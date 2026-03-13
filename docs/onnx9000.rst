@@ -1,0 +1,82 @@
+onnx9000 package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   onnx9000.autograd
+   onnx9000.codegen
+   onnx9000.export
+   onnx9000.jit
+   onnx9000.ops
+   onnx9000.parser
+
+Submodules
+----------
+
+onnx9000.cli module
+-------------------
+
+.. automodule:: onnx9000.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.config module
+----------------------
+
+.. automodule:: onnx9000.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.dtypes module
+----------------------
+
+.. automodule:: onnx9000.dtypes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.exceptions module
+--------------------------
+
+.. automodule:: onnx9000.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.ir module
+------------------
+
+.. automodule:: onnx9000.ir
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.onnx\_pb2 module
+-------------------------
+
+.. automodule:: onnx9000.onnx_pb2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.registry module
+------------------------
+
+.. automodule:: onnx9000.registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: onnx9000
+   :members:
+   :undoc-members:
+   :show-inheritance:

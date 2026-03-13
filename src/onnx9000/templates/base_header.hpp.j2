@@ -1,0 +1,290 @@
+#pragma once
+
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <expected>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#if defined(__APPLE__) && defined(USE_ACCELERATE)
+#include <Accelerate/Accelerate.h>
+#endif
+
+namespace onnx9000 {
+
+/**
+ * @brief Macro for N-dimensional flat index calculation.
+ * @tparam Args Variadic template arguments for indices.
+ * @param strides The strides of the tensor.
+ * @param args The indices.
+ * @return The flat index.
+ */
+template <typename... Args>
+inline int64_t calc_index(const std::vector<int64_t>& strides, Args... args) noexcept {
+    const int64_t indices[] = {static_cast<int64_t>(args)...};
+    int64_t offset = 0;
+    for (size_t i = 0; i < sizeof...(Args); ++i) {
+        offset += indices[i] * strides[i];
+    }
+    return offset;
+}
+
+/**
+ * @brief Flat index calculation given a vector of indices
+ * @param strides The strides of the tensor.
+ * @param indices The indices.
+ * @return The flat index.
+ */
+inline int64_t calc_index_vec(const std::vector<int64_t>& strides,
+                              const std::vector<int64_t>& indices) noexcept {
+    int64_t offset = 0;
+    for (size_t i = 0; i < strides.size(); ++i) {
+        offset += indices[i] * strides[i];
+    }
+    return offset;
+}
+
+/**
+ * @brief Base Tensor struct representing memory layout
+ * @tparam T The data type.
+ */
+template <typename T>
+struct Tensor {
+    T* data;                     ///< Pointer to data buffer
+    std::vector<int64_t> shape;  ///< Tensor shape
+    std::vector<int64_t> strides;///< Tensor strides
+
+    /**
+     * @brief Constructs a Tensor from a pointer and a shape.
+     * @param ptr The data pointer.
+     * @param s The shape vector.
+     */
+    Tensor(T* ptr, const std::vector<int64_t>& s) noexcept : data(ptr), shape(s) {
+        try {
+            strides.resize(shape.size());
+            int64_t stride = 1;
+            for (int i = static_cast<int>(shape.size()) - 1; i >= 0; --i) {
+                strides[i] = stride;
+                stride *= shape[i];
+            }
+        } catch (...) {
+            // Silently fail to keep noexcept guarantee
+        }
+    }
+
+    /**
+     * @brief Gets total elements.
+     * @return Total size.
+     */
+    int64_t size() const noexcept {
+        if (shape.empty()) return 1;
+        int64_t sz = 1;
+        for (auto d : shape) sz *= d;
+        return sz;
+    }
+};
+
+/**
+ * @brief Safe absolute value function that avoids ambiguous calls on unsigned types.
+ * @tparam T The data type.
+ * @param x The input value.
+ * @return The absolute value.
+ */
+template <typename T>
+inline auto safe_abs(T x) noexcept -> T {
+    if constexpr (std::is_unsigned_v<T>) {
+        return x;
+    } else {
+        return std::abs(x);
+    }
+}
+
+#if defined(USE_CUDA)
+
+// A wrapper for CUDA device memory.
+struct CudaBuffer {
+    void* ptr = nullptr;
+    size_t bytes = 0;
+    
+    CudaBuffer() = default;
+    
+    ~CudaBuffer() {
+        if (ptr) {
+            // cudaFree(ptr);
+        }
+    }
+    
+    void resize(size_t new_bytes) noexcept {
+        if (new_bytes > bytes) {
+            if (ptr) {
+                // cudaFree(ptr);
+            }
+            // cudaMalloc(&ptr, new_bytes);
+            bytes = new_bytes;
+        }
+    }
+    
+    template <typename T>
+    T* data() noexcept { return static_cast<T*>(ptr); }
+};
+
+#endif
+
+/**
+ * @brief Broadcasts an index from an output shape to an input shape.
+ * @param out_index The flat index in the output tensor.
+ * @param out_shape The shape of the output tensor.
+ * @param in_shape The shape of the input tensor.
+ * @param in_strides The strides of the input tensor.
+ * @return The mapped flat index in the input tensor.
+ */
+inline int64_t broadcast_index(int64_t out_index,
+                               const std::vector<int64_t>& out_shape,
+                               const std::vector<int64_t>& in_shape,
+                               const std::vector<int64_t>& in_strides) noexcept {
+    int64_t in_index = 0;
+    int64_t current_out_idx = out_index;
+    
+    // Calculate index from right to left
+    for (int i = static_cast<int>(out_shape.size()) - 1; i >= 0; --i) {
+        int64_t coord = current_out_idx % out_shape[i];
+        current_out_idx /= out_shape[i];
+        
+        // Map output axis `i` to input axis `in_i`
+        int in_i = i - (static_cast<int>(out_shape.size()) - static_cast<int>(in_shape.size()));
+        
+        if (in_i >= 0) {
+            // If dimension exists in input
+            int64_t dim_size = in_shape[in_i];
+            if (dim_size > 1) {
+                // Normal stride
+                in_index += coord * in_strides[in_i];
+            }
+            // If dim_size == 1, stride is 0 for broadcast, so we add nothing
+        }
+    }
+    return in_index;
+}
+
+/**
+ * @brief Im2Col for 2D convolutions.
+ * @tparam T Data type.
+ * @param data_im Pointer to input image data (C, H, W).
+ * @param channels Number of channels.
+ * @param height Input height.
+ * @param width Input width.
+ * @param kernel_h Kernel height.
+ * @param kernel_w Kernel width.
+ * @param pad_t Padding top.
+ * @param pad_l Padding left.
+ * @param pad_b Padding bottom.
+ * @param pad_r Padding right.
+ * @param stride_h Stride height.
+ * @param stride_w Stride width.
+ * @param dilation_h Dilation height.
+ * @param dilation_w Dilation width.
+ * @param data_col Pointer to output column data.
+ * @return Expected void on success, string on error.
+ */
+template <typename T>
+inline std::expected<void, std::string> im2col_2d(
+    const T* data_im, int64_t channels, int64_t height, int64_t width,
+    int64_t kernel_h, int64_t kernel_w,
+    int64_t pad_t, int64_t pad_l, int64_t pad_b, int64_t pad_r,
+    int64_t stride_h, int64_t stride_w,
+    int64_t dilation_h, int64_t dilation_w,
+    T* data_col) noexcept {
+
+    if (!data_im || !data_col) return std::unexpected("Null pointer in im2col_2d");
+
+    int64_t out_h = (height + pad_t + pad_b - dilation_h * (kernel_h - 1) - 1) / stride_h + 1;
+    int64_t out_w = (width + pad_l + pad_r - dilation_w * (kernel_w - 1) - 1) / stride_w + 1;
+
+    int64_t channels_col = channels * kernel_h * kernel_w;
+    for (int64_t c = 0; c < channels_col; ++c) {
+        int64_t w_offset = c % kernel_w;
+        int64_t h_offset = (c / kernel_w) % kernel_h;
+        int64_t c_im = c / kernel_h / kernel_w;
+        for (int64_t h = 0; h < out_h; ++h) {
+            for (int64_t w = 0; w < out_w; ++w) {
+                int64_t h_pad = h * stride_h - pad_t + h_offset * dilation_h;
+                int64_t w_pad = w * stride_w - pad_l + w_offset * dilation_w;
+                if (h_pad >= 0 && h_pad < height && w_pad >= 0 && w_pad < width) {
+                    data_col[(c * out_h + h) * out_w + w] = data_im[(c_im * height + h_pad) * width + w_pad];
+                } else {
+                    data_col[(c * out_h + h) * out_w + w] = static_cast<T>(0);
+                }
+            }
+        }
+    }
+    return {};
+}
+
+/**
+ * @brief Performs 2D Convolution using im2col and explicit gemm.
+ * @tparam T Data type.
+ * @param X Input tensor data.
+ * @param W Weight tensor data.
+ * @param B Optional bias tensor data.
+ * @param Y Output tensor data.
+ * @param N Batch size.
+ * @param C Input channels.
+ * @param H Input height.
+ * @param W_w Input width.
+ * @param M Output channels.
+ * @param kH Kernel height.
+ * @param kW Kernel width.
+ * @param pad_t Padding top.
+ * @param pad_l Padding left.
+ * @param pad_b Padding bottom.
+ * @param pad_r Padding right.
+ * @param stride_h Stride height.
+ * @param stride_w Stride width.
+ * @param dilation_h Dilation height.
+ * @param dilation_w Dilation width.
+ * @param col_buffer Temporary workspace buffer (sized C*kH*kW * out_H*out_W).
+ * @return Expected void on success, string on error.
+ */
+template <typename T>
+inline std::expected<void, std::string> conv2d_forward(
+    const T* X, const T* W, std::optional<const T*> B, T* Y,
+    int64_t N, int64_t C, int64_t H, int64_t W_w,
+    int64_t M, int64_t kH, int64_t kW,
+    int64_t pad_t, int64_t pad_l, int64_t pad_b, int64_t pad_r,
+    int64_t stride_h, int64_t stride_w,
+    int64_t dilation_h, int64_t dilation_w,
+    T* col_buffer) noexcept {
+
+    if (!X || !W || !Y || !col_buffer) return std::unexpected("Null pointer in conv2d_forward");
+
+    int64_t out_h = (H + pad_t + pad_b - dilation_h * (kH - 1) - 1) / stride_h + 1;
+    int64_t out_w = (W_w + pad_l + pad_r - dilation_w * (kW - 1) - 1) / stride_w + 1;
+    int64_t out_spatial = out_h * out_w;
+    int64_t col_dim = C * kH * kW;
+
+    for (int64_t n = 0; n < N; ++n) {
+        auto im2col_res = im2col_2d(X + n * C * H * W_w, C, H, W_w,
+                                    kH, kW, pad_t, pad_l, pad_b, pad_r,
+                                    stride_h, stride_w, dilation_h, dilation_w,
+                                    col_buffer);
+        if (!im2col_res) return std::unexpected(im2col_res.error());
+
+        // GEMM: Y[n] = W @ col_buffer
+        for (int64_t m = 0; m < M; ++m) {
+            T bias_val = B.has_value() ? B.value()[m] : static_cast<T>(0);
+            for (int64_t spatial = 0; spatial < out_spatial; ++spatial) {
+                T sum = bias_val;
+                for (int64_t k = 0; k < col_dim; ++k) {
+                    sum += W[m * col_dim + k] * col_buffer[k * out_spatial + spatial];
+                }
+                Y[n * M * out_spatial + m * out_spatial + spatial] = sum;
+            }
+        }
+    }
+    return {};
+}
+
+}  // namespace onnx9000

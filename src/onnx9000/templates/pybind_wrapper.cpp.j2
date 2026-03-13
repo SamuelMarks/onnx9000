@@ -1,0 +1,30 @@
+#include <pybind11/numpy.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+#include <expected>
+#include <stdexcept>
+#include <vector>
+
+namespace py = pybind11;
+
+/**
+ * @brief Helper to convert numpy array to raw pointer (zero copy)
+ * @tparam T The data type.
+ * @param arr The pybind11 array_t.
+ * @return Raw pointer to the array data.
+ */
+template <typename T>
+T* get_ptr(py::array_t<T>& arr) noexcept {
+    py::buffer_info buf = arr.request();
+    return static_cast<T*>(buf.ptr);
+}
+
+PYBIND11_MODULE({{ module_name }}, m) {
+    m.doc() = "Generated ONNX9000 JIT module.";
+    py::class_<{{ class_name }}>(m, "{{ class_name }}")
+        .def(py::init([]({% for p in params_types %}py::array_t<{{ p }}> arr_{{ loop.index0 }}{% if not loop.last %}, {% endif %}{% endfor %}) {
+            return new {{ class_name }}({% for p in params_types %}get_ptr(arr_{{ loop.index0 }}){% if not loop.last %}, {% endif %}{% endfor %});
+        }){% for p in params_types %}, py::keep_alive<1, {{ loop.index + 1 }}>(){% endfor %})
+        .def("forward", &{{ class_name }}::forward_py, "Execute a forward pass.");
+}

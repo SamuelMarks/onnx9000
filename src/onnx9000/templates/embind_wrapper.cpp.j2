@@ -1,0 +1,10 @@
+#include <emscripten/bind.h>
+
+using namespace emscripten;
+
+// Embind JavaScript wrapper definition
+EMSCRIPTEN_BINDINGS({{ module_name }}) {
+    class_<{{ class_name }}>("{{ class_name }}")
+        .constructor<>()
+        .function("forward", &{{ class_name }}::forward); // Adjust method bindings as needed
+}

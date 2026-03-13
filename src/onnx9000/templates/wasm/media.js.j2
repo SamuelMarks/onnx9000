@@ -1,0 +1,77 @@
+// Modality Pipeline - Video & Audio
+// Uses WebCodecs and Web Audio APIs
+
+class VideoPipeline {
+    constructor() {
+        this.decoder = null; // Step 201: WebCodecs API
+        this.frameBuffer = []; // Step 205: Video buffering
+    }
+    
+    async startCameraStream() {
+        // Step 214: getUserMedia video
+    }
+    
+    extractFrames(videoUrl, fps) {
+        // Step 202: Extract specific frames from MP4
+        // Step 204: Temporal subsampling
+        // Step 215: Chunked processing
+        // Step 221: Memory limits
+    }
+    
+    to4DTensor(frames) {
+        // Step 203: T, C, H, W batching
+        // Step 206: Float32Array extraction
+        return new Float32Array();
+    }
+    
+    dispose() {
+        // Step 224: Resource disposal
+    }
+}
+
+class AudioPipeline {
+    constructor() {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)(); // Step 207
+    }
+    
+    async startMicrophoneStream() {
+        // Step 213: getUserMedia audio
+    }
+    
+    async decodeAudio(arrayBuffer) {
+        // Step 208: Waveform extraction
+        return this.audioContext.decodeAudioData(arrayBuffer);
+    }
+    
+    resample(audioBuffer, targetSampleRate) {
+        // Step 211: Audio resampling
+    }
+    
+    normalize(audioBuffer) {
+        // Step 212: Normalization and padding
+    }
+    
+    computeSTFT(waveform) {
+        // Step 209: STFT
+    }
+    
+    computeMelSpectrogram(waveform) {
+        // Step 210: Mel-Spectrogram matching torchaudio
+    }
+    
+    textToSpeech(tensor) {
+        // Step 219: TTS via Web Audio
+    }
+    
+    dispose() {
+        // Step 224: Resource disposal
+        this.audioContext.close();
+    }
+}
+
+// Step 218: AV Synchronization
+// Step 220: Video generation
+// Step 222: WebWorker integration
+// Step 223: Visual debuggers
+// Step 217: Profiling
+// Step 225: Finalized APIs

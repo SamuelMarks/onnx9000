@@ -1,0 +1,94 @@
+/* Step 230: Global theming (Dark/Light mode) based on M3 specs */
+:root {
+    --m3-sys-light-primary: #6750A4;
+    --m3-sys-light-on-primary: #FFFFFF;
+    --m3-sys-light-surface: #FFFBFE;
+    --m3-sys-light-on-surface: #1C1B1F;
+    --m3-sys-light-error: #B3261E;
+    --m3-sys-light-on-error: #FFFFFF;
+    
+    font-family: "Roboto", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--m3-sys-light-surface);
+    color: var(--m3-sys-light-on-surface);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header.stepper-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #ccc;
+}
+
+main#step-content {
+    flex: 1;
+    padding: 2rem;
+    position: relative;
+}
+
+.step-section {
+    transition: opacity 0.3s ease;
+}
+
+.step-section.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.step-section.active {
+    display: block;
+    opacity: 1;
+}
+
+.m3-button {
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.m3-button.primary {
+    background-color: var(--m3-sys-light-primary);
+    color: var(--m3-sys-light-on-primary);
+}
+
+.m3-button.primary:hover {
+    background-color: #553f87;
+}
+
+.m3-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.split-view {
+    display: flex;
+    gap: 20px;
+}
+
+.left-pane, .right-pane {
+    flex: 1;
+}
+
+.error-banner {
+    background-color: var(--m3-sys-light-error);
+    color: var(--m3-sys-light-on-error);
+    padding: 10px;
+    text-align: center;
+}
+
+/* Base structural CSS */
+.dropzone {
+    border: 2px dashed #ccc;
+    padding: 40px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 8px;
+}

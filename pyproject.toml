@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "onnx9000"
+version = "0.1.0"
+description = "A JIT Transpiler architecture for ONNX, eliminating framework bloat with pure C++ and WASM generation."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "protobuf>=4.21.0",
+    "numpy>=1.21.0",
+    "jinja2>=3.0.0",
+    "pybind11>=2.10.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "black>=23.0.0"
+]
+
+[project.scripts]
+onnx9000 = "onnx9000.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/onnx9000"]
+include = ["src/onnx9000/**/*.py", "src/onnx9000/**/*.j2"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report=term-missing"
+
+[tool.coverage.run]
+omit = ["src/onnx9000/onnx_pb2.py"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+strict = false
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "onnx9000.onnx_pb2"
+ignore_errors = true

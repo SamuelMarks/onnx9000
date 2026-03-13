@@ -1,0 +1,45 @@
+onnx9000.autograd package
+=========================
+
+Submodules
+----------
+
+onnx9000.autograd.compiler module
+---------------------------------
+
+.. automodule:: onnx9000.autograd.compiler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.autograd.rules module
+------------------------------
+
+.. automodule:: onnx9000.autograd.rules
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.autograd.utils module
+------------------------------
+
+.. automodule:: onnx9000.autograd.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.autograd.vjp module
+----------------------------
+
+.. automodule:: onnx9000.autograd.vjp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: onnx9000.autograd
+   :members:
+   :undoc-members:
+   :show-inheritance:

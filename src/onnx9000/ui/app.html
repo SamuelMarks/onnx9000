@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onnx9000 - ML Switcheroo</title>
+    <!-- Step 227: Material 3 integration via Web Components -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    <script type="module" src="./app.js"></script>
+    <style>
+        /* Step 230: Global theming */
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-background: #FFFBFE;
+            --md-sys-color-on-background: #1C1B1F;
+            --md-sys-color-surface-variant: #E7E0EC;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --md-sys-color-primary: #D0BCFF;
+                --md-sys-color-on-primary: #381E72;
+                --md-sys-color-background: #1C1B1F;
+                --md-sys-color-on-background: #E6E1E5;
+                --md-sys-color-surface-variant: #49454F;
+            }
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Step 229: Stepper layout container */
+        .stepper-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .step-content {
+            flex-grow: 1;
+            padding: 24px;
+            display: none;
+            /* Step 237: Transitions */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .step-content.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .controls {
+            padding: 16px;
+            background: var(--md-sys-color-surface-variant);
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="stepper-container" id="app">
+        <!-- Step 231: Step 0 - Code Editor / Python Translation -->
+        <div id="step-0" class="step-content active" aria-label="Step 0">
+            <div style="flex:1;">
+                <h2>Step 0: Python to ONNX</h2>
+                <textarea id="code-editor" style="width:100%; height:300px; font-family:monospace;">
+import torch
+import torch.nn as nn
+
+class Model(nn.Module):
+    def forward(self, x):
+        return torch.relu(x)
+                </textarea>
+            </div>
+            <!-- Step 245, 252: DAG Viewer Mock -->
+            <div id="dag-viewer" style="flex:1; border-left: 2px solid var(--md-sys-color-surface-variant); padding-left:24px;">
+                <h3>ONNX DAG Preview</h3>
+                <pre id="dag-output">Waiting for translation...</pre>
+            </div>
+        </div>
+
+        <!-- Step 232: Step 1 - Modality & Execution -->
+        <div id="step-1" class="step-content" aria-label="Step 1">
+            <h2>Step 1: Configuration</h2>
+            <label>Modality:
+                <select id="modality-select">
+                    <option value="text">Text</option>
+                    <option value="image">Image</option>
+                    <option value="video">Video</option>
+                </select>
+            </label>
+            <br><br>
+            <label>Execution Environment:
+                <select id="exec-env">
+                    <option value="browser">In-Browser (WASM/WebGPU)</option>
+                    <option value="local">Local Native Server</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- Step 234: Step 2 - Logs & Transport -->
+        <div id="step-2" class="step-content" aria-label="Step 2">
+            <h2>Step 2: Training & Compilation</h2>
+            <div style="background: black; color: lime; padding: 16px; height: 200px; overflow-y: auto; font-family: monospace;" id="terminal">
+                [SYSTEM] Initializing...
+            </div>
+            <progress id="progress-bar" value="0" max="100" style="width:100%; margin-top: 16px;"></progress>
+        </div>
+
+        <!-- Step 235: Step 3 - Live Execution -->
+        <div id="step-3" class="step-content" aria-label="Step 3">
+            <h2>Step 3: Live System</h2>
+            <div id="interactive-area">
+                <input type="text" id="live-input" placeholder="Enter input...">
+                <button id="run-btn">Run Inference</button>
+                <pre id="live-output"></pre>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="btn-back" disabled>Back</button>
+            <span id="step-indicator">Step 0 of 3</span>
+            <button id="btn-next">Next</button>
+        </div>
+    </div>
+</body>
+</html>

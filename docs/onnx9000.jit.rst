@@ -1,0 +1,37 @@
+onnx9000.jit package
+====================
+
+Submodules
+----------
+
+onnx9000.jit.compiler module
+----------------------------
+
+.. automodule:: onnx9000.jit.compiler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.jit.hasher module
+--------------------------
+
+.. automodule:: onnx9000.jit.hasher
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+onnx9000.jit.wrapper module
+---------------------------
+
+.. automodule:: onnx9000.jit.wrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: onnx9000.jit
+   :members:
+   :undoc-members:
+   :show-inheritance:

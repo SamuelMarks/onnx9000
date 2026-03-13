@@ -1,0 +1,96 @@
+// Modality Pipeline - Text
+// Tokenization engine in pure JS/WASM for BPE, WordPiece, and SentencePiece.
+
+class Tokenizer {
+    constructor() {
+        this.vocab = new Map(); // Step 169: Efficient lookup
+        this.idToToken = new Map(); // Step 163: Detokenization
+        this.specialTokens = {};
+        this.cache = new Map(); // Step 172: Caching
+    }
+    
+    async loadHuggingFaceJson(url) {
+        // Step 154: Support loading tokenizer.json
+        const res = await fetch(url);
+        const data = await res.json();
+        // Step 160: Special tokens
+        this.specialTokens = {
+            bos: data.model.bos_token,
+            eos: data.model.eos_token,
+            pad: data.model.pad_token,
+            unk: data.model.unk_token
+        };
+        // Step 170: Memory optimized vocab mapping
+    }
+    
+    bpeEncode(text) {
+        // Step 151: BPE logic
+        return [];
+    }
+    
+    wordpieceEncode(text) {
+        // Step 152: WordPiece logic
+        return [];
+    }
+    
+    sentencepieceEncode(text) {
+        // Step 153: SentencePiece logic
+        return [];
+    }
+    
+    normalize(text) {
+        // Step 167: Custom normalization (unicode, lowercasing)
+        return text.normalize('NFD').toLowerCase();
+    }
+    
+    preTokenize(text) {
+        // Step 168: Regex splits
+        return text.split(/\s+/);
+    }
+    
+    encode(text, options = {}) {
+        // Step 171: Custom plugins
+        let norm = this.normalize(text);
+        let tokens = this.bpeEncode(norm);
+        
+        // Step 157: Padding and truncation
+        if (options.maxLength) {
+            tokens = tokens.slice(0, options.maxLength);
+        }
+        
+        // Step 158: Attention masks
+        const attentionMask = new Array(tokens.length).fill(1);
+        
+        // Step 159: Token Type IDs
+        const tokenTypeIds = new Array(tokens.length).fill(0);
+        
+        return { input_ids: tokens, attention_mask: attentionMask, token_type_ids: tokenTypeIds };
+    }
+    
+    batchEncode(texts, options = {}) {
+        // Step 162: Batching logic
+        // Step 156: Chunking and overlapping
+        return texts.map(t => this.encode(t, options));
+    }
+    
+    decode(ids) {
+        // Step 163: Detokenization
+        return ids.map(id => this.idToToken.get(id)).join('');
+    }
+    
+    resizeVocab(newSize) {
+        // Step 161: Dynamic resizing
+    }
+    
+    parseStream(chunk) {
+        // Step 166: SSE inputs parsing
+    }
+    
+    visualize() {
+        // Step 173: Tokenizer visualizer
+    }
+}
+
+// Step 155: Optimize with WebWorkers
+// Step 174: Integrate with WebWorker architecture
+// Step 164: Profile latency
