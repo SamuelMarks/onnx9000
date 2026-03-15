@@ -1,0 +1,25 @@
+{
+  "name": "@onnx9000/web",
+  "version": "0.0.1",
+  "description": "ONNX9000 WebGPU and WASM Backend",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "node test.cjs",
+    "docs": "typedoc --out docs src/index.ts"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^5.1.4",
+    "c8": "^11.0.0",
+    "jasmine": "^5.1.0",
+    "puppeteer": "^22.0.0",
+    "rollup": "^3.29.4",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tsx": "^4.21.0",
+    "typedoc": "^0.25.7",
+    "typescript": "^5.3.3"
+  }
+}

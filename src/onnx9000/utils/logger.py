@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Module providing core logic and structural definitions."""
 
 import logging
 import sys

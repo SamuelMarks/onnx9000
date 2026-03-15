@@ -62,7 +62,6 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-pytest_cov.txt
 
 # IDE / Editors
 .idea/
@@ -113,3 +112,33 @@ docs/_build/
 !conftest.py
 *.onnx
 test_f16*
+coverage.json
+
+# Web & C++ testing / coverage
+default.profdata
+default.profraw
+interrogate_output.txt
+test_wasm_core
+src/onnx9000/backends/web/js/coverage/
+src/onnx9000/backends/web/js/docs/
+
+
+# Additional ignore rules
+*.gcov
+*.gcda
+*.gcno
+test_wasm
+#*_cov.txt
+current_cov.txt
+final_cov.txt
+full_cov.txt
+*_coverage.txt
+coverage_report.txt
+ops_above.txt
+ops_in_block.txt
+trace.out
+*.patch
+*.orig
+*.rej
+log
+

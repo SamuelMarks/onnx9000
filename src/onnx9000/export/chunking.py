@@ -9,7 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from onnx9000.ir import Graph
+from onnx9000.core.ir import Graph
 
 
 def export_with_external_data(

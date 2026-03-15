@@ -1,33 +1,51 @@
-onnx9000
-========
+onnx9000: The Grand Unification
+===============================
 
 [![CI](https://github.com/samuel/onnx9000/actions/workflows/ci.yml/badge.svg)](https://github.com/samuel/onnx9000/actions/workflows/ci.yml)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-100%25-brightgreen.svg)](https://github.com/samuel/onnx9000)
 [![Doc Coverage](https://img.shields.io/badge/doc%20coverage-100.0%25-brightgreen.svg)](https://github.com/samuel/onnx9000)
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
-[![C++ Standard](https://img.shields.io/badge/C%2B%2B-23-blue.svg)](https://en.cppreference.com/w/cpp/23)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Welcome to **onnx9000**, a fundamentally reimagined execution engine for ONNX (Open Neural Network Exchange). Instead of operating as a heavyweight runtime with thousands of pre-compiled operator kernels and dynamic dispatch logic, `onnx9000` is a **JIT transpiler**. It parses your specific ONNX graph and generates heavily optimized, bespoke C++23 or WebAssembly (`.wasm`) code specifically tailored for *that exact model*.
+Welcome to **onnx9000 V2**, a fundamentally reimagined ecosystem for ONNX (Open Neural Network Exchange). 
 
-This project provides zero-dependency protobuf parsing, strict type checking, robust autograd capabilities, and 100% test coverage.
+The standard ONNX ecosystem is heavily fragmented across massive C++ repositories (`onnxruntime`, `onnxruntime-extensions`, `torch.onnx`, `tf2onnx`, `Olive`, `onnx-simplifier`). This fragmentation leads to massive binary bloat (150MB+ runtimes), complex build toolchains (CMake, LLVM, Protobuf), and a severe inability to execute natively and efficiently in constrained environments like web browsers (WASM/WebGPU) or edge devices.
 
-**🔥 STATUS:** `onnx9000` is maturing rapidly. Over 200 standard ONNX operators have been implemented. The core IR parsing, autograd engine, static C++ memory planning, Apple Accelerate framework, WebAssembly SIMD backends, CUDA target, and control flow operators are fully integrated.
+`onnx9000` is solving this by **rebuilding the entire ONNX ecosystem into a single, zero-dependency, pure Python and JS/WASM/WebGPU architecture.**
 
+By utilizing a unified Intermediate Representation (IR) written entirely in Python, we can author, trace, optimize, quantize, and execute models dynamically without ever compiling a heavy C++ runtime. 
 
-## Table of Contents
+## The Reimplementation Master Plan
 
-- [Introduction](#introduction)
-- [Key Features](#key-features)
-- [How it Works](#how-it-works)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-  - [Defining and Tracing a Graph](#defining-and-tracing-a-graph)
-  - [Compiling to C++ (JIT)](#compiling-to-c-jit)
-  - [Compiling to WebAssembly (WASM)](#compiling-to-webassembly-wasm)
-- [Project Documentation](#project-documentation)
-- [Contributing](#contributing)
-- [License](#license)
+To achieve true zero-dependency web execution and lightweight native deployments, we are systematically rewriting 18 major ONNX/Ecosystem projects natively into this repository:
+
+| Target Project | `onnx9000` V2 Home | Description | Status |
+| :--- | :--- | :--- | :--- |
+| **[ONNX Runtime Training](https://github.com/microsoft/onnxruntime/tree/main/orttraining)** <br> 📝 [Checklist](ONNX0_ORT_TRAINING.md) | `src/onnx9000/training/` | Replaces the C++ training runtime by statically generating Ahead-of-Time (AOT) backward passes, losses, and optimizer steps entirely as forward ONNX math ops. | 🟢 Ported |
+| **[ONNX Runtime Web](https://github.com/microsoft/onnxruntime/tree/main/js/web)** <br> 📝 [Checklist](ONNX1_ORT_WEB.md) | `src/onnx9000/backends/web/` | Replaces the heavy Emscripten C++ build with a ground-up WebGPU/WASM engine written natively in JS, supporting progressive chunked loading of weights. | 🟢 Ported |
+| **[ONNX Runtime Extensions](https://github.com/microsoft/onnxruntime-extensions)** <br> 📝 [Checklist](ONNX2_ORT_EXTENSIONS.md) | `src/onnx9000/extensions/` | Replaces HuggingFace tokenizers (Rust/C++) and FFmpeg with pure Python/JS BPE tokenizers and WebCodecs/WebAudio media loaders. | 🟢 Ported |
+| **[Torch/TF Exporters](https://github.com/pytorch/pytorch/tree/main/torch/onnx)** <br> 📝 [Checklist](ONNX3_TORCH_EXPORTERS.md) | `src/onnx9000/frontends/` | Replaces massive `torch.onnx` C++ tracing with a lightweight, pure-Python PyTorch-like API that traces models directly to ONNX IR in Pyodide. | 🟢 Ported |
+| **[Olive Optimizer](https://github.com/microsoft/Olive)** <br> 📝 [Checklist](ONNX4_OLIVE_OPTIMIZER.md) | `src/onnx9000/optimize/hardware/` | Replaces Microsoft's heavy C++ hardware optimizer with pure Python INT8/INT4 quantization and memory layout packing designed for HTTP streaming. | 🟢 Ported |
+| **[ONNX-Simplifier](https://github.com/daquexian/onnx-simplifier)** <br> 📝 [Checklist](ONNX5_ONNX_SIMPLIFIER.md) | `src/onnx9000/optimize/simplifier/` | Replaces C++ ONNX Runtime constant folding with aggressive pure-Python algebraic simplifications and dead-code elimination. | 🟢 Ported |
+| **[ONNXScript / Spox](https://github.com/microsoft/onnxscript)** <br> 📝 [Checklist](ONNX6_ONNXSCRIPT_SPOX.md) | `src/onnx9000/script/` | Replaces `protobuf` C++ dependent authoring tools with a fluent, pure Python API to dynamically construct graphs node-by-node. | 🟢 Ported |
+| **[ORT Native Exec](https://github.com/microsoft/onnxruntime)** <br> 📝 [Checklist](ONNX7_ORT_NATIVE.md) | `src/onnx9000/backends/{cuda,apple}` | Replaces the 150MB+ C++ runtime with a zero-overhead Python dispatcher that dynamically calls `cuBLAS`/`Accelerate` via `ctypes`. | 🟢 Ported |
+| **[tf2onnx](https://github.com/onnx/tensorflow-onnx)** <br> 📝 [Checklist](ONNX8_TF2ONNX.md) | `src/onnx9000/frontends/tf/` | Replaces heavy native TF with pure client-side conversion of TensorFlow/Keras/TFLite models to ONNX. | 🟢 Ported |
+| **[paddle2onnx](https://github.com/PaddlePaddle/Paddle2ONNX)** <br> 📝 [Checklist](ONNX9_PADDLE2ONNX.md) | `src/onnx9000/frontends/paddle/` | Client-side conversion of PaddlePaddle models to ONNX supporting dynamic shapes and custom CV/NLP subgraphs. | 🟢 Ported |
+| **[skl2onnx](https://github.com/onnx/sklearn-onnx)** <br> 📝 [Checklist](ONNX10_SKL2ONNX.md) | `src/onnx9000/frontends/sklearn/` | Translates Scikit-Learn pipelines and estimators into optimized `ai.onnx.ml` graph structures natively in WASM. | ⚪️ Planned |
+| **[onnxmltools](https://github.com/onnx/onnxmltools)** <br> 📝 [Checklist](ONNX11_ONNXMLTOOLS.md) | `src/onnx9000/frontends/mltools/` | Unifies converters for XGBoost, LightGBM, CatBoost, CoreML, and SparkML into browser-native graph generation. | ⚪️ Planned |
+| **[ONNX GraphSurgeon](https://github.com/NVIDIA/TensorRT/tree/master/tools/onnx-graphsurgeon)** <br> 📝 [Checklist](ONNX12_GRAPHSURGEON.md) | `src/onnx9000/surgeon/` | High-ergonomic python API for surgical DAG inspection, subgraph replacement, and constant folding via Pyodide. | ⚪️ Planned |
+| **[Hummingbird](https://github.com/microsoft/hummingbird)** <br> 📝 [Checklist](ONNX13_HUMMINGBIRD.md) | `src/onnx9000/optimize/hummingbird/` | Transpiles traditional ML tree ensembles into dense tensor math (GEMM/PerfectTree) for lightning-fast WebGPU execution. | ⚪️ Planned |
+| **[Netron](https://github.com/lutzroeder/netron)** <br> 📝 [Checklist](ONNX14_NETRON.md) | `src/onnx9000/ui/visualizer/` | Integrates interactive, WASM-accelerated 60FPS graph visualization and live editing directly into the client. | ⚪️ Planned |
+| **[onnx-tool](https://github.com/aanna0701/onnx-tool)** <br> 📝 [Checklist](ONNX15_ONNX_TOOL.md) | `src/onnx9000/analysis/profiler/` | Provides zero-install, instant model profiling (MACs, FLOPs, Memory) and dynamic symbolic shape inference. | ⚪️ Planned |
+| **[onnx-mlir](https://github.com/onnx/onnx-mlir)** <br> 📝 [Checklist](ONNX16_ONNXMLIR.md) | `src/onnx9000/compiler/mlir/` | AOT compilation of ONNX graphs into MLIR dialects and finally standalone highly optimized WebAssembly binaries. | ⚪️ Planned |
+| **[onnx-safetensors](https://github.com/huggingface/safetensors)** <br> 📝 [Checklist](ONNX17_SAFETENSORS.md) | `src/onnx9000/core/safetensors/` | Safe, zero-copy, memory-mapped weight loading explicitly designed for massive LLMs in memory-constrained browsers. | ⚪️ Planned |
+
+## Why Rewrite Everything? (The Main Benefits)
+
+1. **Web-Native Execution (Pyodide & WebGPU):** Because everything from tokenization to quantization and execution is written in pure Python or native JS, the entire pipeline can run flawlessly inside the browser without downloading massive Emscripten binaries.
+2. **Zero-Bloat Native Deployments:** For server or desktop execution, you do not need `onnxruntime-gpu`. `onnx9000` evaluates the graph in Python and dynamically dispatches math to native system libraries (NVIDIA cuBLAS, Apple Metal/Accelerate) via `ctypes`. This means instant startup times and zero binary bloat.
+3. **Extreme Debuggability:** Standard ONNX errors happen deep inside black-box C++ execution providers. In `onnx9000`, shape inference, constant folding, autograd VJP generation, and execution dispatch are 100% Python. You can step through them with a standard `pdb` debugger.
+4. **Unified Optimization:** Because authoring (`script/`), exporting (`frontends/`), and optimizing (`optimize/`) share the exact same lightweight `core.ir` objects in memory, there is zero serialization/deserialization overhead when manipulating the graph.
 
 ---
 

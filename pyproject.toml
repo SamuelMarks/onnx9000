@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "onnx9000"
-version = "0.1.0"
+version = "0.0.1"
 description = "A JIT Transpiler architecture for ONNX, eliminating framework bloat with pure C++ and WASM generation."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -34,7 +34,7 @@ include = ["src/onnx9000/**/*.py", "src/onnx9000/**/*.j2"]
 addopts = "--cov=src --cov-report=term-missing"
 
 [tool.coverage.run]
-omit = ["src/onnx9000/onnx_pb2.py"]
+omit = ["src/onnx9000/core/onnx_pb2.py"]
 
 [tool.ruff]
 line-length = 88
@@ -53,3 +53,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "onnx9000.onnx_pb2"
 ignore_errors = true
+
+[tool.coverage.report]
+exclude_lines = []

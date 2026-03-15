@@ -1,6 +1,1 @@
-"""Module docstring."""
-
-
-def test_dummy():
-    """Test dummy."""
-    pass
+"""Module providing core logic and structural definitions."""

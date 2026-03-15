@@ -1,0 +1,402 @@
+# ONNX1: ONNX Runtime Web (ORT-Web) Native Rewrite
+
+## Introduction
+**Target Project:** Microsoft's [ONNX Runtime Web (ORT-Web)](https://onnxruntime.ai/docs/build/web.html)
+**New Home:** `src/onnx9000/backends/web/`
+
+The official ORT-Web implementation relies heavily on compiling the monolithic C++ codebase into WebAssembly via Emscripten. This inference-first approach results in massive binary sizes, high memory overhead (often hitting WASM's 4GB limit), and lacks comprehensive, native WebGPU training primitives.
+
+**The `onnx9000` Vision:** We are rebuilding the web execution engine from the ground up, written natively in zero-dependency JavaScript/TypeScript and targeting modern browser APIs (WebGPU and WASM SIMD). This new backend natively supports:
+1. **Progressive Loading:** Fetching weights in chunks via HTTP Range requests and caching them in IndexedDB.
+2. **Dynamic Tensor Pooling:** Aggressive WebGPU buffer reuse to train massive models without exceeding memory constraints.
+3. **WebWorker Orchestration:** A robust RPC architecture utilizing `SharedArrayBuffer` for zero-copy tensor execution off the main thread.
+4. **Native WGSL Shaders:** Hand-optimized WebGPU shaders for every ONNX operator, completely eliminating the C++ abstraction tax.
+
+## Exhaustive Implementation Checklist (300+ Items)
+
+### Phase 1: WebWorker Topology & RPC Protocol
+- [x] **Step 001:** Initialize the root `WebWorker` execution environment.
+- [x] **Step 002:** Implement bi-directional RPC message serialization.
+- [x] **Step 003:** Implement `postMessage` transferables for zero-copy Float32Array passing.
+- [x] **Step 004:** Detect and utilize `SharedArrayBuffer` if cross-origin isolation is enabled.
+- [x] **Step 005:** Implement atomic locks for thread synchronization.
+- [x] **Step 006:** Create task queuing mechanism in the main thread.
+- [x] **Step 007:** Implement priority queuing for rendering vs. training ticks.
+- [x] **Step 008:** Add WebWorker lifecycle management (init, terminate, restart).
+- [x] **Step 009:** Implement automatic worker restarts on OOM crashes.
+- [x] **Step 010:** Serialize standard JS Error objects across the worker boundary.
+- [x] **Step 011:** Serialize ONNX9000 specific backend exceptions.
+- [x] **Step 012:** Implement cancellation tokens for aborting long-running inference/training.
+- [x] **Step 013:** Establish a heartbeat monitor between main and worker threads.
+- [x] **Step 014:** Implement connection timeout recovery logic.
+- [x] **Step 015:** Build a dynamic worker pool to handle batched multimodal inputs.
+- [x] **Step 016:** Implement memory tracking API over RPC (reporting RAM/VRAM usage).
+- [x] **Step 017:** Implement stream-based RPC for iterative outputs (e.g., text generation).
+- [x] **Step 018:** Handle worker instantiation completely asynchronously.
+- [x] **Step 019:** Add telemetry hooks for RPC message latency profiling.
+- [x] **Step 020:** Wrap RPC calls in standard Promises for the frontend API.
+- [x] **Step 021:** Implement environment capability detection (WASM SIMD, WebGPU, WebGL fallback).
+- [x] **Step 022:** Pass environment capabilities back to the main thread securely.
+- [x] **Step 023:** Write unit tests for message sequence preservation.
+- [x] **Step 024:** Test `SharedArrayBuffer` fallback logic for insecure contexts.
+- [x] **Step 025:** Profile main thread blocking during large tensor `postMessage` transfers.
+- [x] **Step 026:** Implement batched message dispatch to reduce postMessage overhead.
+- [x] **Step 027:** Create debug logging toggles inside the worker.
+- [x] **Step 028:** Implement a virtual file system (VFS) mock for the worker.
+- [x] **Step 029:** Ensure worker garbage collection removes detached ArrayBuffers.
+- [x] **Step 030:** Handle browser tab backgrounding/throttling effects on the worker.
+- [x] **Step 031:** Implement multi-worker synchronization for partitioned graph execution.
+- [x] **Step 032:** Write typed RPC interfaces (TypeScript/JSDoc) for message payloads.
+- [x] **Step 033:** Implement a capability handshake protocol on worker boot.
+- [x] **Step 034:** Implement standard `InferenceSession` API mappings in the RPC wrapper.
+- [x] **Step 035:** Create a mocking layer for testing WebWorker logic in Node.js.
+- [x] **Step 036:** Implement raw binary (BSON/MsgPack) fallback if structured clone fails.
+- [x] **Step 037:** Track worker CPU utilization metrics.
+- [x] **Step 038:** Implement soft-kill gracefully finishing current inferences before terminating.
+- [x] **Step 039:** Add integration tests covering Chrome, Firefox, and Safari worker behaviors.
+- [x] **Step 040:** Finalize Phase 1 WebWorker architecture documentation.
+
+### Phase 2: Progressive Graph & HTTP Chunk Loading
+- [x] **Step 041:** Implement a streaming Protobuf parser natively in JS.
+- [x] **Step 042:** Parse ONNX `ModelProto` without loading the entire file into memory.
+- [x] **Step 043:** Extract graph topology independently from tensor data.
+- [x] **Step 044:** Implement HTTP 206 Partial Content requests for external `.bin` weights.
+- [x] **Step 045:** Create a chunk manifest parser (mapping tensors to byte offsets).
+- [x] **Step 046:** Implement concurrent chunk fetching logic.
+- [x] **Step 047:** Implement dynamic chunk sizing based on network speed (adaptive loading).
+- [x] **Step 048:** Integrate with `IndexedDB` for caching downloaded weight chunks.
+- [x] **Step 049:** Implement ETag/SHA256 validation for cached chunks.
+- [x] **Step 050:** Write resume-capability for interrupted weight downloads.
+- [x] **Step 051:** Handle cache invalidation on model version updates.
+- [x] **Step 052:** Implement a 'dry-run' graph load to estimate memory before downloading.
+- [x] **Step 053:** Create a unified Progress API emitting load percentages to the UI.
+- [x] **Step 054:** Optimize JS `DataView` parsing of little-endian weight buffers.
+- [x] **Step 055:** Support dynamically decoding INT8/INT4 compressed weights on the fly.
+- [x] **Step 056:** Support decoding FP16 weights directly into Float32Arrays if WebGPU f16 is missing.
+- [x] **Step 057:** Implement a memory-mapped-like abstraction for weight access.
+- [x] **Step 058:** Evict unused weight chunks from RAM during execution to save memory.
+- [x] **Step 059:** Pre-fetch adjacent weight chunks in the background during sequential execution.
+- [x] **Step 060:** Handle HTTP 416 Range Not Satisfiable errors gracefully.
+- [x] **Step 061:** Support loading weights from local `File` or `Blob` objects via FileReader API.
+- [x] **Step 062:** Support Base64 data URI decoding for tiny models.
+- [x] **Step 063:** Integrate progressive loading with the WebWorker to avoid blocking main thread.
+- [x] **Step 064:** Implement a mechanism to prioritize loading early layers first.
+- [x] **Step 065:** Write unit tests mocking slow network topologies.
+- [x] **Step 066:** Test chunking logic with massive (>2GB) models.
+- [x] **Step 067:** Handle integer overflow issues in JS when tracking 64-bit byte offsets.
+- [x] **Step 068:** Implement CORS failure detection and fallback instructions.
+- [x] **Step 069:** Create visual chunk-map debuggers.
+- [x] **Step 070:** Implement a 'load minimal graph' feature for server-side hybrid execution.
+- [x] **Step 071:** Implement decryption wrappers for secure weight delivery.
+- [x] **Step 072:** Ensure garbage collection clears temporary HTTP buffers.
+- [x] **Step 073:** Test IndexedDB quota exhaustion errors and fallback to RAM-only.
+- [x] **Step 074:** Implement persistent storage request API (`navigator.storage.persist()`).
+- [x] **Step 075:** Write documentation on how to serve progressive models with standard Nginx/Apache.
+- [x] **Step 076:** Implement stream decompression (e.g., GZIP/Brotli via DecompressionStream API).
+- [x] **Step 077:** Handle endianness differences between host and WASM/WebGPU environments.
+- [x] **Step 078:** Create utility to merge downloaded chunks into a standard `.onnx` export.
+- [x] **Step 079:** Implement multi-connection HTTP pooling for faster downloads.
+- [x] **Step 080:** Test progressive loading on mobile devices with unreliable connections.
+- [x] **Step 081:** Add network bandwidth estimation logging.
+- [x] **Step 082:** Implement retry logic with exponential backoff for failed chunk requests.
+- [x] **Step 083:** Support multiplexed weight loading across multiple model instances.
+- [x] **Step 084:** Finalize the `ProgressiveLoader` public JS API.
+- [x] **Step 085:** Integrate `ProgressiveLoader` with the Material 3 Stepper UI components.
+
+### Phase 3: WebGPU Core Initialization & Memory Pooling
+- [x] **Step 086:** Request `GPUAdapter` and verify WebGPU support.
+- [x] **Step 087:** Request `GPUDevice` with high-performance power preference.
+- [x] **Step 088:** Query and log `GPUDevice` limits (max buffer size, max bind groups, etc.).
+- [x] **Step 089:** Implement fallback mechanisms if `shader-f16` extension is unavailable.
+- [x] **Step 090:** Create the global WebGPU `CommandEncoder` orchestrator.
+- [x] **Step 091:** Implement a central `TensorBuffer` class wrapping `GPUBuffer`.
+- [x] **Step 092:** Implement the WebGPU Memory Pool to reuse buffers of matching sizes.
+- [x] **Step 093:** Track buffer lifecycles (allocated, in-use, free) across execution ticks.
+- [x] **Step 094:** Implement staging buffers (`MAP_READ`, `MAP_WRITE`) for CPU/GPU data transfers.
+- [x] **Step 095:** Optimize `writeBuffer` and `copyBufferToBuffer` dispatching.
+- [x] **Step 096:** Map ONNX IR data types to WebGPU storage formats (f32, i32, u32).
+- [x] **Step 097:** Handle alignment padding requirements for WebGPU storage buffers (256-byte alignment).
+- [x] **Step 098:** Implement automatic buffer resizing/reallocation logic for dynamic shapes.
+- [x] **Step 099:** Implement out-of-memory (OOM) trap and context recreation logic.
+- [x] **Step 100:** Handle `GPUDevice` lost events gracefully (e.g., driver crashes).
+- [x] **Step 101:** Create a centralized `PipelineLayout` cache to avoid recompiling shaders.
+- [x] **Step 102:** Implement asynchronous pipeline creation (`createComputePipelineAsync`).
+- [x] **Step 103:** Group compatible shaders into shared `GPUBindGroupLayouts`.
+- [x] **Step 104:** Optimize max bind groups (usually limited to 4) using dynamic buffer offsets.
+- [x] **Step 105:** Implement dynamic dispatch sizing (`dispatchWorkgroups`) based on N-dimensional shapes.
+- [x] **Step 106:** Calculate optimal workgroup sizes (e.g., 64, 128, 256) based on GPU adapter limits.
+- [x] **Step 107:** Inject debug labels into `GPUBuffer`, `GPUShaderModule`, and `GPUComputePipeline`.
+- [x] **Step 108:** Implement WebGPU timestamp queries for microsecond-level op profiling.
+- [x] **Step 109:** Aggregate GPU timestamp profiles into a flamegraph-compatible format.
+- [x] **Step 110:** Handle WebGPU limits on max compute invocations per workgroup.
+- [x] **Step 111:** Implement a 1D linear addressing system for N-D tensors in WGSL.
+- [x] **Step 112:** Implement strided memory access calculations in WGSL.
+- [x] **Step 113:** Handle broadcast shape expansion mapping to physical buffer indices.
+- [x] **Step 114:** Create a garbage collection sweep for the WebGPU Memory Pool.
+- [x] **Step 115:** Implement buffer zeroing (`clearBuffer`) for initialization operations.
+- [x] **Step 116:** Support uniform buffers for passing scalar constants (shapes, axes).
+- [x] **Step 117:** Optimize CPU-bound uniform buffer updates.
+- [x] **Step 118:** Implement graph partitioning to split execution if max command buffer size is hit.
+- [x] **Step 119:** Write unit tests for the WebGPU Memory Pool reusing freed buffers.
+- [x] **Step 120:** Test memory alignment padding logic against strict WebGPU validation rules.
+- [x] **Step 121:** Implement a 'dry run' allocation to verify graph fits in VRAM.
+- [x] **Step 122:** Support passing external `GPUTexture` directly into the graph (for video processing).
+- [x] **Step 123:** Support outputting directly to a `GPUTexture` (for canvas rendering).
+- [x] **Step 124:** Handle asynchronous mapping of result buffers back to JS `Float32Array`.
+- [x] **Step 125:** Optimize the readback latency loop (fencing and polling).
+- [x] **Step 126:** Implement double-buffering for continuous streaming execution.
+- [x] **Step 127:** Implement memory limits based on `navigator.deviceMemory` heuristics.
+- [x] **Step 128:** Ensure all `GPUBuffer.destroy()` calls are made on worker termination.
+- [x] **Step 129:** Write comprehensive error handlers for WGSL compilation failures.
+- [x] **Step 130:** Log WGSL compilation warnings asynchronously.
+- [x] **Step 131:** Create a memory visualizer component mapping VRAM fragmentation.
+- [x] **Step 132:** Implement memory defragmentation by compacting pool buffers.
+- [x] **Step 133:** Test the WebGPU core on Chrome Desktop, Mac Safari, and Android Chrome.
+- [x] **Step 134:** Implement automatic downgrade to WASM backend if WebGPU initialization fails.
+- [x] **Step 135:** Finalize Phase 3 WebGPU core architecture.
+
+### Phase 4a: WGSL Shaders (Elementwise Math)
+- [x] **Step 136:** Write highly optimized WGSL shader for Elementwise `Add`.
+- [x] **Step 137:** Implement N-dimensional broadcast logic natively inside the `Add` WGSL shader.
+- [x] **Step 138:** Add `shader-f16` (half-precision) variants for `Add` WGSL.
+- [x] **Step 139:** Write highly optimized WGSL shader for Elementwise `Sub`.
+- [x] **Step 140:** Implement N-dimensional broadcast logic natively inside the `Sub` WGSL shader.
+- [x] **Step 141:** Add `shader-f16` (half-precision) variants for `Sub` WGSL.
+- [x] **Step 142:** Write highly optimized WGSL shader for Elementwise `Mul`.
+- [x] **Step 143:** Implement N-dimensional broadcast logic natively inside the `Mul` WGSL shader.
+- [x] **Step 144:** Add `shader-f16` (half-precision) variants for `Mul` WGSL.
+- [x] **Step 145:** Write highly optimized WGSL shader for Elementwise `Div`.
+- [x] **Step 146:** Implement N-dimensional broadcast logic natively inside the `Div` WGSL shader.
+- [x] **Step 147:** Add `shader-f16` (half-precision) variants for `Div` WGSL.
+- [x] **Step 148:** Write highly optimized WGSL shader for Elementwise `Pow`.
+- [x] **Step 149:** Implement N-dimensional broadcast logic natively inside the `Pow` WGSL shader.
+- [x] **Step 150:** Add `shader-f16` (half-precision) variants for `Pow` WGSL.
+- [x] **Step 151:** Write highly optimized WGSL shader for Elementwise `Mod`.
+- [x] **Step 152:** Implement N-dimensional broadcast logic natively inside the `Mod` WGSL shader.
+- [x] **Step 153:** Add `shader-f16` (half-precision) variants for `Mod` WGSL.
+- [x] **Step 154:** Write highly optimized WGSL shader for Elementwise `Abs`.
+- [x] **Step 155:** Implement N-dimensional broadcast logic natively inside the `Abs` WGSL shader.
+- [x] **Step 156:** Add `shader-f16` (half-precision) variants for `Abs` WGSL.
+- [x] **Step 157:** Write highly optimized WGSL shader for Elementwise `Neg`.
+- [x] **Step 158:** Implement N-dimensional broadcast logic natively inside the `Neg` WGSL shader.
+- [x] **Step 159:** Add `shader-f16` (half-precision) variants for `Neg` WGSL.
+- [x] **Step 160:** Write highly optimized WGSL shader for Elementwise `Sign`.
+- [x] **Step 161:** Implement N-dimensional broadcast logic natively inside the `Sign` WGSL shader.
+- [x] **Step 162:** Add `shader-f16` (half-precision) variants for `Sign` WGSL.
+- [x] **Step 163:** Write highly optimized WGSL shader for Elementwise `Exp`.
+- [x] **Step 164:** Implement N-dimensional broadcast logic natively inside the `Exp` WGSL shader.
+- [x] **Step 165:** Add `shader-f16` (half-precision) variants for `Exp` WGSL.
+- [x] **Step 166:** Write highly optimized WGSL shader for Elementwise `Log`.
+- [x] **Step 167:** Implement N-dimensional broadcast logic natively inside the `Log` WGSL shader.
+- [x] **Step 168:** Add `shader-f16` (half-precision) variants for `Log` WGSL.
+- [x] **Step 169:** Write highly optimized WGSL shader for Elementwise `Sqrt`.
+- [x] **Step 170:** Implement N-dimensional broadcast logic natively inside the `Sqrt` WGSL shader.
+- [x] **Step 171:** Add `shader-f16` (half-precision) variants for `Sqrt` WGSL.
+- [x] **Step 172:** Write highly optimized WGSL shader for Elementwise `Sin`.
+- [x] **Step 173:** Implement N-dimensional broadcast logic natively inside the `Sin` WGSL shader.
+- [x] **Step 174:** Add `shader-f16` (half-precision) variants for `Sin` WGSL.
+- [x] **Step 175:** Write highly optimized WGSL shader for Elementwise `Cos`.
+- [x] **Step 176:** Implement N-dimensional broadcast logic natively inside the `Cos` WGSL shader.
+- [x] **Step 177:** Add `shader-f16` (half-precision) variants for `Cos` WGSL.
+- [x] **Step 178:** Write highly optimized WGSL shader for Elementwise `Tan`.
+- [x] **Step 179:** Implement N-dimensional broadcast logic natively inside the `Tan` WGSL shader.
+- [x] **Step 180:** Add `shader-f16` (half-precision) variants for `Tan` WGSL.
+- [x] **Step 181:** Write highly optimized WGSL shader for Elementwise `Asin`.
+- [x] **Step 182:** Implement N-dimensional broadcast logic natively inside the `Asin` WGSL shader.
+- [x] **Step 183:** Add `shader-f16` (half-precision) variants for `Asin` WGSL.
+- [x] **Step 184:** Write highly optimized WGSL shader for Elementwise `Acos`.
+- [x] **Step 185:** Implement N-dimensional broadcast logic natively inside the `Acos` WGSL shader.
+- [x] **Step 186:** Add `shader-f16` (half-precision) variants for `Acos` WGSL.
+- [x] **Step 187:** Write highly optimized WGSL shader for Elementwise `Atan`.
+- [x] **Step 188:** Implement N-dimensional broadcast logic natively inside the `Atan` WGSL shader.
+- [x] **Step 189:** Add `shader-f16` (half-precision) variants for `Atan` WGSL.
+- [x] **Step 190:** Write highly optimized WGSL shader for Elementwise `Sinh`.
+- [x] **Step 191:** Implement N-dimensional broadcast logic natively inside the `Sinh` WGSL shader.
+- [x] **Step 192:** Add `shader-f16` (half-precision) variants for `Sinh` WGSL.
+- [x] **Step 193:** Write highly optimized WGSL shader for Elementwise `Cosh`.
+- [x] **Step 194:** Implement N-dimensional broadcast logic natively inside the `Cosh` WGSL shader.
+- [x] **Step 195:** Add `shader-f16` (half-precision) variants for `Cosh` WGSL.
+- [x] **Step 196:** Write highly optimized WGSL shader for Elementwise `Asinh`.
+- [x] **Step 197:** Implement N-dimensional broadcast logic natively inside the `Asinh` WGSL shader.
+- [x] **Step 198:** Add `shader-f16` (half-precision) variants for `Asinh` WGSL.
+- [x] **Step 199:** Write highly optimized WGSL shader for Elementwise `Acosh`.
+- [x] **Step 200:** Implement N-dimensional broadcast logic natively inside the `Acosh` WGSL shader.
+- [x] **Step 201:** Add `shader-f16` (half-precision) variants for `Acosh` WGSL.
+- [x] **Step 202:** Write highly optimized WGSL shader for Elementwise `Atanh`.
+- [x] **Step 203:** Implement N-dimensional broadcast logic natively inside the `Atanh` WGSL shader.
+- [x] **Step 204:** Add `shader-f16` (half-precision) variants for `Atanh` WGSL.
+- [x] **Step 205:** Write highly optimized WGSL shader for Elementwise `Erf`.
+- [x] **Step 206:** Implement N-dimensional broadcast logic natively inside the `Erf` WGSL shader.
+- [x] **Step 207:** Add `shader-f16` (half-precision) variants for `Erf` WGSL.
+- [x] **Step 208:** Write highly optimized WGSL shader for Elementwise `IsNaN`.
+- [x] **Step 209:** Implement N-dimensional broadcast logic natively inside the `IsNaN` WGSL shader.
+- [x] **Step 210:** Add `shader-f16` (half-precision) variants for `IsNaN` WGSL.
+
+### Phase 4b: WGSL Shaders (Activations)
+- [x] **Step 211:** Write highly optimized WGSL shader for Activation `Relu`.
+- [x] **Step 212:** Implement in-place execution logic for `Relu` if input buffer is exclusively owned.
+- [x] **Step 213:** Add `shader-f16` (half-precision) variants for `Relu` WGSL.
+- [x] **Step 214:** Write highly optimized WGSL shader for Activation `Sigmoid`.
+- [x] **Step 215:** Implement in-place execution logic for `Sigmoid` if input buffer is exclusively owned.
+- [x] **Step 216:** Add `shader-f16` (half-precision) variants for `Sigmoid` WGSL.
+- [x] **Step 217:** Write highly optimized WGSL shader for Activation `Tanh`.
+- [x] **Step 218:** Implement in-place execution logic for `Tanh` if input buffer is exclusively owned.
+- [x] **Step 219:** Add `shader-f16` (half-precision) variants for `Tanh` WGSL.
+- [x] **Step 220:** Write highly optimized WGSL shader for Activation `LeakyRelu`.
+- [x] **Step 221:** Implement in-place execution logic for `LeakyRelu` if input buffer is exclusively owned.
+- [x] **Step 222:** Add `shader-f16` (half-precision) variants for `LeakyRelu` WGSL.
+- [x] **Step 223:** Write highly optimized WGSL shader for Activation `Elu`.
+- [x] **Step 224:** Implement in-place execution logic for `Elu` if input buffer is exclusively owned.
+- [x] **Step 225:** Add `shader-f16` (half-precision) variants for `Elu` WGSL.
+- [x] **Step 226:** Write highly optimized WGSL shader for Activation `Selu`.
+- [x] **Step 227:** Implement in-place execution logic for `Selu` if input buffer is exclusively owned.
+- [x] **Step 228:** Add `shader-f16` (half-precision) variants for `Selu` WGSL.
+- [x] **Step 229:** Write highly optimized WGSL shader for Activation `Softplus`.
+- [x] **Step 230:** Implement in-place execution logic for `Softplus` if input buffer is exclusively owned.
+- [x] **Step 231:** Add `shader-f16` (half-precision) variants for `Softplus` WGSL.
+- [x] **Step 232:** Write highly optimized WGSL shader for Activation `HardSigmoid`.
+- [x] **Step 233:** Implement in-place execution logic for `HardSigmoid` if input buffer is exclusively owned.
+- [x] **Step 234:** Add `shader-f16` (half-precision) variants for `HardSigmoid` WGSL.
+- [x] **Step 235:** Write highly optimized WGSL shader for Activation `Gelu`.
+- [x] **Step 236:** Implement in-place execution logic for `Gelu` if input buffer is exclusively owned.
+- [x] **Step 237:** Add `shader-f16` (half-precision) variants for `Gelu` WGSL.
+- [x] **Step 238:** Write highly optimized WGSL shader for Activation `Softmax`.
+- [x] **Step 239:** Implement in-place execution logic for `Softmax` if input buffer is exclusively owned.
+- [x] **Step 240:** Add `shader-f16` (half-precision) variants for `Softmax` WGSL.
+- [x] **Step 241:** Write highly optimized WGSL shader for Activation `LogSoftmax`.
+- [x] **Step 242:** Implement in-place execution logic for `LogSoftmax` if input buffer is exclusively owned.
+- [x] **Step 243:** Add `shader-f16` (half-precision) variants for `LogSoftmax` WGSL.
+
+### Phase 4c: WGSL Shaders (Neural Network & Linear Algebra)
+- [x] **Step 244:** Write standard WGSL implementation for `MatMul`.
+- [x] **Step 245:** Optimize `MatMul` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 246:** Add `shader-f16` (half-precision) variants for `MatMul` WGSL.
+- [x] **Step 247:** Write standard WGSL implementation for `Gemm`.
+- [x] **Step 248:** Optimize `Gemm` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 249:** Add `shader-f16` (half-precision) variants for `Gemm` WGSL.
+- [x] **Step 250:** Write standard WGSL implementation for `Conv`.
+- [x] **Step 251:** Optimize `Conv` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 252:** Add `shader-f16` (half-precision) variants for `Conv` WGSL.
+- [x] **Step 253:** Implement specialized `im2col` + `MatMul` shader pipeline for `Conv`.
+- [x] **Step 254:** Write dedicated depthwise convolution WGSL shader for `Conv`.
+- [x] **Step 255:** Write standard WGSL implementation for `ConvTranspose`.
+- [x] **Step 256:** Optimize `ConvTranspose` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 257:** Add `shader-f16` (half-precision) variants for `ConvTranspose` WGSL.
+- [x] **Step 258:** Implement specialized `im2col` + `MatMul` shader pipeline for `ConvTranspose`.
+- [x] **Step 259:** Write dedicated depthwise convolution WGSL shader for `ConvTranspose`.
+- [x] **Step 260:** Write standard WGSL implementation for `MaxPool`.
+- [x] **Step 261:** Optimize `MaxPool` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 262:** Add `shader-f16` (half-precision) variants for `MaxPool` WGSL.
+- [x] **Step 263:** Write standard WGSL implementation for `AveragePool`.
+- [x] **Step 264:** Optimize `AveragePool` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 265:** Add `shader-f16` (half-precision) variants for `AveragePool` WGSL.
+- [x] **Step 266:** Write standard WGSL implementation for `GlobalAveragePool`.
+- [x] **Step 267:** Optimize `GlobalAveragePool` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 268:** Add `shader-f16` (half-precision) variants for `GlobalAveragePool` WGSL.
+- [x] **Step 269:** Write standard WGSL implementation for `BatchNorm`.
+- [x] **Step 270:** Optimize `BatchNorm` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 271:** Add `shader-f16` (half-precision) variants for `BatchNorm` WGSL.
+- [x] **Step 272:** Write standard WGSL implementation for `LayerNorm`.
+- [x] **Step 273:** Optimize `LayerNorm` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 274:** Add `shader-f16` (half-precision) variants for `LayerNorm` WGSL.
+- [x] **Step 275:** Write standard WGSL implementation for `InstanceNorm`.
+- [x] **Step 276:** Optimize `InstanceNorm` WGSL using workgroup shared memory (tile caching).
+- [x] **Step 277:** Add `shader-f16` (half-precision) variants for `InstanceNorm` WGSL.
+
+### Phase 4d: WGSL Shaders (Reductions & Tensor Manipulations)
+- [x] **Step 278:** Write WGSL shader for Tensor op `ReduceSum`.
+- [x] **Step 279:** Implement parallel multi-pass tree reduction in WGSL for `ReduceSum`.
+- [x] **Step 280:** Write WGSL shader for Tensor op `ReduceMean`.
+- [x] **Step 281:** Implement parallel multi-pass tree reduction in WGSL for `ReduceMean`.
+- [x] **Step 282:** Write WGSL shader for Tensor op `ReduceMax`.
+- [x] **Step 283:** Implement parallel multi-pass tree reduction in WGSL for `ReduceMax`.
+- [x] **Step 284:** Write WGSL shader for Tensor op `ReduceMin`.
+- [x] **Step 285:** Implement parallel multi-pass tree reduction in WGSL for `ReduceMin`.
+- [x] **Step 286:** Write WGSL shader for Tensor op `Reshape`.
+- [x] **Step 287:** Optimize memory aliasing for `Reshape` (avoiding WGSL copy if strides allow).
+- [x] **Step 288:** Write WGSL shader for Tensor op `Transpose`.
+- [x] **Step 289:** Optimize memory aliasing for `Transpose` (avoiding WGSL copy if strides allow).
+- [x] **Step 290:** Write WGSL shader for Tensor op `Concat`.
+- [x] **Step 291:** Write WGSL shader for Tensor op `Split`.
+- [x] **Step 292:** Write WGSL shader for Tensor op `Slice`.
+- [x] **Step 293:** Write WGSL shader for Tensor op `Gather`.
+- [x] **Step 294:** Write WGSL shader for Tensor op `ScatterND`.
+- [x] **Step 295:** Write WGSL shader for Tensor op `Tile`.
+- [x] **Step 296:** Write WGSL shader for Tensor op `Pad`.
+- [x] **Step 297:** Write WGSL shader for Tensor op `Cast`.
+- [x] **Step 298:** Write WGSL shader for Tensor op `Where`.
+
+### Phase 5: WASM SIMD Fallback Architecture
+- [x] **Step 299:** Initialize Emscripten or raw WASM runtime environment.
+- [x] **Step 300:** Implement C++ `<wasm_simd128.h>` wrapper headers.
+- [x] **Step 301:** Compile the `onnx9000.core.ir` execution logic to WASM via Pyodide or custom Emscripten build.
+- [x] **Step 302:** Implement a WASM memory planner to reuse the limited 4GB linear memory.
+- [x] **Step 303:** Bind WASM memory directly to `Float32Array` in JS to avoid serialization copies.
+- [x] **Step 304:** Write SIMD128 accelerated loop for Vector Addition.
+- [x] **Step 305:** Write SIMD128 accelerated loop for Vector Multiplication.
+- [x] **Step 306:** Write SIMD128 accelerated loop for MatMul (GEMM kernel).
+- [x] **Step 307:** Write SIMD128 accelerated loop for Convolution (im2col).
+- [x] **Step 308:** Write SIMD128 accelerated loop for Relu / Activations.
+- [x] **Step 309:** Implement multi-threading using WASM pthreads (`SharedArrayBuffer`).
+- [x] **Step 310:** Orchestrate thread pools directly within the WASM module.
+- [x] **Step 311:** Handle WASM stack overflows securely.
+- [x] **Step 312:** Implement memory expansion tracking (`memory.grow`).
+- [x] **Step 313:** Optimize loop unrolling natively in the WASM target.
+- [x] **Step 314:** Bind WASM execution to the standard JS `InferenceSession` API.
+- [x] **Step 315:** Profile WASM SIMD matrix multiplication against naive JS loops.
+- [x] **Step 316:** Write fallback scalar C++ loops for environments missing `-msimd128` support.
+- [x] **Step 317:** Implement FP16 arithmetic emulation in WASM (since native f16 is limited).
+- [x] **Step 318:** Compile separate WASM binaries for SIMD vs non-SIMD.
+- [x] **Step 319:** Implement JS dynamic import to load the correct WASM binary based on capability.
+- [x] **Step 320:** Test memory alignment requirements for WASM SIMD load/store instructions.
+- [x] **Step 321:** Optimize JS-to-WASM call overhead (minimize boundary crossing).
+- [x] **Step 322:** Implement batched execution inside WASM to keep the event loop free.
+- [x] **Step 323:** Write unit tests asserting WASM math parity with WebGPU math.
+- [x] **Step 324:** Handle NaN and Infinity propagation correctly in WASM SIMD.
+- [x] **Step 325:** Implement integer (INT8/INT4) dequantization loops directly in WASM.
+- [x] **Step 326:** Write string handling wrappers for ONNX string tensors in WASM.
+- [x] **Step 327:** Implement WASM crash diagnostics (stack trace extraction).
+- [x] **Step 328:** Verify WASM bundle size remains strictly under 5MB.
+- [x] **Step 329:** Configure Emscripten `-O3 -flto` aggressive optimization flags.
+- [x] **Step 330:** Strip unused C++ standard library dependencies from the WASM build.
+- [x] **Step 331:** Test WASM backend on legacy browsers (e.g., older iOS Safari).
+- [x] **Step 332:** Implement a 'hybrid' mode: WebGPU for heavy ops, WASM for missing WebGPU ops.
+- [x] **Step 333:** Orchestrate the zero-copy handoff between WASM linear memory and WebGPU staging buffers.
+- [x] **Step 334:** Profile the hybrid mode boundary synchronization latency.
+- [x] **Step 335:** Document the complete WASM C++ API and JS Embind interface.
+- [x] **Step 336:** Setup CI/CD pipeline to automatically compile WASM artifacts.
+- [x] **Step 337:** Publish WASM artifacts alongside the Python PyPI package.
+- [x] **Step 338:** Finalize Phase 5 WASM architecture.
+
+### Phase 6: JavaScript Frontend API & Tooling
+- [x] **Step 339:** Implement the main `onnx9000.InferenceSession` ES6 class.
+- [x] **Step 340:** Implement `InferenceSession.create()` async initializer.
+- [x] **Step 341:** Implement `InferenceSession.run()` async execution method.
+- [x] **Step 342:** Implement `onnx9000.Tensor` class mapping to `OrtValue`.
+- [x] **Step 343:** Implement Tensor constructor supporting typed arrays (`Float32Array`, `BigInt64Array`).
+- [x] **Step 344:** Implement Tensor `data` and `dims` accessors.
+- [x] **Step 345:** Implement an internal `Env` singleton mapping to `OrtEnv`.
+- [x] **Step 346:** Support providing custom execution providers via `SessionOptions`.
+- [x] **Step 347:** Support setting `intraOpNumThreads` and `interOpNumThreads`.
+- [x] **Step 348:** Implement Graph optimization level flags (`ORT_ENABLE_ALL`).
+- [x] **Step 349:** Write TypeScript type definition file (`index.d.ts`) for the entire API.
+- [x] **Step 350:** Ensure exact API parity with `onnxruntime-web` to act as a drop-in replacement.
+- [x] **Step 351:** Publish the JS library to npm as `@onnx9000/web`.
+- [x] **Step 352:** Implement a Webpack/Rollup bundler configuration for the JS package.
+- [x] **Step 353:** Minify and obfuscate production JS builds.
+- [x] **Step 354:** Implement CommonJS and ES Module (ESM) export targets.
+- [x] **Step 355:** Write extensive JS documentation using TypeDoc/JSDoc.
+- [x] **Step 356:** Implement a visual DAG model viewer component in React/Vanilla JS.
+- [x] **Step 357:** Build a tensor inspector UI tool for debugging intermediate WebGPU buffers.
+- [x] **Step 358:** Implement a 'profiler dump' feature matching standard Chrome tracing JSON format.
+- [x] **Step 359:** Create sample web applications (Image Classification, NLP).
+- [x] **Step 360:** Create a sample demonstrating pure in-browser training.
+- [x] **Step 361:** Create a sample demonstrating multimodal inputs.
+- [x] **Step 362:** Implement continuous integration tests using Karma/Jasmine in headless Chrome.
+- [x] **Step 363:** Integrate Playwright/Puppeteer for end-to-end browser execution tests.
+- [x] **Step 364:** Write benchmarks comparing `@onnx9000/web` vs `onnxruntime-web`.
+- [x] **Step 365:** Setup automatic semantic versioning for the npm package.
+- [x] **Step 366:** Ensure CDN availability (unpkg, jsdelivr) for script-tag imports.
+- [x] **Step 367:** Provide a UMD build for legacy `<script>` tag usage.
+- [x] **Step 368:** Finalize Phase 6 API and Tooling.
+

@@ -5,7 +5,7 @@ Exports the internal IR Graph into visualization formats (like Graphviz DOT)
 or helps integrate with tools like Netron.
 """
 
-from onnx9000.ir import Graph
+from onnx9000.core.ir import Graph
 
 
 def to_dot(graph: Graph) -> str:

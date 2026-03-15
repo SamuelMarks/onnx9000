@@ -1,0 +1,434 @@
+"""
+Frontend Sub-Package
+Provides tracing and PyTorch-like interfaces to define and capture
+computation graphs from native Python execution.
+"""
+
+from typing import Any, Optional, Union
+from onnx9000.core.dtypes import DType
+import numpy as np
+
+
+class Node:
+    """Represents an operation in the graph."""
+
+    def __init__(
+        self,
+        op_type: str,
+        inputs: list[Any],
+        outputs: list[Any],
+        attributes: Optional[dict[str, Any]] = None,
+        name: Optional[str] = None,
+    ) -> None:
+        """Initializes the frontend builder or trace context."""
+        self.op_type = op_type
+        self.inputs = inputs
+        self.outputs = outputs
+        self.attributes = attributes or {}
+        self.name = name or ""
+
+
+class Tensor:
+    """Symbolic representation of data in the frontend graph."""
+
+    _id_counter = 0
+
+    def __init__(
+        self,
+        shape: Optional[tuple[Union[int, str]]] = None,
+        dtype: Optional[DType] = None,
+        name: Optional[str] = None,
+        data: Optional[Any] = None,
+    ) -> None:
+        """Initializes the frontend builder or trace context."""
+        if data is not None:
+            if not isinstance(data, np.ndarray):
+                try:
+                    data = np.asarray(data)
+                except Exception:
+                    data = None
+            if isinstance(data, np.ndarray):
+                if shape is None:
+                    shape = data.shape
+                if dtype is None:
+                    if data.dtype == np.int64:
+                        dtype = DType.INT64
+                    elif data.dtype == np.int32:
+                        dtype = DType.INT32
+                    elif data.dtype == np.float64:
+                        dtype = DType.FLOAT64
+                    elif data.dtype == bool:
+                        dtype = DType.BOOL
+                    else:
+                        dtype = DType.FLOAT32
+
+        self._shape = shape if shape is not None else ()
+        self._dtype = dtype if dtype is not None else DType.FLOAT32
+        self.data = data
+
+        if name is None:
+            Tensor._id_counter += 1
+            self._name = f"tensor_{Tensor._id_counter}"
+        else:
+            self._name = name
+
+    @property
+    def shape(self) -> tuple[Union[int, str]]:
+        """Provides shape functionality and verification."""
+        return self._shape
+
+    @property
+    def dtype(self) -> DType:
+        """Provides dtype functionality and verification."""
+        return self._dtype
+
+    @property
+    def name(self) -> str:
+        """Provides name functionality and verification."""
+        return self._name
+
+    @property
+    def T(self) -> "Tensor":
+        """Provides T functionality and verification."""
+        return self._op("Transpose")
+
+    def __repr__(self) -> str:
+        """Provides   repr   functionality and verification."""
+        return f"Tensor(name={self.name}, shape={self.shape}, dtype={self.dtype})"
+
+    def _op(self, op_type: str, *args, **kwargs) -> Any:
+        """Provides  op functionality and verification."""
+        from onnx9000.frontends.frontend.utils import record_op
+
+        inputs = [self] + list(args)
+        return record_op(op_type, inputs, attributes=kwargs)
+
+    def __add__(self, other: Any) -> "Tensor":
+        """Provides   add   functionality and verification."""
+        return self._op("Add", other)
+
+    def __radd__(self, other: Any) -> "Tensor":
+        """Provides   radd   functionality and verification."""
+        return self._op("Add", other)
+
+    def __sub__(self, other: Any) -> "Tensor":
+        """Provides   sub   functionality and verification."""
+        return self._op("Sub", other)
+
+    def __rsub__(self, other: Any) -> "Tensor":
+        """Provides   rsub   functionality and verification."""
+        from onnx9000.frontends.frontend.utils import record_op
+
+        return record_op("Sub", [other, self])
+
+    def __mul__(self, other: Any) -> "Tensor":
+        """Provides   mul   functionality and verification."""
+        return self._op("Mul", other)
+
+    def __rmul__(self, other: Any) -> "Tensor":
+        """Provides   rmul   functionality and verification."""
+        return self._op("Mul", other)
+
+    def __truediv__(self, other: Any) -> "Tensor":
+        """Provides   truediv   functionality and verification."""
+        return self._op("Div", other)
+
+    def __rtruediv__(self, other: Any) -> "Tensor":
+        """Provides   rtruediv   functionality and verification."""
+        from onnx9000.frontends.frontend.utils import record_op
+
+        return record_op("Div", [other, self])
+
+    def __matmul__(self, other: Any) -> "Tensor":
+        """Provides   matmul   functionality and verification."""
+        return self._op("MatMul", other)
+
+    def __pow__(self, other: Any) -> "Tensor":
+        """Provides   pow   functionality and verification."""
+        return self._op("Pow", other)
+
+    def __mod__(self, other: Any) -> "Tensor":
+        """Provides   mod   functionality and verification."""
+        return self._op("Mod", other)
+
+    def __neg__(self) -> "Tensor":
+        """Provides   neg   functionality and verification."""
+        return self._op("Neg")
+
+    def __abs__(self) -> "Tensor":
+        """Provides   abs   functionality and verification."""
+        return self._op("Abs")
+
+    def __getitem__(self, idx: Any) -> "Tensor":
+        """Provides   getitem   functionality and verification."""
+        return self._op("Gather", idx)
+
+    def __setitem__(self, idx: Any, value: Any) -> None:
+        """Provides   setitem   functionality and verification."""
+        self._op("ScatterND", value, indices=idx)
+
+    def __bool__(self) -> bool:
+        """Provides   bool   functionality and verification."""
+        raise RuntimeError("Data-dependent control flow is not supported")
+
+    def __and__(self, other: Any) -> "Tensor":
+        """Provides   and   functionality and verification."""
+        return self._op("And", other)
+
+    def __or__(self, other: Any) -> "Tensor":
+        """Provides   or   functionality and verification."""
+        return self._op("Or", other)
+
+    def __xor__(self, other: Any) -> "Tensor":
+        """Provides   xor   functionality and verification."""
+        return self._op("Xor", other)
+
+    def __invert__(self) -> "Tensor":
+        """Provides   invert   functionality and verification."""
+        return self._op("Not")
+
+    def __eq__(self, other: Any) -> "Tensor":
+        """Provides   eq   functionality and verification."""
+        return self._op("Equal", other)
+
+    def __ne__(self, other: Any) -> "Tensor":
+        """Provides   ne   functionality and verification."""
+        return self._op("Not", self._op("Equal", other))
+
+    def __lt__(self, other: Any) -> "Tensor":
+        """Provides   lt   functionality and verification."""
+        return self._op("Less", other)
+
+    def __le__(self, other: Any) -> "Tensor":
+        """Provides   le   functionality and verification."""
+        return self._op("LessOrEqual", other)
+
+    def __gt__(self, other: Any) -> "Tensor":
+        """Provides   gt   functionality and verification."""
+        return self._op("Greater", other)
+
+    def __ge__(self, other: Any) -> "Tensor":
+        """Provides   ge   functionality and verification."""
+        return self._op("GreaterOrEqual", other)
+
+    def sum(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides sum functionality and verification."""
+        return self._op("ReduceSum", axes=dim, keepdims=keepdim)
+
+    def mean(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides mean functionality and verification."""
+        return self._op("ReduceMean", axes=dim, keepdims=keepdim)
+
+    def max(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides max functionality and verification."""
+        return self._op("ReduceMax", axes=dim, keepdims=keepdim)
+
+    def min(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides min functionality and verification."""
+        return self._op("ReduceMin", axes=dim, keepdims=keepdim)
+
+    def transpose(self, dim0, dim1) -> "Tensor":
+        """Provides transpose functionality and verification."""
+        ndim = len(self.shape)
+        if ndim == 0:
+            perm = []
+        else:
+            dim0 = dim0 if dim0 >= 0 else ndim + dim0
+            dim1 = dim1 if dim1 >= 0 else ndim + dim1
+            perm = list(range(ndim))
+            perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
+        return self._op("Transpose", perm=perm)
+
+    def reshape(self, shape) -> "Tensor":
+        """Provides reshape functionality and verification."""
+        return self._op("Reshape", shape)
+
+    def view(self, *shape) -> "Tensor":
+        """Provides view functionality and verification."""
+        return self.reshape(shape)
+
+    def squeeze(self, dim=None) -> "Tensor":
+        """Provides squeeze functionality and verification."""
+        return self._op("Squeeze", axes=dim)
+
+    def unsqueeze(self, dim) -> "Tensor":
+        """Provides unsqueeze functionality and verification."""
+        return self._op("Unsqueeze", axes=dim)
+
+    def flatten(self, start_dim=0, end_dim=-1) -> "Tensor":
+        """Provides flatten functionality and verification."""
+        return self._op("Flatten", axis=start_dim)
+
+    def expand(self, *sizes) -> "Tensor":
+        """Provides expand functionality and verification."""
+        return self._op("Expand", sizes)
+
+    def broadcast_to(self, shape) -> "Tensor":
+        """Provides broadcast to functionality and verification."""
+        return self.expand(*shape)
+
+    def contiguous(self) -> "Tensor":
+        """Provides contiguous functionality and verification."""
+        return self
+
+    def type(self, dtype) -> "Tensor":
+        """Provides type functionality and verification."""
+        return self._op("Cast", to=dtype)
+
+    def to(self, *args, **kwargs) -> "Tensor":
+        """Provides to functionality and verification."""
+        return self
+
+    def exp(self) -> "Tensor":
+        """Provides exp functionality and verification."""
+        return self._op("Exp")
+
+    def log(self) -> "Tensor":
+        """Provides log functionality and verification."""
+        return self._op("Log")
+
+    def sqrt(self) -> "Tensor":
+        """Provides sqrt functionality and verification."""
+        return self._op("Sqrt")
+
+    def sin(self) -> "Tensor":
+        """Provides sin functionality and verification."""
+        return self._op("Sin")
+
+    def cos(self) -> "Tensor":
+        """Provides cos functionality and verification."""
+        return self._op("Cos")
+
+    def tan(self) -> "Tensor":
+        """Provides tan functionality and verification."""
+        return self._op("Tan")
+
+    def asin(self) -> "Tensor":
+        """Provides asin functionality and verification."""
+        return self._op("Asin")
+
+    def acos(self) -> "Tensor":
+        """Provides acos functionality and verification."""
+        return self._op("Acos")
+
+    def atan(self) -> "Tensor":
+        """Provides atan functionality and verification."""
+        return self._op("Atan")
+
+    def sinh(self) -> "Tensor":
+        """Provides sinh functionality and verification."""
+        return self._op("Sinh")
+
+    def cosh(self) -> "Tensor":
+        """Provides cosh functionality and verification."""
+        return self._op("Cosh")
+
+    def relu(self) -> "Tensor":
+        """Provides relu functionality and verification."""
+        return self._op("Relu")
+
+    def sigmoid(self) -> "Tensor":
+        """Provides sigmoid functionality and verification."""
+        return self._op("Sigmoid")
+
+    def tanh(self) -> "Tensor":
+        """Provides tanh functionality and verification."""
+        return self._op("Tanh")
+
+    def gelu(self) -> "Tensor":
+        """Provides gelu functionality and verification."""
+        return self._op("Gelu")
+
+    def softmax(self, dim=None) -> "Tensor":
+        """Provides softmax functionality and verification."""
+        return self._op("Softmax", axis=dim)
+
+    def where(self, condition, y) -> "Tensor":
+        """Provides where functionality and verification."""
+        return self._op("Where", condition, y)
+
+    def clip(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":
+        """Provides clip functionality and verification."""
+        return self._op(
+            "Clip",
+            min if min is not None else min_val,
+            max if max is not None else max_val,
+        )
+
+    def clamp(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":
+        """Provides clamp functionality and verification."""
+        return self.clip(
+            min if min is not None else min_val, max if max is not None else max_val
+        )
+
+    def argmax(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides argmax functionality and verification."""
+        return self._op("ArgMax", axis=dim, keepdims=keepdim)
+
+    def argmin(self, dim=None, keepdim=False) -> "Tensor":
+        """Provides argmin functionality and verification."""
+        return self._op("ArgMin", axis=dim, keepdims=keepdim)
+
+    def gather(self, dim, index) -> "Tensor":
+        """Provides gather functionality and verification."""
+        return self._op("Gather", index, axis=dim)
+
+    def scatter(self, dim, index, src) -> "Tensor":
+        """Provides scatter functionality and verification."""
+        return self._op("Scatter", index, src, axis=dim)
+
+    def masked_select(self, mask) -> "Tensor":
+        """Provides masked select functionality and verification."""
+        return self._op("MaskedSelect", mask)
+
+    def nonzero(self) -> "Tensor":
+        """Provides nonzero functionality and verification."""
+        return self._op("NonZero")
+
+    def item(self) -> Any:
+        """Provides item functionality and verification."""
+        return self.data.item() if self.data is not None else None
+
+    def tolist(self) -> list:
+        """Provides tolist functionality and verification."""
+        return self.data.tolist() if self.data is not None else None
+
+    def numpy(self) -> np.ndarray:
+        """Provides numpy functionality and verification."""
+        return self.data if self.data is not None else None
+
+    def requires_grad_(self, requires_grad=True) -> "Tensor":
+        """Provides requires grad  functionality and verification."""
+        return self
+
+    @property
+    def requires_grad(self) -> bool:
+        """Provides requires grad functionality and verification."""
+        return getattr(self, "_requires_grad", False)
+
+    @requires_grad.setter
+    def requires_grad(self, value: bool) -> None:
+        """Provides requires grad functionality and verification."""
+        self._requires_grad = value
+
+    @property
+    def grad(self) -> Optional["Tensor"]:
+        """Provides grad functionality and verification."""
+        return getattr(self, "_grad", None)
+
+    @grad.setter
+    def grad(self, value: Optional["Tensor"]) -> None:
+        """Provides grad functionality and verification."""
+        self._grad = value
+
+    def detach(self) -> "Tensor":
+        """Provides detach functionality and verification."""
+        return self
+
+    def clone(self) -> "Tensor":
+        """Provides clone functionality and verification."""
+        return self
+
+
+class Parameter(Tensor):
+    """Subclass of Tensor denoting trainable weights or fixed initializers."""

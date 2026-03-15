@@ -8,8 +8,8 @@ ensuring compliance with ONNX constraints and constraints.
 # mypy: ignore-errors
 from typing import Any
 
-from onnx9000 import onnx_pb2  # type: ignore
-from onnx9000.frontend.tensor import Node, Parameter, Tensor
+from onnx9000.core import onnx_pb2  # type: ignore
+from onnx9000.frontends.frontend.tensor import Node, Parameter, Tensor
 
 
 def to_tensor_proto(tensor: Parameter) -> onnx_pb2.TensorProto:
@@ -24,72 +24,6 @@ def to_tensor_proto(tensor: Parameter) -> onnx_pb2.TensorProto:
 
         if isinstance(tensor.data, np.ndarray):
             proto.raw_data = tensor.data.tobytes()
-        elif isinstance(tensor.data, list):  # pragma: no cover
-            # Encode list to numpy array first, then to raw_data for compatibility with C++ parser
-            # Assuming tensor.dtype has numpy equivalent mapping or we deduce it
-            from onnx9000.dtypes import DType  # pragma: no cover
-
-            if tensor.dtype == DType.FLOAT32:  # pragma: no cover
-                proto.raw_data = np.array(
-                    tensor.data, dtype=np.float32
-                ).tobytes()  # pragma: no cover
-            elif tensor.dtype == DType.FLOAT64:  # pragma: no cover
-                proto.raw_data = np.array(
-                    tensor.data, dtype=np.float64
-                ).tobytes()  # pragma: no cover
-            elif tensor.dtype in (  # pragma: no cover
-                DType.INT32,
-                DType.INT16,
-                DType.INT8,
-                DType.UINT8,
-                DType.UINT16,
-                DType.BOOL,
-            ):
-                proto.raw_data = np.array(
-                    tensor.data, dtype=np.int32
-                ).tobytes()  # pragma: no cover
-                # Actually wait, let's use exact dtype for int32
-                if tensor.dtype == DType.INT32:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.int32
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.INT16:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.int16
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.INT8:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.int8
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.UINT8:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.uint8
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.UINT16:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.uint16
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.BOOL:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.bool_
-                    ).tobytes()  # pragma: no cover
-            elif tensor.dtype in (
-                DType.INT64,
-                DType.UINT32,
-                DType.UINT64,
-            ):  # pragma: no cover
-                if tensor.dtype == DType.INT64:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.int64
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.UINT32:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.uint32
-                    ).tobytes()  # pragma: no cover
-                elif tensor.dtype == DType.UINT64:  # pragma: no cover
-                    proto.raw_data = np.array(
-                        tensor.data, dtype=np.uint64
-                    ).tobytes()  # pragma: no cover
 
     return proto
 
@@ -108,8 +42,8 @@ def to_value_info_proto(tensor: Tensor) -> onnx_pb2.ValueInfoProto:
         dim_proto = shape_proto.dim.add()
         if isinstance(dim, int):
             dim_proto.dim_value = dim
-        elif isinstance(dim, str):  # pragma: no cover
-            dim_proto.dim_param = dim  # pragma: no cover
+        elif isinstance(dim, str):
+            dim_proto.dim_param = dim
 
     proto.type.CopyFrom(type_proto)
     return proto
@@ -121,32 +55,28 @@ def to_attribute_proto(key: str, value: Any) -> onnx_pb2.AttributeProto:
     attr.name = key
 
     if isinstance(value, float):
-        attr.f = value  # pragma: no cover
-        attr.type = onnx_pb2.AttributeProto.FLOAT  # pragma: no cover
+        attr.f = value
+        attr.type = onnx_pb2.AttributeProto.FLOAT
     elif isinstance(value, int):
         attr.i = value
         attr.type = onnx_pb2.AttributeProto.INT
     elif isinstance(value, str):
-        attr.s = value.encode("utf-8")  # pragma: no cover
-        attr.type = onnx_pb2.AttributeProto.STRING  # pragma: no cover
+        attr.s = value.encode("utf-8")
+        attr.type = onnx_pb2.AttributeProto.STRING
     elif isinstance(value, list) or isinstance(value, tuple):
         if all(isinstance(x, int) for x in value):
             attr.ints.extend(value)
             attr.type = onnx_pb2.AttributeProto.INTS
-        elif all(isinstance(x, float) for x in value):  # pragma: no cover
-            attr.floats.extend(value)  # pragma: no cover
-            attr.type = onnx_pb2.AttributeProto.FLOATS  # pragma: no cover
-        elif all(isinstance(x, str) for x in value):  # pragma: no cover
-            attr.strings.extend([x.encode("utf-8") for x in value])  # pragma: no cover
-            attr.type = onnx_pb2.AttributeProto.STRINGS  # pragma: no cover
-        else:  # pragma: no cover
-            raise ValueError(
-                f"Unsupported list attribute type for key '{key}'"
-            )  # pragma: no cover
-    else:  # pragma: no cover
-        raise ValueError(
-            f"Unsupported attribute type for key '{key}': {type(value)}"
-        )  # pragma: no cover
+        elif all(isinstance(x, float) for x in value):
+            attr.floats.extend(value)
+            attr.type = onnx_pb2.AttributeProto.FLOATS
+        elif all(isinstance(x, str) for x in value):
+            attr.strings.extend([x.encode("utf-8") for x in value])
+            attr.type = onnx_pb2.AttributeProto.STRINGS
+        else:
+            raise ValueError(f"Unsupported list attribute type for key '{key}'")
+    else:
+        raise ValueError(f"Unsupported attribute type for key '{key}': {type(value)}")
 
     return attr
 

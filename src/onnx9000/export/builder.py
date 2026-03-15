@@ -9,15 +9,15 @@ ensuring compliance with ONNX constraints and constraints.
 from pathlib import Path
 from typing import Union
 
-from onnx9000 import onnx_pb2  # type: ignore
-from onnx9000.exceptions import CompilationError
+from onnx9000.core import onnx_pb2  # type: ignore
+from onnx9000.core.exceptions import CompilationError
 from onnx9000.export.proto_utils import (
     to_node_proto,
     to_tensor_proto,
     to_value_info_proto,
 )
-from onnx9000.frontend.builder import GraphBuilder
-from onnx9000.frontend.tensor import Parameter
+from onnx9000.frontends.frontend.builder import GraphBuilder
+from onnx9000.frontends.frontend.tensor import Parameter
 
 
 def build_graph_proto(builder: GraphBuilder) -> onnx_pb2.GraphProto:
@@ -72,9 +72,9 @@ def build_graph_proto(builder: GraphBuilder) -> onnx_pb2.GraphProto:
                 else:
                     # Strings fallbacks are un-annotated output tensors from multi-returns.
                     # This happens when tracing doesn't provide back Tensors but list of names
-                    vi = onnx_pb2.ValueInfoProto()  # pragma: no cover
-                    vi.name = out_name  # pragma: no cover
-                    graph.value_info.append(vi)  # pragma: no cover
+                    vi = onnx_pb2.ValueInfoProto()
+                    vi.name = out_name
+                    graph.value_info.append(vi)
                 known_tensors.add(out_name)
 
         graph.node.append(to_node_proto(node))
@@ -87,7 +87,7 @@ def build_model_proto(builder: GraphBuilder) -> onnx_pb2.ModelProto:
     model = onnx_pb2.ModelProto()
     model.ir_version = 8  # Matches ONNX standard for Opset 18/19
     model.producer_name = "onnx9000"
-    model.producer_version = "0.1.0"
+    model.producer_version = "0.0.1"
 
     opset = model.opset_import.add()
     opset.domain = ""  # Default ONNX domain
@@ -102,7 +102,7 @@ def build_model_proto(builder: GraphBuilder) -> onnx_pb2.ModelProto:
 def validate_model(model: onnx_pb2.ModelProto) -> None:
     """Custom IR validator for model well-formedness."""
     if not model.HasField("graph"):
-        raise CompilationError("Model must have a valid graph.")  # pragma: no cover
+        raise CompilationError("Model must have a valid graph.")
 
     # Very basic validation structure
     known_tensors = set([i.name for i in model.graph.input])
