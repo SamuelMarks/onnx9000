@@ -1,0 +1,5 @@
+{
+  "*.{ts,js}": ["eslint --fix", "prettier --write"],
+  "*.py": ["ruff check --fix", "ruff format"],
+  "*.{json,md,yaml,toml}": ["prettier --write"]
+}

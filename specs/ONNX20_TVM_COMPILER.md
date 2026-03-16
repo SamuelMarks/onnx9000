@@ -1,0 +1,381 @@
+# ONNX18: Apache TVM (Ahead-of-Time Web Compiler)
+
+## Original Project Description
+Apache TVM is an end-to-end open-source machine learning compiler framework for CPUs, GPUs, and specialized accelerators. It aims to close the gap between the productivity-focused deep learning frameworks and the performance- and efficiency-focused hardware backends. TVM takes high-level models (like ONNX), converts them into a high-level Intermediate Representation (Relay/Relax), lowers them to a Tensor IR (TIR), applies target-specific optimizations, and uses machine learning (AutoTVM/MetaSchedule) to search for the optimal hardware-specific memory and compute schedules. Finally, it compiles this optimized graph into highly tuned, standalone machine code binaries or dynamic libraries.
+
+## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementation of TVM-like AOT compilation is completely web-native and Python/TypeScript driven.
+*   **No LLVM Dependency:** The compiler directly emits WebAssembly (WASM) binary format, WebAssembly Text format (WAT), or WebGPU Shading Language (WGSL) ASTs using pure Python/JS code generators.
+*   **Browser-Based Auto-Tuning:** Auto-tuning (profiling thousands of kernel variations) can be distributed across client browsers using Web Workers, rather than requiring a dedicated farm of native hardware.
+*   **Zero-Overhead Standalone Exports:** The output is a highly minimized `.wasm` or `.js` file that contains *only* the specific mathematical loops needed for the model. It completely eliminates the ONNX graph parser, session manager, and execution runtime from the final payload.
+*   **AOT over JIT:** Emphasizes Ahead-of-Time generation of standalone browser artifacts for extreme edge scenarios where loading a 2MB generic ONNX runtime is unacceptable.
+
+---
+
+## Exhaustive Implementation Checklist
+
+### Phase 1: High-Level Intermediate Representation (WebRelay)
+- [ ] 001. Define base AST node structure for High-Level IR.
+- [ ] 002. Implement `Var` node for tensor variables.
+- [ ] 003. Implement `Constant` node for weights/biases.
+- [ ] 004. Implement `Call` node for operator invocation.
+- [ ] 005. Implement `Tuple` node for multi-output operations.
+- [ ] 006. Implement `TupleGetItem` for accessing tuple elements.
+- [ ] 007. Implement `Let` bindings for local variable scope.
+- [ ] 008. Implement `If` node for control flow.
+- [ ] 009. Implement `Function` node (global and local).
+- [ ] 010. Implement IR Module to hold collections of functions.
+- [ ] 011. Implement basic type system (`TensorType`, `TupleType`, `FuncType`).
+- [ ] 012. Implement shape inference pass for High-Level IR.
+- [ ] 013. Implement type checking pass for High-Level IR.
+- [ ] 014. Implement topological sort utility for the AST.
+- [ ] 015. Implement AST visitor/mutator base classes.
+- [ ] 016. Implement dead code elimination pass.
+- [ ] 017. Implement constant folding pass on High-Level IR.
+- [ ] 018. Implement common subexpression elimination (CSE).
+- [ ] 019. Implement algebraic simplification (e.g., `x * 1 -> x`).
+- [ ] 020. Implement let-binding unrolling.
+- [ ] 021. Implement layout transformation pass (NCHW <-> NHWC).
+- [ ] 022. Implement operator fusion pass (detecting fusable subgraphs).
+- [ ] 023. Implement dynamic-to-static shape resolution when bounds are known.
+- [ ] 024. Implement explicit memory planning (arena allocation).
+- [ ] 025. Implement IR textual printer (for debugging).
+- [ ] 026. Implement IR structural equality checker.
+- [ ] 027. Implement serialization of IR to JSON.
+- [ ] 028. Implement deserialization of IR from JSON.
+- [ ] 029. Add source map tracking from ONNX nodes to IR nodes.
+- [ ] 030. Create dependency graph visualization tool for IR.
+
+### Phase 2: ONNX Frontend Importer
+- [ ] 031. Initialize ONNX proto ingestion pipeline.
+- [ ] 032. Map ONNX tensor types to IR `TensorType`.
+- [ ] 033. Importer for `Add`.
+- [ ] 034. Importer for `Sub`.
+- [ ] 035. Importer for `Mul`.
+- [ ] 036. Importer for `Div`.
+- [ ] 037. Importer for `MatMul`.
+- [ ] 038. Importer for `Gemm`.
+- [ ] 039. Importer for `Conv` (1D).
+- [ ] 040. Importer for `Conv` (2D).
+- [ ] 041. Importer for `Conv` (3D).
+- [ ] 042. Importer for `ConvTranspose`.
+- [ ] 043. Importer for `Relu`.
+- [ ] 044. Importer for `LeakyRelu`.
+- [ ] 045. Importer for `Sigmoid`.
+- [ ] 046. Importer for `Tanh`.
+- [ ] 047. Importer for `Softmax`.
+- [ ] 048. Importer for `LogSoftmax`.
+- [ ] 049. Importer for `Erf`.
+- [ ] 050. Importer for `Gelu`.
+- [ ] 051. Importer for `MaxPool` (1D, 2D, 3D).
+- [ ] 052. Importer for `AveragePool`.
+- [ ] 053. Importer for `GlobalMaxPool`.
+- [ ] 054. Importer for `GlobalAveragePool`.
+- [ ] 055. Importer for `Pad` (constant).
+- [ ] 056. Importer for `Pad` (reflect).
+- [ ] 057. Importer for `Pad` (edge).
+- [ ] 058. Importer for `Reshape`.
+- [ ] 059. Importer for `Flatten`.
+- [ ] 060. Importer for `Transpose`.
+- [ ] 061. Importer for `Squeeze`.
+- [ ] 062. Importer for `Unsqueeze`.
+- [ ] 063. Importer for `Concat`.
+- [ ] 064. Importer for `Split`.
+- [ ] 065. Importer for `Slice`.
+- [ ] 066. Importer for `Gather`.
+- [ ] 067. Importer for `GatherElements`.
+- [ ] 068. Importer for `GatherND`.
+- [ ] 069. Importer for `Scatter`.
+- [ ] 070. Importer for `ScatterElements`.
+- [ ] 071. Importer for `ScatterND`.
+- [ ] 072. Importer for `Cast`.
+- [ ] 073. Importer for `ReduceSum`.
+- [ ] 074. Importer for `ReduceMean`.
+- [ ] 075. Importer for `ReduceMax`.
+- [ ] 076. Importer for `ReduceMin`.
+- [ ] 077. Importer for `ReduceProd`.
+- [ ] 078. Importer for `ArgMax`.
+- [ ] 079. Importer for `ArgMin`.
+- [ ] 080. Importer for `Shape`.
+- [ ] 081. Importer for `Size`.
+- [ ] 082. Importer for `ConstantOfShape`.
+- [ ] 083. Importer for `Expand`.
+- [ ] 084. Importer for `Tile`.
+- [ ] 085. Importer for `Where`.
+- [ ] 086. Importer for `Less`.
+- [ ] 087. Importer for `LessOrEqual`.
+- [ ] 088. Importer for `Greater`.
+- [ ] 089. Importer for `GreaterOrEqual`.
+- [ ] 090. Importer for `Equal`.
+- [ ] 091. Importer for `Not`.
+- [ ] 092. Importer for `And`.
+- [ ] 093. Importer for `Or`.
+- [ ] 094. Importer for `Xor`.
+- [ ] 095. Importer for `IsNaN`.
+- [ ] 096. Importer for `IsInf`.
+- [ ] 097. Importer for `Sign`.
+- [ ] 098. Importer for `Abs`.
+- [ ] 099. Importer for `Neg`.
+- [ ] 100. Importer for `Ceil`.
+- [ ] 101. Importer for `Floor`.
+- [ ] 102. Importer for `Round`.
+- [ ] 103. Importer for `Sqrt`.
+- [ ] 104. Importer for `Pow`.
+- [ ] 105. Importer for `Exp`.
+- [ ] 106. Importer for `Log`.
+- [ ] 107. Importer for `Sin`.
+- [ ] 108. Importer for `Cos`.
+- [ ] 109. Importer for `Tan`.
+- [ ] 110. Importer for `Asin`.
+- [ ] 111. Importer for `Acos`.
+- [ ] 112. Importer for `Atan`.
+- [ ] 113. Importer for `Sinh`.
+- [ ] 114. Importer for `Cosh`.
+- [ ] 115. Importer for `Asinh`.
+- [ ] 116. Importer for `Acosh`.
+- [ ] 117. Importer for `Atanh`.
+- [ ] 118. Importer for `Clip`.
+- [ ] 119. Importer for `BatchNormalization`.
+- [ ] 120. Importer for `InstanceNormalization`.
+- [ ] 121. Importer for `LayerNormalization`.
+- [ ] 122. Importer for `Dropout` (train/eval handling).
+- [ ] 123. Importer for `RNN`.
+- [ ] 124. Importer for `LSTM`.
+- [ ] 125. Importer for `GRU`.
+- [ ] 126. Importer for `TopK`.
+- [ ] 127. Importer for `NonZero`.
+- [ ] 128. Importer for `Resize`.
+- [ ] 129. Importer for `OneHot`.
+- [ ] 130. Importer for `CumSum`.
+
+### Phase 3: Tensor Expression (TE) & Compute Primitives
+- [ ] 131. Implement `te.var` for scalar variables.
+- [ ] 132. Implement `te.placeholder` for input tensors.
+- [ ] 133. Implement `te.compute` for defining tensor operations via lambda functions.
+- [ ] 134. Implement `te.reduce_axis` for reductions.
+- [ ] 135. Implement `te.sum` reduction primitive.
+- [ ] 136. Implement `te.max` reduction primitive.
+- [ ] 137. Implement `te.min` reduction primitive.
+- [ ] 138. Implement TE expressions for basic arithmetic (+, -, *, /).
+- [ ] 139. Implement TE expressions for math functions (exp, log, sigmoid).
+- [ ] 140. Translate High-Level IR `Conv2D` to TE compute definition.
+- [ ] 141. Translate High-Level IR `MatMul` to TE compute definition.
+- [ ] 142. Translate High-Level IR `Pool` to TE compute definition.
+- [ ] 143. Translate High-Level IR `Softmax` to TE compute definition.
+- [ ] 144. Translate High-Level IR `LayerNorm` to TE compute definition.
+- [ ] 145. Implement scheduling object (`te.create_schedule`).
+- [ ] 146. Implement `split` schedule primitive.
+- [ ] 147. Implement `fuse` schedule primitive.
+- [ ] 148. Implement `reorder` schedule primitive.
+- [ ] 149. Implement `bind` schedule primitive (for GPU thread/block binding).
+- [ ] 150. Implement `compute_at` schedule primitive.
+- [ ] 151. Implement `compute_inline` schedule primitive.
+- [ ] 152. Implement `tile` schedule primitive.
+- [ ] 153. Implement `unroll` schedule primitive.
+- [ ] 154. Implement `vectorize` schedule primitive.
+- [ ] 155. Implement `tensorize` schedule primitive (for micro-kernels).
+- [ ] 156. Implement caching read (`cache_read`).
+- [ ] 157. Implement caching write (`cache_write`).
+- [ ] 158. Implement double buffering directive.
+- [ ] 159. Implement storage alignment directive.
+- [ ] 160. Create default schedules for x86 CPUs.
+- [ ] 161. Create default schedules for ARM CPUs.
+- [ ] 162. Create default schedules for WebAssembly (SIMD v128).
+- [ ] 163. Create default schedules for WebGPU (Workgroups).
+- [ ] 164. Implement TE to Low-Level TIR lowering.
+- [ ] 165. Implement bounds inference during TE->TIR lowering.
+- [ ] 166. Handle padding implicitly in TE schedules.
+- [ ] 167. Implement schedule verification logic.
+- [ ] 168. Generate schedule syntax trees for persistence.
+- [ ] 169. Add debugging hooks to trace TE compute generation.
+- [ ] 170. Create interactive notebook visualizer for TE schedules.
+
+### Phase 4: Low-Level Tensor IR (TIR)
+- [ ] 171. Define AST for Low-Level TIR.
+- [ ] 172. Implement `For` loop node.
+- [ ] 173. Implement `While` loop node.
+- [ ] 174. Implement `Allocate` node for memory buffers.
+- [ ] 175. Implement `Load` node for buffer reading.
+- [ ] 176. Implement `Store` node for buffer writing.
+- [ ] 177. Implement `LetStmt` for local scalar assignments.
+- [ ] 178. Implement `IfThenElse` statement node.
+- [ ] 179. Implement `Evaluate` node for side-effect calls.
+- [ ] 180. Implement `Call` node for intrinsic functions.
+- [ ] 181. Implement `AssertStmt` for runtime checks.
+- [ ] 182. Implement `Buffer` object (pointer, shape, strides, type).
+- [ ] 183. Implement pass: Loop Unrolling.
+- [ ] 184. Implement pass: Vectorization (generating intrinsic vectors).
+- [ ] 185. Implement pass: Storage Flattening (multi-dim to 1-dim ptr math).
+- [ ] 186. Implement pass: Storage Rewrite (memory pooling/reuse).
+- [ ] 187. Implement pass: Dead Store Elimination.
+- [ ] 188. Implement pass: Inject Virtual Thread.
+- [ ] 189. Implement pass: Inject Double Buffer.
+- [ ] 190. Implement pass: Simplify Math Expressions (e.g., `x * 0 = 0`).
+- [ ] 191. Implement pass: Loop Partitioning (handling edge cases in tiling).
+- [ ] 192. Implement pass: Thread Binding (WebGPU dispatch injection).
+- [ ] 193. Implement pass: Make Packed API (C ABI compatible wrappers).
+- [ ] 194. Implement pass: Lower Custom Datatypes.
+- [ ] 195. Implement pass: Instrument Bound Checkers.
+- [ ] 196. Implement generic TIR visitor.
+- [ ] 197. Implement TIR mutator (for rewriting ASTs).
+- [ ] 198. Implement TIR textual parser (TVMScript equivalent).
+- [ ] 199. Implement TIR textual printer.
+- [ ] 200. Implement TIR semantic analyzer.
+- [ ] 201. Support arbitrary precision integers (i4, i8, i16, i32, i64).
+- [ ] 202. Support float types (f16, bf16, f32, f64).
+- [ ] 203. Handle boolean data types in TIR.
+- [ ] 204. Implement pointer aliasing analysis.
+- [ ] 205. Implement instruction cost modeling for TIR.
+- [ ] 206. Implement basic block extraction.
+- [ ] 207. Create data flow graph representation of TIR.
+- [ ] 208. Implement buffer access bounds checking.
+- [ ] 209. Develop TIR linting tool to ensure AST validity.
+- [ ] 210. Implement snapshotting for compilation rollbacks.
+
+### Phase 5: WebAssembly (WASM) Backend Emitter
+- [ ] 211. Build WASM AST generator module.
+- [ ] 212. Map TIR functions to WASM functions.
+- [ ] 213. Map TIR memory allocations to WASM linear memory segments.
+- [ ] 214. Map TIR variables to WASM locals.
+- [ ] 215. Implement `i32` arithmetic emitters.
+- [ ] 216. Implement `i64` arithmetic emitters.
+- [ ] 217. Implement `f32` arithmetic emitters.
+- [ ] 218. Implement `f64` arithmetic emitters.
+- [ ] 219. Map TIR `For` loops to WASM `block`/`loop`/`br` constructs.
+- [ ] 220. Map TIR `IfThenElse` to WASM `if`/`else` blocks.
+- [ ] 221. Implement WASM memory load instructions (e.g., `i32.load`).
+- [ ] 222. Implement WASM memory store instructions (e.g., `f32.store`).
+- [ ] 223. Support WASM SIMD 128-bit extension (v128).
+- [ ] 224. Emit `v128.load` and `v128.store`.
+- [ ] 225. Emit `f32x4.add`, `f32x4.mul`, etc., for vectorized TIR.
+- [ ] 226. Map TIR math intrinsics (exp, log) to imported JS math functions.
+- [ ] 227. Alternatively, inline lightweight WASM polyfills for math intrinsics.
+- [ ] 228. Implement WASM Text Format (WAT) string generator.
+- [ ] 229. Implement pure Python/TypeScript WASM binary compiler (no external tools).
+- [ ] 230. Implement WASM section encoding (Type, Function, Memory, Export, Code).
+- [ ] 231. Export main entry point function.
+- [ ] 232. Export memory buffer pointers for zero-copy JS interop.
+- [ ] 233. Generate TypeScript typings (.d.ts) for the emitted WASM binary.
+- [ ] 234. Generate JS wrapper class to load and execute the WASM instance.
+- [ ] 235. Implement dynamic memory growth in WASM wrapper.
+- [ ] 236. Support WASM multi-value returns.
+- [ ] 237. Support WASM bulk memory operations (memory.copy, memory.fill).
+- [ ] 238. Optimize WASM binary size (dead function stripping).
+- [ ] 239. Validate emitted WASM binary structure pre-execution.
+- [ ] 240. Create test suite comparing WASM outputs against standard ORT.
+- [ ] 241. Profile WASM load times vs JS payload size.
+- [ ] 242. Support WASM threaded execution (SharedArrayBuffer + Web Workers).
+- [ ] 243. Emit synchronization primitives for threaded WASM (Atomics).
+- [ ] 244. Implement a memory allocator within the generated WASM for dynamic shapes.
+- [ ] 245. Add bounds checking panics in debug mode for WASM.
+- [ ] 246. Implement string/error message logging from WASM to JS console.
+- [ ] 247. Support Wasm64 (memory64 proposal) preparation.
+- [ ] 248. Support Relaxed SIMD proposal instructions.
+- [ ] 249. Integrate with JS garbage collection via FinalizationRegistry in the wrapper.
+- [ ] 250. Create an automated benchmark suite for WASM emitter targets.
+
+### Phase 6: WebGPU (WGSL) Backend Emitter
+- [ ] 251. Build WebGPU WGSL AST generator.
+- [ ] 252. Map TIR functions to WGSL `@compute` entry points.
+- [ ] 253. Map TIR thread bindings to WGSL `@workgroup_size`.
+- [ ] 254. Map TIR global memory to WGSL `storage` buffers.
+- [ ] 255. Map TIR shared memory to WGSL `workgroup` variables.
+- [ ] 256. Map TIR local memory to WGSL function `var` declarations.
+- [ ] 257. Map TIR basic types (f32, i32, u32) to WGSL types.
+- [ ] 258. Map TIR vector types (float4, etc.) to WGSL `vec4<f32>`, etc.
+- [ ] 259. Implement WGSL arithmetic and logical operator emission.
+- [ ] 260. Implement WGSL control flow (loop, continuing, if, else, break).
+- [ ] 261. Map TIR built-in math to WGSL built-ins (e.g., `exp`, `dot`, `clamp`).
+- [ ] 262. Translate TIR storage flattening to WGSL 1D buffer index math.
+- [ ] 263. Handle WGSL struct definitions for buffer binding layouts.
+- [ ] 264. Generate WGSL `@binding(X) @group(Y)` annotations dynamically.
+- [ ] 265. Implement WebGPU pipeline generation script (JS/TS wrapper).
+- [ ] 266. Generate JS code for creating `GPUDevice`, `GPUCommandEncoder`.
+- [ ] 267. Generate JS code for mapping WebGPU buffers to JS TypedArrays.
+- [ ] 268. Handle uniform buffer generation for scalar arguments.
+- [ ] 269. Support WGSL atomic operations for cross-thread reductions.
+- [ ] 270. Support WebGPU subgroup operations (when available in spec).
+- [ ] 271. Implement dynamic workgroup size configurations.
+- [ ] 272. Implement kernel fusion for WebGPU (executing multiple TIR ops in one shader).
+- [ ] 273. Write JS dispatcher for sequential WebGPU compute passes.
+- [ ] 274. Implement ping-pong buffer management in the generated JS wrapper.
+- [ ] 275. Handle fp16 (half-precision) WGSL extension.
+- [ ] 276. Generate WebGPU profiling hooks (timestamp queries).
+- [ ] 277. Validate generated WGSL strings with a built-in WGSL linter/parser.
+- [ ] 278. Optimize WGSL instruction count (minimizing integer modulo/div).
+- [ ] 279. Handle memory alignment rules specifically for WebGPU storage buffers.
+- [ ] 280. Create fallback JS implementations if WebGPU context fails to initialize.
+- [ ] 281. Build multi-pipeline async compiler for rapid WebGPU startup.
+- [ ] 282. Minimize WGSL shader string size (minification).
+- [ ] 283. Implement texture-based matrix multiplication (optional WGSL strategy).
+- [ ] 284. Implement coalesced memory access patterns in WGSL emitter.
+- [ ] 285. Ensure deterministic execution of floating-point ops in WGSL.
+- [ ] 286. Provide interactive viewer of generated WGSL vs original ONNX nodes.
+- [ ] 287. Implement out-of-bounds safety clamping in WGSL generators.
+- [ ] 288. Support 64-bit integers (if extensions allow) or emulate via u32 pairs.
+- [ ] 289. Handle WebGPU device loss/recovery in the generated wrapper.
+- [ ] 290. Comprehensive end-to-end tests for all WGSL generated models.
+
+### Phase 7: Web-Native Auto-Tuning (MetaSchedule Web)
+- [ ] 291. Define scheduling search space for basic operations.
+- [ ] 292. Implement a parameter space generator (tile sizes, unroll factors).
+- [ ] 293. Build a local cost model (e.g., XGBoost or simple NN) in JS/Python.
+- [ ] 294. Create a task builder that partitions the graph for tuning.
+- [ ] 295. Implement a "Builder" that compiles tuning configurations to WASM/WGSL.
+- [ ] 296. Implement a "Runner" that executes and profiles compiled kernels.
+- [ ] 297. Build a Web Worker-based distributed tuning environment.
+- [ ] 298. Create a WebSocket server to coordinate tuning across multiple browsers.
+- [ ] 299. Implement Evolutionary Search algorithm for schedule discovery.
+- [ ] 300. Implement Random Search baseline.
+- [ ] 301. Implement Simulated Annealing search algorithm.
+- [ ] 302. Build a database/JSON store for tuning records (`tuning_logs.json`).
+- [ ] 303. Implement schedule playback (applying best records to compilation).
+- [ ] 304. Detect and filter out invalid/crashing schedules gracefully.
+- [ ] 305. Auto-tune matrix multiplication (finding optimal block/grid sizes).
+- [ ] 306. Auto-tune 2D convolutions (finding optimal memory layouts).
+- [ ] 307. Implement feature extraction from TIR for cost model training.
+- [ ] 308. Support hardware-specific profiles (tuning for specific GPUs vs generic).
+- [ ] 309. Add live progress UI for the tuning process in the browser.
+- [ ] 310. Implement early stopping criteria for the tuner.
+- [ ] 311. Build a fallback heuristic scheduler when tuning time is 0.
+- [ ] 312. Support transfer learning of schedules between similar graph shapes.
+- [ ] 313. Implement memory-hierarchy aware cost modeling.
+- [ ] 314. Create CLI commands (`onnx9000 tune --target webgpu model.onnx`).
+- [ ] 315. Auto-tune fusion decisions (is it faster to fuse or keep separate?).
+- [ ] 316. Integrate Auto-Tuning smoothly with the standard `build()` pipeline.
+- [ ] 317. Verify semantic correctness of all tuned outputs against a golden standard.
+- [ ] 318. Provide API to restrict search space bounds (max memory usage).
+- [ ] 319. Create interactive dashboard analyzing tuning performance history.
+- [ ] 320. Support multi-device heterogenous tuning.
+
+### Phase 8: Compilation CLI, Packaging, and Ecosystem
+- [ ] 321. Add `onnx9000 compile` CLI command.
+- [ ] 322. Implement target configuration flags (e.g., `--target=wasm,webgpu`).
+- [ ] 323. Implement optimization level flags (`-O0, -O1, -O2, -O3`).
+- [ ] 324. Bundle output artifacts into a single `.tar.gz` or `.zip`.
+- [ ] 325. Generate an `npm` package structure for the exported model automatically.
+- [ ] 326. Implement a Python API: `onnx9000.tvm.relay.from_onnx()`.
+- [ ] 327. Implement a Python API: `onnx9000.tvm.build()`.
+- [ ] 328. Provide zero-dependency inference SDK.
+- [ ] 329. Allow manual overriding of graph inputs (shape/type) via CLI.
+- [ ] 330. Add size profiler report (detailing bytes per compiled layer).
+- [ ] 331. Implement cross-compilation capability (compile WebGPU on CPU-only machines).
+- [ ] 332. Add integration with ONNX Model Zoo for automated testing.
+- [ ] 333. Create tutorial documentation: "Deploying AOT Models to the Browser".
+- [ ] 334. Create tutorial documentation: "Writing Custom Hardware Schedules".
+- [ ] 335. Create Jupyter Notebook examples of the Python API.
+- [ ] 336. Hook the AOT compiler into `pytest` CI workflows.
+- [ ] 337. Ensure strictly reproducible builds (deterministic output bytes).
+- [ ] 338. Build an interactive web IDE for compiling models locally in-browser.
+- [ ] 339. Support importing TensorFlow/PyTorch graphs natively (via `onnx9000.frontends`).
+- [ ] 340. Establish memory-leak detection in all generated wrapper scripts.
+- [ ] 341. Add telemetry/logging to compilation process for debugging.
+- [ ] 342. Implement a model-slicing tool (compile only part of a graph).
+- [ ] 343. Create specialized exports for Node.js (CommonJS + WASM).
+- [ ] 344. Create specialized exports for Deno (ESM + WASM).
+- [ ] 345. Create specialized exports for Cloudflare Workers.
+- [ ] 346. Implement dynamic module loading for extremely large graphs (chunked compilation).
+- [ ] 347. Integrate with `safetensors` for efficient AOT weight loading.
+- [ ] 348. Support WebCodecs API interop for video processing models.
+- [ ] 349. Implement fallback tree: Try WebGPU -> fallback to WASM automatically in generated JS.
+- [ ] 350. Release final `v1.0` feature parity certification against standard TVM benchmarks.

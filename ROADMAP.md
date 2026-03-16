@@ -1,41 +1,64 @@
-# onnx9000 Roadmap
+# ONNX9000 Roadmap
 
-**🔥 STATUS:** `onnx9000` is maturing rapidly. Over 200 standard ONNX operators have been implemented. The core IR parsing, autograd engine, static C++ memory planning, Apple Accelerate framework, WebAssembly SIMD backends, CUDA target, WebGPU, and advanced WebWorker RPC architectures are fully integrated and verified with 100% test and doc coverage across Python, C++, and TypeScript.
+This document outlines the current state and future milestones of the `onnx9000` ecosystem. The roadmap is divided into architectural refactoring phases and feature-specific implementation specifications.
 
+## 🚀 Current Status: Foundation Complete
 
-| Phase | Feature / Goal | Description | Complexity | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **1** | **Full Im2Col Convolution** | Upgrade the naive `Conv` C++ template to use a highly optimized `im2col` + `MatMul` approach, supporting arbitrary strides, padding, and dilations. | Medium | ✅ |
-| **2** | **WASM SIMD Intrinsics** | Inject Emscripten `#pragma clang loop vectorize(enable)` and WebAssembly SIMD (`-msimd128`) flags into the Jinja2 templates for 3x-5x browser speedups. | Medium | ✅ |
-| **3** | **Shape Broadcasting Engine** | Implement a robust C++ macro/template system for dynamic N-dimensional NumPy-style broadcasting during element-wise operations. | High | ✅ |
-| **4** | **Standard Operator Parity** | Expand `onnx9000.codegen.ops` to cover the top 100 most common ONNX Opset 18/19 operations (Gather, Slice, Split, Pad, LSTM, etc.). | High | ✅ |
-| **5** | **Reverse-Mode Optimizer Generators** | Add Jinja2 templates that natively generate C++ weight-update logic (SGD, AdamW) to be called after the `ReluGrad`/`MatMulGrad` backward pass execution. | Medium | ✅ |
-| **6** | **Constant Folding & Graph Fusions** | Implement the deferred optimization passes in `parser/passes.py` to pre-compute constants and fuse `Conv + BatchNorm` or `MatMul + Add` before C++ generation. | Medium | ✅ |
-| **7** | **Memory Liveness Re-use Algorithm** | Upgrade the naive memory planner to accurately map non-overlapping tensor lifespans into shared buffer IDs, drastically reducing WASM memory footprints. | High | ✅ |
-| **8** | **Hardware: Apple Accelerate / Metal** | Add a compilation target that swaps the standard C++ `<cmath>` loops with Apple Accelerate `vDSP` calls or pure Metal shaders for native Mac performance. | Very High | ✅ |
-| **9** | **Hardware: CUDA C++ Target** | Create a parallel Jinja2 environment (`codegen/cuda`) that translates the `ir.Graph` directly into `.cu` files, wrapping custom PTX kernels or cuBLAS calls. | Very High | ✅ |
-| **10** | **Control Flow (If, Loop)** | Implement support for ONNX Subgraphs (`If`, `Loop`, `Scan`), requiring the C++ generator to emit dynamic branching and recursive scope evaluation. | Extreme | ✅ |
+We have successfully executed the **Polyglot Monorepo Refactor**. 
+The massive single-directory Python monolith has been cleanly split into a highly modular, decoupled environment managed by `pnpm` and `uv` workspaces. 
 
+- **Python Core:** The `onnx9000-core` package now parses `.onnx` and `.safetensors` files with zero external dependencies using `struct` and `mmap` directly to an AST.
+- **Python EPs:** `onnx9000-backend-native` provides `ctypes` bindings to OpenBLAS/Accelerate, mapping our custom Tensors via DLPack interfaces.
+- **TypeScript Core:** `@onnx9000/core` implements an exact structural clone of the ONNX AST with the strictest possible type safety (no `any`, `unknown`).
 
-## The Grand Unification (V2 Roadmap)
+## 🗺️ Implementation Specifications (The 31 Specs)
 
-With the core transpiler and execution engine verified, `onnx9000` is expanding to absorb the functionality of 18 major ONNX ecosystem projects natively into Python and JS. See [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) and individual project files for detailed 300+ item checklists:
+The following architectural targets guide the development of the ecosystem. They are grouped by their respective domains.
 
-* **[Phase 11: ONNX Runtime Training](ONNX0_ORT_TRAINING.md)**
-* **[Phase 12: ONNX Runtime Web](ONNX1_ORT_WEB.md)**
-* **[Phase 13: ONNX Runtime Extensions](ONNX2_ORT_EXTENSIONS.md)**
-* **[Phase 14: Torch/TF Exporters](ONNX3_TORCH_EXPORTERS.md)**
-* **[Phase 15: Olive Optimizer](ONNX4_OLIVE_OPTIMIZER.md)**
-* **[Phase 16: ONNX-Simplifier](ONNX5_ONNX_SIMPLIFIER.md)**
-* **[Phase 17: ONNXScript / Spox](ONNX6_ONNXSCRIPT_SPOX.md)**
-* **[Phase 18: ORT Native Exec](ONNX7_ORT_NATIVE.md)**
-* **[Phase 19: tf2onnx](ONNX8_TF2ONNX.md)**
-* **[Phase 20: paddle2onnx](ONNX9_PADDLE2ONNX.md)**
-* **[Phase 21: skl2onnx](ONNX10_SKL2ONNX.md)**
-* **[Phase 22: onnxmltools](ONNX11_ONNXMLTOOLS.md)**
-* **[Phase 23: ONNX GraphSurgeon](ONNX12_GRAPHSURGEON.md)**
-* **[Phase 24: Hummingbird](ONNX13_HUMMINGBIRD.md)**
-* **[Phase 25: Netron](ONNX14_NETRON.md)**
-* **[Phase 26: onnx-tool](ONNX15_ONNX_TOOL.md)**
-* **[Phase 27: onnx-mlir](ONNX16_ONNXMLIR.md)**
-* **[Phase 28: onnx-safetensors](ONNX17_SAFETENSORS.md)**
+### Core Execution & Web Backends
+- [x] **ONNX00:** Runtime (Native Exec) Replication & Parity Tracker (The `onnx9000-backend-native` package).
+- [ ] **ONNX01:** ONNX Standard Compliance & Testing Tracker.
+- [ ] **ONNX03:** ONNX Runtime Web Replication (`@onnx9000/backend-web`).
+- [ ] **ONNX25:** WebNN API Native Browser NPU Execution.
+
+### Tooling, Parsing, and Optimizations
+- [ ] **ONNX04:** ONNX Runtime Extensions Replication (`onnx9000-frontend` & `@onnx9000/transformers`).
+- [ ] **ONNX06:** Olive Optimizer Replication (Quantization and W4A16 targeting in `onnx9000-optimizer`).
+- [ ] **ONNX07:** ONNX Simplifier Replication (AST Rewriting in `onnx9000-optimizer`).
+- [ ] **ONNX14:** ONNX GraphSurgeon Replication.
+- [ ] **ONNX17:** `onnx-tool` Profiling Replication (MACs/FLOPs extraction).
+- [ ] **ONNX22:** Safetensors Replication (Zero-copy `mmap` and `ArrayBuffer` extraction in `onnx9000-toolkit`).
+
+### Frontends & Converters (`onnx9000-frontends`)
+- [ ] **ONNX05:** Torch & TF Exporters Replication.
+- [ ] **ONNX10:** `tf2onnx` Replication (Zero-dependency TF parsing).
+- [ ] **ONNX11:** `paddle2onnx` Replication.
+- [ ] **ONNX12:** `skl2onnx` Replication (Compiling Scikit-Learn to `ai.onnx.ml`).
+- [ ] **ONNX13:** `onnxmltools` Replication (LightGBM, XGBoost to ONNX).
+- [ ] **ONNX15:** Hummingbird Replication (Compiling Trees to Tensor Math).
+- [ ] **ONNX28:** `keras2onnx` & `tfjs-to-onnx` (Web-Native Keras Converter).
+- [ ] **ONNX31:** `MMdnn` (Web-Native N-to-N Neural Network Converter).
+
+### Compilers & AOT (`@onnx9000/compiler`)
+- [ ] **ONNX19:** `onnx-mlir` Replication (Compiling ONNX to C++23/WASM).
+- [ ] **ONNX20:** Apache TVM Ahead-of-Time Web Compiler.
+- [ ] **ONNX26:** Apache TVM IREE (WASM-Native MLIR Compiler).
+- [ ] **ONNX27:** `coremltools` (Web-Native Apple Silicon Bridge).
+
+### Web UI & Applications (`apps/`)
+- [ ] **ONNX16:** Netron Replication (The Vanilla TS WebGL Visualizer `netron-ui`).
+- [ ] **ONNX24:** HuggingFace Optimum (Web-Optimized Export & Quantization UI).
+- [ ] **ONNX29:** `onnx-modifier` (Web-Native Graph Editor & Visualizer).
+
+### High-Level APIs & GenAI
+- [ ] **ONNX02:** ONNX Runtime Training Replication (AOT Symbolic Autograd).
+- [ ] **ONNX08:** ONNXScript / Spox Replication (Fluent Model Authoring).
+- [ ] **ONNX21:** ONNX Runtime GenAI (WASM-First Generative Execution).
+- [ ] **ONNX23:** Transformers.js (WASM-Native Auto-Pipelines).
+- [ ] **ONNX30:** `onnx-array-api` (Web-Native NumPy/Eager API for ONNX).
+
+## 🔮 The "Next Next" Plan
+Once the core specifications are complete, the `onnx9000` ecosystem will expand into a **Distributed MLOps Framework** as detailed in `ONNX_NEXT_NEXT_PLAN.md`. This will include:
+1. P2P WebRTC tensor data channels bridging browser nodes.
+2. Distributed Pipeline Parallelism mapping Subgraphs across disparate devices.
+3. A zero-dependency Python MLOps server leveraging an embedded SQLite database for tracking metrics and models across the cluster.

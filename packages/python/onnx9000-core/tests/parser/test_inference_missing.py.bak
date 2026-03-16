@@ -1,0 +1,153 @@
+import pytest
+from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.parser.inference import infer_shapes_and_types, CompilationError
+
+def _mock_graph(nodes, tensors=None):
+    g = Graph(name="test")
+    g.nodes = nodes
+    g.tensors = tensors or {}
+    return g
+
+def test_inference_missing_lines():
+    # 127: Where op missing inputs
+    g = _mock_graph([
+        Node(op_type="Where", inputs=["A", "B", "C"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Missing inputs for Where op."):
+        infer_shapes_and_types(g)
+
+    # 209: Flatten input not found
+    g = _mock_graph([
+        Node(op_type="Flatten", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 290: Transpose input not found
+    g = _mock_graph([
+        Node(op_type="Transpose", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 316: Squeeze input not found
+    g = _mock_graph([
+        Node(op_type="Squeeze", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 362: Split input not found
+    g = _mock_graph([
+        Node(op_type="Split", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 385: Cast input not found
+    g = _mock_graph([
+        Node(op_type="Cast", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 404: CastLike target tensor not found
+    g = _mock_graph([
+        Node(op_type="CastLike", inputs=["A", "B"], outputs=["Y"], attributes={}),
+    ], tensors={"A": Tensor(name="A", shape=(1,), dtype=1)})
+    with pytest.raises(CompilationError, match="Target tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 534: MaxPool no inputs
+    g = _mock_graph([
+        Node(op_type="AveragePool", inputs=[], outputs=[], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Pool expects 1 input and at least 1 output."):
+        infer_shapes_and_types(g)
+
+    # 537: MaxPool input not found
+    g = _mock_graph([
+        Node(op_type="AveragePool", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 577: GlobalMaxPool no inputs
+    g = _mock_graph([
+        Node(op_type="GlobalMaxPool", inputs=[], outputs=[], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="GlobalPool expects 1 input and 1 output."):
+        infer_shapes_and_types(g)
+
+    # 580: GlobalMaxPool input not found
+    g = _mock_graph([
+        Node(op_type="GlobalMaxPool", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 613: ReduceMean input not found
+    g = _mock_graph([
+        Node(op_type="ReduceMean", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 654: MatMul input not found
+    g = _mock_graph([
+        Node(op_type="MatMul", inputs=["A", "B"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 681: Gemm input not found
+    g = _mock_graph([
+        Node(op_type="Gemm", inputs=["A", "B"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor not found."):
+        infer_shapes_and_types(g)
+
+    # 734: SplitToSequence outputs=[]
+    g = _mock_graph([
+        Node(op_type="SplitToSequence", inputs=["A"], outputs=[], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="SplitToSequence expects 1 output."):
+        infer_shapes_and_types(g)
+
+    # 753: Constant outputs=[]
+    g = _mock_graph([
+        Node(op_type="Constant", inputs=[], outputs=[], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Constant expects exactly 1 output."):
+        infer_shapes_and_types(g)
+
+    # 1705: DeformConv inputs not found
+    g = _mock_graph([
+        Node(op_type="DeformConv", inputs=["A", "B"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="DeformConv inputs not found."):
+        infer_shapes_and_types(g)
+
+    # 2032: RandomUniform outputs=[]
+    g = _mock_graph([
+        Node(op_type="RandomUniform", inputs=[], outputs=[], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="RandomUniform expects 1 output."):
+        infer_shapes_and_types(g)
+
+    # 2502: ArgMax input not found
+    g = _mock_graph([
+        Node(op_type="ArgMax", inputs=["A"], outputs=["Y"], attributes={})
+    ])
+    with pytest.raises(CompilationError, match="Input tensor A not found."):
+        infer_shapes_and_types(g)
+
+    # 2552: Attention output is empty string
+    g = _mock_graph([
+        Node(op_type="Attention", inputs=["A", "B", "C"], outputs=[""], attributes={})
+    ], tensors={
+        "A": Tensor(name="A", shape=(1, 2, 3), dtype=1),
+        "B": Tensor(name="B", shape=(1, 2, 3), dtype=1),
+        "C": Tensor(name="C", shape=(1, 2, 3), dtype=1)
+    })
+    infer_shapes_and_types(g)

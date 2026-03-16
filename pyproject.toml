@@ -1,58 +1,22 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
-name = "onnx9000"
-version = "0.0.1"
-description = "A JIT Transpiler architecture for ONNX, eliminating framework bloat with pure C++ and WASM generation."
-readme = "README.md"
+name = "onnx9000-workspace"
+version = "1.0.0"
+description = "Polyglot ONNX Ecosystem"
 requires-python = ">=3.9"
-dependencies = [
-    "protobuf>=4.21.0",
-    "numpy>=1.21.0",
-    "jinja2>=3.0.0",
-    "pybind11>=2.10.0"
-]
+dependencies = []
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0.0",
-    "ruff>=0.1.0",
-    "mypy>=1.0.0",
-    "black>=23.0.0"
-]
-
-[project.scripts]
-onnx9000 = "onnx9000.cli:main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000"]
-include = ["src/onnx9000/**/*.py", "src/onnx9000/**/*.j2"]
-
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term-missing"
-
-[tool.coverage.run]
-omit = ["src/onnx9000/core/onnx_pb2.py"]
+[tool.uv.workspace]
+members = ["packages/python/*"]
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 target-version = "py39"
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "node_modules", "dist", "pycdc"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "B"]
-ignore = ["E501"]
+select = ["E", "F", "B", "I", "N", "UP", "ANN", "C4", "SIM"]
+ignore = ["ANN101"]
 
-[tool.mypy]
-strict = false
-warn_return_any = false
-warn_unused_configs = true
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "onnx9000.onnx_pb2"
-ignore_errors = true
-
-[tool.coverage.report]
-exclude_lines = []
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

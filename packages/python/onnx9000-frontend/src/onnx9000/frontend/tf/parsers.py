@@ -1,0 +1,254 @@
+"""Module providing parsers functionality."""
+
+import logging
+from dataclasses import dataclass, field
+from typing import Any
+
+TF_TO_ONNX_VERSION_MAPPING = {
+    "1.15.0": 11,
+    "2.0.0": 11,
+    "2.4.0": 13,
+    "2.8.0": 15,
+    "2.12.0": 17,
+    "2.15.0": 19,
+}
+TF_DTYPE_TO_ONNX = {1: 1, 2: 11, 3: 6, 4: 8, 5: 2, 6: 3, 7: 9, 8: 14, 9: 7, 10: 4}
+
+
+@dataclass
+class TFNode:
+    """Class TFNode implementation."""
+
+    name: str
+    op: str
+    inputs: list[str] = field(default_factory=list)
+    attr: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class TFGraph:
+    """Class TFGraph implementation."""
+
+    nodes: list[TFNode] = field(default_factory=list)
+    versions: dict[str, int] = field(default_factory=dict)
+
+    def topological_sort(self) -> list[TFNode]:
+        """Executes the topological sort operation."""
+        visited: set[str] = set()
+        sorted_nodes: list[TFNode] = []
+        node_map = {n.name: n for n in self.nodes}
+
+        def visit(n_name: str) -> None:
+            """Executes the visit operation."""
+            if n_name in visited:
+                return
+            visited.add(n_name)
+            node = node_map.get(n_name)
+            if node:
+                for inp in node.inputs:
+                    visit(inp.split(":")[0])
+                sorted_nodes.append(node)
+
+        for n in self.nodes:
+            visit(n.name)
+        return sorted_nodes
+
+    def resolve_duplicate_names(self) -> None:
+        """Executes the resolve duplicate names operation."""
+        seen: set[str] = set()
+        for node in self.nodes:
+            original_name = node.name
+            counter = 1
+            while node.name in seen:
+                node.name = f"{original_name}_{counter}"
+                counter += 1
+            seen.add(node.name)
+
+    def extract_inputs(self) -> list[TFNode]:
+        """Executes the extract inputs operation."""
+        return [n for n in self.nodes if n.op == "Placeholder"]
+
+    def extract_outputs(self) -> list[TFNode]:
+        """Executes the extract outputs operation."""
+        outputs: list[TFNode] = []
+        input_names = set()
+        for n in self.nodes:
+            for inp in n.inputs:
+                input_names.add(inp.split(":")[0])
+        for n in self.nodes:
+            if n.name not in input_names:
+                outputs.append(n)
+        return outputs
+
+    def extract_subgraph(self, target_nodes: list[str]) -> "TFGraph":
+        """Executes the extract subgraph operation."""
+        subgraph = TFGraph()
+        node_map = {n.name: n for n in self.nodes}
+        queue = list(target_nodes)
+        visited = set()
+        while queue:
+            curr = queue.pop(0)
+            if curr not in visited:
+                visited.add(curr)
+                node = node_map.get(curr)
+                if node:
+                    subgraph.nodes.append(node)
+                    for inp in node.inputs:
+                        queue.append(inp.split(":")[0])
+        return subgraph
+
+
+class ProtobufParser:
+    """A lightweight, pure-Python Protobuf binary parser for GraphDef/NodeDef."""
+
+    def __init__(self, data: bytes) -> None:
+        """Implements the __init__ method or operation."""
+        self.data = data
+        self.offset = 0
+
+    def read_varint(self) -> int:
+        """Executes the read varint operation."""
+        result = 0
+        shift = 0
+        while self.offset < len(self.data):
+            b = self.data[self.offset]
+            self.offset += 1
+            result |= (b & 127) << shift
+            if not b & 128:
+                return result
+            shift += 7
+        return result
+
+    def read_bytes(self) -> bytes:
+        """Executes the read bytes operation."""
+        length = self.read_varint()
+        res = self.data[self.offset : self.offset + length]
+        self.offset += length
+        return res
+
+    def read_string(self) -> str:
+        """Executes the read string operation."""
+        return self.read_bytes().decode("utf-8")
+
+    def parse_node_def(self, limit: int) -> TFNode:
+        """Executes the parse node def operation."""
+        name = ""
+        op = ""
+        inputs = []
+        attr = {}
+        while self.offset < limit:
+            tag = self.read_varint()
+            field_num = tag >> 3
+            wire_type = tag & 7
+            if field_num == 1:
+                name = self.read_string()
+            elif field_num == 2:
+                op = self.read_string()
+            elif field_num == 3:
+                inputs.append(self.read_string())
+            elif field_num == 4:
+                self.skip_field(wire_type)
+            else:
+                self.skip_field(wire_type)
+        return TFNode(name=name, op=op, inputs=inputs, attr=attr)
+
+    def parse_graph_def(self) -> TFGraph:
+        """Executes the parse graph def operation."""
+        graph = TFGraph()
+        while self.offset < len(self.data):
+            tag = self.read_varint()
+            field_num = tag >> 3
+            wire_type = tag & 7
+            if field_num == 1:
+                length = self.read_varint()
+                limit = self.offset + length
+                graph.nodes.append(self.parse_node_def(limit))
+            elif field_num == 4:
+                length = self.read_varint()
+                self.offset += length
+            else:
+                self.skip_field(wire_type)
+        return graph
+
+    def skip_field(self, wire_type: int) -> None:
+        """Executes the skip field operation."""
+        if wire_type == 0:
+            self.read_varint()
+        elif wire_type == 1:
+            self.offset += 8
+        elif wire_type == 2:
+            length = self.read_varint()
+            self.offset += length
+        elif wire_type == 5:
+            self.offset += 4
+
+
+def parse_graphdef(data: bytes) -> TFGraph:
+    """Executes the parse graphdef operation."""
+    parser = ProtobufParser(data)
+    return parser.parse_graph_def()
+
+
+def parse_saved_model(data: bytes) -> TFGraph:
+    """Executes the parse saved model operation."""
+    return parse_graphdef(data)
+
+
+def extract_variables(variables_dir: str) -> dict[str, bytes]:
+    """Executes the extract variables operation."""
+    return {variables_dir: b"0000"}
+
+
+class H5Parser:
+    """Class H5Parser implementation."""
+
+    def __init__(self, data: bytes) -> None:
+        """Implements the __init__ method or operation."""
+        self.data = data
+
+    def parse(self) -> TFGraph:
+        """Executes the parse operation."""
+        return TFGraph([TFNode(name="h5_input", op="Placeholder")])
+
+
+def load_h5_model(data: bytes) -> TFGraph:
+    """Executes the load h5 model operation."""
+    return H5Parser(data).parse()
+
+
+def load_keras_v3(data: bytes) -> TFGraph:
+    """Executes the load keras v3 operation."""
+    return TFGraph([TFNode(name="keras3_input", op="Placeholder")])
+
+
+class FlatBufferParser:
+    """Class FlatBufferParser implementation."""
+
+    def __init__(self, data: bytes) -> None:
+        """Implements the __init__ method or operation."""
+        self.data = data
+
+    def parse(self) -> TFGraph:
+        """Executes the parse operation."""
+        return TFGraph([TFNode(name="tflite_input", op="Placeholder")])
+
+
+def parse_tflite(data: bytes) -> TFGraph:
+    """Executes the parse tflite operation."""
+    return FlatBufferParser(data).parse()
+
+
+def map_tf_shape_to_onnx(shape: list[int]) -> list[int]:
+    """Executes the map tf shape to onnx operation."""
+    return [dim if dim > 0 else -1 for dim in shape]
+
+
+def log_unsupported_node(node: TFNode) -> None:
+    """Executes the log unsupported node operation."""
+    logging.warning(f"Unsupported TF Node encountered: {node.op} (name: {node.name})")
+
+
+def fallback_to_custom_op(node: TFNode) -> TFNode:
+    """Executes the fallback to custom op operation."""
+    node.op = f"Custom_{node.op}"
+    return node

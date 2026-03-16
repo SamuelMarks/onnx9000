@@ -1,144 +1,50 @@
-README.md.test
-*.chk
-*.bak
-update_*
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-*.pyd
-*.dll
-*.dylib
-
-# C++ & WASM build artifacts
-*.o
-*.obj
-*.wasm
-*.js
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual Environments
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Environment Variables
-.env
-.env.local
-
-# Pytest / Coverage
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# IDE / Editors
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# Temporary generated scripts
-fix_docs.py
-fix_coverage.py
-test_exp.cpp
-
-# MyPy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Ruff
-.ruff_cache/
-
-# JIT generated C++ files and caches
-src/onnx9000/codegen/temp_*.cpp
-*.so.cache/
-wasm_out/
-
-# Gemini
-.gemini/
-
-# Node
+# Dependencies
 node_modules/
+.venv/
+venv_38/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# OS
+# Build outputs
+dist/
+build/
+.turbo/
+*.so
+*.o
+*.a
+*.dylib
+*.dll
+test_wasm
+test_wasm_core
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# Tox
-.tox/
+# IDEs
+.vscode/
+.idea/
 
-# Docs
-docs/_build/
-
-# Development Scripts
-*.py
-!src/**/*.py
-!tests/**/*.py
-!setup.py
-!conftest.py
-*.onnx
-test_f16*
+# Coverage and Testing
+coverage/
+.coverage
 coverage.json
+*_cov.txt
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+test.chk
+test.onnx
+test.safetensors
 
-# Web & C++ testing / coverage
-default.profdata
-default.profraw
-interrogate_output.txt
-test_wasm_core
-src/onnx9000/backends/web/js/coverage/
-src/onnx9000/backends/web/js/docs/
-
-
-# Additional ignore rules
-*.gcov
-*.gcda
-*.gcno
-test_wasm
-#*_cov.txt
-current_cov.txt
-final_cov.txt
-full_cov.txt
-*_coverage.txt
-coverage_report.txt
-ops_above.txt
-ops_in_block.txt
-trace.out
-*.patch
-*.orig
-*.rej
-log
-
+# Scratch scripts and temporary files
+/*.py
+/*.sh
+/*.patch
+/*.bak
+/*.log
+prompt.md
+skills.md
+/pycdc/

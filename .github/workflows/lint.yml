@@ -1,0 +1,33 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install JS dependencies
+        run: pnpm install
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install Python tools
+        run: uv pip install ruff mypy --system
+      - name: Run ESLint
+        run: pnpm lint
+      - name: Run Ruff
+        run: ruff check .
+      - name: Run Mypy
+        run: mypy .

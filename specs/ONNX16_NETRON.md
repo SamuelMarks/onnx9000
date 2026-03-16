@@ -1,0 +1,333 @@
+# Netron Replication & Parity Tracker
+
+## Description
+This document tracks the complete reimplementation and architectural enhancement of `Netron` within the `onnx9000` ecosystem.
+While the original `Netron` is a fantastic static visualizer (Electron/Web based), it struggles with massive models (like 10GB+ LLMs) due to DOM-based SVG rendering limitations. Our `onnx9000` reimplementation leverages a unified WASM-accelerated pure-JavaScript/Python parser combined with a highly optimized WebGL/Canvas rendering pipeline.
+Furthermore, because it is deeply integrated with `onnx9000`'s IR and `GraphSurgeon`, it transcends being a simple visualizer: it becomes a **live, interactive graph editor and profiler** running entirely in the browser at 60FPS, without installing heavy desktop applications.
+
+## Exhaustive Parity Checklist
+
+### 1. Core Architecture & Parsing Engine (40+ items)
+- [ ] Implement zero-dependency WASM/JS ONNX `ModelProto` parser
+- [ ] Implement lazy-loading for large `.onnx` files (chunked streaming)
+- [ ] Support memory-mapped reading of massive multi-GB models without crashing the browser
+- [ ] Parse `GraphProto` into an optimized internal visualization DAG structure
+- [ ] Parse `NodeProto` into visualization nodes
+- [ ] Parse `TensorProto` (Constants/Initializers) with lazy data extraction
+- [ ] Parse `ValueInfoProto` (Inputs/Outputs/Value Info) for shape/type inference
+- [ ] Parse `AttributeProto` natively (Floats, Ints, Strings, Tensors, Graphs)
+- [ ] Implement WebWorker based off-main-thread parsing to keep UI responsive
+- [ ] Support handling external data files (`.bin` weights) locally via File API
+- [ ] Handle corrupt or truncated ONNX files gracefully with partial visualization
+- [ ] Support parsing strictly ONNX standard topologies
+- [ ] Support parsing `ai.onnx.ml` domain topologies
+- [ ] Support parsing TensorFlow `GraphDef` (`.pb`) via `onnx9000` transpilation
+- [ ] Support parsing TensorFlow `SavedModel` via transpilation
+- [ ] Support parsing TensorFlow Lite (`.tflite`) via transpilation
+- [ ] Support parsing Keras (`.h5`, `.keras`) via transpilation
+- [ ] Support parsing PyTorch (`.pt`, `.pth`) via transpilation (TorchScript extraction)
+- [ ] Support parsing CoreML (`.mlmodel`) via transpilation
+- [ ] Support parsing Scikit-Learn (Pickle) via `skl2onnx` transpilation
+- [ ] Support parsing XGBoost / LightGBM / CatBoost via `onnxmltools` transpilation
+- [ ] Support parsing PaddlePaddle (`.pdmodel`) via transpilation
+- [ ] Extract Graph metadata (Producer, Version, Description, DocString)
+- [ ] Extract Model Opset imports and domain configurations
+- [ ] Traverse deeply nested subgraphs (`If`, `Loop`) natively in the parser
+- [ ] Resolve missing `ValueInfo` shapes by running static shape inference
+- [ ] Generate unique IDs for all parsed entities for rapid DOM/Canvas binding
+- [ ] Deduplicate shared Initializers to reduce memory footprint
+- [ ] Compress repeated identical subgraphs visually (e.g., Transformer blocks)
+- [ ] Auto-detect model formats based on file signatures / magic bytes
+- [ ] Expose TypeScript/JS bindings for embedding parser in other React/Vue apps
+- [ ] Support parsing models hosted on remote HTTP/HTTPS servers
+- [ ] Support parsing models directly from GitHub raw URLs
+- [ ] Extract and format tensor data into readable matrices (1D, 2D, 3D slices)
+- [ ] Provide endianness-safe parsing of raw binary tensor payloads
+- [ ] Support `bfloat16` and `float16` binary decoding in JS
+- [ ] Support decoding strings and string arrays
+- [ ] Identify and handle quantized parameter formats gracefully
+- [ ] Support custom op domain fallback (render as generic nodes)
+- [ ] Provide strict error boundary logs for unsupported attributes
+
+### 2. Graph Layout & WebGL Rendering Engine (40+ items)
+- [ ] Implement robust Directed Acyclic Graph (DAG) layout algorithm (Dagre alternative)
+- [ ] Optimize layout engine for graphs with >100,000 nodes
+- [ ] Execute graph layout calculations in WebWorkers (Offscreen)
+- [ ] Support strictly vertical (Top-to-Bottom) flow layout
+- [ ] Support strictly horizontal (Left-to-Right) flow layout
+- [ ] Implement HTML5 Canvas / WebGL rendering backend for 60FPS pan/zoom
+- [ ] Fallback to SVG rendering for legacy environments or exact exports
+- [ ] Draw generic computation nodes
+- [ ] Draw Graph global inputs with distinct styling
+- [ ] Draw Graph global outputs with distinct styling
+- [ ] Draw Constant / Initializer nodes with distinct styling
+- [ ] Draw nested subgraphs as expandable/collapsible macro-nodes
+- [ ] Draw tensor edges (connections) as smooth bezier curves
+- [ ] Draw tensor edges as orthogonal straight lines
+- [ ] Draw cyclic edges gracefully without infinite loops (e.g., RNN states)
+- [ ] Implement level-of-detail (LOD) rendering (hide text when zoomed out)
+- [ ] Render data types (`float32`, `int64`) as edge labels
+- [ ] Render tensor shapes (`[1, 3, 224, 224]`) as edge labels
+- [ ] Render dynamic symbolic dimensions (`[batch, sequence, 768]`) seamlessly
+- [ ] Implement collision detection to prevent edge-label overlap
+- [ ] Highlight producer-to-consumer paths clearly
+- [ ] Support grouping nodes by namespace (e.g., `layer1.conv.weight`)
+- [ ] Collapse distinct namespaces into single blocks automatically
+- [ ] Highlight node status (e.g., Error, Selected, Hovered)
+- [ ] Implement smooth scrolling and trackpad pinch-to-zoom
+- [ ] Implement minimap (bird's-eye view) for massive graphs
+- [ ] Render grid background (optional)
+- [ ] Support rendering multiple isolated graphs in the same workspace
+- [ ] Calculate bounding boxes accurately for custom node names
+- [ ] Optimize edge routing for dense "skip-connection" architectures (ResNet)
+- [ ] Render quantized/dequantized chains compactly
+- [ ] Ensure sub-millisecond node hit-testing (clicking/hovering)
+- [ ] Support WebGL instance rendering for identical nodes (performance)
+- [ ] Prevent UI freezing when expanding a massive nested subgraph
+- [ ] Support hardware-accelerated CSS transforms for pan/zoom
+- [ ] Render custom operator shapes/icons if metadata provides them
+- [ ] Support auto-centering on loaded models
+- [ ] Support auto-centering on specific searched nodes
+- [ ] Render node execution providers (if profiled) dynamically
+- [ ] Render specific edge colors based on tensor dtype (e.g., Float=Blue, Int=Green)
+
+### 3. Node Interaction & Property Sidebar (30+ items)
+- [ ] Select single node -> Open Sidebar Properties
+- [ ] Sidebar: Display Node Op Type and Domain
+- [ ] Sidebar: Display Node exact Name
+- [ ] Sidebar: Display Node Documentation/DocString
+- [ ] Sidebar: Render all Attributes cleanly
+- [ ] Sidebar: Render `float` attributes
+- [ ] Sidebar: Render `int` attributes
+- [ ] Sidebar: Render `string` attributes
+- [ ] Sidebar: Render `tensor` attributes (with "Click to View" matrix expansions)
+- [ ] Sidebar: Render `graph` attributes (with "Click to Open Subgraph" links)
+- [ ] Sidebar: List all explicit Inputs
+- [ ] Sidebar: List all explicit Outputs
+- [ ] Sidebar: List Input connections (links to producer nodes)
+- [ ] Sidebar: List Output connections (links to consumer nodes)
+- [ ] Sidebar: Render missing / optional inputs gracefully
+- [ ] Sidebar: Display raw tensor shapes and types for each connection
+- [ ] Select edge -> Highlight entire tensor pathway
+- [ ] Select Graph Input -> Display global parameter details
+- [ ] Select Graph Output -> Display global projection details
+- [ ] Provide deep-linking (URL anchors) to specific Node IDs
+- [ ] Support multi-node selection
+- [ ] Sidebar: Show common properties for multi-node selection
+- [ ] Provide "View Raw Protobuf" for developers inspecting individual nodes
+- [ ] Extract and format standard ONNX op documentation instantly
+- [ ] Support viewing `Tensor` data as raw numbers (matrix format)
+- [ ] Support viewing `Tensor` data as a flattened array
+- [ ] Support viewing Image `Tensor` data as an actual RGB/Grayscale image
+- [ ] Provide pagination for massive tensor arrays (>1000 elements)
+- [ ] Extract min, max, mean, and variance dynamically for selected Initializers
+- [ ] Plot histogram of weight distributions inside the Sidebar
+
+### 4. Search, Filtering, and Navigation (25+ items)
+- [ ] Implement fast fuzzy-search by Node Name
+- [ ] Implement search by Node Operator Type (e.g., find all `Conv`)
+- [ ] Implement search by Tensor Name
+- [ ] Implement search by Attribute Name or Value
+- [ ] Highlight all search results simultaneously on the Canvas
+- [ ] Step through search results (Next / Previous) smoothly panning the camera
+- [ ] Filter out (hide) unselected nodes temporarily
+- [ ] Implement "Find Source" (traverse upstream to graph inputs)
+- [ ] Implement "Find Sinks" (traverse downstream to graph outputs)
+- [ ] Implement "Select Subgraph" (isolate a region based on boundary nodes)
+- [ ] Support Regex in the search bar
+- [ ] Highlight shortest path between Node A and Node B
+- [ ] Highlight all paths between Node A and Node B
+- [ ] Filter out specific Op Types visually (e.g., "Hide all Identity nodes")
+- [ ] Filter out Constant/Initializer nodes to simplify topology viewing
+- [ ] Expand all nested subgraphs command
+- [ ] Collapse all nested subgraphs command
+- [ ] Quick-jump to specific Opset Domain configurations
+- [ ] Isolate matching nodes into a separate floating view
+- [ ] Save/Load custom view states (camera position, selected nodes)
+- [ ] Display number of hidden/filtered nodes dynamically
+- [ ] Display real-time node count, edge count, and parameter count
+- [ ] Jump to Node by its internal index
+- [ ] Search by execution provider/device (if metadata exists)
+- [ ] Filter by tensor data type (e.g., "Show all float64 tensors")
+
+### 5. Export, Sharing, and Tooling (20+ items)
+- [ ] Export visualization to SVG
+- [ ] Export visualization to high-res PNG
+- [ ] Export visualization to high-res JPEG
+- [ ] Export isolated subgraph to SVG/PNG
+- [ ] Save modified graph back to `.onnx` (if interactive mode enabled)
+- [ ] Save graph structural metadata to JSON
+- [ ] Export exact node properties to Markdown/Text
+- [ ] Generate reproducible script (Python/onnx9000) that constructs the viewed graph
+- [ ] Export tensor weight data to `.npy` (NumPy) natively
+- [ ] Export tensor weight data to `.csv`
+- [ ] Share current view (URL generation with embedded state)
+- [ ] Integrate instantly with Jupyter Notebooks (IFrame/Widget)
+- [ ] Integrate seamlessly as a VSCode Extension (Webview)
+- [ ] Serve visualization locally via CLI (`onnx9000 serve model.onnx`)
+- [ ] Support "Drag-and-Drop" of files directly onto the canvas
+- [ ] Provide comprehensive hotkeys (Zoom, Pan, Search, Expand)
+- [ ] Support macOS native touch-bar / trackpad gestures
+- [ ] Implement offline-first Progressive Web App (PWA) capabilities
+- [ ] Pre-cache ONNX documentation for offline viewing
+- [ ] Allow loading user-defined custom op documentation JSONs
+
+### 6. Visual Styling, Theming & Accessibility (20+ items)
+- [ ] Implement default Light Theme
+- [ ] Implement default Dark Theme
+- [ ] Support OS-level `prefers-color-scheme` auto-switching
+- [ ] High contrast mode for accessibility
+- [ ] Color-blind safe color palettes for Node domains
+- [ ] Customizable node coloring rules (e.g., Color all `Relu` nodes Red)
+- [ ] Color nodes based on namespace hierarchy
+- [ ] Color nodes based on execution time (Heatmap mode)
+- [ ] Color tensors based on memory size (Heatmap mode)
+- [ ] Color tensors based on quantization state (INT8 vs FP32)
+- [ ] Toggle edge thickness based on tensor volume (dimensions)
+- [ ] Clean sans-serif typography (Inter / Roboto)
+- [ ] Crisp edge-rendering on High-DPI (Retina) displays
+- [ ] CSS-customizable UI elements
+- [ ] Localized UI (English, Chinese, Japanese, etc.)
+- [ ] Provide tooltips on hover for compact mode
+- [ ] Make all SVG paths keyboard-navigable
+- [ ] Screen reader support for node properties
+- [ ] Ensure WCAG AA contrast compliance
+- [ ] Support custom user-provided CSS stylesheets
+
+### 7. Interactive Editing (GraphSurgeon Integration) (40+ items)
+- [ ] Switch from "View Mode" to "Edit Mode"
+- [ ] Click and delete Node directly from the Canvas
+- [ ] Click and delete Edge directly from the Canvas
+- [ ] Drag to connect an Output Tensor to a new Input Node
+- [ ] Drag an Edge to rewire it to a different Node
+- [ ] Insert new Node from an Operator Palette (Searchable list of ONNX ops)
+- [ ] Auto-complete missing inputs when injecting a new Node
+- [ ] Edit Node `name` directly in Sidebar
+- [ ] Edit Node `op_type` directly in Sidebar
+- [ ] Edit/Add/Remove Node Attributes (Float, Int, String) in Sidebar
+- [ ] Edit global Graph `name` and metadata
+- [ ] Promote internal Tensor to Graph Output (Right-click -> Export)
+- [ ] Demote Graph Output to internal Tensor
+- [ ] Convert `Constant` to Graph Input (`Variable`) visually
+- [ ] Convert Graph Input to `Constant` by injecting raw matrix data
+- [ ] Trigger purely visual Constant Folding (collapse math subgraphs)
+- [ ] Trigger purely visual Dead Code Elimination (prune graph)
+- [ ] Trigger purely visual Shape Inference (update all edges instantly)
+- [ ] Highlight structurally invalid topologies (e.g., cyclic loops in non-RNNs)
+- [ ] Highlight type mismatches (e.g., feeding Float into Int node)
+- [ ] Highlight shape mismatches (e.g., MatMul dim conflicts)
+- [ ] Provide Undo / Redo stack for all surgical operations
+- [ ] Isolate Node: Delete everything except the selected Node's path
+- [ ] Duplicate Node
+- [ ] Copy Subgraph
+- [ ] Paste Subgraph
+- [ ] Auto-layout after every surgical change (smooth animation)
+- [ ] "Extract Subgraph" feature to save a highlighted section as a new `.onnx`
+- [ ] "Merge Graph" feature to append another `.onnx` file visually
+- [ ] Modify `opset` versions directly from UI
+- [ ] Downgrade specific ops natively via UI command
+- [ ] Inject custom TensorRT / execution provider plugins natively via UI
+- [ ] Right-click -> "Wrap in If Node"
+- [ ] Right-click -> "Wrap in Loop Node"
+- [ ] Drag external `.bin` weights directly onto an Input to convert to Constant
+- [ ] Support editing raw Tensor Data via interactive Matrix Grid editor
+- [ ] Support generating random normal/uniform data for Inputs
+- [ ] Diff Mode: Visually compare two `.onnx` files, highlighting added/removed/changed nodes
+- [ ] Diff Mode: Highlight exact weight differences (deltas) in Constants
+- [ ] "Bake" all current changes to a perfectly valid `ai.onnx` Graph Proto
+
+### 8. Live Profiling & Analysis Overlays (30+ items)
+- [ ] Overlay Mode: Show Tensor static memory sizes (MB/KB) directly on edges
+- [ ] Overlay Mode: Show Node computational cost (MACs/FLOPs) directly on nodes
+- [ ] Overlay Mode: Show Node parameter count
+- [ ] Summarize total model FLOPs dynamically in the toolbar
+- [ ] Summarize total model Memory footprint dynamically
+- [ ] Profile Mode: Connect to local Python JIT to execute graph visually
+- [ ] Profile Mode: Overlay actual execution time (ms) per Node via heatmap
+- [ ] Profile Mode: Overlay actual peak VRAM per Node
+- [ ] Profile Mode: Highlight bottleneck paths dynamically
+- [ ] Live inference: Inject data, click "Run", view outputs in Sidebar
+- [ ] Inject Image data visually via File Upload
+- [ ] Inject Text/String data visually
+- [ ] Visualize runtime tensor statistics (Min, Max, Mean, Sparsity) per execution
+- [ ] Support stepping through execution (Node-by-Node visual debugger)
+- [ ] Pause execution on `NaN` or `Inf` generation dynamically
+- [ ] Graph metric: Depth of the deepest path
+- [ ] Graph metric: Count of specific operators (e.g., "15 Convs, 4 MatMuls")
+- [ ] Support custom cost-model plugins for hardware specific latency estimates
+- [ ] Highlight memory fragmentation issues (if memory arena is simulated)
+- [ ] Visualize WebGPU shader dispatch boundaries dynamically
+- [ ] Visualize WASM SIMD boundaries dynamically
+- [ ] Display symbolic dimension resolution traces
+- [ ] Overlay Node fusion opportunities (e.g., "Can be fused with Conv")
+- [ ] Generate comprehensive HTML report summarizing all overlays
+- [ ] Support timeline trace import (Chrome Tracing JSON) mapping to graph nodes
+- [ ] Map TensorRT Engine profiles back to original ONNX visual nodes
+- [ ] Map CoreML Engine profiles back to original ONNX visual nodes
+- [ ] Analyze attention mask sparsity dynamically
+- [ ] Identify redundant reshape/transpose operations visually
+- [ ] Analyze dynamic batch size (`N`) propagation safety globally
+
+### 9. Extended Multi-Format Parser Parity (30+ items)
+- [ ] Parse Darknet (`.cfg`, `.weights`) topologies via pure Python translation
+- [ ] Parse Caffe (`.prototxt`, `.caffemodel`) topologies via pure Python translation
+- [ ] Parse Caffe2 (`predict_net.pb`) topologies via pure Python translation
+- [ ] Parse MXNet (`.json`, `.params`) topologies via pure Python translation
+- [ ] Parse NCNN (`.param`, `.bin`) topologies via pure Python translation
+- [ ] Parse MNN (`.mnn`) topologies via pure Python translation
+- [ ] Parse OpenVINO IR (`.xml`, `.bin`) topologies via pure Python translation
+- [ ] Parse RKNN (`.rknn`) topologies via pure Python translation
+- [ ] Parse TensorFlow.js (`model.json`, `.bin`) topologies natively in JS
+- [ ] Parse TensorFlow Lite FlatBuffer directly into the unified DAG
+- [ ] Parse UFF (`.uff`) natively
+- [ ] Parse TensorRT (`.plan`, `.trt`) engine definitions natively
+- [ ] Parse ML.NET (`.zip`) topologies natively
+- [ ] Parse MindSpore Lite (`.ms`) topologies natively
+- [ ] Parse ONNX external data formats accurately (e.g. `raw_data`, `data_location`)
+- [ ] Support massive Safetensors (`.safetensors`) weights mapping to visual nodes
+- [ ] Validate NCNN int8 precision configurations visually
+- [ ] Validate MNN fp16 precision configurations visually
+- [ ] Validate OpenVINO precision settings visually
+- [ ] Validate CoreML `mlprogram` versus legacy `neuralnetwork` architectures visually
+- [ ] Support legacy `mlmodelc` (compiled CoreML) visualization
+- [ ] Support generic `tar.gz` and `zip` model package extraction locally
+- [ ] Extract and format JSON embedded metadata gracefully
+- [ ] Translate unsupported framework ops into generic "CustomOp" nodes
+- [ ] Expose native `FlatBuffers` JS bindings for ultra-fast TFLite parsing
+- [ ] Expose native `Protobuf` JS bindings for ultra-fast ONNX parsing
+- [ ] Implement zero-copy buffer views across the JS/WASM boundary
+- [ ] Prevent 32-bit index overflow in massive model parameter files
+- [ ] Support displaying raw bytes for unrecognized binary attributes
+
+### 10. Deep UX / Interactive Tooling (30+ items)
+- [ ] Support drag-selecting multiple nodes (marquee tool)
+- [ ] Right-click context menu: "Collapse Subgraph"
+- [ ] Right-click context menu: "Expand Subgraph"
+- [ ] Right-click context menu: "Group Selected Nodes"
+- [ ] Right-click context menu: "Ungroup Nodes"
+- [ ] Right-click context menu: "Copy Node JSON"
+- [ ] Right-click context menu: "Copy Node ID"
+- [ ] Double-click edge: Auto-zoom to producer and consumer
+- [ ] Double-click canvas: Reset Zoom and Pan
+- [ ] Hover edge: Display interactive tooltip with exact `[shape]` and `dtype`
+- [ ] Hover node: Display interactive tooltip with Op description
+- [ ] Command Palette (`Ctrl+K`): Fast action triggering (Search, Export, Layout)
+- [ ] Minimap: Click to teleport to specific graph region
+- [ ] Minimap: Drag viewing rectangle to pan the main canvas
+- [ ] Minimap: Highlight search results as tiny dots
+- [ ] Breadcrumb navigation: `Graph > If_1 > Subgraph > Conv_2`
+- [ ] Property Sidebar: Searchable attributes list
+- [ ] Property Sidebar: Copy individual attribute values to clipboard
+- [ ] "Zen Mode": Hide all toolbars, minimaps, and sidebars (Canvas only)
+- [ ] "Code Mode": Split screen between Visual DAG and raw `.onnx` textual representation
+- [ ] Support multiple open tabs (View multiple models simultaneously)
+- [ ] Compare Tabs: Side-by-side synchronized panning and zooming
+- [ ] Custom URL parameters (e.g. `?url=model.onnx&node=Conv_1`)
+- [ ] History panel: View all recent searches and selections
+- [ ] Loading Progress Bar: Smoothly track `XMLHttpRequest` / Fetch API bytes
+- [ ] Display exact rendering FPS counter (Performance mode)
+- [ ] Display Javascript Heap Size dynamically (Performance mode)
+- [ ] Auto-suspend rendering loop when graph is idle (Save battery)
+- [ ] Throttled rendering for massive graphs (Maintain UI responsiveness)
+- [ ] Configurable edge routing algorithms (Orthogonal vs Spline vs Direct)
+

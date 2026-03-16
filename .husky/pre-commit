@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+
+echo "Running Pre-commit Linters & Formatters..."
+ruff format --config pyproject.toml
+fd -eh -ec -x clang-format --style=LLVM -i
+npx prettier --write "packages/**/*.ts" "apps/**/*.ts"
+
+echo "Building TypeScript packages..."
+npx turbo run build
+
+echo "Running Tests & Generating Coverage..."
+# 1. TypeScript tests
+npx turbo run test
+
+# 2. Python Tests (Generating coverage.json)
+# Export PYTHONPATH for all python source directories
+export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '\n' ':'):apps/cli/src
+
+# Clear old coverage
+rm -f .coverage coverage.json
+
+for pkg in packages/python/*/ apps/cli/; do
+  if [ -d "$pkg/tests" ]; then
+    echo "Running tests for $pkg..."
+    uv run pytest --cov=onnx9000 --cov=onnx9000_cli --cov-append "$pkg/tests/"
+  fi
+done
+
+# Generate json report from the combined .coverage
+uv run coverage json
+
+echo "Updating Badges in README.md..."
+python3 scripts/update_badges.py
+
+# Stage files automatically formatted/modified by this script.
+git add README.md
+git add scripts/update_badges.py
+# Stage any files modified by formatting
+git ls-files --modified | xargs git add || true
+echo "Pre-commit hook finished successfully!"

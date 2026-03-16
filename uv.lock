@@ -1,0 +1,71 @@
+version = 1
+revision = 3
+requires-python = ">=3.9"
+
+[manifest]
+members = [
+    "onnx9000-backend-native",
+    "onnx9000-core",
+    "onnx9000-frontend",
+    "onnx9000-optimizer",
+    "onnx9000-toolkit",
+    "onnx9000-workspace",
+]
+
+[[package]]
+name = "onnx9000-backend-native"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-backend-native" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-core"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-core" }
+
+[[package]]
+name = "onnx9000-frontend"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-frontend" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-optimizer"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-optimizer" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-toolkit"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-toolkit" }
+dependencies = [
+    { name = "onnx9000-core" },
+    { name = "onnx9000-optimizer" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
+    { name = "onnx9000-optimizer", editable = "packages/python/onnx9000-optimizer" },
+]
+
+[[package]]
+name = "onnx9000-workspace"
+version = "1.0.0"
+source = { virtual = "." }

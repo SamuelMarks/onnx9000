@@ -1,0 +1,19 @@
+[project]
+name = "onnx9000-cli"
+version = "1.0.0"
+description = "Unified CLI for ONNX9000 Ecosystem"
+requires-python = ">=3.9"
+dependencies = [
+    "onnx9000-core",
+    "onnx9000-backend-native",
+    "onnx9000-optimizer",
+    "onnx9000-frontend",
+    "onnx9000-toolkit"
+]
+
+[project.scripts]
+onnx9000 = "onnx9000_cli.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

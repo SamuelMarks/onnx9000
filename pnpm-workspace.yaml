@@ -1,0 +1,4 @@
+packages:
+  - "packages/js/*"
+  - "packages/python/*"
+  - "apps/*"
