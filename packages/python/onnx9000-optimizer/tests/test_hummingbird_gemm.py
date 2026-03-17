@@ -1,14 +1,13 @@
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.gemm import (
     GemmCompiler,
-    compile_forest_gemm,
     compile_boosting_gemm,
+    compile_forest_gemm,
 )
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 
-def test_gemm_compiler():
+def test_gemm_compiler() -> None:
     g = Graph(name="test_gemm")
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
@@ -33,13 +32,13 @@ def test_gemm_compiler():
     assert "ArgMax" in op_types
 
 
-def test_forest_gemm():
+def test_forest_gemm() -> None:
     g = Graph(name="test_forest")
     compile_forest_gemm(g, [TreeAbstractions(), TreeAbstractions()])
     # It passes for now
 
 
-def test_boosting_gemm():
+def test_boosting_gemm() -> None:
     g = Graph(name="test_boost")
     compile_boosting_gemm(g, [TreeAbstractions(), TreeAbstractions()])
     # It passes for now

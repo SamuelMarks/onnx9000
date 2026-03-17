@@ -1,14 +1,14 @@
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.lightgbm_parser import (
-    parse_lightgbm_dump,
-    parse_lgbm_classifier,
     handle_lgbm_objectives,
+    parse_lgbm_classifier,
+    parse_lightgbm_dump,
 )
 
 
-def test_parse_lightgbm_dump():
+def test_parse_lightgbm_dump() -> None:
     dump = {
         "tree_info": [
             {
@@ -51,7 +51,7 @@ def test_parse_lightgbm_dump():
     assert tree.values[2] == -1.5
 
 
-def test_parse_lgbm_classifier():
+def test_parse_lgbm_classifier() -> None:
     mock_booster = MagicMock()
     mock_booster.dump_model.return_value = {"tree_info": []}
 
@@ -63,7 +63,7 @@ def test_parse_lgbm_classifier():
     mock_booster.dump_model.assert_called_once()
 
 
-def test_handle_lgbm_objectives():
+def test_handle_lgbm_objectives() -> None:
     g = Graph(name="test")
     handle_lgbm_objectives(g, "multiclass")
     assert g.nodes[-1].op_type == "Softmax"

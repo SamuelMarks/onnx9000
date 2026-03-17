@@ -1,8 +1,55 @@
 """Symbolic mathematical evaluation module for ONNX shapes."""
 
-from typing import Union
+import ast
+import operator as op
+from typing import Any, Union
+
 from onnx9000.core.exceptions import ShapeInferenceError
 from onnx9000.core.ir import DynamicDim
+
+# Supported operators
+operators = {
+    ast.Add: op.add,
+    ast.Sub: op.sub,
+    ast.Mult: op.mul,
+    ast.Div: op.truediv,
+    ast.FloorDiv: op.floordiv,
+    ast.Mod: op.mod,
+    ast.Pow: op.pow,
+    ast.USub: op.neg,
+}
+
+
+def eval_expr(node: Any, context: dict[str, int]) -> Union[int, float, str]:
+    if isinstance(node, ast.Name):
+        if node.id in context:
+            return context[node.id]
+        return node.id
+    elif isinstance(node, ast.BinOp):
+        left = eval_expr(node.left, context)
+        right = eval_expr(node.right, context)
+        if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+            return operators[type(node.op)](left, right)
+        op_str_map = {
+            ast.Add: "+",
+            ast.Sub: "-",
+            ast.Mult: "*",
+            ast.Div: "/",
+            ast.FloorDiv: "//",
+            ast.Mod: "%",
+            ast.Pow: "**",
+        }
+        op_str = op_str_map.get(type(node.op), type(node.op).__name__)
+        return f"{left} {op_str} {right}"
+    elif isinstance(node, ast.UnaryOp):
+        operand = eval_expr(node.operand, context)
+        if isinstance(operand, (int, float)):
+            return operators[type(node.op)](operand)
+        return f"(-{operand})"
+    elif isinstance(node, ast.Constant):
+        return node.value
+    else:
+        raise TypeError(node)
 
 
 def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> Union[int, str]:
@@ -12,7 +59,14 @@ def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> Union[in
     """
     if expr in context:
         return context[expr]
-    return expr
+    try:
+        node = ast.parse(expr, mode="eval").body
+        res = eval_expr(node, context)
+        if isinstance(res, float) and res.is_integer():
+            return int(res)
+        return res
+    except Exception:
+        return expr
 
 
 def broadcast_shapes(
@@ -28,14 +82,19 @@ def broadcast_shapes(
     for a, b in zip(padded_a, padded_b):
         a_val = a.value if isinstance(a, DynamicDim) else a
         b_val = b.value if isinstance(b, DynamicDim) else b
-        if a_val == b_val:
-            result.append(a)
-        elif a_val == 1:
+
+        # If one of them is 1, broadcast to the other
+        if a_val == 1:
             result.append(b)
         elif b_val == 1:
             result.append(a)
+        # If they are exactly equal, take either
+        elif a_val == b_val:
+            result.append(a)
+        # Handle string symbols
         elif isinstance(a_val, str) or isinstance(b_val, str):
             result.append(DynamicDim(f"max({a_val}, {b_val})"))
+        # Handle unknown dimensions (-1)
         elif a_val == -1:
             result.append(b)
         elif b_val == -1:
@@ -45,3 +104,9 @@ def broadcast_shapes(
                 f"Operands could not be broadcast together with shapes {shape_a} {shape_b}"
             )
     return tuple(result)
+
+
+def simplify_dim(dim: Union[int, DynamicDim, str]) -> Union[int, str]:
+    if isinstance(dim, DynamicDim):
+        return dim.value
+    return dim

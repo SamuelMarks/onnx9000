@@ -139,3 +139,200 @@ describe('index.ts deeper coverage', () => {
     searchBox.dispatchEvent(new Event('input'));
   });
 });
+
+it('should hit edge render colors', () => {
+  const canvas = document.createElement('canvas');
+  const renderer = new CanvasRenderer(canvas, window);
+  renderer.setLayout({
+    nodes: [],
+    edges: [
+      {
+        from: '1',
+        to: '2',
+        points: [
+          { x: 0, y: 0 },
+          { x: 10, y: 10 },
+        ],
+        dtype: 'int8',
+        shape: '[1]',
+      },
+      {
+        from: '2',
+        to: '3',
+        points: [
+          { x: 0, y: 0 },
+          { x: 10, y: 10 },
+        ],
+        dtype: 'bool',
+        shape: '',
+      },
+      {
+        from: '3',
+        to: '4',
+        points: [
+          { x: 0, y: 0 },
+          { x: 10, y: 10 },
+        ],
+        dtype: 'string',
+        shape: '[1]',
+      },
+    ],
+  } as any);
+
+  // Trigger grid < 0.2
+  renderer.scale = 0.1;
+  renderer.render();
+
+  // Trigger grid > 0.2
+  renderer.scale = 1.0;
+  renderer.render();
+});
+
+it('should render out of bounds and specific node types', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const renderer = new CanvasRenderer(canvas, window);
+  renderer.setLayout({
+    nodes: [
+      { id: '1', name: 'out_of_bounds', x: -1000, y: -1000, width: 10, height: 10, type: 'node' },
+      { id: '2', name: 'input', x: 10, y: 10, width: 10, height: 10, type: 'input' },
+      { id: '3', name: 'output', x: 20, y: 20, width: 10, height: 10, type: 'output' },
+      { id: '4', name: 'constant', x: 30, y: 30, width: 10, height: 10, type: 'constant' },
+    ],
+    edges: [],
+  } as any);
+
+  // Make '2' selected and '3' hovered
+  renderer.selectedNode = '2';
+  renderer.hoveredNode = '3';
+  renderer.setSearchResults(['4']);
+  renderer.render();
+
+  // Add out of bounds check
+  // Wait, -1000 x -1000 will be caught by out of bounds!
+});
+
+it('should hit remaining edge branches', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const renderer = new CanvasRenderer(canvas, window);
+  renderer.setLayout({
+    nodes: [],
+    edges: [
+      {
+        from: '1',
+        to: '2',
+        points: [
+          { x: 0, y: 0 },
+          { x: 10, y: 5 },
+        ],
+        dtype: 'float32',
+        shape: '[1]',
+      }, // horizontal
+      {
+        from: '3',
+        to: '4',
+        points: [
+          { x: 0, y: 0 },
+          { x: 5, y: 10 },
+        ],
+        dtype: 'int32',
+        shape: '[1]',
+      }, // vertical
+      {
+        from: '5',
+        to: '6',
+        points: [
+          { x: 0, y: 0 },
+          { x: 10, y: 10 },
+        ],
+        dtype: 'unknown',
+        shape: '[1]',
+      }, // unknown
+    ],
+  } as any);
+
+  renderer.scale = 1.0;
+  renderer.render();
+});
+
+it('should handle window mouse events for drag and hover', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const renderer = new CanvasRenderer(canvas, window);
+  renderer.setLayout({
+    nodes: [{ id: '1', name: 'N1', x: 0, y: 0, width: 10, height: 10, type: 'node' }],
+    edges: [],
+  } as any);
+
+  // mousedown to start drag
+  canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: 10, clientY: 10 }));
+
+  // mousemove during drag
+  window.dispatchEvent(new MouseEvent('mousemove', { clientX: 20, clientY: 20 }));
+
+  // mouseup after drag
+  window.dispatchEvent(new MouseEvent('mouseup', { clientX: 20, clientY: 20 }));
+
+  // mousemove not dragging (hover test)
+  renderer.offsetX = 0;
+  renderer.offsetY = 0;
+  renderer.scale = 1;
+  window.dispatchEvent(new MouseEvent('mousemove', { clientX: 5, clientY: 5 })); // should hit node '1'
+  window.dispatchEvent(new MouseEvent('mousemove', { clientX: 50, clientY: 50 })); // should hit nothing
+
+  // mouseup not dragging with hoveredNode
+  renderer.hoveredNode = '1';
+  canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: 5, clientY: 5 }));
+  window.dispatchEvent(new MouseEvent('mouseup', { clientX: 5, clientY: 5 }));
+});
+
+it('should render entirely out of bounds nodes', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const renderer = new CanvasRenderer(canvas, window);
+  renderer.setLayout({
+    nodes: [
+      { id: '1', name: 'out_of_bounds_left', x: -1000, y: 10, width: 10, height: 10, type: 'node' },
+      { id: '2', name: 'out_of_bounds_right', x: 1000, y: 10, width: 10, height: 10, type: 'node' },
+      { id: '3', name: 'out_of_bounds_top', x: 10, y: -1000, width: 10, height: 10, type: 'node' },
+      {
+        id: '4',
+        name: 'out_of_bounds_bottom',
+        x: 10,
+        y: 1000,
+        width: 10,
+        height: 10,
+        type: 'node',
+      },
+    ],
+    edges: [],
+  } as any);
+
+  renderer.offsetX = 0;
+  renderer.offsetY = 0;
+  renderer.scale = 1.0;
+  renderer.render();
+});
+
+it('should hit missing branch for centerGraph and focusNode', () => {
+  const canvas = document.createElement('canvas');
+  canvas.getContext = () => null; // To hit line 22
+  expect(() => new CanvasRenderer(canvas, window)).toThrow();
+
+  const canvas2 = document.createElement('canvas');
+  const renderer = new CanvasRenderer(canvas2, window);
+  // Center graph without layout (hits line 37 return)
+  renderer.centerGraph();
+
+  // Focus node without layout (hits line 68 return)
+  renderer.focusNode('unknown');
+
+  renderer.setLayout({ nodes: [], edges: [] } as any);
+  // Focus node not in layout (hits line 70 return)
+  renderer.focusNode('unknown');
+});

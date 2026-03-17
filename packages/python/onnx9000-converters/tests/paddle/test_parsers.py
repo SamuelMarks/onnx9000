@@ -1,4 +1,5 @@
 import logging
+
 from onnx9000.converters.paddle.parsers import (
     PADDLE_TO_ONNX_VERSION,
     PaddleBlock,

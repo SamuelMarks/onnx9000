@@ -5,6 +5,7 @@ Central catalog for registering ONNX operators across the ecosystem.
 """
 
 from typing import Any, Callable
+
 from onnx9000.core.exceptions import UnsupportedOpError
 
 

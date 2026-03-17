@@ -2,6 +2,7 @@
 
 import random
 from typing import Any
+
 from onnx9000.core.ir import Graph, Node, Tensor
 
 

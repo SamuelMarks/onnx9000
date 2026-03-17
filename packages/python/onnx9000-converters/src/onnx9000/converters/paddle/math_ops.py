@@ -2,6 +2,7 @@
 
 import math
 from typing import Callable
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
 

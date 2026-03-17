@@ -1,8 +1,8 @@
 """Test Containers."""
 
 from collections import OrderedDict
+
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.nn.containers import (
     ModuleDict,
     ModuleList,
@@ -11,6 +11,7 @@ from onnx9000.converters.frontend.nn.containers import (
 )
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
+from onnx9000.core.dtypes import DType
 
 
 class Dummy(Module):

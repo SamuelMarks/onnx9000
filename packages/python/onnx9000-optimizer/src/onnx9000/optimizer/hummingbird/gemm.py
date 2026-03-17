@@ -1,5 +1,6 @@
 import logging
-from typing import Any, List
+from typing import Any
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
@@ -9,16 +10,16 @@ logger = logging.getLogger(__name__)
 class GemmCompiler:
     """GEMM (Matrix Multiplication) Strategy compiler."""
 
-    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N"):
+    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
         self.tree = tree
         self.batch_size = batch_size
         self._detect_and_eliminate_redundant_thresholds()
 
-    def _detect_and_eliminate_redundant_thresholds(self):
+    def _detect_and_eliminate_redundant_thresholds(self) -> None:
         """Detect and eliminate redundant threshold checks across identical trees."""
         pass
 
-    def compile(self, g: Graph):
+    def compile(self, g: Graph) -> None:
         """Compiles tree to GEMM operators."""
 
         self._compress_matrix_a()
@@ -101,19 +102,19 @@ class GemmCompiler:
             )
         )
 
-    def _compress_matrix_a(self):
+    def _compress_matrix_a(self) -> None:
         """Compress Matrix A using one-hot/sparse representations."""
         pass
 
-    def _implement_sparsity_optimizations(self):
+    def _implement_sparsity_optimizations(self) -> None:
         """Implement GEMM sparsity optimizations (removing dead matrix columns)."""
         pass
 
-    def _pre_compute_scaling_factors(self):
+    def _pre_compute_scaling_factors(self) -> None:
         """Pre-compute scaling factors in GEMM matrices."""
         pass
 
-    def _merge_bias_into_matrix_c(self, matrix_c: dict):
+    def _merge_bias_into_matrix_c(self, matrix_c: dict) -> None:
         """Merge bias additions directly into GEMM Matrix C."""
         pass
 
@@ -136,38 +137,38 @@ class GemmCompiler:
         return {"shape": (num_nodes, num_nodes)}
 
 
-def compile_forest_gemm(g: Graph, trees: List[TreeAbstractions], batch_size: Any = "N"):
+def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
     """Compile Random Forest into batched 3D MatMul.
     Optimize GEMM memory using block-diagonal matrix representations.
     """
     pass
 
 
-def compile_boosting_gemm(g: Graph, trees: List[TreeAbstractions], batch_size: Any = "N"):
+def compile_boosting_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
     """Compile Gradient Boosting into sequential 2D MatMul additions.
     Transpile Sum reduction over ensemble outputs natively.
     """
     pass
 
 
-def compile_partial_gemm(g: Graph, trees: List[TreeAbstractions], chunks: int):
+def compile_partial_gemm(g: Graph, trees: list[TreeAbstractions], chunks: int) -> None:
     """Implement partial GEMM execution for trees evaluated in chunks."""
     pass
 
 
-def optimize_peak_vram_gemm(trees: List[TreeAbstractions]):
+def optimize_peak_vram_gemm(trees: list[TreeAbstractions]) -> None:
     """Measure and optimize peak VRAM usage of GEMM constants."""
     pass
 
 
 # Expose Regressor / Classifier / IsolationForest helpers
-def compile_decision_tree_regressor_gemm(g: Graph, tree: TreeAbstractions):
+def compile_decision_tree_regressor_gemm(g: Graph, tree: TreeAbstractions) -> None:
     pass
 
 
-def compile_decision_tree_classifier_gemm(g: Graph, tree: TreeAbstractions):
+def compile_decision_tree_classifier_gemm(g: Graph, tree: TreeAbstractions) -> None:
     pass
 
 
-def compile_isolation_forest_gemm(g: Graph, trees: List[TreeAbstractions]):
+def compile_isolation_forest_gemm(g: Graph, trees: list[TreeAbstractions]) -> None:
     pass

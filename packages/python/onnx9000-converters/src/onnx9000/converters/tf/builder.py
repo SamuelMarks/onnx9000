@@ -1,8 +1,9 @@
 """Module providing builder functionality."""
 
 from typing import Any, Optional
-from onnx9000.core.ir import Graph, Node, Tensor
+
 from onnx9000.converters.tf.parsers import TFNode
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 class TFToONNXGraphBuilder:

@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 import onnx9000.toolkit.script.op as op
 from onnx9000.toolkit.script.parser import script
 

@@ -2,12 +2,13 @@
 
 from pathlib import Path
 from typing import Union
+
 import numpy as np
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as plan_memory
-from onnx9000.core.parser.core import load
 from onnx9000.converters.jit.compiler import compile_cpp, compile_wasm, load_module
 from onnx9000.converters.jit.hasher import hash_graph
 from onnx9000.converters.jit.wrapper import CompiledModel
+from onnx9000.core.parser.core import load
 
 
 def compile(
@@ -35,7 +36,7 @@ def compile(
     for name in ir_graph.initializers:
         tensor = ir_graph.tensors[name]
         if tensor.data is None:
-            shape_tuple = tuple((d.value if hasattr(d, "value") else d for d in tensor.shape))
+            shape_tuple = tuple(d.value if hasattr(d, "value") else d for d in tensor.shape)
             init_arrays.append(np.zeros(shape_tuple, dtype=np.float32))
         else:
             init_arrays.append(tensor.data)

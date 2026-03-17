@@ -3,6 +3,7 @@
 import ctypes
 import logging
 from typing import Any, Optional, Union
+
 from onnx9000.core.dtypes import DType
 
 logger = logging.getLogger(__name__)
@@ -137,7 +138,7 @@ class Tensor:
         self.name = name
         self.inputs: list[Node] = []
         self.outputs: list[Node] = []
-        self.shape: tuple[Union[int, DynamicDim], ...] = shape or tuple()
+        self.shape: tuple[Union[int, DynamicDim], ...] = shape or ()
         self.dtype: Optional[DType] = dtype
         self.is_initializer: bool = is_initializer
         self.requires_grad: bool = requires_grad
@@ -182,12 +183,12 @@ class Variable(Tensor):
     ) -> None:
         """Initialize the class with necessary attributes."""
         super().__init__(name)
-        self.shape = shape or tuple()
+        self.shape = shape or ()
         self.dtype = dtype
 
     def is_dynamic(self) -> bool:
         """Is Dynamic function logic implementation."""
-        return any((isinstance(dim, DynamicDim) or dim == -1 for dim in self.shape))
+        return any(isinstance(dim, DynamicDim) or dim == -1 for dim in self.shape)
 
     def is_empty(self) -> bool:
         """Is Empty function logic implementation."""
@@ -210,7 +211,7 @@ class Constant(Tensor):
         """Initialize the class with necessary attributes."""
         super().__init__(name)
         self.data = values
-        self.shape = shape or tuple()
+        self.shape = shape or ()
         self.dtype = dtype
         self.is_initializer = True
 
@@ -223,7 +224,7 @@ class Constant(Tensor):
         return self.data
 
     @values.setter
-    def values(self, val):
+    def values(self, val) -> None:
         """Values function logic implementation."""
         self.data = val
 
@@ -390,12 +391,12 @@ class Graph:
             base_name = "node"
         if base_name not in self._node_name_counter:
             self._node_name_counter[base_name] = 0
-            if not any((n.name == base_name for n in self.nodes)):
+            if not any(n.name == base_name for n in self.nodes):
                 return base_name
         while True:
             self._node_name_counter[base_name] += 1
             new_name = f"{base_name}_{self._node_name_counter[base_name]}"
-            if not any((n.name == new_name for n in self.nodes)):
+            if not any(n.name == new_name for n in self.nodes):
                 return new_name
 
     def _uniquify_tensor_name(self, base_name: str) -> str:
@@ -420,7 +421,7 @@ class Graph:
 
     def add_node(self, node: Node) -> None:
         """Add Node function logic implementation."""
-        if any((n.name == node.name for n in self.nodes)) and node.name:
+        if any(n.name == node.name for n in self.nodes) and node.name:
             node.name = self._uniquify_node_name(node.name)
         elif not node.name:
             node.name = self._uniquify_node_name(node.op_type)
@@ -442,10 +443,7 @@ class Graph:
             return False
         if len(self.nodes) != len(other.nodes):
             return False
-        for n1, n2 in zip(self.nodes, other.nodes):
-            if n1 != n2:
-                return False
-        return True
+        return all(n1 == n2 for n1, n2 in zip(self.nodes, other.nodes))
 
     def copy(self) -> "Graph":
         """Copy function logic implementation."""

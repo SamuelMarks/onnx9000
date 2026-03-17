@@ -20,8 +20,8 @@ def test_jit_initializer_no_data() -> None:
     """Tests the test_jit_initializer_no_data functionality."""
     import numpy as np
     import onnx9000.core.ir as ir
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.jit import compile
+    from onnx9000.core.dtypes import DType
 
     g = ir.Graph("dummy")
     t = ir.Tensor("init1", shape=(1,), dtype=DType.FLOAT32, is_initializer=True)

@@ -5,6 +5,7 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
 from typing import Optional
+
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.utils import get_omp_pragma
 from onnx9000.core.ir import Node

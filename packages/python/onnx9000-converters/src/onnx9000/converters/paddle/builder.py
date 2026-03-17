@@ -1,8 +1,9 @@
 """Module docstring."""
 
 from typing import Any, Optional
-from onnx9000.core.ir import Graph, Node, Tensor
+
 from onnx9000.converters.paddle.parsers import PaddleNode
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 class PaddleToONNXGraphBuilder:
@@ -74,10 +75,7 @@ class PaddleToONNXGraphBuilder:
     ) -> list[str]:
         """make_node implementation."""
         node_name = self.get_unique_name(name_prefix)
-        if not outputs:
-            outputs = [f"{node_name}_out_0"]
-        else:
-            outputs = list(outputs)
+        outputs = [f"{node_name}_out_0"] if not outputs else list(outputs)
         n = Node(
             op_type=op_type, inputs=inputs, outputs=outputs, attributes=attributes, name=node_name
         )

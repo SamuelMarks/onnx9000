@@ -1,8 +1,8 @@
 """Linear layer."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
+from onnx9000.core.dtypes import DType
 
 
 class Linear(Module):

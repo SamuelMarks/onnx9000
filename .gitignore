@@ -49,3 +49,4 @@ prompt.md
 skills.md
 /pycdc/
 .uv
+.env\n.env.local\nuv.lock

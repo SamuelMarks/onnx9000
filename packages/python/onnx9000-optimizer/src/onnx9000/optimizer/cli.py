@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 from typing import Any
+
 from onnx9000.core.execution import SessionOptions
 from onnx9000.optimizer.olive.auto import AutoOptimizer
 from onnx9000.optimizer.olive.model import OliveModel

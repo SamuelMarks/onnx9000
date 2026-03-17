@@ -1,17 +1,17 @@
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.onnxml_parser import (
-    parse_onnxml_tree_ensemble,
-    extract_tree_ensemble_attributes,
     apply_onnxml_post_transform,
+    extract_tree_ensemble_attributes,
+    parse_onnxml_tree_ensemble,
 )
 
 
-def test_parse_onnxml_tree_ensemble():
+def test_parse_onnxml_tree_ensemble() -> None:
     node = Node("TreeEnsembleClassifier")
     # Mocking attributes
-    attr_mock = MagicMock()
+    MagicMock()
 
     # We will just patch the node's attrs directly
     node.attrs["nodes_treeids"] = Mock(value=[0, 0, 0])
@@ -37,7 +37,7 @@ def test_parse_onnxml_tree_ensemble():
     assert tree.right_children[1] == -1
 
 
-def test_extract_tree_ensemble_attributes():
+def test_extract_tree_ensemble_attributes() -> None:
     node = Node("TreeEnsembleClassifier")
     node.attrs["nodes_treeids"] = Mock(value=[0])
     node.attrs["class_ids"] = Mock(value=[1, 2])
@@ -47,7 +47,7 @@ def test_extract_tree_ensemble_attributes():
     assert attrs["class_ids"] == [1, 2]
 
 
-def test_apply_onnxml_post_transform():
+def test_apply_onnxml_post_transform() -> None:
     g = Graph(name="test")
     node = Node("TreeEnsembleClassifier")
 

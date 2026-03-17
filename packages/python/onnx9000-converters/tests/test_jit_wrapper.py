@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from onnx9000.core.ir import Graph
 from onnx9000.converters.jit.wrapper import CompiledModel
+from onnx9000.core.ir import Graph
 
 
 class MockCppModel:

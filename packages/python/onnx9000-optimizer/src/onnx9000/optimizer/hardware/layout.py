@@ -1,6 +1,7 @@
 """Hardware-Aware Memory Layout Optimization module."""
 
 from typing import Any
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -159,7 +160,7 @@ class LayoutOptimizer:
                     p2 = next_node.attributes.get("perm", [])
                     if p1 and p2 and (len(p1) == len(p2)):
                         fused_perm = [p1[p2[i]] for i in range(len(p2))]
-                        is_identity = all((fused_perm[i] == i for i in range(len(fused_perm))))
+                        is_identity = all(fused_perm[i] == i for i in range(len(fused_perm)))
                         if is_identity:
                             ident_node = Node(
                                 "Identity",
@@ -203,7 +204,7 @@ class LayoutOptimizer:
             if node.op_type == "Transpose":
                 out_name = node.outputs[0]
                 cons = consumers.get(out_name, [])
-                if all((c.op_type in elementwise_ops for c in cons)) and len(cons) > 0:
+                if all(c.op_type in elementwise_ops for c in cons) and len(cons) > 0:
                     transposes_to_push[out_name] = node
             if node.op_type == "Transpose" and node.outputs[0] in transposes_to_push:
                 continue

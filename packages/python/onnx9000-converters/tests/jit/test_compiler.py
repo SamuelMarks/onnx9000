@@ -3,13 +3,14 @@
 import subprocess
 import sys
 from unittest.mock import patch
+
 import numpy as np
 import pytest
+from onnx9000.converters.jit import compiler, hasher, wrapper
 from onnx9000.core import config
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.converters.jit import compiler, hasher, wrapper
 
 
 @patch("onnx9000.converters.jit.compiler.PackageLoader")

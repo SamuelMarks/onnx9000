@@ -5,7 +5,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
-def test_executor_coverage():
+def test_executor_coverage() -> None:
     ep = CPUExecutionProvider({})
     g = Graph("g")
     g.add_node(
@@ -29,7 +29,7 @@ def test_executor_coverage():
     assert "T5" in res
 
 
-def test_executor_bytes_dtype_mapping():
+def test_executor_bytes_dtype_mapping() -> None:
     ep = CPUExecutionProvider({})
     import struct
 
@@ -41,7 +41,7 @@ def test_executor_bytes_dtype_mapping():
     t_int64 = Tensor("T", (1,), DType.INT64, data=struct.pack("<q", 1))
     assert ep._to_numpy(t_int64)[0] == 1
     t_bool = Tensor("T", (1,), DType.BOOL, data=struct.pack("<?", True))
-    assert ep._to_numpy(t_bool)[0] == True
+    assert ep._to_numpy(t_bool)[0]
     g1 = Graph("g")
     g1.add_node(Node("MissingOp", [], [], {}))
     assert "MissingOp" not in ep.get_supported_nodes(g1)
@@ -54,7 +54,7 @@ def test_executor_bytes_dtype_mapping():
     assert ep.allocate_tensors([]) is None
 
 
-def test_executor_op_registry():
+def test_executor_op_registry() -> None:
     ep = CPUExecutionProvider({})
     g = Graph("g")
     g.add_node(Node("Abs", ["T1"], ["T2"], attributes={}))

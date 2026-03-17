@@ -1,12 +1,13 @@
 import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 import pytest
+from onnx9000.converters.jit.compiler import _get_compiler, compile_cpp, compile_wasm, load_module
 from onnx9000.core import config
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph, Tensor
-from onnx9000.converters.jit.compiler import _get_compiler, compile_cpp, compile_wasm, load_module
 
 
 def test_get_compiler(monkeypatch) -> None:

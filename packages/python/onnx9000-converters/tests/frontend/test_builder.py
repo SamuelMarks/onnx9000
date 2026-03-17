@@ -1,9 +1,9 @@
 """Module providing core logic and structural definitions."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing, get_active_builder
 from onnx9000.converters.frontend.jit import jit
 from onnx9000.converters.frontend.tensor import Node, Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_graph_builder() -> None:

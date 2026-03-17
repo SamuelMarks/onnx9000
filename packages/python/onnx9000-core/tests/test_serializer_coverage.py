@@ -1,7 +1,7 @@
 from onnx9000.core.serializer import _serialize_shape
 
 
-def test_serialize_str_dim():
+def test_serialize_str_dim() -> None:
     shape = ("N",)
     proto = _serialize_shape(shape)
     assert proto.dim[0].dim_param == "N"

@@ -1,14 +1,12 @@
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
 from onnx9000.optimizer.hummingbird.sklearn_parser import (
-    parse_decision_tree_classifier,
-    parse_decision_tree_regressor,
-    parse_random_forest_classifier,
     extract_n_estimators,
+    parse_decision_tree_classifier,
 )
 
 
-def test_parse_decision_tree_classifier():
+def test_parse_decision_tree_classifier() -> None:
     # Mock sklearn tree
     mock_tree = MagicMock()
     mock_tree.node_count = 3
@@ -37,7 +35,7 @@ def test_parse_decision_tree_classifier():
     assert abstractions.values[2] == 20.0
 
 
-def test_extract_n_estimators():
+def test_extract_n_estimators() -> None:
     mock_rf = Mock()
     mock_rf.n_estimators = 100
     assert extract_n_estimators(mock_rf) == 100
@@ -46,10 +44,11 @@ def test_extract_n_estimators():
     assert extract_n_estimators(mock_dt) == 1
 
 
-def test_sklearn_parser_all():
-    import onnx9000.optimizer.hummingbird.sklearn_parser as sp
+def test_sklearn_parser_all() -> None:
     from unittest.mock import MagicMock
+
     import numpy as np
+    import onnx9000.optimizer.hummingbird.sklearn_parser as sp
 
     class MockTree:
         node_count = 3

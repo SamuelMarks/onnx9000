@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.utils import (
@@ -10,6 +9,7 @@ from onnx9000.converters.frontend.utils import (
     infer_matmul_shape,
     record_op,
 )
+from onnx9000.core.dtypes import DType
 
 
 def test_infer_elementwise_shape() -> None:

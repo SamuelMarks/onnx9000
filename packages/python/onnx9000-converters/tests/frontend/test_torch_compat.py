@@ -37,8 +37,8 @@ def test_drop_in_replacement() -> None:
 
 def test_torch_like_missing() -> None:
     """Tests the test_torch_like_missing functionality."""
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.torch_like import jit, tensor
+    from onnx9000.core.dtypes import DType
 
     t1 = tensor([1, 2], dtype=DType.INT32)
     assert t1.dtype == DType.INT32
@@ -53,8 +53,8 @@ def test_torch_like_missing() -> None:
 
 def test_trace_non_tensor_and_kwargs() -> None:
     """Tests the test_trace_non_tensor_and_kwargs functionality."""
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.torch_like import jit, tensor
+    from onnx9000.core.dtypes import DType
 
     t1 = tensor([1, 2], dtype=DType.INT32)
 

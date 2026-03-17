@@ -1,25 +1,25 @@
 import logging
-from typing import Any, List
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
+
 from onnx9000.core.ir import Graph, Node
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
 
 
-def parse_onnxml_tree_ensemble(node: Node) -> List[TreeAbstractions]:
+def parse_onnxml_tree_ensemble(node: Node) -> list[TreeAbstractions]:
     """Provide explicit converter for ai.onnx.ml.TreeEnsembleClassifier/Regressor -> ai.onnx Math."""
     trees = []
 
-    if "nodes_treeids" not in node.attrs:
+    if "nodes_treeids" not in node.attributes:
         return trees
 
-    tree_ids = node.attrs["nodes_treeids"].value
-    node_ids = node.attrs["nodes_nodeids"].value
-    feature_ids = node.attrs["nodes_featureids"].value
-    thresholds = node.attrs["nodes_values"].value
-    modes = node.attrs["nodes_modes"].value
-    true_node_ids = node.attrs["nodes_truenodeids"].value
-    false_node_ids = node.attrs["nodes_falsenodeids"].value
+    tree_ids = node.attributes["nodes_treeids"].value
+    node.attributes["nodes_nodeids"].value
+    feature_ids = node.attributes["nodes_featureids"].value
+    thresholds = node.attributes["nodes_values"].value
+    modes = node.attributes["nodes_modes"].value
+    true_node_ids = node.attributes["nodes_truenodeids"].value
+    false_node_ids = node.attributes["nodes_falsenodeids"].value
 
     # We'd group by tree_ids and map them to TreeAbstractions natively
     # Mock loop for abstraction
@@ -70,62 +70,62 @@ def extract_tree_ensemble_attributes(node: Node):
         "target_ids",
         "target_weights",
     ]:
-        if k in node.attrs:
-            attrs[k] = node.attrs[k].value
+        if k in node.attributes:
+            attrs[k] = node.attributes[k].value
     return attrs
 
 
-def parse_onnxml_linear(node: Node):
+def parse_onnxml_linear(node: Node) -> None:
     """Provide explicit converter for LinearClassifier / LinearRegressor."""
     pass
 
 
-def parse_onnxml_svm(node: Node):
+def parse_onnxml_svm(node: Node) -> None:
     """Provide explicit converter for SVMClassifier / SVMRegressor."""
     pass
 
 
-def parse_onnxml_scaler(node: Node):
+def parse_onnxml_scaler(node: Node) -> None:
     """Provide explicit converter for Scaler -> Add + Mul."""
     pass
 
 
-def parse_onnxml_normalizer(node: Node):
+def parse_onnxml_normalizer(node: Node) -> None:
     pass
 
 
-def parse_onnxml_binarizer(node: Node):
+def parse_onnxml_binarizer(node: Node) -> None:
     pass
 
 
-def parse_onnxml_onehot(node: Node):
+def parse_onnxml_onehot(node: Node) -> None:
     pass
 
 
-def parse_onnxml_imputer(node: Node):
+def parse_onnxml_imputer(node: Node) -> None:
     pass
 
 
-def parse_onnxml_feature_extractor(node: Node):
+def parse_onnxml_feature_extractor(node: Node) -> None:
     """Provide explicit converter for ArrayFeatureExtractor -> ai.onnx.Gather"""
     pass
 
 
-def parse_onnxml_category_mapper(node: Node):
+def parse_onnxml_category_mapper(node: Node) -> None:
     """Provide explicit converter for CategoryMapper -> ai.onnx Gather/Where"""
     pass
 
 
-def parse_onnxml_zipmap(node: Node):
+def parse_onnxml_zipmap(node: Node) -> None:
     """Provide explicit converter for ZipMap -> standard Tensors + external dictionaries"""
     pass
 
 
-def apply_onnxml_post_transform(g: Graph, node: Node):
+def apply_onnxml_post_transform(g: Graph, node: Node) -> None:
     """Support post_transform extraction (NONE, SOFTMAX, LOGISTIC) natively."""
     post_transform = "NONE"
-    if "post_transform" in node.attrs:
-        post_transform = node.attrs["post_transform"].value.decode()
+    if "post_transform" in node.attributes:
+        post_transform = node.attributes["post_transform"].value.decode()
 
     if post_transform == "SOFTMAX":
         g.nodes.append(Node("Softmax", inputs=["raw"], outputs=["prob"]))
@@ -133,6 +133,6 @@ def apply_onnxml_post_transform(g: Graph, node: Node):
         g.nodes.append(Node("Sigmoid", inputs=["raw"], outputs=["prob"]))
 
 
-def ensure_static_shapes(g: Graph):
+def ensure_static_shapes(g: Graph) -> None:
     """Ensure lowered ONNX subgraphs are perfectly statically shaped."""
     pass

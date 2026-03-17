@@ -9,13 +9,13 @@ class DummyProvider(ExecutionProvider):
     def get_supported_nodes(self, graph):
         return [n.name or n.op_type for n in graph.nodes if n.op_type == "Identity"]
 
-    def allocate_tensors(self, tensors):
+    def allocate_tensors(self, tensors) -> None:
         pass
 
     def execute(self, graph, context, inputs):
         res = {}
         for node in graph.nodes:
-            if node.op_type == "Identity" and all((i in inputs for i in node.inputs)):
+            if node.op_type == "Identity" and all(i in inputs for i in node.inputs):
                 res[node.outputs[0]] = inputs[node.inputs[0]]
         return res
 
@@ -24,18 +24,18 @@ class CPUProvider(ExecutionProvider):
     def get_supported_nodes(self, graph):
         return [n.name or n.op_type for n in graph.nodes if n.op_type in ["Add", "MemcpyToHost"]]
 
-    def allocate_tensors(self, tensors):
+    def allocate_tensors(self, tensors) -> None:
         pass
 
     def execute(self, graph, context, inputs):
         res = {}
         for node in graph.nodes:
-            if node.op_type in ["Add", "MemcpyToHost"] and all((i in inputs for i in node.inputs)):
+            if node.op_type in ["Add", "MemcpyToHost"] and all(i in inputs for i in node.inputs):
                 res[node.outputs[0]] = inputs[node.inputs[0]]
         return res
 
 
-def test_inference_session_api():
+def test_inference_session_api() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.outputs.append(Tensor("Z", (2, 2), DType.FLOAT32))
@@ -66,8 +66,8 @@ def test_inference_session_api():
     session.run_with_iobinding(io_binding)
 
 
-def test_session_errors():
+def test_session_errors() -> None:
     g = Graph("test")
     g.add_node(Node("MissingOp", inputs=[], outputs=["Y"], attributes={}))
     with pytest.raises(InferenceSessionError):
-        session = InferenceSession(g, providers=[DummyProvider({})])
+        InferenceSession(g, providers=[DummyProvider({})])

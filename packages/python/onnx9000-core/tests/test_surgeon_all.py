@@ -3,7 +3,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Variable
 
 
-def test_surgeon_all():
+def test_surgeon_all() -> None:
     g = Graph("test")
     v1 = Variable("in1")
     v2 = Variable("in2")
@@ -60,7 +60,7 @@ def test_surgeon_all():
     g.inject_node_on_edge(n4, n_consumer, n_new, 0)
     g.bypass_node(n_new)
     c2 = g.variable_to_constant(v1, b"xyz")
-    v3 = g.constant_to_variable(c)
+    g.constant_to_variable(c)
     n_fuse1 = Node("A", inputs=[v1], outputs=[Variable("a_out")])
     n_fuse2 = Node("B", inputs=[n_fuse1.outputs[0]], outputs=[Variable("b_out")])
     g.add_node(n_fuse1)
@@ -73,8 +73,8 @@ def test_surgeon_all():
     g_other.add_tensor(Variable("otherv"))
     g.append_graph(g_other, {})
     g.prepend_graph(g_other, {})
-    v_new = g.register_input("global_in", (), DType.FLOAT32)
-    v_out_new = g.register_output("global_out", (), DType.FLOAT32)
+    g.register_input("global_in", (), DType.FLOAT32)
+    g.register_output("global_out", (), DType.FLOAT32)
     g.reorder_inputs(["global_in"])
     g.reorder_outputs(["global_out"])
     g.remove_input("global_in")

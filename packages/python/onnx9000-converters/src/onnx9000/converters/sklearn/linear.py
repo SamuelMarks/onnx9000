@@ -1,4 +1,4 @@
-from onnx9000.core.ir import Graph, Node, Attribute
+from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def _convert_linear_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:

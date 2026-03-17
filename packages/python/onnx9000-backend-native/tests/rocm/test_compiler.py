@@ -1,10 +1,11 @@
-import pytest
 import os
 from unittest.mock import patch
+
+import pytest
 from onnx9000.backends.rocm.compiler import ROCmCompiler
 
 
-def test_rocm_compiler_cached(tmpdir):
+def test_rocm_compiler_cached(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     hsaco_path = os.path.join(cache_dir, "test_kernel.hsaco")
@@ -15,12 +16,12 @@ def test_rocm_compiler_cached(tmpdir):
     assert res == b"cached_hsaco"
 
 
-def test_rocm_compiler_compile(tmpdir):
+def test_rocm_compiler_compile(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     hsaco_path = os.path.join(cache_dir, "test_kernel2.hsaco")
 
-    def fake_run(cmd, check, capture_output):
+    def fake_run(cmd, check, capture_output) -> None:
         with open(hsaco_path, "wb") as f:
             f.write(b"new_hsaco")
 
@@ -29,7 +30,7 @@ def test_rocm_compiler_compile(tmpdir):
         assert res == b"new_hsaco"
 
 
-def test_rocm_compiler_hipcc_not_found(tmpdir):
+def test_rocm_compiler_hipcc_not_found(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     with patch("subprocess.run", side_effect=FileNotFoundError()):
@@ -37,7 +38,7 @@ def test_rocm_compiler_hipcc_not_found(tmpdir):
         assert res == b""
 
 
-def test_rocm_compiler_hipcc_failed(tmpdir):
+def test_rocm_compiler_hipcc_failed(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     import subprocess
@@ -49,7 +50,7 @@ def test_rocm_compiler_hipcc_failed(tmpdir):
             ROCmCompiler.compile_kernel(kernel_code, "test_kernel4", cache_dir=cache_dir)
 
 
-def test_rocm_compiler_no_cache_dir():
+def test_rocm_compiler_no_cache_dir() -> None:
     from unittest.mock import MagicMock
 
     with patch("tempfile.gettempdir", return_value="/tmp"):

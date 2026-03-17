@@ -1,3 +1,5 @@
+import contextlib
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -24,7 +26,7 @@ def _create_and_simplify(op_type, inputs_data, attrs=None):
     return g_sim.nodes[0].attributes["value"]
 
 
-def test_math_ops_folding():
+def test_math_ops_folding() -> None:
     for op in [
         "Sin",
         "Cos",
@@ -52,10 +54,8 @@ def test_math_ops_folding():
             data = np.array([True], dtype=bool)
         elif op == "BitwiseNot":
             data = np.array([1], dtype=np.int32)
-        try:
+        with contextlib.suppress(Exception):
             _create_and_simplify(op, [data])
-        except Exception:
-            pass
     for op in [
         "Mod",
         "Max",
@@ -80,13 +80,11 @@ def test_math_ops_folding():
         elif op.startswith("Bitwise"):
             data1 = np.array([2], dtype=np.int32)
             data2 = np.array([3], dtype=np.int32)
-        try:
+        with contextlib.suppress(Exception):
             _create_and_simplify(op, [data1, data2])
-        except Exception:
-            pass
 
 
-def test_reduce_ops_folding():
+def test_reduce_ops_folding() -> None:
     data = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     for op in [
         "ReduceSum",
@@ -106,7 +104,7 @@ def test_reduce_ops_folding():
             pass
 
 
-def test_other_ops_folding():
+def test_other_ops_folding() -> None:
     _create_and_simplify(
         "Clip",
         [
@@ -125,14 +123,12 @@ def test_other_ops_folding():
         [np.array([4], dtype=np.int32), np.array([1], dtype=np.int32)],
         {"direction": "LEFT"},
     )
-    try:
+    with contextlib.suppress(Exception):
         _create_and_simplify(
             "BitShift",
             [np.array([4], dtype=np.int32), np.array([1], dtype=np.int32)],
             {"direction": "INVALID"},
         )
-    except Exception:
-        pass
     _create_and_simplify(
         "IsInf",
         [np.array([np.inf], dtype=np.float32)],
@@ -157,13 +153,11 @@ def test_other_ops_folding():
     )
 
 
-def test_tensor_ops_folding():
-    try:
+def test_tensor_ops_folding() -> None:
+    with contextlib.suppress(Exception):
         _create_and_simplify(
             "Split", [np.array([1.0, 2.0, 3.0], dtype=np.float32), np.array([1, 2], dtype=np.int64)]
         )
-    except Exception:
-        pass
     _create_and_simplify(
         "Expand", [np.array([1.0], dtype=np.float32), np.array([2, 2], dtype=np.int64)]
     )
@@ -186,14 +180,12 @@ def test_tensor_ops_folding():
         [np.array([1.0], dtype=np.float32), np.array([1, 1], dtype=np.int64)],
         {"mode": "edge"},
     )
-    try:
+    with contextlib.suppress(Exception):
         _create_and_simplify(
             "Pad",
             [np.array([1.0], dtype=np.float32), np.array([1, 1], dtype=np.int64)],
             {"mode": "invalid"},
         )
-    except Exception:
-        pass
     _create_and_simplify(
         "ConstantOfShape",
         [np.array([2, 2], dtype=np.int64)],
@@ -254,7 +246,7 @@ def test_tensor_ops_folding():
     )
 
 
-def test_dce_math_rewrites():
+def test_dce_math_rewrites() -> None:
 
     def _create_dce_graph(op_type, num_inputs=1, attrs=None):
         g = Graph("test")
@@ -313,7 +305,7 @@ def test_dce_math_rewrites():
     assert len(g_sim.nodes) == 0
 
 
-def test_dropout_dce():
+def test_dropout_dce() -> None:
     g = Graph("test")
     g.inputs = ["in0"]
     g.add_node(Node("Dropout", ["in0"], ["out1", "out2"], {}, "n1"))
@@ -323,7 +315,7 @@ def test_dropout_dce():
     assert g_sim.outputs[0] == "in0"
 
 
-def test_where_partial_folding():
+def test_where_partial_folding() -> None:
     g = Graph("test")
     t = Tensor(
         "c", shape=(1,), dtype=DType.BOOL, data=np.array([True], dtype=bool), is_initializer=True
@@ -350,9 +342,9 @@ def test_where_partial_folding():
     assert g_sim.outputs[0] == "y"
 
 
-def test_partial_math_folding():
+def test_partial_math_folding() -> None:
 
-    def _test_partial(op_type, inputs, attrs, expected_nodes, expected_out):
+    def _test_partial(op_type, inputs, attrs, expected_nodes, expected_out) -> None:
         g = Graph("test")
         for i, val in enumerate(inputs):
             if isinstance(val, np.ndarray):

@@ -1,6 +1,7 @@
 """CPU backend operations mapping."""
 
 from typing import Any, Callable
+
 import numpy as np
 
 
@@ -718,10 +719,8 @@ def pad_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
         np.pad(
             inputs[0],
             tuple(
-                (
-                    (int(pads[i]), int(pads[i + len(inputs[0].shape)]))
-                    for i in range(len(inputs[0].shape))
-                )
+                (int(pads[i]), int(pads[i + len(inputs[0].shape)]))
+                for i in range(len(inputs[0].shape))
             ),
             mode="constant",
         )

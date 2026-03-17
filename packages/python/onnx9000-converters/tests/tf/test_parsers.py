@@ -1,4 +1,5 @@
 import logging
+
 from onnx9000.converters.tf.parsers import (
     TF_DTYPE_TO_ONNX,
     TF_TO_ONNX_VERSION_MAPPING,

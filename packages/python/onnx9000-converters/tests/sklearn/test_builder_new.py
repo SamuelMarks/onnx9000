@@ -1,5 +1,4 @@
 from onnx9000.converters.sklearn.builder import SKLearnParser
-from onnx9000.core.ir import Graph, Node
 
 
 class DummyEstimator:
@@ -7,11 +6,11 @@ class DummyEstimator:
 
 
 class DummyPipeline:
-    def __init__(self):
+    def __init__(self) -> None:
         self.steps = [("step1", DummyEstimator())]
 
 
-def test_pipeline_parse():
+def test_pipeline_parse() -> None:
     model = DummyPipeline()
     parser = SKLearnParser(model)
     graph = parser.parse()
@@ -21,48 +20,48 @@ def test_pipeline_parse():
 
 
 class FeatureUnion:
-    def __init__(self):
+    def __init__(self) -> None:
         self.transformer_list = [("t1", DummyEstimator()), ("t2", DummyEstimator())]
 
 
-def test_feature_union_parse():
+def test_feature_union_parse() -> None:
     model = FeatureUnion()
     parser = SKLearnParser(model)
     graph = parser.parse()
-    assert any((n.op == "Concat" for n in graph.nodes))
+    assert any(n.op == "Concat" for n in graph.nodes)
 
 
 class ColumnTransformer:
-    def __init__(self):
+    def __init__(self) -> None:
         self.transformers_ = [("t1", DummyEstimator(), [0, 1])]
         self.remainder = "drop"
 
 
-def test_column_transformer_parse():
+def test_column_transformer_parse() -> None:
     model = ColumnTransformer()
     parser = SKLearnParser(model)
     graph = parser.parse()
-    assert any((n.op == "ArrayFeatureExtractor" for n in graph.nodes))
+    assert any(n.op == "ArrayFeatureExtractor" for n in graph.nodes)
 
 
 class DummyScaler:
-    def __init__(self):
+    def __init__(self) -> None:
         import numpy as np
 
         self.mean_ = np.array([0.0])
         self.scale_ = np.array([1.0])
 
 
-def test_scaler_parse():
+def test_scaler_parse() -> None:
     model = DummyScaler()
     model.__class__.__name__ = "StandardScaler"
     parser = SKLearnParser(model)
     graph = parser.parse()
-    assert any((n.op == "Scaler" for n in graph.nodes))
+    assert any(n.op == "Scaler" for n in graph.nodes)
 
 
 class DummyLinear:
-    def __init__(self):
+    def __init__(self) -> None:
         import numpy as np
 
         self.coef_ = np.array([[1.0]])
@@ -70,44 +69,44 @@ class DummyLinear:
         self.classes_ = np.array([0, 1])
 
 
-def test_linear_parse():
+def test_linear_parse() -> None:
     model = DummyLinear()
     model.__class__.__name__ = "LogisticRegression"
     parser = SKLearnParser(model)
     graph = parser.parse()
-    assert any((n.op == "LinearClassifier" for n in graph.nodes))
+    assert any(n.op == "LinearClassifier" for n in graph.nodes)
 
 
 class DummySearch:
-    def __init__(self):
+    def __init__(self) -> None:
         self.best_estimator_ = DummyLinear()
         self.best_estimator_.__class__.__name__ = "LogisticRegression"
 
 
-def test_search_parse():
+def test_search_parse() -> None:
     model = DummySearch()
     model.__class__.__name__ = "GridSearchCV"
     parser = SKLearnParser(model)
     graph = parser.parse()
-    assert any((n.op == "LinearClassifier" for n in graph.nodes))
+    assert any(n.op == "LinearClassifier" for n in graph.nodes)
 
 
-def test_builder_sklearn_coverage():
+def test_builder_sklearn_coverage() -> None:
+
     from onnx9000.converters.sklearn.builder import SKLearnParser
-    import sys
 
     # Test _is_type
     parser = SKLearnParser(None)
     assert parser._is_type(1, "int")
 
     class Pipeline:
-        def __init__(self):
+        def __init__(self) -> None:
             self.steps = [("passthrough", "passthrough"), ("step2", "step2")]
 
     assert len(parser._parse_estimator(Pipeline(), ["input"])) == 1
 
     class ColumnTransformer:
-        def __init__(self):
+        def __init__(self) -> None:
             self.transformers_ = [
                 ("drop", "drop", [0]),
                 ("pass", "passthrough", [1]),

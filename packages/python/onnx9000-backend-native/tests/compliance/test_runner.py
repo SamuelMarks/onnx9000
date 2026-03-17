@@ -1,5 +1,6 @@
 import tempfile
 from pathlib import Path
+
 import numpy as np
 import pytest
 from onnx9000.backends.cpu.executor import CPUExecutionProvider
@@ -10,7 +11,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.serializer import save
 
 
-def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str):
+def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str) -> None:
     tensor_proto = onnx_pb2.TensorProto()
     tensor_proto.name = name
     tensor_proto.dims.extend(arr.shape)
@@ -27,7 +28,7 @@ def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str):
         f.write(tensor_proto.SerializeToString())
 
 
-def test_onnx_backend_test_runner():
+def test_onnx_backend_test_runner() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -49,7 +50,7 @@ def test_onnx_backend_test_runner():
         assert passed, f"Test failed with message: {msg}"
 
 
-def test_onnx_backend_test_runner_mismatch():
+def test_onnx_backend_test_runner_mismatch() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -72,25 +73,25 @@ def test_onnx_backend_test_runner_mismatch():
         assert "Numerical tolerance mismatch" in msg
 
 
-def test_runner_skip_list():
+def test_runner_skip_list() -> None:
     runner = ONNXBackendTestRunner(providers=[])
     runner.set_skip_list(["test_skip_this"])
     assert "test_skip_this" in runner.skip_lists
 
 
-def test_runner_empty_tensor():
+def test_runner_empty_tensor() -> None:
     runner = ONNXBackendTestRunner(providers=[])
     arr = runner._convert_tensor_to_numpy(Tensor("E", (1,), DType.FLOAT32, data=None))
     assert arr.shape == (1,)
 
 
-def test_runner_invalid_dtype():
+def test_runner_invalid_dtype() -> None:
     runner = ONNXBackendTestRunner(providers=[])
     with pytest.raises(TypeError):
         runner._convert_tensor_to_numpy(Tensor("E", (1,), DType.STRING, data=b"hi"))
 
 
-def test_runner_missing_model():
+def test_runner_missing_model() -> None:
     runner = ONNXBackendTestRunner(providers=[])
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
@@ -99,7 +100,7 @@ def test_runner_missing_model():
         assert "Model file not found" in msg
 
 
-def test_runner_no_datasets():
+def test_runner_no_datasets() -> None:
     runner = ONNXBackendTestRunner(providers=[])
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
@@ -109,7 +110,7 @@ def test_runner_no_datasets():
         assert "No test data sets found" in msg
 
 
-def test_runner_missing_output():
+def test_runner_missing_output() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -134,7 +135,7 @@ def test_runner_missing_output():
         assert "Missing output tensor at index 1" in msg
 
 
-def test_runner_missing_outputs():
+def test_runner_missing_outputs() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -150,7 +151,7 @@ def test_runner_missing_outputs():
         assert passed
 
 
-def test_runner_extra_inputs():
+def test_runner_extra_inputs() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -168,7 +169,7 @@ def test_runner_extra_inputs():
         assert passed
 
 
-def test_runner_mismatches():
+def test_runner_mismatches() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -190,7 +191,7 @@ def test_runner_mismatches():
         assert "DType mismatch" in msg
 
 
-def test_runner_bool_int():
+def test_runner_bool_int() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         ds_dir = base_dir / "test_data_set_0"
@@ -251,7 +252,7 @@ def test_runner_bool_int():
         assert passed
 
 
-def test_runner_exception():
+def test_runner_exception() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")

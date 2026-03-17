@@ -2,7 +2,7 @@ from onnx9000.core.ir import Attribute, Constant, Graph, Node, Variable
 from onnx9000.core.surgeon import cleanup, estimate_macs, fold_constants_math
 
 
-def test_cleanup_producer_visited():
+def test_cleanup_producer_visited() -> None:
     g = Graph("clean")
     v_in = Variable("in")
     v_mid = Variable("mid")
@@ -21,7 +21,7 @@ def test_cleanup_producer_visited():
     assert n2 in g.nodes
 
 
-def test_estimate_macs_conv():
+def test_estimate_macs_conv() -> None:
     g = Graph("macs")
     v_in = Variable("in", shape=(1, 3, 224, 224))
     v_out = Variable("out", shape=(1, 64, 224, 224))
@@ -34,7 +34,7 @@ def test_estimate_macs_conv():
     assert macs == 64 * 224 * 224 * 3 * 3 * 3
 
 
-def test_fold_constants_math_tensor_output():
+def test_fold_constants_math_tensor_output() -> None:
     g = Graph("fold")
     c1 = Constant("c1", values=b"1")
     c2 = Constant("c2", values=b"2")
@@ -49,7 +49,7 @@ def test_fold_constants_math_tensor_output():
     assert isinstance(g.tensors["out"], Constant)
 
 
-def test_estimate_macs_matmul_exception():
+def test_estimate_macs_matmul_exception() -> None:
     g = Graph("mac")
     v1 = Variable("v1")
     n = Node("MatMul", inputs=[v1, v1])
@@ -58,7 +58,7 @@ def test_estimate_macs_matmul_exception():
     assert estimate_macs(g) == 0
 
 
-def test_deduplicate_constants_hash_collision_replace():
+def test_deduplicate_constants_hash_collision_replace() -> None:
     from onnx9000.core.surgeon import deduplicate_constants
 
     g = Graph("dedup")
@@ -76,7 +76,7 @@ def test_deduplicate_constants_hash_collision_replace():
     assert n.inputs[0] == n.inputs[1]
 
 
-def test_sink_transposes():
+def test_sink_transposes() -> None:
     g = Graph("sink")
     v_in = Variable("in")
     v_mid = Variable("mid")

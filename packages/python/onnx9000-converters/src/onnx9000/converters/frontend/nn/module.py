@@ -5,6 +5,7 @@ Base Module framework mirroring PyTorch nn.Module.
 from collections import OrderedDict
 from collections.abc import Iterator
 from typing import Any, Callable, Optional, Union
+
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 
 

@@ -1,6 +1,7 @@
 import os
 import struct
 import tempfile
+
 import pytest
 from onnx9000.core import onnx_pb2
 from onnx9000.core.dtypes import DType
@@ -9,11 +10,11 @@ from onnx9000.core.parser.core import _parse_dtype, from_bytes, load, load_tenso
 from onnx9000.core.serializer import save, serialize_model
 
 
-def test_parse_dtype():
+def test_parse_dtype() -> None:
     assert _parse_dtype(onnx_pb2.TensorProto.FLOAT) == DType.FLOAT32
 
 
-def test_parser_core():
+def test_parser_core() -> None:
     g = Graph("my_graph")
     g.doc_string = "My doc"
     g.opset_imports["ai.onnx"] = 14
@@ -61,8 +62,8 @@ def test_parser_core():
     os.remove(file_path)
 
 
-def test_load_tensor():
-    t_float = Tensor("f1", (1,), DType.FLOAT32, data=struct.pack("<f", 1.0))
+def test_load_tensor() -> None:
+    Tensor("f1", (1,), DType.FLOAT32, data=struct.pack("<f", 1.0))
     proto = onnx_pb2.TensorProto()
     proto.name = "f1"
     proto.data_type = onnx_pb2.TensorProto.FLOAT
@@ -76,14 +77,14 @@ def test_load_tensor():
     os.remove(file_path)
 
 
-def test_parser_unsupported_dtype():
+def test_parser_unsupported_dtype() -> None:
     from onnx9000.core.exceptions import ONNXParseError
 
     with pytest.raises(ONNXParseError):
         _parse_dtype(9999)
 
 
-def test_parser_other_data_fields():
+def test_parser_other_data_fields() -> None:
     tp_float = onnx_pb2.TensorProto(
         name="f2", data_type=onnx_pb2.TensorProto.FLOAT, dims=[1], float_data=[1.0]
     )
@@ -106,14 +107,14 @@ def test_parser_other_data_fields():
     assert "s2" in g.tensors
 
 
-def test_parser_uncovered_paths():
+def test_parser_uncovered_paths() -> None:
     g = Graph("g")
     g.add_node(Node("N", [], [], {"bad_attr": Attribute("bad_attr", "UNKNOWN", None)}))
     v_in = ValueInfo("v1", (DynamicDim("N"), DynamicDim(-1), 1), DType.FLOAT32)
     v_out = ValueInfo("v2", (1,), DType.FLOAT32)
     g.inputs.append(v_in)
     g.outputs.append(v_out)
-    v_mid = ValueInfo("v_mid", (1,), DType.FLOAT32)
+    ValueInfo("v_mid", (1,), DType.FLOAT32)
     model_proto = serialize_model(g)
     vi_proto = onnx_pb2.ValueInfoProto()
     vi_proto.name = "v_mid"

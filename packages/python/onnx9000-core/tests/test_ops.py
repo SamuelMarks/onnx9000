@@ -1,11 +1,12 @@
 import inspect
+
 import onnx9000.core.ops as ops
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Tensor
 
 
-def test_all_ops():
+def test_all_ops() -> None:
     dummy_tensor = Tensor(name="dummy", shape=(2, 2), dtype=DType.FLOAT32)
     for name, func in inspect.getmembers(ops, inspect.isfunction):
         if name == "record_op":
@@ -27,13 +28,13 @@ def test_all_ops():
                 args.append(dummy_tensor)
         try:
             res = func(*args)
-            assert isinstance(res, Tensor) or isinstance(res, list) or res is None
+            assert isinstance(res, (Tensor, list)) or res is None
         except Exception:
             pass
     assert True
 
 
-def test_specific_ops():
+def test_specific_ops() -> None:
     t = Tensor("t", (1,), DType.FLOAT32)
     ops.conv_transpose(t, t, b=t)
     ops.deform_conv(t, t, t, b=t, mask=t)

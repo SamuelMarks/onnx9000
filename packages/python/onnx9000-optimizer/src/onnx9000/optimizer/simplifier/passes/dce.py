@@ -1,6 +1,7 @@
 """Provides dce.py module functionality."""
 
 import logging
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 
@@ -33,7 +34,7 @@ class DCEPass(GraphPass):
                 consumed.add(inp)
         new_nodes = []
         for node in graph.nodes:
-            if any((out in consumed for out in node.outputs)):
+            if any(out in consumed for out in node.outputs):
                 new_nodes.append(node)
             else:
                 logger.info(f"Eliminated dead node {node.name} ({node.op_type})")

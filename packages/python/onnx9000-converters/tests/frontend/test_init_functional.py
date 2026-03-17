@@ -2,10 +2,10 @@
 
 import numpy as np
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.nn import functional as F
 from onnx9000.converters.frontend.nn import init
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_init() -> None:

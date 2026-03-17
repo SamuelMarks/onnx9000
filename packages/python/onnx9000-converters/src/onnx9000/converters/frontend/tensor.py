@@ -5,6 +5,7 @@ computation graphs from native Python execution.
 """
 
 from typing import Any, Optional, Union
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 

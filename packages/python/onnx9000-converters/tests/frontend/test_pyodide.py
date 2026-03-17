@@ -1,10 +1,11 @@
 """Mock tests for Pyodide integration."""
 
 import io
-from onnx9000.core.dtypes import DType
+
 from onnx9000.converters.frontend.exporter import export
 from onnx9000.converters.frontend.models import ResNet18
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_pyodide_export_buffer() -> None:

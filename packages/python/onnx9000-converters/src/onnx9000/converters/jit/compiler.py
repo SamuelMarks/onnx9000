@@ -7,15 +7,16 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
+
 import pybind11
 from jinja2 import Environment, PackageLoader
 from onnx9000.backends.codegen.generator import Generator
+from onnx9000.converters.jit.hasher import hash_graph
 from onnx9000.core import config
 from onnx9000.core.dtypes import to_cpp_type
 from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph
 from onnx9000.core.logger import get_logger
-from onnx9000.converters.jit.hasher import hash_graph
 
 logger = get_logger(__name__)
 

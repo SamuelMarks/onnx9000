@@ -3,15 +3,16 @@ import tempfile
 import urllib.request
 import zipfile
 from pathlib import Path
+
 import pytest
 from onnx9000.backends.testing.downloader import download_and_extract_onnx_tests, get_node_test_dirs
 
 
-def test_downloader_and_extractor(monkeypatch):
+def test_downloader_and_extractor(monkeypatch) -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
-        def mock_retrieve(url, filename):
+        def mock_retrieve(url, filename) -> None:
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo(
@@ -31,11 +32,11 @@ def test_downloader_and_extractor(monkeypatch):
         assert extracted_dir_2 == extracted_dir
 
 
-def test_downloader_missing_dir(monkeypatch):
+def test_downloader_missing_dir(monkeypatch) -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
-        def mock_retrieve(url, filename):
+        def mock_retrieve(url, filename) -> None:
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo("wrong_path/")

@@ -1,13 +1,14 @@
-import pytest
-from unittest.mock import patch, MagicMock
-import numpy as np
 import ctypes
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.dtypes import DType
+from unittest.mock import MagicMock, patch
+
+import numpy as np
 import onnx9000.backends.cuda.executor as executor
+import pytest
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_cuda_executor_fallback():
+def test_cuda_executor_fallback() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -31,7 +32,7 @@ def test_cuda_executor_fallback():
     np.testing.assert_allclose(out["B"], np.array([[1.0, 0.0]], dtype=np.float32))
 
 
-def test_cuda_executor_matmul_cublas():
+def test_cuda_executor_matmul_cublas() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -54,7 +55,7 @@ def test_cuda_executor_matmul_cublas():
                     "cuLaunchKernel.return_value": 0,
                 }
             ),
-        ) as mock_cuda,
+        ),
         patch(
             "onnx9000.backends.memory.cuda_arena._cuda_lib",
             MagicMock(
@@ -80,7 +81,7 @@ def test_cuda_executor_matmul_cublas():
         patch(
             "onnx9000.backends.cuda.executor._cudnn_lib",
             MagicMock(**{"cudnnCreate.return_value": 0}),
-        ) as mock_cudnn,
+        ),
     ):
         # mock planner ptr so tests don't crash
         with patch(
@@ -95,12 +96,12 @@ def test_cuda_executor_matmul_cublas():
                 "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
                 return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
             ):
-                out = dispatcher.run({"A": inp_A, "B": inp_B})
+                dispatcher.run({"A": inp_A, "B": inp_B})
 
             assert mock_cublas.cublasSgemm_v2.called
 
 
-def test_cuda_executor_matmul_no_cublas():
+def test_cuda_executor_matmul_no_cublas() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -136,7 +137,7 @@ def test_cuda_executor_matmul_no_cublas():
             )
 
 
-def test_cuda_executor_elementwise():
+def test_cuda_executor_elementwise() -> None:
     for op_type in ["Add", "Sub", "Mul"]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -174,24 +175,24 @@ def test_cuda_executor_elementwise():
             patch(
                 "onnx9000.backends.cuda.executor.CUDACompiler.compile_kernel", return_value=b"ptx"
             ),
-        ):
-            with patch(
+            patch(
                 "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_tensor_ptr",
                 return_value=ctypes.c_void_p(123),
+            ),
+        ):
+            dispatcher = executor.Dispatcher(g)
+            inp_A = np.ones((2, 2), dtype=np.float32)
+            inp_B = np.ones((2, 2), dtype=np.float32)
+            with patch(
+                "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
+                return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
             ):
-                dispatcher = executor.Dispatcher(g)
-                inp_A = np.ones((2, 2), dtype=np.float32)
-                inp_B = np.ones((2, 2), dtype=np.float32)
-                with patch(
-                    "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
-                    return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
-                ):
-                    out = dispatcher.run({"A": inp_A, "B": inp_B})
+                dispatcher.run({"A": inp_A, "B": inp_B})
 
-                assert mock_cuda.cuLaunchKernel.called
+            assert mock_cuda.cuLaunchKernel.called
 
 
-def test_cuda_executor_elementwise_no_ptx():
+def test_cuda_executor_elementwise_no_ptx() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -212,7 +213,7 @@ def test_cuda_executor_elementwise_no_ptx():
                     "cuLaunchKernel.return_value": 0,
                 }
             ),
-        ) as mock_cuda,
+        ),
         patch(
             "onnx9000.backends.memory.cuda_arena._cuda_lib",
             MagicMock(
@@ -239,11 +240,11 @@ def test_cuda_executor_elementwise_no_ptx():
                 "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
                 return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
             ):
-                out = dispatcher.run({"A": inp_A, "B": inp_B})
+                dispatcher.run({"A": inp_A, "B": inp_B})
             assert mock_exec.called
 
 
-def test_cuda_executor_init_memory_dynamic_and_init():
+def test_cuda_executor_init_memory_dynamic_and_init() -> None:
     g = Graph("test")
     # Using dynamic shape for output
     t_out = Tensor("out_t", ("N", 2), DType.FLOAT32)
@@ -265,7 +266,7 @@ def test_cuda_executor_init_memory_dynamic_and_init():
     assert dispatcher.planner._cpu_fallback_tensors["init_t"] is not None
 
 
-def test_cuda_executor_del_handles_errors():
+def test_cuda_executor_del_handles_errors() -> None:
     g = Graph("test")
     with (
         patch("onnx9000.backends.cuda.executor.is_cuda_available", return_value=True),
@@ -298,7 +299,7 @@ def test_cuda_executor_del_handles_errors():
         dispatcher.__del__()
 
 
-def ignore_this5():
+def ignore_this5() -> None:
     g = Graph("test")
     with (
         patch("onnx9000.backends.cuda.executor.is_cuda_available", return_value=True),
@@ -355,7 +356,7 @@ def ignore_this5():
         # Assertions are implicitly that __del__ doesn't crash
 
 
-def test_cuda_executor_matmul_cublas_static_alloc():
+def test_cuda_executor_matmul_cublas_static_alloc() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -381,7 +382,7 @@ def test_cuda_executor_matmul_cublas_static_alloc():
                     "cuLaunchKernel.return_value": 0,
                 }
             ),
-        ) as mock_cuda,
+        ),
         patch(
             "onnx9000.backends.memory.cuda_arena._cuda_lib",
             MagicMock(
@@ -403,28 +404,28 @@ def test_cuda_executor_matmul_cublas_static_alloc():
                     "cublasSgemm_v2.return_value": 0,
                 }
             ),
-        ) as mock_cublas,
+        ),
         patch(
             "onnx9000.backends.cuda.executor._cudnn_lib",
             MagicMock(**{"cudnnCreate.return_value": 0}),
-        ) as mock_cudnn,
-    ):
-        with patch(
+        ),
+        patch(
             "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_tensor_ptr",
             return_value=ctypes.c_void_p(123),
-        ):
-            with patch(
-                "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
-                return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
-            ):
-                dispatcher = executor.Dispatcher(g)
-                assert "C" in dispatcher.planner.offsets
-                inp_A = np.ones((2, 2), dtype=np.float32)
-                inp_B = np.ones((2, 2), dtype=np.float32)
-                out = dispatcher.run({"A": inp_A, "B": inp_B})
+        ),
+        patch(
+            "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
+            return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
+        ),
+    ):
+        dispatcher = executor.Dispatcher(g)
+        assert "C" in dispatcher.planner.offsets
+        inp_A = np.ones((2, 2), dtype=np.float32)
+        inp_B = np.ones((2, 2), dtype=np.float32)
+        dispatcher.run({"A": inp_A, "B": inp_B})
 
 
-def test_cuda_executor_execute_node_fallback():
+def test_cuda_executor_execute_node_fallback() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -440,7 +441,7 @@ def test_cuda_executor_execute_node_fallback():
         patch(
             "onnx9000.backends.cuda.executor._cuda_lib",
             MagicMock(**{"cuInit.return_value": 0, "cuStreamCreate.return_value": 0}),
-        ) as mock_cuda,
+        ),
         patch(
             "onnx9000.backends.memory.cuda_arena._cuda_lib",
             MagicMock(
@@ -456,27 +457,27 @@ def test_cuda_executor_execute_node_fallback():
         patch(
             "onnx9000.backends.cuda.executor._cublas_lib",
             MagicMock(**{"cublasCreate_v2.return_value": 0, "cublasSetStream_v2.return_value": 0}),
-        ) as mock_cublas,
+        ),
         patch(
             "onnx9000.backends.cuda.executor._cudnn_lib",
             MagicMock(**{"cudnnCreate.return_value": 0}),
-        ) as mock_cudnn,
-    ):
-        with patch(
+        ),
+        patch(
             "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_tensor_ptr",
             return_value=ctypes.c_void_p(123),
-        ):
-            with patch(
-                "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
-                return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
-            ):
-                dispatcher = executor.Dispatcher(g)
-                inp_A = np.ones((2, 2), dtype=np.float32)
+        ),
+        patch(
+            "onnx9000.backends.memory.cuda_arena.CUDAMemoryPlanner.get_host_tensor",
+            return_value=np.zeros((2, 2), dtype=np.float32).tobytes(),
+        ),
+    ):
+        dispatcher = executor.Dispatcher(g)
+        inp_A = np.ones((2, 2), dtype=np.float32)
 
-                with patch.object(
-                    dispatcher.cpu_fallback,
-                    "execute",
-                    return_value={"B": np.ones((2, 2), dtype=np.float32)},
-                ) as mock_exec:
-                    out = dispatcher.run({"A": inp_A})
-                    assert mock_exec.called
+        with patch.object(
+            dispatcher.cpu_fallback,
+            "execute",
+            return_value={"B": np.ones((2, 2), dtype=np.float32)},
+        ) as mock_exec:
+            dispatcher.run({"A": inp_A})
+            assert mock_exec.called

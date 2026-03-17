@@ -40,8 +40,8 @@ def test_state_dict_keys() -> None:
 
 def test_conv2d_parity() -> None:
     """Tests the test_conv2d_parity functionality."""
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
+    from onnx9000.core.dtypes import DType
 
     conv = Conv2d(3, 16, 3, padding=1, bias=False)
     assert conv.weight.shape == (16, 3, 3, 3)

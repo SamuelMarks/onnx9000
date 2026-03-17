@@ -1,13 +1,13 @@
 import logging
-from typing import Any, Dict, List, Optional
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
+from typing import Any, Optional
+
+from onnx9000.core.ir import Graph
+from onnx9000.optimizer.hummingbird.analysis import cast_parameters, flatten_ensemble
 from onnx9000.optimizer.hummingbird.memory import (
     TreeAbstractions,
-    estimate_memory_footprint,
     select_optimal_strategy,
 )
-from onnx9000.optimizer.hummingbird.analysis import flatten_ensemble, cast_parameters
+from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
 
 logger = logging.getLogger(__name__)
 
@@ -15,15 +15,15 @@ logger = logging.getLogger(__name__)
 class TranspilationEngine:
     """Zero-dependency transpilation engine architecture."""
 
-    def __init__(self, target: TargetHardware = TargetHardware.CPU, verbose: bool = False):
+    def __init__(self, target: TargetHardware = TargetHardware.CPU, verbose: bool = False) -> None:
         self.target = target
-        self.abstractions: List[TreeAbstractions] = []
+        self.abstractions: list[TreeAbstractions] = []
         self.backends = {}
         self.verbose = verbose
         if self.verbose:
             logger.setLevel(logging.DEBUG)
 
-    def register_backend(self, name: str, backend_cls: Any):
+    def register_backend(self, name: str, backend_cls: Any) -> None:
         """Implement backend registry for extensibility."""
         self.backends[name] = backend_cls
 
@@ -32,7 +32,7 @@ class TranspilationEngine:
         model_obj: Any,
         force_strategy: Optional[Strategy] = None,
         batch_size: Any = "N",
-        ensemble_weights: Optional[List[float]] = None,
+        ensemble_weights: Optional[list[float]] = None,
     ) -> Graph:
         """Transpiles traditional ML models into ONNX Graph based on selected strategy.
         Supports dynamic batching via symbolic dimension "N".
@@ -74,24 +74,24 @@ class TranspilationEngine:
 
         return g
 
-    def _extract_global_constants(self, g: Graph, tree: TreeAbstractions):
+    def _extract_global_constants(self, g: Graph, tree: TreeAbstractions) -> None:
         """Extract global constants into contiguous initialized Tensors."""
         pass
 
-    def _handle_missing_values(self, tree: TreeAbstractions):
+    def _handle_missing_values(self, tree: TreeAbstractions) -> None:
         """Handle structural missing values (NaN) within tensor operations."""
         pass
 
-    def _handle_categorical_features(self, tree: TreeAbstractions):
+    def _handle_categorical_features(self, tree: TreeAbstractions) -> None:
         """Handle models with a mix of categorical and continuous features natively."""
         pass
 
-    def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any):
+    def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         # Transpile numerical threshold comparisons accurately
         pass
 
-    def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any):
+    def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         pass
 
-    def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any):
+    def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         pass

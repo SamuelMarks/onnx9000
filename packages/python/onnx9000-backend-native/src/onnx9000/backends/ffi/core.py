@@ -18,7 +18,9 @@ class DynamicLibraryError(OSError):
 class DynamicLibrary:
     """Class DynamicLibrary implementation."""
 
-    def __init__(self, name: str, versions=None, calling_convention="cdecl", use_cffi=False):
+    def __init__(
+        self, name: str, versions=None, calling_convention="cdecl", use_cffi=False
+    ) -> None:
         self.name = name
         self.lib = None
         self._lock = threading.Lock()
@@ -62,7 +64,7 @@ class DynamicLibrary:
                 f"Failed to load hardware library: {name}. Ensure it is installed and in PATH/LD_LIBRARY_PATH."
             )
 
-    def _load_lib(self, path, mode):
+    def _load_lib(self, path, mode) -> None:
         if self.os == "Windows" and self.calling_convention == "stdcall":
             self.lib = ctypes.WinDLL(path)
         else:
@@ -108,14 +110,14 @@ class HardwareContextHandle:
     Implement C-struct mappings natively in Python for hardware context handles.
     """
 
-    def __init__(self, handle_ptr, destroy_func):
+    def __init__(self, handle_ptr, destroy_func) -> None:
         self._handle = ctypes.c_void_p(handle_ptr)
         self._destroy_func = destroy_func
         self._lock = threading.Lock()
         weakref.finalize(self, self._cleanup, self._handle, self._destroy_func)
 
     @classmethod
-    def _cleanup(cls, handle, destroy_func):
+    def _cleanup(cls, handle, destroy_func) -> None:
         if handle and handle.value:
             destroy_func(handle)
             handle.value = None

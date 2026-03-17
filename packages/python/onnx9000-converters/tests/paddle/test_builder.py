@@ -1,6 +1,6 @@
-from onnx9000.core.ir import Node
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
+from onnx9000.core.ir import Node
 
 
 def test_paddle_builder_unique_name() -> None:

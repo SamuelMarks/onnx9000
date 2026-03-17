@@ -1,6 +1,7 @@
 """Quantizer module for ONNX hardware optimization."""
 
 from typing import Any, Optional, Union
+
 import numpy as np
 
 

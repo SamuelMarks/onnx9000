@@ -3,6 +3,7 @@
 import ctypes
 import logging
 import time
+
 import numpy as np
 from onnx9000.backends.cuda.bindings import (
     CUdeviceptr,

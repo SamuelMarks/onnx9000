@@ -1,20 +1,21 @@
-import pytest
-from unittest.mock import patch
 import sys
+from unittest.mock import patch
+
+import pytest
 from onnx9000_cli.main import (
-    main,
+    compile_cmd,
+    convert_cmd,
+    export_cmd,
     inspect_cmd,
-    simplify_cmd,
+    main,
     optimize_cmd,
     quantize_cmd,
-    export_cmd,
-    convert_cmd,
     serve_cmd,
-    compile_cmd,
+    simplify_cmd,
 )
 
 
-def test_cli_commands(capsys):
+def test_cli_commands(capsys) -> None:
     import argparse
 
     # Test individual functions
@@ -45,23 +46,22 @@ def test_cli_commands(capsys):
 
 
 @patch("sys.argv", ["onnx9000", "inspect", "model.onnx"])
-def test_main_valid():
+def test_main_valid() -> None:
     with patch("onnx9000_cli.main.inspect_cmd") as mock_cmd:
         main()
         mock_cmd.assert_called_once()
 
 
 @patch("sys.argv", ["onnx9000"])
-def test_main_empty(capsys):
+def test_main_empty(capsys) -> None:
     with pytest.raises(SystemExit) as e:
         main()
     assert e.value.code == 1
     assert "usage:" in capsys.readouterr().out
 
 
-def test_main_execution():
+def test_main_execution() -> None:
     import subprocess
-    import sys
 
     result = subprocess.run(
         [sys.executable, "apps/cli/src/onnx9000_cli/main.py", "--help"],
@@ -72,7 +72,7 @@ def test_main_execution():
     assert "usage:" in result.stdout
 
 
-def test_main_execution_runpy(monkeypatch):
+def test_main_execution_runpy(monkeypatch) -> None:
     import runpy
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
@@ -81,15 +81,14 @@ def test_main_execution_runpy(monkeypatch):
     assert e.value.code == 0
 
 
-def test_module_main_exec(monkeypatch):
+def test_module_main_exec(monkeypatch) -> None:
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
-    with pytest.raises(SystemExit):
-        with open("apps/cli/src/onnx9000_cli/main.py") as f:
-            code = compile(f.read(), "apps/cli/src/onnx9000_cli/main.py", "exec")
-            exec(code, {"__name__": "__main__"})
+    with pytest.raises(SystemExit), open("apps/cli/src/onnx9000_cli/main.py") as f:
+        code = compile(f.read(), "apps/cli/src/onnx9000_cli/main.py", "exec")
+        exec(code, {"__name__": "__main__"})
 
 
-def test_run_module(monkeypatch):
+def test_run_module(monkeypatch) -> None:
     import runpy
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])

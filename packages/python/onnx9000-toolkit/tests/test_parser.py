@@ -1,4 +1,5 @@
 from typing import NoReturn
+
 import pytest
 from onnx9000.toolkit.script import op, script
 
@@ -72,17 +73,14 @@ def test_script_decorator_if() -> None:
     @script
     def my_model(x):
         y = x
-        if 1 > 0:
-            y = x
-        else:
-            y = op.Neg(x)
+        y = x if 1 > 0 else op.Neg(x)
         return y
 
     builder = my_model.to_builder()
     assert builder.name == "my_model"
     ops = [n.op_type for n in builder.nodes]
     assert "If" in ops
-    if_node = next((n for n in builder.nodes if n.op_type == "If"))
+    if_node = next(n for n in builder.nodes if n.op_type == "If")
     assert "then_branch" in if_node.attributes
     assert "else_branch" in if_node.attributes
 
@@ -196,6 +194,7 @@ def test_script_parser_docstring() -> None:
 
 def test_script_parser_docstring2() -> None:
     import ast
+
     from onnx9000.toolkit.script.parser import ScriptParser
 
     tree = ast.parse('def func():\n    """hello"""\n    pass')
@@ -203,7 +202,7 @@ def test_script_parser_docstring2() -> None:
     parser.visit(tree.body[0])
 
 
-def test_parser_missing_lines():
+def test_parser_missing_lines() -> None:
     from onnx9000.toolkit.script.parser import script
 
     @script

@@ -1,6 +1,7 @@
 """Module providing core logic and structural definitions."""
 
 import hashlib
+
 from onnx9000.core.ir import Graph
 
 

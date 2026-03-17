@@ -1,9 +1,9 @@
 """Test Dropout."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.nn.dropout import Dropout, Dropout2d
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_dropout() -> None:
@@ -25,6 +25,7 @@ def test_dropout() -> None:
 def test_dropout_single_res() -> None:
     """Tests the test_dropout_single_res functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.frontend.nn.dropout import Dropout
 
     d = Dropout()

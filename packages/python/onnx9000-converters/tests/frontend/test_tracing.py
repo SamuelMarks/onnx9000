@@ -2,9 +2,9 @@ import onnx9000
 import onnx9000.core.ops
 
 "Module providing core logic and structural definitions."
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import script as jit
+from onnx9000.core.dtypes import DType
 
 
 def test_tensor_creation() -> None:

@@ -1,20 +1,19 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.dtypes import DType
+from unittest.mock import patch
+
 import onnx9000.backends.codegen.generator as cg
-import onnx9000.backends.codegen.utils as cu
 import onnx9000.backends.codegen.op_generator as cog
-import onnx9000.core.config as config
+import onnx9000.backends.codegen.utils as cu
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_sanitize_name():
+def test_sanitize_name() -> None:
     assert cu.sanitize_name("1name") == "var_1name"
     assert cu.sanitize_name("my.name-!") == "my_name__"
     assert cu.sanitize_name("good_name") == "good_name"
 
 
-def test_get_omp_pragma():
+def test_get_omp_pragma() -> None:
     with patch("onnx9000.core.config.ONNX9000_USE_CUDA", True):
         assert cu.get_omp_pragma("N") == ""
 
@@ -25,11 +24,11 @@ def test_get_omp_pragma():
 
 
 class MockOpGen(cog.OpGenerator):
-    def generate(self, node, generator_context):
+    def generate(self, node, generator_context) -> str:
         return f"// Mock OP for {node.op_type}"
 
 
-def test_generator():
+def test_generator() -> None:
     g = Graph("test")
     g.inputs.append("in1")
     g.inputs.append("in1")  # test seen
@@ -78,7 +77,7 @@ def test_generator():
         assert "void forward_py(" in code3
 
 
-def test_generator_one_output():
+def test_generator_one_output() -> None:
     g = Graph("test")
     g.outputs.append("out1")
     t_out1 = Tensor("out1", (2, 2), DType.FLOAT32)

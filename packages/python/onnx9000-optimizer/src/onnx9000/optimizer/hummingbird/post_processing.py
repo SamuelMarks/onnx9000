@@ -1,6 +1,7 @@
 import logging
-from typing import Any, List, Dict
-from onnx9000.core.ir import Graph, Node, Attribute
+from typing import Any
+
+from onnx9000.core.ir import Attribute, Graph, Node
 
 logger = logging.getLogger(__name__)
 
@@ -8,16 +9,16 @@ logger = logging.getLogger(__name__)
 class PostProcessor:
     """Target Post-Processing utility for Hummingbird transpilation."""
 
-    def __init__(self, g: Graph, emit_zipmap: bool = True):
+    def __init__(self, g: Graph, emit_zipmap: bool = True) -> None:
         self.g = g
         self.emit_zipmap = emit_zipmap
 
     def apply_argmax_classes(
         self,
         raw_scores_name: str,
-        classlabels_ints: List[int] = None,
-        classlabels_strings: List[str] = None,
-    ):
+        classlabels_ints: list[int] = None,
+        classlabels_strings: list[str] = None,
+    ) -> None:
         """Extract predicted classes via ArgMax and attach class labels."""
         self.g.nodes.append(Node("ArgMax", inputs=[raw_scores_name], outputs=["predicted_idx"]))
 
@@ -30,7 +31,7 @@ class PostProcessor:
             # Flatten multi-class classlabels_strings into metadata
             pass
 
-    def apply_zipmap(self, probabilities_name: str, classlabels: List[Any]):
+    def apply_zipmap(self, probabilities_name: str, classlabels: list[Any]) -> None:
         """Parse ZipMap requirements and emit explicit output sequences.
         Provide configuration to omit ZipMap for raw tensor performance.
         """
@@ -54,31 +55,31 @@ class PostProcessor:
 
         self.g.nodes.append(zipmap_node)
 
-    def apply_cast(self, input_name: str, output_name: str, to_type: int):
+    def apply_cast(self, input_name: str, output_name: str, to_type: int) -> None:
         """Provide ONNX Cast nodes for specific output target requirements (e.g., bool outputs)."""
         self.g.nodes.append(
             Node("Cast", inputs=[input_name], outputs=[output_name], attributes={"to": to_type})
         )
 
-    def map_hierarchical_probabilities(self):
+    def map_hierarchical_probabilities(self) -> None:
         """Map hierarchical probability distributions cleanly."""
         pass
 
-    def combine_multi_output_regression(self, output_names: List[str], final_name: str):
+    def combine_multi_output_regression(self, output_names: list[str], final_name: str) -> None:
         """Combine multi-output regression lists into contiguous vectors."""
         self.g.nodes.append(
             Node("Concat", inputs=output_names, outputs=[final_name], attributes={"axis": 1})
         )
 
-    def merge_multi_label_classification(self):
+    def merge_multi_label_classification(self) -> None:
         """Merge multi-label classification into 2D probability matrices."""
         pass
 
-    def rename_outputs(self, raw_name: str, target_name: str):
+    def rename_outputs(self, raw_name: str, target_name: str) -> None:
         """Emit specific named outputs (label, probabilities) reliably."""
         self.g.nodes.append(Node("Identity", inputs=[raw_name], outputs=[target_name]))
 
-    def apply_top_k(self, probabilities_name: str, k: int):
+    def apply_top_k(self, probabilities_name: str, k: int) -> None:
         """Append top-K post-processing dynamically to the lowered graph."""
         self.g.nodes.append(
             Node(
@@ -86,11 +87,11 @@ class PostProcessor:
             )
         )
 
-    def bypass_activation_for_logits(self):
+    def bypass_activation_for_logits(self) -> None:
         """Output logits / pre-activation scores on demand (bypassing Sigmoid/Softmax)."""
         pass
 
-    def apply_calibration_scaling(self, probabilities_name: str, factor: float):
+    def apply_calibration_scaling(self, probabilities_name: str, factor: float) -> None:
         """Scale output probabilities by calibration factors statically."""
         self.g.nodes.append(
             Node(
@@ -100,13 +101,13 @@ class PostProcessor:
             )
         )
 
-    def handle_batch_size_1_drop(self, tensor_name: str):
+    def handle_batch_size_1_drop(self, tensor_name: str) -> None:
         """Correctly manage batch_size=1 specific dimensional drops."""
         self.g.nodes.append(
             Node("Squeeze", inputs=[tensor_name], outputs=[f"{tensor_name}_squeezed"])
         )
 
-    def append_confidence_scores(self, probabilities_name: str):
+    def append_confidence_scores(self, probabilities_name: str) -> None:
         """Append confidence score derivations directly into the ONNX graph."""
         self.g.nodes.append(
             Node(

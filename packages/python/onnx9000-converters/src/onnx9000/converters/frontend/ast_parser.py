@@ -3,6 +3,7 @@
 import ast
 import inspect
 from typing import Any, Callable
+
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.tensor import Node, Tensor
 
@@ -88,7 +89,7 @@ class ScriptCompiler(ast.NodeVisitor):
 
     def visit_Tuple(self, node: ast.Tuple):
         """Implements the visit_Tuple method."""
-        return tuple((self.visit(e) for e in node.elts))
+        return tuple(self.visit(e) for e in node.elts)
 
     def visit_List(self, node: ast.List):
         """Implements the visit_List method."""

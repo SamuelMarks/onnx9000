@@ -1,7 +1,7 @@
 import numpy as np
+from onnx9000.converters.jit.hasher import hash_graph
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.converters.jit.hasher import hash_graph
 
 
 def test_hash_graph() -> None:

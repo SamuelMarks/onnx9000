@@ -1,4 +1,3 @@
-from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.converters.tf.passes import (
     constant_folding_pass,
     dce_pass,
@@ -10,6 +9,7 @@ from onnx9000.converters.tf.passes import (
     tf_optimize_graph,
     transpose_optimizer_pass,
 )
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _create_graph() -> Graph:

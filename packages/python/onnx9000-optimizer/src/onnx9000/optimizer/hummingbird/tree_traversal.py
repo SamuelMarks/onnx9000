@@ -1,8 +1,9 @@
 import logging
-from typing import Any, List
+from typing import Any
+
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.analysis import analyze_tree_depth
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
 
@@ -10,13 +11,13 @@ logger = logging.getLogger(__name__)
 class TreeTraversalCompiler:
     """TreeTraversal Strategy compiler."""
 
-    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N"):
+    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
         self.tree = tree
         self.batch_size = batch_size
         self.max_depth = int(analyze_tree_depth(tree)["max"])
         self._merge_index_tensors()
 
-    def compile(self, g: Graph):
+    def compile(self, g: Graph) -> None:
         """Compiles tree to TreeTraversal operators (unrolled)."""
         # Map structures to flat 1D index arrays
         t_features = self._build_1d_array(self.tree.features)
@@ -116,33 +117,35 @@ class TreeTraversalCompiler:
         name = f"arr_{id(data)}"
         return Tensor(name=name, shape=(len(data),), is_initializer=True)
 
-    def _merge_index_tensors(self):
+    def _merge_index_tensors(self) -> None:
         """Optimize Gather operations by merging index tensors."""
         pass
 
 
-def compile_forest_tree_traversal(g: Graph, trees: List[TreeAbstractions], batch_size: Any = "N"):
+def compile_forest_tree_traversal(
+    g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N"
+) -> None:
     """Implement parallel traversal of all trees in an ensemble using batched Gathers.
     Pre-allocate output tensors for traversal aggregations.
     """
     pass
 
 
-def handle_categorical_traversal(g: Graph):
+def handle_categorical_traversal(g: Graph) -> None:
     """Implement categorical feature gathering (equality checks vs inequalities)."""
     pass
 
 
-def handle_missing_value_traversal(g: Graph):
+def handle_missing_value_traversal(g: Graph) -> None:
     """Handle missing value routing natively within gathered offsets."""
     pass
 
 
-def flatten_multi_class_traversal(g: Graph):
+def flatten_multi_class_traversal(g: Graph) -> None:
     """Flatten multi-class leaf outputs into parallel gathers."""
     pass
 
 
-def test_gather_latency_wasm():
+def test_gather_latency_wasm() -> None:
     """Test and validate latency of Gather bounds on WASM."""
     pass

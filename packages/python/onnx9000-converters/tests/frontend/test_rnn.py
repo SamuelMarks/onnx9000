@@ -1,9 +1,9 @@
 """Test RNN."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.nn.rnn import GRU, LSTM, RNN
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_rnn() -> None:
@@ -26,6 +26,7 @@ def test_rnn() -> None:
 def test_rnn_list_return() -> None:
     """Tests the test_rnn_list_return functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.frontend.nn.rnn import GRU, LSTM, RNN
 
     rnn = RNN(10, 20)

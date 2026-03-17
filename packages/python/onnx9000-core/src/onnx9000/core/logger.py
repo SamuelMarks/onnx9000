@@ -4,6 +4,7 @@ Custom logging hierarchy for onnx9000 replacing raw print statements.
 
 import logging
 import sys
+
 from onnx9000.core import config
 
 

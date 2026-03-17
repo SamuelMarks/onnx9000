@@ -1,6 +1,7 @@
 """Evaluator for optimization passes."""
 
 from typing import Any
+
 from onnx9000.optimizer.olive.model import OliveModel
 
 

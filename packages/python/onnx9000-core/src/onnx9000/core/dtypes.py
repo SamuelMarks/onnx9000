@@ -1,6 +1,7 @@
 """Module providing core logic and structural definitions."""
 
 import enum
+
 from onnx9000.core import onnx_pb2
 
 

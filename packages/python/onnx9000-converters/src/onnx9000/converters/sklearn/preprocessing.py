@@ -1,4 +1,4 @@
-from onnx9000.core.ir import Graph, Node, Attribute
+from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def convert_standard_scaler(estimator: object, input_names: list[str], graph: Graph) -> list[str]:

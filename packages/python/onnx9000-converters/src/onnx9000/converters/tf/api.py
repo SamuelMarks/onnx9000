@@ -1,7 +1,7 @@
 """Module providing api functionality."""
 
 import logging
-from onnx9000.core.ir import Graph, Tensor
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.tf.image_rng_ops import IMAGE_RNG_OPS_MAPPING
@@ -19,6 +19,7 @@ from onnx9000.converters.tf.parsers import (
 from onnx9000.converters.tf.reduction_ops import REDUCTION_OPS_MAPPING
 from onnx9000.converters.tf.tensor_ops import TENSOR_OPS_MAPPING
 from onnx9000.converters.tf.tflite_ops import TFLITE_OPS_MAPPING
+from onnx9000.core.ir import Graph, Tensor
 
 ALL_MAPPINGS = {}
 ALL_MAPPINGS.update(MATH_OPS_MAPPING)

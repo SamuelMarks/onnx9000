@@ -1,10 +1,10 @@
 """PyTorch-like drop-in replacement namespace."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend import nn
 from onnx9000.converters.frontend.exporter import export
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.converters.frontend.tracer import script, trace
+from onnx9000.core.dtypes import DType
 
 
 def tensor(data, dtype=None):

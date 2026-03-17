@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.nn.containers import (
     ModuleDict,
@@ -53,6 +52,7 @@ from onnx9000.converters.frontend.nn.pool import (
 )
 from onnx9000.converters.frontend.nn.rnn import GRU, LSTM, RNN
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_containers() -> None:

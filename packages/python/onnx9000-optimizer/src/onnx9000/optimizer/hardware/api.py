@@ -1,6 +1,7 @@
 """Hardware-Aware Execution Pipelining API module."""
 
 from typing import Any
+
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hardware.layout import LayoutOptimizer
 from onnx9000.optimizer.hardware.pipeline import PipelineOptimizer

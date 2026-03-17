@@ -1,6 +1,7 @@
 """Provides constant_folding.py module functionality."""
 
 import logging
+
 import numpy as np
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
@@ -68,7 +69,7 @@ class ConstantFoldingPass(GraphPass):
                     result = self._evaluate_node(node.op_type, input_vals, node.attributes, node)
                     if result is not None:
                         if isinstance(result, list):
-                            size = sum((r.nbytes for r in result))
+                            size = sum(r.nbytes for r in result)
                         else:
                             size = result.nbytes
                         if size <= MAX_CONSTANT_SIZE_BYTES:
@@ -481,17 +482,14 @@ class ConstantFoldingPass(GraphPass):
                     ),
                     True,
                 )
-        if node.op_type == "Where":
-            if node.inputs[0] in known_values:
-                cond = known_values[node.inputs[0]]
-                if isinstance(cond, np.ndarray) and (
-                    cond.size == 1 or np.all(cond == cond.flat[0])
-                ):
-                    if np.all(cond):
-                        (node.op_type, node.inputs) = ("Identity", [node.inputs[1]])
-                    else:
-                        (node.op_type, node.inputs) = ("Identity", [node.inputs[2]])
-                    return (node, True)
+        if node.op_type == "Where" and node.inputs[0] in known_values:
+            cond = known_values[node.inputs[0]]
+            if isinstance(cond, np.ndarray) and (cond.size == 1 or np.all(cond == cond.flat[0])):
+                if np.all(cond):
+                    (node.op_type, node.inputs) = ("Identity", [node.inputs[1]])
+                else:
+                    (node.op_type, node.inputs) = ("Identity", [node.inputs[2]])
+                return (node, True)
         if node.op_type == "Div":
             if node.inputs[1] in known_values and np.all(known_values[node.inputs[1]] == 1):
                 (node.op_type, node.inputs) = ("Identity", [node.inputs[0]])

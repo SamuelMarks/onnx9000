@@ -1,6 +1,6 @@
-import json
 import ast
 import glob
+import json
 import re
 
 
@@ -20,7 +20,7 @@ def get_doc_coverage():
     total_nodes = 0
     doc_nodes = 0
     for f in files:
-        with open(f, "r") as file:
+        with open(f) as file:
             try:
                 tree = ast.parse(file.read())
                 for node in ast.walk(tree):
@@ -46,17 +46,24 @@ doc_badge = f"![Doc Coverage](https://img.shields.io/badge/Doc_Coverage-{doc_pct
 test_badge = f"![Test Coverage](https://img.shields.io/badge/Test_Coverage-{test_pct}%25-success)"
 
 try:
-    with open("README.md", "r") as f:
+    with open("README.md") as f:
         readme = f.read()
 except FileNotFoundError:
     readme = ""
 
-badges_section = f"<!-- BADGES -->\n{doc_badge} {test_badge}\n<!-- /BADGES -->"
+# Instead of using <!-- BADGES --> marker, search for existing badges by alt text and prefix
+doc_pattern = r"!\[Doc Coverage\]\(https://img\.shields\.io/badge/Doc_Coverage-[^)]+\)"
+test_pattern = r"!\[Test Coverage\]\(https://img\.shields\.io/badge/Test_Coverage-[^)]+\)"
 
-if "<!-- BADGES -->" in readme:
-    readme = re.sub(r"<!-- BADGES -->.*<!-- /BADGES -->", badges_section, readme, flags=re.DOTALL)
+if re.search(doc_pattern, readme):
+    readme = re.sub(doc_pattern, doc_badge, readme)
 else:
-    readme = badges_section + "\n\n" + readme
+    readme = doc_badge + "\n" + readme
+
+if re.search(test_pattern, readme):
+    readme = re.sub(test_pattern, test_badge, readme)
+else:
+    readme = test_badge + "\n" + readme
 
 with open("README.md", "w") as f:
     f.write(readme)

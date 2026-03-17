@@ -1,6 +1,7 @@
 """CPU backend operations mapping for ai.onnx.ml domain."""
 
 from typing import Any, Callable
+
 import numpy as np
 
 

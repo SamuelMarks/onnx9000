@@ -1,10 +1,11 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 import numpy as np
-from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Tensor
 from onnx9000.converters.jit import compile
 from onnx9000.converters.jit.wrapper import CompiledModel
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Tensor
 
 
 @patch("onnx9000.converters.jit.load")

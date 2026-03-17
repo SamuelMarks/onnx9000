@@ -14,7 +14,7 @@ _foundation_lib = None
 _objc = None
 
 
-def _load_libraries():
+def _load_libraries() -> None:
     global _accelerate_lib, _metal_lib, _mps_lib, _foundation_lib, _objc
     _accelerate_lib = _metal_lib = _mps_lib = _foundation_lib = _objc = None
     try:

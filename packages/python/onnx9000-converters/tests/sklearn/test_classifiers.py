@@ -1,12 +1,13 @@
-import pytest
+from unittest.mock import MagicMock
+
 import numpy as np
-from unittest.mock import patch, MagicMock
 from onnx9000.core.ir import Graph
 
 
-def test_all_sklearn():
-    import pkgutil
+def test_all_sklearn() -> None:
     import importlib
+    import pkgutil
+
     import onnx9000.converters.sklearn as sk
 
     g = Graph("test")

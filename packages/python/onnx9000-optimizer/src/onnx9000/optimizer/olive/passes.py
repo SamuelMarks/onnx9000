@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Any, Optional
+
 from onnx9000.optimizer.olive.context import PassContext
 from onnx9000.optimizer.olive.model import OliveModel
 

@@ -3,6 +3,7 @@
 import logging
 from pathlib import Path
 from typing import Any, Optional, Union
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.execution import ExecutionContext, ExecutionProvider, RunOptions, SessionOptions
@@ -223,6 +224,6 @@ class InferenceSession:
         self, iobinding: IOBinding, run_options: Optional[RunOptions] = None
     ) -> None:
         """Run with IOBinding."""
-        outputs = self.run([k for k in iobinding.outputs.keys()], iobinding.inputs, run_options)
+        outputs = self.run(list(iobinding.outputs.keys()), iobinding.inputs, run_options)
         for key, tensor in zip(iobinding.outputs.keys(), outputs):
             iobinding.outputs[key] = tensor

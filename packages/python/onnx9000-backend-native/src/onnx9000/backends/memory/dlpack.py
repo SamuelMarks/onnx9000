@@ -1,5 +1,5 @@
 import ctypes
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 
 class DLDataType(ctypes.Structure):
@@ -38,7 +38,7 @@ kDLROCM = 10
 kDLCUDAManaged = 13
 
 
-def from_dlpack(ext_tensor: Any) -> Tuple[ctypes.c_void_p, tuple, Optional[tuple], DLDataType, int]:
+def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], DLDataType, int]:
     """
     Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
     Extract raw memory pointers (`data_ptr`) strictly natively.
@@ -55,8 +55,8 @@ def from_dlpack(ext_tensor: Any) -> Tuple[ctypes.c_void_p, tuple, Optional[tuple
         raise RuntimeError("Failed to extract DLManagedTensor pointer")
     dl_tensor = managed_tensor_ptr.contents.dl_tensor
     ndim = dl_tensor.ndim
-    shape = tuple((dl_tensor.shape[i] for i in range(ndim)))
-    strides = tuple((dl_tensor.strides[i] for i in range(ndim))) if dl_tensor.strides else None
+    shape = tuple(dl_tensor.shape[i] for i in range(ndim))
+    strides = tuple(dl_tensor.strides[i] for i in range(ndim)) if dl_tensor.strides else None
     if strides:
         expected_stride = 1
         is_c_contiguous = True
@@ -74,7 +74,7 @@ def from_dlpack(ext_tensor: Any) -> Tuple[ctypes.c_void_p, tuple, Optional[tuple
     return (data_ptr, shape, strides, dl_tensor.dtype, device_type)
 
 
-def from_numpy(array: Any) -> Tuple[ctypes.c_void_p, tuple, Optional[tuple], str]:
+def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], str]:
     """
     Consume NumPy `np.ndarray` directly via `__array_interface__` (Zero-copy).
     """

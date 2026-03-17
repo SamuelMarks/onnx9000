@@ -1,18 +1,16 @@
+import ctypes
+from unittest.mock import patch
+
+import numpy as np
 import pytest
-from unittest.mock import patch, MagicMock
 from onnx9000.backends.memory.dlpack import (
-    DLDataType,
-    DLDevice,
-    DLTensor,
     DLManagedTensor,
     from_dlpack,
     from_numpy,
 )
-import numpy as np
-import ctypes
 
 
-def test_from_numpy():
+def test_from_numpy() -> None:
     arr = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     ptr, shape, strides, typestr = from_numpy(arr)
 
@@ -22,7 +20,7 @@ def test_from_numpy():
     assert ptr.value == arr.ctypes.data
 
 
-def test_from_numpy_strided():
+def test_from_numpy_strided() -> None:
     arr = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     # create non-contiguous view
     arr_t = arr.T
@@ -30,18 +28,18 @@ def test_from_numpy_strided():
         from_numpy(arr_t)
 
 
-def test_from_numpy_unsupported():
+def test_from_numpy_unsupported() -> None:
     with pytest.raises(TypeError, match="Object does not support __array_interface__"):
         from_numpy([1, 2, 3])
 
 
-def test_from_dlpack_unsupported():
+def test_from_dlpack_unsupported() -> None:
     with pytest.raises(TypeError, match="Object does not support DLPack protocol"):
         from_dlpack([1, 2, 3])
 
 
 class MockDLPackTensor:
-    def __init__(self, arr):
+    def __init__(self, arr) -> None:
         self.arr = arr
 
     def __dlpack__(self):
@@ -51,7 +49,7 @@ class MockDLPackTensor:
         return "capsule"
 
 
-def test_from_dlpack_mock():
+def test_from_dlpack_mock() -> None:
     t = MockDLPackTensor(np.array([1.0, 2.0], dtype=np.float32))
 
     with patch("ctypes.pythonapi.PyCapsule_GetPointer") as mock_get_ptr:
@@ -81,8 +79,8 @@ def test_from_dlpack_mock():
             from_dlpack(t)
 
 
-def test_from_numpy_strided_success():
-    arr = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
+def test_from_numpy_strided_success() -> None:
+    np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
 
     # modify __array_interface__ directly
     class MockArr:
@@ -98,7 +96,7 @@ def test_from_numpy_strided_success():
     assert strides == (8, 4)
 
 
-def test_from_dlpack_strided_success():
+def test_from_dlpack_strided_success() -> None:
     class MockDLPackTensor:
         def __dlpack__(self):
             return "capsule"

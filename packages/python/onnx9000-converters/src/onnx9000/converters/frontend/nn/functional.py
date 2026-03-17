@@ -1,6 +1,7 @@
 """Functional interface."""
 
 from typing import Any, Optional
+
 from onnx9000.converters.frontend.tensor import Tensor
 
 
@@ -69,9 +70,9 @@ def conv2d(
 def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0.0) -> Tensor:
     """Implements the pad method."""
     import numpy as np
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
+    from onnx9000.core.dtypes import DType
 
     dims = len(input.shape)
     num_pad_dims = len(pad) // 2
@@ -100,9 +101,9 @@ def interpolate(
 ) -> Tensor:
     """Implements the interpolate method."""
     import numpy as np
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
+    from onnx9000.core.dtypes import DType
 
     attrs = {"mode": mode}
     if align_corners is not None and mode in ["linear", "bilinear", "trilinear", "bicubic"]:
@@ -129,9 +130,9 @@ def interpolate(
 def one_hot(tensor: Tensor, num_classes: int = -1) -> Tensor:
     """Implements the one_hot method."""
     import numpy as np
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
+    from onnx9000.core.dtypes import DType
 
     depth = Parameter((), DType.INT64, "depth", np.array(num_classes, dtype=np.int64))
     values = Parameter((2,), DType.INT64, "values", np.array([0, 1], dtype=np.int64))

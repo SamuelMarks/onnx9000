@@ -1,11 +1,11 @@
 """Module providing core logic and structural definitions."""
 
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import script
+from onnx9000.core.dtypes import DType
 
 
-def test_ast_script():
+def test_ast_script() -> None:
     """Tests the test_ast_script functionality."""
 
     def my_func(x):
@@ -13,7 +13,7 @@ def test_ast_script():
         if x:
             return x
         else:
-            for i in range(10):
+            for _i in range(10):
                 assert True
             while True:
                 break
@@ -27,7 +27,7 @@ def test_ast_script():
     assert "If" in op_types
 
 
-def test_ast_parser_missing():
+def test_ast_parser_missing() -> None:
     """Tests the test_ast_parser_missing functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
@@ -43,7 +43,7 @@ def test_ast_parser_missing():
     parser.compile(t1, t2)
 
 
-def test_ast_parser_missing_lists():
+def test_ast_parser_missing_lists() -> None:
     """Tests the test_ast_parser_missing_lists functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
@@ -56,7 +56,7 @@ def test_ast_parser_missing_lists():
     parser2.compile(t1)
 
 
-def test_ast_parser_missing_tuple():
+def test_ast_parser_missing_tuple() -> None:
     """Tests the test_ast_parser_missing_tuple functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
@@ -69,7 +69,7 @@ def test_ast_parser_missing_tuple():
     parser3.compile(t1)
 
 
-def test_ast_parser_missing_tensor():
+def test_ast_parser_missing_tensor() -> None:
     """Tests the test_ast_parser_missing_tensor functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
@@ -82,7 +82,7 @@ def test_ast_parser_missing_tensor():
     parser4.compile(t1)
 
 
-def test_ast_parser_missing_lists_2():
+def test_ast_parser_missing_lists_2() -> None:
     """Tests the test_ast_parser_missing_lists_2 functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
@@ -101,16 +101,17 @@ def test_ast_parser_missing_lists_2():
     parser3.compile(t1)
 
 
-def test_ast_parser_generic_visit():
+def test_ast_parser_generic_visit() -> None:
     """Tests the test_ast_parser_generic_visit functionality."""
     import ast
+
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     sc = ScriptCompiler(lambda: None)
     sc.generic_visit(ast.Pass())
 
 
-def test_ast_visit_name():
+def test_ast_visit_name() -> None:
     """Tests the test_ast_visit_name functionality."""
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
     from onnx9000.converters.frontend.tensor import Tensor

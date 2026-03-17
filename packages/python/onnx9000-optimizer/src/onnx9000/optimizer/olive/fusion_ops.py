@@ -1,6 +1,7 @@
 """Graph Fusions & Pattern Optimization module."""
 
 import json
+
 from onnx9000.core.ir import Graph
 
 

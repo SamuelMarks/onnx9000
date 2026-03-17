@@ -1,6 +1,7 @@
 """Identity layer."""
 
 from typing import Any
+
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 

@@ -3,6 +3,7 @@
 import struct
 from pathlib import Path
 from typing import Any, Optional, Union
+
 from onnx9000.core import onnx_pb2
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import ONNXParseError

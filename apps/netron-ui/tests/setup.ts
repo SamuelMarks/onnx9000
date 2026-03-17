@@ -1,10 +1,12 @@
 (globalThis as any).self = globalThis;
+(globalThis as any).postMessage = () => {};
+
 import { JSDOM } from 'jsdom';
 
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
 (globalThis as any).window = dom.window;
 (globalThis as any).document = dom.window.document;
-(globalThis as any).navigator = { userAgent: 'node.js' };
+Object.defineProperty(globalThis, 'navigator', { value: { userAgent: 'node.js' }, writable: true });
 
 const mockContext = {
   fillRect: () => {},
@@ -47,7 +49,12 @@ const mockContext = {
 (globalThis as any).HTMLCanvasElement.prototype.getContext = () => mockContext;
 dom.window.HTMLCanvasElement.prototype.getContext = () => mockContext;
 
+(globalThis as any).self = { postMessage: () => {}, onmessage: null };
+(globalThis as any).workerInstances = [];
 class MockWorker {
+  constructor() {
+    (globalThis as any).workerInstances.push(this);
+  }
   onmessage: any;
   onerror: any;
   postMessage(data: any) {
@@ -104,3 +111,10 @@ if (typeof File === 'undefined') {
     }
   };
 }
+
+(globalThis as any).Event = dom.window.Event;
+(globalThis as any).MouseEvent = dom.window.MouseEvent;
+(globalThis as any).CustomEvent = dom.window.CustomEvent;
+
+(globalThis as any).WheelEvent = dom.window.WheelEvent;
+(globalThis as any).KeyboardEvent = dom.window.KeyboardEvent;

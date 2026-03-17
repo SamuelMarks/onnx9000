@@ -1,6 +1,7 @@
 """Module providing core logic and structural definitions."""
 
 from typing import Any, Union
+
 import numpy as np
 from onnx9000.core.ir import Graph
 

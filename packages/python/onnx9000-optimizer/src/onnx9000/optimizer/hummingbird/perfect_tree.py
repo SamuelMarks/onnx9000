@@ -1,9 +1,9 @@
 import logging
-import math
-from typing import Any, List
+from typing import Any
+
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.analysis import analyze_tree_depth
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
 
@@ -11,18 +11,18 @@ logger = logging.getLogger(__name__)
 class PerfectTreeCompiler:
     """PerfectTree Traversal Strategy compiler."""
 
-    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N"):
+    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
         self.tree = tree
         self.batch_size = batch_size
         self.max_depth = int(analyze_tree_depth(tree)["max"])
         self.capacity = (2**self.max_depth) - 1
         self._detect_and_trim_branches()
 
-    def _detect_and_trim_branches(self):
+    def _detect_and_trim_branches(self) -> None:
         """Detect and trim physically unreachable perfect tree branches."""
         pass
 
-    def compile(self, g: Graph):
+    def compile(self, g: Graph) -> None:
         """Compiles tree to PerfectTree operators."""
         # Pad all trees to perfectly balanced binary trees
         # Map perfect tree structure to implicit binary heap indices (2i+1, 2i+2)
@@ -115,11 +115,11 @@ class PerfectTreeCompiler:
         return features, thresholds, values
 
 
-def handle_perfect_multi_output(g: Graph):
+def handle_perfect_multi_output(g: Graph) -> None:
     """Handle multi-output regression perfectly aligned."""
     pass
 
 
-def map_categorical_perfect(g: Graph):
+def map_categorical_perfect(g: Graph) -> None:
     """Map categorical branches effectively within perfect node constraints."""
     pass

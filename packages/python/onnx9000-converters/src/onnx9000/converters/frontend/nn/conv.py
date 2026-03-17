@@ -1,9 +1,10 @@
 """Convolution layers."""
 
 from typing import Any, Optional, Union
-from onnx9000.core.dtypes import DType
+
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
+from onnx9000.core.dtypes import DType
 
 
 def _pair(x: Union[int, tuple[int, int]]) -> tuple[int, int]:

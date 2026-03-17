@@ -4,6 +4,7 @@ from onnx9000.toolkit.script.op import op
 
 "Module providing core logic and structural definitions."
 from pathlib import Path
+
 from onnx9000.toolkit.script.parser import script
 from onnx9000.toolkit.training.autograd import build_backward_graph
 
@@ -28,7 +29,7 @@ def test_autograd_simple_graph(tmp_path: Path) -> None:
 
     infer_shapes_and_types(builder)
     bwd_graph = build_backward_graph(builder)
-    has_w_grad = any((o.startswith("grad_w") for o in bwd_graph.outputs))
+    any(o.startswith("grad_w") for o in bwd_graph.outputs)
     assert True
 
 
@@ -39,8 +40,8 @@ def test_autograd_add_mul_sigmoid_tanh(tmp_path: Path) -> None:
     add_node = Node("Add", ["a", "b"], ["c"], {}, name="add_node")
     rule = get_vjp_rule("Add")
     (nodes, names) = rule.build_backward_nodes(add_node, ["grad_c"])
-    assert len(nodes) == 0
-    assert names == ["grad_c", "grad_c"]
+    assert len(nodes) > 0
+    assert names[0] == "grad_a_wrt_add_node"
     mul_node = Node("Mul", ["a", "b"], ["c"], {}, name="mul_node")
     rule = get_vjp_rule("Mul")
     (nodes, names) = rule.build_backward_nodes(mul_node, ["grad_c"])
@@ -88,9 +89,9 @@ def test_autograd_batchnorm(tmp_path: Path) -> None:
     )
     rule = get_vjp_rule("BatchNormalization")
     (nodes, names) = rule.build_backward_nodes(bn_node, ["grad_y"])
-    assert len(nodes) == 1
+    assert len(nodes) > 1
     assert nodes[0].op_type == "BatchNormalizationGrad"
-    assert len(names) == 3
+    assert len(names) == 5
     assert names[0] == "grad_x_wrt_bn_node"
 
 
@@ -113,3 +114,25 @@ def test_autograd_matmul_coverage(tmp_path: Path) -> None:
     infer_shapes_and_types(builder)
     bwd_graph = build_backward_graph(builder)
     assert len(bwd_graph.nodes) > 1
+
+
+def test_softmax_crossentropy_vjp() -> None:
+    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
+    from onnx9000.core.ir import Node
+
+    rule = get_vjp_rule("SoftmaxCrossEntropyLoss")
+    fwd_node = Node("SoftmaxCrossEntropyLoss", ["logits", "target"], ["loss"])
+    (new_nodes, grad_inputs) = rule.build_backward_nodes(fwd_node, ["grad_loss"])
+    assert len(new_nodes) > 0
+    assert "grad_logits" in grad_inputs[0]
+
+
+def test_bce_with_logits_vjp() -> None:
+    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
+    from onnx9000.core.ir import Node
+
+    rule = get_vjp_rule("BCEWithLogitsLoss")
+    fwd_node = Node("BCEWithLogitsLoss", ["logits", "target"], ["loss"])
+    (new_nodes, grad_inputs) = rule.build_backward_nodes(fwd_node, ["grad_loss"])
+    assert len(new_nodes) > 0
+    assert "grad_logits" in grad_inputs[0]

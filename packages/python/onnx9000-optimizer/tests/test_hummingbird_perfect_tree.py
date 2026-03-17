@@ -1,10 +1,9 @@
-import pytest
 from onnx9000.core.ir import Graph
-from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
+from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 
 
-def test_perfect_tree_compiler():
+def test_perfect_tree_compiler() -> None:
     g = Graph(name="test_pt")
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)

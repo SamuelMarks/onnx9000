@@ -7,7 +7,7 @@ class MockRule(VJPRule):
         return super().build_backward_nodes(fwd_node, grad_outputs)
 
 
-def test_vjp_base():
+def test_vjp_base() -> None:
     r = MockRule()
     res = r.build_backward_nodes(Node("Test", [], [], {}), [])
     assert res == ([], [])

@@ -1,5 +1,6 @@
 import ctypes
 from unittest.mock import MagicMock
+
 import pytest
 from onnx9000.backends.cuda.bindings import (
     _register_cublas_api,
@@ -14,7 +15,7 @@ from onnx9000.backends.cuda.bindings import (
 )
 
 
-def test_bindings_availability_and_signatures():
+def test_bindings_availability_and_signatures() -> None:
     assert isinstance(is_cuda_available(), bool)
     assert isinstance(is_cublas_available(), bool)
     assert isinstance(is_cudnn_available(), bool)
@@ -30,7 +31,7 @@ def test_bindings_availability_and_signatures():
     _register_cudnn_api(None)
 
 
-def test_bindings_errors():
+def test_bindings_errors() -> None:
     with pytest.raises(RuntimeError, match="CUDA Error"):
         check_cuda_error(1)
     check_cuda_error(0)

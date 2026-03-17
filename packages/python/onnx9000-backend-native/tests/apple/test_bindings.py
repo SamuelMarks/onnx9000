@@ -1,9 +1,8 @@
-import pytest
-from unittest.mock import patch, MagicMock
 import ctypes
+from unittest.mock import MagicMock, patch
 
 
-def test_apple_bindings():
+def test_apple_bindings() -> None:
     import onnx9000.backends.apple.bindings as bindings
 
     bindings._load_libraries()
@@ -54,7 +53,7 @@ def test_apple_bindings():
     bindings._load_libraries()
 
 
-def test_get_class_and_selector():
+def test_get_class_and_selector() -> None:
     import onnx9000.backends.apple.bindings as bindings
 
     old_objc = bindings._objc
@@ -76,7 +75,7 @@ def test_get_class_and_selector():
     bindings._objc = old_objc
 
 
-def test_apple_bindings_import_errors():
+def test_apple_bindings_import_errors() -> None:
     import onnx9000.backends.apple.bindings as bindings
 
     with patch("ctypes.CDLL", side_effect=Exception("Test Error")):

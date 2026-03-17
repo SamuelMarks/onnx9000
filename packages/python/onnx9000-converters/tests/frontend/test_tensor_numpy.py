@@ -1,9 +1,9 @@
 """Module providing core logic and structural definitions."""
 
 import numpy as np
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import trace
+from onnx9000.core.dtypes import DType
 
 
 def test_numpy_dispatch() -> None:

@@ -1,16 +1,15 @@
-import pytest
+from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird import (
-    TranspilationEngine,
     Strategy,
     TargetHardware,
+    TranspilationEngine,
     TreeAbstractions,
     estimate_memory_footprint,
     select_optimal_strategy,
 )
-from onnx9000.core.ir import Graph
 
 
-def test_strategy_enum():
+def test_strategy_enum() -> None:
     assert Strategy.GEMM
     assert Strategy.TREE_TRAVERSAL
     assert Strategy.PERFECT_TREE_TRAVERSAL
@@ -19,7 +18,7 @@ def test_strategy_enum():
     assert TargetHardware.WEBGPU
 
 
-def test_tree_abstractions():
+def test_tree_abstractions() -> None:
     tree = TreeAbstractions()
     tree.add_node(feature=0, threshold=1.5, left=1, right=2, value=0.0)
     assert len(tree.features) == 1
@@ -30,7 +29,7 @@ def test_tree_abstractions():
     assert tree.values[0] == 0.0
 
 
-def test_memory_estimator():
+def test_memory_estimator() -> None:
     tree = TreeAbstractions()
     for i in range(10):
         tree.add_node(i, 0.5, i + 1, i + 2, 1.0)
@@ -44,7 +43,7 @@ def test_memory_estimator():
     assert mem_tree == 240
 
 
-def test_strategy_selector():
+def test_strategy_selector() -> None:
     tree = TreeAbstractions()
     for i in range(10):
         tree.add_node(i, 0.5, i + 1, i + 2, 1.0)
@@ -64,7 +63,7 @@ def test_strategy_selector():
     assert strat == Strategy.GEMM
 
 
-def test_transpilation_engine():
+def test_transpilation_engine() -> None:
     engine = TranspilationEngine(TargetHardware.CPU)
     # Empty abstractions
     g = engine.transpile("fake_model")
@@ -78,9 +77,8 @@ def test_transpilation_engine():
     assert isinstance(g, Graph)
 
 
-def test_engine_verbose():
-    from onnx9000.optimizer.hummingbird.engine import TranspilationEngine
-    from onnx9000.optimizer.hummingbird.engine import TreeAbstractions
+def test_engine_verbose() -> None:
+    from onnx9000.optimizer.hummingbird.engine import TranspilationEngine, TreeAbstractions
 
     engine = TranspilationEngine("webgpu", verbose=True)
     engine.register_backend("test", None)

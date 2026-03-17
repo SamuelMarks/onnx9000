@@ -4,7 +4,8 @@ import glob
 import logging
 import os
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import Union
+
 import numpy as np
 from onnx9000.backends.session import InferenceSession, SessionOptions
 from onnx9000.core.dtypes import DType
@@ -19,19 +20,19 @@ class ONNXBackendTestRunner:
     """Runs official ONNX node tests against ONNX9000 InferenceSession."""
 
     def __init__(
-        self, providers: List[ExecutionProvider], rtol: float = 0.001, atol: float = 1e-05
+        self, providers: list[ExecutionProvider], rtol: float = 0.001, atol: float = 1e-05
     ) -> None:
         """Initialize the test runner."""
         self.providers = providers
         self.rtol = rtol
         self.atol = atol
-        self.skip_lists: List[str] = []
+        self.skip_lists: list[str] = []
 
-    def set_skip_list(self, skip_patterns: List[str]) -> None:
+    def set_skip_list(self, skip_patterns: list[str]) -> None:
         """Set a list of regular expressions to skip tests."""
         self.skip_lists = skip_patterns
 
-    def load_tensors(self, directory: Path, prefix: str) -> List[Tensor]:
+    def load_tensors(self, directory: Path, prefix: str) -> list[Tensor]:
         """Load all tensors from a directory with a specific prefix (e.g., input_*.pb)."""
         files = sorted(glob.glob(os.path.join(directory, f"{prefix}_*.pb")))
         tensors = []
@@ -62,7 +63,7 @@ class ONNXBackendTestRunner:
         arr = np.frombuffer(tensor.data, dtype=np_dtype)
         return arr.reshape(tensor.shape)
 
-    def run_node_test(self, test_dir: Union[str, Path]) -> Tuple[bool, str]:
+    def run_node_test(self, test_dir: Union[str, Path]) -> tuple[bool, str]:
         """Execute a specific node test directory and compare outputs."""
         test_dir = Path(test_dir)
         model_path = test_dir / "model.onnx"

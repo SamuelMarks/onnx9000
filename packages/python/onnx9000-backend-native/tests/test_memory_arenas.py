@@ -1,12 +1,14 @@
-from unittest.mock import patch, MagicMock
+import contextlib
 import gc
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 from onnx9000.backends.memory.metal_arena import MetalMemoryPlanner
 
 
-def test_cpu_memory_planner():
+def test_cpu_memory_planner() -> None:
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     planner.allocate_static("B", 1024, (2, 2), "FLOAT32")
@@ -30,20 +32,18 @@ def test_cpu_memory_planner():
     with pytest.raises(RuntimeError):
         planner.get_host_tensor("UNKNOWN")
     gc.collect()
-    try:
+    with contextlib.suppress(BufferError):
         planner.cleanup()
-    except BufferError:
-        pass
 
 
-def test_cpu_memory_planner_missing():
+def test_cpu_memory_planner_missing() -> None:
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     with pytest.raises(RuntimeError):
         planner.get_tensor_ptr("A")
 
 
-def test_metal_arena():
+def test_metal_arena() -> None:
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     planner.allocate_static("B", 1024, (2, 2), "FLOAT32")
@@ -67,13 +67,11 @@ def test_metal_arena():
     with pytest.raises(RuntimeError):
         planner.get_host_tensor("UNKNOWN")
     gc.collect()
-    try:
+    with contextlib.suppress(BufferError):
         planner.cleanup()
-    except BufferError:
-        pass
 
 
-def test_metal_arena_missing():
+def test_metal_arena_missing() -> None:
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     with pytest.raises(RuntimeError):
@@ -82,22 +80,20 @@ def test_metal_arena_missing():
         planner.get_host_tensor("A")
 
 
-def test_metal_arena_cleanup_dynamic():
+def test_metal_arena_cleanup_dynamic() -> None:
     planner = MetalMemoryPlanner()
     arr = np.array([1.0], dtype=np.float32)
     planner.set_tensor("A", memoryview(arr.tobytes()), (1,), "FLOAT32")
     planner.set_tensor("B", memoryview(arr.tobytes()), (1,), "FLOAT32")
     gc.collect()
-    try:
+    with contextlib.suppress(BufferError):
         planner.cleanup()
-    except BufferError:
-        pass
 
 
-def test_cpu_memory_planner_edge_cases():
+def test_cpu_memory_planner_edge_cases() -> None:
+    from unittest.mock import patch
+
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
-    import sys
-    from unittest.mock import patch, MagicMock
 
     planner = CPUMemoryPlanner()
     mmap0 = planner._allocate_mmap(0)
@@ -105,24 +101,21 @@ def test_cpu_memory_planner_edge_cases():
     with patch("platform.system", return_value="Windows"):
         mmap_win = planner._allocate_mmap(100)
         assert len(mmap_win) == 4096
-    with patch("platform.system", return_value="Linux"):
-        with patch("ctypes.CDLL") as mock_cdll:
-            mock_libc = MagicMock()
-            mock_cdll.return_value = mock_libc
-            planner._allocate_mmap(3 * 1024 * 1024)
-            assert mock_cdll.call_count >= 1
-    with patch("platform.system", return_value="Linux"):
-        with patch("ctypes.CDLL") as mock_cdll:
-            mock_libc = MagicMock()
-            mock_libc.madvise.side_effect = Exception("fake error")
-            mock_cdll.return_value = mock_libc
-            planner._allocate_mmap(3 * 1024 * 1024)
-    with patch("platform.system", return_value="Darwin"):
-        with patch("ctypes.CDLL") as mock_cdll:
-            mock_libc = MagicMock()
-            mock_libc.mlock.side_effect = Exception("fake mlock error")
-            mock_cdll.return_value = mock_libc
-            planner._allocate_mmap(4096)
+    with patch("platform.system", return_value="Linux"), patch("ctypes.CDLL") as mock_cdll:
+        mock_libc = MagicMock()
+        mock_cdll.return_value = mock_libc
+        planner._allocate_mmap(3 * 1024 * 1024)
+        assert mock_cdll.call_count >= 1
+    with patch("platform.system", return_value="Linux"), patch("ctypes.CDLL") as mock_cdll:
+        mock_libc = MagicMock()
+        mock_libc.madvise.side_effect = Exception("fake error")
+        mock_cdll.return_value = mock_libc
+        planner._allocate_mmap(3 * 1024 * 1024)
+    with patch("platform.system", return_value="Darwin"), patch("ctypes.CDLL") as mock_cdll:
+        mock_libc = MagicMock()
+        mock_libc.mlock.side_effect = Exception("fake mlock error")
+        mock_cdll.return_value = mock_libc
+        planner._allocate_mmap(4096)
     with patch("mmap.mmap", side_effect=OSError("fake oom")):
         import pytest
 
@@ -137,7 +130,7 @@ def test_cpu_memory_planner_edge_cases():
     planner.release_ref("UNKNOWN")
 
 
-def test_cpu_memory_planner_ref_counting():
+def test_cpu_memory_planner_ref_counting() -> None:
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -155,7 +148,7 @@ def test_cpu_memory_planner_ref_counting():
     planner.__del__()
 
 
-def test_cpu_memory_planner_cleanup_dynamic():
+def test_cpu_memory_planner_cleanup_dynamic() -> None:
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -165,7 +158,7 @@ def test_cpu_memory_planner_cleanup_dynamic():
     planner.cleanup()
 
 
-def test_cpu_arena_reallocate_dynamic():
+def test_cpu_arena_reallocate_dynamic() -> None:
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -175,9 +168,8 @@ def test_cpu_arena_reallocate_dynamic():
     assert planner.dynamic_sizes["dyn"] == 200
 
 
-def test_cuda_arena_reallocate_dynamic():
+def test_cuda_arena_reallocate_dynamic() -> None:
     from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
-    from onnx9000.backends.cuda.bindings import CUdeviceptr
 
     with patch("onnx9000.backends.memory.cuda_arena.is_cuda_available", return_value=True):
         with patch("onnx9000.backends.memory.cuda_arena._cuda_lib") as mock_lib:

@@ -27,7 +27,7 @@ def test_layernorm_no_bias() -> None:
 
 
 def test_get_vjp_rule_fallback() -> None:
-    from onnx9000.toolkit.training.autograd.rules import ReluVJP, get_vjp_rule
+    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 
     rule = get_vjp_rule("UnknownOpTypeHere")
-    assert isinstance(rule, ReluVJP)
+    assert rule is None

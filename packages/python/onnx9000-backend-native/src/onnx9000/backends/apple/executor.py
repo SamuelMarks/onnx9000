@@ -2,6 +2,7 @@
 
 import ctypes
 import logging
+
 import numpy as np
 from onnx9000.backends.apple.bindings import (
     _accelerate_lib,

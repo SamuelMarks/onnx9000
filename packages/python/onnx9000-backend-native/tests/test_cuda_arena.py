@@ -1,4 +1,6 @@
+from typing import NoReturn
 from unittest.mock import MagicMock
+
 import numpy as np
 import onnx9000.backends.memory.cuda_arena as cuda_arena_mod
 import pytest
@@ -10,7 +12,7 @@ def mock_cuda(monkeypatch):
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: True)
     mock_lib = MagicMock()
 
-    def mock_alloc(ptr_ref, size):
+    def mock_alloc(ptr_ref, size) -> int:
         ptr_ref._obj.value = 1000
         return 0
 
@@ -23,7 +25,7 @@ def mock_cuda(monkeypatch):
     return mock_lib
 
 
-def test_cuda_arena_no_cuda(monkeypatch):
+def test_cuda_arena_no_cuda(monkeypatch) -> None:
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: False)
     planner = CUDAMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), np.float32)
@@ -35,7 +37,7 @@ def test_cuda_arena_no_cuda(monkeypatch):
     assert out is arr
 
 
-def test_cuda_arena_with_cuda(mock_cuda):
+def test_cuda_arena_with_cuda(mock_cuda) -> None:
     planner = CUDAMemoryPlanner()
     planner.allocate_static("A", 8, (2,), np.float32)
     planner.build_arena()
@@ -59,7 +61,7 @@ def test_cuda_arena_with_cuda(mock_cuda):
     mock_cuda.cuMemFree_v2.assert_called()
 
 
-def test_cuda_arena_errors(mock_cuda):
+def test_cuda_arena_errors(mock_cuda) -> None:
     planner = CUDAMemoryPlanner()
     planner.build_arena()
     with pytest.raises(RuntimeError):
@@ -68,7 +70,7 @@ def test_cuda_arena_errors(mock_cuda):
         planner.get_host_tensor("MISSING")
 
 
-def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda):
+def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda) -> None:
     planner = CUDAMemoryPlanner()
     arr = np.array([1.0], dtype=np.float32)
     planner.set_tensor("B", arr)
@@ -81,14 +83,14 @@ def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda):
     planner.set_tensor("B", arr_big)
 
     class BrokenPlanner(CUDAMemoryPlanner):
-        def cleanup(self):
+        def cleanup(self) -> NoReturn:
             raise Exception("broken")
 
     bp = BrokenPlanner()
     del bp
 
 
-def test_cuda_arena_extra_methods(mock_cuda):
+def test_cuda_arena_extra_methods(mock_cuda) -> None:
     import ctypes
 
     planner = CUDAMemoryPlanner()
@@ -103,11 +105,11 @@ def test_cuda_arena_extra_methods(mock_cuda):
     assert out.shape == (1,)
 
 
-def test_cuda_arena_extra_methods_no_cuda(monkeypatch):
+def test_cuda_arena_extra_methods_no_cuda(monkeypatch) -> None:
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: False)
     import ctypes
 
     planner = CUDAMemoryPlanner()
-    ptr = planner.allocate_pinned(1024)
-    mptr = planner.allocate_managed(1024)
+    planner.allocate_pinned(1024)
+    planner.allocate_managed(1024)
     planner.synchronize_stream(ctypes.c_void_p(1234))

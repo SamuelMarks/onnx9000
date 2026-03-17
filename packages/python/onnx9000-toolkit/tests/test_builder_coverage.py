@@ -88,7 +88,7 @@ def test_to_onnx_extras() -> None:
     gb.metadata["custom_domain"] = "ai.onnx.custom"
     model = gb.to_onnx()
     assert model.model_version == 42
-    assert any((imp.domain == "ai.onnx.custom" for imp in model.opset_import))
+    assert any(imp.domain == "ai.onnx.custom" for imp in model.opset_import)
 
 
 def test_validate_cyclic() -> None:

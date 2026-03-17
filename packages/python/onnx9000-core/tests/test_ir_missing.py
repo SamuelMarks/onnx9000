@@ -1,9 +1,10 @@
 import ctypes
+
 import pytest
 from onnx9000.core.ir import *
 
 
-def test_ir_missing():
+def test_ir_missing() -> None:
     assert Attribute.infer_type(1) == "INT"
     assert Attribute.infer_type(1.0) == "FLOAT"
     assert Attribute.infer_type("test") == "STRING"

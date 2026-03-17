@@ -173,7 +173,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -220,7 +220,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -254,7 +254,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -288,7 +288,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -322,7 +322,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -356,7 +356,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -390,7 +390,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -424,7 +424,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -458,7 +458,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -492,7 +492,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -526,7 +526,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -560,7 +560,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -594,7 +594,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -628,7 +628,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -662,7 +662,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -693,7 +693,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -724,7 +724,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -755,7 +755,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -786,7 +786,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -817,7 +817,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -848,7 +848,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -879,7 +879,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -910,7 +910,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -941,7 +941,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -972,7 +972,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -1003,7 +1003,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -1034,7 +1034,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -1065,7 +1065,7 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat
 
 
@@ -1096,5 +1096,5 @@ def test_chunk_large_tensors_pass_real() -> None:
     n = Node("Relu", ["large"], ["out"], {}, "r1")
     g.add_node(n)
     g2 = LayoutOptimizer.chunk_large_tensors_pass(g, max_size=100)
-    has_concat = any((node.op_type == "Concat" for node in g2.nodes))
+    has_concat = any(node.op_type == "Concat" for node in g2.nodes)
     assert has_concat

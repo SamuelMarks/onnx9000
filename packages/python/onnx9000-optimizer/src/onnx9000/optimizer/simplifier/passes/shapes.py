@@ -2,6 +2,7 @@
 
 import logging
 from typing import Optional
+
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 
@@ -51,10 +52,7 @@ class ShapeInferencePass(GraphPass):
                 if s1 == s2:
                     return s1
                 return tuple(
-                    (
-                        max(a, b) if a != 1 and b != 1 else a * b
-                        for (a, b) in zip(s1[::-1], s2[::-1])
-                    )
+                    max(a, b) if a != 1 and b != 1 else a * b for (a, b) in zip(s1[::-1], s2[::-1])
                 )[::-1]
         if node.op_type == "MatMul":
             if node.inputs[0] in shapes and node.inputs[1] in shapes:

@@ -1,4 +1,5 @@
 import logging
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -7,7 +8,7 @@ from onnx9000.optimizer.simplifier.api import simplify
 logging.basicConfig(level=logging.DEBUG)
 
 
-def test_split():
+def test_split() -> None:
     g = Graph("test")
     t = Tensor(
         "in0",

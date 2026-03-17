@@ -7,6 +7,7 @@ import ast
 import inspect
 import textwrap
 from typing import Any, Callable
+
 from onnx9000.core.dtypes import DType
 from onnx9000.toolkit.script.builder import GraphBuilder
 from onnx9000.toolkit.script.op import op
@@ -162,11 +163,7 @@ class ScriptParser(ast.NodeVisitor):
         self.builder = parent_builder
         self.locals_dict = parent_locals
         carried_keys = sorted(
-            (
-                k
-                for (k, v) in body_locals.items()
-                if k in parent_locals and v is not parent_locals[k]
-            )
+            k for (k, v) in body_locals.items() if k in parent_locals and v is not parent_locals[k]
         )
         with body_builder:
             import numpy as np
@@ -207,11 +204,7 @@ class ScriptParser(ast.NodeVisitor):
         self.builder = parent_builder
         self.locals_dict = parent_locals
         carried_keys = sorted(
-            (
-                k
-                for (k, v) in body_locals.items()
-                if k in parent_locals and v is not parent_locals[k]
-            )
+            k for (k, v) in body_locals.items() if k in parent_locals and v is not parent_locals[k]
         )
         body_builder.add_output(cond_out)
         for k in carried_keys:
@@ -258,7 +251,7 @@ class ScriptParser(ast.NodeVisitor):
 
     def visit_Tuple(self, node: ast.Tuple) -> Any:
         """Translates Python tuples into tuples of ONNX variables."""
-        return tuple((self.visit(el) for el in node.elts))
+        return tuple(self.visit(el) for el in node.elts)
 
     def visit_Return(self, node: ast.Return) -> None:
         """Translates return statements into ONNX graph outputs."""
@@ -270,6 +263,30 @@ class ScriptParser(ast.NodeVisitor):
                 self.builder.add_output(v, name=f"output_{i}")
         else:
             self.builder.add_output(val, name="output_0")
+
+    def visit_IfExp(self, node: ast.IfExp) -> Any:
+        """Translates Python conditional expressions (x if cond else y) into ONNX If operations."""
+        cond = self.visit(node.test)
+        parent_builder = self.builder
+        parent_locals = self.locals_dict.copy()
+
+        then_builder = GraphBuilder(name=f"{parent_builder.name}_then")
+        self.builder = then_builder
+        self.locals_dict = parent_locals.copy()
+        then_out = self.visit(node.body)
+        then_builder.add_output(then_out)
+
+        else_builder = GraphBuilder(name=f"{parent_builder.name}_else")
+        self.builder = else_builder
+        self.locals_dict = parent_locals.copy()
+        else_out = self.visit(node.orelse)
+        else_builder.add_output(else_out)
+
+        self.builder = parent_builder
+        self.locals_dict = parent_locals
+
+        with self.builder:
+            return op.If(cond, then_branch=then_builder, else_branch=else_builder, num_outputs=1)
 
     def visit_If(self, node: ast.If) -> None:
         """Translates Python if-statements into ONNX If operations."""

@@ -66,8 +66,8 @@ def test_inject_alloc_free() -> None:
     g = create_mock_pipeline_graph()
     g2 = PipelineOptimizer.inject_alloc_free(g)
     assert len(g2.nodes) > len(g.nodes)
-    has_alloc = any((n.op_type == "Alloc" for n in g2.nodes))
-    has_free = any((n.op_type == "Free" for n in g2.nodes))
+    has_alloc = any(n.op_type == "Alloc" for n in g2.nodes)
+    has_free = any(n.op_type == "Free" for n in g2.nodes)
     assert has_alloc
     assert has_free
 
@@ -159,7 +159,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -199,7 +199,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -239,7 +239,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -279,7 +279,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -319,7 +319,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -359,7 +359,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -399,7 +399,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -439,7 +439,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -479,7 +479,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -519,7 +519,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -559,7 +559,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -599,7 +599,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -639,7 +639,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -679,7 +679,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -719,7 +719,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -757,7 +757,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -793,7 +793,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -829,7 +829,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -865,7 +865,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -901,7 +901,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -937,7 +937,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -973,7 +973,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1009,7 +1009,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1045,7 +1045,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1081,7 +1081,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1117,7 +1117,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1153,7 +1153,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1189,7 +1189,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 
@@ -1225,7 +1225,7 @@ def test_merge_tiny_ops_real() -> None:
     g.add_node(n1)
     g.add_node(n2)
     g2 = PipelineOptimizer.merge_tiny_ops(g)
-    has_fused = any((node.op_type == "FusedElementwise" for node in g2.nodes))
+    has_fused = any(node.op_type == "FusedElementwise" for node in g2.nodes)
     assert has_fused
 
 

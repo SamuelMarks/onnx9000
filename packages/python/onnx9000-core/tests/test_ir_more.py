@@ -1,7 +1,7 @@
 from onnx9000.core.ir import *
 
 
-def test_ir_more():
+def test_ir_more() -> None:
     t = Tensor("t_base")
     assert repr(t) == "ir.Tensor(name=t_base)"
     h = hash(t)
@@ -45,7 +45,7 @@ def test_ir_more():
     g.print_visualizer()
 
 
-def test_ir_edge_cases():
+def test_ir_edge_cases() -> None:
     n1 = Node("Op", inputs=["in1"])
     n2 = Node("Op", inputs=["in1", "in2"])
     assert n1 != n2

@@ -3,6 +3,7 @@
 from collections import OrderedDict
 from collections.abc import Iterable, Iterator
 from typing import Any, Optional, Union
+
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter
 

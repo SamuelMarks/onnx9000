@@ -1,6 +1,7 @@
 """Pooling layers."""
 
 from typing import Any, Union
+
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 

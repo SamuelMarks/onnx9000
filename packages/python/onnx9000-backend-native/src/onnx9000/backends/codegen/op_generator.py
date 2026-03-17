@@ -6,6 +6,7 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 
 import abc
 from typing import TYPE_CHECKING
+
 from onnx9000.core.ir import Node
 
 if TYPE_CHECKING:

@@ -2,9 +2,9 @@
 
 import numpy as np
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_module_init_and_attr() -> None:
@@ -211,8 +211,8 @@ def test_module_setattr_dict_override() -> None:
 
 def test_module_register_buffer_errors() -> None:
     """Tests that register_buffer throws TypeError on invalid tensor argument."""
-    from onnx9000.converters.frontend.nn.module import Module
     import pytest
+    from onnx9000.converters.frontend.nn.module import Module
 
     m = Module()
     with pytest.raises(TypeError, match="cannot assign to buffer, must be a Tensor or None"):

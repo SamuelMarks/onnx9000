@@ -1,6 +1,7 @@
 """Provides validation.py module functionality."""
 
 import logging
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 

@@ -1,14 +1,14 @@
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.xgboost_catboost_parser import (
-    parse_xgboost_dump,
-    parse_xgb_classifier,
     handle_xgb_objectives,
+    parse_xgb_classifier,
+    parse_xgboost_dump,
 )
 
 
-def test_parse_xgboost_dump():
+def test_parse_xgboost_dump() -> None:
     dump = [
         """{
             "nodeid": 0,
@@ -36,7 +36,7 @@ def test_parse_xgboost_dump():
     assert tree.values[1] == 1.5
 
 
-def test_parse_xgb_classifier():
+def test_parse_xgb_classifier() -> None:
     mock_booster = MagicMock()
     mock_booster.get_dump.return_value = []
 
@@ -48,7 +48,7 @@ def test_parse_xgb_classifier():
     mock_booster.get_dump.assert_called_once()
 
 
-def test_handle_xgb_objectives():
+def test_handle_xgb_objectives() -> None:
     g = Graph(name="test")
     handle_xgb_objectives(g, "binary:logistic")
     assert g.nodes[-1].op_type == "Sigmoid"

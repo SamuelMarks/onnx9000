@@ -2,6 +2,7 @@
 
 import threading
 from typing import Any, Callable, Optional
+
 from onnx9000.converters.frontend.builder import GraphBuilder, get_active_builder
 from onnx9000.converters.frontend.tensor import Tensor
 

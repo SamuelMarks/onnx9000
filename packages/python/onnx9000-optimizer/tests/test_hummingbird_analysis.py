@@ -1,14 +1,13 @@
-import pytest
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.analysis import (
-    analyze_tree_depth,
     analyze_leaf_distribution,
-    flatten_ensemble,
+    analyze_tree_depth,
     cast_parameters,
+    flatten_ensemble,
 )
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 
-def test_analyze_tree_depth():
+def test_analyze_tree_depth() -> None:
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
     tree.add_node(1, 0.0, -1, -1, 10.0)
@@ -20,7 +19,7 @@ def test_analyze_tree_depth():
     assert depths["mean"] == 2.0
 
 
-def test_analyze_leaf_distribution():
+def test_analyze_leaf_distribution() -> None:
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
     tree.add_node(-1, 0.0, -1, -1, 10.0)
@@ -31,7 +30,7 @@ def test_analyze_leaf_distribution():
     assert dist[20.0] == 1
 
 
-def test_flatten_ensemble():
+def test_flatten_ensemble() -> None:
     tree1 = TreeAbstractions()
     tree1.add_node(0, 1.5, -1, -1, 1.0)
 
@@ -44,7 +43,7 @@ def test_flatten_ensemble():
     assert flattened.values[1] == 2.0
 
 
-def test_cast_parameters():
+def test_cast_parameters() -> None:
     tree = TreeAbstractions()
     tree.add_node(0, 1.123456789123456789, -1, -1, 2.123456789123456789)
     casted = cast_parameters(tree)
@@ -53,10 +52,10 @@ def test_cast_parameters():
     assert casted.values[0] != 2.123456789123456789
 
 
-def test_analysis_empty():
+def test_analysis_empty() -> None:
     from onnx9000.optimizer.hummingbird.analysis import (
-        analyze_tree_depth,
         analyze_leaf_distribution,
+        analyze_tree_depth,
     )
     from onnx9000.optimizer.hummingbird.engine import TreeAbstractions
 
@@ -65,7 +64,7 @@ def test_analysis_empty():
     assert analyze_leaf_distribution(ab) == {}
 
 
-def test_leaf_distribution_empty():
+def test_leaf_distribution_empty() -> None:
     from onnx9000.optimizer.hummingbird.analysis import analyze_leaf_distribution
     from onnx9000.optimizer.hummingbird.engine import TreeAbstractions
 

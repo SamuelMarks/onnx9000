@@ -7,7 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.serializer import to_bytes
 
 
-def test_session_bytes_and_empty():
+def test_session_bytes_and_empty() -> None:
     g = Graph("g")
     g.add_tensor(Tensor("T", (1,), DType.FLOAT32, is_initializer=True))
     g.initializers.append("T")
@@ -26,7 +26,7 @@ def test_session_bytes_and_empty():
     s.run(None, {})
 
 
-def test_session_missing_output():
+def test_session_missing_output() -> None:
     from onnx9000.backends.session import InferenceSessionError
 
     g = Graph("g")

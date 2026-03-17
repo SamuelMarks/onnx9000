@@ -1,11 +1,11 @@
-import pytest
-from onnx9000.core.ir import Node, Tensor, DType, Graph
-from onnx9000.core.registry import global_registry
+import contextlib
+
 from onnx9000.backends.codegen.generator import Generator
-import onnx9000.backends.codegen.ops  # Ensure they are registered
+from onnx9000.core.ir import DType, Graph, Node, Tensor
+from onnx9000.core.registry import global_registry
 
 
-def test_all_codegen_ops():
+def test_all_codegen_ops() -> None:
     g = Graph("test")
     # We create a dummy generator context
     gen = Generator(g)
@@ -93,36 +93,28 @@ def test_all_codegen_ops():
             elif isinstance(v, bytes):
                 node.attributes[k] = Attribute(k, "STRING", v)
 
-        try:
+        with contextlib.suppress(Exception):
             func(node, gen)
-        except Exception:
-            pass
 
         # Try with fewer inputs
         node2 = Node(op_type.split("::")[-1], ["in0"], ["out0"], attributes=node.attributes)
-        try:
+        with contextlib.suppress(Exception):
             func(node2, gen)
-        except Exception:
-            pass
 
         # Try with 2 inputs
         node3 = Node(op_type.split("::")[-1], ["in0", "in1"], ["out0"], attributes=node.attributes)
-        try:
+        with contextlib.suppress(Exception):
             func(node3, gen)
-        except Exception:
-            pass
 
         # Try with 3 inputs
         node4 = Node(
             op_type.split("::")[-1], ["in0", "in1", "in2"], ["out0"], attributes=node.attributes
         )
-        try:
+        with contextlib.suppress(Exception):
             func(node4, gen)
-        except Exception:
-            pass
 
 
-def test_all_codegen_ops_broadcast():
+def test_all_codegen_ops_broadcast() -> None:
     g = Graph("test")
     gen = Generator(g)
 
@@ -136,19 +128,15 @@ def test_all_codegen_ops_broadcast():
             continue
 
         node = Node(op_type.split("::")[-1], ["in0", "in1"], ["out0"], attributes={})
-        try:
+        with contextlib.suppress(Exception):
             func(node, gen)
-        except Exception:
-            pass
 
         node = Node(op_type.split("::")[-1], ["in0", "in1", "in2"], ["out0"], attributes={})
-        try:
+        with contextlib.suppress(Exception):
             func(node, gen)
-        except Exception:
-            pass
 
 
-def test_all_codegen_ops_extras():
+def test_all_codegen_ops_extras() -> None:
     import numpy as np
     from onnx9000.core.ir import Attribute
 

@@ -1,10 +1,11 @@
-import pytest
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 from onnx9000.backends.cuda.compiler import CUDACompiler
 
 
-def test_cuda_compiler_cached(tmpdir):
+def test_cuda_compiler_cached(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     ptx_path = os.path.join(cache_dir, "test_kernel.ptx")
@@ -15,12 +16,12 @@ def test_cuda_compiler_cached(tmpdir):
     assert res == b"cached_ptx"
 
 
-def test_cuda_compiler_compile(tmpdir):
+def test_cuda_compiler_compile(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     ptx_path = os.path.join(cache_dir, "test_kernel2.ptx")
 
-    def fake_run(cmd, check, capture_output):
+    def fake_run(cmd, check, capture_output) -> None:
         with open(ptx_path, "wb") as f:
             f.write(b"new_ptx")
 
@@ -29,7 +30,7 @@ def test_cuda_compiler_compile(tmpdir):
         assert res == b"new_ptx"
 
 
-def test_cuda_compiler_nvcc_not_found(tmpdir):
+def test_cuda_compiler_nvcc_not_found(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     with patch("subprocess.run", side_effect=FileNotFoundError()):
@@ -37,7 +38,7 @@ def test_cuda_compiler_nvcc_not_found(tmpdir):
         assert res == b""
 
 
-def test_cuda_compiler_nvcc_failed(tmpdir):
+def test_cuda_compiler_nvcc_failed(tmpdir) -> None:
     kernel_code = "void kernel() {}"
     cache_dir = str(tmpdir)
     import subprocess
@@ -49,13 +50,13 @@ def test_cuda_compiler_nvcc_failed(tmpdir):
             CUDACompiler.compile_kernel(kernel_code, "test_kernel4", cache_dir=cache_dir)
 
 
-def test_calculate_grid_block():
+def test_calculate_grid_block() -> None:
     grid, block = CUDACompiler.calculate_grid_block(1000, 256)
     assert grid == 4
     assert block == 256
 
 
-def test_cuda_compiler_no_cache_dir():
+def test_cuda_compiler_no_cache_dir() -> None:
     with patch("tempfile.gettempdir", return_value="/tmp"):
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", MagicMock()):

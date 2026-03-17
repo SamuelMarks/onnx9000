@@ -129,21 +129,20 @@ class CPUMemoryPlanner:
                 return memoryview(self.arena_mmap)[offset : offset + size_bytes]
             raise RuntimeError(f"Tensor {name} not found.")
 
-    def add_ref(self, name: str):
+    def add_ref(self, name: str) -> None:
         with self._lock:
             if name in self.ref_counts:
                 self.ref_counts[name] += 1
 
-    def release_ref(self, name: str):
+    def release_ref(self, name: str) -> None:
         with self._lock:
             if name in self.ref_counts:
                 self.ref_counts[name] -= 1
-                if self.ref_counts[name] == 0:
-                    if name in self.dynamic_allocations:
-                        self.dynamic_allocations[name].close()
-                        del self.dynamic_allocations[name]
-                        if name in self.dynamic_sizes:
-                            del self.dynamic_sizes[name]
+                if self.ref_counts[name] == 0 and name in self.dynamic_allocations:
+                    self.dynamic_allocations[name].close()
+                    del self.dynamic_allocations[name]
+                    if name in self.dynamic_sizes:
+                        del self.dynamic_sizes[name]
 
     def cleanup(self) -> None:
         """Free all explicitly allocated memory."""

@@ -2,7 +2,7 @@ import numpy as np
 from onnx9000.backends.cpu.ops_ml import ML_OP_REGISTRY
 
 
-def test_ml_ops():
+def test_ml_ops() -> None:
     fn = ML_OP_REGISTRY.get("ArrayFeatureExtractor")
     res = fn([np.array([[1, 2, 3]]), np.array([1])], {})
     assert res[0].shape == (1, 1)
@@ -63,7 +63,7 @@ def test_ml_ops():
     assert res[0].shape == (1, 1)
 
 
-def test_ml_ops_missing():
+def test_ml_ops_missing() -> None:
     import numpy as np
     from onnx9000.backends.cpu.ops_ml import linearregressor_op
 

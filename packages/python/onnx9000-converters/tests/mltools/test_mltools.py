@@ -1,15 +1,15 @@
-import pytest
 import json
-from onnx9000.converters.mltools.catboost import parse_catboost_json, parse_catboost_dict
+
+from onnx9000.converters.mltools.catboost import parse_catboost_dict, parse_catboost_json
 from onnx9000.converters.mltools.coreml import parse_coreml_model
 from onnx9000.converters.mltools.h2o import parse_h2o
 from onnx9000.converters.mltools.libsvm import parse_libsvm
-from onnx9000.converters.mltools.lightgbm import parse_lightgbm_json, parse_lightgbm_dict
+from onnx9000.converters.mltools.lightgbm import parse_lightgbm_dict, parse_lightgbm_json
 from onnx9000.converters.mltools.sparkml import parse_sparkml_pipeline
-from onnx9000.converters.mltools.xgboost import parse_xgboost_json, parse_xgboost_dict
+from onnx9000.converters.mltools.xgboost import parse_xgboost_dict, parse_xgboost_json
 
 
-def test_catboost():
+def test_catboost() -> None:
     data = {
         "model_info": {"loss_function": "RMSE"},
         "trees": [{"splits": [], "leaf_values": [1.0]}],
@@ -29,7 +29,7 @@ def test_catboost():
     assert g3.nodes[0].op_type == "TreeEnsembleClassifier"
 
 
-def test_lightgbm():
+def test_lightgbm() -> None:
     data = {
         "objective": "regression",
         "tree_info": [
@@ -55,7 +55,7 @@ def test_lightgbm():
     assert g3.nodes[0].op_type == "TreeEnsembleClassifier"
 
 
-def test_xgboost():
+def test_xgboost() -> None:
     data = {
         "learner": {
             "learner_model_param": {"num_class": "0"},
@@ -89,14 +89,14 @@ def test_xgboost():
     assert g3.nodes[0].op_type == "TreeEnsembleClassifier"
 
 
-def test_others():
+def test_others() -> None:
     assert parse_coreml_model(None) is not None
     assert parse_h2o(None) is not None
     assert parse_libsvm(None) is not None
     assert parse_sparkml_pipeline(None) is not None
 
 
-def test_xgboost_softprob():
+def test_xgboost_softprob() -> None:
     data = {
         "learner": {
             "learner_model_param": {"num_class": "0"},

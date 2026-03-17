@@ -1,7 +1,7 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Optional
+
 from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
-from onnx9000.core.ir import Graph, Node, Tensor
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class TreeAbstractions:
     """Intermediate abstractions mapping tree nodes to native tensors."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.features: list[int] = []
         self.thresholds: list[float] = []
         self.left_children: list[int] = []
@@ -19,7 +19,7 @@ class TreeAbstractions:
 
     def add_node(
         self, feature: int, threshold: float, left: int, right: int, value: float, missing: int = 0
-    ):
+    ) -> None:
         self.features.append(feature)
         self.thresholds.append(threshold)
         self.left_children.append(left)

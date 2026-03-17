@@ -1,6 +1,7 @@
 """Module for graph building."""
 
 from typing import Any, Optional, Union
+
 import numpy as np
 from onnx9000.core import onnx_pb2 as pb
 from onnx9000.core.dtypes import DType
@@ -301,10 +302,10 @@ class GraphBuilder:
                         t.raw_data = v.tobytes()
                     attr.t.CopyFrom(t)
                 elif isinstance(v, list):
-                    if all((isinstance(x, int) for x in v)):
+                    if all(isinstance(x, int) for x in v):
                         attr.type = pb.AttributeProto.INTS
                         attr.ints.extend(v)
-                    elif all((isinstance(x, float) for x in v)):
+                    elif all(isinstance(x, float) for x in v):
                         attr.type = pb.AttributeProto.FLOATS
                         attr.floats.extend(v)
                 elif isinstance(v, GraphBuilder):

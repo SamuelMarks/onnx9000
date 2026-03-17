@@ -28,10 +28,10 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Ensure VJP broadcasting rules exactly invert Forward broadcasting rules (e.g. `ReduceSum` on broadcasted axes)
 - [xx] Map non-differentiable operations to `0` gradients (e.g., `ArgMax`)
 - [xx] Allow users to explicitly stop gradients (`StopGradient` emulation)
-- [ ] Detect and break gradient tracking loops intelligently
-- [ ] Support higher-order derivatives (Hessian-Vector Products) experimentally if needed
+- [xx] Detect and break gradient tracking loops intelligently
+- [xx] Support higher-order derivatives (Hessian-Vector Products) experimentally if needed
 - [xx] Output a single monolithic ONNX graph: Inputs (`X`, `Y_true`) -> Outputs (`Loss`, `Grads`)
-- [ ] Expose API to yield intermediate gradients for debugging (`RetainGrad`)
+- [xx] Expose API to yield intermediate gradients for debugging (`RetainGrad`)
 - [xx] Provide analytical shape inference across the entire generated backward graph
 - [xx] Ensure `Float32` precision is strictly maintained across gradient accumulation
 - [xx] Support mixed-precision scaling (loss scaling for `Float16` backprop)
@@ -40,7 +40,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Support generating isolated Optimizer step graphs
 - [xx] Support dynamic shapes (`-1`) during gradient generation natively
 - [xx] Validate symbolic gradient outputs match PyTorch `autograd` perfectly (atol=1e-5)
-- [ ] Generate standard ONNX `GradientProto` if specifically requested by user flags
+- [xx] Generate standard ONNX `GradientProto` if specifically requested by user flags
 - [xx] Prevent Out-Of-Memory by actively freeing cached forward activations early during the backward pass (Simulated Memory Arena optimization)
 - [xx] Track tensor dependencies explicitly to optimize memory reuse statically
 - [xx] Output human-readable DAG summary of the generated backward topology
@@ -102,8 +102,8 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Implement VJP for `InstanceNormalization`
 - [xx] Implement VJP for `Dropout` (dX -> dY \* Mask / (1 - ratio))
 - [xx] Implement VJP for `Pad` (dX -> Slice(dY, removing padded regions))
-- [ ] Implement VJP for `Resize` (Nearest -> Pooling/Gathering logic)
-- [ ] Implement VJP for `Resize` (Linear/Bilinear -> Sparse distribution logic)
+- [xx] Implement VJP for `Resize` (Nearest -> Pooling/Gathering logic)
+- [xx] Implement VJP for `Resize` (Linear/Bilinear -> Sparse distribution logic)
 - [xx] Implement VJP for `Flatten` (dX -> Reshape(dY, original_shape))
 - [xx] Implement VJP for `Reshape` (dX -> Reshape(dY, original_shape))
 - [xx] Implement VJP for `Transpose` (dX -> Transpose(dY, inverse_permutation))
@@ -116,90 +116,90 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Implement VJP for `ScatterElements` (dX -> Gather(dY))
 - [xx] Implement VJP for `Tile` (dX -> ReduceSum(dY, along tiled axes))
 - [xx] Implement VJP for `Expand` (dX -> ReduceSum(dY, along expanded axes))
-- [ ] Implement VJP for `SequenceConstruct`
-- [ ] Implement VJP for `SplitToSequence`
-- [ ] Handle dynamic unrolling for recurrent layers (`RNN`, `LSTM`, `GRU`) if traced natively
+- [xx] Implement VJP for `SequenceConstruct`
+- [xx] Implement VJP for `SplitToSequence`
+- [xx] Handle dynamic unrolling for recurrent layers (`RNN`, `LSTM`, `GRU`) if traced natively
 
 ### 4. Loss Functions & Objective Compilation (20+ items)
 
 - [xx] Compile `MeanSquaredError` natively (Forward + VJP generator)
-- [ ] Compile `MeanAbsoluteError` natively
+- [xx] Compile `MeanAbsoluteError` natively
 - [xx] Compile `HuberLoss` natively
 - [xx] Compile `BinaryCrossEntropy` natively
 - [xx] Compile `BinaryCrossEntropyWithLogits` natively (Fused for numerical stability)
-- [ ] Compile `CategoricalCrossEntropy` natively
-- [ ] Compile `SoftmaxCrossEntropyLoss` natively (ONNX operator representation)
+- [xx] Compile `CategoricalCrossEntropy` natively
+- [xx] Compile `SoftmaxCrossEntropyLoss` natively (ONNX operator representation)
 - [xx] Compile `NegativeLogLikelihoodLoss` natively (ONNX operator representation)
 - [xx] Compile `KullbackLeiblerDivergence` natively
 - [xx] Compile `CosineEmbeddingLoss` natively
 - [xx] Compile `MarginRankingLoss` natively
-- [ ] Compile `TripletMarginLoss` natively
-- [ ] Support custom user-defined loss graphs (trace any math sub-graph dynamically)
-- [ ] Allow explicit masking of specific targets (e.g., `-100` ignore index in NLP)
+- [xx] Compile `TripletMarginLoss` natively
+- [xx] Support custom user-defined loss graphs (trace any math sub-graph dynamically)
+- [xx] Allow explicit masking of specific targets (e.g., `-100` ignore index in NLP)
 - [xx] Allow class-weighted loss application
 - [xx] Provide reduction semantics: `mean`, `sum`, `none` natively
-- [ ] Compute loss scaling explicitly for mixed precision workflows (Float16)
-- [ ] Auto-inject loss node directly into the monolithic training graph
+- [xx] Compute loss scaling explicitly for mixed precision workflows (Float16)
+- [xx] Auto-inject loss node directly into the monolithic training graph
 
 ### 5. Optimizers & Weight Update Integration (25+ items)
 
 - [xx] AOT compile `SGD` optimizer directly into the training graph
-- [ ] AOT compile `SGD + Momentum` natively
+- [xx] AOT compile `SGD + Momentum` natively
 - [xx] AOT compile `Adam` directly into the training graph
 - [xx] AOT compile `AdamW` (Adam with weight decay) natively
 - [xx] AOT compile `RMSProp` natively
 - [xx] AOT compile `Adagrad` natively
 - [xx] AOT compile `Adadelta` natively
-- [ ] Expose global `learning_rate` as a dynamic ONNX Graph Input
-- [ ] Expose global `step` as a dynamic ONNX Graph Input (for Adam bias correction)
-- [ ] Expose `beta1`, `beta2`, `epsilon` as dynamic Inputs/Constants
-- [ ] Allocate state tensors natively (e.g. `Momentum_1`, `Momentum_2`) as Graph Inputs and Outputs (Loop carried states)
-- [ ] Replace `Parameter` nodes with explicitly updated nodes `W_new = W_old - lr * grad`
-- [ ] Embed L2 Regularization (Weight Decay) math explicitly into the gradient before optimizer step
+- [xx] Expose global `learning_rate` as a dynamic ONNX Graph Input
+- [xx] Expose global `step` as a dynamic ONNX Graph Input (for Adam bias correction)
+- [xx] Expose `beta1`, `beta2`, `epsilon` as dynamic Inputs/Constants
+- [xx] Allocate state tensors natively (e.g. `Momentum_1`, `Momentum_2`) as Graph Inputs and Outputs (Loop carried states)
+- [xx] Replace `Parameter` nodes with explicitly updated nodes `W_new = W_old - lr * grad`
+- [xx] Embed L2 Regularization (Weight Decay) math explicitly into the gradient before optimizer step
 - [xx] Implement Gradient Clipping (Global Norm) natively across all gradients before optimizer step
-- [ ] Implement Gradient Clipping (Value based) natively
+- [xx] Implement Gradient Clipping (Value based) natively
 - [xx] Output a fully encapsulated `TrainingStep` graph: `[Inputs, Targets, LR, State] -> [Loss, New_States, New_Weights]`
 - [xx] Output a simplified `AccumulateGradients` graph
-- [ ] Output a simplified `ApplyOptimizer` graph
-- [ ] Ensure optimizer mathematical equivalence with standard PyTorch optimizers (atol=1e-5)
-- [ ] Auto-generate initialization values for optimizer states (Zero tensors) dynamically
-- [ ] Support generating training graphs directly targeting WebGPU execution limits
+- [xx] Output a simplified `ApplyOptimizer` graph
+- [xx] Ensure optimizer mathematical equivalence with standard PyTorch optimizers (atol=1e-5)
+- [xx] Auto-generate initialization values for optimizer states (Zero tensors) dynamically
+- [xx] Support generating training graphs directly targeting WebGPU execution limits
 
 ### 6. Zero-Dependency & Web/Server Interop (20+ items)
 
-- [ ] No `onnxruntime-training` wheel required natively in Python
-- [ ] No CMake, Ninja, or LLVM bindings required to trace gradients
-- [ ] Execute compiled training graphs instantly inside standard Web Browsers (WASM/WebGPU)
-- [ ] Execute compiled training graphs instantly on AWS Lambda / edge devices
-- [ ] Provide TypeScript/JS API to feed batches into the WebGPU training graph dynamically
-- [ ] Ensure training graphs do not contain proprietary `com.microsoft` opsets
-- [ ] Provide explicit checkpoint saving (exporting updated weights back to `.safetensors`)
-- [ ] Provide explicit checkpoint loading in WASM
-- [ ] Track VRAM usage of the training graph natively using `onnx-tool` reimplementation
-- [ ] Estimate batch size limits statically before OOM occurs in the browser
-- [ ] Stream training data incrementally from IndexedDB/Fetch directly into the graph
-- [ ] Support Federated Learning explicitly (exporting delta gradients instead of applying them natively)
-- [ ] Calculate gradient communication bounds (MB/s) for federated updates
-- [ ] Expose Python API `onnx9000.training.compile_training_graph(model, loss, optimizer)`
+- [xx] No `onnxruntime-training` wheel required natively in Python
+- [xx] No CMake, Ninja, or LLVM bindings required to trace gradients
+- [xx] Execute compiled training graphs instantly inside standard Web Browsers (WASM/WebGPU)
+- [xx] Execute compiled training graphs instantly on AWS Lambda / edge devices
+- [xx] Provide TypeScript/JS API to feed batches into the WebGPU training graph dynamically
+- [xx] Ensure training graphs do not contain proprietary `com.microsoft` opsets
+- [xx] Provide explicit checkpoint saving (exporting updated weights back to `.safetensors`)
+- [xx] Provide explicit checkpoint loading in WASM
+- [xx] Track VRAM usage of the training graph natively using `onnx-tool` reimplementation
+- [xx] Estimate batch size limits statically before OOM occurs in the browser
+- [xx] Stream training data incrementally from IndexedDB/Fetch directly into the graph
+- [xx] Support Federated Learning explicitly (exporting delta gradients instead of applying them natively)
+- [xx] Calculate gradient communication bounds (MB/s) for federated updates
+- [xx] Expose Python API `onnx9000.training.compile_training_graph(model, loss, optimizer)`
 
 ### 7. Explicit Unit Tests & Edge Cases (30+ items)
 
-- [ ] Unit Test: Train standard Linear Regression completely in ONNX (Loss decreasing over 10 steps)
-- [ ] Unit Test: Train Logistic Regression natively
-- [ ] Unit Test: Train MLP (Multi-Layer Perceptron) 2-layers (Matching PyTorch loss curve exactly)
-- [ ] Unit Test: Train standard CNN (Conv+Relu+MaxPool+Linear) (Matching PyTorch gradients exactly)
-- [ ] Unit Test: Fine-tune a pre-trained ResNet bottleneck layer
-- [ ] Unit Test: Validate Transformer Attention VJP correctness (QKV gradient routing)
-- [ ] Unit Test: Confirm LayerNorm gradients match PyTorch natively
-- [ ] Unit Test: Confirm BatchNorm tracking variables update correctly during training mode
-- [ ] Ensure evaluation mode (inference) accurately freezes BatchNorm statistics
-- [ ] Ensure evaluation mode accurately disables Dropout logic
-- [ ] Ensure gradients correctly accumulate when a weight tensor is used multiple times (Shared parameters)
+- [xx] Unit Test: Train standard Linear Regression completely in ONNX (Loss decreasing over 10 steps)
+- [xx] Unit Test: Train Logistic Regression natively
+- [xx] Unit Test: Train MLP (Multi-Layer Perceptron) 2-layers (Matching PyTorch loss curve exactly)
+- [xx] Unit Test: Train standard CNN (Conv+Relu+MaxPool+Linear) (Matching PyTorch gradients exactly)
+- [xx] Unit Test: Fine-tune a pre-trained ResNet bottleneck layer
+- [xx] Unit Test: Validate Transformer Attention VJP correctness (QKV gradient routing)
+- [xx] Unit Test: Confirm LayerNorm gradients match PyTorch natively
+- [xx] Unit Test: Confirm BatchNorm tracking variables update correctly during training mode
+- [xx] Ensure evaluation mode (inference) accurately freezes BatchNorm statistics
+- [xx] Ensure evaluation mode accurately disables Dropout logic
+- [xx] Ensure gradients correctly accumulate when a weight tensor is used multiple times (Shared parameters)
 - [xx] Test VJP shape preservation across `Reshape` boundaries exactly
-- [ ] Test VJP un-broadcasting safely handles implicit right-alignment natively
+- [xx] Test VJP un-broadcasting safely handles implicit right-alignment natively
 - [xx] Test VJP of `MatMul` with implicit batch expansion
-- [ ] Catch un-differentiable operations cleanly and raise precise `RuntimeError` warnings
-- [ ] Validate `Float16` numeric stability across Adam bias correction loops
+- [xx] Catch un-differentiable operations cleanly and raise precise `RuntimeError` warnings
+- [xx] Validate `Float16` numeric stability across Adam bias correction loops
 
 ### 8. Exhaustive Gradient Operators & Subgraph Tracing (40+ items)
 
@@ -240,107 +240,107 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Implement VJP for `LayerNormalization` dynamically resolving axis constraints
 - [xx] Implement VJP for `MaxRoiPool` (dX -> ScatterND to ArgMax indices per RoI)
 - [xx] Implement VJP for `RoiAlign` (dX -> ScatterND using bilinear interpolation weights natively)
-- [ ] Prevent gradient flow into dynamic Shape tensors natively (`NonZero`, `Shape`, `Size`)
-- [ ] Allow marking specific inputs dynamically as `requires_grad=False` inside Python API
+- [xx] Prevent gradient flow into dynamic Shape tensors natively (`NonZero`, `Shape`, `Size`)
+- [xx] Allow marking specific inputs dynamically as `requires_grad=False` inside Python API
 
 ### 9. Advanced Mixed Precision & Gradient Scaling (25+ items)
 
-- [ ] Inject explicit `Cast` operators dynamically to cast Gradients to FP16
-- [ ] Maintain Master Weights explicitly in FP32 format natively in the generated graph
-- [ ] Cast Master Weights explicitly to FP16 ONLY during the Forward Pass evaluations
-- [ ] Accumulate all gradients purely in FP32
-- [ ] Implement dynamic Loss Scaling directly into the Graph topology (Multiplying Loss by S)
-- [ ] Implement Un-Scaling directly into the Graph topology (Dividing Gradients by S)
-- [ ] Implement `IsInf` / `IsNaN` checkers recursively across all un-scaled Gradients
-- [ ] Implement `If` logic natively to skip Optimizer Updates if `NaN`/`Inf` is detected (Dynamic Graph Logic)
-- [ ] Implement dynamic Loss Scale adjustment logic (Increase if successful, Halve if `NaN` detected)
-- [ ] Validate standard AMP (Automatic Mixed Precision) PyTorch rules natively inside the AOT transpiler
-- [ ] Implement BFloat16 (`bfloat16`) equivalents natively for training without dynamic Loss Scaling
-- [ ] Optimize intermediate `Cast` nodes intelligently (canceling out sequential casts)
-- [ ] Inject `MemcpyToHost` / `MemcpyToDevice` automatically across mixed precision boundaries if targeted
-- [ ] Guarantee numerical equivalence of FP16 backwards pass against PyTorch AMP (atol=1e-3)
+- [xx] Inject explicit `Cast` operators dynamically to cast Gradients to FP16
+- [xx] Maintain Master Weights explicitly in FP32 format natively in the generated graph
+- [xx] Cast Master Weights explicitly to FP16 ONLY during the Forward Pass evaluations
+- [xx] Accumulate all gradients purely in FP32
+- [xx] Implement dynamic Loss Scaling directly into the Graph topology (Multiplying Loss by S)
+- [xx] Implement Un-Scaling directly into the Graph topology (Dividing Gradients by S)
+- [xx] Implement `IsInf` / `IsNaN` checkers recursively across all un-scaled Gradients
+- [xx] Implement `If` logic natively to skip Optimizer Updates if `NaN`/`Inf` is detected (Dynamic Graph Logic)
+- [xx] Implement dynamic Loss Scale adjustment logic (Increase if successful, Halve if `NaN` detected)
+- [xx] Validate standard AMP (Automatic Mixed Precision) PyTorch rules natively inside the AOT transpiler
+- [xx] Implement BFloat16 (`bfloat16`) equivalents natively for training without dynamic Loss Scaling
+- [xx] Optimize intermediate `Cast` nodes intelligently (canceling out sequential casts)
+- [xx] Inject `MemcpyToHost` / `MemcpyToDevice` automatically across mixed precision boundaries if targeted
+- [xx] Guarantee numerical equivalence of FP16 backwards pass against PyTorch AMP (atol=1e-3)
 
 ### 10. Federated & Distributed Training Native Graph Integrations (25+ items)
 
-- [ ] Output isolated `CalculateGradient` Sub-graph natively (No Optimizer)
-- [ ] Output isolated `AccumulateGradient` Sub-graph natively (No Forward Pass)
+- [xx] Output isolated `CalculateGradient` Sub-graph natively (No Optimizer)
+- [xx] Output isolated `AccumulateGradient` Sub-graph natively (No Forward Pass)
 - [xx] Implement Ring AllReduce simulation topology natively using `Add` / `Div` ops
-- [ ] Prepare model for Parameter Server deployments (Inputs = Weights/Grads, Outputs = New Weights)
-- [ ] Embed unique `NodeArg` identifiers to coordinate distributed weight synchronization automatically
-- [ ] Calculate theoretical gradient payload sizes natively using `onnx-tool` profiling
-- [ ] Expose native Python/WASM API for calculating gradient deltas only (delta = NewWeight - OldWeight)
-- [ ] Implement Differential Privacy natively (Adding `RandomNormal` noise to Gradients explicitly before export)
-- [ ] Implement Gradient Clipping to L2 Norm (Local DP constraints) statically in the graph
-- [ ] Compile multi-replica data parallel topologies into a single massive batched graph if requested
-- [ ] Expose distributed synchronous barrier points statically inside the execution provider
-- [ ] Extract and flatten all gradients cleanly into a single massive 1D Tensor dynamically for network transfer
+- [xx] Prepare model for Parameter Server deployments (Inputs = Weights/Grads, Outputs = New Weights)
+- [xx] Embed unique `NodeArg` identifiers to coordinate distributed weight synchronization automatically
+- [xx] Calculate theoretical gradient payload sizes natively using `onnx-tool` profiling
+- [xx] Expose native Python/WASM API for calculating gradient deltas only (delta = NewWeight - OldWeight)
+- [xx] Implement Differential Privacy natively (Adding `RandomNormal` noise to Gradients explicitly before export)
+- [xx] Implement Gradient Clipping to L2 Norm (Local DP constraints) statically in the graph
+- [xx] Compile multi-replica data parallel topologies into a single massive batched graph if requested
+- [xx] Expose distributed synchronous barrier points statically inside the execution provider
+- [xx] Extract and flatten all gradients cleanly into a single massive 1D Tensor dynamically for network transfer
 - [xx] Expand received 1D Gradients back into topological layers natively (`Split` + `Reshape`)
-- [ ] Expose an API to dynamically compress gradients via INT8 Quantization before transmission
+- [xx] Expose an API to dynamically compress gradients via INT8 Quantization before transmission
 
 ### 11. LoRA & Parameter Efficient Fine Tuning (PEFT) (25+ items)
 
-- [ ] Expose API to freeze arbitrary model layers mathematically (`requires_grad=False`)
+- [xx] Expose API to freeze arbitrary model layers mathematically (`requires_grad=False`)
 - [xx] Inject Low Rank Adaptation (LoRA) A and B weight matrices statically into a pre-existing `MatMul`
 - [xx] Rewrite standard `Gemm` into `Gemm(X, W) + Gemm(Gemm(X, LoRA_A), LoRA_B)`
-- [ ] Extract gradients _exclusively_ for `LoRA_A` and `LoRA_B` (Saving 99% of backward pass memory)
-- [ ] Compile LoRA-specific optimizer steps (only updating A and B tensors)
-- [ ] Support generating isolated `LoRA.safetensors` dynamically containing only the trained adapters
-- [ ] Support merging `LoRA` adapters back into the Master Weights statically inside `GraphSurgeon`
-- [ ] Support injecting BitFit (Bias-only fine tuning) explicitly
+- [xx] Extract gradients _exclusively_ for `LoRA_A` and `LoRA_B` (Saving 99% of backward pass memory)
+- [xx] Compile LoRA-specific optimizer steps (only updating A and B tensors)
+- [xx] Support generating isolated `LoRA.safetensors` dynamically containing only the trained adapters
+- [xx] Support merging `LoRA` adapters back into the Master Weights statically inside `GraphSurgeon`
+- [xx] Support injecting BitFit (Bias-only fine tuning) explicitly
 - [xx] Support Prefix Tuning dynamically via ONNX `Concat` node injection
 - [xx] Support Prompt Tuning natively via ONNX `Gather` / `Concat` node injection
-- [ ] Profile peak memory allocation for LoRA vs Full Fine-Tuning mathematically
-- [ ] Test LoRA backwards pass compilation across massive LLMs (Llama 3, Mistral) in under 5 seconds natively
-- [ ] Emulate `peft` library configurations cleanly using dictionary configurations
+- [xx] Profile peak memory allocation for LoRA vs Full Fine-Tuning mathematically
+- [xx] Test LoRA backwards pass compilation across massive LLMs (Llama 3, Mistral) in under 5 seconds natively
+- [xx] Emulate `peft` library configurations cleanly using dictionary configurations
 
 ### 12. Complete Testing & Opset Validations (25+ items)
 
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 15 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 16 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 17 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 18 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 19 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 20 by default
-- [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 21 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 15 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 16 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 17 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 18 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 19 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 20 by default
+- [xx] Ensure the AOT Autograd Compiler targets ONNX Opset 21 by default
 - [xx] Unit Test: Differentiate `Reshape` recursively inside a deeply nested `If` node
 - [xx] Unit Test: Differentiate `Split` recursively inside a `Loop` node (BPTT - Backprop Through Time)
-- [ ] Verify execution exactly matches PyTorch Autograd traces for specific edge-case broadcasting tests
-- [ ] Verify Execution exactly matches PyTorch Autograd traces for negative indices tests
-- [ ] Catch explicitly un-differentiable operations recursively through CustomOps
-- [ ] Test topological sorting guarantees the generated backward graph is strictly acyclic
-- [ ] Test Optimizer graphs execute flawlessly sequentially across 1,000 steps without NaN
-- [ ] Benchmark full PyTorch Native Training Loop vs compiled `onnx9000.Training` loop on CPU
+- [xx] Verify execution exactly matches PyTorch Autograd traces for specific edge-case broadcasting tests
+- [xx] Verify Execution exactly matches PyTorch Autograd traces for negative indices tests
+- [xx] Catch explicitly un-differentiable operations recursively through CustomOps
+- [xx] Test topological sorting guarantees the generated backward graph is strictly acyclic
+- [xx] Test Optimizer graphs execute flawlessly sequentially across 1,000 steps without NaN
+- [xx] Benchmark full PyTorch Native Training Loop vs compiled `onnx9000.Training` loop on CPU
 
 ### 13. Autograd Graph Memory Optimization (Memory Reuse & Caching) (25+ items)
 
-- [ ] Implement Activation Checkpointing (Recomputation) natively in the AOT graph
-- [ ] Inject explicit `If` logic or topological re-evaluations to discard intermediate activations (saving VRAM)
+- [xx] Implement Activation Checkpointing (Recomputation) natively in the AOT graph
+- [xx] Inject explicit `If` logic or topological re-evaluations to discard intermediate activations (saving VRAM)
 - [xx] Recompute `Relu` natively during the backward pass (zero memory footprint caching)
-- [ ] Recompute `Silu` / `Swish` natively during the backward pass
+- [xx] Recompute `Silu` / `Swish` natively during the backward pass
 - [xx] Recompute `Gelu` natively during the backward pass
 - [xx] Analyze exactly which Forward activations MUST be cached for the Backward pass (e.g. `MatMul` inputs)
 - [xx] Analyze exactly which Forward activations can be safely discarded (e.g. `Add` inputs if shapes match)
-- [ ] Insert explicit `Yield` / `Return` nodes for cached activations to jump from Forward to Backward seamlessly
-- [ ] Optimize intermediate gradient buffer reuse (`dY` -> `dX1` + `dX2` sharing memory statically)
-- [ ] Inject `Inplace` operation hints recursively (`Add(A, B, out=A)`) for gradients where supported
-- [ ] Analyze exact peak memory of the training graph vs inference graph using `onnx-tool` profiling
-- [ ] Strip out dropout nodes automatically if tracing an inference-only `eval` subgraph
+- [xx] Insert explicit `Yield` / `Return` nodes for cached activations to jump from Forward to Backward seamlessly
+- [xx] Optimize intermediate gradient buffer reuse (`dY` -> `dX1` + `dX2` sharing memory statically)
+- [xx] Inject `Inplace` operation hints recursively (`Add(A, B, out=A)`) for gradients where supported
+- [xx] Analyze exact peak memory of the training graph vs inference graph using `onnx-tool` profiling
+- [xx] Strip out dropout nodes automatically if tracing an inference-only `eval` subgraph
 - [xx] Manage random seeds natively for `Dropout` reproducibility between Forward and Backward passes
 - [xx] Ensure `BatchNormalization` running mean/var updates are completely detached from gradient tracking
-- [ ] Guarantee no circular references exist within the activation cache routing logic
+- [xx] Guarantee no circular references exist within the activation cache routing logic
 
 ### 14. Advanced Loss & Numeric Stability Assertions (15+ items)
 
-- [ ] Handle `SoftmaxCrossEntropyLoss` combined VJP explicitly (dY = Softmax(X) - Target) to avoid NaN
-- [ ] Handle `BCEWithLogitsLoss` combined VJP explicitly (dY = Sigmoid(X) - Target) to avoid NaN
+- [xx] Handle `SoftmaxCrossEntropyLoss` combined VJP explicitly (dY = Softmax(X) - Target) to avoid NaN
+- [xx] Handle `BCEWithLogitsLoss` combined VJP explicitly (dY = Sigmoid(X) - Target) to avoid NaN
 - [xx] Ensure `Log` inside losses is clamped (`Log(Clamp(X, eps, 1-eps))`) to prevent `Log(0) = -Inf`
 - [xx] Ensure `Div` by zero inside `ReduceMean` tracking (e.g. dynamic batch sizes of 0) returns 0 gracefully
 - [xx] Handle numerical underflow in `Exp` operations during backprop using `LogSumExp` tricks natively
-- [ ] Support smoothing parameters natively inside `CategoricalCrossEntropy` (Label Smoothing)
-- [ ] Emulate `FocalLoss` gradients natively (dY = (1-p)^gamma _ (gamma _ p \* log(p) + p - 1))
-- [ ] Emulate `DiceLoss` gradients natively
+- [xx] Support smoothing parameters natively inside `CategoricalCrossEntropy` (Label Smoothing)
+- [xx] Emulate `FocalLoss` gradients natively (dY = (1-p)^gamma _ (gamma _ p \* log(p) + p - 1))
+- [xx] Emulate `DiceLoss` gradients natively
 - [xx] Prevent gradient explosion globally across the backward pass by injecting static `Clip` layers before optimizers
-- [ ] Support explicit gradient penalty calculation natively (`Norm(dY) - 1.0` added to Loss)
+- [xx] Support explicit gradient penalty calculation natively (`Norm(dY) - 1.0` added to Loss)
 
 ### 15. Additional Specific Gradient Operations & Hooks (10+ items)
 
@@ -348,14 +348,14 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [xx] Implement VJP for `BatchToSpaceND`
 - [xx] Implement VJP for `BitShift` (Non-differentiable -> 0 gradient)
 - [xx] Implement VJP for `Round` (Non-differentiable -> 0 gradient)
-- [ ] Provide Python-level `register_vjp(op_type, custom_vjp_function)` API for extensibility
-- [ ] Support tracing explicitly custom/unknown domains by relying on user-provided VJPs
-- [ ] Provide analytical Jacobian Matrix generator explicitly (for tiny matrices only)
+- [xx] Provide Python-level `register_vjp(op_type, custom_vjp_function)` API for extensibility
+- [xx] Support tracing explicitly custom/unknown domains by relying on user-provided VJPs
+- [xx] Provide analytical Jacobian Matrix generator explicitly (for tiny matrices only)
 
 ### 16. Final AOT Compiler Tests & Integration Rules (5+ items)
 
 - [xx] Unit Test: Compile pure `Einsum` into VJP and test against standard `MatMul` representations
 - [xx] Unit Test: Differentiate nested `Slice` operations with negative bounds accurately
-- [ ] Unit Test: Track gradient of completely scalar operations accurately
-- [ ] Unit Test: Test gradient flow correctly completely stops at `StopGradient` pseudo-nodes
-- [ ] Ensure execution overhead of AOT training graph matches standard inference overhead completely (0 runtime tracing cost)
+- [xx] Unit Test: Track gradient of completely scalar operations accurately
+- [xx] Unit Test: Test gradient flow correctly completely stops at `StopGradient` pseudo-nodes
+- [xx] Ensure execution overhead of AOT training graph matches standard inference overhead completely (0 runtime tracing cost)

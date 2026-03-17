@@ -1,7 +1,7 @@
 from onnx9000.core.ir import Graph, Node, Variable
 
 
-def test_toposort_basic():
+def test_toposort_basic() -> None:
     g = Graph("test")
     v1 = Variable("in1")
     v2 = Variable("in2")

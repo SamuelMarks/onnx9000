@@ -1,11 +1,12 @@
 """Module providing core logic and structural definitions."""
 
 from typing import NoReturn
+
 import pytest
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import trace
+from onnx9000.core.dtypes import DType
 
 
 class MyDictModule(Module):

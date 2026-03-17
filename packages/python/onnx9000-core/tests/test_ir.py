@@ -50,7 +50,7 @@ def test_graph(caplog) -> None:
     assert len(g.nodes) == 1
 
     class MockVInfo:
-        def __init__(self, name):
+        def __init__(self, name) -> None:
             self.name = name
 
     g.inputs = [MockVInfo("t1")]

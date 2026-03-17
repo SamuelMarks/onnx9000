@@ -5,6 +5,7 @@ This module manages the active builder context and allows fluent node creation.
 
 import threading
 from typing import Any, Union
+
 import numpy as np
 from onnx9000.core.ir import Node
 from onnx9000.toolkit.script.var import Var
@@ -61,9 +62,8 @@ class OpNamespace:
                 else:
                     inputs.append(_make_var(arg))
             num_outputs = 1
-            if op_type in ["TopK", "Split", "LSTM"]:
-                if op_type == "TopK":
-                    num_outputs = 2
+            if op_type in ["TopK", "Split", "LSTM"] and op_type == "TopK":
+                num_outputs = 2
             from onnx9000.toolkit.script.schema import validate_op
 
             validate_op(op_type, inputs, kwargs)
@@ -96,7 +96,7 @@ def Constant(value: Any) -> Var:
     elif isinstance(value, int):
         arr = np.array(value, dtype=np.int64)
     elif isinstance(value, list):
-        if all((isinstance(x, int) for x in value)):
+        if all(isinstance(x, int) for x in value):
             arr = np.array(value, dtype=np.int64)
         else:
             arr = np.array(value, dtype=np.float32)

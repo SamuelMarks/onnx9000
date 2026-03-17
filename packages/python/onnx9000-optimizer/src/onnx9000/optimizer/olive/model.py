@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from typing import Any, Optional
+
 from onnx9000.core.ir import Graph
 
 

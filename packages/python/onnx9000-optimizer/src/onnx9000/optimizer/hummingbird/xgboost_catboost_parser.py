@@ -1,13 +1,14 @@
-import logging
 import json
-from typing import Any, List, Dict
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
+import logging
+from typing import Any
+
 from onnx9000.core.ir import Graph, Node
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
 
 
-def parse_xgboost_dump(dump: List[str]) -> List[TreeAbstractions]:
+def parse_xgboost_dump(dump: list[str]) -> list[TreeAbstractions]:
     """Load XGBoost Booster JSON dumps natively."""
     trees = []
     for tree_json in dump:
@@ -18,7 +19,7 @@ def parse_xgboost_dump(dump: List[str]) -> List[TreeAbstractions]:
     return trees
 
 
-def _traverse_xgb_tree(node_dict: Dict, abstractions: TreeAbstractions):
+def _traverse_xgb_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
     if "split" in node_dict:  # Internal node
         feature_name = node_dict["split"]
         # In a real impl, we map feature name to integer index
@@ -49,7 +50,7 @@ def _traverse_xgb_tree(node_dict: Dict, abstractions: TreeAbstractions):
         abstractions.add_node(-1, 0.0, -1, -1, float(node_dict.get("leaf", 0.0)))
 
 
-def parse_xgb_classifier(estimator: Any) -> List[TreeAbstractions]:
+def parse_xgb_classifier(estimator: Any) -> list[TreeAbstractions]:
     """Parse XGBClassifier directly from Python memory."""
     if hasattr(estimator, "get_booster"):
         dump = estimator.get_booster().get_dump(dump_format="json")
@@ -57,7 +58,7 @@ def parse_xgb_classifier(estimator: Any) -> List[TreeAbstractions]:
     return []
 
 
-def parse_xgb_regressor(estimator: Any) -> List[TreeAbstractions]:
+def parse_xgb_regressor(estimator: Any) -> list[TreeAbstractions]:
     """Parse XGBRegressor directly from Python memory."""
     if hasattr(estimator, "get_booster"):
         dump = estimator.get_booster().get_dump(dump_format="json")
@@ -65,12 +66,12 @@ def parse_xgb_regressor(estimator: Any) -> List[TreeAbstractions]:
     return []
 
 
-def parse_xgb_ranker(estimator: Any) -> List[TreeAbstractions]:
+def parse_xgb_ranker(estimator: Any) -> list[TreeAbstractions]:
     """Parse XGBRanker directly from Python memory."""
     return parse_xgb_regressor(estimator)
 
 
-def handle_xgb_objectives(g: Graph, objective: str):
+def handle_xgb_objectives(g: Graph, objective: str) -> None:
     """Map XGBoost objectives (binary:logistic, multi:softmax, multi:softprob, count:poisson)"""
     if objective == "binary:logistic":
         g.nodes.append(Node("Sigmoid", inputs=["raw_scores"], outputs=["probabilities"]))
@@ -82,18 +83,18 @@ def handle_xgb_objectives(g: Graph, objective: str):
         g.nodes.append(Node("Exp", inputs=["raw_scores"], outputs=["predictions"]))
 
 
-def parse_catboost_classifier(estimator: Any) -> List[TreeAbstractions]:
+def parse_catboost_classifier(estimator: Any) -> list[TreeAbstractions]:
     """Parse CatBoostClassifier directly from Python memory.
     Leverage CatBoost Oblivious Trees natively mapping to PerfectTree Strategy.
     """
     return []
 
 
-def parse_catboost_regressor(estimator: Any) -> List[TreeAbstractions]:
+def parse_catboost_regressor(estimator: Any) -> list[TreeAbstractions]:
     """Parse CatBoostRegressor directly."""
     return []
 
 
-def handle_catboost_categorical(g: Graph):
+def handle_catboost_categorical(g: Graph) -> None:
     """Handle CatBoost one-hot encoded categorical variables mathematically."""
     pass

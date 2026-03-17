@@ -1,6 +1,6 @@
-from onnx9000.core.ir import Node
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.parsers import TFNode
+from onnx9000.core.ir import Node
 
 
 def test_builder_get_unique_name() -> None:

@@ -2,6 +2,7 @@
 
 import ctypes
 import logging
+
 import numpy as np
 from onnx9000.backends.cpu.executor import CPUExecutionProvider as CPUExecutor
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as MemoryPlanner

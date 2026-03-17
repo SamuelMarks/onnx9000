@@ -3,7 +3,7 @@ from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.webgpu_wasm_opts import WebGPUWASMCompilerOpts
 
 
-def test_eliminate_branch_divergence():
+def test_eliminate_branch_divergence() -> None:
     opts = WebGPUWASMCompilerOpts()
     g = Graph(name="test")
 
@@ -17,18 +17,18 @@ def test_eliminate_branch_divergence():
         opts.eliminate_branch_divergence(g)
 
 
-def test_prevent_oom():
+def test_prevent_oom() -> None:
     opts = WebGPUWASMCompilerOpts()
     opts.prevent_oom()  # ensure it doesn't crash
 
 
-def test_ensure_wgsl_compatibility():
+def test_ensure_wgsl_compatibility() -> None:
     opts = WebGPUWASMCompilerOpts()
     g = Graph(name="test")
     opts.ensure_wgsl_compatibility(g)
 
 
-def test_run_dce_and_folding():
+def test_run_dce_and_folding() -> None:
     opts = WebGPUWASMCompilerOpts()
     g = Graph(name="test")
     opts.run_constant_folding(g)

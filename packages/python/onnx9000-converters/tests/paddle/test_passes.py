@@ -1,5 +1,5 @@
-from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.converters.paddle.passes import paddle_optimize_graph
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _create_graph() -> Graph:

@@ -2,6 +2,7 @@
 
 import logging
 from typing import Optional
+
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 

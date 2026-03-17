@@ -2,10 +2,11 @@
 
 from pathlib import Path
 from typing import Any, Optional, Union
-from onnx9000.core.serializer import serialize_model as build_model_proto
+
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import trace
+from onnx9000.core.serializer import serialize_model as build_model_proto
 
 
 def export(
@@ -36,7 +37,7 @@ def export(
             if i < len(builder.outputs):
                 builder.outputs[i]._name = name
                 for node in builder.nodes:
-                    if any((o is builder.outputs[i] for o in node.outputs)):
+                    if any(o is builder.outputs[i] for o in node.outputs):
                         node.outputs = [
                             builder.outputs[i] if o is builder.outputs[i] else o
                             for o in node.outputs

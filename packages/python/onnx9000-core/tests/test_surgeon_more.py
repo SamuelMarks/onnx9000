@@ -4,7 +4,7 @@ from onnx9000.core.ir import Constant, Graph, Node, Variable
 from onnx9000.core.surgeon import *
 
 
-def test_toposort_cyclic():
+def test_toposort_cyclic() -> None:
     g = Graph("cyclic")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -25,7 +25,7 @@ def test_toposort_cyclic():
         toposort(g)
 
 
-def test_walk_nested_graphs():
+def test_walk_nested_graphs() -> None:
     sub_g = Graph("sub")
     v_sub = Variable("v_sub")
     sub_g.add_tensor(v_sub)
@@ -50,10 +50,10 @@ def test_walk_nested_graphs():
     g.add_node(n1)
     g.add_node(n2)
     g.add_node(n3)
-    nodes = list(walk(g, mode="dfs"))
+    list(walk(g, mode="dfs"))
 
 
-def test_find_paths():
+def test_find_paths() -> None:
     g = Graph("paths")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -79,7 +79,7 @@ def test_find_paths():
     assert find_all_paths(g, n1, nx) == []
 
 
-def test_analyze_critical_path_distances():
+def test_analyze_critical_path_distances() -> None:
     g = Graph("paths")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -99,7 +99,7 @@ def test_analyze_critical_path_distances():
     assert len(cp) > 0
 
 
-def test_estimate_macs():
+def test_estimate_macs() -> None:
     g = Graph("macs")
     v_in = Variable("in", shape=(1, 3, 224, 224))
     v_out = Variable("out", shape=(1, 64, 224, 224))
@@ -120,7 +120,7 @@ def test_estimate_macs():
     assert macs > 0
 
 
-def test_estimate_constant_memory():
+def test_estimate_constant_memory() -> None:
     g = Graph("mem")
     c1 = Constant("c1", shape=(1, -1, 10, "foo"), values=b"123")
     g.add_tensor(c1)
@@ -130,7 +130,7 @@ def test_estimate_constant_memory():
     assert mem > 0
 
 
-def test_replace_output_node_method():
+def test_replace_output_node_method() -> None:
     g = Graph("repl_out")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -144,7 +144,7 @@ def test_replace_output_node_method():
     assert n1 in v2.inputs
 
 
-def test_remove_all_identity():
+def test_remove_all_identity() -> None:
     g = Graph("id")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -160,7 +160,7 @@ def test_remove_all_identity():
     assert n_cons.inputs[0] == v1
 
 
-def test_bypass_node_errors():
+def test_bypass_node_errors() -> None:
     g = Graph("bypass")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -169,7 +169,7 @@ def test_bypass_node_errors():
         bypass_node(g, n1)
 
 
-def test_variable_constant_conversion():
+def test_variable_constant_conversion() -> None:
     g = Graph("vtc")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -187,7 +187,7 @@ def test_variable_constant_conversion():
     assert n1.inputs[0].name == v1_new.name
 
 
-def test_prepend_graph():
+def test_prepend_graph() -> None:
     g1 = Graph("g1")
     n1 = Node("N1")
     g1.add_node(n1)
@@ -198,7 +198,7 @@ def test_prepend_graph():
     assert len(g1.nodes) == 2
 
 
-def test_duplicate_subgraph():
+def test_duplicate_subgraph() -> None:
     g = Graph("dup")
     v1 = Variable("v1", shape=(1,))
     n1 = Node("N1", inputs=[v1], outputs=[])
@@ -207,7 +207,7 @@ def test_duplicate_subgraph():
     assert len(nodes) == 1
 
 
-def test_pattern_matcher_cases():
+def test_pattern_matcher_cases() -> None:
     g = Graph("pm")
     v_in = Variable("in")
     c_in = Constant("c")
@@ -223,7 +223,7 @@ def test_pattern_matcher_cases():
     assert not match_pattern(g, pm2)
     pm3 = PatternMatcher("Conv", is_constant=True)
     assert not match_pattern(g, pm3)
-    pm4 = PatternMatcher("Conv", inputs=[PatternMatcher("Relu")])
+    PatternMatcher("Conv", inputs=[PatternMatcher("Relu")])
     pass
     pm5 = PatternMatcher("Conv", inputs=[lambda t: True, lambda t: True], unordered=True)
     assert match_pattern(g, pm5) == [conv]
@@ -236,7 +236,7 @@ def test_pattern_matcher_cases():
     assert len(match_pattern(g, pm_sub, recursive=True)) == 2
 
 
-def test_infer_shapes_dtypes_symbolic():
+def test_infer_shapes_dtypes_symbolic() -> None:
     g = Graph("inf")
     v1 = Variable("v1", shape=(1, 2), dtype=DType.FLOAT32)
     v2 = Variable("v2")
@@ -251,7 +251,7 @@ def test_infer_shapes_dtypes_symbolic():
     infer_symbolic_shapes(g)
 
 
-def test_strip_doc_strings():
+def test_strip_doc_strings() -> None:
     g = Graph("doc")
     n = Node("N1")
     n.attributes["doc_string"] = Attribute("doc_string", value="test")
@@ -260,7 +260,7 @@ def test_strip_doc_strings():
     assert "doc_string" not in n.attributes
 
 
-def test_deduplicate_constants():
+def test_deduplicate_constants() -> None:
     g = Graph("dedup")
     c1 = Constant("c1", values=b"123")
     c2 = Constant("c2", values=b"123")
@@ -274,7 +274,7 @@ def test_deduplicate_constants():
     assert "c2" not in g.tensors
 
 
-def test_fuse_trivial():
+def test_fuse_trivial() -> None:
     g = Graph("fuse")
     n1 = Node("Erf")
     n2 = Node("Tanh")
@@ -290,7 +290,7 @@ def test_fuse_trivial():
     assert n3.op_type == "LayerNormalization"
 
 
-def test_downcasts():
+def test_downcasts() -> None:
     g = Graph("dc")
     v1 = Variable("v1", dtype=DType.FLOAT64)
     v2 = Variable("v2", dtype=DType.INT64)
@@ -302,7 +302,7 @@ def test_downcasts():
     assert v2.dtype == DType.INT32
 
 
-def test_validate_topology_failures():
+def test_validate_topology_failures() -> None:
     g = Graph("val")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -319,7 +319,7 @@ def test_validate_topology_failures():
     pass
 
 
-def test_broadcast_constant():
+def test_broadcast_constant() -> None:
     c = Constant("c", shape=(1, 2))
     c.dtype = DType.FLOAT32
     c2 = broadcast_constant(c, (1, 2))
@@ -333,13 +333,13 @@ def test_broadcast_constant():
     broadcast_constant(c3, (1, 2))
 
 
-def test_trace_missing():
+def test_trace_missing() -> None:
     g = Graph("trace")
     assert trace_origin(g, "not_found") == []
     assert trace_destiny(g, "not_found") == []
 
 
-def test_walk_bfs():
+def test_walk_bfs() -> None:
     g = Graph("bfs")
     v1 = Variable("v1")
     g.add_tensor(v1)
@@ -356,7 +356,7 @@ def test_walk_bfs():
     assert n2 in res
 
 
-def test_estimate_macs_exceptions():
+def test_estimate_macs_exceptions() -> None:
     g = Graph("mem")
     v1 = Variable("v1")
     n1 = Node("Conv", inputs=[v1])
@@ -368,7 +368,7 @@ def test_estimate_macs_exceptions():
     assert estimate_macs(g) == 0
 
 
-def test_estimate_act_memory_exception():
+def test_estimate_act_memory_exception() -> None:
     g = Graph("mem")
 
     class BadShape:
@@ -385,7 +385,7 @@ def test_estimate_act_memory_exception():
     assert estimate_activation_memory(g2) == 16
 
 
-def test_pattern_match_inputs_ordered():
+def test_pattern_match_inputs_ordered() -> None:
     g = Graph("pm")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -414,7 +414,7 @@ def test_pattern_match_inputs_ordered():
     assert len(match_pattern(g, pm2)) == 0
 
 
-def test_pattern_match_inputs_unordered():
+def test_pattern_match_inputs_unordered() -> None:
     g = Graph("pm")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -436,7 +436,7 @@ def test_pattern_match_inputs_unordered():
     assert len(match_pattern(g, pm_call_un)) == 1
 
 
-def test_validate_topology_cycles():
+def test_validate_topology_cycles() -> None:
     g = Graph("cyc")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -454,7 +454,7 @@ def test_validate_topology_cycles():
     assert not validate_topology(g)
 
 
-def test_validate_topology_name_conflict():
+def test_validate_topology_name_conflict() -> None:
     g = Graph("conflict")
     n1 = Node("Op", name="A")
     n2 = Node("Op", name="A")
@@ -463,7 +463,7 @@ def test_validate_topology_name_conflict():
     assert not validate_topology(g)
 
 
-def test_toposort_producer_not_visited():
+def test_toposort_producer_not_visited() -> None:
     g = Graph("topo")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -474,7 +474,7 @@ def test_toposort_producer_not_visited():
     g.toposort()
 
 
-def test_walk_dfs_connected():
+def test_walk_dfs_connected() -> None:
     g = Graph("dfs")
     v1 = Variable("v1")
     g.add_tensor(v1)
@@ -491,7 +491,7 @@ def test_walk_dfs_connected():
     assert n2 in res
 
 
-def test_isolate_dependencies_more():
+def test_isolate_dependencies_more() -> None:
     g = Graph("iso")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -506,7 +506,7 @@ def test_isolate_dependencies_more():
     assert len(isolated.nodes) == 2
 
 
-def test_estimate_macs_shapes():
+def test_estimate_macs_shapes() -> None:
     g = Graph("mac")
     v_a = Variable("A", shape=(2, 3))
     v_b = Variable("B", shape=(3, 4))

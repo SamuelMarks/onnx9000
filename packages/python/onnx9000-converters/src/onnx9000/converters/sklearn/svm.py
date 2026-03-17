@@ -1,5 +1,5 @@
-from onnx9000.core.ir import Graph, Node, Attribute
 import numpy as np
+from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def _get_kernel_enum(kernel: str) -> str:

@@ -1,14 +1,13 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-import onnx9000.backends.rocm.executor as executor
 import numpy as np
-import ctypes
-from onnx9000.core.ir import Graph, Node, Tensor
+import onnx9000.backends.rocm.executor as executor
+import pytest
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_rocm_executor_fallback():
+def test_rocm_executor_fallback() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -29,7 +28,7 @@ def test_rocm_executor_fallback():
     np.testing.assert_allclose(out["B"], np.array([[1.0, 0.0]], dtype=np.float32))
 
 
-def test_rocm_executor_matmul_fallback():
+def test_rocm_executor_matmul_fallback() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -46,17 +45,17 @@ def test_rocm_executor_matmul_fallback():
         patch(
             "onnx9000.backends.rocm.executor._hip_lib",
             MagicMock(**{"hipStreamCreate.return_value": 0}),
-        ) as mock_hip,
+        ),
         patch(
             "onnx9000.backends.rocm.executor._rocblas_lib",
             MagicMock(
                 **{"rocblas_create_handle.return_value": 0, "rocblas_set_stream.return_value": 0}
             ),
-        ) as mock_rocblas,
+        ),
         patch(
             "onnx9000.backends.rocm.executor._miopen_lib",
             MagicMock(**{"miopenCreate.return_value": 0}),
-        ) as mock_miopen,
+        ),
     ):
         dispatcher = executor.Dispatcher(g)
 
@@ -72,7 +71,7 @@ def test_rocm_executor_matmul_fallback():
         assert "C" in out
 
 
-def test_rocm_executor_matmul_no_rocblas():
+def test_rocm_executor_matmul_no_rocblas() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -95,7 +94,7 @@ def test_rocm_executor_matmul_no_rocblas():
             )
 
 
-def test_rocm_executor_elementwise_fallback():
+def test_rocm_executor_elementwise_fallback() -> None:
     for op_type in ["Add", "Sub", "Conv", "Dummy"]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -125,7 +124,7 @@ def test_rocm_executor_elementwise_fallback():
                 assert "C" in out
 
 
-def test_rocm_executor_init_memory_dynamic_and_init():
+def test_rocm_executor_init_memory_dynamic_and_init() -> None:
     g = Graph("test")
     t_out = Tensor("out_t", ("N", 2), DType.FLOAT32)
     t_init = Tensor(
@@ -143,7 +142,7 @@ def test_rocm_executor_init_memory_dynamic_and_init():
     assert "init_t" in dispatcher.planner.dynamic_allocations
 
 
-def test_rocm_executor_del_handles_success():
+def test_rocm_executor_del_handles_success() -> None:
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),
@@ -180,7 +179,7 @@ def test_rocm_executor_del_handles_success():
         assert mock_hip.hipStreamDestroy.called
 
 
-def test_rocm_executor_del_handles_errors():
+def test_rocm_executor_del_handles_errors() -> None:
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),
@@ -215,7 +214,7 @@ def test_rocm_executor_del_handles_errors():
         dispatcher.__del__()
 
 
-def ignore():
+def ignore() -> None:
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),

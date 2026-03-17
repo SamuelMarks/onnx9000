@@ -1,6 +1,7 @@
 from unittest.mock import patch
-from onnx9000.core.ir import Graph
+
 from onnx9000.converters.paddle.api import convert_paddle_to_onnx
+from onnx9000.core.ir import Graph
 
 
 def test_convert_paddle_to_onnx_empty() -> None:
@@ -15,7 +16,7 @@ def test_convert_paddle_to_onnx_fallback(caplog) -> None:
     block_data = b'\x08\x00\x10\x00"' + bytes([len(op)]) + op
     program_data = b"\n" + bytes([len(block_data)]) + block_data
     g = convert_paddle_to_onnx(program_data)
-    assert any((n.op_type == "Custom_Paddle_unknown" for n in g.nodes))
+    assert any(n.op_type == "Custom_Paddle_unknown" for n in g.nodes)
     assert "Fallback to custom op for unknown Paddle node: unknown" in caplog.text
 
 

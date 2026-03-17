@@ -1,6 +1,7 @@
 """Provides base.py module functionality."""
 
 from abc import ABC, abstractmethod
+
 from onnx9000.core.ir import Graph
 
 

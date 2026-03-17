@@ -1,9 +1,9 @@
-from onnx9000.core.ir import Graph
 from onnx9000.converters.tf.api import (
     convert_keras_to_onnx,
     convert_tf_to_onnx,
     convert_tflite_to_onnx,
 )
+from onnx9000.core.ir import Graph
 
 
 def test_convert_tf_to_onnx_graphdef() -> None:
@@ -13,7 +13,7 @@ def test_convert_tf_to_onnx_graphdef() -> None:
     graph = convert_tf_to_onnx(data)
     assert isinstance(graph, Graph)
     assert graph.name == "tf_graph"
-    assert any((n.op_type == "Relu" for n in graph.nodes))
+    assert any(n.op_type == "Relu" for n in graph.nodes)
 
 
 def test_convert_tf_to_onnx_saved_model() -> None:
@@ -40,5 +40,5 @@ def test_fallback_op_conversion(caplog) -> None:
     node1 = b"\n\x04test\x12\x0bUnknownOpXX"
     data = b"\n" + bytes([len(node1)]) + node1
     graph = convert_tf_to_onnx(data)
-    assert any((n.op_type == "Custom_TF_UnknownOpXX" for n in graph.nodes))
+    assert any(n.op_type == "Custom_TF_UnknownOpXX" for n in graph.nodes)
     assert "Fallback to custom op for unknown node: UnknownOpXX" in caplog.text

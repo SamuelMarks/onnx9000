@@ -1,5 +1,7 @@
 """Tests for AutoOptimizer and Evaluator."""
 
+from typing import NoReturn
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.olive.auto import AutoOptimizer
 from onnx9000.optimizer.olive.evaluator import Evaluator
@@ -27,7 +29,7 @@ class FailingPass(Pass):
         """Init."""
         super().__init__("FailingPass")
 
-    def run(self, model, context):
+    def run(self, model, context) -> NoReturn:
         """Run."""
         raise RuntimeError("Fail")
 

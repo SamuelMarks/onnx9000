@@ -1,9 +1,10 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+
 import onnx9000.backends.rocm.bindings as bindings
+import pytest
 
 
-def test_rocm_bindings_available():
+def test_rocm_bindings_available() -> None:
     # Because these are module level, they could be anything depending on test environment.
     # We just ensure they return a bool
     assert isinstance(bindings.is_hip_available(), bool)
@@ -11,7 +12,7 @@ def test_rocm_bindings_available():
     assert isinstance(bindings.is_miopen_available(), bool)
 
 
-def test_register_apis():
+def test_register_apis() -> None:
     mock_lib = MagicMock()
     bindings._register_hip_api(mock_lib)
     assert mock_lib.hipMalloc.argtypes is not None
@@ -29,7 +30,7 @@ def test_register_apis():
     bindings._register_miopen_api(None)
 
 
-def test_check_errors():
+def test_check_errors() -> None:
     bindings.check_hip_error(0)
     bindings.check_rocblas_error(0)
     bindings.check_miopen_error(0)

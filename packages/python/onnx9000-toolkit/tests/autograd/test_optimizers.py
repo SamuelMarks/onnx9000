@@ -10,7 +10,7 @@ from onnx9000.toolkit.training.autograd.optimizers import (
 )
 
 
-def test_optimizers_coverage():
+def test_optimizers_coverage() -> None:
     g = Graph("g")
     add_sgd_optimizer(g, "lr", ["w1"], weight_decay=0.1, momentum=0.9)
     add_adam_optimizer(g, "lr", ["w2"])
@@ -21,11 +21,12 @@ def test_optimizers_coverage():
     assert len(g.nodes) > 10
 
 
-def test_gradient_clipping():
+def test_gradient_clipping() -> None:
     g = Graph("g")
     add_gradient_clipping(g, [], 1.0)
-    add_gradient_clipping(g, ["w1"], 0.0)
     names1 = ["grad_w1"]
+    add_gradient_clipping(g, names1, 0.0)
+    assert names1[0] == "grad_w1"
     add_gradient_clipping(g, names1, 1.0)
     assert names1[0] == "grad_w1_clipped"
     names2 = ["grad_w2", "grad_w3"]
@@ -33,7 +34,7 @@ def test_gradient_clipping():
     assert names2[0] == "grad_w2_clipped"
 
 
-def test_optimizer_missing():
+def test_optimizer_missing() -> None:
     from onnx9000.toolkit.training.autograd.optimizers import add_gradient_accumulation
 
     g = Graph("g")

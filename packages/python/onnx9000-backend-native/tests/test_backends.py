@@ -1,10 +1,9 @@
-import gc
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 from onnx9000.backends.memory.metal_arena import MetalMemoryPlanner
 
 
-def test_cpu_memory_planner():
+def test_cpu_memory_planner() -> None:
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 128, (2, 2), "float32")
     planner.build_arena()
@@ -20,7 +19,7 @@ def test_cpu_memory_planner():
     assert planner.get_host_tensor("B").tobytes() == b"B"
 
 
-def test_metal_memory_planner():
+def test_metal_memory_planner() -> None:
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 128, (2, 2), "float32")
     planner.build_arena()
@@ -35,7 +34,7 @@ def test_metal_memory_planner():
     assert planner.get_host_tensor("B").tobytes() == b"B"
 
 
-def test_cpu_ops_registry():
+def test_cpu_ops_registry() -> None:
     import numpy as np
 
     inputs = [np.array([1, 2]), np.array([3, 4])]
@@ -53,7 +52,7 @@ def test_cpu_ops_registry():
         assert np.array_equal(res[0], np.array([-2, -2]))
 
 
-def test_cpu_executor():
+def test_cpu_executor() -> None:
     import numpy as np
     from onnx9000.backends.cpu.executor import CPUExecutionProvider
     from onnx9000.core.dtypes import DType

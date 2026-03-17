@@ -1,6 +1,7 @@
 """Module providing core logic and structural definitions."""
 
 from typing import Any
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 

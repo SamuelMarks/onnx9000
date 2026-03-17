@@ -1,12 +1,12 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.dtypes import DType
 import onnx9000.backends.apple.executor as executor
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_apple_executor_fallback():
+def test_apple_executor_fallback() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -28,7 +28,7 @@ def test_apple_executor_fallback():
     np.testing.assert_allclose(out["B"], np.array([[1.0, 0.0]], dtype=np.float32))
 
 
-def test_apple_executor_matmul_accelerate():
+def test_apple_executor_matmul_accelerate() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -47,7 +47,7 @@ def test_apple_executor_matmul_accelerate():
             assert "C" in out
 
 
-def test_apple_executor_elementwise_accelerate():
+def test_apple_executor_elementwise_accelerate() -> None:
     for op_type, func_name in [("Add", "vDSP_vadd"), ("Sub", "vDSP_vsub"), ("Mul", "vDSP_vmul")]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -67,7 +67,7 @@ def test_apple_executor_elementwise_accelerate():
                 assert "C" in out
 
 
-def test_apple_executor_matmul_no_accelerate():
+def test_apple_executor_matmul_no_accelerate() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -84,11 +84,11 @@ def test_apple_executor_matmul_no_accelerate():
             "execute",
             return_value={"C": np.ones((2, 2), dtype=np.float32)},
         ) as mock_exec:
-            out = dispatcher.run({"A": inp_A, "B": inp_B})
+            dispatcher.run({"A": inp_A, "B": inp_B})
             assert mock_exec.called
 
 
-def test_apple_executor_elementwise_no_accelerate():
+def test_apple_executor_elementwise_no_accelerate() -> None:
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -105,11 +105,11 @@ def test_apple_executor_elementwise_no_accelerate():
             "execute",
             return_value={"C": np.ones((2, 2), dtype=np.float32)},
         ) as mock_exec:
-            out = dispatcher.run({"A": inp_A, "B": inp_B})
+            dispatcher.run({"A": inp_A, "B": inp_B})
             assert mock_exec.called
 
 
-def test_apple_executor_init_memory():
+def test_apple_executor_init_memory() -> None:
     g = Graph("test")
     t_out = Tensor("out_t", (2,), DType.FLOAT32)
     t_init = Tensor(

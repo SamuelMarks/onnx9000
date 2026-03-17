@@ -4,6 +4,7 @@
 def test_rnn_coverage_extra_2() -> None:
     """Tests the test_rnn_coverage_extra_2 functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.frontend.nn.rnn import GRU, LSTM, RNN
 
     rnn = RNN(10, 20)
@@ -24,6 +25,7 @@ def test_rnn_coverage_extra_2() -> None:
 def test_rnn_list_return() -> None:
     """Tests the test_rnn_list_return functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.frontend.nn.rnn import GRU, LSTM, RNN
 
     rnn = RNN(10, 20)
@@ -44,6 +46,7 @@ def test_rnn_list_return() -> None:
 def test_lstm_list_len_2() -> None:
     """Tests the test_lstm_list_len_2 functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.frontend.nn.rnn import LSTM
 
     lstm = LSTM(10, 20, bias=False)

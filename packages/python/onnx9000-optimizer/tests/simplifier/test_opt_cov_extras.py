@@ -4,7 +4,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.api import simplify
 
 
-def test_constant_folding_extras():
+def test_constant_folding_extras() -> None:
     g = Graph("test")
     t = Tensor(
         "in0",
@@ -43,7 +43,7 @@ def test_constant_folding_extras():
     simplify(g)
 
 
-def test_dce_transpose_fused():
+def test_dce_transpose_fused() -> None:
     g = Graph("test")
     g.inputs = ["in0"]
     g.add_node(Node("Transpose", ["in0"], ["mid"], {"perm": [1, 0, 2]}, "n1"))

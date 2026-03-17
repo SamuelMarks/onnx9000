@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import Union
+
 from onnx9000.core import onnx_pb2
 from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import DynamicDim, Graph

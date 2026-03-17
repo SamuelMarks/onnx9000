@@ -1,7 +1,7 @@
 """Module docstring."""
 
 import logging
-from onnx9000.core.ir import Graph, Tensor
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.paddle.math_ops import MATH_OPS_MAPPING
@@ -10,6 +10,7 @@ from onnx9000.converters.paddle.parsers import PaddleGraph, load_paddle_model
 from onnx9000.converters.paddle.reduction_ops import REDUCTION_OPS_MAPPING
 from onnx9000.converters.paddle.tensor_ops import TENSOR_OPS_MAPPING
 from onnx9000.converters.paddle.vision_ops import VISION_OPS_MAPPING
+from onnx9000.core.ir import Graph, Tensor
 
 ALL_MAPPINGS = {}
 ALL_MAPPINGS.update(MATH_OPS_MAPPING)

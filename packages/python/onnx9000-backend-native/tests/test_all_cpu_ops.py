@@ -1,12 +1,14 @@
+import contextlib
+
 import numpy as np
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 
 
-def test_all_cpu_ops_via_registry():
+def test_all_cpu_ops_via_registry() -> None:
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     b = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     c = np.array([1.0], dtype=np.float32)
-    for name, func in OP_REGISTRY.items():
+    for _name, func in OP_REGISTRY.items():
         try:
             res = func([a, b, c, c, c, c], {})
             assert isinstance(res, list)
@@ -14,7 +16,7 @@ def test_all_cpu_ops_via_registry():
             pass
 
 
-def test_complex_cpu_ops():
+def test_complex_cpu_ops() -> None:
     from onnx9000.backends.cpu.ops import (
         batchnorm_op,
         conv_op,
@@ -46,10 +48,10 @@ def test_complex_cpu_ops():
     shrink_op([x], {"bias": 0.0, "lambd": 0.5})
 
 
-def test_missing_ops_branches():
+def test_missing_ops_branches() -> None:
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
-    conv_op = OP_REGISTRY["Conv"]
+    OP_REGISTRY["Conv"]
     convtranspose_op = OP_REGISTRY["ConvTranspose"]
     x = np.ones((1, 1, 4, 4), dtype=np.float32)
     w = np.ones((1, 1, 2, 2), dtype=np.float32)
@@ -70,18 +72,16 @@ def test_missing_ops_branches():
     constant_op = OP_REGISTRY["Constant"]
     constant_op([np.array([2, 2], dtype=np.int64)], {"value": np.array([1.0])})
     pad_op = OP_REGISTRY["Pad"]
-    try:
+    with contextlib.suppress(TypeError):
         pad_op([x, np.array([1, 1, 1, 1, 1, 1, 1, 1])], {"mode": "constant"})
-    except TypeError:
-        pass
     clip_op = OP_REGISTRY["Clip"]
     clip_op([x, np.array([-1.0]), np.array([1.0])], {})
 
 
-def test_missing_ops_branches():
+def test_missing_ops_branches() -> None:
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
-    conv_op = OP_REGISTRY["Conv"]
+    OP_REGISTRY["Conv"]
     convtranspose_op = OP_REGISTRY["ConvTranspose"]
     x = np.ones((1, 1, 4, 4), dtype=np.float32)
     w = np.ones((1, 1, 2, 2), dtype=np.float32)
@@ -102,15 +102,13 @@ def test_missing_ops_branches():
     constant_op = OP_REGISTRY["Constant"]
     constant_op([np.array([2, 2], dtype=np.int64)], {"value": np.array([1.0])})
     pad_op = OP_REGISTRY["Pad"]
-    try:
+    with contextlib.suppress(TypeError):
         pad_op([x, np.array([1, 1, 1, 1, 1, 1, 1, 1])], {"mode": "constant"})
-    except TypeError:
-        pass
     clip_op = OP_REGISTRY["Clip"]
     clip_op([x, np.array([-1.0]), np.array([1.0])], {})
 
 
-def test_missing_ops_again_again():
+def test_missing_ops_again_again() -> None:
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -137,7 +135,7 @@ def test_missing_ops_again_again():
     split_to_seq([a], {})
 
 
-def test_missing_last_lines():
+def test_missing_last_lines() -> None:
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -151,7 +149,7 @@ def test_missing_last_lines():
     OP_REGISTRY["Split"]([a, np.array([1, 1], dtype=np.int64)], {})
 
 
-def test_ops_coverage_final():
+def test_ops_coverage_final() -> None:
     import numpy as np
     from onnx9000.backends.cpu.ops import (
         concatfromsequence_op,

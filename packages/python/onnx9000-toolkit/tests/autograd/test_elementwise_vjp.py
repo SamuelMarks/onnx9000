@@ -394,5 +394,5 @@ def test_bitshift_vjp() -> None:
     node = Node("BitShift", ["a", "b"], ["c"], {}, name="bitshift_node")
     rule = get_vjp_rule("BitShift")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
-    assert len(nodes) == 2
+    assert len(nodes) == 1
     assert nodes[0].op_type == "ConstantOfShape"

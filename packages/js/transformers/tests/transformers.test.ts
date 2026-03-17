@@ -32,3 +32,12 @@ describe('Transformers Exports', () => {
     expect(t.ArrayAPI.add([1, 2], [3, 4])).toEqual([4, 6]);
   });
 });
+
+describe('ArrayAPI bounds coverage', () => {
+  it('should handle b shorter than a', () => {
+    const a = [1, 2, 3];
+    const b = [1];
+    const res = t.ArrayAPI.add(a, b);
+    expect(res).toEqual([2, 2, 3]);
+  });
+});

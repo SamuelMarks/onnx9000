@@ -1,12 +1,11 @@
 import logging
-import math
-from typing import Dict, List, Tuple
+
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
 
 
-def analyze_tree_depth(abstractions: TreeAbstractions) -> Dict[str, float]:
+def analyze_tree_depth(abstractions: TreeAbstractions) -> dict[str, float]:
     """Provide tree depth analysis utility (min, max, mean depths)."""
     if not abstractions.features:
         return {"min": 0, "max": 0, "mean": 0}
@@ -14,7 +13,7 @@ def analyze_tree_depth(abstractions: TreeAbstractions) -> Dict[str, float]:
     depths = []
 
     # We trace paths from roots
-    def trace(node_idx: int, current_depth: int):
+    def trace(node_idx: int, current_depth: int) -> None:
         if (
             abstractions.left_children[node_idx] == -1
             and abstractions.right_children[node_idx] == -1
@@ -35,7 +34,7 @@ def analyze_tree_depth(abstractions: TreeAbstractions) -> Dict[str, float]:
     return {"min": min(depths), "max": max(depths), "mean": sum(depths) / len(depths)}
 
 
-def analyze_leaf_distribution(abstractions: TreeAbstractions) -> Dict[float, int]:
+def analyze_leaf_distribution(abstractions: TreeAbstractions) -> dict[float, int]:
     """Provide tree leaf distribution utility."""
     distribution = {}
     for i, left in enumerate(abstractions.left_children):
@@ -45,7 +44,7 @@ def analyze_leaf_distribution(abstractions: TreeAbstractions) -> Dict[float, int
     return distribution
 
 
-def flatten_ensemble(trees: List[TreeAbstractions]) -> TreeAbstractions:
+def flatten_ensemble(trees: list[TreeAbstractions]) -> TreeAbstractions:
     """Flatten nested ensemble structures into unified 2D/3D tensors."""
     flattened = TreeAbstractions()
     offset = 0

@@ -3,10 +3,10 @@
 from onnx9000.converters.frontend.nn.conv import ConvTranspose1d, ConvTranspose2d
 
 "Test Conv."
-from onnx9000.core.dtypes import DType
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.nn.conv import Conv1d, Conv2d, Conv3d
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_conv() -> None:

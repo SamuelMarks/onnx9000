@@ -143,3 +143,27 @@ describe('WebNN Fallbacks', () => {
     global.navigator = origNav;
   });
 });
+
+describe('Provider Object Name fallback coverage', () => {
+  it('should handle Object.name in WasmProvider', async () => {
+    const provider = new WasmProvider();
+    const g = new Graph('g');
+    g.outputs.push({ name: 'out_obj' } as any);
+    const res = await provider.execute(g, {});
+    expect(res['out_obj']).toBeDefined();
+  });
+  it('should handle Object.name in WebGPUProvider', async () => {
+    const provider = new WebGPUProvider();
+    const g = new Graph('g');
+    g.outputs.push({ name: 'out_obj' } as any);
+    const res = await provider.execute(g, {});
+    expect(res['out_obj']).toBeDefined();
+  });
+  it('should handle Object.name in WebNNProvider', async () => {
+    const provider = new WebNNProvider();
+    const g = new Graph('g');
+    g.outputs.push({ name: 'out_obj' } as any);
+    const res = await provider.execute(g, {});
+    expect(res['out_obj']).toBeDefined();
+  });
+});

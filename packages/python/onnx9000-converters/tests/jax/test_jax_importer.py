@@ -40,6 +40,7 @@ def test_jax_importer_unknown_type() -> None:
 def test_jax_importer_fallback_load() -> None:
     """Tests the test_jax_importer_fallback_load functionality."""
     from unittest.mock import patch
+
     from onnx9000.converters.jax.importer import load
 
     with patch("onnx9000.core.parser.core.load") as mock_load:

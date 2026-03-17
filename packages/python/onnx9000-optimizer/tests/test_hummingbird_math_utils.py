@@ -1,15 +1,14 @@
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.math_utils import (
+    clamp_nan_to_zero,
+    ensure_softmax_stability,
     optimize_sigmoid,
     replace_mod,
     replace_where_with_arithmetic_mask,
-    clamp_nan_to_zero,
-    ensure_softmax_stability,
 )
 
 
-def test_optimize_sigmoid():
+def test_optimize_sigmoid() -> None:
     g = Graph(name="test")
     optimize_sigmoid(g, "input", "out_sig", use_fast_math=True)
     op_types = [node.op_type for node in g.nodes]
@@ -18,7 +17,7 @@ def test_optimize_sigmoid():
     assert "Div" in op_types
 
 
-def test_replace_mod():
+def test_replace_mod() -> None:
     g = Graph(name="test")
     replace_mod(g, "A", "B", "out_mod")
     op_types = [node.op_type for node in g.nodes]
@@ -28,7 +27,7 @@ def test_replace_mod():
     assert "Sub" in op_types
 
 
-def test_replace_where_with_arithmetic_mask():
+def test_replace_where_with_arithmetic_mask() -> None:
     g = Graph(name="test")
     replace_where_with_arithmetic_mask(g, "mask", "A", "B", "out")
     op_types = [node.op_type for node in g.nodes]
@@ -37,7 +36,7 @@ def test_replace_where_with_arithmetic_mask():
     assert op_types.count("Add") == 1
 
 
-def test_clamp_nan_to_zero():
+def test_clamp_nan_to_zero() -> None:
     g = Graph(name="test")
     clamp_nan_to_zero(g, "in", "out")
     op_types = [node.op_type for node in g.nodes]
@@ -45,7 +44,7 @@ def test_clamp_nan_to_zero():
     assert "Where" in op_types
 
 
-def test_ensure_softmax_stability():
+def test_ensure_softmax_stability() -> None:
     g = Graph(name="test")
     ensure_softmax_stability(g, "in", "out")
     op_types = [node.op_type for node in g.nodes]

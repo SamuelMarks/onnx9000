@@ -33,23 +33,23 @@ def test_registry_duplicate() -> None:
             assert True
 
 
-def test_registry_new_domain():
+def test_registry_new_domain() -> None:
     from onnx9000.core.registry import OperatorRegistry
 
     reg = OperatorRegistry()
 
     @reg.register_op("TestNewDomain", domain="custom.domain")
-    def my_op():
+    def my_op() -> None:
         pass
 
     assert "custom.domain" in reg._domains
 
 
-def test_global_register_op():
+def test_global_register_op() -> None:
     from onnx9000.core.registry import global_registry, register_op
 
     @register_op("GlobalMockOp", domain="global")
-    def global_mock():
+    def global_mock() -> None:
         pass
 
     assert "global.GlobalMockOp" in global_registry._registry

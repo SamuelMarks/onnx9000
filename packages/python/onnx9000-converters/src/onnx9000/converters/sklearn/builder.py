@@ -1,7 +1,7 @@
-import typing
-from typing import Any, Dict, List, Optional, Tuple, Union
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
+from typing import Optional
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 
 
 class SKLearnParser:
@@ -27,7 +27,7 @@ class SKLearnParser:
             ValueInfo(input_name, self.initial_types[0][1], self.initial_types[0][2])
         )
         output_names = self._parse_estimator(self.model, [input_name])
-        for i, out_name in enumerate(output_names):
+        for _i, out_name in enumerate(output_names):
             self.graph.outputs.append(ValueInfo(out_name, DType.FLOAT32, ("N", "C")))
         return self.graph
 

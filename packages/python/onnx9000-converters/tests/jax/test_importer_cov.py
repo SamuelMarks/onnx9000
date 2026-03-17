@@ -3,8 +3,8 @@
 
 def test_jax_importer_add_mul_i32() -> None:
     """Tests the test_jax_importer_add_mul_i32 functionality."""
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.jax.importer import JaxprImporter, _map_jax_type
+    from onnx9000.core.dtypes import DType
 
     assert _map_jax_type("i32") == DType.INT32
     assert _map_jax_type("unknown") == DType.FLOAT32

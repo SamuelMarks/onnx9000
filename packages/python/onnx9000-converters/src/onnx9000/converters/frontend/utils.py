@@ -6,6 +6,7 @@ computation graphs from native Python execution.
 """
 
 from typing import Any, Union
+
 from onnx9000.core.dtypes import DType
 
 
@@ -81,20 +82,19 @@ def record_op(op_type: str, inputs: list[Any], attributes: dict = None) -> Any:
     out_dtype = inputs[0].dtype if inputs else DType.FLOAT32
     if op_type in ["Trilu"]:
         out_dtype = inputs[0].dtype if inputs else DType.FLOAT32
-    if op_type in ["TopK", "NonMaxSuppression"]:
-        if op_type == "TopK":
-            outputs = [
-                Tensor(shape=out_shape, dtype=out_dtype),
-                Tensor(shape=out_shape, dtype=DType.INT64),
-            ]
-            node = Node(
-                op_type=op_type,
-                inputs=[inp.name for inp in inputs],
-                outputs=[out.name for out in outputs],
-                attributes=attributes or {},
-            )
-            builder.add_node(node)
-            return outputs
+    if op_type in ["TopK", "NonMaxSuppression"] and op_type == "TopK":
+        outputs = [
+            Tensor(shape=out_shape, dtype=out_dtype),
+            Tensor(shape=out_shape, dtype=DType.INT64),
+        ]
+        node = Node(
+            op_type=op_type,
+            inputs=[inp.name for inp in inputs],
+            outputs=[out.name for out in outputs],
+            attributes=attributes or {},
+        )
+        builder.add_node(node)
+        return outputs
     if op_type in ["DynamicQuantizeLinear"]:
         outputs = [
             Tensor(shape=out_shape, dtype=DType.UINT8),
@@ -138,7 +138,7 @@ def record_op(op_type: str, inputs: list[Any], attributes: dict = None) -> Any:
     elif op_type == "Transpose":
         perm = attributes.get("perm") if attributes else None
         if perm:
-            out_shape = tuple((inputs[0].shape[i] for i in perm))
+            out_shape = tuple(inputs[0].shape[i] for i in perm)
         else:
             out_shape = tuple(reversed(inputs[0].shape))
     output_tensor = Tensor(shape=out_shape, dtype=out_dtype)

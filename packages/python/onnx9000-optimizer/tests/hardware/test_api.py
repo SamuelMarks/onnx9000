@@ -93,7 +93,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -103,7 +103,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -113,7 +113,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -132,7 +132,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -142,7 +142,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -152,7 +152,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -162,7 +162,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -172,7 +172,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -182,7 +182,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -192,7 +192,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -202,7 +202,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -212,7 +212,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -222,7 +222,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -232,7 +232,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -242,7 +242,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -252,7 +252,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -262,7 +262,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -272,7 +272,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -282,7 +282,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -292,7 +292,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -302,7 +302,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -312,7 +312,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -322,7 +322,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -332,7 +332,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -342,7 +342,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -352,7 +352,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -362,7 +362,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -372,7 +372,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -382,7 +382,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -392,7 +392,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -402,7 +402,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -412,7 +412,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -422,7 +422,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -432,7 +432,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -442,7 +442,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -452,7 +452,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -462,7 +462,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -472,7 +472,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -482,7 +482,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -492,7 +492,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -502,7 +502,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -512,7 +512,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -522,7 +522,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -532,7 +532,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -542,7 +542,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -551,7 +551,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -560,7 +560,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -569,7 +569,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -578,7 +578,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -587,7 +587,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -596,7 +596,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -605,7 +605,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -614,7 +614,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -623,7 +623,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -632,7 +632,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -641,7 +641,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -650,7 +650,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -659,7 +659,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -668,7 +668,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -677,7 +677,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -686,7 +686,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -695,7 +695,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -704,7 +704,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -713,7 +713,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -722,7 +722,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -731,7 +731,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -740,7 +740,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -749,7 +749,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -758,7 +758,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -767,7 +767,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -776,7 +776,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -785,7 +785,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -794,7 +794,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -803,7 +803,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -812,7 +812,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -821,7 +821,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -830,7 +830,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -839,7 +839,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -848,7 +848,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -857,7 +857,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -866,7 +866,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -875,7 +875,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -884,7 +884,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -893,7 +893,7 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -902,7 +902,7 @@ def test_quantize_dynamic_real() -> None:
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
     g2 = quantize_dynamic(g)
-    has_dql = any((node.op_type == "DynamicQuantizeLinear" for node in g2.nodes))
+    has_dql = any(node.op_type == "DynamicQuantizeLinear" for node in g2.nodes)
     assert has_dql
 
 
@@ -911,7 +911,7 @@ def test_quantize_static_real() -> None:
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv
 
 
@@ -920,5 +920,5 @@ def test_quantize_static_real_with_bias() -> None:
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
     g2 = quantize_static(g, [])
-    has_qconv = any((node.op_type == "QLinearConv" for node in g2.nodes))
+    has_qconv = any(node.op_type == "QLinearConv" for node in g2.nodes)
     assert has_qconv

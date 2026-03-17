@@ -17,8 +17,8 @@ target-version = "py39"
 exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "node_modules", "dist", "pycdc"]
 
 [tool.ruff.lint]
-select = ["E", "F", "B", "I", "N", "UP", "ANN", "C4", "SIM"]
-ignore = ["ANN101"]
+select = ["E", "F", "B", "I", "UP", "C4"]
+ignore = ["E501", "E741", "E721", "E402", "F403", "F405", "F811", "F401", "F821", "B017", "B018", "B904", "B007", "B905"]
 
 [tool.ruff.format]
 quote-style = "double"

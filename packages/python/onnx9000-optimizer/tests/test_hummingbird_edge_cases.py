@@ -1,66 +1,65 @@
-import pytest
 import time
-from unittest.mock import Mock, MagicMock
-from onnx9000.optimizer.hummingbird import TranspilationEngine, TargetHardware, Strategy
+
+from onnx9000.optimizer.hummingbird import Strategy, TargetHardware, TranspilationEngine
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 
 
-def test_1_tree_decision_tree_classifier():
+def test_1_tree_decision_tree_classifier() -> None:
     pass
 
 
-def test_100_tree_random_forest_classifier_binary():
+def test_100_tree_random_forest_classifier_binary() -> None:
     pass
 
 
-def test_100_tree_random_forest_classifier_multiclass():
+def test_100_tree_random_forest_classifier_multiclass() -> None:
     pass
 
 
-def test_100_tree_random_forest_regressor():
+def test_100_tree_random_forest_regressor() -> None:
     pass
 
 
-def test_lightgbm_gbdt_1000_trees():
+def test_lightgbm_gbdt_1000_trees() -> None:
     pass
 
 
-def test_lightgbm_dart_100_trees():
+def test_lightgbm_dart_100_trees() -> None:
     pass
 
 
-def test_xgboost_gblinear():
+def test_xgboost_gblinear() -> None:
     pass
 
 
-def test_xgboost_gbtree_binary_logistic():
+def test_xgboost_gbtree_binary_logistic() -> None:
     pass
 
 
-def test_xgboost_gbtree_multi_softprob():
+def test_xgboost_gbtree_multi_softprob() -> None:
     pass
 
 
-def test_catboost_symmetric_trees():
+def test_catboost_symmetric_trees() -> None:
     pass
 
 
-def test_isolation_forest_anomaly_detection():
+def test_isolation_forest_anomaly_detection() -> None:
     pass
 
 
-def test_empty_tree_structure_handling():
+def test_empty_tree_structure_handling() -> None:
     engine = TranspilationEngine(TargetHardware.CPU)
     g = engine.transpile("fake_empty_model")
     assert g.name == "Hummingbird_Transpiled"
 
 
-def test_trees_with_depth_gt_50_gemm_strategy_fallback():
+def test_trees_with_depth_gt_50_gemm_strategy_fallback() -> None:
     tree = TreeAbstractions()
     # Create depth 55
     curr = 0
-    for i in range(55):
+    for _i in range(55):
         tree.add_node(0, 0.5, curr + 1, -1, 0.0)
         curr += 1
     tree.add_node(-1, 0.0, -1, -1, 1.0)  # Leaf
@@ -71,7 +70,7 @@ def test_trees_with_depth_gt_50_gemm_strategy_fallback():
     engine.transpile("fake", batch_size=1)
 
 
-def test_trees_with_perfectly_balanced_properties():
+def test_trees_with_perfectly_balanced_properties() -> None:
     tree = TreeAbstractions()
     tree.add_node(0, 0.5, 1, 2, 0.0)
     tree.add_node(-1, 0.0, -1, -1, 1.0)
@@ -81,27 +80,27 @@ def test_trees_with_perfectly_balanced_properties():
     engine.transpile("fake", force_strategy=Strategy.PERFECT_TREE_TRAVERSAL)
 
 
-def test_output_equivalency_sklearn_predict():
+def test_output_equivalency_sklearn_predict() -> None:
     pass
 
 
-def test_output_equivalency_sklearn_predict_proba():
+def test_output_equivalency_sklearn_predict_proba() -> None:
     pass
 
 
-def test_output_equivalency_lightgbm():
+def test_output_equivalency_lightgbm() -> None:
     pass
 
 
-def test_output_equivalency_xgboost():
+def test_output_equivalency_xgboost() -> None:
     pass
 
 
-def test_output_equivalency_onnxruntime_native():
+def test_output_equivalency_onnxruntime_native() -> None:
     pass
 
 
-def test_stress_test_10000_tree_random_forest():
+def test_stress_test_10000_tree_random_forest() -> None:
     # compilation time < 2 seconds
     start = time.time()
     trees = []
@@ -117,23 +116,23 @@ def test_stress_test_10000_tree_random_forest():
     assert (end - start) < 2.0
 
 
-def test_stress_test_10000_tree_wasm_execution_time():
+def test_stress_test_10000_tree_wasm_execution_time() -> None:
     pass
 
 
-def test_identically_named_features_in_input_datasets():
+def test_identically_named_features_in_input_datasets() -> None:
     pass
 
 
-def test_completely_collinear_features_cleanly():
+def test_completely_collinear_features_cleanly() -> None:
     pass
 
 
-def test_deeply_imbalanced_multi_class_trees_without_nans():
+def test_deeply_imbalanced_multi_class_trees_without_nans() -> None:
     pass
 
 
-def test_prevent_integer_overflow_perfect_tree():
+def test_prevent_integer_overflow_perfect_tree() -> None:
     tree = TreeAbstractions()
     # Create depth 65 -> this would overflow 64-bit int for PerfectTree
     for i in range(65):

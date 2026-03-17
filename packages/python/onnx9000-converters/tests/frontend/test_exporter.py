@@ -6,6 +6,7 @@ from onnx9000.core.dtypes import DType
 import os
 import tempfile
 from pathlib import Path
+
 from onnx9000.converters.frontend.exporter import export
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
@@ -86,9 +87,9 @@ from unittest.mock import MagicMock, patch
 
 def test_export_large_model(tmp_path) -> None:
     """Tests the test_export_large_model functionality."""
-    from onnx9000.core.dtypes import DType
     from onnx9000.converters.frontend.exporter import export
     from onnx9000.converters.frontend.tensor import Tensor
+    from onnx9000.core.dtypes import DType
 
     def my_fn(a):
         """Tests the my_fn functionality."""
@@ -109,6 +110,7 @@ def test_export_large_model(tmp_path) -> None:
 def test_exporter_large_model(tmpdir) -> None:
     """Tests the test_exporter_large_model functionality."""
     from unittest.mock import patch
+
     import onnx9000.core.onnx_pb2 as onnx_pb2
     from onnx9000.converters.frontend.exporter import export
     from onnx9000.converters.frontend.tensor import Tensor
@@ -127,6 +129,7 @@ def test_exporter_large_model(tmpdir) -> None:
 def test_exporter_file_like_object() -> None:
     """Tests the test_exporter_file_like_object functionality."""
     import io
+
     from onnx9000.converters.frontend.exporter import export
     from onnx9000.converters.frontend.tensor import Tensor
 

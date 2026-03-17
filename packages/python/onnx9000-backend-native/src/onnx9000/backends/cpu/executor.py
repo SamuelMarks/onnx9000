@@ -1,7 +1,8 @@
 """CPU Execution Provider."""
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
+
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 from onnx9000.backends.cpu.ops_ml import ML_OP_REGISTRY
 from onnx9000.core.execution import ExecutionContext, ExecutionProvider
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 class CPUExecutionProvider(ExecutionProvider):
     """Executes supported nodes on the host CPU using simple fallback logic."""
 
-    def get_supported_nodes(self, graph: Graph) -> List[str]:
+    def get_supported_nodes(self, graph: Graph) -> list[str]:
         """Return node names supported by CPU."""
         supported = []
         for node in graph.nodes:
@@ -21,7 +22,7 @@ class CPUExecutionProvider(ExecutionProvider):
                 supported.append(node.name or node.op_type)
         return supported
 
-    def allocate_tensors(self, tensors: List[Tensor]) -> None:
+    def allocate_tensors(self, tensors: list[Tensor]) -> None:
         """Mock allocation logic for generic CPU arrays."""
         return
 
@@ -50,8 +51,8 @@ class CPUExecutionProvider(ExecutionProvider):
         return arr.reshape([int(x) if hasattr(x, "value") else int(x) for x in tensor.shape])
 
     def execute(
-        self, graph: Graph, context: ExecutionContext, inputs: Dict[str, Tensor]
-    ) -> Dict[str, Tensor]:
+        self, graph: Graph, context: ExecutionContext, inputs: dict[str, Tensor]
+    ) -> dict[str, Tensor]:
         """Evaluate nodes sequentially."""
         import numpy as np
 
