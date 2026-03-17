@@ -1,3 +1,5 @@
+"""Tests the jit wrapper module functionality."""
+
 import numpy as np
 import pytest
 from onnx9000.converters.jit.wrapper import CompiledModel
@@ -5,13 +7,17 @@ from onnx9000.core.ir import Graph
 
 
 class MockCppModel:
+    """Represents the Mock Cpp Model class."""
+
     def forward(self, *args):
+        """Executes the forward operation."""
         if len(args) == 1:
             return args[0]
         return args
 
 
 def test_compiled_model_wrapper() -> None:
+    """Tests the compiled model wrapper functionality."""
     g = Graph("test")
     g.inputs.append("in1")
     g.inputs.append("in2")

@@ -1,8 +1,11 @@
+"""Tests the hummingbird post processing module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.post_processing import PostProcessor
 
 
 def test_post_processor() -> None:
+    """Tests the post processor functionality."""
     g = Graph(name="test")
     pp = PostProcessor(g, emit_zipmap=True)
 

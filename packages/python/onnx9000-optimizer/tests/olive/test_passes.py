@@ -68,6 +68,7 @@ from onnx9000.optimizer.olive.passes import (
 
 
 def test_extra_passes() -> None:
+    """Tests the extra passes functionality."""
     graph = Graph("test")
     model = OliveModel(graph)
     ctx = PassContext()

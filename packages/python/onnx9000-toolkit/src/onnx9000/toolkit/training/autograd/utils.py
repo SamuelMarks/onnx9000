@@ -11,6 +11,7 @@ class GradientProto:
     """Standard ONNX GradientProto definition."""
 
     def __init__(self, name: str, weight_name: str, gradient_name: str):
+        """Initializes the instance."""
         self.name = name
         self.weight_name = weight_name
         self.gradient_name = gradient_name
@@ -47,6 +48,7 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
     from onnx9000.core.dtypes import DType
 
     def dtype_size(dtype_str: str) -> int:
+        """Executes the dtype size operation."""
         if dtype_str == "float32":
             return 4
         elif dtype_str in ("float16", "bfloat16"):
@@ -60,6 +62,7 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
         return 4
 
     def resolve_volume(shape: tuple) -> int:
+        """Executes the resolve volume operation."""
         if not shape:
             return 1
         v = 1
@@ -276,6 +279,7 @@ def reverse_topological_sort(graph: Graph) -> list[Node]:
             output_to_node[out] = node
 
     def dfs(node: Node):
+        """Executes the dfs operation."""
         if node.name in rec_stack:
             # Loop detected, break it intelligently by ignoring this back-edge
             return

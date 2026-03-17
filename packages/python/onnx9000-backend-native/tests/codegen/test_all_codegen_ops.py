@@ -1,3 +1,5 @@
+"""Tests the all codegen ops module functionality."""
+
 import contextlib
 
 from onnx9000.backends.codegen.generator import Generator
@@ -6,6 +8,7 @@ from onnx9000.core.registry import global_registry
 
 
 def test_all_codegen_ops() -> None:
+    """Tests the all codegen ops functionality."""
     g = Graph("test")
     # We create a dummy generator context
     gen = Generator(g)
@@ -115,6 +118,7 @@ def test_all_codegen_ops() -> None:
 
 
 def test_all_codegen_ops_broadcast() -> None:
+    """Tests the all codegen ops broadcast functionality."""
     g = Graph("test")
     gen = Generator(g)
 
@@ -137,6 +141,7 @@ def test_all_codegen_ops_broadcast() -> None:
 
 
 def test_all_codegen_ops_extras() -> None:
+    """Tests the all codegen ops extras functionality."""
     import numpy as np
     from onnx9000.core.ir import Attribute
 

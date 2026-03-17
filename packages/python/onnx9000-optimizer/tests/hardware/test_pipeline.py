@@ -741,6 +741,7 @@ def test_genetic_algorithm_auto_tuner_empty() -> None:
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -751,6 +752,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -762,6 +764,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -771,12 +774,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -787,6 +792,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -798,6 +804,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -807,12 +814,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -823,6 +832,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -834,6 +844,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -843,12 +854,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -859,6 +872,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -870,6 +884,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -879,12 +894,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -895,6 +912,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -906,6 +924,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -915,12 +934,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -931,6 +952,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -942,6 +964,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -951,12 +974,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -967,6 +992,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -978,6 +1004,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -987,12 +1014,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1003,6 +1032,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1014,6 +1044,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1023,12 +1054,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1039,6 +1072,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1050,6 +1084,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1059,12 +1094,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1075,6 +1112,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1086,6 +1124,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1095,12 +1134,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1111,6 +1152,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1122,6 +1164,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1131,12 +1174,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1147,6 +1192,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1158,6 +1204,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1167,12 +1214,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1183,6 +1232,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1194,6 +1244,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1203,12 +1254,14 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0
 
 
 def test_device_placement_pass_real() -> None:
+    """Tests the device placement pass real functionality."""
     g = Graph("mock")
     t1 = Tensor("in1", (1, 1024, 1024), DType.FLOAT32)
     g.add_tensor(t1)
@@ -1219,6 +1272,7 @@ def test_device_placement_pass_real() -> None:
 
 
 def test_merge_tiny_ops_real() -> None:
+    """Tests the merge tiny ops real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["t1"], {}, "add1")
     n2 = Node("Relu", ["t1"], ["out"], {}, "relu1")
@@ -1230,6 +1284,7 @@ def test_merge_tiny_ops_real() -> None:
 
 
 def test_generate_static_graph_real() -> None:
+    """Tests the generate static graph real functionality."""
     g = Graph("mock")
     n1 = Node("Add", ["in1", "in2"], ["out"], {"dynamic": True}, "add1")
     g.add_node(n1)
@@ -1239,6 +1294,7 @@ def test_generate_static_graph_real() -> None:
 
 
 def test_genetic_algorithm_auto_tuner_empty() -> None:
+    """Tests the genetic algorithm auto tuner empty functionality."""
     g = Graph("mock")
     res = PipelineOptimizer.genetic_algorithm_auto_tuner(g)
     assert res["best_fitness"] == 1.0

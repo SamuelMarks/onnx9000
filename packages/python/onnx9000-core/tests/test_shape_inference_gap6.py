@@ -1,11 +1,14 @@
+"""Tests the shape inference gap6 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_tile_dynamic():
+    """Tests the tile dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (DynamicDim("N"), 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -18,6 +21,7 @@ def test_tile_dynamic():
 
 
 def test_pad_dynamic():
+    """Tests the pad dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (DynamicDim("N"), 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -30,6 +34,7 @@ def test_pad_dynamic():
 
 
 def test_topk_argmax():
+    """Tests the topk argmax functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -60,6 +65,7 @@ def test_topk_argmax():
 
 
 def test_topk_missing_inputs():
+    """Tests the topk missing inputs functionality."""
     g = Graph("g")
     g.add_node(Node("TopK", [], ["y"]))
     g.add_node(Node("TopK", ["x"], ["y2"]))
@@ -67,6 +73,7 @@ def test_topk_missing_inputs():
 
 
 def test_if_shape_inference():
+    """Tests the if shape inference functionality."""
     g = Graph("g")
     then_g = Graph("then")
     then_g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -89,6 +96,7 @@ def test_if_shape_inference():
 
 
 def test_loop_shape_inference():
+    """Tests the loop shape inference functionality."""
     g = Graph("g")
     body_g = Graph("body")
     body_g.add_tensor(Tensor("b_in", (10, 20), DType.FLOAT32))
@@ -120,6 +128,7 @@ def test_loop_shape_inference():
 
 
 def test_nonzero():
+    """Tests the nonzero functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")

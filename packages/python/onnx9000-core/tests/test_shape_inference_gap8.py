@@ -1,10 +1,13 @@
+"""Tests the shape inference gap8 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_conv_transpose_exception():
+    """Tests the conv transpose exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (3, 16, 3, 3), DType.FLOAT32, is_initializer=True))
@@ -28,6 +31,7 @@ def test_conv_transpose_exception():
 
 
 def test_split_negative_axis():
+    """Tests the split negative axis functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -37,6 +41,7 @@ def test_split_negative_axis():
 
 
 def test_missing_inputs_again():
+    """Tests the missing inputs again functionality."""
     # If the nodes have outputs that are NOT appended to graph.outputs,
     # and inputs NOT in graph.inputs, maybe they are pruned?
     # Let's append to graph.outputs
@@ -55,6 +60,7 @@ def test_missing_inputs_again():
 
 
 def test_loop_m_scalar():
+    """Tests the loop m scalar functionality."""
     g = Graph("g")
     body_g = Graph("body")
     body_g.add_tensor(Tensor("b_in", (10, 20), DType.FLOAT32))

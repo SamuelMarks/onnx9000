@@ -1,3 +1,5 @@
+"""Tests the losses exhaustive module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph, Node
 from onnx9000.toolkit.training.autograd.losses import (
@@ -10,6 +12,7 @@ from onnx9000.toolkit.training.autograd.losses import (
 
 
 def test_add_categorical_crossentropy_loss():
+    """Tests the add categorical crossentropy loss functionality."""
     for red in ["none", "mean", "sum"]:
         g = Graph("g")
         add_categorical_crossentropy_loss(g, "p", "t", "out", reduction=red, label_smoothing=0.0)
@@ -20,6 +23,7 @@ def test_add_categorical_crossentropy_loss():
 
 
 def test_add_dice_loss():
+    """Tests the add dice loss functionality."""
     for red in ["none", "mean", "sum"]:
         g = Graph("g")
         add_dice_loss(g, "p", "t", "out", reduction=red)
@@ -27,6 +31,7 @@ def test_add_dice_loss():
 
 
 def test_add_focal_loss():
+    """Tests the add focal loss functionality."""
     for red in ["none", "mean", "sum"]:
         for alpha in [0.0, 0.25]:
             g = Graph("g")
@@ -35,6 +40,7 @@ def test_add_focal_loss():
 
 
 def test_add_gradient_penalty():
+    """Tests the add gradient penalty functionality."""
     # Empty grad_names
     g = Graph("g")
     add_gradient_penalty(g, [], "out")
@@ -52,6 +58,7 @@ def test_add_gradient_penalty():
 
 
 def test_add_triplet_margin_loss():
+    """Tests the add triplet margin loss functionality."""
     for red in ["none", "mean", "sum"]:
         for p in [1, 2]:
             g = Graph("g")

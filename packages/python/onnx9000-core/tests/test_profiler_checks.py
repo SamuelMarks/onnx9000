@@ -1,9 +1,12 @@
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+"""Tests the profiler checks module functionality."""
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 from onnx9000.core.profiler_checks import OptimizationAnalyzer
 
 
 def test_profiler_checks_unused_initializers():
+    """Tests the profiler checks unused initializers functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Constant("unused_weight", shape=(1,), dtype=DType.FLOAT32, values=b"\0" * 4))
@@ -20,6 +23,7 @@ def test_profiler_checks_unused_initializers():
 
 
 def test_profiler_checks_matmul_add():
+    """Tests the profiler checks matmul add functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(20, 30), dtype=DType.FLOAT32))
@@ -41,6 +45,7 @@ def test_profiler_checks_matmul_add():
 
 
 def test_profiler_checks_unsupported():
+    """Tests the profiler checks unsupported functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10,), dtype=DType.FLOAT32))
     g.inputs.append("A")

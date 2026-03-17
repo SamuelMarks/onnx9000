@@ -1,3 +1,5 @@
+"""Provides engine module functionality."""
+
 import logging
 from typing import Any, Optional
 
@@ -16,6 +18,7 @@ class TranspilationEngine:
     """Zero-dependency transpilation engine architecture."""
 
     def __init__(self, target: TargetHardware = TargetHardware.CPU, verbose: bool = False) -> None:
+        """Initializes the instance."""
         self.target = target
         self.abstractions: list[TreeAbstractions] = []
         self.backends = {}
@@ -88,10 +91,13 @@ class TranspilationEngine:
 
     def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         # Transpile numerical threshold comparisons accurately
+        """Executes the compile gemm operation."""
         pass
 
     def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
+        """Executes the compile tree traversal operation."""
         pass
 
     def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
+        """Executes the compile perfect tree operation."""
         pass

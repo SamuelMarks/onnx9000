@@ -1,3 +1,5 @@
+"""Tests the jit hasher module functionality."""
+
 import numpy as np
 from onnx9000.converters.jit.hasher import hash_graph
 from onnx9000.core.dtypes import DType
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_hash_graph() -> None:
+    """Tests the hash graph functionality."""
     g = Graph("test")
     t1 = Tensor("in1", (2, 2), DType.FLOAT32)
     t2 = Tensor("out", (2, 2), DType.FLOAT32)

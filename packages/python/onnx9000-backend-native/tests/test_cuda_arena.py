@@ -1,3 +1,5 @@
+"""Tests the cuda arena module functionality."""
+
 from typing import NoReturn
 from unittest.mock import MagicMock
 
@@ -9,10 +11,12 @@ from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
 
 @pytest.fixture
 def mock_cuda(monkeypatch):
+    """Executes the mock cuda operation."""
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: True)
     mock_lib = MagicMock()
 
     def mock_alloc(ptr_ref, size) -> int:
+        """Tests the mock alloc functionality."""
         ptr_ref._obj.value = 1000
         return 0
 
@@ -26,6 +30,7 @@ def mock_cuda(monkeypatch):
 
 
 def test_cuda_arena_no_cuda(monkeypatch) -> None:
+    """Tests the cuda arena no cuda functionality."""
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: False)
     planner = CUDAMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), np.float32)
@@ -38,6 +43,7 @@ def test_cuda_arena_no_cuda(monkeypatch) -> None:
 
 
 def test_cuda_arena_with_cuda(mock_cuda) -> None:
+    """Tests the cuda arena with cuda functionality."""
     planner = CUDAMemoryPlanner()
     planner.allocate_static("A", 8, (2,), np.float32)
     planner.build_arena()
@@ -62,6 +68,7 @@ def test_cuda_arena_with_cuda(mock_cuda) -> None:
 
 
 def test_cuda_arena_errors(mock_cuda) -> None:
+    """Tests the cuda arena errors functionality."""
     planner = CUDAMemoryPlanner()
     planner.build_arena()
     with pytest.raises(RuntimeError):
@@ -71,6 +78,7 @@ def test_cuda_arena_errors(mock_cuda) -> None:
 
 
 def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda) -> None:
+    """Tests the cuda arena dynamic reallocation and fetch functionality."""
     planner = CUDAMemoryPlanner()
     arr = np.array([1.0], dtype=np.float32)
     planner.set_tensor("B", arr)
@@ -83,7 +91,10 @@ def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda) -> None:
     planner.set_tensor("B", arr_big)
 
     class BrokenPlanner(CUDAMemoryPlanner):
+        """Represents the BrokenPlanner class and its associated logic."""
+
         def cleanup(self) -> NoReturn:
+            """Tests the cleanup functionality."""
             raise Exception("broken")
 
     bp = BrokenPlanner()
@@ -91,6 +102,7 @@ def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda) -> None:
 
 
 def test_cuda_arena_extra_methods(mock_cuda) -> None:
+    """Tests the cuda arena extra methods functionality."""
     import ctypes
 
     planner = CUDAMemoryPlanner()
@@ -106,6 +118,7 @@ def test_cuda_arena_extra_methods(mock_cuda) -> None:
 
 
 def test_cuda_arena_extra_methods_no_cuda(monkeypatch) -> None:
+    """Tests the cuda arena extra methods no cuda functionality."""
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: False)
     import ctypes
 

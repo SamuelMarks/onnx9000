@@ -1,3 +1,5 @@
+"""Tests the jit init module functionality."""
+
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -12,6 +14,7 @@ from onnx9000.core.ir import Graph, Tensor
 @patch("onnx9000.converters.jit.plan_memory")
 @patch("onnx9000.converters.jit.compile_wasm")
 def test_compile_wasm(mock_compile_wasm, mock_plan_memory, mock_load) -> None:
+    """Tests the compile wasm functionality."""
     g = Graph("test")
     mock_load.return_value = g
     mock_compile_wasm.return_value = Path("out.js")
@@ -25,6 +28,7 @@ def test_compile_wasm(mock_compile_wasm, mock_plan_memory, mock_load) -> None:
 @patch("onnx9000.converters.jit.load")
 @patch("onnx9000.converters.jit.plan_memory")
 def test_compile_unsupported(mock_plan_memory, mock_load) -> None:
+    """Tests the compile unsupported functionality."""
     g = Graph("test")
     mock_load.return_value = g
     if True:
@@ -39,6 +43,7 @@ def test_compile_unsupported(mock_plan_memory, mock_load) -> None:
 def test_compile_cpp(
     mock_hash, mock_load_module, mock_compile_cpp, mock_plan_memory, mock_load
 ) -> None:
+    """Tests the compile cpp functionality."""
     g = Graph("test")
     t_nodata = Tensor("w1", (1, 2), DType.FLOAT32, is_initializer=True)
     t_data = Tensor("w2", (2,), DType.FLOAT32, is_initializer=True)

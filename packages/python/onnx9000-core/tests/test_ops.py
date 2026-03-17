@@ -1,3 +1,5 @@
+"""Tests the ops module functionality."""
+
 import inspect
 
 import onnx9000.core.ops as ops
@@ -7,6 +9,7 @@ from onnx9000.core.ir import Tensor
 
 
 def test_all_ops() -> None:
+    """Tests the all ops functionality."""
     dummy_tensor = Tensor(name="dummy", shape=(2, 2), dtype=DType.FLOAT32)
     for name, func in inspect.getmembers(ops, inspect.isfunction):
         if name == "record_op":
@@ -35,6 +38,7 @@ def test_all_ops() -> None:
 
 
 def test_specific_ops() -> None:
+    """Tests the specific ops functionality."""
     t = Tensor("t", (1,), DType.FLOAT32)
     ops.conv_transpose(t, t, b=t)
     ops.deform_conv(t, t, t, b=t, mask=t)

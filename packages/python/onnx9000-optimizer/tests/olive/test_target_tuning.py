@@ -5,6 +5,7 @@ from onnx9000.optimizer.olive.target_tuning import TargetTuner
 
 
 def test_target_tuner(tmp_path) -> None:
+    """Tests the target tuner functionality."""
     g = Graph("test")
     g.metadata = {}
     TargetTuner.nchw_to_nhwc_webgpu(g)

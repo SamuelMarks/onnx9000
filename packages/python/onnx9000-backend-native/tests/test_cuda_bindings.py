@@ -1,3 +1,5 @@
+"""Tests the cuda bindings module functionality."""
+
 import ctypes
 from unittest.mock import MagicMock
 
@@ -16,6 +18,7 @@ from onnx9000.backends.cuda.bindings import (
 
 
 def test_bindings_availability_and_signatures() -> None:
+    """Tests the bindings availability and signatures functionality."""
     assert isinstance(is_cuda_available(), bool)
     assert isinstance(is_cublas_available(), bool)
     assert isinstance(is_cudnn_available(), bool)
@@ -32,6 +35,7 @@ def test_bindings_availability_and_signatures() -> None:
 
 
 def test_bindings_errors() -> None:
+    """Tests the bindings errors functionality."""
     with pytest.raises(RuntimeError, match="CUDA Error"):
         check_cuda_error(1)
     check_cuda_error(0)

@@ -1,41 +1,45 @@
-import os
+"""Tests the compiler exhaustive module functionality."""
+
 import json
+import os
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import (
-    save_training_checkpoint,
-    save_lora_adapters,
-    inject_memcpy_boundaries,
-    validate_amp_rules,
-    apply_automatic_mixed_precision,
-    cast_gradients_to_fp32,
-    optimize_intermediate_casts,
-    implement_activation_checkpointing,
-    setup_incremental_stream,
-    load_training_checkpoint,
-    set_eval_mode,
-    freeze_layers,
-    inject_bitfit,
-    apply_peft_config,
-    AutogradEngine,
-    inject_explicit_yield_nodes,
-    verify_no_circular_references,
-    inject_inplace_hints,
-    optimize_memory_reuse,
-    inject_nan_inf_bypass,
-    build_backward_graph,
-    hessian_vector_product,
-    analytical_jacobian,
-    ensure_no_microsoft_opsets,
-    enforce_webgpu_limits,
-    track_vram_usage,
-    profile_lora_memory_savings,
-    estimate_batch_size_limit,
     AOTBuilder,
+    AutogradEngine,
+    analytical_jacobian,
+    apply_automatic_mixed_precision,
+    apply_peft_config,
+    build_backward_graph,
+    cast_gradients_to_fp32,
+    enforce_webgpu_limits,
+    ensure_no_microsoft_opsets,
+    estimate_batch_size_limit,
+    freeze_layers,
+    hessian_vector_product,
+    implement_activation_checkpointing,
+    inject_bitfit,
+    inject_explicit_yield_nodes,
+    inject_inplace_hints,
+    inject_memcpy_boundaries,
+    inject_nan_inf_bypass,
+    load_training_checkpoint,
+    optimize_intermediate_casts,
+    optimize_memory_reuse,
+    profile_lora_memory_savings,
+    save_lora_adapters,
+    save_training_checkpoint,
+    set_eval_mode,
+    setup_incremental_stream,
+    track_vram_usage,
+    validate_amp_rules,
+    verify_no_circular_references,
 )
 
 
 def test_save_training_checkpoint(tmp_path):
+    """Tests the save training checkpoint functionality."""
     graph = Graph(name="g")
     graph.initializers.append("w1")
     graph.add_tensor(Tensor(name="w1", shape=(10,), dtype="float32", requires_grad=True))
@@ -43,34 +47,38 @@ def test_save_training_checkpoint(tmp_path):
     filepath = tmp_path / "ckpt.json"
     save_training_checkpoint(graph, str(filepath))
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         data = json.load(f)
     assert data == {"w1": "tensor_data_placeholder"}
 
 
 def test_save_lora_adapters(tmp_path):
+    """Tests the save lora adapters functionality."""
     graph = Graph(name="g")
     graph.initializers.extend(["lora_a_1", "lora_b_1", "w1"])
 
     filepath = tmp_path / "lora.json"
     save_lora_adapters(graph, str(filepath))
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         data = json.load(f)
     assert set(data["adapters"]) == {"lora_a_1", "lora_b_1"}
 
 
 def test_inject_memcpy_boundaries():
+    """Tests the inject memcpy boundaries functionality."""
     graph = Graph(name="g")
     inject_memcpy_boundaries(graph)
 
 
 def test_validate_amp_rules():
+    """Tests the validate amp rules functionality."""
     graph = Graph(name="g")
     validate_amp_rules(graph)
 
 
 def test_apply_automatic_mixed_precision():
+    """Tests the apply automatic mixed precision functionality."""
     graph = Graph(name="g")
     graph.initializers.append("w1")
     graph.add_tensor(Tensor(name="w1", shape=(10,), dtype="float32"))
@@ -98,6 +106,7 @@ def test_apply_automatic_mixed_precision():
 
 
 def test_cast_gradients_to_fp32():
+    """Tests the cast gradients to fp32 functionality."""
     graph = Graph(name="g")
     graph.outputs.append("grad_w1")
     graph.add_tensor(Tensor(name="grad_w1", shape=(10,), dtype="float16"))
@@ -109,6 +118,7 @@ def test_cast_gradients_to_fp32():
 
 
 def test_optimize_intermediate_casts():
+    """Tests the optimize intermediate casts functionality."""
     graph = Graph(name="g")
     graph.add_tensor(Tensor(name="a", shape=(1,), dtype="float32"))
     graph.add_tensor(Tensor(name="b", shape=(1,), dtype="float16"))
@@ -124,14 +134,17 @@ def test_optimize_intermediate_casts():
 
 
 def test_implement_activation_checkpointing():
+    """Tests the implement activation checkpointing functionality."""
     implement_activation_checkpointing(Graph("g"))
 
 
 def test_setup_incremental_stream():
+    """Tests the setup incremental stream functionality."""
     setup_incremental_stream(Graph("g"), "ws://localhost")
 
 
 def test_load_training_checkpoint(tmp_path):
+    """Tests the load training checkpoint functionality."""
     graph = Graph("g")
     graph.add_tensor(Tensor("w1", (1,), "float32"))
     filepath = tmp_path / "ckpt.json"
@@ -143,6 +156,7 @@ def test_load_training_checkpoint(tmp_path):
 
 
 def test_set_eval_mode():
+    """Tests the set eval mode functionality."""
     graph = Graph("g")
     graph.inputs.append("x")
     graph.outputs.append("y")
@@ -162,6 +176,7 @@ def test_set_eval_mode():
 
 
 def test_freeze_layers():
+    """Tests the freeze layers functionality."""
     graph = Graph("g")
     graph.add_tensor(Tensor("w1", (1,), "float32", requires_grad=True))
     freeze_layers(graph, ["w1"])
@@ -169,6 +184,7 @@ def test_freeze_layers():
 
 
 def test_inject_bitfit():
+    """Tests the inject bitfit functionality."""
     graph = Graph("g")
     graph.initializers.extend(["w1", "bias1", "w2"])
     graph.add_tensor(Tensor("w1", (10, 10), "float32", requires_grad=True))
@@ -182,6 +198,7 @@ def test_inject_bitfit():
 
 
 def test_apply_peft_config():
+    """Tests the apply peft config functionality."""
     graph = Graph("g")
     graph.initializers.extend(["w1", "bias1", "prompt_w"])
     graph.add_tensor(Tensor("w1", (10, 10), "float32", requires_grad=True))
@@ -205,30 +222,36 @@ def test_apply_peft_config():
 
 
 def test_autograd_engine_no_grad():
+    """Tests the autograd engine no grad functionality."""
     engine = AutogradEngine()
     with engine.no_grad():
         assert engine._no_grad
 
 
 def test_inject_explicit_yield_nodes():
+    """Tests the inject explicit yield nodes functionality."""
     inject_explicit_yield_nodes(Graph("g"))
 
 
 def test_verify_no_circular_references():
+    """Tests the verify no circular references functionality."""
     g = Graph("g")
     g.toposort = lambda: None
     verify_no_circular_references(g)
 
 
 def test_inject_inplace_hints():
+    """Tests the inject inplace hints functionality."""
     inject_inplace_hints(Graph("g"))
 
 
 def test_optimize_memory_reuse():
+    """Tests the optimize memory reuse functionality."""
     optimize_memory_reuse(Graph("g"))
 
 
 def test_inject_nan_inf_bypass():
+    """Tests the inject nan inf bypass functionality."""
     graph = Graph("g")
     inject_nan_inf_bypass(graph, [])
     inject_nan_inf_bypass(graph, ["grad_1"])
@@ -242,6 +265,7 @@ def test_inject_nan_inf_bypass():
 
 
 def test_build_backward_graph_custom_domain():
+    """Tests the build backward graph custom domain functionality."""
     graph = Graph("g")
     graph.inputs.append("x")
     graph.outputs.append("y")
@@ -257,6 +281,7 @@ def test_build_backward_graph_custom_domain():
 
 
 def test_hessian_vector_product():
+    """Tests the hessian vector product functionality."""
     graph = Graph("g")
     graph.inputs.append("x")
     graph.outputs.append("y")
@@ -269,6 +294,7 @@ def test_hessian_vector_product():
 
 
 def test_analytical_jacobian():
+    """Tests the analytical jacobian functionality."""
     graph = Graph("g")
     graph.inputs.append("x")
     graph.outputs.append("y")
@@ -281,6 +307,7 @@ def test_analytical_jacobian():
 
 
 def test_ensure_no_microsoft_opsets():
+    """Tests the ensure no microsoft opsets functionality."""
     graph = Graph("g")
     node = Node("Op", [], [], name="n1")
     node.domain = "com.microsoft"
@@ -296,6 +323,7 @@ def test_ensure_no_microsoft_opsets():
 
 
 def test_enforce_webgpu_limits():
+    """Tests the enforce webgpu limits functionality."""
     graph = Graph("g")
     graph.add_tensor(Tensor("t1", (10000, 10000, 10000), "float32"))
     with pytest.raises(ValueError):
@@ -303,6 +331,7 @@ def test_enforce_webgpu_limits():
 
 
 def test_track_vram_usage():
+    """Tests the track vram usage functionality."""
     graph = Graph("g")
     graph.add_tensor(Tensor("t1", (10, 10), "float32"))
     vram = track_vram_usage(graph)
@@ -310,6 +339,7 @@ def test_track_vram_usage():
 
 
 def test_profile_lora_memory_savings():
+    """Tests the profile lora memory savings functionality."""
     graph = Graph("g")
     # full params = 0
     assert profile_lora_memory_savings(graph) == 0.0
@@ -321,6 +351,7 @@ def test_profile_lora_memory_savings():
 
 
 def test_estimate_batch_size_limit():
+    """Tests the estimate batch size limit functionality."""
     graph = Graph("g")
     graph.add_tensor(Tensor("t1", (10, 10), "float32"))
     limit = estimate_batch_size_limit(graph, 4000)
@@ -333,6 +364,7 @@ def test_estimate_batch_size_limit():
 
 
 def test_aot_builder():
+    """Tests the aot builder functionality."""
     graph = Graph("g")
     graph.inputs.append("x")
     graph.outputs.append("y")
@@ -353,6 +385,7 @@ def test_aot_builder():
 
     # fake optimizer gen
     def fake_opt(g, lr, params):
+        """Tests the fake opt functionality."""
         for p in params:
             g.outputs.append(f"{p}_new")
 

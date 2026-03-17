@@ -1,9 +1,12 @@
+"""Tests the surgeon lora module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.surgeon import merge_lora_adapters
 
 
 def test_merge_lora_adapters():
+    """Tests the merge lora adapters functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("master_weight", (10, 10), "float32", is_initializer=True))
     g.initializers.append("master_weight")

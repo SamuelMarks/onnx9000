@@ -1,3 +1,5 @@
+"""Tests the hummingbird memory more module functionality."""
+
 import pytest
 from onnx9000.optimizer.hummingbird.memory import (
     TreeAbstractions,
@@ -8,6 +10,7 @@ from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
 
 
 def test_estimate_peak_vram():
+    """Tests the estimate peak vram functionality."""
     t = TreeAbstractions()
     t.add_node(1, 0.5, 1, 2, 0.0)
     v1 = estimate_memory_footprint(t, Strategy.GEMM, 1)
@@ -26,6 +29,7 @@ def test_estimate_peak_vram():
 
 
 def test_select_optimal_strategy():
+    """Tests the select optimal strategy functionality."""
     t = TreeAbstractions()
     t.add_node(1, 0.5, 1, 2, 0.0)
     res = select_optimal_strategy(t, TargetHardware.WEBGPU)

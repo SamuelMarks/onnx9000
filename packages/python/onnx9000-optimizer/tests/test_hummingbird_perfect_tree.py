@@ -1,9 +1,12 @@
+"""Tests the hummingbird perfect tree module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 
 
 def test_perfect_tree_compiler() -> None:
+    """Tests the perfect tree compiler functionality."""
     g = Graph(name="test_pt")
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)

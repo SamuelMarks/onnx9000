@@ -1,3 +1,5 @@
+"""Tests the e2e attention module functionality."""
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 from onnx9000.toolkit.training.autograd.losses import add_mse_loss
@@ -5,6 +7,7 @@ from onnx9000.toolkit.training.autograd.optimizers import add_sgd_optimizer
 
 
 def test_train_transformer_attention() -> None:
+    """Tests the train transformer attention functionality."""
     g = Graph("attention")
     g.inputs.extend(["q", "k", "v", "target", "lr"])
     g.add_tensor(
@@ -34,10 +37,12 @@ def test_train_transformer_attention() -> None:
     builder = AOTBuilder(g)
 
     def loss_gen(gr, p, t, o):
+        """Tests the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
     # Pass empty params to optimizer since QKV are inputs, not initializers
     def opt_gen(gr, lr, p):
+        """Tests the opt gen functionality."""
         pass
 
     train_graph = builder.build_training_graph(loss_gen, opt_gen, "lr")

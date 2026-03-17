@@ -10,6 +10,7 @@ from onnx9000.core.symbolic import evaluate_symbolic_expression, simplify_dim
 
 
 def dtype_size(dtype: DType) -> int:
+    """Executes the dtype size operation."""
     mapping = {
         DType.FLOAT32: 4,
         DType.FLOAT64: 8,
@@ -29,6 +30,7 @@ def dtype_size(dtype: DType) -> int:
 
 
 def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> Union[int, str]:
+    """Executes the resolve volume operation."""
     if not shape:
         return 1
     vol = 1
@@ -50,6 +52,7 @@ def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> Un
 
 
 def get_attr(node: Node, name: str, default: Any = None) -> Any:
+    """Executes the get attr operation."""
     for attr in node.attributes.values():
         if attr.name == name:
             return attr.value
@@ -61,8 +64,11 @@ from functools import wraps
 
 
 def profile_graph(func):
+    """Executes the profile graph operation."""
+
     @wraps(func)
     def wrapper(graph, *args, **kwargs):
+        """Executes the wrapper operation."""
         start = time.perf_counter()
         res = profile(graph)
         elapsed = time.perf_counter() - start
@@ -74,7 +80,10 @@ def profile_graph(func):
 
 
 class ProfilerResult:
+    """Represents the Profiler Result class."""
+
     def __init__(self):
+        """Initializes the instance."""
         self.total_macs: Union[int, str] = 0
         self.total_flops: Union[int, str] = 0
         self.total_params: int = 0
@@ -94,6 +103,7 @@ class ProfilerResult:
         self.int64_count = 0
 
     def generate_suggestions(self):
+        """Executes the generate suggestions operation."""
         if self.float64_count > 0:
             self.suggestions.append(
                 f"Found {self.float64_count} tensors using Float64. Consider downcasting to Float32 to save 50% memory."
@@ -155,6 +165,7 @@ class ProfilerResult:
         }
 
     def print_parameter_pie_chart(self):
+        """Executes the print parameter pie chart operation."""
         print("--- Parameter Distribution ---")
         if self.total_params == 0:
             print("No parameters found.")
@@ -170,6 +181,7 @@ class ProfilerResult:
             print(f"{op}: {pct:.1f}% ({count} Params)")
 
     def print_activation_pie_chart(self):
+        """Executes the print activation pie chart operation."""
         print("--- Activation Distribution ---")
         if self.peak_activation_bytes == 0:
             print("No activations found.")
@@ -183,12 +195,14 @@ class ProfilerResult:
             print(f"{op}: {pct:.1f}% ({count / 1e6:.2f} MB)")
 
     def __repr__(self):
+        """Executes repr magic method operation."""
         return (
             f"ProfilerResult(macs={self.total_macs}, flops={self.total_flops}, "
             f"params={self.total_params}, memory={self.total_memory_bytes / 1e6:.2f} MB)"
         )
 
     def print_bottleneck_analysis(self, top_k: int = 5):
+        """Executes the print bottleneck analysis operation."""
         print(f"--- Top {top_k} Compute Bottlenecks ---")
         sorted_nodes = sorted(
             [n for n in self.node_profiles if isinstance(n["flops"], int)],
@@ -201,6 +215,7 @@ class ProfilerResult:
             )
 
     def print_distribution_pie_chart(self):
+        """Executes the print distribution pie chart operation."""
         print("--- MACs/FLOPs Distribution ---")
         op_types = {}
         for n in self.node_profiles:
@@ -216,6 +231,7 @@ class ProfilerResult:
             print(f"{op}: {pct:.1f}% ({count} FLOPs)")
 
     def get_cumulative_flops_up_to(self, node_name: str) -> Union[int, str]:
+        """Executes the get cumulative flops up to operation."""
         total = 0
         for n in self.node_profiles:
             total = _add_metric(total, n["flops"])
@@ -225,6 +241,7 @@ class ProfilerResult:
 
 
 def _add_metric(a: Union[int, str], b: Union[int, str]) -> Union[int, str]:
+    """Executes the add metric operation."""
     if isinstance(a, int) and isinstance(b, int):
         return a + b
     if a == 0:

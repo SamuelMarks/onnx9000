@@ -27,8 +27,8 @@ Traditional runtimes compile the _engine_ to WebAssembly and load the _graph_ dy
 
 `onnx9000` embraces **Ahead-Of-Time (AOT)** compilation:
 
-- In Python: The `onnx9000-compiler` transpiles the ONNX AST into pure C++23. When compiled with Emscripten (`emcc`), the resulting `.wasm` file is a micro-binary containing _only_ the math loops required for your specific model.
-- In TypeScript: The AST is lowered directly to WebGPU `WGSL` compute shaders or `WebNN` context instructions, completely bypassing a centralized "runtime engine".
+- In TypeScript: The `@onnx9000/compiler` package transpiles the ONNX AST into pure C++23. When compiled with Emscripten (`emcc`), the resulting `.wasm` file is a micro-binary containing _only_ the math loops required for your specific model.
+- It also lowers the AST directly to WebGPU `WGSL` compute shaders or `WebNN` context instructions, completely bypassing a centralized "runtime engine".
 
 ## 4. The Memory Arena
 

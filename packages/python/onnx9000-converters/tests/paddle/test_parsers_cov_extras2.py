@@ -1,7 +1,10 @@
+"""Tests the parsers cov extras2 module functionality."""
+
 from onnx9000.converters.paddle.parsers import PaddleProtobufParser
 
 
 def test_paddle_parsers_var_desc_dims_and_skips() -> None:
+    """Tests the paddle parsers var desc dims and skips functionality."""
     name = b"\n\x01X"
     dim_unpacked = b"\x10\x03"
     dim_packed = b"\x12\x01\x04"

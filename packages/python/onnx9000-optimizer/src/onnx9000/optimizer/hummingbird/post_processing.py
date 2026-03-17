@@ -1,3 +1,5 @@
+"""Provides post processing module functionality."""
+
 import logging
 from typing import Any
 
@@ -10,6 +12,7 @@ class PostProcessor:
     """Target Post-Processing utility for Hummingbird transpilation."""
 
     def __init__(self, g: Graph, emit_zipmap: bool = True) -> None:
+        """Initializes the instance."""
         self.g = g
         self.emit_zipmap = emit_zipmap
 

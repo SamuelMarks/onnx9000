@@ -11,6 +11,7 @@ from onnx9000.core.utils import topological_sort
 
 def _promote_types(t1: DType, t2: DType) -> DType:
     # A simple type promotion rule implementation
+    """Executes the promote types operation."""
     if t1 == t2:
         return t1
     if t1 == DType.FLOAT64 or t2 == DType.FLOAT64:
@@ -27,6 +28,7 @@ def _promote_types(t1: DType, t2: DType) -> DType:
 
 
 def get_attr(node: Node, name: str, default: Any = None) -> Any:
+    """Executes the get attr operation."""
     for attr in node.attributes.values():
         if attr.name == name:
             return attr.value
@@ -58,7 +60,6 @@ def infer_shapes_and_types(graph: Graph) -> None:
     for node in sorted_nodes:
         out_shapes = []
         out_dtypes = []
-
         if node.op_type in [
             "Add",
             "Sub",
@@ -66,10 +67,14 @@ def infer_shapes_and_types(graph: Graph) -> None:
             "Div",
             "And",
             "Or",
+            "Xor",
             "Equal",
             "Less",
             "Greater",
             "Where",
+            "BitwiseAnd",
+            "BitwiseOr",
+            "BitwiseXor",
         ]:
             if len(node.inputs) < 2:
                 continue
@@ -131,7 +136,29 @@ def infer_shapes_and_types(graph: Graph) -> None:
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [out_dtype] * len(node.outputs)
 
-        elif node.op_type in ["Relu", "Sigmoid", "Tanh", "Exp", "Log", "Cast", "Shape", "Size"]:
+        elif node.op_type in [
+            "Relu",
+            "PRelu",
+            "Sigmoid",
+            "Tanh",
+            "Exp",
+            "Log",
+            "Cast",
+            "Shape",
+            "Size",
+            "Gelu",
+            "Sin",
+            "Cos",
+            "Round",
+            "IsInf",
+            "IsNaN",
+            "BitwiseNot",
+            "Hardmax",
+            "LogSoftmax",
+            "HardSigmoid",
+            "HardSwish",
+            "Shrink",
+        ]:
             if len(node.inputs) < 1:
                 continue
             in1 = env.get(node.inputs[0])
@@ -339,6 +366,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             steps = []
 
             def get_tensor_vals(idx, n=node, default_len=None):
+                """Executes the get tensor vals operation."""
                 if len(n.inputs) > idx:
                     t_name = n.inputs[idx]
                     if t_name in graph.tensors and hasattr(graph.tensors[t_name], "values"):
@@ -406,10 +434,13 @@ def infer_shapes_and_types(graph: Graph) -> None:
                         is_dynamic = True
 
             out_shape = in_shape.copy()
-            if is_dynamic:
-                out_shape[axis] = DynamicDim(f"concat_{axis}")
+            if axis < len(out_shape):
+                if is_dynamic:
+                    out_shape[axis] = DynamicDim(f"concat_{axis}")
+                else:
+                    out_shape[axis] = sum_dim
             else:
-                out_shape[axis] = sum_dim
+                out_shape.append(sum_dim if not is_dynamic else DynamicDim(f"concat_{axis}"))
 
             out_shapes = [tuple(out_shape)] * len(node.outputs)
             out_dtypes = [in1.dtype] * len(node.outputs)
@@ -555,50 +586,90 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             if then_graph and isinstance(then_graph, Graph):
                 infer_shapes_and_types(then_graph)
+                for out_v in then_graph.outputs:
+                    name = getattr(out_v, "name", out_v)
+                    if name in then_graph.tensors:
+                        t = then_graph.tensors[name]
+                        if isinstance(out_v, ValueInfo):
+                            out_v.shape = t.shape
+                            out_v.dtype = t.dtype
             if else_graph and isinstance(else_graph, Graph):
                 infer_shapes_and_types(else_graph)
+                for out_v in else_graph.outputs:
+                    name = getattr(out_v, "name", out_v)
+                    if name in else_graph.tensors:
+                        t = else_graph.tensors[name]
+                        if isinstance(out_v, ValueInfo):
+                            out_v.shape = t.shape
+                            out_v.dtype = t.dtype
 
             out_shapes = []
             out_dtypes = []
             for i, out in enumerate(node.outputs):
+                then_shape = ()
+                then_dtype = DType.FLOAT32
                 if then_graph and i < len(then_graph.outputs):
-                    then_out_name = then_graph.outputs[i]
-                    then_shape = (
-                        then_graph.tensors[then_out_name].shape
-                        if then_out_name in then_graph.tensors
-                        else ()
-                    )
-                    then_dtype = (
-                        then_graph.tensors[then_out_name].dtype
-                        if then_out_name in then_graph.tensors
-                        else DType.FLOAT32
-                    )
-                    out_shapes.append(then_shape)
-                    out_dtypes.append(then_dtype)
+                    then_out_name = getattr(then_graph.outputs[i], "name", then_graph.outputs[i])
+                    if then_out_name in then_graph.tensors:
+                        then_shape = then_graph.tensors[then_out_name].shape
+                        then_dtype = then_graph.tensors[then_out_name].dtype
+
+                else_shape = ()
+                else_dtype = DType.FLOAT32
+                if else_graph and i < len(else_graph.outputs):
+                    else_out_name = getattr(else_graph.outputs[i], "name", else_graph.outputs[i])
+                    if else_out_name in else_graph.tensors:
+                        else_shape = else_graph.tensors[else_out_name].shape
+                        else_dtype = else_graph.tensors[else_out_name].dtype
+
+                final_shape = []
+                if len(then_shape) == len(else_shape):
+                    for ts, es in zip(then_shape, else_shape):
+                        if ts == es:
+                            final_shape.append(ts)
+                        else:
+                            final_shape.append(DynamicDim(f"if_branch_dim_{i}"))
+                    out_shapes.append(tuple(final_shape))
                 else:
-                    out_shapes.append(())
-                    out_dtypes.append(DType.FLOAT32)
+                    # Ranks differ, use completely dynamic
+                    out_shapes.append(
+                        tuple(
+                            DynamicDim(f"if_branch_rank_dyn_{i}")
+                            for _ in range(max(len(then_shape), len(else_shape)))
+                        )
+                    )
+
+                # Assume types match, promote if not
+                out_dtypes.append(_promote_types(then_dtype, else_dtype))
 
         elif node.op_type == "Loop":
             # A Loop node contains a 'body' Graph
             body_graph = get_attr(node, "body")
 
             if body_graph and isinstance(body_graph, Graph):
-                # The loop body receives (iter_count, cond_in, v_in...)
-                # And returns (cond_out, v_out..., scan_out...)
                 # Propagate input shapes into the subgraph
                 for i, b_inp in enumerate(body_graph.inputs):
-                    if i == 0:
-                        continue  # iter_count
-                    if i == 1:
-                        continue  # cond_in
-                    node_inp_idx = i  # node.inputs: (M, cond, v_in...)
-                    if node_inp_idx < len(node.inputs):
-                        ext_in = env.get(node.inputs[node_inp_idx])
-                        if ext_in and b_inp in body_graph.tensors:
-                            body_graph.tensors[b_inp].shape = ext_in.shape
-                            body_graph.tensors[b_inp].dtype = ext_in.dtype
+                    b_inp_name = getattr(b_inp, "name", b_inp)
+                    node_inp_idx = i
+                    if i > 1:
+                        if node_inp_idx < len(node.inputs):
+                            ext_in = env.get(node.inputs[node_inp_idx])
+                            if ext_in and b_inp_name in body_graph.tensors:
+                                body_graph.tensors[b_inp_name].shape = ext_in.shape
+                                body_graph.tensors[b_inp_name].dtype = ext_in.dtype
+                                if isinstance(b_inp, ValueInfo):
+                                    b_inp.shape = ext_in.shape
+                                    b_inp.dtype = ext_in.dtype
 
+                infer_shapes_and_types(body_graph)
+
+                for out_v in body_graph.outputs:
+                    name = getattr(out_v, "name", out_v)
+                    if name in body_graph.tensors:
+                        t = body_graph.tensors[name]
+                        if isinstance(out_v, ValueInfo):
+                            out_v.shape = t.shape
+                            out_v.dtype = t.dtype
                 infer_shapes_and_types(body_graph)
 
             out_shapes = []
@@ -655,14 +726,40 @@ def infer_shapes_and_types(graph: Graph) -> None:
             out_shape = (rank, DynamicDim("nonzero_count"))
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [DType.INT64] * len(node.outputs)
+
+        elif getattr(node, "domain", "") == "ai.onnx.ml":
+            if node.op_type == "ArrayFeatureExtractor":
+                in1 = env.get(node.inputs[0])
+                if in1:
+                    out_shapes = [in1.shape] * len(node.outputs)
+                    out_dtypes = [in1.dtype] * len(node.outputs)
+            elif node.op_type in ("LinearClassifier", "TreeEnsembleClassifier"):
+                in1 = env.get(node.inputs[0])
+                if in1:
+                    N = in1.shape[0] if len(in1.shape) > 0 else 1
+                    out_shapes = [(N,), (N, DynamicDim("classes"))]
+                    out_dtypes = [DType.INT64, DType.FLOAT32]
+            else:
+                out_shapes = [tuple(DynamicDim(f"ml_{node.op_type}_{i}") for _ in range(1))] * len(
+                    node.outputs
+                )
+                out_dtypes = [DType.FLOAT32] * len(node.outputs)
+
+        else:
+            # Fallback for CustomOp or Unknown Ops
+            pass
+
         for i, out_name in enumerate(node.outputs):
             if i < len(out_shapes):
                 s = out_shapes[i]
                 d = out_dtypes[i]
             else:
-                in0 = env.get(node.inputs[0]) if node.inputs else None
-                s = ()
-                d = in0.dtype if in0 else DType.FLOAT32
+                s = tuple(DynamicDim(f"custom_{out_name}_{dim}") for dim in range(1))
+                d = (
+                    env.get(node.inputs[0]).dtype
+                    if node.inputs and env.get(node.inputs[0])
+                    else DType.FLOAT32
+                )
 
             env[out_name] = ValueInfo(out_name, s, d)
             if out_name not in graph.tensors:

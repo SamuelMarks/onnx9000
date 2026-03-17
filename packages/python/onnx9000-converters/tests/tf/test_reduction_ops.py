@@ -1,9 +1,12 @@
+"""Tests the reduction ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.converters.tf.reduction_ops import REDUCTION_OPS_MAPPING
 
 
 def test_reduction_ops_simple_reduce() -> None:
+    """Tests the reduction ops simple reduce functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n1", "Sum", inputs=["a", "axes"], attr={"keep_dims": True})
     REDUCTION_OPS_MAPPING["Sum"](builder, node)
@@ -27,6 +30,7 @@ def test_reduction_ops_simple_reduce() -> None:
 
 
 def test_reduction_ops_bincount_cum() -> None:
+    """Tests the reduction ops bincount cum functionality."""
     builder = TFToONNXGraphBuilder()
     REDUCTION_OPS_MAPPING["Bincount"](builder, TFNode("n", "Bincount", inputs=["a", "b"]))
     assert builder.graph.nodes[-1].op_type == "Custom_Bincount"
@@ -42,6 +46,7 @@ def test_reduction_ops_bincount_cum() -> None:
 
 
 def test_reduction_ops_logicals() -> None:
+    """Tests the reduction ops logicals functionality."""
     builder = TFToONNXGraphBuilder()
     logicals = [
         ("LogicalAnd", "And"),

@@ -1,3 +1,5 @@
+"""Provides xgboost catboost parser module functionality."""
+
 import json
 import logging
 from typing import Any
@@ -20,6 +22,7 @@ def parse_xgboost_dump(dump: list[str]) -> list[TreeAbstractions]:
 
 
 def _traverse_xgb_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
+    """Executes the traverse xgb tree operation."""
     if "split" in node_dict:  # Internal node
         feature_name = node_dict["split"]
         # In a real impl, we map feature name to integer index

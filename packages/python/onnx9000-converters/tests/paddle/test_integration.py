@@ -1,3 +1,5 @@
+"""Tests the integration module functionality."""
+
 import time
 
 import pytest
@@ -6,6 +8,7 @@ from onnx9000.converters.paddle.parsers import PaddleBlock, PaddleGraph, PaddleN
 
 
 def test_integration_paddle_linear_regression() -> None:
+    """Tests the integration paddle linear regression functionality."""
     from onnx9000.converters.paddle.api import _convert_paddle_graph
     from onnx9000.converters.paddle.parsers import PaddleBlock, PaddleGraph, PaddleNode
 
@@ -36,6 +39,7 @@ def test_integration_paddle_linear_regression() -> None:
 
 
 def test_integration_paddle_resnet_mock() -> None:
+    """Tests the integration paddle resnet mock functionality."""
     from onnx9000.converters.paddle.api import _convert_paddle_graph
 
     start_time = time.time()
@@ -67,6 +71,7 @@ def test_integration_paddle_resnet_mock() -> None:
 
 
 def test_integration_paddle_ocr_mock() -> None:
+    """Tests the integration paddle ocr mock functionality."""
     from onnx9000.converters.paddle.api import _convert_paddle_graph
 
     ops = [
@@ -86,6 +91,7 @@ def test_integration_paddle_ocr_mock() -> None:
 
 
 def test_paddle_dynamic_shapes_and_lod() -> None:
+    """Tests the paddle dynamic shapes and lod functionality."""
     from onnx9000.converters.paddle.api import _convert_paddle_graph
 
     ops = [
@@ -101,5 +107,6 @@ def test_paddle_dynamic_shapes_and_lod() -> None:
 
 
 def test_paddle_security_audit_parsing() -> None:
+    """Tests the paddle security audit parsing functionality."""
     with pytest.raises(Exception):
         convert_paddle_to_onnx(b"\xff\xff\xff\xff")

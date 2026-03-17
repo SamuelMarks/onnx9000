@@ -1,3 +1,5 @@
+"""Provides onnxml parser module functionality."""
+
 import logging
 
 from onnx9000.core.ir import Graph, Node
@@ -91,18 +93,22 @@ def parse_onnxml_scaler(node: Node) -> None:
 
 
 def parse_onnxml_normalizer(node: Node) -> None:
+    """Executes the parse onnxml normalizer operation."""
     pass
 
 
 def parse_onnxml_binarizer(node: Node) -> None:
+    """Executes the parse onnxml binarizer operation."""
     pass
 
 
 def parse_onnxml_onehot(node: Node) -> None:
+    """Executes the parse onnxml onehot operation."""
     pass
 
 
 def parse_onnxml_imputer(node: Node) -> None:
+    """Executes the parse onnxml imputer operation."""
     pass
 
 

@@ -1,3 +1,5 @@
+"""Tests the hummingbird analysis module functionality."""
+
 from onnx9000.optimizer.hummingbird.analysis import (
     analyze_leaf_distribution,
     analyze_tree_depth,
@@ -8,6 +10,7 @@ from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 
 def test_analyze_tree_depth() -> None:
+    """Tests the analyze tree depth functionality."""
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
     tree.add_node(1, 0.0, -1, -1, 10.0)
@@ -20,6 +23,7 @@ def test_analyze_tree_depth() -> None:
 
 
 def test_analyze_leaf_distribution() -> None:
+    """Tests the analyze leaf distribution functionality."""
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
     tree.add_node(-1, 0.0, -1, -1, 10.0)
@@ -31,6 +35,7 @@ def test_analyze_leaf_distribution() -> None:
 
 
 def test_flatten_ensemble() -> None:
+    """Tests the flatten ensemble functionality."""
     tree1 = TreeAbstractions()
     tree1.add_node(0, 1.5, -1, -1, 1.0)
 
@@ -44,6 +49,7 @@ def test_flatten_ensemble() -> None:
 
 
 def test_cast_parameters() -> None:
+    """Tests the cast parameters functionality."""
     tree = TreeAbstractions()
     tree.add_node(0, 1.123456789123456789, -1, -1, 2.123456789123456789)
     casted = cast_parameters(tree)
@@ -53,6 +59,7 @@ def test_cast_parameters() -> None:
 
 
 def test_analysis_empty() -> None:
+    """Tests the analysis empty functionality."""
     from onnx9000.optimizer.hummingbird.analysis import (
         analyze_leaf_distribution,
         analyze_tree_depth,
@@ -65,6 +72,7 @@ def test_analysis_empty() -> None:
 
 
 def test_leaf_distribution_empty() -> None:
+    """Tests the leaf distribution empty functionality."""
     from onnx9000.optimizer.hummingbird.analysis import analyze_leaf_distribution
     from onnx9000.optimizer.hummingbird.engine import TreeAbstractions
 

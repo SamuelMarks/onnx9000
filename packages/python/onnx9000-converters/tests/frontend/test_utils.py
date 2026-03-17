@@ -723,6 +723,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -731,6 +732,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -738,6 +740,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -745,6 +748,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -753,6 +757,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -760,6 +765,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -767,6 +773,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -775,6 +782,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -782,6 +790,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -789,6 +798,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -797,6 +807,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -804,6 +815,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -811,6 +823,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -819,6 +832,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -826,6 +840,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -833,6 +848,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -841,6 +857,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -848,6 +865,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -855,6 +873,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -863,6 +882,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -870,6 +890,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -877,6 +898,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -885,6 +907,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -892,6 +915,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -899,6 +923,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -907,6 +932,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -914,6 +940,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -921,6 +948,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -929,6 +957,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -936,6 +965,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -943,6 +973,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -951,6 +982,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -958,6 +990,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -965,6 +998,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -973,6 +1007,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -980,6 +1015,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -987,6 +1023,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -995,6 +1032,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -1002,6 +1040,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1
@@ -1009,6 +1048,7 @@ def test_tensor_grad_prop() -> None:
 
 
 def test_tensor_r_ops() -> None:
+    """Tests the tensor r ops functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10,), DType.FLOAT32)
@@ -1017,6 +1057,7 @@ def test_tensor_r_ops() -> None:
 
 
 def test_tensor_transpose_neg() -> None:
+    """Tests the tensor transpose neg functionality."""
     gb = GraphBuilder("mock")
     with Tracing(gb):
         t1 = Tensor((10, 5), DType.FLOAT32)
@@ -1024,6 +1065,7 @@ def test_tensor_transpose_neg() -> None:
 
 
 def test_tensor_grad_prop() -> None:
+    """Tests the tensor grad prop functionality."""
     t1 = Tensor((10,), DType.FLOAT32)
     assert t1.grad is None
     t1.grad = t1

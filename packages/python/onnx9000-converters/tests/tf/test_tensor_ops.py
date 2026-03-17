@@ -1,9 +1,12 @@
+"""Tests the tensor ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.converters.tf.tensor_ops import TENSOR_OPS_MAPPING
 
 
 def test_tensor_ops_mapping_simple() -> None:
+    """Tests the tensor ops mapping simple functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n1", "Identity", inputs=["a"])
     outs = TENSOR_OPS_MAPPING["Identity"](builder, node)
@@ -16,6 +19,7 @@ def test_tensor_ops_mapping_simple() -> None:
 
 
 def test_tensor_ops_reshape_squeeze_expand() -> None:
+    """Tests the tensor ops reshape squeeze expand functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["Reshape"](builder, TFNode("n", "Reshape", inputs=["a", "b"]))
     assert builder.graph.nodes[-1].op_type == "Reshape"
@@ -32,6 +36,7 @@ def test_tensor_ops_reshape_squeeze_expand() -> None:
 
 
 def test_tensor_ops_transpose() -> None:
+    """Tests the tensor ops transpose functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["Transpose"](builder, TFNode("n", "Transpose", inputs=["a", "perm"]))
     assert builder.graph.nodes[-1].op_type == "Transpose"
@@ -43,6 +48,7 @@ def test_tensor_ops_transpose() -> None:
 
 
 def test_tensor_ops_concat_pack_unpack() -> None:
+    """Tests the tensor ops concat pack unpack functionality."""
     builder = TFToONNXGraphBuilder()
     outs = TENSOR_OPS_MAPPING["Concat"](builder, TFNode("n", "Concat", inputs=["dim", "a", "b"]))
     assert builder.graph.nodes[-1].op_type == "Custom_TFConcat"
@@ -60,6 +66,7 @@ def test_tensor_ops_concat_pack_unpack() -> None:
 
 
 def test_tensor_ops_split_slice_tile() -> None:
+    """Tests the tensor ops split slice tile functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["Split"](
         builder, TFNode("n", "Split", inputs=["dim", "a"], attr={"num_split": 3})
@@ -72,6 +79,7 @@ def test_tensor_ops_split_slice_tile() -> None:
 
 
 def test_tensor_ops_pad() -> None:
+    """Tests the tensor ops pad functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["Pad"](builder, TFNode("n", "Pad", inputs=["a", "b"]))
     assert builder.graph.nodes[-1].op_type == "Pad"
@@ -92,6 +100,7 @@ def test_tensor_ops_pad() -> None:
 
 
 def test_tensor_ops_gather_scatter() -> None:
+    """Tests the tensor ops gather scatter functionality."""
     builder = TFToONNXGraphBuilder()
     for op, onnx_op in [
         ("Gather", "Gather"),
@@ -109,6 +118,7 @@ def test_tensor_ops_gather_scatter() -> None:
 
 
 def test_tensor_ops_space_depth() -> None:
+    """Tests the tensor ops space depth functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["SpaceToBatchND"](
         builder, TFNode("n", "SpaceToBatchND", inputs=["a", "b", "c"])
@@ -121,6 +131,7 @@ def test_tensor_ops_space_depth() -> None:
 
 
 def test_tensor_ops_reverse_roll_diag() -> None:
+    """Tests the tensor ops reverse roll diag functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["Reverse"](builder, TFNode("n", "Reverse", inputs=["a", "b"]))
     assert builder.graph.nodes[-1].op_type == "ReverseSequence"
@@ -131,6 +142,7 @@ def test_tensor_ops_reverse_roll_diag() -> None:
 
 
 def test_tensor_ops_cast_shape_size() -> None:
+    """Tests the tensor ops cast shape size functionality."""
     builder = TFToONNXGraphBuilder()
     outs = TENSOR_OPS_MAPPING["Cast"](builder, TFNode("n", "Cast", inputs=["a"], attr={"DstT": 3}))
     assert builder.graph.nodes[-1].op_type == "Cast"
@@ -150,6 +162,7 @@ def test_tensor_ops_cast_shape_size() -> None:
 
 
 def test_tensor_ops_like_fill_broadcast_where() -> None:
+    """Tests the tensor ops like fill broadcast where functionality."""
     builder = TFToONNXGraphBuilder()
     TENSOR_OPS_MAPPING["ZerosLike"](builder, TFNode("n", "ZerosLike", inputs=["a"]))
     assert builder.graph.nodes[-1].op_type == "ConstantOfShape"

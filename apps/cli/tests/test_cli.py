@@ -1,3 +1,5 @@
+"""Tests the cli module functionality."""
+
 import sys
 from unittest.mock import patch
 
@@ -16,15 +18,49 @@ from onnx9000_cli.main import (
 
 
 def test_cli_commands(capsys) -> None:
+    """Tests the cli commands functionality."""
     import argparse
 
     # Test individual functions
-    args = argparse.Namespace(model="test.onnx", script="test.py", src="tf", dst="onnx")
+    args = argparse.Namespace(
+        model="test.onnx",
+        script="test.py",
+        src="tf",
+        dst="onnx",
+        skip_rules="",
+        prune_inputs="",
+        preserve_nodes="",
+        input_shape=[],
+        tensor_type=[],
+        check_n=0,
+        custom_ops=[],
+        skip_fusions=False,
+        skip_constant_folding=False,
+        skip_shape_inference=False,
+        skip_fuse_bn=False,
+        dry_run=False,
+        max_iterations=1,
+        log_json=False,
+        size_limit_mb=0.0,
+        target_opset=None,
+        strip_metadata=False,
+        sort_value_info=False,
+        output="out.onnx",
+        overwrite=True,
+        diff_json=False,
+    )
     inspect_cmd(args)
     assert "Inspecting test.onnx..." in capsys.readouterr().out
 
-    simplify_cmd(args)
-    assert "Simplifying test.onnx..." in capsys.readouterr().out
+    with (
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.simplify") as mock_simplify,
+    ):
+        mock_load.return_value = "mock_graph"
+        mock_simplify.return_value = "mock_simplified_graph"
+        simplify_cmd(args)
+    assert "Simplifying..." in capsys.readouterr().out
 
     optimize_cmd(args)
     assert "Optimizing test.onnx..." in capsys.readouterr().out
@@ -47,6 +83,7 @@ def test_cli_commands(capsys) -> None:
 
 @patch("sys.argv", ["onnx9000", "inspect", "model.onnx"])
 def test_main_valid() -> None:
+    """Tests the main valid functionality."""
     with patch("onnx9000_cli.main.inspect_cmd") as mock_cmd:
         main()
         mock_cmd.assert_called_once()
@@ -54,6 +91,7 @@ def test_main_valid() -> None:
 
 @patch("sys.argv", ["onnx9000"])
 def test_main_empty(capsys) -> None:
+    """Tests the main empty functionality."""
     with pytest.raises(SystemExit) as e:
         main()
     assert e.value.code == 1
@@ -61,6 +99,7 @@ def test_main_empty(capsys) -> None:
 
 
 def test_main_execution() -> None:
+    """Tests the main execution functionality."""
     import subprocess
 
     result = subprocess.run(
@@ -73,6 +112,7 @@ def test_main_execution() -> None:
 
 
 def test_main_execution_runpy(monkeypatch) -> None:
+    """Tests the main execution runpy functionality."""
     import runpy
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
@@ -82,6 +122,7 @@ def test_main_execution_runpy(monkeypatch) -> None:
 
 
 def test_module_main_exec(monkeypatch) -> None:
+    """Tests the module main exec functionality."""
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
     with pytest.raises(SystemExit), open("apps/cli/src/onnx9000_cli/main.py") as f:
         code = compile(f.read(), "apps/cli/src/onnx9000_cli/main.py", "exec")
@@ -89,6 +130,7 @@ def test_module_main_exec(monkeypatch) -> None:
 
 
 def test_run_module(monkeypatch) -> None:
+    """Tests the run module functionality."""
     import runpy
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])

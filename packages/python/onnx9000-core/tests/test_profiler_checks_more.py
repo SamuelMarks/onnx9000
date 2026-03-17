@@ -1,9 +1,12 @@
+"""Tests the profiler checks more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.profiler_checks import OptimizationAnalyzer
 
 
 def test_optimization_checker():
+    """Tests the optimization checker functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("x", [1], "float32"))
     g.add_tensor(Tensor("y", [1], "float32"))
@@ -21,6 +24,7 @@ def test_optimization_checker():
 
 
 def test_optimization_checker_more():
+    """Tests the optimization checker more functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("unused_init", [1], "float32", is_initializer=True))
     g.add_node(Node("MatMul", ["a", "b"], ["mm_out"], name="mm"))

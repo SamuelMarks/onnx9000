@@ -1,22 +1,24 @@
+"""Tests the hummingbird math more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.math_utils import (
-    map_count_vectorizer,
-    map_tfidf_vectorizer,
-    map_polynomial_expansion,
-    map_murmurhash3,
-    optimize_sigmoid,
-    fold_scaler_into_linear,
-    map_knn_distances,
-    replace_mod,
-    replace_where_with_arithmetic_mask,
     clamp_nan_to_zero,
     division_by_zero_guard,
+    enforce_broadcast_safety,
     ensure_softmax_stability,
+    fold_scaler_into_linear,
+    handle_64bit_casting,
+    map_count_vectorizer,
+    map_knn_distances,
+    map_murmurhash3,
     map_naive_bayes,
     map_pca_svd_lda,
-    handle_64bit_casting,
-    enforce_broadcast_safety,
+    map_polynomial_expansion,
+    map_tfidf_vectorizer,
+    optimize_sigmoid,
+    replace_mod,
+    replace_where_with_arithmetic_mask,
     validate_math_exactness,
 )
 from onnx9000.optimizer.hummingbird.perfect_tree import (
@@ -26,6 +28,7 @@ from onnx9000.optimizer.hummingbird.perfect_tree import (
 
 
 def test_hummingbird_math_stubs():
+    """Tests the hummingbird math stubs functionality."""
     g = Graph("g")
     map_count_vectorizer(g, "in", ["a"])
     map_tfidf_vectorizer(g, "in", ["a"], [1.0])

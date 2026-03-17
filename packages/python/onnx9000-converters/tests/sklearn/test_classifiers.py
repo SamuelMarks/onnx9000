@@ -1,3 +1,5 @@
+"""Tests the classifiers module functionality."""
+
 from unittest.mock import MagicMock
 
 import numpy as np
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph
 
 
 def test_all_sklearn() -> None:
+    """Tests the all sklearn functionality."""
     import importlib
     import pkgutil
 
@@ -13,6 +16,8 @@ def test_all_sklearn() -> None:
     g = Graph("test")
 
     class MockEst:
+        """Represents the MockEst class and its associated logic."""
+
         coef_ = np.array([1, 2])
         intercept_ = np.array([0.5])
         classes_ = np.array([0, 1])

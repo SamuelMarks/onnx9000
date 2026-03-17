@@ -1,3 +1,5 @@
+"""Tests the jit compiler module functionality."""
+
 import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -11,6 +13,7 @@ from onnx9000.core.ir import Graph, Tensor
 
 
 def test_get_compiler(monkeypatch) -> None:
+    """Tests the get compiler functionality."""
     monkeypatch.setattr(config, "ONNX9000_COMPILER", "my_custom_compiler")
     assert _get_compiler() == "my_custom_compiler"
     monkeypatch.setattr(config, "ONNX9000_COMPILER", "")
@@ -41,6 +44,7 @@ def test_get_compiler(monkeypatch) -> None:
 def test_compile_cpp(
     mock_run, mock_open, mock_loader, mock_env, mock_gen, mock_hash, monkeypatch, tmp_path
 ) -> None:
+    """Tests the compile cpp functionality."""
     monkeypatch.setattr(config, "ONNX9000_CACHE_DIR", tmp_path)
     monkeypatch.setattr(config, "ONNX9000_DEBUG", False)
     g = Graph("test")
@@ -89,6 +93,7 @@ def test_compile_wasm(
     monkeypatch,
     tmp_path,
 ) -> None:
+    """Tests the compile wasm functionality."""
     monkeypatch.setattr(config, "ONNX9000_DEBUG", False)
     g = Graph("test")
     mock_env.return_value.get_template.return_value.render.return_value = "rendered_template"
@@ -116,6 +121,7 @@ def test_compile_wasm(
 @patch("importlib.util.spec_from_file_location")
 @patch("importlib.util.module_from_spec")
 def test_load_module(mock_mod_from_spec, mock_spec_from_file) -> None:
+    """Tests the load module functionality."""
     mock_spec = MagicMock()
     mock_spec.loader = MagicMock()
     mock_spec_from_file.return_value = mock_spec

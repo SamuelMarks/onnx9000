@@ -174,6 +174,7 @@ class CUDAMemoryPlanner:
             logger.debug(f"Exception during CUDAMemoryPlanner cleanup: {e}")
 
     def allocate_dynamic(self, name: str, size: int, shape: tuple[int, ...], dtype: str) -> None:
+        """Executes the allocate dynamic operation."""
         if not is_cuda_available():
             return
         if name in self.dynamic_allocations:

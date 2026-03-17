@@ -1,3 +1,5 @@
+"""Tests the simplifier ops module functionality."""
+
 import contextlib
 
 import numpy as np
@@ -7,6 +9,7 @@ from onnx9000.optimizer.simplifier.api import simplify
 
 
 def _create_and_simplify(op_type, inputs_data, attrs=None):
+    """Tests the create and simplify functionality."""
     g = Graph("test")
     input_names = []
     for i, data in enumerate(inputs_data):
@@ -27,6 +30,7 @@ def _create_and_simplify(op_type, inputs_data, attrs=None):
 
 
 def test_math_ops_folding() -> None:
+    """Tests the math ops folding functionality."""
     for op in [
         "Sin",
         "Cos",
@@ -85,6 +89,7 @@ def test_math_ops_folding() -> None:
 
 
 def test_reduce_ops_folding() -> None:
+    """Tests the reduce ops folding functionality."""
     data = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     for op in [
         "ReduceSum",
@@ -105,6 +110,7 @@ def test_reduce_ops_folding() -> None:
 
 
 def test_other_ops_folding() -> None:
+    """Tests the other ops folding functionality."""
     _create_and_simplify(
         "Clip",
         [
@@ -154,6 +160,7 @@ def test_other_ops_folding() -> None:
 
 
 def test_tensor_ops_folding() -> None:
+    """Tests the tensor ops folding functionality."""
     with contextlib.suppress(Exception):
         _create_and_simplify(
             "Split", [np.array([1.0, 2.0, 3.0], dtype=np.float32), np.array([1, 2], dtype=np.int64)]
@@ -247,8 +254,10 @@ def test_tensor_ops_folding() -> None:
 
 
 def test_dce_math_rewrites() -> None:
+    """Tests the dce math rewrites functionality."""
 
     def _create_dce_graph(op_type, num_inputs=1, attrs=None):
+        """Executes the create dce graph operation."""
         g = Graph("test")
         inputs = []
         for i in range(num_inputs):
@@ -306,6 +315,7 @@ def test_dce_math_rewrites() -> None:
 
 
 def test_dropout_dce() -> None:
+    """Tests the dropout dce functionality."""
     g = Graph("test")
     g.inputs = ["in0"]
     g.add_node(Node("Dropout", ["in0"], ["out1", "out2"], {}, "n1"))
@@ -316,6 +326,7 @@ def test_dropout_dce() -> None:
 
 
 def test_where_partial_folding() -> None:
+    """Tests the where partial folding functionality."""
     g = Graph("test")
     t = Tensor(
         "c", shape=(1,), dtype=DType.BOOL, data=np.array([True], dtype=bool), is_initializer=True
@@ -343,8 +354,10 @@ def test_where_partial_folding() -> None:
 
 
 def test_partial_math_folding() -> None:
+    """Tests the partial math folding functionality."""
 
     def _test_partial(op_type, inputs, attrs, expected_nodes, expected_out) -> None:
+        """Executes the test partial operation."""
         g = Graph("test")
         for i, val in enumerate(inputs):
             if isinstance(val, np.ndarray):

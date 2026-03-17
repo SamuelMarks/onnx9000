@@ -1,3 +1,5 @@
+"""Provides lightgbm parser module functionality."""
+
 import logging
 from typing import Any
 
@@ -20,6 +22,7 @@ def parse_lightgbm_dump(booster_dump: dict) -> list[TreeAbstractions]:
 
 
 def _traverse_lgbm_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
+    """Executes the traverse lgbm tree operation."""
     if "split_index" in node_dict:  # Internal node
         # Handle categorical features
         if node_dict.get("decision_type") == "<=":

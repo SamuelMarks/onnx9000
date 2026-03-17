@@ -308,7 +308,7 @@ def load_training_checkpoint(graph: Graph, filepath: str) -> None:
     """
     import json
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         state_dict = json.load(f)
     for init, _ in state_dict.items():
         if init in graph.tensors:

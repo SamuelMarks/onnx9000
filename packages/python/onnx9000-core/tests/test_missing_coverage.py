@@ -1,3 +1,5 @@
+"""Tests the missing coverage module functionality."""
+
 import os
 import struct
 import tempfile
@@ -22,15 +24,21 @@ from onnx9000.core.utils import CyclicDependencyError, topological_sort
 
 
 def test_execution_provider_defaults() -> None:
+    """Tests the execution provider defaults functionality."""
 
     class BlankEP(ExecutionProvider):
+        """Represents the BlankEP class and its associated logic."""
+
         def get_supported_nodes(self, graph):
+            """Tests the get supported nodes functionality."""
             return super().get_supported_nodes(graph)
 
         def allocate_tensors(self, tensors):
+            """Tests the allocate tensors functionality."""
             return super().allocate_tensors(tensors)
 
         def execute(self, graph, context, inputs):
+            """Tests the execute functionality."""
             return super().execute(graph, context, inputs)
 
     ep = BlankEP({})
@@ -40,6 +48,7 @@ def test_execution_provider_defaults() -> None:
 
 
 def test_ir_str_repr() -> None:
+    """Tests the ir str repr functionality."""
     d = DynamicDim("batch")
     assert str(d) == "batch"
     assert repr(d) == "DynamicDim(batch)"
@@ -55,11 +64,13 @@ def test_ir_str_repr() -> None:
 
 
 def test_mmap_missing_file() -> None:
+    """Tests the mmap missing file functionality."""
     with pytest.raises(MemoryMapError):
         mmap_tensor_data("non_existent_file.bin", 0, 100)
 
 
 def test_mmap_out_of_bounds() -> None:
+    """Tests the mmap out of bounds functionality."""
     with tempfile.NamedTemporaryFile(delete=False) as f:
         f.write(b"123")
         name = f.name
@@ -69,6 +80,7 @@ def test_mmap_out_of_bounds() -> None:
 
 
 def test_mmap_exception_handling(monkeypatch) -> None:
+    """Tests the mmap exception handling functionality."""
     import mmap
 
     with tempfile.NamedTemporaryFile(delete=False) as f:
@@ -76,6 +88,7 @@ def test_mmap_exception_handling(monkeypatch) -> None:
         name = f.name
 
     def mock_mmap(*args, **kwargs) -> NoReturn:
+        """Tests the mock mmap functionality."""
         raise OSError("Mock error")
 
     monkeypatch.setattr(mmap, "mmap", mock_mmap)
@@ -85,11 +98,13 @@ def test_mmap_exception_handling(monkeypatch) -> None:
 
 
 def test_symbolic_errors() -> None:
+    """Tests the symbolic errors functionality."""
     with pytest.raises(Exception):
         broadcast_shapes((2,), (3,))
 
 
 def test_utils_cyclic_dep() -> None:
+    """Tests the utils cyclic dep functionality."""
     g = Graph("cyclic")
     g.add_node(Node("Identity", inputs=["A"], outputs=["B"], attributes={}))
     g.add_node(Node("Identity", inputs=["B"], outputs=["C"], attributes={}))
@@ -99,6 +114,7 @@ def test_utils_cyclic_dep() -> None:
 
 
 def test_missing_symbolic() -> None:
+    """Tests the missing symbolic functionality."""
     assert broadcast_shapes((1,), (5,)) == (5,)
     assert broadcast_shapes((5,), (1,)) == (5,)
     assert broadcast_shapes((DynamicDim(-1),), (5,)) == (5,)
@@ -109,6 +125,7 @@ def test_missing_symbolic() -> None:
 
 
 def test_missing_execution() -> None:
+    """Tests the missing execution functionality."""
     from onnx9000.core.execution import Environment
 
     e = Environment()
@@ -118,6 +135,7 @@ def test_missing_execution() -> None:
 
 
 def test_missing_ir() -> None:
+    """Tests the missing ir functionality."""
     a = Attribute("attr", "FLOAT", 1.0)
     assert repr(a) == "Attribute(name=attr, type=FLOAT, value=1.0)"
     vi = ValueInfo("V", (1,), DType.FLOAT32)
@@ -129,6 +147,7 @@ def test_missing_ir() -> None:
 
 
 def test_missing_utils() -> None:
+    """Tests the missing utils functionality."""
     g = Graph("g")
     g.add_node(Node("Identity", ["X"], ["Y"], attributes={}, name="N1"))
     g.add_node(Node("Identity", ["Y"], ["Z"], attributes={}, name="N2"))
@@ -138,6 +157,7 @@ def test_missing_utils() -> None:
 
 
 def test_missing_shape_inference() -> None:
+    """Tests the missing shape inference functionality."""
     g = Graph("g")
     g.add_node(Node("MissingOp", ["A", "B"], ["Y"], attributes={}))
     g.add_node(Node("Add", ["A"], ["Y"], attributes={}))
@@ -151,6 +171,7 @@ def test_missing_shape_inference() -> None:
 
 
 def test_missing_serializer() -> None:
+    """Tests the missing serializer functionality."""
     g = Graph("g")
     g.doc_string = "doc"
     g.opset_imports["ai.onnx"] = 15
@@ -204,9 +225,11 @@ def test_missing_serializer() -> None:
 
 
 def test_serializer_error(monkeypatch) -> None:
+    """Tests the serializer error functionality."""
     import onnx9000.core.serializer as s
 
     def mock_to_bytes(g) -> NoReturn:
+        """Tests the mock to bytes functionality."""
         raise Exception("Mock error")
 
     monkeypatch.setattr(s, "to_bytes", mock_to_bytes)
@@ -215,6 +238,7 @@ def test_serializer_error(monkeypatch) -> None:
 
 
 def test_shape_inference_errors() -> None:
+    """Tests the shape inference errors functionality."""
     from onnx9000.core.exceptions import ShapeInferenceError
     from onnx9000.core.shape_inference import infer_shapes_and_types
 
@@ -227,6 +251,7 @@ def test_shape_inference_errors() -> None:
 
 
 def test_shape_inference_branches() -> None:
+    """Tests the shape inference branches functionality."""
     from onnx9000.core.shape_inference import infer_shapes_and_types
 
     g = Graph("g")
@@ -243,6 +268,7 @@ def test_shape_inference_branches() -> None:
 
 
 def test_ir_find_node() -> None:
+    """Tests the ir find node functionality."""
     g = Graph("g")
     n = Node("A", [], [], {}, name="N1")
     g.add_node(n)

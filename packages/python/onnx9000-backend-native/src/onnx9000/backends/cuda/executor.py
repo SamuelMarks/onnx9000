@@ -81,6 +81,7 @@ class Dispatcher:
                 self.planner.set_tensor(init_name, data_arr)
 
     def _set_tensor_safe(self, name: str, data: np.ndarray) -> None:
+        """Executes the set tensor safe operation."""
         if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
             self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
         self.planner.set_tensor(name, data)

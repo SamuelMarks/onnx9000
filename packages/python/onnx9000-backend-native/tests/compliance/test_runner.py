@@ -1,3 +1,5 @@
+"""Tests the runner module functionality."""
+
 import tempfile
 from pathlib import Path
 
@@ -12,6 +14,7 @@ from onnx9000.core.serializer import save
 
 
 def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str) -> None:
+    """Tests the create tensor pb functionality."""
     tensor_proto = onnx_pb2.TensorProto()
     tensor_proto.name = name
     tensor_proto.dims.extend(arr.shape)
@@ -29,6 +32,7 @@ def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str) -> None:
 
 
 def test_onnx_backend_test_runner() -> None:
+    """Tests the onnx backend test runner functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -51,6 +55,7 @@ def test_onnx_backend_test_runner() -> None:
 
 
 def test_onnx_backend_test_runner_mismatch() -> None:
+    """Tests the onnx backend test runner mismatch functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -74,24 +79,28 @@ def test_onnx_backend_test_runner_mismatch() -> None:
 
 
 def test_runner_skip_list() -> None:
+    """Tests the runner skip list functionality."""
     runner = ONNXBackendTestRunner(providers=[])
     runner.set_skip_list(["test_skip_this"])
     assert "test_skip_this" in runner.skip_lists
 
 
 def test_runner_empty_tensor() -> None:
+    """Tests the runner empty tensor functionality."""
     runner = ONNXBackendTestRunner(providers=[])
     arr = runner._convert_tensor_to_numpy(Tensor("E", (1,), DType.FLOAT32, data=None))
     assert arr.shape == (1,)
 
 
 def test_runner_invalid_dtype() -> None:
+    """Tests the runner invalid dtype functionality."""
     runner = ONNXBackendTestRunner(providers=[])
     with pytest.raises(TypeError):
         runner._convert_tensor_to_numpy(Tensor("E", (1,), DType.STRING, data=b"hi"))
 
 
 def test_runner_missing_model() -> None:
+    """Tests the runner missing model functionality."""
     runner = ONNXBackendTestRunner(providers=[])
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
@@ -101,6 +110,7 @@ def test_runner_missing_model() -> None:
 
 
 def test_runner_no_datasets() -> None:
+    """Tests the runner no datasets functionality."""
     runner = ONNXBackendTestRunner(providers=[])
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
@@ -111,6 +121,7 @@ def test_runner_no_datasets() -> None:
 
 
 def test_runner_missing_output() -> None:
+    """Tests the runner missing output functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -136,6 +147,7 @@ def test_runner_missing_output() -> None:
 
 
 def test_runner_missing_outputs() -> None:
+    """Tests the runner missing outputs functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -152,6 +164,7 @@ def test_runner_missing_outputs() -> None:
 
 
 def test_runner_extra_inputs() -> None:
+    """Tests the runner extra inputs functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -170,6 +183,7 @@ def test_runner_extra_inputs() -> None:
 
 
 def test_runner_mismatches() -> None:
+    """Tests the runner mismatches functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")
@@ -192,16 +206,21 @@ def test_runner_mismatches() -> None:
 
 
 def test_runner_bool_int() -> None:
+    """Tests the runner bool int functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         ds_dir = base_dir / "test_data_set_0"
         ds_dir.mkdir()
 
         class MockEP(CPUExecutionProvider):
+            """Represents the MockEP class and its associated logic."""
+
             def get_supported_nodes(self, g):
+                """Tests the get supported nodes functionality."""
                 return ["MockOp"]
 
             def execute(self, g, ctx, inputs):
+                """Tests the execute functionality."""
                 return {
                     "C": Tensor("C", (1,), DType.BOOL, data=np.array([True], dtype=bool).tobytes())
                 }
@@ -222,10 +241,14 @@ def test_runner_bool_int() -> None:
 
         # test int mismatch
         class MockEP2(CPUExecutionProvider):
+            """Represents the MockEP2 class and its associated logic."""
+
             def get_supported_nodes(self, g):
+                """Tests the get supported nodes functionality."""
                 return ["MockOp"]
 
             def execute(self, g, ctx, inputs):
+                """Tests the execute functionality."""
                 return {
                     "C": Tensor(
                         "C", (1,), DType.INT64, data=np.array([1], dtype=np.int64).tobytes()
@@ -253,6 +276,7 @@ def test_runner_bool_int() -> None:
 
 
 def test_runner_exception() -> None:
+    """Tests the runner exception functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         g = Graph("test_add")

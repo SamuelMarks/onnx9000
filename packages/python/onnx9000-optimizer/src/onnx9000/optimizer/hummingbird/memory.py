@@ -1,3 +1,5 @@
+"""Provides memory module functionality."""
+
 import logging
 from typing import Optional
 
@@ -10,6 +12,7 @@ class TreeAbstractions:
     """Intermediate abstractions mapping tree nodes to native tensors."""
 
     def __init__(self) -> None:
+        """Initializes the instance."""
         self.features: list[int] = []
         self.thresholds: list[float] = []
         self.left_children: list[int] = []
@@ -20,6 +23,7 @@ class TreeAbstractions:
     def add_node(
         self, feature: int, threshold: float, left: int, right: int, value: float, missing: int = 0
     ) -> None:
+        """Executes the add node operation."""
         self.features.append(feature)
         self.thresholds.append(threshold)
         self.left_children.append(left)

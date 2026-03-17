@@ -1,3 +1,5 @@
+"""Tests the profiler dtypes and params module functionality."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -5,6 +7,7 @@ from onnx9000.core.profiler import profile
 
 
 def test_profiler_dtypes():
+    """Tests the profiler dtypes functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x16", [10, 10], DType.FLOAT16))
     g.add_tensor(Tensor("w16", [10, 10], DType.FLOAT16, is_initializer=True))
@@ -33,6 +36,7 @@ def test_profiler_dtypes():
 
 
 def test_profiler_batchnorm_int():
+    """Tests the profiler batchnorm int functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
     g.inputs.append("x")
@@ -50,6 +54,7 @@ def test_profiler_batchnorm_int():
 
 
 def test_profiler_reduce_int():
+    """Tests the profiler reduce int functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
     g.inputs.append("x")
@@ -67,6 +72,7 @@ def test_profiler_reduce_int():
 
 
 def test_profiler_batchnorm_str():
+    """Tests the profiler batchnorm str functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "I"), DType.FLOAT32))
     g.inputs.append("x")
@@ -84,6 +90,7 @@ def test_profiler_batchnorm_str():
 
 
 def test_profiler_prelu():
+    """Tests the profiler prelu functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
     g.add_node(Node("PRelu", ["x"], ["y"]))
@@ -96,6 +103,7 @@ from onnx9000.core.profiler import _add_metric
 
 
 def test_add_metric():
+    """Tests the add metric functionality."""
     assert _add_metric(0, "A") == "A"
     assert _add_metric("B", 0) == "B"
     assert _add_metric("A", "B") == "(A + B)"

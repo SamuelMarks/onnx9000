@@ -1,3 +1,5 @@
+"""Tests the hummingbird sklearn parser module functionality."""
+
 from unittest.mock import MagicMock, Mock
 
 from onnx9000.optimizer.hummingbird.sklearn_parser import (
@@ -7,6 +9,7 @@ from onnx9000.optimizer.hummingbird.sklearn_parser import (
 
 
 def test_parse_decision_tree_classifier() -> None:
+    """Tests the parse decision tree classifier functionality."""
     # Mock sklearn tree
     mock_tree = MagicMock()
     mock_tree.node_count = 3
@@ -36,6 +39,7 @@ def test_parse_decision_tree_classifier() -> None:
 
 
 def test_extract_n_estimators() -> None:
+    """Tests the extract n estimators functionality."""
     mock_rf = Mock()
     mock_rf.n_estimators = 100
     assert extract_n_estimators(mock_rf) == 100
@@ -45,12 +49,15 @@ def test_extract_n_estimators() -> None:
 
 
 def test_sklearn_parser_all() -> None:
+    """Tests the sklearn parser all functionality."""
     from unittest.mock import MagicMock
 
     import numpy as np
     import onnx9000.optimizer.hummingbird.sklearn_parser as sp
 
     class MockTree:
+        """Represents the MockTree class and its associated logic."""
+
         node_count = 3
         feature = np.array([0, -2, -2])
         threshold = np.array([0.5, -2.0, -2.0])
@@ -59,6 +66,8 @@ def test_sklearn_parser_all() -> None:
         value = np.array([[[1.0]], [[0.0]], [[1.0]]])
 
     class MockEst:
+        """Represents the MockEst class and its associated logic."""
+
         tree_ = MockTree()
         estimators_ = [MockTree()]
         estimators_ = [MagicMock(tree_=MockTree())]
@@ -103,12 +112,16 @@ def test_sklearn_parser_all() -> None:
 
     # Test no tree path
     class MockNoTree:
+        """Represents the MockNoTree class and its associated logic."""
+
         pass
 
     ab = sp.parse_decision_tree_regressor(MockNoTree())
     assert hasattr(ab, "add_node")
 
     class MockNoTree2:
+        """Represents the MockNoTree2 class and its associated logic."""
+
         pass
 
     ab2 = sp.parse_decision_tree_classifier(MockNoTree2())

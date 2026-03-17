@@ -1,9 +1,12 @@
+"""Tests the shape inference module functionality."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_infer_shapes_and_types_add() -> None:
+    """Tests the infer shapes and types add functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(10, 20), dtype=DType.FLOAT32))
@@ -18,6 +21,7 @@ def test_infer_shapes_and_types_add() -> None:
 
 
 def test_infer_shapes_and_types_matmul() -> None:
+    """Tests the infer shapes and types matmul functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(20, 30), dtype=DType.FLOAT32))
@@ -31,6 +35,7 @@ def test_infer_shapes_and_types_matmul() -> None:
 
 
 def test_infer_shapes_and_types_relu() -> None:
+    """Tests the infer shapes and types relu functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.inputs.append("A")
@@ -41,10 +46,11 @@ def test_infer_shapes_and_types_relu() -> None:
     assert g.tensors["Y"].shape == (10, 20)
 
 
-from onnx9000.core.ir import DynamicDim, Attribute
+from onnx9000.core.ir import Attribute, DynamicDim
 
 
 def test_infer_shapes_symbolic_add():
+    """Tests the infer shapes symbolic add functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, DynamicDim("seq_len")), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(10, 1), dtype=DType.FLOAT32))
@@ -57,6 +63,7 @@ def test_infer_shapes_symbolic_add():
 
 
 def test_infer_shapes_conv():
+    """Tests the infer shapes conv functionality."""
     g = Graph("test_conv")
     g.add_tensor(Tensor("X", shape=(1, 3, 224, 224), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(64, 3, 7, 7), dtype=DType.FLOAT32))
@@ -77,6 +84,7 @@ def test_infer_shapes_conv():
 
 
 def test_infer_shapes_reshape():
+    """Tests the infer shapes reshape functionality."""
     g = Graph("test_reshape")
     g.add_tensor(Tensor("X", shape=(1, 10, 20), dtype=DType.FLOAT32))
     # use values array directly in tensor
@@ -91,6 +99,7 @@ def test_infer_shapes_reshape():
 
 
 def test_infer_shapes_matmul_symbolic():
+    """Tests the infer shapes matmul symbolic functionality."""
     g = Graph("test_matmul")
     g.add_tensor(Tensor("A", shape=(DynamicDim("B"), 10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(10, 20, 30), dtype=DType.FLOAT32))

@@ -1,3 +1,5 @@
+"""Tests the hummingbird module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird import (
     Strategy,
@@ -10,6 +12,7 @@ from onnx9000.optimizer.hummingbird import (
 
 
 def test_strategy_enum() -> None:
+    """Tests the strategy enum functionality."""
     assert Strategy.GEMM
     assert Strategy.TREE_TRAVERSAL
     assert Strategy.PERFECT_TREE_TRAVERSAL
@@ -19,6 +22,7 @@ def test_strategy_enum() -> None:
 
 
 def test_tree_abstractions() -> None:
+    """Tests the tree abstractions functionality."""
     tree = TreeAbstractions()
     tree.add_node(feature=0, threshold=1.5, left=1, right=2, value=0.0)
     assert len(tree.features) == 1
@@ -30,6 +34,7 @@ def test_tree_abstractions() -> None:
 
 
 def test_memory_estimator() -> None:
+    """Tests the memory estimator functionality."""
     tree = TreeAbstractions()
     for i in range(10):
         tree.add_node(i, 0.5, i + 1, i + 2, 1.0)
@@ -44,6 +49,7 @@ def test_memory_estimator() -> None:
 
 
 def test_strategy_selector() -> None:
+    """Tests the strategy selector functionality."""
     tree = TreeAbstractions()
     for i in range(10):
         tree.add_node(i, 0.5, i + 1, i + 2, 1.0)
@@ -64,6 +70,7 @@ def test_strategy_selector() -> None:
 
 
 def test_transpilation_engine() -> None:
+    """Tests the transpilation engine functionality."""
     engine = TranspilationEngine(TargetHardware.CPU)
     # Empty abstractions
     g = engine.transpile("fake_model")
@@ -78,6 +85,7 @@ def test_transpilation_engine() -> None:
 
 
 def test_engine_verbose() -> None:
+    """Tests the engine verbose functionality."""
     from onnx9000.optimizer.hummingbird.engine import TranspilationEngine, TreeAbstractions
 
     engine = TranspilationEngine("webgpu", verbose=True)

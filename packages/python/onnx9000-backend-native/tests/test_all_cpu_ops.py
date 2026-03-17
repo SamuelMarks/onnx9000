@@ -1,3 +1,5 @@
+"""Tests the all cpu ops module functionality."""
+
 import contextlib
 
 import numpy as np
@@ -5,6 +7,7 @@ from onnx9000.backends.cpu.ops import OP_REGISTRY
 
 
 def test_all_cpu_ops_via_registry() -> None:
+    """Tests the all cpu ops via registry functionality."""
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     b = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     c = np.array([1.0], dtype=np.float32)
@@ -17,6 +20,7 @@ def test_all_cpu_ops_via_registry() -> None:
 
 
 def test_complex_cpu_ops() -> None:
+    """Tests the complex cpu ops functionality."""
     from onnx9000.backends.cpu.ops import (
         batchnorm_op,
         conv_op,
@@ -49,6 +53,7 @@ def test_complex_cpu_ops() -> None:
 
 
 def test_missing_ops_branches() -> None:
+    """Tests the missing ops branches functionality."""
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     OP_REGISTRY["Conv"]
@@ -79,6 +84,7 @@ def test_missing_ops_branches() -> None:
 
 
 def test_missing_ops_branches() -> None:
+    """Tests the missing ops branches functionality."""
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     OP_REGISTRY["Conv"]
@@ -109,6 +115,7 @@ def test_missing_ops_branches() -> None:
 
 
 def test_missing_ops_again_again() -> None:
+    """Tests the missing ops again again functionality."""
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -136,6 +143,7 @@ def test_missing_ops_again_again() -> None:
 
 
 def test_missing_last_lines() -> None:
+    """Tests the missing last lines functionality."""
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 
     a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -150,6 +158,7 @@ def test_missing_last_lines() -> None:
 
 
 def test_ops_coverage_final() -> None:
+    """Tests the ops coverage final functionality."""
     import numpy as np
     from onnx9000.backends.cpu.ops import (
         concatfromsequence_op,

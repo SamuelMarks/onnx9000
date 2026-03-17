@@ -1,3 +1,5 @@
+"""Tests the apple executor module functionality."""
+
 from unittest.mock import patch
 
 import numpy as np
@@ -7,6 +9,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_apple_executor_fallback() -> None:
+    """Tests the apple executor fallback functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -29,6 +32,7 @@ def test_apple_executor_fallback() -> None:
 
 
 def test_apple_executor_matmul_accelerate() -> None:
+    """Tests the apple executor matmul accelerate functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -48,6 +52,7 @@ def test_apple_executor_matmul_accelerate() -> None:
 
 
 def test_apple_executor_elementwise_accelerate() -> None:
+    """Tests the apple executor elementwise accelerate functionality."""
     for op_type, func_name in [("Add", "vDSP_vadd"), ("Sub", "vDSP_vsub"), ("Mul", "vDSP_vmul")]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -68,6 +73,7 @@ def test_apple_executor_elementwise_accelerate() -> None:
 
 
 def test_apple_executor_matmul_no_accelerate() -> None:
+    """Tests the apple executor matmul no accelerate functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -89,6 +95,7 @@ def test_apple_executor_matmul_no_accelerate() -> None:
 
 
 def test_apple_executor_elementwise_no_accelerate() -> None:
+    """Tests the apple executor elementwise no accelerate functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -110,6 +117,7 @@ def test_apple_executor_elementwise_no_accelerate() -> None:
 
 
 def test_apple_executor_init_memory() -> None:
+    """Tests the apple executor init memory functionality."""
     g = Graph("test")
     t_out = Tensor("out_t", (2,), DType.FLOAT32)
     t_init = Tensor(

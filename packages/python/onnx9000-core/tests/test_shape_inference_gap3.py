@@ -1,11 +1,14 @@
+"""Tests the shape inference gap3 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_reshape_dynamic_vol_exception():
+    """Tests the reshape dynamic vol exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (DynamicDim("N"), 3), DType.FLOAT32))
     t_shape = Tensor("shape", (2,), DType.INT64)
@@ -20,6 +23,7 @@ def test_reshape_dynamic_vol_exception():
 
 
 def test_reshape_no_values():
+    """Tests the reshape no values functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))
     g.add_tensor(Tensor("shape", (3,), DType.INT64))  # not initializer
@@ -31,6 +35,7 @@ def test_reshape_no_values():
 
 
 def test_global_avg_pool():
+    """Tests the global avg pool functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.inputs.append("x")
@@ -40,6 +45,7 @@ def test_global_avg_pool():
 
 
 def test_conv_no_weights():
+    """Tests the conv no weights functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1,), DType.FLOAT32))
     g.inputs.append("x")
@@ -49,6 +55,7 @@ def test_conv_no_weights():
 
 
 def test_maxpool_channels():
+    """Tests the maxpool channels functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1,), DType.FLOAT32))
     g.inputs.append("x")
@@ -58,6 +65,7 @@ def test_maxpool_channels():
 
 
 def test_conv_dynamic_spatial():
+    """Tests the conv dynamic spatial functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, DynamicDim("H"), 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (16, 3, 3, 3), DType.FLOAT32, is_initializer=True))
@@ -81,6 +89,7 @@ def test_conv_dynamic_spatial():
 
 
 def test_conv_exception():
+    """Tests the conv exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (16, 3, 3, 3), DType.FLOAT32, is_initializer=True))

@@ -1,9 +1,12 @@
+"""Tests the op module functionality."""
+
 import numpy as np
 import pytest
 from onnx9000.toolkit.script import GraphBuilder, Var, op
 
 
 def test_op_namespace() -> None:
+    """Tests the op namespace functionality."""
     with GraphBuilder() as builder:
         x = Var("x")
         y = Var("y")
@@ -17,6 +20,7 @@ def test_op_namespace() -> None:
 
 
 def test_op_multi_output() -> None:
+    """Tests the op multi output functionality."""
     with GraphBuilder() as builder:
         x = Var("x")
         (val, idx) = op.TopK(x, 5)
@@ -28,6 +32,7 @@ def test_op_multi_output() -> None:
 
 
 def test_op_constant_cast() -> None:
+    """Tests the op constant cast functionality."""
     with GraphBuilder() as builder:
         x = Var("x")
         op.Add(x, 1)
@@ -37,6 +42,7 @@ def test_op_constant_cast() -> None:
 
 
 def test_op_constant_explicit() -> None:
+    """Tests the op constant explicit functionality."""
     with GraphBuilder() as builder:
         op.Constant(1)
         op.Constant(1.5)
@@ -49,6 +55,7 @@ def test_op_constant_explicit() -> None:
 
 
 def test_var_overloads() -> None:
+    """Tests the var overloads functionality."""
     with GraphBuilder() as builder:
         x = Var("x")
         y = Var("y")
@@ -94,6 +101,7 @@ def test_var_overloads() -> None:
 
 
 def test_op_control_flow() -> None:
+    """Tests the op control flow functionality."""
     with GraphBuilder() as builder:
         cond = Var("cond")
         max_trip = Var("max_trip")
@@ -109,6 +117,7 @@ def test_op_control_flow() -> None:
 
 
 def test_op_schema_validation() -> None:
+    """Tests the op schema validation functionality."""
     with GraphBuilder() as builder:
         x = Var("x")
         op.Squeeze(x, axes=[1])
@@ -122,6 +131,7 @@ def test_op_schema_validation() -> None:
 
 
 def test_var_rename() -> None:
+    """Tests the var rename functionality."""
     x = Var("x")
     assert repr(x) == "Var(x)"
     x.rename("new_x")

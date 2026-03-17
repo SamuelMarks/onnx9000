@@ -1,11 +1,14 @@
+"""Tests the shape inference gap1 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
-from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.exceptions import ShapeInferenceError
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_promote_types():
+    """Tests the promote types functionality."""
     g = Graph("g")
     # Float64
     g.add_tensor(Tensor("a", (1,), DType.FLOAT64))
@@ -39,6 +42,7 @@ def test_promote_types():
 
 
 def test_shape_inference_error_add():
+    """Tests the shape inference error add functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2,), DType.FLOAT32))
     g.add_tensor(Tensor("b", (3,), DType.FLOAT32))
@@ -49,6 +53,7 @@ def test_shape_inference_error_add():
 
 
 def test_bool_ops():
+    """Tests the bool ops functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (1,), DType.FLOAT32))
     g.add_tensor(Tensor("b", (1,), DType.FLOAT32))
@@ -59,6 +64,7 @@ def test_bool_ops():
 
 
 def test_where_op():
+    """Tests the where op functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("cond", (1,), DType.BOOL))
     g.add_tensor(Tensor("a", (2, 1), DType.FLOAT32))
@@ -70,6 +76,7 @@ def test_where_op():
 
 
 def test_gemm_trans():
+    """Tests the gemm trans functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2, 3), DType.FLOAT32))
     g.add_tensor(Tensor("b", (4, 3), DType.FLOAT32))
@@ -88,6 +95,7 @@ def test_gemm_trans():
 
 
 def test_promote_types_fallback():
+    """Tests the promote types fallback functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (1,), DType.INT8))
     g.add_tensor(Tensor("b", (1,), DType.BOOL))

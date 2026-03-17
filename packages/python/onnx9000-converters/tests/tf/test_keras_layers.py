@@ -1,9 +1,12 @@
+"""Tests the keras layers module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.keras_layers import KERAS_LAYERS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode
 
 
 def test_keras_layers_simple() -> None:
+    """Tests the keras layers simple functionality."""
     builder = TFToONNXGraphBuilder()
     custom_mapped = {
         "Dense": "Custom_KerasDense",
@@ -61,6 +64,7 @@ def test_keras_layers_simple() -> None:
 
 
 def test_keras_layers_dimensional() -> None:
+    """Tests the keras layers dimensional functionality."""
     builder = TFToONNXGraphBuilder()
     for op_prefix in ["SpatialDropout", "Cropping", "UpSampling", "ZeroPadding"]:
         for dim in ["1D", "2D", "3D"]:

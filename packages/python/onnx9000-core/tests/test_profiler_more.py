@@ -1,12 +1,17 @@
+"""Tests the profiler more module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
-from onnx9000.core.profiler import profile, profile_graph, get_attr, ProfilerResult
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+from onnx9000.core.profiler import ProfilerResult, get_attr, profile, profile_graph
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_profile_graph_decorator(capsys):
+    """Tests the profile graph decorator functionality."""
+
     @profile_graph
     def dummy_func(graph):
+        """Executes the dummy func operation."""
         return "done"
 
     g = Graph("g")
@@ -16,12 +21,14 @@ def test_profile_graph_decorator(capsys):
 
 
 def test_get_attr():
+    """Tests the get attr functionality."""
     n = Node("Test", [], [], {"val": Attribute("val", value=10)})
     assert get_attr(n, "val") == 10
     assert get_attr(n, "missing", default=5) == 5
 
 
 def test_profiler_printing(capsys):
+    """Tests the profiler printing functionality."""
     res = ProfilerResult()
     res.total_params = 100
     res.peak_activation_bytes = 200
@@ -47,6 +54,7 @@ def test_profiler_printing(capsys):
 
 
 def test_profiler_print_empty(capsys):
+    """Tests the profiler print empty functionality."""
     res = ProfilerResult()
     res.print_parameter_pie_chart()
     res.print_activation_pie_chart()
@@ -58,6 +66,7 @@ def test_profiler_print_empty(capsys):
 
 
 def test_profiler_webgpu_limits():
+    """Tests the profiler webgpu limits functionality."""
     res = ProfilerResult()
     res.node_profiles = [
         {
@@ -92,6 +101,7 @@ def test_profiler_webgpu_limits():
 
 
 def test_profiler_ops_if():
+    """Tests the profiler ops if functionality."""
     g = Graph("g")
     then_g = Graph("then")
     then_g.add_node(Node("Relu", ["x"], ["y"]))
@@ -123,6 +133,7 @@ def test_profiler_ops_if():
 
 
 def test_profiler_ops_loop():
+    """Tests the profiler ops loop functionality."""
     g = Graph("g")
     body_g = Graph("body")
     body_g.add_node(Node("Relu", ["x"], ["y"]))
@@ -150,6 +161,7 @@ def test_profiler_ops_loop():
 
 
 def test_profiler_ops_attention():
+    """Tests the profiler ops attention functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [2, 10, 64], "float32"))
     g.add_node(Node("Attention", ["x"], ["y"]))
@@ -158,6 +170,7 @@ def test_profiler_ops_attention():
 
 
 def test_profiler_ops_rnn():
+    """Tests the profiler ops rnn functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 2, 64], "float32"))  # seq, batch, input_size
     g.add_tensor(Tensor("w", [1, 128, 64], "float32"))
@@ -168,6 +181,7 @@ def test_profiler_ops_rnn():
 
 
 def test_profiler_estimate_latency():
+    """Tests the profiler estimate latency functionality."""
     res = ProfilerResult()
     res.total_macs = 1e12  # 1 T MAC = 2 T FLOP
     res.total_memory_bytes = 10 * 1e9  # 10 GB

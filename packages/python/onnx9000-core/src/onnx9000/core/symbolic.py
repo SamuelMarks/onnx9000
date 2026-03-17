@@ -21,6 +21,7 @@ operators = {
 
 
 def eval_expr(node: Any, context: dict[str, int]) -> Union[int, float, str]:
+    """Executes the eval expr operation."""
     if isinstance(node, ast.Name):
         if node.id in context:
             return context[node.id]
@@ -107,6 +108,7 @@ def broadcast_shapes(
 
 
 def simplify_dim(dim: Union[int, DynamicDim, str]) -> Union[int, str]:
+    """Executes the simplify dim operation."""
     if isinstance(dim, DynamicDim):
         return dim.value
     return dim

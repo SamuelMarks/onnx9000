@@ -1,9 +1,12 @@
+"""Tests the tensor ops module functionality."""
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
 from onnx9000.converters.paddle.tensor_ops import TENSOR_OPS_MAPPING
 
 
 def test_paddle_tensor_ops_reshape_transpose_flatten() -> None:
+    """Tests the paddle tensor ops reshape transpose flatten functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "reshape", inputs={"X": ["a"], "Shape": ["s"]})
     TENSOR_OPS_MAPPING["reshape"](builder, n)
@@ -24,6 +27,7 @@ def test_paddle_tensor_ops_reshape_transpose_flatten() -> None:
 
 
 def test_paddle_tensor_ops_squeeze_unsqueeze() -> None:
+    """Tests the paddle tensor ops squeeze unsqueeze functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "squeeze", inputs={"X": ["a"]}, attrs={"axes": [1]})
     TENSOR_OPS_MAPPING["squeeze"](builder, n)
@@ -35,6 +39,7 @@ def test_paddle_tensor_ops_squeeze_unsqueeze() -> None:
 
 
 def test_paddle_tensor_ops_concat_stack() -> None:
+    """Tests the paddle tensor ops concat stack functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "concat", inputs={"X": ["a", "b"]}, attrs={"axis": 1})
     outs = TENSOR_OPS_MAPPING["concat"](builder, n)
@@ -57,6 +62,7 @@ def test_paddle_tensor_ops_concat_stack() -> None:
 
 
 def test_paddle_tensor_ops_slice_gather_scatter() -> None:
+    """Tests the paddle tensor ops slice gather scatter functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "slice", inputs={"X": ["a"]})
     TENSOR_OPS_MAPPING["slice"](builder, n)
@@ -85,6 +91,7 @@ def test_paddle_tensor_ops_slice_gather_scatter() -> None:
 
 
 def test_paddle_tensor_ops_misc() -> None:
+    """Tests the paddle tensor ops misc functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "tile", inputs={"X": ["a"], "RepeatTimes": ["rt"]})
     TENSOR_OPS_MAPPING["tile"](builder, n)
@@ -108,6 +115,7 @@ def test_paddle_tensor_ops_misc() -> None:
 
 
 def test_paddle_tensor_ops_constants() -> None:
+    """Tests the paddle tensor ops constants functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "fill_constant", attrs={"shape": [2], "value": 3.0})
     outs = TENSOR_OPS_MAPPING["fill_constant"](builder, n)
@@ -153,6 +161,7 @@ def test_paddle_tensor_ops_constants() -> None:
 
 
 def test_paddle_tensor_ops_slice_input_fb() -> None:
+    """Tests the paddle tensor ops slice input fb functionality."""
     from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
     from onnx9000.converters.paddle.parsers import PaddleNode
     from onnx9000.converters.paddle.tensor_ops import TENSOR_OPS_MAPPING
@@ -164,6 +173,7 @@ def test_paddle_tensor_ops_slice_input_fb() -> None:
 
 
 def test_tensor_ops_custom() -> None:
+    """Tests the tensor ops custom functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "unique", inputs={"X": ["a"]})
     TENSOR_OPS_MAPPING["unique"](builder, n)
@@ -174,6 +184,7 @@ def test_tensor_ops_custom() -> None:
 
 
 def test_tensor_ops_custom2() -> None:
+    """Tests the tensor ops custom2 functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "gru_unit", inputs={"X": ["a"], "Y": ["b"]})
     TENSOR_OPS_MAPPING["gru_unit"](builder, n)

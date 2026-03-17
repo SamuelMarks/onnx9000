@@ -1,11 +1,14 @@
+"""Tests the shape inference gap4 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_conv_transpose():
+    """Tests the conv transpose functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (3, 16, 3, 3), DType.FLOAT32, is_initializer=True))
@@ -30,6 +33,7 @@ def test_conv_transpose():
 
 
 def test_conv_transpose_no_weights():
+    """Tests the conv transpose no weights functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.inputs.append("x")
@@ -39,6 +43,7 @@ def test_conv_transpose_no_weights():
 
 
 def test_conv_transpose_dynamic():
+    """Tests the conv transpose dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, DynamicDim("H"), 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (3, 16, 3, 3), DType.FLOAT32, is_initializer=True))
@@ -50,6 +55,7 @@ def test_conv_transpose_dynamic():
 
 
 def test_gather():
+    """Tests the gather functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.add_tensor(Tensor("indices", (5, 5), DType.INT64))
@@ -68,6 +74,7 @@ def test_gather():
 
 
 def test_slice():
+    """Tests the slice functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
 
@@ -90,6 +97,7 @@ def test_slice():
 
 
 def test_concat():
+    """Tests the concat functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (10, 20), DType.FLOAT32))
     g.add_tensor(Tensor("b", (10, 30), DType.FLOAT32))
@@ -100,6 +108,7 @@ def test_concat():
 
 
 def test_conv_transpose_short_w():
+    """Tests the conv transpose short w functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
     g.add_tensor(Tensor("w", (3, 16), DType.FLOAT32, is_initializer=True))
@@ -111,6 +120,7 @@ def test_conv_transpose_short_w():
 
 
 def test_gather_missing_inputs():
+    """Tests the gather missing inputs functionality."""
     g = Graph("g")
     g.add_node(Node("Gather", ["x"], ["y"]))
     g.add_node(Node("Gather", ["x", "indices"], ["y2"]))
@@ -118,6 +128,7 @@ def test_gather_missing_inputs():
 
 
 def test_slice_missing_inputs():
+    """Tests the slice missing inputs functionality."""
     g = Graph("g")
     g.add_node(Node("Slice", [], ["y"]))
     g.add_node(Node("Slice", ["x"], ["y2"]))
@@ -125,6 +136,7 @@ def test_slice_missing_inputs():
 
 
 def test_slice_default_axes_steps():
+    """Tests the slice default axes steps functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -140,6 +152,7 @@ def test_slice_default_axes_steps():
 
 
 def test_slice_dynamic_dim():
+    """Tests the slice dynamic dim functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (DynamicDim("N"), 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -154,6 +167,7 @@ def test_slice_dynamic_dim():
 
 
 def test_slice_negative_starts_ends():
+    """Tests the slice negative starts ends functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -176,6 +190,7 @@ def test_slice_negative_starts_ends():
 
 
 def test_slice_negative_step():
+    """Tests the slice negative step functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -204,6 +219,7 @@ def test_slice_negative_step():
 
 
 def test_concat_dynamic_and_short():
+    """Tests the concat dynamic and short functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (10, DynamicDim("M")), DType.FLOAT32))
     # short shape to trigger axis out of bounds fallback
@@ -215,6 +231,7 @@ def test_concat_dynamic_and_short():
 
 
 def test_slice_start_end_bounds():
+    """Tests the slice start end bounds functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -231,6 +248,7 @@ def test_slice_start_end_bounds():
 
 
 def test_concat_missing_inputs():
+    """Tests the concat missing inputs functionality."""
     g = Graph("g")
     g.add_node(Node("Concat", [], ["y"]))
     g.add_node(Node("Concat", ["x"], ["y2"]))

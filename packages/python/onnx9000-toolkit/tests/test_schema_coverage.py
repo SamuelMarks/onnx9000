@@ -1,8 +1,11 @@
+"""Tests the schema coverage module functionality."""
+
 import pytest
 from onnx9000.toolkit.script.schema import set_target_opset, validate_op
 
 
 def test_schema_warnings() -> None:
+    """Tests the schema warnings functionality."""
     set_target_opset(18)
     with pytest.warns(UserWarning, match="is not valid for operation"):
         validate_op("Relu", ["X"], {"invalid_attr": 1})
@@ -14,6 +17,7 @@ def test_schema_warnings() -> None:
 
 
 def test_schema_coverage_more() -> None:
+    """Tests the schema coverage more functionality."""
     from onnx9000.toolkit.script.schema import get_target_opset
 
     set_target_opset(10)

@@ -1,9 +1,12 @@
+"""Tests the math ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.math_ops import MATH_OPS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode
 
 
 def test_math_ops_mapping() -> None:
+    """Tests the math ops mapping functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n1", "Add", inputs=["a", "b"])
     outs = MATH_OPS_MAPPING["Add"](builder, node)

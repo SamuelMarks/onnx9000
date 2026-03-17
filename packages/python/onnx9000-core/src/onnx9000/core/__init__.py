@@ -18,12 +18,12 @@ __all__ = [
     "Environment",
     "ExecutionProvider",
 ]
-from onnx9000.core.profiler import profile, ProfilerResult
 from onnx9000.core.memory_planner import simulate_memory_plan
+from onnx9000.core.profiler import ProfilerResult, profile
+from onnx9000.core.profiler_checks import OptimizationAnalyzer
 from onnx9000.core.profiler_grouping import (
-    group_by_namespace,
-    export_hierarchical_json,
     export_csv,
+    export_hierarchical_json,
+    group_by_namespace,
     to_pandas_dataframe,
 )
-from onnx9000.core.profiler_checks import OptimizationAnalyzer

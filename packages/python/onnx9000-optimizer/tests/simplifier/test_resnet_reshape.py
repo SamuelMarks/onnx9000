@@ -1,8 +1,11 @@
+"""Tests the resnet reshape module functionality."""
+
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_simplify_redundant_reshape_nodes() -> None:
+    """Tests the simplify redundant reshape nodes functionality."""
     g = Graph("mock_resnet")
     g.add_node(Node("Reshape", ["input", "shape1"], ["t1"], {}, "reshape1"))
     g.add_node(Node("Reshape", ["t1", "shape2"], ["out"], {}, "reshape2"))

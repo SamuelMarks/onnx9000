@@ -4,6 +4,7 @@ from onnx9000.optimizer.olive.testing_ops import TestingOps
 
 
 def test_testing_ops() -> None:
+    """Tests the testing ops functionality."""
     assert TestingOps.unit_test_quantize_standard_resnet50_fp3() is True
     assert TestingOps.unit_test_prune_standard_bert_75_sparsit() is True
     assert TestingOps.unit_test_optimize_massive_whisper_topol() is True

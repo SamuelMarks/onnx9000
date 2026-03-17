@@ -1,3 +1,5 @@
+"""Tests the session api module functionality."""
+
 import pytest
 from onnx9000.backends.session import InferenceSession, InferenceSessionError, IOBinding
 from onnx9000.core.dtypes import DType
@@ -6,13 +8,18 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 class DummyProvider(ExecutionProvider):
+    """Represents the Dummy Provider class."""
+
     def get_supported_nodes(self, graph):
+        """Executes the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type == "Identity"]
 
     def allocate_tensors(self, tensors) -> None:
+        """Executes the allocate tensors operation."""
         pass
 
     def execute(self, graph, context, inputs):
+        """Executes the execute operation."""
         res = {}
         for node in graph.nodes:
             if node.op_type == "Identity" and all(i in inputs for i in node.inputs):
@@ -21,13 +28,18 @@ class DummyProvider(ExecutionProvider):
 
 
 class CPUProvider(ExecutionProvider):
+    """Represents the C P U Provider class."""
+
     def get_supported_nodes(self, graph):
+        """Executes the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type in ["Add", "MemcpyToHost"]]
 
     def allocate_tensors(self, tensors) -> None:
+        """Executes the allocate tensors operation."""
         pass
 
     def execute(self, graph, context, inputs):
+        """Executes the execute operation."""
         res = {}
         for node in graph.nodes:
             if node.op_type in ["Add", "MemcpyToHost"] and all(i in inputs for i in node.inputs):
@@ -36,6 +48,7 @@ class CPUProvider(ExecutionProvider):
 
 
 def test_inference_session_api() -> None:
+    """Tests the inference session api functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.outputs.append(Tensor("Z", (2, 2), DType.FLOAT32))
@@ -67,6 +80,7 @@ def test_inference_session_api() -> None:
 
 
 def test_session_errors() -> None:
+    """Tests the session errors functionality."""
     g = Graph("test")
     g.add_node(Node("MissingOp", inputs=[], outputs=["Y"], attributes={}))
     with pytest.raises(InferenceSessionError):

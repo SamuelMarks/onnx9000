@@ -1,9 +1,12 @@
+"""Tests the nn ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.nn_ops import NN_OPS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode
 
 
 def test_nn_ops_mapping_simple() -> None:
+    """Tests the nn ops mapping simple functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n1", "MatMul", inputs=["a", "b"])
     outs = NN_OPS_MAPPING["MatMul"](builder, node)
@@ -15,6 +18,7 @@ def test_nn_ops_mapping_simple() -> None:
 
 
 def test_nn_ops_relu6() -> None:
+    """Tests the nn ops relu6 functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Relu6", inputs=["x"])
     NN_OPS_MAPPING["Relu6"](builder, node)
@@ -23,6 +27,7 @@ def test_nn_ops_relu6() -> None:
 
 
 def test_nn_ops_leaky_relu() -> None:
+    """Tests the nn ops leaky relu functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "LeakyRelu", inputs=["x"], attr={"alpha": 0.3})
     NN_OPS_MAPPING["LeakyRelu"](builder, node)
@@ -31,6 +36,7 @@ def test_nn_ops_leaky_relu() -> None:
 
 
 def test_nn_ops_elu() -> None:
+    """Tests the nn ops elu functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Elu", inputs=["x"], attr={"alpha": 2.0})
     NN_OPS_MAPPING["Elu"](builder, node)
@@ -39,6 +45,7 @@ def test_nn_ops_elu() -> None:
 
 
 def test_nn_ops_selu() -> None:
+    """Tests the nn ops selu functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Selu", inputs=["x"])
     NN_OPS_MAPPING["Selu"](builder, node)
@@ -46,6 +53,7 @@ def test_nn_ops_selu() -> None:
 
 
 def test_nn_ops_softplus() -> None:
+    """Tests the nn ops softplus functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Softplus", inputs=["x"])
     NN_OPS_MAPPING["Softplus"](builder, node)
@@ -53,6 +61,7 @@ def test_nn_ops_softplus() -> None:
 
 
 def test_nn_ops_softsign() -> None:
+    """Tests the nn ops softsign functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Softsign", inputs=["x"])
     NN_OPS_MAPPING["Softsign"](builder, node)
@@ -60,6 +69,7 @@ def test_nn_ops_softsign() -> None:
 
 
 def test_nn_ops_softmax() -> None:
+    """Tests the nn ops softmax functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Softmax", inputs=["x"])
     NN_OPS_MAPPING["Softmax"](builder, node)
@@ -68,6 +78,7 @@ def test_nn_ops_softmax() -> None:
 
 
 def test_nn_ops_log_softmax() -> None:
+    """Tests the nn ops log softmax functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "LogSoftmax", inputs=["x"], attr={"axis": 1})
     NN_OPS_MAPPING["LogSoftmax"](builder, node)
@@ -76,6 +87,7 @@ def test_nn_ops_log_softmax() -> None:
 
 
 def test_nn_ops_conv2d_nhwc() -> None:
+    """Tests the nn ops conv2d nhwc functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode(
         "n",
@@ -91,6 +103,7 @@ def test_nn_ops_conv2d_nhwc() -> None:
 
 
 def test_nn_ops_conv2d_nchw() -> None:
+    """Tests the nn ops conv2d nchw functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode(
         "n",
@@ -107,6 +120,7 @@ def test_nn_ops_conv2d_nchw() -> None:
 
 
 def test_nn_ops_conv3d() -> None:
+    """Tests the nn ops conv3d functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Conv3D", inputs=["input", "weight"])
     NN_OPS_MAPPING["Conv3D"](builder, node)
@@ -114,6 +128,7 @@ def test_nn_ops_conv3d() -> None:
 
 
 def test_nn_ops_poolings() -> None:
+    """Tests the nn ops poolings functionality."""
     builder = TFToONNXGraphBuilder()
     for op in ["MaxPool", "MaxPoolV2", "MaxPool3D"]:
         NN_OPS_MAPPING[op](builder, TFNode(f"n_{op}", op, inputs=["x"]))
@@ -128,6 +143,7 @@ def test_nn_ops_poolings() -> None:
 
 
 def test_nn_ops_batch_norm() -> None:
+    """Tests the nn ops batch norm functionality."""
     builder = TFToONNXGraphBuilder()
     for op in [
         "BatchNormWithGlobalNormalization",
@@ -144,6 +160,7 @@ def test_nn_ops_batch_norm() -> None:
 
 
 def test_nn_ops_customs_and_misc() -> None:
+    """Tests the nn ops customs and misc functionality."""
     builder = TFToONNXGraphBuilder()
     mapping_checks = {
         "FractionalMaxPool": "Custom_FractionalMaxPool",

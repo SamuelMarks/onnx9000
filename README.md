@@ -4,7 +4,7 @@ ONNX9000 🚀
 [![Python Tests](https://github.com/SamuelMarks/onnx9000/actions/workflows/test-python.yml/badge.svg)](https://github.com/SamuelMarks/onnx9000/actions/workflows/test-python.yml)
 [![JS Tests](https://github.com/SamuelMarks/onnx9000/actions/workflows/test-js.yml/badge.svg)](https://github.com/SamuelMarks/onnx9000/actions/workflows/test-js.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Doc Coverage](https://img.shields.io/badge/Doc_Coverage-68%25-blue)
+![Doc Coverage](https://img.shields.io/badge/Doc_Coverage-100%25-blue)
 ![Test Coverage](https://img.shields.io/badge/Test_Coverage-100%25-success)
 
 > **The Zero-Dependency, WASM-First, Polyglot Machine Learning Ecosystem.**
@@ -53,12 +53,12 @@ The following table tracks the complete reimplementation and replacement of majo
 | :-------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- | :-------------- | :---------- |
 | **ONNX Runtime**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX00_RUNTIME.md) | Core execution engine for evaluating ONNX models dynamically. | 317/317         | ✅ Full      |
 | **ONNX Compliance**<br>[Original](https://github.com/onnx/onnx) • [Tasks](./specs/ONNX01_COMPLIANCE.md) | Standard testing suite validating correct ONNX mathematical evaluation. | 327/327         | ✅ Full      |
-| **ORT Training**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX02_ORT_TRAINING.md) | Provides Automatic Differentiation (Autograd) and gradient tracking for ONNX models. | 303/303         | ✅ Complete  |
+| **ORT Training**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX02_ORT_TRAINING.md) | Provides Automatic Differentiation (Autograd) and gradient tracking for ONNX models. | 303/303         | ✅ Full      |
 | **ONNX Runtime Web**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX03_ORT_WEB.md) | In-browser execution engine relying on WebAssembly and WebGPU. | 313/313         | ✅ Full      |
 | **ORT Extensions**<br>[Original](https://github.com/microsoft/onnxruntime-extensions) • [Tasks](./specs/ONNX04_ORT_EXTENSIONS.md) | Custom operators for text tokenization, audio extraction, and image processing. | 310/310         | ✅ Full      |
 | **torch.onnx**<br>[Original](https://pytorch.org) • [Tasks](./specs/ONNX05_TORCH_EXPORTERS.md) | PyTorch to ONNX graph translation tools. | 326/326         | ✅ Full      |
 | **Olive Optimizer**<br>[Original](https://github.com/microsoft/Olive) • [Tasks](./specs/ONNX06_OLIVE_OPTIMIZER.md) | Hardware-aware model optimization, compression, and quantization framework. | 310/310         | ✅ Full      |
-| **ONNX Simplifier**<br>[Original](https://github.com/daquexian/onnx-simplifier) • [Tasks](./specs/ONNX07_ONNX_SIMPLIFIER.md) | A tool to simplify ONNX models by constant folding and algebraic rewriting. | 108/310         | 🚧 Partial   |
+| **ONNX Simplifier**<br>[Original](https://github.com/daquexian/onnx-simplifier) • [Tasks](./specs/ONNX07_ONNX_SIMPLIFIER.md) | A tool to simplify ONNX models by constant folding and algebraic rewriting. | 310/310         | ✅ Full      |
 | **ONNXScript / Spox**<br>[Original](https://github.com/microsoft/onnxscript) • [Tasks](./specs/ONNX08_ONNXSCRIPT_SPOX.md) | Authoring ONNX graphs directly via a PyTorch-like Python API. | 306/306         | ✅ Full      |
 | **ORT Native EP**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX09_ORT_NATIVE.md) | Native hardware execution providers (CUDA, CoreML, DirectML). | 313/313         | ✅ Full      |
 | **tf2onnx**<br>[Original](https://github.com/onnx/tensorflow-onnx) • [Tasks](./specs/ONNX10_TF2ONNX.md) | Converts TensorFlow (SavedModel/GraphDef) to ONNX format. | 340/340         | ✅ Full      |
@@ -67,7 +67,7 @@ The following table tracks the complete reimplementation and replacement of majo
 | **onnxmltools**<br>[Original](https://github.com/onnx/onnxmltools) • [Tasks](./specs/ONNX13_ONNXMLTOOLS.md) | Translates LightGBM, XGBoost, CatBoost, and SparkML to ONNX ML. | 307/307         | ✅ Full      |
 | **GraphSurgeon**<br>[Original](https://github.com/NVIDIA/TensorRT) • [Tasks](./specs/ONNX14_GRAPHSURGEON.md) | Allows surgical modification, pruning, and subgraph extraction of ONNX files. | 303/303         | ✅ Full      |
 | **Hummingbird**<br>[Original](https://github.com/microsoft/hummingbird) • [Tasks](./specs/ONNX15_HUMMINGBIRD.md) | Transpiles traditional ML models (Trees) into pure tensor math for GPU acceleration. | 320/320         | ✅ Full      |
-| **Netron**<br>[Original](https://github.com/lutzroeder/netron) • [Tasks](./specs/ONNX16_NETRON.md) | Visualizes deep learning and machine learning model topologies. | 103/103         | ✅ Full      |
+| **Netron**<br>[Original](https://github.com/lutzroeder/netron) • [Tasks](./specs/ONNX16_NETRON.md) | Visualizes deep learning and machine learning model topologies. | 97/97           | ✅ Full      |
 | **onnx-tool**<br>[Original](https://github.com/ThanatosShinji/onnx-tool) • [Tasks](./specs/ONNX17_ONNX_TOOL.md) | Diagnostic utility for profiling MACs, FLOPs, and static memory footprint. | 306/306         | ✅ Full      |
 | **onnx-mlir**<br>[Original](https://github.com/onnx/onnx-mlir) • [Tasks](./specs/ONNX19_ONNXMLIR.md) | Compiles ONNX models to LLVM/MLIR formats and C++ executables. | 0/320           | ⏳ TODO      |
 | **Apache TVM**<br>[Original](https://github.com/apache/tvm) • [Tasks](./specs/ONNX20_TVM_COMPILER.md) | AOT machine learning compiler framework for highly tuned standalone execution. | 0/350           | ⏳ TODO      |

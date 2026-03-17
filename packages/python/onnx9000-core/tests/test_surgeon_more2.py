@@ -1,8 +1,11 @@
+"""Tests the surgeon more2 module functionality."""
+
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Variable
 from onnx9000.core.surgeon import cleanup, estimate_macs, fold_constants_math
 
 
 def test_cleanup_producer_visited() -> None:
+    """Tests the cleanup producer visited functionality."""
     g = Graph("clean")
     v_in = Variable("in")
     v_mid = Variable("mid")
@@ -22,6 +25,7 @@ def test_cleanup_producer_visited() -> None:
 
 
 def test_estimate_macs_conv() -> None:
+    """Tests the estimate macs conv functionality."""
     g = Graph("macs")
     v_in = Variable("in", shape=(1, 3, 224, 224))
     v_out = Variable("out", shape=(1, 64, 224, 224))
@@ -35,6 +39,7 @@ def test_estimate_macs_conv() -> None:
 
 
 def test_fold_constants_math_tensor_output() -> None:
+    """Tests the fold constants math tensor output functionality."""
     g = Graph("fold")
     c1 = Constant("c1", values=b"1")
     c2 = Constant("c2", values=b"2")
@@ -50,6 +55,7 @@ def test_fold_constants_math_tensor_output() -> None:
 
 
 def test_estimate_macs_matmul_exception() -> None:
+    """Tests the estimate macs matmul exception functionality."""
     g = Graph("mac")
     v1 = Variable("v1")
     n = Node("MatMul", inputs=[v1, v1])
@@ -59,6 +65,7 @@ def test_estimate_macs_matmul_exception() -> None:
 
 
 def test_deduplicate_constants_hash_collision_replace() -> None:
+    """Tests the deduplicate constants hash collision replace functionality."""
     from onnx9000.core.surgeon import deduplicate_constants
 
     g = Graph("dedup")
@@ -77,6 +84,7 @@ def test_deduplicate_constants_hash_collision_replace() -> None:
 
 
 def test_sink_transposes() -> None:
+    """Tests the sink transposes functionality."""
     g = Graph("sink")
     v_in = Variable("in")
     v_mid = Variable("mid")

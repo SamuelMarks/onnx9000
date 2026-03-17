@@ -1,9 +1,12 @@
+"""Tests the compiler custom domain module functionality."""
+
+import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import build_backward_graph
-import pytest
 
 
 def test_custom_domain_raise():
+    """Tests the custom domain raise functionality."""
     g = Graph("test")
     g.inputs.append("in")
     g.add_tensor(Tensor(name="in", shape=(), dtype="float32", requires_grad=True))

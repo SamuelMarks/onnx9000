@@ -27,6 +27,7 @@ class CPUExecutionProvider(ExecutionProvider):
         return
 
     def _to_numpy(self, tensor: Tensor) -> Any:
+        """Executes the to numpy operation."""
         import numpy as np
         from onnx9000.core.dtypes import DType
 

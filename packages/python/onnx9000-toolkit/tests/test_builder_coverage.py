@@ -1,3 +1,5 @@
+"""Tests the builder coverage module functionality."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.toolkit.script.builder import GraphBuilder
 
 
 def test_rename_all_initializers() -> None:
+    """Tests the rename all initializers functionality."""
     gb = GraphBuilder("test_ren")
     gb.inputs.append({"name": "i1", "shape": [1], "dtype": DType.FLOAT32})
     gb.outputs.append({"name": "o1", "shape": [1], "dtype": DType.FLOAT32})
@@ -20,6 +23,7 @@ def test_rename_all_initializers() -> None:
 
 
 def test_infer_shapes() -> None:
+    """Tests the infer shapes functionality."""
     gb = GraphBuilder("test_shapes")
     gb.inputs.append({"name": "i1", "shape": [2, 2], "dtype": DType.FLOAT32})
     gb.initializers["w1"] = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -40,6 +44,7 @@ def test_infer_shapes() -> None:
 
 
 def test_extract_subgraph() -> None:
+    """Tests the extract subgraph functionality."""
     gb = GraphBuilder("test_extract")
     gb.inputs.append({"name": "i1", "shape": [2], "dtype": DType.FLOAT32})
     gb.initializers["w1"] = np.array([1.0, 2.0], dtype=np.float32)
@@ -52,6 +57,7 @@ def test_extract_subgraph() -> None:
 
 
 def test_control_flow() -> None:
+    """Tests the control flow functionality."""
     from onnx9000.toolkit.script.var import Var
 
     gb = GraphBuilder("test_cf")
@@ -62,6 +68,7 @@ def test_control_flow() -> None:
 
 
 def test_to_onnx_extras() -> None:
+    """Tests the to onnx extras functionality."""
     gb = GraphBuilder("test_to_onnx_extras")
     gb.inputs.append({"name": "i1", "shape": ["batch", 1], "dtype": DType.INT64})
     gb.inputs.append({"name": "i2", "shape": [1], "dtype": DType.UNDEFINED})
@@ -92,6 +99,7 @@ def test_to_onnx_extras() -> None:
 
 
 def test_validate_cyclic() -> None:
+    """Tests the validate cyclic functionality."""
     gb = GraphBuilder("test_cyclic")
     node1 = Node("Op1", ["o2"], ["o1"], {}, name="n1")
     node2 = Node("Op2", ["o1"], ["o2"], {}, name="n2")
@@ -106,6 +114,7 @@ def test_validate_cyclic() -> None:
 
 
 def test_extract_subgraph_with_graph() -> None:
+    """Tests the extract subgraph with graph functionality."""
     gb = GraphBuilder("test_extract_graph")
     gb.inputs.append({"name": "i1", "shape": [2], "dtype": DType.FLOAT32})
     gb.outputs.append({"name": "o1", "shape": [2], "dtype": DType.FLOAT32})

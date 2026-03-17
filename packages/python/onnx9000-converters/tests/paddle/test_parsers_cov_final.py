@@ -1,13 +1,17 @@
+"""Tests the parsers cov final module functionality."""
+
 from onnx9000.converters.paddle.parsers import PaddleGraph, PaddleProtobufParser
 
 
 def test_paddle_graph_empty_blocks() -> None:
+    """Tests the paddle graph empty blocks functionality."""
     g = PaddleGraph()
     assert g.get_main_block().idx == 0
     assert g.topological_sort() == []
 
 
 def test_paddle_parsers_skip_field() -> None:
+    """Tests the paddle parsers skip field functionality."""
     op = b"\n\x0b\n\x04in_1\x12\x01A\x18\x01\x1a\x04relu"
     parser = PaddleProtobufParser(op)
     node = parser.parse_op_desc(len(op))
@@ -16,6 +20,7 @@ def test_paddle_parsers_skip_field() -> None:
 
 
 def test_paddle_parsers_op_desc_extras() -> None:
+    """Tests the paddle parsers op desc extras functionality."""
     out_var = b"\n\x05out_1\x12\x01B\x18\x01"
     attr1 = b"\n\x05attr1\x10\x02\x18\x03P\x010\x01\xf8\x06\x01"
     is_target = b"(\x01"
@@ -38,6 +43,7 @@ def test_paddle_parsers_op_desc_extras() -> None:
 
 
 def test_paddle_parsers_var_desc() -> None:
+    """Tests the paddle parsers var desc functionality."""
     name = b"\n\x01X"
     tensor_msg = b"\x08\x02"
     lod_msg = b"\n" + bytes([len(tensor_msg)]) + tensor_msg
@@ -54,6 +60,7 @@ def test_paddle_parsers_var_desc() -> None:
 
 
 def test_paddle_parsers_block_desc() -> None:
+    """Tests the paddle parsers block desc functionality."""
     idx = b"\x08\x01"
     parent_idx = b"\x10\x00"
     var = b"\x1a\x00"
@@ -67,6 +74,7 @@ def test_paddle_parsers_block_desc() -> None:
 
 
 def test_paddle_parsers_program_desc() -> None:
+    """Tests the paddle parsers program desc functionality."""
     block_data = b"\x08\x01\x10\x00"
     block_msg = b"\n" + bytes([len(block_data)]) + block_data
     version_msg = b"\x08\x01\x10\x01"
@@ -80,6 +88,7 @@ def test_paddle_parsers_program_desc() -> None:
 
 
 def test_paddle_parsers_framework() -> None:
+    """Tests the paddle parsers framework functionality."""
     block_data = b"\x08\x01\x10\x00"
     block_msg = b"\n" + bytes([len(block_data)]) + block_data
     parser = PaddleProtobufParser(block_msg)
@@ -88,6 +97,7 @@ def test_paddle_parsers_framework() -> None:
 
 
 def test_paddle_parsers_framework_loop() -> None:
+    """Tests the paddle parsers framework loop functionality."""
     prog_msg = b"\n\x00"
     framework_data = prog_msg + b"\xf8\x06\x01"
     parser = PaddleProtobufParser(framework_data)

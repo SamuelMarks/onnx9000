@@ -1,3 +1,5 @@
+"""Tests the coverage gap module functionality."""
+
 import os
 import tempfile
 
@@ -10,6 +12,7 @@ from onnx9000.core.symbolic import broadcast_shapes, evaluate_symbolic_expressio
 
 
 def test_mmap_tensor_data() -> None:
+    """Tests the mmap tensor data functionality."""
     with tempfile.NamedTemporaryFile(delete=False) as f:
         f.write(b"hello world")
         name = f.name
@@ -23,6 +26,7 @@ def test_mmap_tensor_data() -> None:
 
 
 def test_symbolic_math() -> None:
+    """Tests the symbolic math functionality."""
     res = evaluate_symbolic_expression("batch", {"batch": 8})
     assert res == 8
     res = evaluate_symbolic_expression("seq", {"batch": 8})
@@ -37,15 +41,21 @@ def test_symbolic_math() -> None:
 
 
 def test_execution_provider_base() -> None:
+    """Tests the execution provider base functionality."""
 
     class DummyEP(ExecutionProvider):
+        """Represents the DummyEP class and its associated logic."""
+
         def get_supported_nodes(self, graph):
+            """Tests the get supported nodes functionality."""
             return []
 
         def allocate_tensors(self, tensors) -> None:
+            """Tests the allocate tensors functionality."""
             return None
 
         def execute(self, graph, context, inputs):
+            """Tests the execute functionality."""
             return {}
 
     ep = DummyEP({"device_id": "1"})
@@ -57,6 +67,7 @@ def test_execution_provider_base() -> None:
 
 
 def test_serializer() -> None:
+    """Tests the serializer functionality."""
     g = Graph("test")
     g.add_tensor(
         Tensor(
@@ -79,6 +90,7 @@ def test_serializer() -> None:
 
 
 def test_dlpack() -> None:
+    """Tests the dlpack functionality."""
     t = Constant("test", values=b"1234123412341234", shape=(2, 2), dtype=DType.FLOAT32)
     capsule = t.__dlpack__()
     assert capsule is not None

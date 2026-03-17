@@ -1,3 +1,5 @@
+"""Provides math utils module functionality."""
+
 import logging
 
 from onnx9000.core.ir import Graph, Node

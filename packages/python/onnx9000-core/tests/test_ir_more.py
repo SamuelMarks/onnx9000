@@ -1,7 +1,10 @@
+"""Tests the ir more module functionality."""
+
 from onnx9000.core.ir import *
 
 
 def test_ir_more() -> None:
+    """Tests the ir more functionality."""
     t = Tensor("t_base")
     assert repr(t) == "ir.Tensor(name=t_base)"
     h = hash(t)
@@ -46,6 +49,7 @@ def test_ir_more() -> None:
 
 
 def test_ir_edge_cases() -> None:
+    """Tests the ir edge cases functionality."""
     n1 = Node("Op", inputs=["in1"])
     n2 = Node("Op", inputs=["in1", "in2"])
     assert n1 != n2

@@ -1,3 +1,5 @@
+"""Tests the surgeon more module functionality."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Variable
@@ -5,6 +7,7 @@ from onnx9000.core.surgeon import *
 
 
 def test_toposort_cyclic() -> None:
+    """Tests the toposort cyclic functionality."""
     g = Graph("cyclic")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -26,6 +29,7 @@ def test_toposort_cyclic() -> None:
 
 
 def test_walk_nested_graphs() -> None:
+    """Tests the walk nested graphs functionality."""
     sub_g = Graph("sub")
     v_sub = Variable("v_sub")
     sub_g.add_tensor(v_sub)
@@ -54,6 +58,7 @@ def test_walk_nested_graphs() -> None:
 
 
 def test_find_paths() -> None:
+    """Tests the find paths functionality."""
     g = Graph("paths")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -80,6 +85,7 @@ def test_find_paths() -> None:
 
 
 def test_analyze_critical_path_distances() -> None:
+    """Tests the analyze critical path distances functionality."""
     g = Graph("paths")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -100,6 +106,7 @@ def test_analyze_critical_path_distances() -> None:
 
 
 def test_estimate_macs() -> None:
+    """Tests the estimate macs functionality."""
     g = Graph("macs")
     v_in = Variable("in", shape=(1, 3, 224, 224))
     v_out = Variable("out", shape=(1, 64, 224, 224))
@@ -121,6 +128,7 @@ def test_estimate_macs() -> None:
 
 
 def test_estimate_constant_memory() -> None:
+    """Tests the estimate constant memory functionality."""
     g = Graph("mem")
     c1 = Constant("c1", shape=(1, -1, 10, "foo"), values=b"123")
     g.add_tensor(c1)
@@ -131,6 +139,7 @@ def test_estimate_constant_memory() -> None:
 
 
 def test_replace_output_node_method() -> None:
+    """Tests the replace output node method functionality."""
     g = Graph("repl_out")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -145,6 +154,7 @@ def test_replace_output_node_method() -> None:
 
 
 def test_remove_all_identity() -> None:
+    """Tests the remove all identity functionality."""
     g = Graph("id")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -161,6 +171,7 @@ def test_remove_all_identity() -> None:
 
 
 def test_bypass_node_errors() -> None:
+    """Tests the bypass node errors functionality."""
     g = Graph("bypass")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -170,6 +181,7 @@ def test_bypass_node_errors() -> None:
 
 
 def test_variable_constant_conversion() -> None:
+    """Tests the variable constant conversion functionality."""
     g = Graph("vtc")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -188,6 +200,7 @@ def test_variable_constant_conversion() -> None:
 
 
 def test_prepend_graph() -> None:
+    """Tests the prepend graph functionality."""
     g1 = Graph("g1")
     n1 = Node("N1")
     g1.add_node(n1)
@@ -199,6 +212,7 @@ def test_prepend_graph() -> None:
 
 
 def test_duplicate_subgraph() -> None:
+    """Tests the duplicate subgraph functionality."""
     g = Graph("dup")
     v1 = Variable("v1", shape=(1,))
     n1 = Node("N1", inputs=[v1], outputs=[])
@@ -208,6 +222,7 @@ def test_duplicate_subgraph() -> None:
 
 
 def test_pattern_matcher_cases() -> None:
+    """Tests the pattern matcher cases functionality."""
     g = Graph("pm")
     v_in = Variable("in")
     c_in = Constant("c")
@@ -237,6 +252,7 @@ def test_pattern_matcher_cases() -> None:
 
 
 def test_infer_shapes_dtypes_symbolic() -> None:
+    """Tests the infer shapes dtypes symbolic functionality."""
     g = Graph("inf")
     v1 = Variable("v1", shape=(1, 2), dtype=DType.FLOAT32)
     v2 = Variable("v2")
@@ -252,6 +268,7 @@ def test_infer_shapes_dtypes_symbolic() -> None:
 
 
 def test_strip_doc_strings() -> None:
+    """Tests the strip doc strings functionality."""
     g = Graph("doc")
     n = Node("N1")
     n.attributes["doc_string"] = Attribute("doc_string", value="test")
@@ -261,6 +278,7 @@ def test_strip_doc_strings() -> None:
 
 
 def test_deduplicate_constants() -> None:
+    """Tests the deduplicate constants functionality."""
     g = Graph("dedup")
     c1 = Constant("c1", values=b"123")
     c2 = Constant("c2", values=b"123")
@@ -275,6 +293,7 @@ def test_deduplicate_constants() -> None:
 
 
 def test_fuse_trivial() -> None:
+    """Tests the fuse trivial functionality."""
     g = Graph("fuse")
     n1 = Node("Erf")
     n2 = Node("Tanh")
@@ -291,6 +310,7 @@ def test_fuse_trivial() -> None:
 
 
 def test_downcasts() -> None:
+    """Tests the downcasts functionality."""
     g = Graph("dc")
     v1 = Variable("v1", dtype=DType.FLOAT64)
     v2 = Variable("v2", dtype=DType.INT64)
@@ -303,6 +323,7 @@ def test_downcasts() -> None:
 
 
 def test_validate_topology_failures() -> None:
+    """Tests the validate topology failures functionality."""
     g = Graph("val")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -320,6 +341,7 @@ def test_validate_topology_failures() -> None:
 
 
 def test_broadcast_constant() -> None:
+    """Tests the broadcast constant functionality."""
     c = Constant("c", shape=(1, 2))
     c.dtype = DType.FLOAT32
     c2 = broadcast_constant(c, (1, 2))
@@ -327,6 +349,8 @@ def test_broadcast_constant() -> None:
     c3 = Constant("c3", shape=(1,))
 
     class MockDType:
+        """Represents the MockDType class and its associated logic."""
+
         itemsize = 8
 
     c3.dtype = MockDType()
@@ -334,12 +358,14 @@ def test_broadcast_constant() -> None:
 
 
 def test_trace_missing() -> None:
+    """Tests the trace missing functionality."""
     g = Graph("trace")
     assert trace_origin(g, "not_found") == []
     assert trace_destiny(g, "not_found") == []
 
 
 def test_walk_bfs() -> None:
+    """Tests the walk bfs functionality."""
     g = Graph("bfs")
     v1 = Variable("v1")
     g.add_tensor(v1)
@@ -357,6 +383,7 @@ def test_walk_bfs() -> None:
 
 
 def test_estimate_macs_exceptions() -> None:
+    """Tests the estimate macs exceptions functionality."""
     g = Graph("mem")
     v1 = Variable("v1")
     n1 = Node("Conv", inputs=[v1])
@@ -369,10 +396,14 @@ def test_estimate_macs_exceptions() -> None:
 
 
 def test_estimate_act_memory_exception() -> None:
+    """Tests the estimate act memory exception functionality."""
     g = Graph("mem")
 
     class BadShape:
+        """Represents the BadShape class and its associated logic."""
+
         def __iter__(self):
+            """Tests the iter   functionality."""
             raise Exception("bad")
 
     v1 = Variable("v1")
@@ -386,6 +417,7 @@ def test_estimate_act_memory_exception() -> None:
 
 
 def test_pattern_match_inputs_ordered() -> None:
+    """Tests the pattern match inputs ordered functionality."""
     g = Graph("pm")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -415,6 +447,7 @@ def test_pattern_match_inputs_ordered() -> None:
 
 
 def test_pattern_match_inputs_unordered() -> None:
+    """Tests the pattern match inputs unordered functionality."""
     g = Graph("pm")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -437,6 +470,7 @@ def test_pattern_match_inputs_unordered() -> None:
 
 
 def test_validate_topology_cycles() -> None:
+    """Tests the validate topology cycles functionality."""
     g = Graph("cyc")
     v1 = Variable("v1")
     v2 = Variable("v2")
@@ -455,6 +489,7 @@ def test_validate_topology_cycles() -> None:
 
 
 def test_validate_topology_name_conflict() -> None:
+    """Tests the validate topology name conflict functionality."""
     g = Graph("conflict")
     n1 = Node("Op", name="A")
     n2 = Node("Op", name="A")
@@ -464,6 +499,7 @@ def test_validate_topology_name_conflict() -> None:
 
 
 def test_toposort_producer_not_visited() -> None:
+    """Tests the toposort producer not visited functionality."""
     g = Graph("topo")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -475,6 +511,7 @@ def test_toposort_producer_not_visited() -> None:
 
 
 def test_walk_dfs_connected() -> None:
+    """Tests the walk dfs connected functionality."""
     g = Graph("dfs")
     v1 = Variable("v1")
     g.add_tensor(v1)
@@ -492,6 +529,7 @@ def test_walk_dfs_connected() -> None:
 
 
 def test_isolate_dependencies_more() -> None:
+    """Tests the isolate dependencies more functionality."""
     g = Graph("iso")
     v1 = Variable("v1")
     n1 = Node("N1", outputs=[v1])
@@ -507,6 +545,7 @@ def test_isolate_dependencies_more() -> None:
 
 
 def test_estimate_macs_shapes() -> None:
+    """Tests the estimate macs shapes functionality."""
     g = Graph("mac")
     v_a = Variable("A", shape=(2, 3))
     v_b = Variable("B", shape=(3, 4))

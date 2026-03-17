@@ -1,3 +1,5 @@
+"""Tests the executor module functionality."""
+
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -8,6 +10,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_rocm_executor_fallback() -> None:
+    """Tests the rocm executor fallback functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -29,6 +32,7 @@ def test_rocm_executor_fallback() -> None:
 
 
 def test_rocm_executor_matmul_fallback() -> None:
+    """Tests the rocm executor matmul fallback functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -72,6 +76,7 @@ def test_rocm_executor_matmul_fallback() -> None:
 
 
 def test_rocm_executor_matmul_no_rocblas() -> None:
+    """Tests the rocm executor matmul no rocblas functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -95,6 +100,7 @@ def test_rocm_executor_matmul_no_rocblas() -> None:
 
 
 def test_rocm_executor_elementwise_fallback() -> None:
+    """Tests the rocm executor elementwise fallback functionality."""
     for op_type in ["Add", "Sub", "Conv", "Dummy"]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -125,6 +131,7 @@ def test_rocm_executor_elementwise_fallback() -> None:
 
 
 def test_rocm_executor_init_memory_dynamic_and_init() -> None:
+    """Tests the rocm executor init memory dynamic and init functionality."""
     g = Graph("test")
     t_out = Tensor("out_t", ("N", 2), DType.FLOAT32)
     t_init = Tensor(
@@ -143,6 +150,7 @@ def test_rocm_executor_init_memory_dynamic_and_init() -> None:
 
 
 def test_rocm_executor_del_handles_success() -> None:
+    """Tests the rocm executor del handles success functionality."""
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),
@@ -180,6 +188,7 @@ def test_rocm_executor_del_handles_success() -> None:
 
 
 def test_rocm_executor_del_handles_errors() -> None:
+    """Tests the rocm executor del handles errors functionality."""
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),
@@ -215,6 +224,7 @@ def test_rocm_executor_del_handles_errors() -> None:
 
 
 def ignore() -> None:
+    """Executes the ignore operation."""
     g = Graph("test")
     with (
         patch("onnx9000.backends.rocm.executor.is_hip_available", return_value=True),

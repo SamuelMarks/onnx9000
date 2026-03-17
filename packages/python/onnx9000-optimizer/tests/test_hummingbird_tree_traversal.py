@@ -1,9 +1,12 @@
+"""Tests the hummingbird tree traversal module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.tree_traversal import TreeTraversalCompiler
 
 
 def test_tree_traversal_compiler() -> None:
+    """Tests the tree traversal compiler functionality."""
     g = Graph(name="test_tt")
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)

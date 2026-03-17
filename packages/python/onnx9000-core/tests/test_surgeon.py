@@ -1,7 +1,10 @@
+"""Tests the surgeon module functionality."""
+
 from onnx9000.core.ir import Graph, Node, Variable
 
 
 def test_toposort_basic() -> None:
+    """Tests the toposort basic functionality."""
     g = Graph("test")
     v1 = Variable("in1")
     v2 = Variable("in2")

@@ -1,9 +1,12 @@
+"""Tests the backends module functionality."""
+
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 from onnx9000.backends.memory.metal_arena import MetalMemoryPlanner
 
 
 def test_cpu_memory_planner() -> None:
+    """Tests the cpu memory planner functionality."""
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 128, (2, 2), "float32")
     planner.build_arena()
@@ -20,6 +23,7 @@ def test_cpu_memory_planner() -> None:
 
 
 def test_metal_memory_planner() -> None:
+    """Tests the metal memory planner functionality."""
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 128, (2, 2), "float32")
     planner.build_arena()
@@ -35,6 +39,7 @@ def test_metal_memory_planner() -> None:
 
 
 def test_cpu_ops_registry() -> None:
+    """Tests the cpu ops registry functionality."""
     import numpy as np
 
     inputs = [np.array([1, 2]), np.array([3, 4])]
@@ -53,6 +58,7 @@ def test_cpu_ops_registry() -> None:
 
 
 def test_cpu_executor() -> None:
+    """Tests the cpu executor functionality."""
     import numpy as np
     from onnx9000.backends.cpu.executor import CPUExecutionProvider
     from onnx9000.core.dtypes import DType

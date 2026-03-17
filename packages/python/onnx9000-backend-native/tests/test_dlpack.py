@@ -1,3 +1,5 @@
+"""Tests the dlpack module functionality."""
+
 import ctypes
 from unittest.mock import patch
 
@@ -11,6 +13,7 @@ from onnx9000.backends.memory.dlpack import (
 
 
 def test_from_numpy() -> None:
+    """Tests the from numpy functionality."""
     arr = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     ptr, shape, strides, typestr = from_numpy(arr)
 
@@ -21,6 +24,7 @@ def test_from_numpy() -> None:
 
 
 def test_from_numpy_strided() -> None:
+    """Tests the from numpy strided functionality."""
     arr = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
     # create non-contiguous view
     arr_t = arr.T
@@ -29,20 +33,26 @@ def test_from_numpy_strided() -> None:
 
 
 def test_from_numpy_unsupported() -> None:
+    """Tests the from numpy unsupported functionality."""
     with pytest.raises(TypeError, match="Object does not support __array_interface__"):
         from_numpy([1, 2, 3])
 
 
 def test_from_dlpack_unsupported() -> None:
+    """Tests the from dlpack unsupported functionality."""
     with pytest.raises(TypeError, match="Object does not support DLPack protocol"):
         from_dlpack([1, 2, 3])
 
 
 class MockDLPackTensor:
+    """Represents the Mock D L Pack Tensor class."""
+
     def __init__(self, arr) -> None:
+        """Initializes the instance."""
         self.arr = arr
 
     def __dlpack__(self):
+        """Executes dlpack magic method operation."""
         # We need to construct a real PyCapsule to test from_dlpack
         # But constructing a PyCapsule from python is tricky without C extension
         # We will mock the ctypes.pythonapi
@@ -50,6 +60,7 @@ class MockDLPackTensor:
 
 
 def test_from_dlpack_mock() -> None:
+    """Tests the from dlpack mock functionality."""
     t = MockDLPackTensor(np.array([1.0, 2.0], dtype=np.float32))
 
     with patch("ctypes.pythonapi.PyCapsule_GetPointer") as mock_get_ptr:
@@ -80,10 +91,13 @@ def test_from_dlpack_mock() -> None:
 
 
 def test_from_numpy_strided_success() -> None:
+    """Tests the from numpy strided success functionality."""
     np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
 
     # modify __array_interface__ directly
     class MockArr:
+        """Represents the MockArr class and its associated logic."""
+
         __array_interface__ = {
             "data": (123, False),
             "shape": (2, 2),
@@ -97,8 +111,13 @@ def test_from_numpy_strided_success() -> None:
 
 
 def test_from_dlpack_strided_success() -> None:
+    """Tests the from dlpack strided success functionality."""
+
     class MockDLPackTensor:
+        """Represents the MockDLPackTensor class and its associated logic."""
+
         def __dlpack__(self):
+            """Executes dlpack magic method operation."""
             return "capsule"
 
     t = MockDLPackTensor()

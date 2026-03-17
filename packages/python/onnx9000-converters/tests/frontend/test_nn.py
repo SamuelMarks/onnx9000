@@ -260,6 +260,7 @@ def test_functional_kwargs() -> None:
 
 
 def test_init_functions() -> None:
+    """Tests the init functions functionality."""
     from onnx9000.converters.frontend.nn import init
 
     t = Tensor(data=np.ones((10, 10), dtype=np.float32))

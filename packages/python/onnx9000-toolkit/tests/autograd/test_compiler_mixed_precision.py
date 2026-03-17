@@ -1,8 +1,11 @@
+"""Tests the compiler mixed precision module functionality."""
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import scale_backward_graph_for_mixed_precision
 
 
 def test_scale_backward_graph_for_mixed_precision() -> None:
+    """Tests the scale backward graph for mixed precision functionality."""
     g = Graph("test")
     g.initializers.append("w1")
     g.add_tensor(Tensor(name="w1", shape=(10,), dtype="float32", requires_grad=True))

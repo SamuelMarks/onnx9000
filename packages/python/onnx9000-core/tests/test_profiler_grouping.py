@@ -1,17 +1,21 @@
+"""Tests the profiler grouping module functionality."""
+
 import json
 import os
-from onnx9000.core.ir import Graph, Node, Tensor, Constant
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node, Tensor
 from onnx9000.core.profiler import profile
 from onnx9000.core.profiler_grouping import (
-    group_by_namespace,
-    export_hierarchical_json,
     export_csv,
+    export_hierarchical_json,
+    group_by_namespace,
     to_pandas_dataframe,
 )
 
 
 def test_profiler_grouping_hierarchy():
+    """Tests the profiler grouping hierarchy functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.inputs.append("A")
@@ -40,6 +44,7 @@ def test_profiler_grouping_hierarchy():
 
 
 def test_profiler_export():
+    """Tests the profiler export functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.inputs.append("A")
@@ -51,7 +56,7 @@ def test_profiler_export():
     export_hierarchical_json(res, "test_hierarchical.json")
     assert os.path.exists("test_hierarchical.json")
 
-    with open("test_hierarchical.json", "r") as f:
+    with open("test_hierarchical.json") as f:
         data = json.load(f)
         assert data["name"] == "root"
 

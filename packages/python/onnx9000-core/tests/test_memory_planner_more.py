@@ -1,19 +1,24 @@
+"""Tests the memory planner more module functionality."""
+
 import pytest
-from onnx9000.core.memory_planner import MemoryBlock, ArenaSimulator, simulate_memory_plan
 from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.memory_planner import ArenaSimulator, MemoryBlock, simulate_memory_plan
 
 
 def test_memory_block_repr():
+    """Tests the memory block repr functionality."""
     b = MemoryBlock(0, 100)
     assert repr(b) == "Block(offset=0, size=100, free=True, tensor=None)"
 
 
 def test_arena_align_exact():
+    """Tests the arena align exact functionality."""
     arena = ArenaSimulator(alignment=256)
     assert arena._align(256) == 256
 
 
 def test_allocate_first_fit_reuse():
+    """Tests the allocate first fit reuse functionality."""
     arena = ArenaSimulator(alignment=256)
     arena.allocate_first_fit("t1", 200)  # uses 256
     arena.allocate_first_fit("t2", 300)  # uses 512
@@ -24,6 +29,7 @@ def test_allocate_first_fit_reuse():
 
 
 def test_allocate_best_fit():
+    """Tests the allocate best fit functionality."""
     arena = ArenaSimulator(alignment=256)
     arena.allocate_best_fit("t1", 200)  # uses 256
     arena.allocate_best_fit("t2", 600)  # uses 768
@@ -39,6 +45,7 @@ def test_allocate_best_fit():
 
 
 def test_free_merge():
+    """Tests the free merge functionality."""
     arena = ArenaSimulator(alignment=256)
     arena.allocate_first_fit("t1", 200)  # uses 256
     arena.allocate_first_fit("t2", 200)  # uses 256
@@ -49,6 +56,7 @@ def test_free_merge():
 
 
 def test_calculate_fragmentation():
+    """Tests the calculate fragmentation functionality."""
     arena = ArenaSimulator(alignment=256)
     assert arena.calculate_fragmentation() == 0.0
     arena.allocate_first_fit("t1", 200)
@@ -59,6 +67,7 @@ def test_calculate_fragmentation():
 
 
 def test_simulate_best_fit():
+    """Tests the simulate best fit functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("in1", [10, 10], "float32"))
     g.inputs.append("in1")
@@ -75,6 +84,7 @@ def test_simulate_best_fit():
 
 
 def test_block_splitting():
+    """Tests the block splitting functionality."""
     arena = ArenaSimulator(alignment=256)
     arena.allocate_first_fit("t1", 1024)
     arena.free("t1")
@@ -91,6 +101,7 @@ def test_block_splitting():
 
 
 def test_simulate_in_place_and_view():
+    """Tests the simulate in place and view functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("in1", [10, 10], "float32"))
     g.inputs.append("in1")
@@ -110,6 +121,7 @@ def test_simulate_in_place_and_view():
 
 
 def test_simulate_empty_input():
+    """Tests the simulate empty input functionality."""
     g = Graph("g")
     g.inputs.append("unused")
     simulate_memory_plan(g)

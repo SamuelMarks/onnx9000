@@ -1,3 +1,5 @@
+"""Tests the logger module functionality."""
+
 import logging
 import sys
 from unittest.mock import patch

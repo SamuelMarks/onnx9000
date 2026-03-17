@@ -1,9 +1,12 @@
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+"""Tests the memory planner module functionality."""
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 from onnx9000.core.memory_planner import simulate_memory_plan
 
 
 def test_memory_planner_first_fit():
+    """Tests the memory planner first fit functionality."""
     g = Graph("test")
     # A -> B -> C -> D
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
@@ -30,6 +33,7 @@ def test_memory_planner_first_fit():
 
 
 def test_memory_planner_reshape_view():
+    """Tests the memory planner reshape view functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
     g.inputs.append("X")

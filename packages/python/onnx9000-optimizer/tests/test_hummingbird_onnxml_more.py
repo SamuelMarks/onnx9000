@@ -1,22 +1,25 @@
+"""Tests the hummingbird onnxml more module functionality."""
+
 import pytest
-from onnx9000.core.ir import Node, Graph
+from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.onnxml_parser import (
-    parse_onnxml_linear,
-    parse_onnxml_svm,
-    parse_onnxml_scaler,
-    parse_onnxml_normalizer,
-    parse_onnxml_binarizer,
-    parse_onnxml_onehot,
-    parse_onnxml_imputer,
-    parse_onnxml_feature_extractor,
-    parse_onnxml_category_mapper,
-    parse_onnxml_zipmap,
     apply_onnxml_post_transform,
     ensure_static_shapes,
+    parse_onnxml_binarizer,
+    parse_onnxml_category_mapper,
+    parse_onnxml_feature_extractor,
+    parse_onnxml_imputer,
+    parse_onnxml_linear,
+    parse_onnxml_normalizer,
+    parse_onnxml_onehot,
+    parse_onnxml_scaler,
+    parse_onnxml_svm,
+    parse_onnxml_zipmap,
 )
 
 
 def test_hummingbird_onnxml_stubs():
+    """Tests the hummingbird onnxml stubs functionality."""
     n = Node("dummy", [], [])
     g = Graph("g")
     parse_onnxml_linear(n)
@@ -35,12 +38,13 @@ def test_hummingbird_onnxml_stubs():
 
 from onnx9000.core.ir import Attribute
 from onnx9000.optimizer.hummingbird.onnxml_parser import (
-    parse_onnxml_tree_ensemble,
     extract_tree_ensemble_attributes,
+    parse_onnxml_tree_ensemble,
 )
 
 
 def test_parse_onnxml_tree_ensemble():
+    """Tests the parse onnxml tree ensemble functionality."""
     n = Node("TreeEnsembleClassifier", [], [])
     res = parse_onnxml_tree_ensemble(n)
     assert len(res) == 0
@@ -59,6 +63,7 @@ def test_parse_onnxml_tree_ensemble():
 
 
 def test_extract_tree_ensemble_attributes():
+    """Tests the extract tree ensemble attributes functionality."""
     n = Node("TreeEnsembleClassifier", [], [])
     n.attributes["class_ids"] = Attribute("class_ids", value=[1])
     pass
@@ -67,6 +72,7 @@ def test_extract_tree_ensemble_attributes():
 
 
 def test_apply_onnxml_post_transform():
+    """Tests the apply onnxml post transform functionality."""
     g = Graph("g")
     n = Node("dummy", [], [])
     n.attributes["post_transform"] = Attribute("post_transform", value=b"SOFTMAX")

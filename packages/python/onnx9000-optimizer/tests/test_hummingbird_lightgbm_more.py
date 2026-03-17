@@ -1,17 +1,22 @@
+"""Tests the hummingbird lightgbm more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.lightgbm_parser import (
-    parse_lgbm_classifier,
-    parse_lgbm_regressor,
-    parse_lgbm_ranker,
+    apply_lgbm_scaling,
     handle_lgbm_objectives,
     parse_lgbm_categorical,
-    apply_lgbm_scaling,
+    parse_lgbm_classifier,
+    parse_lgbm_ranker,
+    parse_lgbm_regressor,
 )
 
 
 class MockBooster:
+    """Represents the Mock Booster class."""
+
     def dump_model(self):
+        """Executes the dump model operation."""
         return {
             "tree_info": [
                 {
@@ -36,15 +41,21 @@ class MockBooster:
 
 
 class MockEstimator:
+    """Represents the Mock Estimator class."""
+
     def __init__(self):
+        """Initializes the instance."""
         self.booster_ = MockBooster()
 
 
 class MockEstimatorNoBooster:
+    """Represents the Mock Estimator No Booster class."""
+
     pass
 
 
 def test_parse_lgbm_classifier():
+    """Tests the parse lgbm classifier functionality."""
     res = parse_lgbm_classifier(MockEstimator())
     assert len(res) == 1
     res_empty = parse_lgbm_classifier(MockEstimatorNoBooster())
@@ -52,6 +63,7 @@ def test_parse_lgbm_classifier():
 
 
 def test_parse_lgbm_regressor():
+    """Tests the parse lgbm regressor functionality."""
     res = parse_lgbm_regressor(MockEstimator())
     assert len(res) == 1
     res_empty = parse_lgbm_regressor(MockEstimatorNoBooster())
@@ -59,11 +71,13 @@ def test_parse_lgbm_regressor():
 
 
 def test_parse_lgbm_ranker():
+    """Tests the parse lgbm ranker functionality."""
     res = parse_lgbm_ranker(MockEstimator())
     assert len(res) == 1
 
 
 def test_handle_lgbm_objectives():
+    """Tests the handle lgbm objectives functionality."""
     g = Graph("g")
     handle_lgbm_objectives(g, "multiclass")
     assert g.nodes[-1].op_type == "Softmax"
@@ -76,6 +90,7 @@ def test_handle_lgbm_objectives():
 
 
 def test_stubs():
+    """Tests the stubs functionality."""
     g = Graph("g")
     parse_lgbm_categorical(g, [1, 2])
     apply_lgbm_scaling(g, 0.5, 0.1)

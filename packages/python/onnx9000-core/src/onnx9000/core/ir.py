@@ -54,12 +54,15 @@ class DynamicDim:
         self.value = value
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"DynamicDim({self.value})"
 
     def __str__(self) -> str:
+        """Executes str magic method operation."""
         return str(self.value)
 
     def __eq__(self, other: Any) -> bool:
+        """Executes eq magic method operation."""
         if isinstance(other, DynamicDim):
             return self.value == other.value
         return False
@@ -103,9 +106,11 @@ class Attribute:
         self.attr_type = attr_type if attr_type is not None else Attribute.infer_type(value)
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"Attribute(name={self.name}, type={self.attr_type}, value={self.value})"
 
     def __eq__(self, other: Any) -> bool:
+        """Executes eq magic method operation."""
         if not isinstance(other, Attribute):
             return False
         return (
@@ -125,6 +130,7 @@ class ValueInfo:
         self.dtype = dtype
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"ValueInfo(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
 
@@ -147,9 +153,11 @@ class Tensor:
         self.lifespan: tuple[int, int] = (-1, -1)
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"ir.Tensor(name={self.name})"
 
     def __hash__(self) -> int:
+        """Executes hash magic method operation."""
         return object.__hash__(self)
 
     def copy(self) -> "Tensor":
@@ -195,6 +203,7 @@ class Variable(Tensor):
         return len(self.shape) == 0
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"ir.Variable(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
 
@@ -216,6 +225,7 @@ class Constant(Tensor):
         self.is_initializer = True
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         return f"ir.Constant(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
     @property
@@ -229,9 +239,11 @@ class Constant(Tensor):
         self.data = val
 
     def __dlpack_device__(self) -> tuple[int, int]:
+        """Executes dlpack device magic method operation."""
         return (1, 0)
 
     def __dlpack__(self, stream: Optional[int] = None) -> Any:
+        """Executes dlpack magic method operation."""
         if self.data is None:
             raise ValueError("Cannot create DLPack capsule for a tensor with no data.")
         for dim in self.shape:
@@ -308,9 +320,11 @@ class Node:
         return self.attributes
 
     def __hash__(self) -> int:
+        """Executes hash magic method operation."""
         return object.__hash__(self)
 
     def __eq__(self, other: Any) -> bool:
+        """Executes eq magic method operation."""
         if not isinstance(other, Node):
             return False
         if self.op_type != other.op_type:
@@ -357,6 +371,7 @@ class Node:
         return self.outputs[idx]
 
     def __repr__(self) -> str:
+        """Executes repr magic method operation."""
         in_str = [i.name if isinstance(i, Tensor) else str(i) for i in self.inputs]
         out_str = [o.name if isinstance(o, Tensor) else str(o) for o in self.outputs]
         return f"ir.Node({self.op_type}, {in_str} -> {out_str})"
@@ -375,18 +390,24 @@ class Graph:
         self._tensor_name_counter: dict[str, int] = {}
         self.inputs: list[ValueInfo] = []
         self.outputs: list[ValueInfo] = []
+        self.value_info: list[ValueInfo] = []
         self.initializers: list[str] = []
         self.opset_imports: dict[str, int] = {}
         self.doc_string: str = ""
+        self.producer_name: str = "onnx9000"
+        self.producer_version: str = "1.0.0"
+        self.metadata_props: dict[str, str] = {}
         self.producer_map: dict[str, Node] = {}
         self.consumer_map: dict[str, list[Node]] = {}
 
     def _intern_string(self, s: str) -> str:
+        """Executes the intern string operation."""
         if s not in self._string_pool:
             self._string_pool[s] = s
         return self._string_pool[s]
 
     def _uniquify_node_name(self, base_name: str) -> str:
+        """Executes the uniquify node name operation."""
         if not base_name:
             base_name = "node"
         if base_name not in self._node_name_counter:
@@ -400,6 +421,7 @@ class Graph:
                 return new_name
 
     def _uniquify_tensor_name(self, base_name: str) -> str:
+        """Executes the uniquify tensor name operation."""
         if not base_name:
             base_name = "tensor"
         if base_name not in self._tensor_name_counter:
@@ -437,6 +459,7 @@ class Graph:
                 self.consumer_map[i.name].append(node)
 
     def __eq__(self, other: Any) -> bool:
+        """Executes eq magic method operation."""
         if not isinstance(other, Graph):
             return False
         if self.name != other.name:
@@ -449,6 +472,9 @@ class Graph:
         """Copy function logic implementation."""
         g = Graph(self.name)
         g.doc_string = self.doc_string
+        g.producer_name = self.producer_name
+        g.producer_version = self.producer_version
+        g.metadata_props = self.metadata_props.copy()
         g.opset_imports = self.opset_imports.copy()
         tensor_map = {}
         for t_name, t in self.tensors.items():
@@ -459,6 +485,7 @@ class Graph:
             g.add_node(n.copy(tensor_map))
         g.inputs = [ValueInfo(v.name, v.shape, v.dtype) for v in self.inputs]
         g.outputs = [ValueInfo(v.name, v.shape, v.dtype) for v in self.outputs]
+        g.value_info = [ValueInfo(v.name, v.shape, v.dtype) for v in self.value_info]
         g.initializers = self.initializers.copy()
         return g
 

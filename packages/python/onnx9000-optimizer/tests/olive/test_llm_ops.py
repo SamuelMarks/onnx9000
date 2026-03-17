@@ -4,6 +4,7 @@ from onnx9000.optimizer.olive.llm_ops import LlmOps
 
 
 def test_llm_ops() -> None:
+    """Tests the llm ops functionality."""
     assert LlmOps.implement_loramergepass_folding_lora_ada() is True
     assert LlmOps.detect_standard_llm_layer_hierarchies_eg() is True
     assert LlmOps.strip_out_unused_tokenizer_subgraphs_if() is True

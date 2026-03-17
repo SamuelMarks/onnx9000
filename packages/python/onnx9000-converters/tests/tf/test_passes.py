@@ -1,3 +1,5 @@
+"""Tests the passes module functionality."""
+
 from onnx9000.converters.tf.passes import (
     constant_folding_pass,
     dce_pass,
@@ -13,6 +15,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _create_graph() -> Graph:
+    """Tests the create graph functionality."""
     g = Graph(name="test")
     g.tensors["out"] = Tensor(name="out", dtype=1, shape=())
     g.outputs.append(g.tensors["out"])
@@ -20,12 +23,14 @@ def _create_graph() -> Graph:
 
 
 def test_constant_folding_pass() -> None:
+    """Tests the constant folding pass functionality."""
     g = _create_graph()
     g = constant_folding_pass(g)
     assert g.name == "test"
 
 
 def test_identity_removal_pass() -> None:
+    """Tests the identity removal pass functionality."""
     g = _create_graph()
     n1 = Node(op_type="Relu", inputs=["in1"], outputs=["out1"], name="n1", attributes={})
     n2 = Node(op_type="Identity", inputs=["out1"], outputs=["out2"], name="n2", attributes={})
@@ -37,6 +42,7 @@ def test_identity_removal_pass() -> None:
 
 
 def test_identity_removal_pass_outputs() -> None:
+    """Tests the identity removal pass outputs functionality."""
     g = _create_graph()
     n1 = Node(op_type="Relu", inputs=["in1"], outputs=["out1"], name="n1", attributes={})
     n2 = Node(op_type="Identity", inputs=["out1"], outputs=["out"], name="n2", attributes={})
@@ -47,6 +53,7 @@ def test_identity_removal_pass_outputs() -> None:
 
 
 def test_dropout_removal_pass() -> None:
+    """Tests the dropout removal pass functionality."""
     g = _create_graph()
     n1 = Node(
         op_type="Dropout", inputs=["in1"], outputs=["out_drop", "mask"], name="n1", attributes={}
@@ -59,6 +66,7 @@ def test_dropout_removal_pass() -> None:
 
 
 def test_remove_debug_nodes_pass() -> None:
+    """Tests the remove debug nodes pass functionality."""
     g = _create_graph()
     n1 = Node(
         op_type="Custom_TFAssert", inputs=["in1"], outputs=["out_assert"], name="n1", attributes={}
@@ -71,6 +79,7 @@ def test_remove_debug_nodes_pass() -> None:
 
 
 def test_transpose_optimizer_pass() -> None:
+    """Tests the transpose optimizer pass functionality."""
     g = _create_graph()
     n1 = Node(
         op_type="Transpose",
@@ -94,18 +103,21 @@ def test_transpose_optimizer_pass() -> None:
 
 
 def test_shape_folding_pass() -> None:
+    """Tests the shape folding pass functionality."""
     g = _create_graph()
     g = shape_folding_pass(g)
     assert g.name == "test"
 
 
 def test_pattern_matching_pass() -> None:
+    """Tests the pattern matching pass functionality."""
     g = _create_graph()
     g = pattern_matching_pass(g)
     assert g.name == "test"
 
 
 def test_dce_pass() -> None:
+    """Tests the dce pass functionality."""
     g = _create_graph()
     n1 = Node(op_type="Relu", inputs=["in1"], outputs=["out1"], name="n1", attributes={})
     n2 = Node(op_type="MatMul", inputs=["in2"], outputs=["out2"], name="n2", attributes={})
@@ -119,6 +131,7 @@ def test_dce_pass() -> None:
 
 
 def test_tf_optimize_graph() -> None:
+    """Tests the tf optimize graph functionality."""
     g = _create_graph()
     n1 = Node(op_type="Identity", inputs=["in1"], outputs=["out1"], name="n1", attributes={})
     n2 = Node(

@@ -47,6 +47,7 @@ class Dispatcher:
                 self.planner.set_tensor(init_name, memoryview(tensor.data), shape, "float32")
 
     def _get_tensor(self, name: str) -> np.ndarray:
+        """Executes the get tensor operation."""
         raw = self.planner.get_host_tensor(name)
         shape, dtype = self.planner.tensors_shape_dtype[name]
         return np.frombuffer(raw, dtype=np.dtype(dtype)).reshape(shape)
@@ -115,6 +116,7 @@ class Dispatcher:
                 self._set_tensor_safe(out, val)
 
     def _set_tensor_safe(self, name: str, data: np.ndarray) -> None:
+        """Executes the set tensor safe operation."""
         if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
             self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
         self.planner.set_tensor(name, memoryview(data.tobytes()), data.shape, str(data.dtype))

@@ -1,19 +1,22 @@
+"""Tests the compiler exhaustive 2 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Tensor, Node
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import (
-    inject_custom_loss_subgraph,
-    apply_automatic_mixed_precision,
-    scale_backward_graph_for_mixed_precision,
-    set_eval_mode,
+    AOTBuilder,
     AutogradEngine,
+    apply_automatic_mixed_precision,
     build_backward_graph,
     estimate_batch_size_limit,
-    AOTBuilder,
+    inject_custom_loss_subgraph,
     inject_memcpy_boundaries,
+    scale_backward_graph_for_mixed_precision,
+    set_eval_mode,
 )
 
 
 def test_add_loss_subgraph_missing_tensor():
+    """Tests the add loss subgraph missing tensor functionality."""
     g = Graph("g")
     loss_g = Graph("loss_g")
     loss_g.add_node(Node("Identity", ["t_loss"], ["t_loss_out"], name="id"))
@@ -24,6 +27,7 @@ def test_add_loss_subgraph_missing_tensor():
 
 
 def test_amp_skip_non_float32():
+    """Tests the amp skip non float32 functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("init_non_f32", [1], "int64"))
     g.initializers.append("init_non_f32")
@@ -34,6 +38,7 @@ def test_amp_skip_non_float32():
 
 
 def test_inject_memcpy_boundaries_skip_non_float32():
+    """Tests the inject memcpy boundaries skip non float32 functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("init_non_f32", [1], "int64"))
     g.initializers.append("init_non_f32")
@@ -44,6 +49,7 @@ def test_inject_memcpy_boundaries_skip_non_float32():
 
 
 def test_scale_loss_gradient_existing():
+    """Tests the scale loss gradient existing functionality."""
     g = Graph("g")
     g.inputs.append("grad_loss")
     scale_backward_graph_for_mixed_precision(g, 2.0)
@@ -52,6 +58,7 @@ def test_scale_loss_gradient_existing():
 
 
 def test_set_eval_mode_normal_node():
+    """Tests the set eval mode normal node functionality."""
     g = Graph("g")
     g.add_node(Node("Relu", ["x"], ["y"], name="relu1"))
     eval_g = set_eval_mode(g)
@@ -59,6 +66,7 @@ def test_set_eval_mode_normal_node():
 
 
 def test_autograd_engine_retained_grads():
+    """Tests the autograd engine retained grads functionality."""
     engine = AutogradEngine()
     engine.retain_grad("x")
     engine.retain_grad("x")  # should not add twice
@@ -66,6 +74,7 @@ def test_autograd_engine_retained_grads():
 
 
 def test_build_backward_graph_retained_grads():
+    """Tests the build backward graph retained grads functionality."""
     fwd = Graph("fwd")
     fwd.add_node(Node("Relu", ["x"], ["y"], name="relu1"))
     fwd.add_tensor(Tensor("x", [1], "float32", requires_grad=True))
@@ -76,6 +85,7 @@ def test_build_backward_graph_retained_grads():
 
 
 def test_build_backward_graph_no_vjp():
+    """Tests the build backward graph no vjp functionality."""
     fwd = Graph("fwd")
     fwd.add_node(Node("UnknownOp", ["x"], ["y"], name="unk"))
     fwd.add_tensor(Tensor("y", [1], "float32", requires_grad=True))
@@ -85,6 +95,7 @@ def test_build_backward_graph_no_vjp():
 
 
 def test_estimate_batch_size_limit_positive():
+    """Tests the estimate batch size limit positive functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("large_in", (1024, 1024, 1024), "float32", is_initializer=True))
     g.initializers.append("large_in")
@@ -94,14 +105,16 @@ def test_estimate_batch_size_limit_positive():
 
 
 def test_aot_builder_init_no_opset():
+    """Tests the aot builder init no opset functionality."""
     g = Graph("g")
     if hasattr(g, "opset_imports"):
         delattr(g, "opset_imports")
     builder = AOTBuilder(g)
-    assert getattr(builder.fwd_graph, "opset_imports")["ai.onnx"] == 15
+    assert builder.fwd_graph.opset_imports["ai.onnx"] == 15
 
 
 def test_aot_builder_accumulate_gradient():
+    """Tests the aot builder accumulate gradient functionality."""
     g = Graph("g")
     g.add_node(Node("Relu", ["x"], ["y"], name="relu"))
     g.outputs.append("y")

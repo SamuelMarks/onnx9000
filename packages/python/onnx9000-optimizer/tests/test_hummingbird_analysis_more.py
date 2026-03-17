@@ -1,9 +1,12 @@
+"""Tests the hummingbird analysis more module functionality."""
+
 import pytest
-from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.analysis import analyze_tree_depth
+from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 
 def test_analyze_tree_depth_empty():
+    """Tests the analyze tree depth empty functionality."""
     abstractions = TreeAbstractions()
     res = analyze_tree_depth(abstractions)
     assert res == {"min": 0, "max": 0, "mean": 0}
@@ -11,12 +14,13 @@ def test_analyze_tree_depth_empty():
 
 from onnx9000.optimizer.hummingbird.analysis import (
     analyze_leaf_distribution,
-    flatten_ensemble,
     cast_parameters,
+    flatten_ensemble,
 )
 
 
 def test_analyze_tree_depth_full():
+    """Tests the analyze tree depth full functionality."""
     abstractions = TreeAbstractions()
     # root
     abstractions.add_node(1, 0.5, 1, 2, 0.0)
@@ -29,6 +33,7 @@ def test_analyze_tree_depth_full():
 
 
 def test_analyze_leaf_distribution():
+    """Tests the analyze leaf distribution functionality."""
     abstractions = TreeAbstractions()
     abstractions.add_node(1, 0.5, 1, 2, 0.0)
     abstractions.add_node(-1, 0.0, -1, -1, 2.5)
@@ -38,6 +43,7 @@ def test_analyze_leaf_distribution():
 
 
 def test_flatten_ensemble():
+    """Tests the flatten ensemble functionality."""
     t1 = TreeAbstractions()
     t1.add_node(1, 0.5, -1, -1, 1.0)
     t2 = TreeAbstractions()
@@ -49,6 +55,7 @@ def test_flatten_ensemble():
 
 
 def test_cast_parameters():
+    """Tests the cast parameters functionality."""
     t1 = TreeAbstractions()
     t1.add_node(1, 0.5, 1, 2, 1.0)
     # no float64 needed in numpy really, just testing the cast logic.
@@ -59,6 +66,7 @@ def test_cast_parameters():
 
 
 def test_analyze_tree_depth_no_leaves():
+    """Tests the analyze tree depth no leaves functionality."""
     abstractions = TreeAbstractions()
     abstractions.add_node(1, 0.5, 1, 2, 0.0)
     abstractions.add_node(-1, 0.0, -1, -1, 1.0)
@@ -87,6 +95,7 @@ def test_analyze_tree_depth_no_leaves():
 
 
 def test_analyze_tree_depth_no_depths():
+    """Tests the analyze tree depth no depths functionality."""
     # Make a tree that never hits the leaf condition but doesn't crash
     # (actually we just need the root to not append and not call children if we pass -1 but we manually bypass)
     # Wait, if left == -1 and right == -1 it IS a leaf.
@@ -117,6 +126,7 @@ def test_analyze_tree_depth_no_depths():
 
 
 def test_analyze_tree_depth_no_depths_real():
+    """Tests the analyze tree depth no depths real functionality."""
     t = TreeAbstractions()
     t.add_node(1, 0.5, 0, 0, 0.0)  # root
     # Wait, if we just make left_children=[-1] but features is not empty.
@@ -126,7 +136,10 @@ def test_analyze_tree_depth_no_depths_real():
 
     # Let's mock the list with a custom list that ignores __getitem__ if it's -2
     class MyList(list):
+        """Represents the MyList class and its associated logic."""
+
         def __getitem__(self, item):
+            """Tests the getitem   functionality."""
             if item == 0:
                 return -2
             if item == -2:
@@ -143,7 +156,10 @@ def test_analyze_tree_depth_no_depths_real():
     # But `if not depths` only happens if trace completes without appending to depths.
 
     class BadList(list):
+        """Represents the BadList class and its associated logic."""
+
         def __getitem__(self, item):
+            """Tests the getitem   functionality."""
             if item == 0:
                 return -2
             if item == -2:
@@ -160,6 +176,7 @@ def test_analyze_tree_depth_no_depths_real():
 
 
 def test_analyze_tree_depth_no_leaves_hack():
+    """Tests the analyze tree depth no leaves hack functionality."""
     t = TreeAbstractions()
     t.features = [1, 2]
     # We make left_children point to 1 (which exists) but 1 has no children so it never appends if left_children[1] != -1?
@@ -177,6 +194,7 @@ def test_analyze_tree_depth_no_leaves_hack():
 
 
 def test_analyze_tree_depth_hack():
+    """Tests the analyze tree depth hack functionality."""
     # If trace(0, 1) doesn't append to depths.
     # The only way is if it raises an Exception and we catch it? No, there is no try-catch.
     # The only way a node doesn't append is if it's NOT a leaf AND it has NO valid children.
@@ -198,7 +216,10 @@ def test_analyze_tree_depth_hack():
     t.features = [1]
 
     class FakeList(list):
+        """Represents the FakeList class and its associated logic."""
+
         def __getitem__(self, i):
+            """Tests the getitem   functionality."""
             if i == 0:
                 return -1  # left
             if i == 1:
@@ -206,7 +227,10 @@ def test_analyze_tree_depth_hack():
             return super().__getitem__(i)
 
     class FakeListR(list):
+        """Represents the FakeListR class and its associated logic."""
+
         def __getitem__(self, i):
+            """Tests the getitem   functionality."""
             if i == 0:
                 return 1  # right
             if i == 1:
@@ -225,19 +249,24 @@ def test_analyze_tree_depth_hack():
 
 
 def test_analyze_tree_depth_no_depths_mock(monkeypatch):
+    """Tests the analyze tree depth no depths mock functionality."""
     import onnx9000.optimizer.hummingbird.analysis
 
     class FakeTree:
+        """Represents the FakeTree class and its associated logic."""
+
         features = [1]
 
         @property
         def left_children(self):
+            """Tests the left children functionality."""
             return [-1]
 
         @property
         def right_children(self):
             # 0: -2
             # -2 is the end, so index -2 is the same as index 0 if len=1? No, out of bounds.
+            """Tests the right children functionality."""
             return [-1]
 
     # The only way to not append is if the `trace` function never appends.
@@ -288,10 +317,14 @@ def test_analyze_tree_depth_no_depths_mock(monkeypatch):
     # So it will just return silently!
 
     class SneakyInt:
+        """Represents the SneakyInt class and its associated logic."""
+
         def __eq__(self, other):
+            """Tests the eq   functionality."""
             return False
 
         def __ne__(self, other):
+            """Tests the ne   functionality."""
             return False
 
     t = TreeAbstractions()

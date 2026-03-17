@@ -1,8 +1,11 @@
+"""Tests the frontend builder module functionality."""
+
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing, get_active_builder
 from onnx9000.converters.frontend.tensor import Node
 
 
 def test_graph_builder() -> None:
+    """Tests the graph builder functionality."""
     gb = GraphBuilder("my_graph")
     assert gb.name == "my_graph"
     assert gb.nodes == []
@@ -15,6 +18,7 @@ def test_graph_builder() -> None:
 
 
 def test_tracing_context() -> None:
+    """Tests the tracing context functionality."""
     assert get_active_builder() is None
     with Tracing() as gb1:
         assert get_active_builder() is gb1

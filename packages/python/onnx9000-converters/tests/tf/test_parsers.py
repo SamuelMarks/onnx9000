@@ -1,3 +1,5 @@
+"""Tests the parsers module functionality."""
+
 import logging
 
 from onnx9000.converters.tf.parsers import (
@@ -19,11 +21,13 @@ from onnx9000.converters.tf.parsers import (
 
 
 def test_mappings() -> None:
+    """Tests the mappings functionality."""
     assert TF_TO_ONNX_VERSION_MAPPING["1.15.0"] == 11
     assert TF_DTYPE_TO_ONNX[1] == 1
 
 
 def test_tfgraph_topological_sort() -> None:
+    """Tests the tfgraph topological sort functionality."""
     n1 = TFNode("n1", "Placeholder")
     n2 = TFNode("n2", "Relu", inputs=["n1:0"])
     n3 = TFNode("n3", "MatMul", inputs=["n2:0", "n1:0"])
@@ -35,12 +39,14 @@ def test_tfgraph_topological_sort() -> None:
 
 
 def test_tfgraph_resolve_duplicate_names() -> None:
+    """Tests the tfgraph resolve duplicate names functionality."""
     graph = TFGraph([TFNode("n1", "Placeholder"), TFNode("n1", "Relu"), TFNode("n1", "MatMul")])
     graph.resolve_duplicate_names()
     assert [n.name for n in graph.nodes] == ["n1", "n1_1", "n1_2"]
 
 
 def test_tfgraph_extract_inputs_outputs() -> None:
+    """Tests the tfgraph extract inputs outputs functionality."""
     n1 = TFNode("in1", "Placeholder")
     n2 = TFNode("mid", "Relu", inputs=["in1:0"])
     n3 = TFNode("out", "MatMul", inputs=["mid:0"])
@@ -52,6 +58,7 @@ def test_tfgraph_extract_inputs_outputs() -> None:
 
 
 def test_tfgraph_extract_subgraph() -> None:
+    """Tests the tfgraph extract subgraph functionality."""
     n1 = TFNode("n1", "Placeholder")
     n2 = TFNode("n2", "Relu", inputs=["n1:0"])
     n3 = TFNode("n3", "MatMul", inputs=["n2:0"])
@@ -62,6 +69,7 @@ def test_tfgraph_extract_subgraph() -> None:
 
 
 def test_protobuf_parser_varint() -> None:
+    """Tests the protobuf parser varint functionality."""
     parser = ProtobufParser(b"\x08")
     assert parser.read_varint() == 8
     parser = ProtobufParser(b"\x96\x01")
@@ -69,6 +77,7 @@ def test_protobuf_parser_varint() -> None:
 
 
 def test_protobuf_parser_bytes_string() -> None:
+    """Tests the protobuf parser bytes string functionality."""
     parser = ProtobufParser(b"\x04test")
     assert parser.read_bytes() == b"test"
     parser = ProtobufParser(b"\x04test")
@@ -76,6 +85,7 @@ def test_protobuf_parser_bytes_string() -> None:
 
 
 def test_protobuf_parser_node_def() -> None:
+    """Tests the protobuf parser node def functionality."""
     data = b'\n\x02n1\x12\x03op1\x1a\x03in1"\x02ab'
     parser = ProtobufParser(data)
     node = parser.parse_node_def(len(data))
@@ -85,6 +95,7 @@ def test_protobuf_parser_node_def() -> None:
 
 
 def test_protobuf_parser_graph_def() -> None:
+    """Tests the protobuf parser graph def functionality."""
     node_data = b"\n\x02n1\x12\x03op1\x1a\x03in1"
     data = b"\n\x0c" + node_data + b'"\x02ab'
     parser = ProtobufParser(data)
@@ -95,6 +106,7 @@ def test_protobuf_parser_graph_def() -> None:
 
 
 def test_protobuf_parser_skip_fields() -> None:
+    """Tests the protobuf parser skip fields functionality."""
     data = b"\x00\x08"
     data += b"\t\x01\x02\x03\x04\x05\x06\x07\x08"
     data += b"\x12\x02ab"
@@ -112,11 +124,13 @@ def test_protobuf_parser_skip_fields() -> None:
 
 
 def test_protobuf_incomplete_varint() -> None:
+    """Tests the protobuf incomplete varint functionality."""
     parser = ProtobufParser(b"\x80")
     assert parser.read_varint() == 0
 
 
 def test_protobuf_parser_node_def_unknown_field() -> None:
+    """Tests the protobuf parser node def unknown field functionality."""
     data = b"*\x03unk"
     parser = ProtobufParser(data)
     node = parser.parse_node_def(len(data))
@@ -125,6 +139,7 @@ def test_protobuf_parser_node_def_unknown_field() -> None:
 
 
 def test_protobuf_parser_graph_def_unknown_field() -> None:
+    """Tests the protobuf parser graph def unknown field functionality."""
     data = b"*\x03unk"
     parser = ProtobufParser(data)
     graph = parser.parse_graph_def()
@@ -132,6 +147,7 @@ def test_protobuf_parser_graph_def_unknown_field() -> None:
 
 
 def test_parse_functions() -> None:
+    """Tests the parse functions functionality."""
     assert len(parse_graphdef(b"").nodes) == 0
     assert len(parse_saved_model(b"").nodes) == 0
     assert extract_variables("v") == {"v": b"0000"}
@@ -145,6 +161,7 @@ def test_parse_functions() -> None:
 
 
 def test_log_unsupported_node(caplog) -> None:
+    """Tests the log unsupported node functionality."""
     node = TFNode("n", "op")
     with caplog.at_level(logging.WARNING):
         log_unsupported_node(node)

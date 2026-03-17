@@ -1,3 +1,5 @@
+"""Tests the opt cov extras module functionality."""
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -5,6 +7,7 @@ from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_constant_folding_extras() -> None:
+    """Tests the constant folding extras functionality."""
     g = Graph("test")
     t = Tensor(
         "in0",
@@ -44,6 +47,7 @@ def test_constant_folding_extras() -> None:
 
 
 def test_dce_transpose_fused() -> None:
+    """Tests the dce transpose fused functionality."""
     g = Graph("test")
     g.inputs = ["in0"]
     g.add_node(Node("Transpose", ["in0"], ["mid"], {"perm": [1, 0, 2]}, "n1"))

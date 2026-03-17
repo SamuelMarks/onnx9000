@@ -1,9 +1,12 @@
+"""Tests the builder module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.core.ir import Node
 
 
 def test_builder_get_unique_name() -> None:
+    """Tests the builder get unique name functionality."""
     builder = TFToONNXGraphBuilder()
     assert builder.get_unique_name("node") == "node"
     assert builder.get_unique_name("node") == "node_1"
@@ -11,6 +14,7 @@ def test_builder_get_unique_name() -> None:
 
 
 def test_builder_add_constant() -> None:
+    """Tests the builder add constant functionality."""
     builder = TFToONNXGraphBuilder()
     name = builder.add_constant("const_1", 42, 1, (1,))
     assert name == "const_1"
@@ -19,6 +23,7 @@ def test_builder_add_constant() -> None:
 
 
 def test_builder_infer_shape() -> None:
+    """Tests the builder infer shape functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("mat1", "MatMul")
     shape = builder.infer_shape(node, [(2, 3), (3, 4)])
@@ -30,12 +35,14 @@ def test_builder_infer_shape() -> None:
 
 
 def test_builder_infer_dtype() -> None:
+    """Tests the builder infer dtype functionality."""
     builder = TFToONNXGraphBuilder()
     assert builder.infer_dtype(TFNode("n", "Add"), [3, 3]) == 3
     assert builder.infer_dtype(TFNode("n", "Add"), []) == 1
 
 
 def test_builder_convert_nhwc_to_nchw() -> None:
+    """Tests the builder convert nhwc to nchw functionality."""
     builder = TFToONNXGraphBuilder()
     out = builder.convert_nhwc_to_nchw("input_tensor")
     assert out.startswith("transpose_nchw")
@@ -45,12 +52,14 @@ def test_builder_convert_nhwc_to_nchw() -> None:
 
 
 def test_builder_calc_dynamic_padding() -> None:
+    """Tests the builder calc dynamic padding functionality."""
     builder = TFToONNXGraphBuilder()
     assert builder.calc_dynamic_padding("VALID", (1, 5, 5, 1), (3, 3), [1, 1]) == [0, 0, 0, 0]
     assert builder.calc_dynamic_padding("SAME", (1, 5, 5, 1), (3, 3), [1, 1]) == [1, 1, 1, 1]
 
 
 def test_builder_extract_attr() -> None:
+    """Tests the builder extract attr functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "op", attr={"val": 10})
     assert builder.extract_attr(node, "val") == 10
@@ -58,12 +67,14 @@ def test_builder_extract_attr() -> None:
 
 
 def test_builder_resolve_broadcasting() -> None:
+    """Tests the builder resolve broadcasting functionality."""
     builder = TFToONNXGraphBuilder()
     assert builder.resolve_broadcasting((2, 3), (3,)) == (2, 3)
     assert builder.resolve_broadcasting((3,), (2, 3)) == (2, 3)
 
 
 def test_builder_make_node() -> None:
+    """Tests the builder make node functionality."""
     builder = TFToONNXGraphBuilder()
     outs = builder.make_node("Relu", ["in_1"], {"attr1": 1}, "relu_node")
     assert len(outs) == 1
@@ -72,12 +83,14 @@ def test_builder_make_node() -> None:
 
 
 def test_builder_make_node_optional_inputs() -> None:
+    """Tests the builder make node optional inputs functionality."""
     builder = TFToONNXGraphBuilder()
     builder.make_node_optional_inputs("Concat", ["in_1", None, "in_2"], {}, "concat_node")
     assert builder.graph.nodes[-1].inputs == ["in_1", "", "in_2"]
 
 
 def test_builder_replace_node() -> None:
+    """Tests the builder replace node functionality."""
     builder = TFToONNXGraphBuilder()
     outs = builder.make_node("Relu", ["in_1"], {}, "relu_node")
     old_node_name = builder.graph.nodes[0].name
@@ -90,6 +103,7 @@ def test_builder_replace_node() -> None:
 
 
 def test_builder_rewire_edge() -> None:
+    """Tests the builder rewire edge functionality."""
     builder = TFToONNXGraphBuilder()
     outs1 = builder.make_node("Relu", ["in_1"], {}, "relu_1")
     builder.make_node("Relu", [outs1[0]], {}, "relu_2")
@@ -98,11 +112,13 @@ def test_builder_rewire_edge() -> None:
 
 
 def test_builder_extract_const_value() -> None:
+    """Tests the builder extract const value functionality."""
     builder = TFToONNXGraphBuilder()
     node = TFNode("n", "Const", attr={"value": 99})
     assert builder.extract_const_value(node) == 99
 
 
 def test_builder_resolve_variable() -> None:
+    """Tests the builder resolve variable functionality."""
     builder = TFToONNXGraphBuilder()
     assert builder.resolve_variable("var_x") is None

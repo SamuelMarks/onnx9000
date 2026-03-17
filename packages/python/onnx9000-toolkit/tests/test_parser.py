@@ -1,3 +1,5 @@
+"""Tests the parser module functionality."""
+
 from typing import NoReturn
 
 import pytest
@@ -7,9 +9,11 @@ GLOBAL_VAR = 3.14
 
 
 def test_script_decorator_basic() -> None:
+    """Tests the script decorator basic functionality."""
 
     @script
     def my_model(x, y):
+        """Tests the my model functionality."""
         z = op.Add(x, y)
         w = op.Relu(z)
         return w
@@ -24,9 +28,11 @@ def test_script_decorator_basic() -> None:
 
 
 def test_script_decorator_binop() -> None:
+    """Tests the script decorator binop functionality."""
 
     @script
     def my_model(x, y):
+        """Tests the my model functionality."""
         a = x + y
         b = a - y
         c = b * x
@@ -42,10 +48,12 @@ def test_script_decorator_binop() -> None:
 
 
 def test_script_decorator_closure() -> None:
+    """Tests the script decorator closure functionality."""
     local_val = 42
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         a = op.Add(x, local_val)
         b = op.Mul(a, GLOBAL_VAR)
         return b
@@ -57,9 +65,11 @@ def test_script_decorator_closure() -> None:
 
 
 def test_script_decorator_multi_assign() -> None:
+    """Tests the script decorator multi assign functionality."""
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         (val, idx) = op.TopK(x, 5)
         return (val, idx)
 
@@ -69,9 +79,11 @@ def test_script_decorator_multi_assign() -> None:
 
 
 def test_script_decorator_if() -> None:
+    """Tests the script decorator if functionality."""
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         y = x
         y = x if 1 > 0 else op.Neg(x)
         return y
@@ -86,9 +98,11 @@ def test_script_decorator_if() -> None:
 
 
 def test_script_decorator_for() -> None:
+    """Tests the script decorator for functionality."""
 
     @script
     def my_model(x, max_trip):
+        """Tests the my model functionality."""
         res = x
         for _i in max_trip:
             res = res + x
@@ -100,13 +114,16 @@ def test_script_decorator_for() -> None:
 
 
 def test_script_decorator_inlining() -> None:
+    """Tests the script decorator inlining functionality."""
 
     @script
     def inner_model(x):
+        """Tests the inner model functionality."""
         return op.Relu(x)
 
     @script
     def outer_model(x):
+        """Tests the outer model functionality."""
         y = op.Add(x, 1)
         z = inner_model(y)
         return z
@@ -118,9 +135,11 @@ def test_script_decorator_inlining() -> None:
 
 
 def test_script_decorator_parse_error() -> None:
+    """Tests the script decorator parse error functionality."""
 
     @script
     def my_model(x) -> NoReturn:
+        """Tests the my model functionality."""
         raise RuntimeError("Oops")
 
     with pytest.raises(ValueError, match="Parse error at line"):
@@ -128,6 +147,7 @@ def test_script_decorator_parse_error() -> None:
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         res = x
         while res < 10:
             res = res + x
@@ -139,9 +159,11 @@ def test_script_decorator_parse_error() -> None:
 
 
 def test_script_decorator_listcomp() -> None:
+    """Tests the script decorator listcomp functionality."""
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         res = list(x)
         return res
 
@@ -150,9 +172,11 @@ def test_script_decorator_listcomp() -> None:
 
 
 def test_script_decorator_annotation_and_empty_return() -> None:
+    """Tests the script decorator annotation and empty return functionality."""
 
     @script
     def my_model(x: "Float[10, 20]", y) -> None:
+        """Tests the my model functionality."""
         op.Add(x, y)
         return
 
@@ -162,9 +186,11 @@ def test_script_decorator_annotation_and_empty_return() -> None:
 
 
 def test_script_decorator_unsupported() -> None:
+    """Tests the script decorator unsupported functionality."""
 
     @script
     def my_model(x):
+        """Tests the my model functionality."""
         print(x)
         return x
 
@@ -173,9 +199,11 @@ def test_script_decorator_unsupported() -> None:
 
 
 def test_script_decorator_unsupported_binop() -> None:
+    """Tests the script decorator unsupported binop functionality."""
 
     @script
     def my_model(x, y):
+        """Tests the my model functionality."""
         z = x % y
         return z
 
@@ -184,6 +212,7 @@ def test_script_decorator_unsupported_binop() -> None:
 
 
 def test_script_parser_docstring() -> None:
+    """Tests the script parser docstring functionality."""
     from onnx9000.toolkit.script import script
 
     @script
@@ -193,6 +222,7 @@ def test_script_parser_docstring() -> None:
 
 
 def test_script_parser_docstring2() -> None:
+    """Tests the script parser docstring2 functionality."""
     import ast
 
     from onnx9000.toolkit.script.parser import ScriptParser
@@ -203,10 +233,12 @@ def test_script_parser_docstring2() -> None:
 
 
 def test_parser_missing_lines() -> None:
+    """Tests the parser missing lines functionality."""
     from onnx9000.toolkit.script.parser import script
 
     @script
     def model_comp(x):
+        """Tests the model comp functionality."""
         return x != 5
 
     builder = model_comp.to_builder()
@@ -220,6 +252,7 @@ def test_parser_missing_lines() -> None:
 
         @script
         def model_list(x):
+            """Tests the model list functionality."""
             return [i for i in x]
 
         model_list.to_builder()

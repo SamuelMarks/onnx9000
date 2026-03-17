@@ -1,9 +1,12 @@
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, DynamicDim, Attribute
+"""Tests the profiler module functionality."""
+
 from onnx9000.core.dtypes import DType
-from onnx9000.core.profiler import profile, ProfilerResult
+from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor
+from onnx9000.core.profiler import ProfilerResult, profile
 
 
 def test_profiler_macs_flops_basic():
+    """Tests the profiler macs flops basic functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(20, 30), dtype=DType.FLOAT32))
@@ -22,6 +25,7 @@ def test_profiler_macs_flops_basic():
 
 
 def test_profiler_conv():
+    """Tests the profiler conv functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(1, 3, 224, 224), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(64, 3, 7, 7), dtype=DType.FLOAT32))
@@ -49,6 +53,7 @@ def test_profiler_conv():
 
 
 def test_profiler_symbolic():
+    """Tests the profiler symbolic functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(DynamicDim("B"), 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(20, 30), dtype=DType.FLOAT32))
@@ -71,6 +76,7 @@ def test_profiler_symbolic():
 
 
 def test_profiler_memory_params():
+    """Tests the profiler memory params functionality."""
     g = Graph("test")
     w = Constant("W", shape=(10, 10), dtype=DType.FLOAT32, values=b"\0" * 400)
     g.add_tensor(w)
@@ -80,6 +86,7 @@ def test_profiler_memory_params():
 
 
 def test_profiler_bandwidth_and_precisions():
+    """Tests the profiler bandwidth and precisions functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT16))
     g.add_tensor(Tensor("W", shape=(20, 30), dtype=DType.FLOAT16))
@@ -114,6 +121,7 @@ def test_profiler_bandwidth_and_precisions():
 
 
 def test_profiler_latency_and_suggestions():
+    """Tests the profiler latency and suggestions functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT64, is_initializer=True))
     g.add_tensor(Tensor("W", shape=(20, 30), dtype=DType.INT64, is_initializer=True))

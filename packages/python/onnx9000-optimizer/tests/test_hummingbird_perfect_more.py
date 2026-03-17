@@ -1,3 +1,5 @@
+"""Tests the hummingbird perfect more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
@@ -5,6 +7,7 @@ from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 
 
 def test_perfect_tree_converter():
+    """Tests the perfect tree converter functionality."""
     g = Graph("g")
     t = TreeAbstractions()
     t.add_node(1, 0.5, 1, 2, 0.0)
@@ -24,6 +27,7 @@ from onnx9000.optimizer.hummingbird.perfect_tree import (
 
 
 def test_perfect_tree_stubs_more():
+    """Tests the perfect tree stubs more functionality."""
     g = Graph("g")
     handle_perfect_multi_output(g)
     map_categorical_perfect(g)

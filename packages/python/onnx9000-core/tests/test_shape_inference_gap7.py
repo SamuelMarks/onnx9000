@@ -1,10 +1,13 @@
+"""Tests the shape inference gap7 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_missing_inputs_all_ops():
+    """Tests the missing inputs all ops functionality."""
     g = Graph("g")
 
     # Reshape
@@ -35,6 +38,7 @@ def test_missing_inputs_all_ops():
 
 
 def test_tile_repeats_no_values():
+    """Tests the tile repeats no values functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -47,6 +51,7 @@ def test_tile_repeats_no_values():
 
 
 def test_conv_no_spatial_dims():
+    """Tests the conv no spatial dims functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3), DType.FLOAT32))  # len(in_shape) = 2
     g.inputs.append("x")
@@ -58,6 +63,7 @@ def test_conv_no_spatial_dims():
 
 
 def test_split_no_splits():
+    """Tests the split no splits functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -68,6 +74,7 @@ def test_split_no_splits():
 
 
 def test_loop_m_no_values():
+    """Tests the loop m no values functionality."""
     g = Graph("g")
     body_g = Graph("body")
     body_g.add_tensor(Tensor("b_in", (10, 20), DType.FLOAT32))

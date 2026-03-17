@@ -1,3 +1,5 @@
+"""Tests the losses module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.training.autograd.losses import (
     add_bce_with_logits_loss,
@@ -12,6 +14,7 @@ from onnx9000.toolkit.training.autograd.losses import (
 
 
 def test_losses_coverage() -> None:
+    """Tests the losses coverage functionality."""
     g = Graph("g")
     add_mse_loss(g, "p", "t", "l1", reduction="mean")
     add_mse_loss(g, "p", "t", "l2", reduction="sum")

@@ -1,3 +1,5 @@
+"""Tests the hummingbird lightgbm parser module functionality."""
+
 from unittest.mock import MagicMock, Mock
 
 from onnx9000.core.ir import Graph
@@ -9,6 +11,7 @@ from onnx9000.optimizer.hummingbird.lightgbm_parser import (
 
 
 def test_parse_lightgbm_dump() -> None:
+    """Tests the parse lightgbm dump functionality."""
     dump = {
         "tree_info": [
             {
@@ -52,6 +55,7 @@ def test_parse_lightgbm_dump() -> None:
 
 
 def test_parse_lgbm_classifier() -> None:
+    """Tests the parse lgbm classifier functionality."""
     mock_booster = MagicMock()
     mock_booster.dump_model.return_value = {"tree_info": []}
 
@@ -64,6 +68,7 @@ def test_parse_lgbm_classifier() -> None:
 
 
 def test_handle_lgbm_objectives() -> None:
+    """Tests the handle lgbm objectives functionality."""
     g = Graph(name="test")
     handle_lgbm_objectives(g, "multiclass")
     assert g.nodes[-1].op_type == "Softmax"

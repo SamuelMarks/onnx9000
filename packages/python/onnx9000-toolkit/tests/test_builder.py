@@ -1,3 +1,5 @@
+"""Tests the builder module functionality."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -7,6 +9,7 @@ from onnx9000.toolkit.script.var import Var
 
 
 def test_graph_builder_basic() -> None:
+    """Tests the graph builder basic functionality."""
     builder = GraphBuilder(name="TestGraph")
     assert builder.name == "TestGraph"
     builder.add_input("x", DType.FLOAT32, (1, 3, 224, 224))
@@ -25,6 +28,7 @@ def test_graph_builder_basic() -> None:
 
 
 def test_graph_builder_initializer() -> None:
+    """Tests the graph builder initializer functionality."""
     builder = GraphBuilder()
     arr = np.array([1, 2, 3], dtype=np.float32)
     builder.add_initializer("init1", arr)
@@ -35,6 +39,7 @@ def test_graph_builder_initializer() -> None:
 
 
 def test_graph_builder_metadata() -> None:
+    """Tests the graph builder metadata functionality."""
     builder = GraphBuilder()
     builder.set_metadata(doc_string="doc", domain="my.domain", version=2)
     model = builder.to_onnx()
@@ -44,6 +49,7 @@ def test_graph_builder_metadata() -> None:
 
 
 def test_graph_builder_to_onnx() -> None:
+    """Tests the graph builder to onnx functionality."""
     builder = GraphBuilder()
     builder.add_input("x", DType.FLOAT32, (1, 10))
     node = Node(
@@ -58,6 +64,7 @@ def test_graph_builder_to_onnx() -> None:
 
 
 def test_graph_builder_from_onnx() -> None:
+    """Tests the graph builder from onnx functionality."""
     builder = GraphBuilder()
     builder.add_input("x", DType.FLOAT32, (1, 10))
     node = Node(
@@ -77,6 +84,7 @@ def test_graph_builder_from_onnx() -> None:
 
 
 def test_graph_builder_validate() -> None:
+    """Tests the graph builder validate functionality."""
     builder = GraphBuilder()
     node1 = Node(op_type="Relu", inputs=["a"], outputs=["b"], attributes={})
     node2 = Node(op_type="Relu", inputs=["b"], outputs=["a"], attributes={})
@@ -87,6 +95,7 @@ def test_graph_builder_validate() -> None:
 
 
 def test_graph_builder_edit_apis() -> None:
+    """Tests the graph builder edit apis functionality."""
     builder = GraphBuilder()
     node1 = Node(op_type="Relu", inputs=["a"], outputs=["b"], attributes={})
     node2 = Node(op_type="Add", inputs=["b", "c"], outputs=["d"], attributes={})
@@ -108,6 +117,7 @@ def test_graph_builder_edit_apis() -> None:
 
 
 def test_graph_builder_merge_and_rename() -> None:
+    """Tests the graph builder merge and rename functionality."""
     b1 = GraphBuilder("G1")
     b1.add_input("x", DType.FLOAT32, (10,))
     b1.add_node(Node("Relu", ["x"], ["y"], {}))
@@ -122,6 +132,7 @@ def test_graph_builder_merge_and_rename() -> None:
 
 
 def test_graph_builder_all_attributes() -> None:
+    """Tests the graph builder all attributes functionality."""
     builder = GraphBuilder()
     attrs = {
         "a_float": 1.5,
@@ -145,6 +156,7 @@ def test_graph_builder_all_attributes() -> None:
 
 
 def test_graph_builder_extract_subgraph() -> None:
+    """Tests the graph builder extract subgraph functionality."""
     builder = GraphBuilder()
     builder.add_input("a", DType.FLOAT32, (1,))
     builder.add_node(Node("Relu", ["a"], ["b"], {}))
@@ -157,6 +169,7 @@ def test_graph_builder_extract_subgraph() -> None:
 
 
 def test_graph_builder_control_flow() -> None:
+    """Tests the graph builder control flow functionality."""
     builder = GraphBuilder()
     a = builder.add_input("a", DType.FLOAT32, (1,))
     cond = builder.add_input("cond", DType.BOOL, (1,))

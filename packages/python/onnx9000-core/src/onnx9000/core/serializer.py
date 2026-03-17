@@ -40,6 +40,10 @@ def serialize_model(graph: Graph) -> onnx_pb2.ModelProto:
     model_proto.producer_name = "onnx9000"
     model_proto.producer_version = "1.0.0"
     model_proto.doc_string = graph.doc_string
+    for key, val in graph.metadata_props.items():
+        prop = model_proto.metadata_props.add()
+        prop.key = key
+        prop.value = val
     for domain, version in graph.opset_imports.items():
         opset = model_proto.opset_import.add()
         opset.domain = domain
@@ -55,6 +59,18 @@ def serialize_model(graph: Graph) -> onnx_pb2.ModelProto:
             vinfo_proto.type.tensor_type.shape.CopyFrom(_serialize_shape(t.shape))
         elif hasattr(vinfo, "name"):
             vinfo_proto = graph_proto.input.add()
+            vinfo_proto.name = vinfo.name
+            vinfo_proto.type.tensor_type.elem_type = vinfo.dtype.value
+            vinfo_proto.type.tensor_type.shape.CopyFrom(_serialize_shape(vinfo.shape))
+    for vinfo in graph.value_info:
+        if isinstance(vinfo, str) and vinfo in graph.tensors:
+            t = graph.tensors[vinfo]
+            vinfo_proto = graph_proto.value_info.add()
+            vinfo_proto.name = t.name
+            vinfo_proto.type.tensor_type.elem_type = t.dtype.value
+            vinfo_proto.type.tensor_type.shape.CopyFrom(_serialize_shape(t.shape))
+        elif hasattr(vinfo, "name"):
+            vinfo_proto = graph_proto.value_info.add()
             vinfo_proto.name = vinfo.name
             vinfo_proto.type.tensor_type.elem_type = vinfo.dtype.value
             vinfo_proto.type.tensor_type.shape.CopyFrom(_serialize_shape(vinfo.shape))

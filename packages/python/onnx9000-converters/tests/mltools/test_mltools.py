@@ -1,3 +1,5 @@
+"""Tests the mltools module functionality."""
+
 import json
 
 from onnx9000.converters.mltools.catboost import parse_catboost_dict, parse_catboost_json
@@ -10,6 +12,7 @@ from onnx9000.converters.mltools.xgboost import parse_xgboost_dict, parse_xgboos
 
 
 def test_catboost() -> None:
+    """Tests the catboost functionality."""
     data = {
         "model_info": {"loss_function": "RMSE"},
         "trees": [{"splits": [], "leaf_values": [1.0]}],
@@ -30,6 +33,7 @@ def test_catboost() -> None:
 
 
 def test_lightgbm() -> None:
+    """Tests the lightgbm functionality."""
     data = {
         "objective": "regression",
         "tree_info": [
@@ -56,6 +60,7 @@ def test_lightgbm() -> None:
 
 
 def test_xgboost() -> None:
+    """Tests the xgboost functionality."""
     data = {
         "learner": {
             "learner_model_param": {"num_class": "0"},
@@ -90,6 +95,7 @@ def test_xgboost() -> None:
 
 
 def test_others() -> None:
+    """Tests the others functionality."""
     assert parse_coreml_model(None) is not None
     assert parse_h2o(None) is not None
     assert parse_libsvm(None) is not None
@@ -97,6 +103,7 @@ def test_others() -> None:
 
 
 def test_xgboost_softprob() -> None:
+    """Tests the xgboost softprob functionality."""
     data = {
         "learner": {
             "learner_model_param": {"num_class": "0"},

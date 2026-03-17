@@ -1,9 +1,12 @@
+"""Tests the nn ops module functionality."""
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.nn_ops import NN_OPS_MAPPING
 from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def test_paddle_nn_ops_matmul() -> None:
+    """Tests the paddle nn ops matmul functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n",
@@ -21,6 +24,7 @@ def test_paddle_nn_ops_matmul() -> None:
 
 
 def test_paddle_nn_ops_linear() -> None:
+    """Tests the paddle nn ops linear functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "fc", inputs={"X": ["a"], "Y": ["w"], "Bias": ["b"]})
     NN_OPS_MAPPING["fc"](builder, n)
@@ -32,6 +36,7 @@ def test_paddle_nn_ops_linear() -> None:
 
 
 def test_paddle_nn_ops_conv() -> None:
+    """Tests the paddle nn ops conv functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n", "conv2d", inputs={"Input": ["a"], "Filter": ["w"], "Bias": ["b"]}, attrs={"groups": 2}
@@ -42,6 +47,7 @@ def test_paddle_nn_ops_conv() -> None:
 
 
 def test_paddle_nn_ops_pool() -> None:
+    """Tests the paddle nn ops pool functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "pool2d", inputs={"X": ["a"], "Y": ["b"]}, attrs={"global_pooling": True})
     NN_OPS_MAPPING["pool2d"](builder, n)
@@ -57,6 +63,7 @@ def test_paddle_nn_ops_pool() -> None:
 
 
 def test_paddle_nn_ops_adaptive_pool() -> None:
+    """Tests the paddle nn ops adaptive pool functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n", "adaptive_pool2d", inputs={"X": ["a"], "Y": ["b"]}, attrs={"pool_size": [1, 1]}
@@ -90,6 +97,7 @@ def test_paddle_nn_ops_adaptive_pool() -> None:
 
 
 def test_paddle_nn_ops_norms() -> None:
+    """Tests the paddle nn ops norms functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n",
@@ -110,6 +118,7 @@ def test_paddle_nn_ops_norms() -> None:
 
 
 def test_paddle_nn_ops_activations() -> None:
+    """Tests the paddle nn ops activations functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "relu6", inputs={"X": ["a"], "Y": ["b"]})
     NN_OPS_MAPPING["relu6"](builder, n)
@@ -145,6 +154,7 @@ def test_paddle_nn_ops_activations() -> None:
 
 
 def test_paddle_nn_ops_misc() -> None:
+    """Tests the paddle nn ops misc functionality."""
     builder = PaddleToONNXGraphBuilder()
     for op in [
         "hard_swish",
@@ -162,6 +172,7 @@ def test_paddle_nn_ops_misc() -> None:
 
 
 def test_paddle_nn_ops_pad_rois() -> None:
+    """Tests the paddle nn ops pad rois functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n", "pad", inputs={"X": ["a"], "Y": ["b"]}, attrs={"paddings": [1, 1], "pad_value": 0.0}
@@ -180,6 +191,7 @@ def test_paddle_nn_ops_pad_rois() -> None:
 
 
 def test_paddle_nn_ops_instance_norm_with_scale_bias() -> None:
+    """Tests the paddle nn ops instance norm with scale bias functionality."""
     from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
     from onnx9000.converters.paddle.nn_ops import _map_instance_norm
     from onnx9000.converters.paddle.parsers import PaddleNode
@@ -192,6 +204,7 @@ def test_paddle_nn_ops_instance_norm_with_scale_bias() -> None:
 
 
 def test_nn_ops_custom() -> None:
+    """Tests the nn ops custom functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "bce_loss", inputs={"X": ["a"], "Y": ["b"]})
     NN_OPS_MAPPING["bce_loss"](builder, n)

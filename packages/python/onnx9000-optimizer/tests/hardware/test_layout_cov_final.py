@@ -1,9 +1,12 @@
+"""Tests the layout cov final module functionality."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hardware.layout import LayoutOptimizer
 
 
 def test_chunk_large_tensors_inner_else() -> None:
+    """Tests the chunk large tensors inner else functionality."""
     g = Graph("test")
     t_large_axis0_1 = Tensor("large_1", (1, 1000), DType.FLOAT32)
     g.add_tensor(t_large_axis0_1)
@@ -12,6 +15,7 @@ def test_chunk_large_tensors_inner_else() -> None:
 
 
 def test_layout_nchw_to_nhwc_else() -> None:
+    """Tests the layout nchw to nhwc else functionality."""
     g = Graph("test")
     n = Node("Add", ["in1"], ["out1"], {}, "add1")
     g.add_node(n)
@@ -21,6 +25,7 @@ def test_layout_nchw_to_nhwc_else() -> None:
 
 
 def test_layout_nhwc_to_nchw_else() -> None:
+    """Tests the layout nhwc to nchw else functionality."""
     g = Graph("test")
     n = Node("Add", ["in1"], ["out1"], {}, "add1")
     g.add_node(n)

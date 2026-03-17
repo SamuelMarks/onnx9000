@@ -101,6 +101,7 @@ def test_visualize_real() -> None:
 
 
 def test_transpose_identity_fusion_cov() -> None:
+    """Tests the transpose identity fusion cov functionality."""
     from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.optimizer.simplifier.passes.fusion import fuse_consecutive_transpose
 

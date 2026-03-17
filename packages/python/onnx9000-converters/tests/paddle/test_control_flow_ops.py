@@ -1,9 +1,12 @@
+"""Tests the control flow ops module functionality."""
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def test_paddle_cf_ops() -> None:
+    """Tests the paddle cf ops functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "conditional_block", inputs={"Cond": ["c"]})
     CONTROL_FLOW_OPS_MAPPING["conditional_block"](builder, n)
@@ -28,6 +31,7 @@ def test_paddle_cf_ops() -> None:
 
 
 def test_control_flow_ops_custom() -> None:
+    """Tests the control flow ops custom functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "select_input", inputs={"X": ["a"]})
     CONTROL_FLOW_OPS_MAPPING["select_input"](builder, n)

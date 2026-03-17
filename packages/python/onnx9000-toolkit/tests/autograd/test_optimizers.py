@@ -1,3 +1,5 @@
+"""Tests the optimizers module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.training.autograd.optimizers import (
     add_adadelta_optimizer,
@@ -11,6 +13,7 @@ from onnx9000.toolkit.training.autograd.optimizers import (
 
 
 def test_optimizers_coverage() -> None:
+    """Tests the optimizers coverage functionality."""
     g = Graph("g")
     add_sgd_optimizer(g, "lr", ["w1"], weight_decay=0.1, momentum=0.9)
     add_adam_optimizer(g, "lr", ["w2"])
@@ -22,6 +25,7 @@ def test_optimizers_coverage() -> None:
 
 
 def test_gradient_clipping() -> None:
+    """Tests the gradient clipping functionality."""
     g = Graph("g")
     add_gradient_clipping(g, [], 1.0)
     names1 = ["grad_w1"]
@@ -35,6 +39,7 @@ def test_gradient_clipping() -> None:
 
 
 def test_optimizer_missing() -> None:
+    """Tests the optimizer missing functionality."""
     from onnx9000.toolkit.training.autograd.optimizers import add_gradient_accumulation
 
     g = Graph("g")

@@ -1,9 +1,12 @@
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, DynamicDim, Attribute
+"""Tests the profiler edge cases module functionality."""
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor
 from onnx9000.core.profiler import profile
 
 
 def test_profiler_resnet50_mock():
+    """Tests the profiler resnet50 mock functionality."""
     # A single bottleneck block: 1x1 conv -> 3x3 conv -> 1x1 conv
     g = Graph("resnet50")
     g.add_tensor(Tensor("X", shape=(1, 256, 56, 56), dtype=DType.FLOAT32))
@@ -50,6 +53,7 @@ def test_profiler_resnet50_mock():
 
 
 def test_profiler_bert_mock():
+    """Tests the profiler bert mock functionality."""
     g = Graph("bert")
     g.add_tensor(Tensor("X", shape=(DynamicDim("B"), DynamicDim("S"), 768), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("Y", shape=(DynamicDim("B"), DynamicDim("S"), 768), dtype=DType.FLOAT32))
@@ -60,6 +64,7 @@ def test_profiler_bert_mock():
 
 
 def test_profiler_mobilenet_depthwise():
+    """Tests the profiler mobilenet depthwise functionality."""
     g = Graph("mobilenet")
     g.add_tensor(Tensor("X", shape=(1, 32, 112, 112), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(32, 1, 3, 3), dtype=DType.FLOAT32, is_initializer=True))
@@ -88,6 +93,7 @@ def test_profiler_mobilenet_depthwise():
 
 
 def test_profiler_slice_dynamic():
+    """Tests the profiler slice dynamic functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(DynamicDim("B"), 20, 30), dtype=DType.FLOAT32))
     g.inputs.extend(["X"])

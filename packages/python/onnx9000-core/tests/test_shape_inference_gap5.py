@@ -1,11 +1,14 @@
+"""Tests the shape inference gap5 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_split():
+    """Tests the split functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -16,6 +19,7 @@ def test_split():
 
 
 def test_split_with_values():
+    """Tests the split with values functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -29,6 +33,7 @@ def test_split_with_values():
 
 
 def test_tile():
+    """Tests the tile functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -41,6 +46,7 @@ def test_tile():
 
 
 def test_expand():
+    """Tests the expand functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 1), DType.FLOAT32))
     g.inputs.append("x")
@@ -53,6 +59,7 @@ def test_expand():
 
 
 def test_expand_exception():
+    """Tests the expand exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")
@@ -65,6 +72,7 @@ def test_expand_exception():
 
 
 def test_pad():
+    """Tests the pad functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
     g.inputs.append("x")

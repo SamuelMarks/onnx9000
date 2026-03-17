@@ -1,16 +1,24 @@
+"""Provides dlpack module functionality."""
+
 import ctypes
 from typing import Any, Optional
 
 
 class DLDataType(ctypes.Structure):
+    """Represents the D L Data Type class."""
+
     _fields_ = [("code", ctypes.c_uint8), ("bits", ctypes.c_uint8), ("lanes", ctypes.c_uint16)]
 
 
 class DLDevice(ctypes.Structure):
+    """Represents the D L Device class."""
+
     _fields_ = [("device_type", ctypes.c_int32), ("device_id", ctypes.c_int32)]
 
 
 class DLTensor(ctypes.Structure):
+    """Represents the D L Tensor class."""
+
     _fields_ = [
         ("data", ctypes.c_void_p),
         ("device", DLDevice),
@@ -23,6 +31,8 @@ class DLTensor(ctypes.Structure):
 
 
 class DLManagedTensor(ctypes.Structure):
+    """Represents the D L Managed Tensor class."""
+
     pass
 
 

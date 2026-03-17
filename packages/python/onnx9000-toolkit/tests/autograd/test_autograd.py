@@ -1,3 +1,5 @@
+"""Tests the autograd module functionality."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Node, Tensor
 from onnx9000.toolkit.script.op import op
@@ -96,9 +98,11 @@ def test_autograd_batchnorm(tmp_path: Path) -> None:
 
 
 def test_autograd_matmul_coverage(tmp_path: Path) -> None:
+    """Tests the autograd matmul coverage functionality."""
 
     @script
     def matmul_model(x, w):
+        """Tests the matmul model functionality."""
         h = x @ w
         return h
 
@@ -117,8 +121,9 @@ def test_autograd_matmul_coverage(tmp_path: Path) -> None:
 
 
 def test_softmax_crossentropy_vjp() -> None:
-    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
+    """Tests the softmax crossentropy vjp functionality."""
     from onnx9000.core.ir import Node
+    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 
     rule = get_vjp_rule("SoftmaxCrossEntropyLoss")
     fwd_node = Node("SoftmaxCrossEntropyLoss", ["logits", "target"], ["loss"])
@@ -128,8 +133,9 @@ def test_softmax_crossentropy_vjp() -> None:
 
 
 def test_bce_with_logits_vjp() -> None:
-    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
+    """Tests the bce with logits vjp functionality."""
     from onnx9000.core.ir import Node
+    from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 
     rule = get_vjp_rule("BCEWithLogitsLoss")
     fwd_node = Node("BCEWithLogitsLoss", ["logits", "target"], ["loss"])

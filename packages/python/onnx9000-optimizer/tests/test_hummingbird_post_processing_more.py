@@ -1,9 +1,12 @@
+"""Tests the hummingbird post processing more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.post_processing import PostProcessor
 
 
 def test_post_processing_stubs():
+    """Tests the post processing stubs functionality."""
     g = Graph("g")
     c = PostProcessor(g, emit_zipmap=True)
     c.apply_argmax_classes("probs", classlabels_ints=[1, 2])

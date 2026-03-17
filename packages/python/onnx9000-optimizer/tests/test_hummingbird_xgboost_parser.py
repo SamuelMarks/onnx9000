@@ -1,3 +1,5 @@
+"""Tests the hummingbird xgboost parser module functionality."""
+
 from unittest.mock import MagicMock, Mock
 
 from onnx9000.core.ir import Graph
@@ -9,6 +11,7 @@ from onnx9000.optimizer.hummingbird.xgboost_catboost_parser import (
 
 
 def test_parse_xgboost_dump() -> None:
+    """Tests the parse xgboost dump functionality."""
     dump = [
         """{
             "nodeid": 0,
@@ -37,6 +40,7 @@ def test_parse_xgboost_dump() -> None:
 
 
 def test_parse_xgb_classifier() -> None:
+    """Tests the parse xgb classifier functionality."""
     mock_booster = MagicMock()
     mock_booster.get_dump.return_value = []
 
@@ -49,6 +53,7 @@ def test_parse_xgb_classifier() -> None:
 
 
 def test_handle_xgb_objectives() -> None:
+    """Tests the handle xgb objectives functionality."""
     g = Graph(name="test")
     handle_xgb_objectives(g, "binary:logistic")
     assert g.nodes[-1].op_type == "Sigmoid"

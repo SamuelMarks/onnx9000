@@ -740,6 +740,7 @@ class PatternMatcher:
 
 
 def _match_node(node: Node, pattern: PatternMatcher) -> bool:
+    """Executes the match node operation."""
     if pattern.op_type and pattern.op_type != "*" and (node.op_type != pattern.op_type):
         return False
     if pattern.condition and (not pattern.condition(node)):
@@ -794,6 +795,7 @@ def match_pattern(graph: Graph, pattern: PatternMatcher, recursive=True) -> list
     matches = []
 
     def _search(g: Graph) -> None:
+        """Executes the search operation."""
         for n in g.nodes:
             if _match_node(n, pattern):
                 matches.append(n)
@@ -929,6 +931,7 @@ def infer_dtypes(graph: Graph) -> Graph:
 
 
 def _fuse_sequential(graph: Graph, op1: str, op2: str, new_op: str) -> None:
+    """Executes the fuse sequential operation."""
     nodes_to_fuse = []
     for n in graph.nodes:
         if n.op_type == op1 and isinstance(n.outputs[0], Tensor):

@@ -27,6 +27,7 @@ def test_layernorm_no_bias() -> None:
 
 
 def test_get_vjp_rule_fallback() -> None:
+    """Tests the get vjp rule fallback functionality."""
     from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 
     rule = get_vjp_rule("UnknownOpTypeHere")

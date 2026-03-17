@@ -4,6 +4,7 @@ from onnx9000.optimizer.olive.fusion_passes_ops import FusionPassesOps
 
 
 def test_fusion_passes_ops() -> None:
+    """Tests the fusion passes ops functionality."""
     assert FusionPassesOps.implement_attentionfusion_standard_pytor() is True
     assert FusionPassesOps.implement_attentionfusion_with_mask_inje() is True
     assert FusionPassesOps.implement_attentionfusion_with_pastkey_p() is True

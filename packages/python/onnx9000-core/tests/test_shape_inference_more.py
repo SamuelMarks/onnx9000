@@ -1,9 +1,12 @@
-from onnx9000.core.ir import Graph, Node, Tensor, DynamicDim, Attribute
+"""Tests the shape inference more module functionality."""
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_infer_shapes_conv_transpose():
+    """Tests the infer shapes conv transpose functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(1, 64, 112, 112), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("W", shape=(64, 32, 3, 3), dtype=DType.FLOAT32))
@@ -25,6 +28,7 @@ def test_infer_shapes_conv_transpose():
 
 
 def test_infer_shapes_gather():
+    """Tests the infer shapes gather functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20, 30), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("indices", shape=(5, 5), dtype=DType.INT64))
@@ -41,6 +45,7 @@ def test_infer_shapes_gather():
 
 
 def test_infer_shapes_slice():
+    """Tests the infer shapes slice functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20, 30), dtype=DType.FLOAT32))
     starts_t = Tensor("starts", shape=(2,), dtype=DType.INT64)
@@ -61,6 +66,7 @@ def test_infer_shapes_slice():
 
 
 def test_infer_shapes_concat():
+    """Tests the infer shapes concat functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
     g.add_tensor(Tensor("B", shape=(10, 30), dtype=DType.FLOAT32))
@@ -74,6 +80,7 @@ def test_infer_shapes_concat():
 
 
 def test_infer_shapes_split():
+    """Tests the infer shapes split functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 50), dtype=DType.FLOAT32))
     g.inputs.extend(["X"])
@@ -93,6 +100,7 @@ def test_infer_shapes_split():
 
 
 def test_infer_shapes_tile():
+    """Tests the infer shapes tile functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
     repeats_t = Tensor("repeats", shape=(2,), dtype=DType.INT64)
@@ -106,6 +114,7 @@ def test_infer_shapes_tile():
 
 
 def test_infer_shapes_pad():
+    """Tests the infer shapes pad functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
     pads_t = Tensor("pads", shape=(4,), dtype=DType.INT64)
@@ -119,6 +128,7 @@ def test_infer_shapes_pad():
 
 
 def test_infer_shapes_topk():
+    """Tests the infer shapes topk functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
     k_t = Tensor("K", shape=(1,), dtype=DType.INT64)

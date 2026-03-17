@@ -1,3 +1,5 @@
+"""Provides webgpu wasm opts module functionality."""
+
 import logging
 
 from onnx9000.core.ir import Graph
@@ -9,6 +11,7 @@ class WebGPUWASMCompilerOpts:
     """WebGPU & WASM Execution Optimizations utility."""
 
     def __init__(self, max_buffer_size: int = 128 * 1024 * 1024) -> None:
+        """Initializes the instance."""
         self.max_buffer_size = max_buffer_size
         self.max_texture_dim = 8192
 

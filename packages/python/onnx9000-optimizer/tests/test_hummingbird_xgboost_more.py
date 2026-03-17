@@ -1,36 +1,48 @@
+"""Tests the hummingbird xgboost more module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.xgboost_catboost_parser import (
-    parse_xgb_classifier,
-    parse_xgb_regressor,
-    parse_xgb_ranker,
+    handle_catboost_categorical,
     handle_xgb_objectives,
     parse_catboost_classifier,
     parse_catboost_regressor,
-    handle_catboost_categorical,
+    parse_xgb_classifier,
+    parse_xgb_ranker,
+    parse_xgb_regressor,
 )
 
 
 class MockBooster:
+    """Represents the Mock Booster class."""
+
     def get_dump(self, dump_format="json"):
+        """Executes the get dump operation."""
         return [
             '{"nodeid": 0, "depth": 0, "split": "f0", "split_condition": 1.0, "yes": 1, "no": 2, "missing": 1, "children": [{"nodeid": 1, "leaf": 0.0}, {"nodeid": 2, "leaf": 1.0}]}'
         ]
 
 
 class MockEstimator:
+    """Represents the Mock Estimator class."""
+
     def __init__(self):
+        """Initializes the instance."""
         pass
 
     def get_booster(self):
+        """Executes the get booster operation."""
         return MockBooster()
 
 
 class MockEstimatorEmpty:
+    """Represents the Mock Estimator Empty class."""
+
     pass
 
 
 def test_xgboost_stubs():
+    """Tests the xgboost stubs functionality."""
     import onnx9000.optimizer.hummingbird.xgboost_catboost_parser
 
     res1 = parse_xgb_classifier(MockEstimator())

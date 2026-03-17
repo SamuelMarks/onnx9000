@@ -5,6 +5,7 @@ from onnx9000.optimizer.olive.pruning_ops import Pruner
 
 
 def test_pruner(tmp_path) -> None:
+    """Tests the pruner functionality."""
     g = Graph("test")
     g.metadata = {}
     t = Tensor("t1", "FLOAT32", [DynamicDim("N")], [1.0])

@@ -1,3 +1,5 @@
+"""Tests the arithmetic module functionality."""
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -5,6 +7,7 @@ from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_simplify_purely_arithmetic_graph() -> None:
+    """Tests the simplify purely arithmetic graph functionality."""
     g = Graph("mock")
     val_a = np.array([2], dtype=np.float32)
     val_b = np.array([3], dtype=np.float32)

@@ -1,3 +1,5 @@
+"""Tests the hummingbird onnxml parser module functionality."""
+
 from unittest.mock import MagicMock, Mock
 
 from onnx9000.core.ir import Graph, Node
@@ -9,6 +11,7 @@ from onnx9000.optimizer.hummingbird.onnxml_parser import (
 
 
 def test_parse_onnxml_tree_ensemble() -> None:
+    """Tests the parse onnxml tree ensemble functionality."""
     node = Node("TreeEnsembleClassifier")
     # Mocking attributes
     MagicMock()
@@ -38,6 +41,7 @@ def test_parse_onnxml_tree_ensemble() -> None:
 
 
 def test_extract_tree_ensemble_attributes() -> None:
+    """Tests the extract tree ensemble attributes functionality."""
     node = Node("TreeEnsembleClassifier")
     node.attrs["nodes_treeids"] = Mock(value=[0])
     node.attrs["class_ids"] = Mock(value=[1, 2])
@@ -48,6 +52,7 @@ def test_extract_tree_ensemble_attributes() -> None:
 
 
 def test_apply_onnxml_post_transform() -> None:
+    """Tests the apply onnxml post transform functionality."""
     g = Graph(name="test")
     node = Node("TreeEnsembleClassifier")
 

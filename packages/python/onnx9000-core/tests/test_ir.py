@@ -1,8 +1,11 @@
+"""Tests the ir module functionality."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import DynamicDim, Graph, Node, Variable
 
 
 def test_dynamic_dim() -> None:
+    """Tests the dynamic dim functionality."""
     d1 = DynamicDim("batch")
     assert d1.value == "batch"
     assert repr(d1) == "DynamicDim(batch)"
@@ -15,6 +18,7 @@ def test_dynamic_dim() -> None:
 
 
 def test_tensor() -> None:
+    """Tests the tensor functionality."""
     t = Variable(name="input_tensor", shape=(DynamicDim("batch"), 3, 224, 224), dtype=DType.FLOAT32)
     assert t.name == "input_tensor"
     assert t.shape[1] == 3
@@ -26,6 +30,7 @@ def test_tensor() -> None:
 
 
 def test_node() -> None:
+    """Tests the node functionality."""
     n = Node(
         op_type="Add", inputs=["a", "b"], outputs=["c"], attributes={"alpha": 1.0}, name="add_node"
     )
@@ -38,6 +43,7 @@ def test_node() -> None:
 
 
 def test_graph(caplog) -> None:
+    """Tests the graph functionality."""
     g = Graph(name="test_graph")
     assert g.name == "test_graph"
     assert g.nodes == []
@@ -50,7 +56,10 @@ def test_graph(caplog) -> None:
     assert len(g.nodes) == 1
 
     class MockVInfo:
+        """Represents the MockVInfo class and its associated logic."""
+
         def __init__(self, name) -> None:
+            """Tests the init   functionality."""
             self.name = name
 
     g.inputs = [MockVInfo("t1")]

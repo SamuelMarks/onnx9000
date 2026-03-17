@@ -346,8 +346,10 @@ def _map_deformable_conv(builder: PaddleToONNXGraphBuilder, node: PaddleNode) ->
 
 
 def _map_custom(op_name: str):
+    """Executes the map custom operation."""
 
     def _impl(builder, node):
+        """Executes the impl operation."""
         inputs = node.inputs.get("X", [])
         if "Y" in node.inputs:
             inputs.extend(node.inputs["Y"])

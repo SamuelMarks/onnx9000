@@ -1,35 +1,45 @@
 """Advanced static memory arena planning and simulation."""
 
-from typing import Union, Optional
-from onnx9000.core.ir import Graph, Tensor, Constant, Variable, Node
+from typing import Optional, Union
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node, Tensor, Variable
 from onnx9000.core.profiler import dtype_size, resolve_volume
 
 
 class MemoryBlock:
+    """Represents the Memory Block class."""
+
     def __init__(self, offset: int, size: int):
+        """Initializes the instance."""
         self.offset = offset
         self.size = size
         self.free = True
         self.tensor_name: Optional[str] = None
 
     def __repr__(self):
+        """Executes repr magic method operation."""
         return f"Block(offset={self.offset}, size={self.size}, free={self.free}, tensor={self.tensor_name})"
 
 
 class ArenaSimulator:
+    """Represents the Arena Simulator class."""
+
     def __init__(self, alignment: int = 256):
+        """Initializes the instance."""
         self.alignment = alignment
         self.blocks: list[MemoryBlock] = []
         self.peak_memory = 0
         self.tensor_offsets: dict[str, int] = {}
 
     def _align(self, size: int) -> int:
+        """Executes the align operation."""
         if size % self.alignment == 0:
             return size
         return size + (self.alignment - (size % self.alignment))
 
     def allocate_first_fit(self, name: str, size: int) -> int:
+        """Executes the allocate first fit operation."""
         aligned_size = self._align(size)
 
         for b in self.blocks:
@@ -55,6 +65,7 @@ class ArenaSimulator:
         return new_block.offset
 
     def allocate_best_fit(self, name: str, size: int) -> int:
+        """Executes the allocate best fit operation."""
         aligned_size = self._align(size)
 
         best_block = None
@@ -87,6 +98,7 @@ class ArenaSimulator:
         return new_block.offset
 
     def free(self, name: str):
+        """Executes the free operation."""
         for b in self.blocks:
             if b.tensor_name == name:
                 b.free = True
@@ -102,6 +114,7 @@ class ArenaSimulator:
                 i += 1
 
     def calculate_fragmentation(self) -> float:
+        """Executes the calculate fragmentation operation."""
         total_free = sum(b.size for b in self.blocks if b.free)
         if self.peak_memory == 0:
             return 0.0

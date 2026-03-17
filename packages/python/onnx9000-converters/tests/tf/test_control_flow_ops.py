@@ -1,9 +1,12 @@
+"""Tests the control flow ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode
 
 
 def test_control_flow_ops_noop() -> None:
+    """Tests the control flow ops noop functionality."""
     builder = TFToONNXGraphBuilder()
     for op in ["Enter", "Exit", "Merge", "Switch", "NextIteration", "LoopCond"]:
         CONTROL_FLOW_OPS_MAPPING[op](builder, TFNode(f"n_{op}", op, inputs=["a"]))
@@ -11,6 +14,7 @@ def test_control_flow_ops_noop() -> None:
 
 
 def test_control_flow_ops_if_while() -> None:
+    """Tests the control flow ops if while functionality."""
     builder = TFToONNXGraphBuilder()
     CONTROL_FLOW_OPS_MAPPING["If"](
         builder,
@@ -43,6 +47,7 @@ def test_control_flow_ops_if_while() -> None:
 
 
 def test_control_flow_ops_tensor_array() -> None:
+    """Tests the control flow ops tensor array functionality."""
     builder = TFToONNXGraphBuilder()
     outs = CONTROL_FLOW_OPS_MAPPING["TensorArrayV3"](
         builder, TFNode("n_ta", "TensorArrayV3", inputs=["size"], attr={"dtype": 2})
@@ -82,6 +87,7 @@ def test_control_flow_ops_tensor_array() -> None:
 
 
 def test_control_flow_ops_rnn() -> None:
+    """Tests the control flow ops rnn functionality."""
     builder = TFToONNXGraphBuilder()
     for op in ["BasicLSTMCell", "LSTMBlockCell", "BlockLSTM"]:
         CONTROL_FLOW_OPS_MAPPING[op](builder, TFNode(f"n_{op}", op, inputs=["a"]))

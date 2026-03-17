@@ -1,8 +1,11 @@
+"""Tests the parsers cov extras module functionality."""
+
 import pytest
 from onnx9000.converters.paddle.parsers import PaddleProtobufParser
 
 
 def test_paddle_parsers_var_desc_dims_and_skips() -> None:
+    """Tests the paddle parsers var desc dims and skips functionality."""
     name = b"\n\x01X"
     skip_wire1 = b"\x19\x00\x00\x00\x00\x00\x00\x00\x00"
     skip_wire2 = b'"\x04abcd'
@@ -21,6 +24,7 @@ def test_paddle_parsers_var_desc_dims_and_skips() -> None:
 
 
 def test_paddle_parsers_skip_field_error() -> None:
+    """Tests the paddle parsers skip field error functionality."""
     bad_wire = b"\n\x01X\xfb\x06\x01"
     parser = PaddleProtobufParser(bad_wire)
     with pytest.raises(ValueError, match="Unknown wire type: 3"):

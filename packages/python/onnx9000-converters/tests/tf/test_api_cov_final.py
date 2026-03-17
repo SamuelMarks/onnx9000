@@ -1,9 +1,12 @@
+"""Tests the api cov final module functionality."""
+
 from unittest.mock import patch
 
 from onnx9000.converters.tf.api import convert_tf_to_onnx
 
 
 def test_convert_tf_to_onnx_else_branch() -> None:
+    """Tests the convert tf to onnx else branch functionality."""
     op = b"\x1a\x07unknown"
     node_data = b"\n" + bytes([len(op)]) + op
     graph_data = b"\x12" + bytes([len(node_data)]) + node_data
@@ -13,6 +16,7 @@ def test_convert_tf_to_onnx_else_branch() -> None:
     original_make_node = TFToONNXGraphBuilder.make_node
 
     def mock_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs=1):
+        """Tests the mock make node functionality."""
         out = original_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs)
         self.graph.tensors.clear()
         return out

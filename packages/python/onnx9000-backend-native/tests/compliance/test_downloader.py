@@ -1,3 +1,5 @@
+"""Tests the downloader module functionality."""
+
 import io
 import tempfile
 import urllib.request
@@ -9,10 +11,12 @@ from onnx9000.backends.testing.downloader import download_and_extract_onnx_tests
 
 
 def test_downloader_and_extractor(monkeypatch) -> None:
+    """Tests the downloader and extractor functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
         def mock_retrieve(url, filename) -> None:
+            """Tests the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo(
@@ -33,10 +37,12 @@ def test_downloader_and_extractor(monkeypatch) -> None:
 
 
 def test_downloader_missing_dir(monkeypatch) -> None:
+    """Tests the downloader missing dir functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
         def mock_retrieve(url, filename) -> None:
+            """Tests the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo("wrong_path/")

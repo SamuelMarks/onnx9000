@@ -12,6 +12,7 @@ from onnx9000.optimizer.olive.model import OliveModel
 
 
 def test_cli_cache(tmp_path) -> None:
+    """Tests the cli cache functionality."""
     cache = ModelCache(str(tmp_path / ".cache"))
     assert cache.load("test") == {}
     cache.save("test", {"foo": "bar"})
@@ -19,10 +20,12 @@ def test_cli_cache(tmp_path) -> None:
 
 
 def test_package_size() -> None:
+    """Tests the package size functionality."""
     assert is_package_under_5mb()
 
 
 def test_save_stubs() -> None:
+    """Tests the save stubs functionality."""
     g = Graph("test")
     model = OliveModel(g)
     save_onnx(model, "test.onnx")
@@ -30,6 +33,7 @@ def test_save_stubs() -> None:
 
 
 def test_optimize_cli(tmp_path, monkeypatch) -> None:
+    """Tests the optimize cli functionality."""
     import onnx9000.core.parser.core
 
     g = Graph("test")

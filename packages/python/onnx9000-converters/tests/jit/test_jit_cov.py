@@ -1,3 +1,5 @@
+"""Tests the jit cov module functionality."""
+
 from unittest.mock import patch
 
 "Module providing core logic and structural definitions."

@@ -1,3 +1,5 @@
+"""Tests the parser module functionality."""
+
 import os
 import struct
 import tempfile
@@ -11,10 +13,12 @@ from onnx9000.core.serializer import save, serialize_model
 
 
 def test_parse_dtype() -> None:
+    """Tests the parse dtype functionality."""
     assert _parse_dtype(onnx_pb2.TensorProto.FLOAT) == DType.FLOAT32
 
 
 def test_parser_core() -> None:
+    """Tests the parser core functionality."""
     g = Graph("my_graph")
     g.doc_string = "My doc"
     g.opset_imports["ai.onnx"] = 14
@@ -63,6 +67,7 @@ def test_parser_core() -> None:
 
 
 def test_load_tensor() -> None:
+    """Tests the load tensor functionality."""
     Tensor("f1", (1,), DType.FLOAT32, data=struct.pack("<f", 1.0))
     proto = onnx_pb2.TensorProto()
     proto.name = "f1"
@@ -78,6 +83,7 @@ def test_load_tensor() -> None:
 
 
 def test_parser_unsupported_dtype() -> None:
+    """Tests the parser unsupported dtype functionality."""
     from onnx9000.core.exceptions import ONNXParseError
 
     with pytest.raises(ONNXParseError):
@@ -85,6 +91,7 @@ def test_parser_unsupported_dtype() -> None:
 
 
 def test_parser_other_data_fields() -> None:
+    """Tests the parser other data fields functionality."""
     tp_float = onnx_pb2.TensorProto(
         name="f2", data_type=onnx_pb2.TensorProto.FLOAT, dims=[1], float_data=[1.0]
     )
@@ -108,6 +115,7 @@ def test_parser_other_data_fields() -> None:
 
 
 def test_parser_uncovered_paths() -> None:
+    """Tests the parser uncovered paths functionality."""
     g = Graph("g")
     g.add_node(Node("N", [], [], {"bad_attr": Attribute("bad_attr", "UNKNOWN", None)}))
     v_in = ValueInfo("v1", (DynamicDim("N"), DynamicDim(-1), 1), DType.FLOAT32)

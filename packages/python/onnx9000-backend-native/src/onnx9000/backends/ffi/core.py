@@ -1,3 +1,5 @@
+"""Provides core module functionality."""
+
 import ctypes
 import ctypes.util
 import logging
@@ -12,6 +14,8 @@ logger.setLevel(logging.INFO)
 
 
 class DynamicLibraryError(OSError):
+    """Represents the Dynamic Library Error class."""
+
     pass
 
 
@@ -21,6 +25,7 @@ class DynamicLibrary:
     def __init__(
         self, name: str, versions=None, calling_convention="cdecl", use_cffi=False
     ) -> None:
+        """Initializes the instance."""
         self.name = name
         self.lib = None
         self._lock = threading.Lock()
@@ -65,6 +70,7 @@ class DynamicLibrary:
             )
 
     def _load_lib(self, path, mode) -> None:
+        """Executes the load lib operation."""
         if self.os == "Windows" and self.calling_convention == "stdcall":
             self.lib = ctypes.WinDLL(path)
         else:
@@ -92,12 +98,14 @@ class DynamicLibrary:
         func.restype = restype
 
         def wrapped_ffi_call(*args, **kwargs):
+            """Executes the wrapped ffi call operation."""
             return func(*args, **kwargs)
 
         self._func_cache[func_name] = wrapped_ffi_call
         return wrapped_ffi_call
 
     def __getattr__(self, name):
+        """Executes getattr magic method operation."""
         if name in self._func_cache:
             return self._func_cache[name]
         return self.define(name, None, None)
@@ -111,6 +119,7 @@ class HardwareContextHandle:
     """
 
     def __init__(self, handle_ptr, destroy_func) -> None:
+        """Initializes the instance."""
         self._handle = ctypes.c_void_p(handle_ptr)
         self._destroy_func = destroy_func
         self._lock = threading.Lock()
@@ -118,6 +127,7 @@ class HardwareContextHandle:
 
     @classmethod
     def _cleanup(cls, handle, destroy_func) -> None:
+        """Executes the cleanup operation."""
         if handle and handle.value:
             destroy_func(handle)
             handle.value = None
@@ -128,9 +138,11 @@ class HardwareContextHandle:
         return self._handle
 
     def __enter__(self):
+        """Executes enter magic method operation."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Executes exit magic method operation."""
         with self._lock:
             self._cleanup(self._handle, self._destroy_func)
 

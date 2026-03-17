@@ -193,6 +193,7 @@ def test_isnan_vjp() -> None:
 
 
 def test_reciprocal_vjp() -> None:
+    """Tests the reciprocal vjp functionality."""
     node = Node("Reciprocal", ["a"], ["c"], {}, name="reciprocal_node")
     rule = get_vjp_rule("Reciprocal")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -201,6 +202,7 @@ def test_reciprocal_vjp() -> None:
 
 
 def test_clip_vjp() -> None:
+    """Tests the clip vjp functionality."""
     node = Node("Clip", ["a", "min", "max"], ["c"], {}, name="clip_node")
     rule = get_vjp_rule("Clip")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -209,6 +211,7 @@ def test_clip_vjp() -> None:
 
 
 def test_round_vjp() -> None:
+    """Tests the round vjp functionality."""
     node = Node("Round", ["a"], ["c"], {}, name="round_node")
     rule = get_vjp_rule("Round")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -217,6 +220,7 @@ def test_round_vjp() -> None:
 
 
 def test_floor_vjp() -> None:
+    """Tests the floor vjp functionality."""
     node = Node("Floor", ["a"], ["c"], {}, name="floor_node")
     rule = get_vjp_rule("Floor")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -225,6 +229,7 @@ def test_floor_vjp() -> None:
 
 
 def test_ceil_vjp() -> None:
+    """Tests the ceil vjp functionality."""
     node = Node("Ceil", ["a"], ["c"], {}, name="ceil_node")
     rule = get_vjp_rule("Ceil")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -233,6 +238,7 @@ def test_ceil_vjp() -> None:
 
 
 def test_equal_vjp() -> None:
+    """Tests the equal vjp functionality."""
     node = Node("Equal", ["a", "b"], ["c"], {}, name="equal_node")
     rule = get_vjp_rule("Equal")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -241,6 +247,7 @@ def test_equal_vjp() -> None:
 
 
 def test_less_vjp() -> None:
+    """Tests the less vjp functionality."""
     node = Node("Less", ["a", "b"], ["c"], {}, name="less_node")
     rule = get_vjp_rule("Less")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -248,6 +255,7 @@ def test_less_vjp() -> None:
 
 
 def test_greater_vjp() -> None:
+    """Tests the greater vjp functionality."""
     node = Node("Greater", ["a", "b"], ["c"], {}, name="greater_node")
     rule = get_vjp_rule("Greater")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -255,6 +263,7 @@ def test_greater_vjp() -> None:
 
 
 def test_celu_vjp() -> None:
+    """Tests the celu vjp functionality."""
     node = Node("Celu", ["a"], ["c"], {}, name="celu_node")
     rule = get_vjp_rule("Celu")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -263,6 +272,7 @@ def test_celu_vjp() -> None:
 
 
 def test_mish_vjp() -> None:
+    """Tests the mish vjp functionality."""
     node = Node("Mish", ["a"], ["c"], {}, name="mish_node")
     rule = get_vjp_rule("Mish")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -271,6 +281,7 @@ def test_mish_vjp() -> None:
 
 
 def test_shrink_vjp() -> None:
+    """Tests the shrink vjp functionality."""
     node = Node("Shrink", ["a"], ["c"], {}, name="shrink_node")
     rule = get_vjp_rule("Shrink")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -279,6 +290,7 @@ def test_shrink_vjp() -> None:
 
 
 def test_topk_vjp() -> None:
+    """Tests the topk vjp functionality."""
     node = Node("TopK", ["a", "k"], ["v", "i"], {}, name="topk_node")
     rule = get_vjp_rule("TopK")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_v"])
@@ -287,6 +299,7 @@ def test_topk_vjp() -> None:
 
 
 def test_spacetodepth_vjp() -> None:
+    """Tests the spacetodepth vjp functionality."""
     node = Node("SpaceToDepth", ["a"], ["c"], {}, name="spacetodepth_node")
     rule = get_vjp_rule("SpaceToDepth")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -295,6 +308,7 @@ def test_spacetodepth_vjp() -> None:
 
 
 def test_depthtospace_vjp() -> None:
+    """Tests the depthtospace vjp functionality."""
     node = Node("DepthToSpace", ["a"], ["c"], {}, name="depthtospace_node")
     rule = get_vjp_rule("DepthToSpace")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -303,6 +317,7 @@ def test_depthtospace_vjp() -> None:
 
 
 def test_cumsum_vjp() -> None:
+    """Tests the cumsum vjp functionality."""
     node = Node("CumSum", ["a", "axis"], ["c"], {}, name="cumsum_node")
     rule = get_vjp_rule("CumSum")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -311,6 +326,7 @@ def test_cumsum_vjp() -> None:
 
 
 def test_reversesequence_vjp() -> None:
+    """Tests the reversesequence vjp functionality."""
     node = Node("ReverseSequence", ["a", "lens"], ["c"], {}, name="reversesequence_node")
     rule = get_vjp_rule("ReverseSequence")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -319,6 +335,7 @@ def test_reversesequence_vjp() -> None:
 
 
 def test_compress_vjp() -> None:
+    """Tests the compress vjp functionality."""
     node = Node("Compress", ["a", "cond"], ["c"], {}, name="compress_node")
     rule = get_vjp_rule("Compress")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -327,6 +344,7 @@ def test_compress_vjp() -> None:
 
 
 def test_trilu_vjp() -> None:
+    """Tests the trilu vjp functionality."""
     node = Node("Trilu", ["a", "k"], ["c"], {}, name="trilu_node")
     rule = get_vjp_rule("Trilu")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -335,6 +353,7 @@ def test_trilu_vjp() -> None:
 
 
 def test_lpnormalization_vjp() -> None:
+    """Tests the lpnormalization vjp functionality."""
     node = Node("LpNormalization", ["a"], ["c"], {}, name="lpnorm_node")
     rule = get_vjp_rule("LpNormalization")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -343,6 +362,7 @@ def test_lpnormalization_vjp() -> None:
 
 
 def test_globallppool_vjp() -> None:
+    """Tests the globallppool vjp functionality."""
     node = Node("GlobalLpPool", ["a"], ["c"], {}, name="globallppool_node")
     rule = get_vjp_rule("GlobalLpPool")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -351,6 +371,7 @@ def test_globallppool_vjp() -> None:
 
 
 def test_einsum_vjp() -> None:
+    """Tests the einsum vjp functionality."""
     node = Node("Einsum", ["a", "b"], ["c"], {}, name="einsum_node")
     rule = get_vjp_rule("Einsum")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -359,6 +380,7 @@ def test_einsum_vjp() -> None:
 
 
 def test_maxroipool_vjp() -> None:
+    """Tests the maxroipool vjp functionality."""
     node = Node("MaxRoiPool", ["a", "rois"], ["c"], {}, name="maxroipool_node")
     rule = get_vjp_rule("MaxRoiPool")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -367,6 +389,7 @@ def test_maxroipool_vjp() -> None:
 
 
 def test_roialign_vjp() -> None:
+    """Tests the roialign vjp functionality."""
     node = Node("RoiAlign", ["a", "rois", "batch"], ["c"], {}, name="roialign_node")
     rule = get_vjp_rule("RoiAlign")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -375,6 +398,7 @@ def test_roialign_vjp() -> None:
 
 
 def test_spacetobatchnd_vjp() -> None:
+    """Tests the spacetobatchnd vjp functionality."""
     node = Node("SpaceToBatchND", ["a", "bs", "p"], ["c"], {}, name="spacetobatchnd_node")
     rule = get_vjp_rule("SpaceToBatchND")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -383,6 +407,7 @@ def test_spacetobatchnd_vjp() -> None:
 
 
 def test_batchtospacend_vjp() -> None:
+    """Tests the batchtospacend vjp functionality."""
     node = Node("BatchToSpaceND", ["a", "bs", "p"], ["c"], {}, name="batchtospacend_node")
     rule = get_vjp_rule("BatchToSpaceND")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
@@ -391,6 +416,7 @@ def test_batchtospacend_vjp() -> None:
 
 
 def test_bitshift_vjp() -> None:
+    """Tests the bitshift vjp functionality."""
     node = Node("BitShift", ["a", "b"], ["c"], {}, name="bitshift_node")
     rule = get_vjp_rule("BitShift")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])

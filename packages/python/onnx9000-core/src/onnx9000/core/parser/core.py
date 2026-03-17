@@ -61,15 +61,40 @@ def _parse_attribute(attr: Any) -> Attribute:
     return Attribute(attr.name, "UNKNOWN", None)
 
 
-def parse_tensor_proto(init: Any) -> Tensor:
+def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
     """Parses a single ONNX TensorProto into an ir.Tensor."""
     dtype = _parse_dtype(init.data_type)
     shape = tuple(init.dims)
     data: Optional[Union[bytes, memoryview]] = None
-    if init.raw_data:
-        data = memoryview(init.raw_data)
-    elif len(init.float_data) > 0:
-        data = memoryview(struct.pack(f"<{len(init.float_data)}f", *init.float_data))
+
+    if hasattr(init, "data_location") and init.data_location == 1:
+        location = ""
+        offset = 0
+        length = 0
+        for entry in init.external_data:
+            if entry.key == "location":
+                location = entry.value
+            elif entry.key == "offset":
+                offset = int(entry.value)
+            elif entry.key == "length":
+                length = int(entry.value)
+
+        if location and base_dir:
+            import mmap
+
+            file_path = base_dir / location
+            with open(file_path, "rb") as ef:
+                mm = mmap.mmap(ef.fileno(), 0, access=mmap.ACCESS_READ)
+                if length > 0:
+                    data = memoryview(mm)[offset : offset + length]
+                else:
+                    data = memoryview(mm)[offset:]
+
+    if data is None:
+        if init.raw_data:
+            data = memoryview(init.raw_data)
+        elif len(init.float_data) > 0:
+            data = memoryview(struct.pack(f"<{len(init.float_data)}f", *init.float_data))
     elif len(init.int32_data) > 0:
         data = memoryview(struct.pack(f"<{len(init.int32_data)}i", *init.int32_data))
     elif len(init.int64_data) > 0:
@@ -88,15 +113,19 @@ def load_tensor(file_path: Union[str, Path]) -> Tensor:
     return parse_tensor_proto(tensor_proto)
 
 
-def parse_model(model_proto: Any) -> Graph:
+def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
     """Parses an ONNX ModelProto into an ir.Graph."""
     graph_proto = model_proto.graph
     graph = Graph(name=graph_proto.name)
     graph.doc_string = model_proto.doc_string
+    graph.producer_name = model_proto.producer_name
+    graph.producer_version = model_proto.producer_version
+    for prop in model_proto.metadata_props:
+        graph.metadata_props[prop.key] = prop.value
     for opset in model_proto.opset_import:
         graph.opset_imports[opset.domain] = opset.version
     for init in graph_proto.initializer:
-        tensor = parse_tensor_proto(init)
+        tensor = parse_tensor_proto(init, base_dir)
         graph.add_tensor(tensor)
         graph.initializers.append(init.name)
     for vinfo in graph_proto.input:
@@ -119,6 +148,7 @@ def parse_model(model_proto: Any) -> Graph:
         name = vinfo.name
         dtype = _parse_dtype(vinfo.type.tensor_type.elem_type)
         shape = _parse_shape(vinfo.type.tensor_type.shape)
+        graph.value_info.append(ValueInfo(name, shape, dtype))
         if name not in graph.tensors:
             tensor = Variable(name=name, shape=shape, dtype=dtype)
             graph.add_tensor(tensor)
@@ -138,14 +168,39 @@ def parse_model(model_proto: Any) -> Graph:
 
 def load(file_path: Union[str, Path]) -> Graph:
     """Reads an ONNX file and parses it into an ir.Graph."""
-    model = onnx_pb2.ModelProto()
+    path_obj = Path(file_path)
     with open(file_path, "rb") as f:
-        model.ParseFromString(f.read())
-    return parse_model(model)
+        data = f.read()
+
+    # ONNX magic bytes validation for Protobuf
+    if len(data) < 8:
+        raise ONNXParseError("File is too small to be a valid ONNX protobuf")
+
+    model = onnx_pb2.ModelProto()
+    try:
+        model.ParseFromString(data)
+    except Exception as e:
+        raise ONNXParseError(f"Failed to parse ONNX file: {e}") from e
+
+    # Extra validation
+    if model.ir_version == 0:
+        raise ONNXParseError("Invalid ONNX file: ir_version is 0 or missing")
+
+    return parse_model(model, path_obj.parent)
 
 
 def from_bytes(proto_bytes: bytes) -> Graph:
     """Parses an ONNX byte string into an ir.Graph."""
+    if len(proto_bytes) < 8:
+        raise ONNXParseError("Byte string is too small to be a valid ONNX protobuf")
+
     model = onnx_pb2.ModelProto()
-    model.ParseFromString(proto_bytes)
+    try:
+        model.ParseFromString(proto_bytes)
+    except Exception as e:
+        raise ONNXParseError(f"Failed to parse ONNX bytes: {e}") from e
+
+    if model.ir_version == 0:
+        raise ONNXParseError("Invalid ONNX bytes: ir_version is 0 or missing")
+
     return parse_model(model)

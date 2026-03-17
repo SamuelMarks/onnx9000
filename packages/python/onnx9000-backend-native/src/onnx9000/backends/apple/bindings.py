@@ -15,6 +15,7 @@ _objc = None
 
 
 def _load_libraries() -> None:
+    """Executes the load libraries operation."""
     global _accelerate_lib, _metal_lib, _mps_lib, _foundation_lib, _objc
     _accelerate_lib = _metal_lib = _mps_lib = _foundation_lib = _objc = None
     try:

@@ -1,3 +1,5 @@
+"""Provides builder module functionality."""
+
 from typing import Optional
 
 from onnx9000.core.dtypes import DType
@@ -13,6 +15,7 @@ class SKLearnParser:
         name: str = "sklearn_model",
         initial_types: Optional[list[tuple]] = None,
     ) -> None:
+        """Initializes the instance."""
         self.model = model
         self.graph = Graph(name)
         self.initial_types = initial_types or [("input", DType.FLOAT32, ("N", "C"))]
@@ -22,6 +25,7 @@ class SKLearnParser:
         return type(obj).__name__ == type_name
 
     def parse(self) -> Graph:
+        """Executes the parse operation."""
         input_name = self.initial_types[0][0]
         self.graph.inputs.append(
             ValueInfo(input_name, self.initial_types[0][1], self.initial_types[0][2])

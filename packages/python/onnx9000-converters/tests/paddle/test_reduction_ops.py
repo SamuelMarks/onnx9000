@@ -1,9 +1,12 @@
+"""Tests the reduction ops module functionality."""
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
 from onnx9000.converters.paddle.reduction_ops import REDUCTION_OPS_MAPPING
 
 
 def test_paddle_reduce_ops() -> None:
+    """Tests the paddle reduce ops functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "reduce_sum", inputs={"X": ["a"]}, attrs={"dim": [1], "keep_dim": True})
     outs = REDUCTION_OPS_MAPPING["reduce_sum"](builder, n)
@@ -21,6 +24,7 @@ def test_paddle_reduce_ops() -> None:
 
 
 def test_paddle_arg_ops() -> None:
+    """Tests the paddle arg ops functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "arg_max", inputs={"X": ["a"]}, attrs={"axis": 1, "keepdims": True})
     REDUCTION_OPS_MAPPING["arg_max"](builder, n)
@@ -33,6 +37,7 @@ def test_paddle_arg_ops() -> None:
 
 
 def test_paddle_cumsum() -> None:
+    """Tests the paddle cumsum functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
         "n", "cumsum", inputs={"X": ["a"]}, attrs={"axis": 1, "exclusive": True, "reverse": True}
@@ -44,6 +49,7 @@ def test_paddle_cumsum() -> None:
 
 
 def test_paddle_logical_ops() -> None:
+    """Tests the paddle logical ops functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "logical_and", inputs={"X": ["a"], "Y": ["b"]})
     outs = REDUCTION_OPS_MAPPING["logical_and"](builder, n)
@@ -71,6 +77,7 @@ def test_paddle_logical_ops() -> None:
 
 
 def test_reduction_ops_cumprod() -> None:
+    """Tests the reduction ops cumprod functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "cumprod", inputs={"X": ["a"]})
     REDUCTION_OPS_MAPPING["cumprod"](builder, n)

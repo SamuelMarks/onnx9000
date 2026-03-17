@@ -667,6 +667,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -681,12 +682,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -698,6 +701,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -712,12 +716,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -729,6 +735,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -743,12 +750,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -760,6 +769,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -774,12 +784,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -791,6 +803,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -805,12 +818,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -822,6 +837,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -836,12 +852,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -853,6 +871,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -867,12 +886,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -884,6 +905,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -898,12 +920,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -915,6 +939,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -929,12 +954,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -946,6 +973,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -960,12 +988,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -977,6 +1007,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -991,12 +1022,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -1008,6 +1041,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -1022,12 +1056,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -1039,6 +1075,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -1053,12 +1090,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)
@@ -1070,6 +1109,7 @@ def test_chunk_large_tensors_pass_real() -> None:
 
 
 def test_push_transposes_down_real() -> None:
+    """Tests the push transposes down real functionality."""
     g = Graph("mock")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -1084,12 +1124,14 @@ def test_push_transposes_down_real() -> None:
 
 
 def test_update_parameters_for_alignment_reshape() -> None:
+    """Tests the update parameters for alignment reshape functionality."""
     n = Node("Reshape", ["in"], ["out"], {"shape": [1, 2, 3]}, "r1")
     n2 = LayoutOptimizer.update_parameters_for_alignment(n, 2)
     assert n2.attributes["shape"] == [1, 2, 5]
 
 
 def test_chunk_large_tensors_pass_real() -> None:
+    """Tests the chunk large tensors pass real functionality."""
     g = Graph("mock")
     t = Tensor("large", (10, 100), DType.FLOAT32)
     g.add_tensor(t)

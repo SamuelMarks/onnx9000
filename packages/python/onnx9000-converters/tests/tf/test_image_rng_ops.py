@@ -1,9 +1,12 @@
+"""Tests the image rng ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.image_rng_ops import IMAGE_RNG_OPS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode
 
 
 def test_image_ops_resize() -> None:
+    """Tests the image ops resize functionality."""
     builder = TFToONNXGraphBuilder()
     IMAGE_RNG_OPS_MAPPING["ResizeNearestNeighbor"](
         builder, TFNode("n1", "ResizeNearestNeighbor", inputs=["a", "b"])
@@ -29,6 +32,7 @@ def test_image_ops_resize() -> None:
 
 
 def test_rng_ops() -> None:
+    """Tests the rng ops functionality."""
     builder = TFToONNXGraphBuilder()
     IMAGE_RNG_OPS_MAPPING["RandomUniform"](builder, TFNode("n", "RandomUniform", inputs=["a"]))
     assert builder.graph.nodes[-1].op_type == "RandomUniformLike"
@@ -47,6 +51,7 @@ def test_rng_ops() -> None:
 
 
 def test_image_misc() -> None:
+    """Tests the image misc functionality."""
     builder = TFToONNXGraphBuilder()
     for op in [
         "NonMaxSuppression",

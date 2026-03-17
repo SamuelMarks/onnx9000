@@ -1,8 +1,11 @@
+"""Tests the onnx pb2 module functionality."""
+
 import importlib
 from unittest.mock import patch
 
 
 def test_onnx_pb2_coverage() -> None:
+    """Tests the onnx pb2 coverage functionality."""
     import onnx9000.core.onnx_pb2 as onnx_pb2
     from google.protobuf import descriptor
 

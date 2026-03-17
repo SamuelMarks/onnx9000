@@ -1,3 +1,5 @@
+"""Tests the api module functionality."""
+
 from unittest.mock import patch
 
 from onnx9000.converters.paddle.api import convert_paddle_to_onnx
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph
 
 
 def test_convert_paddle_to_onnx_empty() -> None:
+    """Tests the convert paddle to onnx empty functionality."""
     g = convert_paddle_to_onnx(b"")
     assert isinstance(g, Graph)
     assert g.name == "paddle_graph"
@@ -12,6 +15,7 @@ def test_convert_paddle_to_onnx_empty() -> None:
 
 
 def test_convert_paddle_to_onnx_fallback(caplog) -> None:
+    """Tests the convert paddle to onnx fallback functionality."""
     op = b"\x1a\x07unknown"
     block_data = b'\x08\x00\x10\x00"' + bytes([len(op)]) + op
     program_data = b"\n" + bytes([len(block_data)]) + block_data
@@ -21,6 +25,7 @@ def test_convert_paddle_to_onnx_fallback(caplog) -> None:
 
 
 def test_convert_paddle_to_onnx_basic_graph() -> None:
+    """Tests the convert paddle to onnx basic graph functionality."""
     op1 = b"\x1a\x04feed\n\x0b\n\x03Out\x12\x04in_1"
     op2 = b"\x1a\x04relu\n\x0c\n\x01X\x12\x04in_1\x12\x0b\n\x03Out\x12\x04out1"
     block_data = b'\x08\x00\x10\x00"' + bytes([len(op1)]) + op1 + b'"' + bytes([len(op2)]) + op2
@@ -32,6 +37,7 @@ def test_convert_paddle_to_onnx_basic_graph() -> None:
 
 
 def test_convert_paddle_to_onnx_else_branch() -> None:
+    """Tests the convert paddle to onnx else branch functionality."""
     op = b"\x1a\x07unknown"
     block_data = b'\x08\x00\x10\x00"' + bytes([len(op)]) + op
     program_data = b"\n" + bytes([len(block_data)]) + block_data
@@ -40,6 +46,7 @@ def test_convert_paddle_to_onnx_else_branch() -> None:
     original_make_node = PaddleToONNXGraphBuilder.make_node
 
     def mock_make_node(self, op_type, inputs, attributes, name_prefix, outputs=None):
+        """Tests the mock make node functionality."""
         out = original_make_node(self, op_type, inputs, attributes, name_prefix, outputs)
         self.graph.tensors.clear()
         return out

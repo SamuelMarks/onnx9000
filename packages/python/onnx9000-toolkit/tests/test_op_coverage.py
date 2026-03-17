@@ -1,3 +1,5 @@
+"""Tests the op coverage module functionality."""
+
 from onnx9000.toolkit.script.builder import GraphBuilder
 from onnx9000.toolkit.script.op import (
     If,
@@ -11,11 +13,13 @@ from onnx9000.toolkit.script.var import Var
 
 
 def test_make_vars() -> None:
+    """Tests the make vars functionality."""
     vars = _make_vars([1.0, 2])
     assert len(vars) == 2
 
 
 def test_op_multiple_outputs() -> None:
+    """Tests the op multiple outputs functionality."""
     gb = GraphBuilder("test_ops")
     set_active_builder(gb)
     cond = Var("cond")

@@ -1,10 +1,13 @@
+"""Tests the shape inference gap2 module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_gemm_incompatible_batch():
+    """Tests the gemm incompatible batch functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2, 3, 2), DType.FLOAT32))
     g.add_tensor(Tensor("b", (5, 2, 4), DType.FLOAT32))
@@ -15,6 +18,7 @@ def test_gemm_incompatible_batch():
 
 
 def test_gemm_1d():
+    """Tests the gemm 1d functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (3,), DType.FLOAT32))
     g.add_tensor(Tensor("b", (3, 4), DType.FLOAT32))
@@ -25,6 +29,7 @@ def test_gemm_1d():
 
 
 def test_cast_shape_size():
+    """Tests the cast shape size functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))
     g.inputs.append("x")
@@ -41,6 +46,7 @@ def test_cast_shape_size():
 
 
 def test_reshape_no_shape_input():
+    """Tests the reshape no shape input functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))
     g.inputs.append("x")

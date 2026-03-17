@@ -1,3 +1,5 @@
+"""Tests the executor module functionality."""
+
 import numpy as np
 from onnx9000.backends.cpu.executor import CPUExecutionProvider
 from onnx9000.backends.session import ExecutionContext, SessionOptions
@@ -6,6 +8,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
 def test_executor_coverage() -> None:
+    """Tests the executor coverage functionality."""
     ep = CPUExecutionProvider({})
     g = Graph("g")
     g.add_node(
@@ -30,6 +33,7 @@ def test_executor_coverage() -> None:
 
 
 def test_executor_bytes_dtype_mapping() -> None:
+    """Tests the executor bytes dtype mapping functionality."""
     ep = CPUExecutionProvider({})
     import struct
 
@@ -55,6 +59,7 @@ def test_executor_bytes_dtype_mapping() -> None:
 
 
 def test_executor_op_registry() -> None:
+    """Tests the executor op registry functionality."""
     ep = CPUExecutionProvider({})
     g = Graph("g")
     g.add_node(Node("Abs", ["T1"], ["T2"], attributes={}))

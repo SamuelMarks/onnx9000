@@ -1,3 +1,5 @@
+"""Tests the opt cov extras2 module functionality."""
+
 import logging
 
 import numpy as np
@@ -9,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def test_split() -> None:
+    """Tests the split functionality."""
     g = Graph("test")
     t = Tensor(
         "in0",

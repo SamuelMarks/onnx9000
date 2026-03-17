@@ -28,6 +28,7 @@ def test_negative_indices() -> None:
 
 
 def test_autograd_engine_build() -> None:
+    """Tests the autograd engine build functionality."""
     engine = AutogradEngine()
     g = Graph("test_graph")
     res = engine.build_backward_graph(g)

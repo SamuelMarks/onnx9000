@@ -1,9 +1,12 @@
+"""Tests the tflite ops module functionality."""
+
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.converters.tf.tflite_ops import TFLITE_OPS_MAPPING
 
 
 def test_tflite_ops_simple() -> None:
+    """Tests the tflite ops simple functionality."""
     builder = TFToONNXGraphBuilder()
     TFLITE_OPS_MAPPING["ADD"](builder, TFNode("n1", "ADD", inputs=["a", "b"]))
     assert builder.graph.nodes[-1].op_type == "Add"
@@ -12,6 +15,7 @@ def test_tflite_ops_simple() -> None:
 
 
 def test_tflite_ops_pools_and_convs() -> None:
+    """Tests the tflite ops pools and convs functionality."""
     builder = TFToONNXGraphBuilder()
     for op in ["AVERAGE_POOL_2D", "MAX_POOL_2D", "L2_POOL_2D"]:
         TFLITE_OPS_MAPPING[op](builder, TFNode("n", op, inputs=["a"]))
@@ -22,6 +26,7 @@ def test_tflite_ops_pools_and_convs() -> None:
 
 
 def test_tflite_ops_tensor_misc() -> None:
+    """Tests the tflite ops tensor misc functionality."""
     builder = TFToONNXGraphBuilder()
     TFLITE_OPS_MAPPING["RESHAPE"](builder, TFNode("n", "RESHAPE", inputs=["a", "shape"]))
     assert builder.graph.nodes[-1].op_type == "Reshape"
@@ -38,6 +43,7 @@ def test_tflite_ops_tensor_misc() -> None:
 
 
 def test_tflite_ops_activations() -> None:
+    """Tests the tflite ops activations functionality."""
     builder = TFToONNXGraphBuilder()
     TFLITE_OPS_MAPPING["SOFTMAX"](builder, TFNode("n", "SOFTMAX", inputs=["a"]))
     assert builder.graph.nodes[-1].op_type == "Softmax"
@@ -54,6 +60,7 @@ def test_tflite_ops_activations() -> None:
 
 
 def test_tflite_ops_quantization() -> None:
+    """Tests the tflite ops quantization functionality."""
     builder = TFToONNXGraphBuilder()
     TFLITE_OPS_MAPPING["DEQUANTIZE"](builder, TFNode("n", "DEQUANTIZE", inputs=["a"]))
     assert builder.graph.nodes[-1].op_type == "DequantizeLinear"
@@ -62,6 +69,7 @@ def test_tflite_ops_quantization() -> None:
 
 
 def test_tflite_ops_others() -> None:
+    """Tests the tflite ops others functionality."""
     builder = TFToONNXGraphBuilder()
     TFLITE_OPS_MAPPING["EMBEDDING_LOOKUP"](
         builder, TFNode("n", "EMBEDDING_LOOKUP", inputs=["a", "b"])

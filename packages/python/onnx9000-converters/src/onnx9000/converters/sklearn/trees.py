@@ -1,7 +1,10 @@
+"""Provides trees module functionality."""
+
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def _convert_tree_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert tree classifier operation."""
     out_label = graph._uniquify_tensor_name("tree_label")
     out_prob = graph._uniquify_tensor_name("tree_probabilities")
     node = Node(
@@ -41,6 +44,7 @@ def _convert_tree_classifier(estimator: object, input_names: list[str], graph: G
 
 
 def _convert_tree_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert tree regressor operation."""
     out_name = graph._uniquify_tensor_name("tree_regressor_out")
     node = Node(
         "TreeEnsembleRegressor", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name]
@@ -57,116 +61,137 @@ def _convert_tree_regressor(estimator: object, input_names: list[str], graph: Gr
 def convert_decision_tree_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert decision tree classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_decision_tree_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert decision tree regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_extra_tree_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert extra tree classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_extra_tree_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert extra tree regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_random_forest_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert random forest classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_random_forest_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert random forest regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_extra_trees_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert extra trees classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_extra_trees_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert extra trees regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_gradient_boosting_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert gradient boosting classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_gradient_boosting_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert gradient boosting regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_hist_gradient_boosting_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert hist gradient boosting classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_hist_gradient_boosting_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert hist gradient boosting regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_ada_boost_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert ada boost classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_ada_boost_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert ada boost regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_bagging_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert bagging classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_bagging_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert bagging regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_isolation_forest(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert isolation forest operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_voting_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert voting classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_voting_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+    """Executes the convert voting regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)
 
 
 def convert_stacking_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert stacking classifier operation."""
     return _convert_tree_classifier(estimator, input_names, graph)
 
 
 def convert_stacking_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
+    """Executes the convert stacking regressor operation."""
     return _convert_tree_regressor(estimator, input_names, graph)

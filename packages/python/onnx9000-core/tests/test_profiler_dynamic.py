@@ -1,10 +1,13 @@
+"""Tests the profiler dynamic module functionality."""
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
-from onnx9000.core.profiler import profile, ProfilerResult
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+from onnx9000.core.profiler import ProfilerResult, profile
 from onnx9000.core.symbolic import DynamicDim
 
 
 def test_profiler_pad_resize():
+    """Tests the profiler pad resize functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("N",), "float32"))
     g.add_tensor(Tensor("y", ("M",), "float32"))
@@ -19,6 +22,7 @@ def test_profiler_pad_resize():
 
 
 def test_profiler_conv_dynamic():
+    """Tests the profiler conv dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("N", "C", "H", "W"), "float32"))
     g.add_tensor(Tensor("w", ("O", "C", "kH", "kW"), "float32"))
@@ -35,6 +39,7 @@ def test_profiler_conv_dynamic():
 
 
 def test_profiler_matmul_dynamic():
+    """Tests the profiler matmul dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("N", "K"), "float32"))
     g.add_tensor(Tensor("w", ("K", "O"), "float32"))
@@ -49,6 +54,7 @@ def test_profiler_matmul_dynamic():
 
 
 def test_profiler_if_dynamic():
+    """Tests the profiler if dynamic functionality."""
     g = Graph("g")
     then_g = Graph("then")
     then_g.add_node(Node("Relu", ["x"], ["y"]))
@@ -79,6 +85,7 @@ def test_profiler_if_dynamic():
 
 
 def test_profiler_loop_dynamic():
+    """Tests the profiler loop dynamic functionality."""
     g = Graph("g")
     body_g = Graph("body")
     body_g.add_node(Node("Relu", ["x"], ["y"]))
@@ -101,6 +108,7 @@ def test_profiler_loop_dynamic():
 
 
 def test_profiler_attention_dynamic():
+    """Tests the profiler attention dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "S", "E"), "float32"))
     g.add_node(Node("Attention", ["x"], ["y"]))
@@ -109,6 +117,7 @@ def test_profiler_attention_dynamic():
 
 
 def test_profiler_rnn_dynamic():
+    """Tests the profiler rnn dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("S", "B", "I"), "float32"))
     g.add_tensor(Tensor("w", (1, "H", "I"), "float32"))
@@ -119,6 +128,7 @@ def test_profiler_rnn_dynamic():
 
 
 def test_profiler_others_dynamic():
+    """Tests the profiler others dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "I"), "float32"))
     g.inputs.append("x")
@@ -129,6 +139,7 @@ def test_profiler_others_dynamic():
 
 
 def test_profiler_batchnorm_dynamic():
+    """Tests the profiler batchnorm dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "I"), "float32"))
     g.inputs.append("x")
@@ -144,6 +155,7 @@ def test_profiler_batchnorm_dynamic():
 
 
 def test_profiler_reduce_dynamic():
+    """Tests the profiler reduce dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "I"), "float32"))
     g.inputs.append("x")
@@ -153,6 +165,7 @@ def test_profiler_reduce_dynamic():
 
 
 def test_profiler_pass_ops():
+    """Tests the profiler pass ops functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10], "float32"))
     g.add_node(Node("Gather", ["x"], ["y"]))
@@ -160,6 +173,7 @@ def test_profiler_pass_ops():
 
 
 def test_profiler_conv_dynamicdim():
+    """Tests the profiler conv dynamicdim functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, DynamicDim("C"), 10, 10), "float32"))
     g.add_tensor(Tensor("w", (1, DynamicDim("C"), 3, 3), "float32"))
@@ -170,6 +184,7 @@ def test_profiler_conv_dynamicdim():
 
 
 def test_profiler_matmul_dynamicdim():
+    """Tests the profiler matmul dynamicdim functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, DynamicDim("K")), "float32"))
     g.add_tensor(Tensor("w", (DynamicDim("K"), 1), "float32", is_initializer=True))
@@ -181,6 +196,7 @@ def test_profiler_matmul_dynamicdim():
 
 
 def test_profiler_gru():
+    """Tests the profiler gru functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 2, 64), "float32"))  # seq, batch, input_size
     g.add_tensor(Tensor("w", (1, 128, 64), "float32"))

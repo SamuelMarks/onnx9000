@@ -1,9 +1,12 @@
+"""Tests the pipeline cov final module functionality."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hardware.pipeline import PipelineOptimizer
 
 
 def test_fuse_elementwise_break() -> None:
+    """Tests the fuse elementwise break functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("in1", (1, 10), DType.FLOAT32))
     g.add_tensor(Tensor("w", (10, 10), DType.FLOAT32, is_initializer=True))

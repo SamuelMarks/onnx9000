@@ -547,6 +547,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -556,6 +557,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -565,6 +567,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -574,6 +577,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -583,6 +587,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -592,6 +597,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -601,6 +607,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -610,6 +617,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -619,6 +627,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -628,6 +637,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -637,6 +647,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -646,6 +657,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -655,6 +667,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -664,6 +677,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -673,6 +687,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -682,6 +697,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -691,6 +707,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -700,6 +717,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -709,6 +727,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -718,6 +737,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -727,6 +747,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -736,6 +757,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -745,6 +767,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -754,6 +777,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -763,6 +787,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -772,6 +797,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -781,6 +807,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -790,6 +817,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -799,6 +827,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -808,6 +837,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -817,6 +847,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -826,6 +857,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -835,6 +867,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -844,6 +877,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -853,6 +887,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -862,6 +897,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -871,6 +907,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -880,6 +917,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -889,6 +927,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)
@@ -898,6 +937,7 @@ def test_quantize_static_real_with_bias() -> None:
 
 
 def test_quantize_dynamic_real() -> None:
+    """Tests the quantize dynamic real functionality."""
     g = Graph("mock")
     n = Node("MatMul", ["a", "b"], ["c"], {}, "mm")
     g.add_node(n)
@@ -907,6 +947,7 @@ def test_quantize_dynamic_real() -> None:
 
 
 def test_quantize_static_real() -> None:
+    """Tests the quantize static real functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w"], ["y"], {}, "conv")
     g.add_node(n)
@@ -916,6 +957,7 @@ def test_quantize_static_real() -> None:
 
 
 def test_quantize_static_real_with_bias() -> None:
+    """Tests the quantize static real with bias functionality."""
     g = Graph("mock")
     n = Node("Conv", ["x", "w", "b"], ["y"], {}, "conv")
     g.add_node(n)

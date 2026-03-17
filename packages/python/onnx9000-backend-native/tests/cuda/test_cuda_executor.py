@@ -1,3 +1,5 @@
+"""Tests the cuda executor module functionality."""
+
 import ctypes
 from unittest.mock import MagicMock, patch
 
@@ -9,6 +11,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_cuda_executor_fallback() -> None:
+    """Tests the cuda executor fallback functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (1, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (1, 2), DType.FLOAT32))
@@ -33,6 +36,7 @@ def test_cuda_executor_fallback() -> None:
 
 
 def test_cuda_executor_matmul_cublas() -> None:
+    """Tests the cuda executor matmul cublas functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -102,6 +106,7 @@ def test_cuda_executor_matmul_cublas() -> None:
 
 
 def test_cuda_executor_matmul_no_cublas() -> None:
+    """Tests the cuda executor matmul no cublas functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -138,6 +143,7 @@ def test_cuda_executor_matmul_no_cublas() -> None:
 
 
 def test_cuda_executor_elementwise() -> None:
+    """Tests the cuda executor elementwise functionality."""
     for op_type in ["Add", "Sub", "Mul"]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
@@ -193,6 +199,7 @@ def test_cuda_executor_elementwise() -> None:
 
 
 def test_cuda_executor_elementwise_no_ptx() -> None:
+    """Tests the cuda executor elementwise no ptx functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -245,6 +252,7 @@ def test_cuda_executor_elementwise_no_ptx() -> None:
 
 
 def test_cuda_executor_init_memory_dynamic_and_init() -> None:
+    """Tests the cuda executor init memory dynamic and init functionality."""
     g = Graph("test")
     # Using dynamic shape for output
     t_out = Tensor("out_t", ("N", 2), DType.FLOAT32)
@@ -267,6 +275,7 @@ def test_cuda_executor_init_memory_dynamic_and_init() -> None:
 
 
 def test_cuda_executor_del_handles_errors() -> None:
+    """Tests the cuda executor del handles errors functionality."""
     g = Graph("test")
     with (
         patch("onnx9000.backends.cuda.executor.is_cuda_available", return_value=True),
@@ -300,6 +309,7 @@ def test_cuda_executor_del_handles_errors() -> None:
 
 
 def ignore_this5() -> None:
+    """Executes the ignore this5 operation."""
     g = Graph("test")
     with (
         patch("onnx9000.backends.cuda.executor.is_cuda_available", return_value=True),
@@ -357,6 +367,7 @@ def ignore_this5() -> None:
 
 
 def test_cuda_executor_matmul_cublas_static_alloc() -> None:
+    """Tests the cuda executor matmul cublas static alloc functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
@@ -426,6 +437,7 @@ def test_cuda_executor_matmul_cublas_static_alloc() -> None:
 
 
 def test_cuda_executor_execute_node_fallback() -> None:
+    """Tests the cuda executor execute node fallback functionality."""
     g = Graph("test")
     g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
     g.outputs.append(Tensor("B", (2, 2), DType.FLOAT32))

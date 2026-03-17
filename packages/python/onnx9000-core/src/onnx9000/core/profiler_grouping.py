@@ -17,7 +17,10 @@ def extract_namespace(name: str, delimiter: str = ".") -> list[str]:
 
 
 class HierarchicalProfileNode:
+    """Represents the Hierarchical Profile Node class."""
+
     def __init__(self, name: str):
+        """Initializes the instance."""
         self.name = name
         self.macs = 0
         self.flops = 0
@@ -26,6 +29,7 @@ class HierarchicalProfileNode:
         self.children: dict[str, HierarchicalProfileNode] = {}
 
     def add_stats(self, macs: int, flops: int, params: int, activation_bytes: int):
+        """Executes the add stats operation."""
         if isinstance(macs, int):
             self.macs += macs
         if isinstance(flops, int):
@@ -36,6 +40,7 @@ class HierarchicalProfileNode:
             self.activation_bytes += activation_bytes
 
     def to_dict(self) -> dict[str, Any]:
+        """Executes the to dict operation."""
         d = {
             "name": self.name,
             "macs": self.macs,
@@ -48,6 +53,7 @@ class HierarchicalProfileNode:
         return d
 
     def print_tree(self, indent: int = 0):
+        """Executes the print tree operation."""
         pad = "  " * indent
         print(
             f"{pad}- {self.name}: FLOPs={self.flops}, Params={self.params}, Activations={self.activation_bytes}"
@@ -86,6 +92,7 @@ def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
 
 
 def export_hierarchical_json(profiler_result, filepath: str):
+    """Executes the export hierarchical json operation."""
     tree = group_by_namespace(profiler_result)
     with open(filepath, "w") as f:
         json.dump(tree.to_dict(), f, indent=2)
@@ -112,6 +119,7 @@ def to_pandas_dataframe(profiler_result) -> list[dict[str, Any]]:
 
 
 def export_csv(profiler_result, filepath: str):
+    """Executes the export csv operation."""
     df_data = to_pandas_dataframe(profiler_result)
     if not df_data:
         return

@@ -1,3 +1,5 @@
+"""Tests the ir missing module functionality."""
+
 import ctypes
 
 import pytest
@@ -5,6 +7,7 @@ from onnx9000.core.ir import *
 
 
 def test_ir_missing() -> None:
+    """Tests the ir missing functionality."""
     assert Attribute.infer_type(1) == "INT"
     assert Attribute.infer_type(1.0) == "FLOAT"
     assert Attribute.infer_type("test") == "STRING"

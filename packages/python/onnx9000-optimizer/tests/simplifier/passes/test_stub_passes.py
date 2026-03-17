@@ -1,3 +1,5 @@
+"""Tests the stub passes module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 from onnx9000.optimizer.simplifier.passes.broadcast import optimize_broadcasting
@@ -21,17 +23,22 @@ from onnx9000.optimizer.simplifier.passes.webgpu import (
 
 
 class DummyPass(GraphPass):
+    """Represents the Dummy Pass class."""
+
     def run(self, graph: Graph) -> bool:
+        """Executes the run operation."""
         super().run(graph)
         return True
 
 
 def test_base_pass() -> None:
+    """Tests the base pass functionality."""
     p = DummyPass()
     assert p.run(None) is True
 
 
 def test_stub_passes() -> None:
+    """Tests the stub passes functionality."""
     g = Graph("test")
     assert optimize_broadcasting(g) is False
     assert inject_probes(g) is False

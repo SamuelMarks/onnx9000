@@ -4,6 +4,7 @@ from onnx9000.optimizer.olive.diagnostics_ops import DiagnosticsOps
 
 
 def test_diagnostics_ops() -> None:
+    """Tests the diagnostics ops functionality."""
     assert DiagnosticsOps.calculate_executionprovider_fallback_lat() is True
     assert DiagnosticsOps.recommend_explicit_intraopnumthreads_opt() is True
     assert DiagnosticsOps.recommend_explicit_interopnumthreads_opt() is True

@@ -1,3 +1,5 @@
+"""Tests the parsers module functionality."""
+
 import logging
 
 from onnx9000.converters.paddle.parsers import (
@@ -16,12 +18,14 @@ from onnx9000.converters.paddle.parsers import (
 
 
 def test_mappings() -> None:
+    """Tests the mappings functionality."""
     assert PADDLE_TO_ONNX_VERSION["2.0.0"] == 11
     assert map_paddle_dtype(5) == 1
     assert map_paddle_dtype(999) == 1
 
 
 def test_paddlegraph_topological_sort() -> None:
+    """Tests the paddlegraph topological sort functionality."""
     n1 = PaddleNode("feed", "feed", outputs={"Out": ["n1_out"]})
     n2 = PaddleNode("relu", "relu", inputs={"X": ["n1_out"]}, outputs={"Out": ["n2_out"]})
     n3 = PaddleNode("fetch", "fetch", inputs={"X": ["n2_out"]})
@@ -34,6 +38,7 @@ def test_paddlegraph_topological_sort() -> None:
 
 
 def test_paddlegraph_empty() -> None:
+    """Tests the paddlegraph empty functionality."""
     graph = PaddleGraph()
     assert graph.topological_sort() == []
     assert graph.extract_inputs() == []
@@ -41,6 +46,7 @@ def test_paddlegraph_empty() -> None:
 
 
 def test_paddlegraph_extract_inputs_outputs() -> None:
+    """Tests the paddlegraph extract inputs outputs functionality."""
     v1 = PaddleVar("in1", is_data=True)
     v2 = PaddleVar("weight1", is_data=True, persistable=True)
     v3 = PaddleVar("feed", is_data=True)
@@ -57,16 +63,19 @@ def test_paddlegraph_extract_inputs_outputs() -> None:
 
 
 def test_paddle_protobuf_parser_varint() -> None:
+    """Tests the paddle protobuf parser varint functionality."""
     parser = PaddleProtobufParser(b"\x08")
     assert parser.read_varint() == 8
 
 
 def test_paddle_protobuf_parser_string() -> None:
+    """Tests the paddle protobuf parser string functionality."""
     parser = PaddleProtobufParser(b"\x04test")
     assert parser.read_string() == "test"
 
 
 def test_paddle_protobuf_parser_op_desc() -> None:
+    """Tests the paddle protobuf parser op desc functionality."""
     data = b'\x1a\x04relu\n\x07\n\x01X\x12\x02in\x12\n\n\x03Out\x12\x03out"\t\n\x03val\x10\x03\x18*'
     parser = PaddleProtobufParser(data)
     node = parser.parse_op_desc(len(data))
@@ -77,6 +86,7 @@ def test_paddle_protobuf_parser_op_desc() -> None:
 
 
 def test_paddle_protobuf_parser_var_desc() -> None:
+    """Tests the paddle protobuf parser var desc functionality."""
     data = b"\n\x02v1\x18\x01"
     parser = PaddleProtobufParser(data)
     var = parser.parse_var_desc(len(data))
@@ -85,6 +95,7 @@ def test_paddle_protobuf_parser_var_desc() -> None:
 
 
 def test_paddle_protobuf_parser_var_desc_deep() -> None:
+    """Tests the paddle protobuf parser var desc deep functionality."""
     shape_data = b"\x01\x02\x03"
     shape_msg = b"\x12" + bytes([len(shape_data)]) + shape_data
     dtype_msg = b"\x08\x05"
@@ -102,6 +113,7 @@ def test_paddle_protobuf_parser_var_desc_deep() -> None:
 
 
 def test_paddle_protobuf_parser_parse_block_and_program() -> None:
+    """Tests the paddle protobuf parser parse block and program functionality."""
     block_data = b'\x08\x00\x10\x00\x1a\x04\n\x02v1"\x06\x1a\x04relu'
     program_data = b"\n" + bytes([len(block_data)]) + block_data + b"\x12\x02\x08\x0b"
     parser = PaddleProtobufParser(program_data)
@@ -119,6 +131,7 @@ def test_paddle_protobuf_parser_parse_block_and_program() -> None:
 
 
 def test_paddle_protobuf_parser_attr_types() -> None:
+    """Tests the paddle protobuf parser attr types functionality."""
     import struct
 
     f_bytes = struct.pack("<f", 1.0)
@@ -137,6 +150,7 @@ def test_paddle_protobuf_parser_attr_types() -> None:
 
 
 def test_paddle_load_model_feed_fetch() -> None:
+    """Tests the paddle load model feed fetch functionality."""
     op1_sub = b"\n\x03Out\x12\x03in1"
     op1 = b"\x1a\x04feed\x12" + bytes([len(op1_sub)]) + op1_sub
     op2_sub = b"\n\x01X\x12\x04out1"
@@ -165,21 +179,25 @@ def test_paddle_load_model_feed_fetch() -> None:
 
 
 def test_load_paddle_model() -> None:
+    """Tests the load paddle model functionality."""
     graph = load_paddle_model(b"", b"mock_params")
     assert graph.tensors["mock"] == b"\x00"
 
 
 def test_get_opset_version() -> None:
+    """Tests the get opset version functionality."""
     assert get_opset_version(100) == 15
 
 
 def test_fallback_paddle_op() -> None:
+    """Tests the fallback paddle op functionality."""
     n = PaddleNode("n1", "some_op")
     fallback_paddle_op(n)
     assert n.op_type == "Custom_Paddle_some_op"
 
 
 def test_log_unsupported_paddle_node(caplog) -> None:
+    """Tests the log unsupported paddle node functionality."""
     n = PaddleNode("n1", "some_op")
     with caplog.at_level(logging.WARNING):
         log_unsupported_paddle_node(n)

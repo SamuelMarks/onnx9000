@@ -775,8 +775,8 @@ def add_gradient_clipping_value(graph: Graph, grad_names: list[str], clip_value:
     if not grad_names or clip_value <= 0.0:
         return
 
-    c_min = f"clip_val_min"
-    c_max = f"clip_val_max"
+    c_min = "clip_val_min"
+    c_max = "clip_val_max"
     graph.add_node(Node("Constant", [], [c_min], {"value": [-clip_value]}, name="clip_min_c"))
     graph.add_node(Node("Constant", [], [c_max], {"value": [clip_value]}, name="clip_max_c"))
 

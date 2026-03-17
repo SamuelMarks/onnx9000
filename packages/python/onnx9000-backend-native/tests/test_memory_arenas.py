@@ -1,3 +1,5 @@
+"""Tests the memory arenas module functionality."""
+
 import contextlib
 import gc
 from unittest.mock import MagicMock, patch
@@ -9,6 +11,7 @@ from onnx9000.backends.memory.metal_arena import MetalMemoryPlanner
 
 
 def test_cpu_memory_planner() -> None:
+    """Tests the cpu memory planner functionality."""
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     planner.allocate_static("B", 1024, (2, 2), "FLOAT32")
@@ -37,6 +40,7 @@ def test_cpu_memory_planner() -> None:
 
 
 def test_cpu_memory_planner_missing() -> None:
+    """Tests the cpu memory planner missing functionality."""
     planner = CPUMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     with pytest.raises(RuntimeError):
@@ -44,6 +48,7 @@ def test_cpu_memory_planner_missing() -> None:
 
 
 def test_metal_arena() -> None:
+    """Tests the metal arena functionality."""
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     planner.allocate_static("B", 1024, (2, 2), "FLOAT32")
@@ -72,6 +77,7 @@ def test_metal_arena() -> None:
 
 
 def test_metal_arena_missing() -> None:
+    """Tests the metal arena missing functionality."""
     planner = MetalMemoryPlanner()
     planner.allocate_static("A", 1024, (2, 2), "FLOAT32")
     with pytest.raises(RuntimeError):
@@ -81,6 +87,7 @@ def test_metal_arena_missing() -> None:
 
 
 def test_metal_arena_cleanup_dynamic() -> None:
+    """Tests the metal arena cleanup dynamic functionality."""
     planner = MetalMemoryPlanner()
     arr = np.array([1.0], dtype=np.float32)
     planner.set_tensor("A", memoryview(arr.tobytes()), (1,), "FLOAT32")
@@ -91,6 +98,7 @@ def test_metal_arena_cleanup_dynamic() -> None:
 
 
 def test_cpu_memory_planner_edge_cases() -> None:
+    """Tests the cpu memory planner edge cases functionality."""
     from unittest.mock import patch
 
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
@@ -131,6 +139,7 @@ def test_cpu_memory_planner_edge_cases() -> None:
 
 
 def test_cpu_memory_planner_ref_counting() -> None:
+    """Tests the cpu memory planner ref counting functionality."""
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -149,6 +158,7 @@ def test_cpu_memory_planner_ref_counting() -> None:
 
 
 def test_cpu_memory_planner_cleanup_dynamic() -> None:
+    """Tests the cpu memory planner cleanup dynamic functionality."""
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -159,6 +169,7 @@ def test_cpu_memory_planner_cleanup_dynamic() -> None:
 
 
 def test_cpu_arena_reallocate_dynamic() -> None:
+    """Tests the cpu arena reallocate dynamic functionality."""
     from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
 
     planner = CPUMemoryPlanner()
@@ -169,6 +180,7 @@ def test_cpu_arena_reallocate_dynamic() -> None:
 
 
 def test_cuda_arena_reallocate_dynamic() -> None:
+    """Tests the cuda arena reallocate dynamic functionality."""
     from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
 
     with patch("onnx9000.backends.memory.cuda_arena.is_cuda_available", return_value=True):

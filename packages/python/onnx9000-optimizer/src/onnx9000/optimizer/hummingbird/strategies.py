@@ -1,3 +1,5 @@
+"""Provides strategies module functionality."""
+
 from enum import Enum, auto
 
 

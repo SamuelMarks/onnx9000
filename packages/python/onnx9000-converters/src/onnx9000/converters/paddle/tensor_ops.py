@@ -317,8 +317,10 @@ def _map_nonzero(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[st
 
 
 def _map_custom(op_name: str):
+    """Executes the map custom operation."""
 
     def _impl(builder, node):
+        """Executes the impl operation."""
         inputs = node.inputs.get("X", [])
         if "Y" in node.inputs:
             inputs.extend(node.inputs["Y"])

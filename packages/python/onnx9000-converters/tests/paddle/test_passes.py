@@ -1,8 +1,11 @@
+"""Tests the passes module functionality."""
+
 from onnx9000.converters.paddle.passes import paddle_optimize_graph
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _create_graph() -> Graph:
+    """Tests the create graph functionality."""
     g = Graph(name="test")
     g.tensors["out"] = Tensor(name="out", dtype=1, shape=())
     g.outputs.append(g.tensors["out"])
@@ -10,6 +13,7 @@ def _create_graph() -> Graph:
 
 
 def test_paddle_optimize_graph_identity_dropout_dce() -> None:
+    """Tests the paddle optimize graph identity dropout dce functionality."""
     g = _create_graph()
     n1 = Node(op_type="Identity", inputs=["in1"], outputs=["out1"], name="n1", attributes={})
     n2 = Node(op_type="Dropout", inputs=["out1"], outputs=["out2"], name="n2", attributes={})

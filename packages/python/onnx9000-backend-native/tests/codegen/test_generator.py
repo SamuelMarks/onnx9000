@@ -1,3 +1,5 @@
+"""Tests the generator module functionality."""
+
 from unittest.mock import patch
 
 import onnx9000.backends.codegen.generator as cg
@@ -8,12 +10,14 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_sanitize_name() -> None:
+    """Tests the sanitize name functionality."""
     assert cu.sanitize_name("1name") == "var_1name"
     assert cu.sanitize_name("my.name-!") == "my_name__"
     assert cu.sanitize_name("good_name") == "good_name"
 
 
 def test_get_omp_pragma() -> None:
+    """Tests the get omp pragma functionality."""
     with patch("onnx9000.core.config.ONNX9000_USE_CUDA", True):
         assert cu.get_omp_pragma("N") == ""
 
@@ -24,11 +28,15 @@ def test_get_omp_pragma() -> None:
 
 
 class MockOpGen(cog.OpGenerator):
+    """Represents the Mock Op Gen class."""
+
     def generate(self, node, generator_context) -> str:
+        """Executes the generate operation."""
         return f"// Mock OP for {node.op_type}"
 
 
 def test_generator() -> None:
+    """Tests the generator functionality."""
     g = Graph("test")
     g.inputs.append("in1")
     g.inputs.append("in1")  # test seen
@@ -78,6 +86,7 @@ def test_generator() -> None:
 
 
 def test_generator_one_output() -> None:
+    """Tests the generator one output functionality."""
     g = Graph("test")
     g.outputs.append("out1")
     t_out1 = Tensor("out1", (2, 2), DType.FLOAT32)

@@ -1,3 +1,5 @@
+"""Provides analysis module functionality."""
+
 import logging
 
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
@@ -14,6 +16,7 @@ def analyze_tree_depth(abstractions: TreeAbstractions) -> dict[str, float]:
 
     # We trace paths from roots
     def trace(node_idx: int, current_depth: int) -> None:
+        """Executes the trace operation."""
         if (
             abstractions.left_children[node_idx] == -1
             and abstractions.right_children[node_idx] == -1

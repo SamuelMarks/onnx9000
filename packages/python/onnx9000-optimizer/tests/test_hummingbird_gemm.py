@@ -1,3 +1,5 @@
+"""Tests the hummingbird gemm module functionality."""
+
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.gemm import (
     GemmCompiler,
@@ -8,6 +10,7 @@ from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 
 def test_gemm_compiler() -> None:
+    """Tests the gemm compiler functionality."""
     g = Graph(name="test_gemm")
     tree = TreeAbstractions()
     tree.add_node(0, 1.5, 1, 2, 0.0)
@@ -33,12 +36,14 @@ def test_gemm_compiler() -> None:
 
 
 def test_forest_gemm() -> None:
+    """Tests the forest gemm functionality."""
     g = Graph(name="test_forest")
     compile_forest_gemm(g, [TreeAbstractions(), TreeAbstractions()])
     # It passes for now
 
 
 def test_boosting_gemm() -> None:
+    """Tests the boosting gemm functionality."""
     g = Graph(name="test_boost")
     compile_boosting_gemm(g, [TreeAbstractions(), TreeAbstractions()])
     # It passes for now

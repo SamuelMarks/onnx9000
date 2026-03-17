@@ -114,8 +114,10 @@ def _map_cumsum(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str
 
 
 def _map_custom(op_name: str):
+    """Executes the map custom operation."""
 
     def _impl(builder, node):
+        """Executes the impl operation."""
         inputs = node.inputs.get("X", [])
         return builder.make_node(op_name, inputs, {}, node.name)
 

@@ -1,13 +1,17 @@
+"""Tests the integration module functionality."""
+
 import time
 
 from onnx9000.converters.tf.api import convert_keras_to_onnx
 
 
 def _build_mock_tf_mnist() -> bytes:
+    """Tests the build mock tf mnist functionality."""
     return b"\n\x07input\x12\x0bPlaceholder\n\x0bweight1\x12\x05Const\n\tbias1\x12\x05Const\n\rmatmul1\x12\x06MatMul\x1a\x05input\x1a\x07weight1\n\radd1\x12\x07BiasAdd\x1a\x07matmul1\x1a\x05bias1\n\nrelu1\x12\x04Relu\x1a\x04add1\n\x0bweight2\x12\x05Const\n\tbias2\x12\x05Const\n\rmatmul2\x12\x06MatMul\x1a\x05relu1\x1a\x07weight2\n\radd2\x12\x07BiasAdd\x1a\x07matmul2\x1a\x05bias2\n\rsoftmax\x12\x07Softmax\x1a\x04add2"
 
 
 def test_integration_tf_mnist() -> None:
+    """Tests the integration tf mnist functionality."""
     from onnx9000.converters.tf.api import _convert_tfgraph
     from onnx9000.converters.tf.parsers import TFGraph, TFNode
 
@@ -36,6 +40,7 @@ def test_integration_tf_mnist() -> None:
 
 
 def test_integration_resnet_mobilenet_mock() -> None:
+    """Tests the integration resnet mobilenet mock functionality."""
     from onnx9000.converters.tf.api import _convert_tfgraph
     from onnx9000.converters.tf.parsers import TFGraph, TFNode
 
@@ -51,16 +56,19 @@ def test_integration_resnet_mobilenet_mock() -> None:
 
 
 def test_integration_keras_sequential() -> None:
+    """Tests the integration keras sequential functionality."""
     graph = convert_keras_to_onnx(b"")
     assert graph.name == "keras_graph"
 
 
 def test_integration_keras_functional() -> None:
+    """Tests the integration keras functional functionality."""
     graph = convert_keras_to_onnx(b"", is_v3=True)
     assert graph.name == "keras_graph"
 
 
 def test_integration_tflite_quantized() -> None:
+    """Tests the integration tflite quantized functionality."""
     from onnx9000.converters.tf.api import _convert_tfgraph
     from onnx9000.converters.tf.parsers import TFGraph, TFNode
 

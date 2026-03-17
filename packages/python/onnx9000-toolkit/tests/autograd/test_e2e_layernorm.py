@@ -1,9 +1,12 @@
+"""Tests the e2e layernorm module functionality."""
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 from onnx9000.toolkit.training.autograd.losses import add_mse_loss
 
 
 def test_train_layernorm() -> None:
+    """Tests the train layernorm functionality."""
     g = Graph("ln")
     g.inputs.extend(["x", "target", "lr"])
     g.add_tensor(Tensor("x", shape=(1, 16, 64), dtype="float32", requires_grad=True))
@@ -22,9 +25,11 @@ def test_train_layernorm() -> None:
     builder = AOTBuilder(g)
 
     def loss_gen(gr, p, t, o):
+        """Tests the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
     def opt_gen(gr, lr, p):
+        """Tests the opt gen functionality."""
         pass
 
     train_graph = builder.build_training_graph(loss_gen, opt_gen, "lr")

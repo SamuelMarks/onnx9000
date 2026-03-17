@@ -1,9 +1,12 @@
+"""Tests the vision ops module functionality."""
+
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
 from onnx9000.converters.paddle.vision_ops import VISION_OPS_MAPPING
 
 
 def test_paddle_vision_ops() -> None:
+    """Tests the paddle vision ops functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode("n", "bicubic_interp", inputs={"X": ["a"], "OutSize": ["out"]})
     VISION_OPS_MAPPING["bicubic_interp"](builder, n)

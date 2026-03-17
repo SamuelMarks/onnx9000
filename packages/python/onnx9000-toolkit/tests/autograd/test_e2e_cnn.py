@@ -1,3 +1,5 @@
+"""Tests the e2e cnn module functionality."""
+
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 from onnx9000.toolkit.training.autograd.losses import add_mse_loss
@@ -5,6 +7,7 @@ from onnx9000.toolkit.training.autograd.optimizers import add_sgd_optimizer
 
 
 def test_train_cnn() -> None:
+    """Tests the train cnn functionality."""
     g = Graph("cnn")
     g.inputs.append("x")
     g.inputs.append("target")
@@ -48,9 +51,11 @@ def test_train_cnn() -> None:
     builder = AOTBuilder(g)
 
     def loss_gen(gr, p, t, o):
+        """Tests the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
     def opt_gen(gr, lr, p):
+        """Tests the opt gen functionality."""
         add_sgd_optimizer(gr, lr, p)
 
     train_graph = builder.build_training_graph(loss_gen, opt_gen, "lr")

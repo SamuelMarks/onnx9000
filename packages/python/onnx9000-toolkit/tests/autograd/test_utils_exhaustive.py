@@ -1,20 +1,23 @@
+"""Tests the utils exhaustive module functionality."""
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.utils import (
     GradientProto,
-    generate_gradient_proto,
-    calculate_gradient_payload_size,
-    compress_gradients_int8,
-    compile_multi_replica_graph,
-    embed_distributed_identifiers,
     add_synchronous_barrier,
     calculate_communication_bounds,
+    calculate_gradient_payload_size,
+    compile_multi_replica_graph,
+    compress_gradients_int8,
+    embed_distributed_identifiers,
     flatten_gradients,
+    generate_gradient_proto,
     reverse_topological_sort,
 )
 
 
 def test_gradient_proto():
+    """Tests the gradient proto functionality."""
     proto = GradientProto("g1", "w1", "grad_w1")
     assert proto.name == "g1"
     assert proto.weight_name == "w1"
@@ -22,6 +25,7 @@ def test_gradient_proto():
 
 
 def test_generate_gradient_proto():
+    """Tests the generate gradient proto functionality."""
     fwd_graph = Graph(name="fwd")
     fwd_graph.initializers.append("w1")
     fwd_graph.initializers.append("w2")
@@ -34,6 +38,7 @@ def test_generate_gradient_proto():
 
 
 def test_calculate_gradient_payload_size():
+    """Tests the calculate gradient payload size functionality."""
     graph = Graph(name="g")
 
     # Need to mock the shapes and types
@@ -66,6 +71,7 @@ def test_calculate_gradient_payload_size():
 
 
 def test_compress_gradients_int8():
+    """Tests the compress gradients int8 functionality."""
     graph = Graph(name="g")
     compress_gradients_int8(graph)
     assert len(graph.nodes) == 0
@@ -77,6 +83,7 @@ def test_compress_gradients_int8():
 
 
 def test_compile_multi_replica_graph():
+    """Tests the compile multi replica graph functionality."""
     graph = Graph(name="g")
     assert compile_multi_replica_graph(graph, 1) is graph
 
@@ -107,6 +114,7 @@ def test_compile_multi_replica_graph():
 
 
 def test_embed_distributed_identifiers():
+    """Tests the embed distributed identifiers functionality."""
     graph = Graph(name="g")
     graph.outputs.append("grad_w1")
     graph.add_tensor(Tensor(name="grad_w1", shape=(1,), dtype="float32"))
@@ -115,6 +123,7 @@ def test_embed_distributed_identifiers():
 
 
 def test_add_synchronous_barrier():
+    """Tests the add synchronous barrier functionality."""
     graph = Graph(name="g")
     graph.outputs.append("all_gradients_flat")
     add_synchronous_barrier(graph)
@@ -123,6 +132,7 @@ def test_add_synchronous_barrier():
 
 
 def test_calculate_communication_bounds():
+    """Tests the calculate communication bounds functionality."""
     graph = Graph(name="g")
     graph.outputs.append("grad_w1")
     graph.add_tensor(Tensor(name="grad_w1", shape=(1024, 1024), dtype="float32"))  # 4MB
@@ -131,6 +141,7 @@ def test_calculate_communication_bounds():
 
 
 def test_flatten_gradients():
+    """Tests the flatten gradients functionality."""
     graph = Graph(name="g")
     flatten_gradients(graph)  # Should do nothing
 
@@ -140,6 +151,7 @@ def test_flatten_gradients():
 
 
 def test_reverse_topological_sort_cycle():
+    """Tests the reverse topological sort cycle functionality."""
     graph = Graph(name="g")
     graph.add_node(Node("Id", ["x"], ["y"], name="n1"))
     graph.add_node(Node("Id", ["y"], ["x"], name="n2"))
@@ -149,6 +161,7 @@ def test_reverse_topological_sort_cycle():
 
 
 def test_reverse_topological_sort_diamond():
+    """Tests the reverse topological sort diamond functionality."""
     graph = Graph(name="g")
     graph.add_node(Node("Id", ["x"], ["y1"], name="n1"))
     graph.add_node(Node("Id", ["x"], ["y2"], name="n2"))

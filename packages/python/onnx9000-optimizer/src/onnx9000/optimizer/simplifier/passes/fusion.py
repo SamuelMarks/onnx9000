@@ -258,9 +258,303 @@ class PatternMatcherFusion(FusionPass):
         return changed
 
 
+def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
+    import numpy as np
+    from onnx9000.core.ir import Constant
+
+    changed = False
+    for node in graph.nodes:
+        if node.op_type == "BatchNormalization":
+            bn_x = node.inputs[0]
+            gemm_node = None
+            for n in graph.nodes:
+                if n.op_type == "Gemm" and bn_x in n.outputs:
+                    gemm_node = n
+                    break
+
+            if not gemm_node:
+                continue
+
+            num_consumers = sum(1 for n in graph.nodes if bn_x in n.inputs)
+            if num_consumers > 1 or bn_x in [o.name for o in graph.outputs]:
+                continue
+
+            scale_t = graph.tensors.get(node.inputs[1])
+            b_t = graph.tensors.get(node.inputs[2])
+            mean_t = graph.tensors.get(node.inputs[3])
+            var_t = graph.tensors.get(node.inputs[4])
+
+            if not all(
+                t and getattr(t, "is_initializer", False) for t in [scale_t, b_t, mean_t, var_t]
+            ):
+                continue
+
+            epsilon = node.attributes.get("epsilon").value if "epsilon" in node.attributes else 1e-5
+
+            scale = scale_t.data
+            b = b_t.data
+            mean = mean_t.data
+            var = var_t.data
+
+            if not all(isinstance(x, np.ndarray) for x in [scale, b, mean, var]):
+                continue
+
+            gemm_w_name = gemm_node.inputs[1]
+            gemm_w_t = graph.tensors.get(gemm_w_name)
+            if (
+                not gemm_w_t
+                or not getattr(gemm_w_t, "is_initializer", False)
+                or not isinstance(gemm_w_t.data, np.ndarray)
+            ):
+                continue
+
+            transB = (
+                gemm_node.attributes.get("transB").value if "transB" in gemm_node.attributes else 0
+            )
+
+            gemm_w = gemm_w_t.data
+
+            if len(gemm_node.inputs) > 2 and gemm_node.inputs[2]:
+                gemm_b_name = gemm_node.inputs[2]
+                gemm_b_t = graph.tensors.get(gemm_b_name)
+                if (
+                    not gemm_b_t
+                    or not getattr(gemm_b_t, "is_initializer", False)
+                    or not isinstance(gemm_b_t.data, np.ndarray)
+                ):
+                    continue
+                gemm_b = gemm_b_t.data
+            else:
+                gemm_b = np.zeros(
+                    gemm_w.shape[0] if transB else gemm_w.shape[1], dtype=gemm_w.dtype
+                )
+
+            multiplier = scale / np.sqrt(var + epsilon)
+
+            # Gemm formula: alpha * A * B + beta * C
+            # If transB: B is (N, K) -> output features is N.
+            # If not transB: B is (K, N) -> output features is N.
+            if transB:
+                multiplier_reshaped = multiplier.reshape(-1, 1)
+                new_w = gemm_w * multiplier_reshaped
+            else:
+                multiplier_reshaped = multiplier.reshape(1, -1)
+                new_w = gemm_w * multiplier_reshaped
+
+            new_b = (gemm_b - mean) * multiplier + b
+
+            new_w_name = f"{gemm_w_name}_fused_bn"
+            new_b_name = f"{gemm_node.name}_fused_bn_b"
+
+            new_w_t = Constant(
+                new_w_name, data=new_w.astype(gemm_w.dtype), shape=new_w.shape, dtype=gemm_w_t.dtype
+            )
+            new_b_t = Constant(
+                new_b_name,
+                data=new_b.astype(gemm_b.dtype if len(gemm_node.inputs) > 2 else gemm_w.dtype),
+                shape=new_b.shape,
+                dtype=b_t.dtype,
+            )
+
+            graph.add_tensor(new_w_t)
+            graph.initializers.append(new_w_name)
+            graph.add_tensor(new_b_t)
+            graph.initializers.append(new_b_name)
+
+            if len(gemm_node.inputs) > 2:
+                gemm_node.inputs[1] = new_w_name
+                gemm_node.inputs[2] = new_b_name
+            else:
+                gemm_node.inputs[1] = new_w_name
+                gemm_node.inputs.append(new_b_name)
+
+            for n in graph.nodes:
+                for i, inp in enumerate(n.inputs):
+                    if inp == node.outputs[0]:
+                        n.inputs[i] = bn_x
+
+            for out in graph.outputs:
+                if getattr(out, "name", out) == node.outputs[0]:
+                    out.name = bn_x
+
+            node.outputs = []
+            changed = True
+            import logging
+
+            logging.getLogger(__name__).info(
+                f"Fused BatchNormalization {node.name} into Gemm {gemm_node.name}"
+            )
+
+    return changed
+
+
+def fuse_batchnorm_into_conv(graph: Graph) -> bool:
+    import numpy as np
+    from onnx9000.core.ir import Constant
+
+    changed = False
+    for node in graph.nodes:
+        if node.op_type == "BatchNormalization":
+            # BN inputs: X, scale, B, mean, var
+            bn_x = node.inputs[0]
+            conv_node = None
+            for n in graph.nodes:
+                if n.op_type == "Conv" and bn_x in n.outputs:
+                    conv_node = n
+                    break
+
+            if not conv_node:
+                continue
+
+            # Check if Conv outputs are only used by this BN
+            num_consumers = sum(1 for n in graph.nodes if bn_x in n.inputs)
+            if num_consumers > 1 or bn_x in [o.name for o in graph.outputs]:
+                continue
+
+            # Grab BN constants
+            scale_t = graph.tensors.get(node.inputs[1])
+            b_t = graph.tensors.get(node.inputs[2])
+            mean_t = graph.tensors.get(node.inputs[3])
+            var_t = graph.tensors.get(node.inputs[4])
+
+            if not all(
+                t and getattr(t, "is_initializer", False) for t in [scale_t, b_t, mean_t, var_t]
+            ):
+                continue
+
+            epsilon = node.attributes.get("epsilon").value if "epsilon" in node.attributes else 1e-5
+
+            scale = scale_t.data
+            b = b_t.data
+            mean = mean_t.data
+            var = var_t.data
+
+            if not all(isinstance(x, np.ndarray) for x in [scale, b, mean, var]):
+                continue
+
+            # Compute new weights and biases
+            # W_new = W * (scale / sqrt(var + eps))
+            # B_new = (B_conv - mean) * (scale / sqrt(var + eps)) + B_bn
+
+            conv_w_name = conv_node.inputs[1]
+            conv_w_t = graph.tensors.get(conv_w_name)
+            if (
+                not conv_w_t
+                or not getattr(conv_w_t, "is_initializer", False)
+                or not isinstance(conv_w_t.data, np.ndarray)
+            ):
+                continue
+
+            conv_w = conv_w_t.data
+
+            if len(conv_node.inputs) > 2 and conv_node.inputs[2]:
+                conv_b_name = conv_node.inputs[2]
+                conv_b_t = graph.tensors.get(conv_b_name)
+                if (
+                    not conv_b_t
+                    or not getattr(conv_b_t, "is_initializer", False)
+                    or not isinstance(conv_b_t.data, np.ndarray)
+                ):
+                    continue
+                conv_b = conv_b_t.data
+            else:
+                conv_b = np.zeros(conv_w.shape[0], dtype=conv_w.dtype)
+
+            # Compute multiplier
+            multiplier = scale / np.sqrt(var + epsilon)
+
+            # Conv weights: (M, C/group, kH, kW)
+            # Multiplier is shape (M,)
+            w_shape = conv_w.shape
+            multiplier_reshaped = multiplier.reshape((w_shape[0],) + (1,) * (len(w_shape) - 1))
+
+            new_w = conv_w * multiplier_reshaped
+            new_b = (conv_b - mean) * multiplier + b
+
+            new_w_name = f"{conv_w_name}_fused_bn"
+            new_b_name = f"{conv_node.name}_fused_bn_b"
+
+            new_w_t = Constant(
+                new_w_name, data=new_w.astype(conv_w.dtype), shape=new_w.shape, dtype=conv_w_t.dtype
+            )
+            new_b_t = Constant(
+                new_b_name,
+                data=new_b.astype(conv_b.dtype if len(conv_node.inputs) > 2 else conv_w.dtype),
+                shape=new_b.shape,
+                dtype=b_t.dtype,
+            )
+
+            graph.add_tensor(new_w_t)
+            graph.initializers.append(new_w_name)
+            graph.add_tensor(new_b_t)
+            graph.initializers.append(new_b_name)
+
+            # Update Conv inputs
+            if len(conv_node.inputs) > 2:
+                conv_node.inputs[1] = new_w_name
+                conv_node.inputs[2] = new_b_name
+            else:
+                conv_node.inputs[1] = new_w_name
+                conv_node.inputs.append(new_b_name)
+
+            # Rewire BN outputs
+            for n in graph.nodes:
+                for i, inp in enumerate(n.inputs):
+                    if inp == node.outputs[0]:
+                        n.inputs[i] = bn_x
+
+            for out in graph.outputs:
+                if out.name == node.outputs[0]:
+                    out.name = bn_x
+
+            node.outputs = []  # Remove consumers to DCE it out
+            changed = True
+            import logging
+
+            logging.getLogger(__name__).info(
+                f"Fused BatchNormalization {node.name} into Conv {conv_node.name}"
+            )
+
+    return changed
+
+
+def map_aten_arange_to_range(graph: Graph) -> bool:
+    changed = False
+    for node in graph.nodes:
+        if node.op_type == "arange" and getattr(node, "domain", "") == "aten":
+            import numpy as np
+            from onnx9000.core.ir import Constant
+
+            # aten::arange(end, dtype, layout, device, pin_memory) -> Range(start, limit, delta)
+            # or aten::arange(start, end, step, dtype, layout, device, pin_memory)
+            # Simplest way: map inputs correctly if they map directly to Range
+
+            # It's safer to just remap the domain/op_type if it strictly has 3 inputs for start/limit/step
+            # For simplicity, if it has 3 math inputs and the rest are ignored
+            if len(node.inputs) >= 3:
+                node.op_type = "Range"
+                node.domain = ""
+                # Strip out device/dtype parameters which aren't in ONNX Range
+                node.inputs = node.inputs[:3]
+                changed = True
+                import logging
+
+                logging.getLogger(__name__).info(
+                    f"Mapped PyTorch aten::arange to ONNX Range at {node.name}"
+                )
+
+    return changed
+
+
 def run_all_fusions(graph: Graph) -> None:
     """Implements the run_all_fusions method or operation."""
     PatternMatcherFusion().run(graph)
+    while (
+        fuse_batchnorm_into_conv(graph)
+        or fuse_batchnorm_into_gemm(graph)
+        or map_aten_arange_to_range(graph)
+    ):
+        pass
 
 
 def fuse_linear_activation(graph: Graph) -> None:

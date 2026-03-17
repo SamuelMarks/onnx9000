@@ -1,3 +1,5 @@
+"""Tests the pyodide module functionality."""
+
 import sys
 
 
@@ -39,6 +41,7 @@ def test_dynamic_mlp_generation() -> None:
 
 
 def test_js_wrapper() -> None:
+    """Tests the js wrapper functionality."""
     from onnx9000.toolkit.script.js_wrapper import JSGraphBuilder
 
     builder = JSGraphBuilder("MyGraph")
