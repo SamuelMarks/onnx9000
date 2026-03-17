@@ -21,16 +21,16 @@ export default tseslint.config(
         'error',
         {
           selector: "TSKeywordKeyword[name='unknown']",
-          message: "The 'unknown' type is forbidden by project rules."
+          message: "The 'unknown' type is forbidden by project rules.",
         },
         {
           selector: "TSKeywordKeyword[name='never']",
-          message: "The 'never' type is forbidden by project rules."
-        }
-      ]
-    }
+          message: "The 'never' type is forbidden by project rules.",
+        },
+      ],
+    },
   },
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/.turbo/**", "**/coverage/**"]
-  }
+    ignores: ['**/dist/**', '**/node_modules/**', '**/.turbo/**', '**/coverage/**'],
+  },
 );

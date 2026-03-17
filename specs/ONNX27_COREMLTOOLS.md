@@ -1,128 +1,136 @@
 # ONNX27: coremltools (Web-Native Apple Silicon Bridge)
 
 ## Original Project Description
+
 Apple's `coremltools` is a Python package that converts machine learning models from major frameworks (PyTorch, TensorFlow, ONNX) into the Core ML format (`.mlmodel` and the newer `.mlpackage`). This conversion is essential for deploying models natively on Apple hardware (macOS, iOS, iPadOS, watchOS), allowing the operating system to optimally route computations across the CPU, GPU, and the highly efficient Apple Neural Engine (ANE). The tool relies heavily on Python, protobuf generation, and underlying native binaries to optimize the graph intermediate representation (Model Intermediate Language, or MIL).
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 Instead of requiring a local macOS machine with a massive Python environment to generate iOS/macOS payloads, `onnx9000.coreml` is entirely implemented in TypeScript and WebAssembly.
-*   **Browser-Based Generation:** Allows developers to drag-and-drop an ONNX file into a web browser, perform MIL optimizations, and instantly download a signed `.mlpackage` ready for Xcode, entirely client-side.
-*   **No Native Dependencies:** Bypasses Apple's proprietary C++ parsing libraries by implementing the CoreML protobuf schema and MIL AST directly in TypeScript.
-*   **Bi-directional (CoreML -> ONNX):** While Apple's tool primarily focuses on *exporting* to CoreML, `onnx9000` natively supports *importing* existing `.mlmodel` files and lifting them back up to standard ONNX IR to run on non-Apple web environments.
-*   **WebNN Integration:** Automatically generates WebNN execution hints tailored for Safari's CoreML-backed WebNN implementation, ensuring the generated graphs hit the ANE fast-paths dynamically in the browser.
+
+- **Browser-Based Generation:** Allows developers to drag-and-drop an ONNX file into a web browser, perform MIL optimizations, and instantly download a signed `.mlpackage` ready for Xcode, entirely client-side.
+- **No Native Dependencies:** Bypasses Apple's proprietary C++ parsing libraries by implementing the CoreML protobuf schema and MIL AST directly in TypeScript.
+- **Bi-directional (CoreML -> ONNX):** While Apple's tool primarily focuses on _exporting_ to CoreML, `onnx9000` natively supports _importing_ existing `.mlmodel` files and lifting them back up to standard ONNX IR to run on non-Apple web environments.
+- **WebNN Integration:** Automatically generates WebNN execution hints tailored for Safari's CoreML-backed WebNN implementation, ensuring the generated graphs hit the ANE fast-paths dynamically in the browser.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: CoreML Schema & Serialization (Web-Native)
-- [ ] 001. Implement CoreML protobuf parser in pure TypeScript/WASM.
-- [ ] 002. Implement CoreML protobuf emitter in pure TypeScript/WASM.
-- [ ] 003. Support `Model` spec version 1 to 7 compatibility flags.
-- [ ] 004. Define `NeuralNetwork` schema structure.
-- [ ] 005. Define `NeuralNetworkBuilder` schema structure.
-- [ ] 006. Define `MILSpec.Program` schema structure (CoreML v4+).
-- [ ] 007. Define `MILSpec.Function` schema structure.
-- [ ] 008. Define `MILSpec.Block` schema structure.
-- [ ] 009. Implement JSON-to-Protobuf serialization for CoreML definitions.
-- [ ] 010. Implement `.mlmodel` flat file generator.
-- [ ] 011. Implement `.mlpackage` directory structure generator.
-- [ ] 012. Utilize JSZip (or WASM equivalent) to package the `.mlpackage` in the browser.
-- [ ] 013. Generate `Manifest.json` for `.mlpackage`.
-- [ ] 014. Generate `FeatureDescriptions.json` for `.mlpackage`.
-- [ ] 015. Implement `weights/weight.bin` external data writer.
-- [ ] 016. Handle chunked writing for `weight.bin` exceeding browser memory limits.
-- [ ] 017. Define `FeatureType` representations (Int64, Double, String, Image, MultiArray).
-- [ ] 018. Implement `ImageFeatureType` mapping (RGB, BGR, Grayscale).
-- [ ] 019. Implement `DictionaryFeatureType` mapping.
-- [ ] 020. Implement `SequenceFeatureType` mapping.
-- [ ] 021. Parse and preserve model metadata (author, license, description).
-- [ ] 022. Serialize user-defined metadata dictionaries.
-- [ ] 023. Implement a linter validating the generated CoreML protobuf against Apple's strict schema.
-- [ ] 024. Expose an API to read metadata from an existing `.mlmodel` without parsing weights.
-- [ ] 025. Support updating model metadata natively in the browser and re-exporting.
+
+- [ ] 1. Implement CoreML protobuf parser in pure TypeScript/WASM.
+- [ ] 2. Implement CoreML protobuf emitter in pure TypeScript/WASM.
+- [ ] 3. Support `Model` spec version 1 to 7 compatibility flags.
+- [ ] 4. Define `NeuralNetwork` schema structure.
+- [ ] 5. Define `NeuralNetworkBuilder` schema structure.
+- [ ] 6. Define `MILSpec.Program` schema structure (CoreML v4+).
+- [ ] 7. Define `MILSpec.Function` schema structure.
+- [ ] 8. Define `MILSpec.Block` schema structure.
+- [ ] 9. Implement JSON-to-Protobuf serialization for CoreML definitions.
+- [ ] 10. Implement `.mlmodel` flat file generator.
+- [ ] 11. Implement `.mlpackage` directory structure generator.
+- [ ] 12. Utilize JSZip (or WASM equivalent) to package the `.mlpackage` in the browser.
+- [ ] 13. Generate `Manifest.json` for `.mlpackage`.
+- [ ] 14. Generate `FeatureDescriptions.json` for `.mlpackage`.
+- [ ] 15. Implement `weights/weight.bin` external data writer.
+- [ ] 16. Handle chunked writing for `weight.bin` exceeding browser memory limits.
+- [ ] 17. Define `FeatureType` representations (Int64, Double, String, Image, MultiArray).
+- [ ] 18. Implement `ImageFeatureType` mapping (RGB, BGR, Grayscale).
+- [ ] 19. Implement `DictionaryFeatureType` mapping.
+- [ ] 20. Implement `SequenceFeatureType` mapping.
+- [ ] 21. Parse and preserve model metadata (author, license, description).
+- [ ] 22. Serialize user-defined metadata dictionaries.
+- [ ] 23. Implement a linter validating the generated CoreML protobuf against Apple's strict schema.
+- [ ] 24. Expose an API to read metadata from an existing `.mlmodel` without parsing weights.
+- [ ] 25. Support updating model metadata natively in the browser and re-exporting.
 
 ### Phase 2: Model Intermediate Language (MIL) AST
-- [ ] 026. Define base `mil.Operation` AST node.
-- [ ] 027. Define base `mil.Value` and `mil.Var` nodes.
-- [ ] 028. Implement MIL type system (`mil.type.tensor`, `mil.type.scalar`, `mil.type.tuple`).
-- [ ] 029. Implement `mil.type.fp16`, `mil.type.fp32`, `mil.type.int32`, `mil.type.bool`.
-- [ ] 030. Implement `mil.Builder` class for programmatic MIL graph construction.
-- [ ] 031. Implement `mil.Program` and `mil.Function` containers.
-- [ ] 032. Implement graph topological sort utility for MIL operations.
-- [ ] 033. Implement MIL constant folding optimization pass.
-- [ ] 034. Implement MIL dead code elimination (DCE) pass.
-- [ ] 035. Implement MIL common subexpression elimination (CSE).
-- [ ] 036. Implement namespace isolation for MIL variables to prevent collision.
-- [ ] 037. Create the ONNX-to-MIL high-level translation loop.
-- [ ] 038. Map ONNX input tensors to MIL function inputs.
-- [ ] 039. Map ONNX initializers to MIL `const` operations.
-- [ ] 040. Map ONNX output tensors to MIL function outputs.
-- [ ] 041. Implement shape inference within the MIL AST to resolve dynamic boundaries.
-- [ ] 042. Translate ONNX dynamic axes to MIL symbolic variables (e.g., `isize1`).
-- [ ] 043. Handle type casting implicitly if ONNX types (e.g., int64) aren't supported natively by MIL.
-- [ ] 044. Implement a textual printer for MIL AST debugging (similar to Apple's PyMIL).
-- [ ] 045. Implement AST node replacement utilities for graph rewriting.
-- [ ] 046. Validate MIL AST prior to lowering to Protobuf.
-- [ ] 047. Track original ONNX node names in MIL metadata for debugging traceability.
-- [ ] 048. Implement loop/conditional block unwrapping into standard MIL execution flow.
-- [ ] 049. Establish a specific intermediate dialect `onnx9000.apple_ane` for Neural Engine specifics.
-- [ ] 050. Implement a topological verifier checking against acyclic directed graph rules.
+
+- [ ] 26. Define base `mil.Operation` AST node.
+- [ ] 27. Define base `mil.Value` and `mil.Var` nodes.
+- [ ] 28. Implement MIL type system (`mil.type.tensor`, `mil.type.scalar`, `mil.type.tuple`).
+- [ ] 29. Implement `mil.type.fp16`, `mil.type.fp32`, `mil.type.int32`, `mil.type.bool`.
+- [ ] 30. Implement `mil.Builder` class for programmatic MIL graph construction.
+- [ ] 31. Implement `mil.Program` and `mil.Function` containers.
+- [ ] 32. Implement graph topological sort utility for MIL operations.
+- [ ] 33. Implement MIL constant folding optimization pass.
+- [ ] 34. Implement MIL dead code elimination (DCE) pass.
+- [ ] 35. Implement MIL common subexpression elimination (CSE).
+- [ ] 36. Implement namespace isolation for MIL variables to prevent collision.
+- [ ] 37. Create the ONNX-to-MIL high-level translation loop.
+- [ ] 38. Map ONNX input tensors to MIL function inputs.
+- [ ] 39. Map ONNX initializers to MIL `const` operations.
+- [ ] 40. Map ONNX output tensors to MIL function outputs.
+- [ ] 41. Implement shape inference within the MIL AST to resolve dynamic boundaries.
+- [ ] 42. Translate ONNX dynamic axes to MIL symbolic variables (e.g., `isize1`).
+- [ ] 43. Handle type casting implicitly if ONNX types (e.g., int64) aren't supported natively by MIL.
+- [ ] 44. Implement a textual printer for MIL AST debugging (similar to Apple's PyMIL).
+- [ ] 45. Implement AST node replacement utilities for graph rewriting.
+- [ ] 46. Validate MIL AST prior to lowering to Protobuf.
+- [ ] 47. Track original ONNX node names in MIL metadata for debugging traceability.
+- [ ] 48. Implement loop/conditional block unwrapping into standard MIL execution flow.
+- [ ] 49. Establish a specific intermediate dialect `onnx9000.apple_ane` for Neural Engine specifics.
+- [ ] 50. Implement a topological verifier checking against acyclic directed graph rules.
 
 ### Phase 3: Unary & Binary Arithmetic Translation (ONNX -> MIL)
-- [ ] 051. Map ONNX `Add` to MIL `add`.
-- [ ] 052. Map ONNX `Sub` to MIL `sub`.
-- [ ] 053. Map ONNX `Mul` to MIL `mul`.
-- [ ] 054. Map ONNX `Div` to MIL `real_div` / `floor_div`.
-- [ ] 055. Map ONNX `Pow` to MIL `pow`.
-- [ ] 056. Map ONNX `Abs` to MIL `abs`.
-- [ ] 057. Map ONNX `Ceil` to MIL `ceil`.
-- [ ] 058. Map ONNX `Floor` to MIL `floor`.
-- [ ] 059. Map ONNX `Round` to MIL `round`.
-- [ ] 060. Map ONNX `Exp` to MIL `exp`.
-- [ ] 061. Map ONNX `Log` to MIL `log`.
-- [ ] 062. Map ONNX `Sqrt` to MIL `sqrt`.
-- [ ] 063. Map ONNX `Sin` to MIL `sin`.
-- [ ] 064. Map ONNX `Cos` to MIL `cos`.
-- [ ] 065. Map ONNX `Tan` to MIL `tan`.
-- [ ] 066. Map ONNX `Asin` to MIL `asin`.
-- [ ] 067. Map ONNX `Acos` to MIL `acos`.
-- [ ] 068. Map ONNX `Atan` to MIL `atan`.
-- [ ] 069. Map ONNX `Sign` to MIL `sign`.
-- [ ] 070. Map ONNX `Mod` to MIL `mod`.
-- [ ] 071. Map ONNX `Max` to MIL `maximum`.
-- [ ] 072. Map ONNX `Min` to MIL `minimum`.
-- [ ] 073. Map ONNX `Erf` to MIL `erf`.
-- [ ] 074. Map ONNX `IsNaN` to MIL `isnan`.
-- [ ] 075. Handle ONNX implicit broadcasting logic mapping to MIL explicit broadcast ops if needed.
+
+- [ ] 51. Map ONNX `Add` to MIL `add`.
+- [ ] 52. Map ONNX `Sub` to MIL `sub`.
+- [ ] 53. Map ONNX `Mul` to MIL `mul`.
+- [ ] 54. Map ONNX `Div` to MIL `real_div` / `floor_div`.
+- [ ] 55. Map ONNX `Pow` to MIL `pow`.
+- [ ] 56. Map ONNX `Abs` to MIL `abs`.
+- [ ] 57. Map ONNX `Ceil` to MIL `ceil`.
+- [ ] 58. Map ONNX `Floor` to MIL `floor`.
+- [ ] 59. Map ONNX `Round` to MIL `round`.
+- [ ] 60. Map ONNX `Exp` to MIL `exp`.
+- [ ] 61. Map ONNX `Log` to MIL `log`.
+- [ ] 62. Map ONNX `Sqrt` to MIL `sqrt`.
+- [ ] 63. Map ONNX `Sin` to MIL `sin`.
+- [ ] 64. Map ONNX `Cos` to MIL `cos`.
+- [ ] 65. Map ONNX `Tan` to MIL `tan`.
+- [ ] 66. Map ONNX `Asin` to MIL `asin`.
+- [ ] 67. Map ONNX `Acos` to MIL `acos`.
+- [ ] 68. Map ONNX `Atan` to MIL `atan`.
+- [ ] 69. Map ONNX `Sign` to MIL `sign`.
+- [ ] 70. Map ONNX `Mod` to MIL `mod`.
+- [ ] 71. Map ONNX `Max` to MIL `maximum`.
+- [ ] 72. Map ONNX `Min` to MIL `minimum`.
+- [ ] 73. Map ONNX `Erf` to MIL `erf`.
+- [ ] 74. Map ONNX `IsNaN` to MIL `isnan`.
+- [ ] 75. Handle ONNX implicit broadcasting logic mapping to MIL explicit broadcast ops if needed.
 
 ### Phase 4: Tensor Manipulation Translation (ONNX -> MIL)
-- [ ] 076. Map ONNX `Reshape` to MIL `reshape`.
-- [ ] 077. Map ONNX `Transpose` to MIL `transpose`.
-- [ ] 078. Map ONNX `Concat` to MIL `concat`.
-- [ ] 079. Map ONNX `Slice` to MIL `slice_by_index` or `slice_by_size`.
-- [ ] 080. Handle dynamic ONNX slice parameters using MIL symbolic bounds.
-- [ ] 081. Map ONNX `Split` to MIL `split`.
-- [ ] 082. Map ONNX `Squeeze` to MIL `squeeze`.
-- [ ] 083. Map ONNX `Unsqueeze` to MIL `expand_dims`.
-- [ ] 084. Map ONNX `Gather` to MIL `gather`.
-- [ ] 085. Map ONNX `GatherElements` to MIL `gather_along_axis`.
-- [ ] 086. Map ONNX `GatherND` to MIL `gather_nd`.
-- [ ] 087. Map ONNX `Scatter` to MIL `scatter`.
-- [ ] 088. Map ONNX `ScatterElements` to MIL `scatter_along_axis`.
-- [ ] 089. Map ONNX `ScatterND` to MIL `scatter_nd`.
-- [ ] 090. Map ONNX `Tile` to MIL `tile`.
-- [ ] 091. Map ONNX `Pad` to MIL `pad`.
-- [ ] 092. Handle `constant` padding mode in MIL.
-- [ ] 093. Handle `reflect` padding mode in MIL.
-- [ ] 094. Handle `edge` padding mode in MIL.
-- [ ] 095. Map ONNX `Expand` to MIL `broadcast_to`.
-- [ ] 096. Map ONNX `Shape` to MIL `shape`.
-- [ ] 097. Map ONNX `Size` to MIL `size`.
-- [ ] 098. Map ONNX `Cast` to MIL `cast`.
-- [ ] 099. Identify unsupported ONNX type casting (e.g., float64) and insert warning traces.
+
+- [ ] 76. Map ONNX `Reshape` to MIL `reshape`.
+- [ ] 77. Map ONNX `Transpose` to MIL `transpose`.
+- [ ] 78. Map ONNX `Concat` to MIL `concat`.
+- [ ] 79. Map ONNX `Slice` to MIL `slice_by_index` or `slice_by_size`.
+- [ ] 80. Handle dynamic ONNX slice parameters using MIL symbolic bounds.
+- [ ] 81. Map ONNX `Split` to MIL `split`.
+- [ ] 82. Map ONNX `Squeeze` to MIL `squeeze`.
+- [ ] 83. Map ONNX `Unsqueeze` to MIL `expand_dims`.
+- [ ] 84. Map ONNX `Gather` to MIL `gather`.
+- [ ] 85. Map ONNX `GatherElements` to MIL `gather_along_axis`.
+- [ ] 86. Map ONNX `GatherND` to MIL `gather_nd`.
+- [ ] 87. Map ONNX `Scatter` to MIL `scatter`.
+- [ ] 88. Map ONNX `ScatterElements` to MIL `scatter_along_axis`.
+- [ ] 89. Map ONNX `ScatterND` to MIL `scatter_nd`.
+- [ ] 90. Map ONNX `Tile` to MIL `tile`.
+- [ ] 91. Map ONNX `Pad` to MIL `pad`.
+- [ ] 92. Handle `constant` padding mode in MIL.
+- [ ] 93. Handle `reflect` padding mode in MIL.
+- [ ] 94. Handle `edge` padding mode in MIL.
+- [ ] 95. Map ONNX `Expand` to MIL `broadcast_to`.
+- [ ] 96. Map ONNX `Shape` to MIL `shape`.
+- [ ] 97. Map ONNX `Size` to MIL `size`.
+- [ ] 98. Map ONNX `Cast` to MIL `cast`.
+- [ ] 99. Identify unsupported ONNX type casting (e.g., float64) and insert warning traces.
 - [ ] 100. Resolve negative axes indexing natively within the MIL translation.
 
 ### Phase 5: Neural Network Layers Translation (ONNX -> MIL)
+
 - [ ] 101. Map ONNX `Conv` (1D/2D/3D) to MIL `conv`.
 - [ ] 102. Handle convolution `dilations` translation.
 - [ ] 103. Handle convolution `strides` translation.
@@ -150,6 +158,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 125. Parse coordinate transformation modes (`align_corners`, `half_pixel`) for `Resize`.
 
 ### Phase 6: Activations & Reduction Ops Translation (ONNX -> MIL)
+
 - [ ] 126. Map ONNX `Relu` to MIL `relu`.
 - [ ] 127. Map ONNX `LeakyRelu` to MIL `leaky_relu`.
 - [ ] 128. Map ONNX `Sigmoid` to MIL `sigmoid`.
@@ -177,6 +186,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 150. Handle default `keepdims` behaviors between ONNX and MIL properly.
 
 ### Phase 7: Control Flow, Logicals, and RNNs (ONNX -> MIL)
+
 - [ ] 151. Map ONNX `Equal` to MIL `equal`.
 - [ ] 152. Map ONNX `Greater` to MIL `greater`.
 - [ ] 153. Map ONNX `GreaterOrEqual` to MIL `greater_equal`.
@@ -204,6 +214,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 175. Verify acyclic flow after parsing nested subgraphs from ONNX `If`/`Loop`.
 
 ### Phase 8: Apple Neural Engine (ANE) Specific Optimizations
+
 - [ ] 176. Identify and rewrite MatMul sequences into 1x1 Convolutions for ANE acceleration.
 - [ ] 177. Pad hidden dimensions to multiples of 64 or 32 specifically to satisfy ANE lane requirements.
 - [ ] 178. Split massive convolutions (e.g., > 16384 channels) into smaller concatenated blocks to avoid ANE fallback to GPU.
@@ -221,6 +232,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 190. Eliminate redundant `Cast` (FP32 -> FP16 -> FP32) boundaries.
 
 ### Phase 9: Compression & Quantization (`coremltools.optimize`)
+
 - [ ] 191. Implement FP16 casting pass for all weights and biases.
 - [ ] 192. Implement Palettization compression (k-means clustering of weights).
 - [ ] 193. Encode LUT (Look-Up Table) weights natively into the CoreML `.weight.bin` format.
@@ -238,6 +250,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 205. Implement decompression validation ensuring the unpacked LUT exactly matches expected logic.
 
 ### Phase 10: Input/Output Formatting & iOS Integration
+
 - [ ] 206. Support explicitly defining inputs as `ImageType` rather than generic `MultiArray`.
 - [ ] 207. Define image scaling properties (`blueBias`, `greenBias`, `redBias`, `imageScale`).
 - [ ] 208. Parse ONNX Vision transforms to automatically inject image bias metadata.
@@ -250,6 +263,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 215. Configure the generated package to utilize `computeUnits = .all` explicitly by default.
 
 ### Phase 11: Bi-Directional Conversion (CoreML -> ONNX)
+
 - [ ] 216. Implement `.mlmodel` and `.mlpackage` loader/unzipper in JS.
 - [ ] 217. Parse `MILSpec.Program` back into the TypeScript AST representation.
 - [ ] 218. Parse Apple NeuralNetwork V1-V3 layers (legacy protobuf) into the AST representation.
@@ -264,6 +278,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 227. Create a visual diff checker comparing the original ONNX vs the Round-Trip ONNX.
 
 ### Phase 12: GenAI & Stateful Models (iOS 18 / CoreML v8 Spec Prep)
+
 - [ ] 228. Implement the newer Core ML Stateful operations mapping (`mil.state`).
 - [ ] 229. Translate ONNX Runtime GenAI KV Cache patterns directly into CoreML state variables.
 - [ ] 230. Map explicit KV-cache ring buffer updates into MIL `read_state` and `write_state`.
@@ -274,6 +289,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 235. Map Stable Diffusion UNets to CoreML natively, bypassing standard `python-coremltools` pipelines.
 
 ### Phase 13: Browser CLI & Execution Environment
+
 - [ ] 236. Add CLI command: `onnx9000 coreml export <model.onnx>`.
 - [ ] 237. Add CLI command: `onnx9000 coreml import <model.mlpackage>`.
 - [ ] 238. Provide Node.js API: `import { convertToCoreML } from 'onnx9000/coreml'`.
@@ -286,6 +302,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 245. Establish memory bounds checking inside the WASM exporter to prevent browser tab crashes.
 
 ### Phase 14: Quality Assurance & Parity Testing
+
 - [ ] 246. Validate complete conversion of ResNet50 (ONNX -> CoreML).
 - [ ] 247. Validate complete conversion of MobileNetV2 (ONNX -> CoreML).
 - [ ] 248. Validate complete conversion of YOLOv8 (ONNX -> CoreML).
@@ -300,6 +317,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 257. Verify that image classification labels are properly surfaced in macOS Quick Look.
 
 ### Phase 15: Edge Case & Exception Handling
+
 - [ ] 258. Handle parsing of completely unsupported ONNX ops (e.g., custom user ops) by generating clear error traces.
 - [ ] 259. Fallback cleanly if an ONNX model utilizes double precision (`float64`), forcibly downcasting to `float32`.
 - [ ] 260. Manage ONNX `If`/`Loop` constructs that contain operations incompatible with MIL control flow.
@@ -310,6 +328,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 265. Strip `\0` null terminators and non-UTF8 characters from ONNX metadata before serializing to CoreML JSON.
 
 ### Phase 16: Ecosystem & Native Integration
+
 - [ ] 266. Enable importing HuggingFace models seamlessly: `onnx9000 coreml export hf://gpt2`.
 - [ ] 267. Map Hub models to CoreML instantly using cached ONNX graphs internally.
 - [ ] 268. Produce an equivalent to the `coremltools` Python API natively in TypeScript.
@@ -320,6 +339,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 273. Provide a React Native component demonstrating inference on the generated file.
 
 ### Phase 17: Deep CoreML v6/v7 Optimization Passes
+
 - [ ] 274. Implement MIL `constexpr` folding dynamically to resolve constants during the AST building.
 - [ ] 275. Translate ONNX `Einsum` into explicit tensor ops, bypassing ANE issues with native einsum mappings.
 - [ ] 276. Identify `LayerNormalization` acting on the last dimension and utilize specific CoreML accelerated primitives.
@@ -329,6 +349,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 280. Extract dynamic sequence padding operations to CPU boundaries to prevent ANE pipeline stalling.
 
 ### Phase 18: Security & Sandbox Execution
+
 - [ ] 281. Sandbox the JSZip/Archive generation to ensure no cross-site scripting attacks via malicious model metadata.
 - [ ] 282. Prevent local file-system access (except via standard Browser API prompts) during export.
 - [ ] 283. Verify that parsing `.mlmodel` files doesn't trigger JS prototype pollution.
@@ -336,6 +357,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 285. Utilize Subresource Integrity (SRI) on all remote script loading inside the exported HTML demos.
 
 ### Phase 19: Documentation & Profiling
+
 - [ ] 286. Provide comprehensive API documentation mapping `python-coremltools` functions to their TS equivalents.
 - [ ] 287. Publish a migration guide: "Moving from CoreMLTools to `onnx9000`".
 - [ ] 288. Generate a summary table during export showing exactly which layers are structurally modified.
@@ -343,6 +365,7 @@ Instead of requiring a local macOS machine with a massive Python environment to 
 - [ ] 290. Provide visual diffing of the ONNX graph vs the generated MIL graph inside the web UI.
 
 ### Phase 20: Final Polish and Release Readiness
+
 - [ ] 291. Implement dynamic graph batching (converting a single-batch ONNX to a multi-batch CoreML package).
 - [ ] 292. Add support for specialized Apple Vision Pro (visionOS) deployment targets inside the metadata.
 - [ ] 293. Build a WASM fallback for reading/writing Apple's compiled `.mlmodelc` binary directories directly.

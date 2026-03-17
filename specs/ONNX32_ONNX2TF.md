@@ -1,128 +1,136 @@
 # ONNX32: onnx2tf (Web-Native TFLite & EdgeTPU Exporter)
 
 ## Original Project Description
+
 `onnx2tf` (often associated with PINTO0309's widely used repository) is a critical community tool for converting ONNX models into TensorFlow (`SavedModel`) and TensorFlow Lite (`.tflite`) formats. It heavily relies on a massive native Python TensorFlow installation and ONNX Runtime to parse graphs, calculate shapes, and meticulously translate layout structures (since ONNX uses `NCHW` channel-first layouts and TensorFlow/TFLite strongly prefers `NHWC` channel-last layouts). This tool is essential for taking standard AI models and deploying them onto mobile devices (Android NNAPI, iOS CoreML) and hardware accelerators like the Google Coral EdgeTPU.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compile `.tflite` files, `onnx9000.onnx2tf` provides a **100% pure TypeScript and Python FlatBuffer compiler**.
-*   **Zero-Dependency Binary Emission:** It parses the ONNX graph and writes the TFLite FlatBuffer binary directly in memory, byte-by-byte. No `tensorflow`, `tflite`, or `flatc` compiler installations are required.
-*   **Browser-Based EdgeTPU Compilation:** Developers can drop an ONNX file into a web browser, and the library will natively transpose the graph to `NHWC` and generate a mobile-ready `.tflite` file instantly on the client side.
-*   **AOT Transposition:** Re-writing layouts (NCHW -> NHWC) is notoriously slow in Python. `onnx9000` uses its WASM-accelerated GraphSurgeon to permanently bake transpositions directly into the weights before export, guaranteeing peak performance on mobile DSPs without inference-time transposition overhead.
-*   **Unified Quantization:** Maps ONNX `QuantizeLinear`/`DequantizeLinear` directly to TFLite's asymmetric INT8 schema natively, preserving precision without requiring TF Lite's post-training quantization calibration tools.
+
+- **Zero-Dependency Binary Emission:** It parses the ONNX graph and writes the TFLite FlatBuffer binary directly in memory, byte-by-byte. No `tensorflow`, `tflite`, or `flatc` compiler installations are required.
+- **Browser-Based EdgeTPU Compilation:** Developers can drop an ONNX file into a web browser, and the library will natively transpose the graph to `NHWC` and generate a mobile-ready `.tflite` file instantly on the client side.
+- **AOT Transposition:** Re-writing layouts (NCHW -> NHWC) is notoriously slow in Python. `onnx9000` uses its WASM-accelerated GraphSurgeon to permanently bake transpositions directly into the weights before export, guaranteeing peak performance on mobile DSPs without inference-time transposition overhead.
+- **Unified Quantization:** Maps ONNX `QuantizeLinear`/`DequantizeLinear` directly to TFLite's asymmetric INT8 schema natively, preserving precision without requiring TF Lite's post-training quantization calibration tools.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: TFLite FlatBuffer Schema & Serialization Engine
-- [ ] 001. Implement zero-dependency FlatBuffer Builder in TypeScript/JS.
-- [ ] 002. Implement zero-dependency FlatBuffer Builder in Python.
-- [ ] 003. Define TFLite `Model` root table schema natively.
-- [ ] 004. Define TFLite `SubGraph` table schema natively.
-- [ ] 005. Define TFLite `Tensor` table schema natively.
-- [ ] 006. Define TFLite `Buffer` table schema natively.
-- [ ] 007. Define TFLite `Operator` table schema natively.
-- [ ] 008. Define TFLite `OperatorCode` table schema natively.
-- [ ] 009. Define TFLite `QuantizationParameters` table schema.
-- [ ] 010. Define TFLite `Metadata` table schema.
-- [ ] 011. Implement TFLite version 3 header emission (`TFL3` magic bytes).
-- [ ] 012. Implement strictly aligned memory writing (4-byte and 8-byte boundaries for buffers).
-- [ ] 013. Support appending large binary weights directly to the `Buffer` array seamlessly.
-- [ ] 014. Implement string serialization for Tensor and Operator names.
-- [ ] 015. Handle Little-Endian binary encoding universally across all platforms (WASM/JS/Py).
-- [ ] 016. Deduplicate identical operators in the `OperatorCode` array.
-- [ ] 017. Deduplicate identical weight binaries in the `Buffer` array to save disk space.
-- [ ] 018. Deduplicate empty/zero-byte buffers.
-- [ ] 019. Ensure Buffer `0` is always strictly empty as required by the TFLite spec.
-- [ ] 020. Track exact byte offsets during serialization to emit correct vtables.
-- [ ] 021. Provide lazy buffer loading mapping from `onnx9000.Tensor` to FlatBuffer byte arrays.
-- [ ] 022. Export structural JSON representation of the generated FlatBuffer for debugging.
-- [ ] 023. Implement a TFLite FlatBuffer Reader (for bidirectional validation).
-- [ ] 024. Validate generated `.tflite` files against standard `flatc` schema verifiers natively.
-- [ ] 025. Support chunked writing for models exceeding JS `ArrayBuffer` limits (>2GB).
-- [ ] 026. Extract ONNX `ModelProto` metadata (Producer, Version) to TFLite `Metadata` buffers.
-- [ ] 027. Maintain deterministic output (identical ONNX = byte-for-byte identical TFLite).
-- [ ] 028. Manage Javascript `BigInt` safely when writing 64-bit FlatBuffer offsets.
-- [ ] 029. Emulate Python `struct.pack` efficiently in Javascript for primitive types.
-- [ ] 030. Provide a validation pass ensuring no TFLite tensor exceeds standard device bounds.
+
+- [ ] 1. Implement zero-dependency FlatBuffer Builder in TypeScript/JS.
+- [ ] 2. Implement zero-dependency FlatBuffer Builder in Python.
+- [ ] 3. Define TFLite `Model` root table schema natively.
+- [ ] 4. Define TFLite `SubGraph` table schema natively.
+- [ ] 5. Define TFLite `Tensor` table schema natively.
+- [ ] 6. Define TFLite `Buffer` table schema natively.
+- [ ] 7. Define TFLite `Operator` table schema natively.
+- [ ] 8. Define TFLite `OperatorCode` table schema natively.
+- [ ] 9. Define TFLite `QuantizationParameters` table schema.
+- [ ] 10. Define TFLite `Metadata` table schema.
+- [ ] 11. Implement TFLite version 3 header emission (`TFL3` magic bytes).
+- [ ] 12. Implement strictly aligned memory writing (4-byte and 8-byte boundaries for buffers).
+- [ ] 13. Support appending large binary weights directly to the `Buffer` array seamlessly.
+- [ ] 14. Implement string serialization for Tensor and Operator names.
+- [ ] 15. Handle Little-Endian binary encoding universally across all platforms (WASM/JS/Py).
+- [ ] 16. Deduplicate identical operators in the `OperatorCode` array.
+- [ ] 17. Deduplicate identical weight binaries in the `Buffer` array to save disk space.
+- [ ] 18. Deduplicate empty/zero-byte buffers.
+- [ ] 19. Ensure Buffer `0` is always strictly empty as required by the TFLite spec.
+- [ ] 20. Track exact byte offsets during serialization to emit correct vtables.
+- [ ] 21. Provide lazy buffer loading mapping from `onnx9000.Tensor` to FlatBuffer byte arrays.
+- [ ] 22. Export structural JSON representation of the generated FlatBuffer for debugging.
+- [ ] 23. Implement a TFLite FlatBuffer Reader (for bidirectional validation).
+- [ ] 24. Validate generated `.tflite` files against standard `flatc` schema verifiers natively.
+- [ ] 25. Support chunked writing for models exceeding JS `ArrayBuffer` limits (>2GB).
+- [ ] 26. Extract ONNX `ModelProto` metadata (Producer, Version) to TFLite `Metadata` buffers.
+- [ ] 27. Maintain deterministic output (identical ONNX = byte-for-byte identical TFLite).
+- [ ] 28. Manage Javascript `BigInt` safely when writing 64-bit FlatBuffer offsets.
+- [ ] 29. Emulate Python `struct.pack` efficiently in Javascript for primitive types.
+- [ ] 30. Provide a validation pass ensuring no TFLite tensor exceeds standard device bounds.
 
 ### Phase 2: Global Layout Transposition (NCHW -> NHWC)
-- [ ] 031. Implement AST Graph Pass: Identify all spatial convolutions and pooling ops.
-- [ ] 032. Inject `Transpose` (`[0, 2, 3, 1]`) before every 4D spatial operation.
-- [ ] 033. Inject `Transpose` (`[0, 3, 1, 2]`) after every 4D spatial operation.
-- [ ] 034. Implement `Transpose` Push-Down: Move transpositions through elementwise ops (`Add`, `Mul`, `Relu`).
-- [ ] 035. Implement `Transpose` Push-Down through `Concat` and `Split` (adjusting axes dynamically).
-- [ ] 036. Implement `Transpose` Push-Down through `Reshape` (symbolically recalculating reshape targets).
-- [ ] 037. Implement `Transpose` Cancellation: Eliminate adjacent `NCHW->NHWC` and `NHWC->NCHW` pairs.
-- [ ] 038. Fold `Transpose` operations directly into `Constant` / `Initializer` weights statically in memory.
-- [ ] 039. Support 1D layout conversion (`NCW` -> `NWC`).
-- [ ] 040. Support 3D Video layout conversion (`NCDHW` -> `NDHWC`).
-- [ ] 041. Handle ONNX `BatchNormalization` natively on NHWC layouts.
-- [ ] 042. Map Keras/TF.js specific layout formats accurately if originating from `onnx9000.keras`.
-- [ ] 043. Handle arbitrary `Expand` and `Tile` permutations during layout shift.
-- [ ] 044. Generate explicit warnings if an irreducible Transpose node is left in the graph (hurts EdgeTPU).
-- [ ] 045. Automatically recalculate all `ValueInfo` shapes topologically after layout mutation.
-- [ ] 046. Support `--keep-nchw` flag for specific ops that TFLite supports natively in NCHW (though rare).
-- [ ] 047. Translate ONNX `axis` parameters accurately for `Softmax` post-layout shift.
-- [ ] 048. Translate ONNX `axis` parameters for `Gather` and `Scatter`.
-- [ ] 049. Handle `ReduceMean` / `ReduceSum` spatial axes translations (`[2, 3]` -> `[1, 2]`).
-- [ ] 050. Transpose Weight tensors explicitly for `Conv2D` (`[O, I, H, W]` -> `[O, H, W, I]`).
-- [ ] 051. Transpose Weight tensors explicitly for `DepthwiseConv2D` (`[1, C, H, W]` -> `[1, H, W, C]`).
-- [ ] 052. Transpose Weight tensors explicitly for `Conv2DTranspose`.
-- [ ] 053. Ensure scalar biases are preserved correctly without layout corruption.
-- [ ] 054. Verify dimension indexing stability for dynamic batch sizes (`-1`) during layout shifts.
+
+- [ ] 31. Implement AST Graph Pass: Identify all spatial convolutions and pooling ops.
+- [ ] 32. Inject `Transpose` (`[0, 2, 3, 1]`) before every 4D spatial operation.
+- [ ] 33. Inject `Transpose` (`[0, 3, 1, 2]`) after every 4D spatial operation.
+- [ ] 34. Implement `Transpose` Push-Down: Move transpositions through elementwise ops (`Add`, `Mul`, `Relu`).
+- [ ] 35. Implement `Transpose` Push-Down through `Concat` and `Split` (adjusting axes dynamically).
+- [ ] 36. Implement `Transpose` Push-Down through `Reshape` (symbolically recalculating reshape targets).
+- [ ] 37. Implement `Transpose` Cancellation: Eliminate adjacent `NCHW->NHWC` and `NHWC->NCHW` pairs.
+- [ ] 38. Fold `Transpose` operations directly into `Constant` / `Initializer` weights statically in memory.
+- [ ] 39. Support 1D layout conversion (`NCW` -> `NWC`).
+- [ ] 40. Support 3D Video layout conversion (`NCDHW` -> `NDHWC`).
+- [ ] 41. Handle ONNX `BatchNormalization` natively on NHWC layouts.
+- [ ] 42. Map Keras/TF.js specific layout formats accurately if originating from `onnx9000.keras`.
+- [ ] 43. Handle arbitrary `Expand` and `Tile` permutations during layout shift.
+- [ ] 44. Generate explicit warnings if an irreducible Transpose node is left in the graph (hurts EdgeTPU).
+- [ ] 45. Automatically recalculate all `ValueInfo` shapes topologically after layout mutation.
+- [ ] 46. Support `--keep-nchw` flag for specific ops that TFLite supports natively in NCHW (though rare).
+- [ ] 47. Translate ONNX `axis` parameters accurately for `Softmax` post-layout shift.
+- [ ] 48. Translate ONNX `axis` parameters for `Gather` and `Scatter`.
+- [ ] 49. Handle `ReduceMean` / `ReduceSum` spatial axes translations (`[2, 3]` -> `[1, 2]`).
+- [ ] 50. Transpose Weight tensors explicitly for `Conv2D` (`[O, I, H, W]` -> `[O, H, W, I]`).
+- [ ] 51. Transpose Weight tensors explicitly for `DepthwiseConv2D` (`[1, C, H, W]` -> `[1, H, W, C]`).
+- [ ] 52. Transpose Weight tensors explicitly for `Conv2DTranspose`.
+- [ ] 53. Ensure scalar biases are preserved correctly without layout corruption.
+- [ ] 54. Verify dimension indexing stability for dynamic batch sizes (`-1`) during layout shifts.
 
 ### Phase 3: TFLite Tensor & Memory Mapping
-- [ ] 055. Map ONNX `FLOAT` -> TFLite `FLOAT32`.
-- [ ] 056. Map ONNX `FLOAT16` -> TFLite `FLOAT16`.
-- [ ] 057. Map ONNX `INT32` -> TFLite `INT32`.
-- [ ] 058. Map ONNX `INT64` -> TFLite `INT64`.
-- [ ] 059. Map ONNX `INT8` -> TFLite `INT8`.
-- [ ] 060. Map ONNX `UINT8` -> TFLite `UINT8`.
-- [ ] 061. Map ONNX `BOOL` -> TFLite `BOOL`.
-- [ ] 062. Map ONNX `STRING` -> TFLite `STRING`.
-- [ ] 063. Handle ONNX `DOUBLE` (Float64) gracefully (downcast to Float32, as TFLite prefers Float32).
-- [ ] 064. Map empty ONNX shapes `[]` to TFLite scalar shapes `[]`.
-- [ ] 065. Map dynamic ONNX shapes `[-1, 224, 224, 3]` safely.
-- [ ] 066. Emit `ShapeSignature` vectors for TFLite dynamic shapes.
-- [ ] 067. Map ONNX Input Tensors to SubGraph `inputs` array.
-- [ ] 068. Map ONNX Output Tensors to SubGraph `outputs` array.
-- [ ] 069. Resolve ONNX Initializers directly to TFLite `Buffer` indices.
-- [ ] 070. Generate unique integer IDs sequentially for all tensors.
-- [ ] 071. Pack boolean ONNX tensors into TFLite bit-vectors if explicitly required.
-- [ ] 072. Ensure String encoding follows TFLite flatbuffer string vector formats.
-- [ ] 073. Provide fallback casting (`Cast`) automatically if TFLite lacks an op signature for a specific type.
-- [ ] 074. Map 0-dimensional tensors (Scalars) consistently.
+
+- [ ] 55. Map ONNX `FLOAT` -> TFLite `FLOAT32`.
+- [ ] 56. Map ONNX `FLOAT16` -> TFLite `FLOAT16`.
+- [ ] 57. Map ONNX `INT32` -> TFLite `INT32`.
+- [ ] 58. Map ONNX `INT64` -> TFLite `INT64`.
+- [ ] 59. Map ONNX `INT8` -> TFLite `INT8`.
+- [ ] 60. Map ONNX `UINT8` -> TFLite `UINT8`.
+- [ ] 61. Map ONNX `BOOL` -> TFLite `BOOL`.
+- [ ] 62. Map ONNX `STRING` -> TFLite `STRING`.
+- [ ] 63. Handle ONNX `DOUBLE` (Float64) gracefully (downcast to Float32, as TFLite prefers Float32).
+- [ ] 64. Map empty ONNX shapes `[]` to TFLite scalar shapes `[]`.
+- [ ] 65. Map dynamic ONNX shapes `[-1, 224, 224, 3]` safely.
+- [ ] 66. Emit `ShapeSignature` vectors for TFLite dynamic shapes.
+- [ ] 67. Map ONNX Input Tensors to SubGraph `inputs` array.
+- [ ] 68. Map ONNX Output Tensors to SubGraph `outputs` array.
+- [ ] 69. Resolve ONNX Initializers directly to TFLite `Buffer` indices.
+- [ ] 70. Generate unique integer IDs sequentially for all tensors.
+- [ ] 71. Pack boolean ONNX tensors into TFLite bit-vectors if explicitly required.
+- [ ] 72. Ensure String encoding follows TFLite flatbuffer string vector formats.
+- [ ] 73. Provide fallback casting (`Cast`) automatically if TFLite lacks an op signature for a specific type.
+- [ ] 74. Map 0-dimensional tensors (Scalars) consistently.
 
 ### Phase 4: Basic Arithmetic & Elementwise Mapping
-- [ ] 075. Emit `ADD` (TFLite BuiltinOperator).
-- [ ] 076. Emit `SUB`.
-- [ ] 077. Emit `MUL`.
-- [ ] 078. Emit `DIV`.
-- [ ] 079. Emit `FLOOR_DIV`.
-- [ ] 080. Emit `FLOOR_MOD` / `MOD`.
-- [ ] 081. Emit `MAXIMUM`.
-- [ ] 082. Emit `MINIMUM`.
-- [ ] 083. Emit `POW`.
-- [ ] 084. Emit `ABS`.
-- [ ] 085. Emit `EXP`.
-- [ ] 086. Emit `LOG`.
-- [ ] 087. Emit `SQRT`.
-- [ ] 088. Emit `RSQRT` (Reciprocal Square Root).
-- [ ] 089. Emit `SIN`.
-- [ ] 090. Emit `COS`.
-- [ ] 091. Emit `NEG` (Negative).
-- [ ] 092. Emit `CEIL`.
-- [ ] 093. Emit `FLOOR`.
-- [ ] 094. Emit `ROUND`.
-- [ ] 095. Emit `SIGN`.
-- [ ] 096. Handle ONNX implicit broadcasting natively matching TFLite broadcast rules.
-- [ ] 097. Inject TFLite `BROADCAST_TO` explicitly if TFLite strict versions require explicit broadcasts.
-- [ ] 098. Ensure TFLite `fused_activation_function` is utilized for `Add`+`Relu`, `Mul`+`Relu` optimizations.
-- [ ] 099. Verify scalar vs tensor addition signatures map correctly to TFLite options.
+
+- [ ] 75. Emit `ADD` (TFLite BuiltinOperator).
+- [ ] 76. Emit `SUB`.
+- [ ] 77. Emit `MUL`.
+- [ ] 78. Emit `DIV`.
+- [ ] 79. Emit `FLOOR_DIV`.
+- [ ] 80. Emit `FLOOR_MOD` / `MOD`.
+- [ ] 81. Emit `MAXIMUM`.
+- [ ] 82. Emit `MINIMUM`.
+- [ ] 83. Emit `POW`.
+- [ ] 84. Emit `ABS`.
+- [ ] 85. Emit `EXP`.
+- [ ] 86. Emit `LOG`.
+- [ ] 87. Emit `SQRT`.
+- [ ] 88. Emit `RSQRT` (Reciprocal Square Root).
+- [ ] 89. Emit `SIN`.
+- [ ] 90. Emit `COS`.
+- [ ] 91. Emit `NEG` (Negative).
+- [ ] 92. Emit `CEIL`.
+- [ ] 93. Emit `FLOOR`.
+- [ ] 94. Emit `ROUND`.
+- [ ] 95. Emit `SIGN`.
+- [ ] 96. Handle ONNX implicit broadcasting natively matching TFLite broadcast rules.
+- [ ] 97. Inject TFLite `BROADCAST_TO` explicitly if TFLite strict versions require explicit broadcasts.
+- [ ] 98. Ensure TFLite `fused_activation_function` is utilized for `Add`+`Relu`, `Mul`+`Relu` optimizations.
+- [ ] 99. Verify scalar vs tensor addition signatures map correctly to TFLite options.
 - [ ] 100. Handle division by zero constraints if mathematically determinable during translation.
 
 ### Phase 5: Convolution & Spatial Mapping
+
 - [ ] 101. Emit `CONV_2D`.
 - [ ] 102. Extract ONNX `strides` to TFLite `stride_h`, `stride_w`.
 - [ ] 103. Extract ONNX `dilations` to TFLite `dilation_h_factor`, `dilation_w_factor`.
@@ -150,6 +158,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 125. Emit `CONV_3D` exclusively for TFLite Flex delegates or experimental spec configurations.
 
 ### Phase 6: Activations & Normalization Mapping
+
 - [ ] 126. Emit `RELU`.
 - [ ] 127. Emit `RELU6` (Map ONNX `Clip` with `0.0` to `6.0`).
 - [ ] 128. Emit `LEAKY_RELU` (Parsing `alpha` parameter).
@@ -172,6 +181,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 145. Strip `Dropout` identity layers permanently from TFLite payload.
 
 ### Phase 7: Array & Shape Manipulation Mapping
+
 - [ ] 146. Emit `RESHAPE`.
 - [ ] 147. Provide exact `new_shape` options in TFLite builder.
 - [ ] 148. Emit `TRANSPOSE`.
@@ -199,6 +209,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 170. Map ONNX `Expand` to TFLite `BROADCAST_TO`.
 
 ### Phase 8: Matrix Multiplication & Linear Algebra
+
 - [ ] 171. Emit `FULLY_CONNECTED`.
 - [ ] 172. Evaluate ONNX `Gemm` dimensions to determine if it maps to `FULLY_CONNECTED`.
 - [ ] 173. Evaluate ONNX `MatMul` + `Add` patterns to fuse into `FULLY_CONNECTED`.
@@ -211,6 +222,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 180. Emit `MATRIX_SET_DIAG`.
 
 ### Phase 9: Logical, Reduction, & Control Flow Mapping
+
 - [ ] 181. Emit `EQUAL`.
 - [ ] 182. Emit `NOT_EQUAL`.
 - [ ] 183. Emit `LESS`.
@@ -233,6 +245,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 200. Map ONNX `Loop` to TFLite `WHILE` loops.
 
 ### Phase 10: Advanced Vision & Sorting Ops
+
 - [ ] 201. Emit `RESIZE_BILINEAR`.
 - [ ] 202. Encode `align_corners` and `half_pixel_centers` correctly.
 - [ ] 203. Emit `RESIZE_NEAREST_NEIGHBOR`.
@@ -255,6 +268,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 220. Support TFLite specialized `LSH_PROJECTION`.
 
 ### Phase 11: RNN, LSTM, & Sequence Mapping
+
 - [ ] 221. Emit `RNN`.
 - [ ] 222. Emit `UNIDIRECTIONAL_SEQUENCE_RNN`.
 - [ ] 223. Emit `LSTM`.
@@ -267,6 +281,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 230. Support Stateful TFLite Execution (Variable tensors) if sequence history requires persistence.
 
 ### Phase 12: Quantization (TFLite Int8 / UINT8 / FP16)
+
 - [ ] 231. Encode `QuantizationParameters` table natively.
 - [ ] 232. Support `scale` (Float array) definitions.
 - [ ] 233. Support `zero_point` (Int64 array) definitions.
@@ -284,6 +299,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 245. Validate resulting quantized schema against EdgeTPU compiler requirements natively.
 
 ### Phase 13: TensorFlow SavedModel (Protobuf) Generator
+
 - [ ] 246. Implement zero-dependency `saved_model.pb` Protobuf generator in TS/Python.
 - [ ] 247. Define TF `GraphDef` schema natively.
 - [ ] 248. Define TF `SignatureDef` schema natively.
@@ -301,6 +317,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 260. Output the raw `saved_model` bundle instantly to the local filesystem via CLI.
 
 ### Phase 14: EdgeTPU & NNAPI Specific Optimizations
+
 - [ ] 261. Inject padding specifically to satisfy EdgeTPU dimension multiples (e.g., channels multiple of 8 or 4).
 - [ ] 262. Verify strict Full-Integer INT8 quantization compliance (no Float32 nodes left anywhere) to prevent EdgeTPU fallback to CPU.
 - [ ] 263. Analyze TFLite execution plan natively to identify operations that will break NNAPI compatibility.
@@ -313,6 +330,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 270. Issue detailed "EdgeTPU Compatibility Report" upon TFLite export completion.
 
 ### Phase 15: TFLite Custom Ops & Builtin Signatures
+
 - [ ] 271. Implement TFLite Custom Operator embedding in FlatBuffers (handling arbitrary string names).
 - [ ] 272. Map ONNX `NonMaxSuppression` to standard TFLite `TFLite_Detection_PostProcess` custom op.
 - [ ] 273. Support Flex Delegates (`Select TF` ops) embedding TF operators within TFLite flatbuffers natively.
@@ -325,6 +343,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 280. Add support for creating multi-signature TFLite models.
 
 ### Phase 16: CLI & Build Tooling (`onnx9000 onnx2tf`)
+
 - [ ] 281. Implement CLI: `onnx9000 onnx2tf model.onnx -o model.tflite`.
 - [ ] 282. Add `--int8` flag triggering quantization natively during export.
 - [ ] 283. Add `--fp16` flag.
@@ -337,6 +356,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 290. Establish unit test parity checking TFLite CLI parameters matching PINTO0309's standard scripts.
 
 ### Phase 17: Web UI (The Universal Browser Converter)
+
 - [ ] 291. Build a static Vue/React page "ONNX to TFLite Converter".
 - [ ] 292. Provide drag-and-drop ingestion of `model.onnx`.
 - [ ] 293. Provide toggle switches for "Quantize Int8", "FP16", "Optimize for EdgeTPU".
@@ -349,6 +369,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 300. Maintain absolute zero-server contact (100% privacy preserving client-side compilation).
 
 ### Phase 18: End-to-End Testing & Regression Validations
+
 - [ ] 301. Unit Test: Convert ONNX ResNet50 -> TFLite -> Run via WASM TF Lite Interpreter.
 - [ ] 302. Unit Test: Convert ONNX MobileNetV2 -> TFLite -> Validate exact Cosine Similarity.
 - [ ] 303. Unit Test: Convert ONNX YOLOv8 -> TFLite -> Validate bounding boxes.
@@ -361,6 +382,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 310. Measure compilation time (Target: < 5 seconds for a 500MB ONNX model on a standard M1 Mac via Node.js).
 
 ### Phase 19: Edge Cases & Quirks
+
 - [ ] 311. Handle implicit ONNX Shape broadcasting against empty tensors successfully.
 - [ ] 312. Rewrite negative axis references statically to positive axis offsets during conversion to prevent TFLite runtime crashes.
 - [ ] 313. Resolve TensorFlow's strict shape requirements for `Concat` (must have same ranks).
@@ -373,6 +395,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 - [ ] 320. Provide fallback mappings for HuggingFace Tokenizer custom nodes inside the generic ONNX graph.
 
 ### Phase 20: Delivery & Documentation
+
 - [ ] 321. Provide comprehensive documentation: "Deploying ONNX models to Android using `onnx9000`".
 - [ ] 322. Provide documentation: "Compiling ONNX for Coral EdgeTPU via the Browser".
 - [ ] 323. Establish specific GitHub Issue templates for `onnx2tf` conversion failures.

@@ -29,10 +29,10 @@ class Dispatcher:
     """NVIDIA CUDA & cuBLAS Dispatcher."""
 
     def __init__(self, graph: Graph) -> None:
-        """Implements the __init__ method or operation."""
+        """Initialize the dispatcher."""
         self.graph = graph
         self.planner = CUDAMemoryPlanner()
-        self.cpu_fallback = CPUExecutor(graph)
+        self.cpu_fallback = CPUExecutor({})
         self.stream = CUstream()
         self.cublas_handle = cublasHandle_t()
         self.cudnn_handle = cudnnHandle_t()
@@ -57,27 +57,38 @@ class Dispatcher:
                     shape = []
                     is_dynamic = False
                     for dim in tensor.shape:
-                        if hasattr(dim, "value") and isinstance(dim.value, str):
+                        val = getattr(dim, "value", dim)
+                        if isinstance(val, str):
                             is_dynamic = True
                             break
-                        shape.append(int(getattr(dim, "value", dim)))
+                        shape.append(int(val))
                     if not is_dynamic:
                         dtype = np.float32
                         if tensor.dtype:
                             dtype = np.dtype("float32")
                         size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
-                        self.planner.allocate_static(out_name, size_in_bytes, tuple(shape), dtype)
+                        self.planner.allocate_static(
+                            out_name, size_in_bytes, tuple(shape), str(dtype)
+                        )
         self.planner.build_arena()
         for init_name in self.graph.initializers:
             tensor = self.graph.tensors.get(init_name)
             if tensor and tensor.data is not None:
-                self.planner.set_tensor(init_name, tensor.data)
+                shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
+                data_arr = np.frombuffer(tensor.data, dtype=np.float32).reshape(shape)
+                self.planner.allocate_dynamic(init_name, data_arr.nbytes, shape, "float32")
+                self.planner.set_tensor(init_name, data_arr)
+
+    def _set_tensor_safe(self, name: str, data: np.ndarray) -> None:
+        if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
+            self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
+        self.planner.set_tensor(name, data)
 
     def _execute_matmul(self, node: Node) -> None:
-        """Executes the  execute matmul operation."""
+        """Execute MatMul operation."""
         if not is_cublas_available():
             raise RuntimeError("cuBLAS is required for MatMul")
-        (a_name, b_name) = (node.inputs[0], node.inputs[1])
+        a_name, b_name = node.inputs[0], node.inputs[1]
         c_name = node.outputs[0]
         shape_a = self.planner.tensors_shape_dtype[a_name][0]
         shape_b = self.planner.tensors_shape_dtype[b_name][0]
@@ -124,14 +135,14 @@ class Dispatcher:
                 ctypes.byref(func), module, f"elementwise_{node.op_type}".encode()
             )
         )
-        (a_name, b_name) = (node.inputs[0], node.inputs[1])
+        a_name, b_name = node.inputs[0], node.inputs[1]
         c_name = node.outputs[0]
         a_ptr = self.planner.get_tensor_ptr(a_name)
         b_ptr = self.planner.get_tensor_ptr(b_name)
         c_ptr = self.planner.get_tensor_ptr(c_name)
         shape = self.planner.tensors_shape_dtype[a_name][0]
         n_elements = np.prod(shape, dtype=int)
-        (blocks, threads) = CUDACompiler.calculate_grid_block(n_elements)
+        blocks, threads = CUDACompiler.calculate_grid_block(n_elements)
         a_ptr_arg = ctypes.c_void_p(a_ptr.value)
         b_ptr_arg = ctypes.c_void_p(b_ptr.value)
         c_ptr_arg = ctypes.c_void_p(c_ptr.value)
@@ -152,13 +163,18 @@ class Dispatcher:
         inputs = {}
         for inp in node.inputs:
             inputs[inp] = self.planner.get_host_tensor(inp)
-        out_dict = self.cpu_fallback.run(inputs)
+        out_dict = self.cpu_fallback.execute(self.graph, None, inputs)
         for out in node.outputs:
             if out in out_dict:
-                self.planner.set_tensor(out, out_dict[out])
+                val = out_dict[out]
+                if hasattr(val, "data") and val.data is not None:
+                    val = np.frombuffer(val.data, dtype=np.float32).reshape(
+                        [int(x) for x in val.shape]
+                    )
+                self._set_tensor_safe(out, val)
 
     def _execute_node(self, node: Node) -> None:
-        """Executes the  execute node operation."""
+        """Dispatch a single node."""
         if not self.initialized:
             self._cpu_fallback_node(node)
             return
@@ -170,19 +186,20 @@ class Dispatcher:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
-        """Executes the run operation."""
+        """Execute the graph."""
         for name, data in inputs.items():
-            self.planner.set_tensor(name, data)
+            self._set_tensor_safe(name, data)
         for node in self.graph.nodes:
             self._execute_node(node)
         results = {}
-        for out_name in self.graph.outputs:
-            results[out_name] = self.planner.get_host_tensor(out_name)
+        for out_tensor in self.graph.outputs:
+            name = getattr(out_tensor, "name", out_tensor)
+            results[name] = self.planner.get_host_tensor(name)
         return results
 
     def __del__(self) -> None:
-        """Implements the __del__ method or operation."""
-        if not self.initialized:
+        """Cleanup resources."""
+        if getattr(self, "initialized", False) is False:
             return
         if is_cublas_available() and getattr(self, "cublas_handle", None):
             try:

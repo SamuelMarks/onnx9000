@@ -1,6 +1,7 @@
 # ONNX Runtime Extensions Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `onnxruntime-extensions` within the `onnx9000` ecosystem.
 The original project embeds heavy C++ and Rust libraries (Hugging Face `tokenizers`, `OpenCV`, `librosa`, etc.) as custom operators to allow ONNX models to handle raw text, images, and audio directly.
 Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy. We provide zero-dependency implementations of Byte-Pair Encoding (BPE), SentencePiece, audio feature extraction (STFT/MelSpectrogram), and image decoding natively. In the browser, this means leveraging native WebCodecs, WebAudio APIs, and optimized RegExp instead of downloading massive compiled binaries, enabling end-to-end models (Text -> Predictions or Audio -> Predictions) natively on the web.
@@ -8,6 +9,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 ## Exhaustive Parity Checklist
 
 ### 1. NLP Text Tokenization & Processing (Python & JS Parity) (45+ items)
+
 - [xx] Implement `ai.onnx.contrib.StringSplit`
 - [xx] Implement `ai.onnx.contrib.StringJoin`
 - [xx] Implement `ai.onnx.contrib.StringLower`
@@ -55,6 +57,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Ensure BPE dictionaries can be passed dynamically as inputs OR baked as attributes
 
 ### 2. Audio Processing & Speech Feature Extraction (45+ items)
+
 - [xx] Implement `ai.onnx.contrib.AudioDecoder` (Using native OS libraries / WebAudio API)
 - [xx] Implement `ai.onnx.contrib.AudioDecoder` using `ffmpeg-python` or `librosa` natively as a fallback
 - [xx] Implement `ai.onnx.contrib.AudioDecoder` in JS using native HTML5 `<audio>` / WebCodecs
@@ -102,6 +105,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Validate audio length exact bounds after resampling to prevent out-of-bounds indexing
 
 ### 3. Vision Preprocessing & Image Decoders (40+ items)
+
 - [xx] Implement `ai.onnx.contrib.ImageDecoder` natively in Python via `Pillow` (if available)
 - [xx] Implement `ImageDecoder` natively in JS via `Image` object / `createImageBitmap`
 - [xx] Support decoding JPEG directly to Tensor `[H, W, C]`
@@ -144,6 +148,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Extract Multi-page TIFFs or animated GIFs natively if supported
 
 ### 4. Mathematical Custom Ops & Specific Topologies (35+ items)
+
 - [xx] Implement `ai.onnx.contrib.Inverse` (Matrix Inversion) natively via Gaussian Elimination / LU Decomposition
 - [xx] Implement `Inverse` natively in JS for arbitrary square matrices
 - [xx] Implement `ai.onnx.contrib.Gelu` (if exact standard ONNX Gelu is missing)
@@ -181,6 +186,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Support custom WGSL injections for any `ai.onnx.contrib.*` math op in the browser
 
 ### 5. Generative AI & Decoding Architectures (30+ items)
+
 - [xx] Implement `ai.onnx.contrib.BeamSearch` (Standard auto-regressive decoding loop)
 - [xx] Implement `ai.onnx.contrib.GreedySearch`
 - [xx] Implement `ai.onnx.contrib.Sampling` (Top-K / Top-P logic natively)
@@ -213,6 +219,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Catch maximum sequence length bounds logically to prevent OOM
 
 ### 6. Post-Processing & Standard Outputs (25+ items)
+
 - [xx] Implement `ai.onnx.contrib.NonMaxSuppression` (NMS) natively for object detection
 - [xx] Support Batched NMS dynamically
 - [xx] Support Multi-Class NMS natively
@@ -240,6 +247,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Map all CustomOps natively into the Execution Provider boundary (e.g., executing in WebGPU or CPU)
 
 ### 7. Exporting, Serializing, and Integration (25+ items)
+
 - [xx] Serialize `Tokenizer` CustomOps directly to `.onnx` Graph
 - [xx] Dump BPE Dictionary (`merges.txt`, `vocab.txt`) directly into `AttributeProto` natively
 - [xx] Embed Image Preprocessing CustomOps directly into an existing ONNX Graph
@@ -267,6 +275,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Expose an interactive test UI validating all supported Extensions visually in the browser
 
 ### 8. Testing & Validation (Edge Cases) (30+ items)
+
 - [xx] Unit Test: Tokenize "Hello World" using GPT-2 BPE CustomOp
 - [xx] Unit Test: Tokenize "Hello World" using BERT WordPiece CustomOp
 - [xx] Unit Test: Tokenize "Hello World" using SentencePiece Unigram CustomOp
@@ -298,8 +307,8 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Provide explicit developer warnings if a JS execution polyfill runs significantly slower than WASM
 - [xx] Validate `Float16` typed array representations natively for all CustomOps that support mixed precision
 
-
 ### 9. Advanced Tokenization & NLP Edge Cases (20+ items)
+
 - [xx] Implement `ByteLevel` mapping specific to GPT-2 / RoBERTa (encoding 256 bytes to unicode)
 - [xx] Implement `Metaspace` decoding specific to SentencePiece (replacing `_` with space)
 - [xx] Support explicit `add_prefix_space` logic dynamically in tokenizers
@@ -322,6 +331,7 @@ Our `onnx9000` reimplementation uses a pure-Python and pure-JavaScript strategy.
 - [xx] Provide dictionary caching to speed up repeated identical tokenizations natively
 
 ### 10. Exhaustive Cross-Platform Fallbacks & Polyfills (15+ items)
+
 - [xx] Fallback ImageDecoder to JS `CanvasRenderingContext2D` if `createImageBitmap` fails or is unsupported
 - [xx] Fallback VideoDecoder to JS `Canvas` drawing `HTMLVideoElement` if `WebCodecs` is unavailable
 - [xx] Fallback AudioDecoder to pure JS math-based WAV decoder if `WebAudio` is unavailable (Node.js)

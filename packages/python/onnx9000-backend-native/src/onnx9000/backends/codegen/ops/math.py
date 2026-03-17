@@ -324,7 +324,7 @@ def generate_sign(node: Node, ctx: Generator) -> str:
 @registry.register_op("Mod")
 def generate_mod(node: Node, ctx: Generator) -> str:
     """Generate the code implementation for the Mod operator."""
-    fmod_attr = node.attributes.get("fmod", 0)
+    fmod_attr = getattr(node.attributes.get("fmod", 0), "value", 0)
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     from onnx9000.core.dtypes import DType
 
@@ -374,8 +374,8 @@ def generate_bitwise_not(node: Node, ctx: Generator) -> str:
 @registry.register_op("BitShift")
 def generate_bitshift(node: Node, ctx: Generator) -> str:
     """Generate the code implementation for the Bitshift operator."""
-    direction = node.attributes.get("direction", "LEFT")
-    if direction == "RIGHT":
+    direction = getattr(node.attributes.get("direction"), "value", b"LEFT")
+    if direction == b"RIGHT":
         return _generate_binary_op(node, ctx, ">>")
     else:
         return _generate_binary_op(node, ctx, "<<")

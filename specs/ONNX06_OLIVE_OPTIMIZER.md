@@ -1,6 +1,7 @@
 # Olive Optimizer Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of the `Olive Optimizer` framework within the `onnx9000` ecosystem.
 Microsoft's `Olive` is a powerful hardware-aware model optimization tool, but it heavily relies on complex C++ native tools, massive external ML frameworks (PyTorch, ONNX Runtime), and heavy build toolchains to quantize, prune, and optimize models.
 Our `onnx9000` reimplementation operates completely in pure Python. It leverages our internal `GraphSurgeon` and `safetensors` modules to perform state-of-the-art model compression (INT8, INT4 quantization, weight packing, operator fusion, and sparsity pruning) entirely in-memory. This zero-dependency architecture means a multi-GB transformer can be downloaded, dynamically quantized, and executed strictly within a browser (Pyodide/WASM) or optimized instantly on an edge device without installing massive pip packages.
@@ -8,6 +9,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 ## Exhaustive Parity Checklist
 
 ### 1. Core Optimization Architecture & Passes (35+ items)
+
 - [x] Implement `OliveModel` abstraction natively
 - [x] Implement pure-Python `Pass` base class
 - [x] Implement `PassContext` tracking intermediate optimization states
@@ -45,6 +47,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Extract symbolic shapes to validate layout transformations safely
 
 ### 2. Quantization & Weight Compression (40+ items)
+
 - [x] Map FP32 to `Int8` dynamically (`DynamicQuantizeLinear` injection)
 - [x] Map FP32 to `Uint8` dynamically
 - [x] Map `MatMul` -> `DynamicQuantizeMatMul` automatically
@@ -87,6 +90,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Inject specific WebGPU friendly shader unpacking logic dynamically if targeted
 
 ### 3. Graph Fusions & Pattern Optimization (35+ items)
+
 - [x] Implement `GraphSurgeon` driven `Conv` + `Relu` fusion
 - [x] Implement `Conv` + `Clip` fusion
 - [x] Implement `Conv` + `Sigmoid` fusion
@@ -124,6 +128,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Support dynamic fusion logic for CustomOps (HuggingFace tokenizers)
 
 ### 4. Hardware-Aware Target Tuning (WebGPU, WASM, Apple) (30+ items)
+
 - [x] Expose `Target.WebGPU` enumeration
 - [x] Expose `Target.WASM_SIMD` enumeration
 - [x] Expose `Target.Accelerate` (Apple) enumeration
@@ -156,6 +161,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Auto-tune Thread counts (e.g. `IntraOpNumThreads=4`) based on browser logical cores
 
 ### 5. Pruning & Sparsity Strategies (25+ items)
+
 - [x] Implement Global Magnitude Pruning (Unstructured)
 - [x] Implement Block-wise Magnitude Pruning (Structured)
 - [x] Support explicit sparsity targets (e.g., `sparsity=0.75` / 75% zeros)
@@ -183,6 +189,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Catch explicitly un-prunable operations gracefully (e.g. strict positional embeddings)
 
 ### 6. Calibration & Accuracy Evaluation Loop (25+ items)
+
 - [x] Parse explicitly User-Provided datasets (`numpy`, `json`, `csv`) for calibration runs
 - [x] Support PyTorch `DataLoader` emulation purely natively in Python
 - [x] Iterate dynamically across batches running explicit forward passes natively in Python
@@ -210,6 +217,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Test the entire calibration loop inside a Pyodide web environment (WASM Memory Bounds)
 
 ### 7. Testing, Edge Cases & Tooling Parity (25+ items)
+
 - [x] Unit Test: Quantize standard ResNet50 (FP32 -> INT8) seamlessly
 - [x] Unit Test: Prune standard BERT (75% sparsity) natively
 - [x] Unit Test: Optimize massive Whisper topology (MHA / Gelu Fusions) seamlessly
@@ -237,6 +245,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Emulate Microsoft Olive's strict directory structure (`models`, `metrics`, `passes`) internally
 
 ### 8. Exhaustive Operator Fusion Passes (40+ items)
+
 - [x] Implement `AttentionFusion` (Standard PyTorch `Q`, `K`, `V` -> `Attention`)
 - [x] Implement `AttentionFusion` (with `Mask` injection)
 - [x] Implement `AttentionFusion` (with `Past_Key`, `Past_Value` routing)
@@ -279,6 +288,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Prevent fusions dynamically if the resulting node violates Execution Provider bounds
 
 ### 9. LLM Specific Optimizations (30+ items)
+
 - [x] Implement `LoRAMergePass` (Folding LoRA adapters A and B statically into Master Weights)
 - [x] Detect standard LLM layer hierarchies (e.g. `layers.0.attention.wq`) natively
 - [x] Strip out unused tokenizer subgraphs if `TextDecoder` outputs are not requested
@@ -311,6 +321,7 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Export LLM fully compatible with `onnxruntime-web` streaming execution
 
 ### 10. Advanced Hardware Bounds & Diagnostics (25+ items)
+
 - [x] Calculate `ExecutionProvider` fallback latency penalties heuristically (Memcpy overhead)
 - [x] Recommend explicit `IntraOpNumThreads` optimizations based on CPU Core counts
 - [x] Recommend explicit `InterOpNumThreads` optimizations
@@ -336,4 +347,3 @@ Our `onnx9000` reimplementation operates completely in pure Python. It leverages
 - [x] Highlight zero-variance channels (Conv filters that are identical)
 - [x] Simulate CPU L1/L2/L3 cache misses explicitly based on layout (NCHW vs NHWC)
 - [x] Expose an interactive CLI `--debug` flag to step through every single applied optimization graphically
-

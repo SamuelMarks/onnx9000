@@ -1,6 +1,7 @@
 # ONNX Runtime Web Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `ONNX Runtime Web` (`onnxruntime-web`) within the `onnx9000` ecosystem.
 The original `onnxruntime-web` compiles the massive C++ ONNX Runtime into WebAssembly via Emscripten, resulting in large bundle sizes and heavy initialization times.
 Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. It parses ONNX graphs dynamically in the browser and dispatches execution directly to **WebGPU** (via native WGSL compute shaders) or lightweight **WASM** (generated AOT or via pure JS SIMD polyfills). This architecture enables true zero-overhead startup, progressive weight streaming directly to GPU memory, and deep integration with native Web APIs like WebWorkers, OffscreenCanvas, and WebNN.
@@ -8,6 +9,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 ## Exhaustive Parity Checklist
 
 ### 1. Core JS/TS API & Session Management (40+ items)
+
 - [xx] Implement `onnxruntime-web` compatible `InferenceSession` class API
 - [xx] Implement `InferenceSession.create(modelPath, options)`
 - [xx] Implement `InferenceSession.create(buffer, options)`
@@ -50,6 +52,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Avoid `SharedArrayBuffer` usage implicitly unless specifically enabled by user (due to COOP/COEP restrictions)
 
 ### 2. WebGPU Execution Provider: Core Engine (35+ items)
+
 - [xx] Detect `navigator.gpu` natively
 - [xx] Request `GPUDevice` and `GPUAdapter` securely
 - [xx] Support requesting high-performance GPU (`powerPreference: "high-performance"`)
@@ -85,6 +88,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Compile shaders explicitly using WGSL (no SPIR-V or internal translations)
 
 ### 3. WebGPU Execution Provider: WGSL Shaders (50+ items)
+
 - [xx] Implement WGSL `Add` (broadcasting, 1D/2D/3D/4D)
 - [xx] Implement WGSL `Sub`
 - [xx] Implement WGSL `Mul`
@@ -137,6 +141,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Implement WGSL `Resize` (Bilinear and Nearest)
 
 ### 4. WebGPU Optimizations & Tuning (30+ items)
+
 - [xx] Tune `workgroup_size` dynamically based on tensor dimensionality (e.g. `[64, 1, 1]` vs `[8, 8, 1]`)
 - [xx] Vectorize WGSL memory loads (e.g., using `vec4<f32>` instead of `f32` for 4x bandwidth)
 - [xx] Vectorize WGSL memory stores (`vec4<f32>`)
@@ -169,6 +174,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Avoid subgroup operations if not universally supported across standard browser WebGPU targets
 
 ### 5. WASM Execution Provider (WebAssembly SIMD & Threads) (40+ items)
+
 - [xx] Detect WebAssembly support natively
 - [xx] Detect WebAssembly SIMD (`Fixed-Width SIMD`) natively
 - [xx] Detect WebAssembly Threads (`SharedArrayBuffer`) natively
@@ -211,6 +217,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Optimize Javascript to WASM function call overhead (batching calls where possible)
 
 ### 6. Progressive Loading, Streaming & IO Binding (35+ items)
+
 - [xx] Implement `fetch` with `Range` headers natively
 - [xx] Download Model JSON structural definition asynchronously
 - [xx] Download Model `.bin` weight payloads progressively
@@ -248,6 +255,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Zero-pad corrupted chunks safely if `strict=false` is set
 
 ### 7. WebNN Execution Provider (Experimental/Future Parity) (25+ items)
+
 - [xx] Detect `navigator.ml` (WebNN API) natively
 - [xx] Request WebNN Context (`navigator.ml.createContext()`)
 - [xx] Request WebNN Context with GPU preference
@@ -275,6 +283,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Track WebNN Specification updates (W3C) for newly added operator bindings
 
 ### 8. Environment, Workers & Node.js Compatibility (30+ items)
+
 - [xx] Execute cleanly in Main Browser Thread
 - [xx] Execute cleanly in dedicated WebWorker
 - [xx] Execute cleanly in SharedWorker
@@ -307,6 +316,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Ensure CSP (Content Security Policy) compliance: no `unsafe-eval`, no `unsafe-inline` needed
 
 ### 9. Testing, Validation & Edge Cases (30+ items)
+
 - [xx] Unit Test: Load and execute a standard CNN (MobileNet) via WebGPU natively
 - [xx] Unit Test: Load and execute a standard NLP model (BERT) via WebGPU natively
 - [xx] Unit Test: Validate WebGPU outputs against standard Python ONNX Runtime (atol=1e-3)
@@ -337,4 +347,3 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Catch missing operations dynamically and list the failing Node name explicitly
 - [xx] Profile Garbage Collection pauses specifically during heavy inference loops
 - [xx] Validate deterministic execution behavior across multiple consecutive `.run()` calls
-

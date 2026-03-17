@@ -1,13 +1,15 @@
 # ONNX Simplifier Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `onnx-simplifier` within the `onnx9000` ecosystem.
-The original `onnx-simplifier` infers shapes and folds constants by spinning up a heavy C++ `onnxruntime` session to evaluate subgraphs of constant nodes. 
+The original `onnx-simplifier` infers shapes and folds constants by spinning up a heavy C++ `onnxruntime` session to evaluate subgraphs of constant nodes.
 Our `onnx9000` implementation achieves identical or superior graph simplification entirely in pure Python. By embedding a lightweight, mathematically exact tensor execution engine, it evaluates constant nodes natively using NumPy or JS TypedArrays. Coupled with advanced algebraic rewriting (e.g., `A * 1 -> A`, `A + 0 -> A`), symbolic shape inference, and aggressive Dead Code Elimination (DCE), this zero-dependency simplifier can operate instantly inside Web Browsers (WASM), Serverless functions (AWS Lambda), and standard CI/CD pipelines without compiling external native libraries.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core Simplification Engine & Architecture (35+ items)
+
 - [x] Implement pure-Python `simplify(model)` API parity
 - [ ] Implement zero-dependency `ModelProto` parsing and serialization
 - [ ] Maintain a strict Topological Sort during simplification passes
@@ -45,6 +47,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Extract and embed the `onnx9000` execution engine footprint securely within Cloudflare limits
 
 ### 2. Algebraic Rewriting & Simplification (45+ items)
+
 - [x] Rewrite `Add(X, 0)` -> `X` (Identity Addition)
 - [x] Rewrite `Add(0, X)` -> `X`
 - [x] Rewrite `Sub(X, 0)` -> `X` (Identity Subtraction)
@@ -92,6 +95,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [x] Eliminate `Identity` nodes natively and rewire connections
 
 ### 3. Structural & Constant Folding (Math) (45+ items)
+
 - [x] Fold `Add` (Constants only) natively
 - [x] Fold `Sub` (Constants only) natively
 - [x] Fold `Mul` (Constants only) natively
@@ -139,6 +143,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Extract scalar constants explicitly (converting `1D` array of size 1 to `0D` scalar if topological rules allow)
 
 ### 4. Structural & Constant Folding (Tensors & NN) (40+ items)
+
 - [x] Fold `Reshape` (Constants only) natively
 - [x] Fold `Transpose` natively
 - [x] Fold `Flatten` natively
@@ -181,6 +186,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Evaluate `SequenceAt` natively
 
 ### 5. Control Flow & Advanced Dead Code Elimination (30+ items)
+
 - [x] Implement Graph-wide Dead Code Elimination (DCE)
 - [x] Prune Nodes with zero consumer edges
 - [x] Prune Initializers with zero consumer edges
@@ -213,6 +219,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Track memory of in-flight constant evaluations explicitly to avoid RAM spikes
 
 ### 6. Advanced Shape & Type Inference (30+ items)
+
 - [ ] Implement fully native `onnx9000.shape_inference` passes (bypassing ONNX C++ `infer_shapes`)
 - [ ] Resolve unknown dimensions symbolically (e.g., `batch_size`, `seq_len`)
 - [ ] Apply mathematical constraints to symbols (`seq_len * 2`)
@@ -245,6 +252,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Log every successful and failed shape inference derivation for debugging
 
 ### 7. Environment, CLI & Web Integrations (25+ items)
+
 - [ ] Expose pure Python CLI: `onnx9000 simplify model.onnx model_sim.onnx`
 - [ ] Expose JS/TypeScript API: `const simplifiedModel = await onnx9000.simplify(modelBuffer)`
 - [ ] Provide WebWorker wrapper natively in JS to prevent UI freezing during large simplifies
@@ -272,6 +280,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Verify standard Python 3.9 through 3.12 compatibility
 
 ### 8. Testing, Compliance & Edge Cases (30+ items)
+
 - [x] Unit Test: Simplify purely arithmetic graph (`Add(2, Mul(3, 4))` -> `Constant(14)`)
 - [x] Unit Test: Simplify redundant `Reshape` nodes on standard ResNet
 - [ ] Unit Test: Fold `BatchNormalization` natively on standard MobileNet
@@ -304,6 +313,7 @@ Our `onnx9000` implementation achieves identical or superior graph simplificatio
 - [ ] Emit detailed warning if simplifier encounters unsupported custom ops breaking the cascade
 
 ### 9. Advanced Edge Cases, Operator Specifics, & Tooling (30+ items)
+
 - [ ] Evaluate `NonMaxSuppression` if all inputs (boxes, scores, max_output) are constants
 - [ ] Handle `ConstantOfShape` where shape is an empty tensor `[]` correctly (generating a scalar)
 - [ ] Handle `ConstantOfShape` where shape contains `0` correctly (generating an empty tensor)

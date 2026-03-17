@@ -1,13 +1,15 @@
 # onnx-safetensors Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `safetensors` within the `onnx9000` ecosystem.
-The original `safetensors` library (by Hugging Face) relies on Rust bindings to provide secure, fast, and zero-copy tensor serialization. 
+The original `safetensors` library (by Hugging Face) relies on Rust bindings to provide secure, fast, and zero-copy tensor serialization.
 Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript (WASM/WebGPU) parser. It reads `.safetensors` files directly, mapping them securely to ONNX `TensorProto` data structures. By leveraging native POSIX `mmap` in Python and `ArrayBuffer` / `fetch` Range requests in the browser, we can progressively stream and instantly load multi-gigabyte LLM weights into memory-constrained environments with true zero-copy performance and absolute security (no `pickle` vulnerabilities).
 
 ## Exhaustive Parity Checklist
 
 ### 1. Pure-Python/JS Core Parsing Engine (40+ items)
+
 - [ ] Implement zero-dependency `.safetensors` header parser in Python
 - [ ] Implement zero-dependency `.safetensors` header parser in JavaScript (TypeScript)
 - [ ] Read 8-byte little-endian unsigned integer (header size `N`)
@@ -18,7 +20,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Extract tensor metadata: `data_offsets` `[begin, end]`
 - [ ] Implement O(1) dictionary lookups for tensor names
 - [ ] Verify `begin` and `end` offsets fit within the bounds of the file size
-- [ ] Verify `end - begin` exactly matches the calculated byte size of `shape` * `dtype_size`
+- [ ] Verify `end - begin` exactly matches the calculated byte size of `shape` \* `dtype_size`
 - [ ] Support implicit 8-byte alignment padding validation
 - [ ] Ignore internal JSON whitespace formatting variants seamlessly
 - [ ] Reject duplicate tensor names in the JSON header
@@ -47,6 +49,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Reject unaligned tensor offsets (must be 8-byte aligned per standard)
 
 ### 2. Zero-Copy Memory & Mmap Implementation (30+ items)
+
 - [ ] Implement POSIX `mmap` for instant disk-to-memory mapping natively in Python
 - [ ] Implement Windows `mmap` equivalent (`CreateFileMapping`) safely
 - [ ] Extract NumPy `ndarray` views directly from the `mmap` buffer (zero-copy)
@@ -70,6 +73,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Share Safetensors `mmap` memory maps across Python threads cleanly
 
 ### 3. Web-Specific Progressive Streaming & HTTP (40+ items)
+
 - [ ] Implement HTTP `Range` request wrapper for native JS `fetch`
 - [ ] Download ONLY the JSON header using initial 8-byte + N-byte HTTP requests
 - [ ] Stream specific tensor payloads dynamically using `Range: bytes=begin-end`
@@ -94,6 +98,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Fallback to full file download if server ignores Range headers
 
 ### 4. Data Type, Endianness & Tensor Alignment (40+ items)
+
 - [ ] Parse `F64` -> `Float64` / `float64`
 - [ ] Parse `F32` -> `Float32` / `float32`
 - [ ] Parse `F16` -> `Float16` / `float16`
@@ -123,6 +128,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Unpack specific AWQ / GPTQ packed `safetensors` layouts correctly
 
 ### 5. ONNX Graph Integration & Surgery (30+ items)
+
 - [ ] Convert `.safetensors` mappings directly into ONNX `Initializer` tensors
 - [ ] Replace standard `.bin` external data natively with `.safetensors` lookups
 - [ ] Intercept ONNX parsing to pull constants exclusively from `.safetensors` indices
@@ -140,6 +146,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Validate `ai.onnx` operators evaluate correctly against the extracted views
 
 ### 6. Security, Auditing & Validation (The "Safe" in Safetensors) (30+ items)
+
 - [ ] Prevent Arbitrary Code Execution (0-day vulnerabilities vs Python `pickle`)
 - [ ] Enforce strict sandboxing of file parsing logic
 - [ ] Validate `shape` arrays contain no negative dimensions
@@ -157,6 +164,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Ensure parser runs securely within Cloudflare Workers isolates
 
 ### 7. Distributed Server & High-Performance IO (30+ items)
+
 - [ ] Deploy Safetensors `mmap` views natively in Ray Clusters for zero-copy IPC
 - [ ] Serialize `onnx9000.Tensor` wrappers across gRPC efficiently using Safetensors formats
 - [ ] Implement lazy-loading for Celery distributed background workers
@@ -171,6 +179,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Tensor parallelism loading strategies (Load slice `[:, 0:Dim/2]` directly from disk)
 
 ### 8. Serialization, Exporting & Creation (40+ items)
+
 - [ ] Implement `.safetensors` writing logic purely in Python
 - [ ] Implement `.safetensors` writing logic purely in Javascript (Node.js/Browser)
 - [ ] Accept generic Python dictionaries (`dict[str, np.ndarray]`) for serialization
@@ -193,6 +202,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Stream serialization natively via `yield` buffers (chunked HTTP uploads)
 
 ### 9. Edge Cases, Framework Interop & Testing (30+ items)
+
 - [ ] Unit Test: 0-byte tensor saving/loading (`shape=[]`)
 - [ ] Unit Test: 1D, 2D, 3D, 4D standard Float32 arrays
 - [ ] Unit Test: Endianness conversion tests natively
@@ -207,8 +217,8 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Validate Javascript WebAssembly Out-of-Bounds protections
 - [ ] Expose benchmarking scripts comparing pure Python vs `pickle` vs `rust-safetensors`
 
-
 ### 10. Explicit JavaScript / WASM Typed Array Mappings (30+ items)
+
 - [ ] Map Safetensors `F64` directly to JS `Float64Array` without duplication
 - [ ] Map Safetensors `F32` directly to JS `Float32Array` without duplication
 - [ ] Map Safetensors `I32` directly to JS `Int32Array` without duplication
@@ -234,6 +244,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Parse UTF-8 JSON headers natively using JS `TextDecoder` (handling streaming bytes)
 
 ### 11. Comprehensive Error Handling & Exceptions (30+ items)
+
 - [ ] Raise `SafetensorsHeaderTooLargeError` if header size `N` > 100MB
 - [ ] Raise `SafetensorsInvalidHeaderError` if UTF-8 JSON decoding fails
 - [ ] Raise `SafetensorsInvalidJSONError` if JSON parses but is structurally invalid
@@ -257,6 +268,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Ensure all custom exceptions subclass a base `SafetensorsError` for easy `try/except` handling
 
 ### 12. Hugging Face Hub Integration & Ecosystem (25+ items)
+
 - [ ] Support direct parsing of `hf://` protocol URIs natively
 - [ ] Authenticate HTTP Range requests using `HF_TOKEN` environment variables implicitly
 - [ ] Parse Hugging Face Hub `model.safetensors.index.json` natively
@@ -273,6 +285,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Support PyTorch `load_state_dict` direct emulation (returning dict of PyTorch-compatible tensors)
 
 ### 13. Deep Framework Weight Layout Mappings (20+ items)
+
 - [ ] Emulate PyTorch `Conv1d` weight layouts seamlessly (translating ONNX shapes if necessary)
 - [ ] Emulate PyTorch `Conv2d` weight layouts seamlessly (`[O, I, H, W]`)
 - [ ] Emulate PyTorch `Linear` weight layouts seamlessly (`[O, I]`)
@@ -288,6 +301,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Concatenate separated Q, K, V tensors automatically if ONNX topology expects a packed QKV
 
 ### 14. Performance Profiling & Advanced Benchmarking (20+ items)
+
 - [ ] Benchmark: Peak memory usage loading 7B parameter model (should be ~0 RAM overhead via mmap)
 - [ ] Benchmark: Total time to extract 10,000 specific small tensors from a massive file
 - [ ] Benchmark: Total time to stream a single 1GB layer over HTTP (measuring overhead)
@@ -301,6 +315,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Monitor and test HTTP Keep-Alive connection limits natively to prevent socket exhaustion
 
 ### 15. WASM Specific Memory Alignment & Buffers (20+ items)
+
 - [ ] Explicitly pad `U8` JS extracts to 8-byte boundaries if passing to WebAssembly
 - [ ] Explicitly pad `I8` JS extracts to 8-byte boundaries if passing to WebAssembly
 - [ ] Pad `F16` JS extracts to 8-byte boundaries natively before Emscripten ingestion
@@ -316,6 +331,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Trigger explicit JS GC (`gc()`) dynamically after offloading large tensors to WebGPU buffers
 
 ### 16. Advanced Dict Manipulation & Utility API (20+ items)
+
 - [ ] Support PyTorch `state_dict()` semantic patching dynamically
 - [ ] Rename keys natively during loading (`safetensors.load_file(..., prefix="model.")`)
 - [ ] Filter keys natively using Regex (`safetensors.load_file(..., pattern=".*weight$")`)
@@ -330,6 +346,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Provide utility to convert TensorFlow `SavedModel` variables directly to `.safetensors`
 
 ### 17. Model-Specific Parsing Architectures & Edge Cases (15+ items)
+
 - [ ] Parse explicitly LLaMA format Safetensors layouts (`layers.0.self_attn.q_proj.weight`)
 - [ ] Parse explicitly BERT format Safetensors layouts (`bert.encoder.layer.0.attention.self.query.weight`)
 - [ ] Parse explicitly Whisper format Safetensors layouts (encoder and decoder sub-dictionaries)
@@ -341,6 +358,7 @@ Our `onnx9000` reimplementation provides a 100% pure-Python and pure-JavaScript 
 - [ ] Verify `int4` block scaling arrays are mapped correctly relative to the primary weight
 
 ### 18. Final Precision, Testing, and Compliance Verification (15+ items)
+
 - [ ] Profile HTTP Request times dynamically for 100 concurrent Range requests
 - [ ] Measure total elapsed time parsing exactly 10,000 JSON keys natively
 - [ ] Unit Test: Verify `bfloat16` mathematical conversions round accurately in JS

@@ -7,7 +7,7 @@ dependencies = [
     "onnx9000-core",
     "onnx9000-backend-native",
     "onnx9000-optimizer",
-    "onnx9000-frontend",
+    "onnx9000-converters",
     "onnx9000-toolkit"
 ]
 
@@ -17,3 +17,10 @@ onnx9000 = "onnx9000_cli.main:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+onnx9000-core = { workspace = true }
+onnx9000-backend-native = { workspace = true }
+onnx9000-optimizer = { workspace = true }
+onnx9000-converters = { workspace = true }
+onnx9000-toolkit = { workspace = true }

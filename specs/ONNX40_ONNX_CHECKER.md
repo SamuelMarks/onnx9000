@@ -1,130 +1,140 @@
 # ONNX40: ONNX Checker & Schema Registry (Web-Native Validator)
 
 ## Original Project Description
+
 The official `onnx` Python package serves as the primary gateway for interacting with ONNX models. Its most crucial function is `onnx.checker.check_model()`, which analyzes a model's structural integrity, validates type and shape constraints, and enforces compatibility against the official ONNX Operator Schemas (Opsets). However, this functionality is implemented entirely in C++ using the standard Protobuf library. This heavy C++ dependency means the official `onnx` checker cannot be easily executed in standard JavaScript environments, edge devices, or browser-based tools without compiling massive WebAssembly runtimes.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.checker` completely reimplements the official ONNX schema registry, type-checker, and topology validator in **100% pure TypeScript and Python**.
-*   **Zero-Dependency Browser Validation:** Developers can drop an `.onnx` file into a web app, and `onnx9000` will instantly perform a rigorous static analysis, verifying every node, edge, and attribute against the official ONNX specifications without server-side C++ processing.
-*   **Integrated Schema Registry:** Bakes the entire official ONNX Operator Schema (Opsets 1 through 21) directly into a highly compressed JSON/JS dictionary. This allows the tool to provide exact, human-readable error messages (e.g., `"Node Conv_1 expected attribute 'pads' to be an array of length 4, got 2"`) dynamically.
-*   **Extensible for Custom Ops:** Allows users to inject their own custom operator schemas as JSON objects, enabling the checker to validate proprietary models seamlessly.
+
+- **Zero-Dependency Browser Validation:** Developers can drop an `.onnx` file into a web app, and `onnx9000` will instantly perform a rigorous static analysis, verifying every node, edge, and attribute against the official ONNX specifications without server-side C++ processing.
+- **Integrated Schema Registry:** Bakes the entire official ONNX Operator Schema (Opsets 1 through 21) directly into a highly compressed JSON/JS dictionary. This allows the tool to provide exact, human-readable error messages (e.g., `"Node Conv_1 expected attribute 'pads' to be an array of length 4, got 2"`) dynamically.
+- **Extensible for Custom Ops:** Allows users to inject their own custom operator schemas as JSON objects, enabling the checker to validate proprietary models seamlessly.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core Protobuf & Structural Validation
-- [ ] 001. Implement `check_model(model)` base function.
-- [ ] 002. Verify valid ONNX Magic Bytes on binary payload ingestion.
-- [ ] 003. Verify `ir_version` matches supported standard ranges (e.g., >= 3, <= 10).
-- [ ] 004. Verify `producer_name` string encoding.
-- [ ] 005. Verify `producer_version` string encoding.
-- [ ] 006. Verify `domain` string constraints.
-- [ ] 007. Verify `model_version` integer constraints.
-- [ ] 008. Verify `doc_string` UTF-8 encoding safely.
-- [ ] 009. Validate `opset_import` array (must contain at least one entry, typically `ai.onnx`).
-- [ ] 010. Detect duplicate `domain` definitions in `opset_import`.
-- [ ] 011. Throw error if `ir_version` requires an opset that is not present.
-- [ ] 012. Verify `graph` exists and is a valid `GraphProto` object.
-- [ ] 013. Detect and warn on unpopulated metadata fields.
-- [ ] 014. Validate nested `training_info` blocks if present.
-- [ ] 015. Support parsing and validating `metadata_props` key-value maps.
+
+- [ ] 1. Implement `check_model(model)` base function.
+- [ ] 2. Verify valid ONNX Magic Bytes on binary payload ingestion.
+- [ ] 3. Verify `ir_version` matches supported standard ranges (e.g., >= 3, <= 10).
+- [ ] 4. Verify `producer_name` string encoding.
+- [ ] 5. Verify `producer_version` string encoding.
+- [ ] 6. Verify `domain` string constraints.
+- [ ] 7. Verify `model_version` integer constraints.
+- [ ] 8. Verify `doc_string` UTF-8 encoding safely.
+- [ ] 9. Validate `opset_import` array (must contain at least one entry, typically `ai.onnx`).
+- [ ] 10. Detect duplicate `domain` definitions in `opset_import`.
+- [ ] 11. Throw error if `ir_version` requires an opset that is not present.
+- [ ] 12. Verify `graph` exists and is a valid `GraphProto` object.
+- [ ] 13. Detect and warn on unpopulated metadata fields.
+- [ ] 14. Validate nested `training_info` blocks if present.
+- [ ] 15. Support parsing and validating `metadata_props` key-value maps.
 
 ### Phase 2: Topological DAG Validation (Graph Integrity)
-- [ ] 016. Build a dependency map of all `NodeProto` inputs and outputs.
-- [ ] 017. Verify the graph is strictly Acyclic (Detect cycles/loops natively).
-- [ ] 018. Verify every `NodeProto` input is supplied by either an Initializer, a Graph Input, or a preceding Node Output.
-- [ ] 019. Catch "Dangling Inputs" (Node asks for `tensor_x`, but `tensor_x` is never produced).
-- [ ] 020. Identify and warn about "Dangling Outputs" (Node produces `tensor_y`, but it's never consumed and not a Graph Output).
-- [ ] 021. Verify Graph Inputs do not contain duplicate names.
-- [ ] 022. Verify Graph Outputs do not contain duplicate names.
-- [ ] 023. Verify Initializers do not contain duplicate names.
-- [ ] 024. Verify Node outputs do not contain duplicate names globally.
-- [ ] 025. Verify Graph Inputs and Initializers names do not illegally collide (unless intentionally shadowing per ONNX spec rules).
-- [ ] 026. Ensure top-level graph output names are exactly matched by node outputs.
-- [ ] 027. Process lexical scope rules for nested Subgraphs (`If`, `Loop`).
-- [ ] 028. Validate that nested Subgraphs can read parent tensors but cannot mutate them.
-- [ ] 029. Verify no overlapping tensor definitions exist between a parent and its sub-graph unless explicitly allowed.
-- [ ] 030. Catch and report multi-writer conflicts (two different nodes attempting to output to the exact same tensor name).
+
+- [ ] 16. Build a dependency map of all `NodeProto` inputs and outputs.
+- [ ] 17. Verify the graph is strictly Acyclic (Detect cycles/loops natively).
+- [ ] 18. Verify every `NodeProto` input is supplied by either an Initializer, a Graph Input, or a preceding Node Output.
+- [ ] 19. Catch "Dangling Inputs" (Node asks for `tensor_x`, but `tensor_x` is never produced).
+- [ ] 20. Identify and warn about "Dangling Outputs" (Node produces `tensor_y`, but it's never consumed and not a Graph Output).
+- [ ] 21. Verify Graph Inputs do not contain duplicate names.
+- [ ] 22. Verify Graph Outputs do not contain duplicate names.
+- [ ] 23. Verify Initializers do not contain duplicate names.
+- [ ] 24. Verify Node outputs do not contain duplicate names globally.
+- [ ] 25. Verify Graph Inputs and Initializers names do not illegally collide (unless intentionally shadowing per ONNX spec rules).
+- [ ] 26. Ensure top-level graph output names are exactly matched by node outputs.
+- [ ] 27. Process lexical scope rules for nested Subgraphs (`If`, `Loop`).
+- [ ] 28. Validate that nested Subgraphs can read parent tensors but cannot mutate them.
+- [ ] 29. Verify no overlapping tensor definitions exist between a parent and its sub-graph unless explicitly allowed.
+- [ ] 30. Catch and report multi-writer conflicts (two different nodes attempting to output to the exact same tensor name).
 
 ### Phase 3: TensorProto & External Data Validation
-- [ ] 031. Implement `check_tensor(tensor)` base function.
-- [ ] 032. Verify `data_type` strictly matches ONNX `TensorProto.DataType` enums.
-- [ ] 033. Verify `dims` array contains only non-negative integers (or -1 if symbolically allowed, though initializers shouldn't).
-- [ ] 034. Reject `-1` dimensions inside `Initializer` tensors strictly.
-- [ ] 035. Calculate expected byte size based on `dims` and `data_type`.
-- [ ] 036. Verify `raw_data` byte length matches the expected calculated size.
-- [ ] 037. If using `float_data` array, verify array length matches element count.
-- [ ] 038. If using `int32_data` array, verify array length.
-- [ ] 039. If using `string_data` array, verify encoding and structure.
-- [ ] 040. If `data_location` is set to `EXTERNAL`, verify `external_data` array exists.
-- [ ] 041. Validate `external_data` keys (`location`, `offset`, `length`).
-- [ ] 042. Throw explicit warning if an external data file path contains directory traversal hacks (`../`).
-- [ ] 043. Verify total tensor size does not exceed Protobuf hard limit (2GB) unless external data is used.
-- [ ] 044. Prevent simultaneous usage of `raw_data` and typed arrays (e.g., `float_data`) on the same tensor.
+
+- [ ] 31. Implement `check_tensor(tensor)` base function.
+- [ ] 32. Verify `data_type` strictly matches ONNX `TensorProto.DataType` enums.
+- [ ] 33. Verify `dims` array contains only non-negative integers (or -1 if symbolically allowed, though initializers shouldn't).
+- [ ] 34. Reject `-1` dimensions inside `Initializer` tensors strictly.
+- [ ] 35. Calculate expected byte size based on `dims` and `data_type`.
+- [ ] 36. Verify `raw_data` byte length matches the expected calculated size.
+- [ ] 37. If using `float_data` array, verify array length matches element count.
+- [ ] 38. If using `int32_data` array, verify array length.
+- [ ] 39. If using `string_data` array, verify encoding and structure.
+- [ ] 40. If `data_location` is set to `EXTERNAL`, verify `external_data` array exists.
+- [ ] 41. Validate `external_data` keys (`location`, `offset`, `length`).
+- [ ] 42. Throw explicit warning if an external data file path contains directory traversal hacks (`../`).
+- [ ] 43. Verify total tensor size does not exceed Protobuf hard limit (2GB) unless external data is used.
+- [ ] 44. Prevent simultaneous usage of `raw_data` and typed arrays (e.g., `float_data`) on the same tensor.
 
 ### Phase 4: Schema Registry & Opset Mapping
-- [ ] 045. Implement the unified `SchemaRegistry` dictionary in TS/Python.
-- [ ] 046. Embed `ai.onnx` Opset 7 definitions.
-- [ ] 047. Embed `ai.onnx` Opset 8 definitions.
-- [ ] 048. Embed `ai.onnx` Opset 9 definitions.
-- [ ] 049. Embed `ai.onnx` Opset 10 definitions.
-- [ ] 050. Embed `ai.onnx` Opset 11 definitions.
-- [ ] 051. Embed `ai.onnx` Opset 12 definitions.
-- [ ] 052. Embed `ai.onnx` Opset 13 definitions.
-- [ ] 053. Embed `ai.onnx` Opset 14 definitions.
-- [ ] 054. Embed `ai.onnx` Opset 15 definitions.
-- [ ] 055. Embed `ai.onnx` Opset 16 definitions.
-- [ ] 056. Embed `ai.onnx` Opset 17 definitions.
-- [ ] 057. Embed `ai.onnx` Opset 18 definitions.
-- [ ] 058. Embed `ai.onnx` Opset 19 definitions.
-- [ ] 059. Embed `ai.onnx` Opset 20 definitions.
-- [ ] 060. Embed `ai.onnx` Opset 21 definitions.
-- [ ] 061. Embed `ai.onnx.ml` Opsets 1, 2, 3, 4.
-- [ ] 062. Automatically map a Node's `domain` and the Model's `opset_import` version to the exact Schema schema.
-- [ ] 063. Throw `UnsupportedOperatorError` if a node's `op_type` does not exist in the registered domain.
-- [ ] 064. Throw `UnsupportedOpsetError` if the model relies on an opset version not defined in the registry.
+
+- [ ] 45. Implement the unified `SchemaRegistry` dictionary in TS/Python.
+- [ ] 46. Embed `ai.onnx` Opset 7 definitions.
+- [ ] 47. Embed `ai.onnx` Opset 8 definitions.
+- [ ] 48. Embed `ai.onnx` Opset 9 definitions.
+- [ ] 49. Embed `ai.onnx` Opset 10 definitions.
+- [ ] 50. Embed `ai.onnx` Opset 11 definitions.
+- [ ] 51. Embed `ai.onnx` Opset 12 definitions.
+- [ ] 52. Embed `ai.onnx` Opset 13 definitions.
+- [ ] 53. Embed `ai.onnx` Opset 14 definitions.
+- [ ] 54. Embed `ai.onnx` Opset 15 definitions.
+- [ ] 55. Embed `ai.onnx` Opset 16 definitions.
+- [ ] 56. Embed `ai.onnx` Opset 17 definitions.
+- [ ] 57. Embed `ai.onnx` Opset 18 definitions.
+- [ ] 58. Embed `ai.onnx` Opset 19 definitions.
+- [ ] 59. Embed `ai.onnx` Opset 20 definitions.
+- [ ] 60. Embed `ai.onnx` Opset 21 definitions.
+- [ ] 61. Embed `ai.onnx.ml` Opsets 1, 2, 3, 4.
+- [ ] 62. Automatically map a Node's `domain` and the Model's `opset_import` version to the exact Schema schema.
+- [ ] 63. Throw `UnsupportedOperatorError` if a node's `op_type` does not exist in the registered domain.
+- [ ] 64. Throw `UnsupportedOpsetError` if the model relies on an opset version not defined in the registry.
 
 ### Phase 5: Attribute Schema Validation
-- [ ] 065. Implement `check_attribute(attr, schema)` function.
-- [ ] 066. Verify required attributes are present.
-- [ ] 067. Warn on unrecognized attributes not present in the schema.
-- [ ] 068. Verify attribute type `FLOAT` matches `f`.
-- [ ] 069. Verify attribute type `INT` matches `i`.
-- [ ] 070. Verify attribute type `STRING` matches `s`.
-- [ ] 071. Verify attribute type `TENSOR` matches `t` (and validate the embedded tensor).
-- [ ] 072. Verify attribute type `GRAPH` matches `g` (and validate the nested graph recursively).
-- [ ] 073. Verify attribute type `FLOATS` matches `floats` array.
-- [ ] 074. Verify attribute type `INTS` matches `ints` array.
-- [ ] 075. Verify attribute type `STRINGS` matches `strings` array.
-- [ ] 076. Verify attribute type `TENSORS` matches `tensors` array.
-- [ ] 077. Verify attribute type `GRAPHS` matches `graphs` array.
-- [ ] 078. Apply schema-defined default values explicitly if an optional attribute is missing.
-- [ ] 079. Validate enum constraints (e.g., `auto_pad` MUST be one of `['NOTSET', 'SAME_UPPER', 'SAME_LOWER', 'VALID']`).
-- [ ] 080. Validate boolean attributes strictly as `int` `0` or `1`.
+
+- [ ] 65. Implement `check_attribute(attr, schema)` function.
+- [ ] 66. Verify required attributes are present.
+- [ ] 67. Warn on unrecognized attributes not present in the schema.
+- [ ] 68. Verify attribute type `FLOAT` matches `f`.
+- [ ] 69. Verify attribute type `INT` matches `i`.
+- [ ] 70. Verify attribute type `STRING` matches `s`.
+- [ ] 71. Verify attribute type `TENSOR` matches `t` (and validate the embedded tensor).
+- [ ] 72. Verify attribute type `GRAPH` matches `g` (and validate the nested graph recursively).
+- [ ] 73. Verify attribute type `FLOATS` matches `floats` array.
+- [ ] 74. Verify attribute type `INTS` matches `ints` array.
+- [ ] 75. Verify attribute type `STRINGS` matches `strings` array.
+- [ ] 76. Verify attribute type `TENSORS` matches `tensors` array.
+- [ ] 77. Verify attribute type `GRAPHS` matches `graphs` array.
+- [ ] 78. Apply schema-defined default values explicitly if an optional attribute is missing.
+- [ ] 79. Validate enum constraints (e.g., `auto_pad` MUST be one of `['NOTSET', 'SAME_UPPER', 'SAME_LOWER', 'VALID']`).
+- [ ] 80. Validate boolean attributes strictly as `int` `0` or `1`.
 
 ### Phase 6: Input & Output Type/Shape Checking
-- [ ] 081. Extract node `input` arity (count).
-- [ ] 082. Verify input arity satisfies schema `min_input` and `max_input`.
-- [ ] 083. Extract node `output` arity.
-- [ ] 084. Verify output arity satisfies schema `min_output` and `max_output`.
-- [ ] 085. Handle variadic inputs correctly (e.g., `Concat` takes 1 to infinity inputs).
-- [ ] 086. Handle optional inputs correctly (e.g., empty string `""` mapping to missing input).
-- [ ] 087. Verify that optional inputs are legally allowed to be missing per the specific schema.
-- [ ] 088. Execute `TypeInference` pass: Deduce the `dtype` of every intermediate edge.
-- [ ] 089. Validate edge `dtypes` against schema Type Constraints (e.g., `T1` must be `tensor(float16)` or `tensor(float)`).
-- [ ] 090. Enforce identical types across constrained inputs (e.g., `Add` requires both inputs to be exactly the same `T`).
-- [ ] 091. Execute `ShapeInference` pass: Deduce the shape of every intermediate edge.
-- [ ] 092. Validate dimensional constraints (e.g., `MatMul` 2nd dimension of A must match 1st dimension of B).
-- [ ] 093. Check broadcasting rules validity for elementwise mathematical nodes.
-- [ ] 094. Throw precise `TypeMismatchError` detailing the node, expected type, and received type.
-- [ ] 095. Throw precise `ShapeMismatchError` detailing the mathematical impossibility.
+
+- [ ] 81. Extract node `input` arity (count).
+- [ ] 82. Verify input arity satisfies schema `min_input` and `max_input`.
+- [ ] 83. Extract node `output` arity.
+- [ ] 84. Verify output arity satisfies schema `min_output` and `max_output`.
+- [ ] 85. Handle variadic inputs correctly (e.g., `Concat` takes 1 to infinity inputs).
+- [ ] 86. Handle optional inputs correctly (e.g., empty string `""` mapping to missing input).
+- [ ] 87. Verify that optional inputs are legally allowed to be missing per the specific schema.
+- [ ] 88. Execute `TypeInference` pass: Deduce the `dtype` of every intermediate edge.
+- [ ] 89. Validate edge `dtypes` against schema Type Constraints (e.g., `T1` must be `tensor(float16)` or `tensor(float)`).
+- [ ] 90. Enforce identical types across constrained inputs (e.g., `Add` requires both inputs to be exactly the same `T`).
+- [ ] 91. Execute `ShapeInference` pass: Deduce the shape of every intermediate edge.
+- [ ] 92. Validate dimensional constraints (e.g., `MatMul` 2nd dimension of A must match 1st dimension of B).
+- [ ] 93. Check broadcasting rules validity for elementwise mathematical nodes.
+- [ ] 94. Throw precise `TypeMismatchError` detailing the node, expected type, and received type.
+- [ ] 95. Throw precise `ShapeMismatchError` detailing the mathematical impossibility.
 
 ### Phase 7: Core Operator Specific Validations (Math & Logic)
-- [ ] 096. Validate `Add`, `Sub`, `Mul`, `Div` require identical input typings or safe broadcasting.
-- [ ] 097. Validate `Pow` input typings.
-- [ ] 098. Validate `Mod` attribute `fmod` limits.
-- [ ] 099. Validate `Abs`, `Exp`, `Log`, `Sqrt`, `Ceil`, `Floor`, `Round` inputs.
+
+- [ ] 96. Validate `Add`, `Sub`, `Mul`, `Div` require identical input typings or safe broadcasting.
+- [ ] 97. Validate `Pow` input typings.
+- [ ] 98. Validate `Mod` attribute `fmod` limits.
+- [ ] 99. Validate `Abs`, `Exp`, `Log`, `Sqrt`, `Ceil`, `Floor`, `Round` inputs.
 - [ ] 100. Validate `Sin`, `Cos`, `Tan`, `Asin`, `Acos`, `Atan`.
 - [ ] 101. Validate `IsNaN`, `IsInf` output types strictly forced to `bool`.
 - [ ] 102. Validate `Equal`, `Less`, `Greater` output types forced to `bool`.
@@ -134,6 +144,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 106. Validate `Cast` attribute `to` matches a valid ONNX DataType int.
 
 ### Phase 8: Core Operator Specific Validations (NN Layers)
+
 - [ ] 107. Validate `Conv` input rank (N-D inputs).
 - [ ] 108. Validate `Conv` weight shape aligns with `groups` attribute (`W_shape[0] % groups == 0`).
 - [ ] 109. Validate `Conv` bias shape matches `W_shape[0]`.
@@ -150,6 +161,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 120. Validate `Gemm` enforces strict 2D semantics (prior to opset upgrades).
 
 ### Phase 9: Routing & Manipulation Validations
+
 - [ ] 121. Validate `Reshape` output volume matches input volume perfectly (if static).
 - [ ] 122. Ensure `Reshape` `shape` input tensor contains at most one `-1` dimension.
 - [ ] 123. Validate `Transpose` `perm` array contains exact, unique axes mapping to the input rank.
@@ -165,6 +177,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 133. Validate `Expand` shape tensor bounds.
 
 ### Phase 10: Control Flow Validations (`If`, `Loop`, `Scan`)
+
 - [ ] 134. Validate `If` node has `then_branch` and `else_branch` Graph attributes.
 - [ ] 135. Verify `then_branch` and `else_branch` output counts match exactly.
 - [ ] 136. Verify `then_branch` and `else_branch` output types match exactly.
@@ -177,6 +190,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 143. Ensure nested control flow graphs do not define global initializers illegally.
 
 ### Phase 11: Quantization & Sequence Validations
+
 - [ ] 144. Validate `QuantizeLinear` requires `y_scale` and `y_zero_point`.
 - [ ] 145. Validate `y_scale` is strictly a scalar (1D tensor of size 1) or matches `axis` for per-channel.
 - [ ] 146. Validate `DequantizeLinear` requires matching scales and zero points.
@@ -187,6 +201,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 151. Validate `SplitToSequence` limits.
 
 ### Phase 12: `ai.onnx.ml` Domain Validations
+
 - [ ] 152. Validate `TreeEnsembleClassifier` requires `nodes_treeids`, `nodes_nodeids`, `nodes_featureids`.
 - [ ] 153. Validate `TreeEnsembleClassifier` array lengths internally align perfectly.
 - [ ] 154. Validate `TreeEnsembleRegressor` node lengths.
@@ -202,6 +217,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 164. Validate `Scaler` scale and offset dimensions match.
 
 ### Phase 13: Extensibility & User Customization
+
 - [ ] 165. Expose `register_custom_schema(domain, opset, schema_json)` API.
 - [ ] 166. Support overriding existing standard schemas for testing purposes.
 - [ ] 167. Implement schema generation utility: creating a blank JSON schema template for users.
@@ -210,6 +226,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 170. Expose an API to extract the schema definition for a specific node directly (`onnx9000.get_schema("Conv", 13)`).
 
 ### Phase 14: Security, Malice & Fuzzing Protections
+
 - [ ] 171. Catch memory explosion attacks: Prevent arrays with `dims: [2^30, 2^30]` from crashing the validator.
 - [ ] 172. Detect arbitrary nested recursion attacks (e.g., 10,000 deep `If` subgraphs).
 - [ ] 173. Prevent prototype pollution via dynamically loaded custom schemas in JS.
@@ -218,6 +235,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 176. Ensure JS `BigInt` usage for all tensor volume calculations to prevent 32-bit truncation vulnerabilities.
 
 ### Phase 15: Memory-Efficient Execution (Streaming Validation)
+
 - [ ] 177. Implement a streaming validator for files > 2GB.
 - [ ] 178. Read `NodeProto` sequentially from the File/Blob without holding the entire graph in RAM.
 - [ ] 179. Verify Graph definitions on the fly, emitting errors immediately before the file finishes loading.
@@ -225,6 +243,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 181. Expose `check_model_async()` allowing UI responsiveness during large graph traversal.
 
 ### Phase 16: Reporting & Diagnostics Generation
+
 - [ ] 182. Build a unified `ValidationError` exception object holding Node ID, line/index, and the specific failure.
 - [ ] 183. Generate rich, colored terminal output for Node.js / CLI execution.
 - [ ] 184. Aggregate all errors globally (don't stop on the first error, collect a complete list of failures).
@@ -233,6 +252,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 187. Provide Opset suggestions (e.g., "Node `HardSwish` is invalid in Opset 11. It was introduced in Opset 14").
 
 ### Phase 17: CLI Tooling (`onnx9000 check`)
+
 - [ ] 188. Implement CLI: `onnx9000 check model.onnx`.
 - [ ] 189. Add `--strict` flag to enforce pedantic standard matching.
 - [ ] 190. Add `--allow-unrecognized-ops` flag.
@@ -242,6 +262,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 194. Handle exit codes correctly (`0` for valid, `1` for invalid) to fail shell pipelines automatically.
 
 ### Phase 18: Web UI (The Visual Validator)
+
 - [ ] 195. Build a static React/Vue Web UI for `onnx9000.checker`.
 - [ ] 196. Implement drag-and-drop ingestion of `model.onnx`.
 - [ ] 197. Render a visual checklist passing/failing across the distinct phases (Topology, Types, Attributes).
@@ -250,6 +271,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 200. Integrate the Checker natively into `onnx9000.Netron` and `onnx9000.modifier` as a real-time linter.
 
 ### Phase 19: End-to-End Compliance Verification
+
 - [ ] 201. Download the official ONNX backend test suite topologies.
 - [ ] 202. Execute `check_model` over all 1000+ valid test models and verify no false positives.
 - [ ] 203. Execute `check_model` over known invalid models and verify correct exceptions are raised.
@@ -261,6 +283,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 - [ ] 209. Emulate exact Protobuf wire-format verification checks.
 
 ### Phase 20: Delivery, Fallbacks & Advanced Topologies
+
 - [ ] 210. Write Tutorial: "Validating and Fixing Broken ONNX Models Locally".
 - [ ] 211. Provide automated "Quick Fix" scripts for common errors (e.g., dropping empty dimensions).
 - [ ] 212. Verify `SparseTensorProto` validations explicitly.

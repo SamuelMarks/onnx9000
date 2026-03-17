@@ -91,7 +91,7 @@ class Generator:
             )
         for node in self.graph.nodes:
             domain = getattr(node, "domain", "")
-            op_gen = registry.get_generator(node.op_type, domain=domain)
+            op_gen = registry.get_op(node.op_type, domain=domain)
             op_code = op_gen(node, self)
             body.append(op_code)
         for i, name in enumerate(self.graph.outputs):

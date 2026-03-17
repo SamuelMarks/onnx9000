@@ -23,7 +23,7 @@ def generate_constant(node: Node, ctx: Generator) -> str:
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     data_str = "0"
     if "value" in node.attributes:
-        val = node.attributes["value"]
+        val = node.attributes["value"].value
         if hasattr(val, "data") and val.data is not None:
             import numpy as np
 

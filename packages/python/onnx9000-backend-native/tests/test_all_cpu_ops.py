@@ -167,3 +167,7 @@ def test_ops_coverage_final():
     concatfromsequence_op(
         [[np.ones((2,), dtype=np.float32), np.ones((2,), dtype=np.float32)]], {"new_axis": 1}
     )
+
+    from onnx9000.backends.cpu.ops import sequenceinsert_op
+
+    sequenceinsert_op([[1, 2], np.array(3), np.array(1)], {})

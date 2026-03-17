@@ -4,15 +4,14 @@
 
 > **Note:** The distributed components described below integrate directly into the `onnx9000` **Polyglot Monorepo** architecture as dedicated `packages/python/onnx9000-network`, `packages/js/network`, and `apps/mlops-ui` workspaces.
 
-
-
 The `onnx9000` ecosystem has successfully laid the groundwork for a revolutionary approach to Machine Learning: **zero-dependency, web-native, and universally portable execution**. By rebuilding the core ONNX runtime, optimizers, converters, and generative loops entirely in pure Python and TypeScript/WebAssembly, we have broken the chains of massive C++ binaries, complex build toolchains, and platform-specific deployments.
 
-However, running a model natively in the browser or on a single edge device is only the foundation. The ultimate goal of modern AI engineering requires orchestrating these lightweight, frictionless runtimes into a cohesive, distributed network. 
+However, running a model natively in the browser or on a single edge device is only the foundation. The ultimate goal of modern AI engineering requires orchestrating these lightweight, frictionless runtimes into a cohesive, distributed network.
 
-**The "Next Next" Plan** targets the complete democratization of the ML infrastructure lifecycle. We are extending `onnx9000` from single-node execution to a **planet-scale, distributed compute fabric** seamlessly coupled with a **lightweight, zero-dependency MLOps platform**. 
+**The "Next Next" Plan** targets the complete democratization of the ML infrastructure lifecycle. We are extending `onnx9000` from single-node execution to a **planet-scale, distributed compute fabric** seamlessly coupled with a **lightweight, zero-dependency MLOps platform**.
 
 When this phase is complete, `onnx9000` will natively support:
+
 - **Training:** Single node, single-node in-browser, multi-node cluster, and multi-node peer-to-peer (P2P) browser swarms (Federated & Distributed).
 - **Inference:** Single node, single-node browser, and multi-node parallelized inference (e.g., splitting a 70B LLM across 10 consumer web browsers).
 - **Unified SDK & CLI:** A seamless developer experience transitioning from local prototyping to distributed cluster execution.
@@ -26,109 +25,112 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 ## Exhaustive Parity & Implementation Checklist
 
 ### Phase 1: Distributed Transport Layer (WebRTC & WebSockets)
-- [ ] 001. Design unified `onnx9000.network.Transport` interface for Python and JS.
-- [ ] 002. Implement zero-dependency WebSocket client/server bridging in Python.
-- [ ] 003. Implement native WebSocket client bridging in standard Browser JS.
-- [ ] 004. Implement WebRTC signaling server natively in the Python MLOps server.
-- [ ] 005. Implement WebRTC `RTCPeerConnection` wrapper for browser-to-browser P2P transport.
-- [ ] 006. Implement Python WebRTC bindings (via `aiortc` or pure-python equivalent).
-- [ ] 007. Develop WebRTC DataChannel multiplexing (handling multiple tensor streams).
-- [ ] 008. Implement STUN/TURN server configurations for strict NAT traversal.
-- [ ] 009. Build binary serialization protocol for `onnx9000.Tensor` over the wire.
-- [ ] 010. Implement dynamic chunking for massive tensors exceeding WebRTC message size limits.
-- [ ] 011. Implement chunk reassembly and ordering guarantees for UDP-based DataChannels.
-- [ ] 012. Implement compression (e.g., GZIP/Brotli) for text/metadata payloads.
-- [ ] 013. Support BFloat16/Float16 over-the-wire casting to reduce bandwidth.
-- [ ] 014. Implement connection health monitoring (ping/pong heartbeats).
-- [ ] 015. Implement automatic reconnection logic with exponential backoff.
-- [ ] 016. Build a Peer Discovery mechanism (DHT or centralized tracker).
-- [ ] 017. Expose latency profiling tools (measuring ping between two browser nodes).
-- [ ] 018. Expose bandwidth profiling tools (measuring Mbps throughput between nodes).
-- [ ] 019. Implement a fallback routing mechanism (P2P fails -> route through WebSocket relay).
-- [ ] 020. Implement a topology mapper (identifying cluster layout, e.g., Ring, Star, Mesh).
-- [ ] 021. Optimize binary packing of `Shape` and `Dtype` metadata into 64-byte headers.
-- [ ] 022. Implement streaming iterators for receiving tensors asynchronously in JS (`for await`).
-- [ ] 023. Implement streaming iterators for receiving tensors asynchronously in Python.
-- [ ] 024. Abstract connection details into a `onnx9000.Cluster` manager object.
-- [ ] 025. Support multi-threading/WebWorkers for offloading transport encryption/decryption.
-- [ ] 026. Implement explicit end-to-end encryption (E2EE) for tensor data over WebSockets.
-- [ ] 027. Ensure WebRTC DTLS security protocols are strictly enforced.
-- [ ] 028. Create CLI diagnostic tool: `onnx9000 network test`.
-- [ ] 029. Map standard HTTP/REST fallback for environments blocking WSS/WebRTC.
-- [ ] 030. Support establishing direct local-network connections via IP (bypassing signaling).
-- [ ] 031. Implement cross-tab communication (BroadcastChannel) for multi-window local execution.
-- [ ] 032. Define `NodeCapabilities` struct (VRAM, RAM, CPU/GPU type) for broadcast to peers.
-- [ ] 033. Implement peer authorization tokens (preventing rogue nodes from joining).
-- [ ] 034. Support dynamic topology adjustment (nodes joining/leaving mid-execution).
-- [ ] 035. Validate 100-node simulated cluster communication stability natively.
+
+- [ ] 1. Design unified `onnx9000.network.Transport` interface for Python and JS.
+- [ ] 2. Implement zero-dependency WebSocket client/server bridging in Python.
+- [ ] 3. Implement native WebSocket client bridging in standard Browser JS.
+- [ ] 4. Implement WebRTC signaling server natively in the Python MLOps server.
+- [ ] 5. Implement WebRTC `RTCPeerConnection` wrapper for browser-to-browser P2P transport.
+- [ ] 6. Implement Python WebRTC bindings (via `aiortc` or pure-python equivalent).
+- [ ] 7. Develop WebRTC DataChannel multiplexing (handling multiple tensor streams).
+- [ ] 8. Implement STUN/TURN server configurations for strict NAT traversal.
+- [ ] 9. Build binary serialization protocol for `onnx9000.Tensor` over the wire.
+- [ ] 10. Implement dynamic chunking for massive tensors exceeding WebRTC message size limits.
+- [ ] 11. Implement chunk reassembly and ordering guarantees for UDP-based DataChannels.
+- [ ] 12. Implement compression (e.g., GZIP/Brotli) for text/metadata payloads.
+- [ ] 13. Support BFloat16/Float16 over-the-wire casting to reduce bandwidth.
+- [ ] 14. Implement connection health monitoring (ping/pong heartbeats).
+- [ ] 15. Implement automatic reconnection logic with exponential backoff.
+- [ ] 16. Build a Peer Discovery mechanism (DHT or centralized tracker).
+- [ ] 17. Expose latency profiling tools (measuring ping between two browser nodes).
+- [ ] 18. Expose bandwidth profiling tools (measuring Mbps throughput between nodes).
+- [ ] 19. Implement a fallback routing mechanism (P2P fails -> route through WebSocket relay).
+- [ ] 20. Implement a topology mapper (identifying cluster layout, e.g., Ring, Star, Mesh).
+- [ ] 21. Optimize binary packing of `Shape` and `Dtype` metadata into 64-byte headers.
+- [ ] 22. Implement streaming iterators for receiving tensors asynchronously in JS (`for await`).
+- [ ] 23. Implement streaming iterators for receiving tensors asynchronously in Python.
+- [ ] 24. Abstract connection details into a `onnx9000.Cluster` manager object.
+- [ ] 25. Support multi-threading/WebWorkers for offloading transport encryption/decryption.
+- [ ] 26. Implement explicit end-to-end encryption (E2EE) for tensor data over WebSockets.
+- [ ] 27. Ensure WebRTC DTLS security protocols are strictly enforced.
+- [ ] 28. Create CLI diagnostic tool: `onnx9000 network test`.
+- [ ] 29. Map standard HTTP/REST fallback for environments blocking WSS/WebRTC.
+- [ ] 30. Support establishing direct local-network connections via IP (bypassing signaling).
+- [ ] 31. Implement cross-tab communication (BroadcastChannel) for multi-window local execution.
+- [ ] 32. Define `NodeCapabilities` struct (VRAM, RAM, CPU/GPU type) for broadcast to peers.
+- [ ] 33. Implement peer authorization tokens (preventing rogue nodes from joining).
+- [ ] 34. Support dynamic topology adjustment (nodes joining/leaving mid-execution).
+- [ ] 35. Validate 100-node simulated cluster communication stability natively.
 
 ### Phase 2: Distributed Multi-Node Inference
-- [ ] 036. Implement `onnx9000.inference.DistributedSession` wrapper.
-- [ ] 037. Build graph partitioning algorithm (splitting ONNX graph into Subgraphs).
-- [ ] 038. Implement Pipeline Parallelism (Node A runs Layer 1-10, Node B runs Layer 11-20).
-- [ ] 039. Implement Tensor Parallelism (Node A and B compute different heads of the same Attention layer).
-- [ ] 040. Automatically inject `NetworkRecv` and `NetworkSend` virtual ONNX nodes at split boundaries.
-- [ ] 041. Parse available cluster `NodeCapabilities` to optimally assign Subgraphs based on VRAM.
-- [ ] 042. Implement distributed execution of standard ResNet (CNN pipeline parallel).
-- [ ] 043. Implement distributed execution of massive LLMs (Llama/Mistral).
-- [ ] 044. Optimize token-streaming across network boundaries (pipelining sequence generation).
-- [ ] 045. Support executing a single prompt across a 10-browser swarm flawlessly.
-- [ ] 046. Implement KV-Cache distribution (each node maintains its own local cache for its layers).
-- [ ] 047. Handle continuous batching across distributed nodes.
-- [ ] 048. Support dynamic batch size adjustments mid-pipeline.
-- [ ] 049. Route inference requests dynamically to least-loaded nodes (Load Balancing).
-- [ ] 050. Implement Speculative Decoding across distributed nodes (Draft model on Node A, Verifier on Node B).
-- [ ] 051. Support asymmetric node compute (combining an iPhone, a PC, and a Server into one inference pipeline).
-- [ ] 052. Handle latency jitter (buffering inputs safely on receiving nodes).
-- [ ] 053. Ensure WebGPU buffers can be directly mapped to WebRTC DataChannels with minimal copies.
-- [ ] 054. Execute graph boundary checks to ensure partitioned subgraphs remain strictly acyclic.
-- [ ] 055. Provide visual CLI output of the distributed pipeline architecture.
-- [ ] 056. Expose manual partition overrides (allowing users to slice the graph via a JSON config).
-- [ ] 057. Support execution of Mixture of Experts (MoE) where each node hosts a different Expert.
-- [ ] 058. Implement expert routing logic across the network layer.
-- [ ] 059. Support streaming audio processing pipelines (Whisper) across multiple nodes.
-- [ ] 060. Manage Distributed Session teardown and memory cleanup across the cluster.
-- [ ] 061. Provide a "dry-run" mode estimating inference latency across a simulated network.
-- [ ] 062. Handle quantization boundary mismatches (e.g., Node A uses INT8, Node B uses FP16).
-- [ ] 063. Cast tensors optimally before transmission (e.g., downcasting to FP16 over wire, computing in FP32).
-- [ ] 064. Implement specific timeout parameters for stalled inference nodes.
-- [ ] 065. Create a fallback mechanism (if Node B drops out, Node C takes over its Subgraph).
-- [ ] 066. Enable seamless bridging between Python Server backends and JS Browser frontends in the same pipeline.
-- [ ] 067. Provide end-to-end tests for a 5-node distributed LLM generation script.
-- [ ] 068. Measure TTFT (Time-To-First-Token) overhead of network transmission.
-- [ ] 069. Optimize throughput (Tokens/sec) via concurrent pipelining (micro-batches).
-- [ ] 070. Support WebNN / CoreML integration within individual distributed nodes.
+
+- [ ] 36. Implement `onnx9000.inference.DistributedSession` wrapper.
+- [ ] 37. Build graph partitioning algorithm (splitting ONNX graph into Subgraphs).
+- [ ] 38. Implement Pipeline Parallelism (Node A runs Layer 1-10, Node B runs Layer 11-20).
+- [ ] 39. Implement Tensor Parallelism (Node A and B compute different heads of the same Attention layer).
+- [ ] 40. Automatically inject `NetworkRecv` and `NetworkSend` virtual ONNX nodes at split boundaries.
+- [ ] 41. Parse available cluster `NodeCapabilities` to optimally assign Subgraphs based on VRAM.
+- [ ] 42. Implement distributed execution of standard ResNet (CNN pipeline parallel).
+- [ ] 43. Implement distributed execution of massive LLMs (Llama/Mistral).
+- [ ] 44. Optimize token-streaming across network boundaries (pipelining sequence generation).
+- [ ] 45. Support executing a single prompt across a 10-browser swarm flawlessly.
+- [ ] 46. Implement KV-Cache distribution (each node maintains its own local cache for its layers).
+- [ ] 47. Handle continuous batching across distributed nodes.
+- [ ] 48. Support dynamic batch size adjustments mid-pipeline.
+- [ ] 49. Route inference requests dynamically to least-loaded nodes (Load Balancing).
+- [ ] 50. Implement Speculative Decoding across distributed nodes (Draft model on Node A, Verifier on Node B).
+- [ ] 51. Support asymmetric node compute (combining an iPhone, a PC, and a Server into one inference pipeline).
+- [ ] 52. Handle latency jitter (buffering inputs safely on receiving nodes).
+- [ ] 53. Ensure WebGPU buffers can be directly mapped to WebRTC DataChannels with minimal copies.
+- [ ] 54. Execute graph boundary checks to ensure partitioned subgraphs remain strictly acyclic.
+- [ ] 55. Provide visual CLI output of the distributed pipeline architecture.
+- [ ] 56. Expose manual partition overrides (allowing users to slice the graph via a JSON config).
+- [ ] 57. Support execution of Mixture of Experts (MoE) where each node hosts a different Expert.
+- [ ] 58. Implement expert routing logic across the network layer.
+- [ ] 59. Support streaming audio processing pipelines (Whisper) across multiple nodes.
+- [ ] 60. Manage Distributed Session teardown and memory cleanup across the cluster.
+- [ ] 61. Provide a "dry-run" mode estimating inference latency across a simulated network.
+- [ ] 62. Handle quantization boundary mismatches (e.g., Node A uses INT8, Node B uses FP16).
+- [ ] 63. Cast tensors optimally before transmission (e.g., downcasting to FP16 over wire, computing in FP32).
+- [ ] 64. Implement specific timeout parameters for stalled inference nodes.
+- [ ] 65. Create a fallback mechanism (if Node B drops out, Node C takes over its Subgraph).
+- [ ] 66. Enable seamless bridging between Python Server backends and JS Browser frontends in the same pipeline.
+- [ ] 67. Provide end-to-end tests for a 5-node distributed LLM generation script.
+- [ ] 68. Measure TTFT (Time-To-First-Token) overhead of network transmission.
+- [ ] 69. Optimize throughput (Tokens/sec) via concurrent pipelining (micro-batches).
+- [ ] 70. Support WebNN / CoreML integration within individual distributed nodes.
 
 ### Phase 3: Distributed & Federated Training Engine
-- [ ] 071. Implement `onnx9000.training.DistributedOptimizer`.
-- [ ] 072. Support Data Parallelism (Multiple nodes training on different data batches, identical graphs).
-- [ ] 073. Implement synchronous gradient accumulation across nodes.
-- [ ] 074. Implement asynchronous gradient updates (Hogwild! style).
-- [ ] 075. Build `AllReduce` primitive natively over WebRTC/WebSockets.
-- [ ] 076. Build `Ring-AllReduce` topology for optimal bandwidth scaling.
-- [ ] 077. Build `Broadcast` primitive for parameter synchronization.
-- [ ] 078. Build `Scatter` and `Gather` primitives for distributed tensors.
-- [ ] 079. Implement Parameter Server (PS) architecture (Dedicated node holds master weights).
-- [ ] 080. Implement Decentralized (P2P) training architecture.
-- [ ] 081. Support Federated Averaging (FedAvg) algorithm specifically.
-- [ ] 082. Implement Federated Proximal (FedProx) algorithm.
-- [ ] 083. Support local training loops (E.g., 5 epochs locally before syncing with global server).
-- [ ] 084. Manage dynamic gradient compression (e.g., Top-K gradient sparsification) to save bandwidth.
-- [ ] 085. Support INT8 / FP8 quantization of gradients specifically for network transmission.
-- [ ] 086. Implement Differential Privacy (DP) noise injection natively on edge devices before sending gradients.
-- [ ] 087. Support Secure Multi-Party Computation (SMPC) basics for privacy-preserving aggregations.
-- [ ] 088. Execute `Backward` passes efficiently across partitioned Pipeline Parallel nodes.
-- [ ] 089. Propagate `dY` (gradients) backwards through the network channels to upstream nodes.
-- [ ] 090. Handle optimizer state (e.g., Adam momentum) strictly on the node holding the parameter.
-- [ ] 091. Implement dynamic loss scaling for distributed FP16 training stability.
-- [ ] 092. Validate mathematical equivalence of Distributed SGD vs Local SGD.
-- [ ] 093. Expose API `model.train(distributed=True, cluster=my_cluster)`.
-- [ ] 094. Support distributing large HuggingFace datasets across the cluster automatically.
-- [ ] 095. Implement peer dropout recovery during training (ignoring disconnected nodes without crashing).
-- [ ] 096. Handle straggler nodes (slow devices) dropping them from synchronous steps if they exceed timeouts.
-- [ ] 097. Provide global training step barrier synchronization.
-- [ ] 098. Support evaluation/validation phases distributed across the cluster.
-- [ ] 099. Track training memory bounds per node securely via `onnx-tool` integrations.
+
+- [ ] 71. Implement `onnx9000.training.DistributedOptimizer`.
+- [ ] 72. Support Data Parallelism (Multiple nodes training on different data batches, identical graphs).
+- [ ] 73. Implement synchronous gradient accumulation across nodes.
+- [ ] 74. Implement asynchronous gradient updates (Hogwild! style).
+- [ ] 75. Build `AllReduce` primitive natively over WebRTC/WebSockets.
+- [ ] 76. Build `Ring-AllReduce` topology for optimal bandwidth scaling.
+- [ ] 77. Build `Broadcast` primitive for parameter synchronization.
+- [ ] 78. Build `Scatter` and `Gather` primitives for distributed tensors.
+- [ ] 79. Implement Parameter Server (PS) architecture (Dedicated node holds master weights).
+- [ ] 80. Implement Decentralized (P2P) training architecture.
+- [ ] 81. Support Federated Averaging (FedAvg) algorithm specifically.
+- [ ] 82. Implement Federated Proximal (FedProx) algorithm.
+- [ ] 83. Support local training loops (E.g., 5 epochs locally before syncing with global server).
+- [ ] 84. Manage dynamic gradient compression (e.g., Top-K gradient sparsification) to save bandwidth.
+- [ ] 85. Support INT8 / FP8 quantization of gradients specifically for network transmission.
+- [ ] 86. Implement Differential Privacy (DP) noise injection natively on edge devices before sending gradients.
+- [ ] 87. Support Secure Multi-Party Computation (SMPC) basics for privacy-preserving aggregations.
+- [ ] 88. Execute `Backward` passes efficiently across partitioned Pipeline Parallel nodes.
+- [ ] 89. Propagate `dY` (gradients) backwards through the network channels to upstream nodes.
+- [ ] 90. Handle optimizer state (e.g., Adam momentum) strictly on the node holding the parameter.
+- [ ] 91. Implement dynamic loss scaling for distributed FP16 training stability.
+- [ ] 92. Validate mathematical equivalence of Distributed SGD vs Local SGD.
+- [ ] 93. Expose API `model.train(distributed=True, cluster=my_cluster)`.
+- [ ] 94. Support distributing large HuggingFace datasets across the cluster automatically.
+- [ ] 95. Implement peer dropout recovery during training (ignoring disconnected nodes without crashing).
+- [ ] 96. Handle straggler nodes (slow devices) dropping them from synchronous steps if they exceed timeouts.
+- [ ] 97. Provide global training step barrier synchronization.
+- [ ] 98. Support evaluation/validation phases distributed across the cluster.
+- [ ] 99. Track training memory bounds per node securely via `onnx-tool` integrations.
 - [ ] 100. Stream training progress (Loss, Accuracy) from all edge devices back to the coordinator.
 - [ ] 101. Support in-browser federated learning (e.g., 100 users training a model on their local clicks).
 - [ ] 102. Save/Checkpoint global model states safely at regular distributed intervals.
@@ -137,6 +139,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 105. Support zero-dependency execution of the Parameter Server purely in Node.js or Python.
 
 ### Phase 4: Unified MLOps SDK & CLI Hardening
+
 - [ ] 106. Formalize the `onnx9000` CLI as the central entry point for all ML lifecycle commands.
 - [ ] 107. Implement `onnx9000 login` for authenticating with the MLOps Server.
 - [ ] 108. Implement `onnx9000 init` to scaffold a new ML project structure (JSON config + scripts).
@@ -174,6 +177,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 140. Execute comprehensive integration tests ensuring SDK -> Server communication parity.
 
 ### Phase 5: MLOps Server - Core Architecture & API
+
 - [ ] 141. Implement a lightweight, zero-dependency pure-Python HTTP Server (or via `fastapi` / `starlette`).
 - [ ] 142. Avoid requiring Docker, Redis, or Kubernetes for basic local server operation.
 - [ ] 143. Implement an embedded SQLite database as the default metadata store.
@@ -211,6 +215,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 175. Handle graceful shutdown (draining active connections) on SIGTERM.
 
 ### Phase 6: MLOps Server - Model Registry & Artifact Storage
+
 - [ ] 176. Define the `Model` database schema (Name, Description, Tags).
 - [ ] 177. Define the `ModelVersion` schema (Version string, Model ID, Checkpoint ID).
 - [ ] 178. Support semantic versioning (e.g., `v1.0.0`, `v1.0.1-beta`).
@@ -248,6 +253,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 210. Validate End-to-End: Train in browser -> Push to Registry -> Pull to CLI.
 
 ### Phase 7: MLOps Server - Experiment Tracking & Runs
+
 - [ ] 211. Define the `Experiment` database schema.
 - [ ] 212. Define the `Run` database schema (Status, Start Time, End Time).
 - [ ] 213. Define the `Metric` schema (Key, Value, Step, Timestamp).
@@ -285,6 +291,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 245. Validate seamless integration with the `onnx9000.mlops.Client`.
 
 ### Phase 8: MLOps Web Frontend (UI/UX)
+
 - [ ] 246. Bootstrap the frontend application using a lightweight, modern framework (React, Vue, or Vanilla TS).
 - [ ] 247. Implement a zero-build-step deployment option for the UI (statically served).
 - [ ] 248. Design a clean, high-performance responsive layout (Sidebar, Header, Main Content).
@@ -322,6 +329,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 280. Validate accessibility (a11y) and keyboard navigation.
 
 ### Phase 9: Fault Tolerance, Security & Peer Management
+
 - [ ] 281. Harden the MLOps server against unauthorized API access.
 - [ ] 282. Ensure WebRTC signalling data does not leak IP/location metadata inappropriately.
 - [ ] 283. Implement a strict validation layer for decentralized gradients (preventing gradient poisoning).
@@ -359,6 +367,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 315. Document a full Threat Model assessment for the distributed ecosystem.
 
 ### Phase 10: End-to-End System Tests & Deployment Targets
+
 - [ ] 316. Unit Test: E2E Single Node Training logged to local MLOps server.
 - [ ] 317. Unit Test: E2E Federated Training in Browser logged to remote MLOps server.
 - [ ] 318. Unit Test: E2E Multi-Node Inference pipeline orchestrated by Coordinator.

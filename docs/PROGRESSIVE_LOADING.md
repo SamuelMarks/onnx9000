@@ -11,7 +11,7 @@ server {
 
     location / {
         root /var/www/models;
-        
+
         # Step 075: Enable CORS
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
@@ -20,7 +20,7 @@ server {
 
         # Ensure byte-range requests are enabled
         max_ranges 10;
-        
+
         # Step 076: Enable Gzip for metadata (optional, but good)
         gzip on;
         gzip_types application/octet-stream application/x-protobuf;

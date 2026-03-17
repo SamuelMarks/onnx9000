@@ -8,8 +8,8 @@ from onnx9000.backends.apple.bindings import (
     is_accelerate_available,
     mtl_create_system_default_device,
 )
-from onnx9000.backends.cpu.executor import Executor as CPUExecutor
-from onnx9000.backends.cpu.memory import MemoryPlanner
+from onnx9000.backends.cpu.executor import CPUExecutionProvider as CPUExecutor
+from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as MemoryPlanner
 from onnx9000.core.ir import Graph, Node
 
 logger = logging.getLogger(__name__)
@@ -19,14 +19,12 @@ class Dispatcher:
     """Apple Metal (MPS) & Accelerate Dispatcher."""
 
     def __init__(self, graph: Graph) -> None:
-        """Implements the __init__ method or operation."""
+        """Initialize the dispatcher."""
         self.graph = graph
         self.planner = MemoryPlanner()
-        self.cpu_fallback = CPUExecutor(graph)
+        self.cpu_fallback = CPUExecutor({})
         self.device = mtl_create_system_default_device()
-        self.initialized = False
-        if self.device:
-            self.initialized = True
+        self.initialized = bool(self.device)
         self._init_memory()
 
     def _init_memory(self) -> None:
@@ -35,22 +33,29 @@ class Dispatcher:
             for out_name in node.outputs:
                 tensor = self.graph.tensors.get(out_name)
                 if tensor:
-                    shape = [int(getattr(dim, "value", dim)) for dim in tensor.shape]
+                    shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
                     dtype = np.dtype("float32")
-                    size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
-                    self.planner.allocate_static(out_name, size_in_bytes, tuple(shape), dtype)
+                    size_in_bytes = int(np.prod(shape)) * dtype.itemsize
+                    self.planner.allocate_static(out_name, size_in_bytes, shape, str(dtype))
         self.planner.build_arena()
         for init_name in self.graph.initializers:
             tensor = self.graph.tensors.get(init_name)
             if tensor and tensor.data is not None:
-                self.planner.set_tensor(init_name, tensor.data)
+                shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
+                self.planner.allocate_dynamic(init_name, len(tensor.data), shape, "float32")
+                self.planner.set_tensor(init_name, memoryview(tensor.data), shape, "float32")
+
+    def _get_tensor(self, name: str) -> np.ndarray:
+        raw = self.planner.get_host_tensor(name)
+        shape, dtype = self.planner.tensors_shape_dtype[name]
+        return np.frombuffer(raw, dtype=np.dtype(dtype)).reshape(shape)
 
     def _execute_matmul(self, node: Node) -> None:
-        """Executes the  execute matmul operation."""
-        (a_name, b_name) = (node.inputs[0], node.inputs[1])
+        """Execute MatMul using Accelerate or fallback."""
+        a_name, b_name = node.inputs[0], node.inputs[1]
         c_name = node.outputs[0]
-        a_data = self.planner.get_tensor(a_name)
-        b_data = self.planner.get_tensor(b_name)
+        a_data = self._get_tensor(a_name)
+        b_data = self._get_tensor(b_name)
         if is_accelerate_available():
             shape_a = a_data.shape
             shape_b = b_data.shape
@@ -64,16 +69,16 @@ class Dispatcher:
             _accelerate_lib.cblas_sgemm(
                 101, 111, 111, m, n, k, 1.0, a_ptr, k, b_ptr, n, 0.0, c_ptr, n
             )
-            self.planner.set_tensor(c_name, c_data)
+            self._set_tensor_safe(c_name, c_data)
         else:
             self._cpu_fallback_node(node)
 
     def _execute_elementwise(self, node: Node, op_type: str) -> None:
-        """Executes the  execute elementwise operation."""
-        (a_name, b_name) = (node.inputs[0], node.inputs[1])
+        """Execute elementwise ops using Accelerate or fallback."""
+        a_name, b_name = node.inputs[0], node.inputs[1]
         c_name = node.outputs[0]
-        a_data = self.planner.get_tensor(a_name)
-        b_data = self.planner.get_tensor(b_name)
+        a_data = self._get_tensor(a_name)
+        b_data = self._get_tensor(b_name)
         size = a_data.size
         c_data = np.zeros_like(a_data)
         a_ptr = a_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
@@ -86,22 +91,35 @@ class Dispatcher:
                 _accelerate_lib.vDSP_vsub(b_ptr, 1, a_ptr, 1, c_ptr, 1, size)
             elif op_type == "Mul":
                 _accelerate_lib.vDSP_vmul(a_ptr, 1, b_ptr, 1, c_ptr, 1, size)
-            self.planner.set_tensor(c_name, c_data)
+            self._set_tensor_safe(c_name, c_data)
         else:
             self._cpu_fallback_node(node)
 
     def _cpu_fallback_node(self, node: Node) -> None:
-        """Executes the  cpu fallback node operation."""
+        """Fallback to CPU Execution Provider."""
         inputs = {}
         for inp in node.inputs:
-            inputs[inp] = self.planner.get_tensor(inp)
-        out_dict = self.cpu_fallback.run(inputs)
+            inputs[inp] = self._get_tensor(inp)
+        out_dict = self.cpu_fallback.execute(self.graph, None, inputs)
         for out in node.outputs:
             if out in out_dict:
-                self.planner.set_tensor(out, out_dict[out])
+                val = out_dict[out]
+                if hasattr(val, "data") and val.data is not None:
+                    # it's a Tensor
+                    import numpy as np
+
+                    val = np.frombuffer(val.data, dtype=np.float32).reshape(
+                        [int(x) for x in val.shape]
+                    )
+                self._set_tensor_safe(out, val)
+
+    def _set_tensor_safe(self, name: str, data: np.ndarray) -> None:
+        if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
+            self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
+        self.planner.set_tensor(name, memoryview(data.tobytes()), data.shape, str(data.dtype))
 
     def _execute_node(self, node: Node) -> None:
-        """Executes the  execute node operation."""
+        """Dispatch a single node."""
         if node.op_type == "MatMul":
             self._execute_matmul(node)
         elif node.op_type in ["Add", "Sub", "Mul"]:
@@ -110,12 +128,13 @@ class Dispatcher:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
-        """Executes the run operation."""
+        """Execute the graph."""
         for name, data in inputs.items():
-            self.planner.set_tensor(name, data)
+            self._set_tensor_safe(name, data)
         for node in self.graph.nodes:
             self._execute_node(node)
         results = {}
-        for out_name in self.graph.outputs:
-            results[out_name] = self.planner.get_tensor(out_name)
+        for out_tensor in self.graph.outputs:
+            name = getattr(out_tensor, "name", out_tensor)
+            results[name] = self._get_tensor(name)
         return results

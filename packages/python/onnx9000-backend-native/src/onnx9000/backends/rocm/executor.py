@@ -3,8 +3,8 @@
 import ctypes
 import logging
 import numpy as np
-from onnx9000.backends.cpu.executor import Executor as CPUExecutor
-from onnx9000.backends.cpu.memory import MemoryPlanner
+from onnx9000.backends.cpu.executor import CPUExecutionProvider as CPUExecutor
+from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as MemoryPlanner
 from onnx9000.backends.rocm.bindings import (
     _hip_lib,
     _miopen_lib,
@@ -31,7 +31,7 @@ class Dispatcher:
         """Implements the __init__ method or operation."""
         self.graph = graph
         self.planner = MemoryPlanner()
-        self.cpu_fallback = CPUExecutor(graph)
+        self.cpu_fallback = CPUExecutor({})
         self.stream = hipStream_t()
         self.rocblas_handle = rocblas_handle()
         self.miopen_handle = miopenHandle_t()
@@ -56,15 +56,30 @@ class Dispatcher:
             for out_name in node.outputs:
                 tensor = self.graph.tensors.get(out_name)
                 if tensor:
-                    shape = [int(getattr(dim, "value", dim)) for dim in tensor.shape]
-                    dtype = np.dtype("float32")
-                    size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
-                    self.planner.allocate_static(out_name, size_in_bytes, tuple(shape), dtype)
+                    shape = []
+                    is_dynamic = False
+                    for dim in tensor.shape:
+                        val = getattr(dim, "value", dim)
+                        if isinstance(val, str):
+                            is_dynamic = True
+                            break
+                        shape.append(int(val))
+                    if not is_dynamic:
+                        dtype = np.float32
+                        if tensor.dtype:
+                            dtype = np.dtype("float32")
+                        size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
+                        self.planner.allocate_static(
+                            out_name, size_in_bytes, tuple(shape), str(dtype)
+                        )
         self.planner.build_arena()
         for init_name in self.graph.initializers:
             tensor = self.graph.tensors.get(init_name)
             if tensor and tensor.data is not None:
-                self.planner.set_tensor(init_name, tensor.data)
+                shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
+                data_arr = np.frombuffer(tensor.data, dtype=np.float32).reshape(shape)
+                self.planner.allocate_dynamic(init_name, data_arr.nbytes, shape, "float32")
+                self.planner.set_tensor(init_name, memoryview(data_arr.tobytes()), shape, "float32")
 
     def _execute_matmul(self, node: Node) -> None:
         """Execute MatMul using rocBLAS."""
@@ -78,11 +93,21 @@ class Dispatcher:
         """Run an unsupported op on the CPU."""
         inputs = {}
         for inp in node.inputs:
-            inputs[inp] = self.planner.get_tensor(inp)
-        out_dict = self.cpu_fallback.run(inputs)
+            inputs[inp] = np.frombuffer(
+                self.planner.get_host_tensor(inp),
+                dtype=np.dtype(self.planner.tensors_shape_dtype[inp][1]),
+            ).reshape(self.planner.tensors_shape_dtype[inp][0])
+        out_dict = self.cpu_fallback.execute(self.graph, None, inputs)
         for out in node.outputs:
             if out in out_dict:
-                self.planner.set_tensor(out, out_dict[out])
+                val = out_dict[out]
+                if hasattr(val, "data") and val.data is not None:
+                    val = np.frombuffer(val.data, dtype=np.float32).reshape(
+                        [int(x) for x in val.shape]
+                    )
+                if out not in self.planner.offsets and out not in self.planner.dynamic_allocations:
+                    self.planner.allocate_dynamic(out, val.nbytes, val.shape, str(val.dtype))
+                self.planner.set_tensor(out, memoryview(val.tobytes()), val.shape, str(val.dtype))
 
     def _execute_node(self, node: Node) -> None:
         """Executes the  execute node operation."""
@@ -99,12 +124,18 @@ class Dispatcher:
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         """Executes the run operation."""
         for name, data in inputs.items():
-            self.planner.set_tensor(name, data)
+            if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
+                self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
+            self.planner.set_tensor(name, memoryview(data.tobytes()), data.shape, str(data.dtype))
         for node in self.graph.nodes:
             self._execute_node(node)
         results = {}
-        for out_name in self.graph.outputs:
-            results[out_name] = self.planner.get_tensor(out_name)
+        for out_tensor in self.graph.outputs:
+            out_name = getattr(out_tensor, "name", out_tensor)
+            results[out_name] = np.frombuffer(
+                self.planner.get_host_tensor(out_name),
+                dtype=np.dtype(self.planner.tensors_shape_dtype[out_name][1]),
+            ).reshape(self.planner.tensors_shape_dtype[out_name][0])
         return results
 
     def __del__(self) -> None:

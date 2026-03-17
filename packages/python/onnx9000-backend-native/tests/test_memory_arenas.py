@@ -1,3 +1,4 @@
+from unittest.mock import patch, MagicMock
 import gc
 import numpy as np
 import pytest
@@ -162,3 +163,28 @@ def test_cpu_memory_planner_cleanup_dynamic():
 
     planner.set_tensor("D", memoryview(np.zeros(10, dtype=np.uint8).tobytes()), (10,), "UINT8")
     planner.cleanup()
+
+
+def test_cpu_arena_reallocate_dynamic():
+    from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner
+
+    planner = CPUMemoryPlanner()
+    planner.allocate_dynamic("dyn", 100, (10,), "float32")
+    # trigger reallocation
+    planner.allocate_dynamic("dyn", 200, (20,), "float32")
+    assert planner.dynamic_sizes["dyn"] == 200
+
+
+def test_cuda_arena_reallocate_dynamic():
+    from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
+    from onnx9000.backends.cuda.bindings import CUdeviceptr
+
+    with patch("onnx9000.backends.memory.cuda_arena.is_cuda_available", return_value=True):
+        with patch("onnx9000.backends.memory.cuda_arena._cuda_lib") as mock_lib:
+            mock_lib.cuMemAlloc.return_value = 0
+            mock_lib.cuMemFree.return_value = 0
+            planner = CUDAMemoryPlanner()
+            planner.allocate_dynamic("dyn", 100, (10,), "float32")
+            # trigger reallocation
+            planner.allocate_dynamic("dyn", 200, (20,), "float32")
+            assert mock_lib.cuMemFree.called

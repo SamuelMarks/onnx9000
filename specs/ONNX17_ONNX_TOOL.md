@@ -1,6 +1,7 @@
 # onnx-tool Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `onnx-tool` within the `onnx9000` ecosystem.
 The original `onnx-tool` is an excellent diagnostic utility for profiling MACs, FLOPs, parameter counts, and static memory allocations. However, it often relies on heavy system environments or is used purely as a CLI script.
 Our `onnx9000` reimplementation integrates these advanced profiling and symbolic shape inference capabilities natively into our pure-Python, WASM-compatible Intermediate Representation. This means you can profile the exact memory bounds and compute intensity of a multi-GB transformer or vision model instantly in the browser or on a cold serverless node without executing the model or installing `onnxruntime`.
@@ -8,6 +9,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 ## Exhaustive Parity Checklist
 
 ### 1. Shape Inference & Symbolic Math (50+ items)
+
 - [ ] Implement zero-dependency static shape inference
 - [ ] Implement symbolic shape inference (e.g., tracking `batch_size`, `seq_len`)
 - [ ] Support dynamic symbolic variables recursively across subgraphs
@@ -59,6 +61,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Support `Reshape` -> `Reshape` cancellations mathematically
 
 ### 2. MACs & FLOPs Computation Profiling (40+ items)
+
 - [ ] Profile MACs (Multiply-Accumulates) for `MatMul`
 - [ ] Profile FLOPs (Floating-Point Operations) for `MatMul`
 - [ ] Profile MACs for `Conv` (Standard 2D/3D)
@@ -101,6 +104,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Provide ratio of Compute vs Memory-bound characteristics per node
 
 ### 3. Static Parameter & Memory Footprint Profiling (40+ items)
+
 - [ ] Profile Total Parameter count
 - [ ] Profile Total Constant Memory footprint (MB/GB)
 - [ ] Distinguish trainable parameters (`Parameter` inputs) vs frozen constants
@@ -140,6 +144,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Report estimated latency given theoretical hardware memory bandwidth (GB/s)
 
 ### 4. Graph Topology Optimization Checks (30+ items)
+
 - [ ] Detect missing `ConstantFolding` opportunities automatically
 - [ ] Detect redundant `Transpose` operations natively
 - [ ] Detect redundant `Cast` operations
@@ -166,6 +171,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Expose automated apply functions for the identified optimizations (via GraphSurgeon)
 
 ### 5. Detailed Layer/Module Analysis & Grouping (30+ items)
+
 - [ ] Implement smart node-grouping based on naming conventions (e.g., `model.layer.0.*`)
 - [ ] Group MACs/FLOPs recursively by namespace
 - [ ] Group Memory recursively by namespace
@@ -188,6 +194,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Emit Pandas DataFrame compatible dictionaries internally
 
 ### 6. Zero-Dependency & Lightweight Runtime Integrations (30+ items)
+
 - [ ] Run profiling logic purely via `onnx9000` Python API (no native binaries)
 - [ ] Support profiling >10GB LLMs directly via memory-mapped IO (without OOM)
 - [ ] Execute completely within Pyodide/WASM limits
@@ -207,6 +214,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Allow streaming of results as graph is being analyzed (for extremely large models)
 
 ### 7. Extensive Profiling Edge Cases & Validations (30+ items)
+
 - [ ] Unit Test: Profile MACs on standard ResNet50
 - [ ] Unit Test: Profile FLOPs on standard ResNet50
 - [ ] Unit Test: Profile Mem on standard ResNet50
@@ -230,6 +238,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Fallback gracefully when encountering mathematically undefined subgraphs (e.g., RNG nodes)
 
 ### 8. External Data & Advanced Deployment Profiling (50+ items)
+
 - [ ] Accurately profile ONNX `.bin` external data sizes natively without parsing
 - [ ] Detect broken external data links during profiling
 - [ ] Expose HTTP byte-range overhead analysis for streamed models
@@ -248,6 +257,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Analyze memory-arena pre-allocation sizes specifically for JS TypedArrays
 
 ### 9. Operator-Specific FLOP/MAC Definitions (40+ items)
+
 - [ ] Define precise FLOPs for `Einsum` natively based on equation strings
 - [ ] Define precise FLOPs for `ConvInteger`
 - [ ] Define precise FLOPs for `MatMulInteger`
@@ -285,6 +295,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Differentiate memory bandwidth for `Concat` (copying) vs `Split` (viewing if supported)
 
 ### 10. Advanced Dynamic Range & Data Type Analysis (20+ items)
+
 - [ ] Profile min/max value bounds for `Constant` tensors natively
 - [ ] Profile sparsity percentage (zeros) for `Constant` tensors natively
 - [ ] Warn if `Float32` constants are strictly integers visually
@@ -301,6 +312,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Quantify theoretical memory savings if sparsity is leveraged natively
 
 ### 11. Custom Memory Planning & Arena Simulation (20+ items)
+
 - [ ] Simulate First-Fit contiguous memory allocation scheme
 - [ ] Simulate Best-Fit contiguous memory allocation scheme
 - [ ] Simulate explicit buffer reuse lifetimes based on topological traversal
@@ -313,6 +325,7 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Export memory plan directly to `GraphSurgeon` attributes for compiled backends
 
 ### 12. Command Line & Developer Ergonomics (10+ items)
+
 - [ ] Output interactive HTML Flamegraphs for memory/compute profiles
 - [ ] Generate D3.js TreeMaps representing hierarchical parameter distribution
 - [ ] Expose native Python decorators `@onnx9000.profile` for instant model logging
@@ -321,8 +334,8 @@ Our `onnx9000` reimplementation integrates these advanced profiling and symbolic
 - [ ] Implement colorized terminal outputs using standard ANSI escapes
 - [ ] Graceful fallback for massive models on low-RAM machines (chunked profiling)
 
-
 ### 13. Advanced Hardware & Web Profiling Targets (25+ items)
+
 - [ ] Simulate Apple Metal specific thread-group memory alignment
 - [ ] Simulate WebGPU specific Workgroup alignment (e.g. multiples of 64 or 256)
 - [ ] Simulate WebGL specific texture packing limits (e.g. RGBA packing overhead)

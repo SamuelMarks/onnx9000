@@ -1,13 +1,15 @@
 # tf2onnx Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `tf2onnx` within the `onnx9000` ecosystem.
-Unlike the original project which relies heavily on a massive native `tensorflow` installation to parse and trace graphs, this implementation uses a pure-Python, zero-dependency `protobuf` / `flatbuffers` parser. 
+Unlike the original project which relies heavily on a massive native `tensorflow` installation to parse and trace graphs, this implementation uses a pure-Python, zero-dependency `protobuf` / `flatbuffers` parser.
 This allows the converter to run entirely in the browser via WASM/WebGPU or incredibly efficiently in serverless/distributed environments without pulling in gigabytes of TF dependencies.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Pure-Python Parsers & Loaders (Zero-Dependency)
+
 - [x] Implement pure-Python parser for TensorFlow `GraphDef` (`.pb`) formats
 - [x] Implement pure-Python parser for TensorFlow `SavedModel` v1 formats
 - [x] Implement pure-Python parser for TensorFlow `SavedModel` v2 formats
@@ -29,6 +31,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Handle TensorFlow `Resource` handles natively
 
 ### 2. Graph Pre-Processing & Topology Adjustments
+
 - [x] Implement dead code elimination for unconnected TF nodes
 - [x] Remove training-specific ops (e.g., `ApplyAdam`, `AssignVariableOp`)
 - [x] Remove assertion ops (`Assert`, `CheckNumerics`)
@@ -50,6 +53,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Prune identity chains created during Graph building
 
 ### 3. TensorFlow Control Flow v1 & v2 Mapping
+
 - [x] Map TF1 `Switch` -> ONNX `If` branch condition
 - [x] Map TF1 `Merge` -> ONNX `If` branch output
 - [x] Map TF1 `Enter` -> ONNX `Loop` initial context
@@ -78,6 +82,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `TensorArrayCloseV3` -> No-op equivalent
 
 ### 4. Mathematical Operator Mapping (70+ items)
+
 - [x] Map `Add` -> `Add`
 - [x] Map `AddV2` -> `Add`
 - [x] Map `Sub` -> `Sub`
@@ -140,6 +145,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `BiasAdd` -> `Add`
 
 ### 5. Logical & Reduction Operator Mapping (30+ items)
+
 - [x] Map `LogicalAnd` -> `And`
 - [x] Map `LogicalOr` -> `Or`
 - [x] Map `LogicalNot` -> `Not`
@@ -170,6 +176,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `InvertPermutation` -> ONNX Subgraph
 
 ### 6. Neural Network Operator Mapping (40+ items)
+
 - [x] Map `MatMul` -> `MatMul` (handling adj_a / adj_b)
 - [x] Map `Conv2D` -> `Conv` (NHWC to NCHW mapping)
 - [x] Map `DepthwiseConv2dNative` -> `Conv` (with `group` attribute)
@@ -213,6 +220,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `LSTMBlockCell` -> `LSTM`
 
 ### 7. Array & Tensor Manipulation Mapping (40+ items)
+
 - [x] Map `Reshape` -> `Reshape`
 - [x] Map `Transpose` -> `Transpose`
 - [x] Map `Concat` -> `Concat`
@@ -256,6 +264,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `Bitcast` -> `BitShift` or custom
 
 ### 8. Image, Resize & Audio Mapping (20+ items)
+
 - [x] Map `ResizeBilinear` -> `Resize` (mode: linear)
 - [x] Map `ResizeNearestNeighbor` -> `Resize` (mode: nearest)
 - [x] Map `ResizeBicubic` -> `Resize` (mode: cubic)
@@ -278,6 +287,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `EncodePng` -> ONNX EncodeImage
 
 ### 9. String, Text & Random Operators (20+ items)
+
 - [x] Map `StringJoin` -> `StringConcat`
 - [x] Map `StringLower` -> `StringNormalizer`
 - [x] Map `StringUpper` -> `StringNormalizer`
@@ -296,6 +306,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map `StatelessRandomNormal` -> `RandomNormal`
 
 ### 10. TFLite-Specific Operator Mapping (30+ items)
+
 - [x] Map TFLite `CONV_2D` -> `Conv`
 - [x] Map TFLite `DEPTHWISE_CONV_2D` -> `Conv`
 - [x] Map TFLite `FULLY_CONNECTED` -> `MatMul` + `Add`
@@ -327,6 +338,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Map TFLite `FILL` -> `ConstantOfShape`
 
 ### 11. Graph Optimizations (tf2onnx specifics)
+
 - [x] Implement Constant Folding pass
 - [x] Implement Redundant Transpose Elimination (canceling `Transpose` -> `Transpose`)
 - [x] Implement Reshape Fusion (merging adjacent `Reshape` ops)
@@ -343,6 +355,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Drop `Shape` ops tied to fixed known inputs
 
 ### 12. Opset Compliance
+
 - [x] Support generating ONNX Opset 7
 - [x] Support generating ONNX Opset 8
 - [x] Support generating ONNX Opset 9
@@ -362,6 +375,7 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Domain standard compliance tests for `ai.onnx.ml`
 
 ### 13. Zero-Dependency & Lightweight Runtime Features
+
 - [x] CLI fully operational without `tensorflow` or `tflite` PIP packages
 - [x] Convert models entirely in a browser using Emscripten compiled WASM
 - [x] Support WebWorker parallel parsing of massive `.pb` files
@@ -372,4 +386,3 @@ This allows the converter to run entirely in the browser via WASM/WebGPU or incr
 - [x] Dynamic WebGPU shader allocation verification during conversion
 - [x] Expose TypeScript bindings for in-browser drag-and-drop conversion
 - [x] Memory-mapped model rewriting for models > 2GB (preventing OOM)
-

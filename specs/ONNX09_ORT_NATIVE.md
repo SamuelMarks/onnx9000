@@ -1,13 +1,15 @@
 # ORT Native Exec & FFI Dispatcher Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of the native hardware Execution Providers (EP) originally found in `onnxruntime`, within the `onnx9000` ecosystem.
-Instead of relying on a massive C++ framework to coordinate hardware execution, `onnx9000` acts as a zero-overhead pure-Python dynamic dispatcher. It maps ONNX `Tensor` structures (backed by zero-copy DLPack or NumPy contiguous memory) directly to OS-native hardware libraries via `ctypes` and `cffi`. 
+Instead of relying on a massive C++ framework to coordinate hardware execution, `onnx9000` acts as a zero-overhead pure-Python dynamic dispatcher. It maps ONNX `Tensor` structures (backed by zero-copy DLPack or NumPy contiguous memory) directly to OS-native hardware libraries via `ctypes` and `cffi`.
 This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Apple Metal (MPS)**, **NVIDIA CUDA (cuBLAS/cuDNN)**, and **OpenBLAS/MKL** natively from Python. This architecture allows an ONNX model to execute at native C speeds without requiring any C++ compilation or `onnxruntime` installations on the host machine.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core FFI, CTypes, & Dynamic Library Orchestration (35+ items)
+
 - [x] Implement generic `DynamicLibrary` loader for POSIX (`dlopen`, `dlsym`)
 - [x] Implement generic `DynamicLibrary` loader for Windows (`LoadLibrary`, `GetProcAddress`)
 - [x] Extract library paths dynamically using `ctypes.util.find_library`
@@ -45,6 +47,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Identify L1/L2/L3 Cache sizes natively to optimize BLAS tiling logic
 
 ### 2. Zero-Copy Memory & DLPack Integration (40+ items)
+
 - [x] Implement strict `__dlpack__` protocol for `onnx9000.Tensor`
 - [x] Implement strict `__dlpack_device__` protocol
 - [x] Consume PyTorch `torch.Tensor` directly via DLPack (Zero-copy)
@@ -87,6 +90,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Support explicit INT4 memory packing and pointer resolution natively
 
 ### 3. Apple Accelerate (vDSP & BNNS) Backend (40+ items)
+
 - [x] Detect `Accelerate.framework` dynamically on macOS
 - [x] Load `cblas` directly from Accelerate
 - [x] Implement `MatMul` -> `cblas_sgemm` (Float32)
@@ -129,6 +133,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Profile the latency of Accelerate framework calls natively
 
 ### 4. Apple Metal Performance Shaders (MPS) Backend (40+ items)
+
 - [x] Detect `Metal.framework` dynamically
 - [x] Detect `MetalPerformanceShaders.framework` (MPS) dynamically
 - [x] Expose PyObjC bridging natively using pure `ctypes` (allocating `NSObject` securely)
@@ -171,6 +176,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Validate Apple Silicon (M1/M2/M3) unified memory bandwidth limits natively
 
 ### 5. NVIDIA CUDA Core & cuBLAS Backend (45+ items)
+
 - [x] Detect `libcudart.so` / `cudart.dll` dynamically
 - [x] Detect `libcublas.so` / `cublas.dll` dynamically
 - [x] Detect `libcublasLt.so` / `cublasLt.dll` dynamically
@@ -218,6 +224,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Support dynamic sizing (`-1` axes) implicitly by re-calling cuBLAS without reallocation if buffer fits
 
 ### 6. NVIDIA cuDNN & Tensor Core Backend (40+ items)
+
 - [x] Detect `libcudnn.so` / `cudnn.dll` dynamically
 - [x] Create `cudnnCreate` handle natively
 - [x] Set cuDNN streams via `cudnnSetStream`
@@ -260,6 +267,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Test numerical tolerance on Deep CNNs (ResNet/VGG) entirely on cuDNN
 
 ### 7. OpenBLAS & CPU Generic Execution Fallback (30+ items)
+
 - [x] Detect `libopenblas.so` / `libopenblas.dll` dynamically
 - [x] Implement fallback `MatMul` (Float32) using `cblas_sgemm`
 - [x] Implement fallback `MatMul` (Float64) using `cblas_dgemm`
@@ -292,6 +300,7 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Ensure standard C-libraries do not interfere with application Signal Handlers (e.g. SIGINT)
 
 ### 8. Native Hardware Profiling & Synchronization (25+ items)
+
 - [x] Profile pure Python overhead time (Time spent in interpreter vs hardware execution)
 - [x] Profile memory allocation time exactly
 - [x] Profile memory transfer time (CPU -> GPU) exactly
@@ -318,8 +327,8 @@ This covers the exhaustive integration of **Apple Accelerate (vDSP/BNNS)**, **Ap
 - [x] Trace Garbage Collection (GC) pauses natively during the execution session
 - [x] Profile execution natively within Cloudflare Worker limits (measuring wall-time cleanly)
 
-
 ### 9. Edge Cases, System Errors & Hardware Limitations (30+ items)
+
 - [x] Provide explicit fallbacks if `libcudnn.so` fails to initialize properly
 - [x] Manage `CUDA_ERROR_OUT_OF_MEMORY` gracefully without killing the Python process
 - [x] Map PyTorch memory caching allocator states dynamically (integrating our arena into PyTorch's)

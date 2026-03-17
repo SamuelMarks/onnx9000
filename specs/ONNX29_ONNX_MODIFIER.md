@@ -1,135 +1,147 @@
 # ONNX29: onnx-modifier (Web-Native Graph Editor & Visualizer)
 
 ## Original Project Description
+
 `onnx-modifier` is a lightweight, community-built Python tool and Flask-based web UI that allows developers to visually edit ONNX models. Users can load a model, visualize its graph, delete nodes, rename inputs/outputs, change batch sizes, and modify node attributes directly without needing to write complex Python scripts using the low-level `onnx.helper` API. It is incredibly useful for debugging, pruning broken nodes before export, or fixing shape mismatches in models downloaded from the internet.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.modifier` completely drops the Python backend (Flask/Protobuf) and operates as a **100% serverless, client-side web application**.
-*   **Zero-Install Editing:** A user visits a static HTML page, drops an `.onnx` file, edits it using a rich interactive Canvas/WebGL UI, and clicks "Download". Nothing is uploaded to a server.
-*   **Integrated Graph Validation:** Leveraging the `onnx9000` AST engine, any structural changes (like deleting a node) instantly trigger a client-side shape and type inference pass, visually highlighting broken edges in red *before* the user exports the model.
-*   **WASM-Backed Subgraph Execution:** A user can select a specific node or subgraph in the UI and click "Run Here", prompting `onnx9000` to execute just that portion of the graph instantly using WebGPU or WASM to verify the numerical impact of their edit.
+
+- **Zero-Install Editing:** A user visits a static HTML page, drops an `.onnx` file, edits it using a rich interactive Canvas/WebGL UI, and clicks "Download". Nothing is uploaded to a server.
+- **Integrated Graph Validation:** Leveraging the `onnx9000` AST engine, any structural changes (like deleting a node) instantly trigger a client-side shape and type inference pass, visually highlighting broken edges in red _before_ the user exports the model.
+- **WASM-Backed Subgraph Execution:** A user can select a specific node or subgraph in the UI and click "Run Here", prompting `onnx9000` to execute just that portion of the graph instantly using WebGPU or WASM to verify the numerical impact of their edit.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core AST & In-Memory Graph Mutator
-- [ ] 001. Implement `GraphMutator` class wrapping the `onnx9000` AST.
-- [ ] 002. Support `addNode(opType, inputs, outputs, attributes, name)`.
-- [ ] 003. Support `removeNode(nodeName)`.
-- [ ] 004. Support `removeNode(nodeIndex)`.
-- [ ] 005. Implement automatic edge healing when deleting a pass-through node (connecting its input to its output).
-- [ ] 006. Support `renameNode(oldName, newName)`.
-- [ ] 007. Support `replaceNode(oldNodeName, newNodeDef)`.
-- [ ] 008. Support `changeNodeOpType(nodeName, newOpType)`.
-- [ ] 009. Support `renameInput(oldName, newName)`.
-- [ ] 010. Support `renameOutput(oldName, newName)`.
-- [ ] 011. Propagate input/output name changes globally across all downstream/upstream nodes.
-- [ ] 012. Support `addInput(name, type, shape)`.
-- [ ] 013. Support `removeInput(name)`.
-- [ ] 014. Support `addOutput(name, type, shape)`.
-- [ ] 015. Support `removeOutput(name)`.
-- [ ] 016. Support `addInitializer(name, type, shape, dataBuffer)`.
-- [ ] 017. Support `removeInitializer(name)`.
-- [ ] 018. Support `updateInitializer(name, newDataBuffer)`.
-- [ ] 019. Support converting an Input into an Initializer (baking a constant).
-- [ ] 020. Support converting an Initializer into an Input (making a constant dynamic).
-- [ ] 021. Support `setNodeAttribute(nodeName, attrName, attrValue, attrType)`.
-- [ ] 022. Support `removeNodeAttribute(nodeName, attrName)`.
-- [ ] 023. Implement a transactional rollback system (Undo/Redo stack for graph edits).
-- [ ] 024. Implement topological re-sorting after graph mutations.
-- [ ] 025. Support updating model metadata (`producer_name`, `version`, `doc_string`).
+
+- [ ] 1. Implement `GraphMutator` class wrapping the `onnx9000` AST.
+- [ ] 2. Support `addNode(opType, inputs, outputs, attributes, name)`.
+- [ ] 3. Support `removeNode(nodeName)`.
+- [ ] 4. Support `removeNode(nodeIndex)`.
+- [ ] 5. Implement automatic edge healing when deleting a pass-through node (connecting its input to its output).
+- [ ] 6. Support `renameNode(oldName, newName)`.
+- [ ] 7. Support `replaceNode(oldNodeName, newNodeDef)`.
+- [ ] 8. Support `changeNodeOpType(nodeName, newOpType)`.
+- [ ] 9. Support `renameInput(oldName, newName)`.
+- [ ] 10. Support `renameOutput(oldName, newName)`.
+- [ ] 11. Propagate input/output name changes globally across all downstream/upstream nodes.
+- [ ] 12. Support `addInput(name, type, shape)`.
+- [ ] 13. Support `removeInput(name)`.
+- [ ] 14. Support `addOutput(name, type, shape)`.
+- [ ] 15. Support `removeOutput(name)`.
+- [ ] 16. Support `addInitializer(name, type, shape, dataBuffer)`.
+- [ ] 17. Support `removeInitializer(name)`.
+- [ ] 18. Support `updateInitializer(name, newDataBuffer)`.
+- [ ] 19. Support converting an Input into an Initializer (baking a constant).
+- [ ] 20. Support converting an Initializer into an Input (making a constant dynamic).
+- [ ] 21. Support `setNodeAttribute(nodeName, attrName, attrValue, attrType)`.
+- [ ] 22. Support `removeNodeAttribute(nodeName, attrName)`.
+- [ ] 23. Implement a transactional rollback system (Undo/Redo stack for graph edits).
+- [ ] 24. Implement topological re-sorting after graph mutations.
+- [ ] 25. Support updating model metadata (`producer_name`, `version`, `doc_string`).
 
 ### Phase 2: Static Analysis & Validation Engine
-- [ ] 026. Implement a fast, synchronous `verify()` method tracking graph validity.
-- [ ] 027. Detect dangling nodes (nodes whose outputs are never consumed and aren't graph outputs).
-- [ ] 028. Detect unresolved inputs (nodes expecting an input that doesn't exist).
-- [ ] 029. Detect cyclic dependencies introduced by bad edits.
-- [ ] 030. Detect type mismatches (e.g., feeding an INT64 into a Conv2D node expecting FLOAT32).
-- [ ] 031. Implement local shape inference: given modified inputs, recalculate a node's output shape.
-- [ ] 032. Cascade shape inference changes throughout the entire downstream graph.
-- [ ] 033. Highlight dimension mismatches (e.g., MatMul expecting `[M, K] x [K, N]`, but got `[M, X]`).
-- [ ] 034. Support explicit shape overriding (forcing an intermediate tensor to be a specific shape to bypass strict inference bugs).
-- [ ] 035. Implement dead code elimination specifically triggered by user UI interactions (e.g., "Clean Graph" button).
+
+- [ ] 26. Implement a fast, synchronous `verify()` method tracking graph validity.
+- [ ] 27. Detect dangling nodes (nodes whose outputs are never consumed and aren't graph outputs).
+- [ ] 28. Detect unresolved inputs (nodes expecting an input that doesn't exist).
+- [ ] 29. Detect cyclic dependencies introduced by bad edits.
+- [ ] 30. Detect type mismatches (e.g., feeding an INT64 into a Conv2D node expecting FLOAT32).
+- [ ] 31. Implement local shape inference: given modified inputs, recalculate a node's output shape.
+- [ ] 32. Cascade shape inference changes throughout the entire downstream graph.
+- [ ] 33. Highlight dimension mismatches (e.g., MatMul expecting `[M, K] x [K, N]`, but got `[M, X]`).
+- [ ] 34. Support explicit shape overriding (forcing an intermediate tensor to be a specific shape to bypass strict inference bugs).
+- [ ] 35. Implement dead code elimination specifically triggered by user UI interactions (e.g., "Clean Graph" button).
 
 ### Phase 3: The Visualization Engine (Canvas/WebGL)
-- [ ] 036. Build a custom WebGL/Canvas 2D renderer for drawing the directed acyclic graph (DAG).
-- [ ] 037. Implement the Sugiyama layout algorithm (or integrate Dagre.js) to auto-arrange nodes into visual layers.
-- [ ] 038. Support vertical rendering mode (Top-to-Bottom).
-- [ ] 039. Support horizontal rendering mode (Left-to-Right).
-- [ ] 040. Implement infinite pan and zoom capabilities (mouse wheel, trackpad, pinch-to-zoom).
-- [ ] 041. Implement a minimap/radar view for navigating massive graphs (10k+ nodes).
-- [ ] 042. Render Initializers distinctly from dynamic Inputs (e.g., different shapes or colors).
-- [ ] 043. Render Constants distinctly.
-- [ ] 044. Render standard Operations (e.g., rounded rectangles).
-- [ ] 045. Render Graph Outputs distinctly.
-- [ ] 046. Display the `op_type` prominently on every node.
-- [ ] 047. Display the tensor shape and type directly on the connecting edges.
-- [ ] 048. Implement edge routing (orthogonal routing or curved splines) to minimize line crossing confusion.
-- [ ] 049. Support edge highlighting (hovering an edge highlights the producer and consumer nodes).
-- [ ] 050. Implement visual grouping (drawing bounding boxes around Subgraphs or NameScopes).
+
+- [ ] 36. Build a custom WebGL/Canvas 2D renderer for drawing the directed acyclic graph (DAG).
+- [ ] 37. Implement the Sugiyama layout algorithm (or integrate Dagre.js) to auto-arrange nodes into visual layers.
+- [ ] 38. Support vertical rendering mode (Top-to-Bottom).
+- [ ] 39. Support horizontal rendering mode (Left-to-Right).
+- [ ] 40. Implement infinite pan and zoom capabilities (mouse wheel, trackpad, pinch-to-zoom).
+- [ ] 41. Implement a minimap/radar view for navigating massive graphs (10k+ nodes).
+- [ ] 42. Render Initializers distinctly from dynamic Inputs (e.g., different shapes or colors).
+- [ ] 43. Render Constants distinctly.
+- [ ] 44. Render standard Operations (e.g., rounded rectangles).
+- [ ] 45. Render Graph Outputs distinctly.
+- [ ] 46. Display the `op_type` prominently on every node.
+- [ ] 47. Display the tensor shape and type directly on the connecting edges.
+- [ ] 48. Implement edge routing (orthogonal routing or curved splines) to minimize line crossing confusion.
+- [ ] 49. Support edge highlighting (hovering an edge highlights the producer and consumer nodes).
+- [ ] 50. Implement visual grouping (drawing bounding boxes around Subgraphs or NameScopes).
 
 ### Phase 4: UI/UX Components & Interactions
-- [ ] 051. Build the main layout: Graph View (center), Properties Panel (right), Structure Tree (left).
-- [ ] 052. Implement node selection logic (single click).
-- [ ] 053. Implement multi-node selection (Shift+Click or Drag Box).
-- [ ] 054. Display selected node properties in the Right Panel (Name, OpType, Attributes, Inputs, Outputs).
-- [ ] 055. Display selected edge properties (Name, Type, Shape, Producer, Consumers).
-- [ ] 056. Create inline editable text fields for node names in the Properties Panel.
-- [ ] 057. Create dropdown menus for editing enum-based attributes (e.g., `auto_pad`).
-- [ ] 058. Create array editors for editing list attributes (e.g., `pads: [1, 1, 1, 1]`).
-- [ ] 059. Implement a "Delete" button (and mapping to the `Del` / `Backspace` keyboard key).
-- [ ] 060. Implement a context menu (Right Click on Node -> "Delete", "Disconnect", "Duplicate").
-- [ ] 061. Implement edge dragging: clicking an output port on Node A and dragging a line to an input port on Node B.
-- [ ] 062. Implement edge deletion: clicking an edge and pressing Delete.
-- [ ] 063. Implement an "Add Node" modal with a searchable list of all valid ONNX operators.
-- [ ] 064. Automatically populate the attributes form based on the selected `op_type`'s ONNX specification schema.
-- [ ] 065. Support collapsing/expanding complex nodes (e.g., hiding the body of an `If` or `Loop` node to save screen space).
+
+- [ ] 51. Build the main layout: Graph View (center), Properties Panel (right), Structure Tree (left).
+- [ ] 52. Implement node selection logic (single click).
+- [ ] 53. Implement multi-node selection (Shift+Click or Drag Box).
+- [ ] 54. Display selected node properties in the Right Panel (Name, OpType, Attributes, Inputs, Outputs).
+- [ ] 55. Display selected edge properties (Name, Type, Shape, Producer, Consumers).
+- [ ] 56. Create inline editable text fields for node names in the Properties Panel.
+- [ ] 57. Create dropdown menus for editing enum-based attributes (e.g., `auto_pad`).
+- [ ] 58. Create array editors for editing list attributes (e.g., `pads: [1, 1, 1, 1]`).
+- [ ] 59. Implement a "Delete" button (and mapping to the `Del` / `Backspace` keyboard key).
+- [ ] 60. Implement a context menu (Right Click on Node -> "Delete", "Disconnect", "Duplicate").
+- [ ] 61. Implement edge dragging: clicking an output port on Node A and dragging a line to an input port on Node B.
+- [ ] 62. Implement edge deletion: clicking an edge and pressing Delete.
+- [ ] 63. Implement an "Add Node" modal with a searchable list of all valid ONNX operators.
+- [ ] 64. Automatically populate the attributes form based on the selected `op_type`'s ONNX specification schema.
+- [ ] 65. Support collapsing/expanding complex nodes (e.g., hiding the body of an `If` or `Loop` node to save screen space).
 
 ### Phase 5: Batch Modification & Advanced Editing
-- [ ] 066. Implement "Change Batch Size" utility (dynamically updates Dimension 0 across all Inputs and intermediate shapes).
-- [ ] 067. Implement "Make Dynamic" utility (changes static batch size `1` to `-1` / `?` or string variable `batch_size`).
-- [ ] 068. Implement "Strip Initializers" utility (removes all weights, saving only the structural `.onnx` for sharing topology).
-- [ ] 069. Implement "Extract Subgraph" utility (select N nodes -> right click -> "Save as new Model").
-- [ ] 070. Implement "Insert Identity" utility (drops an Identity node on an edge for debugging breakpoints).
-- [ ] 071. Implement "Change Opset Version" utility (attempts to auto-upgrade or auto-downgrade the model schema).
-- [ ] 072. Provide regex-based batch renaming (e.g., renaming all nodes starting with `old_prefix/` to `new_prefix/`).
-- [ ] 073. Support injecting Cast nodes automatically if the user connects incompatible types via the UI.
-- [ ] 074. Implement a "Find Node by Name" search bar.
-- [ ] 075. Implement a "Find Node by Type" search filter (e.g., highlighting all `Conv` layers).
+
+- [ ] 66. Implement "Change Batch Size" utility (dynamically updates Dimension 0 across all Inputs and intermediate shapes).
+- [ ] 67. Implement "Make Dynamic" utility (changes static batch size `1` to `-1` / `?` or string variable `batch_size`).
+- [ ] 68. Implement "Strip Initializers" utility (removes all weights, saving only the structural `.onnx` for sharing topology).
+- [ ] 69. Implement "Extract Subgraph" utility (select N nodes -> right click -> "Save as new Model").
+- [ ] 70. Implement "Insert Identity" utility (drops an Identity node on an edge for debugging breakpoints).
+- [ ] 71. Implement "Change Opset Version" utility (attempts to auto-upgrade or auto-downgrade the model schema).
+- [ ] 72. Provide regex-based batch renaming (e.g., renaming all nodes starting with `old_prefix/` to `new_prefix/`).
+- [ ] 73. Support injecting Cast nodes automatically if the user connects incompatible types via the UI.
+- [ ] 74. Implement a "Find Node by Name" search bar.
+- [ ] 75. Implement a "Find Node by Type" search filter (e.g., highlighting all `Conv` layers).
 
 ### Phase 6: Initializer / Weight Editing
-- [ ] 076. Implement an Initializer Inspector in the UI (showing Min, Max, Mean, Variance of the weight tensor).
-- [ ] 077. Render small 2D weights (e.g., 3x3 Conv kernels) as visual pixel grids (heatmaps) in the properties panel.
-- [ ] 078. Support explicitly editing scalar initializer values via a text input field.
-- [ ] 079. Support zeroing out an initializer (setting all values to 0).
-- [ ] 080. Support injecting random noise into an initializer (for fuzzing or privacy obfuscation).
-- [ ] 081. Support downloading a specific initializer as a `.bin` or `.npy` file.
-- [ ] 082. Support uploading and replacing an initializer's data from a local `.bin` file.
-- [ ] 083. Support precision casting specifically for initializers via the UI (e.g., clicking "Convert to FP16").
-- [ ] 084. Track exact byte sizes of individual initializers to help users identify the heaviest layers in their model.
-- [ ] 085. Provide a "Prune" button that applies a magnitude threshold to an initializer (setting values < threshold to 0).
+
+- [ ] 76. Implement an Initializer Inspector in the UI (showing Min, Max, Mean, Variance of the weight tensor).
+- [ ] 77. Render small 2D weights (e.g., 3x3 Conv kernels) as visual pixel grids (heatmaps) in the properties panel.
+- [ ] 78. Support explicitly editing scalar initializer values via a text input field.
+- [ ] 79. Support zeroing out an initializer (setting all values to 0).
+- [ ] 80. Support injecting random noise into an initializer (for fuzzing or privacy obfuscation).
+- [ ] 81. Support downloading a specific initializer as a `.bin` or `.npy` file.
+- [ ] 82. Support uploading and replacing an initializer's data from a local `.bin` file.
+- [ ] 83. Support precision casting specifically for initializers via the UI (e.g., clicking "Convert to FP16").
+- [ ] 84. Track exact byte sizes of individual initializers to help users identify the heaviest layers in their model.
+- [ ] 85. Provide a "Prune" button that applies a magnitude threshold to an initializer (setting values < threshold to 0).
 
 ### Phase 7: Interactive Graph Execution & Debugging (The "Run Here" Feature)
-- [ ] 086. Integrate the core `onnx9000` execution runtime into the modifier UI.
-- [ ] 087. Support "Set as Temporary Output": User clicks an intermediate edge, and the graph compiles to yield that specific tensor.
-- [ ] 088. Implement an Input Data Generator (creating random dummy data matching the input shapes).
-- [ ] 089. Allow users to manually input values for small inputs (e.g., JSON arrays) or upload images for Image inputs.
-- [ ] 090. Execute the graph natively in the browser via WebAssembly/WebGPU based on the dummy/user data.
-- [ ] 091. Display the execution output tensor visually (e.g., as an image if shape is HWC, or a JSON array if 1D).
-- [ ] 092. Support "Run Subgraph": User selects Node A, B, and C. The UI extracts them, generates dummy inputs for Node A, runs the subgraph, and shows Node C's output.
-- [ ] 093. Profile execution: display the exact execution time (in ms) taken by the currently selected node/subgraph.
-- [ ] 094. Implement a step-by-step debugger: "Step Next", executing the graph one node at a time and visualizing the tensor flowing through the edges.
-- [ ] 095. Implement breakpoint pausing in the visual debugger.
+
+- [ ] 86. Integrate the core `onnx9000` execution runtime into the modifier UI.
+- [ ] 87. Support "Set as Temporary Output": User clicks an intermediate edge, and the graph compiles to yield that specific tensor.
+- [ ] 88. Implement an Input Data Generator (creating random dummy data matching the input shapes).
+- [ ] 89. Allow users to manually input values for small inputs (e.g., JSON arrays) or upload images for Image inputs.
+- [ ] 90. Execute the graph natively in the browser via WebAssembly/WebGPU based on the dummy/user data.
+- [ ] 91. Display the execution output tensor visually (e.g., as an image if shape is HWC, or a JSON array if 1D).
+- [ ] 92. Support "Run Subgraph": User selects Node A, B, and C. The UI extracts them, generates dummy inputs for Node A, runs the subgraph, and shows Node C's output.
+- [ ] 93. Profile execution: display the exact execution time (in ms) taken by the currently selected node/subgraph.
+- [ ] 94. Implement a step-by-step debugger: "Step Next", executing the graph one node at a time and visualizing the tensor flowing through the edges.
+- [ ] 95. Implement breakpoint pausing in the visual debugger.
 
 ### Phase 8: Data Privacy & Security
-- [ ] 096. Ensure the entire Vue/React application is served as a static bundle (no server backend).
-- [ ] 097. Provide a standalone HTML file option (single-file export containing UI, logic, and wasm encoded in base64) for offline editing.
-- [ ] 098. Ensure massive models (>2GB) utilize standard `File` slicing APIs and do not crash the browser's maximum heap limit.
-- [ ] 099. Restrict execution features if the model triggers potential infinite loops (timeout circuit breakers).
+
+- [ ] 96. Ensure the entire Vue/React application is served as a static bundle (no server backend).
+- [ ] 97. Provide a standalone HTML file option (single-file export containing UI, logic, and wasm encoded in base64) for offline editing.
+- [ ] 98. Ensure massive models (>2GB) utilize standard `File` slicing APIs and do not crash the browser's maximum heap limit.
+- [ ] 99. Restrict execution features if the model triggers potential infinite loops (timeout circuit breakers).
 - [ ] 100. Disallow prototype pollution or malicious script injection if the ONNX metadata contains `<script>` tags.
 
 ### Phase 9: Model Export & Serialization
+
 - [ ] 101. Implement `export()` method combining the AST and mutated Initializers back into a standard ONNX Protobuf string.
 - [ ] 102. Validate the final protobuf against the ONNX spec schema explicitly before allowing the download.
 - [ ] 103. Generate a standard browser download (`blob` URL) for the resulting `.onnx` file.
@@ -142,6 +154,7 @@
 - [ ] 110. Guarantee binary determinism: opening an ONNX file and clicking "Save" without edits produces a byte-identical file.
 
 ### Phase 10: Specific ONNX Operator Custom Editors
+
 - [ ] 111. Create a specialized UI form for editing `Conv` (Fields: Strides, Pads, Dilations, Groups).
 - [ ] 112. Create a specialized UI form for editing `Gemm` (Toggles for transA, transB, alpha, beta).
 - [ ] 113. Create a specialized UI form for editing `Split` (Array editor for the `split` attribute).
@@ -154,6 +167,7 @@
 - [ ] 120. Provide tooltips hovering over specific attribute names that fetch documentation directly from the official ONNX spec definitions.
 
 ### Phase 11: CLI Interface (onnx9000.modifier CLI)
+
 - [ ] 121. Expose `onnx9000 edit <model.onnx>` command to start a local development server hosting the UI and serving the target file automatically.
 - [ ] 122. Expose `onnx9000 prune <model.onnx> --nodes "node_1,node_2"` for headless CLI modification.
 - [ ] 123. Expose `onnx9000 rename-input <model.onnx> --old "X" --new "Y"` via CLI.
@@ -161,6 +175,7 @@
 - [ ] 125. Support headless JSON mutation scripts: `onnx9000 mutate <model.onnx> --script edits.json`.
 
 ### Phase 12: Interoperability with Pyodide
+
 - [ ] 126. Expose the `GraphMutator` API to a Pyodide web-worker.
 - [ ] 127. Allow users to write arbitrary Python scripts in a Monaco Editor panel within the UI.
 - [ ] 128. Run the Python script securely against the active graph (e.g., `for node in graph.nodes: if node.op_type == 'Relu': graph.remove(node)`).
@@ -168,6 +183,7 @@
 - [ ] 130. Support standard `import onnx` within the Pyodide environment to allow users to use familiar legacy scripts.
 
 ### Phase 13: Accessibility and Theming
+
 - [ ] 131. Implement Dark Mode UI.
 - [ ] 132. Implement Light Mode UI.
 - [ ] 133. Provide a colorblind-friendly palette for the node typings (e.g., differentiating Conv vs Matmul clearly without relying solely on red/green).
@@ -175,6 +191,7 @@
 - [ ] 135. Support screen-reader announcements when nodes are selected or deleted.
 
 ### Phase 14: Automated Graph Fixers (One-Click Macros)
+
 - [ ] 136. Implement "Fix Mixed Precision": Automatically identifies Cast anomalies and normalizes the graph to FP32 or FP16.
 - [ ] 137. Implement "Remove Training Nodes": Automatically strips `Dropout`, `Gradient`, and `YieldOp` nodes from the graph.
 - [ ] 138. Implement "Fold Constants": Runs the `onnx9000` constant folding optimizer and updates the visual layout.
@@ -182,6 +199,7 @@
 - [ ] 140. Implement "Sanitize Names": Replaces complex/illegal node and edge names with sequential alphanumeric IDs.
 
 ### Phase 15: Quality Assurance & Parity Testing
+
 - [ ] 141. Write unit tests for node deletion preserving topological order.
 - [ ] 142. Write unit tests for batch size mutation propagating correctly through `Reshape` constants.
 - [ ] 143. Test the UI rendering limit (ensuring WebGL handles a 50,000-node graph at >30 FPS).
@@ -189,6 +207,7 @@
 - [ ] 145. Automate browser testing using Playwright to simulate dropping nodes and verifying edge counts.
 
 ### Phase 16: File Handling Edge Cases
+
 - [ ] 146. Process ONNX models utilizing opset versions < 7 gracefully.
 - [ ] 147. Parse and warn about unrecognized custom domain operations cleanly (rendering them as gray unknown nodes).
 - [ ] 148. Handle corrupted `.onnx` files by providing a partial load (showing whatever AST was successfully parsed before the crash).
@@ -196,6 +215,7 @@
 - [ ] 150. Use SharedArrayBuffer to offload the Protobuf parsing sequence to a background Web Worker.
 
 ### Phase 17: Integration with Other `onnx9000` Tools
+
 - [ ] 151. Add an "Optimize" button that bridges directly to `onnx9000.optimum` graph rewriting routines (O1, O2, O3).
 - [ ] 152. Add a "Quantize" button that bridges directly to `onnx9000.optimum` dynamic quantization, updating the visual graph with the new `DynamicQuantizeLinear` nodes.
 - [ ] 153. Allow direct hand-off from `onnx9000.keras` (User converts a `.h5` file and is immediately presented with the modifier UI).
@@ -203,6 +223,7 @@
 - [ ] 155. Provide "Compile to IREE/WebNN" integration from the modifier UI.
 
 ### Phase 18: Collaboration & Cloud Extensions (Optional Layer)
+
 - [ ] 156. Support generating a shareable Base64 URI fragment if the model is < 5MB.
 - [ ] 157. Create a "Copy Link" feature that stores the graph temporarily in IndexedDB and allows opening it across different browser tabs.
 - [ ] 158. Implement CRDT (Conflict-free Replicated Data Type) structures for multi-user real-time graph editing (like Figma for ONNX).
@@ -210,6 +231,7 @@
 - [ ] 160. Create a unified `onnx9000.modifier` React component that external developers can embed in their own MLOps dashboards.
 
 ### Phase 19: Tooling for Generative AI specifically
+
 - [ ] 161. Implement a specialized view for LLM repeated layers (e.g., visually stacking `TransformerBlock_0` through `TransformerBlock_31` to save screen space).
 - [ ] 162. Provide an automated macro to inject explicit KV-cache `past_key_values` inputs into a static LLM graph.
 - [ ] 163. Provide an automated macro to convert static Rotary Positional Embeddings (RoPE) limits into dynamic limits.
@@ -217,6 +239,7 @@
 - [ ] 165. Parse Hugging Face `config.json` alongside the ONNX file to provide human-readable names for intermediate states.
 
 ### Phase 20: Polish & Documentation
+
 - [ ] 166. Publish an interactive web demo at `modifier.onnx9000.dev`.
 - [ ] 167. Create tooltip guides explaining ONNX specific concepts (e.g., what an Initializer is vs an Input) for beginners.
 - [ ] 168. Ensure strict conformance to WAI-ARIA accessibility standards for web apps.

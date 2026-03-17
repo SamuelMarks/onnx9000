@@ -1,127 +1,135 @@
 # ONNX21: HuggingFace Optimum (Web-Optimized Export & Quantization)
 
 ## Original Project Description
+
 HuggingFace Optimum is an extension of the `transformers` library designed to bridge the gap between high-level model code and hardware-accelerated execution backends. It provides dedicated tools to export PyTorch/TensorFlow models to ONNX (via `optimum-cli`), apply hardware-specific graph optimizations, and perform advanced quantization (Dynamic Int8, Static Int8, GPTQ, AWQ) to maximize inference speed and minimize memory footprints. Optimum typically targets backend SDKs like ONNX Runtime, Intel OpenVINO, Nvidia TensorRT, and Habana Gaudi.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or OpenVINO), `onnx9000.optimum` acts as the definitive build, optimization, and quantization toolchain targeting **WebAssembly, WebGPU, and WebNN**.
-*   **Web-Centric Quantization:** Focuses heavily on W4A16 (4-bit weights, 16-bit activations) and sub-byte packing tailored specifically for WebGPU storage buffers and WASM SIMD, prioritizing payload size reduction over pure theoretical FLOPs.
-*   **Universal Tooling:** Replaces the Python-only `optimum` toolchain with a universal framework. Developers can export, optimize, and quantize models using pure Node.js or even directly within the browser, avoiding massive PyTorch environments when simply converting an existing model for web delivery.
-*   **Integrated Optimization:** Standard HF Optimum relies on external ONNX Runtime tools for optimization. `onnx9000` applies these graph mutations internally via its own AST/Graph rewriting engine, emitting highly pruned web-ready payloads.
-*   **Web Inference Wrappers:** Provides equivalent `ORTModelForX` wrapper classes that are intimately aware of WebGPU memory management and WASM threading.
+
+- **Web-Centric Quantization:** Focuses heavily on W4A16 (4-bit weights, 16-bit activations) and sub-byte packing tailored specifically for WebGPU storage buffers and WASM SIMD, prioritizing payload size reduction over pure theoretical FLOPs.
+- **Universal Tooling:** Replaces the Python-only `optimum` toolchain with a universal framework. Developers can export, optimize, and quantize models using pure Node.js or even directly within the browser, avoiding massive PyTorch environments when simply converting an existing model for web delivery.
+- **Integrated Optimization:** Standard HF Optimum relies on external ONNX Runtime tools for optimization. `onnx9000` applies these graph mutations internally via its own AST/Graph rewriting engine, emitting highly pruned web-ready payloads.
+- **Web Inference Wrappers:** Provides equivalent `ORTModelForX` wrapper classes that are intimately aware of WebGPU memory management and WASM threading.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Exporter CLI & Core Architectures (`optimum-cli`)
-- [ ] 001. Implement `onnx9000 optimum` base CLI command structure.
-- [ ] 002. Implement `onnx9000 optimum export` sub-command.
-- [ ] 003. Implement `onnx9000 optimum optimize` sub-command.
-- [ ] 004. Implement `onnx9000 optimum quantize` sub-command.
-- [ ] 005. Support `--model <model_id>` fetching from HuggingFace Hub.
-- [ ] 006. Support `--task <task>` flag for explicit export paths.
-- [ ] 007. Auto-detect task from `config.json` if `--task` is omitted.
-- [ ] 008. Support `--opset <version>` flag for specific ONNX opset targeting.
-- [ ] 009. Implement `--device` flag targeting `cpu`, `wasm`, `webgpu`, `webnn`.
-- [ ] 010. Support `--cache_dir` for downloading HuggingFace weights.
-- [ ] 011. Support `--monolith` vs `--external-data` flag for weight storage.
-- [ ] 012. Implement `--atol` and `--rtol` flags for post-export validation.
-- [ ] 013. Parse specific `transformers` model architectures dynamically.
-- [ ] 014. Support export of `past_key_values` inputs/outputs automatically.
-- [ ] 015. Handle `use_cache=True` configuration during export tracing.
-- [ ] 016. Support creating dummy inputs for ONNX JIT tracing.
-- [ ] 017. Support dynamic axes declaration during export mapping.
-- [ ] 018. Handle multiple graph outputs automatically mapping to dictionary keys.
-- [ ] 019. Warn users on unsupported PyTorch ops with fallback suggestions.
-- [ ] 020. Implement export progress bars (Tqdm equivalent in Python/JS).
-- [ ] 021. Provide Node.js equivalent API: `import { exportModel } from 'onnx9000/optimum'`.
-- [ ] 022. Save resulting `model.onnx` alongside `config.json` and `tokenizer.json`.
-- [ ] 023. Generate a `generation_config.json` on export for GenAI models.
-- [ ] 024. Extract preprocessor configs (e.g., `preprocessor_config.json`) during export.
-- [ ] 025. Support `--split` flag to partition massive graphs (e.g., separating Encoder/Decoder).
+
+- [ ] 1. Implement `onnx9000 optimum` base CLI command structure.
+- [ ] 2. Implement `onnx9000 optimum export` sub-command.
+- [ ] 3. Implement `onnx9000 optimum optimize` sub-command.
+- [ ] 4. Implement `onnx9000 optimum quantize` sub-command.
+- [ ] 5. Support `--model <model_id>` fetching from HuggingFace Hub.
+- [ ] 6. Support `--task <task>` flag for explicit export paths.
+- [ ] 7. Auto-detect task from `config.json` if `--task` is omitted.
+- [ ] 8. Support `--opset <version>` flag for specific ONNX opset targeting.
+- [ ] 9. Implement `--device` flag targeting `cpu`, `wasm`, `webgpu`, `webnn`.
+- [ ] 10. Support `--cache_dir` for downloading HuggingFace weights.
+- [ ] 11. Support `--monolith` vs `--external-data` flag for weight storage.
+- [ ] 12. Implement `--atol` and `--rtol` flags for post-export validation.
+- [ ] 13. Parse specific `transformers` model architectures dynamically.
+- [ ] 14. Support export of `past_key_values` inputs/outputs automatically.
+- [ ] 15. Handle `use_cache=True` configuration during export tracing.
+- [ ] 16. Support creating dummy inputs for ONNX JIT tracing.
+- [ ] 17. Support dynamic axes declaration during export mapping.
+- [ ] 18. Handle multiple graph outputs automatically mapping to dictionary keys.
+- [ ] 19. Warn users on unsupported PyTorch ops with fallback suggestions.
+- [ ] 20. Implement export progress bars (Tqdm equivalent in Python/JS).
+- [ ] 21. Provide Node.js equivalent API: `import { exportModel } from 'onnx9000/optimum'`.
+- [ ] 22. Save resulting `model.onnx` alongside `config.json` and `tokenizer.json`.
+- [ ] 23. Generate a `generation_config.json` on export for GenAI models.
+- [ ] 24. Extract preprocessor configs (e.g., `preprocessor_config.json`) during export.
+- [ ] 25. Support `--split` flag to partition massive graphs (e.g., separating Encoder/Decoder).
 
 ### Phase 2: Base Graph Optimizations (O1 & O2 Levels)
-- [ ] 026. Implement Optimization Level 1 (O1): Basic Graph Topology Optimization.
-- [ ] 027. Implement constant folding across the entire graph.
-- [ ] 028. Implement redundant node elimination (e.g., double transposes).
-- [ ] 029. Implement Cast insertion/removal for mixed precision graph cleanup.
-- [ ] 030. Implement Identity node removal.
-- [ ] 031. Fuse `MatMul` + `Add` into `Gemm` operation.
-- [ ] 032. Fuse `Conv` + `BatchNormalization`.
-- [ ] 033. Fuse `Conv` + `Add` + `Relu`.
-- [ ] 034. Implement reshape/transpose propagation.
-- [ ] 035. Implement Optimization Level 2 (O2): Extended Fusions.
-- [ ] 036. Fuse `LayerNormalization` from underlying Add/ReduceMean/Sub/Pow/Div ops.
-- [ ] 037. Fuse `Gelu` from Erf/Add/Mul/Div ops.
-- [ ] 038. Fuse `FastGelu` from Tanh approximation ops.
-- [ ] 039. Fuse `SkipLayerNormalization` (Add + LayerNorm).
-- [ ] 040. Fuse `Attention` mechanisms (standard Multi-Head Attention).
-- [ ] 041. Handle masked attention fusions.
-- [ ] 042. Identify and fuse `RotaryEmbedding` (RoPE) subgraph structures.
-- [ ] 043. Support overriding optimization behavior via `--disable-fusion` flags.
-- [ ] 044. Track FLOPs reduction and report optimization statistics post-build.
-- [ ] 045. Ensure O1/O2 passes maintain strict floating-point parity with raw export.
-- [ ] 046. Eliminate dead initializer memory from the model proto.
-- [ ] 047. Perform ONNX model shape inference statically before saving.
-- [ ] 048. Deduplicate identical initializers (weights) referenced multiple times.
-- [ ] 049. Strip `doc_string` metadata from ONNX nodes to reduce file size.
-- [ ] 050. Strip debug tensor names based on an `--optimize-size` flag.
+
+- [ ] 26. Implement Optimization Level 1 (O1): Basic Graph Topology Optimization.
+- [ ] 27. Implement constant folding across the entire graph.
+- [ ] 28. Implement redundant node elimination (e.g., double transposes).
+- [ ] 29. Implement Cast insertion/removal for mixed precision graph cleanup.
+- [ ] 30. Implement Identity node removal.
+- [ ] 31. Fuse `MatMul` + `Add` into `Gemm` operation.
+- [ ] 32. Fuse `Conv` + `BatchNormalization`.
+- [ ] 33. Fuse `Conv` + `Add` + `Relu`.
+- [ ] 34. Implement reshape/transpose propagation.
+- [ ] 35. Implement Optimization Level 2 (O2): Extended Fusions.
+- [ ] 36. Fuse `LayerNormalization` from underlying Add/ReduceMean/Sub/Pow/Div ops.
+- [ ] 37. Fuse `Gelu` from Erf/Add/Mul/Div ops.
+- [ ] 38. Fuse `FastGelu` from Tanh approximation ops.
+- [ ] 39. Fuse `SkipLayerNormalization` (Add + LayerNorm).
+- [ ] 40. Fuse `Attention` mechanisms (standard Multi-Head Attention).
+- [ ] 41. Handle masked attention fusions.
+- [ ] 42. Identify and fuse `RotaryEmbedding` (RoPE) subgraph structures.
+- [ ] 43. Support overriding optimization behavior via `--disable-fusion` flags.
+- [ ] 44. Track FLOPs reduction and report optimization statistics post-build.
+- [ ] 45. Ensure O1/O2 passes maintain strict floating-point parity with raw export.
+- [ ] 46. Eliminate dead initializer memory from the model proto.
+- [ ] 47. Perform ONNX model shape inference statically before saving.
+- [ ] 48. Deduplicate identical initializers (weights) referenced multiple times.
+- [ ] 49. Strip `doc_string` metadata from ONNX nodes to reduce file size.
+- [ ] 50. Strip debug tensor names based on an `--optimize-size` flag.
 
 ### Phase 3: Web-Native Advanced Optimizations (O3 & O4 Levels)
-- [ ] 051. Implement Optimization Level 3 (O3): Hardware-aware layout transformations.
-- [ ] 052. Perform NCHW to NHWC layout conversions explicitly for WebGPU targeting.
-- [ ] 053. Apply specific SIMD padding alignment for WebAssembly memory boundaries.
-- [ ] 054. Fuse grouped Query/Key/Value projections into unified linear layers.
-- [ ] 055. Fuse SwiGLU activations (commonly used in Llama/Mistral).
-- [ ] 056. Fuse GeGLU activations.
-- [ ] 057. Replace standard Softmax with numerically stable/fast approximations for WASM.
-- [ ] 058. Implement Optimization Level 4 (O4): Precision mapping and Web Mixed-Precision.
-- [ ] 059. Cast entire graph weights to FP16 (`--fp16`).
-- [ ] 060. Exclude `LayerNorm` and `Softmax` from FP16 casting to prevent overflow/NaNs.
-- [ ] 061. Provide a `webgpu_strict` graph pass (replacing WebGPU unsupported ops).
-- [ ] 062. Implement custom `onnx9000.DynamicQuantizeLinear` fusion for smaller payload.
-- [ ] 063. Support rewriting FlashAttention-like nodes natively recognized by `onnx9000` web runtimes.
-- [ ] 064. Optimize model subgraph partitioning specifically for asynchronous WebGPU passes.
-- [ ] 065. Inject explicit Web Worker memory boundaries into the graph metadata.
-- [ ] 066. Build an interactive HTML report of the optimized graph vs original graph.
-- [ ] 067. Support `--disable-gelu-fusion` for legacy browser support.
-- [ ] 068. Perform static allocation planning and save arena layouts into model metadata.
-- [ ] 069. Replace `Gather` operations with specific dictionary lookups where weights are constant.
-- [ ] 070. Generate a topological execution schedule as a JSON sidecar file.
+
+- [ ] 51. Implement Optimization Level 3 (O3): Hardware-aware layout transformations.
+- [ ] 52. Perform NCHW to NHWC layout conversions explicitly for WebGPU targeting.
+- [ ] 53. Apply specific SIMD padding alignment for WebAssembly memory boundaries.
+- [ ] 54. Fuse grouped Query/Key/Value projections into unified linear layers.
+- [ ] 55. Fuse SwiGLU activations (commonly used in Llama/Mistral).
+- [ ] 56. Fuse GeGLU activations.
+- [ ] 57. Replace standard Softmax with numerically stable/fast approximations for WASM.
+- [ ] 58. Implement Optimization Level 4 (O4): Precision mapping and Web Mixed-Precision.
+- [ ] 59. Cast entire graph weights to FP16 (`--fp16`).
+- [ ] 60. Exclude `LayerNorm` and `Softmax` from FP16 casting to prevent overflow/NaNs.
+- [ ] 61. Provide a `webgpu_strict` graph pass (replacing WebGPU unsupported ops).
+- [ ] 62. Implement custom `onnx9000.DynamicQuantizeLinear` fusion for smaller payload.
+- [ ] 63. Support rewriting FlashAttention-like nodes natively recognized by `onnx9000` web runtimes.
+- [ ] 64. Optimize model subgraph partitioning specifically for asynchronous WebGPU passes.
+- [ ] 65. Inject explicit Web Worker memory boundaries into the graph metadata.
+- [ ] 66. Build an interactive HTML report of the optimized graph vs original graph.
+- [ ] 67. Support `--disable-gelu-fusion` for legacy browser support.
+- [ ] 68. Perform static allocation planning and save arena layouts into model metadata.
+- [ ] 69. Replace `Gather` operations with specific dictionary lookups where weights are constant.
+- [ ] 70. Generate a topological execution schedule as a JSON sidecar file.
 
 ### Phase 4: Basic Quantization Engine (Int8 / FP16)
-- [ ] 071. Implement Dynamic Int8 Quantization core engine.
-- [ ] 072. Support dynamic quantization for `MatMul` nodes.
-- [ ] 073. Support dynamic quantization for `Attention` nodes.
-- [ ] 074. Implement asymmetric Int8 quantization (Zero-point + Scale).
-- [ ] 075. Implement symmetric Int8 quantization (Scale only, Zero-point = 0).
-- [ ] 076. Implement MinMax quantization calibration algorithm.
-- [ ] 077. Implement Entropy (KL-Divergence) calibration algorithm.
-- [ ] 078. Implement Percentile calibration algorithm.
-- [ ] 079. Support Per-Tensor quantization configuration.
-- [ ] 080. Support Per-Channel quantization configuration.
-- [ ] 081. Add Python API: `Quantizer.quantize(model, config)`.
-- [ ] 082. Add Node.js API: `quantizer.quantize(model, config)`.
-- [ ] 083. Support `ORTConfig` mapping for backwards compatibility with HF Optimum.
-- [ ] 084. Implement Static Int8 Quantization engine.
-- [ ] 085. Provide APIs to ingest calibration datasets for static quantization.
-- [ ] 086. Expose `--quantize dynamic` in the CLI.
-- [ ] 087. Expose `--quantize static` in the CLI.
-- [ ] 088. Prevent quantization of embedding layers to maintain output quality.
-- [ ] 089. Allow selective node exclusion from quantization via regex/node name.
-- [ ] 090. Convert specific nodes directly to Int8, emitting `QuantizeLinear` and `DequantizeLinear`.
+
+- [ ] 71. Implement Dynamic Int8 Quantization core engine.
+- [ ] 72. Support dynamic quantization for `MatMul` nodes.
+- [ ] 73. Support dynamic quantization for `Attention` nodes.
+- [ ] 74. Implement asymmetric Int8 quantization (Zero-point + Scale).
+- [ ] 75. Implement symmetric Int8 quantization (Scale only, Zero-point = 0).
+- [ ] 76. Implement MinMax quantization calibration algorithm.
+- [ ] 77. Implement Entropy (KL-Divergence) calibration algorithm.
+- [ ] 78. Implement Percentile calibration algorithm.
+- [ ] 79. Support Per-Tensor quantization configuration.
+- [ ] 80. Support Per-Channel quantization configuration.
+- [ ] 81. Add Python API: `Quantizer.quantize(model, config)`.
+- [ ] 82. Add Node.js API: `quantizer.quantize(model, config)`.
+- [ ] 83. Support `ORTConfig` mapping for backwards compatibility with HF Optimum.
+- [ ] 84. Implement Static Int8 Quantization engine.
+- [ ] 85. Provide APIs to ingest calibration datasets for static quantization.
+- [ ] 86. Expose `--quantize dynamic` in the CLI.
+- [ ] 87. Expose `--quantize static` in the CLI.
+- [ ] 88. Prevent quantization of embedding layers to maintain output quality.
+- [ ] 89. Allow selective node exclusion from quantization via regex/node name.
+- [ ] 90. Convert specific nodes directly to Int8, emitting `QuantizeLinear` and `DequantizeLinear`.
 
 ### Phase 5: Advanced Web-Quantization (GPTQ, AWQ, W4A16)
-- [ ] 091. Implement **GPTQ** (Accurate Post-Training Quantization) algorithm.
-- [ ] 092. Compute Hessian matrices over calibration data for GPTQ.
-- [ ] 093. Perform greedy/Cholesky inverse weight updates for GPTQ.
-- [ ] 094. Support `--gptq-bits` parameter (e.g., 4, 3, 2).
-- [ ] 095. Support `--gptq-group-size` (e.g., 32, 64, 128).
-- [ ] 096. Implement **AWQ** (Activation-aware Weight Quantization) algorithm.
-- [ ] 097. Scale salient weights dynamically based on activation distributions.
-- [ ] 098. Implement **SmoothQuant** algorithm.
-- [ ] 099. Perform activation smoothing (migrating difficulty from activations to weights).
+
+- [ ] 91. Implement **GPTQ** (Accurate Post-Training Quantization) algorithm.
+- [ ] 92. Compute Hessian matrices over calibration data for GPTQ.
+- [ ] 93. Perform greedy/Cholesky inverse weight updates for GPTQ.
+- [ ] 94. Support `--gptq-bits` parameter (e.g., 4, 3, 2).
+- [ ] 95. Support `--gptq-group-size` (e.g., 32, 64, 128).
+- [ ] 96. Implement **AWQ** (Activation-aware Weight Quantization) algorithm.
+- [ ] 97. Scale salient weights dynamically based on activation distributions.
+- [ ] 98. Implement **SmoothQuant** algorithm.
+- [ ] 99. Perform activation smoothing (migrating difficulty from activations to weights).
 - [ ] 100. Implement W4A16 (4-bit weights, 16-bit activations) packing engine.
 - [ ] 101. Pack two 4-bit weights into a single UInt8 initializer (crucial for web payloads).
 - [ ] 102. Pack eight 4-bit weights into a single UInt32 initializer (optimal for WebGPU buffers).
@@ -135,6 +143,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 110. Expose an API to evaluate perplexity degradation post-quantization.
 
 ### Phase 6: Calibration & Data Processing
+
 - [ ] 111. Define base `CalibrationDataReader` interface.
 - [ ] 112. Implement dataset loaders for text datasets (WikiText, C4).
 - [ ] 113. Implement dataset loaders for image datasets (ImageNet miniset).
@@ -152,6 +161,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 125. Implement early stopping in calibration if degradation threshold is exceeded.
 
 ### Phase 7: Specialized Task Exporters (NLP architectures)
+
 - [ ] 126. Create custom ONNX config mapping for **BERT** architecture.
 - [ ] 127. Create custom ONNX config mapping for **RoBERTa** architecture.
 - [ ] 128. Create custom ONNX config mapping for **DistilBERT** architecture.
@@ -174,6 +184,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 145. Automatically fix missing dummy inputs for complex custom NLP topologies.
 
 ### Phase 8: Specialized Task Exporters (Vision, Audio, Multimodal)
+
 - [ ] 146. Create custom ONNX config mapping for **ViT** (Vision Transformer).
 - [ ] 147. Create custom ONNX config mapping for **CLIP** (Text and Image Encoders split).
 - [ ] 148. Create custom ONNX config mapping for **DETR** (Object Detection).
@@ -196,6 +207,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 165. Add warnings for audio models if exported without caching mechanisms.
 
 ### Phase 9: Model Web-Inference Wrappers (`ORTModelForX`)
+
 - [ ] 166. Implement base `ORTModel` wrapper for browser execution environments.
 - [ ] 167. Implement `ORTModelForSequenceClassification`.
 - [ ] 168. Implement `ORTModelForTokenClassification`.
@@ -218,6 +230,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 185. Support retrieving attentions if `--output_attentions` was flagged during export.
 
 ### Phase 10: Web-Native Optimization Extensions (BetterTransformer equivalent)
+
 - [ ] 186. Port "BetterTransformer" concept to WebAssembly/WebGPU fast paths.
 - [ ] 187. Implement AST pass: Replace PyTorch native `nn.MultiheadAttention` with optimized `onnx9000.FlashAttention`.
 - [ ] 188. Support sparsity-aware execution routing in models (executing only non-zero blocks if identified).
@@ -235,6 +248,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 200. Minify the ONNX graph structure by renaming long internal node names to short alphabetic identifiers.
 
 ### Phase 11: Export Tooling Validation & Parity
+
 - [ ] 201. Create a validation suite comparing PyTorch outputs vs ONNX exported outputs.
 - [ ] 202. Measure max absolute error (MAE) across all output tensors post-export.
 - [ ] 203. Measure cosine similarity across all output tensors post-export.
@@ -252,6 +266,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 215. Validate correct exporting of complex control flow structures (If/Loop) if present.
 
 ### Phase 12: HuggingFace Hub Integration & Publishing
+
 - [ ] 216. Implement `onnx9000 optimum push_to_hub` CLI.
 - [ ] 217. Handle chunked file uploads for ONNX files > 2GB.
 - [ ] 218. Generate appropriate `README.md` model cards tagging `onnx9000` and `webgpu`.
@@ -264,6 +279,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 225. Expose an API to check if a model repository already contains a web-optimized ONNX variant.
 
 ### Phase 13: Specialized Node.js Export Tooling (Browser Context)
+
 - [ ] 226. Ensure the graph optimization engine (AST rewriting) is 100% written in TS/JS.
 - [ ] 227. Enable a user to upload a `.onnx` file in a browser, optimize it, and download it locally.
 - [ ] 228. Provide a Web Worker wrapper for heavy JS-based optimization passes.
@@ -276,6 +292,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 235. Provide simple APIs: `const optimizedBlob = await optimize(onnxBlob, { level: 'O3' })`.
 
 ### Phase 14: LoRA and Adapters Integration
+
 - [ ] 236. Support exporting PyTorch models with fused PEFT/LoRA adapters.
 - [ ] 237. Implement logic to extract LoRA weights as a standalone `.onnx_adapter` file.
 - [ ] 238. Optimize base model to support dynamic injection of exported LoRA weights.
@@ -288,6 +305,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 245. Validate LoRA rank scaling factors are correctly serialized.
 
 ### Phase 15: Telemetry, Logs, and Error Handling
+
 - [ ] 246. Implement highly descriptive parsing errors if the user's HF model structure is unrecognized.
 - [ ] 247. Produce a comprehensive debug log (`onnx9000_export.log`) tracking every graph mutation.
 - [ ] 248. Provide clear "How to fix" suggestions when encountering unsupported PyTorch dynamic control flows.
@@ -300,6 +318,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 255. Wrap obscure ONNX protobuf parse errors into human-readable TS exceptions.
 
 ### Phase 16: Security & System Integration
+
 - [ ] 256. Strictly sanitize any custom python code present in Hub `trust_remote_code=True` instances.
 - [ ] 257. Verify checksums of downloaded HuggingFace models prior to executing export logic.
 - [ ] 258. Ensure the exported `.onnx` does not embed local file paths or PII from the export machine.
@@ -312,6 +331,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 265. Document the complete mapping architecture for adding a new model to the ecosystem.
 
 ### Phase 17: Extended Calibration and Evaluation Options
+
 - [ ] 266. Integrate BLEU score evaluation directly post-quantization for translation models.
 - [ ] 267. Integrate ROUGE score evaluation for summarization models.
 - [ ] 268. Integrate WER (Word Error Rate) evaluation for ASR models.
@@ -324,6 +344,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 275. Expand test coverage to handle edge case models with sparse attention patterns.
 
 ### Phase 18: Specific Kernel Tuning for Web Deployment
+
 - [ ] 276. Generate WebGPU specific memory alignment metadata directly during export.
 - [ ] 277. Tag specific nodes for execution on WASM vs WebGPU in heterogenous setups.
 - [ ] 278. Export WebNN specific hint metadata for NPU offloading capabilities.
@@ -336,6 +357,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 285. Support externalizing weights into independent files chunks for HTTP range requests.
 
 ### Phase 19: Comprehensive Examples & Ecosystem
+
 - [ ] 286. Provide `examples/export_llama_webgpu.sh` script.
 - [ ] 287. Provide `examples/quantize_whisper_wasm.sh` script.
 - [ ] 288. Provide Jupyter notebook detailing the AWQ calibration process step-by-step.
@@ -348,6 +370,7 @@ Instead of catering to heavy, server-centric C++ hardware SDKs (like TensorRT or
 - [ ] 295. Write a migration guide for users switching from `optimum-cli` to `onnx9000 optimum`.
 
 ### Phase 20: Final Polish and Release Readiness
+
 - [ ] 296. Verify 100% test coverage over graph mutating functions to prevent silent corruption.
 - [ ] 297. Ensure binary deterministic outputs (identical inputs + seeds = byte-for-byte identical `.onnx`).
 - [ ] 298. Perform a final audit on memory limits to ensure massive models (e.g., 70B parameter models) do not crash the export CLI.

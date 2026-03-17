@@ -1,137 +1,150 @@
 # ONNX38: Triton Compiler (Web-Native Custom Kernel Generator)
 
 ## Original Project Description
+
 OpenAI's `Triton` is a Python-like language and compiler for writing highly efficient custom GPU kernels (CUDA/ROCm). It allows researchers to write fast kernels (like FlashAttention) without writing C++ or CUDA C. Under the hood, Triton relies on a massive MLIR/LLVM stack to parse the Python AST and JIT-compile it into optimized `.ptx` binaries. Typically, developers write Triton kernels by hand to optimize specific un-fusable layer combinations in their PyTorch models.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.triton` acts as an **Automated Custom Kernel Generator** accessible completely via the browser or Node.js.
-*   **Automatic Subgraph-to-Kernel Compilation:** It scans an ONNX graph, identifies computationally expensive subgraphs that lack optimized backend support, and automatically generates the raw Triton Python source code (`@triton.jit`) required to execute that subgraph as a single fused GPU kernel.
-*   **Zero-Dependency AST Transpilation:** Translates the pure-TypeScript `onnx9000` AST directly into Triton's block-based programming semantics. No LLVM or PyTorch is required to *generate* the code.
-*   **WGSL Dual-Emission:** Because Triton's tile-based programming model (Block-M, Block-N) maps beautifully to WebGPU Compute Shaders, `onnx9000` can simultaneously emit Triton Python code for server GPUs and equivalent WGSL shader code for browser execution, creating a unified performance path.
+
+- **Automatic Subgraph-to-Kernel Compilation:** It scans an ONNX graph, identifies computationally expensive subgraphs that lack optimized backend support, and automatically generates the raw Triton Python source code (`@triton.jit`) required to execute that subgraph as a single fused GPU kernel.
+- **Zero-Dependency AST Transpilation:** Translates the pure-TypeScript `onnx9000` AST directly into Triton's block-based programming semantics. No LLVM or PyTorch is required to _generate_ the code.
+- **WGSL Dual-Emission:** Because Triton's tile-based programming model (Block-M, Block-N) maps beautifully to WebGPU Compute Shaders, `onnx9000` can simultaneously emit Triton Python code for server GPUs and equivalent WGSL shader code for browser execution, creating a unified performance path.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Triton AST & Block-Level Representation
-- [ ] 001. Define base Triton AST generator inside `onnx9000`.
-- [ ] 002. Implement `tl.tensor` logical abstraction for blocked memory.
-- [ ] 003. Implement `BLOCK_SIZE` symbolic dimension tracking.
-- [ ] 004. Generate `@triton.jit` function decorators.
-- [ ] 005. Generate function signatures mapping ONNX inputs to Triton pointers (`*fp32`).
-- [ ] 006. Generate function signatures mapping ONNX outputs to Triton pointers.
-- [ ] 007. Append stride arguments automatically for N-dimensional tensors (e.g., `stride_am, stride_ak`).
-- [ ] 008. Append `BLOCK_M`, `BLOCK_N`, `BLOCK_K` meta-parameters to signatures.
-- [ ] 009. Implement 1D pointer arithmetic code generation (`pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)`).
-- [ ] 010. Implement 2D pointer block arithmetic generation.
-- [ ] 011. Generate boundary mask checks (`mask = offsets < MAX_DIM`).
-- [ ] 012. Support emitting explicitly typed pointers (`tl.pointer_type(tl.float16)`).
-- [ ] 013. Support generating `tl.constexpr` arguments natively.
-- [ ] 014. Handle translating ONNX string names to valid Python/Triton function names.
-- [ ] 015. Extract static ONNX shapes to bake into `tl.constexpr` limits dynamically.
+
+- [ ] 1. Define base Triton AST generator inside `onnx9000`.
+- [ ] 2. Implement `tl.tensor` logical abstraction for blocked memory.
+- [ ] 3. Implement `BLOCK_SIZE` symbolic dimension tracking.
+- [ ] 4. Generate `@triton.jit` function decorators.
+- [ ] 5. Generate function signatures mapping ONNX inputs to Triton pointers (`*fp32`).
+- [ ] 6. Generate function signatures mapping ONNX outputs to Triton pointers.
+- [ ] 7. Append stride arguments automatically for N-dimensional tensors (e.g., `stride_am, stride_ak`).
+- [ ] 8. Append `BLOCK_M`, `BLOCK_N`, `BLOCK_K` meta-parameters to signatures.
+- [ ] 9. Implement 1D pointer arithmetic code generation (`pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)`).
+- [ ] 10. Implement 2D pointer block arithmetic generation.
+- [ ] 11. Generate boundary mask checks (`mask = offsets < MAX_DIM`).
+- [ ] 12. Support emitting explicitly typed pointers (`tl.pointer_type(tl.float16)`).
+- [ ] 13. Support generating `tl.constexpr` arguments natively.
+- [ ] 14. Handle translating ONNX string names to valid Python/Triton function names.
+- [ ] 15. Extract static ONNX shapes to bake into `tl.constexpr` limits dynamically.
 
 ### Phase 2: Core Memory Operations (`load` / `store`)
-- [ ] 016. Emit `tl.load(pointer)` statements.
-- [ ] 017. Emit `tl.load(pointer, mask=mask)` safely.
-- [ ] 018. Emit `tl.load(pointer, mask=mask, other=0.0)` handling boundary padding.
-- [ ] 019. Emit `tl.store(pointer, value)` statements.
-- [ ] 020. Emit `tl.store(pointer, value, mask=mask)` safely.
-- [ ] 021. Resolve ONNX dimension broadcasting before generating load pointers.
-- [ ] 022. Optimize memory loads by reusing loaded blocks (register caching in generated code).
-- [ ] 023. Generate 2D tile memory pointers correctly (`ptr + (offsets_m[:, None] * stride_m + offsets_n[None, :] * stride_n)`).
-- [ ] 024. Manage contiguous memory assumptions to drop explicit stride calculations if safe.
-- [ ] 025. Emit `tl.advance(pointer, offsets)` for loop-based sliding windows.
+
+- [ ] 16. Emit `tl.load(pointer)` statements.
+- [ ] 17. Emit `tl.load(pointer, mask=mask)` safely.
+- [ ] 18. Emit `tl.load(pointer, mask=mask, other=0.0)` handling boundary padding.
+- [ ] 19. Emit `tl.store(pointer, value)` statements.
+- [ ] 20. Emit `tl.store(pointer, value, mask=mask)` safely.
+- [ ] 21. Resolve ONNX dimension broadcasting before generating load pointers.
+- [ ] 22. Optimize memory loads by reusing loaded blocks (register caching in generated code).
+- [ ] 23. Generate 2D tile memory pointers correctly (`ptr + (offsets_m[:, None] * stride_m + offsets_n[None, :] * stride_n)`).
+- [ ] 24. Manage contiguous memory assumptions to drop explicit stride calculations if safe.
+- [ ] 25. Emit `tl.advance(pointer, offsets)` for loop-based sliding windows.
 
 ### Phase 3: Basic Arithmetic & Elementwise Generation
-- [ ] 026. Map ONNX `Add` to Triton `a + b`.
-- [ ] 027. Map ONNX `Sub` to Triton `a - b`.
-- [ ] 028. Map ONNX `Mul` to Triton `a * b`.
-- [ ] 029. Map ONNX `Div` to Triton `a / b`.
-- [ ] 030. Map ONNX `Pow` to Triton `tl.math.pow(a, b)`.
-- [ ] 031. Map ONNX `Exp` to Triton `tl.exp(x)`.
-- [ ] 032. Map ONNX `Log` to Triton `tl.log(x)`.
-- [ ] 033. Map ONNX `Sqrt` to Triton `tl.sqrt(x)`.
-- [ ] 034. Map ONNX `Sin` to Triton `tl.sin(x)`.
-- [ ] 035. Map ONNX `Cos` to Triton `tl.cos(x)`.
-- [ ] 036. Map ONNX `Abs` to Triton `tl.abs(x)`.
-- [ ] 037. Map ONNX `Max` to Triton `tl.maximum(a, b)`.
-- [ ] 038. Map ONNX `Min` to Triton `tl.minimum(a, b)`.
-- [ ] 039. Map ONNX `Where` to Triton `tl.where(condition, a, b)`.
-- [ ] 040. Ensure explicit type casting via `tl.cast(x, type)` before arithmetic if ONNX requires it.
+
+- [ ] 26. Map ONNX `Add` to Triton `a + b`.
+- [ ] 27. Map ONNX `Sub` to Triton `a - b`.
+- [ ] 28. Map ONNX `Mul` to Triton `a * b`.
+- [ ] 29. Map ONNX `Div` to Triton `a / b`.
+- [ ] 30. Map ONNX `Pow` to Triton `tl.math.pow(a, b)`.
+- [ ] 31. Map ONNX `Exp` to Triton `tl.exp(x)`.
+- [ ] 32. Map ONNX `Log` to Triton `tl.log(x)`.
+- [ ] 33. Map ONNX `Sqrt` to Triton `tl.sqrt(x)`.
+- [ ] 34. Map ONNX `Sin` to Triton `tl.sin(x)`.
+- [ ] 35. Map ONNX `Cos` to Triton `tl.cos(x)`.
+- [ ] 36. Map ONNX `Abs` to Triton `tl.abs(x)`.
+- [ ] 37. Map ONNX `Max` to Triton `tl.maximum(a, b)`.
+- [ ] 38. Map ONNX `Min` to Triton `tl.minimum(a, b)`.
+- [ ] 39. Map ONNX `Where` to Triton `tl.where(condition, a, b)`.
+- [ ] 40. Ensure explicit type casting via `tl.cast(x, type)` before arithmetic if ONNX requires it.
 
 ### Phase 4: Matrix Multiplication & Tiling (`tl.dot`)
-- [ ] 041. Identify ONNX `MatMul` and translate to `tl.dot(a, b)`.
-- [ ] 042. Generate the K-dimension accumulation `for`-loop in Python.
-- [ ] 043. Generate correct `tl.zeros([BLOCK_M, BLOCK_N], dtype=tl.float32)` accumulator initializers.
-- [ ] 044. Generate block updates inside the loop (`a_ptrs += BLOCK_K * stride_ak`).
-- [ ] 045. Support `transA` generating transposed pointer logic (`stride_k, stride_m`).
-- [ ] 046. Support `transB` generating transposed pointer logic natively.
-- [ ] 047. Map ONNX `Gemm` to `tl.dot(a, b) + bias`.
-- [ ] 048. Cast `Float16` blocks to `Float32` explicitly for accumulation (standard TRT/CUDA best practice).
-- [ ] 049. Handle dynamic matrix bounds with masked loading inside the K-loop.
-- [ ] 050. Emit `allow_tf32=True` parameters in `tl.dot` if requested via compiler flags.
+
+- [ ] 41. Identify ONNX `MatMul` and translate to `tl.dot(a, b)`.
+- [ ] 42. Generate the K-dimension accumulation `for`-loop in Python.
+- [ ] 43. Generate correct `tl.zeros([BLOCK_M, BLOCK_N], dtype=tl.float32)` accumulator initializers.
+- [ ] 44. Generate block updates inside the loop (`a_ptrs += BLOCK_K * stride_ak`).
+- [ ] 45. Support `transA` generating transposed pointer logic (`stride_k, stride_m`).
+- [ ] 46. Support `transB` generating transposed pointer logic natively.
+- [ ] 47. Map ONNX `Gemm` to `tl.dot(a, b) + bias`.
+- [ ] 48. Cast `Float16` blocks to `Float32` explicitly for accumulation (standard TRT/CUDA best practice).
+- [ ] 49. Handle dynamic matrix bounds with masked loading inside the K-loop.
+- [ ] 50. Emit `allow_tf32=True` parameters in `tl.dot` if requested via compiler flags.
 
 ### Phase 5: Convolution & Spatial Generation (Im2Col Emulation)
-- [ ] 051. Triton lacks native `Conv2d`. Emulate ONNX `Conv` via implicit Im2Col pointer math.
-- [ ] 052. Generate sliding window index calculations for image patches.
-- [ ] 053. Map spatial padding bounds to explicit `tl.load` mask conditions (`other=0.0`).
-- [ ] 054. Transform kernel dimensions into inner-loop `tl.dot` executions.
-- [ ] 055. Generate specific 1D Convolution unrolled loops.
-- [ ] 056. Generate specific Depthwise Convolution blocks (avoiding cross-channel `tl.dot`).
-- [ ] 057. Emit loop strides reflecting ONNX `strides` parameters accurately.
-- [ ] 058. Extract ONNX `dilations` and bake them into the spatial pointer multipliers.
-- [ ] 059. Generate fully fused `Conv2D` + `BatchNorm` + `Relu` Triton kernels automatically.
-- [ ] 060. Provide memory footprint checks predicting register-spills if kernel window sizes exceed limits.
+
+- [ ] 51. Triton lacks native `Conv2d`. Emulate ONNX `Conv` via implicit Im2Col pointer math.
+- [ ] 52. Generate sliding window index calculations for image patches.
+- [ ] 53. Map spatial padding bounds to explicit `tl.load` mask conditions (`other=0.0`).
+- [ ] 54. Transform kernel dimensions into inner-loop `tl.dot` executions.
+- [ ] 55. Generate specific 1D Convolution unrolled loops.
+- [ ] 56. Generate specific Depthwise Convolution blocks (avoiding cross-channel `tl.dot`).
+- [ ] 57. Emit loop strides reflecting ONNX `strides` parameters accurately.
+- [ ] 58. Extract ONNX `dilations` and bake them into the spatial pointer multipliers.
+- [ ] 59. Generate fully fused `Conv2D` + `BatchNorm` + `Relu` Triton kernels automatically.
+- [ ] 60. Provide memory footprint checks predicting register-spills if kernel window sizes exceed limits.
 
 ### Phase 6: Reductions & Normalizations
-- [ ] 061. Map ONNX `ReduceSum` to `tl.sum(x, axis)`.
-- [ ] 062. Map ONNX `ReduceMax` to `tl.max(x, axis)`.
-- [ ] 063. Map ONNX `ReduceMin` to `tl.min(x, axis)`.
-- [ ] 064. Map ONNX `ArgMax` to `tl.argmax(x, axis)`.
-- [ ] 065. Map ONNX `ArgMin` to `tl.argmin(x, axis)`.
-- [ ] 066. Generate numerically stable `Softmax` block (calculating max, exp, sum, div).
-- [ ] 067. Generate `LayerNormalization` kernel (calculating mean, var, rsqrt).
-- [ ] 068. Generate `InstanceNormalization` kernel natively.
-- [ ] 069. Support cross-block reductions (when reduction axis size > `BLOCK_SIZE`) via multi-pass atomic adds.
-- [ ] 070. Use `tl.atomic_add(pointer, value)` for cross-grid accumulation.
+
+- [ ] 61. Map ONNX `ReduceSum` to `tl.sum(x, axis)`.
+- [ ] 62. Map ONNX `ReduceMax` to `tl.max(x, axis)`.
+- [ ] 63. Map ONNX `ReduceMin` to `tl.min(x, axis)`.
+- [ ] 64. Map ONNX `ArgMax` to `tl.argmax(x, axis)`.
+- [ ] 65. Map ONNX `ArgMin` to `tl.argmin(x, axis)`.
+- [ ] 66. Generate numerically stable `Softmax` block (calculating max, exp, sum, div).
+- [ ] 67. Generate `LayerNormalization` kernel (calculating mean, var, rsqrt).
+- [ ] 68. Generate `InstanceNormalization` kernel natively.
+- [ ] 69. Support cross-block reductions (when reduction axis size > `BLOCK_SIZE`) via multi-pass atomic adds.
+- [ ] 70. Use `tl.atomic_add(pointer, value)` for cross-grid accumulation.
 
 ### Phase 7: Activations & Fused Subgraphs
-- [ ] 071. Generate fused `Relu` (`tl.maximum(x, 0.0)`).
-- [ ] 072. Generate fused `LeakyRelu` (`tl.where(x > 0, x, x * alpha)`).
-- [ ] 073. Generate fused `Sigmoid` (`1.0 / (1.0 + tl.exp(-x))`).
-- [ ] 074. Generate fused `Tanh` (via math approximation if native is slow).
-- [ ] 075. Generate fused `Gelu` (using `tl.math.erf` or polynomial approximations).
-- [ ] 076. Identify multi-node chains in ONNX (e.g. `MatMul -> Add -> Gelu`) and emit a single Triton `@jit` function.
-- [ ] 077. Track intermediate logical tensors perfectly within Triton `Local` registers.
-- [ ] 078. Prevent generating `tl.store` for intermediate operations, keeping data strictly in SRAM.
-- [ ] 079. Support generating Epilogue operations dynamically (fusing arbitrary user-defined math to MatMuls).
-- [ ] 080. Fallback gracefully to separate kernels if the register pressure of a fused chain is calculated to be too high.
+
+- [ ] 71. Generate fused `Relu` (`tl.maximum(x, 0.0)`).
+- [ ] 72. Generate fused `LeakyRelu` (`tl.where(x > 0, x, x * alpha)`).
+- [ ] 73. Generate fused `Sigmoid` (`1.0 / (1.0 + tl.exp(-x))`).
+- [ ] 74. Generate fused `Tanh` (via math approximation if native is slow).
+- [ ] 75. Generate fused `Gelu` (using `tl.math.erf` or polynomial approximations).
+- [ ] 76. Identify multi-node chains in ONNX (e.g. `MatMul -> Add -> Gelu`) and emit a single Triton `@jit` function.
+- [ ] 77. Track intermediate logical tensors perfectly within Triton `Local` registers.
+- [ ] 78. Prevent generating `tl.store` for intermediate operations, keeping data strictly in SRAM.
+- [ ] 79. Support generating Epilogue operations dynamically (fusing arbitrary user-defined math to MatMuls).
+- [ ] 80. Fallback gracefully to separate kernels if the register pressure of a fused chain is calculated to be too high.
 
 ### Phase 8: FlashAttention & Advanced Configurations
-- [ ] 081. Detect ONNX standard Attention topologies (Q, K, V -> Softmax -> MatMul).
-- [ ] 082. Emit standardized Triton FlashAttention-2 implementation code automatically.
-- [ ] 083. Apply causal masking dynamically inside the generated FlashAttention block.
-- [ ] 084. Modify FlashAttention block generation for Grouped-Query Attention (GQA) mapping.
-- [ ] 085. Generate Rotary Positional Embeddings (RoPE) inside the Triton kernel on-the-fly to save memory bandwidth.
-- [ ] 086. Generate ALiBi positional biases dynamically inside the Softmax loop.
-- [ ] 087. Enable sequence-length chunking natively inside the generated python code.
-- [ ] 088. Evaluate KV cache pointers and generate code capable of appending to existing memory rings.
-- [ ] 089. Optimize inner loop scaling (e.g. `q * softmax_scale`).
-- [ ] 090. Output highly readable, heavily commented Triton code to assist researchers.
+
+- [ ] 81. Detect ONNX standard Attention topologies (Q, K, V -> Softmax -> MatMul).
+- [ ] 82. Emit standardized Triton FlashAttention-2 implementation code automatically.
+- [ ] 83. Apply causal masking dynamically inside the generated FlashAttention block.
+- [ ] 84. Modify FlashAttention block generation for Grouped-Query Attention (GQA) mapping.
+- [ ] 85. Generate Rotary Positional Embeddings (RoPE) inside the Triton kernel on-the-fly to save memory bandwidth.
+- [ ] 86. Generate ALiBi positional biases dynamically inside the Softmax loop.
+- [ ] 87. Enable sequence-length chunking natively inside the generated python code.
+- [ ] 88. Evaluate KV cache pointers and generate code capable of appending to existing memory rings.
+- [ ] 89. Optimize inner loop scaling (e.g. `q * softmax_scale`).
+- [ ] 90. Output highly readable, heavily commented Triton code to assist researchers.
 
 ### Phase 9: Precision, Quantization & Type Casting
-- [ ] 091. Support `tl.float32`.
-- [ ] 092. Support `tl.float16`.
-- [ ] 093. Support `tl.bfloat16`.
-- [ ] 094. Support `tl.int8` and `tl.uint8`.
-- [ ] 095. Support `tl.int32` and `tl.int64`.
-- [ ] 096. Emit explicit `tl.cast()` calls when ONNX nodes dictate precision shifts.
-- [ ] 097. Generate INT8 quantized MatMul loops natively (`tl.dot` on `int8` inputs).
-- [ ] 098. Apply dynamic dequantization scales inside the MatMul epilogue.
-- [ ] 099. Generate W4A16 unpacking logic inside the Triton kernel (extracting 4-bit nibbles using bitwise shifts).
+
+- [ ] 91. Support `tl.float32`.
+- [ ] 92. Support `tl.float16`.
+- [ ] 93. Support `tl.bfloat16`.
+- [ ] 94. Support `tl.int8` and `tl.uint8`.
+- [ ] 95. Support `tl.int32` and `tl.int64`.
+- [ ] 96. Emit explicit `tl.cast()` calls when ONNX nodes dictate precision shifts.
+- [ ] 97. Generate INT8 quantized MatMul loops natively (`tl.dot` on `int8` inputs).
+- [ ] 98. Apply dynamic dequantization scales inside the MatMul epilogue.
+- [ ] 99. Generate W4A16 unpacking logic inside the Triton kernel (extracting 4-bit nibbles using bitwise shifts).
 - [ ] 100. Provide AWQ/GPTQ specific fast-paths in the generated code based on ONNX metadata tags.
 
 ### Phase 10: Auto-Tuning & Grid Scheduling Generators
+
 - [ ] 101. Wrap generated functions with `@triton.autotune`.
 - [ ] 102. Emit `triton.Config` lists covering multiple `BLOCK_M`, `BLOCK_N`, `BLOCK_K` combinations.
 - [ ] 103. Emit `num_warps` combinations dynamically (e.g., 4, 8).
@@ -144,6 +157,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 110. Handle non-contiguous tensor alignments safely in the wrapper logic.
 
 ### Phase 11: Python/PyTorch Host Code Generation
+
 - [ ] 111. Generate standard `import torch` and `import triton` boilerplate.
 - [ ] 112. Emit `torch.empty_like` or `torch.empty` to allocate the output tensors before kernel launch.
 - [ ] 113. Validate input shapes natively using Python `assert` blocks in the wrapper.
@@ -156,6 +170,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 120. Emit profiling blocks `triton.testing.do_bench` dynamically for instant performance feedback.
 
 ### Phase 12: Dual-Emission: WebGPU WGSL Mapping
+
 - [ ] 121. Since Triton `BLOCK_M` logic mirrors WebGPU `workgroup_size`, map the AST to WGSL.
 - [ ] 122. Translate `pid = tl.program_id(0)` to WGSL `workgroup_id.x`.
 - [ ] 123. Translate `tl.arange` sequences to local WGSL thread indices (`local_invocation_id`).
@@ -168,6 +183,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 130. Output a combined `.js` package containing the WebGPU pipeline execution logic.
 
 ### Phase 13: Browser UI (The Visual Kernel Compiler)
+
 - [ ] 131. Build a React/Vue interface for `onnx9000.triton`.
 - [ ] 132. Allow users to drag-and-drop an ONNX model into the UI.
 - [ ] 133. Display the interactive ONNX Graph (via `onnx9000.modifier`).
@@ -180,6 +196,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 140. Generate a downloadable `.py` artifact completely serverless.
 
 ### Phase 14: AST Manipulation & Advanced Parsing
+
 - [ ] 141. Ensure the topological sort of selected nodes is preserved.
 - [ ] 142. Identify nodes that cannot be safely fused (e.g., global sync points like `TopK`) and split them into separate kernels automatically.
 - [ ] 143. Handle multiple output variables (e.g., LayerNorm returning both Output and Mean/Var tensors).
@@ -192,6 +209,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 150. Emit `tl.device_assert` for debugging purposes if `--debug-kernel` is enabled.
 
 ### Phase 15: Edge Cases, Security & Validation
+
 - [ ] 151. Warn if a selected subgraph contains nodes that Triton cannot process (e.g. `String` operators).
 - [ ] 152. Verify dynamically generated array access limits mathematically to prevent GPU memory faults.
 - [ ] 153. Enforce valid Python indentation perfectly in the generated code.
@@ -204,6 +222,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 160. Test the generated python code instantly via Pyodide (`exec(code)`) to ensure syntax is valid, even without a GPU.
 
 ### Phase 16: End-to-End Validation (NLP)
+
 - [ ] 161. Extract LLaMA Attention block -> Generate Triton -> Verify structural validity.
 - [ ] 162. Extract BERT LayerNorm + MLP block -> Generate Triton.
 - [ ] 163. Extract MoE Gating / Routing logic -> Generate Triton.
@@ -216,6 +235,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 170. Expose exact performance estimates based on analytical Roofline modeling.
 
 ### Phase 17: End-to-End Validation (Vision & Math)
+
 - [ ] 171. Extract ResNet Block -> Generate Triton (Im2Col + Gemm + Relu).
 - [ ] 172. Extract MobileNetV2 Depthwise Block -> Generate Triton.
 - [ ] 173. Extract YOLO Non-Max Suppression bounding box math -> Generate Triton.
@@ -228,6 +248,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 180. Handle `GroupNormalization` explicitly.
 
 ### Phase 18: CLI Tooling & Node.js Environment (`onnx9000 triton`)
+
 - [ ] 181. Build CLI: `onnx9000 triton generate model.onnx --node "Conv_1,Relu_2" -o kernel.py`.
 - [ ] 182. Support `--auto-fuse` flag (analyzes the whole model and outputs multiple optimized `.py` files).
 - [ ] 183. Support `--target wgsl` flag for WebGPU shader emission.
@@ -240,6 +261,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 190. Handle exact CI/CD validations mapping Python ASTs backwards to ONNX.
 
 ### Phase 19: Expanded Triton Operator Math Mapping
+
 - [ ] 191. Implement `tf.complex` equivalents natively if Triton introduces complex numbers.
 - [ ] 192. Handle `tl.bfloat16` casting natively inside the generator.
 - [ ] 193. Map `Round` to `tl.math.round`.
@@ -252,6 +274,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [ ] 200. Configure specific Float8 operations if target hardware supports it (Hopper).
 
 ### Phase 20: Delivery & Documentation
+
 - [ ] 201. Write Tutorial: "Fusing Custom LLM Operations with Triton".
 - [ ] 202. Write Tutorial: "Migrating from ONNX to WebGPU Compute Shaders".
 - [ ] 203. Create comprehensive mapping documentation showing exactly which ONNX ops generate which Triton ops.

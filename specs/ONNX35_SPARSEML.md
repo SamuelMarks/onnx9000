@@ -1,132 +1,143 @@
 # ONNX35: SparseML (Web-Native Sparsity & Pruning Engine)
 
 ## Original Project Description
+
 `SparseML` (developed by Neural Magic) is a toolkit that applies state-of-the-art sparsification techniques—such as unstructured pruning, N:M block-structured pruning, and quantization—to machine learning models. It uses declarative `.yaml` "recipes" to systematically remove redundant weights from deep neural networks. When combined with sparsification-aware execution engines (like Neural Magic's DeepSparse), these pruned ONNX models achieve massive speedups and memory reductions on commodity hardware without requiring expensive GPUs. The standard tool relies heavily on PyTorch and native C++ integrations for calibration, pruning, and export.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.sparse` implements the entire sparsification pipeline in **pure TypeScript and Python**, bringing Neural Magic's recipe-driven pruning directly to the browser.
-*   **Client-Side Pruning:** Users can drop a dense model and a `.yaml` recipe into a web page. The app processes the AST, applies the magnitude or block-pruning masks, and outputs a highly compressed `SparseTensorProto` ONNX model—all via Web Workers, with zero server interaction.
-*   **Web-Native Sparse Kernels:** Standard WebGPU and WebAssembly engines evaluate dense matrices. `onnx9000` compiles specialized sparse-matrix multiplication (SpMM) WGSL shaders and WASM SIMD loops, ensuring that the 2:4 or unstructured sparsity actually translates into *faster execution* on the web, not just a smaller file size.
-*   **Zero-Dependency Execution:** Applies One-Shot (OBS) or magnitude pruning directly on the pure ONNX graph weights in memory, entirely bypassing the need to load the model into PyTorch to modify its parameters.
+
+- **Client-Side Pruning:** Users can drop a dense model and a `.yaml` recipe into a web page. The app processes the AST, applies the magnitude or block-pruning masks, and outputs a highly compressed `SparseTensorProto` ONNX model—all via Web Workers, with zero server interaction.
+- **Web-Native Sparse Kernels:** Standard WebGPU and WebAssembly engines evaluate dense matrices. `onnx9000` compiles specialized sparse-matrix multiplication (SpMM) WGSL shaders and WASM SIMD loops, ensuring that the 2:4 or unstructured sparsity actually translates into _faster execution_ on the web, not just a smaller file size.
+- **Zero-Dependency Execution:** Applies One-Shot (OBS) or magnitude pruning directly on the pure ONNX graph weights in memory, entirely bypassing the need to load the model into PyTorch to modify its parameters.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Sparse Tensor Core & Data Formats
-- [ ] 001. Implement `SparseTensor` base class extending `onnx9000.Tensor`.
-- [ ] 002. Implement COO (Coordinate List) format parser in TS/Python.
-- [ ] 003. Implement CSR (Compressed Sparse Row) format parser natively.
-- [ ] 004. Implement CSC (Compressed Sparse Column) format parser.
-- [ ] 005. Implement BSR (Block Sparse Row) format parser.
-- [ ] 006. Convert Dense ONNX `TensorProto` to `SparseTensorProto` explicitly.
-- [ ] 007. Convert `SparseTensorProto` to Dense `TensorProto` cleanly.
-- [ ] 008. Extract `values` array for `SparseTensorProto`.
-- [ ] 009. Extract `indices` array (1D/2D) for `SparseTensorProto`.
-- [ ] 010. Support 1D tensor sparsity (Biases, Scales).
-- [ ] 011. Support 2D matrix sparsity (Linear/Gemm).
-- [ ] 012. Support 4D tensor sparsity (Conv kernels).
-- [ ] 013. Detect maximum sparsity theoretically achievable based on epsilon values.
-- [ ] 014. Support zero-copy views for sparse value arrays in JS (`TypedArray`).
-- [ ] 015. Support converting standard HuggingFace sparse models to ONNX native sparse models.
-- [ ] 016. Provide memory usage calculation (Dense vs Sparse byte comparison).
-- [ ] 017. Enforce standard `SparseTensorProto` binary serialization.
-- [ ] 018. Support mapping sparse inputs correctly to `safetensors` external references.
-- [ ] 019. Manage JS `BigInt` indexing for massive sparse arrays safely.
-- [ ] 020. Track compression ratio mathematically (`1.0 - (sparse_size / dense_size)`).
+
+- [ ] 1. Implement `SparseTensor` base class extending `onnx9000.Tensor`.
+- [ ] 2. Implement COO (Coordinate List) format parser in TS/Python.
+- [ ] 3. Implement CSR (Compressed Sparse Row) format parser natively.
+- [ ] 4. Implement CSC (Compressed Sparse Column) format parser.
+- [ ] 5. Implement BSR (Block Sparse Row) format parser.
+- [ ] 6. Convert Dense ONNX `TensorProto` to `SparseTensorProto` explicitly.
+- [ ] 7. Convert `SparseTensorProto` to Dense `TensorProto` cleanly.
+- [ ] 8. Extract `values` array for `SparseTensorProto`.
+- [ ] 9. Extract `indices` array (1D/2D) for `SparseTensorProto`.
+- [ ] 10. Support 1D tensor sparsity (Biases, Scales).
+- [ ] 11. Support 2D matrix sparsity (Linear/Gemm).
+- [ ] 12. Support 4D tensor sparsity (Conv kernels).
+- [ ] 13. Detect maximum sparsity theoretically achievable based on epsilon values.
+- [ ] 14. Support zero-copy views for sparse value arrays in JS (`TypedArray`).
+- [ ] 15. Support converting standard HuggingFace sparse models to ONNX native sparse models.
+- [ ] 16. Provide memory usage calculation (Dense vs Sparse byte comparison).
+- [ ] 17. Enforce standard `SparseTensorProto` binary serialization.
+- [ ] 18. Support mapping sparse inputs correctly to `safetensors` external references.
+- [ ] 19. Manage JS `BigInt` indexing for massive sparse arrays safely.
+- [ ] 20. Track compression ratio mathematically (`1.0 - (sparse_size / dense_size)`).
 
 ### Phase 2: Recipe Parser & Modifiers Engine (YAML)
-- [ ] 021. Implement zero-dependency YAML parser natively in TS/Python.
-- [ ] 022. Define `Modifier` base class for recipe execution.
-- [ ] 023. Implement `ConstantPruningModifier` (Applying static masks).
-- [ ] 024. Implement `MagnitudePruningModifier` (Global or layer-wise thresholds).
-- [ ] 025. Implement `GlobalMagnitudePruningModifier`.
-- [ ] 026. Implement `QuantizationModifier` (Injecting QAT/PTQ INT8 layers).
-- [ ] 027. Implement `SparseQuantizationModifier` (Combining both).
-- [ ] 028. Parse `init_sparsity` and `final_sparsity` parameters.
-- [ ] 029. Parse `start_epoch` and `end_epoch` (ignoring epoch timing if applying One-Shot statically).
-- [ ] 030. Parse `update_frequency` (mapping to static intervals if calibrating).
-- [ ] 031. Support layer targeting using Regex patterns (e.g., `re:.*weight`).
-- [ ] 032. Support exact layer name targeting `["conv1.weight", "conv2.weight"]`.
-- [ ] 033. Parse `leave_unmasked` parameters (preventing specific nodes from pruning).
-- [ ] 034. Support custom user-defined modifiers securely.
-- [ ] 035. Evaluate recipes in topological order to prevent dependency masking conflicts.
-- [ ] 036. Provide detailed recipe validation errors (e.g., Target layer not found).
-- [ ] 037. Provide strict linting for Neural Magic specific `.yaml` configurations.
-- [ ] 038. Export an applied recipe directly into the ONNX `metadata_props` as a string for tracking provenance.
+
+- [ ] 21. Implement zero-dependency YAML parser natively in TS/Python.
+- [ ] 22. Define `Modifier` base class for recipe execution.
+- [ ] 23. Implement `ConstantPruningModifier` (Applying static masks).
+- [ ] 24. Implement `MagnitudePruningModifier` (Global or layer-wise thresholds).
+- [ ] 25. Implement `GlobalMagnitudePruningModifier`.
+- [ ] 26. Implement `QuantizationModifier` (Injecting QAT/PTQ INT8 layers).
+- [ ] 27. Implement `SparseQuantizationModifier` (Combining both).
+- [ ] 28. Parse `init_sparsity` and `final_sparsity` parameters.
+- [ ] 29. Parse `start_epoch` and `end_epoch` (ignoring epoch timing if applying One-Shot statically).
+- [ ] 30. Parse `update_frequency` (mapping to static intervals if calibrating).
+- [ ] 31. Support layer targeting using Regex patterns (e.g., `re:.*weight`).
+- [ ] 32. Support exact layer name targeting `["conv1.weight", "conv2.weight"]`.
+- [ ] 33. Parse `leave_unmasked` parameters (preventing specific nodes from pruning).
+- [ ] 34. Support custom user-defined modifiers securely.
+- [ ] 35. Evaluate recipes in topological order to prevent dependency masking conflicts.
+- [ ] 36. Provide detailed recipe validation errors (e.g., Target layer not found).
+- [ ] 37. Provide strict linting for Neural Magic specific `.yaml` configurations.
+- [ ] 38. Export an applied recipe directly into the ONNX `metadata_props` as a string for tracking provenance.
 
 ### Phase 3: Unstructured Pruning Algorithms (Magnitude)
-- [ ] 039. Implement Layer-wise Magnitude Pruning natively.
-- [ ] 040. Calculate exact $L_1$ norms for individual weights.
-- [ ] 041. Calculate exact $L_2$ norms if requested.
-- [ ] 042. Apply Top-K masking to retain the largest magnitude weights per layer.
-- [ ] 043. Implement Global Magnitude Pruning.
-- [ ] 044. Gather all model weights into a single virtual 1D array for global threshold calculation.
-- [ ] 045. Distribute global threshold mask safely back to original N-dimensional tensor shapes.
-- [ ] 046. Support random pruning (baseline testing).
-- [ ] 047. Handle uniform sparsity across all channels explicitly.
-- [ ] 048. Implement sparsity distribution scaling (e.g., Erdos-Renyi-Kernel distributions).
-- [ ] 049. Prevent completely zeroed channels (ensuring at least 1 weight survives per output dimension).
-- [ ] 050. Freeze bias parameters explicitly during standard unstructured weight pruning.
+
+- [ ] 39. Implement Layer-wise Magnitude Pruning natively.
+- [ ] 40. Calculate exact $L_1$ norms for individual weights.
+- [ ] 41. Calculate exact $L_2$ norms if requested.
+- [ ] 42. Apply Top-K masking to retain the largest magnitude weights per layer.
+- [ ] 43. Implement Global Magnitude Pruning.
+- [ ] 44. Gather all model weights into a single virtual 1D array for global threshold calculation.
+- [ ] 45. Distribute global threshold mask safely back to original N-dimensional tensor shapes.
+- [ ] 46. Support random pruning (baseline testing).
+- [ ] 47. Handle uniform sparsity across all channels explicitly.
+- [ ] 48. Implement sparsity distribution scaling (e.g., Erdos-Renyi-Kernel distributions).
+- [ ] 49. Prevent completely zeroed channels (ensuring at least 1 weight survives per output dimension).
+- [ ] 50. Freeze bias parameters explicitly during standard unstructured weight pruning.
 
 ### Phase 4: Structured Pruning Algorithms (N:M & Block)
-- [ ] 051. Implement strict N:M pruning algorithm (e.g., Nvidia 2:4).
-- [ ] 052. Reshape target matrices to `[K, 4]` or `[K, M]` structurally.
-- [ ] 053. Apply `ArgMax` iteratively to retain the 2 largest elements per block.
-- [ ] 054. Generate bitmasks corresponding to the N:M layout.
-- [ ] 055. Validate 2:4 compliance strictly (raising errors if dims aren't multiples of 4).
-- [ ] 056. Implement 4:8 structured pruning.
-- [ ] 057. Implement block-sparse pruning (e.g., `[32, 32]` contiguous zero blocks).
-- [ ] 058. Implement 1D channel pruning (eliminating entire filters in Convolutions).
-- [ ] 059. Implement row pruning for GEMM/Linear layers.
-- [ ] 060. Propagate channel eliminations topologically (rewiring downstream layer input sizes).
-- [ ] 061. Drop output dimension slices natively if a filter is completely pruned.
-- [ ] 062. Update downstream biases if channel pruning occurs.
-- [ ] 063. Update downstream `BatchNormalization` constants natively if channel pruning occurs.
-- [ ] 064. Resolve 2:4 sparse encoding metadata specifically for TensorRT / WebGPU injection.
-- [ ] 065. Handle transposed linear layer dimensions securely during block processing.
+
+- [ ] 51. Implement strict N:M pruning algorithm (e.g., Nvidia 2:4).
+- [ ] 52. Reshape target matrices to `[K, 4]` or `[K, M]` structurally.
+- [ ] 53. Apply `ArgMax` iteratively to retain the 2 largest elements per block.
+- [ ] 54. Generate bitmasks corresponding to the N:M layout.
+- [ ] 55. Validate 2:4 compliance strictly (raising errors if dims aren't multiples of 4).
+- [ ] 56. Implement 4:8 structured pruning.
+- [ ] 57. Implement block-sparse pruning (e.g., `[32, 32]` contiguous zero blocks).
+- [ ] 58. Implement 1D channel pruning (eliminating entire filters in Convolutions).
+- [ ] 59. Implement row pruning for GEMM/Linear layers.
+- [ ] 60. Propagate channel eliminations topologically (rewiring downstream layer input sizes).
+- [ ] 61. Drop output dimension slices natively if a filter is completely pruned.
+- [ ] 62. Update downstream biases if channel pruning occurs.
+- [ ] 63. Update downstream `BatchNormalization` constants natively if channel pruning occurs.
+- [ ] 64. Resolve 2:4 sparse encoding metadata specifically for TensorRT / WebGPU injection.
+- [ ] 65. Handle transposed linear layer dimensions securely during block processing.
 
 ### Phase 5: Optimal Brain Surgeon (OBS) & Advanced Sparsity
-- [ ] 066. Implement One-Shot OBS (Optimal Brain Surgeon) approximations.
-- [ ] 067. Provide Taylor expansion tracking for weight saliency (if calibration data is provided).
-- [ ] 068. Calculate diagonal Hessian approximations purely in Python/JS.
-- [ ] 069. Support Fisher Information Matrix approximations for parameter importance.
-- [ ] 070. Implement Movement Pruning (simulating weight updates via gradient tracking if requested).
-- [ ] 071. Implement gradual pruning schedules mapped to calibration loop steps.
-- [ ] 072. Execute Hessian calculations inside Web Workers to prevent main-thread freezing.
-- [ ] 073. Enable batch-chunked Hessian approximations to prevent RAM overflow on massive LLMs.
-- [ ] 074. Map exact saliency scores to a temporary Graph metadata structure for visualization.
-- [ ] 075. Allow explicit user manipulation of saliency scores via a visual interface.
+
+- [ ] 66. Implement One-Shot OBS (Optimal Brain Surgeon) approximations.
+- [ ] 67. Provide Taylor expansion tracking for weight saliency (if calibration data is provided).
+- [ ] 68. Calculate diagonal Hessian approximations purely in Python/JS.
+- [ ] 69. Support Fisher Information Matrix approximations for parameter importance.
+- [ ] 70. Implement Movement Pruning (simulating weight updates via gradient tracking if requested).
+- [ ] 71. Implement gradual pruning schedules mapped to calibration loop steps.
+- [ ] 72. Execute Hessian calculations inside Web Workers to prevent main-thread freezing.
+- [ ] 73. Enable batch-chunked Hessian approximations to prevent RAM overflow on massive LLMs.
+- [ ] 74. Map exact saliency scores to a temporary Graph metadata structure for visualization.
+- [ ] 75. Allow explicit user manipulation of saliency scores via a visual interface.
 
 ### Phase 6: Sparse-Quantization (Combining INT8 + Sparsity)
-- [ ] 076. Apply `QuantizationModifier` over a statically pruned graph.
-- [ ] 077. Ignore `0.0` masked values explicitly during MinMax scale calibration.
-- [ ] 078. Ignore `0.0` masked values explicitly during Entropy (KL) scale calibration.
-- [ ] 079. Ensure zero-points align perfectly with the sparse `0` mask natively.
-- [ ] 080. Compress Sparse INT8 tensors via bit-packing (storing 4-bit indices and 8-bit values).
-- [ ] 081. Support asymmetric sparse-quantization cleanly.
-- [ ] 082. Generate specific `SparseQLinearConv` topologies (if mapped to custom WebGPU ops).
-- [ ] 083. Support generating ONNX `QuantizeLinear` nodes acting exclusively on `SparseTensorProto` inputs.
-- [ ] 084. Flag potential numerical underflow where quantization forces dense weights to become sparsely zeroed unintentionally.
-- [ ] 085. Provide specific W4A16 (4-bit weight) block sparsity generation routines.
+
+- [ ] 76. Apply `QuantizationModifier` over a statically pruned graph.
+- [ ] 77. Ignore `0.0` masked values explicitly during MinMax scale calibration.
+- [ ] 78. Ignore `0.0` masked values explicitly during Entropy (KL) scale calibration.
+- [ ] 79. Ensure zero-points align perfectly with the sparse `0` mask natively.
+- [ ] 80. Compress Sparse INT8 tensors via bit-packing (storing 4-bit indices and 8-bit values).
+- [ ] 81. Support asymmetric sparse-quantization cleanly.
+- [ ] 82. Generate specific `SparseQLinearConv` topologies (if mapped to custom WebGPU ops).
+- [ ] 83. Support generating ONNX `QuantizeLinear` nodes acting exclusively on `SparseTensorProto` inputs.
+- [ ] 84. Flag potential numerical underflow where quantization forces dense weights to become sparsely zeroed unintentionally.
+- [ ] 85. Provide specific W4A16 (4-bit weight) block sparsity generation routines.
 
 ### Phase 7: AST Injection & Masking Engine (`onnx9000.modifier` bridge)
-- [ ] 086. Connect `onnx9000.sparse` to `onnx9000.modifier` graph mutator natively.
-- [ ] 087. Extract all `Constant` nodes matching the regex definitions.
-- [ ] 088. Execute masking (elementwise multiplication by a generated `0/1` tensor mask) securely in-memory.
-- [ ] 089. Bake the masked tensor explicitly back into the ONNX AST.
-- [ ] 090. Strip the dense representation immediately to trigger JS Garbage Collection.
-- [ ] 091. Identify and collapse structurally 100% sparse `Constant` tensors into a scalar `0`.
-- [ ] 092. Analyze topological dead ends created by 100% sparse layers.
-- [ ] 093. Run standard Dead Code Elimination (DCE) automatically after a pruning pass.
-- [ ] 094. Run standard Constant Folding automatically after a pruning pass.
-- [ ] 095. Provide tracking: "Layer `Conv_42` went from 1.2M params to 120k params."
+
+- [ ] 86. Connect `onnx9000.sparse` to `onnx9000.modifier` graph mutator natively.
+- [ ] 87. Extract all `Constant` nodes matching the regex definitions.
+- [ ] 88. Execute masking (elementwise multiplication by a generated `0/1` tensor mask) securely in-memory.
+- [ ] 89. Bake the masked tensor explicitly back into the ONNX AST.
+- [ ] 90. Strip the dense representation immediately to trigger JS Garbage Collection.
+- [ ] 91. Identify and collapse structurally 100% sparse `Constant` tensors into a scalar `0`.
+- [ ] 92. Analyze topological dead ends created by 100% sparse layers.
+- [ ] 93. Run standard Dead Code Elimination (DCE) automatically after a pruning pass.
+- [ ] 94. Run standard Constant Folding automatically after a pruning pass.
+- [ ] 95. Provide tracking: "Layer `Conv_42` went from 1.2M params to 120k params."
 
 ### Phase 8: WebGPU Sparse Kernels (WGSL)
-- [ ] 096. Implement `SpMM` (Sparse Matrix-Dense Matrix Multiplication) in WGSL.
-- [ ] 097. Support COO format ingestion in WGSL directly.
-- [ ] 098. Support CSR format ingestion (Row pointers + Column indices + Values) in WGSL.
-- [ ] 099. Optimize WGSL CSR traversal using `workgroup` shared memory.
+
+- [ ] 96. Implement `SpMM` (Sparse Matrix-Dense Matrix Multiplication) in WGSL.
+- [ ] 97. Support COO format ingestion in WGSL directly.
+- [ ] 98. Support CSR format ingestion (Row pointers + Column indices + Values) in WGSL.
+- [ ] 99. Optimize WGSL CSR traversal using `workgroup` shared memory.
 - [ ] 100. Implement Block-Sparse MatMul in WGSL (optimized for N:M structured pruning).
 - [ ] 101. Implement 2:4 structured sparse WebGPU shader via intrinsic bitwise lookups if possible.
 - [ ] 102. Validate memory coalescing bounds for WGSL sparse indices.
@@ -140,6 +151,7 @@
 - [ ] 110. Profile SpMM vs Dense latency dynamically on the client's GPU before locking in the execution schedule.
 
 ### Phase 9: WASM SIMD Sparse Kernels (CPU Execution)
+
 - [ ] 111. Implement `SpMM` loops natively in C++ transpiled to WASM.
 - [ ] 112. Utilize WASM SIMD128 (`v128`) for vectorizing non-zero value multiplications.
 - [ ] 113. Implement CSR format traversal natively in WASM memory space.
@@ -152,6 +164,7 @@
 - [ ] 120. Verify WASM Sparse evaluation outperforms dense evaluation on >70% sparse networks.
 
 ### Phase 10: Calibration & Loss Simulation (In-Browser Fine-tuning)
+
 - [ ] 121. Support `DataLoader` abstractions explicitly for sparse calibration runs.
 - [ ] 122. Evaluate Mean Squared Error (MSE) degradation after applying a sparse mask.
 - [ ] 123. Evaluate Cross-Entropy loss degradation natively in JS/Python.
@@ -164,6 +177,7 @@
 - [ ] 130. Fallback to entirely static pruning if no calibration dataset is supplied.
 
 ### Phase 11: ONNX Serializer (SparseTensor Export)
+
 - [ ] 131. Provide API: `export_sparse_model(model, "sparse.onnx")`.
 - [ ] 132. Encode `SparseTensorProto` natively bypassing standard `TensorProto`.
 - [ ] 133. Serialize `indices` perfectly per ONNX spec.
@@ -176,6 +190,7 @@
 - [ ] 140. Generate a deterministic byte output (same model + same recipe = same bytes).
 
 ### Phase 12: Specific Architecture Support (LLMs & Vision)
+
 - [ ] 141. Apply Unstructured Pruning seamlessly to `BERT` attention heads.
 - [ ] 142. Apply 2:4 Structured Pruning to `ResNet50` convolutional kernels.
 - [ ] 143. Apply Block-sparsity to `LLaMA` feed-forward (`up_proj`, `down_proj`) layers.
@@ -188,6 +203,7 @@
 - [ ] 150. Translate natively formatted DeepSparse model graphs back to generic ONNX if requested.
 
 ### Phase 13: Sparsity Profiling & Memory Analysis
+
 - [ ] 151. Profile explicit FLOPs saved due to zero-skipping.
 - [ ] 152. Calculate "Theoretical Speedup" vs "Actual WebGPU Speedup".
 - [ ] 153. Expose API: `onnx9000.sparse.profile(model)`.
@@ -200,6 +216,7 @@
 - [ ] 160. Expose interactive HTML Flamegraphs highlighting sparsified operations.
 
 ### Phase 14: Web UI (The Interactive Pruner)
+
 - [ ] 161. Build static Vue/React page "ONNX Web Pruner".
 - [ ] 162. Implement drag-and-drop ingestion of `model.onnx` and `recipe.yaml`.
 - [ ] 163. Display a 3D/2D visualization of the model topology.
@@ -212,6 +229,7 @@
 - [ ] 170. Ensure the UI functions 100% completely offline after initial load.
 
 ### Phase 15: Node.js & CLI Integration (`onnx9000 sparse`)
+
 - [ ] 171. Implement CLI: `onnx9000 sparse prune model.onnx --recipe recipe.yaml -o sparse.onnx`.
 - [ ] 172. Add `--sparsity 0.8` global override flag.
 - [ ] 173. Add `--structured 2:4` flag to enforce block sparsity explicitly.
@@ -224,6 +242,7 @@
 - [ ] 180. Validate CLI parity against standard Neural Magic `sparseml.onnx` scripts.
 
 ### Phase 16: Interoperability with other `onnx9000` Tools
+
 - [ ] 181. Integration: `onnx9000.optimum` -> `onnx9000.sparse` -> `onnx9000.quantize`.
 - [ ] 182. Inject `SparseTensorProto` natively into the `Netron` visualizer for rendering block structures.
 - [ ] 183. Map sparse parameters flawlessly back into `onnx9000.coreml` export if targeting ANE (which occasionally supports structured sparsity).
@@ -236,6 +255,7 @@
 - [ ] 190. Load Safetensors (`.safetensors`) natively, prune them in memory, and export to Sparse ONNX without saving intermediate dense protobufs.
 
 ### Phase 17: Deep Execution & Edge Cases
+
 - [ ] 191. Validate numerical stability of extremely sparse matrices (0.99 sparsity) multiplying against dense activations.
 - [ ] 192. Handle `NaN` propagation specifically in SpMM.
 - [ ] 193. Throw warnings if a user attempts to sparsify a tiny model (e.g., 2-layer MLP) where CSR overhead outweighs dense execution.
@@ -248,6 +268,7 @@
 - [ ] 200. Execute precise tolerance matching (atol=1e-5) comparing dense vs sparse execution on identical calibration inputs.
 
 ### Phase 18: Security, Validation & File Processing
+
 - [ ] 201. Verify `SparseTensorProto` schemas correctly implement the ONNX IR version 11+ requirements.
 - [ ] 202. Reject corrupt YAML recipes containing arbitrary code execution markers.
 - [ ] 203. Prevent prototype pollution via malformed JSON calibration objects.
@@ -260,6 +281,7 @@
 - [ ] 210. Validate that sparse structures correctly maintain `__dlpack__` interop protocols where possible.
 
 ### Phase 19: Comprehensive Documentation
+
 - [ ] 211. Write Tutorial: "Pruning ResNet50 in the Browser".
 - [ ] 212. Write Tutorial: "Understanding 2:4 Block Sparsity and WebGPU".
 - [ ] 213. Document the precise `SparseTensorProto` serialization sequence.
@@ -272,6 +294,7 @@
 - [ ] 220. Release benchmark comparisons (Dense vs Sparse latency) on standard Apple Silicon and Chrome V8.
 
 ### Phase 20: Delivery & Final Polish
+
 - [ ] 221. Establish a test suite converting 50+ diverse Dense models to Sparse models automatically.
 - [ ] 222. Expose specific hooks to visualize the exact non-zero weight distribution on an HTML Canvas element.
 - [ ] 223. Output a detailed JSON "Sparsity Report Card" suitable for MLOps dashboards.

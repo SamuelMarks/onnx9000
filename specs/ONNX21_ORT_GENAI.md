@@ -1,128 +1,136 @@
 # ONNX19: ONNX Runtime GenAI (WASM-First Generative Execution)
 
 ## Original Project Description
+
 ONNX Runtime GenAI (ORT GenAI) is a highly specialized extension of the standard ONNX Runtime designed specifically for executing large generative AI models (like LLMs, Whisper, and Stable Diffusion). Standard graph execution is insufficient for generative models because they require complex control loops (autoregressive decoding), dynamic memory management across sequence generations (KV Caching), and specific search algorithms (Beam Search, Top-K/Top-P sampling). ORT GenAI provides a native C++ API and custom operations to handle these generative loops efficiently, avoiding the overhead of shuttling tokens back and forth between the host language (Python) and the execution runtime.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI implementation is built natively as an extension module within the web-first monolith.
-*   **WebAssembly / WebGPU Native Loops:** The autoregressive generation loop is implemented directly in TypeScript/WASM, preventing the catastrophic latency of crossing the JS-to-WASM boundary for every single generated token.
-*   **Integrated KV Cache Management:** Memory management for Key-Value caches is handled by the `onnx9000` memory planner directly in the WebGPU VRAM or WASM linear memory, utilizing ring buffers to handle infinite context window generation.
-*   **Unified Pipeline:** Eliminates the need for a secondary library. `onnx9000.genai` is a first-class citizen, wrapping the core execution engine to provide high-level APIs like `model.generate()`.
-*   **Browser-Side Tokenization:** Incorporates lightweight WASM tokenizers directly into the generation pipeline, allowing the browser to accept raw text and output raw text without server-side preprocessing.
+
+- **WebAssembly / WebGPU Native Loops:** The autoregressive generation loop is implemented directly in TypeScript/WASM, preventing the catastrophic latency of crossing the JS-to-WASM boundary for every single generated token.
+- **Integrated KV Cache Management:** Memory management for Key-Value caches is handled by the `onnx9000` memory planner directly in the WebGPU VRAM or WASM linear memory, utilizing ring buffers to handle infinite context window generation.
+- **Unified Pipeline:** Eliminates the need for a secondary library. `onnx9000.genai` is a first-class citizen, wrapping the core execution engine to provide high-level APIs like `model.generate()`.
+- **Browser-Side Tokenization:** Incorporates lightweight WASM tokenizers directly into the generation pipeline, allowing the browser to accept raw text and output raw text without server-side preprocessing.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core GenAI Pipeline & State Management
-- [ ] 001. Define `GeneratorParams` configuration object.
-- [ ] 002. Define `ModelParams` configuration object.
-- [ ] 003. Implement base `Model` class for GenAI wrappers.
-- [ ] 004. Implement base `Generator` class for stateful decoding.
-- [ ] 005. Implement `State` object to hold execution graph and KV cache.
-- [ ] 006. Create `Tensor` utility extensions specific to sequence lengths.
-- [ ] 007. Implement dynamic shape allocation strategies for growing sequences.
-- [ ] 008. Implement a pre-fill phase executor (processing the initial prompt).
-- [ ] 009. Implement a decode phase executor (generating token by token).
-- [ ] 010. Support seamless transition between pre-fill and decode phases.
-- [ ] 011. Implement cross-layer KV cache synchronization.
-- [ ] 012. Support for continuous batching (adding requests mid-generation).
-- [ ] 013. Support for sequence batching (multiple independent sequences).
-- [ ] 014. Implement paged attention memory management (conceptually in WASM/WGSL).
-- [ ] 015. Handle context window overflow (sliding window cache ejection).
-- [ ] 016. Implement asynchronous generation stepping (`await generator.compute_logits()`).
-- [ ] 017. Implement synchronous generation stepping for blocking environments.
-- [ ] 018. Support early stopping conditions (EOS token reached).
-- [ ] 019. Support max length stopping conditions.
-- [ ] 020. Implement a unified `generate()` high-level API.
-- [ ] 021. Provide callback hooks for streaming output (yielding tokens).
-- [ ] 022. Implement memory reuse across generation requests.
-- [ ] 023. Handle dynamic model loading (loading weights asynchronously during pre-fill).
-- [ ] 024. Implement graceful abort/cancellation of a generation loop.
-- [ ] 025. Support sub-graph partitioning for multi-GPU/WebGPU chunking.
+
+- [ ] 1. Define `GeneratorParams` configuration object.
+- [ ] 2. Define `ModelParams` configuration object.
+- [ ] 3. Implement base `Model` class for GenAI wrappers.
+- [ ] 4. Implement base `Generator` class for stateful decoding.
+- [ ] 5. Implement `State` object to hold execution graph and KV cache.
+- [ ] 6. Create `Tensor` utility extensions specific to sequence lengths.
+- [ ] 7. Implement dynamic shape allocation strategies for growing sequences.
+- [ ] 8. Implement a pre-fill phase executor (processing the initial prompt).
+- [ ] 9. Implement a decode phase executor (generating token by token).
+- [ ] 10. Support seamless transition between pre-fill and decode phases.
+- [ ] 11. Implement cross-layer KV cache synchronization.
+- [ ] 12. Support for continuous batching (adding requests mid-generation).
+- [ ] 13. Support for sequence batching (multiple independent sequences).
+- [ ] 14. Implement paged attention memory management (conceptually in WASM/WGSL).
+- [ ] 15. Handle context window overflow (sliding window cache ejection).
+- [ ] 16. Implement asynchronous generation stepping (`await generator.compute_logits()`).
+- [ ] 17. Implement synchronous generation stepping for blocking environments.
+- [ ] 18. Support early stopping conditions (EOS token reached).
+- [ ] 19. Support max length stopping conditions.
+- [ ] 20. Implement a unified `generate()` high-level API.
+- [ ] 21. Provide callback hooks for streaming output (yielding tokens).
+- [ ] 22. Implement memory reuse across generation requests.
+- [ ] 23. Handle dynamic model loading (loading weights asynchronously during pre-fill).
+- [ ] 24. Implement graceful abort/cancellation of a generation loop.
+- [ ] 25. Support sub-graph partitioning for multi-GPU/WebGPU chunking.
 
 ### Phase 2: Generation Algorithms (Search & Sampling)
-- [ ] 026. Define `SearchOptions` configuration struct.
-- [ ] 027. Implement Greedy Search algorithm.
-- [ ] 028. Implement Beam Search algorithm.
-- [ ] 029. Manage beam search state (beam scores, beam tokens, beam histories).
-- [ ] 030. Implement beam search pruning and sorting.
-- [ ] 031. Support `num_beams` parameter.
-- [ ] 032. Support `num_return_sequences` parameter.
-- [ ] 033. Implement multinomial sampling.
-- [ ] 034. Implement Top-K sampling filter.
-- [ ] 035. Implement Top-P (Nucleus) sampling filter.
-- [ ] 036. Implement Min-P sampling filter.
-- [ ] 037. Implement Temperature scaling applied to logits.
-- [ ] 038. Support `repetition_penalty` filter.
-- [ ] 039. Support `presence_penalty` filter.
-- [ ] 040. Support `frequency_penalty` filter.
-- [ ] 041. Support `length_penalty` filter (primarily for beam search).
-- [ ] 042. Implement `no_repeat_ngram_size` filter.
-- [ ] 043. Support forced BOS (Beginning of Sequence) token injection.
-- [ ] 044. Support forced EOS (End of Sequence) token generation.
-- [ ] 045. Implement custom logit bias injection (boosting/penalizing specific tokens).
-- [ ] 046. Support custom bad words list (banning specific token sequences).
-- [ ] 047. Support custom allowed words list (restricting vocabulary).
-- [ ] 048. Implement diverse beam search (grouping beams to ensure variety).
-- [ ] 049. Support typical decoding sampling.
-- [ ] 050. Implement a modular logit processor pipeline.
-- [ ] 051. Create a WASM-optimized logit sorting/filtering kernel (crucial for speed).
-- [ ] 052. Create a WebGPU-optimized Top-K/Top-P extraction shader.
-- [ ] 053. Implement random seed control for deterministic sampling.
-- [ ] 054. Provide probability distributions per token in the output.
-- [ ] 055. Implement contrastive search algorithm.
+
+- [ ] 26. Define `SearchOptions` configuration struct.
+- [ ] 27. Implement Greedy Search algorithm.
+- [ ] 28. Implement Beam Search algorithm.
+- [ ] 29. Manage beam search state (beam scores, beam tokens, beam histories).
+- [ ] 30. Implement beam search pruning and sorting.
+- [ ] 31. Support `num_beams` parameter.
+- [ ] 32. Support `num_return_sequences` parameter.
+- [ ] 33. Implement multinomial sampling.
+- [ ] 34. Implement Top-K sampling filter.
+- [ ] 35. Implement Top-P (Nucleus) sampling filter.
+- [ ] 36. Implement Min-P sampling filter.
+- [ ] 37. Implement Temperature scaling applied to logits.
+- [ ] 38. Support `repetition_penalty` filter.
+- [ ] 39. Support `presence_penalty` filter.
+- [ ] 40. Support `frequency_penalty` filter.
+- [ ] 41. Support `length_penalty` filter (primarily for beam search).
+- [ ] 42. Implement `no_repeat_ngram_size` filter.
+- [ ] 43. Support forced BOS (Beginning of Sequence) token injection.
+- [ ] 44. Support forced EOS (End of Sequence) token generation.
+- [ ] 45. Implement custom logit bias injection (boosting/penalizing specific tokens).
+- [ ] 46. Support custom bad words list (banning specific token sequences).
+- [ ] 47. Support custom allowed words list (restricting vocabulary).
+- [ ] 48. Implement diverse beam search (grouping beams to ensure variety).
+- [ ] 49. Support typical decoding sampling.
+- [ ] 50. Implement a modular logit processor pipeline.
+- [ ] 51. Create a WASM-optimized logit sorting/filtering kernel (crucial for speed).
+- [ ] 52. Create a WebGPU-optimized Top-K/Top-P extraction shader.
+- [ ] 53. Implement random seed control for deterministic sampling.
+- [ ] 54. Provide probability distributions per token in the output.
+- [ ] 55. Implement contrastive search algorithm.
 
 ### Phase 3: Tokenization & Text Processing
-- [ ] 056. Define base `Tokenizer` interface.
-- [ ] 057. Implement `TokenizerStream` for real-time decoding.
-- [ ] 058. Implement Byte-Pair Encoding (BPE) algorithm in WASM.
-- [ ] 059. Implement WordPiece tokenization algorithm.
-- [ ] 060. Implement Unigram tokenization algorithm.
-- [ ] 061. Support loading HuggingFace `tokenizer.json` formats.
-- [ ] 062. Support loading SentencePiece `.model` binaries natively.
-- [ ] 063. Implement byte-level BPE pre-tokenization.
-- [ ] 064. Implement basic whitespace pre-tokenization.
-- [ ] 065. Implement punctuation splitting pre-tokenization.
-- [ ] 066. Implement Unicode normalization (NFC, NFD, NFKC, NFKD).
-- [ ] 067. Support added tokens (special tokens mapping).
-- [ ] 068. Handle unknown `<unk>` token replacements.
-- [ ] 069. Implement `encode()` method (text to token IDs).
-- [ ] 070. Implement `decode()` method (token IDs to text).
-- [ ] 071. Implement batched encoding.
-- [ ] 072. Implement batched decoding.
-- [ ] 073. Provide token ID to string lookup utilities.
-- [ ] 074. Handle whitespace stripping/preservation rules cleanly.
-- [ ] 075. Implement a robust Trie structure for fast token matching in WASM.
-- [ ] 076. Handle UTF-8 decoding boundaries safely in streaming mode.
-- [ ] 077. Integrate tokenizer instantiation via `Model.create_tokenizer()`.
-- [ ] 078. Support specific tokenizer dialects (Llama, GPT-2, T5, Bert).
-- [ ] 079. Implement chat template rendering (applying Jinja templates).
-- [ ] 080. Fallback JS tokenizers if WASM module fails to load.
+
+- [ ] 56. Define base `Tokenizer` interface.
+- [ ] 57. Implement `TokenizerStream` for real-time decoding.
+- [ ] 58. Implement Byte-Pair Encoding (BPE) algorithm in WASM.
+- [ ] 59. Implement WordPiece tokenization algorithm.
+- [ ] 60. Implement Unigram tokenization algorithm.
+- [ ] 61. Support loading HuggingFace `tokenizer.json` formats.
+- [ ] 62. Support loading SentencePiece `.model` binaries natively.
+- [ ] 63. Implement byte-level BPE pre-tokenization.
+- [ ] 64. Implement basic whitespace pre-tokenization.
+- [ ] 65. Implement punctuation splitting pre-tokenization.
+- [ ] 66. Implement Unicode normalization (NFC, NFD, NFKC, NFKD).
+- [ ] 67. Support added tokens (special tokens mapping).
+- [ ] 68. Handle unknown `<unk>` token replacements.
+- [ ] 69. Implement `encode()` method (text to token IDs).
+- [ ] 70. Implement `decode()` method (token IDs to text).
+- [ ] 71. Implement batched encoding.
+- [ ] 72. Implement batched decoding.
+- [ ] 73. Provide token ID to string lookup utilities.
+- [ ] 74. Handle whitespace stripping/preservation rules cleanly.
+- [ ] 75. Implement a robust Trie structure for fast token matching in WASM.
+- [ ] 76. Handle UTF-8 decoding boundaries safely in streaming mode.
+- [ ] 77. Integrate tokenizer instantiation via `Model.create_tokenizer()`.
+- [ ] 78. Support specific tokenizer dialects (Llama, GPT-2, T5, Bert).
+- [ ] 79. Implement chat template rendering (applying Jinja templates).
+- [ ] 80. Fallback JS tokenizers if WASM module fails to load.
 
 ### Phase 4: KV Cache & Attention Architectures
-- [ ] 081. Implement a generic `KVCache` management class.
-- [ ] 082. Support standard Multi-Head Attention (MHA) caching.
-- [ ] 083. Support Grouped-Query Attention (GQA) caching structures.
-- [ ] 084. Support Multi-Query Attention (MQA) caching structures.
-- [ ] 085. Implement continuous memory allocation for caches.
-- [ ] 086. Implement fragmented (paged) memory allocation for caches.
-- [ ] 087. Support past key/value graph inputs.
-- [ ] 088. Support present key/value graph outputs.
-- [ ] 089. Manage in-place KV cache updates (mutating past_key_values directly).
-- [ ] 090. Implement rotary positional embeddings (RoPE) scaling.
-- [ ] 091. Support dynamic RoPE calculation based on sequence length.
-- [ ] 092. Support ALiBi (Attention with Linear Biases) positional encodings.
-- [ ] 093. Implement cross-attention caching (for Encoder-Decoder models).
-- [ ] 094. Optimize cache memory layouts (e.g., interleaving K and V).
-- [ ] 095. Implement cache clearing/reset APIs.
-- [ ] 096. Support offloading KV cache to CPU memory when WebGPU VRAM is full.
-- [ ] 097. Implement cache quantization (storing K/V as int8 or fp8).
-- [ ] 098. Support sliding window attention limits (e.g., Mistral).
-- [ ] 099. Handle varying batch sizes between pre-fill and decode steps.
+
+- [ ] 81. Implement a generic `KVCache` management class.
+- [ ] 82. Support standard Multi-Head Attention (MHA) caching.
+- [ ] 83. Support Grouped-Query Attention (GQA) caching structures.
+- [ ] 84. Support Multi-Query Attention (MQA) caching structures.
+- [ ] 85. Implement continuous memory allocation for caches.
+- [ ] 86. Implement fragmented (paged) memory allocation for caches.
+- [ ] 87. Support past key/value graph inputs.
+- [ ] 88. Support present key/value graph outputs.
+- [ ] 89. Manage in-place KV cache updates (mutating past_key_values directly).
+- [ ] 90. Implement rotary positional embeddings (RoPE) scaling.
+- [ ] 91. Support dynamic RoPE calculation based on sequence length.
+- [ ] 92. Support ALiBi (Attention with Linear Biases) positional encodings.
+- [ ] 93. Implement cross-attention caching (for Encoder-Decoder models).
+- [ ] 94. Optimize cache memory layouts (e.g., interleaving K and V).
+- [ ] 95. Implement cache clearing/reset APIs.
+- [ ] 96. Support offloading KV cache to CPU memory when WebGPU VRAM is full.
+- [ ] 97. Implement cache quantization (storing K/V as int8 or fp8).
+- [ ] 98. Support sliding window attention limits (e.g., Mistral).
+- [ ] 99. Handle varying batch sizes between pre-fill and decode steps.
 - [ ] 100. Implement specialized WebGPU shaders for fast KV cache concatenation.
 
 ### Phase 5: Model-Specific Optimizations & Architectures
+
 - [ ] 101. Support **Llama** architecture variants (Llama 2, Llama 3).
 - [ ] 102. Support **Mistral** architecture variants.
 - [ ] 103. Support **Gemma** architecture variants.
@@ -150,6 +158,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 125. Support speculative decoding (using a draft model to accelerate target model).
 
 ### Phase 6: API Mappings & Web Integration
+
 - [ ] 126. Create `onnx9000.genai.Model` Python API.
 - [ ] 127. Create `onnx9000.genai.GeneratorParams` Python API.
 - [ ] 128. Create `onnx9000.genai.Tokenizer` Python API.
@@ -172,6 +181,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 145. Implement cross-origin resource sharing (CORS) configurations for local serving.
 
 ### Phase 7: Generative Builders & Export Tooling
+
 - [ ] 146. Create `onnx9000.genai.builder` module to prepare standard models for GenAI.
 - [ ] 147. Implement a PyTorch to ONNX exporter specifically tuned for GenAI graph structures.
 - [ ] 148. Automate the insertion of KV cache inputs/outputs during export.
@@ -189,6 +199,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 160. Create integration scripts for downloading directly from HuggingFace Hub.
 
 ### Phase 8: Advanced Inference Techniques
+
 - [ ] 161. Implement prompt caching (saving KV states of frequent system prompts to disk/IDB).
 - [ ] 162. Implement batched prompt processing (processing prefix trees efficiently).
 - [ ] 163. Support grammar-guided generation (Constrained Decoding via BNF/EBNF).
@@ -201,6 +212,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 170. Implement prefix matching for fast retrieval-augmented generation (RAG) updates.
 
 ### Phase 9: UI Components & Demos
+
 - [ ] 171. Build a barebones HTML/JS demo demonstrating browser-local Llama execution.
 - [ ] 172. Create a React hook: `useGenAI(modelUrl)`.
 - [ ] 173. Create a Vue composable: `useGenAI(modelUrl)`.
@@ -213,6 +225,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 180. Document best practices for memory management in mobile browsers.
 
 ### Phase 10: Performance, Testing, and Compliance
+
 - [ ] 181. Create unit tests for all logit processors.
 - [ ] 182. Create unit tests for beam search logic.
 - [ ] 183. Create unit tests for KV cache indexing math.
@@ -235,6 +248,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 200. Achieve 100% test coverage for the core generation loop state machine.
 
 ### Phase 11: Text-to-Image / Multi-modal GenAI
+
 - [ ] 201. Define `ImageGeneratorParams`.
 - [ ] 202. Implement UNet/DiT inference loop for diffusion models.
 - [ ] 203. Implement VAE (Variational Autoencoder) decoding step.
@@ -257,6 +271,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 220. Implement memory optimizations for the diffusion loop to prevent WebGPU crashes.
 
 ### Phase 12: Audio GenAI
+
 - [ ] 221. Support Text-to-Speech (TTS) architectures (e.g., VITS).
 - [ ] 222. Support Bark architecture.
 - [ ] 223. Support MusicGen architecture.
@@ -269,6 +284,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 230. Provide Python and JS APIs for saving generated audio to `.wav`.
 
 ### Phase 13: Edge Case Handling & Stability
+
 - [ ] 231. Handle extremely large vocabularies (>100k tokens) without memory bloat.
 - [ ] 232. Manage Out-Of-Memory (OOM) WebGPU errors gracefully, falling back or shrinking cache.
 - [ ] 233. Handle NaN/Inf propagation during generation (resetting or skipping).
@@ -281,6 +297,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 240. Implement a safe mode that disables advanced sampling if incompatibilities arise.
 
 ### Phase 14: Ecosystem Integration
+
 - [ ] 241. Provide integration examples with LangChain.js.
 - [ ] 242. Provide integration examples with LlamaIndex.TS.
 - [ ] 243. Create a unified pipeline representation for sharing GenAI models on standard model hubs.
@@ -293,6 +310,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 250. Release final `v1.0` feature parity certification for GenAI capabilities.
 
 ### Phase 15: Deep WASM/WebGPU Optimizations
+
 - [ ] 251. Implement WebGPU buffer mapping to avoid redundant CPU-GPU copies during logit retrieval.
 - [ ] 252. Optimize WASM indirect function calls in the generation loop.
 - [ ] 253. Utilize WebGPU `compute` subgroups for fast logit reduction (max/sum) if available.
@@ -305,6 +323,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 260. Develop custom shader generation strategies specifically for MoE routing logic.
 
 ### Phase 16: Extended Features
+
 - [ ] 261. Support drafting models for speculative decoding (running a small model to predict multiple tokens).
 - [ ] 262. Verify drafted tokens with the target model efficiently in a single pass.
 - [ ] 263. Implement self-consistency decoding (generating multiple paths and choosing the majority).
@@ -317,6 +336,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 270. Handle multi-turn conversation caching inherently within the `State` object.
 
 ### Phase 17: Multi-GPU / Distributed Execution
+
 - [ ] 271. Implement basic tensor parallelism (splitting weights across multiple WebGPU devices/contexts).
 - [ ] 272. Handle inter-device synchronization for multi-GPU setups.
 - [ ] 273. Support pipeline parallelism (allocating layers sequentially to different workers/devices).
@@ -329,6 +349,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 280. Establish security protocols for sharing tensor data between browser contexts.
 
 ### Phase 18: Quality Assurance & Tooling
+
 - [ ] 281. Build a specialized debugger UI stepping through the generation loop token by token.
 - [ ] 282. Visualize attention maps generated during decoding.
 - [ ] 283. Visualize beam search trees dynamically.
@@ -341,6 +362,7 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 - [ ] 290. Implement a feature toggle system to disable experimental GenAI optimizations.
 
 ### Phase 19: Security & Safety
+
 - [ ] 291. Implement prompt injection detection heuristics.
 - [ ] 292. Integrate with content safety filters (e.g., Llama Guard) seamlessly in the pipeline.
 - [ ] 293. Ensure secure execution boundaries for Web Workers handling third-party models.

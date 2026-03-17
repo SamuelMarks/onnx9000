@@ -1,129 +1,138 @@
 # ONNX34: onnx2gguf (Web-Native GGUF Compiler & Llama.cpp Bridge)
 
 ## Original Project Description
+
 The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Generated Unified Format) binary format. GGUF is heavily optimized for fast loading and memory-mapping (mmap) of large language models (LLMs) on CPUs and GPUs. Converting models into GGUF traditionally requires heavy Python scripts (`convert.py`) that depend on PyTorch, SentencePiece, and Hugging Face Transformers to parse `.safetensors`, `.bin`, or `.onnx` files, extract tokenizers, and map tensors into the strict GGUF naming and metadata standards.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.onnx2gguf` bridges the standard ONNX ecosystem to the `llama.cpp` ecosystem using a **100% pure TypeScript and Python binary compiler**.
-*   **Zero-Dependency Binary Emission:** It parses ONNX and Safetensors natively, bypassing PyTorch and SentencePiece completely, to emit GGUF files directly in memory or via streaming disk I/O.
-*   **Browser-Based GGUF Compilation:** Users can drag-and-drop an ONNX model and its associated `tokenizer.json` into a webpage. The tool instantly packs them into a valid `.gguf` file locally, providing the ultimate privacy-preserving model converter.
-*   **Native Sub-byte Quantization:** Standard GGUF relies on `llama.cpp` tools for K-quants (e.g., `Q4_K_M`). `onnx9000` implements the GGML quantization math directly in WASM/Python, allowing users to quantize an ONNX model directly to a `Q4_0` or `Q8_0` GGUF payload in a single pass.
-*   **Bidirectional Support:** Unlike standard scripts, `onnx9000` can also *read* `.gguf` files natively, mapping GGML's custom tensors back up into standard ONNX operations to execute `llama.cpp` models directly inside the WebGPU-accelerated `onnx9000` runtime.
+
+- **Zero-Dependency Binary Emission:** It parses ONNX and Safetensors natively, bypassing PyTorch and SentencePiece completely, to emit GGUF files directly in memory or via streaming disk I/O.
+- **Browser-Based GGUF Compilation:** Users can drag-and-drop an ONNX model and its associated `tokenizer.json` into a webpage. The tool instantly packs them into a valid `.gguf` file locally, providing the ultimate privacy-preserving model converter.
+- **Native Sub-byte Quantization:** Standard GGUF relies on `llama.cpp` tools for K-quants (e.g., `Q4_K_M`). `onnx9000` implements the GGML quantization math directly in WASM/Python, allowing users to quantize an ONNX model directly to a `Q4_0` or `Q8_0` GGUF payload in a single pass.
+- **Bidirectional Support:** Unlike standard scripts, `onnx9000` can also _read_ `.gguf` files natively, mapping GGML's custom tensors back up into standard ONNX operations to execute `llama.cpp` models directly inside the WebGPU-accelerated `onnx9000` runtime.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: GGUF Format Binary Serialization Engine
-- [ ] 001. Implement zero-dependency GGUF Builder in TypeScript/JS.
-- [ ] 002. Implement zero-dependency GGUF Builder in Python.
-- [ ] 003. Emit GGUF Magic Bytes (`0x46554747` / "GGUF").
-- [ ] 004. Emit GGUF Version (Strictly targeting Version 3).
-- [ ] 005. Handle strict Little-Endian serialization natively across all platforms.
-- [ ] 006. Write `tensor_count` (uint64).
-- [ ] 007. Write `metadata_kv_count` (uint64).
-- [ ] 008. Implement `write_string` matching GGUF length-prefixed format (uint64 length + UTF-8 bytes).
-- [ ] 009. Support implicit padding alignment (defaulting to 32-byte alignment for tensors).
-- [ ] 010. Implement metadata writing for `UINT8`.
-- [ ] 011. Implement metadata writing for `INT8`.
-- [ ] 012. Implement metadata writing for `UINT16`.
-- [ ] 013. Implement metadata writing for `INT16`.
-- [ ] 014. Implement metadata writing for `UINT32`.
-- [ ] 015. Implement metadata writing for `INT32`.
-- [ ] 016. Implement metadata writing for `FLOAT32`.
-- [ ] 017. Implement metadata writing for `BOOL`.
-- [ ] 018. Implement metadata writing for `STRING`.
-- [ ] 019. Implement metadata writing for `ARRAY` types.
-- [ ] 020. Implement metadata writing for `UINT64`.
-- [ ] 021. Implement metadata writing for `INT64`.
-- [ ] 022. Implement metadata writing for `FLOAT64`.
-- [ ] 023. Implement dynamic KV dictionary schema mapping inside the Builder.
-- [ ] 024. Write `tensor_info` blocks (Name, Dimensions, GGML Type, Offset).
-- [ ] 025. Calculate explicit tensor binary offsets dynamically during header generation.
-- [ ] 026. Guarantee absolute structural compliance with the `ggml` standard C-struct parsers.
-- [ ] 027. Provide an API to stream binary tensor arrays directly to the output buffer/file.
-- [ ] 028. Throw strict validation errors if a string exceeds standard allocation limits.
-- [ ] 029. Fuzz-test the GGUF writer against corrupted metadata dictionaries.
-- [ ] 030. Support Javascript `BigInt` securely for all `uint64` file size offsets.
+
+- [ ] 1. Implement zero-dependency GGUF Builder in TypeScript/JS.
+- [ ] 2. Implement zero-dependency GGUF Builder in Python.
+- [ ] 3. Emit GGUF Magic Bytes (`0x46554747` / "GGUF").
+- [ ] 4. Emit GGUF Version (Strictly targeting Version 3).
+- [ ] 5. Handle strict Little-Endian serialization natively across all platforms.
+- [ ] 6. Write `tensor_count` (uint64).
+- [ ] 7. Write `metadata_kv_count` (uint64).
+- [ ] 8. Implement `write_string` matching GGUF length-prefixed format (uint64 length + UTF-8 bytes).
+- [ ] 9. Support implicit padding alignment (defaulting to 32-byte alignment for tensors).
+- [ ] 10. Implement metadata writing for `UINT8`.
+- [ ] 11. Implement metadata writing for `INT8`.
+- [ ] 12. Implement metadata writing for `UINT16`.
+- [ ] 13. Implement metadata writing for `INT16`.
+- [ ] 14. Implement metadata writing for `UINT32`.
+- [ ] 15. Implement metadata writing for `INT32`.
+- [ ] 16. Implement metadata writing for `FLOAT32`.
+- [ ] 17. Implement metadata writing for `BOOL`.
+- [ ] 18. Implement metadata writing for `STRING`.
+- [ ] 19. Implement metadata writing for `ARRAY` types.
+- [ ] 20. Implement metadata writing for `UINT64`.
+- [ ] 21. Implement metadata writing for `INT64`.
+- [ ] 22. Implement metadata writing for `FLOAT64`.
+- [ ] 23. Implement dynamic KV dictionary schema mapping inside the Builder.
+- [ ] 24. Write `tensor_info` blocks (Name, Dimensions, GGML Type, Offset).
+- [ ] 25. Calculate explicit tensor binary offsets dynamically during header generation.
+- [ ] 26. Guarantee absolute structural compliance with the `ggml` standard C-struct parsers.
+- [ ] 27. Provide an API to stream binary tensor arrays directly to the output buffer/file.
+- [ ] 28. Throw strict validation errors if a string exceeds standard allocation limits.
+- [ ] 29. Fuzz-test the GGUF writer against corrupted metadata dictionaries.
+- [ ] 30. Support Javascript `BigInt` securely for all `uint64` file size offsets.
 
 ### Phase 2: General & Standard Metadata Mapping
-- [ ] 031. Set `general.architecture` automatically based on ONNX graph topology.
-- [ ] 032. Set `general.name` mapping to `ModelProto.graph.name`.
-- [ ] 033. Set `general.author` mapping to `ModelProto.producer_name`.
-- [ ] 034. Set `general.version` mapping to `ModelProto.model_version`.
-- [ ] 035. Set `general.file_type` automatically based on the detected quantization level.
-- [ ] 036. Set `general.quantization_version` (typically 2).
-- [ ] 037. Set `general.alignment` explicitly in the KV store (typically 32).
-- [ ] 038. Support user overrides for any `general.*` KV pair.
-- [ ] 039. Provide a fallback `general.architecture = "unknown"` if the ONNX graph doesn't match standard LLM architectures.
-- [ ] 040. Extract and sanitize ONNX `doc_string` into `general.description`.
+
+- [ ] 31. Set `general.architecture` automatically based on ONNX graph topology.
+- [ ] 32. Set `general.name` mapping to `ModelProto.graph.name`.
+- [ ] 33. Set `general.author` mapping to `ModelProto.producer_name`.
+- [ ] 34. Set `general.version` mapping to `ModelProto.model_version`.
+- [ ] 35. Set `general.file_type` automatically based on the detected quantization level.
+- [ ] 36. Set `general.quantization_version` (typically 2).
+- [ ] 37. Set `general.alignment` explicitly in the KV store (typically 32).
+- [ ] 38. Support user overrides for any `general.*` KV pair.
+- [ ] 39. Provide a fallback `general.architecture = "unknown"` if the ONNX graph doesn't match standard LLM architectures.
+- [ ] 40. Extract and sanitize ONNX `doc_string` into `general.description`.
 
 ### Phase 3: LLaMA Architecture Metadata Mapping
-- [ ] 041. Identify LLaMA architecture topologies automatically from ONNX IR.
-- [ ] 042. Extract and set `llama.context_length`.
-- [ ] 043. Extract and set `llama.embedding_length`.
-- [ ] 044. Extract and set `llama.block_count`.
-- [ ] 045. Extract and set `llama.feed_forward_length`.
-- [ ] 046. Extract and set `llama.attention.head_count`.
-- [ ] 047. Extract and set `llama.attention.head_count_kv` (for GQA/MQA).
-- [ ] 048. Extract and set `llama.attention.layer_norm_rms_epsilon`.
-- [ ] 049. Extract and set `llama.rope.dimension_count`.
-- [ ] 050. Extract and set `llama.rope.freq_base`.
-- [ ] 051. Extract and set `llama.vocab_size`.
-- [ ] 052. Handle dynamic detection of Grouped Query Attention (GQA) ratios.
-- [ ] 053. Determine and map SwiGLU vs GeGLU activation patterns natively into the metadata.
-- [ ] 054. Check for standard vs transposed weight formats prior to generating LLAMA metadata.
-- [ ] 055. Validate `block_count` matches the actual number of Transformer layer copies found in the ONNX graph.
+
+- [ ] 41. Identify LLaMA architecture topologies automatically from ONNX IR.
+- [ ] 42. Extract and set `llama.context_length`.
+- [ ] 43. Extract and set `llama.embedding_length`.
+- [ ] 44. Extract and set `llama.block_count`.
+- [ ] 45. Extract and set `llama.feed_forward_length`.
+- [ ] 46. Extract and set `llama.attention.head_count`.
+- [ ] 47. Extract and set `llama.attention.head_count_kv` (for GQA/MQA).
+- [ ] 48. Extract and set `llama.attention.layer_norm_rms_epsilon`.
+- [ ] 49. Extract and set `llama.rope.dimension_count`.
+- [ ] 50. Extract and set `llama.rope.freq_base`.
+- [ ] 51. Extract and set `llama.vocab_size`.
+- [ ] 52. Handle dynamic detection of Grouped Query Attention (GQA) ratios.
+- [ ] 53. Determine and map SwiGLU vs GeGLU activation patterns natively into the metadata.
+- [ ] 54. Check for standard vs transposed weight formats prior to generating LLAMA metadata.
+- [ ] 55. Validate `block_count` matches the actual number of Transformer layer copies found in the ONNX graph.
 
 ### Phase 4: Other LLM Architectures Metadata Mapping
-- [ ] 056. Identify and support **Mistral** architecture.
-- [ ] 057. Extract Mistral sliding window parameters (`mistral.attention.sliding_window`).
-- [ ] 058. Identify and support **Phi-2 / Phi-3** architecture.
-- [ ] 059. Identify and support **Qwen2** architecture.
-- [ ] 060. Identify and support **Gemma** architecture.
-- [ ] 061. Extract Gemma specific layer norm scale parameters.
-- [ ] 062. Identify and support **StarCoder** architecture.
-- [ ] 063. Identify and support **Falcon** architecture.
-- [ ] 064. Identify and support **Bloom** architecture.
-- [ ] 065. Identify and support **Mixtral** (MoE) architecture.
-- [ ] 066. Extract `expert_count` and `expert_used_count` for MoE architectures.
-- [ ] 067. Identify and support **StableLM** architecture.
-- [ ] 068. Identify and support **Command-R** architecture.
-- [ ] 069. Support exporting classic **BERT** architectures to GGUF (rare, but supported by some GGML forks).
-- [ ] 070. Throw descriptive errors if an unsupported topology is forced into a strict architecture mapping.
+
+- [ ] 56. Identify and support **Mistral** architecture.
+- [ ] 57. Extract Mistral sliding window parameters (`mistral.attention.sliding_window`).
+- [ ] 58. Identify and support **Phi-2 / Phi-3** architecture.
+- [ ] 59. Identify and support **Qwen2** architecture.
+- [ ] 60. Identify and support **Gemma** architecture.
+- [ ] 61. Extract Gemma specific layer norm scale parameters.
+- [ ] 62. Identify and support **StarCoder** architecture.
+- [ ] 63. Identify and support **Falcon** architecture.
+- [ ] 64. Identify and support **Bloom** architecture.
+- [ ] 65. Identify and support **Mixtral** (MoE) architecture.
+- [ ] 66. Extract `expert_count` and `expert_used_count` for MoE architectures.
+- [ ] 67. Identify and support **StableLM** architecture.
+- [ ] 68. Identify and support **Command-R** architecture.
+- [ ] 69. Support exporting classic **BERT** architectures to GGUF (rare, but supported by some GGML forks).
+- [ ] 70. Throw descriptive errors if an unsupported topology is forced into a strict architecture mapping.
 
 ### Phase 5: Tokenizer Extraction & GGUF Embedding
-- [ ] 071. Extract tokenizer natively from ONNX `ai.onnx.contrib` (HuggingFace tokenizers).
-- [ ] 072. Extract tokenizer by directly parsing an external `tokenizer.json` file.
-- [ ] 073. Extract tokenizer by directly parsing an external `tokenizer.model` (SentencePiece) file.
-- [ ] 074. Map tokenizer model type to `tokenizer.ggml.model` (`llama`, `gpt2`, `bert`).
-- [ ] 075. Extract and format the complete vocabulary into `tokenizer.ggml.tokens` (ARRAY of STRINGs).
-- [ ] 076. Extract and format the scores into `tokenizer.ggml.scores` (ARRAY of FLOAT32).
-- [ ] 077. Extract and format token types into `tokenizer.ggml.token_type` (ARRAY of INT32).
-- [ ] 078. Extract and format merges for BPE tokenizers into `tokenizer.ggml.merges` (ARRAY of STRINGs).
-- [ ] 079. Determine and set `tokenizer.ggml.bos_token_id`.
-- [ ] 080. Determine and set `tokenizer.ggml.eos_token_id`.
-- [ ] 081. Determine and set `tokenizer.ggml.unknown_token_id`.
-- [ ] 082. Determine and set `tokenizer.ggml.padding_token_id`.
-- [ ] 083. Determine and set `tokenizer.ggml.separator_token_id` (if applicable).
-- [ ] 084. Determine and set `tokenizer.ggml.add_bos_token` (boolean).
-- [ ] 085. Determine and set `tokenizer.ggml.add_eos_token` (boolean).
-- [ ] 086. Support mapping specific Chat Templates into `tokenizer.chat_template` (STRING).
-- [ ] 087. Extract byte-fallback configurations specifically for Llama models.
-- [ ] 088. Encode vocabulary strings safely, preserving whitespace and control characters exactly as GGML expects.
-- [ ] 089. Generate a dummy tokenizer if no tokenizer metadata is provided (to prevent `llama.cpp` crash, though inference will be raw tokens).
-- [ ] 090. Validate the length of `tokens` array matches `vocab_size` exactly.
+
+- [ ] 71. Extract tokenizer natively from ONNX `ai.onnx.contrib` (HuggingFace tokenizers).
+- [ ] 72. Extract tokenizer by directly parsing an external `tokenizer.json` file.
+- [ ] 73. Extract tokenizer by directly parsing an external `tokenizer.model` (SentencePiece) file.
+- [ ] 74. Map tokenizer model type to `tokenizer.ggml.model` (`llama`, `gpt2`, `bert`).
+- [ ] 75. Extract and format the complete vocabulary into `tokenizer.ggml.tokens` (ARRAY of STRINGs).
+- [ ] 76. Extract and format the scores into `tokenizer.ggml.scores` (ARRAY of FLOAT32).
+- [ ] 77. Extract and format token types into `tokenizer.ggml.token_type` (ARRAY of INT32).
+- [ ] 78. Extract and format merges for BPE tokenizers into `tokenizer.ggml.merges` (ARRAY of STRINGs).
+- [ ] 79. Determine and set `tokenizer.ggml.bos_token_id`.
+- [ ] 80. Determine and set `tokenizer.ggml.eos_token_id`.
+- [ ] 81. Determine and set `tokenizer.ggml.unknown_token_id`.
+- [ ] 82. Determine and set `tokenizer.ggml.padding_token_id`.
+- [ ] 83. Determine and set `tokenizer.ggml.separator_token_id` (if applicable).
+- [ ] 84. Determine and set `tokenizer.ggml.add_bos_token` (boolean).
+- [ ] 85. Determine and set `tokenizer.ggml.add_eos_token` (boolean).
+- [ ] 86. Support mapping specific Chat Templates into `tokenizer.chat_template` (STRING).
+- [ ] 87. Extract byte-fallback configurations specifically for Llama models.
+- [ ] 88. Encode vocabulary strings safely, preserving whitespace and control characters exactly as GGML expects.
+- [ ] 89. Generate a dummy tokenizer if no tokenizer metadata is provided (to prevent `llama.cpp` crash, though inference will be raw tokens).
+- [ ] 90. Validate the length of `tokens` array matches `vocab_size` exactly.
 
 ### Phase 6: ONNX to GGUF Tensor Naming Translation
-- [ ] 091. Build a Regex-based tensor renaming engine.
-- [ ] 092. Map ONNX/HF `model.embed_tokens.weight` -> GGUF `token_embd.weight`.
-- [ ] 093. Map ONNX/HF `model.layers.N.input_layernorm.weight` -> GGUF `blk.N.attn_norm.weight`.
-- [ ] 094. Map ONNX/HF `model.layers.N.self_attn.q_proj.weight` -> GGUF `blk.N.attn_q.weight`.
-- [ ] 095. Map ONNX/HF `model.layers.N.self_attn.k_proj.weight` -> GGUF `blk.N.attn_k.weight`.
-- [ ] 096. Map ONNX/HF `model.layers.N.self_attn.v_proj.weight` -> GGUF `blk.N.attn_v.weight`.
-- [ ] 097. Map ONNX/HF `model.layers.N.self_attn.o_proj.weight` -> GGUF `blk.N.attn_output.weight`.
-- [ ] 098. Support fused QKV mapping -> GGUF `blk.N.attn_qkv.weight`.
-- [ ] 099. Map ONNX/HF `model.layers.N.post_attention_layernorm.weight` -> GGUF `blk.N.ffn_norm.weight`.
+
+- [ ] 91. Build a Regex-based tensor renaming engine.
+- [ ] 92. Map ONNX/HF `model.embed_tokens.weight` -> GGUF `token_embd.weight`.
+- [ ] 93. Map ONNX/HF `model.layers.N.input_layernorm.weight` -> GGUF `blk.N.attn_norm.weight`.
+- [ ] 94. Map ONNX/HF `model.layers.N.self_attn.q_proj.weight` -> GGUF `blk.N.attn_q.weight`.
+- [ ] 95. Map ONNX/HF `model.layers.N.self_attn.k_proj.weight` -> GGUF `blk.N.attn_k.weight`.
+- [ ] 96. Map ONNX/HF `model.layers.N.self_attn.v_proj.weight` -> GGUF `blk.N.attn_v.weight`.
+- [ ] 97. Map ONNX/HF `model.layers.N.self_attn.o_proj.weight` -> GGUF `blk.N.attn_output.weight`.
+- [ ] 98. Support fused QKV mapping -> GGUF `blk.N.attn_qkv.weight`.
+- [ ] 99. Map ONNX/HF `model.layers.N.post_attention_layernorm.weight` -> GGUF `blk.N.ffn_norm.weight`.
 - [ ] 100. Map ONNX/HF `model.layers.N.mlp.gate_proj.weight` -> GGUF `blk.N.ffn_gate.weight`.
 - [ ] 101. Map ONNX/HF `model.layers.N.mlp.down_proj.weight` -> GGUF `blk.N.ffn_down.weight`.
 - [ ] 102. Map ONNX/HF `model.layers.N.mlp.up_proj.weight` -> GGUF `blk.N.ffn_up.weight`.
@@ -137,6 +146,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 110. Fail cleanly and log unmatched tensors if an ONNX model contains unknown weights.
 
 ### Phase 7: Tensor Memory Transposition & Layout Adjustments
+
 - [ ] 111. GGML expects standard Row-Major arrays. Ensure ONNX weights match.
 - [ ] 112. Identify 1D tensors (Biases, LayerNorm scales) and write them directly.
 - [ ] 113. Identify 2D tensors (Linear/MatMul weights) and write them directly.
@@ -149,6 +159,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 120. Provide a zero-copy fast-path when weights require no transposition or quantization.
 
 ### Phase 8: GGUF Quantization Engine (GGML Data Types)
+
 - [ ] 121. Support generating `GGML_TYPE_F32` (0).
 - [ ] 122. Support generating `GGML_TYPE_F16` (1).
 - [ ] 123. Implement C-equivalent `Float32` to `Float16` downcasting loop natively in JS/Python.
@@ -171,6 +182,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 140. Generate quantization histograms if detailed logs are requested.
 
 ### Phase 9: Reverse Translation (GGUF -> ONNX)
+
 - [ ] 141. Implement zero-dependency GGUF Reader in TypeScript/JS.
 - [ ] 142. Implement zero-dependency GGUF Reader in Python.
 - [ ] 143. Parse GGUF v2 and v3 headers smoothly.
@@ -193,6 +205,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 160. Test the GGUF reader successfully mapping an `INT8` model to an ONNX `QuantizeLinear` -> `MatMul` graph.
 
 ### Phase 10: CLI Tooling (`onnx9000 onnx2gguf`)
+
 - [ ] 161. Implement CLI: `onnx9000 onnx2gguf model.onnx -o model.gguf`.
 - [ ] 162. Support `--tokenizer <path>` flag to point explicitly to a `tokenizer.json` or `tokenizer.model`.
 - [ ] 163. Support `--outtype <type>` (e.g., `f32`, `f16`, `q8_0`, `q4_0`).
@@ -205,6 +218,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 170. Validate full CLI parity against `llama.cpp/convert_hf_to_gguf.py`.
 
 ### Phase 11: The Web UI (Client-Side Exporter)
+
 - [ ] 171. Build a static React/Vue Web UI for `onnx2gguf`.
 - [ ] 172. Implement drag-and-drop for `model.onnx` or multiple `.safetensors` files simultaneously.
 - [ ] 173. Implement drag-and-drop for `tokenizer.json` and `config.json`.
@@ -217,6 +231,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 180. Provide specific browser compatibility warnings if running on devices with <8GB RAM.
 
 ### Phase 12: HuggingFace Hub Integration
+
 - [ ] 181. Support fetching model configurations natively from the HF Hub API.
 - [ ] 182. Download `config.json` and `tokenizer.json` dynamically if they aren't provided locally.
 - [ ] 183. Identify `.safetensors.index.json` manifests on the Hub and stream-convert shards seamlessly.
@@ -229,6 +244,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 190. Match `transformers` internal dictionary structures seamlessly when bypassing standard ONNX inputs.
 
 ### Phase 13: Edge Cases, Security & Validation
+
 - [ ] 191. Prevent integer overflows in Javascript when aggregating massive tensor offsets (`BigInt` enforcement).
 - [ ] 192. Handle extremely long tensor names (validating against reasonable limits).
 - [ ] 193. Trap Out-Of-Memory (OOM) errors and report them as "Hardware Constrained" rather than vague JS stack traces.
@@ -241,6 +257,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 200. Execute validation against Endianness discrepancies if running the Node.js CLI on Big-Endian architectures.
 
 ### Phase 14: LLaMA.cpp Specific Quirks & Hacks
+
 - [ ] 201. Support `llama.attention.key_length` overrides explicitly.
 - [ ] 202. Support `llama.attention.value_length` overrides explicitly.
 - [ ] 203. Set `llama.tensor_data_layout` if spatial conventions differ.
@@ -253,6 +270,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 210. Map `AddedTokens` natively to the end of the `tokenizer.ggml.tokens` array.
 
 ### Phase 15: Advanced Quantization (K-Quants & Custom Types)
+
 - [ ] 211. Provide structural support for `Q2_K`, `Q3_K`, `Q4_K`, `Q5_K`, `Q6_K` formats in the parser.
 - [ ] 212. Implement `Q4_K` quantization loop native in JS/Python (highly complex block structures).
 - [ ] 213. Implement `Q6_K` quantization loop.
@@ -265,6 +283,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 220. Output the quantization error MSE strictly for the user's review.
 
 ### Phase 16: Interoperability with other `onnx9000` Tools
+
 - [ ] 221. Integration: `onnx9000.optimum` -> `onnx9000.onnx2gguf` pipeline.
 - [ ] 222. Convert HuggingFace PyTorch models to ONNX to GGUF in one fluid CLI command.
 - [ ] 223. Support injecting `onnx9000.modifier` AST changes directly into the GGUF compiler stream.
@@ -277,6 +296,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 230. Support evaluating raw `.gguf` files via WebGPU directly inside the browser.
 
 ### Phase 17: Code Quality, Optimization & CI
+
 - [ ] 231. Establish automated CI pipeline converting TinyLlama to GGUF.
 - [ ] 232. Run the generated GGUF through an actual compiled `llama.cpp` binary in GitHub Actions to verify functionality.
 - [ ] 233. Measure memory allocations during the TypeScript Web Worker process (keeping it below 1GB).
@@ -289,6 +309,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 240. Ensure all generated code passes rigorous linting and formatting.
 
 ### Phase 18: Specific Metadata & Model Edge Cases
+
 - [ ] 241. Extract `falcon.attention.use_alibi` parameter correctly.
 - [ ] 242. Extract `starcoder.attention.head_count_kv` correctly.
 - [ ] 243. Handle models with tied embeddings (where `output.weight` is mathematically linked to `token_embd.weight`).
@@ -301,6 +322,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 250. Support extracting vocabulary from legacy HuggingFace `vocab.json` instead of just `tokenizer.json`.
 
 ### Phase 19: Comprehensive Documentation
+
 - [ ] 251. Write Tutorial: "Converting ONNX to GGUF in the Browser".
 - [ ] 252. Write Tutorial: "Reading a GGUF model natively in Node.js".
 - [ ] 253. Document the complete mapping schema of `ONNX -> GGUF`.
@@ -313,6 +335,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 260. Include a benchmark report proving quantization parity with `llama.cpp`.
 
 ### Phase 20: Final Deliverables & Web-Native Polish
+
 - [ ] 261. Expose `get_metadata(file)` API for incredibly fast extraction without parsing the multi-GB payload.
 - [ ] 262. Support dynamic fetching of GGUF metadata via HTTP Range requests natively.
 - [ ] 263. Establish a unified error handling class (`GGUFParseError`, `GGUFCompileError`).

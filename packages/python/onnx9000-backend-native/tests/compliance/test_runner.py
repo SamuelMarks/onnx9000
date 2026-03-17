@@ -210,13 +210,16 @@ def test_runner_bool_int():
         g.outputs.append(Tensor("C", (1,), DType.BOOL))
         g.add_node(Node("MockOp", ["A"], ["C"], {}, name="N1"))
         save(g, base_dir / "model.onnx")
+
         _create_tensor_pb("A", np.array([True], dtype=bool), str(ds_dir / "input_0.pb"))
         _create_tensor_pb("C", np.array([False], dtype=bool), str(ds_dir / "output_0.pb"))
+
         runner = ONNXBackendTestRunner(providers=[MockEP({})])
-        (passed, msg) = runner.run_node_test(base_dir)
+        passed, msg = runner.run_node_test(base_dir)
         assert not passed
         assert "Boolean array values mismatch" in msg
 
+        # test int mismatch
         class MockEP2(CPUExecutionProvider):
             def get_supported_nodes(self, g):
                 return ["MockOp"]
@@ -233,14 +236,18 @@ def test_runner_bool_int():
         g.outputs.append(Tensor("C", (1,), DType.INT64))
         g.add_node(Node("MockOp", ["A"], ["C"], {}, name="N1"))
         save(g, base_dir / "model.onnx")
+
         _create_tensor_pb("A", np.array([1], dtype=np.int64), str(ds_dir / "input_0.pb"))
         _create_tensor_pb("C", np.array([2], dtype=np.int64), str(ds_dir / "output_0.pb"))
+
         runner = ONNXBackendTestRunner(providers=[MockEP2({})])
-        (passed, msg) = runner.run_node_test(base_dir)
+        passed, msg = runner.run_node_test(base_dir)
         assert not passed
         assert "Numerical tolerance mismatch" in msg
+
+        # test int pass
         _create_tensor_pb("C", np.array([1], dtype=np.int64), str(ds_dir / "output_0.pb"))
-        (passed, msg) = runner.run_node_test(base_dir)
+        passed, msg = runner.run_node_test(base_dir)
         assert passed
 
 

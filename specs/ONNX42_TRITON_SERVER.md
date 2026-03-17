@@ -1,134 +1,145 @@
 # ONNX42: Triton Inference Server (Web-Native Edge Serving Engine)
 
 ## Original Project Description
+
 NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are the industry standards for deploying machine learning models to production. They provide high-performance features like dynamic batching, model ensembling, concurrent execution, and strict gRPC/REST APIs (the KServe standard). However, these servers are massive, monolithic C++ applications. They require heavy Docker containers, specific CUDA host drivers, complex memory allocators, and generally cannot run in serverless or edge environments.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.serve` completely reimagines ML model serving as a **100% pure TypeScript, Edge-Native Application**.
-*   **Serverless Edge Deployment:** Designed natively for Vercel Edge, Cloudflare Workers, Deno Deploy, and Bun. You can deploy a globally distributed inference server without a single Docker container.
-*   **Event-Loop Dynamic Batching:** Instead of complex C++ thread locking, it utilizes the native JavaScript asynchronous event loop to seamlessly debounce and batch incoming concurrent HTTP requests into single WebGPU tensor executions.
-*   **Zero-Dependency Monolith:** Because it uses `onnx9000`'s internal pure-TS execution engine, there are no C++ binaries to install on the server. Models are JIT-compiled to WASM or WebGPU exactly as they are in the browser.
-*   **OpenAI & KServe Parity:** It natively exposes the KServe V2 standard (used by Triton) alongside the OpenAI REST API (for LLMs), making it a drop-in replacement for existing cloud infrastructure.
+
+- **Serverless Edge Deployment:** Designed natively for Vercel Edge, Cloudflare Workers, Deno Deploy, and Bun. You can deploy a globally distributed inference server without a single Docker container.
+- **Event-Loop Dynamic Batching:** Instead of complex C++ thread locking, it utilizes the native JavaScript asynchronous event loop to seamlessly debounce and batch incoming concurrent HTTP requests into single WebGPU tensor executions.
+- **Zero-Dependency Monolith:** Because it uses `onnx9000`'s internal pure-TS execution engine, there are no C++ binaries to install on the server. Models are JIT-compiled to WASM or WebGPU exactly as they are in the browser.
+- **OpenAI & KServe Parity:** It natively exposes the KServe V2 standard (used by Triton) alongside the OpenAI REST API (for LLMs), making it a drop-in replacement for existing cloud infrastructure.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core Server Architecture & Protocol Handlers
-- [ ] 001. Implement high-performance core HTTP router natively in TypeScript.
-- [ ] 002. Support generic `fetch` Event Listener interfaces for Edge runtimes.
-- [ ] 003. Implement HTTP/1.1 REST API bindings.
-- [ ] 004. Implement HTTP/2 multiplexed connections.
-- [ ] 005. Implement gRPC protocol emulation over HTTP/2 natively in JS (via `bufbuild/connect` or similar).
-- [ ] 006. Implement KServe / Triton V2 Inference Protocol natively.
-- [ ] 007. Implement WebSocket (WS) endpoint for continuous bidirectional inference streams.
-- [ ] 008. Implement Server-Sent Events (SSE) for token-by-token Generative AI streams.
-- [ ] 009. Support multipart/form-data parsing for binary image/audio uploads.
-- [ ] 010. Implement zero-copy ArrayBuffer extraction from HTTP request bodies.
-- [ ] 011. Implement standard CORS (Cross-Origin Resource Sharing) middleware.
-- [ ] 012. Expose `/v2/health/ready` endpoint.
-- [ ] 013. Expose `/v2/health/live` endpoint.
-- [ ] 014. Expose `/v2/models` repository index endpoint.
-- [ ] 015. Expose `/v2/models/{model_name}` metadata endpoint.
+
+- [ ] 1. Implement high-performance core HTTP router natively in TypeScript.
+- [ ] 2. Support generic `fetch` Event Listener interfaces for Edge runtimes.
+- [ ] 3. Implement HTTP/1.1 REST API bindings.
+- [ ] 4. Implement HTTP/2 multiplexed connections.
+- [ ] 5. Implement gRPC protocol emulation over HTTP/2 natively in JS (via `bufbuild/connect` or similar).
+- [ ] 6. Implement KServe / Triton V2 Inference Protocol natively.
+- [ ] 7. Implement WebSocket (WS) endpoint for continuous bidirectional inference streams.
+- [ ] 8. Implement Server-Sent Events (SSE) for token-by-token Generative AI streams.
+- [ ] 9. Support multipart/form-data parsing for binary image/audio uploads.
+- [ ] 10. Implement zero-copy ArrayBuffer extraction from HTTP request bodies.
+- [ ] 11. Implement standard CORS (Cross-Origin Resource Sharing) middleware.
+- [ ] 12. Expose `/v2/health/ready` endpoint.
+- [ ] 13. Expose `/v2/health/live` endpoint.
+- [ ] 14. Expose `/v2/models` repository index endpoint.
+- [ ] 15. Expose `/v2/models/{model_name}` metadata endpoint.
 
 ### Phase 2: Edge Runtime Compatibility (Cloudflare, Bun, Deno, Node)
-- [ ] 016. Provide `Cloudflare Worker` specific entrypoint bindings.
-- [ ] 017. Support Cloudflare WebGPU bindings (if available/experimental).
-- [ ] 018. Support Cloudflare WASM bindings natively within the 50ms CPU limit.
-- [ ] 019. Provide `Deno` specific entrypoint bindings (`Deno.serve`).
-- [ ] 020. Provide `Bun` specific high-performance entrypoint (`Bun.serve`).
-- [ ] 021. Provide `Node.js` specific entrypoint (`http` / `http2` / `Express` wrappers).
-- [ ] 022. Prevent usage of standard Node.js `fs` module in core engine to ensure Edge compatibility.
-- [ ] 023. Implement a virtual file system (VFS) for loading models from Cloudflare R2 / S3.
-- [ ] 024. Handle Cloudflare's strict memory limitations (128MB per isolate) gracefully via streaming inference.
-- [ ] 025. Provide AWS Lambda native handler formats (`event, context`).
-- [ ] 026. Provide Vercel Edge Function native bindings.
-- [ ] 027. Gracefully catch specific runtime timeouts (e.g., Lambda 15min limit).
-- [ ] 028. Export the server as a unified isomorphic NPM package (`@onnx9000/serve`).
-- [ ] 029. Bypass completely any reliance on Node `child_process` natively.
-- [ ] 030. Leverage JS `ReadableStream` and `WritableStream` universally across all runtimes.
+
+- [ ] 16. Provide `Cloudflare Worker` specific entrypoint bindings.
+- [ ] 17. Support Cloudflare WebGPU bindings (if available/experimental).
+- [ ] 18. Support Cloudflare WASM bindings natively within the 50ms CPU limit.
+- [ ] 19. Provide `Deno` specific entrypoint bindings (`Deno.serve`).
+- [ ] 20. Provide `Bun` specific high-performance entrypoint (`Bun.serve`).
+- [ ] 21. Provide `Node.js` specific entrypoint (`http` / `http2` / `Express` wrappers).
+- [ ] 22. Prevent usage of standard Node.js `fs` module in core engine to ensure Edge compatibility.
+- [ ] 23. Implement a virtual file system (VFS) for loading models from Cloudflare R2 / S3.
+- [ ] 24. Handle Cloudflare's strict memory limitations (128MB per isolate) gracefully via streaming inference.
+- [ ] 25. Provide AWS Lambda native handler formats (`event, context`).
+- [ ] 26. Provide Vercel Edge Function native bindings.
+- [ ] 27. Gracefully catch specific runtime timeouts (e.g., Lambda 15min limit).
+- [ ] 28. Export the server as a unified isomorphic NPM package (`@onnx9000/serve`).
+- [ ] 29. Bypass completely any reliance on Node `child_process` natively.
+- [ ] 30. Leverage JS `ReadableStream` and `WritableStream` universally across all runtimes.
 
 ### Phase 3: Dynamic Batching & Event Loop Scheduling
-- [ ] 031. Implement the `DynamicBatcher` core class.
-- [ ] 032. Configure `max_batch_size` parameters per model.
-- [ ] 033. Configure `batch_timeout_ms` parameters per model (debouncing).
-- [ ] 034. Trap asynchronous HTTP requests into an active batch queue.
-- [ ] 035. Trigger ONNX execution dynamically when the queue reaches `max_batch_size`.
-- [ ] 036. Trigger ONNX execution dynamically when `batch_timeout_ms` is reached.
-- [ ] 037. Implement tensor concatenation across the batch dimension (`Axis 0`) dynamically.
-- [ ] 038. Pad variable-length sequence inputs automatically (e.g., text inputs) within the batch.
-- [ ] 039. Generate dynamic `attention_mask` tensors for padded sequences securely.
-- [ ] 040. Split the single ONNX execution output back into isolated HTTP response promises.
-- [ ] 041. Ensure strict ordering of responses matching the incoming queue exactly.
-- [ ] 042. Implement Priority Queueing (prioritizing premium user requests over standard).
-- [ ] 043. Handle batching failures (e.g., one request has invalid shapes) by isolating the failure and re-executing the valid subset.
-- [ ] 044. Profile batching efficiency natively (Logging: "Batched 12 requests in 5ms").
-- [ ] 045. Support Continuous Batching for LLMs (inserting new requests into active autoregressive loops).
+
+- [ ] 31. Implement the `DynamicBatcher` core class.
+- [ ] 32. Configure `max_batch_size` parameters per model.
+- [ ] 33. Configure `batch_timeout_ms` parameters per model (debouncing).
+- [ ] 34. Trap asynchronous HTTP requests into an active batch queue.
+- [ ] 35. Trigger ONNX execution dynamically when the queue reaches `max_batch_size`.
+- [ ] 36. Trigger ONNX execution dynamically when `batch_timeout_ms` is reached.
+- [ ] 37. Implement tensor concatenation across the batch dimension (`Axis 0`) dynamically.
+- [ ] 38. Pad variable-length sequence inputs automatically (e.g., text inputs) within the batch.
+- [ ] 39. Generate dynamic `attention_mask` tensors for padded sequences securely.
+- [ ] 40. Split the single ONNX execution output back into isolated HTTP response promises.
+- [ ] 41. Ensure strict ordering of responses matching the incoming queue exactly.
+- [ ] 42. Implement Priority Queueing (prioritizing premium user requests over standard).
+- [ ] 43. Handle batching failures (e.g., one request has invalid shapes) by isolating the failure and re-executing the valid subset.
+- [ ] 44. Profile batching efficiency natively (Logging: "Batched 12 requests in 5ms").
+- [ ] 45. Support Continuous Batching for LLMs (inserting new requests into active autoregressive loops).
 
 ### Phase 4: KServe V2 / Triton API Standard Compliance
-- [ ] 046. Parse KServe V2 `InferenceRequest` JSON body format strictly.
-- [ ] 047. Parse KServe V2 binary extension format (for zero-copy tensor transmission).
-- [ ] 048. Format KServe V2 `InferenceResponse` JSON body perfectly.
-- [ ] 049. Support explicit output tensor selection (only returning requested node outputs).
-- [ ] 050. Validate input datatype strings (`FP32`, `INT64`, `BOOL`) against ONNX requirements.
-- [ ] 051. Validate input shapes securely, rejecting mismatched shapes with HTTP 400 Bad Request.
-- [ ] 052. Support Server-side Model Metadata querying (`/v2/models/{name}`).
-- [ ] 053. Expose execution provider metrics in the metadata response.
-- [ ] 054. Provide KServe compliant error objects with precise stack traces.
-- [ ] 055. Validate endianness on incoming binary tensors, byte-swapping if the client requests it.
-- [ ] 056. Support Model Versioning natively (`/v2/models/{name}/versions/{version}`).
-- [ ] 057. Default to the highest available model version if omitted in the URL.
-- [ ] 058. Support Triton's specific Model Configuration (`config.pbtxt`) format conversion to ONNX9000 internal JSON configs.
-- [ ] 059. Allow explicit batching flags inside the request payload.
-- [ ] 060. Expose an automated tester to verify strict KServe spec compliance on deployment.
+
+- [ ] 46. Parse KServe V2 `InferenceRequest` JSON body format strictly.
+- [ ] 47. Parse KServe V2 binary extension format (for zero-copy tensor transmission).
+- [ ] 48. Format KServe V2 `InferenceResponse` JSON body perfectly.
+- [ ] 49. Support explicit output tensor selection (only returning requested node outputs).
+- [ ] 50. Validate input datatype strings (`FP32`, `INT64`, `BOOL`) against ONNX requirements.
+- [ ] 51. Validate input shapes securely, rejecting mismatched shapes with HTTP 400 Bad Request.
+- [ ] 52. Support Server-side Model Metadata querying (`/v2/models/{name}`).
+- [ ] 53. Expose execution provider metrics in the metadata response.
+- [ ] 54. Provide KServe compliant error objects with precise stack traces.
+- [ ] 55. Validate endianness on incoming binary tensors, byte-swapping if the client requests it.
+- [ ] 56. Support Model Versioning natively (`/v2/models/{name}/versions/{version}`).
+- [ ] 57. Default to the highest available model version if omitted in the URL.
+- [ ] 58. Support Triton's specific Model Configuration (`config.pbtxt`) format conversion to ONNX9000 internal JSON configs.
+- [ ] 59. Allow explicit batching flags inside the request payload.
+- [ ] 60. Expose an automated tester to verify strict KServe spec compliance on deployment.
 
 ### Phase 5: OpenAI REST API Parity (For LLMs / GenAI)
-- [ ] 061. Implement `/v1/chat/completions` endpoint.
-- [ ] 062. Implement `/v1/completions` endpoint.
-- [ ] 063. Implement `/v1/embeddings` endpoint.
-- [ ] 064. Implement `/v1/audio/transcriptions` endpoint (routing to Whisper models).
-- [ ] 065. Parse standard OpenAI `messages` array natively.
-- [ ] 066. Apply HuggingFace `tokenizer.json` chat templates dynamically to the messages array.
-- [ ] 067. Support `stream=true` using HTTP Server-Sent Events (SSE).
-- [ ] 068. Support `temperature`, `top_p`, `top_k` sampling parameters.
-- [ ] 069. Support `max_tokens` and `presence_penalty`.
-- [ ] 070. Support `stop` sequences (string arrays).
-- [ ] 071. Implement exact JSON response schema matching OpenAI's objects (id, object, created, model, choices).
-- [ ] 072. Emit standard `[DONE]` marker at the end of SSE streams.
-- [ ] 073. Track and return `usage` statistics (prompt_tokens, completion_tokens, total_tokens).
-- [ ] 074. Map specific base models automatically to the OpenAI router (e.g., routing `llama-3` requests appropriately).
-- [ ] 075. Support function calling / tools arrays by injecting JSON schema constraints into the GenAI loop.
+
+- [ ] 61. Implement `/v1/chat/completions` endpoint.
+- [ ] 62. Implement `/v1/completions` endpoint.
+- [ ] 63. Implement `/v1/embeddings` endpoint.
+- [ ] 64. Implement `/v1/audio/transcriptions` endpoint (routing to Whisper models).
+- [ ] 65. Parse standard OpenAI `messages` array natively.
+- [ ] 66. Apply HuggingFace `tokenizer.json` chat templates dynamically to the messages array.
+- [ ] 67. Support `stream=true` using HTTP Server-Sent Events (SSE).
+- [ ] 68. Support `temperature`, `top_p`, `top_k` sampling parameters.
+- [ ] 69. Support `max_tokens` and `presence_penalty`.
+- [ ] 70. Support `stop` sequences (string arrays).
+- [ ] 71. Implement exact JSON response schema matching OpenAI's objects (id, object, created, model, choices).
+- [ ] 72. Emit standard `[DONE]` marker at the end of SSE streams.
+- [ ] 73. Track and return `usage` statistics (prompt_tokens, completion_tokens, total_tokens).
+- [ ] 74. Map specific base models automatically to the OpenAI router (e.g., routing `llama-3` requests appropriately).
+- [ ] 75. Support function calling / tools arrays by injecting JSON schema constraints into the GenAI loop.
 
 ### Phase 6: Model Pipelines & Ensembles (DAG Orchestration)
-- [ ] 076. Implement Model Ensemble routing.
-- [ ] 077. Define `Ensemble` JSON configuration (Mapping Model A outputs to Model B inputs).
-- [ ] 078. Support sequentially executing isolated ONNX models in memory without HTTP overhead.
-- [ ] 079. Support executing multiple models in parallel if inputs are independent.
-- [ ] 080. Implement custom "Business Logic" pipeline nodes (executing raw Javascript between models).
-- [ ] 081. Example: Route `Image Upload -> ResNet50 -> JS Logic -> Text Model -> JSON Response`.
-- [ ] 082. Manage end-to-end memory buffers across the ensemble to ensure zero-copy bridging.
-- [ ] 083. Support Conditional Routing inside an ensemble (e.g., if Image is Dark, run Enhancer Model, else run Standard Model).
-- [ ] 084. Track latency individually across the ensemble steps.
-- [ ] 085. Provide unified KServe API endpoint representing the entire Ensemble as a single model.
-- [ ] 086. Automatically inject Tokenization as a pre-processing step inside the ensemble.
-- [ ] 087. Automatically inject Post-Processing (NMS, ArgMax) inside the ensemble.
-- [ ] 088. Prevent infinite routing loops within the ensemble definition natively.
-- [ ] 089. Allow importing HuggingFace Pipelines (`transformers.js` parity) directly as server ensembles.
-- [ ] 090. Support mapping isolated LoRA adapters dynamically across the ensemble stages.
+
+- [ ] 76. Implement Model Ensemble routing.
+- [ ] 77. Define `Ensemble` JSON configuration (Mapping Model A outputs to Model B inputs).
+- [ ] 78. Support sequentially executing isolated ONNX models in memory without HTTP overhead.
+- [ ] 79. Support executing multiple models in parallel if inputs are independent.
+- [ ] 80. Implement custom "Business Logic" pipeline nodes (executing raw Javascript between models).
+- [ ] 81. Example: Route `Image Upload -> ResNet50 -> JS Logic -> Text Model -> JSON Response`.
+- [ ] 82. Manage end-to-end memory buffers across the ensemble to ensure zero-copy bridging.
+- [ ] 83. Support Conditional Routing inside an ensemble (e.g., if Image is Dark, run Enhancer Model, else run Standard Model).
+- [ ] 84. Track latency individually across the ensemble steps.
+- [ ] 85. Provide unified KServe API endpoint representing the entire Ensemble as a single model.
+- [ ] 86. Automatically inject Tokenization as a pre-processing step inside the ensemble.
+- [ ] 87. Automatically inject Post-Processing (NMS, ArgMax) inside the ensemble.
+- [ ] 88. Prevent infinite routing loops within the ensemble definition natively.
+- [ ] 89. Allow importing HuggingFace Pipelines (`transformers.js` parity) directly as server ensembles.
+- [ ] 90. Support mapping isolated LoRA adapters dynamically across the ensemble stages.
 
 ### Phase 7: Memory & VRAM Resource Management
-- [ ] 091. Track total active WebGPU VRAM natively inside the Node/Deno environment.
-- [ ] 092. Track total active WASM linear memory usage dynamically.
-- [ ] 093. Implement a Least Recently Used (LRU) Cache for loaded models.
-- [ ] 094. Evict models gracefully from memory if a new request requires VRAM.
-- [ ] 095. Implement graceful memory eviction limits (e.g., `MAX_RAM_PERCENT = 0.85`).
-- [ ] 096. Reject requests with HTTP 503 (Service Unavailable) if the server is severely OOM.
-- [ ] 097. Provide global configuration for Max Concurrent Executions.
-- [ ] 098. Utilize `onnx9000`'s static arena planner to refuse loading models that mathematically exceed the server's RAM bounds.
-- [ ] 099. Share weights natively across multiple instances of the same model (e.g., 4 Workers sharing 1 ArrayBuffer).
+
+- [ ] 91. Track total active WebGPU VRAM natively inside the Node/Deno environment.
+- [ ] 92. Track total active WASM linear memory usage dynamically.
+- [ ] 93. Implement a Least Recently Used (LRU) Cache for loaded models.
+- [ ] 94. Evict models gracefully from memory if a new request requires VRAM.
+- [ ] 95. Implement graceful memory eviction limits (e.g., `MAX_RAM_PERCENT = 0.85`).
+- [ ] 96. Reject requests with HTTP 503 (Service Unavailable) if the server is severely OOM.
+- [ ] 97. Provide global configuration for Max Concurrent Executions.
+- [ ] 98. Utilize `onnx9000`'s static arena planner to refuse loading models that mathematically exceed the server's RAM bounds.
+- [ ] 99. Share weights natively across multiple instances of the same model (e.g., 4 Workers sharing 1 ArrayBuffer).
 - [ ] 100. Force Javascript Garbage Collection (`global.gc()`) explicitly between massive batches if the runtime allows it.
 
 ### Phase 8: Hardware Acceleration Binding (WebGPU / WASM)
+
 - [ ] 101. Initialize Node.js WebGPU backend bindings (`@webgpu/types` + native adapters).
 - [ ] 102. Initialize Deno WebGPU backend natively.
 - [ ] 103. Initialize Bun WebGPU / WASM adapters seamlessly.
@@ -141,6 +152,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 110. Capture WebGPU Device Loss events and gracefully restart the internal worker without dropping the HTTP server.
 
 ### Phase 9: KV Cache & Distributed State (LLMs)
+
 - [ ] 111. Maintain continuous `past_key_values` dynamically inside the WebGPU memory across multiple HTTP requests.
 - [ ] 112. Assign a unique `session_id` to chat streams to route requests back to their active KV cache.
 - [ ] 113. Implement a distributed KV cache synchronizer using Redis or Cloudflare KV (for scaling across multiple edge nodes).
@@ -153,6 +165,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 120. Provide API to explicitly flush the global server KV Cache.
 
 ### Phase 10: Multi-threading & Worker Pools
+
 - [ ] 121. Implement a Web Worker Pool manager for processing isolated requests.
 - [ ] 122. Support running the HTTP router on the Main Thread and all ONNX executions on Worker Threads.
 - [ ] 123. Transmit tensors across threads natively using `SharedArrayBuffer` (zero-copy).
@@ -165,6 +178,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 130. Manage PM2 clustering compatibility gracefully (if users deploy via standard Node tooling).
 
 ### Phase 11: Metrics, Prometheus, & Observability
+
 - [ ] 131. Expose `/metrics` endpoint natively.
 - [ ] 132. Implement standard Prometheus text-based metrics format.
 - [ ] 133. Metric: `onnx9000_inference_request_total` (Counter).
@@ -182,6 +196,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 145. Provide a built-in interactive HTML dashboard available at `/v2/dashboard`.
 
 ### Phase 12: Security, Rate Limiting, & Authentication
+
 - [ ] 146. Implement Bearer Token validation natively.
 - [ ] 147. Expose an API to inject custom Auth Middlewares (e.g., JWT validation).
 - [ ] 148. Implement IP-based Rate Limiting (Token Bucket algorithm natively in memory).
@@ -194,6 +209,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 155. Support SSL/TLS directly natively in Node/Deno (or assume reverse-proxy termination).
 
 ### Phase 13: Model Repository & Hot-Reloading
+
 - [ ] 156. Implement local File System (FS) watcher natively in Node/Deno.
 - [ ] 157. Detect new `.onnx` models dropped into the `/models` directory and hot-load them instantly.
 - [ ] 158. Detect removed models and evict them from memory safely.
@@ -206,6 +222,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 165. Manage corrupted model downloads securely (falling back to the previous known good version).
 
 ### Phase 14: Vision & Audio specific Data Ingestion
+
 - [ ] 166. Handle Base64 encoded image strings in the KServe JSON payload securely.
 - [ ] 167. Handle raw binary JPEG/PNG bytes passed via multipart forms.
 - [ ] 168. Inject `onnx9000.image.decode` natively to convert the binary payload to an ONNX Tensor automatically based on model hints.
@@ -218,6 +235,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 175. Allow defining these custom Data Transformers declaratively in the `config.json`.
 
 ### Phase 15: Load Balancing & Multi-Node Routing
+
 - [ ] 176. Implement a native Serverless Hash-Ring router for mapping specific users to specific Edge Nodes.
 - [ ] 177. If Node A doesn't have `Model X` in memory, transparently proxy the request to Node B.
 - [ ] 178. Maintain a global peer-to-peer registry of loaded models across a server cluster natively in JS.
@@ -225,6 +243,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 180. Forward HTTP client IPs perfectly via `X-Forwarded-For` across proxy bounces.
 
 ### Phase 16: CLI & Deployment Tooling (`onnx9000 serve`)
+
 - [ ] 181. Implement CLI: `onnx9000 serve --model-repository ./models --port 8080`.
 - [ ] 182. Support `--log-verbose` flag.
 - [ ] 183. Support `--max-batch-size 32` global override flag.
@@ -237,6 +256,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 190. Handle strict graceful shutdown signals (`SIGINT`, `SIGTERM`), draining the active batch queues before exiting.
 
 ### Phase 17: Load Simulation & Benchmarking
+
 - [ ] 191. Implement a load tester tool natively: `onnx9000 perf-analyzer`.
 - [ ] 192. Simulate 100 concurrent users hitting the REST API.
 - [ ] 193. Simulate 1000 concurrent users using WebSockets.
@@ -249,6 +269,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 200. Publish interactive charts comparing Edge Deployment latency against centralized Cloud latency.
 
 ### Phase 18: Testing & Parity
+
 - [ ] 201. Unit Test: Boot server, load ResNet, process KServe JSON request, return KServe JSON response.
 - [ ] 202. Unit Test: Boot server, load TinyLlama, process OpenAI Chat Completion, return SSE stream.
 - [ ] 203. Unit Test: Execute 5 simultaneous requests natively and ensure batching triggers exactly once.
@@ -261,6 +282,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 210. Validate strict Cross-Platform execution across Windows, Mac, and Linux via Node.js.
 
 ### Phase 19: Framework Integrations (Langchain / LlamaIndex)
+
 - [ ] 211. Ensure the OpenAI API shim works flawlessly with `langchain` Python package.
 - [ ] 212. Ensure the OpenAI API shim works flawlessly with `langchain.js` NPM package.
 - [ ] 213. Ensure integration with `LlamaIndex` natively.
@@ -273,6 +295,7 @@ NVIDIA's `Triton Inference Server` (and the deprecated ONNX Runtime Server) are 
 - [ ] 220. Output the embedding responses natively packed as Base64 strings if the client requests bandwidth optimizations.
 
 ### Phase 20: Delivery & Documentation
+
 - [ ] 221. Write Tutorial: "Deploying a Global AI Server on Cloudflare Workers for $0".
 - [ ] 222. Write Tutorial: "Replacing Nvidia Triton with `onnx9000.serve`".
 - [ ] 223. Provide OpenAPI (Swagger) `swagger.json` specification for the server.

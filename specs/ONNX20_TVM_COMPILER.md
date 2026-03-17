@@ -1,121 +1,126 @@
 # ONNX18: Apache TVM (Ahead-of-Time Web Compiler)
 
 ## Original Project Description
+
 Apache TVM is an end-to-end open-source machine learning compiler framework for CPUs, GPUs, and specialized accelerators. It aims to close the gap between the productivity-focused deep learning frameworks and the performance- and efficiency-focused hardware backends. TVM takes high-level models (like ONNX), converts them into a high-level Intermediate Representation (Relay/Relax), lowers them to a Tensor IR (TIR), applies target-specific optimizations, and uses machine learning (AutoTVM/MetaSchedule) to search for the optimal hardware-specific memory and compute schedules. Finally, it compiles this optimized graph into highly tuned, standalone machine code binaries or dynamic libraries.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementation of TVM-like AOT compilation is completely web-native and Python/TypeScript driven.
-*   **No LLVM Dependency:** The compiler directly emits WebAssembly (WASM) binary format, WebAssembly Text format (WAT), or WebGPU Shading Language (WGSL) ASTs using pure Python/JS code generators.
-*   **Browser-Based Auto-Tuning:** Auto-tuning (profiling thousands of kernel variations) can be distributed across client browsers using Web Workers, rather than requiring a dedicated farm of native hardware.
-*   **Zero-Overhead Standalone Exports:** The output is a highly minimized `.wasm` or `.js` file that contains *only* the specific mathematical loops needed for the model. It completely eliminates the ONNX graph parser, session manager, and execution runtime from the final payload.
-*   **AOT over JIT:** Emphasizes Ahead-of-Time generation of standalone browser artifacts for extreme edge scenarios where loading a 2MB generic ONNX runtime is unacceptable.
+
+- **No LLVM Dependency:** The compiler directly emits WebAssembly (WASM) binary format, WebAssembly Text format (WAT), or WebGPU Shading Language (WGSL) ASTs using pure Python/JS code generators.
+- **Browser-Based Auto-Tuning:** Auto-tuning (profiling thousands of kernel variations) can be distributed across client browsers using Web Workers, rather than requiring a dedicated farm of native hardware.
+- **Zero-Overhead Standalone Exports:** The output is a highly minimized `.wasm` or `.js` file that contains _only_ the specific mathematical loops needed for the model. It completely eliminates the ONNX graph parser, session manager, and execution runtime from the final payload.
+- **AOT over JIT:** Emphasizes Ahead-of-Time generation of standalone browser artifacts for extreme edge scenarios where loading a 2MB generic ONNX runtime is unacceptable.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: High-Level Intermediate Representation (WebRelay)
-- [ ] 001. Define base AST node structure for High-Level IR.
-- [ ] 002. Implement `Var` node for tensor variables.
-- [ ] 003. Implement `Constant` node for weights/biases.
-- [ ] 004. Implement `Call` node for operator invocation.
-- [ ] 005. Implement `Tuple` node for multi-output operations.
-- [ ] 006. Implement `TupleGetItem` for accessing tuple elements.
-- [ ] 007. Implement `Let` bindings for local variable scope.
-- [ ] 008. Implement `If` node for control flow.
-- [ ] 009. Implement `Function` node (global and local).
-- [ ] 010. Implement IR Module to hold collections of functions.
-- [ ] 011. Implement basic type system (`TensorType`, `TupleType`, `FuncType`).
-- [ ] 012. Implement shape inference pass for High-Level IR.
-- [ ] 013. Implement type checking pass for High-Level IR.
-- [ ] 014. Implement topological sort utility for the AST.
-- [ ] 015. Implement AST visitor/mutator base classes.
-- [ ] 016. Implement dead code elimination pass.
-- [ ] 017. Implement constant folding pass on High-Level IR.
-- [ ] 018. Implement common subexpression elimination (CSE).
-- [ ] 019. Implement algebraic simplification (e.g., `x * 1 -> x`).
-- [ ] 020. Implement let-binding unrolling.
-- [ ] 021. Implement layout transformation pass (NCHW <-> NHWC).
-- [ ] 022. Implement operator fusion pass (detecting fusable subgraphs).
-- [ ] 023. Implement dynamic-to-static shape resolution when bounds are known.
-- [ ] 024. Implement explicit memory planning (arena allocation).
-- [ ] 025. Implement IR textual printer (for debugging).
-- [ ] 026. Implement IR structural equality checker.
-- [ ] 027. Implement serialization of IR to JSON.
-- [ ] 028. Implement deserialization of IR from JSON.
-- [ ] 029. Add source map tracking from ONNX nodes to IR nodes.
-- [ ] 030. Create dependency graph visualization tool for IR.
+
+- [ ] 1. Define base AST node structure for High-Level IR.
+- [ ] 2. Implement `Var` node for tensor variables.
+- [ ] 3. Implement `Constant` node for weights/biases.
+- [ ] 4. Implement `Call` node for operator invocation.
+- [ ] 5. Implement `Tuple` node for multi-output operations.
+- [ ] 6. Implement `TupleGetItem` for accessing tuple elements.
+- [ ] 7. Implement `Let` bindings for local variable scope.
+- [ ] 8. Implement `If` node for control flow.
+- [ ] 9. Implement `Function` node (global and local).
+- [ ] 10. Implement IR Module to hold collections of functions.
+- [ ] 11. Implement basic type system (`TensorType`, `TupleType`, `FuncType`).
+- [ ] 12. Implement shape inference pass for High-Level IR.
+- [ ] 13. Implement type checking pass for High-Level IR.
+- [ ] 14. Implement topological sort utility for the AST.
+- [ ] 15. Implement AST visitor/mutator base classes.
+- [ ] 16. Implement dead code elimination pass.
+- [ ] 17. Implement constant folding pass on High-Level IR.
+- [ ] 18. Implement common subexpression elimination (CSE).
+- [ ] 19. Implement algebraic simplification (e.g., `x * 1 -> x`).
+- [ ] 20. Implement let-binding unrolling.
+- [ ] 21. Implement layout transformation pass (NCHW <-> NHWC).
+- [ ] 22. Implement operator fusion pass (detecting fusable subgraphs).
+- [ ] 23. Implement dynamic-to-static shape resolution when bounds are known.
+- [ ] 24. Implement explicit memory planning (arena allocation).
+- [ ] 25. Implement IR textual printer (for debugging).
+- [ ] 26. Implement IR structural equality checker.
+- [ ] 27. Implement serialization of IR to JSON.
+- [ ] 28. Implement deserialization of IR from JSON.
+- [ ] 29. Add source map tracking from ONNX nodes to IR nodes.
+- [ ] 30. Create dependency graph visualization tool for IR.
 
 ### Phase 2: ONNX Frontend Importer
-- [ ] 031. Initialize ONNX proto ingestion pipeline.
-- [ ] 032. Map ONNX tensor types to IR `TensorType`.
-- [ ] 033. Importer for `Add`.
-- [ ] 034. Importer for `Sub`.
-- [ ] 035. Importer for `Mul`.
-- [ ] 036. Importer for `Div`.
-- [ ] 037. Importer for `MatMul`.
-- [ ] 038. Importer for `Gemm`.
-- [ ] 039. Importer for `Conv` (1D).
-- [ ] 040. Importer for `Conv` (2D).
-- [ ] 041. Importer for `Conv` (3D).
-- [ ] 042. Importer for `ConvTranspose`.
-- [ ] 043. Importer for `Relu`.
-- [ ] 044. Importer for `LeakyRelu`.
-- [ ] 045. Importer for `Sigmoid`.
-- [ ] 046. Importer for `Tanh`.
-- [ ] 047. Importer for `Softmax`.
-- [ ] 048. Importer for `LogSoftmax`.
-- [ ] 049. Importer for `Erf`.
-- [ ] 050. Importer for `Gelu`.
-- [ ] 051. Importer for `MaxPool` (1D, 2D, 3D).
-- [ ] 052. Importer for `AveragePool`.
-- [ ] 053. Importer for `GlobalMaxPool`.
-- [ ] 054. Importer for `GlobalAveragePool`.
-- [ ] 055. Importer for `Pad` (constant).
-- [ ] 056. Importer for `Pad` (reflect).
-- [ ] 057. Importer for `Pad` (edge).
-- [ ] 058. Importer for `Reshape`.
-- [ ] 059. Importer for `Flatten`.
-- [ ] 060. Importer for `Transpose`.
-- [ ] 061. Importer for `Squeeze`.
-- [ ] 062. Importer for `Unsqueeze`.
-- [ ] 063. Importer for `Concat`.
-- [ ] 064. Importer for `Split`.
-- [ ] 065. Importer for `Slice`.
-- [ ] 066. Importer for `Gather`.
-- [ ] 067. Importer for `GatherElements`.
-- [ ] 068. Importer for `GatherND`.
-- [ ] 069. Importer for `Scatter`.
-- [ ] 070. Importer for `ScatterElements`.
-- [ ] 071. Importer for `ScatterND`.
-- [ ] 072. Importer for `Cast`.
-- [ ] 073. Importer for `ReduceSum`.
-- [ ] 074. Importer for `ReduceMean`.
-- [ ] 075. Importer for `ReduceMax`.
-- [ ] 076. Importer for `ReduceMin`.
-- [ ] 077. Importer for `ReduceProd`.
-- [ ] 078. Importer for `ArgMax`.
-- [ ] 079. Importer for `ArgMin`.
-- [ ] 080. Importer for `Shape`.
-- [ ] 081. Importer for `Size`.
-- [ ] 082. Importer for `ConstantOfShape`.
-- [ ] 083. Importer for `Expand`.
-- [ ] 084. Importer for `Tile`.
-- [ ] 085. Importer for `Where`.
-- [ ] 086. Importer for `Less`.
-- [ ] 087. Importer for `LessOrEqual`.
-- [ ] 088. Importer for `Greater`.
-- [ ] 089. Importer for `GreaterOrEqual`.
-- [ ] 090. Importer for `Equal`.
-- [ ] 091. Importer for `Not`.
-- [ ] 092. Importer for `And`.
-- [ ] 093. Importer for `Or`.
-- [ ] 094. Importer for `Xor`.
-- [ ] 095. Importer for `IsNaN`.
-- [ ] 096. Importer for `IsInf`.
-- [ ] 097. Importer for `Sign`.
-- [ ] 098. Importer for `Abs`.
-- [ ] 099. Importer for `Neg`.
+
+- [ ] 31. Initialize ONNX proto ingestion pipeline.
+- [ ] 32. Map ONNX tensor types to IR `TensorType`.
+- [ ] 33. Importer for `Add`.
+- [ ] 34. Importer for `Sub`.
+- [ ] 35. Importer for `Mul`.
+- [ ] 36. Importer for `Div`.
+- [ ] 37. Importer for `MatMul`.
+- [ ] 38. Importer for `Gemm`.
+- [ ] 39. Importer for `Conv` (1D).
+- [ ] 40. Importer for `Conv` (2D).
+- [ ] 41. Importer for `Conv` (3D).
+- [ ] 42. Importer for `ConvTranspose`.
+- [ ] 43. Importer for `Relu`.
+- [ ] 44. Importer for `LeakyRelu`.
+- [ ] 45. Importer for `Sigmoid`.
+- [ ] 46. Importer for `Tanh`.
+- [ ] 47. Importer for `Softmax`.
+- [ ] 48. Importer for `LogSoftmax`.
+- [ ] 49. Importer for `Erf`.
+- [ ] 50. Importer for `Gelu`.
+- [ ] 51. Importer for `MaxPool` (1D, 2D, 3D).
+- [ ] 52. Importer for `AveragePool`.
+- [ ] 53. Importer for `GlobalMaxPool`.
+- [ ] 54. Importer for `GlobalAveragePool`.
+- [ ] 55. Importer for `Pad` (constant).
+- [ ] 56. Importer for `Pad` (reflect).
+- [ ] 57. Importer for `Pad` (edge).
+- [ ] 58. Importer for `Reshape`.
+- [ ] 59. Importer for `Flatten`.
+- [ ] 60. Importer for `Transpose`.
+- [ ] 61. Importer for `Squeeze`.
+- [ ] 62. Importer for `Unsqueeze`.
+- [ ] 63. Importer for `Concat`.
+- [ ] 64. Importer for `Split`.
+- [ ] 65. Importer for `Slice`.
+- [ ] 66. Importer for `Gather`.
+- [ ] 67. Importer for `GatherElements`.
+- [ ] 68. Importer for `GatherND`.
+- [ ] 69. Importer for `Scatter`.
+- [ ] 70. Importer for `ScatterElements`.
+- [ ] 71. Importer for `ScatterND`.
+- [ ] 72. Importer for `Cast`.
+- [ ] 73. Importer for `ReduceSum`.
+- [ ] 74. Importer for `ReduceMean`.
+- [ ] 75. Importer for `ReduceMax`.
+- [ ] 76. Importer for `ReduceMin`.
+- [ ] 77. Importer for `ReduceProd`.
+- [ ] 78. Importer for `ArgMax`.
+- [ ] 79. Importer for `ArgMin`.
+- [ ] 80. Importer for `Shape`.
+- [ ] 81. Importer for `Size`.
+- [ ] 82. Importer for `ConstantOfShape`.
+- [ ] 83. Importer for `Expand`.
+- [ ] 84. Importer for `Tile`.
+- [ ] 85. Importer for `Where`.
+- [ ] 86. Importer for `Less`.
+- [ ] 87. Importer for `LessOrEqual`.
+- [ ] 88. Importer for `Greater`.
+- [ ] 89. Importer for `GreaterOrEqual`.
+- [ ] 90. Importer for `Equal`.
+- [ ] 91. Importer for `Not`.
+- [ ] 92. Importer for `And`.
+- [ ] 93. Importer for `Or`.
+- [ ] 94. Importer for `Xor`.
+- [ ] 95. Importer for `IsNaN`.
+- [ ] 96. Importer for `IsInf`.
+- [ ] 97. Importer for `Sign`.
+- [ ] 98. Importer for `Abs`.
+- [ ] 99. Importer for `Neg`.
 - [ ] 100. Importer for `Ceil`.
 - [ ] 101. Importer for `Floor`.
 - [ ] 102. Importer for `Round`.
@@ -149,6 +154,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 130. Importer for `CumSum`.
 
 ### Phase 3: Tensor Expression (TE) & Compute Primitives
+
 - [ ] 131. Implement `te.var` for scalar variables.
 - [ ] 132. Implement `te.placeholder` for input tensors.
 - [ ] 133. Implement `te.compute` for defining tensor operations via lambda functions.
@@ -156,7 +162,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 135. Implement `te.sum` reduction primitive.
 - [ ] 136. Implement `te.max` reduction primitive.
 - [ ] 137. Implement `te.min` reduction primitive.
-- [ ] 138. Implement TE expressions for basic arithmetic (+, -, *, /).
+- [ ] 138. Implement TE expressions for basic arithmetic (+, -, \*, /).
 - [ ] 139. Implement TE expressions for math functions (exp, log, sigmoid).
 - [ ] 140. Translate High-Level IR `Conv2D` to TE compute definition.
 - [ ] 141. Translate High-Level IR `MatMul` to TE compute definition.
@@ -191,6 +197,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 170. Create interactive notebook visualizer for TE schedules.
 
 ### Phase 4: Low-Level Tensor IR (TIR)
+
 - [ ] 171. Define AST for Low-Level TIR.
 - [ ] 172. Implement `For` loop node.
 - [ ] 173. Implement `While` loop node.
@@ -233,6 +240,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 210. Implement snapshotting for compilation rollbacks.
 
 ### Phase 5: WebAssembly (WASM) Backend Emitter
+
 - [ ] 211. Build WASM AST generator module.
 - [ ] 212. Map TIR functions to WASM functions.
 - [ ] 213. Map TIR memory allocations to WASM linear memory segments.
@@ -275,6 +283,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 250. Create an automated benchmark suite for WASM emitter targets.
 
 ### Phase 6: WebGPU (WGSL) Backend Emitter
+
 - [ ] 251. Build WebGPU WGSL AST generator.
 - [ ] 252. Map TIR functions to WGSL `@compute` entry points.
 - [ ] 253. Map TIR thread bindings to WGSL `@workgroup_size`.
@@ -317,6 +326,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 290. Comprehensive end-to-end tests for all WGSL generated models.
 
 ### Phase 7: Web-Native Auto-Tuning (MetaSchedule Web)
+
 - [ ] 291. Define scheduling search space for basic operations.
 - [ ] 292. Implement a parameter space generator (tile sizes, unroll factors).
 - [ ] 293. Build a local cost model (e.g., XGBoost or simple NN) in JS/Python.
@@ -349,6 +359,7 @@ Instead of relying on a massive C++ LLVM toolchain, the `onnx9000` implementatio
 - [ ] 320. Support multi-device heterogenous tuning.
 
 ### Phase 8: Compilation CLI, Packaging, and Ecosystem
+
 - [ ] 321. Add `onnx9000 compile` CLI command.
 - [ ] 322. Implement target configuration flags (e.g., `--target=wasm,webgpu`).
 - [ ] 323. Implement optimization level flags (`-O0, -O1, -O2, -O3`).

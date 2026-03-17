@@ -1,13 +1,15 @@
 # Torch & TF Exporters Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of the PyTorch exporter (`torch.onnx`) within the `onnx9000` ecosystem.
-Standard `torch.onnx.export` relies on massive C++ dependencies (`libtorch`) to trace operations and translate ATen (PyTorch's internal C++ tensor library) to ONNX. 
+Standard `torch.onnx.export` relies on massive C++ dependencies (`libtorch`) to trace operations and translate ATen (PyTorch's internal C++ tensor library) to ONNX.
 Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a pure-Python, PyTorch-like API and leverages pure-Python `torch.fx` (Dynamo) graph extraction to map PyTorch operations directly to ONNX. This lightweight architecture allows model conversion to execute seamlessly in the browser via Pyodide, or instantly on edge devices, completely removing the gigabytes of C++ overhead typically required to export a model.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core Export API & Architecture (30+ items)
+
 - [xx] Implement pure-Python `onnx9000.export(model, args, f)`
 - [xx] Implement pure-Python `onnx9000.dynamo_export(model, args)`
 - [xx] Support `export_params=True` (embedding weights as initializers)
@@ -40,6 +42,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Ensure strict adherence to PyTorch `fx.GraphModule` topological traversal
 
 ### 2. ATen Math & Elementwise Operator Mappings (50+ items)
+
 - [xx] Map `aten::add` -> `Add`
 - [xx] Map `aten::add_` (inplace) -> `Add`
 - [xx] Map `aten::sub` -> `Sub`
@@ -94,6 +97,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Resolve implicit `alpha` scaling in `aten::add(a, b, alpha=2)` -> `Add(a, Mul(b, 2))`
 
 ### 3. ATen Neural Network Layer Mappings (40+ items)
+
 - [xx] Map `aten::linear` -> `MatMul` + `Add` or `Gemm`
 - [xx] Map `aten::conv1d` -> `Conv`
 - [xx] Map `aten::conv2d` -> `Conv`
@@ -136,6 +140,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Map `aten::embedding_bag` -> `Gather` + `ReduceSum`
 
 ### 4. ATen Activation Functions Mappings (25+ items)
+
 - [xx] Map `aten::relu` -> `Relu`
 - [xx] Map `aten::relu_` -> `Relu`
 - [xx] Map `aten::relu6` -> `Clip(0, 6)`
@@ -163,6 +168,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Map `aten::log_softmax` -> `LogSoftmax`
 
 ### 5. ATen Tensor Manipulation & Shape Mappings (45+ items)
+
 - [xx] Map `aten::view` -> `Reshape`
 - [xx] Map `aten::reshape` -> `Reshape`
 - [xx] Map `aten::transpose` -> `Transpose`
@@ -211,6 +217,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Map `aten::full_like` -> `Shape` + `ConstantOfShape`
 
 ### 6. ATen Reductions, Logical & Linear Algebra (40+ items)
+
 - [xx] Map `aten::sum` -> `ReduceSum`
 - [xx] Map `aten::mean` -> `ReduceMean`
 - [xx] Map `aten::max` -> `ReduceMax` (reduction) or `Max` (elementwise)
@@ -255,6 +262,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Map `aten::triu` -> `Trilu`
 
 ### 7. TorchScript, Dynamo & Control Flow (25+ items)
+
 - [xx] Implement `prim::If` -> `If`
 - [xx] Implement `prim::Loop` -> `Loop`
 - [xx] Implement `prim::ListConstruct` -> `SequenceConstruct`
@@ -282,6 +290,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Support exporting models with custom C++ ops via explicit `custom_opsets` definitions
 
 ### 8. Web/Pyodide & Zero-Dependency Validations (20+ items)
+
 - [xx] CLI fully operational without installing the pip `torch` package (requires providing `onnx9000.nn` equivalent models)
 - [xx] Execute `onnx9000.export` seamlessly inside the browser (WASM/Pyodide)
 - [xx] Load and trace PyTorch `.pt` / `.pth` state dictionaries purely via Python `pickle` parsers natively without `torch`
@@ -304,6 +313,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Export `model.safetensors` mappings natively alongside the ONNX topology implicitly
 
 ### 9. Vision, Audio & Advanced Operations (25+ items)
+
 - [xx] Map `torchvision.ops.nms` -> `NonMaxSuppression`
 - [xx] Map `torchvision.ops.roi_align` -> `RoiAlign`
 - [xx] Map `torchvision.ops.roi_pool` -> `MaxRoiPool`
@@ -332,6 +342,7 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Map `torch.distributions.normal.Normal` -> `RandomNormal`
 
 ### 10. Graph Optimizations & Export Post-Processing (20+ items)
+
 - [xx] Fold static PyTorch shapes (`x.shape[0]`) into `Constant` nodes automatically
 - [xx] Remove `aten::contiguous` operations completely (No-op in ONNX)
 - [xx] Remove `aten::to` operations where `dtype` is identical
@@ -352,4 +363,3 @@ Our `onnx9000` reimplementation completely bypasses C++ tracing. It provides a p
 - [xx] Format PyTorch stack traces securely inside `ModelProto.doc_string`
 - [xx] Export directly to `.onnx` byte buffer for instant HTTP transmission or WebSocket delivery
 - [xx] Guarantee the generated `.onnx` requires ZERO external pre-processing to run in `onnxruntime-web`
-

@@ -1,12 +1,14 @@
 # ONNX Standard Compliance & Testing Tracker
 
 ## Description
+
 This document tracks the complete compliance and validation of the `onnx9000` ecosystem against the official ONNX Standard specifications.
 To ensure our zero-dependency pure-Python implementation is numerically and structurally identical to the massive C++ reference implementation (`onnxruntime`), we must execute the thousands of standard ONNX Backend Test Cases. These tests guarantee that `onnx9000` evaluates every single operator, shape, broadcasting rule, and mathematical edge case precisely according to the strict `ai.onnx` and `ai.onnx.ml` specifications across Opsets 1 through 21.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Test Runner Architecture & Environment (30+ items)
+
 - [xx] Implement pure-Python test case runner targeting `.pb` directories
 - [xx] Parse `test_data_set_N/input_X.pb` seamlessly without `onnx` native package
 - [xx] Parse `test_data_set_N/output_X.pb` seamlessly without `onnx` native package
@@ -39,6 +41,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Support strictly executing `ai.onnx.ml` domain test sets
 
 ### 2. Math & Elementwise Operator Compliance (40+ items)
+
 - [xx] Pass `test_abs`
 - [xx] Pass `test_acos`
 - [xx] Pass `test_acosh`
@@ -81,6 +84,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_mul_bcast`
 
 ### 3. Math & Elementwise (Continued) (30+ items)
+
 - [xx] Pass `test_neg`
 - [xx] Pass `test_not`
 - [xx] Pass `test_or` (standard)
@@ -113,6 +117,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_less_equal_bcast`
 
 ### 4. Matrix & Neural Network Operators Compliance (40+ items)
+
 - [xx] Pass `test_matmul_2d`
 - [xx] Pass `test_matmul_3d`
 - [xx] Pass `test_matmul_4d`
@@ -155,6 +160,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_celu_expanded`
 
 ### 5. Activations & Reductions Compliance (30+ items)
+
 - [xx] Pass `test_elu`
 - [xx] Pass `test_hardmax_axis_0`
 - [xx] Pass `test_hardmax_axis_1`
@@ -187,6 +193,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_reduce_sum_square_do_not_keepdims`
 
 ### 6. Shape, Tensor Manipulation & Selection (40+ items)
+
 - [xx] Pass `test_argmax_default_axis_example`
 - [xx] Pass `test_argmax_keepdims_example`
 - [xx] Pass `test_argmin_default_axis_example`
@@ -230,6 +237,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_slice_default_axes`
 
 ### 7. Tensor Manipulation (Continued) & Control Flow (30+ items)
+
 - [xx] Pass `test_slice_negative_axes`
 - [xx] Pass `test_slice_negative_steps`
 - [xx] Pass `test_split_equal_parts_1d`
@@ -262,6 +270,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_sequence_construct`
 
 ### 8. `ai.onnx.ml` Classical ML Domain Compliance (30+ items)
+
 - [xx] Pass `test_ml_array_feature_extractor`
 - [xx] Pass `test_ml_binarizer`
 - [xx] Pass `test_ml_cast`
@@ -293,8 +302,8 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Validate ML topologies handle sparse structures if tested
 - [xx] Catch expected execution failures natively on invalid `ai.onnx.ml` topologies
 
-
 ### 9. Advanced Operators, Sequences & Quantization Compliance (30+ items)
+
 - [xx] Pass `test_sequence_at_negative`
 - [xx] Pass `test_sequence_empty`
 - [xx] Pass `test_sequence_erase_at_back`
@@ -329,6 +338,7 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Pass `test_lstm_with_initial_bias`
 
 ### 10. Explicit Edge Cases, Precision & Subgraphs (25+ items)
+
 - [xx] Validate 0D scalar broadcasts successfully against ND tensors (`test_add_scalar_ND`)
 - [xx] Validate empty tensor execution (`test_empty_tensor_1d`)
 - [xx] Validate empty tensor execution propagates properly through math ops
@@ -353,4 +363,3 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 - [xx] Execute standard ONNX ResNet compliance test seamlessly
 - [xx] Execute standard ONNX BERT compliance test seamlessly
 - [xx] Execute standard ONNX VGG compliance test seamlessly
-

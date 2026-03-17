@@ -1,13 +1,15 @@
 # paddle2onnx Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `paddle2onnx` within the `onnx9000` ecosystem.
-Unlike the original project, which binds tightly to the native C++ `paddlepaddle` framework, this implementation uses a zero-dependency, pure-Python parser to read Paddle's internal protobuf (`.pdmodel`) and binary parameter (`.pdiparams`) formats. 
+Unlike the original project, which binds tightly to the native C++ `paddlepaddle` framework, this implementation uses a zero-dependency, pure-Python parser to read Paddle's internal protobuf (`.pdmodel`) and binary parameter (`.pdiparams`) formats.
 By decoupling the converter from the massive native Paddle engine, it can execute entirely inside a web browser (via WASM/WebGPU) or run in high-concurrency server environments instantly without bloated container images.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Pure-Python Parsers & Loaders (Zero-Dependency)
+
 - [x] Implement pure-Python parser for Paddle Inference Model (`.pdmodel`) Protobuf format
 - [x] Implement pure-Python parser for Paddle Inference Parameters (`.pdiparams`) binary format
 - [x] Implement pure-Python parser for Legacy Paddle Inference (`__model__`) Protobuf format
@@ -30,6 +32,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Decrypt / Handle Paddle encrypted model formats (if keys provided)
 
 ### 2. Graph Pre-Processing & Topology Adjustments
+
 - [x] Eliminate dead code and unconnected ops
 - [x] Prune backward pass / training specific ops (e.g., `sgd`, `adam`)
 - [x] Resolve variable renaming conflicts between blocks
@@ -45,6 +48,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Extract and bake-in `scale` and `bias` tensors that Paddle leaves floating
 
 ### 3. Control Flow & LoDTensor Mapping
+
 - [x] Map Paddle `while` op -> ONNX `Loop`
 - [x] Map Paddle `conditional_block` -> ONNX `If`
 - [x] Map Paddle `select_input` -> ONNX `If` or `Where`
@@ -68,6 +72,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map Paddle `sequence_unpad` -> ONNX `Slice`
 
 ### 4. Mathematical Element-wise Operators (50+ items)
+
 - [x] Map `elementwise_add` -> `Add`
 - [x] Map `elementwise_sub` -> `Sub`
 - [x] Map `elementwise_mul` -> `Mul`
@@ -114,6 +119,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `clip` -> `Clip`
 
 ### 5. Reduction & Logical Operators (30+ items)
+
 - [x] Map `reduce_sum` -> `ReduceSum`
 - [x] Map `reduce_mean` -> `ReduceMean`
 - [x] Map `reduce_max` -> `ReduceMax`
@@ -144,6 +150,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `nonzero` -> `NonZero`
 
 ### 6. Activations (20+ items)
+
 - [x] Map `relu` -> `Relu`
 - [x] Map `relu6` -> `Clip(0, 6)`
 - [x] Map `leaky_relu` -> `LeakyRelu`
@@ -166,6 +173,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `bipolar_sigmoid` -> Subgraph
 
 ### 7. Neural Network & Vision Operators (50+ items)
+
 - [x] Map `conv2d` -> `Conv`
 - [x] Map `depthwise_conv2d` -> `Conv` (with groups)
 - [x] Map `conv2d_transpose` -> `ConvTranspose`
@@ -208,6 +216,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `collect_fpn_proposals` -> ONNX Custom Subgraph
 
 ### 8. Tensor Manipulation & Creation Operators (50+ items)
+
 - [x] Map `reshape` -> `Reshape`
 - [x] Map `reshape2` -> `Reshape`
 - [x] Map `flatten` -> `Flatten`
@@ -256,6 +265,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `meshgrid` -> ONNX Subgraph
 
 ### 9. NLP & Sequence Operators (20+ items)
+
 - [x] Map `embedding` -> `Gather`
 - [x] Map `lookup_table` -> `Gather`
 - [x] Map `lookup_table_v2` -> `Gather`
@@ -273,6 +283,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Map `fused_feedforward` -> ONNX Custom or Math ops
 
 ### 10. Quantization & Mixed Precision (20+ items)
+
 - [x] Map `quantize_linear` -> `QuantizeLinear`
 - [x] Map `dequantize_linear` -> `DequantizeLinear`
 - [x] Map `fake_quantize_abs_max` -> Quantize Subgraph
@@ -287,6 +298,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Strip out FakeQuantize ops for FP32 targets natively
 
 ### 11. Graph Optimizations (Paddle Specific)
+
 - [x] Constant Folding pass
 - [x] Redundant `cast` Elimination
 - [x] `scale` operation folding into Conv/MatMul weights
@@ -298,6 +310,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Fuse `batch_norm` into `conv2d`
 
 ### 12. Opset Compliance
+
 - [x] Target ONNX Opset 7
 - [x] Target ONNX Opset 8
 - [x] Target ONNX Opset 9
@@ -315,6 +328,7 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Target ONNX Opset 21
 
 ### 13. Zero-Dependency & Lightweight Runtime Features (20+ items)
+
 - [x] CLI fully operational without `paddlepaddle` installed
 - [x] Convert `.pdmodel` files purely via python `protobuf`
 - [x] Memory-efficient streamed reading of `.pdiparams` binary blobs
@@ -326,8 +340,8 @@ By decoupling the converter from the massive native Paddle engine, it can execut
 - [x] Expose native JS/TypeScript bindings for drag-and-drop web UI
 - [x] Dynamic WebGPU Shader preparation metrics generated during conversion
 
-
 ### 14. Additional Paddle Operators & Special Cases (30+ items)
+
 - [x] Map `grid_sampler` -> `GridSample`
 - [x] Map `affine_grid` -> ONNX Custom Subgraph
 - [x] Map `deformable_conv` -> ONNX Custom Subgraph

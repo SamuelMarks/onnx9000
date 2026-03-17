@@ -69,3 +69,111 @@ describe('Index Export', () => {
     expect(mod.Attribute).toBeDefined();
   });
 });
+
+describe('Tensor Format', () => {
+  it('should format no data', () => {
+    const t = new Tensor('T', [2], 'float32');
+    expect(t.formatData()).toBe('No data');
+  });
+
+  it('should generate uuid via math random if crypto missing', () => {
+    // we can mock crypto to test the fallback
+    const origCrypto = globalThis.crypto;
+    // @ts-ignore
+    delete globalThis.crypto;
+    const t = new Tensor('T', [2], 'float32');
+    expect(t.id).toBeDefined();
+    expect(typeof t.id).toBe('string');
+    // @ts-ignore
+    globalThis.crypto = origCrypto;
+  });
+
+  it('should store external data', () => {
+    const ext = { location: 'model.data', offset: 0, length: 100 };
+    const t = new Tensor('T', [2], 'float32', false, true, null, ext);
+    expect(t.externalData).toBe(ext);
+  });
+
+  it('should format float32 data', () => {
+    const buf = new Float32Array([1.0, 2.5, 3.0, 4.0]);
+    const t = new Tensor('T', [4], 'float32', false, true, new Uint8Array(buf.buffer));
+    const str = t.formatData(2);
+    expect(str).toBe('[1, 2.5 ... +2 elements]');
+  });
+
+  it('should format int64 data', () => {
+    const buf = new BigInt64Array([1n, -500n]);
+    const t = new Tensor('T', [2], 'int64', false, true, new Uint8Array(buf.buffer));
+    const str = t.formatData();
+    expect(str).toBe('[1, -500]');
+  });
+
+  it('should format float16 data', () => {
+    const buf = new Uint16Array([0x3c00, 0xbc00]); // 1.0, -1.0
+    const t = new Tensor('T', [2], 'float16', false, true, new Uint8Array(buf.buffer));
+    const str = t.formatData();
+    expect(str).toBe('[1, -1]');
+  });
+
+  it('should format float16 zero data', () => {
+    const buf = new Uint16Array([0x0000]); // 0
+    const t = new Tensor('T', [1], 'float16', false, true, new Uint8Array(buf.buffer));
+    const str = t.formatData();
+    expect(str).toBe('[0]');
+  });
+
+  it('should format bfloat16 data', () => {
+    const buf = new Uint16Array([0x3f80, 0xbf80]); // 1.0, -1.0
+    const t = new Tensor('T', [2], 'bfloat16', false, true, new Uint8Array(buf.buffer));
+    const str = t.formatData();
+    expect(str).toBe('[1, -1]');
+  });
+
+  it('should format int8/uint8 fallback data', () => {
+    const buf = new Uint8Array([10, 20]);
+    const t = new Tensor('T', [2], 'uint8', false, true, buf);
+    const str = t.formatData();
+    expect(str).toBe('[10, 20]');
+  });
+
+  it('should format directly from typed array', () => {
+    const buf = new Float32Array([10.5, 20.5]);
+    const t = new Tensor('T', [2], 'float32', false, true, buf);
+    const str = t.formatData();
+    expect(str).toBe('[10.5, 20.5]');
+  });
+});
+
+describe('Graph specific', () => {
+  it('should generate vi uuid via math random if crypto missing', () => {
+    const origCrypto = globalThis.crypto;
+    // @ts-ignore
+    delete globalThis.crypto;
+    const g = new Graph('g1');
+    const vi = new ValueInfo('V', [1], 'float32');
+    expect(vi.id).toBeDefined();
+    expect(g.id).toBeDefined();
+    // @ts-ignore
+    globalThis.crypto = origCrypto;
+  });
+});
+
+describe('Node format/missing', () => {
+  it('should handle optional properties', () => {
+    const n = new Node('Relu', [], [], {}, undefined, undefined);
+    expect(n.name).toBe('');
+    expect(n.domain).toBe('');
+  });
+});
+
+describe('Node format/missing', () => {
+  it('should generate uuid via math random if crypto missing', () => {
+    const origCrypto = globalThis.crypto;
+    // @ts-ignore
+    delete globalThis.crypto;
+    const n = new Node('Relu', [], []);
+    expect(n.id).toBeDefined();
+    // @ts-ignore
+    globalThis.crypto = origCrypto;
+  });
+});

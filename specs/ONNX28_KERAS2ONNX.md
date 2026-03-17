@@ -1,134 +1,145 @@
 # ONNX28: keras2onnx & tfjs-to-onnx (Web-Native Keras Converter)
 
 ## Original Project Description
+
 `keras2onnx` (and its underlying dependencies like `tf2onnx`) is a Python-based conversion tool that translates Keras and TensorFlow models into the standard ONNX format. It parses Keras `.h5`, `.keras`, or SavedModel files, extracting the computational graph and weight tensors, and meticulously maps Keras layer semantics (which default to NHWC layout) into ONNX operator semantics (which default to NCHW layout). It requires a heavy, full-scale Python installation with TensorFlow and ONNX pip packages installed.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.keras` eliminates the Python dependency completely, offering a **pure TypeScript/WebAssembly converter**.
-*   **Browser-Based Conversion:** Developers can drag and drop a Keras `.h5` file or a TensorFlow.js `model.json` directly into the browser, and `onnx9000` will output a `.onnx` file instantly, strictly client-side.
-*   **Dual-Format Ingestion:** Natively parses both Keras HDF5 (`.h5`) via a pure-JS HDF5 reader, and TensorFlow.js formats (`LayersModel` and `GraphModel`), providing an automatic bridge from the JS ecosystem to ONNX.
-*   **Zero-Copy Weight Transposition:** Translating Keras weight layouts (e.g., `[H, W, In, Out]`) to ONNX layouts (`[Out, In, H, W]`) is performed by highly optimized WASM kernels to prevent browser tab crashes on massive models.
-*   **Direct Execution Pipeline:** Converted models can be instantly routed into the `onnx9000` execution backend (WebGPU/WASM), allowing a user to `await onnx9000.keras.load('model.json')` and run it as if it were a native ONNX model.
+
+- **Browser-Based Conversion:** Developers can drag and drop a Keras `.h5` file or a TensorFlow.js `model.json` directly into the browser, and `onnx9000` will output a `.onnx` file instantly, strictly client-side.
+- **Dual-Format Ingestion:** Natively parses both Keras HDF5 (`.h5`) via a pure-JS HDF5 reader, and TensorFlow.js formats (`LayersModel` and `GraphModel`), providing an automatic bridge from the JS ecosystem to ONNX.
+- **Zero-Copy Weight Transposition:** Translating Keras weight layouts (e.g., `[H, W, In, Out]`) to ONNX layouts (`[Out, In, H, W]`) is performed by highly optimized WASM kernels to prevent browser tab crashes on massive models.
+- **Direct Execution Pipeline:** Converted models can be instantly routed into the `onnx9000` execution backend (WebGPU/WASM), allowing a user to `await onnx9000.keras.load('model.json')` and run it as if it were a native ONNX model.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Ingestion & Format Parsing (TF.js & Keras H5)
-- [ ] 001. Implement `tfjs.LayersModel` (`model.json`) JSON schema parser.
-- [ ] 002. Implement `tfjs.GraphModel` JSON schema parser.
-- [ ] 003. Implement external binary weight shard downloader/parser for TF.js.
-- [ ] 004. Combine chunked `.bin` shards into a contiguous ArrayBuffer.
-- [ ] 005. Map TF.js weight manifests to specific layer variables.
-- [ ] 006. Implement pure-JS HDF5 (`.h5`) file reader.
-- [ ] 007. Parse Keras `model_config` JSON strings embedded within HDF5 files.
-- [ ] 008. Extract layer weights sequentially from HDF5 datasets.
-- [ ] 009. Implement parser for the newer Keras 3 `.keras` zip-based format.
-- [ ] 010. Support reading from local `File`/`Blob` objects in the browser.
-- [ ] 011. Support fetching from remote URLs (with CORS handling).
-- [ ] 012. Extract input specifications (shapes, names, types) from Keras config.
-- [ ] 013. Extract output specifications from Keras config.
-- [ ] 014. Identify multi-input / multi-output model topologies.
-- [ ] 015. Build an internal abstract graph of Keras layers before ONNX translation.
+
+- [ ] 1. Implement `tfjs.LayersModel` (`model.json`) JSON schema parser.
+- [ ] 2. Implement `tfjs.GraphModel` JSON schema parser.
+- [ ] 3. Implement external binary weight shard downloader/parser for TF.js.
+- [ ] 4. Combine chunked `.bin` shards into a contiguous ArrayBuffer.
+- [ ] 5. Map TF.js weight manifests to specific layer variables.
+- [ ] 6. Implement pure-JS HDF5 (`.h5`) file reader.
+- [ ] 7. Parse Keras `model_config` JSON strings embedded within HDF5 files.
+- [ ] 8. Extract layer weights sequentially from HDF5 datasets.
+- [ ] 9. Implement parser for the newer Keras 3 `.keras` zip-based format.
+- [ ] 10. Support reading from local `File`/`Blob` objects in the browser.
+- [ ] 11. Support fetching from remote URLs (with CORS handling).
+- [ ] 12. Extract input specifications (shapes, names, types) from Keras config.
+- [ ] 13. Extract output specifications from Keras config.
+- [ ] 14. Identify multi-input / multi-output model topologies.
+- [ ] 15. Build an internal abstract graph of Keras layers before ONNX translation.
 
 ### Phase 2: Core Layout Translation Engine (NHWC to NCHW)
-- [ ] 016. Build the NHWC (Channels Last) to NCHW (Channels First) shape translator.
-- [ ] 017. Build the `onnx9000` Transpose WASM kernel for 4D Image weights (Conv2D: `[H, W, I, O]` -> `[O, I, H, W]`).
-- [ ] 018. Build the Transpose WASM kernel for 3D Sequence weights.
-- [ ] 019. Build the Transpose WASM kernel for 5D Video weights (Conv3D).
-- [ ] 020. Transpose Keras `Dense` weights (`[In, Out]` -> `[Out, In]`) where ONNX requires explicit GEMM mapping.
-- [ ] 021. Track layout states dynamically (inserting ONNX `Transpose` ops dynamically if a Keras layer explicitly assumes NHWC data).
-- [ ] 022. Implement a layout optimizer pass to remove redundant `Transpose` (e.g., `NCHW->NHWC->NCHW` collapses).
-- [ ] 023. Handle Keras `data_format="channels_first"` layers gracefully (bypassing transpose injection).
-- [ ] 024. Resolve Spatial padding discrepancies between Keras and ONNX.
-- [ ] 025. Convert explicit TF `padding="SAME"` behavior to explicit ONNX padding values.
-- [ ] 026. Convert explicit TF `padding="VALID"` behavior to ONNX padding values.
+
+- [ ] 16. Build the NHWC (Channels Last) to NCHW (Channels First) shape translator.
+- [ ] 17. Build the `onnx9000` Transpose WASM kernel for 4D Image weights (Conv2D: `[H, W, I, O]` -> `[O, I, H, W]`).
+- [ ] 18. Build the Transpose WASM kernel for 3D Sequence weights.
+- [ ] 19. Build the Transpose WASM kernel for 5D Video weights (Conv3D).
+- [ ] 20. Transpose Keras `Dense` weights (`[In, Out]` -> `[Out, In]`) where ONNX requires explicit GEMM mapping.
+- [ ] 21. Track layout states dynamically (inserting ONNX `Transpose` ops dynamically if a Keras layer explicitly assumes NHWC data).
+- [ ] 22. Implement a layout optimizer pass to remove redundant `Transpose` (e.g., `NCHW->NHWC->NCHW` collapses).
+- [ ] 23. Handle Keras `data_format="channels_first"` layers gracefully (bypassing transpose injection).
+- [ ] 24. Resolve Spatial padding discrepancies between Keras and ONNX.
+- [ ] 25. Convert explicit TF `padding="SAME"` behavior to explicit ONNX padding values.
+- [ ] 26. Convert explicit TF `padding="VALID"` behavior to ONNX padding values.
 
 ### Phase 3: Core Keras Layers Mapping (ONNX Emitters)
-- [ ] 027. Map `InputLayer` to ONNX Graph Inputs.
-- [ ] 028. Map `Dense` to ONNX `MatMul` + `Add` (Bias) or `Gemm`.
-- [ ] 029. Extract `Dense` activation and append matching ONNX activation node.
-- [ ] 030. Map `Activation` layer directly.
-- [ ] 031. Map `ReLU` activation.
-- [ ] 032. Map `Softmax` activation (handling axis conversions).
-- [ ] 033. Map `LeakyReLU` activation.
-- [ ] 034. Map `PReLU` activation (handling shared axes constraints).
-- [ ] 035. Map `ELU` activation.
-- [ ] 036. Map `ThresholdedReLU` activation.
-- [ ] 037. Map `Softplus` activation.
-- [ ] 038. Map `Softsign` activation.
-- [ ] 039. Map `HardSigmoid` activation.
-- [ ] 040. Map `Swish` / `SiLU` activation.
-- [ ] 041. Map `GELU` activation (handling approx vs exact flags).
-- [ ] 042. Map `Dropout` to ONNX `Identity` (or drop entirely for inference).
-- [ ] 043. Map `SpatialDropout1D`, `SpatialDropout2D`, `SpatialDropout3D` to `Identity`.
-- [ ] 044. Map `GaussianDropout` to `Identity`.
-- [ ] 045. Map `GaussianNoise` to `Identity`.
-- [ ] 046. Map `ActivityRegularization` to `Identity`.
-- [ ] 047. Map `AlphaDropout` to `Identity`.
+
+- [ ] 27. Map `InputLayer` to ONNX Graph Inputs.
+- [ ] 28. Map `Dense` to ONNX `MatMul` + `Add` (Bias) or `Gemm`.
+- [ ] 29. Extract `Dense` activation and append matching ONNX activation node.
+- [ ] 30. Map `Activation` layer directly.
+- [ ] 31. Map `ReLU` activation.
+- [ ] 32. Map `Softmax` activation (handling axis conversions).
+- [ ] 33. Map `LeakyReLU` activation.
+- [ ] 34. Map `PReLU` activation (handling shared axes constraints).
+- [ ] 35. Map `ELU` activation.
+- [ ] 36. Map `ThresholdedReLU` activation.
+- [ ] 37. Map `Softplus` activation.
+- [ ] 38. Map `Softsign` activation.
+- [ ] 39. Map `HardSigmoid` activation.
+- [ ] 40. Map `Swish` / `SiLU` activation.
+- [ ] 41. Map `GELU` activation (handling approx vs exact flags).
+- [ ] 42. Map `Dropout` to ONNX `Identity` (or drop entirely for inference).
+- [ ] 43. Map `SpatialDropout1D`, `SpatialDropout2D`, `SpatialDropout3D` to `Identity`.
+- [ ] 44. Map `GaussianDropout` to `Identity`.
+- [ ] 45. Map `GaussianNoise` to `Identity`.
+- [ ] 46. Map `ActivityRegularization` to `Identity`.
+- [ ] 47. Map `AlphaDropout` to `Identity`.
 
 ### Phase 4: Convolutional Layers Mapping
-- [ ] 048. Map `Conv1D` to ONNX `Conv`.
-- [ ] 049. Map `Conv2D` to ONNX `Conv`.
-- [ ] 050. Map `Conv3D` to ONNX `Conv`.
-- [ ] 051. Parse and apply `strides` tuple to ONNX.
-- [ ] 052. Parse and apply `dilation_rate` tuple to ONNX.
-- [ ] 053. Parse and apply `groups` attribute.
-- [ ] 054. Map `SeparableConv1D` to Depthwise `Conv` + Pointwise `Conv`.
-- [ ] 055. Map `SeparableConv2D` to Depthwise `Conv` + Pointwise `Conv`.
-- [ ] 056. Map `DepthwiseConv2D` to ONNX `Conv` with `groups = in_channels`.
-- [ ] 057. Map `Conv1DTranspose` to ONNX `ConvTranspose`.
-- [ ] 058. Map `Conv2DTranspose` to ONNX `ConvTranspose`.
-- [ ] 059. Map `Conv3DTranspose` to ONNX `ConvTranspose`.
-- [ ] 060. Calculate ONNX `output_padding` dynamically to match Keras shape inference for Transpose Convs.
+
+- [ ] 48. Map `Conv1D` to ONNX `Conv`.
+- [ ] 49. Map `Conv2D` to ONNX `Conv`.
+- [ ] 50. Map `Conv3D` to ONNX `Conv`.
+- [ ] 51. Parse and apply `strides` tuple to ONNX.
+- [ ] 52. Parse and apply `dilation_rate` tuple to ONNX.
+- [ ] 53. Parse and apply `groups` attribute.
+- [ ] 54. Map `SeparableConv1D` to Depthwise `Conv` + Pointwise `Conv`.
+- [ ] 55. Map `SeparableConv2D` to Depthwise `Conv` + Pointwise `Conv`.
+- [ ] 56. Map `DepthwiseConv2D` to ONNX `Conv` with `groups = in_channels`.
+- [ ] 57. Map `Conv1DTranspose` to ONNX `ConvTranspose`.
+- [ ] 58. Map `Conv2DTranspose` to ONNX `ConvTranspose`.
+- [ ] 59. Map `Conv3DTranspose` to ONNX `ConvTranspose`.
+- [ ] 60. Calculate ONNX `output_padding` dynamically to match Keras shape inference for Transpose Convs.
 
 ### Phase 5: Pooling Layers Mapping
-- [ ] 061. Map `MaxPooling1D` to ONNX `MaxPool`.
-- [ ] 062. Map `MaxPooling2D` to ONNX `MaxPool`.
-- [ ] 063. Map `MaxPooling3D` to ONNX `MaxPool`.
-- [ ] 064. Map `AveragePooling1D` to ONNX `AveragePool`.
-- [ ] 065. Map `AveragePooling2D` to ONNX `AveragePool`.
-- [ ] 066. Map `AveragePooling3D` to ONNX `AveragePool`.
-- [ ] 067. Map `GlobalMaxPooling1D` to ONNX `GlobalMaxPool`.
-- [ ] 068. Map `GlobalMaxPooling2D` to ONNX `GlobalMaxPool`.
-- [ ] 069. Map `GlobalMaxPooling3D` to ONNX `GlobalMaxPool`.
-- [ ] 070. Map `GlobalAveragePooling1D` to ONNX `GlobalAveragePool`.
-- [ ] 071. Map `GlobalAveragePooling2D` to ONNX `GlobalAveragePool`.
-- [ ] 072. Map `GlobalAveragePooling3D` to ONNX `GlobalAveragePool`.
-- [ ] 073. Handle Keras `keepdims=False` (default in GlobalPools) by inserting ONNX `Squeeze`.
+
+- [ ] 61. Map `MaxPooling1D` to ONNX `MaxPool`.
+- [ ] 62. Map `MaxPooling2D` to ONNX `MaxPool`.
+- [ ] 63. Map `MaxPooling3D` to ONNX `MaxPool`.
+- [ ] 64. Map `AveragePooling1D` to ONNX `AveragePool`.
+- [ ] 65. Map `AveragePooling2D` to ONNX `AveragePool`.
+- [ ] 66. Map `AveragePooling3D` to ONNX `AveragePool`.
+- [ ] 67. Map `GlobalMaxPooling1D` to ONNX `GlobalMaxPool`.
+- [ ] 68. Map `GlobalMaxPooling2D` to ONNX `GlobalMaxPool`.
+- [ ] 69. Map `GlobalMaxPooling3D` to ONNX `GlobalMaxPool`.
+- [ ] 70. Map `GlobalAveragePooling1D` to ONNX `GlobalAveragePool`.
+- [ ] 71. Map `GlobalAveragePooling2D` to ONNX `GlobalAveragePool`.
+- [ ] 72. Map `GlobalAveragePooling3D` to ONNX `GlobalAveragePool`.
+- [ ] 73. Handle Keras `keepdims=False` (default in GlobalPools) by inserting ONNX `Squeeze`.
 
 ### Phase 6: Recurrent Layers (RNN/LSTM/GRU) Mapping
-- [ ] 074. Map `SimpleRNN` to ONNX `RNN`.
-- [ ] 075. Transpose and pack Keras RNN weights (`kernel`, `recurrent_kernel`, `bias`) into ONNX RNN combined weights `W` and `R`.
-- [ ] 076. Handle Keras `return_sequences=True` (outputting full sequence).
-- [ ] 077. Handle Keras `return_sequences=False` (outputting last state, slicing ONNX output).
-- [ ] 078. Handle Keras `return_state=True` (outputting hidden states).
-- [ ] 079. Map `LSTM` to ONNX `LSTM`.
-- [ ] 080. Convert Keras LSTM weight gate order (i, f, c, o) to ONNX LSTM gate order (i, o, f, c).
-- [ ] 081. Map `GRU` to ONNX `GRU`.
-- [ ] 082. Convert Keras GRU weight gate order (z, r, h) to ONNX GRU gate order (z, r, h).
-- [ ] 083. Handle GRU `reset_after` flag (mapping to linear_before_reset in ONNX).
-- [ ] 084. Map `Bidirectional` wrapper for RNN/LSTM/GRU.
-- [ ] 085. Combine forward and backward Keras weights into ONNX multi-directional weights.
-- [ ] 086. Implement `merge_mode='concat'` for Bidirectional outputs.
-- [ ] 087. Implement `merge_mode='sum'` for Bidirectional outputs.
-- [ ] 088. Implement `merge_mode='mul'` for Bidirectional outputs.
-- [ ] 089. Implement `merge_mode='ave'` for Bidirectional outputs.
-- [ ] 090. Handle initial state inputs securely for stateful sequence models.
+
+- [ ] 74. Map `SimpleRNN` to ONNX `RNN`.
+- [ ] 75. Transpose and pack Keras RNN weights (`kernel`, `recurrent_kernel`, `bias`) into ONNX RNN combined weights `W` and `R`.
+- [ ] 76. Handle Keras `return_sequences=True` (outputting full sequence).
+- [ ] 77. Handle Keras `return_sequences=False` (outputting last state, slicing ONNX output).
+- [ ] 78. Handle Keras `return_state=True` (outputting hidden states).
+- [ ] 79. Map `LSTM` to ONNX `LSTM`.
+- [ ] 80. Convert Keras LSTM weight gate order (i, f, c, o) to ONNX LSTM gate order (i, o, f, c).
+- [ ] 81. Map `GRU` to ONNX `GRU`.
+- [ ] 82. Convert Keras GRU weight gate order (z, r, h) to ONNX GRU gate order (z, r, h).
+- [ ] 83. Handle GRU `reset_after` flag (mapping to linear_before_reset in ONNX).
+- [ ] 84. Map `Bidirectional` wrapper for RNN/LSTM/GRU.
+- [ ] 85. Combine forward and backward Keras weights into ONNX multi-directional weights.
+- [ ] 86. Implement `merge_mode='concat'` for Bidirectional outputs.
+- [ ] 87. Implement `merge_mode='sum'` for Bidirectional outputs.
+- [ ] 88. Implement `merge_mode='mul'` for Bidirectional outputs.
+- [ ] 89. Implement `merge_mode='ave'` for Bidirectional outputs.
+- [ ] 90. Handle initial state inputs securely for stateful sequence models.
 
 ### Phase 7: Merge Layers Mapping
-- [ ] 091. Map `Add` to ONNX `Add` (with multi-input accumulation).
-- [ ] 092. Map `Subtract` to ONNX `Sub`.
-- [ ] 093. Map `Multiply` to ONNX `Mul` (with multi-input accumulation).
-- [ ] 094. Map `Average` to ONNX `Mean`.
-- [ ] 095. Map `Maximum` to ONNX `Max`.
-- [ ] 096. Map `Minimum` to ONNX `Min`.
-- [ ] 097. Map `Concatenate` to ONNX `Concat`.
-- [ ] 098. Resolve negative `axis` properly for `Concatenate` within the NHWC -> NCHW translation context.
-- [ ] 099. Map `Dot` to ONNX `MatMul` (handling explicit axes parameters via Transpose injections).
+
+- [ ] 91. Map `Add` to ONNX `Add` (with multi-input accumulation).
+- [ ] 92. Map `Subtract` to ONNX `Sub`.
+- [ ] 93. Map `Multiply` to ONNX `Mul` (with multi-input accumulation).
+- [ ] 94. Map `Average` to ONNX `Mean`.
+- [ ] 95. Map `Maximum` to ONNX `Max`.
+- [ ] 96. Map `Minimum` to ONNX `Min`.
+- [ ] 97. Map `Concatenate` to ONNX `Concat`.
+- [ ] 98. Resolve negative `axis` properly for `Concatenate` within the NHWC -> NCHW translation context.
+- [ ] 99. Map `Dot` to ONNX `MatMul` (handling explicit axes parameters via Transpose injections).
 - [ ] 100. Handle implicit broadcasting differences between Keras and ONNX during merge operations.
 
 ### Phase 8: Advanced & Attention Layers
+
 - [ ] 101. Map `Attention` to explicit ONNX Subgraph (MatMul + Softmax + MatMul).
 - [ ] 102. Handle causal masks dynamically inside `Attention` mapping.
 - [ ] 103. Map `AdditiveAttention` (Bahdanau) to ONNX explicit Ops.
@@ -143,6 +154,7 @@
 - [ ] 112. Map Keras `TimeDistributed` wrapper by reshaping `[batch, time, ...]` -> `[batch * time, ...]` -> Apply Layer -> Reshape back.
 
 ### Phase 9: Normalization & Reshaping Layers
+
 - [ ] 113. Map `BatchNormalization` to ONNX `BatchNormalization`.
 - [ ] 114. Extract moving mean, moving variance, beta, and gamma.
 - [ ] 115. Map `LayerNormalization` to ONNX `LayerNormalization` or `ReduceMean`->`Sub`->`Pow`->`Add`->`Div` if ONNX opset is too low.
@@ -165,7 +177,8 @@
 - [ ] 132. Map `UpSampling2D` to ONNX `Resize`.
 - [ ] 133. Map `UpSampling3D` to ONNX `Resize`.
 
-### Phase 10: TF.js GraphModel Specific Ops (tf.* equivalents)
+### Phase 10: TF.js GraphModel Specific Ops (tf.\* equivalents)
+
 - [ ] 134. Map TF.js `tf.add` to ONNX `Add`.
 - [ ] 135. Map TF.js `tf.sub` to ONNX `Sub`.
 - [ ] 136. Map TF.js `tf.mul` to ONNX `Mul`.
@@ -195,6 +208,7 @@
 - [ ] 160. Map TF.js `tf.image.resizeNearestNeighbor` to ONNX `Resize`.
 
 ### Phase 11: End-to-End Validation (Vision Architectures)
+
 - [ ] 161. Convert and validate TF.js `MobileNetV1`.
 - [ ] 162. Convert and validate TF.js `MobileNetV2`.
 - [ ] 163. Convert and validate TF.js `MobileNetV3`.
@@ -212,6 +226,7 @@
 - [ ] 175. Verify 100% equivalent spatial output matrices against native TF.js execution (tolerance 1e-5).
 
 ### Phase 12: End-to-End Validation (NLP & Sequence Architectures)
+
 - [ ] 176. Convert and validate TF.js `Universal Sentence Encoder` (USE).
 - [ ] 177. Convert and validate Keras `Transformer` implementation (MultiHeadAttention).
 - [ ] 178. Convert and validate TF.js `Toxicity` text classifier.
@@ -222,6 +237,7 @@
 - [ ] 183. Check precise parity of Bidirectional states outputs against TF.js.
 
 ### Phase 13: End-to-End Validation (Generative & Audio)
+
 - [ ] 184. Convert and validate Keras `DCGAN` generator.
 - [ ] 185. Convert and validate Keras `VAE` (Variational Autoencoder) decoding blocks.
 - [ ] 186. Convert and validate TF.js `SpeechCommands` audio classifier.
@@ -230,6 +246,7 @@
 - [ ] 189. Validate UpSampling/Conv2DTranspose artifacts match TF.js completely.
 
 ### Phase 14: Subgraphs, Custom Layers & Control Flow
+
 - [ ] 190. Handle Keras `Lambda` layers. (Provide clear errors if un-translatable Python code is found, skip if JS equivalents exist).
 - [ ] 191. Attempt to trace JS closures in TF.js GraphModels and map them to ONNX subgraphs.
 - [ ] 192. Parse TF.js `ControlFlow` ops (`Switch`, `Merge`, `Enter`, `Exit`, `NextIteration`).
@@ -241,6 +258,7 @@
 - [ ] 198. Extract `keras_version` and `backend` information and embed into ONNX `producer_name`.
 
 ### Phase 15: Browser API, UI, and Packaging
+
 - [ ] 199. Expose TypeScript library API: `const onnxBytes = await keras2onnx(modelJson, weightsBin)`.
 - [ ] 200. Build a Node.js CLI: `onnx9000 keras convert my_model.h5 --output my_model.onnx`.
 - [ ] 201. Support CLI format auto-detection (inferring TF.js vs HDF5 from file signatures).
@@ -252,6 +270,7 @@
 - [ ] 207. Create an automated migration script mapping standard `tfjs-converter` args to `onnx9000`.
 
 ### Phase 16: Optimizations & Graph Rewriting
+
 - [ ] 208. Implement TF.js explicit `FusedBatchNorm` un-fusing if targeting low ONNX opsets.
 - [ ] 209. Map TF.js `_FusedConv2D` explicitly to ONNX `Conv` + `Relu` or `Conv` + `Bias` + `Relu`.
 - [ ] 210. Map TF.js `_FusedMatMul` to ONNX explicitly.
@@ -261,6 +280,7 @@
 - [ ] 214. Clean up `StopGradient` nodes (removing them entirely as ONNX is inference-only).
 
 ### Phase 17: Precision & Quantization
+
 - [ ] 215. Parse TF.js `float16` weights natively (handling DataView buffers correctly in JS).
 - [ ] 216. Parse TF.js `uint8` quantized weights natively.
 - [ ] 217. Read TF.js quantization scale/min/max metadata and embed into ONNX `DequantizeLinear`.
@@ -269,6 +289,7 @@
 - [ ] 220. Ensure `int64` tensors in TF.js are gracefully downcast to `int32` for better WebGPU support down the line.
 
 ### Phase 18: Ecosystem Parity & Interoperability
+
 - [ ] 221. Establish CI pipeline matching official `tf2onnx` regression tests.
 - [ ] 222. Maintain exact equivalence with `tf2onnx` opset 13-19 standards.
 - [ ] 223. Convert HuggingFace standard Keras/TF models dynamically via Hub URLs.
@@ -278,6 +299,7 @@
 - [ ] 227. Export a `metadata.json` sidecar preserving Keras training history, class labels, and dictionaries.
 
 ### Phase 19: Edge Cases, Quirks, and Telemetry
+
 - [ ] 228. Detect and warn on Keras `input_shape` missing dimensions (e.g., completely dynamic models without defined ranks).
 - [ ] 229. Handle `SpaceToBatchND` and `BatchToSpaceND` operations efficiently (often used in dilated convs).
 - [ ] 230. Map TF.js `NonMaxSuppressionV3/V4/V5` to ONNX `NonMaxSuppression`.
@@ -288,6 +310,7 @@
 - [ ] 235. Track specific operator translation failures and report aggregate telemetry.
 
 ### Phase 20: Documentation & Final Delivery
+
 - [ ] 236. Create tutorial: "Migrating from TensorFlow.js to WebGPU ONNX in 5 minutes".
 - [ ] 237. Create tutorial: "Converting Keras H5 models directly in the Browser".
 - [ ] 238. Write detailed API specs for the TS conversion hooks.

@@ -1,129 +1,138 @@
 # ONNX25: WebNN API (Native Browser NPU Execution)
 
 ## Original Project Description
+
 The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ONNX models with hardware acceleration utilizing the emerging W3C Web Neural Network API (WebNN). WebNN provides standard low-level browser APIs to access dedicated machine learning accelerators like Neural Processing Units (NPUs), Digital Signal Processors (DSPs), and specialized GPU ML cores (like Apple's Neural Engine or Intel's VPU/NPU). In the standard ORT architecture, the WebNN EP acts as a bridge: compiling C++ ONNX nodes into JavaScript `MLGraphBuilder` calls via WebAssembly interop.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000` eliminates the C++ WebAssembly middleware entirely for graph construction. Since `onnx9000` handles the ONNX graph directly in TypeScript/JavaScript, the mapping to WebNN is direct, native, and synchronous.
-*   **Zero JS-WASM Boundary Crossing for Compilation:** The `onnx9000` graph compiler traverses the IR in memory and calls `MLGraphBuilder` natively, compiling the NPU graph orders of magnitude faster than a C++ runtime shuttling strings and pointers across the WASM bridge.
-*   **Granular Sub-Graph Partitioning:** If the host's NPU/WebNN implementation doesn't support a specific ONNX operator (e.g., a custom transformer node), `onnx9000` dynamically partitions the graph. The supported sub-graphs run natively on the NPU via WebNN, while unsupported nodes seamlessly fall back to `onnx9000`'s highly optimized WebGPU or WASM SIMD backends sharing the same memory context.
-*   **WebNN Polyfill Integration:** Automatically integrates with the WebNN Polyfill for rapid testing on browsers that have not yet fully shipped the W3C spec.
-*   **First-Class FP16 & INT8:** WebNN is primarily designed for low-power edge NPUs; `onnx9000` strictly maps its Web-Native W4A16 and INT8 quantizations directly to WebNN primitives to maximize NPU throughput.
+
+- **Zero JS-WASM Boundary Crossing for Compilation:** The `onnx9000` graph compiler traverses the IR in memory and calls `MLGraphBuilder` natively, compiling the NPU graph orders of magnitude faster than a C++ runtime shuttling strings and pointers across the WASM bridge.
+- **Granular Sub-Graph Partitioning:** If the host's NPU/WebNN implementation doesn't support a specific ONNX operator (e.g., a custom transformer node), `onnx9000` dynamically partitions the graph. The supported sub-graphs run natively on the NPU via WebNN, while unsupported nodes seamlessly fall back to `onnx9000`'s highly optimized WebGPU or WASM SIMD backends sharing the same memory context.
+- **WebNN Polyfill Integration:** Automatically integrates with the WebNN Polyfill for rapid testing on browsers that have not yet fully shipped the W3C spec.
+- **First-Class FP16 & INT8:** WebNN is primarily designed for low-power edge NPUs; `onnx9000` strictly maps its Web-Native W4A16 and INT8 quantizations directly to WebNN primitives to maximize NPU throughput.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Context Initialization & Feature Detection
-- [ ] 001. Implement `navigator.ml` presence detection.
-- [ ] 002. Implement graceful fallback if WebNN API is missing.
-- [ ] 003. Request `MLContext` via `navigator.ml.createContext()`.
-- [ ] 004. Support `deviceType: 'npu'` preference.
-- [ ] 005. Support `deviceType: 'gpu'` preference.
-- [ ] 006. Support `deviceType: 'cpu'` preference.
-- [ ] 007. Support `powerPreference: 'default'`.
-- [ ] 008. Support `powerPreference: 'high-performance'`.
-- [ ] 009. Support `powerPreference: 'low-power'`.
-- [ ] 010. Implement caching of the `MLContext` singleton.
-- [ ] 011. Detect supported data types (`float32`, `float16`, `int32`, `int8`, `uint8`).
-- [ ] 012. Implement capability queries to check if specific ops are supported by the host context.
-- [ ] 013. Provide a diagnostic CLI command: `onnx9000 info webnn` to list host NPU capabilities.
-- [ ] 014. Handle context loss/restore events dynamically.
-- [ ] 015. Support initializing `MLGraphBuilder` strictly bound to the active context.
+
+- [ ] 1. Implement `navigator.ml` presence detection.
+- [ ] 2. Implement graceful fallback if WebNN API is missing.
+- [ ] 3. Request `MLContext` via `navigator.ml.createContext()`.
+- [ ] 4. Support `deviceType: 'npu'` preference.
+- [ ] 5. Support `deviceType: 'gpu'` preference.
+- [ ] 6. Support `deviceType: 'cpu'` preference.
+- [ ] 7. Support `powerPreference: 'default'`.
+- [ ] 8. Support `powerPreference: 'high-performance'`.
+- [ ] 9. Support `powerPreference: 'low-power'`.
+- [ ] 10. Implement caching of the `MLContext` singleton.
+- [ ] 11. Detect supported data types (`float32`, `float16`, `int32`, `int8`, `uint8`).
+- [ ] 12. Implement capability queries to check if specific ops are supported by the host context.
+- [ ] 13. Provide a diagnostic CLI command: `onnx9000 info webnn` to list host NPU capabilities.
+- [ ] 14. Handle context loss/restore events dynamically.
+- [ ] 15. Support initializing `MLGraphBuilder` strictly bound to the active context.
 
 ### Phase 2: Graph Builder (MLGraphBuilder) Core Orchestration
-- [ ] 016. Initialize the `MLGraphBuilder` instance.
-- [ ] 017. Define an internal map of ONNX Node IDs to `MLOperand` objects.
-- [ ] 018. Implement translation of ONNX Graph Inputs to `builder.input(name, type)`.
-- [ ] 019. Implement translation of ONNX Initializers to `builder.constant(data)`.
-- [ ] 020. Resolve ONNX dimensions (Array of Numbers) to WebNN dimensions.
-- [ ] 021. Map `onnx9000` Float32 tensors to WebNN `float32` constants.
-- [ ] 022. Map `onnx9000` Float16 tensors to WebNN `float16` constants.
-- [ ] 023. Map `onnx9000` Int32 tensors to WebNN `int32` constants.
-- [ ] 024. Map `onnx9000` Int8 tensors to WebNN `int8` constants.
-- [ ] 025. Map `onnx9000` UInt8 tensors to WebNN `uint8` constants.
-- [ ] 026. Handle dynamic axes in inputs (specifying `-1` or large bounds if required by specific WebNN drafts).
-- [ ] 027. Track intermediate `MLOperand` instances during the topological traversal.
-- [ ] 028. Support releasing intermediate `MLOperand` references to aid garbage collection.
-- [ ] 029. Map ONNX Graph Outputs to final `MLOperand` evaluations.
-- [ ] 030. Handle cases where an initializer is passed directly as a graph output.
+
+- [ ] 16. Initialize the `MLGraphBuilder` instance.
+- [ ] 17. Define an internal map of ONNX Node IDs to `MLOperand` objects.
+- [ ] 18. Implement translation of ONNX Graph Inputs to `builder.input(name, type)`.
+- [ ] 19. Implement translation of ONNX Initializers to `builder.constant(data)`.
+- [ ] 20. Resolve ONNX dimensions (Array of Numbers) to WebNN dimensions.
+- [ ] 21. Map `onnx9000` Float32 tensors to WebNN `float32` constants.
+- [ ] 22. Map `onnx9000` Float16 tensors to WebNN `float16` constants.
+- [ ] 23. Map `onnx9000` Int32 tensors to WebNN `int32` constants.
+- [ ] 24. Map `onnx9000` Int8 tensors to WebNN `int8` constants.
+- [ ] 25. Map `onnx9000` UInt8 tensors to WebNN `uint8` constants.
+- [ ] 26. Handle dynamic axes in inputs (specifying `-1` or large bounds if required by specific WebNN drafts).
+- [ ] 27. Track intermediate `MLOperand` instances during the topological traversal.
+- [ ] 28. Support releasing intermediate `MLOperand` references to aid garbage collection.
+- [ ] 29. Map ONNX Graph Outputs to final `MLOperand` evaluations.
+- [ ] 30. Handle cases where an initializer is passed directly as a graph output.
 
 ### Phase 3: Unary & Binary Arithmetic Operations
-- [ ] 031. Map ONNX `Add` to WebNN `builder.add()`.
-- [ ] 032. Map ONNX `Sub` to WebNN `builder.sub()`.
-- [ ] 033. Map ONNX `Mul` to WebNN `builder.mul()`.
-- [ ] 034. Map ONNX `Div` to WebNN `builder.div()`.
-- [ ] 035. Map ONNX `Max` to WebNN `builder.max()`.
-- [ ] 036. Map ONNX `Min` to WebNN `builder.min()`.
-- [ ] 037. Map ONNX `Pow` to WebNN `builder.pow()`.
-- [ ] 038. Map ONNX `Abs` to WebNN `builder.abs()`.
-- [ ] 039. Map ONNX `Ceil` to WebNN `builder.ceil()`.
-- [ ] 040. Map ONNX `Floor` to WebNN `builder.floor()`.
-- [ ] 041. Map ONNX `Exp` to WebNN `builder.exp()`.
-- [ ] 042. Map ONNX `Log` to WebNN `builder.log()`.
-- [ ] 043. Map ONNX `Cos` to WebNN `builder.cos()`.
-- [ ] 044. Map ONNX `Sin` to WebNN `builder.sin()`.
-- [ ] 045. Map ONNX `Tan` to WebNN `builder.tan()`.
-- [ ] 046. Map ONNX `Acos` to WebNN `builder.acos()`.
-- [ ] 047. Map ONNX `Asin` to WebNN `builder.asin()`.
-- [ ] 048. Map ONNX `Atan` to WebNN `builder.atan()`.
-- [ ] 049. Map ONNX `Sqrt` to WebNN `builder.sqrt()`.
-- [ ] 050. Map ONNX `Erf` to WebNN `builder.erf()`.
-- [ ] 051. Map ONNX `Sign` to WebNN `builder.sign()`.
-- [ ] 052. Map ONNX `Neg` to WebNN `builder.neg()`.
-- [ ] 053. Handle Numpy-style implicit broadcasting in WebNN binary ops automatically.
-- [ ] 054. Explicitly reshape scalar initializers for WebNN if the spec requires strict rank matching.
+
+- [ ] 31. Map ONNX `Add` to WebNN `builder.add()`.
+- [ ] 32. Map ONNX `Sub` to WebNN `builder.sub()`.
+- [ ] 33. Map ONNX `Mul` to WebNN `builder.mul()`.
+- [ ] 34. Map ONNX `Div` to WebNN `builder.div()`.
+- [ ] 35. Map ONNX `Max` to WebNN `builder.max()`.
+- [ ] 36. Map ONNX `Min` to WebNN `builder.min()`.
+- [ ] 37. Map ONNX `Pow` to WebNN `builder.pow()`.
+- [ ] 38. Map ONNX `Abs` to WebNN `builder.abs()`.
+- [ ] 39. Map ONNX `Ceil` to WebNN `builder.ceil()`.
+- [ ] 40. Map ONNX `Floor` to WebNN `builder.floor()`.
+- [ ] 41. Map ONNX `Exp` to WebNN `builder.exp()`.
+- [ ] 42. Map ONNX `Log` to WebNN `builder.log()`.
+- [ ] 43. Map ONNX `Cos` to WebNN `builder.cos()`.
+- [ ] 44. Map ONNX `Sin` to WebNN `builder.sin()`.
+- [ ] 45. Map ONNX `Tan` to WebNN `builder.tan()`.
+- [ ] 46. Map ONNX `Acos` to WebNN `builder.acos()`.
+- [ ] 47. Map ONNX `Asin` to WebNN `builder.asin()`.
+- [ ] 48. Map ONNX `Atan` to WebNN `builder.atan()`.
+- [ ] 49. Map ONNX `Sqrt` to WebNN `builder.sqrt()`.
+- [ ] 50. Map ONNX `Erf` to WebNN `builder.erf()`.
+- [ ] 51. Map ONNX `Sign` to WebNN `builder.sign()`.
+- [ ] 52. Map ONNX `Neg` to WebNN `builder.neg()`.
+- [ ] 53. Handle Numpy-style implicit broadcasting in WebNN binary ops automatically.
+- [ ] 54. Explicitly reshape scalar initializers for WebNN if the spec requires strict rank matching.
 
 ### Phase 4: Activation Functions
-- [ ] 055. Map ONNX `Relu` to WebNN `builder.relu()`.
-- [ ] 056. Map ONNX `Sigmoid` to WebNN `builder.sigmoid()`.
-- [ ] 057. Map ONNX `Tanh` to WebNN `builder.tanh()`.
-- [ ] 058. Map ONNX `Softmax` to WebNN `builder.softmax()`.
-- [ ] 059. Handle `Softmax` axis parameter mapping.
-- [ ] 060. Map ONNX `LeakyRelu` to WebNN `builder.leakyRelu()`.
-- [ ] 061. Parse `alpha` parameter for `LeakyRelu`.
-- [ ] 062. Map ONNX `Elu` to WebNN `builder.elu()`.
-- [ ] 063. Parse `alpha` parameter for `Elu`.
-- [ ] 064. Map ONNX `HardSigmoid` to WebNN `builder.hardSigmoid()`.
-- [ ] 065. Parse `alpha` and `beta` parameters for `HardSigmoid`.
-- [ ] 066. Map ONNX `Softplus` to WebNN `builder.softplus()`.
-- [ ] 067. Map ONNX `Softsign` to WebNN `builder.softsign()`.
-- [ ] 068. Map ONNX `Gelu` to WebNN `builder.gelu()`.
-- [ ] 069. Map ONNX `PRelu` to WebNN `builder.prelu()`.
-- [ ] 070. Support `Clip` via WebNN `builder.clamp()`.
-- [ ] 071. Handle missing min/max boundaries in `Clip` converting to infinity bounds.
+
+- [ ] 55. Map ONNX `Relu` to WebNN `builder.relu()`.
+- [ ] 56. Map ONNX `Sigmoid` to WebNN `builder.sigmoid()`.
+- [ ] 57. Map ONNX `Tanh` to WebNN `builder.tanh()`.
+- [ ] 58. Map ONNX `Softmax` to WebNN `builder.softmax()`.
+- [ ] 59. Handle `Softmax` axis parameter mapping.
+- [ ] 60. Map ONNX `LeakyRelu` to WebNN `builder.leakyRelu()`.
+- [ ] 61. Parse `alpha` parameter for `LeakyRelu`.
+- [ ] 62. Map ONNX `Elu` to WebNN `builder.elu()`.
+- [ ] 63. Parse `alpha` parameter for `Elu`.
+- [ ] 64. Map ONNX `HardSigmoid` to WebNN `builder.hardSigmoid()`.
+- [ ] 65. Parse `alpha` and `beta` parameters for `HardSigmoid`.
+- [ ] 66. Map ONNX `Softplus` to WebNN `builder.softplus()`.
+- [ ] 67. Map ONNX `Softsign` to WebNN `builder.softsign()`.
+- [ ] 68. Map ONNX `Gelu` to WebNN `builder.gelu()`.
+- [ ] 69. Map ONNX `PRelu` to WebNN `builder.prelu()`.
+- [ ] 70. Support `Clip` via WebNN `builder.clamp()`.
+- [ ] 71. Handle missing min/max boundaries in `Clip` converting to infinity bounds.
 
 ### Phase 5: Matrix Multiplication & Linear Algebra
-- [ ] 072. Map ONNX `MatMul` to WebNN `builder.matmul()`.
-- [ ] 073. Map ONNX `Gemm` to WebNN `builder.gemm()`.
-- [ ] 074. Parse and apply `alpha` scalar for `Gemm`.
-- [ ] 075. Parse and apply `beta` scalar for `Gemm`.
-- [ ] 076. Handle `transA` flag correctly in `Gemm` via WebNN options.
-- [ ] 077. Handle `transB` flag correctly in `Gemm` via WebNN options.
-- [ ] 078. Support explicit bias addition in `Gemm` via `c` operand.
-- [ ] 079. If WebNN `matmul` doesn't support n-dimensional batching natively, emulate via `reshape` -> `matmul` -> `reshape` if mathematically equivalent.
-- [ ] 080. Fallback: Emulate `Gemm` with `MatMul` + `Add` if `builder.gemm` is missing on specific hardware implementations.
-- [ ] 081. Implement 1D matrix multiplication bounds checking according to WebNN spec.
+
+- [ ] 72. Map ONNX `MatMul` to WebNN `builder.matmul()`.
+- [ ] 73. Map ONNX `Gemm` to WebNN `builder.gemm()`.
+- [ ] 74. Parse and apply `alpha` scalar for `Gemm`.
+- [ ] 75. Parse and apply `beta` scalar for `Gemm`.
+- [ ] 76. Handle `transA` flag correctly in `Gemm` via WebNN options.
+- [ ] 77. Handle `transB` flag correctly in `Gemm` via WebNN options.
+- [ ] 78. Support explicit bias addition in `Gemm` via `c` operand.
+- [ ] 79. If WebNN `matmul` doesn't support n-dimensional batching natively, emulate via `reshape` -> `matmul` -> `reshape` if mathematically equivalent.
+- [ ] 80. Fallback: Emulate `Gemm` with `MatMul` + `Add` if `builder.gemm` is missing on specific hardware implementations.
+- [ ] 81. Implement 1D matrix multiplication bounds checking according to WebNN spec.
 
 ### Phase 6: Tensor Manipulation & Routing
-- [ ] 082. Map ONNX `Reshape` to WebNN `builder.reshape()`.
-- [ ] 083. Extract dynamic shape tensor inputs to static shapes if WebNN requires static `reshape` arguments at build time.
-- [ ] 084. Map ONNX `Transpose` to WebNN `builder.transpose()`.
-- [ ] 085. Pass explicit `permutation` array to `builder.transpose()`.
-- [ ] 086. Map ONNX `Slice` to WebNN `builder.slice()`.
-- [ ] 087. Resolve dynamic ONNX `Slice` starts/ends/axes/steps to static WebNN options.
-- [ ] 088. Emulate negative `starts` and `ends` indices since WebNN slice may require positive absolute bounds.
-- [ ] 089. Map ONNX `Concat` to WebNN `builder.concat()`.
-- [ ] 090. Handle `axis` mapping for `Concat`.
-- [ ] 091. Map ONNX `Split` to WebNN `builder.split()`.
-- [ ] 092. Handle equal splitting (scalar `split` argument).
-- [ ] 093. Handle unequal splitting (array `split` argument).
-- [ ] 094. Map ONNX `Squeeze` to WebNN `builder.reshape()` (calculating squeezed shape dynamically).
-- [ ] 095. Map ONNX `Unsqueeze` to WebNN `builder.reshape()` (calculating unsqueezed shape dynamically).
-- [ ] 096. Map ONNX `Expand` to WebNN `builder.expand()`.
-- [ ] 097. Map ONNX `Gather` to WebNN `builder.gather()`.
-- [ ] 098. Handle `axis` parameter for `Gather`.
-- [ ] 099. Handle dynamic/variable indices in `Gather` if WebNN supports them.
+
+- [ ] 82. Map ONNX `Reshape` to WebNN `builder.reshape()`.
+- [ ] 83. Extract dynamic shape tensor inputs to static shapes if WebNN requires static `reshape` arguments at build time.
+- [ ] 84. Map ONNX `Transpose` to WebNN `builder.transpose()`.
+- [ ] 85. Pass explicit `permutation` array to `builder.transpose()`.
+- [ ] 86. Map ONNX `Slice` to WebNN `builder.slice()`.
+- [ ] 87. Resolve dynamic ONNX `Slice` starts/ends/axes/steps to static WebNN options.
+- [ ] 88. Emulate negative `starts` and `ends` indices since WebNN slice may require positive absolute bounds.
+- [ ] 89. Map ONNX `Concat` to WebNN `builder.concat()`.
+- [ ] 90. Handle `axis` mapping for `Concat`.
+- [ ] 91. Map ONNX `Split` to WebNN `builder.split()`.
+- [ ] 92. Handle equal splitting (scalar `split` argument).
+- [ ] 93. Handle unequal splitting (array `split` argument).
+- [ ] 94. Map ONNX `Squeeze` to WebNN `builder.reshape()` (calculating squeezed shape dynamically).
+- [ ] 95. Map ONNX `Unsqueeze` to WebNN `builder.reshape()` (calculating unsqueezed shape dynamically).
+- [ ] 96. Map ONNX `Expand` to WebNN `builder.expand()`.
+- [ ] 97. Map ONNX `Gather` to WebNN `builder.gather()`.
+- [ ] 98. Handle `axis` parameter for `Gather`.
+- [ ] 99. Handle dynamic/variable indices in `Gather` if WebNN supports them.
 - [ ] 100. Map ONNX `Tile` by composing `expand` or `concat` ops if direct `tile` is unavailable.
 - [ ] 101. Map ONNX `Pad` to WebNN `builder.pad()`.
 - [ ] 102. Handle `constant` padding mode.
@@ -134,6 +143,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 107. Map ONNX `Shape` to a static CPU/WASM computation since WebNN expects static graphs.
 
 ### Phase 7: Convolution & Pooling (Vision Architectures)
+
 - [ ] 108. Map ONNX `Conv` (2D) to WebNN `builder.conv2d()`.
 - [ ] 109. Extract `strides` attribute.
 - [ ] 110. Extract `dilations` attribute.
@@ -159,6 +169,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 130. Implement `GlobalMaxPool` via WebNN `builder.maxPool2d()` matching entire spatial dim.
 
 ### Phase 8: Reduction Operations
+
 - [ ] 131. Map ONNX `ReduceMean` to WebNN `builder.reduceMean()`.
 - [ ] 132. Handle `axes` parsing.
 - [ ] 133. Handle `keepdims` mapping.
@@ -173,6 +184,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 142. Emulate `ArgMin` via WebNN `builder.argMin()`.
 
 ### Phase 9: Normalization Operations
+
 - [ ] 143. Map ONNX `BatchNormalization` to WebNN `builder.batchNormalization()`.
 - [ ] 144. Pass `scale` operand to WebNN.
 - [ ] 145. Pass `B` (bias) operand to WebNN.
@@ -187,6 +199,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 154. Support `LpNormalization` via WebNN `builder.l2Normalization()`.
 
 ### Phase 10: Logical & Relational Operations
+
 - [ ] 155. Map ONNX `Equal` to WebNN `builder.equal()`.
 - [ ] 156. Map ONNX `Greater` to WebNN `builder.greater()`.
 - [ ] 157. Map ONNX `GreaterOrEqual` to WebNN `builder.greaterOrEqual()`.
@@ -200,6 +213,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 165. Ensure output boolean masks cast strictly back to ONNX Float/Int types if downstream ops require it.
 
 ### Phase 11: Graph Compilation & Execution Engine
+
 - [ ] 166. Implement the `build()` sequence: finalizing the WebNN `MLGraph`.
 - [ ] 167. Call `await builder.build(outputs)` to trigger the host NPU compilation.
 - [ ] 168. Track compile times and log NPU startup latency.
@@ -217,6 +231,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 180. Implement asynchronous non-blocking inference in Web Workers.
 
 ### Phase 12: Sub-Graph Partitioning & Fallback
+
 - [ ] 181. Implement a WebNN capability checker (simulating a build to check for supported nodes).
 - [ ] 182. Implement an AST traversal to identify contiguous blocks of WebNN-supported ops.
 - [ ] 183. Partition the `onnx9000` graph into "WebNN Regions" and "WASM/WebGPU Regions".
@@ -229,6 +244,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 190. Handle dynamic shape propagation correctly across partitioned sub-graphs.
 
 ### Phase 13: Transformer & LLM specific Operators (WebNN Draft Extensions)
+
 - [ ] 191. Map explicit `Gelu` fusions to `builder.gelu()`.
 - [ ] 192. Translate ONNX `Attention` or `FlashAttention` into standard WebNN MatMul+Softmax subgraphs if a native WebNN Attention op is unavailable.
 - [ ] 193. Check for emerging W3C WebNN Draft ops (e.g., `triangular`, `scaledDotProductAttention`).
@@ -241,6 +257,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 200. Execute gating logic on CPU and only send the selected expert matrices to WebNN to save bandwidth.
 
 ### Phase 14: Quantization (W8A8 & W4A16 Native WebNN integration)
+
 - [ ] 201. Support ONNX `QuantizeLinear` via WebNN `builder.quantizeLinear()`.
 - [ ] 202. Support ONNX `DequantizeLinear` via WebNN `builder.dequantizeLinear()`.
 - [ ] 203. Map ONNX `DynamicQuantizeLinear` to WebNN if supported, otherwise emulate via `reduceMax/Min` and `quantize`.
@@ -253,6 +270,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 210. Validate quantization accuracy against CPU baseline to ensure NPU driver hasn't applied aggressive lossy compression.
 
 ### Phase 15: Edge Cases & Quirks Management
+
 - [ ] 211. Emulate ONNX `GatherElements` (often missing in NPUs) using WebGPU.
 - [ ] 212. Emulate ONNX `ScatterND` using WebGPU fallback.
 - [ ] 213. Emulate ONNX `NonZero` (dynamic output shape) by executing exclusively on CPU/WASM.
@@ -265,6 +283,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 220. Prevent WebNN memory limit exceeded crashes by chunking massive convolutions iteratively.
 
 ### Phase 16: Device-Specific Tuning (Intel VPU, Apple Neural Engine, Snapdragon)
+
 - [ ] 221. Implement a hardware-sniffing utility checking user-agent/GPU strings.
 - [ ] 222. Workaround: If Apple Neural Engine, prefer NHWC layout explicit casting before `conv2d` to prevent catastrophic driver reshapes.
 - [ ] 223. Workaround: If Intel VPU, pad channel dimensions to multiples of 4 or 16.
@@ -277,6 +296,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 230. Submit anonymous telemetry on specific WebNN operator failures to identify broken driver updates.
 
 ### Phase 17: Memory Management & Buffer Re-use
+
 - [ ] 231. Implement an Arena allocator specifically for WebNN `ArrayBuffer` inputs.
 - [ ] 232. Prevent garbage collection thrashing by re-using `context.compute` output buffers.
 - [ ] 233. Map `onnx9000` internal tensor pools directly to WebNN view allocations.
@@ -289,6 +309,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 240. Track precise byte alignment requirements (e.g., 4-byte boundaries) for `float16` buffers passed to WebNN.
 
 ### Phase 18: Testing & Conformance
+
 - [ ] 241. Construct automated test suite passing the standard ONNX Node test dataset directly to the WebNN EP.
 - [ ] 242. Validate `Add` node outputs against WASM CPU.
 - [ ] 243. Validate `Conv2d` node outputs against WASM CPU.
@@ -306,6 +327,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 255. Verify asynchronous execution does not block CSS animations on the main thread.
 
 ### Phase 19: Framework & Tooling Integration
+
 - [ ] 256. Allow `Transformers.js` pipelines to explicitly target WebNN (`device: 'webnn'`).
 - [ ] 257. Hook WebNN capability checking into the `AutoConfig` loader.
 - [ ] 258. Ensure `onnx9000.genai` can offload LLM MatMul blocks natively to the NPU.
@@ -318,6 +340,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [ ] 265. Document the complete list of supported ops and their spec version in a generated Markdown file.
 
 ### Phase 20: Advanced API Features & Future Specs
+
 - [ ] 266. Prepare for W3C WebNN API v2 (dynamic shapes natively).
 - [ ] 267. Map ONNX `Loop` natively if WebNN introduces control flow APIs.
 - [ ] 268. Map ONNX `If` natively to WebNN.

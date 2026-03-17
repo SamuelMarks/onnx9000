@@ -3,10 +3,13 @@ name = "onnx9000-workspace"
 version = "1.0.0"
 description = "Polyglot ONNX Ecosystem"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "jinja2>=3.1.6",
+    "pybind11>=3.0.2",
+]
 
 [tool.uv.workspace]
-members = ["packages/python/*"]
+members = ["packages/python/*", "apps/cli"]
 
 [tool.ruff]
 line-length = 100
@@ -20,3 +23,12 @@ ignore = ["ANN101"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "scipy>=1.13.1",
+]
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"

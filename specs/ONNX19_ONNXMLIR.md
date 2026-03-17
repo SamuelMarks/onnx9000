@@ -1,13 +1,15 @@
 # onnx-mlir Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `onnx-mlir` (Ahead-Of-Time Compilation) within the `onnx9000` ecosystem.
 The standard `onnx-mlir` project relies on the massive LLVM compiler infrastructure and the MLIR (Multi-Level Intermediate Representation) dialect framework. Building and utilizing it requires a massive C++ toolchain.
-Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it transpiles the pure-Python `core.ir` directly into highly optimized, strict C++23 source files using Jinja2 templates. This C++ can then be compiled natively via `g++`/`clang++` for zero-overhead server execution, or via `emcc` (Emscripten) into microscopic standalone WebAssembly (`.wasm`) payloads that require *zero external ML runtimes* (like ONNX Runtime Web) to execute in the browser.
+Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it transpiles the pure-Python `core.ir` directly into highly optimized, strict C++23 source files using Jinja2 templates. This C++ can then be compiled natively via `g++`/`clang++` for zero-overhead server execution, or via `emcc` (Emscripten) into microscopic standalone WebAssembly (`.wasm`) payloads that require _zero external ML runtimes_ (like ONNX Runtime Web) to execute in the browser.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Codegen Architecture & Static Memory Arena (40+ items)
+
 - [ ] Implement C++23 code generation engine using Jinja2 templates
 - [ ] Implement static shape resolution pass ahead of transpilation
 - [ ] Implement static dtype resolution pass ahead of transpilation
@@ -42,6 +44,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Optimize identical loop fusion directly in the C++ generator
 
 ### 2. WebAssembly (WASM) Backend Compilation (30+ items)
+
 - [ ] Detect Emscripten (`emcc`) installation automatically
 - [ ] Emit Emscripten JS glue code (`--bind` or WebIDL) automatically
 - [ ] Compile directly to `.wasm` payload
@@ -67,6 +70,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Support `Deno` environment natively in the generated WASM wrappers
 
 ### 3. CPU Core Operations (C++ Kernels) (40+ items)
+
 - [ ] Implement `Add` kernel (broadcasted and flat)
 - [ ] Implement `Sub` kernel
 - [ ] Implement `Mul` kernel
@@ -109,6 +113,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Implement `NonMaxSuppression` kernel
 
 ### 4. Apple Accelerate Framework Integration (20+ items)
+
 - [ ] Detect `Accelerate` framework on macOS natively
 - [ ] Bind `MatMul` to `cblas_sgemm` (Float32)
 - [ ] Bind `MatMul` to `cblas_dgemm` (Float64)
@@ -131,6 +136,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Fallback to native C++ loop if dimensions do not match BLAS requirements
 
 ### 5. OpenBLAS & MKL Fallback (15+ items)
+
 - [ ] Detect OpenBLAS on Linux/Windows natively
 - [ ] Bind `MatMul` to OpenBLAS `cblas_sgemm`
 - [ ] Detect Intel MKL on compatible hardware
@@ -142,6 +148,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Fallback gracefully to cache-blocked C++ kernels if no BLAS is detected
 
 ### 6. Neural Architecture & Optimization Specifics (25+ items)
+
 - [ ] Implement `LayerNormalization` kernel natively in C++
 - [ ] Implement `BatchNormalization` kernel natively (Inference mode)
 - [ ] Implement `Gelu` kernel natively (Erf and Tanh approximations)
@@ -166,6 +173,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Validate `Cast` kernels correctly map `float` to `int` safely
 
 ### 7. Explicit Advanced C++ Transpiler Support (40+ items)
+
 - [ ] Support `float16` (`_Float16`) code generation natively in C++23
 - [ ] Support `bfloat16` (`__bf16`) code generation natively
 - [ ] Support `int8_t` memory alignment natively
@@ -191,6 +199,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Extract and embed the original ONNX `doc_string` as a C++ multiline comment
 
 ### 8. Testing & Validation (Edge Cases) (30+ items)
+
 - [ ] Unit Test: Compile pure `Add` graph to C++ and execute via Pybind11
 - [ ] Unit Test: Compile `MatMul` (statically shaped) and execute natively
 - [ ] Unit Test: Compile `MatMul` (dynamic batch size) and execute natively
@@ -209,8 +218,8 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Test cross-compilation (e.g. compiling for `aarch64-linux-gnu` from x86_64) if LLVM/Clang is used natively
 - [ ] Validate WASM SIMD execution strictly in Chrome
 
-
 ### 9. Exhaustive C++ Operator Implementations (60+ items)
+
 - [ ] Implement `Abs` kernel (branchless `std::abs`)
 - [ ] Implement `Acos` kernel (`std::acos`)
 - [ ] Implement `Acosh` kernel (`std::acosh`)
@@ -274,6 +283,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Implement `Or` kernel (`||`)
 
 ### 10. Memory Planning & Dynamic Allocations (30+ items)
+
 - [ ] Implement dynamic tensor memory reallocation gracefully (for `NonZero` and `Compress`)
 - [ ] Support falling back from Static Arena to `std::vector` if fully dynamic shapes are encountered
 - [ ] Provide explicit C++ `Context` struct tracking dynamic sizes at runtime
@@ -296,6 +306,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Calculate specific memory layout bytes mathematically given tensor shapes and dtypes natively
 
 ### 11. Pybind11 & C API Interop (20+ items)
+
 - [ ] Generate strict `<pybind11/pybind11.h>` headers and modules dynamically
 - [ ] Generate `<pybind11/numpy.h>` bridges automatically for `py::array_t<float>` handling
 - [ ] Guarantee zero-copy evaluation when Python arrays are strictly `C_CONTIGUOUS`
@@ -312,6 +323,7 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Catch native C++ exceptions `try/catch` and translate to Python `RuntimeError` securely
 
 ### 12. Advanced Emscripten & WASM Opts (20+ items)
+
 - [ ] Emit `--no-entry` flag dynamically if compiling a pure library (no main)
 - [ ] Emit `-s EXPORTED_FUNCTIONS=['_execute', '_malloc', '_free']` automatically
 - [ ] Emit `-s EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']` for dynamic invocation
@@ -327,8 +339,8 @@ Our `onnx9000` reimplementation completely bypasses LLVM/MLIR. Instead, it trans
 - [ ] Profile WASM execution without SIMD (Baseline tests)
 - [ ] Profile WASM execution with SIMD enabled (Performance tests)
 
-
 ### 13. Opset Compliance & Edge Cases (25+ items)
+
 - [ ] Implement `Pow` kernel (`std::pow`)
 - [ ] Implement `PRelu` kernel
 - [ ] Implement `QLinearConv` kernel (handling zero-points and scales)

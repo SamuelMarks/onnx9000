@@ -15,6 +15,7 @@ This document details the internal architectural design of `onnx9000`. It is int
 7. [The Codegen Engine (C++23)](#the-codegen-engine-c23)
 8. [The Autograd Subsystem](#the-autograd-subsystem)
 9. [Edge Serving & API Shims](#edge-serving--api-shims)
+10. [Tooling, Visualization & Profiling](#tooling-visualization--profiling)
 
 ---
 
@@ -46,6 +47,7 @@ By decoupling the IR from both the frontend input and the backend output, the sy
 The foundation of the entire ecosystem lives in `packages/python/onnx9000-core` and `packages/js/core`.
 
 The IR (`Graph`, `Node`, `Tensor`, `ValueInfo`) is a flattened, heavily typed list of operations. Unlike the highly nested structure of raw ONNX protobufs, the IR guarantees:
+
 1. **Topological Sorting:** Nodes are strictly ordered so that inputs are always computed before they are consumed.
 2. **Shape and Type Inference:** Every single edge in the DAG has a concretely resolved `shape` and `dtype`. Dynamic shapes are handled by preserving symbolic string variables in the shape tuples (e.g., `("N", 64, 64)`).
 3. **Zero Dependencies:** The Python package uses native `struct` and `mmap` modules. The TypeScript package uses standard `DataView` and `ArrayBuffer`. Neither relies on `numpy`, `torch`, `onnx`, or proprietary native libraries.
@@ -55,9 +57,10 @@ The IR (`Graph`, `Node`, `Tensor`, `ValueInfo`) is a flattened, heavily typed li
 
 ## 3. The Frontend Converters & Parsers
 
-The system ingests models through `packages/python/onnx9000-frontends`:
+The system ingests models through `packages/python/onnx9000-converterss`:
 
 To maintain a zero-heavy-dependency footprint, `onnx9000` avoids using the official C++ `onnx` repository bindings. Instead, it ships with pure Python/TypeScript definitions compiled directly from the ONNX protocol buffers.
+
 - The parsers handle unrolling `GraphProto` objects, decoding base64/raw tensor data for initializers, and resolving legacy layouts (e.g., translating Keras NHWC formats dynamically to ONNX NCHW standard).
 - **Extensibility:** Frontends for PyTorch (via Dynamo), Scikit-Learn, XGBoost, and legacy formats (Caffe, MXNet, PaddlePaddle) map their proprietary ASTs directly into `onnx9000-core/ir.py` components natively in the browser.
 
@@ -66,6 +69,7 @@ To maintain a zero-heavy-dependency footprint, `onnx9000` avoids using the offic
 ## 4. The Backend Exporters (Bi-Directional Transpilation)
 
 Because `onnx9000` treats ONNX as the universal source of truth, it acts as a universal N-to-N converter.
+
 - **TFLite (`onnx2tf`):** Emits FlatBuffers natively to target Android NNAPI and Coral EdgeTPU.
 - **CoreML (`coremltools`):** Emits Apple MIL and `.mlpackage` archives targeting the Apple Neural Engine.
 - **GGUF (`onnx2gguf`):** Directly translates standard LLM ONNX models into `llama.cpp` compatible `Q4_0` binaries.
@@ -86,6 +90,7 @@ Living in `packages/python/onnx9000-backend-native`, execution providers are dyn
 ## 6. Web Backends (TypeScript)
 
 Living in `packages/js/backend-web`, execution is ported natively to the browser.
+
 - **WebGPU Shaders (WGSL):** Graph nodes (MatMul, Conv) are compiled dynamically into WebGPU Compute pipelines sharing the exact same memory buffers.
 - **WebNN API:** Integrates directly with `navigator.ml` and provides the definitive W3C `webnn-polyfill`.
 - **WASM SIMD:** Fallback execution providing high-speed CPU paths.
@@ -96,6 +101,7 @@ Living in `packages/js/backend-web`, execution is ported natively to the browser
 ## 7. The Codegen Engine (C++23 & Triton)
 
 For targets lacking generic engines:
+
 - **C++ / TinyML:** Maps the Python IR into valid C++23 source code (or C99 for microcontrollers) using Jinja templates, returning `std::expected` or raw pointer arrays.
 - **OpenAI Triton:** Identifies un-fusable subgraphs and generates optimized `@triton.jit` Python kernels for execution on Nvidia GPUs.
 - **Web-MLIR (IREE):** Compiles static graphs into a minuscule (<50kb) bytecode format (`.wvm`) interpreted entirely in WASM.
@@ -105,6 +111,7 @@ For targets lacking generic engines:
 ## 8. The Autograd Subsystem
 
 Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Reverse-Mode Automatic Differentiation.
+
 - **AOT Compilation:** It walks the `onnx9000.core.ir` DAG backwards. For every node, it inserts the corresponding VJP (Vector-Jacobian Product) nodes into the graph.
 - **Unified Graph:** The result is a single `.onnx` graph containing both the forward inference and backward optimizer steps, executable natively on WebGPU.
 
@@ -114,3 +121,9 @@ Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Re
 
 - **Triton Inference Server:** `onnx9000.serve` provides a high-performance, purely asynchronous server designed for Cloudflare Workers and Bun. It natively implements KServe V2 dynamic batching and OpenAI REST APIs.
 - **TF.js Drop-in:** Provides `@onnx9000/tfjs-shim`, allowing developers to replace `@tensorflow/tfjs` entirely. It intercepts `tf.matMul` or `tf.loadGraphModel` calls and routes them transparently to `onnx9000` WebGPU, providing instantaneous acceleration without code rewrites.
+
+## 10. Tooling, Visualization & Profiling
+
+`onnx9000` provides a comprehensive suite of Web-Native visual and diagnostic tools:
+- **Graph Editing & Visualization:** A WebGL-accelerated implementation of `Netron` and `onnx-modifier` allows users to open, inspect, and surgically edit massive (>10GB) models directly in the browser at 60FPS. Changes to the topology invoke real-time shape inference and validation before the modified `.onnx` is exported.
+- **Diagnostics & Profiling:** A complete port of `onnx-tool` evaluates MACs, FLOPs, and static memory footprint dynamically, giving engineers deep insights into computation bottlenecks without needing to execute the graph.

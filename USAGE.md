@@ -5,12 +5,14 @@
 ## Installation
 
 ### Python (via pip or uv)
+
 ```bash
 # In your Python 3.9+ environment
 pip install onnx9000-core onnx9000-backend-native onnx9000-optimizer
 ```
 
 ### TypeScript / JavaScript (via pnpm or npm)
+
 ```bash
 # For Node.js, Deno, Bun, or Browser (Webpack/Vite) targets
 pnpm add @onnx9000/core @onnx9000/backend-web
@@ -81,28 +83,28 @@ import { load } from '@onnx9000/core';
 import { InferenceSession, WebGPUProvider } from '@onnx9000/backend-web';
 
 async function runModel(modelUrl: string) {
-    // Fetch and parse the ONNX model into the TS AST
-    const response = await fetch(modelUrl);
-    const buffer = await response.arrayBuffer();
-    const graph = load(buffer);
+  // Fetch and parse the ONNX model into the TS AST
+  const response = await fetch(modelUrl);
+  const buffer = await response.arrayBuffer();
+  const graph = load(buffer);
 
-    // Initialize the WebGPU execution provider
-    const webgpuProvider = new WebGPUProvider();
-    await webgpuProvider.initialize();
+  // Initialize the WebGPU execution provider
+  const webgpuProvider = new WebGPUProvider();
+  await webgpuProvider.initialize();
 
-    // Create session
-    const session = new InferenceSession(graph, [webgpuProvider]);
+  // Create session
+  const session = new InferenceSession(graph, [webgpuProvider]);
 
-    // Create input tensor natively
-    const inputData = new Float32Array(1 * 3 * 224 * 224).fill(0.5);
-    const inputFeed = {
-        'input': { data: inputData, shape: [1, 3, 224, 224], dtype: 'float32' }
-    };
+  // Create input tensor natively
+  const inputData = new Float32Array(1 * 3 * 224 * 224).fill(0.5);
+  const inputFeed = {
+    input: { data: inputData, shape: [1, 3, 224, 224], dtype: 'float32' },
+  };
 
-    // Run inference asynchronously via WebGPU shaders
-    const results = await session.run(['output'], inputFeed);
-    
-    console.log("Inference complete!", results['output'].data);
+  // Run inference asynchronously via WebGPU shaders
+  const results = await session.run(['output'], inputFeed);
+
+  console.log('Inference complete!', results['output'].data);
 }
 ```
 

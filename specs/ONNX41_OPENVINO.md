@@ -1,130 +1,140 @@
 # ONNX41: OpenVINO Exporter (Web-Native OpenVINO IR Compiler)
 
 ## Original Project Description
+
 Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for converting machine learning models (ONNX, TensorFlow, PyTorch) into the OpenVINO Intermediate Representation (IR). This IR consists of two files: an `.xml` file describing the network topology and a `.bin` file containing the weights. This conversion is strictly required to execute models with maximum acceleration on Intel CPUs, integrated GPUs, and Neural Compute Sticks (NCS2). However, the optimizer is a massive native toolchain requiring Python, heavy C++ libraries, and gigabytes of dependencies to perform shape inference and graph translation.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.openvino` implements the OpenVINO IR specification directly via a **100% pure TypeScript and Python transpiler**.
-*   **Zero-Dependency Compilation:** By generating the `.xml` DOM strings and writing the `.bin` byte offsets manually, `onnx9000` can generate perfectly compliant OpenVINO models entirely in memory without ever installing the Intel OpenVINO SDK.
-*   **Browser-Based Edge Deployment:** Allows developers to drag an ONNX model into a webpage, configure quantization parameters (like FP16 weights), and instantly download the `.xml` and `.bin` payloads ready for edge deployment.
-*   **Integrated Optimization:** Because it taps into `onnx9000`'s internal AST mutator, it automatically performs the heavy layout transformations and constant folding required by OpenVINO (e.g., converting ONNX BatchNorms to OpenVINO ScaleShifts) instantly inside the browser.
+
+- **Zero-Dependency Compilation:** By generating the `.xml` DOM strings and writing the `.bin` byte offsets manually, `onnx9000` can generate perfectly compliant OpenVINO models entirely in memory without ever installing the Intel OpenVINO SDK.
+- **Browser-Based Edge Deployment:** Allows developers to drag an ONNX model into a webpage, configure quantization parameters (like FP16 weights), and instantly download the `.xml` and `.bin` payloads ready for edge deployment.
+- **Integrated Optimization:** Because it taps into `onnx9000`'s internal AST mutator, it automatically performs the heavy layout transformations and constant folding required by OpenVINO (e.g., converting ONNX BatchNorms to OpenVINO ScaleShifts) instantly inside the browser.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: OpenVINO IR `.xml` Schema & Serialization
-- [ ] 001. Implement zero-dependency XML DOM builder in TypeScript/JS.
-- [ ] 002. Implement zero-dependency XML builder in Python.
-- [ ] 003. Emit `<net>` root tag with `name` and `version` (e.g., `version="11"` or `"10"`).
-- [ ] 004. Emit `<layers>` container tag.
-- [ ] 005. Emit `<edges>` container tag.
-- [ ] 006. Emit `<layer>` node tags mapping `id`, `name`, `type`, and `version`.
-- [ ] 007. Implement `<data>` tags for layer-specific attributes.
-- [ ] 008. Implement `<input>` and `<port>` tags for structural topology definition.
-- [ ] 009. Implement `<output>` and `<port>` tags.
-- [ ] 010. Map ONNX `TensorProto.DataType` to OpenVINO precision strings (`f32`, `f16`, `i64`, `i32`, `i8`, `u8`, `boolean`).
-- [ ] 011. Implement shape serialization inside `<dim>` tags.
-- [ ] 012. Translate ONNX dynamic axes (`-1`) to OpenVINO dynamic shapes (`-1` or `?`).
-- [ ] 013. Ensure topologically sorted emission of `<layer>` nodes.
-- [ ] 014. Translate ONNX graph connections into explicit `<edge>` source/target port definitions.
-- [ ] 015. Export model metadata directly into the `<rt_info>` (Runtime Info) tag blocks.
-- [ ] 016. Support pretty-printing XML (indentation) vs minified output.
-- [ ] 017. Generate unique, strictly sequential integer IDs for all OpenVINO layers.
-- [ ] 018. Deduplicate identical edge definitions securely.
-- [ ] 019. Track explicit port mapping limits (e.g. output port `0` maps to input port `1`).
-- [ ] 020. Provide validation against OpenVINO's strict XML Schema Definition (XSD).
+
+- [ ] 1. Implement zero-dependency XML DOM builder in TypeScript/JS.
+- [ ] 2. Implement zero-dependency XML builder in Python.
+- [ ] 3. Emit `<net>` root tag with `name` and `version` (e.g., `version="11"` or `"10"`).
+- [ ] 4. Emit `<layers>` container tag.
+- [ ] 5. Emit `<edges>` container tag.
+- [ ] 6. Emit `<layer>` node tags mapping `id`, `name`, `type`, and `version`.
+- [ ] 7. Implement `<data>` tags for layer-specific attributes.
+- [ ] 8. Implement `<input>` and `<port>` tags for structural topology definition.
+- [ ] 9. Implement `<output>` and `<port>` tags.
+- [ ] 10. Map ONNX `TensorProto.DataType` to OpenVINO precision strings (`f32`, `f16`, `i64`, `i32`, `i8`, `u8`, `boolean`).
+- [ ] 11. Implement shape serialization inside `<dim>` tags.
+- [ ] 12. Translate ONNX dynamic axes (`-1`) to OpenVINO dynamic shapes (`-1` or `?`).
+- [ ] 13. Ensure topologically sorted emission of `<layer>` nodes.
+- [ ] 14. Translate ONNX graph connections into explicit `<edge>` source/target port definitions.
+- [ ] 15. Export model metadata directly into the `<rt_info>` (Runtime Info) tag blocks.
+- [ ] 16. Support pretty-printing XML (indentation) vs minified output.
+- [ ] 17. Generate unique, strictly sequential integer IDs for all OpenVINO layers.
+- [ ] 18. Deduplicate identical edge definitions securely.
+- [ ] 19. Track explicit port mapping limits (e.g. output port `0` maps to input port `1`).
+- [ ] 20. Provide validation against OpenVINO's strict XML Schema Definition (XSD).
 
 ### Phase 2: OpenVINO IR `.bin` Serialization & Memory
-- [ ] 021. Implement a binary packer streaming ONNX `Constant` arrays into the contiguous `.bin` payload.
-- [ ] 022. Track absolute byte offsets natively.
-- [ ] 023. Track explicit byte lengths natively.
-- [ ] 024. Write Little-Endian data strictly for all `.bin` extractions.
-- [ ] 025. Emit `<layer type="Const">` mapping `offset` and `size` parameters directly to the `.bin` byte coordinates.
-- [ ] 026. Execute global FP16 casting (`--compress_to_fp16`) natively, converting F32 weights to F16 binary streams while setting the `<data>` tag to `f16`.
-- [ ] 027. Ensure memory alignment pads are correctly bypassed or respected during binary packing.
-- [ ] 028. Deduplicate strictly identical constants (e.g., repeated scaling factors) to point to the exact same `.bin` offsets.
-- [ ] 029. Stream massive `.bin` files (> 2GB) chunk-by-chunk locally in Node.js/Browser to prevent out-of-memory limits.
-- [ ] 030. Provide combined `.xml` + `.bin` zip downloads directly within the JS/Python APIs.
+
+- [ ] 21. Implement a binary packer streaming ONNX `Constant` arrays into the contiguous `.bin` payload.
+- [ ] 22. Track absolute byte offsets natively.
+- [ ] 23. Track explicit byte lengths natively.
+- [ ] 24. Write Little-Endian data strictly for all `.bin` extractions.
+- [ ] 25. Emit `<layer type="Const">` mapping `offset` and `size` parameters directly to the `.bin` byte coordinates.
+- [ ] 26. Execute global FP16 casting (`--compress_to_fp16`) natively, converting F32 weights to F16 binary streams while setting the `<data>` tag to `f16`.
+- [ ] 27. Ensure memory alignment pads are correctly bypassed or respected during binary packing.
+- [ ] 28. Deduplicate strictly identical constants (e.g., repeated scaling factors) to point to the exact same `.bin` offsets.
+- [ ] 29. Stream massive `.bin` files (> 2GB) chunk-by-chunk locally in Node.js/Browser to prevent out-of-memory limits.
+- [ ] 30. Provide combined `.xml` + `.bin` zip downloads directly within the JS/Python APIs.
 
 ### Phase 3: Parameters, Results & Constants
-- [ ] 031. Map ONNX Graph Inputs to OpenVINO `Parameter` layers.
-- [ ] 032. Map ONNX Graph Outputs to OpenVINO `Result` layers.
-- [ ] 033. Map ONNX Initializers to OpenVINO `Const` layers.
-- [ ] 034. Extract ONNX scalars cleanly to `Const` layers with `<dim>1</dim>`.
-- [ ] 035. Assign precise precision metadata for `Parameter` layers.
-- [ ] 036. Resolve `Result` types automatically by querying the output of the final connected layer.
-- [ ] 037. Force explicit `Convert` nodes immediately following `Parameter` if the target precision mismatches input definitions.
-- [ ] 038. Support multiple outputs natively via multiple `Result` definitions linked to different ports on the same origin node.
-- [ ] 039. Emit `<meta_data>` specific to the conversion parameters utilized.
-- [ ] 040. Prevent `Parameter` definitions that aren't consumed by any internal nodes.
+
+- [ ] 31. Map ONNX Graph Inputs to OpenVINO `Parameter` layers.
+- [ ] 32. Map ONNX Graph Outputs to OpenVINO `Result` layers.
+- [ ] 33. Map ONNX Initializers to OpenVINO `Const` layers.
+- [ ] 34. Extract ONNX scalars cleanly to `Const` layers with `<dim>1</dim>`.
+- [ ] 35. Assign precise precision metadata for `Parameter` layers.
+- [ ] 36. Resolve `Result` types automatically by querying the output of the final connected layer.
+- [ ] 37. Force explicit `Convert` nodes immediately following `Parameter` if the target precision mismatches input definitions.
+- [ ] 38. Support multiple outputs natively via multiple `Result` definitions linked to different ports on the same origin node.
+- [ ] 39. Emit `<meta_data>` specific to the conversion parameters utilized.
+- [ ] 40. Prevent `Parameter` definitions that aren't consumed by any internal nodes.
 
 ### Phase 4: Basic Math & Elementwise Operations
-- [ ] 041. Map ONNX `Add` to OpenVINO `Add`.
-- [ ] 042. Map ONNX `Sub` to OpenVINO `Subtract`.
-- [ ] 043. Map ONNX `Mul` to OpenVINO `Multiply`.
-- [ ] 044. Map ONNX `Div` to OpenVINO `Divide`.
-- [ ] 045. Map ONNX `Pow` to OpenVINO `Power`.
-- [ ] 046. Map ONNX `Max` to OpenVINO `Maximum`.
-- [ ] 047. Map ONNX `Min` to OpenVINO `Minimum`.
-- [ ] 048. Handle implicit broadcasting differences (OpenVINO `auto_broadcast="numpy"`).
-- [ ] 049. Map ONNX `Abs` to OpenVINO `Abs`.
-- [ ] 050. Map ONNX `Ceil` to OpenVINO `Ceiling`.
-- [ ] 051. Map ONNX `Floor` to OpenVINO `Floor`.
-- [ ] 052. Map ONNX `Exp` to OpenVINO `Exp`.
-- [ ] 053. Map ONNX `Log` to OpenVINO `Log`.
-- [ ] 054. Map ONNX `Sqrt` to OpenVINO `Sqrt`.
-- [ ] 055. Map ONNX `Sin` to OpenVINO `Sin`.
-- [ ] 056. Map ONNX `Cos` to OpenVINO `Cos`.
-- [ ] 057. Map ONNX `Tan` to OpenVINO `Tan`.
-- [ ] 058. Map ONNX `Asin` to OpenVINO `Asin`.
-- [ ] 059. Map ONNX `Acos` to OpenVINO `Acos`.
-- [ ] 060. Map ONNX `Atan` to OpenVINO `Atan`.
-- [ ] 061. Map ONNX `Sign` to OpenVINO `Sign`.
-- [ ] 062. Map ONNX `Mod` to OpenVINO `Mod` (parsing `fmod` appropriately).
+
+- [ ] 41. Map ONNX `Add` to OpenVINO `Add`.
+- [ ] 42. Map ONNX `Sub` to OpenVINO `Subtract`.
+- [ ] 43. Map ONNX `Mul` to OpenVINO `Multiply`.
+- [ ] 44. Map ONNX `Div` to OpenVINO `Divide`.
+- [ ] 45. Map ONNX `Pow` to OpenVINO `Power`.
+- [ ] 46. Map ONNX `Max` to OpenVINO `Maximum`.
+- [ ] 47. Map ONNX `Min` to OpenVINO `Minimum`.
+- [ ] 48. Handle implicit broadcasting differences (OpenVINO `auto_broadcast="numpy"`).
+- [ ] 49. Map ONNX `Abs` to OpenVINO `Abs`.
+- [ ] 50. Map ONNX `Ceil` to OpenVINO `Ceiling`.
+- [ ] 51. Map ONNX `Floor` to OpenVINO `Floor`.
+- [ ] 52. Map ONNX `Exp` to OpenVINO `Exp`.
+- [ ] 53. Map ONNX `Log` to OpenVINO `Log`.
+- [ ] 54. Map ONNX `Sqrt` to OpenVINO `Sqrt`.
+- [ ] 55. Map ONNX `Sin` to OpenVINO `Sin`.
+- [ ] 56. Map ONNX `Cos` to OpenVINO `Cos`.
+- [ ] 57. Map ONNX `Tan` to OpenVINO `Tan`.
+- [ ] 58. Map ONNX `Asin` to OpenVINO `Asin`.
+- [ ] 59. Map ONNX `Acos` to OpenVINO `Acos`.
+- [ ] 60. Map ONNX `Atan` to OpenVINO `Atan`.
+- [ ] 61. Map ONNX `Sign` to OpenVINO `Sign`.
+- [ ] 62. Map ONNX `Mod` to OpenVINO `Mod` (parsing `fmod` appropriately).
 
 ### Phase 5: Convolutions & Spatial Operations
-- [ ] 063. Map ONNX `Conv` (2D) to OpenVINO `Convolution`.
-- [ ] 064. Map ONNX `Conv` with `groups > 1` to OpenVINO `GroupConvolution`.
-- [ ] 065. Parse ONNX `strides` to `<data strides="X,Y"/>`.
-- [ ] 066. Parse ONNX `dilations` to `<data dilations="X,Y"/>`.
-- [ ] 067. Parse ONNX `pads` to `pads_begin` and `pads_end` natively.
-- [ ] 068. Translate ONNX `auto_pad` definitions to OpenVINO `auto_pad` strings (`valid`, `same_upper`, `same_lower`).
-- [ ] 069. Handle OpenVINO's requirement for decoupled Convolution bias additions. (Emit `Convolution` -> `Add`).
-- [ ] 070. Map ONNX `ConvTranspose` to OpenVINO `ConvolutionBackpropData`.
-- [ ] 071. Handle `output_padding` cleanly in `ConvolutionBackpropData`.
-- [ ] 072. Map 3D Convolutions correctly.
-- [ ] 073. Map 1D Convolutions correctly.
-- [ ] 074. Map ONNX `MaxPool` to OpenVINO `MaxPool`.
-- [ ] 075. Extract `kernel` spatial dimensions cleanly for `<data kernel="..."/>`.
-- [ ] 076. Map ONNX `AveragePool` to OpenVINO `AvgPool`.
-- [ ] 077. Map `count_include_pad` attribute in `AvgPool`.
-- [ ] 078. Map ONNX `GlobalMaxPool` to OpenVINO `ReduceMax` (with dynamic axes) or `MaxPool` spanning dimensions.
-- [ ] 079. Map ONNX `GlobalAveragePool` to OpenVINO `ReduceMean`.
-- [ ] 080. Handle asymmetric spatial paddings safely inside OpenVINO parameters.
+
+- [ ] 63. Map ONNX `Conv` (2D) to OpenVINO `Convolution`.
+- [ ] 64. Map ONNX `Conv` with `groups > 1` to OpenVINO `GroupConvolution`.
+- [ ] 65. Parse ONNX `strides` to `<data strides="X,Y"/>`.
+- [ ] 66. Parse ONNX `dilations` to `<data dilations="X,Y"/>`.
+- [ ] 67. Parse ONNX `pads` to `pads_begin` and `pads_end` natively.
+- [ ] 68. Translate ONNX `auto_pad` definitions to OpenVINO `auto_pad` strings (`valid`, `same_upper`, `same_lower`).
+- [ ] 69. Handle OpenVINO's requirement for decoupled Convolution bias additions. (Emit `Convolution` -> `Add`).
+- [ ] 70. Map ONNX `ConvTranspose` to OpenVINO `ConvolutionBackpropData`.
+- [ ] 71. Handle `output_padding` cleanly in `ConvolutionBackpropData`.
+- [ ] 72. Map 3D Convolutions correctly.
+- [ ] 73. Map 1D Convolutions correctly.
+- [ ] 74. Map ONNX `MaxPool` to OpenVINO `MaxPool`.
+- [ ] 75. Extract `kernel` spatial dimensions cleanly for `<data kernel="..."/>`.
+- [ ] 76. Map ONNX `AveragePool` to OpenVINO `AvgPool`.
+- [ ] 77. Map `count_include_pad` attribute in `AvgPool`.
+- [ ] 78. Map ONNX `GlobalMaxPool` to OpenVINO `ReduceMax` (with dynamic axes) or `MaxPool` spanning dimensions.
+- [ ] 79. Map ONNX `GlobalAveragePool` to OpenVINO `ReduceMean`.
+- [ ] 80. Handle asymmetric spatial paddings safely inside OpenVINO parameters.
 
 ### Phase 6: Matrix Multiplication & Linear Algebra
-- [ ] 081. Map ONNX `MatMul` to OpenVINO `MatMul`.
-- [ ] 082. Map ONNX `Gemm` to OpenVINO `MatMul` -> `Multiply` (Alpha) -> `Add` (Bias + Beta).
-- [ ] 083. Extract `transA` and map to `<data transpose_a="true"/>`.
-- [ ] 084. Extract `transB` and map to `<data transpose_b="true"/>`.
-- [ ] 085. Translate fully connected dense layers efficiently into OpenVINO `MatMul` pairs.
-- [ ] 086. Optimize static Gemm conversions by folding `alpha` directly into the weights `.bin` array natively prior to XML emission.
-- [ ] 087. Validate multidimensional MatMul limits natively.
-- [ ] 088. Handle `Einsum` explicitly by unrolling into OpenVINO `Transpose` + `MatMul` blocks if OpenVINO `Einsum` is unsupported.
-- [ ] 089. Identify `Linear` loops explicitly.
+
+- [ ] 81. Map ONNX `MatMul` to OpenVINO `MatMul`.
+- [ ] 82. Map ONNX `Gemm` to OpenVINO `MatMul` -> `Multiply` (Alpha) -> `Add` (Bias + Beta).
+- [ ] 83. Extract `transA` and map to `<data transpose_a="true"/>`.
+- [ ] 84. Extract `transB` and map to `<data transpose_b="true"/>`.
+- [ ] 85. Translate fully connected dense layers efficiently into OpenVINO `MatMul` pairs.
+- [ ] 86. Optimize static Gemm conversions by folding `alpha` directly into the weights `.bin` array natively prior to XML emission.
+- [ ] 87. Validate multidimensional MatMul limits natively.
+- [ ] 88. Handle `Einsum` explicitly by unrolling into OpenVINO `Transpose` + `MatMul` blocks if OpenVINO `Einsum` is unsupported.
+- [ ] 89. Identify `Linear` loops explicitly.
 
 ### Phase 7: Activations & Normalization
-- [ ] 090. Map ONNX `Relu` to OpenVINO `ReLU`.
-- [ ] 091. Map ONNX `LeakyRelu` to OpenVINO `PRelu` (with constant alpha parameter tensor) or specialized `LeakyRelu` depending on IR version.
-- [ ] 092. Map ONNX `Sigmoid` to OpenVINO `Sigmoid`.
-- [ ] 093. Map ONNX `Tanh` to OpenVINO `Tanh`.
-- [ ] 094. Map ONNX `Elu` to OpenVINO `Elu` (mapping alpha).
-- [ ] 095. Map ONNX `Selu` to OpenVINO `Selu` (mapping alpha, gamma).
-- [ ] 096. Map ONNX `Softplus` to OpenVINO `SoftPlus`.
-- [ ] 097. Map ONNX `Gelu` to OpenVINO `Gelu`.
-- [ ] 098. Translate Gelu `erf` vs `tanh` approximation modes correctly.
-- [ ] 099. Map ONNX `Softmax` to OpenVINO `SoftMax`.
+
+- [ ] 90. Map ONNX `Relu` to OpenVINO `ReLU`.
+- [ ] 91. Map ONNX `LeakyRelu` to OpenVINO `PRelu` (with constant alpha parameter tensor) or specialized `LeakyRelu` depending on IR version.
+- [ ] 92. Map ONNX `Sigmoid` to OpenVINO `Sigmoid`.
+- [ ] 93. Map ONNX `Tanh` to OpenVINO `Tanh`.
+- [ ] 94. Map ONNX `Elu` to OpenVINO `Elu` (mapping alpha).
+- [ ] 95. Map ONNX `Selu` to OpenVINO `Selu` (mapping alpha, gamma).
+- [ ] 96. Map ONNX `Softplus` to OpenVINO `SoftPlus`.
+- [ ] 97. Map ONNX `Gelu` to OpenVINO `Gelu`.
+- [ ] 98. Translate Gelu `erf` vs `tanh` approximation modes correctly.
+- [ ] 99. Map ONNX `Softmax` to OpenVINO `SoftMax`.
 - [ ] 100. Map `axis` attribute natively for Softmax.
 - [ ] 101. Map ONNX `LogSoftmax` to OpenVINO `LogSoftmax`.
 - [ ] 102. Map ONNX `PRelu` to OpenVINO `PRelu`.
@@ -138,6 +148,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 110. Evaluate explicit dropout removal safely.
 
 ### Phase 8: Shape, Routing & Tensor Manipulation
+
 - [ ] 111. Map ONNX `Reshape` to OpenVINO `Reshape`.
 - [ ] 112. Connect dynamic `Reshape` dimensions to a secondary OpenVINO `Const` node providing the target shape array.
 - [ ] 113. Map ONNX `Transpose` to OpenVINO `Transpose`.
@@ -165,6 +176,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 135. Inject `Convert` nodes dynamically to enforce OpenVINO's rigid data type propagation laws.
 
 ### Phase 9: Reductions & Logical Operators
+
 - [ ] 136. Map ONNX `ReduceMean` to OpenVINO `ReduceMean`.
 - [ ] 137. Map ONNX `ReduceMax` to OpenVINO `ReduceMax`.
 - [ ] 138. Map ONNX `ReduceMin` to OpenVINO `ReduceMin`.
@@ -188,6 +200,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 156. Map ONNX `Where` to OpenVINO `Select`.
 
 ### Phase 10: Control Flow & State (If, Loop, Scan)
+
 - [ ] 157. Map ONNX `If` to OpenVINO `If`.
 - [ ] 158. Extract sub-graphs natively into inner `<body ...>` tags inside the XML.
 - [ ] 159. Map `<port_map>` definitions connecting parent variables to inner `If` inputs securely.
@@ -197,6 +210,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 163. Map ONNX `Scan` sequences natively into `TensorIterator` definitions.
 
 ### Phase 11: INT8 / Quantization Mapping (FakeQuantize)
+
 - [ ] 164. Map ONNX `QuantizeLinear` -> `DequantizeLinear` pairs to OpenVINO `FakeQuantize`.
 - [ ] 165. Extract scale and zero-point values mathematically to form `input_low`, `input_high`, `output_low`, `output_high`.
 - [ ] 166. Handle Per-Channel OpenVINO `FakeQuantize` configurations correctly via multi-dimensional bound arrays.
@@ -206,6 +220,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 170. Ensure OpenVINO recognizes sub-byte (INT4) weight representations natively by emitting the precise `FakeQuantize` parameters matching W4A16.
 
 ### Phase 12: LLM & Transformer Specialized Topologies
+
 - [ ] 171. Identify standard Attention structures and map them natively to OpenVINO optimized pipelines.
 - [ ] 172. Extract Rotary Positional Embedding (RoPE) slices and map to specialized `RoPE` nodes if supported by target IR.
 - [ ] 173. Identify SwiGLU / GeGLU structures and emit them cleanly to maximize OpenVINO fusing potential.
@@ -213,6 +228,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 175. Configure explicit KV Cache variables as `Parameter` and `Result` nodes with stateful flags.
 
 ### Phase 13: Image, Vision, and Audio Specials
+
 - [ ] 176. Map ONNX `Resize` to OpenVINO `Interpolate`.
 - [ ] 177. Format `Interpolate` `<data mode="..." shape_calculation_mode="..." coordinate_transformation_mode="..."/>`.
 - [ ] 178. Map ONNX `SpaceToDepth` to OpenVINO `SpaceToDepth`.
@@ -225,6 +241,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 185. Handle `CumSum` natively via `CumSum` OpenVINO tags.
 
 ### Phase 14: Dynamic Shapes & Execution Boundaries
+
 - [ ] 186. Translate ONNX symbolic parameters natively (e.g. `batch_size`).
 - [ ] 187. Ensure dynamic bounds (`?` characters) correctly propagate inside `<dim>` tags.
 - [ ] 188. Support CLI override: `onnx9000 openvino export model.onnx --shape input:[1,3,224,224]`.
@@ -232,6 +249,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 190. Handle multi-input variable broadcasting natively.
 
 ### Phase 15: Node.js & CLI Tooling (`onnx9000 openvino`)
+
 - [ ] 191. Implement CLI command: `onnx9000 openvino export model.onnx -o output_dir/`.
 - [ ] 192. Add `--fp16` argument to downcast all weights seamlessly.
 - [ ] 193. Add `--data_type` overrides.
@@ -244,6 +262,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 200. Execute CI integration testing generating Intel files flawlessly on GitHub Actions.
 
 ### Phase 16: Browser UI (The Web-Native Compiler)
+
 - [ ] 201. Build static React/Vue Web UI for `onnx9000.openvino`.
 - [ ] 202. Implement drag-and-drop ingestion of `model.onnx` or HuggingFace URLs.
 - [ ] 203. Display interactive configuration parameters (e.g., Select Precision: FP32 vs FP16).
@@ -256,6 +275,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 210. Eliminate backend server requirements completely (100% client side execution).
 
 ### Phase 17: Validation & Consistency
+
 - [ ] 211. Unit Test: Convert `Add` -> OpenVINO XML.
 - [ ] 212. Unit Test: Convert `MatMul` -> Validate XML constraints.
 - [ ] 213. Unit Test: Convert `Conv2D` -> Validate XML padding layouts.
@@ -268,6 +288,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 220. Ensure `model.mapping` files align with standard Intel debugging targets.
 
 ### Phase 18: Specific Edge Cases & Workarounds
+
 - [ ] 221. Emulate missing OpenVINO `GatherElements` via explicit indexing mappings natively.
 - [ ] 222. Handle ONNX `Cast` from float to boolean dynamically as OpenVINO requires integer stepping.
 - [ ] 223. Resolve nested 5D+ arrays successfully within OpenVINO tensor limitations.
@@ -280,6 +301,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 230. Test exporting inside Pyodide explicitly.
 
 ### Phase 19: Ecosystem Integrations
+
 - [ ] 231. Connect `onnx9000.openvino` cleanly with `onnx9000.optimum` to allow automated HuggingFace optimization hooks.
 - [ ] 232. Parse `Safetensors` natively into OpenVINO `.bin` files bypassing dense ONNX structures explicitly.
 - [ ] 233. Map CoreML / TFLite structures indirectly to OpenVINO via ONNX translations.
@@ -292,6 +314,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 - [ ] 240. Publish performance comparisons of native `.onnx` evaluation vs generated `.xml` OpenVINO optimizations natively.
 
 ### Phase 20: Delivery & Final Polish
+
 - [ ] 241. Map `tf.complex` equivalents cleanly.
 - [ ] 242. Map `Round` to `Round`.
 - [ ] 243. Handle specific `Pad` dimensions generating explicit 0.0 value injections.

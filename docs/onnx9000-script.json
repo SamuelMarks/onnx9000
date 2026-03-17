@@ -1,20 +1,18 @@
 {
-    "onnx_script_function": {
-        "prefix": "onnxscript",
-        "body": [
-            "from onnx9000.script import script, op",
-            "",
-            "@script",
-            "def ${1:my_model}(${2:x}):",
-            "    ${3:return op.Relu(x)}"
-        ],
-        "description": "Create an ONNX9000 script function"
-    },
-    "onnx_op_call": {
-        "prefix": "op.",
-        "body": [
-            "op.${1:Add}(${2:A}, ${3:B})"
-        ],
-        "description": "Call an ONNX operation"
-    }
+  "onnx_script_function": {
+    "prefix": "onnxscript",
+    "body": [
+      "from onnx9000.script import script, op",
+      "",
+      "@script",
+      "def ${1:my_model}(${2:x}):",
+      "    ${3:return op.Relu(x)}"
+    ],
+    "description": "Create an ONNX9000 script function"
+  },
+  "onnx_op_call": {
+    "prefix": "op.",
+    "body": ["op.${1:Add}(${2:A}, ${3:B})"],
+    "description": "Call an ONNX operation"
+  }
 }

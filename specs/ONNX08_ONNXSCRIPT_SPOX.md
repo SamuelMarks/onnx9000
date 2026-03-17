@@ -1,6 +1,7 @@
 # ONNXScript / Spox Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `ONNXScript` and `Spox` within the `onnx9000` ecosystem.
 The original `ONNXScript` and `Spox` projects provide fantastic Pythonic abstractions for authoring ONNX graphs, but they rely heavily on the native C++ `protobuf` library and the official `onnx` Python package to validate, build, and serialize models.
 Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-like Python API**. By utilizing our pure-Python internal Intermediate Representation (IR) and execution engine, developers can author, trace, shape-infer, and execute complex ONNX graphs node-by-node dynamically. This architecture enables building and exporting ONNX models entirely inside a web browser via WASM/Pyodide or in strict serverless environments without ever installing C++ Protobuf or the massive `onnx` package.
@@ -8,6 +9,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 ## Exhaustive Parity Checklist
 
 ### 1. Core Authoring API & Tracing Architecture (40+ items)
+
 - [x] Implement `onnx9000.script()` decorator for tracing Python functions
 - [x] Implement `onnx9000.Tensor` base abstraction for eager/symbolic execution
 - [x] Implement `onnx9000.Parameter` abstraction for trainable weights
@@ -50,6 +52,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Emulate `Spox` `Var` and `Node` abstractions implicitly
 
 ### 2. Fluent Tensor Math Operators (45+ items)
+
 - [x] Implement `tensor + other` (`__add__`)
 - [x] Implement `tensor - other` (`__sub__`)
 - [x] Implement `tensor * other` (`__mul__`)
@@ -98,6 +101,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Implement `tensor.isinf()`
 
 ### 3. Fluent Tensor Shape & Manipulation (40+ items)
+
 - [x] Implement `tensor.reshape(shape)`
 - [x] Implement `tensor.view(shape)` (Alias for reshape)
 - [x] Implement `tensor.transpose(axes)`
@@ -140,6 +144,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Support dynamic shapes cleanly inside list arguments (e.g., `Concat`)
 
 ### 4. Fluent Reductions & Neural Network Layers (40+ items)
+
 - [x] Implement `tensor.sum(axis, keepdims)`
 - [x] Implement `tensor.mean(axis, keepdims)`
 - [x] Implement `tensor.max(axis, keepdims)`
@@ -182,6 +187,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Implement `tensor.silu()` / `swish()`
 
 ### 5. Advanced ONNX Operators & Attributes Mapping (30+ items)
+
 - [x] Expose `onnx9000.op.Einsum` with string equations
 - [x] Expose `onnx9000.op.GridSample`
 - [x] Expose `onnx9000.op.RoiAlign`
@@ -214,6 +220,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Emulate `Spox` strict type/shape invariant checking during node construction
 
 ### 6. Shape Inference & Symbolic Trace Validation (25+ items)
+
 - [x] Execute `onnx9000.shape_inference` dynamically during tracing
 - [x] Assign explicit output shapes to generated Tensors natively
 - [x] Resolve symbolic math variables natively (e.g. `batch * seq`)
@@ -241,6 +248,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Validate `SplitToSequence` output shapes
 
 ### 7. Zero-Dependency Browser & Serverless Execution (30+ items)
+
 - [x] Export `onnx9000.script` decorator specifically for Web/Pyodide usage
 - [x] Ensure 0 bytes of C++ dependencies (No `onnx`, no `protobuf` PIP packages)
 - [x] Prevent usage of native Python `ctypes` bindings during the tracing process
@@ -273,6 +281,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Validate backwards compatibility (loading the generated model using original `onnxruntime` C++)
 
 ### 8. Extensive Testing & Edge Cases (30+ items)
+
 - [x] Unit Test: Trace `Add(A, B)` and evaluate exact binary equivalence with `onnx` package
 - [x] Unit Test: Trace `MatMul` with implicit broadcasting
 - [x] Unit Test: Trace `Reshape` utilizing `Shape` symbolic extraction
@@ -305,6 +314,7 @@ Our `onnx9000` reimplementation provides a **zero-dependency, fluent, PyTorch-li
 - [x] Provide comprehensive `TypeError` messages containing explicit file/line numbers (Stack Traces)
 
 ### 9. Spox Specific Emulation & Extended Validations (25+ items)
+
 - [x] Implement `Spox`-style strong typing (`Var` validation during instantiation)
 - [x] Support `Spox` strict `type` annotations (rejecting construction if `Float32` is fed to `Int64` op)
 - [x] Support `Spox` strict `shape` annotations (rejecting construction if `[1, 3]` is fed to `[10]`)

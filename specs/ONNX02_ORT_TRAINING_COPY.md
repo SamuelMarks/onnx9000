@@ -1,14 +1,16 @@
 # ONNX Runtime Training Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `ONNX Runtime Training` (`orttraining`) within the `onnx9000` ecosystem.
-The original `orttraining` requires a massive C++ dependency to dynamically calculate gradients (Automatic Differentiation) and update weights at runtime. 
-Our `onnx9000` reimplementation uses a completely different architecture: **Ahead-of-Time (AOT) Symbolic Autograd**. We parse a standard ONNX inference graph and mathematically compile the exact Vector-Jacobian Products (VJPs) into pure, standard `ai.onnx` forward math operators (`MatMul`, `Add`, `Transpose`). 
-This means we output a static "Training Graph" `.onnx` file that inherently contains the forward pass, loss calculation, backward pass, and optimizer steps. This file can then be executed on *any* standard inference engine (like our browser WASM/WebGPU backend), allowing for true zero-dependency on-device training in the browser.
+The original `orttraining` requires a massive C++ dependency to dynamically calculate gradients (Automatic Differentiation) and update weights at runtime.
+Our `onnx9000` reimplementation uses a completely different architecture: **Ahead-of-Time (AOT) Symbolic Autograd**. We parse a standard ONNX inference graph and mathematically compile the exact Vector-Jacobian Products (VJPs) into pure, standard `ai.onnx` forward math operators (`MatMul`, `Add`, `Transpose`).
+This means we output a static "Training Graph" `.onnx` file that inherently contains the forward pass, loss calculation, backward pass, and optimizer steps. This file can then be executed on _any_ standard inference engine (like our browser WASM/WebGPU backend), allowing for true zero-dependency on-device training in the browser.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Autograd Core Architecture & Gradient Tracing (40+ items)
+
 - [ ] Implement AOT Autograd Compiler in pure Python
 - [ ] Implement reverse-mode Automatic Differentiation algorithm
 - [ ] Extract trainable `Parameter` nodes explicitly
@@ -44,33 +46,34 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Output human-readable DAG summary of the generated backward topology
 
 ### 2. Elementwise & Math VJP (Vector-Jacobian Products) (35+ items)
+
 - [ ] Implement VJP for `Add` (dY -> dX1=dY, dX2=dY with un-broadcasting)
 - [ ] Implement VJP for `Sub` (dY -> dX1=dY, dX2=-dY with un-broadcasting)
 - [ ] Implement VJP for `Mul` (dY -> dX1=dY*X2, dX2=dY*X1 with un-broadcasting)
-- [ ] Implement VJP for `Div` (dY -> dX1=dY/X2, dX2=-dY*X1/(X2^2) with un-broadcasting)
-- [ ] Implement VJP for `Abs` (dY -> dY * Sign(X))
+- [ ] Implement VJP for `Div` (dY -> dX1=dY/X2, dX2=-dY\*X1/(X2^2) with un-broadcasting)
+- [ ] Implement VJP for `Abs` (dY -> dY \* Sign(X))
 - [ ] Implement VJP for `Neg` (dY -> -dY)
-- [ ] Implement VJP for `Exp` (dY -> dY * Exp(X))
+- [ ] Implement VJP for `Exp` (dY -> dY \* Exp(X))
 - [ ] Implement VJP for `Log` (dY -> dY / X)
-- [ ] Implement VJP for `Sin` (dY -> dY * Cos(X))
-- [ ] Implement VJP for `Cos` (dY -> dY * -Sin(X))
+- [ ] Implement VJP for `Sin` (dY -> dY \* Cos(X))
+- [ ] Implement VJP for `Cos` (dY -> dY \* -Sin(X))
 - [ ] Implement VJP for `Tan` (dY -> dY / Cos(X)^2)
-- [ ] Implement VJP for `Sinh` (dY -> dY * Cosh(X))
-- [ ] Implement VJP for `Cosh` (dY -> dY * Sinh(X))
-- [ ] Implement VJP for `Tanh` (dY -> dY * (1 - Tanh(X)^2))
-- [ ] Implement VJP for `Pow` (Constant exponent, e.g., X^2 -> dY * 2X)
+- [ ] Implement VJP for `Sinh` (dY -> dY \* Cosh(X))
+- [ ] Implement VJP for `Cosh` (dY -> dY \* Sinh(X))
+- [ ] Implement VJP for `Tanh` (dY -> dY \* (1 - Tanh(X)^2))
+- [ ] Implement VJP for `Pow` (Constant exponent, e.g., X^2 -> dY \* 2X)
 - [ ] Implement VJP for `Pow` (Variable exponent X^Y)
-- [ ] Implement VJP for `Sqrt` (dY -> dY / (2 * Sqrt(X)))
+- [ ] Implement VJP for `Sqrt` (dY -> dY / (2 \* Sqrt(X)))
 - [ ] Implement VJP for `Reciprocal` (dY -> -dY / X^2)
-- [ ] Implement VJP for `Clip` (dY -> dY * Where(min < X < max, 1, 0))
-- [ ] Implement VJP for `Relu` (dY -> dY * Where(X > 0, 1, 0))
-- [ ] Implement VJP for `LeakyRelu` (dY -> dY * Where(X > 0, 1, alpha))
-- [ ] Implement VJP for `PRelu` (dY -> dY * Where(X > 0, 1, alpha), dAlpha -> dY * Where(X < 0, X, 0))
-- [ ] Implement VJP for `Sigmoid` (dY -> dY * Sigmoid(X) * (1 - Sigmoid(X)))
-- [ ] Implement VJP for `Erf` (dY -> dY * 2/sqrt(pi) * exp(-X^2))
+- [ ] Implement VJP for `Clip` (dY -> dY \* Where(min < X < max, 1, 0))
+- [ ] Implement VJP for `Relu` (dY -> dY \* Where(X > 0, 1, 0))
+- [ ] Implement VJP for `LeakyRelu` (dY -> dY \* Where(X > 0, 1, alpha))
+- [ ] Implement VJP for `PRelu` (dY -> dY _ Where(X > 0, 1, alpha), dAlpha -> dY _ Where(X < 0, X, 0))
+- [ ] Implement VJP for `Sigmoid` (dY -> dY _ Sigmoid(X) _ (1 - Sigmoid(X)))
+- [ ] Implement VJP for `Erf` (dY -> dY _ 2/sqrt(pi) _ exp(-X^2))
 - [ ] Implement VJP for `Gelu` (Exact derivative based on Erf)
 - [ ] Implement VJP for `HardSwish`
-- [ ] Implement VJP for `Softplus` (dY -> dY * Sigmoid(X))
+- [ ] Implement VJP for `Softplus` (dY -> dY \* Sigmoid(X))
 - [ ] Implement VJP for `Softsign` (dY -> dY / (1 + |X|)^2)
 - [ ] Implement explicit Un-broadcasting logic (ReduceSum over broadcasted axes) internally for all binary math
 - [ ] Verify shape extraction cleanly supports dynamic un-broadcasting logic
@@ -79,6 +82,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Implement VJP for `Where` (Condition routing)
 
 ### 3. Neural Network Layers VJP Parity (40+ items)
+
 - [ ] Implement VJP for `MatMul` (dY -> dX1=dY @ X2^T, dX2=X1^T @ dY)
 - [ ] Implement VJP for `Gemm` (handling alpha, beta, transA, transB cleanly)
 - [ ] Implement VJP for `Conv` (dX -> ConvTranspose(dY, W), dW -> Conv2D(X, dY), dB -> ReduceSum(dY))
@@ -89,14 +93,14 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Implement VJP for `ConvTranspose` (dX -> Conv(dY, W))
 - [ ] Implement VJP for `MaxPool` (dX -> ScatterND routing gradients to ArgMax indices)
 - [ ] Implement VJP for `AveragePool` (dX -> Distribute dY / pool_size uniformly)
-- [ ] Implement VJP for `GlobalAveragePool` (dX -> Expand dY / (H*W))
+- [ ] Implement VJP for `GlobalAveragePool` (dX -> Expand dY / (H\*W))
 - [ ] Implement VJP for `GlobalMaxPool` (dX -> ScatterND routing)
-- [ ] Implement VJP for `Softmax` (dY -> dY * Softmax(X) - ReduceSum(dY * Softmax(X)) * Softmax(X))
+- [ ] Implement VJP for `Softmax` (dY -> dY _ Softmax(X) - ReduceSum(dY _ Softmax(X)) \* Softmax(X))
 - [ ] Implement VJP for `LogSoftmax`
 - [ ] Implement VJP for `BatchNormalization` (Training mode: Tracking mean/var + gradient derivation)
 - [ ] Implement VJP for `LayerNormalization` (Gradient with respect to X, Scale, Bias)
 - [ ] Implement VJP for `InstanceNormalization`
-- [ ] Implement VJP for `Dropout` (dX -> dY * Mask / (1 - ratio))
+- [ ] Implement VJP for `Dropout` (dX -> dY \* Mask / (1 - ratio))
 - [ ] Implement VJP for `Pad` (dX -> Slice(dY, removing padded regions))
 - [ ] Implement VJP for `Resize` (Nearest -> Pooling/Gathering logic)
 - [ ] Implement VJP for `Resize` (Linear/Bilinear -> Sparse distribution logic)
@@ -117,6 +121,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Handle dynamic unrolling for recurrent layers (`RNN`, `LSTM`, `GRU`) if traced natively
 
 ### 4. Loss Functions & Objective Compilation (20+ items)
+
 - [ ] Compile `MeanSquaredError` natively (Forward + VJP generator)
 - [ ] Compile `MeanAbsoluteError` natively
 - [ ] Compile `HuberLoss` natively
@@ -137,6 +142,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Auto-inject loss node directly into the monolithic training graph
 
 ### 5. Optimizers & Weight Update Integration (25+ items)
+
 - [ ] AOT compile `SGD` optimizer directly into the training graph
 - [ ] AOT compile `SGD + Momentum` natively
 - [ ] AOT compile `Adam` directly into the training graph
@@ -160,6 +166,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Support generating training graphs directly targeting WebGPU execution limits
 
 ### 6. Zero-Dependency & Web/Server Interop (20+ items)
+
 - [ ] No `onnxruntime-training` wheel required natively in Python
 - [ ] No CMake, Ninja, or LLVM bindings required to trace gradients
 - [ ] Execute compiled training graphs instantly inside standard Web Browsers (WASM/WebGPU)
@@ -176,6 +183,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Expose Python API `onnx9000.training.compile_training_graph(model, loss, optimizer)`
 
 ### 7. Explicit Unit Tests & Edge Cases (30+ items)
+
 - [ ] Unit Test: Train standard Linear Regression completely in ONNX (Loss decreasing over 10 steps)
 - [ ] Unit Test: Train Logistic Regression natively
 - [ ] Unit Test: Train MLP (Multi-Layer Perceptron) 2-layers (Matching PyTorch loss curve exactly)
@@ -194,6 +202,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Validate `Float16` numeric stability across Adam bias correction loops
 
 ### 8. Exhaustive Gradient Operators & Subgraph Tracing (40+ items)
+
 - [ ] Implement VJP for `TopK` (dX -> ScatterND routing gradients to extracted indices)
 - [ ] Implement VJP for `SpaceToDepth` (dX -> DepthToSpace(dY))
 - [ ] Implement VJP for `DepthToSpace` (dX -> SpaceToDepth(dY))
@@ -203,10 +212,10 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Implement VJP for `Asinh` (dY -> dY / Sqrt(X^2 + 1))
 - [ ] Implement VJP for `Atan` (dY -> dY / (1 + X^2))
 - [ ] Implement VJP for `Atanh` (dY -> dY / (1 - X^2))
-- [ ] Implement VJP for `Celul` (dY -> dY * Where(X > 0, 1, alpha * Exp(X)))
-- [ ] Implement VJP for `Elu` (dY -> dY * Where(X > 0, 1, alpha * Exp(X)))
-- [ ] Implement VJP for `Selu` (dY -> dY * scale * Where(X > 0, 1, alpha * Exp(X)))
-- [ ] Implement VJP for `Mish` (dY -> dY * (Softplus(X) + X * Sigmoid(X) * (1 - Tanh(Softplus(X))^2)))
+- [ ] Implement VJP for `Celul` (dY -> dY _ Where(X > 0, 1, alpha _ Exp(X)))
+- [ ] Implement VJP for `Elu` (dY -> dY _ Where(X > 0, 1, alpha _ Exp(X)))
+- [ ] Implement VJP for `Selu` (dY -> dY _ scale _ Where(X > 0, 1, alpha \* Exp(X)))
+- [ ] Implement VJP for `Mish` (dY -> dY _ (Softplus(X) + X _ Sigmoid(X) \* (1 - Tanh(Softplus(X))^2)))
 - [ ] Implement VJP for `Shrink`
 - [ ] Implement VJP for `CumSum` (dX -> CumSum(dY, reverse=True))
 - [ ] Implement VJP for `ReverseSequence` (dX -> ReverseSequence(dY))
@@ -219,12 +228,12 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Implement VJP for `ReduceMax` (dX -> ScatterND(dY) distributing to ArgMax indices)
 - [ ] Implement VJP for `ReduceMin` (dX -> ScatterND(dY) distributing to ArgMin indices)
 - [ ] Implement VJP for `ReduceMean` (dX -> Expand(dY / N))
-- [ ] Implement VJP for `ReduceProd` (dX -> dY * Prod(X) / X)
-- [ ] Implement VJP for `ReduceL1` (dX -> dY * Sign(X))
-- [ ] Implement VJP for `ReduceL2` (dX -> dY * X / L2_Norm(X))
+- [ ] Implement VJP for `ReduceProd` (dX -> dY \* Prod(X) / X)
+- [ ] Implement VJP for `ReduceL1` (dX -> dY \* Sign(X))
+- [ ] Implement VJP for `ReduceL2` (dX -> dY \* X / L2_Norm(X))
 - [ ] Implement VJP for `ReduceLogSum` (dX -> Expand(dY) / Sum(X))
-- [ ] Implement VJP for `ReduceLogSumExp` (dX -> Expand(dY) * Softmax(X))
-- [ ] Implement VJP for `ReduceSumSquare` (dX -> 2 * X * Expand(dY))
+- [ ] Implement VJP for `ReduceLogSumExp` (dX -> Expand(dY) \* Softmax(X))
+- [ ] Implement VJP for `ReduceSumSquare` (dX -> 2 _ X _ Expand(dY))
 - [ ] Implement VJP for `LpNormalization` (Gradient of L1/L2 Norm)
 - [ ] Implement VJP for `GlobalLpPool` (Gradient of Lp Norm)
 - [ ] Implement VJP for `Einsum` (Symbolically generating the adjoint equation)
@@ -235,6 +244,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Allow marking specific inputs dynamically as `requires_grad=False` inside Python API
 
 ### 9. Advanced Mixed Precision & Gradient Scaling (25+ items)
+
 - [ ] Inject explicit `Cast` operators dynamically to cast Gradients to FP16
 - [ ] Maintain Master Weights explicitly in FP32 format natively in the generated graph
 - [ ] Cast Master Weights explicitly to FP16 ONLY during the Forward Pass evaluations
@@ -251,6 +261,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Guarantee numerical equivalence of FP16 backwards pass against PyTorch AMP (atol=1e-3)
 
 ### 10. Federated & Distributed Training Native Graph Integrations (25+ items)
+
 - [ ] Output isolated `CalculateGradient` Sub-graph natively (No Optimizer)
 - [ ] Output isolated `AccumulateGradient` Sub-graph natively (No Forward Pass)
 - [ ] Implement Ring AllReduce simulation topology natively using `Add` / `Div` ops
@@ -267,10 +278,11 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Expose an API to dynamically compress gradients via INT8 Quantization before transmission
 
 ### 11. LoRA & Parameter Efficient Fine Tuning (PEFT) (25+ items)
+
 - [ ] Expose API to freeze arbitrary model layers mathematically (`requires_grad=False`)
 - [ ] Inject Low Rank Adaptation (LoRA) A and B weight matrices statically into a pre-existing `MatMul`
 - [ ] Rewrite standard `Gemm` into `Gemm(X, W) + Gemm(Gemm(X, LoRA_A), LoRA_B)`
-- [ ] Extract gradients *exclusively* for `LoRA_A` and `LoRA_B` (Saving 99% of backward pass memory)
+- [ ] Extract gradients _exclusively_ for `LoRA_A` and `LoRA_B` (Saving 99% of backward pass memory)
 - [ ] Compile LoRA-specific optimizer steps (only updating A and B tensors)
 - [ ] Support generating isolated `LoRA.safetensors` dynamically containing only the trained adapters
 - [ ] Support merging `LoRA` adapters back into the Master Weights statically inside `GraphSurgeon`
@@ -282,6 +294,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Emulate `peft` library configurations cleanly using dictionary configurations
 
 ### 12. Complete Testing & Opset Validations (25+ items)
+
 - [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 15 by default
 - [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 16 by default
 - [ ] Ensure the AOT Autograd Compiler targets ONNX Opset 17 by default
@@ -299,6 +312,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Benchmark full PyTorch Native Training Loop vs compiled `onnx9000.Training` loop on CPU
 
 ### 13. Autograd Graph Memory Optimization (Memory Reuse & Caching) (25+ items)
+
 - [ ] Implement Activation Checkpointing (Recomputation) natively in the AOT graph
 - [ ] Inject explicit `If` logic or topological re-evaluations to discard intermediate activations (saving VRAM)
 - [ ] Recompute `Relu` natively during the backward pass (zero memory footprint caching)
@@ -316,18 +330,20 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Guarantee no circular references exist within the activation cache routing logic
 
 ### 14. Advanced Loss & Numeric Stability Assertions (15+ items)
+
 - [ ] Handle `SoftmaxCrossEntropyLoss` combined VJP explicitly (dY = Softmax(X) - Target) to avoid NaN
 - [ ] Handle `BCEWithLogitsLoss` combined VJP explicitly (dY = Sigmoid(X) - Target) to avoid NaN
 - [ ] Ensure `Log` inside losses is clamped (`Log(Clamp(X, eps, 1-eps))`) to prevent `Log(0) = -Inf`
 - [ ] Ensure `Div` by zero inside `ReduceMean` tracking (e.g. dynamic batch sizes of 0) returns 0 gracefully
 - [ ] Handle numerical underflow in `Exp` operations during backprop using `LogSumExp` tricks natively
 - [ ] Support smoothing parameters natively inside `CategoricalCrossEntropy` (Label Smoothing)
-- [ ] Emulate `FocalLoss` gradients natively (dY = (1-p)^gamma * (gamma * p * log(p) + p - 1))
+- [ ] Emulate `FocalLoss` gradients natively (dY = (1-p)^gamma _ (gamma _ p \* log(p) + p - 1))
 - [ ] Emulate `DiceLoss` gradients natively
 - [ ] Prevent gradient explosion globally across the backward pass by injecting static `Clip` layers before optimizers
 - [ ] Support explicit gradient penalty calculation natively (`Norm(dY) - 1.0` added to Loss)
 
 ### 15. Additional Specific Gradient Operations & Hooks (10+ items)
+
 - [ ] Implement VJP for `SpaceToBatchND`
 - [ ] Implement VJP for `BatchToSpaceND`
 - [ ] Implement VJP for `BitShift` (Non-differentiable -> 0 gradient)
@@ -337,6 +353,7 @@ This means we output a static "Training Graph" `.onnx` file that inherently cont
 - [ ] Provide analytical Jacobian Matrix generator explicitly (for tiny matrices only)
 
 ### 16. Final AOT Compiler Tests & Integration Rules (5+ items)
+
 - [ ] Unit Test: Compile pure `Einsum` into VJP and test against standard `MatMul` representations
 - [ ] Unit Test: Differentiate nested `Slice` operations with negative bounds accurately
 - [ ] Unit Test: Track gradient of completely scalar operations accurately

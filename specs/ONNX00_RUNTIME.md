@@ -1,12 +1,14 @@
 # ONNX Runtime (Native Exec) Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of the core `ONNX Runtime` (ORT) native execution engine within the `onnx9000` ecosystem.
 Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C++ shared library depending heavily on Protobuf and CMake, our `onnx9000` engine is written in pure Python. It acts as a lightweight dynamic dispatcher. Instead of bundling math libraries, it parses the ONNX graph into memory and natively dispatches tensor operations via `ctypes` directly to the host OS's accelerated libraries (e.g., Apple Accelerate on macOS, OpenBLAS on Linux, or cuBLAS for CUDA). This achieves native C-level performance with instant, zero-build startup and a microscopic disk footprint.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core Session API & Environment (35+ items)
+
 - [xx] Implement `InferenceSession` class
 - [xx] Implement `SessionOptions` class
 - [xx] Implement `RunOptions` class
@@ -44,6 +46,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Expose native `get_device()` capabilities
 
 ### 2. Native Memory Management & I/O Binding (25+ items)
+
 - [xx] Implement `OrtValue` / `onnx9000.Tensor` abstraction
 - [xx] Implement `IOBinding` class for pre-allocated memory handling
 - [xx] Support `IOBinding.bind_input()`
@@ -71,6 +74,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Generate raw ctypes pointers directly from outputs without copying
 
 ### 3. Execution Provider (EP) Abstraction & Routing (20+ items)
+
 - [xx] Implement `ExecutionProvider` base class interface
 - [xx] Implement Node partitioning algorithm based on EP capabilities
 - [xx] Support fallback cascading (e.g. `CUDAExecutionProvider` -> `CPUExecutionProvider`)
@@ -93,6 +97,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Abstract synchronous vs asynchronous EP execution cleanly
 
 ### 4. Math, Logical & Reduction Operators Parity (45+ items)
+
 - [xx] Dispatch `Add` (broadcasting)
 - [xx] Dispatch `Sub` (broadcasting)
 - [xx] Dispatch `Mul` (broadcasting)
@@ -138,6 +143,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Dispatch `CastLike`
 
 ### 5. Neural Network Layers & Activations Parity (40+ items)
+
 - [xx] Dispatch `Conv` (1D, 2D, 3D)
 - [xx] Dispatch `Conv` with dilations and grouped convolutions
 - [xx] Dispatch `ConvTranspose`
@@ -179,6 +185,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Dispatch `DepthToSpace`
 
 ### 6. Tensor Manipulation & Shape Operators Parity (35+ items)
+
 - [xx] Dispatch `Reshape` (Zero-copy logical remap)
 - [xx] Dispatch `Transpose` (Physical memory remap or logical stride adjustment)
 - [xx] Dispatch `Flatten` (Zero-copy)
@@ -216,6 +223,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Dispatch `ConcatFromSequence`
 
 ### 7. Control Flow & Dynamic Execution Parity (15+ items)
+
 - [xx] Dispatch `If` (Sub-graph conditional execution)
 - [xx] Manage isolated execution contexts for `If` branch bodies
 - [xx] Dispatch `Loop` (Standard dynamic loop execution)
@@ -233,6 +241,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Validate `If` branch output types match exactly at runtime
 
 ### 8. Accelerate Execution Provider (Apple macOS) (20+ items)
+
 - [xx] Load `Accelerate.framework` via `ctypes.util.find_library`
 - [xx] Bind `cblas_sgemm` directly for Float32 `MatMul` / `Gemm`
 - [xx] Bind `cblas_dgemm` directly for Float64 `MatMul` / `Gemm`
@@ -255,6 +264,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Integrate AMX (Apple Matrix Coprocessor) hidden instructions automatically via Accelerate
 
 ### 9. CUDA Execution Provider (NVIDIA) (30+ items)
+
 - [xx] Load `libcublas.so` / `cublas.dll` dynamically via `ctypes`
 - [xx] Load `libcudart.so` / `cudart.dll` dynamically via `ctypes`
 - [xx] Implement GPU memory allocation (`cudaMalloc`, `cudaFree`) via `ctypes`
@@ -287,6 +297,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Test FP16 evaluation numerical stability across Tensor Cores
 
 ### 10. Graph Optimizations (Level 1, Level 2, Level 3) (30+ items)
+
 - [xx] Level 1: Implement `ConstantFolding` (Pre-calculating math ops)
 - [xx] Level 1: Implement `DeadCodeElimination` (Removing unused nodes)
 - [xx] Level 1: Implement `IdentityElimination` (Removing no-ops)
@@ -319,6 +330,7 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Ensure optimizations do not change the ultimate output shape/type semantics
 
 ### 11. Testing, Profiling & Opset Compliance (25+ items)
+
 - [xx] Execute `onnx` repository standard backend tests: Opset 7
 - [xx] Execute `onnx` repository standard backend tests: Opset 8
 - [xx] Execute `onnx` repository standard backend tests: Opset 9
@@ -344,4 +356,3 @@ Unlike the original Microsoft ORT project, which compiles to a massive 150MB+ C+
 - [xx] Benchmark: BERT-Base Inference (Batch 1, Float32)
 - [xx] Provide detailed mismatch exception logs containing exact tensor deltas when tests fail
 - [xx] Fallback to simple NumPy evaluation explicitly for ops lacking optimized ctypes bindings
-

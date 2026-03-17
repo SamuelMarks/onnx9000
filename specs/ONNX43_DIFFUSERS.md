@@ -1,131 +1,141 @@
 # ONNX43: Diffusers (Web-Native Diffusion Pipelines & Schedulers)
 
 ## Original Project Description
+
 Hugging Face `diffusers` is the state-of-the-art Python library for pretrained diffusion models. It provides the building blocks—pipelines, models (UNet, VAE), and mathematical schedulers (DDIM, Euler, DPM-Solver)—required to generate images, audio, and video from text prompts (e.g., Stable Diffusion, SDXL, ControlNet). However, `diffusers` is deeply coupled to PyTorch, CUDA, and the Python ecosystem. Running these models typically requires massive discrete GPUs and gigabytes of Python dependencies, making client-side or edge deployment exceedingly difficult.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.diffusers` reimagines the entire diffusion ecosystem as a **100% pure TypeScript and Python, zero-dependency library** optimized for WebGPU and WASM.
-*   **Browser-Based Generation:** By coordinating `onnx9000`'s highly optimized WebGPU execution engine with pure-JS schedulers, users can generate Stable Diffusion or SDXL images entirely on the client-side within a standard web browser at near-native speeds.
-*   **Static Graph Fusion for LoRA/ControlNet:** Instead of managing complex runtime adapters, `onnx9000` utilizes its internal `GraphSurgeon` (ONNX14) to permanently fuse LoRA weights and ControlNet branches into the core UNet ONNX graph *before* compilation, completely eliminating adapter runtime overhead and saving massive amounts of VRAM.
-*   **Web-Optimized Tiling & Slicing:** VAE decoding often causes WebGPU out-of-memory (OOM) crashes on high-resolution images. `onnx9000.diffusers` implements native latent tiling and attention-slicing directly inside the execution engine, enabling 4K image generation on consumer laptops.
-*   **Zero-Copy Pipelines:** Text encoders, UNets, and VAEs share the exact same WebGPU memory arena. Tensors are never pulled back to the CPU until the final RGB image is generated, maximizing bandwidth.
+
+- **Browser-Based Generation:** By coordinating `onnx9000`'s highly optimized WebGPU execution engine with pure-JS schedulers, users can generate Stable Diffusion or SDXL images entirely on the client-side within a standard web browser at near-native speeds.
+- **Static Graph Fusion for LoRA/ControlNet:** Instead of managing complex runtime adapters, `onnx9000` utilizes its internal `GraphSurgeon` (ONNX14) to permanently fuse LoRA weights and ControlNet branches into the core UNet ONNX graph _before_ compilation, completely eliminating adapter runtime overhead and saving massive amounts of VRAM.
+- **Web-Optimized Tiling & Slicing:** VAE decoding often causes WebGPU out-of-memory (OOM) crashes on high-resolution images. `onnx9000.diffusers` implements native latent tiling and attention-slicing directly inside the execution engine, enabling 4K image generation on consumer laptops.
+- **Zero-Copy Pipelines:** Text encoders, UNets, and VAEs share the exact same WebGPU memory arena. Tensors are never pulled back to the CPU until the final RGB image is generated, maximizing bandwidth.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core Pipeline Architecture & Execution Loop
-- [ ] 001. Define base `DiffusionPipeline` interface in TypeScript and Python.
-- [ ] 002. Implement `from_pretrained` dynamic fetching from local paths or Hugging Face Hub.
-- [ ] 003. Manage unified caching of downloaded `.onnx` and `.safetensors` components via IndexedDB / OS Cache.
-- [ ] 004. Implement asynchronous inference loop (`await pipeline(prompt)`).
-- [ ] 005. Support `callback_on_step_end` to yield intermediate latents/images to the UI.
-- [ ] 006. Implement Progress Bar hooks natively (yielding `step`, `timestep`, `total_steps`).
-- [ ] 007. Support pipeline cancellation via Web standard `AbortController` / `AbortSignal`.
-- [ ] 008. Implement a completely zero-copy WebGPU memory bridge between pipeline sub-models.
-- [ ] 009. Execute Python/JS identical Pseudo-Random Number Generators (PRNG) to ensure cross-platform seed determinism matching PyTorch `torch.Generator`.
-- [ ] 010. Implement standard `randn` (Standard Normal) tensor initialization natively using Box-Muller or Ziggurat algorithms in WASM/JS.
-- [ ] 011. Implement `rand` (Uniform) tensor initialization natively.
-- [ ] 012. Map hardware specific `device` flags (e.g., forcing Text Encoder to CPU/WASM while UNet runs on WebGPU to save VRAM).
-- [ ] 013. Provide native configuration parsing for `model_index.json`.
-- [ ] 014. Expose memory-flushing APIs (`pipeline.free_memory()`) to trigger JS/Python garbage collection explicitly.
-- [ ] 015. Implement a global `set_progress_bar_config` equivalent for CLI environments.
+
+- [ ] 1. Define base `DiffusionPipeline` interface in TypeScript and Python.
+- [ ] 2. Implement `from_pretrained` dynamic fetching from local paths or Hugging Face Hub.
+- [ ] 3. Manage unified caching of downloaded `.onnx` and `.safetensors` components via IndexedDB / OS Cache.
+- [ ] 4. Implement asynchronous inference loop (`await pipeline(prompt)`).
+- [ ] 5. Support `callback_on_step_end` to yield intermediate latents/images to the UI.
+- [ ] 6. Implement Progress Bar hooks natively (yielding `step`, `timestep`, `total_steps`).
+- [ ] 7. Support pipeline cancellation via Web standard `AbortController` / `AbortSignal`.
+- [ ] 8. Implement a completely zero-copy WebGPU memory bridge between pipeline sub-models.
+- [ ] 9. Execute Python/JS identical Pseudo-Random Number Generators (PRNG) to ensure cross-platform seed determinism matching PyTorch `torch.Generator`.
+- [ ] 10. Implement standard `randn` (Standard Normal) tensor initialization natively using Box-Muller or Ziggurat algorithms in WASM/JS.
+- [ ] 11. Implement `rand` (Uniform) tensor initialization natively.
+- [ ] 12. Map hardware specific `device` flags (e.g., forcing Text Encoder to CPU/WASM while UNet runs on WebGPU to save VRAM).
+- [ ] 13. Provide native configuration parsing for `model_index.json`.
+- [ ] 14. Expose memory-flushing APIs (`pipeline.free_memory()`) to trigger JS/Python garbage collection explicitly.
+- [ ] 15. Implement a global `set_progress_bar_config` equivalent for CLI environments.
 
 ### Phase 2: Base Mathematical Schedulers (ODE/SDE Solvers)
-- [ ] 016. Define base `Scheduler` interface (extracting `timesteps`, `alphas_cumprod`, `betas`).
-- [ ] 017. Implement `DDIMScheduler` natively in JS/Python.
-- [ ] 018. Implement `DDPMScheduler`.
-- [ ] 019. Implement `PNDMScheduler`.
-- [ ] 020. Implement `LMSDiscreteScheduler` (Linear Multistep).
-- [ ] 021. Implement `EulerDiscreteScheduler`.
-- [ ] 022. Implement `EulerAncestralDiscreteScheduler`.
-- [ ] 023. Implement `DPMSolverMultistepScheduler` (DPM-Solver++).
-- [ ] 024. Implement `DPMSolverSinglestepScheduler`.
-- [ ] 025. Implement `KDPM2DiscreteScheduler`.
-- [ ] 026. Implement `KDPM2AncestralDiscreteScheduler`.
-- [ ] 027. Implement `HeunDiscreteScheduler`.
-- [ ] 028. Implement `UniPCMultistepScheduler`.
-- [ ] 029. Ensure exact numerical parity with PyTorch scheduler steps (float32 operations).
-- [ ] 030. Provide an API to swap schedulers seamlessly on an instantiated pipeline (`pipeline.scheduler = new EulerDiscreteScheduler(...)`).
+
+- [ ] 16. Define base `Scheduler` interface (extracting `timesteps`, `alphas_cumprod`, `betas`).
+- [ ] 17. Implement `DDIMScheduler` natively in JS/Python.
+- [ ] 18. Implement `DDPMScheduler`.
+- [ ] 19. Implement `PNDMScheduler`.
+- [ ] 20. Implement `LMSDiscreteScheduler` (Linear Multistep).
+- [ ] 21. Implement `EulerDiscreteScheduler`.
+- [ ] 22. Implement `EulerAncestralDiscreteScheduler`.
+- [ ] 23. Implement `DPMSolverMultistepScheduler` (DPM-Solver++).
+- [ ] 24. Implement `DPMSolverSinglestepScheduler`.
+- [ ] 25. Implement `KDPM2DiscreteScheduler`.
+- [ ] 26. Implement `KDPM2AncestralDiscreteScheduler`.
+- [ ] 27. Implement `HeunDiscreteScheduler`.
+- [ ] 28. Implement `UniPCMultistepScheduler`.
+- [ ] 29. Ensure exact numerical parity with PyTorch scheduler steps (float32 operations).
+- [ ] 30. Provide an API to swap schedulers seamlessly on an instantiated pipeline (`pipeline.scheduler = new EulerDiscreteScheduler(...)`).
 
 ### Phase 3: Advanced Latent Schedulers
-- [ ] 031. Implement `LCMScheduler` (Latent Consistency Models) for 2-4 step generation.
-- [ ] 032. Implement `EulerDiscreteScheduler` optimized specifically for SDXL trailing timesteps.
-- [ ] 033. Implement `DDPMWuerstchenScheduler`.
-- [ ] 034. Implement `FlowMatchEulerDiscreteScheduler` (used in modern Rectified Flow models like SD3).
-- [ ] 035. Implement `SASolverScheduler`.
-- [ ] 036. Handle `set_timesteps()` scaling dynamically based on `num_inference_steps`.
-- [ ] 037. Calculate `sigmas` natively using numerical integrations (no SciPy required in Python/JS).
-- [ ] 038. Support `use_karras_sigmas` flag in applicable schedulers.
-- [ ] 039. Support continuous vs discrete timestep indexing.
-- [ ] 040. Implement `add_noise()` mathematical functionality natively (forward diffusion process).
-- [ ] 041. Handle custom timestep spacing (e.g., `trailing`, `leading`, `linspace`).
-- [ ] 042. Implement specialized ODE step scaling natively in WGSL if the CPU overhead of scheduler math becomes a bottleneck.
-- [ ] 043. Evaluate derivative/model output (`pred_noise`, `pred_v`, `pred_sample`) conversions dynamically.
-- [ ] 044. Prevent `NaN` propagation mathematically during extreme SNR (Signal-to-Noise Ratio) shifts.
-- [ ] 045. Support custom scheduler configuration parsing from `scheduler_config.json`.
+
+- [ ] 31. Implement `LCMScheduler` (Latent Consistency Models) for 2-4 step generation.
+- [ ] 32. Implement `EulerDiscreteScheduler` optimized specifically for SDXL trailing timesteps.
+- [ ] 33. Implement `DDPMWuerstchenScheduler`.
+- [ ] 34. Implement `FlowMatchEulerDiscreteScheduler` (used in modern Rectified Flow models like SD3).
+- [ ] 35. Implement `SASolverScheduler`.
+- [ ] 36. Handle `set_timesteps()` scaling dynamically based on `num_inference_steps`.
+- [ ] 37. Calculate `sigmas` natively using numerical integrations (no SciPy required in Python/JS).
+- [ ] 38. Support `use_karras_sigmas` flag in applicable schedulers.
+- [ ] 39. Support continuous vs discrete timestep indexing.
+- [ ] 40. Implement `add_noise()` mathematical functionality natively (forward diffusion process).
+- [ ] 41. Handle custom timestep spacing (e.g., `trailing`, `leading`, `linspace`).
+- [ ] 42. Implement specialized ODE step scaling natively in WGSL if the CPU overhead of scheduler math becomes a bottleneck.
+- [ ] 43. Evaluate derivative/model output (`pred_noise`, `pred_v`, `pred_sample`) conversions dynamically.
+- [ ] 44. Prevent `NaN` propagation mathematically during extreme SNR (Signal-to-Noise Ratio) shifts.
+- [ ] 45. Support custom scheduler configuration parsing from `scheduler_config.json`.
 
 ### Phase 4: VAE (Variational Autoencoder) Engine
-- [ ] 046. Implement `AutoencoderKL` wrapper for ONNX VAE execution.
-- [ ] 047. Map VAE `encode` (Image -> Latent) operations natively.
-- [ ] 048. Map VAE `decode` (Latent -> Image) operations natively.
-- [ ] 049. Handle VAE latent scaling explicitly (`latents = latents * 0.18215`).
-- [ ] 050. Implement VAE Slicing (running decoding in smaller batch slices to save WebGPU VRAM).
-- [ ] 051. Implement VAE Tiling (splitting massive latents into 64x64 chunks, decoding, and blending borders natively).
-- [ ] 052. Write dedicated WGSL compute shaders for seamless tile blending (Gaussian masking) to prevent edge artifacts.
-- [ ] 053. Ensure output denormalization (`image = (image / 2 + 0.5).clamp(0, 1)`) occurs purely on the GPU.
-- [ ] 054. Convert final WebGPU Image buffers directly to `ImageData` / HTML5 `<canvas>` objects without CPU copies.
-- [ ] 055. Provide Node.js fallbacks saving WebGPU buffers directly to `.png` via lightweight JS encoders.
-- [ ] 056. Handle `TinyVAE` / `TAESD` specialized ONNX topologies.
-- [ ] 057. Support VAE FP16 execution seamlessly (resolving known NaN issues in standard VAE FP16 by dynamically clamping).
-- [ ] 058. Auto-detect broken FP16 VAE topologies and force FP32 execution for critical convolution layers via GraphSurgeon.
-- [ ] 059. Expose `.to_data_url()` method for easy rendering in web applications.
-- [ ] 060. Manage exact VAE channel configurations (e.g., 4 channels for standard SD, 16 channels for SD3).
+
+- [ ] 46. Implement `AutoencoderKL` wrapper for ONNX VAE execution.
+- [ ] 47. Map VAE `encode` (Image -> Latent) operations natively.
+- [ ] 48. Map VAE `decode` (Latent -> Image) operations natively.
+- [ ] 49. Handle VAE latent scaling explicitly (`latents = latents * 0.18215`).
+- [ ] 50. Implement VAE Slicing (running decoding in smaller batch slices to save WebGPU VRAM).
+- [ ] 51. Implement VAE Tiling (splitting massive latents into 64x64 chunks, decoding, and blending borders natively).
+- [ ] 52. Write dedicated WGSL compute shaders for seamless tile blending (Gaussian masking) to prevent edge artifacts.
+- [ ] 53. Ensure output denormalization (`image = (image / 2 + 0.5).clamp(0, 1)`) occurs purely on the GPU.
+- [ ] 54. Convert final WebGPU Image buffers directly to `ImageData` / HTML5 `<canvas>` objects without CPU copies.
+- [ ] 55. Provide Node.js fallbacks saving WebGPU buffers directly to `.png` via lightweight JS encoders.
+- [ ] 56. Handle `TinyVAE` / `TAESD` specialized ONNX topologies.
+- [ ] 57. Support VAE FP16 execution seamlessly (resolving known NaN issues in standard VAE FP16 by dynamically clamping).
+- [ ] 58. Auto-detect broken FP16 VAE topologies and force FP32 execution for critical convolution layers via GraphSurgeon.
+- [ ] 59. Expose `.to_data_url()` method for easy rendering in web applications.
+- [ ] 60. Manage exact VAE channel configurations (e.g., 4 channels for standard SD, 16 channels for SD3).
 
 ### Phase 5: UNet & Transformer Denoising Engines
-- [ ] 061. Implement `UNet2DConditionModel` wrapper.
-- [ ] 062. Implement `SD3Transformer2DModel` (MM-DiT / Diffusion Transformer) wrapper.
-- [ ] 063. Extract expected dynamic input shapes (`sample`, `timestep`, `encoder_hidden_states`).
-- [ ] 064. Handle added condition embeddings (`text_embeds`, `time_ids`) for SDXL UNet.
-- [ ] 065. Implement Attention Slicing within the UNet (modifying the ONNX graph dynamically to chunk MatMuls if requested).
-- [ ] 066. Support replacing standard ONNX `Attention` nodes with `FlashAttention` WebGPU optimized equivalents natively.
-- [ ] 067. Support classifier-free guidance (CFG) natively within the WebGPU arena (batching conditional and unconditional inputs).
-- [ ] 068. Optimize CFG by calculating `noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)` via a single WGSL fused kernel.
-- [ ] 069. Support negative guidance (`guidance_rescale`) natively.
-- [ ] 070. Handle specific UNet input scaling required by certain schedulers before execution.
-- [ ] 071. Implement dynamic batch size handling for multi-image generation (e.g., `num_images_per_prompt=4`).
-- [ ] 072. Pre-calculate UNet WebGPU static memory arenas specifically designed for the massive ResNet and Attention blocks.
-- [ ] 073. Profile and warn if the UNet memory requirements exceed the maximum standard WebGPU buffer limits.
-- [ ] 074. Expose hooks to extract UNet cross-attention maps for interpretability or visualization tools.
-- [ ] 075. Support executing UNet blocks across multiple WebGPU adapters if physically available.
+
+- [ ] 61. Implement `UNet2DConditionModel` wrapper.
+- [ ] 62. Implement `SD3Transformer2DModel` (MM-DiT / Diffusion Transformer) wrapper.
+- [ ] 63. Extract expected dynamic input shapes (`sample`, `timestep`, `encoder_hidden_states`).
+- [ ] 64. Handle added condition embeddings (`text_embeds`, `time_ids`) for SDXL UNet.
+- [ ] 65. Implement Attention Slicing within the UNet (modifying the ONNX graph dynamically to chunk MatMuls if requested).
+- [ ] 66. Support replacing standard ONNX `Attention` nodes with `FlashAttention` WebGPU optimized equivalents natively.
+- [ ] 67. Support classifier-free guidance (CFG) natively within the WebGPU arena (batching conditional and unconditional inputs).
+- [ ] 68. Optimize CFG by calculating `noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)` via a single WGSL fused kernel.
+- [ ] 69. Support negative guidance (`guidance_rescale`) natively.
+- [ ] 70. Handle specific UNet input scaling required by certain schedulers before execution.
+- [ ] 71. Implement dynamic batch size handling for multi-image generation (e.g., `num_images_per_prompt=4`).
+- [ ] 72. Pre-calculate UNet WebGPU static memory arenas specifically designed for the massive ResNet and Attention blocks.
+- [ ] 73. Profile and warn if the UNet memory requirements exceed the maximum standard WebGPU buffer limits.
+- [ ] 74. Expose hooks to extract UNet cross-attention maps for interpretability or visualization tools.
+- [ ] 75. Support executing UNet blocks across multiple WebGPU adapters if physically available.
 
 ### Phase 6: Text Encoding & Tokenization
-- [ ] 076. Implement `CLIPTextModel` wrapper.
-- [ ] 077. Implement `CLIPTokenizer` mapping natively (via ONNX23 Transformers.js integration).
-- [ ] 078. Support extracting `last_hidden_state` for standard SD 1.5.
-- [ ] 079. Support extracting `hidden_states` and `pooled_output` for SDXL.
-- [ ] 080. Implement `T5EncoderModel` wrapper (used by SD3 and DeepFloyd).
-- [ ] 081. Implement `T5Tokenizer` natively.
-- [ ] 082. Automate prompt truncation to model `max_length` (e.g., 77 tokens).
-- [ ] 083. Support prompt padding natively (padding with EOS/BOS tokens).
-- [ ] 084. Implement long-prompt concatenation (bypassing the 77-token limit by executing CLIP multiple times and concatenating hidden states).
-- [ ] 085. Implement Compel-style Prompt Weighting natively (`"a cute cat++"` -> increasing embedding scale).
-- [ ] 086. Translate textual weights directly into tensor multipliers locally.
-- [ ] 087. Support dual-text encoders (e.g., evaluating CLIP L and CLIP G simultaneously for SDXL).
-- [ ] 088. Execute text encoders exclusively on the CPU/WASM if WebGPU memory is starved, as they only run once per prompt.
-- [ ] 089. Extract tokenizer configurations directly from Hub repository subfolders.
-- [ ] 090. Handle unconditional prompt (negative prompt) empty string resolution natively.
+
+- [ ] 76. Implement `CLIPTextModel` wrapper.
+- [ ] 77. Implement `CLIPTokenizer` mapping natively (via ONNX23 Transformers.js integration).
+- [ ] 78. Support extracting `last_hidden_state` for standard SD 1.5.
+- [ ] 79. Support extracting `hidden_states` and `pooled_output` for SDXL.
+- [ ] 80. Implement `T5EncoderModel` wrapper (used by SD3 and DeepFloyd).
+- [ ] 81. Implement `T5Tokenizer` natively.
+- [ ] 82. Automate prompt truncation to model `max_length` (e.g., 77 tokens).
+- [ ] 83. Support prompt padding natively (padding with EOS/BOS tokens).
+- [ ] 84. Implement long-prompt concatenation (bypassing the 77-token limit by executing CLIP multiple times and concatenating hidden states).
+- [ ] 85. Implement Compel-style Prompt Weighting natively (`"a cute cat++"` -> increasing embedding scale).
+- [ ] 86. Translate textual weights directly into tensor multipliers locally.
+- [ ] 87. Support dual-text encoders (e.g., evaluating CLIP L and CLIP G simultaneously for SDXL).
+- [ ] 88. Execute text encoders exclusively on the CPU/WASM if WebGPU memory is starved, as they only run once per prompt.
+- [ ] 89. Extract tokenizer configurations directly from Hub repository subfolders.
+- [ ] 90. Handle unconditional prompt (negative prompt) empty string resolution natively.
 
 ### Phase 7: Standard Text-to-Image Pipelines
-- [ ] 091. Implement `StableDiffusionPipeline` natively.
-- [ ] 092. Implement `StableDiffusionXLPipeline` natively.
-- [ ] 093. Implement `StableDiffusion3Pipeline` natively.
-- [ ] 094. Implement `LatentConsistencyModelPipeline` (LCM).
-- [ ] 095. Implement `WuerstchenPipeline`.
-- [ ] 096. Implement `KandinskyV22Pipeline`.
-- [ ] 097. Handle the complex micro-conditioning parameters for SDXL (e.g., `original_size`, `crops_coords`, `target_size`).
-- [ ] 098. Bake standard SDXL resolution dimensions (e.g., `1024x1024`) into the condition tensors automatically.
-- [ ] 099. Support configuring `guidance_scale` and `num_inference_steps` via the JS/Python call.
+
+- [ ] 91. Implement `StableDiffusionPipeline` natively.
+- [ ] 92. Implement `StableDiffusionXLPipeline` natively.
+- [ ] 93. Implement `StableDiffusion3Pipeline` natively.
+- [ ] 94. Implement `LatentConsistencyModelPipeline` (LCM).
+- [ ] 95. Implement `WuerstchenPipeline`.
+- [ ] 96. Implement `KandinskyV22Pipeline`.
+- [ ] 97. Handle the complex micro-conditioning parameters for SDXL (e.g., `original_size`, `crops_coords`, `target_size`).
+- [ ] 98. Bake standard SDXL resolution dimensions (e.g., `1024x1024`) into the condition tensors automatically.
+- [ ] 99. Support configuring `guidance_scale` and `num_inference_steps` via the JS/Python call.
 - [ ] 100. Support returning raw `Float32Array` latents instead of fully decoded images if requested.
 - [ ] 101. Provide detailed type definitions (`SDXLPipelineOutput`) for TypeScript developers.
 - [ ] 102. Output an array of images natively if `num_images_per_prompt > 1`.
@@ -134,6 +144,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 105. Gracefully catch and format ONNX evaluation errors.
 
 ### Phase 8: Image-to-Image & Inpainting Pipelines
+
 - [ ] 106. Implement `StableDiffusionImg2ImgPipeline`.
 - [ ] 107. Implement `StableDiffusionXLImg2ImgPipeline`.
 - [ ] 108. Accept base images natively via `HTMLImageElement`, `Canvas`, or Node.js Buffers.
@@ -151,6 +162,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 120. Provide a specific `onnx9000.ui.InpaintCanvas` component for easy React/Vue integration.
 
 ### Phase 9: ControlNet & T2I-Adapters
+
 - [ ] 121. Implement `ControlNetModel` wrapper.
 - [ ] 122. Implement `StableDiffusionControlNetPipeline`.
 - [ ] 123. Support evaluating the ControlNet graph to generate `down_block_res_samples` and `mid_block_res_sample`.
@@ -168,6 +180,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 135. Manage memory explicitly for Multi-ControlNet (can easily exceed 8GB VRAM; implement aggressive flushing).
 
 ### Phase 10: LoRA, Textual Inversion & Graph Fusion
+
 - [ ] 136. Parse standard `safetensors` LoRA weights (`.safetensors` A and B matrices).
 - [ ] 137. Implement static LoRA fusion via `onnx9000.modifier`: permanently folding $W = W + (A \times B) \times \alpha$ into the ONNX UNet `Constant` weights.
 - [ ] 138. Ensure LoRA fusion occurs completely in-memory on the client-side within seconds.
@@ -185,6 +198,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 150. Handle FP16 / FP32 precision boundaries safely during weight fusion matrix multiplications.
 
 ### Phase 11: WebGPU Optimization, Chunking & Slicing
+
 - [ ] 151. Execute WebGPU pipeline warming explicitly.
 - [ ] 152. Group UNet `Add`, `Mul`, and `Silu` elementwise nodes into monolithic WebGPU shaders to bypass memory bandwidth bottlenecks.
 - [ ] 153. Implement KV Cache optimizations for the Self-Attention layers in the UNet.
@@ -202,6 +216,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 165. Optimize standard InstanceNorm 2D operations specifically inside the UNet downblocks.
 
 ### Phase 12: Video, Audio, and 3D Diffusion
+
 - [ ] 166. Implement `AnimateDiffPipeline` wrapper.
 - [ ] 167. Parse and inject AnimateDiff Motion Modules (Temporal Attention) explicitly into the 2D UNet structure.
 - [ ] 168. Expand 4D latents `[B, C, H, W]` to 5D latents `[B, C, F, H, W]` dynamically.
@@ -219,6 +234,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 180. Validate compatibility with WebCodecs API for encoding frames to video on-the-fly.
 
 ### Phase 13: Advanced Generation Utilities
+
 - [ ] 181. Support `img2img` Strength mapping seamlessly to timestep calculation.
 - [ ] 182. Implement High-Res Fix (generating at low res, upscaling, and running img2img).
 - [ ] 183. Implement latent upscalers natively in WGSL.
@@ -236,6 +252,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 195. Implement latent space interpolation (Morphing between two prompts by interpolating embeddings and initial noise).
 
 ### Phase 14: Safety Checkers & Watermarking
+
 - [ ] 196. Implement `StableDiffusionSafetyChecker` ONNX wrapper.
 - [ ] 197. Execute safety checker immediately prior to returning the final image.
 - [ ] 198. Provide callback to flag images as NSFW and return a black image natively.
@@ -248,6 +265,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 205. Implement Blur filter fallbacks for NSFW content instead of pure black.
 
 ### Phase 15: Exporter Tooling (PyTorch -> ONNX9000 Format)
+
 - [ ] 206. Build CLI tool: `onnx9000 diffusers export stabilityai/stable-diffusion-xl-base-1.0`.
 - [ ] 207. Traverse the PyTorch Diffusers pipeline, isolating the UNet, VAE, and Text Encoders.
 - [ ] 208. Export each sub-model to ONNX using `torch.onnx.export`.
@@ -262,9 +280,10 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 217. Compress exported models directly to `safetensors` external data format.
 - [ ] 218. Generate metadata tracking exact PyTorch versions used during export.
 - [ ] 219. Map ControlNet models specifically, maintaining exact hint image input signatures.
-- [ ] 220. Support merging LoRAs dynamically via CLI flag *during* the export process.
+- [ ] 220. Support merging LoRAs dynamically via CLI flag _during_ the export process.
 
 ### Phase 16: Browser UI & Component Library
+
 - [ ] 221. Build `@onnx9000/diffusers-react` NPM package.
 - [ ] 222. Expose `<DiffusionCanvas />` component for rendering real-time generation steps.
 - [ ] 223. Expose `<PromptInput />` component with built-in token-limit tracking.
@@ -277,6 +296,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 230. Include progress-bar abstractions directly integrated with the pipeline callback hooks.
 
 ### Phase 17: Edge Cases & Quirks
+
 - [ ] 231. Handle specific epsilon settings for different VAE scale factors natively.
 - [ ] 232. Emulate exact `torch.chunk` behaviors inside ONNX `Split`.
 - [ ] 233. Handle 0-length prompts natively (falling back to unconditional paths only).
@@ -289,6 +309,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 240. Manage multiple model caching securely (e.g., SD1.5 and SDXL open simultaneously).
 
 ### Phase 18: Quality Assurance & Parity Testing
+
 - [ ] 241. Unit Test: Ensure `DDIMScheduler` step matches PyTorch `diffusers` step natively.
 - [ ] 242. Unit Test: Ensure `EulerDiscreteScheduler` step matches.
 - [ ] 243. Unit Test: Ensure `LCMScheduler` step matches.
@@ -301,6 +322,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 250. Verify exact topological compatibility against WebNN drafts (identifying non-compliant UNet layers).
 
 ### Phase 19: Ecosystem & Delivery
+
 - [ ] 251. Write Tutorial: "Running Stable Diffusion entirely in the Browser".
 - [ ] 252. Write Tutorial: "Integrating ControlNet natively into React Apps".
 - [ ] 253. Establish NPM deployment pipeline for `@onnx9000/diffusers`.
@@ -313,6 +335,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 260. Publish a comparison showing latency differences between `WASM` and `WebGPU` for diffusion tasks.
 
 ### Phase 20: Final Polish and Exhaustive Feature Alignment
+
 - [ ] 261. Support passing custom mathematical functions to `latents` generation.
 - [ ] 262. Translate `num_inference_steps` properly across all scheduler domains.
 - [ ] 263. Map `torch.Generator` explicitly to internal JS objects.

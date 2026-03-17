@@ -1,0 +1,6 @@
+{
+  "name": "@onnx9000/converters",
+  "version": "1.0.0",
+  "description": "Universal N-to-N ML model transpiler (ONNX, TFLite, CoreML, GGUF) for the browser",
+  "main": "src/index.ts"
+}

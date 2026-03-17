@@ -1,13 +1,15 @@
 # skl2onnx Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `skl2onnx` within the `onnx9000` ecosystem.
-Unlike the original project, our implementation focuses heavily on translating traditional machine learning models (Scikit-Learn) into highly optimized, zero-dependency `ai.onnx.ml` structures. 
+Unlike the original project, our implementation focuses heavily on translating traditional machine learning models (Scikit-Learn) into highly optimized, zero-dependency `ai.onnx.ml` structures.
 By generating these models via pure Python, the resulting pipelines can be executed instantly in the browser natively using WASM without needing heavy Python runtimes or C++ ML libraries, and they can be dispatched instantly in high-concurrency server environments.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core Architecture & Pipeline Parsing (Zero-Dependency)
+
 - [x] Implement zero-dependency Scikit-Learn object introspection logic
 - [x] Traverse `Pipeline` objects and topologically sort steps
 - [x] Traverse `FeatureUnion` objects and map to parallel execution graphs
@@ -24,6 +26,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Handle sparse matrix inputs (SciPy sparse matrices to ONNX dense/sparse translations)
 
 ### 2. Preprocessing Transformers & Scaling (30+ items)
+
 - [x] Map `StandardScaler` -> `Scaler`
 - [x] Map `MinMaxScaler` -> `Scaler`
 - [x] Map `MaxAbsScaler` -> `Scaler`
@@ -55,6 +58,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Map `HashingVectorizer` -> ONNX Custom Hash
 
 ### 3. Linear Models & Classifiers (30+ items)
+
 - [x] Map `LinearRegression` -> `LinearRegressor`
 - [x] Map `Ridge` -> `LinearRegressor`
 - [x] Map `RidgeCV` -> `LinearRegressor`
@@ -86,6 +90,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Map `TweedieRegressor` -> `LinearRegressor` + Link
 
 ### 4. Support Vector Machines (SVM) (20+ items)
+
 - [x] Map `SVC` (linear kernel) -> `SVMClassifier`
 - [x] Map `SVC` (poly kernel) -> `SVMClassifier`
 - [x] Map `SVC` (rbf kernel) -> `SVMClassifier`
@@ -107,6 +112,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Support multi-class SVM (`ovr` strategy) via ONNX topology mappings
 
 ### 5. Tree & Ensemble Methods (30+ items)
+
 - [x] Map `DecisionTreeClassifier` -> `TreeEnsembleClassifier`
 - [x] Map `DecisionTreeRegressor` -> `TreeEnsembleRegressor`
 - [x] Map `ExtraTreeClassifier` -> `TreeEnsembleClassifier`
@@ -137,6 +143,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Correctly accumulate decision paths for predictions
 
 ### 6. Decomposition, PCA, and Clustering (30+ items)
+
 - [x] Map `PCA` -> `MatMul` (components) + `Add` (mean)
 - [x] Map `IncrementalPCA` -> `MatMul` + `Add`
 - [x] Map `KernelPCA` (linear) -> Subgraph
@@ -161,6 +168,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Compute pairwise distances in ONNX (Cosine)
 
 ### 7. Naive Bayes & Nearest Neighbors (20+ items)
+
 - [x] Map `GaussianNB` -> Subgraph (probability densities)
 - [x] Map `MultinomialNB` -> `LinearClassifier` or Subgraph
 - [x] Map `ComplementNB` -> `LinearClassifier` or Subgraph
@@ -176,6 +184,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Support distance weighting in KNN
 
 ### 8. Neural Networks (Scikit-Learn) (10+ items)
+
 - [x] Map `MLPClassifier` -> Chained `MatMul` + `Add` + `Relu`/`Tanh`/`Logistic`
 - [x] Map `MLPRegressor` -> Chained `MatMul` + `Add` + Activations
 - [x] Handle `MLPClassifier` with multi-label output
@@ -188,6 +197,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Map `softmax` output layer -> `Softmax`
 
 ### 9. Feature Selection & Cross-Validation Meta-Estimators (15+ items)
+
 - [x] Map `SelectKBest` -> `ArrayFeatureExtractor`
 - [x] Map `SelectPercentile` -> `ArrayFeatureExtractor`
 - [x] Map `SelectFpr` -> `ArrayFeatureExtractor`
@@ -202,6 +212,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Evaluate meta-estimators post-fit (they behave as standard models at inference)
 
 ### 10. `ai.onnx.ml` Domain Mapping Operators (30+ items)
+
 - [x] Validate `ai.onnx.ml.ArrayFeatureExtractor` semantics
 - [x] Validate `ai.onnx.ml.Binarizer` semantics
 - [x] Validate `ai.onnx.ml.Cast` semantics (ML domain)
@@ -226,6 +237,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Emit `ZipMap` strictly conforming to dictionary structures for probabilities
 
 ### 11. Graph Optimizations (skl2onnx specific) (20+ items)
+
 - [x] Fuse adjacent `Scaler` operations into a single affine transform
 - [x] Fuse `Normalizer` operations where mathematically redundant
 - [x] Fuse `ArrayFeatureExtractor` chains
@@ -238,6 +250,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Reduce dimensions automatically for sparse matrix assumptions
 
 ### 12. Opset Compliance & Versions
+
 - [x] Target ONNX Standard Opset 9-21
 - [x] Target `ai.onnx.ml` Opset 1
 - [x] Target `ai.onnx.ml` Opset 2
@@ -246,6 +259,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Ensure backward compatibility with ONNX Runtime v1.10+ ML executor
 
 ### 13. Zero-Dependency & Lightweight Runtime Features (20+ items)
+
 - [x] Pipeline conversion strictly via pure Python introspection (no C++ bindings)
 - [x] Emscripten/WASM compilation capability for deploying ML pipelines directly in the browser
 - [x] Convert `scikit-learn` objects trained in Python to WASM graphs instantaneously
@@ -256,8 +270,8 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Enable zero-copy prediction in Pyodide bridging
 - [x] Enable serverless execution of tree ensembles on AWS Lambda without scikit-learn installed
 
-
 ### 14. Additional Preprocessing, Cross-Decomposition & Covariance (30+ items)
+
 - [x] Map `PLSRegression` -> `MatMul` + `Add`
 - [x] Map `PLSCanonical` -> `MatMul` + `Add`
 - [x] Map `CCA` (Canonical Correlation Analysis) -> `MatMul`
@@ -280,6 +294,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Validate TF-IDF with `sublinear_tf=True`
 
 ### 15. Exhaustive Neural & Kernel Features (20+ items)
+
 - [x] Map `Nystroem` -> Feature approximation subgraph
 - [x] Map `RBFSampler` -> Feature approximation subgraph
 - [x] Map `SkewedChi2Sampler` -> Feature approximation subgraph
@@ -299,6 +314,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Support `RegressorChain` meta-estimator
 
 ### 16. Extensive Opset & Backend Testing (40+ items)
+
 - [x] Test integration with `onnx9000` Python Native Executor (Accelerate)
 - [x] Test integration with `onnx9000` WebGPU WASM Executor
 - [x] Validate strict type-checking on `float32` vs `float64` boundaries
@@ -318,8 +334,8 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Test `TreeEnsembleClassifier` serialization size efficiency against native Pickling
 - [x] Test `TreeEnsembleRegressor` memory loading latency via WASM
 
-
 ### 17. Hyper-Specific Tree Metrics & Target Class Mapping (20+ items)
+
 - [x] Map `classlabels_ints` -> Output `Int64` type
 - [x] Map `classlabels_strings` -> Output `String` type
 - [x] Translate `classes_` of boolean type to `classlabels_ints` (0, 1)
@@ -340,6 +356,7 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Calculate `TreeEnsembleClassifier` tree weight sums natively in graph (`post_transform='SOFTMAX'`)
 
 ### 18. Edge-Case Matrix Transformations (20+ items)
+
 - [x] Ensure `MatrixFactorization` outputs correct shape constraints
 - [x] Handle `SparseMatrix` density optimizations (if supported by `ai.onnx.ml`)
 - [x] Handle 1D array fallback behavior (scikit-learn allows some 1D `y`, ONNX requires 2D matrices)
@@ -355,4 +372,3 @@ By generating these models via pure Python, the resulting pipelines can be execu
 - [x] Support `OneHotEncoder` with `drop='if_binary'`
 - [x] Support `LabelBinarizer` with `neg_label=-1, pos_label=1`
 - [x] Explicit error throwing for unsupported estimators (e.g., `LocalOutlierFactor` with `novelty=False`)
-

@@ -1,135 +1,147 @@
 # ONNX31: MMdnn (Web-Native N-to-N Neural Network Converter)
 
 ## Original Project Description
+
 `MMdnn` is a comprehensive, open-source, N-to-N converter and framework created by Microsoft. It allows developers to convert neural network models between a massive variety of different frameworks (Caffe, Keras, MXNet, TensorFlow, CNTK, PyTorch, CoreML, and ONNX). It operates by converting the source framework's model into a unified Intermediate Representation (IR), and then translating that IR into the target framework's format. It is a heavy, Python-based toolset that requires the installation of the specific framework dependencies (e.g., Caffe binaries) to properly extract and compile models.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.mmdnn` reimagines this universal translator as a **client-side, browser-native conversion tool**.
-*   **ONNX as the Universal IR:** Instead of using a proprietary MMdnn IR, `onnx9000` uses standard ONNX as the absolute source of truth. Every legacy format is converted *to* ONNX, and every export target is generated *from* ONNX.
-*   **Zero Native Dependencies:** Developers do not need to install dead frameworks like Caffe or CNTK to extract their models. `onnx9000` implements pure TypeScript/WASM parsers for the underlying protobuf/json/binary weight files of these legacy formats.
-*   **Browser-Based Resurrection:** It allows users to drag-and-drop a 10-year-old `.caffemodel` into a webpage and instantly run it using modern WebGPU, rescuing legacy architectures from software rot without touching a command line.
-*   **Code Generation:** Instead of just outputting binary files, `onnx9000.mmdnn` can generate raw PyTorch or TensorFlow.js code from an ONNX file, allowing developers to mathematically recreate models natively in modern frameworks.
+
+- **ONNX as the Universal IR:** Instead of using a proprietary MMdnn IR, `onnx9000` uses standard ONNX as the absolute source of truth. Every legacy format is converted _to_ ONNX, and every export target is generated _from_ ONNX.
+- **Zero Native Dependencies:** Developers do not need to install dead frameworks like Caffe or CNTK to extract their models. `onnx9000` implements pure TypeScript/WASM parsers for the underlying protobuf/json/binary weight files of these legacy formats.
+- **Browser-Based Resurrection:** It allows users to drag-and-drop a 10-year-old `.caffemodel` into a webpage and instantly run it using modern WebGPU, rescuing legacy architectures from software rot without touching a command line.
+- **Code Generation:** Instead of just outputting binary files, `onnx9000.mmdnn` can generate raw PyTorch or TensorFlow.js code from an ONNX file, allowing developers to mathematically recreate models natively in modern frameworks.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core Architecture & ONNX Hub
-- [ ] 001. Establish ONNX as the central IR for all N-to-N conversions.
-- [ ] 002. Define the unified `onnx9000.convert(source, target)` API.
-- [ ] 003. Implement memory-mapped file loading for processing massive model binaries in the browser.
-- [ ] 004. Create a unified warning/error reporting system for unsupported operations across frameworks.
-- [ ] 005. Implement a robust topological sorter ensuring acyclic graphs before any translation begins.
-- [ ] 006. Build a shape inference engine that runs *during* the conversion process (required for frameworks lacking static shapes).
-- [ ] 007. Implement automatic data layout tracking (e.g., tracking `NCHW` vs `NHWC` states throughout the graph).
-- [ ] 008. Implement a global node-fusion registry (e.g., automatically fusing Batch Norm into Convolutions during import to simplify the IR).
+
+- [ ] 1. Establish ONNX as the central IR for all N-to-N conversions.
+- [ ] 2. Define the unified `onnx9000.convert(source, target)` API.
+- [ ] 3. Implement memory-mapped file loading for processing massive model binaries in the browser.
+- [ ] 4. Create a unified warning/error reporting system for unsupported operations across frameworks.
+- [ ] 5. Implement a robust topological sorter ensuring acyclic graphs before any translation begins.
+- [ ] 6. Build a shape inference engine that runs _during_ the conversion process (required for frameworks lacking static shapes).
+- [ ] 7. Implement automatic data layout tracking (e.g., tracking `NCHW` vs `NHWC` states throughout the graph).
+- [ ] 8. Implement a global node-fusion registry (e.g., automatically fusing Batch Norm into Convolutions during import to simplify the IR).
 
 ### Phase 2: Caffe Importer (Caffe -> ONNX)
-- [ ] 009. Implement a pure TypeScript parser for `caffe.proto`.
-- [ ] 010. Parse Caffe `.prototxt` (model architecture) files natively.
-- [ ] 011. Parse Caffe `.caffemodel` (binary weight) files natively.
-- [ ] 012. Map Caffe `Convolution` to ONNX `Conv`.
-- [ ] 013. Map Caffe `InnerProduct` to ONNX `Gemm`.
-- [ ] 014. Map Caffe `ReLU` to ONNX `Relu`.
-- [ ] 015. Map Caffe `Pooling` (MAX, AVE) to ONNX `MaxPool` / `AveragePool`.
-- [ ] 016. Map Caffe `LRN` (Local Response Normalization) to ONNX `LRN`.
-- [ ] 017. Map Caffe `Softmax` to ONNX `Softmax`.
-- [ ] 018. Map Caffe `Eltwise` (PROD, SUM, MAX) to ONNX `Mul`, `Add`, `Max`.
-- [ ] 019. Map Caffe `Concat` to ONNX `Concat`.
-- [ ] 020. Map Caffe `Scale` to ONNX `Mul` + `Add`.
-- [ ] 021. Map Caffe `BatchNorm` to ONNX `BatchNormalization`.
-- [ ] 022. Extract Caffe moving average statistics into ONNX initializers.
-- [ ] 023. Map Caffe `Dropout` to ONNX `Dropout` or `Identity`.
-- [ ] 024. Map Caffe `Reshape` to ONNX `Reshape`.
-- [ ] 025. Map Caffe `Flatten` to ONNX `Flatten`.
-- [ ] 026. Map Caffe `Split` to ONNX `Split`.
-- [ ] 027. Map Caffe `Slice` to ONNX `Slice`.
-- [ ] 028. Resolve legacy Caffe padding conventions natively to ONNX explicit pads.
+
+- [ ] 9. Implement a pure TypeScript parser for `caffe.proto`.
+- [ ] 10. Parse Caffe `.prototxt` (model architecture) files natively.
+- [ ] 11. Parse Caffe `.caffemodel` (binary weight) files natively.
+- [ ] 12. Map Caffe `Convolution` to ONNX `Conv`.
+- [ ] 13. Map Caffe `InnerProduct` to ONNX `Gemm`.
+- [ ] 14. Map Caffe `ReLU` to ONNX `Relu`.
+- [ ] 15. Map Caffe `Pooling` (MAX, AVE) to ONNX `MaxPool` / `AveragePool`.
+- [ ] 16. Map Caffe `LRN` (Local Response Normalization) to ONNX `LRN`.
+- [ ] 17. Map Caffe `Softmax` to ONNX `Softmax`.
+- [ ] 18. Map Caffe `Eltwise` (PROD, SUM, MAX) to ONNX `Mul`, `Add`, `Max`.
+- [ ] 19. Map Caffe `Concat` to ONNX `Concat`.
+- [ ] 20. Map Caffe `Scale` to ONNX `Mul` + `Add`.
+- [ ] 21. Map Caffe `BatchNorm` to ONNX `BatchNormalization`.
+- [ ] 22. Extract Caffe moving average statistics into ONNX initializers.
+- [ ] 23. Map Caffe `Dropout` to ONNX `Dropout` or `Identity`.
+- [ ] 24. Map Caffe `Reshape` to ONNX `Reshape`.
+- [ ] 25. Map Caffe `Flatten` to ONNX `Flatten`.
+- [ ] 26. Map Caffe `Split` to ONNX `Split`.
+- [ ] 27. Map Caffe `Slice` to ONNX `Slice`.
+- [ ] 28. Resolve legacy Caffe padding conventions natively to ONNX explicit pads.
 
 ### Phase 3: MXNet Importer (MXNet -> ONNX)
-- [ ] 029. Implement parser for MXNet `.json` (symbol) architecture files.
-- [ ] 030. Implement pure TypeScript parser for MXNet `.params` (NDArray binary) weight files.
-- [ ] 031. Map MXNet `Convolution` to ONNX `Conv`.
-- [ ] 032. Map MXNet `FullyConnected` to ONNX `Gemm`.
-- [ ] 033. Map MXNet `Activation` (relu, sigmoid, tanh, softrelu) to ONNX equivalents.
-- [ ] 034. Map MXNet `Pooling` to ONNX `MaxPool` / `AveragePool`.
-- [ ] 035. Map MXNet `BatchNorm` to ONNX `BatchNormalization`.
-- [ ] 036. Map MXNet `Dropout` to ONNX `Identity`.
-- [ ] 037. Map MXNet `Flatten` to ONNX `Flatten`.
-- [ ] 038. Map MXNet `Reshape` to ONNX `Reshape`.
-- [ ] 039. Map MXNet `Concat` to ONNX `Concat`.
-- [ ] 040. Map MXNet `elemwise_add` to ONNX `Add`.
-- [ ] 041. Map MXNet `elemwise_sub` to ONNX `Sub`.
-- [ ] 042. Map MXNet `elemwise_mul` to ONNX `Mul`.
-- [ ] 043. Map MXNet `broadcast_add`, `broadcast_mul` to standard ONNX math.
-- [ ] 044. Map MXNet `SoftmaxOutput` to ONNX `Softmax`.
-- [ ] 045. Map MXNet `LeakyReLU` to ONNX `LeakyRelu`.
-- [ ] 046. Map MXNet `UpSampling` to ONNX `Resize`.
-- [ ] 047. Resolve MXNet's implicit shapes by running a pre-inference shape calculation pass.
+
+- [ ] 29. Implement parser for MXNet `.json` (symbol) architecture files.
+- [ ] 30. Implement pure TypeScript parser for MXNet `.params` (NDArray binary) weight files.
+- [ ] 31. Map MXNet `Convolution` to ONNX `Conv`.
+- [ ] 32. Map MXNet `FullyConnected` to ONNX `Gemm`.
+- [ ] 33. Map MXNet `Activation` (relu, sigmoid, tanh, softrelu) to ONNX equivalents.
+- [ ] 34. Map MXNet `Pooling` to ONNX `MaxPool` / `AveragePool`.
+- [ ] 35. Map MXNet `BatchNorm` to ONNX `BatchNormalization`.
+- [ ] 36. Map MXNet `Dropout` to ONNX `Identity`.
+- [ ] 37. Map MXNet `Flatten` to ONNX `Flatten`.
+- [ ] 38. Map MXNet `Reshape` to ONNX `Reshape`.
+- [ ] 39. Map MXNet `Concat` to ONNX `Concat`.
+- [ ] 40. Map MXNet `elemwise_add` to ONNX `Add`.
+- [ ] 41. Map MXNet `elemwise_sub` to ONNX `Sub`.
+- [ ] 42. Map MXNet `elemwise_mul` to ONNX `Mul`.
+- [ ] 43. Map MXNet `broadcast_add`, `broadcast_mul` to standard ONNX math.
+- [ ] 44. Map MXNet `SoftmaxOutput` to ONNX `Softmax`.
+- [ ] 45. Map MXNet `LeakyReLU` to ONNX `LeakyRelu`.
+- [ ] 46. Map MXNet `UpSampling` to ONNX `Resize`.
+- [ ] 47. Resolve MXNet's implicit shapes by running a pre-inference shape calculation pass.
 
 ### Phase 4: CNTK Importer (CNTK -> ONNX)
-- [ ] 048. Implement parser for CNTK `Dictionary` V2 model format.
-- [ ] 049. Map CNTK `Convolution` to ONNX `Conv`.
-- [ ] 050. Map CNTK `Plus` to ONNX `Add`.
-- [ ] 051. Map CNTK `Minus` to ONNX `Sub`.
-- [ ] 052. Map CNTK `ElementTimes` to ONNX `Mul`.
-- [ ] 053. Map CNTK `Times` to ONNX `MatMul`.
-- [ ] 054. Map CNTK `RectifiedLinear` to ONNX `Relu`.
-- [ ] 055. Map CNTK `Sigmoid` to ONNX `Sigmoid`.
-- [ ] 056. Map CNTK `Tanh` to ONNX `Tanh`.
-- [ ] 057. Map CNTK `Softmax` to ONNX `Softmax`.
-- [ ] 058. Map CNTK `Pooling` to ONNX `MaxPool` / `AveragePool`.
-- [ ] 059. Map CNTK `BatchNormalization` to ONNX `BatchNormalization`.
-- [ ] 060. Map CNTK `Splice` to ONNX `Concat`.
-- [ ] 061. Map CNTK `Reshape` to ONNX `Reshape`.
-- [ ] 062. Map CNTK `Transpose` to ONNX `Transpose`.
-- [ ] 063. Handle CNTK's implicit dynamic batch and sequence axes explicitly via ONNX dynamic shapes.
+
+- [ ] 48. Implement parser for CNTK `Dictionary` V2 model format.
+- [ ] 49. Map CNTK `Convolution` to ONNX `Conv`.
+- [ ] 50. Map CNTK `Plus` to ONNX `Add`.
+- [ ] 51. Map CNTK `Minus` to ONNX `Sub`.
+- [ ] 52. Map CNTK `ElementTimes` to ONNX `Mul`.
+- [ ] 53. Map CNTK `Times` to ONNX `MatMul`.
+- [ ] 54. Map CNTK `RectifiedLinear` to ONNX `Relu`.
+- [ ] 55. Map CNTK `Sigmoid` to ONNX `Sigmoid`.
+- [ ] 56. Map CNTK `Tanh` to ONNX `Tanh`.
+- [ ] 57. Map CNTK `Softmax` to ONNX `Softmax`.
+- [ ] 58. Map CNTK `Pooling` to ONNX `MaxPool` / `AveragePool`.
+- [ ] 59. Map CNTK `BatchNormalization` to ONNX `BatchNormalization`.
+- [ ] 60. Map CNTK `Splice` to ONNX `Concat`.
+- [ ] 61. Map CNTK `Reshape` to ONNX `Reshape`.
+- [ ] 62. Map CNTK `Transpose` to ONNX `Transpose`.
+- [ ] 63. Handle CNTK's implicit dynamic batch and sequence axes explicitly via ONNX dynamic shapes.
 
 ### Phase 5: PyTorch Code Generation (ONNX -> PyTorch)
-- [ ] 064. Implement an AST generator that produces raw Python `torch.nn.Module` classes from an ONNX graph.
-- [ ] 065. Map ONNX `Conv` to `nn.Conv1d`, `nn.Conv2d`, `nn.Conv3d` string declarations.
-- [ ] 066. Map ONNX `Gemm` / `MatMul` to `nn.Linear` string declarations.
-- [ ] 067. Map ONNX `MaxPool` to `nn.MaxPool2d` string declarations.
-- [ ] 068. Map ONNX `AveragePool` to `nn.AvgPool2d` string declarations.
-- [ ] 069. Map ONNX `BatchNormalization` to `nn.BatchNorm2d` string declarations.
-- [ ] 070. Generate the Python `__init__` method, instantiating all stateful layers.
-- [ ] 071. Generate the Python `forward(self, x)` method, defining the exact execution topology.
-- [ ] 072. Map ONNX math ops (`Add`, `Mul`) to native PyTorch tensor operations (`x + y`).
-- [ ] 073. Map ONNX `Relu`, `Sigmoid`, `Tanh` to `torch.nn.functional` calls.
-- [ ] 074. Map ONNX `Concat` to `torch.cat`.
-- [ ] 075. Map ONNX `Reshape` to `torch.reshape` or `x.view()`.
-- [ ] 076. Map ONNX `Transpose` to `torch.transpose` or `x.permute()`.
-- [ ] 077. Create a utility to export ONNX weights directly into a PyTorch `.pth` / `.pt` `state_dict` using a WASM Pickle serializer.
-- [ ] 078. Handle nested topologies by generating nested `nn.Sequential` blocks where possible for cleaner code.
-- [ ] 079. Ensure generated PyTorch code adheres to PEP8 styling standards.
-- [ ] 080. Build a live web UI tab showing the PyTorch code updating in real-time as the user drops an ONNX model.
+
+- [ ] 64. Implement an AST generator that produces raw Python `torch.nn.Module` classes from an ONNX graph.
+- [ ] 65. Map ONNX `Conv` to `nn.Conv1d`, `nn.Conv2d`, `nn.Conv3d` string declarations.
+- [ ] 66. Map ONNX `Gemm` / `MatMul` to `nn.Linear` string declarations.
+- [ ] 67. Map ONNX `MaxPool` to `nn.MaxPool2d` string declarations.
+- [ ] 68. Map ONNX `AveragePool` to `nn.AvgPool2d` string declarations.
+- [ ] 69. Map ONNX `BatchNormalization` to `nn.BatchNorm2d` string declarations.
+- [ ] 70. Generate the Python `__init__` method, instantiating all stateful layers.
+- [ ] 71. Generate the Python `forward(self, x)` method, defining the exact execution topology.
+- [ ] 72. Map ONNX math ops (`Add`, `Mul`) to native PyTorch tensor operations (`x + y`).
+- [ ] 73. Map ONNX `Relu`, `Sigmoid`, `Tanh` to `torch.nn.functional` calls.
+- [ ] 74. Map ONNX `Concat` to `torch.cat`.
+- [ ] 75. Map ONNX `Reshape` to `torch.reshape` or `x.view()`.
+- [ ] 76. Map ONNX `Transpose` to `torch.transpose` or `x.permute()`.
+- [ ] 77. Create a utility to export ONNX weights directly into a PyTorch `.pth` / `.pt` `state_dict` using a WASM Pickle serializer.
+- [ ] 78. Handle nested topologies by generating nested `nn.Sequential` blocks where possible for cleaner code.
+- [ ] 79. Ensure generated PyTorch code adheres to PEP8 styling standards.
+- [ ] 80. Build a live web UI tab showing the PyTorch code updating in real-time as the user drops an ONNX model.
 
 ### Phase 6: TensorFlow.js Code Generation (ONNX -> TF.js)
-- [ ] 081. Implement an AST generator that produces raw JavaScript TensorFlow.js code from an ONNX graph.
-- [ ] 082. Map ONNX `Conv` to `tf.layers.conv2d`.
-- [ ] 083. Map ONNX `Gemm` to `tf.layers.dense`.
-- [ ] 084. Map ONNX `MaxPool` to `tf.layers.maxPooling2d`.
-- [ ] 085. Map ONNX `AveragePool` to `tf.layers.averagePooling2d`.
-- [ ] 086. Map ONNX `BatchNormalization` to `tf.layers.batchNormalization`.
-- [ ] 087. Support emitting the TF.js `Sequential` API for straight-line models.
-- [ ] 088. Support emitting the TF.js `Model` API (functional) for branching models (ResNets, etc).
-- [ ] 089. Extract ONNX weights and generate a compatible `weights.bin` and `model.json` structure natively in the browser.
-- [ ] 090. Perform automatic data layout transposition (NCHW -> NHWC) during the code generation, as TF.js strongly prefers NHWC.
-- [ ] 091. Inject `tf.transpose` calls dynamically if exact weight packing is bypassed.
-- [ ] 092. Verify the generated JS code is syntactically valid by running it through an internal JS parser.
+
+- [ ] 81. Implement an AST generator that produces raw JavaScript TensorFlow.js code from an ONNX graph.
+- [ ] 82. Map ONNX `Conv` to `tf.layers.conv2d`.
+- [ ] 83. Map ONNX `Gemm` to `tf.layers.dense`.
+- [ ] 84. Map ONNX `MaxPool` to `tf.layers.maxPooling2d`.
+- [ ] 85. Map ONNX `AveragePool` to `tf.layers.averagePooling2d`.
+- [ ] 86. Map ONNX `BatchNormalization` to `tf.layers.batchNormalization`.
+- [ ] 87. Support emitting the TF.js `Sequential` API for straight-line models.
+- [ ] 88. Support emitting the TF.js `Model` API (functional) for branching models (ResNets, etc).
+- [ ] 89. Extract ONNX weights and generate a compatible `weights.bin` and `model.json` structure natively in the browser.
+- [ ] 90. Perform automatic data layout transposition (NCHW -> NHWC) during the code generation, as TF.js strongly prefers NHWC.
+- [ ] 91. Inject `tf.transpose` calls dynamically if exact weight packing is bypassed.
+- [ ] 92. Verify the generated JS code is syntactically valid by running it through an internal JS parser.
 
 ### Phase 7: Keras Importer (Extending ONNX28)
-- [ ] 093. Integrate `onnx9000.keras` (ONNX28) directly into the `MMdnn` pipeline as a first-class source.
-- [ ] 094. Support `Keras (H5) -> ONNX -> PyTorch` multi-hop translation.
-- [ ] 095. Support `Keras (H5) -> ONNX -> CoreML` multi-hop translation.
-- [ ] 096. Ensure Keras custom layers translate cleanly across the multi-hop boundary.
+
+- [ ] 93. Integrate `onnx9000.keras` (ONNX28) directly into the `MMdnn` pipeline as a first-class source.
+- [ ] 94. Support `Keras (H5) -> ONNX -> PyTorch` multi-hop translation.
+- [ ] 95. Support `Keras (H5) -> ONNX -> CoreML` multi-hop translation.
+- [ ] 96. Ensure Keras custom layers translate cleanly across the multi-hop boundary.
 
 ### Phase 8: CoreML Importer (Extending ONNX27)
-- [ ] 097. Integrate `onnx9000.coreml` (ONNX27) directly into the `MMdnn` pipeline.
-- [ ] 098. Support `CoreML -> ONNX -> TF.js` multi-hop translation.
-- [ ] 099. Support `CoreML -> ONNX -> PyTorch Code` translation.
+
+- [ ] 97. Integrate `onnx9000.coreml` (ONNX27) directly into the `MMdnn` pipeline.
+- [ ] 98. Support `CoreML -> ONNX -> TF.js` multi-hop translation.
+- [ ] 99. Support `CoreML -> ONNX -> PyTorch Code` translation.
 
 ### Phase 9: Darknet / YOLO Importer (Darknet -> ONNX)
+
 - [ ] 100. Implement parser for Darknet `.cfg` architecture files.
 - [ ] 101. Implement parser for Darknet `.weights` binary files.
 - [ ] 102. Map Darknet `[convolutional]` to ONNX `Conv` + `BatchNormalization` + `LeakyRelu`.
@@ -143,6 +155,7 @@
 - [ ] 110. Handle Darknet's implicit weight indexing natively in the WASM array builder.
 
 ### Phase 10: NCNN Importer (Tencent NCNN -> ONNX)
+
 - [ ] 111. Implement parser for NCNN `.param` text files.
 - [ ] 112. Implement parser for NCNN `.bin` weight files.
 - [ ] 113. Map NCNN `Convolution` to ONNX `Conv`.
@@ -155,6 +168,7 @@
 - [ ] 120. Extract NCNN specific `INT8` quantized topologies and map them back up to ONNX `QuantizeLinear`.
 
 ### Phase 11: PaddlePaddle Importer (Paddle -> ONNX)
+
 - [ ] 121. Implement parser for PaddlePaddle `__model__` protobuf structures.
 - [ ] 122. Implement parser for PaddlePaddle binary weight formats.
 - [ ] 123. Map Paddle `conv2d` to ONNX `Conv`.
@@ -167,6 +181,7 @@
 - [ ] 130. Translate Paddle dynamic `lod_tensor` shapes to ONNX dynamic axes correctly.
 
 ### Phase 12: Graph Verification & Normalization
+
 - [ ] 131. Build an "ONNX Normalizer" pass that runs after any import.
 - [ ] 132. Remove all Framework-specific proprietary opcodes by decomposing them into standard ONNX ops.
 - [ ] 133. Ensure input/output names are sanitized to match valid C-style identifiers for downstream code generation.
@@ -176,6 +191,7 @@
 - [ ] 137. Allow users to provide a reference output tensor from their original framework to prove identical execution.
 
 ### Phase 13: Browser-Based UI (The Universal Converter)
+
 - [ ] 138. Create a "Source Framework" dropdown menu.
 - [ ] 139. Create a "Target Framework" dropdown menu.
 - [ ] 140. Implement a drag-and-drop zone that conditionally accepts multiple files (e.g., requires both `.prototxt` and `.caffemodel` if Caffe is selected).
@@ -185,6 +201,7 @@
 - [ ] 144. Allow editing the intermediate ONNX model manually before exporting to the final target framework.
 
 ### Phase 14: Node.js & CLI Integration (`onnx9000-convert`)
+
 - [ ] 145. Expose CLI: `onnx9000 convert --src caffe --dst pytorch_code model.prototxt model.caffemodel`.
 - [ ] 146. Expose CLI: `onnx9000 convert --src mxnet --dst onnx model-symbol.json model-0000.params`.
 - [ ] 147. Expose CLI: `onnx9000 convert --src darknet --dst tfjs yolov3.cfg yolov3.weights`.
@@ -193,6 +210,7 @@
 - [ ] 150. Handle massive file conversions via streaming buffers in Node.js to avoid Heap exhaustion.
 
 ### Phase 15: Validation (Caffe Parity)
+
 - [ ] 151. Validate conversion of Caffe `AlexNet`.
 - [ ] 152. Validate conversion of Caffe `VGG16` / `VGG19`.
 - [ ] 153. Validate conversion of Caffe `GoogLeNet`.
@@ -200,6 +218,7 @@
 - [ ] 155. Validate conversion of Caffe `SqueezeNet`.
 
 ### Phase 16: Validation (MXNet Parity)
+
 - [ ] 156. Validate conversion of MXNet `Inception-v3`.
 - [ ] 157. Validate conversion of MXNet `MobileNet`.
 - [ ] 158. Validate conversion of MXNet `ResNet-152`.
@@ -207,6 +226,7 @@
 - [ ] 160. Validate conversion of MXNet `VGG`.
 
 ### Phase 17: Validation (Darknet Parity)
+
 - [ ] 161. Validate conversion of Darknet `YOLO v2`.
 - [ ] 162. Validate conversion of Darknet `YOLO v3`.
 - [ ] 163. Validate conversion of Darknet `YOLO v4`.
@@ -214,6 +234,7 @@
 - [ ] 165. Verify that Darknet custom anchors are correctly serialized into the target format or metadata.
 
 ### Phase 18: Testing & Continuous Integration
+
 - [ ] 166. Establish a standard model zoo containing tiny test models from all 8 supported legacy frameworks.
 - [ ] 167. Automate conversion of the entire zoo on every PR.
 - [ ] 168. Compare the generated `.onnx` files against a known-good golden standard to prevent regression.
@@ -221,6 +242,7 @@
 - [ ] 170. Validate that the UI accurately catches unsupported file types cleanly.
 
 ### Phase 19: Edge Cases & Legacy Quirks
+
 - [ ] 171. Handle Caffe's infamous 0-padding quirks dynamically.
 - [ ] 172. Translate CNTK's dynamic axis broadcast rules properly into ONNX static ops.
 - [ ] 173. Resolve MXNet's specific `Flatten` behaviors which occasionally differ from ONNX depending on rank.
@@ -228,6 +250,7 @@
 - [ ] 175. Emulate Caffe `ROIPooling` layer if possible via complex ONNX ops, or warn user.
 
 ### Phase 20: Future Frameworks & Ecosystem Expansion
+
 - [ ] 176. Implement parser for specific TensorFlow Lite `.tflite` flatbuffers to ONNX.
 - [ ] 177. Map `.tflite` `CONV_2D` to ONNX `Conv`.
 - [ ] 178. Map `.tflite` `DEPTHWISE_CONV_2D` to ONNX `Conv`.

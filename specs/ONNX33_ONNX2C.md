@@ -1,131 +1,141 @@
 # ONNX33: onnx2c (Web-Native TinyML & Embedded C99 Generator)
 
 ## Original Project Description
+
 `onnx2c` (and similar projects like `deepC`) are compilers that parse ONNX models and emit pure, standalone C/C++ source code. This is a game-changer for the TinyML and embedded systems ecosystems (Arduino, ESP32, STM32, Raspberry Pi Pico) because it completely eliminates the need for an operating system, a dynamic memory allocator (malloc/free), or a bulky deep learning runtime library. However, standard `onnx2c` tools are typically written in C++ using heavy LLVM or ONNX Protobuf libraries, requiring a complex local build environment just to translate the model.
 
 ## How `onnx9000` Deviates (The WASM-First Monolith Approach)
+
 `onnx9000.onnx2c` brings embedded C code generation directly into the browser and Node.js using **pure TypeScript and Python AST transpilation**.
-*   **Browser-Based C99 Transpilation:** A user can drag an ONNX file into a web page, and the application instantly parses the model, performs static memory planning, and generates a `.c` and `.h` file pair in milliseconds, completely client-side.
-*   **Zero Dynamic Memory (No `malloc`):** Uses `onnx9000`'s advanced static memory arena planner to hardcode every tensor byte-offset directly into the C99 code, guaranteeing execution safety on microcontrollers with 16KB-256KB of RAM.
-*   **Hardware Intrinsic Injection:** Rather than generating only naive C loops, the web compiler can optionally inject `#ifdef` blocks targeting ARM CMSIS-NN or Espressif ESP-NN DSP intrinsics for massive acceleration on microcontrollers.
-*   **Flash Storage Optimization:** Automatically serializes multi-megabyte weights into `const` C arrays decorated with `PROGMEM` or linker-script specific sections to ensure they remain in Flash ROM and don't overflow the tiny SRAM.
+
+- **Browser-Based C99 Transpilation:** A user can drag an ONNX file into a web page, and the application instantly parses the model, performs static memory planning, and generates a `.c` and `.h` file pair in milliseconds, completely client-side.
+- **Zero Dynamic Memory (No `malloc`):** Uses `onnx9000`'s advanced static memory arena planner to hardcode every tensor byte-offset directly into the C99 code, guaranteeing execution safety on microcontrollers with 16KB-256KB of RAM.
+- **Hardware Intrinsic Injection:** Rather than generating only naive C loops, the web compiler can optionally inject `#ifdef` blocks targeting ARM CMSIS-NN or Espressif ESP-NN DSP intrinsics for massive acceleration on microcontrollers.
+- **Flash Storage Optimization:** Automatically serializes multi-megabyte weights into `const` C arrays decorated with `PROGMEM` or linker-script specific sections to ensure they remain in Flash ROM and don't overflow the tiny SRAM.
 
 ---
 
 ## Exhaustive Implementation Checklist
 
 ### Phase 1: Core C99 Code Generation Engine & Architecture
-- [ ] 001. Implement base C99 AST textual string builder in TS/Python.
-- [ ] 002. Define C99 `#include` header generation (`<stdint.h>`, `<math.h>`, `<string.h>`, `<stdbool.h>`).
-- [ ] 003. Implement Header Guard generation (`#ifndef MODEL_H ...`).
-- [ ] 004. Define the primary `ModelContext` C struct (holding arena pointers and state).
-- [ ] 005. Implement `model_init()` C function generator.
-- [ ] 006. Implement `model_predict()` / `model_run()` C function generator.
-- [ ] 007. Generate explicit function signatures (`int model_predict(const float* input, float* output)`).
-- [ ] 008. Auto-format generated C code with a lightweight JS-based C beautifier.
-- [ ] 009. Implement `static inline` function generators for small utility math.
-- [ ] 010. Support `--namespace` prefixing to avoid C symbol collisions (e.g., `mnist_predict()`).
-- [ ] 011. Translate ONNX names to valid C identifiers natively (sanitizing `/`, `-`, `.` to `_`).
-- [ ] 012. Ensure generated code compiles warning-free under `gcc -Wall -Wextra -pedantic -std=c99`.
-- [ ] 013. Ensure generated code compiles warning-free under `clang`.
-- [ ] 014. Support C++ mode (`--emit-cpp`) changing `struct` initialization to support modern C++ standards if requested.
-- [ ] 015. Generate `tensor_info` struct for introspecting shapes at runtime without parsing logic.
-- [ ] 016. Provide standalone `Makefile` or `CMakeLists.txt` generation alongside the `.c` files.
-- [ ] 017. Support generating a standalone `main.c` wrapper for quick local CLI testing.
-- [ ] 018. Support explicit pointer restrict qualifiers (`float* restrict out`) for compiler optimization.
-- [ ] 019. Embed original ONNX model version and producer metadata as C comments.
-- [ ] 020. Track C-stack depth to avoid stack overflows on deeply nested subgraphs.
+
+- [ ] 1. Implement base C99 AST textual string builder in TS/Python.
+- [ ] 2. Define C99 `#include` header generation (`<stdint.h>`, `<math.h>`, `<string.h>`, `<stdbool.h>`).
+- [ ] 3. Implement Header Guard generation (`#ifndef MODEL_H ...`).
+- [ ] 4. Define the primary `ModelContext` C struct (holding arena pointers and state).
+- [ ] 5. Implement `model_init()` C function generator.
+- [ ] 6. Implement `model_predict()` / `model_run()` C function generator.
+- [ ] 7. Generate explicit function signatures (`int model_predict(const float* input, float* output)`).
+- [ ] 8. Auto-format generated C code with a lightweight JS-based C beautifier.
+- [ ] 9. Implement `static inline` function generators for small utility math.
+- [ ] 10. Support `--namespace` prefixing to avoid C symbol collisions (e.g., `mnist_predict()`).
+- [ ] 11. Translate ONNX names to valid C identifiers natively (sanitizing `/`, `-`, `.` to `_`).
+- [ ] 12. Ensure generated code compiles warning-free under `gcc -Wall -Wextra -pedantic -std=c99`.
+- [ ] 13. Ensure generated code compiles warning-free under `clang`.
+- [ ] 14. Support C++ mode (`--emit-cpp`) changing `struct` initialization to support modern C++ standards if requested.
+- [ ] 15. Generate `tensor_info` struct for introspecting shapes at runtime without parsing logic.
+- [ ] 16. Provide standalone `Makefile` or `CMakeLists.txt` generation alongside the `.c` files.
+- [ ] 17. Support generating a standalone `main.c` wrapper for quick local CLI testing.
+- [ ] 18. Support explicit pointer restrict qualifiers (`float* restrict out`) for compiler optimization.
+- [ ] 19. Embed original ONNX model version and producer metadata as C comments.
+- [ ] 20. Track C-stack depth to avoid stack overflows on deeply nested subgraphs.
 
 ### Phase 2: Static Memory Arena Allocation (Zero-malloc)
-- [ ] 021. Implement static memory planner pass directly on the ONNX AST.
-- [ ] 022. Calculate peak working memory required for intermediate activations (the "Arena").
-- [ ] 023. Generate a single global contiguous byte array: `static uint8_t arena[ARENA_SIZE];`.
-- [ ] 024. Alternatively, allow the user to pass a pre-allocated arena buffer to `model_run(uint8_t* arena)`.
-- [ ] 025. Calculate explicit byte offsets for every intermediate tensor (e.g., `float* conv_out = (float*)(&arena[1024]);`).
-- [ ] 026. Optimize arena memory by reusing buffer offsets across disjoint topological layers (graph coloring).
-- [ ] 027. Ensure strictly aligned memory offsets (4-byte alignment for `float`, 8-byte for `double`).
-- [ ] 028. Ensure 16-byte or 32-byte alignment if the user specifies SIMD target compilation.
-- [ ] 029. Serialize `Constant` weights into a separate `static const float weights[] = {...}` array.
-- [ ] 030. Apply `PROGMEM` macros automatically to constant weight arrays if `--target=arduino` is specified.
-- [ ] 031. Apply `__attribute__((section(".rodata")))` for specific bare-metal linker scripts.
-- [ ] 032. Split massive weight arrays into smaller chunked C arrays to avoid MSVC/GCC array-size compilation limits.
-- [ ] 033. Store quantized (INT8/UINT8) weights as byte arrays to compress the C source file size.
-- [ ] 034. Handle explicit C struct alignments (`__attribute__((packed))`) if defining complex tensor headers.
-- [ ] 035. Prevent any usage of `malloc`, `calloc`, `realloc`, or `free` in the emitted code.
-- [ ] 036. Warn user dynamically if required arena size exceeds standard microcontroller limits (e.g., > 256KB).
+
+- [ ] 21. Implement static memory planner pass directly on the ONNX AST.
+- [ ] 22. Calculate peak working memory required for intermediate activations (the "Arena").
+- [ ] 23. Generate a single global contiguous byte array: `static uint8_t arena[ARENA_SIZE];`.
+- [ ] 24. Alternatively, allow the user to pass a pre-allocated arena buffer to `model_run(uint8_t* arena)`.
+- [ ] 25. Calculate explicit byte offsets for every intermediate tensor (e.g., `float* conv_out = (float*)(&arena[1024]);`).
+- [ ] 26. Optimize arena memory by reusing buffer offsets across disjoint topological layers (graph coloring).
+- [ ] 27. Ensure strictly aligned memory offsets (4-byte alignment for `float`, 8-byte for `double`).
+- [ ] 28. Ensure 16-byte or 32-byte alignment if the user specifies SIMD target compilation.
+- [ ] 29. Serialize `Constant` weights into a separate `static const float weights[] = {...}` array.
+- [ ] 30. Apply `PROGMEM` macros automatically to constant weight arrays if `--target=arduino` is specified.
+- [ ] 31. Apply `__attribute__((section(".rodata")))` for specific bare-metal linker scripts.
+- [ ] 32. Split massive weight arrays into smaller chunked C arrays to avoid MSVC/GCC array-size compilation limits.
+- [ ] 33. Store quantized (INT8/UINT8) weights as byte arrays to compress the C source file size.
+- [ ] 34. Handle explicit C struct alignments (`__attribute__((packed))`) if defining complex tensor headers.
+- [ ] 35. Prevent any usage of `malloc`, `calloc`, `realloc`, or `free` in the emitted code.
+- [ ] 36. Warn user dynamically if required arena size exceeds standard microcontroller limits (e.g., > 256KB).
 
 ### Phase 3: Basic Math & Elementwise Operations (C Loops)
-- [ ] 037. Emit C loop for `Add`.
-- [ ] 038. Emit C loop for `Sub`.
-- [ ] 039. Emit C loop for `Mul`.
-- [ ] 040. Emit C loop for `Div`.
-- [ ] 041. Handle implicit scalar-to-tensor broadcasting natively within the generated C loop (optimizing out full array iterations).
-- [ ] 042. Handle implicit tensor-to-tensor broadcasting (using dynamic stride modulo math in C).
-- [ ] 043. Pre-calculate unrolled broadcast offsets statically if dimensions are known, avoiding modulo `%` in C.
-- [ ] 044. Emit C `<math.h>` calls for `Exp` (`expf`).
-- [ ] 045. Emit C calls for `Log` (`logf`).
-- [ ] 046. Emit C calls for `Sqrt` (`sqrtf`).
-- [ ] 047. Emit C calls for `Pow` (`powf`).
-- [ ] 048. Emit C calls for `Sin` (`sinf`).
-- [ ] 049. Emit C calls for `Cos` (`cosf`).
-- [ ] 050. Emit C calls for `Tan` (`tanf`).
-- [ ] 051. Emit C implementation for `Abs` (`fabsf`).
-- [ ] 052. Emit C implementation for `Neg` (`-x`).
-- [ ] 053. Emit C implementation for `Sign`.
-- [ ] 054. Emit C calls for `Ceil` (`ceilf`).
-- [ ] 055. Emit C calls for `Floor` (`floorf`).
-- [ ] 056. Emit C calls for `Round` (`roundf`).
-- [ ] 057. Implement custom fallback `expf` / `logf` approximation macros if `<math.h>` is forbidden on target.
-- [ ] 058. Optimize Division by powers of 2 into right-shifts (`>>`) for integer tensors.
-- [ ] 059. Implement strict `NaN` and `Inf` checking macros if `--debug` is enabled.
+
+- [ ] 37. Emit C loop for `Add`.
+- [ ] 38. Emit C loop for `Sub`.
+- [ ] 39. Emit C loop for `Mul`.
+- [ ] 40. Emit C loop for `Div`.
+- [ ] 41. Handle implicit scalar-to-tensor broadcasting natively within the generated C loop (optimizing out full array iterations).
+- [ ] 42. Handle implicit tensor-to-tensor broadcasting (using dynamic stride modulo math in C).
+- [ ] 43. Pre-calculate unrolled broadcast offsets statically if dimensions are known, avoiding modulo `%` in C.
+- [ ] 44. Emit C `<math.h>` calls for `Exp` (`expf`).
+- [ ] 45. Emit C calls for `Log` (`logf`).
+- [ ] 46. Emit C calls for `Sqrt` (`sqrtf`).
+- [ ] 47. Emit C calls for `Pow` (`powf`).
+- [ ] 48. Emit C calls for `Sin` (`sinf`).
+- [ ] 49. Emit C calls for `Cos` (`cosf`).
+- [ ] 50. Emit C calls for `Tan` (`tanf`).
+- [ ] 51. Emit C implementation for `Abs` (`fabsf`).
+- [ ] 52. Emit C implementation for `Neg` (`-x`).
+- [ ] 53. Emit C implementation for `Sign`.
+- [ ] 54. Emit C calls for `Ceil` (`ceilf`).
+- [ ] 55. Emit C calls for `Floor` (`floorf`).
+- [ ] 56. Emit C calls for `Round` (`roundf`).
+- [ ] 57. Implement custom fallback `expf` / `logf` approximation macros if `<math.h>` is forbidden on target.
+- [ ] 58. Optimize Division by powers of 2 into right-shifts (`>>`) for integer tensors.
+- [ ] 59. Implement strict `NaN` and `Inf` checking macros if `--debug` is enabled.
 
 ### Phase 4: Linear Algebra & Matrix Multiplication
-- [ ] 060. Emit C loop for `MatMul` (Naive 3-loop structure $O(N^3)$).
-- [ ] 061. Emit Cache-Blocked `MatMul` C code (Loop Tiling) for optimized CPU cache utilization.
-- [ ] 062. Implement matrix transposition inline within the `MatMul` loop to handle transposed weights.
-- [ ] 063. Emit C loop for `Gemm` (Handling `alpha`, `beta`, `transA`, `transB`).
-- [ ] 064. Optimize `Gemm` into `MatMul` if `alpha=1.0` and `beta=0.0`.
-- [ ] 065. Support batch matrix multiplication (`BatchMatMul`) via 4-loop C structures.
-- [ ] 066. Statically unroll small `MatMul` loops (e.g., 3x3 matrices) into linear arithmetic to eliminate loop branching overhead.
-- [ ] 067. Detect matrix-vector multiplication (GEMV) and emit specialized, faster $O(N^2)$ loops.
-- [ ] 068. Avoid generating inner-loop branches (if statements) during matrix multiplication.
-- [ ] 069. Support integer matrix multiplication (`MatMulInteger`) strictly using `int32_t` accumulators to prevent overflow.
+
+- [ ] 60. Emit C loop for `MatMul` (Naive 3-loop structure $O(N^3)$).
+- [ ] 61. Emit Cache-Blocked `MatMul` C code (Loop Tiling) for optimized CPU cache utilization.
+- [ ] 62. Implement matrix transposition inline within the `MatMul` loop to handle transposed weights.
+- [ ] 63. Emit C loop for `Gemm` (Handling `alpha`, `beta`, `transA`, `transB`).
+- [ ] 64. Optimize `Gemm` into `MatMul` if `alpha=1.0` and `beta=0.0`.
+- [ ] 65. Support batch matrix multiplication (`BatchMatMul`) via 4-loop C structures.
+- [ ] 66. Statically unroll small `MatMul` loops (e.g., 3x3 matrices) into linear arithmetic to eliminate loop branching overhead.
+- [ ] 67. Detect matrix-vector multiplication (GEMV) and emit specialized, faster $O(N^2)$ loops.
+- [ ] 68. Avoid generating inner-loop branches (if statements) during matrix multiplication.
+- [ ] 69. Support integer matrix multiplication (`MatMulInteger`) strictly using `int32_t` accumulators to prevent overflow.
 
 ### Phase 5: Convolution & Spatial Operations
-- [ ] 070. Emit C loop for `Conv` (1D).
-- [ ] 071. Emit C loop for `Conv` (2D) natively (7-level deep nested loops for naive direct convolution).
-- [ ] 072. Emit C im2col (Image-to-Column) transformation arrays in the arena for optimized `Conv2D`.
-- [ ] 073. Map `Conv2D` to im2col + `MatMul` for performance on larger networks.
-- [ ] 074. Emit specific C loops for `DepthwiseConv2D` (drastically reducing multiplications).
-- [ ] 075. Handle `strides` explicitly within the C loop increments (`i += stride`).
-- [ ] 076. Handle `dilations` explicitly within the C loop kernel index lookups.
-- [ ] 077. Handle `pads` implicitly by clamping boundary reads (e.g., `if (h < 0 || h >= H) val = 0;`).
-- [ ] 078. Alternatively, allocate pre-padded input tensors in the arena to avoid branching in the hot Conv loop.
-- [ ] 079. Emit C loop for `ConvTranspose` (2D).
-- [ ] 080. Emit 3D Convolution C loops (Video processing).
-- [ ] 081. Fuse `Conv` + `BiasAdd` directly into the C accumulation loop to save memory passes.
-- [ ] 082. Statically unroll 1x1 Convolutions into direct Matrix Multiplications in C.
+
+- [ ] 70. Emit C loop for `Conv` (1D).
+- [ ] 71. Emit C loop for `Conv` (2D) natively (7-level deep nested loops for naive direct convolution).
+- [ ] 72. Emit C im2col (Image-to-Column) transformation arrays in the arena for optimized `Conv2D`.
+- [ ] 73. Map `Conv2D` to im2col + `MatMul` for performance on larger networks.
+- [ ] 74. Emit specific C loops for `DepthwiseConv2D` (drastically reducing multiplications).
+- [ ] 75. Handle `strides` explicitly within the C loop increments (`i += stride`).
+- [ ] 76. Handle `dilations` explicitly within the C loop kernel index lookups.
+- [ ] 77. Handle `pads` implicitly by clamping boundary reads (e.g., `if (h < 0 || h >= H) val = 0;`).
+- [ ] 78. Alternatively, allocate pre-padded input tensors in the arena to avoid branching in the hot Conv loop.
+- [ ] 79. Emit C loop for `ConvTranspose` (2D).
+- [ ] 80. Emit 3D Convolution C loops (Video processing).
+- [ ] 81. Fuse `Conv` + `BiasAdd` directly into the C accumulation loop to save memory passes.
+- [ ] 82. Statically unroll 1x1 Convolutions into direct Matrix Multiplications in C.
 
 ### Phase 6: Pooling & Reductions
-- [ ] 083. Emit C loop for `MaxPool` (1D, 2D).
-- [ ] 084. Emit C loop for `AveragePool` (2D).
-- [ ] 085. Handle `kernel_shape`, `strides`, and `pads` dynamically inside pooling loops.
-- [ ] 086. Emit C loop for `GlobalAveragePool` (averaging over all spatial dimensions).
-- [ ] 087. Emit C loop for `GlobalMaxPool`.
-- [ ] 088. Emit C loop for `ReduceMean`.
-- [ ] 089. Emit C loop for `ReduceSum`.
-- [ ] 090. Emit C loop for `ReduceMax`.
-- [ ] 091. Emit C loop for `ReduceMin`.
-- [ ] 092. Emit C loop for `ReduceProd`.
-- [ ] 093. Handle `keepdims` attribute explicitly in pointer arithmetic mappings.
-- [ ] 094. Optimize `ReduceMean` across full continuous flat arrays if spatial dimensions are contiguous.
-- [ ] 095. Emit C loop for `ArgMax` (storing the index of the highest value).
-- [ ] 096. Emit C loop for `ArgMin`.
-- [ ] 097. Provide specific integer precision mappings for `ArgMax` (using `int32_t` or `int64_t`).
+
+- [ ] 83. Emit C loop for `MaxPool` (1D, 2D).
+- [ ] 84. Emit C loop for `AveragePool` (2D).
+- [ ] 85. Handle `kernel_shape`, `strides`, and `pads` dynamically inside pooling loops.
+- [ ] 86. Emit C loop for `GlobalAveragePool` (averaging over all spatial dimensions).
+- [ ] 87. Emit C loop for `GlobalMaxPool`.
+- [ ] 88. Emit C loop for `ReduceMean`.
+- [ ] 89. Emit C loop for `ReduceSum`.
+- [ ] 90. Emit C loop for `ReduceMax`.
+- [ ] 91. Emit C loop for `ReduceMin`.
+- [ ] 92. Emit C loop for `ReduceProd`.
+- [ ] 93. Handle `keepdims` attribute explicitly in pointer arithmetic mappings.
+- [ ] 94. Optimize `ReduceMean` across full continuous flat arrays if spatial dimensions are contiguous.
+- [ ] 95. Emit C loop for `ArgMax` (storing the index of the highest value).
+- [ ] 96. Emit C loop for `ArgMin`.
+- [ ] 97. Provide specific integer precision mappings for `ArgMax` (using `int32_t` or `int64_t`).
 
 ### Phase 7: Activations & Normalizations
-- [ ] 098. Emit C code for `Relu` (`x > 0 ? x : 0`).
-- [ ] 099. Emit C code for `LeakyRelu` (`x > 0 ? x : alpha * x`).
+
+- [ ] 98. Emit C code for `Relu` (`x > 0 ? x : 0`).
+- [ ] 99. Emit C code for `LeakyRelu` (`x > 0 ? x : alpha * x`).
 - [ ] 100. Emit C code for `Sigmoid` (`1.0f / (1.0f + expf(-x))`).
 - [ ] 101. Emit C code for `Tanh` (`tanhf(x)`).
 - [ ] 102. Emit C code for `Softmax`.
@@ -144,6 +154,7 @@
 - [ ] 115. Manage LayerNorm `epsilon` precision safely within C types.
 
 ### Phase 8: Tensor Manipulation, Shape, & Routing
+
 - [ ] 116. Emit C code for `Reshape` (No-op memory mapping, purely updating C pointer shapes).
 - [ ] 117. Emit C code for `Flatten` (No-op).
 - [ ] 118. Emit C code for `Squeeze` (No-op).
@@ -165,6 +176,7 @@
 - [ ] 134. Emit C code for `ConstantOfShape` (Using `memset` or array fill loop).
 
 ### Phase 9: Logical, Relational & Boolean Operations
+
 - [ ] 135. Emit C code for `Equal` (`==`).
 - [ ] 136. Emit C code for `Less` (`<`).
 - [ ] 137. Emit C code for `LessOrEqual` (`<=`).
@@ -178,6 +190,7 @@
 - [ ] 145. Handle C type enforcement (mapping ONNX booleans to C99 `bool` or `uint8_t`).
 
 ### Phase 10: TinyML Specific Quantization (INT8 / UINT8 / FP16)
+
 - [ ] 146. Emit C loops for `QuantizeLinear`.
 - [ ] 147. Emit C loops for `DequantizeLinear`.
 - [ ] 148. Emit specific C loops for `QLinearConv` (fully quantized INT8 convolution).
@@ -191,6 +204,7 @@
 - [ ] 156. Translate Float16 ops back to Float32 on the fly if the hardware lacks a native FPU for Float16.
 
 ### Phase 11: Control Flow & Subgraph Translation
+
 - [ ] 157. Map ONNX `If` to C `if / else` blocks.
 - [ ] 158. Generate nested function calls or inline code for `If` branch subgraphs.
 - [ ] 159. Map ONNX `Loop` to C `while` or `for` loops.
@@ -200,6 +214,7 @@
 - [ ] 163. Map ONNX `Scan` operation to a strict C for-loop.
 
 ### Phase 12: Hardware-Specific Intrinsics & Pragmas
+
 - [ ] 164. Support `--target=cmsis-nn` to inject ARM Cortex-M DSP intrinsics.
 - [ ] 165. Emit `arm_fully_connected_s8` for `QLinearMatMul` if CMSIS-NN is active.
 - [ ] 166. Emit `arm_convolve_s8` for `QLinearConv` if CMSIS-NN is active.
@@ -210,6 +225,7 @@
 - [ ] 171. Add `#ifdef __AVX2__` headers and block variations for x86 inference.
 
 ### Phase 13: Specialized Tasks, NLP & Vision
+
 - [ ] 172. Emit C arrays for BPE Tokenizer dictionaries (enabling text-to-tensor completely in C).
 - [ ] 173. Compile ONNX `NonMaxSuppression` (NMS) into a robust C algorithm with dynamic array bounds.
 - [ ] 174. Emit C code for `TopK` using a lightweight Quicksort or Heap implementation.
@@ -221,6 +237,7 @@
 - [ ] 180. Translate standard PyTorch Attention into explicit C memory loop combinations.
 
 ### Phase 14: CLI, Output Formatting & Packaging
+
 - [ ] 181. Build Node.js CLI: `onnx9000 onnx2c model.onnx --output src/`.
 - [ ] 182. Support generating a split architecture: `model.c`, `model.h`, and `weights.h`.
 - [ ] 183. Bundle external weight binaries into `.bin` files loaded via `fopen` if specifically requested (for Raspberry Pi / Desktop).
@@ -231,6 +248,7 @@
 - [ ] 188. Generate a `CMakeLists.txt` for ESP-IDF integration.
 
 ### Phase 15: Edge Cases, Security & Memory Guards
+
 - [ ] 189. Add buffer-overflow protections: Generate `assert()` statements checking tensor array bounds in debug mode.
 - [ ] 190. Handle dynamic shapes (`-1` dimensions) by emitting dynamic array variables (`int dim_0 = ...`) rather than `const int` inside the C function.
 - [ ] 191. Fallback dynamic arena sizing to stack-allocated VLA (Variable Length Arrays) if C99 VLA is supported and safe.
@@ -241,6 +259,7 @@
 - [ ] 196. Translate `String` type ONNX tensors into `const char*[]` arrays natively.
 
 ### Phase 16: Browser UI (The C99 Web Compiler)
+
 - [ ] 197. Build static React/Vue Web UI for `onnx2c`.
 - [ ] 198. Implement drag-and-drop ONNX file ingestion.
 - [ ] 199. Display an interactive Monaco Editor showing the real-time C99 code generation.
@@ -251,6 +270,7 @@
 - [ ] 204. Validate model RAM suitability against a dropdown list of standard boards (e.g., "Arduino Nano 33 BLE", "ESP32-S3").
 
 ### Phase 17: Validation & Continuous Integration
+
 - [ ] 205. Unit Test: Compile pure `Add` ONNX, pipe through GCC, validate output.
 - [ ] 206. Unit Test: Compile `MatMul` ONNX, pipe through GCC, validate output.
 - [ ] 207. Unit Test: Compile `Conv2D` ONNX, pipe through GCC, validate output.
@@ -261,6 +281,7 @@
 - [ ] 212. Verify memory limits on generated binaries using `size` and `objdump`.
 
 ### Phase 18: Standard Optimization Passes
+
 - [ ] 213. Execute `onnx9000.optimum` Level 3 graph optimization automatically before C generation.
 - [ ] 214. Strip all debug symbols and doc_strings internally before generating the C arrays.
 - [ ] 215. Find continuous execution sequences that can be combined (e.g., merging 3 consecutive `Add` operations into `out = x + y + z`).
@@ -268,12 +289,14 @@
 - [ ] 217. Identify sub-normal float ranges and clamp to zero during generation to prevent extreme CPU penalties in C.
 
 ### Phase 19: Extreme TinyML Specializations
+
 - [ ] 218. Provide a LUT (Look Up Table) generator. Compile complex nonlinear functions (e.g. `Sigmoid`) into static pre-computed C arrays `const float sigmoid_lut[256]` to save CPU cycles.
 - [ ] 219. Emit bit-packed arrays for boolean tensors (`uint8_t` packing 8 booleans) with masking logic.
 - [ ] 220. Support multi-model multiplexing (generating multiple ONNX graphs that share the exact same memory arena).
 - [ ] 221. Strip the standard C standard library `math.h` completely if generating integer-only quantized topologies.
 
 ### Phase 20: Parity & Delivery Finalization
+
 - [ ] 222. Support compiling specific ONNX `ai.onnx.ml` Classical ML models (Tree Ensembles) to C if-else statements natively.
 - [ ] 223. Output `model.c` size must be strictly proportional to the number of nodes (preventing exponential string bloating).
 - [ ] 224. Format extremely large floating-point arrays cleanly (`1.234e-5f, ...`) with controlled wrap-around to keep file lines manageable.

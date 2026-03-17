@@ -171,3 +171,13 @@ class CUDAMemoryPlanner:
             self.cleanup()
         except Exception as e:
             logger.debug(f"Exception during CUDAMemoryPlanner cleanup: {e}")
+
+    def allocate_dynamic(self, name: str, size: int, shape: tuple[int, ...], dtype: str) -> None:
+        if not is_cuda_available():
+            return
+        if name in self.dynamic_allocations:
+            _cuda_lib.cuMemFree(self.dynamic_allocations[name][0])
+        ptr = CUdeviceptr(0)
+        check_cuda_error(_cuda_lib.cuMemAlloc(ctypes.byref(ptr), size))
+        self.dynamic_allocations[name] = (ptr, size)
+        self.tensors_shape_dtype[name] = (shape, np.dtype(dtype))

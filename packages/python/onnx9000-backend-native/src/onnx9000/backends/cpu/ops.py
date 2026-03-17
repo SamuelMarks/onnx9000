@@ -864,7 +864,7 @@ def sequenceempty_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np
 def sequenceerase_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceerase Op function logic implementation."""
     seq = list(inputs[0])
-    idx = int(inputs[1]) if len(inputs) > 1 else -1
+    idx = int(inputs[1].item()) if len(inputs) > 1 else -1
     seq.pop(idx)
     return [seq]
 

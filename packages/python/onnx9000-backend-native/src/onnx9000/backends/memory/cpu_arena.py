@@ -159,3 +159,13 @@ class CPUMemoryPlanner:
     def __del__(self) -> None:
         """Ensure cleanup on destruction."""
         self.cleanup()
+
+    def allocate_dynamic(self, name: str, size: int, shape: tuple[int, ...], dtype: str) -> None:
+        """Allocate an independent block for dynamically shaped tensors."""
+        with self._lock:
+            if name in self.dynamic_allocations:
+                self.release_ref(name)
+            self.dynamic_allocations[name] = self._allocate_mmap(size)
+            self.dynamic_sizes[name] = size
+            self.tensors_shape_dtype[name] = (shape, dtype)
+            self.ref_counts[name] = 1

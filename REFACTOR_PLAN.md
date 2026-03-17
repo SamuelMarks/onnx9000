@@ -1,117 +1,122 @@
 # ONNX9000: Polyglot Monorepo Refactor Plan
 
-This document outlines the exhaustive, 300+ step plan to transition `onnx9000` from a monolithic Python project into a modular, highly cohesive Polyglot Monorepo (Python + TypeScript). 
+This document outlines the exhaustive, 300+ step plan to transition `onnx9000` from a monolithic Python project into a modular, highly cohesive Polyglot Monorepo (Python + TypeScript).
 
 This architecture isolates the core ONNX Intermediate Representation (IR), decoupling parsers, execution backends, and web UI components. This is a prerequisite for achieving the ambitious WASM-First execution, WebGPU acceleration, and zero-dependency goals.
 
 ## Phase 1: Monorepo Foundation & Tooling
-- [x] 001. Initialize root `package.json` for npm/pnpm/yarn workspaces.
-- [x] 002. Configure `pnpm-workspace.yaml` (or equivalent) defining `packages/js/*`, `packages/python/*`, and `apps/*`.
-- [x] 003. Initialize root `pyproject.toml` (using `uv` or `poetry` workspaces if applicable, or generic PEP 621).
-- [x] 004. Create directory `packages/python/`.
-- [x] 005. Create directory `packages/js/`.
-- [x] 006. Create directory `apps/`.
-- [x] 007. Set up root `.eslintrc.js` or `eslint.config.js` for universal TypeScript linting.
-- [x] 008. Set up root `.prettierrc` for polyglot formatting.
-- [x] 009. Set up root `ruff.toml` for universal Python linting and formatting.
-- [x] 010. Set up `mypy.ini` in root for strict Python typing across all packages.
-- [x] 011. Create root `tsconfig.base.json` for TypeScript package inheritance.
-- [x] 012. Configure Git hooks (e.g., Husky + lint-staged) for polyglot pre-commit checks.
-- [x] 013. Update `.gitignore` to handle `node_modules`, `dist`, `.turbo`, `.venv`, and `__pycache__` across all subdirectories.
-- [x] 014. Set up Turborepo (`turbo.json`) or Wireit to orchestrate cross-language build tasks (`build`, `test`, `lint`).
-- [x] 015. Define a `clean` task in `turbo.json` to purge all build artifacts globally.
-- [x] 016. Initialize GitHub Actions (or equivalent CI): Create `lint.yml` for parallel TS/Python linting.
-- [x] 017. Initialize GitHub Actions: Create `test-python.yml` for Python unit tests.
-- [x] 018. Initialize GitHub Actions: Create `test-js.yml` for TypeScript/Node/Browser unit tests.
-- [x] 019. Define strict internal dependency rules (e.g., Backends depend on Core IR, never vice versa).
-- [x] 020. Set up a central `scripts/` directory for monorepo maintenance scripts.
-- [x] 021. Create `scripts/bootstrap.sh` to install all JS and Python dependencies in one command.
-- [x] 022. Configure Python pathings so local packages can cross-import in development (e.g., `pip install -e .`).
-- [x] 023. Audit existing `requirements.txt` / `pyproject.toml` dependencies and prepare to split them by package.
-- [x] 024. Review and migrate existing `.github/workflows/` to the new workspace structure.
-- [x] 025. Verify that existing `tox.ini` commands can be mapped to the new package structure.
+
+- [x] 1. Initialize root `package.json` for npm/pnpm/yarn workspaces.
+- [x] 2. Configure `pnpm-workspace.yaml` (or equivalent) defining `packages/js/*`, `packages/python/*`, and `apps/*`.
+- [x] 3. Initialize root `pyproject.toml` (using `uv` or `poetry` workspaces if applicable, or generic PEP 621).
+- [x] 4. Create directory `packages/python/`.
+- [x] 5. Create directory `packages/js/`.
+- [x] 6. Create directory `apps/`.
+- [x] 7. Set up root `.eslintrc.js` or `eslint.config.js` for universal TypeScript linting.
+- [x] 8. Set up root `.prettierrc` for polyglot formatting.
+- [x] 9. Set up root `ruff.toml` for universal Python linting and formatting.
+- [x] 10. Set up `mypy.ini` in root for strict Python typing across all packages.
+- [x] 11. Create root `tsconfig.base.json` for TypeScript package inheritance.
+- [x] 12. Configure Git hooks (e.g., Husky + lint-staged) for polyglot pre-commit checks.
+- [x] 13. Update `.gitignore` to handle `node_modules`, `dist`, `.turbo`, `.venv`, and `__pycache__` across all subdirectories.
+- [x] 14. Set up Turborepo (`turbo.json`) or Wireit to orchestrate cross-language build tasks (`build`, `test`, `lint`).
+- [x] 15. Define a `clean` task in `turbo.json` to purge all build artifacts globally.
+- [x] 16. Initialize GitHub Actions (or equivalent CI): Create `lint.yml` for parallel TS/Python linting.
+- [x] 17. Initialize GitHub Actions: Create `test-python.yml` for Python unit tests.
+- [x] 18. Initialize GitHub Actions: Create `test-js.yml` for TypeScript/Node/Browser unit tests.
+- [x] 19. Define strict internal dependency rules (e.g., Backends depend on Core IR, never vice versa).
+- [x] 20. Set up a central `scripts/` directory for monorepo maintenance scripts.
+- [x] 21. Create `scripts/bootstrap.sh` to install all JS and Python dependencies in one command.
+- [x] 22. Configure Python pathings so local packages can cross-import in development (e.g., `pip install -e .`).
+- [x] 23. Audit existing `requirements.txt` / `pyproject.toml` dependencies and prepare to split them by package.
+- [x] 24. Review and migrate existing `.github/workflows/` to the new workspace structure.
+- [x] 25. Verify that existing `tox.ini` commands can be mapped to the new package structure.
 
 ## Phase 2: Python Core IR Extraction (`packages/python/onnx9000-core`)
-- [x] 026. Create `packages/python/onnx9000-core/pyproject.toml`.
-- [x] 027. Create `packages/python/onnx9000-core/src/onnx9000/core/__init__.py`.
-- [x] 028. Migrate `src/onnx9000/core/` (from root) to the new `onnx9000-core` package.
-- [x] 029. Migrate pure Python Protobuf parsers (`src/onnx9000/proto/`) into `onnx9000-core`.
-- [x] 030. Refactor `Graph` class to be completely decoupled from execution providers.
-- [x] 031. Refactor `Node` class.
-- [x] 032. Refactor `Tensor` class (establishing `__dlpack__` interfaces here).
-- [x] 033. Refactor `Attribute` class and type resolution logic.
-- [x] 034. Extract and isolate static shape inference logic into `onnx9000-core/shape_inference`.
-- [x] 035. Extract and isolate symbolic math logic into `onnx9000-core/symbolic`.
-- [x] 036. Implement the central Plugin Registry (`@register_op`) in `onnx9000-core/registry.py`.
-- [x] 037. Migrate base Operator classes and definitions to `onnx9000-core/ops/`.
-- [x] 038. Define `ValueInfo` and graph I/O abstractions.
-- [x] 039. Implement the zero-dependency `.onnx` byte-reader in `onnx9000-core/parser`.
-- [x] 040. Implement the zero-dependency `.onnx` byte-writer in `onnx9000-core/serializer`.
-- [x] 041. Create robust custom Exception classes (`ONNXParseError`, `ShapeInferenceError`) in `onnx9000-core/exceptions.py`.
-- [x] 042. Migrate `tests/core/` to `packages/python/onnx9000-core/tests/`.
-- [x] 043. Ensure `onnx9000-core` has ZERO external dependencies (no `numpy`, no `torch`, no `onnx`).
-- [x] 044. Verify all `onnx9000-core` tests pass in isolation.
-- [x] 045. Set up test coverage reporting specifically for `onnx9000-core` (>95% target).
-- [x] 046. Implement memory-mapped (`mmap`) reading utilities in `onnx9000-core` for large tensors.
-- [x] 047. Refactor internal logging to use standard Python `logging` attached to a specific `onnx9000.core` logger.
-- [x] 048. Implement DAG topological sorting utilities in `onnx9000-core/utils.py`.
-- [x] 049. Define the base `ExecutionProvider` interface (abstract base class) inside `onnx9000-core`.
-- [x] 050. Define the standard Context and Session Options dataclasses.
-- [x] 051. Ensure `onnx9000-core` exposes a clean public API (`__all__` definitions).
+
+- [x] 26. Create `packages/python/onnx9000-core/pyproject.toml`.
+- [x] 27. Create `packages/python/onnx9000-core/src/onnx9000/core/__init__.py`.
+- [x] 28. Migrate `src/onnx9000/core/` (from root) to the new `onnx9000-core` package.
+- [x] 29. Migrate pure Python Protobuf parsers (`src/onnx9000/proto/`) into `onnx9000-core`.
+- [x] 30. Refactor `Graph` class to be completely decoupled from execution providers.
+- [x] 31. Refactor `Node` class.
+- [x] 32. Refactor `Tensor` class (establishing `__dlpack__` interfaces here).
+- [x] 33. Refactor `Attribute` class and type resolution logic.
+- [x] 34. Extract and isolate static shape inference logic into `onnx9000-core/shape_inference`.
+- [x] 35. Extract and isolate symbolic math logic into `onnx9000-core/symbolic`.
+- [x] 36. Implement the central Plugin Registry (`@register_op`) in `onnx9000-core/registry.py`.
+- [x] 37. Migrate base Operator classes and definitions to `onnx9000-core/ops/`.
+- [x] 38. Define `ValueInfo` and graph I/O abstractions.
+- [x] 39. Implement the zero-dependency `.onnx` byte-reader in `onnx9000-core/parser`.
+- [x] 40. Implement the zero-dependency `.onnx` byte-writer in `onnx9000-core/serializer`.
+- [x] 41. Create robust custom Exception classes (`ONNXParseError`, `ShapeInferenceError`) in `onnx9000-core/exceptions.py`.
+- [x] 42. Migrate `tests/core/` to `packages/python/onnx9000-core/tests/`.
+- [x] 43. Ensure `onnx9000-core` has ZERO external dependencies (no `numpy`, no `torch`, no `onnx`).
+- [x] 44. Verify all `onnx9000-core` tests pass in isolation.
+- [x] 45. Set up test coverage reporting specifically for `onnx9000-core` (>95% target).
+- [x] 46. Implement memory-mapped (`mmap`) reading utilities in `onnx9000-core` for large tensors.
+- [x] 47. Refactor internal logging to use standard Python `logging` attached to a specific `onnx9000.core` logger.
+- [x] 48. Implement DAG topological sorting utilities in `onnx9000-core/utils.py`.
+- [x] 49. Define the base `ExecutionProvider` interface (abstract base class) inside `onnx9000-core`.
+- [x] 50. Define the standard Context and Session Options dataclasses.
+- [x] 51. Ensure `onnx9000-core` exposes a clean public API (`__all__` definitions).
 
 ## Phase 3: Python Native Backend Extraction (`packages/python/onnx9000-backend-native`)
-- [x] 052. Create `packages/python/onnx9000-backend-native/pyproject.toml`.
-- [x] 053. Add `onnx9000-core` as a local dependency in `pyproject.toml`.
-- [x] 054. Migrate `src/onnx9000/backends/cuda/` to this package.
-- [x] 055. Migrate `src/onnx9000/backends/apple/` (Accelerate/MPS) to this package.
-- [x] 056. Migrate `src/onnx9000/backends/cpu/` (OpenBLAS/MKL/Generic) to this package.
-- [x] 057. Migrate `src/onnx9000/backends/rocm/` to this package.
-- [x] 058. Migrate `src/onnx9000/backends/codegen/` (if C++ oriented) to this package.
-- [x] 059. Refactor ctypes/cffi dynamic library loaders to be completely lazy (only load on EP init).
-- [x] 060. Isolate CUDA memory arena allocator into `memory/cuda_arena.py`.
-- [x] 061. Isolate Apple Metal buffer mappings into `memory/metal_arena.py`.
-- [x] 062. Isolate host CPU memory mmap/allocators into `memory/cpu_arena.py`.
-- [x] 063. Implement `InferenceSession` orchestration logic (routing Graph nodes to EPs).
-- [x] 064. Register CPU Fallback operators via the Core Plugin Registry.
-- [x] 065. Register CUDA specific operators via the Core Plugin Registry.
-- [x] 066. Register Accelerate specific operators via the Core Plugin Registry.
-- [x] 067. Implement zero-copy DLPack ingestion targeting Native backends.
-- [x] 068. Migrate execution/backend tests from `tests/backends/` to this package's test suite.
-- [x] 069. Refactor benchmark scripts into `onnx9000-backend-native/benchmarks/`.
-- [x] 070. Establish OS-specific testing skips (e.g., skip Accelerate tests on Linux).
-- [x] 071. Verify `onnx9000-backend-native` successfully executes `test_all_ops.py` (migrated here).
-- [x] 072. Ensure no Web/WASM logic exists in this package.
+
+- [x] 52. Create `packages/python/onnx9000-backend-native/pyproject.toml`.
+- [x] 53. Add `onnx9000-core` as a local dependency in `pyproject.toml`.
+- [x] 54. Migrate `src/onnx9000/backends/cuda/` to this package.
+- [x] 55. Migrate `src/onnx9000/backends/apple/` (Accelerate/MPS) to this package.
+- [x] 56. Migrate `src/onnx9000/backends/cpu/` (OpenBLAS/MKL/Generic) to this package.
+- [x] 57. Migrate `src/onnx9000/backends/rocm/` to this package.
+- [x] 58. Migrate `src/onnx9000/backends/codegen/` (if C++ oriented) to this package.
+- [x] 59. Refactor ctypes/cffi dynamic library loaders to be completely lazy (only load on EP init).
+- [x] 60. Isolate CUDA memory arena allocator into `memory/cuda_arena.py`.
+- [x] 61. Isolate Apple Metal buffer mappings into `memory/metal_arena.py`.
+- [x] 62. Isolate host CPU memory mmap/allocators into `memory/cpu_arena.py`.
+- [x] 63. Implement `InferenceSession` orchestration logic (routing Graph nodes to EPs).
+- [x] 64. Register CPU Fallback operators via the Core Plugin Registry.
+- [x] 65. Register CUDA specific operators via the Core Plugin Registry.
+- [x] 66. Register Accelerate specific operators via the Core Plugin Registry.
+- [x] 67. Implement zero-copy DLPack ingestion targeting Native backends.
+- [x] 68. Migrate execution/backend tests from `tests/backends/` to this package's test suite.
+- [x] 69. Refactor benchmark scripts into `onnx9000-backend-native/benchmarks/`.
+- [x] 70. Establish OS-specific testing skips (e.g., skip Accelerate tests on Linux).
+- [x] 71. Verify `onnx9000-backend-native` successfully executes `test_all_ops.py` (migrated here).
+- [x] 72. Ensure no Web/WASM logic exists in this package.
 
 ## Phase 4: Python Optimizers Extraction (`packages/python/onnx9000-optimizer`)
-- [x] 073. Create `packages/python/onnx9000-optimizer/pyproject.toml`.
-- [x] 074. Add `onnx9000-core` as a local dependency.
-- [x] 075. Migrate GraphSurgeon logic into `onnx9000-optimizer/surgeon/`.
-- [x] 076. Migrate ONNX Simplifier logic into `onnx9000-optimizer/simplifier/`.
-- [x] 077. Migrate Olive Quantization & Pruning logic into `onnx9000-optimizer/olive/`.
-- [x] 078. Abstract constant folding to use the `onnx9000-core` evaluation engine or fallback numpy.
-- [x] 079. Implement `Pass` and `PassContext` base classes.
-- [x] 080. Migrate Level 1 Optimization Passes (DCE, Identity Elimination).
-- [x] 081. Migrate Level 2 Optimization Passes (Fusions: Conv+BN, Gemm+Relu).
-- [x] 082. Migrate Level 3 Optimization Passes (Transformer Fusions, Gelu, RoPE).
-- [x] 083. Migrate Dynamic Quantization passes (FP32 -> Int8/UInt8).
-- [x] 084. Migrate W4A16 Weight Packing algorithms.
-- [x] 085. Migrate Sparsity and Pruning algorithms.
-- [x] 086. Migrate hardware-aware target tuning (layout conversions).
-- [x] 087. Migrate `onnx-tool` profiling logic (MACs, FLOPs, Memory) into `onnx9000-optimizer/profiler/`.
-- [x] 088. Migrate `tests/optimize/` to this package.
-- [x] 089. Verify all structural optimizations preserve `onnx9000-core` AST validity.
-- [x] 090. Create isolated tests for each specific fusion pattern.
-- [x] 091. Create isolated tests for quantization accuracy degradation.
+
+- [x] 73. Create `packages/python/onnx9000-optimizer/pyproject.toml`.
+- [x] 74. Add `onnx9000-core` as a local dependency.
+- [x] 75. Migrate GraphSurgeon logic into `onnx9000-optimizer/surgeon/`.
+- [x] 76. Migrate ONNX Simplifier logic into `onnx9000-optimizer/simplifier/`.
+- [x] 77. Migrate Olive Quantization & Pruning logic into `onnx9000-optimizer/olive/`.
+- [x] 78. Abstract constant folding to use the `onnx9000-core` evaluation engine or fallback numpy.
+- [x] 79. Implement `Pass` and `PassContext` base classes.
+- [x] 80. Migrate Level 1 Optimization Passes (DCE, Identity Elimination).
+- [x] 81. Migrate Level 2 Optimization Passes (Fusions: Conv+BN, Gemm+Relu).
+- [x] 82. Migrate Level 3 Optimization Passes (Transformer Fusions, Gelu, RoPE).
+- [x] 83. Migrate Dynamic Quantization passes (FP32 -> Int8/UInt8).
+- [x] 84. Migrate W4A16 Weight Packing algorithms.
+- [x] 85. Migrate Sparsity and Pruning algorithms.
+- [x] 86. Migrate hardware-aware target tuning (layout conversions).
+- [x] 87. Migrate `onnx-tool` profiling logic (MACs, FLOPs, Memory) into `onnx9000-optimizer/profiler/`.
+- [x] 88. Migrate `tests/optimize/` to this package.
+- [x] 89. Verify all structural optimizations preserve `onnx9000-core` AST validity.
+- [x] 90. Create isolated tests for each specific fusion pattern.
+- [x] 91. Create isolated tests for quantization accuracy degradation.
 
 ## Phase 5: Python Frontends Extraction (`packages/python/onnx9000-frontend`)
-- [x] 092. Create `packages/python/onnx9000-frontend/pyproject.toml`.
-- [x] 093. Add `onnx9000-core` as a local dependency.
-- [x] 094. Migrate PyTorch Dynamo/FX exporter (`ONNX05`) into `onnx9000-frontend/torch/`.
-- [x] 095. Migrate `tf2onnx` (`ONNX10`) zero-dependency parser into `onnx9000-frontend/tensorflow/`.
-- [x] 096. Migrate `skl2onnx` (`ONNX12`) converter into `onnx9000-frontend/sklearn/`.
-- [x] 097. Migrate `onnxmltools` (`ONNX13`) (LightGBM, XGBoost, CatBoost, SparkML) into `onnx9000-frontend/mltools/`.
-- [x] 098. Migrate `paddle2onnx` (`ONNX11`) parser into `onnx9000-frontend/paddle/`.
-- [x] 099. Migrate `mmdnn` (`ONNX31`) parsers (Caffe, MXNet, Darknet, NCNN) into `onnx9000-frontend/mmdnn/`.
+
+- [x] 92. Create `packages/python/onnx9000-frontend/pyproject.toml`.
+- [x] 93. Add `onnx9000-core` as a local dependency.
+- [x] 94. Migrate PyTorch Dynamo/FX exporter (`ONNX05`) into `onnx9000-frontend/torch/`.
+- [x] 95. Migrate `tf2onnx` (`ONNX10`) zero-dependency parser into `onnx9000-frontend/tensorflow/`.
+- [x] 96. Migrate `skl2onnx` (`ONNX12`) converter into `onnx9000-frontend/sklearn/`.
+- [x] 97. Migrate `onnxmltools` (`ONNX13`) (LightGBM, XGBoost, CatBoost, SparkML) into `onnx9000-frontend/mltools/`.
+- [x] 98. Migrate `paddle2onnx` (`ONNX11`) parser into `onnx9000-frontend/paddle/`.
+- [x] 99. Migrate `mmdnn` (`ONNX31`) parsers (Caffe, MXNet, Darknet, NCNN) into `onnx9000-frontend/mmdnn/`.
 - [x] 100. Isolate PyTorch ATen mapping registries.
 - [x] 101. Isolate TensorFlow GraphDef parsing logic.
 - [x] 102. Isolate Scikit-Learn AST traversal logic.
@@ -122,6 +127,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 107. Build integration tests linking frontends directly to optimizers.
 
 ## Phase 6: Python Scripts, Training & Array API (`packages/python/onnx9000-toolkit`)
+
 - [x] 108. Create `packages/python/onnx9000-toolkit/pyproject.toml`.
 - [x] 109. Add `onnx9000-core`, `onnx9000-optimizer` as local dependencies.
 - [x] 110. Migrate `ONNXScript / Spox` (`ONNX08`) logic into `onnx9000-toolkit/script/`.
@@ -136,6 +142,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 119. Validate AOT backward pass generation produces compliant ONNX topologies.
 
 ## Phase 7: TypeScript Core IR Initialization (`packages/js/core`)
+
 - [x] 120. Create `packages/js/core/package.json`.
 - [x] 121. Configure `tsconfig.json` extending root base.
 - [x] 122. Implement `Graph` AST class in TypeScript.
@@ -154,6 +161,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 135. Export clean TS module interfaces (`index.ts`).
 
 ## Phase 8: TypeScript Web Backends (`packages/js/backend-web`)
+
 - [x] 136. Create `packages/js/backend-web/package.json`.
 - [x] 137. Add `@onnx9000/core` as workspace dependency.
 - [x] 138. Migrate `ONNX03` (ORT Web Parity) logic here.
@@ -174,6 +182,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 153. Expose Web Worker wrappers for off-main-thread execution naturally.
 
 ## Phase 9: TypeScript Transformers & Array API (`packages/js/transformers`)
+
 - [x] 154. Create `packages/js/transformers/package.json`.
 - [x] 155. Add `@onnx9000/core` and `@onnx9000/backend-web` as dependencies.
 - [x] 156. Migrate `Transformers.js` (`ONNX23`) parity logic into this package.
@@ -189,6 +198,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 166. Write integration tests executing full LLM generation loops in Headless Chrome.
 
 ## Phase 10: TypeScript Compilers (`packages/js/compiler`)
+
 - [x] 167. Create `packages/js/compiler/package.json`.
 - [x] 168. Add `@onnx9000/core` as dependency.
 - [x] 169. Migrate TVM/IREE AOT compiler (`ONNX20`, `ONNX26`) logic here.
@@ -203,6 +213,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 178. Build WVM interpreter module.
 
 ## Phase 11: Frontends & UI Apps (`apps/netron-ui` & `apps/optimum-ui`)
+
 - [x] 179. Create React or Vue application in `apps/netron-ui/`.
 - [x] 180. Configure Vite/Webpack for the UI application.
 - [x] 181. Add `@onnx9000/core`, `@onnx9000/backend-web`, and `@onnx9000/compiler` as local dependencies.
@@ -218,6 +229,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 191. Test UI with massive 10GB+ models via memory-mapped File API.
 
 ## Phase 12: The Unified CLI (`apps/cli`)
+
 - [x] 192. Create Python CLI application in `apps/cli/`.
 - [x] 193. Add all `packages/python/*` as local dependencies.
 - [x] 194. Setup `click`, `argparse`, or `typer` for command orchestration.
@@ -232,6 +244,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 203. Create exhaustive help documentation for every sub-command.
 
 ## Phase 13: Final Wiring & End-to-End Validation
+
 - [x] 204. Validate Python Core is completely independent of JS packages.
 - [x] 205. Validate TS Core is completely independent of Python packages.
 - [x] 206. Set up a sync mechanism (or verify manual parity) between TS AST and Python AST definitions.
@@ -241,6 +254,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 210. Clean up unused directories from the old `src/onnx9000/` monolith.
 
 ## Phase 14: Polishing Python Packages
+
 - [x] 211. Ensure `__init__.py` exposes correct public classes for `onnx9000-core`.
 - [x] 212. Verify Python 3.9 - 3.12 compatibility across all packages.
 - [x] 213. Strip any leftover `print()` statements and replace with logger instances.
@@ -253,6 +267,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 220. Document architecture specific exceptions in the `onnx9000-backend-native` README.
 
 ## Phase 15: Polishing TypeScript Packages
+
 - [x] 221. Verify `tsconfig.json` generates valid ESM and CommonJS formats.
 - [x] 222. Configure Rollup/Vite/Esbuild for bundling `packages/js/*`.
 - [x] 223. Ensure `d.ts` declaration files are correctly generated and exported.
@@ -265,6 +280,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 230. Review WebNN draft specification updates and align `@onnx9000/backend-web`.
 
 ## Phase 16: UI Refinement & Deployment
+
 - [x] 231. Test UI responsiveness when rendering graphs > 50,000 nodes.
 - [x] 232. Configure error boundaries in React/Vue to prevent white-screen-of-death on parser fail.
 - [x] 233. Verify Dark Mode / Light Mode toggling across the entire application.
@@ -277,6 +293,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 240. Add a "Copy to Clipboard" utility for generated code snippets.
 
 ## Phase 17: Ecosystem Harmonization
+
 - [x] 241. Ensure naming conventions (e.g. `InferenceSession`, `GraphBuilder`) are identical in Python and TS.
 - [x] 242. Ensure logging levels (DEBUG, INFO, WARN) correspond to the same verbosity in Python and TS.
 - [x] 243. Harmonize Exception names between Python and TS (e.g. `ShapeInferenceError`).
@@ -289,6 +306,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 250. Verify the Polyglot build times are acceptable for local development.
 
 ## Phase 18: Specific Refactor Fixes & Edge Cases
+
 - [x] 251. Fix circular dependencies that may emerge when extracting `onnx9000-core`.
 - [x] 252. Ensure Python `@register_op` correctly maps to the same domain strings as TS `@registerOp`.
 - [x] 253. Handle large binary initializers during TS to Python IPC if used in a mixed environment.
@@ -301,6 +319,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 260. Test the Olive quantization passes specifically on models with dynamic input axes.
 
 ## Phase 19: Documentation Generation
+
 - [x] 261. Auto-generate Python API docs using Sphinx or pdoc.
 - [x] 262. Auto-generate TS API docs using TypeDoc.
 - [x] 263. Create a master `README.md` in the root explaining the new monorepo layout.
@@ -313,6 +332,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 270. Create interactive Jupyter notebooks demonstrating Python usage.
 
 ## Phase 20: Performance & Stress Testing
+
 - [x] 271. Measure baseline Python import time (`import onnx9000`) before and after refactor.
 - [x] 272. Measure baseline JS import time/bundle size before and after refactor.
 - [x] 273. Execute a 10GB LLM load test on the Python Core IR.
@@ -325,6 +345,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 280. Validate exact FLOP count parity between the old monolithic `onnx-tool` and the new optimizer package.
 
 ## Phase 21: Security & Compliance
+
 - [x] 281. Run Python `bandit` or `safety` checks across the new packages.
 - [x] 282. Run `npm audit` across the new JS packages.
 - [x] 283. Verify no secrets or proprietary data were leaked during the file migration.
@@ -337,6 +358,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 290. Implement reproducible builds for the WASM binaries.
 
 ## Phase 22: Final Review & Merge
+
 - [x] 291. Do a dry-run publish of all Python packages to TestPyPI.
 - [x] 292. Do a dry-run publish of all JS packages to a local Verdaccio registry or npm dry-run.
 - [x] 293. Review the `apps/cli` to ensure all commands alias correctly to their underlying packages.

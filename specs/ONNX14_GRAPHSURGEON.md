@@ -1,13 +1,15 @@
 # ONNX GraphSurgeon Replication & Parity Tracker
 
 ## Description
+
 This document tracks the complete reimplementation of `ONNX GraphSurgeon` within the `onnx9000` ecosystem.
-Unlike the original project, our implementation is tightly integrated into a pure-Python, zero-dependency Intermediate Representation (IR). It avoids the massive C++ Protocol Buffers backend entirely. 
+Unlike the original project, our implementation is tightly integrated into a pure-Python, zero-dependency Intermediate Representation (IR). It avoids the massive C++ Protocol Buffers backend entirely.
 By operating purely on Python dictionaries, lists, and lightweight dataclasses, this GraphSurgeon can modify, prune, fold, and optimize 1GB+ graphs instantaneously within a browser (WASM/Pyodide) or a distributed serverless environment with zero installation overhead.
 
 ## Exhaustive Parity Checklist
 
 ### 1. Core IR Abstractions & Graph Topology (50+ items)
+
 - [x] Implement `Graph` core abstraction
 - [x] Implement `Node` core abstraction
 - [x] Implement `Tensor` base abstraction
@@ -55,6 +57,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Implement Graph `consumer_map` caching for fast traversal
 
 ### 2. Node & Graph Traversal Operations (30+ items)
+
 - [x] Implement Graph `toposort()` (Topological Sort)
 - [x] Implement Graph `cleanup()` (Dead Code Elimination)
 - [x] Implement Graph `fold_constants()` (Constant Folding)
@@ -87,6 +90,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Profiling: Estimate activation memory footprint
 
 ### 3. Surgical Modifications & Topology Editing (40+ items)
+
 - [x] `Graph.append_node()`: Add node to end of graph
 - [x] `Graph.insert_node()`: Insert node at specific topology index
 - [x] `Graph.remove_node()`: Delete node and sever tensor links
@@ -128,6 +132,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Inject custom CustomOp / Plugin nodes safely
 
 ### 4. Advanced Pattern Matching & Replacement (40+ items)
+
 - [x] Implement declarative subgraph pattern matcher
 - [x] Match node by `op` type
 - [x] Match node by attribute value / condition
@@ -151,6 +156,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Register custom matcher callbacks via Python functions
 
 ### 5. Standard Graph Optimizations (60+ items)
+
 - [x] Built-in pass: Constant Folding (Math ops)
 - [x] Built-in pass: Constant Folding (Shape/Slice ops)
 - [x] Built-in pass: Constant Folding (Reshape/Transpose)
@@ -194,6 +200,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Quantization pass: Weight-only INT4 packing
 
 ### 6. Zero-Dependency & Lightweight Runtime Integrations (30+ items)
+
 - [x] Parse `ModelProto` fully natively in Python (no `import onnx`)
 - [x] Parse `GraphProto` fully natively in Python
 - [x] Parse `NodeProto` fully natively in Python
@@ -215,6 +222,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Auto-chunking of large constant arrays for HTTP streaming
 
 ### 7. Explicit Opset & Validation Tools (30+ items)
+
 - [x] Implement Graph topological validation checker
 - [x] Validate no cyclical dependencies exist natively
 - [x] Validate all internal Tensors have producers
@@ -240,6 +248,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Import constants safely from external data chunks
 
 ### 8. TensorRT Pattern Injection & Surgery (30+ items)
+
 - [x] Inject `QuantizeLinear` dynamically based on heuristic thresholds
 - [x] Inject `DequantizeLinear` dynamically based on heuristic thresholds
 - [x] Fuse `QuantizeLinear` + `DequantizeLinear` into `FakeQuantize`
@@ -262,6 +271,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Support generating TRT-friendly separated convolutions
 
 ### 9. Detailed Tensor Manipulations & Mathematics (30+ items)
+
 - [x] Transpose constant tensors natively in-memory (Numpy/Pyodide)
 - [x] Reshape constant tensors natively in-memory
 - [x] Broadcast constant tensors natively in-memory
@@ -284,6 +294,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Support dense tensor to sparse tensor compression inside GraphSurgeon
 
 ### 10. Graph Debugging & Inspection Utilities (20+ items)
+
 - [x] Print Node input/output topology map logically
 - [x] Print all Graph Constants sorted by memory size (to find bloat)
 - [x] Print all Node Op types sorted by frequency (profiling)
@@ -301,6 +312,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Identify isolated nodes (dead code) interactively
 
 ### 11. Custom Node Injection & Callbacks (20+ items)
+
 - [x] Register new Custom Operator `schema` to the Graph
 - [x] Inject Custom Operator with arbitrarily named inputs
 - [x] Inject Custom Operator with arbitrarily named outputs
@@ -318,6 +330,7 @@ By operating purely on Python dictionaries, lists, and lightweight dataclasses, 
 - [x] Provide dynamic type inference for Custom Ops via Python lambdas
 
 ### 12. Surgical Testing & Quality Assurance (20+ items)
+
 - [x] Unit Test: Topologically sort a 10,000 node graph in < 50ms
 - [x] Unit Test: Deep copy a 1GB graph safely
 - [x] Unit Test: Extract a dense BERT subgraph based strictly on attention outputs
