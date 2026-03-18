@@ -1,6 +1,6 @@
-from onnx9000.core.ir import Graph, Node, Constant, Variable, ValueInfo
-from onnx9000.optimizer.simplifier.api import simplify
 import numpy as np
+from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
+from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_compare_mathematical_output_with_pytorch_mock():

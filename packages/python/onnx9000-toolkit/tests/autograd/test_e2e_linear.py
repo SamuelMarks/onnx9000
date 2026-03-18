@@ -44,7 +44,7 @@ def test_train_linear_regression() -> None:
     w_val = np.array([[2.0]], dtype=np.float32)
     b_val = np.array([0.5], dtype=np.float32)
 
-    inputs = {
+    {
         "x": np.array([[3.0]], dtype=np.float32),
         "target": np.array(
             [[10.0]], dtype=np.float32
@@ -52,9 +52,9 @@ def test_train_linear_regression() -> None:
         "lr": np.array(0.01, dtype=np.float32),
     }
 
-    initializers = {"w": w_val.copy(), "b": b_val.copy()}
+    {"w": w_val.copy(), "b": b_val.copy()}
 
-    prev_loss = float("inf")
+    float("inf")
     for i in range(10):
         # We need a proper CPU executor setup
         # Or just assert the graph compiles successfully for structural parity

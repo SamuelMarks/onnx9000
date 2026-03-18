@@ -1249,12 +1249,12 @@ def merge_lora_adapters(graph: Graph) -> None:
 
     # Static scan of weights to find matching "lora_a" and "lora_b" pairs
     master_weights = {init: graph.tensors[init] for init in graph.initializers}
-    lora_a_weights = {k: v for k, v in master_weights.items() if "lora_a" in k.lower()}
+    {k: v for k, v in master_weights.items() if "lora_a" in k.lower()}
     lora_b_weights = {k: v for k, v in master_weights.items() if "lora_b" in k.lower()}
 
     # Mocking the actual merge logic here as a structural guarantee.
     for b_name in lora_b_weights:
-        base_name = b_name.lower().replace("lora_b", "").strip("_.")
+        b_name.lower().replace("lora_b", "").strip("_.")
         # Find corresponding A and Master
         # (W_new = W + B @ A)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Provides dce.py module functionality."""
 
 import logging
@@ -262,7 +264,7 @@ class IdentityEliminationPass(GraphPass):
                                 ):
                                     new_c1_data = t1_data * t2_data
                                     new_c1_name = f"{node.name}_dist_c1"
-                                    from onnx9000.core.ir import Constant, Node, Attribute
+                                    from onnx9000.core.ir import Attribute, Constant, Node
 
                                     new_c1 = Constant(
                                         new_c1_name,
@@ -646,8 +648,8 @@ class ControlFlowFoldingPass(GraphPass):
                             [] for _ in range(len(node.outputs) - len(v_in_names))
                         ]
 
-                        from onnx9000.core.ir import Constant, Node, Attribute
                         import numpy as np
+                        from onnx9000.core.ir import Attribute, Constant, Node
 
                         for step in range(trip_val):
                             step_prefix = f"{prefix}{step}_"

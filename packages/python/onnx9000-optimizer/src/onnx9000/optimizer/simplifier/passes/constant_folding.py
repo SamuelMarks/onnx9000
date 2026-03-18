@@ -1,8 +1,9 @@
 """Provides constant_folding.py module functionality."""
 
 import logging
+
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 
 logger = logging.getLogger(__name__)
@@ -339,6 +340,13 @@ class ConstantFoldingPass(GraphPass):
             ):
                 try:
                     result = self._evaluate_node(node.op_type, input_vals, node.attributes, node)
+                    print(
+                        "EVALUATED:",
+                        node.op_type,
+                        result is not None,
+                        "size:",
+                        result.nbytes if hasattr(result, "nbytes") else None,
+                    )
                     print(
                         "EVALUATED:",
                         node.op_type,
@@ -936,7 +944,7 @@ class ConstantFoldingPass(GraphPass):
 
             num_batches = boxes.shape[0]
             num_classes = scores.shape[1]
-            num_boxes = boxes.shape[1]
+            boxes.shape[1]
 
             selected_indices = []
 

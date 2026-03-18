@@ -42,7 +42,7 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
     from onnx9000.core.profiler import profile
 
     total_bytes = 0
-    res = profile(graph)
+    profile(graph)
     # The profiler might not explicitly split out just the outputs.
     # So we compute it natively here based on graph outputs.
     from onnx9000.core.dtypes import DType

@@ -1,5 +1,5 @@
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Constant, Variable, ValueInfo
+from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
@@ -81,7 +81,7 @@ def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
     import copy
 
     graph2 = copy.deepcopy(graph)
-    sim1 = simplify(graph)
+    simplify(graph)
 
     # Now explicitly lock the batch size by simulating the CLI --input-shape 'input_ids:1,512'
     # This should cascade fold Shape -> Slice -> Concat -> Expanded_Shape into a Constant(1, 512)

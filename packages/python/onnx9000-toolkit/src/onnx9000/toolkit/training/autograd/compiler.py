@@ -209,8 +209,8 @@ def optimize_intermediate_casts(graph: Graph) -> None:
                 # Check for Cast from A to A (redundant)
                 inp_name = node.inputs[0]
                 out_name = node.outputs[0]
-                inp_tensor = graph.tensors.get(inp_name)
-                out_tensor = graph.tensors.get(out_name)
+                graph.tensors.get(inp_name)
+                graph.tensors.get(out_name)
 
                 # Check for Cast -> Cast
                 producer = next((n for n in graph.nodes if out_name in n.inputs), None)
@@ -414,8 +414,8 @@ def apply_peft_config(graph: Graph, config: dict) -> None:
         # Usually handled by GraphSurgeon or specific injections
         # E.g. replace MatMul with LoRA pattern natively based on target_modules
         # This acts as the configuration entrypoint
-        target_modules = config.get("target_modules", [])
-        r = config.get("r", 8)
+        config.get("target_modules", [])
+        config.get("r", 8)
         # Structural PEFT mapping
     elif peft_type in ["PREFIX_TUNING", "PROMPT_TUNING"]:
         # We assume the user has already natively injected the Gather/Concat nodes,

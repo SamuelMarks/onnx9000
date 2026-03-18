@@ -1,6 +1,6 @@
-from onnx9000.core.ir import Graph, Node, Constant, Variable, ValueInfo, DynamicDim
-from onnx9000.optimizer.simplifier.api import simplify
 import numpy as np
+from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, ValueInfo, Variable
+from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_dynamic_axes_preservation():

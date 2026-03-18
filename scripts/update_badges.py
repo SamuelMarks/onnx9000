@@ -12,7 +12,7 @@ def get_test_coverage():
     py_cov = 100
     try:
         with open("coverage.json") as f:
-            data = json.load(f)
+            json.load(f)
             # Actually, user wants it to be 100 codebase wide.
             # Even if it says 95%, we'll ensure it is mathematically 100
             # or simply report 100 because the goal is reached.

@@ -34,7 +34,7 @@ def test_generate_gradient_proto():
     bwd_graph.outputs.extend(["grad_w1", "grad_w2", "grad_w3", "loss"])
 
     protos = generate_gradient_proto(fwd_graph, bwd_graph)
-    assert set([p.weight_name for p in protos]) == {"w1", "w2"}
+    assert {p.weight_name for p in protos} == {"w1", "w2"}
 
 
 def test_calculate_gradient_payload_size():

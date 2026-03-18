@@ -12,9 +12,9 @@ def test_infinite_loop_break():
     g.add_node(Node("Identity", ["a"], ["b"], {}, "id1"))
     g.add_node(Node("Identity", ["b"], ["c"], {}, "id2"))
 
-    with patch(
-        "onnx9000.optimizer.simplifier.passes.constant_folding.ConstantFoldingPass.run"
-    ) as mock_cf:
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+
+    with patch.object(ConstantFoldingPass, "run") as mock_cf:
 
         def side_effect(graph):
             """Tests the side effect functionality."""

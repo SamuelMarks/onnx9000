@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Provides api.py module functionality."""
 
 import logging

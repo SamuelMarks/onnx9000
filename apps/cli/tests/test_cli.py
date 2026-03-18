@@ -54,7 +54,7 @@ def test_cli_commands(capsys) -> None:
 
     with (
         patch("onnx9000_cli.main.load_onnx") as mock_load,
-        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.save_onnx"),
         patch("onnx9000_cli.main.simplify") as mock_simplify,
     ):
         mock_load.return_value = "mock_graph"
