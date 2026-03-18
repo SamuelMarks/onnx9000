@@ -1,0 +1,250 @@
+/* docs/_static/demo.css */
+.demo-container {
+  margin-top: 2rem;
+  border: 1px solid var(--color-background-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-background-secondary);
+}
+
+.demo-tabs {
+  display: flex;
+  background: var(--color-background-primary);
+  border-bottom: 1px solid var(--color-background-border);
+}
+
+.demo-tab {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-foreground-muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.demo-tab:hover, .demo-tab:focus {
+  color: var(--color-foreground-primary);
+  background: var(--color-background-hover);
+  outline: none;
+}
+
+.demo-tab:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
+
+.demo-tab.active {
+  color: var(--color-brand-primary);
+  border-bottom-color: var(--color-brand-primary);
+}
+
+.demo-panel {
+  display: none;
+  padding: 1rem;
+}
+
+.demo-panel.active {
+  display: block;
+}
+
+.converter-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: var(--color-background-primary);
+  border-radius: 6px;
+  border: 1px solid var(--color-background-border);
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--color-foreground-primary);
+}
+
+.toolbar-group select {
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-background-border);
+  background: var(--color-background-secondary);
+  color: var(--color-foreground-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.toolbar-group select:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+
+.toolbar-group select option[disabled] {
+  color: var(--color-foreground-muted);
+  font-style: italic;
+}
+
+.action-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--color-brand-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+.action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.converter-editor {
+  display: flex;
+  gap: 1rem;
+  height: 400px;
+}
+
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-background-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-background-primary);
+}
+
+/* Explicit fallback before Furo theme var is loaded */
+body[data-theme="dark"] .editor-pane { background: #1e1e1e; }
+body[data-theme="light"] .editor-pane { background: #fffffe; }
+
+.pane-header {
+  padding: 0.5rem 1rem;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-background-border);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--color-foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.monaco-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Bottom Pane */
+.bottom-pane-container {
+  margin-top: 1rem;
+  border: 1px solid var(--color-background-border);
+  border-radius: 6px;
+  background: var(--color-background-primary);
+  overflow: hidden;
+}
+
+.bottom-tabs {
+  display: flex;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-background-border);
+}
+
+.bottom-tab {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  color: var(--color-foreground-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.bottom-tab:hover, .bottom-tab:focus {
+  color: var(--color-foreground-primary);
+  background: var(--color-background-hover);
+  outline: none;
+}
+
+.bottom-tab:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
+
+.bottom-tab.active {
+  color: var(--color-brand-primary);
+  border-bottom-color: var(--color-brand-primary);
+}
+
+.bottom-panel {
+  display: none;
+  height: 200px;
+  padding: 1rem;
+}
+
+.bottom-panel.active {
+  display: block;
+}
+
+.log-output {
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: var(--font-stack--monospace);
+  font-size: 0.85rem;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+body[data-theme="light"] .log-output {
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Canvas Mocks */
+.placeholder-box {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-foreground-primary);
+}
+
+.canvas-mock {
+  margin-top: 1rem;
+  height: 300px;
+  border: 2px dashed var(--color-background-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-foreground-muted);
+  font-family: var(--font-stack--monospace);
+  font-size: 1.2rem;
+}
+
+.small-mock {
+  height: 100%;
+  margin-top: 0;
+}

@@ -7,19 +7,19 @@ This guide covers installation, Python APIs, TypeScript Web APIs, Edge Serving, 
 ## Table of Contents
 
 1. [Installation](#installation)
-2. [🐍 Python Ecosystem](#-python-ecosystem)
-   - [Zero-Dependency Parsers & Inspection](#zero-dependency-parsers--inspection)
+2. [🐍 Python Ecosystem](#python-ecosystem)
+   - [Zero-Dependency Parsers & Inspection](#zero-dependency-parsers-inspection)
    - [Hardware-Native Execution](#hardware-native-execution)
-   - [Model Optimization & Quantization](#model-optimization--quantization)
-   - [Autograd & On-Device Training](#autograd--on-device-training)
+   - [Model Optimization & Quantization](#model-optimization-quantization)
+   - [Autograd & On-Device Training](#autograd-on-device-training)
    - [Framework Converters](#framework-converters)
-3. [🌐 TypeScript & Web Ecosystem](#-typescript--web-ecosystem)
-   - [WebGPU & WebNN Inference](#webgpu--webnn-inference)
-   - [TensorFlow.js Drop-in Shim](#tensorflowjs-drop-in-shim)
+3. [🌐 TypeScript & Web Ecosystem](#typescript-web-ecosystem)
+   - [WebGPU & WebNN Inference](#webgpu-webnn-inference)
+   - [TensorFlow.js Drop-in Shim](#tensorflow-js-drop-in-shim)
    - [Serverless Edge Serving (Cloudflare/Bun)](#serverless-edge-serving)
-   - [AOT Compilation to WASM/C++](#aot-compilation-to-wasm--c)
-   - [Generative AI & Diffusers](#generative-ai--diffusers)
-4. [💻 Unified CLI (`onnx9000`)](#-unified-cli)
+   - [AOT Compilation to WASM/C++](#aot-compilation-to-wasm-c)
+   - [Generative AI & Diffusers](#generative-ai-diffusers)
+4. [💻 Unified CLI (`onnx9000`)](#unified-cli-onnx9000)
 
 ---
 
@@ -57,7 +57,11 @@ pnpm add @onnx9000/transformers @onnx9000/diffusers
 
 ---
 
+(python-ecosystem)=
+
 ## 🐍 Python Ecosystem
+
+(zero-dependency-parsers-inspection)=
 
 ### Zero-Dependency Parsers & Inspection
 
@@ -81,6 +85,8 @@ infer_shapes_and_types(graph)
 from onnx9000.core.graph_surgeon import extract_subgraph
 sub_graph = extract_subgraph(graph, input_names=["conv1_out"], output_names=["layer3_out"])
 ```
+
+(hardware-native-execution)=
 
 ### Hardware-Native Execution
 
@@ -119,6 +125,8 @@ outputs = session.run(output_names=["output_1"], input_feed={"input_1": input_te
 print("Result shape:", outputs["output_1"].shape)
 ```
 
+(model-optimization-quantization)=
+
 ### Model Optimization & Quantization
 
 The `onnx9000-optimizer` module offers state-of-the-art algebraic simplification (constant folding, fusion) and advanced INT4/INT8 quantization, fully replacing `onnx-simplifier` and `optimum`.
@@ -139,6 +147,8 @@ q_config = QuantizationConfig(
 quantized_graph = quantize(optimized_graph, q_config)
 ```
 
+(autograd-on-device-training)=
+
 ### Autograd & On-Device Training
 
 `onnx9000-toolkit` handles Ahead-of-Time (AOT) symbolic autograd. It takes a forward-pass ONNX graph and compiles the backward pass (VJPs) directly into the graph.
@@ -152,6 +162,8 @@ training_graph = add_backward_pass(graph, loss_node="cross_entropy_loss")
 # The resulting graph now accepts gradients and computes weight updates
 print("Trainable parameters:", training_graph.get_trainable_initializers())
 ```
+
+(framework-converters)=
 
 ### Framework Converters
 
@@ -172,7 +184,11 @@ with open("model.gguf", "wb") as f:
 
 ---
 
+(typescript-web-ecosystem)=
+
 ## 🌐 TypeScript & Web Ecosystem
+
+(webgpu-webnn-inference)=
 
 ### WebGPU & WebNN Inference
 
@@ -203,6 +219,8 @@ async function runVisionModel(modelUrl: string) {
 }
 ```
 
+(tensorflow-js-drop-in-shim)=
+
 ### TensorFlow.js Drop-in Shim
 
 Migrate old `@tensorflow/tfjs` projects to `onnx9000` with zero code changes using our shim.
@@ -217,6 +235,8 @@ const tensor = tf.tensor([1, 2, 3, 4], [2, 2]);
 const output = model.predict(tensor);
 output.print();
 ```
+
+(serverless-edge-serving)=
 
 ### Serverless Edge Serving
 
@@ -236,6 +256,8 @@ const app = serve({
 export default app;
 ```
 
+(aot-compilation-to-wasm-c)=
+
 ### AOT Compilation to WASM / C++
 
 Compile an ONNX model strictly to a standalone executable or WebAssembly module. This entirely skips the "interpreter" overhead at runtime.
@@ -249,6 +271,8 @@ const cppCode = await compile(graph, { target: 'cpp23', staticMemory: true });
 // Compiles the graph into a raw WebAssembly bytecode array
 const wasmModule = await compile(graph, { target: 'wasm', useSIMD: true });
 ```
+
+(generative-ai-diffusers)=
 
 ### Generative AI & Diffusers
 
@@ -268,6 +292,8 @@ console.log(response);
 ```
 
 ---
+
+(unified-cli-onnx9000)=
 
 ## 💻 Unified CLI (`onnx9000`)
 

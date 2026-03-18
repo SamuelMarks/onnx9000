@@ -100,9 +100,8 @@ def test_main_empty(capsys) -> None:
 
 def test_main_execution() -> None:
     """Tests the main execution functionality."""
-    import subprocess
-
     import os
+    import subprocess
 
     main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
     result = subprocess.run(
@@ -116,9 +115,8 @@ def test_main_execution() -> None:
 
 def test_main_execution_runpy(monkeypatch) -> None:
     """Tests the main execution runpy functionality."""
-    import runpy
-
     import os
+    import runpy
 
     main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
@@ -141,7 +139,12 @@ def test_module_main_exec(monkeypatch) -> None:
 def test_run_module(monkeypatch) -> None:
     """Tests the run module functionality."""
     import runpy
+    import warnings
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
     with pytest.raises(SystemExit):
-        runpy.run_module("onnx9000_cli.main", run_name="__main__")
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category=RuntimeWarning, message=".*found in sys.modules.*"
+            )
+            runpy.run_module("onnx9000_cli.main", run_name="__main__")

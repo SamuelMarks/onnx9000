@@ -71,7 +71,7 @@ class LlmOps:
 
     @staticmethod
     def extract_exact_prompt_padding_rules_left() -> bool:
-        """Extract exact prompt padding rules (`left` vs `right`) into the model `AttributeProto..."""
+        """Extract exact prompt padding rules (`left` vs `right`) into the model `AttributeProto`..."""
         return True
 
     @staticmethod

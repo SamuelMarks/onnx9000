@@ -219,8 +219,8 @@ class IdentityEliminationPass(GraphPass):
                             if c2_name and inner_x:
                                 import numpy as np
 
-                                t1_data = graph.tensors[c1_name].data
-                                t2_data = graph.tensors[c2_name].data
+                                t2_data = graph.tensors[c1_name].data
+                                t1_data = graph.tensors[c2_name].data
                                 if isinstance(t1_data, np.ndarray) and isinstance(
                                     t2_data, np.ndarray
                                 ):
@@ -234,7 +234,7 @@ class IdentityEliminationPass(GraphPass):
 
                                     new_c = Constant(
                                         new_c_name,
-                                        data=new_data,
+                                        values=new_data,
                                         shape=new_data.shape,
                                         dtype=graph.tensors[c1_name].dtype,
                                     )
@@ -245,20 +245,20 @@ class IdentityEliminationPass(GraphPass):
                                     changed = True
                                     logger.info(f"Folded sequential {node.op_type} at {node.name}")
                         elif producer and producer.op_type == "Add" and node.op_type == "Mul":
-                            # Mul(Add(X, C1), C2) -> Add(Mul(X, C2), C1*C2)
-                            c1_name = None
+                            # Mul(Add(X, C1_inner), C1_outer) -> Add(Mul(X, C1_outer), C1_inner*C1_outer)
+                            c1_name_inner = None
                             inner_x = None
                             for i in range(2):
                                 t1_cand = graph.tensors.get(producer.inputs[i])
                                 if t1_cand and getattr(t1_cand, "is_initializer", False):
-                                    c1_name = producer.inputs[i]
+                                    c1_name_inner = producer.inputs[i]
                                     inner_x = producer.inputs[1 - i]
                                     break
-                            if c1_name and inner_x:
+                            if c1_name_inner and inner_x:
                                 import numpy as np
 
-                                t1_data = graph.tensors[c1_name].data
-                                t2_data = graph.tensors[c2_name].data
+                                t2_data = graph.tensors[c1_name].data
+                                t1_data = graph.tensors[c1_name_inner].data
                                 if isinstance(t1_data, np.ndarray) and isinstance(
                                     t2_data, np.ndarray
                                 ):
@@ -268,7 +268,7 @@ class IdentityEliminationPass(GraphPass):
 
                                     new_c1 = Constant(
                                         new_c1_name,
-                                        data=new_c1_data,
+                                        values=new_c1_data,
                                         shape=new_c1_data.shape,
                                         dtype=graph.tensors[c1_name].dtype,
                                     )
@@ -278,7 +278,7 @@ class IdentityEliminationPass(GraphPass):
                                     mul_out_name = f"{node.name}_dist_mul_out"
                                     new_mul = Node(
                                         op_type="Mul",
-                                        inputs=[inner_x, c2_name],
+                                        inputs=[inner_x, c1_name],
                                         outputs=[mul_out_name],
                                         name=f"{node.name}_dist_mul",
                                     )
@@ -406,7 +406,7 @@ class IdentityEliminationPass(GraphPass):
                                     if not np.all(steps_tensor.data == 1):
                                         steps_ok = False
                                 else:
-                                    if steps_tensor is None and node.inputs[4] != "":
+                                    if node.inputs[4] != "":
                                         steps_ok = False  # Dynamic steps, can't eliminate
                             if steps_ok:
                                 self._rewire(graph, node.outputs[0], node.inputs[0])
@@ -580,7 +580,7 @@ class ControlFlowFoldingPass(GraphPass):
 
                     # Rewire If node outputs to the subgraph outputs
                     for i, out_name in enumerate(node.outputs):
-                        sub_out_name = subgraph.outputs[i].name
+                        sub_out_name = getattr(subgraph.outputs[i], "name", subgraph.outputs[i])
                         mapped_sub_out = tensor_map.get(sub_out_name, sub_out_name)
                         self._rewire(graph, out_name, mapped_sub_out)
 
@@ -589,218 +589,90 @@ class ControlFlowFoldingPass(GraphPass):
                     logger.info(f"Folded If node {node.name} (Condition: {cond_bool})")
             elif node.op_type == "Loop":
                 max_trip_count_name = node.inputs[0]
-                if not max_trip_count_name:
-                    continue
-                trip_tensor = graph.tensors.get(max_trip_count_name)
-                if trip_tensor and trip_tensor.is_initializer:
-                    import numpy as np
+                cond_name = node.inputs[1] if len(node.inputs) > 1 else None
 
-                    trip_val = trip_tensor.data
-                    if isinstance(trip_val, np.ndarray):
-                        trip_val = int(trip_val.item() if trip_val.size == 1 else trip_val[0])
-                    else:
-                        trip_val = int(trip_val)
-
-                    if trip_val == 0:
-                        # route initial states to outputs
-                        v_initials = node.inputs[2:]
-                        v_finals = node.outputs[: len(v_initials)]
-                        for i, v_init in enumerate(v_initials):
-                            self._rewire(graph, v_finals[i], v_init)
-
-                        # create SequenceEmpty for scan_outputs
-                        from onnx9000.core.ir import Node
-
-                        scan_outputs = node.outputs[len(v_initials) :]
-                        for i, scan_out in enumerate(scan_outputs):
-                            seq_node = Node(
-                                op_type="SequenceEmpty",
-                                inputs=[],
-                                outputs=[scan_out],
-                                name=f"{node.name}_seq_{i}",
-                            )
-                            graph.add_node(seq_node)
-
-                        nodes_to_remove.add(node)
-                        changed = True
-                        logger.info(f"Folded Loop node {node.name} (max_trip_count=0)")
-                    elif (
-                        trip_val < 10 and len(node.attributes["body"].value.nodes) * trip_val < 1000
-                    ):
-                        # Unroll loop natively
-                        subgraph = node.attributes["body"].value
-                        prefix = f"{node.name}_unroll_"
-
-                        body_inputs = [inp.name for inp in subgraph.inputs]
-                        body_outputs = [out.name for out in subgraph.outputs]
-
-                        iter_num_name = body_inputs[0]
-                        cond_in_name = body_inputs[1]
-                        v_in_names = body_inputs[2:]
-
-                        # Initialize states
-                        current_v = list(node.inputs[2:])
-                        current_cond = (
-                            node.inputs[1] if len(node.inputs) > 1 and node.inputs[1] else ""
-                        )
-
-                        scan_outputs_accum = [
-                            [] for _ in range(len(node.outputs) - len(v_in_names))
-                        ]
-
+                trip_val = None
+                if max_trip_count_name:
+                    trip_tensor = graph.tensors.get(max_trip_count_name)
+                    if trip_tensor and trip_tensor.is_initializer:
                         import numpy as np
-                        from onnx9000.core.ir import Attribute, Constant, Node
 
-                        for step in range(trip_val):
-                            step_prefix = f"{prefix}{step}_"
-                            tensor_map = {}
+                        trip_val = trip_tensor.data
+                        if isinstance(trip_val, np.ndarray):
+                            trip_val = int(trip_val.item() if trip_val.size == 1 else trip_val[0])
+                        else:
+                            trip_val = int(trip_val)
 
-                            iter_tensor_name = f"{step_prefix}iter_num"
-                            iter_tensor = Constant(
-                                iter_tensor_name,
-                                data=np.array([step], dtype=np.int64),
-                                shape=(1,),
-                                dtype="int64",
+                cond_val = None
+                if cond_name:
+                    cond_tensor = graph.tensors.get(cond_name)
+                    if cond_tensor and cond_tensor.is_initializer:
+                        import numpy as np
+
+                        cond_data = cond_tensor.data
+                        if isinstance(cond_data, np.ndarray):
+                            cond_val = bool(
+                                cond_data.item() if cond_data.size == 1 else cond_data[0]
                             )
-                            graph.add_tensor(iter_tensor)
-                            graph.initializers.append(iter_tensor_name)
-                            tensor_map[iter_num_name] = iter_tensor_name
+                        else:
+                            cond_val = bool(cond_data)
 
-                            if current_cond:
-                                tensor_map[cond_in_name] = current_cond
+                if trip_val == 0 or cond_val is False:
+                    # route initial states to outputs
+                    v_initials = node.inputs[2:]
+                    v_finals = node.outputs[: len(v_initials)]
+                    for i, v_init in enumerate(v_initials):
+                        self._rewire(graph, v_finals[i], v_init)
 
-                            for i, v_in in enumerate(v_in_names):
-                                tensor_map[v_in] = current_v[i]
+                    # create SequenceEmpty for scan_outputs
+                    from onnx9000.core.ir import Node
 
-                            local_tensors = set(subgraph.initializers)
-                            for sub_node in subgraph.nodes:
-                                for out in sub_node.outputs:
-                                    local_tensors.add(out)
-
-                            for name in local_tensors:
-                                tensor_map[name] = f"{step_prefix}{name}"
-
-                            for init_name in subgraph.initializers:
-                                new_name = tensor_map[init_name]
-                                t = subgraph.tensors[init_name].copy()
-                                t.name = new_name
-                                graph.add_tensor(t)
-                                graph.initializers.append(new_name)
-
-                            for sub_node in subgraph.nodes:
-                                new_inputs = [tensor_map.get(inp, inp) for inp in sub_node.inputs]
-                                new_outputs = [tensor_map.get(out, out) for out in sub_node.outputs]
-                                new_attrs = {
-                                    k: Attribute(v.name, v.attr_type, v.value)
-                                    for k, v in sub_node.attributes.items()
-                                }
-                                new_node = Node(
-                                    op_type=sub_node.op_type,
-                                    inputs=new_inputs,
-                                    outputs=new_outputs,
-                                    attributes=new_attrs,
-                                    name=f"{step_prefix}{sub_node.name}",
-                                    domain=sub_node.domain,
-                                )
-                                graph.add_node(new_node)
-
-                            body_v_outs = body_outputs[1 : 1 + len(v_in_names)]
-                            body_scan_outs = body_outputs[1 + len(v_in_names) :]
-
-                            # Next iteration inputs
-                            current_v = [tensor_map.get(o, o) for o in body_v_outs]
-                            current_cond = tensor_map.get(body_outputs[0], body_outputs[0])
-
-                            # Accumulate scan outputs
-                            for i, scan_out in enumerate(body_scan_outs):
-                                scan_outputs_accum[i].append(tensor_map.get(scan_out, scan_out))
-
-                        # Final assignments
-                        for i, v_final in enumerate(node.outputs[: len(v_in_names)]):
-                            self._rewire(graph, v_final, current_v[i])
-
-                        # Reconstruct sequences using SequenceConstruct or Concat if we unrolled completely
-                        # Actually for ONNX loop, scan outputs are tensors with an extra dimension
-                        for i, scan_final in enumerate(node.outputs[len(v_in_names) :]):
-                            if len(scan_outputs_accum[i]) == 1:
-                                # Just an unsqueeze
-                                from onnx9000.core.ir import Node
-
-                                axes_name = f"{prefix}axes_{i}"
-                                axes_tensor = Constant(
-                                    axes_name,
-                                    data=np.array([0], dtype=np.int64),
-                                    shape=(1,),
-                                    dtype="int64",
-                                )
-                                graph.add_tensor(axes_tensor)
-                                graph.initializers.append(axes_name)
-
-                                unsqueeze_node = Node(
-                                    op_type="Unsqueeze",
-                                    inputs=[scan_outputs_accum[i][0], axes_name],
-                                    outputs=[scan_final],
-                                    name=f"{prefix}unsqueeze_{i}",
-                                )
-                                graph.add_node(unsqueeze_node)
-                            elif len(scan_outputs_accum[i]) > 1:
-                                # First we sequence construct then concat or sequence insert?
-                                # Easiest: Unsqueeze each, then Concat
-                                concat_inputs = []
-                                for step, item in enumerate(scan_outputs_accum[i]):
-                                    axes_name = f"{prefix}axes_{i}_{step}"
-                                    axes_tensor = Constant(
-                                        axes_name,
-                                        data=np.array([0], dtype=np.int64),
-                                        shape=(1,),
-                                        dtype="int64",
-                                    )
-                                    graph.add_tensor(axes_tensor)
-                                    graph.initializers.append(axes_name)
-
-                                    unsq_out = f"{prefix}unsq_out_{i}_{step}"
-                                    unsqueeze_node = Node(
-                                        op_type="Unsqueeze",
-                                        inputs=[item, axes_name],
-                                        outputs=[unsq_out],
-                                        name=f"{prefix}unsqueeze_{i}_{step}",
-                                    )
-                                    graph.add_node(unsqueeze_node)
-                                    concat_inputs.append(unsq_out)
-
-                                concat_node = Node(
-                                    op_type="Concat",
-                                    inputs=concat_inputs,
-                                    outputs=[scan_final],
-                                    attributes={"axis": Attribute("axis", "INT", 0)},
-                                    name=f"{prefix}concat_{i}",
-                                )
-                                graph.add_node(concat_node)
-
-                        nodes_to_remove.add(node)
-                        changed = True
-                        logger.info(
-                            f"Unrolled Loop node {node.name} natively (max_trip_count={trip_val})"
+                    scan_outputs = node.outputs[len(v_initials) :]
+                    for i, scan_out in enumerate(scan_outputs):
+                        seq_node = Node(
+                            op_type="SequenceEmpty",
+                            inputs=[],
+                            outputs=[scan_out],
+                            name=f"{node.name}_seq_{i}",
                         )
-                        # inject loop body directly into parent graph
-                        subgraph = node.attributes["body"].value
-                        prefix = f"{node.name}_fold_loop_"
+                        graph.add_node(seq_node)
 
-                        body_inputs = [inp.name for inp in subgraph.inputs]
-                        body_outputs = [out.name for out in subgraph.outputs]
+                    nodes_to_remove.add(node)
+                    changed = True
+                    logger.info(f"Folded Loop node {node.name} (max_trip_count=0)")
+                elif (
+                    trip_val is not None
+                    and trip_val < 10
+                    and len(node.attributes["body"].value.nodes) * trip_val < 1000
+                ):
+                    # Unroll loop natively
+                    subgraph = node.attributes["body"].value
+                    prefix = f"{node.name}_unroll_"
 
-                        iter_num_name = body_inputs[0]
-                        cond_in_name = body_inputs[1]
-                        v_in_names = body_inputs[2:]
+                    body_inputs = [getattr(inp, "name", inp) for inp in subgraph.inputs]
+                    body_outputs = [getattr(out, "name", out) for out in subgraph.outputs]
 
+                    iter_num_name = body_inputs[0]
+                    cond_in_name = body_inputs[1]
+                    v_in_names = body_inputs[2:]
+
+                    # Initialize states
+                    current_v = list(node.inputs[2:])
+                    current_cond = node.inputs[1] if len(node.inputs) > 1 and node.inputs[1] else ""
+
+                    scan_outputs_accum = [[] for _ in range(len(node.outputs) - len(v_in_names))]
+
+                    import numpy as np
+                    from onnx9000.core.ir import Attribute, Constant, Node
+
+                    for step in range(trip_val):
+                        step_prefix = f"{prefix}{step}_"
                         tensor_map = {}
 
-                        from onnx9000.core.ir import Attribute, Constant, Node
-
-                        iter_tensor_name = f"{prefix}iter_num"
+                        iter_tensor_name = f"{step_prefix}iter_num"
                         iter_tensor = Constant(
                             iter_tensor_name,
-                            data=np.array([0], dtype=np.int64),
+                            values=np.array([step], dtype=np.int64),
                             shape=(1,),
                             dtype="int64",
                         )
@@ -808,9 +680,11 @@ class ControlFlowFoldingPass(GraphPass):
                         graph.initializers.append(iter_tensor_name)
                         tensor_map[iter_num_name] = iter_tensor_name
 
-                        tensor_map[cond_in_name] = node.inputs[1] if node.inputs[1] else ""
+                        if current_cond:
+                            tensor_map[cond_in_name] = current_cond
+
                         for i, v_in in enumerate(v_in_names):
-                            tensor_map[v_in] = node.inputs[i + 2]
+                            tensor_map[v_in] = current_v[i]
 
                         local_tensors = set(subgraph.initializers)
                         for sub_node in subgraph.nodes:
@@ -818,9 +692,8 @@ class ControlFlowFoldingPass(GraphPass):
                                 local_tensors.add(out)
 
                         for name in local_tensors:
-                            tensor_map[name] = f"{prefix}{name}"
+                            tensor_map[name] = f"{step_prefix}{name}"
 
-                        # Add sub-graph initializers
                         for init_name in subgraph.initializers:
                             new_name = tensor_map[init_name]
                             t = subgraph.tensors[init_name].copy()
@@ -828,7 +701,6 @@ class ControlFlowFoldingPass(GraphPass):
                             graph.add_tensor(t)
                             graph.initializers.append(new_name)
 
-                        # Add nodes
                         for sub_node in subgraph.nodes:
                             new_inputs = [tensor_map.get(inp, inp) for inp in sub_node.inputs]
                             new_outputs = [tensor_map.get(out, out) for out in sub_node.outputs]
@@ -841,7 +713,7 @@ class ControlFlowFoldingPass(GraphPass):
                                 inputs=new_inputs,
                                 outputs=new_outputs,
                                 attributes=new_attrs,
-                                name=f"{prefix}{sub_node.name}",
+                                name=f"{step_prefix}{sub_node.name}",
                                 domain=sub_node.domain,
                             )
                             graph.add_node(new_node)
@@ -849,24 +721,166 @@ class ControlFlowFoldingPass(GraphPass):
                         body_v_outs = body_outputs[1 : 1 + len(v_in_names)]
                         body_scan_outs = body_outputs[1 + len(v_in_names) :]
 
-                        for i, v_final in enumerate(node.outputs[: len(body_v_outs)]):
-                            sub_out_name = body_v_outs[i]
-                            self._rewire(graph, v_final, tensor_map.get(sub_out_name, sub_out_name))
+                        # Next iteration inputs
+                        current_v = [tensor_map.get(o, o) for o in body_v_outs]
+                        current_cond = tensor_map.get(body_outputs[0], body_outputs[0])
 
-                        for i, scan_final in enumerate(node.outputs[len(body_v_outs) :]):
-                            sub_scan_name = body_scan_outs[i]
-                            mapped_sub_scan = tensor_map.get(sub_scan_name, sub_scan_name)
-                            seq_node = Node(
-                                op_type="SequenceConstruct",
-                                inputs=[mapped_sub_scan],
-                                outputs=[scan_final],
-                                name=f"{node.name}_seq_{i}",
+                        # Accumulate scan outputs
+                        for i, scan_out in enumerate(body_scan_outs):
+                            scan_outputs_accum[i].append(tensor_map.get(scan_out, scan_out))
+
+                    # Final assignments
+                    for i, v_final in enumerate(node.outputs[: len(v_in_names)]):
+                        self._rewire(graph, v_final, current_v[i])
+
+                    # Reconstruct sequences using SequenceConstruct or Concat if we unrolled completely
+                    # Actually for ONNX loop, scan outputs are tensors with an extra dimension
+                    for i, scan_final in enumerate(node.outputs[len(v_in_names) :]):
+                        if len(scan_outputs_accum[i]) == 1:
+                            # Just an unsqueeze
+                            from onnx9000.core.ir import Node
+
+                            axes_name = f"{prefix}axes_{i}"
+                            axes_tensor = Constant(
+                                axes_name,
+                                values=np.array([0], dtype=np.int64),
+                                shape=(1,),
+                                dtype="int64",
                             )
-                            graph.add_node(seq_node)
+                            graph.add_tensor(axes_tensor)
+                            graph.initializers.append(axes_name)
 
-                        nodes_to_remove.add(node)
-                        changed = True
-                        logger.info(f"Folded Loop node {node.name} (max_trip_count=1)")
+                            unsqueeze_node = Node(
+                                op_type="Unsqueeze",
+                                inputs=[scan_outputs_accum[i][0], axes_name],
+                                outputs=[scan_final],
+                                name=f"{prefix}unsqueeze_{i}",
+                            )
+                            graph.add_node(unsqueeze_node)
+                        elif len(scan_outputs_accum[i]) > 1:
+                            # First we sequence construct then concat or sequence insert?
+                            # Easiest: Unsqueeze each, then Concat
+                            concat_inputs = []
+                            for step, item in enumerate(scan_outputs_accum[i]):
+                                axes_name = f"{prefix}axes_{i}_{step}"
+                                axes_tensor = Constant(
+                                    axes_name,
+                                    values=np.array([0], dtype=np.int64),
+                                    shape=(1,),
+                                    dtype="int64",
+                                )
+                                graph.add_tensor(axes_tensor)
+                                graph.initializers.append(axes_name)
+
+                                unsq_out = f"{prefix}unsq_out_{i}_{step}"
+                                unsqueeze_node = Node(
+                                    op_type="Unsqueeze",
+                                    inputs=[item, axes_name],
+                                    outputs=[unsq_out],
+                                    name=f"{prefix}unsqueeze_{i}_{step}",
+                                )
+                                graph.add_node(unsqueeze_node)
+                                concat_inputs.append(unsq_out)
+
+                            concat_node = Node(
+                                op_type="Concat",
+                                inputs=concat_inputs,
+                                outputs=[scan_final],
+                                attributes={"axis": Attribute("axis", "INT", 0)},
+                                name=f"{prefix}concat_{i}",
+                            )
+                            graph.add_node(concat_node)
+
+                    nodes_to_remove.add(node)
+                    changed = True
+                    logger.info(
+                        f"Unrolled Loop node {node.name} natively (max_trip_count={trip_val})"
+                    )
+                    # inject loop body directly into parent graph
+                    subgraph = node.attributes["body"].value
+                    prefix = f"{node.name}_fold_loop_"
+
+                    body_inputs = [getattr(inp, "name", inp) for inp in subgraph.inputs]
+                    body_outputs = [getattr(out, "name", out) for out in subgraph.outputs]
+
+                    iter_num_name = body_inputs[0]
+                    cond_in_name = body_inputs[1]
+                    v_in_names = body_inputs[2:]
+
+                    tensor_map = {}
+
+                    from onnx9000.core.ir import Attribute, Constant, Node
+
+                    iter_tensor_name = f"{prefix}iter_num"
+                    iter_tensor = Constant(
+                        iter_tensor_name,
+                        values=np.array([0], dtype=np.int64),
+                        shape=(1,),
+                        dtype="int64",
+                    )
+                    graph.add_tensor(iter_tensor)
+                    graph.initializers.append(iter_tensor_name)
+                    tensor_map[iter_num_name] = iter_tensor_name
+
+                    tensor_map[cond_in_name] = node.inputs[1] if node.inputs[1] else ""
+                    for i, v_in in enumerate(v_in_names):
+                        tensor_map[v_in] = node.inputs[i + 2]
+
+                    local_tensors = set(subgraph.initializers)
+                    for sub_node in subgraph.nodes:
+                        for out in sub_node.outputs:
+                            local_tensors.add(out)
+
+                    for name in local_tensors:
+                        tensor_map[name] = f"{prefix}{name}"
+
+                    # Add sub-graph initializers
+                    for init_name in subgraph.initializers:
+                        new_name = tensor_map[init_name]
+                        t = subgraph.tensors[init_name].copy()
+                        t.name = new_name
+                        graph.add_tensor(t)
+                        graph.initializers.append(new_name)
+
+                    # Add nodes
+                    for sub_node in subgraph.nodes:
+                        new_inputs = [tensor_map.get(inp, inp) for inp in sub_node.inputs]
+                        new_outputs = [tensor_map.get(out, out) for out in sub_node.outputs]
+                        new_attrs = {
+                            k: Attribute(v.name, v.attr_type, v.value)
+                            for k, v in sub_node.attributes.items()
+                        }
+                        new_node = Node(
+                            op_type=sub_node.op_type,
+                            inputs=new_inputs,
+                            outputs=new_outputs,
+                            attributes=new_attrs,
+                            name=f"{prefix}{sub_node.name}",
+                            domain=sub_node.domain,
+                        )
+                        graph.add_node(new_node)
+
+                    body_v_outs = body_outputs[1 : 1 + len(v_in_names)]
+                    body_scan_outs = body_outputs[1 + len(v_in_names) :]
+
+                    for i, v_final in enumerate(node.outputs[: len(body_v_outs)]):
+                        sub_out_name = body_v_outs[i]
+                        self._rewire(graph, v_final, tensor_map.get(sub_out_name, sub_out_name))
+
+                    for i, scan_final in enumerate(node.outputs[len(body_v_outs) :]):
+                        sub_scan_name = body_scan_outs[i]
+                        mapped_sub_scan = tensor_map.get(sub_scan_name, sub_scan_name)
+                        seq_node = Node(
+                            op_type="SequenceConstruct",
+                            inputs=[mapped_sub_scan],
+                            outputs=[scan_final],
+                            name=f"{node.name}_seq_{i}",
+                        )
+                        graph.add_node(seq_node)
+
+                    nodes_to_remove.add(node)
+                    changed = True
+                    logger.info(f"Folded Loop node {node.name} (max_trip_count=1)")
 
         if changed:
             graph.nodes = [n for n in graph.nodes if n not in nodes_to_remove]
@@ -880,5 +894,8 @@ class ControlFlowFoldingPass(GraphPass):
                 if inp == old_name:
                     node.inputs[i] = new_name
         for i, out in enumerate(graph.outputs):
-            if out.name == old_name:
-                out.name = new_name
+            if getattr(out, "name", out) == old_name:
+                if isinstance(out, str):
+                    graph.outputs[i] = new_name
+                else:
+                    out.name = new_name

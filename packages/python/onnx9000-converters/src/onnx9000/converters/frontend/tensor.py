@@ -396,7 +396,7 @@ class Tensor:
         return self.data if self.data is not None else None
 
     def requires_grad_(self, requires_grad=True) -> "Tensor":
-        """Implements the requires_grad_ operation for the tensor."""
+        """Implements the requires_grad operation for the tensor."""
         return self
 
     @property

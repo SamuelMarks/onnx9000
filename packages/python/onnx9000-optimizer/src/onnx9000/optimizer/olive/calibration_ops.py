@@ -80,7 +80,7 @@ class CalibrationLoop:
 
     @staticmethod
     def highlight_sensitive_nodes(graph: Graph) -> list[str]:
-        """Highlight "Sensitive" nodes graphically to the user (e.g. `LayerNormalization`, `Soft..."""
+        """Highlight "Sensitive" nodes graphically to the user (e.g. `LayerNormalization`, `Softmax`..."""
         return ["LayerNorm_1"]
 
     @staticmethod
@@ -127,7 +127,7 @@ class CalibrationLoop:
 
     @staticmethod
     def bypass_calibration_fallback(graph: Graph) -> None:
-        """Bypass calibration completely if `StaticQuantization` falls back to `DynamicQuantizat..."""
+        """Bypass calibration completely if `StaticQuantization` falls back to `DynamicQuantization`..."""
         graph.metadata["bypassed"] = True
 
     @staticmethod

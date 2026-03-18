@@ -151,17 +151,19 @@ def simplify(
         from onnx9000.core.ir import DynamicDim
 
         for inp in graph.inputs:
-            if inp.name in input_shapes:
+            inp_name = getattr(inp, "name", inp)
+            if inp_name in input_shapes:
                 new_shape = []
-                for dim in input_shapes[inp.name]:
+                for dim in input_shapes[inp_name]:
                     if isinstance(dim, str):
                         new_shape.append(DynamicDim(dim))
                     else:
                         new_shape.append(int(dim))
-                inp.shape = tuple(new_shape)
-                if inp.name in graph.tensors:
-                    graph.tensors[inp.name].shape = tuple(new_shape)
-                logger.info(f"Overrode input shape for '{inp.name}' to {inp.shape}")
+                if not isinstance(inp, str):
+                    inp.shape = tuple(new_shape)
+                if inp_name in graph.tensors:
+                    graph.tensors[inp_name].shape = tuple(new_shape)
+                logger.info(f"Overrode input shape for '{inp_name}' to {new_shape}")
         for t_name, tensor in graph.tensors.items():
             if t_name in input_shapes:
                 new_shape = []
@@ -194,13 +196,15 @@ def simplify(
             "BFLOAT16": DType.BFLOAT16,
         }
         for inp in graph.inputs:
-            if inp.name in tensor_types:
-                t_str = str(tensor_types[inp.name]).upper()
+            inp_name = getattr(inp, "name", inp)
+            if inp_name in tensor_types:
+                t_str = str(tensor_types[inp_name]).upper()
                 if t_str in type_mapping:
-                    inp.dtype = type_mapping[t_str]
-                    if inp.name in graph.tensors:
-                        graph.tensors[inp.name].dtype = type_mapping[t_str]
-                    logger.info(f"Overrode input type for '{inp.name}' to {inp.dtype}")
+                    if not isinstance(inp, str):
+                        inp.dtype = type_mapping[t_str]
+                    if inp_name in graph.tensors:
+                        graph.tensors[inp_name].dtype = type_mapping[t_str]
+                    logger.info(f"Overrode input type for '{inp_name}' to {type_mapping[t_str]}")
         for t_name, tensor in graph.tensors.items():
             if t_name in tensor_types:
                 t_str = str(tensor_types[t_name]).upper()

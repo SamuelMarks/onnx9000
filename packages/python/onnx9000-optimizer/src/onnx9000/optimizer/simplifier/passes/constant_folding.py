@@ -266,12 +266,14 @@ class ConstantFoldingPass(GraphPass):
                 elif hasattr(val, "ndim"):
                     known_values[node.outputs[0]] = val
                 elif "value_float" in node.attributes:
+                    attr_val = node.attributes["value_float"]
                     known_values[node.outputs[0]] = np.array(
-                        node.attributes["value_float"], dtype=np.float32
+                        attr_val.value if hasattr(attr_val, "value") else attr_val, dtype=np.float32
                     )
                 elif "value_int" in node.attributes:
+                    attr_val = node.attributes["value_int"]
                     known_values[node.outputs[0]] = np.array(
-                        node.attributes["value_int"], dtype=np.int64
+                        attr_val.value if hasattr(attr_val, "value") else attr_val, dtype=np.int64
                     )
         new_nodes = []
         for node in graph.nodes:
@@ -340,6 +342,27 @@ class ConstantFoldingPass(GraphPass):
             ):
                 try:
                     result = self._evaluate_node(node.op_type, input_vals, node.attributes, node)
+                    print(
+                        "EVALUATED:",
+                        node.op_type,
+                        result is not None,
+                        "size:",
+                        result.nbytes if hasattr(result, "nbytes") else None,
+                    )
+                    print(
+                        "EVALUATED:",
+                        node.op_type,
+                        result is not None,
+                        "size:",
+                        result.nbytes if hasattr(result, "nbytes") else None,
+                    )
+                    print(
+                        "EVALUATED:",
+                        node.op_type,
+                        result is not None,
+                        "size:",
+                        result.nbytes if hasattr(result, "nbytes") else None,
+                    )
                     print(
                         "EVALUATED:",
                         node.op_type,
@@ -792,11 +815,11 @@ class ConstantFoldingPass(GraphPass):
         if op_type == "GatherND":
             data = inputs[0]
             indices = inputs[1]
-            batch_dims = attrs.get("batch_dims", Attribute("batch_dims", "INT", 0)).value
-            if isinstance(batch_dims, object) and hasattr(batch_dims, "value"):
-                batch_dims = int(batch_dims.value)
+            batch_dims_attr = attrs.get("batch_dims", 0)
+            if hasattr(batch_dims_attr, "value"):
+                batch_dims = int(batch_dims_attr.value)
             else:
-                batch_dims = int(batch_dims)
+                batch_dims = int(batch_dims_attr)
 
             # Naive pure python/numpy implementation of GatherND
             # This works well for constant folding sizes
@@ -840,9 +863,11 @@ class ConstantFoldingPass(GraphPass):
             data = inputs[0].copy()
             indices = inputs[1]
             updates = inputs[2]
-            reduction = attrs.get("reduction", Attribute("reduction", "STRING", "none")).value
-            if isinstance(reduction, object) and hasattr(reduction, "value"):
-                reduction = str(reduction.value)
+            reduction_attr = attrs.get("reduction", "none")
+            if hasattr(reduction_attr, "value"):
+                reduction = str(reduction_attr.value)
+            else:
+                reduction = str(reduction_attr)
 
             indices_shape = indices.shape
             k = indices_shape[-1]
@@ -885,9 +910,11 @@ class ConstantFoldingPass(GraphPass):
                 if isinstance(split, np.ndarray) and split.size == 1:
                     split = split.item()
                 if isinstance(split, int):
-                    axis = attrs.get("axis", Attribute("axis", "INT", 0)).value
-                    if isinstance(axis, object) and hasattr(axis, "value"):
-                        axis = int(axis.value)
+                    axis_attr = attrs.get("axis", 0)
+                    if hasattr(axis_attr, "value"):
+                        axis = int(axis_attr.value)
+                    else:
+                        axis = int(axis_attr)
 
                     # Prevent massive arrays
                     dim_size = inputs[0].shape[axis]

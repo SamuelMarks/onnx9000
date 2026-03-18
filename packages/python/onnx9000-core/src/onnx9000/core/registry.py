@@ -37,7 +37,7 @@ class OperatorRegistry:
                 self._domains.append(domain)
             full_op_type = f"{domain}.{op_type}" if domain else op_type
             if full_op_type in self._registry:
-                raise ValueError(f"Operator {full_op_type} is already registered.")
+                pass  # Already registered, allow overwrite to support reloading
             self._registry[full_op_type] = impl
             return impl
 

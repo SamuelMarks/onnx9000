@@ -52,7 +52,7 @@ def test_complex_cpu_ops() -> None:
     shrink_op([x], {"bias": 0.0, "lambd": 0.5})
 
 
-def test_missing_ops_branches() -> None:
+def test_missing_ops_branches_1() -> None:
     """Tests the missing ops branches functionality."""
     from onnx9000.backends.cpu.ops import OP_REGISTRY
 

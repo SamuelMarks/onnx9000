@@ -30,15 +30,13 @@ def test_registry_duplicate() -> None:
 
     @reg.register_op("Add")
     def mock_add() -> None:
-        """Tests the mock add functionality."""
-        assert True
+        pass
 
-    with pytest.raises(ValueError):
+    @reg.register_op("Add")
+    def mock_add_again() -> None:
+        pass
 
-        @reg.register_op("Add")
-        def mock_add_again() -> None:
-            """Tests the mock add again functionality."""
-            assert True
+    assert reg.get_op("Add") is mock_add_again
 
 
 def test_registry_new_domain() -> None:

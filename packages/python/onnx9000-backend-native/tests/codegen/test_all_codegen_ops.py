@@ -13,6 +13,9 @@ def test_all_codegen_ops() -> None:
     # We create a dummy generator context
     gen = Generator(g)
 
+    # Register a dummy ML op to hit the continue branches
+    global_registry.register_op("TreeEnsembleClassifier", domain="ai.onnx.ml")(lambda n, c: "")
+
     # Pre-populate some tensors so get_tensor_name works if it tries to lookup
     for i in range(10):
         g.tensors[f"in{i}"] = Tensor(f"in{i}", (2, 2), DType.FLOAT32)
@@ -21,6 +24,11 @@ def test_all_codegen_ops() -> None:
     for op_type, func in global_registry._registry.items():
         if op_type.startswith("ai.onnx.ml"):
             continue
+
+        import numpy as np
+        from onnx9000.core.ir import Attribute
+
+        tval = Tensor("t", (1,), DType.FLOAT32, data=np.array([1.23], dtype=np.float32).tobytes())
 
         # Some ops might require specific attributes, we'll supply a massive dummy dict
         attrs = {
@@ -55,7 +63,7 @@ def test_all_codegen_ops() -> None:
             "largest": 1,
             "sorted": 1,
             "k": 1,
-            "mode": b"constant",
+            "mode": b"DCR",
             "coordinate_transformation_mode": b"half_pixel",
             "cubic_coeff_a": -0.75,
             "exclude_outside": 0,
@@ -69,9 +77,10 @@ def test_all_codegen_ops() -> None:
             "output_height": 2,
             "output_width": 2,
             "sampling_ratio": 0,
-        }
-
-        # Give it up to 6 inputs and 4 outputs
+            "dummy_floats": [1.0, 2.0, 3.0],
+            "perm": [0, 1],
+            "value": Attribute("value", "TENSOR", tval),
+        }  # Give it up to 6 inputs and 4 outputs
         inputs = [f"in{i}" for i in range(6)]
         outputs = [f"out{i}" for i in range(4)]
 
@@ -84,17 +93,7 @@ def test_all_codegen_ops() -> None:
         from onnx9000.core.ir import Attribute
 
         for k, v in attrs.items():
-            if isinstance(v, list):
-                if all(isinstance(x, int) for x in v):
-                    node.attributes[k] = Attribute(k, "INTS", v)
-                elif all(isinstance(x, float) for x in v):
-                    node.attributes[k] = Attribute(k, "FLOATS", v)
-            elif isinstance(v, int):
-                node.attributes[k] = Attribute(k, "INT", v)
-            elif isinstance(v, float):
-                node.attributes[k] = Attribute(k, "FLOAT", v)
-            elif isinstance(v, bytes):
-                node.attributes[k] = Attribute(k, "STRING", v)
+            node.attributes[k] = v
 
         with contextlib.suppress(Exception):
             func(node, gen)

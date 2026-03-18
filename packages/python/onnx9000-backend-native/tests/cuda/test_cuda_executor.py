@@ -308,7 +308,7 @@ def test_cuda_executor_del_handles_errors() -> None:
         dispatcher.__del__()
 
 
-def ignore_this5() -> None:
+def test_ignore_this5() -> None:
     """Executes the ignore this5 operation."""
     g = Graph("test")
     with (

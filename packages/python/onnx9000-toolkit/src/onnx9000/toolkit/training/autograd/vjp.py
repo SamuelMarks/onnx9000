@@ -19,19 +19,19 @@ class VJPRule(abc.ABC):
 
     @abc.abstractmethod
     def build_backward_nodes(
-        self, fwd_node: Node, grad_outputs: list[str]
-    ) -> tuple[list[Node], list[str]]:
+        self, fwd_node: "onnx9000.core.ir.Node", grad_outputs: list[str]
+    ) -> tuple[list["onnx9000.core.ir.Node"], list[str]]:
         """
         Given a forward node and the names of the incoming gradient tensors (dL/dOut),
         returns a list of new nodes to compute gradients for the inputs,
         and a list of names for those input gradients (dL/dIn).
 
         Args:
-            fwd_node (Node): The forward pass operation node.
+            fwd_node ("onnx9000.core.ir.Node"): The forward pass operation node.
             grad_outputs (list[str]): Names of the incoming gradient tensors.
 
         Returns:
-            tuple[list[Node], list[str]]: A tuple containing:
+            tuple[list["onnx9000.core.ir.Node"], list[str]]: A tuple containing:
                 - List of nodes computing the backward pass.
                 - List of names corresponding to the gradients with respect to the node inputs.
         """

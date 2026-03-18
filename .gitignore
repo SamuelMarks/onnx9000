@@ -50,3 +50,11 @@ skills.md
 /pycdc/
 .uv
 .env\n.env.local\nuv.lock
+docs/README_GENERATED.md
+docs/_build/
+docs/js-api/
+typedoc.out.json
+
+# Generated Sphinx ReST files
+docs/onnx9000.*.rst
+docs/js-api_toc.rst

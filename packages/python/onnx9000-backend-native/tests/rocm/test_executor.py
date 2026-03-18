@@ -223,7 +223,7 @@ def test_rocm_executor_del_handles_errors() -> None:
         dispatcher.__del__()
 
 
-def ignore() -> None:
+def test_ignore() -> None:
     """Executes the ignore operation."""
     g = Graph("test")
     with (

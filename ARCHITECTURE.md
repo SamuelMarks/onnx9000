@@ -8,22 +8,24 @@ This document details the internal architectural design of `onnx9000`. It is int
 
 1. [The Polyglot Monorepo Architecture](#the-polyglot-monorepo-architecture)
 2. [The Core Intermediate Representation (IR)](#the-core-intermediate-representation-ir)
-3. [The Frontend Converters & Parsers](#the-frontend-converters--parsers)
+3. [The Frontend Converters & Parsers](#the-frontend-converters-parsers)
 4. [The Backend Exporters (Bi-Directional Transpilation)](#the-backend-exporters-bi-directional-transpilation)
 5. [Hardware Native Backends (Python)](#hardware-native-backends-python)
 6. [Web Backends (TypeScript)](#web-backends-typescript)
-7. [The Codegen Engine (C++23)](#the-codegen-engine-c23)
+7. [The Codegen Engine (C++23)](#the-codegen-engine-c-23-triton)
 8. [The Autograd Subsystem](#the-autograd-subsystem)
-9. [Edge Serving & API Shims](#edge-serving--api-shims)
-10. [Tooling, Visualization & Profiling](#tooling-visualization--profiling)
+9. [Edge Serving & API Shims](#edge-serving-api-shims)
+10. [Tooling, Visualization & Profiling](#tooling-visualization-profiling)
 
 ---
+
+(the-polyglot-monorepo-architecture)=
 
 ## 1. The Polyglot Monorepo Architecture
 
 `onnx9000` is built as a highly decoupled pipeline. A graph flows through the system in strict, immutable packages managed by `pnpm` workspaces (JS) and `uv` (Python):
 
-```mermaid
+```text
 graph TD;
     A[Frontends: Torch, TF, Keras, Caffe] -->|Parses to| C(onnx9000-core IR AST);
     B[Raw .onnx / .safetensors] -->|Parses to| C;
@@ -42,6 +44,8 @@ By decoupling the IR from both the frontend input and the backend output, the sy
 
 ---
 
+(the-core-intermediate-representation-ir)=
+
 ## 2. The Core Intermediate Representation (IR)
 
 The foundation of the entire ecosystem lives in `packages/python/onnx9000-core` and `packages/js/core`.
@@ -55,6 +59,8 @@ The IR (`Graph`, `Node`, `Tensor`, `ValueInfo`) is a flattened, heavily typed li
 
 ---
 
+(the-frontend-converters-parsers)=
+
 ## 3. The Frontend Converters & Parsers
 
 The system ingests models through `packages/python/onnx9000-converterss`:
@@ -65,6 +71,8 @@ To maintain a zero-heavy-dependency footprint, `onnx9000` avoids using the offic
 - **Extensibility:** Frontends for PyTorch (via Dynamo), Scikit-Learn, XGBoost, and legacy formats (Caffe, MXNet, PaddlePaddle) map their proprietary ASTs directly into `onnx9000-core/ir.py` components natively in the browser.
 
 ---
+
+(the-backend-exporters-bi-directional-transpilation)=
 
 ## 4. The Backend Exporters (Bi-Directional Transpilation)
 
@@ -78,6 +86,8 @@ Because `onnx9000` treats ONNX as the universal source of truth, it acts as a un
 
 ---
 
+(hardware-native-backends-python)=
+
 ## 5. Hardware Native Backends (Python)
 
 Living in `packages/python/onnx9000-backend-native`, execution providers are dynamically routed.
@@ -86,6 +96,8 @@ Living in `packages/python/onnx9000-backend-native`, execution providers are dyn
 - **CTYPES / FFI Dispatch:** `onnx9000` uses `ctypes` to invoke `cblas_sgemm` (Apple Accelerate), `cublasSgemm` (CUDA), or `nvinfer` (TensorRT) endpoints directly on raw memory. This achieves C++ inference speeds completely within Python.
 
 ---
+
+(web-backends-typescript)=
 
 ## 6. Web Backends (TypeScript)
 
@@ -98,6 +110,8 @@ Living in `packages/js/backend-web`, execution is ported natively to the browser
 
 ---
 
+(the-codegen-engine-c-23-triton)=
+
 ## 7. The Codegen Engine (C++23 & Triton)
 
 For targets lacking generic engines:
@@ -108,6 +122,8 @@ For targets lacking generic engines:
 
 ---
 
+(the-autograd-subsystem)=
+
 ## 8. The Autograd Subsystem
 
 Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Reverse-Mode Automatic Differentiation.
@@ -117,10 +133,14 @@ Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Re
 
 ---
 
+(edge-serving-api-shims)=
+
 ## 9. Edge Serving & API Shims
 
 - **Triton Inference Server:** `onnx9000.serve` provides a high-performance, purely asynchronous server designed for Cloudflare Workers and Bun. It natively implements KServe V2 dynamic batching and OpenAI REST APIs.
 - **TF.js Drop-in:** Provides `@onnx9000/tfjs-shim`, allowing developers to replace `@tensorflow/tfjs` entirely. It intercepts `tf.matMul` or `tf.loadGraphModel` calls and routes them transparently to `onnx9000` WebGPU, providing instantaneous acceleration without code rewrites.
+
+(tooling-visualization-profiling)=
 
 ## 10. Tooling, Visualization & Profiling
 

@@ -740,9 +740,10 @@ def infer_shapes_and_types(graph: Graph) -> None:
                     out_shapes = [(N,), (N, DynamicDim("classes"))]
                     out_dtypes = [DType.INT64, DType.FLOAT32]
             else:
-                out_shapes = [tuple(DynamicDim(f"ml_{node.op_type}_{i}") for _ in range(1))] * len(
-                    node.outputs
-                )
+                out_shapes = [
+                    tuple([DynamicDim(f"ml_{node.op_type}_{idx}")])
+                    for idx in range(len(node.outputs))
+                ]
                 out_dtypes = [DType.FLOAT32] * len(node.outputs)
 
         else:

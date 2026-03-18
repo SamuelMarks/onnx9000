@@ -19,7 +19,7 @@ class OpGenerator(abc.ABC):
     """
 
     @abc.abstractmethod
-    def generate(self, node: Node, generator_context: "Generator") -> str:
+    def generate(self, node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
         """
         Generate C++ code for the given node.
 

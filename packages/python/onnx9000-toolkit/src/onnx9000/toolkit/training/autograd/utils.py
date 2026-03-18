@@ -262,7 +262,7 @@ def flatten_gradients(graph: Graph) -> None:
     graph.outputs.append(all_grads_flat)
 
 
-def reverse_topological_sort(graph: Graph) -> list[Node]:
+def reverse_topological_sort(graph: Graph) -> list["onnx9000.core.ir.Node"]:
     """
     Returns the nodes of the graph in reverse topological order.
     Detects and breaks gradient tracking loops intelligently.
@@ -278,7 +278,7 @@ def reverse_topological_sort(graph: Graph) -> list[Node]:
         for out in node.outputs:
             output_to_node[out] = node
 
-    def dfs(node: Node):
+    def dfs(node: "onnx9000.core.ir.Node"):
         """Executes the dfs operation."""
         if node.name in rec_stack:
             # Loop detected, break it intelligently by ignoring this back-edge

@@ -11,7 +11,7 @@ def sanitize_name(name: str) -> str:
     """
     Sanitizes ONNX string IDs to make them valid C++ variable names.
     Replaces non-alphanumeric characters with underscores.
-    Prepends 'var_' if the name starts with a number.
+    Prepends `var_` if the name starts with a number.
     """
     clean = re.sub("[^a-zA-Z0-9_]", "_", name)
     if clean and clean[0].isdigit():
@@ -19,7 +19,7 @@ def sanitize_name(name: str) -> str:
     return clean
 
 
-def get_omp_pragma(total_elements: str, threshold: int = 10000) -> str:
+def get_omp_pragma(total_elements: str, threshold: int = 10000, extra: str = "") -> str:
     """
     Returns an OpenMP/SIMD pragma conditionally based on the target.
     In a full system, this would inspect if the target is WASM or Native.
@@ -30,4 +30,13 @@ def get_omp_pragma(total_elements: str, threshold: int = 10000) -> str:
 
     if config.ONNX9000_USE_CUDA:
         return ""
-    return "#if defined(__EMSCRIPTEN__)\n        #pragma clang loop vectorize(enable)\n        #else\n        #pragma omp parallel for\n        #endif"
+
+    pragmas = []
+    if getattr(config, "ONNX9000_ENABLE_LOOP_UNROLLING", False):
+        pragmas.append("#pragma unroll")
+
+    pragmas.append(
+        f"#if defined(__EMSCRIPTEN__)\n#pragma clang loop vectorize(enable)\n#else\n#pragma omp parallel for {extra}\n#endif"
+    )
+
+    return "\n".join(pragmas)

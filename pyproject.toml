@@ -1,12 +1,20 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
 [project]
 name = "onnx9000-workspace"
 version = "1.0.0"
 description = "Polyglot ONNX Ecosystem"
 requires-python = ">=3.9"
-dependencies = [
-    "jinja2>=3.1.6",
-    "pybind11>=3.0.2",
-]
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
+docs = ["requirements-doc.txt"]
+dev = ["requirements-dev.txt"]
 
 [tool.uv.workspace]
 members = ["packages/python/*", "apps/cli"]
@@ -24,11 +32,10 @@ ignore = ["E501", "E741", "E721", "E402", "F403", "F405", "F811", "F401", "F821"
 quote-style = "double"
 indent-style = "space"
 
-[dependency-groups]
-dev = [
-    "pytest>=8.4.2",
-    "pytest-cov>=7.0.0",
-    "scipy>=1.13.1",
-]
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
+norecursedirs = ["pycdc", "node_modules", ".venv"]
+testpaths = ["packages/python", "apps/cli"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["onnx9000_workspace"]

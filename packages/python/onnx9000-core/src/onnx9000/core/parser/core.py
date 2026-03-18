@@ -95,12 +95,12 @@ def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
             data = memoryview(init.raw_data)
         elif len(init.float_data) > 0:
             data = memoryview(struct.pack(f"<{len(init.float_data)}f", *init.float_data))
-    elif len(init.int32_data) > 0:
-        data = memoryview(struct.pack(f"<{len(init.int32_data)}i", *init.int32_data))
-    elif len(init.int64_data) > 0:
-        data = memoryview(struct.pack(f"<{len(init.int64_data)}q", *init.int64_data))
-    elif len(init.string_data) > 0:
-        data = b"\x00".join(init.string_data)
+        elif len(init.int32_data) > 0:
+            data = memoryview(struct.pack(f"<{len(init.int32_data)}i", *init.int32_data))
+        elif len(init.int64_data) > 0:
+            data = memoryview(struct.pack(f"<{len(init.int64_data)}q", *init.int64_data))
+        elif len(init.string_data) > 0:
+            data = b"\x00".join(init.string_data)
     tensor = Constant(name=init.name, shape=shape, dtype=dtype, values=data)
     return tensor
 

@@ -276,7 +276,7 @@ def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
                 continue
 
             num_consumers = sum(1 for n in graph.nodes if bn_x in n.inputs)
-            if num_consumers > 1 or bn_x in [o.name for o in graph.outputs]:
+            if num_consumers > 1 or bn_x in [getattr(o, "name", o) for o in graph.outputs]:
                 continue
 
             scale_t = graph.tensors.get(node.inputs[1])
@@ -347,11 +347,14 @@ def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
             new_b_name = f"{gemm_node.name}_fused_bn_b"
 
             new_w_t = Constant(
-                new_w_name, data=new_w.astype(gemm_w.dtype), shape=new_w.shape, dtype=gemm_w_t.dtype
+                new_w_name,
+                values=new_w.astype(gemm_w.dtype),
+                shape=new_w.shape,
+                dtype=gemm_w_t.dtype,
             )
             new_b_t = Constant(
                 new_b_name,
-                data=new_b.astype(gemm_b.dtype if len(gemm_node.inputs) > 2 else gemm_w.dtype),
+                values=new_b.astype(gemm_b.dtype if len(gemm_node.inputs) > 2 else gemm_w.dtype),
                 shape=new_b.shape,
                 dtype=b_t.dtype,
             )
@@ -373,9 +376,12 @@ def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
                     if inp == node.outputs[0]:
                         n.inputs[i] = bn_x
 
-            for out in graph.outputs:
+            for i, out in enumerate(graph.outputs):
                 if getattr(out, "name", out) == node.outputs[0]:
-                    out.name = bn_x
+                    if isinstance(out, str):
+                        graph.outputs[i] = bn_x
+                    else:
+                        out.name = bn_x
 
             node.outputs = []
             changed = True
@@ -408,7 +414,7 @@ def fuse_batchnorm_into_conv(graph: Graph) -> bool:
 
             # Check if Conv outputs are only used by this BN
             num_consumers = sum(1 for n in graph.nodes if bn_x in n.inputs)
-            if num_consumers > 1 or bn_x in [o.name for o in graph.outputs]:
+            if num_consumers > 1 or bn_x in [getattr(o, "name", o) for o in graph.outputs]:
                 continue
 
             # Grab BN constants
@@ -475,15 +481,17 @@ def fuse_batchnorm_into_conv(graph: Graph) -> bool:
             new_b_name = f"{conv_node.name}_fused_bn_b"
 
             new_w_t = Constant(
-                new_w_name, data=new_w.astype(conv_w.dtype), shape=new_w.shape, dtype=conv_w_t.dtype
+                new_w_name,
+                values=new_w.astype(conv_w.dtype),
+                shape=new_w.shape,
+                dtype=conv_w_t.dtype,
             )
             new_b_t = Constant(
                 new_b_name,
-                data=new_b.astype(conv_b.dtype if len(conv_node.inputs) > 2 else conv_w.dtype),
+                values=new_b.astype(conv_b.dtype if len(conv_node.inputs) > 2 else conv_w.dtype),
                 shape=new_b.shape,
                 dtype=b_t.dtype,
             )
-
             graph.add_tensor(new_w_t)
             graph.initializers.append(new_w_name)
             graph.add_tensor(new_b_t)
@@ -503,10 +511,12 @@ def fuse_batchnorm_into_conv(graph: Graph) -> bool:
                     if inp == node.outputs[0]:
                         n.inputs[i] = bn_x
 
-            for out in graph.outputs:
-                if out.name == node.outputs[0]:
-                    out.name = bn_x
-
+            for i, out in enumerate(graph.outputs):
+                if getattr(out, "name", out) == node.outputs[0]:
+                    if isinstance(out, str):
+                        graph.outputs[i] = bn_x
+                    else:
+                        out.name = bn_x
             node.outputs = []  # Remove consumers to DCE it out
             changed = True
             import logging

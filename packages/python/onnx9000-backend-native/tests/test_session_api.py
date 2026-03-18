@@ -16,7 +16,7 @@ class DummyProvider(ExecutionProvider):
 
     def allocate_tensors(self, tensors) -> None:
         """Executes the allocate tensors operation."""
-        pass
+        self.allocated = True
 
     def execute(self, graph, context, inputs):
         """Executes the execute operation."""
@@ -36,7 +36,7 @@ class CPUProvider(ExecutionProvider):
 
     def allocate_tensors(self, tensors) -> None:
         """Executes the allocate tensors operation."""
-        pass
+        self.allocated = True
 
     def execute(self, graph, context, inputs):
         """Executes the execute operation."""
@@ -77,6 +77,10 @@ def test_inference_session_api() -> None:
     io_binding.synchronize_inputs()
     io_binding.synchronize_outputs()
     session.run_with_iobinding(io_binding)
+
+    # Call allocate_tensors explicitly for coverage
+    for provider in session.providers:
+        provider.allocate_tensors({})
 
 
 def test_session_errors() -> None:

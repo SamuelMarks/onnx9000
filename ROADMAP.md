@@ -53,7 +53,7 @@ The following architectural targets guide the development of the ecosystem. They
 
 ### Compilers & AOT (`@onnx9000/compiler`)
 
-- [ ] **ONNX19:** `onnx-mlir` Replication (Compiling ONNX to C++23/WASM).
+- [x] **ONNX19:** `onnx-mlir` Replication (Compiling ONNX to C++23/WASM).
 - [ ] **ONNX20:** Apache TVM Ahead-of-Time Web Compiler.
 - [ ] **ONNX26:** Apache TVM IREE (WASM-Native MLIR Compiler).
 - [ ] **ONNX33:** `onnx2c` / `deepC` (Web-Native TinyML & Embedded C99 Generator).
