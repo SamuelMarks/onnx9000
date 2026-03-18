@@ -102,8 +102,11 @@ def test_main_execution() -> None:
     """Tests the main execution functionality."""
     import subprocess
 
+    import os
+
+    main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
     result = subprocess.run(
-        [sys.executable, "apps/cli/src/onnx9000_cli/main.py", "--help"],
+        [sys.executable, main_script, "--help"],
         capture_output=True,
         text=True,
     )
@@ -115,17 +118,23 @@ def test_main_execution_runpy(monkeypatch) -> None:
     """Tests the main execution runpy functionality."""
     import runpy
 
+    import os
+
+    main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
     with pytest.raises(SystemExit) as e:
-        runpy.run_path("apps/cli/src/onnx9000_cli/main.py", run_name="__main__")
+        runpy.run_path(main_script, run_name="__main__")
     assert e.value.code == 0
 
 
 def test_module_main_exec(monkeypatch) -> None:
     """Tests the module main exec functionality."""
+    import os
+
+    main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
-    with pytest.raises(SystemExit), open("apps/cli/src/onnx9000_cli/main.py") as f:
-        code = compile(f.read(), "apps/cli/src/onnx9000_cli/main.py", "exec")
+    with pytest.raises(SystemExit), open(main_script) as f:
+        code = compile(f.read(), main_script, "exec")
         exec(code, {"__name__": "__main__"})
 
 

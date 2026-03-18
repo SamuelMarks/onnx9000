@@ -1,11 +1,6 @@
 (globalThis as any).self = globalThis;
 (globalThis as any).postMessage = () => {};
 
-import { JSDOM } from 'jsdom';
-
-const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
-(globalThis as any).window = dom.window;
-(globalThis as any).document = dom.window.document;
 Object.defineProperty(globalThis, 'navigator', { value: { userAgent: 'node.js' }, writable: true });
 
 const mockContext = {
@@ -45,11 +40,10 @@ const mockContext = {
   createPattern: () => ({}),
 };
 
-(globalThis as any).HTMLCanvasElement = dom.window.HTMLCanvasElement;
-(globalThis as any).HTMLCanvasElement.prototype.getContext = () => mockContext;
-dom.window.HTMLCanvasElement.prototype.getContext = () => mockContext;
+if (typeof HTMLCanvasElement !== 'undefined') {
+  (HTMLCanvasElement as any).prototype.getContext = () => mockContext;
+}
 
-(globalThis as any).self = { postMessage: () => {}, onmessage: null };
 (globalThis as any).workerInstances = [];
 class MockWorker {
   constructor() {
@@ -94,7 +88,6 @@ class MockWorker {
   terminate() {}
 }
 (globalThis as any).Worker = MockWorker;
-dom.window.Worker = MockWorker;
 
 if (typeof Blob === 'undefined') {
   (globalThis as any).Blob = class Blob {
@@ -111,10 +104,3 @@ if (typeof File === 'undefined') {
     }
   };
 }
-
-(globalThis as any).Event = dom.window.Event;
-(globalThis as any).MouseEvent = dom.window.MouseEvent;
-(globalThis as any).CustomEvent = dom.window.CustomEvent;
-
-(globalThis as any).WheelEvent = dom.window.WheelEvent;
-(globalThis as any).KeyboardEvent = dom.window.KeyboardEvent;

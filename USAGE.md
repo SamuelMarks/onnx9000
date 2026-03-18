@@ -1,47 +1,90 @@
 # Usage Guide
 
-`onnx9000` is a comprehensive polyglot ecosystem comprising Python and TypeScript/JavaScript packages. The following guide covers installation, the Python Execution Pipeline, the TypeScript Web Backends, and the Unified CLI tool.
+`onnx9000` is a comprehensive polyglot ecosystem comprising Python and TypeScript/JavaScript packages. By entirely replacing C++ tooling, we offer a truly cross-platform, zero-dependency environment for modern Machine Learning.
+
+This guide covers installation, Python APIs, TypeScript Web APIs, Edge Serving, Generative AI, and the Unified CLI tool.
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [🐍 Python Ecosystem](#-python-ecosystem)
+   - [Zero-Dependency Parsers & Inspection](#zero-dependency-parsers--inspection)
+   - [Hardware-Native Execution](#hardware-native-execution)
+   - [Model Optimization & Quantization](#model-optimization--quantization)
+   - [Autograd & On-Device Training](#autograd--on-device-training)
+   - [Framework Converters](#framework-converters)
+3. [🌐 TypeScript & Web Ecosystem](#-typescript--web-ecosystem)
+   - [WebGPU & WebNN Inference](#webgpu--webnn-inference)
+   - [TensorFlow.js Drop-in Shim](#tensorflowjs-drop-in-shim)
+   - [Serverless Edge Serving (Cloudflare/Bun)](#serverless-edge-serving)
+   - [AOT Compilation to WASM/C++](#aot-compilation-to-wasm--c)
+   - [Generative AI & Diffusers](#generative-ai--diffusers)
+4. [💻 Unified CLI (`onnx9000`)](#-unified-cli)
+
+---
 
 ## Installation
 
 ### Python (via pip or uv)
 
+You can install individual packages or the entire toolkit. No C++ compiler or `cmake` is required.
+
 ```bash
-# In your Python 3.9+ environment
-pip install onnx9000-core onnx9000-backend-native onnx9000-optimizer
+# Minimal core for parsing/editing
+uv pip install onnx9000-core
+
+# Hardware execution, optimizers, and converters
+uv pip install onnx9000-backend-native onnx9000-optimizer onnx9000-converters
+
+# Everything
+uv pip install "onnx9000[all]"
 ```
 
 ### TypeScript / JavaScript (via pnpm or npm)
 
+Packages are modular and tree-shakeable for browser, Node.js, Bun, and Deno.
+
 ```bash
-# For Node.js, Deno, Bun, or Browser (Webpack/Vite) targets
-pnpm add @onnx9000/core @onnx9000/backend-web
+# Core AST and parsers
+pnpm add @onnx9000/core
+
+# Web backends (WebGPU / WebNN / WASM)
+pnpm add @onnx9000/backend-web
+
+# Higher-level pipelines (LLMs, SD)
+pnpm add @onnx9000/transformers @onnx9000/diffusers
 ```
 
-## 🐍 Python Examples
+---
 
-### 1. Zero-Dependency Model Loading & Inspection
+## 🐍 Python Ecosystem
 
-The core of `onnx9000` does not rely on the massive `onnx` protobuf Python package or `numpy`. It uses raw Python data structures for memory efficiency.
+### Zero-Dependency Parsers & Inspection
+
+The core `onnx9000-core` package does not rely on the massive `onnx` protobuf package. It reads `.onnx`, `.pb`, `.h5`, `.tflite`, `.gguf`, and `.safetensors` using raw Python data structures for memory efficiency and instant loading.
 
 ```python
 from onnx9000.core.parser.core import load
+from onnx9000.core.shape_inference import infer_shapes_and_types
 
-# Parses the raw protobuf structure into an in-memory `Graph` AST instantly.
+# Parses the raw protobuf structure into an in-memory `Graph` AST instantly
 graph = load("mobilenetv2.onnx")
 
-print(f"Model Name: {graph.name}")
-print(f"Inputs: {graph.inputs}")
-print(f"Number of Tensors: {len(graph.tensors)}")
+print(f"Model: {graph.name} | IR Version: {graph.ir_version}")
+print(f"Inputs: {[i.name for i in graph.inputs]}")
+print(f"Tensors: {len(graph.tensors)}")
 
-# Optional: Run static shape inference on dynamic graphs
-from onnx9000.core.shape_inference import infer_shapes_and_types
+# Run strict static shape inference
 infer_shapes_and_types(graph)
+
+# Extract a subgraph surgically
+from onnx9000.core.graph_surgeon import extract_subgraph
+sub_graph = extract_subgraph(graph, input_names=["conv1_out"], output_names=["layer3_out"])
 ```
 
-### 2. Execution (Native CPU)
+### Hardware-Native Execution
 
-`onnx9000-backend-native` exposes `ExecutionProviders` that allocate contiguous memory arenas and evaluate nodes using `ctypes` dispatches to native math libraries (e.g., OpenBLAS or Apple Accelerate).
+`onnx9000-backend-native` dynamically routes operations via `ctypes` to native math libraries (Apple Accelerate, CUDA, TensorRT) without the overhead of massive C++ bindings.
 
 ```python
 import numpy as np
@@ -50,81 +93,209 @@ from onnx9000.core.ir import Tensor
 from onnx9000.core.dtypes import DType
 from onnx9000.backends.session import InferenceSession, SessionOptions
 from onnx9000.backends.cpu.executor import CPUExecutionProvider
+from onnx9000.backends.cuda.executor import CUDAExecutionProvider
 
 graph = load("model.onnx")
 
-# Set up Session Configuration
 options = SessionOptions(execution_mode="SEQUENTIAL", enable_profiling=True)
 
-# Orchestrate execution via the CPU Provider
-session = InferenceSession(graph, providers=[CPUExecutionProvider({})], options=options)
+# Orchestrate execution via CPU or CUDA Providers
+session = InferenceSession(
+    graph,
+    providers=[CUDAExecutionProvider(), CPUExecutionProvider()],
+    options=options
+)
 
-# Generate Mock Data
+# Zero-copy DLPack mapping with internal Tensor representation
 input_data = np.random.randn(1, 3, 224, 224).astype(np.float32)
+input_tensor = Tensor(
+    name="input_1",
+    shape=(1, 3, 224, 224),
+    dtype=DType.FLOAT32,
+    data=input_data.tobytes()
+)
 
-# Wrap NumPy array in the internal `onnx9000.Tensor` (Zero-copy DLPack mapping)
-input_tensor = Tensor(name="input_1", shape=(1, 3, 224, 224), dtype=DType.FLOAT32, data=input_data.tobytes())
-
-# Execute
 outputs = session.run(output_names=["output_1"], input_feed={"input_1": input_tensor})
-
-# Access resulting memoryview
-print(outputs["output_1"].data)
+print("Result shape:", outputs["output_1"].shape)
 ```
 
-## 🌐 TypeScript Examples
+### Model Optimization & Quantization
 
-### 1. WebGPU / WebNN Execution
+The `onnx9000-optimizer` module offers state-of-the-art algebraic simplification (constant folding, fusion) and advanced INT4/INT8 quantization, fully replacing `onnx-simplifier` and `optimum`.
 
-The `@onnx9000/backend-web` package translates the `Graph` AST into dynamic WebGPU compute shaders or `navigator.ml` WebNN builder contexts natively within the browser, enabling near-native FPS for large vision and language models.
+```python
+from onnx9000.optimizer import optimize, quantize, QuantizationConfig
+
+# Apply Level 3 fusions (GELU, RoPE, LayerNorm) and constant folding
+optimized_graph = optimize(graph, level=3)
+
+# INT8/INT4 Quantization
+q_config = QuantizationConfig(
+    weight_type="int8",
+    activation_type="int8",
+    per_channel=True,
+    symmetric=True
+)
+quantized_graph = quantize(optimized_graph, q_config)
+```
+
+### Autograd & On-Device Training
+
+`onnx9000-toolkit` handles Ahead-of-Time (AOT) symbolic autograd. It takes a forward-pass ONNX graph and compiles the backward pass (VJPs) directly into the graph.
+
+```python
+from onnx9000.toolkit.autograd import add_backward_pass
+
+# Given an inference graph with a defined loss node
+training_graph = add_backward_pass(graph, loss_node="cross_entropy_loss")
+
+# The resulting graph now accepts gradients and computes weight updates
+print("Trainable parameters:", training_graph.get_trainable_initializers())
+```
+
+### Framework Converters
+
+Convert legacy and modern frameworks seamlessly into ONNX natively, or convert ONNX to other formats like TFLite and GGUF using bi-directional transpilation.
+
+```python
+from onnx9000.converters.tf import tf2onnx
+from onnx9000.converters.gguf import onnx2gguf
+
+# Convert a TensorFlow SavedModel to ONNX without TensorFlow installed!
+onnx_graph = tf2onnx("/path/to/saved_model")
+
+# Transpile an ONNX model natively to GGUF format for llama.cpp
+gguf_bytes = onnx2gguf(onnx_graph, use_f16=True)
+with open("model.gguf", "wb") as f:
+    f.write(gguf_bytes)
+```
+
+---
+
+## 🌐 TypeScript & Web Ecosystem
+
+### WebGPU & WebNN Inference
+
+The `@onnx9000/backend-web` package turns your TS AST into highly optimized WebGPU WGSL shaders or `navigator.ml` WebNN contexts natively in the browser.
 
 ```typescript
 import { load } from '@onnx9000/core';
-import { InferenceSession, WebGPUProvider } from '@onnx9000/backend-web';
+import { InferenceSession, WebGPUProvider, WebNNProvider } from '@onnx9000/backend-web';
 
-async function runModel(modelUrl: string) {
-  // Fetch and parse the ONNX model into the TS AST
-  const response = await fetch(modelUrl);
-  const buffer = await response.arrayBuffer();
+async function runVisionModel(modelUrl: string) {
+  const buffer = await (await fetch(modelUrl)).arrayBuffer();
   const graph = load(buffer);
 
-  // Initialize the WebGPU execution provider
-  const webgpuProvider = new WebGPUProvider();
-  await webgpuProvider.initialize();
+  // Initialize providers: Try WebNN first, fallback to WebGPU
+  const webnn = new WebNNProvider({ deviceType: 'npu' });
+  const webgpu = new WebGPUProvider({ powerPreference: 'high-performance' });
 
-  // Create session
-  const session = new InferenceSession(graph, [webgpuProvider]);
+  await webnn.initialize().catch(() => webgpu.initialize());
 
-  // Create input tensor natively
+  const session = new InferenceSession(graph, [webnn, webgpu]);
+
   const inputData = new Float32Array(1 * 3 * 224 * 224).fill(0.5);
-  const inputFeed = {
+  const results = await session.run(['output'], {
     input: { data: inputData, shape: [1, 3, 224, 224], dtype: 'float32' },
-  };
-
-  // Run inference asynchronously via WebGPU shaders
-  const results = await session.run(['output'], inputFeed);
+  });
 
   console.log('Inference complete!', results['output'].data);
 }
 ```
 
-## 💻 Unified CLI (`apps/cli`)
+### TensorFlow.js Drop-in Shim
 
-The `onnx9000` CLI acts as a comprehensive entry point to the entire Python optimization and compilation toolchain.
+Migrate old `@tensorflow/tfjs` projects to `onnx9000` with zero code changes using our shim.
+
+```typescript
+// Replace: import * as tf from '@tensorflow/tfjs';
+import * as tf from '@onnx9000/tfjs-shim';
+
+// Uses ONNX/WebGPU under the hood, but exposes the TFJS API
+const model = await tf.loadGraphModel('model.json');
+const tensor = tf.tensor([1, 2, 3, 4], [2, 2]);
+const output = model.predict(tensor);
+output.print();
+```
+
+### Serverless Edge Serving
+
+The `@onnx9000/serve` module provides an event-loop driven, dynamic batching inference server. It's perfectly designed for Cloudflare Workers, Bun, and Deno.
+
+```typescript
+// worker.ts (Cloudflare Worker or Bun)
+import { serve } from '@onnx9000/serve';
+import { WebAssemblyProvider } from '@onnx9000/backend-web';
+
+const app = serve({
+  model: 's3://models/bert.onnx',
+  provider: new WebAssemblyProvider({ simd: true, threads: 4 }),
+  batching: { maxBatchSize: 8, timeoutMs: 10 },
+});
+
+export default app;
+```
+
+### AOT Compilation to WASM / C++
+
+Compile an ONNX model strictly to a standalone executable or WebAssembly module. This entirely skips the "interpreter" overhead at runtime.
+
+```typescript
+import { compile } from '@onnx9000/compiler';
+
+// Compiles the graph into a standalone C++23 header
+const cppCode = await compile(graph, { target: 'cpp23', staticMemory: true });
+
+// Compiles the graph into a raw WebAssembly bytecode array
+const wasmModule = await compile(graph, { target: 'wasm', useSIMD: true });
+```
+
+### Generative AI & Diffusers
+
+Direct integration for Hugging Face pipelines natively in WebWorkers using customized W4A16 packed weights.
+
+```typescript
+import { pipeline } from '@onnx9000/transformers';
+
+// Automatic text-generation using an optimized ONNX-based LLM in WebGPU
+const generate = await pipeline('text-generation', 'onnx-community/Llama-3-8B-Instruct', {
+  device: 'webgpu',
+  dtype: 'q4f16',
+});
+
+const response = await generate('What is the future of ML?', { max_new_tokens: 100 });
+console.log(response);
+```
+
+---
+
+## 💻 Unified CLI (`onnx9000`)
+
+The `onnx9000` CLI is a "Swiss Army Knife" for the entire ML pipeline. It brings all the capabilities of the Python and JS packages into a single terminal command.
 
 ```bash
+# 🔍 Inspection
 # Inspect the topology, memory usage, and FLOP count of an ONNX file
 onnx9000 inspect ./model.onnx
 
+# ⚡ Optimization & Quantization
 # Apply Level 3 (Transformer fusions, Gelu, RoPE) optimizations
 onnx9000 optimize ./model.onnx --level 3 --output ./optimized.onnx
 
 # Quantize a model to Int8 natively
 onnx9000 quantize ./model.onnx --format int8 --output ./quantized.onnx
 
+# 🔄 Converters
 # Convert a legacy Keras H5 file directly to ONNX (Zero TensorFlow dependency required)
 onnx9000 convert --src keras --dst onnx ./model.h5
 
-# Launch the local Netron-style Web Visualizer Server
-onnx9000 serve ./model.onnx
+# Convert an ONNX model to a llama.cpp compatible GGUF
+onnx9000 convert --src onnx --dst gguf ./model.onnx --output model.gguf
+
+# 🚀 Serverless & UI
+# Launch the local Netron-style WebGL Visualizer Server
+onnx9000 ui ./model.onnx
+
+# Launch a dynamic batching inference API on port 8080
+onnx9000 serve ./model.onnx --port 8080 --batch-size 16
 ```

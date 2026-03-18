@@ -1,0 +1,8 @@
+{
+  "name": "onnx9000-core",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "pytest tests"
+  }
+}
