@@ -1,9 +1,10 @@
-import pytest
 from unittest.mock import patch
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
-from onnx9000.core.dtypes import DType
+
+import pytest
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.utils import get_omp_pragma
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
 def test_category_mapper_codegen():

@@ -41,13 +41,23 @@ def test_topk_argmax():
     t_k = Tensor("k", (1,), DType.INT64)
     t_k.values = [5]
     g.add_tensor(t_k)
-    g.add_node(Node("TopK", ["x", "k"], ["y_val", "y_idx"], {"axis": Attribute("axis", value=-1)}))
+    g.add_node(
+        Node(
+            "TopK",
+            ["x", "k"],
+            ["y_val", "y_idx"],
+            {"axis": Attribute("axis", value=-1)},
+        )
+    )
     g.add_node(
         Node(
             "ArgMax",
             ["x"],
             ["y_arg"],
-            {"axis": Attribute("axis", value=-1), "keepdims": Attribute("keepdims", value=0)},
+            {
+                "axis": Attribute("axis", value=-1),
+                "keepdims": Attribute("keepdims", value=0),
+            },
         )
     )
     g.add_node(
@@ -55,7 +65,10 @@ def test_topk_argmax():
             "ArgMin",
             ["x"],
             ["y_arg2"],
-            {"axis": Attribute("axis", value=-1), "keepdims": Attribute("keepdims", value=1)},
+            {
+                "axis": Attribute("axis", value=-1),
+                "keepdims": Attribute("keepdims", value=1),
+            },
         )
     )
     infer_shapes_and_types(g)

@@ -177,7 +177,12 @@ def simulate_memory_plan(
                         break
 
         view_possible = False
-        if not in_place_possible and n.op_type in ["Reshape", "Flatten", "Squeeze", "Unsqueeze"]:
+        if not in_place_possible and n.op_type in [
+            "Reshape",
+            "Flatten",
+            "Squeeze",
+            "Unsqueeze",
+        ]:
             if n.inputs and n.inputs[0] in arena.tensor_offsets:
                 view_possible = True
                 arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets[n.inputs[0]]

@@ -1204,7 +1204,7 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
     """Generate the code implementation for the Categorymapper operator."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
-    tensor_info = ctx.graph.tensors[node.outputs[0]]
+    ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
     cpp_type = "int64_t"
 
@@ -1219,7 +1219,6 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
     if len(cats_int64s) > 0 and len(cats_strings) == 0:
         # Int to Int or String to Int. Let's assume Int to Int
-        cases = []
         for i, val in enumerate(cats_int64s):
             # The values to map are in another list, wait, ONNX CategoryMapper uses
             # cats_int64s and cats_strings. It maps from one to another.

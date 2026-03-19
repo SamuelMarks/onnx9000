@@ -1,9 +1,10 @@
-import pytest
-import sys
-import tempfile
 import os
 import subprocess
+import sys
+import tempfile
 from unittest.mock import patch
+
+import pytest
 from onnx9000.backends.codegen.compiler import compile_cpp, compile_static_lib
 
 

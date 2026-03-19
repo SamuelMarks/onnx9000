@@ -74,7 +74,10 @@ def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
 
         current = root
         current.add_stats(
-            n.get("macs", 0), n.get("flops", 0), n.get("params", 0), n.get("activation_bytes", 0)
+            n.get("macs", 0),
+            n.get("flops", 0),
+            n.get("params", 0),
+            n.get("activation_bytes", 0),
         )
 
         for p in parts:

@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 
 docs_dir = os.path.dirname(__file__)
 toc_file = os.path.join(docs_dir, "js-api_toc.rst")

@@ -71,13 +71,20 @@ def test_serializer() -> None:
     g = Graph("test")
     g.add_tensor(
         Tensor(
-            "w", shape=(2, 2), dtype=DType.FLOAT32, is_initializer=True, data=b"1234123412341234"
+            "w",
+            shape=(2, 2),
+            dtype=DType.FLOAT32,
+            is_initializer=True,
+            data=b"1234123412341234",
         )
     )
     g.initializers.append("w")
     g.inputs.append("w")
     n = Node(
-        "Relu", ["w"], ["out"], attributes={"test_float": Attribute("test_float", "FLOAT", 1.0)}
+        "Relu",
+        ["w"],
+        ["out"],
+        attributes={"test_float": Attribute("test_float", "FLOAT", 1.0)},
     )
     g.add_node(n)
     b = to_bytes(g)

@@ -1,9 +1,10 @@
-import pytest
-from pathlib import Path
 import tempfile
-from onnx9000.core.parser.core import load, from_bytes
-from onnx9000.core.exceptions import ONNXParseError
+from pathlib import Path
+
+import pytest
 from onnx9000.core import onnx_pb2
+from onnx9000.core.exceptions import ONNXParseError
+from onnx9000.core.parser.core import from_bytes, load
 
 
 def test_load_errors():

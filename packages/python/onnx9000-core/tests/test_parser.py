@@ -8,7 +8,13 @@ import pytest
 from onnx9000.core import onnx_pb2
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor, ValueInfo
-from onnx9000.core.parser.core import _parse_dtype, from_bytes, load, load_tensor, parse_model
+from onnx9000.core.parser.core import (
+    _parse_dtype,
+    from_bytes,
+    load,
+    load_tensor,
+    parse_model,
+)
 from onnx9000.core.serializer import save, serialize_model
 
 

@@ -9,7 +9,15 @@ import pytest
 from onnx9000.core import onnx_pb2
 from onnx9000.core.dtypes import DType
 from onnx9000.core.execution import ExecutionContext, ExecutionProvider, SessionOptions
-from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import (
+    Attribute,
+    Constant,
+    DynamicDim,
+    Graph,
+    Node,
+    Tensor,
+    ValueInfo,
+)
 from onnx9000.core.memory import MemoryMapError, mmap_tensor_data
 from onnx9000.core.serializer import (
     SerializationError,

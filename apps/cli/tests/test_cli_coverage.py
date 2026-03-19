@@ -1,10 +1,11 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from onnx9000_cli.main import simplify_cmd
 import argparse
-import os
 import json
+import os
 import tempfile
+from unittest.mock import MagicMock, patch
+
+import pytest
+from onnx9000_cli.main import simplify_cmd
 
 
 def test_simplify_cmd_coverage():
@@ -45,7 +46,7 @@ def test_simplify_cmd_coverage():
 
         with (
             patch("onnx9000_cli.main.load_onnx") as mock_load,
-            patch("onnx9000_cli.main.save_onnx") as mock_save,
+            patch("onnx9000_cli.main.save_onnx"),
             patch("onnx9000_cli.main.simplify", autospec=True) as mock_simplify,
         ):
             mock_graph = MagicMock()
@@ -64,7 +65,7 @@ def test_simplify_cmd_coverage():
             # Check diff file
             diff_path = out_path.replace(".onnx", "_diff.json")
             assert os.path.exists(diff_path)
-            with open(diff_path, "r") as f:
+            with open(diff_path) as f:
                 diff = json.load(f)
             assert "n1" in diff.get("removed", {"n1": 1})
             assert "n2" in diff.get("added", {"n2": 1})

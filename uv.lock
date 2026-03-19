@@ -17,6 +17,7 @@ members = [
     "onnx9000-core",
     "onnx9000-optimizer",
     "onnx9000-toolkit",
+    "onnx9000-tvm",
     "onnx9000-workspace",
 ]
 
@@ -1280,6 +1281,17 @@ requires-dist = [
     { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
     { name = "onnx9000-optimizer", editable = "packages/python/onnx9000-optimizer" },
 ]
+
+[[package]]
+name = "onnx9000-tvm"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-tvm" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
 
 [[package]]
 name = "onnx9000-workspace"

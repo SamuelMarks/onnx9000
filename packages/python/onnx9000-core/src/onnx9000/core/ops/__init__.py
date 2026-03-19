@@ -345,7 +345,9 @@ def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: A
 def blackman_window(size: Tensor, output_datatype: int = 1, periodic: int = 1) -> Tensor:
     """Computes BlackmanWindow."""
     return record_op(
-        "BlackmanWindow", [size], {"output_datatype": output_datatype, "periodic": periodic}
+        "BlackmanWindow",
+        [size],
+        {"output_datatype": output_datatype, "periodic": periodic},
     )
 
 
@@ -401,7 +403,9 @@ def layer_normalization(
     if b is not None:
         inputs.append(b)
     return record_op(
-        "LayerNormalization", inputs, {"axis": axis, "epsilon": epsilon, "stash_type": stash_type}
+        "LayerNormalization",
+        inputs,
+        {"axis": axis, "epsilon": epsilon, "stash_type": stash_type},
     )
 
 
@@ -448,7 +452,9 @@ def mel_weight_matrix(
 def multinomial(input: Tensor, dtype: int = 6, sample_size: int = 1, seed: float = 0.0) -> Tensor:
     """Computes Multinomial."""
     return record_op(
-        "Multinomial", [input], {"dtype": dtype, "sample_size": sample_size, "seed": seed}
+        "Multinomial",
+        [input],
+        {"dtype": dtype, "sample_size": sample_size, "seed": seed},
     )
 
 
@@ -512,7 +518,11 @@ def random_normal_like(
 
 
 def random_uniform(
-    dtype: int = 1, high: float = 1.0, low: float = 0.0, seed: float = 0.0, shape: list[int] = None
+    dtype: int = 1,
+    high: float = 1.0,
+    low: float = 0.0,
+    seed: float = 0.0,
+    shape: list[int] = None,
 ) -> Tensor:
     """Computes RandomUniform."""
     if shape is None:
@@ -627,11 +637,17 @@ def scatter(data: Tensor, indices: Tensor, updates: Tensor, axis: int = 0) -> Te
 
 
 def scatter_elements(
-    data: Tensor, indices: Tensor, updates: Tensor, axis: int = 0, reduction: str = "none"
+    data: Tensor,
+    indices: Tensor,
+    updates: Tensor,
+    axis: int = 0,
+    reduction: str = "none",
 ) -> Tensor:
     """Computes ScatterElements."""
     return record_op(
-        "ScatterElements", [data, indices, updates], {"axis": axis, "reduction": reduction}
+        "ScatterElements",
+        [data, indices, updates],
+        {"axis": axis, "reduction": reduction},
     )
 
 
@@ -1072,7 +1088,11 @@ def expand(input: Tensor, shape: Tensor) -> Tensor:
 
 
 def slice(
-    data: Tensor, starts: Tensor, ends: Tensor, axes: Tensor = None, steps: Tensor = None
+    data: Tensor,
+    starts: Tensor,
+    ends: Tensor,
+    axes: Tensor = None,
+    steps: Tensor = None,
 ) -> Tensor:
     """Computes Slice."""
     inputs = [data, starts, ends]
@@ -1129,7 +1149,11 @@ def one_hot(indices: Tensor, depth: Tensor, values: Tensor, axis: int = -1) -> T
 
 
 def lrn(
-    x: Tensor, alpha: float = 0.0001, beta: float = 0.75, bias: float = 1.0, size: int = 1
+    x: Tensor,
+    alpha: float = 0.0001,
+    beta: float = 0.75,
+    bias: float = 1.0,
+    size: int = 1,
 ) -> Tensor:
     """Computes LRN."""
     return record_op("LRN", [x], {"alpha": alpha, "beta": beta, "bias": bias, "size": size})
@@ -1140,5 +1164,7 @@ def group_normalization(
 ) -> Tensor:
     """Computes GroupNormalization."""
     return record_op(
-        "GroupNormalization", [x, scale, b], {"epsilon": epsilon, "num_groups": num_groups}
+        "GroupNormalization",
+        [x, scale, b],
+        {"epsilon": epsilon, "num_groups": num_groups},
     )

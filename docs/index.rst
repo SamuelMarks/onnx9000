@@ -17,13 +17,61 @@ Demo
    <script src="_static/demo.js" defer></script>
 
    <div class="demo-container">
-     <div class="demo-tabs" role="tablist" aria-label="Demo Applications">
-       <button class="demo-tab active" id="tab-converter" role="tab" aria-selected="true" aria-controls="converter-demo" data-target="converter-demo" tabindex="0">Model Converter</button>
+          <div class="demo-tabs" role="tablist" aria-label="Demo Applications">
+       <button class="demo-tab active" id="tab-genai" role="tab" aria-selected="true" aria-controls="genai-demo" data-target="genai-demo" tabindex="0">WASM GenAI</button>
+       <button class="demo-tab" id="tab-converter" role="tab" aria-selected="false" aria-controls="converter-demo" data-target="converter-demo" tabindex="-1">Model Converter</button>
        <button class="demo-tab" id="tab-netron" role="tab" aria-selected="false" aria-controls="netron-demo" data-target="netron-demo" tabindex="-1">Netron UI</button>
        <button class="demo-tab" id="tab-optimum" role="tab" aria-selected="false" aria-controls="optimum-demo" data-target="optimum-demo" tabindex="-1">Optimum UI</button>
+       <button class="demo-tab" id="tab-tvm" role="tab" aria-selected="false" aria-controls="tvm-demo" data-target="tvm-demo" tabindex="-1">Apache TVM</button>
      </div>
 
-     <div id="converter-demo" class="demo-panel active" role="tabpanel" aria-labelledby="tab-converter" tabindex="0">
+
+          <div id="tvm-demo" class="demo-panel" role="tabpanel" aria-labelledby="tab-tvm" tabindex="0">
+       <div class="tvm-container" style="display: flex; flex-direction: column; gap: 1rem;">
+         <div class="tvm-header" style="border-bottom: 1px solid var(--color-background-border); padding-bottom: 1rem;">
+           <h3>Apache TVM (WASM-Native) Compiler Demo</h3>
+           <p>Compile and execute ML models directly in the browser via WASM-Native MLIR and TVM.</p>
+           <div id="tvm-status" class="status-badge status-loading">Initializing TVM WASM Runtime...</div>
+         </div>
+         <div class="tvm-content" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+           <div class="tvm-input-area" style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 0.5rem;">
+             <h4 style="margin: 0; font-size: 0.9rem; color: var(--color-foreground-muted);">Model Specification (Relay IR / JSON)</h4>
+             <textarea id="tvm-input-model" style="width: 100%; height: 200px; font-family: monospace; padding: 0.5rem; border: 1px solid var(--color-background-border); border-radius: 4px; background: var(--color-background-primary); color: var(--color-foreground-primary); resize: vertical;" placeholder="Enter model JSON or Relay IR..."></textarea>
+             <button id="tvm-compile-btn" class="action-btn" disabled>Compile to WASM &rarr;</button>
+           </div>
+           <div class="tvm-output-area" style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 0.5rem;">
+             <h4 style="margin: 0; font-size: 0.9rem; color: var(--color-foreground-muted);">Compilation Output / Execution Log</h4>
+             <div id="tvm-output-log" class="chat-output" style="height: 200px; overflow-y: auto; border: 1px solid var(--color-background-border); border-radius: 4px; background: var(--color-background-primary); padding: 10px; font-family: monospace; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;" aria-live="polite">
+               <div class="system-message">Ready to initialize the WebAssembly execution environment for TVM.</div>
+             </div>
+             <button id="tvm-run-btn" class="action-btn" disabled>Execute WASM Kernel &rarr;</button>
+           </div>
+         </div>
+       </div>
+       <script type="module" src="_static/tvm.js"></script>
+     </div>
+
+     <div id="genai-demo" class="demo-panel active" role="tabpanel" aria-labelledby="tab-genai" tabindex="0">
+       <div class="genai-container">
+         <div class="genai-header">
+           <h3>ONNX GenAI (WASM-First) Local LLM Demo</h3>
+           <p>Running entirely in your browser using the newly implemented ONNX GenAI WASM backend.</p>
+           <div id="genai-status" class="status-badge status-loading">Initializing Engine...</div>
+         </div>
+         <div class="genai-chat">
+           <div id="genai-output" class="chat-output" aria-live="polite">
+             <div class="chat-message system-message">Ready to initialize the WebAssembly execution environment and download the quantized LLM.</div>
+           </div>
+           <div class="chat-input-area">
+             <input type="text" id="genai-input" class="chat-input" placeholder="Ask me anything..." aria-label="Chat input" disabled>
+             <button id="genai-btn" class="action-btn" disabled>Send &rarr;</button>
+           </div>
+         </div>
+       </div>
+       <script type="module" src="_static/genai.js"></script>
+     </div>
+
+     <div id="converter-demo" class="demo-panel" role="tabpanel" aria-labelledby="tab-converter" tabindex="0">
        <div class="converter-toolbar">
          <div class="toolbar-group">
            <label for="input-lang">Input:</label>
@@ -92,6 +140,74 @@ Demo
        </div>
      </div>
    </div>
+
+Architecture
+============
+
+.. mermaid::
+
+   flowchart LR
+       %% Theme initialization
+       %%{
+         init: {
+           'theme': 'base',
+           'themeVariables': {
+             'fontFamily': '"Google Sans Normal", "Google Sans", sans-serif',
+             'lineColor': '#20344b',
+             'clusterBkg': '#ffffff',
+             'clusterBorder': '#20344b'
+           }
+         }
+       }%%
+
+       classDef default fill:#ffffff,stroke:#20344b,stroke-width:2px,color:#20344b,font-family:"Google Sans Normal",font-weight:400;
+       classDef centerNode fill:#20344b,stroke:#20344b,stroke-width:2px,color:#ffffff,font-family:"Google Sans Medium",font-weight:500,font-size:20px;
+       classDef import fill:#5cdb6d,stroke:#34a853,stroke-width:2px,color:#20344b,font-family:"Google Sans Normal",font-weight:400;
+       classDef export fill:#57caff,stroke:#4285f4,stroke-width:2px,color:#20344b,font-family:"Google Sans Normal",font-weight:400;
+       classDef process fill:#ffd427,stroke:#f9ab00,stroke-width:2px,color:#20344b,font-family:"Google Sans Normal",font-weight:400;
+       classDef soon fill:#ff7daf,stroke:#ea4335,stroke-width:2px,stroke-dasharray: 5 5,color:#20344b,font-family:"Google Sans Normal",font-weight:400;
+
+       IR(("ONNX9000 IR")):::centerNode
+
+       subgraph Imports ["<span style='font-family: Roboto Mono Normal, monospace; font-size: 16px; font-weight: normal; color: #20344b;'>Imports</span>"]
+           direction TB
+           I_ONNX("ONNX"):::import
+           I_PT("PyTorch"):::import
+           I_OS("ONNX Script"):::import
+           I_TF("TensorFlow (Soon)"):::soon
+       end
+
+       subgraph Exports ["<span style='font-family: Roboto Mono Normal, monospace; font-size: 16px; font-weight: normal; color: #20344b;'>Exports</span>"]
+           direction TB
+           E_ONNX("ONNX"):::export
+           E_MLIR("MLIR / Web-MLIR"):::export
+           E_C("C Backend"):::export
+           E_KERAS("Keras (Soon)"):::soon
+           E_CPP("C++ (Soon)"):::soon
+       end
+
+       subgraph Processing ["<span style='font-family: Roboto Mono Normal, monospace; font-size: 16px; font-weight: normal; color: #20344b;'>Processing</span>"]
+           direction TB
+           P_SIMP("Simplify Models"):::process
+           P_OPT("Optimize Models"):::process
+           P_VIS("Visualize Models"):::process
+       end
+
+       I_ONNX --> IR
+       I_PT --> IR
+       I_OS --> IR
+       I_TF -.-> IR
+
+       IR --> E_ONNX
+       IR --> E_MLIR
+       IR --> E_C
+       IR -.-> E_KERAS
+       IR -.-> E_CPP
+
+       IR <--> P_SIMP
+       IR <--> P_OPT
+       IR --> P_VIS
+
 
 .. include:: README_GENERATED.md
    :parser: myst_parser.sphinx_

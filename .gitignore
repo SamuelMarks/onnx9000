@@ -3,9 +3,7 @@ node_modules/
 .venv/
 venv_38/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 
 # Build outputs
 dist/
@@ -18,6 +16,10 @@ build/
 *.dll
 test_wasm
 test_wasm_core
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+libpycxx.a
 
 # OS files
 .DS_Store
@@ -31,6 +33,7 @@ Thumbs.db
 coverage/
 .coverage
 coverage.json
+coverage.xml
 *_cov.txt
 .pytest_cache/
 .ruff_cache/
@@ -38,18 +41,37 @@ coverage.json
 test.chk
 test.onnx
 test.safetensors
+*.gcda
+*.gcno
+*.gcov
+*.profdata
+*.profraw
+*,cover
 
 # Scratch scripts and temporary files
 /*.py
 /*.sh
-/*.patch
-/*.bak
-/*.log
+*.patch
+*.bak
+*.log
 prompt.md
 skills.md
 /pycdc/
+pycdas
+pycdc
 .uv
-.env\n.env.local\nuv.lock
+.env
+.env.local
+run_*.sh
+fix*.js
+fix*.ts
+fix*.py
+dummy_*.json
+*.data
+*.orig
+*.rej
+
+# Documentation
 docs/README_GENERATED.md
 docs/_build/
 docs/js-api/
@@ -58,3 +80,4 @@ typedoc.out.json
 # Generated Sphinx ReST files
 docs/onnx9000.*.rst
 docs/js-api_toc.rst
+dir/

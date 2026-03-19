@@ -14,7 +14,14 @@ def test_optimization_checker():
     g.add_node(Node("Cast", ["x"], ["y"], name="cast"))
     g.add_node(Node("Conv", ["x", "w"], ["conv_out"], name="conv"))
     g.add_tensor(Tensor("conv_out", [1], "float32"))
-    g.add_node(Node("BatchNormalization", ["conv_out", "s", "b", "m", "v"], ["bn_out"], name="bn"))
+    g.add_node(
+        Node(
+            "BatchNormalization",
+            ["conv_out", "s", "b", "m", "v"],
+            ["bn_out"],
+            name="bn",
+        )
+    )
     g.add_node(Node("Identity", ["x"], ["x_id"], name="id"))
 
     checker = OptimizationAnalyzer(g)

@@ -1,6 +1,6 @@
 import os
-import sys
 import subprocess
+import sys
 
 # Add Python packages to path just in case uv didn't link them natively in build context
 sys.path.insert(0, os.path.abspath("../packages/python/onnx9000-core/src"))
@@ -22,6 +22,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "myst_parser",
     "sphinx_copybutton",
+    "sphinxcontrib.mermaid",
 ]
 
 # myst-parser settings

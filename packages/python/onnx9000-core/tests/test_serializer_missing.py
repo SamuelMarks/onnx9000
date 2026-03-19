@@ -1,8 +1,9 @@
-import pytest
-from onnx9000.core.ir import Graph, Tensor
-from onnx9000.core.dtypes import DType
-from onnx9000.core.serializer import serialize_model
 from typing import Any
+
+import pytest
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.serializer import serialize_model
 
 
 class MockValueInfo:

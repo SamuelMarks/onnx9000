@@ -1,7 +1,7 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.dtypes import DType
 from onnx9000.backends.codegen.generator import Generator
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_elementwise_missing():

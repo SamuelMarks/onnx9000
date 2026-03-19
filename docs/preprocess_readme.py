@@ -4,7 +4,7 @@ docs_dir = os.path.dirname(__file__)
 readme_src = os.path.join(docs_dir, "..", "README.md")
 readme_dest = os.path.join(docs_dir, "README_GENERATED.md")
 
-with open(readme_src, "r") as f:
+with open(readme_src) as f:
     content = f.read()
 
 # Replace paths to point to the js-api/_media versions

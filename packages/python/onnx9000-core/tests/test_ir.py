@@ -19,7 +19,11 @@ def test_dynamic_dim() -> None:
 
 def test_tensor() -> None:
     """Tests the tensor functionality."""
-    t = Variable(name="input_tensor", shape=(DynamicDim("batch"), 3, 224, 224), dtype=DType.FLOAT32)
+    t = Variable(
+        name="input_tensor",
+        shape=(DynamicDim("batch"), 3, 224, 224),
+        dtype=DType.FLOAT32,
+    )
     assert t.name == "input_tensor"
     assert t.shape[1] == 3
     assert t.dtype == DType.FLOAT32
@@ -32,7 +36,11 @@ def test_tensor() -> None:
 def test_node() -> None:
     """Tests the node functionality."""
     n = Node(
-        op_type="Add", inputs=["a", "b"], outputs=["c"], attributes={"alpha": 1.0}, name="add_node"
+        op_type="Add",
+        inputs=["a", "b"],
+        outputs=["c"],
+        attributes={"alpha": 1.0},
+        name="add_node",
     )
     assert n.op_type == "Add"
     assert n.inputs == ["a", "b"]

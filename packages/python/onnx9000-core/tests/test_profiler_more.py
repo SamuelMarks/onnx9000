@@ -34,8 +34,20 @@ def test_profiler_printing(capsys):
     res.peak_activation_bytes = 200
     res.total_flops = 500
     res.node_profiles = [
-        {"name": "n1", "op_type": "Conv", "params": 60, "activation_bytes": 100, "flops": 300},
-        {"name": "n2", "op_type": "Relu", "params": 40, "activation_bytes": 100, "flops": 200},
+        {
+            "name": "n1",
+            "op_type": "Conv",
+            "params": 60,
+            "activation_bytes": 100,
+            "flops": 300,
+        },
+        {
+            "name": "n2",
+            "op_type": "Relu",
+            "params": 40,
+            "activation_bytes": 100,
+            "flops": 200,
+        },
     ]
     res.print_parameter_pie_chart()
     res.print_activation_pie_chart()
@@ -141,7 +153,12 @@ def test_profiler_ops_loop():
     body_g.add_tensor(Tensor("y", [10, 10], "float32"))
 
     g.add_node(
-        Node("Loop", ["M", "cond", "v_in"], ["v_out"], {"body": Attribute("body", value=body_g)})
+        Node(
+            "Loop",
+            ["M", "cond", "v_in"],
+            ["v_out"],
+            {"body": Attribute("body", value=body_g)},
+        )
     )
     # Mock M tensor with values
     t_M = Tensor(

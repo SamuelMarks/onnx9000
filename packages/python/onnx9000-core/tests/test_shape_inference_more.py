@@ -72,7 +72,10 @@ def test_infer_shapes_concat():
     g.add_tensor(Tensor("B", shape=(10, 30), dtype=DType.FLOAT32))
     g.inputs.extend(["A", "B"])
     n = Node(
-        "Concat", inputs=["A", "B"], outputs=["Y"], attributes={"axis": Attribute("axis", value=1)}
+        "Concat",
+        inputs=["A", "B"],
+        outputs=["Y"],
+        attributes={"axis": Attribute("axis", value=1)},
     )
     g.add_node(n)
     infer_shapes_and_types(g)

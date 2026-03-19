@@ -12,7 +12,9 @@ class SerializationError(Onnx9000Error):
     """Exception raised when failing to serialize an ONNX graph to a file."""
 
 
-def _serialize_shape(shape: tuple[Union[int, DynamicDim], ...]) -> onnx_pb2.TensorShapeProto:
+def _serialize_shape(
+    shape: tuple[Union[int, DynamicDim], ...],
+) -> onnx_pb2.TensorShapeProto:
     """Serialize our internal shape into ONNX TensorShapeProto."""
     shape_proto = onnx_pb2.TensorShapeProto()
     for dim in shape:

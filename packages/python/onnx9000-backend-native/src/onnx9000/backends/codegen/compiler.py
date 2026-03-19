@@ -179,7 +179,8 @@ def compile_wasm(
             import warnings
 
             warnings.warn(
-                f"Generated WASM payload is {size_mb:.2f}MB, which exceeds standard 4MB WebAssembly.instantiate limits. Use instantiateStreaming in the browser."
+                f"Generated WASM payload is {size_mb:.2f}MB, which exceeds standard 4MB WebAssembly.instantiate limits. Use instantiateStreaming in the browser.",
+                stacklevel=2,
             )
 
     # Post-process to expose JS typed-array bridges for zero-copy input/output evaluation

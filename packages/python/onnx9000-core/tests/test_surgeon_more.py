@@ -435,11 +435,16 @@ def test_pattern_match_inputs_ordered() -> None:
     assert len(match_pattern(g, pm_call2)) == 1
     pm_opt = PatternMatcher(
         "Main",
-        inputs=[PatternMatcher("N1"), PatternMatcher("N2"), PatternMatcher("N3", optional=True)],
+        inputs=[
+            PatternMatcher("N1"),
+            PatternMatcher("N2"),
+            PatternMatcher("N3", optional=True),
+        ],
     )
     assert len(match_pattern(g, pm_opt)) == 1
     pm_opt2 = PatternMatcher(
-        "Main", inputs=[PatternMatcher("N1"), PatternMatcher("N2"), PatternMatcher("N3")]
+        "Main",
+        inputs=[PatternMatcher("N1"), PatternMatcher("N2"), PatternMatcher("N3")],
     )
     assert len(match_pattern(g, pm_opt2)) == 0
     pm2 = PatternMatcher("Main", inputs=[PatternMatcher("N1"), PatternMatcher("N3")])

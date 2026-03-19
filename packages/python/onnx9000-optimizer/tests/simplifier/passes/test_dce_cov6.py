@@ -1,10 +1,8 @@
 import numpy as np
-from onnx9000.core.ir import ValueInfo
-from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
-from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass, IdentityEliminationPass
 
 
 def test_cf_subgraph_recurse():

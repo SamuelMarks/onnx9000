@@ -1,6 +1,5 @@
 import pytest
-from onnx9000.toolkit.script import script
-from onnx9000.toolkit.script import op
+from onnx9000.toolkit.script import op, script
 
 
 def my_if(cond, a, b):

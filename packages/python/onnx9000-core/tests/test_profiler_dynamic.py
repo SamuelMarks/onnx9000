@@ -93,7 +93,12 @@ def test_profiler_loop_dynamic():
     body_g.add_tensor(Tensor("y", ("N",), "float32"))
 
     g.add_node(
-        Node("Loop", ["M", "cond", "v_in"], ["v_out"], {"body": Attribute("body", value=body_g)})
+        Node(
+            "Loop",
+            ["M", "cond", "v_in"],
+            ["v_out"],
+            {"body": Attribute("body", value=body_g)},
+        )
     )
     # Without values for M so it falls back to loop_iters
     g.add_tensor(Tensor("M", [1], "int64"))

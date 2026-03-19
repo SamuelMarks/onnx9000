@@ -3,7 +3,11 @@
 import os
 
 import pytest
-from onnx9000.core.profiler_grouping import HierarchicalProfileNode, export_csv, extract_namespace
+from onnx9000.core.profiler_grouping import (
+    HierarchicalProfileNode,
+    export_csv,
+    extract_namespace,
+)
 
 
 class DummyProfilerResult:

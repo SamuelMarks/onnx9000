@@ -1,6 +1,6 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 

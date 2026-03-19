@@ -1,14 +1,14 @@
-import pytest
 import numpy as np
+import pytest
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.constant_folding import (
-    _evaluate_pool,
+    ConstantFoldingPass,
     _evaluate_conv,
+    _evaluate_pool,
     _numpy_to_tensor_proto,
     _tensor_to_numpy,
-    ConstantFoldingPass,
 )
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
-from onnx9000.core.dtypes import DType
 
 
 def test_evaluate_pool_max_avg():
@@ -70,17 +70,17 @@ def test_numpy_to_tensor_proto():
     t_f32 = _numpy_to_tensor_proto(np.array([1.0], dtype=np.float32), "test_f32")
     assert t_f32.name == "test_f32"
 
-    t_f64 = _numpy_to_tensor_proto(np.array([1.0], dtype=np.float64))
-    t_f16 = _numpy_to_tensor_proto(np.array([1.0], dtype=np.float16))
-    t_i32 = _numpy_to_tensor_proto(np.array([1], dtype=np.int32))
-    t_i64 = _numpy_to_tensor_proto(np.array([1], dtype=np.int64))
-    t_i16 = _numpy_to_tensor_proto(np.array([1], dtype=np.int16))
-    t_i8 = _numpy_to_tensor_proto(np.array([1], dtype=np.int8))
-    t_u8 = _numpy_to_tensor_proto(np.array([1], dtype=np.uint8))
-    t_u16 = _numpy_to_tensor_proto(np.array([1], dtype=np.uint16))
-    t_u32 = _numpy_to_tensor_proto(np.array([1], dtype=np.uint32))
-    t_u64 = _numpy_to_tensor_proto(np.array([1], dtype=np.uint64))
-    t_bool = _numpy_to_tensor_proto(np.array([True], dtype=np.bool_))
+    _numpy_to_tensor_proto(np.array([1.0], dtype=np.float64))
+    _numpy_to_tensor_proto(np.array([1.0], dtype=np.float16))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.int32))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.int64))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.int16))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.int8))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.uint8))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.uint16))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.uint32))
+    _numpy_to_tensor_proto(np.array([1], dtype=np.uint64))
+    _numpy_to_tensor_proto(np.array([True], dtype=np.bool_))
 
     # Int and float conversion
     t_int = _numpy_to_tensor_proto(5)
@@ -315,8 +315,8 @@ def test_gathernd_batch_dims():
 
 
 def test_cf_constant_attr_types():
+    from onnx9000.core.ir import Attribute, Graph, Node
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
-    from onnx9000.core.ir import Graph, Node, Attribute
 
     g = Graph("TestCFConstants")
 
@@ -364,10 +364,10 @@ def test_cf_constant_attr_types():
 
 
 def test_cf_constant_attr_types():
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
-    from onnx9000.core.ir import Graph, Node, Attribute, Tensor
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     g = Graph("TestCFConstants")
 
@@ -412,11 +412,12 @@ def test_cf_constant_attr_types():
 
 
 def test_cf_tensor_proto():
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
-    from onnx9000.core.ir import Graph, Node, Attribute, Tensor
-    from onnx9000.core.dtypes import DType
-    import numpy as np
     import unittest.mock
+
+    import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     g = Graph("TestTensorProto")
     n = Node("Constant", [], ["out"])
@@ -608,7 +609,7 @@ def test_cf_final_lines():
         cf._run_once(g)
 
     # 725: BN 1D fallback
-    n_bn = Node("BatchNormalization", [], [])
+    Node("BatchNormalization", [], [])
     X = np.ones((2,))
     scale = np.ones((2,))
     B = np.ones((2,))
@@ -697,7 +698,7 @@ def test_cf_final_lines():
         cf._run_once(g)
 
     # 725: BN 1D fallback
-    n_bn = Node("BatchNormalization", [], [])
+    Node("BatchNormalization", [], [])
     X = np.ones((2,))
     scale = np.ones((2,))
     B = np.ones((2,))

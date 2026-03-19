@@ -1,8 +1,7 @@
-from onnx9000.core.ir import Attribute
-import pytest
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
+import pytest
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 

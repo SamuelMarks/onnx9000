@@ -1,6 +1,6 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training import compile_training_graph
 
 

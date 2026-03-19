@@ -1,9 +1,10 @@
-import pytest
-from pathlib import Path
 import struct
 import tempfile
-from onnx9000.core.parser.core import parse_tensor_proto, parse_model, load_tensor
+from pathlib import Path
+
+import pytest
 from onnx9000.core import onnx_pb2
+from onnx9000.core.parser.core import load_tensor, parse_model, parse_tensor_proto
 
 
 def test_parse_tensor_proto_external_data():

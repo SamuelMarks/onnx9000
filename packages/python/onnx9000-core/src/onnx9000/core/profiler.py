@@ -348,7 +348,13 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
                     macs = f"({out_v} * {k_vol} * {in_c} / {groups})"
                     flops = f"2 * {macs}"
 
-            elif n.op_type in ["MatMul", "Gemm", "MatMulInteger", "QLinearMatMul", "QLinearConv"]:
+            elif n.op_type in [
+                "MatMul",
+                "Gemm",
+                "MatMulInteger",
+                "QLinearMatMul",
+                "QLinearConv",
+            ]:
                 in1_shape = graph.tensors[n.inputs[0]].shape if n.inputs else ()
                 k = in1_shape[-1] if len(in1_shape) > 0 else 1
                 if isinstance(k, DynamicDim):
@@ -503,13 +509,23 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
             ]:
                 flops = out_vol
 
-            elif n.op_type in ["BatchNormalization", "LayerNormalization", "InstanceNormalization"]:
+            elif n.op_type in [
+                "BatchNormalization",
+                "LayerNormalization",
+                "InstanceNormalization",
+            ]:
                 if isinstance(out_vol, int):
                     flops = out_vol * 4
                 else:
                     flops = f"4 * {out_vol}"
 
-            elif n.op_type in ["ReduceMean", "ReduceSum", "ReduceMax", "ReduceMin", "Softmax"]:
+            elif n.op_type in [
+                "ReduceMean",
+                "ReduceSum",
+                "ReduceMax",
+                "ReduceMin",
+                "Softmax",
+            ]:
                 in_vol = (
                     resolve_volume(graph.tensors[n.inputs[0]].shape, dynamic_overrides)
                     if n.inputs
@@ -526,7 +542,8 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
                         for inp in n.inputs
                         if inp in graph.tensors
                         and isinstance(
-                            resolve_volume(graph.tensors[inp].shape, dynamic_overrides), int
+                            resolve_volume(graph.tensors[inp].shape, dynamic_overrides),
+                            int,
                         )
                     ]
                 )

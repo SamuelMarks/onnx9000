@@ -71,7 +71,8 @@ def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> Union[in
 
 
 def broadcast_shapes(
-    shape_a: tuple[Union[int, DynamicDim], ...], shape_b: tuple[Union[int, DynamicDim], ...]
+    shape_a: tuple[Union[int, DynamicDim], ...],
+    shape_b: tuple[Union[int, DynamicDim], ...],
 ) -> tuple[Union[int, DynamicDim], ...]:
     """
     Applies standard NumPy broadcasting rules to two shapes, including dynamic dimensions.

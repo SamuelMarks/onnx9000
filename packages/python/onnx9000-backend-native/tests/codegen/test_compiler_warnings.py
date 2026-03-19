@@ -1,8 +1,9 @@
-import pytest
-from unittest.mock import patch
 import os
 import warnings
-from onnx9000.backends.codegen.compiler import compile_wasm, compile_static_lib
+from unittest.mock import patch
+
+import pytest
+from onnx9000.backends.codegen.compiler import compile_static_lib, compile_wasm
 
 
 def test_wasm_size_warning():

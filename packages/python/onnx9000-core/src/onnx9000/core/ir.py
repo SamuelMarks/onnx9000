@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 class DLDataType(ctypes.Structure):
     """DLPack data type structure."""
 
-    _fields_ = [("code", ctypes.c_uint8), ("bits", ctypes.c_uint8), ("lanes", ctypes.c_uint16)]
+    _fields_ = [
+        ("code", ctypes.c_uint8),
+        ("bits", ctypes.c_uint8),
+        ("lanes", ctypes.c_uint16),
+    ]
 
 
 class DLDevice(ctypes.Structure):
@@ -138,7 +142,13 @@ class Tensor:
     """Base Internal Representation of a Tensor."""
 
     def __init__(
-        self, name: str, shape=None, dtype=None, is_initializer=False, requires_grad=True, data=None
+        self,
+        name: str,
+        shape=None,
+        dtype=None,
+        is_initializer=False,
+        requires_grad=True,
+        data=None,
     ) -> None:
         """Initialize the class with necessary attributes."""
         self.name = name

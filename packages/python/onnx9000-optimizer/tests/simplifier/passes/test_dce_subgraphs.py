@@ -1,6 +1,6 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Attribute
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import DCEPass
 
 

@@ -1,10 +1,10 @@
-import os
 import glob
+import os
 
 for file in glob.glob(
     os.path.join(os.path.dirname(__file__), "js-api", "**", "*.md"), recursive=True
 ):
-    with open(file, "r") as f:
+    with open(file) as f:
         content = f.read()
     if "(Box.md#" in content:
         content = content.replace("(Box.md#height)", "(Box.md)")

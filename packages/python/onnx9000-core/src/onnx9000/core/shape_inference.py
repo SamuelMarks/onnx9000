@@ -5,7 +5,11 @@ from typing import Any, Optional, Union
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import ShapeInferenceError
 from onnx9000.core.ir import DynamicDim, Graph, Node, Tensor, ValueInfo
-from onnx9000.core.symbolic import broadcast_shapes, evaluate_symbolic_expression, simplify_dim
+from onnx9000.core.symbolic import (
+    broadcast_shapes,
+    evaluate_symbolic_expression,
+    simplify_dim,
+)
 from onnx9000.core.utils import topological_sort
 
 
@@ -741,8 +745,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
                     out_dtypes = [DType.INT64, DType.FLOAT32]
             else:
                 out_shapes = [
-                    tuple([DynamicDim(f"ml_{node.op_type}_{idx}")])
-                    for idx in range(len(node.outputs))
+                    (DynamicDim(f"ml_{node.op_type}_{idx}"),) for idx in range(len(node.outputs))
                 ]
                 out_dtypes = [DType.FLOAT32] * len(node.outputs)
 

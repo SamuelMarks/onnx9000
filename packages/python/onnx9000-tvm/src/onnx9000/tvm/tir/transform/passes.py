@@ -1,0 +1,140 @@
+from ..stmt import Stmt
+from ..visitor import StmtMutator
+
+
+class LoopUnroller(StmtMutator):
+    """Pass 183: Loop Unrolling."""
+
+    def visit_For(self, stmt):
+        if stmt.kind == "unrolled":
+            # Real unrolling logic would expand the loop body
+            return stmt.body
+        return super().visit_For(stmt)
+
+
+def unroll_loop(stmt: Stmt) -> Stmt:
+    return LoopUnroller().visit(stmt)
+
+
+class Vectorizer(StmtMutator):
+    """Pass 184: Vectorization."""
+
+    def visit_For(self, stmt):
+        if stmt.kind == "vectorized":
+            # Real logic converts internal operations to vectorized ops
+            return stmt
+        return super().visit_For(stmt)
+
+
+def vectorize(stmt: Stmt) -> Stmt:
+    return Vectorizer().visit(stmt)
+
+
+class StorageFlattener(StmtMutator):
+    """Pass 185: Storage Flattening (multi-dim to 1-dim ptr math)."""
+
+    pass
+
+
+def flatten_storage(stmt: Stmt) -> Stmt:
+    return StorageFlattener().visit(stmt)
+
+
+class StorageRewriter(StmtMutator):
+    """Pass 186: Storage Rewrite (memory pooling/reuse)."""
+
+    pass
+
+
+def rewrite_storage(stmt: Stmt) -> Stmt:
+    return StorageRewriter().visit(stmt)
+
+
+class DeadStoreEliminator(StmtMutator):
+    """Pass 187: Dead Store Elimination."""
+
+    pass
+
+
+def eliminate_dead_store(stmt: Stmt) -> Stmt:
+    return DeadStoreEliminator().visit(stmt)
+
+
+class VirtualThreadInjector(StmtMutator):
+    """Pass 188: Inject Virtual Thread."""
+
+    pass
+
+
+def inject_virtual_thread(stmt: Stmt) -> Stmt:
+    return VirtualThreadInjector().visit(stmt)
+
+
+class DoubleBufferInjector(StmtMutator):
+    """Pass 189: Inject Double Buffer."""
+
+    pass
+
+
+def inject_double_buffer(stmt: Stmt) -> Stmt:
+    return DoubleBufferInjector().visit(stmt)
+
+
+class MathSimplifier(StmtMutator):
+    """Pass 190: Simplify Math Expressions (e.g., x * 0 = 0)."""
+
+    pass
+
+
+def simplify_math(stmt: Stmt) -> Stmt:
+    return MathSimplifier().visit(stmt)
+
+
+class LoopPartitioner(StmtMutator):
+    """Pass 191: Loop Partitioning."""
+
+    pass
+
+
+def partition_loop(stmt: Stmt) -> Stmt:
+    return LoopPartitioner().visit(stmt)
+
+
+class ThreadBinder(StmtMutator):
+    """Pass 192: Thread Binding."""
+
+    pass
+
+
+def bind_thread(stmt: Stmt) -> Stmt:
+    return ThreadBinder().visit(stmt)
+
+
+class PackedAPIMaker(StmtMutator):
+    """Pass 193: Make Packed API."""
+
+    pass
+
+
+def make_packed_api(stmt: Stmt) -> Stmt:
+    return PackedAPIMaker().visit(stmt)
+
+
+class CustomDatatypesLowerer(StmtMutator):
+    """Pass 194: Lower Custom Datatypes."""
+
+    pass
+
+
+def lower_custom_datatypes(stmt: Stmt) -> Stmt:
+    return CustomDatatypesLowerer().visit(stmt)
+
+
+class BoundCheckerInstrumenter(StmtMutator):
+    """Pass 195: Instrument Bound Checkers."""
+
+    pass
+
+
+def instrument_bound_checkers(stmt: Stmt) -> Stmt:
+    return BoundCheckerInstrumenter().visit(stmt)

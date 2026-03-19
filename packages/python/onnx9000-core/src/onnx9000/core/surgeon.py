@@ -85,7 +85,10 @@ def simplify(graph: Graph) -> Graph:
 
 
 def walk(
-    graph: Graph, mode: str = "dfs", yield_type: Optional[str] = None, direction: str = "backward"
+    graph: Graph,
+    mode: str = "dfs",
+    yield_type: Optional[str] = None,
+    direction: str = "backward",
 ) -> Generator[Union[Node, Tensor], None, None]:
     """Depth-First or Breadth-First traversal yielding Nodes and Tensors."""
     visited = set()
@@ -116,7 +119,10 @@ def walk(
             for attr in n.attributes.values():
                 if isinstance(attr.value, Graph):
                     yield from walk(
-                        attr.value, mode=mode, yield_type=yield_type, direction=direction
+                        attr.value,
+                        mode=mode,
+                        yield_type=yield_type,
+                        direction=direction,
                     )
                 elif isinstance(attr.value, list) and all(isinstance(v, Graph) for v in attr.value):
                     for g in attr.value:
@@ -1286,7 +1292,10 @@ def unfuse_fake_quantize(graph: Graph) -> Graph:
 
 def inject_trt_plugin(graph: Graph, plugin_name: str, attrs: dict) -> Node:
     """Inject Trt Plugin function logic implementation."""
-    return Node(plugin_name, attributes={k: Attribute(k, "UNKNOWN", v) for (k, v) in attrs.items()})
+    return Node(
+        plugin_name,
+        attributes={k: Attribute(k, "UNKNOWN", v) for (k, v) in attrs.items()},
+    )
 
 
 def convert_nms_trt(graph: Graph) -> Graph:
