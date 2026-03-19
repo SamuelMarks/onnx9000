@@ -1,4 +1,5 @@
-from typing import Set
+"""TVM submodule for AST and optimization."""
+
 
 # Pass 201: Support arbitrary precision integers (i4, i8, i16, i32, i64).
 # Pass 202: Support float types (f16, bf16, f32, f64).
@@ -24,4 +25,5 @@ SUPPORTED_DTYPES: set[str] = {
 
 
 def is_supported(dtype: str) -> bool:
+    """Do the function."""
     return dtype in SUPPORTED_DTYPES

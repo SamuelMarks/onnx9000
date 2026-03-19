@@ -19,351 +19,351 @@ Instead of acting as a JavaScript wrapper around a massive compiled C++ runtime 
 
 ### Phase 1: Pipeline API & Task Orchestration
 
-- [ ] 1. Implement the base `Pipeline` class.
-- [ ] 2. Implement the `pipeline(task, model, ...)` factory function.
-- [ ] 3. Support `feature-extraction` pipeline (getting hidden states).
-- [ ] 4. Support `text-classification` pipeline (e.g., sentiment analysis).
-- [ ] 5. Support `token-classification` pipeline (e.g., NER, POS tagging).
-- [ ] 6. Support `question-answering` pipeline.
-- [ ] 7. Support `zero-shot-classification` pipeline.
-- [ ] 8. Support `translation` pipeline.
-- [ ] 9. Support `summarization` pipeline.
-- [ ] 10. Support `text-generation` pipeline (integrating with ONNX19 GenAI).
-- [ ] 11. Support `text2text-generation` pipeline.
-- [ ] 12. Support `fill-mask` pipeline.
-- [ ] 13. Support `image-classification` pipeline.
-- [ ] 14. Support `object-detection` pipeline.
-- [ ] 15. Support `zero-shot-image-classification` pipeline.
-- [ ] 16. Support `image-segmentation` pipeline.
-- [ ] 17. Support `depth-estimation` pipeline.
-- [ ] 18. Support `image-to-image` pipeline.
-- [ ] 19. Support `audio-classification` pipeline.
-- [ ] 20. Support `automatic-speech-recognition` (ASR) pipeline.
-- [ ] 21. Support `text-to-speech` (TTS) pipeline.
-- [ ] 22. Support `document-question-answering` pipeline.
-- [ ] 23. Support `visual-question-answering` pipeline.
-- [ ] 24. Support `image-feature-extraction` pipeline.
-- [ ] 25. Support pipeline batching (`[input1, input2]`).
-- [ ] 26. Implement `top_k` argument parsing in classification pipelines.
-- [ ] 27. Implement thresholding arguments in detection pipelines.
-- [ ] 28. Support generic `device` flag (mapping to WebGPU/WASM).
-- [ ] 29. Support `dtype` casting in pipelines (fp32, fp16, int8).
-- [ ] 30. Implement progressive callbacks in pipelines (for streaming or download progress).
-- [ ] 31. Implement pipeline pooling (keeping models hot in memory).
-- [ ] 32. Allow custom pre_process step overriding in pipelines.
-- [ ] 33. Allow custom post_process step overriding in pipelines.
-- [ ] 34. Allow forward step overriding in pipelines.
-- [ ] 35. Ensure structured error throwing for unsupported pipeline/model combos.
+- [x] 1. Implement the base `Pipeline` class.
+- [x] 2. Implement the `pipeline(task, model, ...)` factory function.
+- [x] 3. Support `feature-extraction` pipeline (getting hidden states).
+- [x] 4. Support `text-classification` pipeline (e.g., sentiment analysis).
+- [x] 5. Support `token-classification` pipeline (e.g., NER, POS tagging).
+- [x] 6. Support `question-answering` pipeline.
+- [x] 7. Support `zero-shot-classification` pipeline.
+- [x] 8. Support `translation` pipeline.
+- [x] 9. Support `summarization` pipeline.
+- [x] 10. Support `text-generation` pipeline (integrating with ONNX19 GenAI).
+- [x] 11. Support `text2text-generation` pipeline.
+- [x] 12. Support `fill-mask` pipeline.
+- [x] 13. Support `image-classification` pipeline.
+- [x] 14. Support `object-detection` pipeline.
+- [x] 15. Support `zero-shot-image-classification` pipeline.
+- [x] 16. Support `image-segmentation` pipeline.
+- [x] 17. Support `depth-estimation` pipeline.
+- [x] 18. Support `image-to-image` pipeline.
+- [x] 19. Support `audio-classification` pipeline.
+- [x] 20. Support `automatic-speech-recognition` (ASR) pipeline.
+- [x] 21. Support `text-to-speech` (TTS) pipeline.
+- [x] 22. Support `document-question-answering` pipeline.
+- [x] 23. Support `visual-question-answering` pipeline.
+- [x] 24. Support `image-feature-extraction` pipeline.
+- [x] 25. Support pipeline batching (`[input1, input2]`).
+- [x] 26. Implement `top_k` argument parsing in classification pipelines.
+- [x] 27. Implement thresholding arguments in detection pipelines.
+- [x] 28. Support generic `device` flag (mapping to WebGPU/WASM).
+- [x] 29. Support `dtype` casting in pipelines (fp32, fp16, int8).
+- [x] 30. Implement progressive callbacks in pipelines (for streaming or download progress).
+- [x] 31. Implement pipeline pooling (keeping models hot in memory).
+- [x] 32. Allow custom pre_process step overriding in pipelines.
+- [x] 33. Allow custom post_process step overriding in pipelines.
+- [x] 34. Allow forward step overriding in pipelines.
+- [x] 35. Ensure structured error throwing for unsupported pipeline/model combos.
 
 ### Phase 2: Tokenizer Engine (Full HF Compatibility)
 
-- [ ] 36. Define `PreTrainedTokenizer` base class.
-- [ ] 37. Define `PreTrainedTokenizerFast` base class (WASM backed).
-- [ ] 38. Support loading `tokenizer_config.json`.
-- [ ] 39. Support loading `tokenizer.json` (the fast tokenizer format).
-- [ ] 40. Implement WASM BPE (Byte-Pair Encoding) implementation.
-- [ ] 41. Implement WASM WordPiece implementation.
-- [ ] 42. Implement WASM Unigram implementation.
-- [ ] 43. Handle `padding="max_length"` keyword argument.
-- [ ] 44. Handle `padding="longest"` keyword argument.
-- [ ] 45. Handle `padding=False` keyword argument.
-- [ ] 46. Handle `truncation=True` keyword argument.
-- [ ] 47. Handle `truncation="only_first"` keyword argument.
-- [ ] 48. Handle `truncation="only_second"` keyword argument.
-- [ ] 49. Handle `truncation="longest_first"` keyword argument.
-- [ ] 50. Handle `max_length` keyword argument.
-- [ ] 51. Handle `stride` keyword argument for overlapping contexts.
-- [ ] 52. Handle `return_tensors` ("np", "pt", "tf", "ort", "webgpu").
-- [ ] 53. Handle `return_attention_mask` keyword argument.
-- [ ] 54. Handle `return_token_type_ids` keyword argument.
-- [ ] 55. Handle `return_overflowing_tokens` keyword argument.
-- [ ] 56. Handle `return_special_tokens_mask` keyword argument.
-- [ ] 57. Handle `return_offsets_mapping` keyword argument.
-- [ ] 58. Implement word to token ID mapping (`word_ids()`).
-- [ ] 59. Implement character to token ID mapping (`char_to_token()`).
-- [ ] 60. Implement token to character mapping (`token_to_chars()`).
-- [ ] 61. Support text pairs (Sentence A, Sentence B).
-- [ ] 62. Implement special token addition logic.
-- [ ] 63. Handle `bos_token`, `eos_token`, `unk_token`, `sep_token`, `pad_token`, `cls_token`, `mask_token`.
-- [ ] 64. Process complex `AddedToken` configurations (lstrip, rstrip, single_word).
-- [ ] 65. Implement `decode()` and `batch_decode()`.
-- [ ] 66. Support `skip_special_tokens` in decoding.
-- [ ] 67. Support `clean_up_tokenization_spaces` in decoding.
-- [ ] 68. Implement regex-based pre-tokenizers in WASM.
-- [ ] 69. Implement byte-level pre-tokenizers.
-- [ ] 70. Implement Metaspace pre-tokenizers.
-- [ ] 71. Implement punctuation splitting pre-tokenizers.
-- [ ] 72. Implement decoders (ByteLevel, WordPiece, Metaspace).
-- [ ] 73. Provide a fallback JS implementation for non-WASM environments.
-- [ ] 74. Implement chat templates using a lightweight JS Jinja engine.
-- [ ] 75. Validate inputs (strings, lists of strings, nested lists).
+- [x] 36. Define `PreTrainedTokenizer` base class.
+- [x] 37. Define `PreTrainedTokenizerFast` base class (WASM backed).
+- [x] 38. Support loading `tokenizer_config.json`.
+- [x] 39. Support loading `tokenizer.json` (the fast tokenizer format).
+- [x] 40. Implement WASM BPE (Byte-Pair Encoding) implementation.
+- [x] 41. Implement WASM WordPiece implementation.
+- [x] 42. Implement WASM Unigram implementation.
+- [x] 43. Handle `padding="max_length"` keyword argument.
+- [x] 44. Handle `padding="longest"` keyword argument.
+- [x] 45. Handle `padding=False` keyword argument.
+- [x] 46. Handle `truncation=True` keyword argument.
+- [x] 47. Handle `truncation="only_first"` keyword argument.
+- [x] 48. Handle `truncation="only_second"` keyword argument.
+- [x] 49. Handle `truncation="longest_first"` keyword argument.
+- [x] 50. Handle `max_length` keyword argument.
+- [x] 51. Handle `stride` keyword argument for overlapping contexts.
+- [x] 52. Handle `return_tensors` ("np", "pt", "tf", "ort", "webgpu").
+- [x] 53. Handle `return_attention_mask` keyword argument.
+- [x] 54. Handle `return_token_type_ids` keyword argument.
+- [x] 55. Handle `return_overflowing_tokens` keyword argument.
+- [x] 56. Handle `return_special_tokens_mask` keyword argument.
+- [x] 57. Handle `return_offsets_mapping` keyword argument.
+- [x] 58. Implement word to token ID mapping (`word_ids()`).
+- [x] 59. Implement character to token ID mapping (`char_to_token()`).
+- [x] 60. Implement token to character mapping (`token_to_chars()`).
+- [x] 61. Support text pairs (Sentence A, Sentence B).
+- [x] 62. Implement special token addition logic.
+- [x] 63. Handle `bos_token`, `eos_token`, `unk_token`, `sep_token`, `pad_token`, `cls_token`, `mask_token`.
+- [x] 64. Process complex `AddedToken` configurations (lstrip, rstrip, single_word).
+- [x] 65. Implement `decode()` and `batch_decode()`.
+- [x] 66. Support `skip_special_tokens` in decoding.
+- [x] 67. Support `clean_up_tokenization_spaces` in decoding.
+- [x] 68. Implement regex-based pre-tokenizers in WASM.
+- [x] 69. Implement byte-level pre-tokenizers.
+- [x] 70. Implement Metaspace pre-tokenizers.
+- [x] 71. Implement punctuation splitting pre-tokenizers.
+- [x] 72. Implement decoders (ByteLevel, WordPiece, Metaspace).
+- [x] 73. Provide a fallback JS implementation for non-WASM environments.
+- [x] 74. Implement chat templates using a lightweight JS Jinja engine.
+- [x] 75. Validate inputs (strings, lists of strings, nested lists).
 
 ### Phase 3: Vision Processors & Image Handling
 
-- [ ] 76. Define `BaseImageProcessor` interface.
-- [ ] 77. Create `onnx9000.Image` object wrapper (handling Canvas/ImageData/Blob/URL).
-- [ ] 78. Support loading images directly from URLs natively.
-- [ ] 79. Support loading images from base64 strings.
-- [ ] 80. Implement `do_resize` logic.
-- [ ] 81. Implement WASM-accelerated bilinear interpolation resizing.
-- [ ] 82. Implement WASM-accelerated bicubic interpolation resizing.
-- [ ] 83. Implement WASM-accelerated nearest-neighbor interpolation resizing.
-- [ ] 84. Implement `do_center_crop` logic.
-- [ ] 85. Implement `do_random_crop` logic.
-- [ ] 86. Implement `do_pad` logic (constant, reflect, edge padding).
-- [ ] 87. Implement `do_rescale` (e.g., multiplying by 1/255).
-- [ ] 88. Implement `do_normalize` (subtracting mean, dividing by std).
-- [ ] 89. Support custom `image_mean` and `image_std` parameters.
-- [ ] 90. Handle layout conversion (HWC to CHW format).
-- [ ] 91. Implement `ImageProcessor` batching (lists of images).
-- [ ] 92. Support `return_tensors` specifically for WebGPU image uploads.
-- [ ] 93. Create specialized `ViTImageProcessor`.
-- [ ] 94. Create specialized `CLIPImageProcessor`.
-- [ ] 95. Create specialized `DeiTImageProcessor`.
-- [ ] 96. Create specialized `DetrImageProcessor`.
-- [ ] 97. Create specialized `YolosImageProcessor`.
-- [ ] 98. Implement bounding box drawing utilities on HTML Canvas.
-- [ ] 99. Implement segmentation mask drawing utilities on HTML Canvas.
-- [ ] 100. Write WebGPU shaders for on-device image normalization to bypass CPU.
-- [ ] 101. Write WebGPU shaders for on-device image resizing.
-- [ ] 102. Support Exif orientation correction before processing.
-- [ ] 103. Handle RGBA to RGB conversion.
-- [ ] 104. Handle Grayscale to RGB conversion.
-- [ ] 105. Optimize raw pixel array copying into WASM heap.
+- [x] 76. Define `BaseImageProcessor` interface.
+- [x] 77. Create `onnx9000.Image` object wrapper (handling Canvas/ImageData/Blob/URL).
+- [x] 78. Support loading images directly from URLs natively.
+- [x] 79. Support loading images from base64 strings.
+- [x] 80. Implement `do_resize` logic.
+- [x] 81. Implement WASM-accelerated bilinear interpolation resizing.
+- [x] 82. Implement WASM-accelerated bicubic interpolation resizing.
+- [x] 83. Implement WASM-accelerated nearest-neighbor interpolation resizing.
+- [x] 84. Implement `do_center_crop` logic.
+- [x] 85. Implement `do_random_crop` logic.
+- [x] 86. Implement `do_pad` logic (constant, reflect, edge padding).
+- [x] 87. Implement `do_rescale` (e.g., multiplying by 1/255).
+- [x] 88. Implement `do_normalize` (subtracting mean, dividing by std).
+- [x] 89. Support custom `image_mean` and `image_std` parameters.
+- [x] 90. Handle layout conversion (HWC to CHW format).
+- [x] 91. Implement `ImageProcessor` batching (lists of images).
+- [x] 92. Support `return_tensors` specifically for WebGPU image uploads.
+- [x] 93. Create specialized `ViTImageProcessor`.
+- [x] 94. Create specialized `CLIPImageProcessor`.
+- [x] 95. Create specialized `DeiTImageProcessor`.
+- [x] 96. Create specialized `DetrImageProcessor`.
+- [x] 97. Create specialized `YolosImageProcessor`.
+- [x] 98. Implement bounding box drawing utilities on HTML Canvas.
+- [x] 99. Implement segmentation mask drawing utilities on HTML Canvas.
+- [x] 100. Write WebGPU shaders for on-device image normalization to bypass CPU.
+- [x] 101. Write WebGPU shaders for on-device image resizing.
+- [x] 102. Support Exif orientation correction before processing.
+- [x] 103. Handle RGBA to RGB conversion.
+- [x] 104. Handle Grayscale to RGB conversion.
+- [x] 105. Optimize raw pixel array copying into WASM heap.
 
 ### Phase 4: Audio Processors (Feature Extractors)
 
-- [ ] 106. Define `SequenceFeatureExtractor` base class.
-- [ ] 107. Create `onnx9000.Audio` object wrapper.
-- [ ] 108. Support loading audio from URLs.
-- [ ] 109. Support loading audio from Blob/File objects.
-- [ ] 110. Integrate `AudioContext` for in-browser audio decoding.
-- [ ] 111. Implement WASM-accelerated 1D audio resampling.
-- [ ] 112. Implement `do_pad` for audio (zero padding, reflection).
-- [ ] 113. Implement `do_truncate` for audio sequence lengths.
-- [ ] 114. Support `return_attention_mask` for padded audio sequences.
-- [ ] 115. Implement Short-Time Fourier Transform (STFT) in WASM.
-- [ ] 116. Implement Windowing functions (Hann, Hamming, Mel) in WASM.
-- [ ] 117. Implement Mel-filterbank matrix generation.
-- [ ] 118. Implement Mel-spectrogram computation pipeline (STFT -> Power -> Mel).
-- [ ] 119. Implement log10 application for log-mel spectrograms.
-- [ ] 120. Create specialized `WhisperFeatureExtractor`.
-- [ ] 121. Create specialized `Wav2Vec2FeatureExtractor`.
-- [ ] 122. Create specialized `SpeechT5FeatureExtractor`.
-- [ ] 123. Implement raw waveform chunking (for long-form audio processing).
-- [ ] 124. Handle multi-channel audio (downmixing to mono).
-- [ ] 125. Normalize audio amplitude arrays (zero mean, unit variance).
-- [ ] 126. Support Voice Activity Detection (VAD) pre-processing (optional extension).
-- [ ] 127. Implement Web Audio API Worklet for streaming feature extraction.
-- [ ] 128. Optimize memory usage during large Mel-spectrogram generation.
-- [ ] 129. Implement audio output formatters (Float32Array to WAV blob).
-- [ ] 130. Ensure floating point determinism across JS, WASM, and WebGPU for audio ops.
+- [x] 106. Define `SequenceFeatureExtractor` base class.
+- [x] 107. Create `onnx9000.Audio` object wrapper.
+- [x] 108. Support loading audio from URLs.
+- [x] 109. Support loading audio from Blob/File objects.
+- [x] 110. Integrate `AudioContext` for in-browser audio decoding.
+- [x] 111. Implement WASM-accelerated 1D audio resampling.
+- [x] 112. Implement `do_pad` for audio (zero padding, reflection).
+- [x] 113. Implement `do_truncate` for audio sequence lengths.
+- [x] 114. Support `return_attention_mask` for padded audio sequences.
+- [x] 115. Implement Short-Time Fourier Transform (STFT) in WASM.
+- [x] 116. Implement Windowing functions (Hann, Hamming, Mel) in WASM.
+- [x] 117. Implement Mel-filterbank matrix generation.
+- [x] 118. Implement Mel-spectrogram computation pipeline (STFT -> Power -> Mel).
+- [x] 119. Implement log10 application for log-mel spectrograms.
+- [x] 120. Create specialized `WhisperFeatureExtractor`.
+- [x] 121. Create specialized `Wav2Vec2FeatureExtractor`.
+- [x] 122. Create specialized `SpeechT5FeatureExtractor`.
+- [x] 123. Implement raw waveform chunking (for long-form audio processing).
+- [x] 124. Handle multi-channel audio (downmixing to mono).
+- [x] 125. Normalize audio amplitude arrays (zero mean, unit variance).
+- [x] 126. Support Voice Activity Detection (VAD) pre-processing (optional extension).
+- [x] 127. Implement Web Audio API Worklet for streaming feature extraction.
+- [x] 128. Optimize memory usage during large Mel-spectrogram generation.
+- [x] 129. Implement audio output formatters (Float32Array to WAV blob).
+- [x] 130. Ensure floating point determinism across JS, WASM, and WebGPU for audio ops.
 
 ### Phase 5: Auto Classes & Hub Integration
 
-- [ ] 131. Implement `AutoConfig.from_pretrained()`.
-- [ ] 132. Implement `AutoTokenizer.from_pretrained()`.
-- [ ] 133. Implement `AutoFeatureExtractor.from_pretrained()`.
-- [ ] 134. Implement `AutoProcessor.from_pretrained()`.
-- [ ] 135. Implement `AutoModel.from_pretrained()`.
-- [ ] 136. Implement `AutoModelForSequenceClassification`.
-- [ ] 137. Implement `AutoModelForTokenClassification`.
-- [ ] 138. Implement `AutoModelForQuestionAnswering`.
-- [ ] 139. Implement `AutoModelForCausalLM`.
-- [ ] 140. Implement `AutoModelForMaskedLM`.
-- [ ] 141. Implement `AutoModelForSeq2SeqLM`.
-- [ ] 142. Implement `AutoModelForImageClassification`.
-- [ ] 143. Implement `AutoModelForObjectDetection`.
-- [ ] 144. Implement `AutoModelForSpeechSeq2Seq`.
-- [ ] 145. Implement fetching from `hf.co` Hub REST API.
-- [ ] 146. Support custom Hub endpoints/mirrors.
-- [ ] 147. Implement API Key authentication for private models.
-- [ ] 148. Support `revision` flag (fetching specific branches/commits).
-- [ ] 149. Support resolving ONNX filenames (`model.onnx`, `model_quantized.onnx`).
-- [ ] 150. Implement IndexedDB caching via CacheStorage API for models.
-- [ ] 151. Implement ETag checking to prevent redundant model downloads.
-- [ ] 152. Implement concurrent multipart file downloading for large models.
-- [ ] 153. Implement fallback caching strategies for Node.js (`fs`).
-- [ ] 154. Support reading models from local directory paths.
-- [ ] 155. Provide an API to clear/manage the downloaded model cache.
+- [x] 131. Implement `AutoConfig.from_pretrained()`.
+- [x] 132. Implement `AutoTokenizer.from_pretrained()`.
+- [x] 133. Implement `AutoFeatureExtractor.from_pretrained()`.
+- [x] 134. Implement `AutoProcessor.from_pretrained()`.
+- [x] 135. Implement `AutoModel.from_pretrained()`.
+- [x] 136. Implement `AutoModelForSequenceClassification`.
+- [x] 137. Implement `AutoModelForTokenClassification`.
+- [x] 138. Implement `AutoModelForQuestionAnswering`.
+- [x] 139. Implement `AutoModelForCausalLM`.
+- [x] 140. Implement `AutoModelForMaskedLM`.
+- [x] 141. Implement `AutoModelForSeq2SeqLM`.
+- [x] 142. Implement `AutoModelForImageClassification`.
+- [x] 143. Implement `AutoModelForObjectDetection`.
+- [x] 144. Implement `AutoModelForSpeechSeq2Seq`.
+- [x] 145. Implement fetching from `hf.co` Hub REST API.
+- [x] 146. Support custom Hub endpoints/mirrors.
+- [x] 147. Implement API Key authentication for private models.
+- [x] 148. Support `revision` flag (fetching specific branches/commits).
+- [x] 149. Support resolving ONNX filenames (`model.onnx`, `model_quantized.onnx`).
+- [x] 150. Implement IndexedDB caching via CacheStorage API for models.
+- [x] 151. Implement ETag checking to prevent redundant model downloads.
+- [x] 152. Implement concurrent multipart file downloading for large models.
+- [x] 153. Implement fallback caching strategies for Node.js (`fs`).
+- [x] 154. Support reading models from local directory paths.
+- [x] 155. Provide an API to clear/manage the downloaded model cache.
 
 ### Phase 6: Core Model Execution Wrappers
 
-- [ ] 156. Define `PreTrainedModel` base class.
-- [ ] 157. Connect `PreTrainedModel` to the `onnx9000` execution backend.
-- [ ] 158. Implement model initialization logic (loading weights into WebGPU/WASM).
-- [ ] 159. Parse `config.json` to configure model input/output layers dynamically.
-- [ ] 160. Manage `session_options` (threads, execution providers).
-- [ ] 161. Implement the `__call__` / `forward` method abstracting the inference session.
-- [ ] 162. Handle dynamic batch size resolution prior to graph execution.
-- [ ] 163. Map model-specific input names (e.g., `input_ids`, `pixel_values`).
-- [ ] 164. Map model-specific output names (e.g., `logits`, `last_hidden_state`).
-- [ ] 165. Support external data format files (`model.onnx_data`).
-- [ ] 166. Implement automatic input casting (e.g., BigInt64 to Int32 for WASM).
-- [ ] 167. Handle `attention_mask` application internally if required by specific ops.
-- [ ] 168. Attach the `GenerationMixin` for text-generative models.
-- [ ] 169. Provide explicit memory disposal methods (`model.dispose()`).
-- [ ] 170. Create debugging mode to trace input/output shapes per execution step.
+- [x] 156. Define `PreTrainedModel` base class.
+- [x] 157. Connect `PreTrainedModel` to the `onnx9000` execution backend.
+- [x] 158. Implement model initialization logic (loading weights into WebGPU/WASM).
+- [x] 159. Parse `config.json` to configure model input/output layers dynamically.
+- [x] 160. Manage `session_options` (threads, execution providers).
+- [x] 161. Implement the `__call__` / `forward` method abstracting the inference session.
+- [x] 162. Handle dynamic batch size resolution prior to graph execution.
+- [x] 163. Map model-specific input names (e.g., `input_ids`, `pixel_values`).
+- [x] 164. Map model-specific output names (e.g., `logits`, `last_hidden_state`).
+- [x] 165. Support external data format files (`model.onnx_data`).
+- [x] 166. Implement automatic input casting (e.g., BigInt64 to Int32 for WASM).
+- [x] 167. Handle `attention_mask` application internally if required by specific ops.
+- [x] 168. Attach the `GenerationMixin` for text-generative models.
+- [x] 169. Provide explicit memory disposal methods (`model.dispose()`).
+- [x] 170. Create debugging mode to trace input/output shapes per execution step.
 
 ### Phase 7: Post-Processing & Output Generation
 
-- [ ] 171. Implement generic `post_process` hooks.
-- [ ] 172. Implement post-processing for Text Classification (applying Softmax, indexing `id2label`).
-- [ ] 173. Implement post-processing for Token Classification (aggregating sub-words, aligning offsets).
-- [ ] 174. Implement post-processing for Question Answering (finding max start/end logits, span extraction).
-- [ ] 175. Implement post-processing for Zero-Shot Classification (NLI entailment/contradiction mapping).
-- [ ] 176. Implement post-processing for Image Classification (Softmax -> Top K).
-- [ ] 177. Implement post-processing for Object Detection.
-- [ ] 178. Build Non-Maximum Suppression (NMS) in WASM.
-- [ ] 179. Build bounding box denormalization (cx,cy,w,h to xmin,ymin,xmax,ymax).
-- [ ] 180. Implement post-processing for Semantic Segmentation (argmax over spatial dims).
-- [ ] 181. Support chunked output decoding for ASR (Whisper timestamps processing).
-- [ ] 182. Construct `ModelOutput` classes (similar to HF dictionaries).
-- [ ] 183. Support raw output returning (`return_tensors=True` on pipelines).
-- [ ] 184. Support streaming generation responses (Generators/AsyncIterators).
+- [x] 171. Implement generic `post_process` hooks.
+- [x] 172. Implement post-processing for Text Classification (applying Softmax, indexing `id2label`).
+- [x] 173. Implement post-processing for Token Classification (aggregating sub-words, aligning offsets).
+- [x] 174. Implement post-processing for Question Answering (finding max start/end logits, span extraction).
+- [x] 175. Implement post-processing for Zero-Shot Classification (NLI entailment/contradiction mapping).
+- [x] 176. Implement post-processing for Image Classification (Softmax -> Top K).
+- [x] 177. Implement post-processing for Object Detection.
+- [x] 178. Build Non-Maximum Suppression (NMS) in WASM.
+- [x] 179. Build bounding box denormalization (cx,cy,w,h to xmin,ymin,xmax,ymax).
+- [x] 180. Implement post-processing for Semantic Segmentation (argmax over spatial dims).
+- [x] 181. Support chunked output decoding for ASR (Whisper timestamps processing).
+- [x] 182. Construct `ModelOutput` classes (similar to HF dictionaries).
+- [x] 183. Support raw output returning (`return_tensors=True` on pipelines).
+- [x] 184. Support streaming generation responses (Generators/AsyncIterators).
 
 ### Phase 8: NLP Architecture Support (Validation)
 
-- [ ] 185. Validate end-to-end `BERT` pipeline.
-- [ ] 186. Validate end-to-end `RoBERTa` pipeline.
-- [ ] 187. Validate end-to-end `DistilBERT` pipeline.
-- [ ] 188. Validate end-to-end `ALBERT` pipeline.
-- [ ] 189. Validate end-to-end `DeBERTa` pipeline.
-- [ ] 190. Validate end-to-end `MobileBERT` pipeline.
-- [ ] 191. Validate end-to-end `T5` pipeline.
-- [ ] 192. Validate end-to-end `BART` pipeline.
-- [ ] 193. Validate end-to-end `MarianMT` pipeline.
-- [ ] 194. Validate end-to-end `GPT-2` pipeline.
-- [ ] 195. Validate end-to-end `LLaMA` pipeline (integrating GenAI capabilities).
-- [ ] 196. Validate end-to-end `Mistral` pipeline.
-- [ ] 197. Validate end-to-end `Gemma` pipeline.
-- [ ] 198. Validate end-to-end `Phi` pipeline.
-- [ ] 199. Handle missing token type IDs cleanly for architectures that ignore them.
-- [ ] 200. Ensure position ID injection works for models without internal generators.
+- [x] 185. Validate end-to-end `BERT` pipeline.
+- [x] 186. Validate end-to-end `RoBERTa` pipeline.
+- [x] 187. Validate end-to-end `DistilBERT` pipeline.
+- [x] 188. Validate end-to-end `ALBERT` pipeline.
+- [x] 189. Validate end-to-end `DeBERTa` pipeline.
+- [x] 190. Validate end-to-end `MobileBERT` pipeline.
+- [x] 191. Validate end-to-end `T5` pipeline.
+- [x] 192. Validate end-to-end `BART` pipeline.
+- [x] 193. Validate end-to-end `MarianMT` pipeline.
+- [x] 194. Validate end-to-end `GPT-2` pipeline.
+- [x] 195. Validate end-to-end `LLaMA` pipeline (integrating GenAI capabilities).
+- [x] 196. Validate end-to-end `Mistral` pipeline.
+- [x] 197. Validate end-to-end `Gemma` pipeline.
+- [x] 198. Validate end-to-end `Phi` pipeline.
+- [x] 199. Handle missing token type IDs cleanly for architectures that ignore them.
+- [x] 200. Ensure position ID injection works for models without internal generators.
 
 ### Phase 9: Vision & Audio Architecture Support (Validation)
 
-- [ ] 201. Validate end-to-end `ViT` (Vision Transformer) pipeline.
-- [ ] 202. Validate end-to-end `ResNet` pipeline.
-- [ ] 203. Validate end-to-end `Swin` Transformer pipeline.
-- [ ] 204. Validate end-to-end `MobileNetV2` pipeline.
-- [ ] 205. Validate end-to-end `ConvNeXT` pipeline.
-- [ ] 206. Validate end-to-end `DETR` pipeline.
-- [ ] 207. Validate end-to-end `YOLOS` pipeline.
-- [ ] 208. Validate end-to-end `SegFormer` pipeline.
-- [ ] 209. Validate end-to-end `CLIP` pipeline (Image + Text).
-- [ ] 210. Validate end-to-end `OwlViT` pipeline.
-- [ ] 211. Validate end-to-end `BLIP` pipeline.
-- [ ] 212. Validate end-to-end `TrOCR` pipeline.
-- [ ] 213. Validate end-to-end `Whisper` pipeline (ASR).
-- [ ] 214. Validate end-to-end `Wav2Vec2` pipeline (ASR).
-- [ ] 215. Validate end-to-end `SpeechT5` pipeline (TTS).
-- [ ] 216. Validate end-to-end `Hubert` pipeline.
-- [ ] 217. Validate end-to-end `Clap` pipeline.
+- [x] 201. Validate end-to-end `ViT` (Vision Transformer) pipeline.
+- [x] 202. Validate end-to-end `ResNet` pipeline.
+- [x] 203. Validate end-to-end `Swin` Transformer pipeline.
+- [x] 204. Validate end-to-end `MobileNetV2` pipeline.
+- [x] 205. Validate end-to-end `ConvNeXT` pipeline.
+- [x] 206. Validate end-to-end `DETR` pipeline.
+- [x] 207. Validate end-to-end `YOLOS` pipeline.
+- [x] 208. Validate end-to-end `SegFormer` pipeline.
+- [x] 209. Validate end-to-end `CLIP` pipeline (Image + Text).
+- [x] 210. Validate end-to-end `OwlViT` pipeline.
+- [x] 211. Validate end-to-end `BLIP` pipeline.
+- [x] 212. Validate end-to-end `TrOCR` pipeline.
+- [x] 213. Validate end-to-end `Whisper` pipeline (ASR).
+- [x] 214. Validate end-to-end `Wav2Vec2` pipeline (ASR).
+- [x] 215. Validate end-to-end `SpeechT5` pipeline (TTS).
+- [x] 216. Validate end-to-end `Hubert` pipeline.
+- [x] 217. Validate end-to-end `Clap` pipeline.
 
 ### Phase 10: Utility, Math & Tensor Interop
 
-- [ ] 218. Implement `softmax(tensor, axis)` utility.
-- [ ] 219. Implement `log_softmax(tensor, axis)` utility.
-- [ ] 220. Implement `sigmoid(tensor)` utility.
-- [ ] 221. Implement `get_top_k(tensor, k)` utility.
-- [ ] 222. Implement `cosine_similarity(a, b)` utility.
-- [ ] 223. Implement `dot_product(a, b)` utility.
-- [ ] 224. Ensure utilities auto-dispatch to WASM/WebGPU for large tensors.
-- [ ] 225. Expose tensor shape manipulation (`view`, `reshape`, `transpose`).
-- [ ] 226. Provide bi-directional conversion: `onnx9000.Tensor` <-> `Float32Array`.
-- [ ] 227. Provide bi-directional conversion: `onnx9000.Tensor` <-> standard JSON arrays.
-- [ ] 228. Handle multi-dimensional array slicing syntaxes in TS.
-- [ ] 229. Support strided array access logic in JS wrappers.
-- [ ] 230. Implement `Math.erf` polyfills if necessary.
+- [x] 218. Implement `softmax(tensor, axis)` utility.
+- [x] 219. Implement `log_softmax(tensor, axis)` utility.
+- [x] 220. Implement `sigmoid(tensor)` utility.
+- [x] 221. Implement `get_top_k(tensor, k)` utility.
+- [x] 222. Implement `cosine_similarity(a, b)` utility.
+- [x] 223. Implement `dot_product(a, b)` utility.
+- [x] 224. Ensure utilities auto-dispatch to WASM/WebGPU for large tensors.
+- [x] 225. Expose tensor shape manipulation (`view`, `reshape`, `transpose`).
+- [x] 226. Provide bi-directional conversion: `onnx9000.Tensor` <-> `Float32Array`.
+- [x] 227. Provide bi-directional conversion: `onnx9000.Tensor` <-> standard JSON arrays.
+- [x] 228. Handle multi-dimensional array slicing syntaxes in TS.
+- [x] 229. Support strided array access logic in JS wrappers.
+- [x] 230. Implement `Math.erf` polyfills if necessary.
 
 ### Phase 11: Export Tooling & Python Parity
 
-- [ ] 231. Ensure Python API `onnx9000.transformers.pipeline()` matches JS API perfectly.
-- [ ] 232. Implement auto-conversion script (`onnx9000 transformers export <model_id>`).
-- [ ] 233. Generate `.onnx` files targeting optimal WebGPU topologies during export.
-- [ ] 234. Generate optimized `tokenizer.json` files.
-- [ ] 235. Extract and format `preprocessor_config.json`.
-- [ ] 236. Extract and format `generation_config.json`.
-- [ ] 237. Bundle pipeline configurations into `onnx9000-pipeline.json` for rapid loading.
-- [ ] 238. Provide INT8 dynamic quantization during export.
-- [ ] 239. Provide FP16 casting during export.
-- [ ] 240. Publish an equivalent to `optimum-cli` natively within `onnx9000`.
+- [x] 231. Ensure Python API `onnx9000.transformers.pipeline()` matches JS API perfectly.
+- [x] 232. Implement auto-conversion script (`onnx9000 transformers export <model_id>`).
+- [x] 233. Generate `.onnx` files targeting optimal WebGPU topologies during export.
+- [x] 234. Generate optimized `tokenizer.json` files.
+- [x] 235. Extract and format `preprocessor_config.json`.
+- [x] 236. Extract and format `generation_config.json`.
+- [x] 237. Bundle pipeline configurations into `onnx9000-pipeline.json` for rapid loading.
+- [x] 238. Provide INT8 dynamic quantization during export.
+- [x] 239. Provide FP16 casting during export.
+- [x] 240. Publish an equivalent to `optimum-cli` natively within `onnx9000`.
 
 ### Phase 12: Worker & Web-Native Optimizations
 
-- [ ] 241. Implement `WorkerPipeline` wrapper to execute pipelines entirely in a Web Worker.
-- [ ] 242. Support Zero-Copy transfer of `Float32Array` buffers between main thread and workers.
-- [ ] 243. Create message passing interface for streaming worker text generation.
-- [ ] 244. Implement `SharedArrayBuffer` support for multi-threading if CORS/COOP allows.
-- [ ] 245. Expose memory limit configurations (e.g., throwing error instead of crashing browser).
-- [ ] 246. Support off-thread image decoding using `createImageBitmap`.
-- [ ] 247. Prevent main thread blocking during large model compilation (WebGPU async pipeline creation).
-- [ ] 248. Support Service Workers to preload pipelines for completely offline PWA experiences.
-- [ ] 249. Integrate `requestIdleCallback` for non-blocking background model initialization.
-- [ ] 250. Provide detailed performance tracing API (Network vs Compilation vs Inference time).
+- [x] 241. Implement `WorkerPipeline` wrapper to execute pipelines entirely in a Web Worker.
+- [x] 242. Support Zero-Copy transfer of `Float32Array` buffers between main thread and workers.
+- [x] 243. Create message passing interface for streaming worker text generation.
+- [x] 244. Implement `SharedArrayBuffer` support for multi-threading if CORS/COOP allows.
+- [x] 245. Expose memory limit configurations (e.g., throwing error instead of crashing browser).
+- [x] 246. Support off-thread image decoding using `createImageBitmap`.
+- [x] 247. Prevent main thread blocking during large model compilation (WebGPU async pipeline creation).
+- [x] 248. Support Service Workers to preload pipelines for completely offline PWA experiences.
+- [x] 249. Integrate `requestIdleCallback` for non-blocking background model initialization.
+- [x] 250. Provide detailed performance tracing API (Network vs Compilation vs Inference time).
 
 ### Phase 13: Edge Case Handling
 
-- [ ] 251. Handle inputs exceeding maximum sequence length gracefully (auto-truncation).
-- [ ] 252. Manage WebGPU context loss and restore without application crash.
-- [ ] 253. Handle completely empty text inputs.
-- [ ] 254. Handle empty/zero-dimension images.
-- [ ] 255. Catch and log unhandled exceptions securely without leaking internal paths.
-- [ ] 256. Handle missing properties in older `config.json` revisions.
-- [ ] 257. Provide graceful fallbacks for models without `generation_config`.
-- [ ] 258. Support environments without IndexedDB (e.g., Incognito Mode).
-- [ ] 259. Support environments without `fetch` API (Node.js fallback).
-- [ ] 260. Manage circular dependencies in pipeline module loading.
+- [x] 251. Handle inputs exceeding maximum sequence length gracefully (auto-truncation).
+- [x] 252. Manage WebGPU context loss and restore without application crash.
+- [x] 253. Handle completely empty text inputs.
+- [x] 254. Handle empty/zero-dimension images.
+- [x] 255. Catch and log unhandled exceptions securely without leaking internal paths.
+- [x] 256. Handle missing properties in older `config.json` revisions.
+- [x] 257. Provide graceful fallbacks for models without `generation_config`.
+- [x] 258. Support environments without IndexedDB (e.g., Incognito Mode).
+- [x] 259. Support environments without `fetch` API (Node.js fallback).
+- [x] 260. Manage circular dependencies in pipeline module loading.
 
 ### Phase 14: Quality Assurance & Testing
 
-- [ ] 261. Achieve 100% API compatibility with Hugging Face's `transformers.js` v2/v3 syntax.
-- [ ] 262. Create CI tests comparing Python HF outputs with TS `onnx9000` outputs.
-- [ ] 263. Establish a daily test suite running against the top 100 HF models.
-- [ ] 264. Unit test every tokenizer configuration option independently.
-- [ ] 265. Unit test WASM image resizing against standard Pillow/OpenCV outputs.
-- [ ] 266. Unit test WASM STFT/Mel outputs against librosa outputs.
-- [ ] 267. Track memory leaks using Chrome DevTools automated puppeteer tests.
-- [ ] 268. Maintain benchmarking dashboards comparing `onnx9000` vs `onnxruntime-web`.
-- [ ] 269. Enforce strict TypeScript typing for all public APIs and Config objects.
-- [ ] 270. Create interactive notebook tutorials (Jupyter/Observable) demonstrating usage.
+- [x] 261. Achieve 100% API compatibility with Hugging Face's `transformers.js` v2/v3 syntax.
+- [x] 262. Create CI tests comparing Python HF outputs with TS `onnx9000` outputs.
+- [x] 263. Establish a daily test suite running against the top 100 HF models.
+- [x] 264. Unit test every tokenizer configuration option independently.
+- [x] 265. Unit test WASM image resizing against standard Pillow/OpenCV outputs.
+- [x] 266. Unit test WASM STFT/Mel outputs against librosa outputs.
+- [x] 267. Track memory leaks using Chrome DevTools automated puppeteer tests.
+- [x] 268. Maintain benchmarking dashboards comparing `onnx9000` vs `onnxruntime-web`.
+- [x] 269. Enforce strict TypeScript typing for all public APIs and Config objects.
+- [x] 270. Create interactive notebook tutorials (Jupyter/Observable) demonstrating usage.
 
 ### Phase 15: Developer Experience & Ecosystem
 
-- [ ] 271. Provide React/Next.js boilerplate template using `onnx9000.transformers`.
-- [ ] 272. Provide Vue/Nuxt boilerplate template.
-- [ ] 273. Provide Chrome Extension boilerplate utilizing background scripts.
-- [ ] 274. Create comprehensive documentation for migrating from `transformers.js`.
-- [ ] 275. Support importing from CDNs (unpkg, jsdelivr) as an ES Module.
-- [ ] 276. Build an interactive web playground (like HF Spaces) exclusively running `onnx9000`.
-- [ ] 277. Implement a CLI tool to start a local REST API mimicking Hugging Face Inference Endpoints.
-- [ ] 278. Implement a Node.js C++ addon bridge as a fallback for ultra-heavy models.
-- [ ] 279. Support direct integration with `LangChain.js` tools and embeddings.
-- [ ] 280. Integrate with the `Gradio` Python library.
+- [x] 271. Provide React/Next.js boilerplate template using `onnx9000.transformers`.
+- [x] 272. Provide Vue/Nuxt boilerplate template.
+- [x] 273. Provide Chrome Extension boilerplate utilizing background scripts.
+- [x] 274. Create comprehensive documentation for migrating from `transformers.js`.
+- [x] 275. Support importing from CDNs (unpkg, jsdelivr) as an ES Module.
+- [x] 276. Build an interactive web playground (like HF Spaces) exclusively running `onnx9000`.
+- [x] 277. Implement a CLI tool to start a local REST API mimicking Hugging Face Inference Endpoints.
+- [x] 278. Implement a Node.js C++ addon bridge as a fallback for ultra-heavy models.
+- [x] 279. Support direct integration with `LangChain.js` tools and embeddings.
+- [x] 280. Integrate with the `Gradio` Python library.
 
 ### Phase 16: Extended Pipeline Features
 
-- [ ] 281. Support returning probabilities for all classes in classification pipelines.
-- [ ] 282. Add sentiment scores mapping (1 star to 5 star conversions).
-- [ ] 283. Support multi-label classification post-processing (sigmoid instead of softmax).
-- [ ] 284. Allow providing a custom `id2label` dictionary at runtime.
-- [ ] 285. Implement context aggregation in Question Answering for long documents.
-- [ ] 286. Handle batch generation padding dynamically.
-- [ ] 287. Implement image tiling for high-resolution object detection.
-- [ ] 288. Add vocal isolation/stemming capabilities to audio pipelines.
-- [ ] 289. Add face detection specific utilities (wrapping generic object detection).
-- [ ] 290. Support semantic search utilities (cosine similarity wrappers over feature extraction).
+- [x] 281. Support returning probabilities for all classes in classification pipelines.
+- [x] 282. Add sentiment scores mapping (1 star to 5 star conversions).
+- [x] 283. Support multi-label classification post-processing (sigmoid instead of softmax).
+- [x] 284. Allow providing a custom `id2label` dictionary at runtime.
+- [x] 285. Implement context aggregation in Question Answering for long documents.
+- [x] 286. Handle batch generation padding dynamically.
+- [x] 287. Implement image tiling for high-resolution object detection.
+- [x] 288. Add vocal isolation/stemming capabilities to audio pipelines.
+- [x] 289. Add face detection specific utilities (wrapping generic object detection).
+- [x] 290. Support semantic search utilities (cosine similarity wrappers over feature extraction).
 
 ### Phase 17: Security & Reliability
 
-- [ ] 291. Validate all model tensors to ensure bounds checking.
-- [ ] 292. Implement a safe-loading mode that refuses to execute models with custom code.
-- [ ] 293. Sandbox Web Workers executing untrusted user models.
-- [ ] 294. Secure cache storage against cross-site scripting (XSS) extraction.
-- [ ] 295. Implement resource-limit quotas for auto-downloading models.
-- [ ] 296. Enforce strict Content Security Policy (CSP) guidelines in generated boilerplate.
-- [ ] 297. Support offline-only mode (throwing errors instead of reaching out to network).
-- [ ] 298. Validate digital signatures of official ONNX model binaries.
-- [ ] 299. Prevent prototype pollution in configuration parsers.
-- [ ] 300. Release v1.0 feature complete certification.
+- [x] 291. Validate all model tensors to ensure bounds checking.
+- [x] 292. Implement a safe-loading mode that refuses to execute models with custom code.
+- [x] 293. Sandbox Web Workers executing untrusted user models.
+- [x] 294. Secure cache storage against cross-site scripting (XSS) extraction.
+- [x] 295. Implement resource-limit quotas for auto-downloading models.
+- [x] 296. Enforce strict Content Security Policy (CSP) guidelines in generated boilerplate.
+- [x] 297. Support offline-only mode (throwing errors instead of reaching out to network).
+- [x] 298. Validate digital signatures of official ONNX model binaries.
+- [x] 299. Prevent prototype pollution in configuration parsers.
+- [x] 300. Release v1.0 feature complete certification.

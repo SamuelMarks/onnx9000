@@ -1,3 +1,11 @@
+import {
+  TypicalLogitProcessor,
+  RepetitionPenaltyLogitProcessor,
+  TemperatureLogitProcessor,
+  LogitProcessorList,
+} from '../../src/genai/logit_processors';
+import { Tensor } from '../../src/ir/tensor';
+import { test, expect } from 'vitest';
 import { describe, expect, it } from 'vitest';
 import { Tensor } from '../../src/index.js';
 import {
@@ -144,4 +152,38 @@ describe('Logit Processors', () => {
     expect(data[1]).toBe(-Infinity);
     expect(data[2]).toBe(6.0);
   });
+});
+
+test('TypicalLogitProcessor coverage', async () => {
+  const p = new TypicalLogitProcessor();
+  const t = new Tensor('t', 'float32', [1]);
+  expect(p.process([], t)).toBe(t);
+});
+
+test('RepetitionPenaltyLogitProcessor val > 0', async () => {
+  const p = new RepetitionPenaltyLogitProcessor(1.2);
+
+  const t = new Tensor('t', 'float32', [2]);
+  t.data = new Float32Array([2.0, 2.0]);
+
+  const out = p.process([0], t);
+  expect(out.data[0]).toBeLessThan(2.0);
+
+  // Also test negative
+  t.data[0] = -2.0;
+  const out2 = p.process([0], t);
+  expect(out2.data[0]).toBeLessThan(-2.0);
+});
+
+test('Processor non-float32 return early', async () => {
+  const p = new RepetitionPenaltyLogitProcessor(1.2);
+  const l = new LogitProcessorList([p]);
+  const t = new Tensor('t', 'int32', [1]);
+  expect(l.process([], t)).toBe(t);
+});
+
+test('TemperatureLogitProcessor non-float32', async () => {
+  const p = new TemperatureLogitProcessor(1.2);
+  const t = new Tensor('t', 'int32', [1]);
+  expect(p.process([], t)).toBe(t);
 });

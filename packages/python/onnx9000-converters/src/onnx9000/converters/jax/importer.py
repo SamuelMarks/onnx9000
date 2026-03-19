@@ -7,7 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _map_jax_type(jax_type: str) -> DType:
-    """Implements the _map_jax_type method or operation."""
+    """Implement the _map_jax_type method or operation."""
     if jax_type == "f32":
         return DType.FLOAT32
     if jax_type == "i32":
@@ -16,14 +16,14 @@ def _map_jax_type(jax_type: str) -> DType:
 
 
 class JaxprImporter:
-    """Parses a JAX jaxpr (dict representation) to ONNX IR."""
+    """Pars a JAX jaxpr (dict representation) to ONNX IR."""
 
     def __init__(self) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.graph = Graph(name="jax_model")
 
     def parse(self, jaxpr: dict[str, Any]) -> Graph:
-        """Implements the parse method or operation."""
+        """Implement the parse method or operation."""
         for invar in jaxpr.get("invars", []):
             name = invar["name"]
             shape = tuple(invar["shape"])

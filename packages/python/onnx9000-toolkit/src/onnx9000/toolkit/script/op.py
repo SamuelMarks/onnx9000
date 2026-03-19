@@ -1,5 +1,5 @@
-"""
-Provides the dynamic op namespace and utility functions for constructing ONNX nodes.
+"""Provide the dynamic op namespace and utility functions for constructing ONNX nodes.
+
 This module manages the active builder context and allows fluent node creation.
 """
 
@@ -14,7 +14,7 @@ _context = threading.local()
 
 
 def get_active_builder() -> Any:
-    """Retrieves the currently active GraphBuilder from the thread-local context stack."""
+    """Retrieve the currently active GraphBuilder from the thread-local context stack."""
     if hasattr(_context, "builder_stack") and _context.builder_stack:
         return _context.builder_stack[-1]
     return None
@@ -28,7 +28,7 @@ def set_active_builder(builder: Any) -> None:
 
 
 def pop_active_builder() -> None:
-    """Removes the currently active GraphBuilder from the thread-local context stack."""
+    """Remove the currently active GraphBuilder from the thread-local context stack."""
     if hasattr(_context, "builder_stack") and _context.builder_stack:
         _context.builder_stack.pop()
 
@@ -42,7 +42,7 @@ def _make_var(val: Any) -> Var:
 
 
 def _make_vars(vals: Union[list[Any], tuple[Any, ...]]) -> list[Var]:
-    """Converts a collection of Python values into Constant Vars."""
+    """Convert a collection of Python values into Constant Vars."""
     return [_make_var(v) for v in vals]
 
 
@@ -50,10 +50,10 @@ class OpNamespace:
     """Dynamic namespace for ONNX operations."""
 
     def __getattr__(self, op_type: str) -> Any:
-        """Returns a generator function for constructing an ONNX node of the specified op_type."""
+        """Return a generator function for constructing an ONNX node of the specified op_type."""
 
         def _node_builder(*args: Any, **kwargs: Any) -> Union[Var, tuple[Var, ...]]:
-            """Constructs and adds an ONNX node to the currently active GraphBuilder."""
+            """Construct and adds an ONNX node to the currently active GraphBuilder."""
             inputs = []
             for arg in args:
                 if isinstance(arg, list) and op_type == "Concat":
@@ -113,7 +113,7 @@ def Constant(value: Any) -> Var:
 def If(
     cond: Any, then_branch: Any, else_branch: Any, num_outputs: int = 1
 ) -> Union[Var, tuple[Var, ...], None]:
-    """Builds an ONNX If operation with the given condition and branch subgraphs."""
+    """Build an ONNX If operation with the given condition and branch subgraphs."""
     cond_var = _make_var(cond)
     out_vars = [Var() for _ in range(num_outputs)]
     out_names = [v.name for v in out_vars]
@@ -136,7 +136,7 @@ def If(
 def Loop(
     max_trip_count: Any, cond: Any, body: Any, num_outputs: int = 1
 ) -> Union[Var, tuple[Var, ...], None]:
-    """Builds an ONNX Loop operation with iteration limits, conditions, and a body subgraph."""
+    """Build an ONNX Loop operation with iteration limits, conditions, and a body subgraph."""
     mtc_var = _make_var(max_trip_count)
     cond_var = _make_var(cond)
     out_vars = [Var() for _ in range(num_outputs)]
@@ -160,7 +160,7 @@ def Loop(
 def Scan(
     body: Any, num_scan_inputs: int, num_outputs: int = 1
 ) -> Union[Var, tuple[Var, ...], None]:
-    """Builds an ONNX Scan operation to iterate a subgraph over one or more input tensors."""
+    """Build an ONNX Scan operation to iterate a subgraph over one or more input tensors."""
     out_vars = [Var() for _ in range(num_outputs)]
     out_names = [v.name for v in out_vars]
     node = Node(

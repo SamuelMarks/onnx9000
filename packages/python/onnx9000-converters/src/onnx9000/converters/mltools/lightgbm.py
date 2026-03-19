@@ -44,7 +44,7 @@ def parse_lightgbm_dict(data: dict[str, Any]) -> Graph:
         tree_id = tree["tree_index"]
 
         def traverse(node: dict[str, Any], node_id: int, tree_id: int = tree_id) -> int:
-            """Executes the traverse operation."""
+            """Execute the traverse operation."""
             if "leaf_value" in node:
                 nodes_treeids.append(tree_id)
                 nodes_nodeids.append(node_id)

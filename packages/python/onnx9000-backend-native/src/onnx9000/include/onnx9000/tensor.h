@@ -12,6 +12,10 @@
 
 namespace onnx9000 {
 
+/**
+ * \brief Multi-dimensional array representing an ONNX Tensor.
+ * \tparam T Data type of the tensor elements.
+ */
 template <typename T> struct Tensor {
   T *__restrict__ data = nullptr;
   std::vector<int64_t> shape;
@@ -42,6 +46,15 @@ template <typename T> struct Tensor {
   }
 };
 
+/**
+ * \brief Computes the index in the input array for a given output flat index
+ * during broadcasting.
+ * \param out_index The flattened index in the output array.
+ * \param out_shape The shape of the output array.
+ * \param in_shape The shape of the input array.
+ * \param in_strides The strides of the input array.
+ * \return The corresponding flat index in the input array.
+ */
 inline int64_t broadcast_index(int64_t out_index,
                                const std::vector<int64_t> &out_shape,
                                const std::vector<int64_t> &in_shape,

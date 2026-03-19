@@ -1,9 +1,11 @@
+"""TVM submodule for AST and optimization."""
+
 import json
 import os
 import tarfile
 import zipfile
 from io import BytesIO
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 
 def bundle_artifacts(
@@ -73,13 +75,18 @@ export class ModelRunner {
 
 
 class Target:
+    """Core class for TVM AST node or pass."""
+
     def __init__(self, target_name: str, options: dict = None):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.target_name = target_name
         self.options = options or {}
 
 
 def build(mod, target=None, params=None):
-    """Pass 327: Implement a Python API: onnx9000.tvm.build()."""
+    """Implement a Python API."""
     pass
 
 

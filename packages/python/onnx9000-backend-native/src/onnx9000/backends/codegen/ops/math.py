@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -12,7 +11,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("BlackmanWindow")
 def generate_blackman_window(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_blackman_window method or operation."""
+    """Implement the generate_blackman_window method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -28,7 +27,7 @@ def generate_blackman_window(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("Det")
 def generate_det(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_det method or operation."""
+    """Implement the generate_det method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -44,7 +43,7 @@ def generate_det(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("Mean")
 def generate_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_mean method or operation."""
+    """Implement the generate_mean method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -59,7 +58,7 @@ def generate_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 
 @registry.register_op("MelWeightMatrix")
 def generate_mel_weight_matrix(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_mel_weight_matrix method or operation."""
+    """Implement the generate_mel_weight_matrix method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -74,7 +73,7 @@ def generate_mel_weight_matrix(node: Node, ctx: "onnx9000.backends.codegen.Gener
 
 @registry.register_op("Multinomial")
 def generate_multinomial(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_multinomial method or operation."""
+    """Implement the generate_multinomial method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -89,7 +88,7 @@ def generate_multinomial(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 
 @registry.register_op("ReduceSumSquare")
 def generate_reduce_sum_square(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_sum_square method or operation."""
+    """Implement the generate_reduce_sum_square method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -105,7 +104,7 @@ def generate_reduce_sum_square(node: Node, ctx: "onnx9000.backends.codegen.Gener
 
 @registry.register_op("ReduceL1")
 def generate_reduce_l1(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_l1 method or operation."""
+    """Implement the generate_reduce_l1 method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -121,7 +120,7 @@ def generate_reduce_l1(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("ReduceL2")
 def generate_reduce_l2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_l2 method or operation."""
+    """Implement the generate_reduce_l2 method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -137,7 +136,7 @@ def generate_reduce_l2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("ReduceLogSum")
 def generate_reduce_log_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_log_sum method or operation."""
+    """Implement the generate_reduce_log_sum method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -153,7 +152,7 @@ def generate_reduce_log_sum(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
 @registry.register_op("ReduceLogSumExp")
 def generate_reduce_log_sum_exp(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_log_sum_exp method or operation."""
+    """Implement the generate_reduce_log_sum_exp method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -169,7 +168,7 @@ def generate_reduce_log_sum_exp(node: Node, ctx: "onnx9000.backends.codegen.Gene
 
 @registry.register_op("Shrink")
 def generate_shrink(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_shrink method or operation."""
+    """Implement the generate_shrink method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -185,7 +184,7 @@ def generate_shrink(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
 
 @registry.register_op("Size")
 def generate_size(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_size method or operation."""
+    """Implement the generate_size method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -201,79 +200,79 @@ def generate_size(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 
 @registry.register_op("Abs")
 def generate_abs(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_abs method or operation."""
+    """Implement the generate_abs method or operation."""
     return _generate_unary_op(node, ctx, "std::abs({inp})")
 
 
 @registry.register_op("Acos")
 def generate_acos(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_acos method or operation."""
+    """Implement the generate_acos method or operation."""
     return _generate_unary_op(node, ctx, "std::acos({inp})")
 
 
 @registry.register_op("Acosh")
 def generate_acosh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_acosh method or operation."""
+    """Implement the generate_acosh method or operation."""
     return _generate_unary_op(node, ctx, "std::acosh({inp})")
 
 
 @registry.register_op("Asin")
 def generate_asin(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_asin method or operation."""
+    """Implement the generate_asin method or operation."""
     return _generate_unary_op(node, ctx, "std::asin({inp})")
 
 
 @registry.register_op("Asinh")
 def generate_asinh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_asinh method or operation."""
+    """Implement the generate_asinh method or operation."""
     return _generate_unary_op(node, ctx, "std::asinh({inp})")
 
 
 @registry.register_op("Atan")
 def generate_atan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_atan method or operation."""
+    """Implement the generate_atan method or operation."""
     return _generate_unary_op(node, ctx, "std::atan({inp})")
 
 
 @registry.register_op("Atanh")
 def generate_atanh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_atanh method or operation."""
+    """Implement the generate_atanh method or operation."""
     return _generate_unary_op(node, ctx, "std::atanh({inp})")
 
 
 @registry.register_op("Cos")
 def generate_cos(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_cos method or operation."""
+    """Implement the generate_cos method or operation."""
     return _generate_unary_op(node, ctx, "std::cos({inp})", vdsp_func="vvcosf")
 
 
 @registry.register_op("Cosh")
 def generate_cosh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_cosh method or operation."""
+    """Implement the generate_cosh method or operation."""
     return _generate_unary_op(node, ctx, "std::cosh({inp})")
 
 
 @registry.register_op("Sin")
 def generate_sin(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sin method or operation."""
+    """Implement the generate_sin method or operation."""
     return _generate_unary_op(node, ctx, "std::sin({inp})", vdsp_func="vvsinf")
 
 
 @registry.register_op("Sinh")
 def generate_sinh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sinh method or operation."""
+    """Implement the generate_sinh method or operation."""
     return _generate_unary_op(node, ctx, "std::sinh({inp})")
 
 
 @registry.register_op("Tan")
 def generate_tan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_tan method or operation."""
+    """Implement the generate_tan method or operation."""
     return _generate_unary_op(node, ctx, "std::tan({inp})")
 
 
 @registry.register_op("Clip")
 def generate_clip(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_clip method or operation."""
+    """Implement the generate_clip method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -315,7 +314,7 @@ def generate_clip(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 
 @registry.register_op("Ceil")
 def generate_ceil(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_ceil method or operation."""
+    """Implement the generate_ceil method or operation."""
     return _generate_unary_op(node, ctx, "std::ceil({inp})")
 
 
@@ -449,73 +448,73 @@ def generate_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("Exp")
 def generate_exp(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_exp method or operation."""
+    """Implement the generate_exp method or operation."""
     return _generate_unary_op(node, ctx, "std::exp({inp})", vdsp_func="vvexpf")
 
 
 @registry.register_op("Log")
 def generate_log(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_log method or operation."""
+    """Implement the generate_log method or operation."""
     return _generate_unary_op(node, ctx, "std::log({inp})", vdsp_func="vvlogf")
 
 
 @registry.register_op("Sqrt")
 def generate_sqrt(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sqrt method or operation."""
+    """Implement the generate_sqrt method or operation."""
     return _generate_unary_op(node, ctx, "std::sqrt({inp})", vdsp_func="vvsqrtf")
 
 
 @registry.register_op("Erf")
 def generate_erf(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_erf method or operation."""
+    """Implement the generate_erf method or operation."""
     return _generate_unary_op(node, ctx, "std::erf({inp})")
 
 
 @registry.register_op("Equal")
 def generate_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_equal method or operation."""
+    """Implement the generate_equal method or operation."""
     return _generate_binary_op(node, ctx, "==")
 
 
 @registry.register_op("Greater")
 def generate_greater(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_greater method or operation."""
+    """Implement the generate_greater method or operation."""
     return _generate_binary_op(node, ctx, ">")
 
 
 @registry.register_op("Less")
 def generate_less(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_less method or operation."""
+    """Implement the generate_less method or operation."""
     return _generate_binary_op(node, ctx, "<")
 
 
 @registry.register_op("LessOrEqual")
 def generate_less_or_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_less_or_equal method or operation."""
+    """Implement the generate_less_or_equal method or operation."""
     return _generate_binary_op(node, ctx, "<=")
 
 
 @registry.register_op("GreaterOrEqual")
 def generate_greater_or_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_greater_or_equal method or operation."""
+    """Implement the generate_greater_or_equal method or operation."""
     return _generate_binary_op(node, ctx, ">=")
 
 
 @registry.register_op("And")
 def generate_and(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_and method or operation."""
+    """Implement the generate_and method or operation."""
     return _generate_binary_op(node, ctx, "&&")
 
 
 @registry.register_op("Or")
 def generate_or(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_or method or operation."""
+    """Implement the generate_or method or operation."""
     return _generate_binary_op(node, ctx, "||")
 
 
 @registry.register_op("Not")
 def generate_not(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_not method or operation."""
+    """Implement the generate_not method or operation."""
     return _generate_unary_op(node, ctx, "!{inp}")
 
 
@@ -527,6 +526,7 @@ def _generate_reduction(
     iter_val: str,
     final_val: str = "",
 ) -> str:
+    """Execute the _generate_reduction operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -570,16 +570,19 @@ def _generate_reduction(
 
 @registry.register_op("ReduceSum")
 def generate_reduce_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
+    """Execute the generate_reduce_sum operation."""
     return _generate_reduction(node, ctx, "ReduceSum", "0", "acc += {inp};")
 
 
 @registry.register_op("ReduceMean")
 def generate_reduce_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
+    """Execute the generate_reduce_mean operation."""
     return _generate_reduction(node, ctx, "ReduceMean", "0", "acc += {inp};", "acc /= {size};")
 
 
 @registry.register_op("ReduceMax")
 def generate_reduce_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
+    """Execute the generate_reduce_max operation."""
     return _generate_reduction(
         node,
         ctx,
@@ -591,6 +594,7 @@ def generate_reduce_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("ReduceMin")
 def generate_reduce_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
+    """Execute the generate_reduce_min operation."""
     return _generate_reduction(
         node, ctx, "ReduceMin", "std::numeric_limits<float>::max()", "if ({inp} < acc) acc = {inp};"
     )
@@ -598,7 +602,7 @@ def generate_reduce_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("ReduceProd")
 def generate_reduce_prod(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reduce_prod method or operation."""
+    """Implement the generate_reduce_prod method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -613,7 +617,7 @@ def generate_reduce_prod(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 
 @registry.register_op("DFT")
 def generate_dft(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_dft method or operation."""
+    """Implement the generate_dft method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]

@@ -1,4 +1,6 @@
-from typing import Any, Dict, Union
+"""TVM submodule for AST and optimization."""
+
+from typing import Any, Union
 
 from ..expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
 from ..ty import FuncType, TensorType, TupleType, Type
@@ -6,14 +8,16 @@ from ..visitor import ExprMutator
 
 
 class ShapeResolver(ExprMutator):
-    """
-    Resolves dynamic shape components (strings) to static shapes based on bounds.
-    """
+    """Resolves dynamic shape components (strings) to static shapes based on bounds."""
 
     def __init__(self, bounds: dict[str, int]):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.bounds = bounds
 
     def _resolve_type(self, ty: Type) -> Type:
+        """Do the function."""
         if isinstance(ty, TensorType):
             new_shape = []
             changed = False
@@ -43,6 +47,7 @@ class ShapeResolver(ExprMutator):
         return ty
 
     def visit(self, expr: Expr) -> Expr:
+        """Do the function."""
         new_expr = super().visit(expr)
 
         # Also mutate checked_type
@@ -52,6 +57,7 @@ class ShapeResolver(ExprMutator):
         return new_expr
 
     def visit_var(self, expr: Var) -> Expr:
+        """Do the function."""
         if expr.type_annotation:
             new_ty = self._resolve_type(expr.type_annotation)
             if new_ty is not expr.type_annotation:
@@ -59,6 +65,7 @@ class ShapeResolver(ExprMutator):
         return expr
 
     def visit_function(self, expr: Function) -> Expr:
+        """Do the function."""
         new_params = [self.visit(p) for p in expr.params]
         new_body = self.visit(expr.body)
         new_ret_type = self._resolve_type(expr.ret_type) if expr.ret_type else None

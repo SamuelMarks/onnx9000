@@ -148,11 +148,13 @@ def test_load_training_checkpoint(tmp_path):
     graph = Graph("g")
     graph.add_tensor(Tensor("w1", (1,), "float32"))
     filepath = tmp_path / "ckpt.json"
+    from unittest.mock import patch
+
     with open(filepath, "w") as f:
-        json.load = lambda f: {"w1": "data"}  # mock
         json.dump({"w1": "data"}, f)
 
-    load_training_checkpoint(graph, str(filepath))
+    with patch("json.load", return_value={"w1": "data"}):
+        load_training_checkpoint(graph, str(filepath))
 
 
 def test_set_eval_mode():

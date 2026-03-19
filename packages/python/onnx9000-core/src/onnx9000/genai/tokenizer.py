@@ -1,10 +1,13 @@
-from typing import List, Union
+"""Provide functionality for this module."""
+
+from typing import Union
 
 
 class TokenizerStream:
     """Stream decoder for real-time generation."""
 
     def __init__(self, tokenizer: "Tokenizer"):
+        """Initialize the instance."""
         self.tokenizer = tokenizer
         self.token_cache: list[int] = []
 
@@ -22,6 +25,7 @@ class Tokenizer:
     """Base Tokenizer interface."""
 
     def __init__(self, added_tokens: dict[str, int] = None):
+        """Initialize the instance."""
         self.added_tokens = added_tokens or {}
         self.inv_added_tokens = {v: k for k, v in self.added_tokens.items()}
 
@@ -45,6 +49,7 @@ class Tokenizer:
         return "".join(chr(token_id))
 
     def token_to_id(self, token: str) -> int:
+        """Execute the token_to_id operation."""
         return ord(token[0]) if token else 0
 
     def encode_batch(self, texts: list[str]) -> list[list[int]]:
@@ -69,6 +74,7 @@ class BPETokenizer(Tokenizer):
         vocab: dict[str, int],
         unk_token: str = "<unk>",
     ):
+        """Initialize the instance."""
         self.merges = merges
         self.vocab = vocab
         self.unk_token = unk_token
@@ -76,6 +82,7 @@ class BPETokenizer(Tokenizer):
         self.inv_vocab = {v: k for k, v in vocab.items()}
 
     def _get_pairs(self, word: tuple[str, ...]) -> set[tuple[str, str]]:
+        """Execute the _get_pairs operation."""
         pairs = set()
         prev_char = word[0]
         for char in word[1:]:
@@ -85,6 +92,7 @@ class BPETokenizer(Tokenizer):
 
     def encode(self, text: str) -> list[int]:
         # Minimal BPE pre-tokenization
+        """Execute the encode operation."""
         words = text.split()
         token_ids = []
         for word in words:
@@ -126,6 +134,7 @@ class BPETokenizer(Tokenizer):
         return token_ids
 
     def decode(self, token_ids: list[int], clean_up_tokenization_spaces: bool = True) -> str:
+        """Execute the decode operation."""
         text = "".join([self.inv_vocab.get(tid, self.unk_token) for tid in token_ids])
         if clean_up_tokenization_spaces:
             import re
@@ -143,6 +152,7 @@ class WordPieceTokenizer(Tokenizer):
         unk_token: str = "[UNK]",
         max_input_chars_per_word: int = 100,
     ):
+        """Initialize the instance."""
         self.vocab = vocab
         self.unk_token = unk_token
         self.unk_token_id = self.vocab.get(unk_token, 0)
@@ -150,6 +160,7 @@ class WordPieceTokenizer(Tokenizer):
         self.max_input_chars_per_word = max_input_chars_per_word
 
     def encode(self, text: str) -> list[int]:
+        """Execute the encode operation."""
         import re
 
         words = text.split()
@@ -189,6 +200,7 @@ class WordPieceTokenizer(Tokenizer):
         return token_ids
 
     def decode(self, token_ids: list[int], clean_up_tokenization_spaces: bool = True) -> str:
+        """Execute the decode operation."""
         text = ""
         for tid in token_ids:
             token = self.inv_vocab.get(tid, self.unk_token)
@@ -211,6 +223,7 @@ class UnigramTokenizer(Tokenizer):
     """Unigram tokenization algorithm implementation."""
 
     def __init__(self, vocab: dict[str, float], unk_token: str = "<unk>"):
+        """Initialize the instance."""
         self.vocab = vocab
         self.unk_token = unk_token
         self.unk_score = self.vocab.get(unk_token, -100.0)
@@ -220,6 +233,7 @@ class UnigramTokenizer(Tokenizer):
 
     def encode(self, text: str) -> list[int]:
         # Simplistic Viterbi/Unigram scoring simulation
+        """Execute the encode operation."""
         words = text.split()
         token_ids = []
         for word in words:
@@ -255,6 +269,7 @@ class UnigramTokenizer(Tokenizer):
         return token_ids
 
     def decode(self, token_ids: list[int], clean_up_tokenization_spaces: bool = True) -> str:
+        """Execute the decode operation."""
         text = " ".join([self.id_to_token_map.get(tid, self.unk_token) for tid in token_ids])
         if clean_up_tokenization_spaces:
             import re
@@ -268,6 +283,7 @@ class HuggingFaceTokenizerLoader:
 
     @staticmethod
     def load_from_json(json_content: str) -> Tokenizer:
+        """Execute the load_from_json operation."""
         import json
 
         data = json.loads(json_content)
@@ -303,10 +319,11 @@ class HuggingFaceTokenizerLoader:
 
 
 class UnicodeNormalizer:
-    """Applies Unicode normalization (NFC, NFD, NFKC, NFKD)."""
+    """Apply Unicode normalization (NFC, NFD, NFKC, NFKD)."""
 
     @staticmethod
     def normalize(text: str, form: str = "NFC") -> str:
+        """Execute the normalize operation."""
         import unicodedata
 
         if form not in ("NFC", "NFD", "NFKC", "NFKD"):
@@ -319,12 +336,14 @@ class PreTokenizer:
 
     @staticmethod
     def whitespace_split(text: str) -> list[str]:
+        """Execute the whitespace_split operation."""
         import re
 
         return re.findall(r"\S+|\s+", text)
 
     @staticmethod
     def punctuation_split(text: str) -> list[str]:
+        """Execute the punctuation_split operation."""
         import re
 
         # Splits on punctuation but keeps it
@@ -334,4 +353,5 @@ class PreTokenizer:
     def byte_level(text: str) -> list[str]:
         # Translates string into byte tokens mapped to specific character sets (e.g. GPT-2 style)
         # This is a mock translation, in real systems it uses a constant 256 mapping
+        """Execute the byte_level operation."""
         return [chr(b) for b in text.encode("utf-8")]

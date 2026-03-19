@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -11,7 +10,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("If")
 def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_if method or operation."""
+    """Implement the generate_if method or operation."""
     cond_var = ctx.get_tensor_name(node.inputs[0])
 
     then_graph = node.attributes.get("then_branch")
@@ -53,7 +52,7 @@ def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("Loop")
 def generate_loop(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_loop method or operation."""
+    """Implement the generate_loop method or operation."""
     max_trip_count = (
         ctx.get_tensor_name(node.inputs[0]) if len(node.inputs) > 0 and node.inputs[0] else None
     )

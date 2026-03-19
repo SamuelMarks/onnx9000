@@ -1,5 +1,4 @@
-"""
-Operator Registry
+"""Operator Registry.
 
 Central catalog for registering ONNX operators across the ecosystem.
 """
@@ -10,8 +9,8 @@ from onnx9000.core.exceptions import UnsupportedOpError
 
 
 class OperatorRegistry:
-    """
-    Registry for mapping ONNX operator types to their respective
+    """Registry for mapping ONNX operator types to their respective.
+
     implementations, parsers, or execution kernels.
     """
 
@@ -27,9 +26,7 @@ class OperatorRegistry:
         ]
 
     def register_op(self, op_type: str, domain: str = "") -> Callable[[Any], Any]:
-        """
-        Decorator to register a class or function for a specific ONNX op_type.
-        """
+        """Decorate to register a class or function for a specific ONNX op_type."""
 
         def wrapper(impl: Any) -> Any:
             """Wrap the implementation and register it."""
@@ -44,9 +41,7 @@ class OperatorRegistry:
         return wrapper
 
     def get_op(self, op_type: str, domain: str = "") -> Any:
-        """
-        Retrieve the registered implementation for an ONNX operator.
-        """
+        """Retrieve the registered implementation for an ONNX operator."""
         full_op_type = f"{domain}.{op_type}" if domain else op_type
         if full_op_type not in self._registry:
             raise UnsupportedOpError(full_op_type)

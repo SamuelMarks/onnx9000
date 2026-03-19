@@ -13,7 +13,7 @@ class GemmCompiler:
     """GEMM (Matrix Multiplication) Strategy compiler."""
 
     def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.tree = tree
         self.batch_size = batch_size
         self._detect_and_eliminate_redundant_thresholds()
@@ -24,7 +24,6 @@ class GemmCompiler:
 
     def compile(self, g: Graph) -> None:
         """Compiles tree to GEMM operators."""
-
         self._compress_matrix_a()
         self._implement_sparsity_optimizations()
         self._pre_compute_scaling_factors()
@@ -122,30 +121,31 @@ class GemmCompiler:
         pass
 
     def _build_matrix_a(self) -> dict:
-        """Executes the build matrix a operation."""
+        """Execute the build matrix a operation."""
         num_nodes = len(self.tree.features)
         return {"shape": (num_nodes, max(self.tree.features + [0]) + 1)}
 
     def _build_matrix_b(self) -> dict:
-        """Executes the build matrix b operation."""
+        """Execute the build matrix b operation."""
         num_nodes = len(self.tree.features)
         # Map missing values to extreme matrix thresholds (+inf / -inf) natively here
         return {"shape": (num_nodes, 1)}
 
     def _build_matrix_c(self) -> dict:
-        """Executes the build matrix c operation."""
+        """Execute the build matrix c operation."""
         num_nodes = len(self.tree.features)
         # Support multi-class prediction packing in GEMM C matrices
         return {"shape": (num_nodes, 1)}
 
     def _build_matrix_d(self) -> dict:
-        """Executes the build matrix d operation."""
+        """Execute the build matrix d operation."""
         num_nodes = len(self.tree.features)
         return {"shape": (num_nodes, num_nodes)}
 
 
 def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
     """Compile Random Forest into batched 3D MatMul.
+
     Optimize GEMM memory using block-diagonal matrix representations.
     """
     pass
@@ -153,6 +153,7 @@ def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any
 
 def compile_boosting_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
     """Compile Gradient Boosting into sequential 2D MatMul additions.
+
     Transpile Sum reduction over ensemble outputs natively.
     """
     pass
@@ -170,15 +171,15 @@ def optimize_peak_vram_gemm(trees: list[TreeAbstractions]) -> None:
 
 # Expose Regressor / Classifier / IsolationForest helpers
 def compile_decision_tree_regressor_gemm(g: Graph, tree: TreeAbstractions) -> None:
-    """Executes the compile decision tree regressor gemm operation."""
+    """Execute the compile decision tree regressor gemm operation."""
     pass
 
 
 def compile_decision_tree_classifier_gemm(g: Graph, tree: TreeAbstractions) -> None:
-    """Executes the compile decision tree classifier gemm operation."""
+    """Execute the compile decision tree classifier gemm operation."""
     pass
 
 
 def compile_isolation_forest_gemm(g: Graph, trees: list[TreeAbstractions]) -> None:
-    """Executes the compile isolation forest gemm operation."""
+    """Execute the compile isolation forest gemm operation."""
     pass

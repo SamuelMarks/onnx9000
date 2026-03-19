@@ -12,13 +12,13 @@ class ScriptCompiler(ast.NodeVisitor):
     """Class ScriptCompiler implementation."""
 
     def __init__(self, func: Callable) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         self.func = func
         self.env: dict[str, Any] = {}
         self.builder = GraphBuilder(name=func.__name__)
 
     def compile(self, *args, **kwargs) -> GraphBuilder:
-        """Implements the compile method."""
+        """Implement the compile method."""
         source = inspect.getsource(self.func)
         import textwrap
 
@@ -34,12 +34,12 @@ class ScriptCompiler(ast.NodeVisitor):
         return self.builder
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
-        """Implements the visit_FunctionDef method."""
+        """Implement the visit_FunctionDef method."""
         for stmt in node.body:
             self.visit(stmt)
 
     def visit_Return(self, node: ast.Return) -> None:
-        """Implements the visit_Return method."""
+        """Implement the visit_Return method."""
         if node.value:
             val = self.visit(node.value)
             if isinstance(val, Tensor):
@@ -51,7 +51,7 @@ class ScriptCompiler(ast.NodeVisitor):
         return None
 
     def visit_If(self, node: ast.If) -> None:
-        """Implements the visit_If method."""
+        """Implement the visit_If method."""
         cond = self.visit(node.test)
         then_builder = GraphBuilder(name=f"{self.builder.name}_then")
         else_builder = GraphBuilder(name=f"{self.builder.name}_else")
@@ -68,29 +68,29 @@ class ScriptCompiler(ast.NodeVisitor):
             self.visit(stmt)
 
     def visit_For(self, node: ast.For) -> None:
-        """Implements the visit_For method."""
+        """Implement the visit_For method."""
         self.visit(node.iter)
         for stmt in node.body:
             self.visit(stmt)
 
     def visit_While(self, node: ast.While) -> None:
-        """Implements the visit_While method."""
+        """Implement the visit_While method."""
         self.visit(node.test)
         for stmt in node.body:
             self.visit(stmt)
 
     def visit_Name(self, node: ast.Name):
-        """Implements the visit_Name method."""
+        """Implement the visit_Name method."""
         return self.env.get(node.id, None)
 
     def generic_visit(self, node):
-        """Implements the generic_visit method."""
+        """Implement the generic_visit method."""
         return super().generic_visit(node)
 
     def visit_Tuple(self, node: ast.Tuple):
-        """Implements the visit_Tuple method."""
+        """Implement the visit_Tuple method."""
         return tuple(self.visit(e) for e in node.elts)
 
     def visit_List(self, node: ast.List):
-        """Implements the visit_List method."""
+        """Implement the visit_List method."""
         return [self.visit(e) for e in node.elts]

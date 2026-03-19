@@ -6,32 +6,32 @@ import numpy as np
 
 
 def add_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the add op operation."""
+    """Execute the add op operation."""
     return [inputs[0] + inputs[1]]
 
 
 def sub_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the sub op operation."""
+    """Execute the sub op operation."""
     return [inputs[0] - inputs[1]]
 
 
 def mul_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the mul op operation."""
+    """Execute the mul op operation."""
     return [inputs[0] * inputs[1]]
 
 
 def div_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the div op operation."""
+    """Execute the div op operation."""
     return [inputs[0] / inputs[1]]
 
 
 def pow_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the pow op operation."""
+    """Execute the pow op operation."""
     return [inputs[0] ** inputs[1]]
 
 
 def matmul_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the matmul op operation."""
+    """Execute the matmul op operation."""
     return [np.matmul(inputs[0], inputs[1])]
 
 
@@ -44,7 +44,7 @@ def im2col(
     pad_h: int,
     pad_w: int,
 ) -> np.ndarray:
-    """Executes the im2col operation."""
+    """Execute the im2col operation."""
     (n, c, h, w) = x.shape
     out_h = (h + 2 * pad_h - filter_h) // stride_h + 1
     out_w = (w + 2 * pad_w - filter_w) // stride_w + 1
@@ -62,7 +62,7 @@ def im2col(
 
 
 def conv_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the conv op operation."""
+    """Execute the conv op operation."""
     x = inputs[0]
     w = inputs[1]
     b = inputs[2] if len(inputs) > 2 else None
@@ -105,28 +105,28 @@ def conv_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
 
 
 def relu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the relu op operation."""
+    """Execute the relu op operation."""
     return [np.maximum(0, inputs[0])]
 
 
 def sigmoid_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the sigmoid op operation."""
+    """Execute the sigmoid op operation."""
     return [1.0 / (1.0 + np.exp(-inputs[0]))]
 
 
 def tanh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the tanh op operation."""
+    """Execute the tanh op operation."""
     return [np.tanh(inputs[0])]
 
 
 def gelu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the gelu op operation."""
+    """Execute the gelu op operation."""
     x = inputs[0]
     return [0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * np.power(x, 3))))]
 
 
 def reducesum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the reducesum op operation."""
+    """Execute the reducesum op operation."""
     axes = tuple(attrs.get("axes", []))
     keepdims = attrs.get("keepdims", 1)
     if not axes:
@@ -135,7 +135,7 @@ def reducesum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
 
 
 def reducemean_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the reducemean op operation."""
+    """Execute the reducemean op operation."""
     axes = tuple(attrs.get("axes", []))
     keepdims = attrs.get("keepdims", 1)
     if not axes:
@@ -144,7 +144,7 @@ def reducemean_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nd
 
 
 def reducemax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the reducemax op operation."""
+    """Execute the reducemax op operation."""
     axes = tuple(attrs.get("axes", []))
     keepdims = attrs.get("keepdims", 1)
     if not axes:
@@ -153,13 +153,13 @@ def reducemax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
 
 
 def transpose_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the transpose op operation."""
+    """Execute the transpose op operation."""
     perm = attrs.get("perm")
     return [np.transpose(inputs[0], axes=perm)]
 
 
 def reshape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the reshape op operation."""
+    """Execute the reshape op operation."""
     shape_tensor = inputs[1] if len(inputs) > 1 else attrs.get("shape", [])
     target_shape = []
     for i, s in enumerate(shape_tensor):
@@ -171,7 +171,7 @@ def reshape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
 
 
 def flatten_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the flatten op operation."""
+    """Execute the flatten op operation."""
     axis = attrs.get("axis", 1)
     x = inputs[0]
     if axis < 0:
@@ -181,19 +181,19 @@ def flatten_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
 
 
 def concat_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the concat op operation."""
+    """Execute the concat op operation."""
     axis = attrs.get("axis", 0)
     return [np.concatenate(inputs, axis=axis)]
 
 
 def gather_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the gather op operation."""
+    """Execute the gather op operation."""
     axis = attrs.get("axis", 0)
     return [np.take(inputs[0], inputs[1].astype(int), axis=axis)]
 
 
 def scatternd_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the scatternd op operation."""
+    """Execute the scatternd op operation."""
     data = np.copy(inputs[0])
     indices = inputs[1]
     updates = inputs[2]
@@ -206,7 +206,7 @@ def scatternd_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
 
 
 def slice_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the slice op operation."""
+    """Execute the slice op operation."""
     data = inputs[0]
     starts = inputs[1]
     ends = inputs[2]
@@ -219,7 +219,7 @@ def slice_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray
 
 
 def softmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the softmax op operation."""
+    """Execute the softmax op operation."""
     axis = attrs.get("axis", -1)
     x = inputs[0]
     x_max = np.max(x, axis=axis, keepdims=True)
@@ -228,7 +228,7 @@ def softmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
 
 
 def layernorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the layernorm op operation."""
+    """Execute the layernorm op operation."""
     x = inputs[0]
     scale = inputs[1]
     b = inputs[2] if len(inputs) > 2 else None
@@ -244,7 +244,7 @@ def layernorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
 
 
 def batchnorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the batchnorm op operation."""
+    """Execute the batchnorm op operation."""
     x = inputs[0]
     scale = inputs[1]
     b = inputs[2]
@@ -807,7 +807,7 @@ def topk_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
 
 
 def unique_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Unique Op function logic implementation."""
+    """Implement Unique Op function logic."""
     (u, indices, inverse_indices, counts) = np.unique(
         inputs[0], return_index=True, return_inverse=True, return_counts=True
     )

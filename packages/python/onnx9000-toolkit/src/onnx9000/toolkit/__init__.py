@@ -1,1 +1,1 @@
-"""Provides toolkit module functionality."""
+"""Provide toolkit module functionality."""

@@ -6,8 +6,8 @@ from onnx9000.core import onnx_pb2
 
 
 class DType(enum.Enum):
-    """
-    Core data type enumeration bridging Python, NumPy, C++, and ONNX.
+    """Core data type enumeration bridging Python, NumPy, C++, and ONNX.
+
     Values correspond to ONNX TensorProto.DataType.
     """
 
@@ -29,9 +29,7 @@ class DType(enum.Enum):
 
 
 def to_cpp_type(dtype: DType) -> str:
-    """
-    Convert a DType to its corresponding native C++ type string.
-    """
+    """Convert a DType to its corresponding native C++ type string."""
     mapping = {
         DType.FLOAT32: "float",
         DType.FLOAT64: "double",
@@ -54,9 +52,7 @@ def to_cpp_type(dtype: DType) -> str:
 
 
 def to_emscripten_type(dtype: DType) -> str:
-    """
-    Convert a DType to its corresponding JS TypedArray string for Emscripten.
-    """
+    """Convert a DType to its corresponding JS TypedArray string for Emscripten."""
     mapping = {
         DType.FLOAT32: "Float32Array",
         DType.FLOAT64: "Float64Array",

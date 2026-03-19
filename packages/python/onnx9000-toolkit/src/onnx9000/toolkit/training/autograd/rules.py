@@ -1,5 +1,4 @@
-"""
-Gradient Rules Mapping
+"""Gradient Rules Mapping.
 
 Contains the Vector-Jacobian Product (VJP) mapping rules for specific ONNX operations,
 defining the mathematical backward propagation rules for basic arithmetic and activations.
@@ -697,17 +696,17 @@ class HardSigmoidVJP(VJPRule):
 
 
 class SiluVJP(VJPRule):
-    """
-    Autograd rule for Silu/Swish.
+    """Autograd rule for Silu/Swish.
+
     Recomputes the activation natively during the backward pass (saving VRAM).
     Silu(x) = x * sigmoid(x)
-    Silu'(x) = silu(x) + sigmoid(x) * (1 - silu(x))
+    Silu'(x) = silu(x) + sigmoid(x) * (1 - silu(x)).
     """
 
     def build_backward_nodes(
         self, fwd_node: Node, grad_outputs: list[str]
     ) -> tuple[list[Node], list[str]]:
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         grad_out = grad_outputs[0]
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
@@ -2435,7 +2434,7 @@ class BCEWithLogitsLossVJP(VJPRule):
     def build_backward_nodes(
         self, fwd_node: Node, grad_outputs: list[str]
     ) -> tuple[list[Node], list[str]]:
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         grad_out = grad_outputs[0]
         logits = fwd_node.inputs[0]
         target = fwd_node.inputs[1]
@@ -2470,7 +2469,7 @@ class BinaryCrossEntropyLossVJP(VJPRule):
     def build_backward_nodes(
         self, fwd_node: Node, grad_outputs: list[str]
     ) -> tuple[list[Node], list[str]]:
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         grad_out = grad_outputs[0]
         pred = fwd_node.inputs[0]
         target = fwd_node.inputs[1]
@@ -2514,7 +2513,7 @@ class SoftmaxCrossEntropyLossVJP(VJPRule):
     def build_backward_nodes(
         self, fwd_node: Node, grad_outputs: list[str]
     ) -> tuple[list[Node], list[str]]:
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         grad_out = grad_outputs[0]
         logits = fwd_node.inputs[0]
         target = fwd_node.inputs[1]
@@ -2580,15 +2579,15 @@ class SequenceConstructVJP(VJPRule):
 
 
 class RecurrentVJP(VJPRule):
-    """
-    Handles dynamic unrolling for recurrent layers (RNN, LSTM, GRU) traced natively.
+    """Handles dynamic unrolling for recurrent layers (RNN, LSTM, GRU) traced natively.
+
     Injects a backward 'Loop' node for Backpropagation Through Time (BPTT).
     """
 
     def build_backward_nodes(
         self, fwd_node: Node, grad_outputs: list[str]
     ) -> tuple[list[Node], list[str]]:
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         nodes = []
         grads = []
         for i, in_name in enumerate(fwd_node.inputs):
@@ -2776,8 +2775,8 @@ def get_vjp_rule(op_type: str) -> VJPRule:
 
 
 def register_vjp(op_type: str, custom_vjp_function) -> None:
-    """
-    Provide Python-level register_vjp(op_type, custom_vjp_function) API for extensibility.
+    """Provide Python-level custom VJP registration API for extensibility.
+
     Supports tracing explicitly custom/unknown domains by relying on user-provided VJPs.
     """
 
@@ -2787,7 +2786,7 @@ def register_vjp(op_type: str, custom_vjp_function) -> None:
         def build_backward_nodes(
             self, fwd_node: Node, grad_outputs: list[str]
         ) -> tuple[list[Node], list[str]]:
-            """Executes the build backward nodes operation."""
+            """Execute the build backward nodes operation."""
             return custom_vjp_function(fwd_node, grad_outputs)
 
     _VJP_REGISTRY[op_type] = CustomVJP()

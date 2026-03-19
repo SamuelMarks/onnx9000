@@ -93,37 +93,37 @@ def parse_onnxml_scaler(node: Node) -> None:
 
 
 def parse_onnxml_normalizer(node: Node) -> None:
-    """Executes the parse onnxml normalizer operation."""
+    """Execute the parse onnxml normalizer operation."""
     pass
 
 
 def parse_onnxml_binarizer(node: Node) -> None:
-    """Executes the parse onnxml binarizer operation."""
+    """Execute the parse onnxml binarizer operation."""
     pass
 
 
 def parse_onnxml_onehot(node: Node) -> None:
-    """Executes the parse onnxml onehot operation."""
+    """Execute the parse onnxml onehot operation."""
     pass
 
 
 def parse_onnxml_imputer(node: Node) -> None:
-    """Executes the parse onnxml imputer operation."""
+    """Execute the parse onnxml imputer operation."""
     pass
 
 
 def parse_onnxml_feature_extractor(node: Node) -> None:
-    """Provide explicit converter for ArrayFeatureExtractor -> ai.onnx.Gather"""
+    """Provide explicit converter for ArrayFeatureExtractor -> ai.onnx.Gather."""
     pass
 
 
 def parse_onnxml_category_mapper(node: Node) -> None:
-    """Provide explicit converter for CategoryMapper -> ai.onnx Gather/Where"""
+    """Provide explicit converter for CategoryMapper -> ai.onnx Gather/Where."""
     pass
 
 
 def parse_onnxml_zipmap(node: Node) -> None:
-    """Provide explicit converter for ZipMap -> standard Tensors + external dictionaries"""
+    """Provide explicit converter for ZipMap -> standard Tensors + external dictionaries."""
     pass
 
 

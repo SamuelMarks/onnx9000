@@ -1,5 +1,4 @@
-"""
-Autograd Utilities
+"""Autograd Utilities.
 
 Helper functions for graph traversal and manipulation during backward pass construction.
 """
@@ -11,16 +10,14 @@ class GradientProto:
     """Standard ONNX GradientProto definition."""
 
     def __init__(self, name: str, weight_name: str, gradient_name: str):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.name = name
         self.weight_name = weight_name
         self.gradient_name = gradient_name
 
 
 def generate_gradient_proto(fwd_graph: Graph, bwd_graph: Graph) -> list[GradientProto]:
-    """
-    Generate standard ONNX GradientProto if specifically requested by user flags.
-    """
+    """Generate standard ONNX GradientProto if specifically requested by user flags."""
     protos = []
     for out in bwd_graph.outputs:
         if out.startswith("grad_"):
@@ -35,8 +32,8 @@ def generate_gradient_proto(fwd_graph: Graph, bwd_graph: Graph) -> list[Gradient
 
 
 def calculate_gradient_payload_size(graph: Graph) -> int:
-    """
-    Calculates theoretical gradient payload sizes natively using onnx-tool profiling.
+    """Calculate theoretical gradient payload sizes natively using onnx-tool profiling.
+
     Returns the size in bytes of all exposed gradients.
     """
     from onnx9000.core.profiler import profile
@@ -48,7 +45,7 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
     from onnx9000.core.dtypes import DType
 
     def dtype_size(dtype_str: str) -> int:
-        """Executes the dtype size operation."""
+        """Execute the dtype size operation."""
         if dtype_str == "float32":
             return 4
         elif dtype_str in ("float16", "bfloat16"):
@@ -62,7 +59,7 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
         return 4
 
     def resolve_volume(shape: tuple) -> int:
-        """Executes the resolve volume operation."""
+        """Execute the resolve volume operation."""
         if not shape:
             return 1
         v = 1
@@ -85,8 +82,8 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
 
 
 def compress_gradients_int8(graph: Graph) -> None:
-    """
-    Exposes an API to dynamically compress gradients via INT8 Quantization before transmission.
+    """Exposes an API to dynamically compress gradients via INT8 Quantization before transmission.
+
     Inserts a DynamicQuantizeLinear node for each gradient output.
     """
     grad_names = [out for out in graph.outputs if out.startswith("grad_")]
@@ -113,8 +110,8 @@ def compress_gradients_int8(graph: Graph) -> None:
 
 
 def compile_multi_replica_graph(graph: Graph, num_replicas: int) -> Graph:
-    """
-    Compiles multi-replica data parallel topologies into a single massive batched graph.
+    """Compiles multi-replica data parallel topologies into a single massive batched graph.
+
     Simply duplicates the graph N times natively inside the same execution payload.
     """
     if num_replicas <= 1:
@@ -196,9 +193,7 @@ def compile_multi_replica_graph(graph: Graph, num_replicas: int) -> Graph:
 
 
 def embed_distributed_identifiers(graph: Graph) -> None:
-    """
-    Embeds unique NodeArg identifiers natively to coordinate distributed weight synchronization automatically.
-    """
+    """Embeds unique NodeArg identifiers natively to coordinate distributed weight synchronization automatically."""
     for idx, g in enumerate([out for out in graph.outputs if out.startswith("grad_")]):
         t = graph.tensors.get(g)
         if t:
@@ -208,8 +203,8 @@ def embed_distributed_identifiers(graph: Graph) -> None:
 
 
 def add_synchronous_barrier(graph: Graph) -> None:
-    """
-    Exposes distributed synchronous barrier points statically inside the execution provider
+    """Exposes distributed synchronous barrier points statically inside the execution provider.
+
     by injecting an explicit Wait/Barrier sequence.
     """
     # Just an identity sync node dependent on flattened gradients to force execution barrier
@@ -223,8 +218,8 @@ def add_synchronous_barrier(graph: Graph) -> None:
 
 
 def calculate_communication_bounds(graph: Graph, target_ms: int = 100) -> float:
-    """
-    Calculates theoretical gradient communication bounds (MB/s) for federated updates,
+    """Calculate theoretical gradient communication bounds (MB/s) for federated updates,.
+
     assuming we want to synchronize gradients within a target_ms budget per step.
     """
     bytes_size = calculate_gradient_payload_size(graph)
@@ -235,9 +230,7 @@ def calculate_communication_bounds(graph: Graph, target_ms: int = 100) -> float:
 
 
 def flatten_gradients(graph: Graph) -> None:
-    """
-    Extracts and flattens all gradients cleanly into a single massive 1D Tensor dynamically for network transfer.
-    """
+    """Extract and flattens all gradients cleanly into a single massive 1D Tensor dynamically for network transfer."""
     grad_names = [out for out in graph.outputs if out.startswith("grad_")]
     if not grad_names:
         return
@@ -263,8 +256,8 @@ def flatten_gradients(graph: Graph) -> None:
 
 
 def reverse_topological_sort(graph: Graph) -> list["onnx9000.core.ir.Node"]:
-    """
-    Returns the nodes of the graph in reverse topological order.
+    """Return the nodes of the graph in reverse topological order.
+
     Detects and breaks gradient tracking loops intelligently.
     """
     # Detect cycles in the directed graph of nodes
@@ -279,7 +272,7 @@ def reverse_topological_sort(graph: Graph) -> list["onnx9000.core.ir.Node"]:
             output_to_node[out] = node
 
     def dfs(node: "onnx9000.core.ir.Node"):
-        """Executes the dfs operation."""
+        """Execute the dfs operation."""
         if node.name in rec_stack:
             # Loop detected, break it intelligently by ignoring this back-edge
             return

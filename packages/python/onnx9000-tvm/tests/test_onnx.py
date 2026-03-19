@@ -1,19 +1,18 @@
-import pytest
 import inspect
+
+import pytest
 
 
 def test_onnx_importer_all():
-    from onnx9000.tvm.relay.frontend.onnx import ONNXImporter
     import onnx
-    from onnx import helper
-    from onnx import TensorProto
-    from onnx import AttributeProto
+    from onnx import AttributeProto, TensorProto, helper
+    from onnx9000.tvm.relay.frontend.onnx import ONNXImporter
 
     importer = ONNXImporter()
 
     # cover _get_type
     t1 = helper.make_tensor_value_info("test", TensorProto.FLOAT, [1, "dim", None])
-    ty = importer._get_type(t1.type.tensor_type)
+    importer._get_type(t1.type.tensor_type)
 
     # cover _parse_attr
     a_f = helper.make_attribute("a", 1.0)

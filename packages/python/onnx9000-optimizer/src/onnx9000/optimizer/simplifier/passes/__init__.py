@@ -1,5 +1,4 @@
-"""
-Optimization and Analysis Passes
+"""Optimization and Analysis Passes.
 
 Contains all graph transformation passes (DCE, Fusion, Layout, Quantization)
 and analytical tools (Memory Planning, Validation) for the IR.

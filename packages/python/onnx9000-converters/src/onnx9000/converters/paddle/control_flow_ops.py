@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""PaddlePaddle converter operations and graph builders."""
 
 from typing import Callable
 
@@ -7,35 +7,35 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def _map_conditional_block(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map conditional block operation."""
+    """Execute the  map conditional block operation."""
     return builder.make_node("If", node.inputs.get("Cond", []), node.attrs, node.name)
 
 
 def _map_while(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map while operation."""
+    """Execute the  map while operation."""
     return builder.make_node("Loop", node.inputs.get("X", []), node.attrs, node.name)
 
 
 def _map_rnn(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map rnn operation."""
+    """Execute the  map rnn operation."""
     return builder.make_node("RNN", node.inputs.get("Input", []), node.attrs, node.name)
 
 
 def _map_lstm(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map lstm operation."""
+    """Execute the  map lstm operation."""
     return builder.make_node("LSTM", node.inputs.get("Input", []), node.attrs, node.name)
 
 
 def _map_gru(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map gru operation."""
+    """Execute the  map gru operation."""
     return builder.make_node("GRU", node.inputs.get("Input", []), node.attrs, node.name)
 
 
 def _map_tensor_array(op_type: str) -> Callable:
-    """Executes the  map tensor array operation."""
+    """Execute the  map tensor array operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node(
             op_type, node.inputs.get("X", []) + node.inputs.get("Value", []), node.attrs, node.name
         )

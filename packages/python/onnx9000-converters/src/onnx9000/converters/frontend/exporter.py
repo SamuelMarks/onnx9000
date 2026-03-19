@@ -76,5 +76,5 @@ def export(
 
 
 def visualize(model_path: Union[str, Path]) -> str:
-    """Implements the visualize method."""
+    """Implement the visualize method."""
     return ""

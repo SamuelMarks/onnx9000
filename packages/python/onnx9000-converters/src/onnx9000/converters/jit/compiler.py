@@ -37,8 +37,8 @@ def _get_compiler() -> str:
 
 
 def compile_cpp(graph: Graph) -> Path:
-    """
-    Generates C++ code for the graph and compiles it into a shared library.
+    """Generate C++ code for the graph and compiles it into a shared library.
+
     Returns the path to the compiled extension.
     """
     cache_key = hash_graph(graph)
@@ -110,8 +110,8 @@ def compile_cpp(graph: Graph) -> Path:
 
 
 def compile_wasm(graph: Graph, out_dir: Path) -> Path:
-    """
-    Generates C++ code and compiles it to WASM using Emscripten.
+    """Generate C++ code and compiles it to WASM using Emscripten.
+
     Returns the path to the generated .js file.
     """
     cache_key = hash_graph(graph)
@@ -168,7 +168,7 @@ def compile_wasm(graph: Graph, out_dir: Path) -> Path:
 
 
 def load_module(module_path: Path):
-    """Loads the compiled shared library into Python."""
+    """Load the compiled shared library into Python."""
     module_name = module_path.stem
     spec = importlib.util.spec_from_file_location(module_name, module_path)
     if spec is None or spec.loader is None:

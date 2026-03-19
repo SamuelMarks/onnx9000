@@ -1,5 +1,5 @@
-"""
-Registry and validation mechanisms for ONNX operator schemas.
+"""Registry and validation mechanisms for ONNX operator schemas.
+
 Provides lookup for operation signatures across different opset versions.
 """
 
@@ -18,7 +18,7 @@ class OpSchema:
         outputs: list[str],
         attributes: list[str],
     ) -> None:
-        """Initializes a schema for a specific ONNX operator version."""
+        """Initialize a schema for a specific ONNX operator version."""
         self.name = name
         self.since_version = since_version
         self.inputs = inputs
@@ -30,18 +30,18 @@ class SchemaRegistry:
     """A registry that stores and manages schemas for ONNX operations over different versions."""
 
     def __init__(self) -> None:
-        """Initializes an empty schema registry."""
+        """Initialize an empty schema registry."""
         self.schemas: dict[str, list[OpSchema]] = {}
 
     def register(self, schema: OpSchema) -> None:
-        """Registers a new operator schema into the registry, maintaining sorted order by version."""
+        """Register a new operator schema into the registry, maintaining sorted order by version."""
         if schema.name not in self.schemas:
             self.schemas[schema.name] = []
         self.schemas[schema.name].append(schema)
         self.schemas[schema.name].sort(key=lambda s: s.since_version)
 
     def get_schema(self, op_type: str, version: int) -> Optional[OpSchema]:
-        """Retrieves the highest compatible schema for a given operator type and target opset version."""
+        """Retrieve the highest compatible schema for a given operator type and target opset version."""
         if op_type not in self.schemas:
             return None
         candidates = [s for s in self.schemas[op_type] if s.since_version <= version]
@@ -50,7 +50,7 @@ class SchemaRegistry:
         return candidates[-1]
 
     def load_from_json(self, json_str: str) -> None:
-        """Loads and registers operator schemas from a JSON-formatted string."""
+        """Load and registers operator schemas from a JSON-formatted string."""
         data = json.loads(json_str)
         for item in data:
             self.register(
@@ -74,18 +74,18 @@ _target_opset = 18
 
 
 def set_target_opset(version: int) -> None:
-    """Sets the global target opset version to use for resolving operation schemas."""
+    """Set the global target opset version to use for resolving operation schemas."""
     global _target_opset
     _target_opset = version
 
 
 def get_target_opset() -> int:
-    """Retrieves the globally configured target opset version."""
+    """Retrieve the globally configured target opset version."""
     return _target_opset
 
 
 def validate_op(op_type: str, inputs: list[Any], attributes: dict[str, Any]) -> None:
-    """Validates an operation's instantiation against the globally targeted opset schema."""
+    """Validate an operation's instantiation against the globally targeted opset schema."""
     schema = registry.get_schema(op_type, _target_opset)
     if schema is None:
         if op_type in registry.schemas:

@@ -15,7 +15,7 @@ _objc = None
 
 
 def _load_libraries() -> None:
-    """Executes the load libraries operation."""
+    """Execute the load libraries operation."""
     global _accelerate_lib, _metal_lib, _mps_lib, _foundation_lib, _objc
     _accelerate_lib = _metal_lib = _mps_lib = _foundation_lib = _objc = None
     try:
@@ -113,29 +113,29 @@ _load_libraries()
 
 
 def is_accelerate_available() -> bool:
-    """Executes the is accelerate available operation."""
+    """Execute the is accelerate available operation."""
     return _accelerate_lib is not None
 
 
 def is_metal_available() -> bool:
-    """Executes the is metal available operation."""
+    """Execute the is metal available operation."""
     return _metal_lib is not None
 
 
 def is_mps_available() -> bool:
-    """Executes the is mps available operation."""
+    """Execute the is mps available operation."""
     return _mps_lib is not None
 
 
 def get_class(name: str) -> ctypes.c_void_p:
-    """Executes the get class operation."""
+    """Execute the get class operation."""
     if _objc is None:
         return ctypes.c_void_p(0)
     return _objc.objc_getClass(name.encode("utf-8"))
 
 
 def get_selector(name: str) -> ctypes.c_void_p:
-    """Executes the get selector operation."""
+    """Execute the get selector operation."""
     if _objc is None:
         return ctypes.c_void_p(0)
     return _objc.sel_registerName(name.encode("utf-8"))
@@ -155,7 +155,7 @@ def nsstring(string: str) -> ctypes.c_void_p:
 
 
 def mtl_create_system_default_device() -> Optional[ctypes.c_void_p]:
-    """MTLCreateSystemDefaultDevice"""
+    """MTLCreateSystemDefaultDevice."""
     if not is_metal_available():
         return None
     try:

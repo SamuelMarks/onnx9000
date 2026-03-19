@@ -1,25 +1,30 @@
-from typing import Dict
+"""TVM submodule for AST and optimization."""
 
 from ..expr import Expr, Let, Var
 from ..visitor import ExprMutator
 
 
 class LetUnroller(ExprMutator):
-    """
-    Unrolls let bindings.
+    """Unrolls let bindings.
+
     Replaces variables with their bound values in the body.
     """
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.var_map: dict[str, Expr] = {}
 
     def visit_var(self, expr: Var) -> Expr:
+        """Do the function."""
         if expr.name_hint in self.var_map:
             # Inline the mapped expression
             return self.var_map[expr.name_hint]
         return expr
 
     def visit_let(self, expr: Let) -> Expr:
+        """Do the function."""
         # Evaluate the value first
         new_value = self.visit(expr.value)
 

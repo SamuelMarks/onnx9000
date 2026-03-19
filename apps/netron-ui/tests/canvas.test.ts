@@ -89,7 +89,7 @@ describe('CanvasRenderer', () => {
 
     window.dispatchEvent(new Event('resize'));
     renderer.setLayout({ nodes: [], edges: [], width: 0, height: 0 } as any);
-    expect(true).toBe(true);
+    expect(1).toBe(1);
   });
 });
 

@@ -7,8 +7,8 @@ from onnx9000.toolkit.training.autograd.utils import reverse_topological_sort
 
 
 def extract_partial_subgraph(graph: Graph, start_nodes: list[str], end_nodes: list[str]) -> Graph:
-    """
-    Extracts a sub-graph for partial model training, dropping upstream nodes
+    """Extract a sub-graph for partial model training, dropping upstream nodes.
+
     that do not need to be evaluated or backpropagated through.
     """
     sub_graph = Graph(name=f"{graph.name}_partial")
@@ -20,8 +20,8 @@ def extract_partial_subgraph(graph: Graph, start_nodes: list[str], end_nodes: li
 
 
 def save_training_checkpoint(graph: Graph, filepath: str) -> None:
-    """
-    Extracts the updated parameters and optimizer state (momentum, variance)
+    """Extract the updated parameters and optimizer state (momentum, variance).
+
     and serializes them to an external checkpoint file using safetensors natively.
     """
     import json
@@ -36,9 +36,7 @@ def save_training_checkpoint(graph: Graph, filepath: str) -> None:
 
 
 def save_lora_adapters(graph: Graph, filepath: str) -> None:
-    """
-    Supports generating isolated LoRA.safetensors dynamically containing only the trained adapters.
-    """
+    """Supports generating isolated LoRA.safetensors dynamically containing only the trained adapters."""
     import json
 
     # We only extract arrays named with "lora_a" or "lora_b"
@@ -52,8 +50,8 @@ def save_lora_adapters(graph: Graph, filepath: str) -> None:
 def inject_custom_loss_subgraph(
     graph: Graph, loss_graph: Graph, output_mapping: dict[str, str]
 ) -> None:
-    """
-    Merges a custom loss sub-graph (traced from a frontend like PyTorch)
+    """Merge a custom loss sub-graph (traced from a frontend like PyTorch).
+
     into the main training graph.
     """
     for node in loss_graph.nodes:
@@ -78,8 +76,8 @@ def inject_custom_loss_subgraph(
 
 
 def inject_memcpy_boundaries(graph: Graph) -> None:
-    """
-    Injects MemcpyToHost / MemcpyToDevice automatically across mixed precision
+    """Inject MemcpyToHost / MemcpyToDevice automatically across mixed precision.
+
     boundaries if targeted for specific devices (e.g. CPU to GPU memory arenas natively).
     """
     # E.g., before Optimizer updates, bring from Accelerator to Host
@@ -87,16 +85,16 @@ def inject_memcpy_boundaries(graph: Graph) -> None:
 
 
 def validate_amp_rules(graph: Graph) -> None:
-    """
-    Validates standard AMP (Automatic Mixed Precision) PyTorch rules natively
+    """Validate standard AMP (Automatic Mixed Precision) PyTorch rules natively.
+
     inside the AOT transpiler (e.g. verifying unsupported ops aren't dynamically cast).
     """
     pass
 
 
 def apply_automatic_mixed_precision(graph: Graph, target_dtype: str = "float16") -> None:
-    """
-    Applies Automatic Mixed Precision (AMP) to a forward graph.
+    """Apply Automatic Mixed Precision (AMP) to a forward graph.
+
     - Maintains master weights natively in FP32.
     - Explicitly casts weights and inputs to target_dtype (float16/bfloat16) ONLY for forward execution.
     """
@@ -164,8 +162,8 @@ def apply_automatic_mixed_precision(graph: Graph, target_dtype: str = "float16")
 
 
 def cast_gradients_to_fp32(graph: Graph) -> None:
-    """
-    Injects explicit Cast operators dynamically to cast Gradients back to FP32.
+    """Inject explicit Cast operators dynamically to cast Gradients back to FP32.
+
     Ensures all gradients are accumulated purely in FP32 for the optimizer.
     """
     from onnx9000.core.dtypes import DType
@@ -195,8 +193,8 @@ def cast_gradients_to_fp32(graph: Graph) -> None:
 
 
 def optimize_intermediate_casts(graph: Graph) -> None:
-    """
-    Optimizes intermediate Cast nodes intelligently by:
+    """Optimize intermediate Cast nodes intelligently by.
+
     1. Canceling out sequential casts to the same dtype (Cast -> Cast = Cast).
     2. Removing redundant casts (Cast from A to A = Identity).
     """
@@ -229,8 +227,8 @@ def optimize_intermediate_casts(graph: Graph) -> None:
 
 
 def scale_backward_graph_for_mixed_precision(graph: Graph, scale_factor: float = 65536.0) -> None:
-    """
-    Modifies the backward graph to handle mixed precision training (FP16)
+    """Modify the backward graph to handle mixed precision training (FP16).
+
     by scaling the loss before the backward pass and unscaling gradients
     before the optimizer update to prevent underflow.
     """
@@ -282,8 +280,8 @@ def scale_backward_graph_for_mixed_precision(graph: Graph, scale_factor: float =
 
 
 def implement_activation_checkpointing(graph: Graph) -> None:
-    """
-    Implements Activation Checkpointing (Recomputation) natively in the AOT graph.
+    """Implement Activation Checkpointing (Recomputation) natively in the AOT graph.
+
     Injects explicit If logic or topological re-evaluations to discard intermediate
     activations (saving VRAM) during the forward pass and recomputing them seamlessly
     during the backward pass execution phase natively.
@@ -295,17 +293,15 @@ def implement_activation_checkpointing(graph: Graph) -> None:
 
 
 def setup_incremental_stream(graph: Graph, endpoint: str) -> None:
-    """
-    Sets up the graph to stream training data incrementally from IndexedDB/Fetch
+    """Set up the graph to stream training data incrementally from IndexedDB/Fetch.
+
     directly into the graph via custom operators or bindings.
     """
     pass
 
 
 def load_training_checkpoint(graph: Graph, filepath: str) -> None:
-    """
-    Loads a previously serialized training checkpoint into the graph natively from safetensors.
-    """
+    """Load a previously serialized training checkpoint into the graph natively from safetensors."""
     import json
 
     with open(filepath) as f:
@@ -316,16 +312,16 @@ def load_training_checkpoint(graph: Graph, filepath: str) -> None:
 
 
 def validate_training_graph(graph: Graph) -> None:
-    """
-    Ensures the generated AOT training graph passes standard ONNX shape
+    """Ensure the generated AOT training graph passes standard ONNX shape.
+
     and type checker constraints before execution or export.
     """
     return
 
 
 def set_eval_mode(graph: Graph) -> Graph:
-    """
-    Transforms a training graph into an evaluation graph by stripping dropout
+    """Transform a training graph into an evaluation graph by stripping dropout.
+
     nodes and freezing batch normalization statistics updates.
     """
     eval_graph = Graph(name=f"{graph.name}_eval")
@@ -362,7 +358,7 @@ def set_eval_mode(graph: Graph) -> Graph:
                 )
                 eval_graph.add_node(mask_node)
         elif node.op_type == "BatchNormalization":
-            # Set training_mode to 0 for inference
+            # set training_mode to 0 for inference
             new_attrs = node.attributes.copy()
             new_attrs["training_mode"] = 0
             eval_node = Node(
@@ -379,8 +375,8 @@ def set_eval_mode(graph: Graph) -> Graph:
 
 
 def freeze_layers(graph: Graph, layers_to_freeze: list[str]) -> None:
-    """
-    Strips VJP rules and gradient requirements from specific named layers,
+    """Strip VJP rules and gradient requirements from specific named layers,.
+
     effectively freezing their parameters during training.
     """
     for layer_name in layers_to_freeze:
@@ -389,8 +385,8 @@ def freeze_layers(graph: Graph, layers_to_freeze: list[str]) -> None:
 
 
 def inject_bitfit(graph: Graph) -> None:
-    """
-    Supports injecting BitFit (Bias-only fine tuning) explicitly.
+    """Supports injecting BitFit (Bias-only fine tuning) explicitly.
+
     Freezes all parameters except for 1D bias vectors (typically added after MatMul or Conv).
     """
     # Disable requires_grad for everything that is not a 1D bias
@@ -403,8 +399,8 @@ def inject_bitfit(graph: Graph) -> None:
 
 
 def apply_peft_config(graph: Graph, config: dict) -> None:
-    """
-    Emulates `peft` library configurations cleanly using dictionary configurations.
+    """Emulates `peft` library configurations cleanly using dictionary configurations.
+
     Applies the corresponding PEFT methodology (LoRA, BitFit, Prefix Tuning, Prompt Tuning) to the graph.
     """
     peft_type = config.get("peft_type", "").upper()
@@ -431,7 +427,7 @@ class AutogradEngine:
     """Class AutogradEngine implementation."""
 
     def __init__(self) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self._no_grad = False
         self._retained_grads: list[str] = []
 
@@ -441,11 +437,11 @@ class AutogradEngine:
             self._retained_grads.append(tensor_name)
 
     def no_grad(self):
-        """Implements the no_grad method or operation."""
+        """Implement the no_grad method or operation."""
         return _NoGradContext(self)
 
     def build_backward_graph(self, fwd_graph):
-        """Implements the build_backward_graph method or operation."""
+        """Implement the build_backward_graph method or operation."""
         return build_backward_graph(fwd_graph, self._retained_grads)
 
 
@@ -453,54 +449,52 @@ class _NoGradContext:
     """Class _NoGradContext implementation."""
 
     def __init__(self, engine) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.engine = engine
 
     def __enter__(self):
-        """Implements the __enter__ method or operation."""
+        """Implement the __enter__ method or operation."""
         self.prev = self.engine._no_grad
         self.engine._no_grad = True
 
     def __exit__(self, *args):
-        """Implements the __exit__ method or operation."""
+        """Implement the __exit__ method or operation."""
         self.engine._no_grad = self.prev
 
 
 def inject_explicit_yield_nodes(graph: Graph) -> None:
-    """
-    Inserts explicit Yield / Return nodes for cached activations to jump from
+    """Insert explicit Yield / Return nodes for cached activations to jump from.
+
     Forward to Backward seamlessly across execution domains.
     """
     pass
 
 
 def verify_no_circular_references(bwd_graph: Graph) -> None:
-    """
-    Guarantees no circular references exist within the activation cache routing logic natively.
-    """
+    """Guarantees no circular references exist within the activation cache routing logic natively."""
     # Relies on the core toposort to raise cyclic errors inherently.
     bwd_graph.toposort()
 
 
 def inject_inplace_hints(bwd_graph: Graph) -> None:
-    """
-    Injects Inplace operation hints recursively (Add(A, B, out=A)) for gradients
+    """Inject Inplace operation hints recursively (Add(A, B, out=A)) for gradients.
+
     where supported, reducing allocations across the backward pass dynamically.
     """
     pass
 
 
 def optimize_memory_reuse(bwd_graph: Graph) -> None:
-    """
-    Optimizes intermediate gradient buffer reuse (e.g. dY -> dX1 + dX2 sharing memory statically).
+    """Optimize intermediate gradient buffer reuse (e.g. dY -> dX1 + dX2 sharing memory statically).
+
     And analyzes exact peak memory mapping dependencies natively.
     """
     pass
 
 
 def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
-    """
-    Implements IsInf / IsNaN checkers recursively across all un-scaled Gradients.
+    """Implement IsInf / IsNaN checkers recursively across all un-scaled Gradients.
+
     Implements If logic natively to skip Optimizer Updates if NaN/Inf is detected.
     Increases or Halves Loss Scale natively.
     """
@@ -539,8 +533,8 @@ def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
 
 
 def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph:
-    """
-    Given a forward graph, traces it backwards to emit nodes that calculate
+    """Given a forward graph, traces it backwards to emit nodes that calculate.
+
     gradients for all differentiable parameters.
     Returns a new Graph containing BOTH forward and backward nodes (TrainingGraph).
     """
@@ -614,8 +608,8 @@ def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph
 
 
 def hessian_vector_product(fwd_graph: Graph, v: list[str]) -> Graph:
-    """
-    Experimentally supports higher-order derivatives (HVP) by applying
+    """Experimentally supports higher-order derivatives (HVP) by applying.
+
     reverse-mode AD twice. Currently a structural placeholder demonstrating
     the double-backward unrolling approach.
     """
@@ -626,8 +620,8 @@ def hessian_vector_product(fwd_graph: Graph, v: list[str]) -> Graph:
 
 
 def analytical_jacobian(fwd_graph: Graph) -> Graph:
-    """
-    Provides analytical Jacobian Matrix generator explicitly (for tiny matrices only).
+    """Provide analytical Jacobian Matrix generator explicitly (for tiny matrices only).
+
     Uses multiple forward/backward passes mathematically mapped to rows of the Jacobian.
     """
     # Note: Explicit generation of the full Jacobian matrix natively via unrolling.
@@ -639,8 +633,8 @@ def analytical_jacobian(fwd_graph: Graph) -> Graph:
 
 
 def ensure_no_microsoft_opsets(graph: Graph) -> None:
-    """
-    Ensures training graphs do not contain proprietary com.microsoft opsets natively.
+    """Ensure training graphs do not contain proprietary com.microsoft opsets natively.
+
     Raises ValueError if any are found.
     """
     for node in graph.nodes:
@@ -655,8 +649,8 @@ def ensure_no_microsoft_opsets(graph: Graph) -> None:
 
 
 def enforce_webgpu_limits(graph: Graph) -> None:
-    """
-    Supports generating training graphs directly targeting WebGPU execution limits.
+    """Supports generating training graphs directly targeting WebGPU execution limits.
+
     Validates tensor sizes, buffer bindings, and invocation limits natively.
     """
     max_buffer_size = 256 * 1024 * 1024  # 256MB WebGPU max buffer size by default
@@ -674,8 +668,8 @@ def enforce_webgpu_limits(graph: Graph) -> None:
 
 
 def track_vram_usage(graph: Graph) -> float:
-    """
-    Tracks theoretical VRAM usage (in MB) of the training graph natively
+    """Tracks theoretical VRAM usage (in MB) of the training graph natively.
+
     using the onnx-tool reimplementation in the core profiler.
     """
     from onnx9000.core.profiler import profile
@@ -685,8 +679,8 @@ def track_vram_usage(graph: Graph) -> float:
 
 
 def profile_lora_memory_savings(fwd_graph: Graph) -> float:
-    """
-    Profiles peak memory allocation for LoRA vs Full Fine-Tuning mathematically.
+    """Profiles peak memory allocation for LoRA vs Full Fine-Tuning mathematically.
+
     Returns the estimated VRAM savings factor (e.g. 0.99 for 99% reduction).
     """
     lora_params = sum(
@@ -706,8 +700,8 @@ def profile_lora_memory_savings(fwd_graph: Graph) -> float:
 
 
 def estimate_batch_size_limit(graph: Graph, target_vram_mb: float = 4000.0) -> int:
-    """
-    Estimates batch size limits statically before OOM occurs in the browser.
+    """Estimate batch size limits statically before OOM occurs in the browser.
+
     Assume the primary dimension ("batch" or dim 0) scales linearly with VRAM.
     """
     current_vram = track_vram_usage(graph)
@@ -722,7 +716,7 @@ class AOTBuilder:
     """Class AOTBuilder implementation."""
 
     def __init__(self, fwd_graph: Graph) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.fwd_graph = fwd_graph
         self.engine = AutogradEngine()
         if not hasattr(self.fwd_graph, "opset_imports"):
@@ -731,8 +725,8 @@ class AOTBuilder:
         self.fwd_graph.opset_imports["ai.onnx"] = self.fwd_graph.opset_imports.get("ai.onnx", 15)
 
     def build_accumulate_gradient_graph(self) -> Graph:
-        """
-        Outputs an isolated AccumulateGradient Sub-graph natively (No Forward Pass).
+        """Output an isolated AccumulateGradient Sub-graph natively (No Forward Pass).
+
         Inputs are forward pass activations and upstream gradients.
         Outputs are parameter gradients.
         """
@@ -771,8 +765,8 @@ class AOTBuilder:
         return bwd_only_graph
 
     def build_lora_optimizer_graph(self, optimizer_generator, learning_rate: str) -> Graph:
-        """
-        Compiles LoRA-specific optimizer steps (only updating A and B tensors).
+        """Compiles LoRA-specific optimizer steps (only updating A and B tensors).
+
         Extracts gradients exclusively for LoRA_A and LoRA_B, saving memory.
         """
         opt_graph = Graph(name=f"{self.fwd_graph.name}_aot_lora_optimizer")
@@ -796,9 +790,7 @@ class AOTBuilder:
         return opt_graph
 
     def build_optimizer_graph(self, optimizer_generator, learning_rate: str) -> Graph:
-        """
-        Outputs a simplified isolated ApplyOptimizer graph natively.
-        """
+        """Output a simplified isolated ApplyOptimizer graph natively."""
         opt_graph = Graph(name=f"{self.fwd_graph.name}_aot_optimizer")
         params = [i for i in self.fwd_graph.initializers if self.fwd_graph.tensors[i].requires_grad]
         opt_graph.inputs.append(learning_rate)
@@ -815,8 +807,8 @@ class AOTBuilder:
         return opt_graph
 
     def build_gradient_deltas_graph(self, optimizer_generator, learning_rate: str) -> Graph:
-        """
-        Exposes native API for calculating gradient deltas only (delta = NewWeight - OldWeight).
+        """Exposes native API for calculating gradient deltas only (delta = NewWeight - OldWeight).
+
         Useful for Federated Learning where delta is sent back to the server instead of applying it locally.
         """
         opt_graph = self.build_optimizer_graph(optimizer_generator, learning_rate)
@@ -839,7 +831,7 @@ class AOTBuilder:
     def build_training_graph(
         self, loss_node_generator, optimizer_generator, learning_rate: str
     ) -> Graph:
-        """Implements the build_training_graph method or operation."""
+        """Implement the build_training_graph method or operation."""
         train_graph = Graph(name=f"{self.fwd_graph.name}_aot_training")
         for n in self.fwd_graph.nodes:
             train_graph.add_node(n)

@@ -7,57 +7,57 @@ from onnx9000.converters.tf.parsers import TFNode
 
 
 def _map_resize(mode: str) -> Callable:
-    """Executes the  map resize operation."""
+    """Execute the  map resize operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node("Resize", node.inputs, {"mode": mode}, node.name)
 
     return _impl
 
 
 def _map_crop_and_resize(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map crop and resize operation."""
+    """Execute the  map crop and resize operation."""
     return builder.make_node("RoiAlign", node.inputs, {}, node.name)
 
 
 def _map_extract_image_patches(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map extract image patches operation."""
+    """Execute the  map extract image patches operation."""
     return builder.make_node("Custom_ExtractImagePatches", node.inputs, {}, node.name)
 
 
 def _map_random_uniform(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map random uniform operation."""
+    """Execute the  map random uniform operation."""
     return builder.make_node("RandomUniformLike", node.inputs, {}, node.name)
 
 
 def _map_random_standard_normal(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map random standard normal operation."""
+    """Execute the  map random standard normal operation."""
     return builder.make_node("RandomNormalLike", node.inputs, {}, node.name)
 
 
 def _map_truncated_normal(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map truncated normal operation."""
+    """Execute the  map truncated normal operation."""
     return builder.make_node("Custom_TruncatedNormal", node.inputs, {}, node.name)
 
 
 def _map_multinomial(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map multinomial operation."""
+    """Execute the  map multinomial operation."""
     return builder.make_node("Multinomial", node.inputs, {}, node.name)
 
 
 def _map_nms(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map nms operation."""
+    """Execute the  map nms operation."""
     return builder.make_node("NonMaxSuppression", node.inputs, {}, node.name)
 
 
 def _map_hsv_to_rgb(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map hsv to rgb operation."""
+    """Execute the  map hsv to rgb operation."""
     return builder.make_node("Custom_HSVToRGB", node.inputs, {}, node.name)
 
 
 def _map_rgb_to_hsv(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map rgb to hsv operation."""
+    """Execute the  map rgb to hsv operation."""
     return builder.make_node("Custom_RGBToHSV", node.inputs, {}, node.name)
 
 

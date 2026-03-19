@@ -5,8 +5,8 @@ from typing import Any
 
 
 def extract_namespace(name: str, delimiter: str = ".") -> list[str]:
-    """
-    Extracts namespace hierarchy from a node name (e.g. 'model.layer.0.attention.proj').
+    """Extract namespace hierarchy from a node name (e.g. 'model.layer.0.attention.proj').
+
     Falls back to '/' if '.' isn't used (common in TF/Keras).
     """
     if "." in name:
@@ -20,7 +20,7 @@ class HierarchicalProfileNode:
     """Represents the Hierarchical Profile Node class."""
 
     def __init__(self, name: str):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.name = name
         self.macs = 0
         self.flops = 0
@@ -29,7 +29,7 @@ class HierarchicalProfileNode:
         self.children: dict[str, HierarchicalProfileNode] = {}
 
     def add_stats(self, macs: int, flops: int, params: int, activation_bytes: int):
-        """Executes the add stats operation."""
+        """Execute the add stats operation."""
         if isinstance(macs, int):
             self.macs += macs
         if isinstance(flops, int):
@@ -40,7 +40,7 @@ class HierarchicalProfileNode:
             self.activation_bytes += activation_bytes
 
     def to_dict(self) -> dict[str, Any]:
-        """Executes the to dict operation."""
+        """Execute the to dict operation."""
         d = {
             "name": self.name,
             "macs": self.macs,
@@ -53,7 +53,7 @@ class HierarchicalProfileNode:
         return d
 
     def print_tree(self, indent: int = 0):
-        """Executes the print tree operation."""
+        """Execute the print tree operation."""
         pad = "  " * indent
         print(
             f"{pad}- {self.name}: FLOPs={self.flops}, Params={self.params}, Activations={self.activation_bytes}"
@@ -63,9 +63,7 @@ class HierarchicalProfileNode:
 
 
 def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
-    """
-    Takes a ProfilerResult and groups its flat node_profiles into a hierarchical tree.
-    """
+    """Take a ProfilerResult and groups its flat node_profiles into a hierarchical tree."""
     root = HierarchicalProfileNode("root")
 
     for n in profiler_result.node_profiles:
@@ -95,14 +93,14 @@ def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
 
 
 def export_hierarchical_json(profiler_result, filepath: str):
-    """Executes the export hierarchical json operation."""
+    """Execute the export hierarchical json operation."""
     tree = group_by_namespace(profiler_result)
     with open(filepath, "w") as f:
         json.dump(tree.to_dict(), f, indent=2)
 
 
 def to_pandas_dataframe(profiler_result) -> list[dict[str, Any]]:
-    """Returns a list of dictionaries ready to be ingested by Pandas DataFrame."""
+    """Return a list of dictionaries ready to be ingested by Pandas DataFrame."""
     df_data = []
     for n in profiler_result.node_profiles:
         namespace = ".".join(extract_namespace(n.get("name", "unnamed"))[:-1])
@@ -122,7 +120,7 @@ def to_pandas_dataframe(profiler_result) -> list[dict[str, Any]]:
 
 
 def export_csv(profiler_result, filepath: str):
-    """Executes the export csv operation."""
+    """Execute the export csv operation."""
     df_data = to_pandas_dataframe(profiler_result)
     if not df_data:
         return

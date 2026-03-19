@@ -16,7 +16,7 @@ class BasicBlock(Module):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.conv1 = Conv2d(inplanes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = BatchNorm2d(planes)
@@ -25,7 +25,7 @@ class BasicBlock(Module):
         self.downsample = downsample
 
     def forward(self, x):
-        """Implements the forward method."""
+        """Implement the forward method."""
         identity = x
         out = self.conv1(x)
         out = self.bn1(out)
@@ -43,7 +43,7 @@ class ResNet18(Module):
     """Class ResNet18 implementation."""
 
     def __init__(self, num_classes=1000) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.inplanes = 64
         self.conv1 = Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
@@ -57,7 +57,7 @@ class ResNet18(Module):
         self.fc = Linear(512, num_classes)
 
     def _make_layer(self, planes, blocks, stride=1):
-        """Implements the _make_layer method."""
+        """Implement the _make_layer method."""
         downsample = None
         if stride != 1 or self.inplanes != planes:
             downsample = Sequential(
@@ -71,7 +71,7 @@ class ResNet18(Module):
         return Sequential(*layers)
 
     def forward(self, x):
-        """Implements the forward method."""
+        """Implement the forward method."""
         x = self.conv1(x)
         x = self.bn1(x)
         x = relu(x)
@@ -90,7 +90,7 @@ class MobileNetV2(Module):
     """Class MobileNetV2 implementation."""
 
     def __init__(self, num_classes=1000) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.features = Sequential(
             Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False),
@@ -101,7 +101,7 @@ class MobileNetV2(Module):
         self.classifier = Sequential(Linear(1280, num_classes))
 
     def forward(self, x):
-        """Implements the forward method."""
+        """Implement the forward method."""
         x = self.features(x)
         x = x.mean((2, 3))
         x = x.flatten(1)
@@ -113,7 +113,7 @@ class GPT2Block(Module):
     """Class GPT2Block implementation."""
 
     def __init__(self, d_model=768, n_head=12) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.ln_1 = LayerNorm(d_model)
         self.attn_c_attn = Linear(d_model, 3 * d_model)
@@ -123,7 +123,7 @@ class GPT2Block(Module):
         self.mlp_c_proj = Linear(4 * d_model, d_model)
 
     def forward(self, x):
-        """Implements the forward method."""
+        """Implement the forward method."""
         a = self.ln_1(x)
         a = self.attn_c_attn(a)
         a = self.attn_c_proj(a)
@@ -140,7 +140,7 @@ class GPT2(Module):
     """Class GPT2 implementation."""
 
     def __init__(self, vocab_size=50257, d_model=768) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.wte = Embedding(vocab_size, d_model)
         self.wpe = Embedding(1024, d_model)
@@ -148,7 +148,7 @@ class GPT2(Module):
         self.ln_f = LayerNorm(d_model)
 
     def forward(self, idx):
-        """Implements the forward method."""
+        """Implement the forward method."""
         x = self.wte(idx)
         x = self.blocks(x)
         x = self.ln_f(x)

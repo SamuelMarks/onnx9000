@@ -79,9 +79,7 @@ class IOBinding:
 
 
 class InferenceSession:
-    """
-    Coordinates execution of an ONNX Graph across multiple Execution Providers.
-    """
+    """Coordinates execution of an ONNX Graph across multiple Execution Providers."""
 
     def __init__(
         self,
@@ -101,8 +99,8 @@ class InferenceSession:
         self._partition_graph()
 
     def _partition_graph(self) -> None:
-        """
-        Assign each node in the graph to the most preferred Execution Provider
+        """Assign each node in the graph to the most preferred Execution Provider.
+
         that supports it. Providers are ordered by preference (e.g. CUDA, then CPU).
         """
         self.node_to_provider: dict[str, ExecutionProvider] = {}
@@ -193,9 +191,7 @@ class InferenceSession:
         input_feed: dict[str, Tensor],
         run_options: Optional[RunOptions] = None,
     ) -> list[Tensor]:
-        """
-        Execute the graph and return the requested outputs.
-        """
+        """Execute the graph and return the requested outputs."""
         if not output_names:
             output_names = [v.name for v in self.graph.outputs]
         context = ExecutionContext(options=self.options)

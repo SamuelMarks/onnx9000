@@ -1,17 +1,19 @@
-from typing import Dict, Tuple
+"""TVM submodule for AST and optimization."""
 
 from .expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
 
 
 class StructuralEquality:
-    """
-    Checks if two Relay expressions are structurally equal.
-    """
+    """Checks if two Relay expressions are structurally equal."""
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.var_map: dict[str, str] = {}
 
     def equal(self, a: Expr, b: Expr) -> bool:
+        """Do the function."""
         if type(a) != type(b):
             return False
 
@@ -21,12 +23,11 @@ class StructuralEquality:
 
         elif isinstance(a, Constant):
             # Check data equality
-            try:
+            if type(a.data).__name__ == "ndarray":
                 import numpy as np
 
                 return np.array_equal(a.data, b.data)
-            except:
-                return a.data == b.data
+            return a.data == b.data
 
         elif isinstance(a, Op):
             return a.name == b.name
@@ -99,5 +100,5 @@ class StructuralEquality:
 
 
 def structural_equal(a: Expr, b: Expr) -> bool:
-    """Returns True if the two expressions are structurally equal."""
+    """Return True if the two expressions are structurally equal."""
     return StructuralEquality().equal(a, b)

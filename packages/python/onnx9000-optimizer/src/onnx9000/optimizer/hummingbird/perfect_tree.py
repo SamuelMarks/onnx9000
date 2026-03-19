@@ -14,7 +14,7 @@ class PerfectTreeCompiler:
     """PerfectTree Traversal Strategy compiler."""
 
     def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.tree = tree
         self.batch_size = batch_size
         self.max_depth = int(analyze_tree_depth(tree)["max"])

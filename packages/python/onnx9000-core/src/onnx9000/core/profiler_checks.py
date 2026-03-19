@@ -7,12 +7,12 @@ class OptimizationAnalyzer:
     """Represents the Optimization Analyzer class."""
 
     def __init__(self, graph: Graph):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.graph = graph
         self.opportunities = []
 
     def analyze(self):
-        """Executes the analyze operation."""
+        """Execute the analyze operation."""
         self._check_redundant_casts()
         self._check_unused_initializers()
         self._check_fusion_matmul_add()
@@ -22,14 +22,14 @@ class OptimizationAnalyzer:
         return self.opportunities
 
     def _check_redundant_casts(self):
-        """Executes the check redundant casts operation."""
+        """Execute the check redundant casts operation."""
         for n in self.graph.nodes:
             if n.op_type == "Cast":
                 # if input dtype == output dtype
                 pass  # simplification for now
 
     def _check_unused_initializers(self):
-        """Executes the check unused initializers operation."""
+        """Execute the check unused initializers operation."""
         used_inputs = set()
         for n in self.graph.nodes:
             for inp in n.inputs:
@@ -51,7 +51,7 @@ class OptimizationAnalyzer:
 
     def _check_fusion_matmul_add(self):
         # MatMul -> Add
-        """Executes the check fusion matmul add operation."""
+        """Execute the check fusion matmul add operation."""
         count = 0
         for n in self.graph.nodes:
             if n.op_type == "MatMul":
@@ -65,7 +65,7 @@ class OptimizationAnalyzer:
             )
 
     def _check_fusion_conv_bn(self):
-        """Executes the check fusion conv bn operation."""
+        """Execute the check fusion conv bn operation."""
         count = 0
         for n in self.graph.nodes:
             if n.op_type == "Conv":
@@ -79,7 +79,7 @@ class OptimizationAnalyzer:
             )
 
     def _check_identity_chains(self):
-        """Executes the check identity chains operation."""
+        """Execute the check identity chains operation."""
         count = 0
         for n in self.graph.nodes:
             if n.op_type == "Identity":
@@ -90,7 +90,7 @@ class OptimizationAnalyzer:
             )
 
     def _check_unsupported_webgpu(self):
-        """Executes the check unsupported webgpu operation."""
+        """Execute the check unsupported webgpu operation."""
         unsupported = ["Loop", "Scan", "SequenceConstruct", "Complex", "NonZero"]
         found = set()
         for n in self.graph.nodes:

@@ -34,9 +34,7 @@ def _serialize_shape(
 
 
 def serialize_model(graph: Graph) -> onnx_pb2.ModelProto:
-    """
-    Serializes an internal ir.Graph back into an ONNX ModelProto.
-    """
+    """Serialize an internal ir.Graph back into an ONNX ModelProto."""
     model_proto = onnx_pb2.ModelProto()
     model_proto.ir_version = 8
     model_proto.producer_name = "onnx9000"
@@ -138,17 +136,13 @@ def serialize_model(graph: Graph) -> onnx_pb2.ModelProto:
 
 
 def to_bytes(graph: Graph) -> bytes:
-    """
-    Serializes the internal graph directly to a binary ONNX string.
-    """
+    """Serialize the internal graph directly to a binary ONNX string."""
     model_proto = serialize_model(graph)
     return model_proto.SerializeToString()
 
 
 def save(graph: Graph, file_path: Union[str, Path]) -> None:
-    """
-    Saves an ir.Graph into a .onnx file format on disk.
-    """
+    """Save an ir.Graph into a .onnx file format on disk."""
     try:
         binary_data = to_bytes(graph)
         with open(file_path, "wb") as f:

@@ -7,8 +7,8 @@ from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 def compile_training_graph(
     model: Graph, loss_fn, optimizer_fn, learning_rate: str = "learning_rate"
 ) -> Graph:
-    """
-    Exposes Python API `onnx9000.training.compile_training_graph(model, loss, optimizer)`.
+    """Expose Python API for compiling the training graph.
+
     Compiles the provided ONNX IR Graph into a monolithic training graph containing
     forward pass, loss, backward pass, and optimizer steps.
     """

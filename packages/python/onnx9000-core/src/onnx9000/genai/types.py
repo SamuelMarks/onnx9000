@@ -1,4 +1,6 @@
-from typing import List, Optional, Union
+"""Provide functionality for this module."""
+
+from typing import Optional, Union
 
 
 class ModelParams:
@@ -16,6 +18,7 @@ class ModelParams:
         bos_token_id: Optional[int] = None,
         pad_token_id: Optional[int] = None,
     ):
+        """Initialize the instance."""
         self.max_sequence_length = max_sequence_length
         self.num_hidden_layers = num_hidden_layers
         self.num_attention_heads = num_attention_heads
@@ -45,6 +48,7 @@ class GeneratorParams:
         seed: Optional[int] = None,
         abort_signal: Optional[bool] = False,
     ):
+        """Initialize the instance."""
         self.max_length = max_length
         self.max_new_tokens = max_new_tokens
         self.early_stopping = early_stopping

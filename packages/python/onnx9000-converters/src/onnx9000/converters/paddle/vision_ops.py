@@ -7,7 +7,7 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def _map_resize(mode: str) -> Callable[[PaddleToONNXGraphBuilder, PaddleNode], list[str]]:
-    """Executes the  map resize operation."""
+    """Execute the  map resize operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Resize mapping."""

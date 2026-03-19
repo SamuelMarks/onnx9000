@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional, Tuple
+"""Provide functionality for this module."""
+
+from typing import Optional
 
 from ..core.ir import Graph, Tensor
 
@@ -7,51 +9,62 @@ class KVCache:
     """KV Cache abstraction for self-attention."""
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         pass
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
+        """Execute the update operation."""
         pass
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return None
 
 
 class ContinuousKVCache(KVCache):
-    """Implements continuous memory allocation for caches."""
+    """Implement continuous memory allocation for caches."""
 
     def __init__(self):
+        """Initialize the instance."""
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         # Simplistic continuous appending, in real system this uses SequenceTensorUtils
+        """Execute the update operation."""
         if layer_idx in self._cache:
             # Assume concatenation
             pass
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
 class PagedKVCache(KVCache):
-    """Implements fragmented (paged) memory allocation for caches."""
+    """Implement fragmented (paged) memory allocation for caches."""
 
     def __init__(self, page_size: int = 16):
+        """Initialize the instance."""
         self.page_size = page_size
         self._pages: dict[int, list[tuple[Tensor, Tensor]]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._pages.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
+        """Execute the update operation."""
         if layer_idx not in self._pages:
             self._pages[layer_idx] = []
         self._pages[layer_idx].append((keys, values))
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         pages = self._pages.get(layer_idx)
         if not pages:
             return None
@@ -63,13 +76,14 @@ class State:
     """State object to hold execution graph and KV cache."""
 
     def __init__(self, graph: Graph, kv_cache: KVCache):
+        """Initialize the instance."""
         self.graph = graph
         self.kv_cache = kv_cache
         self.current_length: int = 0
         self.is_prefill: bool = True
 
     def reset(self) -> None:
-        """Reset state for a new generation"""
+        """Reset state for a new generation."""
         self.kv_cache.clear()
         self.current_length = 0
         self.is_prefill = True
@@ -79,15 +93,18 @@ class MultiHeadAttentionCache(KVCache):
     """Supports standard Multi-Head Attention (MHA) caching."""
 
     def __init__(self, num_heads: int, head_dim: int):
+        """Initialize the instance."""
         self.num_heads = num_heads
         self.head_dim = head_dim
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         # Expected shape: [batch_size, num_heads, seq_len, head_dim]
+        """Execute the update operation."""
         if keys.shape[1] != self.num_heads or values.shape[1] != self.num_heads:
             raise ValueError(
                 f"Expected {self.num_heads} heads, got keys: {keys.shape[1]}, values: {values.shape[1]}"
@@ -95,6 +112,7 @@ class MultiHeadAttentionCache(KVCache):
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
@@ -102,15 +120,18 @@ class GroupedQueryAttentionCache(KVCache):
     """Supports Grouped-Query Attention (GQA) caching structures."""
 
     def __init__(self, num_kv_heads: int, head_dim: int):
+        """Initialize the instance."""
         self.num_kv_heads = num_kv_heads
         self.head_dim = head_dim
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         # Expected shape: [batch_size, num_kv_heads, seq_len, head_dim]
+        """Execute the update operation."""
         if keys.shape[1] != self.num_kv_heads or values.shape[1] != self.num_kv_heads:
             raise ValueError(
                 f"Expected {self.num_kv_heads} KV heads, got keys: {keys.shape[1]}, values: {values.shape[1]}"
@@ -118,6 +139,7 @@ class GroupedQueryAttentionCache(KVCache):
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
@@ -125,15 +147,18 @@ class MultiQueryAttentionCache(KVCache):
     """Supports Multi-Query Attention (MQA) caching structures (single KV head)."""
 
     def __init__(self, head_dim: int):
+        """Initialize the instance."""
         self.num_kv_heads = 1
         self.head_dim = head_dim
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         # Expected shape: [batch_size, 1, seq_len, head_dim]
+        """Execute the update operation."""
         if keys.shape[1] != self.num_kv_heads or values.shape[1] != self.num_kv_heads:
             raise ValueError(
                 f"Expected {self.num_kv_heads} KV heads, got keys: {keys.shape[1]}, values: {values.shape[1]}"
@@ -141,6 +166,7 @@ class MultiQueryAttentionCache(KVCache):
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
@@ -148,20 +174,24 @@ class SequenceBatchingKVCache(KVCache):
     """Handles caching for multiple independent sequences with potentially varying batch sizes."""
 
     def __init__(self):
+        """Initialize the instance."""
         self._cache: dict[int, list[tuple[Tensor, Tensor]]] = {}
         # Stores [batch_index][layer_index] = (K, V) -> conceptually, we flatten batch dimension
         # or store a list of batches. For simplicity of the interface, we'll store lists of KV per batch.
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
+        """Execute the update operation."""
         if layer_idx not in self._cache:
             self._cache[layer_idx] = []
         # Simulate appending batched states
         self._cache[layer_idx].append((keys, values))
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         if layer_idx in self._cache and self._cache[layer_idx]:
             # Mock returning the batched tensor
             return self._cache[layer_idx][-1]
@@ -172,16 +202,20 @@ class CrossAttentionCache(KVCache):
     """Supports cross-attention caching for Encoder-Decoder architectures."""
 
     def __init__(self):
+        """Initialize the instance."""
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         # In cross-attention, keys and values typically come from the encoder and only need to be cached once.
+        """Execute the update operation."""
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
@@ -189,13 +223,16 @@ class SlidingWindowKVCache(KVCache):
     """Supports sliding window attention limits (e.g., Mistral)."""
 
     def __init__(self, window_size: int):
+        """Initialize the instance."""
         self.window_size = window_size
         self._cache: dict[int, tuple[Tensor, Tensor]] = {}
 
     def clear(self) -> None:
+        """Execute the clear operation."""
         self._cache.clear()
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
+        """Execute the update operation."""
         import struct
 
         # Simulation of sliding window truncation along sequence length
@@ -208,6 +245,7 @@ class SlidingWindowKVCache(KVCache):
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+        """Execute the get operation."""
         return self._cache.get(layer_idx)
 
 
@@ -222,7 +260,7 @@ class PositionalEmbeddingUtils:
         rope_scale: float = 1.0,
         rope_theta: float = 10000.0,
     ) -> tuple[Tensor, Tensor]:
-        """Applies Rotary Positional Embeddings to queries and keys."""
+        """Apply Rotary Positional Embeddings to queries and keys."""
         if query.data is None or key.data is None:
             return query, key
 
@@ -230,6 +268,7 @@ class PositionalEmbeddingUtils:
         import struct
 
         def _apply_to_tensor(t: Tensor) -> Tensor:
+            """Execute the _apply_to_tensor operation."""
             itemsize = t.dtype.itemsize if hasattr(t.dtype, "itemsize") else 4
             new_data = bytearray(t.data)
 
@@ -261,7 +300,7 @@ class PositionalEmbeddingUtils:
 
     @staticmethod
     def apply_alibi(attention_scores: Tensor, num_heads: int) -> Tensor:
-        """Applies ALiBi (Attention with Linear Biases) to attention scores."""
+        """Apply ALiBi (Attention with Linear Biases) to attention scores."""
         if attention_scores.data is None:
             return attention_scores
 

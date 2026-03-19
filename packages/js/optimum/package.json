@@ -1,0 +1,16 @@
+{
+  "name": "@onnx9000/optimum",
+  "version": "0.1.0",
+  "description": "Web-Optimized Export & Quantization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

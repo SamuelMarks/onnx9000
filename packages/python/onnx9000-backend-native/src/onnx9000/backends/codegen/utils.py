@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -8,8 +7,8 @@ import re
 
 
 def sanitize_name(name: str) -> str:
-    """
-    Sanitizes ONNX string IDs to make them valid C++ variable names.
+    """Sanitizes ONNX string IDs to make them valid C++ variable names.
+
     Replaces non-alphanumeric characters with underscores.
     Prepends `var_` if the name starts with a number.
     """
@@ -20,8 +19,8 @@ def sanitize_name(name: str) -> str:
 
 
 def get_omp_pragma(total_elements: str, threshold: int = 10000, extra: str = "") -> str:
-    """
-    Returns an OpenMP/SIMD pragma conditionally based on the target.
+    """Return an OpenMP/SIMD pragma conditionally based on the target.
+
     In a full system, this would inspect if the target is WASM or Native.
     For Emscripten (WASM), we emit `#pragma clang loop vectorize(enable)`.
     For native, we emit `#pragma omp parallel for`.

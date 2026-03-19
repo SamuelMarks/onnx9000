@@ -1,1 +1,1 @@
-"""Provides converters module functionality."""
+"""Provide converters module functionality."""

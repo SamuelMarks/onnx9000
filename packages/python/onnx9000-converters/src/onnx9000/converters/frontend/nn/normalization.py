@@ -19,7 +19,7 @@ class _BatchNormNd(Module):
         track_running_stats: bool,
         dtype: DType,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -40,7 +40,7 @@ class _BatchNormNd(Module):
             self.register_buffer("running_var", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -78,7 +78,7 @@ class BatchNorm1d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -94,7 +94,7 @@ class BatchNorm2d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -110,7 +110,7 @@ class BatchNorm3d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -124,7 +124,7 @@ class LayerNorm(Module):
         elementwise_affine: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         if isinstance(normalized_shape, int):
             normalized_shape = (normalized_shape,)
@@ -136,7 +136,7 @@ class LayerNorm(Module):
             self.bias = Parameter(normalized_shape, dtype, "bias")
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"axis": -len(self.normalized_shape), "epsilon": self.eps}
@@ -158,7 +158,7 @@ class GroupNorm(Module):
         affine: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.num_groups = num_groups
         self.num_channels = num_channels
@@ -169,7 +169,7 @@ class GroupNorm(Module):
             self.bias = Parameter((num_channels,), dtype, "bias")
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"epsilon": self.eps, "num_groups": self.num_groups}
@@ -192,7 +192,7 @@ class _InstanceNormNd(Module):
         track_running_stats: bool,
         dtype: DType,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -206,7 +206,7 @@ class _InstanceNormNd(Module):
             self.register_parameter("bias", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"epsilon": self.eps}
@@ -229,7 +229,7 @@ class InstanceNorm1d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -245,7 +245,7 @@ class InstanceNorm2d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -261,5 +261,5 @@ class InstanceNorm3d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)

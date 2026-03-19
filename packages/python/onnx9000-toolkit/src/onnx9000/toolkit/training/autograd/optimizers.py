@@ -1,5 +1,4 @@
-"""
-Optimizer Generators
+"""Optimizer Generators.
 
 Constructs pure-ONNX subgraphs for various weight update algorithms (SGD, Adam, etc.)
 """
@@ -14,7 +13,7 @@ def add_sgd_optimizer(
     weight_decay: float = 0.0,
     momentum: float = 0.0,
 ) -> None:
-    """Adds SGD optimizer steps to the graph."""
+    """Add SGD optimizer steps to the graph."""
     for param in parameters:
         grad = f"grad_{param}"
         if weight_decay > 0.0:
@@ -86,7 +85,7 @@ def add_adam_optimizer(
     weight_decay: float = 0.0,
     global_step: str = "global_step",
 ) -> None:
-    """Adds Adam optimizer steps natively to the graph."""
+    """Add Adam optimizer steps natively to the graph."""
     if global_step not in graph.inputs:
         graph.inputs.append(global_step)
 
@@ -222,7 +221,7 @@ def add_adamw_optimizer(
     weight_decay: float = 0.01,
     global_step: str = "global_step",
 ) -> None:
-    """Adds AdamW optimizer steps natively to the graph."""
+    """Add AdamW optimizer steps natively to the graph."""
     if global_step not in graph.inputs:
         graph.inputs.append(global_step)
 
@@ -348,7 +347,7 @@ def add_rmsprop_optimizer(
     weight_decay: float = 0.0,
     momentum: float = 0.0,
 ) -> None:
-    """Adds RMSprop optimizer steps natively to the graph."""
+    """Add RMSprop optimizer steps natively to the graph."""
     graph.add_node(
         Node("Constant", [], ["_rmsprop_alpha"], {"value": [alpha]}, name="rmsprop_alpha_c")
     )
@@ -464,7 +463,7 @@ def add_adagrad_optimizer(
     epsilon: float = 1e-10,
     weight_decay: float = 0.0,
 ) -> None:
-    """Adds Adagrad optimizer steps natively to the graph."""
+    """Add Adagrad optimizer steps natively to the graph."""
     graph.add_node(
         Node("Constant", [], ["_adagrad_eps"], {"value": [epsilon]}, name="adagrad_eps_c")
     )
@@ -534,7 +533,7 @@ def add_adadelta_optimizer(
     epsilon: float = 1e-06,
     weight_decay: float = 0.0,
 ) -> None:
-    """Adds Adadelta optimizer steps natively to the graph."""
+    """Add Adadelta optimizer steps natively to the graph."""
     graph.add_node(Node("Constant", [], ["_adadelta_rho"], {"value": [rho]}, name="adadelta_rho_c"))
     graph.add_node(
         Node("Constant", [], ["_adadelta_1_m_rho"], {"value": [1.0 - rho]}, name="adadelta_1mrho_c")
@@ -643,15 +642,15 @@ def add_adadelta_optimizer(
 
 
 def add_gradient_accumulation(graph: Graph, grad_names: list[str], steps: int) -> None:
-    """Adds gradient accumulation logic."""
+    """Add gradient accumulation logic."""
     return
 
 
 def add_differential_privacy_noise(
     graph: Graph, grad_names: list[str], noise_multiplier: float, max_grad_norm: float
 ) -> None:
-    """
-    Implements Differential Privacy natively by adding RandomNormal noise to
+    """Implement Differential Privacy natively by adding RandomNormal noise to.
+
     Gradients explicitly before export.
     """
     if not grad_names or noise_multiplier <= 0.0:
@@ -681,7 +680,7 @@ def add_differential_privacy_noise(
 
 
 def add_gradient_clipping(graph: Graph, grad_names: list[str], max_norm: float) -> None:
-    """Adds gradient clipping by global norm logic natively."""
+    """Add gradient clipping by global norm logic natively."""
     if not grad_names or max_norm <= 0.0:
         return
     sq_norms = []
@@ -733,8 +732,8 @@ def add_gradient_clipping(graph: Graph, grad_names: list[str], max_norm: float) 
 
 
 def add_local_dp_gradient_clipping(graph: Graph, grad_names: list[str], max_l2_norm: float) -> None:
-    """
-    Implements Gradient Clipping to L2 Norm (Local DP constraints) statically.
+    """Implement Gradient Clipping to L2 Norm (Local DP constraints) statically.
+
     Differs from global norm by clipping each gradient independently.
     """
     if not grad_names or max_l2_norm <= 0.0:
@@ -771,7 +770,7 @@ def add_local_dp_gradient_clipping(graph: Graph, grad_names: list[str], max_l2_n
 
 
 def add_gradient_clipping_value(graph: Graph, grad_names: list[str], clip_value: float) -> None:
-    """Adds gradient clipping by absolute value natively."""
+    """Add gradient clipping by absolute value natively."""
     if not grad_names or clip_value <= 0.0:
         return
 

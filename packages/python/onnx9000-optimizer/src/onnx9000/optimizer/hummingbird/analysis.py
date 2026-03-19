@@ -16,7 +16,7 @@ def analyze_tree_depth(abstractions: TreeAbstractions) -> dict[str, float]:
 
     # We trace paths from roots
     def trace(node_idx: int, current_depth: int) -> None:
-        """Executes the trace operation."""
+        """Execute the trace operation."""
         if (
             abstractions.left_children[node_idx] == -1
             and abstractions.right_children[node_idx] == -1
@@ -69,6 +69,7 @@ def flatten_ensemble(trees: list[TreeAbstractions]) -> TreeAbstractions:
 
 def cast_parameters(abstractions: TreeAbstractions, target_dtype="float32") -> TreeAbstractions:
     """Resolve numerical precision mismatches (FP32 vs FP64) ahead of time.
+
     Cast FP64 parameters to FP32 natively to optimize WebGPU limits.
     """
     casted = TreeAbstractions()

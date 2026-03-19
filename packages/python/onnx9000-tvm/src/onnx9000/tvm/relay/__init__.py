@@ -1,5 +1,7 @@
+"""TVM submodule for AST and optimization."""
+
 from .expr import Call, Constant, Expr, Function, If, Let, Op, TupleGetItem, Var
-from .expr import TupleExpr as Tuple
+from .expr import TupleExpr as tuple
 from .frontend import from_onnx, from_pytorch, from_tensorflow
 from .module import IRModule
 from .ty import FuncType, TensorType, TupleType, Type
@@ -15,7 +17,7 @@ __all__ = [
     "Constant",
     "Op",
     "Call",
-    "Tuple",
+    "tuple",
     "TupleGetItem",
     "Let",
     "If",

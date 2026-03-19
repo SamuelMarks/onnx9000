@@ -1,3 +1,5 @@
+"""TVM submodule for AST and optimization."""
+
 from ...tir.stmt import SeqStmt, Stmt
 from ..schedule import Schedule
 from ..tensor import Tensor

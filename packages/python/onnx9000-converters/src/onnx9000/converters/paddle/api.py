@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""PaddlePaddle converter operations and graph builders."""
 
 import logging
 
@@ -31,7 +31,7 @@ def paddle_optimize_graph(graph: Graph) -> Graph:
 
 
 def _convert_paddle_graph(p_graph: PaddleGraph, name: str = "paddle_to_onnx") -> Graph:
-    """Executes the  convert paddle graph operation."""
+    """Execute the  convert paddle graph operation."""
     builder = PaddleToONNXGraphBuilder(name=name)
     sorted_nodes = p_graph.blocks[0].ops if p_graph.blocks else []
     for node in sorted_nodes:

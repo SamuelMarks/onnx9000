@@ -6,7 +6,7 @@ from onnx9000.converters.frontend.tensor import Tensor
 
 
 def calculate_fan_in_and_fan_out(tensor: Tensor) -> tuple[int, int]:
-    """Implements the calculate_fan_in_and_fan_out method."""
+    """Implement the calculate_fan_in_and_fan_out method."""
     dimensions = tensor.shape
     if len(dimensions) < 2:
         raise ValueError(
@@ -24,7 +24,7 @@ def calculate_fan_in_and_fan_out(tensor: Tensor) -> tuple[int, int]:
 
 
 def xavier_uniform_(tensor: Tensor, gain: float = 1.0) -> Tensor:
-    """Implements the `xavier_uniform_` method."""
+    """Implement the `xavier_uniform_` method."""
     import numpy as np
 
     if tensor.data is not None and isinstance(tensor.data, np.ndarray):
@@ -36,7 +36,7 @@ def xavier_uniform_(tensor: Tensor, gain: float = 1.0) -> Tensor:
 
 
 def xavier_normal_(tensor: Tensor, gain: float = 1.0) -> Tensor:
-    """Implements the `xavier_normal_` method."""
+    """Implement the `xavier_normal_` method."""
     import numpy as np
 
     if tensor.data is not None and isinstance(tensor.data, np.ndarray):
@@ -49,7 +49,7 @@ def xavier_normal_(tensor: Tensor, gain: float = 1.0) -> Tensor:
 def kaiming_uniform_(
     tensor: Tensor, a: float = 0, mode: str = "fan_in", nonlinearity: str = "leaky_relu"
 ) -> Tensor:
-    """Implements the `kaiming_uniform_` method."""
+    """Implement the `kaiming_uniform_` method."""
     import numpy as np
 
     if tensor.data is not None and isinstance(tensor.data, np.ndarray):
@@ -65,7 +65,7 @@ def kaiming_uniform_(
 def kaiming_normal_(
     tensor: Tensor, a: float = 0, mode: str = "fan_in", nonlinearity: str = "leaky_relu"
 ) -> Tensor:
-    """Implements the `kaiming_normal_` method."""
+    """Implement the `kaiming_normal_` method."""
     import numpy as np
 
     if tensor.data is not None and isinstance(tensor.data, np.ndarray):
@@ -78,7 +78,7 @@ def kaiming_normal_(
 
 
 def constant_(tensor: Tensor, val: float) -> Tensor:
-    """Implements the `constant_` method."""
+    """Implement the `constant_` method."""
     import numpy as np
 
     if tensor.data is not None and isinstance(tensor.data, np.ndarray):
@@ -87,10 +87,10 @@ def constant_(tensor: Tensor, val: float) -> Tensor:
 
 
 def zeros_(tensor: Tensor) -> Tensor:
-    """Implements the `zeros_` method."""
+    """Implement the `zeros_` method."""
     return constant_(tensor, 0.0)
 
 
 def ones_(tensor: Tensor) -> Tensor:
-    """Implements the `ones_` method."""
+    """Implement the `ones_` method."""
     return constant_(tensor, 1.0)

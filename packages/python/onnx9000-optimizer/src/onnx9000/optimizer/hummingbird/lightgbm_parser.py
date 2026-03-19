@@ -22,7 +22,7 @@ def parse_lightgbm_dump(booster_dump: dict) -> list[TreeAbstractions]:
 
 
 def _traverse_lgbm_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
-    """Executes the traverse lgbm tree operation."""
+    """Execute the traverse lgbm tree operation."""
     if "split_index" in node_dict:  # Internal node
         # Handle categorical features
         if node_dict.get("decision_type") == "<=":
@@ -87,6 +87,7 @@ def handle_lgbm_objectives(g: Graph, objective: str) -> None:
 
 def parse_lgbm_categorical(g: Graph, bitset: list[int]) -> None:
     """Transpile LightGBM categorical features (bitset evaluations) to Gather/Equal chains.
+
     Compress large categorical bitsets using int64 arithmetic in ONNX.
     """
     pass

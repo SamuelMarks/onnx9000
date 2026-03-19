@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -15,13 +14,13 @@ from onnx9000.core.registry import global_registry as registry
 
 
 class Generator:
-    """
-    Core C++ Code Generator orchestrating the translation of an ir.Graph
+    """Core C++ Code Generator orchestrating the translation of an ir.Graph.
+
     into a bespoke C++ class using Jinja2 templates.
     """
 
     def __init__(self, graph: Graph, class_name: str = "GeneratedModel") -> None:
-        """Initializes the code generator for a given Graph."""
+        """Initialize the code generator for a given Graph."""
         self.graph = graph
         self.class_name = class_name
         self.code_blocks: list[str] = []
@@ -268,8 +267,8 @@ class Generator:
         )
 
     def write_to_directory(self, output_dir: str, run_clang_format: bool = True, **generate_kwargs):
-        """
-        Generates the C++ code and writes it to a specific directory alongside a CMakeLists.txt.
+        """Generate the C++ code and writes it to a specific directory alongside a CMakeLists.txt.
+
         Optionally runs clang-format on the generated code.
         """
         os.makedirs(output_dir, exist_ok=True)
@@ -337,5 +336,5 @@ int main() {{
         return cpp_path
 
     def get_tensor_name(self, name: str) -> str:
-        """Returns the safe C++ variable name for a given tensor."""
+        """Return the safe C++ variable name for a given tensor."""
         return sanitize_name(name)

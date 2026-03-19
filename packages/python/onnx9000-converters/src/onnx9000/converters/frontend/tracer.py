@@ -13,12 +13,12 @@ class Tracer:
     """Context manager that intercepts all Tensor operations."""
 
     def __init__(self, builder: Optional[GraphBuilder] = None) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         self.builder = builder or GraphBuilder()
         self.prev_builder: Optional[GraphBuilder] = None
 
     def __enter__(self) -> GraphBuilder:
-        """Implements the __enter__ method."""
+        """Implement the __enter__ method."""
         self.prev_builder = get_active_builder()
         import onnx9000.converters.frontend.builder as builder_mod
 
@@ -27,7 +27,7 @@ class Tracer:
         return self.builder
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Implements the __exit__ method."""
+        """Implement the __exit__ method."""
         import onnx9000.converters.frontend.builder as builder_mod
 
         builder_mod._tls.builder = self.prev_builder

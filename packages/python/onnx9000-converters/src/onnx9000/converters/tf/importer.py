@@ -7,7 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _convert_dtype(tf_dtype: int) -> DType:
-    """Implements the _convert_dtype method or operation."""
+    """Implement the _convert_dtype method or operation."""
     if tf_dtype == 1:
         return DType.FLOAT32
     if tf_dtype == 3:
@@ -19,12 +19,12 @@ class TFImporter:
     """Class TFImporter implementation."""
 
     def __init__(self) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.graph = Graph(name="tf_model")
         self.tensor_map: dict[str, str] = {}
 
     def convert_nhwc_to_nchw(self, input_name: str, node_name: str) -> str:
-        """Implements the convert_nhwc_to_nchw method or operation."""
+        """Implement the convert_nhwc_to_nchw method or operation."""
         t_out = f"{node_name}_nchw"
         t_node = Node(
             op_type="Transpose",
@@ -38,7 +38,7 @@ class TFImporter:
         return t_out
 
     def convert_nchw_to_nhwc(self, input_name: str, node_name: str) -> str:
-        """Implements the convert_nchw_to_nhwc method or operation."""
+        """Implement the convert_nchw_to_nhwc method or operation."""
         t_out = f"{node_name}_nhwc"
         t_node = Node(
             op_type="Transpose",
@@ -52,7 +52,7 @@ class TFImporter:
         return t_out
 
     def parse(self, graph_def: dict[str, Any]) -> Graph:
-        """Implements the parse method or operation."""
+        """Implement the parse method or operation."""
         for node in graph_def.get("node", []):
             op = node["op"]
             name = node["name"]
@@ -148,7 +148,7 @@ class TFImporter:
 
 
 def load_tf(model_path_or_dict: Any) -> Graph:
-    """Implements the load_tf method or operation."""
+    """Implement the load_tf method or operation."""
     importer = TFImporter()
     if isinstance(model_path_or_dict, dict):
         return importer.parse(model_path_or_dict)

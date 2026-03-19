@@ -7,10 +7,10 @@ from onnx9000.converters.tf.parsers import TFNode
 
 
 def _map_reduce_op(onnx_op_type: str) -> Callable:
-    """Executes the  map reduce op operation."""
+    """Execute the  map reduce op operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         keepdims = builder.extract_attr(node, "keep_dims", False)
         return builder.make_node(
             onnx_op_type, node.inputs, {"keepdims": 1 if keepdims else 0}, node.name
@@ -20,12 +20,12 @@ def _map_reduce_op(onnx_op_type: str) -> Callable:
 
 
 def _map_bincount(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map bincount operation."""
+    """Execute the  map bincount operation."""
     return builder.make_node("Custom_Bincount", node.inputs, {}, node.name)
 
 
 def _map_cumsum(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map cumsum operation."""
+    """Execute the  map cumsum operation."""
     exclusive = builder.extract_attr(node, "exclusive", False)
     reverse = builder.extract_attr(node, "reverse", False)
     return builder.make_node(
@@ -37,22 +37,22 @@ def _map_cumsum(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_cumprod(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map cumprod operation."""
+    """Execute the  map cumprod operation."""
     return builder.make_node("Custom_Cumprod", node.inputs, {}, node.name)
 
 
 def _map_logical_binary(onnx_op_type: str) -> Callable:
-    """Executes the  map logical binary operation."""
+    """Execute the  map logical binary operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node(onnx_op_type, node.inputs, {}, node.name)
 
     return _impl
 
 
 def _map_not_equal(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map not equal operation."""
+    """Execute the  map not equal operation."""
     eq = builder.make_node("Equal", node.inputs, {}, f"{node.name}_eq")[0]
     return builder.make_node("Not", [eq], {}, node.name)
 

@@ -1,6 +1,4 @@
-"""
-Base Module framework mirroring PyTorch nn.Module.
-"""
+"""Base Module framework mirroring PyTorch nn.Module."""
 
 from collections import OrderedDict
 from collections.abc import Iterator
@@ -71,7 +69,7 @@ class Module:
         return self._named_members(get_parameters, prefix, recurse)
 
     def parameters(self, recurse: bool = True) -> Iterator[Parameter]:
-        """Returns an iterator over module parameters, useful for passing to an optimizer."""
+        """Return an iterator over module parameters, useful for passing to an optimizer."""
         for _, param in self.named_parameters(recurse=recurse):
             yield param
 
@@ -85,12 +83,12 @@ class Module:
         return self._named_members(get_buffers, prefix, recurse)
 
     def buffers(self, recurse: bool = True) -> Iterator[Tensor]:
-        """Returns an iterator over module buffers."""
+        """Return an iterator over module buffers."""
         for _, buffer in self.named_buffers(recurse=recurse):
             yield buffer
 
     def children(self) -> Iterator["Module"]:
-        """Returns an iterator over immediate children modules."""
+        """Return an iterator over immediate children modules."""
         for _, module in self.named_children():
             yield module
 
@@ -101,7 +99,7 @@ class Module:
                 yield (name, module)
 
     def modules(self) -> Iterator["Module"]:
-        """Returns an iterator over all modules in the network, including the current module."""
+        """Return an iterator over all modules in the network, including the current module."""
         for _, module in self.named_modules():
             yield module
 
@@ -127,7 +125,7 @@ class Module:
         prefix: str = "",
         keep_vars: bool = False,
     ) -> dict[str, Any]:
-        """Returns a dictionary containing the entire state of the module (parameters and buffers)."""
+        """Return a dictionary containing the entire state of the module (parameters and buffers)."""
         if destination is None:
             destination = OrderedDict()
         for name, param in self._parameters.items():
@@ -178,7 +176,7 @@ class Module:
         return self.train(False)
 
     def apply(self, fn: Callable[["Module"], None]) -> "Module":
-        """Applies a given function recursively to every submodule as well as the current module."""
+        """Apply a given function recursively to every submodule as well as the current module."""
         for module in self.children():
             module.apply(fn)
         fn(self)

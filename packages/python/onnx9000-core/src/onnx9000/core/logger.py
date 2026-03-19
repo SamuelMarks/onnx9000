@@ -1,6 +1,4 @@
-"""
-Custom logging hierarchy for onnx9000 replacing raw print statements.
-"""
+"""Custom logging hierarchy for onnx9000 replacing raw print statements."""
 
 import logging
 import sys
@@ -9,9 +7,7 @@ from onnx9000.core import config
 
 
 def get_logger(name: str) -> logging.Logger:
-    """
-    Get a custom logger for onnx9000 with the specified name.
-    """
+    """Get a custom logger for onnx9000 with the specified name."""
     logger = logging.getLogger(name)
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)

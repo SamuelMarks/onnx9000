@@ -15,7 +15,7 @@ from onnx9000.core.utils import topological_sort
 
 def _promote_types(t1: DType, t2: DType) -> DType:
     # A simple type promotion rule implementation
-    """Executes the promote types operation."""
+    """Execute the promote types operation."""
     if t1 == t2:
         return t1
     if t1 == DType.FLOAT64 or t2 == DType.FLOAT64:
@@ -32,7 +32,7 @@ def _promote_types(t1: DType, t2: DType) -> DType:
 
 
 def get_attr(node: Node, name: str, default: Any = None) -> Any:
-    """Executes the get attr operation."""
+    """Execute the get attr operation."""
     for attr in node.attributes.values():
         if attr.name == name:
             return attr.value
@@ -40,8 +40,8 @@ def get_attr(node: Node, name: str, default: Any = None) -> Any:
 
 
 def infer_shapes_and_types(graph: Graph) -> None:
-    """
-    Performs static shape and type inference on the given graph.
+    """Perform static shape and type inference on the given graph.
+
     Updates the graph.tensors and graph.value_info intrinsically.
     """
     try:
@@ -370,7 +370,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             steps = []
 
             def get_tensor_vals(idx, n=node, default_len=None):
-                """Executes the get tensor vals operation."""
+                """Execute the get tensor vals operation."""
                 if len(n.inputs) > idx:
                     t_name = n.inputs[idx]
                     if t_name in graph.tensors and hasattr(graph.tensors[t_name], "values"):

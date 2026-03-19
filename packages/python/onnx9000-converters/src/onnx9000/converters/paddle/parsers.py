@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""PaddlePaddle converter operations and graph builders."""
 
 import logging
 import struct
@@ -91,7 +91,7 @@ class PaddleGraph:
                     op_by_output[name] = op
 
         def visit(op: PaddleNode) -> None:
-            """visit implementation."""
+            """Visit implementation."""
             op_id = id(op)
             if op_id in visited:
                 return

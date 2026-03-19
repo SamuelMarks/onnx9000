@@ -22,7 +22,7 @@ class RNNBase(Module):
         bidirectional: bool,
         dtype: DType,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.mode = mode
         self.input_size = input_size
@@ -44,7 +44,7 @@ class RNNBase(Module):
             self.bias_hh_l0 = Parameter((self.num_directions * hidden_size,), dtype, "bias_hh_l0")
 
     def forward(self, input: Tensor, hx: Optional[Tensor] = None) -> tuple[Tensor, Tensor]:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -78,7 +78,7 @@ class RNN(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(
             "RNN",
             input_size,
@@ -106,7 +106,7 @@ class LSTM(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(
             "LSTM",
             input_size,
@@ -122,7 +122,7 @@ class LSTM(RNNBase):
     def forward(
         self, input: Tensor, hx: Optional[tuple[Tensor, Tensor]] = None
     ) -> tuple[Tensor, tuple[Tensor, Tensor]]:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -156,7 +156,7 @@ class GRU(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(
             "GRU",
             input_size,
@@ -170,7 +170,7 @@ class GRU(RNNBase):
         )
 
     def forward(self, input: Tensor, hx: Optional[Tensor] = None) -> tuple[Tensor, Tensor]:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {

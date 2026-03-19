@@ -1,5 +1,4 @@
-"""
-Base Vector-Jacobian Product (VJP) Rules
+"""Base Vector-Jacobian Product (VJP) Rules.
 
 This module provides the abstract base class for defining VJP rules,
 which form the core of automatic differentiation by describing how
@@ -12,8 +11,8 @@ from onnx9000.core.ir import Node
 
 
 class VJPRule(abc.ABC):
-    """
-    Base class for Vector-Jacobian Product rules.
+    """Base class for Vector-Jacobian Product rules.
+
     Defines how gradients propagate backwards through an operation.
     """
 
@@ -21,8 +20,8 @@ class VJPRule(abc.ABC):
     def build_backward_nodes(
         self, fwd_node: "onnx9000.core.ir.Node", grad_outputs: list[str]
     ) -> tuple[list["onnx9000.core.ir.Node"], list[str]]:
-        """
-        Given a forward node and the names of the incoming gradient tensors (dL/dOut),
+        """Given a forward node, and the names of the incoming gradient tensors (dL/dOut),.
+
         returns a list of new nodes to compute gradients for the inputs,
         and a list of names for those input gradients (dL/dIn).
 
@@ -32,7 +31,8 @@ class VJPRule(abc.ABC):
 
         Returns:
             tuple[list["onnx9000.core.ir.Node"], list[str]]: A tuple containing:
-                - List of nodes computing the backward pass.
-                - List of names corresponding to the gradients with respect to the node inputs.
+                - list of nodes computing the backward pass.
+                - list of names corresponding to the gradients with respect to the node inputs.
+
         """
         return ([], [])

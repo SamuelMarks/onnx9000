@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "pytest tests"
+    "test": "uv run pytest tests"
   }
 }

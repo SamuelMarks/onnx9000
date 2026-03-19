@@ -4,12 +4,12 @@ from onnx9000.core.ir import Graph, Node
 
 
 def constant_folding_pass(graph: Graph) -> Graph:
-    """Executes the constant folding pass operation."""
+    """Execute the constant folding pass operation."""
     return graph
 
 
 def identity_removal_pass(graph: Graph) -> Graph:
-    """Executes the identity removal pass operation."""
+    """Execute the identity removal pass operation."""
     new_nodes = []
     replacements: dict[str, str] = {}
     for node in graph.nodes:
@@ -30,7 +30,7 @@ def identity_removal_pass(graph: Graph) -> Graph:
 
 
 def dropout_removal_pass(graph: Graph) -> Graph:
-    """Executes the dropout removal pass operation."""
+    """Execute the dropout removal pass operation."""
     new_nodes = []
     replacements: dict[str, str] = {}
     for node in graph.nodes:
@@ -46,7 +46,7 @@ def dropout_removal_pass(graph: Graph) -> Graph:
 
 
 def remove_debug_nodes_pass(graph: Graph) -> Graph:
-    """Executes the remove debug nodes pass operation."""
+    """Execute the remove debug nodes pass operation."""
     debug_ops = {
         "Custom_TFAssert",
         "Custom_TFCheckNumerics",
@@ -68,7 +68,7 @@ def remove_debug_nodes_pass(graph: Graph) -> Graph:
 
 
 def transpose_optimizer_pass(graph: Graph) -> Graph:
-    """Executes the transpose optimizer pass operation."""
+    """Execute the transpose optimizer pass operation."""
     new_nodes = []
     replacements: dict[str, str] = {}
     node_by_output: dict[str, Node] = {}
@@ -95,17 +95,17 @@ def transpose_optimizer_pass(graph: Graph) -> Graph:
 
 
 def shape_folding_pass(graph: Graph) -> Graph:
-    """Executes the shape folding pass operation."""
+    """Execute the shape folding pass operation."""
     return graph
 
 
 def pattern_matching_pass(graph: Graph) -> Graph:
-    """Executes the pattern matching pass operation."""
+    """Execute the pattern matching pass operation."""
     return graph
 
 
 def dce_pass(graph: Graph) -> Graph:
-    """Executes the dce pass operation."""
+    """Execute the dce pass operation."""
     output_names = {t.name for t in graph.outputs}
     consumed: set[str] = set()
     consumed.update(output_names)
@@ -131,7 +131,7 @@ def dce_pass(graph: Graph) -> Graph:
 
 
 def tf_optimize_graph(graph: Graph) -> Graph:
-    """Executes the tf optimize graph operation."""
+    """Execute the tf optimize graph operation."""
     graph = identity_removal_pass(graph)
     graph = dropout_removal_pass(graph)
     graph = remove_debug_nodes_pass(graph)

@@ -11,9 +11,7 @@ ONNX_URL = f"https://github.com/onnx/onnx/archive/refs/tags/v{ONNX_VERSION}.zip"
 
 
 def download_and_extract_onnx_tests(target_dir: Path) -> Path:
-    """
-    Downloads the ONNX source code repository ZIP and extracts the standard backend node tests.
-    """
+    """Download the ONNX source code repository ZIP and extracts the standard backend node tests."""
     target_dir.mkdir(parents=True, exist_ok=True)
     zip_path = target_dir / f"onnx-v{ONNX_VERSION}.zip"
     extract_dir = target_dir / f"onnx-{ONNX_VERSION}"

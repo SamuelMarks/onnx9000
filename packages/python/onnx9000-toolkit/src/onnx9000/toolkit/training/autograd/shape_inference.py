@@ -1,5 +1,4 @@
-"""
-Shape Inference for Autograd
+"""Shape Inference for Autograd.
 
 Propagates shapes through dynamically generated backward nodes to ensure
 the resulting graph is valid and can be properly memory-mapped.
@@ -9,8 +8,8 @@ from onnx9000.core.ir import Graph
 
 
 def infer_backward_shapes(graph: Graph) -> None:
-    """
-    Infers shapes for the dynamically generated backward pass nodes.
+    """Infers shapes for the dynamically generated backward pass nodes.
+
     For simplicity in this engine, we assume gradient shapes perfectly
     mirror their corresponding forward activations and parameters.
     """

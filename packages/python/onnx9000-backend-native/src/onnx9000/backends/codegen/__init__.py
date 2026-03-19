@@ -1,5 +1,4 @@
-"""
-Codegen Sub-Package
+"""Codegen Sub-Package.
 
 Translates ONNX IR graphs into high-performance C++ code via template rendering.
 Provides the central Generator class and all registered operator emitters.

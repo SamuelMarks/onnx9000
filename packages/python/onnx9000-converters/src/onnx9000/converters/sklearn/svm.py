@@ -1,17 +1,17 @@
-"""Provides svm module functionality."""
+"""Provide svm module functionality."""
 
 import numpy as np
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def _get_kernel_enum(kernel: str) -> str:
-    """Executes the get kernel enum operation."""
+    """Execute the get kernel enum operation."""
     mapping = {"linear": "LINEAR", "poly": "POLY", "rbf": "RBF", "sigmoid": "SIGMOID"}
     return mapping.get(kernel, "RBF")
 
 
 def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert svm classifier operation."""
+    """Execute the convert svm classifier operation."""
     out_label = graph._uniquify_tensor_name("svm_label")
     out_prob = graph._uniquify_tensor_name("svm_probabilities")
     node = Node(
@@ -63,7 +63,7 @@ def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Gr
 
 
 def _convert_svm_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert svm regressor operation."""
+    """Execute the convert svm regressor operation."""
     out_name = graph._uniquify_tensor_name("svm_regressor_out")
     node = Node("SVMRegressor", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
     if hasattr(estimator, "kernel"):
@@ -86,35 +86,35 @@ def _convert_svm_regressor(estimator: object, input_names: list[str], graph: Gra
 
 
 def convert_svc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert svc operation."""
+    """Execute the convert svc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
 def convert_nusvc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert nusvc operation."""
+    """Execute the convert nusvc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
 def convert_one_class_svm(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert one class svm operation."""
+    """Execute the convert one class svm operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
 def convert_svr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert svr operation."""
+    """Execute the convert svr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)
 
 
 def convert_nusvr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert nusvr operation."""
+    """Execute the convert nusvr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)
 
 
 def convert_linear_svc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert linear svc operation."""
+    """Execute the convert linear svc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
 def convert_linear_svr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert linear svr operation."""
+    """Execute the convert linear svr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)

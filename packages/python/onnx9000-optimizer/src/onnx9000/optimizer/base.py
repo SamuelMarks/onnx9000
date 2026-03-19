@@ -33,8 +33,8 @@ class Pass(ABC):
 
     @abstractmethod
     def run(self, graph: Graph) -> PassContext:
-        """
-        Execute the optimization pass directly on the graph (mutates in-place).
+        """Execute the optimization pass directly on the graph (mutates in-place).
+
         Returns a PassContext detailing what was changed.
         """
         return PassContext(self.name)

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class ONNXBackendTestRunner:
-    """Runs official ONNX node tests against ONNX9000 InferenceSession."""
+    """Run official ONNX node tests against ONNX9000 InferenceSession."""
 
     def __init__(
         self, providers: list[ExecutionProvider], rtol: float = 0.001, atol: float = 1e-05

@@ -97,7 +97,7 @@ def test_tvm_all_others_part2():
                                 for j in range(5):
                                     try_call(m_obj, [MagicMock() for _ in range(j)])
                         break
-                    except:
+                    except Exception:
                         pass
             elif inspect.isfunction(obj) and obj.__module__ == mod.__name__:
                 for i in range(5):

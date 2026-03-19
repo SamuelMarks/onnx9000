@@ -1,14 +1,22 @@
-from typing import Any, Dict, Tuple
+"""TVM submodule for AST and optimization."""
+
+from typing import Any
 
 from ..expr import Call, Constant, Expr, Op, TupleExpr, TupleGetItem, Var
 from ..visitor import ExprMutator
 
 
 class CommonSubexprEliminator(ExprMutator):
+    """Core class for TVM AST node or pass."""
+
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.expr_map: dict[tuple, Expr] = {}
 
     def hash_expr(self, expr: Expr) -> tuple:
+        """Do the function."""
         if isinstance(expr, Var):
             return ("Var", expr.name_hint)
         elif isinstance(expr, Constant):
@@ -36,6 +44,7 @@ class CommonSubexprEliminator(ExprMutator):
             return ("Unknown", id(expr))
 
     def visit(self, expr: Expr) -> Expr:
+        """Do the function."""
         # First check if we've already computed an identical expression
         h = self.hash_expr(expr)
         if h in self.expr_map:

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class CPUExecutionProvider(ExecutionProvider):
-    """Executes supported nodes on the host CPU using simple fallback logic."""
+    """Execute supported nodes on the host CPU using simple fallback logic."""
 
     def get_supported_nodes(self, graph: Graph) -> list[str]:
         """Return node names supported by CPU."""
@@ -27,7 +27,7 @@ class CPUExecutionProvider(ExecutionProvider):
         return
 
     def _to_numpy(self, tensor: Tensor) -> Any:
-        """Executes the to numpy operation."""
+        """Execute the to numpy operation."""
         import numpy as np
         from onnx9000.core.dtypes import DType
 

@@ -12,7 +12,7 @@ class TreeAbstractions:
     """Intermediate abstractions mapping tree nodes to native tensors."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.features: list[int] = []
         self.thresholds: list[float] = []
         self.left_children: list[int] = []
@@ -23,7 +23,7 @@ class TreeAbstractions:
     def add_node(
         self, feature: int, threshold: float, left: int, right: int, value: float, missing: int = 0
     ) -> None:
-        """Executes the add node operation."""
+        """Execute the add node operation."""
         self.features.append(feature)
         self.thresholds.append(threshold)
         self.left_children.append(left)
@@ -36,6 +36,7 @@ def estimate_memory_footprint(
     abstractions: TreeAbstractions, strategy: Strategy, batch_size: int = 1
 ) -> int:
     """Implement memory-footprint estimator to auto-select optimal strategy.
+
     Returns estimated bytes.
     """
     num_nodes = len(abstractions.features)

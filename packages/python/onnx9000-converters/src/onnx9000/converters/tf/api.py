@@ -33,7 +33,7 @@ ALL_MAPPINGS.update(TFLITE_OPS_MAPPING)
 
 
 def _convert_tfgraph(tf_graph: TFGraph, name: str = "tf_to_onnx") -> Graph:
-    """Executes the  convert tfgraph operation."""
+    """Execute the  convert tfgraph operation."""
     builder = TFToONNXGraphBuilder(name=name)
     sorted_nodes = tf_graph.topological_sort()
     if not sorted_nodes:

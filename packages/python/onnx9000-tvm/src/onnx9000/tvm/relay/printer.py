@@ -1,3 +1,5 @@
+"""TVM submodule for AST and optimization."""
+
 from typing import Any
 
 from .expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
@@ -5,24 +7,34 @@ from .visitor import ExprVisitor
 
 
 class Printer(ExprVisitor):
+    """Core class for TVM AST node or pass."""
+
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.indent = 0
         self.result = ""
         self.var_count = 0
 
     def get_var_name(self, var: Var) -> str:
+        """Do the function."""
         return f"%{var.name_hint}"
 
     def visit_var(self, expr: Var) -> Any:
+        """Do the function."""
         return self.get_var_name(expr)
 
     def visit_constant(self, expr: Constant) -> Any:
+        """Do the function."""
         return f"meta[Constant][{id(expr)}]"
 
     def visit_op(self, expr: Op) -> Any:
+        """Do the function."""
         return f"op({expr.name})"
 
     def visit_call(self, expr: Call) -> Any:
+        """Do the function."""
         op_str = self.visit(expr.op)
         args_str = ", ".join(str(self.visit(arg)) for arg in expr.args)
         attrs_str = ""
@@ -31,14 +43,17 @@ class Printer(ExprVisitor):
         return f"{op_str}({args_str}{attrs_str})"
 
     def visit_tuple(self, expr: TupleExpr) -> Any:
+        """Do the function."""
         fields_str = ", ".join(str(self.visit(f)) for f in expr.fields)
         return f"({fields_str})"
 
     def visit_tuple_getitem(self, expr: TupleGetItem) -> Any:
+        """Do the function."""
         t_str = self.visit(expr.tuple_value)
         return f"{t_str}.{expr.index}"
 
     def visit_let(self, expr: Let) -> Any:
+        """Do the function."""
         var_str = self.visit(expr.var)
         val_str = self.visit(expr.value)
 
@@ -52,6 +67,7 @@ class Printer(ExprVisitor):
             return ""
 
     def visit_if(self, expr: If) -> Any:
+        """Do the function."""
         cond_str = self.visit(expr.cond)
         res = f"if ({cond_str}) {{\n"
         self.indent += 1
@@ -67,6 +83,7 @@ class Printer(ExprVisitor):
         return res
 
     def visit_function(self, expr: Function) -> Any:
+        """Do the function."""
         params_str = ", ".join(self.visit(p) for p in expr.params)
         res = f"fn ({params_str}) {{\n"
         self.indent += 1
@@ -79,7 +96,7 @@ class Printer(ExprVisitor):
 
 
 def astext(expr: Expr) -> str:
-    """Returns a textual representation of the IR."""
+    """Return a textual representation of the IR."""
     printer = Printer()
     res = printer.visit(expr)
     if isinstance(expr, (Let, If, Function)):

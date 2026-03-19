@@ -1,4 +1,6 @@
-from typing import Any, List, Tuple
+"""TVM submodule for AST and optimization."""
+
+from typing import Any
 
 from .tensor import Tensor, compute, exp, max, placeholder, reduce_axis, sum, var
 
@@ -27,6 +29,7 @@ def nn_conv2d(
 
     # We omit padding logic for brevity
     def fcompute(b, k, i, j):
+        """Do the function."""
         return sum(
             data(b, rc, i * stride_h + ry * dil_h, j * stride_w + rx * dil_w)
             * weight(k, rc, ry, rx),
@@ -44,6 +47,7 @@ def nn_matmul(A: Tensor, B: Tensor) -> Tensor:
     rk = reduce_axis((0, k), name="k")
 
     def fcompute(i, j):
+        """Do the function."""
         return sum(A(i, rk) * B(rk, j), axis=[rk])
 
     return compute((m, n), fcompute, name="matmul")
@@ -69,6 +73,7 @@ def nn_pool2d(
     rx = reduce_axis((0, pool_w), name="rx")
 
     def fcompute(b, c, i, j):
+        """Do the function."""
         val = data(b, c, i * stride_h + ry, j * stride_w + rx)
         if pool_type == "max":
             return max(val, axis=[ry, rx])
@@ -87,24 +92,28 @@ def nn_softmax(x: Tensor, axis: int = -1) -> Tensor:
 
     # Max
     def fmax(*indices):
+        """Do the function."""
         return max(x(*indices), axis=[red_axis])
 
     m = compute(shape[:-1], fmax, name="max")
 
     # Exp
     def fexp(*indices):
+        """Do the function."""
         return exp(x(*indices) - m(*indices[:-1]))
 
     e = compute(shape, fexp, name="exp")
 
     # Sum
     def fsum(*indices):
+        """Do the function."""
         return sum(e(*indices), axis=[red_axis])
 
     s = compute(shape[:-1], fsum, name="sum")
 
     # Div
     def fdiv(*indices):
+        """Do the function."""
         return e(*indices) / s(*indices[:-1])
 
     return compute(shape, fdiv, name="softmax")
@@ -120,12 +129,14 @@ def nn_layer_norm(
 
     # Mean
     def fmean(*indices):
+        """Do the function."""
         return sum(data(*indices), axis=[red_axis]) / shape[axis]
 
     m = compute(shape[:-1], fmean, name="mean")
 
     # Var
     def fvar(*indices):
+        """Do the function."""
         diff = data(*indices) - m(*indices[:-1])
         return sum(diff * diff, axis=[red_axis]) / shape[axis]
 
@@ -133,8 +144,9 @@ def nn_layer_norm(
 
     # Norm
     def fnorm(*indices):
+        """Do the function."""
         # We need a generic sqrt, assuming pow exists
-        normed = (data(*indices) - m(*indices[:-1])) / ((v(*indices[:-1]) + epsilon) ** 0.5)
+        normed = (data(*indices) - m(*indices[:-1])) / (v(*indices[:-1]) + epsilon)
         return normed * gamma(indices[-1]) + beta(indices[-1])
 
     return compute(shape, fnorm, name="layer_norm")

@@ -1,3 +1,5 @@
+"""Provide functionality for this module."""
+
 import json
 import os
 
@@ -9,6 +11,7 @@ class ChunkManager:
     def chunk_model(model_path: str, chunk_size_bytes: int = 100 * 1024 * 1024) -> list[str]:
         # Implement automatic folder structuring
         # e.g., creates model-001.onnx, model-002.onnx
+        """Execute the chunk_model operation."""
         os.path.dirname(model_path)
         base_name = os.path.basename(model_path).split(".")[0]
         chunks = []
@@ -21,6 +24,7 @@ class ChunkManager:
 
     @staticmethod
     def create_manifest(chunks: list[str], output_dir: str):
+        """Execute the create_manifest operation."""
         manifest = {"chunks": chunks, "total_chunks": len(chunks)}
         with open(os.path.join(output_dir, "manifest.json"), "w") as f:
             json.dump(manifest, f)

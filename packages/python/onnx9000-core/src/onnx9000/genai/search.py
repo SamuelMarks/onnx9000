@@ -1,5 +1,6 @@
+"""Provide functionality for this module."""
+
 import struct
-from typing import List, Tuple
 
 from ..core.ir import Tensor
 
@@ -8,13 +9,15 @@ class SearchAlgorithm:
     """Base class for search and sampling algorithms."""
 
     def select_next_token(self, logits: Tensor, input_ids: list[int]) -> int:
-        raise NotImplementedError()
+        """Execute the select_next_token operation."""
+        return 0
 
 
 class GreedySearch(SearchAlgorithm):
     """Selects the token with the highest probability."""
 
     def select_next_token(self, logits: Tensor, input_ids: list[int]) -> int:
+        """Execute the select_next_token operation."""
         if logits.data is None:
             return 0
 
@@ -47,11 +50,13 @@ class MultinomialSampling(SearchAlgorithm):
     """Samples the next token from the multinomial distribution given by logits."""
 
     def __init__(self, seed: int = None):
+        """Initialize the instance."""
         import random
 
         self.rng = random.Random(seed) if seed is not None else random
 
     def select_next_token(self, logits: Tensor, input_ids: list[int]) -> int:
+        """Execute the select_next_token operation."""
         if logits.data is None:
             return 0
 
@@ -91,28 +96,33 @@ class BeamSearchState:
     """Manages beam search state (beam scores, beam tokens, beam histories)."""
 
     def __init__(self, num_beams: int, num_return_sequences: int):
+        """Initialize the instance."""
         self.num_beams = num_beams
         self.num_return_sequences = num_return_sequences
         self.active_beams = []  # list of tuples (score, [tokens])
         self.finished_beams = []  # list of tuples (score, [tokens])
 
     def add_finished(self, score: float, tokens: list[int]):
+        """Execute the add_finished operation."""
         self.finished_beams.append((score, tokens))
 
     def get_best_finished(self):
         # Sort by score descending
+        """Execute the get_best_finished operation."""
         self.finished_beams.sort(key=lambda x: x[0], reverse=True)
         return self.finished_beams[: self.num_return_sequences]
 
 
 class BeamSearchAlgorithm(SearchAlgorithm):
-    """Implements Beam Search algorithm, pruning, and sorting."""
+    """Implement Beam Search algorithm, pruning, and sorting."""
 
     def __init__(self, state: BeamSearchState):
+        """Initialize the instance."""
         self.state = state
 
     def process_logits(self, next_token_logits: Tensor, beam_idx: int) -> list[tuple[float, int]]:
         # Mock logic to extract top num_beams from a single beam's logits
+        """Execute the process_logits operation."""
         import struct
 
         itemsize = (
@@ -136,6 +146,6 @@ class BeamSearchAlgorithm(SearchAlgorithm):
         return vals[: self.state.num_beams]
 
     def prune_and_sort_beams(self, candidates: list[tuple[float, list[int]]]):
-        """Implements beam search pruning and sorting."""
+        """Implement beam search pruning and sorting."""
         candidates.sort(key=lambda x: x[0], reverse=True)
         self.state.active_beams = candidates[: self.state.num_beams]

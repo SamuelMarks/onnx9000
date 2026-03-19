@@ -1,15 +1,23 @@
-from typing import Callable, List, Set
+"""TVM submodule for AST and optimization."""
+
+from typing import Callable
 
 from .expr import Expr
 from .visitor import ExprVisitor
 
 
 class PostOrderVisitor(ExprVisitor):
+    """Core class for TVM AST node or pass."""
+
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.visited: set[int] = set()
         self.order: list[Expr] = []
 
     def visit(self, expr: Expr) -> None:
+        """Do the function."""
         expr_id = id(expr)
         if expr_id in self.visited:
             return
@@ -21,7 +29,7 @@ class PostOrderVisitor(ExprVisitor):
 
 
 def post_order_visit(expr: Expr) -> list[Expr]:
-    """Returns a list of expressions in post-order (topological sort of dependencies)."""
+    """Return a list of expressions in post-order (topological sort of dependencies)."""
     visitor = PostOrderVisitor()
     visitor.visit(expr)
     return visitor.order

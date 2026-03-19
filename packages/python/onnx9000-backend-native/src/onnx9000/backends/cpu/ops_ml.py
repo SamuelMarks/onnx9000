@@ -6,48 +6,48 @@ import numpy as np
 
 
 def arrayfeatureextractor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the ArrayFeatureExtractor operation."""
+    """Execute the ArrayFeatureExtractor operation."""
     return [np.take(inputs[0], inputs[1].astype(int), axis=-1)]
 
 
 def binarizer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the Binarizer operation."""
+    """Execute the Binarizer operation."""
     threshold = attrs.get("threshold", 0.0)
     return [(inputs[0] > threshold).astype(inputs[0].dtype)]
 
 
 def cast_ml_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the Cast operation for ML domain."""
+    """Execute the Cast operation for ML domain."""
     return [inputs[0].astype(np.float32)]
 
 
 def categorymapper_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the CategoryMapper operation."""
+    """Execute the CategoryMapper operation."""
     return [np.zeros_like(inputs[0])]
 
 
 def dictvectorizer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the DictVectorizer operation."""
+    """Execute the DictVectorizer operation."""
     return [np.zeros((1, 1), dtype=np.float32)]
 
 
 def featurevectorizer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the FeatureVectorizer operation."""
+    """Execute the FeatureVectorizer operation."""
     return [np.concatenate(inputs, axis=-1)]
 
 
 def imputer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the Imputer operation."""
+    """Execute the Imputer operation."""
     return [np.nan_to_num(inputs[0])]
 
 
 def labelencoder_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the LabelEncoder operation."""
+    """Execute the LabelEncoder operation."""
     return [inputs[0]]
 
 
 def linearclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the LinearClassifier operation."""
+    """Execute the LinearClassifier operation."""
     return [
         np.zeros((inputs[0].shape[0], 1), dtype=np.int64),
         np.zeros((inputs[0].shape[0], 2), dtype=np.float32),
@@ -55,7 +55,7 @@ def linearclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list
 
 
 def linearregressor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the LinearRegressor operation."""
+    """Execute the LinearRegressor operation."""
     coefficients = np.array(attrs.get("coefficients", []), dtype=np.float32)
     intercepts = np.array(attrs.get("intercepts", []), dtype=np.float32)
     if coefficients.size == 0:
@@ -66,7 +66,7 @@ def linearregressor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[
 
 
 def normalizer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the Normalizer operation."""
+    """Execute the Normalizer operation."""
     norm = attrs.get("norm", "MAX")
     if norm == "MAX":
         divisor = np.max(np.abs(inputs[0]), axis=-1, keepdims=True)
@@ -79,19 +79,19 @@ def normalizer_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nd
 
 
 def onehotencoder_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the OneHotEncoder operation."""
+    """Execute the OneHotEncoder operation."""
     return [np.zeros((inputs[0].shape[0], 10), dtype=np.float32)]
 
 
 def scaler_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the Scaler operation."""
+    """Execute the Scaler operation."""
     scale = np.array(attrs.get("scale", [1.0]), dtype=np.float32)
     offset = np.array(attrs.get("offset", [0.0]), dtype=np.float32)
     return [(inputs[0] - offset) * scale]
 
 
 def svmclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the SVMClassifier operation."""
+    """Execute the SVMClassifier operation."""
     return [
         np.zeros((inputs[0].shape[0], 1), dtype=np.int64),
         np.zeros((inputs[0].shape[0], 2), dtype=np.float32),
@@ -99,12 +99,12 @@ def svmclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np
 
 
 def svmregressor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the SVMRegressor operation."""
+    """Execute the SVMRegressor operation."""
     return [np.zeros((inputs[0].shape[0], 1), dtype=np.float32)]
 
 
 def treeensembleclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the TreeEnsembleClassifier operation."""
+    """Execute the TreeEnsembleClassifier operation."""
     return [
         np.zeros((inputs[0].shape[0], 1), dtype=np.int64),
         np.zeros((inputs[0].shape[0], 2), dtype=np.float32),
@@ -112,12 +112,12 @@ def treeensembleclassifier_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -
 
 
 def treeensembleregressor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the TreeEnsembleRegressor operation."""
+    """Execute the TreeEnsembleRegressor operation."""
     return [np.zeros((inputs[0].shape[0], 1), dtype=np.float32)]
 
 
 def zipmap_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
-    """Executes the ZipMap operation."""
+    """Execute the ZipMap operation."""
     return [np.zeros(inputs[0].shape, dtype=inputs[0].dtype)]
 
 

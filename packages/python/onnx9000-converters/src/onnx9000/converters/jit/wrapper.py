@@ -7,22 +7,22 @@ from onnx9000.core.ir import Graph
 
 
 class CompiledModel:
-    """
-    Python wrapper around the dynamically loaded C++ model class.
+    """Python wrapper around the dynamically loaded C++ model class.
+
     Handles the conversion of inputs to numpy arrays and calling the C++ forward method.
     """
 
     def __init__(self, cpp_model: Any, graph: Graph) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self._cpp_model = cpp_model
         self.graph = graph
 
     def __call__(self, *args: Any, **kwargs: Any) -> Union[np.ndarray, tuple[np.ndarray]]:
-        """Implements the __call__ method or operation."""
+        """Implement the __call__ method or operation."""
         return self.forward(*args, **kwargs)
 
     def forward(self, *args: Any, **kwargs: Any) -> Union[np.ndarray, tuple[np.ndarray]]:
-        """Implements the forward method or operation."""
+        """Implement the forward method or operation."""
         input_arrays: list[np.ndarray] = []
         if len(args) != len(self.graph.inputs):
             raise ValueError(f"Expected {len(self.graph.inputs)} inputs, got {len(args)}")

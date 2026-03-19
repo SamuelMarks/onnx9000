@@ -62,7 +62,7 @@ def _parse_attribute(attr: Any) -> Attribute:
 
 
 def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
-    """Parses a single ONNX TensorProto into an ir.Tensor."""
+    """Parse a single ONNX TensorProto into an ir.Tensor."""
     dtype = _parse_dtype(init.data_type)
     shape = tuple(init.dims)
     data: Optional[Union[bytes, memoryview]] = None
@@ -106,7 +106,7 @@ def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
 
 
 def load_tensor(file_path: Union[str, Path]) -> Tensor:
-    """Reads an ONNX Tensor file (.pb) and parses it into an ir.Tensor."""
+    """Read an ONNX Tensor file (.pb) and parses it into an ir.Tensor."""
     tensor_proto = onnx_pb2.TensorProto()
     with open(file_path, "rb") as f:
         tensor_proto.ParseFromString(f.read())
@@ -114,7 +114,7 @@ def load_tensor(file_path: Union[str, Path]) -> Tensor:
 
 
 def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
-    """Parses an ONNX ModelProto into an ir.Graph."""
+    """Parse an ONNX ModelProto into an ir.Graph."""
     graph_proto = model_proto.graph
     graph = Graph(name=graph_proto.name)
     graph.doc_string = model_proto.doc_string
@@ -167,7 +167,7 @@ def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
 
 
 def load(file_path: Union[str, Path]) -> Graph:
-    """Reads an ONNX file and parses it into an ir.Graph."""
+    """Read an ONNX file and parses it into an ir.Graph."""
     path_obj = Path(file_path)
     with open(file_path, "rb") as f:
         data = f.read()
@@ -190,7 +190,7 @@ def load(file_path: Union[str, Path]) -> Graph:
 
 
 def from_bytes(proto_bytes: bytes) -> Graph:
-    """Parses an ONNX byte string into an ir.Graph."""
+    """Parse an ONNX byte string into an ir.Graph."""
     if len(proto_bytes) < 8:
         raise ONNXParseError("Byte string is too small to be a valid ONNX protobuf")
 

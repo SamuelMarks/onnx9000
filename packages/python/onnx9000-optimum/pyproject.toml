@@ -1,0 +1,25 @@
+[project]
+name = "onnx9000-optimum"
+version = "0.1.0"
+description = "Web-Optimized Export & Quantization"
+authors = [
+    { name = "Samuel", email = "samuel@onnx9000.dev" },
+]
+dependencies = [
+    "onnx9000-core",
+]
+requires-python = ">=3.9"
+
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[tool.uv.sources.onnx9000-core]
+workspace = true
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/onnx9000_optimum",
+]

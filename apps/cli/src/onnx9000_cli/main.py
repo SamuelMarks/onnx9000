@@ -16,7 +16,6 @@ def inspect_cmd(args: argparse.Namespace) -> None:
 
 def simplify_cmd(args: argparse.Namespace) -> None:
     """Simplify an ONNX model."""
-
     print(f"Loading {args.model}...")
     t0 = time.time()
     graph = load_onnx(args.model)
@@ -134,6 +133,55 @@ def export_cmd(args: argparse.Namespace) -> None:
     print(f"Exporting {args.script}...")
 
 
+def optimum_export_cmd(args: argparse.Namespace) -> None:
+    """Export a HuggingFace model to ONNX."""
+    from onnx9000_optimum.export import export_model
+
+    export_model(
+        model_id=args.model_id,
+        output_dir="exported_model",
+        task=args.task,
+        opset=args.opset,
+        device=args.device,
+        cache_dir=args.cache_dir,
+        split=args.split,
+    )
+
+
+def optimum_optimize_cmd(args: argparse.Namespace) -> None:
+    """Optimize a HuggingFace ONNX model for Web deployment."""
+    from onnx9000_optimum.optimize import optimize_model
+
+    optimize_model(
+        model_path=args.model,
+        level=args.level,
+        disable_fusion=args.disable_fusion,
+        optimize_size=args.optimize_size,
+    )
+
+
+def optimum_quantize_cmd(args: argparse.Namespace) -> None:
+    """Quantize an ONNX model using Optimum settings."""
+    from onnx9000_optimum.quantize import quantize_model
+
+    quantize_model(
+        model_path=args.model,
+        method=args.quantize,
+        gptq_bits=args.gptq_bits,
+        gptq_group_size=args.gptq_group_size,
+    )
+
+
+def optimum_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for Optimum subcommand group."""
+    if not hasattr(args, "optimum_func"):
+        print("Missing optimum subcommand")
+        import sys
+
+        sys.exit(1)
+    args.optimum_func(args)
+
+
 def convert_cmd(args: argparse.Namespace) -> None:
     """Convert between model formats."""
     print(f"Converting from {args.src} to {args.dst}...")
@@ -149,12 +197,41 @@ def compile_cmd(args: argparse.Namespace) -> None:
     print(f"Compiling {args.model}...")
 
 
+def info_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for info diagnostics command group."""
+    if not hasattr(args, "info_func"):
+        print("Missing info subcommand")
+        import sys
+
+        sys.exit(1)
+    args.info_func(args)
+
+
+def info_webnn_cmd(args: argparse.Namespace) -> None:
+    """Print host WebNN capabilities."""
+    print("WebNN API Diagnostic Info:")
+    print("--------------------------")
+    print("Host NPU capabilities check is primarily available in the browser environment.")
+    print("Run `onnx9000 serve` to open the local visualizer and view detailed NPU metrics.")
+    print("\nCapabilities (Mock/Node.js context):")
+    print("- Float16: true")
+    print("- Float32: true")
+    print("- Int8: true")
+    print("- WebNN API Present: false (Requires browser `navigator.ml` context)")
+
+
 def main() -> None:
     """CLI Entrypoint."""
     parser = argparse.ArgumentParser(
         prog="onnx9000", description="ONNX9000 Unified MLOps and Execution Ecosystem CLI."
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Info
+    info_parser = subparsers.add_parser("info", help="Diagnostic information")
+    info_subparsers = info_parser.add_subparsers(dest="info_command", help="Info commands")
+    info_webnn_parser = info_subparsers.add_parser("webnn", help="List host NPU capabilities")
+    info_webnn_parser.set_defaults(info_func=info_webnn_cmd, func=info_cmd)
 
     # Inspect
     inspect_parser = subparsers.add_parser(
@@ -251,6 +328,74 @@ def main() -> None:
     export_parser = subparsers.add_parser("export", help="Export PyTorch/TF scripts to ONNX")
     export_parser.add_argument("script", type=str, help="Path to the model script")
     export_parser.set_defaults(func=export_cmd)
+
+    # Optimum
+    optimum_parser = subparsers.add_parser(
+        "optimum", help="HuggingFace Optimum web-optimized export and quantization"
+    )
+    optimum_subparsers = optimum_parser.add_subparsers(
+        dest="optimum_command", help="Optimum commands"
+    )
+
+    # Optimum Export
+    optimum_export = optimum_subparsers.add_parser("export", help="Export models to ONNX")
+    optimum_export.add_argument(
+        "--model", dest="model_id", type=str, help="Model ID from HuggingFace Hub"
+    )
+    optimum_export.add_argument("--task", type=str, help="Task to export for")
+    optimum_export.add_argument("--opset", type=int, help="ONNX opset version")
+    optimum_export.add_argument(
+        "--device",
+        type=str,
+        choices=["cpu", "wasm", "webgpu", "webnn"],
+        default="cpu",
+        help="Target device",
+    )
+    optimum_export.add_argument("--cache_dir", type=str, help="Cache directory for HF weights")
+    optimum_export.add_argument(
+        "--monolith", action="store_true", help="Store weights in monolithic file"
+    )
+    optimum_export.add_argument(
+        "--external-data", action="store_true", help="Store weights externally"
+    )
+    optimum_export.add_argument("--atol", type=float, help="Absolute tolerance for validation")
+    optimum_export.add_argument("--rtol", type=float, help="Relative tolerance for validation")
+    optimum_export.add_argument("--split", action="store_true", help="Split massive graphs")
+    optimum_export.set_defaults(optimum_func=optimum_export_cmd, func=optimum_cmd)
+
+    # Optimum Optimize
+    optimum_optimize = optimum_subparsers.add_parser(
+        "optimize", help="Optimize ONNX models for web"
+    )
+    optimum_optimize.add_argument("model", type=str, help="Path to the .onnx file")
+    optimum_optimize.add_argument(
+        "--level",
+        type=str,
+        choices=["O1", "O2", "O3", "O4"],
+        default="O1",
+        help="Optimization level",
+    )
+    optimum_optimize.add_argument(
+        "--disable-fusion", action="store_true", help="Disable operator fusion"
+    )
+    optimum_optimize.add_argument(
+        "--optimize-size", action="store_true", help="Strip debug names and compress size"
+    )
+    optimum_optimize.set_defaults(optimum_func=optimum_optimize_cmd, func=optimum_cmd)
+
+    # Optimum Quantize
+    optimum_quantize = optimum_subparsers.add_parser("quantize", help="Quantize ONNX models")
+    optimum_quantize.add_argument("model", type=str, help="Path to the .onnx file")
+    optimum_quantize.add_argument(
+        "--quantize",
+        type=str,
+        choices=["dynamic", "static"],
+        default="dynamic",
+        help="Quantization method",
+    )
+    optimum_quantize.add_argument("--gptq-bits", type=int, help="GPTQ bits")
+    optimum_quantize.add_argument("--gptq-group-size", type=int, help="GPTQ group size")
+    optimum_quantize.set_defaults(optimum_func=optimum_quantize_cmd, func=optimum_cmd)
 
     # Convert
     convert_parser = subparsers.add_parser("convert", help="Convert legacy model formats to ONNX")

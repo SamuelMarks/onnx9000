@@ -1,5 +1,4 @@
-"""
-Frontend Sub-Package
+"""Frontend Sub-Package.
 
 Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
@@ -13,14 +12,14 @@ from onnx9000.converters.frontend.tensor import Tensor
 
 
 def jit(fn: Callable) -> Callable:
-    """
-    Traces a Python function into an ONNX GraphBuilder.
+    """Traces a Python function into an ONNX GraphBuilder.
+
     This is a symbolic tracer (similar to JAX's make_jaxpr or PyTorch's trace).
     """
 
     @wraps(fn)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        """Implements the wrapper method."""
+        """Implement the wrapper method."""
         "Provides wrapper functionality and verification."
         builder = GraphBuilder(name=fn.__name__)
         for arg in args:

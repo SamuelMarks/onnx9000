@@ -1,5 +1,5 @@
-"""
-Provides the AST parser that translates Python functions into ONNX graphs.
+"""Provide the AST parser that translates Python functions into ONNX graphs.
+
 Handles mapping of variables, loops, conditionals, and node generation.
 """
 
@@ -15,16 +15,16 @@ from onnx9000.toolkit.script.var import Var
 
 
 class ScriptParser(ast.NodeVisitor):
-    """Parses a Python function AST into an ONNX GraphBuilder."""
+    """Pars a Python function AST into an ONNX GraphBuilder."""
 
     def __init__(self, globals_dict: dict[str, Any]) -> None:
-        """Initializes the parser with a dictionary of global variables."""
+        """Initialize the parser with a dictionary of global variables."""
         self.builder = GraphBuilder()
         self.globals_dict = globals_dict
         self.locals_dict: dict[str, Var] = {}
 
     def parse(self, func: Callable) -> GraphBuilder:
-        """Parses a given Python function and populates the GraphBuilder."""
+        """Pars a given Python function and populates the GraphBuilder."""
         source = inspect.getsource(func)
         source = textwrap.dedent(source)
         tree = ast.parse(source)
@@ -53,13 +53,13 @@ class ScriptParser(ast.NodeVisitor):
             raise
 
     def visit_Expr(self, node: ast.Expr) -> Any:
-        """Translates expression statements, ignoring docstrings."""
+        """Translate expression statements, ignoring docstrings."""
         if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
             return None
         return self.visit(node.value)
 
     def visit_Assign(self, node: ast.Assign) -> None:
-        """Translates Python assignment statements into ONNX variable bindings."""
+        """Translate Python assignment statements into ONNX variable bindings."""
         val = self.visit(node.value)
         if len(node.targets) == 1:
             target = node.targets[0]
@@ -75,7 +75,7 @@ class ScriptParser(ast.NodeVisitor):
                             self.locals_dict[t.id] = v
 
     def visit_Call(self, node: ast.Call) -> Any:
-        """Translates function calls into ONNX node invocations or subgraph inlining."""
+        """Translate function calls into ONNX node invocations or subgraph inlining."""
         args = [self.visit(arg) for arg in node.args]
         kwargs = {kw.arg: self.visit(kw.value) for kw in node.keywords if kw.arg is not None}
         if (
@@ -109,7 +109,7 @@ class ScriptParser(ast.NodeVisitor):
         raise ValueError(f"Unsupported call: {ast.dump(node)}")
 
     def visit_BinOp(self, node: ast.BinOp) -> Any:
-        """Translates binary operations into their corresponding ONNX mathematical nodes."""
+        """Translate binary operations into their corresponding ONNX mathematical nodes."""
         left = self.visit(node.left)
         right = self.visit(node.right)
         with self.builder:
@@ -128,7 +128,7 @@ class ScriptParser(ast.NodeVisitor):
         raise ValueError(f"Unsupported binary operator: {type(node.op)}")
 
     def visit_Compare(self, node: ast.Compare) -> Any:
-        """Translates comparison operations into ONNX logical nodes."""
+        """Translate comparison operations into ONNX logical nodes."""
         if len(node.ops) > 1 or len(node.comparators) > 1:
             raise ValueError("Multiple comparisons not supported")
         left = self.visit(node.left)
@@ -146,7 +146,7 @@ class ScriptParser(ast.NodeVisitor):
         raise ValueError(f"Unsupported comparison: {type(op_node)}")
 
     def visit_For(self, node: ast.For) -> None:
-        """Translates Python for-loops into ONNX Loop operations."""
+        """Translate Python for-loops into ONNX Loop operations."""
         max_trip_count = self.visit(node.iter)
         parent_builder = self.builder
         parent_locals = self.locals_dict.copy()
@@ -189,7 +189,7 @@ class ScriptParser(ast.NodeVisitor):
                 self.locals_dict[k] = out_vars[i]
 
     def visit_While(self, node: ast.While) -> None:
-        """Translates Python while-loops into ONNX Loop operations."""
+        """Translate Python while-loops into ONNX Loop operations."""
         parent_builder = self.builder
         parent_locals = self.locals_dict.copy()
         body_builder = GraphBuilder(name=f"{parent_builder.name}_while_body")
@@ -227,13 +227,13 @@ class ScriptParser(ast.NodeVisitor):
                 self.locals_dict[k] = out_vars[i]
 
     def visit_ListComp(self, node: ast.ListComp) -> Any:
-        """Raises an error indicating list comprehensions are not supported."""
+        """Raise an error indicating list comprehensions are not supported."""
         raise ValueError(
             "List comprehensions cannot be mapped to ONNX directly. Unroll statically."
         )
 
     def visit_Name(self, node: ast.Name) -> Any:
-        """Resolves variable names to ONNX variables or captured global constants."""
+        """Resolve variable names to ONNX variables or captured global constants."""
         if node.id in self.locals_dict:
             return self.locals_dict[node.id]
         elif node.id in self.globals_dict:
@@ -245,16 +245,16 @@ class ScriptParser(ast.NodeVisitor):
         raise ValueError(f"Unknown variable: {node.id}")
 
     def visit_Constant(self, node: ast.Constant) -> Any:
-        """Translates Python constants into ONNX Constant nodes."""
+        """Translate Python constants into ONNX Constant nodes."""
         with self.builder:
             return op.Constant(node.value)
 
     def visit_Tuple(self, node: ast.Tuple) -> Any:
-        """Translates Python tuples into tuples of ONNX variables."""
+        """Translate Python tuples into tuples of ONNX variables."""
         return tuple(self.visit(el) for el in node.elts)
 
     def visit_Return(self, node: ast.Return) -> None:
-        """Translates return statements into ONNX graph outputs."""
+        """Translate return statements into ONNX graph outputs."""
         if node.value is None:
             return
         val = self.visit(node.value)
@@ -265,7 +265,7 @@ class ScriptParser(ast.NodeVisitor):
             self.builder.add_output(val, name="output_0")
 
     def visit_IfExp(self, node: ast.IfExp) -> Any:
-        """Translates Python conditional expressions (x if cond else y) into ONNX If operations."""
+        """Translate Python conditional expressions (x if cond else y) into ONNX If operations."""
         cond = self.visit(node.test)
         parent_builder = self.builder
         parent_locals = self.locals_dict.copy()
@@ -289,7 +289,7 @@ class ScriptParser(ast.NodeVisitor):
             return op.If(cond, then_branch=then_builder, else_branch=else_builder, num_outputs=1)
 
     def visit_If(self, node: ast.If) -> None:
-        """Translates Python if-statements into ONNX If operations."""
+        """Translate Python if-statements into ONNX If operations."""
         cond = self.visit(node.test)
         parent_builder = self.builder
         parent_locals = self.locals_dict.copy()
@@ -334,7 +334,7 @@ class ScriptParser(ast.NodeVisitor):
 
 
 def script(func: Callable) -> Callable:
-    """Decorator to convert a Python function to an ONNX GraphBuilder/Model."""
+    """Decorate to convert a Python function to an ONNX GraphBuilder/Model."""
     frame = inspect.currentframe()
     if frame is not None and frame.f_back is not None:
         globals_dict = frame.f_back.f_globals.copy()
@@ -343,7 +343,7 @@ def script(func: Callable) -> Callable:
         globals_dict = {}
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        """Executes the parsed ONNX graph by building and running it."""
+        """Execute the parsed ONNX graph by building and running it."""
         parser = ScriptParser(globals_dict)
         builder = parser.parse(func)
         return builder.build()

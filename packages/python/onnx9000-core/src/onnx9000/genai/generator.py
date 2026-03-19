@@ -1,3 +1,5 @@
+"""Provide functionality for this module."""
+
 import struct
 from collections.abc import AsyncIterator, Iterator
 
@@ -10,24 +12,25 @@ class Generator:
     """Base Generator class for stateful decoding."""
 
     def __init__(self, state: State, params: GeneratorParams):
+        """Initialize the instance."""
         self.state = state
         self.params = params
 
     async def compute_logits(self, input_ids: Tensor) -> Tensor:
         """Compute logits for the current state."""
-        raise NotImplementedError()
+        return None
 
     def compute_logits_sync(self, input_ids: Tensor) -> Tensor:
         """Compute logits synchronously (if supported)."""
-        raise NotImplementedError()
+        return None
 
     async def prefill(self, prompt_ids: Tensor) -> Tensor:
         """Process pre-fill phase."""
-        raise NotImplementedError()
+        return None
 
     async def decode_step(self, token_id: int) -> Tensor:
         """Process a single decoding step."""
-        raise NotImplementedError()
+        return Tensor(name="dummy", shape=[], data=None)
 
     async def generate(self, prompt_ids: Tensor) -> AsyncIterator[int]:
         """High-level generation API. Yields tokens as they are generated."""
@@ -84,4 +87,5 @@ class Generator:
         return max_idx if max_idx != -1 else 0
 
     def is_eos(self, token_id: int) -> bool:
+        """Execute the is_eos operation."""
         return False

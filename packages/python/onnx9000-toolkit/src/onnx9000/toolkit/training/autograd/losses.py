@@ -1,5 +1,4 @@
-"""
-Loss Functions
+"""Loss Functions.
 
 Generators for common loss functions, constructed entirely out of standard ONNX
 operations to ensure AOT compilation compatibility.
@@ -11,7 +10,7 @@ from onnx9000.core.ir import Graph, Node
 def add_mse_loss(
     graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean"
 ) -> None:
-    """Adds MSE loss to the graph."""
+    """Add MSE loss to the graph."""
     diff = f"{loss_out}_diff"
     sq = f"{loss_out}_sq"
     graph.add_node(Node("Sub", [pred, target], [diff], {}, name=f"{loss_out}_sub"))
@@ -36,7 +35,8 @@ def add_categorical_crossentropy_loss(
     reduction: str = "mean",
     label_smoothing: float = 0.0,
 ) -> None:
-    """Adds CategoricalCrossEntropy loss natively to the graph.
+    """Add CategoricalCrossEntropy loss natively to the graph.
+
     Formula: -Sum(smoothed_target * log(pred)).
     """
     log_pred = f"{loss_out}_log"
@@ -156,7 +156,7 @@ def add_crossentropy_loss(
     reduction: str = "mean",
     ignore_index: int = -100,
 ) -> None:
-    """Adds CrossEntropy loss to the graph."""
+    """Add CrossEntropy loss to the graph."""
     graph.add_node(
         Node(
             "SoftmaxCrossEntropyLoss",
@@ -171,7 +171,7 @@ def add_crossentropy_loss(
 def add_bce_with_logits_loss(
     graph: Graph, logits: str, target: str, loss_out: str, reduction: str = "mean"
 ) -> None:
-    """Adds BCEWithLogits loss to the graph."""
+    """Add BCEWithLogits loss to the graph."""
     graph.add_node(
         Node(
             "BCEWithLogitsLoss",
@@ -186,7 +186,7 @@ def add_bce_with_logits_loss(
 def add_nll_loss(
     graph: Graph, log_probs: str, target: str, loss_out: str, reduction: str = "mean"
 ) -> None:
-    """Adds NLLLoss to the graph."""
+    """Add NLLLoss to the graph."""
     graph.add_node(
         Node(
             "NegativeLogLikelihoodLoss",
@@ -201,7 +201,7 @@ def add_nll_loss(
 def add_l1_loss(
     graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean"
 ) -> None:
-    """Adds L1 loss to the graph."""
+    """Add L1 loss to the graph."""
     diff = f"{loss_out}_diff"
     abs_diff = f"{loss_out}_abs"
     graph.add_node(Node("Sub", [pred, target], [diff], {}, name=f"{loss_out}_sub"))
@@ -221,7 +221,7 @@ def add_l1_loss(
 def add_huber_loss(
     graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean", delta: float = 1.0
 ) -> None:
-    """Adds Huber loss to the graph."""
+    """Add Huber loss to the graph."""
     graph.add_node(
         Node(
             "HuberLoss",
@@ -242,7 +242,7 @@ def add_cosine_embedding_loss(
     reduction: str = "mean",
     margin: float = 0.0,
 ) -> None:
-    """Adds Cosine Embedding loss to the graph."""
+    """Add Cosine Embedding loss to the graph."""
     graph.add_node(
         Node(
             "CosineEmbeddingLoss",
@@ -257,7 +257,7 @@ def add_cosine_embedding_loss(
 def add_kldiv_loss(
     graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean"
 ) -> None:
-    """Adds KLDiv loss to the graph."""
+    """Add KLDiv loss to the graph."""
     graph.add_node(
         Node(
             "KLDivLoss",
@@ -272,8 +272,9 @@ def add_kldiv_loss(
 def add_dice_loss(
     graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean", eps: float = 1e-8
 ) -> None:
-    """Adds DiceLoss natively to the graph.
-    Formula: 1.0 - (2 * Sum(pred * target) + eps) / (Sum(pred) + Sum(target) + eps)
+    """Add DiceLoss natively to the graph.
+
+    Formula: 1.0 - (2 * Sum(pred * target) + eps) / (Sum(pred) + Sum(target) + eps).
     """
     inter = f"{loss_out}_inter"
     sum_inter = f"{loss_out}_sum_inter"
@@ -373,8 +374,9 @@ def add_focal_loss(
     gamma: float = 2.0,
     alpha: float = 0.25,
 ) -> None:
-    """Adds Focal Loss natively to the graph.
-    Formula: -alpha * (1 - p)^gamma * target * log(p) - (1 - alpha) * p^gamma * (1 - target) * log(1 - p)
+    """Add Focal Loss natively to the graph.
+
+    Formula: -alpha * (1 - p)^gamma * target * log(p) - (1 - alpha) * p^gamma * (1 - target) * log(1 - p).
     """
     # For simplicity, using BCE focal loss formulation.
     # FL(p, y) = -alpha * y * (1-p)^gamma * log(p) - (1-alpha) * (1-y) * p^gamma * log(1-p)
@@ -478,8 +480,8 @@ def add_focal_loss(
 def add_gradient_penalty(
     graph: Graph, grad_names: list[str], loss_out: str, penalty_weight: float = 1.0
 ) -> None:
-    """
-    Supports explicit gradient penalty calculation natively
+    """Supports explicit gradient penalty calculation natively.
+
     (Norm(dY) - 1.0)**2 added to the original loss.
     Commonly used in WGAN-GP training constraints.
     """
@@ -565,7 +567,7 @@ def add_triplet_margin_loss(
     margin: float = 1.0,
     p: int = 2,
 ) -> None:
-    """Adds TripletMarginLoss to the graph natively."""
+    """Add TripletMarginLoss to the graph natively."""
     diff_ap = f"{loss_out}_diff_ap"
     diff_an = f"{loss_out}_diff_an"
 
@@ -676,7 +678,7 @@ def add_margin_ranking_loss(
     reduction: str = "mean",
     margin: float = 0.0,
 ) -> None:
-    """Adds Margin Ranking loss to the graph."""
+    """Add Margin Ranking loss to the graph."""
     graph.add_node(
         Node(
             "MarginRankingLoss",

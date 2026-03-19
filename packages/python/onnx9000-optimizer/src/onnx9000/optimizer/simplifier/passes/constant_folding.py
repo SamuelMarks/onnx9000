@@ -207,7 +207,11 @@ def _tensor_to_numpy(tensor):
 
 
 class ConstantFoldingPass(GraphPass):
+    """Perform constant folding across the entire graph by pre-evaluating static subgraphs."""
+
     def __init__(self, max_size_mb: float = 10.0):
+        """Initialize the optimization pass."""
+        """Initialize the optimization pass."""
         super().__init__()
         self.max_size_mb = max_size_mb
 
@@ -217,7 +221,7 @@ class ConstantFoldingPass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         while True:
             iteration_changed = self._run_once(graph)
@@ -236,7 +240,7 @@ class ConstantFoldingPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         changed = False
         known_values = {}
         for init_name in graph.initializers:
@@ -464,7 +468,7 @@ class ConstantFoldingPass(GraphPass):
         return changed
 
     def _evaluate_node(self, op_type: str, inputs: list, attrs: dict, node=None):
-        """Implements the _evaluate_node method or operation."""
+        """Implement the _evaluate_node method or operation."""
         if op_type == "Add":
             return np.add(inputs[0], inputs[1])
         if op_type == "Sub":
@@ -1045,7 +1049,7 @@ class ConstantFoldingPass(GraphPass):
         return None
 
     def _partial_fold(self, node: Node, known_values: dict) -> tuple:
-        """Implements the _partial_fold method or operation."""
+        """Implement the _partial_fold method or operation."""
         if node.op_type == "Add":
             if node.inputs[1] in known_values and np.all(known_values[node.inputs[1]] == 0):
                 (node.op_type, node.inputs) = ("Identity", [node.inputs[0]])
@@ -1128,5 +1132,5 @@ class ConstantFoldingPass(GraphPass):
 
 
 def constant_folding(graph: Graph, max_size_mb: float = 10.0) -> None:
-    """Implements the constant_folding method or operation."""
+    """Implement the constant_folding method or operation."""
     ConstantFoldingPass(max_size_mb).run(graph)

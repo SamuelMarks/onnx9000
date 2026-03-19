@@ -1,4 +1,4 @@
-"""Provides builder module functionality."""
+"""Provide builder module functionality."""
 
 from typing import Optional
 
@@ -7,7 +7,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 
 
 class SKLearnParser:
-    """Parses a Scikit-Learn object into an ONNX Graph using pure duck-typing."""
+    """Pars a Scikit-Learn object into an ONNX Graph using pure duck-typing."""
 
     def __init__(
         self,
@@ -15,7 +15,7 @@ class SKLearnParser:
         name: str = "sklearn_model",
         initial_types: Optional[list[tuple]] = None,
     ) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.model = model
         self.graph = Graph(name)
         self.initial_types = initial_types or [("input", DType.FLOAT32, ("N", "C"))]
@@ -25,7 +25,7 @@ class SKLearnParser:
         return type(obj).__name__ == type_name
 
     def parse(self) -> Graph:
-        """Executes the parse operation."""
+        """Execute the parse operation."""
         input_name = self.initial_types[0][0]
         self.graph.inputs.append(
             ValueInfo(input_name, self.initial_types[0][1], self.initial_types[0][2])
@@ -36,7 +36,7 @@ class SKLearnParser:
         return self.graph
 
     def _parse_estimator(self, estimator: object, input_names: list[str]) -> list[str]:
-        """Parses an estimator and returns its output names."""
+        """Pars an estimator and returns its output names."""
         est_type = type(estimator).__name__
         if est_type in ("GridSearchCV", "RandomizedSearchCV"):
             return self._parse_estimator(estimator.best_estimator_, input_names)

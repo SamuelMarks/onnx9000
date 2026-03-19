@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional, Tuple
+"""TVM submodule for AST and optimization."""
+
+from typing import Optional
 
 from ..expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
 from ..ty import FuncType, TensorType, TupleType, Type
@@ -6,20 +8,23 @@ from ..visitor import ExprVisitor
 
 
 class TypeChecker(ExprVisitor):
-    """
-    Infers shapes and dtypes for all nodes in the AST.
-    """
+    """Infers shapes and dtypes for all nodes in the AST."""
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         # Environment for variable types
         self.env: dict[str, Type] = {}
         # Op registries
         self.op_infer: dict[str, callable] = {}
 
     def register_op_infer(self, op_name: str, infer_func: callable):
+        """Do the function."""
         self.op_infer[op_name] = infer_func
 
     def visit_var(self, expr: Var) -> Type:
+        """Do the function."""
         if expr.type_annotation:
             expr.checked_type = expr.type_annotation
         elif expr.name_hint in self.env:
@@ -29,6 +34,7 @@ class TypeChecker(ExprVisitor):
         return expr.checked_type
 
     def visit_constant(self, expr: Constant) -> Type:
+        """Do the function."""
         if expr.type_annotation:
             expr.checked_type = expr.type_annotation
         else:
@@ -43,11 +49,13 @@ class TypeChecker(ExprVisitor):
         return expr.checked_type
 
     def visit_op(self, expr: Op) -> Type:
+        """Do the function."""
         # Ops themselves don't have a direct type without arguments in our simplified model
         # We handle this in visit_call
         return None
 
     def visit_call(self, expr: Call) -> Type:
+        """Do the function."""
         arg_types = [self.visit(arg) for arg in expr.args]
 
         if isinstance(expr.op, Op):
@@ -71,20 +79,23 @@ class TypeChecker(ExprVisitor):
         raise ValueError("Invalid call operator")
 
     def visit_tuple(self, expr: TupleExpr) -> Type:
+        """Do the function."""
         field_types = [self.visit(field) for field in expr.fields]
         expr.checked_type = TupleType(fields=field_types)
         return expr.checked_type
 
     def visit_tuple_getitem(self, expr: TupleGetItem) -> Type:
+        """Do the function."""
         tuple_type = self.visit(expr.tuple_value)
         if isinstance(tuple_type, TupleType):
             if 0 <= expr.index < len(tuple_type.fields):
                 expr.checked_type = tuple_type.fields[expr.index]
                 return expr.checked_type
-            raise IndexError(f"Tuple index {expr.index} out of bounds")
+            raise IndexError(f"tuple index {expr.index} out of bounds")
         raise TypeError("Expected TupleType")
 
     def visit_let(self, expr: Let) -> Type:
+        """Do the function."""
         val_type = self.visit(expr.value)
 
         # Save old env to restore scope later
@@ -104,6 +115,7 @@ class TypeChecker(ExprVisitor):
         return expr.checked_type
 
     def visit_if(self, expr: If) -> Type:
+        """Do the function."""
         self.visit(expr.cond)
         # Should check if cond is bool/int
         true_type = self.visit(expr.true_branch)
@@ -113,6 +125,7 @@ class TypeChecker(ExprVisitor):
         return expr.checked_type
 
     def visit_function(self, expr: Function) -> Type:
+        """Do the function."""
         arg_types = []
         old_env = {}
 

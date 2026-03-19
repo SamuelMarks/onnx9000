@@ -1,4 +1,4 @@
-"""Provides core module functionality."""
+"""Provide core module functionality."""
 
 import ctypes
 import ctypes.util
@@ -25,7 +25,7 @@ class DynamicLibrary:
     def __init__(
         self, name: str, versions=None, calling_convention="cdecl", use_cffi=False
     ) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.name = name
         self.lib = None
         self._lock = threading.Lock()
@@ -70,16 +70,14 @@ class DynamicLibrary:
             )
 
     def _load_lib(self, path, mode) -> None:
-        """Executes the load lib operation."""
+        """Execute the load lib operation."""
         if self.os == "Windows" and self.calling_convention == "stdcall":
             self.lib = ctypes.WinDLL(path)
         else:
             self.lib = ctypes.CDLL(path, mode=mode)
 
     def define(self, func_name: str, argtypes: list, restype: type):
-        """
-        Define explicit C function signatures (`argtypes`, `restype`) for safety.
-        """
+        """Define explicit C function signatures (`argtypes`, `restype`) for safety."""
         try:
             func = getattr(self.lib, func_name)
         except AttributeError:
@@ -98,28 +96,28 @@ class DynamicLibrary:
         func.restype = restype
 
         def wrapped_ffi_call(*args, **kwargs):
-            """Executes the wrapped ffi call operation."""
+            """Execute the wrapped ffi call operation."""
             return func(*args, **kwargs)
 
         self._func_cache[func_name] = wrapped_ffi_call
         return wrapped_ffi_call
 
     def __getattr__(self, name):
-        """Executes getattr magic method operation."""
+        """Execute getattr magic method operation."""
         if name in self._func_cache:
             return self._func_cache[name]
         return self.define(name, None, None)
 
 
 class HardwareContextHandle:
-    """
-    Manage Hardware Context handles (e.g. `cublasHandle_t`) safely across Threads.
+    """Manage Hardware Context handles (e.g. `cublasHandle_t`) safely across Threads.
+
     Destroy Hardware Context handles explicitly on `__del__` or Context Manager exit.
     Implement C-struct mappings natively in Python for hardware context handles.
     """
 
     def __init__(self, handle_ptr, destroy_func) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self._handle = ctypes.c_void_p(handle_ptr)
         self._destroy_func = destroy_func
         self._lock = threading.Lock()
@@ -127,38 +125,38 @@ class HardwareContextHandle:
 
     @classmethod
     def _cleanup(cls, handle, destroy_func) -> None:
-        """Executes the cleanup operation."""
+        """Execute the cleanup operation."""
         if handle and handle.value:
             destroy_func(handle)
             handle.value = None
 
     @property
     def ptr(self):
-        """Expose native pointers from Python integers (`ctypes.c_void_p`)"""
+        """Expose native pointers from Python integers (`ctypes.c_void_p`)."""
         return self._handle
 
     def __enter__(self):
-        """Executes enter magic method operation."""
+        """Execute enter magic method operation."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Executes exit magic method operation."""
+        """Execute exit magic method operation."""
         with self._lock:
             self._cleanup(self._handle, self._destroy_func)
 
 
 def map_python_string(s: str) -> ctypes.c_char_p:
-    """Map Python strings to `const char*` C-strings seamlessly"""
+    """Map Python strings to `const char*` C-strings seamlessly."""
     return ctypes.c_char_p(s.encode("utf-8"))
 
 
 def map_python_bool(b: bool) -> ctypes.c_int:
-    """Map Python `bool` to C `int` natively"""
+    """Map Python `bool` to C `int` natively."""
     return ctypes.c_int(1 if b else 0)
 
 
 def profile_ctypes_overhead():
-    """Profile `ctypes` call overhead to ensure it remains < 1 microsecond per op"""
+    """Profile `ctypes` call overhead to ensure it remains < 1 microsecond per op."""
     libc = ctypes.CDLL(ctypes.util.find_library("c") or "libc.so.6")
     libc.getpid.argtypes = []
     libc.getpid.restype = ctypes.c_int
@@ -172,8 +170,8 @@ def profile_ctypes_overhead():
 
 
 def get_cpu_features():
-    """
-    Execute `sysctl` or `machdep` natively on macOS to query specific CPU features.
+    """Execute `sysctl` or `machdep` natively on macOS to query specific CPU features.
+
     Query `/proc/cpuinfo` on Linux natively to identify AVX/AVX2/AVX512/NEON extensions.
     """
     features = {"avx": False, "avx2": False, "avx512": False, "neon": False}
@@ -203,7 +201,7 @@ def get_cpu_features():
 
 
 def get_cache_sizes():
-    """Identify L1/L2/L3 Cache sizes natively to optimize BLAS tiling logic"""
+    """Identify L1/L2/L3 Cache sizes natively to optimize BLAS tiling logic."""
     sizes = {"l1": 0, "l2": 0, "l3": 0}
     os_name = platform.system()
     if os_name == "Linux":

@@ -1,5 +1,6 @@
+"""Provide functionality for this module."""
+
 import math
-from typing import List
 
 from ..core.ir import Tensor
 
@@ -8,18 +9,21 @@ class LogitProcessor:
     """Base class for modifying logits during generation."""
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         return logits
 
 
 class TemperatureLogitProcessor(LogitProcessor):
-    """Applies temperature scaling to logits."""
+    """Apply temperature scaling to logits."""
 
     def __init__(self, temperature: float):
+        """Initialize the instance."""
         if temperature <= 0.0:
             raise ValueError("Temperature must be strictly positive.")
         self.temperature = temperature
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.temperature == 1.0 or logits.data is None:
             return logits
 
@@ -41,11 +45,13 @@ class TopKLogitProcessor(LogitProcessor):
     """Filters logits, retaining only the top K most likely tokens."""
 
     def __init__(self, top_k: int):
+        """Initialize the instance."""
         if top_k <= 0:
             raise ValueError("top_k must be strictly positive.")
         self.top_k = top_k
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if logits.data is None:
             return logits
 
@@ -85,14 +91,16 @@ class TopKLogitProcessor(LogitProcessor):
 
 
 class RepetitionPenaltyLogitProcessor(LogitProcessor):
-    """Applies a penalty to tokens that have already been generated."""
+    """Apply a penalty to tokens that have already been generated."""
 
     def __init__(self, penalty: float):
+        """Initialize the instance."""
         if penalty <= 0.0:
             raise ValueError("Penalty must be strictly positive.")
         self.penalty = penalty
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.penalty == 1.0 or logits.data is None or not input_ids:
             return logits
 
@@ -123,11 +131,13 @@ class MinPLogitProcessor(LogitProcessor):
     """Filters logits based on min-p sampling."""
 
     def __init__(self, min_p: float):
+        """Initialize the instance."""
         if min_p <= 0.0 or min_p > 1.0:
             raise ValueError("min_p must be strictly positive and <= 1.0")
         self.min_p = min_p
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.min_p >= 1.0 or logits.data is None:
             return logits
 
@@ -166,12 +176,14 @@ class MinPLogitProcessor(LogitProcessor):
 
 
 class PresencePenaltyLogitProcessor(LogitProcessor):
-    """Applies a presence penalty to tokens that have already been generated."""
+    """Apply a presence penalty to tokens that have already been generated."""
 
     def __init__(self, penalty: float):
+        """Initialize the instance."""
         self.penalty = penalty
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.penalty == 0.0 or logits.data is None or not input_ids:
             return logits
 
@@ -195,12 +207,14 @@ class PresencePenaltyLogitProcessor(LogitProcessor):
 
 
 class FrequencyPenaltyLogitProcessor(LogitProcessor):
-    """Applies a frequency penalty to tokens that have already been generated."""
+    """Apply a frequency penalty to tokens that have already been generated."""
 
     def __init__(self, penalty: float):
+        """Initialize the instance."""
         self.penalty = penalty
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.penalty == 0.0 or logits.data is None or not input_ids:
             return logits
 
@@ -229,9 +243,11 @@ class ForcedBOSLogitProcessor(LogitProcessor):
     """Forces the first generated token to be the BOS token."""
 
     def __init__(self, bos_token_id: int):
+        """Initialize the instance."""
         self.bos_token_id = bos_token_id
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if len(input_ids) == 0 and logits.data is not None:
             import struct
 
@@ -253,10 +269,12 @@ class ForcedEOSLogitProcessor(LogitProcessor):
     """Forces the token to be EOS when max_length is reached."""
 
     def __init__(self, max_length: int, eos_token_id: int):
+        """Initialize the instance."""
         self.max_length = max_length
         self.eos_token_id = eos_token_id
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if len(input_ids) == self.max_length - 1 and logits.data is not None:
             import struct
 
@@ -275,12 +293,14 @@ class ForcedEOSLogitProcessor(LogitProcessor):
 
 
 class LogitBiasProcessor(LogitProcessor):
-    """Applies custom biases to specific tokens."""
+    """Apply custom biases to specific tokens."""
 
     def __init__(self, bias_map: dict[int, float]):
+        """Initialize the instance."""
         self.bias_map = bias_map
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if not self.bias_map or logits.data is None:
             return logits
 
@@ -306,11 +326,13 @@ class NoRepeatNGramLogitProcessor(LogitProcessor):
     """Prevents generating n-grams that have already been generated."""
 
     def __init__(self, ngram_size: int):
+        """Initialize the instance."""
         if ngram_size <= 0:
             raise ValueError("ngram_size must be strictly positive")
         self.ngram_size = ngram_size
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.ngram_size == 0 or len(input_ids) < self.ngram_size - 1 or logits.data is None:
             return logits
 
@@ -347,9 +369,11 @@ class NoBadWordsLogitProcessor(LogitProcessor):
     """Prevents generating specific token sequences."""
 
     def __init__(self, bad_words_ids: list[list[int]]):
+        """Initialize the instance."""
         self.bad_words_ids = bad_words_ids
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if not self.bad_words_ids or logits.data is None:
             return logits
 
@@ -388,9 +412,11 @@ class AllowedWordsLogitProcessor(LogitProcessor):
     """Restricts the generated tokens to a specific set."""
 
     def __init__(self, allowed_token_ids: list[int]):
+        """Initialize the instance."""
         self.allowed_token_ids = set(allowed_token_ids)
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if not self.allowed_token_ids or logits.data is None:
             return logits
 

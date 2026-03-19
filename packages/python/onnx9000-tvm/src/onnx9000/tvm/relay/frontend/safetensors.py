@@ -1,3 +1,6 @@
+"""TVM submodule for AST and optimization."""
+
+
 def load_safetensors_weights(path: str) -> dict:
     """Pass 347: Integrate with safetensors for efficient AOT weight loading."""
     import json

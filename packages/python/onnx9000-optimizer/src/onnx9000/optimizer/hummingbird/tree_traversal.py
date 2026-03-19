@@ -14,7 +14,7 @@ class TreeTraversalCompiler:
     """TreeTraversal Strategy compiler."""
 
     def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.tree = tree
         self.batch_size = batch_size
         self.max_depth = int(analyze_tree_depth(tree)["max"])
@@ -117,7 +117,7 @@ class TreeTraversalCompiler:
         )
 
     def _build_1d_array(self, data: list) -> Tensor:
-        """Executes the build 1d array operation."""
+        """Execute the build 1d array operation."""
         name = f"arr_{id(data)}"
         return Tensor(name=name, shape=(len(data),), is_initializer=True)
 
@@ -130,6 +130,7 @@ def compile_forest_tree_traversal(
     g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N"
 ) -> None:
     """Implement parallel traversal of all trees in an ensemble using batched Gathers.
+
     Pre-allocate output tensors for traversal aggregations.
     """
     pass

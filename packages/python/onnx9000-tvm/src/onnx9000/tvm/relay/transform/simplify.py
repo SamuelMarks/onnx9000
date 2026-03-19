@@ -1,16 +1,19 @@
+"""TVM submodule for AST and optimization."""
+
 from ..expr import Call, Constant, Expr, Op
 from ..visitor import ExprMutator
 
 
 class AlgebraicSimplifier(ExprMutator):
-    """
-    Simplifies algebraic expressions:
+    """Simplifies algebraic expressions.
+
     x * 1 -> x
     x * 0 -> 0
     x + 0 -> x
     """
 
     def is_constant_value(self, expr: Expr, val: float) -> bool:
+        """Do the function."""
         if isinstance(expr, Constant):
             # Try to evaluate if a constant is all given val
             # For simplicity, if it's a scalar:
@@ -21,6 +24,7 @@ class AlgebraicSimplifier(ExprMutator):
         return False
 
     def visit_call(self, expr: Call) -> Expr:
+        """Do the function."""
         new_op = self.visit(expr.op)
         new_args = [self.visit(arg) for arg in expr.args]
 

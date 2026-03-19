@@ -81,3 +81,9 @@ typedoc.out.json
 docs/onnx9000.*.rst
 docs/js-api_toc.rst
 dir/
+package-lock.json
+test/
+
+# Temp Opt reports
+*_report.html
+*_schedule.json

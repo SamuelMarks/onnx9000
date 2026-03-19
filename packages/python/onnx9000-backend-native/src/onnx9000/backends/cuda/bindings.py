@@ -26,17 +26,17 @@ except Exception as e:
 
 
 def is_cuda_available() -> bool:
-    """Executes the is cuda available operation."""
+    """Execute the is cuda available operation."""
     return _cuda_lib is not None
 
 
 def is_cublas_available() -> bool:
-    """Executes the is cublas available operation."""
+    """Execute the is cublas available operation."""
     return _cublas_lib is not None
 
 
 def is_cudnn_available() -> bool:
-    """Executes the is cudnn available operation."""
+    """Execute the is cudnn available operation."""
     return _cudnn_lib is not None
 
 
@@ -49,7 +49,7 @@ cudnnFilterDescriptor_t = ctypes.c_void_p
 
 
 def _register_cuda_api(lib) -> None:
-    """Executes the  register cuda api operation."""
+    """Execute the  register cuda api operation."""
     if lib is None:
         return
     lib.cuInit.argtypes = [ctypes.c_uint]
@@ -81,7 +81,7 @@ def _register_cuda_api(lib) -> None:
 
 
 def _register_cublas_api(lib) -> None:
-    """Executes the  register cublas api operation."""
+    """Execute the  register cublas api operation."""
     if lib is None:
         return
     lib.cublasCreate_v2.argtypes = [ctypes.POINTER(cublasHandle_t)]
@@ -136,7 +136,7 @@ def _register_cublas_api(lib) -> None:
 
 
 def _register_cudnn_api(lib) -> None:
-    """Executes the  register cudnn api operation."""
+    """Execute the  register cudnn api operation."""
     if lib is None:
         return
     lib.cudnnCreate.argtypes = [ctypes.POINTER(cudnnHandle_t)]

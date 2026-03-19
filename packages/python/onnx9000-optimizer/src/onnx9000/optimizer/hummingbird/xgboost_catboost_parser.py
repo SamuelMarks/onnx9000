@@ -22,7 +22,7 @@ def parse_xgboost_dump(dump: list[str]) -> list[TreeAbstractions]:
 
 
 def _traverse_xgb_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
-    """Executes the traverse xgb tree operation."""
+    """Execute the traverse xgb tree operation."""
     if "split" in node_dict:  # Internal node
         feature_name = node_dict["split"]
         # In a real impl, we map feature name to integer index
@@ -75,7 +75,7 @@ def parse_xgb_ranker(estimator: Any) -> list[TreeAbstractions]:
 
 
 def handle_xgb_objectives(g: Graph, objective: str) -> None:
-    """Map XGBoost objectives (binary:logistic, multi:softmax, multi:softprob, count:poisson)"""
+    """Map XGBoost objectives (binary:logistic, multi:softmax, multi:softprob, count:poisson)."""
     if objective == "binary:logistic":
         g.nodes.append(Node("Sigmoid", inputs=["raw_scores"], outputs=["probabilities"]))
     elif objective == "multi:softprob":
@@ -88,6 +88,7 @@ def handle_xgb_objectives(g: Graph, objective: str) -> None:
 
 def parse_catboost_classifier(estimator: Any) -> list[TreeAbstractions]:
     """Parse CatBoostClassifier directly from Python memory.
+
     Leverage CatBoost Oblivious Trees natively mapping to PerfectTree Strategy.
     """
     return []

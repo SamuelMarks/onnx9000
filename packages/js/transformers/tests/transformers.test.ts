@@ -3,13 +3,12 @@ import * as t from '../src/index.js';
 
 describe('Transformers Exports', () => {
   it('should export pipelines', async () => {
-    const pipe = t.pipeline('text-generation');
+    const pipe = await t.pipeline('text-generation');
     expect(pipe.task).toBe('text-generation');
-    const res = await pipe.run('hello');
+    const res = await pipe('hello');
     expect(res).toEqual([{ generated_text: 'hello [GENERATED]' }]);
 
-    const badPipe = t.pipeline('unknown');
-    await expect(badPipe.run('hi')).rejects.toThrow('Unsupported task: unknown');
+    await expect(t.pipeline('unknown')).rejects.toThrow('Unsupported task: unknown');
   });
 
   it('should export models', async () => {

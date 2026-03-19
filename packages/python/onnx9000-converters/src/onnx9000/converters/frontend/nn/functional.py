@@ -6,32 +6,32 @@ from onnx9000.converters.frontend.tensor import Tensor
 
 
 def relu(input: Tensor) -> Tensor:
-    """Implements the relu method."""
+    """Implement the relu method."""
     return input.relu()
 
 
 def sigmoid(input: Tensor) -> Tensor:
-    """Implements the sigmoid method."""
+    """Implement the sigmoid method."""
     return input.sigmoid()
 
 
 def tanh(input: Tensor) -> Tensor:
-    """Implements the tanh method."""
+    """Implement the tanh method."""
     return input.tanh()
 
 
 def gelu(input: Tensor) -> Tensor:
-    """Implements the gelu method."""
+    """Implement the gelu method."""
     return input.gelu()
 
 
 def softmax(input: Tensor, dim: int = -1) -> Tensor:
-    """Implements the softmax method."""
+    """Implement the softmax method."""
     return input.softmax(dim)
 
 
 def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tensor:
-    """Implements the linear method."""
+    """Implement the linear method."""
     res = input @ weight.T
     if bias is not None:
         res = res + bias
@@ -47,11 +47,11 @@ def conv2d(
     dilation: Any = 1,
     groups: int = 1,
 ) -> Tensor:
-    """Implements the conv2d method."""
+    """Implement the conv2d method."""
     from onnx9000.converters.frontend.utils import record_op
 
     def _pair(x):
-        """Implements the _pair method."""
+        """Implement the _pair method."""
         return (x, x) if isinstance(x, int) else x
 
     attrs = {
@@ -68,7 +68,7 @@ def conv2d(
 
 
 def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0.0) -> Tensor:
-    """Implements the pad method."""
+    """Implement the pad method."""
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
@@ -99,7 +99,7 @@ def interpolate(
     mode: str = "nearest",
     align_corners: Optional[bool] = None,
 ) -> Tensor:
-    """Implements the interpolate method."""
+    """Implement the interpolate method."""
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
@@ -128,7 +128,7 @@ def interpolate(
 
 
 def one_hot(tensor: Tensor, num_classes: int = -1) -> Tensor:
-    """Implements the one_hot method."""
+    """Implement the one_hot method."""
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op

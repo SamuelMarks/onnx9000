@@ -8,7 +8,8 @@ dependencies = [
     "onnx9000-backend-native",
     "onnx9000-optimizer",
     "onnx9000-converters",
-    "onnx9000-toolkit"
+    "onnx9000-toolkit",
+    "onnx9000-optimum",
 ]
 
 [project.scripts]
@@ -24,3 +25,4 @@ onnx9000-backend-native = { workspace = true }
 onnx9000-optimizer = { workspace = true }
 onnx9000-converters = { workspace = true }
 onnx9000-toolkit = { workspace = true }
+onnx9000-optimum = { workspace = true }

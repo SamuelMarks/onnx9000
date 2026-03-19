@@ -1,1 +1,1 @@
-"""Provides backends module functionality."""
+"""Provide backends module functionality."""

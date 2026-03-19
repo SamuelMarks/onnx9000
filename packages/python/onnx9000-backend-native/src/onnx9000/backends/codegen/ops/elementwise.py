@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -18,7 +17,7 @@ def _generate_unary_op(
     op_expr: str,
     vdsp_func: Optional[str] = None,
 ) -> str:
-    """Implements the _generate_unary_op method or operation."""
+    """Implement the _generate_unary_op method or operation."""
     inp = generator_context.get_tensor_name(node.inputs[0])
     out = generator_context.get_tensor_name(node.outputs[0])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
@@ -58,7 +57,7 @@ def _generate_unary_op(
 
 @registry.register_op("Relu")
 def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_relu method or operation."""
+    """Implement the generate_relu method or operation."""
     return _generate_unary_op(
         node, generator_context, "std::max(static_cast<float>(0.0f), static_cast<float>({inp}))"
     )
@@ -170,13 +169,13 @@ def generate_hard_swish(
 
 @registry.register_op("Sigmoid")
 def generate_sigmoid(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sigmoid method or operation."""
+    """Implement the generate_sigmoid method or operation."""
     return _generate_unary_op(node, generator_context, "1.0f / (1.0f + std::exp(-{inp}))")
 
 
 @registry.register_op("Tanh")
 def generate_tanh(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_tanh method or operation."""
+    """Implement the generate_tanh method or operation."""
     return _generate_unary_op(node, generator_context, "std::tanh({inp})", vdsp_func="vvtanhf")
 
 
@@ -187,7 +186,7 @@ def _generate_binary_op(
     vdsp_func: Optional[str] = None,
     is_function: bool = False,
 ) -> str:
-    """Implements the _generate_binary_op method or operation."""
+    """Implement the _generate_binary_op method or operation."""
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     out = generator_context.get_tensor_name(node.outputs[0])
@@ -221,7 +220,7 @@ def _generate_binary_op(
 def _generate_ternary_op(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator", op_expr: str
 ) -> str:
-    """Implements the _generate_ternary_op method or operation."""
+    """Implement the _generate_ternary_op method or operation."""
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     inp3 = generator_context.get_tensor_name(node.inputs[2])
@@ -255,23 +254,23 @@ def generate_prelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 @registry.register_op("Add")
 def generate_add(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_add method or operation."""
+    """Implement the generate_add method or operation."""
     return _generate_binary_op(node, generator_context, "+", vdsp_func="vDSP_vadd")
 
 
 @registry.register_op("Sub")
 def generate_sub(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sub method or operation."""
+    """Implement the generate_sub method or operation."""
     return _generate_binary_op(node, generator_context, "-")
 
 
 @registry.register_op("Mul")
 def generate_mul(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_mul method or operation."""
+    """Implement the generate_mul method or operation."""
     return _generate_binary_op(node, generator_context, "*", vdsp_func="vDSP_vmul")
 
 
 @registry.register_op("Div")
 def generate_div(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_div method or operation."""
+    """Implement the generate_div method or operation."""
     return _generate_binary_op(node, generator_context, "/", vdsp_func="vDSP_vdiv")

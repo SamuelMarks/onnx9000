@@ -1,5 +1,4 @@
-"""
-C++ Compiler Utilities
+"""C++ Compiler Utilities.
 
 Provides functionality to compile generated C++ code into shared libraries
 and load them dynamically into Python via ctypes or pybind11.
@@ -16,8 +15,7 @@ import tempfile
 def compile_cpp(
     cpp_code: str, output_path: str = None, use_pybind: bool = True, extra_flags: list[str] = None
 ) -> str:
-    """
-    Compiles C++ source code into a shared library.
+    """Compiles C++ source code into a shared library.
 
     Args:
         cpp_code: The generated C++ source code.
@@ -27,6 +25,7 @@ def compile_cpp(
 
     Returns:
         The path to the compiled shared library.
+
     """
     if extra_flags is None:
         extra_flags = []
@@ -104,9 +103,7 @@ def compile_wasm(
     use_pthreads: bool = False,
     emit_tsd: bool = False,
 ) -> str:
-    """
-    Compiles C++ source code into a WebAssembly payload (.wasm) using Emscripten.
-    """
+    """Compiles C++ source code into a WebAssembly payload (.wasm) using Emscripten."""
     if extra_flags is None:
         extra_flags = []
 
@@ -206,9 +203,7 @@ Module.freeBuffer = function(ptr) {
 
 
 def load_pybind_module(so_path: str, module_name: str = "_model"):
-    """
-    Dynamically loads a compiled Pybind11 shared library.
-    """
+    """Dynamically loads a compiled Pybind11 shared library."""
     spec = importlib.util.spec_from_file_location(module_name, so_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Could not load module {module_name} from {so_path}")
@@ -218,18 +213,14 @@ def load_pybind_module(so_path: str, module_name: str = "_model"):
 
 
 def load_ctypes_library(so_path: str):
-    """
-    Dynamically loads a compiled C++ shared library via ctypes.
-    """
+    """Dynamically loads a compiled C++ shared library via ctypes."""
     return ctypes.cdll.LoadLibrary(so_path)
 
 
 def compile_static_lib(
     cpp_code: str, output_path: str = None, extra_flags: list[str] = None
 ) -> str:
-    """
-    Compiles C++ source code into a static library (.a / .lib).
-    """
+    """Compiles C++ source code into a static library (.a / .lib)."""
     if extra_flags is None:
         extra_flags = []
 

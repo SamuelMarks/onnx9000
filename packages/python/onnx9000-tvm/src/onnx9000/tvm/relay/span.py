@@ -1,3 +1,5 @@
+"""TVM submodule for AST and optimization."""
+
 from dataclasses import dataclass
 from typing import Optional
 
@@ -14,6 +16,6 @@ class Span:
 
 
 def set_span(expr, span: Span):
-    """Sets the span of an expression for source map tracking."""
+    """Set the span of an expression for source map tracking."""
     expr.span = span
     return expr

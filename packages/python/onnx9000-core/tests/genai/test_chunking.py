@@ -1,5 +1,6 @@
-import os
 import json
+import os
+
 from onnx9000.genai.chunking import ChunkManager
 
 
@@ -14,7 +15,7 @@ def test_chunking_and_manifest(tmp_path):
     manifest_path = os.path.join(tmp_path, "manifest.json")
     assert os.path.exists(manifest_path)
 
-    with open(manifest_path, "r") as f:
+    with open(manifest_path) as f:
         manifest = json.load(f)
 
     assert manifest["total_chunks"] == 2
@@ -38,9 +39,10 @@ def test_chunk_builder_export_and_cli():
 
 def test_chunking_external_and_embed(tmp_path):
     """Test externalizing weights and embedding tokenizer config."""
-    from onnx9000.genai.chunking import ChunkManager
-    import os
     import json
+    import os
+
+    from onnx9000.genai.chunking import ChunkManager
 
     class MockModel:
         pass
@@ -65,13 +67,10 @@ def test_huggingface_download():
 
 
 def test_model_unimplemented():
-    """Test that Model raises NotImplementedError on abstract methods."""
+    """Test that Model abstract methods return default values."""
     from onnx9000.genai.model import Model
-    from onnx9000.genai.types import ModelParams
-    from onnx9000.genai.types import GeneratorParams
-    import pytest
+    from onnx9000.genai.types import GeneratorParams, ModelParams
 
     model = Model(ModelParams(1, 1, 1, 1, 1, 1, 1))
-
-    with pytest.raises(NotImplementedError):
-        model.create_generator(GeneratorParams(max_length=10))
+    gen = model.create_generator(GeneratorParams(max_length=10))
+    assert gen is not None

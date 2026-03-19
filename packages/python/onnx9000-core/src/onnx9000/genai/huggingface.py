@@ -1,3 +1,6 @@
+"""Provide functionality for this module."""
+
+
 class HuggingFaceIntegration:
     """Integrations for downloading directly from HuggingFace Hub."""
 
@@ -19,6 +22,7 @@ class HuggingFaceIntegration:
     @staticmethod
     def load_generation_config(config_path: str) -> dict:
         # Support standard HuggingFace generation_config.json loading
+        """Execute the load_generation_config operation."""
         import json
 
         with open(config_path) as f:
@@ -27,6 +31,7 @@ class HuggingFaceIntegration:
     @staticmethod
     def load_metadata_from_config(config_path: str) -> dict:
         # Support consuming metadata directly from HuggingFace config.json
+        """Execute the load_metadata_from_config operation."""
         import json
 
         with open(config_path) as f:

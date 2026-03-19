@@ -1,3 +1,5 @@
+"""TVM submodule for AST and optimization."""
+
 from ...tir.stmt import Stmt
 from ...tir.visitor import StmtVisitor
 
@@ -6,6 +8,9 @@ class WASMEmitter(StmtVisitor):
     """Pass 211: Build WASM AST generator module."""
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         super().__init__()
         # 212: Map TIR functions to WASM functions.
         # 213: Map TIR memory allocations to WASM linear memory segments.
@@ -31,6 +36,7 @@ class WASMEmitter(StmtVisitor):
         # 249: Integrate with JS garbage collection via FinalizationRegistry.
 
     def emit(self, stmt: Stmt) -> bytes:
+        """Do the function."""
         return b"\x00asm"
 
 

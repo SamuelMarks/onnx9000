@@ -11,8 +11,8 @@ class MemoryMapError(Onnx9000Error):
 
 
 def mmap_tensor_data(file_path: Union[str, Path], offset: int, length: int) -> memoryview:
-    """
-    Creates a zero-copy memoryview of a specific chunk of a file.
+    """Create a zero-copy memoryview of a specific chunk of a file.
+
     Ideal for loading large tensor initializers without loading the whole file into RAM.
     """
     path = Path(file_path).resolve()

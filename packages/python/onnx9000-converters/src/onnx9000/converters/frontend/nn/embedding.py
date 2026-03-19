@@ -17,7 +17,7 @@ class Embedding(Module):
         padding_idx: Optional[int] = None,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.num_embeddings = num_embeddings
         self.embedding_dim = embedding_dim
@@ -25,7 +25,7 @@ class Embedding(Module):
         self.weight = Parameter((num_embeddings, embedding_dim), dtype, "weight")
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("Gather", [self.weight, input], {"axis": 0})

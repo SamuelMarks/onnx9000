@@ -1,4 +1,4 @@
-from typing import Dict, List, Set, Tuple
+"""TVM submodule for AST and optimization."""
 
 from ..analysis import topological_sort
 from ..expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
@@ -6,17 +6,19 @@ from ..ty import TensorType, TupleType
 
 
 class MemoryPlanner:
-    """
-    Simulates a linear memory allocator for intermediate activations.
-    """
+    """Simulates a linear memory allocator for intermediate activations."""
 
     def __init__(self, alignment: int = 16):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.alignment = alignment
         self.offsets: dict[Expr, int] = {}
         self.sizes: dict[Expr, int] = {}
         self.total_size = 0
 
     def _get_dtype_size(self, dtype: str) -> int:
+        """Do the function."""
         if dtype in ("float32", "int32", "uint32"):
             return 4
         if dtype in ("float64", "int64", "uint64"):
@@ -28,9 +30,11 @@ class MemoryPlanner:
         return 4  # Default fallback
 
     def _align(self, size: int) -> int:
+        """Do the function."""
         return (size + self.alignment - 1) & ~(self.alignment - 1)
 
     def _compute_size(self, ty: TensorType) -> int:
+        """Do the function."""
         count = 1
         for dim in ty.shape:
             if isinstance(dim, str):
@@ -41,8 +45,8 @@ class MemoryPlanner:
         return self._align(count * self._get_dtype_size(ty.dtype))
 
     def plan(self, expr: Expr) -> tuple[int, dict[Expr, int]]:
-        """
-        Plans memory and returns (total_size, offset_map)
+        """Plans memory and returns (total_size, offset_map).
+
         Currently implements a simple bump allocator without reuse.
         """
         nodes = topological_sort(expr)
@@ -62,5 +66,5 @@ class MemoryPlanner:
 
 
 def plan_memory(expr: Expr) -> tuple[int, dict[Expr, int]]:
-    """Performs explicit memory planning."""
+    """Perform explicit memory planning."""
     return MemoryPlanner().plan(expr)

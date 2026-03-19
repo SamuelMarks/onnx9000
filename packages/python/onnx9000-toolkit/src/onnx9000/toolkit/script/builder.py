@@ -14,7 +14,7 @@ class GraphBuilder:
     """Builder class for explicit Top-Down Graph Construction."""
 
     def __init__(self, name: str = "Graph") -> None:
-        """Implementation of __init__."""
+        """Implement __init__."""
         self.name = name
         self.nodes: list[Node] = []
         self.inputs: list[dict[str, Any]] = []
@@ -24,56 +24,56 @@ class GraphBuilder:
         self.metadata: dict[str, str] = {}
 
     def __enter__(self) -> "GraphBuilder":
-        """Implementation of __enter__."""
+        """Implement __enter__."""
         set_active_builder(self)
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Implementation of __exit__."""
+        """Implement __exit__."""
         pop_active_builder()
 
     def set_metadata(self, doc_string: str = "", domain: str = "", version: int = 1) -> None:
-        """Implementation of set_metadata."""
+        """Implement set_metadata."""
         self.metadata["doc_string"] = doc_string
         self.metadata["domain"] = domain
         self.metadata["version"] = str(version)
 
     def add_node(self, node: Node) -> None:
-        """Implementation of add_node."""
+        """Implement add_node."""
         if not node.name:
             node.name = f"{node.op_type}_{len(self.nodes)}"
         self.nodes.append(node)
         self.node_by_name[node.name] = node
 
     def add_input(self, name: str, dtype: DType, shape: tuple[Union[int, str], ...]) -> Var:
-        """Implementation of add_input."""
+        """Implement add_input."""
         self.inputs.append({"name": name, "dtype": dtype, "shape": shape})
         return Var(name=name)
 
     def add_output(self, var: Var, name: Optional[str] = None) -> None:
-        """Implementation of add_output."""
+        """Implement add_output."""
         if name is not None:
             var.name = name
         self.outputs.append({"name": var.name})
 
     def add_initializer(self, name: str, array: np.ndarray) -> Var:
-        """Implementation of add_initializer."""
+        """Implement add_initializer."""
         self.initializers[name] = array
         return Var(name=name)
 
     def get_node(self, name: str) -> Optional[Node]:
-        """Implementation of get_node."""
+        """Implement get_node."""
         return self.node_by_name.get(name)
 
     def delete(self, node: Node) -> None:
-        """Implementation of delete."""
+        """Implement delete."""
         if node in self.nodes:
             self.nodes.remove(node)
             if node.name in self.node_by_name:
                 del self.node_by_name[node.name]
 
     def replace(self, old_node: Node, new_node: Node) -> None:
-        """Implementation of replace."""
+        """Implement replace."""
         if old_node in self.nodes:
             idx = self.nodes.index(old_node)
             self.nodes[idx] = new_node
@@ -84,12 +84,12 @@ class GraphBuilder:
             self.node_by_name[new_node.name] = new_node
 
     def replace_input(self, node: Node, old_var: Var, new_var: Var) -> None:
-        """Implementation of replace_input."""
+        """Implement replace_input."""
         if node in self.nodes:
             node.inputs = [new_var.name if x == old_var.name else x for x in node.inputs]
 
     def merge(self, other_builder: "GraphBuilder") -> None:
-        """Implementation of merge."""
+        """Implement merge."""
         for node in other_builder.nodes:
             self.add_node(node)
         self.inputs.extend(other_builder.inputs)
@@ -97,7 +97,7 @@ class GraphBuilder:
         self.initializers.update(other_builder.initializers)
 
     def rename_all(self, prefix: str) -> None:
-        """Utility to rename all nodes and tensors in a graph with a specific prefix."""
+        """Use utility to rename all nodes and tensors in a graph with a specific prefix."""
         for inp in self.inputs:
             inp["name"] = f"{prefix}_{inp['name']}"
         for out in self.outputs:
@@ -198,19 +198,19 @@ class GraphBuilder:
         return sub_builder
 
     def If(self, cond: Var, num_outputs: int = 1) -> Any:
-        """Implementation of If."""
+        """Implement If."""
         from onnx9000.toolkit.script.control_flow import IfContextManager
 
         return IfContextManager(self, cond, num_outputs)
 
     def Loop(self, max_trip_count: Var, cond: Var, num_outputs: int = 1) -> Any:
-        """Implementation of Loop."""
+        """Implement Loop."""
         from onnx9000.toolkit.script.control_flow import LoopContextManager
 
         return LoopContextManager(self, max_trip_count, cond, num_outputs)
 
     def build(self) -> Graph:
-        """Implementation of build."""
+        """Implement build."""
         graph = Graph(self.name)
         for inp in self.inputs:
             graph.inputs.append(inp["name"])
@@ -229,7 +229,7 @@ class GraphBuilder:
         return graph
 
     def to_onnx(self) -> pb.ModelProto:
-        """Serializes GraphBuilder directly to a ModelProto using the lightweight pb2 module."""
+        """Serialize GraphBuilder directly to a ModelProto using the lightweight pb2 module."""
         graph_proto = pb.GraphProto()
         graph_proto.name = self.name
         for inp in self.inputs:
@@ -352,7 +352,7 @@ class GraphBuilder:
             node_to_deps[node.name] = deps
 
         def visit(n: Node) -> None:
-            """Implementation of visit."""
+            """Implement visit."""
             if n.name in path:
                 raise ValueError(f"Cyclic dependency detected involving node {n.name}")
             if n.name in visited:

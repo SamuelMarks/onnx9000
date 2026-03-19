@@ -6,8 +6,8 @@ from onnx9000.core.ir import Graph
 
 
 def hash_graph(graph: Graph) -> str:
-    """
-    Computes a SHA-256 hash over the structural content of the Graph and its weights.
+    """Compute a SHA-256 hash over the structural content of the Graph and its weights.
+
     Used for cache key generation.
     """
     hasher = hashlib.sha256()

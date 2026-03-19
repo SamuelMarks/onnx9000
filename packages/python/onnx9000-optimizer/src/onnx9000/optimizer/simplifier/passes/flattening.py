@@ -2,5 +2,5 @@
 
 
 def flatten_subgraphs(graph) -> bool:
-    """Implements the flatten_subgraphs method or operation."""
+    """Implement the flatten_subgraphs method or operation."""
     return False

@@ -11,7 +11,7 @@ class Linear(Module):
     def __init__(
         self, in_features: int, out_features: int, bias: bool = True, dtype: DType = DType.FLOAT32
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -22,7 +22,7 @@ class Linear(Module):
             self.register_parameter("bias", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         res = input @ self.weight.T
         if self.bias is not None:
             res = res + self.bias

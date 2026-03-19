@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -12,7 +11,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("MatMul")
 def generate_matmul(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_matmul method or operation."""
+    """Implement the generate_matmul method or operation."""
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     out = generator_context.get_tensor_name(node.outputs[0])
@@ -29,7 +28,7 @@ def generate_matmul(node: Node, generator_context: "onnx9000.backends.codegen.Ge
 
 @registry.register_op("Gemm")
 def generate_gemm(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gemm method or operation."""
+    """Implement the generate_gemm method or operation."""
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     has_bias = len(node.inputs) > 2

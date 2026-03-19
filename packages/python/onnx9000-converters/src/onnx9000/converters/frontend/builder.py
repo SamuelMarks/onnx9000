@@ -1,5 +1,4 @@
-"""
-Frontend Sub-Package
+"""Frontend Sub-Package.
 
 Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
@@ -15,7 +14,7 @@ class GraphBuilder:
     """Tracks a sequence of nodes for a given graph."""
 
     def __init__(self, name: str = "Graph") -> None:
-        """Initializes the frontend builder or trace context."""
+        """Initialize the frontend builder or trace context."""
         self.name = name
         self.nodes: list[Node] = []
         self.inputs: list[Tensor] = []
@@ -75,7 +74,7 @@ _tls = threading.local()
 
 
 def get_active_builder() -> Optional[GraphBuilder]:
-    """Retrieves the active graph builder from thread local storage."""
+    """Retrieve the active graph builder from thread local storage."""
     return getattr(_tls, "builder", None)
 
 
@@ -83,16 +82,16 @@ class Tracing:
     """Context manager for tracing operations into a GraphBuilder."""
 
     def __init__(self, builder: Optional[GraphBuilder] = None) -> None:
-        """Initializes the frontend builder or trace context."""
+        """Initialize the frontend builder or trace context."""
         self.builder = builder or GraphBuilder()
         self.prev_builder: Optional[GraphBuilder] = None
 
     def __enter__(self) -> GraphBuilder:
-        """Implements the __enter__ method."""
+        """Implement the __enter__ method."""
         self.prev_builder = get_active_builder()
         _tls.builder = self.builder
         return self.builder
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Implements the __exit__ method."""
+        """Implement the __exit__ method."""
         _tls.builder = self.prev_builder

@@ -8,28 +8,28 @@ from onnx9000.core.dtypes import DType
 
 
 def tensor(data, dtype=None):
-    """Implements the tensor method or operation."""
+    """Implement the tensor method or operation."""
     if dtype is None:
         return Tensor(data=data)
     return Tensor(data=data, dtype=dtype)
 
 
 def zeros(*shape, dtype=DType.FLOAT32):
-    """Implements the zeros method or operation."""
+    """Implement the zeros method or operation."""
     import numpy as np
 
     return Tensor(shape=shape, dtype=dtype, data=np.zeros(shape, dtype=np.float32))
 
 
 def ones(*shape, dtype=DType.FLOAT32):
-    """Implements the ones method or operation."""
+    """Implement the ones method or operation."""
     import numpy as np
 
     return Tensor(shape=shape, dtype=dtype, data=np.ones(shape, dtype=np.float32))
 
 
 def randn(*shape, dtype=DType.FLOAT32):
-    """Implements the randn method or operation."""
+    """Implement the randn method or operation."""
     import numpy as np
 
     return Tensor(shape=shape, dtype=dtype, data=np.random.randn(*shape).astype(np.float32))
@@ -47,14 +47,14 @@ class jit:
 
     @staticmethod
     def trace(*args, **kwargs):
-        """Implements the trace method or operation."""
+        """Implement the trace method or operation."""
         if len(args) == 2:
             return trace(args[0], args[1])
         return trace(*args, **kwargs)
 
     @staticmethod
     def script(*args, **kwargs):
-        """Implements the script method or operation."""
+        """Implement the script method or operation."""
         return script(*args, **kwargs)
 
 
@@ -63,7 +63,7 @@ class onnx:
 
     @staticmethod
     def export(*args, **kwargs):
-        """Implements the export method or operation."""
+        """Implement the export method or operation."""
         return export(*args, **kwargs)
 
 

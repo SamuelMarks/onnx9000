@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph
 
 
 class FusionOptimizer:
-    """Implements all pattern matching fusions natively."""
+    """Implement all pattern matching fusions natively."""
 
     @staticmethod
     def fuse_conv_relu(graph: Graph) -> None:

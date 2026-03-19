@@ -130,13 +130,13 @@ class CPUMemoryPlanner:
             raise RuntimeError(f"Tensor {name} not found.")
 
     def add_ref(self, name: str) -> None:
-        """Executes the add ref operation."""
+        """Execute the add ref operation."""
         with self._lock:
             if name in self.ref_counts:
                 self.ref_counts[name] += 1
 
     def release_ref(self, name: str) -> None:
-        """Executes the release ref operation."""
+        """Execute the release ref operation."""
         with self._lock:
             if name in self.ref_counts:
                 self.ref_counts[name] -= 1

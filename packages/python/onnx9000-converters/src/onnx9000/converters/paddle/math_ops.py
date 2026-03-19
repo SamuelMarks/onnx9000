@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""PaddlePaddle converter operations and graph builders."""
 
 import math
 from typing import Callable
@@ -8,7 +8,7 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def _map_log2(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map log2 operation."""
+    """Execute the  map log2 operation."""
     inputs = node.inputs.get("X", [])
     log_x = builder.make_node("Log", inputs, {}, f"{node.name}_log")[0]
     log_2_const = builder.add_constant(f"{node.name}_log2_const", math.log(2.0), 1, [])
@@ -16,7 +16,7 @@ def _map_log2(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
 
 
 def _map_log10(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map log10 operation."""
+    """Execute the  map log10 operation."""
     inputs = node.inputs.get("X", [])
     log_x = builder.make_node("Log", inputs, {}, f"{node.name}_log")[0]
     log_10_const = builder.add_constant(f"{node.name}_log10_const", math.log(10.0), 1, [])
@@ -24,7 +24,7 @@ def _map_log10(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
 
 
 def _map_clip(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map clip operation."""
+    """Execute the  map clip operation."""
     inputs = node.inputs.get("X", [])
     min_val = builder.extract_attr(node, "min", -3.402823466e38)
     max_val = builder.extract_attr(node, "max", 3.402823466e38)
@@ -35,14 +35,14 @@ def _map_clip(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     return builder.make_node("Clip", clip_inputs, {}, node.name)
 
 
-"Module docstring."
+"Paddle converter routines."
 
 
 def _map_simple_binary(op_type: str) -> Callable:
-    """Executes the  map simple binary operation."""
+    """Execute the  map simple binary operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = []
         if "X" in node.inputs:
             inputs.extend(node.inputs["X"])
@@ -54,10 +54,10 @@ def _map_simple_binary(op_type: str) -> Callable:
 
 
 def _map_simple_unary(op_type: str) -> Callable:
-    """Executes the  map simple unary operation."""
+    """Execute the  map simple unary operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = node.inputs.get("X", [])
         return builder.make_node(op_type, inputs, {}, node.name)
 
@@ -65,7 +65,7 @@ def _map_simple_unary(op_type: str) -> Callable:
 
 
 def _map_floordiv(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map floordiv operation."""
+    """Execute the  map floordiv operation."""
     inputs = []
     if "X" in node.inputs:
         inputs.extend(node.inputs["X"])
@@ -76,7 +76,7 @@ def _map_floordiv(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[s
 
 
 def _map_log1p(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map log1p operation."""
+    """Execute the  map log1p operation."""
     inputs = node.inputs.get("X", [])
     one = builder.add_constant(f"{node.name}_one", 1.0, 1, ())
     add_out = builder.make_node("Add", inputs + [one], {}, f"{node.name}_add")[0]
@@ -84,20 +84,20 @@ def _map_log1p(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
 
 
 def _map_rsqrt(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map rsqrt operation."""
+    """Execute the  map rsqrt operation."""
     inputs = node.inputs.get("X", [])
     sqrt_out = builder.make_node("Sqrt", inputs, {}, f"{node.name}_sqrt")[0]
     return builder.make_node("Reciprocal", [sqrt_out], {}, node.name)
 
 
 def _map_square(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map square operation."""
+    """Execute the  map square operation."""
     inputs = node.inputs.get("X", [])
     return builder.make_node("Mul", inputs * 2, {}, node.name)
 
 
 def _map_isfinite(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map isfinite operation."""
+    """Execute the  map isfinite operation."""
     inputs = node.inputs.get("X", [])
     is_nan = builder.make_node("IsNaN", inputs, {}, f"{node.name}_isnan")[0]
     is_inf = builder.make_node("IsInf", inputs, {}, f"{node.name}_isinf")[0]
@@ -106,7 +106,7 @@ def _map_isfinite(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[s
 
 
 def _map_scale(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map scale operation."""
+    """Execute the  map scale operation."""
     inputs = node.inputs.get("X", [])
     scale = builder.extract_attr(node, "scale", 1.0)
     bias = builder.extract_attr(node, "bias", 0.0)
@@ -117,13 +117,13 @@ def _map_scale(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
 
 
 def _map_sum(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map sum operation."""
+    """Execute the  map sum operation."""
     inputs = node.inputs.get("X", [])
     return builder.make_node("Sum", inputs, {}, node.name)
 
 
 def _map_dot(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map dot operation."""
+    """Execute the  map dot operation."""
     x = node.inputs.get("X", [])
     y = node.inputs.get("Y", [])
     mul_out = builder.make_node("Mul", x + y, {}, f"{node.name}_mul")[0]
@@ -131,16 +131,16 @@ def _map_dot(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
 
 
 def _map_cross(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map cross operation."""
+    """Execute the  map cross operation."""
     inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
     return builder.make_node("Custom_Paddle_cross", inputs, node.attrs, node.name)
 
 
 def _map_custom(op_name: str) -> Callable:
-    """Executes the  map custom operation."""
+    """Execute the  map custom operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = node.inputs.get("X", [])
         if "Y" in node.inputs:
             inputs.extend(node.inputs["Y"])

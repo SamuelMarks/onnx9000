@@ -7,14 +7,14 @@ from onnx9000.converters.frontend.tensor import Tensor
 
 
 def _pair(x: Union[int, tuple[int, int]]) -> tuple[int, int]:
-    """Implements the _pair method."""
+    """Implement the _pair method."""
     if isinstance(x, int):
         return (x, x)
     return x
 
 
 def _single(x: Union[int, tuple[int]]) -> tuple[int]:
-    """Implements the _single method."""
+    """Implement the _single method."""
     if isinstance(x, int):
         return (x,)
     return x
@@ -26,7 +26,7 @@ class _MaxPoolNd(Module):
     def __init__(
         self, kernel_size: Any, stride: Any, padding: Any, dilation: Any, ceil_mode: bool
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride
@@ -35,7 +35,7 @@ class _MaxPoolNd(Module):
         self.ceil_mode = ceil_mode
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -59,7 +59,7 @@ class MaxPool1d(_MaxPoolNd):
         dilation: Union[int, tuple[int]] = 1,
         ceil_mode: bool = False,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride) if stride is not None else kernel_size_
         padding_ = _single(padding)
@@ -78,7 +78,7 @@ class MaxPool2d(_MaxPoolNd):
         dilation: Union[int, tuple[int, int]] = 1,
         ceil_mode: bool = False,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride) if stride is not None else kernel_size_
         padding_ = _pair(padding)
@@ -92,7 +92,7 @@ class _AvgPoolNd(Module):
     def __init__(
         self, kernel_size: Any, stride: Any, padding: Any, ceil_mode: bool, count_include_pad: bool
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride
@@ -101,7 +101,7 @@ class _AvgPoolNd(Module):
         self.count_include_pad = count_include_pad
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -125,7 +125,7 @@ class AvgPool1d(_AvgPoolNd):
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride) if stride is not None else kernel_size_
         padding_ = _single(padding)
@@ -143,7 +143,7 @@ class AvgPool2d(_AvgPoolNd):
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride) if stride is not None else kernel_size_
         padding_ = _pair(padding)
@@ -154,20 +154,20 @@ class _AdaptiveAvgPoolNd(Module):
     """Class _AdaptiveAvgPoolNd implementation."""
 
     def __init__(self, output_size: Any) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.output_size = output_size
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("GlobalAveragePool", [input])
 
 
 class AdaptiveAvgPool2d(_AdaptiveAvgPoolNd):
-    """AdaptiveAvgPool2d"""
+    """AdaptiveAvgPool2d."""
 
     def __init__(self, output_size: Union[int, tuple[int, int]]) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__(output_size)

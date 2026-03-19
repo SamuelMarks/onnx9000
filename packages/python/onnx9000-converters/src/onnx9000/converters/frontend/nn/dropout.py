@@ -8,13 +8,13 @@ class _DropoutNd(Module):
     """Class _DropoutNd implementation."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.p = p
         self.inplace = inplace
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         if not self.training or self.p == 0.0:

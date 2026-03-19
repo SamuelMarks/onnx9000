@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 def parse_decision_tree_classifier(estimator: Any) -> TreeAbstractions:
     """Parse DecisionTreeClassifier into Intermediate Representation.
+
     Bypass Scikit-Learn C++ extensions, extracting directly from Python object properties.
     """
     abstractions = TreeAbstractions()
@@ -56,7 +57,7 @@ def parse_random_forest_classifier(estimator: Any) -> list[TreeAbstractions]:
 
 
 def parse_random_forest_regressor(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse random forest regressor operation."""
+    """Execute the parse random forest regressor operation."""
     trees = []
     if hasattr(estimator, "estimators_"):
         for tree_estimator in estimator.estimators_:
@@ -65,47 +66,47 @@ def parse_random_forest_regressor(estimator: Any) -> list[TreeAbstractions]:
 
 
 def parse_gradient_boosting_classifier(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse gradient boosting classifier operation."""
+    """Execute the parse gradient boosting classifier operation."""
     return parse_random_forest_classifier(estimator)  # Stubs
 
 
 def parse_gradient_boosting_regressor(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse gradient boosting regressor operation."""
+    """Execute the parse gradient boosting regressor operation."""
     return parse_random_forest_regressor(estimator)
 
 
 def parse_hist_gradient_boosting_classifier(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse hist gradient boosting classifier operation."""
+    """Execute the parse hist gradient boosting classifier operation."""
     return []
 
 
 def parse_hist_gradient_boosting_regressor(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse hist gradient boosting regressor operation."""
+    """Execute the parse hist gradient boosting regressor operation."""
     return []
 
 
 def parse_isolation_forest(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse isolation forest operation."""
+    """Execute the parse isolation forest operation."""
     return parse_random_forest_classifier(estimator)
 
 
 def parse_ada_boost_classifier(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse ada boost classifier operation."""
+    """Execute the parse ada boost classifier operation."""
     return parse_random_forest_classifier(estimator)
 
 
 def parse_ada_boost_regressor(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse ada boost regressor operation."""
+    """Execute the parse ada boost regressor operation."""
     return parse_random_forest_regressor(estimator)
 
 
 def parse_extra_trees_classifier(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse extra trees classifier operation."""
+    """Execute the parse extra trees classifier operation."""
     return parse_random_forest_classifier(estimator)
 
 
 def parse_extra_trees_regressor(estimator: Any) -> list[TreeAbstractions]:
-    """Executes the parse extra trees regressor operation."""
+    """Execute the parse extra trees regressor operation."""
     return parse_random_forest_regressor(estimator)
 
 
@@ -141,62 +142,62 @@ def extract_classes_and_zipmaps() -> None:
 
 # Math parsing for non-tree linear models
 def parse_linear_regression() -> None:
-    """Executes the parse linear regression operation."""
+    """Execute the parse linear regression operation."""
     pass
 
 
 def parse_logistic_regression() -> None:
-    """Executes the parse logistic regression operation."""
+    """Execute the parse logistic regression operation."""
     pass
 
 
 def parse_ridge_lasso_elasticnet() -> None:
-    """Executes the parse ridge lasso elasticnet operation."""
+    """Execute the parse ridge lasso elasticnet operation."""
     pass
 
 
 def parse_sgd_classifier() -> None:
-    """Executes the parse sgd classifier operation."""
+    """Execute the parse sgd classifier operation."""
     pass
 
 
 def parse_linear_svc() -> None:
-    """Executes the parse linear svc operation."""
+    """Execute the parse linear svc operation."""
     pass
 
 
 def parse_svc_poly() -> None:
-    """Executes the parse svc poly operation."""
+    """Execute the parse svc poly operation."""
     pass
 
 
 def parse_svc_rbf() -> None:
-    """Executes the parse svc rbf operation."""
+    """Execute the parse svc rbf operation."""
     pass
 
 
 def parse_svc_sigmoid() -> None:
-    """Executes the parse svc sigmoid operation."""
+    """Execute the parse svc sigmoid operation."""
     pass
 
 
 def parse_gaussian_nb() -> None:
-    """Executes the parse gaussian nb operation."""
+    """Execute the parse gaussian nb operation."""
     pass
 
 
 def parse_multinomial_nb() -> None:
-    """Executes the parse multinomial nb operation."""
+    """Execute the parse multinomial nb operation."""
     pass
 
 
 def parse_bernoulli_nb() -> None:
-    """Executes the parse bernoulli nb operation."""
+    """Execute the parse bernoulli nb operation."""
     pass
 
 
 def parse_mlp_classifier() -> None:
-    """Executes the parse mlp classifier operation."""
+    """Execute the parse mlp classifier operation."""
     pass
 
 

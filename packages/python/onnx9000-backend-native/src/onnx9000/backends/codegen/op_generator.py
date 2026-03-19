@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -14,14 +13,11 @@ if TYPE_CHECKING:
 
 
 class OpGenerator(abc.ABC):
-    """
-    Interface for C++ operator writers.
-    """
+    """Interface for C++ operator writers."""
 
     @abc.abstractmethod
     def generate(self, node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-        """
-        Generate C++ code for the given node.
+        """Generate C++ code for the given node.
 
         Args:
             node: The IR Node to generate code for.
@@ -30,4 +26,5 @@ class OpGenerator(abc.ABC):
 
         Returns:
             A string containing the generated C++ code.
+
         """

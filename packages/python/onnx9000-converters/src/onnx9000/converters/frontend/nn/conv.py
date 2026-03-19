@@ -8,21 +8,21 @@ from onnx9000.core.dtypes import DType
 
 
 def _pair(x: Union[int, tuple[int, int]]) -> tuple[int, int]:
-    """Implements the _pair method."""
+    """Implement the _pair method."""
     if isinstance(x, int):
         return (x, x)
     return x
 
 
 def _single(x: Union[int, tuple[int]]) -> tuple[int]:
-    """Implements the _single method."""
+    """Implement the _single method."""
     if isinstance(x, int):
         return (x,)
     return x
 
 
 def _triple(x: Union[int, tuple[int, int, int]]) -> tuple[int, int, int]:
-    """Implements the _triple method."""
+    """Implement the _triple method."""
     if isinstance(x, int):
         return (x, x, x)
     return x
@@ -44,7 +44,7 @@ class _ConvNd(Module):
         padding_mode: str,
         dtype: DType,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -58,7 +58,7 @@ class _ConvNd(Module):
         self.bias: Optional[Parameter] = None
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -90,7 +90,7 @@ class Conv1d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride)
         padding_ = _single(padding)
@@ -132,7 +132,7 @@ class Conv2d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride)
         padding_ = _pair(padding)
@@ -174,7 +174,7 @@ class Conv3d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _triple(kernel_size)
         stride_ = _triple(stride)
         padding_ = _triple(padding)
@@ -217,7 +217,7 @@ class _ConvTransposeNd(Module):
         padding_mode: str,
         dtype: DType,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -232,7 +232,7 @@ class _ConvTransposeNd(Module):
         self.bias: Optional[Parameter] = None
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implements the forward method."""
+        """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -267,7 +267,7 @@ class ConvTranspose1d(_ConvTransposeNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride)
         padding_ = _single(padding)
@@ -312,7 +312,7 @@ class ConvTranspose2d(_ConvTransposeNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implements the __init__ method."""
+        """Implement the __init__ method."""
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride)
         padding_ = _pair(padding)

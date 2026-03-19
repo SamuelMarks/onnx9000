@@ -2,5 +2,5 @@
 
 
 def optimize_broadcasting(graph) -> bool:
-    """Implements the optimize_broadcasting method or operation."""
+    """Implement the optimize_broadcasting method or operation."""
     return False

@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -12,7 +11,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("Reshape")
 def generate_reshape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reshape method or operation."""
+    """Implement the generate_reshape method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -39,25 +38,25 @@ def generate_reshape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("Flatten")
 def generate_flatten(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_flatten method or operation."""
+    """Implement the generate_flatten method or operation."""
     return generate_reshape(node, ctx)
 
 
 @registry.register_op("Squeeze")
 def generate_squeeze(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_squeeze method or operation."""
+    """Implement the generate_squeeze method or operation."""
     return generate_reshape(node, ctx)
 
 
 @registry.register_op("Unsqueeze")
 def generate_unsqueeze(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_unsqueeze method or operation."""
+    """Implement the generate_unsqueeze method or operation."""
     return generate_reshape(node, ctx)
 
 
 @registry.register_op("CastLike")
 def generate_cast_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_cast_like method or operation."""
+    """Implement the generate_cast_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -81,7 +80,7 @@ def generate_cast_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("Cast")
 def generate_cast(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_cast method or operation."""
+    """Implement the generate_cast method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]

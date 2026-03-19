@@ -9,21 +9,21 @@ logger = logging.getLogger(__name__)
 
 
 class ValidationPass(GraphPass):
-    """
-    Graph Validation.
+    """Graph Validation.
+
     Sanity checks for graph structures, such as detecting cycles or
     disconnected subgraphs.
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         self.detect_cycles(graph)
         self.detect_dangling(graph)
         return False
 
     def detect_cycles(self, graph: Graph) -> None:
-        """
-        Performs a topological sort or DFS to ensure the graph is a strict DAG.
+        """Perform a topological sort or DFS to ensure the graph is a strict DAG.
+
         Raises an error if a cycle is detected.
         """
         adj = {node.name: [] for node in graph.nodes}
@@ -39,7 +39,7 @@ class ValidationPass(GraphPass):
         rec_stack = set()
 
         def is_cyclic(u: str) -> bool:
-            """Implements the is_cyclic method or operation."""
+            """Implement the is_cyclic method or operation."""
             visited.add(u)
             rec_stack.add(u)
             for neighbor in adj.get(u, []):
@@ -56,7 +56,7 @@ class ValidationPass(GraphPass):
                 raise RuntimeError(f"Cycle detected in graph starting from node {node.name}")
 
     def detect_dangling(self, graph: Graph) -> None:
-        """Implements the detect_dangling method or operation."""
+        """Implement the detect_dangling method or operation."""
         available = set(graph.inputs) | set(graph.initializers)
         for n in graph.nodes:
             for out in n.outputs:
@@ -68,10 +68,10 @@ class ValidationPass(GraphPass):
 
 
 def detect_cycles(graph: Graph) -> None:
-    """Implements the detect_cycles method or operation."""
+    """Implement the detect_cycles method or operation."""
     ValidationPass().detect_cycles(graph)
 
 
 def detect_dangling(graph: Graph) -> None:
-    """Implements the detect_dangling method or operation."""
+    """Implement the detect_dangling method or operation."""
     ValidationPass().detect_dangling(graph)

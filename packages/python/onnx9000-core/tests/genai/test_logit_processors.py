@@ -1,13 +1,14 @@
-import pytest
 import struct
+
+import pytest
 from onnx9000.core.ir import Tensor
+from onnx9000.genai.logit_processor_list import LogitProcessorList
 from onnx9000.genai.logit_processors import (
+    RepetitionPenaltyLogitProcessor,
     TemperatureLogitProcessor,
     TopKLogitProcessor,
-    RepetitionPenaltyLogitProcessor,
 )
 from onnx9000.genai.top_p import TopPLogitProcessor
-from onnx9000.genai.logit_processor_list import LogitProcessorList
 
 
 def create_logits(vals):
@@ -89,9 +90,9 @@ def test_logit_processor_list():
 
 
 from onnx9000.genai.logit_processors import (
+    FrequencyPenaltyLogitProcessor,
     MinPLogitProcessor,
     PresencePenaltyLogitProcessor,
-    FrequencyPenaltyLogitProcessor,
 )
 
 
@@ -133,12 +134,12 @@ def test_frequency_penalty():
 
 
 from onnx9000.genai.logit_processors import (
+    AllowedWordsLogitProcessor,
     ForcedBOSLogitProcessor,
     ForcedEOSLogitProcessor,
     LogitBiasProcessor,
-    NoRepeatNGramLogitProcessor,
     NoBadWordsLogitProcessor,
-    AllowedWordsLogitProcessor,
+    NoRepeatNGramLogitProcessor,
 )
 
 
@@ -185,8 +186,8 @@ def test_allowed_words():
 
 
 def test_top_p_errors():
-    from onnx9000.genai.top_p import TopPLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.top_p import TopPLogitProcessor
 
     with pytest.raises(ValueError):
         TopPLogitProcessor(-0.5)
@@ -201,8 +202,8 @@ def test_top_p_errors():
 
 
 def test_min_p_errors():
-    from onnx9000.genai.logit_processors import MinPLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import MinPLogitProcessor
 
     with pytest.raises(ValueError):
         MinPLogitProcessor(1.5)
@@ -221,8 +222,8 @@ def test_min_p_errors():
 
 
 def test_temperature_errors():
-    from onnx9000.genai.logit_processors import TemperatureLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import TemperatureLogitProcessor
 
     with pytest.raises(ValueError):
         TemperatureLogitProcessor(0.0)
@@ -237,8 +238,8 @@ def test_temperature_errors():
 
 
 def test_top_k_errors():
-    from onnx9000.genai.logit_processors import TopKLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import TopKLogitProcessor
 
     with pytest.raises(ValueError):
         TopKLogitProcessor(0)
@@ -249,8 +250,8 @@ def test_top_k_errors():
 
 
 def test_repetition_penalty_errors():
-    from onnx9000.genai.logit_processors import RepetitionPenaltyLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import RepetitionPenaltyLogitProcessor
 
     with pytest.raises(ValueError):
         RepetitionPenaltyLogitProcessor(-1.0)
@@ -261,11 +262,11 @@ def test_repetition_penalty_errors():
 
 
 def test_presence_frequency_errors():
-    from onnx9000.genai.logit_processors import (
-        PresencePenaltyLogitProcessor,
-        FrequencyPenaltyLogitProcessor,
-    )
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import (
+        FrequencyPenaltyLogitProcessor,
+        PresencePenaltyLogitProcessor,
+    )
 
     proc = PresencePenaltyLogitProcessor(0.0)
     t = create_logits([1.0])
@@ -329,11 +330,11 @@ def test_allowed_words_errors():
 
 
 def test_logit_processors_missing_2():
+    from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import (
         TemperatureLogitProcessor,
         TopKLogitProcessor,
     )
-    from onnx9000.core.ir import Tensor
 
     t_short = Tensor(
         name="x",
@@ -355,32 +356,33 @@ def test_logit_processors_missing_2():
 
 
 def test_logit_processors_more():
-    from onnx9000.genai.logit_processors import (
-        RepetitionPenaltyLogitProcessor,
-        ForcedEOSLogitProcessor,
-    )
-    from onnx9000.core.ir import Tensor
     import struct
+
+    from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import (
+        ForcedEOSLogitProcessor,
+        RepetitionPenaltyLogitProcessor,
+    )
 
     p = RepetitionPenaltyLogitProcessor(penalty=2.0)
     data = bytearray(8)
     data[0:4] = struct.pack("<f", 4.0)
     data[4:8] = struct.pack("<f", -4.0)
     t = Tensor(name="", shape=(2,), data=data, dtype=type("m", (), {"itemsize": 4}))
-    res = p([0], t)
+    p([0], t)
 
     eos = ForcedEOSLogitProcessor(max_length=1, eos_token_id=0)
     data2 = bytearray(8)
     data2[0:4] = struct.pack("<f", 0.0)
     data2[4:8] = struct.pack("<f", 0.0)
     t2 = Tensor(name="", shape=(2,), data=data2, dtype=type("m", (), {"itemsize": 4}))
-    res2 = eos([1], t2)
+    eos([1], t2)
     # len is 1, so it forces eos.
 
 
 def test_forced_eos_no_force():
-    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
 
     eos = ForcedEOSLogitProcessor(max_length=5, eos_token_id=0)
     t = Tensor(name="", shape=(2,), data=bytearray(8), dtype=type("m", (), {"itemsize": 4}))
@@ -388,21 +390,21 @@ def test_forced_eos_no_force():
 
 
 def test_forced_eos_force():
-    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
 
     eos = ForcedEOSLogitProcessor(max_length=1, eos_token_id=0)
     t = Tensor(name="", shape=(2,), data=bytearray(8), dtype=type("m", (), {"itemsize": 4}))
-    res = eos([], t)
+    eos([], t)
 
 
 def test_logit_processors_11_287():
+    from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import (
+        AllowedWordsLogitProcessor,
         LogitProcessor,
         NoBadWordsLogitProcessor,
-        AllowedWordsLogitProcessor,
     )
-    from onnx9000.core.ir import Tensor
 
     p = LogitProcessor()
     t = Tensor(name="", shape=(), data=bytearray(4))
@@ -416,9 +418,10 @@ def test_logit_processors_11_287():
 
 
 def test_logit_bias_processor_restored():
-    from onnx9000.genai.logit_processors import LogitBiasProcessor
-    from onnx9000.core.ir import Tensor
     import struct
+
+    from onnx9000.core.ir import Tensor
+    from onnx9000.genai.logit_processors import LogitBiasProcessor
 
     p = LogitBiasProcessor(bias_map={0: 1.0, 1: -1.0})
     data = bytearray(8)
@@ -434,8 +437,8 @@ def test_logit_bias_processor_restored():
 
 
 def test_chunking_restored():
-    from onnx9000.genai.chunking import ChunkManager
     import onnx9000.core.ir as ir
+    from onnx9000.genai.chunking import ChunkManager
 
     c = ChunkManager.chunk_model("a.onnx")
     ChunkManager.create_manifest(c, "/tmp/")

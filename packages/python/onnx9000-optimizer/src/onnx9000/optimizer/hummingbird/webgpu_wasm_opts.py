@@ -11,7 +11,7 @@ class WebGPUWASMCompilerOpts:
     """WebGPU & WASM Execution Optimizations utility."""
 
     def __init__(self, max_buffer_size: int = 128 * 1024 * 1024) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.max_buffer_size = max_buffer_size
         self.max_texture_dim = 8192
 
@@ -32,6 +32,7 @@ class WebGPUWASMCompilerOpts:
 
     def validate_memory_alignment(self, g: Graph) -> None:
         """Validate memory alignment of Float32 constants for WASM direct ingestion.
+
         Serialize Constant arrays cleanly using little-endian standard.
         """
         pass
@@ -74,6 +75,7 @@ class WebGPUWASMCompilerOpts:
 
     def prevent_oom(self) -> None:
         """Prevent Out-of-Memory (OOM) on Pyodide by aggressively garbage collecting intermediate trees.
+
         Minimize peak RAM during the compilation phase.
         """
         import gc
@@ -94,12 +96,14 @@ class WebGPUWASMCompilerOpts:
 
     def ensure_wgsl_compatibility(self, g: Graph) -> None:
         """Ensure WGSL shader compatibility by avoiding Float64 across the entire graph.
+
         Ensure WGSL shader compatibility by casting Int64 to Int32 natively.
         """
         pass
 
     def optimize_topology_for_ort_web(self, g: Graph) -> None:
         """Optimize node topology specifically for onnxruntime-web execution providers.
+
         Map tree structures to explicitly parallelized sub-graphs if hardware supports it.
         """
         pass

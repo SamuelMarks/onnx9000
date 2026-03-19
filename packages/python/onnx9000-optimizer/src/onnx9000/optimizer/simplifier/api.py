@@ -1,3 +1,5 @@
+"""Simplify ONNX graphs through high-level API functions."""
+
 from __future__ import annotations
 
 """Provides api.py module functionality."""
@@ -28,6 +30,7 @@ def _calculate_graph_size(graph: Graph) -> int:
 
 
 def check_disconnected_outputs(graph: Graph):
+    """Check and remove disconnected outputs from the ONNX graph."""
     producers = {}
     for node in graph.nodes:
         for out in node.outputs:
@@ -60,6 +63,7 @@ def check_disconnected_outputs(graph: Graph):
 
 
 def extract_scalars(graph: Graph):
+    """Extract and isolate scalar operations to simplify computation."""
     # Some ops require 1D arrays (like Concat, Slice, Split). But Add, Mul, Pow, etc. broadcast 0D.
     # In ONNX, if an initializer is 1D with size 1, it might be safer to keep it 1D unless we know consumers broadcast it well.
     # Let's conservatively turn 1D size-1 constants into 0D scalars if they only feed into element-wise operations.
@@ -115,8 +119,7 @@ def simplify(
     target_opset: int | None = None,
     sort_value_info: bool = False,
 ) -> Graph:
-    """
-    Simplifies an ONNX9000 IR Graph using Constant Folding, DCE, and Operator Fusion.
+    """Simplifies an ONNX9000 IR Graph using Constant Folding, DCE, and Operator Fusion.
 
     Args:
         graph: The IR Graph to simplify.
@@ -124,7 +127,7 @@ def simplify(
         skip_constant_folding: If True, skips constant folding.
         skip_shape_inference: If True, skips shape inference.
         skip_fuse_bn: If True, skips batch norm fusion.
-        skip_rules: List of specific optimization rules to skip.
+        skip_rules: list of specific optimization rules to skip.
         dry_run: If True, operates on a copy of the graph and returns it.
         max_iterations: Maximum number of simplification iterations to prevent infinite loops.
         log_json_summary: If True, logs a JSON summary of changes.
@@ -132,6 +135,7 @@ def simplify(
 
     Returns:
         The simplified Graph.
+
     """
     if skip_rules is None:
         skip_rules = []

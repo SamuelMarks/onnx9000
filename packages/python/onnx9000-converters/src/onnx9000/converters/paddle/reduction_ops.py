@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""PaddlePaddle converter operations and graph builders."""
 
 from typing import Callable
 
@@ -7,7 +7,7 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 
 def _map_allclose(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map allclose operation."""
+    """Execute the  map allclose operation."""
     inputs = node.inputs.get("Input", [])
     if not inputs:
         inputs = node.inputs.get("X", [])
@@ -29,14 +29,14 @@ def _map_allclose(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[s
     return builder.make_node("ReduceMin", [less_eq], {"keepdims": 0}, node.name)
 
 
-"Module docstring."
+"Paddle converter routines."
 
 
 def _map_logical_binary(op_type: str) -> Callable:
-    """Executes the  map logical binary operation."""
+    """Execute the  map logical binary operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = []
         if "X" in node.inputs:
             inputs.extend(node.inputs["X"])
@@ -48,10 +48,10 @@ def _map_logical_binary(op_type: str) -> Callable:
 
 
 def _map_logical_unary(op_type: str) -> Callable:
-    """Executes the  map logical unary operation."""
+    """Execute the  map logical unary operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = node.inputs.get("X", [])
         return builder.make_node(op_type, inputs, {}, node.name)
 
@@ -59,7 +59,7 @@ def _map_logical_unary(op_type: str) -> Callable:
 
 
 def _map_not_equal(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map not equal operation."""
+    """Execute the  map not equal operation."""
     inputs = []
     if "X" in node.inputs:
         inputs.extend(node.inputs["X"])
@@ -70,10 +70,10 @@ def _map_not_equal(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[
 
 
 def _map_reduce(op_type: str) -> Callable:
-    """Executes the  map reduce operation."""
+    """Execute the  map reduce operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = node.inputs.get("X", [])
         keep_dim = builder.extract_attr(node, "keep_dim", False)
         attrs = {"keepdims": 1 if keep_dim else 0}
@@ -87,10 +87,10 @@ def _map_reduce(op_type: str) -> Callable:
 
 
 def _map_arg(op_type: str) -> Callable:
-    """Executes the  map arg operation."""
+    """Execute the  map arg operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         inputs = node.inputs.get("X", [])
         axis = builder.extract_attr(node, "axis", 0)
         keepdims = builder.extract_attr(node, "keepdims", False)
@@ -102,7 +102,7 @@ def _map_arg(op_type: str) -> Callable:
 
 
 def _map_cumsum(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
-    """Executes the  map cumsum operation."""
+    """Execute the  map cumsum operation."""
     inputs = node.inputs.get("X", [])
     axis = builder.extract_attr(node, "axis", 0)
     axis_tensor = builder.add_constant(f"{node.name}_axis", [axis], 7, (1,))
@@ -114,10 +114,10 @@ def _map_cumsum(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str
 
 
 def _map_custom(op_name: str):
-    """Executes the map custom operation."""
+    """Execute the map custom operation."""
 
     def _impl(builder, node):
-        """Executes the impl operation."""
+        """Execute the impl operation."""
         inputs = node.inputs.get("X", [])
         return builder.make_node(op_name, inputs, {}, node.name)
 

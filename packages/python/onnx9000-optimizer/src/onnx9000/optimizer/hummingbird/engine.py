@@ -18,7 +18,7 @@ class TranspilationEngine:
     """Zero-dependency transpilation engine architecture."""
 
     def __init__(self, target: TargetHardware = TargetHardware.CPU, verbose: bool = False) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.target = target
         self.abstractions: list[TreeAbstractions] = []
         self.backends = {}
@@ -38,6 +38,7 @@ class TranspilationEngine:
         ensemble_weights: Optional[list[float]] = None,
     ) -> Graph:
         """Transpiles traditional ML models into ONNX Graph based on selected strategy.
+
         Supports dynamic batching via symbolic dimension "N".
         """
         g = Graph(name="Hummingbird_Transpiled")
@@ -91,13 +92,13 @@ class TranspilationEngine:
 
     def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         # Transpile numerical threshold comparisons accurately
-        """Executes the compile gemm operation."""
+        """Execute the compile gemm operation."""
         pass
 
     def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
-        """Executes the compile tree traversal operation."""
+        """Execute the compile tree traversal operation."""
         pass
 
     def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
-        """Executes the compile perfect tree operation."""
+        """Execute the compile perfect tree operation."""
         pass

@@ -1,5 +1,4 @@
-"""
-Frontend Sub-Package
+"""Frontend Sub-Package.
 
 Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.

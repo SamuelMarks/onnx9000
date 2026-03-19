@@ -1,3 +1,5 @@
+"""Provide functionality for this module."""
+
 from .generator import Generator
 from .logit_processor_list import LogitProcessorList
 from .logit_processors import (

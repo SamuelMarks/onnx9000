@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 class Quantizer:
-    """Implements all core quantization logic and math natively."""
+    """Implement all core quantization logic and math natively."""
 
     @staticmethod
     def calc_scale_zp(

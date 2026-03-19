@@ -10,4 +10,4 @@ class GraphPass(ABC):
 
     @abstractmethod
     def run(self, graph: Graph) -> bool:
-        """Runs the pass on the graph. Returns True if graph was modified."""
+        """Run the pass on the graph. Returns True if graph was modified."""

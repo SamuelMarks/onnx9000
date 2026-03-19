@@ -1,4 +1,4 @@
-"""Utility functions for topological sorting and DAG manipulations."""
+"""Use utility functions for topological sorting and DAG manipulations."""
 
 from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Node
@@ -9,8 +9,8 @@ class CyclicDependencyError(Onnx9000Error):
 
 
 def topological_sort(graph: Graph) -> list[Node]:
-    """
-    Perform a topological sort of the nodes in the graph.
+    """Perform a topological sort of the nodes in the graph.
+
     Throws CyclicDependencyError if a cycle is detected.
     """
     producer_map: dict[str, Node] = {}

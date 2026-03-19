@@ -1,22 +1,26 @@
-from typing import Dict, List, Set, Tuple
+"""TVM submodule for AST and optimization."""
 
 from ..expr import Call, Constant, Expr, Function, Op, Var
 from ..visitor import ExprMutator
 
 
 class OpFusionDetector(ExprMutator):
-    """
-    Detects fusable subgraphs and converts them into fused functions.
+    """Detects fusable subgraphs and converts them into fused functions.
+
     Example: Conv + ReLU -> FusedConvReLU.
     """
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         # We define simple fusable patterns.
         # This maps an operation name to a list of ops it can fuse with (if they are consumers).
         self.fusable_rules = {"Conv": ["Relu", "Add"], "MatMul": ["Add"], "Add": ["Relu"]}
         self.fused_count = 0
 
     def visit_call(self, expr: Call) -> Expr:
+        """Do the function."""
         new_op = self.visit(expr.op)
         new_args = [self.visit(arg) for arg in expr.args]
 

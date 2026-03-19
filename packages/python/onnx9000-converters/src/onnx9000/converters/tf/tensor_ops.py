@@ -7,12 +7,12 @@ from onnx9000.converters.tf.parsers import TFNode
 
 
 def _map_identity(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map identity operation."""
+    """Execute the  map identity operation."""
     return builder.make_node("Identity", node.inputs, {}, node.name)
 
 
 def _map_identity_n(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map identity n operation."""
+    """Execute the  map identity n operation."""
     outs = []
     for i, inp in enumerate(node.inputs):
         outs.extend(builder.make_node("Identity", [inp], {}, f"{node.name}_{i}"))
@@ -20,12 +20,12 @@ def _map_identity_n(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_reshape(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map reshape operation."""
+    """Execute the  map reshape operation."""
     return builder.make_node("Reshape", node.inputs, {}, node.name)
 
 
 def _map_squeeze(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map squeeze operation."""
+    """Execute the  map squeeze operation."""
     axes = builder.extract_attr(node, "squeeze_dims", [])
     if axes:
         axes_tensor = builder.add_constant(f"{node.name}_axes", axes, 7, (len(axes),))
@@ -35,28 +35,28 @@ def _map_squeeze(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_expand_dims(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map expand dims operation."""
+    """Execute the  map expand dims operation."""
     return builder.make_node("Unsqueeze", node.inputs, {}, node.name)
 
 
 def _map_transpose(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map transpose operation."""
+    """Execute the  map transpose operation."""
     return builder.make_node("Transpose", node.inputs, {}, node.name)
 
 
 def _map_conjugate_transpose(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map conjugate transpose operation."""
+    """Execute the  map conjugate transpose operation."""
     trans = builder.make_node("Transpose", node.inputs, {}, f"{node.name}_trans")[0]
     return builder.make_node("Custom_Conjugate", [trans], {}, node.name)
 
 
 def _map_concat(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map concat operation."""
+    """Execute the  map concat operation."""
     return builder.make_node("Custom_TFConcat", node.inputs, {}, node.name)
 
 
 def _map_pack(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map pack operation."""
+    """Execute the  map pack operation."""
     axis = builder.extract_attr(node, "axis", 0)
     unsqueezed = []
     axes_const = builder.add_constant(f"{node.name}_axes", [axis], 7, (1,))
@@ -67,7 +67,7 @@ def _map_pack(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_unpack(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map unpack operation."""
+    """Execute the  map unpack operation."""
     axis = builder.extract_attr(node, "axis", 0)
     num = builder.extract_attr(node, "num", len(node.inputs))
     splits = builder.make_node(
@@ -86,7 +86,7 @@ def _map_unpack(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_split(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map split operation."""
+    """Execute the  map split operation."""
     num = builder.extract_attr(node, "num_split", 1)
     return builder.make_node(
         "Custom_TFSplit", node.inputs, {"num_outputs": num}, node.name, num_outputs=num
@@ -94,27 +94,27 @@ def _map_split(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_slice(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map slice operation."""
+    """Execute the  map slice operation."""
     return builder.make_node("Slice", node.inputs, {}, node.name)
 
 
 def _map_tile(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tile operation."""
+    """Execute the  map tile operation."""
     return builder.make_node("Tile", node.inputs, {}, node.name)
 
 
 def _map_pad(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map pad operation."""
+    """Execute the  map pad operation."""
     return builder.make_node("Pad", node.inputs, {"mode": "constant"}, node.name)
 
 
 def _map_pad_v2(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map pad v2 operation."""
+    """Execute the  map pad v2 operation."""
     return builder.make_node("Pad", node.inputs, {"mode": "constant"}, node.name)
 
 
 def _map_mirror_pad(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map mirror pad operation."""
+    """Execute the  map mirror pad operation."""
     mode_str = builder.extract_attr(node, "mode", b"REFLECT")
     if isinstance(mode_str, bytes):
         mode_str = mode_str.decode("utf-8")
@@ -123,73 +123,73 @@ def _map_mirror_pad(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_gather(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map gather operation."""
+    """Execute the  map gather operation."""
     return builder.make_node("Gather", node.inputs, {}, node.name)
 
 
 def _map_gather_nd(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map gather nd operation."""
+    """Execute the  map gather nd operation."""
     return builder.make_node("GatherND", node.inputs, {}, node.name)
 
 
 def _map_scatter_nd(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map scatter nd operation."""
+    """Execute the  map scatter nd operation."""
     return builder.make_node("ScatterND", node.inputs, {}, node.name)
 
 
 def _map_tensor_scatter_update(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tensor scatter update operation."""
+    """Execute the  map tensor scatter update operation."""
     return builder.make_node("ScatterND", node.inputs, {}, node.name)
 
 
 def _map_tensor_scatter_add(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tensor scatter add operation."""
+    """Execute the  map tensor scatter add operation."""
     return builder.make_node("ScatterND", node.inputs, {"reduction": "add"}, node.name)
 
 
 def _map_space_to_batch(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map space to batch operation."""
+    """Execute the  map space to batch operation."""
     return builder.make_node("SpaceToDepth", node.inputs, {}, node.name)
 
 
 def _map_batch_to_space(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map batch to space operation."""
+    """Execute the  map batch to space operation."""
     return builder.make_node("DepthToSpace", node.inputs, {}, node.name)
 
 
 def _map_reverse(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map reverse operation."""
+    """Execute the  map reverse operation."""
     return builder.make_node("ReverseSequence", node.inputs, {}, node.name)
 
 
 def _map_roll(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map roll operation."""
+    """Execute the  map roll operation."""
     return builder.make_node("Custom_Roll", node.inputs, {}, node.name)
 
 
 def _map_matrix_diag(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map matrix diag operation."""
+    """Execute the  map matrix diag operation."""
     return builder.make_node("Custom_MatrixDiag", node.inputs, {}, node.name)
 
 
 def _map_cast(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map cast operation."""
+    """Execute the  map cast operation."""
     to_dtype = builder.extract_attr(node, "DstT", 1)
     return builder.make_node("Cast", node.inputs, {"to": to_dtype}, node.name)
 
 
 def _map_bitcast(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map bitcast operation."""
+    """Execute the  map bitcast operation."""
     return builder.make_node("Cast", node.inputs, {}, node.name)
 
 
 def _map_shape(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map shape operation."""
+    """Execute the  map shape operation."""
     return builder.make_node("Shape", node.inputs, {}, node.name)
 
 
 def _map_shape_n(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map shape n operation."""
+    """Execute the  map shape n operation."""
     outs = []
     for i, inp in enumerate(node.inputs):
         outs.extend(builder.make_node("Shape", [inp], {}, f"{node.name}_{i}"))
@@ -197,45 +197,45 @@ def _map_shape_n(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
 
 
 def _map_size(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map size operation."""
+    """Execute the  map size operation."""
     return builder.make_node("Size", node.inputs, {}, node.name)
 
 
 def _map_rank(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map rank operation."""
+    """Execute the  map rank operation."""
     shape = builder.make_node("Shape", node.inputs, {}, f"{node.name}_shape")[0]
     return builder.make_node("Size", [shape], {}, node.name)
 
 
 def _map_zeros_like(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map zeros like operation."""
+    """Execute the  map zeros like operation."""
     shape = builder.make_node("Shape", node.inputs, {}, f"{node.name}_shape")[0]
     return builder.make_node("ConstantOfShape", [shape], {"value": 0.0}, node.name)
 
 
 def _map_ones_like(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map ones like operation."""
+    """Execute the  map ones like operation."""
     shape = builder.make_node("Shape", node.inputs, {}, f"{node.name}_shape")[0]
     return builder.make_node("ConstantOfShape", [shape], {"value": 1.0}, node.name)
 
 
 def _map_fill(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map fill operation."""
+    """Execute the  map fill operation."""
     return builder.make_node("Custom_Fill", node.inputs, {}, node.name)
 
 
 def _map_broadcast_to(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map broadcast to operation."""
+    """Execute the  map broadcast to operation."""
     return builder.make_node("Expand", node.inputs, {}, node.name)
 
 
 def _map_where(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map where operation."""
+    """Execute the  map where operation."""
     return builder.make_node("Where", node.inputs, {}, node.name)
 
 
 def _map_select(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map select operation."""
+    """Execute the  map select operation."""
     return builder.make_node("Where", node.inputs, {}, node.name)
 
 

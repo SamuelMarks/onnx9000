@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -12,7 +11,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("ReluGrad")
 def generate_relu_grad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_relu_grad method or operation."""
+    """Implement the generate_relu_grad method or operation."""
     grad_out = ctx.get_tensor_name(node.inputs[0])
     fwd_in = ctx.get_tensor_name(node.inputs[1])
     grad_in = ctx.get_tensor_name(node.outputs[0])
@@ -29,7 +28,7 @@ def generate_relu_grad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("SGDOptimizer")
 def generate_sgd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sgd method or operation."""
+    """Implement the generate_sgd method or operation."""
     param = ctx.get_tensor_name(node.inputs[0])
     grad = ctx.get_tensor_name(node.inputs[1])
     lr = node.attributes.get("lr", 0.01)
@@ -39,7 +38,7 @@ def generate_sgd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("AdamWOptimizer")
 def generate_adamw(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_adamw method or operation."""
+    """Implement the generate_adamw method or operation."""
     param = ctx.get_tensor_name(node.inputs[0])
     grad = ctx.get_tensor_name(node.inputs[1])
     m = ctx.get_tensor_name(node.inputs[2])

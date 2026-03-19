@@ -7,137 +7,137 @@ from onnx9000.converters.tf.parsers import TFNode
 
 
 def _map_tflite_simple_binary(op_type: str) -> Callable:
-    """Executes the  map tflite simple binary operation."""
+    """Execute the  map tflite simple binary operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node(op_type, node.inputs, {}, node.name)
 
     return _impl
 
 
 def _map_tflite_pool(op_type: str) -> Callable:
-    """Executes the  map tflite pool operation."""
+    """Execute the  map tflite pool operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node(f"Custom_TFLite{op_type}", node.inputs, node.attr, node.name)
 
     return _impl
 
 
 def _map_tflite_conv2d(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite conv2d operation."""
+    """Execute the  map tflite conv2d operation."""
     return builder.make_node("Custom_TFLiteConv2D", node.inputs, node.attr, node.name)
 
 
 def _map_tflite_depthwise_conv2d(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite depthwise conv2d operation."""
+    """Execute the  map tflite depthwise conv2d operation."""
     return builder.make_node("Custom_TFLiteDepthwiseConv2D", node.inputs, node.attr, node.name)
 
 
 def _map_tflite_fully_connected(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite fully connected operation."""
+    """Execute the  map tflite fully connected operation."""
     return builder.make_node("Custom_TFLiteFullyConnected", node.inputs, node.attr, node.name)
 
 
 def _map_tflite_reshape(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite reshape operation."""
+    """Execute the  map tflite reshape operation."""
     return builder.make_node("Reshape", node.inputs, {}, node.name)
 
 
 def _map_tflite_resize_bilinear(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite resize bilinear operation."""
+    """Execute the  map tflite resize bilinear operation."""
     return builder.make_node("Resize", node.inputs, {"mode": "linear"}, node.name)
 
 
 def _map_tflite_concat(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite concat operation."""
+    """Execute the  map tflite concat operation."""
     axis = builder.extract_attr(node, "axis", 0)
     return builder.make_node("Concat", node.inputs, {"axis": axis}, node.name)
 
 
 def _map_tflite_softmax(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite softmax operation."""
+    """Execute the  map tflite softmax operation."""
     return builder.make_node("Softmax", node.inputs, {"axis": -1}, node.name)
 
 
 def _map_tflite_logistic(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite logistic operation."""
+    """Execute the  map tflite logistic operation."""
     return builder.make_node("Sigmoid", node.inputs, {}, node.name)
 
 
 def _map_tflite_tanh(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite tanh operation."""
+    """Execute the  map tflite tanh operation."""
     return builder.make_node("Tanh", node.inputs, {}, node.name)
 
 
 def _map_tflite_relu(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite relu operation."""
+    """Execute the  map tflite relu operation."""
     return builder.make_node("Relu", node.inputs, {}, node.name)
 
 
 def _map_tflite_relu6(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite relu6 operation."""
+    """Execute the  map tflite relu6 operation."""
     zero = builder.add_constant(f"{node.name}_zero", 0.0, 1, ())
     six = builder.add_constant(f"{node.name}_six", 6.0, 1, ())
     return builder.make_node("Clip", [node.inputs[0], zero, six], {}, node.name)
 
 
 def _map_tflite_relu_n1_to_1(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite relu n1 to 1 operation."""
+    """Execute the  map tflite relu n1 to 1 operation."""
     neg_one = builder.add_constant(f"{node.name}_neg1", -1.0, 1, ())
     pos_one = builder.add_constant(f"{node.name}_pos1", 1.0, 1, ())
     return builder.make_node("Clip", [node.inputs[0], neg_one, pos_one], {}, node.name)
 
 
 def _map_tflite_dequantize(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite dequantize operation."""
+    """Execute the  map tflite dequantize operation."""
     return builder.make_node("DequantizeLinear", node.inputs, {}, node.name)
 
 
 def _map_tflite_quantize(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite quantize operation."""
+    """Execute the  map tflite quantize operation."""
     return builder.make_node("QuantizeLinear", node.inputs, {}, node.name)
 
 
 def _map_tflite_embedding_lookup(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite embedding lookup operation."""
+    """Execute the  map tflite embedding lookup operation."""
     return builder.make_node("Gather", node.inputs, {}, node.name)
 
 
 def _map_tflite_l2_normalization(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite l2 normalization operation."""
+    """Execute the  map tflite l2 normalization operation."""
     return builder.make_node("LpNormalization", node.inputs, {"p": 2}, node.name)
 
 
 def _map_tflite_local_response_normalization(
     builder: TFToONNXGraphBuilder, node: TFNode
 ) -> list[str]:
-    """Executes the  map tflite local response normalization operation."""
+    """Execute the  map tflite local response normalization operation."""
     return builder.make_node("LRN", node.inputs, {}, node.name)
 
 
 def _map_tflite_space_to_depth(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite space to depth operation."""
+    """Execute the  map tflite space to depth operation."""
     return builder.make_node("SpaceToDepth", node.inputs, {}, node.name)
 
 
 def _map_tflite_depth_to_space(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite depth to space operation."""
+    """Execute the  map tflite depth to space operation."""
     return builder.make_node("DepthToSpace", node.inputs, {}, node.name)
 
 
 def _map_tflite_floor(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-    """Executes the  map tflite floor operation."""
+    """Execute the  map tflite floor operation."""
     return builder.make_node("Floor", node.inputs, {}, node.name)
 
 
 def _map_tflite_custom_subgraph(op: str) -> Callable:
-    """Executes the  map tflite custom subgraph operation."""
+    """Execute the  map tflite custom subgraph operation."""
 
     def _impl(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
-        """Executes the  impl operation."""
+        """Execute the  impl operation."""
         return builder.make_node(f"Custom_TFLite{op}", node.inputs, node.attr, node.name)
 
     return _impl

@@ -1,14 +1,22 @@
+"""TVM submodule for AST and optimization."""
+
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from .ty import FuncType, Type
 
 
 class Expr:
+    """Core class for TVM AST node or pass."""
+
     def __hash__(self):
+        """Magic method."""
+        """Do the function."""
         return id(self)
 
     def __eq__(self, other):
+        """Magic method."""
+        """Do the function."""
         return self is other
 
     """Base class for all Relay expressions."""

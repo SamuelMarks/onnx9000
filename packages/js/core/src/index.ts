@@ -5,3 +5,5 @@ export * from './parser/protobuf.js';
 export * from './parser/onnx.js';
 export * from './shape_inference/infer.js';
 export * from './parser/magic.js';
+export * from './parser/safetensors.js';
+export * from './parser/safetensors.node.js';

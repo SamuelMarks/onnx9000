@@ -1,3 +1,5 @@
+"""TVM submodule for AST and optimization."""
+
 from .cse import eliminate_common_subexpr
 from .dead_code_elimination import eliminate_dead_code
 from .fold_constant import fold_constant

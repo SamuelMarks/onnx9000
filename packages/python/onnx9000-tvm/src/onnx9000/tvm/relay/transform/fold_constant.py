@@ -1,19 +1,25 @@
-from typing import Callable, Dict
+"""TVM submodule for AST and optimization."""
+
+from typing import Callable
 
 from ..expr import Call, Constant, Expr, Op
 from ..visitor import ExprMutator
 
 
 class ConstantFolder(ExprMutator):
-    """
-    Folds operations applied to constants.
+    """Folds operations applied to constants.
+
     Requires a registry of evaluator functions for operations.
     """
 
     def __init__(self, evaluators: dict[str, Callable]):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.evaluators = evaluators
 
     def visit_call(self, expr: Call) -> Expr:
+        """Do the function."""
         new_op = self.visit(expr.op)
         new_args = [self.visit(arg) for arg in expr.args]
 

@@ -1,22 +1,27 @@
-from typing import Dict, Optional
+"""TVM submodule for AST and optimization."""
+
+from typing import Optional
 
 from ..expr import Call, Constant, Expr, Op
 from ..visitor import ExprMutator
 
 
 class LayoutTransform(ExprMutator):
-    """
-    Transforms layout of operators (e.g. NCHW to NHWC).
-    """
+    """Transforms layout of operators (e.g. NCHW to NHWC)."""
 
     def __init__(self, src_layout: str = "NCHW", dst_layout: str = "NHWC"):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.src_layout = src_layout
         self.dst_layout = dst_layout
 
     def _create_transpose(self, expr: Expr, perm: list) -> Expr:
+        """Do the function."""
         return Call(op=Op("Transpose"), args=[expr], attrs={"perm": perm})
 
     def visit_call(self, expr: Call) -> Expr:
+        """Do the function."""
         new_op = self.visit(expr.op)
         new_args = [self.visit(arg) for arg in expr.args]
 

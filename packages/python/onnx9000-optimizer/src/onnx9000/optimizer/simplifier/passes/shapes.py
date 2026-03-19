@@ -10,13 +10,13 @@ logger = logging.getLogger(__name__)
 
 
 class ShapeInferencePass(GraphPass):
-    """
-    Static Shape Inference & Validation.
+    """Static Shape Inference & Validation.
+
     Propagates tensor shapes from inputs to outputs for all standard Opset 18 ops.
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         shapes = {}
         for inp in graph.inputs:
@@ -38,7 +38,7 @@ class ShapeInferencePass(GraphPass):
         return changed
 
     def _infer_shape(self, node: Node, shapes: dict) -> Optional[tuple]:
-        """Implements the _infer_shape method or operation."""
+        """Implement the _infer_shape method or operation."""
         if (
             node.op_type
             in ("Relu", "Sigmoid", "Exp", "Log", "Abs", "Sqrt", "Cast", "Identity", "Swish", "Gelu")
@@ -72,7 +72,7 @@ class ShapeInferencePass(GraphPass):
 
 
 def resolve_dynamic_batch(graph: Graph, batch_size: int = 1) -> None:
-    """Implements the resolve_dynamic_batch method or operation."""
+    """Implement the resolve_dynamic_batch method or operation."""
     for _t_name, tensor in graph.tensors.items():
         if (
             tensor.shape
@@ -83,7 +83,7 @@ def resolve_dynamic_batch(graph: Graph, batch_size: int = 1) -> None:
 
 
 def resolve_dynamic_sequence(graph: Graph, seq_len: int = 128) -> None:
-    """Implements the resolve_dynamic_sequence method or operation."""
+    """Implement the resolve_dynamic_sequence method or operation."""
     for _t_name, tensor in graph.tensors.items():
         if (
             tensor.shape
@@ -94,5 +94,5 @@ def resolve_dynamic_sequence(graph: Graph, seq_len: int = 128) -> None:
 
 
 def extract_rnn_states(graph: Graph) -> None:
-    """Implements the extract_rnn_states method or operation."""
+    """Implement the extract_rnn_states method or operation."""
     return None

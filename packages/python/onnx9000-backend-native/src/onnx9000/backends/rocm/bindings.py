@@ -26,17 +26,17 @@ except Exception as e:
 
 
 def is_hip_available() -> bool:
-    """Executes the is hip available operation."""
+    """Execute the is hip available operation."""
     return _hip_lib is not None
 
 
 def is_rocblas_available() -> bool:
-    """Executes the is rocblas available operation."""
+    """Execute the is rocblas available operation."""
     return _rocblas_lib is not None
 
 
 def is_miopen_available() -> bool:
-    """Executes the is miopen available operation."""
+    """Execute the is miopen available operation."""
     return _miopen_lib is not None
 
 
@@ -48,7 +48,7 @@ miopenTensorDescriptor_t = ctypes.c_void_p
 
 
 def _register_hip_api(lib) -> None:
-    """Executes the  register hip api operation."""
+    """Execute the  register hip api operation."""
     if lib is None:
         return
     lib.hipMalloc.argtypes = [ctypes.POINTER(hipDeviceptr_t), ctypes.c_size_t]
@@ -79,7 +79,7 @@ def _register_hip_api(lib) -> None:
 
 
 def _register_rocblas_api(lib) -> None:
-    """Executes the  register rocblas api operation."""
+    """Execute the  register rocblas api operation."""
     if lib is None:
         return
     lib.rocblas_create_handle.argtypes = [ctypes.POINTER(rocblas_handle)]
@@ -120,7 +120,7 @@ def _register_rocblas_api(lib) -> None:
 
 
 def _register_miopen_api(lib) -> None:
-    """Executes the  register miopen api operation."""
+    """Execute the  register miopen api operation."""
     if lib is None:
         return
     lib.miopenCreate.argtypes = [ctypes.POINTER(miopenHandle_t)]
@@ -182,18 +182,18 @@ _register_miopen_api(_miopen_lib)
 
 
 def check_hip_error(result: int) -> None:
-    """Executes the check hip error operation."""
+    """Execute the check hip error operation."""
     if result != 0:
         raise RuntimeError(f"HIP Error: {result}")
 
 
 def check_rocblas_error(result: int) -> None:
-    """Executes the check rocblas error operation."""
+    """Execute the check rocblas error operation."""
     if result != 0:
         raise RuntimeError(f"rocBLAS Error: {result}")
 
 
 def check_miopen_error(result: int) -> None:
-    """Executes the check miopen error operation."""
+    """Execute the check miopen error operation."""
     if result != 0:
         raise RuntimeError(f"MIOpen Error: {result}")

@@ -1,22 +1,32 @@
+"""TVM submodule for AST and optimization."""
+
 from .analysis import topological_sort
 from .expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
 from .visitor import ExprVisitor
 
 
 class DotPrinter(ExprVisitor):
+    """Core class for TVM AST node or pass."""
+
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self.result = "digraph IR {\n"
         self.node_ids = {}
 
     def get_id(self, expr: Expr) -> str:
+        """Do the function."""
         if id(expr) not in self.node_ids:
             self.node_ids[id(expr)] = f"node_{len(self.node_ids)}"
         return self.node_ids[id(expr)]
 
     def _add_edge(self, src: Expr, dst: Expr, label: str = ""):
+        """Do the function."""
         self.result += f'  {self.get_id(src)} -> {self.get_id(dst)} [label="{label}"];\n'
 
     def visit(self, expr: Expr) -> None:
+        """Do the function."""
         nodes = topological_sort(expr)
 
         for node in nodes:
@@ -34,7 +44,7 @@ class DotPrinter(ExprVisitor):
                 for i, arg in enumerate(node.args):
                     self._add_edge(node, arg, f"arg_{i}")
             elif isinstance(node, TupleExpr):
-                label = "Tuple"
+                label = "tuple"
                 for i, f in enumerate(node.fields):
                     self._add_edge(node, f, f"field_{i}")
             elif isinstance(node, TupleGetItem):
@@ -62,7 +72,7 @@ class DotPrinter(ExprVisitor):
 
 
 def to_dot(expr: Expr) -> str:
-    """Returns a Graphviz DOT representation of the AST."""
+    """Return a Graphviz DOT representation of the AST."""
     printer = DotPrinter()
     printer.visit(expr)
     return printer.result

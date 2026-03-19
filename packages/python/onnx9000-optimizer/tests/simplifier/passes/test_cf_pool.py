@@ -592,7 +592,7 @@ def test_cf_final_lines():
     g.nodes.append(n2)
     cf._run_once(g)  # float
 
-    # List:
+    # list:
     # Use mock to return list
     t3 = Tensor("t3", (), DType.FLOAT32)
     t3.data = float("nan")
@@ -681,7 +681,7 @@ def test_cf_final_lines():
     g.nodes.append(n2)
     cf._run_once(g)  # float
 
-    # List:
+    # list:
     # Use mock to return list
     t3 = Tensor("t3", (), DType.FLOAT32)
     t3.data = float("nan")

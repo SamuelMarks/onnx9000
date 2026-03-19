@@ -77,3 +77,44 @@ def test_simplify_cmd_coverage():
             with pytest.raises(SystemExit) as e:
                 simplify_cmd(args)
             assert e.value.code == 1
+
+
+def test_tui_chat():
+    import sys
+
+    sys.path.insert(0, "apps/cli/src")
+    from tui_chat import start_chat_tui
+
+    start_chat_tui()
+
+
+def test_info_cmd_coverage(capsys):
+    from onnx9000_cli.main import info_cmd, info_webnn_cmd
+    import argparse
+    import pytest
+
+    args = argparse.Namespace()
+
+    # Test missing info_func
+    with pytest.raises(SystemExit) as e:
+        info_cmd(args)
+    assert e.value.code == 1
+    assert "Missing info subcommand" in capsys.readouterr().out
+
+    # Test info_webnn_cmd
+    info_webnn_cmd(args)
+    assert "WebNN API Diagnostic Info" in capsys.readouterr().out
+
+
+def test_info_cmd_with_func():
+    from onnx9000_cli.main import info_cmd
+    import argparse
+
+    args = argparse.Namespace()
+
+    def dummy_func(a):
+        a.called = True
+
+    args.info_func = dummy_func
+    info_cmd(args)
+    assert args.called

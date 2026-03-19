@@ -17,7 +17,7 @@ class Pass(ABC):
 
     @abstractmethod
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
 
 
 class QuantizationPass(Pass):
@@ -30,7 +30,7 @@ class QuantizationPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -72,7 +72,7 @@ class PruningPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -86,7 +86,7 @@ class GraphFusionPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -100,7 +100,7 @@ class MixedPrecisionPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -114,7 +114,7 @@ class LayoutConversionPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -128,7 +128,7 @@ class OrtPerfTuningPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -142,7 +142,7 @@ class OrtTransformerOptimizationPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -156,7 +156,7 @@ class ConstantFoldingPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -170,7 +170,7 @@ class StripIdentityPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -184,7 +184,7 @@ class StripUnusedInitializersPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model
 
 
@@ -198,5 +198,5 @@ class ExtractSymbolicShapesPass(Pass):
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
-        """Runs the pass on the model."""
+        """Run the pass on the model."""
         return model

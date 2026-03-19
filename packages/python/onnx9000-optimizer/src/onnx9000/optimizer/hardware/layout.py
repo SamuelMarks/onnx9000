@@ -22,7 +22,7 @@ class LayoutOptimizer:
 
     @staticmethod
     def inject_transpose(graph: Graph, input_name: str, output_name: str, perm: list[int]) -> Node:
-        """Helper to inject a Transpose node."""
+        """Inject a Transpose node into the graph."""
         node_name = f"Transpose_{input_name}_{output_name}"
         t_node = Node("Transpose", [input_name], [output_name], {"perm": perm}, name=node_name)
         graph.add_node(t_node)

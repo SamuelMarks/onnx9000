@@ -50,7 +50,7 @@ class Environment:
 
     @staticmethod
     def get_device() -> str:
-        """Returns the native device name/type."""
+        """Return the native device name/type."""
         return "CPU"
 
 
@@ -73,23 +73,17 @@ class ExecutionProvider(ABC):
 
     @abstractmethod
     def get_supported_nodes(self, graph: Graph) -> list[str]:
-        """
-        Return a list of node names from the graph that this provider can execute.
-        """
+        """Return a list of node names from the graph that this provider can execute."""
         return []
 
     @abstractmethod
     def allocate_tensors(self, tensors: list[Tensor]) -> None:
-        """
-        Allocate necessary buffers for the provided tensors on the target device.
-        """
+        """Allocate necessary buffers for the provided tensors on the target device."""
         return None
 
     @abstractmethod
     def execute(
         self, graph: Graph, context: ExecutionContext, inputs: dict[str, Tensor]
     ) -> dict[str, Tensor]:
-        """
-        Execute the graph (or a supported subgraph) and return the outputs.
-        """
+        """Execute the graph (or a supported subgraph) and return the outputs."""
         return {}

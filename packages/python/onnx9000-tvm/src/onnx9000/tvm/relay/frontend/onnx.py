@@ -1,4 +1,6 @@
-from typing import Any, Dict, List, Optional
+"""TVM submodule for AST and optimization."""
+
+from typing import Any, Optional
 
 import onnx
 from onnx.helper import tensor_dtype_to_np_dtype
@@ -12,6 +14,9 @@ class ONNXImporter:
     """Importer for ONNX models to WebRelay IR."""
 
     def __init__(self):
+        """Magic method."""
+        """Initialize."""
+        """Do the function."""
         self._nodes: dict[str, Expr] = {}
         # Op converters
         self._convert_map: dict[str, callable] = {
@@ -111,7 +116,7 @@ class ONNXImporter:
         }
 
     def _get_type(self, tensor_type) -> TensorType:
-        """Map ONNX tensor type to IR TensorType"""
+        """Map ONNX tensor type to IR TensorType."""
         dtype = onnx.helper.tensor_dtype_to_np_dtype(tensor_type.elem_type).name
         shape = []
         for d in tensor_type.shape.dim:
@@ -124,6 +129,7 @@ class ONNXImporter:
         return TensorType(shape=tuple(shape), dtype=dtype)
 
     def _parse_attr(self, attr: onnx.AttributeProto) -> Any:
+        """Do the function."""
         if attr.type == onnx.AttributeProto.FLOAT:
             return attr.f
         elif attr.type == onnx.AttributeProto.INT:
@@ -145,6 +151,7 @@ class ONNXImporter:
         return None
 
     def from_onnx(self, model: onnx.ModelProto, opset: int = None) -> IRModule:
+        """Do the function."""
         graph = model.graph
 
         # 1. Parse Inputs
@@ -210,288 +217,382 @@ class ONNXImporter:
     # --- Node Converters ---
 
     def _generic_convert(self, op_name: str, inputs: list[Expr], attrs: dict[str, Any]) -> Expr:
+        """Do the function."""
         return Call(op=Op(op_name), args=inputs, attrs=attrs)
 
     def _convert_add(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Add", inputs, attrs)
 
     def _convert_sub(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sub", inputs, attrs)
 
     def _convert_mul(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Multiply", inputs, attrs)
 
     def _convert_div(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Divide", inputs, attrs)
 
     def _convert_matmul(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("MatMul", inputs, attrs)
 
     def _convert_gemm(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Gemm", inputs, attrs)
 
     def _convert_conv(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Conv", inputs, attrs)
 
     def _convert_relu(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Relu", inputs, attrs)
 
     def _convert_leakyrelu(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("LeakyRelu", inputs, attrs)
 
     def _convert_sigmoid(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sigmoid", inputs, attrs)
 
     def _convert_tanh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Tanh", inputs, attrs)
 
     def _convert_softmax(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Softmax", inputs, attrs)
 
     def _convert_logsoftmax(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("LogSoftmax", inputs, attrs)
 
     def _convert_erf(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Erf", inputs, attrs)
 
     def _convert_gelu(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Gelu", inputs, attrs)
 
     def _convert_maxpool(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("MaxPool", inputs, attrs)
 
     def _convert_averagepool(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("AveragePool", inputs, attrs)
 
     def _convert_globalmaxpool(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GlobalMaxPool", inputs, attrs)
 
     def _convert_globalaveragepool(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GlobalAveragePool", inputs, attrs)
 
     def _convert_pad(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Pad", inputs, attrs)
 
     def _convert_reshape(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Reshape", inputs, attrs)
 
     def _convert_flatten(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Flatten", inputs, attrs)
 
     def _convert_transpose(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Transpose", inputs, attrs)
 
     def _convert_squeeze(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Squeeze", inputs, attrs)
 
     def _convert_unsqueeze(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Unsqueeze", inputs, attrs)
 
     def _convert_concat(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Concat", inputs, attrs)
 
     def _convert_split(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Split", inputs, attrs)
 
     def _convert_slice(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Slice", inputs, attrs)
 
     def _convert_gather(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Gather", inputs, attrs)
 
     def _convert_gatherelements(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GatherElements", inputs, attrs)
 
     def _convert_gathernd(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GatherND", inputs, attrs)
 
     def _convert_scatter(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Scatter", inputs, attrs)
 
     def _convert_scatterelements(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ScatterElements", inputs, attrs)
 
     def _convert_scatternd(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ScatterND", inputs, attrs)
 
     def _convert_cast(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Cast", inputs, attrs)
 
     def _convert_reducesum(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ReduceSum", inputs, attrs)
 
     def _convert_reducemean(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ReduceMean", inputs, attrs)
 
     def _convert_reducemax(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ReduceMax", inputs, attrs)
 
     def _convert_reducemin(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ReduceMin", inputs, attrs)
 
     def _convert_reduceprod(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ReduceProd", inputs, attrs)
 
     def _convert_argmax(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ArgMax", inputs, attrs)
 
     def _convert_argmin(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ArgMin", inputs, attrs)
 
     def _convert_shape(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Shape", inputs, attrs)
 
     def _convert_size(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Size", inputs, attrs)
 
     def _convert_constantofshape(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("ConstantOfShape", inputs, attrs)
 
     def _convert_expand(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Expand", inputs, attrs)
 
     def _convert_tile(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Tile", inputs, attrs)
 
     def _convert_where(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Where", inputs, attrs)
 
     def _convert_less(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Less", inputs, attrs)
 
     def _convert_lessorequal(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("LessOrEqual", inputs, attrs)
 
     def _convert_greater(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Greater", inputs, attrs)
 
     def _convert_greaterorequal(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GreaterOrEqual", inputs, attrs)
 
     def _convert_equal(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Equal", inputs, attrs)
 
     def _convert_not(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Not", inputs, attrs)
 
     def _convert_and(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("And", inputs, attrs)
 
     def _convert_or(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Or", inputs, attrs)
 
     def _convert_xor(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Xor", inputs, attrs)
 
     def _convert_isnan(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("IsNaN", inputs, attrs)
 
     def _convert_isinf(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("IsInf", inputs, attrs)
 
     def _convert_sign(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sign", inputs, attrs)
 
     def _convert_abs(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Abs", inputs, attrs)
 
     def _convert_neg(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Neg", inputs, attrs)
 
     def _convert_ceil(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Ceil", inputs, attrs)
 
     def _convert_floor(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Floor", inputs, attrs)
 
     def _convert_round(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Round", inputs, attrs)
 
     def _convert_sqrt(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sqrt", inputs, attrs)
 
     def _convert_pow(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Pow", inputs, attrs)
 
     def _convert_exp(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Exp", inputs, attrs)
 
     def _convert_log(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Log", inputs, attrs)
 
     def _convert_sin(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sin", inputs, attrs)
 
     def _convert_cos(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Cos", inputs, attrs)
 
     def _convert_tan(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Tan", inputs, attrs)
 
     def _convert_asin(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Asin", inputs, attrs)
 
     def _convert_acos(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Acos", inputs, attrs)
 
     def _convert_atan(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Atan", inputs, attrs)
 
     def _convert_sinh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Sinh", inputs, attrs)
 
     def _convert_cosh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Cosh", inputs, attrs)
 
     def _convert_asinh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Asinh", inputs, attrs)
 
     def _convert_acosh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Acosh", inputs, attrs)
 
     def _convert_atanh(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Atanh", inputs, attrs)
 
     def _convert_clip(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Clip", inputs, attrs)
 
     def _convert_batchnorm(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("BatchNormalization", inputs, attrs)
 
     def _convert_instancenorm(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("InstanceNormalization", inputs, attrs)
 
     def _convert_layernorm(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("LayerNormalization", inputs, attrs)
 
     def _convert_dropout(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Dropout", inputs, attrs)
 
     def _convert_rnn(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("RNN", inputs, attrs)
 
     def _convert_lstm(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("LSTM", inputs, attrs)
 
     def _convert_gru(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("GRU", inputs, attrs)
 
     def _convert_topk(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("TopK", inputs, attrs)
 
     def _convert_nonzero(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("NonZero", inputs, attrs)
 
     def _convert_resize(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("Resize", inputs, attrs)
 
     def _convert_onehot(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("OneHot", inputs, attrs)
 
     def _convert_cumsum(self, inputs, attrs):
+        """Do the function."""
         return self._generic_convert("CumSum", inputs, attrs)
 
 
 def from_onnx(model, opset: int = None) -> IRModule:
-    """Convenience function to import ONNX models."""
+    """Import ONNX models."""
     return ONNXImporter().from_onnx(model, opset)

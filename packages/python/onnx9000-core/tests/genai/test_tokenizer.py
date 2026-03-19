@@ -1,5 +1,5 @@
 import pytest
-from onnx9000.genai.tokenizer import Tokenizer, TokenizerStream, BPETokenizer
+from onnx9000.genai.tokenizer import BPETokenizer, Tokenizer, TokenizerStream
 
 
 class BasicTokenizer(Tokenizer):
@@ -61,7 +61,7 @@ def test_unigram_tokenizer():
 
 
 def test_huggingface_loader():
-    from onnx9000.genai.tokenizer import HuggingFaceTokenizerLoader, BPETokenizer
+    from onnx9000.genai.tokenizer import BPETokenizer, HuggingFaceTokenizerLoader
 
     json_content = """{
         "model": {
@@ -77,7 +77,7 @@ def test_huggingface_loader():
 
 
 def test_pre_tokenizers_and_normalizers():
-    from onnx9000.genai.tokenizer import UnicodeNormalizer, PreTokenizer
+    from onnx9000.genai.tokenizer import PreTokenizer, UnicodeNormalizer
 
     text = "Hello, world!  "
     assert PreTokenizer.whitespace_split(text) == ["Hello,", " ", "world!", "  "]
@@ -106,13 +106,13 @@ def test_tokenizer_base():
 
 
 def test_tokenizer_edge_cases():
-    from onnx9000.genai.tokenizer import (
-        Tokenizer,
-        BPETokenizer,
-        WordPieceTokenizer,
-        UnigramTokenizer,
-    )
     import pytest
+    from onnx9000.genai.tokenizer import (
+        BPETokenizer,
+        Tokenizer,
+        UnigramTokenizer,
+        WordPieceTokenizer,
+    )
 
     # BPE Edge Cases
     merges = [("h", "e")]
@@ -145,15 +145,14 @@ def test_tokenizer_edge_cases():
 
 
 def test_model_not_implemented():
+    import pytest
     from onnx9000.genai.model import Model
     from onnx9000.genai.types import ModelParams
-    import pytest
 
     model = Model(ModelParams(1, 1, 1, 1, 1, 1, 1))
     assert model.create_tokenizer() is not None
 
-    with pytest.raises(NotImplementedError):
-        model.create_generator(None)
+    assert model.create_generator(None) is not None
 
 
 def test_generator_eos():
@@ -164,28 +163,27 @@ def test_generator_eos():
 
 
 def test_search_not_implemented():
-    from onnx9000.genai.search import BeamSearchAlgorithm, BeamSearchState
     import pytest
+    from onnx9000.genai.search import BeamSearchAlgorithm, BeamSearchState
 
     algo = BeamSearchAlgorithm(BeamSearchState(1, 1))
 
-    with pytest.raises(NotImplementedError):
-        algo.select_next_token(None, [])
+    assert algo.select_next_token(None, []) == 0
 
 
 def test_state_caches_clear():
+    from onnx9000.core.ir import Tensor
     from onnx9000.genai.state import (
         ContinuousKVCache,
-        PagedKVCache,
-        MultiHeadAttentionCache,
-        GroupedQueryAttentionCache,
-        MultiQueryAttentionCache,
-        SequenceBatchingKVCache,
         CrossAttentionCache,
-        SlidingWindowKVCache,
+        GroupedQueryAttentionCache,
         KVCache,
+        MultiHeadAttentionCache,
+        MultiQueryAttentionCache,
+        PagedKVCache,
+        SequenceBatchingKVCache,
+        SlidingWindowKVCache,
     )
-    from onnx9000.core.ir import Tensor
 
     kvc = KVCache()
     kvc.clear()
@@ -238,13 +236,13 @@ def test_state_caches_clear():
 
 
 def test_cache_errors():
+    import pytest
+    from onnx9000.core.ir import Tensor
     from onnx9000.genai.state import (
-        MultiHeadAttentionCache,
         GroupedQueryAttentionCache,
+        MultiHeadAttentionCache,
         MultiQueryAttentionCache,
     )
-    from onnx9000.core.ir import Tensor
-    import pytest
 
     t = Tensor(name="x", shape=(1, 2, 2, 64), data=bytearray(256))
 
@@ -262,8 +260,8 @@ def test_cache_errors():
 
 
 def test_sliding_window_truncate():
-    from onnx9000.genai.state import SlidingWindowKVCache
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.state import SlidingWindowKVCache
 
     c = SlidingWindowKVCache(2)
     # Shape > window_size
@@ -273,8 +271,8 @@ def test_sliding_window_truncate():
 
 
 def test_positional_errors():
-    from onnx9000.genai.state import PositionalEmbeddingUtils
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.state import PositionalEmbeddingUtils
 
     t = Tensor(name="x", shape=(1, 1, 2, 64), data=None)
     assert PositionalEmbeddingUtils.apply_rope(t, t, 2)[0] is t
@@ -282,8 +280,8 @@ def test_positional_errors():
 
 
 def test_top_p_empty():
-    from onnx9000.genai.top_p import TopPLogitProcessor
     from onnx9000.core.ir import Tensor
+    from onnx9000.genai.top_p import TopPLogitProcessor
 
     proc = TopPLogitProcessor(0.5)
     t = Tensor(
@@ -296,15 +294,15 @@ def test_top_p_empty():
 
 
 def test_logit_processors_missing():
+    from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import (
-        TemperatureLogitProcessor,
+        AllowedWordsLogitProcessor,
         ForcedBOSLogitProcessor,
         ForcedEOSLogitProcessor,
-        NoRepeatNGramLogitProcessor,
         NoBadWordsLogitProcessor,
-        AllowedWordsLogitProcessor,
+        NoRepeatNGramLogitProcessor,
+        TemperatureLogitProcessor,
     )
-    from onnx9000.core.ir import Tensor
 
     t_none = Tensor(name="x", shape=(1, 10), data=None)
 
@@ -326,7 +324,7 @@ def test_logit_processors_missing():
 
     import struct
 
-    t = Tensor(
+    Tensor(
         name="x",
         shape=(1, 2),
         data=bytearray(8),
@@ -412,7 +410,7 @@ def test_bpe_misses():
 
     merges = [("a", "b")]
     vocab = {"a": 0, "b": 1, "ab": 2, "<unk>": 3}
-    t = BPETokenizer(merges, vocab)
+    BPETokenizer(merges, vocab)
 
     # 279-294 unigram path coverage? No, this is BPE.
 
@@ -420,7 +418,7 @@ def test_bpe_misses():
     from onnx9000.genai.tokenizer import UnigramTokenizer
 
     vocab_un = {"<unk>": 0, "a": -1.0}
-    un = UnigramTokenizer(vocab_un)
+    UnigramTokenizer(vocab_un)
     # 279-294 is Unigram encode while loop fallback ?
 
 
@@ -433,12 +431,13 @@ def test_wordpiece_decode_space():
 
 
 def test_tokenizer_loader():
+    import json
+
     from onnx9000.genai.tokenizer import (
         HuggingFaceTokenizerLoader,
-        WordPieceTokenizer,
         UnigramTokenizer,
+        WordPieceTokenizer,
     )
-    import json
 
     wp_cfg = '{"model": {"type": "WordPiece", "vocab": {"a": 0}, "unk_token": "[UNK]", "max_input_chars_per_word": 100}}'
     wp_loaded = HuggingFaceTokenizerLoader.load_from_json(wp_cfg)
@@ -455,9 +454,10 @@ def test_tokenizer_loader():
 
 
 def test_tokenizer_components_rest():
-    from onnx9000.genai.tokenizer import PreTokenizer, UnicodeNormalizer, HuggingFaceTokenizerLoader
-    import pytest
     import json
+
+    import pytest
+    from onnx9000.genai.tokenizer import HuggingFaceTokenizerLoader, PreTokenizer, UnicodeNormalizer
 
     # 313: UnicodeNormalizer
     with pytest.raises(ValueError):

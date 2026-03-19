@@ -12,7 +12,7 @@ class PostProcessor:
     """Target Post-Processing utility for Hummingbird transpilation."""
 
     def __init__(self, g: Graph, emit_zipmap: bool = True) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.g = g
         self.emit_zipmap = emit_zipmap
 
@@ -36,6 +36,7 @@ class PostProcessor:
 
     def apply_zipmap(self, probabilities_name: str, classlabels: list[Any]) -> None:
         """Parse ZipMap requirements and emit explicit output sequences.
+
         Provide configuration to omit ZipMap for raw tensor performance.
         """
         if not self.emit_zipmap:

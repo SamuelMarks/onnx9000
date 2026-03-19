@@ -1,5 +1,4 @@
-"""
-This module exposes the main components for scripting ONNX graphs.
+"""This module exposes the main components for scripting ONNX graphs.
 
 It provides the GraphBuilder, operational definitions, script parser, and
 symbolic variables used to construct and manipulate ONNX models programmatically.

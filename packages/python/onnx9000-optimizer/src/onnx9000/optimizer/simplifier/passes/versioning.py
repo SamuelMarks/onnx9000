@@ -2,10 +2,10 @@
 
 
 def apply_opset_fallbacks(graph) -> bool:
-    """Implements the apply_opset_fallbacks method or operation."""
+    """Implement the apply_opset_fallbacks method or operation."""
     return False
 
 
 def enforce_opset_18(graph) -> bool:
-    """Implements the enforce_opset_18 method or operation."""
+    """Implement the enforce_opset_18 method or operation."""
     return False

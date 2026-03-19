@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -11,7 +10,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("Constant")
 def generate_constant(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_constant method or operation."""
+    """Implement the generate_constant method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -42,7 +41,7 @@ def generate_constant(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("ConstantOfShape")
 def generate_constant_of_shape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_constant_of_shape method or operation."""
+    """Implement the generate_constant_of_shape method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -85,7 +84,7 @@ def generate_constant_of_shape(node: Node, ctx: "onnx9000.backends.codegen.Gener
 
 @registry.register_op("Concat")
 def generate_concat(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_concat method or operation."""
+    """Implement the generate_concat method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -136,7 +135,7 @@ def generate_concat(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
 
 @registry.register_op("Split")
 def generate_split(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_split method or operation."""
+    """Implement the generate_split method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     axis = node.attributes.get("axis", 0)
 
@@ -190,7 +189,7 @@ def generate_split(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 @registry.register_op("Gather")
 def generate_gather(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gather method or operation."""
+    """Implement the generate_gather method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     indices = ctx.get_tensor_name(node.inputs[1])
     out = ctx.get_tensor_name(node.outputs[0])
@@ -246,7 +245,7 @@ def generate_gather(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
 
 @registry.register_op("QuantizeLinear")
 def generate_quantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_quantize_linear method or operation."""
+    """Implement the generate_quantize_linear method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     y_scale = ctx.get_tensor_name(node.inputs[1])
     y_zero_point = ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -288,7 +287,7 @@ def generate_quantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("DequantizeLinear")
 def generate_dequantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_dequantize_linear method or operation."""
+    """Implement the generate_dequantize_linear method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     x_scale = ctx.get_tensor_name(node.inputs[1])
     x_zero_point = ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -330,7 +329,7 @@ def generate_dequantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Gener
 
 @registry.register_op("EyeLike")
 def generate_eye_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_eye_like method or operation."""
+    """Implement the generate_eye_like method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -346,7 +345,7 @@ def generate_eye_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("NonMaxSuppression")
 def generate_non_max_suppression(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_non_max_suppression method or operation."""
+    """Implement the generate_non_max_suppression method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -361,7 +360,7 @@ def generate_non_max_suppression(node: Node, ctx: "onnx9000.backends.codegen.Gen
 
 @registry.register_op("NonZero")
 def generate_non_zero(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_non_zero method or operation."""
+    """Implement the generate_non_zero method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -410,7 +409,7 @@ def generate_non_zero(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("RandomNormal")
 def generate_random_normal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_random_normal method or operation."""
+    """Implement the generate_random_normal method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -428,7 +427,7 @@ def generate_random_normal(node: Node, ctx: "onnx9000.backends.codegen.Generator
 
 @registry.register_op("RandomNormalLike")
 def generate_random_normal_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_random_normal_like method or operation."""
+    """Implement the generate_random_normal_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -453,7 +452,7 @@ def generate_random_normal_like(node: Node, ctx: "onnx9000.backends.codegen.Gene
 
 @registry.register_op("RandomUniform")
 def generate_random_uniform(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_random_uniform method or operation."""
+    """Implement the generate_random_uniform method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -471,7 +470,7 @@ def generate_random_uniform(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
 @registry.register_op("RandomUniformLike")
 def generate_random_uniform_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_random_uniform_like method or operation."""
+    """Implement the generate_random_uniform_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -496,7 +495,7 @@ def generate_random_uniform_like(node: Node, ctx: "onnx9000.backends.codegen.Gen
 
 @registry.register_op("Range")
 def generate_range(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_range method or operation."""
+    """Implement the generate_range method or operation."""
     start = ctx.get_tensor_name(node.inputs[0])
     limit = ctx.get_tensor_name(node.inputs[1])
     delta = ctx.get_tensor_name(node.inputs[2])
@@ -534,7 +533,7 @@ def generate_range(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 @registry.register_op("RegexFullMatch")
 def generate_regex_full_match(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_regex_full_match method or operation."""
+    """Implement the generate_regex_full_match method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -546,7 +545,7 @@ def generate_regex_full_match(node: Node, ctx: "onnx9000.backends.codegen.Genera
 
 @registry.register_op("Resize")
 def generate_resize(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_resize method or operation."""
+    """Implement the generate_resize method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     ctx.get_tensor_name(node.inputs[1]) if len(node.inputs) > 1 else None
     ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -572,7 +571,7 @@ def generate_resize(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
 
 @registry.register_op("ReverseSequence")
 def generate_reverse_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_reverse_sequence method or operation."""
+    """Implement the generate_reverse_sequence method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -588,7 +587,7 @@ def generate_reverse_sequence(node: Node, ctx: "onnx9000.backends.codegen.Genera
 
 @registry.register_op("Scatter")
 def generate_scatter(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_scatter method or operation."""
+    """Implement the generate_scatter method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -604,7 +603,7 @@ def generate_scatter(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("ScatterElements")
 def generate_scatter_elements(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_scatter_elements method or operation."""
+    """Implement the generate_scatter_elements method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     indices = ctx.get_tensor_name(node.inputs[1])
     updates = ctx.get_tensor_name(node.inputs[2])
@@ -669,7 +668,7 @@ def generate_scatter_elements(node: Node, ctx: "onnx9000.backends.codegen.Genera
 
 @registry.register_op("ScatterND")
 def generate_scatter_nd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_scatter_nd method or operation."""
+    """Implement the generate_scatter_nd method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     indices = ctx.get_tensor_name(node.inputs[1])
     updates = ctx.get_tensor_name(node.inputs[2])
@@ -726,7 +725,7 @@ def generate_scatter_nd(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("GatherElements")
 def generate_gather_elements(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gather_elements method or operation."""
+    """Implement the generate_gather_elements method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     indices = ctx.get_tensor_name(node.inputs[1])
     out = ctx.get_tensor_name(node.outputs[0])
@@ -758,7 +757,7 @@ def generate_gather_elements(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("GatherND")
 def generate_gathernd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gathernd method or operation."""
+    """Implement the generate_gathernd method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     indices = ctx.get_tensor_name(node.inputs[1])
     out = ctx.get_tensor_name(node.outputs[0])
@@ -836,7 +835,7 @@ def generate_gridsample(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("GroupNormalization")
 def generate_group_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_group_normalization method or operation."""
+    """Implement the generate_group_normalization method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2])
@@ -888,7 +887,7 @@ def generate_hannwindow(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("Identity")
 def generate_identity(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_identity method or operation."""
+    """Implement the generate_identity method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -909,7 +908,7 @@ def generate_identity(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 
 def generate_same_shape_type_ops(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_same_shape_type_ops method or operation."""
+    """Implement the generate_same_shape_type_ops method or operation."""
     if not node.inputs:
         return ""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -939,7 +938,7 @@ def generate_imagedecoder(node: Node, ctx: "onnx9000.backends.codegen.Generator"
 
 @registry.register_op("LRN")
 def generate_lrn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_lrn method or operation."""
+    """Implement the generate_lrn method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -979,7 +978,7 @@ def generate_negativeloglikelihoodloss(
 
 @registry.register_op("OneHot")
 def generate_onehot(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_onehot method or operation."""
+    """Implement the generate_onehot method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     depth = ctx.get_tensor_name(node.inputs[1])
     values = ctx.get_tensor_name(node.inputs[2])
@@ -1090,7 +1089,7 @@ def generate_softmaxcrossentropyloss(node: Node, ctx: "onnx9000.backends.codegen
 
 @registry.register_op("Sum")
 def generate_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sum method or operation."""
+    """Implement the generate_sum method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -1113,7 +1112,7 @@ def generate_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("Swish")
 def generate_swish(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_swish method or operation."""
+    """Implement the generate_swish method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1147,7 +1146,7 @@ def generate_tfidfvectorizer(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("Tile")
 def generate_tile(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_tile method or operation."""
+    """Implement the generate_tile method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1359,7 +1358,7 @@ def generate_momentum(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("Slice")
 def generate_slice(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_slice method or operation."""
+    """Implement the generate_slice method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1480,7 +1479,7 @@ def generate_slice(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 @registry.register_op("DepthToSpace")
 def generate_depthtospace(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_depthtospace method or operation."""
+    """Implement the generate_depthtospace method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1551,7 +1550,7 @@ def generate_depthtospace(node: Node, ctx: "onnx9000.backends.codegen.Generator"
 
 @registry.register_op("SpaceToDepth")
 def generate_spacetodepth2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_spacetodepth2 method or operation."""
+    """Implement the generate_spacetodepth2 method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1611,7 +1610,7 @@ def generate_spacetodepth2(node: Node, ctx: "onnx9000.backends.codegen.Generator
 
 @registry.register_op("Compress")
 def generate_compress(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_compress method or operation."""
+    """Implement the generate_compress method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     condition = ctx.get_tensor_name(node.inputs[1])
     out = ctx.get_tensor_name(node.outputs[0])
@@ -1684,7 +1683,7 @@ def generate_compress(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("CumSum")
 def generate_cumsum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_cumsum method or operation."""
+    """Implement the generate_cumsum method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     axis_name = ctx.get_tensor_name(node.inputs[1])
     out = ctx.get_tensor_name(node.outputs[0])
@@ -1758,7 +1757,7 @@ def generate_cumsum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
 
 @registry.register_op("Dropout")
 def generate_dropout(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_dropout method or operation."""
+    """Implement the generate_dropout method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -1780,7 +1779,7 @@ def generate_dropout(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("Trilu")
 def generate_trilu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_trilu method or operation."""
+    """Implement the generate_trilu method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     k_name = ctx.get_tensor_name(node.inputs[1]) if len(node.inputs) > 1 else None
     out = ctx.get_tensor_name(node.outputs[0])
@@ -1814,7 +1813,7 @@ def generate_trilu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 @registry.register_op("Pad")
 def generate_pad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_pad method or operation."""
+    """Implement the generate_pad method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     pads_name = ctx.get_tensor_name(node.inputs[1])
     val_name = ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -1872,7 +1871,7 @@ def generate_pad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("Unique")
 def generate_unique(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_unique method or operation."""
+    """Implement the generate_unique method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]

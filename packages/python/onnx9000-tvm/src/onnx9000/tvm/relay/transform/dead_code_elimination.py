@@ -1,14 +1,17 @@
+"""TVM submodule for AST and optimization."""
+
 from ..expr import Expr, Let, Var
 from ..visitor import ExprMutator
 
 
 class DeadCodeElimination(ExprMutator):
-    """
-    Eliminates dead code.
+    """Eliminates dead code.
+
     Specifically, it removes Let bindings where the variable is not used in the body.
     """
 
     def visit_let(self, expr: Let) -> Expr:
+        """Do the function."""
         # First process the body
         new_body = self.visit(expr.body)
 

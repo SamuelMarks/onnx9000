@@ -1,10 +1,10 @@
-"""Provides linear module functionality."""
+"""Provide linear module functionality."""
 
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
 def _convert_linear_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert linear regressor operation."""
+    """Execute the convert linear regressor operation."""
     out_name = graph._uniquify_tensor_name("linear_regressor_out")
     node = Node("LinearRegressor", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
     if hasattr(estimator, "coef_"):
@@ -20,115 +20,115 @@ def _convert_linear_regressor(estimator: object, input_names: list[str], graph: 
 
 
 def convert_linear_regression(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert linear regression operation."""
+    """Execute the convert linear regression operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_ridge(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert ridge operation."""
+    """Execute the convert ridge operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_ridge_cv(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert ridge cv operation."""
+    """Execute the convert ridge cv operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_lasso(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert lasso operation."""
+    """Execute the convert lasso operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_lasso_cv(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert lasso cv operation."""
+    """Execute the convert lasso cv operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_elastic_net(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert elastic net operation."""
+    """Execute the convert elastic net operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_elastic_net_cv(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert elastic net cv operation."""
+    """Execute the convert elastic net cv operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_lars(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert lars operation."""
+    """Execute the convert lars operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_lasso_lars(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert lasso lars operation."""
+    """Execute the convert lasso lars operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_omp(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert omp operation."""
+    """Execute the convert omp operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_bayesian_ridge(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert bayesian ridge operation."""
+    """Execute the convert bayesian ridge operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_ard_regression(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert ard regression operation."""
+    """Execute the convert ard regression operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_passive_aggressive_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert passive aggressive regressor operation."""
+    """Execute the convert passive aggressive regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_sgd_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert sgd regressor operation."""
+    """Execute the convert sgd regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_huber_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert huber regressor operation."""
+    """Execute the convert huber regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_theil_sen_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert theil sen regressor operation."""
+    """Execute the convert theil sen regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_quantile_regressor(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert quantile regressor operation."""
+    """Execute the convert quantile regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_poisson_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert poisson regressor operation."""
+    """Execute the convert poisson regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_gamma_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert gamma regressor operation."""
+    """Execute the convert gamma regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def convert_tweedie_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert tweedie regressor operation."""
+    """Execute the convert tweedie regressor operation."""
     return _convert_linear_regressor(estimator, input_names, graph)
 
 
 def _convert_linear_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert linear classifier operation."""
+    """Execute the convert linear classifier operation."""
     out_label = graph._uniquify_tensor_name("label")
     out_prob = graph._uniquify_tensor_name("probabilities")
     node = Node(
@@ -173,41 +173,41 @@ def _convert_linear_classifier(
 def convert_logistic_regression(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert logistic regression operation."""
+    """Execute the convert logistic regression operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_logistic_regression_cv(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert logistic regression cv operation."""
+    """Execute the convert logistic regression cv operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_passive_aggressive_classifier(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert passive aggressive classifier operation."""
+    """Execute the convert passive aggressive classifier operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_perceptron(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert perceptron operation."""
+    """Execute the convert perceptron operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_ridge_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert ridge classifier operation."""
+    """Execute the convert ridge classifier operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_ridge_classifier_cv(
     estimator: object, input_names: list[str], graph: Graph
 ) -> list[str]:
-    """Executes the convert ridge classifier cv operation."""
+    """Execute the convert ridge classifier cv operation."""
     return _convert_linear_classifier(estimator, input_names, graph)
 
 
 def convert_sgd_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
-    """Executes the convert sgd classifier operation."""
+    """Execute the convert sgd classifier operation."""
     return _convert_linear_classifier(estimator, input_names, graph)

@@ -1,5 +1,6 @@
+"""Provide functionality for this module."""
+
 import math
-from typing import List
 
 from ..core.ir import Tensor
 from .logit_processors import LogitProcessor
@@ -9,11 +10,13 @@ class TopPLogitProcessor(LogitProcessor):
     """Filters logits based on top-P (Nucleus) sampling."""
 
     def __init__(self, top_p: float):
+        """Initialize the instance."""
         if top_p <= 0.0 or top_p > 1.0:
             raise ValueError("top_p must be strictly positive and <= 1.0")
         self.top_p = top_p
 
     def __call__(self, input_ids: list[int], logits: Tensor) -> Tensor:
+        """Execute the callable."""
         if self.top_p >= 1.0 or logits.data is None:
             return logits
 

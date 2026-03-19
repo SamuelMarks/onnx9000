@@ -19,7 +19,7 @@ class CUDAMemoryPlanner:
     """Manages memory allocations on the CUDA device."""
 
     def __init__(self) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.allocations: dict[str, CUdeviceptr] = {}
         self.arena_ptr = CUdeviceptr(0)
         self.offsets: dict[str, tuple[int, int]] = {}
@@ -30,14 +30,14 @@ class CUDAMemoryPlanner:
     def allocate_static(
         self, name: str, size_in_bytes: int, shape: tuple[int, ...], dtype: np.dtype
     ) -> None:
-        """Executes the allocate static operation."""
+        """Execute the allocate static operation."""
         aligned_size = size_in_bytes + 255 & ~255
         self.offsets[name] = (self.current_offset, aligned_size)
         self.current_offset += aligned_size
         self.tensors_shape_dtype[name] = (shape, dtype)
 
     def build_arena(self) -> None:
-        """Executes the build arena operation."""
+        """Execute the build arena operation."""
         if not is_cuda_available():
             logger.warning("CUDA not available, skipping arena build.")
             return
@@ -64,7 +64,7 @@ class CUDAMemoryPlanner:
         return ptr
 
     def get_tensor_ptr(self, name: str) -> CUdeviceptr:
-        """Executes the get tensor ptr operation."""
+        """Execute the get tensor ptr operation."""
         if name in self.dynamic_allocations:
             return self.dynamic_allocations[name][0]
         if name in self.offsets:
@@ -73,7 +73,7 @@ class CUDAMemoryPlanner:
         raise RuntimeError(f"Tensor {name} not found in CUDA memory planner")
 
     def set_tensor(self, name: str, host_data: np.ndarray, stream: ctypes.c_void_p = None) -> None:
-        """Executes the set tensor operation."""
+        """Execute the set tensor operation."""
         if not is_cuda_available():
             if not hasattr(self, "_cpu_fallback_tensors"):
                 self._cpu_fallback_tensors = {}
@@ -117,7 +117,7 @@ class CUDAMemoryPlanner:
             self.tensors_shape_dtype[name] = (host_data.shape, host_data.dtype)
 
     def get_host_tensor(self, name: str, stream: ctypes.c_void_p = None) -> np.ndarray:
-        """Executes the get host tensor operation."""
+        """Execute the get host tensor operation."""
         if (
             not is_cuda_available()
             and hasattr(self, "_cpu_fallback_tensors")
@@ -151,12 +151,12 @@ class CUDAMemoryPlanner:
         return host_data
 
     def synchronize_stream(self, stream: ctypes.c_void_p) -> None:
-        """Provide explicit memory barrier primitives (`cudaStreamSynchronize`)"""
+        """Provide explicit memory barrier primitives (`cudaStreamSynchronize`)."""
         if is_cuda_available() and stream:
             check_cuda_error(_cuda_lib.cuStreamSynchronize(stream))
 
     def cleanup(self) -> None:
-        """Executes the cleanup operation."""
+        """Execute the cleanup operation."""
         if not is_cuda_available():
             return
         if self.arena_ptr.value != 0:
@@ -167,14 +167,14 @@ class CUDAMemoryPlanner:
         self.dynamic_allocations.clear()
 
     def __del__(self) -> None:
-        """Implements the __del__ method or operation."""
+        """Implement the __del__ method or operation."""
         try:
             self.cleanup()
         except Exception as e:
             logger.debug(f"Exception during CUDAMemoryPlanner cleanup: {e}")
 
     def allocate_dynamic(self, name: str, size: int, shape: tuple[int, ...], dtype: str) -> None:
-        """Executes the allocate dynamic operation."""
+        """Execute the allocate dynamic operation."""
         if not is_cuda_available():
             return
         if name in self.dynamic_allocations:

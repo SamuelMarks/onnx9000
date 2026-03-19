@@ -1,3 +1,5 @@
+"""Eliminate dead code from the ONNX computational graph."""
+
 from __future__ import annotations
 
 """Provides dce.py module functionality."""
@@ -11,23 +13,24 @@ logger = logging.getLogger(__name__)
 
 
 class DCEPass(GraphPass):
+    """Dead Code Elimination (DCE).
+
+    Removes nodes whose outputs are never consumed by any other node
+    and are not in the graph's explicitly defined outputs.
+    """
+
     def __init__(
         self,
         unused_inputs_to_prune: list[str] | None = None,
         nodes_to_preserve: list[str] | None = None,
     ):
+        """Initialize dead code elimination pass."""
         self.nodes_to_preserve = set(nodes_to_preserve or [])
         super().__init__()
         self.unused_inputs_to_prune = set(unused_inputs_to_prune or [])
 
-    """
-    Dead Code Elimination (DCE).
-    Removes nodes whose outputs are never consumed by any other node
-    and are not in the graph's explicitly defined outputs.
-    """
-
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         while True:
             local_changed = self._run_once(graph)
@@ -46,7 +49,7 @@ class DCEPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         changed = False
 
         # Identify nodes that produce each tensor
@@ -123,14 +126,14 @@ class DCEPass(GraphPass):
 
 
 class IdentityEliminationPass(GraphPass):
-    """
-    Detects and removes explicit Identity nodes and redundant operations
+    """Detects and removes explicit Identity nodes and redundant operations.
+
     like Cast(Cast(X)), Reshape(Reshape(X)), Transpose(Transpose(X)), etc.
     Rewires inputs to consumers.
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         while True:
             local_changed = self._run_once(graph)
@@ -149,7 +152,7 @@ class IdentityEliminationPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         changed = False
         producers = {}
         for node in graph.nodes:
@@ -466,7 +469,7 @@ class IdentityEliminationPass(GraphPass):
         return changed
 
     def _rewire(self, graph: Graph, old_name: str, new_name: str) -> None:
-        """Implements the _rewire method or operation."""
+        """Implement the _rewire method or operation."""
         for node in graph.nodes:
             for i, inp in enumerate(node.inputs):
                 if inp == old_name:
@@ -481,7 +484,7 @@ def dead_code_elimination(
     unused_inputs_to_prune: list[str] | None = None,
     nodes_to_preserve: list[str] | None = None,
 ) -> None:
-    """Implements the dead_code_elimination method or operation."""
+    """Implement the dead_code_elimination method or operation."""
     while True:
         dce_changed = DCEPass(unused_inputs_to_prune, nodes_to_preserve).run(graph)
         id_changed = IdentityEliminationPass().run(graph)
@@ -491,12 +494,10 @@ def dead_code_elimination(
 
 
 class ControlFlowFoldingPass(GraphPass):
-    """
-    Folds 'If' and 'Loop' control flow nodes explicitly when their conditions are statically known constants.
-    """
+    """Folds 'If' and 'Loop' control flow nodes explicitly when their conditions are statically known constants."""
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         while True:
             local_changed = self._run_once(graph)
@@ -515,7 +516,7 @@ class ControlFlowFoldingPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         changed = False
         nodes_to_remove = set()
 
@@ -888,7 +889,7 @@ class ControlFlowFoldingPass(GraphPass):
         return changed
 
     def _rewire(self, graph: Graph, old_name: str, new_name: str) -> None:
-        """Implements the _rewire method or operation."""
+        """Implement the _rewire method or operation."""
         for node in graph.nodes:
             for i, inp in enumerate(node.inputs):
                 if inp == old_name:

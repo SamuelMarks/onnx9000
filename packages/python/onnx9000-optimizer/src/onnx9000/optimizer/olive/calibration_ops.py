@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph
 
 
 class CalibrationLoop:
-    """Implements calibration and evaluation logic."""
+    """Implement calibration and evaluation logic."""
 
     @staticmethod
     def parse_datasets(data_type: str) -> list:

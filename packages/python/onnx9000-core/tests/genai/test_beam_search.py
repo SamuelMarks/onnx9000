@@ -1,19 +1,18 @@
 def test_beam_search_logic():
     """Test beam search logic end-to-end with GeneratorParams and basic state."""
-    from onnx9000.genai.types import GeneratorParams
-    from onnx9000.genai.search import BeamSearchState
-    from onnx9000.genai.state import State
-    from onnx9000.genai.state import KVCache
     from onnx9000.core.ir import Graph, Tensor
+    from onnx9000.genai.search import BeamSearchState
+    from onnx9000.genai.state import KVCache, State
+    from onnx9000.genai.types import GeneratorParams
 
     params = GeneratorParams(max_length=10, num_beams=2, num_return_sequences=1)
 
-    # Set up basic graph and state
+    # set up basic graph and state
     graph = Graph("mock_graph")
     cache = KVCache()
-    state = State(graph, cache)
+    State(graph, cache)
 
-    # Set up beam search state
+    # set up beam search state
     beam_state = BeamSearchState(
         num_beams=params.num_beams, num_return_sequences=params.num_return_sequences
     )

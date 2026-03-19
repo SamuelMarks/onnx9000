@@ -8,7 +8,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 def record_op(
     op_type: str, inputs: list[Any], attributes: Optional[dict[str, Any]] = None
 ) -> Tensor:
-    """Records the operation and returns a dummy output tensor."""
+    """Record the operation and returns a dummy output tensor."""
     attributes = attributes or {}
     tensors = [inp for inp in inputs if hasattr(inp, "dtype")]
     dtype = tensors[0].dtype if tensors else None
@@ -16,277 +16,277 @@ def record_op(
 
 
 def relu(x: Tensor) -> Tensor:
-    """Computes Rectified Linear Unit."""
+    """Compute Rectified Linear Unit."""
     return record_op("Relu", [x])
 
 
 def abs(x: Tensor) -> Tensor:
-    """Computes Absolute Value."""
+    """Compute Absolute Value."""
     return record_op("Abs", [x])
 
 
 def acos(x: Tensor) -> Tensor:
-    """Computes Inverse Cosine."""
+    """Compute Inverse Cosine."""
     return record_op("Acos", [x])
 
 
 def acosh(x: Tensor) -> Tensor:
-    """Computes Inverse Hyperbolic Cosine."""
+    """Compute Inverse Hyperbolic Cosine."""
     return record_op("Acosh", [x])
 
 
 def asin(x: Tensor) -> Tensor:
-    """Computes Inverse Sine."""
+    """Compute Inverse Sine."""
     return record_op("Asin", [x])
 
 
 def asinh(x: Tensor) -> Tensor:
-    """Computes Inverse Hyperbolic Sine."""
+    """Compute Inverse Hyperbolic Sine."""
     return record_op("Asinh", [x])
 
 
 def atan(x: Tensor) -> Tensor:
-    """Computes Inverse Tangent."""
+    """Compute Inverse Tangent."""
     return record_op("Atan", [x])
 
 
 def atanh(x: Tensor) -> Tensor:
-    """Computes Inverse Hyperbolic Tangent."""
+    """Compute Inverse Hyperbolic Tangent."""
     return record_op("Atanh", [x])
 
 
 def cos(x: Tensor) -> Tensor:
-    """Computes Cosine."""
+    """Compute Cosine."""
     return record_op("Cos", [x])
 
 
 def cosh(x: Tensor) -> Tensor:
-    """Computes Hyperbolic Cosine."""
+    """Compute Hyperbolic Cosine."""
     return record_op("Cosh", [x])
 
 
 def sin(x: Tensor) -> Tensor:
-    """Computes Sine."""
+    """Compute Sine."""
     return record_op("Sin", [x])
 
 
 def sinh(x: Tensor) -> Tensor:
-    """Computes Hyperbolic Sine."""
+    """Compute Hyperbolic Sine."""
     return record_op("Sinh", [x])
 
 
 def tan(x: Tensor) -> Tensor:
-    """Computes Tangent."""
+    """Compute Tangent."""
     return record_op("Tan", [x])
 
 
 def max(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Max."""
+    """Compute Max."""
     return record_op("Max", [x, y])
 
 
 def min(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Min."""
+    """Compute Min."""
     return record_op("Min", [x, y])
 
 
 def where(condition: Tensor, x: Tensor, y: Tensor) -> Tensor:
-    """Computes Where."""
+    """Compute Where."""
     return record_op("Where", [condition, x, y])
 
 
 def cast(x: Tensor, to_type: int) -> Tensor:
-    """Computes Cast."""
+    """Compute Cast."""
     return record_op("Cast", [x], {"to": to_type})
 
 
 def cast_like(x: Tensor, target: Tensor) -> Tensor:
-    """Computes CastLike."""
+    """Compute CastLike."""
     return record_op("CastLike", [x, target])
 
 
 def bitshift(x: Tensor, y: Tensor, direction: str) -> Tensor:
-    """Computes BitShift."""
+    """Compute BitShift."""
     return record_op("BitShift", [x, y], {"direction": direction})
 
 
 def bitwise_and(x: Tensor, y: Tensor) -> Tensor:
-    """Computes BitwiseAnd."""
+    """Compute BitwiseAnd."""
     return record_op("BitwiseAnd", [x, y])
 
 
 def bitwise_not(x: Tensor) -> Tensor:
-    """Computes BitwiseNot."""
+    """Compute BitwiseNot."""
     return record_op("BitwiseNot", [x])
 
 
 def bitwise_or(x: Tensor, y: Tensor) -> Tensor:
-    """Computes BitwiseOr."""
+    """Compute BitwiseOr."""
     return record_op("BitwiseOr", [x, y])
 
 
 def bitwise_xor(x: Tensor, y: Tensor) -> Tensor:
-    """Computes BitwiseXor."""
+    """Compute BitwiseXor."""
     return record_op("BitwiseXor", [x, y])
 
 
 def ceil(x: Tensor) -> Tensor:
-    """Computes Ceil."""
+    """Compute Ceil."""
     return record_op("Ceil", [x])
 
 
 def floor(x: Tensor) -> Tensor:
-    """Computes Floor."""
+    """Compute Floor."""
     return record_op("Floor", [x])
 
 
 def isinf(x: Tensor) -> Tensor:
-    """Computes IsInf."""
+    """Compute IsInf."""
     return record_op("IsInf", [x])
 
 
 def isnan(x: Tensor) -> Tensor:
-    """Computes IsNaN."""
+    """Compute IsNaN."""
     return record_op("IsNaN", [x])
 
 
 def mod(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Modulo."""
+    """Compute Modulo."""
     return record_op("Mod", [x, y])
 
 
 def neg(x: Tensor) -> Tensor:
-    """Computes Negation."""
+    """Compute Negation."""
     return record_op("Neg", [x])
 
 
 def pow(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Power."""
+    """Compute Power."""
     return record_op("Pow", [x, y])
 
 
 def reciprocal(x: Tensor) -> Tensor:
-    """Computes Reciprocal."""
+    """Compute Reciprocal."""
     return record_op("Reciprocal", [x])
 
 
 def round(x: Tensor) -> Tensor:
-    """Computes Round."""
+    """Compute Round."""
     return record_op("Round", [x])
 
 
 def sign(x: Tensor) -> Tensor:
-    """Computes Sign."""
+    """Compute Sign."""
     return record_op("Sign", [x])
 
 
 def sigmoid(x: Tensor) -> Tensor:
-    """Computes Sigmoid."""
+    """Compute Sigmoid."""
     return record_op("Sigmoid", [x])
 
 
 def tanh(x: Tensor) -> Tensor:
-    """Computes Hyperbolic Tangent."""
+    """Compute Hyperbolic Tangent."""
     return record_op("Tanh", [x])
 
 
 def elu(x: Tensor, alpha: float = 1.0) -> Tensor:
-    """Computes Elu."""
+    """Compute Elu."""
     return record_op("Elu", [x], {"alpha": alpha})
 
 
 def celu(x: Tensor, alpha: float = 1.0) -> Tensor:
-    """Computes Celu."""
+    """Compute Celu."""
     return record_op("Celu", [x], {"alpha": alpha})
 
 
 def leaky_relu(x: Tensor, alpha: float = 0.01) -> Tensor:
-    """Computes LeakyRelu."""
+    """Compute LeakyRelu."""
     return record_op("LeakyRelu", [x], {"alpha": alpha})
 
 
 def selu(x: Tensor, alpha: float = 1.67326, gamma: float = 1.0507) -> Tensor:
-    """Computes Selu."""
+    """Compute Selu."""
     return record_op("Selu", [x], {"alpha": alpha, "gamma": gamma})
 
 
 def softplus(x: Tensor) -> Tensor:
-    """Computes Softplus."""
+    """Compute Softplus."""
     return record_op("Softplus", [x])
 
 
 def softsign(x: Tensor) -> Tensor:
-    """Computes Softsign."""
+    """Compute Softsign."""
     return record_op("Softsign", [x])
 
 
 def thresholded_relu(x: Tensor, alpha: float = 1.0) -> Tensor:
-    """Computes ThresholdedRelu."""
+    """Compute ThresholdedRelu."""
     return record_op("ThresholdedRelu", [x], {"alpha": alpha})
 
 
 def mish(x: Tensor) -> Tensor:
-    """Computes Mish."""
+    """Compute Mish."""
     return record_op("Mish", [x])
 
 
 def hard_sigmoid(x: Tensor, alpha: float = 0.2, beta: float = 0.5) -> Tensor:
-    """Computes HardSigmoid."""
+    """Compute HardSigmoid."""
     return record_op("HardSigmoid", [x], {"alpha": alpha, "beta": beta})
 
 
 def hard_swish(x: Tensor) -> Tensor:
-    """Computes HardSwish."""
+    """Compute HardSwish."""
     return record_op("HardSwish", [x])
 
 
 def hardmax(x: Tensor, axis: int = -1) -> Tensor:
-    """Computes Hardmax."""
+    """Compute Hardmax."""
     return record_op("Hardmax", [x], {"axis": axis})
 
 
 def softmax(x: Tensor, axis: int = -1) -> Tensor:
-    """Computes Softmax."""
+    """Compute Softmax."""
     return record_op("Softmax", [x], {"axis": axis})
 
 
 def log_softmax(x: Tensor, axis: int = -1) -> Tensor:
-    """Computes LogSoftmax."""
+    """Compute LogSoftmax."""
     return record_op("LogSoftmax", [x], {"axis": axis})
 
 
 def prelu(x: Tensor, slope: Tensor) -> Tensor:
-    """Computes PRelu."""
+    """Compute PRelu."""
     return record_op("PRelu", [x, slope])
 
 
 def rnn(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
-    """Computes RNN."""
+    """Compute RNN."""
     return record_op("RNN", [x, w, r])
 
 
 def lstm(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
-    """Computes LSTM."""
+    """Compute LSTM."""
     return record_op("LSTM", [x, w, r])
 
 
 def gru(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
-    """Computes GRU."""
+    """Compute GRU."""
     return record_op("GRU", [x, w, r])
 
 
 def sequence_construct(inputs: list[Tensor]) -> Tensor:
-    """Computes SequenceConstruct."""
+    """Compute SequenceConstruct."""
     return record_op("SequenceConstruct", inputs)
 
 
 def sequence_empty(dtype: int) -> Tensor:
-    """Computes SequenceEmpty."""
+    """Compute SequenceEmpty."""
     return record_op("SequenceEmpty", [], {"dtype": dtype})
 
 
 def sequence_insert(seq: Tensor, tensor: Tensor, position: Optional[Tensor] = None) -> Tensor:
-    """Computes SequenceInsert."""
+    """Compute SequenceInsert."""
     inputs = [seq, tensor]
     if position is not None:
         inputs.append(position)
@@ -294,32 +294,32 @@ def sequence_insert(seq: Tensor, tensor: Tensor, position: Optional[Tensor] = No
 
 
 def sequence_map(seq: Tensor) -> Tensor:
-    """Computes SequenceMap."""
+    """Compute SequenceMap."""
     return record_op("SequenceMap", [seq])
 
 
 def concat_from_sequence(seq: Tensor, axis: int, new_axis: int = 0) -> Tensor:
-    """Computes ConcatFromSequence."""
+    """Compute ConcatFromSequence."""
     return record_op("ConcatFromSequence", [seq], {"axis": axis, "new_axis": new_axis})
 
 
 def constant(value: Any, dtype: int = 1) -> Tensor:
-    """Computes Constant."""
+    """Compute Constant."""
     return record_op("Constant", [], {"value": value, "dtype": dtype})
 
 
 def constant_of_shape(input: Tensor, value: Any = 0.0, dtype: int = 1) -> Tensor:
-    """Computes ConstantOfShape."""
+    """Compute ConstantOfShape."""
     return record_op("ConstantOfShape", [input], {"value": value, "dtype": dtype})
 
 
 def concat(inputs: list[Tensor], axis: int) -> Tensor:
-    """Computes Concat."""
+    """Compute Concat."""
     return record_op("Concat", inputs, {"axis": axis})
 
 
 def quantize_linear(x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] = None) -> Tensor:
-    """Computes QuantizeLinear."""
+    """Compute QuantizeLinear."""
     inputs = [x, y_scale]
     if y_zero_point is not None:
         inputs.append(y_zero_point)
@@ -327,7 +327,7 @@ def quantize_linear(x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] =
 
 
 def dequantize_linear(x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor] = None) -> Tensor:
-    """Computes DequantizeLinear."""
+    """Compute DequantizeLinear."""
     inputs = [x, x_scale]
     if x_zero_point is not None:
         inputs.append(x_zero_point)
@@ -335,7 +335,7 @@ def dequantize_linear(x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor]
 
 
 def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
-    """Computes ConvTranspose."""
+    """Compute ConvTranspose."""
     inputs = [x, w]
     if b is not None:
         inputs.append(b)
@@ -343,7 +343,7 @@ def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: A
 
 
 def blackman_window(size: Tensor, output_datatype: int = 1, periodic: int = 1) -> Tensor:
-    """Computes BlackmanWindow."""
+    """Compute BlackmanWindow."""
     return record_op(
         "BlackmanWindow",
         [size],
@@ -359,7 +359,7 @@ def deform_conv(
     mask: Optional[Tensor] = None,
     **kwargs: Any,
 ) -> Tensor:
-    """Computes DeformConv."""
+    """Compute DeformConv."""
     inputs = [x, w, offset]
     if b is not None:
         inputs.append(b)
@@ -371,22 +371,22 @@ def deform_conv(
 
 
 def lp_normalization(input: Tensor, axis: int = -1, p: int = 2) -> Tensor:
-    """Computes LpNormalization."""
+    """Compute LpNormalization."""
     return record_op("LpNormalization", [input], {"axis": axis, "p": p})
 
 
 def lp_pool(input: Tensor, kernel_shape: list[int], p: float = 2.0, **kwargs: Any) -> Tensor:
-    """Computes LpPool."""
+    """Compute LpPool."""
     return record_op("LpPool", [input], {"kernel_shape": kernel_shape, "p": p, **kwargs})
 
 
 def det(x: Tensor) -> Tensor:
-    """Computes Det."""
+    """Compute Det."""
     return record_op("Det", [x])
 
 
 def eye_like(input: Tensor, dtype: int = 1, k: int = 0) -> Tensor:
-    """Computes EyeLike."""
+    """Compute EyeLike."""
     return record_op("EyeLike", [input], {"dtype": dtype, "k": k})
 
 
@@ -398,7 +398,7 @@ def layer_normalization(
     epsilon: float = 1e-05,
     stash_type: int = 1,
 ) -> Tensor:
-    """Computes LayerNormalization."""
+    """Compute LayerNormalization."""
     inputs = [x, scale]
     if b is not None:
         inputs.append(b)
@@ -410,29 +410,29 @@ def layer_normalization(
 
 
 def mean_variance_normalization(x: Tensor, axes: list[int]) -> Tensor:
-    """Computes MeanVarianceNormalization."""
+    """Compute MeanVarianceNormalization."""
     return record_op("MeanVarianceNormalization", [x], {"axes": axes})
 
 
 def instance_normalization(
     input: Tensor, scale: Tensor, B: Tensor, epsilon: float = 1e-05
 ) -> Tensor:
-    """Computes InstanceNormalization."""
+    """Compute InstanceNormalization."""
     return record_op("InstanceNormalization", [input, scale, B], {"epsilon": epsilon})
 
 
 def less_or_equal(a: Tensor, b: Tensor) -> Tensor:
-    """Computes LessOrEqual."""
+    """Compute LessOrEqual."""
     return record_op("LessOrEqual", [a, b])
 
 
 def greater_or_equal(a: Tensor, b: Tensor) -> Tensor:
-    """Computes GreaterOrEqual."""
+    """Compute GreaterOrEqual."""
     return record_op("GreaterOrEqual", [a, b])
 
 
 def mean(inputs: list[Tensor]) -> Tensor:
-    """Computes Mean."""
+    """Compute Mean."""
     return record_op("Mean", inputs)
 
 
@@ -444,13 +444,13 @@ def mel_weight_matrix(
     upper_edge_hertz: Tensor,
     output_datatype: int = 1,
 ) -> Tensor:
-    """Computes MelWeightMatrix."""
+    """Compute MelWeightMatrix."""
     inputs = [num_mel_bins, dft_length, sample_rate, lower_edge_hertz, upper_edge_hertz]
     return record_op("MelWeightMatrix", inputs, {"output_datatype": output_datatype})
 
 
 def multinomial(input: Tensor, dtype: int = 6, sample_size: int = 1, seed: float = 0.0) -> Tensor:
-    """Computes Multinomial."""
+    """Compute Multinomial."""
     return record_op(
         "Multinomial",
         [input],
@@ -466,7 +466,7 @@ def non_max_suppression(
     score_threshold: Optional[Tensor] = None,
     center_point_box: int = 0,
 ) -> Tensor:
-    """Computes NonMaxSuppression."""
+    """Compute NonMaxSuppression."""
     inputs = [boxes, scores]
     if max_output_boxes_per_class is not None:
         inputs.append(max_output_boxes_per_class)
@@ -482,7 +482,7 @@ def non_max_suppression(
 
 
 def non_zero(x: Tensor) -> Tensor:
-    """Computes NonZero."""
+    """Compute NonZero."""
     return record_op("NonZero", [x])
 
 
@@ -493,7 +493,7 @@ def random_normal(
     seed: float = 0.0,
     shape: list[int] = None,
 ) -> Tensor:
-    """Computes RandomNormal."""
+    """Compute RandomNormal."""
     if shape is None:
         shape = []
     return record_op(
@@ -510,7 +510,7 @@ def random_normal_like(
     scale: float = 1.0,
     seed: float = 0.0,
 ) -> Tensor:
-    """Computes RandomNormalLike."""
+    """Compute RandomNormalLike."""
     attrs: dict[str, Any] = {"mean": mean, "scale": scale, "seed": seed}
     if dtype is not None:
         attrs["dtype"] = dtype
@@ -524,7 +524,7 @@ def random_uniform(
     seed: float = 0.0,
     shape: list[int] = None,
 ) -> Tensor:
-    """Computes RandomUniform."""
+    """Compute RandomUniform."""
     if shape is None:
         shape = []
     return record_op(
@@ -541,7 +541,7 @@ def random_uniform_like(
     low: float = 0.0,
     seed: float = 0.0,
 ) -> Tensor:
-    """Computes RandomUniformLike."""
+    """Compute RandomUniformLike."""
     attrs: dict[str, Any] = {"high": high, "low": low, "seed": seed}
     if dtype is not None:
         attrs["dtype"] = dtype
@@ -549,7 +549,7 @@ def random_uniform_like(
 
 
 def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
-    """Computes ReduceSumSquare."""
+    """Compute ReduceSumSquare."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
         attrs["axes"] = axes
@@ -557,7 +557,7 @@ def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: 
 
 
 def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
-    """Computes ReduceL1."""
+    """Compute ReduceL1."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
         attrs["axes"] = axes
@@ -565,7 +565,7 @@ def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
 
 
 def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
-    """Computes ReduceL2."""
+    """Compute ReduceL2."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
         attrs["axes"] = axes
@@ -573,7 +573,7 @@ def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
 
 
 def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
-    """Computes ReduceLogSum."""
+    """Compute ReduceLogSum."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
         attrs["axes"] = axes
@@ -581,7 +581,7 @@ def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int
 
 
 def reduce_log_sum_exp(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
-    """Computes ReduceLogSumExp."""
+    """Compute ReduceLogSumExp."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
         attrs["axes"] = axes
@@ -589,12 +589,12 @@ def reduce_log_sum_exp(data: Tensor, axes: Optional[list[int]] = None, keepdims:
 
 
 def range_op(start: Tensor, limit: Tensor, delta: Tensor) -> Tensor:
-    """Computes Range."""
+    """Compute Range."""
     return record_op("Range", [start, limit, delta])
 
 
 def regex_full_match(x: Tensor, pattern: str) -> Tensor:
-    """Computes RegexFullMatch."""
+    """Compute RegexFullMatch."""
     return record_op("RegexFullMatch", [x], {"pattern": pattern})
 
 
@@ -605,7 +605,7 @@ def resize(
     sizes: Optional[Tensor] = None,
     **kwargs: Any,
 ) -> Tensor:
-    """Computes Resize."""
+    """Compute Resize."""
     inputs = [x]
     if roi is not None:
         inputs.append(roi)
@@ -623,7 +623,7 @@ def resize(
 def reverse_sequence(
     input: Tensor, sequence_lens: Tensor, batch_axis: int = 1, time_axis: int = 0
 ) -> Tensor:
-    """Computes ReverseSequence."""
+    """Compute ReverseSequence."""
     return record_op(
         "ReverseSequence",
         [input, sequence_lens],
@@ -632,7 +632,7 @@ def reverse_sequence(
 
 
 def scatter(data: Tensor, indices: Tensor, updates: Tensor, axis: int = 0) -> Tensor:
-    """Computes Scatter."""
+    """Compute Scatter."""
     return record_op("Scatter", [data, indices, updates], {"axis": axis})
 
 
@@ -643,7 +643,7 @@ def scatter_elements(
     axis: int = 0,
     reduction: str = "none",
 ) -> Tensor:
-    """Computes ScatterElements."""
+    """Compute ScatterElements."""
     return record_op(
         "ScatterElements",
         [data, indices, updates],
@@ -652,22 +652,22 @@ def scatter_elements(
 
 
 def scatter_nd(data: Tensor, indices: Tensor, updates: Tensor, reduction: str = "none") -> Tensor:
-    """Computes ScatterND."""
+    """Compute ScatterND."""
     return record_op("ScatterND", [data, indices, updates], {"reduction": reduction})
 
 
 def shrink(input: Tensor, bias: float = 0.0, lambd: float = 0.5) -> Tensor:
-    """Computes Shrink."""
+    """Compute Shrink."""
     return record_op("Shrink", [input], {"bias": bias, "lambd": lambd})
 
 
 def size(data: Tensor) -> Tensor:
-    """Computes Size."""
+    """Compute Size."""
     return record_op("Size", [data])
 
 
 def string_concat(x: Tensor, y: Tensor) -> Tensor:
-    """Computes StringConcat."""
+    """Compute StringConcat."""
     return record_op("StringConcat", [x, y])
 
 
@@ -678,7 +678,7 @@ def string_normalizer(
     locale: str = "",
     stopwords: Optional[list[str]] = None,
 ) -> Tensor:
-    """Computes StringNormalizer."""
+    """Compute StringNormalizer."""
     attrs: dict[str, Any] = {
         "case_change_action": case_change_action,
         "is_case_sensitive": is_case_sensitive,
@@ -690,12 +690,12 @@ def string_normalizer(
 
 
 def string_split(x: Tensor, delimiter: str = "", maxsplit: int = -1) -> Tensor:
-    """Computes StringSplit."""
+    """Compute StringSplit."""
     return record_op("StringSplit", [x], {"delimiter": delimiter, "maxsplit": maxsplit})
 
 
 def trilu(input: Tensor, k: Optional[Tensor] = None, upper: int = 1) -> Tensor:
-    """Computes Trilu."""
+    """Compute Trilu."""
     inputs = [input]
     if k is not None:
         inputs.append(k)
@@ -703,12 +703,12 @@ def trilu(input: Tensor, k: Optional[Tensor] = None, upper: int = 1) -> Tensor:
 
 
 def topk(X: Tensor, K: Tensor, axis: int = -1, largest: int = 1, sorted: int = 1) -> Tensor:
-    """Computes TopK."""
+    """Compute TopK."""
     return record_op("TopK", [X, K], {"axis": axis, "largest": largest, "sorted": sorted})
 
 
 def unique(X: Tensor, axis: Optional[int] = None, sorted: int = 1) -> Tensor:
-    """Computes Unique."""
+    """Compute Unique."""
     attrs = {"sorted": sorted}
     if axis is not None:
         attrs["axis"] = axis
@@ -716,14 +716,14 @@ def unique(X: Tensor, axis: Optional[int] = None, sorted: int = 1) -> Tensor:
 
 
 def sequence_at(input_sequence: Tensor, position: Tensor) -> Tensor:
-    """Computes SequenceAt."""
+    """Compute SequenceAt."""
     return record_op("SequenceAt", [input_sequence, position])
 
 
 def split_to_sequence(
     input: Tensor, split: Optional[Tensor] = None, axis: int = 0, keepdims: int = 1
 ) -> Tensor:
-    """Computes SplitToSequence."""
+    """Compute SplitToSequence."""
     inputs = [input]
     if split is not None:
         inputs.append(split)
@@ -731,7 +731,7 @@ def split_to_sequence(
 
 
 def sequence_erase(input_sequence: Tensor, position: Optional[Tensor] = None) -> Tensor:
-    """Computes SequenceErase."""
+    """Compute SequenceErase."""
     inputs = [input_sequence]
     if position is not None:
         inputs.append(position)
@@ -739,17 +739,17 @@ def sequence_erase(input_sequence: Tensor, position: Optional[Tensor] = None) ->
 
 
 def sequence_length(input_sequence: Tensor) -> Tensor:
-    """Computes SequenceLength."""
+    """Compute SequenceLength."""
     return record_op("SequenceLength", [input_sequence])
 
 
 def affine_grid(theta: Tensor, size: Tensor, align_corners: int = 0) -> Tensor:
-    """Computes AffineGrid."""
+    """Compute AffineGrid."""
     return record_op("AffineGrid", [theta, size], {"align_corners": align_corners})
 
 
 def argmax(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: int = 0) -> Tensor:
-    """Computes ArgMax."""
+    """Compute ArgMax."""
     return record_op(
         "ArgMax",
         [data],
@@ -758,7 +758,7 @@ def argmax(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: in
 
 
 def argmin(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: int = 0) -> Tensor:
-    """Computes ArgMin."""
+    """Compute ArgMin."""
     return record_op(
         "ArgMin",
         [data],
@@ -767,12 +767,12 @@ def argmin(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: in
 
 
 def attention(Q: Tensor, K: Tensor, V: Tensor, **kwargs: Any) -> Tensor:
-    """Computes Attention."""
+    """Compute Attention."""
     return record_op("Attention", [Q, K, V], kwargs)
 
 
 def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> Tensor:
-    """Computes Bernoulli."""
+    """Compute Bernoulli."""
     attrs: dict[str, Any] = {"seed": seed}
     if dtype is not None:
         attrs["dtype"] = dtype
@@ -780,7 +780,7 @@ def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> 
 
 
 def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]] = None) -> Tensor:
-    """Computes CenterCropPad."""
+    """Compute CenterCropPad."""
     attrs = {}
     if axes is not None:
         attrs["axes"] = axes
@@ -788,7 +788,7 @@ def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]]
 
 
 def clip(input: Tensor, min: Optional[Tensor] = None, max: Optional[Tensor] = None) -> Tensor:
-    """Computes Clip."""
+    """Compute Clip."""
     inputs = [input]
     if min is not None:
         inputs.append(min)
@@ -807,7 +807,7 @@ def col2im(
     pads: Optional[list[int]] = None,
     strides: Optional[list[int]] = None,
 ) -> Tensor:
-    """Computes Col2Im."""
+    """Compute Col2Im."""
     attrs = {}
     if dilations is not None:
         attrs["dilations"] = dilations
@@ -819,7 +819,7 @@ def col2im(
 
 
 def compress(input: Tensor, condition: Tensor, axis: Optional[int] = None) -> Tensor:
-    """Computes Compress."""
+    """Compute Compress."""
     attrs = {}
     if axis is not None:
         attrs["axis"] = axis
@@ -833,7 +833,7 @@ def conv_integer(
     w_zero_point: Optional[Tensor] = None,
     **kwargs: Any,
 ) -> Tensor:
-    """Computes ConvInteger."""
+    """Compute ConvInteger."""
     inputs = [x, w]
     if x_zero_point is not None:
         inputs.append(x_zero_point)
@@ -845,7 +845,7 @@ def conv_integer(
 
 
 def cumsum(x: Tensor, axis: Tensor, exclusive: int = 0, reverse: int = 0) -> Tensor:
-    """Computes CumSum."""
+    """Compute CumSum."""
     return record_op("CumSum", [x, axis], {"exclusive": exclusive, "reverse": reverse})
 
 
@@ -856,7 +856,7 @@ def dft(
     inverse: int = 0,
     onesided: int = 0,
 ) -> Tensor:
-    """Computes DFT."""
+    """Compute DFT."""
     inputs = [input]
     if dft_length is not None:
         inputs.append(dft_length)
@@ -869,7 +869,7 @@ def dropout(
     training_mode: Optional[Tensor] = None,
     seed: int = 0,
 ) -> Tensor:
-    """Computes Dropout."""
+    """Compute Dropout."""
     inputs = [data]
     if ratio is not None:
         inputs.append(ratio)
@@ -891,7 +891,7 @@ def average_pool(
     strides: Optional[list[int]] = None,
     pads: Optional[list[int]] = None,
 ) -> Tensor:
-    """Computes AveragePool."""
+    """Compute AveragePool."""
     attr = {"kernel_shape": kernel_shape}
     if strides:
         attr["strides"] = strides
@@ -906,7 +906,7 @@ def max_pool(
     strides: Optional[list[int]] = None,
     pads: Optional[list[int]] = None,
 ) -> Tensor:
-    """Computes MaxPool."""
+    """Compute MaxPool."""
     attr = {"kernel_shape": kernel_shape}
     if strides:
         attr["strides"] = strides
@@ -916,12 +916,12 @@ def max_pool(
 
 
 def global_average_pool(x: Tensor) -> Tensor:
-    """Computes GlobalAveragePool."""
+    """Compute GlobalAveragePool."""
     return record_op("GlobalAveragePool", [x])
 
 
 def global_max_pool(x: Tensor) -> Tensor:
-    """Computes GlobalMaxPool."""
+    """Compute GlobalMaxPool."""
     return record_op("GlobalMaxPool", [x])
 
 
@@ -932,57 +932,57 @@ def transpose(x: Tensor, perm: Optional[list[int]] = None) -> Tensor:
 
 
 def equal(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Equal."""
+    """Compute Equal."""
     return record_op("Equal", [x, y])
 
 
 def greater(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Greater."""
+    """Compute Greater."""
     return record_op("Greater", [x, y])
 
 
 def less(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Less."""
+    """Compute Less."""
     return record_op("Less", [x, y])
 
 
 def and_(x: Tensor, y: Tensor) -> Tensor:
-    """Computes And."""
+    """Compute And."""
     return record_op("And", [x, y])
 
 
 def or_(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Or."""
+    """Compute Or."""
     return record_op("Or", [x, y])
 
 
 def not_(x: Tensor) -> Tensor:
-    """Computes Not."""
+    """Compute Not."""
     return record_op("Not", [x])
 
 
 def add(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Add."""
+    """Compute Add."""
     return record_op("Add", [x, y])
 
 
 def sub(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Sub."""
+    """Compute Sub."""
     return record_op("Sub", [x, y])
 
 
 def mul(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Mul."""
+    """Compute Mul."""
     return record_op("Mul", [x, y])
 
 
 def div(x: Tensor, y: Tensor) -> Tensor:
-    """Computes Div."""
+    """Compute Div."""
     return record_op("Div", [x, y])
 
 
 def matmul(x: Tensor, y: Tensor) -> Tensor:
-    """Computes MatMul."""
+    """Compute MatMul."""
     return record_op("MatMul", [x, y])
 
 
@@ -995,7 +995,7 @@ def gemm(
     trans_a: int = 0,
     trans_b: int = 0,
 ) -> Tensor:
-    """Computes Gemm."""
+    """Compute Gemm."""
     inputs = [x, y]
     if c is not None:
         inputs.append(c)
@@ -1004,7 +1004,7 @@ def gemm(
 
 
 def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
-    """Computes the sum of the input tensor's element along the provided axes."""
+    """Compute the sum of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
         attributes["axes"] = axes
@@ -1012,7 +1012,7 @@ def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
-    """Computes the mean of the input tensor's element along the provided axes."""
+    """Compute the mean of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
         attributes["axes"] = axes
@@ -1020,7 +1020,7 @@ def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tr
 
 
 def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
-    """Computes ReduceMax."""
+    """Compute ReduceMax."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
         attributes["axes"] = axes
@@ -1028,7 +1028,7 @@ def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
-    """Computes ReduceMin."""
+    """Compute ReduceMin."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
         attributes["axes"] = axes
@@ -1036,7 +1036,7 @@ def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 def reduce_prod(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
-    """Computes ReduceProd."""
+    """Compute ReduceProd."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
         attributes["axes"] = axes
@@ -1050,7 +1050,7 @@ def conv(
     strides: Optional[list[int]] = None,
     pads: Optional[list[int]] = None,
 ) -> Tensor:
-    """Computes an N-D convolution."""
+    """Compute an N-D convolution."""
     if strides is None:
         strides = [1, 1]
     if pads is None:
@@ -1063,22 +1063,22 @@ def conv(
 
 
 def dynamic_quantize_linear(x: Tensor) -> Any:
-    """Computes DynamicQuantizeLinear."""
+    """Compute DynamicQuantizeLinear."""
     return record_op("DynamicQuantizeLinear", [x])
 
 
 def einsum(inputs: list[Tensor], equation: str) -> Tensor:
-    """Computes Einsum."""
+    """Compute Einsum."""
     return record_op("Einsum", inputs, {"equation": equation})
 
 
 def erf(input: Tensor) -> Tensor:
-    """Computes Erf."""
+    """Compute Erf."""
     return record_op("Erf", [input])
 
 
 def exp(input: Tensor) -> Tensor:
-    """Computes Exp."""
+    """Compute Exp."""
     return record_op("Exp", [input])
 
 
@@ -1094,7 +1094,7 @@ def slice(
     axes: Tensor = None,
     steps: Tensor = None,
 ) -> Tensor:
-    """Computes Slice."""
+    """Compute Slice."""
     inputs = [data, starts, ends]
     if axes is not None:
         inputs.append(axes)
@@ -1104,47 +1104,47 @@ def slice(
 
 
 def tile(input: Tensor, repeats: Tensor) -> Tensor:
-    """Computes Tile."""
+    """Compute Tile."""
     return record_op("Tile", [input, repeats])
 
 
 def gather(data: Tensor, indices: Tensor, axis: int = 0) -> Tensor:
-    """Computes Gather."""
+    """Compute Gather."""
     return record_op("Gather", [data, indices], {"axis": axis})
 
 
 def gather_nd(data: Tensor, indices: Tensor, batch_dims: int = 0) -> Tensor:
-    """Computes GatherND."""
+    """Compute GatherND."""
     return record_op("GatherND", [data, indices], {"batch_dims": batch_dims})
 
 
 def gather_elements(data: Tensor, indices: Tensor, axis: int = 0) -> Tensor:
-    """Computes GatherElements."""
+    """Compute GatherElements."""
     return record_op("GatherElements", [data, indices], {"axis": axis})
 
 
 def depth_to_space(data: Tensor, blocksize: int, mode: str = "DCR") -> Tensor:
-    """Computes DepthToSpace."""
+    """Compute DepthToSpace."""
     return record_op("DepthToSpace", [data], {"blocksize": blocksize, "mode": mode})
 
 
 def space_to_depth(data: Tensor, blocksize: int) -> Tensor:
-    """Computes SpaceToDepth."""
+    """Compute SpaceToDepth."""
     return record_op("SpaceToDepth", [data], {"blocksize": blocksize})
 
 
 def sum(data: list[Tensor]) -> Tensor:
-    """Computes Sum."""
+    """Compute Sum."""
     return record_op("Sum", data)
 
 
 def swish(x: Tensor) -> Tensor:
-    """Computes Swish."""
+    """Compute Swish."""
     return record_op("Swish", [x])
 
 
 def one_hot(indices: Tensor, depth: Tensor, values: Tensor, axis: int = -1) -> Tensor:
-    """Computes OneHot."""
+    """Compute OneHot."""
     return record_op("OneHot", [indices, depth, values], {"axis": axis})
 
 
@@ -1155,14 +1155,14 @@ def lrn(
     bias: float = 1.0,
     size: int = 1,
 ) -> Tensor:
-    """Computes LRN."""
+    """Compute LRN."""
     return record_op("LRN", [x], {"alpha": alpha, "beta": beta, "bias": bias, "size": size})
 
 
 def group_normalization(
     x: Tensor, scale: Tensor, b: Tensor, epsilon: float = 1e-05, num_groups: int = 1
 ) -> Tensor:
-    """Computes GroupNormalization."""
+    """Compute GroupNormalization."""
     return record_op(
         "GroupNormalization",
         [x, scale, b],

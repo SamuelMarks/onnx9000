@@ -7,7 +7,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("SequenceEmpty")
 def generate_sequence_empty(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_empty method or operation."""
+    """Implement the generate_sequence_empty method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -21,7 +21,7 @@ def generate_sequence_empty(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
 @registry.register_op("SequenceErase")
 def generate_sequence_erase(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_erase method or operation."""
+    """Implement the generate_sequence_erase method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -35,7 +35,7 @@ def generate_sequence_erase(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
 @registry.register_op("SequenceInsert")
 def generate_sequence_insert(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_insert method or operation."""
+    """Implement the generate_sequence_insert method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -49,7 +49,7 @@ def generate_sequence_insert(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("SequenceLength")
 def generate_sequence_length(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_length method or operation."""
+    """Implement the generate_sequence_length method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -58,7 +58,7 @@ def generate_sequence_length(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("SequenceMap")
 def generate_sequence_map(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_map method or operation."""
+    """Implement the generate_sequence_map method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -72,7 +72,7 @@ def generate_sequence_map(node: Node, ctx: "onnx9000.backends.codegen.Generator"
 
 @registry.register_op("ConcatFromSequence")
 def generate_concat_from_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_concat_from_sequence method or operation."""
+    """Implement the generate_concat_from_sequence method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -87,7 +87,7 @@ def generate_concat_from_sequence(node: Node, ctx: "onnx9000.backends.codegen.Ge
 
 @registry.register_op("SplitToSequence")
 def generate_split_to_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_split_to_sequence method or operation."""
+    """Implement the generate_split_to_sequence method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -101,7 +101,7 @@ def generate_split_to_sequence(node: Node, ctx: "onnx9000.backends.codegen.Gener
 
 @registry.register_op("SequenceConstruct")
 def generate_sequence_construct(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_construct method or operation."""
+    """Implement the generate_sequence_construct method or operation."""
     ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     ctx.tensor_offsets.get(node.outputs[0], 0)
@@ -114,7 +114,7 @@ def generate_sequence_construct(node: Node, ctx: "onnx9000.backends.codegen.Gene
 
 @registry.register_op("SequenceAt")
 def generate_sequence_at(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_sequence_at method or operation."""
+    """Implement the generate_sequence_at method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)

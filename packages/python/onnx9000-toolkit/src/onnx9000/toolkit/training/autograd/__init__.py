@@ -1,5 +1,4 @@
-"""
-Autograd Sub-Package
+"""Autograd Sub-Package.
 
 This module provides the necessary primitives and graph builders to perform
 automatic differentiation (autograd) on ONNX IR graphs. It dynamically constructs

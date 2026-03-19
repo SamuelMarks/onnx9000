@@ -10,14 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 class FusionPass(GraphPass):
-    """
-    Operator Fusion Passes.
+    """Operator Fusion Passes.
+
     Combines adjacent operations into fused kernels for improved memory
     locality and performance.
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implements the run method or operation."""
+        """Implement the run method or operation."""
         changed = False
         while True:
             local_changed = self._run_once(graph)
@@ -27,17 +27,15 @@ class FusionPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         return False
 
 
 class PatternMatcherFusion(FusionPass):
-    """
-    A Pattern Matching DSL for Operator Fusion.
-    """
+    """A Pattern Matching DSL for Operator Fusion."""
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implements the _run_once method or operation."""
+        """Implement the _run_once method or operation."""
         changed = False
         usages = {}
         for node in graph.nodes:
@@ -47,7 +45,7 @@ class PatternMatcherFusion(FusionPass):
             usages[out] = usages.get(out, 0) + 1
 
         def match_chain(start_node: Node, ops: list[str]) -> Optional[list[Node]]:
-            """Implements the match_chain method or operation."""
+            """Implement the match_chain method or operation."""
             chain = [start_node]
             curr = start_node
             if start_node.op_type != ops[0]:
@@ -259,6 +257,7 @@ class PatternMatcherFusion(FusionPass):
 
 
 def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
+    """Fuse a BatchNormalization node directly into a preceding GEMM or MatMul node."""
     import numpy as np
     from onnx9000.core.ir import Constant
 
@@ -395,6 +394,7 @@ def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
 
 
 def fuse_batchnorm_into_conv(graph: Graph) -> bool:
+    """Fuse a BatchNormalization node directly into a preceding Convolution node."""
     import numpy as np
     from onnx9000.core.ir import Constant
 
@@ -529,6 +529,7 @@ def fuse_batchnorm_into_conv(graph: Graph) -> bool:
 
 
 def map_aten_arange_to_range(graph: Graph) -> bool:
+    """Convert PyTorch's ATen arange operator into the standard ONNX Range operator."""
     changed = False
     for node in graph.nodes:
         if node.op_type == "arange" and getattr(node, "domain", "") == "aten":
@@ -557,7 +558,7 @@ def map_aten_arange_to_range(graph: Graph) -> bool:
 
 
 def run_all_fusions(graph: Graph) -> None:
-    """Implements the run_all_fusions method or operation."""
+    """Implement the run_all_fusions method or operation."""
     PatternMatcherFusion().run(graph)
     while (
         fuse_batchnorm_into_conv(graph)
@@ -568,12 +569,12 @@ def run_all_fusions(graph: Graph) -> None:
 
 
 def fuse_linear_activation(graph: Graph) -> None:
-    """Implements the fuse_linear_activation method or operation."""
+    """Implement the fuse_linear_activation method or operation."""
     run_all_fusions(graph)
 
 
 def fuse_consecutive_transpose(graph: Graph) -> None:
-    """Implements the fuse_consecutive_transpose method or operation."""
+    """Implement the fuse_consecutive_transpose method or operation."""
     changed = True
     while changed:
         changed = False
@@ -614,5 +615,5 @@ def fuse_consecutive_transpose(graph: Graph) -> None:
 
 
 def fuse_matmul_add(graph: Graph) -> None:
-    """Implements the fuse_matmul_add method or operation."""
+    """Implement the fuse_matmul_add method or operation."""
     run_all_fusions(graph)

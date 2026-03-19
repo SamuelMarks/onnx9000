@@ -1,5 +1,4 @@
-"""
-C++ Code Generation Utilities
+"""C++ Code Generation Utilities.
 
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
@@ -11,7 +10,7 @@ from onnx9000.core.registry import global_registry as registry
 
 @registry.register_op("Attention")
 def generate_attention(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_attention method or operation."""
+    """Implement the generate_attention method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     code = "// Attention (Mock)\n"
     for _i, out_name in enumerate(node.outputs):
@@ -32,7 +31,7 @@ def generate_attention(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("Conv")
 def generate_conv(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_conv method or operation."""
+    """Implement the generate_conv method or operation."""
     x_var = generator_context.get_tensor_name(node.inputs[0])
     w_var = generator_context.get_tensor_name(node.inputs[1])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
@@ -55,7 +54,7 @@ def generate_conv(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 @registry.register_op("Transpose")
 def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Generates Transpose op."""
+    """Generate Transpose op."""
     inp = generator_context.get_tensor_name(node.inputs[0])
     out = generator_context.get_tensor_name(node.outputs[0])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
@@ -115,7 +114,7 @@ def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen
 
 @registry.register_op("Softmax")
 def generate_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_softmax method or operation."""
+    """Implement the generate_softmax method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -166,7 +165,7 @@ def generate_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("LogSoftmax")
 def generate_log_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_log_softmax method or operation."""
+    """Implement the generate_log_softmax method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -189,7 +188,7 @@ def generate_log_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 
 @registry.register_op("Hardmax")
 def generate_hardmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_hardmax method or operation."""
+    """Implement the generate_hardmax method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -204,7 +203,7 @@ def generate_hardmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("RNN")
 def generate_rnn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_rnn method or operation."""
+    """Implement the generate_rnn method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -220,7 +219,7 @@ def generate_rnn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("LSTM")
 def generate_lstm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_lstm method or operation."""
+    """Implement the generate_lstm method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -236,7 +235,7 @@ def generate_lstm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 
 @registry.register_op("GRU")
 def generate_gru(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gru method or operation."""
+    """Implement the generate_gru method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -252,7 +251,7 @@ def generate_gru(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 @registry.register_op("ConvTranspose")
 def generate_conv_transpose(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_conv_transpose method or operation."""
+    """Implement the generate_conv_transpose method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     ctx.get_tensor_name(node.inputs[1])
     ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -270,7 +269,7 @@ def generate_conv_transpose(node: Node, ctx: "onnx9000.backends.codegen.Generato
 
 @registry.register_op("DeformConv")
 def generate_deform_conv(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_deform_conv method or operation."""
+    """Implement the generate_deform_conv method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     ctx.get_tensor_name(node.inputs[1])
     ctx.get_tensor_name(node.inputs[2])
@@ -288,7 +287,7 @@ def generate_deform_conv(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 
 @registry.register_op("LpNormalization")
 def generate_lp_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_lp_normalization method or operation."""
+    """Implement the generate_lp_normalization method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -304,7 +303,7 @@ def generate_lp_normalization(node: Node, ctx: "onnx9000.backends.codegen.Genera
 
 @registry.register_op("LpPool")
 def generate_lp_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_lp_pool method or operation."""
+    """Implement the generate_lp_pool method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -320,7 +319,7 @@ def generate_lp_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 @registry.register_op("LayerNormalization")
 def generate_layer_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_layer_normalization method or operation."""
+    """Implement the generate_layer_normalization method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
@@ -365,7 +364,7 @@ def generate_layer_normalization(node: Node, ctx: "onnx9000.backends.codegen.Gen
 def generate_mean_variance_normalization(
     node: Node, ctx: "onnx9000.backends.codegen.Generator"
 ) -> str:
-    """Implements the generate_mean_variance_normalization method or operation."""
+    """Implement the generate_mean_variance_normalization method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -402,7 +401,7 @@ def generate_mean_variance_normalization(
 
 @registry.register_op("InstanceNormalization")
 def generate_instance_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_instance_normalization method or operation."""
+    """Implement the generate_instance_normalization method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2])
@@ -441,7 +440,7 @@ def generate_instance_normalization(node: Node, ctx: "onnx9000.backends.codegen.
 
 @registry.register_op("MaxUnpool")
 def generate_max_unpool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_max_unpool method or operation."""
+    """Implement the generate_max_unpool method or operation."""
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -457,7 +456,7 @@ def generate_max_unpool(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 
 @registry.register_op("AveragePool")
 def generate_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_average_pool method or operation."""
+    """Implement the generate_average_pool method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -539,7 +538,7 @@ def generate_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator"
 
 @registry.register_op("MaxPool")
 def generate_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_max_pool method or operation."""
+    """Implement the generate_max_pool method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -620,7 +619,7 @@ def generate_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 @registry.register_op("GlobalMaxPool")
 def generate_global_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_global_max_pool method or operation."""
+    """Implement the generate_global_max_pool method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -672,7 +671,7 @@ def generate_global_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 @registry.register_op("GlobalAveragePool")
 def generate_global_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_global_average_pool method or operation."""
+    """Implement the generate_global_average_pool method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
@@ -723,7 +722,7 @@ def generate_global_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Gen
 
 @registry.register_op("BatchNormalization")
 def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_batchnorm method or operation."""
+    """Implement the generate_batchnorm method or operation."""
     x = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2])
@@ -746,7 +745,7 @@ def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 @registry.register_op("Gelu")
 def generate_gelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implements the generate_gelu method or operation."""
+    """Implement the generate_gelu method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]

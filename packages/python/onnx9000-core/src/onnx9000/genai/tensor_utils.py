@@ -1,3 +1,5 @@
+"""Provide functionality for this module."""
+
 import struct
 
 from ..core.dtypes import DType
@@ -5,10 +7,11 @@ from ..core.ir import Tensor
 
 
 class SequenceTensorUtils:
-    """Utility class for manipulating Tensors specifically for sequence lengths."""
+    """Use utility class for manipulating Tensors specifically for sequence lengths."""
 
     @staticmethod
     def expand_sequence_dimension(tensor: Tensor, new_seq_len: int) -> Tensor:
+        """Execute the expand_sequence_dimension operation."""
         if len(tensor.shape) < 2:
             raise ValueError("Tensor must have at least 2 dimensions to expand sequence length.")
 
@@ -18,6 +21,7 @@ class SequenceTensorUtils:
 
         # dynamic shape allocation strategy implementation
         def get_vol(shape):
+            """Execute the get_vol operation."""
             v = 1
             for s in shape:
                 v *= s

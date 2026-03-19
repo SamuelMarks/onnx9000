@@ -1,4 +1,4 @@
-"""Provides dlpack module functionality."""
+"""Provide dlpack module functionality."""
 
 import ctypes
 from typing import Any, Optional
@@ -49,8 +49,8 @@ kDLCUDAManaged = 13
 
 
 def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], DLDataType, int]:
-    """
-    Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
+    """Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
+
     Extract raw memory pointers (`data_ptr`) strictly natively.
     Extract memory strides strictly natively.
     Extract data types (`DLDataType` struct) strictly natively.
@@ -85,9 +85,7 @@ def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple
 
 
 def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], str]:
-    """
-    Consume NumPy `np.ndarray` directly via `__array_interface__` (Zero-copy).
-    """
+    """Consume NumPy `np.ndarray` directly via `__array_interface__` (Zero-copy)."""
     if not hasattr(array, "__array_interface__"):
         raise TypeError("Object does not support __array_interface__")
     interface = array.__array_interface__

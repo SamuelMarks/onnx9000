@@ -29,7 +29,7 @@ class Dispatcher:
     """AMD ROCm (HIP) & MIOpen Dispatcher."""
 
     def __init__(self, graph: Graph) -> None:
-        """Implements the __init__ method or operation."""
+        """Implement the __init__ method or operation."""
         self.graph = graph
         self.planner = MemoryPlanner()
         self.cpu_fallback = CPUExecutor({})
@@ -111,7 +111,7 @@ class Dispatcher:
                 self.planner.set_tensor(out, memoryview(val.tobytes()), val.shape, str(val.dtype))
 
     def _execute_node(self, node: Node) -> None:
-        """Executes the  execute node operation."""
+        """Execute the  execute node operation."""
         if not self.initialized:
             self._cpu_fallback_node(node)
             return
@@ -123,7 +123,7 @@ class Dispatcher:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
-        """Executes the run operation."""
+        """Execute the run operation."""
         for name, data in inputs.items():
             if name not in self.planner.offsets and name not in self.planner.dynamic_allocations:
                 self.planner.allocate_dynamic(name, data.nbytes, data.shape, str(data.dtype))
@@ -140,7 +140,7 @@ class Dispatcher:
         return results
 
     def __del__(self) -> None:
-        """Implements the __del__ method or operation."""
+        """Implement the __del__ method or operation."""
         if not self.initialized:
             return
         if is_rocblas_available() and getattr(self, "rocblas_handle", None):
