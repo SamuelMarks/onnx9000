@@ -1,16 +1,14 @@
-import { Graph } from '../ir/graph.js';
-import { Tensor, Shape } from '../ir/tensor.js';
+import { Graph, ValueInfo } from '../ir/graph.js';
+import { Tensor, Shape, DType } from '../ir/tensor.js';
 
 export function inferShapes(graph: Graph): void {
-  // A minimal placeholder for static shape inference.
-  // It iterates topologically over nodes and assigns default output shapes
-  // if they are missing in ValueInfo.
-
   const shapeMap = new Map<string, Shape>();
+  const dtypeMap = new Map<string, DType>();
 
   // Initialize with inputs
   for (const input of graph.inputs) {
     shapeMap.set(input.name, input.shape);
+    dtypeMap.set(input.name, input.dtype);
   }
 
   // Initialize with constants
@@ -18,19 +16,34 @@ export function inferShapes(graph: Graph): void {
     const t = graph.tensors[init];
     if (t) {
       shapeMap.set(init, t.shape);
+      dtypeMap.set(init, t.dtype);
     }
   }
+
+  // Determine which outputs are already tracked
+  const trackedOutputs = new Set<string>();
+  for (const vi of graph.outputs) trackedOutputs.add(vi.name);
+  for (const vi of graph.inputs) trackedOutputs.add(vi.name);
+  for (const vi of graph.valueInfo) trackedOutputs.add(vi.name);
 
   // Very naive forward pass
   for (const node of graph.nodes) {
     // Basic heuristics: if it's an elementwise op, output shape = input shape
     if (node.inputs.length > 0 && node.inputs[0]) {
       const firstInputShape = shapeMap.get(node.inputs[0]);
+      const firstInputDType = dtypeMap.get(node.inputs[0]) || 'float32';
+
       if (firstInputShape) {
         for (const output of node.outputs) {
           if (!shapeMap.has(output)) {
             // we assume output shape matches first input shape as a fallback
             shapeMap.set(output, firstInputShape);
+            dtypeMap.set(output, firstInputDType);
+
+            if (!trackedOutputs.has(output)) {
+              graph.valueInfo.push(new ValueInfo(output, firstInputShape, firstInputDType));
+              trackedOutputs.add(output);
+            }
           }
         }
       }

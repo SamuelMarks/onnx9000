@@ -184,7 +184,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 
 ### Phase 13: Browser UI (The Visual Kernel Compiler)
 
-- [ ] 131. Build a React/Vue interface for `onnx9000.triton`.
+- [ ] 131. Build a Web Components interface for `onnx9000.triton`.
 - [ ] 132. Allow users to drag-and-drop an ONNX model into the UI.
 - [ ] 133. Display the interactive ONNX Graph (via `onnx9000.modifier`).
 - [ ] 134. Users shift-click to select a chain of nodes (e.g., `Conv -> Batchnorm -> Relu`).

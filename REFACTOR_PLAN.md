@@ -214,7 +214,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 
 ## Phase 11: Frontends & UI Apps (`apps/netron-ui` & `apps/optimum-ui`)
 
-- [x] 179. Create React or Vue application in `apps/netron-ui/`.
+- [x] 179. Create Vanilla JS or Vanilla JS application in `apps/netron-ui/`.
 - [x] 180. Configure Vite/Webpack for the UI application.
 - [x] 181. Add `@onnx9000/core`, `@onnx9000/backend-web`, and `@onnx9000/compiler` as local dependencies.
 - [x] 182. Migrate `Netron` visualizer (`ONNX16`) rendering logic (WebGL/Canvas/Dagre).
@@ -282,7 +282,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 ## Phase 16: UI Refinement & Deployment
 
 - [x] 231. Test UI responsiveness when rendering graphs > 50,000 nodes.
-- [x] 232. Configure error boundaries in React/Vue to prevent white-screen-of-death on parser fail.
+- [x] 232. Configure error boundaries in Vanilla JS/Web Components to prevent white-screen-of-death on parser fail.
 - [x] 233. Verify Dark Mode / Light Mode toggling across the entire application.
 - [x] 234. Ensure drag-and-drop file targets are clearly visible.
 - [x] 235. Check mobile/tablet responsiveness for the Netron viewer.

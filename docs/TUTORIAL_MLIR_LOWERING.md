@@ -2,7 +2,7 @@
 
 The compilation from an ONNX model into WebGPU shader code or WebAssembly bytecode undergoes a multi-stage lowering process.
 
-1. **ONNX to MHLO (High-Level Dialect):** 
+1. **ONNX to MHLO (High-Level Dialect):**
    - Operations like `Add`, `Conv`, and `MatMul` are mapped to target-agnostic MHLO operations with resolved data types and shapes.
 2. **MHLO to Linalg (Structural Dialect):**
    - Implicit looping patterns are expanded into explicit `linalg.generic` iterations. Elementwise fusion occurs here.

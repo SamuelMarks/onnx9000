@@ -159,7 +159,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 - [ ] 117. Concatenate mask and masked_image_latents to standard latents if using an `inpaint` specific UNet.
 - [ ] 118. Execute standard latent blending (masking out untouched regions at every timestep) if using a standard UNet for inpainting.
 - [ ] 119. Implement mask blurring/feathering capabilities directly via WGSL convolutions.
-- [ ] 120. Provide a specific `onnx9000.ui.InpaintCanvas` component for easy React/Vue integration.
+- [ ] 120. Provide a specific `onnx9000.ui.InpaintCanvas` component for easy Web Components integration.
 
 ### Phase 9: ControlNet & T2I-Adapters
 
@@ -284,12 +284,12 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 
 ### Phase 16: Browser UI & Component Library
 
-- [ ] 221. Build `@onnx9000/diffusers-react` NPM package.
+- [ ] 221. Build `@onnx9000/diffusers-web` NPM package.
 - [ ] 222. Expose `<DiffusionCanvas />` component for rendering real-time generation steps.
 - [ ] 223. Expose `<PromptInput />` component with built-in token-limit tracking.
 - [ ] 224. Expose `<SchedulerSelect />` component auto-populated with supported algorithms.
 - [ ] 225. Expose `<InpaintingCanvas />` allowing users to brush masks over images using standard HTML5 Canvas tools.
-- [ ] 226. Ensure React hooks manage the pipeline memory lifecycle cleanly (`useDiffusionPipeline`).
+- [ ] 226. Ensure Web Components utilities manage the pipeline memory lifecycle cleanly (`useDiffusionPipeline`).
 - [ ] 227. Dispatch unmount events accurately to trigger `pipeline.dispose()` to prevent VRAM memory leaks in SPAs (Single Page Applications).
 - [ ] 228. Provide Web Worker wrappers natively within the components.
 - [ ] 229. Display WebGPU initialization errors gracefully in the UI components.
@@ -324,7 +324,7 @@ Hugging Face `diffusers` is the state-of-the-art Python library for pretrained d
 ### Phase 19: Ecosystem & Delivery
 
 - [ ] 251. Write Tutorial: "Running Stable Diffusion entirely in the Browser".
-- [ ] 252. Write Tutorial: "Integrating ControlNet natively into React Apps".
+- [ ] 252. Write Tutorial: "Integrating ControlNet natively into Web apps".
 - [ ] 253. Establish NPM deployment pipeline for `@onnx9000/diffusers`.
 - [ ] 254. Provide TypeScript typings completely mapping the HuggingFace Python classes.
 - [ ] 255. Support reading model files directly from the Hugging Face Hub using `<model_id>`.

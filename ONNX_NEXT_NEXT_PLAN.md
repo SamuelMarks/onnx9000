@@ -292,7 +292,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 
 ### Phase 8: MLOps Web Frontend (UI/UX)
 
-- [ ] 246. Bootstrap the frontend application using a lightweight, modern framework (React, Vue, or Vanilla TS).
+- [ ] 246. Bootstrap the frontend application using a lightweight, modern framework (Vanilla JS, Vanilla JS, or Vanilla TS).
 - [ ] 247. Implement a zero-build-step deployment option for the UI (statically served).
 - [ ] 248. Design a clean, high-performance responsive layout (Sidebar, Header, Main Content).
 - [ ] 249. Implement Dark/Light mode theming.

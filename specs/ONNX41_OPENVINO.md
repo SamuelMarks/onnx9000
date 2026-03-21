@@ -263,7 +263,7 @@ Intel's `OpenVINO` Model Optimizer (`mo` or `ovc`) is the standard toolchain for
 
 ### Phase 16: Browser UI (The Web-Native Compiler)
 
-- [ ] 201. Build static React/Vue Web UI for `onnx9000.openvino`.
+- [ ] 201. Build static Web Components Web UI for `onnx9000.openvino`.
 - [ ] 202. Implement drag-and-drop ingestion of `model.onnx` or HuggingFace URLs.
 - [ ] 203. Display interactive configuration parameters (e.g., Select Precision: FP32 vs FP16).
 - [ ] 204. Generate the `.xml` natively inside a Web Worker.

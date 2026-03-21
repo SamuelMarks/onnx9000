@@ -1,31 +1,7 @@
 """TVM submodule for AST and optimization."""
 
 from typing import Any, Callable, Optional, Union
-
-
-class IterVar:
-    """Evaluates or manipulates TVM AST nodes."""
-
-    def __init__(self, name: str):
-        """Evaluates or manipulates TVM AST nodes."""
-        self.name = name
-
-    def __repr__(self):
-        """Evaluates or manipulates TVM AST nodes."""
-        return f"IterVar({self.name})"
-
-
-class ReduceAxis(IterVar):
-    """Evaluates or manipulates TVM AST nodes."""
-
-    def __init__(self, name: str, dom: tuple[int, int]):
-        """Evaluates or manipulates TVM AST nodes."""
-        super().__init__(name)
-        self.dom = dom
-
-    def __repr__(self):
-        """Evaluates or manipulates TVM AST nodes."""
-        return f"ReduceAxis({self.name}, dom={self.dom})"
+from ..tir.expr import Expr
 
 
 class ExprOp:
@@ -62,6 +38,32 @@ class ExprOp:
     def __rtruediv__(self, other):
         """Evaluates or manipulates TVM AST nodes."""
         return Div(other, self)
+
+
+class IterVar(ExprOp):
+    """Evaluates or manipulates TVM AST nodes."""
+
+    def __init__(self, name: str):
+        """Evaluates or manipulates TVM AST nodes."""
+        self.name = name
+        self.dtype = "int32"
+
+    def __repr__(self):
+        """Evaluates or manipulates TVM AST nodes."""
+        return f"IterVar({self.name})"
+
+
+class ReduceAxis(IterVar):
+    """Evaluates or manipulates TVM AST nodes."""
+
+    def __init__(self, name: str, dom: tuple[int, int]):
+        """Evaluates or manipulates TVM AST nodes."""
+        super().__init__(name)
+        self.dom = dom
+
+    def __repr__(self):
+        """Evaluates or manipulates TVM AST nodes."""
+        return f"ReduceAxis({self.name}, dom={self.dom})"
 
 
 class Var(ExprOp):
@@ -186,6 +188,10 @@ class Tensor:
         self.dtype = dtype
         self.op = op
         self.value_index = value_index
+
+    @property
+    def name(self) -> str:
+        return getattr(self.op, "name", "unknown")
 
     def __call__(self, *indices):
         """Evaluates or manipulates TVM AST nodes."""

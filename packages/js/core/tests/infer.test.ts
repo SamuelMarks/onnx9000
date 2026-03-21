@@ -22,10 +22,15 @@ describe('inferShapes', () => {
 
     inferShapes(g);
 
-    // In our current naive implementation, it just populates a local shapeMap and does nothing else.
-    // It doesn't mutate ValueInfo or create new Tensors.
-    // So we just verify it doesn't crash.
-    expect(1).toBe(1);
+    // Verify it added 'C' and 'D' to valueInfo with correct shapes
+    expect(g.valueInfo.length).toBe(2);
+    expect(g.valueInfo[0].name).toBe('C');
+    expect(g.valueInfo[0].shape).toEqual([1, 2, 3]);
+    expect(g.valueInfo[0].dtype).toBe('float32');
+
+    expect(g.valueInfo[1].name).toBe('D');
+    expect(g.valueInfo[1].shape).toEqual([1, 2, 3]);
+    expect(g.valueInfo[1].dtype).toBe('float32');
   });
 
   it('should handle nodes with no inputs or missing shapes', () => {
@@ -36,6 +41,8 @@ describe('inferShapes', () => {
     g.addNode(n);
 
     inferShapes(g);
-    expect(1).toBe(1);
+
+    // Constant has no inputs, so naive infer won't add a shape for 'C' currently
+    expect(g.valueInfo.length).toBe(0);
   });
 });

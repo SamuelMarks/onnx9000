@@ -50,7 +50,7 @@ def test_module_errors() -> None:
         def __init__(self) -> None:
             """Initializes the mock module with parameters, buffers, and sub-modules."""
 
-        assert True
+        pass
 
     n = NoInit()
     with pytest.raises(AttributeError):

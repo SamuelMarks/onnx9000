@@ -2,5 +2,17 @@
   "name": "@onnx9000/converters",
   "version": "1.0.0",
   "description": "Universal N-to-N ML model transpiler (ONNX, TFLite, CoreML, GGUF) for the browser",
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ --ext .ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:^",
+    "@onnx9000/coreml": "workspace:^",
+    "fflate": "^0.8.2",
+    "jsfive": "^0.4.0"
+  }
 }

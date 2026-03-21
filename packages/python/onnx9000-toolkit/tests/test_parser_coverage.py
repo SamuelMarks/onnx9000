@@ -69,7 +69,7 @@ def test_no_frame() -> None:
 class MyObj:
     """Represents the My Obj class."""
 
-    assert True
+    pass
 
 
 my_obj = MyObj()
@@ -100,7 +100,7 @@ def test_ast_attribute_coverage() -> None:
     class Obj:
         """Represents the Obj class and its associated logic."""
 
-        assert True
+        pass
 
     o = Obj()
     o.dummy_subgraph = dummy_subgraph

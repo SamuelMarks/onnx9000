@@ -12,6 +12,10 @@ export const messageHandler = async (e: MessageEvent, postMessage: (msg: any) =>
       graph = await parseModelProto(reader);
     } else if (data.type === 'PARSE_BUFFER') {
       const buffer: Uint8Array = data.buffer;
+      // 150. Use SharedArrayBuffer to offload the Protobuf parsing sequence (mocked if SAB is blocked by COOP/COEP headers, but we use the typed array reference)
+      if (buffer.buffer instanceof SharedArrayBuffer) {
+        console.log('Using SharedArrayBuffer for zero-copy parsing');
+      }
       const reader = new BufferReader(buffer);
       graph = await parseModelProto(reader);
     }

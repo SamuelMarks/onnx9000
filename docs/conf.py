@@ -67,6 +67,46 @@ intersphinx_mapping = {
 
 # Auto build typedoc on start
 def run_typedoc(app):
+    print("Building TypeScript for docs...")
+    subprocess.run(
+        [
+            "pnpm",
+            "exec",
+            "esbuild",
+            "--bundle",
+            "--format=esm",
+            "docs/_static/ts/src/App.ts",
+            "--outfile=docs/_static/app.bundle.js",
+            "--minify",
+        ],
+        cwd=os.path.dirname(os.path.abspath(__file__)).replace("/docs", ""),
+    )
+    subprocess.run(
+        [
+            "pnpm",
+            "exec",
+            "esbuild",
+            "--bundle",
+            "--format=esm",
+            "docs/_static/ts/src/workers/ParserWorker.ts",
+            "--outfile=docs/_static/assets/parser.worker.js",
+            "--minify",
+        ],
+        cwd=os.path.dirname(os.path.abspath(__file__)).replace("/docs", ""),
+    )
+    subprocess.run(
+        [
+            "pnpm",
+            "exec",
+            "esbuild",
+            "--bundle",
+            "--format=esm",
+            "docs/_static/ts/src/workers/PyodideWorker.ts",
+            "--outfile=docs/_static/assets/pyodide.worker.js",
+            "--minify",
+        ],
+        cwd=os.path.dirname(os.path.abspath(__file__)).replace("/docs", ""),
+    )
     print("Running typedoc...")
     # Generate typedoc in docs/_build/typedoc
     docs_dir = os.path.dirname(os.path.abspath(__file__))

@@ -14,6 +14,7 @@ export interface LayoutNode extends Box {
   opType: string;
   name: string;
   type: 'node' | 'input' | 'output' | 'constant';
+  stringValue?: string; // 297. For inline string rendering
 }
 
 export interface LayoutEdge {
@@ -23,11 +24,18 @@ export interface LayoutEdge {
   tensorName: string;
   dtype?: string;
   shape?: string;
+  isOptional?: boolean;
+}
+
+export interface LayoutGroup extends Box {
+  name: string;
+  depth: number;
 }
 
 export interface GraphLayout {
   nodes: LayoutNode[];
   edges: LayoutEdge[];
+  groups?: LayoutGroup[];
   width: number;
   height: number;
 }
@@ -35,6 +43,7 @@ export interface GraphLayout {
 export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): GraphLayout {
   const layoutNodes: LayoutNode[] = [];
   const layoutEdges: LayoutEdge[] = [];
+  const layoutGroups: LayoutGroup[] = [];
 
   const producerMap = new Map<string, string>(); // tensorName -> producerNodeId
   const allNodeIds = new Set<string>();
@@ -126,6 +135,7 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
         let opType = 'Unknown';
         let name = nodeId;
         let type: LayoutNode['type'] = 'node';
+        let stringValue: string | undefined;
 
         if (nodeId.startsWith('input_')) {
           opType = 'Input';
@@ -135,6 +145,13 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
           opType = 'Constant';
           name = nodeId.substring(6);
           type = 'constant';
+          // 297. Find the string value if any
+          const tensor = graph.tensors[name];
+          if (tensor && tensor.dtype === 'string' && tensor.data) {
+            const decoder = new TextDecoder('utf-8');
+            const str = decoder.decode(tensor.data).replace(/[\x00-\x1F\x7F]/g, '');
+            stringValue = str.length > 15 ? str.substring(0, 15) + '...' : str;
+          }
         } else if (nodeId.startsWith('output_')) {
           opType = 'Output';
           name = nodeId.substring(7);
@@ -144,14 +161,25 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
           if (n) {
             opType = n.opType;
             name = n.name;
+            if (opType === 'Constant' && n.attributes['value_string']) {
+              const v = String(n.attributes['value_string']!.value);
+              stringValue = v.length > 15 ? v.substring(0, 15) + '...' : v;
+            }
           }
         }
 
-        const dynamicWidth = Math.max(NODE_WIDTH, opType.length * 10 + 20);
+        const dynamicWidth = Math.max(
+          NODE_WIDTH,
+          opType.length * 10 + (stringValue ? stringValue.length * 8 : 0) + 20,
+        );
         const box: Box = { x: currentX, y: currentY, width: dynamicWidth, height: NODE_HEIGHT };
         positions.set(nodeId, box);
 
-        layoutNodes.push({ ...box, id: nodeId, opType, name, type });
+        if (stringValue !== undefined) {
+          layoutNodes.push({ ...box, id: nodeId, opType, name, type, stringValue });
+        } else {
+          layoutNodes.push({ ...box, id: nodeId, opType, name, type });
+        }
         currentX += dynamicWidth + HORIZONTAL_GAP;
       }
       totalWidth = Math.max(totalWidth, bucketWidth);
@@ -169,6 +197,7 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
         let opType = 'Unknown';
         let name = nodeId;
         let type: LayoutNode['type'] = 'node';
+        let stringValue: string | undefined;
 
         if (nodeId.startsWith('input_')) {
           opType = 'Input';
@@ -178,6 +207,12 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
           opType = 'Constant';
           name = nodeId.substring(6);
           type = 'constant';
+          const tensor = graph.tensors[name];
+          if (tensor && tensor.dtype === 'string' && tensor.data) {
+            const decoder = new TextDecoder('utf-8');
+            const str = decoder.decode(tensor.data).replace(/[\x00-\x1F\x7F]/g, '');
+            stringValue = str.length > 15 ? str.substring(0, 15) + '...' : str;
+          }
         } else if (nodeId.startsWith('output_')) {
           opType = 'Output';
           name = nodeId.substring(7);
@@ -187,14 +222,25 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
           if (n) {
             opType = n.opType;
             name = n.name;
+            if (opType === 'Constant' && n.attributes['value_string']) {
+              const v = String(n.attributes['value_string']!.value);
+              stringValue = v.length > 15 ? v.substring(0, 15) + '...' : v;
+            }
           }
         }
 
-        const dynamicWidth = Math.max(NODE_WIDTH, opType.length * 10 + 20);
+        const dynamicWidth = Math.max(
+          NODE_WIDTH,
+          opType.length * 10 + (stringValue ? stringValue.length * 8 : 0) + 20,
+        );
         const box: Box = { x: currentX, y: currentY, width: dynamicWidth, height: NODE_HEIGHT };
         positions.set(nodeId, box);
 
-        layoutNodes.push({ ...box, id: nodeId, opType, name, type });
+        if (stringValue !== undefined) {
+          layoutNodes.push({ ...box, id: nodeId, opType, name, type, stringValue });
+        } else {
+          layoutNodes.push({ ...box, id: nodeId, opType, name, type });
+        }
         currentY += NODE_HEIGHT + VERTICAL_GAP;
       }
       totalHeight = Math.max(totalHeight, bucketHeight);
@@ -202,6 +248,55 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
     }
     totalWidth = currentX;
   }
+
+  // Compute NameScope groups
+  const scopeMap = new Map<
+    string,
+    { minX: number; minY: number; maxX: number; maxY: number; count: number; depth: number }
+  >();
+  for (const node of layoutNodes) {
+    if (node.type !== 'node') continue;
+    const parts = node.name.split('/');
+    if (parts.length > 1) {
+      let currentScope = '';
+      for (let i = 0; i < parts.length - 1; i++) {
+        currentScope += (i === 0 ? '' : '/') + parts[i];
+        if (!scopeMap.has(currentScope)) {
+          scopeMap.set(currentScope, {
+            minX: Infinity,
+            minY: Infinity,
+            maxX: -Infinity,
+            maxY: -Infinity,
+            count: 0,
+            depth: i,
+          });
+        }
+        const b = scopeMap.get(currentScope)!;
+        b.minX = Math.min(b.minX, node.x);
+        b.minY = Math.min(b.minY, node.y);
+        b.maxX = Math.max(b.maxX, node.x + node.width);
+        b.maxY = Math.max(b.maxY, node.y + node.height);
+        b.count++;
+      }
+    }
+  }
+
+  for (const [scopeName, bounds] of scopeMap.entries()) {
+    if (bounds.count > 1) {
+      const padding = 20 + bounds.depth * 10;
+      layoutGroups.push({
+        name: scopeName,
+        depth: bounds.depth,
+        x: bounds.minX - padding,
+        y: bounds.minY - padding - 20, // Extra top padding for label
+        width: bounds.maxX - bounds.minX + padding * 2,
+        height: bounds.maxY - bounds.minY + padding * 2 + 20,
+      });
+    }
+  }
+
+  // Sort groups by depth (deepest first, or shallowest first for rendering)
+  layoutGroups.sort((a, b) => a.depth - b.depth);
 
   // Helper to add edge
   function addEdge(from: string, to: string, tensorName: string) {
@@ -258,6 +353,10 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
   // Node edges
   for (const node of graph.nodes) {
     for (const input of node.inputs) {
+      if (input === '') {
+        // This is an omitted optional input, no edge to draw.
+        continue;
+      }
       const p = producerMap.get(input);
       if (p) addEdge(p, node.id, input);
     }
@@ -269,5 +368,11 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
     if (p) addEdge(p, `output_${output.name}`, output.name);
   }
 
-  return { nodes: layoutNodes, edges: layoutEdges, width: totalWidth, height: totalHeight };
+  return {
+    nodes: layoutNodes,
+    edges: layoutEdges,
+    groups: layoutGroups,
+    width: totalWidth,
+    height: totalHeight,
+  };
 }

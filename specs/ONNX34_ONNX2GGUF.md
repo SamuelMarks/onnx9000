@@ -219,7 +219,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 
 ### Phase 11: The Web UI (Client-Side Exporter)
 
-- [ ] 171. Build a static React/Vue Web UI for `onnx2gguf`.
+- [ ] 171. Build a static Web Components Web UI for `onnx2gguf`.
 - [ ] 172. Implement drag-and-drop for `model.onnx` or multiple `.safetensors` files simultaneously.
 - [ ] 173. Implement drag-and-drop for `tokenizer.json` and `config.json`.
 - [ ] 174. Display an interactive table previewing the extracted KV Metadata.
@@ -328,7 +328,7 @@ The `ggml` ecosystem (famously powering `llama.cpp`) uses the **GGUF** (GPT-Gene
 - [ ] 253. Document the complete mapping schema of `ONNX -> GGUF`.
 - [ ] 254. Provide a compatibility matrix of supported LLM architectures.
 - [ ] 255. Detail the memory limitations and browser configuration (e.g., enabling WASM-64) required for massive models.
-- [ ] 256. Provide clear code snippets for integrating `@onnx9000/onnx2gguf` into a React application.
+- [ ] 256. Provide clear code snippets for integrating `@onnx9000/onnx2gguf` into a Web application.
 - [ ] 257. Document all supported CLI flags and arguments.
 - [ ] 258. Create an architectural diagram showing how data flows from `.safetensors` through the transpiler to `.gguf`.
 - [ ] 259. Publish a specific "Troubleshooting" guide for shape mismatch errors.

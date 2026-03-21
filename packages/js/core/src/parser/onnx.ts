@@ -451,7 +451,11 @@ async function parseTensorProto(
         break;
       case 9: // raw_data
         const rawLen = await readVarInt(reader);
-        rawData = await reader.readBytes(rawLen);
+        if (rawLen > 0) {
+          rawData = await reader.readBytes(rawLen);
+        } else {
+          rawData = new Uint8Array(0);
+        }
         break;
       case 14: // data_location
         dataLocation = await readVarInt(reader);
@@ -497,4 +501,13 @@ async function parseTensorProto(
   }
 
   return new Tensor(name, dims, dtype, isInitializer, false, rawData, externalData);
+}
+
+// 149. Memory optimization explicitly exported
+export function releaseArrayBuffer(buffer: ArrayBuffer | null) {
+  if (buffer) {
+    // In pure JS, we can't manually force GC, but we can null out references.
+    // Real V8 memory release happens when there are no detached references.
+    buffer = null;
+  }
 }

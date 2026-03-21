@@ -44,7 +44,7 @@ def test_jit_initializer_no_data() -> None:
             def __init__(self, *args) -> None:
                 """Tests the __init__ functionality."""
 
-        assert True
+        pass
 
     with patch("onnx9000.converters.jit.load", return_value=g):
         with patch("onnx9000.converters.jit.plan_memory"):

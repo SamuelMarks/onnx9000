@@ -73,7 +73,7 @@ def test_script_compiler_generic() -> None:
 
     def pass_func() -> None:
         """Tests the pass_func functionality."""
-        assert True
+        pass
 
     compiler = DummyCompiler(pass_func)
     compiler.compile()

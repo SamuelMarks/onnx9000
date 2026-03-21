@@ -118,3 +118,254 @@ def test_info_cmd_with_func():
     args.info_func = dummy_func
     info_cmd(args)
     assert args.called
+
+
+def test_coreml_cmd_coverage():
+    from onnx9000_cli.main import coreml_cmd
+    import argparse
+    import pytest
+    from unittest.mock import patch
+    import subprocess
+
+    args = argparse.Namespace(coreml_command="export", model="test.onnx")
+
+    # Test when JS CLI script is missing
+    with patch("os.path.exists", return_value=False), pytest.raises(SystemExit) as e:
+        coreml_cmd(args)
+    assert e.value.code == 1
+
+    # Test successful execution
+    with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
+        coreml_cmd(args)
+        mock_run.assert_called_once()
+
+    # Test failed execution
+    with (
+        patch("os.path.exists", return_value=True),
+        patch("subprocess.run", side_effect=subprocess.CalledProcessError(2, "cmd")),
+    ):
+        with pytest.raises(SystemExit) as e:
+            coreml_cmd(args)
+        assert e.value.code == 2
+
+
+def test_edit_cmd():
+    from onnx9000_cli.main import edit_cmd
+    import argparse
+    from unittest.mock import patch
+
+    args = argparse.Namespace(model="test.onnx")
+    with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
+        edit_cmd(args)
+        mock_run.assert_called_once()
+
+    with patch("os.path.exists", return_value=False):
+        edit_cmd(args)
+
+    with (
+        patch("os.path.exists", return_value=True),
+        patch("subprocess.run", side_effect=KeyboardInterrupt),
+    ):
+        edit_cmd(args)
+
+
+def test_prune_cmd():
+    from onnx9000_cli.main import prune_cmd
+    import argparse
+    from unittest.mock import MagicMock, patch
+
+    args = argparse.Namespace(model="test.onnx", nodes="n1,n2", output="out.onnx")
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_graph = MagicMock()
+        mock_graph.nodes = [
+            MagicMock(name="n1", op_type="Add"),
+            MagicMock(name="n3", op_type="Sub"),
+        ]
+        mock_graph.nodes[0].name = "n1"
+        mock_graph.nodes[1].name = "n3"
+        mock_load.return_value = mock_graph
+        prune_cmd(args)
+        assert len(mock_graph.nodes) == 1
+        assert mock_graph.nodes[0].name == "n3"
+        mock_save.assert_called_once()
+
+    # test no output
+    args.output = None
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_load.return_value = MagicMock(nodes=[])
+        prune_cmd(args)
+
+
+def test_rename_input_cmd():
+    from onnx9000_cli.main import rename_input_cmd
+    import argparse
+    from unittest.mock import MagicMock, patch
+
+    args = argparse.Namespace(model="test.onnx", old="A", new="B", output="out.onnx")
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_graph = MagicMock()
+        mock_input = MagicMock()
+        mock_input.name = "A"
+        mock_graph.inputs = [mock_input]
+        mock_node = MagicMock()
+        mock_node.inputs = ["A", "C"]
+        mock_graph.nodes = [mock_node]
+        mock_load.return_value = mock_graph
+        rename_input_cmd(args)
+        assert mock_input.name == "B"
+        assert mock_node.inputs[0] == "B"
+        mock_save.assert_called_once()
+
+    # test no output
+    args.output = None
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_load.return_value = MagicMock(inputs=[], nodes=[])
+        rename_input_cmd(args)
+
+
+def test_change_batch_cmd():
+    from onnx9000_cli.main import change_batch_cmd
+    import argparse
+    from unittest.mock import MagicMock, patch
+
+    args = argparse.Namespace(model="test.onnx", size="4", output="out.onnx")
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_graph = MagicMock()
+        mock_input = MagicMock()
+        mock_input.shape = [1, 2, 3]
+        mock_graph.inputs = [mock_input]
+        mock_graph.outputs = []
+        mock_graph.value_info = []
+        mock_load.return_value = mock_graph
+        change_batch_cmd(args)
+        assert mock_input.shape[0] == 4
+        mock_save.assert_called_once()
+
+    args = argparse.Namespace(model="test.onnx", size="dynamic", output=None)
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        mock_graph = MagicMock()
+        mock_input = MagicMock()
+        mock_input.shape = [1, 2, 3]
+        mock_graph.inputs = [mock_input]
+        mock_graph.outputs = []
+        mock_graph.value_info = []
+        mock_load.return_value = mock_graph
+        change_batch_cmd(args)
+        assert mock_input.shape[0] == "dynamic"
+
+
+def test_mutate_cmd():
+    from onnx9000_cli.main import mutate_cmd
+    import argparse
+    from unittest.mock import MagicMock, patch, mock_open
+
+    args = argparse.Namespace(model="test.onnx", script="mut.json", output="out.onnx")
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        with patch(
+            "builtins.open", mock_open(read_data='[{"action": "remove_node", "node_name": "n1"}]')
+        ):
+            mock_graph = MagicMock()
+            mock_graph.nodes = [
+                MagicMock(name="n1", op_type="Add"),
+                MagicMock(name="n2", op_type="Sub"),
+            ]
+            mock_graph.nodes[0].name = "n1"
+            mock_graph.nodes[1].name = "n2"
+            mock_load.return_value = mock_graph
+            mutate_cmd(args)
+            assert len(mock_graph.nodes) == 1
+            assert mock_graph.nodes[0].name == "n2"
+
+    args.output = None
+    with (
+        patch("onnx9000.core.parser.core.load") as mock_load,
+        patch("onnx9000.core.serializer.save") as mock_save,
+    ):
+        with patch("builtins.open", mock_open(read_data="[]")):
+            mock_load.return_value = MagicMock(nodes=[])
+            mutate_cmd(args)
+
+
+def test_stubs_coverage():
+    from onnx9000_cli.main import (
+        inspect_cmd,
+        optimize_cmd,
+        quantize_cmd,
+        export_cmd,
+        convert_cmd,
+        serve_cmd,
+        compile_cmd,
+        optimum_export_cmd,
+        optimum_optimize_cmd,
+        optimum_quantize_cmd,
+        optimum_cmd,
+    )
+    import argparse
+    from unittest.mock import patch
+    import pytest
+
+    args = argparse.Namespace(
+        model="test.onnx",
+        script="test.py",
+        src="a",
+        dst="b",
+        model_id="test/model",
+        task="text-classification",
+        opset=14,
+        device="cpu",
+        cache_dir=None,
+        split="train",
+        level="O2",
+        disable_fusion=False,
+        optimize_size=False,
+        quantize="int8",
+        gptq_bits=4,
+        gptq_group_size=128,
+    )
+
+    inspect_cmd(args)
+    optimize_cmd(args)
+    quantize_cmd(args)
+    export_cmd(args)
+    convert_cmd(args)
+    serve_cmd(args)
+    compile_cmd(args)
+
+    with patch("onnx9000_optimum.export.export_model") as m1:
+        optimum_export_cmd(args)
+        m1.assert_called_once()
+
+    with patch("onnx9000_optimum.optimize.optimize_model") as m2:
+        optimum_optimize_cmd(args)
+        m2.assert_called_once()
+
+    with patch("onnx9000_optimum.quantize.quantize_model") as m3:
+        optimum_quantize_cmd(args)
+        m3.assert_called_once()
+
+    with pytest.raises(SystemExit):
+        optimum_cmd(argparse.Namespace())
+
+    args.optimum_func = lambda x: print("optimum ok")
+    optimum_cmd(args)

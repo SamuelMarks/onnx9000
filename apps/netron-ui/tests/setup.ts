@@ -104,3 +104,13 @@ if (typeof File === 'undefined') {
     }
   };
 }
+
+// @ts-ignore
+global.Path2D = class Path2D {
+  moveTo() {}
+  lineTo() {}
+  arc() {}
+  closePath() {}
+  bezierCurveTo() {}
+  rect() {}
+};

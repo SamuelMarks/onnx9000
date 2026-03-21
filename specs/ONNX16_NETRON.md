@@ -40,7 +40,7 @@ Furthermore, because it is deeply integrated with `onnx9000`'s IR and `GraphSurg
 - [x] Deduplicate shared Initializers to reduce memory footprint
 - [x] Compress repeated identical subgraphs visually (e.g., Transformer blocks)
 - [x] Auto-detect model formats based on file signatures / magic bytes
-- [x] Expose TypeScript/JS bindings for embedding parser in other React/Vue apps
+- [x] Expose TypeScript/JS bindings for embedding parser in other Web Components apps
 - [x] Support parsing models hosted on remote HTTP/HTTPS servers
 - [x] Support parsing models directly from GitHub raw URLs
 - [x] Extract and format tensor data into readable matrices (1D, 2D, 3D slices)

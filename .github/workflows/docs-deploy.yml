@@ -1,0 +1,68 @@
+name: Deploy Web IDE
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          
+      - name: Install JS dependencies
+        run: pnpm install
+        
+      # 319. Cache TS build artifacts
+      - name: Cache TS Build
+        uses: actions/cache@v4
+        with:
+          path: docs/_static/app.bundle.js
+          key: ${{ runner.os }}-esbuild-${{ hashFiles('docs/_static/ts/**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-esbuild-
+
+      - name: Install uv and Sphinx
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv pip install sphinx furo sphinx-copybutton --system
+          
+      # 318. Verify CI/CD pipeline triggers the TS frontend build
+      - name: Build TS Web IDE
+        run: pnpm exec esbuild --bundle --format=esm docs/_static/ts/src/App.ts --outfile=docs/_static/app.bundle.js --minify
+          
+      - name: Build Sphinx Docs
+        run: make -C docs html
+        
+      # 320. Deploy to GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/_build/html'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

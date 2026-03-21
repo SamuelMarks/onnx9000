@@ -217,7 +217,7 @@
 
 ### Phase 14: Web UI (The Interactive Pruner)
 
-- [ ] 161. Build static Vue/React page "ONNX Web Pruner".
+- [ ] 161. Build static Web Components page "ONNX Web Pruner".
 - [ ] 162. Implement drag-and-drop ingestion of `model.onnx` and `recipe.yaml`.
 - [ ] 163. Display a 3D/2D visualization of the model topology.
 - [ ] 164. Render a "Sparsity Slider" allowing users to dial in global sparsity from `0.0` to `0.99`.

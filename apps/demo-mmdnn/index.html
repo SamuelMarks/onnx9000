@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MMDNN Universal Converter Demo</title>
+    <style>
+      :root {
+        --bg-color: #1e1e1e;
+        --text-color: #d4d4d4;
+        --border-color: #3c3c3c;
+        --accent-color: #007acc;
+        --hover-accent: #005f9e;
+        --drop-bg: #2d2d2d;
+        --drop-hover: #3a3a3a;
+        --success-color: #4CAF50;
+      }
+
+      body {
+        margin: 0;
+        padding: 2rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .control-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      label {
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      select {
+        padding: 0.5rem;
+        background-color: var(--drop-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      .drop-zone {
+        border: 2px dashed var(--border-color);
+        border-radius: 8px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: var(--drop-bg);
+        transition: all 0.2s ease;
+        margin-bottom: 2rem;
+        cursor: pointer;
+      }
+
+      .drop-zone.dragover {
+        border-color: var(--accent-color);
+        background-color: var(--drop-hover);
+      }
+
+      .drop-zone p {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .drop-zone .hint {
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 0.5rem;
+      }
+
+      .files-list {
+        margin-top: 1rem;
+        text-align: left;
+      }
+
+      .file-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background: rgba(0,0,0,0.2);
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        background-color: var(--accent-color);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        flex: 1;
+      }
+
+      button:hover {
+        background-color: var(--hover-accent);
+      }
+
+      button:disabled {
+        background-color: var(--border-color);
+        color: #888;
+        cursor: not-allowed;
+      }
+      
+      button.success {
+        background-color: var(--success-color);
+      }
+
+      .logs-container {
+        background-color: #000;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem;
+        height: 200px;
+        overflow-y: auto;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+      }
+
+      .log-line {
+        margin: 0.25rem 0;
+        line-height: 1.4;
+      }
+
+      .log-line.info { color: #d4d4d4; }
+      .log-line.success { color: #4CAF50; }
+      .log-line.warning { color: #ffeb3b; }
+      .log-line.error { color: #f44336; }
+
+      .graph-preview {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--drop-bg);
+        color: #888;
+      }
+      
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>MMDNN Universal Converter</h1>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="src-framework">Source Framework</label>
+          <select id="src-framework">
+            <option value="caffe">Caffe</option>
+            <option value="mxnet">MXNet</option>
+            <option value="cntk">CNTK</option>
+            <option value="darknet">Darknet</option>
+            <option value="ncnn">NCNN</option>
+            <option value="paddle">PaddlePaddle</option>
+            <option value="keras">Keras</option>
+            <option value="coreml">CoreML</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="dst-framework">Target Framework</label>
+          <select id="dst-framework">
+            <option value="onnx">ONNX</option>
+            <option value="pytorch_code">PyTorch Code</option>
+            <option value="tfjs">TF.js</option>
+            <option value="coreml">CoreML</option>
+            <option value="ncnn">NCNN</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <p>Drag and drop model files here or click to select</p>
+        <p class="hint" id="drop-hint">Requires: .prototxt and .caffemodel</p>
+        <input type="file" id="file-input" multiple style="display: none;" />
+        
+        <div class="files-list" id="files-list"></div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-convert" disabled>Convert Model</button>
+        <button id="btn-download" disabled class="hidden">Download Result</button>
+      </div>
+
+      <label>Conversion Logs</label>
+      <div class="logs-container" id="logs"></div>
+
+      <label>3D Visual Graph Preview (Intermediate ONNX)</label>
+      <div class="graph-preview" id="graph-preview">
+        <!-- Stub for onnx9000.modifier visual preview -->
+        Preview unavailable: waiting for conversion or missing 3D viewer integration.
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -31,8 +31,7 @@ def test_autograd_simple_graph(tmp_path: Path) -> None:
 
     infer_shapes_and_types(builder)
     bwd_graph = build_backward_graph(builder)
-    any(o.startswith("grad_w") for o in bwd_graph.outputs)
-    assert True
+    assert len(bwd_graph.outputs) > 0
 
 
 def test_autograd_add_mul_sigmoid_tanh(tmp_path: Path) -> None:

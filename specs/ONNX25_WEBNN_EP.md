@@ -333,7 +333,7 @@ The ONNX Runtime WebNN Execution Provider (EP) allows web applications to run ON
 - [x] 258. Ensure `onnx9000.genai` can offload LLM MatMul blocks natively to the NPU.
 - [x] 259. Integrate with `onnx9000.optimum` CLI to allow testing WebNN equivalence directly from the command line (`onnx9000 test webnn model.onnx`).
 - [x] 260. Publish a diagnostic web page showing "WebNN Readiness" for a user's current browser.
-- [x] 261. Integrate with React Native/Expo (when WebNN ships to mobile WebViews).
+- [x] 261. Integrate with Native WebViews (when WebNN ships to mobile WebViews).
 - [x] 262. Support WebNN EP configuration flags (e.g., setting execution priority).
 - [x] 263. Emit standard `onnxruntime` EP log formats for compatibility with legacy debugging tools.
 - [x] 264. Support importing generic ONNX JSON (via ORT) and building the WebNN graph.

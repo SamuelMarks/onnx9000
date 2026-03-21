@@ -87,3 +87,34 @@ test/
 # Temp Opt reports
 *_report.html
 *_schedule.json
+
+# Scratch files generated during AI development
+append_*.ts
+cov_report.txt
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+*.tsbuildinfo
+docs/_static/app.bundle.js
+docs/_static/assets/*.worker.js
+
+# MMDNN conversion test files
+*.pt
+*.pth
+*.h5
+*.hdf5
+*.mlmodel
+*.caffemodel
+*.param
+*.bin
+*.prototxt
+
+# Scratch / Patch scripts
+fix_*.js
+patch_*.js
+test_*.ts
+test_*.pt
+update_*.js

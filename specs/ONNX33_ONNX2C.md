@@ -260,7 +260,7 @@
 
 ### Phase 16: Browser UI (The C99 Web Compiler)
 
-- [ ] 197. Build static React/Vue Web UI for `onnx2c`.
+- [ ] 197. Build static Web Components Web UI for `onnx2c`.
 - [ ] 198. Implement drag-and-drop ONNX file ingestion.
 - [ ] 199. Display an interactive Monaco Editor showing the real-time C99 code generation.
 - [ ] 200. Allow the user to tweak memory arena size parameters visually.

@@ -10,12 +10,12 @@ def test_script_parser_missing_lines() -> None:
 
     def valid_func() -> None:
         """Tests the valid func functionality."""
-        assert True
+        pass
 
     class MyClass:
         """Represents the MyClass class and its associated logic."""
 
-        assert True
+        pass
 
     with pytest.raises(ValueError, match="Expected a function definition"):
         p.parse(MyClass)

@@ -14,7 +14,7 @@ def test_ast_script() -> None:
             return x
         else:
             for _i in range(10):
-                assert True
+                pass
             while True:
                 break
         return x
@@ -34,7 +34,7 @@ def test_ast_parser_missing() -> None:
     def my_func(a, b, c=None):
         """Tests the my_func functionality."""
         if True:
-            assert True
+            pass
         return ((a, b), [a])
 
     t1 = Tensor((10,), DType.FLOAT32, "a")

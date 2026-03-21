@@ -5,6 +5,7 @@ import { fetchAndParseModel } from '../src/parser/fetcher';
 const mockContext = {
   fillRect: vi.fn(),
   clearRect: vi.fn(),
+  setLineDash: vi.fn(),
   getImageData: vi.fn(),
   putImageData: vi.fn(),
   createImageData: vi.fn(),
@@ -89,7 +90,7 @@ describe('CanvasRenderer', () => {
 
     window.dispatchEvent(new Event('resize'));
     renderer.setLayout({ nodes: [], edges: [], width: 0, height: 0 } as any);
-    expect(1).toBe(1);
+    expect(renderer).toBeDefined();
   });
 });
 

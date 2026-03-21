@@ -25,6 +25,7 @@ export class Graph {
   tensors: Record<string, Tensor>;
   inputs: ValueInfo[];
   outputs: ValueInfo[];
+  valueInfo: ValueInfo[];
   initializers: string[];
   opsetImports: Record<string, number>;
   producerName: string = '';
@@ -32,6 +33,7 @@ export class Graph {
   modelVersion: number = 0;
   domain: string = '';
   docString: string = '';
+  metadataProps: Record<string, string> = {};
 
   constructor(name: string) {
     this.id =
@@ -43,9 +45,11 @@ export class Graph {
     this.tensors = {};
     this.inputs = [];
     this.outputs = [];
+    this.valueInfo = [];
     this.initializers = [];
     this.opsetImports = {};
     this.docString = '';
+    this.metadataProps = {};
   }
 
   addTensor(tensor: Tensor): void {

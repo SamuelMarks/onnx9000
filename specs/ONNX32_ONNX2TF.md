@@ -357,7 +357,7 @@ Instead of relying on Google's multi-gigabyte C++ TensorFlow framework to compil
 
 ### Phase 17: Web UI (The Universal Browser Converter)
 
-- [ ] 291. Build a static Vue/React page "ONNX to TFLite Converter".
+- [ ] 291. Build a static Web Components page "ONNX to TFLite Converter".
 - [ ] 292. Provide drag-and-drop ingestion of `model.onnx`.
 - [ ] 293. Provide toggle switches for "Quantize Int8", "FP16", "Optimize for EdgeTPU".
 - [ ] 294. Utilize Web Workers to perform the AST traversal and FlatBuffer building without blocking the main UI.

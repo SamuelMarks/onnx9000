@@ -214,8 +214,8 @@ Instead of a separate C++ library bridging into Python, `onnx9000`'s GenAI imple
 ### Phase 9: UI Components & Demos
 
 - [x] 171. Build a barebones HTML/JS demo demonstrating browser-local Llama execution.
-- [x] 172. Create a React hook: `useGenAI(modelUrl)`.
-- [x] 173. Create a Vue composable: `useGenAI(modelUrl)`.
+- [x] 172. Create a Web Components function: `useGenAI(modelUrl)`.
+- [x] 173. Create a Vanilla utility: `useGenAI(modelUrl)`.
 - [x] 174. Implement a terminal UI (TUI) chat interface for the CLI.
 - [x] 175. Create a WebGL/Canvas visualizer showing token probabilities in real-time.
 - [x] 176. Implement a drag-and-drop interface for loading local ONNX files.

@@ -45,8 +45,19 @@ export class CanvasRenderer {
 
     // Center it
     this.offsetX = cw / 2;
-    // this.offsetY = ch / 2 - (this.layout.height * this.scale) / 2;
     this.offsetY = 100 * this.scale;
+
+    // Attempt restore from localStorage
+    try {
+      const savedScale = localStorage.getItem('onnxModifier_scale');
+      const savedOffsetX = localStorage.getItem('onnxModifier_offsetX');
+      const savedOffsetY = localStorage.getItem('onnxModifier_offsetY');
+      if (savedScale && savedOffsetX && savedOffsetY) {
+        this.scale = parseFloat(savedScale);
+        this.offsetX = parseFloat(savedOffsetX);
+        this.offsetY = parseFloat(savedOffsetY);
+      }
+    } catch (e) {}
   }
 
   private resize() {
@@ -56,11 +67,33 @@ export class CanvasRenderer {
   }
 
   private hoveredNode: string | null = null;
-  public selectedNode: string | null = null;
+  private hoveredEdge: LayoutEdge | null = null;
+  public selectedNodes: string[] = [];
   private searchResults: Set<string> = new Set();
+
+  private hideControlEdges: boolean = false;
+  private customColorRegex: RegExp | null = null;
 
   public setSearchResults(results: string[]) {
     this.searchResults = new Set(results);
+    this.render();
+  }
+
+  public setFilterControlEdges(hide: boolean) {
+    this.hideControlEdges = hide;
+    this.render();
+  }
+
+  public setCustomColorRegex(pattern: string) {
+    if (!pattern.trim()) {
+      this.customColorRegex = null;
+    } else {
+      try {
+        this.customColorRegex = new RegExp(pattern, 'i');
+      } catch (e) {
+        this.customColorRegex = null; // invalid regex, ignore
+      }
+    }
     this.render();
   }
 
@@ -69,6 +102,7 @@ export class CanvasRenderer {
     const node = this.layout.nodes.find((n) => n.id === nodeId);
     if (!node) return;
 
+    this.selectedNodes = [nodeId];
     // Animate or snap to center
     this.offsetX = this.canvas.width / 2 - (node.x + node.width / 2) * this.scale;
     this.offsetY = this.canvas.height / 2 - (node.y + node.height / 2) * this.scale;
@@ -76,6 +110,45 @@ export class CanvasRenderer {
   }
 
   private setupEvents() {
+    // 283. Implement touch event handling for iPad/Mobile Safari rendering.
+    this.canvas.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches.length === 1) {
+          this.isDragging = true;
+          this.hasMovedDuringDrag = false;
+          this.lastMouseX = e.touches[0]!.clientX;
+          this.lastMouseY = e.touches[0]!.clientY;
+        }
+      },
+      { passive: false },
+    );
+
+    this.canvas.addEventListener(
+      'touchmove',
+      (e) => {
+        if (this.isDragging && e.touches.length === 1) {
+          e.preventDefault(); // Prevent scrolling
+          this.hasMovedDuringDrag = true;
+          this.offsetX += e.touches[0]!.clientX - this.lastMouseX;
+          this.offsetY += e.touches[0]!.clientY - this.lastMouseY;
+          this.lastMouseX = e.touches[0]!.clientX;
+          this.lastMouseY = e.touches[0]!.clientY;
+          try {
+            localStorage.setItem('onnxModifier_offsetX', String(this.offsetX));
+            localStorage.setItem('onnxModifier_offsetY', String(this.offsetY));
+          } catch (e) {}
+          this.render();
+        }
+      },
+      { passive: false },
+    );
+
+    this.canvas.addEventListener('touchend', () => {
+      this.isDragging = false;
+      // We don't simulate click selection on touch yet, just pan
+    });
+
     this.canvas.addEventListener('mousedown', (e) => {
       this.isDragging = true;
       this.hasMovedDuringDrag = false;
@@ -83,10 +156,27 @@ export class CanvasRenderer {
       this.lastMouseY = e.clientY;
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener('mouseup', (e) => {
       if (this.isDragging && !this.hasMovedDuringDrag) {
-        this.selectedNode = this.hoveredNode;
-        this.onSelect(this.selectedNode);
+        if (this.hoveredNode) {
+          if (e.shiftKey) {
+            if (this.selectedNodes.includes(this.hoveredNode)) {
+              this.selectedNodes = this.selectedNodes.filter((n) => n !== this.hoveredNode);
+            } else {
+              this.selectedNodes.push(this.hoveredNode);
+            }
+          } else {
+            this.selectedNodes = [this.hoveredNode];
+          }
+          this.onSelect(
+            this.selectedNodes.length > 0
+              ? this.selectedNodes[this.selectedNodes.length - 1]!
+              : null,
+          );
+        } else {
+          this.selectedNodes = [];
+          this.onSelect(null);
+        }
         this.render();
       }
       this.isDragging = false;
@@ -99,6 +189,10 @@ export class CanvasRenderer {
         this.offsetY += e.clientY - this.lastMouseY;
         this.lastMouseX = e.clientX;
         this.lastMouseY = e.clientY;
+        try {
+          localStorage.setItem('onnxModifier_offsetX', String(this.offsetX));
+          localStorage.setItem('onnxModifier_offsetY', String(this.offsetY));
+        } catch (e) {}
         this.render();
       } else {
         // Sub-millisecond hit testing for hovering
@@ -106,19 +200,55 @@ export class CanvasRenderer {
           const mx = (e.clientX - this.offsetX) / this.scale;
           const my = (e.clientY - this.offsetY) / this.scale;
 
-          let found: string | null = null;
+          let foundNode: string | null = null;
           // Loop backwards to hit top-most items first
           for (let i = this.layout.nodes.length - 1; i >= 0; i--) {
             const n = this.layout.nodes[i]!;
             if (mx >= n.x && mx <= n.x + n.width && my >= n.y && my <= n.y + n.height) {
-              found = n.id;
+              foundNode = n.id;
               break;
             }
           }
 
-          if (this.hoveredNode !== found) {
-            this.hoveredNode = found;
-            this.canvas.style.cursor = found ? 'pointer' : 'default';
+          let foundEdge: LayoutEdge | null = null;
+          if (!foundNode) {
+            // Hit test edges if no node found
+            for (const edge of this.layout.edges) {
+              const p1 = edge.points[0];
+              const p2 = edge.points[1];
+              if (p1 && p2) {
+                const isVertical = Math.abs(p2.y - p1.y) > Math.abs(p2.x - p1.x);
+                const path = new Path2D();
+                path.moveTo(p1.x, p1.y);
+                if (isVertical) {
+                  const midY = (p1.y + p2.y) / 2;
+                  path.bezierCurveTo(p1.x, midY, p2.x, midY, p2.x, p2.y);
+                } else {
+                  const midX = (p1.x + p2.x) / 2;
+                  path.bezierCurveTo(midX, p1.y, midX, p2.y, p2.x, p2.y);
+                }
+
+                this.ctx.lineWidth = 10 / this.scale; // Thicker hit area
+                if (this.ctx.isPointInStroke(path, mx, my)) {
+                  foundEdge = edge;
+                  break;
+                }
+              }
+            }
+          }
+
+          let changed = false;
+          if (this.hoveredNode !== foundNode) {
+            this.hoveredNode = foundNode;
+            changed = true;
+          }
+          if (this.hoveredEdge !== foundEdge) {
+            this.hoveredEdge = foundEdge;
+            changed = true;
+          }
+
+          if (changed) {
+            this.canvas.style.cursor = foundNode || foundEdge ? 'pointer' : 'default';
             this.render();
           }
         }
@@ -143,6 +273,13 @@ export class CanvasRenderer {
         // Limit zoom
         this.scale = Math.max(0.01, Math.min(this.scale, 5));
 
+        // 279. Support saving layout preferences to localStorage
+        try {
+          localStorage.setItem('onnxModifier_scale', String(this.scale));
+          localStorage.setItem('onnxModifier_offsetX', String(this.offsetX));
+          localStorage.setItem('onnxModifier_offsetY', String(this.offsetY));
+        } catch (e) {}
+
         this.render();
       },
       { passive: false },
@@ -164,7 +301,7 @@ export class CanvasRenderer {
     const endX = startX + canvas.width / this.scale;
     const endY = startY + canvas.height / this.scale;
 
-    // Draw grid lines
+    // Draw Grid
     if (this.scale > 0.2) {
       ctx.save();
       ctx.strokeStyle = '#222';
@@ -186,25 +323,67 @@ export class CanvasRenderer {
         ctx.lineTo(gridEndX, y);
       }
       ctx.stroke();
+      ctx.setLineDash([]); // Reset line dash for next shapes
       ctx.restore();
+    }
+
+    // Draw Groups (NameScopes)
+    if (this.layout.groups) {
+      for (const group of this.layout.groups) {
+        if (
+          group.x + group.width < startX ||
+          group.x > endX ||
+          group.y + group.height < startY ||
+          group.y > endY
+        ) {
+          continue;
+        }
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.02 + group.depth * 0.01})`;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + group.depth * 0.05})`;
+        ctx.lineWidth = 1 / this.scale;
+
+        ctx.beginPath();
+        ctx.roundRect(group.x, group.y, group.width, group.height, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        if (this.scale > 0.1) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + group.depth * 0.1})`;
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.fillText(group.name, group.x + 10, group.y + 10);
+        }
+      }
     }
 
     // Draw Edges
     for (const edge of this.layout.edges) {
+      if (this.hideControlEdges) {
+        // Typical ONNX control edges have empty strings as tensor names, or are boolean
+        if (!edge.tensorName || edge.dtype === 'bool') continue;
+      }
+      const isHoveredEdge = this.hoveredEdge === edge;
+
       // Color by dtype
-      if (edge.dtype?.startsWith('float') || edge.dtype?.startsWith('bfloat')) {
-        ctx.strokeStyle = '#4A90E2'; // Blue
+      // 133. Colorblind-friendly palette
+      // Using IBM Design-ish / Wong palette colors for colorblind accessibility
+      if (isHoveredEdge) {
+        ctx.strokeStyle = '#ffffff'; // Highlighted edge color
+      } else if (edge.dtype?.startsWith('float') || edge.dtype?.startsWith('bfloat')) {
+        ctx.strokeStyle = '#56B4E9'; // Sky Blue
       } else if (edge.dtype?.startsWith('int') || edge.dtype?.startsWith('uint')) {
-        ctx.strokeStyle = '#7ED321'; // Green
+        ctx.strokeStyle = '#009E73'; // Bluish Green
       } else if (edge.dtype === 'bool') {
-        ctx.strokeStyle = '#F8E71C'; // Yellow
+        ctx.strokeStyle = '#F0E442'; // Yellow
       } else if (edge.dtype === 'string') {
-        ctx.strokeStyle = '#F5A623'; // Orange
+        ctx.strokeStyle = '#E69F00'; // Orange
       } else {
         ctx.strokeStyle = '#888888'; // Default
       }
 
-      ctx.lineWidth = 2 / this.scale;
+      ctx.lineWidth = (isHoveredEdge ? 4 : 2) / this.scale;
       ctx.beginPath();
 
       const p1 = edge.points[0];
@@ -227,14 +406,38 @@ export class CanvasRenderer {
         ctx.stroke();
 
         // Render data types and shapes as edge labels
-        if (this.scale > 0.8 && edge.shape && edge.dtype) {
-          ctx.fillStyle = '#aaa';
-          ctx.font = '10px sans-serif';
+        if ((this.scale > 0.8 || isHoveredEdge) && edge.shape && edge.dtype) {
+          ctx.fillStyle = isHoveredEdge ? '#fff' : '#aaa';
+          ctx.font = isHoveredEdge ? '12px sans-serif' : '10px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
           const midX = (p1.x + p2.x) / 2;
           const midY = (p1.y + p2.y) / 2;
-          ctx.fillText(`${edge.dtype} ${edge.shape}`, midX, midY - 2);
+          // 210. Edge hover preview of tensor shape sizes
+          let text = `${edge.dtype} ${edge.shape}`;
+          if (isHoveredEdge) {
+            // estimate byte size if possible
+            const dims = edge.shape
+              .replace('[', '')
+              .replace(']', '')
+              .split(',')
+              .map((s) => parseInt(s.trim()));
+            if (dims.every((d) => !isNaN(d) && d > 0)) {
+              const elements = dims.reduce((a, b) => a * b, 1);
+              let bpe = 4;
+              if (edge.dtype.includes('8')) bpe = 1;
+              if (edge.dtype.includes('16')) bpe = 2;
+              if (edge.dtype.includes('64')) bpe = 8;
+              const bytes = elements * bpe;
+              text += ` (${(bytes / 1024).toFixed(1)} KB)`;
+            }
+            // Draw background pill for hover text
+            const m = ctx.measureText(text);
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            ctx.fillRect(midX - m.width / 2 - 4, midY - 14, m.width + 8, 16);
+            ctx.fillStyle = '#fff';
+          }
+          ctx.fillText(text, midX, midY - 2);
         }
       }
     }
@@ -265,13 +468,34 @@ export class CanvasRenderer {
         stroke = '#44a';
       }
 
+      // 211, 212. Visual Cues for INT8 / W4A16
+      const isQuantized =
+        (node.opType || '').includes('Quantize') ||
+        (node.opType || '').includes('Integer') ||
+        (node.opType || '').includes('QLinear');
+      const isPacked =
+        (node.opType || '').includes('Bitpack') || (node.opType || '').includes('NBits');
+
+      if (isQuantized) fill = '#3e2a1e'; // Orange-ish tint for INT8
+      if (isPacked) fill = '#2e1e3e'; // Purple-ish tint for W4A16
+
+      // 197. Custom Regex Node Coloring
+      if (this.customColorRegex && this.customColorRegex.test(node.name || node.opType)) {
+        fill = '#0052cc'; // Distinctive highlight blue
+        stroke = '#0066ff';
+      }
+
+      const isConnectedToHoveredEdge =
+        this.hoveredEdge && (this.hoveredEdge.from === node.id || this.hoveredEdge.to === node.id);
+
       // Highlight on hover / selection / search
-      if (this.selectedNode === node.id) {
+      const isSelected = this.selectedNodes.includes(node.id);
+      if (isSelected) {
         fill = '#4a4a4a';
         stroke = '#ffffff';
-      } else if (this.hoveredNode === node.id) {
+      } else if (this.hoveredNode === node.id || isConnectedToHoveredEdge) {
         fill = '#3a3a3a';
-        stroke = '#aaaaaa';
+        stroke = '#ffffff';
       }
 
       if (this.searchResults.has(node.id)) {
@@ -279,7 +503,8 @@ export class CanvasRenderer {
         ctx.lineWidth = 3 / this.scale;
       } else {
         ctx.lineWidth =
-          (this.selectedNode === node.id || this.hoveredNode === node.id ? 2 : 1) / this.scale;
+          (isSelected || this.hoveredNode === node.id || isConnectedToHoveredEdge ? 2 : 1) /
+          this.scale;
       }
 
       ctx.fillStyle = fill;
@@ -298,7 +523,22 @@ export class CanvasRenderer {
         ctx.font = '12px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(node.opType, node.x + node.width / 2, node.y + node.height / 2);
+
+        // 193. Render mathematical symbols for basic math nodes
+        let label = node.opType;
+        if (label === 'Add') label = '+ (Add)';
+        if (label === 'Sub') label = '- (Sub)';
+        if (label === 'Mul') label = '× (Mul)';
+        if (label === 'Div') label = '÷ (Div)';
+
+        // 297. Render String constants with truncated inline text
+        if (node.opType === 'Constant' && node.stringValue) {
+          label = `"${node.stringValue}"`;
+        } else if (node.type === 'constant' && node.stringValue) {
+          label = `"${node.stringValue}"`;
+        }
+
+        ctx.fillText(label, node.x + node.width / 2, node.y + node.height / 2);
       }
     }
 

@@ -299,7 +299,7 @@ Our `onnx9000` Web engine is written natively in strict TypeScript/JavaScript. I
 - [xx] Support execution in `Bun` environments
 - [xx] Execute cleanly in Electron apps (Main Process)
 - [xx] Execute cleanly in Electron apps (Renderer Process)
-- [xx] Execute cleanly in React Native WebViews
+- [xx] Execute cleanly in Native WebViews WebViews
 - [xx] Export as standard ECMAScript Module (`import { InferenceSession } from 'onnx9000-web'`)
 - [xx] Export as CommonJS module (`require('onnx9000-web')`)
 - [xx] Export as UMD bundle for direct `<script>` tags

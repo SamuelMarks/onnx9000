@@ -367,7 +367,7 @@ Instead of relying on a disconnected stack (like XNNPACK or generic WebGL), `onn
 - [ ] 290. Extract string values safely out of promises natively.
 - [ ] 291. Manage ArrayBuffer Detachment explicitly upon tensor disposal.
 - [ ] 292. Add support for creating a Web Worker dedicated specifically to evaluations.
-- [ ] 293. Build interactive examples demonstrating the exact same React code running simultaneously.
+- [ ] 293. Build interactive examples demonstrating the exact same Web Components code running simultaneously.
 - [ ] 294. Validate memory leak absence in 1,000,000+ operation loops.
 - [ ] 295. Configure explicit fallback logic for unsupported `WebGL2` specific functions if they exist.
 - [ ] 296. Validate execution cleanly in Node.js.

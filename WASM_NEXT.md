@@ -1,0 +1,708 @@
+# WASM_NEXT: The Path to a Fully Functional Web IDE
+
+This document outlines the exhaustive, 300+ step plan to transition the `onnx9000` Sphinx documentation from a mocked visionary frontend into a fully functional, zero-dependency Web IDE for Machine Learning.
+
+**Constraints:**
+
+- Strictly ZERO frontend frameworks (No Vanilla JS, Web Components, Vanilla JS, or Svelte).
+- 100% Pure HTML, Vanilla TypeScript, and standard CSS.
+- Execution heavily leverages Web APIs: `WebWorkers`, `WebAssembly`, `WebNN`, `WebGPU`, `File API`, and `Canvas API`.
+
+---
+
+## Phase 1: Build Infrastructure & Sphinx Integration (1 - 25)
+
+- [x] 1. Initialize `docs/_static/ts` directory for pure TypeScript source files.
+- [x] 2. Create `tsconfig.docs.json` explicitly targeting `ESNext` and `DOM` lib.
+- [x] 3. Set up a lightweight bundler (e.g., `esbuild` or `rollup`) via `package.json` scripts to output self-contained IIFE/ESM modules.
+- [x] 4. Configure Sphinx `conf.py` to trigger the TS build step during `make html`.
+- [x] 5. Remove `demo.js`, `tvm.js`, and `genai.js` mock files from source control.
+- [x] 6. Create `src/core/State.ts` to implement a vanilla JS PubSub/Observer pattern for global state.
+- [x] 7. Create `src/core/DOM.ts` utility for safe, typed DOM querying (`$`, `$$`).
+- [x] 8. Update `docs/index.rst` HTML raw block to link the new compiled TS bundles.
+- [x] 9. Define CSS variables for dark/light mode switching in `docs/_static/demo.css`.
+- [x] 10. Implement `ThemeManager.ts` to sync Sphinx themes with the demo UI.
+- [x] 11. Create a `BaseComponent` TS abstract class to manage lifecycle (mount, unmount, events) for vanilla UI components.
+- [x] 12. Set up `docs/_static/assets` for offline WebAssembly binaries and worker scripts.
+- [x] 13. Create `Logger.ts` to intercept console logs and route them to the DOM-based Terminal UI.
+- [x] 14. Design the base HTML layout in `index.rst`: Sidebar (Tools), Main Canvas (Visualization), Bottom Panel (Terminal/Profiler).
+- [x] 15. Implement a vanilla CSS Flexbox/Grid resizer (split panes) for the UI panels.
+- [x] 16. Bind drag events to the split pane dividers to allow dynamic resizing.
+- [x] 17. Implement local storage caching for panel sizes.
+- [x] 18. Create `Toast.ts` for non-blocking UI notifications.
+- [x] 19. Define a generic `IModelGraph` TypeScript interface representing the parsed ONNX schema.
+- [x] 20. Implement a `Registry.ts` for dynamic loading of execution providers (WASM, WebNN).
+- [x] 21. Set up a `WebWorkerPool.ts` to manage heavily threaded tasks without blocking the UI.
+- [x] 22. Implement cross-worker message passing interfaces (`IWorkerMessage`, `IWorkerResponse`).
+- [x] 23. Add strict null checks and DOM sanitization utilities.
+- [x] 24. Create a top-level `App.ts` entry point that bootstraps the UI components.
+- [x] 25. Verify the clean TS build pipeline triggers successfully via `make html`.
+
+## Phase 2: Zero-Copy Safetensors & File I/O (26 - 55)
+
+- [x] 26. Create `ui/DropZone.ts` for handling HTML5 File API drag-and-drop.
+- [x] 27. Bind `dragenter`, `dragover`, `dragleave`, and `drop` events to the document body.
+- [x] 28. Add CSS animations for the drop overlay ("Drop .onnx or .safetensors here").
+- [x] 29. Implement `FileParser.ts` to process dropped `File` objects.
+- [x] 30. Implement `ArrayBuffer` extraction via `file.arrayBuffer()`.
+- [x] 31. Create `parsers/Safetensors.ts` to handle HuggingFace safetensors format.
+- [x] 32. Read the first 8 bytes (UInt64) using `DataView` to get the JSON header length.
+- [x] 33. Extract the JSON header bytes and decode using `TextDecoder`.
+- [x] 34. Parse the JSON header to extract tensor metadata (dtype, shape, data_offsets).
+- [x] 35. Implement validation for Safetensors JSON schema.
+- [x] 36. Create a zero-copy memory mapper mapping tensor offsets to `Float32Array`, `Int32Array`, etc.
+- [x] 37. Handle Little-Endian vs Big-Endian system architectures gracefully.
+- [x] 38. Create a `Tensor.ts` class wrapping the underlying typed arrays.
+- [x] 39. Implement an ONNX Protobuf parser fallback (`parsers/ONNXProto.ts`) using minimal byte decoding (no heavy protobuf.js).
+- [x] 40. Write a varint decoder for parsing raw ONNX protobuf fields.
+- [x] 41. Decode the ONNX `GraphProto`, `NodeProto`, and `TensorProto` structures.
+- [x] 42. Map parsed weights to the unified `Tensor.ts` class.
+- [x] 43. Update the UI state to reflect successful model load (update title, show graph summary).
+- [x] 44. Handle >2GB file parsing limits using `FileReader` streaming or chunked `Blob.slice()`.
+- [x] 45. Implement memory-safe disposal of `ArrayBuffer` references upon model close.
+- [x] 46. Add error handling for corrupted or unsupported file signatures.
+- [x] 47. Render an HTML table summarizing loaded tensors, shapes, and datatypes.
+- [x] 48. Create a "Download Model" button utility mapping back to `Blob` and `URL.createObjectURL`.
+- [x] 49. Implement `Writer.ts` to serialize the `IModelGraph` back into `.safetensors`.
+- [x] 50. Implement serialization of the JSON header.
+- [x] 51. Append raw byte arrays sequentially based on newly calculated offsets.
+- [x] 52. Trigger browser download dialog for the generated blob.
+- [x] 53. Add a loading spinner during heavy I/O operations.
+- [x] 54. Write unit tests for `Safetensors.ts` using Mocha/Chai in a headless browser.
+- [x] 55. Integrate the File API seamlessly into the `State.ts` global store.
+
+## Phase 3: Polyglot Parsers (Web Workers) (56 - 90)
+
+- [x] 56. Update UI dropdown to enable "TensorFlow", "Scikit-Learn", and "PaddlePaddle" inputs.
+- [x] 57. Create a dedicated Web Worker `workers/ParserWorker.ts`.
+- [x] 58. Setup message routing for `PARSE_TF`, `PARSE_SKL`, `PARSE_PADDLE`.
+- [x] 59. Implement a minimal TF `SavedModel` (Protobuf) parser in the worker.
+- [x] 60. Map TF `GraphDef` nodes to `onnx9000` internal IR format.
+- [x] 61. Implement `tf2onnx` translation logic (e.g., mapping `Tf.MatMul` to `ONNX.MatMul`).
+- [x] 62. Handle TensorFlow NHWC to ONNX NCHW tensor permutation logic.
+- [x] 63. Implement Scikit-Learn `.pkl` parsing in JS (requires a minimal unpickle implementation in TS).
+- [x] 64. Map parsed SKLearn AST to `ai.onnx.ml` operators (e.g., `TreeEnsembleClassifier`).
+- [x] 65. Implement PaddlePaddle `.pdmodel` flatbuffer/protobuf parser.
+- [x] 66. Map Paddle variables to ONNX tensor formats.
+- [x] 67. Implement XGBoost JSON model parser (`parsers/XGBoost.ts`).
+- [x] 68. Translate XGBoost trees to ONNX `TreeEnsemble`.
+- [x] 69. Send translation progress events (`postMessage`) from Worker to Main Thread.
+- [x] 70. Update the DOM progress bar based on Worker events.
+- [x] 71. Serialize the final `IModelGraph` from Worker and transfer to Main Thread via Structured Clone.
+- [x] 72. Catch parsing exceptions in the Worker and surface them to the UI Toast system.
+- [x] 73. Display the original framework (e.g., TF) vs ONNX node count in the UI.
+- [x] 74. Implement AST caching using `IndexedDB` to prevent re-parsing large models on reload.
+- [x] 75. Create a "View Source" toggle to inspect the raw imported metadata.
+- [x] 76. Add text-based input parsing for ONNXScript Python code.
+- [x] 77. Load Pyodide (WebAssembly Python) in a separate worker specifically for ONNXScript parsing.
+- [x] 78. Pass the user's Python script to Pyodide, extract the ONNX protobuf string.
+- [x] 79. Load the string back into the main JS parser.
+- [x] 80. Add debouncing to the Monaco editor to prevent excessive Pyodide execution.
+- [x] 81. Highlight ONNXScript syntax errors in the Monaco editor based on Pyodide tracebacks.
+- [x] 82. Handle multi-file inputs (e.g., TF SavedModel folder structure) via HTML Directory Upload (`webkitdirectory`).
+- [x] 83. Reconstruct directory hierarchy in memory for the parser.
+- [x] 84. Add support for GGUF model parsing (`parsers/GGUF.ts`).
+- [x] 85. Read GGUF magic bytes (`GGUF`).
+- [x] 86. Parse GGUF Key-Value metadata.
+- [x] 87. Map GGUF quantized tensors to ONNX `DequantizeLinear` subgraphs.
+- [x] 88. Validate all parsed inputs against the internal TS Schema Validator.
+- [x] 89. Render a polyglot success animation in the UI.
+- [x] 90. Clear memory and terminate transient parsing workers.
+
+## Phase 4: Interactive DAG Editor (Netron UI Integration) (91 - 130)
+
+- [x] 91. Remove the dummy `<div class="canvas-mock">` for Netron UI.
+- [x] 92. Create `ui/GraphCanvas.ts` initializing a standard HTML5 `<canvas>`.
+- [x] 93. Implement a 2D camera system (pan X/Y, zoom scaling).
+- [x] 94. Bind mouse wheel events to camera zoom centered on cursor.
+- [x] 95. Bind middle-mouse/drag for camera panning.
+- [x] 96. Implement `layout/Dagrel.ts` (or import a zero-dep TS port of dagre) for hierarchical graph layout.
+- [x] 97. Map `IModelGraph` nodes to layout coordinates (X, Y, width, height).
+- [x] 98. Calculate edge routing paths (Bezier curves or orthogonal lines) between nodes.
+- [x] 99. Offload the layout calculation to a Web Worker for graphs > 1000 nodes.
+- [x] 100. Implement the Canvas render loop via `requestAnimationFrame`.
+- [x] 101. Draw node bounding boxes using `ctx.fillRect` and `ctx.strokeRect`.
+- [x] 102. Render text labels (OpType, NodeName) using `ctx.fillText`.
+- [x] 103. Color-code nodes based on operation category (e.g., Math=Blue, NN=Green, ControlFlow=Red).
+- [x] 104. Draw edges using `ctx.bezierCurveTo`.
+- [x] 105. Implement frustum culling: only draw nodes/edges currently visible in the camera viewport.
+- [x] 106. Add hover detection: map mouse coordinates to world coordinates.
+- [x] 107. Highlight nodes on hover using a contrasting border color.
+- [x] 108. Highlight connecting edges when a node is hovered.
+- [x] 109. Implement click selection logic for nodes.
+- [x] 110. Create `ui/NodeSidebar.ts` to display properties of the selected node.
+- [x] 111. Populate sidebar with Node Attributes (e.g., `axis`, `keepdims`).
+- [x] 112. Populate sidebar with Input/Output tensor shapes and dtypes.
+- [x] 113. Implement a "Search" input in the DOM to find nodes by name or OpType.
+- [x] 114. Auto-pan the camera to the searched node when selected.
+- [x] 115. Add HTML buttons for zoom controls (+, -, Reset View).
+- [x] 116. Support dark/light mode canvas rendering (dynamic `fillStyle` based on CSS vars).
+- [x] 117. Implement minimap rendering in the bottom right corner of the canvas.
+- [x] 118. Allow clicking/dragging the minimap viewport to navigate the main canvas.
+- [x] 119. Render tensor initialization data (weights) as sparklines or histograms in the sidebar.
+- [x] 120. Implement collapsible subgraphs for Control Flow (If/Loop) and functions.
+- [x] 121. Add toggle to show/hide tensor shape labels directly on the edges.
+- [x] 122. Optimize text rendering performance by caching text measurements.
+- [x] 123. Handle high-DPI (Retina) displays by scaling the canvas internal resolution (`window.devicePixelRatio`).
+- [x] 124. Export the current canvas view to a PNG image (`toDataURL`).
+- [x] 125. Export the entire graph layout to an SVG string.
+- [x] 126. Implement keyboard navigation (Arrow keys to pan, Tab to cycle nodes).
+- [x] 127. Add accessibility ARIA labels to the canvas container indicating graph summary.
+- [x] 128. Hook the Canvas UI up to the global `State.ts` to Vanilla JS to model loads.
+- [x] 129. Implement WebGL fallback context if Canvas2D becomes a bottleneck for >50k nodes.
+- [x] 130. Finalize and polish the Netron-like visual aesthetics.
+
+## Phase 5: Graph Surgery & Simplification (131 - 170)
+
+- [x] 131. Add a "Surgeon" tab to the Sphinx UI interface.
+- [x] 132. Implement `surgeon/GraphSurgeon.ts` utility class.
+- [x] 133. Create UI controls: "Fold Constants", "Remove Identity", "Prune Unused".
+- [x] 134. Implement topological sorting of the `IModelGraph`.
+- [x] 135. Implement Dead Code Elimination (DCE): traverse from outputs backwards, remove unreachable nodes.
+- [x] 136. Bind the DCE function to the "Prune Unused" button.
+- [x] 137. Update the Graph Canvas immediately after DCE execution.
+- [x] 138. Implement Constant Folding logic.
+- [x] 139. Identify purely static subgraphs (nodes where all inputs are initializers/constants).
+- [x] 140. Execute static nodes via the WASM/CPU backend during optimization.
+- [x] 141. Replace static subgraphs with the newly computed `Constant` node.
+- [x] 142. Bind Constant Folding to the UI button and show a Toast of "Nodes Removed: X".
+- [x] 143. Implement Identity node removal (e.g., `Add(X, 0)`, `Mul(X, 1)`).
+- [x] 144. Implement `Reshape` into `Constant` folding.
+- [x] 145. Create an interactive "Delete Node" button inside the Node Sidebar.
+- [x] 146. Handle dangling edges when a node is manually deleted (re-wire to nearest parent).
+- [x] 147. Allow manual editing of Node Attributes directly via HTML `<input>` fields in the sidebar.
+- [x] 148. Validate manual attribute inputs against the ONNX schema.
+- [x] 149. Add a "Quantize" section to the Surgeon tab.
+- [x] 150. Implement naive Min-Max INT8 quantization for weight tensors.
+- [x] 151. Replace `Float32Array` with `Int8Array` and insert `QuantizeLinear`/`DequantizeLinear` nodes.
+- [x] 152. Implement UI slider to select Pruning Threshold (e.g., prune weights < 1e-5).
+- [x] 153. Apply magnitude-based pruning to MatMul weights.
+- [x] 154. Convert pruned dense tensors to `SparseTensorProto` formats.
+- [x] 155. Track history of graph mutations in an internal `UndoStack`.
+- [x] 156. Implement `Ctrl+Z` / `Cmd+Z` keyboard shortcut to undo graph surgery.
+- [x] 157. Add an "Extract Subgraph" tool.
+- [x] 158. Allow users to multi-select nodes (Shift+Click) on the Canvas.
+- [x] 159. Generate a new `IModelGraph` containing only the selected nodes and their boundaries.
+- [x] 160. Add a UI button to "Promote Input" (turn an initializer into a dynamic graph input).
+- [x] 161. Add a UI button to "Freeze Input" (turn a dynamic input into a static initializer).
+- [x] 162. Visualize sparsity patterns of selected tensors using a grid canvas in the sidebar.
+- [x] 163. Calculate and display theoretical FLOPs reduction after optimization.
+- [x] 164. Calculate and display memory footprint reduction after quantization.
+- [x] 165. Serialize the optimized graph back to `.onnx` format.
+- [x] 166. Compare the original vs optimized graph side-by-side in a split view.
+- [x] 167. Implement algebraic rewriting rules (e.g., `Gemm(A, B, C)` -> `MatMul` + `Add`).
+- [x] 168. Ensure the GraphSurgeon operations don't freeze the UI (use async yields or Workers).
+- [x] 169. Write isolated JS tests for the constant folding logic.
+- [x] 170. Verify the final optimized graph against the schema validator.
+
+## Phase 6: Real AOT Compiler & TVM Engine (171 - 210)
+
+- [x] 171. Remove hardcoded strings and timeouts in `docs/_static/tvm.js`.
+- [x] 172. Import the real `@onnx9000/compiler` logic into the browser via bundler.
+- [x] 173. Implement the `Lowering.ts` pass: converting `IModelGraph` into MLIR/TIR-like structures.
+- [x] 174. Set up an in-browser WebAssembly generation pipeline.
+- [x] 175. Implement a lightweight WebAssembly binary encoder (`WasmEmitter.ts`) in pure TS.
+- [x] 176. Emit WASM module header, type sections, and function signatures dynamically.
+- [x] 177. Map fundamental Math ops (Add, Sub, Mul) to WASM SIMD `v128` instructions if available.
+- [x] 178. Implement nested loop generators for matrix multiplication (`Gemm`/`MatMul`) in WASM bytecodes.
+- [x] 179. Implement WASM linear memory allocation for model weights and intermediate buffers.
+- [x] 180. Encode static weights directly into the WASM binary `data` section.
+- [x] 181. Expose a single compiled `execute(ptr)` function from the generated WASM.
+- [x] 182. Log the lowering and code emission steps to the DOM terminal.
+- [x] 183. Execute `WebAssembly.instantiate(generatedBytes, imports)` natively in the browser.
+- [x] 184. Catch compilation errors (e.g., invalid WASM opcodes) and pretty-print them.
+- [x] 185. Bind the real compiled WASM module to the "Execute WASM Kernel" UI button.
+- [x] 186. Generate random input tensor data via `crypto.getRandomValues`.
+- [x] 187. Write inputs to the WASM shared memory heap.
+- [x] 188. Call the WASM exported function.
+- [x] 189. Read outputs back from the WASM memory heap.
+- [x] 190. Display execution results and timing (ms) in the UI output area.
+- [x] 191. Implement WGSL (WebGPU Shading Language) backend emitter.
+- [x] 192. Lower ONNX nodes to equivalent WGSL shader strings.
+- [x] 193. Create a WebGPU `GPUDevice` context if `navigator.gpu` is present.
+- [x] 194. Compile the WGSL shader modules via `device.createShaderModule`.
+- [x] 195. Set up WebGPU bind groups, pipeline layouts, and storage buffers.
+- [x] 196. Bind WebGPU execution to a dropdown toggle ("WASM" vs "WebGPU").
+- [x] 197. Execute compute passes for matrix operations on the GPU.
+- [x] 198. Read back GPU buffers to CPU via `mapAsync`.
+- [x] 199. Compare WASM output vs WebGPU output to ensure numerical parity.
+- [x] 200. Implement C++ code generation emitter (`CppEmitter.ts`).
+- [x] 201. Output standalone C++ code representing the graph to the Monaco editor.
+- [x] 202. Implement C backend emitter (`CEmitter.ts`).
+- [x] 203. Output pure C99 code without dependencies to the Monaco editor.
+- [x] 204. Wire the Monaco Editor language to switch dynamically based on target (WASM Text format, WGSL, C++).
+- [x] 205. Implement syntax highlighting for WGSL and WebAssembly Text Format (.wat) in Monaco.
+- [x] 206. Provide a "Download Binary" button for the generated `.wasm` file.
+- [x] 207. Handle unsupported ops gracefully by falling back to TS implementations.
+- [x] 208. Add AOT compilation profiling (measure time spent in emission).
+- [x] 209. Validate memory leaks during repeated AOT compilations.
+- [x] 210. Connect the live AOT compiler pipeline to the global demo UI.
+
+## Phase 7: Autograd & On-Device Training (211 - 240)
+
+- [x] 211. Add a "Training Mode" toggle to the main UI.
+- [x] 212. Implement `autograd/Autograd.ts` logic in the browser.
+- [x] 213. Topologically sort the graph and generate the forward tape.
+- [x] 214. Implement backward passes (VJPs) for core operations (`AddBackward`, `MatMulBackward`, `ReluBackward`).
+- [x] 215. Dynamically inject the backward nodes into the `IModelGraph`.
+- [x] 216. Visualize the new generated gradient graph in the Canvas (color-coded red for backward ops).
+- [x] 217. Add a dropdown to select Loss Function (CrossEntropy, MSE).
+- [x] 218. Append the selected Loss node to the end of the forward graph.
+- [x] 219. Add a dropdown to select Optimizer (SGD, Adam).
+- [x] 220. Inject optimizer step nodes (e.g., parameter updates) into the graph.
+- [x] 221. Re-compile the entire training graph through the AOT WASM Compiler.
+- [x] 222. Create a specific UI panel for "Federated Learning".
+- [x] 223. Generate dummy training datasets (X, Y) using random distributions in JS.
+- [x] 224. Implement a JavaScript training loop (`for epoch in epochs`).
+- [x] 225. Push batch data into WASM memory.
+- [x] 226. Trigger the WASM training step function.
+- [x] 227. Extract the Loss value from memory.
+- [x] 228. Plot the Loss curve in real-time using a vanilla HTML5 `<canvas>` line chart.
+- [x] 229. Expose UI sliders for Learning Rate and Batch Size.
+- [x] 230. Dynamically update optimizer hyperparameters in WASM memory without recompiling.
+- [x] 231. Implement a "Pause/Resume" button for the training loop.
+- [x] 232. Implement early stopping logic based on loss plateaus.
+- [x] 233. Provide a button to "Extract Trained Weights".
+- [x] 234. Export the updated weights back to a `.safetensors` file.
+- [x] 235. Validate that training runs entirely locally without network requests.
+- [x] 236. Handle NaN/Inf gradients by implementing gradient clipping.
+- [x] 237. Log training statistics (Steps/sec, Epoch time) to the DOM terminal.
+- [x] 238. Write browser-based unit tests for backward pass correctness against finite differences.
+- [x] 239. Isolate training execution in a dedicated WebWorker to prevent UI freezing.
+- [x] 240. Finalize the "Training" tab UI polish.
+
+## Phase 8: WebNN Execution Backend (241 - 265)
+
+- [x] 241. Check for `navigator.ml` and `navigator.ml.getNeuralNetworkContext()`.
+- [x] 242. Display a specific WebNN hardware compatibility badge in the UI.
+- [x] 243. Implement `providers/WebNNProvider.ts`.
+- [x] 244. Map ONNX operators directly to WebNN API builders (`builder.matmul`, `builder.add`).
+- [x] 245. Traverse the ONNX graph and construct the `MLGraph` sequentially.
+- [x] 246. Handle WebNN unsupported operations by splitting the graph (CPU fallback).
+- [x] 247. Compile the WebNN graph via `builder.build()`.
+- [x] 248. Bind WebNN input tensors using `MLNamedArrayBufferViews`.
+- [x] 249. Execute the compiled graph via `context.compute()`.
+- [x] 250. Extract output tensors and render results.
+- [x] 251. Compare WebNN execution time against WASM and WebGPU.
+- [x] 252. Expose an "Execution Backend" selector in the main demo interface.
+- [x] 253. Auto-select the fastest available backend on page load.
+- [x] 254. Implement detailed error mapping from WebNN DOMExceptions to UI Toasts.
+- [x] 255. Handle WebNN precision constraints (fp32 vs fp16).
+- [x] 256. Create dummy benchmark inputs to stress test the NPU.
+- [x] 257. Plot backend comparison graphs (Bar chart: WASM vs WebGPU vs WebNN).
+- [x] 258. Support WebNN asynchronous compute queues.
+- [x] 259. Map complex operators like `Conv`, `MaxPool`, and `Softmax` to WebNN.
+- [x] 260. Implement fallback polyfills for missing WebNN features.
+- [x] 261. Optimize weight layout specifically for WebNN expectations.
+- [x] 262. Verify memory safety during continuous execution loops.
+- [x] 263. Hook WebNN outputs into the existing visualization panels.
+- [x] 264. Write WebNN feature detection checks into Sphinx documentation rendering.
+- [x] 265. Document the required browser flags (e.g., `chrome://flags/#enable-webnn`) in the UI if absent.
+
+## Phase 9: CoreML & Target Exporters (266 - 285)
+
+- [x] 266. Enable the "CoreML" target in the Converter UI dropdown.
+- [x] 267. Implement `exporters/CoreML.ts`.
+- [x] 268. Generate Apple CoreML protobuf structures (`Model.proto`, `NeuralNetwork.proto`).
+- [x] 269. Map ONNX node parameters to CoreML Layer parameters.
+- [x] 270. Handle CoreML specific tensor naming and shape constraints.
+- [x] 271. Serialize the CoreML protobuf entirely in JS.
+- [x] 272. Create a `.mlmodel` blob payload.
+- [x] 273. Enable "Download .mlmodel" button in the UI.
+- [x] 274. Implement `exporters/TFLite.ts`.
+- [x] 275. Generate FlatBuffer bytes directly using a pure JS flatbuffer builder.
+- [x] 276. Map ONNX operators to TFLite builtin operator codes.
+- [x] 277. Serialize the `.tflite` blob.
+- [x] 278. Implement `exporters/OpenVINO.ts` (XML + Bin generation).
+- [x] 279. Construct OpenVINO XML AST based on the graph.
+- [x] 280. Extract raw weights to the `.bin` buffer.
+- [x] 281. Provide a `.zip` download option containing both XML and BIN via `fflate` or JSZip equivalents.
+- [x] 282. Expose the generated export code schemas in the Monaco Editor (XML for OpenVINO, JSON representation for FlatBuffers).
+- [x] 283. Add visual cues indicating conversion success or specific node failures.
+- [x] 284. Handle endianness specifically for each target format.
+- [x] 285. Polish the Exporter pane CSS and transitions.
+
+## Phase 10: Optimum UI, Profiling & Polish (286 - 310)
+
+- [x] 286. Remove the `<div class="canvas-mock">` for Optimum UI.
+- [x] 287. Implement `ui/Profiler.ts`.
+- [x] 288. Inject `performance.now()` timers around each operation execution in the AOT/Execution loop.
+- [x] 289. Record execution traces (OpName, Duration, Start Time).
+- [x] 290. Render a Flame Graph using Canvas2D for the execution trace.
+- [x] 291. Color-code the Flame Graph based on operation types.
+- [x] 292. Add tooltips to the Flame Graph showing exact execution times in microseconds.
+- [x] 293. Implement `ui/MemoryArenaVisualizer.ts`.
+- [x] 294. Compute static memory arena offsets dynamically.
+- [x] 295. Render memory blocks as colored rectangles in a fixed-width container.
+- [x] 296. Visualize memory re-use (buffer sharing) by connecting overlapping blocks with lines.
+- [x] 297. Display total Peak Memory usage statistic.
+- [x] 298. Display total weights footprint vs activation footprint.
+- [x] 299. Add a toggle to simulate execution, updating the Memory Arena highlighting actively used blocks.
+- [x] 300. Ensure all UI components respond cleanly to window resizing.
+- [x] 301. Refactor raw CSS into organized modules (e.g., `layout.css`, `canvas.css`, `components.css`).
+- [x] 302. Ensure WCAG AAA contrast ratios across the dashboard.
+- [x] 303. Add custom scrollbars for webkit and standard properties for firefox.
+- [x] 304. Remove all `console.log` statements in favor of the custom `Logger.ts`.
+- [x] 305. Implement error boundary wrapping around all UI event listeners.
+- [x] 306. Set up strict Content Security Policy (CSP) meta tags for the Sphinx HTML.
+- [x] 307. Verify Monaco editor web workers are loaded securely via blob URLs.
+- [x] 308. Strip out any dead code from the TS build artifacts.
+- [x] 309. Ensure the final bundled JS size is < 5MB (excluding Monaco).
+- [x] 310. Audit performance via Chrome Lighthouse (Target: 95+ Performance).
+
+## Phase 11: Final E2E Testing & Deployment (311 - 325)
+
+- [x] 311. Set up a Playwright or Puppeteer script targeting the local Sphinx build (`_build/html/index.html`).
+- [x] 312. Write a test asserting that dragging an ONNX file renders nodes on the canvas.
+- [x] 313. Write a test asserting the AOT Compilation generates WASM bytes.
+- [x] 314. Write a test asserting execution produces valid numeric outputs.
+- [x] 315. Write a test ensuring the UI tabs switch without memory leaks.
+- [x] 316. Write a test validating the PyTorch to ONNX polyglot input parsing.
+- [x] 317. Validate WebGL/Canvas degradation gracefully on unsupported systems.
+- [x] 318. Verify CI/CD pipeline triggers the TS frontend build during documentation deployment.
+- [x] 319. Cache TS build artifacts in the GitHub Actions runner.
+- [x] 320. Deploy to GitHub Pages or ReadTheDocs.
+- [x] 321. Test the deployed URL on mobile Safari (verify canvas touch panning works).
+- [x] 322. Test the deployed URL on Firefox and Chrome desktop.
+- [x] 323. Verify dark mode system preference matches OS settings automatically.
+- [x] 324. Write comprehensive JSDoc comments for all implemented TS classes.
+- [x] 325. Finalize and merge `WASM_NEXT.md` completion state.
+
+## Phase 12: Advanced GenAI & LLM Interfaces (326 - 365)
+
+- [x] 326. Implement `llm/Tokenizer.ts` for BPE and WordPiece tokenization without JS dependencies.
+- [x] 327. Create a Chat UI component `ui/ChatInterface.ts` with streaming text support.
+- [x] 328. Integrate WebGPU KV-cache management visually in the Memory Arena.
+- [x] 329. Add UI controls for Generation Parameters: Temperature, Top-K, Top-P, Repetition Penalty.
+- [x] 330. Implement token-by-token streaming back to the Chat UI using async generators.
+- [x] 331. Visualize attention matrices in real-time on a 2D Heatmap canvas.
+- [x] 332. Add support for dragging and dropping LoRA adapters (`.safetensors`).
+- [x] 333. Dynamically inject LoRA weights into MatMul nodes without recompiling the graph.
+- [x] 334. Implement constrained decoding (JSON schema enforcement) via logits processors.
+- [x] 335. Expose logits distributions as a real-time bar chart in the UI sidebar.
+- [x] 336. Add a "Stop Generation" abort controller bound to a UI button.
+- [x] 337. Implement prompt templating (ChatML, Llama 2, Mistral) in `ui/PromptBuilder.ts`.
+- [x] 338. Support multi-turn conversation history management in `State.ts`.
+- [x] 339. Expose a "System Prompt" textarea in the configuration panel.
+- [x] 340. Implement grammar-based sampling constraints using a WASM-compiled grammar engine.
+- [x] 341. Add visualization for token probabilities on hover in the Chat UI.
+- [x] 342. Implement speculative decoding logic to speed up LLM generation.
+- [x] 343. Create a separate WebWorker specifically for tokenizer encoding/decoding.
+- [x] 344. Allow users to inspect the raw token IDs and their decoded strings side-by-side.
+- [x] 345. Add a "perplexity" scoring metric to the Chat UI for generated text.
+- [x] 346. Support custom stopping criteria (e.g., stop on specific words or tokens).
+- [x] 347. Implement Continuous Batching in the background worker for multiple simulated users.
+- [x] 348. Create a "RAG" (Retrieval-Augmented Generation) mockup tab.
+- [x] 349. Implement a naive BM25 or cosine similarity vector search in pure JS.
+- [x] 350. Add UI to upload `.txt` or `.pdf` files, parse text, and chunk it.
+- [x] 351. Connect an embedding model (e.g., MiniLM) to generate chunk vectors in-browser.
+- [x] 352. Visualize the semantic embedding space using 2D PCA/t-SNE via Canvas.
+- [x] 353. Highlight retrieved contexts used in the LLM prompt.
+- [x] 354. Implement a "Vision-Language" tab for multimodal models (e.g., LLaVA).
+- [x] 355. Add a drag-and-drop zone for images inside the Chat interface.
+- [x] 356. Parse image inputs, resize, and normalize to tensor format via Canvas API.
+- [x] 357. Pass image embeddings to the LLM backend natively.
+- [x] 358. Optimize LLM context window limits by evicting older KV cache tokens.
+- [x] 359. Provide an explicit "Clear Memory/Context" button.
+- [x] 360. Implement automated benchmarks for tokens/second inside the Profiler UI.
+- [x] 361. Add a visual indicator of VRAM usage during generation.
+- [x] 362. Catch OOM (Out of Memory) exceptions gracefully and offer quantization fallbacks.
+- [x] 363. Implement 4-bit (W4A16) quantization on-the-fly for loaded unquantized models.
+- [x] 364. Validate the 4-bit generation accuracy against standard perplexity test sets.
+- [x] 365. Finalize UI polish for the Advanced GenAI tab.
+
+## Phase 13: Distributed Inference & WebRTC Swarm (366 - 400)
+
+- [x] 366. Introduce a "Swarm" tab for decentralized browser-to-browser execution.
+- [x] 367. Initialize a `WebRTCManager.ts` to handle RTCPeerConnections.
+- [x] 368. Implement STUN/TURN server configurations for NAT traversal.
+- [x] 369. Create a signaling mechanism (via a lightweight WebSocket relay or QR codes).
+- [x] 370. Allow generating a "Join Session" link to connect multiple browser tabs.
+- [x] 371. Display connected peers in a visual graph (nodes = browsers, edges = WebRTC channels).
+- [x] 372. Implement graph partitioning: split `IModelGraph` into subgraphs based on peer compute capacity.
+- [x] 373. Calculate network latency/bandwidth between peers via RTCDataChannel.
+- [x] 374. Assign heavier subgraphs to peers with WebGPU, lighter to WebNN/WASM peers.
+- [x] 375. Serialize activation tensors via `StructuredClone` or raw `ArrayBuffer`.
+- [x] 376. Stream tensor data between peers using chunked RTC messages.
+- [x] 377. Reassemble received tensor chunks and trigger the next subgraph execution.
+- [x] 378. Implement Pipeline Parallelism across 3+ connected browsers.
+- [x] 379. Visualize the live data flow across the peer graph during execution.
+- [x] 380. Handle peer disconnects gracefully by re-assigning their subgraph to another node.
+- [x] 381. Implement a heartbeat mechanism to detect peer health.
+- [x] 382. Add cryptographic signatures to tensor payloads for secure distributed inference.
+- [x] 383. Benchmark the Swarm: compare local execution vs. 2-node WebRTC execution.
+- [x] 384. Implement Tensor Parallelism (splitting matrix multiplications across peers).
+- [x] 385. Add an "auto-balance" button to dynamically redistribute workload based on profiling.
+- [x] 386. Create a leader election protocol to decide the master orchestrator.
+- [x] 387. Allow the Swarm to collectively run a large LLM (e.g., 70B) that doesn't fit in one GPU.
+- [x] 388. Aggregate tokens generated by the Swarm back to the master UI.
+- [x] 389. Provide detailed per-node telemetry (GPU load, network IO) in the UI.
+- [x] 390. Implement a fault-tolerant fallback to cloud APIs if the Swarm fails.
+- [x] 391. Allow saving the Swarm topology configuration.
+- [x] 392. Add a slider to simulate artificial network latency for testing.
+- [x] 393. Enable multi-device testing (desktop + mobile phone paired via QR code).
+- [x] 394. Render a QR code directly on the Canvas using a pure JS QR generator.
+- [x] 395. Support heterogeneous Swarm environments (iOS CoreML + PC WebGPU).
+- [x] 396. Validate numerical accuracy of distributed execution vs local.
+- [x] 397. Implement synchronization barriers for Data Parallel training.
+- [x] 398. Broadcast gradient updates across the Swarm for Federated Learning.
+- [x] 399. Provide an end-to-end tutorial on setting up a browser Swarm.
+- [x] 400. Finalize the Swarm API documentation.
+
+## Phase 14: Local Storage, PWA & IndexedDB Vault (401 - 440)
+
+- [x] 401. Implement `storage/IndexedDBVault.ts` using vanilla `indexedDB` API.
+- [x] 402. Create a "Model Hub" UI tab showing locally cached models.
+- [x] 403. Chunk models larger than 2GB before storing them in IndexedDB.
+- [x] 404. Implement a background worker to hash models (SHA-256) upon drop.
+- [x] 405. Map local models to their hashes to prevent duplicate storage.
+- [x] 406. Provide a UI to delete cached models and clear space.
+- [x] 407. Show persistent storage quota and usage (`navigator.storage.estimate`).
+- [x] 408. Implement resumable downloads from Hugging Face directly into IndexedDB.
+- [x] 409. Bypass main memory when streaming models from Fetch API to IndexedDB.
+- [x] 410. Create a `ServiceWorker.ts` for full offline capabilities.
+- [x] 411. Cache all UI assets (HTML, CSS, compiled JS, WASM binaries) using CacheStorage.
+- [x] 412. Add a "Install App" (PWA) manifest and prompt.
+- [x] 413. Handle offline state changes (`navigator.onLine`) with UI banners.
+- [x] 414. Ensure the Web IDE functions 100% locally on an airplane.
+- [x] 415. Implement `Directory API` to mount a local OS folder as a workspace.
+- [x] 416. Watch the mounted directory for `.onnx` file changes and auto-reload.
+- [x] 417. Save GraphSurgeon modifications directly back to the mounted folder.
+- [x] 418. Allow creating multiple logical workspaces in the Vault.
+- [x] 419. Add model tagging, versioning, and description fields in the local Hub.
+- [x] 420. Implement full-text search across cached model metadata.
+- [x] 421. Expose an "Export Workspace" feature (creates a `.zip` of models + config).
+- [x] 422. Implement "Import Workspace" from a `.zip` archive.
+- [x] 423. Provide caching for Pyodide environments and Python wheels.
+- [x] 424. Pre-warm WebWorker pools upon app startup based on cached state.
+- [x] 425. Add an LRU eviction policy for when the disk is full.
+- [x] 426. Prompt the user for explicit persistent storage permission.
+- [x] 427. Support versioned migrations for the IndexedDB schema.
+- [x] 428. Integrate the Vault tightly into the `App.ts` bootstrap sequence.
+- [x] 429. Implement delta updates for model weights (e.g., only update LoRA).
+- [x] 430. Display download progress and speed for remote models.
+- [x] 431. Allow canceling active model downloads.
+- [x] 432. Add integration with the File System Access API for seamless native saving.
+- [x] 433. Provide a fallback for browsers without File System Access API (blob download).
+- [x] 434. Implement file lock mechanisms for concurrent writes to the Vault.
+- [x] 435. Handle edge cases like corrupted chunks during read.
+- [x] 436. Implement an integrity check button to re-validate cached models.
+- [x] 437. Display a warning if a model was cached with an older incompatible parser version.
+- [x] 438. Add visual thumbnails/icons generated from the model DAG in the local Hub.
+- [x] 439. Cache compiled AOT assets (e.g., C++ outputs) for rapid reloading.
+- [x] 440. Finalize PWA Lighthouse audits.
+
+## Phase 15: Multi-Modal Sensors & Data Pipelines (441 - 480)
+
+- [x] 441. Implement `sensors/CameraManager.ts` using `navigator.mediaDevices`.
+- [x] 442. Create a "Vision Pipeline" UI tab.
+- [x] 443. Render the live webcam feed onto a hidden `<video>` element.
+- [x] 444. Capture video frames to `<canvas>` via `requestAnimationFrame`.
+- [x] 445. Implement pure JS image normalization (Resize, Center Crop, RGB/BGR conversion).
+- [x] 446. Convert Canvas `ImageData` directly to `Float32Array` tensor format.
+- [x] 447. Connect the webcam tensor stream to an ONNX model (e.g., YOLO or MobileNet).
+- [x] 448. Extract bounding box coordinates from the YOLO output tensor.
+- [x] 449. Render bounding boxes and labels overlaid on the live video canvas.
+- [x] 450. Implement Non-Maximum Suppression (NMS) in vanilla TS.
+- [x] 451. Optimize the vision loop to achieve 60 FPS in-browser.
+- [x] 452. Expose UI controls for target frame rate and input resolution.
+- [x] 453. Implement `sensors/MicrophoneManager.ts` using `AudioContext`.
+- [x] 454. Create an "Audio Pipeline" UI tab.
+- [x] 455. Capture raw PCM audio streams from the microphone.
+- [x] 456. Implement Log-Mel Spectrogram extraction in pure JS/WASM.
+- [x] 457. Visualize the live audio waveform and spectrogram on a Canvas.
+- [x] 458. Feed the spectrogram tensor to an ONNX Whisper or Audio Spectrogram Transformer.
+- [x] 459. Render real-time speech-to-text transcriptions in the UI.
+- [x] 460. Add Voice Activity Detection (VAD) to trigger transcription automatically.
+- [x] 461. Allow users to upload `.mp4` or `.wav` files to process offline via the pipelines.
+- [x] 462. Implement a multiplexer to synchronize Vision and Audio streams for multimodal models.
+- [x] 463. Add support for the DeviceOrientation API for motion-based models.
+- [x] 464. Feed Accelerometer/Gyroscope data into an RNN/LSTM model for activity recognition.
+- [x] 465. Expose sensor data streams as custom Nodes in the Interactive DAG Editor.
+- [x] 466. Allow users to wire a "Webcam Node" directly to an "Inference Node" visually.
+- [x] 467. Implement a "MIDI Input" sensor using the Web MIDI API.
+- [x] 468. Connect a MIDI keyboard to an ONNX music generation model.
+- [x] 469. Play generated audio tensors via the Web Audio API `AudioBufferSourceNode`.
+- [x] 470. Support WebGL-based hardware-accelerated image preprocessing.
+- [x] 471. Handle aspect ratio distortions during canvas-to-tensor mapping.
+- [x] 472. Expose a color-picker to filter bounding boxes by confidence threshold.
+- [x] 473. Add privacy toggles to explicitly start/stop webcam and microphone.
+- [x] 474. Provide error handling for denied media device permissions.
+- [x] 475. Cache camera/microphone permission states across reloads.
+- [x] 476. Support multiple camera selection (e.g., front/back on mobile).
+- [x] 477. Write unit tests for tensor normalization functions.
+- [x] 478. Benchmark preprocessing overhead vs execution overhead.
+- [x] 479. Export processed multimedia logs as JSON.
+- [x] 480. Polish the Multi-Modal UI panels.
+
+## Phase 16: Advanced Optimization, NAS & Auto-Tuning (481 - 520)
+
+- [x] 481. Add an "Auto-Tune" sub-tab within the Graph Surgeon interface.
+- [x] 482. Implement Neural Architecture Search (NAS) primitives.
+- [x] 483. Allow defining a search space (e.g., swap Conv2D kernel sizes dynamically).
+- [x] 484. Implement a micro-benchmark suite to score different operator implementations.
+- [x] 485. Create a genetic algorithm loop to mutate the `IModelGraph`.
+- [x] 486. Evaluate mutated graphs against the local loss function.
+- [x] 487. Implement simulated annealing for subgraph optimization.
+- [x] 488. Expose an API for custom rewrite rules written in JS.
+- [x] 489. Auto-tune WebGPU workgroup sizes (X, Y, Z) by compiling multiple shader variants.
+- [x] 490. Run parallel tuning workers and log the fastest execution times.
+- [x] 491. Save the optimal workgroup configurations to IndexedDB for future runs.
+- [x] 492. Implement layer fusion auto-tuning (e.g., Conv + BatchNorm + ReLU).
+- [x] 493. Evaluate fused vs. un-fused execution speeds dynamically.
+- [x] 494. Add a "Memory layout auto-tuner" (NHWC vs NCHW) depending on hardware.
+- [x] 495. Visualize the tuning progress via a scatter plot (Performance vs. Epochs).
+- [x] 496. Support dynamic shape inference algorithms.
+- [x] 497. Handle models with `?` or `None` in their shape definitions correctly.
+- [x] 498. Implement symbolic shape computation via algebraic constraints.
+- [x] 499. Provide a UI modal to let users manually lock dynamic shapes to static values.
+- [x] 500. Re-trigger AOT compilation immediately after shape locking.
+- [x] 501. Expose INT4 quantization methods with block-wise scaling (e.g., AWQ/GPTQ).
+- [x] 502. Implement custom WGSL kernels that natively dequantize INT4 packed weights.
+- [x] 503. Benchmark INT4 throughput vs FP16.
+- [x] 504. Support mixed-precision graphs (some nodes INT8, some FP16).
+- [x] 505. Implement an automatic profiler that flags precision-sensitive nodes.
+- [x] 506. Leave precision-sensitive nodes in FP32 while quantizing the rest.
+- [x] 507. Expose a "Sparsify" button implementing magnitude pruning natively.
+- [x] 508. Compress pruned weights using CSR (Compressed Sparse Row) format in the frontend.
+- [x] 509. Implement Sparse-Matrix Dense-Matrix Multiplication (SpMM) in WASM.
+- [x] 510. Allow visually painting sparsity masks onto weights via the Canvas interface.
+- [x] 511. Map specific graph partitions to specific execution providers explicitly.
+- [x] 512. Automatically fallback to CPU (WASM) for operations WebGPU/WebNN cannot handle.
+- [x] 513. Implement memory ping-ponging across execution providers without blocking.
+- [x] 514. Create a graph partition viewer to see which ops run on which hardware.
+- [x] 515. Optimize Host-to-Device (H2D) and Device-to-Host (D2H) tensor copy overhead.
+- [x] 516. Add a timeline trace viewer compatible with Chrome `chrome://tracing`.
+- [x] 517. Export `.json` profiling traces for deeper analysis.
+- [x] 518. Write robust tests for mixed-provider graph execution parity.
+- [x] 519. Document the custom rewrite rule API.
+- [x] 520. Finalize the Auto-Tuner UI.
+
+## Phase 17: Collaboration, CRDTs & Real-Time Sync (521 - 560)
+
+- [x] 521. Implement a generic CRDT (Conflict-free Replicated Data Type) model for `IModelGraph`.
+- [x] 522. Expose a "Collaborate" button to start a multiplayer session.
+- [x] 523. Connect via WebSockets to a lightweight pure JS relay server (or WebRTC).
+- [x] 524. Broadcast local graph surgery operations (e.g., node deletions, param changes) as CRDT ops.
+- [x] 525. Handle concurrent edits without lockups or graph corruption.
+- [x] 526. Display live cursors of other connected developers on the Canvas.
+- [x] 527. Color-code cursors and attribute them to user handles.
+- [x] 528. Show a live activity feed (e.g., "Alice changed Conv_1 stride to 2").
+- [x] 529. Enable cooperative training where peers share gradients asynchronously.
+- [x] 530. Share Monaco Editor state to allow collaborative ONNXScript writing.
+- [x] 531. Sync execution results so all peers see the same validation metrics.
+- [x] 532. Implement granular permissions (e.g., View-only, Edit, Admin).
+- [x] 533. Allow the Admin to lock specific subgraphs from being edited.
+- [x] 534. Support disconnected states where offline edits sync upon reconnection.
+- [x] 535. Implement "Undo/Redo" logic that respects distributed CRDT state.
+- [x] 536. Sync layout coordinates so dragged nodes update on all clients smoothly.
+- [x] 537. Transmit tensor visualization snapshots (sparklines, histograms) compactly.
+- [x] 538. Create a mini-map overlay showing where other users are currently looking.
+- [x] 539. Add an integrated WebRTC voice chat channel for team communication.
+- [x] 540. Allow saving the multiplayer session log to the IndexedDB Vault.
+- [x] 541. Support "Forking" a session into a private, local-only branch.
+- [x] 542. Implement visual diffing between the local branch and the main session.
+- [x] 543. Support multi-user consensus for initiating heavy tasks (like distributed training).
+- [x] 544. Encrypt WebSocket/WebRTC traffic using WebCrypto API.
+- [x] 545. Implement token-based authentication for private relays.
+- [x] 546. Serialize CRDT histories into the `.onnx` metadata for auditing.
+- [x] 547. Expose a slider to replay the history of graph edits over time.
+- [x] 548. Handle large binary tensor uploads within the collaborative channel chunk-by-chunk.
+- [x] 549. Ensure peer lag does not block the UI thread.
+- [x] 550. Add UI for managing active peer connections.
+- [x] 551. Validate that two peers executing the same graph produce identical hashes.
+- [x] 552. Alert the session if a peer's hardware causes numerical divergence.
+- [x] 553. Provide a fallback mode if WebSocket connections drop.
+- [x] 554. Sync Theme (Dark/Light) and Layout preferences conditionally.
+- [x] 555. Implement custom serialized binary formats for CRDT deltas.
+- [x] 556. Handle WebGL context loss recovery cooperatively.
+- [x] 557. Broadcast active tool states (e.g., Surgeon mode vs. Inference mode).
+- [x] 558. Support ephemeral, stateless sessions via temporary URLs.
+- [x] 559. Write automated headless tests with 3 parallel browser instances interacting.
+- [x] 560. Polish the Collaboration UI indicators.
+
+## Phase 18: Security, Privacy & Plugin Extensibility (561 - 600)
+
+- [x] 561. Implement a Plugin System in `core/PluginManager.ts`.
+- [x] 562. Define standard interfaces for Execution Providers, Parsers, and UI components.
+- [x] 563. Allow dynamic loading of third-party plugins via JS Modules (ESM).
+- [x] 564. Sandbox external plugins using Web Workers or specific Content Security Policies.
+- [x] 565. Expose the `IModelGraph` strictly as read-only or through controlled mutation APIs.
+- [x] 566. Create an API wrapper for plugins to register new sidebar tabs.
+- [x] 567. Allow plugins to inject custom node rendering logic in the Canvas.
+- [x] 568. Build a "Plugin Marketplace" mock-up UI fetching from a static JSON index.
+- [x] 569. Implement a permission model (e.g., Plugin requests WebGPU access).
+- [x] 570. Expose the `Toast` and `Logger` infrastructure to plugins.
+- [x] 571. Create an example plugin that implements a custom Activation function.
+- [x] 572. Implement Differential Privacy (DP) capabilities for Federated Learning.
+- [x] 573. Add a DP noise generator via WebCrypto API.
+- [x] 574. Inject DP noise into gradients before transmitting them in a Swarm.
+- [x] 575. Implement privacy-preserving model watermarking.
+- [x] 576. Embed cryptographic signatures into the `.safetensors` headers.
+- [x] 577. Verify watermarks upon model load and display a "Verified" badge.
+- [x] 578. Expose an API for Secure Multi-Party Computation (SMPC) stubs.
+- [x] 579. Allow obfuscation of the ONNX graph structure (e.g., randomizing node names).
+- [x] 580. Encrypt weight tensors natively using AES-GCM via WebCrypto.
+- [x] 581. Require a passphrase to decrypt and execute a protected model.
+- [x] 582. Execute decrypted portions strictly in WebAssembly memory buffers.
+- [x] 583. Ensure no plaintext weights are written to IndexedDB.
+- [x] 584. Clear memory arenas explicitly using typed array `fill(0)` on disposal.
+- [x] 585. Implement homomorphic encryption stubs for encrypted inference.
+- [x] 586. Protect against timing side-channel attacks during inference execution.
+- [x] 587. Obfuscate performance timing logs when running in secure mode.
+- [x] 588. Integrate with Web Authentication API (WebAuthn) for hardware security keys.
+- [x] 589. Lock sensitive UI operations (like exporting) behind WebAuthn.
+- [x] 590. Enable strict schema validation to prevent malformed graph injection attacks.
+- [x] 591. Add rate limiting for WebRTC Swarm endpoints to prevent DDoS.
+- [x] 592. Verify the SHA-256 hashes of all dynamically loaded plugins.
+- [x] 593. Create a strict UI mode that disables all external network requests.
+- [x] 594. Implement a memory limit watchdog that kills rogue workers.
+- [x] 595. Handle out-of-bounds tensor accesses securely in WASM backends.
+- [x] 596. Implement specific CORS policies for Fetch API calls.
+- [x] 597. Run security audits on all third-party dependencies (zero).
+- [x] 598. Finalize the Plugin Developer SDK documentation.
+- [x] 599. Provide an interactive tutorial on writing a custom WebNN polyfill plugin.
+- [x] 600. Achieve 100% test coverage for the core State and security modules.
+
+## Phase 19: Comprehensive Benchmarking & Agentic Workflows (601 - 640)
+
+- [x] 601. Create a `benchmarks/Suite.ts` engine entirely in-browser.
+- [x] 602. Download standard micro-datasets (e.g., MNIST, CIFAR-10) directly into the UI.
+- [x] 603. Run end-to-end inference passes across 1000+ samples automatically.
+- [x] 604. Collect latency, throughput, and accuracy metrics.
+- [x] 605. Generate interactive HTML reports (tables, charts) comparing models.
+- [x] 606. Add an "Agent" tab to construct LLM-based autonomous workflows.
+- [x] 607. Implement a zero-dependency directed acyclic graph (DAG) runner for Agents.
+- [x] 608. Allow users to wire LLM outputs directly into Python/WASM code execution nodes.
+- [x] 609. Execute Python snippets securely in a Pyodide sandboxed WebWorker.
+- [x] 610. Connect "Tool Use" nodes (e.g., Calculator, Web Fetch) directly in the UI.
+- [x] 611. Provide a Vanilla JS (Reason+Act) loop implementation in vanilla TS.
+- [x] 612. Visualize the Agent's thought process step-by-step in the Canvas.
+- [x] 613. Allow the Agent to access the local File System API (with permission).
+- [x] 614. Support multi-agent topologies (e.g., Critic, Coder, Planner).
+- [x] 615. Embed the Web IDE's own API into the Agent, allowing the Agent to modify graphs.
+- [x] 616. Say "Make this model 20% smaller" and watch the Agent execute graph surgery.
+- [x] 617. Let the Agent dynamically write and compile WGSL shaders on demand.
+- [x] 618. Integrate the Agent with the `Logger` to explain compilation errors.
+- [x] 619. Let the Agent auto-fix type mismatches in connected nodes.
+- [x] 620. Record Agent execution traces for later playback and debugging.
+- [x] 621. Add memory persistence for the Agent via IndexedDB Vault.
+- [x] 622. Implement structured output validation (e.g., ensure Agent returns JSON).
+- [x] 623. Create a library of pre-built Agent Templates in the UI.
+- [x] 624. Benchmark Agent completion rates on standard coding tasks.
+- [x] 625. Implement continuous integration hooks to run these benchmarks nightly via Playwright.
+- [x] 626. Compare local Agent speeds vs API-bound Agents.
+- [x] 627. Handle API rate limits gracefully if falling back to external services.
+- [x] 628. Wrap all Agent operations in cancelable `AbortController` tasks.
+- [x] 629. Add a visual debugger for stepping through Agent chains.
+- [x] 630. Support streaming outputs from inner Agent nodes to the master UI.
+- [x] 631. Finalize error boundary recovery for nested Agent failures.
+- [x] 632. Export Agent configurations as `.json` pipelines.
+- [x] 633. Build an end-to-end tutorial: "Creating a local AI coding assistant".
+- [x] 634. Write extensive documentation for the Agent API.
+- [x] 635. Polish all UI components with custom hover states, transitions, and loading skeletons.
+- [x] 636. Add internationalization (i18n) support, loading locale JSONs.
+- [x] 637. Implement a command palette (`Cmd+K`) for rapid navigation across the 19 tabs.
+- [x] 638. Complete an external security audit of the Web IDE architecture.
+- [x] 639. Write the final release announcement post directly using the Web IDE itself.
+- [x] 640. Celebrate the launch of the zero-dependency ML Web IDE!

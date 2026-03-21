@@ -263,7 +263,7 @@ The official `onnx` Python package serves as the primary gateway for interacting
 
 ### Phase 18: Web UI (The Visual Validator)
 
-- [ ] 195. Build a static React/Vue Web UI for `onnx9000.checker`.
+- [ ] 195. Build a static Web Components Web UI for `onnx9000.checker`.
 - [ ] 196. Implement drag-and-drop ingestion of `model.onnx`.
 - [ ] 197. Render a visual checklist passing/failing across the distinct phases (Topology, Types, Attributes).
 - [ ] 198. Display a table of all errors, allowing users to click an error and see the raw JSON representation of the broken node.

@@ -68,7 +68,7 @@ This document serves as the master specification for building the UI/UX architec
 - [ ] 32. Register providers for `.pb`, `.tflite`, `.h5`, `.caffemodel`, `.gguf`, and `.mlmodel` (routing to `onnx9000.mmdnn` on open).
 - [ ] 33. Implement `CustomDocument` interface representing the abstract ONNX AST in memory.
 - [ ] 34. Implement `resolveCustomEditor()` to initialize the Webview panel.
-- [ ] 35. Inject the compiled React/Vue WebGL Visualizer into the Webview HTML.
+- [ ] 35. Inject the compiled Web Components WebGL Visualizer into the Webview HTML.
 - [ ] 36. Establish bi-directional sync: Webview tells Host "Node selected", Host tells Webview "Update graph topology".
 - [ ] 37. Support the VS Code "Revert" command to reload the AST from disk.
 - [ ] 38. Implement `backup()` and VS Code Hot Exit support (saving unsaved model AST edits to an internal workspace cache).
@@ -445,7 +445,7 @@ _(Note: This covers the foundational OS architecture, VFS, interactive editing, 
 - [ ] 331. Implement an "Export to Code" action for individual models or multi-model ensembles.
 - [ ] 332. Generate boilerplate Python code utilizing `onnxruntime` to execute the current visual graph.
 - [ ] 333. Generate boilerplate TypeScript/JavaScript utilizing `onnxruntime-web` for browser environments.
-- [ ] 334. Scaffold a complete React frontend hooked to a Web Worker that loads the selected `.onnx` file.
+- [ ] 334. Scaffold a complete Web Components frontend hooked to a Web Worker that loads the selected `.onnx` file.
 - [ ] 335. Scaffold a complete FastAPI (Python) backend serving the selected model.
 - [ ] 336. Generate `Dockerfile` configurations specifically tuned with CUDA runtime layers for the target model.
 - [ ] 337. Implement an `onnx9000` workspace configuration file (`onnx9000.config.json`) for project settings.

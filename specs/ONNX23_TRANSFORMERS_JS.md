@@ -331,8 +331,8 @@ Instead of acting as a JavaScript wrapper around a massive compiled C++ runtime 
 
 ### Phase 15: Developer Experience & Ecosystem
 
-- [x] 271. Provide React/Next.js boilerplate template using `onnx9000.transformers`.
-- [x] 272. Provide Vue/Nuxt boilerplate template.
+- [x] 271. Provide Vanilla HTML/JS boilerplate template using `onnx9000.transformers`.
+- [x] 272. Provide Vanilla HTML/JS boilerplate template.
 - [x] 273. Provide Chrome Extension boilerplate utilizing background scripts.
 - [x] 274. Create comprehensive documentation for migrating from `transformers.js`.
 - [x] 275. Support importing from CDNs (unpkg, jsdelivr) as an ES Module.

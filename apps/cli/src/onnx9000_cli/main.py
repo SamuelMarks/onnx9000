@@ -220,12 +220,188 @@ def info_webnn_cmd(args: argparse.Namespace) -> None:
     print("- WebNN API Present: false (Requires browser `navigator.ml` context)")
 
 
+def coreml_cmd(args: argparse.Namespace) -> None:
+    """Execute CoreML export/import via Node.js CLI."""
+    import subprocess
+    import os
+
+    # Look for the JS CLI script in the monorepo
+    base_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    )
+    cli_js_path = os.path.join(base_dir, "packages", "js", "coreml", "dist", "cli.js")
+
+    if not os.path.exists(cli_js_path):
+        print(
+            f"Error: Could not find JS CoreML CLI at {cli_js_path}. Please build the JS packages."
+        )
+        sys.exit(1)
+
+    cmd = ["node", cli_js_path, args.coreml_command, args.model]
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"CoreML command failed with code {e.returncode}")
+        sys.exit(e.returncode)
+
+
+def edit_cmd(args: argparse.Namespace) -> None:
+    """Open the ONNX9000 Modifier Web UI."""
+    print(f"Starting modifier UI for {args.model}...")
+    import os
+    import subprocess
+
+    # Run vite dev server or equivalent from apps/netron-ui
+    base_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    )
+    ui_dir = os.path.join(base_dir, "apps", "netron-ui")
+    if os.path.exists(ui_dir):
+        print(f"Opening {ui_dir}...")
+        try:
+            subprocess.run(["pnpm", "dev"], cwd=ui_dir)
+        except KeyboardInterrupt:
+            pass
+    else:
+        print("Modifier UI not found in monorepo.")
+
+
+def prune_cmd(args: argparse.Namespace) -> None:
+    """Headless CLI modification: Prune nodes from the graph."""
+    print(f"Loading {args.model} for pruning...")
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.core.serializer import save as save_onnx
+
+    graph = load_onnx(args.model)
+    nodes_to_remove = set(args.nodes.split(","))
+
+    orig_count = len(graph.nodes)
+    graph.nodes = [
+        n for n in graph.nodes if n.name not in nodes_to_remove and n.op_type not in nodes_to_remove
+    ]
+
+    removed_count = orig_count - len(graph.nodes)
+    print(f"Pruned {removed_count} nodes.")
+
+    out_path = args.output or args.model.replace(".onnx", "_pruned.onnx")
+    save_onnx(graph, out_path)
+    print(f"Saved pruned model to {out_path}")
+
+
+def rename_input_cmd(args: argparse.Namespace) -> None:
+    """Headless CLI modification: Rename an input in the graph."""
+    print(f"Loading {args.model} to rename input...")
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.core.serializer import save as save_onnx
+
+    graph = load_onnx(args.model)
+    old_name = args.old
+    new_name = args.new
+
+    # Rename in graph.inputs
+    for inp in graph.inputs:
+        if inp.name == old_name:
+            inp.name = new_name
+
+    # Rename in node inputs
+    for node in graph.nodes:
+        for i in range(len(node.inputs)):
+            if node.inputs[i] == old_name:
+                node.inputs[i] = new_name
+
+    out_path = args.output or args.model.replace(".onnx", "_renamed.onnx")
+    save_onnx(graph, out_path)
+    print(f"Saved renamed model to {out_path}")
+
+
+def change_batch_cmd(args: argparse.Namespace) -> None:
+    """Headless CLI modification: Change batch size."""
+    print(f"Loading {args.model} to change batch size...")
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.core.serializer import save as save_onnx
+
+    graph = load_onnx(args.model)
+    size = args.size
+    # Try cast to int if possible
+    try:
+        size = int(size)
+    except ValueError:
+        pass
+
+    for vi in graph.inputs + graph.outputs + graph.value_info:
+        if vi.shape and len(vi.shape) > 0:
+            vi.shape[0] = size
+
+    out_path = args.output or args.model.replace(".onnx", "_batch_changed.onnx")
+    save_onnx(graph, out_path)
+    print(f"Saved model with new batch size to {out_path}")
+
+
+def mutate_cmd(args: argparse.Namespace) -> None:
+    """Headless CLI modification: Apply JSON script mutations."""
+    print(f"Loading {args.model} for batch mutation...")
+    import json
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.core.serializer import save as save_onnx
+
+    graph = load_onnx(args.model)
+    with open(args.script, "r") as f:
+        edits = json.load(f)
+
+    # Simplistic evaluator
+    for edit in edits:
+        if edit.get("action") == "remove_node":
+            node_name = edit.get("node_name")
+            graph.nodes = [n for n in graph.nodes if n.name != node_name and n.op_type != node_name]
+
+    out_path = args.output or args.model.replace(".onnx", "_mutated.onnx")
+    save_onnx(graph, out_path)
+    print(f"Saved mutated model to {out_path}")
+
+
 def main() -> None:
     """CLI Entrypoint."""
     parser = argparse.ArgumentParser(
         prog="onnx9000", description="ONNX9000 Unified MLOps and Execution Ecosystem CLI."
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Edit
+    edit_parser = subparsers.add_parser("edit", help="Start the local visual modifier UI")
+    edit_parser.add_argument("model", type=str, nargs="?", help="Path to the .onnx file")
+    edit_parser.set_defaults(func=edit_cmd)
+
+    # Prune
+    prune_parser = subparsers.add_parser("prune", help="Headless graph pruning")
+    prune_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    prune_parser.add_argument(
+        "--nodes", type=str, required=True, help="Comma-separated nodes to remove"
+    )
+    prune_parser.add_argument("--output", type=str, help="Output path")
+    prune_parser.set_defaults(func=prune_cmd)
+    # Rename Input
+    rename_parser = subparsers.add_parser("rename-input", help="Headless input renaming")
+    rename_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    rename_parser.add_argument("--old", type=str, required=True, help="Old input name")
+    rename_parser.add_argument("--new", type=str, required=True, help="New input name")
+    rename_parser.add_argument("--output", type=str, help="Output path")
+    rename_parser.set_defaults(func=rename_input_cmd)
+
+    # Change Batch
+    batch_parser = subparsers.add_parser("change-batch", help="Headless batch size modification")
+    batch_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    batch_parser.add_argument(
+        "--size", type=str, required=True, help="New batch size (int or string)"
+    )
+    batch_parser.add_argument("--output", type=str, help="Output path")
+    batch_parser.set_defaults(func=change_batch_cmd)
+
+    # Mutate
+    mutate_parser = subparsers.add_parser("mutate", help="Headless JSON script mutation")
+    mutate_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    mutate_parser.add_argument("--script", type=str, required=True, help="Path to edits.json")
+    mutate_parser.add_argument("--output", type=str, help="Output path")
+    mutate_parser.set_defaults(func=mutate_cmd)
 
     # Info
     info_parser = subparsers.add_parser("info", help="Diagnostic information")
@@ -404,6 +580,18 @@ def main() -> None:
     )
     convert_parser.add_argument("--dst", type=str, default="onnx", help="Target format")
     convert_parser.set_defaults(func=convert_cmd)
+
+    # CoreML
+    coreml_parser = subparsers.add_parser("coreml", help="Convert to/from CoreML packages")
+    coreml_sub = coreml_parser.add_subparsers(dest="coreml_command", help="CoreML subcommands")
+
+    coreml_export = coreml_sub.add_parser("export", help="Export ONNX to CoreML (.mlpackage)")
+    coreml_export.add_argument("model", type=str, help="Path to the .onnx file")
+
+    coreml_import = coreml_sub.add_parser("import", help="Import CoreML (.mlpackage) to ONNX")
+    coreml_import.add_argument("model", type=str, help="Path to the .mlpackage")
+
+    coreml_parser.set_defaults(func=coreml_cmd)
 
     # Serve
     serve_parser = subparsers.add_parser(
