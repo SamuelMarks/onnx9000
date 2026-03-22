@@ -89,6 +89,22 @@ importers:
         specifier: ^5.0.0
         version: 5.4.11(@types/node@25.5.0)
 
+  apps/demo-tflite-converter:
+    dependencies:
+      '@onnx9000/converters':
+        specifier: workspace:*
+        version: link:../../packages/js/converters
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/tflite-exporter':
+        specifier: workspace:*
+        version: link:../../packages/js/tflite-exporter
+    devDependencies:
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
   apps/netron-ui:
     dependencies:
       '@onnx9000/backend-web':
@@ -308,6 +324,25 @@ importers:
   packages/js/serve: {}
 
   packages/js/tfjs-shim: {}
+
+  packages/js/tflite-exporter:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.5.0
+      '@vitest/coverage-v8':
+        specifier: 1.6.0
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0))
+      vite:
+        specifier: 5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0)
 
   packages/js/transformers:
     dependencies:

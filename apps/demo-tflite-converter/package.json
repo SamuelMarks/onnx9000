@@ -1,0 +1,17 @@
+{
+  "name": "demo-tflite-converter",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/converters": "workspace:*",
+    "@onnx9000/tflite-exporter": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}

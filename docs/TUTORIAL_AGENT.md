@@ -2,7 +2,7 @@
 
 This tutorial demonstrates how to use the pure-Vanilla TypeScript Agent APIs inside `onnx9000` to build a zero-dependency, browser-local AI coding assistant.
 
-Because `onnx9000` uses a native `AgentRunner` mapped tightly to an underlying ReAct loop, you do not need external API keys, Node.js servers, or complex Docker containers.
+Because `onnx9000` uses a native `AgentRunner` mapped tightly to an underlying Reason+Act loop, you do not need external API keys, Node.js servers, or complex Docker containers.
 
 ## 1. Defining Tools
 

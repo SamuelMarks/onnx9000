@@ -19,7 +19,7 @@ export class AgentInterface extends BaseComponent {
     this.container.style.flexDirection = 'column';
 
     const header = $create('div', { className: 'property-row' });
-    header.appendChild($create('h2', { textContent: 'Autonomous Agent (ReAct Loop)' }));
+    header.appendChild($create('h2', { textContent: 'Autonomous Agent (Agent Loop)' }));
 
     // 628. Cancelable Tasks
     const abortBtn = $create('button', {
@@ -122,7 +122,7 @@ export class AgentInterface extends BaseComponent {
     const activeController = new AbortController();
     // 630. Streaming output happens organically via agentLog emitter.
     // 631. Nested agent failures caught internally inside Runner tools.
-    globalAgent.runReAct(text, activeController.signal).catch((e) => {
+    globalAgent.runAgentLoop(text, activeController.signal).catch((e) => {
       globalEvents.emit('agentLog', `[Error] Agent crashed: ${e}`);
     });
   }

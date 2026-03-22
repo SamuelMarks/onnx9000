@@ -18,6 +18,7 @@ members = [
     "onnx9000-core",
     "onnx9000-optimizer",
     "onnx9000-optimum",
+    "onnx9000-tflite-exporter",
     "onnx9000-toolkit",
     "onnx9000-tvm",
     "onnx9000-workspace",
@@ -1292,6 +1293,17 @@ requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-
 name = "onnx9000-optimum"
 version = "0.1.0"
 source = { editable = "packages/python/onnx9000-optimum" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-tflite-exporter"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-tflite-exporter" }
 dependencies = [
     { name = "onnx9000-core" },
 ]

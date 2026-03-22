@@ -16,6 +16,7 @@ build/
 *.dll
 test_wasm
 test_wasm_core
+test_tensor
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -118,3 +119,4 @@ patch_*.js
 test_*.ts
 test_*.pt
 update_*.js
+coverage.json

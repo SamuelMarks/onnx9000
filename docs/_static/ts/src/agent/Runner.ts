@@ -26,7 +26,7 @@ export interface IAgentDAG {
 
 /**
  * 607. Implement a zero-dependency directed acyclic graph (DAG) runner for Agents.
- * 611. Provide a ReAct (Reason+Act) loop implementation in vanilla TS.
+ * 611. Provide a Reasoning+Acting loop implementation in vanilla TS.
  */
 export class AgentRunner {
   private tools: Map<string, IAgentTool> = new Map();
@@ -144,10 +144,10 @@ export class AgentRunner {
   }
 
   /**
-   * 611. Basic ReAct Loop Engine
+   * 611. Basic Agent Loop Engine
    * Mocked LLM interaction parsing "Thought:", "Action:", "Observation:"
    */
-  public async runReAct(prompt: string, signal?: AbortSignal): Promise<void> {
+  public async runAgentLoop(prompt: string, signal?: AbortSignal): Promise<void> {
     this.isRunning = true;
     globalEvents.emit('agentLog', `[User] ${prompt}`);
 

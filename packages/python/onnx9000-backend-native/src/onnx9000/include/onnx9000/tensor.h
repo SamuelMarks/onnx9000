@@ -4,9 +4,38 @@
 #include <numeric>
 #include <vector>
 
+/**
+ * \brief Macro to calculate a 1D flat index from a 2D coordinate based on
+ * strides.
+ * \param strides A pointer to the strides array.
+ * \param i The row index.
+ * \param j The column index.
+ * \return The flattened 1D index.
+ */
 #define ONNX9000_INDEX_2D(strides, i, j) ((i) * (strides)[0] + (j))
+
+/**
+ * \brief Macro to calculate a 1D flat index from a 3D coordinate based on
+ * strides.
+ * \param strides A pointer to the strides array.
+ * \param i The depth index.
+ * \param j The row index.
+ * \param k The column index.
+ * \return The flattened 1D index.
+ */
 #define ONNX9000_INDEX_3D(strides, i, j, k)                                    \
   ((i) * (strides)[0] + (j) * (strides)[1] + (k))
+
+/**
+ * \brief Macro to calculate a 1D flat index from a 4D coordinate based on
+ * strides.
+ * \param strides A pointer to the strides array.
+ * \param n The batch index.
+ * \param c The channel index.
+ * \param h The height index.
+ * \param w The width index.
+ * \return The flattened 1D index.
+ */
 #define ONNX9000_INDEX_4D(strides, n, c, h, w)                                 \
   ((n) * (strides)[0] + (c) * (strides)[1] + (h) * (strides)[2] + (w))
 
@@ -17,12 +46,25 @@ namespace onnx9000 {
  * \tparam T Data type of the tensor elements.
  */
 template <typename T> struct Tensor {
+  /** \brief Pointer to the contiguous block of memory holding tensor data. */
   T *__restrict__ data = nullptr;
+  /** \brief The shape of the tensor (sizes of each dimension). */
   std::vector<int64_t> shape;
+  /** \brief The strides of the tensor (step sizes in memory for each
+   * dimension). */
   std::vector<int64_t> strides;
 
+  /**
+   * \brief Default constructor. Creates an empty tensor.
+   */
   Tensor() = default;
 
+  /**
+   * \brief Constructs a tensor with specific data and shape.
+   * Computes the contiguous strides automatically based on the provided shape.
+   * \param data Pointer to the tensor elements.
+   * \param shape A vector of integers specifying the size of each dimension.
+   */
   Tensor(T *__restrict__ data, const std::vector<int64_t> &shape)
       : data(data), shape(shape) {
     strides.resize(shape.size());
@@ -34,11 +76,18 @@ template <typename T> struct Tensor {
     }
   }
 
+  /**
+   * \brief Computes the total number of elements in the tensor.
+   * \return The product of the dimension sizes. Returns 0 if shape is empty or
+   * if any dimension is 0.
+   */
   size_t size() const {
     if (shape.empty())
       return 0;
     size_t s = 1;
     for (auto d : shape) {
+      if (d == 0)
+        return 0;
       if (d > 0)
         s *= d;
     }

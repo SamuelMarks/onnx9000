@@ -1,0 +1,40 @@
+name: onnx2tf Conversion Failure
+description: File a bug report for issues converting an ONNX model into TensorFlow Lite or SavedModel formats.
+labels: ["bug", "onnx2tf"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting an issue, please test the latest code and verify the operator isn't explicitly unsupported in standard TFLite builtin structures.
+  - type: input
+    id: version
+    attributes:
+      label: onnx9000 Version
+      description: Provide the specific package versions.
+      placeholder: "@onnx9000/tflite-exporter@1.0.x"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the conversion failure in detail.
+      placeholder: The conversion failed during the Transpose push-down process...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Model Reproduction (Crucial)
+      description: Please provide a reproducible snippet or a link to the original `.onnx` model file (via Gist/Drive/HuggingFace). We cannot debug an arbitrary compiler crash without seeing the AST structure.
+      placeholder: |
+        Model link: ...
+        Command: onnx9000 onnx2tf model.onnx --fp16
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output Logs
+      description: Paste the exact compiler stacktrace or UI Console output.
+      render: shell

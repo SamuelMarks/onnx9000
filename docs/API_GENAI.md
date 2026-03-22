@@ -12,7 +12,7 @@ Registers a functional closure as an executable agent tool.
 - **`description`**: Context fed directly into the system prompt guiding the LLM selection mechanism.
 - **`execute`**: An asynchronous `(args: string) => Promise<string>` callback executing sandbox logic.
 
-### `globalAgent.runReAct(prompt: string, signal?: AbortSignal)`
+### `globalAgent.runAgentLoop(prompt: string, signal?: AbortSignal)`
 
 Initiates an autonomous Reason+Act iterative loop.
 

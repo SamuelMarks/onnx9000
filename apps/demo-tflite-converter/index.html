@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONNX to TFLite Converter</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ONNX to TFLite Converter</h1>
+      <p>100% Client-Side. Zero Server Contact. Pure WASM/JS.</p>
+    </header>
+    
+    <main>
+      <div id="drop-zone" class="drop-zone">
+        <p>Drag and Drop your <code>.onnx</code> model here</p>
+        <p>or</p>
+        <button id="browse-btn">Browse Files</button>
+        <input type="file" id="file-input" accept=".onnx" hidden>
+      </div>
+
+      <div class="options">
+        <h3>Compilation Options</h3>
+        <label>
+          <input type="checkbox" id="quant-fp16"> FP16 Quantization (Downcast weights)
+        </label>
+        <label>
+          <input type="checkbox" id="quant-int8"> INT8 Quantization (Experimental)
+        </label>
+        <label>
+          <input type="checkbox" id="opt-edgetpu"> Optimize for EdgeTPU (NHWC Transpositions)
+        </label>
+        <br/><br/>
+        <label>
+          <input type="checkbox" id="open-netron" checked> Open interactive Graph Visualizer (Netron style) when finished.
+        </label>
+      </div>
+
+      <div id="status-panel" class="status-panel hidden">
+        <h3>Status</h3>
+        <div id="progress-bar-container" class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="status-text">Ready...</p>
+        <div id="error-box" class="error-box hidden"></div>
+      </div>
+
+      <div id="result-panel" class="result-panel hidden">
+        <h3>Conversion Complete!</h3>
+        <p id="stats-text"></p>
+        <button id="download-btn">Download .tflite</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./app.ts"></script>
+</body>
+</html>
