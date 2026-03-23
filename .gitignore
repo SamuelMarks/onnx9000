@@ -120,3 +120,5 @@ test_*.ts
 test_*.pt
 update_*.js
 coverage.json
+test_out/
+out_c/

@@ -1,0 +1,68 @@
+from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+from onnx9000.core.dtypes import DType
+from onnx9000.c_compiler.compiler import C89Compiler
+
+
+def test_100_cov():
+    g = Graph("test")
+    # PRelu
+    g.tensors["PRelu_X"] = Tensor("PRelu_X", shape=(1,), dtype=DType.FLOAT32)
+    g.tensors["PRelu_Y"] = Tensor("PRelu_Y", shape=(1,), dtype=DType.FLOAT32)
+    g.nodes.append(Node("PRelu", inputs=["PRelu_X"], outputs=["PRelu_Y"]))
+
+    # NLP / Vision / RNN TopK
+    g.tensors["TK_X"] = Tensor("TK_X", shape=(1,), dtype=DType.FLOAT32)
+    g.tensors["TK_Y"] = Tensor("TK_Y", shape=(1,), dtype=DType.FLOAT32)
+    g.nodes.append(Node("TopK", inputs=["TK_X", "TK_X"], outputs=["TK_Y"]))
+    g.nodes.append(Node("Unique", inputs=["TK_X"], outputs=["TK_Y"]))
+
+    g.nodes.append(
+        Node("NonMaxSuppression", inputs=["TK_X", "TK_X", "TK_X", "TK_X", "TK_X"], outputs=["TK_Y"])
+    )
+    g.nodes.append(
+        Node("NonMaxSuppression", inputs=["TK_X", "TK_X", "TK_X", "TK_X"], outputs=["TK_Y"])
+    )
+    g.nodes.append(
+        Node(
+            "Resize",
+            inputs=["TK_X"],
+            outputs=["TK_Y"],
+            attributes={"mode": Attribute("mode", b"linear")},
+        )
+    )
+    g.nodes.append(
+        Node(
+            "Resize",
+            inputs=["TK_X"],
+            outputs=["TK_Y"],
+            attributes={"mode": Attribute("mode", "nearest")},
+        )
+    )
+
+    g.nodes.append(Node("LSTM", inputs=["TK_X", "TK_X", "TK_X"], outputs=["TK_Y"]))
+    g.nodes.append(Node("GRU", inputs=["TK_X", "TK_X", "TK_X"], outputs=["TK_Y"]))
+    g.nodes.append(Node("Attention", inputs=["TK_X", "TK_X", "TK_X", "TK_X"], outputs=["TK_Y"]))
+
+    # Intrinsics esp_nn_conv_s8
+    import struct
+
+    g.tensors["Q_X"] = Tensor("Q_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)
+    g.tensors["Q_S"] = Constant(
+        "Q_S", shape=(1,), dtype=DType.FLOAT32, values=struct.pack("<f", 1.0)
+    )
+    g.tensors["Q_Z"] = Constant("Q_Z", shape=(1,), dtype=DType.UINT8, values=b"\x00")
+    g.tensors["Q_W"] = Tensor("Q_W", shape=(6, 3, 3, 3), dtype=DType.UINT8)
+    g.tensors["Q_Y"] = Tensor("Q_Y", shape=(1, 6, 8, 8), dtype=DType.UINT8)
+    g.nodes.append(
+        Node(
+            "QLinearConv",
+            inputs=["Q_X", "Q_S", "Q_Z", "Q_W", "Q_S", "Q_Z", "Q_S", "Q_Z"],
+            outputs=["Q_Y"],
+        )
+    )
+
+    comp = C89Compiler(g, target="esp-nn")
+    h, c = comp.generate()
+
+
+test_100_cov()

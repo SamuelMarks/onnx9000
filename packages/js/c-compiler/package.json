@@ -1,0 +1,19 @@
+{
+  "name": "@onnx9000/c-compiler",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "pyodide": "^0.26.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^2.1.8",
+    "@types/node": "^22.0.0"
+  }
+}

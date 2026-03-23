@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>onnx2c Web Compiler</title>
+    <style>
+      body { margin: 0; padding: 0; font-family: system-ui, sans-serif; display: flex; height: 100vh; overflow: hidden; background: #1e1e1e; color: #fff; }
+      #sidebar { width: 300px; background: #252526; padding: 20px; box-sizing: border-box; border-right: 1px solid #333; overflow-y: auto; }
+      #editor-container { flex: 1; display: flex; flex-direction: column; }
+      #tabs { display: flex; background: #2d2d2d; border-bottom: 1px solid #1e1e1e; }
+      .tab { padding: 10px 20px; cursor: pointer; color: #888; user-select: none; }
+      .tab.active { background: #1e1e1e; color: #fff; border-top: 2px solid #007acc; }
+      #monaco-root { flex: 1; }
+      .dropzone { border: 2px dashed #444; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: 0.2s; }
+      .dropzone.hover { border-color: #007acc; background: rgba(0, 122, 204, 0.1); }
+      .btn { display: block; width: 100%; padding: 10px; background: #007acc; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; text-align: center; }
+      .btn:hover { background: #005f9e; }
+      label { display: block; margin-top: 15px; font-size: 14px; color: #ccc; }
+      input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar">
+      <h2>onnx2c Compiler</h2>
+      
+      <!-- 198: Drag and drop ONNX file ingestion -->
+      <div id="dropzone" class="dropzone">
+        <p>Drop .onnx file here<br/>or click to browse</p>
+        <input type="file" id="file-input" style="display: none" accept=".onnx,.pb" />
+      </div>
+
+      <div id="controls" style="display: none">
+        <!-- 200: Visual tweak memory arena -->
+        <label>Target Architecture</label>
+        <select id="target-arch">
+          <option value="">Generic (C99)</option>
+          <option value="cmsis-nn">ARM CMSIS-NN</option>
+          <option value="esp-nn">Espressif ESP-NN</option>
+          <option value="arduino">Arduino</option>
+        </select>
+        
+        <!-- 201: Visual toggles -->
+        <label><input type="checkbox" id="opt-cpp"> Emit C++ struct headers</label>
+        <label><input type="checkbox" id="opt-math" checked> Provide <math.h> fallbacks</label>
+        <label><input type="checkbox" id="opt-unroll"> Unroll loops statically</label>
+        
+        <!-- 204: Validate model RAM against boards -->
+        <label>Target Board Validation</label>
+        <select id="target-board">
+          <option value="none">None</option>
+          <option value="256000">Arduino Nano 33 BLE (256KB)</option>
+          <option value="512000">ESP32-S3 (512KB SRAM)</option>
+          <option value="2000000">Raspberry Pi Pico (2MB)</option>
+        </select>
+
+        <button id="btn-compile" class="btn">Compile to C</button>
+        <button id="btn-download" class="btn" style="background: #28a745; margin-top: 10px;">Download C Zip</button>
+      </div>
+    </div>
+    
+    <div id="editor-container">
+      <div id="tabs">
+        <div class="tab active" data-target="header">model.h</div>
+        <div class="tab" data-target="source">model.c</div>
+      </div>
+      <!-- 199: Interactive Monaco Editor -->
+      <div id="monaco-root"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
