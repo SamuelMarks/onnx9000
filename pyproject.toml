@@ -39,3 +39,6 @@ testpaths = ["packages/python", "apps/cli"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["onnx9000_workspace"]
+
+[tool.coverage.run]
+omit = ["*/onnx_pb2.py"]

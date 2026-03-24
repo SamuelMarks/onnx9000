@@ -56,6 +56,8 @@ export class Sidebar extends BaseComponent {
         <option value="sklearn">Scikit-Learn (.pkl)</option>
         <option value="paddle">PaddlePaddle (.pdmodel)</option>
         <option value="xgboost">XGBoost (.json)</option>
+        <option value="keras">Keras TF.js (.json)</option>
+
         <option value="gguf">GGUF (.gguf)</option>
       `,
     });
@@ -107,6 +109,15 @@ export class Sidebar extends BaseComponent {
     importerSection.appendChild($create('hr'));
     importerSection.appendChild(exportOnnxBtn);
     importerSection.appendChild(exportOVBtn);
+    const exportTfBtn = $create('button', {
+      className: 'action-btn secondary',
+      textContent: 'Export TFLite (JSON)',
+      attributes: { style: 'margin-top: 5px;' },
+    });
+    importerSection.appendChild(exportTfBtn);
+    exportTfBtn.addEventListener('click', () => {
+      globalEvents.emit('exportTFLite');
+    });
 
     exportOnnxBtn.addEventListener('click', () => {
       globalEvents.emit('exportONNX');

@@ -38,6 +38,9 @@ During the optimization phase, a `MemoryPlanner` calculates the exact lifespan o
 
 ## 5. Rescuing Legacy Models
 
-Thousands of incredible models are trapped in outdated formats (`.caffemodel`, `.h5`, `.pb`). The frameworks required to run them (Caffe, MXNet, TF1) no longer compile on modern operating systems.
+Thousands of incredible models are trapped in outdated formats (`.caffemodel`, `.h5`, `.pb`). The frameworks required to run them (Caffe, MXNet, TF1) no longer compile easily on modern operating systems. `onnx9000` revitalizes these architectures, converting Caffe Prototxt, Keras H5, or CoreML representations seamlessly.
 
 The `onnx9000-frontend` package provides pure Python/TS parsers that read these legacy binary formats and translate them directly to the ONNX standard, allowing 10-year-old architectures to suddenly run flawlessly on modern WebGPU browsers with zero native installation.
+
+## 6. Real-Time IDE Integration
+The `onnx9000` ecosystem treats the browser as a primary IDE platform. Integrated with Sphinx documentation (`apps/sphinx-demo-ui`), it empowers developers to experiment, edit, and transpile natively across MLIR, C++, PyTorch, and ONNX backends completely client-side.

@@ -346,17 +346,14 @@ def test_builder_missing_21():
 
 def test_huggingface_mocked_success():
     import sys
-    from unittest.mock import MagicMock
+    from unittest.mock import MagicMock, patch
 
     mock_hub = MagicMock()
-    sys.modules["huggingface_hub"] = mock_hub
+    with patch.dict(sys.modules, {"huggingface_hub": mock_hub}):
+        from onnx9000.genai.huggingface import HuggingFaceIntegration
 
-    from onnx9000.genai.huggingface import HuggingFaceIntegration
-
-    HuggingFaceIntegration.download_model("repo", "dir")
-    mock_hub.snapshot_download.assert_called_once()
-
-    del sys.modules["huggingface_hub"]
+        HuggingFaceIntegration.download_model("repo", "dir")
+        mock_hub.snapshot_download.assert_called_once()
 
     from onnx9000.genai.builder import GenAICLI
 
@@ -401,15 +398,14 @@ def test_huggingface_all():
     from unittest.mock import MagicMock, mock_open, patch
 
     mock_hub = MagicMock()
-    sys.modules["huggingface_hub"] = mock_hub
-    from onnx9000.genai.huggingface import HuggingFaceIntegration
+    with patch.dict(sys.modules, {"huggingface_hub": mock_hub}):
+        from onnx9000.genai.huggingface import HuggingFaceIntegration
 
-    HuggingFaceIntegration.download_model("repo", "dir")
-    mock_hub.snapshot_download.assert_called_once()
-    with patch("builtins.open", mock_open(read_data="{}")):
-        assert HuggingFaceIntegration.load_generation_config("path") == {}
-        assert HuggingFaceIntegration.load_metadata_from_config("path") == {}
-    del sys.modules["huggingface_hub"]
+        HuggingFaceIntegration.download_model("repo", "dir")
+        mock_hub.snapshot_download.assert_called_once()
+        with patch("builtins.open", mock_open(read_data="{}")):
+            assert HuggingFaceIntegration.load_generation_config("path") == {}
+            assert HuggingFaceIntegration.load_metadata_from_config("path") == {}
 
 
 def test_generator_all():

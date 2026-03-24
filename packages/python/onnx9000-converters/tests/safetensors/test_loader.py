@@ -189,6 +189,7 @@ def test_converters_loader_remaining():
 
         # convert pytorch
         import sys
+        from unittest.mock import patch
 
         class MockTorch:
             class Tensor:
@@ -197,9 +198,6 @@ def test_converters_loader_remaining():
 
             def load(self, f, map_location):
                 return {"a": self.Tensor(), "b": "not_tensor"}
-
-        sys.modules["torch"] = MockTorch()
-        convert_pytorch_to_safetensors("dummy.bin", os.path.join(d, "out.safetensors"))
 
         # convert tf
         class MockTF:
@@ -221,8 +219,9 @@ def test_converters_loader_remaining():
             def __init__(self):
                 self.saved_model = self.SavedModel()
 
-        sys.modules["tensorflow"] = MockTF()
-        convert_tf_to_safetensors("dummy", os.path.join(d, "tf.safetensors"))
+        with patch.dict(sys.modules, {"torch": MockTorch(), "tensorflow": MockTF()}):
+            convert_pytorch_to_safetensors("dummy.bin", os.path.join(d, "out.safetensors"))
+            convert_tf_to_safetensors("dummy", os.path.join(d, "tf.safetensors"))
 
         # dump_graph_to_safetensors
         g = Graph("g")

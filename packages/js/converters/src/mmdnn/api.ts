@@ -15,9 +15,27 @@ export type SourceFramework =
   | 'paddle'
   | 'keras'
   | 'coreml'
-  | 'onnx';
+  | 'onnx'
+  | 'tensorflow'
+  | 'scikitlearn'
+  | 'lightgbm'
+  | 'xgboost'
+  | 'catboost'
+  | 'sparkml'
+  | 'onnxscript';
 
-export type TargetFramework = 'onnx' | 'pytorch_code' | 'tfjs' | 'tflite' | 'coreml' | 'array';
+export type TargetFramework =
+  | 'onnx'
+  | 'pytorch_code'
+  | 'tfjs'
+  | 'tflite'
+  | 'coreml'
+  | 'array'
+  | 'caffe'
+  | 'keras'
+  | 'mxnet'
+  | 'tensorflow'
+  | 'cntk';
 
 export interface ConvertOptions {
   fusion?: boolean;

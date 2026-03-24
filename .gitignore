@@ -81,6 +81,7 @@ typedoc.out.json
 # Generated Sphinx ReST files
 docs/onnx9000.*.rst
 docs/js-api_toc.rst
+docs/html_extra/onnx9000.wasm
 dir/
 package-lock.json
 test/
@@ -122,3 +123,10 @@ update_*.js
 coverage.json
 test_out/
 out_c/
+commit_msg*.txt
+
+# Test outputs and scratch
+*_output.txt
+test_opt_*.txt
+cov_out.txt
+test_*.js

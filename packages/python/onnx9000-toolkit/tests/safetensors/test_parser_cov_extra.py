@@ -118,16 +118,11 @@ def test_save_sharded_raw_data(tmp_path):
     assert os.path.exists(str(tmp_path / "test" / "model-00001-of-00001.safetensors"))
 
 
-def test_convert_pytorch_to_safetensors_non_tensor(tmp_path):
+def test_convert_pytorch_to_safetensors_mocked(tmp_path):
     import sys
-    from unittest.mock import MagicMock
+    from unittest.mock import MagicMock, patch
 
-    if "torch" not in sys.modules:
-        sys.modules["torch"] = MagicMock()
-    import torch
-    from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
-    from unittest.mock import patch
-    import os
+    mock_torch = MagicMock()
 
     class DummyTensor:
         def numpy(self):
@@ -135,19 +130,23 @@ def test_convert_pytorch_to_safetensors_non_tensor(tmp_path):
 
             return np.array([1.0])
 
-    torch.Tensor = DummyTensor
-    torch.tensor = lambda x: DummyTensor()
-    state_dict = {"a": torch.tensor([1.0]), "b": 42}
+    mock_torch.Tensor = DummyTensor
+    mock_torch.tensor = lambda x: DummyTensor()
+    state_dict = {"a": mock_torch.tensor([1.0]), "b": 42}
 
-    with patch("torch.load", return_value=state_dict):
-        output_file = tmp_path / "model.safetensors"
+    with patch.dict(sys.modules, {"torch": mock_torch}):
+        with patch("torch.load", return_value=state_dict) as mock_load:
+            from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
+            import os
 
-        (tmp_path / "dummy.bin").write_text("")
-        convert_pytorch_to_safetensors(str(tmp_path), str(output_file))
+            output_file = tmp_path / "model.safetensors"
 
-        assert os.path.exists(str(output_file))
+            (tmp_path / "dummy.bin").write_text("")
+            convert_pytorch_to_safetensors(str(tmp_path), str(output_file))
 
-        assert torch.load.called
+            assert os.path.exists(str(output_file))
+            print("state_dict:", state_dict)
+        assert mock_load.called
         # FORCE hit line 41 by providing an explicit non-tensor
         # Wait, if `42` was silently skipped by not hitting the loop? No, it's in the dict.
         print("state_dict:", state_dict)
@@ -155,11 +154,9 @@ def test_convert_pytorch_to_safetensors_non_tensor(tmp_path):
 
 def test_convert_tf_to_safetensors(tmp_path):
     import sys
-    from unittest.mock import MagicMock
+    from unittest.mock import MagicMock, patch
 
-    if "tensorflow" not in sys.modules:
-        sys.modules["tensorflow"] = MagicMock()
-    import tensorflow as tf
+    mock_tf = MagicMock()
 
     class DummyVar:
         def __init__(self, name):
@@ -175,14 +172,17 @@ def test_convert_tf_to_safetensors(tmp_path):
         def __init__(self):
             self.variables = [DummyVar("layer1:0"), DummyVar("layer2")]
 
-    tf.saved_model.load.return_value = DummyModel()
+    mock_tf.saved_model.load.return_value = DummyModel()
 
-    from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
+    with patch.dict(sys.modules, {"tensorflow": mock_tf}):
+        from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
 
-    output_file = tmp_path / "tf_model.safetensors"
-    convert_tf_to_safetensors("dummy_dir", str(output_file))
+        output_file = tmp_path / "tf_model.safetensors"
+        convert_tf_to_safetensors("dummy_dir", str(output_file))
 
-    assert os.path.exists(str(output_file))
+        import os
+
+        assert os.path.exists(str(output_file))
 
 
 def test_convert_pytorch_missing_torch():
@@ -190,7 +190,7 @@ def test_convert_pytorch_missing_torch():
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
     import pytest
 
-    with patch.dict("sys.modules", {"torch": None}):
+    with patch.dict(sys.modules, {"torch": None}):
         with pytest.raises(ImportError, match="PyTorch is required"):
             convert_pytorch_to_safetensors("dummy_dir")
 
@@ -200,13 +200,16 @@ def test_convert_tf_missing_tf():
     from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
     import pytest
 
-    with patch.dict("sys.modules", {"tensorflow": None}):
+    with patch.dict(sys.modules, {"tensorflow": None}):
         with pytest.raises(ImportError, match="TensorFlow is required"):
             convert_tf_to_safetensors("dummy_dir", "out")
 
 
 def test_convert_pytorch_no_bins(tmp_path):
+    import sys
+    from unittest.mock import MagicMock, patch
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
 
     # Called with no output dir, and no bins
-    convert_pytorch_to_safetensors(str(tmp_path))
+    with patch.dict(sys.modules, {"torch": MagicMock()}):
+        convert_pytorch_to_safetensors(str(tmp_path))

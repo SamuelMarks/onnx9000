@@ -1,5 +1,7 @@
 # onnx9000.script Documentation
 
+> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+
 `onnx9000.script` provides a fluent, pure-Python authoring environment for ONNX, similar to Microsoft's ONNXScript and Quantco's Spox, but built entirely without the C++ `protobuf` extension. This makes it perfect for generating ONNX models dynamically directly in browser environments (like Pyodide/WASM).
 
 ## Features

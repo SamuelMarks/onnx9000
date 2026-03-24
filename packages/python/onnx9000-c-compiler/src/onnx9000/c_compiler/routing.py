@@ -31,8 +31,6 @@ def generate_shape_op(
         b.emit(f"{out_name}[i] = {in_name}[i];")
         b.pop_indent()
         b.emit("}")
-    else:
-        pass
 
     b.pop_indent()
     b.emit("}")
@@ -240,8 +238,6 @@ def generate_pad(
         b.emit("}")
         b.pop_indent()
         b.emit("}")
-    else:
-        pass
 
     b.pop_indent()
     b.emit("}")

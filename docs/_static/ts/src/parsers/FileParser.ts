@@ -1,3 +1,5 @@
+import { KerasParser } from './KerasParser';
+
 import { SafetensorsParser } from './Safetensors';
 import { ONNXProtoParser } from './ONNXProto';
 import { Toast } from '../ui/Toast';
@@ -133,6 +135,14 @@ export class FileParser {
     if (ext === 'pkl') type = 'PARSE_SKL';
     if (ext === 'pdmodel') type = 'PARSE_PADDLE';
     if (ext === 'json') {
+      const text = new TextDecoder().decode(buffer);
+      if (text.includes('keras_version') || text.includes('class_name')) {
+        const parser = new KerasParser(text);
+        const graph = parser.parse();
+        await astCache.set(hash, graph);
+        return graph;
+      }
+
       type = 'PARSE_XGBOOST';
       payload = new TextDecoder().decode(buffer);
     }

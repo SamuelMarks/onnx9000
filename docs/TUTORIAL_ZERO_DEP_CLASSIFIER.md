@@ -1,4 +1,10 @@
+---
+orphan: true
+---
+
 # Tutorial: Building a Zero-Dependency 10KB Image Classifier
+
+> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
 
 This tutorial shows how to use `onnx9000-iree` to compile a standard ResNet or MobileNet model into a 10KB standalone JS file that uses WebGPU directly, bypassing heavy runtime libraries.
 

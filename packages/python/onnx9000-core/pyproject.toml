@@ -3,7 +3,7 @@ name = "onnx9000-core"
 version = "1.0.0"
 description = "Core ONNX Intermediate Representation"
 requires-python = ">=3.9"
-dependencies = ["protobuf", "numpy", "onnx"]
+dependencies = ["protobuf", "numpy"]
 
 [build-system]
 requires = ["hatchling"]

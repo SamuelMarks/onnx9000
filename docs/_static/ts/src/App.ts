@@ -22,6 +22,8 @@ import { Lowering } from './compiler/Lowering';
 import { WasmEmitter } from './compiler/WasmEmitter';
 import { WGSLEmitter } from './compiler/WGSLEmitter';
 import { CppEmitter } from './compiler/CppEmitter';
+import { CEmitter } from './compiler/CEmitter';
+import { ONNX2TF } from './exporters/ONNX2TF';
 import { WebNNProvider } from './providers/WebNNProvider';
 import { CoreMLExporter } from './exporters/CoreML';
 import { TFLiteExporter } from './exporters/TFLite';
@@ -352,6 +354,20 @@ export class App {
           });
 
           // 165. Serialize the optimized graph back to .onnx format
+          globalEvents.on('exportTFLite', () => {
+            if (!this.currentModel) return Toast.show('No model loaded', 'warn');
+            const exporter = new ONNX2TF(this.currentModel, {
+              target: 'tflite_json',
+              edgeTpuOptimization: true,
+            });
+            const tfJson = exporter.export();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([tfJson], { type: 'application/json' }));
+            a.download = 'model_PINTO0309.tflite.json';
+            a.click();
+            Toast.show('Exported TFLite JSON (onnx2tf)', 'success');
+          });
+
           globalEvents.on('exportONNX', () => {
             if (!this.currentModel) return Toast.show('No model loaded', 'warn');
 

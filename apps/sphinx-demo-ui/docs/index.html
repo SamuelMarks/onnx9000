@@ -1,0 +1,320 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@onnx9000/sphinx-demo-ui</title><meta name="description" content="Documentation for @onnx9000/sphinx-demo-ui"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@onnx9000/sphinx-demo-ui</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>@onnx9000/sphinx-demo-ui</h2></div><div class="tsd-panel tsd-typography"><a id="md:onnx9000-🚀" class="tsd-anchor"></a><h1><a href="#md:onnx9000-🚀">ONNX9000 🚀</a></h1><p><a href="https://github.com/SamuelMarks/onnx9000/actions/workflows/lint.yml"><img src="https://github.com/SamuelMarks/onnx9000/actions/workflows/lint.yml/badge.svg" alt="Lint"></a>
+<a href="https://github.com/SamuelMarks/onnx9000/actions/workflows/test-python.yml"><img src="https://github.com/SamuelMarks/onnx9000/actions/workflows/test-python.yml/badge.svg" alt="Python Tests"></a>
+<a href="https://github.com/SamuelMarks/onnx9000/actions/workflows/test-js.yml"><img src="https://github.com/SamuelMarks/onnx9000/actions/workflows/test-js.yml/badge.svg" alt="JS Tests"></a>
+<a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg" alt="License"></a>
+<img src="https://img.shields.io/badge/Doc_Coverage-100%25-blue" alt="Doc Coverage">
+<img src="https://img.shields.io/badge/Test_Coverage-100%25-success" alt="Test Coverage"></p>
+<blockquote>
+<p><strong>The Zero-Dependency, WASM-First, Polyglot Machine Learning Ecosystem.</strong></p>
+</blockquote>
+<p><code>onnx9000</code> is a radical reimagining of the entire Machine Learning deployment stack. It systematically dismantles and replaces massive C++ binaries, complex CMake toolchains, and bloated Python dependencies (like <code>numpy</code>, <code>torch</code>, <code>tensorflow</code>, or <code>onnxruntime</code>) in favor of a <strong>Polyglot Monorepo</strong> written in pure Python and strictly-typed TypeScript.</p>
+<p>The vision is absolute portability and zero-overhead execution: an ONNX model should parse, optimize, train, compile, and execute flawlessly on a massive GPU cluster, a Serverless Node.js function, a bare-metal microcontroller, or directly inside a user&#39;s web browser using WebAssembly and WebGPU—all without installing a single native C++ library.</p>
+<a id="md:the-grand-unification" class="tsd-anchor"></a><h2><a href="#md:the-grand-unification">The Grand Unification</a></h2><p><code>onnx9000</code> is not just an inference engine; it is a complete replacement for over 40+ disparate tools across the ML ecosystem. By centralizing the Intermediate Representation (IR) in pure Python and TypeScript, <code>onnx9000</code> achieves what disparate C++ ecosystems cannot: seamless interoperability.</p>
+<a id="md:🐍-python-amp-🌐-typescript-polyglot-architecture" class="tsd-anchor"></a><h3><a href="#md:🐍-python-amp-🌐-typescript-polyglot-architecture">🐍 Python &amp; 🌐 TypeScript Polyglot Architecture</a></h3><p>The ecosystem is divided into highly cohesive, modular packages managed by <code>pnpm</code> workspaces (JS) and <code>uv</code> (Python):</p>
+<ul>
+<li><strong>Core IR &amp; Parsers (<code>onnx9000-core</code>, <code>js/core</code>)</strong>: Zero-dependency ONNX Protobuf/FlatBuffer parsers, exact schema validation (replacing <code>onnx.checker</code>), and structural DAGs. No <code>protobuf</code> C++ extensions required.</li>
+<li><strong>Hardware-Native Execution (<code>onnx9000-backend-native</code>)</strong>: Replaces the C++ <code>onnxruntime</code> with a lightweight, dynamic Python FFI dispatcher utilizing <code>ctypes</code> to route operations directly to Apple Accelerate, CUDA, or TensorRT with zero memory copies.</li>
+<li><strong>Web-First Execution (<code>js/backend-web</code>, <code>js/tfjs-shim</code>)</strong>: Highly tuned WebGPU, WASM SIMD, and WebNN execution providers. Acts as a 100% drop-in replacement for TensorFlow.js, bringing ONNX speeds to legacy web apps.</li>
+<li><strong>Frontends &amp; Converters (<code>onnx9000-converters</code>)</strong>: Pure-Python/JS transpilers for legacy and modern frameworks. Translates PyTorch (replacing <code>torch.onnx</code>), TensorFlow (<code>tf2onnx</code>), Keras (<code>keras2onnx</code>), Scikit-Learn (<code>skl2onnx</code>), and LightGBM/XGBoost (<code>onnxmltools</code>) directly into ONNX without requiring the original frameworks at runtime.</li>
+<li><strong>AOT Compilation &amp; Codegen (<code>js/compiler</code>)</strong>: Replaces Apache TVM and IREE. Compiles ONNX graphs directly into standalone C++23 (replacing <code>onnx2c</code>), WebAssembly bytecodes (<code>.wvm</code>), or WebGPU WGSL shaders with zero runtime overhead.</li>
+<li><strong>Optimization &amp; Sparsity (<code>onnx9000-optimizer</code>)</strong>: In-memory graph surgery (<code>GraphSurgeon</code>), algebraic simplification (<code>onnx-simplifier</code>), INT4/INT8 quantization (<code>Optimum</code>), and state-of-the-art pruning/sparsity (<code>SparseML</code>).</li>
+<li><strong>Autograd &amp; Training (<code>onnx9000-toolkit</code>)</strong>: Ahead-of-Time (AOT) symbolic autograd. Generates backward passes (VJPs) and optimizer steps directly into static ONNX graphs, allowing on-device training in the browser without <code>onnxruntime-training</code>.</li>
+<li><strong>Generative AI &amp; Pipelines (<code>js/transformers</code>, <code>js/diffusers</code>)</strong>: Web-native implementations of Hugging Face <code>transformers.js</code> and <code>diffusers</code>. Supports LLM autoregressive loops, KV-caching (<code>ORT GenAI</code>), and Stable Diffusion directly in WebGPU.</li>
+<li><strong>Tooling &amp; UI (<code>apps/netron-ui</code>, <code>onnx-modifier</code>)</strong>: Client-side, WebGL-accelerated 60FPS visualizers and interactive graph editors. Inspect, modify, and prune 10GB+ models entirely in the browser.</li>
+</ul>
+<a id="md:key-differentiators" class="tsd-anchor"></a><h2><a href="#md:key-differentiators">Key Differentiators</a></h2><ul>
+<li><strong>Zero-Dependency Universal Parsers</strong>: Natively reads <code>.onnx</code>, <code>.pb</code>, <code>.h5</code>, <code>.tflite</code>, <code>.gguf</code>, and <code>.safetensors</code> using pure <code>struct</code>/<code>mmap</code> in Python and <code>ArrayBuffer</code>/<code>DataView</code> in JS.</li>
+<li><strong>Static Memory Arenas</strong>: Execution providers completely eliminate dynamic memory allocations (<code>malloc</code>/<code>new</code>) during inference. Offsets are pre-calculated topologically ahead of time.</li>
+<li><strong>Browser-Native Generative AI</strong>: LLM and Diffusion pipelines run natively in WebWorkers/WebGPU without bridging overhead, utilizing custom W4A16 packed weights for minimal VRAM footprint.</li>
+<li><strong>Bi-Directional Transpilation</strong>: Converts ONNX models flawlessly into TFLite FlatBuffers (<code>onnx2tf</code>), CoreML archives (<code>coremltools</code>), GGUF binaries (<code>onnx2gguf</code>), and OpenVINO XML structures using zero-dependency AST compilation.</li>
+<li><strong>Serverless Edge Serving</strong>: Replaces Triton Inference Server with a pure-TS, event-loop driven dynamic batching server natively designed for Cloudflare Workers, Bun, and Deno.</li>
+</ul>
+<a id="md:web-interface-amp-ide-integration-in-docs" class="tsd-anchor"></a><h2><a href="#md:web-interface-amp-ide-integration-in-docs">Web Interface &amp; IDE Integration in Docs</a></h2><p>Our Sphinx-based documentation goes far beyond static text—it embeds a complete, zero-dependency <strong>Web-Native Machine Learning IDE</strong> directly into the browser. Powered by WebAssembly and WebGPU, the integrated web interface provides a rich set of features:</p>
+<ul>
+<li><strong>High-Performance Graph Visualizer</strong>: A WebGL-powered canvas (<code>GraphCanvas</code>) that effortlessly renders massive computational graphs with semantic zooming, a radar minimap, and node-level inspection (<code>NodeSidebar</code>).</li>
+<li><strong>Interactive Execution &amp; Profiling</strong>: Run inferences or partial subgraphs dynamically using the integrated <code>CodeEditor</code> (powered by Monaco). Profile execution latency and visualize static memory allocation in real-time with the <code>Profiler</code> and <code>MemoryArenaVisualizer</code>.</li>
+<li><strong>Advanced Graph Surgery</strong>: Perform on-the-fly model modifications (<code>GraphSurgeon</code>), dynamic batch sizing, and structural pruning without writing a single line of code.</li>
+<li><strong>Hardware-Native Execution Providers</strong>: Instantly test model performance across backends with seamless routing to <code>WebNNProvider</code>, <code>WGSLEmitter</code> (WebGPU), and <code>WasmEmitter</code> (WebAssembly SIMD).</li>
+<li><strong>In-Browser Transpilation &amp; Exporting</strong>: Visually translate and export your <code>.onnx</code> models into standalone C++ code (<code>CppEmitter</code>), Apple CoreML archives (<code>CoreMLExporter</code>), or TensorFlow Lite FlatBuffers (<code>TFLiteExporter</code>).</li>
+<li><strong>Data &amp; Model Vault</strong>: Manage external assets with chunked reading via the <code>VaultManager</code>, supporting gigabyte-scale datasets and local caching.</li>
+<li><strong>Agent Assistance &amp; Swarm Coordination</strong>: An integrated <code>ChatInterface</code> provides LLM-backed architectural suggestions, while the <code>SwarmInterface</code> coordinates distributed peer-to-peer (WebRTC) compute across browser tabs.</li>
+<li><strong>Specialized Pipelines</strong>: Native interfaces for vision (<code>VisionPipeline</code>), audio (<code>AudioPipeline</code>), and autograd (<code>Autograd</code>) support end-to-end task execution and visualization right in the documentation sidebar.</li>
+</ul>
+<a id="md:getting-started" class="tsd-anchor"></a><h2><a href="#md:getting-started">Getting Started</a></h2><p>For a comprehensive dive into using the Python API, Web APIs, and CLI tools, please see <a href="./USAGE.md">USAGE.md</a>.</p>
+<p>For the complete architectural layout, code generation strategies, and contribution guidelines, review <a href="./ARCHITECTURE.md">ARCHITECTURE.md</a> and <a href="./ROADMAP.md">ROADMAP.md</a>.</p>
+<a id="md:replaced-ecosystem-components" class="tsd-anchor"></a><h2><a href="#md:replaced-ecosystem-components">Replaced Ecosystem Components</a></h2><p>The following table tracks the complete reimplementation and replacement of major first-party and third-party tools within the ONNX and general Machine Learning ecosystem by <code>onnx9000</code>.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Component / Original Project</th>
+<th align="left">Description</th>
+<th align="left">Tasks Completed</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>ONNX Runtime</strong><br><a href="https://github.com/microsoft/onnxruntime">Original</a> • <a href="./specs/ONNX00_RUNTIME.md">Tasks</a></td>
+<td align="left">Core execution engine for evaluating ONNX models dynamically.</td>
+<td align="left">317/317</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNX Compliance</strong><br><a href="https://github.com/onnx/onnx">Original</a> • <a href="./specs/ONNX01_COMPLIANCE.md">Tasks</a></td>
+<td align="left">Standard testing suite validating correct ONNX mathematical evaluation.</td>
+<td align="left">327/327</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ORT Training</strong><br><a href="https://github.com/microsoft/onnxruntime">Original</a> • <a href="./specs/ONNX02_ORT_TRAINING.md">Tasks</a></td>
+<td align="left">Provides Automatic Differentiation (Autograd) and gradient tracking for ONNX models.</td>
+<td align="left">303/303</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNX Runtime Web</strong><br><a href="https://github.com/microsoft/onnxruntime">Original</a> • <a href="./specs/ONNX03_ORT_WEB.md">Tasks</a></td>
+<td align="left">In-browser execution engine relying on WebAssembly and WebGPU.</td>
+<td align="left">313/313</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ORT Extensions</strong><br><a href="https://github.com/microsoft/onnxruntime-extensions">Original</a> • <a href="./specs/ONNX04_ORT_EXTENSIONS.md">Tasks</a></td>
+<td align="left">Custom operators for text tokenization, audio extraction, and image processing.</td>
+<td align="left">310/310</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>torch.onnx</strong><br><a href="https://pytorch.org">Original</a> • <a href="./specs/ONNX05_TORCH_EXPORTERS.md">Tasks</a></td>
+<td align="left">PyTorch to ONNX graph translation tools.</td>
+<td align="left">326/326</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Olive Optimizer</strong><br><a href="https://github.com/microsoft/Olive">Original</a> • <a href="./specs/ONNX06_OLIVE_OPTIMIZER.md">Tasks</a></td>
+<td align="left">Hardware-aware model optimization, compression, and quantization framework.</td>
+<td align="left">310/310</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNX Simplifier</strong><br><a href="https://github.com/daquexian/onnx-simplifier">Original</a> • <a href="./specs/ONNX07_ONNX_SIMPLIFIER.md">Tasks</a></td>
+<td align="left">A tool to simplify ONNX models by constant folding and algebraic rewriting.</td>
+<td align="left">310/310</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNXScript / Spox</strong><br><a href="https://github.com/microsoft/onnxscript">Original</a> • <a href="./specs/ONNX08_ONNXSCRIPT_SPOX.md">Tasks</a></td>
+<td align="left">Authoring ONNX graphs directly via a PyTorch-like Python API.</td>
+<td align="left">306/306</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ORT Native EP</strong><br><a href="https://github.com/microsoft/onnxruntime">Original</a> • <a href="./specs/ONNX09_ORT_NATIVE.md">Tasks</a></td>
+<td align="left">Native hardware execution providers (CUDA, CoreML, DirectML).</td>
+<td align="left">313/313</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>tf2onnx</strong><br><a href="https://github.com/onnx/tensorflow-onnx">Original</a> • <a href="./specs/ONNX10_TF2ONNX.md">Tasks</a></td>
+<td align="left">Converts TensorFlow (SavedModel/GraphDef) to ONNX format.</td>
+<td align="left">340/340</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>paddle2onnx</strong><br><a href="https://github.com/PaddlePaddle/Paddle2ONNX">Original</a> • <a href="./specs/ONNX11_PADDLE2ONNX.md">Tasks</a></td>
+<td align="left">Converts PaddlePaddle models to ONNX format.</td>
+<td align="left">324/324</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>skl2onnx</strong><br><a href="https://github.com/onnx/sklearn-onnx">Original</a> • <a href="./specs/ONNX12_SKL2ONNX.md">Tasks</a></td>
+<td align="left">Translates Scikit-Learn models into ONNX ML (ai.onnx.ml) topologies.</td>
+<td align="left">311/311</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnxmltools</strong><br><a href="https://github.com/onnx/onnxmltools">Original</a> • <a href="./specs/ONNX13_ONNXMLTOOLS.md">Tasks</a></td>
+<td align="left">Translates LightGBM, XGBoost, CatBoost, and SparkML to ONNX ML.</td>
+<td align="left">307/307</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>GraphSurgeon</strong><br><a href="https://github.com/NVIDIA/TensorRT">Original</a> • <a href="./specs/ONNX14_GRAPHSURGEON.md">Tasks</a></td>
+<td align="left">Allows surgical modification, pruning, and subgraph extraction of ONNX files.</td>
+<td align="left">303/303</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Hummingbird</strong><br><a href="https://github.com/microsoft/hummingbird">Original</a> • <a href="./specs/ONNX15_HUMMINGBIRD.md">Tasks</a></td>
+<td align="left">Transpiles traditional ML models (Trees) into pure tensor math for GPU acceleration.</td>
+<td align="left">320/320</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Netron</strong><br><a href="https://github.com/lutzroeder/netron">Original</a> • <a href="./specs/ONNX16_NETRON.md">Tasks</a></td>
+<td align="left">Visualizes deep learning and machine learning model topologies.</td>
+<td align="left">97/97</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx-tool</strong><br><a href="https://github.com/ThanatosShinji/onnx-tool">Original</a> • <a href="./specs/ONNX17_ONNX_TOOL.md">Tasks</a></td>
+<td align="left">Diagnostic utility for profiling MACs, FLOPs, and static memory footprint.</td>
+<td align="left">306/306</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx-mlir</strong><br><a href="https://github.com/onnx/onnx-mlir">Original</a> • <a href="./specs/ONNX19_ONNXMLIR.md">Tasks</a></td>
+<td align="left">Compiles ONNX models to LLVM/MLIR formats and C++ executables.</td>
+<td align="left">320/320</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Apache TVM</strong><br><a href="https://github.com/apache/tvm">Original</a> • <a href="./specs/ONNX20_TVM_COMPILER.md">Tasks</a></td>
+<td align="left">AOT machine learning compiler framework for highly tuned standalone execution.</td>
+<td align="left">350/350</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>ORT GenAI</strong><br><a href="https://github.com/microsoft/onnxruntime-genai">Original</a> • <a href="./specs/ONNX21_ORT_GENAI.md">Tasks</a></td>
+<td align="left">Specialized execution loops for Generative AI (LLMs, Whisper).</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>safetensors</strong><br><a href="https://github.com/huggingface/safetensors">Original</a> • <a href="./specs/ONNX22_SAFETENSORS.md">Tasks</a></td>
+<td align="left">Zero-copy, secure tensor serialization format by Hugging Face.</td>
+<td align="left">309/309</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Transformers.js</strong><br><a href="https://github.com/xenova/transformers.js">Original</a> • <a href="./specs/ONNX23_TRANSFORMERS_JS.md">Tasks</a></td>
+<td align="left">Runs Hugging Face transformer models directly in the browser/Node.js.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>Optimum</strong><br><a href="https://github.com/huggingface/optimum">Original</a> • <a href="./specs/ONNX24_OPTIMUM.md">Tasks</a></td>
+<td align="left">Web-optimized export &amp; quantization (W4A16, GPTQ, AWQ) toolchain.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>WebNN API</strong><br><a href="https://www.w3.org/TR/webnn/">Original</a> • <a href="./specs/ONNX25_WEBNN_EP.md">Tasks</a></td>
+<td align="left">Web API for accessing dedicated hardware accelerators (NPU) in the browser.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>OpenXLA IREE</strong><br><a href="https://github.com/openxla/iree">Original</a> • <a href="./specs/ONNX26_APACHE_TVM_IREE.md">Tasks</a></td>
+<td align="left">AOT compilation to standalone VM bytecodes and tiny execution runtimes.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>coremltools</strong><br><a href="https://github.com/apple/coremltools">Original</a> • <a href="./specs/ONNX27_COREMLTOOLS.md">Tasks</a></td>
+<td align="left">Apple&#39;s tool for converting ML models into Core ML format.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>keras2onnx &amp; tfjs</strong><br><a href="https://github.com/onnx/keras-onnx">Original</a> • <a href="./specs/ONNX28_KERAS2ONNX.md">Tasks</a></td>
+<td align="left">Translates Keras (H5/Keras3) and TensorFlow.js models into ONNX.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx-modifier</strong><br><a href="https://github.com/ZhangGe6/onnx-modifier">Original</a> • <a href="./specs/ONNX29_ONNX_MODIFIER.md">Tasks</a></td>
+<td align="left">Web-based graphical editor for ONNX models.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx-array-api</strong><br><a href="https://github.com/sdpython/onnx-array-api">Original</a> • <a href="./specs/ONNX30_ONNX_ARRAY_API.md">Tasks</a></td>
+<td align="left">A NumPy-like eager execution API for dynamic ONNX graph construction.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>MMdnn</strong><br><a href="https://github.com/Microsoft/MMdnn">Original</a> • <a href="./specs/ONNX31_MMDNN.md">Tasks</a></td>
+<td align="left">N-to-N converter between various deep learning frameworks (Caffe, MXNet, etc.).</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx2tf (PINTO0309)</strong><br><a href="https://github.com/PINTO0309/onnx2tf">Original</a> • <a href="./specs/ONNX32_ONNX2TF.md">Tasks</a></td>
+<td align="left">Web-Native TFLite &amp; EdgeTPU Exporter.</td>
+<td align="left">330/330</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx2c / deepC</strong><br><a href="https://github.com/ai-techsystems/deepC">Original</a> • <a href="./specs/ONNX33_ONNX2C.md">Tasks</a></td>
+<td align="left">Web-Native TinyML &amp; Embedded C99 Generator.</td>
+<td align="left">300/300</td>
+<td align="left">✅ Full</td>
+</tr>
+<tr>
+<td align="left"><strong>onnx2gguf</strong><br><a href="https://github.com/ggerganov/llama.cpp">Original</a> • <a href="./specs/ONNX34_ONNX2GGUF.md">Tasks</a></td>
+<td align="left">Web-Native GGUF Compiler &amp; Llama.cpp Bridge.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>SparseML</strong><br><a href="https://github.com/neuralmagic/sparseml">Original</a> • <a href="./specs/ONNX35_SPARSEML.md">Tasks</a></td>
+<td align="left">Web-Native Sparsity &amp; Pruning Engine.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>TF.js API Shim</strong><br><a href="https://github.com/tensorflow/tfjs">Original</a> • <a href="./specs/ONNX36_TFJS_SHIM.md">Tasks</a></td>
+<td align="left">WebGPU ONNX Drop-In Replacement for TF.js.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNX-TensorRT</strong><br><a href="https://github.com/onnx/onnx-tensorrt">Original</a> • <a href="./specs/ONNX37_TENSORRT.md">Tasks</a></td>
+<td align="left">Zero-Build TRT FFI Parser.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>Triton Compiler</strong><br><a href="https://github.com/openai/triton">Original</a> • <a href="./specs/ONNX38_TRITON.md">Tasks</a></td>
+<td align="left">Web-Native Custom Kernel Generator.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>WebNN Polyfill</strong><br><a href="https://github.com/webmachinelearning/webnn-polyfill">Original</a> • <a href="./specs/ONNX39_WEBNN_POLYFILL.md">Tasks</a></td>
+<td align="left">W3C API WebGPU/WASM Shim.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>ONNX Checker</strong><br><a href="https://github.com/onnx/onnx">Original</a> • <a href="./specs/ONNX40_ONNX_CHECKER.md">Tasks</a></td>
+<td align="left">100% Pure TS/Python Web-Native Schema Validator.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>OpenVINO Optimizer</strong><br><a href="https://github.com/openvinotoolkit/openvino">Original</a> • <a href="./specs/ONNX41_OPENVINO.md">Tasks</a></td>
+<td align="left">Zero-dependency OpenVINO IR <code>.xml</code>/<code>.bin</code> Compiler.</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>Triton Inference Server</strong><br><a href="https://github.com/triton-inference-server/server">Original</a> • <a href="./specs/ONNX42_TRITON_SERVER.md">Tasks</a></td>
+<td align="left">Serverless Edge Serving Engine (Bun/Cloudflare).</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>Diffusers</strong><br><a href="https://github.com/huggingface/diffusers">Original</a> • <a href="./specs/ONNX43_DIFFUSERS.md">Tasks</a></td>
+<td align="left">Web-Native Diffusion Pipelines (SDXL, VAE).</td>
+<td align="left">0/300</td>
+<td align="left">⏳ TODO</td>
+</tr>
+<tr>
+<td align="left"><strong>VS Code Machine Learning OS</strong><br><a href="https://github.com">Original</a> • <a href="./specs/ONNX44_VSCODE_IDE.md">Tasks</a></td>
+<td align="left">The Universal Web-Native IDE</td>
+<td align="left">0/1000</td>
+<td align="left">⏳ TODO</td>
+</tr>
+</tbody></table>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:onnx9000-🚀"><span>ONNX9000 🚀</span></a><ul><li><a href="#md:the-grand-unification"><span>The <wbr/>Grand <wbr/>Unification</span></a></li><li><ul><li><a href="#md:🐍-python-amp-🌐-typescript-polyglot-architecture"><span>🐍 <wbr/>Python &amp; 🌐 <wbr/>Type<wbr/>Script <wbr/>Polyglot <wbr/>Architecture</span></a></li></ul></li><li><a href="#md:key-differentiators"><span>Key <wbr/>Differentiators</span></a></li><li><a href="#md:web-interface-amp-ide-integration-in-docs"><span>Web <wbr/>Interface &amp; IDE <wbr/>Integration in <wbr/>Docs</span></a></li><li><a href="#md:getting-started"><span>Getting <wbr/>Started</span></a></li><li><a href="#md:replaced-ecosystem-components"><span>Replaced <wbr/>Ecosystem <wbr/>Components</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="index.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>@onnx9000/sphinx-demo-ui</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

@@ -43,9 +43,9 @@ The following architectural targets guide the development of the ecosystem. They
 - [x] **ONNX12:** `skl2onnx` Replication (Compiling Scikit-Learn to `ai.onnx.ml`).
 - [x] **ONNX13:** `onnxmltools` Replication (LightGBM, XGBoost to ONNX).
 - [x] **ONNX15:** Hummingbird Replication (Compiling Trees to Tensor Math).
-- [ ] **ONNX27:** `coremltools` (Web-Native Apple Silicon Bridge).
+- [x] **ONNX27:** `coremltools` (Web-Native Apple Silicon Bridge).
 - [ ] **ONNX28:** `keras2onnx` & `tfjs-to-onnx` (Web-Native Keras Converter).
-- [ ] **ONNX31:** `MMdnn` (Web-Native N-to-N Neural Network Converter).
+- [x] **ONNX31:** `MMdnn` (Web-Native N-to-N Neural Network Converter).
 - [ ] **ONNX32:** `onnx2tf` (Web-Native TFLite & EdgeTPU Exporter).
 - [ ] **ONNX34:** `onnx2gguf` (Web-Native GGUF Compiler & Llama.cpp Bridge).
 - [ ] **ONNX36:** TF.js API Shim (WebGPU ONNX Drop-In Replacement for TF.js).
@@ -56,7 +56,7 @@ The following architectural targets guide the development of the ecosystem. They
 - [x] **ONNX19:** `onnx-mlir` Replication (Compiling ONNX to C++23/WASM).
 - [ ] **ONNX20:** Apache TVM Ahead-of-Time Web Compiler.
 - [ ] **ONNX26:** Apache TVM IREE (WASM-Native MLIR Compiler).
-- [ ] **ONNX33:** `onnx2c` / `deepC` (Web-Native TinyML & Embedded C99 Generator).
+- [x] **ONNX33:** `onnx2c` / `deepC` (Web-Native TinyML & Embedded C++ Generator).
 - [ ] **ONNX38:** Triton Compiler (Web-Native Custom Kernel Generator).
 - [ ] **ONNX41:** OpenVINO Optimizer (Zero-dependency OpenVINO IR `.xml`/`.bin` Compiler).
 

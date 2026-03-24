@@ -1053,8 +1053,9 @@ def test_cli_no_math_strip():
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: g
-                    sys.modules["onnx9000.converters.frontend.pyodide_wrapper"] = mock_module
-                    try:
+                    with patch.dict(
+                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                    ):
                         from onnx9000.c_compiler.compiler import C89Compiler
 
                         # capture the outputs of compiler.generate() directly
@@ -1077,9 +1078,6 @@ def test_cli_no_math_strip():
                                 main()
                             except SystemExit:
                                 pass
-
-                    finally:
-                        del sys.modules["onnx9000.converters.frontend.pyodide_wrapper"]
 
 
 def test_int64_macros():

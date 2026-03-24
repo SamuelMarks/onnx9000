@@ -1,6 +1,6 @@
 # onnx9000: Architecture Deep Dive
 
-This document details the internal architectural design of `onnx9000`. It is intended for core contributors, framework engineers, and advanced users who want to understand exactly how `onnx9000` parses, optimizes, and compiles machine learning graphs into bare-metal C++, WebAssembly, and a dozen other framework formats.
+This document details the internal architectural design of `onnx9000`. It is intended for core contributors, framework engineers, and advanced users who want to understand exactly how `onnx9000` parses, optimizes, and compiles machine learning graphs into bare-metal C++, WebAssembly, and dozens of other framework formats including C++, CoreML, PyTorch, MLIR, Caffe, and TFLite.
 
 > **Note:** The `onnx9000` architecture relies on a strict **Polyglot Monorepo** design. The core IR is decoupled and isolated in `packages/python/onnx9000-core` and `packages/js/core`. Frontends, EPs, and optimizers MUST never cross-contaminate their dependencies.
 
@@ -25,19 +25,19 @@ This document details the internal architectural design of `onnx9000`. It is int
 
 `onnx9000` is built as a highly decoupled pipeline. A graph flows through the system in strict, immutable packages managed by `pnpm` workspaces (JS) and `uv` (Python):
 
-```text
+```mermaid
 graph TD;
-    A[Frontends: Torch, TF, Keras, Caffe] -->|Parses to| C(onnx9000-core IR AST);
-    B[Raw .onnx / .safetensors] -->|Parses to| C;
-    C --> D[Optimizer: Surgeon, Simplifier, SparseML];
-    D --> E{Execution Layer};
-    E -->|Native| F[Native: CUDA, Accelerate, TensorRT FFI];
-    E -->|Web| G[Web: WebGPU, WebNN, WASM];
-    E -->|AOT| H[Compiler: IREE, C++ Codegen, Triton];
-    D --> I{Exporters};
-    I -->|Mobile| J[TFLite, CoreML];
-    I -->|LLMs| K[GGUF];
-    I -->|Code| L[PyTorch Source, TF.js Source];
+    A["Frontends: Torch, TF, Keras, Caffe"] -->|"Parses to"| C("onnx9000-core IR AST");
+    B["Raw .onnx / .safetensors"] -->|"Parses to"| C;
+    C --> D["Optimizer: Surgeon, Simplifier, SparseML"];
+    D --> E{"Execution Layer"};
+    E -->|"Native"| F["Native: CUDA, Accelerate, TensorRT FFI"];
+    E -->|"Web"| G["Web: WebGPU, WebNN, WASM"];
+    E -->|"AOT"| H["Compiler: IREE, C++ Codegen, Triton"];
+    D --> I{"Exporters"};
+    I -->|"Mobile"| J["TFLite, CoreML"];
+    I -->|"LLMs"| K["GGUF"];
+    I -->|"Code"| L["PyTorch Source, TF.js Source"];
 ```
 
 By decoupling the IR from both the frontend input and the backend output, the system allows arbitrary manipulation (like Autograd or fusion optimizations) strictly within the pure Python/TS domains before a single line of native or shader code is emitted.
@@ -63,7 +63,7 @@ The IR (`Graph`, `Node`, `Tensor`, `ValueInfo`) is a flattened, heavily typed li
 
 ## 3. The Frontend Converters & Parsers
 
-The system ingests models through `packages/python/onnx9000-converterss`:
+The system ingests models through `packages/python/onnx9000-converters`:
 
 To maintain a zero-heavy-dependency footprint, `onnx9000` avoids using the official C++ `onnx` repository bindings. Instead, it ships with pure Python/TypeScript definitions compiled directly from the ONNX protocol buffers.
 
@@ -79,6 +79,8 @@ To maintain a zero-heavy-dependency footprint, `onnx9000` avoids using the offic
 Because `onnx9000` treats ONNX as the universal source of truth, it acts as a universal N-to-N converter.
 
 - **TFLite (`onnx2tf`):** Emits FlatBuffers natively to target Android NNAPI and Coral EdgeTPU.
+- **MLIR (`onnx-mlir`):** Compiles static graphs into standard MLIR dialects.
+- **C++ (`onnx2c`):** Generates standalone, zero-dependency C++ code representations.
 - **CoreML (`coremltools`):** Emits Apple MIL and `.mlpackage` archives targeting the Apple Neural Engine.
 - **GGUF (`onnx2gguf`):** Directly translates standard LLM ONNX models into `llama.cpp` compatible `Q4_0` binaries.
 - **OpenVINO:** Generates Intel-compatible `.xml` topological trees.

@@ -1,2 +1,3 @@
 export { generateTFJSCode, isLinearGraph } from './generator.js';
-export { serializeTFJSWeights, TFJSModelArtifacts } from './serializer.js';
+export { serializeTFJSWeights } from './serializer.js';
+export type { TFJSModelArtifacts } from './serializer.js';

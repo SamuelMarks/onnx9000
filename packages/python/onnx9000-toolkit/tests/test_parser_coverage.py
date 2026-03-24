@@ -23,7 +23,7 @@ def multi_out_func(x):
 
 
 @script
-def test_func_coverage(x: Float[10, 20]):
+def dummy_test_func_coverage(x: Float[10, 20]):
     """Tests the func coverage functionality."""
     eq = x == x
     op.Add(x, x)
@@ -49,7 +49,7 @@ def test_func_coverage(x: Float[10, 20]):
 
 def test_parser_coverage() -> None:
     """Tests the parser coverage functionality."""
-    graph = test_func_coverage()
+    graph = dummy_test_func_coverage()
     assert graph is not None
     assert len(graph.nodes) > 0
 

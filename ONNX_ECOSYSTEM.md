@@ -28,3 +28,5 @@ The workspace is cleanly divided between Python tools for heavy-duty graph surge
 1. **`onnx9000-cli`**: The unified Python orchestrator mapping user terminal commands to the frontend, optimizer, and compilation packages.
 2. **`netron-ui`**: A purely vanilla TS implementation of Netron to view, edit, and profile massive `.onnx` models interactively at 60FPS using WebGL.
 3. **`optimum-ui`**: A visual dashboard allowing users to execute INT4 quantization techniques on their weights and observe the graph layout changes dynamically before downloading the resulting web-safe payload.
+
+4. **`sphinx-demo-ui`**: The all-encompassing browser IDE embedded in Sphinx documentation, capable of rendering models, and running real-time transpilation to MLIR, C++, PyTorch, Caffe, and Apple CoreML offline.

@@ -4,7 +4,7 @@
 
 > **Note:** The distributed components described below integrate directly into the `onnx9000` **Polyglot Monorepo** architecture as dedicated `packages/python/onnx9000-network`, `packages/js/network`, and `apps/mlops-ui` workspaces.
 
-The `onnx9000` ecosystem has successfully laid the groundwork for a revolutionary approach to Machine Learning: **zero-dependency, web-native, and universally portable execution**. By rebuilding the core ONNX runtime, optimizers, converters, and generative loops entirely in pure Python and TypeScript/WebAssembly, we have broken the chains of massive C++ binaries, complex build toolchains, and platform-specific deployments.
+The `onnx9000` ecosystem, now supporting rich client-side Web IDE transpilation, has successfully laid the groundwork for a revolutionary approach to Machine Learning: **zero-dependency, web-native, and universally portable execution**. By rebuilding the core ONNX runtime, optimizers, converters, and generative loops entirely in pure Python and TypeScript/WebAssembly, we have broken the chains of massive C++ binaries, complex build toolchains, and platform-specific deployments.
 
 However, running a model natively in the browser or on a single edge device is only the foundation. The ultimate goal of modern AI engineering requires orchestrating these lightweight, frictionless runtimes into a cohesive, distributed network.
 

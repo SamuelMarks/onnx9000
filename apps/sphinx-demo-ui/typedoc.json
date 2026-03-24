@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["src/main.ts", "src/components", "src/core"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "exclude": ["tests/**/*", "**/*.spec.ts"],
+  "validation": {
+    "notExported": true,
+    "invalidLink": true
+  }
+}

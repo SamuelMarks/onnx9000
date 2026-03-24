@@ -1,5 +1,11 @@
 import pytest
+import sys
 from unittest.mock import patch, MagicMock
+import onnx9000_optimum
+import onnx9000_optimum.export
+import onnx9000_optimum.optimize
+import onnx9000_optimum.quantize
+import onnx9000_optimum.architectures
 
 
 @patch("onnx9000_optimum.export.get_huggingface_model_files")
@@ -22,13 +28,14 @@ def test_export_model_flow(
     # Mock torch and transformers
     import sys
 
-    sys.modules["torch"] = MagicMock()
-    sys.modules["torch"].no_grad = MagicMock()
-    sys.modules["transformers"] = MagicMock()
+    mock_torch = MagicMock()
+    mock_torch.no_grad = MagicMock()
+    mock_transformers = MagicMock()
 
-    export_model("model_id", "/tmp/out")
-    mock_get_hf.assert_called_once()
-    mock_makedirs.assert_called()
+    with patch.dict(sys.modules, {"torch": mock_torch, "transformers": mock_transformers}):
+        export_model("model_id", "/tmp/out")
+        mock_get_hf.assert_called_once()
+        mock_makedirs.assert_called()
 
 
 @patch("onnx9000.core.parser.core.load")
@@ -108,16 +115,24 @@ def test_auto_detect_others():
 def test_dummy_inputs():
     from onnx9000_optimum.export import create_dummy_inputs
     import sys
-    import torch
+    from unittest.mock import MagicMock
 
-    sys.modules["torch"] = torch
-    create_dummy_inputs({"vocab_size": 10}, "text-generation", use_past=True)
-    create_dummy_inputs({"vocab_size": 10}, "image-classification", use_past=False)
-    create_dummy_inputs({"vocab_size": 10}, "other", use_past=False)
+    mock_torch = MagicMock()
+    with patch.dict(sys.modules, {"torch": mock_torch}):
+        create_dummy_inputs({"vocab_size": 10}, "text-generation", use_past=True)
+        create_dummy_inputs({"vocab_size": 10}, "image-classification", use_past=False)
+        create_dummy_inputs({"vocab_size": 10}, "other", use_past=False)
 
 
 def test_export_other_tasks():
     from onnx9000_optimum.export import export_model
+    import sys
+    from unittest.mock import MagicMock
+
+    mock_transformers = MagicMock()
+    mock_transformers.AutoModelForSequenceClassification.from_pretrained.return_value = MagicMock()
+    mock_transformers.AutoModel.from_pretrained.return_value = MagicMock()
+    mock_torch = MagicMock()
 
     with (
         patch("onnx9000_optimum.export.get_huggingface_model_files", return_value="/tmp"),
@@ -127,19 +142,22 @@ def test_export_other_tasks():
         patch("onnx9000_optimum.export._progress_bar", return_value=[1]),
         patch("os.makedirs"),
         patch("shutil.copy"),
+        patch.dict(sys.modules, {"transformers": mock_transformers, "torch": mock_torch}),
     ):
-        with patch(
-            "transformers.AutoModelForSequenceClassification.from_pretrained",
-            return_value=MagicMock(),
-        ):
-            export_model("model_id", "/tmp/out", task="text-classification")
-
-        with patch("transformers.AutoModel.from_pretrained", return_value=MagicMock()):
-            export_model("model_id", "/tmp/out", task="other")
+        export_model("model_id", "/tmp/out", task="text-classification")
+        export_model("model_id", "/tmp/out", task="other")
 
 
 def test_export_exception():
     from onnx9000_optimum.export import export_model
+    import sys
+
+    mock_torch = MagicMock()
+    mock_torch.no_grad = MagicMock()
+    mock_torch.onnx.export.side_effect = Exception("mocked err")
+
+    mock_transformers = MagicMock()
+    mock_transformers.AutoModelForCausalLM.from_pretrained.return_value = MagicMock()
 
     with (
         patch("onnx9000_optimum.export.get_huggingface_model_files", return_value="/tmp"),
@@ -148,13 +166,10 @@ def test_export_exception():
         patch("json.load", return_value={"architectures": ["SequenceClassification"]}),
         patch("onnx9000_optimum.export._progress_bar", return_value=[1]),
         patch("os.makedirs"),
+        patch.dict(sys.modules, {"torch": mock_torch, "transformers": mock_transformers}),
     ):
-        with patch("torch.onnx.export", side_effect=Exception("mocked err")):
-            with patch(
-                "transformers.AutoModelForCausalLM.from_pretrained", return_value=MagicMock()
-            ):
-                with pytest.raises(SystemExit):
-                    export_model("model_id", "/tmp/out")
+        with pytest.raises(SystemExit):
+            export_model("model_id", "/tmp/out")
 
 
 def test_quantizer_methods():
@@ -185,32 +200,36 @@ def test_export_tqdm_and_hub_success():
 
     hf_mock = MagicMock()
     hf_mock.snapshot_download = MagicMock(return_value="/tmp/test")
-    sys.modules["huggingface_hub"] = hf_mock
 
     tqdm_mock = MagicMock()
     tqdm_mock.tqdm = MagicMock(return_value=[1, 2, 3])
-    sys.modules["tqdm"] = tqdm_mock
 
-    from onnx9000_optimum.export import get_huggingface_model_files, _progress_bar, auto_detect_task
+    with patch.dict(sys.modules, {"huggingface_hub": hf_mock, "tqdm": tqdm_mock}):
+        from onnx9000_optimum.export import (
+            get_huggingface_model_files,
+            _progress_bar,
+            auto_detect_task,
+        )
 
-    assert get_huggingface_model_files("test") == "/tmp/test"
-    assert list(_progress_bar([1, 2, 3])) == [1, 2, 3]
-    assert auto_detect_task({"architectures": []}) == "feature-extraction"
+        assert get_huggingface_model_files("test") == "/tmp/test"
+        assert list(_progress_bar([1, 2, 3])) == [1, 2, 3]
+        assert auto_detect_task({"architectures": []}) == "feature-extraction"
 
 
 def test_export_transformers_error():
     from onnx9000_optimum.export import export_model
     import sys
+    from unittest.mock import MagicMock
 
-    sys.modules["transformers"] = None
-    with (
-        patch("onnx9000_optimum.export.get_huggingface_model_files", return_value="/tmp/test"),
-        patch("os.path.exists", return_value=True),
-        patch("builtins.open"),
-        patch("json.load", return_value={}),
-    ):
-        with pytest.raises(SystemExit):
-            export_model("test", "/tmp")
+    with patch.dict(sys.modules, {"transformers": None, "torch": MagicMock()}):
+        with (
+            patch("onnx9000_optimum.export.get_huggingface_model_files", return_value="/tmp/test"),
+            patch("os.path.exists", return_value=True),
+            patch("builtins.open"),
+            patch("json.load", return_value={}),
+        ):
+            with pytest.raises(SystemExit):
+                export_model("test", "/tmp")
 
 
 def test_optimize_import_error():

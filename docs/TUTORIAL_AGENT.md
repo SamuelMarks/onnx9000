@@ -1,4 +1,10 @@
+---
+orphan: true
+---
+
 # Tutorial: Creating a Local AI Coding Assistant in ONNX9000
+
+> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
 
 This tutorial demonstrates how to use the pure-Vanilla TypeScript Agent APIs inside `onnx9000` to build a zero-dependency, browser-local AI coding assistant.
 

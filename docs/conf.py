@@ -16,6 +16,7 @@ copyright = "2026, Samuel"
 author = "Samuel"
 
 extensions = [
+    "sphinx_ext_demo_ui",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
@@ -30,6 +31,7 @@ myst_enable_extensions = [
     "colon_fence",
     "deflist",
 ]
+suppress_warnings = ["myst.xref_missing", "myst.header", "misc.highlighting_failure"]
 source_suffix = {
     ".rst": "restructuredtext",
     ".txt": "markdown",
@@ -58,6 +60,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "furo"
 html_static_path = ["_static"]
+html_extra_path = ["html_extra"]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
@@ -107,10 +110,12 @@ def run_typedoc(app):
         ],
         cwd=os.path.dirname(os.path.abspath(__file__)).replace("/docs", ""),
     )
-    print("Running typedoc...")
-    # Generate typedoc in docs/_build/typedoc
+
     docs_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.dirname(docs_dir)
+
+    print("Running typedoc...")
+    # Generate typedoc in docs/_build/typedoc
     subprocess.run(
         [
             "pnpm",

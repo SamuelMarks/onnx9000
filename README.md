@@ -29,34 +29,31 @@ The ecosystem is divided into highly cohesive, modular packages managed by `pnpm
 - **Optimization & Sparsity (`onnx9000-optimizer`)**: In-memory graph surgery (`GraphSurgeon`), algebraic simplification (`onnx-simplifier`), INT4/INT8 quantization (`Optimum`), and state-of-the-art pruning/sparsity (`SparseML`).
 - **Autograd & Training (`onnx9000-toolkit`)**: Ahead-of-Time (AOT) symbolic autograd. Generates backward passes (VJPs) and optimizer steps directly into static ONNX graphs, allowing on-device training in the browser without `onnxruntime-training`.
 - **Generative AI & Pipelines (`js/transformers`, `js/diffusers`)**: Web-native implementations of Hugging Face `transformers.js` and `diffusers`. Supports LLM autoregressive loops, KV-caching (`ORT GenAI`), and Stable Diffusion directly in WebGPU.
-- **Tooling & UI (`apps/netron-ui`, `onnx-modifier`)**: Client-side, WebGL-accelerated 60FPS visualizers and interactive graph editors. Inspect, modify, and prune 10GB+ models entirely in the browser.
+- **Tooling & UI (`apps/netron-ui`, `apps/sphinx-demo-ui`)**: Client-side, WebGL-accelerated interactive graph editors, visualizers, and an integrated Web-Native Machine Learning IDE.
 
 ## Key Differentiators
 
 - **Zero-Dependency Universal Parsers**: Natively reads `.onnx`, `.pb`, `.h5`, `.tflite`, `.gguf`, and `.safetensors` using pure `struct`/`mmap` in Python and `ArrayBuffer`/`DataView` in JS.
 - **Static Memory Arenas**: Execution providers completely eliminate dynamic memory allocations (`malloc`/`new`) during inference. Offsets are pre-calculated topologically ahead of time.
 - **Browser-Native Generative AI**: LLM and Diffusion pipelines run natively in WebWorkers/WebGPU without bridging overhead, utilizing custom W4A16 packed weights for minimal VRAM footprint.
-- **Bi-Directional Transpilation**: Converts ONNX models flawlessly into TFLite FlatBuffers (`onnx2tf`), CoreML archives (`coremltools`), GGUF binaries (`onnx2gguf`), and OpenVINO XML structures using zero-dependency AST compilation.
+- **Bi-Directional Transpilation**: Converts ONNX models flawlessly into TFLite FlatBuffers (`onnx2tf`), CoreML archives (`coremltools`), GGUF binaries (`onnx2gguf`), MLIR, C++, Caffe, PyTorch Source, and OpenVINO XML structures using zero-dependency AST compilation.
 - **Serverless Edge Serving**: Replaces Triton Inference Server with a pure-TS, event-loop driven dynamic batching server natively designed for Cloudflare Workers, Bun, and Deno.
 
 ## Web Interface & IDE Integration in Docs
 
-Our Sphinx-based documentation goes far beyond static text—it embeds a complete, zero-dependency **Web-Native Machine Learning IDE** directly into the browser. Powered by WebAssembly and WebGPU, the integrated web interface provides a rich set of features:
+Our Sphinx-based documentation embeds a complete, zero-dependency **Web-Native Machine Learning IDE** directly into the browser (`apps/sphinx-demo-ui`). Powered by WebAssembly and WebGPU, it features:
 
-- **High-Performance Graph Visualizer**: A WebGL-powered canvas (`GraphCanvas`) that effortlessly renders massive computational graphs with semantic zooming, a radar minimap, and node-level inspection (`NodeSidebar`).
-- **Interactive Execution & Profiling**: Run inferences or partial subgraphs dynamically using the integrated `CodeEditor` (powered by Monaco). Profile execution latency and visualize static memory allocation in real-time with the `Profiler` and `MemoryArenaVisualizer`.
-- **Advanced Graph Surgery**: Perform on-the-fly model modifications (`GraphSurgeon`), dynamic batch sizing, and structural pruning without writing a single line of code.
-- **Hardware-Native Execution Providers**: Instantly test model performance across backends with seamless routing to `WebNNProvider`, `WGSLEmitter` (WebGPU), and `WasmEmitter` (WebAssembly SIMD).
-- **In-Browser Transpilation & Exporting**: Visually translate and export your `.onnx` models into standalone C++ code (`CppEmitter`), Apple CoreML archives (`CoreMLExporter`), or TensorFlow Lite FlatBuffers (`TFLiteExporter`).
-- **Data & Model Vault**: Manage external assets with chunked reading via the `VaultManager`, supporting gigabyte-scale datasets and local caching.
-- **Agent Assistance & Swarm Coordination**: An integrated `ChatInterface` provides LLM-backed architectural suggestions, while the `SwarmInterface` coordinates distributed peer-to-peer (WebRTC) compute across browser tabs.
-- **Specialized Pipelines**: Native interfaces for vision (`VisionPipeline`), audio (`AudioPipeline`), and autograd (`Autograd`) support end-to-end task execution and visualization right in the documentation sidebar.
+- **High-Performance Graph Visualizer**: A WebGL-powered canvas that renders massive computational graphs with semantic zooming, a radar minimap, and node-level inspection.
+- **Interactive Execution & Profiling**: Run inferences or partial subgraphs dynamically using the integrated CodeEditor.
+- **Advanced Graph Surgery**: Perform on-the-fly model modifications, dynamic batch sizing, and structural pruning.
+- **In-Browser Transpilation & Exporting**: Visually translate and export your `.onnx` models into standalone C++ code, Apple CoreML archives, MLIR graphs, PyTorch Python code, Caffe Prototxt, or optimized representations without requiring a native compiler backend.
+- **Hardware-Native Execution Providers**: Instantly test model performance across backends with seamless routing to WebNN, WebGPU, and WebAssembly SIMD.
+- **Specialized Pipelines**: Native interfaces for vision, audio, and autograd workflows.
 
 ## Getting Started
 
 For a comprehensive dive into using the Python API, Web APIs, and CLI tools, please see [USAGE.md](./USAGE.md).
-
-For the complete architectural layout, code generation strategies, and contribution guidelines, review [ARCHITECTURE.md](./ARCHITECTURE.md) and [ROADMAP.md](./ROADMAP.md).
+For the complete architectural layout and contribution guidelines, review [ARCHITECTURE.md](./ARCHITECTURE.md) and [ROADMAP.md](./ROADMAP.md).
 
 ## Replaced Ecosystem Components
 
@@ -107,4 +104,4 @@ The following table tracks the complete reimplementation and replacement of majo
 | **OpenVINO Optimizer**<br>[Original](https://github.com/openvinotoolkit/openvino) • [Tasks](./specs/ONNX41_OPENVINO.md)                 | Zero-dependency OpenVINO IR `.xml`/`.bin` Compiler.                                  | 0/300           | ⏳ TODO |
 | **Triton Inference Server**<br>[Original](https://github.com/triton-inference-server/server) • [Tasks](./specs/ONNX42_TRITON_SERVER.md) | Serverless Edge Serving Engine (Bun/Cloudflare).                                     | 0/300           | ⏳ TODO |
 | **Diffusers**<br>[Original](https://github.com/huggingface/diffusers) • [Tasks](./specs/ONNX43_DIFFUSERS.md)                            | Web-Native Diffusion Pipelines (SDXL, VAE).                                          | 0/300           | ⏳ TODO |
-| **VS Code Machine Learning OS**<br>[Original]() • [Tasks](./specs/ONNX44_VSCODE_IDE.md)                                                 | The Universal Web-Native IDE                                                         | 0/1000          | ⏳ TODO |
+| **VS Code Machine Learning OS**<br>[Original](https://github.com) • [Tasks](./specs/ONNX44_VSCODE_IDE.md)                               | The Universal Web-Native IDE                                                         | 0/1000          | ⏳ TODO |

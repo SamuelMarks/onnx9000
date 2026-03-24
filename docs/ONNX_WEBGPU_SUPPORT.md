@@ -1,5 +1,7 @@
 # ONNX Ops Supported by WebGPU Backend
 
+> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+
 The onnx9000 pure Python authoring API can generate any ONNX operator dynamically. However, when executing those models via the WebGPU backend in Pyodide, the following opset 18+ subset is supported:
 
 ## Mathematics

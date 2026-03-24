@@ -1,43 +1,13 @@
 import inspect
-
 import pytest
+from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
+from onnx9000.core import dtypes
 
 
 def test_onnx_importer_all():
-    import onnx
-    from onnx import AttributeProto, TensorProto, helper
     from onnx9000.tvm.relay.frontend.onnx import ONNXImporter
 
     importer = ONNXImporter()
-
-    # cover _get_type
-    t1 = helper.make_tensor_value_info("test", TensorProto.FLOAT, [1, "dim", None])
-    importer._get_type(t1.type.tensor_type)
-
-    # cover _parse_attr
-    a_f = helper.make_attribute("a", 1.0)
-    assert importer._parse_attr(a_f) == 1.0
-    a_i = helper.make_attribute("a", 1)
-    assert importer._parse_attr(a_i) == 1
-    a_s = helper.make_attribute("a", b"hello")
-    assert importer._parse_attr(a_s) == "hello"
-
-    import numpy as np
-
-    a_t = helper.make_attribute("a", helper.make_tensor("t", TensorProto.FLOAT, [1], [1.0]))
-    importer._parse_attr(a_t)
-
-    a_fs = helper.make_attribute("a", [1.0, 2.0])
-    importer._parse_attr(a_fs)
-    a_is = helper.make_attribute("a", [1, 2])
-    importer._parse_attr(a_is)
-    a_ss = helper.make_attribute("a", [b"a", b"b"])
-    importer._parse_attr(a_ss)
-
-    class UnkAttr:
-        type = 999
-
-    importer._parse_attr(UnkAttr())
 
     # call all _convert_* methods
     for name in dir(importer):
@@ -46,32 +16,37 @@ def test_onnx_importer_all():
             method([], {})
 
     # mock from_onnx
-    graph = helper.make_graph(
-        nodes=[
-            helper.make_node("Add", ["in", "init"], ["out"]),
-            helper.make_node("Unknown", ["out"], ["out1", "out2"]),
-            helper.make_node("Relu", ["out1"], ["out3"]),
-        ],
-        name="test",
-        inputs=[helper.make_tensor_value_info("in", TensorProto.FLOAT, [1])],
-        outputs=[helper.make_tensor_value_info("out3", TensorProto.FLOAT, [1])],
-        initializer=[helper.make_tensor("init", TensorProto.FLOAT, [1], [1.0])],
-    )
-    model = helper.make_model(graph)
-    importer.from_onnx(model)
+    import struct
+
+    init_data = struct.pack("<f", 1.0)
+    init_tensor = Tensor(name="init", dtype="float32", shape=(1,), data=init_data)
+
+    in_vi = ValueInfo(name="in", dtype="float32", shape=(1,))
+    out_vi = ValueInfo(name="out3", dtype="float32", shape=(1,))
+
+    graph = Graph(name="test")
+    graph.inputs = [in_vi]
+    graph.outputs = [out_vi]
+    graph.nodes = [
+        Node(op_type="Add", inputs=["in", "init"], outputs=["out"]),
+        Node(op_type="Unknown", inputs=["out"], outputs=["out1", "out2"]),
+        Node(op_type="Relu", inputs=["out1"], outputs=["out3"]),
+    ]
+    graph.initializers = [init_tensor]
+
+    importer.from_onnx(graph)
 
     # graph with multiple outputs
-    graph2 = helper.make_graph(
-        nodes=[],
-        name="test",
-        inputs=[
-            helper.make_tensor_value_info("in1", TensorProto.FLOAT, [1]),
-            helper.make_tensor_value_info("in2", TensorProto.FLOAT, [1]),
-        ],
-        outputs=[
-            helper.make_tensor_value_info("in1", TensorProto.FLOAT, [1]),
-            helper.make_tensor_value_info("in2", TensorProto.FLOAT, [1]),
-        ],
-        initializer=[],
-    )
-    importer.from_onnx(helper.make_model(graph2))
+    graph2 = Graph(name="test2")
+    graph2.inputs = [
+        ValueInfo(name="in1", dtype="float32", shape=("dim",)),
+        ValueInfo(name="in2", dtype="float32", shape=(1,)),
+    ]
+    graph2.outputs = [
+        ValueInfo(name="in1", dtype="float32", shape=("dim",)),
+        ValueInfo(name="in2", dtype="float32", shape=(1,)),
+    ]
+    graph2.nodes = []
+    graph2.initializers = []
+
+    importer.from_onnx(graph2)

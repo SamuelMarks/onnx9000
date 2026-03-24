@@ -1,5 +1,7 @@
 # @onnx9000/tflite-exporter
 
+> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+
 This module serves as a 100% dependency-free compiler designed to translate ONNX Intermediate Representations natively into Google's `.tflite` binary schema format and the TensorFlow SavedModel Protobuf. It is compatible with both Web V8 Javascript contexts, Mobile environments, and Python natively.
 
 ## Architecture and Scope

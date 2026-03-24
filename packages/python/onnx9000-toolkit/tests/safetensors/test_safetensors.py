@@ -503,7 +503,7 @@ def _read_loop_mp(p):
 def test_multiprocessing():
     import multiprocessing
 
-    multiprocessing.set_start_method("fork", force=True)
+    multiprocessing.set_start_method("spawn", force=True)
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
         save_file({"a": b"2" * 1000}, path)
@@ -919,27 +919,26 @@ def test_converters_coverage():
         def __init__(self):
             self.saved_model = self.SavedModel()
 
-    sys.modules["torch"] = MockTorch()
-    sys.modules["tensorflow"] = MockTF()
+    from unittest.mock import patch
 
-    with tempfile.TemporaryDirectory() as d:
-        with open(os.path.join(d, "model.bin"), "wb") as bf:
-            pass
-        convert_pytorch_to_safetensors(d, d)
+    with patch.dict(sys.modules, {"torch": MockTorch(), "tensorflow": MockTF()}):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "model.bin"), "wb") as bf:
+                pass
+            convert_pytorch_to_safetensors(d, d)
 
-        convert_tf_to_safetensors(d, os.path.join(d, "tf.safetensors"))
+            convert_tf_to_safetensors(d, os.path.join(d, "tf.safetensors"))
 
-        # Test no bin files
-        with tempfile.TemporaryDirectory() as d2:
-            convert_pytorch_to_safetensors(d2)
+            # Test no bin files
+            with tempfile.TemporaryDirectory() as d2:
+                convert_pytorch_to_safetensors(d2)
 
     # Test missing imports
-    sys.modules["torch"] = None
-    sys.modules["tensorflow"] = None
-    with pytest.raises(ImportError):
-        convert_pytorch_to_safetensors("dummy")
-    with pytest.raises(ImportError):
-        convert_tf_to_safetensors("dummy", "dummy")
+    with patch.dict(sys.modules, {"torch": None, "tensorflow": None}):
+        with pytest.raises(ImportError):
+            convert_pytorch_to_safetensors("dummy")
+        with pytest.raises(ImportError):
+            convert_tf_to_safetensors("dummy", "dummy")
 
 
 def test_hub_coverage():

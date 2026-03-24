@@ -38,15 +38,13 @@ def test_cli_success(capsys):
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: Graph("test_g")
-                    sys.modules["onnx9000.converters.frontend.pyodide_wrapper"] = mock_module
-
-                    try:
+                    with patch.dict(
+                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                    ):
                         with patch.object(C89Compiler, "generate", return_value=("h", "c")):
                             C89Compiler.arena_size = 1024
                             main()
                             assert "Success" in capsys.readouterr().out
-                    finally:
-                        del sys.modules["onnx9000.converters.frontend.pyodide_wrapper"]
 
 
 def test_generator_extras():
@@ -140,8 +138,9 @@ def test_cli_extras(capsys):
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: g
-                    sys.modules["onnx9000.converters.frontend.pyodide_wrapper"] = mock_module
-                    try:
+                    with patch.dict(
+                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                    ):
                         from onnx9000.c_compiler.compiler import C89Compiler
 
                         with patch.object(C89Compiler, "generate", return_value=("h", "c")):
@@ -150,9 +149,6 @@ def test_cli_extras(capsys):
                             except SystemExit:
                                 pass
 
-                    finally:
-                        del sys.modules["onnx9000.converters.frontend.pyodide_wrapper"]
-
 
 def test_cli_with_opt(capsys):
     import types
@@ -160,20 +156,19 @@ def test_cli_with_opt(capsys):
 
     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
     mock_module.parse_onnx_to_ir = lambda x: Graph("test_g")
-    sys.modules["onnx9000.converters.frontend.pyodide_wrapper"] = mock_module
+    with patch.dict(sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}):
+        with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--target", "arduino"]):
+            with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
+                m_open = MagicMock()
+                with patch("onnx9000.c_compiler.cli.open", m_open):
+                    with patch("onnx9000.c_compiler.cli.os.makedirs"):
+                        try:
+                            with patch(
+                                "onnx9000.c_compiler.compiler.C89Compiler.generate",
+                                return_value=("h", "c"),
+                            ):
+                                import onnx9000.c_compiler.cli
 
-    with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--target", "arduino"]):
-        with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
-            m_open = MagicMock()
-            with patch("onnx9000.c_compiler.cli.open", m_open):
-                with patch("onnx9000.c_compiler.cli.os.makedirs"):
-                    try:
-                        with patch(
-                            "onnx9000.c_compiler.compiler.C89Compiler.generate",
-                            return_value=("h", "c"),
-                        ):
-                            import onnx9000.c_compiler.cli
-
-                            onnx9000.c_compiler.cli.main()
-                    except SystemExit:
-                        pass
+                                onnx9000.c_compiler.cli.main()
+                        except SystemExit:
+                            pass

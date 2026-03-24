@@ -5,10 +5,12 @@ pushd %~dp0
 REM Command file for Sphinx documentation
 
 if "%SPHINXBUILD%" == "" (
-	set SPHINXBUILD=sphinx-build
+	set SPHINXBUILD=uv run sphinx-build
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
+
+if "%1" == "build_wasm" goto build_wasm
 
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
@@ -24,6 +26,13 @@ if errorlevel 9009 (
 )
 
 if "%1" == "" goto help
+
+:build_wasm
+echo Building ONNX9000 WebAssembly engine...
+pushd ..
+call pnpm exec asc packages/js/core/src/wasm/engine.ts -O -o docs/html_extra/onnx9000.wasm
+popd
+if "%1" == "build_wasm" goto end
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end

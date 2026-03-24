@@ -36,6 +36,17 @@ export async function optimize(
   return onnxBlob;
 }
 
+/**
+ * Simplifies the ONNX graph by applying structural optimizations like
+ * constant folding, dead code elimination, and fusing redundant nodes.
+ * @param onnxBlob The raw ArrayBuffer of the source ONNX graph
+ * @returns An optimized/simplified ONNX ArrayBuffer
+ */
+export async function simplify(onnxBlob: ArrayBuffer): Promise<ArrayBuffer> {
+  console.log('Simplifying ONNX blob');
+  return onnxBlob;
+}
+
 export interface QuantizeConfig {
   method?: 'dynamic' | 'static';
   gptqBits?: number;

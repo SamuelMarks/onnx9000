@@ -315,7 +315,11 @@ onnx9000 quantize ./model.onnx --format int8 --output ./quantized.onnx
 # Convert a legacy Keras H5 file directly to ONNX (Zero TensorFlow dependency required)
 onnx9000 convert --src keras --dst onnx ./model.h5
 
-# Convert an ONNX model to a llama.cpp compatible GGUF
+# Convert an ONNX model to standalone C++ code
+onnx9000 convert --src onnx --dst cpp ./model.onnx --output model.h
+
+# Convert an ONNX model to an MLIR Graph
+onnx9000 convert --src onnx --dst mlir ./model.onnx --output graph.mlir
 onnx9000 convert --src onnx --dst gguf ./model.onnx --output model.gguf
 
 # 🚀 Serverless & UI

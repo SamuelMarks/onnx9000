@@ -1,6 +1,6 @@
 # WASM_NEXT: The Path to a Fully Functional Web IDE
 
-This document outlines the exhaustive, 300+ step plan to transition the `onnx9000` Sphinx documentation from a mocked visionary frontend into a fully functional, zero-dependency Web IDE for Machine Learning.
+This document outlines the exhaustive, 300+ step plan to transition the `onnx9000` Sphinx documentation into a fully functional, zero-dependency Web IDE (now live as `apps/sphinx-demo-ui`) for Machine Learning.
 
 **Constraints:**
 

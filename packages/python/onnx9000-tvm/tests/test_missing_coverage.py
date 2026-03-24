@@ -1265,3 +1265,19 @@ def test_ty_7_real():
     t2 = DummyType()
     assert not t1 == t2
     assert hash(t1) != hash(t2)
+
+
+def test_load_safetensors_weights():
+    from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
+    import struct
+    import json
+    import tempfile
+
+    with tempfile.NamedTemporaryFile("wb") as f:
+        header_data = json.dumps({"test": "data"}).encode("utf-8")
+        f.write(struct.pack("<Q", len(header_data)))
+        f.write(header_data)
+        f.flush()
+
+        res = load_safetensors_weights(f.name)
+        assert res == {"test": "data"}
