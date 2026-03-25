@@ -1,3 +1,11 @@
+"""Tests for the main CLI commands ensuring correct coverage and execution behavior.
+
+This module provides comprehensive test cases for various command-line interface
+functions such as simplify, coreml export, node pruning, input renaming, batch size
+modification, mutation, and information retrieval. It mocks file system operations,
+external command executions, and core ONNX operations to evaluate the CLI logic.
+"""
+
 import argparse
 import json
 import os
@@ -9,6 +17,14 @@ from onnx9000_cli.main import simplify_cmd
 
 
 def test_simplify_cmd_coverage():
+    """Verify that the simplify command correctly processes arguments and generates output.
+
+    This test sets up a temporary workspace with mock ONNX and custom ops files,
+    invokes the `simplify_cmd` with an array of configuration flags, and asserts
+    that the diff file is correctly produced and contains the expected node
+    additions and removals. It also ensures that the command exits correctly
+    when the overwrite flag is disabled and the output file already exists.
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         model_path = os.path.join(tmpdir, "test.onnx")
         out_path = os.path.join(tmpdir, "out.onnx")
@@ -80,6 +96,12 @@ def test_simplify_cmd_coverage():
 
 
 def test_tui_chat():
+    """Ensure that the TUI chat interface entry point can be invoked without errors.
+
+    This test explicitly inserts the source path into `sys.path` to load and
+    call `start_chat_tui`, ensuring that the TUI module loads correctly when
+    the command is executed.
+    """
     import sys
 
     sys.path.insert(0, "apps/cli/src")
@@ -89,6 +111,12 @@ def test_tui_chat():
 
 
 def test_info_cmd_coverage(capsys):
+    """Test the behavior of info commands when standard attributes or functions are invoked.
+
+    This test checks that `info_cmd` handles a missing subcommand properly by
+    raising a `SystemExit` with the correct code. It also verifies that
+    `info_webnn_cmd` properly prints the diagnostic information to standard output.
+    """
     from onnx9000_cli.main import info_cmd, info_webnn_cmd
     import argparse
     import pytest
@@ -107,6 +135,11 @@ def test_info_cmd_coverage(capsys):
 
 
 def test_info_cmd_with_func():
+    """Verify that `info_cmd` successfully delegates execution to a provided subcommand.
+
+    A dummy function is injected into the arguments namespace, and this test
+    ensures that the CLI successfully calls it when the command is invoked.
+    """
     from onnx9000_cli.main import info_cmd
     import argparse
 
@@ -121,6 +154,12 @@ def test_info_cmd_with_func():
 
 
 def test_coreml_cmd_coverage():
+    """Check the robust execution and error handling of the CoreML export command.
+
+    This test evaluates different execution paths of `coreml_cmd`, including
+    scenarios where the underlying JavaScript CLI script is missing, successful
+    subprocess execution, and handling of subprocess errors.
+    """
     from onnx9000_cli.main import coreml_cmd
     import argparse
     import pytest
@@ -150,6 +189,12 @@ def test_coreml_cmd_coverage():
 
 
 def test_edit_cmd():
+    """Evaluate the `edit_cmd` behavior for launching an interactive edit session.
+
+    This test covers successful execution of the edit command via a subprocess,
+    handles cases where the model path does not exist, and gracefully handles
+    `KeyboardInterrupt` exceptions triggered during the interactive session.
+    """
     from onnx9000_cli.main import edit_cmd
     import argparse
     from unittest.mock import patch
@@ -170,6 +215,12 @@ def test_edit_cmd():
 
 
 def test_prune_cmd():
+    """Test the graph pruning CLI command for expected node removals.
+
+    Mocks are used to simulate loading a graph and evaluating the `prune_cmd`'s
+    ability to remove specified nodes based on the arguments. It also validates
+    behavior when no output path is explicitly provided.
+    """
     from onnx9000_cli.main import prune_cmd
     import argparse
     from unittest.mock import MagicMock, patch
@@ -203,6 +254,12 @@ def test_prune_cmd():
 
 
 def test_rename_input_cmd():
+    """Verify that graph inputs can be successfully renamed via the CLI.
+
+    This test simulates an ONNX graph with predefined inputs and checks whether
+    `rename_input_cmd` accurately modifies the input name and propagates the
+    changes to nodes connected to that input. It also tests omitting the output arg.
+    """
     from onnx9000_cli.main import rename_input_cmd
     import argparse
     from unittest.mock import MagicMock, patch
@@ -236,6 +293,12 @@ def test_rename_input_cmd():
 
 
 def test_change_batch_cmd():
+    """Test functionality of modifying batch size dimensions in the ONNX model.
+
+    This validates that `change_batch_cmd` parses dimensions correctly,
+    handling both static integer sizes and dynamic text representations
+    by applying them to the shape attribute of the input tensors.
+    """
     from onnx9000_cli.main import change_batch_cmd
     import argparse
     from unittest.mock import MagicMock, patch
@@ -273,6 +336,12 @@ def test_change_batch_cmd():
 
 
 def test_mutate_cmd():
+    """Ensure graph mutations are applied correctly when loading a script file.
+
+    Using mocked JSON file reads, this checks that the `mutate_cmd` loads operations,
+    such as removing a specific node, and applies these mutations successfully
+    to the loaded ONNX graph structure.
+    """
     from onnx9000_cli.main import mutate_cmd
     import argparse
     from unittest.mock import MagicMock, patch, mock_open
@@ -308,6 +377,13 @@ def test_mutate_cmd():
 
 
 def test_stubs_coverage():
+    """Verify that all placeholder and specialized commands execute safely.
+
+    This test comprehensively covers basic stubs and external module wrappers
+    (e.g., inspect, convert, compile, and various optimum commands). It asserts
+    that these commands can be invoked using standard arguments without crashing,
+    and specifically that the optimum proxy commands invoke their respective APIs.
+    """
     from onnx9000_cli.main import (
         inspect_cmd,
         optimize_cmd,

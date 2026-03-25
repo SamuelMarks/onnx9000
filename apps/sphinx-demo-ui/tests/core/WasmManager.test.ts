@@ -68,8 +68,8 @@ describe('WasmManager', () => {
     expect(stateChangedSpy).toHaveBeenCalledWith(WasmState.LOADING);
     expect(stateChangedSpy).toHaveBeenCalledWith(WasmState.LOADED);
 
-    expect(progressSpy).toHaveBeenCalledWith(60); // After first chunk (3/5)
-    expect(progressSpy).toHaveBeenCalledWith(100); // After second chunk (5/5)
+    expect(progressSpy).toHaveBeenCalledWith({ progress: 60, loaded: 3, total: 5 }); // After first chunk (3/5)
+    expect(progressSpy).toHaveBeenCalledWith({ progress: 100, loaded: 5, total: 5 }); // After second chunk (5/5)
 
     expect(loadedSpy).toHaveBeenCalledTimes(1);
   });

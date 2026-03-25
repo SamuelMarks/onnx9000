@@ -1,0 +1,27 @@
+{
+  "version": "4.1.1",
+  "objects": [
+    "SparkConf",
+    "SparkContext",
+    "SparkFiles",
+    "RDD",
+    "StorageLevel",
+    "Broadcast",
+    "Accumulator",
+    "AccumulatorParam",
+    "MarshalSerializer",
+    "CPickleSerializer",
+    "StatusTracker",
+    "SparkJobInfo",
+    "SparkStageInfo",
+    "Profiler",
+    "BasicProfiler",
+    "TaskContext",
+    "RDDBarrier",
+    "BarrierTaskContext",
+    "BarrierTaskInfo",
+    "InheritableThread",
+    "inheritable_thread_target",
+    "__version__"
+  ]
+}

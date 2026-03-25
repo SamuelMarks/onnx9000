@@ -79,7 +79,7 @@ export class WasmManager {
     this._progress = 0;
     this._error = null;
     globalEventBus.emit('WASM_STATE_CHANGED', this._state);
-    globalEventBus.emit('WASM_PROGRESS', this._progress);
+    globalEventBus.emit('WASM_PROGRESS', { progress: this._progress, loaded: 0, total: 0 });
 
     try {
       const response = await fetch(url);
@@ -115,7 +115,11 @@ export class WasmManager {
             // Fake progress if no content-length
             this._progress = Math.min(99, this._progress + 5);
           }
-          globalEventBus.emit('WASM_PROGRESS', this._progress);
+          globalEventBus.emit('WASM_PROGRESS', {
+            progress: this._progress,
+            loaded: loaded || 0,
+            total: total || 0
+          });
         }
       }
 
@@ -140,7 +144,11 @@ export class WasmManager {
 
       this._progress = 100;
       this._state = WasmState.LOADED;
-      globalEventBus.emit('WASM_PROGRESS', this._progress);
+      globalEventBus.emit('WASM_PROGRESS', {
+        progress: this._progress,
+        loaded: loaded || 0,
+        total: total || 0
+      });
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);
       globalEventBus.emit('WASM_LOADED', this._instance);
     } catch (err: any) {

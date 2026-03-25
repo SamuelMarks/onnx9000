@@ -439,6 +439,8 @@ def test_generator_all():
         g = MockGen(None, params)
         async for t in g.generate(Tensor(name="", shape=(1, 2), data=bytearray(8))):
             pass
+
+        await g.decode_step(1)
         params2 = GeneratorParams(
             max_length=10, max_new_tokens=None, abort_signal=False, early_stopping=True
         )
@@ -453,7 +455,7 @@ def test_placeholders_real():
     import ast
     import glob
 
-    for f in glob.glob("src/onnx9000/genai/*.py"):
+    for f in glob.glob("packages/python/onnx9000-core/src/onnx9000/genai/*.py"):
         mod_name = f.split("/")[-1][:-3]
         if mod_name == "__init__":
             continue
@@ -504,3 +506,31 @@ def test_missing_4_lines():
 
     stability.MalformedChatTemplateError()
     stability.EndOfStreamError()
+
+
+def test_mock_methods():
+    mg = MockGenerator(None, None)
+    from onnx9000.genai.generator import Generator
+
+    class MockGen2(Generator):
+        def sample(self, x):
+            return 1
+
+        async def decode_step(self, x):
+            return None
+
+        def is_eos(self, x):
+            return True
+
+        async def compute_logits(self, x):
+            return None
+
+    mh = MockGen2(None, None)
+    mg.compute_logits_sync(None)
+    import asyncio
+
+    asyncio.run(mg.compute_logits(None))
+    mh.sample(None)
+    mh.is_eos(None)
+    asyncio.run(mh.decode_step(None))
+    asyncio.run(mh.compute_logits(None))

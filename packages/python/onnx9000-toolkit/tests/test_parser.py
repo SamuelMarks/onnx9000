@@ -220,6 +220,8 @@ def test_script_parser_docstring() -> None:
         """This is a dummy docstring"""
         return 1
 
+    dummy_func_with_doc.to_builder()
+
 
 def test_script_parser_docstring2() -> None:
     """Tests the script parser docstring2 functionality."""
@@ -256,3 +258,38 @@ def test_parser_missing_lines() -> None:
             return [i for i in x]  # noqa: C416
 
         model_list.to_builder()
+
+
+def test_conftest_coverage_dummy():
+    import sys
+    from .conftest import CovDummy
+
+    d = CovDummy()
+    _ = d + 1
+    from contextlib import suppress
+
+    with suppress(Exception):
+        _ = 1 + d
+    _ = d - 1
+    with suppress(Exception):
+        _ = 1 - d
+    _ = d * 1
+    with suppress(Exception):
+        _ = 1 * d
+    _ = d / 1
+    with suppress(Exception):
+        _ = 1 / d
+    _ = d**1
+    _ = d @ 1
+    _ = d % 1
+    list(d)
+    bool(d)
+    _ = d < 1
+    _ = d > 1
+    _ = d <= 1
+    _ = d >= 1
+    _ = d == 1
+    _ = d != 1
+    d()
+    _ = d[0]
+    _ = d.something

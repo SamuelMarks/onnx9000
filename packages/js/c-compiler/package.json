@@ -9,11 +9,13 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@onnx9000/core": "workspace:^",
     "pyodide": "^0.26.4"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.1.9",
     "typescript": "^5.4.5",
-    "vitest": "^2.1.8",
-    "@types/node": "^22.0.0"
+    "vitest": "^2.1.8"
   }
 }

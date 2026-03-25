@@ -162,7 +162,9 @@ export class FileTree extends Component<HTMLDivElement> {
 
   public updateData(root: FileNode): void {
     this.options.root = root;
-    // Keep expanded states, maybe auto expand new root if needed
+    if (root.type === 'directory') {
+      this.expandedPaths.add(root.path);
+    }
     this.reRender();
   }
 

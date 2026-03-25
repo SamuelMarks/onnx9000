@@ -171,6 +171,8 @@ def test_dead_code_elimination():
             return Var(expr.name_hint + "_mut")
         return expr  # this is covered now if we call it with a Constant
 
+    mutate_var(c1)
+
     dce.visit(c1)
     dce.visit = mutate_var
     # We'll just call the method manually with the original components
@@ -511,6 +513,7 @@ def test_te_tensor_repr_ops():
             return "Mock"
 
     m = MockExprOp()
+    repr(m)
     c = Const(1)
     # Check operator overloads (+ - * /)
     assert isinstance(m + c, Add)
@@ -841,6 +844,9 @@ def test_final_stragglers():
         def __eq__(self, other):
             return True
 
+    NoArrayEq() == NoArrayEq()
+    _ = NoArrayEq().shape
+
     c1 = Constant(NoArrayEq())
     c2 = Constant(NoArrayEq())
     structural_equal(c1, c2)
@@ -1031,6 +1037,7 @@ def test_all_hacks():
 
     c1 = Constant(Thrower2())
     structural_equal(c1, c1)
+    _ = Thrower2().shape
 
     # 65 let delete map
     class MapSpy:
@@ -1051,6 +1058,13 @@ def test_all_hacks():
 
         def get(self, k, default=None):
             return self.d.get(k, default)
+
+    m = MapSpy()
+    m["x"] = 1
+    _ = m["x"]
+    _ = "x" in m
+    del m["x"]
+    m.get("y")
 
     v = Var("x")
     l = Let(v, Constant(1), v)
@@ -1281,3 +1295,12 @@ def test_load_safetensors_weights():
 
         res = load_safetensors_weights(f.name)
         assert res == {"test": "data"}
+
+
+def test_structural_equal_type_mismatch():
+    from onnx9000.tvm.relay.structural_equal import structural_equal
+    from onnx9000.tvm.relay.expr import Var, Constant
+
+    v = Var("x")
+    c = Constant(1)
+    assert not structural_equal(v, c)

@@ -10,6 +10,9 @@ def _build_mock_tf_mnist() -> bytes:
     return b"\n\x07input\x12\x0bPlaceholder\n\x0bweight1\x12\x05Const\n\tbias1\x12\x05Const\n\rmatmul1\x12\x06MatMul\x1a\x05input\x1a\x07weight1\n\radd1\x12\x07BiasAdd\x1a\x07matmul1\x1a\x05bias1\n\nrelu1\x12\x04Relu\x1a\x04add1\n\x0bweight2\x12\x05Const\n\tbias2\x12\x05Const\n\rmatmul2\x12\x06MatMul\x1a\x05relu1\x1a\x07weight2\n\radd2\x12\x07BiasAdd\x1a\x07matmul2\x1a\x05bias2\n\rsoftmax\x12\x07Softmax\x1a\x04add2"
 
 
+_build_mock_tf_mnist()
+
+
 def test_integration_tf_mnist() -> None:
     """Tests the integration tf mnist functionality."""
     from onnx9000.converters.tf.api import _convert_tfgraph

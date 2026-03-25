@@ -1,0 +1,32 @@
+{
+  "version": "9.0",
+  "objects": [
+    "ClassifierConfig",
+    "ComputeUnit",
+    "EnumeratedShapes",
+    "ImageType",
+    "PassPipeline",
+    "RangeDim",
+    "ReshapeFrequency",
+    "SPECIFICATION_VERSION",
+    "Shape",
+    "SpecializationStrategy",
+    "StateType",
+    "TensorType",
+    "colorlayout",
+    "compression_utils",
+    "convert",
+    "converters",
+    "libcoremlpython",
+    "libmilstoragepython",
+    "libmodelpackage",
+    "models",
+    "optimize",
+    "precision",
+    "proto",
+    "target",
+    "transform",
+    "utils",
+    "version"
+  ]
+}

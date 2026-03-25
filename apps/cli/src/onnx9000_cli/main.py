@@ -192,6 +192,61 @@ def serve_cmd(args: argparse.Namespace) -> None:
     print(f"Serving {args.model} on local server...")
 
 
+def onnx2gguf_cmd(args: argparse.Namespace) -> None:
+    """Convert ONNX to GGUF."""
+    import os
+    import json
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.onnx2gguf.compiler import compile_gguf
+
+    if args.dry_run:
+        print(f"Dry run: Would convert {args.model} to GGUF")
+        return
+
+    if (
+        os.path.exists(args.model)
+        and os.path.getsize(args.model) > 70_000_000_000
+        and not args.force
+    ):
+        print("Warning: Massive model detected. Use --force to proceed.")
+        return
+
+    graph = load_onnx(args.model)
+    out_path = args.output or args.model.replace(".onnx", ".gguf")
+
+    kv_overrides = {}
+    if args.architecture:
+        kv_overrides["general.architecture"] = args.architecture
+
+    if args.tokenizer:
+        with open(args.tokenizer, "r") as f:
+            kv_overrides["tokenizer.json"] = f.read()
+
+    if args.outtype:
+        kv_overrides["general.file_type"] = args.outtype
+
+    with open(out_path, "wb") as out_f:
+        compile_gguf(graph, out_f, kv_overrides=kv_overrides)
+
+    print(f"Saved GGUF to {out_path}")
+
+
+def gguf2onnx_cmd(args: argparse.Namespace) -> None:
+    """Convert GGUF to ONNX."""
+    from onnx9000.onnx2gguf.reader import GGUFReader
+    from onnx9000.onnx2gguf.reverse import reconstruct_onnx
+    from onnx9000.core.serializer import save as save_onnx
+
+    out_path = args.output or args.model.replace(".gguf", ".onnx")
+
+    with open(args.model, "rb") as f:
+        reader = GGUFReader(f)
+        graph = reconstruct_onnx(reader)
+
+    save_onnx(graph, out_path)
+    print(f"Saved ONNX to {out_path}")
+
+
 def compile_cmd(args: argparse.Namespace) -> None:
     """Compile an ONNX model AOT."""
     print(f"Compiling {args.model}...")
@@ -403,6 +458,14 @@ def main() -> None:
     mutate_parser.add_argument("--output", type=str, help="Output path")
     mutate_parser.set_defaults(func=mutate_cmd)
 
+    # Coverage
+    coverage_parser = subparsers.add_parser(
+        "update-coverage", help="Update framework coverage tracking"
+    )
+    from onnx9000_cli.coverage import update_coverage_cmd
+
+    coverage_parser.set_defaults(func=update_coverage_cmd)
+
     # Info
     info_parser = subparsers.add_parser("info", help="Diagnostic information")
     info_subparsers = info_parser.add_subparsers(dest="info_command", help="Info commands")
@@ -599,6 +662,26 @@ def main() -> None:
     )
     serve_parser.add_argument("model", type=str, help="Path to the .onnx file")
     serve_parser.set_defaults(func=serve_cmd)
+
+    # onnx2gguf
+    onnx2gguf_parser = subparsers.add_parser("onnx2gguf", help="Convert ONNX to GGUF")
+    onnx2gguf_parser.add_argument("model", type=str, help="Path to the .onnx file or directory")
+    onnx2gguf_parser.add_argument("-o", "--output", type=str, help="Output path")
+    onnx2gguf_parser.add_argument("--tokenizer", type=str, help="Path to tokenizer.json")
+    onnx2gguf_parser.add_argument("--outtype", type=str, help="Output type (e.g. f32, q8_0)")
+    onnx2gguf_parser.add_argument("--architecture", type=str, help="Architecture override")
+    onnx2gguf_parser.add_argument("--split-max-size", type=str, help="Split max size")
+    onnx2gguf_parser.add_argument("--dry-run", action="store_true", help="Dry run")
+    onnx2gguf_parser.add_argument(
+        "--force", action="store_true", help="Force conversion of huge models"
+    )
+    onnx2gguf_parser.set_defaults(func=onnx2gguf_cmd)
+
+    # gguf2onnx
+    gguf2onnx_parser = subparsers.add_parser("gguf2onnx", help="Convert GGUF to ONNX")
+    gguf2onnx_parser.add_argument("model", type=str, help="Path to the .gguf file")
+    gguf2onnx_parser.add_argument("-o", "--output", type=str, help="Output path")
+    gguf2onnx_parser.set_defaults(func=gguf2onnx_cmd)
 
     # Compile
     compile_parser = subparsers.add_parser(

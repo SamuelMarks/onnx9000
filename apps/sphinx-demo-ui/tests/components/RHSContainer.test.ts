@@ -34,6 +34,7 @@ vi.mock('../../src/components/FileTree', () => ({
     updateData = vi.fn();
     findNode = vi.fn().mockReturnValue(null);
     getSelectedPath = vi.fn().mockReturnValue('');
+    selectFile = vi.fn();
     triggerSelect(path: string) {
       if (this.options.onSelect) this.options.onSelect(path);
     }
@@ -68,13 +69,34 @@ vi.mock('@onnx9000/converters', () => ({
 }));
 
 vi.mock('@onnx9000/optimum', () => ({
-  optimize: vi.fn().mockResolvedValue(new ArrayBuffer(3)),
-  simplify: vi.fn().mockResolvedValue(new ArrayBuffer(3))
+  optimize: vi.fn().mockResolvedValue({
+    nodes: [],
+    inputs: [],
+    outputs: [],
+    initializers: [],
+    tensors: {},
+    valueInfo: []
+  }),
+  simplify: vi.fn().mockResolvedValue({
+    nodes: [],
+    inputs: [],
+    outputs: [],
+    initializers: [],
+    tensors: {},
+    valueInfo: []
+  })
 }));
 
 vi.mock('@onnx9000/core', () => ({
   BufferReader: class {},
-  parseModelProto: vi.fn().mockResolvedValue({ nodes: [], inputs: [], outputs: [] })
+  parseModelProto: vi.fn().mockResolvedValue({
+    nodes: [],
+    inputs: [],
+    outputs: [],
+    initializers: [],
+    tensors: {},
+    valueInfo: []
+  })
 }));
 
 vi.mock('@onnx9000/iree-compiler/dist/passes/lower_onnx_to_mhlo.js', () => ({
@@ -148,11 +170,7 @@ describe('RHSContainer', () => {
       prefix: 'model_',
       emitCpp: true
     });
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/output-cpp/model.cpp',
-      '// mocked source',
-      'cpp'
-    );
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith('/output-cpp/model.cpp');
     container.unmount();
   });
 
@@ -169,7 +187,9 @@ describe('RHSContainer', () => {
 
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10)); // wait for promise resolution
-    expect(editor.openFile).toHaveBeenCalledWith('/model.mlpackage/Manifest.json', '{}', 'json');
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith(
+      '/model.mlpackage/Manifest.json'
+    );
     container.unmount();
   });
 
@@ -186,11 +206,7 @@ describe('RHSContainer', () => {
 
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10)); // wait for promise resolution
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/output-pytorch/module.py',
-      'def forward(): pass',
-      'python'
-    );
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith('/output-pytorch/module.py');
     container.unmount();
   });
 
@@ -208,10 +224,8 @@ describe('RHSContainer', () => {
     // It parses the graph, OnnxAstFormatter format returns '' by default when mocking missing methods, but we just verify it opens file
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10)); // wait for promise resolution
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/olive-optimized/optimized_model.onnx',
-      expect.any(String),
-      'plaintext'
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith(
+      '/olive-optimized/optimized_model.onnx'
     );
     container.unmount();
   });
@@ -229,11 +243,7 @@ describe('RHSContainer', () => {
 
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10)); // wait for promise resolution
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/output-mlir/graph.mlir',
-      'module {}',
-      'plaintext'
-    );
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith('/output-mlir/graph.mlir');
     container.unmount();
   });
 
@@ -250,10 +260,8 @@ describe('RHSContainer', () => {
 
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10));
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/simplified-model/simplified.onnx',
-      expect.any(String),
-      'plaintext'
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith(
+      '/simplified-model/simplified.onnx'
     );
     container.unmount();
   });
@@ -271,11 +279,7 @@ describe('RHSContainer', () => {
 
     globalEventBus.emit('ONNX_BINARY_GENERATED', new Uint8Array([1, 2, 3]));
     await new Promise((r) => setTimeout(r, 10));
-    expect(editor.openFile).toHaveBeenCalledWith(
-      '/output-caffe/model.prototxt',
-      expect.any(String),
-      'plaintext'
-    );
+    expect((container as any).tree.selectFile).toHaveBeenCalledWith('/output-caffe/model.prototxt');
     container.unmount();
   });
 

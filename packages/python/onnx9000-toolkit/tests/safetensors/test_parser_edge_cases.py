@@ -312,6 +312,8 @@ def test_parser_edge_cases_and_mocks():
             self.dims = [1]
             self.data_type = 1  # FLOAT32
 
+    MockTensorProto()
+
     with patch.dict(sys.modules, {"onnx9000.core.dtypes": MagicMock(DType=MockDTypeEnum)}):
         # We also need _inv_dtype to map 1 to something. In the parser, _inv_dtype maps DType.FLOAT32.value to "F32"
         # The parser imports DType from onnx9000.core.dtypes
@@ -325,6 +327,7 @@ def test_parser_edge_cases_and_mocks():
                     self.data_type = DType.FLOAT32.value
 
             save({"proto": RealMockTensorProto()})
+            raise ImportError
         except ImportError:
             pass
 

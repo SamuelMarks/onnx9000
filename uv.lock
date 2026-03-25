@@ -17,6 +17,7 @@ members = [
     "onnx9000-cli",
     "onnx9000-converters",
     "onnx9000-core",
+    "onnx9000-onnx2gguf",
     "onnx9000-optimizer",
     "onnx9000-optimum",
     "onnx9000-tflite-exporter",
@@ -1141,6 +1142,21 @@ dependencies = [
 requires-dist = [
     { name = "numpy" },
     { name = "protobuf" },
+]
+
+[[package]]
+name = "onnx9000-onnx2gguf"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-onnx2gguf" }
+dependencies = [
+    { name = "onnx9000-core" },
+    { name = "onnx9000-toolkit" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
+    { name = "onnx9000-toolkit", editable = "packages/python/onnx9000-toolkit" },
 ]
 
 [[package]]

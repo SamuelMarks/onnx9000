@@ -9,7 +9,7 @@ Demo
 ====
 .. interactive-demo::
    :initial-source: keras
-   :initial-target: onnx
+   :initial-target: c
 
 Architecture
 ============

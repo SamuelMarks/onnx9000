@@ -9,8 +9,9 @@ import { LHS_FRAMEWORKS, LHS_EXAMPLES } from '../data/MockData';
 import { Debouncer } from '../core/Debouncer';
 import { t } from '../core/I18n';
 import { keras2onnx } from '@onnx9000/converters';
-import { BufferReader, parseModelProto } from '@onnx9000/core';
+import { BufferReader, parseModelProto, serializeModelProto } from '@onnx9000/core';
 import { VizGraph, VizNode } from '../core/OnnxAdapter';
+import { KerasPythonParser } from '../core/KerasPythonParser';
 
 export class LHSContainer extends Component<HTMLDivElement> {
   private frameworkDropdown!: Dropdown;
@@ -104,15 +105,20 @@ export class LHSContainer extends Component<HTMLDivElement> {
         let onnxBytes: Uint8Array;
 
         if (sourceId === 'keras') {
-          console.log('[stdout] Validating Keras JSON source...');
+          console.log('[stdout] Validating Keras source...');
           const sourceCode = this.editor.getValue();
 
           let parsed;
           try {
-            parsed = JSON.parse(sourceCode);
-          } catch (err) {
+            if (sourceCode.includes('import keras') || sourceCode.includes('models.Sequential')) {
+              console.log('[stdout] Python Keras script detected. Parsing dynamically...');
+              parsed = await KerasPythonParser.parse(sourceCode);
+            } else {
+              parsed = JSON.parse(sourceCode);
+            }
+          } catch (err: any) {
             console.warn(
-              '[stderr] Current editor content is not valid JSON. Cannot convert via keras2onnx. Falling back to default mnist model...'
+              `[stderr] Failed to parse editor content: ${err.message}. Falling back to default mnist model...`
             );
             parsed = JSON.parse(LHS_EXAMPLES['keras'][0].root.children![1].content!);
           }
@@ -121,7 +127,6 @@ export class LHSContainer extends Component<HTMLDivElement> {
 
           console.log('[stdout] Using @onnx9000/converters keras2onnx...');
           onnxBytes = await keras2onnx(modelJsonString);
-
           if (onnxBytes.byteLength === 0) {
             const nodes: VizNode[] = [];
             const layers = parsed?.modelTopology?.config?.layers || [];
@@ -177,7 +182,20 @@ export class LHSContainer extends Component<HTMLDivElement> {
           console.log(`[stdout] Converting ${sourceId} to ONNX using @onnx9000/converters...`);
 
           const fileContent = this.editor.getValue();
-          const file = new File([fileContent], 'model_file', { type: 'text/plain' });
+          let ext = '.txt';
+          if (sourceId === 'caffe') ext = '.prototxt';
+          else if (sourceId === 'mxnet') ext = '.json';
+          else if (sourceId === 'tensorflow') ext = '.pbtxt';
+          else if (sourceId === 'paddle') ext = '.json';
+          else if (sourceId === 'onnxscript') ext = '.py';
+          else if (sourceId === 'scikitlearn') ext = '.json';
+          else if (sourceId === 'xgboost') ext = '.json';
+          else if (sourceId === 'catboost') ext = '.json';
+          else if (sourceId === 'sparkml') ext = '.json';
+
+          let filename = `model_file${ext}`;
+          if (sourceId === 'paddle') filename = '__model__';
+          const file = new File([fileContent], filename, { type: 'text/plain' });
           const graph = await convert(sourceId as any, 'onnx', [file]);
 
           vizGraph = {
@@ -193,7 +211,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
             outputs: graph.outputs.map((o: any) => ({ name: o.name, type: o.dtype }))
           };
 
-          onnxBytes = new Uint8Array(0);
+          onnxBytes = serializeModelProto(graph as any);
         }
 
         globalEventBus.emit('ONNX_GRAPH_GENERATED', vizGraph);
@@ -215,7 +233,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
           state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' }
         });
       } catch (err: any) {
-        console.error(`[stderr] Error: ${err.message || err}`);
+        console.error(`[stderr] Error: ${err.stack || err.message || err}`);
         console.error('[stderr] Failed to generate ONNX representation.');
         console.error('Conversion unsuccessful.');
       } finally {

@@ -13,7 +13,7 @@ export const LHS_FRAMEWORKS = [
   { value: 'tensorflow', label: 'TensorFlow' },
   { value: 'caffe', label: 'Caffe' },
   { value: 'mxnet', label: 'MXNet' },
-  { value: 'paddlepaddle', label: 'PaddlePaddle' },
+  { value: 'paddle', label: 'PaddlePaddle' },
   { value: 'scikitlearn', label: 'Scikit-Learn' },
   { value: 'lightgbm', label: 'LightGBM' },
   { value: 'xgboost', label: 'XGBoost' },
@@ -26,7 +26,7 @@ export const LHS_EXAMPLES: Record<string, ExampleData[]> = {
     {
       id: 'keras-mnist',
       label: 'Basic CNN (MNIST)',
-      initialFile: '/keras-mnist/model.json',
+      initialFile: '/keras-mnist/train.py',
       root: {
         name: 'keras-mnist',
         type: 'directory',
@@ -132,7 +132,26 @@ model.save('model.h5')
         name: 'spox-mlp',
         type: 'directory',
         path: '/spox-mlp',
-        children: [{ name: 'model.py', type: 'file', path: '/spox-mlp/model.py' }]
+        children: [
+          {
+            name: 'model.py',
+            type: 'file',
+            path: '/spox-mlp/model.py',
+            content: `import onnxscript
+from onnxscript import opset15 as op
+from onnxscript import FLOAT
+
+@onnxscript.script()
+def mlp(X: FLOAT[10, 10], W1: FLOAT[10, 20], B1: FLOAT[20], W2: FLOAT[20, 1], B2: FLOAT[1]) -> FLOAT[10, 1]:
+    H1 = op.MatMul(X, W1)
+    H1_bias = op.Add(H1, B1)
+    H1_relu = op.Relu(H1_bias)
+    H2 = op.MatMul(H1_relu, W2)
+    Y = op.Add(H2, B2)
+    return Y
+`
+          }
+        ]
       }
     }
   ],
@@ -140,13 +159,56 @@ model.save('model.h5')
     {
       id: 'tf-mobilenet',
       label: 'MobileNet V2',
-      initialFile: '/tf-mobilenet/export.py',
+      initialFile: '/tf-mobilenet/saved_model.pbtxt',
       root: {
         name: 'tf-mobilenet',
         type: 'directory',
         path: '/tf-mobilenet',
         children: [
-          { name: 'saved_model.pb', type: 'file', path: '/tf-mobilenet/saved_model.pb' },
+          {
+            name: 'saved_model.pbtxt',
+            type: 'file',
+            path: '/tf-mobilenet/saved_model.pbtxt',
+            content: `node {
+  name: "input_1"
+  op: "Placeholder"
+  attr {
+    key: "dtype"
+    value { type: DT_FLOAT }
+  }
+  attr {
+    key: "shape"
+    value { shape { dim { size: -1 } dim { size: 224 } dim { size: 224 } dim { size: 3 } } }
+  }
+}
+node {
+  name: "weights"
+  op: "Const"
+  attr {
+    key: "value"
+    value { tensor { dtype: DT_FLOAT tensor_shape { dim { size: 32 } dim { size: 3 } dim { size: 3 } dim { size: 3 } } } }
+  }
+}
+node {
+  name: "Conv2D_1"
+  op: "Conv2D"
+  input: "input_1"
+  input: "weights"
+  attr {
+    key: "strides"
+    value { list { i: 1 i: 2 i: 2 i: 1 } }
+  }
+  attr {
+    key: "padding"
+    value { s: "SAME" }
+  }
+}
+node {
+  name: "Relu_1"
+  op: "Relu"
+  input: "Conv2D_1"
+}`
+          },
           { name: 'export.py', type: 'file', path: '/tf-mobilenet/export.py' },
           {
             name: 'variables',
@@ -194,7 +256,13 @@ model.save('model.h5')
         type: 'directory',
         path: '/caffe-alexnet',
         children: [
-          { name: 'deploy.prototxt', type: 'file', path: '/caffe-alexnet/deploy.prototxt' },
+          {
+            name: 'deploy.prototxt',
+            type: 'file',
+            path: '/caffe-alexnet/deploy.prototxt',
+            content:
+              'name: "AlexNet"\nlayer {\n  name: "data"\n  type: "Input"\n  top: "data"\n  input_param {\n    shape {\n      dim: 1\n      dim: 3\n      dim: 227\n      dim: 227\n    }\n  }\n}\nlayer {\n  name: "conv1"\n  type: "Convolution"\n  bottom: "data"\n  top: "conv1"\n  convolution_param {\n    num_output: 96\n    kernel_size: 11\n    stride: 4\n  }\n}\nlayer {\n  name: "relu1"\n  type: "ReLU"\n  bottom: "conv1"\n  top: "conv1"\n}\nlayer {\n  name: "pool1"\n  type: "Pooling"\n  bottom: "conv1"\n  top: "pool1"\n  pooling_param {\n    pool: MAX\n    kernel_size: 3\n    stride: 2\n  }\n}\nlayer {\n  name: "fc8"\n  type: "InnerProduct"\n  bottom: "pool1"\n  top: "fc8"\n  inner_product_param {\n    num_output: 1000\n  }\n}\nlayer {\n  name: "prob"\n  type: "Softmax"\n  bottom: "fc8"\n  top: "prob"\n}'
+          },
           { name: 'weights.caffemodel', type: 'file', path: '/caffe-alexnet/weights.caffemodel' }
         ]
       }
@@ -202,21 +270,27 @@ model.save('model.h5')
   ],
   mxnet: [
     {
-      id: 'mxnet-resnet',
-      label: 'ResNet 152',
-      initialFile: '/mxnet-resnet/model-symbol.json',
+      id: 'mxnet-resnet50',
+      label: 'ResNet-50',
+      initialFile: '/mxnet-resnet50/model-symbol.json',
       root: {
-        name: 'mxnet-resnet',
+        name: 'mxnet-resnet50',
         type: 'directory',
-        path: '/mxnet-resnet',
+        path: '/mxnet-resnet50',
         children: [
-          { name: 'model-symbol.json', type: 'file', path: '/mxnet-resnet/model-symbol.json' },
-          { name: 'model-0000.params', type: 'file', path: '/mxnet-resnet/model-0000.params' }
+          {
+            name: 'model-symbol.json',
+            type: 'file',
+            path: '/mxnet-resnet50/model-symbol.json',
+            content:
+              '{"nodes": [{"op": "null", "name": "data", "inputs": []}, {"op": "Convolution", "name": "conv0", "attrs": {"kernel": "(7, 7)", "num_filter": "64", "stride": "(2, 2)", "pad": "(3, 3)", "no_bias": "True"}, "inputs": [[0, 0, 0], [1, 0, 0]]}, {"op": "Activation", "name": "relu0", "attrs": {"act_type": "relu"}, "inputs": [[1, 0, 0]]}, {"op": "Pooling", "name": "pool0", "attrs": {"kernel": "(3, 3)", "pool_type": "max", "stride": "(2, 2)", "pad": "(1, 1)"}, "inputs": [[2, 0, 0]]}, {"op": "FullyConnected", "name": "fc1", "attrs": {"num_hidden": "1000"}, "inputs": [[3, 0, 0], [4, 0, 0], [5, 0, 0]]}, {"op": "SoftmaxOutput", "name": "softmax", "inputs": [[4, 0, 0]]}]}'
+          },
+          { name: 'model-0000.params', type: 'file', path: '/mxnet-resnet50/model-0000.params' }
         ]
       }
     }
   ],
-  paddlepaddle: [
+  paddle: [
     {
       id: 'paddle-ocr',
       label: 'PaddleOCR (Detection)',
@@ -226,7 +300,91 @@ model.save('model.h5')
         type: 'directory',
         path: '/paddle-ocr',
         children: [
-          { name: '__model__', type: 'file', path: '/paddle-ocr/__model__' },
+          {
+            name: '__model__',
+            type: 'file',
+            path: '/paddle-ocr/__model__',
+            content: JSON.stringify(
+              {
+                blocks: [
+                  {
+                    ops: [
+                      {
+                        type: 'conv2d',
+                        inputs: { Input: ['image'], Filter: ['conv1_weights'] },
+                        outputs: { Output: ['conv1_out'] },
+                        attrs: {
+                          paddings: [1, 1, 1, 1],
+                          strides: [1, 1],
+                          dilations: [1, 1],
+                          groups: 1
+                        }
+                      },
+                      {
+                        type: 'relu',
+                        inputs: { X: ['conv1_out'] },
+                        outputs: { Out: ['relu1_out'] }
+                      },
+                      {
+                        type: 'pool2d',
+                        inputs: { X: ['relu1_out'] },
+                        outputs: { Out: ['pool1_out'] },
+                        attrs: {
+                          pooling_type: 'max',
+                          ksize: [2, 2],
+                          strides: [2, 2],
+                          paddings: [0, 0, 0, 0]
+                        }
+                      },
+                      {
+                        type: 'elementwise_add',
+                        inputs: { X: ['pool1_out'], Y: ['bias1'] },
+                        outputs: { Out: ['add1_out'] }
+                      },
+                      {
+                        type: 'batch_norm',
+                        inputs: {
+                          X: ['add1_out'],
+                          Scale: ['bn_scale'],
+                          Bias: ['bn_bias'],
+                          Mean: ['bn_mean'],
+                          Variance: ['bn_var']
+                        },
+                        outputs: { Y: ['bn_out'] },
+                        attrs: { epsilon: 1e-5, momentum: 0.9 }
+                      },
+                      {
+                        type: 'mul',
+                        inputs: { X: ['bn_out'], Y: ['fc_weights'] },
+                        outputs: { Out: ['mul_out'] },
+                        attrs: { x_num_col_dims: 1, y_num_col_dims: 1 }
+                      },
+                      {
+                        type: 'concat',
+                        inputs: { X: ['mul_out', 'mul_out'] },
+                        outputs: { Out: ['concat_out'] },
+                        attrs: { axis: 1 }
+                      },
+                      {
+                        type: 'split',
+                        inputs: { X: ['concat_out'] },
+                        outputs: { Out: ['split_out1', 'split_out2'] },
+                        attrs: { axis: 1, num_or_sections: [1, 1] }
+                      },
+                      {
+                        type: 'matmul',
+                        inputs: { X: ['split_out1'], Y: ['split_out2'] },
+                        outputs: { Out: ['matmul_out'] },
+                        attrs: { transpose_x: false, transpose_y: true }
+                      }
+                    ]
+                  }
+                ]
+              },
+              null,
+              2
+            )
+          },
           { name: 'weight', type: 'file', path: '/paddle-ocr/weight' }
         ]
       }
@@ -236,13 +394,18 @@ model.save('model.h5')
     {
       id: 'sklearn-rf',
       label: 'Random Forest Classifier',
-      initialFile: '/sklearn-rf/train.py',
+      initialFile: '/sklearn-rf/pipeline.json',
       root: {
         name: 'sklearn-rf',
         type: 'directory',
         path: '/sklearn-rf',
         children: [
-          { name: 'pipeline.pkl', type: 'file', path: '/sklearn-rf/pipeline.pkl' },
+          {
+            name: 'pipeline.json',
+            type: 'file',
+            path: '/sklearn-rf/pipeline.json',
+            content: `{\n  "model": "RandomForestClassifier",\n  "n_estimators": 100,\n  "max_depth": 5\n}`
+          },
           { name: 'train.py', type: 'file', path: '/sklearn-rf/train.py' }
         ]
       }
@@ -250,12 +413,19 @@ model.save('model.h5')
     {
       id: 'sklearn-svc',
       label: 'SVM Pipeline',
-      initialFile: '/sklearn-svc/pipeline.pkl',
+      initialFile: '/sklearn-svc/pipeline.json',
       root: {
         name: 'sklearn-svc',
         type: 'directory',
         path: '/sklearn-svc',
-        children: [{ name: 'pipeline.pkl', type: 'file', path: '/sklearn-svc/pipeline.pkl' }]
+        children: [
+          {
+            name: 'pipeline.json',
+            type: 'file',
+            path: '/sklearn-svc/pipeline.json',
+            content: `{\n  "model": "SVC",\n  "kernel": "rbf",\n  "C": 1.0\n}`
+          }
+        ]
       }
     }
   ],
@@ -263,13 +433,18 @@ model.save('model.h5')
     {
       id: 'lgbm-regressor',
       label: 'LGBM Regressor',
-      initialFile: '/lightgbm-reg/train.py',
+      initialFile: '/lightgbm-reg/model.txt',
       root: {
         name: 'lightgbm-reg',
         type: 'directory',
         path: '/lightgbm-reg',
         children: [
-          { name: 'model.txt', type: 'file', path: '/lightgbm-reg/model.txt' },
+          {
+            name: 'model.txt',
+            type: 'file',
+            path: '/lightgbm-reg/model.txt',
+            content: `tree\nversion=v3\nnum_class=1\nnum_tree_per_iteration=1\nlabel_index=0\nmax_feature_idx=4\n`
+          },
           { name: 'train.py', type: 'file', path: '/lightgbm-reg/train.py' }
         ]
       }
@@ -284,7 +459,14 @@ model.save('model.h5')
         name: 'xgb-class',
         type: 'directory',
         path: '/xgb-class',
-        children: [{ name: 'model.json', type: 'file', path: '/xgb-class/model.json' }]
+        children: [
+          {
+            name: 'model.json',
+            type: 'file',
+            path: '/xgb-class/model.json',
+            content: `{"learner":{"objective":{"name":"binary:logistic"}}}`
+          }
+        ]
       }
     }
   ],
@@ -292,12 +474,19 @@ model.save('model.h5')
     {
       id: 'catboost-model',
       label: 'CatBoost Default',
-      initialFile: '/catboost-model/model.cbm',
+      initialFile: '/catboost-model/model.json',
       root: {
         name: 'catboost-model',
         type: 'directory',
         path: '/catboost-model',
-        children: [{ name: 'model.cbm', type: 'file', path: '/catboost-model/model.cbm' }]
+        children: [
+          {
+            name: 'model.json',
+            type: 'file',
+            path: '/catboost-model/model.json',
+            content: `{"catboost_version": "1.0.6", "model_info": {"class_names": ["0", "1"]}}`
+          }
+        ]
       }
     }
   ],
@@ -316,7 +505,12 @@ model.save('model.h5')
             type: 'directory',
             path: '/sparkml-pipeline/metadata',
             children: [
-              { name: 'part-00000', type: 'file', path: '/sparkml-pipeline/metadata/part-00000' }
+              {
+                name: 'part-00000',
+                type: 'file',
+                path: '/sparkml-pipeline/metadata/part-00000',
+                content: `{"class": "org.apache.spark.ml.classification.LogisticRegressionModel", "numClasses": 2}`
+              }
             ]
           },
           { name: 'stages', type: 'directory', path: '/sparkml-pipeline/stages', children: [] }
@@ -386,13 +580,43 @@ export const RHS_TARGETS: Record<string, FileNode> = {
     path: '/output-mlir',
     children: [{ name: 'graph.mlir', type: 'file', path: '/output-mlir/graph.mlir' }]
   },
+
+  c: {
+    name: 'output-c',
+    type: 'directory',
+    path: '/output-c',
+    children: [
+      {
+        name: 'model.h',
+        type: 'file',
+        path: '/output-c/model.h',
+        content: `#ifndef MODEL_H\n#define MODEL_H\n\n#ifdef __cplusplus\nextern "C" {\n#endif\n\nvoid run_model(const float* input, float* output);\n\n#ifdef __cplusplus\n}\n#endif\n\n#endif // MODEL_H`
+      },
+      {
+        name: 'model.c',
+        type: 'file',
+        path: '/output-c/model.c',
+        content: `#include "model.h"\n#include <stdio.h>\n#include <stdlib.h>\n\nvoid run_model(const float* input, float* output) {\n    // A simple mock calculation\n    for (int i = 0; i < 10; ++i) {\n        output[i] = input[i] * 2.0f;\n    }\n}\n\nint main() {\n    float input[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};\n    float output[10];\n    \n    run_model(input, output);\n    \n    printf("Output: ");\n    for (int i = 0; i < 10; ++i) {\n        printf("%f ", output[i]);\n    }\n    printf("\\n");\n    \n    return 0;\n}`
+      }
+    ]
+  },
   cpp: {
     name: 'output-cpp',
     type: 'directory',
     path: '/output-cpp',
     children: [
-      { name: 'model.h', type: 'file', path: '/output-cpp/model.h' },
-      { name: 'model.cpp', type: 'file', path: '/output-cpp/model.cpp' }
+      {
+        name: 'model.h',
+        type: 'file',
+        path: '/output-cpp/model.h',
+        content: `#ifndef MODEL_H\n#define MODEL_H\n\n#include <vector>\n\nclass Model {\npublic:\n    void run(const std::vector<float>& input, std::vector<float>& output);\n};\n\n#endif // MODEL_H`
+      },
+      {
+        name: 'model.cpp',
+        type: 'file',
+        path: '/output-cpp/model.cpp',
+        content: `#include "model.h"\n#include <iostream>\n\nvoid Model::run(const std::vector<float>& input, std::vector<float>& output) {\n    output.resize(input.size());\n    for (size_t i = 0; i < input.size(); ++i) {\n        output[i] = input[i] * 3.0f;\n    }\n}\n\nint main() {\n    Model model;\n    std::vector<float> input = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f};\n    std::vector<float> output;\n    \n    model.run(input, output);\n    \n    std::cout << "Output: ";\n    for (float val : output) {\n        std::cout << val << " ";\n    }\n    std::cout << "\\n";\n    \n    return 0;\n}`
+      }
     ]
   },
   coreml: {
@@ -411,7 +635,7 @@ export const RHS_TARGETS: Record<string, FileNode> = {
     name: 'output-keras',
     type: 'directory',
     path: '/output-keras',
-    children: [{ name: 'model.h5', type: 'file', path: '/output-keras/model.h5' }]
+    children: [{ name: 'model.py', type: 'file', path: '/output-keras/model.py' }]
   },
   mxnet: {
     name: 'output-mxnet',
@@ -429,12 +653,18 @@ export const RHS_TARGETS: Record<string, FileNode> = {
     name: 'output-cntk',
     type: 'directory',
     path: '/output-cntk',
-    children: [{ name: 'model.model', type: 'file', path: '/output-cntk/model.model' }]
+    children: [{ name: 'model.py', type: 'file', path: '/output-cntk/model.py' }]
   },
   pytorch: {
     name: 'output-pytorch',
     type: 'directory',
     path: '/output-pytorch',
     children: [{ name: 'module.py', type: 'file', path: '/output-pytorch/module.py' }]
+  },
+  onnxscript: {
+    name: 'output-onnxscript',
+    type: 'directory',
+    path: '/output-onnxscript',
+    children: [{ name: 'model.py', type: 'file', path: '/output-onnxscript/model.py' }]
   }
 };

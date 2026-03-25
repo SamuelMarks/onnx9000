@@ -43,4 +43,5 @@ Thousands of incredible models are trapped in outdated formats (`.caffemodel`, `
 The `onnx9000-frontend` package provides pure Python/TS parsers that read these legacy binary formats and translate them directly to the ONNX standard, allowing 10-year-old architectures to suddenly run flawlessly on modern WebGPU browsers with zero native installation.
 
 ## 6. Real-Time IDE Integration
+
 The `onnx9000` ecosystem treats the browser as a primary IDE platform. Integrated with Sphinx documentation (`apps/sphinx-demo-ui`), it empowers developers to experiment, edit, and transpile natively across MLIR, C++, PyTorch, and ONNX backends completely client-side.

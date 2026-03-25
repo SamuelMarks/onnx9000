@@ -26,18 +26,6 @@ def test_dce_rewire_string_literal_exact():
     assert g.outputs[0] == "new_out"
 
 
-def test_dce_rewire_string_literal_exact():
-    g = Graph("TestRewireStr")
-    g.outputs = ["old_out"]  # Use string instead of ValueInfo object
-
-    from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
-
-    cf = ControlFlowFoldingPass()
-    cf._rewire(g, "old_out", "new_out")
-
-    assert g.outputs[0] == "new_out"
-
-
 def test_cf_folding_with_subgraph_changed_trigger_cf():
     # Force sub_changed = True, to test local_changed = True and changed = True for ControlFlowFoldingPass
     g = Graph("TestSubTrigCF")

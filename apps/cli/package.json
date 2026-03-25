@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "uv run pytest tests"
+    "test": "uv run pytest tests",
+    "test_js": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/onnx2gguf": "workspace:*"
   }
 }

@@ -36,6 +36,7 @@
     "@onnx9000/iree-compiler": "workspace:^",
     "@onnx9000/optimum": "workspace:^",
     "cytoscape": "^3.33.1",
-    "monaco-editor": "^0.47.0"
+    "monaco-editor": "^0.47.0",
+    "pyodide": "^0.26.4"
   }
 }

@@ -5,6 +5,33 @@
 This document tracks the complete compliance and validation of the `onnx9000` ecosystem against the official ONNX Standard specifications.
 To ensure our zero-dependency pure-Python implementation is numerically and structurally identical to the massive C++ reference implementation (`onnxruntime`), we must execute the thousands of standard ONNX Backend Test Cases. These tests guarantee that `onnx9000` evaluates every single operator, shape, broadcasting rule, and mathematical edge case precisely according to the strict `ai.onnx` and `ai.onnx.ml` specifications across Opsets 1 through 21.
 
+<!-- COVERAGE_SUMMARY_START -->
+## Summary
+
+| Target | Supported | Total | Percentage |
+|---|---|---|---|
+| ONNX Spec | 160 | 200 | 80.00% |
+| Torch | 25 | 914 | 2.74% |
+| Tensorflow | 177 | 316 | 56.01% |
+| Keras | 47 | Unknown | N/A |
+| Jax | 1 | 134 | 0.75% |
+| Flax | 1 | 11 | 9.09% |
+| Paddle | 96 | Unknown | N/A |
+| Coremltools | 0 | 27 | 0.00% |
+| Sklearn | 115 | 43 | 100.00% |
+| Xgboost | 2 | Unknown | N/A |
+| Lightgbm | 2 | Unknown | N/A |
+| Catboost | 2 | 24 | 8.33% |
+| Pyspark | 1 | 22 | 4.55% |
+| H2o | 1 | Unknown | N/A |
+| Libsvm | 1 | Unknown | N/A |
+| Cntk | 0 | Unknown | N/A |
+| Mxnet | 0 | Unknown | N/A |
+| Caffe | 0 | Unknown | N/A |
+| Gguf | 2 | 207 | 0.97% |
+| Safetensors | 2 | 5 | 40.00% |
+<!-- COVERAGE_SUMMARY_END -->
+
 ## Exhaustive Parity Checklist
 
 ### 1. Test Runner Architecture & Environment (30+ items)

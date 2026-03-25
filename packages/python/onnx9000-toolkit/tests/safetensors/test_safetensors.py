@@ -70,10 +70,6 @@ def test_too_small_file():
             SafeTensors(path)
 
 
-def test_duplicate_key_save():
-    pass
-
-
 import json
 
 import numpy as np
@@ -504,6 +500,10 @@ def test_multiprocessing():
     import multiprocessing
 
     multiprocessing.set_start_method("spawn", force=True)
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "model.safetensors")
+        save_file({"a": b"2" * 1000}, p)
+        _read_loop_mp(p)
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
         save_file({"a": b"2" * 1000}, path)

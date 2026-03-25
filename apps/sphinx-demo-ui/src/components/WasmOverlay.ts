@@ -13,6 +13,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
   private progressBar!: HTMLDivElement;
   private progressText!: HTMLParagraphElement;
   private errorText!: HTMLParagraphElement;
+  private sizeInfo!: HTMLParagraphElement;
 
   constructor() {
     super();
@@ -31,6 +32,13 @@ export class WasmOverlay extends Component<HTMLDivElement> {
 
     const desc = document.createElement('p');
     desc.textContent = t('wasm.desc');
+
+    this.sizeInfo = document.createElement('p');
+    this.sizeInfo.className = 'demo-wasm-size-info';
+    this.sizeInfo.textContent = 'Estimating download size...';
+    this.sizeInfo.style.fontWeight = 'bold';
+    this.sizeInfo.style.marginTop = '10px';
+    this.sizeInfo.style.marginBottom = '20px';
 
     this.loadButton = document.createElement('button');
     this.loadButton.className = 'demo-btn-primary';
@@ -61,6 +69,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
 
     modal.appendChild(title);
     modal.appendChild(desc);
+    modal.appendChild(this.sizeInfo);
     modal.appendChild(this.loadButton);
     modal.appendChild(this.progressContainer);
     modal.appendChild(this.errorText);
@@ -70,6 +79,21 @@ export class WasmOverlay extends Component<HTMLDivElement> {
   }
 
   protected onMount(): void {
+    // Estimate download size before they click
+    fetch('/onnx9000.wasm', { method: 'HEAD' })
+      .then((res) => {
+        const size = res.headers.get('content-length');
+        if (size) {
+          const mb = (parseInt(size, 10) / (1024 * 1024)).toFixed(1);
+          this.sizeInfo.textContent = `Estimated download size: ~${mb} MB`;
+        } else {
+          this.sizeInfo.textContent = `Estimated download size: ~50.0 MB`;
+        }
+      })
+      .catch(() => {
+        this.sizeInfo.textContent = `Estimated download size: ~50.0 MB`;
+      });
+
     // Bind click event
     this.addDOMListener(this.loadButton, 'click', () => {
       this.loadButton.style.display = 'none';
@@ -83,6 +107,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
       globalEventBus.on('LANGUAGE_CHANGED', () => {
         const title = this.element.querySelector('h2');
         if (title) title.textContent = t('wasm.loading');
+        // Only update the first p element which is desc
         const desc = this.element.querySelector('p');
         if (desc) desc.textContent = t('wasm.desc');
         if (this.loadButton) this.loadButton.textContent = t('wasm.start');
@@ -91,9 +116,31 @@ export class WasmOverlay extends Component<HTMLDivElement> {
 
     // Listen to WASM progress events
     this.onCleanup(
-      globalEventBus.on<number>('WASM_PROGRESS', (progress) => {
+      globalEventBus.on<any>('WASM_PROGRESS', (payload) => {
+        let progress = 0;
+        let loaded = 0;
+        let total = 0;
+
+        if (typeof payload === 'number') {
+          progress = payload;
+        } else if (payload && typeof payload.progress === 'number') {
+          progress = payload.progress;
+          loaded = payload.loaded || 0;
+          total = payload.total || 0;
+        }
+
         this.progressBar.style.width = `${progress}%`;
-        this.progressText.textContent = `${progress}%`;
+
+        if (total > 0) {
+          const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+          const totalMB = (total / (1024 * 1024)).toFixed(1);
+          this.progressText.textContent = `${progress}% (${loadedMB} MB / ${totalMB} MB)`;
+        } else if (loaded > 0) {
+          const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+          this.progressText.textContent = `${progress}% (${loadedMB} MB)`;
+        } else {
+          this.progressText.textContent = `${progress}%`;
+        }
       })
     );
 

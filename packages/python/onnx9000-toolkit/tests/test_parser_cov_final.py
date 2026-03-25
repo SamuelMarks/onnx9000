@@ -12,6 +12,8 @@ def test_script_parser_missing_lines() -> None:
         """Tests the valid func functionality."""
         pass
 
+    valid_func()
+
     class MyClass:
         """Represents the MyClass class and its associated logic."""
 

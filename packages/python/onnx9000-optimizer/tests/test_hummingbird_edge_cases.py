@@ -7,61 +7,6 @@ from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 
 
-def test_1_tree_decision_tree_classifier() -> None:
-    """Tests the 1 tree decision tree classifier functionality."""
-    pass
-
-
-def test_100_tree_random_forest_classifier_binary() -> None:
-    """Tests the 100 tree random forest classifier binary functionality."""
-    pass
-
-
-def test_100_tree_random_forest_classifier_multiclass() -> None:
-    """Tests the 100 tree random forest classifier multiclass functionality."""
-    pass
-
-
-def test_100_tree_random_forest_regressor() -> None:
-    """Tests the 100 tree random forest regressor functionality."""
-    pass
-
-
-def test_lightgbm_gbdt_1000_trees() -> None:
-    """Tests the lightgbm gbdt 1000 trees functionality."""
-    pass
-
-
-def test_lightgbm_dart_100_trees() -> None:
-    """Tests the lightgbm dart 100 trees functionality."""
-    pass
-
-
-def test_xgboost_gblinear() -> None:
-    """Tests the xgboost gblinear functionality."""
-    pass
-
-
-def test_xgboost_gbtree_binary_logistic() -> None:
-    """Tests the xgboost gbtree binary logistic functionality."""
-    pass
-
-
-def test_xgboost_gbtree_multi_softprob() -> None:
-    """Tests the xgboost gbtree multi softprob functionality."""
-    pass
-
-
-def test_catboost_symmetric_trees() -> None:
-    """Tests the catboost symmetric trees functionality."""
-    pass
-
-
-def test_isolation_forest_anomaly_detection() -> None:
-    """Tests the isolation forest anomaly detection functionality."""
-    pass
-
-
 def test_empty_tree_structure_handling() -> None:
     """Tests the empty tree structure handling functionality."""
     engine = TranspilationEngine(TargetHardware.CPU)
@@ -96,31 +41,6 @@ def test_trees_with_perfectly_balanced_properties() -> None:
     engine.transpile("fake", force_strategy=Strategy.PERFECT_TREE_TRAVERSAL)
 
 
-def test_output_equivalency_sklearn_predict() -> None:
-    """Tests the output equivalency sklearn predict functionality."""
-    pass
-
-
-def test_output_equivalency_sklearn_predict_proba() -> None:
-    """Tests the output equivalency sklearn predict proba functionality."""
-    pass
-
-
-def test_output_equivalency_lightgbm() -> None:
-    """Tests the output equivalency lightgbm functionality."""
-    pass
-
-
-def test_output_equivalency_xgboost() -> None:
-    """Tests the output equivalency xgboost functionality."""
-    pass
-
-
-def test_output_equivalency_onnxruntime_native() -> None:
-    """Tests the output equivalency onnxruntime native functionality."""
-    pass
-
-
 def test_stress_test_10000_tree_random_forest() -> None:
     """Tests the stress test 10000 tree random forest functionality."""
     # compilation time < 2 seconds
@@ -138,26 +58,6 @@ def test_stress_test_10000_tree_random_forest() -> None:
     assert (end - start) < 2.0
 
 
-def test_stress_test_10000_tree_wasm_execution_time() -> None:
-    """Tests the stress test 10000 tree wasm execution time functionality."""
-    pass
-
-
-def test_identically_named_features_in_input_datasets() -> None:
-    """Tests the identically named features in input datasets functionality."""
-    pass
-
-
-def test_completely_collinear_features_cleanly() -> None:
-    """Tests the completely collinear features cleanly functionality."""
-    pass
-
-
-def test_deeply_imbalanced_multi_class_trees_without_nans() -> None:
-    """Tests the deeply imbalanced multi class trees without nans functionality."""
-    pass
-
-
 def test_prevent_integer_overflow_perfect_tree() -> None:
     """Tests the prevent integer overflow perfect tree functionality."""
     tree = TreeAbstractions()
@@ -167,9 +67,6 @@ def test_prevent_integer_overflow_perfect_tree() -> None:
     tree.add_node(-1, 0.0, -1, -1, 1.0)
 
     # Python ints don't overflow, but in C++ / capacity calculation we simulate it
-    try:
-        compiler = PerfectTreeCompiler(tree)
-        cap = compiler.capacity
-        assert isinstance(cap, int)
-    except Exception:
-        pass  # Overflow caught or memory limit
+    compiler = PerfectTreeCompiler(tree)
+    cap = compiler.capacity
+    assert isinstance(cap, int)

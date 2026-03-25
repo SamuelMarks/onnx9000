@@ -130,3 +130,8 @@ commit_msg*.txt
 test_opt_*.txt
 cov_out.txt
 test_*.js
+coverage.txt
+*remaining.json
+*_errors.json
+debug.ts
+run_pw_console.js

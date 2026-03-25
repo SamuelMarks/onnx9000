@@ -1,0 +1,19 @@
+{
+  "name": "@onnx9000/onnx2gguf",
+  "version": "1.0.0",
+  "description": "Zero-dependency GGUF Compiler and Llama.cpp Bridge for Web and Node.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

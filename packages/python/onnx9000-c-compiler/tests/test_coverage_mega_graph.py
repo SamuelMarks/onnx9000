@@ -81,13 +81,7 @@ def test_mega_graph_routing_coverage():
     except Exception as e:
         print("Infer failed:", e)
 
-    try:
-        compiler = C89Compiler(graph=graph)
-    except Exception as e:
-        for t in graph.tensors.values():
-            if type(t.shape) is int:
-                print("BAD TENSOR:", t.name, t.shape)
-        raise e
+    compiler = C89Compiler(graph=graph)
     _, c_code = compiler.generate()
     assert "ScatterElements" in c_code
     assert "CumSum" in c_code

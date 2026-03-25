@@ -141,7 +141,7 @@ def test_cf_folding_with_subgraph_initializers():
     assert changed
 
 
-def test_dce_sub_changed_local_changed2():
+def test_dce_sub_changed_local_changed2_1():
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
     t_c = Tensor("cond", (), DType.BOOL)
@@ -177,7 +177,7 @@ def test_dce_sub_changed_local_changed2():
     assert changed
 
 
-def test_dce_sub_changed_local_changed2():
+def test_dce_sub_changed_local_changed2_2():
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
     t_c = Tensor("cond", (), DType.BOOL)

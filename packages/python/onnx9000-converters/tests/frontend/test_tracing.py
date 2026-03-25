@@ -40,6 +40,15 @@ def test_jit_decorator() -> None:
         h = x @ w
         return h.relu()
 
+    class MockT:
+        def __matmul__(self, o):
+            return MockT()
+
+        def relu(self):
+            return self
+
+    simple_model(MockT(), MockT())
+
     x = Tensor(shape=(32, 128), dtype=DType.FLOAT32, name="x")
     w = onnx9000.converters.frontend.tensor.Parameter(
         shape=(128, 64), dtype=DType.FLOAT32, name="w"

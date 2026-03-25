@@ -13,7 +13,8 @@ def test_all_ops() -> None:
     dummy_tensor = Tensor(name="dummy", shape=(2, 2), dtype=DType.FLOAT32)
     for name, func in inspect.getmembers(ops, inspect.isfunction):
         if name == "record_op":
-            continue
+            func("dummy", [], {})
+
         sig = inspect.signature(func)
         args = []
         for param in sig.parameters.values():

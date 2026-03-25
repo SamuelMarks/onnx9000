@@ -49,30 +49,29 @@ export class RHSContainer extends Component<HTMLDivElement> {
     const val = this.dropdown.getValue();
     if (!val || !this.onnxBytes) return;
 
-    if (val === 'cpp') {
-      console.log('[stdout] Compiling ONNX to C++...');
+    if (val === 'cpp' || val === 'c') {
+      const isCpp = val === 'cpp';
+      const langName = isCpp ? 'C++' : 'C';
+      const ext = isCpp ? 'cpp' : 'c';
+      const outputDir = `/output-${val}`;
+      console.log(`[stdout] Compiling ONNX to ${langName}...`);
       try {
-        const result = await compileOnnxToC(this.onnxBytes, { prefix: 'model_', emitCpp: true });
+        const result = await compileOnnxToC(this.onnxBytes, { prefix: 'model_', emitCpp: isCpp });
 
-        const cppTarget = RHS_TARGETS.cpp;
-        if (cppTarget && cppTarget.children) {
-          const headerNode = cppTarget.children.find((c) => c.name === 'model.h');
-          const sourceNode = cppTarget.children.find((c) => c.name === 'model.cpp');
+        const target = RHS_TARGETS[val];
+        if (target && target.children) {
+          const headerNode = target.children.find((c) => c.name === 'model.h');
+          const sourceNode = target.children.find((c) => c.name === `model.${ext}`);
 
           if (headerNode) headerNode.content = result.header;
           if (sourceNode) sourceNode.content = result.source;
         }
 
-        // Update editor if looking at one of these files
-        const selectedPath = this.tree.getSelectedPath();
-        if (selectedPath === '/output-cpp/model.h') {
-          this.editor.openFile('/output-cpp/model.h', result.header, 'cpp');
-        } else if (selectedPath === '/output-cpp/model.cpp') {
-          this.editor.openFile('/output-cpp/model.cpp', result.source, 'cpp');
-        }
-        console.log('[stdout] C++ compilation complete.');
+        // Auto-select and open the newly converted source file
+        this.tree.selectFile(`${outputDir}/model.${ext}`);
+        console.log(`[stdout] ${langName} compilation complete.`, result);
       } catch (e: any) {
-        console.error(`[stderr] C++ compilation failed: ${e.message}`);
+        console.error(`[stderr] ${langName} compilation failed: ${e.message}`);
       }
     } else if (val === 'coreml') {
       console.log('[stdout] Compiling ONNX to CoreML...');
@@ -86,7 +85,25 @@ export class RHSContainer extends Component<HTMLDivElement> {
           mlProgram: program
         };
 
-        const builder = buildMLPackage(model as any);
+        // Extract weights from the parsed graph for the CoreML package
+        let totalWeightsLength = 0;
+        const weightChunks: Uint8Array[] = [];
+        for (const initName of graph.initializers) {
+          const t = graph.tensors[initName];
+          if (t && t.data) {
+            const buf = new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength);
+            weightChunks.push(buf);
+            totalWeightsLength += buf.length;
+          }
+        }
+        const concatenatedWeights = new Uint8Array(totalWeightsLength);
+        let offset = 0;
+        for (const chunk of weightChunks) {
+          concatenatedWeights.set(chunk, offset);
+          offset += chunk.length;
+        }
+
+        const builder = buildMLPackage(model as any, concatenatedWeights);
         const structure = builder.buildDirectoryStructure();
         const manifestBytes = structure.get('Manifest.json');
 
@@ -98,10 +115,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
             if (manifestNode) manifestNode.content = manifestJson;
           }
 
-          const selectedPath = this.tree.getSelectedPath();
-          if (selectedPath === '/model.mlpackage/Manifest.json') {
-            this.editor.openFile('/model.mlpackage/Manifest.json', manifestJson, 'json');
-          }
+          this.tree.selectFile('/model.mlpackage/Manifest.json');
         }
         console.log('[stdout] CoreML compilation complete.');
       } catch (e: any) {
@@ -122,14 +136,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
             pyNode.content = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
         }
 
-        const selectedPath = this.tree.getSelectedPath();
-        if (selectedPath === '/output-pytorch/module.py') {
-          this.editor.openFile(
-            '/output-pytorch/module.py',
-            typeof output === 'string' ? output : JSON.stringify(output, null, 2),
-            'python'
-          );
-        }
+        this.tree.selectFile('/output-pytorch/module.py');
         console.log('[stdout] PyTorch conversion complete.');
       } catch (e: any) {
         console.error(`[stderr] PyTorch conversion failed: ${e.message}`);
@@ -142,12 +149,11 @@ export class RHSContainer extends Component<HTMLDivElement> {
           level: oliveConfig.quantizationLevel === 'INT8' ? 'O3' : 'O2',
           disableFusion: !oliveConfig.enableTransformerFusion
         };
-        const optimizedArrayBuffer = await optimize(this.onnxBytes.slice().buffer, optimizeConfig);
-
-        const reader = new BufferReader(new Uint8Array(optimizedArrayBuffer));
-        const graph = await parseModelProto(reader);
+        const reader = new BufferReader(this.onnxBytes);
+        const originalGraph = await parseModelProto(reader);
+        const graph = await optimize(originalGraph, optimizeConfig);
         const vizGraph: VizGraph = {
-          nodes: graph.nodes.map((n: any) => ({
+          nodes: (graph as any).nodes.map((n: any) => ({
             id: n.name || Math.random().toString(),
             name: n.name || '',
             opType: n.opType,
@@ -155,8 +161,8 @@ export class RHSContainer extends Component<HTMLDivElement> {
             outputs: n.outputs,
             attributes: {}
           })),
-          inputs: graph.inputs.map((i: any) => ({ name: i.name, type: i.dtype })),
-          outputs: graph.outputs.map((o: any) => ({ name: o.name, type: o.dtype }))
+          inputs: (graph as any).inputs.map((i: any) => ({ name: i.name, type: i.dtype })),
+          outputs: (graph as any).outputs.map((o: any) => ({ name: o.name, type: o.dtype }))
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -166,10 +172,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           if (optNode) optNode.content = astText;
         }
 
-        const selectedPath = this.tree.getSelectedPath();
-        if (selectedPath === '/olive-optimized/optimized_model.onnx') {
-          this.editor.openFile('/olive-optimized/optimized_model.onnx', astText, 'plaintext');
-        }
+        this.tree.selectFile('/olive-optimized/optimized_model.onnx');
         console.log('[stdout] Olive optimization complete.');
       } catch (e: any) {
         console.error(`[stderr] Olive optimization failed: ${e.message}`);
@@ -189,10 +192,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           if (mlirNode) mlirNode.content = mlirText;
         }
 
-        const selectedPath = this.tree.getSelectedPath();
-        if (selectedPath === '/output-mlir/graph.mlir') {
-          this.editor.openFile('/output-mlir/graph.mlir', mlirText, 'plaintext');
-        }
+        this.tree.selectFile('/output-mlir/graph.mlir');
         console.log('[stdout] MLIR generation complete.');
       } catch (e: any) {
         console.error(`[stderr] MLIR generation failed: ${e.message}`);
@@ -200,12 +200,11 @@ export class RHSContainer extends Component<HTMLDivElement> {
     } else if (val === 'onnx-simplifier') {
       console.log('[stdout] Simplifying ONNX model...');
       try {
-        const simplifiedArrayBuffer = await simplify(this.onnxBytes.slice().buffer);
-
-        const reader = new BufferReader(new Uint8Array(simplifiedArrayBuffer));
-        const graph = await parseModelProto(reader);
+        const reader = new BufferReader(this.onnxBytes);
+        const originalGraph = await parseModelProto(reader);
+        const graph = await simplify(originalGraph);
         const vizGraph: VizGraph = {
-          nodes: graph.nodes.map((n: any) => ({
+          nodes: (graph as any).nodes.map((n: any) => ({
             id: n.name || Math.random().toString(),
             name: n.name || '',
             opType: n.opType,
@@ -213,8 +212,8 @@ export class RHSContainer extends Component<HTMLDivElement> {
             outputs: n.outputs,
             attributes: {}
           })),
-          inputs: graph.inputs.map((i: any) => ({ name: i.name, type: i.dtype })),
-          outputs: graph.outputs.map((o: any) => ({ name: o.name, type: o.dtype }))
+          inputs: (graph as any).inputs.map((i: any) => ({ name: i.name, type: i.dtype })),
+          outputs: (graph as any).outputs.map((o: any) => ({ name: o.name, type: o.dtype }))
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -224,15 +223,12 @@ export class RHSContainer extends Component<HTMLDivElement> {
           if (optNode) optNode.content = astText;
         }
 
-        const selectedPath = this.tree.getSelectedPath();
-        if (selectedPath === '/simplified-model/simplified.onnx') {
-          this.editor.openFile('/simplified-model/simplified.onnx', astText, 'plaintext');
-        }
+        this.tree.selectFile('/simplified-model/simplified.onnx');
         console.log('[stdout] Simplification complete.');
       } catch (e: any) {
         console.error(`[stderr] Simplification failed: ${e.message}`);
       }
-    } else if (['caffe', 'keras', 'mxnet', 'tensorflow', 'cntk'].includes(val)) {
+    } else if (['caffe', 'keras', 'mxnet', 'tensorflow', 'cntk', 'onnxscript'].includes(val)) {
       console.log(`[stdout] Converting ONNX to ${val}...`);
       try {
         const file = new File([new Blob([this.onnxBytes as any])], 'model.onnx', {
@@ -253,20 +249,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           }
         }
 
-        const selectedPath = this.tree.getSelectedPath();
-        if (filePath && selectedPath === filePath) {
-          const ext = filePath.split('.').pop() || 'plaintext';
-          let lang = 'plaintext';
-          if (ext === 'json') lang = 'json';
-          else if (ext === 'py') lang = 'python';
-          else if (ext === 'cpp' || ext === 'h') lang = 'cpp';
-
-          this.editor.openFile(
-            filePath,
-            typeof output === 'string' ? output : JSON.stringify(output, null, 2),
-            lang
-          );
-        }
+        if (filePath) this.tree.selectFile(filePath);
         console.log(`[stdout] ${val} conversion complete.`);
       } catch (e: any) {
         console.error(`[stderr] ${val} conversion failed: ${e.message}`);
@@ -300,12 +283,18 @@ export class RHSContainer extends Component<HTMLDivElement> {
     actionContainer.style.alignItems = 'center';
     actionContainer.style.gap = '8px';
 
+    const initialTarget =
+      document.getElementById('interactive-demo-container')?.getAttribute('data-initial-target') ||
+      localStorage.getItem('onnx9000-demo-rhs-target') ||
+      'c';
+
     this.dropdown = new Dropdown({
       items: [
         { value: 'onnx', label: '.onnx' },
         { value: 'olive', label: 'Optimize (Olive)' },
         { value: 'onnx-simplifier', label: 'Simplify (onnx-simplifier)' },
         { value: 'mlir', label: 'MLIR' },
+        { value: 'c', label: 'C' },
         { value: 'cpp', label: 'C++' },
         { value: 'coreml', label: 'Apple CoreML' },
         { value: 'caffe', label: 'Caffe' },
@@ -313,15 +302,11 @@ export class RHSContainer extends Component<HTMLDivElement> {
         { value: 'mxnet', label: 'MXNet' },
         { value: 'tensorflow', label: 'TensorFlow' },
         { value: 'cntk', label: 'CNTK' },
-        { value: 'pytorch', label: 'PyTorch' }
+        { value: 'pytorch', label: 'PyTorch' },
+        { value: 'onnxscript', label: 'ONNX Script' }
       ],
       placeholder: 'Select Target Framework...',
-      initialValue:
-        document
-          .getElementById('interactive-demo-container')
-          ?.getAttribute('data-initial-target') ||
-        localStorage.getItem('onnx9000-demo-rhs-target') ||
-        undefined,
+      initialValue: initialTarget,
       onChange: (val) => {
         if (this.olivePanel) {
           (this.olivePanel as any).element.style.display = val === 'olive' ? 'block' : 'none';
@@ -410,13 +395,13 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
     // 3. Tree (Top)
     this.tree = new FileTree({
-      root: RHS_TARGETS.onnx,
+      root: RHS_TARGETS[initialTarget] || RHS_TARGETS.onnx,
       onSelect: (path) => {
         const node = this.tree['findNode'](this.tree['options'].root, path);
         const content = node && node.content ? node.content : '// Binary representation of ' + path;
         const ext = path.split('.').pop();
         let lang = 'plaintext';
-        if (ext === 'cpp' || ext === 'h') lang = 'cpp';
+        if (ext === 'cpp' || ext === 'h' || ext === 'c') lang = 'cpp';
         if (ext === 'json') lang = 'json';
         if (ext === 'py') lang = 'python';
 

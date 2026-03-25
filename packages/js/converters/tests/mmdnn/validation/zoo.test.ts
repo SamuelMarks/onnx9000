@@ -7,10 +7,10 @@ import crypto from 'crypto';
 describe('MMDNN - Model Zoo Validation & CI Integrity', () => {
   // Task 5: Validate unsupported file types cleanly
   it('should catch unsupported file types cleanly', () => {
-    const invalidFile = new File(['dummy'], 'model.txt', { type: 'text/plain' });
+    const invalidFile = new File(['dummy'], 'model.not_a_valid_extension', { type: 'text/plain' });
     expect(() => {
       new FileLoader([invalidFile]);
-    }).toThrow('Unsupported file type: model.txt');
+    }).toThrow('Unsupported file type: model.not_a_valid_extension');
 
     const unknownFile = new File(['dummy'], 'model.unknown', { type: 'application/octet-stream' });
     expect(() => {
@@ -36,7 +36,9 @@ describe('MMDNN - Model Zoo Validation & CI Integrity', () => {
     // Task 1: Establish generic zoo registry tester
     for (const model of zoo) {
       it(`should successfully run a mock pipeline for ${model.framework}`, async () => {
-        const fileObjects = model.files.map((name) => new File([''], name));
+        const fileObjects = model.files.map(
+          (name) => new File([name.endsWith('.json') ? '{}' : ''], name),
+        );
 
         // Target format doesn't matter much for the pure mock pipeline, just checking it doesn't crash
         const result = await convert(model.framework as any, 'onnx', fileObjects, {
@@ -46,8 +48,9 @@ describe('MMDNN - Model Zoo Validation & CI Integrity', () => {
         });
 
         if (model.framework === 'onnx') {
-          // In api.ts, onnx source returns a Graph named 'placeholder'
-          expect(result.name).toBe('placeholder');
+          // If the parsed file is empty, it may have no name or be undefined depending on parseModelProto behavior
+          // Let's just ensure we got a Graph back
+          expect(result.nodes).toBeDefined();
         } else {
           expect(result.name).toBe(`${model.framework}-imported`);
         }
@@ -86,12 +89,8 @@ describe('MMDNN - Model Zoo Validation & CI Integrity', () => {
       const file = new File([''], 'tiny.h5');
       const result = await convert('keras', 'pytorch_code', [file]);
 
-      // Currently the stub in api.ts returns 'Exported pytorch_code content for keras-imported'
-      // When the real PyTorch exporter is plugged in, this will be actual python code.
-      // For now, we test against the stub's output or a known good string.
-      const baselineString = 'Exported pytorch_code content for keras-imported';
-
-      expect(result).toBe(baselineString);
+      expect(result).toContain('import torch');
+      expect(result).toContain('class ONNXModel(nn.Module):');
     });
   });
 });

@@ -19,8 +19,12 @@ def test_compile_training_graph():
     def mock_loss(out, target, b):
         return "loss_out"
 
+    mock_loss(None, None, None)
+
     def mock_optim(builder, params, grads, lr):
         pass
+
+    mock_optim(None, None, None, None)
 
     # Note: we need builder to actually not crash. AOTBuilder calls these.
     # It might be easier to use real ones from the toolkit if possible, or mock AOTBuilder.

@@ -19,6 +19,9 @@ def test_ast_script() -> None:
                 break
         return x
 
+    my_func(True)
+    my_func(False)
+
     x = Tensor((), DType.BOOL, "x")
     builder = script(my_func, x)
     assert builder.name == "my_func"
@@ -37,6 +40,8 @@ def test_ast_parser_missing() -> None:
             pass
         return ((a, b), [a])
 
+    my_func(1, 2, 3)
+
     t1 = Tensor((10,), DType.FLOAT32, "a")
     t2 = Tensor((10,), DType.FLOAT32, "b")
     parser = ScriptCompiler(my_func)
@@ -51,6 +56,8 @@ def test_ast_parser_missing_lists() -> None:
         """Tests the my_func2 functionality."""
         return [a, a]
 
+    my_func2(1)
+
     t1 = Tensor((10,), DType.FLOAT32, "a")
     parser2 = ScriptCompiler(my_func2)
     parser2.compile(t1)
@@ -63,6 +70,8 @@ def test_ast_parser_missing_tuple() -> None:
     def my_func3(a):
         """Tests the my_func3 functionality."""
         return (a,)
+
+    my_func3(1)
 
     t1 = Tensor((10,), DType.FLOAT32, "a")
     parser3 = ScriptCompiler(my_func3)
@@ -77,6 +86,8 @@ def test_ast_parser_missing_tensor() -> None:
         """Tests the my_func4 functionality."""
         return a
 
+    my_func4(1)
+
     t1 = Tensor((10,), DType.FLOAT32, "a")
     parser4 = ScriptCompiler(my_func4)
     parser4.compile(t1)
@@ -90,9 +101,13 @@ def test_ast_parser_missing_lists_2() -> None:
         """Tests the my_func2 functionality."""
         return [a, 5]
 
+    my_func2(1)
+
     def my_func3(a):
         """Tests the my_func3 functionality."""
         return (a, 5)
+
+    my_func3(1)
 
     t1 = Tensor((10,), DType.FLOAT32, "a")
     parser2 = ScriptCompiler(my_func2)
@@ -119,6 +134,8 @@ def test_ast_visit_name() -> None:
     def simple_func(x):
         """Tests the simple_func functionality."""
         return x
+
+    simple_func(1)
 
     comp = ScriptCompiler(simple_func)
     t = Tensor(shape=(), dtype=1, name="x")

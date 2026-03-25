@@ -12,8 +12,12 @@ def test_compile_training_graph_mock(mock_aot_builder):
     def loss_fn(a, b, c):
         return "loss"
 
+    loss_fn(None, None, None)
+
     def opt_fn(a, b, c, d):
         return None
+
+    opt_fn(None, None, None, None)
 
     mock_instance = mock_aot_builder.return_value
     mock_instance.build_training_graph.return_value = g

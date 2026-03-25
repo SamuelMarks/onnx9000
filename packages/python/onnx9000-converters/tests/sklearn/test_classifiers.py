@@ -59,14 +59,12 @@ def test_all_sklearn() -> None:
         for func_name in dir(mod):
             if func_name.startswith("convert_") or func_name.startswith("build_"):
                 func = getattr(mod, func_name)
-                try:
+                from contextlib import suppress
+
+                with suppress(Exception):
                     # Attempt signature 1
                     func(MockEst(), ["in"], g)
-                except Exception:
-                    pass
 
-                try:
+                with suppress(Exception):
                     # Attempt signature 2 (builder)
                     func(MockEst(), "out", MockEst(), "in")
-                except Exception:
-                    pass

@@ -11,6 +11,9 @@ export default defineConfig({
     },
     outDir: 'dist'
   },
+  optimizeDeps: {
+    exclude: ['pyodide']
+  },
   test: {
     environment: 'jsdom',
     alias: [{ find: /^monaco-editor.*/, replacement: resolve(__dirname, 'tests/monaco-mock.ts') }],

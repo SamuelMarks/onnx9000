@@ -108,6 +108,17 @@ def copy_frontend_assets(app: Sphinx, exc: Exception) -> None:
 
     shutil.copytree(dist_dir, out_static_dir)
 
+    # Copy pyodide
+    pyodide_src = os.path.abspath(os.path.join(app.srcdir, "../node_modules/pyodide"))
+    if os.path.exists(pyodide_src):
+        for item in os.listdir(pyodide_src):
+            src_item = os.path.join(pyodide_src, item)
+            dst_item = os.path.join(out_static_dir, item)
+            if os.path.isdir(src_item):
+                shutil.copytree(src_item, dst_item, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src_item, dst_item)
+
 
 def setup(app: Sphinx) -> dict[str, str]:
     """

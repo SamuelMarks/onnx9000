@@ -1,0 +1,16 @@
+{
+  "version": "0.8.5",
+  "objects": [
+    "config",
+    "core",
+    "errors",
+    "ids",
+    "jax_utils",
+    "linen",
+    "serialization",
+    "struct",
+    "traceback_util",
+    "traverse_util",
+    "typing"
+  ]
+}

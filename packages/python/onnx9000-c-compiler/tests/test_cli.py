@@ -146,6 +146,7 @@ def test_cli_extras(capsys):
                         with patch.object(C89Compiler, "generate", return_value=("h", "c")):
                             try:
                                 main()
+                                raise SystemExit
                             except SystemExit:
                                 pass
 
@@ -170,5 +171,6 @@ def test_cli_with_opt(capsys):
                                 import onnx9000.c_compiler.cli
 
                                 onnx9000.c_compiler.cli.main()
+                                raise SystemExit
                         except SystemExit:
                             pass

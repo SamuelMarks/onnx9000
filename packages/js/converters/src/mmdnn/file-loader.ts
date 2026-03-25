@@ -20,6 +20,10 @@ export class FileLoader {
       '.mlmodel', // coreml
       '.zip',
       '.onnx', // onnx
+      '.pbtxt', // tensorflow text proto
+      '.pb', // tensorflow binary proto
+      '.txt', // generic fallback
+      '.py', // onnxscript
     ];
 
     for (const f of files) {

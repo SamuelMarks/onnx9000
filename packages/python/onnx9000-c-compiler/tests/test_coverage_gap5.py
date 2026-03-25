@@ -43,3 +43,16 @@ def test_quant_matmul_nd():
     generate_qlinear_matmul(
         b, n, tY, tA, sA, zA, tB, sB, zB, sY, zY, "A", "sA", "zA", "B", "sB", "zB", "sY", "zY", "Y"
     )
+
+
+def test_subnormal_float():
+    from onnx9000.c_compiler.data_unpacker import unpack_bytes_to_str
+    from onnx9000.core.dtypes import DType
+    import struct
+
+    data = struct.pack("<f", 1e-35)
+    result = unpack_bytes_to_str(data, DType.FLOAT32)
+    assert result == "0.0f"
+    data64 = struct.pack("<d", 1e-35)
+    result64 = unpack_bytes_to_str(data64, DType.FLOAT64)
+    assert result64 == "0.0f"

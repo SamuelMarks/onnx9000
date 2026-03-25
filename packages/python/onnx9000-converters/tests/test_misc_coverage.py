@@ -12,9 +12,13 @@ def test_ast_parser_miss() -> None:
         """Tests the f1 functionality."""
         return (x, y)
 
+    f1(1)
+
     def f2(x):
         """Tests the f2 functionality."""
         return [x]
+
+    f2(1)
 
     sc1 = ScriptCompiler(f1)
     sc1.compile(Tensor((1,), DType.FLOAT32))

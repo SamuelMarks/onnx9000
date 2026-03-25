@@ -259,6 +259,7 @@ export class ONNXToMILConverter {
       Log: 'log',
       Sqrt: 'sqrt',
       Sin: 'sin',
+      Identity: 'identity',
       Cos: 'cos',
       Tan: 'tan',
       Asin: 'asin',

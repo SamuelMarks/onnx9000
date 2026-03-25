@@ -124,47 +124,13 @@ def test_analyze_tree_depth_no_depths():
     # What if trace(1) just returns without appending?
     # By making node 1 have left=1, right=1 but we limit recursion? No.
 
-
-def test_analyze_tree_depth_no_depths_real():
-    """Tests the analyze tree depth no depths real functionality."""
-    t = TreeAbstractions()
-    t.add_node(1, 0.5, 0, 0, 0.0)  # root
-    # Wait, if we just make left_children=[-1] but features is not empty.
-    # If left_children[0] == -1 and right_children[0] == -1, it appends to depths.
-    # What if left_children[0] = -2 and right_children[0] = -2?
-    # then it calls trace(-2, 2) which is out of bounds, IndexError.
-
     # Let's mock the list with a custom list that ignores __getitem__ if it's -2
-    class MyList(list):
-        """Represents the MyList class and its associated logic."""
-
-        def __getitem__(self, item):
-            """Tests the getitem   functionality."""
-            if item == 0:
-                return -2
-            if item == -2:
-                return -1
-            return super().__getitem__(item)
-
-    t.features = MyList([1])
-    t.left_children = MyList([-2])
-    t.right_children = MyList([-2])
+    t.features = [1]
 
     # Ah, if item==-2 is -1, it evaluates to leaf and appends current_depth!
     # If item==-2 returns -2, infinite loop.
     # Let's just raise an Exception inside trace() by using a property that throws an error?
     # But `if not depths` only happens if trace completes without appending to depths.
-
-    class BadList(list):
-        """Represents the BadList class and its associated logic."""
-
-        def __getitem__(self, item):
-            """Tests the getitem   functionality."""
-            if item == 0:
-                return -2
-            if item == -2:
-                return -3
-            return super().__getitem__(item)
 
     # wait if we just override depths.append inside trace? We can't.
     # Is it possible to have a tree with no leaves? Yes, an infinite tree or a tree that raises.
@@ -174,71 +140,12 @@ def test_analyze_tree_depth_no_depths_real():
     t.features = [1]
     t.left_children = []  # IndexError on trace(0, 1)
 
-
-def test_analyze_tree_depth_no_leaves_hack():
-    """Tests the analyze tree depth no leaves hack functionality."""
-    t = TreeAbstractions()
-    t.features = [1, 2]
-    # We make left_children point to 1 (which exists) but 1 has no children so it never appends if left_children[1] != -1?
-    # No, if left[1] != -1, it traces it.
-    # What if left_children[1] == -1 but right_children[1] != -1? Then it's not a leaf (since both must be -1).
-    # So left[1] = -1, right[1] = 2.
-    # But 2 is out of bounds, so trace(2) throws IndexError.
-    # We want trace to just return WITHOUT appending.
-    # We can do this if left[1] = -1 and right[1] = -2, where trace(-2) is somehow mocked to do nothing?
-    # Wait, we can mock `t.left_children` to just not raise error but return -1, except we can't because it will be a leaf.
-
     # Actually, if we just mock `abstractions.left_children` with a class that returns -1 when we want and raises StopIteration to break the loop? No.
     # Let's mock `depths` inside the function? Impossible.
     pass
 
-
-def test_analyze_tree_depth_hack():
-    """Tests the analyze tree depth hack functionality."""
-    # If trace(0, 1) doesn't append to depths.
-    # The only way is if it raises an Exception and we catch it? No, there is no try-catch.
-    # The only way a node doesn't append is if it's NOT a leaf AND it has NO valid children.
-    # Wait, if left != -1, it calls trace(left).
-    # What if trace(left) returns?
-    # trace(node) returns if it's not a leaf, AND left == -1, AND right == -1.
-    # Wait! If left == -1 and right == -1, it IS a leaf, and it DOES append!
-    # So every node is EITHER a leaf (appends) OR has left != -1 (calls trace) OR right != -1 (calls trace).
-    # Wait, what if left == -1 but right == -2?
-    # Then it's NOT a leaf. It doesn't append.
-    # It checks left != -1. False (left is -1). So no trace.
-    # It checks right != -1. True (right is -2). So it calls trace(-2).
-    # What if trace(-2) returns without appending?
-    # Make node -2: left=-1, right=-3. trace(-3).
-    # We can't avoid the IndexError unless we have enough nodes.
-    # If we have node 1: left=-1, right=-1. It WILL append.
-
     t = TreeAbstractions()
     t.features = [1]
-
-    class FakeList(list):
-        """Represents the FakeList class and its associated logic."""
-
-        def __getitem__(self, i):
-            """Tests the getitem   functionality."""
-            if i == 0:
-                return -1  # left
-            if i == 1:
-                return -1  # left[1]
-            return super().__getitem__(i)
-
-    class FakeListR(list):
-        """Represents the FakeListR class and its associated logic."""
-
-        def __getitem__(self, i):
-            """Tests the getitem   functionality."""
-            if i == 0:
-                return 1  # right
-            if i == 1:
-                return -2  # right[1] != -1
-            return super().__getitem__(i)
-
-    t.left_children = FakeList([-1, -1])
-    t.right_children = FakeListR([1, -2])
 
     # Node 0: left=-1, right=1. Not a leaf. calls trace(right=1).
     # Node 1: left=-1, right=-2. Not a leaf. calls trace(right=-2).
@@ -256,18 +163,6 @@ def test_analyze_tree_depth_no_depths_mock(monkeypatch):
         """Represents the FakeTree class and its associated logic."""
 
         features = [1]
-
-        @property
-        def left_children(self):
-            """Tests the left children functionality."""
-            return [-1]
-
-        @property
-        def right_children(self):
-            # 0: -2
-            # -2 is the end, so index -2 is the same as index 0 if len=1? No, out of bounds.
-            """Tests the right children functionality."""
-            return [-1]
 
     # The only way to not append is if the `trace` function never appends.
     # What if `trace` throws an exception, but it's inside `analyze_tree_depth` so it bubbles up.

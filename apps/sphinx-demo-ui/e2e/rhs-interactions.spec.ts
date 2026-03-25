@@ -11,7 +11,7 @@ test.describe('RHS (Target) Implementation', () => {
         const dummyWasm = Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
         await route.fulfill({ status: 200, contentType: 'application/wasm', body: dummyWasm });
       });
-      await overlayBtn.click();
+      await overlayBtn.click({ force: true });
       await page.locator('.demo-wasm-overlay').waitFor({ state: 'hidden' });
     }
   });
@@ -23,18 +23,19 @@ test.describe('RHS (Target) Implementation', () => {
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
+    const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Default tree shows 'output-onnx'
     await expect(tree).toContainText('output-onnx');
     await expect(tree).toContainText('model.onnx');
 
     // Click to open dropdown
-    await button.click();
+    await button.click({ force: true });
     await expect(listbox).toBeVisible();
 
     // Select PyTorch
     const item = listbox.locator('.demo-dropdown-item').filter({ hasText: 'PyTorch' });
-    await item.click();
+    await item.click({ force: true });
 
     // Verify tree updated to output-pytorch
     await expect(tree).toContainText('output-pytorch');
@@ -52,7 +53,7 @@ test.describe('RHS (Target) Implementation', () => {
 
     // Click model.onnx
     const file1 = tree.locator('.demo-tree-file').filter({ hasText: 'model.onnx' });
-    await file1.click();
+    await file1.click({ force: true });
 
     // Editor updates
     await expect(editorLines).toContainText('// Binary representation of /output-onnx/model.onnx');
@@ -66,13 +67,12 @@ test.describe('RHS (Target) Implementation', () => {
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'C++' }).click();
+    await button.click({ force: true });
+    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'C++' }).click({ force: true });
 
-    await tree.locator('.demo-tree-file').filter({ hasText: 'model.h' }).click();
-    await expect(editorLines).toContainText('/* Header for model_ */');
+    await expect(editorLines).toContainText('namespace model_');
   });
 
   test('should compile CoreML when Apple CoreML target is selected', async ({ page }) => {
@@ -83,12 +83,14 @@ test.describe('RHS (Target) Implementation', () => {
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'Apple CoreML' }).click();
+    await button.click({ force: true });
+    await listbox
+      .locator('.demo-dropdown-item')
+      .filter({ hasText: 'Apple CoreML' })
+      .click({ force: true });
 
-    await tree.locator('.demo-tree-file').filter({ hasText: 'Manifest.json' }).click();
     // the manifest structure starts with {
     await expect(editorLines).toContainText('{');
   });
@@ -101,13 +103,15 @@ test.describe('RHS (Target) Implementation', () => {
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'PyTorch' }).click();
+    await button.click({ force: true });
+    await listbox
+      .locator('.demo-dropdown-item')
+      .filter({ hasText: 'PyTorch' })
+      .click({ force: true });
 
-    await tree.locator('.demo-tree-file').filter({ hasText: 'module.py' }).click();
-    await expect(editorLines).toContainText('Exported pytorch_code content'); // the mocked converter returns Exported pytorch_code content for placeholder
+    await expect(editorLines).toContainText('import torch'); // the mocked converter returns Exported pytorch_code content for placeholder
   });
 
   test('should optimize Olive when Optimize (Olive) target is selected', async ({ page }) => {
@@ -115,16 +119,18 @@ test.describe('RHS (Target) Implementation', () => {
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
+    const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'Optimize (Olive)' }).click();
+    await button.click({ force: true });
+    await listbox
+      .locator('.demo-dropdown-item')
+      .filter({ hasText: 'Optimize (Olive)' })
+      .click({ force: true });
 
-    await expect(
-      tree.locator('.demo-tree-file').filter({ hasText: 'optimized_model.onnx' })
-    ).toBeVisible();
+    await expect(editorLines).toContainText('producer_name');
   });
 
   test('should generate MLIR when MLIR target is selected', async ({ page }) => {
@@ -135,12 +141,11 @@ test.describe('RHS (Target) Implementation', () => {
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'MLIR' }).click();
+    await button.click({ force: true });
+    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'MLIR' }).click({ force: true });
 
-    await tree.locator('.demo-tree-file').filter({ hasText: 'graph.mlir' }).click();
     await expect(editorLines).toContainText('module');
   });
 
@@ -151,19 +156,18 @@ test.describe('RHS (Target) Implementation', () => {
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
+    const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
+    await button.click({ force: true });
     await listbox
       .locator('.demo-dropdown-item')
       .filter({ hasText: 'Simplify (onnx-simplifier)' })
-      .click();
+      .click({ force: true });
 
-    await expect(
-      tree.locator('.demo-tree-file').filter({ hasText: 'simplified.onnx' })
-    ).toBeVisible();
+    await expect(editorLines).toContainText('producer_name');
   });
 
   test('should convert to target when Caffe is selected', async ({ page }) => {
@@ -174,12 +178,32 @@ test.describe('RHS (Target) Implementation', () => {
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
     // Generate an ONNX binary first
-    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click();
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
 
-    await button.click();
-    await listbox.locator('.demo-dropdown-item').filter({ hasText: 'Caffe' }).click();
+    await button.click({ force: true });
+    await listbox
+      .locator('.demo-dropdown-item')
+      .filter({ hasText: 'Caffe' })
+      .click({ force: true });
 
-    await tree.locator('.demo-tree-file').filter({ hasText: 'model.prototxt' }).click();
-    await expect(editorLines).toContainText('Exported caffe content');
+    await expect(editorLines).toContainText('layer {');
+  });
+
+  test('should convert to Keras when Keras is selected', async ({ page }) => {
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const button = dropdown.locator('.demo-dropdown-button');
+    const listbox = dropdown.locator('.demo-dropdown-listbox');
+    const tree = page.locator('.demo-pane-rhs .demo-file-tree');
+    const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
+
+    await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
+
+    await button.click({ force: true });
+    await listbox
+      .locator('.demo-dropdown-item')
+      .filter({ exact: true, hasText: 'Keras' })
+      .click({ force: true });
+
+    await expect(editorLines).toContainText('import keras');
   });
 });

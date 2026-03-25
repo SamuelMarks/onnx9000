@@ -28,6 +28,7 @@ class CustomOptimizer(AutoOptimizer):
 
 
 def test_skip_pass() -> None:
+    SkipPass().run(None, None)
     """Tests the skip pass functionality."""
     g = Graph("test")
     model = OliveModel(g)

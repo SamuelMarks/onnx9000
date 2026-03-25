@@ -12,6 +12,8 @@ def test_script_compiler_basic() -> None:
         a = x
         return a
 
+    simple_func(1)
+
     compiler = ScriptCompiler(simple_func)
     builder = compiler.compile(Tensor(name="x"))
     assert builder.name == "simple_func"
@@ -24,9 +26,13 @@ def test_script_compiler_return_multiple() -> None:
         """Tests the return_tuple functionality."""
         return (x, y)
 
+    return_tuple(1, 2)
+
     def return_list(x, y):
         """Tests the return_list functionality."""
         return [x, y]
+
+    return_list(1, 2)
 
     compiler = ScriptCompiler(return_tuple)
     compiler.compile(Tensor(name="x"), Tensor(name="y"))
@@ -42,6 +48,8 @@ def test_script_compiler_if() -> None:
         y = x or x
         return y
 
+    if_func(1)
+
     compiler = ScriptCompiler(if_func)
     compiler.compile(Tensor(name="x"))
 
@@ -54,8 +62,12 @@ def test_script_compiler_for_while() -> None:
         for _i in [1, 2]:
             pass
         while x:
+            x -= 1
             pass
         return x
+
+    loops(0)
+    loops(1)
 
     compiler = ScriptCompiler(loops)
     compiler.compile(Tensor(name="x"))
@@ -75,6 +87,8 @@ def test_script_compiler_generic() -> None:
         """Tests the pass_func functionality."""
         pass
 
+    pass_func()
+
     compiler = DummyCompiler(pass_func)
     compiler.compile()
 
@@ -86,6 +100,8 @@ def test_script_compiler_less_args() -> None:
         """Tests the my_func functionality."""
         a = x
         return a
+
+    my_func(1, 2)
 
     compiler = ScriptCompiler(my_func)
     compiler.compile(Tensor(name="x"))

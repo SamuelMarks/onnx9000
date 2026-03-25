@@ -12,7 +12,7 @@ export class PipelineValidator {
     onnxscript: ['.onnx'],
     caffe: ['.onnx'],
     mxnet: ['.onnx'],
-    paddlepaddle: ['.onnx'],
+    paddle: ['.onnx'],
     scikitlearn: ['.onnx'],
     lightgbm: ['.onnx'],
     xgboost: ['.onnx'],

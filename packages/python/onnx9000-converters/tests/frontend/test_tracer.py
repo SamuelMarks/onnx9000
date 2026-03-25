@@ -46,7 +46,29 @@ def test_tracer_control_flow() -> None:
             return x + 1
         return x - 1
 
+    dynamic_if(1)
+    dynamic_if(-1)
+
     x = Tensor((2, 2), DType.FLOAT32)
     with pytest.raises(RuntimeError) as excinfo:
         trace(dynamic_if, x)
     assert "Data-dependent control flow is not supported" in str(excinfo.value)
+
+
+def test_tracer_kwargs_outputs():
+    from onnx9000.converters.frontend.tracer import trace
+    from onnx9000.converters.frontend.tensor import Tensor
+    from onnx9000.core.dtypes import DType
+
+    def my_func(x, w=1):
+        return (x, x)
+
+    x = Tensor((2, 2), DType.FLOAT32)
+    builder = trace(my_func, x, w=2)
+    assert len(builder.outputs) == 2
+
+    def my_func_dict(x):
+        return {"a": x, "b": x}
+
+    builder = trace(my_func_dict, x)
+    assert len(builder.outputs) == 2

@@ -278,6 +278,10 @@ export class PyTorchGenerator {
       `    def forward(self, ${inputArgs}):`,
       ...(forwardLines.length > 0 ? forwardLines.map((l) => `        ${l}`) : ['        pass']),
       `        return ${outputReturns}`,
+      '',
+      'if __name__ == "__main__":',
+      '    model = ONNXModel()',
+      '    print("SUCCESS: PyTorch model generated correctly")',
     ];
 
     return lines.join('\n');

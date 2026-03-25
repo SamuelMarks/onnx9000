@@ -2,6 +2,8 @@ import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import * as monaco from 'monaco-editor';
 
+(window as any).monaco = monaco;
+
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker&inline';
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker&inline';
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker&inline';

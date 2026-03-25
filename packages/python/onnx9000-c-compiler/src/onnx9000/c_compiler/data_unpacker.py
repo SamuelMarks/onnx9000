@@ -46,7 +46,7 @@ def unpack_bytes_to_str(data: bytes, dtype: DType, force_float32: bool = True) -
     # 231: Handle float64 fallback cleanly
     elif dtype == DType.FLOAT64 and force_float32:
         num_elements = len(data) // 8
-        values = struct.unpack("<" + ("d" * num_elements), data)
+        values = list(struct.unpack("<" + ("d" * num_elements), data))
         # downcast in python memory
         dtype = DType.FLOAT32
     else:

@@ -103,6 +103,7 @@ describe('MMDNN - Core Architecture', () => {
   it('should execute convert API', async () => {
     const file = new File([''], 'model.onnx', { type: 'application/octet-stream' });
     const result = await convert('onnx', 'pytorch_code', [file]);
-    expect(result).toBe('Exported pytorch_code content for placeholder');
+    expect(result).toContain('import torch');
+    expect(result).toContain('class ONNXModel(nn.Module):');
   });
 });

@@ -7,3 +7,20 @@ export * from './shape_inference/infer.js';
 export * from './parser/magic.js';
 export * from './parser/safetensors.js';
 export * from './parser/safetensors.node.js';
+export * from './parser/onnx_writer.js';
+
+import { Graph } from './ir/graph.js';
+import { BufferReader } from './parser/protobuf.js';
+import { parseModelProto } from './parser/onnx.js';
+import { serializeModelProto } from './parser/onnx_writer.js';
+
+export async function load(buffer: ArrayBuffer | Uint8Array): Promise<Graph> {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  const reader = new BufferReader(bytes);
+  return await parseModelProto(reader);
+}
+
+export async function save(graph: Graph): Promise<ArrayBuffer> {
+  const bytes = serializeModelProto(graph);
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}

@@ -1,4 +1,4 @@
-import { Graph, Node, Attribute } from '@onnx9000/core';
+import { Graph, Node, Attribute, Tensor } from '@onnx9000/core';
 
 /**
  * A type representing a function that maps a Caffe layer to one or more ONNX Nodes.
@@ -107,12 +107,12 @@ export class CaffeMapper {
    */
   map(layer: any, graph: Graph): Node[] {
     const type = layer.type;
+    this.processBlobs(layer, graph);
     if (caffeRegistry[type]) {
       return caffeRegistry[type](layer, graph);
     }
 
     const reporter = { warn: console.warn };
-
     if (type === 'VisionTransform') {
       return [
         new Node(
@@ -552,5 +552,36 @@ export class CaffeMapper {
     }
     const node = new Node('Split', layer.bottom || [], layer.top || [], attrs, layer.name);
     return [node];
+  }
+
+  private processBlobs(layer: any, graph: Graph) {
+    if (!layer.blobs || layer.blobs.length === 0) return;
+
+    const wName = `${layer.name}_W`;
+    if (layer.blobs.length > 0) {
+      const wBlob = layer.blobs[0];
+      const shape = wBlob.shape?.dim || [1]; // dummy shape if missing
+      const tensor = new Tensor(wName, shape, 'float32', true, false);
+      const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
+      tensor.data = new Float32Array(size); // Zero initialized
+      if (wBlob.data) {
+        (tensor.data as Float32Array).set(wBlob.data.slice(0, size));
+      }
+      graph.initializers.push(wName);
+      graph.tensors[wName] = tensor;
+    }
+    if (layer.blobs.length > 1) {
+      const bName = `${layer.name}_B`;
+      const bBlob = layer.blobs[1];
+      const shape = bBlob.shape?.dim || [1];
+      const tensor = new Tensor(bName, shape, 'float32', true, false);
+      const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
+      tensor.data = new Float32Array(size);
+      if (bBlob.data) {
+        (tensor.data as Float32Array).set(bBlob.data.slice(0, size));
+      }
+      graph.initializers.push(bName);
+      graph.tensors[bName] = tensor;
+    }
   }
 }

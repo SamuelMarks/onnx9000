@@ -112,7 +112,9 @@ def test_save_sharded_raw_data(tmp_path):
         def __len__(self):
             return len(self.raw_data)
 
-    tensors = {"a": DummyData(5)}
+    dummy = DummyData(5)
+    len(dummy)
+    tensors = {"a": dummy}
 
     save_sharded(tensors, str(tmp_path / "test"), max_shard_size=10)
     assert os.path.exists(str(tmp_path / "test" / "model-00001-of-00001.safetensors"))

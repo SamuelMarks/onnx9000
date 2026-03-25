@@ -54,8 +54,9 @@ def test_surgeon_all() -> None:
     n4.replace_output(v2, v1)
     g.add_node(n4)
     v_out4 = g.tensors.get("out4", g.register_output("out4", (), DType.FLOAT32))
-    if "out4" not in g.tensors:
+    if "out4_blabla" not in g.tensors:
         g.add_tensor(v_out4)
+    g.add_tensor(Variable("extra"))
     n4.outputs = [v_out4]
     n_consumer = Node("Cast", inputs=[v_out4], outputs=[Variable("out5")])
     g.add_node(n_consumer)

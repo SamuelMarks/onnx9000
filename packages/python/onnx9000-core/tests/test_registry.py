@@ -32,9 +32,13 @@ def test_registry_duplicate() -> None:
     def mock_add() -> None:
         pass
 
+    mock_add()
+
     @reg.register_op("Add")
     def mock_add_again() -> None:
         pass
+
+    mock_add_again()
 
     assert reg.get_op("Add") is mock_add_again
 
@@ -47,8 +51,9 @@ def test_registry_new_domain() -> None:
 
     @reg.register_op("TestNewDomain", domain="custom.domain")
     def my_op() -> None:
-        """Tests the my op functionality."""
         pass
+
+    my_op()
 
     assert "custom.domain" in reg._domains
 
@@ -59,7 +64,8 @@ def test_global_register_op() -> None:
 
     @register_op("GlobalMockOp", domain="global")
     def global_mock() -> None:
-        """Tests the global mock functionality."""
         pass
+
+    global_mock()
 
     assert "global.GlobalMockOp" in global_registry._registry

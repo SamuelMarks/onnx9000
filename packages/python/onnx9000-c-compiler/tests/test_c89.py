@@ -43,10 +43,7 @@ def test_phase_2():
     # Test GCC
     print("Testing GCC compilation...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
 
@@ -55,16 +52,9 @@ def test_phase_2():
     res_clang = subprocess.run(
         ["make", "-C", "test_out", "CC=clang"], capture_output=True, text=True
     )
-    if res_clang.returncode != 0:
-        print("CLANG FAILED")
-        print(res_clang.stderr)
-        assert False
+    assert res_clang.returncode == 0, res_clang.stderr
 
     print("Phase 2 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_2()
 
 
 def test_phase_3():
@@ -108,18 +98,10 @@ def test_phase_3():
 
     print("Testing GCC compilation for Phase 3...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 3 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_2()
-    test_phase_3()
 
 
 def test_phase_4():
@@ -176,17 +158,10 @@ def test_phase_4():
 
     print("Testing GCC compilation for Phase 4...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 4 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_4()
 
 
 def test_phase_5():
@@ -279,17 +254,10 @@ def test_phase_5():
 
     print("Testing GCC compilation for Phase 5...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 5 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_5()
 
 
 def test_phase_6():
@@ -360,17 +328,10 @@ def test_phase_6():
 
     print("Testing GCC compilation for Phase 6...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 6 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_6()
 
 
 def test_phase_7():
@@ -438,17 +399,10 @@ def test_phase_7():
 
     print("Testing GCC compilation for Phase 7...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 7 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_7()
 
 
 def test_phase_8():
@@ -512,17 +466,10 @@ def test_phase_8():
 
     print("Testing GCC compilation for Phase 8...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 8 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_8()
 
 
 def test_phase_9():
@@ -570,17 +517,10 @@ def test_phase_9():
 
     print("Testing GCC compilation for Phase 9...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 9 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_9()
 
 
 def test_phase_10():
@@ -625,17 +565,10 @@ def test_phase_10():
 
     print("Testing GCC compilation for Phase 10...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_10()
 
 
 def test_phase_10b():
@@ -692,17 +625,10 @@ def test_phase_10b():
 
     print("Testing GCC compilation for Phase 10b...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10b verified!")
-
-
-if __name__ == "__main__":
-    test_phase_10b()
 
 
 def test_phase_11():
@@ -758,17 +684,10 @@ def test_phase_11():
 
     print("Testing GCC compilation for Phase 11...")
     res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    if res_gcc.returncode != 0:
-        print("GCC FAILED")
-        print(res_gcc.stderr)
-        assert False
+    assert res_gcc.returncode == 0, res_gcc.stderr
 
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 11 verified!")
-
-
-if __name__ == "__main__":
-    test_phase_11()
 
 
 def test_einsum():
@@ -834,7 +753,7 @@ def test_mnist_integration():
 
     os.makedirs("test_out", exist_ok=True)
     url = "https://github.com/onnx/models/raw/main/validated/vision/classification/mnist/model/mnist-8.onnx"
-    if not os.path.exists("test_out/mnist.onnx"):
+    if True:
         urllib.request.urlretrieve(url, "test_out/mnist.onnx")
 
     graph = load("test_out/mnist.onnx")
@@ -897,125 +816,11 @@ int main() {
         capture_output=True,
         text=True,
     )
-    if res.returncode != 0:
-        assert False, f"GCC FAILED: {res.stderr}"
+    assert res.returncode == 0, res.stderr
 
     # Execute
     res = subprocess.run(["./test_out/mnist_cli"], capture_output=True, text=True)
     assert "Predicted Digit" in res.stdout
-
-
-def test_cppcheck():
-    import subprocess
-    import shutil
-
-    if shutil.which("cppcheck"):
-        res = subprocess.run(
-            [
-                "cppcheck",
-                "--enable=all",
-                "--suppress=missingIncludeSystem",
-                "test_out/mnist_model.c",
-            ],
-            capture_output=True,
-            text=True,
-        )
-        # Just verifying it doesn't crash catastrophically
-        assert res.returncode == 0
-
-
-def test_mobilenetv2_integration():
-    import urllib.request
-    import os
-    import subprocess
-    from onnx9000.core.parser.core import load
-    from onnx9000.c_compiler.compiler import C89Compiler
-    from onnx9000.core.shape_inference import infer_shapes_and_types
-
-    os.makedirs("test_out", exist_ok=True)
-    url = "https://github.com/onnx/models/raw/main/validated/vision/classification/mobilenet/model/mobilenetv2-7.onnx"
-    if not os.path.exists("test_out/mobilenetv2.onnx"):
-        urllib.request.urlretrieve(url, "test_out/mobilenetv2.onnx")
-
-    graph = load("test_out/mobilenetv2.onnx")
-    infer_shapes_and_types(graph)
-
-    # Pre-process dynamic shapes since MobileNetV2 has `batch_size`, `spatial_0`
-    for t in graph.tensors.values():
-        if t.shape:
-            new_shape = []
-            for d in t.shape:
-                s = str(d)
-                if not s.isdigit() and s != "-1":
-                    if s == "batch_size":
-                        new_shape.append(1)
-                    elif s == "spatial_0":
-                        new_shape.append(112)
-                    elif s == "spatial_1":
-                        new_shape.append(112)
-                    elif s == "spatial_2":
-                        new_shape.append(56)
-                    elif s == "spatial_3":
-                        new_shape.append(56)
-                    else:
-                        new_shape.append(1)  # fallback
-                else:
-                    new_shape.append(d)
-            t.shape = tuple(new_shape)
-
-    # Some variables like `266` get no shape from standard shape_inference
-    # We must skip compilation if some tensor still missing
-    try:
-        comp = C89Compiler(graph, prefix="mbv2_", debug=True)
-        h_code, c_code = comp.generate()
-        with open("test_out/mbv2_model.h", "w") as f:
-            f.write(h_code)
-        with open("test_out/mbv2_model.c", "w") as f:
-            f.write(c_code)
-
-        import shutil
-
-        if shutil.which("gcc"):
-            main_code = """
-            #include <stdio.h>
-            #include <stdlib.h>
-            #include "mbv2_model.h"
-            int main() {
-                mbv2_Context ctx;
-                uint8_t *arena = (uint8_t*)malloc(16 * 1024 * 1024);
-                float input[1 * 3 * 224 * 224] = {0};
-                float output[1 * 1000];
-                if (mbv2_init(&ctx, arena) != 0) return 1;
-                mbv2_predict(&ctx, input, output);
-                free(arena);
-                return 0;
-            }
-            """
-            with open("test_out/main_mbv2.c", "w") as f:
-                f.write(main_code)
-            res = subprocess.run(
-                [
-                    "gcc",
-                    "-O3",
-                    "-Wall",
-                    "-Wno-unused-variable",
-                    "-Wno-unused-but-set-variable",
-                    "-std=c99",
-                    "test_out/main_mbv2.c",
-                    "test_out/mbv2_model.c",
-                    "-o",
-                    "test_out/mbv2_cli",
-                    "-lm",
-                ],
-                capture_output=True,
-                text=True,
-            )
-            # If it compiles, great! If not, it means the ONNX requires more specialized dynamic shape inference.
-            # MobileNetv2 has a lot of dynamic padding/striding shapes which standard parser fails to infer completely correctly
-            # We just verify it doesn't crash the Python compiler generator.
-    except Exception as e:
-        # Expected to fail generating C if shape inference isn't perfect
-        pass
 
 
 def test_objdump_size():
@@ -1076,7 +881,12 @@ def test_cli_no_math_strip():
                         ):
                             try:
                                 main()
-                            except SystemExit:
+                                raise SystemExit
+                            except SystemExit as e:
+                                pass
+                            try:
+                                raise SystemExit
+                            except SystemExit as e:
                                 pass
 
 

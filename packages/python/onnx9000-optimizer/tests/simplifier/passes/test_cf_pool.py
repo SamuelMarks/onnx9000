@@ -314,7 +314,7 @@ def test_gathernd_batch_dims():
     assert out is not None
 
 
-def test_cf_constant_attr_types():
+def test_cf_constant_attr_types_1():
     from onnx9000.core.ir import Attribute, Graph, Node
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
@@ -567,7 +567,7 @@ def test_cf_nms():
     assert out_nms3.shape[0] >= 0
 
 
-def test_cf_final_lines():
+def test_cf_final_lines_1():
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     cf = ConstantFoldingPass()

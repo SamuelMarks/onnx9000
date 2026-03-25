@@ -214,8 +214,11 @@ def test_qdq_quantization_extraction():
         def end_vector(self, l):
             return 3
 
+    m = MockBuilder()
+    m.create_float32_vector([1.0])
+    m.create_int64_vector([1])
     offset = quantizer.get_quantization_offset(
-        MockBuilder(), Tensor("X_quant", shape=(1,), dtype="int8", is_initializer=False)
+        m, Tensor("X_quant", shape=(1,), dtype="int8", is_initializer=False)
     )
     assert offset == 42
 
