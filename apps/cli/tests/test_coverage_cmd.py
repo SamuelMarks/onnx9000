@@ -45,12 +45,16 @@ def test_generate_framework_snapshots(tmpdir):
     def mock_get_pypi(pkg):
         if pkg == "caffe":
             return "unknown", None
+        if pkg == "catboost":
+            return "unknown", None  # Test unknown fallback
         if pkg == "cntk":
             return "1.0.0", "3.6"  # triggers fallback and installation
         if pkg == "tensorflow":
             return "1.0.0", "3.10"  # triggers fallback but pyenv has it
         if pkg == "torch":
             return "1.0.0", "3.9"  # triggers complete pyenv fallback failure
+        if pkg == "coremltools":
+            return "2.0.0", "3.10" # triggers subprocess failure fallback
         return "1.0.0", None
 
     def mock_subp_run(args, **kwargs):
@@ -60,8 +64,14 @@ def test_generate_framework_snapshots(tmpdir):
                 venv_dir = args[-1]
                 os.makedirs(venv_dir, exist_ok=True)
                 # First uv venv try fails to trigger pyenv
-                if "--python" in args and args[3] in ["3.6", "3.10", "3.9"]:
-                    raise subprocess.CalledProcessError(1, "uv")
+                if "--python" in args and args[3] in ["3.6", "3.10", "3.9", "3.10"]:
+                    if args[3] == "3.10" and "coremltools" in str(args):
+                        raise subprocess.CalledProcessError(1, "uv")
+                    if "coremltools" not in str(args):
+                        raise subprocess.CalledProcessError(1, "uv")
+            if len(args) > 2 and args[2] == "install":
+                if "coremltools" in args[-1]:
+                    raise subprocess.CalledProcessError(1, "pip install")
         elif cmd == "pyenv":
             if args[1] == "versions":
                 # Mock pyenv having 3.10 installed but not 3.6
@@ -100,6 +110,17 @@ def test_generate_framework_snapshots(tmpdir):
         with open(os.path.join(snapshots_dir, "jax-1.0.0.json"), "w") as f:
             f.write("corrupted_json")
 
+        # Create old snapshots for fallback testing
+        with open(os.path.join(snapshots_dir, "catboost-Not Installed.json"), "w") as f:
+            json.dump({"version": "Not Installed", "objects": []}, f)
+        with open(os.path.join(snapshots_dir, "catboost-0.9.0.json"), "w") as f:
+            json.dump({"version": "0.9.0", "objects": ["catboost_obj"]}, f)
+
+        with open(os.path.join(snapshots_dir, "coremltools-Not Installed.json"), "w") as f:
+            json.dump({"version": "Not Installed", "objects": []}, f)
+        with open(os.path.join(snapshots_dir, "coremltools-1.0.0.json"), "w") as f:
+            json.dump({"version": "1.0.0", "objects": ["coreml_obj"]}, f)
+
         # Mock os.name for Windows branch coverage
         with patch("os.name", "nt"):
             results = generate_framework_snapshots(snapshots_dir)
@@ -108,7 +129,13 @@ def test_generate_framework_snapshots(tmpdir):
         assert results["onnx"]["objects"] == ["onnx_obj"]  # cache hit
 
         assert "caffe" in results
-        assert results["caffe"]["version"] == "Not Installed"  # unknown pypi
+        assert results["caffe"]["version"] == "Not Installed"  # unknown pypi, no fallback
+
+        assert "catboost" in results
+        assert results["catboost"]["version"] == "0.9.0" # unknown pypi, ignored Not Installed, fallback found
+
+        assert "coremltools" in results
+        assert results["coremltools"]["version"] == "1.0.0" # pip fail, ignored Not Installed, fallback found
 
         assert "jax" in results
         assert results["jax"]["version"] == "Not Installed"  # corrupted cache handling

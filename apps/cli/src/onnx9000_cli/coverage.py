@@ -118,6 +118,23 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
                     results[fw] = {"version": "Not Installed", "objects": []}
             elif version == "unknown":
                 print(f"Could not find {pkg_name} on PyPI. Skipping.")
+                import glob
+                existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
+                fallback_data = None
+                if existing:
+                    for fallback in sorted(existing, reverse=True):
+                        try:
+                            with open(fallback, "r", encoding="utf-8") as f:
+                                data = json.load(f)
+                            if data.get("version") != "Not Installed" and data.get("objects"):
+                                fallback_data = data
+                                print(f"Falling back to existing snapshot: {os.path.basename(fallback)}")
+                                break
+                        except Exception:  # pragma: no cover
+                            pass
+                if fallback_data:
+                    results[fw] = fallback_data
+                    continue
                 results[fw] = {"version": "Not Installed", "objects": []}
             else:
                 py_ver = pypi_py_ver or python_versions.get(fw, default_python)
@@ -199,6 +216,23 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
                     print(f"Successfully generated API snapshot for {fw}.")
                 except Exception as e:
                     print(f"Failed to generate API snapshot for {fw}: {e}")
+                    import glob
+                    existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
+                    fallback_data = None
+                    if existing:
+                        for fallback in sorted(existing, reverse=True):
+                            try:
+                                with open(fallback, "r", encoding="utf-8") as f:
+                                    data = json.load(f)
+                                if data.get("version") != "Not Installed" and data.get("objects"):
+                                    fallback_data = data
+                                    print(f"Falling back to existing snapshot: {os.path.basename(fallback)}")
+                                    break
+                            except Exception:  # pragma: no cover
+                                pass
+                    if fallback_data:
+                        results[fw] = fallback_data
+                        continue
                     results[fw] = {"version": "Not Installed", "objects": []}
                     with open(snapshot_path, "w", encoding="utf-8") as f:
                         json.dump(results[fw], f, indent=2)
