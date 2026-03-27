@@ -1,4 +1,570 @@
 {
-  "version": "Not Installed",
-  "objects": []
+  "version": "4.6.0",
+  "objects": [
+    {
+      "name": "Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    },
+    {
+      "name": "Dataset",
+      "type": "Class",
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+    },
+    {
+      "name": "Sequence",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "register_logger",
+      "type": "Function",
+      "signature": "(logger: Any, info_method_name: str, warning_method_name: str) -> None"
+    },
+    {
+      "name": "EarlyStopException",
+      "type": "Class",
+      "signature": "(best_iteration: int, best_score: _ListOfEvalResultTuples)"
+    },
+    {
+      "name": "early_stopping",
+      "type": "Function",
+      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, List[float]]) -> _EarlyStoppingCallback"
+    },
+    {
+      "name": "log_evaluation",
+      "type": "Function",
+      "signature": "(period: int, show_stdv: bool) -> _LogEvaluationCallback"
+    },
+    {
+      "name": "record_evaluation",
+      "type": "Function",
+      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+    },
+    {
+      "name": "reset_parameter",
+      "type": "Function",
+      "signature": "(kwargs: Union[list, Callable]) -> Callable"
+    },
+    {
+      "name": "CVBooster",
+      "type": "Class",
+      "signature": "(model_file: Optional[Union[str, Path]])"
+    },
+    {
+      "name": "cv",
+      "type": "Function",
+      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, List[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> Dict[str, Union[List[float], CVBooster]]"
+    },
+    {
+      "name": "train",
+      "type": "Function",
+      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+    },
+    {
+      "name": "LGBMClassifier",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "LGBMModel",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "LGBMRanker",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "LGBMRegressor",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "create_tree_digraph",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
+    },
+    {
+      "name": "plot_importance",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], height: float, xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], importance_type: str, max_num_features: Optional[int], ignore_zero: bool, figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool, precision: Optional[int], kwargs: Any) -> Any"
+    },
+    {
+      "name": "plot_metric",
+      "type": "Function",
+      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[List[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
+    },
+    {
+      "name": "plot_split_value_histogram",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], feature: Union[int, str], bins: Union[int, str, None], ax: Optional[matplotlib.axes.Axes], width_coef: float, xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool, kwargs: Any) -> Any"
+    },
+    {
+      "name": "plot_tree",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
+    },
+    {
+      "name": "DaskLGBMClassifier",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "DaskLGBMRanker",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "DaskLGBMRegressor",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "dask.LightGBMError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "dask.DASK_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.PANDAS_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.SKLEARN_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.Client",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.Future",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.LGBMNotFittedError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.concat",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.dask_Array",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.dask_array_from_delayed",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.dask_bag_from_delayed",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.dask_DataFrame",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.dask_Series",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.default_client",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.delayed",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.pd_DataFrame",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.pd_Series",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "dask.wait",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dask.LGBMClassifier",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "dask.LGBMModel",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "dask.LGBMRanker",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "dask.LGBMRegressor",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "dask.DaskLGBMClassifier",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "dask.DaskLGBMRegressor",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "dask.DaskLGBMRanker",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, client: Optional[Client], kwargs: Any)"
+    },
+    {
+      "name": "engine.callback",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "engine.Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    },
+    {
+      "name": "engine.Dataset",
+      "type": "Class",
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+    },
+    {
+      "name": "engine.LightGBMError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "engine.SKLEARN_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "engine.train",
+      "type": "Function",
+      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+    },
+    {
+      "name": "engine.CVBooster",
+      "type": "Class",
+      "signature": "(model_file: Optional[Union[str, Path]])"
+    },
+    {
+      "name": "engine.cv",
+      "type": "Function",
+      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, List[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> Dict[str, Union[List[float], CVBooster]]"
+    },
+    {
+      "name": "sklearn.Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    },
+    {
+      "name": "sklearn.Dataset",
+      "type": "Class",
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+    },
+    {
+      "name": "sklearn.LightGBMError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "sklearn.record_evaluation",
+      "type": "Function",
+      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+    },
+    {
+      "name": "sklearn.SKLEARN_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sklearn.LGBMNotFittedError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sklearn.dt_DataTable",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "sklearn.pd_DataFrame",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "sklearn.train",
+      "type": "Function",
+      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+    },
+    {
+      "name": "sklearn.LGBMModel",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "sklearn.LGBMRegressor",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "sklearn.LGBMClassifier",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "sklearn.LGBMRanker",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "plotting.Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    },
+    {
+      "name": "plotting.GRAPHVIZ_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "plotting.MATPLOTLIB_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "plotting.pd_DataFrame",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "plotting.LGBMModel",
+      "type": "Class",
+      "signature": "(boosting_type: str, num_leaves: int, max_depth: int, learning_rate: float, n_estimators: int, subsample_for_bin: int, objective: Optional[Union[str, _LGBM_ScikitCustomObjectiveFunction]], class_weight: Optional[Union[Dict, str]], min_split_gain: float, min_child_weight: float, min_child_samples: int, subsample: float, subsample_freq: int, colsample_bytree: float, reg_alpha: float, reg_lambda: float, random_state: Optional[Union[int, np.random.RandomState, np.random.Generator]], n_jobs: Optional[int], importance_type: str, kwargs: Any)"
+    },
+    {
+      "name": "plotting.plot_importance",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], height: float, xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], importance_type: str, max_num_features: Optional[int], ignore_zero: bool, figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool, precision: Optional[int], kwargs: Any) -> Any"
+    },
+    {
+      "name": "plotting.plot_split_value_histogram",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], feature: Union[int, str], bins: Union[int, str, None], ax: Optional[matplotlib.axes.Axes], width_coef: float, xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool, kwargs: Any) -> Any"
+    },
+    {
+      "name": "plotting.plot_metric",
+      "type": "Function",
+      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[List[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
+    },
+    {
+      "name": "plotting.create_tree_digraph",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
+    },
+    {
+      "name": "plotting.plot_tree",
+      "type": "Function",
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
+    },
+    {
+      "name": "callback.Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    },
+    {
+      "name": "callback.CVBooster",
+      "type": "Class",
+      "signature": "(model_file: Optional[Union[str, Path]])"
+    },
+    {
+      "name": "callback.EarlyStopException",
+      "type": "Class",
+      "signature": "(best_iteration: int, best_score: _ListOfEvalResultTuples)"
+    },
+    {
+      "name": "callback.CallbackEnv",
+      "type": "Class",
+      "signature": "(model: Union[Booster, CVBooster], params: Dict[str, Any], iteration: int, begin_iteration: int, end_iteration: int, evaluation_result_list: Optional[_ListOfEvalResultTuples])"
+    },
+    {
+      "name": "callback.log_evaluation",
+      "type": "Function",
+      "signature": "(period: int, show_stdv: bool) -> _LogEvaluationCallback"
+    },
+    {
+      "name": "callback.record_evaluation",
+      "type": "Function",
+      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+    },
+    {
+      "name": "callback.reset_parameter",
+      "type": "Function",
+      "signature": "(kwargs: Union[list, Callable]) -> Callable"
+    },
+    {
+      "name": "callback.early_stopping",
+      "type": "Function",
+      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, List[float]]) -> _EarlyStoppingCallback"
+    },
+    {
+      "name": "basic.CFFI_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.PANDAS_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.PYARROW_INSTALLED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.arrow_cffi",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.arrow_is_boolean",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.arrow_is_floating",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.arrow_is_integer",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.concat",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.dt_DataTable",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pa_Array",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pa_chunked_array",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.pa_ChunkedArray",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pa_compute",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "basic.pa_Table",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pd_CategoricalDtype",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pd_DataFrame",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.pd_Series",
+      "type": "Class",
+      "signature": "(args: Any, kwargs: Any)"
+    },
+    {
+      "name": "basic.ZERO_THRESHOLD",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.LightGBMError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "basic.register_logger",
+      "type": "Function",
+      "signature": "(logger: Any, info_method_name: str, warning_method_name: str) -> None"
+    },
+    {
+      "name": "basic.callback",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "basic.LGBMDeprecationWarning",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "basic.Sequence",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "basic.Dataset",
+      "type": "Class",
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+    },
+    {
+      "name": "basic.Booster",
+      "type": "Class",
+      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+    }
+  ]
 }

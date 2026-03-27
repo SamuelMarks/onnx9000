@@ -1,29 +1,845 @@
 {
   "version": "1.2.10",
   "objects": [
-    "FeaturesData",
-    "EFstrType",
-    "EShapCalcType",
-    "EFeaturesSelectionAlgorithm",
-    "EFeaturesSelectionGrouping",
-    "Pool",
-    "CatBoost",
-    "CatBoostClassifier",
-    "CatBoostRegressor",
-    "CatBoostRanker",
-    "CatBoostError",
-    "CatboostError",
-    "cv",
-    "sample_gaussian_process",
-    "train",
-    "sum_models",
-    "_have_equal_features",
-    "to_regressor",
-    "to_classifier",
-    "to_ranker",
-    "MultiRegressionCustomMetric",
-    "MultiRegressionCustomObjective",
-    "MultiTargetCustomMetric",
-    "MultiTargetCustomObjective"
+    {
+      "name": "FeaturesData",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "EFstrType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "EShapCalcType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "EFeaturesSelectionAlgorithm",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "EFeaturesSelectionGrouping",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Pool",
+      "type": "Class",
+      "signature": "(data, label, cat_features, text_features, embedding_features, embedding_features_data, column_description, pairs, graph, delimiter, has_header, ignore_csv_quoting, weight, group_id, group_weight, subgroup_id, pairs_weight, baseline, timestamp, feature_names, feature_tags, thread_count, log_cout, log_cerr, data_can_be_none)"
+    },
+    {
+      "name": "CatBoost",
+      "type": "Class",
+      "signature": "(params)"
+    },
+    {
+      "name": "CatBoostClassifier",
+      "type": "Class",
+      "signature": "(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, classes_count, class_weights, auto_class_weights, class_names, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_loss, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_unit, sampling_frequency, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, scale_pos_weight, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, callback, eval_fraction, fixed_binary_splits)"
+    },
+    {
+      "name": "CatBoostRegressor",
+      "type": "Class",
+      "signature": "(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)"
+    },
+    {
+      "name": "CatBoostRanker",
+      "type": "Class",
+      "signature": "(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)"
+    },
+    {
+      "name": "CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "cv",
+      "type": "Function",
+      "signature": "(pool, params, dtrain, iterations, num_boost_round, fold_count, nfold, inverted, partition_random_seed, seed, shuffle, logging_level, stratified, as_pandas, metric_period, verbose, verbose_eval, plot, plot_file, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, metric_update_interval, folds, type, return_models, log_cout, log_cerr)"
+    },
+    {
+      "name": "sample_gaussian_process",
+      "type": "Function",
+      "signature": "(X, y, eval_set, cat_features, text_features, embedding_features, random_seed, samples, posterior_iterations, prior_iterations, learning_rate, depth, sigma, delta, random_strength, random_score_type, eps, verbose)"
+    },
+    {
+      "name": "train",
+      "type": "Function",
+      "signature": "(pool, params, dtrain, logging_level, verbose, iterations, num_boost_round, evals, eval_set, plot, plot_file, verbose_eval, metric_period, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, init_model, log_cout, log_cerr)"
+    },
+    {
+      "name": "sum_models",
+      "type": "Function",
+      "signature": "(models, weights, ctr_merge_policy)"
+    },
+    {
+      "name": "to_regressor",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "to_classifier",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "to_ranker",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "MultiRegressionCustomMetric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MultiRegressionCustomObjective",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MultiTargetCustomMetric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MultiTargetCustomObjective",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "CatboostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MetricVisualizer",
+      "type": "Class",
+      "signature": "(train_dirs, subdirs)"
+    },
+    {
+      "name": "MetricsPlotter",
+      "type": "Class",
+      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+    },
+    {
+      "name": "XGBPlottingCallback",
+      "type": "Class",
+      "signature": "(total_iterations: int)"
+    },
+    {
+      "name": "lgbm_plotting_callback",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "carry.carry",
+      "type": "Function",
+      "signature": "(model, features)"
+    },
+    {
+      "name": "carry.uplift",
+      "type": "Function",
+      "signature": "(model, features)"
+    },
+    {
+      "name": "version.VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "text_processing.Tokenizer",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "text_processing.Dictionary",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "plot_helpers.fspath",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "plot_helpers.try_plot_offline",
+      "type": "Function",
+      "signature": "(figs)"
+    },
+    {
+      "name": "plot_helpers.save_plot_file",
+      "type": "Function",
+      "signature": "(plot_file, plot_name, figs)"
+    },
+    {
+      "name": "plot_helpers.OfflineMetricVisualizer",
+      "type": "Class",
+      "signature": "(train_dirs)"
+    },
+    {
+      "name": "monoforest.CatBoost",
+      "type": "Class",
+      "signature": "(params)"
+    },
+    {
+      "name": "monoforest.CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "monoforest.FeatureExplanation",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "monoforest.to_polynom",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "monoforest.to_polynom_string",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "monoforest.explain_features",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "monoforest.calc_features_strength",
+      "type": "Function",
+      "signature": "(model)"
+    },
+    {
+      "name": "monoforest.plot_pdp",
+      "type": "Function",
+      "signature": "(arg, size_per_plot, plots_per_row)"
+    },
+    {
+      "name": "monoforest.plot_features_strength",
+      "type": "Function",
+      "signature": "(model, height_per_feature, width_per_plot, plots_per_row)"
+    },
+    {
+      "name": "dev_utils.is_groupwise_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_multiclass_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_multitarget_objective",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_classification_objective",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.get_multi_quantile_approx_size",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_pairwise_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_maximizable_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_minimizable_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.is_user_defined_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.has_gpu_implementation_metric",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.need_dataset_for_leaves_weights",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.get_experiment_name",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.convert_features_to_indices",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dev_utils.get_num_feature_values_sample",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "datasets.PATH_TYPES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "datasets.fspath",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "datasets.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "datasets.set_cache_path",
+      "type": "Function",
+      "signature": "(path)"
+    },
+    {
+      "name": "datasets.titanic",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.amazon",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.msrank",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.msrank_10k",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.rotten_tomatoes",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.imdb",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.epsilon",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.monotonic1",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.monotonic2",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.adult",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.higgs",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "metrics.pandas",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "metrics.BuiltinMetric",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.factor_utils.LabelMode",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.factor_utils.FactorUtils",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.catboost_evaluation.CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.catboost_evaluation.CatBoost",
+      "type": "Class",
+      "signature": "(params)"
+    },
+    {
+      "name": "eval.catboost_evaluation.EvaluationResults",
+      "type": "Class",
+      "signature": "(metric_results)"
+    },
+    {
+      "name": "eval.catboost_evaluation.MetricEvaluationResult",
+      "type": "Class",
+      "signature": "(case_results)"
+    },
+    {
+      "name": "eval.catboost_evaluation.FoldModelsHandler",
+      "type": "Class",
+      "signature": "(metrics, cases, thread_count, eval_step, remove_models)"
+    },
+    {
+      "name": "eval.catboost_evaluation.ExecutionCase",
+      "type": "Class",
+      "signature": "(params, label, ignored_features, learning_rate)"
+    },
+    {
+      "name": "eval.catboost_evaluation.LabelMode",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.catboost_evaluation.FactorUtils",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.catboost_evaluation.EvalType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.catboost_evaluation.CatboostEvaluation",
+      "type": "Class",
+      "signature": "(path_to_dataset, fold_size, fold_count, column_description, fold_offset, group_column, working_dir, remove_models, delimiter, has_header, partition_random_seed, min_fold_count)"
+    },
+    {
+      "name": "eval.log_config.filename",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.log_config.eval_logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.log_config.console_handler",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.log_config.init",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "eval.log_config.set_logger_name",
+      "type": "Function",
+      "signature": "(name)"
+    },
+    {
+      "name": "eval.log_config.get_eval_logger",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "eval.log_config.set_level",
+      "type": "Function",
+      "signature": "(level)"
+    },
+    {
+      "name": "eval.execution_case.CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.execution_case.FactorUtils",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.execution_case.ExecutionCase",
+      "type": "Class",
+      "signature": "(params, label, ignored_features, learning_rate)"
+    },
+    {
+      "name": "eval.evaluation_result.CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.evaluation_result.metric_description_or_str_to_str",
+      "type": "Function",
+      "signature": "(description)"
+    },
+    {
+      "name": "eval.evaluation_result.compute_wx_test",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.evaluation_result.calc_wilcoxon_test",
+      "type": "Function",
+      "signature": "(baseline, test)"
+    },
+    {
+      "name": "eval.evaluation_result.ScoreType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.evaluation_result.ScoreConfig",
+      "type": "Class",
+      "signature": "(score_type, multiplier, score_level, interval_level, overfit_iterations_info)"
+    },
+    {
+      "name": "eval.evaluation_result.calc_bootstrap_ci_for_mean",
+      "type": "Function",
+      "signature": "(samples, level, tries)"
+    },
+    {
+      "name": "eval.evaluation_result.CaseEvaluationResult",
+      "type": "Class",
+      "signature": "(case, metric_description, eval_step)"
+    },
+    {
+      "name": "eval.evaluation_result.MetricEvaluationResult",
+      "type": "Class",
+      "signature": "(case_results)"
+    },
+    {
+      "name": "eval.evaluation_result.EvaluationResults",
+      "type": "Class",
+      "signature": "(metric_results)"
+    },
+    {
+      "name": "eval.print_function",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.os",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.copy",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.Enum",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.CatBoostError",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.CatBoost",
+      "type": "Class",
+      "signature": "(params)"
+    },
+    {
+      "name": "eval.EvaluationResults",
+      "type": "Class",
+      "signature": "(metric_results)"
+    },
+    {
+      "name": "eval.MetricEvaluationResult",
+      "type": "Class",
+      "signature": "(case_results)"
+    },
+    {
+      "name": "eval.FoldModelsHandler",
+      "type": "Class",
+      "signature": "(metrics, cases, thread_count, eval_step, remove_models)"
+    },
+    {
+      "name": "eval.ExecutionCase",
+      "type": "Class",
+      "signature": "(params, label, ignored_features, learning_rate)"
+    },
+    {
+      "name": "eval.LabelMode",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.FactorUtils",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.EvalType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.CatboostEvaluation",
+      "type": "Class",
+      "signature": "(path_to_dataset, fold_size, fold_count, column_description, fold_offset, group_column, working_dir, remove_models, delimiter, has_header, partition_random_seed, min_fold_count)"
+    },
+    {
+      "name": "eval.np",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.pd",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.metric_description_or_str_to_str",
+      "type": "Function",
+      "signature": "(description)"
+    },
+    {
+      "name": "eval.compute_wx_test",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.calc_wilcoxon_test",
+      "type": "Function",
+      "signature": "(baseline, test)"
+    },
+    {
+      "name": "eval.ScoreType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eval.ScoreConfig",
+      "type": "Class",
+      "signature": "(score_type, multiplier, score_level, interval_level, overfit_iterations_info)"
+    },
+    {
+      "name": "eval.calc_bootstrap_ci_for_mean",
+      "type": "Function",
+      "signature": "(samples, level, tries)"
+    },
+    {
+      "name": "eval.CaseEvaluationResult",
+      "type": "Class",
+      "signature": "(case, metric_description, eval_step)"
+    },
+    {
+      "name": "eval.json",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "eval.make_dirs_if_not_exists",
+      "type": "Function",
+      "signature": "(name)"
+    },
+    {
+      "name": "eval.series_to_line",
+      "type": "Function",
+      "signature": "(row, sep)"
+    },
+    {
+      "name": "eval.save_plot",
+      "type": "Function",
+      "signature": "(fig, file_name)"
+    },
+    {
+      "name": "hnsw.EDistance",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "hnsw.EVectorComponentType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "hnsw.Pool",
+      "type": "Class",
+      "signature": "(vectors_path, dtype, dimension, vectors_bin_data)"
+    },
+    {
+      "name": "hnsw.Hnsw",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "hnsw.HnswException",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "hnsw.transform_mobius",
+      "type": "Function",
+      "signature": "(pool)"
+    },
+    {
+      "name": "hnsw.HnswEstimator",
+      "type": "Class",
+      "signature": "(n_neighbors, distance, max_neighbors, search_neighborhood_size, num_exact_candidates, batch_size, upper_level_batch_size, level_size_decay)"
+    },
+    {
+      "name": "hnsw.OnlineHnsw",
+      "type": "Class",
+      "signature": "(dtype, dimension, distance, max_neighbors, search_neighborhood_size, num_vertices, level_size_decay)"
+    },
+    {
+      "name": "hnsw.hnsw.get_so_paths",
+      "type": "Function",
+      "signature": "(dir_name)"
+    },
+    {
+      "name": "hnsw.hnsw.get_hnsw_bin_module",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "hnsw.hnsw.log_fixup",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "hnsw.hnsw.EDistance",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "hnsw.hnsw.EVectorComponentType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "hnsw.hnsw.HnswException",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "hnsw.hnsw.Pool",
+      "type": "Class",
+      "signature": "(vectors_path, dtype, dimension, vectors_bin_data)"
+    },
+    {
+      "name": "hnsw.hnsw.transform_mobius",
+      "type": "Function",
+      "signature": "(pool)"
+    },
+    {
+      "name": "hnsw.hnsw.Hnsw",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "hnsw.hnsw.HnswEstimator",
+      "type": "Class",
+      "signature": "(n_neighbors, distance, max_neighbors, search_neighborhood_size, num_exact_candidates, batch_size, upper_level_batch_size, level_size_decay)"
+    },
+    {
+      "name": "hnsw.hnsw.OnlineHnsw",
+      "type": "Class",
+      "signature": "(dtype, dimension, distance, max_neighbors, search_neighborhood_size, num_vertices, level_size_decay)"
+    },
+    {
+      "name": "widget.MetricVisualizer",
+      "type": "Class",
+      "signature": "(train_dirs, subdirs)"
+    },
+    {
+      "name": "widget.MetricsPlotter",
+      "type": "Class",
+      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+    },
+    {
+      "name": "widget.XGBPlottingCallback",
+      "type": "Class",
+      "signature": "(total_iterations: int)"
+    },
+    {
+      "name": "widget.lgbm_plotting_callback",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "widget.callbacks.XGBTrainingCallback",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "widget.callbacks.MetricsPlotter",
+      "type": "Class",
+      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+    },
+    {
+      "name": "widget.callbacks.XGBPlottingCallback",
+      "type": "Class",
+      "signature": "(total_iterations: int)"
+    },
+    {
+      "name": "widget.callbacks.lgbm_plotting_callback",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "widget.ipythonwidget.MetricWidget",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "widget.ipythonwidget.MetricVisualizer",
+      "type": "Class",
+      "signature": "(train_dirs, subdirs)"
+    },
+    {
+      "name": "widget.metrics_plotter.MetricWidget",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "widget.metrics_plotter.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "widget.metrics_plotter.MetricsWidget",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "widget.metrics_plotter.MetricsPlotter",
+      "type": "Class",
+      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+    }
   ]
 }

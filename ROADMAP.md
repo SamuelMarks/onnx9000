@@ -84,3 +84,7 @@ Once the core specifications are complete, the `onnx9000` ecosystem will expand 
 1. P2P WebRTC tensor data channels bridging browser nodes.
 2. Distributed Pipeline Parallelism mapping Subgraphs across disparate devices.
 3. A zero-dependency Python MLOps server leveraging an embedded SQLite database for tracking metrics and models across the cluster.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

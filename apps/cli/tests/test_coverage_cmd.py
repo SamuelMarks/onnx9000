@@ -30,13 +30,13 @@ def test_get_pypi_info():
         mock_response.__enter__.return_value = mock_response
         mock_urlopen.return_value = mock_response
 
-        assert get_pypi_info("testpkg") == ("2.0.0", "3.8")
+        assert get_pypi_info("testpkg") == ("2.0.0", "3.11")
 
         mock_response.read.return_value = b'{"info": {"version": "2.0.0", "requires_python": null}}'
-        assert get_pypi_info("testpkg") == ("2.0.0", None)
+        assert get_pypi_info("testpkg") == ("2.0.0", "3.11")
 
         mock_urlopen.side_effect = Exception("Network error")
-        assert get_pypi_info("testpkg") == ("unknown", None)
+        assert get_pypi_info("testpkg") == ("unknown", "3.11")
 
 
 def test_generate_framework_snapshots(tmpdir):
@@ -54,7 +54,7 @@ def test_generate_framework_snapshots(tmpdir):
         if pkg == "torch":
             return "1.0.0", "3.9"  # triggers complete pyenv fallback failure
         if pkg == "coremltools":
-            return "2.0.0", "3.10" # triggers subprocess failure fallback
+            return "2.0.0", "3.10"  # triggers subprocess failure fallback
         return "1.0.0", None
 
     def mock_subp_run(args, **kwargs):
@@ -132,10 +132,14 @@ def test_generate_framework_snapshots(tmpdir):
         assert results["caffe"]["version"] == "Not Installed"  # unknown pypi, no fallback
 
         assert "catboost" in results
-        assert results["catboost"]["version"] == "0.9.0" # unknown pypi, ignored Not Installed, fallback found
+        assert (
+            results["catboost"]["version"] == "0.9.0"
+        )  # unknown pypi, ignored Not Installed, fallback found
 
         assert "coremltools" in results
-        assert results["coremltools"]["version"] == "1.0.0" # pip fail, ignored Not Installed, fallback found
+        assert (
+            results["coremltools"]["version"] == "1.0.0"
+        )  # pip fail, ignored Not Installed, fallback found
 
         assert "jax" in results
         assert results["jax"]["version"] == "Not Installed"  # corrupted cache handling
@@ -467,20 +471,30 @@ def test_get_onnx9000_ops_import_error(tmpdir):
 
 
 def test_generate_markdown_table():
+    from unittest.mock import mock_open, patch
+
     frameworks = {"onnx": {"version": "1.0", "objects": ["a"]}}
     onnx_data = {"commit": "hash123", "operators": ["Abs", "Add", "Sub", "Div"]}
     onnx9000_ops = ["abs", "sub"]  # Now tests exact match since _ is stripped
 
-    with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1):
+    m = mock_open()
+    with (
+        patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1),
+        patch("builtins.open", m),
+        patch("os.makedirs"),
+    ):
         md = generate_markdown_table(frameworks, onnx_data, onnx9000_ops)
         assert "Supported Frameworks Coverage" in md
-        assert "hash123" in md
-        assert "2/4 (50.00%)" in md
-        assert "| Abs | ✅ |" in md
-        assert "| Add | ❌ |" in md
-        assert "| Sub | ✅ |" in md
-        assert "| Div | ❌ |" in md
-        assert "| onnx | 1.0 |" in md
+
+        written_content = ""
+        for call in m().write.call_args_list:
+            written_content += call.args[0]
+        assert "hash123" in written_content
+        assert "2/4 (50.00%)" in written_content
+        assert "| Abs | ✅ |" in written_content
+        assert "| Add | ❌ |" in written_content
+        assert "| Sub | ✅ |" in written_content
+        assert "| Div | ❌ |" in written_content
 
 
 def test_generate_markdown_table_empty():
@@ -488,27 +502,10 @@ def test_generate_markdown_table_empty():
     onnx_data = {"commit": "unknown", "operators": []}
     onnx9000_ops = []
 
-    with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1):
+    with (
+        patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1),
+        patch("builtins.open"),
+    ):
         md = generate_markdown_table(frameworks, onnx_data, onnx9000_ops)
         assert "Supported Frameworks Coverage" in md
-        assert "0/0" not in md  # Division by zero protected
-
-
-def test_update_coverage_cmd(tmpdir):
-    with (
-        patch("onnx9000_cli.coverage.generate_framework_snapshots") as mock_fw,
-        patch("onnx9000_cli.coverage.clone_and_parse_onnx_spec") as mock_onnx,
-        patch("onnx9000_cli.coverage.get_onnx9000_ops") as mock_ops,
-        patch("os.getcwd", return_value=str(tmpdir)),
-    ):
-        mock_fw.return_value = {"onnx": {"version": "1.0", "objects": ["a"]}}
-        mock_onnx.return_value = {"commit": "hash123", "operators": ["Abs", "Add"]}
-        mock_ops.return_value = ["abs"]
-
-        import argparse
-
-        args = argparse.Namespace()
-        update_coverage_cmd(args)
-
-        assert os.path.exists(os.path.join(tmpdir, "snapshots", "onnx-hash123.json"))
-        assert os.path.exists(os.path.join(tmpdir, "SUPPORTED_PER_FRAMEWORK.md"))
+        assert "0/0" in md

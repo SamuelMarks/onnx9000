@@ -1,0 +1,2413 @@
+# Flax Support Coverage
+
+Tracking exhaustive coverage of the `flax` python package API.
+
+
+## Detailed API
+
+| Object Name | Type | Signature |
+|---|---|---|
+| `config` | Object | `` |
+| `configurations.Config` | Class | `()` |
+| `configurations.FlagHolder` | Class | `(name, help)` |
+| `configurations.bool_flag` | Function | `(name: str, default: bool, help: str) -> FlagHolder[bool]` |
+| `configurations.config` | Object | `` |
+| `configurations.flax_always_shard_variable` | Object | `` |
+| `configurations.flax_array_ref` | Object | `` |
+| `configurations.flax_filter_frames` | Object | `` |
+| `configurations.flax_fix_rng` | Object | `` |
+| `configurations.flax_hijax_variable` | Object | `` |
+| `configurations.flax_max_repr_depth` | Object | `` |
+| `configurations.flax_preserve_adopted_names` | Object | `` |
+| `configurations.flax_profile` | Object | `` |
+| `configurations.flax_pytree_module` | Object | `` |
+| `configurations.flax_return_frozendict` | Object | `` |
+| `configurations.flax_use_flaxlib` | Object | `` |
+| `configurations.flax_use_orbax_checkpointing` | Object | `` |
+| `configurations.int_flag` | Function | `(name: str, default: int \| None, help: str) -> FlagHolder[int]` |
+| `configurations.nnx_graph_mode` | Object | `` |
+| `configurations.nnx_graph_updates` | Object | `` |
+| `configurations.static_bool_env` | Function | `(varname: str, default: bool) -> bool` |
+| `configurations.static_int_env` | Function | `(varname: str, default: int \| None) -> int \| None` |
+| `core.Array` | Object | `` |
+| `core.AxisMetadata` | Class | `(...)` |
+| `core.DenyList` | Class | `(deny: Filter)` |
+| `core.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `core.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.apply` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.axes_scan.ScanAxis` | Object | `` |
+| `core.axes_scan.broadcast` | Object | `` |
+| `core.axes_scan.build_shaped_array` | Function | `(x, batch_dim: bool) -> core.ShapedArray` |
+| `core.axes_scan.scan` | Function | `(fn: Callable[..., Any], in_axes: Any, out_axes: Any, length: int \| None, reverse: bool, unroll: int, _split_transpose: bool, check_constancy_invariants: bool)` |
+| `core.bind` | Function | `(variables: VariableDict, rngs: RNGSequences \| None, mutable: CollectionFilter, flags: Mapping \| None)` |
+| `core.broadcast` | Object | `` |
+| `core.check_trace_level` | Function | `(base_level)` |
+| `core.copy` | Function | `(x: FrozenDict \| dict[str, Any], add_or_replace: FrozenDict[str, Any] \| dict[str, Any]) -> FrozenDict \| dict[str, Any]` |
+| `core.current_trace` | Function | `()` |
+| `core.custom_vjp` | Function | `(fn: Callable[..., Any], forward_fn: Callable[..., Any], backward_fn: Callable[..., Any], grad_vars: CollectionFilter, nondiff_argnums)` |
+| `core.freeze` | Function | `(xs: Mapping[Any, Any]) -> FrozenDict[Any, Any]` |
+| `core.frozen_dict.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `core.frozen_dict.FrozenKeysView` | Class | `(...)` |
+| `core.frozen_dict.FrozenValuesView` | Class | `(...)` |
+| `core.frozen_dict.K` | Object | `` |
+| `core.frozen_dict.V` | Object | `` |
+| `core.frozen_dict.copy` | Function | `(x: FrozenDict \| dict[str, Any], add_or_replace: FrozenDict[str, Any] \| dict[str, Any]) -> FrozenDict \| dict[str, Any]` |
+| `core.frozen_dict.freeze` | Function | `(xs: Mapping[Any, Any]) -> FrozenDict[Any, Any]` |
+| `core.frozen_dict.pop` | Function | `(x: FrozenDict \| dict[str, Any], key: str) -> tuple[FrozenDict \| dict[str, Any], Any]` |
+| `core.frozen_dict.pretty_repr` | Function | `(x: Any, num_spaces: int) -> str` |
+| `core.frozen_dict.serialization` | Object | `` |
+| `core.frozen_dict.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `core.init` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.jit` | Function | `(fn: Callable[..., Any], variables: CollectionFilter, rngs: PRNGSequenceFilter, static_argnums: int \| Iterable[int], static_argnames: str \| Iterable[str], donate_argnums: int \| Iterable[int], device, backend: str \| None) -> Callable[..., Any]` |
+| `core.jvp` | Function | `(fn: Callable[..., Any], scope: Scope, primals, tangents, variable_tangents, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Any]` |
+| `core.lazy_init` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.lift.A` | Object | `` |
+| `core.lift.C` | Object | `` |
+| `core.lift.CollectionFilter` | Object | `` |
+| `core.lift.CountsHolder` | Class | `(flat_d)` |
+| `core.lift.DenyList` | Class | `(deny: Filter)` |
+| `core.lift.Filter` | Object | `` |
+| `core.lift.In` | Class | `(axis: T)` |
+| `core.lift.InOutAxis` | Object | `` |
+| `core.lift.InOutScanAxis` | Object | `` |
+| `core.lift.LazyRng` | Class | `(...)` |
+| `core.lift.Out` | Class | `(axis: T)` |
+| `core.lift.PRNGSequenceFilter` | Object | `` |
+| `core.lift.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.lift.TransformContext` | Class | `(stack: list[A])` |
+| `core.lift.axes_scan` | Object | `` |
+| `core.lift.checkpoint` | Function | `(fn: Callable[..., Any], variables: CollectionFilter, rngs: PRNGSequenceFilter, concrete: bool, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: Callable[..., bool] \| None) -> Callable[..., Any]` |
+| `core.lift.cond` | Function | `(pred: Any, true_fun: Callable[..., C], false_fun: Callable[..., C], scope: Scope, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `core.lift.custom_vjp` | Function | `(fn: Callable[..., Any], forward_fn: Callable[..., Any], backward_fn: Callable[..., Any], grad_vars: CollectionFilter, nondiff_argnums)` |
+| `core.lift.fold_rngs` | Function | `(fn: Callable[..., Any], variables: CollectionFilter, rngs: PRNGSequenceFilter) -> Callable[..., Any]` |
+| `core.lift.freeze` | Function | `(xs: Mapping[Any, Any]) -> FrozenDict[Any, Any]` |
+| `core.lift.group_collections` | Function | `(xs: VariableDict, col_filters: Sequence[CollectionFilter]) -> Sequence[MutableVariableDict]` |
+| `core.lift.id_fn` | Object | `` |
+| `core.lift.in_filter` | Function | `(filter_like: Filter, col: str) -> bool` |
+| `core.lift.intersect_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.lift.is_filter_empty` | Function | `(filter_like: Filter) -> bool` |
+| `core.lift.jit` | Function | `(fn: Callable[..., Any], variables: CollectionFilter, rngs: PRNGSequenceFilter, static_argnums: int \| Iterable[int], static_argnames: str \| Iterable[str], donate_argnums: int \| Iterable[int], device, backend: str \| None) -> Callable[..., Any]` |
+| `core.lift.jvp` | Function | `(fn: Callable[..., Any], scope: Scope, primals, tangents, variable_tangents, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Any]` |
+| `core.lift.map_variables` | Function | `(fn: Callable[..., Any], mapped_collections: CollectionFilter, map_in_fn: Callable[..., Any], map_out_fn: Callable[..., Any], init: bool, mutable: bool, rngs: PRNGSequenceFilter, variables: CollectionFilter) -> Callable[..., Any]` |
+| `core.lift.meta` | Object | `` |
+| `core.lift.pack` | Function | `(fn: Callable[..., Any], in_variable_filters: Sequence[CollectionFilter], out_variable_filters: Sequence[CollectionFilter], rng_filters: Sequence[PRNGSequenceFilter], name, enable_kwargs) -> Callable[..., Any]` |
+| `core.lift.remat` | Object | `` |
+| `core.lift.remat_scan` | Function | `(body_fn: Callable[..., Any], lengths: Sequence[int], policy: Callable[..., bool] \| None, variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, variable_axes: Mapping[CollectionFilter, InOutScanAxis], split_rngs: Mapping[PRNGSequenceFilter, bool]) -> Callable[..., Any]` |
+| `core.lift.scan` | Function | `(fn: Callable[..., Any], variable_axes: Mapping[CollectionFilter, InOutScanAxis], variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, length: int \| None, reverse: bool, unroll: int, _split_transpose: bool, data_transform: Callable[..., Any] \| None, metadata_params: dict[Any, Any], check_constancy_invariants: bool) -> Callable[..., Any]` |
+| `core.lift.set_from_dict` | Function | `(original, updates)` |
+| `core.lift.subtract_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.lift.swap_collection` | Function | `(fn: Callable[..., Any], col_a: str, col_b: str)` |
+| `core.lift.switch` | Function | `(index: Any, branches: Sequence[Callable[..., C]], scope: Scope, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `core.lift.traceback_util` | Object | `` |
+| `core.lift.traverse_util` | Object | `` |
+| `core.lift.tree_map_rngs` | Function | `(fn, tree)` |
+| `core.lift.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `core.lift.union_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.lift.value_and_grad` | Function | `(fn: Callable[..., Any], scope: Scope, primals, has_aux: bool, reduce_axes, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Callable[..., Any]] \| tuple[Any, Callable[..., Any], Any]` |
+| `core.lift.vjp` | Function | `(fn: Callable[..., Any], scope: Scope, primals, has_aux: bool, reduce_axes, vjp_variables: CollectionFilter, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Callable[..., Any]] \| tuple[Any, Callable[..., Any], Any]` |
+| `core.lift.vmap` | Function | `(fn: Callable[..., Any], variable_axes: Mapping[CollectionFilter, InOutAxis], split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, axis_size: int \| None, axis_name: str \| None, spmd_axis_name: str \| None, metadata_params: dict[Any, Any]) -> Callable[..., Any]` |
+| `core.lift.while_loop` | Function | `(cond_fn: Callable[[Scope, C], bool], body_fn: Callable[[Scope, C], C], scope: Scope, init: C, carry_variables: CollectionFilter, broadcast_variables: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool]) -> C` |
+| `core.map_axis_meta` | Function | `(fn: Callable[[AxisMetadata[Any]], Any], tree: Any) -> Any` |
+| `core.meta.A` | Object | `` |
+| `core.meta.AxisMetadata` | Class | `(...)` |
+| `core.meta.B` | Object | `` |
+| `core.meta.LogicalNames` | Object | `` |
+| `core.meta.PARTITION_NAME` | Object | `` |
+| `core.meta.Partitioned` | Class | `(...)` |
+| `core.meta.TAxisMetadata` | Object | `` |
+| `core.meta.add_axis` | Function | `(tree: Any, index: int, params: dict[Any, Any]) -> Any` |
+| `core.meta.errors` | Object | `` |
+| `core.meta.get_global_mesh` | Function | `() -> jax.sharding.AbstractMesh \| jax.sharding.Mesh \| None` |
+| `core.meta.get_partition_spec` | Function | `(tree: Any) -> Any` |
+| `core.meta.get_sharding` | Function | `(tree: Any, mesh: jax.sharding.Mesh) -> Any` |
+| `core.meta.global_mesh_defined` | Function | `() -> bool` |
+| `core.meta.is_axis_metadata` | Function | `(val: Any) -> bool` |
+| `core.meta.map_axis_meta` | Function | `(fn: Callable[[AxisMetadata[Any]], Any], tree: Any) -> Any` |
+| `core.meta.remove_axis` | Function | `(tree: Any, index: int, params: dict[Any, Any]) -> Any` |
+| `core.meta.replace_boxed` | Function | `(tree: Any, updates: Any) -> Any` |
+| `core.meta.struct` | Object | `` |
+| `core.meta.unbox` | Function | `(tree: Any) -> Any` |
+| `core.meta.with_partitioning` | Function | `(fn: Callable[..., Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None) -> Callable[..., Partitioned[Any]]` |
+| `core.nn.Embedding` | Class | `(...)` |
+| `core.nn.activation` | Object | `` |
+| `core.nn.attention.CacheEntry` | Class | `(...)` |
+| `core.nn.attention.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.nn.attention.default_kernel_init` | Object | `` |
+| `core.nn.attention.dense_general` | Function | `(scope, inputs, features, axis, batch_dims, bias, dtype, kernel_init, bias_init, precision)` |
+| `core.nn.attention.dot_product_attention` | Function | `(scope, query, key, value, dtype, bias, axis, broadcast_dropout, dropout_rng, dropout_rate, deterministic, precision)` |
+| `core.nn.attention.initializers` | Object | `` |
+| `core.nn.attention.make_padding_mask` | Function | `(padding_mask_query, padding_mask_key, query_shape, key_shape, attention_axis, segmentation_mask)` |
+| `core.nn.attention.multi_head_dot_product_attention` | Function | `(scope: Scope, inputs_q, inputs_kv, num_heads, dtype, qkv_features, out_features, attention_axis, causal_mask, padding_mask, key_padding_mask, segmentation, key_segmentation, cache, broadcast_dropout, dropout_rng, dropout_rate, deterministic, precision, kernel_init, bias_init, bias, attention_fn)` |
+| `core.nn.attention.struct` | Object | `` |
+| `core.nn.avg_pool` | Function | `(inputs, window_shape, strides, padding, count_include_pad)` |
+| `core.nn.batch_norm` | Function | `(scope: Scope, x, use_running_average, axis, momentum, epsilon, dtype, bias, scale, bias_init, scale_init, axis_name, axis_index_groups, kind)` |
+| `core.nn.celu` | Object | `` |
+| `core.nn.conv` | Function | `(scope, inputs, features, kernel_size, strides, padding, input_dilation, kernel_dilation, feature_group_count, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.conv_transpose` | Function | `(scope, inputs, features, kernel_size, strides, padding, kernel_dilation, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.dense` | Function | `(scope, inputs, features, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.dense_general` | Function | `(scope, inputs, features, axis, batch_dims, bias, dtype, kernel_init, bias_init, precision)` |
+| `core.nn.dot_product_attention` | Function | `(scope, query, key, value, dtype, bias, axis, broadcast_dropout, dropout_rng, dropout_rate, deterministic, precision)` |
+| `core.nn.dropout` | Function | `(scope, inputs, rate, deterministic, rng)` |
+| `core.nn.elu` | Object | `` |
+| `core.nn.embedding` | Function | `(scope: Scope, num_embeddings: int, features: int, init_fn) -> Embedding` |
+| `core.nn.gelu` | Object | `` |
+| `core.nn.glu` | Object | `` |
+| `core.nn.group_norm` | Function | `(scope, x, num_groups, group_size, epsilon, dtype, bias, scale, bias_init, scale_init)` |
+| `core.nn.initializers` | Object | `` |
+| `core.nn.layer_norm` | Function | `(scope: Scope, x, epsilon, dtype, bias, scale, bias_init, scale_init)` |
+| `core.nn.leaky_relu` | Object | `` |
+| `core.nn.linear.Embedding` | Class | `(...)` |
+| `core.nn.linear.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.nn.linear.conv` | Function | `(scope, inputs, features, kernel_size, strides, padding, input_dilation, kernel_dilation, feature_group_count, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.linear.conv_transpose` | Function | `(scope, inputs, features, kernel_size, strides, padding, kernel_dilation, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.linear.default_embed_init` | Object | `` |
+| `core.nn.linear.default_kernel_init` | Object | `` |
+| `core.nn.linear.dense` | Function | `(scope, inputs, features, bias, dtype, precision, kernel_init, bias_init)` |
+| `core.nn.linear.dense_general` | Function | `(scope, inputs, features, axis, batch_dims, bias, dtype, kernel_init, bias_init, precision)` |
+| `core.nn.linear.embedding` | Function | `(scope: Scope, num_embeddings: int, features: int, init_fn) -> Embedding` |
+| `core.nn.linear.initializers` | Object | `` |
+| `core.nn.linear.struct` | Object | `` |
+| `core.nn.log_sigmoid` | Object | `` |
+| `core.nn.log_softmax` | Object | `` |
+| `core.nn.max_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `core.nn.multi_head_dot_product_attention` | Function | `(scope: Scope, inputs_q, inputs_kv, num_heads, dtype, qkv_features, out_features, attention_axis, causal_mask, padding_mask, key_padding_mask, segmentation, key_segmentation, cache, broadcast_dropout, dropout_rng, dropout_rate, deterministic, precision, kernel_init, bias_init, bias, attention_fn)` |
+| `core.nn.normalization.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.nn.normalization.batch_norm` | Function | `(scope: Scope, x, use_running_average, axis, momentum, epsilon, dtype, bias, scale, bias_init, scale_init, axis_name, axis_index_groups, kind)` |
+| `core.nn.normalization.group_norm` | Function | `(scope, x, num_groups, group_size, epsilon, dtype, bias, scale, bias_init, scale_init)` |
+| `core.nn.normalization.initializers` | Object | `` |
+| `core.nn.normalization.layer_norm` | Function | `(scope: Scope, x, epsilon, dtype, bias, scale, bias_init, scale_init)` |
+| `core.nn.relu` | Object | `` |
+| `core.nn.sigmoid` | Object | `` |
+| `core.nn.silu` | Object | `` |
+| `core.nn.soft_sign` | Object | `` |
+| `core.nn.softmax` | Object | `` |
+| `core.nn.softplus` | Object | `` |
+| `core.nn.stochastic.dropout` | Function | `(scope, inputs, rate, deterministic, rng)` |
+| `core.nn.swish` | Object | `` |
+| `core.nn.tanh` | Object | `` |
+| `core.partial_eval.errors` | Object | `` |
+| `core.partial_eval.lazy_init` | Function | `(fn)` |
+| `core.pop` | Function | `(x: FrozenDict \| dict[str, Any], key: str) -> tuple[FrozenDict \| dict[str, Any], Any]` |
+| `core.pretty_repr` | Function | `(x: Any, num_spaces: int) -> str` |
+| `core.remat` | Object | `` |
+| `core.remat_scan` | Function | `(body_fn: Callable[..., Any], lengths: Sequence[int], policy: Callable[..., bool] \| None, variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, variable_axes: Mapping[CollectionFilter, InOutScanAxis], split_rngs: Mapping[PRNGSequenceFilter, bool]) -> Callable[..., Any]` |
+| `core.scan` | Function | `(fn: Callable[..., Any], variable_axes: Mapping[CollectionFilter, InOutScanAxis], variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, length: int \| None, reverse: bool, unroll: int, _split_transpose: bool, data_transform: Callable[..., Any] \| None, metadata_params: dict[Any, Any], check_constancy_invariants: bool) -> Callable[..., Any]` |
+| `core.scope.Array` | Object | `` |
+| `core.scope.Collection` | Object | `` |
+| `core.scope.CollectionFilter` | Object | `` |
+| `core.scope.DenyList` | Class | `(deny: Filter)` |
+| `core.scope.Filter` | Object | `` |
+| `core.scope.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `core.scope.FrozenVariableDict` | Object | `` |
+| `core.scope.LazyRng` | Class | `(...)` |
+| `core.scope.MutableCollection` | Object | `` |
+| `core.scope.MutableVariableDict` | Object | `` |
+| `core.scope.PRNGFoldable` | Object | `` |
+| `core.scope.PRNGKey` | Object | `` |
+| `core.scope.PRNGSequenceFilter` | Object | `` |
+| `core.scope.RNGSequences` | Object | `` |
+| `core.scope.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `core.scope.T` | Object | `` |
+| `core.scope.Variable` | Class | `(scope: Scope, collection: str, name: str, unbox: bool)` |
+| `core.scope.VariableDict` | Object | `` |
+| `core.scope.apply` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.scope.bind` | Function | `(variables: VariableDict, rngs: RNGSequences \| None, mutable: CollectionFilter, flags: Mapping \| None)` |
+| `core.scope.child_rng_token` | Object | `` |
+| `core.scope.config` | Object | `` |
+| `core.scope.errors` | Object | `` |
+| `core.scope.filter_to_set` | Function | `(x: Filter) -> set[str]` |
+| `core.scope.freeze` | Function | `(xs: Mapping[Any, Any]) -> FrozenDict[Any, Any]` |
+| `core.scope.group_collections` | Function | `(xs: VariableDict, col_filters: Sequence[CollectionFilter]) -> Sequence[MutableVariableDict]` |
+| `core.scope.in_filter` | Function | `(filter_like: Filter, col: str) -> bool` |
+| `core.scope.init` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.scope.intersect_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.scope.is_filter_empty` | Function | `(filter_like: Filter) -> bool` |
+| `core.scope.lazy_init` | Function | `(fn: Callable[..., Any], mutable: CollectionFilter, flags: Mapping \| None) -> Callable[..., Any]` |
+| `core.scope.meta` | Object | `` |
+| `core.scope.no_flag` | Object | `` |
+| `core.scope.partial_eval` | Object | `` |
+| `core.scope.struct` | Object | `` |
+| `core.scope.subtract_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.scope.traceback_util` | Object | `` |
+| `core.scope.tracers` | Object | `` |
+| `core.scope.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `core.scope.union_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `core.scope.uuid` | Object | `` |
+| `core.spmd.LogicalRules` | Object | `` |
+| `core.spmd.Sharding` | Object | `` |
+| `core.spmd.apply_rules` | Function | `(sharding, sharding_rules)` |
+| `core.spmd.composite_rules` | Function | `(rule1, rule2)` |
+| `core.spmd.from_sharding_rules` | Function | `(sharding: Sharding, sharding_rules: LogicalRules) -> Sharding` |
+| `core.spmd.get_logical_axis_rules` | Function | `() -> LogicalRules` |
+| `core.spmd.get_mesh` | Function | `(sharding)` |
+| `core.spmd.get_pspec` | Function | `(sharding, sharding_rules) -> PartitionSpec` |
+| `core.spmd.logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `core.spmd.map_sharding` | Function | `(f, sharding)` |
+| `core.spmd.meta` | Object | `` |
+| `core.spmd.set_logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `core.spmd.shard_value` | Function | `(value, out_sharding, sharding_rules, mesh)` |
+| `core.tracers.check_trace_level` | Function | `(base_level)` |
+| `core.tracers.current_trace` | Function | `()` |
+| `core.unbox` | Function | `(tree: Any) -> Any` |
+| `core.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `core.variables.Variable` | Class | `(scope: Scope, collection: str, name: str, unbox: bool)` |
+| `core.vjp` | Function | `(fn: Callable[..., Any], scope: Scope, primals, has_aux: bool, reduce_axes, vjp_variables: CollectionFilter, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Callable[..., Any]] \| tuple[Any, Callable[..., Any], Any]` |
+| `core.vmap` | Function | `(fn: Callable[..., Any], variable_axes: Mapping[CollectionFilter, InOutAxis], split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, axis_size: int \| None, axis_name: str \| None, spmd_axis_name: str \| None, metadata_params: dict[Any, Any]) -> Callable[..., Any]` |
+| `core.while_loop` | Function | `(cond_fn: Callable[[Scope, C], bool], body_fn: Callable[[Scope, C], C], scope: Scope, init: C, carry_variables: CollectionFilter, broadcast_variables: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool]) -> C` |
+| `cursor.A` | Object | `` |
+| `cursor.AccessType` | Class | `(...)` |
+| `cursor.Cursor` | Class | `(obj: A, parent_key: ParentKey[A] \| None)` |
+| `cursor.CursorFindError` | Class | `(cursor, cursor2)` |
+| `cursor.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `cursor.Indexable` | Class | `(...)` |
+| `cursor.Key` | Object | `` |
+| `cursor.ParentKey` | Class | `(parent: Cursor[A], key: Key, access_type: AccessType)` |
+| `cursor.TraverseTreeError` | Class | `(update_fn, cond_fn)` |
+| `cursor.cursor` | Function | `(obj: A) -> Cursor[A]` |
+| `cursor.is_named_tuple` | Function | `(obj)` |
+| `errors.AlreadyExistsError` | Class | `(path)` |
+| `errors.ApplyModuleInvalidMethodError` | Class | `(method)` |
+| `errors.ApplyScopeInvalidVariablesStructureError` | Class | `(variables)` |
+| `errors.ApplyScopeInvalidVariablesTypeError` | Class | `()` |
+| `errors.AssignSubModuleError` | Class | `(cls)` |
+| `errors.CallCompactUnboundModuleError` | Class | `()` |
+| `errors.CallSetupUnboundModuleError` | Class | `()` |
+| `errors.CallShareScopeOnUnboundModuleError` | Class | `()` |
+| `errors.CallUnbindOnUnboundModuleError` | Class | `()` |
+| `errors.CursorFindError` | Class | `(cursor, cursor2)` |
+| `errors.DescriptorAttributeError` | Class | `()` |
+| `errors.FlaxError` | Class | `(message)` |
+| `errors.ImmutableVariableError` | Class | `(message)` |
+| `errors.IncorrectPostInitOverrideError` | Class | `()` |
+| `errors.InvalidCheckpointError` | Class | `(path, step)` |
+| `errors.InvalidFilterError` | Class | `(filter_like)` |
+| `errors.InvalidInstanceModuleError` | Class | `()` |
+| `errors.InvalidRngError` | Class | `(msg)` |
+| `errors.InvalidScopeError` | Class | `(scope_name)` |
+| `errors.JaxTransformError` | Class | `()` |
+| `errors.LazyInitError` | Class | `(partial_val)` |
+| `errors.MPACheckpointingRequiredError` | Class | `(path, step)` |
+| `errors.MPARestoreDataCorruptedError` | Class | `(step, path)` |
+| `errors.MPARestoreTargetRequiredError` | Class | `(path, step, key)` |
+| `errors.ModifyScopeVariableError` | Class | `(col, variable_name, scope_path)` |
+| `errors.MultipleMethodsCompactError` | Class | `()` |
+| `errors.NameInUseError` | Class | `(key_type, value, module_name)` |
+| `errors.PartitioningUnspecifiedError` | Class | `(target)` |
+| `errors.ReservedModuleAttributeError` | Class | `(annotations)` |
+| `errors.ScopeCollectionNotFound` | Class | `(col_name, var_name, scope_path)` |
+| `errors.ScopeParamNotFoundError` | Class | `(param_name, scope_path)` |
+| `errors.ScopeParamShapeError` | Class | `(param_name, scope_path, value_shape, init_shape)` |
+| `errors.ScopeVariableNotFoundError` | Class | `(name, col, scope_path)` |
+| `errors.SetAttributeFrozenModuleError` | Class | `(module_cls, attr_name, attr_val)` |
+| `errors.SetAttributeInModuleSetupError` | Class | `()` |
+| `errors.TraceContextError` | Class | `(...)` |
+| `errors.TransformTargetError` | Class | `(target)` |
+| `errors.TransformedMethodReturnValueError` | Class | `(name)` |
+| `errors.TraverseTreeError` | Class | `(update_fn, cond_fn)` |
+| `experimental.nnx.A` | Object | `` |
+| `experimental.nnx.All` | Class | `(filters: Filter)` |
+| `experimental.nnx.Any` | Class | `(filters: Filter)` |
+| `experimental.nnx.BatchNorm` | Class | `(num_features: int, use_running_average: bool, axis: int, momentum: float, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.BatchStat` | Class | `(...)` |
+| `experimental.nnx.Bidirectional` | Class | `(forward_rnn: RNNBase, backward_rnn: RNNBase, merge_fn: Callable[[Array, Array], Array], time_major: bool, return_carry: bool, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `experimental.nnx.Cache` | Class | `(...)` |
+| `experimental.nnx.Carry` | Class | `(...)` |
+| `experimental.nnx.Conv` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: tp.Union[None, int, tp.Sequence[int]], padding: PaddingLike, input_dilation: tp.Union[None, int, tp.Sequence[int]], kernel_dilation: tp.Union[None, int, tp.Sequence[int]], feature_group_count: int, use_bias: bool, mask: tp.Optional[Array], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, conv_general_dilated: ConvGeneralDilatedT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.ConvTranspose` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: int \| tp.Sequence[int] \| None, padding: PaddingLike, kernel_dilation: int \| tp.Sequence[int] \| None, use_bias: bool, mask: Array \| None, dtype: Dtype \| None, param_dtype: Dtype, precision: PrecisionLike \| None, kernel_init: Initializer, bias_init: Initializer, transpose_kernel: bool, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Data` | Object | `` |
+| `experimental.nnx.Dict` | Class | `(args, kwargs)` |
+| `experimental.nnx.DiffState` | Class | `(argnum: int, filter: filterlib.Filter)` |
+| `experimental.nnx.Dropout` | Class | `(rate: float, broadcast_dims: Sequence[int], deterministic: bool, rng_collection: str, rngs: rnglib.Rngs \| rnglib.RngStream \| None)` |
+| `experimental.nnx.Einsum` | Class | `(einsum_str: str, kernel_shape: Shape, bias_shape: tp.Optional[Shape], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, einsum_op: EinsumT, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Embed` | Class | `(num_embeddings: int, features: int, dtype: tp.Optional[Dtype], param_dtype: Dtype, embedding_init: Initializer, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, embedding_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Everything` | Class | `(...)` |
+| `experimental.nnx.FlatState` | Class | `(items: tp.Iterable[tuple[PathParts, V]], sort: bool)` |
+| `experimental.nnx.GRUCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `experimental.nnx.GraphDef` | Class | `(nodes: list[NodeDefType[tp.Any]], attributes: list[tuple[Key, AttrType]], num_leaves: int)` |
+| `experimental.nnx.GraphState` | Object | `` |
+| `experimental.nnx.GroupNorm` | Class | `(num_features: int, num_groups: tp.Optional[int], group_size: tp.Optional[int], epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: tp.Optional[Axes], axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Initializer` | Object | `` |
+| `experimental.nnx.InstanceNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Intermediate` | Class | `(...)` |
+| `experimental.nnx.LSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `experimental.nnx.LayerNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Linear` | Class | `(in_features: int, out_features: int, use_bias: bool, dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, dot_general: DotGeneralT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.LinearGeneral` | Class | `(in_features: Size \| tp.Sequence[Size], out_features: Size \| tp.Sequence[Size], axis: Axis \| tp.Sequence[Axis], batch_axis: tp.Mapping[Axis, Size], use_bias: bool, dtype: Dtype \| None, param_dtype: Dtype, kernel_init: Initializer, bias_init: Initializer, precision: PrecisionLike, promote_dtype: PromoteDtypeFn, dot_general: DotGeneralT \| None, dot_general_cls: tp.Any, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.List` | Class | `(it: tp.Iterable[A] \| None)` |
+| `experimental.nnx.LoRA` | Class | `(in_features: int, lora_rank: int, out_features: int, base_module: tp.Optional[Module], dtype: tp.Optional[Dtype], param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.LoRALinear` | Class | `(in_features: int, out_features: int, lora_rank: int, lora_dtype: tp.Optional[Dtype], lora_param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], lora_promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any], kwargs)` |
+| `experimental.nnx.LoRAParam` | Class | `(...)` |
+| `experimental.nnx.M` | Object | `` |
+| `experimental.nnx.MergeContext` | Class | `(ctxtag: tp.Hashable \| None, index_ref: IndexMap, is_inner: bool \| None)` |
+| `experimental.nnx.Metric` | Class | `()` |
+| `experimental.nnx.ModelAndOptimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `experimental.nnx.Module` | Class | `(...)` |
+| `experimental.nnx.MultiHeadAttention` | Class | `(num_heads: int, in_features: int, qkv_features: int \| None, out_features: int \| None, num_kv_heads: int \| None, in_kv_features: int \| None, dtype: Dtype \| None, param_dtype: Dtype, broadcast_dropout: bool, dropout_rate: float, deterministic: bool \| None, precision: PrecisionLike, kernel_init: Initializer, out_kernel_init: Initializer \| None, bias_init: Initializer, out_bias_init: Initializer \| None, use_bias: bool, attention_fn: Callable[..., Array], decode: bool \| None, normalize_qk: bool, qkv_promote_dtype: PromoteDtypeFn, out_promote_dtype: PromoteDtypeFn, ln_promote_dtype: PromoteDtypeFn, qkv_dot_general: DotGeneralT \| None, out_dot_general: DotGeneralT \| None, qkv_dot_general_cls: Any, out_dot_general_cls: Any, rngs: rnglib.Rngs, keep_rngs: bool, kernel_metadata: Mapping[str, Any], out_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any], out_bias_metadata: Mapping[str, Any], query_ln_scale_metadata: Mapping[str, Any], key_ln_scale_metadata: Mapping[str, Any])` |
+| `experimental.nnx.MultiMetric` | Class | `(metrics)` |
+| `experimental.nnx.NodeStates` | Class | `(...)` |
+| `experimental.nnx.Not` | Class | `(collection_filter: Filter)` |
+| `experimental.nnx.Nothing` | Class | `(...)` |
+| `experimental.nnx.Object` | Class | `(...)` |
+| `experimental.nnx.OfType` | Class | `(type: type)` |
+| `experimental.nnx.OptArray` | Class | `(...)` |
+| `experimental.nnx.OptState` | Class | `(...)` |
+| `experimental.nnx.OptVariable` | Class | `(...)` |
+| `experimental.nnx.OptimizedLSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `experimental.nnx.Optimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `experimental.nnx.PARTITION_NAME` | Object | `` |
+| `experimental.nnx.PReLU` | Class | `(negative_slope_init: float, dtype: Dtype \| None, param_dtype: Dtype, promote_dtype: PromoteDtypeFn, negative_slope_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.Param` | Class | `(...)` |
+| `experimental.nnx.PathContains` | Class | `(key: Key \| str, exact: bool)` |
+| `experimental.nnx.Perturbation` | Class | `(...)` |
+| `experimental.nnx.PureState` | Object | `` |
+| `experimental.nnx.Pytree` | Class | `(...)` |
+| `experimental.nnx.RMSNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_scale: bool, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, scale_metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.RNN` | Class | `(cell: RNNCellBase, time_major: bool, return_carry: bool, reverse: bool, keep_order: bool, unroll: int, state_axes: Mapping[str, int \| type[iteration.Carry] \| None] \| None, broadcast_rngs: filterlib.Filter, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `experimental.nnx.RNNCellBase` | Class | `(...)` |
+| `experimental.nnx.RngCount` | Class | `(...)` |
+| `experimental.nnx.RngKey` | Class | `(...)` |
+| `experimental.nnx.RngState` | Class | `(...)` |
+| `experimental.nnx.RngStream` | Class | `(key: jax.Array \| int, tag: str)` |
+| `experimental.nnx.Rngs` | Class | `(default: RngValue \| RngStream \| tp.Mapping[str, RngValue \| RngStream] \| None, rngs: RngValue \| RngStream)` |
+| `experimental.nnx.Sequential` | Class | `(fns: tp.Callable[..., tp.Any])` |
+| `experimental.nnx.SimpleCell` | Class | `(in_features: int, hidden_features: int, dtype: Dtype, param_dtype: Dtype, carry_init: Initializer \| None, residual: bool, activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `experimental.nnx.SpectralNorm` | Class | `(layer_instance: Module, n_steps: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, error_on_non_matrix: bool, update_stats: bool, rngs: rnglib.Rngs)` |
+| `experimental.nnx.SplitContext` | Class | `(ctxtag: tp.Hashable \| None, ref_index: RefMap, is_inner: bool \| None)` |
+| `experimental.nnx.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `experimental.nnx.StateAxes` | Class | `(filter_axes: statelib.State \| tp.Mapping[filterlib.Filter, Index \| type[Carry] \| None] \| tp.Iterable[tuple[filterlib.Filter, Index \| type[Carry] \| None]])` |
+| `experimental.nnx.StateSharding` | Class | `(filter_sharding: statelib.State \| tp.Mapping[filterlib.Filter, tp.Any] \| tp.Iterable[tuple[filterlib.Filter, tp.Any]])` |
+| `experimental.nnx.Static` | Object | `` |
+| `experimental.nnx.TrainState` | Class | `(...)` |
+| `experimental.nnx.UpdateContext` | Class | `(tag: tp.Hashable, outer_ref_outer_index: RefMap \| None, outer_index_inner_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, inner_ref_outer_index: RefMap \| None, static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None)` |
+| `experimental.nnx.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `experimental.nnx.VariableMetadata` | Class | `(raw_value: A, set_value_hooks: tuple[SetValueHook[A], ...], get_value_hooks: tuple[GetValueHook[A], ...], create_value_hooks: tuple[CreateValueHook[A], ...], add_axis_hooks: tuple[AddAxisHook[Variable[A]], ...], remove_axis_hooks: tuple[RemoveAxisHook[Variable[A]], ...], metadata: tp.Mapping[str, tp.Any])` |
+| `experimental.nnx.VariableState` | Object | `` |
+| `experimental.nnx.WeightNorm` | Class | `(layer_instance: nnx.Module, feature_axes: Axes \| None, use_scale: bool, scale_init: Initializer, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, variable_filter: nnx.filterlib.Filter, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs)` |
+| `experimental.nnx.WithTag` | Class | `(tag: str)` |
+| `experimental.nnx.abstract_with_sharding` | Function | `(tree: A, graph: bool \| None) -> A` |
+| `experimental.nnx.avg_pool` | Function | `(inputs, window_shape, strides, padding, count_include_pad)` |
+| `experimental.nnx.cached_partial` | Object | `` |
+| `experimental.nnx.call` | Function | `(graphdef_state: tuple[GraphDef[A], GraphState]) -> ApplyCaller[tuple[GraphDef[A], GraphState]]` |
+| `experimental.nnx.capture` | Function | `(fn: tp.Callable[P, R] \| type[variableslib.Variable], var_types: type[variableslib.Variable], init: tp.Optional[State], method_outputs: tp.Optional[type[variableslib.Variable]]) -> tp.Callable[P, tuple[R, State]] \| tp.Callable[[tp.Callable[P, R]], tp.Callable[P, tuple[R, State]]]` |
+| `experimental.nnx.celu` | Object | `` |
+| `experimental.nnx.check_pytree` | Function | `(pytree)` |
+| `experimental.nnx.checkify` | Function | `(f: tp.Callable[..., checkify_lib.Out], errors: frozenset[type[checkify_lib.JaxException]], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tuple[checkify_lib.Error, checkify_lib.Out]]` |
+| `experimental.nnx.clone` | Function | `(node: Node, variables: bool, graph: bool \| None) -> Node` |
+| `experimental.nnx.combine_masks` | Function | `(masks: Array \| None, dtype: Dtype) -> Array \| None` |
+| `experimental.nnx.compat` | Object | `` |
+| `experimental.nnx.cond` | Function | `(pred, true_fun: tp.Callable[..., A], false_fun: tp.Callable[..., A], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `experimental.nnx.current_update_context` | Function | `(tag: tp.Hashable) -> UpdateContext` |
+| `experimental.nnx.custom_vjp` | Function | `(fun: tp.Callable[..., A] \| Missing, nondiff_argnums: tuple[int \| DiffState, ...], graph: bool \| None, graph_updates: bool \| None) -> CustomVjp[A] \| SimpleCustomVjp[A] \| tp.Callable[[tp.Callable[..., A]], CustomVjp[A] \| SimpleCustomVjp[A]]` |
+| `experimental.nnx.data` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `experimental.nnx.dataclass` | Function | `(cls, init: bool, eq: bool, order: bool, unsafe_hash: bool, match_args: bool, kw_only: bool, slots: bool, weakref_slot: bool) -> tp.Any` |
+| `experimental.nnx.display` | Function | `(args)` |
+| `experimental.nnx.dot_product_attention` | Function | `(query: Array, key: Array, value: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: Array \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, promote_dtype: PromoteDtypeFn, is_causal: bool)` |
+| `experimental.nnx.elu` | Object | `` |
+| `experimental.nnx.eval_shape` | Function | `(f: tp.Callable[..., A], args: tp.Any, graph: bool \| None, graph_updates: bool \| None, kwargs: tp.Any) -> A` |
+| `experimental.nnx.filter_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `experimental.nnx.find_duplicates` | Function | `(node: tp.Any, only: filterlib.Filter) -> list[list[PathParts]]` |
+| `experimental.nnx.flatten` | Function | `(node: Node, with_paths: bool, ref_index: RefMap \| None, ref_outer_index: RefMap \| None, graph: bool \| None) -> tuple[GraphDef[Node], FlatState[tp.Any] \| list[tp.Any]]` |
+| `experimental.nnx.fori_loop` | Function | `(lower: int, upper: int, body_fun: tp.Callable[[int, T], T], init_val: T, unroll: int \| bool \| None, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `experimental.nnx.fork_rngs` | Function | `(node: tp.Any, split: tp.Mapping[filterlib.Filter, int \| tuple[int, ...] \| None] \| int \| None, graph: bool \| None) -> SplitBackups \| tp.Callable[[F], F]` |
+| `experimental.nnx.from_flat_state` | Function | `(flat_state: tp.Mapping[PathParts, V] \| tp.Iterable[tuple[PathParts, V]], cls) -> State` |
+| `experimental.nnx.from_tree` | Function | `(tree: tp.Any, prefix: tp.Any, merge_fn: tp.Callable[[graphlib.MergeContext, KeyPath, Prefix, Leaf], tp.Any], is_node_leaf: tp.Callable[[Leaf], bool], is_leaf: tp.Callable[[Leaf], bool], map_non_graph_nodes: bool, is_inner: bool \| None, ctxtag: tp.Hashable \| None) -> tp.Any` |
+| `experimental.nnx.gelu` | Object | `` |
+| `experimental.nnx.get_abstract_model` | Function | `(init_fn, mesh, graph: bool \| None)` |
+| `experimental.nnx.get_named_sharding` | Function | `(tree: A, mesh: jax.sharding.Mesh) -> A` |
+| `experimental.nnx.get_partition_spec` | Function | `(tree: A) -> A` |
+| `experimental.nnx.glu` | Object | `` |
+| `experimental.nnx.grad` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `experimental.nnx.graph` | Object | `` |
+| `experimental.nnx.graphdef` | Function | `(node: tp.Any, graph: bool \| None) -> GraphDef[tp.Any]` |
+| `experimental.nnx.graphlib` | Object | `` |
+| `experimental.nnx.hard_sigmoid` | Object | `` |
+| `experimental.nnx.hard_silu` | Object | `` |
+| `experimental.nnx.hard_swish` | Object | `` |
+| `experimental.nnx.hard_tanh` | Object | `` |
+| `experimental.nnx.has_data` | Function | `(value: tp.Any) -> list[tp.Any]` |
+| `experimental.nnx.identity` | Object | `` |
+| `experimental.nnx.initializers` | Object | `` |
+| `experimental.nnx.is_data` | Function | `(value: tp.Any) -> bool` |
+| `experimental.nnx.iter_children` | Object | `` |
+| `experimental.nnx.iter_graph` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[PathParts, tp.Any]]` |
+| `experimental.nnx.iter_modules` | Function | `(module: Module, graph: bool \| None) -> tp.Iterator[tuple[PathParts, Module]]` |
+| `experimental.nnx.jit` | Function | `(fun: tp.Callable[P, R] \| Missing, in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> JitWrapped[P, R] \| tp.Callable[[tp.Callable[P, R]], JitWrapped[P, R]]` |
+| `experimental.nnx.jit_partial` | Function | `(fun: tp.Callable[..., R], partial_args: tp.Any, in_shardings: tp.Any, out_shardings: tp.Any, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> SimpleJitWrapped[..., R]` |
+| `experimental.nnx.jvp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tuple[tp.Any, ...] \| Missing, tangents: tuple[tp.Any, ...] \| Missing, has_aux: bool, graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, ...] \| tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `experimental.nnx.leaky_relu` | Object | `` |
+| `experimental.nnx.log_sigmoid` | Object | `` |
+| `experimental.nnx.log_softmax` | Object | `` |
+| `experimental.nnx.logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `experimental.nnx.logsumexp` | Object | `` |
+| `experimental.nnx.make_attention_mask` | Function | `(query_input: Array, key_input: Array, pairwise_fn: Callable[..., Any], extra_batch_dims: int, dtype: Dtype)` |
+| `experimental.nnx.make_causal_mask` | Function | `(x: Array, extra_batch_dims: int, dtype: Dtype) -> Array` |
+| `experimental.nnx.map` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], node: A, graph: bool \| None) -> A` |
+| `experimental.nnx.map_state` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], state: State) -> State` |
+| `experimental.nnx.max_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `experimental.nnx.merge` | Function | `(graphdef: GraphDef[A], state: tp.Any, states: tp.Any, copy: bool) -> A` |
+| `experimental.nnx.merge_context` | Function | `(ctxtag: tp.Hashable \| None, inner: bool \| None)` |
+| `experimental.nnx.merge_state` | Function | `(state: tp.Mapping, states: tp.Mapping, cls) -> State` |
+| `experimental.nnx.metrics` | Object | `` |
+| `experimental.nnx.min_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `experimental.nnx.object` | Object | `` |
+| `experimental.nnx.one_hot` | Object | `` |
+| `experimental.nnx.optimizer` | Object | `` |
+| `experimental.nnx.pmap` | Function | `(f: F \| type[Missing], axis_name: AxisName \| None, in_axes: tp.Any, out_axes: tp.Any, static_broadcasted_argnums: int \| tp.Iterable[int], devices: tp.Sequence[jax.Device] \| None, backend: str \| None, axis_size: int \| None, donate_argnums: int \| tp.Iterable[int], transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.pool` | Function | `(inputs, init, reduce_fn, window_shape, strides, padding)` |
+| `experimental.nnx.pop` | Function | `(node, filters: filterlib.Filter) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `experimental.nnx.pure` | Function | `(tree: A) -> A` |
+| `experimental.nnx.recursive_map` | Function | `(f: tp.Callable[[PathParts, tp.Any], tp.Any], node: tp.Any, graph: bool \| None)` |
+| `experimental.nnx.register_data_type` | Function | `(type_: T) -> T` |
+| `experimental.nnx.register_variable_name` | Function | `(name: str, typ: type[Variable[A]] \| Missing, overwrite) -> type[Variable[A]] \| tp.Callable[[type[Variable[A]]], type[Variable[A]]]` |
+| `experimental.nnx.relu` | Object | `` |
+| `experimental.nnx.relu6` | Object | `` |
+| `experimental.nnx.remat` | Function | `(f: F \| Missing, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: tp.Callable[..., bool] \| None, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.replace_by_pure_dict` | Function | `(state: State, pure_dict: dict[str, tp.Any], replace_fn: SetValueFn \| None)` |
+| `experimental.nnx.reseed` | Function | `(node, graph: bool \| None, policy: tp.Literal['scalars_only', 'match_shape'] \| tp.Callable[[tuple, jax.Array, tuple[int, ...]], jax.Array], stream_keys: RngValue)` |
+| `experimental.nnx.restore_int_paths` | Function | `(pure_dict: dict[str, tp.Any])` |
+| `experimental.nnx.restore_rngs` | Function | `(backups: tp.Iterable[StreamBackup])` |
+| `experimental.nnx.scan` | Function | `(f: F \| type[Missing], length: int \| None, reverse: bool, unroll: int \| bool, _split_transpose: bool, in_axes: int \| None \| type[Carry] \| tuple[tp.Any, ...], out_axes: tp.Any, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.selu` | Object | `` |
+| `experimental.nnx.set_graph_mode` | Class | `(...)` |
+| `experimental.nnx.set_graph_updates` | Class | `(...)` |
+| `experimental.nnx.set_metadata` | Function | `(node: tp.Any, only: filterlib.Filter, metadata: tp.Any) -> None` |
+| `experimental.nnx.shard_map` | Function | `(f: F \| type[Missing], mesh: Mesh \| AbstractMesh, in_specs: Specs, out_specs: Specs, axis_names: tp.AbstractSet[AxisName], check_vma: bool, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.sigmoid` | Object | `` |
+| `experimental.nnx.silu` | Object | `` |
+| `experimental.nnx.soft_sign` | Object | `` |
+| `experimental.nnx.softmax` | Object | `` |
+| `experimental.nnx.softplus` | Object | `` |
+| `experimental.nnx.split` | Function | `(node: A, filters: filterlib.Filter, graph: bool \| None) -> tuple[GraphDef[A], GraphState, tpe.Unpack[tuple[GraphState, ...]]]` |
+| `experimental.nnx.split_context` | Function | `(ctxtag: tp.Hashable \| None)` |
+| `experimental.nnx.split_rngs` | Function | `(node: tp.Any, splits: int \| tuple[int, ...], only: filterlib.Filter, squeeze: bool, graph: bool \| None) -> SplitBackups \| tp.Any \| tp.Callable[[F], F]` |
+| `experimental.nnx.split_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `experimental.nnx.standardize` | Object | `` |
+| `experimental.nnx.state` | Function | `(node, filters: filterlib.Filter, graph: bool \| None) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `experimental.nnx.static` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `experimental.nnx.swish` | Object | `` |
+| `experimental.nnx.switch` | Function | `(index, branches: tp.Sequence[tp.Callable[..., A]], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `experimental.nnx.tabulate` | Function | `(obj, input_args, depth: int \| None, method: str, row_filter: tp.Callable[[CallInfo], bool], table_kwargs: tp.Mapping[str, tp.Any], column_kwargs: tp.Mapping[str, tp.Any], console_kwargs: tp.Mapping[str, tp.Any], compute_flops: bool, compute_vjp_flops: bool, input_kwargs) -> str` |
+| `experimental.nnx.tanh` | Object | `` |
+| `experimental.nnx.to_flat_state` | Function | `(state: State) -> FlatState` |
+| `experimental.nnx.to_pure_dict` | Function | `(state: State, extract_fn: ExtractValueFn \| None) -> dict[str, tp.Any]` |
+| `experimental.nnx.to_tree` | Function | `(tree, prefix: tp.Any, split_fn: tp.Callable[[graphlib.SplitContext, KeyPath, Prefix, Leaf], tp.Any], map_non_graph_nodes: bool, ctxtag: tp.Hashable \| None, check_aliasing: bool) -> tp.Any` |
+| `experimental.nnx.transform_metadata` | Function | `(f: F \| type[Missing], in_axes: tp.Any, out_axes: tp.Any, graph: bool \| None, partition: str) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.traversals` | Object | `` |
+| `experimental.nnx.unflatten` | Function | `(graphdef: GraphDef[Node], state: State[Key, tp.Any] \| FlatState[tp.Any] \| list[tp.Any], index_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, copy_variables: bool) -> Node` |
+| `experimental.nnx.update` | Function | `(node, state: tp.Any, states: tp.Any) -> None` |
+| `experimental.nnx.update_context` | Function | `(tag: tp.Hashable)` |
+| `experimental.nnx.use_eager_sharding` | Class | `(...)` |
+| `experimental.nnx.using_eager_sharding` | Function | `() -> bool` |
+| `experimental.nnx.value_and_grad` | Function | `(f: tp.Callable[..., tp.Any] \| type[Missing], argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `experimental.nnx.var_defaults` | Function | `(hijax: bool \| None, ref: bool \| None) -> VarDefaultsContext \| VarDefaults` |
+| `experimental.nnx.variable_name_from_type` | Function | `(typ: tp.Type[Variable[tp.Any]], allow_register: bool) -> str` |
+| `experimental.nnx.variable_type_from_name` | Function | `(name: str, base: type[Variable[tp.Any]], allow_register: bool) -> tp.Type[Variable[tp.Any]]` |
+| `experimental.nnx.variables` | Object | `` |
+| `experimental.nnx.vars_as` | Function | `(node: A, hijax: bool \| None, ref: bool \| None, mutable: bool \| None, only: filterlib.Filter, allow_duplicates: bool) -> A` |
+| `experimental.nnx.view` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, kwargs) -> A` |
+| `experimental.nnx.view_info` | Function | `(node: Module, only: filterlib.Filter, graph: bool \| None) -> str` |
+| `experimental.nnx.vjp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tp.Any, has_aux: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, tp.Callable] \| tuple[tp.Any, tp.Callable, tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `experimental.nnx.vmap` | Function | `(f: F \| type[Missing], in_axes: int \| None \| tp.Sequence[tp.Any], out_axes: tp.Any, axis_name: AxisName \| None, axis_size: int \| None, spmd_axis_name: AxisName \| tuple[AxisName, ...] \| None, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `experimental.nnx.while_loop` | Function | `(cond_fun: tp.Callable[[T], tp.Any], body_fun: tp.Callable[[T], T], init_val: T, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `experimental.nnx.with_attributes` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, attributes: tp.Any) -> A` |
+| `experimental.nnx.with_metadata` | Function | `(initializer: F, set_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], get_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], create_value_hooks: tp.Union[CreateValueHook[A], tp.Sequence[CreateValueHook[A]]], add_axis_hooks: tp.Union[AddAxisHook[Variable[A]], tp.Sequence[AddAxisHook[Variable[A]]]], remove_axis_hooks: tp.Union[RemoveAxisHook[Variable[A]], tp.Sequence[RemoveAxisHook[Variable[A]]]], metadata: tp.Any) -> F` |
+| `experimental.nnx.with_partitioning` | Function | `(initializer: F, sharding: Sharding, mesh: tp.Optional[jax.sharding.Mesh], metadata: tp.Any) -> F` |
+| `experimental.nnx.wrappers` | Object | `` |
+| `ids.FlaxId` | Class | `(rawid)` |
+| `ids.UUIDManager` | Class | `()` |
+| `ids.uuid` | Object | `` |
+| `io.BackendMode` | Class | `(...)` |
+| `io.GFile` | Function | `(name, mode)` |
+| `io.NotFoundError` | Object | `` |
+| `io.copy` | Function | `(src, dst, overwrite)` |
+| `io.errors` | Object | `` |
+| `io.exists` | Function | `(path)` |
+| `io.getsize` | Function | `(path)` |
+| `io.glob` | Function | `(pattern)` |
+| `io.io_mode` | Object | `` |
+| `io.isdir` | Function | `(path)` |
+| `io.listdir` | Function | `(path)` |
+| `io.makedirs` | Function | `(path)` |
+| `io.override_mode` | Function | `(override: BackendMode)` |
+| `io.remove` | Function | `(path)` |
+| `io.rename` | Function | `(src, dst, overwrite)` |
+| `io.rmtree` | Function | `(path)` |
+| `io.set_mode` | Function | `(override: BackendMode)` |
+| `jax_utils.pad_shard_unpad` | Function | `(wrapped, static_argnums, static_argnames, static_return)` |
+| `jax_utils.partial_eval_by_shape` | Function | `(fn, input_spec, args, kwargs)` |
+| `jax_utils.pmean` | Function | `(xs, axis_name)` |
+| `jax_utils.prefetch_to_device` | Function | `(iterator, size, devices)` |
+| `jax_utils.replicate` | Function | `(tree, devices)` |
+| `jax_utils.scan_in_dim` | Function | `(body_fn, init, xs, axis, unroll, keepdims)` |
+| `jax_utils.unreplicate` | Function | `(tree)` |
+| `linen.BatchApply` | Class | `(f, num_dims)` |
+| `linen.BatchNorm` | Class | `(...)` |
+| `linen.Bidirectional` | Class | `(...)` |
+| `linen.Conv` | Class | `(...)` |
+| `linen.ConvLSTMCell` | Class | `(...)` |
+| `linen.ConvLocal` | Class | `(...)` |
+| `linen.ConvTranspose` | Class | `(...)` |
+| `linen.Dense` | Class | `(...)` |
+| `linen.DenseGeneral` | Class | `(...)` |
+| `linen.DenyList` | Class | `(deny: Filter)` |
+| `linen.Dropout` | Class | `(...)` |
+| `linen.Einsum` | Class | `(...)` |
+| `linen.Embed` | Class | `(...)` |
+| `linen.Fp8DirectDotGeneralOp` | Class | `(...)` |
+| `linen.Fp8DotGeneral` | Object | `` |
+| `linen.Fp8DotGeneralOp` | Class | `(...)` |
+| `linen.Fp8Einsum` | Class | `(...)` |
+| `linen.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `linen.GRUCell` | Class | `(...)` |
+| `linen.GroupNorm` | Class | `(...)` |
+| `linen.InstanceNorm` | Class | `(...)` |
+| `linen.LSTMCell` | Class | `(...)` |
+| `linen.LayerNorm` | Class | `(...)` |
+| `linen.LogicallyPartitioned` | Class | `(...)` |
+| `linen.MGUCell` | Class | `(...)` |
+| `linen.Module` | Class | `(args, kwargs)` |
+| `linen.MultiHeadAttention` | Class | `(...)` |
+| `linen.MultiHeadDotProductAttention` | Class | `(...)` |
+| `linen.NANOOFp8DotGeneralOp` | Class | `(...)` |
+| `linen.OptimizedLSTMCell` | Class | `(...)` |
+| `linen.PARTITION_NAME` | Object | `` |
+| `linen.PReLU` | Class | `(...)` |
+| `linen.Partitioned` | Class | `(...)` |
+| `linen.RMSNorm` | Class | `(...)` |
+| `linen.RNN` | Class | `(...)` |
+| `linen.RNNCellBase` | Class | `(...)` |
+| `linen.SelfAttention` | Class | `(...)` |
+| `linen.Sequential` | Class | `(...)` |
+| `linen.SimpleCell` | Class | `(...)` |
+| `linen.SpectralNorm` | Class | `(...)` |
+| `linen.Variable` | Class | `(scope: Scope, collection: str, name: str, unbox: bool)` |
+| `linen.WeightNorm` | Class | `(...)` |
+| `linen.activation.Array` | Object | `` |
+| `linen.activation.Dense` | Class | `(...)` |
+| `linen.activation.Dtype` | Object | `` |
+| `linen.activation.Module` | Class | `(args, kwargs)` |
+| `linen.activation.PReLU` | Class | `(...)` |
+| `linen.activation.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.activation.normalize` | Object | `` |
+| `linen.add_metadata_axis` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutAxis], metadata_params: dict[Any, Any]) -> Target` |
+| `linen.apply` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., Any]` |
+| `linen.attention.Array` | Object | `` |
+| `linen.attention.DenseGeneral` | Class | `(...)` |
+| `linen.attention.DotGeneralT` | Object | `` |
+| `linen.attention.Dtype` | Object | `` |
+| `linen.attention.Initializer` | Object | `` |
+| `linen.attention.LayerNorm` | Class | `(...)` |
+| `linen.attention.Module` | Class | `(args, kwargs)` |
+| `linen.attention.MultiHeadAttention` | Class | `(...)` |
+| `linen.attention.MultiHeadDotProductAttention` | Class | `(...)` |
+| `linen.attention.PRNGKey` | Object | `` |
+| `linen.attention.PrecisionLike` | Object | `` |
+| `linen.attention.SelfAttention` | Class | `(...)` |
+| `linen.attention.Shape` | Object | `` |
+| `linen.attention.combine_masks` | Function | `(masks: Array \| None, dtype: Dtype) -> Array \| None` |
+| `linen.attention.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.attention.default_kernel_init` | Object | `` |
+| `linen.attention.dot_product_attention` | Function | `(query: Array, key: Array, value: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: PRNGKey \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, force_fp32_for_softmax: bool, einsum_dot_general: Callable[..., Array] \| None, qk_attn_weights_einsum: Callable[..., Array] \| None, attn_weights_value_einsum: Callable[..., Array] \| None)` |
+| `linen.attention.dot_product_attention_weights` | Function | `(query: Array, key: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: PRNGKey \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, force_fp32_for_softmax: bool, einsum_dot_general: Callable[..., Array] \| None, einsum: Callable[..., Array] \| None)` |
+| `linen.attention.initializers` | Object | `` |
+| `linen.attention.make_attention_mask` | Function | `(query_input: Array, key_input: Array, pairwise_fn: Callable[..., Any], extra_batch_dims: int, dtype: Dtype)` |
+| `linen.attention.make_causal_mask` | Function | `(x: Array, extra_batch_dims: int, dtype: Dtype) -> Array` |
+| `linen.attention.merge_param` | Function | `(name: str, a: T \| None, b: T \| None) -> T` |
+| `linen.attention.promote_dtype` | Function | `(args, dtype, inexact) -> list[Any]` |
+| `linen.avg_pool` | Function | `(inputs, window_shape, strides, padding, count_include_pad)` |
+| `linen.batch_apply.BatchApply` | Class | `(f, num_dims)` |
+| `linen.batch_apply.arbitrary_mergeable_leaf` | Function | `(min_num_dims, args, kwargs)` |
+| `linen.batch_apply.merge_leading_dims` | Function | `(x, num_dims)` |
+| `linen.batch_apply.ndim_at_least` | Function | `(x, num_dims)` |
+| `linen.batch_apply.split_leading_dim` | Function | `(x, to_dim)` |
+| `linen.broadcast` | Object | `` |
+| `linen.celu` | Object | `` |
+| `linen.checkpoint` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter, concrete: bool, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: Callable[..., bool] \| None, methods) -> Target` |
+| `linen.combinators.Module` | Class | `(args, kwargs)` |
+| `linen.combinators.Sequential` | Class | `(...)` |
+| `linen.combinators.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.combine_masks` | Function | `(masks: Array \| None, dtype: Dtype) -> Array \| None` |
+| `linen.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.compact_name_scope` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.cond` | Function | `(pred: Any, true_fun: Callable[..., C], false_fun: Callable[..., C], mdl: Module, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `linen.custom_vjp` | Function | `(fn: Callable[..., Any], forward_fn: Callable[..., Any], backward_fn: Callable[..., Any], grad_vars: CollectionFilter, nondiff_argnums)` |
+| `linen.disable_named_call` | Function | `()` |
+| `linen.dot_product_attention` | Function | `(query: Array, key: Array, value: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: PRNGKey \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, force_fp32_for_softmax: bool, einsum_dot_general: Callable[..., Array] \| None, qk_attn_weights_einsum: Callable[..., Array] \| None, attn_weights_value_einsum: Callable[..., Array] \| None)` |
+| `linen.dot_product_attention_weights` | Function | `(query: Array, key: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: PRNGKey \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, force_fp32_for_softmax: bool, einsum_dot_general: Callable[..., Array] \| None, einsum: Callable[..., Array] \| None)` |
+| `linen.dtypes.Dtype` | Object | `` |
+| `linen.dtypes.T` | Object | `` |
+| `linen.dtypes.canonicalize_dtype` | Function | `(args, dtype: Dtype \| None, inexact: bool) -> Dtype` |
+| `linen.dtypes.promote_dtype` | Function | `(args, dtype, inexact) -> list[Any]` |
+| `linen.elu` | Object | `` |
+| `linen.enable_named_call` | Function | `()` |
+| `linen.fold_rngs` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> Target` |
+| `linen.fp8_ops.CAN_USE_EARRAY` | Object | `` |
+| `linen.fp8_ops.DType` | Object | `` |
+| `linen.fp8_ops.Fp8DirectDotGeneralOp` | Class | `(...)` |
+| `linen.fp8_ops.Fp8DotGeneral` | Object | `` |
+| `linen.fp8_ops.Fp8DotGeneralBase` | Class | `(...)` |
+| `linen.fp8_ops.Fp8DotGeneralOp` | Class | `(...)` |
+| `linen.fp8_ops.Fp8Einsum` | Class | `(...)` |
+| `linen.fp8_ops.Fp8MetaTyRules` | Class | `(...)` |
+| `linen.fp8_ops.NANOOFp8DotGeneralOp` | Class | `(...)` |
+| `linen.fp8_ops.OVERWRITE_WITH_GRADIENT` | Object | `` |
+| `linen.fp8_ops.compute_amax_history` | Function | `(x, amax_history)` |
+| `linen.fp8_ops.compute_scale` | Function | `(amax, scale, fp8_max, margin)` |
+| `linen.fp8_ops.dequantize` | Function | `(x, dq_dtype, scale)` |
+| `linen.fp8_ops.dot_general_transpose_lhs` | Function | `(g, x, y, dimension_numbers, precision, preferred_element_type: DTypeLike \| None, swap_ans)` |
+| `linen.fp8_ops.dot_general_transpose_rhs` | Function | `(g, x, y, dimension_numbers, precision, preferred_element_type: DTypeLike \| None)` |
+| `linen.fp8_ops.dot_general_with_precision` | Function | `(lhs, rhs, dimension_numbers, precision, preferred_element_type)` |
+| `linen.fp8_ops.dot_general_with_precision_jvp` | Function | `(dimension_numbers, precision, preferred_element_type, primals, tangents)` |
+| `linen.fp8_ops.fm32` | Object | `` |
+| `linen.fp8_ops.fp32_max_grad` | Object | `` |
+| `linen.fp8_ops.fp8_meta_dtype` | Class | `(...)` |
+| `linen.fp8_ops.fp8_meta_dtype_wrapper` | Class | `(float_dtype: dtypes.DType, _rules: type, type: type)` |
+| `linen.fp8_ops.fp8_scaled_dot_general` | Function | `(lhs, rhs, dimension_numbers, precision, preferred_element_type, lhs_scale, rhs_scale, grad_scale, lhs_amax_history, rhs_amax_history, grad_amax_history, quantize_compute_type)` |
+| `linen.fp8_ops.get_fp8_max` | Function | `(fp8_dtype, out_dtype)` |
+| `linen.fp8_ops.in_q` | Function | `(compute_dtype, q_dtype, inp, scale, amax_history)` |
+| `linen.fp8_ops.in_q_bwd` | Function | `(compute_dtype, q_dtype, res, _)` |
+| `linen.fp8_ops.in_q_fwd` | Function | `(compute_dtype, q_dtype, inp, scale, amax_history)` |
+| `linen.fp8_ops.in_qdq` | Function | `(compute_dtype, q_dtype, inp, scale, amax_history)` |
+| `linen.fp8_ops.in_qdq_bwd` | Function | `(compute_dtype, q_dtype, res, g)` |
+| `linen.fp8_ops.in_qdq_fwd` | Function | `(compute_dtype, q_dtype, inp, scale, amax_history)` |
+| `linen.fp8_ops.initializers` | Object | `` |
+| `linen.fp8_ops.module` | Object | `` |
+| `linen.fp8_ops.out_dq` | Function | `(dq_type, lhs_scale, rhs_scale, out)` |
+| `linen.fp8_ops.out_dq_bwd` | Function | `(dq_type, _, g)` |
+| `linen.fp8_ops.out_dq_fwd` | Function | `(dq_type, lhs_scale, rhs_scale, out)` |
+| `linen.fp8_ops.out_qdq` | Function | `(compute_dtype, q_dtype, out, scale, amax_history)` |
+| `linen.fp8_ops.out_qdq_bwd` | Function | `(compute_dtype, q_dtype, res, g)` |
+| `linen.fp8_ops.out_qdq_fwd` | Function | `(compute_dtype, q_dtype, out, scale, amax_history)` |
+| `linen.fp8_ops.qdq` | Function | `(x, q_dtype, scale, compute_dtype)` |
+| `linen.fp8_ops.quantize` | Function | `(x, q_dtype, scale, compute_dtype)` |
+| `linen.fp8_ops.quantize_dequantize_update` | Function | `(x, q_dtype, scale, amax_history, compute_dtype)` |
+| `linen.fp8_ops.quantized_dot` | Function | `(lhs, q_lhs, lhs_scale, rhs, q_rhs, rhs_scale, out_grad_scale, out_grad_amax_history, dimension_numbers, preferred_element_type)` |
+| `linen.fp8_ops.quantized_dot_bwd` | Function | `(dimension_numbers, preferred_element_type, res, g)` |
+| `linen.fp8_ops.quantized_dot_fwd` | Function | `(lhs, q_lhs, lhs_scale, rhs, q_rhs, rhs_scale, out_grad_scale, out_grad_amax_history, dimension_numbers, preferred_element_type)` |
+| `linen.fp8_ops.update_fp8_meta` | Function | `(x, q_dtype, scale, amax_history)` |
+| `linen.gelu` | Object | `` |
+| `linen.get_logical_axis_rules` | Function | `() -> LogicalRules` |
+| `linen.get_partition_spec` | Function | `(tree: Any) -> Any` |
+| `linen.get_sharding` | Function | `(tree: Any, mesh: jax.sharding.Mesh) -> Any` |
+| `linen.glu` | Object | `` |
+| `linen.grad` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, variables: CollectionFilter, rngs: PRNGSequenceFilter)` |
+| `linen.hard_sigmoid` | Object | `` |
+| `linen.hard_silu` | Object | `` |
+| `linen.hard_swish` | Object | `` |
+| `linen.hard_tanh` | Object | `` |
+| `linen.init` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., FrozenVariableDict \| dict[str, Any]]` |
+| `linen.init_with_output` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., tuple[Any, FrozenVariableDict \| dict[str, Any]]]` |
+| `linen.initializers.Initializer` | Object | `` |
+| `linen.initializers.ones_init` | Function | `() -> Initializer` |
+| `linen.initializers.zeros_init` | Function | `() -> Initializer` |
+| `linen.intercept_methods` | Function | `(interceptor: Interceptor)` |
+| `linen.jit` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter, static_argnums: int \| Iterable[int], static_argnames: str \| Iterable[str], donate_argnums: int \| Iterable[int], device, backend: str \| None, methods) -> Target` |
+| `linen.jvp` | Function | `(fn: Callable[..., Any], mdl: Module, primals, tangents, variable_tangents, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Callable[..., Any]] \| tuple[Any, Callable[..., Any], Any]` |
+| `linen.kw_only_dataclasses.Annotation` | Object | `` |
+| `linen.kw_only_dataclasses.Default` | Object | `` |
+| `linen.kw_only_dataclasses.FieldName` | Object | `` |
+| `linen.kw_only_dataclasses.KW_ONLY` | Object | `` |
+| `linen.kw_only_dataclasses.M` | Object | `` |
+| `linen.kw_only_dataclasses.dataclass` | Function | `(cls, extra_fields, kwargs)` |
+| `linen.kw_only_dataclasses.field` | Function | `(metadata, kw_only, kwargs)` |
+| `linen.leaky_relu` | Object | `` |
+| `linen.linear.Array` | Object | `` |
+| `linen.linear.Conv` | Class | `(...)` |
+| `linen.linear.ConvGeneralDilatedT` | Object | `` |
+| `linen.linear.ConvLocal` | Class | `(...)` |
+| `linen.linear.ConvTranspose` | Class | `(...)` |
+| `linen.linear.Dense` | Class | `(...)` |
+| `linen.linear.DenseGeneral` | Class | `(...)` |
+| `linen.linear.DotGeneralT` | Object | `` |
+| `linen.linear.Dtype` | Object | `` |
+| `linen.linear.Einsum` | Class | `(...)` |
+| `linen.linear.Embed` | Class | `(...)` |
+| `linen.linear.Initializer` | Object | `` |
+| `linen.linear.LaxPadding` | Object | `` |
+| `linen.linear.Module` | Class | `(args, kwargs)` |
+| `linen.linear.PRNGKey` | Object | `` |
+| `linen.linear.PaddingLike` | Object | `` |
+| `linen.linear.PrecisionLike` | Object | `` |
+| `linen.linear.PromoteDtypeFn` | Class | `(...)` |
+| `linen.linear.Shape` | Object | `` |
+| `linen.linear.canonicalize_padding` | Function | `(padding: PaddingLike, rank: int) -> LaxPadding` |
+| `linen.linear.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.linear.default_embed_init` | Object | `` |
+| `linen.linear.default_kernel_init` | Object | `` |
+| `linen.linear.initializers` | Object | `` |
+| `linen.linear.meta` | Object | `` |
+| `linen.linear.module` | Object | `` |
+| `linen.linear.promote_dtype` | Function | `(args, dtype, inexact) -> list[Any]` |
+| `linen.log_sigmoid` | Object | `` |
+| `linen.log_softmax` | Object | `` |
+| `linen.logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `linen.logical_to_mesh` | Function | `(tree: Any, rules: LogicalRules \| None) -> Any` |
+| `linen.logical_to_mesh_axes` | Function | `(array_dim_names: Sequence[str \| None] \| None, rules: LogicalRules \| None) -> jax.sharding.PartitionSpec \| None` |
+| `linen.logical_to_mesh_sharding` | Function | `(tree: Any, mesh: jax.sharding.Mesh, rules: LogicalRules \| None) -> Any` |
+| `linen.logsumexp` | Object | `` |
+| `linen.make_attention_mask` | Function | `(query_input: Array, key_input: Array, pairwise_fn: Callable[..., Any], extra_batch_dims: int, dtype: Dtype)` |
+| `linen.make_causal_mask` | Function | `(x: Array, extra_batch_dims: int, dtype: Dtype) -> Array` |
+| `linen.map_variables` | Function | `(target: Target, mapped_collections: CollectionFilter, trans_in_fn: Callable[..., Any], trans_out_fn: Callable[..., Any], init: bool, mutable: bool, rngs: PRNGSequenceFilter, variables: CollectionFilter, methods) -> Target` |
+| `linen.max_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `linen.merge_param` | Function | `(name: str, a: T \| None, b: T \| None) -> T` |
+| `linen.meta` | Object | `` |
+| `linen.module.Args` | Object | `` |
+| `linen.module.CollectionFilter` | Object | `` |
+| `linen.module.CompactNameScope` | Class | `(fn: Callable, module_fn: Callable, name: str)` |
+| `linen.module.DenyList` | Class | `(deny: Filter)` |
+| `linen.module.Descriptor` | Class | `(...)` |
+| `linen.module.DescriptorWrapper` | Class | `(...)` |
+| `linen.module.FlaxId` | Class | `(rawid)` |
+| `linen.module.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `linen.module.FrozenVariableDict` | Object | `` |
+| `linen.module.Interceptor` | Object | `` |
+| `linen.module.InterceptorContext` | Class | `(module: Module, method_name: str, orig_method: Callable[..., Any])` |
+| `linen.module.K` | Object | `` |
+| `linen.module.Kwargs` | Object | `` |
+| `linen.module.M` | Object | `` |
+| `linen.module.Module` | Class | `(args, kwargs)` |
+| `linen.module.ModuleBase` | Class | `(...)` |
+| `linen.module.NextGetter` | Object | `` |
+| `linen.module.PRNGKey` | Object | `` |
+| `linen.module.ParentDescriptor` | Class | `(...)` |
+| `linen.module.RNGSequences` | Object | `` |
+| `linen.module.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `linen.module.SetupState` | Class | `(...)` |
+| `linen.module.T` | Object | `` |
+| `linen.module.TestScope` | Object | `` |
+| `linen.module.ThreadLocalStack` | Class | `()` |
+| `linen.module.Variable` | Class | `(scope: Scope, collection: str, name: str, unbox: bool)` |
+| `linen.module.VariableDict` | Object | `` |
+| `linen.module.apply` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., Any]` |
+| `linen.module.capture_call_intermediates` | Object | `` |
+| `linen.module.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.module.compact_name_scope` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.module.config` | Object | `` |
+| `linen.module.core` | Object | `` |
+| `linen.module.create_descriptor_wrapper` | Function | `(descriptor: Descriptor)` |
+| `linen.module.disable_named_call` | Function | `()` |
+| `linen.module.enable_named_call` | Function | `()` |
+| `linen.module.errors` | Object | `` |
+| `linen.module.init` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., FrozenVariableDict \| dict[str, Any]]` |
+| `linen.module.init_with_output` | Function | `(fn: Callable[..., Any], module: Module, mutable: CollectionFilter, capture_intermediates: bool \| Callable[[Module, str], bool]) -> Callable[..., tuple[Any, FrozenVariableDict \| dict[str, Any]]]` |
+| `linen.module.intercept_methods` | Function | `(interceptor: Interceptor)` |
+| `linen.module.kw_only_dataclasses` | Object | `` |
+| `linen.module.merge_param` | Function | `(name: str, a: T \| None, b: T \| None) -> T` |
+| `linen.module.meta` | Object | `` |
+| `linen.module.module_field` | Function | `(kw_only: bool, default: Any \| None) -> Any` |
+| `linen.module.nn` | Object | `` |
+| `linen.module.nowrap` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.module.override_named_call` | Function | `(enable: bool)` |
+| `linen.module.partial_eval` | Object | `` |
+| `linen.module.run_interceptors` | Function | `(orig_method: Callable[..., Any], module: Module, args, kwargs) -> Any` |
+| `linen.module.serialization` | Object | `` |
+| `linen.module.share_scope` | Function | `(module: Module, other: Module)` |
+| `linen.module.traceback_util` | Object | `` |
+| `linen.module.traverse_util` | Object | `` |
+| `linen.module.tuple_init` | Object | `` |
+| `linen.module.tuple_reduce` | Object | `` |
+| `linen.module.union_filters` | Function | `(a: Filter, b: Filter) -> Filter` |
+| `linen.module.uuid` | Object | `` |
+| `linen.module.wrap_descriptor_once` | Function | `(descriptor) -> DescriptorWrapper` |
+| `linen.module.wrap_method_once` | Function | `(fun: Callable[..., Any]) -> Callable[..., Any]` |
+| `linen.named_call` | Function | `(class_fn, force)` |
+| `linen.normalization.Array` | Object | `` |
+| `linen.normalization.Axes` | Object | `` |
+| `linen.normalization.BatchNorm` | Class | `(...)` |
+| `linen.normalization.Dtype` | Object | `` |
+| `linen.normalization.GroupNorm` | Class | `(...)` |
+| `linen.normalization.Initializer` | Object | `` |
+| `linen.normalization.InstanceNorm` | Class | `(...)` |
+| `linen.normalization.LayerNorm` | Class | `(...)` |
+| `linen.normalization.Module` | Object | `` |
+| `linen.normalization.PRNGKey` | Object | `` |
+| `linen.normalization.RMSNorm` | Class | `(...)` |
+| `linen.normalization.Shape` | Object | `` |
+| `linen.normalization.SpectralNorm` | Class | `(...)` |
+| `linen.normalization.WeightNorm` | Class | `(...)` |
+| `linen.normalization.canonicalize_dtype` | Object | `` |
+| `linen.normalization.compact` | Object | `` |
+| `linen.normalization.dtypes` | Object | `` |
+| `linen.normalization.field` | Object | `` |
+| `linen.normalization.map_variables` | Object | `` |
+| `linen.normalization.merge_param` | Object | `` |
+| `linen.normalization.module` | Object | `` |
+| `linen.normalization.transforms` | Object | `` |
+| `linen.normalize` | Object | `` |
+| `linen.nowrap` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.one_hot` | Object | `` |
+| `linen.ones` | Object | `` |
+| `linen.ones_init` | Function | `() -> Initializer` |
+| `linen.override_named_call` | Function | `(enable: bool)` |
+| `linen.partitioning.Array` | Object | `` |
+| `linen.partitioning.ArrayPytree` | Object | `` |
+| `linen.partitioning.AxisMetadata` | Class | `(...)` |
+| `linen.partitioning.CollectionFilter` | Object | `` |
+| `linen.partitioning.InOutAxis` | Object | `` |
+| `linen.partitioning.InOutScanAxis` | Object | `` |
+| `linen.partitioning.LogicalPartitionSpec` | Object | `` |
+| `linen.partitioning.LogicalPartitionSpecPytree` | Object | `` |
+| `linen.partitioning.LogicalRules` | Object | `` |
+| `linen.partitioning.PRNGSequenceFilter` | Object | `` |
+| `linen.partitioning.PartitionSpecPytree` | Object | `` |
+| `linen.partitioning.PartitionedVariable` | Class | `(scope, collection: str, name: str, axes: tuple[str, ...] \| None, fallback: RulesFallback)` |
+| `linen.partitioning.RulesFallback` | Class | `(...)` |
+| `linen.partitioning.ScanIn` | Class | `(axis: T)` |
+| `linen.partitioning.ScanOut` | Class | `(axis: T)` |
+| `linen.partitioning.axis_rules` | Function | `(rules: LogicalRules)` |
+| `linen.partitioning.core_remat_static` | Function | `(fn, variables, rngs, concrete, prevent_cse, static_argnums, policy)` |
+| `linen.partitioning.flatten_dict` | Function | `(xs, keep_empty_nodes, is_leaf, sep)` |
+| `linen.partitioning.freeze` | Function | `(xs: Mapping[Any, Any]) -> FrozenDict[Any, Any]` |
+| `linen.partitioning.get_axis_names` | Function | `(axes_metadata)` |
+| `linen.partitioning.get_axis_rules` | Function | `() -> LogicalRules` |
+| `linen.partitioning.logical_to_mesh` | Function | `(tree: Any, rules: LogicalRules \| None) -> Any` |
+| `linen.partitioning.logical_to_mesh_axes` | Function | `(array_dim_names: Sequence[str \| None] \| None, rules: LogicalRules \| None) -> jax.sharding.PartitionSpec \| None` |
+| `linen.partitioning.nn` | Object | `` |
+| `linen.partitioning.param_with_axes` | Function | `(name: str, init_fn, init_args, axes: tuple[str, ...] \| None, module: Optional[nn.Module], init_kwargs)` |
+| `linen.partitioning.remat` | Function | `(target, variables, rngs, concrete, prevent_cse, static_argnums, policy, methods)` |
+| `linen.partitioning.scan_with_axes` | Function | `(target: flax.linen.transforms.Target, variable_axes: Mapping[CollectionFilter, InOutScanAxis], variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, length: int \| None, reverse: bool, unroll: int, axis_name: str, axes_collections: tuple[str, ...], data_transform: Callable[..., Any] \| None, methods) -> flax.linen.transforms.Target` |
+| `linen.partitioning.set_axis_rules` | Function | `(rules: LogicalRules)` |
+| `linen.partitioning.struct` | Object | `` |
+| `linen.partitioning.unflatten_dict` | Function | `(xs, sep)` |
+| `linen.partitioning.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `linen.partitioning.variable_with_axes` | Function | `(collection: str, name: str, init_fn, init_args, axes: tuple[str, ...] \| None, module: Optional[nn.Module], fallback: RulesFallback, init_kwargs)` |
+| `linen.partitioning.vmap_with_axes` | Function | `(target: flax.linen.transforms.Target, variable_axes: Mapping[CollectionFilter, InOutAxis], split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, axis_size: int \| None, axis_name: str \| None, partitioning_axis_names: Mapping[Any, str], spmd_axis_name: str \| None, methods) -> flax.linen.transforms.Target` |
+| `linen.partitioning.with_sharding_constraint` | Function | `(x: ArrayPytree, logical_axis_resources: LogicalPartitionSpecPytree, rules: LogicalRules \| None, mesh: jax.sharding.Mesh \| None, fallback: RulesFallback)` |
+| `linen.pool` | Function | `(inputs, init, reduce_fn, window_shape, strides, padding)` |
+| `linen.pooling.avg_pool` | Function | `(inputs, window_shape, strides, padding, count_include_pad)` |
+| `linen.pooling.max_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `linen.pooling.min_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `linen.pooling.pool` | Function | `(inputs, init, reduce_fn, window_shape, strides, padding)` |
+| `linen.recurrent.A` | Object | `` |
+| `linen.recurrent.Array` | Object | `` |
+| `linen.recurrent.Bidirectional` | Class | `(...)` |
+| `linen.recurrent.Carry` | Object | `` |
+| `linen.recurrent.CarryHistory` | Object | `` |
+| `linen.recurrent.CollectionFilter` | Object | `` |
+| `linen.recurrent.Conv` | Class | `(...)` |
+| `linen.recurrent.ConvLSTMCell` | Class | `(...)` |
+| `linen.recurrent.Dense` | Class | `(...)` |
+| `linen.recurrent.DenseParams` | Class | `(...)` |
+| `linen.recurrent.Dtype` | Object | `` |
+| `linen.recurrent.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `linen.recurrent.GRUCell` | Class | `(...)` |
+| `linen.recurrent.InOutScanAxis` | Object | `` |
+| `linen.recurrent.Initializer` | Object | `` |
+| `linen.recurrent.LSTMCell` | Class | `(...)` |
+| `linen.recurrent.MGUCell` | Class | `(...)` |
+| `linen.recurrent.Module` | Class | `(args, kwargs)` |
+| `linen.recurrent.OptimizedLSTMCell` | Class | `(...)` |
+| `linen.recurrent.Output` | Object | `` |
+| `linen.recurrent.PRNGKey` | Object | `` |
+| `linen.recurrent.PRNGSequenceFilter` | Object | `` |
+| `linen.recurrent.PrecisionLike` | Object | `` |
+| `linen.recurrent.RNN` | Class | `(...)` |
+| `linen.recurrent.RNNBase` | Class | `(...)` |
+| `linen.recurrent.RNNCellBase` | Class | `(...)` |
+| `linen.recurrent.SimpleCell` | Class | `(...)` |
+| `linen.recurrent.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.recurrent.default_kernel_init` | Object | `` |
+| `linen.recurrent.flip_sequences` | Function | `(inputs: Array, seq_lengths: Array \| None, num_batch_dims: int, time_major: bool) -> Array` |
+| `linen.recurrent.initializers` | Object | `` |
+| `linen.recurrent.nowrap` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.recurrent.promote_dtype` | Function | `(args, dtype, inexact) -> list[Any]` |
+| `linen.recurrent.sigmoid` | Object | `` |
+| `linen.recurrent.tanh` | Object | `` |
+| `linen.recurrent.transforms` | Object | `` |
+| `linen.relu` | Object | `` |
+| `linen.relu6` | Object | `` |
+| `linen.remat` | Object | `` |
+| `linen.remat_scan` | Function | `(target: Target, lengths: Sequence[int] \| None, policy: Callable[..., bool] \| None, variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, variable_axes: Mapping[CollectionFilter, InOutScanAxis], split_rngs: Mapping[PRNGSequenceFilter, bool]) -> Target` |
+| `linen.scan` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutScanAxis], variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, length: int \| None, reverse: bool, unroll: int, data_transform: Callable[..., Any] \| None, metadata_params: Mapping[Any, Any], methods, _split_transpose: bool, check_constancy_invariants: bool) -> Target` |
+| `linen.selu` | Object | `` |
+| `linen.set_logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `linen.share_scope` | Function | `(module: Module, other: Module)` |
+| `linen.sigmoid` | Object | `` |
+| `linen.silu` | Object | `` |
+| `linen.soft_sign` | Object | `` |
+| `linen.softmax` | Object | `` |
+| `linen.softplus` | Object | `` |
+| `linen.spmd.Array` | Object | `` |
+| `linen.spmd.ArrayPytree` | Object | `` |
+| `linen.spmd.LogicalNames` | Object | `` |
+| `linen.spmd.LogicalPartitionSpec` | Object | `` |
+| `linen.spmd.LogicalPartitionSpecPytree` | Object | `` |
+| `linen.spmd.LogicalRules` | Object | `` |
+| `linen.spmd.LogicallyPartitioned` | Class | `(...)` |
+| `linen.spmd.RulesFallback` | Class | `(...)` |
+| `linen.spmd.get_logical_axis_rules` | Function | `() -> LogicalRules` |
+| `linen.spmd.logical_to_mesh` | Function | `(tree: Any, rules: LogicalRules \| None) -> Any` |
+| `linen.spmd.logical_to_mesh_axes` | Function | `(array_dim_names: Sequence[str \| None] \| None, rules: LogicalRules \| None) -> jax.sharding.PartitionSpec \| None` |
+| `linen.spmd.logical_to_mesh_sharding` | Function | `(tree: Any, mesh: jax.sharding.Mesh, rules: LogicalRules \| None) -> Any` |
+| `linen.spmd.meta` | Object | `` |
+| `linen.spmd.struct` | Object | `` |
+| `linen.spmd.with_logical_constraint` | Function | `(x: ArrayPytree, logical_axis_resources: LogicalPartitionSpecPytree, rules: LogicalRules \| None, mesh: jax.sharding.Mesh \| None, fallback: RulesFallback)` |
+| `linen.spmd.with_logical_partitioning` | Function | `(fn: Callable[..., Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None, rules: LogicalRules \| None) -> Callable[..., LogicallyPartitioned]` |
+| `linen.standardize` | Object | `` |
+| `linen.stochastic.Dropout` | Class | `(...)` |
+| `linen.stochastic.Module` | Class | `(args, kwargs)` |
+| `linen.stochastic.PRNGKey` | Object | `` |
+| `linen.stochastic.compact` | Function | `(fun: _CallableT) -> _CallableT` |
+| `linen.stochastic.merge_param` | Function | `(name: str, a: T \| None, b: T \| None) -> T` |
+| `linen.summary.Array` | Object | `` |
+| `linen.summary.CollectionFilter` | Object | `` |
+| `linen.summary.DenyList` | Class | `(deny: Filter)` |
+| `linen.summary.FrozenVariableDict` | Object | `` |
+| `linen.summary.LazyRng` | Class | `(...)` |
+| `linen.summary.LogicalNames` | Object | `` |
+| `linen.summary.MutableVariableDict` | Object | `` |
+| `linen.summary.PRNGKey` | Object | `` |
+| `linen.summary.RNGSequences` | Object | `` |
+| `linen.summary.Row` | Class | `(path: tuple[str, ...], module_copy: module_lib.Module, method: str, inputs: Any, outputs: Any, module_variables: dict[str, dict[str, Any]], counted_variables: dict[str, dict[str, Any]], flops: int, vjp_flops: int)` |
+| `linen.summary.Table` | Class | `(module: module_lib.Module, collections: Sequence[str], rows: Iterable[Row])` |
+| `linen.summary.meta` | Object | `` |
+| `linen.summary.module_lib` | Object | `` |
+| `linen.summary.tabulate` | Function | `(module: module_lib.Module, rngs: PRNGKey \| RNGSequences, depth: int \| None, show_repeated: bool, mutable: CollectionFilter, console_kwargs: Mapping[str, Any] \| None, table_kwargs: Mapping[str, Any], column_kwargs: Mapping[str, Any], compute_flops: bool, compute_vjp_flops: bool, kwargs) -> Callable[..., str]` |
+| `linen.summary.unfreeze` | Function | `(x: FrozenDict \| dict[str, Any]) -> dict[Any, Any]` |
+| `linen.swish` | Object | `` |
+| `linen.switch` | Function | `(index: Any, branches: Sequence[Callable[..., C]], mdl: Module, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `linen.tabulate` | Function | `(module: module_lib.Module, rngs: PRNGKey \| RNGSequences, depth: int \| None, show_repeated: bool, mutable: CollectionFilter, console_kwargs: Mapping[str, Any] \| None, table_kwargs: Mapping[str, Any], column_kwargs: Mapping[str, Any], compute_flops: bool, compute_vjp_flops: bool, kwargs) -> Callable[..., str]` |
+| `linen.tanh` | Object | `` |
+| `linen.transforms.C` | Object | `` |
+| `linen.transforms.CollectionFilter` | Object | `` |
+| `linen.transforms.FlaxId` | Class | `(rawid)` |
+| `linen.transforms.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `linen.transforms.InOutAxis` | Object | `` |
+| `linen.transforms.InOutScanAxis` | Object | `` |
+| `linen.transforms.InstancePlaceholder` | Class | `(...)` |
+| `linen.transforms.LazyRng` | Class | `(...)` |
+| `linen.transforms.Module` | Class | `(args, kwargs)` |
+| `linen.transforms.ModuleT` | Object | `` |
+| `linen.transforms.PRNGSequenceFilter` | Object | `` |
+| `linen.transforms.Scope` | Class | `(variables: MutableVariableDict, rngs: RNGSequences \| dict[str, LazyRng] \| None, name: str \| None, mutable: CollectionFilter, parent: Optional[Scope], path: Iterable[str], debug_path: Iterable[str], flags: Mapping \| None)` |
+| `linen.transforms.Target` | Object | `` |
+| `linen.transforms.TransformTarget` | Object | `` |
+| `linen.transforms.Variable` | Class | `(scope: Scope, collection: str, name: str, unbox: bool)` |
+| `linen.transforms.VariablePlaceholder` | Class | `(...)` |
+| `linen.transforms.add_metadata_axis` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutAxis], metadata_params: dict[Any, Any]) -> Target` |
+| `linen.transforms.checkpoint` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter, concrete: bool, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: Callable[..., bool] \| None, methods) -> Target` |
+| `linen.transforms.clean_clone` | Function | `(x)` |
+| `linen.transforms.cond` | Function | `(pred: Any, true_fun: Callable[..., C], false_fun: Callable[..., C], mdl: Module, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `linen.transforms.core` | Object | `` |
+| `linen.transforms.custom_vjp` | Function | `(fn: Callable[..., Any], forward_fn: Callable[..., Any], backward_fn: Callable[..., Any], grad_vars: CollectionFilter, nondiff_argnums)` |
+| `linen.transforms.decorator_lift_transform` | Function | `(transform, class_fn, trafo_args, multi_scope, trafo_kwargs)` |
+| `linen.transforms.decorator_lift_transform_cached` | Function | `(transform, class_fn, trafo_kwargs)` |
+| `linen.transforms.errors` | Object | `` |
+| `linen.transforms.fold_rngs` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> Target` |
+| `linen.transforms.fork_rngs` | Function | `(module: Module)` |
+| `linen.transforms.get_module_scopes` | Function | `(module, args, kwargs)` |
+| `linen.transforms.grad` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, variables: CollectionFilter, rngs: PRNGSequenceFilter)` |
+| `linen.transforms.jit` | Function | `(target: Target, variables: CollectionFilter, rngs: PRNGSequenceFilter, static_argnums: int \| Iterable[int], static_argnames: str \| Iterable[str], donate_argnums: int \| Iterable[int], device, backend: str \| None, methods) -> Target` |
+| `linen.transforms.jvp` | Function | `(fn: Callable[..., Any], mdl: Module, primals, tangents, variable_tangents, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> tuple[Any, Callable[..., Any]] \| tuple[Any, Callable[..., Any], Any]` |
+| `linen.transforms.lift` | Object | `` |
+| `linen.transforms.lift_direct_transform` | Function | `(transform: Callable[..., Any], targets: tuple[Callable[..., Any], ...], mdl: Module, args, multi_scope, kwargs)` |
+| `linen.transforms.lift_transform` | Function | `(transform, target, trafo_args, methods, trafo_kwargs)` |
+| `linen.transforms.lift_transform_cached` | Function | `(transform, target, trafo_args, methods, trafo_kwargs)` |
+| `linen.transforms.linen_module` | Object | `` |
+| `linen.transforms.map_variables` | Function | `(target: Target, mapped_collections: CollectionFilter, trans_in_fn: Callable[..., Any], trans_out_fn: Callable[..., Any], init: bool, mutable: bool, rngs: PRNGSequenceFilter, variables: CollectionFilter, methods) -> Target` |
+| `linen.transforms.meta` | Object | `` |
+| `linen.transforms.module_class_lift_transform` | Function | `(transform, module_class, trafo_args, methods, trafo_kwargs)` |
+| `linen.transforms.module_class_lift_transform_cached` | Function | `(transform, module_class, methods, trafo_kwargs)` |
+| `linen.transforms.named_call` | Function | `(class_fn, force)` |
+| `linen.transforms.remat` | Object | `` |
+| `linen.transforms.remat_scan` | Function | `(target: Target, lengths: Sequence[int] \| None, policy: Callable[..., bool] \| None, variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, variable_axes: Mapping[CollectionFilter, InOutScanAxis], split_rngs: Mapping[PRNGSequenceFilter, bool]) -> Target` |
+| `linen.transforms.scan` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutScanAxis], variable_broadcast: CollectionFilter, variable_carry: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, length: int \| None, reverse: bool, unroll: int, data_transform: Callable[..., Any] \| None, metadata_params: Mapping[Any, Any], methods, _split_transpose: bool, check_constancy_invariants: bool) -> Target` |
+| `linen.transforms.serialization` | Object | `` |
+| `linen.transforms.set_module_scopes` | Function | `(module, args, kwargs, scopes)` |
+| `linen.transforms.struct` | Object | `` |
+| `linen.transforms.switch` | Function | `(index: Any, branches: Sequence[Callable[..., C]], mdl: Module, operands, variables: CollectionFilter, rngs: PRNGSequenceFilter) -> C` |
+| `linen.transforms.traceback_util` | Object | `` |
+| `linen.transforms.value_and_grad` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, variables: CollectionFilter, rngs: PRNGSequenceFilter)` |
+| `linen.transforms.vjp` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, vjp_variables: CollectionFilter, variables: CollectionFilter, rngs: PRNGSequenceFilter, multi_scope: bool)` |
+| `linen.transforms.vmap` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutAxis], split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, axis_size: int \| None, axis_name: str \| None, spmd_axis_name: str \| None, metadata_params: Mapping[Any, Any], methods) -> Target` |
+| `linen.transforms.while_loop` | Function | `(cond_fn: Callable[[ModuleT, C], bool], body_fn: Callable[[ModuleT, C], C], mdl: ModuleT, init: C, carry_variables: CollectionFilter, broadcast_variables: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool]) -> C` |
+| `linen.transforms.wrap_method_once` | Function | `(fun: Callable[..., Any]) -> Callable[..., Any]` |
+| `linen.unbox` | Function | `(tree: Any) -> Any` |
+| `linen.value_and_grad` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, variables: CollectionFilter, rngs: PRNGSequenceFilter)` |
+| `linen.vjp` | Function | `(fn: Callable[..., Any], mdl: Module, primals, has_aux: bool, reduce_axes, vjp_variables: CollectionFilter, variables: CollectionFilter, rngs: PRNGSequenceFilter, multi_scope: bool)` |
+| `linen.vmap` | Function | `(target: Target, variable_axes: Mapping[CollectionFilter, InOutAxis], split_rngs: Mapping[PRNGSequenceFilter, bool], in_axes, out_axes, axis_size: int \| None, axis_name: str \| None, spmd_axis_name: str \| None, metadata_params: Mapping[Any, Any], methods) -> Target` |
+| `linen.while_loop` | Function | `(cond_fn: Callable[[ModuleT, C], bool], body_fn: Callable[[ModuleT, C], C], mdl: ModuleT, init: C, carry_variables: CollectionFilter, broadcast_variables: CollectionFilter, split_rngs: Mapping[PRNGSequenceFilter, bool]) -> C` |
+| `linen.with_logical_constraint` | Function | `(x: ArrayPytree, logical_axis_resources: LogicalPartitionSpecPytree, rules: LogicalRules \| None, mesh: jax.sharding.Mesh \| None, fallback: RulesFallback)` |
+| `linen.with_logical_partitioning` | Function | `(fn: Callable[..., Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None, rules: LogicalRules \| None) -> Callable[..., LogicallyPartitioned]` |
+| `linen.with_partitioning` | Function | `(fn: Callable[..., Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None) -> Callable[..., Partitioned[Any]]` |
+| `linen.zeros` | Object | `` |
+| `linen.zeros_init` | Function | `() -> Initializer` |
+| `metrics.tensorboard.SummaryWriter` | Class | `(log_dir, auto_flush)` |
+| `metrics.tensorboard.io` | Object | `` |
+| `nnx.A` | Object | `` |
+| `nnx.All` | Class | `(filters: Filter)` |
+| `nnx.Any` | Class | `(filters: Filter)` |
+| `nnx.BatchNorm` | Class | `(num_features: int, use_running_average: bool, axis: int, momentum: float, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.BatchStat` | Class | `(...)` |
+| `nnx.Bidirectional` | Class | `(forward_rnn: RNNBase, backward_rnn: RNNBase, merge_fn: Callable[[Array, Array], Array], time_major: bool, return_carry: bool, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `nnx.Cache` | Class | `(...)` |
+| `nnx.Carry` | Class | `(...)` |
+| `nnx.Conv` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: tp.Union[None, int, tp.Sequence[int]], padding: PaddingLike, input_dilation: tp.Union[None, int, tp.Sequence[int]], kernel_dilation: tp.Union[None, int, tp.Sequence[int]], feature_group_count: int, use_bias: bool, mask: tp.Optional[Array], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, conv_general_dilated: ConvGeneralDilatedT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.ConvTranspose` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: int \| tp.Sequence[int] \| None, padding: PaddingLike, kernel_dilation: int \| tp.Sequence[int] \| None, use_bias: bool, mask: Array \| None, dtype: Dtype \| None, param_dtype: Dtype, precision: PrecisionLike \| None, kernel_init: Initializer, bias_init: Initializer, transpose_kernel: bool, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Data` | Object | `` |
+| `nnx.Dict` | Class | `(args, kwargs)` |
+| `nnx.DiffState` | Class | `(argnum: int, filter: filterlib.Filter)` |
+| `nnx.Dropout` | Class | `(rate: float, broadcast_dims: Sequence[int], deterministic: bool, rng_collection: str, rngs: rnglib.Rngs \| rnglib.RngStream \| None)` |
+| `nnx.Einsum` | Class | `(einsum_str: str, kernel_shape: Shape, bias_shape: tp.Optional[Shape], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, einsum_op: EinsumT, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Embed` | Class | `(num_embeddings: int, features: int, dtype: tp.Optional[Dtype], param_dtype: Dtype, embedding_init: Initializer, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, embedding_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Everything` | Class | `(...)` |
+| `nnx.FlatState` | Class | `(items: tp.Iterable[tuple[PathParts, V]], sort: bool)` |
+| `nnx.GRUCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.GraphDef` | Class | `(nodes: list[NodeDefType[tp.Any]], attributes: list[tuple[Key, AttrType]], num_leaves: int)` |
+| `nnx.GraphState` | Object | `` |
+| `nnx.GroupNorm` | Class | `(num_features: int, num_groups: tp.Optional[int], group_size: tp.Optional[int], epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: tp.Optional[Axes], axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Initializer` | Object | `` |
+| `nnx.InstanceNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Intermediate` | Class | `(...)` |
+| `nnx.LSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.LayerNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Linear` | Class | `(in_features: int, out_features: int, use_bias: bool, dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, dot_general: DotGeneralT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.LinearGeneral` | Class | `(in_features: Size \| tp.Sequence[Size], out_features: Size \| tp.Sequence[Size], axis: Axis \| tp.Sequence[Axis], batch_axis: tp.Mapping[Axis, Size], use_bias: bool, dtype: Dtype \| None, param_dtype: Dtype, kernel_init: Initializer, bias_init: Initializer, precision: PrecisionLike, promote_dtype: PromoteDtypeFn, dot_general: DotGeneralT \| None, dot_general_cls: tp.Any, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.List` | Class | `(it: tp.Iterable[A] \| None)` |
+| `nnx.LoRA` | Class | `(in_features: int, lora_rank: int, out_features: int, base_module: tp.Optional[Module], dtype: tp.Optional[Dtype], param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.LoRALinear` | Class | `(in_features: int, out_features: int, lora_rank: int, lora_dtype: tp.Optional[Dtype], lora_param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], lora_promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any], kwargs)` |
+| `nnx.LoRAParam` | Class | `(...)` |
+| `nnx.M` | Object | `` |
+| `nnx.MergeContext` | Class | `(ctxtag: tp.Hashable \| None, index_ref: IndexMap, is_inner: bool \| None)` |
+| `nnx.Metric` | Class | `()` |
+| `nnx.ModelAndOptimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `nnx.Module` | Class | `(...)` |
+| `nnx.MultiHeadAttention` | Class | `(num_heads: int, in_features: int, qkv_features: int \| None, out_features: int \| None, num_kv_heads: int \| None, in_kv_features: int \| None, dtype: Dtype \| None, param_dtype: Dtype, broadcast_dropout: bool, dropout_rate: float, deterministic: bool \| None, precision: PrecisionLike, kernel_init: Initializer, out_kernel_init: Initializer \| None, bias_init: Initializer, out_bias_init: Initializer \| None, use_bias: bool, attention_fn: Callable[..., Array], decode: bool \| None, normalize_qk: bool, qkv_promote_dtype: PromoteDtypeFn, out_promote_dtype: PromoteDtypeFn, ln_promote_dtype: PromoteDtypeFn, qkv_dot_general: DotGeneralT \| None, out_dot_general: DotGeneralT \| None, qkv_dot_general_cls: Any, out_dot_general_cls: Any, rngs: rnglib.Rngs, keep_rngs: bool, kernel_metadata: Mapping[str, Any], out_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any], out_bias_metadata: Mapping[str, Any], query_ln_scale_metadata: Mapping[str, Any], key_ln_scale_metadata: Mapping[str, Any])` |
+| `nnx.MultiMetric` | Class | `(metrics)` |
+| `nnx.NodeStates` | Class | `(...)` |
+| `nnx.Not` | Class | `(collection_filter: Filter)` |
+| `nnx.Nothing` | Class | `(...)` |
+| `nnx.Object` | Class | `(...)` |
+| `nnx.OfType` | Class | `(type: type)` |
+| `nnx.OptArray` | Class | `(...)` |
+| `nnx.OptState` | Class | `(...)` |
+| `nnx.OptVariable` | Class | `(...)` |
+| `nnx.OptimizedLSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.Optimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `nnx.PARTITION_NAME` | Object | `` |
+| `nnx.PReLU` | Class | `(negative_slope_init: float, dtype: Dtype \| None, param_dtype: Dtype, promote_dtype: PromoteDtypeFn, negative_slope_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.Param` | Class | `(...)` |
+| `nnx.PathContains` | Class | `(key: Key \| str, exact: bool)` |
+| `nnx.Perturbation` | Class | `(...)` |
+| `nnx.PureState` | Object | `` |
+| `nnx.Pytree` | Class | `(...)` |
+| `nnx.RMSNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_scale: bool, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.RNN` | Class | `(cell: RNNCellBase, time_major: bool, return_carry: bool, reverse: bool, keep_order: bool, unroll: int, state_axes: Mapping[str, int \| type[iteration.Carry] \| None] \| None, broadcast_rngs: filterlib.Filter, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `nnx.RNNCellBase` | Class | `(...)` |
+| `nnx.RngCount` | Class | `(...)` |
+| `nnx.RngKey` | Class | `(...)` |
+| `nnx.RngState` | Class | `(...)` |
+| `nnx.RngStream` | Class | `(key: jax.Array \| int, tag: str)` |
+| `nnx.Rngs` | Class | `(default: RngValue \| RngStream \| tp.Mapping[str, RngValue \| RngStream] \| None, rngs: RngValue \| RngStream)` |
+| `nnx.Sequential` | Class | `(fns: tp.Callable[..., tp.Any])` |
+| `nnx.SimpleCell` | Class | `(in_features: int, hidden_features: int, dtype: Dtype, param_dtype: Dtype, carry_init: Initializer \| None, residual: bool, activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.SpectralNorm` | Class | `(layer_instance: Module, n_steps: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, error_on_non_matrix: bool, update_stats: bool, rngs: rnglib.Rngs)` |
+| `nnx.SplitContext` | Class | `(ctxtag: tp.Hashable \| None, ref_index: RefMap, is_inner: bool \| None)` |
+| `nnx.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.StateAxes` | Class | `(filter_axes: statelib.State \| tp.Mapping[filterlib.Filter, Index \| type[Carry] \| None] \| tp.Iterable[tuple[filterlib.Filter, Index \| type[Carry] \| None]])` |
+| `nnx.StateSharding` | Class | `(filter_sharding: statelib.State \| tp.Mapping[filterlib.Filter, tp.Any] \| tp.Iterable[tuple[filterlib.Filter, tp.Any]])` |
+| `nnx.Static` | Object | `` |
+| `nnx.TrainState` | Class | `(...)` |
+| `nnx.UpdateContext` | Class | `(tag: tp.Hashable, outer_ref_outer_index: RefMap \| None, outer_index_inner_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, inner_ref_outer_index: RefMap \| None, static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None)` |
+| `nnx.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.VariableMetadata` | Class | `(raw_value: A, set_value_hooks: tuple[SetValueHook[A], ...], get_value_hooks: tuple[GetValueHook[A], ...], create_value_hooks: tuple[CreateValueHook[A], ...], add_axis_hooks: tuple[AddAxisHook[Variable[A]], ...], remove_axis_hooks: tuple[RemoveAxisHook[Variable[A]], ...], metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.VariableState` | Object | `` |
+| `nnx.WeightNorm` | Class | `(layer_instance: nnx.Module, feature_axes: Axes \| None, use_scale: bool, scale_init: Initializer, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, variable_filter: nnx.filterlib.Filter, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs)` |
+| `nnx.WithTag` | Class | `(tag: str)` |
+| `nnx.abstract_with_sharding` | Function | `(tree: A, graph: bool \| None) -> A` |
+| `nnx.avg_pool` | Function | `(inputs, window_shape, strides, padding, count_include_pad)` |
+| `nnx.bridge.AttrPriority` | Class | `(...)` |
+| `nnx.bridge.Functional` | Class | `(module_type: tp.Type[M], graphdef: tp.Optional[graphlib.GraphDef[M]], args: tuple[tp.Any, ...], kwargs: dict[str, tp.Any])` |
+| `nnx.bridge.Module` | Class | `(...)` |
+| `nnx.bridge.NNXMeta` | Class | `(...)` |
+| `nnx.bridge.Scope` | Class | `(rngs: rnglib.Rngs, mutable: CollectionFilter)` |
+| `nnx.bridge.ToLinen` | Class | `(...)` |
+| `nnx.bridge.ToNNX` | Class | `(module: linen.Module, rngs: Rngs \| jax.Array \| None)` |
+| `nnx.bridge.compact` | Function | `(f: F) -> F` |
+| `nnx.bridge.current_context` | Function | `() -> ModuleStackEntry \| None` |
+| `nnx.bridge.current_module` | Function | `() -> Module \| None` |
+| `nnx.bridge.functional` | Function | `(cls: tp.Type[M]) -> tp.Callable[..., Functional[M]]` |
+| `nnx.bridge.initializers` | Object | `` |
+| `nnx.bridge.interop.bdg_module` | Object | `` |
+| `nnx.bridge.interop.graphlib` | Object | `` |
+| `nnx.bridge.interop.linen_in_bridge_mdl` | Function | `(linen_module: nn_module.Module, name: str \| None) -> nnx_module.Module` |
+| `nnx.bridge.interop.nn_module` | Object | `` |
+| `nnx.bridge.interop.nnx_eval_shape` | Function | `(f: tp.Callable[..., A], args: tp.Any, graph: bool \| None, graph_updates: bool \| None, kwargs: tp.Any) -> A` |
+| `nnx.bridge.interop.nnx_in_bridge_mdl` | Function | `(factory: tp.Callable[[rnglib.Rngs], nnx_module.Module], name: str \| None) -> nnx_module.Module` |
+| `nnx.bridge.interop.nnx_jit` | Function | `(fun: tp.Callable[P, R] \| Missing, in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> JitWrapped[P, R] \| tp.Callable[[tp.Callable[P, R]], JitWrapped[P, R]]` |
+| `nnx.bridge.interop.nnx_module` | Object | `` |
+| `nnx.bridge.interop.rnglib` | Object | `` |
+| `nnx.bridge.interop.wrappers` | Object | `` |
+| `nnx.bridge.lazy_init` | Function | `(fn: Module \| tp.Callable[..., tp.Any], args, kwargs)` |
+| `nnx.bridge.linen_in_bridge_mdl` | Function | `(linen_module: nn_module.Module, name: str \| None) -> nnx_module.Module` |
+| `nnx.bridge.module.A` | Object | `` |
+| `nnx.bridge.module.AttrPriority` | Class | `(...)` |
+| `nnx.bridge.module.CollectionFilter` | Object | `` |
+| `nnx.bridge.module.F` | Object | `` |
+| `nnx.bridge.module.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `nnx.bridge.module.M` | Object | `` |
+| `nnx.bridge.module.MODULE_CONTEXT` | Object | `` |
+| `nnx.bridge.module.Module` | Class | `(...)` |
+| `nnx.bridge.module.ModuleBase` | Class | `(...)` |
+| `nnx.bridge.module.ModuleContext` | Class | `(module_stack: list[ModuleStackEntry \| None])` |
+| `nnx.bridge.module.ModuleMeta` | Class | `(...)` |
+| `nnx.bridge.module.ModuleStackEntry` | Class | `(module: Module, in_compact: bool, type_counter: defaultdict[type, int])` |
+| `nnx.bridge.module.ModuleState` | Class | `(...)` |
+| `nnx.bridge.module.PriorityStr` | Class | `(...)` |
+| `nnx.bridge.module.Pytree` | Class | `(...)` |
+| `nnx.bridge.module.Scope` | Class | `(rngs: rnglib.Rngs, mutable: CollectionFilter)` |
+| `nnx.bridge.module.bridge_variables` | Object | `` |
+| `nnx.bridge.module.compact` | Function | `(f: F) -> F` |
+| `nnx.bridge.module.current_context` | Function | `() -> ModuleStackEntry \| None` |
+| `nnx.bridge.module.current_module` | Function | `() -> Module \| None` |
+| `nnx.bridge.module.errors` | Object | `` |
+| `nnx.bridge.module.graphlib` | Object | `` |
+| `nnx.bridge.module.has_setup` | Function | `(x: tp.Any) -> tp.TypeGuard[_HasSetup]` |
+| `nnx.bridge.module.meta` | Object | `` |
+| `nnx.bridge.module.nnx_module` | Object | `` |
+| `nnx.bridge.module.register_data_type` | Function | `(type_: T) -> T` |
+| `nnx.bridge.module.rnglib` | Object | `` |
+| `nnx.bridge.module.statelib` | Object | `` |
+| `nnx.bridge.module.traversals` | Object | `` |
+| `nnx.bridge.module.variablelib` | Object | `` |
+| `nnx.bridge.nnx_in_bridge_mdl` | Function | `(factory: tp.Callable[[rnglib.Rngs], nnx_module.Module], name: str \| None) -> nnx_module.Module` |
+| `nnx.bridge.to_linen` | Function | `(nnx_class: tp.Callable[..., Module], args, metadata_fn: tp.Callable[[variablelib.Variable], tp.Any] \| None, name: str \| None, skip_rng: bool, abstract_init: bool, kwargs)` |
+| `nnx.bridge.variables.A` | Object | `` |
+| `nnx.bridge.variables.B` | Object | `` |
+| `nnx.bridge.variables.LogicalNames` | Object | `` |
+| `nnx.bridge.variables.NNXMeta` | Class | `(...)` |
+| `nnx.bridge.variables.get_col_name` | Function | `(keypath: tp.Sequence[Any]) -> str` |
+| `nnx.bridge.variables.is_vanilla_variable` | Function | `(vs: variablelib.Variable) -> bool` |
+| `nnx.bridge.variables.linen_vars_to_nnx_attrs` | Function | `(variables: tp.Mapping[str, Any]) -> dict[str, Any]` |
+| `nnx.bridge.variables.meta` | Object | `` |
+| `nnx.bridge.variables.nnx_attrs_to_linen_vars` | Function | `(nnx_attrs: dict) -> dict` |
+| `nnx.bridge.variables.sort_variable_types` | Function | `(types: tp.Iterable[type])` |
+| `nnx.bridge.variables.spmd` | Object | `` |
+| `nnx.bridge.variables.struct` | Object | `` |
+| `nnx.bridge.variables.to_linen_var` | Function | `(vs: variablelib.Variable) -> meta.AxisMetadata` |
+| `nnx.bridge.variables.to_nnx_var` | Function | `(col: str, x: meta.AxisMetadata \| Any) -> variablelib.Variable` |
+| `nnx.bridge.variables.traversals` | Object | `` |
+| `nnx.bridge.variables.variablelib` | Object | `` |
+| `nnx.bridge.variables.with_partitioning` | Function | `(fn: tp.Callable[..., tp.Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None) -> tp.Callable[..., meta.Partitioned[tp.Any]]` |
+| `nnx.bridge.with_partitioning` | Function | `(fn: tp.Callable[..., tp.Any], names: LogicalNames, mesh: jax.sharding.Mesh \| None) -> tp.Callable[..., meta.Partitioned[tp.Any]]` |
+| `nnx.bridge.wrappers.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `nnx.bridge.wrappers.Functional` | Class | `(module_type: tp.Type[M], graphdef: tp.Optional[graphlib.GraphDef[M]], args: tuple[tp.Any, ...], kwargs: dict[str, tp.Any])` |
+| `nnx.bridge.wrappers.M` | Object | `` |
+| `nnx.bridge.wrappers.Module` | Class | `(...)` |
+| `nnx.bridge.wrappers.Pytree` | Class | `(...)` |
+| `nnx.bridge.wrappers.Rngs` | Class | `(default: RngValue \| RngStream \| tp.Mapping[str, RngValue \| RngStream] \| None, rngs: RngValue \| RngStream)` |
+| `nnx.bridge.wrappers.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.bridge.wrappers.ToLinen` | Class | `(...)` |
+| `nnx.bridge.wrappers.ToNNX` | Class | `(module: linen.Module, rngs: Rngs \| jax.Array \| None)` |
+| `nnx.bridge.wrappers.bdg_module` | Object | `` |
+| `nnx.bridge.wrappers.bv` | Object | `` |
+| `nnx.bridge.wrappers.core` | Object | `` |
+| `nnx.bridge.wrappers.current_linen_module` | Function | `() -> linen.Module \| None` |
+| `nnx.bridge.wrappers.functional` | Function | `(cls: tp.Type[M]) -> tp.Callable[..., Functional[M]]` |
+| `nnx.bridge.wrappers.graphlib` | Object | `` |
+| `nnx.bridge.wrappers.lazy_init` | Function | `(fn: Module \| tp.Callable[..., tp.Any], args, kwargs)` |
+| `nnx.bridge.wrappers.linen` | Object | `` |
+| `nnx.bridge.wrappers.linen_rngs_dict` | Function | `(linen_module: linen.Module, add_default: bool)` |
+| `nnx.bridge.wrappers.meta` | Object | `` |
+| `nnx.bridge.wrappers.nnx` | Object | `` |
+| `nnx.bridge.wrappers.to_linen` | Function | `(nnx_class: tp.Callable[..., Module], args, metadata_fn: tp.Callable[[variablelib.Variable], tp.Any] \| None, name: str \| None, skip_rng: bool, abstract_init: bool, kwargs)` |
+| `nnx.bridge.wrappers.to_linen_class` | Function | `(base_nnx_class: type[M], base_metadata_fn: tp.Callable[[variablelib.VariableState], tp.Any] \| None, base_skip_rng: bool, partial_kwargs: tp.Any) -> type[ToLinen]` |
+| `nnx.bridge.wrappers.variablelib` | Object | `` |
+| `nnx.cached_partial` | Object | `` |
+| `nnx.call` | Function | `(graphdef_state: tuple[GraphDef[A], GraphState]) -> ApplyCaller[tuple[GraphDef[A], GraphState]]` |
+| `nnx.capture` | Function | `(fn: tp.Callable[P, R] \| type[variableslib.Variable], var_types: type[variableslib.Variable], init: tp.Optional[State], method_outputs: tp.Optional[type[variableslib.Variable]]) -> tp.Callable[P, tuple[R, State]] \| tp.Callable[[tp.Callable[P, R]], tp.Callable[P, tuple[R, State]]]` |
+| `nnx.celu` | Object | `` |
+| `nnx.check_pytree` | Function | `(pytree)` |
+| `nnx.checkify` | Function | `(f: tp.Callable[..., checkify_lib.Out], errors: frozenset[type[checkify_lib.JaxException]], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tuple[checkify_lib.Error, checkify_lib.Out]]` |
+| `nnx.clone` | Function | `(node: Node, variables: bool, graph: bool \| None) -> Node` |
+| `nnx.combine_masks` | Function | `(masks: Array \| None, dtype: Dtype) -> Array \| None` |
+| `nnx.compat.backup_keys` | Object | `` |
+| `nnx.compat.checkify` | Object | `` |
+| `nnx.compat.clone` | Object | `` |
+| `nnx.compat.cond` | Object | `` |
+| `nnx.compat.custom_vjp` | Object | `` |
+| `nnx.compat.eval_shape` | Object | `` |
+| `nnx.compat.flatten` | Object | `` |
+| `nnx.compat.fori_loop` | Object | `` |
+| `nnx.compat.fork_rngs` | Object | `` |
+| `nnx.compat.get_abstract_model` | Object | `` |
+| `nnx.compat.grad` | Object | `` |
+| `nnx.compat.graphdef` | Object | `` |
+| `nnx.compat.iter_children` | Object | `` |
+| `nnx.compat.iter_graph` | Object | `` |
+| `nnx.compat.iter_modules` | Object | `` |
+| `nnx.compat.jit` | Object | `` |
+| `nnx.compat.jvp` | Object | `` |
+| `nnx.compat.pmap` | Object | `` |
+| `nnx.compat.recursive_map` | Object | `` |
+| `nnx.compat.remat` | Object | `` |
+| `nnx.compat.reseed` | Object | `` |
+| `nnx.compat.scan` | Object | `` |
+| `nnx.compat.shard_map` | Object | `` |
+| `nnx.compat.split` | Object | `` |
+| `nnx.compat.split_rngs` | Object | `` |
+| `nnx.compat.state` | Object | `` |
+| `nnx.compat.switch` | Object | `` |
+| `nnx.compat.value_and_grad` | Object | `` |
+| `nnx.compat.view` | Object | `` |
+| `nnx.compat.view_info` | Object | `` |
+| `nnx.compat.vjp` | Object | `` |
+| `nnx.compat.vmap` | Object | `` |
+| `nnx.compat.while_loop` | Object | `` |
+| `nnx.cond` | Function | `(pred, true_fun: tp.Callable[..., A], false_fun: tp.Callable[..., A], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `nnx.current_update_context` | Function | `(tag: tp.Hashable) -> UpdateContext` |
+| `nnx.custom_vjp` | Function | `(fun: tp.Callable[..., A] \| Missing, nondiff_argnums: tuple[int \| DiffState, ...], graph: bool \| None, graph_updates: bool \| None) -> CustomVjp[A] \| SimpleCustomVjp[A] \| tp.Callable[[tp.Callable[..., A]], CustomVjp[A] \| SimpleCustomVjp[A]]` |
+| `nnx.data` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `nnx.dataclass` | Function | `(cls, init: bool, eq: bool, order: bool, unsafe_hash: bool, match_args: bool, kw_only: bool, slots: bool, weakref_slot: bool) -> tp.Any` |
+| `nnx.display` | Function | `(args)` |
+| `nnx.dot_product_attention` | Function | `(query: Array, key: Array, value: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: Array \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, promote_dtype: PromoteDtypeFn, is_causal: bool)` |
+| `nnx.elu` | Object | `` |
+| `nnx.eval_shape` | Function | `(f: tp.Callable[..., A], args: tp.Any, graph: bool \| None, graph_updates: bool \| None, kwargs: tp.Any) -> A` |
+| `nnx.extract.A` | Object | `` |
+| `nnx.extract.GraphDefState` | Class | `(...)` |
+| `nnx.extract.Index` | Object | `` |
+| `nnx.extract.KeepFn` | Object | `` |
+| `nnx.extract.KeyPath` | Object | `` |
+| `nnx.extract.Leaf` | Object | `` |
+| `nnx.extract.Mask` | Class | `(...)` |
+| `nnx.extract.Missing` | Class | `(...)` |
+| `nnx.extract.NodeStates` | Class | `(...)` |
+| `nnx.extract.PathParts` | Object | `` |
+| `nnx.extract.Prefix` | Object | `` |
+| `nnx.extract.PrefixMapping` | Class | `(...)` |
+| `nnx.extract.Pytree` | Class | `(...)` |
+| `nnx.extract.S` | Object | `` |
+| `nnx.extract.apply_variable_updates` | Function | `(args_tree: A, updates_tree: A)` |
+| `nnx.extract.broadcast_prefix` | Function | `(prefix_tree: tp.Any, full_tree: tp.Any, prefix_is_leaf: tp.Callable[[tp.Any], bool] \| None, tree_is_leaf: tp.Callable[[tp.Any], bool] \| None) -> list[tp.Any]` |
+| `nnx.extract.broadcast_prefix2` | Function | `(prefix_tree: tp.Any, full_tree: tp.Any, is_leaf: tp.Callable[[tp.Any], bool] \| None) -> tuple[list[KeyPath], list[tp.Any]]` |
+| `nnx.extract.broadcast_prefix_map` | Function | `(f: tp.Callable[..., tp.Any], prefix_tree: tp.Any, full_tree: tp.Any, rest: tp.Any, is_leaf: tp.Callable[[tp.Any], bool] \| None) -> tp.Any` |
+| `nnx.extract.check_consistent_aliasing` | Function | `(node: tp.Any, prefix: tp.Any, node_prefixes: dict[int, list[tuple[PathParts, tp.Any]]] \| None)` |
+| `nnx.extract.check_consistent_aliasing2` | Function | `(node: tp.Any, prefix: tp.Any, base_path: tuple[tp.Any, ...], node_prefixes: dict[int, list[tuple[PathParts, tp.Any]]] \| None)` |
+| `nnx.extract.check_no_aliases` | Function | `(fn_name: str, kwargs)` |
+| `nnx.extract.check_prefix` | Function | `(prefix: tp.Any, prefix_name: str, fn_name: str)` |
+| `nnx.extract.check_same_variables` | Function | `(inputs, outputs, transform_name: str)` |
+| `nnx.extract.clear_non_graph_nodes` | Function | `(tree)` |
+| `nnx.extract.default_split_fn` | Function | `(ctx: graphlib.SplitContext, path: KeyPath, prefix: Prefix, leaf: Leaf) -> tp.Any` |
+| `nnx.extract.from_tree` | Function | `(tree: tp.Any, prefix: tp.Any, merge_fn: tp.Callable[[graphlib.MergeContext, KeyPath, Prefix, Leaf], tp.Any], is_node_leaf: tp.Callable[[Leaf], bool], is_leaf: tp.Callable[[Leaf], bool], map_non_graph_nodes: bool, is_inner: bool \| None, ctxtag: tp.Hashable \| None) -> tp.Any` |
+| `nnx.extract.from_tree2` | Function | `(tree: tp.Any) -> tp.Any` |
+| `nnx.extract.graphlib` | Object | `` |
+| `nnx.extract.is_tree_node` | Function | `(x)` |
+| `nnx.extract.mask_at` | Function | `(t: tuple, index: int \| None) -> tuple` |
+| `nnx.extract.mask_variable_updates` | Function | `(current_tree: A, snapshot_tree: A, prefix: tp.Any, keep_fn: KeepFn \| None) -> A` |
+| `nnx.extract.merge_tree_node` | Function | `(ctx: graphlib.MergeContext, path: KeyPath, prefix: Prefix, leaf: Leaf) -> tp.Any` |
+| `nnx.extract.replace_at` | Function | `(t: tuple, index: int, value: tp.Any) -> tuple` |
+| `nnx.extract.struct` | Object | `` |
+| `nnx.extract.to_tree` | Function | `(tree, prefix: tp.Any, split_fn: tp.Callable[[graphlib.SplitContext, KeyPath, Prefix, Leaf], tp.Any], map_non_graph_nodes: bool, ctxtag: tp.Hashable \| None, check_aliasing: bool) -> tp.Any` |
+| `nnx.extract.to_tree2` | Function | `(tree, prefix: tp.Any, check_aliasing: bool) -> tp.Any` |
+| `nnx.extract.treemap_copy_args` | Function | `(f)` |
+| `nnx.extract.typing` | Object | `` |
+| `nnx.extract.update_carry_variables` | Function | `(init_val, val_out)` |
+| `nnx.extract.updates_and_snapshot` | Function | `(args: A) -> tuple[A, A]` |
+| `nnx.extract.variable_changed` | Function | `(post: variablelib.Variable, pre: variablelib.Variable) -> bool` |
+| `nnx.extract.variablelib` | Object | `` |
+| `nnx.filter_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `nnx.filterlib.All` | Class | `(filters: Filter)` |
+| `nnx.filterlib.Any` | Class | `(filters: Filter)` |
+| `nnx.filterlib.Everything` | Class | `(...)` |
+| `nnx.filterlib.Filter` | Object | `` |
+| `nnx.filterlib.FilterLiteral` | Object | `` |
+| `nnx.filterlib.HasTag` | Class | `(...)` |
+| `nnx.filterlib.Key` | Class | `(...)` |
+| `nnx.filterlib.Not` | Class | `(collection_filter: Filter)` |
+| `nnx.filterlib.Nothing` | Class | `(...)` |
+| `nnx.filterlib.OfType` | Class | `(type: type)` |
+| `nnx.filterlib.PathContains` | Class | `(key: Key \| str, exact: bool)` |
+| `nnx.filterlib.PathIn` | Class | `(paths: PathParts)` |
+| `nnx.filterlib.PathParts` | Object | `` |
+| `nnx.filterlib.Predicate` | Object | `` |
+| `nnx.filterlib.WithTag` | Class | `(tag: str)` |
+| `nnx.filterlib.ellipsis` | Object | `` |
+| `nnx.filterlib.filters_to_predicates` | Function | `(filters: tp.Sequence[Filter]) -> tuple[Predicate, ...]` |
+| `nnx.filterlib.to_predicate` | Function | `(filter: Filter) -> Predicate` |
+| `nnx.find_duplicates` | Function | `(node: tp.Any, only: filterlib.Filter) -> list[list[PathParts]]` |
+| `nnx.flatten` | Function | `(node: Node, with_paths: bool, ref_index: RefMap \| None, ref_outer_index: RefMap \| None, graph: bool \| None) -> tuple[GraphDef[Node], FlatState[tp.Any] \| list[tp.Any]]` |
+| `nnx.fori_loop` | Function | `(lower: int, upper: int, body_fun: tp.Callable[[int, T], T], init_val: T, unroll: int \| bool \| None, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `nnx.fork_rngs` | Function | `(node: tp.Any, split: tp.Mapping[filterlib.Filter, int \| tuple[int, ...] \| None] \| int \| None, graph: bool \| None) -> SplitBackups \| tp.Callable[[F], F]` |
+| `nnx.from_flat_state` | Function | `(flat_state: tp.Mapping[PathParts, V] \| tp.Iterable[tuple[PathParts, V]], cls) -> State` |
+| `nnx.from_tree` | Function | `(tree: tp.Any, prefix: tp.Any, merge_fn: tp.Callable[[graphlib.MergeContext, KeyPath, Prefix, Leaf], tp.Any], is_node_leaf: tp.Callable[[Leaf], bool], is_leaf: tp.Callable[[Leaf], bool], map_non_graph_nodes: bool, is_inner: bool \| None, ctxtag: tp.Hashable \| None) -> tp.Any` |
+| `nnx.gelu` | Object | `` |
+| `nnx.get_abstract_model` | Function | `(init_fn, mesh, graph: bool \| None)` |
+| `nnx.get_named_sharding` | Function | `(tree: A, mesh: jax.sharding.Mesh) -> A` |
+| `nnx.get_partition_spec` | Function | `(tree: A) -> A` |
+| `nnx.glu` | Object | `` |
+| `nnx.grad` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.graph.A` | Object | `` |
+| `nnx.graph.ApplyCaller` | Class | `(...)` |
+| `nnx.graph.ArrayRefDef` | Class | `(index: int, outer_index: int \| None)` |
+| `nnx.graph.ArrayRefOutput` | Class | `(value: jax.Array)` |
+| `nnx.graph.AttrType` | Object | `` |
+| `nnx.graph.AuxData` | Object | `` |
+| `nnx.graph.B` | Object | `` |
+| `nnx.graph.BaseConfigContext` | Class | `(value)` |
+| `nnx.graph.C` | Object | `` |
+| `nnx.graph.CallableProxy` | Class | `(callable: _AccessorCall, accessor: DelayedAccessor \| None)` |
+| `nnx.graph.DataElem` | Class | `(value: tp.Any)` |
+| `nnx.graph.DelayedAccessor` | Class | `(actions: tuple[GetItem \| GetAttr, ...])` |
+| `nnx.graph.F` | Object | `` |
+| `nnx.graph.FlatState` | Class | `(items: tp.Iterable[tuple[PathParts, V]], sort: bool)` |
+| `nnx.graph.GRAPH_CONTEXT` | Object | `` |
+| `nnx.graph.GRAPH_REGISTRY` | Object | `` |
+| `nnx.graph.GenericPytree` | Class | `(...)` |
+| `nnx.graph.GraphContext` | Class | `(update_context_stacks: dict[tp.Hashable, list[UpdateContext]], ref_index_stack: list[SplitContext], index_ref_stack: list[MergeContext], tmp_static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None, caching: bool, graph_mode_stack: list[bool], graph_updates_stack: list[bool])` |
+| `nnx.graph.GraphDef` | Class | `(nodes: list[NodeDefType[tp.Any]], attributes: list[tuple[Key, AttrType]], num_leaves: int)` |
+| `nnx.graph.GraphFlatState` | Object | `` |
+| `nnx.graph.GraphNodeImpl` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], set_key: tp.Callable[[Node, Key, Leaf], None], pop_key: tp.Callable[[Node, Key], Leaf], create_empty: tp.Callable[[AuxData], Node], clear: tp.Callable[[Node], None], init: tp.Callable[[Node, tp.Iterable[tuple[Key, Leaf]]], None])` |
+| `nnx.graph.GraphState` | Object | `` |
+| `nnx.graph.HA` | Object | `` |
+| `nnx.graph.HB` | Object | `` |
+| `nnx.graph.HashableMapping` | Class | `(mapping: Mapping[HA, HB], copy: bool)` |
+| `nnx.graph.Index` | Object | `` |
+| `nnx.graph.IndexMap` | Class | `(...)` |
+| `nnx.graph.IndexesPytreeDef` | Class | `(...)` |
+| `nnx.graph.JAX_PYTREE_REGISTRY` | Object | `` |
+| `nnx.graph.Key` | Class | `(...)` |
+| `nnx.graph.KeyT` | Object | `` |
+| `nnx.graph.LEAF_ATTR` | Object | `` |
+| `nnx.graph.Leaf` | Object | `` |
+| `nnx.graph.LeafAttr` | Class | `()` |
+| `nnx.graph.LeafType` | Object | `` |
+| `nnx.graph.MergeContext` | Class | `(ctxtag: tp.Hashable \| None, index_ref: IndexMap, is_inner: bool \| None)` |
+| `nnx.graph.NODE_ATTR` | Object | `` |
+| `nnx.graph.NO_UPDATE` | Object | `` |
+| `nnx.graph.Names` | Object | `` |
+| `nnx.graph.NoUpdate` | Class | `()` |
+| `nnx.graph.Node` | Object | `` |
+| `nnx.graph.NodeAttr` | Class | `()` |
+| `nnx.graph.NodeDef` | Class | `(type: tp.Type[Node], index: int \| None, outer_index: int \| None, num_attributes: int, metadata: tp.Any)` |
+| `nnx.graph.NodeDefType` | Object | `` |
+| `nnx.graph.NodeImpl` | Object | `` |
+| `nnx.graph.NodeImplBase` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]])` |
+| `nnx.graph.NodeRef` | Class | `(index: int)` |
+| `nnx.graph.PYTREE_NODE_IMPL` | Object | `` |
+| `nnx.graph.PYTREE_REGISTRY` | Object | `` |
+| `nnx.graph.PathParts` | Object | `` |
+| `nnx.graph.PureState` | Object | `` |
+| `nnx.graph.PythonRefMap` | Object | `` |
+| `nnx.graph.PytreeNodeImpl` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], unflatten: tp.Callable[[tp.Sequence[tuple[Key, Leaf]], AuxData], Node], set_key: tp.Callable[[Node, Key, Leaf], None] \| None, pop_key: tp.Callable[[Node, Key], Leaf] \| None)` |
+| `nnx.graph.REPEATED` | Object | `` |
+| `nnx.graph.RefMap` | Class | `(mapping: tp.Mapping[tp.Any, int] \| tp.Iterable[tuple[tp.Any, int]] \| None)` |
+| `nnx.graph.Repeated` | Class | `()` |
+| `nnx.graph.SplitContext` | Class | `(ctxtag: tp.Hashable \| None, ref_index: RefMap, is_inner: bool \| None)` |
+| `nnx.graph.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.graph.Static` | Class | `(value: A)` |
+| `nnx.graph.StaticCache` | Class | `(...)` |
+| `nnx.graph.StaticElem` | Class | `(value: tp.Any)` |
+| `nnx.graph.TreeNodeDef` | Class | `(type: tp.Type[Node], treedef: jax.tree_util.PyTreeDef, path_index: tuple[tuple[PathParts, int], ...])` |
+| `nnx.graph.UpdateContext` | Class | `(tag: tp.Hashable, outer_ref_outer_index: RefMap \| None, outer_index_inner_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, inner_ref_outer_index: RefMap \| None, static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None)` |
+| `nnx.graph.UpdateContextManager` | Class | `(tag: tp.Hashable)` |
+| `nnx.graph.V` | Object | `` |
+| `nnx.graph.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.graph.VariableDef` | Class | `(type: type[Node], index: int, outer_index: int \| None, metadata: HashableMapping[str, tp.Any], array_refdef: ArrayRefDef \| NodeRef \| None)` |
+| `nnx.graph.annotations` | Object | `` |
+| `nnx.graph.builtins` | Object | `` |
+| `nnx.graph.cached_partial` | Object | `` |
+| `nnx.graph.call` | Function | `(graphdef_state: tuple[GraphDef[A], GraphState]) -> ApplyCaller[tuple[GraphDef[A], GraphState]]` |
+| `nnx.graph.clone` | Function | `(node: Node, variables: bool, graph: bool \| None) -> Node` |
+| `nnx.graph.config` | Object | `` |
+| `nnx.graph.contextlib` | Object | `` |
+| `nnx.graph.current_update_context` | Function | `(tag: tp.Hashable) -> UpdateContext` |
+| `nnx.graph.dataclasses` | Object | `` |
+| `nnx.graph.filterlib` | Object | `` |
+| `nnx.graph.find_duplicates` | Function | `(node: tp.Any, only: filterlib.Filter) -> list[list[PathParts]]` |
+| `nnx.graph.flatten` | Function | `(node: Node, with_paths: bool, ref_index: RefMap \| None, ref_outer_index: RefMap \| None, graph: bool \| None) -> tuple[GraphDef[Node], FlatState[tp.Any] \| list[tp.Any]]` |
+| `nnx.graph.flaxlib` | Object | `` |
+| `nnx.graph.functools` | Object | `` |
+| `nnx.graph.get_node_impl` | Function | `(x: Node) -> NodeImpl[Node, tp.Any, tp.Any] \| None` |
+| `nnx.graph.get_node_impl_for_type` | Function | `(x: type[Node]) -> NodeImpl[Node, tp.Any, tp.Any] \| None` |
+| `nnx.graph.graph_pop` | Function | `(node: tp.Any, filters: tuple[filterlib.Filter, ...]) -> tuple[GraphState, ...]` |
+| `nnx.graph.graphdef` | Function | `(node: tp.Any, graph: bool \| None) -> GraphDef[tp.Any]` |
+| `nnx.graph.is_array_ref` | Function | `(x) -> tp.TypeGuard[Ref]` |
+| `nnx.graph.is_graph_node` | Function | `(x: tp.Any) -> bool` |
+| `nnx.graph.is_key_like` | Function | `(x: Any) -> TypeGuard[Key]` |
+| `nnx.graph.is_node` | Function | `(x: tp.Any) -> bool` |
+| `nnx.graph.is_node_leaf` | Function | `(x: tp.Any) -> tpe.TypeGuard[LeafType]` |
+| `nnx.graph.is_node_type` | Function | `(x: type[tp.Any]) -> bool` |
+| `nnx.graph.is_pytree_node` | Function | `(x: tp.Any, check_graph_registry: bool) -> bool` |
+| `nnx.graph.iter_children` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[Key, tp.Any]]` |
+| `nnx.graph.iter_graph` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[PathParts, tp.Any]]` |
+| `nnx.graph.jax` | Object | `` |
+| `nnx.graph.jax_to_nnx_path` | Function | `(jax_path: tuple)` |
+| `nnx.graph.map` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], node: A, graph: bool \| None) -> A` |
+| `nnx.graph.map_state` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], state: State) -> State` |
+| `nnx.graph.merge` | Function | `(graphdef: GraphDef[A], state: tp.Any, states: tp.Any, copy: bool) -> A` |
+| `nnx.graph.merge_context` | Function | `(ctxtag: tp.Hashable \| None, inner: bool \| None)` |
+| `nnx.graph.np` | Object | `` |
+| `nnx.graph.pop` | Function | `(node, filters: filterlib.Filter) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.graph.pure` | Function | `(tree: A) -> A` |
+| `nnx.graph.recursive_map` | Function | `(f: tp.Callable[[PathParts, tp.Any], tp.Any], node: tp.Any, graph: bool \| None)` |
+| `nnx.graph.register_graph_node_type` | Function | `(type: type, flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], set_key: tp.Callable[[Node, Key, Leaf], None], pop_key: tp.Callable[[Node, Key], Leaf], create_empty: tp.Callable[[AuxData], Node], clear: tp.Callable[[Node], None], init: tp.Callable[[Node, tp.Iterable[tuple[Key, Leaf]]], None])` |
+| `nnx.graph.register_pytree_node_type` | Function | `(type: type, flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], unflatten: tp.Callable[[tp.Sequence[tuple[Key, Leaf]], AuxData], Node], set_key: tp.Callable[[Node, Key, Leaf], None] \| None, pop_key: tp.Callable[[Node, Key], Leaf] \| None)` |
+| `nnx.graph.reprlib` | Object | `` |
+| `nnx.graph.set_graph_mode` | Class | `(...)` |
+| `nnx.graph.set_graph_updates` | Class | `(...)` |
+| `nnx.graph.set_metadata` | Function | `(node: tp.Any, only: filterlib.Filter, metadata: tp.Any) -> None` |
+| `nnx.graph.split` | Function | `(node: A, filters: filterlib.Filter, graph: bool \| None) -> tuple[GraphDef[A], GraphState, tpe.Unpack[tuple[GraphState, ...]]]` |
+| `nnx.graph.split_context` | Function | `(ctxtag: tp.Hashable \| None)` |
+| `nnx.graph.state` | Function | `(node, filters: filterlib.Filter, graph: bool \| None) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.graph.statelib` | Object | `` |
+| `nnx.graph.static_cache` | Function | `(static_cache: tp.MutableMapping[tp.Any, StaticCache])` |
+| `nnx.graph.threading` | Object | `` |
+| `nnx.graph.tp` | Object | `` |
+| `nnx.graph.tpe` | Object | `` |
+| `nnx.graph.traversals` | Object | `` |
+| `nnx.graph.treescope` | Object | `` |
+| `nnx.graph.unflatten` | Function | `(graphdef: GraphDef[Node], state: State[Key, tp.Any] \| FlatState[tp.Any] \| list[tp.Any], index_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, copy_variables: bool) -> Node` |
+| `nnx.graph.update` | Function | `(node, state: tp.Any, states: tp.Any) -> None` |
+| `nnx.graph.update_context` | Function | `(tag: tp.Hashable)` |
+| `nnx.graph.variablelib` | Object | `` |
+| `nnx.graph.variables` | Object | `` |
+| `nnx.graph.vars_as` | Function | `(node: A, hijax: bool \| None, ref: bool \| None, mutable: bool \| None, only: filterlib.Filter, allow_duplicates: bool) -> A` |
+| `nnx.graphdef` | Function | `(node: tp.Any, graph: bool \| None) -> GraphDef[tp.Any]` |
+| `nnx.graphlib.A` | Object | `` |
+| `nnx.graphlib.ApplyCaller` | Class | `(...)` |
+| `nnx.graphlib.ArrayRefDef` | Class | `(index: int, outer_index: int \| None)` |
+| `nnx.graphlib.ArrayRefOutput` | Class | `(value: jax.Array)` |
+| `nnx.graphlib.AttrType` | Object | `` |
+| `nnx.graphlib.AuxData` | Object | `` |
+| `nnx.graphlib.B` | Object | `` |
+| `nnx.graphlib.BaseConfigContext` | Class | `(value)` |
+| `nnx.graphlib.C` | Object | `` |
+| `nnx.graphlib.CallableProxy` | Class | `(callable: _AccessorCall, accessor: DelayedAccessor \| None)` |
+| `nnx.graphlib.DataElem` | Class | `(value: tp.Any)` |
+| `nnx.graphlib.DelayedAccessor` | Class | `(actions: tuple[GetItem \| GetAttr, ...])` |
+| `nnx.graphlib.F` | Object | `` |
+| `nnx.graphlib.FlatState` | Class | `(items: tp.Iterable[tuple[PathParts, V]], sort: bool)` |
+| `nnx.graphlib.GRAPH_CONTEXT` | Object | `` |
+| `nnx.graphlib.GRAPH_REGISTRY` | Object | `` |
+| `nnx.graphlib.GenericPytree` | Class | `(...)` |
+| `nnx.graphlib.GraphContext` | Class | `(update_context_stacks: dict[tp.Hashable, list[UpdateContext]], ref_index_stack: list[SplitContext], index_ref_stack: list[MergeContext], tmp_static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None, caching: bool, graph_mode_stack: list[bool], graph_updates_stack: list[bool])` |
+| `nnx.graphlib.GraphDef` | Class | `(nodes: list[NodeDefType[tp.Any]], attributes: list[tuple[Key, AttrType]], num_leaves: int)` |
+| `nnx.graphlib.GraphFlatState` | Object | `` |
+| `nnx.graphlib.GraphNodeImpl` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], set_key: tp.Callable[[Node, Key, Leaf], None], pop_key: tp.Callable[[Node, Key], Leaf], create_empty: tp.Callable[[AuxData], Node], clear: tp.Callable[[Node], None], init: tp.Callable[[Node, tp.Iterable[tuple[Key, Leaf]]], None])` |
+| `nnx.graphlib.GraphState` | Object | `` |
+| `nnx.graphlib.HA` | Object | `` |
+| `nnx.graphlib.HB` | Object | `` |
+| `nnx.graphlib.HashableMapping` | Class | `(mapping: Mapping[HA, HB], copy: bool)` |
+| `nnx.graphlib.Index` | Object | `` |
+| `nnx.graphlib.IndexMap` | Class | `(...)` |
+| `nnx.graphlib.IndexesPytreeDef` | Class | `(...)` |
+| `nnx.graphlib.Key` | Class | `(...)` |
+| `nnx.graphlib.KeyT` | Object | `` |
+| `nnx.graphlib.LEAF_ATTR` | Object | `` |
+| `nnx.graphlib.Leaf` | Object | `` |
+| `nnx.graphlib.LeafAttr` | Class | `()` |
+| `nnx.graphlib.LeafType` | Object | `` |
+| `nnx.graphlib.MergeContext` | Class | `(ctxtag: tp.Hashable \| None, index_ref: IndexMap, is_inner: bool \| None)` |
+| `nnx.graphlib.NODE_ATTR` | Object | `` |
+| `nnx.graphlib.NO_UPDATE` | Object | `` |
+| `nnx.graphlib.Names` | Object | `` |
+| `nnx.graphlib.NoUpdate` | Class | `()` |
+| `nnx.graphlib.Node` | Object | `` |
+| `nnx.graphlib.NodeAttr` | Class | `()` |
+| `nnx.graphlib.NodeDef` | Class | `(type: tp.Type[Node], index: int \| None, outer_index: int \| None, num_attributes: int, metadata: tp.Any)` |
+| `nnx.graphlib.NodeDefType` | Object | `` |
+| `nnx.graphlib.NodeImpl` | Object | `` |
+| `nnx.graphlib.NodeImplBase` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]])` |
+| `nnx.graphlib.NodeRef` | Class | `(index: int)` |
+| `nnx.graphlib.PYTREE_NODE_IMPL` | Object | `` |
+| `nnx.graphlib.PYTREE_REGISTRY` | Object | `` |
+| `nnx.graphlib.PathParts` | Object | `` |
+| `nnx.graphlib.PureState` | Object | `` |
+| `nnx.graphlib.PythonRefMap` | Object | `` |
+| `nnx.graphlib.PytreeNodeImpl` | Class | `(type: type[Node], flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], unflatten: tp.Callable[[tp.Sequence[tuple[Key, Leaf]], AuxData], Node], set_key: tp.Callable[[Node, Key, Leaf], None] \| None, pop_key: tp.Callable[[Node, Key], Leaf] \| None)` |
+| `nnx.graphlib.REPEATED` | Object | `` |
+| `nnx.graphlib.RefMap` | Class | `(mapping: tp.Mapping[tp.Any, int] \| tp.Iterable[tuple[tp.Any, int]] \| None)` |
+| `nnx.graphlib.Repeated` | Class | `()` |
+| `nnx.graphlib.SplitContext` | Class | `(ctxtag: tp.Hashable \| None, ref_index: RefMap, is_inner: bool \| None)` |
+| `nnx.graphlib.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.graphlib.Static` | Class | `(value: A)` |
+| `nnx.graphlib.StaticCache` | Class | `(...)` |
+| `nnx.graphlib.StaticElem` | Class | `(value: tp.Any)` |
+| `nnx.graphlib.TreeNodeDef` | Class | `(type: tp.Type[Node], treedef: jax.tree_util.PyTreeDef, path_index: tuple[tuple[PathParts, int], ...])` |
+| `nnx.graphlib.UpdateContext` | Class | `(tag: tp.Hashable, outer_ref_outer_index: RefMap \| None, outer_index_inner_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, inner_ref_outer_index: RefMap \| None, static_cache: tp.MutableMapping[tp.Any, StaticCache] \| None)` |
+| `nnx.graphlib.UpdateContextManager` | Class | `(tag: tp.Hashable)` |
+| `nnx.graphlib.V` | Object | `` |
+| `nnx.graphlib.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.graphlib.VariableDef` | Class | `(type: type[Node], index: int, outer_index: int \| None, metadata: HashableMapping[str, tp.Any], array_refdef: ArrayRefDef \| NodeRef \| None)` |
+| `nnx.graphlib.cached_partial` | Object | `` |
+| `nnx.graphlib.call` | Function | `(graphdef_state: tuple[GraphDef[A], GraphState]) -> ApplyCaller[tuple[GraphDef[A], GraphState]]` |
+| `nnx.graphlib.clone` | Function | `(node: Node, variables: bool, graph: bool \| None) -> Node` |
+| `nnx.graphlib.config` | Object | `` |
+| `nnx.graphlib.current_update_context` | Function | `(tag: tp.Hashable) -> UpdateContext` |
+| `nnx.graphlib.filterlib` | Object | `` |
+| `nnx.graphlib.find_duplicates` | Function | `(node: tp.Any, only: filterlib.Filter) -> list[list[PathParts]]` |
+| `nnx.graphlib.flatten` | Function | `(node: Node, with_paths: bool, ref_index: RefMap \| None, ref_outer_index: RefMap \| None, graph: bool \| None) -> tuple[GraphDef[Node], FlatState[tp.Any] \| list[tp.Any]]` |
+| `nnx.graphlib.get_node_impl` | Function | `(x: Node) -> NodeImpl[Node, tp.Any, tp.Any] \| None` |
+| `nnx.graphlib.get_node_impl_for_type` | Function | `(x: type[Node]) -> NodeImpl[Node, tp.Any, tp.Any] \| None` |
+| `nnx.graphlib.graph_pop` | Function | `(node: tp.Any, filters: tuple[filterlib.Filter, ...]) -> tuple[GraphState, ...]` |
+| `nnx.graphlib.graphdef` | Function | `(node: tp.Any, graph: bool \| None) -> GraphDef[tp.Any]` |
+| `nnx.graphlib.is_array_ref` | Function | `(x) -> tp.TypeGuard[Ref]` |
+| `nnx.graphlib.is_graph_node` | Function | `(x: tp.Any) -> bool` |
+| `nnx.graphlib.is_key_like` | Function | `(x: Any) -> TypeGuard[Key]` |
+| `nnx.graphlib.is_node` | Function | `(x: tp.Any) -> bool` |
+| `nnx.graphlib.is_node_leaf` | Function | `(x: tp.Any) -> tpe.TypeGuard[LeafType]` |
+| `nnx.graphlib.is_node_type` | Function | `(x: type[tp.Any]) -> bool` |
+| `nnx.graphlib.is_pytree_node` | Function | `(x: tp.Any, check_graph_registry: bool) -> bool` |
+| `nnx.graphlib.iter_children` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[Key, tp.Any]]` |
+| `nnx.graphlib.iter_graph` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[PathParts, tp.Any]]` |
+| `nnx.graphlib.jax_to_nnx_path` | Function | `(jax_path: tuple)` |
+| `nnx.graphlib.map` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], node: A, graph: bool \| None) -> A` |
+| `nnx.graphlib.map_state` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], state: State) -> State` |
+| `nnx.graphlib.merge` | Function | `(graphdef: GraphDef[A], state: tp.Any, states: tp.Any, copy: bool) -> A` |
+| `nnx.graphlib.merge_context` | Function | `(ctxtag: tp.Hashable \| None, inner: bool \| None)` |
+| `nnx.graphlib.pop` | Function | `(node, filters: filterlib.Filter) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.graphlib.pure` | Function | `(tree: A) -> A` |
+| `nnx.graphlib.recursive_map` | Function | `(f: tp.Callable[[PathParts, tp.Any], tp.Any], node: tp.Any, graph: bool \| None)` |
+| `nnx.graphlib.register_graph_node_type` | Function | `(type: type, flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], set_key: tp.Callable[[Node, Key, Leaf], None], pop_key: tp.Callable[[Node, Key], Leaf], create_empty: tp.Callable[[AuxData], Node], clear: tp.Callable[[Node], None], init: tp.Callable[[Node, tp.Iterable[tuple[Key, Leaf]]], None])` |
+| `nnx.graphlib.register_pytree_node_type` | Function | `(type: type, flatten: tp.Callable[[Node], tuple[tp.Sequence[tuple[Key, Leaf]], AuxData]], unflatten: tp.Callable[[tp.Sequence[tuple[Key, Leaf]], AuxData], Node], set_key: tp.Callable[[Node, Key, Leaf], None] \| None, pop_key: tp.Callable[[Node, Key], Leaf] \| None)` |
+| `nnx.graphlib.reprlib` | Object | `` |
+| `nnx.graphlib.set_graph_mode` | Class | `(...)` |
+| `nnx.graphlib.set_graph_updates` | Class | `(...)` |
+| `nnx.graphlib.set_metadata` | Function | `(node: tp.Any, only: filterlib.Filter, metadata: tp.Any) -> None` |
+| `nnx.graphlib.split` | Function | `(node: A, filters: filterlib.Filter, graph: bool \| None) -> tuple[GraphDef[A], GraphState, tpe.Unpack[tuple[GraphState, ...]]]` |
+| `nnx.graphlib.split_context` | Function | `(ctxtag: tp.Hashable \| None)` |
+| `nnx.graphlib.state` | Function | `(node, filters: filterlib.Filter, graph: bool \| None) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.graphlib.statelib` | Object | `` |
+| `nnx.graphlib.static_cache` | Function | `(static_cache: tp.MutableMapping[tp.Any, StaticCache])` |
+| `nnx.graphlib.traversals` | Object | `` |
+| `nnx.graphlib.unflatten` | Function | `(graphdef: GraphDef[Node], state: State[Key, tp.Any] \| FlatState[tp.Any] \| list[tp.Any], index_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, copy_variables: bool) -> Node` |
+| `nnx.graphlib.update` | Function | `(node, state: tp.Any, states: tp.Any) -> None` |
+| `nnx.graphlib.update_context` | Function | `(tag: tp.Hashable)` |
+| `nnx.graphlib.variablelib` | Object | `` |
+| `nnx.graphlib.variables` | Object | `` |
+| `nnx.graphlib.vars_as` | Function | `(node: A, hijax: bool \| None, ref: bool \| None, mutable: bool \| None, only: filterlib.Filter, allow_duplicates: bool) -> A` |
+| `nnx.hard_sigmoid` | Object | `` |
+| `nnx.hard_silu` | Object | `` |
+| `nnx.hard_swish` | Object | `` |
+| `nnx.hard_tanh` | Object | `` |
+| `nnx.has_data` | Function | `(value: tp.Any) -> list[tp.Any]` |
+| `nnx.helpers.A` | Object | `` |
+| `nnx.helpers.ApplyCaller` | Class | `(...)` |
+| `nnx.helpers.Dict` | Class | `(args, kwargs)` |
+| `nnx.helpers.GraphDef` | Class | `(nodes: list[NodeDefType[tp.Any]], attributes: list[tuple[Key, AttrType]], num_leaves: int)` |
+| `nnx.helpers.List` | Class | `(it: tp.Iterable[A] \| None)` |
+| `nnx.helpers.M` | Object | `` |
+| `nnx.helpers.Module` | Class | `(...)` |
+| `nnx.helpers.ModuleDefApply` | Class | `(...)` |
+| `nnx.helpers.Rngs` | Class | `(default: RngValue \| RngStream \| tp.Mapping[str, RngValue \| RngStream] \| None, rngs: RngValue \| RngStream)` |
+| `nnx.helpers.Sequential` | Class | `(fns: tp.Callable[..., tp.Any])` |
+| `nnx.helpers.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.helpers.TS` | Object | `` |
+| `nnx.helpers.TrainState` | Class | `(...)` |
+| `nnx.helpers.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.helpers.graphlib` | Object | `` |
+| `nnx.helpers.has_keyword_arg` | Function | `(func: tp.Callable[..., tp.Any], name: str) -> bool` |
+| `nnx.helpers.reprlib` | Object | `` |
+| `nnx.helpers.struct` | Object | `` |
+| `nnx.identity` | Object | `` |
+| `nnx.ids.UUID` | Class | `(rawid)` |
+| `nnx.ids.UUIDManager` | Class | `()` |
+| `nnx.ids.uuid` | Object | `` |
+| `nnx.initializers` | Object | `` |
+| `nnx.is_data` | Function | `(value: tp.Any) -> bool` |
+| `nnx.iter_children` | Object | `` |
+| `nnx.iter_graph` | Function | `(node: tp.Any, graph: bool \| None) -> tp.Iterator[tuple[PathParts, tp.Any]]` |
+| `nnx.iter_modules` | Function | `(module: Module, graph: bool \| None) -> tp.Iterator[tuple[PathParts, Module]]` |
+| `nnx.jit` | Function | `(fun: tp.Callable[P, R] \| Missing, in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> JitWrapped[P, R] \| tp.Callable[[tp.Callable[P, R]], JitWrapped[P, R]]` |
+| `nnx.jit_partial` | Function | `(fun: tp.Callable[..., R], partial_args: tp.Any, in_shardings: tp.Any, out_shardings: tp.Any, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> SimpleJitWrapped[..., R]` |
+| `nnx.jvp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tuple[tp.Any, ...] \| Missing, tangents: tuple[tp.Any, ...] \| Missing, has_aux: bool, graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, ...] \| tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.leaky_relu` | Object | `` |
+| `nnx.log_sigmoid` | Object | `` |
+| `nnx.log_softmax` | Object | `` |
+| `nnx.logical_axis_rules` | Function | `(rules: LogicalRules)` |
+| `nnx.logsumexp` | Object | `` |
+| `nnx.make_attention_mask` | Function | `(query_input: Array, key_input: Array, pairwise_fn: Callable[..., Any], extra_batch_dims: int, dtype: Dtype)` |
+| `nnx.make_causal_mask` | Function | `(x: Array, extra_batch_dims: int, dtype: Dtype) -> Array` |
+| `nnx.map` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], node: A, graph: bool \| None) -> A` |
+| `nnx.map_state` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], state: State) -> State` |
+| `nnx.max_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `nnx.merge` | Function | `(graphdef: GraphDef[A], state: tp.Any, states: tp.Any, copy: bool) -> A` |
+| `nnx.merge_context` | Function | `(ctxtag: tp.Hashable \| None, inner: bool \| None)` |
+| `nnx.merge_state` | Function | `(state: tp.Mapping, states: tp.Mapping, cls) -> State` |
+| `nnx.metrics` | Object | `` |
+| `nnx.min_pool` | Function | `(inputs, window_shape, strides, padding)` |
+| `nnx.module.A` | Object | `` |
+| `nnx.module.B` | Object | `` |
+| `nnx.module.F` | Object | `` |
+| `nnx.module.GraphState` | Object | `` |
+| `nnx.module.Key` | Class | `(...)` |
+| `nnx.module.M` | Object | `` |
+| `nnx.module.Module` | Class | `(...)` |
+| `nnx.module.ModuleMeta` | Class | `(...)` |
+| `nnx.module.P` | Object | `` |
+| `nnx.module.Path` | Object | `` |
+| `nnx.module.PathParts` | Object | `` |
+| `nnx.module.Pytree` | Class | `(...)` |
+| `nnx.module.PytreeMeta` | Class | `(...)` |
+| `nnx.module.R` | Object | `` |
+| `nnx.module.S` | Object | `` |
+| `nnx.module.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.module.StateMapping` | Object | `` |
+| `nnx.module.V` | Object | `` |
+| `nnx.module.capture` | Function | `(fn: tp.Callable[P, R] \| type[variableslib.Variable], var_types: type[variableslib.Variable], init: tp.Optional[State], method_outputs: tp.Optional[type[variableslib.Variable]]) -> tp.Callable[P, tuple[R, State]] \| tp.Callable[[tp.Callable[P, R]], tp.Callable[P, tuple[R, State]]]` |
+| `nnx.module.filterlib` | Object | `` |
+| `nnx.module.first_from` | Function | `(args: tp.Optional[A], error_msg: str) -> A` |
+| `nnx.module.graphlib` | Object | `` |
+| `nnx.module.iter_children` | Object | `` |
+| `nnx.module.iter_modules` | Function | `(module: Module, graph: bool \| None) -> tp.Iterator[tuple[PathParts, Module]]` |
+| `nnx.module.pytreelib` | Object | `` |
+| `nnx.module.split_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `nnx.module.tuple_init` | Object | `` |
+| `nnx.module.tuple_reduce` | Object | `` |
+| `nnx.module.variableslib` | Object | `` |
+| `nnx.module.view` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, kwargs) -> A` |
+| `nnx.module.view_info` | Function | `(node: Module, only: filterlib.Filter, graph: bool \| None) -> str` |
+| `nnx.module.with_attributes` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, attributes: tp.Any) -> A` |
+| `nnx.nn.activations.Array` | Object | `` |
+| `nnx.nn.activations.Dtype` | Object | `` |
+| `nnx.nn.activations.PReLU` | Class | `(negative_slope_init: float, dtype: Dtype \| None, param_dtype: Dtype, promote_dtype: PromoteDtypeFn, negative_slope_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.activations.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.activations.dtypes` | Object | `` |
+| `nnx.nn.activations.nnx` | Object | `` |
+| `nnx.nn.attention.Array` | Object | `` |
+| `nnx.nn.attention.DotGeneralT` | Object | `` |
+| `nnx.nn.attention.Dtype` | Object | `` |
+| `nnx.nn.attention.Initializer` | Object | `` |
+| `nnx.nn.attention.LayerNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.attention.LinearGeneral` | Class | `(in_features: Size \| tp.Sequence[Size], out_features: Size \| tp.Sequence[Size], axis: Axis \| tp.Sequence[Axis], batch_axis: tp.Mapping[Axis, Size], use_bias: bool, dtype: Dtype \| None, param_dtype: Dtype, kernel_init: Initializer, bias_init: Initializer, precision: PrecisionLike, promote_dtype: PromoteDtypeFn, dot_general: DotGeneralT \| None, dot_general_cls: tp.Any, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.attention.Module` | Class | `(...)` |
+| `nnx.nn.attention.MultiHeadAttention` | Class | `(num_heads: int, in_features: int, qkv_features: int \| None, out_features: int \| None, num_kv_heads: int \| None, in_kv_features: int \| None, dtype: Dtype \| None, param_dtype: Dtype, broadcast_dropout: bool, dropout_rate: float, deterministic: bool \| None, precision: PrecisionLike, kernel_init: Initializer, out_kernel_init: Initializer \| None, bias_init: Initializer, out_bias_init: Initializer \| None, use_bias: bool, attention_fn: Callable[..., Array], decode: bool \| None, normalize_qk: bool, qkv_promote_dtype: PromoteDtypeFn, out_promote_dtype: PromoteDtypeFn, ln_promote_dtype: PromoteDtypeFn, qkv_dot_general: DotGeneralT \| None, out_dot_general: DotGeneralT \| None, qkv_dot_general_cls: Any, out_dot_general_cls: Any, rngs: rnglib.Rngs, keep_rngs: bool, kernel_metadata: Mapping[str, Any], out_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any], out_bias_metadata: Mapping[str, Any], query_ln_scale_metadata: Mapping[str, Any], key_ln_scale_metadata: Mapping[str, Any])` |
+| `nnx.nn.attention.PrecisionLike` | Object | `` |
+| `nnx.nn.attention.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.attention.Shape` | Object | `` |
+| `nnx.nn.attention.combine_masks` | Function | `(masks: Array \| None, dtype: Dtype) -> Array \| None` |
+| `nnx.nn.attention.default_kernel_init` | Object | `` |
+| `nnx.nn.attention.dot_product_attention` | Function | `(query: Array, key: Array, value: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: Array \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, promote_dtype: PromoteDtypeFn, is_causal: bool)` |
+| `nnx.nn.attention.dot_product_attention_weights` | Function | `(query: Array, key: Array, bias: Array \| None, mask: Array \| None, broadcast_dropout: bool, dropout_rng: Array \| None, dropout_rate: float, deterministic: bool, dtype: Dtype \| None, precision: PrecisionLike, module: Module \| None, promote_dtype: PromoteDtypeFn, is_causal: bool)` |
+| `nnx.nn.attention.dtypes` | Object | `` |
+| `nnx.nn.attention.first_from` | Function | `(args: tp.Optional[A], error_msg: str) -> A` |
+| `nnx.nn.attention.initializers` | Object | `` |
+| `nnx.nn.attention.make_attention_mask` | Function | `(query_input: Array, key_input: Array, pairwise_fn: Callable[..., Any], extra_batch_dims: int, dtype: Dtype)` |
+| `nnx.nn.attention.make_causal_mask` | Function | `(x: Array, extra_batch_dims: int, dtype: Dtype) -> Array` |
+| `nnx.nn.attention.nnx` | Object | `` |
+| `nnx.nn.attention.rnglib` | Object | `` |
+| `nnx.nn.dtypes.Dtype` | Object | `` |
+| `nnx.nn.dtypes.T` | Object | `` |
+| `nnx.nn.dtypes.canonicalize_dtype` | Function | `(args, dtype: Dtype \| None, inexact: bool) -> Dtype` |
+| `nnx.nn.dtypes.promote_dtype` | Function | `(args: T, dtype, inexact) -> T` |
+| `nnx.nn.initializers.DtypeLikeInexact` | Object | `` |
+| `nnx.nn.initializers.Initializer` | Object | `` |
+| `nnx.nn.initializers.ones_init` | Function | `() -> Initializer` |
+| `nnx.nn.initializers.zeros_init` | Function | `() -> Initializer` |
+| `nnx.nn.linear.Array` | Object | `` |
+| `nnx.nn.linear.Axis` | Object | `` |
+| `nnx.nn.linear.Conv` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: tp.Union[None, int, tp.Sequence[int]], padding: PaddingLike, input_dilation: tp.Union[None, int, tp.Sequence[int]], kernel_dilation: tp.Union[None, int, tp.Sequence[int]], feature_group_count: int, use_bias: bool, mask: tp.Optional[Array], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, conv_general_dilated: ConvGeneralDilatedT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.ConvGeneralDilatedT` | Object | `` |
+| `nnx.nn.linear.ConvTranspose` | Class | `(in_features: int, out_features: int, kernel_size: int \| tp.Sequence[int], strides: int \| tp.Sequence[int] \| None, padding: PaddingLike, kernel_dilation: int \| tp.Sequence[int] \| None, use_bias: bool, mask: Array \| None, dtype: Dtype \| None, param_dtype: Dtype, precision: PrecisionLike \| None, kernel_init: Initializer, bias_init: Initializer, transpose_kernel: bool, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.DotGeneralT` | Object | `` |
+| `nnx.nn.linear.Dtype` | Object | `` |
+| `nnx.nn.linear.Einsum` | Class | `(einsum_str: str, kernel_shape: Shape, bias_shape: tp.Optional[Shape], dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, einsum_op: EinsumT, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.EinsumT` | Object | `` |
+| `nnx.nn.linear.Embed` | Class | `(num_embeddings: int, features: int, dtype: tp.Optional[Dtype], param_dtype: Dtype, embedding_init: Initializer, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, embedding_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `nnx.nn.linear.Initializer` | Object | `` |
+| `nnx.nn.linear.LaxPadding` | Object | `` |
+| `nnx.nn.linear.Linear` | Class | `(in_features: int, out_features: int, use_bias: bool, dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, dot_general: DotGeneralT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.LinearGeneral` | Class | `(in_features: Size \| tp.Sequence[Size], out_features: Size \| tp.Sequence[Size], axis: Axis \| tp.Sequence[Axis], batch_axis: tp.Mapping[Axis, Size], use_bias: bool, dtype: Dtype \| None, param_dtype: Dtype, kernel_init: Initializer, bias_init: Initializer, precision: PrecisionLike, promote_dtype: PromoteDtypeFn, dot_general: DotGeneralT \| None, dot_general_cls: tp.Any, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.linear.Module` | Class | `(...)` |
+| `nnx.nn.linear.PaddingLike` | Object | `` |
+| `nnx.nn.linear.PrecisionLike` | Object | `` |
+| `nnx.nn.linear.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.linear.Shape` | Object | `` |
+| `nnx.nn.linear.Size` | Object | `` |
+| `nnx.nn.linear.canonicalize_padding` | Function | `(padding: PaddingLike, rank: int) -> LaxPadding` |
+| `nnx.nn.linear.default_bias_init` | Object | `` |
+| `nnx.nn.linear.default_embed_init` | Object | `` |
+| `nnx.nn.linear.default_kernel_init` | Object | `` |
+| `nnx.nn.linear.dtypes` | Object | `` |
+| `nnx.nn.linear.first_from` | Function | `(args: tp.Optional[A], error_msg: str) -> A` |
+| `nnx.nn.linear.initializers` | Object | `` |
+| `nnx.nn.linear.nnx` | Object | `` |
+| `nnx.nn.linear.rnglib` | Object | `` |
+| `nnx.nn.linear.variablelib` | Object | `` |
+| `nnx.nn.lora.A` | Object | `` |
+| `nnx.nn.lora.Array` | Object | `` |
+| `nnx.nn.lora.Axis` | Object | `` |
+| `nnx.nn.lora.Dtype` | Object | `` |
+| `nnx.nn.lora.Initializer` | Object | `` |
+| `nnx.nn.lora.Linear` | Class | `(in_features: int, out_features: int, use_bias: bool, dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, dot_general: DotGeneralT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.lora.LoRA` | Class | `(in_features: int, lora_rank: int, out_features: int, base_module: tp.Optional[Module], dtype: tp.Optional[Dtype], param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.lora.LoRALinear` | Class | `(in_features: int, out_features: int, lora_rank: int, lora_dtype: tp.Optional[Dtype], lora_param_dtype: Dtype, a_initializer: Initializer, b_initializer: Initializer, lora_param_type: tp.Type[variablelib.Variable], lora_promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, a_metadata: tp.Mapping[str, tp.Any], b_metadata: tp.Mapping[str, tp.Any], kwargs)` |
+| `nnx.nn.lora.LoRAParam` | Class | `(...)` |
+| `nnx.nn.lora.Module` | Class | `(...)` |
+| `nnx.nn.lora.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.lora.Size` | Object | `` |
+| `nnx.nn.lora.default_a_initializer` | Object | `` |
+| `nnx.nn.lora.default_b_initializer` | Object | `` |
+| `nnx.nn.lora.dtypes` | Object | `` |
+| `nnx.nn.lora.initializers` | Object | `` |
+| `nnx.nn.lora.rnglib` | Object | `` |
+| `nnx.nn.lora.variablelib` | Object | `` |
+| `nnx.nn.normalization.Array` | Object | `` |
+| `nnx.nn.normalization.Axes` | Object | `` |
+| `nnx.nn.normalization.BatchNorm` | Class | `(num_features: int, use_running_average: bool, axis: int, momentum: float, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.normalization.Dtype` | Object | `` |
+| `nnx.nn.normalization.GroupNorm` | Class | `(num_features: int, num_groups: tp.Optional[int], group_size: tp.Optional[int], epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: tp.Optional[Axes], axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.normalization.Initializer` | Object | `` |
+| `nnx.nn.normalization.InstanceNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.normalization.LayerNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_bias: bool, use_scale: bool, bias_init: Initializer, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, bias_metadata: tp.Mapping[str, tp.Any], scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.normalization.Module` | Class | `(...)` |
+| `nnx.nn.normalization.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.normalization.RMSNorm` | Class | `(num_features: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, use_scale: bool, scale_init: Initializer, reduction_axes: Axes, feature_axes: Axes, axis_name: tp.Optional[str], axis_index_groups: tp.Any, use_fast_variance: bool, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs, scale_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.normalization.SpectralNorm` | Class | `(layer_instance: Module, n_steps: int, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, error_on_non_matrix: bool, update_stats: bool, rngs: rnglib.Rngs)` |
+| `nnx.nn.normalization.WeightNorm` | Class | `(layer_instance: nnx.Module, feature_axes: Axes \| None, use_scale: bool, scale_init: Initializer, epsilon: float, dtype: tp.Optional[Dtype], param_dtype: Dtype, variable_filter: nnx.filterlib.Filter, promote_dtype: PromoteDtypeFn, rngs: rnglib.Rngs)` |
+| `nnx.nn.normalization.dtypes` | Object | `` |
+| `nnx.nn.normalization.first_from` | Function | `(args: tp.Optional[A], error_msg: str) -> A` |
+| `nnx.nn.normalization.initializers` | Object | `` |
+| `nnx.nn.normalization.nnx` | Object | `` |
+| `nnx.nn.normalization.rnglib` | Object | `` |
+| `nnx.nn.recurrent.A` | Object | `` |
+| `nnx.nn.recurrent.Array` | Object | `` |
+| `nnx.nn.recurrent.Bidirectional` | Class | `(forward_rnn: RNNBase, backward_rnn: RNNBase, merge_fn: Callable[[Array, Array], Array], time_major: bool, return_carry: bool, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `nnx.nn.recurrent.Carry` | Object | `` |
+| `nnx.nn.recurrent.Dtype` | Object | `` |
+| `nnx.nn.recurrent.GRUCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.nn.recurrent.Initializer` | Object | `` |
+| `nnx.nn.recurrent.LSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.nn.recurrent.Linear` | Class | `(in_features: int, out_features: int, use_bias: bool, dtype: tp.Optional[Dtype], param_dtype: Dtype, precision: PrecisionLike, kernel_init: Initializer, bias_init: Initializer, dot_general: DotGeneralT, promote_dtype: PromoteDtypeFn, preferred_element_type: Dtype \| None, rngs: rnglib.Rngs, kernel_metadata: tp.Mapping[str, tp.Any], bias_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.nn.recurrent.Module` | Class | `(...)` |
+| `nnx.nn.recurrent.OptimizedLSTMCell` | Class | `(in_features: int, hidden_features: int, gate_fn: Callable[..., Any], activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, dtype: Dtype \| None, param_dtype: Dtype, carry_init: Initializer \| None, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.nn.recurrent.Output` | Object | `` |
+| `nnx.nn.recurrent.PromoteDtypeFn` | Class | `(...)` |
+| `nnx.nn.recurrent.RNN` | Class | `(cell: RNNCellBase, time_major: bool, return_carry: bool, reverse: bool, keep_order: bool, unroll: int, state_axes: Mapping[str, int \| type[iteration.Carry] \| None] \| None, broadcast_rngs: filterlib.Filter, rngs: rnglib.Rngs \| rnglib.RngStream \| bool)` |
+| `nnx.nn.recurrent.RNNBase` | Class | `(...)` |
+| `nnx.nn.recurrent.RNNCellBase` | Class | `(...)` |
+| `nnx.nn.recurrent.Shape` | Object | `` |
+| `nnx.nn.recurrent.SimpleCell` | Class | `(in_features: int, hidden_features: int, dtype: Dtype, param_dtype: Dtype, carry_init: Initializer \| None, residual: bool, activation_fn: Callable[..., Any], kernel_init: Initializer, recurrent_kernel_init: Initializer, bias_init: Initializer, promote_dtype: PromoteDtypeFn, keep_rngs: bool, rngs: rnglib.Rngs, kernel_metadata: Mapping[str, Any], recurrent_kernel_metadata: Mapping[str, Any], bias_metadata: Mapping[str, Any])` |
+| `nnx.nn.recurrent.default_bias_init` | Object | `` |
+| `nnx.nn.recurrent.default_kernel_init` | Object | `` |
+| `nnx.nn.recurrent.dtypes` | Object | `` |
+| `nnx.nn.recurrent.filterlib` | Object | `` |
+| `nnx.nn.recurrent.flip_sequences` | Function | `(inputs: Array, seq_lengths: Array \| None, num_batch_dims: int, time_major: bool) -> Array` |
+| `nnx.nn.recurrent.initializers` | Object | `` |
+| `nnx.nn.recurrent.iteration` | Object | `` |
+| `nnx.nn.recurrent.modified_orthogonal` | Function | `(key: Array, shape: Shape, dtype: Dtype) -> Array` |
+| `nnx.nn.recurrent.nnx` | Object | `` |
+| `nnx.nn.recurrent.rnglib` | Object | `` |
+| `nnx.nn.recurrent.sigmoid` | Object | `` |
+| `nnx.nn.recurrent.tanh` | Object | `` |
+| `nnx.nn.stochastic.Dropout` | Class | `(rate: float, broadcast_dims: Sequence[int], deterministic: bool, rng_collection: str, rngs: rnglib.Rngs \| rnglib.RngStream \| None)` |
+| `nnx.nn.stochastic.Module` | Class | `(...)` |
+| `nnx.nn.stochastic.first_from` | Function | `(args: tp.Optional[A], error_msg: str) -> A` |
+| `nnx.nn.stochastic.nnx` | Object | `` |
+| `nnx.nn.stochastic.rnglib` | Object | `` |
+| `nnx.object` | Object | `` |
+| `nnx.one_hot` | Object | `` |
+| `nnx.optimizer` | Object | `` |
+| `nnx.pmap` | Function | `(f: F \| type[Missing], axis_name: AxisName \| None, in_axes: tp.Any, out_axes: tp.Any, static_broadcasted_argnums: int \| tp.Iterable[int], devices: tp.Sequence[jax.Device] \| None, backend: str \| None, axis_size: int \| None, donate_argnums: int \| tp.Iterable[int], transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.pool` | Function | `(inputs, init, reduce_fn, window_shape, strides, padding)` |
+| `nnx.pop` | Function | `(node, filters: filterlib.Filter) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.proxy_caller.A` | Object | `` |
+| `nnx.proxy_caller.ApplyCaller` | Class | `(...)` |
+| `nnx.proxy_caller.CallableProxy` | Class | `(callable: _AccessorCall, accessor: DelayedAccessor \| None)` |
+| `nnx.proxy_caller.DelayedAccessor` | Class | `(actions: tuple[GetItem \| GetAttr, ...])` |
+| `nnx.proxy_caller.GetAttr` | Class | `(name: str)` |
+| `nnx.proxy_caller.GetItem` | Class | `(key: tp.Any)` |
+| `nnx.pure` | Function | `(tree: A) -> A` |
+| `nnx.pytreelib.A` | Object | `` |
+| `nnx.pytreelib.ArrayRepr` | Class | `(shape: tp.Tuple[int, ...], dtype: tp.Any)` |
+| `nnx.pytreelib.AttributeStatus` | Class | `(...)` |
+| `nnx.pytreelib.BUILDING_DOCS` | Object | `` |
+| `nnx.pytreelib.DATA_REGISTRY` | Object | `` |
+| `nnx.pytreelib.Data` | Object | `` |
+| `nnx.pytreelib.DataAnnotation` | Object | `` |
+| `nnx.pytreelib.MISSING` | Object | `` |
+| `nnx.pytreelib.Missing` | Class | `(...)` |
+| `nnx.pytreelib.MutableArrayRepr` | Class | `(shape: tp.Tuple[int, ...], dtype: tp.Any)` |
+| `nnx.pytreelib.OBJECT_CONTEXT` | Object | `` |
+| `nnx.pytreelib.Object` | Class | `(...)` |
+| `nnx.pytreelib.ObjectContext` | Class | `(seen_modules_repr: set[int] \| None, node_stats: dict[int, dict[type[Variable], SizeBytes]] \| None)` |
+| `nnx.pytreelib.ObjectMeta` | Object | `` |
+| `nnx.pytreelib.P` | Object | `` |
+| `nnx.pytreelib.Pytree` | Class | `(...)` |
+| `nnx.pytreelib.PytreeMeta` | Class | `(...)` |
+| `nnx.pytreelib.PytreeState` | Class | `(initializing: bool, is_setup: bool)` |
+| `nnx.pytreelib.SizeBytes` | Class | `(size: int, bytes: int)` |
+| `nnx.pytreelib.Static` | Object | `` |
+| `nnx.pytreelib.StaticAnnotation` | Object | `` |
+| `nnx.pytreelib.T` | Object | `` |
+| `nnx.pytreelib.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.pytreelib.VariableRepr` | Class | `(var_type: type[Variable], value: tp.Any, metadata: dict[str, tp.Any])` |
+| `nnx.pytreelib.check_pytree` | Function | `(pytree)` |
+| `nnx.pytreelib.config` | Object | `` |
+| `nnx.pytreelib.data` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `nnx.pytreelib.dataclass` | Function | `(cls, init: bool, eq: bool, order: bool, unsafe_hash: bool, match_args: bool, kw_only: bool, slots: bool, weakref_slot: bool) -> tp.Any` |
+| `nnx.pytreelib.errors` | Object | `` |
+| `nnx.pytreelib.graphlib` | Object | `` |
+| `nnx.pytreelib.has_data` | Function | `(value: tp.Any) -> list[tp.Any]` |
+| `nnx.pytreelib.is_data` | Function | `(value: tp.Any) -> bool` |
+| `nnx.pytreelib.nnx` | Object | `` |
+| `nnx.pytreelib.register_data_type` | Function | `(type_: T) -> T` |
+| `nnx.pytreelib.reprlib` | Object | `` |
+| `nnx.pytreelib.static` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `nnx.pytreelib.tracers` | Object | `` |
+| `nnx.pytreelib.variablelib` | Object | `` |
+| `nnx.pytreelib.visualization` | Object | `` |
+| `nnx.recursive_map` | Function | `(f: tp.Callable[[PathParts, tp.Any], tp.Any], node: tp.Any, graph: bool \| None)` |
+| `nnx.register_data_type` | Function | `(type_: T) -> T` |
+| `nnx.register_variable_name` | Function | `(name: str, typ: type[Variable[A]] \| Missing, overwrite) -> type[Variable[A]] \| tp.Callable[[type[Variable[A]]], type[Variable[A]]]` |
+| `nnx.relu` | Object | `` |
+| `nnx.relu6` | Object | `` |
+| `nnx.remat` | Function | `(f: F \| Missing, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: tp.Callable[..., bool] \| None, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.replace_by_pure_dict` | Function | `(state: State, pure_dict: dict[str, tp.Any], replace_fn: SetValueFn \| None)` |
+| `nnx.reprlib.A` | Object | `` |
+| `nnx.reprlib.Attr` | Class | `(key: str, value: tp.Union[str, tp.Any], start: str, end: str, use_raw_value: bool, use_raw_key: bool)` |
+| `nnx.reprlib.B` | Object | `` |
+| `nnx.reprlib.COLOR` | Object | `` |
+| `nnx.reprlib.Color` | Class | `(...)` |
+| `nnx.reprlib.MappingReprMixin` | Class | `(...)` |
+| `nnx.reprlib.NO_COLOR` | Object | `` |
+| `nnx.reprlib.Object` | Class | `(type: tp.Union[str, type], start: str, end: str, kv_sep: str, indent: str, empty_repr: str, comment: str, same_line: bool)` |
+| `nnx.reprlib.PrettyMapping` | Class | `(mapping: tp.Mapping)` |
+| `nnx.reprlib.PrettySequence` | Class | `(sequence: tp.Sequence)` |
+| `nnx.reprlib.REPR_CONTEXT` | Object | `` |
+| `nnx.reprlib.ReprContext` | Class | `(current_color: Color, depth: int)` |
+| `nnx.reprlib.Representable` | Class | `(...)` |
+| `nnx.reprlib.SequenceReprMixin` | Class | `()` |
+| `nnx.reprlib.colorized` | Function | `(x)` |
+| `nnx.reprlib.flax_config` | Object | `` |
+| `nnx.reprlib.get_repr` | Function | `(obj: Representable) -> str` |
+| `nnx.reprlib.supports_color` | Function | `() -> bool` |
+| `nnx.reseed` | Function | `(node, graph: bool \| None, policy: tp.Literal['scalars_only', 'match_shape'] \| tp.Callable[[tuple, jax.Array, tuple[int, ...]], jax.Array], stream_keys: RngValue)` |
+| `nnx.restore_int_paths` | Function | `(pure_dict: dict[str, tp.Any])` |
+| `nnx.restore_rngs` | Function | `(backups: tp.Iterable[StreamBackup])` |
+| `nnx.rnglib.A` | Object | `` |
+| `nnx.rnglib.AxesValue` | Object | `` |
+| `nnx.rnglib.Counts` | Object | `` |
+| `nnx.rnglib.F` | Object | `` |
+| `nnx.rnglib.Fargs` | Object | `` |
+| `nnx.rnglib.Key` | Class | `(...)` |
+| `nnx.rnglib.KeylessInitializer` | Class | `(...)` |
+| `nnx.rnglib.MISSING` | Object | `` |
+| `nnx.rnglib.Missing` | Class | `(...)` |
+| `nnx.rnglib.NotKey` | Object | `` |
+| `nnx.rnglib.OutShardingType` | Object | `` |
+| `nnx.rnglib.Pytree` | Class | `(...)` |
+| `nnx.rnglib.RngCount` | Class | `(...)` |
+| `nnx.rnglib.RngKey` | Class | `(...)` |
+| `nnx.rnglib.RngState` | Class | `(...)` |
+| `nnx.rnglib.RngStream` | Class | `(key: jax.Array \| int, tag: str)` |
+| `nnx.rnglib.RngValue` | Object | `` |
+| `nnx.rnglib.Rngs` | Class | `(default: RngValue \| RngStream \| tp.Mapping[str, RngValue \| RngStream] \| None, rngs: RngValue \| RngStream)` |
+| `nnx.rnglib.SplitBackups` | Class | `(...)` |
+| `nnx.rnglib.SplitPattern` | Object | `` |
+| `nnx.rnglib.StreamBackup` | Object | `` |
+| `nnx.rnglib.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.rnglib.backup_keys` | Function | `(node: tp.Any, graph: bool \| None)` |
+| `nnx.rnglib.filterlib` | Object | `` |
+| `nnx.rnglib.fork_rngs` | Function | `(node: tp.Any, split: tp.Mapping[filterlib.Filter, int \| tuple[int, ...] \| None] \| int \| None, graph: bool \| None) -> SplitBackups \| tp.Callable[[F], F]` |
+| `nnx.rnglib.graphlib` | Object | `` |
+| `nnx.rnglib.initializers` | Object | `` |
+| `nnx.rnglib.reseed` | Function | `(node, graph: bool \| None, policy: tp.Literal['scalars_only', 'match_shape'] \| tp.Callable[[tuple, jax.Array, tuple[int, ...]], jax.Array], stream_keys: RngValue)` |
+| `nnx.rnglib.restore_rngs` | Function | `(backups: tp.Iterable[StreamBackup])` |
+| `nnx.rnglib.split_rngs` | Function | `(node: tp.Any, splits: int \| tuple[int, ...], only: filterlib.Filter, squeeze: bool, graph: bool \| None) -> SplitBackups \| tp.Any \| tp.Callable[[F], F]` |
+| `nnx.rnglib.struct` | Object | `` |
+| `nnx.rnglib.typing` | Object | `` |
+| `nnx.scan` | Function | `(f: F \| type[Missing], length: int \| None, reverse: bool, unroll: int \| bool, _split_transpose: bool, in_axes: int \| None \| type[Carry] \| tuple[tp.Any, ...], out_axes: tp.Any, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.selu` | Object | `` |
+| `nnx.set_graph_mode` | Class | `(...)` |
+| `nnx.set_graph_updates` | Class | `(...)` |
+| `nnx.set_metadata` | Function | `(node: tp.Any, only: filterlib.Filter, metadata: tp.Any) -> None` |
+| `nnx.shard_map` | Function | `(f: F \| type[Missing], mesh: Mesh \| AbstractMesh, in_specs: Specs, out_specs: Specs, axis_names: tp.AbstractSet[AxisName], check_vma: bool, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.sigmoid` | Object | `` |
+| `nnx.silu` | Object | `` |
+| `nnx.soft_sign` | Object | `` |
+| `nnx.softmax` | Object | `` |
+| `nnx.softplus` | Object | `` |
+| `nnx.split` | Function | `(node: A, filters: filterlib.Filter, graph: bool \| None) -> tuple[GraphDef[A], GraphState, tpe.Unpack[tuple[GraphState, ...]]]` |
+| `nnx.split_context` | Function | `(ctxtag: tp.Hashable \| None)` |
+| `nnx.split_rngs` | Function | `(node: tp.Any, splits: int \| tuple[int, ...], only: filterlib.Filter, squeeze: bool, graph: bool \| None) -> SplitBackups \| tp.Any \| tp.Callable[[F], F]` |
+| `nnx.split_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `nnx.spmd.A` | Object | `` |
+| `nnx.spmd.F` | Object | `` |
+| `nnx.spmd.PARTITION_NAME` | Object | `` |
+| `nnx.spmd.Sharding` | Object | `` |
+| `nnx.spmd.abstract_with_sharding` | Function | `(tree: A, graph: bool \| None) -> A` |
+| `nnx.spmd.add_axis` | Function | `(tree: A, index: int, transform_metadata: tp.Mapping) -> A` |
+| `nnx.spmd.core_spmd` | Object | `` |
+| `nnx.spmd.eval_shape` | Function | `(f: tp.Callable[..., A], args: tp.Any, graph: bool \| None, graph_updates: bool \| None, kwargs: tp.Any) -> A` |
+| `nnx.spmd.get_abstract_model` | Function | `(init_fn, mesh, graph: bool \| None)` |
+| `nnx.spmd.get_named_sharding` | Function | `(tree: A, mesh: jax.sharding.Mesh) -> A` |
+| `nnx.spmd.get_partition_spec` | Function | `(tree: A) -> A` |
+| `nnx.spmd.get_var_pspec` | Function | `(v: variablelib.Variable) -> PartitionSpec \| None` |
+| `nnx.spmd.graphlib` | Object | `` |
+| `nnx.spmd.remove_axis` | Function | `(tree: A, index: int, transform_metadata: tp.Mapping[tp.Any, tp.Any]) -> A` |
+| `nnx.spmd.variablelib` | Object | `` |
+| `nnx.spmd.with_partitioning` | Function | `(initializer: F, sharding: Sharding, mesh: tp.Optional[jax.sharding.Mesh], metadata: tp.Any) -> F` |
+| `nnx.standardize` | Object | `` |
+| `nnx.state` | Function | `(node, filters: filterlib.Filter, graph: bool \| None) -> tp.Union[GraphState, tuple[GraphState, ...]]` |
+| `nnx.statelib.A` | Object | `` |
+| `nnx.statelib.ExtractValueFn` | Object | `` |
+| `nnx.statelib.FlatState` | Class | `(items: tp.Iterable[tuple[PathParts, V]], sort: bool)` |
+| `nnx.statelib.K` | Object | `` |
+| `nnx.statelib.Key` | Class | `(...)` |
+| `nnx.statelib.NestedStateRepr` | Class | `(state: State)` |
+| `nnx.statelib.PathParts` | Object | `` |
+| `nnx.statelib.S` | Object | `` |
+| `nnx.statelib.SetValueFn` | Object | `` |
+| `nnx.statelib.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.statelib.V` | Object | `` |
+| `nnx.statelib.create_path_filters` | Function | `(state: State)` |
+| `nnx.statelib.diff` | Function | `(state: State, other: State) -> State` |
+| `nnx.statelib.filter_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `nnx.statelib.filterlib` | Object | `` |
+| `nnx.statelib.from_flat_state` | Function | `(flat_state: tp.Mapping[PathParts, V] \| tp.Iterable[tuple[PathParts, V]], cls) -> State` |
+| `nnx.statelib.map_state` | Function | `(f: tp.Callable[[tuple, tp.Any], tp.Any], state: State) -> State` |
+| `nnx.statelib.merge_state` | Function | `(state: tp.Mapping, states: tp.Mapping, cls) -> State` |
+| `nnx.statelib.replace_by_pure_dict` | Function | `(state: State, pure_dict: dict[str, tp.Any], replace_fn: SetValueFn \| None)` |
+| `nnx.statelib.reprlib` | Object | `` |
+| `nnx.statelib.restore_int_paths` | Function | `(pure_dict: dict[str, tp.Any])` |
+| `nnx.statelib.split_state` | Function | `(state: State, first: filterlib.Filter, filters: filterlib.Filter) -> tp.Union[State, tuple[State, ...]]` |
+| `nnx.statelib.to_flat_state` | Function | `(state: State) -> FlatState` |
+| `nnx.statelib.to_pure_dict` | Function | `(state: State, extract_fn: ExtractValueFn \| None) -> dict[str, tp.Any]` |
+| `nnx.statelib.traversals` | Object | `` |
+| `nnx.statelib.variablelib` | Object | `` |
+| `nnx.static` | Function | `(value: tp.Any, kwargs) -> tp.Any` |
+| `nnx.summary.ArrayRepr` | Class | `(shape: tuple[int, ...], dtype: tp.Any)` |
+| `nnx.summary.CallInfo` | Class | `(call_order: int, object_id: int, type: type, path: statelib.PathParts, inputs_repr: str, outputs: tp.Any, flops: int \| None, vjp_flops: int \| None)` |
+| `nnx.summary.NodeStats` | Object | `` |
+| `nnx.summary.NoneDumper` | Class | `(...)` |
+| `nnx.summary.ObjectInfo` | Class | `(...)` |
+| `nnx.summary.SimpleObjectRepr` | Class | `(obj: tp.Any)` |
+| `nnx.summary.SizeBytes` | Class | `(...)` |
+| `nnx.summary.filter_rng_streams` | Function | `(row: CallInfo)` |
+| `nnx.summary.graphlib` | Object | `` |
+| `nnx.summary.in_ipython` | Object | `` |
+| `nnx.summary.nnx` | Object | `` |
+| `nnx.summary.statelib` | Object | `` |
+| `nnx.summary.tabulate` | Function | `(obj, input_args, depth: int \| None, method: str, row_filter: tp.Callable[[CallInfo], bool], table_kwargs: tp.Mapping[str, tp.Any], column_kwargs: tp.Mapping[str, tp.Any], console_kwargs: tp.Mapping[str, tp.Any], compute_flops: bool, compute_vjp_flops: bool, input_kwargs) -> str` |
+| `nnx.summary.typing` | Object | `` |
+| `nnx.summary.variablelib` | Object | `` |
+| `nnx.swish` | Object | `` |
+| `nnx.switch` | Function | `(index, branches: tp.Sequence[tp.Callable[..., A]], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `nnx.tabulate` | Function | `(obj, input_args, depth: int \| None, method: str, row_filter: tp.Callable[[CallInfo], bool], table_kwargs: tp.Mapping[str, tp.Any], column_kwargs: tp.Mapping[str, tp.Any], console_kwargs: tp.Mapping[str, tp.Any], compute_flops: bool, compute_vjp_flops: bool, input_kwargs) -> str` |
+| `nnx.tanh` | Object | `` |
+| `nnx.to_flat_state` | Function | `(state: State) -> FlatState` |
+| `nnx.to_pure_dict` | Function | `(state: State, extract_fn: ExtractValueFn \| None) -> dict[str, tp.Any]` |
+| `nnx.to_tree` | Function | `(tree, prefix: tp.Any, split_fn: tp.Callable[[graphlib.SplitContext, KeyPath, Prefix, Leaf], tp.Any], map_non_graph_nodes: bool, ctxtag: tp.Hashable \| None, check_aliasing: bool) -> tp.Any` |
+| `nnx.tracers.TraceState` | Class | `()` |
+| `nnx.tracers.current_jax_trace` | Function | `()` |
+| `nnx.tracers.reprlib` | Object | `` |
+| `nnx.training.metrics.Accuracy` | Class | `(threshold: float \| None, args, kwargs)` |
+| `nnx.training.metrics.Average` | Class | `(argname: str)` |
+| `nnx.training.metrics.Metric` | Class | `()` |
+| `nnx.training.metrics.MetricState` | Class | `(...)` |
+| `nnx.training.metrics.MultiMetric` | Class | `(metrics)` |
+| `nnx.training.metrics.Pytree` | Class | `(...)` |
+| `nnx.training.metrics.Statistics` | Class | `(...)` |
+| `nnx.training.metrics.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.training.metrics.Welford` | Class | `(argname: str)` |
+| `nnx.training.metrics.filterlib` | Object | `` |
+| `nnx.training.metrics.graphlib` | Object | `` |
+| `nnx.training.metrics.struct` | Object | `` |
+| `nnx.training.optimizer.F` | Object | `` |
+| `nnx.training.optimizer.M` | Object | `` |
+| `nnx.training.optimizer.MISSING` | Object | `` |
+| `nnx.training.optimizer.ModelAndOptimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `nnx.training.optimizer.OptArray` | Class | `(...)` |
+| `nnx.training.optimizer.OptState` | Class | `(...)` |
+| `nnx.training.optimizer.OptVariable` | Class | `(...)` |
+| `nnx.training.optimizer.Optimizer` | Class | `(model: M, tx: optax.GradientTransformation, wrt: filterlib.Filter)` |
+| `nnx.training.optimizer.Pytree` | Class | `(...)` |
+| `nnx.training.optimizer.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.training.optimizer.filterlib` | Object | `` |
+| `nnx.training.optimizer.nnx` | Object | `` |
+| `nnx.training.optimizer.to_opt_state` | Function | `(tree)` |
+| `nnx.transform_metadata` | Function | `(f: F \| type[Missing], in_axes: tp.Any, out_axes: tp.Any, graph: bool \| None, partition: str) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.autodiff.A` | Object | `` |
+| `nnx.transforms.autodiff.AxisName` | Object | `` |
+| `nnx.transforms.autodiff.BwdFn` | Class | `(bwd: tp.Callable[..., tp.Any], tree_node_args: tuple[tp.Any, ...])` |
+| `nnx.transforms.autodiff.CustomVjp` | Class | `(fun: tp.Callable[..., A], nondiff_argnums: tuple[int \| DiffState, ...])` |
+| `nnx.transforms.autodiff.CustomVjpFnWrapper` | Class | `(f: tp.Callable[..., tp.Any], jax_nondiff_argnums: tuple[int, ...], ctxtag: str, nondiff_states: list[extract.GraphDefState], nodedefs: deque[graphlib.GraphDef])` |
+| `nnx.transforms.autodiff.DiffState` | Class | `(argnum: int, filter: filterlib.Filter)` |
+| `nnx.transforms.autodiff.F` | Object | `` |
+| `nnx.transforms.autodiff.FwdFn` | Class | `(fwd: tp.Callable[..., tp.Any], nondiff_argnums: tuple[int, ...], ctxtag: str, nondiff_states: list[extract.GraphDefState], nodedefs: deque[graphlib.GraphDef])` |
+| `nnx.transforms.autodiff.GradFn` | Class | `(f: tp.Callable[..., tp.Any], has_aux: bool, nondiff_states: deque[State \| None])` |
+| `nnx.transforms.autodiff.MISSING` | Object | `` |
+| `nnx.transforms.autodiff.Missing` | Class | `(...)` |
+| `nnx.transforms.autodiff.SimpleBwdFn` | Class | `(bwd: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.autodiff.SimpleCustomVjp` | Class | `(fun: tp.Callable[..., A], nondiff_argnums: tuple[int, ...], graph: bool)` |
+| `nnx.transforms.autodiff.SimpleCustomVjpFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool, nondiff_argnums: tuple[int, ...])` |
+| `nnx.transforms.autodiff.SimpleFwdFn` | Class | `(fwd: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.autodiff.SimpleGradFn` | Class | `(f: tp.Callable[..., tp.Any], has_aux: bool, graph: bool)` |
+| `nnx.transforms.autodiff.SimpleJvpFn` | Class | `(f: tp.Callable[..., tp.Any], has_aux: bool, graph: bool)` |
+| `nnx.transforms.autodiff.SimpleRematFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.autodiff.SimpleVjpFn` | Class | `(f: tp.Callable[..., tp.Any], has_aux: bool, graph: bool)` |
+| `nnx.transforms.autodiff.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.transforms.autodiff.custom_vjp` | Function | `(fun: tp.Callable[..., A] \| Missing, nondiff_argnums: tuple[int \| DiffState, ...], graph: bool \| None, graph_updates: bool \| None) -> CustomVjp[A] \| SimpleCustomVjp[A] \| tp.Callable[[tp.Callable[..., A]], CustomVjp[A] \| SimpleCustomVjp[A]]` |
+| `nnx.transforms.autodiff.extract` | Object | `` |
+| `nnx.transforms.autodiff.filterlib` | Object | `` |
+| `nnx.transforms.autodiff.general` | Object | `` |
+| `nnx.transforms.autodiff.grad` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.transforms.autodiff.graphlib` | Object | `` |
+| `nnx.transforms.autodiff.jvp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tuple[tp.Any, ...] \| Missing, tangents: tuple[tp.Any, ...] \| Missing, has_aux: bool, graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, ...] \| tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.transforms.autodiff.remat` | Function | `(f: F \| Missing, prevent_cse: bool, static_argnums: int \| tuple[int, ...], policy: tp.Callable[..., bool] \| None, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.autodiff.resolve_kwargs` | Function | `(fun: tp.Callable[..., tp.Any] \| Missing, args: tuple \| Missing, kwargs: dict[str, tp.Any] \| Missing) -> tuple \| tp.Callable[[F], F]` |
+| `nnx.transforms.autodiff.struct` | Object | `` |
+| `nnx.transforms.autodiff.value_and_grad` | Function | `(f: tp.Callable[..., tp.Any] \| type[Missing], argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.transforms.autodiff.variablelib` | Object | `` |
+| `nnx.transforms.autodiff.vjp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tp.Any, has_aux: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, tp.Callable] \| tuple[tp.Any, tp.Callable, tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.transforms.compilation.AxisName` | Object | `` |
+| `nnx.transforms.compilation.Compiled` | Class | `(compiled: jax.stages.Compiled, jit_wrapped: JitWrapped)` |
+| `nnx.transforms.compilation.F` | Object | `` |
+| `nnx.transforms.compilation.JitFn` | Class | `(f: tp.Callable[..., tp.Any], in_shardings: tp.Any, out_shardings: tp.Any, kwarg_shardings: tp.Any, ctxtag: tp.Hashable)` |
+| `nnx.transforms.compilation.JitWrapped` | Class | `(fun: tp.Callable[P, R], in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool)` |
+| `nnx.transforms.compilation.Lowered` | Class | `(lowered: jax.stages.Lowered, jit_wrapped: JitWrapped)` |
+| `nnx.transforms.compilation.MISSING` | Object | `` |
+| `nnx.transforms.compilation.Missing` | Class | `(...)` |
+| `nnx.transforms.compilation.P` | Object | `` |
+| `nnx.transforms.compilation.PartialState` | Class | `(treedef: jax.tree_util.PyTreeDef, leaves: list[tp.Any])` |
+| `nnx.transforms.compilation.PathParts` | Object | `` |
+| `nnx.transforms.compilation.R` | Object | `` |
+| `nnx.transforms.compilation.ShardMapFn` | Class | `(f: tp.Callable[..., tp.Any], in_specs: tp.Any, out_specs: tp.Any, kwarg_specs: tp.Any, ctxtag: tp.Hashable)` |
+| `nnx.transforms.compilation.SimpleCompiled` | Class | `(compiled: jax.stages.Compiled, jit_wrapped: SimpleJitWrapped)` |
+| `nnx.transforms.compilation.SimpleJitFn` | Class | `(f: tp.Callable[..., tp.Any], out_shardings: tp.Any, donate_argnums: frozenset[int], donate_argnames: frozenset[str], graph: bool)` |
+| `nnx.transforms.compilation.SimpleJitWrapped` | Class | `(fun: tp.Callable[P, R], in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, partial_args: tuple[PartialState, ...], graph: bool)` |
+| `nnx.transforms.compilation.SimpleLowered` | Class | `(lowered: jax.stages.Lowered, jit_wrapped: SimpleJitWrapped)` |
+| `nnx.transforms.compilation.SimpleShardMapFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool, out_specs: tp.Any)` |
+| `nnx.transforms.compilation.SimpleTraced` | Class | `(traced: jax.stages.Traced, jit_wrapped: SimpleJitWrapped)` |
+| `nnx.transforms.compilation.Specs` | Object | `` |
+| `nnx.transforms.compilation.Stage` | Class | `(...)` |
+| `nnx.transforms.compilation.StateSharding` | Class | `(filter_sharding: statelib.State \| tp.Mapping[filterlib.Filter, tp.Any] \| tp.Iterable[tuple[filterlib.Filter, tp.Any]])` |
+| `nnx.transforms.compilation.Traced` | Class | `(traced: jax.stages.Traced, jit_wrapped: JitWrapped)` |
+| `nnx.transforms.compilation.extract` | Object | `` |
+| `nnx.transforms.compilation.filterlib` | Object | `` |
+| `nnx.transforms.compilation.graphlib` | Object | `` |
+| `nnx.transforms.compilation.jit` | Function | `(fun: tp.Callable[P, R] \| Missing, in_shardings: tp.Any, out_shardings: tp.Any, static_argnums: int \| tp.Sequence[int] \| None, static_argnames: str \| tp.Iterable[str] \| None, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> JitWrapped[P, R] \| tp.Callable[[tp.Callable[P, R]], JitWrapped[P, R]]` |
+| `nnx.transforms.compilation.jit_partial` | Function | `(fun: tp.Callable[..., R], partial_args: tp.Any, in_shardings: tp.Any, out_shardings: tp.Any, donate_argnums: int \| tp.Sequence[int] \| None, donate_argnames: str \| tp.Iterable[str] \| None, keep_unused: bool, device: tp.Optional[jax.Device], backend: tp.Optional[str], inline: bool, graph: bool \| None, graph_updates: bool \| None) -> SimpleJitWrapped[..., R]` |
+| `nnx.transforms.compilation.shard_map` | Function | `(f: F \| type[Missing], mesh: Mesh \| AbstractMesh, in_specs: Specs, out_specs: Specs, axis_names: tp.AbstractSet[AxisName], check_vma: bool, graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.compilation.statelib` | Object | `` |
+| `nnx.transforms.compilation.variablelib` | Object | `` |
+| `nnx.transforms.general.A` | Object | `` |
+| `nnx.transforms.general.F` | Object | `` |
+| `nnx.transforms.general.MISSING` | Object | `` |
+| `nnx.transforms.general.Missing` | Class | `(...)` |
+| `nnx.transforms.general.extract` | Object | `` |
+| `nnx.transforms.general.graphlib` | Object | `` |
+| `nnx.transforms.general.merge_inputs` | Function | `(f: F \| Missing, ctxtag: str) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.general.split_inputs` | Function | `(f: F \| Missing, ctxtag: str) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.A` | Object | `` |
+| `nnx.transforms.iteration.AxisFn` | Object | `` |
+| `nnx.transforms.iteration.AxisName` | Object | `` |
+| `nnx.transforms.iteration.B` | Object | `` |
+| `nnx.transforms.iteration.Broadcasted` | Class | `(...)` |
+| `nnx.transforms.iteration.C` | Object | `` |
+| `nnx.transforms.iteration.Carry` | Class | `(...)` |
+| `nnx.transforms.iteration.F` | Object | `` |
+| `nnx.transforms.iteration.ForiLoopBodyFn` | Class | `(f: tp.Callable[..., tp.Any])` |
+| `nnx.transforms.iteration.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `nnx.transforms.iteration.G` | Object | `` |
+| `nnx.transforms.iteration.Index` | Object | `` |
+| `nnx.transforms.iteration.Leaf` | Object | `` |
+| `nnx.transforms.iteration.Leaves` | Object | `` |
+| `nnx.transforms.iteration.M` | Object | `` |
+| `nnx.transforms.iteration.MA` | Object | `` |
+| `nnx.transforms.iteration.Missing` | Class | `(...)` |
+| `nnx.transforms.iteration.Module` | Class | `(...)` |
+| `nnx.transforms.iteration.N` | Object | `` |
+| `nnx.transforms.iteration.PmapFn` | Class | `(f: tp.Callable[..., tp.Any], transform_metadata: tp.Mapping[str, tp.Any], in_axes: tp.Any, out_axes: tp.Any)` |
+| `nnx.transforms.iteration.PytreeDeque` | Class | `(...)` |
+| `nnx.transforms.iteration.ScanFn` | Class | `(f: tp.Callable[..., tp.Any], input_carry_argnum: int \| None \| tp.Literal['all'], output_carry_argnum: int \| None \| tp.Literal['all'], in_axes: tp.Any, out_axes: tp.Any, transform_metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.transforms.iteration.SimpleForiLoopBodyFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.iteration.SimplePmapFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool, out_axes: tp.Any)` |
+| `nnx.transforms.iteration.SimpleScanFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool, in_axes: tp.Any, out_axes: tp.Any, out_is_tuple: bool, carry_arg_index: int \| None, carry_out_index: int \| None)` |
+| `nnx.transforms.iteration.SimpleVmapFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool, out_axes: tp.Any)` |
+| `nnx.transforms.iteration.SimpleWhileLoopBodyFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.iteration.SimpleWhileLoopCondFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.iteration.State` | Class | `(mapping: tp.Union[tp.Mapping[K, tp.Mapping \| V], tp.Iterator[tuple[K, tp.Mapping \| V]]], _copy: bool)` |
+| `nnx.transforms.iteration.StateAxes` | Class | `(filter_axes: statelib.State \| tp.Mapping[filterlib.Filter, Index \| type[Carry] \| None] \| tp.Iterable[tuple[filterlib.Filter, Index \| type[Carry] \| None]])` |
+| `nnx.transforms.iteration.StrInt` | Object | `` |
+| `nnx.transforms.iteration.T` | Object | `` |
+| `nnx.transforms.iteration.VmapFn` | Class | `(f: tp.Callable[..., tp.Any], transform_metadata: tp.Mapping[str, tp.Any], in_axes: tp.Any, out_axes: tp.Any)` |
+| `nnx.transforms.iteration.WhileLoopBodyFn` | Class | `(f: tp.Callable[..., tp.Any])` |
+| `nnx.transforms.iteration.WhileLoopCondFn` | Class | `(f: tp.Callable[..., tp.Any])` |
+| `nnx.transforms.iteration.extract` | Object | `` |
+| `nnx.transforms.iteration.filterlib` | Object | `` |
+| `nnx.transforms.iteration.fori_loop` | Function | `(lower: int, upper: int, body_fun: tp.Callable[[int, T], T], init_val: T, unroll: int \| bool \| None, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `nnx.transforms.iteration.graphlib` | Object | `` |
+| `nnx.transforms.iteration.pmap` | Function | `(f: F \| type[Missing], axis_name: AxisName \| None, in_axes: tp.Any, out_axes: tp.Any, static_broadcasted_argnums: int \| tp.Iterable[int], devices: tp.Sequence[jax.Device] \| None, backend: str \| None, axis_size: int \| None, donate_argnums: int \| tp.Iterable[int], transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.pure_jax_fancy_scan` | Function | `(f, args, length: int \| None, reverse: bool, unroll: int \| bool, _split_transpose: bool, in_axes: tp.Any, out_axes: tp.Any)` |
+| `nnx.transforms.iteration.resolve_kwargs` | Function | `(fun: tp.Callable[..., tp.Any] \| Missing, args: tuple \| Missing, kwargs: dict[str, tp.Any] \| Missing) -> tuple \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.scan` | Function | `(f: F \| type[Missing], length: int \| None, reverse: bool, unroll: int \| bool, _split_transpose: bool, in_axes: int \| None \| type[Carry] \| tuple[tp.Any, ...], out_axes: tp.Any, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.spmd` | Object | `` |
+| `nnx.transforms.iteration.statelib` | Object | `` |
+| `nnx.transforms.iteration.struct` | Object | `` |
+| `nnx.transforms.iteration.transform_metadata` | Function | `(f: F \| type[Missing], in_axes: tp.Any, out_axes: tp.Any, graph: bool \| None, partition: str) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.typing` | Object | `` |
+| `nnx.transforms.iteration.variablelib` | Object | `` |
+| `nnx.transforms.iteration.vmap` | Function | `(f: F \| type[Missing], in_axes: int \| None \| tp.Sequence[tp.Any], out_axes: tp.Any, axis_name: AxisName \| None, axis_size: int \| None, spmd_axis_name: AxisName \| tuple[AxisName, ...] \| None, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.transforms.iteration.while_loop` | Function | `(cond_fun: tp.Callable[[T], tp.Any], body_fun: tp.Callable[[T], T], init_val: T, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `nnx.transforms.transforms.A` | Object | `` |
+| `nnx.transforms.transforms.AxisName` | Object | `` |
+| `nnx.transforms.transforms.B` | Object | `` |
+| `nnx.transforms.transforms.C` | Object | `` |
+| `nnx.transforms.transforms.CallableProxy` | Class | `(callable: _AccessorCall, accessor: DelayedAccessor \| None)` |
+| `nnx.transforms.transforms.CheckifyFn` | Class | `(f: tp.Callable[..., tp.Any])` |
+| `nnx.transforms.transforms.DelayedAccessor` | Class | `(actions: tuple[GetItem \| GetAttr, ...])` |
+| `nnx.transforms.transforms.F` | Object | `` |
+| `nnx.transforms.transforms.G` | Object | `` |
+| `nnx.transforms.transforms.Index` | Object | `` |
+| `nnx.transforms.transforms.Leaf` | Object | `` |
+| `nnx.transforms.transforms.Leaves` | Object | `` |
+| `nnx.transforms.transforms.LiftedModule` | Class | `(...)` |
+| `nnx.transforms.transforms.M` | Object | `` |
+| `nnx.transforms.transforms.MA` | Object | `` |
+| `nnx.transforms.transforms.MISSING` | Object | `` |
+| `nnx.transforms.transforms.Missing` | Class | `(...)` |
+| `nnx.transforms.transforms.Module` | Class | `(...)` |
+| `nnx.transforms.transforms.N` | Object | `` |
+| `nnx.transforms.transforms.SimpleCheckifyFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.transforms.SimpleCondFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.transforms.SimpleEvalShapeFn` | Class | `(f: tp.Callable[..., tp.Any], graph: bool)` |
+| `nnx.transforms.transforms.StrInt` | Object | `` |
+| `nnx.transforms.transforms.ValueMetadata` | Class | `(var_type: type[variablelib.Variable], value: tp.Any, metadata: dict[str, tp.Any])` |
+| `nnx.transforms.transforms.checkify` | Function | `(f: tp.Callable[..., checkify_lib.Out], errors: frozenset[type[checkify_lib.JaxException]], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tuple[checkify_lib.Error, checkify_lib.Out]]` |
+| `nnx.transforms.transforms.cond` | Function | `(pred, true_fun: tp.Callable[..., A], false_fun: tp.Callable[..., A], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `nnx.transforms.transforms.eval_shape` | Function | `(f: tp.Callable[..., A], args: tp.Any, graph: bool \| None, graph_updates: bool \| None, kwargs: tp.Any) -> A` |
+| `nnx.transforms.transforms.extract` | Object | `` |
+| `nnx.transforms.transforms.general` | Object | `` |
+| `nnx.transforms.transforms.graphlib` | Object | `` |
+| `nnx.transforms.transforms.resolve_kwargs` | Function | `(fun: tp.Callable[..., tp.Any] \| Missing, args: tuple \| Missing, kwargs: dict[str, tp.Any] \| Missing) -> tuple \| tp.Callable[[F], F]` |
+| `nnx.transforms.transforms.switch` | Function | `(index, branches: tp.Sequence[tp.Callable[..., A]], operands, graph: bool \| None, graph_updates: bool \| None) -> A` |
+| `nnx.transforms.transforms.variablelib` | Object | `` |
+| `nnx.traversals.IsLeafCallable` | Object | `` |
+| `nnx.traversals.empty_node` | Object | `` |
+| `nnx.traversals.flatten_mapping` | Function | `(xs: Mapping[Any, Any], keep_empty_nodes: bool, is_leaf: None \| IsLeafCallable, sep: None \| str) -> dict[Any, Any]` |
+| `nnx.traversals.flatten_to_sequence` | Function | `(xs: Mapping[Any, Any], is_leaf: IsLeafCallable \| None) -> list[tuple[Any, Any]]` |
+| `nnx.traversals.struct` | Object | `` |
+| `nnx.traversals.unflatten_mapping` | Function | `(xs: Any, sep: str \| None) -> dict[Any, Any]` |
+| `nnx.unflatten` | Function | `(graphdef: GraphDef[Node], state: State[Key, tp.Any] \| FlatState[tp.Any] \| list[tp.Any], index_ref: IndexMap \| None, outer_index_outer_ref: IndexMap \| None, copy_variables: bool) -> Node` |
+| `nnx.update` | Function | `(node, state: tp.Any, states: tp.Any) -> None` |
+| `nnx.update_context` | Function | `(tag: tp.Hashable)` |
+| `nnx.use_eager_sharding` | Class | `(...)` |
+| `nnx.using_eager_sharding` | Function | `() -> bool` |
+| `nnx.value_and_grad` | Function | `(f: tp.Callable[..., tp.Any] \| type[Missing], argnums: int \| DiffState \| tp.Sequence[int \| DiffState], has_aux: bool, holomorphic: bool, allow_int: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tp.Callable[..., tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.var_defaults` | Function | `(hijax: bool \| None, ref: bool \| None) -> VarDefaultsContext \| VarDefaults` |
+| `nnx.variable_name_from_type` | Function | `(typ: tp.Type[Variable[tp.Any]], allow_register: bool) -> str` |
+| `nnx.variable_type_from_name` | Function | `(name: str, base: type[Variable[tp.Any]], allow_register: bool) -> tp.Type[Variable[tp.Any]]` |
+| `nnx.variablelib.A` | Object | `` |
+| `nnx.variablelib.AbstractVariable` | Class | `(var_type: type[Variable[A]], treedef: PyTreeDef \| None, leaves: tuple[hjx.AbstractValue, ...] \| None, has_qdd: bool, ref: bool)` |
+| `nnx.variablelib.AddAxisHook` | Object | `` |
+| `nnx.variablelib.AxisIndex` | Object | `` |
+| `nnx.variablelib.AxisName` | Object | `` |
+| `nnx.variablelib.B` | Object | `` |
+| `nnx.variablelib.BaseConfigContext` | Class | `(value)` |
+| `nnx.variablelib.BatchStat` | Class | `(...)` |
+| `nnx.variablelib.C` | Object | `` |
+| `nnx.variablelib.Cache` | Class | `(...)` |
+| `nnx.variablelib.CreateValueHook` | Object | `` |
+| `nnx.variablelib.F` | Object | `` |
+| `nnx.variablelib.GetValueHook` | Object | `` |
+| `nnx.variablelib.GetVariable` | Class | `(...)` |
+| `nnx.variablelib.HijaxVariable` | Class | `(...)` |
+| `nnx.variablelib.HijaxVariableMeta` | Class | `(...)` |
+| `nnx.variablelib.Intermediate` | Class | `(...)` |
+| `nnx.variablelib.Leaf` | Object | `` |
+| `nnx.variablelib.MISSING` | Object | `` |
+| `nnx.variablelib.Missing` | Class | `(...)` |
+| `nnx.variablelib.NewVariable` | Class | `(...)` |
+| `nnx.variablelib.P` | Object | `` |
+| `nnx.variablelib.Param` | Class | `(...)` |
+| `nnx.variablelib.Perturbation` | Class | `(...)` |
+| `nnx.variablelib.PyTreeDef` | Object | `` |
+| `nnx.variablelib.RemoveAxisHook` | Object | `` |
+| `nnx.variablelib.SetValueHook` | Object | `` |
+| `nnx.variablelib.SetVariable` | Class | `(...)` |
+| `nnx.variablelib.SizeBytes` | Class | `(size: int, bytes: int)` |
+| `nnx.variablelib.V` | Object | `` |
+| `nnx.variablelib.VARIABLE_CONTEXT` | Object | `` |
+| `nnx.variablelib.VarDefaults` | Class | `(hijax: bool, ref: bool)` |
+| `nnx.variablelib.VarDefaultsContext` | Class | `(hijax_prev: bool \| None, hijax_new: bool \| None, ref_prev: bool \| None, ref_new: bool \| None)` |
+| `nnx.variablelib.Variable` | Class | `(value: A \| VariableMetadata[A], hijax: bool \| None, ref: bool \| None, eager_sharding: bool \| None, metadata: tp.Any)` |
+| `nnx.variablelib.VariableContext` | Class | `(variable_hijax_stack: list[bool], variable_ref_stack: list[bool], eager_shard_stack: list[bool])` |
+| `nnx.variablelib.VariableEffect` | Class | `(...)` |
+| `nnx.variablelib.VariableMeta` | Class | `(...)` |
+| `nnx.variablelib.VariableMetadata` | Class | `(raw_value: A, set_value_hooks: tuple[SetValueHook[A], ...], get_value_hooks: tuple[GetValueHook[A], ...], create_value_hooks: tuple[CreateValueHook[A], ...], add_axis_hooks: tuple[AddAxisHook[Variable[A]], ...], remove_axis_hooks: tuple[RemoveAxisHook[Variable[A]], ...], metadata: tp.Mapping[str, tp.Any])` |
+| `nnx.variablelib.VariableQDD` | Class | `(leaf_avals: tuple[hjx.AbstractValue, ...], treedef: PyTreeDef, var_type: type[Variable[Any]])` |
+| `nnx.variablelib.VariableState` | Object | `` |
+| `nnx.variablelib.VariableTypeCache` | Object | `` |
+| `nnx.variablelib.config` | Object | `` |
+| `nnx.variablelib.core_spmd` | Object | `` |
+| `nnx.variablelib.errors` | Object | `` |
+| `nnx.variablelib.get_variable_p` | Object | `` |
+| `nnx.variablelib.is_array_ref` | Function | `(x) -> tp.TypeGuard[Ref]` |
+| `nnx.variablelib.new_variable_p` | Object | `` |
+| `nnx.variablelib.register_variable_name` | Function | `(name: str, typ: type[Variable[A]] \| Missing, overwrite) -> type[Variable[A]] \| tp.Callable[[type[Variable[A]]], type[Variable[A]]]` |
+| `nnx.variablelib.reprlib` | Object | `` |
+| `nnx.variablelib.set_variable_p` | Object | `` |
+| `nnx.variablelib.tracers` | Object | `` |
+| `nnx.variablelib.use_eager_sharding` | Class | `(...)` |
+| `nnx.variablelib.using_eager_sharding` | Function | `() -> bool` |
+| `nnx.variablelib.var_defaults` | Function | `(hijax: bool \| None, ref: bool \| None) -> VarDefaultsContext \| VarDefaults` |
+| `nnx.variablelib.variable_effect` | Object | `` |
+| `nnx.variablelib.variable_name_from_type` | Function | `(typ: tp.Type[Variable[tp.Any]], allow_register: bool) -> str` |
+| `nnx.variablelib.variable_type_from_name` | Function | `(name: str, base: type[Variable[tp.Any]], allow_register: bool) -> tp.Type[Variable[tp.Any]]` |
+| `nnx.variablelib.visualization` | Object | `` |
+| `nnx.variablelib.with_metadata` | Function | `(initializer: F, set_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], get_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], create_value_hooks: tp.Union[CreateValueHook[A], tp.Sequence[CreateValueHook[A]]], add_axis_hooks: tp.Union[AddAxisHook[Variable[A]], tp.Sequence[AddAxisHook[Variable[A]]]], remove_axis_hooks: tp.Union[RemoveAxisHook[Variable[A]], tp.Sequence[RemoveAxisHook[Variable[A]]]], metadata: tp.Any) -> F` |
+| `nnx.variables` | Object | `` |
+| `nnx.vars_as` | Function | `(node: A, hijax: bool \| None, ref: bool \| None, mutable: bool \| None, only: filterlib.Filter, allow_duplicates: bool) -> A` |
+| `nnx.view` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, kwargs) -> A` |
+| `nnx.view_info` | Function | `(node: Module, only: filterlib.Filter, graph: bool \| None) -> str` |
+| `nnx.visualization.display` | Function | `(args)` |
+| `nnx.visualization.in_ipython` | Object | `` |
+| `nnx.visualization.render_object_constructor` | Function | `(object_type: type[tp.Any], attributes: tp.Mapping[str, tp.Any], path: str \| None, subtree_renderer: renderers.TreescopeSubtreeRenderer, roundtrippable: bool, color: str \| None, first_line_annotation: rendering_parts.RenderableTreePart \| None) -> rendering_parts.Rendering` |
+| `nnx.vjp` | Function | `(f: tp.Callable[..., tp.Any] \| Missing, primals: tp.Any, has_aux: bool, reduce_axes: tp.Sequence[AxisName], graph: bool \| None, graph_updates: bool \| None) -> tuple[tp.Any, tp.Callable] \| tuple[tp.Any, tp.Callable, tp.Any] \| tp.Callable[[tp.Callable[..., tp.Any]], tp.Callable[..., tp.Any]]` |
+| `nnx.vmap` | Function | `(f: F \| type[Missing], in_axes: int \| None \| tp.Sequence[tp.Any], out_axes: tp.Any, axis_name: AxisName \| None, axis_size: int \| None, spmd_axis_name: AxisName \| tuple[AxisName, ...] \| None, transform_metadata: tp.Mapping[str, tp.Any], graph: bool \| None, graph_updates: bool \| None) -> F \| tp.Callable[[F], F]` |
+| `nnx.while_loop` | Function | `(cond_fun: tp.Callable[[T], tp.Any], body_fun: tp.Callable[[T], T], init_val: T, graph: bool \| None, graph_updates: bool \| None) -> T` |
+| `nnx.with_attributes` | Function | `(node: A, only: filterlib.Filter, raise_if_not_found: bool, graph: bool \| None, attributes: tp.Any) -> A` |
+| `nnx.with_metadata` | Function | `(initializer: F, set_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], get_value_hooks: tp.Union[SetValueHook[A], tp.Sequence[SetValueHook[A]]], create_value_hooks: tp.Union[CreateValueHook[A], tp.Sequence[CreateValueHook[A]]], add_axis_hooks: tp.Union[AddAxisHook[Variable[A]], tp.Sequence[AddAxisHook[Variable[A]]]], remove_axis_hooks: tp.Union[RemoveAxisHook[Variable[A]], tp.Sequence[RemoveAxisHook[Variable[A]]]], metadata: tp.Any) -> F` |
+| `nnx.with_partitioning` | Function | `(initializer: F, sharding: Sharding, mesh: tp.Optional[jax.sharding.Mesh], metadata: tp.Any) -> F` |
+| `nnx.wrappers` | Object | `` |
+| `serialization.MAX_CHUNK_SIZE` | Object | `` |
+| `serialization.current_path` | Function | `()` |
+| `serialization.from_bytes` | Function | `(target, encoded_bytes: bytes)` |
+| `serialization.from_state_dict` | Function | `(target, state: dict[str, Any], name: str)` |
+| `serialization.is_serializable` | Function | `(target)` |
+| `serialization.msgpack_restore` | Function | `(encoded_pytree: bytes)` |
+| `serialization.msgpack_serialize` | Function | `(pytree, in_place: bool) -> bytes` |
+| `serialization.register_serialization_state` | Function | `(ty, ty_to_state_dict, ty_from_state_dict, override)` |
+| `serialization.to_bytes` | Function | `(target) -> bytes` |
+| `serialization.to_state_dict` | Function | `(target) -> dict[str, Any]` |
+| `struct.PyTreeNode` | Class | `(args, kwargs)` |
+| `struct.TNode` | Object | `` |
+| `struct.dataclass` | Function | `(clz: _T \| None, kwargs) -> _T \| Callable[[_T], _T]` |
+| `struct.field` | Function | `(pytree_node, metadata, kwargs)` |
+| `struct.serialization` | Object | `` |
+| `testing.Benchmark` | Class | `(args, kwargs)` |
+| `testing.benchmark.Benchmark` | Class | `(args, kwargs)` |
+| `testing.benchmark.io` | Object | `` |
+| `traceback_util.api_boundary` | Object | `` |
+| `traceback_util.config` | Object | `` |
+| `traceback_util.hide_flax_in_tracebacks` | Function | `()` |
+| `traceback_util.register_exclusion` | Function | `(path)` |
+| `traceback_util.show_flax_in_tracebacks` | Function | `()` |
+| `training.checkpoints.AsyncManager` | Class | `(max_workers: int)` |
+| `training.checkpoints.COMMIT_SUCCESS_FILE` | Object | `` |
+| `training.checkpoints.MODULE_NUM_RE` | Object | `` |
+| `training.checkpoints.MP_ARRAY_PH` | Object | `` |
+| `training.checkpoints.MP_ARRAY_POSTFIX` | Object | `` |
+| `training.checkpoints.MultiprocessArrayType` | Object | `` |
+| `training.checkpoints.ORBAX_CKPT_FILENAME` | Object | `` |
+| `training.checkpoints.ORBAX_MANIFEST_OCDBT` | Object | `` |
+| `training.checkpoints.ORBAX_METADATA_FILENAME` | Object | `` |
+| `training.checkpoints.PyTree` | Object | `` |
+| `training.checkpoints.SCHEME_RE` | Object | `` |
+| `training.checkpoints.SIGNED_FLOAT_RE` | Object | `` |
+| `training.checkpoints.UNSIGNED_FLOAT_RE` | Object | `` |
+| `training.checkpoints.available_steps` | Function | `(ckpt_dir: str \| os.PathLike, prefix: str, step_type: type) -> list[int \| float]` |
+| `training.checkpoints.config` | Object | `` |
+| `training.checkpoints.convert_pre_linen` | Function | `(params: PyTree) -> PyTree` |
+| `training.checkpoints.core` | Object | `` |
+| `training.checkpoints.errors` | Object | `` |
+| `training.checkpoints.io` | Object | `` |
+| `training.checkpoints.latest_checkpoint` | Function | `(ckpt_dir: str \| os.PathLike, prefix: str) -> str \| None` |
+| `training.checkpoints.natural_sort` | Function | `(file_list: Iterable[str], signed: bool) -> list[str]` |
+| `training.checkpoints.orbax_utils` | Object | `` |
+| `training.checkpoints.restore_checkpoint` | Function | `(ckpt_dir: str \| os.PathLike, target: Any \| None, step: int \| float \| None, prefix: str, parallel: bool, gda_manager: GlobalAsyncCheckpointManager \| None, allow_partial_mpa_restoration: bool, orbax_checkpointer: ocp.Checkpointer \| None, orbax_transforms: dict \| None) -> PyTree` |
+| `training.checkpoints.safe_normpath` | Function | `(path: str) -> str` |
+| `training.checkpoints.save_checkpoint` | Function | `(ckpt_dir: str \| os.PathLike, target: PyTree, step: int \| float, prefix: str, keep: int, overwrite: bool, keep_every_n_steps: int \| None, async_manager: AsyncManager \| None, orbax_checkpointer: ocp.Checkpointer \| None) -> str` |
+| `training.checkpoints.save_checkpoint_multiprocess` | Function | `(ckpt_dir: str \| os.PathLike, target: PyTree, step: int \| float, prefix: str, keep: int, overwrite: bool, keep_every_n_steps: int \| None, async_manager: AsyncManager \| None, gda_manager: GlobalAsyncCheckpointManager \| None, orbax_checkpointer: ocp.Checkpointer \| None) -> str` |
+| `training.checkpoints.serialization` | Object | `` |
+| `training.checkpoints.traverse_util` | Object | `` |
+| `training.common_utils.get_metrics` | Function | `(device_metrics)` |
+| `training.common_utils.onehot` | Function | `(labels, num_classes, on_value, off_value)` |
+| `training.common_utils.shard` | Function | `(xs)` |
+| `training.common_utils.shard_prng_key` | Function | `(prng_key)` |
+| `training.common_utils.stack_forest` | Function | `(forest)` |
+| `training.dynamic_scale.Array` | Object | `` |
+| `training.dynamic_scale.DynamicScale` | Class | `(...)` |
+| `training.dynamic_scale.DynamicScaleResult` | Class | `(...)` |
+| `training.dynamic_scale.struct` | Object | `` |
+| `training.early_stopping.EarlyStopping` | Class | `(...)` |
+| `training.early_stopping.struct` | Object | `` |
+| `training.lr_schedule.create_constant_learning_rate_schedule` | Function | `(base_learning_rate, steps_per_epoch, warmup_length)` |
+| `training.lr_schedule.create_cosine_learning_rate_schedule` | Function | `(base_learning_rate, steps_per_epoch, halfcos_epochs, warmup_length)` |
+| `training.lr_schedule.create_stepped_learning_rate_schedule` | Function | `(base_learning_rate, steps_per_epoch, lr_sched_steps, warmup_length)` |
+| `training.orbax_utils.PyTree` | Object | `` |
+| `training.orbax_utils.is_multi_device_array` | Function | `(value: Any) -> bool` |
+| `training.orbax_utils.maybe_construct_transformations` | Function | `(target: Any, transforms: Any \| None) -> Any` |
+| `training.orbax_utils.restore_args_from_target` | Function | `(target: Any, mesh: Mesh \| None) -> Any` |
+| `training.orbax_utils.save_args_from_target` | Function | `(target: Any) -> Any` |
+| `training.prefetch_iterator.PrefetchIterator` | Class | `(data_iter, buffer_size)` |
+| `training.train_state.OVERWRITE_WITH_GRADIENT` | Object | `` |
+| `training.train_state.TrainState` | Class | `(...)` |
+| `training.train_state.core` | Object | `` |
+| `training.train_state.struct` | Object | `` |
+| `traverse_util.ModelParamTraversal` | Class | `(filter_fn)` |
+| `traverse_util.PathParts` | Object | `` |
+| `traverse_util.Traversal` | Class | `(...)` |
+| `traverse_util.TraverseAttr` | Class | `(attr)` |
+| `traverse_util.TraverseCompose` | Class | `(x, y)` |
+| `traverse_util.TraverseEach` | Class | `(...)` |
+| `traverse_util.TraverseFilter` | Class | `(fn)` |
+| `traverse_util.TraverseId` | Class | `(...)` |
+| `traverse_util.TraverseItem` | Class | `(key)` |
+| `traverse_util.TraverseMerge` | Class | `(traversals)` |
+| `traverse_util.TraverseTree` | Class | `(...)` |
+| `traverse_util.VariableDict` | Object | `` |
+| `traverse_util.empty_node` | Object | `` |
+| `traverse_util.flatten_dict` | Function | `(xs, keep_empty_nodes, is_leaf, sep)` |
+| `traverse_util.path_aware_map` | Function | `(f: Callable[[PathParts, Any], Any], nested_dict: VariableDict) -> VariableDict` |
+| `traverse_util.struct` | Object | `` |
+| `traverse_util.t_identity` | Object | `` |
+| `traverse_util.unflatten_dict` | Function | `(xs, sep)` |
+| `typing.A` | Object | `` |
+| `typing.Array` | Object | `` |
+| `typing.ArrayPytree` | Object | `` |
+| `typing.Axes` | Object | `` |
+| `typing.Axis` | Object | `` |
+| `typing.AxisName` | Object | `` |
+| `typing.BaseConfigContext` | Class | `(value)` |
+| `typing.Collection` | Object | `` |
+| `typing.ConvGeneralDilatedT` | Object | `` |
+| `typing.DotGeneralT` | Object | `` |
+| `typing.Dtype` | Object | `` |
+| `typing.EinsumT` | Object | `` |
+| `typing.F` | Object | `` |
+| `typing.FrozenDict` | Class | `(args, __unsafe_skip_copy__, kwargs)` |
+| `typing.FrozenVariableDict` | Object | `` |
+| `typing.HA` | Object | `` |
+| `typing.HB` | Object | `` |
+| `typing.HashableMapping` | Class | `(mapping: Mapping[HA, HB], copy: bool)` |
+| `typing.In` | Class | `(axis: T)` |
+| `typing.InOutAxis` | Object | `` |
+| `typing.InOutScanAxis` | Object | `` |
+| `typing.Initializer` | Object | `` |
+| `typing.K` | Object | `` |
+| `typing.Key` | Class | `(...)` |
+| `typing.LaxPadding` | Object | `` |
+| `typing.Leaf` | Object | `` |
+| `typing.LogicalNames` | Object | `` |
+| `typing.LogicalPartitionSpec` | Object | `` |
+| `typing.LogicalPartitionSpecPytree` | Object | `` |
+| `typing.LogicalRules` | Object | `` |
+| `typing.MISSING` | Object | `` |
+| `typing.Missing` | Class | `(...)` |
+| `typing.MutableCollection` | Object | `` |
+| `typing.MutableVariableDict` | Object | `` |
+| `typing.Out` | Class | `(axis: T)` |
+| `typing.PRNGFoldable` | Object | `` |
+| `typing.PRNGKey` | Object | `` |
+| `typing.PaddingLike` | Object | `` |
+| `typing.PartitionSpecPytree` | Object | `` |
+| `typing.Path` | Object | `` |
+| `typing.PathParts` | Object | `` |
+| `typing.PrecisionLike` | Object | `` |
+| `typing.PromoteDtypeFn` | Class | `(...)` |
+| `typing.PytreeDeque` | Class | `(...)` |
+| `typing.RNGSequences` | Object | `` |
+| `typing.ScanAxis` | Object | `` |
+| `typing.Shape` | Object | `` |
+| `typing.ShapeDtype` | Class | `(...)` |
+| `typing.Sharding` | Object | `` |
+| `typing.SizeBytes` | Class | `(size: int, bytes: int)` |
+| `typing.T` | Object | `` |
+| `typing.TupleArg` | Object | `` |
+| `typing.VariableDict` | Object | `` |
+| `typing.has_shape_dtype` | Function | `(x: Any) -> TypeGuard[ShapeDtype]` |
+| `typing.is_key_like` | Function | `(x: Any) -> TypeGuard[Key]` |

@@ -1,0 +1,261 @@
+# Catboost Support Coverage
+
+Tracking exhaustive coverage of the `catboost` python package API.
+
+
+## Detailed API
+
+| Object Name | Type | Signature |
+|---|---|---|
+| `CatBoost` | Class | `(params)` |
+| `CatBoostClassifier` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, classes_count, class_weights, auto_class_weights, class_names, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_loss, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_unit, sampling_frequency, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, scale_pos_weight, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, callback, eval_fraction, fixed_binary_splits)` |
+| `CatBoostError` | Object | `` |
+| `CatBoostRanker` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)` |
+| `CatBoostRegressor` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)` |
+| `CatboostError` | Object | `` |
+| `EFeaturesSelectionAlgorithm` | Class | `(...)` |
+| `EFeaturesSelectionGrouping` | Class | `(...)` |
+| `EFstrType` | Class | `(...)` |
+| `EShapCalcType` | Class | `(...)` |
+| `FeaturesData` | Object | `` |
+| `MetricVisualizer` | Class | `(train_dirs, subdirs)` |
+| `MetricsPlotter` | Class | `(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])` |
+| `MultiRegressionCustomMetric` | Object | `` |
+| `MultiRegressionCustomObjective` | Object | `` |
+| `MultiTargetCustomMetric` | Object | `` |
+| `MultiTargetCustomObjective` | Object | `` |
+| `Pool` | Class | `(data, label, cat_features, text_features, embedding_features, embedding_features_data, column_description, pairs, graph, delimiter, has_header, ignore_csv_quoting, weight, group_id, group_weight, subgroup_id, pairs_weight, baseline, timestamp, feature_names, feature_tags, thread_count, log_cout, log_cerr, data_can_be_none)` |
+| `XGBPlottingCallback` | Class | `(total_iterations: int)` |
+| `carry.carry` | Function | `(model, features)` |
+| `carry.uplift` | Function | `(model, features)` |
+| `core.ARRAY_TYPES` | Object | `` |
+| `core.BatchMetricCalcer` | Class | `(catboost, metrics, ntree_start, ntree_end, eval_period, thread_count, tmp_dir)` |
+| `core.BuiltinMetric` | Class | `(...)` |
+| `core.CatBoost` | Class | `(params)` |
+| `core.CatBoostClassifier` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, classes_count, class_weights, auto_class_weights, class_names, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_loss, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_unit, sampling_frequency, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, scale_pos_weight, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, callback, eval_fraction, fixed_binary_splits)` |
+| `core.CatBoostError` | Object | `` |
+| `core.CatBoostRanker` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)` |
+| `core.CatBoostRegressor` | Class | `(iterations, learning_rate, depth, l2_leaf_reg, model_size_reg, rsm, loss_function, border_count, feature_border_type, per_float_feature_quantization, input_borders, output_borders, fold_permutation_block, od_pval, od_wait, od_type, nan_mode, counter_calc_method, leaf_estimation_iterations, leaf_estimation_method, thread_count, random_seed, use_best_model, best_model_min_trees, verbose, silent, logging_level, metric_period, ctr_leaf_count_limit, store_all_simple_ctr, max_ctr_complexity, has_time, allow_const_label, target_border, one_hot_max_size, random_strength, random_score_type, name, ignored_features, train_dir, custom_metric, eval_metric, bagging_temperature, save_snapshot, snapshot_file, snapshot_interval, fold_len_multiplier, used_ram_limit, gpu_ram_part, pinned_memory_size, allow_writing_files, final_ctr_computation_mode, approx_on_full_history, boosting_type, simple_ctr, combinations_ctr, per_feature_ctr, ctr_description, ctr_target_border_count, task_type, device_config, devices, bootstrap_type, subsample, mvs_reg, sampling_frequency, sampling_unit, dev_score_calc_obj_block_size, dev_efb_max_buckets, sparse_features_conflict_fraction, max_depth, n_estimators, num_boost_round, num_trees, colsample_bylevel, random_state, reg_lambda, objective, eta, max_bin, gpu_cat_features_storage, data_partition, metadata, early_stopping_rounds, cat_features, grow_policy, min_data_in_leaf, min_child_samples, max_leaves, num_leaves, score_function, leaf_estimation_backtracking, ctr_history_unit, monotone_constraints, feature_weights, penalties_coefficient, first_feature_use_penalties, per_object_feature_penalties, model_shrink_rate, model_shrink_mode, langevin, diffusion_temperature, posterior_sampling, boost_from_average, text_features, tokenizers, dictionaries, feature_calcers, text_processing, embedding_features, eval_fraction, fixed_binary_splits)` |
+| `core.EFeaturesSelectionAlgorithm` | Class | `(...)` |
+| `core.EFeaturesSelectionGrouping` | Class | `(...)` |
+| `core.EFstrType` | Class | `(...)` |
+| `core.EShapCalcType` | Class | `(...)` |
+| `core.FLOAT_TYPES` | Object | `` |
+| `core.FeaturesData` | Object | `` |
+| `core.INTEGER_TYPES` | Object | `` |
+| `core.MultiRegressionCustomMetric` | Object | `` |
+| `core.MultiRegressionCustomObjective` | Object | `` |
+| `core.MultiTargetCustomMetric` | Object | `` |
+| `core.MultiTargetCustomObjective` | Object | `` |
+| `core.OfflineMetricVisualizer` | Class | `(train_dirs)` |
+| `core.PATH_TYPES` | Object | `` |
+| `core.Pool` | Class | `(data, label, cat_features, text_features, embedding_features, embedding_features_data, column_description, pairs, graph, delimiter, has_header, ignore_csv_quoting, weight, group_id, group_weight, subgroup_id, pairs_weight, baseline, timestamp, feature_names, feature_tags, thread_count, log_cout, log_cerr, data_can_be_none)` |
+| `core.SPARSE_MATRIX_TYPES` | Object | `` |
+| `core.STRING_TYPES` | Object | `` |
+| `core.create_dir_if_not_exist` | Function | `(path)` |
+| `core.cv` | Function | `(pool, params, dtrain, iterations, num_boost_round, fold_count, nfold, inverted, partition_random_seed, seed, shuffle, logging_level, stratified, as_pandas, metric_period, verbose, verbose_eval, plot, plot_file, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, metric_update_interval, folds, type, return_models, log_cout, log_cerr)` |
+| `core.enum_from_enum_or_str` | Function | `(enum_type, arg)` |
+| `core.fspath` | Object | `` |
+| `core.is_classification_objective` | Object | `` |
+| `core.is_cv_stratified_objective` | Object | `` |
+| `core.is_groupwise_metric` | Object | `` |
+| `core.is_maximizable_metric` | Object | `` |
+| `core.is_minimizable_metric` | Object | `` |
+| `core.is_multiclass_compatible_objective` | Object | `` |
+| `core.is_multilabel_objective` | Object | `` |
+| `core.is_multiregression_objective` | Object | `` |
+| `core.is_multitarget_objective` | Object | `` |
+| `core.is_ranking_metric` | Object | `` |
+| `core.is_regression_objective` | Object | `` |
+| `core.is_survivalregression_objective` | Object | `` |
+| `core.log_fixup` | Function | `(log_cout, log_cerr)` |
+| `core.logger` | Object | `` |
+| `core.metric_description_or_str_to_str` | Function | `(description)` |
+| `core.pandas` | Class | `(...)` |
+| `core.plot_features_selection_loss_graph` | Function | `(title, entities_name, entities_name_in_fields, eliminated_entities_indices, eliminated_entities_names, loss_graph, cost_graph)` |
+| `core.plot_features_selection_loss_graphs` | Function | `(summary)` |
+| `core.plot_wrapper` | Function | `(plot, plot_file, plot_title, train_dirs)` |
+| `core.polars` | Class | `(...)` |
+| `core.sample_gaussian_process` | Function | `(X, y, eval_set, cat_features, text_features, embedding_features, random_seed, samples, posterior_iterations, prior_iterations, learning_rate, depth, sigma, delta, random_strength, random_score_type, eps, verbose)` |
+| `core.save_plot_file` | Function | `(plot_file, plot_name, figs)` |
+| `core.stringify_builtin_metrics` | Function | `(params)` |
+| `core.stringify_builtin_metrics_list` | Function | `(metrics)` |
+| `core.sum_models` | Function | `(models, weights, ctr_merge_policy)` |
+| `core.to_classifier` | Function | `(model)` |
+| `core.to_ranker` | Function | `(model)` |
+| `core.to_regressor` | Function | `(model)` |
+| `core.train` | Function | `(pool, params, dtrain, logging_level, verbose, iterations, num_boost_round, evals, eval_set, plot, plot_file, verbose_eval, metric_period, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, init_model, log_cout, log_cerr)` |
+| `core.try_plot_offline` | Function | `(figs)` |
+| `cv` | Function | `(pool, params, dtrain, iterations, num_boost_round, fold_count, nfold, inverted, partition_random_seed, seed, shuffle, logging_level, stratified, as_pandas, metric_period, verbose, verbose_eval, plot, plot_file, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, metric_update_interval, folds, type, return_models, log_cout, log_cerr)` |
+| `datasets.PATH_TYPES` | Object | `` |
+| `datasets.adult` | Function | `()` |
+| `datasets.amazon` | Function | `()` |
+| `datasets.epsilon` | Function | `()` |
+| `datasets.fspath` | Object | `` |
+| `datasets.higgs` | Function | `()` |
+| `datasets.imdb` | Function | `()` |
+| `datasets.logger` | Object | `` |
+| `datasets.monotonic1` | Function | `()` |
+| `datasets.monotonic2` | Function | `()` |
+| `datasets.msrank` | Function | `()` |
+| `datasets.msrank_10k` | Function | `()` |
+| `datasets.rotten_tomatoes` | Function | `()` |
+| `datasets.set_cache_path` | Function | `(path)` |
+| `datasets.titanic` | Function | `()` |
+| `dev_utils.convert_features_to_indices` | Object | `` |
+| `dev_utils.get_experiment_name` | Object | `` |
+| `dev_utils.get_multi_quantile_approx_size` | Object | `` |
+| `dev_utils.get_num_feature_values_sample` | Object | `` |
+| `dev_utils.has_gpu_implementation_metric` | Object | `` |
+| `dev_utils.is_classification_objective` | Object | `` |
+| `dev_utils.is_groupwise_metric` | Object | `` |
+| `dev_utils.is_maximizable_metric` | Object | `` |
+| `dev_utils.is_minimizable_metric` | Object | `` |
+| `dev_utils.is_multiclass_metric` | Object | `` |
+| `dev_utils.is_multitarget_objective` | Object | `` |
+| `dev_utils.is_pairwise_metric` | Object | `` |
+| `dev_utils.is_user_defined_metric` | Object | `` |
+| `dev_utils.need_dataset_for_leaves_weights` | Object | `` |
+| `eval.CaseEvaluationResult` | Class | `(case, metric_description, eval_step)` |
+| `eval.CatBoost` | Class | `(params)` |
+| `eval.CatBoostError` | Object | `` |
+| `eval.CatboostEvaluation` | Class | `(path_to_dataset, fold_size, fold_count, column_description, fold_offset, group_column, working_dir, remove_models, delimiter, has_header, partition_random_seed, min_fold_count)` |
+| `eval.Enum` | Object | `` |
+| `eval.EvalType` | Class | `(...)` |
+| `eval.EvaluationResults` | Class | `(metric_results)` |
+| `eval.ExecutionCase` | Class | `(params, label, ignored_features, learning_rate)` |
+| `eval.FactorUtils` | Class | `(...)` |
+| `eval.FoldModelsHandler` | Class | `(metrics, cases, thread_count, eval_step, remove_models)` |
+| `eval.LabelMode` | Class | `(...)` |
+| `eval.MetricEvaluationResult` | Class | `(case_results)` |
+| `eval.ScoreConfig` | Class | `(score_type, multiplier, score_level, interval_level, overfit_iterations_info)` |
+| `eval.ScoreType` | Class | `(...)` |
+| `eval.calc_bootstrap_ci_for_mean` | Function | `(samples, level, tries)` |
+| `eval.calc_wilcoxon_test` | Function | `(baseline, test)` |
+| `eval.catboost_evaluation.CatBoost` | Class | `(params)` |
+| `eval.catboost_evaluation.CatBoostError` | Object | `` |
+| `eval.catboost_evaluation.CatboostEvaluation` | Class | `(path_to_dataset, fold_size, fold_count, column_description, fold_offset, group_column, working_dir, remove_models, delimiter, has_header, partition_random_seed, min_fold_count)` |
+| `eval.catboost_evaluation.EvalType` | Class | `(...)` |
+| `eval.catboost_evaluation.EvaluationResults` | Class | `(metric_results)` |
+| `eval.catboost_evaluation.ExecutionCase` | Class | `(params, label, ignored_features, learning_rate)` |
+| `eval.catboost_evaluation.FactorUtils` | Class | `(...)` |
+| `eval.catboost_evaluation.FoldModelsHandler` | Class | `(metrics, cases, thread_count, eval_step, remove_models)` |
+| `eval.catboost_evaluation.LabelMode` | Class | `(...)` |
+| `eval.catboost_evaluation.MetricEvaluationResult` | Class | `(case_results)` |
+| `eval.compute_wx_test` | Object | `` |
+| `eval.copy` | Object | `` |
+| `eval.evaluation_result.CaseEvaluationResult` | Class | `(case, metric_description, eval_step)` |
+| `eval.evaluation_result.CatBoostError` | Object | `` |
+| `eval.evaluation_result.EvaluationResults` | Class | `(metric_results)` |
+| `eval.evaluation_result.MetricEvaluationResult` | Class | `(case_results)` |
+| `eval.evaluation_result.ScoreConfig` | Class | `(score_type, multiplier, score_level, interval_level, overfit_iterations_info)` |
+| `eval.evaluation_result.ScoreType` | Class | `(...)` |
+| `eval.evaluation_result.calc_bootstrap_ci_for_mean` | Function | `(samples, level, tries)` |
+| `eval.evaluation_result.calc_wilcoxon_test` | Function | `(baseline, test)` |
+| `eval.evaluation_result.compute_wx_test` | Object | `` |
+| `eval.evaluation_result.metric_description_or_str_to_str` | Function | `(description)` |
+| `eval.execution_case.CatBoostError` | Object | `` |
+| `eval.execution_case.ExecutionCase` | Class | `(params, label, ignored_features, learning_rate)` |
+| `eval.execution_case.FactorUtils` | Class | `(...)` |
+| `eval.factor_utils.FactorUtils` | Class | `(...)` |
+| `eval.factor_utils.LabelMode` | Class | `(...)` |
+| `eval.json` | Object | `` |
+| `eval.log_config.console_handler` | Object | `` |
+| `eval.log_config.eval_logger` | Object | `` |
+| `eval.log_config.filename` | Object | `` |
+| `eval.log_config.get_eval_logger` | Function | `()` |
+| `eval.log_config.init` | Function | `()` |
+| `eval.log_config.set_level` | Function | `(level)` |
+| `eval.log_config.set_logger_name` | Function | `(name)` |
+| `eval.make_dirs_if_not_exists` | Function | `(name)` |
+| `eval.metric_description_or_str_to_str` | Function | `(description)` |
+| `eval.np` | Object | `` |
+| `eval.os` | Object | `` |
+| `eval.pd` | Object | `` |
+| `eval.print_function` | Object | `` |
+| `eval.save_plot` | Function | `(fig, file_name)` |
+| `eval.series_to_line` | Function | `(row, sep)` |
+| `eval.utils.make_dirs_if_not_exists` | Function | `(name)` |
+| `eval.utils.save_plot` | Function | `(fig, file_name)` |
+| `eval.utils.series_to_line` | Function | `(row, sep)` |
+| `hnsw.EDistance` | Class | `(...)` |
+| `hnsw.EVectorComponentType` | Class | `(...)` |
+| `hnsw.Hnsw` | Class | `()` |
+| `hnsw.HnswEstimator` | Class | `(n_neighbors, distance, max_neighbors, search_neighborhood_size, num_exact_candidates, batch_size, upper_level_batch_size, level_size_decay)` |
+| `hnsw.HnswException` | Object | `` |
+| `hnsw.OnlineHnsw` | Class | `(dtype, dimension, distance, max_neighbors, search_neighborhood_size, num_vertices, level_size_decay)` |
+| `hnsw.Pool` | Class | `(vectors_path, dtype, dimension, vectors_bin_data)` |
+| `hnsw.hnsw.EDistance` | Class | `(...)` |
+| `hnsw.hnsw.EVectorComponentType` | Class | `(...)` |
+| `hnsw.hnsw.Hnsw` | Class | `()` |
+| `hnsw.hnsw.HnswEstimator` | Class | `(n_neighbors, distance, max_neighbors, search_neighborhood_size, num_exact_candidates, batch_size, upper_level_batch_size, level_size_decay)` |
+| `hnsw.hnsw.HnswException` | Object | `` |
+| `hnsw.hnsw.OnlineHnsw` | Class | `(dtype, dimension, distance, max_neighbors, search_neighborhood_size, num_vertices, level_size_decay)` |
+| `hnsw.hnsw.Pool` | Class | `(vectors_path, dtype, dimension, vectors_bin_data)` |
+| `hnsw.hnsw.get_hnsw_bin_module` | Function | `()` |
+| `hnsw.hnsw.get_so_paths` | Function | `(dir_name)` |
+| `hnsw.hnsw.log_fixup` | Function | `()` |
+| `hnsw.hnsw.transform_mobius` | Function | `(pool)` |
+| `hnsw.transform_mobius` | Function | `(pool)` |
+| `lgbm_plotting_callback` | Function | `()` |
+| `metrics.BuiltinMetric` | Class | `(...)` |
+| `metrics.pandas` | Class | `(...)` |
+| `monoforest.CatBoost` | Class | `(params)` |
+| `monoforest.CatBoostError` | Object | `` |
+| `monoforest.FeatureExplanation` | Object | `` |
+| `monoforest.calc_features_strength` | Function | `(model)` |
+| `monoforest.explain_features` | Function | `(model)` |
+| `monoforest.plot_features_strength` | Function | `(model, height_per_feature, width_per_plot, plots_per_row)` |
+| `monoforest.plot_pdp` | Function | `(arg, size_per_plot, plots_per_row)` |
+| `monoforest.to_polynom` | Function | `(model)` |
+| `monoforest.to_polynom_string` | Function | `(model)` |
+| `plot_helpers.OfflineMetricVisualizer` | Class | `(train_dirs)` |
+| `plot_helpers.fspath` | Object | `` |
+| `plot_helpers.save_plot_file` | Function | `(plot_file, plot_name, figs)` |
+| `plot_helpers.try_plot_offline` | Function | `(figs)` |
+| `sample_gaussian_process` | Function | `(X, y, eval_set, cat_features, text_features, embedding_features, random_seed, samples, posterior_iterations, prior_iterations, learning_rate, depth, sigma, delta, random_strength, random_score_type, eps, verbose)` |
+| `sum_models` | Function | `(models, weights, ctr_merge_policy)` |
+| `text_processing.Dictionary` | Object | `` |
+| `text_processing.Tokenizer` | Object | `` |
+| `to_classifier` | Function | `(model)` |
+| `to_ranker` | Function | `(model)` |
+| `to_regressor` | Function | `(model)` |
+| `train` | Function | `(pool, params, dtrain, logging_level, verbose, iterations, num_boost_round, evals, eval_set, plot, plot_file, verbose_eval, metric_period, early_stopping_rounds, save_snapshot, snapshot_file, snapshot_interval, init_model, log_cout, log_cerr)` |
+| `utils.ARRAY_TYPES` | Object | `` |
+| `utils.CatBoostError` | Object | `` |
+| `utils.DataMetaInfo` | Object | `` |
+| `utils.PATH_TYPES` | Object | `` |
+| `utils.Pool` | Class | `(data, label, cat_features, text_features, embedding_features, embedding_features_data, column_description, pairs, graph, delimiter, has_header, ignore_csv_quoting, weight, group_id, group_weight, subgroup_id, pairs_weight, baseline, timestamp, feature_names, feature_tags, thread_count, log_cout, log_cerr, data_can_be_none)` |
+| `utils.TargetStats` | Object | `` |
+| `utils.calculate_quantization_grid` | Function | `(values, border_count, border_type)` |
+| `utils.compute_training_options` | Object | `` |
+| `utils.compute_wx_test` | Object | `` |
+| `utils.convert_to_onnx_object` | Function | `(model, export_parameters, kwargs)` |
+| `utils.create_cd` | Function | `(label, cat_features, text_features, embedding_features, weight, baseline, doc_id, group_id, subgroup_id, timestamp, auxiliary_columns, feature_names, output_path)` |
+| `utils.eval_metric` | Function | `(label, approx, metric, weight, group_id, group_weight, subgroup_id, pairs, thread_count)` |
+| `utils.fspath` | Object | `` |
+| `utils.get_confusion_matrix` | Function | `(model, data, thread_count)` |
+| `utils.get_fnr_curve` | Function | `(model, data, curve, thread_count, plot)` |
+| `utils.get_fpr_curve` | Function | `(model, data, curve, thread_count, plot)` |
+| `utils.get_gpu_device_count` | Function | `()` |
+| `utils.get_roc_curve` | Function | `(model, data, thread_count, plot)` |
+| `utils.polars` | Class | `(...)` |
+| `utils.quantize` | Function | `(data_path, column_description, pairs, graph, delimiter, has_header, ignore_csv_quoting, feature_names, thread_count, ignored_features, per_float_feature_quantization, border_count, max_bin, feature_border_type, nan_mode, input_borders, task_type, used_ram_limit, random_seed, log_cout, log_cerr, kwargs)` |
+| `utils.read_cd` | Function | `(cd_file, column_count, data_file, canonize_column_types)` |
+| `utils.reset_trace_backend` | Function | `(filename)` |
+| `utils.select_threshold` | Function | `(model, data, curve, FPR, FNR, thread_count)` |
+| `version.VERSION` | Object | `` |
+| `widget.MetricVisualizer` | Class | `(train_dirs, subdirs)` |
+| `widget.MetricsPlotter` | Class | `(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])` |
+| `widget.XGBPlottingCallback` | Class | `(total_iterations: int)` |
+| `widget.callbacks.MetricsPlotter` | Class | `(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])` |
+| `widget.callbacks.XGBPlottingCallback` | Class | `(total_iterations: int)` |
+| `widget.callbacks.XGBTrainingCallback` | Class | `(...)` |
+| `widget.callbacks.lgbm_plotting_callback` | Function | `()` |
+| `widget.ipythonwidget.MetricVisualizer` | Class | `(train_dirs, subdirs)` |
+| `widget.ipythonwidget.MetricWidget` | Class | `(...)` |
+| `widget.lgbm_plotting_callback` | Function | `()` |
+| `widget.metrics_plotter.MetricWidget` | Class | `(...)` |
+| `widget.metrics_plotter.MetricsPlotter` | Class | `(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])` |
+| `widget.metrics_plotter.MetricsWidget` | Class | `()` |
+| `widget.metrics_plotter.logger` | Object | `` |

@@ -45,3 +45,7 @@ The `onnx9000-frontend` package provides pure Python/TS parsers that read these 
 ## 6. Real-Time IDE Integration
 
 The `onnx9000` ecosystem treats the browser as a primary IDE platform. Integrated with Sphinx documentation (`apps/sphinx-demo-ui`), it empowers developers to experiment, edit, and transpile natively across MLIR, C++, PyTorch, and ONNX backends completely client-side.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

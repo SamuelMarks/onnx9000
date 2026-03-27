@@ -11,25 +11,25 @@ To ensure our zero-dependency pure-Python implementation is numerically and stru
 | Target | Supported | Total | Percentage |
 |---|---|---|---|
 | ONNX Spec | 160 | 200 | 80.00% |
-| Torch | 25 | 914 | 2.74% |
-| Tensorflow | 177 | 316 | 56.01% |
-| Keras | 47 | Unknown | N/A |
-| Jax | 1 | 134 | 0.75% |
-| Flax | 1 | 11 | 9.09% |
-| Paddle | 96 | Unknown | N/A |
-| Coremltools | 0 | 27 | 0.00% |
-| Sklearn | 115 | 43 | 100.00% |
-| Xgboost | 2 | Unknown | N/A |
-| Lightgbm | 2 | Unknown | N/A |
-| Catboost | 2 | 24 | 8.33% |
-| Pyspark | 1 | 22 | 4.55% |
-| H2o | 1 | Unknown | N/A |
-| Libsvm | 1 | Unknown | N/A |
-| Cntk | 0 | Unknown | N/A |
-| Mxnet | 0 | Unknown | N/A |
-| Caffe | 0 | Unknown | N/A |
-| Gguf | 2 | 207 | 0.97% |
-| Safetensors | 2 | 5 | 40.00% |
+| Torch | 25 | 935 | 2.67% |
+| Tensorflow | 177 | 352 | 50.28% |
+| Keras | 47 | 714 | 6.58% |
+| Jax | 1 | 1767 | 0.06% |
+| Flax | 1 | 1929 | 0.05% |
+| Paddle | 96 | 14217 | 0.68% |
+| Coremltools | 0 | 4339 | 0.00% |
+| Sklearn | 115 | 1203 | 9.56% |
+| Xgboost | 2 | 298 | 0.67% |
+| Lightgbm | 2 | 113 | 1.77% |
+| Catboost | 2 | 168 | 1.19% |
+| Pyspark | 1 | 7741 | 0.01% |
+| H2o | 1 | 1653 | 0.06% |
+| Libsvm | 1 | 40 | 2.50% |
+| Cntk | 0 | 1377 | 0.00% |
+| Mxnet | 0 | 2611 | 0.00% |
+| Caffe | 0 | 149 | 0.00% |
+| Gguf | 2 | 381 | 0.52% |
+| Safetensors | 2 | 53 | 3.77% |
 <!-- COVERAGE_SUMMARY_END -->
 
 ## Exhaustive Parity Checklist

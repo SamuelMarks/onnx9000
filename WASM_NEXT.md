@@ -706,3 +706,7 @@ This document outlines the exhaustive, 300+ step plan to transition the `onnx900
 - [x] 638. Complete an external security audit of the Web IDE architecture.
 - [x] 639. Write the final release announcement post directly using the Web IDE itself.
 - [x] 640. Celebrate the launch of the zero-dependency ML Web IDE!
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

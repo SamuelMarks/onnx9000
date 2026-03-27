@@ -403,3 +403,7 @@ The following 350-step exhaustive checklist maps the exact engineering pathway t
 - [ ] 348. Release v1.0 of the MLOps Web Dashboard.
 - [ ] 349. Publish the "State of Web-Native MLOps" architectural whitepaper.
 - [ ] 350. Achieve total feature completion, signaling the beginning of the `onnx9000` distributed era.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

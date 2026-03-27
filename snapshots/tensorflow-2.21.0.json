@@ -1,321 +1,1765 @@
 {
   "version": "2.21.0",
   "objects": [
-    "AggregationMethod",
-    "Assert",
-    "CriticalSection",
-    "DType",
-    "DeviceSpec",
-    "GradientTape",
-    "Graph",
-    "IndexedSlices",
-    "IndexedSlicesSpec",
-    "Module",
-    "NoneTensorSpec",
-    "Operation",
-    "OptionalSpec",
-    "RaggedTensor",
-    "RaggedTensorSpec",
-    "RegisterGradient",
-    "SparseTensor",
-    "SparseTensorSpec",
-    "Tensor",
-    "TensorArray",
-    "TensorArraySpec",
-    "TensorShape",
-    "TensorSpec",
-    "TypeSpec",
-    "UnconnectedGradients",
-    "Variable",
-    "VariableAggregation",
-    "VariableSynchronization",
-    "abs",
-    "acos",
-    "acosh",
-    "add",
-    "add_n",
-    "approx_top_k",
-    "argmax",
-    "argmin",
-    "argsort",
-    "as_dtype",
-    "as_string",
-    "asin",
-    "asinh",
-    "assert_equal",
-    "assert_greater",
-    "assert_less",
-    "assert_rank",
-    "atan",
-    "atan2",
-    "atanh",
-    "audio",
-    "autodiff",
-    "autograph",
-    "batch_to_space",
-    "bfloat16",
-    "bitcast",
-    "bitwise",
-    "bool",
-    "boolean_mask",
-    "broadcast_dynamic_shape",
-    "broadcast_static_shape",
-    "broadcast_to",
-    "case",
-    "cast",
-    "check_pinned",
-    "clip_by_global_norm",
-    "clip_by_norm",
-    "clip_by_value",
-    "compat",
-    "complex",
-    "complex128",
-    "complex64",
-    "concat",
-    "cond",
-    "config",
-    "constant",
-    "constant_initializer",
-    "control_dependencies",
-    "conv",
-    "conv2d_backprop_filter_v2",
-    "conv2d_backprop_input_v2",
-    "convert_to_tensor",
-    "cos",
-    "cosh",
-    "cumsum",
-    "custom_gradient",
-    "data",
-    "debugging",
-    "device",
-    "distribute",
-    "divide",
-    "double",
-    "dtensor",
-    "dtypes",
-    "dynamic_partition",
-    "dynamic_stitch",
-    "edit_distance",
-    "eig",
-    "eigvals",
-    "einsum",
-    "ensure_shape",
-    "equal",
-    "errors",
-    "executing_eagerly",
-    "exp",
-    "expand_dims",
-    "experimental",
-    "extract_volume_patches",
-    "eye",
-    "feature_column",
-    "fftnd",
-    "fill",
-    "fingerprint",
-    "float16",
-    "float32",
-    "float64",
-    "floor",
-    "foldl",
-    "foldr",
-    "function",
-    "gather",
-    "gather_nd",
-    "get_current_name_scope",
-    "get_logger",
-    "get_static_value",
-    "grad_pass_through",
-    "gradients",
-    "graph_util",
-    "greater",
-    "greater_equal",
-    "group",
-    "guarantee_const",
-    "half",
-    "hessians",
-    "histogram_fixed_width",
-    "histogram_fixed_width_bins",
-    "identity",
-    "identity_n",
-    "ifftnd",
-    "image",
-    "import_graph_def",
-    "init_scope",
-    "initializers",
-    "inside_function",
-    "int16",
-    "int32",
-    "int64",
-    "int8",
-    "io",
-    "irfftnd",
-    "is_symbolic_tensor",
-    "is_tensor",
-    "keras",
-    "less",
-    "less_equal",
-    "linalg",
-    "linspace",
-    "lite",
-    "load_library",
-    "load_op_library",
-    "logical_and",
-    "logical_not",
-    "logical_or",
-    "lookup",
-    "losses",
-    "make_ndarray",
-    "make_tensor_proto",
-    "map_fn",
-    "math",
-    "matmul",
-    "matrix_square_root",
-    "maximum",
-    "meshgrid",
-    "metrics",
-    "minimum",
-    "mlir",
-    "multiply",
-    "name_scope",
-    "negative",
-    "nest",
-    "newaxis",
-    "nn",
-    "no_gradient",
-    "no_op",
-    "nondifferentiable_batch_function",
-    "norm",
-    "not_equal",
-    "numpy_function",
-    "one_hot",
-    "ones",
-    "ones_initializer",
-    "ones_like",
-    "optimizers",
-    "pad",
-    "parallel_stack",
-    "pow",
-    "print",
-    "profiler",
-    "py_function",
-    "qint16",
-    "qint32",
-    "qint8",
-    "quantization",
-    "queue",
-    "quint16",
-    "quint8",
-    "ragged",
-    "ragged_fill_empty_rows",
-    "ragged_fill_empty_rows_grad",
-    "random",
-    "random_index_shuffle",
-    "random_normal_initializer",
-    "random_uniform_initializer",
-    "range",
-    "rank",
-    "raw_ops",
-    "realdiv",
-    "recompute_grad",
-    "reduce_all",
-    "reduce_any",
-    "reduce_logsumexp",
-    "reduce_max",
-    "reduce_mean",
-    "reduce_min",
-    "reduce_prod",
-    "reduce_sum",
-    "register_tensor_conversion_function",
-    "repeat",
-    "required_space_to_batch_paddings",
-    "reshape",
-    "resource",
-    "reverse",
-    "reverse_sequence",
-    "rfftnd",
-    "roll",
-    "round",
-    "saturate_cast",
-    "saved_model",
-    "scalar_mul",
-    "scan",
-    "scatter_nd",
-    "searchsorted",
-    "security",
-    "sequence_mask",
-    "sets",
-    "shape",
-    "shape_n",
-    "sigmoid",
-    "sign",
-    "signal",
-    "sin",
-    "sinh",
-    "size",
-    "slice",
-    "sort",
-    "space_to_batch",
-    "space_to_batch_nd",
-    "sparse",
-    "split",
-    "sqrt",
-    "square",
-    "squeeze",
-    "stack",
-    "stop_gradient",
-    "strided_slice",
-    "string",
-    "strings",
-    "subtract",
-    "summary",
-    "switch_case",
-    "sysconfig",
-    "tan",
-    "tanh",
-    "tensor_scatter_nd_add",
-    "tensor_scatter_nd_max",
-    "tensor_scatter_nd_min",
-    "tensor_scatter_nd_sub",
-    "tensor_scatter_nd_update",
-    "tensordot",
-    "test",
-    "tile",
-    "timestamp",
-    "tools",
-    "tpu",
-    "train",
-    "transpose",
-    "truediv",
-    "truncatediv",
-    "truncatemod",
-    "tuple",
-    "type_spec_from_value",
-    "types",
-    "uint16",
-    "uint32",
-    "uint64",
-    "uint8",
-    "unique",
-    "unique_with_counts",
-    "unravel_index",
-    "unstack",
-    "variable_creator_scope",
-    "variant",
-    "vectorized_map",
-    "version",
-    "where",
-    "while_loop",
-    "xla",
-    "zeros",
-    "zeros_initializer",
-    "zeros_like",
-    "__compiler_version__",
-    "__cxx11_abi_flag__",
-    "__cxx_version__",
-    "__git_version__",
-    "__internal__",
-    "__monolithic_build__",
-    "__operators__",
-    "__version__"
+    {
+      "name": "audio",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "autodiff",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "autograph",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bitwise",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "config",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "data",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "debugging",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dtypes",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "errors",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "feature_column",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "graph_util",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "image",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "io",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "linalg",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.types_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.toco_flags_pb2.tensorflow_dot_compiler_dot_mlir_dot_lite_dot_debug_dot_debug__options__pb2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.toco_flags_pb2.tensorflow_dot_compiler_dot_mlir_dot_quantization_dot_stablehlo_dot_quantization__config__pb2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.toco_flags_pb2.tensorflow_dot_compiler_dot_mlir_dot_quantization_dot_stablehlo_dot_quantization__options__pb2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.toco_flags_pb2.tensorflow_dot_lite_dot_toco_dot_types__pb2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.toco_flags_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.logging.gen_html.html_escape_table",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.toco.logging.gen_html.html_escape",
+      "type": "Function",
+      "signature": "(text)"
+    },
+    {
+      "name": "lite.toco.logging.gen_html.get_input_type_from_signature",
+      "type": "Function",
+      "signature": "(op_signature)"
+    },
+    {
+      "name": "lite.toco.logging.gen_html.get_operator_type",
+      "type": "Function",
+      "signature": "(op_name, conversion_log)"
+    },
+    {
+      "name": "lite.toco.logging.gen_html.HTMLGenerator",
+      "type": "Class",
+      "signature": "(html_template_path, export_report_path)"
+    },
+    {
+      "name": "lite.toco.logging.gen_html.gen_conversion_log_html",
+      "type": "Function",
+      "signature": "(conversion_log_dir, quantization_enabled, tflite_graph_path)"
+    },
+    {
+      "name": "lite.toco.logging.toco_conversion_log_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.profiling.proto.model_runtime_info_pb2.tensorflow_dot_lite_dot_profiling_dot_proto_dot_profiling__info__pb2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.profiling.proto.model_runtime_info_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lite.profiling.proto.profiling_info_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lookup",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "math",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "mlir",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "nest",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "nn",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "profiler",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quantization",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "queue",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ragged",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "random",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "raw_ops",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "saved_model",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sets",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "signal",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sparse",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "strings",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "summary",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sysconfig",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "test",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tpu",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "train",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "types",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "version",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "xla",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bitcast",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_Bitcast_T], type: TV_Bitcast_type, name) -> Annotated[Any, TV_Bitcast_type]"
+    },
+    {
+      "name": "broadcast_to",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_BroadcastTo_T], shape: Annotated[Any, TV_BroadcastTo_Tidx], name) -> Annotated[Any, TV_BroadcastTo_T]"
+    },
+    {
+      "name": "extract_volume_patches",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_ExtractVolumePatches_T], ksizes, strides, padding: str, name) -> Annotated[Any, TV_ExtractVolumePatches_T]"
+    },
+    {
+      "name": "identity_n",
+      "type": "Function",
+      "signature": "(input, name)"
+    },
+    {
+      "name": "reverse",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_ReverseV2_T], axis: Annotated[Any, TV_ReverseV2_Tidx], name) -> Annotated[Any, TV_ReverseV2_T]"
+    },
+    {
+      "name": "scatter_nd",
+      "type": "Function",
+      "signature": "(indices: Annotated[Any, TV_ScatterNd_Tindices], updates: Annotated[Any, TV_ScatterNd_T], shape: Annotated[Any, TV_ScatterNd_Tindices], bad_indices_policy: str, name) -> Annotated[Any, TV_ScatterNd_T]"
+    },
+    {
+      "name": "space_to_batch_nd",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_SpaceToBatchND_T], block_shape: Annotated[Any, TV_SpaceToBatchND_Tblock_shape], paddings: Annotated[Any, TV_SpaceToBatchND_Tpaddings], name) -> Annotated[Any, TV_SpaceToBatchND_T]"
+    },
+    {
+      "name": "tensor_scatter_nd_add",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_TensorScatterAdd_T], indices: Annotated[Any, TV_TensorScatterAdd_Tindices], updates: Annotated[Any, TV_TensorScatterAdd_T], bad_indices_policy: str, name) -> Annotated[Any, TV_TensorScatterAdd_T]"
+    },
+    {
+      "name": "tensor_scatter_nd_max",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_TensorScatterMax_T], indices: Annotated[Any, TV_TensorScatterMax_Tindices], updates: Annotated[Any, TV_TensorScatterMax_T], bad_indices_policy: str, name) -> Annotated[Any, TV_TensorScatterMax_T]"
+    },
+    {
+      "name": "tensor_scatter_nd_min",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_TensorScatterMin_T], indices: Annotated[Any, TV_TensorScatterMin_Tindices], updates: Annotated[Any, TV_TensorScatterMin_T], bad_indices_policy: str, name) -> Annotated[Any, TV_TensorScatterMin_T]"
+    },
+    {
+      "name": "tensor_scatter_nd_sub",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_TensorScatterSub_T], indices: Annotated[Any, TV_TensorScatterSub_Tindices], updates: Annotated[Any, TV_TensorScatterSub_T], bad_indices_policy: str, name) -> Annotated[Any, TV_TensorScatterSub_T]"
+    },
+    {
+      "name": "tile",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_Tile_T], multiples: Annotated[Any, TV_Tile_Tmultiples], name) -> Annotated[Any, TV_Tile_T]"
+    },
+    {
+      "name": "unravel_index",
+      "type": "Function",
+      "signature": "(indices: Annotated[Any, TV_UnravelIndex_Tidx], dims: Annotated[Any, TV_UnravelIndex_Tidx], name) -> Annotated[Any, TV_UnravelIndex_Tidx]"
+    },
+    {
+      "name": "no_op",
+      "type": "Function",
+      "signature": "(name)"
+    },
+    {
+      "name": "dynamic_partition",
+      "type": "Function",
+      "signature": "(data: Annotated[Any, TV_DynamicPartition_T], partitions: Annotated[Any, _atypes.Int32], num_partitions: int, name)"
+    },
+    {
+      "name": "dynamic_stitch",
+      "type": "Function",
+      "signature": "(indices: Annotated[List[Any], _atypes.Int32], data: Annotated[List[Any], TV_DynamicStitch_T], name) -> Annotated[Any, TV_DynamicStitch_T]"
+    },
+    {
+      "name": "check_pinned",
+      "type": "Function",
+      "signature": "(tensor: Annotated[Any, TV_CheckPinned_T], name) -> Annotated[Any, TV_CheckPinned_T]"
+    },
+    {
+      "name": "matrix_square_root",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_MatrixSquareRoot_T], name) -> Annotated[Any, TV_MatrixSquareRoot_T]"
+    },
+    {
+      "name": "timestamp",
+      "type": "Function",
+      "signature": "(name) -> Annotated[Any, _atypes.Float64]"
+    },
+    {
+      "name": "acosh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Acosh_T], name) -> Annotated[Any, TV_Acosh_T]"
+    },
+    {
+      "name": "asin",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Asin_T], name) -> Annotated[Any, TV_Asin_T]"
+    },
+    {
+      "name": "asinh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Asinh_T], name) -> Annotated[Any, TV_Asinh_T]"
+    },
+    {
+      "name": "atan",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Atan_T], name) -> Annotated[Any, TV_Atan_T]"
+    },
+    {
+      "name": "atan2",
+      "type": "Function",
+      "signature": "(y: Annotated[Any, TV_Atan2_T], x: Annotated[Any, TV_Atan2_T], name) -> Annotated[Any, TV_Atan2_T]"
+    },
+    {
+      "name": "atanh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Atanh_T], name) -> Annotated[Any, TV_Atanh_T]"
+    },
+    {
+      "name": "cos",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Cos_T], name) -> Annotated[Any, TV_Cos_T]"
+    },
+    {
+      "name": "cosh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Cosh_T], name) -> Annotated[Any, TV_Cosh_T]"
+    },
+    {
+      "name": "greater",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Greater_T], y: Annotated[Any, TV_Greater_T], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "greater_equal",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_GreaterEqual_T], y: Annotated[Any, TV_GreaterEqual_T], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "less",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Less_T], y: Annotated[Any, TV_Less_T], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "less_equal",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_LessEqual_T], y: Annotated[Any, TV_LessEqual_T], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "logical_and",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, _atypes.Bool], y: Annotated[Any, _atypes.Bool], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "logical_not",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, _atypes.Bool], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "logical_or",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, _atypes.Bool], y: Annotated[Any, _atypes.Bool], name) -> Annotated[Any, _atypes.Bool]"
+    },
+    {
+      "name": "maximum",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Maximum_T], y: Annotated[Any, TV_Maximum_T], name) -> Annotated[Any, TV_Maximum_T]"
+    },
+    {
+      "name": "minimum",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Minimum_T], y: Annotated[Any, TV_Minimum_T], name) -> Annotated[Any, TV_Minimum_T]"
+    },
+    {
+      "name": "negative",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Neg_T], name) -> Annotated[Any, TV_Neg_T]"
+    },
+    {
+      "name": "realdiv",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_RealDiv_T], y: Annotated[Any, TV_RealDiv_T], name) -> Annotated[Any, TV_RealDiv_T]"
+    },
+    {
+      "name": "sin",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Sin_T], name) -> Annotated[Any, TV_Sin_T]"
+    },
+    {
+      "name": "sinh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Sinh_T], name) -> Annotated[Any, TV_Sinh_T]"
+    },
+    {
+      "name": "square",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Square_T], name) -> Annotated[Any, TV_Square_T]"
+    },
+    {
+      "name": "tan",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Tan_T], name) -> Annotated[Any, TV_Tan_T]"
+    },
+    {
+      "name": "tanh",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_Tanh_T], name) -> Annotated[Any, TV_Tanh_T]"
+    },
+    {
+      "name": "truncatediv",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_TruncateDiv_T], y: Annotated[Any, TV_TruncateDiv_T], name) -> Annotated[Any, TV_TruncateDiv_T]"
+    },
+    {
+      "name": "truncatemod",
+      "type": "Function",
+      "signature": "(x: Annotated[Any, TV_TruncateMod_T], y: Annotated[Any, TV_TruncateMod_T], name) -> Annotated[Any, TV_TruncateMod_T]"
+    },
+    {
+      "name": "approx_top_k",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_ApproxTopK_T], k: int, reduction_dimension: int, recall_target: float, is_max_k: bool, reduction_input_size_override: int, aggregate_to_topk: bool, name)"
+    },
+    {
+      "name": "conv",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_Conv_T], filter: Annotated[Any, TV_Conv_T], strides, padding: str, explicit_paddings, data_format: str, dilations, batch_dims: int, groups: int, name) -> Annotated[Any, TV_Conv_T]"
+    },
+    {
+      "name": "conv2d_backprop_filter_v2",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_Conv2DBackpropFilterV2_T], filter: Annotated[Any, TV_Conv2DBackpropFilterV2_T], out_backprop: Annotated[Any, TV_Conv2DBackpropFilterV2_T], strides, padding: str, use_cudnn_on_gpu: bool, explicit_paddings, data_format: str, dilations, name) -> Annotated[Any, TV_Conv2DBackpropFilterV2_T]"
+    },
+    {
+      "name": "conv2d_backprop_input_v2",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_Conv2DBackpropInputV2_T], filter: Annotated[Any, TV_Conv2DBackpropInputV2_T], out_backprop: Annotated[Any, TV_Conv2DBackpropInputV2_T], strides, padding: str, use_cudnn_on_gpu: bool, explicit_paddings, data_format: str, dilations, name) -> Annotated[Any, TV_Conv2DBackpropInputV2_T]"
+    },
+    {
+      "name": "ragged_fill_empty_rows",
+      "type": "Function",
+      "signature": "(value_rowids: Annotated[Any, _atypes.Int64], values: Annotated[Any, TV_RaggedFillEmptyRows_T], nrows: Annotated[Any, _atypes.Int64], default_value: Annotated[Any, TV_RaggedFillEmptyRows_T], name)"
+    },
+    {
+      "name": "ragged_fill_empty_rows_grad",
+      "type": "Function",
+      "signature": "(reverse_index_map: Annotated[Any, _atypes.Int64], grad_values: Annotated[Any, TV_RaggedFillEmptyRowsGrad_T], name)"
+    },
+    {
+      "name": "random_index_shuffle",
+      "type": "Function",
+      "signature": "(index: Annotated[Any, TV_RandomIndexShuffle_dtype], seed: Annotated[Any, TV_RandomIndexShuffle_Tseed], max_index: Annotated[Any, TV_RandomIndexShuffle_dtype], rounds: int, name) -> Annotated[Any, TV_RandomIndexShuffle_dtype]"
+    },
+    {
+      "name": "fftnd",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_FFTND_Tcomplex], fft_length: Annotated[Any, _atypes.Int32], axes: Annotated[Any, _atypes.Int32], name) -> Annotated[Any, TV_FFTND_Tcomplex]"
+    },
+    {
+      "name": "ifftnd",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_IFFTND_Tcomplex], fft_length: Annotated[Any, _atypes.Int32], axes: Annotated[Any, _atypes.Int32], name) -> Annotated[Any, TV_IFFTND_Tcomplex]"
+    },
+    {
+      "name": "irfftnd",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_IRFFTND_Tcomplex], fft_length: Annotated[Any, _atypes.Int32], axes: Annotated[Any, _atypes.Int32], Treal: TV_IRFFTND_Treal, name) -> Annotated[Any, TV_IRFFTND_Treal]"
+    },
+    {
+      "name": "rfftnd",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_RFFTND_Treal], fft_length: Annotated[Any, _atypes.Int32], axes: Annotated[Any, _atypes.Int32], Tcomplex: TV_RFFTND_Tcomplex, name) -> Annotated[Any, TV_RFFTND_Tcomplex]"
+    },
+    {
+      "name": "as_string",
+      "type": "Function",
+      "signature": "(input: Annotated[Any, TV_AsString_T], precision: int, scientific: bool, shortest: bool, width: int, fill: str, name) -> Annotated[Any, _atypes.String]"
+    },
+    {
+      "name": "OptionalSpec",
+      "type": "Class",
+      "signature": "(element_spec)"
+    },
+    {
+      "name": "GradientTape",
+      "type": "Class",
+      "signature": "(persistent, watch_accessed_variables)"
+    },
+    {
+      "name": "executing_eagerly",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "function",
+      "type": "Function",
+      "signature": "(func, input_signature, autograph, jit_compile, reduce_retracing, experimental_implements, experimental_autograph_options, experimental_attributes, experimental_relax_shapes, experimental_compile, experimental_follow_type_hints) -> core.PolymorphicFunction"
+    },
+    {
+      "name": "constant",
+      "type": "Function",
+      "signature": "(value, dtype, shape, name) -> Union[ops.Operation, ops._EagerTensorBase]"
+    },
+    {
+      "name": "DeviceSpec",
+      "type": "Class",
+      "signature": "(job, replica, task, device_type, device_index)"
+    },
+    {
+      "name": "DType",
+      "type": "Class",
+      "signature": "(type_enum, handle_data)"
+    },
+    {
+      "name": "as_dtype",
+      "type": "Function",
+      "signature": "(type_value)"
+    },
+    {
+      "name": "bfloat16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bool",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "complex128",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "complex64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "double",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "half",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "qint16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "qint32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "qint8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quint16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quint8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "resource",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "string",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "variant",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "import_graph_def",
+      "type": "Function",
+      "signature": "(graph_def, input_map, return_elements, name, op_dict, producer_op_list)"
+    },
+    {
+      "name": "IndexedSlices",
+      "type": "Class",
+      "signature": "(values, indices, dense_shape)"
+    },
+    {
+      "name": "IndexedSlicesSpec",
+      "type": "Class",
+      "signature": "(shape, dtype, indices_dtype, dense_shape_dtype, indices_shape)"
+    },
+    {
+      "name": "load_library",
+      "type": "Function",
+      "signature": "(library_location)"
+    },
+    {
+      "name": "load_op_library",
+      "type": "Function",
+      "signature": "(library_filename)"
+    },
+    {
+      "name": "NoneTensorSpec",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Graph",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "Operation",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "RegisterGradient",
+      "type": "Class",
+      "signature": "(op_type)"
+    },
+    {
+      "name": "control_dependencies",
+      "type": "Function",
+      "signature": "(control_inputs) -> Graph._ControlDependenciesController"
+    },
+    {
+      "name": "device",
+      "type": "Function",
+      "signature": "(device_name) -> ContextManager[None]"
+    },
+    {
+      "name": "get_current_name_scope",
+      "type": "Function",
+      "signature": "() -> str"
+    },
+    {
+      "name": "init_scope",
+      "type": "Function",
+      "signature": "() -> Iterator[None]"
+    },
+    {
+      "name": "inside_function",
+      "type": "Function",
+      "signature": "() -> bool"
+    },
+    {
+      "name": "is_symbolic_tensor",
+      "type": "Function",
+      "signature": "(tensor) -> bool"
+    },
+    {
+      "name": "name_scope",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "no_gradient",
+      "type": "Function",
+      "signature": "(op_type: str) -> None"
+    },
+    {
+      "name": "SparseTensor",
+      "type": "Class",
+      "signature": "(indices, values, dense_shape)"
+    },
+    {
+      "name": "SparseTensorSpec",
+      "type": "Class",
+      "signature": "(shape, dtype)"
+    },
+    {
+      "name": "Tensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TensorSpec",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "convert_to_tensor",
+      "type": "Function",
+      "signature": "(value, dtype, dtype_hint, name) -> tensor_lib.Tensor"
+    },
+    {
+      "name": "register_tensor_conversion_function",
+      "type": "Function",
+      "signature": "(base_type, conversion_func, priority)"
+    },
+    {
+      "name": "TensorShape",
+      "type": "Class",
+      "signature": "(dims)"
+    },
+    {
+      "name": "get_static_value",
+      "type": "Function",
+      "signature": "(tensor, partial)"
+    },
+    {
+      "name": "is_tensor",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "make_ndarray",
+      "type": "Function",
+      "signature": "(tensor)"
+    },
+    {
+      "name": "make_tensor_proto",
+      "type": "Function",
+      "signature": "(values, dtype, shape, verify_shape, allow_broadcast)"
+    },
+    {
+      "name": "TypeSpec",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "type_spec_from_value",
+      "type": "Function",
+      "signature": "(value) -> TypeSpec"
+    },
+    {
+      "name": "Module",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "batch_to_space",
+      "type": "Function",
+      "signature": "(input, block_shape, crops, name)"
+    },
+    {
+      "name": "boolean_mask",
+      "type": "Function",
+      "signature": "(tensor, mask, axis, name)"
+    },
+    {
+      "name": "broadcast_dynamic_shape",
+      "type": "Function",
+      "signature": "(shape_x, shape_y)"
+    },
+    {
+      "name": "broadcast_static_shape",
+      "type": "Function",
+      "signature": "(shape_x, shape_y)"
+    },
+    {
+      "name": "concat",
+      "type": "Function",
+      "signature": "(values, axis, name)"
+    },
+    {
+      "name": "edit_distance",
+      "type": "Function",
+      "signature": "(hypothesis, truth, normalize, name)"
+    },
+    {
+      "name": "expand_dims",
+      "type": "Function",
+      "signature": "(input, axis, name)"
+    },
+    {
+      "name": "fill",
+      "type": "Function",
+      "signature": "(dims, value, name, layout)"
+    },
+    {
+      "name": "fingerprint",
+      "type": "Function",
+      "signature": "(data, method, name)"
+    },
+    {
+      "name": "gather",
+      "type": "Function",
+      "signature": "(params, indices, validate_indices, axis, batch_dims, name)"
+    },
+    {
+      "name": "gather_nd",
+      "type": "Function",
+      "signature": "(params, indices, batch_dims, name, bad_indices_policy)"
+    },
+    {
+      "name": "guarantee_const",
+      "type": "Function",
+      "signature": "(input, name)"
+    },
+    {
+      "name": "identity",
+      "type": "Function",
+      "signature": "(input, name)"
+    },
+    {
+      "name": "meshgrid",
+      "type": "Function",
+      "signature": "(args, kwargs)"
+    },
+    {
+      "name": "newaxis",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "one_hot",
+      "type": "Function",
+      "signature": "(indices, depth, on_value, off_value, axis, dtype, name)"
+    },
+    {
+      "name": "ones",
+      "type": "Function",
+      "signature": "(shape, dtype, name, layout)"
+    },
+    {
+      "name": "ones_like",
+      "type": "Function",
+      "signature": "(input, dtype, name, layout)"
+    },
+    {
+      "name": "pad",
+      "type": "Function",
+      "signature": "(tensor, paddings, mode, constant_values, name)"
+    },
+    {
+      "name": "parallel_stack",
+      "type": "Function",
+      "signature": "(values, name)"
+    },
+    {
+      "name": "rank",
+      "type": "Function",
+      "signature": "(input, name)"
+    },
+    {
+      "name": "repeat",
+      "type": "Function",
+      "signature": "(input, repeats, axis, name)"
+    },
+    {
+      "name": "required_space_to_batch_paddings",
+      "type": "Function",
+      "signature": "(input_shape, block_shape, base_paddings, name)"
+    },
+    {
+      "name": "reshape",
+      "type": "Function",
+      "signature": "(tensor, shape, name)"
+    },
+    {
+      "name": "reverse_sequence",
+      "type": "Function",
+      "signature": "(input, seq_lengths, seq_axis, batch_axis, name)"
+    },
+    {
+      "name": "searchsorted",
+      "type": "Function",
+      "signature": "(sorted_sequence, values, side, out_type, name)"
+    },
+    {
+      "name": "sequence_mask",
+      "type": "Function",
+      "signature": "(lengths, maxlen, dtype, name)"
+    },
+    {
+      "name": "shape",
+      "type": "Function",
+      "signature": "(input, out_type, name)"
+    },
+    {
+      "name": "shape_n",
+      "type": "Function",
+      "signature": "(input, out_type, name)"
+    },
+    {
+      "name": "size",
+      "type": "Function",
+      "signature": "(input, out_type, name)"
+    },
+    {
+      "name": "slice",
+      "type": "Function",
+      "signature": "(input_, begin, size, name)"
+    },
+    {
+      "name": "space_to_batch",
+      "type": "Function",
+      "signature": "(input, block_shape, paddings, name)"
+    },
+    {
+      "name": "split",
+      "type": "Function",
+      "signature": "(value, num_or_size_splits, axis, num, name)"
+    },
+    {
+      "name": "squeeze",
+      "type": "Function",
+      "signature": "(input, axis, name)"
+    },
+    {
+      "name": "stop_gradient",
+      "type": "Function",
+      "signature": "(input, name)"
+    },
+    {
+      "name": "strided_slice",
+      "type": "Function",
+      "signature": "(input_, begin, end, strides, begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask, var, name)"
+    },
+    {
+      "name": "tensor_scatter_nd_update",
+      "type": "Function",
+      "signature": "(tensor, indices, updates, name)"
+    },
+    {
+      "name": "transpose",
+      "type": "Function",
+      "signature": "(a, perm, conjugate, name)"
+    },
+    {
+      "name": "unique",
+      "type": "Function",
+      "signature": "(x, out_idx, name)"
+    },
+    {
+      "name": "unique_with_counts",
+      "type": "Function",
+      "signature": "(x, out_idx, name)"
+    },
+    {
+      "name": "where",
+      "type": "Function",
+      "signature": "(condition, x, y, name)"
+    },
+    {
+      "name": "zeros",
+      "type": "Function",
+      "signature": "(shape, dtype, name, layout)"
+    },
+    {
+      "name": "zeros_like",
+      "type": "Function",
+      "signature": "(input, dtype, name, layout)"
+    },
+    {
+      "name": "stack",
+      "type": "Function",
+      "signature": "(values, axis, name)"
+    },
+    {
+      "name": "unstack",
+      "type": "Function",
+      "signature": "(value, num, axis, name)"
+    },
+    {
+      "name": "nondifferentiable_batch_function",
+      "type": "Function",
+      "signature": "(num_batch_threads, max_batch_size, batch_timeout_micros, allowed_batch_sizes, max_enqueued_batches, autograph, enable_large_batch_splitting)"
+    },
+    {
+      "name": "assert_equal",
+      "type": "Function",
+      "signature": "(x, y, message, summarize, name)"
+    },
+    {
+      "name": "assert_greater",
+      "type": "Function",
+      "signature": "(x, y, message, summarize, name)"
+    },
+    {
+      "name": "assert_less",
+      "type": "Function",
+      "signature": "(x, y, message, summarize, name)"
+    },
+    {
+      "name": "assert_rank",
+      "type": "Function",
+      "signature": "(x, rank, message, name)"
+    },
+    {
+      "name": "ensure_shape",
+      "type": "Function",
+      "signature": "(x, shape, name)"
+    },
+    {
+      "name": "clip_by_global_norm",
+      "type": "Function",
+      "signature": "(t_list, clip_norm, use_norm, name)"
+    },
+    {
+      "name": "clip_by_norm",
+      "type": "Function",
+      "signature": "(t, clip_norm, axes, name)"
+    },
+    {
+      "name": "clip_by_value",
+      "type": "Function",
+      "signature": "(t, clip_value_min, clip_value_max, name)"
+    },
+    {
+      "name": "cond",
+      "type": "Function",
+      "signature": "(pred, true_fn, false_fn, name)"
+    },
+    {
+      "name": "Assert",
+      "type": "Function",
+      "signature": "(condition, data, summarize, name)"
+    },
+    {
+      "name": "case",
+      "type": "Function",
+      "signature": "(pred_fn_pairs, default, exclusive, strict, name)"
+    },
+    {
+      "name": "group",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "tuple",
+      "type": "Function",
+      "signature": "(tensors, control_inputs, name)"
+    },
+    {
+      "name": "switch_case",
+      "type": "Function",
+      "signature": "(branch_index, branch_fns, default, name)"
+    },
+    {
+      "name": "CriticalSection",
+      "type": "Class",
+      "signature": "(name, shared_name, critical_section_def, import_scope)"
+    },
+    {
+      "name": "custom_gradient",
+      "type": "Function",
+      "signature": "(f)"
+    },
+    {
+      "name": "grad_pass_through",
+      "type": "Function",
+      "signature": "(f)"
+    },
+    {
+      "name": "recompute_grad",
+      "type": "Function",
+      "signature": "(f)"
+    },
+    {
+      "name": "foldl",
+      "type": "Function",
+      "signature": "(fn, elems, initializer, parallel_iterations, back_prop, swap_memory, name)"
+    },
+    {
+      "name": "foldr",
+      "type": "Function",
+      "signature": "(fn, elems, initializer, parallel_iterations, back_prop, swap_memory, name)"
+    },
+    {
+      "name": "scan",
+      "type": "Function",
+      "signature": "(fn, elems, initializer, parallel_iterations, back_prop, swap_memory, infer_shape, reverse, name)"
+    },
+    {
+      "name": "gradients",
+      "type": "Function",
+      "signature": "(ys, xs, grad_ys, name, gate_gradients, aggregation_method, stop_gradients, unconnected_gradients)"
+    },
+    {
+      "name": "hessians",
+      "type": "Function",
+      "signature": "(ys, xs, gate_gradients, aggregation_method, name)"
+    },
+    {
+      "name": "AggregationMethod",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "histogram_fixed_width",
+      "type": "Function",
+      "signature": "(values, value_range, nbins, dtype, name)"
+    },
+    {
+      "name": "histogram_fixed_width_bins",
+      "type": "Function",
+      "signature": "(values, value_range, nbins, dtype, name)"
+    },
+    {
+      "name": "constant_initializer",
+      "type": "Class",
+      "signature": "(value, support_partition)"
+    },
+    {
+      "name": "ones_initializer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "random_normal_initializer",
+      "type": "Class",
+      "signature": "(mean, stddev, seed)"
+    },
+    {
+      "name": "random_uniform_initializer",
+      "type": "Class",
+      "signature": "(minval, maxval, seed)"
+    },
+    {
+      "name": "zeros_initializer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "eig",
+      "type": "Function",
+      "signature": "(tensor, name)"
+    },
+    {
+      "name": "eigvals",
+      "type": "Function",
+      "signature": "(tensor, name)"
+    },
+    {
+      "name": "eye",
+      "type": "Function",
+      "signature": "(num_rows, num_columns, batch_shape, dtype, name)"
+    },
+    {
+      "name": "norm",
+      "type": "Function",
+      "signature": "(tensor, ord, axis, keepdims, name)"
+    },
+    {
+      "name": "print",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "roll",
+      "type": "Function",
+      "signature": "(input, shift, axis, name)"
+    },
+    {
+      "name": "map_fn",
+      "type": "Function",
+      "signature": "(fn, elems, dtype, parallel_iterations, back_prop, swap_memory, infer_shape, name, fn_output_signature)"
+    },
+    {
+      "name": "abs",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "acos",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "add",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "add_n",
+      "type": "Function",
+      "signature": "(inputs, name)"
+    },
+    {
+      "name": "argmax",
+      "type": "Function",
+      "signature": "(input, axis, output_type, name)"
+    },
+    {
+      "name": "argmin",
+      "type": "Function",
+      "signature": "(input, axis, output_type, name)"
+    },
+    {
+      "name": "cast",
+      "type": "Function",
+      "signature": "(x, dtype, name)"
+    },
+    {
+      "name": "complex",
+      "type": "Function",
+      "signature": "(real, imag, name)"
+    },
+    {
+      "name": "cumsum",
+      "type": "Function",
+      "signature": "(x, axis, exclusive, reverse, name)"
+    },
+    {
+      "name": "divide",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "equal",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "exp",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "floor",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "linspace",
+      "type": "Function",
+      "signature": "(start, stop, num, name, axis)"
+    },
+    {
+      "name": "matmul",
+      "type": "Function",
+      "signature": "(a, b, transpose_a, transpose_b, adjoint_a, adjoint_b, a_is_sparse, b_is_sparse, output_type, grad_a, grad_b, name)"
+    },
+    {
+      "name": "multiply",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "not_equal",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "pow",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "range",
+      "type": "Function",
+      "signature": "(start, limit, delta, dtype, name)"
+    },
+    {
+      "name": "reduce_all",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_any",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_logsumexp",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_max",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_mean",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_min",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_prod",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "reduce_sum",
+      "type": "Function",
+      "signature": "(input_tensor, axis, keepdims, name)"
+    },
+    {
+      "name": "round",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "saturate_cast",
+      "type": "Function",
+      "signature": "(value, dtype, name)"
+    },
+    {
+      "name": "scalar_mul",
+      "type": "Function",
+      "signature": "(scalar, x, name)"
+    },
+    {
+      "name": "sigmoid",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "sign",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "sqrt",
+      "type": "Function",
+      "signature": "(x, name)"
+    },
+    {
+      "name": "subtract",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "tensordot",
+      "type": "Function",
+      "signature": "(a, b, axes, name)"
+    },
+    {
+      "name": "truediv",
+      "type": "Function",
+      "signature": "(x, y, name)"
+    },
+    {
+      "name": "vectorized_map",
+      "type": "Function",
+      "signature": "(fn, elems, fallback_to_while_loop, warn)"
+    },
+    {
+      "name": "RaggedTensor",
+      "type": "Class",
+      "signature": "(values, row_partition, internal)"
+    },
+    {
+      "name": "RaggedTensorSpec",
+      "type": "Class",
+      "signature": "(shape, dtype, ragged_rank, row_splits_dtype, flat_values_spec)"
+    },
+    {
+      "name": "numpy_function",
+      "type": "Function",
+      "signature": "(func, inp, Tout, stateful, name)"
+    },
+    {
+      "name": "py_function",
+      "type": "Function",
+      "signature": "(func, inp, Tout, name)"
+    },
+    {
+      "name": "argsort",
+      "type": "Function",
+      "signature": "(values, axis, direction, stable, name)"
+    },
+    {
+      "name": "sort",
+      "type": "Function",
+      "signature": "(values, axis, direction, name)"
+    },
+    {
+      "name": "einsum",
+      "type": "Function",
+      "signature": "(equation, inputs, kwargs)"
+    },
+    {
+      "name": "TensorArray",
+      "type": "Class",
+      "signature": "(dtype, size, dynamic_size, clear_after_read, tensor_array_name, handle, flow, infer_shape, element_shape, colocate_with_first_write_call, name)"
+    },
+    {
+      "name": "TensorArraySpec",
+      "type": "Class",
+      "signature": "(element_shape, dtype, dynamic_size, infer_shape)"
+    },
+    {
+      "name": "UnconnectedGradients",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "variable_creator_scope",
+      "type": "Function",
+      "signature": "(variable_creator)"
+    },
+    {
+      "name": "Variable",
+      "type": "Class",
+      "signature": "(initial_value, trainable, validate_shape, caching_device, name, variable_def, dtype, import_scope, constraint, synchronization, aggregation, shape, experimental_enable_variable_lifting)"
+    },
+    {
+      "name": "VariableAggregation",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "VariableSynchronization",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "while_loop",
+      "type": "Function",
+      "signature": "(cond, body, loop_vars, shape_invariants, parallel_iterations, back_prop, swap_memory, maximum_iterations, name)"
+    },
+    {
+      "name": "get_logger",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "dtensor.proto.layout_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.DTypeAnnotation",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.BFloat16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Bool",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Complex128",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Complex64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float8e4m3fn",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float8e5m2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float8e4m3fnuz",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float8e4m3b11fnuz",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float8e5m2fnuz",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float4e2m1fn",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Float64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Half",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Int64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.UInt64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.QInt8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.QInt16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.QInt32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.QUInt16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.QUInt8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Resource",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.String",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "security.fuzzing.py.annotation_types.Variant",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tsl.profiler.protobuf.xplane_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tsl.profiler.protobuf.profile_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tsl.profiler.protobuf.profiler_options_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tsl.profiler.protobuf.trace_events_pb2.DESCRIPTOR",
+      "type": "Object",
+      "signature": ""
+    }
   ]
 }

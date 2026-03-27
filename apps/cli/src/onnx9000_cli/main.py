@@ -194,8 +194,9 @@ def serve_cmd(args: argparse.Namespace) -> None:
 
 def onnx2gguf_cmd(args: argparse.Namespace) -> None:
     """Convert ONNX to GGUF."""
-    import os
     import json
+    import os
+
     from onnx9000.core.parser.core import load as load_onnx
     from onnx9000.onnx2gguf.compiler import compile_gguf
 
@@ -219,7 +220,7 @@ def onnx2gguf_cmd(args: argparse.Namespace) -> None:
         kv_overrides["general.architecture"] = args.architecture
 
     if args.tokenizer:
-        with open(args.tokenizer, "r") as f:
+        with open(args.tokenizer) as f:
             kv_overrides["tokenizer.json"] = f.read()
 
     if args.outtype:
@@ -233,9 +234,9 @@ def onnx2gguf_cmd(args: argparse.Namespace) -> None:
 
 def gguf2onnx_cmd(args: argparse.Namespace) -> None:
     """Convert GGUF to ONNX."""
+    from onnx9000.core.serializer import save as save_onnx
     from onnx9000.onnx2gguf.reader import GGUFReader
     from onnx9000.onnx2gguf.reverse import reconstruct_onnx
-    from onnx9000.core.serializer import save as save_onnx
 
     out_path = args.output or args.model.replace(".gguf", ".onnx")
 
@@ -277,8 +278,8 @@ def info_webnn_cmd(args: argparse.Namespace) -> None:
 
 def coreml_cmd(args: argparse.Namespace) -> None:
     """Execute CoreML export/import via Node.js CLI."""
-    import subprocess
     import os
+    import subprocess
 
     # Look for the JS CLI script in the monorepo
     base_dir = os.path.dirname(
@@ -396,11 +397,12 @@ def mutate_cmd(args: argparse.Namespace) -> None:
     """Headless CLI modification: Apply JSON script mutations."""
     print(f"Loading {args.model} for batch mutation...")
     import json
+
     from onnx9000.core.parser.core import load as load_onnx
     from onnx9000.core.serializer import save as save_onnx
 
     graph = load_onnx(args.model)
-    with open(args.script, "r") as f:
+    with open(args.script) as f:
         edits = json.load(f)
 
     # Simplistic evaluator

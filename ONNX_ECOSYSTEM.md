@@ -30,3 +30,7 @@ The workspace is cleanly divided between Python tools for heavy-duty graph surge
 3. **`optimum-ui`**: A visual dashboard allowing users to execute INT4 quantization techniques on their weights and observe the graph layout changes dynamically before downloading the resulting web-safe payload.
 
 4. **`sphinx-demo-ui`**: The all-encompassing browser IDE embedded in Sphinx documentation, capable of rendering models, and running real-time transpilation to MLIR, C++, PyTorch, Caffe, and Apple CoreML offline.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

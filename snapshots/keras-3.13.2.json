@@ -1,4 +1,3575 @@
 {
-  "version": "Not Installed",
-  "objects": []
+  "version": "3.13.2",
+  "objects": [
+    {
+      "name": "Variable",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "device",
+      "type": "Function",
+      "signature": "(device_name)"
+    },
+    {
+      "name": "name_scope",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "KerasTensor",
+      "type": "Class",
+      "signature": "(shape, dtype, sparse, ragged, record_history, name, kwargs)"
+    },
+    {
+      "name": "RematScope",
+      "type": "Class",
+      "signature": "(mode, output_size_threshold, layer_names)"
+    },
+    {
+      "name": "remat",
+      "type": "Function",
+      "signature": "(f)"
+    },
+    {
+      "name": "StatelessScope",
+      "type": "Class",
+      "signature": "(state_mapping, collect_losses, initialize_variables)"
+    },
+    {
+      "name": "SymbolicScope",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DTypePolicy",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "FloatDTypePolicy",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Initializer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Input",
+      "type": "Function",
+      "signature": "(shape, batch_size, dtype, sparse, ragged, batch_shape, name, tensor, optional)"
+    },
+    {
+      "name": "InputSpec",
+      "type": "Class",
+      "signature": "(dtype, shape, ndim, max_ndim, min_ndim, axes, allow_last_axis_squeeze, name, optional)"
+    },
+    {
+      "name": "Layer",
+      "type": "Class",
+      "signature": "(activity_regularizer, trainable, dtype, autocast, name, kwargs)"
+    },
+    {
+      "name": "Loss",
+      "type": "Class",
+      "signature": "(name, reduction, dtype)"
+    },
+    {
+      "name": "Metric",
+      "type": "Class",
+      "signature": "(dtype, name)"
+    },
+    {
+      "name": "Model",
+      "type": "Class",
+      "signature": "(args, kwargs)"
+    },
+    {
+      "name": "Sequential",
+      "type": "Class",
+      "signature": "(layers, trainable, name)"
+    },
+    {
+      "name": "Function",
+      "type": "Class",
+      "signature": "(inputs, outputs, name)"
+    },
+    {
+      "name": "Operation",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "Optimizer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Quantizer",
+      "type": "Class",
+      "signature": "(output_dtype)"
+    },
+    {
+      "name": "Regularizer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "version",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "saving.KerasFileEditor",
+      "type": "Class",
+      "signature": "(filepath)"
+    },
+    {
+      "name": "saving.CustomObjectScope",
+      "type": "Class",
+      "signature": "(custom_objects)"
+    },
+    {
+      "name": "saving.custom_object_scope",
+      "type": "Class",
+      "signature": "(custom_objects)"
+    },
+    {
+      "name": "saving.get_custom_objects",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "saving.get_registered_name",
+      "type": "Function",
+      "signature": "(obj)"
+    },
+    {
+      "name": "saving.get_registered_object",
+      "type": "Function",
+      "signature": "(name, custom_objects, module_objects)"
+    },
+    {
+      "name": "saving.register_keras_serializable",
+      "type": "Function",
+      "signature": "(package, name)"
+    },
+    {
+      "name": "saving.load_model",
+      "type": "Function",
+      "signature": "(filepath, custom_objects, compile, safe_mode)"
+    },
+    {
+      "name": "saving.load_weights",
+      "type": "Function",
+      "signature": "(model, filepath, skip_mismatch, kwargs)"
+    },
+    {
+      "name": "saving.save_model",
+      "type": "Function",
+      "signature": "(model, filepath, overwrite, zipped, kwargs)"
+    },
+    {
+      "name": "saving.save_weights",
+      "type": "Function",
+      "signature": "(model, filepath, overwrite, max_shard_size, kwargs)"
+    },
+    {
+      "name": "saving.deserialize_keras_object",
+      "type": "Function",
+      "signature": "(config, custom_objects, safe_mode, kwargs)"
+    },
+    {
+      "name": "saving.serialize_keras_object",
+      "type": "Function",
+      "signature": "(obj)"
+    },
+    {
+      "name": "export.ExportArchive",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "preprocessing.image_dataset_from_directory",
+      "type": "Function",
+      "signature": "(directory, labels, label_mode, class_names, color_mode, batch_size, image_size, shuffle, seed, validation_split, subset, interpolation, follow_links, crop_to_aspect_ratio, pad_to_aspect_ratio, data_format, format, verbose)"
+    },
+    {
+      "name": "preprocessing.text_dataset_from_directory",
+      "type": "Function",
+      "signature": "(directory, labels, label_mode, class_names, batch_size, max_length, shuffle, seed, validation_split, subset, follow_links, format, verbose)"
+    },
+    {
+      "name": "preprocessing.timeseries_dataset_from_array",
+      "type": "Function",
+      "signature": "(data, targets, sequence_length, sequence_stride, sampling_rate, batch_size, shuffle, seed, start_index, end_index)"
+    },
+    {
+      "name": "preprocessing.image.array_to_img",
+      "type": "Function",
+      "signature": "(x, data_format, scale, dtype)"
+    },
+    {
+      "name": "preprocessing.image.img_to_array",
+      "type": "Function",
+      "signature": "(img, data_format, dtype)"
+    },
+    {
+      "name": "preprocessing.image.load_img",
+      "type": "Function",
+      "signature": "(path, color_mode, target_size, interpolation, keep_aspect_ratio)"
+    },
+    {
+      "name": "preprocessing.image.save_img",
+      "type": "Function",
+      "signature": "(path, x, data_format, file_format, scale, kwargs)"
+    },
+    {
+      "name": "preprocessing.image.smart_resize",
+      "type": "Function",
+      "signature": "(x, size, interpolation, data_format, backend_module)"
+    },
+    {
+      "name": "preprocessing.sequence.pad_sequences",
+      "type": "Function",
+      "signature": "(sequences, maxlen, dtype, padding, truncating, value)"
+    },
+    {
+      "name": "distillation.DistillationLoss",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "distillation.FeatureDistillation",
+      "type": "Class",
+      "signature": "(loss, teacher_layer_name, student_layer_name)"
+    },
+    {
+      "name": "distillation.LogitsDistillation",
+      "type": "Class",
+      "signature": "(temperature, loss)"
+    },
+    {
+      "name": "distillation.Distiller",
+      "type": "Class",
+      "signature": "(teacher, student, distillation_losses, distillation_loss_weights, student_loss_weight, name, kwargs)"
+    },
+    {
+      "name": "models.clone_model",
+      "type": "Function",
+      "signature": "(model, input_tensors, clone_function, call_function, recursive, kwargs)"
+    },
+    {
+      "name": "models.Model",
+      "type": "Class",
+      "signature": "(args, kwargs)"
+    },
+    {
+      "name": "models.model_from_json",
+      "type": "Function",
+      "signature": "(json_string, custom_objects)"
+    },
+    {
+      "name": "models.Sequential",
+      "type": "Class",
+      "signature": "(layers, trainable, name)"
+    },
+    {
+      "name": "models.load_model",
+      "type": "Function",
+      "signature": "(filepath, custom_objects, compile, safe_mode)"
+    },
+    {
+      "name": "models.save_model",
+      "type": "Function",
+      "signature": "(model, filepath, overwrite, zipped, kwargs)"
+    },
+    {
+      "name": "applications.ConvNeXtBase",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ConvNeXtLarge",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ConvNeXtSmall",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ConvNeXtTiny",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ConvNeXtXLarge",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.DenseNet121",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.DenseNet169",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.DenseNet201",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB0",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB1",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB4",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB5",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB6",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetB7",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2B0",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2B1",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2B2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2B3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2L",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2M",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.EfficientNetV2S",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.InceptionResNetV2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.InceptionV3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.MobileNet",
+      "type": "Function",
+      "signature": "(input_shape, alpha, depth_multiplier, dropout, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.MobileNetV2",
+      "type": "Function",
+      "signature": "(input_shape, alpha, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.MobileNetV3Large",
+      "type": "Function",
+      "signature": "(input_shape, alpha, minimalistic, include_top, weights, input_tensor, classes, pooling, dropout_rate, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.MobileNetV3Small",
+      "type": "Function",
+      "signature": "(input_shape, alpha, minimalistic, include_top, weights, input_tensor, classes, pooling, dropout_rate, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.NASNetLarge",
+      "type": "Function",
+      "signature": "(input_shape, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.NASNetMobile",
+      "type": "Function",
+      "signature": "(input_shape, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet50",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet101",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet152",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet50V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet101V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.ResNet152V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.VGG16",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.VGG19",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.Xception",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.mobilenet_v3.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.mobilenet_v3.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.inception_resnet_v2.InceptionResNetV2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.inception_resnet_v2.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.inception_resnet_v2.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.resnet_v2.ResNet50V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet_v2.ResNet101V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet_v2.ResNet152V2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet_v2.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.resnet_v2.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.convnext.ConvNeXtBase",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.convnext.ConvNeXtLarge",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.convnext.ConvNeXtSmall",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.convnext.ConvNeXtTiny",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.convnext.ConvNeXtXLarge",
+      "type": "Function",
+      "signature": "(include_top, include_preprocessing, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.convnext.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.convnext.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.inception_v3.InceptionV3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.inception_v3.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.inception_v3.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.xception.Xception",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.xception.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.xception.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.resnet50.ResNet50",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet50.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.resnet50.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.vgg19.VGG19",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.vgg19.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.vgg19.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.resnet.ResNet50",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet.ResNet101",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet.ResNet152",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.resnet.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.resnet.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.vgg16.VGG16",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.vgg16.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.vgg16.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.densenet.DenseNet121",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.densenet.DenseNet169",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.densenet.DenseNet201",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.densenet.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.densenet.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.nasnet.NASNetLarge",
+      "type": "Function",
+      "signature": "(input_shape, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.nasnet.NASNetMobile",
+      "type": "Function",
+      "signature": "(input_shape, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.nasnet.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.nasnet.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.mobilenet.MobileNet",
+      "type": "Function",
+      "signature": "(input_shape, alpha, depth_multiplier, dropout, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.mobilenet.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.mobilenet.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.imagenet_utils.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.imagenet_utils.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format, mode)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB0",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB1",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB4",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB5",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB6",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.EfficientNetB7",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.efficientnet.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.efficientnet.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2B0",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2B1",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2B2",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2B3",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2L",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2M",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.EfficientNetV2S",
+      "type": "Function",
+      "signature": "(include_top, weights, input_tensor, input_shape, pooling, classes, classifier_activation, include_preprocessing, name)"
+    },
+    {
+      "name": "applications.efficientnet_v2.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.efficientnet_v2.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "applications.mobilenet_v2.MobileNetV2",
+      "type": "Function",
+      "signature": "(input_shape, alpha, include_top, weights, input_tensor, pooling, classes, classifier_activation, name)"
+    },
+    {
+      "name": "applications.mobilenet_v2.decode_predictions",
+      "type": "Function",
+      "signature": "(preds, top)"
+    },
+    {
+      "name": "applications.mobilenet_v2.preprocess_input",
+      "type": "Function",
+      "signature": "(x, data_format)"
+    },
+    {
+      "name": "initializers.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "initializers.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "initializers.serialize",
+      "type": "Function",
+      "signature": "(initializer)"
+    },
+    {
+      "name": "initializers.STFT",
+      "type": "Class",
+      "signature": "(side, window, scaling, periodic)"
+    },
+    {
+      "name": "initializers.STFTInitializer",
+      "type": "Class",
+      "signature": "(side, window, scaling, periodic)"
+    },
+    {
+      "name": "initializers.stft",
+      "type": "Class",
+      "signature": "(side, window, scaling, periodic)"
+    },
+    {
+      "name": "initializers.Constant",
+      "type": "Class",
+      "signature": "(value)"
+    },
+    {
+      "name": "initializers.constant",
+      "type": "Class",
+      "signature": "(value)"
+    },
+    {
+      "name": "initializers.Identity",
+      "type": "Class",
+      "signature": "(gain)"
+    },
+    {
+      "name": "initializers.IdentityInitializer",
+      "type": "Class",
+      "signature": "(gain)"
+    },
+    {
+      "name": "initializers.identity",
+      "type": "Class",
+      "signature": "(gain)"
+    },
+    {
+      "name": "initializers.Ones",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "initializers.ones",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "initializers.Zeros",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "initializers.zeros",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "initializers.Initializer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "initializers.GlorotNormal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.glorot_normal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.GlorotUniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.glorot_uniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.HeNormal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.he_normal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.HeUniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.he_uniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.LecunNormal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.lecun_normal",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.LecunUniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.lecun_uniform",
+      "type": "Class",
+      "signature": "(seed)"
+    },
+    {
+      "name": "initializers.Orthogonal",
+      "type": "Class",
+      "signature": "(gain, seed)"
+    },
+    {
+      "name": "initializers.OrthogonalInitializer",
+      "type": "Class",
+      "signature": "(gain, seed)"
+    },
+    {
+      "name": "initializers.orthogonal",
+      "type": "Class",
+      "signature": "(gain, seed)"
+    },
+    {
+      "name": "initializers.RandomNormal",
+      "type": "Class",
+      "signature": "(mean, stddev, seed)"
+    },
+    {
+      "name": "initializers.random_normal",
+      "type": "Class",
+      "signature": "(mean, stddev, seed)"
+    },
+    {
+      "name": "initializers.RandomUniform",
+      "type": "Class",
+      "signature": "(minval, maxval, seed)"
+    },
+    {
+      "name": "initializers.random_uniform",
+      "type": "Class",
+      "signature": "(minval, maxval, seed)"
+    },
+    {
+      "name": "initializers.TruncatedNormal",
+      "type": "Class",
+      "signature": "(mean, stddev, seed)"
+    },
+    {
+      "name": "initializers.truncated_normal",
+      "type": "Class",
+      "signature": "(mean, stddev, seed)"
+    },
+    {
+      "name": "initializers.VarianceScaling",
+      "type": "Class",
+      "signature": "(scale, mode, distribution, seed)"
+    },
+    {
+      "name": "initializers.variance_scaling",
+      "type": "Class",
+      "signature": "(scale, mode, distribution, seed)"
+    },
+    {
+      "name": "quantizers.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "quantizers.get",
+      "type": "Function",
+      "signature": "(identifier, kwargs)"
+    },
+    {
+      "name": "quantizers.serialize",
+      "type": "Function",
+      "signature": "(initializer)"
+    },
+    {
+      "name": "quantizers.GPTQConfig",
+      "type": "Class",
+      "signature": "(dataset, tokenizer, weight_bits: int, num_samples: int, per_channel: bool, sequence_length: int, hessian_damping: float, group_size: int, symmetric: bool, activation_order: bool, quantization_layer_structure: dict)"
+    },
+    {
+      "name": "quantizers.Float8QuantizationConfig",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "quantizers.Int4QuantizationConfig",
+      "type": "Class",
+      "signature": "(weight_quantizer, activation_quantizer)"
+    },
+    {
+      "name": "quantizers.Int8QuantizationConfig",
+      "type": "Class",
+      "signature": "(weight_quantizer, activation_quantizer)"
+    },
+    {
+      "name": "quantizers.QuantizationConfig",
+      "type": "Class",
+      "signature": "(weight_quantizer, activation_quantizer)"
+    },
+    {
+      "name": "quantizers.AbsMaxQuantizer",
+      "type": "Class",
+      "signature": "(axis, value_range, epsilon, output_dtype)"
+    },
+    {
+      "name": "quantizers.Quantizer",
+      "type": "Class",
+      "signature": "(output_dtype)"
+    },
+    {
+      "name": "quantizers.abs_max_quantize",
+      "type": "Function",
+      "signature": "(inputs, axis, value_range, dtype, epsilon, to_numpy)"
+    },
+    {
+      "name": "quantizers.compute_float8_amax_history",
+      "type": "Function",
+      "signature": "(x, amax_history)"
+    },
+    {
+      "name": "quantizers.compute_float8_scale",
+      "type": "Function",
+      "signature": "(amax, scale, dtype_max, margin)"
+    },
+    {
+      "name": "quantizers.fake_quant_with_min_max_vars",
+      "type": "Function",
+      "signature": "(inputs, min_vals, max_vals, num_bits, narrow_range, axis)"
+    },
+    {
+      "name": "quantizers.pack_int4",
+      "type": "Function",
+      "signature": "(arr, axis, dtype)"
+    },
+    {
+      "name": "quantizers.quantize_and_dequantize",
+      "type": "Function",
+      "signature": "(inputs, scale, quantized_dtype, compute_dtype)"
+    },
+    {
+      "name": "quantizers.unpack_int4",
+      "type": "Function",
+      "signature": "(packed, orig_len, axis, dtype)"
+    },
+    {
+      "name": "activations.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "activations.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "activations.serialize",
+      "type": "Function",
+      "signature": "(activation)"
+    },
+    {
+      "name": "activations.celu",
+      "type": "Function",
+      "signature": "(x, alpha)"
+    },
+    {
+      "name": "activations.elu",
+      "type": "Function",
+      "signature": "(x, alpha)"
+    },
+    {
+      "name": "activations.exponential",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.gelu",
+      "type": "Function",
+      "signature": "(x, approximate)"
+    },
+    {
+      "name": "activations.glu",
+      "type": "Function",
+      "signature": "(x, axis)"
+    },
+    {
+      "name": "activations.hard_shrink",
+      "type": "Function",
+      "signature": "(x, threshold)"
+    },
+    {
+      "name": "activations.hard_sigmoid",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.hard_silu",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.hard_swish",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.hard_tanh",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.leaky_relu",
+      "type": "Function",
+      "signature": "(x, negative_slope)"
+    },
+    {
+      "name": "activations.linear",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.log_sigmoid",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.log_softmax",
+      "type": "Function",
+      "signature": "(x, axis)"
+    },
+    {
+      "name": "activations.mish",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.relu",
+      "type": "Function",
+      "signature": "(x, negative_slope, max_value, threshold)"
+    },
+    {
+      "name": "activations.relu6",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.selu",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.sigmoid",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.silu",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.swish",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.soft_shrink",
+      "type": "Function",
+      "signature": "(x, threshold)"
+    },
+    {
+      "name": "activations.softmax",
+      "type": "Function",
+      "signature": "(x, axis)"
+    },
+    {
+      "name": "activations.softplus",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.softsign",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.sparse_plus",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.sparse_sigmoid",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.sparsemax",
+      "type": "Function",
+      "signature": "(x, axis)"
+    },
+    {
+      "name": "activations.squareplus",
+      "type": "Function",
+      "signature": "(x, b)"
+    },
+    {
+      "name": "activations.tanh",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.tanh_shrink",
+      "type": "Function",
+      "signature": "(x)"
+    },
+    {
+      "name": "activations.threshold",
+      "type": "Function",
+      "signature": "(x, threshold, default_value)"
+    },
+    {
+      "name": "metrics.binary_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "metrics.binary_focal_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, apply_class_balancing, alpha, gamma, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "metrics.categorical_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "metrics.categorical_focal_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, alpha, gamma, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "metrics.categorical_hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.huber",
+      "type": "Function",
+      "signature": "(y_true, y_pred, delta)"
+    },
+    {
+      "name": "metrics.kl_divergence",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.log_cosh",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.mean_absolute_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.mean_absolute_percentage_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.mean_squared_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.mean_squared_logarithmic_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.poisson",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.sparse_categorical_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, ignore_class, axis)"
+    },
+    {
+      "name": "metrics.squared_hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "metrics.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "metrics.serialize",
+      "type": "Function",
+      "signature": "(metric)"
+    },
+    {
+      "name": "metrics.Accuracy",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.BinaryAccuracy",
+      "type": "Class",
+      "signature": "(name, dtype, threshold)"
+    },
+    {
+      "name": "metrics.CategoricalAccuracy",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.SparseCategoricalAccuracy",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.SparseTopKCategoricalAccuracy",
+      "type": "Class",
+      "signature": "(k, name, dtype, from_sorted_ids)"
+    },
+    {
+      "name": "metrics.TopKCategoricalAccuracy",
+      "type": "Class",
+      "signature": "(k, name, dtype)"
+    },
+    {
+      "name": "metrics.binary_accuracy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, threshold)"
+    },
+    {
+      "name": "metrics.categorical_accuracy",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.sparse_categorical_accuracy",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "metrics.sparse_top_k_categorical_accuracy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, k, from_sorted_ids)"
+    },
+    {
+      "name": "metrics.top_k_categorical_accuracy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, k)"
+    },
+    {
+      "name": "metrics.AUC",
+      "type": "Class",
+      "signature": "(num_thresholds, curve, summation_method, name, dtype, thresholds, multi_label, num_labels, label_weights, from_logits)"
+    },
+    {
+      "name": "metrics.FalseNegatives",
+      "type": "Class",
+      "signature": "(thresholds, name, dtype)"
+    },
+    {
+      "name": "metrics.FalsePositives",
+      "type": "Class",
+      "signature": "(thresholds, name, dtype)"
+    },
+    {
+      "name": "metrics.Precision",
+      "type": "Class",
+      "signature": "(thresholds, top_k, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.PrecisionAtRecall",
+      "type": "Class",
+      "signature": "(recall, num_thresholds, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.Recall",
+      "type": "Class",
+      "signature": "(thresholds, top_k, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.RecallAtPrecision",
+      "type": "Class",
+      "signature": "(precision, num_thresholds, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.SensitivityAtSpecificity",
+      "type": "Class",
+      "signature": "(specificity, num_thresholds, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.SpecificityAtSensitivity",
+      "type": "Class",
+      "signature": "(sensitivity, num_thresholds, class_id, name, dtype)"
+    },
+    {
+      "name": "metrics.TrueNegatives",
+      "type": "Class",
+      "signature": "(thresholds, name, dtype)"
+    },
+    {
+      "name": "metrics.TruePositives",
+      "type": "Class",
+      "signature": "(thresholds, name, dtype)"
+    },
+    {
+      "name": "metrics.ConcordanceCorrelation",
+      "type": "Class",
+      "signature": "(name, dtype, axis)"
+    },
+    {
+      "name": "metrics.PearsonCorrelation",
+      "type": "Class",
+      "signature": "(name, dtype, axis)"
+    },
+    {
+      "name": "metrics.concordance_correlation",
+      "type": "Function",
+      "signature": "(y_true, y_pred, axis)"
+    },
+    {
+      "name": "metrics.pearson_correlation",
+      "type": "Function",
+      "signature": "(y_true, y_pred, axis)"
+    },
+    {
+      "name": "metrics.F1Score",
+      "type": "Class",
+      "signature": "(average, threshold, name, dtype)"
+    },
+    {
+      "name": "metrics.FBetaScore",
+      "type": "Class",
+      "signature": "(average, beta, threshold, name, dtype)"
+    },
+    {
+      "name": "metrics.CategoricalHinge",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.Hinge",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.SquaredHinge",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.BinaryIoU",
+      "type": "Class",
+      "signature": "(target_class_ids, threshold, name, dtype)"
+    },
+    {
+      "name": "metrics.IoU",
+      "type": "Class",
+      "signature": "(num_classes, target_class_ids, name, dtype, ignore_class, sparse_y_true, sparse_y_pred, axis)"
+    },
+    {
+      "name": "metrics.MeanIoU",
+      "type": "Class",
+      "signature": "(num_classes, name, dtype, ignore_class, sparse_y_true, sparse_y_pred, axis)"
+    },
+    {
+      "name": "metrics.OneHotIoU",
+      "type": "Class",
+      "signature": "(num_classes, target_class_ids, name, dtype, ignore_class, sparse_y_pred, axis)"
+    },
+    {
+      "name": "metrics.OneHotMeanIoU",
+      "type": "Class",
+      "signature": "(num_classes, name, dtype, ignore_class, sparse_y_pred, axis)"
+    },
+    {
+      "name": "metrics.Metric",
+      "type": "Class",
+      "signature": "(dtype, name)"
+    },
+    {
+      "name": "metrics.BinaryCrossentropy",
+      "type": "Class",
+      "signature": "(name, dtype, from_logits, label_smoothing)"
+    },
+    {
+      "name": "metrics.CategoricalCrossentropy",
+      "type": "Class",
+      "signature": "(name, dtype, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "metrics.KLDivergence",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.Poisson",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.SparseCategoricalCrossentropy",
+      "type": "Class",
+      "signature": "(name, dtype, from_logits, axis)"
+    },
+    {
+      "name": "metrics.Mean",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.MeanMetricWrapper",
+      "type": "Class",
+      "signature": "(fn, name, dtype, kwargs)"
+    },
+    {
+      "name": "metrics.Sum",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.CosineSimilarity",
+      "type": "Class",
+      "signature": "(name, dtype, axis)"
+    },
+    {
+      "name": "metrics.LogCoshError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.MeanAbsoluteError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.MeanAbsolutePercentageError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.MeanSquaredError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.MeanSquaredLogarithmicError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "metrics.R2Score",
+      "type": "Class",
+      "signature": "(class_aggregation, num_regressors, name, dtype)"
+    },
+    {
+      "name": "metrics.RootMeanSquaredError",
+      "type": "Class",
+      "signature": "(name, dtype)"
+    },
+    {
+      "name": "losses.deserialize",
+      "type": "Function",
+      "signature": "(name, custom_objects)"
+    },
+    {
+      "name": "losses.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "losses.serialize",
+      "type": "Function",
+      "signature": "(loss)"
+    },
+    {
+      "name": "losses.Loss",
+      "type": "Class",
+      "signature": "(name, reduction, dtype)"
+    },
+    {
+      "name": "losses.CTC",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.BinaryCrossentropy",
+      "type": "Class",
+      "signature": "(from_logits, label_smoothing, axis, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.BinaryFocalCrossentropy",
+      "type": "Class",
+      "signature": "(apply_class_balancing, alpha, gamma, from_logits, label_smoothing, axis, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.CategoricalCrossentropy",
+      "type": "Class",
+      "signature": "(from_logits, label_smoothing, axis, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.CategoricalFocalCrossentropy",
+      "type": "Class",
+      "signature": "(alpha, gamma, from_logits, label_smoothing, axis, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.CategoricalGeneralizedCrossEntropy",
+      "type": "Class",
+      "signature": "(q, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.CategoricalHinge",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.Circle",
+      "type": "Class",
+      "signature": "(gamma, margin, remove_diagonal, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.CosineSimilarity",
+      "type": "Class",
+      "signature": "(axis, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.Dice",
+      "type": "Class",
+      "signature": "(reduction, name, axis, dtype)"
+    },
+    {
+      "name": "losses.Hinge",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.Huber",
+      "type": "Class",
+      "signature": "(delta, reduction, name, dtype)"
+    },
+    {
+      "name": "losses.KLDivergence",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.LogCosh",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.MeanAbsoluteError",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.MeanAbsolutePercentageError",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.MeanSquaredError",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.MeanSquaredLogarithmicError",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.Poisson",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.SparseCategoricalCrossentropy",
+      "type": "Class",
+      "signature": "(from_logits, ignore_class, reduction, axis, name, dtype)"
+    },
+    {
+      "name": "losses.SquaredHinge",
+      "type": "Class",
+      "signature": "(reduction, name, dtype)"
+    },
+    {
+      "name": "losses.Tversky",
+      "type": "Class",
+      "signature": "(alpha, beta, reduction, name, axis, dtype)"
+    },
+    {
+      "name": "losses.binary_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "losses.binary_focal_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, apply_class_balancing, alpha, gamma, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "losses.categorical_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "losses.categorical_focal_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, alpha, gamma, from_logits, label_smoothing, axis)"
+    },
+    {
+      "name": "losses.categorical_generalized_cross_entropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, q)"
+    },
+    {
+      "name": "losses.categorical_hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.circle",
+      "type": "Function",
+      "signature": "(y_true, y_pred, ref_labels, ref_embeddings, remove_diagonal, gamma, margin)"
+    },
+    {
+      "name": "losses.cosine_similarity",
+      "type": "Function",
+      "signature": "(y_true, y_pred, axis)"
+    },
+    {
+      "name": "losses.ctc",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.dice",
+      "type": "Function",
+      "signature": "(y_true, y_pred, axis)"
+    },
+    {
+      "name": "losses.hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.huber",
+      "type": "Function",
+      "signature": "(y_true, y_pred, delta)"
+    },
+    {
+      "name": "losses.kl_divergence",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.log_cosh",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.mean_absolute_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.mean_absolute_percentage_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.mean_squared_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.mean_squared_logarithmic_error",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.poisson",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.sparse_categorical_crossentropy",
+      "type": "Function",
+      "signature": "(y_true, y_pred, from_logits, ignore_class, axis)"
+    },
+    {
+      "name": "losses.squared_hinge",
+      "type": "Function",
+      "signature": "(y_true, y_pred)"
+    },
+    {
+      "name": "losses.tversky",
+      "type": "Function",
+      "signature": "(y_true, y_pred, alpha, beta, axis)"
+    },
+    {
+      "name": "constraints.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "constraints.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "constraints.serialize",
+      "type": "Function",
+      "signature": "(constraint)"
+    },
+    {
+      "name": "constraints.Constraint",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constraints.MaxNorm",
+      "type": "Class",
+      "signature": "(max_value, axis)"
+    },
+    {
+      "name": "constraints.max_norm",
+      "type": "Class",
+      "signature": "(max_value, axis)"
+    },
+    {
+      "name": "constraints.MinMaxNorm",
+      "type": "Class",
+      "signature": "(min_value, max_value, rate, axis)"
+    },
+    {
+      "name": "constraints.min_max_norm",
+      "type": "Class",
+      "signature": "(min_value, max_value, rate, axis)"
+    },
+    {
+      "name": "constraints.NonNeg",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constraints.non_neg",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constraints.UnitNorm",
+      "type": "Class",
+      "signature": "(axis)"
+    },
+    {
+      "name": "constraints.unit_norm",
+      "type": "Class",
+      "signature": "(axis)"
+    },
+    {
+      "name": "datasets.cifar10.load_data",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.fashion_mnist.load_data",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.boston_housing.load_data",
+      "type": "Function",
+      "signature": "(path, test_split, seed)"
+    },
+    {
+      "name": "datasets.california_housing.load_data",
+      "type": "Function",
+      "signature": "(version, path, test_split, seed)"
+    },
+    {
+      "name": "datasets.cifar100.load_data",
+      "type": "Function",
+      "signature": "(label_mode)"
+    },
+    {
+      "name": "datasets.mnist.load_data",
+      "type": "Function",
+      "signature": "(path)"
+    },
+    {
+      "name": "datasets.imdb.get_word_index",
+      "type": "Function",
+      "signature": "(path)"
+    },
+    {
+      "name": "datasets.imdb.load_data",
+      "type": "Function",
+      "signature": "(path, num_words, skip_top, maxlen, seed, start_char, oov_char, index_from, kwargs)"
+    },
+    {
+      "name": "datasets.reuters.get_label_names",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "datasets.reuters.get_word_index",
+      "type": "Function",
+      "signature": "(path)"
+    },
+    {
+      "name": "datasets.reuters.load_data",
+      "type": "Function",
+      "signature": "(path, num_words, skip_top, maxlen, test_split, seed, start_char, oov_char, index_from)"
+    },
+    {
+      "name": "dtype_policies.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "dtype_policies.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "dtype_policies.serialize",
+      "type": "Function",
+      "signature": "(dtype_policy)"
+    },
+    {
+      "name": "dtype_policies.DTypePolicy",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "dtype_policies.FloatDTypePolicy",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "dtype_policies.GPTQDTypePolicy",
+      "type": "Class",
+      "signature": "(mode, source_name)"
+    },
+    {
+      "name": "dtype_policies.QuantizedDTypePolicy",
+      "type": "Class",
+      "signature": "(mode, source_name)"
+    },
+    {
+      "name": "dtype_policies.QuantizedFloat8DTypePolicy",
+      "type": "Class",
+      "signature": "(mode, source_name, amax_history_length)"
+    },
+    {
+      "name": "dtype_policies.DTypePolicyMap",
+      "type": "Class",
+      "signature": "(default_policy, policy_map)"
+    },
+    {
+      "name": "mixed_precision.DTypePolicy",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "mixed_precision.Policy",
+      "type": "Class",
+      "signature": "(name)"
+    },
+    {
+      "name": "mixed_precision.dtype_policy",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "mixed_precision.global_policy",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "mixed_precision.set_dtype_policy",
+      "type": "Function",
+      "signature": "(policy)"
+    },
+    {
+      "name": "mixed_precision.set_global_policy",
+      "type": "Function",
+      "signature": "(policy)"
+    },
+    {
+      "name": "mixed_precision.LossScaleOptimizer",
+      "type": "Class",
+      "signature": "(inner_optimizer, initial_scale, dynamic_growth_steps, name, kwargs)"
+    },
+    {
+      "name": "random.beta",
+      "type": "Function",
+      "signature": "(shape, alpha, beta, dtype, seed)"
+    },
+    {
+      "name": "random.binomial",
+      "type": "Function",
+      "signature": "(shape, counts, probabilities, dtype, seed)"
+    },
+    {
+      "name": "random.categorical",
+      "type": "Function",
+      "signature": "(logits, num_samples, dtype, seed)"
+    },
+    {
+      "name": "random.dropout",
+      "type": "Function",
+      "signature": "(inputs, rate, noise_shape, seed)"
+    },
+    {
+      "name": "random.gamma",
+      "type": "Function",
+      "signature": "(shape, alpha, dtype, seed)"
+    },
+    {
+      "name": "random.normal",
+      "type": "Function",
+      "signature": "(shape, mean, stddev, dtype, seed)"
+    },
+    {
+      "name": "random.randint",
+      "type": "Function",
+      "signature": "(shape, minval, maxval, dtype, seed)"
+    },
+    {
+      "name": "random.shuffle",
+      "type": "Function",
+      "signature": "(x, axis, seed)"
+    },
+    {
+      "name": "random.truncated_normal",
+      "type": "Function",
+      "signature": "(shape, mean, stddev, dtype, seed)"
+    },
+    {
+      "name": "random.uniform",
+      "type": "Function",
+      "signature": "(shape, minval, maxval, dtype, seed)"
+    },
+    {
+      "name": "random.SeedGenerator",
+      "type": "Class",
+      "signature": "(seed, name, kwargs)"
+    },
+    {
+      "name": "config.disable_flash_attention",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.enable_flash_attention",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.epsilon",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.floatx",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.image_data_format",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.is_flash_attention_enabled",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.is_nnx_enabled",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.max_epochs",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.max_steps_per_epoch",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.set_epsilon",
+      "type": "Function",
+      "signature": "(value)"
+    },
+    {
+      "name": "config.set_floatx",
+      "type": "Function",
+      "signature": "(value)"
+    },
+    {
+      "name": "config.set_image_data_format",
+      "type": "Function",
+      "signature": "(data_format)"
+    },
+    {
+      "name": "config.set_max_epochs",
+      "type": "Function",
+      "signature": "(max_epochs)"
+    },
+    {
+      "name": "config.set_max_steps_per_epoch",
+      "type": "Function",
+      "signature": "(max_steps_per_epoch)"
+    },
+    {
+      "name": "config.dtype_policy",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.set_dtype_policy",
+      "type": "Function",
+      "signature": "(policy)"
+    },
+    {
+      "name": "config.enable_unsafe_deserialization",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.set_backend",
+      "type": "Function",
+      "signature": "(backend)"
+    },
+    {
+      "name": "config.disable_interactive_logging",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.enable_interactive_logging",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.is_interactive_logging_enabled",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.disable_traceback_filtering",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.enable_traceback_filtering",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "config.is_traceback_filtering_enabled",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "distribution.DataParallel",
+      "type": "Class",
+      "signature": "(device_mesh, devices, auto_shard_dataset)"
+    },
+    {
+      "name": "distribution.DeviceMesh",
+      "type": "Class",
+      "signature": "(shape, axis_names, devices)"
+    },
+    {
+      "name": "distribution.LayoutMap",
+      "type": "Class",
+      "signature": "(device_mesh)"
+    },
+    {
+      "name": "distribution.ModelParallel",
+      "type": "Class",
+      "signature": "(layout_map, batch_dim_name, auto_shard_dataset, kwargs)"
+    },
+    {
+      "name": "distribution.TensorLayout",
+      "type": "Class",
+      "signature": "(axes, device_mesh)"
+    },
+    {
+      "name": "distribution.distribute_tensor",
+      "type": "Function",
+      "signature": "(tensor, layout)"
+    },
+    {
+      "name": "distribution.distribution",
+      "type": "Function",
+      "signature": "()"
+    },
+    {
+      "name": "distribution.get_device_count",
+      "type": "Function",
+      "signature": "(device_type)"
+    },
+    {
+      "name": "distribution.initialize",
+      "type": "Function",
+      "signature": "(job_addresses, num_processes, process_id)"
+    },
+    {
+      "name": "distribution.list_devices",
+      "type": "Function",
+      "signature": "(device_type)"
+    },
+    {
+      "name": "distribution.set_distribution",
+      "type": "Function",
+      "signature": "(value)"
+    },
+    {
+      "name": "visualization.draw_bounding_boxes",
+      "type": "Function",
+      "signature": "(images, bounding_boxes, bounding_box_format, class_mapping, color, line_thickness, text_thickness, font_scale, data_format)"
+    },
+    {
+      "name": "visualization.draw_segmentation_masks",
+      "type": "Function",
+      "signature": "(images, segmentation_masks, num_classes, color_mapping, alpha, blend, ignore_index, data_format)"
+    },
+    {
+      "name": "visualization.plot_bounding_box_gallery",
+      "type": "Function",
+      "signature": "(images, bounding_box_format, y_true, y_pred, value_range, true_color, pred_color, line_thickness, font_scale, text_thickness, class_mapping, ground_truth_mapping, prediction_mapping, legend, legend_handles, rows, cols, data_format, kwargs)"
+    },
+    {
+      "name": "visualization.plot_image_gallery",
+      "type": "Function",
+      "signature": "(images, y_true, y_pred, label_map, rows, cols, value_range, scale, path, show, transparent, dpi, legend_handles, data_format)"
+    },
+    {
+      "name": "visualization.plot_segmentation_mask_gallery",
+      "type": "Function",
+      "signature": "(images, num_classes, value_range, y_true, y_pred, color_mapping, blend, alpha, ignore_index, data_format, kwargs)"
+    },
+    {
+      "name": "wrappers.SKLearnClassifier",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "wrappers.SKLearnRegressor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "wrappers.SKLearnTransformer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "regularizers.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "regularizers.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "regularizers.serialize",
+      "type": "Function",
+      "signature": "(regularizer)"
+    },
+    {
+      "name": "regularizers.L1",
+      "type": "Class",
+      "signature": "(l1)"
+    },
+    {
+      "name": "regularizers.l1",
+      "type": "Class",
+      "signature": "(l1)"
+    },
+    {
+      "name": "regularizers.L1L2",
+      "type": "Class",
+      "signature": "(l1, l2)"
+    },
+    {
+      "name": "regularizers.l1_l2",
+      "type": "Class",
+      "signature": "(l1, l2)"
+    },
+    {
+      "name": "regularizers.L2",
+      "type": "Class",
+      "signature": "(l2)"
+    },
+    {
+      "name": "regularizers.l2",
+      "type": "Class",
+      "signature": "(l2)"
+    },
+    {
+      "name": "regularizers.OrthogonalRegularizer",
+      "type": "Class",
+      "signature": "(factor, mode)"
+    },
+    {
+      "name": "regularizers.orthogonal_regularizer",
+      "type": "Class",
+      "signature": "(factor, mode)"
+    },
+    {
+      "name": "regularizers.Regularizer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "callbacks.BackupAndRestore",
+      "type": "Class",
+      "signature": "(backup_dir, save_freq, double_checkpoint, delete_checkpoint)"
+    },
+    {
+      "name": "callbacks.Callback",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "callbacks.CallbackList",
+      "type": "Class",
+      "signature": "(callbacks, add_history, add_progbar, model, params)"
+    },
+    {
+      "name": "callbacks.CSVLogger",
+      "type": "Class",
+      "signature": "(filename, separator, append)"
+    },
+    {
+      "name": "callbacks.EarlyStopping",
+      "type": "Class",
+      "signature": "(monitor, min_delta, patience, verbose, mode, baseline, restore_best_weights, start_from_epoch)"
+    },
+    {
+      "name": "callbacks.History",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "callbacks.LambdaCallback",
+      "type": "Class",
+      "signature": "(on_epoch_begin, on_epoch_end, on_train_begin, on_train_end, on_train_batch_begin, on_train_batch_end, kwargs)"
+    },
+    {
+      "name": "callbacks.LearningRateScheduler",
+      "type": "Class",
+      "signature": "(schedule, verbose)"
+    },
+    {
+      "name": "callbacks.ModelCheckpoint",
+      "type": "Class",
+      "signature": "(filepath, monitor, verbose, save_best_only, save_weights_only, mode, save_freq, initial_value_threshold)"
+    },
+    {
+      "name": "callbacks.ProgbarLogger",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "callbacks.ReduceLROnPlateau",
+      "type": "Class",
+      "signature": "(monitor, factor, patience, verbose, mode, min_delta, cooldown, min_lr, kwargs)"
+    },
+    {
+      "name": "callbacks.RemoteMonitor",
+      "type": "Class",
+      "signature": "(root, path, field, headers, send_as_json)"
+    },
+    {
+      "name": "callbacks.SwapEMAWeights",
+      "type": "Class",
+      "signature": "(swap_on_epoch)"
+    },
+    {
+      "name": "callbacks.TensorBoard",
+      "type": "Class",
+      "signature": "(log_dir, histogram_freq, write_graph, write_images, write_steps_per_second, update_freq, profile_batch, embeddings_freq, embeddings_metadata)"
+    },
+    {
+      "name": "callbacks.TerminateOnNaN",
+      "type": "Class",
+      "signature": "(raise_error: bool)"
+    },
+    {
+      "name": "optimizers.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "optimizers.get",
+      "type": "Function",
+      "signature": "(identifier)"
+    },
+    {
+      "name": "optimizers.serialize",
+      "type": "Function",
+      "signature": "(optimizer)"
+    },
+    {
+      "name": "optimizers.Adadelta",
+      "type": "Class",
+      "signature": "(learning_rate, rho, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Adafactor",
+      "type": "Class",
+      "signature": "(learning_rate, beta_2_decay, epsilon_1, epsilon_2, clip_threshold, relative_step, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Adagrad",
+      "type": "Class",
+      "signature": "(learning_rate, initial_accumulator_value, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Adam",
+      "type": "Class",
+      "signature": "(learning_rate, beta_1, beta_2, epsilon, amsgrad, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Adamax",
+      "type": "Class",
+      "signature": "(learning_rate, beta_1, beta_2, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.AdamW",
+      "type": "Class",
+      "signature": "(learning_rate, weight_decay, beta_1, beta_2, epsilon, amsgrad, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Ftrl",
+      "type": "Class",
+      "signature": "(learning_rate, learning_rate_power, initial_accumulator_value, l1_regularization_strength, l2_regularization_strength, l2_shrinkage_regularization_strength, beta, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Lamb",
+      "type": "Class",
+      "signature": "(learning_rate, beta_1, beta_2, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Lion",
+      "type": "Class",
+      "signature": "(learning_rate, beta_1, beta_2, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.LossScaleOptimizer",
+      "type": "Class",
+      "signature": "(inner_optimizer, initial_scale, dynamic_growth_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Muon",
+      "type": "Class",
+      "signature": "(learning_rate, adam_beta_1, adam_beta_2, adam_weight_decay, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, exclude_layers, exclude_embeddings, muon_a, muon_b, muon_c, adam_lr_ratio, momentum, ns_steps, nesterov, rms_rate, kwargs)"
+    },
+    {
+      "name": "optimizers.Nadam",
+      "type": "Class",
+      "signature": "(learning_rate, beta_1, beta_2, epsilon, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.Optimizer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "optimizers.RMSprop",
+      "type": "Class",
+      "signature": "(learning_rate, rho, momentum, epsilon, centered, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.SGD",
+      "type": "Class",
+      "signature": "(learning_rate, momentum, nesterov, weight_decay, clipnorm, clipvalue, global_clipnorm, use_ema, ema_momentum, ema_overwrite_frequency, loss_scale_factor, gradient_accumulation_steps, name, kwargs)"
+    },
+    {
+      "name": "optimizers.schedules.CosineDecay",
+      "type": "Class",
+      "signature": "(initial_learning_rate, decay_steps, alpha, name, warmup_target, warmup_steps)"
+    },
+    {
+      "name": "optimizers.schedules.CosineDecayRestarts",
+      "type": "Class",
+      "signature": "(initial_learning_rate, first_decay_steps, t_mul, m_mul, alpha, name)"
+    },
+    {
+      "name": "optimizers.schedules.ExponentialDecay",
+      "type": "Class",
+      "signature": "(initial_learning_rate, decay_steps, decay_rate, staircase, name)"
+    },
+    {
+      "name": "optimizers.schedules.InverseTimeDecay",
+      "type": "Class",
+      "signature": "(initial_learning_rate, decay_steps, decay_rate, staircase, name)"
+    },
+    {
+      "name": "optimizers.schedules.LearningRateSchedule",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "optimizers.schedules.PiecewiseConstantDecay",
+      "type": "Class",
+      "signature": "(boundaries, values, name)"
+    },
+    {
+      "name": "optimizers.schedules.PolynomialDecay",
+      "type": "Class",
+      "signature": "(initial_learning_rate, decay_steps, end_learning_rate, power, cycle, name)"
+    },
+    {
+      "name": "optimizers.schedules.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "optimizers.schedules.serialize",
+      "type": "Function",
+      "signature": "(learning_rate_schedule)"
+    },
+    {
+      "name": "layers.TFSMLayer",
+      "type": "Class",
+      "signature": "(filepath, call_endpoint, call_training_endpoint, trainable, name, dtype)"
+    },
+    {
+      "name": "layers.deserialize",
+      "type": "Function",
+      "signature": "(config, custom_objects)"
+    },
+    {
+      "name": "layers.serialize",
+      "type": "Function",
+      "signature": "(layer)"
+    },
+    {
+      "name": "layers.Activation",
+      "type": "Class",
+      "signature": "(activation, kwargs)"
+    },
+    {
+      "name": "layers.ELU",
+      "type": "Class",
+      "signature": "(alpha, kwargs)"
+    },
+    {
+      "name": "layers.LeakyReLU",
+      "type": "Class",
+      "signature": "(negative_slope, kwargs)"
+    },
+    {
+      "name": "layers.PReLU",
+      "type": "Class",
+      "signature": "(alpha_initializer, alpha_regularizer, alpha_constraint, shared_axes, kwargs)"
+    },
+    {
+      "name": "layers.ReLU",
+      "type": "Class",
+      "signature": "(max_value, negative_slope, threshold, kwargs)"
+    },
+    {
+      "name": "layers.Softmax",
+      "type": "Class",
+      "signature": "(axis, kwargs)"
+    },
+    {
+      "name": "layers.AdditiveAttention",
+      "type": "Class",
+      "signature": "(use_scale, dropout, kwargs)"
+    },
+    {
+      "name": "layers.Attention",
+      "type": "Class",
+      "signature": "(use_scale, score_mode, dropout, seed, kwargs)"
+    },
+    {
+      "name": "layers.GroupQueryAttention",
+      "type": "Class",
+      "signature": "(head_dim, num_query_heads, num_key_value_heads, dropout, use_bias, flash_attention, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, seed, kwargs)"
+    },
+    {
+      "name": "layers.MultiHeadAttention",
+      "type": "Class",
+      "signature": "(num_heads, key_dim, value_dim, dropout, use_bias, output_shape, attention_axes, flash_attention, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, seed, kwargs)"
+    },
+    {
+      "name": "layers.Conv1D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution1D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Conv1DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, output_padding, data_format, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution1DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, output_padding, data_format, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Conv2D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution2D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Conv2DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, output_padding, data_format, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution2DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, output_padding, data_format, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Conv3D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution3D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, groups, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Conv3DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, output_padding, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Convolution3DTranspose",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, output_padding, dilation_rate, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.DepthwiseConv1D",
+      "type": "Class",
+      "signature": "(kernel_size, strides, padding, depth_multiplier, data_format, dilation_rate, activation, use_bias, depthwise_initializer, bias_initializer, depthwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.DepthwiseConv2D",
+      "type": "Class",
+      "signature": "(kernel_size, strides, padding, depth_multiplier, data_format, dilation_rate, activation, use_bias, depthwise_initializer, bias_initializer, depthwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.SeparableConv1D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, depth_multiplier, activation, use_bias, depthwise_initializer, pointwise_initializer, bias_initializer, depthwise_regularizer, pointwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, pointwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.SeparableConvolution1D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, depth_multiplier, activation, use_bias, depthwise_initializer, pointwise_initializer, bias_initializer, depthwise_regularizer, pointwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, pointwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.SeparableConv2D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, depth_multiplier, activation, use_bias, depthwise_initializer, pointwise_initializer, bias_initializer, depthwise_regularizer, pointwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, pointwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.SeparableConvolution2D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, depth_multiplier, activation, use_bias, depthwise_initializer, pointwise_initializer, bias_initializer, depthwise_regularizer, pointwise_regularizer, bias_regularizer, activity_regularizer, depthwise_constraint, pointwise_constraint, bias_constraint, kwargs)"
+    },
+    {
+      "name": "layers.Dense",
+      "type": "Class",
+      "signature": "(units, activation, use_bias, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, bias_constraint, lora_rank, lora_alpha, quantization_config, kwargs)"
+    },
+    {
+      "name": "layers.EinsumDense",
+      "type": "Class",
+      "signature": "(equation, output_shape, activation, bias_axes, kernel_initializer, bias_initializer, kernel_regularizer, bias_regularizer, kernel_constraint, bias_constraint, lora_rank, lora_alpha, gptq_unpacked_column_size, quantization_config, kwargs)"
+    },
+    {
+      "name": "layers.Embedding",
+      "type": "Class",
+      "signature": "(input_dim, output_dim, embeddings_initializer, embeddings_regularizer, embeddings_constraint, mask_zero, weights, lora_rank, lora_alpha, quantization_config, kwargs)"
+    },
+    {
+      "name": "layers.Identity",
+      "type": "Class",
+      "signature": "(kwargs)"
+    },
+    {
+      "name": "layers.Input",
+      "type": "Function",
+      "signature": "(shape, batch_size, dtype, sparse, ragged, batch_shape, name, tensor, optional)"
+    },
+    {
+      "name": "layers.InputLayer",
+      "type": "Class",
+      "signature": "(shape, batch_size, dtype, sparse, ragged, batch_shape, input_tensor, optional, name, kwargs)"
+    },
+    {
+      "name": "layers.Lambda",
+      "type": "Class",
+      "signature": "(function, output_shape, mask, arguments, kwargs)"
+    },
+    {
+      "name": "layers.Masking",
+      "type": "Class",
+      "signature": "(mask_value, kwargs)"
+    },
+    {
+      "name": "layers.ReversibleEmbedding",
+      "type": "Class",
+      "signature": "(input_dim, output_dim, tie_weights, embeddings_initializer, embeddings_regularizer, embeddings_constraint, mask_zero, reverse_dtype, logit_soft_cap, kwargs)"
+    },
+    {
+      "name": "layers.Wrapper",
+      "type": "Class",
+      "signature": "(layer, kwargs)"
+    },
+    {
+      "name": "layers.InputSpec",
+      "type": "Class",
+      "signature": "(dtype, shape, ndim, max_ndim, min_ndim, axes, allow_last_axis_squeeze, name, optional)"
+    },
+    {
+      "name": "layers.Layer",
+      "type": "Class",
+      "signature": "(activity_regularizer, trainable, dtype, autocast, name, kwargs)"
+    },
+    {
+      "name": "layers.Add",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.add",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.Average",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.average",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.Concatenate",
+      "type": "Class",
+      "signature": "(axis, kwargs)"
+    },
+    {
+      "name": "layers.concatenate",
+      "type": "Function",
+      "signature": "(inputs, axis, kwargs)"
+    },
+    {
+      "name": "layers.Dot",
+      "type": "Class",
+      "signature": "(axes, normalize, kwargs)"
+    },
+    {
+      "name": "layers.dot",
+      "type": "Function",
+      "signature": "(inputs, axes, kwargs)"
+    },
+    {
+      "name": "layers.Maximum",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.maximum",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.Minimum",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.minimum",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.Multiply",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.multiply",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.Subtract",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "layers.subtract",
+      "type": "Function",
+      "signature": "(inputs, kwargs)"
+    },
+    {
+      "name": "layers.BatchNormalization",
+      "type": "Class",
+      "signature": "(axis, momentum, epsilon, center, scale, beta_initializer, gamma_initializer, moving_mean_initializer, moving_variance_initializer, beta_regularizer, gamma_regularizer, beta_constraint, gamma_constraint, synchronized, kwargs)"
+    },
+    {
+      "name": "layers.GroupNormalization",
+      "type": "Class",
+      "signature": "(groups, axis, epsilon, center, scale, beta_initializer, gamma_initializer, beta_regularizer, gamma_regularizer, beta_constraint, gamma_constraint, kwargs)"
+    },
+    {
+      "name": "layers.LayerNormalization",
+      "type": "Class",
+      "signature": "(axis, epsilon, center, scale, beta_initializer, gamma_initializer, beta_regularizer, gamma_regularizer, beta_constraint, gamma_constraint, kwargs)"
+    },
+    {
+      "name": "layers.RMSNormalization",
+      "type": "Class",
+      "signature": "(axis, epsilon, kwargs)"
+    },
+    {
+      "name": "layers.SpectralNormalization",
+      "type": "Class",
+      "signature": "(layer, power_iterations, kwargs)"
+    },
+    {
+      "name": "layers.UnitNormalization",
+      "type": "Class",
+      "signature": "(axis, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveAveragePooling1D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveAveragePooling2D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveAveragePooling3D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveMaxPooling1D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveMaxPooling2D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AdaptiveMaxPooling3D",
+      "type": "Class",
+      "signature": "(output_size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AveragePooling1D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.AvgPool1D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.AveragePooling2D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.AvgPool2D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.AveragePooling3D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.AvgPool3D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAveragePooling1D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAvgPool1D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAveragePooling2D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAvgPool2D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAveragePooling3D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalAvgPool3D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPool1D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPooling1D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPool2D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPooling2D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPool3D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.GlobalMaxPooling3D",
+      "type": "Class",
+      "signature": "(data_format, keepdims, kwargs)"
+    },
+    {
+      "name": "layers.MaxPool1D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.MaxPooling1D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.MaxPool2D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.MaxPooling2D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.MaxPool3D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.MaxPooling3D",
+      "type": "Class",
+      "signature": "(pool_size, strides, padding, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.CategoryEncoding",
+      "type": "Class",
+      "signature": "(num_tokens, output_mode, sparse, kwargs)"
+    },
+    {
+      "name": "layers.Discretization",
+      "type": "Class",
+      "signature": "(bin_boundaries, num_bins, epsilon, output_mode, sparse, dtype, name)"
+    },
+    {
+      "name": "layers.HashedCrossing",
+      "type": "Class",
+      "signature": "(num_bins, output_mode, sparse, name, dtype, kwargs)"
+    },
+    {
+      "name": "layers.Hashing",
+      "type": "Class",
+      "signature": "(num_bins, mask_value, salt, output_mode, sparse, kwargs)"
+    },
+    {
+      "name": "layers.AugMix",
+      "type": "Class",
+      "signature": "(value_range, num_chains, chain_depth, factor, alpha, all_ops, interpolation, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.AutoContrast",
+      "type": "Class",
+      "signature": "(value_range, kwargs)"
+    },
+    {
+      "name": "layers.CenterCrop",
+      "type": "Class",
+      "signature": "(height, width, data_format, kwargs)"
+    },
+    {
+      "name": "layers.CutMix",
+      "type": "Class",
+      "signature": "(factor, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Equalization",
+      "type": "Class",
+      "signature": "(value_range, bins, data_format, kwargs)"
+    },
+    {
+      "name": "layers.MaxNumBoundingBoxes",
+      "type": "Class",
+      "signature": "(max_number, fill_value, kwargs)"
+    },
+    {
+      "name": "layers.MixUp",
+      "type": "Class",
+      "signature": "(alpha, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandAugment",
+      "type": "Class",
+      "signature": "(value_range, num_ops, factor, interpolation, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomBrightness",
+      "type": "Class",
+      "signature": "(factor, value_range, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomColorDegeneration",
+      "type": "Class",
+      "signature": "(factor, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomColorJitter",
+      "type": "Class",
+      "signature": "(value_range, brightness_factor, contrast_factor, saturation_factor, hue_factor, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomContrast",
+      "type": "Class",
+      "signature": "(factor, value_range, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomCrop",
+      "type": "Class",
+      "signature": "(height, width, seed, data_format, name, kwargs)"
+    },
+    {
+      "name": "layers.RandomElasticTransform",
+      "type": "Class",
+      "signature": "(factor, scale, interpolation, fill_mode, fill_value, value_range, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomErasing",
+      "type": "Class",
+      "signature": "(factor, scale, fill_value, value_range, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomFlip",
+      "type": "Class",
+      "signature": "(mode, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomGaussianBlur",
+      "type": "Class",
+      "signature": "(factor, kernel_size, sigma, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomGrayscale",
+      "type": "Class",
+      "signature": "(factor, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomHue",
+      "type": "Class",
+      "signature": "(factor, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomInvert",
+      "type": "Class",
+      "signature": "(factor, value_range, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomPerspective",
+      "type": "Class",
+      "signature": "(factor, scale, interpolation, fill_value, seed, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomPosterization",
+      "type": "Class",
+      "signature": "(factor, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomRotation",
+      "type": "Class",
+      "signature": "(factor, fill_mode, interpolation, seed, fill_value, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomSaturation",
+      "type": "Class",
+      "signature": "(factor, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomSharpness",
+      "type": "Class",
+      "signature": "(factor, value_range, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomShear",
+      "type": "Class",
+      "signature": "(x_factor, y_factor, interpolation, fill_mode, fill_value, data_format, seed, kwargs)"
+    },
+    {
+      "name": "layers.RandomTranslation",
+      "type": "Class",
+      "signature": "(height_factor, width_factor, fill_mode, interpolation, seed, fill_value, data_format, kwargs)"
+    },
+    {
+      "name": "layers.RandomZoom",
+      "type": "Class",
+      "signature": "(height_factor, width_factor, fill_mode, interpolation, seed, fill_value, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Resizing",
+      "type": "Class",
+      "signature": "(height, width, interpolation, crop_to_aspect_ratio, pad_to_aspect_ratio, fill_mode, fill_value, antialias, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Solarization",
+      "type": "Class",
+      "signature": "(addition_factor, threshold_factor, value_range, seed, kwargs)"
+    },
+    {
+      "name": "layers.IntegerLookup",
+      "type": "Class",
+      "signature": "(max_tokens, num_oov_indices, mask_token, oov_token, vocabulary, vocabulary_dtype, idf_weights, invert, output_mode, sparse, pad_to_max_tokens, name, kwargs)"
+    },
+    {
+      "name": "layers.MelSpectrogram",
+      "type": "Class",
+      "signature": "(fft_length, sequence_stride, sequence_length, window, sampling_rate, num_mel_bins, min_freq, max_freq, power_to_db, top_db, mag_exp, min_power, ref_power, kwargs)"
+    },
+    {
+      "name": "layers.Normalization",
+      "type": "Class",
+      "signature": "(axis, mean, variance, invert, kwargs)"
+    },
+    {
+      "name": "layers.Pipeline",
+      "type": "Class",
+      "signature": "(layers, name)"
+    },
+    {
+      "name": "layers.Rescaling",
+      "type": "Class",
+      "signature": "(scale, offset, kwargs)"
+    },
+    {
+      "name": "layers.STFTSpectrogram",
+      "type": "Class",
+      "signature": "(mode, frame_length, frame_step, fft_length, window, periodic, scaling, padding, expand_dims, data_format, kwargs)"
+    },
+    {
+      "name": "layers.StringLookup",
+      "type": "Class",
+      "signature": "(max_tokens, num_oov_indices, mask_token, oov_token, vocabulary, idf_weights, invert, output_mode, pad_to_max_tokens, sparse, encoding, name, kwargs)"
+    },
+    {
+      "name": "layers.TextVectorization",
+      "type": "Class",
+      "signature": "(max_tokens, standardize, split, ngrams, output_mode, output_sequence_length, pad_to_max_tokens, vocabulary, idf_weights, sparse, ragged, encoding, name, kwargs)"
+    },
+    {
+      "name": "layers.ActivityRegularization",
+      "type": "Class",
+      "signature": "(l1, l2, kwargs)"
+    },
+    {
+      "name": "layers.AlphaDropout",
+      "type": "Class",
+      "signature": "(rate, noise_shape, seed, kwargs)"
+    },
+    {
+      "name": "layers.Dropout",
+      "type": "Class",
+      "signature": "(rate, noise_shape, seed, kwargs)"
+    },
+    {
+      "name": "layers.GaussianDropout",
+      "type": "Class",
+      "signature": "(rate, seed, kwargs)"
+    },
+    {
+      "name": "layers.GaussianNoise",
+      "type": "Class",
+      "signature": "(stddev, seed, kwargs)"
+    },
+    {
+      "name": "layers.SpatialDropout1D",
+      "type": "Class",
+      "signature": "(rate, seed, name, dtype)"
+    },
+    {
+      "name": "layers.SpatialDropout2D",
+      "type": "Class",
+      "signature": "(rate, data_format, seed, name, dtype)"
+    },
+    {
+      "name": "layers.SpatialDropout3D",
+      "type": "Class",
+      "signature": "(rate, data_format, seed, name, dtype)"
+    },
+    {
+      "name": "layers.Cropping1D",
+      "type": "Class",
+      "signature": "(cropping, kwargs)"
+    },
+    {
+      "name": "layers.Cropping2D",
+      "type": "Class",
+      "signature": "(cropping, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Cropping3D",
+      "type": "Class",
+      "signature": "(cropping, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Flatten",
+      "type": "Class",
+      "signature": "(data_format, kwargs)"
+    },
+    {
+      "name": "layers.Permute",
+      "type": "Class",
+      "signature": "(dims, kwargs)"
+    },
+    {
+      "name": "layers.RepeatVector",
+      "type": "Class",
+      "signature": "(n, kwargs)"
+    },
+    {
+      "name": "layers.Reshape",
+      "type": "Class",
+      "signature": "(target_shape, kwargs)"
+    },
+    {
+      "name": "layers.UpSampling1D",
+      "type": "Class",
+      "signature": "(size, kwargs)"
+    },
+    {
+      "name": "layers.UpSampling2D",
+      "type": "Class",
+      "signature": "(size, data_format, interpolation, kwargs)"
+    },
+    {
+      "name": "layers.UpSampling3D",
+      "type": "Class",
+      "signature": "(size, data_format, kwargs)"
+    },
+    {
+      "name": "layers.ZeroPadding1D",
+      "type": "Class",
+      "signature": "(padding, data_format, kwargs)"
+    },
+    {
+      "name": "layers.ZeroPadding2D",
+      "type": "Class",
+      "signature": "(padding, data_format, kwargs)"
+    },
+    {
+      "name": "layers.ZeroPadding3D",
+      "type": "Class",
+      "signature": "(padding, data_format, kwargs)"
+    },
+    {
+      "name": "layers.Bidirectional",
+      "type": "Class",
+      "signature": "(layer, merge_mode, weights, backward_layer, kwargs)"
+    },
+    {
+      "name": "layers.ConvLSTM1D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, unit_forget_bias, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, return_sequences, return_state, go_backwards, stateful, kwargs)"
+    },
+    {
+      "name": "layers.ConvLSTM2D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, unit_forget_bias, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, return_sequences, return_state, go_backwards, stateful, kwargs)"
+    },
+    {
+      "name": "layers.ConvLSTM3D",
+      "type": "Class",
+      "signature": "(filters, kernel_size, strides, padding, data_format, dilation_rate, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, unit_forget_bias, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, return_sequences, return_state, go_backwards, stateful, kwargs)"
+    },
+    {
+      "name": "layers.GRU",
+      "type": "Class",
+      "signature": "(units, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, return_sequences, return_state, go_backwards, stateful, unroll, reset_after, use_cudnn, kwargs)"
+    },
+    {
+      "name": "layers.GRUCell",
+      "type": "Class",
+      "signature": "(units, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, kernel_regularizer, recurrent_regularizer, bias_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, reset_after, seed, kwargs)"
+    },
+    {
+      "name": "layers.LSTM",
+      "type": "Class",
+      "signature": "(units, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, unit_forget_bias, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, return_sequences, return_state, go_backwards, stateful, unroll, use_cudnn, kwargs)"
+    },
+    {
+      "name": "layers.LSTMCell",
+      "type": "Class",
+      "signature": "(units, activation, recurrent_activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, unit_forget_bias, kernel_regularizer, recurrent_regularizer, bias_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, kwargs)"
+    },
+    {
+      "name": "layers.RNN",
+      "type": "Class",
+      "signature": "(cell, return_sequences, return_state, go_backwards, stateful, unroll, zero_output_for_mask, kwargs)"
+    },
+    {
+      "name": "layers.SimpleRNN",
+      "type": "Class",
+      "signature": "(units, activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, kernel_regularizer, recurrent_regularizer, bias_regularizer, activity_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, return_sequences, return_state, go_backwards, stateful, unroll, seed, kwargs)"
+    },
+    {
+      "name": "layers.SimpleRNNCell",
+      "type": "Class",
+      "signature": "(units, activation, use_bias, kernel_initializer, recurrent_initializer, bias_initializer, kernel_regularizer, recurrent_regularizer, bias_regularizer, kernel_constraint, recurrent_constraint, bias_constraint, dropout, recurrent_dropout, seed, kwargs)"
+    },
+    {
+      "name": "layers.StackedRNNCells",
+      "type": "Class",
+      "signature": "(cells, kwargs)"
+    },
+    {
+      "name": "layers.TimeDistributed",
+      "type": "Class",
+      "signature": "(layer, kwargs)"
+    },
+    {
+      "name": "layers.FlaxLayer",
+      "type": "Class",
+      "signature": "(module, method, variables, kwargs)"
+    },
+    {
+      "name": "layers.JaxLayer",
+      "type": "Class",
+      "signature": "(call_fn, init_fn, params, state, seed, kwargs)"
+    },
+    {
+      "name": "layers.TorchModuleWrapper",
+      "type": "Class",
+      "signature": "(module, name, output_shape, kwargs)"
+    },
+    {
+      "name": "tree.MAP_TO_NONE",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "tree.assert_same_paths",
+      "type": "Function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "tree.assert_same_structure",
+      "type": "Function",
+      "signature": "(a, b, check_types)"
+    },
+    {
+      "name": "tree.flatten",
+      "type": "Function",
+      "signature": "(structure)"
+    },
+    {
+      "name": "tree.flatten_with_path",
+      "type": "Function",
+      "signature": "(structure)"
+    },
+    {
+      "name": "tree.is_nested",
+      "type": "Function",
+      "signature": "(structure)"
+    },
+    {
+      "name": "tree.lists_to_tuples",
+      "type": "Function",
+      "signature": "(structure)"
+    },
+    {
+      "name": "tree.map_shape_structure",
+      "type": "Function",
+      "signature": "(func, structure)"
+    },
+    {
+      "name": "tree.map_structure",
+      "type": "Function",
+      "signature": "(func, structures, none_is_leaf)"
+    },
+    {
+      "name": "tree.map_structure_up_to",
+      "type": "Function",
+      "signature": "(shallow_structure, func, structures)"
+    },
+    {
+      "name": "tree.pack_sequence_as",
+      "type": "Function",
+      "signature": "(structure, flat_sequence)"
+    },
+    {
+      "name": "tree.traverse",
+      "type": "Function",
+      "signature": "(func, structure, top_down)"
+    }
+  ]
 }

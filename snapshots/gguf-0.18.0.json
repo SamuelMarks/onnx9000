@@ -1,212 +1,1910 @@
 {
-  "version": "unknown",
+  "version": "0.18.0",
   "objects": [
-    "ABC",
-    "ABCMeta",
-    "Any",
-    "BF16",
-    "BaseVocab",
-    "BpeVocab",
-    "BufferedWriter",
-    "Callable",
-    "ClassVar",
-    "DTypeLike",
-    "Enum",
-    "ExpertGatingFuncType",
-    "GGMLQuantizationType",
-    "GGML_QUANT_SIZES",
-    "GGML_QUANT_VERSION",
-    "GGUFEndian",
-    "GGUFReader",
-    "GGUFType",
-    "GGUFValue",
-    "GGUFValueType",
-    "GGUFWriter",
-    "GGUF_DEFAULT_ALIGNMENT",
-    "GGUF_MAGIC",
-    "GGUF_VERSION",
-    "IO",
-    "IQ1_M",
-    "IQ1_S",
-    "IQ2_S",
-    "IQ2_XS",
-    "IQ2_XXS",
-    "IQ3_S",
-    "IQ3_XXS",
-    "IQ4_NL",
-    "IQ4_XS",
-    "IntEnum",
-    "Iterable",
-    "KEY_ATTENTION_CLAMP_KQV",
-    "KEY_ATTENTION_HEAD_COUNT",
-    "KEY_ATTENTION_HEAD_COUNT_KV",
-    "KEY_ATTENTION_LAYERNORM_EPS",
-    "KEY_ATTENTION_LAYERNORM_RMS_EPS",
-    "KEY_ATTENTION_MAX_ALIBI_BIAS",
-    "KEY_BLOCK_COUNT",
-    "KEY_CONTEXT_LENGTH",
-    "KEY_EMBEDDING_LENGTH",
-    "KEY_FEED_FORWARD_LENGTH",
-    "KEY_GENERAL_ALIGNMENT",
-    "KEY_GENERAL_ARCHITECTURE",
-    "KEY_GENERAL_AUTHOR",
-    "KEY_GENERAL_DESCRIPTION",
-    "KEY_GENERAL_FILE_TYPE",
-    "KEY_GENERAL_LICENSE",
-    "KEY_GENERAL_NAME",
-    "KEY_GENERAL_QUANTIZATION_VERSION",
-    "KEY_GENERAL_SOURCE_URL",
-    "KEY_GENERAL_URL",
-    "KEY_KDA_HEAD_DIM",
-    "KEY_ROPE_DIMENSION_COUNT",
-    "KEY_ROPE_FREQ_BASE",
-    "KEY_ROPE_SCALING_FACTOR",
-    "KEY_ROPE_SCALING_FINETUNED",
-    "KEY_ROPE_SCALING_ORIG_CTX_LEN",
-    "KEY_ROPE_SCALING_TYPE",
-    "KEY_SSM_CONV_KERNEL",
-    "KEY_SSM_DT_B_C_RMS",
-    "KEY_SSM_GROUP_COUNT",
-    "KEY_SSM_INNER_SIZE",
-    "KEY_SSM_STATE_SIZE",
-    "KEY_SSM_TIME_STEP_RANK",
-    "KEY_TENSOR_DATA_LAYOUT",
-    "KEY_TOKENIZER_BOS_ID",
-    "KEY_TOKENIZER_EOM_ID",
-    "KEY_TOKENIZER_EOS_ID",
-    "KEY_TOKENIZER_EOT_ID",
-    "KEY_TOKENIZER_FIM_MID_ID",
-    "KEY_TOKENIZER_FIM_PAD_ID",
-    "KEY_TOKENIZER_FIM_PRE_ID",
-    "KEY_TOKENIZER_FIM_REP_ID",
-    "KEY_TOKENIZER_FIM_SEP_ID",
-    "KEY_TOKENIZER_FIM_SUF_ID",
-    "KEY_TOKENIZER_HF_JSON",
-    "KEY_TOKENIZER_LIST",
-    "KEY_TOKENIZER_MASK_ID",
-    "KEY_TOKENIZER_MERGES",
-    "KEY_TOKENIZER_MIDDLE_ID",
-    "KEY_TOKENIZER_MODEL",
-    "KEY_TOKENIZER_PAD_ID",
-    "KEY_TOKENIZER_PRE",
-    "KEY_TOKENIZER_PREFIX_ID",
-    "KEY_TOKENIZER_RWKV",
-    "KEY_TOKENIZER_SCORES",
-    "KEY_TOKENIZER_SEP_ID",
-    "KEY_TOKENIZER_SUFFIX_ID",
-    "KEY_TOKENIZER_TOKEN_TYPE",
-    "KEY_TOKENIZER_UNK_ID",
-    "KEY_USE_PARALLEL_RESIDUAL",
-    "KEY_VOCAB_SIZE",
-    "Keys",
-    "LazyBase",
-    "LazyMeta",
-    "LazyNumpyTensor",
-    "Literal",
-    "LlamaFileType",
-    "LlamaHfVocab",
-    "LocalTensor",
-    "LocalTensorRange",
-    "MODEL_ARCH",
-    "MODEL_ARCH_NAMES",
-    "MODEL_TENSOR",
-    "MODEL_TENSORS",
-    "MODEL_TENSOR_SKIP",
-    "MXFP4",
-    "Mapping",
-    "Metadata",
-    "MistralTokenizer",
-    "MistralTokenizerType",
-    "MistralVocab",
-    "NamedTuple",
-    "NoVocab",
-    "Optional",
-    "OrderedDict",
-    "Path",
-    "PoolingType",
-    "Protocol",
-    "Q2_K",
-    "Q3_K",
-    "Q4_0",
-    "Q4_1",
-    "Q4_K",
-    "Q5_0",
-    "Q5_1",
-    "Q5_K",
-    "Q6_K",
-    "Q8_0",
-    "QK_K",
-    "QuantError",
-    "READER_SUPPORTED_VERSIONS",
-    "ReaderField",
-    "ReaderTensor",
-    "RemoteTensor",
-    "RopeScalingType",
-    "SHARD_NAME_FORMAT",
-    "SafetensorRemote",
-    "SafetensorsLocal",
-    "SentencePieceProcessor",
-    "SentencePieceTokenizer",
-    "SentencePieceVocab",
-    "Sequence",
-    "SpecialVocab",
-    "TENSOR_NAMES",
-    "TQ1_0",
-    "TQ2_0",
-    "Tekkenizer",
-    "TensorInfo",
-    "TensorNameMap",
-    "TokenType",
-    "TypeVar",
-    "Union",
-    "VISION_PROJECTOR_TYPE",
-    "VISION_PROJECTOR_TYPE_NAMES",
-    "VisionProjectorType",
-    "Vocab",
-    "WriterState",
-    "abstractmethod",
-    "annotations",
-    "ascii_letters",
-    "auto",
-    "bytes_to_unicode",
-    "ceil",
-    "constants",
-    "dataclass",
-    "dequantize",
-    "digits",
-    "fill_templated_filename",
-    "get_one_valid_tokenizer_file",
-    "get_tensor_name_map",
-    "gguf",
-    "gguf_reader",
-    "gguf_writer",
-    "json",
-    "lazy",
-    "log2",
-    "logger",
-    "logging",
-    "metadata",
-    "model_weight_count_rounded_notation",
-    "naming_convention",
-    "np",
-    "np_roundf",
-    "npt",
-    "os",
-    "prod",
-    "quant_shape_from_byte_shape",
-    "quant_shape_to_byte_shape",
-    "quantize",
-    "quants",
-    "re",
-    "runtime_checkable",
-    "shutil",
-    "size_label",
-    "struct",
-    "sys",
-    "tempfile",
-    "tensor_mapping",
-    "utility",
-    "vocab",
-    "yaml"
+    {
+      "name": "metadata.Keys",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "metadata.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "metadata.Metadata",
+      "type": "Class",
+      "signature": "(sampling_sequence: Optional[str], sampling_top_k: Optional[int], sampling_top_p: Optional[float], sampling_min_p: Optional[float], sampling_xtc_probability: Optional[float], sampling_xtc_threshold: Optional[float], sampling_temp: Optional[float], sampling_penalty_last_n: Optional[int], sampling_penalty_repeat: Optional[float], sampling_mirostat: Optional[int], sampling_mirostat_tau: Optional[float], sampling_mirostat_eta: Optional[float], name: Optional[str], author: Optional[str], version: Optional[str], organization: Optional[str], finetune: Optional[str], basename: Optional[str], description: Optional[str], quantized_by: Optional[str], size_label: Optional[str], url: Optional[str], doi: Optional[str], uuid: Optional[str], repo_url: Optional[str], source_url: Optional[str], source_doi: Optional[str], source_uuid: Optional[str], source_repo_url: Optional[str], license: Optional[str], license_name: Optional[str], license_link: Optional[str], base_models: Optional[list[dict]], tags: Optional[list[str]], languages: Optional[list[str]], datasets: Optional[list[dict]])"
+    },
+    {
+      "name": "lazy.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "lazy.LazyMeta",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "lazy.LazyBase",
+      "type": "Class",
+      "signature": "(meta: Any, data: Any | None, args: tuple, kwargs: dict[str, Any] | None, func: Callable[[Any], Any] | None)"
+    },
+    {
+      "name": "lazy.LazyNumpyTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.GGUF_MAGIC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.GGUF_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.GGUF_DEFAULT_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.GGML_QUANT_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.Keys",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.GGUFType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.MODEL_ARCH",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.VISION_PROJECTOR_TYPE",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.MODEL_TENSOR",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.MODEL_ARCH_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.VISION_PROJECTOR_TYPE_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.TENSOR_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.MODEL_TENSORS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.MODEL_TENSOR_SKIP",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.TokenType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.RopeScalingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.PoolingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.GGMLQuantizationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.ExpertGatingFuncType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.LlamaFileType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.GGUFEndian",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.GGUFValueType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.VisionProjectorType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "constants.QK_K",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.GGML_QUANT_SIZES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_ARCHITECTURE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_QUANTIZATION_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_NAME",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_AUTHOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_URL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_DESCRIPTION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_LICENSE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_SOURCE_URL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_GENERAL_FILE_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_VOCAB_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_CONTEXT_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_EMBEDDING_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_BLOCK_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_FEED_FORWARD_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_USE_PARALLEL_RESIDUAL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TENSOR_DATA_LAYOUT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_HEAD_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_HEAD_COUNT_KV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_MAX_ALIBI_BIAS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_CLAMP_KQV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_LAYERNORM_EPS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ATTENTION_LAYERNORM_RMS_EPS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_DIMENSION_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_FREQ_BASE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_SCALING_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_SCALING_FACTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_SCALING_ORIG_CTX_LEN",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_ROPE_SCALING_FINETUNED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_CONV_KERNEL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_INNER_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_STATE_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_TIME_STEP_RANK",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_GROUP_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_SSM_DT_B_C_RMS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_KDA_HEAD_DIM",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_MODEL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_PRE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_LIST",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_TOKEN_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_SCORES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_MERGES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_BOS_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_EOS_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_EOT_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_EOM_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_UNK_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_SEP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_PAD_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_MASK_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_HF_JSON",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_RWKV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_PRE_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_SUF_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_MID_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_PAD_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_REP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_FIM_SEP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_PREFIX_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_SUFFIX_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "constants.KEY_TOKENIZER_MIDDLE_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "utility.fill_templated_filename",
+      "type": "Function",
+      "signature": "(filename: str, output_type: str | None) -> str"
+    },
+    {
+      "name": "utility.model_weight_count_rounded_notation",
+      "type": "Function",
+      "signature": "(model_params_count: int, min_digits: int) -> str"
+    },
+    {
+      "name": "utility.size_label",
+      "type": "Function",
+      "signature": "(total_params: int, shared_params: int, expert_params: int, expert_count: int) -> str"
+    },
+    {
+      "name": "utility.naming_convention",
+      "type": "Function",
+      "signature": "(model_name: str | None, base_name: str | None, finetune_string: str | None, version_string: str | None, size_label: str | None, output_type: str | None, model_type: Literal['vocab', 'LoRA'] | None) -> str"
+    },
+    {
+      "name": "utility.RemoteTensor",
+      "type": "Class",
+      "signature": "(dtype: str, shape: tuple[int, ...], offset_start: int, size: int, url: str)"
+    },
+    {
+      "name": "utility.SafetensorRemote",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "utility.LocalTensorRange",
+      "type": "Class",
+      "signature": "(filename: Path, offset: int, size: int)"
+    },
+    {
+      "name": "utility.LocalTensor",
+      "type": "Class",
+      "signature": "(dtype: str, shape: tuple[int, ...], data_range: LocalTensorRange)"
+    },
+    {
+      "name": "utility.SafetensorsLocal",
+      "type": "Class",
+      "signature": "(filename: Path)"
+    },
+    {
+      "name": "vocab.GGUFWriter",
+      "type": "Class",
+      "signature": "(path: os.PathLike[str] | str | None, arch: str, use_temp_file: bool, endianess: GGUFEndian, split_max_tensors: int, split_max_size: int, dry_run: bool, small_first_shard: bool)"
+    },
+    {
+      "name": "vocab.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "vocab.SpecialVocab",
+      "type": "Class",
+      "signature": "(path: str | os.PathLike[str], load_merges: bool, special_token_types: Iterable[str] | None, n_vocab: int | None)"
+    },
+    {
+      "name": "vocab.BaseVocab",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "vocab.Vocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "vocab.NoVocab",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "vocab.BpeVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "vocab.SentencePieceVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "vocab.LlamaHfVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "vocab.MistralTokenizerType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "vocab.bytes_to_unicode",
+      "type": "Function",
+      "signature": "() -> dict[int, str]"
+    },
+    {
+      "name": "vocab.MistralVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "gguf_reader.quant_shape_to_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "gguf_reader.GGML_QUANT_SIZES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.GGUF_DEFAULT_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.GGUF_MAGIC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.GGUF_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.GGMLQuantizationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_reader.GGUFValueType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_reader.GGUFEndian",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_reader.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.READER_SUPPORTED_VERSIONS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_reader.ReaderField",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_reader.ReaderTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_reader.GGUFReader",
+      "type": "Class",
+      "signature": "(path: os.PathLike[str] | str, mode: Literal['r', 'r+', 'c'])"
+    },
+    {
+      "name": "gguf_writer.GGUF_DEFAULT_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_writer.GGUF_MAGIC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_writer.GGUF_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_writer.GGMLQuantizationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.GGUFEndian",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.GGUFValueType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.Keys",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.RopeScalingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.PoolingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.TokenType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.ExpertGatingFuncType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.quant_shape_from_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "gguf_writer.logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_writer.SHARD_NAME_FORMAT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "gguf_writer.TensorInfo",
+      "type": "Class",
+      "signature": "(shape: Sequence[int], dtype: GGMLQuantizationType, nbytes: int, tensor: np.ndarray[Any, Any] | None)"
+    },
+    {
+      "name": "gguf_writer.GGUFValue",
+      "type": "Class",
+      "signature": "(value: Any, type: GGUFValueType, sub_type: GGUFValueType | None)"
+    },
+    {
+      "name": "gguf_writer.WriterState",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "gguf_writer.GGUFWriter",
+      "type": "Class",
+      "signature": "(path: os.PathLike[str] | str | None, arch: str, use_temp_file: bool, endianess: GGUFEndian, split_max_tensors: int, split_max_size: int, dry_run: bool, small_first_shard: bool)"
+    },
+    {
+      "name": "tensor_mapping.MODEL_ARCH",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "tensor_mapping.MODEL_TENSOR",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "tensor_mapping.MODEL_TENSORS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tensor_mapping.TENSOR_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tensor_mapping.TensorNameMap",
+      "type": "Class",
+      "signature": "(arch: MODEL_ARCH, n_blocks: int)"
+    },
+    {
+      "name": "tensor_mapping.get_tensor_name_map",
+      "type": "Function",
+      "signature": "(arch: MODEL_ARCH, n_blocks: int) -> TensorNameMap"
+    },
+    {
+      "name": "quants.GGML_QUANT_SIZES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quants.GGMLQuantizationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.QK_K",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quants.LazyNumpyTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.quant_shape_to_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "quants.quant_shape_from_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "quants.np_roundf",
+      "type": "Function",
+      "signature": "(n: np.ndarray) -> np.ndarray"
+    },
+    {
+      "name": "quants.QuantError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.quantize",
+      "type": "Function",
+      "signature": "(data: np.ndarray, qtype: GGMLQuantizationType) -> np.ndarray"
+    },
+    {
+      "name": "quants.dequantize",
+      "type": "Function",
+      "signature": "(data: np.ndarray, qtype: GGMLQuantizationType) -> np.ndarray"
+    },
+    {
+      "name": "quants.BF16",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q4_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q4_1",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q5_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q5_1",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q8_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q2_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q3_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q4_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q5_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.Q6_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.TQ1_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.TQ2_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.MXFP4",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ2_XXS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ2_XS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ2_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ3_XXS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ3_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ1_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ1_M",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ4_NL",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quants.IQ4_XS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "annotations",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Enum",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "IntEnum",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "auto",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Any",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "GGUF_MAGIC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "GGUF_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "GGUF_DEFAULT_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "GGML_QUANT_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Keys",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGUFType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "MODEL_ARCH",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "VISION_PROJECTOR_TYPE",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "MODEL_TENSOR",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "MODEL_ARCH_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "VISION_PROJECTOR_TYPE_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "TENSOR_NAMES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MODEL_TENSORS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MODEL_TENSOR_SKIP",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "TokenType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "RopeScalingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "PoolingType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGMLQuantizationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ExpertGatingFuncType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LlamaFileType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGUFEndian",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGUFValueType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "VisionProjectorType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "QK_K",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "GGML_QUANT_SIZES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_ARCHITECTURE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_QUANTIZATION_VERSION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_ALIGNMENT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_NAME",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_AUTHOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_URL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_DESCRIPTION",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_LICENSE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_SOURCE_URL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_GENERAL_FILE_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_VOCAB_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_CONTEXT_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_EMBEDDING_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_BLOCK_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_FEED_FORWARD_LENGTH",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_USE_PARALLEL_RESIDUAL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TENSOR_DATA_LAYOUT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_HEAD_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_HEAD_COUNT_KV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_MAX_ALIBI_BIAS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_CLAMP_KQV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_LAYERNORM_EPS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ATTENTION_LAYERNORM_RMS_EPS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_DIMENSION_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_FREQ_BASE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_SCALING_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_SCALING_FACTOR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_SCALING_ORIG_CTX_LEN",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_ROPE_SCALING_FINETUNED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_CONV_KERNEL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_INNER_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_STATE_SIZE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_TIME_STEP_RANK",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_GROUP_COUNT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_SSM_DT_B_C_RMS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_KDA_HEAD_DIM",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_MODEL",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_PRE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_LIST",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_TOKEN_TYPE",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_SCORES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_MERGES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_BOS_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_EOS_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_EOT_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_EOM_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_UNK_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_SEP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_PAD_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_MASK_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_HF_JSON",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_RWKV",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_PRE_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_SUF_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_MID_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_PAD_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_REP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_FIM_SEP_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_PREFIX_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_SUFFIX_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "KEY_TOKENIZER_MIDDLE_ID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ABC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ABCMeta",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "abstractmethod",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "logging",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Callable",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "np",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "DTypeLike",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "logger",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "LazyMeta",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LazyBase",
+      "type": "Class",
+      "signature": "(meta: Any, data: Any | None, args: tuple, kwargs: dict[str, Any] | None, func: Callable[[Any], Any] | None)"
+    },
+    {
+      "name": "LazyNumpyTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "os",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "sys",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "OrderedDict",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Literal",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "NamedTuple",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "TypeVar",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Union",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "npt",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quant_shape_to_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "Path",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "READER_SUPPORTED_VERSIONS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ReaderField",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ReaderTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGUFReader",
+      "type": "Class",
+      "signature": "(path: os.PathLike[str] | str, mode: Literal['r', 'r+', 'c'])"
+    },
+    {
+      "name": "shutil",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "struct",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tempfile",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "dataclass",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "prod",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "BufferedWriter",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "IO",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Sequence",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Mapping",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ascii_letters",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "digits",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quant_shape_from_byte_shape",
+      "type": "Function",
+      "signature": "(shape: Sequence[int], quant_type: GGMLQuantizationType) -> tuple[int, ...]"
+    },
+    {
+      "name": "SHARD_NAME_FORMAT",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "TensorInfo",
+      "type": "Class",
+      "signature": "(shape: Sequence[int], dtype: GGMLQuantizationType, nbytes: int, tensor: np.ndarray[Any, Any] | None)"
+    },
+    {
+      "name": "GGUFValue",
+      "type": "Class",
+      "signature": "(value: Any, type: GGUFValueType, sub_type: GGUFValueType | None)"
+    },
+    {
+      "name": "WriterState",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GGUFWriter",
+      "type": "Class",
+      "signature": "(path: os.PathLike[str] | str | None, arch: str, use_temp_file: bool, endianess: GGUFEndian, split_max_tensors: int, split_max_size: int, dry_run: bool, small_first_shard: bool)"
+    },
+    {
+      "name": "log2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ceil",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "np_roundf",
+      "type": "Function",
+      "signature": "(n: np.ndarray) -> np.ndarray"
+    },
+    {
+      "name": "QuantError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantize",
+      "type": "Function",
+      "signature": "(data: np.ndarray, qtype: GGMLQuantizationType) -> np.ndarray"
+    },
+    {
+      "name": "dequantize",
+      "type": "Function",
+      "signature": "(data: np.ndarray, qtype: GGMLQuantizationType) -> np.ndarray"
+    },
+    {
+      "name": "BF16",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q4_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q4_1",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q5_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q5_1",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q8_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q2_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q3_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q4_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q5_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Q6_K",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TQ1_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TQ2_0",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "MXFP4",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ2_XXS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ2_XS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ2_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ3_XXS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ3_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ1_S",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ1_M",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ4_NL",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IQ4_XS",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TensorNameMap",
+      "type": "Class",
+      "signature": "(arch: MODEL_ARCH, n_blocks: int)"
+    },
+    {
+      "name": "get_tensor_name_map",
+      "type": "Function",
+      "signature": "(arch: MODEL_ARCH, n_blocks: int) -> TensorNameMap"
+    },
+    {
+      "name": "re",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "json",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Iterable",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Protocol",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ClassVar",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "runtime_checkable",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "SentencePieceProcessor",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "MistralTokenizer",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Tekkenizer",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "SentencePieceTokenizer",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "get_one_valid_tokenizer_file",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "SpecialVocab",
+      "type": "Class",
+      "signature": "(path: str | os.PathLike[str], load_merges: bool, special_token_types: Iterable[str] | None, n_vocab: int | None)"
+    },
+    {
+      "name": "BaseVocab",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Vocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "NoVocab",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "BpeVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "SentencePieceVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "LlamaHfVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "MistralTokenizerType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "bytes_to_unicode",
+      "type": "Function",
+      "signature": "() -> dict[int, str]"
+    },
+    {
+      "name": "MistralVocab",
+      "type": "Class",
+      "signature": "(base_path: Path)"
+    },
+    {
+      "name": "fill_templated_filename",
+      "type": "Function",
+      "signature": "(filename: str, output_type: str | None) -> str"
+    },
+    {
+      "name": "model_weight_count_rounded_notation",
+      "type": "Function",
+      "signature": "(model_params_count: int, min_digits: int) -> str"
+    },
+    {
+      "name": "size_label",
+      "type": "Function",
+      "signature": "(total_params: int, shared_params: int, expert_params: int, expert_count: int) -> str"
+    },
+    {
+      "name": "naming_convention",
+      "type": "Function",
+      "signature": "(model_name: str | None, base_name: str | None, finetune_string: str | None, version_string: str | None, size_label: str | None, output_type: str | None, model_type: Literal['vocab', 'LoRA'] | None) -> str"
+    },
+    {
+      "name": "RemoteTensor",
+      "type": "Class",
+      "signature": "(dtype: str, shape: tuple[int, ...], offset_start: int, size: int, url: str)"
+    },
+    {
+      "name": "SafetensorRemote",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LocalTensorRange",
+      "type": "Class",
+      "signature": "(filename: Path, offset: int, size: int)"
+    },
+    {
+      "name": "LocalTensor",
+      "type": "Class",
+      "signature": "(dtype: str, shape: tuple[int, ...], data_range: LocalTensorRange)"
+    },
+    {
+      "name": "SafetensorsLocal",
+      "type": "Class",
+      "signature": "(filename: Path)"
+    },
+    {
+      "name": "yaml",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Optional",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "Metadata",
+      "type": "Class",
+      "signature": "(sampling_sequence: Optional[str], sampling_top_k: Optional[int], sampling_top_p: Optional[float], sampling_min_p: Optional[float], sampling_xtc_probability: Optional[float], sampling_xtc_threshold: Optional[float], sampling_temp: Optional[float], sampling_penalty_last_n: Optional[int], sampling_penalty_repeat: Optional[float], sampling_mirostat: Optional[int], sampling_mirostat_tau: Optional[float], sampling_mirostat_eta: Optional[float], name: Optional[str], author: Optional[str], version: Optional[str], organization: Optional[str], finetune: Optional[str], basename: Optional[str], description: Optional[str], quantized_by: Optional[str], size_label: Optional[str], url: Optional[str], doi: Optional[str], uuid: Optional[str], repo_url: Optional[str], source_url: Optional[str], source_doi: Optional[str], source_uuid: Optional[str], source_repo_url: Optional[str], license: Optional[str], license_name: Optional[str], license_link: Optional[str], base_models: Optional[list[dict]], tags: Optional[list[str]], languages: Optional[list[str]], datasets: Optional[list[dict]])"
+    }
   ]
 }

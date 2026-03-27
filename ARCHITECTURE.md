@@ -150,3 +150,7 @@ Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Re
 
 - **Graph Editing & Visualization:** A WebGL-accelerated implementation of `Netron` and `onnx-modifier` allows users to open, inspect, and surgically edit massive (>10GB) models directly in the browser at 60FPS. Changes to the topology invoke real-time shape inference and validation before the modified `.onnx` is exported.
 - **Diagnostics & Profiling:** A complete port of `onnx-tool` evaluates MACs, FLOPs, and static memory footprint dynamically, giving engineers deep insights into computation bottlenecks without needing to execute the graph.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

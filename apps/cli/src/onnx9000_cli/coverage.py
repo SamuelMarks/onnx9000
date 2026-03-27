@@ -6,41 +6,38 @@ import importlib
 import inspect
 import json
 import os
+import re
+import shutil
 import subprocess
 import tempfile
-import urllib.request
-from typing import Dict, List, Set, Any, Optional, Tuple
-
 import urllib.error
-import shutil
-import re
+import urllib.request
+from typing import Any, Optional
 
 
-def get_pypi_info(pkg_name: str) -> Tuple[str, Optional[str]]:
-    """Fetch the latest version and python requirement of a package from PyPI.
+def get_pypi_info(pkg_name: str) -> tuple[str, Optional[str]]:
+    import json
+    import urllib.request
 
-    Returns:
-        A tuple of (latest_version, required_python_version).
-        Returns ('unknown', None) if the package is not found.
-    """
-    url = f"https://pypi.org/pypi/{pkg_name}/json"
+    req_py = "3.11"
+    if pkg_name == "cntk":
+        req_py = "3.6"
+    if pkg_name == "mxnet":
+        req_py = "3.8"
+    if pkg_name == "caffe":
+        req_py = "3.8"
+
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=5) as response:
+        url = f"https://pypi.org/pypi/{pkg_name}/json"
+        with urllib.request.urlopen(url) as response:
             data = json.loads(response.read().decode("utf-8"))
             version = data["info"]["version"]
-            requires_python = data["info"].get("requires_python")
-            py_ver = None
-            if requires_python:
-                match = re.search(r"(3\.\d+)", requires_python)
-                if match:
-                    py_ver = match.group(1)
-            return version, py_ver
+            return version, req_py
     except Exception:
-        return "unknown", None
+        return "unknown", req_py
 
 
-def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]]:
+def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]]:
     """Generate API snapshots by querying PyPI and creating temporary venvs.
 
     Returns:
@@ -88,19 +85,151 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
         dumper_path = os.path.join(base_tmp, "dumper.py")
         with open(dumper_path, "w", encoding="utf-8") as f:
             f.write(
-                "import importlib, json, sys\n"
+                "\n"
+                "import importlib\n"
+                "import importlib.metadata\n"
+                "import json\n"
+                "import sys\n"
+                "import inspect\n"
+                "\n"
                 "fw = sys.argv[1]\n"
                 "out_path = sys.argv[2]\n"
+                "objects = []\n"
+                "version = 'unknown'\n"
+                "\n"
+                "try:\n"
+                "    version = importlib.metadata.version(fw)\n"
+                "except Exception:\n"
+                "    pass\n"
+                "\n"
                 "try:\n"
                 "    mod = importlib.import_module(fw)\n"
-                "    version = getattr(mod, '__version__', 'unknown')\n"
-                "    objects = mod.__all__ if hasattr(mod, '__all__') else [n for n in dir(mod) if not n.startswith('_')]\n"
-                "    objects = [str(o) for o in objects if isinstance(o, str)]\n"
-                "    with open(out_path, 'w', encoding='utf-8') as f:\n"
-                "        json.dump({'version': version, 'objects': objects}, f)\n"
+                "    if hasattr(mod, '__version__'):\n"
+                "        version = mod.__version__\n"
+                "except Exception:\n"
+                "    pass\n"
+                "\n"
+                "try:\n"
+                "    import griffe\n"
+                "    mod = griffe.load(fw, allow_inspection=False)\n"
+                "    visited_paths = set()\n"
+                "\n"
+                "    def traverse(m, prefix=''):\n"
+                "        if m.path in visited_paths:\n"
+                "            return\n"
+                "        visited_paths.add(m.path)\n"
+                "        for name, member in m.members.items():\n"
+                "            if str(name).startswith('_'): continue\n"
+                "            if str(name) in {'python', 'compiler', 'internal', 'core', 'tests', 'testing', 'experimental', 'contrib', 'compat', 'backends', 'backend', 'ops', 'legacy', 'src', 'tools', 'utils', 'fluid'}: continue\n"
+                "            \n"
+                "            is_func = False\n"
+                "            is_cls = False\n"
+                "            is_mod = False\n"
+                "            is_alias = False\n"
+                "            \n"
+                "            try:\n"
+                "                is_alias = member.is_alias\n"
+                "            except Exception:\n"
+                "                pass\n"
+                "            \n"
+                "            try:\n"
+                "                if is_alias:\n"
+                "                    try:\n"
+                "                        target_path = member.target_path\n"
+                "                        if not target_path.startswith(fw + '.'):\n"
+                "                            continue\n"
+                "                    except Exception:\n"
+                "                        pass\n"
+                "                is_func = member.is_function\n"
+                "                is_cls = member.is_class\n"
+                "                is_mod = member.is_module\n"
+                "            except Exception:\n"
+                "                pass\n"
+                "\n"
+                "            if is_func:\n"
+                "                params = []\n"
+                "                try:\n"
+                "                    for p in member.parameters:\n"
+                "                        s = p.name\n"
+                "                        if p.annotation:\n"
+                "                            s += f': {p.annotation}'\n"
+                "                        params.append(s)\n"
+                "                except Exception:\n"
+                "                    pass\n"
+                "                sig = '(' + ', '.join(params) + ')'\n"
+                "                try:\n"
+                "                    if member.returns:\n"
+                "                        sig += f' -> {member.returns}'\n"
+                "                except Exception:\n"
+                "                    pass\n"
+                "                objects.append({'name': prefix + str(name), 'type': 'Function', 'signature': sig})\n"
+                "            elif is_cls:\n"
+                "                sig = '(...)'\n"
+                "                init_method = member.members.get('__init__')\n"
+                "                if init_method:\n"
+                "                    try:\n"
+                "                        if init_method.is_function:\n"
+                "                            params = []\n"
+                "                            for p in init_method.parameters:\n"
+                "                                if p.name == 'self': continue\n"
+                "                                s = p.name\n"
+                "                                if p.annotation:\n"
+                "                                    s += f': {p.annotation}'\n"
+                "                                params.append(s)\n"
+                "                            sig = '(' + ', '.join(params) + ')'\n"
+                "                    except Exception:\n"
+                "                        pass\n"
+                "                objects.append({'name': prefix + str(name), 'type': 'Class', 'signature': sig})\n"
+                "            elif is_mod and not is_alias:\n"
+                "                traverse(member, prefix + str(name) + '.')\n"
+                "            else:\n"
+                "                objects.append({'name': prefix + str(name), 'type': 'Object', 'signature': ''})\n"
+                "    \n"
+                "    traverse(mod)\n"
+                "    with open(out_path, 'w', encoding='utf-8') as file:\n"
+                "        json.dump({'version': version, 'objects': objects}, file)\n"
+                "\n"
                 "except Exception as e:\n"
-                "    with open(out_path, 'w', encoding='utf-8') as f:\n"
-                "        json.dump({'version': 'Not Installed', 'objects': []}, f)\n"
+                "    try:\n"
+                "        mod = importlib.import_module(fw)\n"
+                "        visited_mods = set()\n"
+                "        \n"
+                "        def inspect_traverse(m, prefix=''):\n"
+                "            if id(m) in visited_mods:\n"
+                "                return\n"
+                "            visited_mods.add(id(m))\n"
+                "            members = getattr(m, '__all__', [n for n in dir(m) if not n.startswith('_')])\n"
+                "            members = [n for n in members if n not in {'python', 'compiler', 'internal', 'core', 'tests', 'testing', 'experimental', 'contrib', 'compat', 'backends', 'backend', 'ops', 'legacy', 'src', 'tools', 'utils', 'fluid'}]\n"
+                "            for name in members:\n"
+                "                if str(name).startswith('_'): continue\n"
+                "                try:\n"
+                "                    obj = getattr(m, name)\n"
+                "                    if inspect.isroutine(obj) or inspect.isbuiltin(obj):\n"
+                "                        try:\n"
+                "                            sig = str(inspect.signature(obj))\n"
+                "                        except ValueError:\n"
+                "                            sig = '(...)'\n"
+                "                        objects.append({'name': prefix + str(name), 'type': 'Function', 'signature': sig})\n"
+                "                    elif inspect.isclass(obj):\n"
+                "                        try:\n"
+                "                            sig = str(inspect.signature(obj))\n"
+                "                        except (ValueError, TypeError):\n"
+                "                            sig = '(...)'\n"
+                "                        objects.append({'name': prefix + str(name), 'type': 'Class', 'signature': sig})\n"
+                "                    elif inspect.ismodule(obj) and obj.__name__.startswith(fw + '.'):\n"
+                "                        inspect_traverse(obj, prefix + str(name) + '.')\n"
+                "                    else:\n"
+                "                        objects.append({'name': prefix + str(name), 'type': 'Object', 'signature': ''})\n"
+                "                except Exception:\n"
+                "                    objects.append({'name': prefix + str(name), 'type': 'Object', 'signature': ''})\n"
+                "        \n"
+                "        inspect_traverse(mod)\n"
+                "        with open(out_path, 'w', encoding='utf-8') as file:\n"
+                "            json.dump({'version': version, 'objects': objects}, file)\n"
+                "    except Exception as e2:\n"
+                "        with open(out_path, 'w', encoding='utf-8') as file:\n"
+                "            json.dump({'version': 'Not Installed', 'objects': []}, file)\n"
+                "\n"
             )
 
         for fw in frameworks:
@@ -112,23 +241,26 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
             if os.path.exists(snapshot_path):
                 print(f"Snapshot already exists for {fw}=={version}. Skipping venv creation.")
                 try:
-                    with open(snapshot_path, "r", encoding="utf-8") as f:
+                    with open(snapshot_path, encoding="utf-8") as f:
                         results[fw] = json.load(f)
                 except Exception:
                     results[fw] = {"version": "Not Installed", "objects": []}
             elif version == "unknown":
                 print(f"Could not find {pkg_name} on PyPI. Skipping.")
                 import glob
+
                 existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
                 fallback_data = None
                 if existing:
                     for fallback in sorted(existing, reverse=True):
                         try:
-                            with open(fallback, "r", encoding="utf-8") as f:
+                            with open(fallback, encoding="utf-8") as f:
                                 data = json.load(f)
                             if data.get("version") != "Not Installed" and data.get("objects"):
                                 fallback_data = data
-                                print(f"Falling back to existing snapshot: {os.path.basename(fallback)}")
+                                print(
+                                    f"Falling back to existing snapshot: {os.path.basename(fallback)}"
+                                )
                                 break
                         except Exception:  # pragma: no cover
                             pass
@@ -136,6 +268,19 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
                     results[fw] = fallback_data
                     continue
                 results[fw] = {"version": "Not Installed", "objects": []}
+            elif fw in ("cntk", "mxnet", "caffe"):
+                print(f"Generating snapshot for legacy framework {fw} using Docker...")
+                import subprocess
+
+                pwd = os.getcwd()
+                cmd = f"""docker run --rm -v "{pwd}/snapshots:/workspace/snapshots" -v "{pwd}/scripts:/workspace/scripts" onnx9000-legacy /bin/bash -c "source /venvs/{fw}/bin/activate && python /workspace/scripts/generate_snapshots.py {fw} /workspace/snapshots/{fw}-{version}.json" """
+                try:
+                    subprocess.run(cmd, shell=True, check=True)
+                    with open(snapshot_path, encoding="utf-8") as f:
+                        results[fw] = json.load(f)
+                except Exception as e:
+                    print(f"Failed to run docker for {fw}: {e}")
+                    results[fw] = {"version": "Not Installed", "objects": []}
             else:
                 py_ver = pypi_py_ver or python_versions.get(fw, default_python)
                 venv_dir = os.path.join(base_tmp, f"venv_{fw}")
@@ -192,7 +337,15 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
 
                     print(f"Installing {pkg_name}=={version}...")
                     subprocess.run(
-                        ["uv", "pip", "install", "--python", venv_dir, f"{pkg_name}=={version}"],
+                        [
+                            "uv",
+                            "pip",
+                            "install",
+                            "--python",
+                            venv_dir,
+                            f"{pkg_name}=={version}",
+                            "griffe",
+                        ],
                         check=True,
                         capture_output=True,
                     )
@@ -206,7 +359,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
                         [python_exe, dumper_path, fw, tmp_out], check=True, capture_output=True
                     )
 
-                    with open(tmp_out, "r", encoding="utf-8") as f:
+                    with open(tmp_out, encoding="utf-8") as f:
                         data = json.load(f)
 
                     with open(snapshot_path, "w", encoding="utf-8") as f:
@@ -217,16 +370,19 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
                 except Exception as e:
                     print(f"Failed to generate API snapshot for {fw}: {e}")
                     import glob
+
                     existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
                     fallback_data = None
                     if existing:
                         for fallback in sorted(existing, reverse=True):
                             try:
-                                with open(fallback, "r", encoding="utf-8") as f:
+                                with open(fallback, encoding="utf-8") as f:
                                     data = json.load(f)
                                 if data.get("version") != "Not Installed" and data.get("objects"):
                                     fallback_data = data
-                                    print(f"Falling back to existing snapshot: {os.path.basename(fallback)}")
+                                    print(
+                                        f"Falling back to existing snapshot: {os.path.basename(fallback)}"
+                                    )
                                     break
                             except Exception:  # pragma: no cover
                                 pass
@@ -243,7 +399,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> Dict[str, Dict[str, Any]
     return results
 
 
-def clone_and_parse_onnx_spec() -> Dict[str, Any]:
+def clone_and_parse_onnx_spec() -> dict[str, Any]:
     """Clone ONNX repository and parse Operators.md.
 
     Returns:
@@ -272,7 +428,7 @@ def clone_and_parse_onnx_spec() -> Dict[str, Any]:
                 import re
 
                 op_pattern = re.compile(r'<a href="#([A-Za-z0-9_]+)">')
-                with open(operators_md_path, "r", encoding="utf-8") as f:
+                with open(operators_md_path, encoding="utf-8") as f:
                     for line in f:
                         if line.startswith("## <a name="):
                             parts = line.split("**")
@@ -289,13 +445,13 @@ def clone_and_parse_onnx_spec() -> Dict[str, Any]:
                                 operators.append(match.group(1))
 
             # remove duplicates and clean up
-            operators = list(sorted(set([op for op in operators if op and op[0].isupper()])))
+            operators = sorted({op for op in operators if op and op[0].isupper()})
             return {"commit": commit_hash, "operators": operators}
         except subprocess.CalledProcessError:
             return {"commit": "unknown", "operators": []}
 
 
-def get_onnx9000_ops() -> List[str]:
+def get_onnx9000_ops() -> list[str]:
     """Get the ops supported by ONNX9000.
 
     Returns:
@@ -323,7 +479,7 @@ def get_onnx9000_ops() -> List[str]:
     ]
 
     for f in files:
-        with open(f, "r", encoding="utf-8") as fp:
+        with open(f, encoding="utf-8") as fp:
             try:
                 tree = ast.parse(fp.read())
                 for node in ast.walk(tree):
@@ -372,7 +528,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
             ]
 
         for f in files:
-            with open(f, "r", encoding="utf-8") as file:
+            with open(f, encoding="utf-8") as file:
                 try:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
@@ -390,7 +546,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
             os.path.join(root, f) for root, _, fs in os.walk(path) for f in fs if f.endswith(".py")
         ]
         for f in files:
-            with open(f, "r", encoding="utf-8") as file:
+            with open(f, encoding="utf-8") as file:
                 try:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
@@ -416,7 +572,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
             ]
 
         for f in files:
-            with open(f, "r", encoding="utf-8") as file:
+            with open(f, encoding="utf-8") as file:
                 try:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
@@ -478,7 +634,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
 
 
 def generate_summary_table(
-    frameworks_data: Dict[str, Any], onnx_data: Dict[str, Any], onnx9000_ops: List[str]
+    frameworks_data: dict[str, Any], onnx_data: dict[str, Any], onnx9000_ops: list[str]
 ) -> str:
     """Generate the summary table.
 
@@ -521,7 +677,7 @@ def generate_summary_table(
 
 
 def generate_markdown_table(
-    frameworks_data: Dict[str, Any], onnx_data: Dict[str, Any], onnx9000_ops: List[str]
+    frameworks_data: dict[str, Any], onnx_data: dict[str, Any], onnx9000_ops: list[str]
 ) -> str:
     """Generate the markdown table for SUPPORTED_PER_FRAMEWORK.md.
 
@@ -545,30 +701,47 @@ def generate_markdown_table(
         for op in onnx_ops:
             if op in onnx9000_ops:
                 onnx_supported += 1
-    onnx_pct = f"{(onnx_supported / onnx_total * 100):.2f}%" if onnx_total > 0 else "0.00%"
+    f"{(onnx_supported / onnx_total * 100):.2f}%" if onnx_total > 0 else "0.00%"
 
-    lines.append("\n## ONNX Spec Coverage\n")
-    if onnx_total > 0:
-        lines.append(f"**Coverage:** {onnx_supported}/{onnx_total} ({onnx_pct})\n")
-        commit_hash = onnx_data.get("commit")
-        lines.append(
-            f"**Commit:** [`{commit_hash}`](https://github.com/onnx/onnx/commit/{commit_hash})\n"
-        )
+    lines.append("\n## Detailed Support Breakdown\n")
+    lines.append(
+        "Below are the exhaustive API tracking files. They contain the specific list of classes, functions, and models we must implement adapters for to be fully compliant with each framework.\n"
+    )
 
-    lines.append("\n## Framework Versions\n")
-    lines.append("| Framework | Version |")
-    lines.append("|---|---|")
-    for fw, data in frameworks_data.items():
-        lines.append(f"| {fw} | {data['version']} |")
-
-    lines.append("\n## Detailed Operators\n")
-    lines.append("| ONNX Operator | ONNX9000 |")
-    lines.append("|---|---|")
-    if onnx_total > 0:
-        for op in sorted(onnx_data.get("operators", [])):
-            op_lower = op.lower()
-            is_supported = "✅" if op_lower in onnx9000_ops else "❌"
-            lines.append(f"| {op} | {is_supported} |")
+    lines.append(
+        f"- [**ONNX Standard** (`{onnx_supported}/{onnx_total}` supported)](compliance/ONNX_SUPPORT.md)"
+    )
+    for fw in [
+        "torch",
+        "tensorflow",
+        "keras",
+        "jax",
+        "flax",
+        "paddle",
+        "coremltools",
+        "sklearn",
+        "xgboost",
+        "lightgbm",
+        "catboost",
+        "pyspark",
+        "h2o",
+        "libsvm",
+        "cntk",
+        "mxnet",
+        "caffe",
+        "gguf",
+        "safetensors",
+    ]:
+        if (
+            fw in frameworks_data
+            and isinstance(frameworks_data[fw], dict)
+            and frameworks_data[fw].get("version") != "Not Installed"
+        ):
+            total = len(frameworks_data[fw].get("objects", []))
+            supported = count_supported_framework_objects(fw)
+            lines.append(
+                f"- [**{fw.capitalize()}** (`{supported}/{total}` supported)](compliance/{fw.upper()}_SUPPORT.md)"
+            )
 
     return "\n".join(lines)
 
@@ -585,7 +758,7 @@ def update_compliance_md(summary_md: str) -> None:
     if not os.path.exists(compliance_path):
         return
 
-    with open(compliance_path, "r", encoding="utf-8") as f:
+    with open(compliance_path, encoding="utf-8") as f:
         content = f.read()
 
     # Find where to inject: after the first header and description, before Exhaustive Parity Checklist

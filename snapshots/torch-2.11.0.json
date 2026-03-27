@@ -1,919 +1,4680 @@
 {
-  "version": "2.11.0",
+  "version": "2.11.0+cu130",
   "objects": [
-    "BoolStorage",
-    "BoolTensor",
-    "ByteStorage",
-    "ByteTensor",
-    "CharStorage",
-    "CharTensor",
-    "DoubleStorage",
-    "DoubleTensor",
-    "FloatStorage",
-    "FloatTensor",
-    "GradScaler",
-    "IntStorage",
-    "IntTensor",
-    "LongStorage",
-    "LongTensor",
-    "ShortStorage",
-    "ShortTensor",
-    "SymBool",
-    "SymFloat",
-    "SymInt",
-    "Tensor",
-    "TypedStorage",
-    "UntypedStorage",
-    "are_deterministic_algorithms_enabled",
-    "autocast",
-    "chunk",
-    "compile",
-    "cond",
-    "enable_grad",
-    "export",
-    "get_default_device",
-    "get_deterministic_debug_mode",
-    "get_device_module",
-    "get_float32_matmul_precision",
-    "get_rng_state",
-    "inference_mode",
-    "initial_seed",
-    "is_deterministic_algorithms_warn_only_enabled",
-    "is_storage",
-    "is_tensor",
-    "is_warn_always_enabled",
-    "load",
-    "lobpcg",
-    "manual_seed",
-    "matmul",
-    "no_grad",
-    "rand",
-    "randn",
-    "save",
-    "seed",
-    "set_default_device",
-    "set_default_tensor_type",
-    "set_deterministic_debug_mode",
-    "set_float32_matmul_precision",
-    "set_printoptions",
-    "set_rng_state",
-    "set_warn_always",
-    "split",
-    "stack",
-    "sym_float",
-    "sym_fresh_size",
-    "sym_int",
-    "sym_ite",
-    "sym_max",
-    "sym_min",
-    "sym_not",
-    "sym_sum",
-    "typename",
-    "unravel_index",
-    "use_deterministic_algorithms",
-    "vmap",
-    "sym_sqrt",
-    "AVG",
-    "AcceleratorError",
-    "AggregationType",
-    "AliasDb",
-    "AnyType",
-    "Argument",
-    "ArgumentSpec",
-    "AwaitType",
-    "BenchmarkConfig",
-    "BenchmarkExecutionStats",
-    "Block",
-    "BoolType",
-    "BufferDict",
-    "CallStack",
-    "Capsule",
-    "ClassType",
-    "Code",
-    "CompilationUnit",
-    "CompleteArgumentSpec",
-    "ComplexType",
-    "ConcreteModuleType",
-    "ConcreteModuleTypeBuilder",
-    "DeepCopyMemoTable",
-    "DeserializationStorageContext",
-    "DeviceObjType",
-    "DictType",
-    "DisableTorchFunction",
-    "DisableTorchFunctionSubclass",
-    "DispatchKey",
-    "DispatchKeySet",
-    "EnumType",
-    "ErrorReport",
-    "Event",
-    "ExcludeDispatchKeyGuard",
-    "ExecutionPlan",
-    "FatalError",
-    "FileCheck",
-    "FloatType",
-    "FunctionSchema",
-    "Future",
-    "FutureType",
-    "Generator",
-    "Gradient",
-    "Graph",
-    "GraphExecutorState",
-    "IODescriptor",
-    "InferredType",
-    "IntType",
-    "InterfaceType",
-    "JITException",
-    "ListType",
-    "LiteScriptModule",
-    "LockingLogger",
-    "ModuleDict",
-    "Node",
-    "NoneType",
-    "NoopLogger",
-    "NumberType",
-    "OperatorInfo",
-    "OptionalType",
-    "OutOfMemoryError",
-    "ParameterDict",
-    "PyObjectType",
-    "PyTorchFileReader",
-    "PyTorchFileWriter",
-    "RRefType",
-    "SUM",
-    "ScriptClass",
-    "ScriptClassFunction",
-    "ScriptDict",
-    "ScriptDictIterator",
-    "ScriptDictKeyIterator",
-    "ScriptFunction",
-    "ScriptList",
-    "ScriptListIterator",
-    "ScriptMethod",
-    "ScriptModule",
-    "ScriptModuleSerializer",
-    "ScriptObject",
-    "ScriptObjectProperty",
-    "SerializationStorageContext",
-    "Size",
-    "StaticModule",
-    "Stream",
-    "StreamObjType",
-    "StringType",
-    "SymBoolType",
-    "SymIntType",
-    "Tag",
-    "TensorType",
-    "ThroughputBenchmark",
-    "TracingState",
-    "TupleType",
-    "Type",
-    "UnionType",
-    "Use",
-    "Value",
-    "autocast_decrement_nesting",
-    "autocast_increment_nesting",
-    "clear_autocast_cache",
-    "cpp",
-    "default_generator",
-    "device",
-    "dtype",
-    "finfo",
-    "fork",
-    "get_autocast_cpu_dtype",
-    "get_autocast_dtype",
-    "get_autocast_gpu_dtype",
-    "get_autocast_ipu_dtype",
-    "get_autocast_xla_dtype",
-    "get_default_dtype",
-    "get_num_interop_threads",
-    "get_num_threads",
-    "has_lapack",
-    "has_mkl",
-    "has_openmp",
-    "has_spectral",
-    "iinfo",
-    "import_ir_module",
-    "import_ir_module_from_buffer",
-    "init_num_threads",
-    "is_anomaly_check_nan_enabled",
-    "is_anomaly_enabled",
-    "is_autocast_cache_enabled",
-    "is_autocast_cpu_enabled",
-    "is_autocast_enabled",
-    "is_autocast_ipu_enabled",
-    "is_autocast_xla_enabled",
-    "is_grad_enabled",
-    "is_inference_mode_enabled",
-    "layout",
-    "memory_format",
-    "merge_type_from_type_comment",
-    "parse_ir",
-    "parse_schema",
-    "parse_type_comment",
-    "qscheme",
-    "read_vitals",
-    "set_anomaly_enabled",
-    "set_autocast_cache_enabled",
-    "set_autocast_cpu_dtype",
-    "set_autocast_cpu_enabled",
-    "set_autocast_dtype",
-    "set_autocast_enabled",
-    "set_autocast_gpu_dtype",
-    "set_autocast_ipu_dtype",
-    "set_autocast_ipu_enabled",
-    "set_autocast_xla_dtype",
-    "set_autocast_xla_enabled",
-    "set_flush_denormal",
-    "set_num_interop_threads",
-    "set_num_threads",
-    "set_vital",
-    "unify_type_list",
-    "vitals_enabled",
-    "wait",
-    "e",
-    "pi",
-    "nan",
-    "inf",
-    "newaxis",
-    "abs",
-    "abs_",
-    "absolute",
-    "acos",
-    "acos_",
-    "acosh",
-    "acosh_",
-    "adaptive_avg_pool1d",
-    "adaptive_max_pool1d",
-    "add",
-    "addbmm",
-    "addcdiv",
-    "addcmul",
-    "addmm",
-    "addmv",
-    "addmv_",
-    "addr",
-    "adjoint",
-    "affine_grid_generator",
-    "alias_copy",
-    "align_tensors",
-    "all",
-    "allclose",
-    "alpha_dropout",
-    "alpha_dropout_",
-    "amax",
-    "amin",
-    "aminmax",
-    "angle",
-    "any",
-    "arange",
-    "arccos",
-    "arccos_",
-    "arccosh",
-    "arccosh_",
-    "arcsin",
-    "arcsin_",
-    "arcsinh",
-    "arcsinh_",
-    "arctan",
-    "arctan2",
-    "arctan_",
-    "arctanh",
-    "arctanh_",
-    "argmax",
-    "argmin",
-    "argsort",
-    "argwhere",
-    "as_strided",
-    "as_strided_",
-    "as_strided_copy",
-    "as_strided_scatter",
-    "as_tensor",
-    "asarray",
-    "asin",
-    "asin_",
-    "asinh",
-    "asinh_",
-    "atan",
-    "atan2",
-    "atan_",
-    "atanh",
-    "atanh_",
-    "atleast_1d",
-    "atleast_2d",
-    "atleast_3d",
-    "avg_pool1d",
-    "baddbmm",
-    "bartlett_window",
-    "batch_norm",
-    "batch_norm_backward_elemt",
-    "batch_norm_backward_reduce",
-    "batch_norm_elemt",
-    "batch_norm_gather_stats",
-    "batch_norm_gather_stats_with_counts",
-    "batch_norm_stats",
-    "batch_norm_update_stats",
-    "bernoulli",
-    "bilinear",
-    "binary_cross_entropy_with_logits",
-    "bincount",
-    "binomial",
-    "bitwise_and",
-    "bitwise_left_shift",
-    "bitwise_not",
-    "bitwise_or",
-    "bitwise_right_shift",
-    "bitwise_xor",
-    "blackman_window",
-    "block_diag",
-    "bmm",
-    "broadcast_tensors",
-    "broadcast_to",
-    "bucketize",
-    "can_cast",
-    "cartesian_prod",
-    "cat",
-    "ccol_indices_copy",
-    "cdist",
-    "ceil",
-    "ceil_",
-    "celu",
-    "celu_",
-    "chain_matmul",
-    "channel_shuffle",
-    "cholesky",
-    "cholesky_inverse",
-    "cholesky_solve",
-    "choose_qparams_optimized",
-    "chunk",
-    "clamp",
-    "clamp_",
-    "clamp_max",
-    "clamp_max_",
-    "clamp_min",
-    "clamp_min_",
-    "clip",
-    "clip_",
-    "clone",
-    "col_indices_copy",
-    "column_stack",
-    "combinations",
-    "complex",
-    "concat",
-    "concatenate",
-    "conj",
-    "conj_physical",
-    "conj_physical_",
-    "constant_pad_nd",
-    "conv1d",
-    "conv2d",
-    "conv3d",
-    "conv_tbc",
-    "conv_transpose1d",
-    "conv_transpose2d",
-    "conv_transpose3d",
-    "convolution",
-    "copysign",
-    "corrcoef",
-    "cos",
-    "cos_",
-    "cosh",
-    "cosh_",
-    "cosine_embedding_loss",
-    "cosine_similarity",
-    "count_nonzero",
-    "cov",
-    "cross",
-    "crow_indices_copy",
-    "ctc_loss",
-    "cudnn_affine_grid_generator",
-    "cudnn_batch_norm",
-    "cudnn_convolution",
-    "cudnn_convolution_add_relu",
-    "cudnn_convolution_relu",
-    "cudnn_convolution_transpose",
-    "cudnn_grid_sampler",
-    "cudnn_is_acceptable",
-    "cummax",
-    "cummin",
-    "cumprod",
-    "cumsum",
-    "cumulative_trapezoid",
-    "deg2rad",
-    "deg2rad_",
-    "dequantize",
-    "det",
-    "detach",
-    "detach_",
-    "detach_copy",
-    "diag",
-    "diag_embed",
-    "diagflat",
-    "diagonal",
-    "diagonal_copy",
-    "diagonal_scatter",
-    "diff",
-    "digamma",
-    "dist",
-    "div",
-    "divide",
-    "dot",
-    "dropout",
-    "dropout_",
-    "dsmm",
-    "dsplit",
-    "dstack",
-    "einsum",
-    "embedding",
-    "embedding_bag",
-    "embedding_renorm_",
-    "empty",
-    "empty_like",
-    "empty_permuted",
-    "empty_quantized",
-    "empty_strided",
-    "eq",
-    "equal",
-    "erf",
-    "erf_",
-    "erfc",
-    "erfc_",
-    "erfinv",
-    "exp",
-    "exp2",
-    "exp2_",
-    "exp_",
-    "expand_copy",
-    "expm1",
-    "expm1_",
-    "eye",
-    "fake_quantize_per_channel_affine",
-    "fake_quantize_per_tensor_affine",
-    "fbgemm_linear_fp16_weight",
-    "fbgemm_linear_fp16_weight_fp32_activation",
-    "fbgemm_linear_int8_weight",
-    "fbgemm_linear_int8_weight_fp32_activation",
-    "fbgemm_linear_quantize_weight",
-    "fbgemm_pack_gemm_matrix_fp16",
-    "fbgemm_pack_quantized_matrix",
-    "feature_alpha_dropout",
-    "feature_alpha_dropout_",
-    "feature_dropout",
-    "feature_dropout_",
-    "fill",
-    "fill_",
-    "fix",
-    "fix_",
-    "flatten",
-    "flip",
-    "fliplr",
-    "flipud",
-    "float_power",
-    "floor",
-    "floor_",
-    "floor_divide",
-    "fmax",
-    "fmin",
-    "fmod",
-    "frac",
-    "frac_",
-    "frexp",
-    "frobenius_norm",
-    "from_file",
-    "from_numpy",
-    "frombuffer",
-    "full",
-    "full_like",
-    "fused_moving_avg_obs_fake_quant",
-    "gather",
-    "gcd",
-    "gcd_",
-    "ge",
-    "geqrf",
-    "ger",
-    "get_device",
-    "gradient",
-    "greater",
-    "greater_equal",
-    "grid_sampler",
-    "grid_sampler_2d",
-    "grid_sampler_3d",
-    "group_norm",
-    "gru",
-    "gru_cell",
-    "gt",
-    "hamming_window",
-    "hann_window",
-    "hardshrink",
-    "hash_tensor",
-    "heaviside",
-    "hinge_embedding_loss",
-    "histc",
-    "histogram",
-    "histogramdd",
-    "hsmm",
-    "hsplit",
-    "hspmm",
-    "hstack",
-    "hypot",
-    "i0",
-    "i0_",
-    "igamma",
-    "igammac",
-    "imag",
-    "index_add",
-    "index_copy",
-    "index_fill",
-    "index_put",
-    "index_put_",
-    "index_reduce",
-    "index_select",
-    "indices_copy",
-    "inner",
-    "instance_norm",
-    "int_repr",
-    "inverse",
-    "is_complex",
-    "is_conj",
-    "is_distributed",
-    "is_floating_point",
-    "is_inference",
-    "is_neg",
-    "is_nonzero",
-    "is_same_size",
-    "is_signed",
-    "is_vulkan_available",
-    "isclose",
-    "isfinite",
-    "isin",
-    "isinf",
-    "isnan",
-    "isneginf",
-    "isposinf",
-    "isreal",
-    "istft",
-    "kaiser_window",
-    "kl_div",
-    "kron",
-    "kthvalue",
-    "layer_norm",
-    "lcm",
-    "lcm_",
-    "ldexp",
-    "ldexp_",
-    "le",
-    "lerp",
-    "less",
-    "less_equal",
-    "lgamma",
-    "linspace",
-    "log",
-    "log10",
-    "log10_",
-    "log1p",
-    "log1p_",
-    "log2",
-    "log2_",
-    "log_",
-    "log_softmax",
-    "logaddexp",
-    "logaddexp2",
-    "logcumsumexp",
-    "logdet",
-    "logical_and",
-    "logical_not",
-    "logical_or",
-    "logical_xor",
-    "logit",
-    "logit_",
-    "logspace",
-    "logsumexp",
-    "lstm",
-    "lstm_cell",
-    "lt",
-    "lu_solve",
-    "lu_unpack",
-    "margin_ranking_loss",
-    "masked_fill",
-    "masked_scatter",
-    "masked_select",
-    "matmul",
-    "matrix_exp",
-    "matrix_power",
-    "max",
-    "max_pool1d",
-    "max_pool1d_with_indices",
-    "max_pool2d",
-    "max_pool3d",
-    "maximum",
-    "mean",
-    "median",
-    "meshgrid",
-    "min",
-    "minimum",
-    "miopen_batch_norm",
-    "miopen_convolution",
-    "miopen_convolution_add_relu",
-    "miopen_convolution_relu",
-    "miopen_convolution_transpose",
-    "miopen_ctc_loss",
-    "miopen_depthwise_convolution",
-    "miopen_rnn",
-    "mkldnn_adaptive_avg_pool2d",
-    "mkldnn_convolution",
-    "mkldnn_linear_backward_weights",
-    "mkldnn_max_pool2d",
-    "mkldnn_max_pool3d",
-    "mkldnn_rnn_layer",
-    "mm",
-    "mode",
-    "moveaxis",
-    "movedim",
-    "msort",
-    "mul",
-    "multinomial",
-    "multiply",
-    "mv",
-    "mvlgamma",
-    "nan_to_num",
-    "nan_to_num_",
-    "nanmean",
-    "nanmedian",
-    "nanquantile",
-    "nansum",
-    "narrow",
-    "narrow_copy",
-    "native_batch_norm",
-    "native_channel_shuffle",
-    "native_dropout",
-    "native_group_norm",
-    "native_layer_norm",
-    "native_norm",
-    "ne",
-    "neg",
-    "neg_",
-    "negative",
-    "negative_",
-    "nextafter",
-    "nonzero",
-    "nonzero_static",
-    "norm",
-    "norm_except_dim",
-    "normal",
-    "not_equal",
-    "nuclear_norm",
-    "numel",
-    "ones",
-    "ones_like",
-    "orgqr",
-    "ormqr",
-    "outer",
-    "pairwise_distance",
-    "pdist",
-    "permute",
-    "permute_copy",
-    "pinverse",
-    "pixel_shuffle",
-    "pixel_unshuffle",
-    "poisson",
-    "poisson_nll_loss",
-    "polar",
-    "polygamma",
-    "positive",
-    "pow",
-    "prelu",
-    "prod",
-    "promote_types",
-    "put",
-    "q_per_channel_axis",
-    "q_per_channel_scales",
-    "q_per_channel_zero_points",
-    "q_scale",
-    "q_zero_point",
-    "qr",
-    "quantile",
-    "quantize_per_channel",
-    "quantize_per_tensor",
-    "quantize_per_tensor_dynamic",
-    "quantized_batch_norm",
-    "quantized_gru_cell",
-    "quantized_lstm_cell",
-    "quantized_max_pool1d",
-    "quantized_max_pool2d",
-    "quantized_max_pool3d",
-    "quantized_rnn_relu_cell",
-    "quantized_rnn_tanh_cell",
-    "rad2deg",
-    "rad2deg_",
-    "rand",
-    "rand_like",
-    "randint",
-    "randint_like",
-    "randn",
-    "randn_like",
-    "randperm",
-    "range",
-    "ravel",
-    "real",
-    "reciprocal",
-    "reciprocal_",
-    "relu",
-    "relu_",
-    "remainder",
-    "renorm",
-    "repeat_interleave",
-    "reshape",
-    "resize_as_",
-    "resize_as_sparse_",
-    "resolve_conj",
-    "resolve_neg",
-    "result_type",
-    "rms_norm",
-    "rnn_relu",
-    "rnn_relu_cell",
-    "rnn_tanh",
-    "rnn_tanh_cell",
-    "roll",
-    "rot90",
-    "round",
-    "round_",
-    "row_indices_copy",
-    "row_stack",
-    "rrelu",
-    "rrelu_",
-    "rsqrt",
-    "rsqrt_",
-    "rsub",
-    "saddmm",
-    "scalar_tensor",
-    "scatter",
-    "scatter_add",
-    "scatter_reduce",
-    "searchsorted",
-    "select",
-    "select_copy",
-    "select_scatter",
-    "selu",
-    "selu_",
-    "sgn",
-    "sigmoid",
-    "sigmoid_",
-    "sign",
-    "signbit",
-    "sin",
-    "sin_",
-    "sinc",
-    "sinc_",
-    "sinh",
-    "sinh_",
-    "slice_copy",
-    "slice_inverse",
-    "slice_scatter",
-    "slogdet",
-    "smm",
-    "softmax",
-    "sort",
-    "sparse_bsc_tensor",
-    "sparse_bsr_tensor",
-    "sparse_compressed_tensor",
-    "sparse_coo_tensor",
-    "sparse_csc_tensor",
-    "sparse_csr_tensor",
-    "split",
-    "split_copy",
-    "split_with_sizes",
-    "split_with_sizes_copy",
-    "spmm",
-    "sqrt",
-    "sqrt_",
-    "square",
-    "square_",
-    "squeeze",
-    "squeeze_copy",
-    "sspaddmm",
-    "stack",
-    "std",
-    "std_mean",
-    "stft",
-    "sub",
-    "subtract",
-    "sum",
-    "svd",
-    "swapaxes",
-    "swapdims",
-    "sym_constrain_range",
-    "sym_constrain_range_for_size",
-    "t",
-    "t_copy",
-    "take",
-    "take_along_dim",
-    "tan",
-    "tan_",
-    "tanh",
-    "tanh_",
-    "tensor",
-    "tensor_split",
-    "tensordot",
-    "threshold",
-    "threshold_",
-    "tile",
-    "topk",
-    "trace",
-    "transpose",
-    "transpose_copy",
-    "trapezoid",
-    "trapz",
-    "triangular_solve",
-    "tril",
-    "tril_indices",
-    "triplet_margin_loss",
-    "triu",
-    "triu_indices",
-    "true_divide",
-    "trunc",
-    "trunc_",
-    "unbind",
-    "unbind_copy",
-    "unflatten",
-    "unfold_copy",
-    "unique_consecutive",
-    "unsafe_chunk",
-    "unsafe_split",
-    "unsafe_split_with_sizes",
-    "unsqueeze",
-    "unsqueeze_copy",
-    "values_copy",
-    "vander",
-    "var",
-    "var_mean",
-    "vdot",
-    "view_as_complex",
-    "view_as_complex_copy",
-    "view_as_real",
-    "view_as_real_copy",
-    "view_copy",
-    "vsplit",
-    "vstack",
-    "where",
-    "xlogy",
-    "xlogy_",
-    "zero_",
-    "zeros",
-    "zeros_like",
-    "bfloat16",
-    "bit",
-    "bits16",
-    "bits1x8",
-    "bits2x4",
-    "bits4x2",
-    "bits8",
-    "bool",
-    "cdouble",
-    "cfloat",
-    "chalf",
-    "complex128",
-    "complex32",
-    "complex64",
-    "double",
-    "float",
-    "float16",
-    "float32",
-    "float4_e2m1fn_x2",
-    "float64",
-    "float8_e4m3fn",
-    "float8_e4m3fnuz",
-    "float8_e5m2",
-    "float8_e5m2fnuz",
-    "float8_e8m0fnu",
-    "half",
-    "int",
-    "int1",
-    "int16",
-    "int2",
-    "int3",
-    "int32",
-    "int4",
-    "int5",
-    "int6",
-    "int64",
-    "int7",
-    "int8",
-    "long",
-    "qint32",
-    "qint8",
-    "quint2x4",
-    "quint4x2",
-    "quint8",
-    "short",
-    "uint1",
-    "uint16",
-    "uint2",
-    "uint3",
-    "uint32",
-    "uint4",
-    "uint5",
-    "uint6",
-    "uint64",
-    "uint7",
-    "uint8"
+    {
+      "name": "BoolStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "BoolTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ByteStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "ByteTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "CharStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "CharTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DoubleStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "DoubleTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FloatStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "FloatTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GradScaler",
+      "type": "Class",
+      "signature": "(device: 'str' = 'cuda', init_scale: 'float' = 65536.0, growth_factor: 'float' = 2.0, backoff_factor: 'float' = 0.5, growth_interval: 'int' = 2000, enabled: 'bool' = True) -> 'None'"
+    },
+    {
+      "name": "IntStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "IntTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LongStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "LongTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ShortStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "ShortTensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "SymBool",
+      "type": "Class",
+      "signature": "(node)"
+    },
+    {
+      "name": "SymFloat",
+      "type": "Class",
+      "signature": "(node)"
+    },
+    {
+      "name": "SymInt",
+      "type": "Class",
+      "signature": "(node)"
+    },
+    {
+      "name": "Tensor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TypedStorage",
+      "type": "Class",
+      "signature": "(*args, wrap_storage=None, dtype=None, device=None, _internal=False)"
+    },
+    {
+      "name": "UntypedStorage",
+      "type": "Class",
+      "signature": "(*args, **kwargs)"
+    },
+    {
+      "name": "are_deterministic_algorithms_enabled",
+      "type": "Function",
+      "signature": "() -> bool"
+    },
+    {
+      "name": "autocast",
+      "type": "Class",
+      "signature": "(device_type: str, dtype: Optional[torch.dtype] = None, enabled: bool = True, cache_enabled: Optional[bool] = None)"
+    },
+    {
+      "name": "chunk",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "compile",
+      "type": "Function",
+      "signature": "(model: collections.abc.Callable[~_InputT, ~_RetT] | None = None, *, fullgraph: bool = False, dynamic: bool | None = None, backend: str | collections.abc.Callable = 'inductor', mode: str | None = None, options: dict[str, str | int | bool | collections.abc.Callable] | None = None, disable: bool = False) -> collections.abc.Callable[[collections.abc.Callable[~_InputT, ~_RetT]], collections.abc.Callable[~_InputT, ~_RetT]] | collections.abc.Callable[~_InputT, ~_RetT]"
+    },
+    {
+      "name": "cond",
+      "type": "Function",
+      "signature": "(pred: Union[bool, int, float, torch.Tensor], true_fn: collections.abc.Callable, false_fn: collections.abc.Callable, operands: Union[tuple, list] = ()) -> Any"
+    },
+    {
+      "name": "enable_grad",
+      "type": "Class",
+      "signature": "(orig_func: Optional[~F] = None) -> Union[Self, ~F]"
+    },
+    {
+      "name": "export.AdditionalInputs",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "export.Constraint",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "export.CustomDecompTable",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "export.default_decompositions",
+      "type": "Function",
+      "signature": "() -> 'CustomDecompTable'"
+    },
+    {
+      "name": "export.Dim",
+      "type": "Class",
+      "signature": "(name: str, *, min: int | None = None, max: int | None = None)"
+    },
+    {
+      "name": "export.dims",
+      "type": "Function",
+      "signature": "(*names: str, min: int | None = None, max: int | None = None) -> tuple[torch.export.dynamic_shapes.Dim, ...]"
+    },
+    {
+      "name": "export.draft_export",
+      "type": "Function",
+      "signature": "(mod: torch.nn.modules.module.Module, args: tuple[typing.Any, ...], kwargs: collections.abc.Mapping[str, typing.Any] | None = None, *, dynamic_shapes: dict[str, typing.Any] | tuple[typing.Any, ...] | list[typing.Any] | None = None, preserve_module_call_signature: tuple[str, ...] = (), strict: bool = False, prefer_deferred_runtime_asserts_over_guards: bool = False) -> torch.export.exported_program.ExportedProgram"
+    },
+    {
+      "name": "export.export",
+      "type": "Function",
+      "signature": "(mod: torch.nn.modules.module.Module, args: tuple[typing.Any, ...], kwargs: collections.abc.Mapping[str, typing.Any] | None = None, *, dynamic_shapes: dict[str, typing.Any] | tuple[typing.Any, ...] | list[typing.Any] | None = None, strict: bool = False, preserve_module_call_signature: tuple[str, ...] = (), prefer_deferred_runtime_asserts_over_guards: bool = False) -> torch.export.exported_program.ExportedProgram"
+    },
+    {
+      "name": "export.ExportBackwardSignature",
+      "type": "Class",
+      "signature": "(gradients_to_parameters: dict[str, str], gradients_to_user_inputs: dict[str, str], loss_output: str) -> None"
+    },
+    {
+      "name": "export.ExportedProgram",
+      "type": "Class",
+      "signature": "(root: torch.nn.modules.module.Module | dict[str, typing.Any], graph: torch.fx.graph.Graph, graph_signature: torch.export.graph_signature.ExportGraphSignature, state_dict: dict[str, torch.Tensor | torch.nn.parameter.Parameter], range_constraints: 'dict[sympy.Symbol, Any]', module_call_graph: list[torch.export.exported_program.ModuleCallEntry], example_inputs: tuple[tuple[typing.Any, ...], dict[str, typing.Any]] | None = None, constants: dict[str, typing.Union[torch.Tensor, torch.ScriptObject, torch._library.fake_class_registry.FakeScriptObject, torch.utils._pytree.TreeSpec]] | None = None, *, verifiers: list[type[torch._export.verifier.Verifier]] | None = None)"
+    },
+    {
+      "name": "export.ExportGraphSignature",
+      "type": "Class",
+      "signature": "(input_specs: list[torch.export.graph_signature.InputSpec], output_specs: list[torch.export.graph_signature.OutputSpec]) -> None"
+    },
+    {
+      "name": "export.FlatArgsAdapter",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "export.load",
+      "type": "Function",
+      "signature": "(f: Union[str, os.PathLike[str], IO[bytes]], *, extra_files: dict[str, typing.Any] | None = None, expected_opset_version: dict[str, int] | None = None) -> torch.export.exported_program.ExportedProgram"
+    },
+    {
+      "name": "export.ModuleCallEntry",
+      "type": "Class",
+      "signature": "(fqn: str, signature: torch.export.exported_program.ModuleCallSignature | None = None) -> None"
+    },
+    {
+      "name": "export.ModuleCallSignature",
+      "type": "Class",
+      "signature": "(inputs: list[typing.Union[torch.export.graph_signature.TensorArgument, torch.export.graph_signature.SymIntArgument, torch.export.graph_signature.SymFloatArgument, torch.export.graph_signature.SymBoolArgument, torch.export.graph_signature.ConstantArgument, torch.export.graph_signature.CustomObjArgument, torch.export.graph_signature.TokenArgument]], outputs: list[typing.Union[torch.export.graph_signature.TensorArgument, torch.export.graph_signature.SymIntArgument, torch.export.graph_signature.SymFloatArgument, torch.export.graph_signature.SymBoolArgument, torch.export.graph_signature.ConstantArgument, torch.export.graph_signature.CustomObjArgument, torch.export.graph_signature.TokenArgument]], in_spec: torch.utils._pytree.TreeSpec, out_spec: torch.utils._pytree.TreeSpec, forward_arg_names: list[str] | None = None) -> None"
+    },
+    {
+      "name": "export.register_dataclass",
+      "type": "Function",
+      "signature": "(cls: type[typing.Any], *, serialized_type_name: str | None = None) -> None"
+    },
+    {
+      "name": "export.save",
+      "type": "Function",
+      "signature": "(ep: torch.export.exported_program.ExportedProgram, f: Union[str, os.PathLike[str], IO[bytes]], *, extra_files: dict[str, typing.Any] | None = None, opset_version: dict[str, int] | None = None, pickle_protocol: int = 2) -> None"
+    },
+    {
+      "name": "export.ShapesCollection",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "export.unflatten",
+      "type": "Function",
+      "signature": "(module: torch.export.exported_program.ExportedProgram, flat_args_adapter: torch.export.unflatten.FlatArgsAdapter | None = None) -> torch.export.unflatten.UnflattenedModule"
+    },
+    {
+      "name": "export.UnflattenedModule",
+      "type": "Class",
+      "signature": "(export_module: torch.export.exported_program.ExportedProgram, flat_args_adapter: torch.export.unflatten.FlatArgsAdapter | None = None)"
+    },
+    {
+      "name": "get_default_device",
+      "type": "Function",
+      "signature": "() -> 'torch.device'"
+    },
+    {
+      "name": "get_deterministic_debug_mode",
+      "type": "Function",
+      "signature": "() -> int"
+    },
+    {
+      "name": "get_device_module",
+      "type": "Function",
+      "signature": "(device: torch.device | str | None = None)"
+    },
+    {
+      "name": "get_float32_matmul_precision",
+      "type": "Function",
+      "signature": "() -> str"
+    },
+    {
+      "name": "get_rng_state",
+      "type": "Function",
+      "signature": "() -> torch.Tensor"
+    },
+    {
+      "name": "inference_mode",
+      "type": "Class",
+      "signature": "(mode=True)"
+    },
+    {
+      "name": "initial_seed",
+      "type": "Function",
+      "signature": "() -> int"
+    },
+    {
+      "name": "is_deterministic_algorithms_warn_only_enabled",
+      "type": "Function",
+      "signature": "() -> bool"
+    },
+    {
+      "name": "is_storage",
+      "type": "Function",
+      "signature": "(obj: Any, /) -> bool"
+    },
+    {
+      "name": "is_tensor",
+      "type": "Function",
+      "signature": "(obj: Any, /) -> typing_extensions.TypeIs[ForwardRef('torch.Tensor')]"
+    },
+    {
+      "name": "is_warn_always_enabled",
+      "type": "Function",
+      "signature": "() -> bool"
+    },
+    {
+      "name": "load",
+      "type": "Function",
+      "signature": "(f: Union[str, os.PathLike[str], IO[bytes]], map_location: collections.abc.Callable[[torch.types.Storage, str], torch.types.Storage] | torch.device | str | dict[str, str] | None = None, pickle_module: Any = None, *, weights_only: bool | None = None, mmap: bool | None = None, **pickle_load_args: Any) -> Any"
+    },
+    {
+      "name": "lobpcg",
+      "type": "Function",
+      "signature": "(A: torch.Tensor, k: int | None = None, B: torch.Tensor | None = None, X: torch.Tensor | None = None, n: int | None = None, iK: torch.Tensor | None = None, niter: int | None = None, tol: float | None = None, largest: bool | None = None, method: str | None = None, tracker: None = None, ortho_iparams: dict[str, int] | None = None, ortho_fparams: dict[str, float] | None = None, ortho_bparams: dict[str, bool] | None = None) -> tuple[torch.Tensor, torch.Tensor]"
+    },
+    {
+      "name": "manual_seed",
+      "type": "Function",
+      "signature": "(seed) -> torch._C.Generator"
+    },
+    {
+      "name": "matmul",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "no_grad",
+      "type": "Class",
+      "signature": "() -> None"
+    },
+    {
+      "name": "rand",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randn",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "save",
+      "type": "Function",
+      "signature": "(obj: object, f: Union[str, os.PathLike[str], IO[bytes]], pickle_module: Any = <module 'pickle' from '/home/samuel/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/lib/python3.11/pickle.py'>, pickle_protocol: int = 2, _use_new_zipfile_serialization: bool = True, _disable_byteorder_record: bool = False) -> None"
+    },
+    {
+      "name": "seed",
+      "type": "Function",
+      "signature": "() -> int"
+    },
+    {
+      "name": "set_default_device",
+      "type": "Function",
+      "signature": "(device: 'Device') -> None"
+    },
+    {
+      "name": "set_default_tensor_type",
+      "type": "Function",
+      "signature": "(t: type['torch.Tensor'] | str, /) -> None"
+    },
+    {
+      "name": "set_deterministic_debug_mode",
+      "type": "Function",
+      "signature": "(debug_mode: int | str) -> None"
+    },
+    {
+      "name": "set_float32_matmul_precision",
+      "type": "Function",
+      "signature": "(precision: str) -> None"
+    },
+    {
+      "name": "set_printoptions",
+      "type": "Function",
+      "signature": "(precision=None, threshold=None, edgeitems=None, linewidth=None, profile=None, sci_mode=None)"
+    },
+    {
+      "name": "set_rng_state",
+      "type": "Function",
+      "signature": "(new_state: torch.Tensor) -> None"
+    },
+    {
+      "name": "set_warn_always",
+      "type": "Function",
+      "signature": "(b: bool, /) -> None"
+    },
+    {
+      "name": "split",
+      "type": "Function",
+      "signature": "(tensor: torch.Tensor, split_size_or_sections: int | list[int], dim: int = 0) -> tuple[torch.Tensor, ...]"
+    },
+    {
+      "name": "stack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sym_float",
+      "type": "Function",
+      "signature": "(a)"
+    },
+    {
+      "name": "sym_fresh_size",
+      "type": "Function",
+      "signature": "(expr)"
+    },
+    {
+      "name": "sym_int",
+      "type": "Function",
+      "signature": "(a)"
+    },
+    {
+      "name": "sym_ite",
+      "type": "Function",
+      "signature": "(b, t, f)"
+    },
+    {
+      "name": "sym_max",
+      "type": "Function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "sym_min",
+      "type": "Function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "sym_not",
+      "type": "Function",
+      "signature": "(a)"
+    },
+    {
+      "name": "sym_sum",
+      "type": "Function",
+      "signature": "(args)"
+    },
+    {
+      "name": "typename",
+      "type": "Function",
+      "signature": "(obj: Any, /) -> str"
+    },
+    {
+      "name": "unravel_index",
+      "type": "Function",
+      "signature": "(indices: torch.Tensor, shape: int | collections.abc.Sequence[int] | torch.Size) -> tuple[torch.Tensor, ...]"
+    },
+    {
+      "name": "use_deterministic_algorithms",
+      "type": "Function",
+      "signature": "(mode: bool, *, warn_only: bool = False) -> None"
+    },
+    {
+      "name": "vmap",
+      "type": "Function",
+      "signature": "(func: 'Callable[_P, _R]', in_dims: 'in_dims_t' = 0, out_dims: 'out_dims_t' = 0, randomness: 'str' = 'error', *, chunk_size: 'int | None' = None) -> 'Callable[_P, _R]'"
+    },
+    {
+      "name": "sym_sqrt",
+      "type": "Function",
+      "signature": "(a)"
+    },
+    {
+      "name": "AVG",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "AcceleratorError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "AggregationType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "AliasDb",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "AnyType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Argument",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ArgumentSpec",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "AwaitType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "BenchmarkConfig",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "BenchmarkExecutionStats",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Block",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "BoolType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "BufferDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "CallStack",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Capsule",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ClassType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Code",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "CompilationUnit",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "CompleteArgumentSpec",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ComplexType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ConcreteModuleType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ConcreteModuleTypeBuilder",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DeepCopyMemoTable",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DeserializationStorageContext",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DeviceObjType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DictType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DisableTorchFunction",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DisableTorchFunctionSubclass",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DispatchKey",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "DispatchKeySet",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "EnumType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ErrorReport",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Event",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ExcludeDispatchKeyGuard",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ExecutionPlan",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FatalError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FileCheck",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FloatType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FunctionSchema",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Future",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "FutureType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Generator",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Gradient",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Graph",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "GraphExecutorState",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IODescriptor",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "InferredType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "IntType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "InterfaceType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "JITException",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ListType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LiteScriptModule",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "LockingLogger",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ModuleDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Node",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "NoneType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "NoopLogger",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "NumberType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "OperatorInfo",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "OptionalType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "OutOfMemoryError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ParameterDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "PyObjectType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "PyTorchFileReader",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "PyTorchFileWriter",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "RRefType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "SUM",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "ScriptClass",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptClassFunction",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptDictIterator",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptDictKeyIterator",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptFunction",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptList",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptListIterator",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptMethod",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptModule",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptModuleSerializer",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptObject",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ScriptObjectProperty",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "SerializationStorageContext",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Size",
+      "type": "Class",
+      "signature": "(iterable=(), /)"
+    },
+    {
+      "name": "StaticModule",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Stream",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "StreamObjType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "StringType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "SymBoolType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "SymIntType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Tag",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TensorType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "ThroughputBenchmark",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TracingState",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "TupleType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Type",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "UnionType",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Use",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "Value",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "autocast_decrement_nesting",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "autocast_increment_nesting",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clear_autocast_cache",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cpp.OrderedModuleDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "cpp.OrderedTensorDict",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "cpp.nn.Module",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "default_generator",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "device",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "dtype",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "finfo",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "fork",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_autocast_cpu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_autocast_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_autocast_gpu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_autocast_ipu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_autocast_xla_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_default_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_num_interop_threads",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_num_threads",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "has_lapack",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "has_mkl",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "has_openmp",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "has_spectral",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "iinfo",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "import_ir_module",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "import_ir_module_from_buffer",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "init_num_threads",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_anomaly_check_nan_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_anomaly_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_autocast_cache_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_autocast_cpu_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_autocast_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_autocast_ipu_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_autocast_xla_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_grad_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_inference_mode_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "layout",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "memory_format",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "merge_type_from_type_comment",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "parse_ir",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "parse_schema",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "parse_type_comment",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "qscheme",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "read_vitals",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_anomaly_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_cache_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_cpu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_cpu_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_gpu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_ipu_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_ipu_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_xla_dtype",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_autocast_xla_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_flush_denormal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_num_interop_threads",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_num_threads",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "set_vital",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unify_type_list",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "vitals_enabled",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "wait",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "e",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "pi",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "nan",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "inf",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "newaxis",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "abs",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "abs_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "absolute",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "acos",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "acos_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "acosh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "acosh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "adaptive_avg_pool1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "adaptive_max_pool1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "add",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addbmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addcdiv",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addcmul",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addmv",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addmv_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "addr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "adjoint",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "affine_grid_generator",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "alias_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "align_tensors",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "all",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "allclose",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "alpha_dropout",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "alpha_dropout_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "amax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "amin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "aminmax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "angle",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "any",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arange",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arccos",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arccos_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arccosh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arccosh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arcsin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arcsin_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arcsinh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arcsinh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arctan",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arctan2",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arctan_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arctanh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "arctanh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "argmax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "argmin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "argsort",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "argwhere",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "as_strided",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "as_strided_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "as_strided_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "as_strided_scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "as_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "asarray",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "asin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "asin_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "asinh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "asinh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atan",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atan2",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atan_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atanh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atanh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "atleast_1d",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "atleast_2d",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "atleast_3d",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "avg_pool1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "baddbmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bartlett_window",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_backward_elemt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_backward_reduce",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_elemt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_gather_stats",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_gather_stats_with_counts",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_stats",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "batch_norm_update_stats",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bernoulli",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bilinear",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "binary_cross_entropy_with_logits",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bincount",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "binomial",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_and",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_left_shift",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_not",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_or",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_right_shift",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bitwise_xor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "blackman_window",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "block_diag",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "bmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "broadcast_tensors",
+      "type": "Function",
+      "signature": "(*tensors)"
+    },
+    {
+      "name": "broadcast_to",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bucketize",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "can_cast",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cartesian_prod",
+      "type": "Function",
+      "signature": "(*tensors: torch.Tensor) -> torch.Tensor"
+    },
+    {
+      "name": "cat",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ccol_indices_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cdist",
+      "type": "Function",
+      "signature": "(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary')"
+    },
+    {
+      "name": "ceil",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ceil_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "celu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "celu_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "chain_matmul",
+      "type": "Function",
+      "signature": "(*matrices, out=None)"
+    },
+    {
+      "name": "channel_shuffle",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cholesky",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cholesky_inverse",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cholesky_solve",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "choose_qparams_optimized",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "chunk",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp_max",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp_max_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp_min",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clamp_min_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clip",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clip_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "clone",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "col_indices_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "column_stack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "combinations",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "complex",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "concat",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "concatenate",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conj",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conj_physical",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conj_physical_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "constant_pad_nd",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv_tbc",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv_transpose1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv_transpose2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "conv_transpose3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "convolution",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "copysign",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "corrcoef",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cos",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cos_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cosh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cosh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cosine_embedding_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cosine_similarity",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "count_nonzero",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cov",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cross",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "crow_indices_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ctc_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_affine_grid_generator",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_batch_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_convolution",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_convolution_add_relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_convolution_relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_convolution_transpose",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_grid_sampler",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cudnn_is_acceptable",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cummax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cummin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cumprod",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cumsum",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "cumulative_trapezoid",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "deg2rad",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "deg2rad_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dequantize",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "det",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "detach",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "detach_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "detach_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diag",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diag_embed",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diagflat",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diagonal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diagonal_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diagonal_scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "diff",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "digamma",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dist",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "div",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "divide",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dot",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dropout",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dropout_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dsmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dsplit",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "dstack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "einsum",
+      "type": "Function",
+      "signature": "(*args: Any) -> torch.Tensor"
+    },
+    {
+      "name": "embedding",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "embedding_bag",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "embedding_renorm_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "empty",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "empty_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "empty_permuted",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "empty_quantized",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "empty_strided",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "eq",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "equal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "erf",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "erf_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "erfc",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "erfc_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "erfinv",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "exp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "exp2",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "exp2_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "exp_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "expand_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "expm1",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "expm1_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "eye",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fake_quantize_per_channel_affine",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fake_quantize_per_tensor_affine",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_linear_fp16_weight",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_linear_fp16_weight_fp32_activation",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_linear_int8_weight",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_linear_int8_weight_fp32_activation",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_linear_quantize_weight",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_pack_gemm_matrix_fp16",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fbgemm_pack_quantized_matrix",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "feature_alpha_dropout",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "feature_alpha_dropout_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "feature_dropout",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "feature_dropout_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fill",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fill_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fix",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fix_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "flatten",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "flip",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fliplr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "flipud",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "float_power",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "floor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "floor_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "floor_divide",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fmax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fmin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fmod",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "frac",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "frac_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "frexp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "frobenius_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "from_file",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "from_numpy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "frombuffer",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "full",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "full_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "fused_moving_avg_obs_fake_quant",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gather",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gcd",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gcd_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ge",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "geqrf",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ger",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "get_device",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gradient",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "greater",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "greater_equal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "grid_sampler",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "grid_sampler_2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "grid_sampler_3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "group_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gru",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gru_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "gt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hamming_window",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hann_window",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hardshrink",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hash_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "heaviside",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hinge_embedding_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "histc",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "histogram",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "histogramdd",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hsmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hsplit",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hspmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hstack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "hypot",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "i0",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "i0_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "igamma",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "igammac",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "imag",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_add",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_fill",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_put",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_put_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_reduce",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "index_select",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "indices_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "inner",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "instance_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "int_repr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "inverse",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_complex",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_conj",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_distributed",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_floating_point",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_inference",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_neg",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_nonzero",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_same_size",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_signed",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "is_vulkan_available",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isclose",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isfinite",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isinf",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isnan",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isneginf",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isposinf",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "isreal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "istft",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "kaiser_window",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "kl_div",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "kron",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "kthvalue",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "layer_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lcm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lcm_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ldexp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ldexp_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "le",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lerp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "less",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "less_equal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lgamma",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "linspace",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log10",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log10_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log1p",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log1p_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log2",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log2_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "log_softmax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logaddexp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logaddexp2",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logcumsumexp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logdet",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logical_and",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logical_not",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logical_or",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logical_xor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logit",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logit_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logspace",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "logsumexp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lstm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lstm_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lu_solve",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "lu_unpack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "margin_ranking_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "masked_fill",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "masked_scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "masked_select",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "matmul",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "matrix_exp",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "matrix_power",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "max",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "max_pool1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "max_pool1d_with_indices",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "max_pool2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "max_pool3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "maximum",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mean",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "median",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "meshgrid",
+      "type": "Function",
+      "signature": "(*tensors, indexing: str | None = None) -> tuple[torch.Tensor, ...]"
+    },
+    {
+      "name": "min",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "minimum",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_batch_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_convolution",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_convolution_add_relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_convolution_relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_convolution_transpose",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_ctc_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_depthwise_convolution",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "miopen_rnn",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_adaptive_avg_pool2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_convolution",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_linear_backward_weights",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_max_pool2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_max_pool3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mkldnn_rnn_layer",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mode",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "moveaxis",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "movedim",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "msort",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mul",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "multinomial",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "multiply",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mv",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "mvlgamma",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nan_to_num",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nan_to_num_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nanmean",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nanmedian",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nanquantile",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nansum",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "narrow",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "narrow_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_batch_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_channel_shuffle",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_dropout",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_group_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_layer_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "native_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ne",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "neg",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "neg_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "negative",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "negative_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nextafter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nonzero",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nonzero_static",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "norm",
+      "type": "Function",
+      "signature": "(input, p: float | str | None = 'fro', dim=None, keepdim=False, out=None, dtype=None)"
+    },
+    {
+      "name": "norm_except_dim",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "normal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "not_equal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "nuclear_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "numel",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ones",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ones_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "orgqr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ormqr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "outer",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pairwise_distance",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pdist",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "permute",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "permute_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pinverse",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pixel_shuffle",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pixel_unshuffle",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "poisson",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "poisson_nll_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "polar",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "polygamma",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "positive",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "pow",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "prelu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "prod",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "promote_types",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "put",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "q_per_channel_axis",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "q_per_channel_scales",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "q_per_channel_zero_points",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "q_scale",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "q_zero_point",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "qr",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantile",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantize_per_channel",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantize_per_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantize_per_tensor_dynamic",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_batch_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_gru_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_lstm_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_max_pool1d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_max_pool2d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_max_pool3d",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_rnn_relu_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "quantized_rnn_tanh_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rad2deg",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rad2deg_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rand",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rand_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randint",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randint_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randn",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randn_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "randperm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "range",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "ravel",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "real",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "reciprocal",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "reciprocal_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "relu_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "remainder",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "renorm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "repeat_interleave",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "reshape",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "resize_as_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "resize_as_sparse_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "resolve_conj",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "resolve_neg",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "result_type",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rms_norm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rnn_relu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rnn_relu_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rnn_tanh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rnn_tanh_cell",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "roll",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rot90",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "round",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "round_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "row_indices_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "row_stack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rrelu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rrelu_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rsqrt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rsqrt_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "rsub",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "saddmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "scalar_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "scatter_add",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "scatter_reduce",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "searchsorted",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "select",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "select_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "select_scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "selu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "selu_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sgn",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sigmoid",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sigmoid_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sign",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "signbit",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sin",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sin_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sinc",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sinc_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sinh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sinh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "slice_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "slice_inverse",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "slice_scatter",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "slogdet",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "smm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "softmax",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sort",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_bsc_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_bsr_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_compressed_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_coo_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_csc_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sparse_csr_tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "split",
+      "type": "Function",
+      "signature": "(tensor: torch.Tensor, split_size_or_sections: int | list[int], dim: int = 0) -> tuple[torch.Tensor, ...]"
+    },
+    {
+      "name": "split_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "split_with_sizes",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "split_with_sizes_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "spmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sqrt",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sqrt_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "square",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "square_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "squeeze",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "squeeze_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sspaddmm",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "stack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "std",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "std_mean",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "stft",
+      "type": "Function",
+      "signature": "(input: torch.Tensor, n_fft: int, hop_length: int | None = None, win_length: int | None = None, window: torch.Tensor | None = None, center: bool = True, pad_mode: str = 'reflect', normalized: bool = False, onesided: bool | None = None, return_complex: bool | None = None, align_to_window: bool | None = None) -> torch.Tensor"
+    },
+    {
+      "name": "sub",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "subtract",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sum",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "svd",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "swapaxes",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "swapdims",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sym_constrain_range",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "sym_constrain_range_for_size",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "t",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "t_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "take",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "take_along_dim",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tan",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tan_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tanh",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tanh_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tensor",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tensor_split",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tensordot",
+      "type": "Function",
+      "signature": "(a, b, dims=2, out: torch.Tensor | None = None)"
+    },
+    {
+      "name": "threshold",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "threshold_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tile",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "topk",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "trace",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "transpose",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "transpose_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "trapezoid",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "trapz",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "triangular_solve",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tril",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "tril_indices",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "triplet_margin_loss",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "triu",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "triu_indices",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "true_divide",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "trunc",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "trunc_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unbind",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unbind_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unflatten",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unfold_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unique_consecutive",
+      "type": "Function",
+      "signature": "(*args, **kwargs)"
+    },
+    {
+      "name": "unsafe_chunk",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unsafe_split",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unsafe_split_with_sizes",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unsqueeze",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "unsqueeze_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "values_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "vander",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "var",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "var_mean",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "vdot",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "view_as_complex",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "view_as_complex_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "view_as_real",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "view_as_real_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "view_copy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "vsplit",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "vstack",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "where",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "xlogy",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "xlogy_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "zero_",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "zeros",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "zeros_like",
+      "type": "Function",
+      "signature": "(...)"
+    },
+    {
+      "name": "bfloat16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bit",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bits16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bits1x8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bits2x4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bits4x2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bits8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "bool",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "cdouble",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "cfloat",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "chalf",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "complex128",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "complex32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "complex64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "double",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float4_e2m1fn_x2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float8_e4m3fn",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float8_e4m3fnuz",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float8_e5m2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float8_e5m2fnuz",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "float8_e8m0fnu",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "half",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int1",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int3",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int5",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int6",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int7",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "int8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "long",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "qint32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "qint8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quint2x4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quint4x2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "quint8",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "short",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint1",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint16",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint2",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint3",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint32",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint4",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint5",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint6",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint64",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint7",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "uint8",
+      "type": "Object",
+      "signature": ""
+    }
   ]
 }

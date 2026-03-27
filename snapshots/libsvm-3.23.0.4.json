@@ -1,4 +1,205 @@
 {
-  "version": "Not Installed",
-  "objects": []
+  "version": "3.23.0.4",
+  "objects": [
+    {
+      "name": "commonutil.svm_read_problem",
+      "type": "Function",
+      "signature": "(data_file_name, return_scipy)"
+    },
+    {
+      "name": "commonutil.evaluations_scipy",
+      "type": "Function",
+      "signature": "(ty, pv)"
+    },
+    {
+      "name": "commonutil.evaluations",
+      "type": "Function",
+      "signature": "(ty, pv, useScipy)"
+    },
+    {
+      "name": "commonutil.csr_find_scale_param",
+      "type": "Function",
+      "signature": "(x, lower, upper)"
+    },
+    {
+      "name": "commonutil.csr_scale",
+      "type": "Function",
+      "signature": "(x, scale_param)"
+    },
+    {
+      "name": "svm.range",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.dirname",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.pkg_path",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.file_name",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.file_path",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.libsvm",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.C_SVC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.NU_SVC",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.ONE_CLASS",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.EPSILON_SVR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.NU_SVR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.LINEAR",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.POLY",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.RBF",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.SIGMOID",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.PRECOMPUTED",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.PRINT_STRING_FUN",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.print_null",
+      "type": "Function",
+      "signature": "(s)"
+    },
+    {
+      "name": "svm.genFields",
+      "type": "Function",
+      "signature": "(names, types)"
+    },
+    {
+      "name": "svm.fillprototype",
+      "type": "Function",
+      "signature": "(f, restype, argtypes)"
+    },
+    {
+      "name": "svm.svm_node",
+      "type": "Class",
+      "signature": "(index, value)"
+    },
+    {
+      "name": "svm.gen_svm_nodearray",
+      "type": "Function",
+      "signature": "(xi, feature_max, isKernel)"
+    },
+    {
+      "name": "svm.jit_enabled",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svm.csr_to_problem_jit",
+      "type": "Function",
+      "signature": "(l, x_val, x_ind, x_rowptr, prob_val, prob_ind, prob_rowptr, indx_start)"
+    },
+    {
+      "name": "svm.csr_to_problem_nojit",
+      "type": "Function",
+      "signature": "(l, x_val, x_ind, x_rowptr, prob_val, prob_ind, prob_rowptr, indx_start)"
+    },
+    {
+      "name": "svm.csr_to_problem",
+      "type": "Function",
+      "signature": "(x, prob, isKernel)"
+    },
+    {
+      "name": "svm.svm_problem",
+      "type": "Class",
+      "signature": "(y, x, isKernel)"
+    },
+    {
+      "name": "svm.svm_parameter",
+      "type": "Class",
+      "signature": "(options)"
+    },
+    {
+      "name": "svm.svm_model",
+      "type": "Class",
+      "signature": "()"
+    },
+    {
+      "name": "svm.toPyModel",
+      "type": "Function",
+      "signature": "(model_ptr)"
+    },
+    {
+      "name": "svmutil.range",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "svmutil.svm_load_model",
+      "type": "Function",
+      "signature": "(model_file_name)"
+    },
+    {
+      "name": "svmutil.svm_save_model",
+      "type": "Function",
+      "signature": "(model_file_name, model)"
+    },
+    {
+      "name": "svmutil.svm_train",
+      "type": "Function",
+      "signature": "(arg1, arg2, arg3)"
+    },
+    {
+      "name": "svmutil.svm_predict",
+      "type": "Function",
+      "signature": "(y, x, m, options)"
+    }
+  ]
 }

@@ -373,3 +373,7 @@ This architecture isolates the core ONNX Intermediate Representation (IR), decou
 - [x] 302. Drink water and rest before beginning Phase 1.
 
 > Note: This refactor has successfully concluded. ONNX9000 is now fully operating as a Polyglot Monorepo capable of compiling PyTorch, C++, CoreML, MLIR, and Caffe all client-side.
+
+## Framework Support Completeness
+
+For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

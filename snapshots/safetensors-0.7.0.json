@@ -1,10 +1,270 @@
 {
   "version": "0.7.0",
   "objects": [
-    "SafetensorError",
-    "deserialize",
-    "safe_open",
-    "serialize",
-    "serialize_file"
+    {
+      "name": "SafetensorError",
+      "type": "Class",
+      "signature": "(...)"
+    },
+    {
+      "name": "deserialize",
+      "type": "Function",
+      "signature": "(bytes)"
+    },
+    {
+      "name": "safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "serialize",
+      "type": "Function",
+      "signature": "(tensor_dict, metadata)"
+    },
+    {
+      "name": "serialize_file",
+      "type": "Function",
+      "signature": "(tensor_dict, filename, metadata)"
+    },
+    {
+      "name": "torch.deserialize",
+      "type": "Function",
+      "signature": "(bytes)"
+    },
+    {
+      "name": "torch.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "torch.serialize",
+      "type": "Function",
+      "signature": "(tensor_dict, metadata)"
+    },
+    {
+      "name": "torch.serialize_file",
+      "type": "Function",
+      "signature": "(tensor_dict, filename, metadata)"
+    },
+    {
+      "name": "torch.storage_ptr",
+      "type": "Function",
+      "signature": "(tensor: torch.Tensor) -> int"
+    },
+    {
+      "name": "torch.storage_size",
+      "type": "Function",
+      "signature": "(tensor: torch.Tensor) -> int"
+    },
+    {
+      "name": "torch.save_model",
+      "type": "Function",
+      "signature": "(model: torch.nn.Module, filename: str, metadata: Optional[Dict[str, str]], force_contiguous: bool)"
+    },
+    {
+      "name": "torch.load_model",
+      "type": "Function",
+      "signature": "(model: torch.nn.Module, filename: Union[str, os.PathLike], strict: bool, device: Union[str, int]) -> Tuple[List[str], List[str]]"
+    },
+    {
+      "name": "torch.save",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, torch.Tensor], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "torch.save_file",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, torch.Tensor], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]])"
+    },
+    {
+      "name": "torch.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike], device: Union[str, int]) -> Dict[str, torch.Tensor]"
+    },
+    {
+      "name": "torch.load",
+      "type": "Function",
+      "signature": "(data: bytes) -> Dict[str, torch.Tensor]"
+    },
+    {
+      "name": "flax.numpy",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "flax.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "flax.save",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, Array], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "flax.save_file",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, Array], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]]) -> None"
+    },
+    {
+      "name": "flax.load",
+      "type": "Function",
+      "signature": "(data: bytes) -> Dict[str, Array]"
+    },
+    {
+      "name": "flax.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike]) -> Dict[str, Array]"
+    },
+    {
+      "name": "numpy.deserialize",
+      "type": "Function",
+      "signature": "(bytes)"
+    },
+    {
+      "name": "numpy.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "numpy.serialize",
+      "type": "Function",
+      "signature": "(tensor_dict, metadata)"
+    },
+    {
+      "name": "numpy.serialize_file",
+      "type": "Function",
+      "signature": "(tensor_dict, filename, metadata)"
+    },
+    {
+      "name": "numpy.save",
+      "type": "Function",
+      "signature": "(tensor_dict: Dict[str, np.ndarray], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "numpy.save_file",
+      "type": "Function",
+      "signature": "(tensor_dict: Dict[str, np.ndarray], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]]) -> None"
+    },
+    {
+      "name": "numpy.load",
+      "type": "Function",
+      "signature": "(data: bytes) -> Dict[str, np.ndarray]"
+    },
+    {
+      "name": "numpy.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike]) -> Dict[str, np.ndarray]"
+    },
+    {
+      "name": "paddle.numpy",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "paddle.deserialize",
+      "type": "Function",
+      "signature": "(bytes)"
+    },
+    {
+      "name": "paddle.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "paddle.serialize",
+      "type": "Function",
+      "signature": "(tensor_dict, metadata)"
+    },
+    {
+      "name": "paddle.serialize_file",
+      "type": "Function",
+      "signature": "(tensor_dict, filename, metadata)"
+    },
+    {
+      "name": "paddle.save",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, paddle.Tensor], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "paddle.save_file",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, paddle.Tensor], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]]) -> None"
+    },
+    {
+      "name": "paddle.load",
+      "type": "Function",
+      "signature": "(data: bytes, device: str) -> Dict[str, paddle.Tensor]"
+    },
+    {
+      "name": "paddle.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike], device) -> Dict[str, paddle.Tensor]"
+    },
+    {
+      "name": "paddle.NPDTYPES",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tensorflow.numpy",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "tensorflow.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "tensorflow.save",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, tf.Tensor], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "tensorflow.save_file",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, tf.Tensor], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]]) -> None"
+    },
+    {
+      "name": "tensorflow.load",
+      "type": "Function",
+      "signature": "(data: bytes) -> Dict[str, tf.Tensor]"
+    },
+    {
+      "name": "tensorflow.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike]) -> Dict[str, tf.Tensor]"
+    },
+    {
+      "name": "mlx.numpy",
+      "type": "Object",
+      "signature": ""
+    },
+    {
+      "name": "mlx.safe_open",
+      "type": "Class",
+      "signature": "(filename, framework, device)"
+    },
+    {
+      "name": "mlx.save",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, mx.array], metadata: Optional[Dict[str, str]]) -> bytes"
+    },
+    {
+      "name": "mlx.save_file",
+      "type": "Function",
+      "signature": "(tensors: Dict[str, mx.array], filename: Union[str, os.PathLike], metadata: Optional[Dict[str, str]]) -> None"
+    },
+    {
+      "name": "mlx.load",
+      "type": "Function",
+      "signature": "(data: bytes) -> Dict[str, mx.array]"
+    },
+    {
+      "name": "mlx.load_file",
+      "type": "Function",
+      "signature": "(filename: Union[str, os.PathLike]) -> Dict[str, mx.array]"
+    }
   ]
 }
