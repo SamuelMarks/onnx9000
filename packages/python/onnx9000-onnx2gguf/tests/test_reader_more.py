@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import pytest
 import io
 import struct
@@ -5,6 +7,7 @@ from onnx9000.onnx2gguf.reader import GGUFReader
 
 
 def test_reader_unknown_value_type():
+    """Docstring."""
     buf = io.BytesIO()
     buf.write(b"GGUF")
     buf.write(struct.pack("<I", 3))  # version
@@ -24,6 +27,7 @@ def test_reader_unknown_value_type():
 
 
 def test_reader_read_val_unknown():
+    """Docstring."""
     buf = io.BytesIO()
     buf.write(b"GGUF")
     buf.write(struct.pack("<I", 3))  # version
@@ -37,6 +41,7 @@ def test_reader_read_val_unknown():
 
 
 def test_reader_unknown_tensor_type():
+    """Docstring."""
     buf = io.BytesIO()
     buf.write(b"GGUF")
     buf.write(struct.pack("<I", 3))  # version

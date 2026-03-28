@@ -2,7 +2,7 @@
 
 
 def polyfill_webgpu_unsupported(graph) -> bool:
-    """Replaces operations unsupported by WebGPU with combinations of standard ops."""
+    """Replace operations unsupported by WebGPU with combinations of standard ops."""
     changed = False
     for node in list(graph.nodes):
         if node.op_type == "UnsupportedOpX":
@@ -12,7 +12,7 @@ def polyfill_webgpu_unsupported(graph) -> bool:
 
 
 def optimize_for_webgpu(graph) -> bool:
-    """Performs NCHW to NHWC layout conversions explicitly for WebGPU targeting."""
+    """Perform NCHW to NHWC layout conversions explicitly for WebGPU targeting."""
     changed = False
     for node in graph.nodes:
         if node.op_type == "Conv":
@@ -44,7 +44,7 @@ def fp16_cast(graph, exclude_ops=("LayerNormalization", "Softmax")) -> bool:
 
 
 def generate_html_report(orig_graph, opt_graph, out_path: str):
-    """Builds an interactive HTML report of the optimized graph vs original graph."""
+    """Build an interactive HTML report of the optimized graph vs original graph."""
     html_content = f"""
     <html>
         <body>
@@ -59,7 +59,7 @@ def generate_html_report(orig_graph, opt_graph, out_path: str):
 
 
 def generate_execution_schedule(graph, out_path: str):
-    """Generates a topological execution schedule as a JSON sidecar file."""
+    """Generate a topological execution schedule as a JSON sidecar file."""
     import json
 
     schedule = []

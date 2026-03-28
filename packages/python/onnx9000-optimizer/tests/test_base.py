@@ -18,7 +18,7 @@ def test_pass_base() -> None:
         """Represents the MockPass class and its associated logic."""
 
         def run(self, graph):
-            """Executes the run operation."""
+            """Execute the run operation."""
             return super().run(graph)
 
     p = MockPass("test_pass")

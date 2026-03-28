@@ -1,4 +1,5 @@
 """Frontend Sub-Package
+
 Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
 """
@@ -145,7 +146,7 @@ class Tensor:
         return self._op("MatMul", other)
 
     def __pow__(self, other: Any) -> "Tensor":
-        """Raises the tensor to the power of another tensor or scalar."""
+        """Raise the tensor to the power of another tensor or scalar."""
         return self._op("Pow", other)
 
     def __mod__(self, other: Any) -> "Tensor":

@@ -4,7 +4,10 @@ import re
 
 
 class C89Builder:
+    """C89Builder implementation."""
+
     def __init__(self, prefix: str = ""):
+        """Perform   init   operation."""
         self.code: list[str] = []
         self.indent_level = 0
         self.prefix = prefix
@@ -12,12 +15,13 @@ class C89Builder:
 
     def _sanitize(self, name: str) -> str:
         """Translate ONNX names to valid C identifiers natively."""
-        sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", name)
+        sanitized = re.sub("[^a-zA-Z0-9_]", "_", name)
         if sanitized and sanitized[0].isdigit():
             sanitized = "v" + sanitized
         return sanitized
 
     def emit(self, text: str) -> None:
+        """Perform emit operation."""
         if text.strip():
             self.code.append("    " * self.indent_level + text)
         else:
@@ -28,20 +32,24 @@ class C89Builder:
         self.emit(f"/* {text} */")
 
     def emit_include(self, header: str, is_system: bool = True) -> None:
+        """Perform emit include operation."""
         if is_system:
             self.emit(f"#include <{header}>")
         else:
             self.emit(f'#include "{header}"')
 
     def push_indent(self) -> None:
+        """Perform push indent operation."""
         self.indent_level += 1
 
     def pop_indent(self) -> None:
+        """Perform pop indent operation."""
         self.indent_level -= 1
         if self.indent_level < 0:
             self.indent_level = 0
 
     def get_code(self) -> str:
+        """Perform get code operation."""
         return "\n".join(self.code) + "\n"
 
     def new_var(self, name: str) -> str:

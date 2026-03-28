@@ -42,7 +42,7 @@ def test_jit_initializer_no_data() -> None:
             """Class Model_hash implementation."""
 
             def __init__(self, *args) -> None:
-                """Tests the __init__ functionality."""
+                """Test the __init__ functionality."""
 
         pass
 

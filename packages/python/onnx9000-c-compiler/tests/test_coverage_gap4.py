@@ -1,3 +1,5 @@
+"""Tests for remaining coverage gaps in the C compiler."""
+
 import pytest
 import sys
 import os
@@ -13,6 +15,7 @@ from onnx9000.c_compiler.ast_builder import C89Builder
 
 
 def test_cli_remaining():
+    """Test CLI remaining branches."""
     with patch("sys.argv", ["onnx2c", "test.onnx", "--target", "arduino"]):
         with patch("os.path.exists", return_value=True):
             try:
@@ -29,6 +32,7 @@ def test_cli_remaining():
 
 
 def test_activations_remaining():
+    """Test activation functions remaining branches."""
     b = C89Builder()
     node = Node("Softplus", ["X"], ["Y"])
     generate_activation(
@@ -43,6 +47,7 @@ def test_activations_remaining():
 
 
 def test_data_unpacker_remaining():
+    """Test data unpacker remaining branches."""
     # boolean packed
     t = Tensor("B", [8], DType.BOOL, data=b"\x01\x00\x01\x00\x00\x00\x00\x00")
     unpack_bytes_to_str(t.data, t.dtype)
@@ -61,6 +66,7 @@ def test_data_unpacker_remaining():
 
 
 def test_operations_remaining():
+    """Test operations remaining branches."""
     assert get_strides([]) == []
     assert resolve_broadcast_indices([], []) == "0"
 

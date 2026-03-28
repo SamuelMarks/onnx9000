@@ -1,3 +1,5 @@
+"""Module providing functionality for test_parser_missing."""
+
 import struct
 import tempfile
 from pathlib import Path
@@ -8,6 +10,7 @@ from onnx9000.core.parser.core import load_tensor, parse_model, parse_tensor_pro
 
 
 def test_parse_tensor_proto_external_data():
+    """Test parse tensor proto external data."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
         bin_path = base_dir / "external.bin"
@@ -53,7 +56,9 @@ def test_parse_tensor_proto_external_data():
 
 
 def test_parse_tensor_proto_data_types():
+    """Docstring."""
     # int32
+    """Test parse tensor proto data types."""
     tp_i32 = onnx_pb2.TensorProto()
     tp_i32.name = "t_i32"
     tp_i32.data_type = 6  # INT32
@@ -82,6 +87,7 @@ def test_parse_tensor_proto_data_types():
 
 
 def test_parse_model_metadata():
+    """Test parse model metadata."""
     mp = onnx_pb2.ModelProto()
     gp = mp.graph
     gp.name = "test_graph"
@@ -96,6 +102,7 @@ def test_parse_model_metadata():
 
 
 def test_load_tensor():
+    """Test load tensor."""
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "tensor.pb"
         tp = onnx_pb2.TensorProto()

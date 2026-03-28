@@ -10,7 +10,7 @@ class MockSVC:
     """Represents the Mock S V C class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.n_support_ = np.array([1, 1])
         self.support_vectors_ = np.array([[1.0]])
         self.dual_coef_ = np.array([[0.5, -0.5]])
@@ -35,7 +35,7 @@ class MockSVCStrings:
     """Represents the Mock S V C Strings class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.n_support_ = np.array([1, 1])
         self.support_vectors_ = np.array([[1.0]])
         self.dual_coef_ = np.array([[0.5, -0.5]])

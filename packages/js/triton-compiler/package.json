@@ -1,0 +1,19 @@
+{
+  "name": "@onnx9000/triton-compiler",
+  "version": "1.0.0",
+  "description": "Web-Native Custom Kernel Generator for OpenAI Triton",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@onnx9000/compiler": "workspace:^",
+    "@onnx9000/core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

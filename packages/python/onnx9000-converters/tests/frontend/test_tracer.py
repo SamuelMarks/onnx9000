@@ -10,7 +10,7 @@ def test_tracer_and_proxy() -> None:
     """Tests the test_tracer_and_proxy functionality."""
 
     def my_func(x, y):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         return x + y
 
     x = Tensor((2, 2), DType.FLOAT32)
@@ -27,7 +27,7 @@ def test_tracer_constant_folding() -> None:
     """Tests the test_tracer_constant_folding functionality."""
 
     def const_func(x):
-        """Tests the const_func functionality."""
+        """Test the const_func functionality."""
         return x + 2
 
     x = Tensor((2, 2), DType.FLOAT32)
@@ -41,7 +41,7 @@ def test_tracer_control_flow() -> None:
     """Tests the test_tracer_control_flow functionality."""
 
     def dynamic_if(x):
-        """Tests the dynamic_if functionality."""
+        """Test the dynamic_if functionality."""
         if x > 0:
             return x + 1
         return x - 1
@@ -56,11 +56,13 @@ def test_tracer_control_flow() -> None:
 
 
 def test_tracer_kwargs_outputs():
+    """Test tracer kwargs outputs."""
     from onnx9000.converters.frontend.tracer import trace
     from onnx9000.converters.frontend.tensor import Tensor
     from onnx9000.core.dtypes import DType
 
     def my_func(x, w=1):
+        """Docstring."""
         return (x, x)
 
     x = Tensor((2, 2), DType.FLOAT32)
@@ -68,6 +70,7 @@ def test_tracer_kwargs_outputs():
     assert len(builder.outputs) == 2
 
     def my_func_dict(x):
+        """Docstring."""
         return {"a": x, "b": x}
 
     builder = trace(my_func_dict, x)

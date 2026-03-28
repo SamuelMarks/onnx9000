@@ -442,7 +442,7 @@ def test_rnn_list_return() -> None:
         from unittest.mock import patch
 
         def fake_rec(op, inp, attrs=None):
-            """Tests the fake_rec functionality."""
+            """Test the fake_rec functionality."""
             return [Tensor((1,), DType.FLOAT32)]
 
         with patch("onnx9000.converters.frontend.utils.record_op", fake_rec):
@@ -497,7 +497,7 @@ def test_rnn_list_missing() -> None:
         from unittest.mock import patch
 
         def fake_rec(op, inp, attrs=None):
-            """Tests the fake_rec functionality."""
+            """Test the fake_rec functionality."""
             return Tensor((1,), DType.FLOAT32)
 
         with patch("onnx9000.converters.frontend.utils.record_op", fake_rec):

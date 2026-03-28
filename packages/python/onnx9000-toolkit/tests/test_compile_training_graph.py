@@ -1,3 +1,5 @@
+"""Tests for compiling a training graph."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -5,6 +7,7 @@ from onnx9000.toolkit.training import compile_training_graph
 
 
 def test_compile_training_graph():
+    """Test the compilation of a basic training graph."""
     g = Graph("TestCompile")
     g.inputs = ["X"]
     g.outputs = ["Y"]
@@ -17,11 +20,13 @@ def test_compile_training_graph():
 
     # Mock loss and optim
     def mock_loss(out, target, b):
+        """Mock loss function."""
         return "loss_out"
 
     mock_loss(None, None, None)
 
     def mock_optim(builder, params, grads, lr):
+        """Mock optimizer function."""
         pass
 
     mock_optim(None, None, None, None)

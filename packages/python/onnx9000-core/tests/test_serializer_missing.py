@@ -1,3 +1,5 @@
+"""Module providing functionality for test_serializer_missing."""
+
 from typing import Any
 
 import pytest
@@ -7,13 +9,17 @@ from onnx9000.core.serializer import serialize_model
 
 
 class MockValueInfo:
+    """Class representing mock value info."""
+
     def __init__(self, name, shape, dtype):
+        """Initialize the instance."""
         self.name = name
         self.shape = shape
         self.dtype = dtype
 
 
 def test_serializer_metadata_and_vinfo():
+    """Test serializer metadata and vinfo."""
     g = Graph("TestGraph")
     g.metadata_props["key1"] = "val1"
 

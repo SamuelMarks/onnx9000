@@ -27,6 +27,7 @@ export class Graph {
   outputs: ValueInfo[];
   valueInfo: ValueInfo[];
   initializers: string[];
+  sparseInitializers: string[];
   opsetImports: Record<string, number>;
   producerName: string = '';
   producerVersion: string = '';
@@ -47,6 +48,7 @@ export class Graph {
     this.outputs = [];
     this.valueInfo = [];
     this.initializers = [];
+    this.sparseInitializers = [];
     this.opsetImports = {};
     this.docString = '';
     this.metadataProps = {};

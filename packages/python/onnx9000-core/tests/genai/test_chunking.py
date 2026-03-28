@@ -1,3 +1,5 @@
+"""Module providing functionality for test_chunking."""
+
 import json
 import os
 
@@ -5,6 +7,7 @@ from onnx9000.genai.chunking import ChunkManager
 
 
 def test_chunking_and_manifest(tmp_path):
+    """Test chunking and manifest."""
     model_path = os.path.join(tmp_path, "model.onnx")
 
     chunks = ChunkManager.chunk_model(model_path)
@@ -23,6 +26,7 @@ def test_chunking_and_manifest(tmp_path):
 
 
 def test_chunk_builder_export_and_cli():
+    """Test chunk builder export and cli."""
     from onnx9000.genai.builder import GenAIBuilder, GenAICLI
 
     # Builder
@@ -45,6 +49,8 @@ def test_chunking_external_and_embed(tmp_path):
     from onnx9000.genai.chunking import ChunkManager
 
     class MockModel:
+        """Docstring."""
+
         pass
 
     model = MockModel()
@@ -61,6 +67,7 @@ def test_chunking_external_and_embed(tmp_path):
 
 
 def test_huggingface_download():
+    """Test huggingface download."""
     from onnx9000.genai.huggingface import HuggingFaceIntegration
 
     HuggingFaceIntegration.download_model("repo", "dir")

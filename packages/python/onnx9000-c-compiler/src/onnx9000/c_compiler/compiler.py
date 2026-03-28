@@ -9,6 +9,12 @@ from onnx9000.core.ir import Constant, Graph
 
 
 class C89Compiler:
+    """A compiler that transforms ONNX9000 IR Graphs into C89 compatible source code.
+
+    This compiler handles memory planning, weight serialization, and code generation
+    for a wide range of ONNX operators, targeting embedded and restricted environments.
+    """
+
     def __init__(
         self,
         graph: Graph,
@@ -20,6 +26,18 @@ class C89Compiler:
         align: int = 0,
         indent: int = 4,
     ):
+        """Initialize the C89 compiler with a graph and configuration options.
+
+        Args:
+            graph: The IR Graph to compile.
+            prefix: Prefix for generated C functions and variables.
+            emit_cpp: Whether to add C++ compatibility (extern "C").
+            target: Target hardware architecture for specialized optimizations.
+            use_math_h: Whether to include and use standard <math.h>.
+            debug: Enable debug assertions and checks in generated code.
+            align: Memory alignment for tensor buffers.
+            indent: Number of spaces for code indentation.
+        """
         self.align = align
         self.indent = indent
         self.graph = graph
@@ -39,6 +57,7 @@ class C89Compiler:
             )
 
     def _generate_header(self) -> None:
+        """Generate the C89 header file containing type definitions, macros, and function prototypes."""
         b = self.header_builder
         guard = f"{self.prefix.upper()}H_INCLUDED"
         b.emit(f"#ifndef {guard}")
@@ -171,6 +190,7 @@ class C89Compiler:
         b.emit(f"#endif /* {guard} */")
 
     def _generate_source(self) -> None:
+        """Generate the C89 source file containing model weights, memory mapping, and operator logic."""
         b = self.source_builder
         b.emit_include(f"{self.prefix}model.h", is_system=False)
         if self.use_math_h:
@@ -815,6 +835,7 @@ class C89Compiler:
         b.emit("}")
 
     def generate(self) -> tuple[str, str]:
+        """Compile the graph and return the generated header and source code as strings."""
         self._generate_header()
         self._generate_source()
         return self.header_builder.get_code(), self.source_builder.get_code()

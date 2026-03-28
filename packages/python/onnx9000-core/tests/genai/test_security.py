@@ -1,15 +1,21 @@
+"""Module providing functionality for test_security."""
+
+"""Test security."""
+
+
 def test_security():
+    """Docstring."""
     from onnx9000.genai.security import (
-        PromptInjectionDetector,
-        ContentSafetyFilter,
-        SecureExecutionBoundary,
-        ExploitPreventer,
         ChatTemplateSanitizer,
-        ResourceLimits,
-        EncryptedModelExecutor,
-        SignatureValidator,
-        KVCacheIsolator,
+        ContentSafetyFilter,
         CSPCompliance,
+        EncryptedModelExecutor,
+        ExploitPreventer,
+        KVCacheIsolator,
+        PromptInjectionDetector,
+        ResourceLimits,
+        SecureExecutionBoundary,
+        SignatureValidator,
     )
 
     assert PromptInjectionDetector()._initialized

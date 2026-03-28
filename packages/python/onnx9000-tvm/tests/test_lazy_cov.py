@@ -1,7 +1,10 @@
+"""Tests for lazy coverage of TVM relay transforms and types."""
+
 import pytest
 
 
 def test_lazy_coverage():
+    """Exercise various TVM relay components to improve lazy code coverage."""
     import onnx9000.tvm.relay.expr as expr
 
     try:

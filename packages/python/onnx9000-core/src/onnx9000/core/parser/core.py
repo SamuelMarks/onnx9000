@@ -58,7 +58,28 @@ def _parse_attribute(attr: Any) -> Attribute:
         return Attribute(attr.name, "INTS", list(attr.ints))
     elif attr.type == onnx_pb2.AttributeProto.STRINGS:
         return Attribute(attr.name, "STRINGS", [s.decode("utf-8") for s in attr.strings])
+    elif attr.type == onnx_pb2.AttributeProto.SPARSE_TENSOR:
+        return Attribute(attr.name, "SPARSE_TENSOR", parse_sparse_tensor_proto(attr.sparse_tensor))
+    elif attr.type == onnx_pb2.AttributeProto.SPARSE_TENSORS:
+        return Attribute(
+            attr.name,
+            "SPARSE_TENSORS",
+            [parse_sparse_tensor_proto(st) for st in attr.sparse_tensors],
+        )
     return Attribute(attr.name, "UNKNOWN", None)
+
+
+def parse_sparse_tensor_proto(sparse_init: Any, base_dir: Optional[Path] = None) -> "SparseTensor":
+    """Parse a single ONNX SparseTensorProto into an ir.SparseTensor."""
+    from onnx9000.core.ir import SparseTensor
+
+    values = parse_tensor_proto(sparse_init.values, base_dir)
+    indices = parse_tensor_proto(sparse_init.indices, base_dir)
+    dims = tuple(sparse_init.dims)
+    # values.name is usually the name of the sparse tensor
+    return SparseTensor(
+        name=sparse_init.values.name, values=values, indices=indices, dims=dims, format="COO"
+    )
 
 
 def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
@@ -128,9 +149,13 @@ def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
         tensor = parse_tensor_proto(init, base_dir)
         graph.add_tensor(tensor)
         graph.initializers.append(init.name)
+    for sparse_init in graph_proto.sparse_initializer:
+        sparse_tensor = parse_sparse_tensor_proto(sparse_init, base_dir)
+        graph.add_tensor(sparse_tensor)
+        graph.sparse_initializers.append(sparse_tensor.name)
     for vinfo in graph_proto.input:
         name = vinfo.name
-        if name not in graph.initializers:
+        if name not in graph.initializers and name not in graph.sparse_initializers:
             dtype = _parse_dtype(vinfo.type.tensor_type.elem_type)
             shape = _parse_shape(vinfo.type.tensor_type.shape)
             graph.inputs.append(ValueInfo(name, shape, dtype))

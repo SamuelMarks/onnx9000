@@ -1,0 +1,16 @@
+{
+  "name": "@onnx9000/webnn-polyfill",
+  "version": "1.0.0",
+  "description": "W3C WebNN API Polyfill mapping to onnx9000 WebGPU/WASM execution engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:^",
+    "@onnx9000/backend-web": "workspace:^"
+  }
+}

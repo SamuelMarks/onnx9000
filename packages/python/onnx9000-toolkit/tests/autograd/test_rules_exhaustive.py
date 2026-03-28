@@ -82,7 +82,7 @@ def test_register_custom_vjp():
     """Tests the custom vjp registration functionality."""
 
     def custom_vjp_function(fwd_node: Node, grad_outputs: list[str]):
-        """Executes the custom vjp function operation."""
+        """Execute the custom vjp function operation."""
         return [], ["grad_x"]
 
     register_vjp("MyCustomOp", custom_vjp_function)

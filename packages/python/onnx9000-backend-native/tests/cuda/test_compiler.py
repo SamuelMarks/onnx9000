@@ -26,7 +26,7 @@ def test_cuda_compiler_compile(tmpdir) -> None:
     ptx_path = os.path.join(cache_dir, "test_kernel2.ptx")
 
     def fake_run(cmd, check, capture_output) -> None:
-        """Tests the fake run functionality."""
+        """Test the fake run functionality."""
         with open(ptx_path, "wb") as f:
             f.write(b"new_ptx")
 

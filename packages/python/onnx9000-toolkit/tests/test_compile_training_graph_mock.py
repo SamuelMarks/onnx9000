@@ -1,3 +1,5 @@
+"""Tests for compiling a training graph using mocks."""
+
 from unittest.mock import patch
 
 import pytest
@@ -7,14 +9,17 @@ from onnx9000.toolkit.training import compile_training_graph
 
 @patch("onnx9000.toolkit.training.AOTBuilder")
 def test_compile_training_graph_mock(mock_aot_builder):
+    """Test the compilation of a training graph with a mocked AOTBuilder."""
     g = Graph("mock")
 
     def loss_fn(a, b, c):
+        """Mock loss function."""
         return "loss"
 
     loss_fn(None, None, None)
 
     def opt_fn(a, b, c, d):
+        """Mock optimizer function."""
         return None
 
     opt_fn(None, None, None, None)

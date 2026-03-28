@@ -48,11 +48,11 @@ class MockDLPackTensor:
     """Represents the Mock D L Pack Tensor class."""
 
     def __init__(self, arr) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.arr = arr
 
     def __dlpack__(self):
-        """Executes dlpack magic method operation."""
+        """Execute dlpack magic method operation."""
         # We need to construct a real PyCapsule to test from_dlpack
         # But constructing a PyCapsule from python is tricky without C extension
         # We will mock the ctypes.pythonapi
@@ -117,7 +117,7 @@ def test_from_dlpack_strided_success() -> None:
         """Represents the MockDLPackTensor class and its associated logic."""
 
         def __dlpack__(self):
-            """Executes dlpack magic method operation."""
+            """Execute dlpack magic method operation."""
             return "capsule"
 
     t = MockDLPackTensor()

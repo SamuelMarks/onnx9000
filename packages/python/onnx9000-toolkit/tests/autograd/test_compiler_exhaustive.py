@@ -387,7 +387,7 @@ def test_aot_builder():
 
     # fake optimizer gen
     def fake_opt(g, lr, params):
-        """Tests the fake opt functionality."""
+        """Test the fake opt functionality."""
         for p in params:
             g.outputs.append(f"{p}_new")
 

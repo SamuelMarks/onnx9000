@@ -1,9 +1,13 @@
+"""TFLite FlatBuffer schema definitions and object creation helpers."""
+
 from enum import IntEnum
 
 from .builder import FlatBufferBuilder
 
 
 class TensorType:
+    """TFLite tensor data types."""
+
     FLOAT32 = 0
     FLOAT16 = 1
     INT32 = 2
@@ -25,11 +29,15 @@ class TensorType:
 
 
 class Padding:
+    """TFLite padding types."""
+
     SAME = 0
     VALID = 1
 
 
 class BuiltinOperator(IntEnum):
+    """TFLite builtin operators."""
+
     ADD = 0
     AVERAGE_POOL_2D = 1
     CONCATENATION = 2
@@ -196,6 +204,8 @@ class BuiltinOperator(IntEnum):
 
 
 class BuiltinOptions(IntEnum):
+    """TFLite builtin operator options types."""
+
     NONE = 0
     Conv2DOptions = 1
     DepthwiseConv2DOptions = 2
@@ -315,10 +325,13 @@ class BuiltinOptions(IntEnum):
 
 
 class OperatorCode:
+    """TFLite OperatorCode object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder, builtin_code: int, custom_code_offset: int, version: int
     ) -> int:
+        """Create a TFLite OperatorCode object."""
         builder.start_object(4)
         builder.add_field_int8(0, builtin_code, 0)
         builder.add_field_offset(1, custom_code_offset, 0)
@@ -328,6 +341,8 @@ class OperatorCode:
 
 
 class QuantizationParameters:
+    """TFLite QuantizationParameters object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder,
@@ -339,6 +354,7 @@ class QuantizationParameters:
         details_offset: int,
         quantized_dimension: int,
     ) -> int:
+        """Create a TFLite QuantizationParameters object."""
         builder.start_object(7)
         builder.add_field_offset(0, min_offset, 0)
         builder.add_field_offset(1, max_offset, 0)
@@ -351,6 +367,8 @@ class QuantizationParameters:
 
 
 class Tensor:
+    """TFLite Tensor object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder,
@@ -364,6 +382,7 @@ class Tensor:
         shape_signature_offset: int,
         has_rank: bool,
     ) -> int:
+        """Create a TFLite Tensor object."""
         builder.start_object(10)
         builder.add_field_offset(0, shape_offset, 0)
         builder.add_field_int8(1, tensor_type, 0)
@@ -378,6 +397,8 @@ class Tensor:
 
 
 class Operator:
+    """TFLite Operator object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder,
@@ -391,6 +412,7 @@ class Operator:
         mutating_variable_inputs: bool,
         intermediates_offset: int,
     ) -> int:
+        """Create a TFLite Operator object."""
         builder.start_object(9)
         builder.add_field_int32(0, opcode_index, 0)
         builder.add_field_offset(1, inputs_offset, 0)
@@ -405,6 +427,8 @@ class Operator:
 
 
 class SubGraph:
+    """TFLite SubGraph object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder,
@@ -414,6 +438,7 @@ class SubGraph:
         operators_offset: int,
         name_offset: int,
     ) -> int:
+        """Create a TFLite SubGraph object."""
         builder.start_object(5)
         builder.add_field_offset(0, tensors_offset, 0)
         builder.add_field_offset(1, inputs_offset, 0)
@@ -424,16 +449,22 @@ class SubGraph:
 
 
 class Buffer:
+    """TFLite Buffer object helper."""
+
     @staticmethod
     def create(builder: FlatBufferBuilder, data_offset: int) -> int:
+        """Create a TFLite Buffer object."""
         builder.start_object(1)
         builder.add_field_offset(0, data_offset, 0)
         return builder.end_object()
 
 
 class Metadata:
+    """TFLite Metadata object helper."""
+
     @staticmethod
     def create(builder: FlatBufferBuilder, name_offset: int, buffer: int) -> int:
+        """Create a TFLite Metadata object."""
         builder.start_object(2)
         builder.add_field_offset(0, name_offset, 0)
         builder.add_field_int32(1, buffer, 0)
@@ -441,6 +472,8 @@ class Metadata:
 
 
 class Model:
+    """TFLite Model object helper."""
+
     @staticmethod
     def create(
         builder: FlatBufferBuilder,
@@ -453,6 +486,7 @@ class Model:
         metadata_offset: int,
         signature_defs_offset: int,
     ) -> int:
+        """Create a TFLite Model object."""
         builder.start_object(8)
         builder.add_field_int32(0, version, 0)
         builder.add_field_offset(1, operator_codes_offset, 0)

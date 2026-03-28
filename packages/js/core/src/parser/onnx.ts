@@ -4,6 +4,7 @@ import { Tensor, Shape, DType, DynamicDim } from '../ir/tensor.js';
 import {
   Reader,
   readVarInt,
+  readVarInt64,
   readTag,
   skipField,
   readString,
@@ -78,7 +79,7 @@ function mapAttributeType(type: number): AttributeType {
 
 export async function parseModelProto(reader: Reader): Promise<Graph> {
   const end = reader.getLength();
-  let graph = new Graph('');
+  const graph = new Graph('');
 
   try {
     while (reader.getPosition() < end) {
@@ -181,13 +182,13 @@ async function parseGraphProto(reader: Reader, limit: number, graph: Graph): Pro
 }
 
 async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
-  let inputs: string[] = [];
-  let outputs: string[] = [];
+  const inputs: string[] = [];
+  const outputs: string[] = [];
   let name = '';
   let opType = '';
   let domain = '';
   let docString = '';
-  let attributes: Record<string, Attribute> = {};
+  const attributes: Record<string, Attribute> = {};
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);
@@ -231,7 +232,7 @@ async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
 
 async function parseValueInfoProto(reader: Reader, limit: number): Promise<ValueInfo> {
   let name = '';
-  let shape: Shape = [];
+  const shape: Shape = [];
   let dtype: DType = 'float32';
 
   while (reader.getPosition() < limit) {
@@ -325,7 +326,7 @@ async function parseAttributeProto(reader: Reader, limit: number): Promise<Attri
         }
         break;
       case 3: // i
-        value = await readVarInt(reader);
+        value = await readVarInt64(reader);
         break;
       case 4: // s
         {
@@ -373,11 +374,11 @@ async function parseAttributeProto(reader: Reader, limit: number): Promise<Attri
             const iLimit = reader.getPosition() + iLen;
             value = [];
             while (reader.getPosition() < iLimit) {
-              value.push(await readVarInt(reader));
+              value.push(await readVarInt64(reader));
             }
           } else {
             value = value || [];
-            value.push(await readVarInt(reader));
+            value.push(await readVarInt64(reader));
           }
         }
         break;
@@ -422,11 +423,11 @@ async function parseTensorProto(
   isInitializer: boolean,
 ): Promise<Tensor> {
   let name = '';
-  let dims: number[] = [];
+  const dims: number[] = [];
   let dataTypeNum = 0;
   let rawData: Uint8Array | null = null;
   let dataLocation = 0;
-  let externalDataMap: Record<string, string> = {};
+  const externalDataMap: Record<string, string> = {};
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);

@@ -1,8 +1,11 @@
 /* prettier-ignore-start */
 // ONNX9000 WebAssembly Execution Engine Scaffold
 
-@external("env", "abort")
+// @ts-ignore
 declare function abort(): void;
+
+type usize = number;
+type i32 = number;
 
 export function init(): void {
   // Setup logic for the engine

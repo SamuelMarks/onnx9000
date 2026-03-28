@@ -1,3 +1,5 @@
+"""Model optimization tools for onnx9000 graphs."""
+
 import json
 import logging
 import os

@@ -14,7 +14,7 @@ class MockRobustScaler:
     """Represents the Mock Robust Scaler class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         import numpy as np
 
         self.center_ = np.array([0.5])

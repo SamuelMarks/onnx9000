@@ -1,3 +1,9 @@
+"""Command line interface for the ONNX9000 C89 compiler backend.
+
+This tool converts ONNX models into standalone, dependency-free C89 code
+suitable for embedded devices and restricted environments.
+"""
+
 import argparse
 import os
 import sys
@@ -6,6 +12,7 @@ from onnx9000.c_compiler.compiler import C89Compiler
 
 
 def main():
+    """Execute the C compiler CLI, parsing arguments and generating C code."""
     parser = argparse.ArgumentParser(
         description="onnx9000-c-compiler: Convert ONNX models to standalone C89 code."
     )

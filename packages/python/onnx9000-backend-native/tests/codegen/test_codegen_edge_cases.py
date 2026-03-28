@@ -1,3 +1,5 @@
+"""Module providing functionality for test_codegen_edge_cases."""
+
 from unittest.mock import patch
 
 import pytest
@@ -8,6 +10,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
 def test_category_mapper_codegen():
+    """Test category mapper codegen."""
     g = Graph("TestCat")
     g.inputs = ["in"]
     g.outputs = ["out"]
@@ -24,6 +27,7 @@ def test_category_mapper_codegen():
 
 
 def test_get_omp_pragma_unroll():
+    """Test get omp pragma unroll."""
     with patch("onnx9000.core.config.ONNX9000_ENABLE_LOOP_UNROLLING", True):
         pragma = get_omp_pragma("100")
         assert "#pragma unroll" in pragma

@@ -1,3 +1,5 @@
+"""Tests for control flow folding and dead code elimination."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
 
 
 def test_if_folding():
+    """Test folding of If nodes with constant conditions."""
     g = Graph("TestIf")
     g.inputs = ["cond_true", "cond_false", "in"]
     g.outputs = ["Y1", "Y2"]
@@ -55,6 +58,7 @@ def test_if_folding():
 
 
 def test_loop_zero_trip_folding():
+    """Test loop zero trip folding."""
     g = Graph("TestLoopZero")
     t_m = Tensor("M", (1,), DType.INT64)
     t_m.data = np.array([0])
@@ -84,6 +88,7 @@ def test_loop_zero_trip_folding():
 
 
 def test_loop_cond_false_folding():
+    """Test loop cond false folding."""
     g = Graph("TestLoopCond")
     g.tensors["M"] = Tensor("M", (1,), DType.INT64)  # Unknown
 
@@ -111,6 +116,7 @@ def test_loop_cond_false_folding():
 
 
 def test_loop_unroll_small():
+    """Test unrolling of Loop nodes with a small constant trip count."""
     g = Graph("TestLoopUnroll")
 
     t_m = Tensor("M", (1,), DType.INT64)

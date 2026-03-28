@@ -1,3 +1,5 @@
+"""Tests for packages/python/onnx9000-tvm/tests/test_all_nodes_cov.py."""
+
 from contextlib import suppress
 import pytest
 from onnx9000.tvm.relay.expr import (
@@ -27,6 +29,7 @@ from onnx9000.tvm.relay.transform.unroll_let import unroll_let
 
 
 def get_nodes():
+    """Perform get nodes operation."""
     v = Var("v", type_annotation=TensorType([1], "float32"))
     c = Constant([1.0], TensorType([1], "float32"))
     op = Op("add")
@@ -40,24 +43,28 @@ def get_nodes():
 
 
 def test_expr_visitor():
+    """Test expr visitor."""
     vis = ExprVisitor()
     for n in get_nodes():
         vis.visit(n)
 
 
 def test_expr_mutator():
+    """Test expr mutator."""
     mut = ExprMutator()
     for n in get_nodes():
         mut.visit(n)
 
 
 def test_ir_printer():
+    """Test ir printer."""
     pr = IRPrinter()
     for n in get_nodes():
         pr.visit(n)
 
 
 def test_passes():
+    """Test passes."""
     nodes = get_nodes()
     for n in nodes:
         try:
@@ -116,6 +123,7 @@ def test_passes():
 
 
 def test_te_tir_nodes():
+    """Test te tir nodes."""
     from onnx9000.tvm.te.tensor import Tensor, ComputeOp, PlaceholderOp
     from onnx9000.tvm.tir.expr import (
         Var as TIRVar,
@@ -187,7 +195,6 @@ def test_te_tir_nodes():
         Evaluate(v),
         SeqStmt([Evaluate(v), Evaluate(c)]),
     ]
-
     pe = TIRPrinter()
     for e in exprs:
         try:
@@ -195,7 +202,6 @@ def test_te_tir_nodes():
             raise Exception
         except Exception:
             pass
-
     vs = StmtVisitor()
     ms = StmtMutator()
     ps = TIRPrinter()

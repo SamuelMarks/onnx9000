@@ -11,7 +11,7 @@ def test_profile_graph_decorator(capsys):
 
     @profile_graph
     def dummy_func(graph):
-        """Executes the dummy func operation."""
+        """Execute the dummy func operation."""
         return "done"
 
     g = Graph("g")

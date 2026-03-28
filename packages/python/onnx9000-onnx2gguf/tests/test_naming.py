@@ -1,8 +1,11 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.onnx2gguf.naming import rename_tensor
 
 
 def test_rename_tensor():
+    """Docstring."""
     assert rename_tensor("model.embed_tokens.weight") == "token_embd.weight"
     assert rename_tensor("model.layers.0.input_layernorm.weight") == "blk.0.attn_norm.weight"
     assert rename_tensor("model.layers.10.self_attn.q_proj.weight") == "blk.10.attn_q.weight"

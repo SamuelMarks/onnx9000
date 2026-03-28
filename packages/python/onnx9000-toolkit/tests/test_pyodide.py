@@ -4,8 +4,8 @@ import sys
 
 
 def test_pyodide_compatibility() -> None:
-    """
-    Step 097: Ensure `import onnx9000.toolkit.script` works flawlessly inside Pyodide.
+    """Step 097: Ensure `import onnx9000.toolkit.script` works flawlessly inside Pyodide.
+
     Since we don't have Pyodide running in our pytest environment natively,
     we simulate the strict requirements:
     1. No heavy C extensions (like the standard protobuf).

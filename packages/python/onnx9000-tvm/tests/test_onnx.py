@@ -1,9 +1,12 @@
+"""Tests for ONNX frontend in TVM."""
+
 from onnx9000.tvm.relay.frontend.onnx import from_onnx, ONNXImporter
 from onnx9000.core.ir import Graph, Node, ValueInfo, Tensor
 from onnx9000.core.dtypes import DType
 
 
 def test_from_onnx_full():
+    """Test importing a full ONNX graph into TVM relay."""
     g = Graph("test_graph")
     g.inputs.append(ValueInfo("x", (1, 2), DType.FLOAT32))  # Has int! Covers 124
     g.inputs.append(ValueInfo("x2", ("?", 2), DType.FLOAT32))

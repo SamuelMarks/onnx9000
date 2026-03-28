@@ -1,25 +1,31 @@
+"""Module providing functionality for test_image."""
+
+"""Test image."""
+
+
 def test_image():
+    """Docstring."""
     from onnx9000.genai.image import (
-        ImageGeneratorParams,
-        UNetInference,
-        VAEDecoder,
-        DDIMScheduler,
-        EulerAncestralScheduler,
-        PNDMScheduler,
-        LCMScheduler,
         ClassifierFreeGuidance,
-        NegativePromptHandler,
-        LatentNoiseGenerator,
-        MultiModelPipeline,
-        StableDiffusion1_5,
-        StableDiffusionXL,
+        ControlNetSupport,
+        DDIMScheduler,
+        DiffusionMemoryOptimizer,
+        DynamicResolutionScaler,
+        EulerAncestralScheduler,
+        HTMLCanvasExporter,
+        ImageGeneratorParams,
         ImageToImage,
         Inpainting,
-        ControlNetSupport,
+        LatentNoiseGenerator,
+        LCMScheduler,
+        MultiModelPipeline,
+        NegativePromptHandler,
+        PNDMScheduler,
         ProgressiveImageHooks,
-        HTMLCanvasExporter,
-        DynamicResolutionScaler,
-        DiffusionMemoryOptimizer,
+        StableDiffusion1_5,
+        StableDiffusionXL,
+        UNetInference,
+        VAEDecoder,
     )
 
     assert ImageGeneratorParams()._initialized

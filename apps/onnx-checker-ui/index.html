@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONNX Checker UI</title>
+    <style>
+      body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+      #dropzone { width: 100%; height: 200px; border: 2px dashed #aaa; display: flex; align-items: center; justify-content: center; background: #fff; margin-bottom: 20px; }
+      #results { background: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      .error { color: red; margin-bottom: 10px; }
+      .success { color: green; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h1>ONNX9000 Static Validator</h1>
+    <div id="dropzone">Drag & Drop .onnx file here</div>
+    <div id="results"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

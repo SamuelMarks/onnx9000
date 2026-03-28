@@ -15,7 +15,7 @@ from onnx9000.optimizer.simplifier.passes.validation import detect_cycles
 
 
 def create_mock_graph():
-    """Tests the create_mock_graph functionality."""
+    """Test the create_mock_graph functionality."""
     g = Graph("mock")
     n1 = Node("Transpose", ["in1"], ["t1"], {"perm": [1, 0]}, "trans1")
     n2 = Node("Transpose", ["t1"], ["t2"], {"perm": [1, 0]}, "trans2")

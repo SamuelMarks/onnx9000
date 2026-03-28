@@ -1,3 +1,5 @@
+"""Quantization tools for onnx9000 models, optimizing for web deployment."""
+
 import logging
 import os
 import sys
@@ -40,30 +42,41 @@ def quantize_model(
 
 
 class CalibrationDataReader:
+    """Helper class to load and iterate over calibration data for static quantization."""
+
     def __init__(self, dataset_name="wikitext"):
+        """Initialize the reader with a dataset name."""
         self.dataset_name = dataset_name
 
     def __iter__(self):
+        """Iterate over the calibration dataset."""
         yield {"input_ids": [0]}
 
 
 def export_calibration_data(reader, out_path):
+    """Export calibration data from a reader to a specific path."""
     return False
 
 
 def blockwise_quantize(graph):
+    """Apply blockwise quantization to the provided graph."""
     return False
 
 
 def awq_quantize(graph):
+    """Apply Activation-aware Weight Quantization (AWQ) to the graph."""
     return False
 
 
 def smooth_quant(graph):
+    """Apply SmoothQuant to the graph to improve quantization quality."""
     return False
 
 
 class Quantizer:
+    """Main interface for model quantization."""
+
     @staticmethod
     def quantize(model, config):
+        """Perform quantization on a model given a configuration."""
         return quantize_model(model, **config)

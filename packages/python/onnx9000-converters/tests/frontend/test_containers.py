@@ -18,12 +18,12 @@ class Dummy(Module):
     """Class Dummy implementation."""
 
     def __init__(self, c=1) -> None:
-        """Tests the __init__ functionality."""
+        """Test the __init__ functionality."""
         super().__init__()
         self.c = c
 
     def forward(self, x):
-        """Tests the forward functionality."""
+        """Test the forward functionality."""
         return x + self.c
 
 

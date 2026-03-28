@@ -1,5 +1,4 @@
-"""
-Sphinx extension for integrating the ONNX9000 Interactive WASM Demo UI.
+"""Sphinx extension for integrating the ONNX9000 Interactive WASM Demo UI.
 This extension provides the `.. interactive-demo::` directive which mounts
 the Vanilla JS frontend into the generated Sphinx HTML.
 """
@@ -42,8 +41,7 @@ def depart_interactive_demo_node(self, node: InteractiveDemoNode) -> None:
 
 
 class InteractiveDemoDirective(Directive):
-    """
-    Directive to embed the interactive WASM UI demo.
+    """Directive to embed the interactive WASM UI demo.
 
     Usage:
         .. interactive-demo::
@@ -66,8 +64,7 @@ class InteractiveDemoDirective(Directive):
 
 
 def build_frontend(app: Sphinx) -> None:
-    """
-    Hooks into Sphinx build process to run the frontend build via pnpm
+    """Hooks into Sphinx build process to run the frontend build via pnpm
     if it hasn't been built, and copies the artifacts into the Sphinx static directory.
     """
     frontend_dir = os.path.abspath(os.path.join(app.srcdir, "../apps/sphinx-demo-ui"))
@@ -90,9 +87,7 @@ def build_frontend(app: Sphinx) -> None:
 
 
 def copy_frontend_assets(app: Sphinx, exc: Exception) -> None:
-    """
-    Copies the built Vite assets into Sphinx's output build directory _static/demo-ui.
-    """
+    """Copies the built Vite assets into Sphinx's output build directory _static/demo-ui."""
     if exc:
         return
 
@@ -121,9 +116,7 @@ def copy_frontend_assets(app: Sphinx, exc: Exception) -> None:
 
 
 def setup(app: Sphinx) -> dict[str, str]:
-    """
-    Extension setup.
-    """
+    """Extension setup."""
     app.add_node(
         InteractiveDemoNode, html=(visit_interactive_demo_node, depart_interactive_demo_node)
     )

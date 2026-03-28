@@ -18,7 +18,7 @@ class Module:
         self.training: bool = True
 
     def register_parameter(self, name: str, param: Optional[Parameter]) -> None:
-        """Registers a parameter to the module, making it available in state_dict and parameters()."""
+        """Register a parameter to the module, making it available in state_dict and parameters()."""
         if not isinstance(name, str):
             raise TypeError("parameter name should be a string.")
         if param is not None and (not isinstance(param, Parameter)):
@@ -26,7 +26,7 @@ class Module:
         self._parameters[name] = param
 
     def register_buffer(self, name: str, tensor: Optional[Tensor]) -> None:
-        """Registers a buffer to the module, which is persistent state but not a parameter."""
+        """Register a buffer to the module, which is persistent state but not a parameter."""
         if not isinstance(name, str):
             raise TypeError("buffer name should be a string.")
         if tensor is not None and (not isinstance(tensor, Tensor)):
@@ -34,7 +34,7 @@ class Module:
         self._buffers[name] = tensor
 
     def add_module(self, name: str, module: Optional["Module"]) -> None:
-        """Adds a child module to the current module, making it accessible via named_modules()."""
+        """Add a child module to the current module, making it accessible via named_modules()."""
         if not isinstance(name, str):
             raise TypeError("module name should be a string.")
         if module is not None and (not isinstance(module, Module)):
@@ -60,10 +60,10 @@ class Module:
     def named_parameters(
         self, prefix: str = "", recurse: bool = True
     ) -> Iterator[tuple[str, Parameter]]:
-        """Yields an iterator over module parameters, yielding both the name and the parameter itself."""
+        """Yield an iterator over module parameters, yielding both the name and the parameter itself."""
 
         def get_parameters(m: Module) -> dict[str, Any]:
-            """Tests the corresponding module functionality."""
+            """Test the corresponding module functionality."""
             return m._parameters
 
         return self._named_members(get_parameters, prefix, recurse)
@@ -74,10 +74,10 @@ class Module:
             yield param
 
     def named_buffers(self, prefix: str = "", recurse: bool = True) -> Iterator[tuple[str, Tensor]]:
-        """Yields an iterator over module buffers, yielding both the name and the buffer itself."""
+        """Yield an iterator over module buffers, yielding both the name and the buffer itself."""
 
         def get_buffers(m: Module) -> dict[str, Any]:
-            """Tests the corresponding module functionality."""
+            """Test the corresponding module functionality."""
             return m._buffers
 
         return self._named_members(get_buffers, prefix, recurse)
@@ -93,7 +93,7 @@ class Module:
             yield module
 
     def named_children(self) -> Iterator[tuple[str, "Module"]]:
-        """Yields an iterator over immediate children modules, yielding both the name and the module itself."""
+        """Yield an iterator over immediate children modules, yielding both the name and the module itself."""
         for name, module in self._modules.items():
             if module is not None:
                 yield (name, module)
@@ -106,7 +106,7 @@ class Module:
     def named_modules(
         self, memo: Optional[set["Module"]] = None, prefix: str = "", remove_duplicate: bool = True
     ) -> Iterator[tuple[str, "Module"]]:
-        """Yields an iterator over all modules in the network, yielding both the name and the module itself."""
+        """Yield an iterator over all modules in the network, yielding both the name and the module itself."""
         if memo is None:
             memo = set()
         if self not in memo:
@@ -140,7 +140,7 @@ class Module:
         return destination
 
     def load_state_dict(self, state_dict: dict[str, Any], strict: bool = True) -> None:
-        """Copies parameters and buffers from state_dict into this module and its descendants."""
+        """Copie parameters and buffers from state_dict into this module and its descendants."""
         local_state = dict(self.state_dict(keep_vars=True).items())
         for key, param in state_dict.items():
             if key in local_state:
@@ -155,7 +155,7 @@ class Module:
                     raise RuntimeError(f"Missing key '{key}' in state_dict")
 
     def to(self, *args: Any, **kwargs: Any) -> "Module":
-        """Moves and/or casts the parameters and buffers of the module to the specified device or dtype."""
+        """Move and/or casts the parameters and buffers of the module to the specified device or dtype."""
         for t in self.parameters():
             if t is not None:
                 t.to(*args, **kwargs)
@@ -165,14 +165,14 @@ class Module:
         return self
 
     def train(self, mode: bool = True) -> "Module":
-        """Sets the module in training mode, affecting layers like Dropout and BatchNorm."""
+        """Set the module in training mode, affecting layers like Dropout and BatchNorm."""
         self.training = mode
         for module in self.children():
             module.train(mode)
         return self
 
     def eval(self) -> "Module":
-        """Sets the module in evaluation mode."""
+        """Set the module in evaluation mode."""
         return self.train(False)
 
     def apply(self, fn: Callable[["Module"], None]) -> "Module":
@@ -183,13 +183,13 @@ class Module:
         return self
 
     def zero_grad(self) -> None:
-        """Sets the gradients of all model parameters to None."""
+        """Set the gradients of all model parameters to None."""
         for p in self.parameters():
             if p is not None:
                 p.grad = None
 
     def __setattr__(self, name: str, value: Union["Module", Parameter, Tensor, Any]) -> None:
-        """Overrides default attribute setting to properly handle parameters, buffers, and submodules."""
+        """Override default attribute setting to properly handle parameters, buffers, and submodules."""
         if name in ("_parameters", "_buffers", "_modules", "training"):
             object.__setattr__(self, name, value)
             return
@@ -229,7 +229,7 @@ class Module:
             object.__setattr__(self, name, value)
 
     def __getattr__(self, name: str) -> Any:
-        """Overrides default attribute access to retrieve parameters, buffers, and submodules."""
+        """Override default attribute access to retrieve parameters, buffers, and submodules."""
         if "_parameters" in self.__dict__ and name in self._parameters:
             return self._parameters[name]
         if "_buffers" in self.__dict__ and name in self._buffers:
@@ -239,9 +239,9 @@ class Module:
         raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
     def forward(self, *args: Any, **kwargs: Any) -> Any:
-        """Defines the computation performed at every call. Should be overridden by all subclasses."""
+        """Define the computation performed at every call. Should be overridden by all subclasses."""
         return None
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Invokes the forward pass of the module with the provided arguments."""
+        """Invoke the forward pass of the module with the provided arguments."""
         return self.forward(*args, **kwargs)

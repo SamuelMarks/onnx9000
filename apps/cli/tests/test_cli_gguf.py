@@ -6,8 +6,10 @@ executions are properly initiated with the correct file operations and compiler 
 """
 
 import argparse
+from unittest.mock import MagicMock, patch
+
 import pytest
-from onnx9000_cli.main import onnx2gguf_cmd, gguf2onnx_cmd
+from onnx9000_cli.main import gguf2onnx_cmd, onnx2gguf_cmd
 
 
 def test_onnx2gguf_dry_run(capsys):
@@ -61,7 +63,9 @@ def test_onnx2gguf(monkeypatch):
     compiler routine is successfully invoked exactly once.
     """
     monkeypatch.setattr("os.path.getsize", lambda x: 100)
-    monkeypatch.setattr("onnx9000.core.parser.core.load", lambda x: "graph")
+
+    mock_graph = MagicMock()
+    monkeypatch.setattr("onnx9000_cli.main.load_onnx", lambda x: mock_graph)
 
     import io
 
@@ -92,14 +96,29 @@ def test_gguf2onnx(monkeypatch):
     function, saving the resulting graph structure to the target path.
     """
     monkeypatch.setattr("onnx9000.onnx2gguf.reader.GGUFReader", lambda f: "reader")
-    monkeypatch.setattr("onnx9000.onnx2gguf.reverse.reconstruct_onnx", lambda r: "graph")
+
+    mock_graph = MagicMock()
+    mock_graph.doc_string = ""
+    mock_graph.metadata_props = {}
+    mock_graph.opset_imports = {}
+    mock_graph.tensors = {}
+    mock_graph.initializers = []
+    mock_graph.sparse_initializers = []
+    mock_graph.nodes = []
+    mock_graph.inputs = []
+    mock_graph.outputs = []
+    mock_graph.value_info = []
+
+    monkeypatch.setattr("onnx9000.onnx2gguf.reverse.reconstruct_onnx", lambda r: mock_graph)
 
     called = []
-    monkeypatch.setattr("onnx9000.core.serializer.save", lambda g, f: called.append((g, f)))
+    monkeypatch.setattr("onnx9000_cli.main.save_onnx", lambda g, f: called.append((g, f)))
 
     import io
 
     monkeypatch.setattr("builtins.open", lambda *a, **kw: io.StringIO('{"dummy": 1}'))
     args = argparse.Namespace(model="dummy.gguf", output="dummy.onnx")
     gguf2onnx_cmd(args)
-    assert called == [("graph", "dummy.onnx")]
+    assert len(called) == 1
+    assert called[0][0] == mock_graph
+    assert called[0][1] == "dummy.onnx"

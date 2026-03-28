@@ -46,7 +46,7 @@ def test_convert_paddle_to_onnx_else_branch() -> None:
     original_make_node = PaddleToONNXGraphBuilder.make_node
 
     def mock_make_node(self, op_type, inputs, attributes, name_prefix, outputs=None):
-        """Tests the mock make node functionality."""
+        """Test the mock make node functionality."""
         out = original_make_node(self, op_type, inputs, attributes, name_prefix, outputs)
         self.graph.tensors.clear()
         return out

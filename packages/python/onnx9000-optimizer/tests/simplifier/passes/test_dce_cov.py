@@ -1,3 +1,5 @@
+"""Module providing functionality for test_dce_cov."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
@@ -5,6 +7,7 @@ from onnx9000.optimizer.simplifier.passes.dce import DCEPass
 
 
 def test_dce_run_once_missing():
+    """Test dce run once missing."""
     g = Graph("TestDCE")
     g.inputs = ["X", "UnusedIn"]
     g.outputs = ["Y"]

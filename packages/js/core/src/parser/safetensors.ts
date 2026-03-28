@@ -443,7 +443,9 @@ export async function fetchSafetensorsChunk(
           resolve(new Uint8Array(event.data));
         }
       };
-      ws.onerror = (e) => reject(new Error(`WebSocket chunk fetch failed: ${e}`));
+      ws.onerror = (e) => {
+        reject(new Error(`WebSocket chunk fetch failed: ${e}`));
+      };
     });
   }
 
@@ -786,7 +788,7 @@ export function decodeFloat16(uint16Array: Uint16Array): Float32Array {
   const uint32 = new Uint32Array(float32.buffer);
   for (let i = 0; i < uint16Array.length; i++) {
     const h = uint16Array[i] as number;
-    let sign = (h & 0x8000) << 16;
+    const sign = (h & 0x8000) << 16;
     let exp = (h & 0x7c00) >> 10;
     let frac = h & 0x03ff;
 
@@ -854,7 +856,7 @@ export async function benchmark10kKeys() {
   }
   const headerStr = JSON.stringify(header);
   let headerBytes = new TextEncoder().encode(headerStr);
-  let pad = (8 - (headerBytes.byteLength % 8)) % 8;
+  const pad = (8 - (headerBytes.byteLength % 8)) % 8;
   if (pad > 0) {
     headerBytes = new TextEncoder().encode(headerStr + ' '.repeat(pad));
   }

@@ -11,11 +11,11 @@ class SkipPass(Pass):
     """A pass that should be skipped."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         super().__init__("SkipPass")
 
     def run(self, model, context):
-        """Executes the run operation."""
+        """Execute the run operation."""
         return model
 
 
@@ -23,11 +23,12 @@ class CustomOptimizer(AutoOptimizer):
     """Represents the Custom Optimizer class."""
 
     def _check_hardware_limits(self, p: Pass) -> bool:
-        """Tests the check hardware limits functionality."""
+        """Test the check hardware limits functionality."""
         return p.name != "SkipPass"
 
 
 def test_skip_pass() -> None:
+    """Test skip pass."""
     SkipPass().run(None, None)
     """Tests the skip pass functionality."""
     g = Graph("test")

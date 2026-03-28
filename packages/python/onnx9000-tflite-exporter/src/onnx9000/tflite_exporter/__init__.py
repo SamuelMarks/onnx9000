@@ -1,3 +1,9 @@
+"""TFLite exporter for ONNX models.
+
+This package provides tools for converting ONNX models to TFLite format,
+including flatbuffer construction, operator mapping, and quantization.
+"""
+
 from .compiler.subgraph import compile_graph_to_tflite
 from .exporter import TFLiteExporter
 from .flatbuffer.builder import FlatBufferBuilder

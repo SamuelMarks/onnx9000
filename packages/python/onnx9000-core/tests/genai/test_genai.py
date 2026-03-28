@@ -1,3 +1,5 @@
+"""Tests for packages/python/onnx9000-core/tests/genai/test_genai.py."""
+
 import asyncio
 import struct
 
@@ -10,41 +12,38 @@ from onnx9000.genai.types import GeneratorParams, ModelParams
 
 
 class MockGenerator(Generator):
+    """MockGenerator implementation."""
+
     async def compute_logits(self, input_ids):
+        """Compute logits."""
         return Tensor(
-            name="test",
-            shape=(1, 10),
-            data=bytearray(40),
-            dtype=type("mock", (), {"itemsize": 4}),
+            name="test", shape=(1, 10), data=bytearray(40), dtype=type("mock", (), {"itemsize": 4})
         )
 
     def compute_logits_sync(self, input_ids):
+        """Perform compute logits sync operation."""
         return Tensor(
-            name="test",
-            shape=(1, 10),
-            data=bytearray(40),
-            dtype=type("mock", (), {"itemsize": 4}),
+            name="test", shape=(1, 10), data=bytearray(40), dtype=type("mock", (), {"itemsize": 4})
         )
 
     async def prefill(self, prompt_ids):
+        """Prefill."""
         return Tensor(
-            name="test",
-            shape=(1, 10),
-            data=bytearray(40),
-            dtype=type("mock", (), {"itemsize": 4}),
+            name="test", shape=(1, 10), data=bytearray(40), dtype=type("mock", (), {"itemsize": 4})
         )
 
     async def decode_step(self, token_id):
+        """Decode step."""
         return Tensor(
-            name="test",
-            shape=(1, 10),
-            data=bytearray(40),
-            dtype=type("mock", (), {"itemsize": 4}),
+            name="test", shape=(1, 10), data=bytearray(40), dtype=type("mock", (), {"itemsize": 4})
         )
 
 
 class MockModel(Model):
+    """MockModel implementation."""
+
     def create_generator(self, params):
+        """Perform create generator operation."""
         from onnx9000.genai.state import KVCache, State
 
         return MockGenerator(State(None, KVCache()), params)
@@ -55,15 +54,18 @@ from onnx9000.genai.tensor_utils import SequenceTensorUtils
 
 @pytest.fixture
 def mock_params():
+    """Perform mock params operation."""
     return GeneratorParams(max_length=10, max_new_tokens=5, early_stopping=False)
 
 
 @pytest.fixture
 def mock_state():
+    """Perform mock state operation."""
     return State(graph=Graph(name="test"), kv_cache=ContinuousKVCache())
 
 
 def test_types():
+    """Test types."""
     mp = ModelParams(
         max_sequence_length=1024,
         num_hidden_layers=12,
@@ -74,21 +76,19 @@ def test_types():
         eos_token_id=50256,
     )
     assert mp.vocab_size == 50257
-
     gp = GeneratorParams(max_length=20, num_beams=2)
     assert gp.num_beams == 2
 
 
 def test_state_and_kv_cache(mock_state):
+    """Test state and kv cache."""
     cache = mock_state.kv_cache
     keys = Tensor(name="k", shape=(1, 2, 64), data=bytearray(128))
     values = Tensor(name="v", shape=(1, 2, 64), data=bytearray(128))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
     assert cached[0].name == "k"
-
     mock_state.reset()
     assert mock_state.current_length == 0
     assert mock_state.is_prefill is True
@@ -96,35 +96,36 @@ def test_state_and_kv_cache(mock_state):
 
 
 def test_tensor_utils():
-    # Test expand sequence dimension
-    shape = (2, 3, 4)  # batch=2, seq=3, hidden=4
+    """Test tensor utils."""
+    shape = (2, 3, 4)
     itemsize = 4
     data = bytearray(2 * 3 * 4 * itemsize)
     tensor = Tensor(name="test", shape=shape, dtype=None, data=data)
-
-    # Expand to seq=5
     expanded = SequenceTensorUtils.expand_sequence_dimension(tensor, 5)
     assert expanded.shape == (2, 5, 4)
     assert len(expanded.data) == 2 * 5 * 4 * itemsize
 
 
 def test_generator_loop(mock_state, mock_params):
+    """Test generator loop."""
+
     async def run():
+        """Final Docstring."""
         gen = MockGenerator(mock_state, mock_params)
-
         prompt = Tensor(name="prompt", shape=(1, 2), data=bytearray(8))
-
         tokens = []
         async for token in gen.generate(prompt):
             tokens.append(token)
-
         assert len(tokens) == mock_params.max_new_tokens
 
     asyncio.run(run())
 
 
 def test_model_generate():
+    """Test model generate."""
+
     async def run():
+        """Final Docstring."""
         mp = ModelParams(
             max_sequence_length=1024,
             num_hidden_layers=1,
@@ -135,21 +136,21 @@ def test_model_generate():
             eos_token_id=9,
         )
         gp = GeneratorParams(max_length=5, max_new_tokens=3)
-
         model = MockModel(mp)
         prompt = Tensor(name="prompt", shape=(1, 2), data=bytearray(8))
-
         tokens = []
         async for t in model.generate(prompt, gp):
             tokens.append(t)
-
         assert len(tokens) == 3
 
     asyncio.run(run())
 
 
 def test_zero_length_prompt(mock_state, mock_params):
+    """Test zero length prompt."""
+
     async def run():
+        """Final Docstring."""
         gen = MockGenerator(mock_state, mock_params)
         prompt = Tensor(name="prompt", shape=(1, 0), data=bytearray(0))
         tokens = []
@@ -163,12 +164,12 @@ def test_zero_length_prompt(mock_state, mock_params):
 
 
 def test_continuous_kv_cache():
+    """Test continuous kv cache."""
     from onnx9000.genai.state import ContinuousKVCache
 
     cache = ContinuousKVCache()
     keys = Tensor(name="k", shape=(1, 2, 64), data=bytearray(128))
     values = Tensor(name="v", shape=(1, 2, 64), data=bytearray(128))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
@@ -176,12 +177,12 @@ def test_continuous_kv_cache():
 
 
 def test_paged_kv_cache():
+    """Test paged kv cache."""
     from onnx9000.genai.state import PagedKVCache
 
     cache = PagedKVCache(page_size=16)
     keys = Tensor(name="k", shape=(1, 2, 64), data=bytearray(128))
     values = Tensor(name="v", shape=(1, 2, 64), data=bytearray(128))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
@@ -189,103 +190,97 @@ def test_paged_kv_cache():
 
 
 def test_mha_cache():
+    """Test mha cache."""
     from onnx9000.genai.state import MultiHeadAttentionCache
 
     cache = MultiHeadAttentionCache(num_heads=12, head_dim=64)
-    # [batch=1, num_heads=12, seq=2, head_dim=64]
     keys = Tensor(name="k", shape=(1, 12, 2, 64), data=bytearray(12 * 2 * 64 * 4))
     values = Tensor(name="v", shape=(1, 12, 2, 64), data=bytearray(12 * 2 * 64 * 4))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
 
 
 def test_gqa_cache():
+    """Test gqa cache."""
     from onnx9000.genai.state import GroupedQueryAttentionCache
 
     cache = GroupedQueryAttentionCache(num_kv_heads=4, head_dim=64)
     keys = Tensor(name="k", shape=(1, 4, 2, 64), data=bytearray(4 * 2 * 64 * 4))
     values = Tensor(name="v", shape=(1, 4, 2, 64), data=bytearray(4 * 2 * 64 * 4))
-
     cache.update(keys, values, layer_idx=0)
     assert cache.get(layer_idx=0) is not None
 
 
 def test_mqa_cache():
+    """Test mqa cache."""
     from onnx9000.genai.state import MultiQueryAttentionCache
 
     cache = MultiQueryAttentionCache(head_dim=64)
     keys = Tensor(name="k", shape=(1, 1, 2, 64), data=bytearray(1 * 2 * 64 * 4))
     values = Tensor(name="v", shape=(1, 1, 2, 64), data=bytearray(1 * 2 * 64 * 4))
-
     cache.update(keys, values, layer_idx=0)
     assert cache.get(layer_idx=0) is not None
 
 
 def test_sequence_batching_kv_cache():
+    """Test sequence batching kv cache."""
     from onnx9000.genai.state import SequenceBatchingKVCache
 
     cache = SequenceBatchingKVCache()
-
-    # sequence 1
     keys1 = Tensor(name="k1", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
     values1 = Tensor(name="v1", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
     cache.update(keys1, values1, layer_idx=0)
-
-    # sequence 2 added
     keys2 = Tensor(name="k2", shape=(2, 1, 3, 64), data=bytearray(2 * 1 * 3 * 64 * 4))
     values2 = Tensor(name="v2", shape=(2, 1, 3, 64), data=bytearray(2 * 1 * 3 * 64 * 4))
     cache.update(keys2, values2, layer_idx=0)
-
     cached = cache.get(layer_idx=0)
     assert cached is not None
     assert cached[0].name == "k2"
 
 
 def test_cross_attention_cache():
+    """Test cross attention cache."""
     from onnx9000.genai.state import CrossAttentionCache
 
     cache = CrossAttentionCache()
     keys = Tensor(name="k", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
     values = Tensor(name="v", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
-
     cache.clear()
     assert cache.get(layer_idx=0) is None
 
 
 def test_sliding_window_cache():
+    """Test sliding window cache."""
     from onnx9000.genai.state import SlidingWindowKVCache
 
     cache = SlidingWindowKVCache(window_size=2048)
     keys = Tensor(name="k", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
     values = Tensor(name="v", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
-
     cache.update(keys, values, layer_idx=0)
     cached = cache.get(layer_idx=0)
     assert cached is not None
 
 
 def test_positional_embedding_utils():
+    """Test positional embedding utils."""
     from onnx9000.genai.state import PositionalEmbeddingUtils
 
     q = Tensor(name="q", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
     k = Tensor(name="k", shape=(1, 1, 2, 64), data=bytearray(1 * 1 * 2 * 64 * 4))
-
-    q_rope, k_rope = PositionalEmbeddingUtils.apply_rope(q, k, seq_len=2)
+    (q_rope, k_rope) = PositionalEmbeddingUtils.apply_rope(q, k, seq_len=2)
     assert q_rope.shape == q.shape
     assert k_rope.shape == k.shape
-
     scores = Tensor(name="scores", shape=(1, 2, 2, 2), data=bytearray(1 * 2 * 2 * 2 * 4))
     scores_alibi = PositionalEmbeddingUtils.apply_alibi(scores, num_heads=2)
     assert scores_alibi.shape == scores.shape
 
 
 def test_sequence_tensor_utils_errors():
+    """Test sequence tensor utils errors."""
     import pytest
     from onnx9000.core.ir import Tensor
     from onnx9000.genai.tensor_utils import SequenceTensorUtils
@@ -293,14 +288,13 @@ def test_sequence_tensor_utils_errors():
     t = Tensor(name="x", shape=(1,), data=bytearray(4))
     with pytest.raises(ValueError):
         SequenceTensorUtils.expand_sequence_dimension(t, 2)
-
-    # None data logic
     t2 = Tensor(name="x2", shape=(1, 1, 1), data=None, dtype=type("mock", (), {"itemsize": 4}))
     expanded = SequenceTensorUtils.expand_sequence_dimension(t2, 2)
-    assert len(expanded.data) == 8  # 1*2*1*4
+    assert len(expanded.data) == 8
 
 
 def test_generator_not_implemented():
+    """Test generator not implemented."""
     import asyncio
 
     from onnx9000.genai.generator import Generator
@@ -308,6 +302,7 @@ def test_generator_not_implemented():
     gen = Generator(None, None)
 
     async def run():
+        """Final Docstring."""
         assert await gen.compute_logits(None) is None
         assert gen.compute_logits_sync(None) is None
         assert await gen.prefill(None) is None
@@ -317,6 +312,7 @@ def test_generator_not_implemented():
 
 
 def test_generator_sample_none():
+    """Test generator sample none."""
     from onnx9000.genai.generator import Generator
 
     gen = Generator(None, None)
@@ -325,26 +321,23 @@ def test_generator_sample_none():
 
 
 def test_generator_sample_offset_negative():
+    """Test generator sample offset negative."""
     from onnx9000.genai.generator import Generator
 
     gen = Generator(None, None)
-    # vocab 10, length 4 bytes -> offset -36
-    t = Tensor(
-        name="x",
-        shape=(1, 10),
-        data=bytearray(4),
-        dtype=type("mock", (), {"itemsize": 4}),
-    )
+    t = Tensor(name="x", shape=(1, 10), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4}))
     assert gen.sample(t) == 0
 
 
 def test_builder_missing_21():
+    """Test builder missing 21."""
     from onnx9000.genai.builder import GenAIBuilder
 
     GenAIBuilder.export_pytorch(None, None)
 
 
 def test_huggingface_mocked_success():
+    """Test huggingface mocked success."""
     import sys
     from unittest.mock import MagicMock, patch
 
@@ -354,17 +347,18 @@ def test_huggingface_mocked_success():
 
         HuggingFaceIntegration.download_model("repo", "dir")
         mock_hub.snapshot_download.assert_called_once()
-
     from onnx9000.genai.builder import GenAICLI
 
 
 def test_builder_21_fix():
+    """Test builder 21 fix."""
     from onnx9000.genai.builder import GenAIBuilder
 
     assert GenAIBuilder.export_pytorch("mock", None) == "mock_exported_onnx_model"
 
 
 def test_builder_all():
+    """Test builder all."""
     from onnx9000.genai.builder import GenAIBuilder
 
     GenAIBuilder.build("foo", "bar")
@@ -379,6 +373,7 @@ def test_builder_all():
 
 
 def test_chunking_all():
+    """Test chunking all."""
     from onnx9000.genai.chunking import ChunkManager
 
     ChunkManager()
@@ -394,6 +389,7 @@ def test_chunking_all():
 
 
 def test_huggingface_all():
+    """Test huggingface all."""
     import sys
     from unittest.mock import MagicMock, mock_open, patch
 
@@ -409,37 +405,44 @@ def test_huggingface_all():
 
 
 def test_generator_all():
+    """Test generator all."""
     from onnx9000.core.ir import Tensor
     from onnx9000.genai.generator import Generator
     from onnx9000.genai.types import GeneratorParams
 
     class MockGen(Generator):
+        """MockGen implementation."""
+
         async def prefill(self, x):
+            """Final Docstring."""
             return Tensor(
                 name="", shape=(1, 10), data=bytearray(40), dtype=type("m", (), {"itemsize": 4})
             )
 
         def sample(self, x):
+            """Perform sample operation."""
             return 1
 
         async def decode_step(self, x):
+            """Final Docstring."""
             return Tensor(
                 name="", shape=(1, 10), data=bytearray(40), dtype=type("m", (), {"itemsize": 4})
             )
 
         def is_eos(self, x):
+            """Perform is eos operation."""
             return x == 1
 
     import asyncio
 
     async def run():
+        """Final Docstring."""
         params = GeneratorParams(
             max_length=10, max_new_tokens=None, abort_signal=True, early_stopping=True
         )
         g = MockGen(None, params)
         async for t in g.generate(Tensor(name="", shape=(1, 2), data=bytearray(8))):
             pass
-
         await g.decode_step(1)
         params2 = GeneratorParams(
             max_length=10, max_new_tokens=None, abort_signal=False, early_stopping=True
@@ -452,6 +455,7 @@ def test_generator_all():
 
 
 def test_placeholders_real():
+    """Test placeholders real."""
     import ast
     import glob
 
@@ -468,40 +472,38 @@ def test_placeholders_real():
                 continue
             cls = getattr(mod, c)
             try:
-                # instantiate with dummy if possible
                 cls()
             except Exception:
                 pass
 
 
 def test_huggingface_fallback():
+    """Test huggingface fallback."""
     import builtins
     from unittest.mock import patch
 
     from onnx9000.genai.huggingface import HuggingFaceIntegration
 
-    # Hide huggingface_hub
     orig_import = builtins.__import__
 
     def mock_import(name, *args, **kwargs):
+        """Perform mock import operation."""
         if name == "huggingface_hub":
             raise ImportError()
         return orig_import(name, *args, **kwargs)
 
     with patch("builtins.__import__", side_effect=mock_import):
-        # Also need to mock os.makedirs and open to avoid filesystem errors if we want, or just write to tempdir
         HuggingFaceIntegration.download_model("repo", "/tmp/hf_fallback_test_dir")
 
 
 def test_missing_4_lines():
+    """Test missing 4 lines."""
     import onnx9000.genai.logging as logging
 
     logging.GenerationStatsLogger().log()
-
     import onnx9000.genai.openai_api as openai_api
 
     openai_api.OpenAIServer().serve()
-
     import onnx9000.genai.stability as stability
 
     stability.MalformedChatTemplateError()
@@ -509,20 +511,27 @@ def test_missing_4_lines():
 
 
 def test_mock_methods():
+    """Test mock methods."""
     mg = MockGenerator(None, None)
     from onnx9000.genai.generator import Generator
 
     class MockGen2(Generator):
+        """MockGen2 implementation."""
+
         def sample(self, x):
+            """Perform sample operation."""
             return 1
 
         async def decode_step(self, x):
+            """Final Docstring."""
             return None
 
         def is_eos(self, x):
+            """Perform is eos operation."""
             return True
 
         async def compute_logits(self, x):
+            """Final Docstring."""
             return None
 
     mh = MockGen2(None, None)

@@ -9,7 +9,7 @@ def test_ast_script() -> None:
     """Tests the test_ast_script functionality."""
 
     def my_func(x):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         if x:
             return x
         else:
@@ -35,7 +35,7 @@ def test_ast_parser_missing() -> None:
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     def my_func(a, b, c=None):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         if True:
             pass
         return ((a, b), [a])
@@ -53,7 +53,7 @@ def test_ast_parser_missing_lists() -> None:
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     def my_func2(a):
-        """Tests the my_func2 functionality."""
+        """Test the my_func2 functionality."""
         return [a, a]
 
     my_func2(1)
@@ -68,7 +68,7 @@ def test_ast_parser_missing_tuple() -> None:
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     def my_func3(a):
-        """Tests the my_func3 functionality."""
+        """Test the my_func3 functionality."""
         return (a,)
 
     my_func3(1)
@@ -83,7 +83,7 @@ def test_ast_parser_missing_tensor() -> None:
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     def my_func4(a):
-        """Tests the my_func4 functionality."""
+        """Test the my_func4 functionality."""
         return a
 
     my_func4(1)
@@ -98,13 +98,13 @@ def test_ast_parser_missing_lists_2() -> None:
     from onnx9000.converters.frontend.ast_parser import ScriptCompiler
 
     def my_func2(a):
-        """Tests the my_func2 functionality."""
+        """Test the my_func2 functionality."""
         return [a, 5]
 
     my_func2(1)
 
     def my_func3(a):
-        """Tests the my_func3 functionality."""
+        """Test the my_func3 functionality."""
         return (a, 5)
 
     my_func3(1)
@@ -132,7 +132,7 @@ def test_ast_visit_name() -> None:
     from onnx9000.converters.frontend.tensor import Tensor
 
     def simple_func(x):
-        """Tests the simple_func functionality."""
+        """Test the simple_func functionality."""
         return x
 
     simple_func(1)

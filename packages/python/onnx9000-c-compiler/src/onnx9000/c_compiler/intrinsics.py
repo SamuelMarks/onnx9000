@@ -138,6 +138,7 @@ def emit_esp_nn_qlinear_matmul(
     zp_out: int,
     multiplier: float,
 ):
+    """Emit ESP-NN specific esp_nn_fully_connected_s8 call for ESP32-S3/C6."""
     b.emit(f"/* ESP-NN esp_nn_fully_connected_s8 optimized ({M}x{K}x{N}) */")
     b.emit(f"/* Offline calculation needed for multiplier {multiplier} */")
     b.emit("int32_t out_mult = 1; /* Placeholder */")
@@ -170,6 +171,7 @@ def emit_esp_nn_qlinear_conv(
     pads: list,
     dilations: list,
 ):
+    """Emit ESP-NN specific esp_nn_conv_s8 call for ESP32-S3/C6."""
     b.emit("/* ESP-NN esp_nn_conv_s8 optimized */")
     b.emit("int32_t out_mult = 1; /* Placeholder */")
     b.emit("int32_t out_shift = 0; /* Placeholder */")
@@ -180,6 +182,7 @@ def emit_esp_nn_qlinear_conv(
 
 
 def emit_avx2_headers(b: C89Builder, target: str):
+    """Emit AVX2/SIMD headers if the target architecture supports them."""
     if target == "avx2":
         b.emit("#ifdef __AVX2__")
         b.emit("#include <immintrin.h>")

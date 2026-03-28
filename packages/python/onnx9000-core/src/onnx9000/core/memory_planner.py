@@ -166,7 +166,11 @@ def simulate_memory_plan(
     for i, n in enumerate(graph.nodes):
         in_place_possible = False
         if n.op_type in ["Relu", "Sigmoid", "Tanh"]:
-            if n.inputs and lifetimes.get(n.inputs[0], [0, 0])[1] <= i:
+            if (
+                n.inputs
+                and lifetimes.get(n.inputs[0], [0, 0])[1] <= i
+                and n.inputs[0] not in graph.outputs
+            ):
                 in_place_possible = True
                 arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets.get(n.inputs[0], 0)
                 for b in arena.blocks:

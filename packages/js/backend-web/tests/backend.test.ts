@@ -134,10 +134,15 @@ describe('WasmProvider', () => {
 describe('WebGPUProvider coverage gap', () => {
   it('should initialize when navigator.gpu exists', async () => {
     // Mock navigator.gpu
+    const mockAdapter = {
+      requestDevice: vi.fn().mockResolvedValue({
+        destroy: vi.fn(),
+      }),
+    };
     Object.defineProperty(global, 'navigator', {
       value: {
         gpu: {
-          requestAdapter: vi.fn().mockResolvedValue({}),
+          requestAdapter: vi.fn().mockResolvedValue(mockAdapter),
         },
       },
       writable: true,
@@ -147,6 +152,7 @@ describe('WebGPUProvider coverage gap', () => {
     const provider = new WebGPUProvider();
     await provider.initialize();
     expect(navigator.gpu.requestAdapter).toHaveBeenCalled();
+    expect(mockAdapter.requestDevice).toHaveBeenCalled();
   });
 });
 

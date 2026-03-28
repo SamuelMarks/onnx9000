@@ -5,6 +5,17 @@ from onnx9000.core.ir import Node, Tensor
 
 
 def get_attribute(node, name, default):
+    """
+    Get an attribute value from an ONNX node.
+
+    Args:
+        node: The ONNX Node.
+        name: The name of the attribute.
+        default: The default value if the attribute is not found.
+
+    Returns:
+        The attribute value or the default value.
+    """
     if node.attributes and name in node.attributes:
         val = node.attributes[name].value
         return val if val is not None else default

@@ -1,3 +1,10 @@
+"""Core TFLite exporter implementation.
+
+This module provides the TFLiteExporter class, which handles the creation of
+the TFLite flatbuffer, including buffer deduplication, operator code management,
+and metadata injection.
+"""
+
 from .flatbuffer.builder import FlatBufferBuilder
 from .flatbuffer.schema import (
     Buffer,

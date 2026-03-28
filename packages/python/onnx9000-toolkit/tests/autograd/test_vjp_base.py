@@ -8,7 +8,7 @@ class MockRule(VJPRule):
     """Represents the Mock Rule class."""
 
     def build_backward_nodes(self, fwd_node, grad_outputs):
-        """Executes the build backward nodes operation."""
+        """Execute the build backward nodes operation."""
         return super().build_backward_nodes(fwd_node, grad_outputs)
 
 

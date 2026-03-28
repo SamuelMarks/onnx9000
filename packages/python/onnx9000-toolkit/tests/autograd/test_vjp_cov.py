@@ -9,7 +9,7 @@ def test_vjp_base() -> None:
         """Class DummyRule implementation."""
 
         def build_backward_nodes(self, n, g):
-            """Tests the build_backward_nodes functionality."""
+            """Test the build_backward_nodes functionality."""
             return super().build_backward_nodes(n, g)
 
     assert DummyRule().build_backward_nodes(None, []) == ([], [])

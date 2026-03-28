@@ -86,6 +86,8 @@ class Attribute:
             return "STRING"
         if isinstance(value, Tensor):
             return "TENSOR"
+        if isinstance(value, SparseTensor):
+            return "SPARSE_TENSOR"
         if isinstance(value, Graph):
             return "GRAPH"
         if isinstance(value, list):
@@ -99,6 +101,8 @@ class Attribute:
                 return "STRINGS"
             if isinstance(value[0], Tensor):
                 return "TENSORS"
+            if isinstance(value[0], SparseTensor):
+                return "SPARSE_TENSORS"
             if isinstance(value[0], Graph):
                 return "GRAPHS"
         return "UNKNOWN"
@@ -174,6 +178,17 @@ class Tensor:
         """Copy function logic implementation."""
         if isinstance(self, Constant):
             return Constant(self.name, values=self.data, shape=self.shape, dtype=self.dtype)
+        elif isinstance(self, SparseTensor):
+            return SparseTensor(
+                self.name,
+                values=self.values.copy() if self.values else None,
+                indices=self.indices.copy() if self.indices else None,
+                dims=self.shape,
+                format=self.format,
+                row_ptr=self.row_ptr.copy() if self.row_ptr else None,
+                col_indices=self.col_indices.copy() if self.col_indices else None,
+                block_dims=self.block_dims,
+            )
         else:
             return Variable(self.name, shape=self.shape, dtype=self.dtype)
 
@@ -188,6 +203,49 @@ class Tensor:
         for n in self.outputs:
             n.inputs = [i for i in n.inputs if i is not self]
         self.outputs.clear()
+
+
+class SparseTensor(Tensor):
+    """Internal Representation of a Sparse Tensor."""
+
+    def __init__(
+        self,
+        name: str,
+        values: Optional["Constant"] = None,
+        indices: Optional["Constant"] = None,
+        dims: Optional[tuple[Union[int, DynamicDim], ...]] = None,
+        format: str = "COO",
+        row_ptr: Optional["Constant"] = None,
+        col_indices: Optional["Constant"] = None,
+        block_dims: Optional[tuple[int, ...]] = None,
+    ) -> None:
+        """Initialize the class with necessary attributes."""
+        super().__init__(name)
+        self.values = values
+        self.indices = indices
+        self.row_ptr = row_ptr
+        self.col_indices = col_indices
+        self.block_dims = block_dims
+        self.shape = dims or ()
+        self.format = format
+        self.is_initializer = True
+
+    def __repr__(self) -> str:
+        """Execute repr magic method operation."""
+        return f"ir.SparseTensor(name={self.name}, shape={self.shape}, format={self.format})"
+
+    def copy(self) -> "SparseTensor":
+        """Copy function logic implementation."""
+        return SparseTensor(
+            self.name,
+            values=self.values.copy() if self.values else None,
+            indices=self.indices.copy() if self.indices else None,
+            dims=self.shape,
+            format=self.format,
+            row_ptr=self.row_ptr.copy() if self.row_ptr else None,
+            col_indices=self.col_indices.copy() if self.col_indices else None,
+            block_dims=self.block_dims,
+        )
 
 
 class Variable(Tensor):
@@ -402,6 +460,7 @@ class Graph:
         self.outputs: list[ValueInfo] = []
         self.value_info: list[ValueInfo] = []
         self.initializers: list[str] = []
+        self.sparse_initializers: list[str] = []
         self.opset_imports: dict[str, int] = {}
         self.doc_string: str = ""
         self.producer_name: str = "onnx9000"

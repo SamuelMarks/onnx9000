@@ -17,7 +17,7 @@ class MockBooster:
     """Represents the Mock Booster class."""
 
     def get_dump(self, dump_format="json"):
-        """Executes the get dump operation."""
+        """Execute the get dump operation."""
         return [
             '{"nodeid": 0, "depth": 0, "split": "f0", "split_condition": 1.0, "yes": 1, "no": 2, "missing": 1, "children": [{"nodeid": 1, "leaf": 0.0}, {"nodeid": 2, "leaf": 1.0}]}'
         ]
@@ -27,11 +27,11 @@ class MockEstimator:
     """Represents the Mock Estimator class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         pass
 
     def get_booster(self):
-        """Executes the get booster operation."""
+        """Execute the get booster operation."""
         return MockBooster()
 
 

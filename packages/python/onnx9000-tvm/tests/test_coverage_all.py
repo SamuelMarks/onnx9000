@@ -1,4 +1,8 @@
+"""Tests for comprehensive coverage of various TVM modules."""
+
+
 def test_tvm_all_others_part2():
+    """Exercise various TVM modules to improve code coverage."""
     import glob
     import inspect
 
@@ -76,6 +80,7 @@ def test_tvm_all_others_part2():
     ]
 
     def try_call(func, args):
+        """Try calling a function with the given arguments and ignore exceptions."""
         try:
             func(*args)
         except Exception:

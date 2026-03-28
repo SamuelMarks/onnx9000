@@ -1,15 +1,21 @@
+"""Module providing functionality for test_qa."""
+
+"""Test qa."""
+
+
 def test_qa():
+    """Docstring."""
     from onnx9000.genai.qa import (
-        StepDebuggerUI,
         AttentionMapVisualizer,
         BeamSearchTreeVisualizer,
-        SamplingConfigLinter,
-        ChromeTracer,
         BrokenModelSuite,
-        HardwareBugDatabase,
-        TokenizerEdgeCasesTester,
-        LogitComparer,
+        ChromeTracer,
         FeatureToggles,
+        HardwareBugDatabase,
+        LogitComparer,
+        SamplingConfigLinter,
+        StepDebuggerUI,
+        TokenizerEdgeCasesTester,
     )
 
     assert StepDebuggerUI()._initialized

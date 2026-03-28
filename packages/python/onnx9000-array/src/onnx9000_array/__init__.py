@@ -16,6 +16,17 @@ class BaseTensor(CoreTensor):
         inputs: list[Any] = None,
         data: Any = None,
     ):
+        """Initialize the base tensor.
+
+        Args:
+            name: Name of the tensor.
+            shape: Shape of the tensor.
+            dtype: Data type of the tensor.
+            op_type: ONNX operator type.
+            inputs: Input tensors for the operation.
+            data: Raw data for the tensor.
+
+        """
         super().__init__(name, shape, dtype, data=data)
         self.op_type = op_type
         self.inputs = inputs or []
@@ -25,6 +36,13 @@ class EagerTensor(BaseTensor):
     """Eager execution tensor."""
 
     def __init__(self, data: Any, dtype: Optional[str] = None):
+        """Initialize an eager tensor with data.
+
+        Args:
+            data: Raw data (usually numpy-like).
+            dtype: Optional data type override.
+
+        """
         super().__init__("eager", [len(data)] if data else [], dtype or "float32", data=data)
         self.data_ref = data
 
@@ -79,6 +97,14 @@ class LazyTensor(BaseTensor):
     """Lazy evaluation tensor."""
 
     def __init__(self, op_type: str, inputs: list[Any], dtype: str = "float32"):
+        """Initialize a lazy tensor for an operation.
+
+        Args:
+            op_type: ONNX operator type.
+            inputs: Input tensors for the operation.
+            dtype: Output data type.
+
+        """
         super().__init__("lazy_" + op_type, [], dtype, op_type, inputs)
 
 
@@ -953,54 +979,67 @@ class nn:
 
     @staticmethod
     def relu(x: Any) -> Any:
+        """Applies rectified linear unit activation."""
         return LazyTensor("Relu", [x]) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def sigmoid(x: Any) -> Any:
+        """Applies sigmoid activation."""
         return LazyTensor("Sigmoid", [x]) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def softmax(x: Any, axis: Any = -1) -> Any:
+        """Applies softmax activation."""
         return LazyTensor("Softmax", [x, axis]) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def log_softmax(x: Any, axis: Any = -1) -> Any:
+        """Applies log-softmax activation."""
         return LazyTensor("LogSoftmax", [x, axis]) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def gelu(x: Any) -> Any:
+        """Applies Gaussian Error Linear Unit activation."""
         return LazyTensor("Gelu", [x]) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def conv2d(*args: Any) -> Any:
+        """Performs 2D convolution."""
         return LazyTensor("Conv", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def max_pool2d(*args: Any) -> Any:
+        """Performs 2D max pooling."""
         return LazyTensor("MaxPool", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def avg_pool2d(*args: Any) -> Any:
+        """Performs 2D average pooling."""
         return LazyTensor("AveragePool", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def batch_norm(*args: Any) -> Any:
+        """Applies batch normalization."""
         return LazyTensor("BatchNormalization", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def layer_norm(*args: Any) -> Any:
+        """Applies layer normalization."""
         return LazyTensor("LayerNormalization", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def dropout(*args: Any) -> Any:
+        """Applies dropout regularization."""
         return LazyTensor("Dropout", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def linear(*args: Any) -> Any:
+        """Performs linear transformation (matrix multiplication)."""
         return LazyTensor("MatMul", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def cross_entropy_loss(*args: Any) -> Any:
+        """Computes cross-entropy loss."""
         return LazyTensor("SoftmaxCrossEntropyLoss", list(args)) if IS_LAZY else EagerTensor([1.0])
 
 
@@ -1009,22 +1048,27 @@ class linalg:
 
     @staticmethod
     def norm(*args: Any) -> Any:
+        """Computes the matrix or vector norm."""
         return LazyTensor("LpNormalization", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def det(*args: Any) -> Any:
+        """Computes the determinant of a square matrix."""
         return LazyTensor("Det", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def inv(*args: Any) -> Any:
+        """Computes the multiplicative inverse of a matrix."""
         return LazyTensor("Inv", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def solve(*args: Any) -> Any:
+        """Solves a linear matrix equation."""
         return LazyTensor("Solve", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def svd(*args: Any) -> Any:
+        """Singular Value Decomposition."""
         return LazyTensor("Svd", list(args)) if IS_LAZY else EagerTensor([1.0])
 
 
@@ -1033,14 +1077,17 @@ class char:
 
     @staticmethod
     def add(*args: Any) -> Any:
+        """Concatenates strings element-wise."""
         return LazyTensor("StringConcat", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def equal(*args: Any) -> Any:
+        """Performs element-wise string comparison for equality."""
         return LazyTensor("StringEqual", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def replace(*args: Any) -> Any:
+        """Replaces substrings element-wise."""
         return LazyTensor("StringReplace", list(args)) if IS_LAZY else EagerTensor([1.0])
 
 
@@ -1049,26 +1096,32 @@ class random:
 
     @staticmethod
     def rand(*args: Any) -> Any:
+        """Generates random numbers from a uniform distribution."""
         return LazyTensor("RandomUniform", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def randn(*args: Any) -> Any:
+        """Generates random numbers from a standard normal distribution."""
         return LazyTensor("RandomNormal", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def randint(*args: Any) -> Any:
+        """Generates random integers from a uniform distribution."""
         return LazyTensor("RandomUniformInt", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def uniform(*args: Any) -> Any:
+        """Generates random numbers from a uniform distribution."""
         return LazyTensor("RandomUniform", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def normal(*args: Any) -> Any:
+        """Generates random numbers from a normal distribution."""
         return LazyTensor("RandomNormal", list(args)) if IS_LAZY else EagerTensor([1.0])
 
     @staticmethod
     def seed(s: Any) -> Any:
+        """Sets the random seed."""
         return None
 
 

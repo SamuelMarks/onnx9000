@@ -16,7 +16,7 @@ from onnx9000.optimizer.hardware.api import (
 
 
 def create_mock_api_graph():
-    """Tests the create_mock_api_graph functionality."""
+    """Test the create_mock_api_graph functionality."""
     g = Graph("api_graph")
     t1 = Tensor("in1", (1, 3, 224, 224), DType.FLOAT32)
     t2 = Tensor("w", (16, 3, 3, 3), DType.FLOAT32)

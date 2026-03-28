@@ -16,7 +16,7 @@ def test_convert_tf_to_onnx_else_branch() -> None:
     original_make_node = TFToONNXGraphBuilder.make_node
 
     def mock_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs=1):
-        """Tests the mock make node functionality."""
+        """Test the mock make node functionality."""
         out = original_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs)
         self.graph.tensors.clear()
         return out

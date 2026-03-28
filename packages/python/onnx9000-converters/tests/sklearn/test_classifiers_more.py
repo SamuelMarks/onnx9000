@@ -9,7 +9,7 @@ class MockEstimator:
     """Represents the Mock Estimator class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         import numpy as np
 
         self.coef_ = np.array([[1.0, 2.0]])
@@ -28,7 +28,7 @@ class MockEstimatorInts:
     """Represents the Mock Estimator Ints class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         import numpy as np
 
         self.coef_ = np.array([[1.0, 2.0]])

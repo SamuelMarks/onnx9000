@@ -29,3 +29,11 @@ class ONNXParseError(Onnx9000Error):
 
 class ShapeInferenceError(Onnx9000Error):
     """Exception raised when static or symbolic shape inference fails."""
+
+
+class UnsupportedOpsetError(Onnx9000Error):
+    """Exception raised when attempting to validate a model with an unsupported opset."""
+
+
+class ValidationError(Onnx9000Error):
+    """Exception raised when a model fails static validation checks."""

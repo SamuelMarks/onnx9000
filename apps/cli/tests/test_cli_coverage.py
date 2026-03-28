@@ -146,6 +146,7 @@ def test_info_cmd_with_func():
     args = argparse.Namespace()
 
     def dummy_func(a):
+        """A simple placeholder function used to verify CLI subcommand delegation."""
         a.called = True
 
     args.info_func = dummy_func
@@ -227,8 +228,8 @@ def test_prune_cmd():
 
     args = argparse.Namespace(model="test.onnx", nodes="n1,n2", output="out.onnx")
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_graph = MagicMock()
         mock_graph.nodes = [
@@ -246,8 +247,8 @@ def test_prune_cmd():
     # test no output
     args.output = None
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_load.return_value = MagicMock(nodes=[])
         prune_cmd(args)
@@ -266,8 +267,8 @@ def test_rename_input_cmd():
 
     args = argparse.Namespace(model="test.onnx", old="A", new="B", output="out.onnx")
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_graph = MagicMock()
         mock_input = MagicMock()
@@ -285,8 +286,8 @@ def test_rename_input_cmd():
     # test no output
     args.output = None
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_load.return_value = MagicMock(inputs=[], nodes=[])
         rename_input_cmd(args)
@@ -305,8 +306,8 @@ def test_change_batch_cmd():
 
     args = argparse.Namespace(model="test.onnx", size="4", output="out.onnx")
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_graph = MagicMock()
         mock_input = MagicMock()
@@ -321,8 +322,8 @@ def test_change_batch_cmd():
 
     args = argparse.Namespace(model="test.onnx", size="dynamic", output=None)
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         mock_graph = MagicMock()
         mock_input = MagicMock()
@@ -348,8 +349,8 @@ def test_mutate_cmd():
 
     args = argparse.Namespace(model="test.onnx", script="mut.json", output="out.onnx")
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         with patch(
             "builtins.open", mock_open(read_data='[{"action": "remove_node", "node_name": "n1"}]')
@@ -368,8 +369,8 @@ def test_mutate_cmd():
 
     args.output = None
     with (
-        patch("onnx9000.core.parser.core.load") as mock_load,
-        patch("onnx9000.core.serializer.save") as mock_save,
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
     ):
         with patch("builtins.open", mock_open(read_data="[]")):
             mock_load.return_value = MagicMock(nodes=[])
@@ -418,11 +419,23 @@ def test_stubs_coverage():
         quantize="int8",
         gptq_bits=4,
         gptq_group_size=128,
+        prune=False,
+        sparsity=0.5,
+        output=None,
     )
 
     inspect_cmd(args)
-    optimize_cmd(args)
-    quantize_cmd(args)
+    with (
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx") as mock_save,
+    ):
+        mock_graph = MagicMock()
+        mock_graph.tensors = {}
+        mock_graph.nodes = []
+        mock_load.return_value = mock_graph
+        optimize_cmd(args)
+        quantize_cmd(args)
+
     export_cmd(args)
     convert_cmd(args)
     serve_cmd(args)

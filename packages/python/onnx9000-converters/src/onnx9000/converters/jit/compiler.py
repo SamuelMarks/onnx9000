@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 
 
 def _get_compiler() -> str:
-    """Detects available C++ compiler."""
+    """Detect available C++ compiler."""
     if config.ONNX9000_COMPILER:
         return config.ONNX9000_COMPILER
     if sys.platform == "win32":

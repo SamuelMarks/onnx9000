@@ -10,12 +10,12 @@ def test_drop_in_replacement() -> None:
         """Class MyModel implementation."""
 
         def __init__(self) -> None:
-            """Tests the __init__ functionality."""
+            """Test the __init__ functionality."""
             super().__init__()
             self.linear = torch.nn.Linear(10, 2)
 
         def forward(self, x):
-            """Tests the forward functionality."""
+            """Test the forward functionality."""
             return torch.nn.functional.relu(self.linear(x))
 
     m = MyModel()
@@ -44,7 +44,7 @@ def test_torch_like_missing() -> None:
     assert t1.dtype == DType.INT32
 
     def my_fn(a):
-        """Tests the my_fn functionality."""
+        """Test the my_fn functionality."""
         return a
 
     jit.trace(my_fn, t1)
@@ -59,7 +59,7 @@ def test_trace_non_tensor_and_kwargs() -> None:
     t1 = tensor([1, 2], dtype=DType.INT32)
 
     def my_fn2(a, b, c=None):
-        """Tests the my_fn2 functionality."""
+        """Test the my_fn2 functionality."""
         return a
 
     jit.trace(my_fn2, t1, 5, c=t1)

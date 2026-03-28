@@ -1,9 +1,12 @@
+"""Tests for MobileNet-like graph simplifications, specifically BatchNormalization folding."""
+
 import numpy as np
 from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_fold_batch_normalization_natively_on_standard_mobilenet():
+    """Test that BatchNormalization is correctly folded when all its inputs are constants."""
     graph = Graph("MobileNet_Simulated")
 
     x = Variable("x", shape=(1, 32, 112, 112), dtype=np.dtype("float32"))

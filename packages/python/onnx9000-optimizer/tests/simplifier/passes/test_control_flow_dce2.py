@@ -1,3 +1,5 @@
+"""Tests for control flow folding, specifically loop unrolling with scan outputs."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
 
 
 def test_loop_unroll_single_scan_out():
+    """Test loop unrolling when there is exactly one scan output."""
     g = Graph("TestLoopUnrollSingle")
 
     t_m = Tensor("M", (1,), DType.INT64)

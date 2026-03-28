@@ -1,3 +1,5 @@
+"""Module providing functionality for test_elementwise_missing."""
+
 import pytest
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.dtypes import DType
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_elementwise_missing():
+    """Test elementwise missing."""
     g = Graph("TestAllMissing")
     g.inputs = ["in1", "in2"]
 

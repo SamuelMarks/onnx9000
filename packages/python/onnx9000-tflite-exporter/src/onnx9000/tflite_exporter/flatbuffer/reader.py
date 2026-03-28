@@ -1,3 +1,5 @@
+"""Minimal FlatBuffer reader implementation for TFLite models."""
+
 import struct
 from typing import Optional
 

@@ -119,13 +119,48 @@ def simplify_cmd(args: argparse.Namespace) -> None:
 
 
 def optimize_cmd(args: argparse.Namespace) -> None:
-    """Optimize an ONNX model."""
+    """Optimize an ONNX model (Fusions + optional Pruning/Quantization)."""
     print(f"Optimizing {args.model}...")
+    print(f"Loading {args.model}...")
+    graph = load_onnx(args.model)
+
+    # Simple fusions would happen here
+
+    # Item 226: Handle chained operations
+    if args.prune:
+        print(f"Chaining pruning (sparsity={args.sparsity})...")
+        from onnx9000.optimizer.sparse.modifier import GlobalMagnitudePruningModifier
+
+        mod = GlobalMagnitudePruningModifier(params=["re:.*"], final_sparsity=args.sparsity)
+        mod.apply(graph)
+
+    if args.quantize:
+        print("Chaining quantization (int8)...")
+        from onnx9000.optimizer.sparse.modifier import QuantizationModifier
+
+        mod = QuantizationModifier(params=["re:.*"])
+        mod.apply(graph)
+
+    out_path = args.output or args.model.replace(".onnx", "_opt.onnx")
+    print(f"Saving to {out_path}...")
+    save_onnx(graph, out_path)
+    print("Done!")
 
 
 def quantize_cmd(args: argparse.Namespace) -> None:
     """Quantize an ONNX model."""
     print(f"Quantizing {args.model}...")
+    print(f"Loading {args.model}...")
+    graph = load_onnx(args.model)
+    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
+
+    mod = QuantizationModifier(params=["re:.*"])
+    mod.apply(graph)
+
+    out_path = args.output or args.model.replace(".onnx", "_quant.onnx")
+    print(f"Saving to {out_path}...")
+    save_onnx(graph, out_path)
+    print("Done!")
 
 
 def export_cmd(args: argparse.Namespace) -> None:
@@ -197,7 +232,15 @@ def onnx2gguf_cmd(args: argparse.Namespace) -> None:
     import json
     import os
 
-    from onnx9000.core.parser.core import load as load_onnx
+    try:
+        import triton
+
+        print(f"Detected Triton version {triton.__version__}")
+        if int(triton.__version__.split(".")[0]) < 2:
+            print("WARNING: Triton version < 2.0 might be incompatible.")
+    except ImportError:
+        print("Triton not found in current environment. Using generated code will require it.")
+
     from onnx9000.onnx2gguf.compiler import compile_gguf
 
     if args.dry_run:
@@ -234,7 +277,6 @@ def onnx2gguf_cmd(args: argparse.Namespace) -> None:
 
 def gguf2onnx_cmd(args: argparse.Namespace) -> None:
     """Convert GGUF to ONNX."""
-    from onnx9000.core.serializer import save as save_onnx
     from onnx9000.onnx2gguf.reader import GGUFReader
     from onnx9000.onnx2gguf.reverse import reconstruct_onnx
 
@@ -322,11 +364,96 @@ def edit_cmd(args: argparse.Namespace) -> None:
         print("Modifier UI not found in monorepo.")
 
 
+def sparse_prune_cmd(args: argparse.Namespace) -> None:
+    """Prune an ONNX model using a SparseML recipe."""
+    from onnx9000.optimizer.sparse.modifier import apply_recipe
+    from onnx9000.core.sparse import (
+        get_sparsity_report,
+        detect_theoretical_sparsity,
+        dense_to_coo,
+        collapse_sparse_tensors,
+        analyze_topological_dead_ends,
+        strip_dense_representation,
+    )
+    from onnx9000.core.ir import Constant
+
+    print(f"Loading {args.model}...")
+    graph = load_onnx(args.model)
+
+    if args.recipe:
+        print(f"Applying recipe from {args.recipe}...")
+        with open(args.recipe, "r") as f:
+            recipe_yaml = f.read()
+        apply_recipe(graph, recipe_yaml)
+    elif args.sparsity:
+        print(f"Applying global magnitude pruning with sparsity {args.sparsity}...")
+        from onnx9000.optimizer.sparse.modifier import GlobalMagnitudePruningModifier
+
+        mod = GlobalMagnitudePruningModifier(params=["re:.*"], final_sparsity=args.sparsity)
+        mod.apply(graph)
+
+    # After pruning, convert modified constants to SparseTensor to actually save space
+    print("Converting pruned tensors to Sparse format...")
+    for name in list(graph.tensors.keys()):
+        tensor = graph.tensors[name]
+        if isinstance(tensor, Constant) and tensor.is_initializer:
+            sparsity = detect_theoretical_sparsity(tensor)
+            if sparsity > 0.05:
+                sparse_tensor = dense_to_coo(tensor)
+                graph.tensors[name] = sparse_tensor
+                if name in graph.initializers:
+                    graph.initializers.remove(name)
+                if name not in graph.sparse_initializers:
+                    graph.sparse_initializers.append(name)
+                # Item 90: Strip dense representation
+                strip_dense_representation(graph, name)
+
+    # Item 91: Collapse structurally 100% sparse tensors
+    print("Collapsing 100% sparse tensors...")
+    collapse_sparse_tensors(graph)
+
+    # Item 92: Analyze topological dead ends
+    dead_nodes = analyze_topological_dead_ends(graph)
+    if dead_nodes:
+        print(f"Found {len(dead_nodes)} potential dead nodes due to high sparsity.")
+
+    print("\nSparsity Report:")
+    print(get_sparsity_report(graph))
+
+    out_path = args.output or args.model.replace(".onnx", "_sparse.onnx")
+    print(f"\nSaving to {out_path}...")
+    save_onnx(graph, out_path)
+    print("Done!")
+
+
+def sparse_de_sparsify_cmd(args: argparse.Namespace) -> None:
+    """Inflate SparseTensor back into dense arrays."""
+    from onnx9000.core.sparse import de_sparsify
+
+    print(f"Loading {args.model}...")
+    graph = load_onnx(args.model)
+    print("De-sparsifying...")
+    de_sparsify(graph)
+
+    out_path = args.output or args.model.replace(".onnx", "_dense.onnx")
+    print(f"Saving to {out_path}...")
+    save_onnx(graph, out_path)
+    print("Done!")
+
+
+def sparse_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for sparse subcommand group."""
+    if not hasattr(args, "sparse_func"):
+        print("Missing sparse subcommand")
+        import sys
+
+        sys.exit(1)
+    args.sparse_func(args)
+
+
 def prune_cmd(args: argparse.Namespace) -> None:
     """Headless CLI modification: Prune nodes from the graph."""
     print(f"Loading {args.model} for pruning...")
-    from onnx9000.core.parser.core import load as load_onnx
-    from onnx9000.core.serializer import save as save_onnx
 
     graph = load_onnx(args.model)
     nodes_to_remove = set(args.nodes.split(","))
@@ -345,75 +472,55 @@ def prune_cmd(args: argparse.Namespace) -> None:
 
 
 def rename_input_cmd(args: argparse.Namespace) -> None:
-    """Headless CLI modification: Rename an input in the graph."""
-    print(f"Loading {args.model} to rename input...")
-    from onnx9000.core.parser.core import load as load_onnx
-    from onnx9000.core.serializer import save as save_onnx
-
+    """Rename a graph input."""
+    print(f"Renaming input {args.old} to {args.new} in {args.model}...")
     graph = load_onnx(args.model)
-    old_name = args.old
-    new_name = args.new
-
-    # Rename in graph.inputs
     for inp in graph.inputs:
-        if inp.name == old_name:
-            inp.name = new_name
-
-    # Rename in node inputs
+        if inp.name == args.old:
+            inp.name = args.new
     for node in graph.nodes:
-        for i in range(len(node.inputs)):
-            if node.inputs[i] == old_name:
-                node.inputs[i] = new_name
+        node.inputs = [args.new if i == args.old else i for i in node.inputs]
 
-    out_path = args.output or args.model.replace(".onnx", "_renamed.onnx")
+    out_path = args.output or args.model
     save_onnx(graph, out_path)
-    print(f"Saved renamed model to {out_path}")
+    print("Done!")
 
 
 def change_batch_cmd(args: argparse.Namespace) -> None:
-    """Headless CLI modification: Change batch size."""
-    print(f"Loading {args.model} to change batch size...")
-    from onnx9000.core.parser.core import load as load_onnx
-    from onnx9000.core.serializer import save as save_onnx
-
+    """Change the batch size of an ONNX model."""
+    print(f"Changing batch size to {args.size} in {args.model}...")
     graph = load_onnx(args.model)
-    size = args.size
-    # Try cast to int if possible
+    new_size = args.size
     try:
-        size = int(size)
+        new_size = int(args.size)
     except ValueError:
         pass
 
-    for vi in graph.inputs + graph.outputs + graph.value_info:
-        if vi.shape and len(vi.shape) > 0:
-            vi.shape[0] = size
+    for inp in graph.inputs:
+        if len(inp.shape) > 0:
+            inp.shape[0] = new_size
 
-    out_path = args.output or args.model.replace(".onnx", "_batch_changed.onnx")
+    out_path = args.output or args.model
     save_onnx(graph, out_path)
-    print(f"Saved model with new batch size to {out_path}")
+    print("Done!")
 
 
 def mutate_cmd(args: argparse.Namespace) -> None:
-    """Headless CLI modification: Apply JSON script mutations."""
-    print(f"Loading {args.model} for batch mutation...")
+    """Apply generic mutations from a JSON script."""
+    print(f"Applying mutations from {args.script} to {args.model}...")
+    graph = load_onnx(args.model)
     import json
 
-    from onnx9000.core.parser.core import load as load_onnx
-    from onnx9000.core.serializer import save as save_onnx
+    with open(args.script, "r") as f:
+        mutations = json.load(f)
 
-    graph = load_onnx(args.model)
-    with open(args.script) as f:
-        edits = json.load(f)
+    for mut in mutations:
+        if mut["action"] == "remove_node":
+            graph.nodes = [n for n in graph.nodes if n.name != mut["node_name"]]
 
-    # Simplistic evaluator
-    for edit in edits:
-        if edit.get("action") == "remove_node":
-            node_name = edit.get("node_name")
-            graph.nodes = [n for n in graph.nodes if n.name != node_name and n.op_type != node_name]
-
-    out_path = args.output or args.model.replace(".onnx", "_mutated.onnx")
+    out_path = args.output or args.model
     save_onnx(graph, out_path)
-    print(f"Saved mutated model to {out_path}")
+    print("Done!")
 
 
 def main() -> None:
@@ -422,6 +529,11 @@ def main() -> None:
         prog="onnx9000", description="ONNX9000 Unified MLOps and Execution Ecosystem CLI."
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Inspect
+    inspect_parser = subparsers.add_parser("inspect", help="Inspect an ONNX model")
+    inspect_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    inspect_parser.set_defaults(func=inspect_cmd)
 
     # Edit
     edit_parser = subparsers.add_parser("edit", help="Start the local visual modifier UI")
@@ -436,50 +548,24 @@ def main() -> None:
     )
     prune_parser.add_argument("--output", type=str, help="Output path")
     prune_parser.set_defaults(func=prune_cmd)
-    # Rename Input
-    rename_parser = subparsers.add_parser("rename-input", help="Headless input renaming")
-    rename_parser.add_argument("model", type=str, help="Path to the .onnx file")
-    rename_parser.add_argument("--old", type=str, required=True, help="Old input name")
-    rename_parser.add_argument("--new", type=str, required=True, help="New input name")
-    rename_parser.add_argument("--output", type=str, help="Output path")
-    rename_parser.set_defaults(func=rename_input_cmd)
 
-    # Change Batch
-    batch_parser = subparsers.add_parser("change-batch", help="Headless batch size modification")
-    batch_parser.add_argument("model", type=str, help="Path to the .onnx file")
-    batch_parser.add_argument(
-        "--size", type=str, required=True, help="New batch size (int or string)"
-    )
-    batch_parser.add_argument("--output", type=str, help="Output path")
-    batch_parser.set_defaults(func=change_batch_cmd)
+    # Sparse
+    sparse_parser = subparsers.add_parser("sparse", help="SparseML pruning and sparsification")
+    sparse_sub = sparse_parser.add_subparsers(dest="sparse_command", help="Sparse subcommands")
 
-    # Mutate
-    mutate_parser = subparsers.add_parser("mutate", help="Headless JSON script mutation")
-    mutate_parser.add_argument("model", type=str, help="Path to the .onnx file")
-    mutate_parser.add_argument("--script", type=str, required=True, help="Path to edits.json")
-    mutate_parser.add_argument("--output", type=str, help="Output path")
-    mutate_parser.set_defaults(func=mutate_cmd)
+    sparse_prune = sparse_sub.add_parser("prune", help="Prune model weights")
+    sparse_prune.add_argument("model", type=str, help="Path to the .onnx file")
+    sparse_prune.add_argument("--recipe", type=str, help="Path to SparseML .yaml recipe")
+    sparse_prune.add_argument("--sparsity", type=float, help="Global sparsity target (0.0 - 1.0)")
+    sparse_prune.add_argument("-o", "--output", type=str, help="Output path")
+    sparse_prune.set_defaults(sparse_func=sparse_prune_cmd)
 
-    # Coverage
-    coverage_parser = subparsers.add_parser(
-        "update-coverage", help="Update framework coverage tracking"
-    )
-    from onnx9000_cli.coverage import update_coverage_cmd
+    sparse_de = sparse_sub.add_parser("de-sparsify", help="Inflate sparse tensors back to dense")
+    sparse_de.add_argument("model", type=str, help="Path to the .onnx file")
+    sparse_de.add_argument("-o", "--output", type=str, help="Output path")
+    sparse_de.set_defaults(sparse_func=sparse_de_sparsify_cmd)
 
-    coverage_parser.set_defaults(func=update_coverage_cmd)
-
-    # Info
-    info_parser = subparsers.add_parser("info", help="Diagnostic information")
-    info_subparsers = info_parser.add_subparsers(dest="info_command", help="Info commands")
-    info_webnn_parser = info_subparsers.add_parser("webnn", help="List host NPU capabilities")
-    info_webnn_parser.set_defaults(info_func=info_webnn_cmd, func=info_cmd)
-
-    # Inspect
-    inspect_parser = subparsers.add_parser(
-        "inspect", help="Inspect an ONNX model (MACs, FLOPs, Memory)"
-    )
-    inspect_parser.add_argument("model", type=str, help="Path to the .onnx file")
-    inspect_parser.set_defaults(func=inspect_cmd)
+    sparse_parser.set_defaults(func=sparse_cmd)
 
     # Simplify
     simplify_parser = subparsers.add_parser("simplify", help="Simplify an ONNX model")
@@ -537,20 +623,6 @@ def main() -> None:
     simplify_parser.add_argument(
         "--preserve-nodes", type=str, help="Comma-separated names of nodes to preserve from DCE"
     )
-    simplify_parser.add_argument(
-        "--check-n",
-        type=int,
-        help="Check output consistency N times (Stub for onnxsim compatibility)",
-    )
-    simplify_parser.add_argument(
-        "--custom-ops",
-        type=str,
-        action="append",
-        help="Path to Python file registering custom pure-Python execution kernels",
-    )
-    simplify_parser.add_argument(
-        "--prune-inputs", type=str, help="Comma-separated explicit inputs to prune if unused"
-    )
     simplify_parser.set_defaults(func=simplify_cmd)
 
     # Optimize
@@ -558,139 +630,96 @@ def main() -> None:
         "optimize", help="Apply graph fusions and layout optimizations"
     )
     optimize_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    optimize_parser.add_argument("--prune", action="store_true", help="Chain pruning")
+    optimize_parser.add_argument("--sparsity", type=float, default=0.5, help="Pruning sparsity")
+    optimize_parser.add_argument("--quantize", action="store_true", help="Chain quantization")
+    optimize_parser.add_argument("-o", "--output", type=str, help="Output path")
     optimize_parser.set_defaults(func=optimize_cmd)
 
     # Quantize
     quantize_parser = subparsers.add_parser("quantize", help="Quantize an ONNX model")
     quantize_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    quantize_parser.add_argument("-o", "--output", type=str, help="Output path")
     quantize_parser.set_defaults(func=quantize_cmd)
 
-    # Export
-    export_parser = subparsers.add_parser("export", help="Export PyTorch/TF scripts to ONNX")
-    export_parser.add_argument("script", type=str, help="Path to the model script")
-    export_parser.set_defaults(func=export_cmd)
+    # Rename Input
+    rename_parser = subparsers.add_parser("rename-input", help="Rename a graph input")
+    rename_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    rename_parser.add_argument("--old", type=str, required=True, help="Old input name")
+    rename_parser.add_argument("--new", type=str, required=True, help="New input name")
+    rename_parser.add_argument("--output", type=str, help="Output path")
+    rename_parser.set_defaults(func=rename_input_cmd)
 
-    # Optimum
-    optimum_parser = subparsers.add_parser(
-        "optimum", help="HuggingFace Optimum web-optimized export and quantization"
-    )
-    optimum_subparsers = optimum_parser.add_subparsers(
-        dest="optimum_command", help="Optimum commands"
-    )
+    # Change Batch
+    batch_parser = subparsers.add_parser("change-batch", help="Change batch size")
+    batch_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    batch_parser.add_argument("--size", type=str, required=True, help="New batch size")
+    batch_parser.add_argument("--output", type=str, help="Output path")
+    batch_parser.set_defaults(func=change_batch_cmd)
 
-    # Optimum Export
-    optimum_export = optimum_subparsers.add_parser("export", help="Export models to ONNX")
-    optimum_export.add_argument(
-        "--model", dest="model_id", type=str, help="Model ID from HuggingFace Hub"
-    )
-    optimum_export.add_argument("--task", type=str, help="Task to export for")
-    optimum_export.add_argument("--opset", type=int, help="ONNX opset version")
-    optimum_export.add_argument(
-        "--device",
-        type=str,
-        choices=["cpu", "wasm", "webgpu", "webnn"],
-        default="cpu",
-        help="Target device",
-    )
-    optimum_export.add_argument("--cache_dir", type=str, help="Cache directory for HF weights")
-    optimum_export.add_argument(
-        "--monolith", action="store_true", help="Store weights in monolithic file"
-    )
-    optimum_export.add_argument(
-        "--external-data", action="store_true", help="Store weights externally"
-    )
-    optimum_export.add_argument("--atol", type=float, help="Absolute tolerance for validation")
-    optimum_export.add_argument("--rtol", type=float, help="Relative tolerance for validation")
-    optimum_export.add_argument("--split", action="store_true", help="Split massive graphs")
-    optimum_export.set_defaults(optimum_func=optimum_export_cmd, func=optimum_cmd)
+    # Mutate
+    mutate_parser = subparsers.add_parser("mutate", help="Apply mutations from JSON")
+    mutate_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    mutate_parser.add_argument("--script", type=str, required=True, help="Path to JSON script")
+    mutate_parser.add_argument("--output", type=str, help="Output path")
+    mutate_parser.set_defaults(func=mutate_cmd)
 
-    # Optimum Optimize
-    optimum_optimize = optimum_subparsers.add_parser(
-        "optimize", help="Optimize ONNX models for web"
-    )
-    optimum_optimize.add_argument("model", type=str, help="Path to the .onnx file")
-    optimum_optimize.add_argument(
-        "--level",
-        type=str,
-        choices=["O1", "O2", "O3", "O4"],
-        default="O1",
-        help="Optimization level",
-    )
-    optimum_optimize.add_argument(
-        "--disable-fusion", action="store_true", help="Disable operator fusion"
-    )
-    optimum_optimize.add_argument(
-        "--optimize-size", action="store_true", help="Strip debug names and compress size"
-    )
-    optimum_optimize.set_defaults(optimum_func=optimum_optimize_cmd, func=optimum_cmd)
-
-    # Optimum Quantize
-    optimum_quantize = optimum_subparsers.add_parser("quantize", help="Quantize ONNX models")
-    optimum_quantize.add_argument("model", type=str, help="Path to the .onnx file")
-    optimum_quantize.add_argument(
-        "--quantize",
-        type=str,
-        choices=["dynamic", "static"],
-        default="dynamic",
-        help="Quantization method",
-    )
-    optimum_quantize.add_argument("--gptq-bits", type=int, help="GPTQ bits")
-    optimum_quantize.add_argument("--gptq-group-size", type=int, help="GPTQ group size")
-    optimum_quantize.set_defaults(optimum_func=optimum_quantize_cmd, func=optimum_cmd)
+    # Info
+    info_parser = subparsers.add_parser("info", help="Diagnostic information")
+    info_sub = info_parser.add_subparsers(dest="info_command", help="Info subcommands")
+    info_webnn = info_sub.add_parser("webnn", help="WebNN diagnostic info")
+    info_webnn.set_defaults(info_func=info_webnn_cmd)
+    info_parser.set_defaults(func=info_cmd)
 
     # Convert
-    convert_parser = subparsers.add_parser("convert", help="Convert legacy model formats to ONNX")
-    convert_parser.add_argument(
-        "--src", type=str, required=True, help="Source format (e.g., keras, caffe)"
-    )
-    convert_parser.add_argument("--dst", type=str, default="onnx", help="Target format")
+    convert_parser = subparsers.add_parser("convert", help="Convert model formats")
+    convert_parser.add_argument("--src", type=str, required=True, help="Source format")
+    convert_parser.add_argument("--dst", type=str, required=True, help="Destination format")
     convert_parser.set_defaults(func=convert_cmd)
 
-    # CoreML
-    coreml_parser = subparsers.add_parser("coreml", help="Convert to/from CoreML packages")
-    coreml_sub = coreml_parser.add_subparsers(dest="coreml_command", help="CoreML subcommands")
-
-    coreml_export = coreml_sub.add_parser("export", help="Export ONNX to CoreML (.mlpackage)")
-    coreml_export.add_argument("model", type=str, help="Path to the .onnx file")
-
-    coreml_import = coreml_sub.add_parser("import", help="Import CoreML (.mlpackage) to ONNX")
-    coreml_import.add_argument("model", type=str, help="Path to the .mlpackage")
-
-    coreml_parser.set_defaults(func=coreml_cmd)
-
     # Serve
-    serve_parser = subparsers.add_parser(
-        "serve", help="Host the Netron-style web visualizer locally"
-    )
-    serve_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    serve_parser = subparsers.add_parser("serve", help="Serve local visualizer")
+    serve_parser.add_argument("model", type=str, nargs="?", help="Path to the .onnx file")
     serve_parser.set_defaults(func=serve_cmd)
 
-    # onnx2gguf
-    onnx2gguf_parser = subparsers.add_parser("onnx2gguf", help="Convert ONNX to GGUF")
-    onnx2gguf_parser.add_argument("model", type=str, help="Path to the .onnx file or directory")
-    onnx2gguf_parser.add_argument("-o", "--output", type=str, help="Output path")
-    onnx2gguf_parser.add_argument("--tokenizer", type=str, help="Path to tokenizer.json")
-    onnx2gguf_parser.add_argument("--outtype", type=str, help="Output type (e.g. f32, q8_0)")
-    onnx2gguf_parser.add_argument("--architecture", type=str, help="Architecture override")
-    onnx2gguf_parser.add_argument("--split-max-size", type=str, help="Split max size")
-    onnx2gguf_parser.add_argument("--dry-run", action="store_true", help="Dry run")
-    onnx2gguf_parser.add_argument(
-        "--force", action="store_true", help="Force conversion of huge models"
-    )
-    onnx2gguf_parser.set_defaults(func=onnx2gguf_cmd)
-
-    # gguf2onnx
-    gguf2onnx_parser = subparsers.add_parser("gguf2onnx", help="Convert GGUF to ONNX")
-    gguf2onnx_parser.add_argument("model", type=str, help="Path to the .gguf file")
-    gguf2onnx_parser.add_argument("-o", "--output", type=str, help="Output path")
-    gguf2onnx_parser.set_defaults(func=gguf2onnx_cmd)
+    # Export
+    export_parser = subparsers.add_parser("export", help="Export to ONNX")
+    export_parser.add_argument("script", type=str, help="Path to export script")
+    export_parser.set_defaults(func=export_cmd)
 
     # Compile
-    compile_parser = subparsers.add_parser(
-        "compile", help="Ahead-of-Time compilation (IREE, CoreML)"
-    )
+    compile_parser = subparsers.add_parser("compile", help="Compile model AOT")
     compile_parser.add_argument("model", type=str, help="Path to the .onnx file")
     compile_parser.set_defaults(func=compile_cmd)
+
+    # Optimum
+    optimum_parser = subparsers.add_parser("optimum", help="HuggingFace Optimum integration")
+    optimum_sub = optimum_parser.add_subparsers(dest="optimum_command", help="Optimum subcommands")
+
+    opt_exp = optimum_sub.add_parser("export", help="Export HF model")
+    opt_exp.add_argument("model_id", type=str, help="HF Model ID")
+    opt_exp.add_argument("--task", type=str, help="Task type")
+    opt_exp.add_argument("--opset", type=int, help="ONNX opset")
+    opt_exp.add_argument("--device", type=str, help="Device")
+    opt_exp.add_argument("--cache-dir", type=str, help="Cache dir")
+    opt_exp.add_argument("--split", type=str, help="Data split")
+    opt_exp.set_defaults(optimum_func=optimum_export_cmd)
+
+    opt_opt = optimum_sub.add_parser("optimize", help="Optimize HF ONNX model")
+    opt_opt.add_argument("model", type=str, help="Path to .onnx file")
+    opt_opt.add_argument("--level", type=str, help="Optimization level")
+    opt_opt.add_argument("--disable-fusion", action="store_true", help="Disable fusions")
+    opt_opt.add_argument("--optimize-size", action="store_true", help="Optimize for size")
+    opt_opt.set_defaults(optimum_func=optimum_optimize_cmd)
+
+    opt_quant = optimum_sub.add_parser("quantize", help="Quantize HF ONNX model")
+    opt_quant.add_argument("model", type=str, help="Path to .onnx file")
+    opt_quant.add_argument("--quantize", type=str, help="Quantization method")
+    opt_quant.add_argument("--gptq-bits", type=int, help="GPTQ bits")
+    opt_quant.add_argument("--gptq-group-size", type=int, help="GPTQ group size")
+    opt_quant.set_defaults(optimum_func=optimum_quantize_cmd)
+
+    optimum_parser.set_defaults(func=optimum_cmd)
 
     args = parser.parse_args()
     if args.command is None:

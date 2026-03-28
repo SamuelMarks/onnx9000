@@ -17,7 +17,7 @@ def test_infinite_loop_break():
     with patch.object(ConstantFoldingPass, "run") as mock_cf:
 
         def side_effect(graph):
-            """Tests the side effect functionality."""
+            """Test the side effect functionality."""
             graph.add_node(Node("Identity", ["a"], ["b"], {}, "id1"))  # Fake nodes length changing
 
         mock_cf.side_effect = side_effect

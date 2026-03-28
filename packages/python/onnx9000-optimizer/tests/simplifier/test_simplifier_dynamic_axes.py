@@ -1,9 +1,12 @@
+"""Tests for preserving dynamic axes during graph simplification."""
+
 import numpy as np
 from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_dynamic_axes_preservation():
+    """Test that dynamic dimensions are preserved when folding conditional nodes."""
     graph = Graph("Dynamic_Axes_Test")
     x = Variable("x", shape=(DynamicDim("batch"), 3, 224, 224), dtype=np.dtype("float32"))
     graph.add_tensor(x)

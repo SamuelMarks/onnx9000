@@ -9,13 +9,13 @@ def test_ast_parser_miss() -> None:
     """Tests the test_ast_parser_miss functionality."""
 
     def f1(x, y=None):
-        """Tests the f1 functionality."""
+        """Test the f1 functionality."""
         return (x, y)
 
     f1(1)
 
     def f2(x):
-        """Tests the f2 functionality."""
+        """Test the f2 functionality."""
         return [x]
 
     f2(1)

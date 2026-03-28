@@ -1,3 +1,10 @@
+"""Layout optimization and graph transformation for TFLite export.
+
+This module provides the LayoutOptimizer class, which performs various
+optimizations and layout transformations (e.g., NCHW to NHWC) on the ONNX
+graph to prepare it for TFLite conversion.
+"""
+
 import logging
 import struct
 
@@ -7,11 +14,25 @@ logger = logging.getLogger(__name__)
 
 
 class LayoutOptimizer:
+    """Optimizes and transforms the ONNX graph for TFLite export.
+
+    Handles layout changes (NCHW to NHWC), constant folding, fusion,
+    and other graph-level optimizations.
+    """
+
     def __init__(self, graph: Graph, keep_nchw: bool = False):
+        """Initialize the layout optimizer.
+
+        Args:
+            graph: The ONNX graph to optimize.
+            keep_nchw: If True, do not perform NCHW to NHWC transformation.
+
+        """
         self.graph = graph
         self.keep_nchw = keep_nchw
 
     def optimize(self) -> None:
+        """Run all optimization passes on the graph."""
         self.strip_identities()
         self.rewrite_negative_axes()
         self.fuse_conv_batch_normalization()
@@ -32,6 +53,7 @@ class LayoutOptimizer:
         self.check_irreducible_transposes()
 
     def emulate_einsum(self) -> None:
+        """Stub for emulating Einsum nodes by decomposing them."""
         import logging
 
         for i in range(len(self.graph.nodes)):
@@ -46,6 +68,7 @@ class LayoutOptimizer:
                 node.op_type = "MatMul"
 
     def process_edge_cases(self) -> None:
+        """Handle framework-specific or model-specific edge cases (e.g., Keras origins, stateful tensors)."""
         metadata = getattr(self.graph, "metadata", None)
         import logging
 
@@ -62,6 +85,7 @@ class LayoutOptimizer:
                 break
 
     def expand_1d_spatial_ops(self) -> None:
+        """Expand 1D spatial operations to 2D for TFLite compatibility."""
         spatial_ops = {
             "Conv",
             "MaxPool",
@@ -162,6 +186,7 @@ class LayoutOptimizer:
             i += 1
 
     def fuse_conv_batch_normalization(self) -> None:
+        """Fuse Convolution and Batch Normalization layers where possible."""
         import math
         import struct
 
@@ -281,6 +306,7 @@ class LayoutOptimizer:
             i += 1
 
     def decompose_batch_normalization(self) -> None:
+        """Decompose Batch Normalization into a combination of Mul and Add nodes."""
         i = 0
         while i < len(self.graph.nodes):
             node = self.graph.nodes[i]
@@ -358,6 +384,7 @@ class LayoutOptimizer:
             i += 1
 
     def evaluate_constants(self) -> None:
+        """Statically evaluate constants and check for potential runtime issues (e.g., division by zero)."""
         import struct
         import logging
 
@@ -374,6 +401,7 @@ class LayoutOptimizer:
                             )
 
     def strip_identities(self) -> None:
+        """Remove Identity and Dropout nodes from the graph."""
         ops_to_remove = {"Dropout", "Identity"}
         i = 0
         while i < len(self.graph.nodes):
@@ -397,6 +425,7 @@ class LayoutOptimizer:
             i += 1
 
     def inject_transposes(self) -> None:
+        """Inject Transpose nodes to convert spatial operations from NCHW to NHWC."""
         spatial_ops = {
             "Conv",
             "MaxPool",
@@ -483,6 +512,7 @@ class LayoutOptimizer:
         self.graph.nodes = new_nodes
 
     def push_down_transposes(self) -> None:
+        """Push Transpose nodes down through elementwise and axis-based operations."""
         elementwise_ops = {
             "Add",
             "Sub",
@@ -640,6 +670,7 @@ class LayoutOptimizer:
                 i += 1
 
     def cancel_transposes(self) -> None:
+        """Identify and remove redundant back-to-back Transpose operations."""
         changed = True
         while changed:
             changed = False
@@ -679,6 +710,7 @@ class LayoutOptimizer:
                 i += 1
 
     def fuse_activations_and_matmuls(self) -> None:
+        """Fuse activation functions into preceding Convolution or Gemm layers."""
         fused_activations = {"Relu", "Relu6"}
         i = 0
         while i < len(self.graph.nodes):
@@ -731,6 +763,7 @@ class LayoutOptimizer:
             i += 1
 
     def fold_constants(self) -> None:
+        """Perform constant folding and specialized weight transformations."""
         self.fuse_activations_and_matmuls()
         for node in self.graph.nodes:
             if node.op_type == "Gemm":
@@ -852,6 +885,7 @@ class LayoutOptimizer:
                             weight_tensor.shape = (o, h, w, i_chan)
 
     def _transpose_tensor_data(self, tensor: Tensor, perm: list[int]) -> None:
+        """Physically transpose the data within a Tensor object."""
         if tensor.data is None:
             return
 
@@ -893,6 +927,7 @@ class LayoutOptimizer:
         tensor.data = struct.pack(f"<{num_floats}f", *dst)
 
     def rewrite_negative_axes(self) -> None:
+        """Convert negative axis indices to their positive equivalents based on tensor rank."""
         for node in self.graph.nodes:
             axis_attr = node.attributes.get("axis")
             if axis_attr and isinstance(axis_attr.value, int) and axis_attr.value < 0:
@@ -923,6 +958,7 @@ class LayoutOptimizer:
                 axes_attr.value = [a + rank if a < 0 else a for a in axes_attr.value]
 
     def recalculate_shapes(self) -> None:
+        """Update value information with recalculated shapes after graph transformations."""
         for node in self.graph.nodes:
             if node.op_type == "Transpose":
                 perm_attr = node.attributes.get("perm")
@@ -949,6 +985,7 @@ class LayoutOptimizer:
                             )
 
     def check_irreducible_transposes(self) -> None:
+        """Identify Transpose operations that couldn't be optimized away and may impact performance."""
         for node in self.graph.nodes:
             if node.op_type == "Transpose":
                 perm = node.attributes.get("perm")

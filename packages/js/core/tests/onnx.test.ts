@@ -58,7 +58,7 @@ describe('parseModelProto', () => {
     expect(n?.attributes['alpha']?.type).toBe('FLOAT');
     expect(n?.attributes['alpha']?.value).toBe(1.5);
     expect(n?.attributes['ints']?.type).toBe('INTS');
-    expect(n?.attributes['ints']?.value).toEqual([1, 2, 3]);
+    expect(n?.attributes['ints']?.value).toEqual([1n, 2n, 3n]);
     expect(n?.attributes['strings']?.type).toBe('STRINGS');
   });
 });
@@ -84,11 +84,11 @@ it('should parse an exhaustive ONNX model from disk', async () => {
   const n = graph.nodes[0];
   expect(n?.opType).toBe('DummyOp');
   expect(n?.attributes['f']?.value).toBe(1.5);
-  expect(n?.attributes['i']?.value).toBe(10);
+  expect(n?.attributes['i']?.value).toBe(10n);
   expect(n?.attributes['s']?.value).toBe('test_str');
   expect(n?.attributes['t']?.type).toBe('TENSOR');
   expect(n?.attributes['fs']?.value).toEqual([1.5, 2.5]);
-  expect(n?.attributes['is_']?.value).toEqual([10, 20]);
+  expect(n?.attributes['is_']?.value).toEqual([10n, 20n]);
   expect(n?.attributes['ss']?.value).toEqual(['test_str1', 'test_str2']);
   expect(n?.attributes['ts']?.type).toBe('TENSORS');
   expect(n?.attributes['g']?.type).toBe('GRAPH');

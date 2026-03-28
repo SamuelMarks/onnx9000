@@ -10,7 +10,7 @@ class MockCppModel:
     """Represents the Mock Cpp Model class."""
 
     def forward(self, *args):
-        """Executes the forward operation."""
+        """Execute the forward operation."""
         if len(args) == 1:
             return args[0]
         return args

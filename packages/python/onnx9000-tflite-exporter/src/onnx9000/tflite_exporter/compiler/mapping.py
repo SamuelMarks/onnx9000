@@ -1,3 +1,9 @@
+"""Mapping utilities for ONNX to TFLite types and shapes.
+
+This module provides functions to convert ONNX data types and tensor shapes
+to their corresponding TFLite representations.
+"""
+
 from typing import Union, Optional
 import logging
 

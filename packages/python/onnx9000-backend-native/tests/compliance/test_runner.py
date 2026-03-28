@@ -14,7 +14,7 @@ from onnx9000.core.serializer import save
 
 
 def _create_tensor_pb(name: str, arr: np.ndarray, file_path: str) -> None:
-    """Tests the create tensor pb functionality."""
+    """Test the create tensor pb functionality."""
     tensor_proto = onnx_pb2.TensorProto()
     tensor_proto.name = name
     tensor_proto.dims.extend(arr.shape)
@@ -216,11 +216,11 @@ def test_runner_bool_int() -> None:
             """Represents the MockEP class and its associated logic."""
 
             def get_supported_nodes(self, g):
-                """Tests the get supported nodes functionality."""
+                """Test the get supported nodes functionality."""
                 return ["MockOp"]
 
             def execute(self, g, ctx, inputs):
-                """Tests the execute functionality."""
+                """Test the execute functionality."""
                 return {
                     "C": Tensor("C", (1,), DType.BOOL, data=np.array([True], dtype=bool).tobytes())
                 }
@@ -244,11 +244,11 @@ def test_runner_bool_int() -> None:
             """Represents the MockEP2 class and its associated logic."""
 
             def get_supported_nodes(self, g):
-                """Tests the get supported nodes functionality."""
+                """Test the get supported nodes functionality."""
                 return ["MockOp"]
 
             def execute(self, g, ctx, inputs):
-                """Tests the execute functionality."""
+                """Test the execute functionality."""
                 return {
                     "C": Tensor(
                         "C", (1,), DType.INT64, data=np.array([1], dtype=np.int64).tobytes()

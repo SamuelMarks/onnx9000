@@ -37,12 +37,12 @@ def test_train_transformer_attention() -> None:
     builder = AOTBuilder(g)
 
     def loss_gen(gr, p, t, o):
-        """Tests the loss gen functionality."""
+        """Test the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
     # Pass empty params to optimizer since QKV are inputs, not initializers
     def opt_gen(gr, lr, p):
-        """Tests the opt gen functionality."""
+        """Test the opt gen functionality."""
         pass
 
     train_graph = builder.build_training_graph(loss_gen, opt_gen, "lr")

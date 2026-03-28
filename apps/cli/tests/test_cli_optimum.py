@@ -93,6 +93,7 @@ def test_optimum_cmd_has_subcmd():
     """
 
     def dummy_func(a):
+        """Tests the optimum command dispatcher functionality."""
         a.called = True
 
     args = argparse.Namespace(optimum_func=dummy_func)

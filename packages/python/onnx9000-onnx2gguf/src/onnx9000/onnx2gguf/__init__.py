@@ -1,3 +1,5 @@
+"""Module providing onnx2gguf functionality."""
+
 from .builder import GGUFWriter
 from .arch import extract_metadata, infer_architecture
 from .tokenizer import extract_tokenizer_metadata

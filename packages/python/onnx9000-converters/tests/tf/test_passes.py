@@ -15,7 +15,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _create_graph() -> Graph:
-    """Tests the create graph functionality."""
+    """Test the create graph functionality."""
     g = Graph(name="test")
     g.tensors["out"] = Tensor(name="out", dtype=1, shape=())
     g.outputs.append(g.tensors["out"])

@@ -1,8 +1,11 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.onnx2gguf.tokenizer import extract_tokenizer_metadata
 
 
 def test_extract_tokenizer():
+    """Docstring."""
     meta = extract_tokenizer_metadata()
     assert meta["tokenizer.ggml.model"] == "llama"
     assert len(meta["tokenizer.ggml.tokens"]) == 2

@@ -350,7 +350,7 @@ export class PositionalEmbeddingUtils {
       return attentionScores;
     }
 
-    const data = attentionScores.data as Float32Array;
+    const data = attentionScores.data;
     const newData = new Float32Array(data);
     const seqLen = attentionScores.shape[attentionScores.shape.length - 1] as number;
 

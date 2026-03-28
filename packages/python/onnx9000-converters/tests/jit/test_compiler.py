@@ -44,14 +44,14 @@ def test_wrapper(mock_loader) -> None:
         """Class MockCppModel implementation."""
 
         def forward(self, x):
-            """Tests the forward functionality."""
+            """Test the forward functionality."""
             return x * 2
 
     class MockCppModel2:
         """Class MockCppModel2 implementation."""
 
         def forward(self, x):
-            """Tests the forward functionality."""
+            """Test the forward functionality."""
             return (x * 2, x * 3)
 
     cm = wrapper.CompiledModel(MockCppModel(), g)

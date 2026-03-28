@@ -1,3 +1,5 @@
+"""Tests for packages/python/onnx9000-tvm/tests/test_relay_passes.py."""
+
 import pytest
 from onnx9000.tvm.relay.expr import (
     Call,
@@ -25,109 +27,72 @@ from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
 
 
 class MockData:
+    """MockData implementation."""
+
     shape = (1, 10)
     dtype = "float32"
 
 
 def test_relay_comprehensive_ast():
+    """Test relay comprehensive ast."""
     v1 = Var("x", TensorType((1, 10), "float32"))
     c1 = Constant([1.0], TensorType((1, 10), "float32"))
-
-    # call
     op_add = Op("add")
     call_add = Call(op_add, [v1, c1], {"test_attr": 1})
-
-    # tuple
     tup = TupleExpr([v1, call_add])
-
-    # tuple get item
     tgi = TupleGetItem(tup, 1)
-
-    # let
     v2 = Var("y")
     let_stmt = Let(v2, tgi, Call(Op("sub"), [v2, c1]))
-
-    # if
     v_cond = Var("cond", TensorType((), "bool"))
     if_stmt = If(v_cond, let_stmt, c1)
-
-    # function
     func = Function([v1, v_cond], if_stmt, ret_type=TensorType((1, 10), "float32"))
 
-    # infer type
     def mock_add_infer(args, attrs):
+        """Perform mock add infer operation."""
         return args[0]
 
     infer_type(func, {"add": mock_add_infer, "sub": mock_add_infer})
-
-    # cse
     eliminate_common_subexpr(func)
-
-    # dce
     eliminate_dead_code(func)
-
-    # fold
     fold_constant(func)
-
-    # fusion
     fuse_ops(func)
-
-    # layout
     transform_layout(func, "NCHW")
-
-    # memory plan
     plan_memory(func)
-
-    # resolve shape
     resolve_dynamic_shape(func, {"dim": 10})
-
-    # simplify
     simplify_algebra(func)
-
-    # unroll let
     unroll_let(func)
-
-    # error cases for infer_type
     try:
         TypeChecker().visit_var(Var("unk"))
     except ValueError:
         pass
-
     try:
         TypeChecker().visit_call(Call(Op("unk"), []))
     except ValueError:
         pass
-
     try:
         TypeChecker().visit_tuple_getitem(TupleGetItem(TupleExpr([]), 1))
     except IndexError:
         pass
-
     try:
         TypeChecker().visit_tuple_getitem(TupleGetItem(v1, 0))
     except TypeError:
         pass
-
     try:
         TypeChecker().visit_function(Function([Var("z")], c1))
     except ValueError:
         pass
-
     try:
         TypeChecker().visit_call(Call(v1, []))
     except ValueError:
         pass
-
-    # cover constant inference fallback
     c_empty = Constant(None)
     TypeChecker().visit_constant(c_empty)
-
-    # cover function call
     call_fn = Call(func, [c1, c_empty])
     TypeChecker().visit_call(call_fn)
 
 
 def test_parser_printer():
+    """Test parser printer."""
     from onnx9000.tvm.relay.parser import load_json
     from onnx9000.tvm.relay.printer import astext
     from onnx9000.tvm.relay.structural_equal import structural_equal
@@ -136,13 +101,10 @@ def test_parser_printer():
     script = (
         "fn main(x: Tensor[(10, 20), float32]) { let y = add(x, x); if (True) { y } else { x } }"
     )
-    # wait, our parser might not support this fully, let's just test basic components
     try:
         load_json(script)
     except Exception:
         pass
-
-    # create full AST and print it
     v1 = Var("x", TensorType((1, 10), "float32"))
     c1 = Constant([1.0], TensorType((1, 10), "float32"))
     op_add = Op("add")
@@ -152,7 +114,6 @@ def test_parser_printer():
     let_stmt = Let(Var("y"), tgi, Call(Op("sub"), [Var("y"), c1]))
     if_stmt = If(Var("cond"), let_stmt, c1)
     func = Function([v1, Var("cond")], if_stmt, ret_type=TensorType((1, 10), "float32"))
-
     astext(func)
     astext(v1)
     astext(c1)
@@ -162,7 +123,6 @@ def test_parser_printer():
     astext(tgi)
     astext(let_stmt)
     astext(if_stmt)
-
     structural_equal(func, func)
     structural_equal(v1, v1)
     structural_equal(c1, c1)
@@ -172,7 +132,6 @@ def test_parser_printer():
     structural_equal(tgi, tgi)
     structural_equal(let_stmt, let_stmt)
     structural_equal(if_stmt, if_stmt)
-
     to_dot(func)
     to_dot(v1)
     to_dot(c1)
@@ -185,6 +144,7 @@ def test_parser_printer():
 
 
 def test_json_serialization():
+    """Test json serialization."""
     from onnx9000.tvm.relay.parser import load_json, save_json
     from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
 
@@ -197,16 +157,12 @@ def test_json_serialization():
     let_stmt = Let(Var("y"), tgi, Call(Op("sub"), [Var("y"), c1]))
     if_stmt = If(Var("cond"), let_stmt, c1)
     func = Function([v1, Var("cond")], if_stmt, ret_type=TensorType((1, 10), "float32"))
-
     j = save_json(func)
     load_json(j)
-
-    # error paths
     try:
         load_json('{"root": 0, "nodes": [ {"type": "Unknown"} ]}')
     except ValueError:
         pass
-
     try:
         load_json("invalid json string")
     except Exception:
@@ -214,9 +170,9 @@ def test_json_serialization():
 
 
 def test_load_json_more():
+    """Test load json more."""
     from onnx9000.tvm.relay.parser import load_json
 
-    # test parse_type
     try:
         load_json("invalid")
     except Exception:
@@ -229,8 +185,6 @@ def test_load_json_more():
         load_json("invalid")
     except Exception:
         pass
-
-    # test get_node variants
     try:
         load_json("invalid")
     except Exception:
@@ -266,6 +220,7 @@ def test_load_json_more():
 
 
 def test_mutator():
+    """Test mutator."""
     from onnx9000.tvm.tir.expr import IntImm, Var
     from onnx9000.tvm.tir.stmt import (
         Allocate,
@@ -285,7 +240,10 @@ def test_mutator():
     c = IntImm("int32", 1)
 
     class ChangeEvaluate(StmtMutator):
+        """ChangeEvaluate implementation."""
+
         def visit_Evaluate(self, stmt):
+            """Perform visit Evaluate operation."""
             return Evaluate(v)
 
     stmts = [
@@ -300,14 +258,11 @@ def test_mutator():
         IfThenElse(v, Evaluate(c), None),
         While(v, Evaluate(c)),
     ]
-
     for s in stmts:
         m.visit(s)
-
     c2 = ChangeEvaluate()
     for s in stmts:
         c2.visit(s)
-
     try:
         m.visit(v)
     except Exception:

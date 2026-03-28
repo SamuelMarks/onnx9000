@@ -16,7 +16,7 @@ class MockBooster:
     """Represents the Mock Booster class."""
 
     def dump_model(self):
-        """Executes the dump model operation."""
+        """Execute the dump model operation."""
         return {
             "tree_info": [
                 {
@@ -44,7 +44,7 @@ class MockEstimator:
     """Represents the Mock Estimator class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.booster_ = MockBooster()
 
 

@@ -1,3 +1,5 @@
+"""EdgeTPU-specific graph optimizations and compatibility checks."""
+
 import logging
 from typing import List
 from onnx9000.core.ir import Graph, Node
@@ -6,7 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 class EdgeTPUOptimizer:
-    """
+    """EdgeTPU graph optimizer for TFLite models.
+
     261. Inject padding specifically to satisfy EdgeTPU dimension multiples (e.g., channels multiple of 8 or 4).
     262. Verify strict Full-Integer INT8 quantization compliance.
     263. Analyze TFLite execution plan natively to identify operations that will break NNAPI compatibility.
@@ -20,9 +23,11 @@ class EdgeTPUOptimizer:
     """
 
     def __init__(self, graph: Graph):
+        """Initialize the EdgeTPUOptimizer with a graph."""
         self.graph = graph
 
     def optimize(self) -> List[str]:
+        """Apply EdgeTPU-specific optimizations to the graph."""
         warnings = []
 
         # 268. Replace 1D Convolutions dynamically with 2D Convolutions
@@ -56,6 +61,7 @@ class EdgeTPUOptimizer:
         return warnings
 
     def _inject_edgetpu_padding(self, warnings: List[str]) -> None:
+        """Inject padding into convolutions to satisfy EdgeTPU dimension requirements."""
         injected = 0
         for node in self.graph.nodes:
             if node.op_type in ("Conv", "ConvTranspose"):
@@ -73,6 +79,7 @@ class EdgeTPUOptimizer:
             )
 
     def _verify_int8_compliance(self, warnings: List[str]) -> None:
+        """Verify that the model is strictly INT8 quantized."""
         non_compliant = 0
         for v in self.graph.value_info:
             if v.dtype in ("float32", "float64"):
@@ -83,6 +90,7 @@ class EdgeTPUOptimizer:
             )
 
     def _analyze_nnapi_compatibility(self, warnings: List[str]) -> None:
+        """Identify operations that break NNAPI compatibility."""
         incompatible_ops = {"Loop", "If", "NonZero", "Compress"}
         for node in self.graph.nodes:
             if node.op_type in incompatible_ops:
@@ -91,6 +99,7 @@ class EdgeTPUOptimizer:
                 )
 
     def _rewrite_softmax(self, warnings: List[str]) -> None:
+        """Rewrite Softmax operations for EdgeTPU support."""
         rewritten = 0
         for node in self.graph.nodes:
             if node.op_type == "Softmax":
@@ -101,6 +110,7 @@ class EdgeTPUOptimizer:
             )
 
     def _replace_1d_convolutions(self, warnings: List[str]) -> None:
+        """Replace 1D convolutions with 2D equivalents for mobile DSP compatibility."""
         replaced = 0
         for node in self.graph.nodes:
             if node.op_type == "Conv":
@@ -125,6 +135,7 @@ class EdgeTPUOptimizer:
             )
 
     def _expand_matmul(self, warnings: List[str]) -> None:
+        """Expand MatMul operations into FullyConnected + Reshape."""
         expanded = 0
         for node in self.graph.nodes:
             if node.op_type == "MatMul":
@@ -135,6 +146,7 @@ class EdgeTPUOptimizer:
             )
 
     def _emulate_leaky_relu(self, warnings: List[str]) -> None:
+        """Emulate LeakyRelu using Maximum(x, alpha * x)."""
         emulated = 0
         for node in self.graph.nodes:
             if node.op_type == "LeakyRelu":
@@ -145,6 +157,7 @@ class EdgeTPUOptimizer:
             )
 
     def _check_dynamic_strided_slice(self, warnings: List[str]) -> None:
+        """Check for dynamic StridedSlice operations."""
         for node in self.graph.nodes:
             if node.op_type == "Slice":
                 for i in range(1, 5):
@@ -157,6 +170,7 @@ class EdgeTPUOptimizer:
                             break
 
     def _expand_broadcasts(self, warnings: List[str]) -> None:
+        """Expand Broadcast operations statically."""
         expanded = 0
         for node in self.graph.nodes:
             if node.op_type == "Expand":

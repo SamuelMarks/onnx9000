@@ -1,3 +1,5 @@
+from typing import Any
+
 """Tests the missing coverage module functionality."""
 
 import os
@@ -38,15 +40,15 @@ def test_execution_provider_defaults() -> None:
         """Represents the BlankEP class and its associated logic."""
 
         def get_supported_nodes(self, graph):
-            """Tests the get supported nodes functionality."""
+            """Test the get supported nodes functionality."""
             return super().get_supported_nodes(graph)
 
         def allocate_tensors(self, tensors):
-            """Tests the allocate tensors functionality."""
+            """Test the allocate tensors functionality."""
             return super().allocate_tensors(tensors)
 
         def execute(self, graph, context, inputs):
-            """Tests the execute functionality."""
+            """Test the execute functionality."""
             return super().execute(graph, context, inputs)
 
     ep = BlankEP({})
@@ -96,7 +98,7 @@ def test_mmap_exception_handling(monkeypatch) -> None:
         name = f.name
 
     def mock_mmap(*args, **kwargs) -> NoReturn:
-        """Tests the mock mmap functionality."""
+        """Test the mock mmap functionality."""
         raise OSError("Mock error")
 
     monkeypatch.setattr(mmap, "mmap", mock_mmap)
@@ -236,11 +238,11 @@ def test_serializer_error(monkeypatch) -> None:
     """Tests the serializer error functionality."""
     import onnx9000.core.serializer as s
 
-    def mock_to_bytes(g) -> NoReturn:
-        """Tests the mock to bytes functionality."""
+    def mock_serialize_model(g, base_dir=None, external_file=None) -> Any:
+        """Test the mock serialize model functionality."""
         raise Exception("Mock error")
 
-    monkeypatch.setattr(s, "to_bytes", mock_to_bytes)
+    monkeypatch.setattr(s, "serialize_model", mock_serialize_model)
     with pytest.raises(SerializationError):
         s.save(Graph("t"), "test.onnx")
 

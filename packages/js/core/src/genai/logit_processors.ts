@@ -18,7 +18,7 @@ export class TemperatureLogitProcessor implements LogitProcessor {
 
     const newData = new Float32Array(logits.data.length);
     for (let i = 0; i < logits.data.length; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       newData[i] = data[i]! / this.temperature;
     }
 
@@ -50,7 +50,7 @@ export class TopKLogitProcessor implements LogitProcessor {
 
     const vals: { val: number; idx: number }[] = [];
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       vals.push({ val: data[offset + i]!, idx: i });
     }
 
@@ -61,7 +61,7 @@ export class TopKLogitProcessor implements LogitProcessor {
       const newData = new Float32Array(logits.data);
 
       for (let i = 0; i < vocabSize; i++) {
-        const data = logits.data as Float32Array;
+        const data = logits.data;
         if (data[offset + i]! < threshold) {
           newData[offset + i] = -Infinity;
         }
@@ -150,10 +150,10 @@ export class MinPLogitProcessor implements LogitProcessor {
 
     let maxVal = -Infinity;
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       const val = data[offset + i]!;
 
-      if (val! > maxVal) {
+      if (val > maxVal) {
         maxVal = val!;
       }
     }
@@ -166,7 +166,7 @@ export class MinPLogitProcessor implements LogitProcessor {
     const newData = new Float32Array(logits.data);
 
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       if (data[offset + i]! < threshold) {
         newData[offset + i] = -Infinity;
       }
@@ -199,7 +199,7 @@ export class PresencePenaltyLogitProcessor implements LogitProcessor {
     for (const tokenId of uniqueIds) {
       if (tokenId < vocabSize) {
         const idx = offset + tokenId;
-        const data = logits.data as Float32Array;
+        const data = logits.data;
         newData[idx] = data[idx]! - this.penalty;
       }
     }
@@ -235,7 +235,7 @@ export class FrequencyPenaltyLogitProcessor implements LogitProcessor {
     for (const [tokenId, count] of counts.entries()) {
       if (tokenId < vocabSize) {
         const idx = offset + tokenId;
-        const data = logits.data as Float32Array;
+        const data = logits.data;
         newData[idx] = data[idx]! - this.penalty * count;
       }
     }
@@ -322,7 +322,7 @@ export class LogitBiasProcessor implements LogitProcessor {
 
     for (const [tokenId, bias] of this.biasMap.entries()) {
       if (tokenId < vocabSize) {
-        const data = logits.data as Float32Array;
+        const data = logits.data;
         newData[offset + tokenId]! += bias;
       }
     }

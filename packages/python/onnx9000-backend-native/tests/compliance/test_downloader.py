@@ -16,7 +16,7 @@ def test_downloader_and_extractor(monkeypatch) -> None:
         base_dir = Path(tmpdir)
 
         def mock_retrieve(url, filename) -> None:
-            """Tests the mock retrieve functionality."""
+            """Test the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo(
@@ -42,7 +42,7 @@ def test_downloader_missing_dir(monkeypatch) -> None:
         base_dir = Path(tmpdir)
 
         def mock_retrieve(url, filename) -> None:
-            """Tests the mock retrieve functionality."""
+            """Test the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
                 z_info = zipfile.ZipInfo("wrong_path/")

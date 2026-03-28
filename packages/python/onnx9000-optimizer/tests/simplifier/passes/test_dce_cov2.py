@@ -1,3 +1,5 @@
+"""Module providing functionality for test_dce_cov2."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.dce import DCEPass, IdentityEliminatio
 
 
 def test_dce_preserve_nodes():
+    """Test dce preserve nodes."""
     g = Graph("TestPreserve")
     g.inputs = ["X"]
     g.outputs = ["Y"]
@@ -28,6 +31,7 @@ def test_dce_preserve_nodes():
 
 
 def test_identity_subgraphs():
+    """Test identity subgraphs."""
     g = Graph("TestIdSub")
     sub = Graph("Sub")
     sub.tensors["A"] = Tensor("A", (1,), DType.FLOAT32)
@@ -45,6 +49,7 @@ def test_identity_subgraphs():
 
 
 def test_identity_folding():
+    """Test identity folding."""
     g = Graph("TestFold")
 
     t_c1 = Tensor("C1", (1,), DType.FLOAT32)
@@ -96,6 +101,7 @@ def test_identity_folding():
 
 
 def test_mul_add_distribute():
+    """Test mul add distribute."""
     g = Graph("TestDist")
     t_c1 = Tensor("C1", (1,), DType.FLOAT32)
     t_c1.data = np.array([2.0])

@@ -1,3 +1,5 @@
+"""Module providing functionality for test_compiler_os."""
+
 import os
 import subprocess
 import sys
@@ -9,6 +11,7 @@ from onnx9000.backends.codegen.compiler import compile_cpp, compile_static_lib
 
 
 def test_compile_cpp_os_branches():
+    """Test compile cpp os branches."""
     with patch("sys.platform", "win32"):
         with patch("subprocess.run"):
             # use_pybind=False, win32 -> .dll
@@ -31,6 +34,7 @@ def test_compile_cpp_os_branches():
 
 
 def test_compile_static_lib():
+    """Test compile static lib."""
     with patch("subprocess.run"):
         # We need an ar compiler mock
         with patch("sys.platform", "win32"):

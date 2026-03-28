@@ -1,3 +1,5 @@
+"""Model export functionality for onnx9000, compatible with HuggingFace Optimum."""
+
 import json
 import logging
 import os
@@ -24,6 +26,7 @@ def get_huggingface_model_files(model_id: str, cache_dir: Optional[str] = None) 
 
 
 def _progress_bar(iterable, desc="Progress", unit="it"):
+    """Create a progress bar for iterables, with tqdm support if available."""
     try:
         from tqdm import tqdm
 
@@ -34,6 +37,7 @@ def _progress_bar(iterable, desc="Progress", unit="it"):
         total = len(items)
 
         def generator():
+            """Yield items while printing a simple progress update to stdout."""
             for i, item in enumerate(items):
                 sys.stdout.write(f"\r{desc}: {i}/{total} [{int(i / total * 100)}%] ")
                 sys.stdout.flush()
@@ -69,6 +73,7 @@ def auto_detect_task(config: dict[str, Any]) -> str:
 
 
 def warn_unsupported_ops():
+    """Log a warning if unsupported PyTorch ops are encountered during export."""
     logger.warning(
         "Unsupported PyTorch ops found during export. Fallback to CPU recommended if WebGPU fails."
     )
@@ -120,7 +125,7 @@ def export_model(
     cache_dir: Optional[str] = None,
     split: bool = False,
 ):
-
+    """Trace and export a HuggingFace model to ONNX format."""
     print(f"Exporting model {model_id}...")
     local_path = get_huggingface_model_files(model_id, cache_dir)
 

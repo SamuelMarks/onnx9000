@@ -1,3 +1,5 @@
+"""Module providing functionality for test_dce_cov7."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 
 
 def test_string_fallback():
+    """Test string fallback."""
     from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
 
     g = Graph("Str")
@@ -15,6 +18,7 @@ def test_string_fallback():
 
 
 def test_dce_rewire_string_literal_exact():
+    """Test dce rewire string literal exact."""
     g = Graph("TestRewireStr")
     g.outputs = ["old_out"]  # Use string instead of ValueInfo object
 
@@ -27,6 +31,7 @@ def test_dce_rewire_string_literal_exact():
 
 
 def test_cf_folding_with_subgraph_changed_trigger_cf():
+    """Test that subgraph changes correctly trigger parent graph constant folding."""
     # Force sub_changed = True, to test local_changed = True and changed = True for ControlFlowFoldingPass
     g = Graph("TestSubTrigCF")
     g.inputs = ["cond"]
@@ -51,6 +56,7 @@ def test_cf_folding_with_subgraph_changed_trigger_cf():
     orig_run = cf.run
 
     def mock_run(graph):
+        """Mocked run method to simulate subgraph changes."""
         nonlocal run_count
         if graph.name == "Sub" and run_count == 0:
             run_count += 1
@@ -64,7 +70,9 @@ def test_cf_folding_with_subgraph_changed_trigger_cf():
 
 
 def test_cf_rewire_inputs_name():
+    """Docstring."""
     # Hit line 893: node.inputs[i] = new_name
+    """Test cf rewire inputs name."""
     g = Graph("TestRewireInputsCF")
     g.inputs = ["X"]
 

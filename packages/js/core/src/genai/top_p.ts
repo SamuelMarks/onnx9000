@@ -22,7 +22,7 @@ export class TopPLogitProcessor implements LogitProcessor {
     let sumProbs = 0;
 
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       probs[i] = Math.exp(data[offset + i]! - maxLogit);
       sumProbs += probs[i]!;
     }

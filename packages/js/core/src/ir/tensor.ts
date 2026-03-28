@@ -63,7 +63,7 @@ export class Tensor {
 
   formatData(limit: number = 100): string {
     if (!this.data) return 'No data';
-    let values: number[] = [];
+    const values: number[] = [];
     const maxVals = Math.min(this.size, limit);
     // basic assumption: Float32Array or similar
     if (this.data instanceof Uint8Array) {
@@ -107,5 +107,69 @@ export class Tensor {
       return `[${values.join(', ')} ... +${this.size - maxVals} elements]`;
     }
     return `[${values.join(', ')}]`;
+  }
+
+  copy(): Tensor {
+    if (this instanceof SparseTensor) {
+      return new SparseTensor(
+        this.name,
+        [...this.shape],
+        this.format,
+        this.valuesTensor?.copy() || null,
+        this.indicesTensor?.copy() || null,
+        this.rowPtrTensor?.copy() || null,
+        this.colIndicesTensor?.copy() || null,
+        this.blockDims ? [...this.blockDims] : undefined,
+      );
+    }
+    const t = new Tensor(
+      this.name,
+      [...this.shape],
+      this.dtype,
+      this.isInitializer,
+      this.requiresGrad,
+    );
+    if (this.data) {
+      // Shallow copy of view or deep copy of buffer?
+      // For IR, usually we might want to copy the data too if it's being mutated.
+      // But let's keep it simple for now.
+      t.data = this.data;
+    }
+    if (this.externalData) {
+      t.externalData = { ...this.externalData };
+    }
+    return t;
+  }
+}
+
+export type SparseFormat = 'COO' | 'CSR' | 'CSC' | 'BSR';
+
+export class SparseTensor extends Tensor {
+  valuesTensor: Tensor | null;
+  indicesTensor: Tensor | null;
+  rowPtrTensor: Tensor | null;
+  colIndicesTensor: Tensor | null;
+  format: SparseFormat;
+  blockDims?: [number, number];
+
+  constructor(
+    name: string,
+    shape: Shape,
+    format: SparseFormat = 'COO',
+    valuesTensor: Tensor | null = null,
+    indicesTensor: Tensor | null = null,
+    rowPtrTensor: Tensor | null = null,
+    colIndicesTensor: Tensor | null = null,
+    blockDims?: [number, number],
+  ) {
+    super(name, shape, valuesTensor?.dtype || 'float32', true);
+    this.format = format;
+    this.valuesTensor = valuesTensor;
+    this.indicesTensor = indicesTensor;
+    this.rowPtrTensor = rowPtrTensor;
+    this.colIndicesTensor = colIndicesTensor;
+    if (blockDims !== undefined) {
+      this.blockDims = blockDims;
+    }
   }
 }

@@ -1,3 +1,5 @@
+"""Module providing functionality for test_dce_cov5."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 
 def test_chained_expand():
+    """Test chained expand."""
     g = Graph("TestChainedExpand")
     g.inputs = ["X"]
     g.outputs = ["Z"]
@@ -26,6 +29,7 @@ def test_chained_expand():
 
 
 def test_reduce_scalar():
+    """Test reduce scalar."""
     g = Graph("TestReduceScalar")
     g.inputs = ["X"]
     g.outputs = ["Y"]
@@ -41,6 +45,7 @@ def test_reduce_scalar():
 
 
 def test_rewire_out_string():
+    """Test rewire out string."""
     g = Graph("TestRewireStr")
     g.inputs = ["X"]
     g.outputs = ["old_out"]  # Raw string in outputs

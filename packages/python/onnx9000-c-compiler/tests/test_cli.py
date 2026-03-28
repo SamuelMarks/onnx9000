@@ -1,3 +1,5 @@
+"""Tests for packages/python/onnx9000-c-compiler/tests/test_cli.py."""
+
 import pytest
 from unittest.mock import patch, MagicMock
 from onnx9000.c_compiler.cli import main
@@ -6,6 +8,7 @@ from onnx9000.core.ir import Graph
 
 
 def test_cli_missing_file(capsys):
+    """Test cli missing file."""
     with patch.object(sys, "argv", ["onnx2c", "does_not_exist.onnx"]):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=False):
             with pytest.raises(SystemExit) as e:
@@ -14,6 +17,7 @@ def test_cli_missing_file(capsys):
 
 
 def test_cli_fallback(capsys):
+    """Test cli fallback."""
     with patch.object(sys, "argv", ["onnx2c", "exists.onnx"]):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
             m_open = MagicMock()
@@ -25,6 +29,7 @@ def test_cli_fallback(capsys):
 
 
 def test_cli_success(capsys):
+    """Test cli success."""
     from onnx9000.c_compiler.compiler import C89Compiler
 
     with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--no-opt"]):
@@ -33,7 +38,6 @@ def test_cli_success(capsys):
             m_open.return_value.__enter__.return_value.read.return_value = "test"
             with patch("onnx9000.c_compiler.cli.open", m_open):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
-                    # mock the pyodide module completely
                     import types
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
@@ -48,6 +52,7 @@ def test_cli_success(capsys):
 
 
 def test_generator_extras():
+    """Test generator extras."""
     from onnx9000.c_compiler.project_generator import generate_cmakelists, generate_arduino_sketch
 
     cm = generate_cmakelists("pref_")
@@ -57,6 +62,7 @@ def test_generator_extras():
 
 
 def test_bundler():
+    """Test bundler."""
     from onnx9000.c_compiler.bundler import bundle_weights_bin, generate_memory_summary
     import tempfile
     import os
@@ -66,13 +72,13 @@ def test_bundler():
         assert os.path.exists(bp)
         with open(bp, "rb") as f:
             assert f.read() == b"hello"
-
     summary = generate_memory_summary(1024, 10, 5)
     assert "Peak Arena RAM:  1024 bytes" in summary
     assert "Total Nodes:     10" in summary
 
 
 def test_cli_import_error(capsys):
+    """Test cli import error."""
     from unittest.mock import patch, MagicMock
     import sys
     from onnx9000.c_compiler.cli import main
@@ -82,12 +88,12 @@ def test_cli_import_error(capsys):
             m_open = MagicMock()
             m_open.return_value.__enter__.return_value.read.return_value = "test"
             with patch("onnx9000.c_compiler.cli.open", m_open):
-                # mock import error
                 import builtins
 
                 real_import = builtins.__import__
 
                 def mock_import(name, *args):
+                    """Perform mock import operation."""
                     if name == "onnx9000.converters.frontend.pyodide_wrapper":
                         raise ImportError("mock error")
                     return real_import(name, *args)
@@ -99,6 +105,7 @@ def test_cli_import_error(capsys):
 
 
 def test_string_weights():
+    """Test string weights."""
     from onnx9000.c_compiler.compiler import C89Compiler
     from onnx9000.core.ir import Graph, Tensor
     from onnx9000.core.dtypes import DType
@@ -109,12 +116,13 @@ def test_string_weights():
     g.tensors["test_str"] = t
     comp = C89Compiler(g, "p_")
     comp.arena.tensor_offsets = {}
-    h, c = comp.generate()
+    (h, c) = comp.generate()
     assert "static const char* p_weights_test_str[]" in c
     assert '"hello",' in c
 
 
 def test_cli_extras(capsys):
+    """Test cli extras."""
     import sys
     from onnx9000.c_compiler.cli import main
     from unittest.mock import patch, MagicMock
@@ -128,12 +136,10 @@ def test_cli_extras(capsys):
             m_open.return_value.__enter__.return_value.read.return_value = "test"
             with patch("onnx9000.c_compiler.cli.open", m_open):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
-                    # Custom graph with Float to trigger math.h override
                     g = Graph("t")
                     g.tensors["A"] = Tensor(
                         "A", shape=(1,), dtype=DType.FLOAT32, data=struct.pack("<f", 1.0)
                     )
-
                     import types
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
@@ -152,6 +158,7 @@ def test_cli_extras(capsys):
 
 
 def test_cli_with_opt(capsys):
+    """Test cli with opt."""
     import types
     from onnx9000.core.ir import Graph
 

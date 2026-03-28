@@ -1,3 +1,5 @@
+"""Module providing functionality for test_control_flow_codegen."""
+
 import pytest
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.dtypes import DType
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_if_codegen():
+    """Test if codegen."""
     g = Graph("TestIf")
     g.inputs = ["cond"]
     g.outputs = ["out"]
@@ -37,6 +40,7 @@ def test_if_codegen():
 
 
 def test_loop_codegen():
+    """Test loop codegen."""
     g = Graph("TestLoop")
     g.inputs = ["M", "cond"]
     g.outputs = ["out"]

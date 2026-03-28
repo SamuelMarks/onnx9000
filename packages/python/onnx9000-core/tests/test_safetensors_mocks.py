@@ -1,25 +1,31 @@
+"""Module providing functionality for test_safetensors_mocks."""
+
+"""Test safetensors mocks."""
+
+
 def test_safetensors_mocks():
+    """Docstring."""
     from onnx9000.safetensors_mocks import (
-        ray_mmap_ipc_deploy,
-        grpc_serialize_tensor,
-        celery_lazy_load_worker,
-        linux_sendfile_weights,
-        s3_boto3_range_request,
         azure_blob_range_request,
-        gcp_chunked_load_memory,
-        maximize_nvme_page_cache,
-        load_tensor_parallel_slice,
-        writev_vectorized_io,
-        stream_arrays_sequentially,
-        export_sharded_100gb_arrays,
-        validate_rust_byte_parity,
-        yield_stream_serialization,
-        cross_platform_file_lock,
-        validate_hub_etag,
-        benchmark_7b_memory_usage,
         benchmark_1gb_layer_stream,
-        profile_os_page_cache_hits,
+        benchmark_7b_memory_usage,
+        celery_lazy_load_worker,
+        cross_platform_file_lock,
+        export_sharded_100gb_arrays,
+        gcp_chunked_load_memory,
+        grpc_serialize_tensor,
+        linux_sendfile_weights,
+        load_tensor_parallel_slice,
+        maximize_nvme_page_cache,
         monitor_keep_alive_limits,
+        profile_os_page_cache_hits,
+        ray_mmap_ipc_deploy,
+        s3_boto3_range_request,
+        stream_arrays_sequentially,
+        validate_hub_etag,
+        validate_rust_byte_parity,
+        writev_vectorized_io,
+        yield_stream_serialization,
     )
 
     ray_mmap_ipc_deploy(None)

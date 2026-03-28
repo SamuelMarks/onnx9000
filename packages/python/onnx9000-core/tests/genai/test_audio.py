@@ -1,15 +1,21 @@
+"""Module providing functionality for test_audio."""
+
+"""Test audio."""
+
+
 def test_audio():
+    """Docstring."""
     from onnx9000.genai.audio import (
-        VITSModel,
         BarkModel,
+        ContinuousAudioGenerator,
+        MelSpectrogramLoop,
+        MultiSpeakerEmbeddings,
         MusicGenModel,
         StreamingAudioOutput,
-        MelSpectrogramLoop,
-        WebAudioAPIIntegrator,
+        VITSModel,
         VocoderDecoder,
-        MultiSpeakerEmbeddings,
-        ContinuousAudioGenerator,
         WavExporter,
+        WebAudioAPIIntegrator,
     )
 
     assert VITSModel()._initialized

@@ -28,7 +28,7 @@ from onnx9000.optimizer.simplifier.passes.validation import ValidationPass
 
 
 def _make_graph(name="test"):
-    """Tests the _make_graph functionality."""
+    """Test the _make_graph functionality."""
     return Graph(name)
 
 

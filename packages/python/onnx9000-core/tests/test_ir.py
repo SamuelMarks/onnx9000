@@ -67,7 +67,7 @@ def test_graph(caplog) -> None:
         """Represents the MockVInfo class and its associated logic."""
 
         def __init__(self, name) -> None:
-            """Tests the init   functionality."""
+            """Test the init   functionality."""
             self.name = name
 
     g.inputs = [MockVInfo("t1")]

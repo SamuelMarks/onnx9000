@@ -1,3 +1,5 @@
+"""Module providing functionality for test_shape_inference_extra."""
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
@@ -5,6 +7,7 @@ from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_shape_inference_reshape_tensor_data():
+    """Test shape inference reshape tensor data."""
     g = Graph("g")
     g.inputs.append(ValueInfo("x", DType.FLOAT32, (10, 20)))
 

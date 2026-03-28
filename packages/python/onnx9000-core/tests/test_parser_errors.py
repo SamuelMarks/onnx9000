@@ -1,3 +1,5 @@
+"""Module providing functionality for test_parser_errors."""
+
 import tempfile
 from pathlib import Path
 
@@ -8,6 +10,7 @@ from onnx9000.core.parser.core import from_bytes, load
 
 
 def test_load_errors():
+    """Test load errors."""
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "test.onnx"
 
@@ -34,7 +37,9 @@ def test_load_errors():
 
 
 def test_from_bytes_errors():
+    """Docstring."""
     # Too small
+    """Test from bytes errors."""
     with pytest.raises(ONNXParseError, match="too small"):
         from_bytes(b"123")
 

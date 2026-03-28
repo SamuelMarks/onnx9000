@@ -1,7 +1,10 @@
+"""Tests for TE and TIR coverage in TVM."""
+
 import pytest
 
 
 def test_tir_full():
+    """Exercise TIR expressions, statements, and visitors for coverage."""
     from onnx9000.tvm.tir.analysis import SemanticAnalyzer
     from onnx9000.tvm.tir.expr import (
         EQ,
@@ -90,6 +93,7 @@ def test_tir_full():
 
 
 def test_te_full():
+    """Exercise TE schedules, tensors, and TOPI operators for coverage."""
     from onnx9000.tvm.te.default_schedules import (
         default_arm_schedule,
         default_wasm_schedule,

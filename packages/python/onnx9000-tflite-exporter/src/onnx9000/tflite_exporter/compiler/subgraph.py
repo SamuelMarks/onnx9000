@@ -1,3 +1,10 @@
+"""TFLite subgraph compilation.
+
+This module provides the core logic for converting an ONNX graph into a
+TFLite SubGraph, including layout optimization, quantization, and
+operator/tensor mapping.
+"""
+
 from onnx9000.core.ir import Graph
 
 from ..exporter import TFLiteExporter
@@ -13,7 +20,6 @@ def compile_graph_to_tflite(
     graph: Graph, exporter: TFLiteExporter, keep_nchw: bool = False, quant_mode: str = "none"
 ) -> int:
     """Compile an ONNX graph into a TFLite SubGraph and write to builder."""
-
     # 31. Phase 2: Global Layout Transposition (NCHW -> NHWC)
     optimizer = LayoutOptimizer(graph, keep_nchw)
     optimizer.optimize()

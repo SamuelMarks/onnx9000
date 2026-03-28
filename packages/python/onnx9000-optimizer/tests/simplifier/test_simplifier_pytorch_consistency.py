@@ -1,9 +1,12 @@
+"""Tests for mathematical consistency between the simplifier and PyTorch/ONNX Runtime."""
+
 import numpy as np
 from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
 def test_compare_mathematical_output_with_pytorch_mock():
+    """Test the mathematical consistency of the simplifier using a mock comparison."""
     # 1e-5 atol mathematical consistency test.
     graph = Graph("Consistency_Test")
     x = Variable("x", shape=(1, 3, 224, 224), dtype=np.dtype("float32"))

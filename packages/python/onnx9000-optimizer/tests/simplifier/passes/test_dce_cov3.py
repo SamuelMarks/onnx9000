@@ -1,3 +1,5 @@
+"""Module providing functionality for test_dce_cov3."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 
 def test_chained_expand():
+    """Test chained expand."""
     g = Graph("TestExpand")
     g.tensors["X"] = Tensor("X", (1,), DType.FLOAT32)
     g.tensors["Shape1"] = Tensor("Shape1", (2,), DType.INT64)
@@ -24,6 +27,7 @@ def test_chained_expand():
 
 
 def test_slice_dynamic_steps():
+    """Test slice dynamic steps."""
     g = Graph("TestSliceDynamic")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
 
@@ -54,6 +58,7 @@ def test_slice_dynamic_steps():
 
 
 def test_reduce_scalar():
+    """Test elimination of redundant reductions on scalar tensors."""
     g = Graph("TestReduce")
     g.tensors["X"] = Tensor("X", (), DType.FLOAT32)
     g.tensors["Y"] = Tensor("Y", (), DType.FLOAT32)

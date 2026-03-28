@@ -1,3 +1,5 @@
+"""Module providing functionality for test_shape_inference_gap10."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
@@ -5,6 +7,7 @@ from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_shape_inference_conv_transpose_gather_pad_missing_inputs():
+    """Test shape inference conv transpose gather pad missing inputs."""
     g = Graph("TestGaps")
     n_ct1 = Node("ConvTranspose", inputs=[], outputs=["Y_ct1"])
     g.nodes.append(n_ct1)
@@ -24,6 +27,7 @@ def test_shape_inference_conv_transpose_gather_pad_missing_inputs():
 
 
 def test_shape_inference_if_else_graph():
+    """Test shape inference if else graph."""
     g = Graph("TestIf")
     cond = Tensor("cond", (), DType.BOOL)
     g.inputs.append("cond")
@@ -79,6 +83,7 @@ def test_shape_inference_if_else_graph():
 
 
 def test_shape_inference_loop_body():
+    """Test shape inference loop body."""
     g = Graph("TestLoop")
     g.inputs.append("M")
     g.inputs.append("cond")
@@ -100,6 +105,7 @@ def test_shape_inference_loop_body():
 
 
 def test_shape_inference_ml_domain():
+    """Test shape inference ml domain."""
     g = Graph("TestML")
     g.inputs.append("X")
     g.tensors["X"] = Tensor("X", (10, 5), DType.FLOAT32)
@@ -125,6 +131,7 @@ def test_shape_inference_ml_domain():
 
 
 def test_shape_inference_final_gaps():
+    """Test shape inference final gaps."""
     g = Graph("TestFinal")
 
     # Gather missing in2

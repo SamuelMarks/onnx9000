@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseModelProto } from '../src/parser/onnx';
-import { BufferReader } from '../src/parser/protobuf';
+import { parseModelProto, releaseArrayBuffer } from '../src/parser/onnx.js';
+import { BufferReader } from '../src/parser/protobuf.js';
 
 // Minimal protobuf writer to generate specific bytes for testing
 class ProtoWriter {
@@ -247,8 +247,8 @@ describe('ONNX Parser Coverage Gaps', () => {
     if (!attrs['attr_f_list']) throw new Error('missing attr_f_list');
     expect(attrs['attr_f_list'].value).toEqual([1.5, 2.5]);
     expect(attrs['attr_f_32'].value).toEqual([3.5, 4.5]);
-    expect(attrs['attr_i_list'].value).toEqual([10, 20]);
-    expect(attrs['attr_i_0'].value).toEqual([30, 40]);
+    expect(attrs['attr_i_list'].value).toEqual([10n, 20n]);
+    expect(attrs['attr_i_0'].value).toEqual([30n, 40n]);
   });
 
   it('handles unknown attribute type (407-412)', async () => {
@@ -417,6 +417,30 @@ describe('ONNX Parser Coverage Gaps', () => {
     expect(attrs['SPARSE_TENSOR'].type).toBe('SPARSE_TENSOR');
     expect(attrs['SPARSE_TENSORS'].type).toBe('SPARSE_TENSORS');
     expect(attrs['UNKNOWN'].type).toBe('UNKNOWN');
+  });
+  it('handles empty raw_data (458-459)', async () => {
+    const w = new ProtoWriter();
+    const gW = new ProtoWriter();
+    const tW = new ProtoWriter();
+    tW.writeTag(8, 2);
+    tW.writeString('empty_t');
+    tW.writeTag(2, 0); // data_type
+    tW.writeVarInt(1); // float32
+    tW.writeTag(9, 2); // raw_data
+    tW.writeVarInt(0);
+    gW.writeTag(5, 2);
+    gW.writeBytes(tW.build());
+    w.writeTag(7, 2);
+    w.writeBytes(gW.build());
+    const reader = new BufferReader(w.build());
+    const g = await parseModelProto(reader);
+    expect(g.tensors['empty_t'].data).toEqual(new Uint8Array(0));
+  });
+
+  it('covers releaseArrayBuffer (509-514)', () => {
+    const buf = new ArrayBuffer(8);
+    releaseArrayBuffer(buf);
+    releaseArrayBuffer(null);
   });
 });
 

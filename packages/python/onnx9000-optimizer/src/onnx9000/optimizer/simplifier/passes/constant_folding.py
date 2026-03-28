@@ -11,7 +11,7 @@ MAX_CONSTANT_SIZE_BYTES = 10 * 1024 * 1024
 
 
 def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0):
-
+    """Evaluates a pooling operation (Max or Average) using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
     spatial_dims = len(kernel_shape)
@@ -60,7 +60,7 @@ def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0)
 
 
 def _evaluate_conv(x, w, b, strides, pads, dilations, group):
-
+    """Evaluates a convolution operation using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
     spatial_dims = len(x.shape) - 2
@@ -128,7 +128,7 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
 
 
 def _numpy_to_tensor_proto(arr, name=""):
-
+    """Converts a NumPy array to an ONNX TensorProto."""
     from onnx9000.core import onnx_pb2
 
     if isinstance(arr, (int, float, bool)):
@@ -163,7 +163,7 @@ def _numpy_to_tensor_proto(arr, name=""):
 
 
 def _tensor_to_numpy(tensor):
-
+    """Converts an ONNX Tensor to a NumPy array."""
     from onnx9000.core.dtypes import DType
 
     if isinstance(tensor.data, np.ndarray):
@@ -346,65 +346,10 @@ class ConstantFoldingPass(GraphPass):
             ):
                 try:
                     result = self._evaluate_node(node.op_type, input_vals, node.attributes, node)
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
-                    print(
-                        "EVALUATED:",
-                        node.op_type,
-                        result is not None,
-                        "size:",
-                        result.nbytes if hasattr(result, "nbytes") else None,
-                    )
                     if result is not None:
 
                         def _has_nan_inf(val):
+                            """Checks if a value (NumPy array, float, or list) contains NaN or Infinity."""
                             if isinstance(val, np.ndarray):
                                 if np.issubdtype(val.dtype, np.number):
                                     return np.any(np.isnan(val)) or np.any(np.isinf(val))

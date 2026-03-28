@@ -14,7 +14,7 @@ def test_module_init_and_attr() -> None:
         """A mock module for testing parameter and sub-module registration."""
 
         def __init__(self) -> None:
-            """Initializes the mock module with parameters, buffers, and sub-modules."""
+            """Initialize the mock module with parameters, buffers, and sub-modules."""
             super().__init__()
             self.p = Parameter((10,), DType.FLOAT32, "p")
             self.b = Tensor((10,), DType.FLOAT32, "b")
@@ -48,7 +48,7 @@ def test_module_errors() -> None:
         """A mock module that fails to call super().__init__()."""
 
         def __init__(self) -> None:
-            """Initializes the mock module with parameters, buffers, and sub-modules."""
+            """Initialize the mock module with parameters, buffers, and sub-modules."""
 
         pass
 

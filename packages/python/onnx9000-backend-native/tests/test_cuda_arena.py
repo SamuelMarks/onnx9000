@@ -11,12 +11,12 @@ from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
 
 @pytest.fixture
 def mock_cuda(monkeypatch):
-    """Executes the mock cuda operation."""
+    """Execute the mock cuda operation."""
     monkeypatch.setattr(cuda_arena_mod, "is_cuda_available", lambda: True)
     mock_lib = MagicMock()
 
     def mock_alloc(ptr_ref, size) -> int:
-        """Tests the mock alloc functionality."""
+        """Test the mock alloc functionality."""
         ptr_ref._obj.value = 1000
         return 0
 
@@ -94,7 +94,7 @@ def test_cuda_arena_dynamic_reallocation_and_fetch(mock_cuda) -> None:
         """Represents the BrokenPlanner class and its associated logic."""
 
         def cleanup(self) -> NoReturn:
-            """Tests the cleanup functionality."""
+            """Test the cleanup functionality."""
             raise Exception("broken")
 
     bp = BrokenPlanner()

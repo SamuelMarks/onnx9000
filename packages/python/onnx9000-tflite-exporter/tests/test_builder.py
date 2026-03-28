@@ -1,8 +1,11 @@
+"""Tests for the FlatBuffer builder used in the TFLite exporter."""
+
 import pytest
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
 
 def test_flatbuffer_builder():
+    """Test the basic functionality of the FlatBufferBuilder."""
     builder = FlatBufferBuilder()
 
     str_offset = builder.create_string("test")
@@ -24,6 +27,7 @@ def test_flatbuffer_builder():
 
 
 def test_builder_edge_cases():
+    """Test edge cases and error conditions in the FlatBufferBuilder."""
     builder = FlatBufferBuilder()
 
     # Test clear

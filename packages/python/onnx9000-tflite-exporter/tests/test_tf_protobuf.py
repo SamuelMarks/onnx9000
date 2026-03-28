@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.tflite_exporter.tf_protobuf import TFProtobufEncoder, SavedModelGenerator
@@ -5,6 +7,7 @@ import struct
 
 
 def test_tf_protobuf_generation():
+    """Docstring."""
     graph = Graph("TestGraph")
     graph.tensors["X"] = Tensor("X", shape=(1, 10), dtype="float32", is_initializer=False)
 

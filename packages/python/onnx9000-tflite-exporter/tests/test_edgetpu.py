@@ -1,9 +1,12 @@
+"""Tests for the EdgeTPU optimizer in the TFLite exporter."""
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.optimizations.edgetpu import EdgeTPUOptimizer
 
 
 def test_edgetpu_optimizer():
+    """Test various EdgeTPU-specific optimizations and rewrites."""
     graph = Graph("test")
 
     # 1D Convolution

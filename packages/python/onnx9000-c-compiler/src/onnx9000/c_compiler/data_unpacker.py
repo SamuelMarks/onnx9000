@@ -1,9 +1,19 @@
+"""Utilities for unpacking raw ONNX tensor bytes into C-compatible string literals."""
+
 import struct
 
 from onnx9000.core.dtypes import DType
 
 
 def dtype_to_struct_fmt(dtype: DType) -> str:
+    """Map an ONNX DType to a Python struct format character.
+
+    Args:
+        dtype: The ONNX DType to map.
+
+    Returns:
+        The corresponding struct format character.
+    """
     mapping = {
         DType.FLOAT32: "f",
         DType.FLOAT64: "d",
@@ -21,9 +31,22 @@ def dtype_to_struct_fmt(dtype: DType) -> str:
 
 
 def unpack_bytes_to_str(data: bytes, dtype: DType, force_float32: bool = True) -> str:
+    """Convert raw bytes into a comma-separated string of C literals.
+
+    This function handles various data types, bit-packing for booleans,
+    bfloat16 to float32 conversion, and clamps subnormal floats to zero.
+
+    Args:
+        data: Raw byte data from a tensor.
+        dtype: The ONNX DType of the data.
+        force_float32: Whether to downcast double precision floats to single precision.
+
+    Returns:
+        A formatted string of C literals suitable for inclusion in a C array.
+    """
     # 219: Bit-packed boolean arrays
     if dtype == DType.BOOL and len(data) > 0:
-        values = struct.unpack("<" + ("B" * len(data)), data)
+        values = list(struct.unpack("<" + ("B" * len(data)), data))
         packed = []
         for i in range(0, len(values), 8):
             chunk = values[i : i + 8]
@@ -52,7 +75,7 @@ def unpack_bytes_to_str(data: bytes, dtype: DType, force_float32: bool = True) -
     else:
         fmt_char = dtype_to_struct_fmt(dtype)
         if len(data) % struct.calcsize(fmt_char) != 0:
-            values = struct.unpack("<" + ("B" * len(data)), data)
+            values = list(struct.unpack("<" + ("B" * len(data)), data))
             str_values = [f"0x{v:02X}" for v in values]
             return ",\n".join(
                 [", ".join(str_values[i : i + 16]) for i in range(0, len(str_values), 16)]
@@ -63,6 +86,7 @@ def unpack_bytes_to_str(data: bytes, dtype: DType, force_float32: bool = True) -
 
     # 217: Identify sub-normal float ranges and clamp to zero
     if dtype in (DType.FLOAT32, DType.FLOAT64):
+        values = list(values)
         for i in range(len(values)):
             if -1e-32 < values[i] < 1e-32:
                 values[i] = 0.0

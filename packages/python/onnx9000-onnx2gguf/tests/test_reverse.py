@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import io
 import os
 import pytest
@@ -9,6 +11,7 @@ from onnx9000.onnx2gguf.reverse import reverse_map_name, reconstruct_onnx, rever
 
 
 def test_reverse_mapping():
+    """Docstring."""
     assert reverse_map_name("token_embd.weight") == "model.embed_tokens.weight"
     assert reverse_map_name("blk.0.attn_norm.weight") == "model.layers.0.input_layernorm.weight"
     assert reverse_map_name("blk.1.attn_q.weight") == "model.layers.1.self_attn.q_proj.weight"
@@ -44,6 +47,7 @@ def test_reverse_mapping():
 
 
 def test_reconstruct_onnx():
+    """Docstring."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     writer.add_string("general.name", "test")

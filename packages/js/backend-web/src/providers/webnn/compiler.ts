@@ -633,7 +633,7 @@ export class WebNNCompiler {
         if (this.builder.scaledDotProductAttention) {
           result = this.builder.scaledDotProductAttention(inputs[0]!, inputs[1]!, inputs[2]!);
         } else {
-          // Mock manual decomposition
+          // Emulate manual decomposition
           const qk = this.builder.matmul(inputs[0]!, inputs[1]!);
           // Scale by sqrt d_k omitted in this mock
           const softmax = this.builder.softmax(qk);

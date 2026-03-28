@@ -26,7 +26,7 @@ def test_rocm_compiler_compile(tmpdir) -> None:
     hsaco_path = os.path.join(cache_dir, "test_kernel2.hsaco")
 
     def fake_run(cmd, check, capture_output) -> None:
-        """Tests the fake run functionality."""
+        """Test the fake run functionality."""
         with open(hsaco_path, "wb") as f:
             f.write(b"new_hsaco")
 

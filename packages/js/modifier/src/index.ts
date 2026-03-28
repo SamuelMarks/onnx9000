@@ -13,3 +13,4 @@ export * from './components/initializers/inspector.js';
 export * from './components/debugger/debugger.js';
 export * from './utils/file_handling.js';
 export * from './components/editors/custom_editors.js';
+export * from './sparse/modifier.js';

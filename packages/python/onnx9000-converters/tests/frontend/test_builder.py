@@ -30,7 +30,7 @@ def test_jit_decorator() -> None:
 
     @jit
     def my_func(x):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         return x + x
 
     t = Tensor((10,), DType.FLOAT32, "x")
@@ -47,7 +47,7 @@ def test_jit_multi_out() -> None:
 
     @jit
     def my_func(x):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         return (x + x, x * x)
 
     t = Tensor((10,), DType.FLOAT32, "x")
@@ -60,7 +60,7 @@ def test_jit_list_out() -> None:
 
     @jit
     def my_func(x):
-        """Tests the my_func functionality."""
+        """Test the my_func functionality."""
         return [x + x, x * x]
 
     t = Tensor((10,), DType.FLOAT32, "x")

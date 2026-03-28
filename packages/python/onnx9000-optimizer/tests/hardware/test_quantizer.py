@@ -249,7 +249,7 @@ class MockTensorProto:
     """Class MockTensorProto implementation."""
 
     def __init__(self, dt, rd=None, fd=None) -> None:
-        """Tests the __init__ functionality."""
+        """Test the __init__ functionality."""
         self.data_type = dt
         self.raw_data = rd
         self.float_data = fd

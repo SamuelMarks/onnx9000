@@ -1,7 +1,10 @@
+"""Tests for packages/python/onnx9000-array/tests/test_all_ops_generated.py."""
+
 import onnx9000_array
 
 
 def test_all_ops_dynamic():
+    """Test all ops dynamic."""
     ops = [
         attr
         for attr in dir(onnx9000_array)
@@ -22,6 +25,7 @@ def test_all_ops_dynamic():
 
 
 def test_array_classes():
+    """Test array classes."""
     a = onnx9000_array.array([1.0, 2.0])
     a.ndim
     a.numpy()
@@ -34,16 +38,17 @@ def test_array_classes():
     a.gpu()
     a.quantize_dynamic()
     a.evaluate()
-
     c = onnx9000_array.Input("test", (2,), "float32")
 
 
 def test_array_data_method_bypass():
+    """Test array data method bypass."""
     a = onnx9000_array.array([1.0, 2.0])
     onnx9000_array.EagerTensor.data(a)
 
 
 def test_missing_submodules():
+    """Test missing submodules."""
     a = onnx9000_array.array([1.0])
     for mode in [False, True]:
         onnx9000_array.lazy_mode(mode)
@@ -67,6 +72,7 @@ def test_missing_submodules():
 
 
 def test_nn_linalg():
+    """Test nn linalg."""
     a = onnx9000_array.array([1.0])
     for mode in [False, True]:
         onnx9000_array.lazy_mode(mode)

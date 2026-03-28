@@ -1,4 +1,4 @@
-import { expect, test, describe } from 'vitest';
+import { expect, test, describe, vi } from 'vitest';
 import {
   SafeTensors,
   SafetensorsError,
@@ -264,6 +264,46 @@ test('DataView limits > 2GB', () => {
   view.setBigUint64(0, BigInt(bytes.byteLength), true);
   out.set(bytes, 8);
   expect(() => new SafeTensors(out.buffer)).toThrow(SafetensorsOutOfBoundsError);
+});
+
+test('getTensor bounds check manual', () => {
+  const tensors = { a: new Uint8Array([1, 2]) };
+  const buffer = saveSafetensors(tensors);
+  const st = new SafeTensors(buffer.buffer);
+
+  // Manually corrupt the tensor info to bypass constructor check
+  // @ts-ignore
+  st.tensors['a'].data_offsets = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER + 10];
+
+  expect(() => st.getTensor('a')).toThrow(SafetensorsOutOfBoundsError);
+});
+
+test('getTypedArray Big-Endian fallback', async () => {
+  // Use vi.spyOn to mock getEndianness
+  const mod = await import('../src/parser/safetensors.js');
+  const spy = vi.spyOn(mod, 'getEndianness').mockReturnValue('BE');
+
+  const headerObj = {
+    a: { dtype: 'F32', shape: [1], data_offsets: [0, 4] },
+    __metadata__: {},
+  };
+  const headerStr = JSON.stringify(headerObj);
+  const headerBytes = new TextEncoder().encode(headerStr);
+
+  const out = new Uint8Array(8 + headerBytes.byteLength + 4);
+  const view = new DataView(out.buffer);
+  view.setBigUint64(0, BigInt(headerBytes.byteLength), true);
+  out.set(headerBytes, 8);
+  const floatData = new Float32Array([1.0]);
+  out.set(new Uint8Array(floatData.buffer), 8 + headerBytes.byteLength);
+
+  const st = new SafeTensors(out.buffer);
+
+  // Should trigger Big-Endian swap logic
+  const arr = st.getTypedArray('a');
+  expect(arr instanceof Float32Array).toBe(true);
+
+  spy.mockRestore();
 });
 
 test('getEndianness sanity check', () => {

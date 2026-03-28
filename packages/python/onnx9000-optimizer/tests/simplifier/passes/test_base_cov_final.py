@@ -11,7 +11,7 @@ def test_pass_base() -> None:
         """Represents the DummyPass class and its associated logic."""
 
         def run(self, graph: Graph) -> bool:
-            """Tests the run functionality."""
+            """Test the run functionality."""
             super().run(graph)
             return False
 

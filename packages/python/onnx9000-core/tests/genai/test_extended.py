@@ -1,14 +1,20 @@
+"""Module providing functionality for test_extended."""
+
+"""Test extended."""
+
+
 def test_extended():
+    """Docstring."""
     from onnx9000.genai.extended import (
+        ChunkedPrefiller,
+        ContinuousBatchingQueue,
         DraftingModel,
         DraftVerifier,
-        SelfConsistencyDecoder,
-        ContinuousBatchingQueue,
-        HiddenStateVisualizer,
-        PromptCompressor,
-        ChunkedPrefiller,
         DynamicParamAdjuster,
+        HiddenStateVisualizer,
         MultiTurnCache,
+        PromptCompressor,
+        SelfConsistencyDecoder,
     )
 
     assert DraftingModel()._initialized

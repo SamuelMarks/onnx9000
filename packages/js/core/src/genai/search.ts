@@ -17,13 +17,13 @@ export class GreedySearch implements SearchAlgorithm {
     let maxIdx = 0;
 
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       const val = data[offset + i]!;
 
       if (isNaN(val) || (!isFinite(val) && val > 0)) {
         return 0;
       }
-      if (val! > maxVal) {
+      if (val > maxVal) {
         maxVal = val!;
         maxIdx = i;
       }
@@ -44,7 +44,7 @@ export class MultinomialSampling implements SearchAlgorithm {
 
     let maxVal = -Infinity;
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       if (data[offset + i]! > maxVal) {
         maxVal = data[offset + i]!;
       }
@@ -53,7 +53,7 @@ export class MultinomialSampling implements SearchAlgorithm {
     let sumExp = 0;
     const probs = new Float32Array(vocabSize);
     for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data as Float32Array;
+      const data = logits.data;
       probs[i] = Math.exp(data[offset + i]! - maxVal);
       sumExp += probs[i]!;
     }
@@ -115,7 +115,7 @@ export class BeamSearchAlgorithm implements SearchAlgorithm {
     }
 
     const vocabSize = nextTokenLogits.shape[nextTokenLogits.shape.length - 1] as number;
-    const data = nextTokenLogits.data as Float32Array;
+    const data = nextTokenLogits.data;
     const offset = data.length - vocabSize;
 
     const vals: { val: number; idx: number }[] = [];

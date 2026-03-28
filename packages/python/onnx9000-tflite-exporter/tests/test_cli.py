@@ -1,3 +1,5 @@
+"""Tests for packages/python/onnx9000-tflite-exporter/tests/test_cli.py."""
+
 import pytest
 from unittest.mock import patch, MagicMock
 from onnx9000.tflite_exporter.cli import main
@@ -6,6 +8,7 @@ from onnx9000.tflite_exporter.cli import main
 @patch("onnx9000.tflite_exporter.cli.argparse.ArgumentParser.parse_args")
 @patch("builtins.print")
 def test_cli_parsing(mock_print, mock_parse_args):
+    """Test cli parsing."""
     mock_args = MagicMock()
     mock_args.input = "dummy.onnx"
     mock_args.output = "dummy.tflite"
@@ -17,9 +20,7 @@ def test_cli_parsing(mock_print, mock_parse_args):
     mock_args.progress = False
     mock_args.micro = False
     mock_parse_args.return_value = mock_args
-
     main(["dummy.onnx", "--keep-nchw", "--int8"])
-
     mock_parse_args.assert_called_once_with(["dummy.onnx", "--keep-nchw", "--int8"])
     mock_print.assert_any_call("[onnx2tf] Loading ONNX model from dummy.onnx...")
     mock_print.assert_any_call("[onnx2tf] Compiling to TFLite... (keep_nchw=True, quant_mode=int8)")
@@ -28,6 +29,7 @@ def test_cli_parsing(mock_print, mock_parse_args):
 @patch("onnx9000.tflite_exporter.cli.argparse.ArgumentParser.parse_args")
 @patch("builtins.print")
 def test_cli_fp16(mock_print, mock_parse_args):
+    """Test cli fp16."""
     mock_args = MagicMock()
     mock_args.input = "dummy.onnx"
     mock_args.output = "dummy.tflite"
@@ -40,7 +42,6 @@ def test_cli_fp16(mock_print, mock_parse_args):
     mock_args.progress = False
     mock_args.micro = False
     mock_parse_args.return_value = mock_args
-
     main(["dummy.onnx", "--fp16", "-b", "4"])
     mock_print.assert_any_call("[onnx2tf] Overriding dynamic batch size to 4")
     mock_print.assert_any_call(
@@ -51,6 +52,7 @@ def test_cli_fp16(mock_print, mock_parse_args):
 @patch("onnx9000.tflite_exporter.cli.argparse.ArgumentParser.parse_args")
 @patch("builtins.print")
 def test_cli_disable_opt(mock_print, mock_parse_args):
+    """Test cli disable opt."""
     mock_args = MagicMock()
     mock_args.input = "dummy.onnx"
     mock_args.output = "dummy.tflite"
@@ -63,7 +65,6 @@ def test_cli_disable_opt(mock_print, mock_parse_args):
     mock_args.micro = False
     mock_args.disable_optimization = True
     mock_parse_args.return_value = mock_args
-
     main(["dummy.onnx", "--disable-optimization"])
     mock_print.assert_any_call("[onnx2tf] Disabling layout and math optimizations...")
 
@@ -71,6 +72,7 @@ def test_cli_disable_opt(mock_print, mock_parse_args):
 @patch("onnx9000.tflite_exporter.cli.argparse.ArgumentParser.parse_args")
 @patch("builtins.print")
 def test_cli_misc_flags(mock_print, mock_parse_args):
+    """Test cli misc flags."""
     mock_args = MagicMock()
     mock_args.input = "dummy.onnx"
     mock_args.output = "dummy.tflite"
@@ -84,7 +86,6 @@ def test_cli_misc_flags(mock_print, mock_parse_args):
     mock_args.disable_optimization = False
     mock_args.saved_model = True
     mock_parse_args.return_value = mock_args
-
     main(
         [
             "dummy.onnx",
@@ -103,6 +104,7 @@ def test_cli_misc_flags(mock_print, mock_parse_args):
 
 
 def test_cli_empty_args():
+    """Test cli empty args."""
     with patch("sys.argv", ["onnx2tf"]):
         with pytest.raises(SystemExit):
             main()
@@ -112,6 +114,7 @@ import runpy
 
 
 def test_cli_main_block():
+    """Test cli main block."""
     with patch("sys.argv", ["onnx2tf", "--help"]):
         try:
             runpy.run_module("onnx9000.tflite_exporter.cli", run_name="__main__")

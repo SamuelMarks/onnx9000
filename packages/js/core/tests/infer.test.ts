@@ -40,9 +40,25 @@ describe('inferShapes', () => {
     const n = new Node('Constant', [], ['C']);
     g.addNode(n);
 
+    const n2 = new Node('UnknownInput', ['not_there'], ['D']);
+    g.addNode(n2);
+
     inferShapes(g);
 
     // Constant has no inputs, so naive infer won't add a shape for 'C' currently
+    // UnknownInput has input with no known shape, so it won't add 'D'
     expect(g.valueInfo.length).toBe(0);
+  });
+
+  it('should skip already tracked outputs', () => {
+    const g = new Graph('test');
+    g.inputs.push(new ValueInfo('A', [1], 'float32'));
+    g.outputs.push(new ValueInfo('B', [1], 'float32'));
+
+    const n = new Node('Identity', ['A'], ['B']);
+    g.addNode(n);
+
+    inferShapes(g);
+    expect(g.valueInfo.length).toBe(0); // B is already in outputs
   });
 });

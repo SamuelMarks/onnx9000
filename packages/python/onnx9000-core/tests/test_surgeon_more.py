@@ -403,7 +403,7 @@ def test_estimate_act_memory_exception() -> None:
         """Represents the BadShape class and its associated logic."""
 
         def __iter__(self):
-            """Tests the iter   functionality."""
+            """Test the iter   functionality."""
             raise Exception("bad")
 
     v1 = Variable("v1")

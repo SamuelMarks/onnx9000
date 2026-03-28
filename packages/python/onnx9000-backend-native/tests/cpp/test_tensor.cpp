@@ -47,8 +47,18 @@ void test_broadcast_index() {
   // + 3 = 12 + 8 + 3 = 23 coord is: n=1, c=2, h=3 broadcast mapping: n=0, c=2,
   // h=0 flat in_index for (0, 2, 0) in in_shape (strides: 3, 1, 1) is 0*3 + 2*1
   // + 0 = 2
-  int64_t in_idx = broadcast_index(23, out_shape, in_shape, in_strides);
-  assert(in_idx == 2);
+  // Test case for in_ndim < out_ndim
+  // out_shape = [2, 3, 4], in_shape = [3, 4], in_strides = [4, 1]
+  // out_index 23 -> coords (1, 2, 3) -> in_coords (2, 3) -> in_index 11
+  std::vector<int64_t> out_shape2 = {2, 3, 4};
+  std::vector<int64_t> in_shape2 = {3, 4};
+  std::vector<int64_t> in_strides2 = {4, 1};
+  int64_t in_idx2 = broadcast_index(23, out_shape2, in_shape2, in_strides2);
+  assert(in_idx2 == 11);
+
+  // out_index 12 -> coords (1, 0, 0) -> in_coords (0, 0) -> in_index 0
+  int64_t in_idx3 = broadcast_index(12, out_shape2, in_shape2, in_strides2);
+  assert(in_idx3 == 0);
 }
 
 int main() {

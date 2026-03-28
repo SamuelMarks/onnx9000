@@ -39,6 +39,10 @@
 #define ONNX9000_INDEX_4D(strides, n, c, h, w)                                 \
   ((n) * (strides)[0] + (c) * (strides)[1] + (h) * (strides)[2] + (w))
 
+/**
+ * \namespace onnx9000
+ * \brief The onnx9000 namespace contains core tensor definitions and utilities.
+ */
 namespace onnx9000 {
 
 /**

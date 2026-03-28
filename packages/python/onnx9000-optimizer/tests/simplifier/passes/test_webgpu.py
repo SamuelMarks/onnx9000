@@ -1,16 +1,25 @@
+"""Tests for packages/python/onnx9000-optimizer/tests/simplifier/passes/test_webgpu.py."""
+
 import pytest
 import numpy as np
 
 
 def test_polyfill_webgpu():
+    """Test polyfill webgpu."""
     from onnx9000.optimizer.simplifier.passes.webgpu import polyfill_webgpu_unsupported
 
     class MockNode:
+        """MockNode implementation."""
+
         def __init__(self, op_type):
+            """Perform   init   operation."""
             self.op_type = op_type
 
     class MockGraph:
+        """MockGraph implementation."""
+
         def __init__(self):
+            """Perform   init   operation."""
             self.nodes = [MockNode("UnsupportedOpX"), MockNode("Conv")]
 
     g = MockGraph()
@@ -19,14 +28,21 @@ def test_polyfill_webgpu():
 
 
 def test_optimize_for_webgpu():
+    """Test optimize for webgpu."""
     from onnx9000.optimizer.simplifier.passes.webgpu import optimize_for_webgpu
 
     class MockNode:
+        """MockNode implementation."""
+
         def __init__(self, op_type):
+            """Perform   init   operation."""
             self.op_type = op_type
 
     class MockGraph:
+        """MockGraph implementation."""
+
         def __init__(self):
+            """Perform   init   operation."""
             self.nodes = [MockNode("UnsupportedOpX"), MockNode("Conv")]
 
     g = MockGraph()
@@ -35,24 +51,35 @@ def test_optimize_for_webgpu():
 
 
 def test_fp16_cast():
+    """Test fp16 cast."""
     from onnx9000.optimizer.simplifier.passes.webgpu import fp16_cast
 
     class MockInit:
+        """MockInit implementation."""
+
         def __init__(self, name, dtype):
+            """Perform   init   operation."""
             self.name = name
             self.dtype = dtype
             self.data = b"abc"
 
         def numpy(self):
+            """Perform numpy operation."""
             return np.array([1.0, 2.0], dtype=np.float32)
 
     class MockNode:
+        """MockNode implementation."""
+
         def __init__(self, op_type, inputs):
+            """Perform   init   operation."""
             self.op_type = op_type
             self.inputs = inputs
 
     class MockGraph:
+        """MockGraph implementation."""
+
         def __init__(self):
+            """Perform   init   operation."""
             self.nodes = [MockNode("LayerNormalization", ["init1"]), MockNode("Conv", ["init2"])]
             self.initializers = {
                 "init1": MockInit("init1", "float32"),
@@ -66,33 +93,40 @@ def test_fp16_cast():
 
 
 def test_generate_reports(tmp_path):
+    """Test generate reports."""
     from onnx9000.optimizer.simplifier.passes.webgpu import (
         generate_html_report,
         generate_execution_schedule,
     )
 
     class MockNode:
+        """MockNode implementation."""
+
         def __init__(self, name, op_type, inputs, outputs):
+            """Perform   init   operation."""
             self.name = name
             self.op_type = op_type
             self.inputs = inputs
             self.outputs = outputs
 
     class MockGraph:
+        """MockGraph implementation."""
+
         def __init__(self):
+            """Perform   init   operation."""
             self.nodes = [MockNode("A", "Conv", ["a"], ["b"])]
 
     g = MockGraph()
     out_html = tmp_path / "report.html"
     generate_html_report(g, g, str(out_html))
     assert out_html.exists()
-
     out_json = tmp_path / "schedule.json"
     generate_execution_schedule(g, str(out_json))
     assert out_json.exists()
 
 
 def test_fuse_methods():
+    """Test fuse methods."""
     from onnx9000.optimizer.simplifier.passes.webgpu import (
         fuse_swiglu,
         fuse_geglu,

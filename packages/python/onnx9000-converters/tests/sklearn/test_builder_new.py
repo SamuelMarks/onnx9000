@@ -13,7 +13,7 @@ class DummyPipeline:
     """Represents the Dummy Pipeline class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.steps = [("step1", DummyEstimator())]
 
 
@@ -31,7 +31,7 @@ class FeatureUnion:
     """Represents the Feature Union class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.transformer_list = [("t1", DummyEstimator()), ("t2", DummyEstimator())]
 
 
@@ -47,7 +47,7 @@ class ColumnTransformer:
     """Represents the Column Transformer class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.transformers_ = [("t1", DummyEstimator(), [0, 1])]
         self.remainder = "drop"
 
@@ -64,7 +64,7 @@ class DummyScaler:
     """Represents the Dummy Scaler class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         import numpy as np
 
         self.mean_ = np.array([0.0])
@@ -84,7 +84,7 @@ class DummyLinear:
     """Represents the Dummy Linear class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         import numpy as np
 
         self.coef_ = np.array([[1.0]])
@@ -105,7 +105,7 @@ class DummySearch:
     """Represents the Dummy Search class."""
 
     def __init__(self) -> None:
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.best_estimator_ = DummyLinear()
         self.best_estimator_.__class__.__name__ = "LogisticRegression"
 
@@ -121,7 +121,6 @@ def test_search_parse() -> None:
 
 def test_builder_sklearn_coverage() -> None:
     """Tests the builder sklearn coverage functionality."""
-
     from onnx9000.converters.sklearn.builder import SKLearnParser
 
     # Test _is_type
@@ -132,7 +131,7 @@ def test_builder_sklearn_coverage() -> None:
         """Represents the Pipeline class and its associated logic."""
 
         def __init__(self) -> None:
-            """Tests the init   functionality."""
+            """Test the init   functionality."""
             self.steps = [("passthrough", "passthrough"), ("step2", "step2")]
 
     assert len(parser._parse_estimator(Pipeline(), ["input"])) == 1
@@ -141,7 +140,7 @@ def test_builder_sklearn_coverage() -> None:
         """Represents the ColumnTransformer class and its associated logic."""
 
         def __init__(self) -> None:
-            """Tests the init   functionality."""
+            """Test the init   functionality."""
             self.transformers_ = [
                 ("drop", "drop", [0]),
                 ("pass", "passthrough", [1]),

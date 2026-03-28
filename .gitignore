@@ -50,7 +50,7 @@ test.safetensors
 *,cover
 
 # Scratch scripts and temporary files
-/*.py
+# /*.py  <-- Removed this to allow root python files if any
 /*.sh
 *.patch
 *.bak
@@ -135,3 +135,25 @@ coverage.txt
 *_errors.json
 debug.ts
 run_pw_console.js
+
+# Auto-generated scripts
+fix_*.py
+generate_*.py
+double_tick.py
+
+# AI scratch scripts
+/ast_*.txt
+/finish_*.py
+/get_*.py
+/implement_*.py
+/parse_*.py
+/rewrite_stubs*.py
+/tick_boxes*.py
+/update_markdown.py
+/update_ui.py
+
+# TypeScript compiled files in src directory
+packages/js/*/src/**/*.js
+packages/js/*/src/**/*.js.map
+packages/js/*/src/**/*.d.ts
+packages/js/*/src/**/*.d.ts.map

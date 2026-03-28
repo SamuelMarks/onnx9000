@@ -1,4 +1,7 @@
+"""Module docstring."""
+
 import struct
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
@@ -8,6 +11,7 @@ from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator
 
 
 def test_compiler_subgraph_mapping():
+    """Docstring."""
     exporter = TFLiteExporter()
     graph = Graph("TestGraph")
 
@@ -66,6 +70,7 @@ def test_compiler_subgraph_mapping():
 
 
 def test_compiler_elementwise():
+    """Test the compilation of elementwise operations to TFLite."""
     exporter = TFLiteExporter()
     graph = Graph("TestGraph")
 

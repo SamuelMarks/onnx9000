@@ -10,7 +10,7 @@ def test_numpy_dispatch() -> None:
     """Tests the corresponding tensor functionality."""
 
     def my_np_func(x):
-        """Tests the corresponding tensor functionality."""
+        """Test the corresponding tensor functionality."""
         return np.add(x, np.array([2.0], dtype=np.float32))
 
     x = Tensor((2,), DType.FLOAT32, "x")
@@ -24,7 +24,7 @@ def test_dynamic_axes_trace() -> None:
     from onnx9000.converters.frontend.tracer import trace
 
     def my_func(x):
-        """Tests the corresponding tensor functionality."""
+        """Test the corresponding tensor functionality."""
         return x * 2.0
 
     x = Tensor(("N", 3, 224, 224), DType.FLOAT32, "x")

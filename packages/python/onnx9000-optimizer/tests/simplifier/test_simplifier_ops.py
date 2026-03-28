@@ -9,7 +9,7 @@ from onnx9000.optimizer.simplifier.api import simplify
 
 
 def _create_and_simplify(op_type, inputs_data, attrs=None):
-    """Tests the create and simplify functionality."""
+    """Test the create and simplify functionality."""
     g = Graph("test")
     input_names = []
     for i, data in enumerate(inputs_data):
@@ -89,6 +89,7 @@ def test_math_ops_folding() -> None:
 
 
 def test_reduce_ops_folding() -> None:
+    """Test reduce ops folding."""
     try:
         _create_and_simplify("Add", [None, None])
     except AssertionError:
@@ -262,7 +263,7 @@ def test_dce_math_rewrites() -> None:
     """Tests the dce math rewrites functionality."""
 
     def _create_dce_graph(op_type, num_inputs=1, attrs=None):
-        """Executes the create dce graph operation."""
+        """Execute the create dce graph operation."""
         g = Graph("test")
         inputs = []
         for i in range(num_inputs):
@@ -362,7 +363,7 @@ def test_partial_math_folding() -> None:
     """Tests the partial math folding functionality."""
 
     def _test_partial(op_type, inputs, attrs, expected_nodes, expected_out) -> None:
-        """Executes the test partial operation."""
+        """Execute the test partial operation."""
         g = Graph("test")
         for i, val in enumerate(inputs):
             if isinstance(val, np.ndarray):

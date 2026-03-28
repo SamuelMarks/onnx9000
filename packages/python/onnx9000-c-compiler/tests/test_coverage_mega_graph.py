@@ -1,3 +1,5 @@
+"""Tests for a large graph with many operations in the C compiler."""
+
 from onnx9000.core.dtypes import DType
 import sys
 import pytest
@@ -6,6 +8,7 @@ from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 
 
 def test_mega_graph_routing_coverage():
+    """Test routing coverage for a mega graph with various operations."""
     tensors = {
         "X": Tensor("X", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16),
         "Y": Tensor("Y", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16),

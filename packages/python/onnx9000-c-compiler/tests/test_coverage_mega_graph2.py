@@ -1,3 +1,5 @@
+"""Further tests for a large graph with complex operations in the C compiler."""
+
 import pytest
 import sys
 import struct
@@ -9,6 +11,7 @@ from unittest.mock import patch
 
 
 def test_mega_graph_routing_coverage2():
+    """Another test for routing coverage for a mega graph with complex operations."""
     tA = Tensor("A", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16)
     tB = Tensor("B", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16)
     tC = Tensor("C", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16)

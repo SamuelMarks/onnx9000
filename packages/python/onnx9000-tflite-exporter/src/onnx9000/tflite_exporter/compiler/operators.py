@@ -1,3 +1,9 @@
+"""Operator mapping from ONNX to TFLite.
+
+This module defines how ONNX operators are mapped to TFLite operators,
+including the transformation of attributes into TFLite BuiltinOptions.
+"""
+
 from dataclasses import dataclass
 from typing import Callable, Optional
 
@@ -8,12 +14,22 @@ from ..flatbuffer.schema import BuiltinOperator, BuiltinOptions, TensorType
 
 @dataclass
 class TFLiteOperatorMapping:
+    """Represents a mapping from an ONNX operator to a TFLite operator.
+
+    Attributes:
+        builtin_code: The TFLite BuiltinOperator code.
+        builtin_options_type: The type of BuiltinOptions for this operator.
+        create_options: An optional callable to create the BuiltinOptions flatbuffer object.
+
+    """
+
     builtin_code: int
     builtin_options_type: int
     create_options: Optional[Callable] = None
 
 
 def _map_cast(b, n):
+    """Map ONNX Cast attributes to TFLite CastOptions."""
     to_attr = n.attributes.get("to")
     to_val = to_attr.value if to_attr else 1
     out_type = TensorType.FLOAT32
@@ -37,6 +53,7 @@ def _map_cast(b, n):
 
 
 def _map_fully_connected(b, n):
+    """Map ONNX Gemm attributes to TFLite FullyConnectedOptions."""
     b.start_object(4)
     b.add_field_int8(0, 0, 0)
     b.add_field_int8(1, 0, 0)
@@ -46,6 +63,7 @@ def _map_fully_connected(b, n):
 
 
 def _map_transpose_conv(b, n):
+    """Map ONNX ConvTranspose attributes to TFLite TransposeConvOptions."""
     strides_attr = n.attributes.get("strides")
     pads_attr = n.attributes.get("pads")
     auto_pad_attr = n.attributes.get("auto_pad")
@@ -73,6 +91,7 @@ def _map_transpose_conv(b, n):
 
 
 def _map_scatter_elements(b, n):
+    """Map ONNX ScatterElements to TFLite SCATTER_ND (with warning)."""
     import logging
 
     logging.warning(
@@ -474,6 +493,7 @@ ELEMENTWISE_OPS = {
 
 
 def _map_cumsum(b, n):
+    """Map ONNX CumSum attributes to TFLite CumsumOptions."""
     exclusive = n.attributes.get("exclusive").value if n.attributes.get("exclusive") else 0
     reverse = n.attributes.get("reverse").value if n.attributes.get("reverse") else 0
     b.start_object(2)
@@ -483,6 +503,7 @@ def _map_cumsum(b, n):
 
 
 def _map_rnn(b, n):
+    """Map ONNX RNN attributes to TFLite RNNOptions."""
     b.start_object(2)
     b.add_field_int8(0, 0, 0)
     b.add_field_int8(1, 0, 0)
@@ -490,6 +511,7 @@ def _map_rnn(b, n):
 
 
 def _map_lstm(b, n):
+    """Map ONNX LSTM attributes to TFLite LSTMOptions."""
     b.start_object(5)
     b.add_field_int8(0, 0, 0)
     b.add_field_float32(1, 0.0, 0.0)
@@ -500,6 +522,7 @@ def _map_lstm(b, n):
 
 
 def _map_sequence_rnn(b, n):
+    """Map ONNX Sequence RNN attributes to TFLite SequenceRNNOptions."""
     # 226. Support time_major flags natively.
     time_major = (
         1 if (n.attributes.get("time_major") and n.attributes.get("time_major").value == 1) else 0
@@ -512,6 +535,7 @@ def _map_sequence_rnn(b, n):
 
 
 def _map_matmul(b, n, graph=None):
+    """Map ONNX MatMul attributes to TFLite BatchMatMulOptions."""
     adj_x_attr = n.attributes.get("adj_x")
     adj_y_attr = n.attributes.get("adj_y")
 
@@ -529,6 +553,7 @@ def _map_matmul(b, n, graph=None):
 
 
 def _map_resize(b, n):
+    """Map ONNX Resize attributes to TFLite ResizeBilinear/NearestNeighborOptions."""
     coord_mode = n.attributes.get("coordinate_transformation_mode")
     coord_mode_val = coord_mode.value if coord_mode else ""
     align_corners = 1 if coord_mode_val == "align_corners" else 0
@@ -550,6 +575,7 @@ def _map_resize(b, n):
 
 
 def _map_space_depth(b, n):
+    """Map ONNX SpaceToDepth/DepthToSpace attributes to TFLite Options."""
     bs = n.attributes.get("blocksize").value if n.attributes.get("blocksize") else 1
     b.start_object(1)
     b.add_field_int32(0, bs, 0)
@@ -557,12 +583,14 @@ def _map_space_depth(b, n):
 
 
 def _map_arg(b, n):
+    """Map ONNX ArgMax/ArgMin attributes to TFLite Options."""
     b.start_object(1)
     b.add_field_int8(0, 3, 0)
     return b.end_object()
 
 
 def _map_reducer_options(b, n):
+    """Map ONNX Reduction attributes to TFLite ReducerOptions."""
     keepdims = n.attributes.get("keepdims").value if n.attributes.get("keepdims") else 1
     b.start_object(2)
     b.add_field_int8(0, keepdims, 0)
@@ -570,18 +598,21 @@ def _map_reducer_options(b, n):
 
 
 def _map_softmax(b, n):
+    """Map ONNX Softmax attributes to TFLite SoftmaxOptions."""
     b.start_object(1)
     b.add_field_float32(0, 1.0, 1.0)
     return b.end_object()
 
 
 def _map_l2norm(b, n):
+    """Map ONNX LpNormalization attributes to TFLite L2NormOptions."""
     b.start_object(1)
     b.add_field_int8(0, 0, 0)
     return b.end_object()
 
 
 def _map_lrn(b, n):
+    """Map ONNX LRN attributes to TFLite LocalResponseNormOptions."""
     radius = n.attributes.get("size").value if n.attributes.get("size") else 1
     bias = n.attributes.get("bias").value if n.attributes.get("bias") else 1.0
     alpha = n.attributes.get("alpha").value if n.attributes.get("alpha") else 1.0
@@ -595,6 +626,7 @@ def _map_lrn(b, n):
 
 
 def _map_split(b, n):
+    """Map ONNX Split attributes to TFLite SplitOptions."""
     num_splits = len(n.outputs)
     b.start_object(1)
     b.add_field_int32(0, num_splits, 0)
@@ -602,6 +634,7 @@ def _map_split(b, n):
 
 
 def _map_strided_slice(b, n):
+    """Map ONNX Slice/StridedSlice attributes to TFLite StridedSliceOptions."""
     bm_attr = n.attributes.get("begin_mask")
     em_attr = n.attributes.get("end_mask")
     sm_attr = n.attributes.get("shrink_axis_mask")
@@ -624,6 +657,7 @@ def _map_strided_slice(b, n):
 
 
 def _map_gather(b, n):
+    """Map ONNX Gather attributes to TFLite GatherOptions."""
     axis = n.attributes.get("axis").value if n.attributes.get("axis") else 0
     b.start_object(2)
     b.add_field_int32(0, axis, 0)
@@ -632,12 +666,14 @@ def _map_gather(b, n):
 
 
 def _map_mirror_pad(b, n):
+    """Map ONNX MirrorPad attributes to TFLite MirrorPadOptions."""
     b.start_object(1)
     b.add_field_int8(0, 0, 0)
     return b.end_object()
 
 
 def _map_pack(b, n):
+    """Map ONNX SequenceConstruct to TFLite PackOptions."""
     b.start_object(2)
     b.add_field_int32(0, len(n.inputs), 0)
     b.add_field_int32(1, 0, 0)
@@ -645,6 +681,7 @@ def _map_pack(b, n):
 
 
 def _map_unpack(b, n):
+    """Map ONNX SplitToSequence to TFLite UnpackOptions."""
     b.start_object(2)
     b.add_field_int32(0, len(n.outputs), 0)
     b.add_field_int32(1, 0, 0)
@@ -652,6 +689,7 @@ def _map_unpack(b, n):
 
 
 def _map_math_fused(b, n):
+    """Map fused activation attributes to TFLite math options."""
     act_attr = n.attributes.get("fused_activation")
     act = act_attr.value if act_attr else ""
     act_val = 1 if act == "Relu" else (3 if act == "Relu6" else 0)
@@ -661,6 +699,7 @@ def _map_math_fused(b, n):
 
 
 def _map_leaky_relu(b, n):
+    """Map ONNX LeakyRelu attributes to TFLite LeakyReluOptions."""
     alpha = n.attributes.get("alpha").value if n.attributes.get("alpha") else 0.01
     b.start_object(1)
     b.add_field_float32(0, alpha, 0.0)
@@ -668,12 +707,14 @@ def _map_leaky_relu(b, n):
 
 
 def _map_gelu(b, n):
+    """Map ONNX Gelu attributes to TFLite GeluOptions."""
     b.start_object(1)
     b.add_field_int8(0, 0, 0)
     return b.end_object()
 
 
 def _map_reshape(b, n, graph=None):
+    """Map ONNX Reshape attributes to TFLite ReshapeOptions, including static shape extraction."""
     new_shape_offset = 0
     if len(n.inputs) > 1 and graph and graph.tensors:
         shape_input = n.inputs[1]
@@ -694,12 +735,14 @@ def _map_reshape(b, n, graph=None):
 
 
 def _map_squeeze(b, n):
+    """Map ONNX Squeeze attributes to TFLite SqueezeOptions."""
     b.start_object(1)
     b.add_field_offset(0, 0, 0)
     return b.end_object()
 
 
 def _map_concat(b, n):
+    """Map ONNX Concat attributes to TFLite ConcatenationOptions."""
     axis = n.attributes.get("axis").value if n.attributes.get("axis") else 0
     b.start_object(3)
     b.add_field_int32(0, axis, 0)
@@ -708,6 +751,7 @@ def _map_concat(b, n):
 
 
 def _map_reducer(b, n):
+    """Map ONNX Global Pooling to TFLite ReducerOptions."""
     b.start_object(2)
     b.add_field_int8(0, 1, 0)
     return b.end_object()
@@ -715,6 +759,7 @@ def _map_reducer(b, n):
 
 # 114. Extract pool filter_height, filter_width.
 def map_pool2d_options(builder: any, node: Node, graph=None) -> int:
+    """Map ONNX Pool attributes to TFLite Pool2DOptions."""
     strides_attr = node.attributes.get("strides")
     kernel_attr = node.attributes.get("kernel_shape")
     pads_attr = node.attributes.get("pads")
@@ -754,6 +799,7 @@ def map_pool2d_options(builder: any, node: Node, graph=None) -> int:
 
 # 101. Emit CONV_2D
 def map_conv2d_options(builder: any, node: Node, graph=None) -> int:
+    """Map ONNX Conv attributes to TFLite Conv2DOptions."""
     strides_attr = node.attributes.get("strides")
     dilations_attr = node.attributes.get("dilations")
     pads_attr = node.attributes.get("pads")
@@ -797,6 +843,7 @@ def map_conv2d_options(builder: any, node: Node, graph=None) -> int:
 
 # 108. Emit DEPTHWISE_CONV_2D
 def map_depthwise_conv2d_options(builder: any, node: Node, graph=None) -> int:
+    """Map ONNX Depthwise Conv attributes to TFLite DepthwiseConv2DOptions."""
     strides_attr = node.attributes.get("strides")
     dilations_attr = node.attributes.get("dilations")
     pads_attr = node.attributes.get("pads")
@@ -834,6 +881,15 @@ def map_depthwise_conv2d_options(builder: any, node: Node, graph=None) -> int:
 
 
 def map_onnx_node_to_tflite(node: Node) -> Optional[TFLiteOperatorMapping]:
+    """Map an ONNX node to its TFLite operator mapping.
+
+    Args:
+        node: The ONNX node to map.
+
+    Returns:
+        The TFLiteOperatorMapping if successful, else None.
+
+    """
     if node.op_type in ELEMENTWISE_OPS:
         mapping = ELEMENTWISE_OPS[node.op_type]
         if node.op_type == "Resize":

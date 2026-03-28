@@ -215,11 +215,11 @@ def test_analyze_tree_depth_no_depths_mock(monkeypatch):
         """Represents the SneakyInt class and its associated logic."""
 
         def __eq__(self, other):
-            """Tests the eq   functionality."""
+            """Test the eq   functionality."""
             return False
 
         def __ne__(self, other):
-            """Tests the ne   functionality."""
+            """Test the ne   functionality."""
             return False
 
     t = TreeAbstractions()

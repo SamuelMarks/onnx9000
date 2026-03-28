@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import pytest
 import onnx9000_optimum
 import onnx9000_optimum.export
@@ -9,6 +11,7 @@ import sys
 
 
 def test_auto_detect_task():
+    """Docstring."""
     importlib.reload(onnx9000_optimum.export)
     from onnx9000_optimum.export import auto_detect_task
 
@@ -18,6 +21,7 @@ def test_auto_detect_task():
 
 
 def test_export_model():
+    """Docstring."""
     importlib.reload(onnx9000_optimum.export)
     from onnx9000_optimum.export import export_model
 
@@ -25,6 +29,7 @@ def test_export_model():
 
 
 def test_optimize_model():
+    """Docstring."""
     importlib.reload(onnx9000_optimum.optimize)
     from onnx9000_optimum.optimize import optimize_model
 
@@ -32,6 +37,7 @@ def test_optimize_model():
 
 
 def test_quantize_model():
+    """Docstring."""
     importlib.reload(onnx9000_optimum.quantize)
     from onnx9000_optimum.quantize import quantize_model
 
@@ -39,6 +45,7 @@ def test_quantize_model():
 
 
 def test_architectures():
+    """Docstring."""
     importlib.reload(onnx9000_optimum.architectures)
     from onnx9000_optimum.architectures import BERTConfig
 

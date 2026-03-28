@@ -10,7 +10,7 @@ class MockTree:
     """Represents the Mock Tree class."""
 
     def __init__(self):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.classes_ = np.array(["A", "B"])
 
 

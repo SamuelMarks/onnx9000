@@ -16,7 +16,7 @@ def test_autograd_simple_graph(tmp_path: Path) -> None:
 
     @script
     def simple_model(x, w):
-        """Tests the simple_model functionality."""
+        """Test the simple_model functionality."""
         h = x + w
         return op.Relu(h)
 
@@ -101,7 +101,7 @@ def test_autograd_matmul_coverage(tmp_path: Path) -> None:
 
     @script
     def matmul_model(x, w):
-        """Tests the matmul model functionality."""
+        """Test the matmul model functionality."""
         h = x @ w
         return h
 

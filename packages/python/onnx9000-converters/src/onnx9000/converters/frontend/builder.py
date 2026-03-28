@@ -66,7 +66,7 @@ class GraphBuilder:
         return g
 
     def add_node(self, node: Node) -> None:
-        """Appends a node to the execution plan."""
+        """Append a node to the execution plan."""
         self.nodes.append(node)
 
 

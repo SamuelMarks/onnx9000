@@ -147,5 +147,5 @@ def test_parser_uncovered_paths() -> None:
     assert len(g2.inputs) == 1
     assert "v1" in g2.tensors
     assert g2.tensors["v1"].shape[0].value == "N"
-    assert g2.tensors["v1"].shape[1] == -1
+    assert g2.tensors["v1"].shape[1].value == "-1"
     assert "v2" in g2.tensors

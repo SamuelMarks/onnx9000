@@ -6,7 +6,7 @@ from onnx9000.optimizer.hardware.pipeline import PipelineOptimizer
 
 
 def create_mock_pipeline_graph():
-    """Tests the create_mock_pipeline_graph functionality."""
+    """Test the create_mock_pipeline_graph functionality."""
     g = Graph("pipeline_graph")
     g.inputs = ["in1", "in2"]
     g.outputs = ["out1"]

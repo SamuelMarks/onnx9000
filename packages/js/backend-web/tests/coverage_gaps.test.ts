@@ -143,6 +143,40 @@ describe('Coverage gaps for WebNN Context', () => {
     // Restore
     (globalThis as any).MLGraphBuilder = orig;
   });
+
+  it('should use window.MLGraphBuilder if window is defined', async () => {
+    const mockContext = { compute: vi.fn() };
+    Object.defineProperty(global, 'navigator', {
+      value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
+      configurable: true,
+    });
+
+    const mockBuilderClass = class {
+      constructor() {}
+      input() {
+        return {};
+      }
+      constant() {
+        return {};
+      }
+      build() {
+        return Promise.resolve({ destroy: vi.fn() });
+      }
+    };
+
+    vi.stubGlobal('window', { MLGraphBuilder: mockBuilderClass });
+
+    const manager = WebNNContextManager.getInstance();
+    await manager.initialize();
+    expect(manager.getBuilder()).toBeDefined();
+
+    vi.unstubAllGlobals();
+  });
+
+  it('should return null capabilities if not initialized', () => {
+    const manager = WebNNContextManager.getInstance();
+    expect(manager.getCapabilities()).toBeNull();
+  });
 });
 
 describe('Coverage gaps for Session & Partitioner', () => {

@@ -1,0 +1,62 @@
+export enum DataType {
+  kFLOAT = 0,
+  kHALF = 1,
+  kINT8 = 2,
+  kINT32 = 3,
+  kBOOL = 4,
+  kUINT8 = 5,
+  kFP8 = 6,
+}
+
+export enum ElementWiseOperation {
+  kSUM = 0,
+  kPROD = 1,
+  kMAX = 2,
+  kMIN = 3,
+  kSUB = 4,
+  kDIV = 5,
+  kMINIMUM = 6,
+  kPOW = 7,
+  kFLOOR_DIV = 8,
+  kAND = 9,
+  kOR = 10,
+  kXOR = 11,
+  kEQUAL = 12,
+  kGREATER = 13,
+  kLESS = 14,
+}
+
+export enum ActivationType {
+  kRELU = 0,
+  kSIGMOID = 1,
+  kTANH = 2,
+  kLEAKY_RELU = 3,
+  kELU = 4,
+  kSELU = 5,
+  kSOFTSIGN = 6,
+  kSOFTPLUS = 7,
+  kCLIP = 8,
+  kHARD_SIGMOID = 9,
+  kSCALED_TANH = 10,
+  kTHRESHOLDED_RELU = 11,
+}
+
+export enum BuilderFlag {
+  kFP16 = 0,
+  kINT8 = 1,
+  kDEBUG = 2,
+  kGPU_FALLBACK = 3,
+  kSTRICT_TYPES = 4,
+  kREFIT = 5,
+  kDISABLE_TIMING_CACHE = 6,
+  kTF32 = 7,
+  kSPARSE_WEIGHTS = 8,
+  kSAFETY_SCOPE = 9,
+  kOBEY_PRECISION_CONSTRAINTS = 10,
+  kREJECT_EMPTY_ALGORITHMS = 11,
+  kDIRECT_IO = 12,
+  kREJECT_EMPTY_TUNING = 13,
+  kPREFER_PRECISION_CONSTRAINTS = 14,
+  kFP8 = 15,
+  kERROR_ON_TIMING_CACHE_MISS = 16,
+}

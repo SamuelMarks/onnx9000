@@ -1,3 +1,5 @@
+"""Module providing functionality for test_hub_extra."""
+
 import os
 from unittest.mock import patch, MagicMock
 from onnx9000.toolkit.safetensors.hub import cached_download
@@ -5,6 +7,7 @@ from onnx9000.toolkit.safetensors.hub import cached_download
 
 @patch("onnx9000.toolkit.safetensors.hub.urlopen")
 def test_download_from_hub_with_token(mock_urlopen):
+    """Test download from hub with token."""
     mock_response = MagicMock()
     mock_response.read.return_value = b""
     mock_urlopen.return_value.__enter__.return_value = mock_response

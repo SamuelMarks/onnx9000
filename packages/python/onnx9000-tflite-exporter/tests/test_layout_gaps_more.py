@@ -1,6 +1,11 @@
+"""Module docstring."""
+
+
 def test_layout_gaps_more():
+    """Docstring."""
     import struct
-    from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
+
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
     from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 
     # 53, 59-62 process_edge_cases
@@ -32,8 +37,10 @@ def test_layout_gaps_more():
 
 
 def test_layout_remaining_gaps():
+    """Docstring."""
     import struct
-    from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
+
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
     from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 
     # evaluate_constants non-numeric
@@ -163,8 +170,10 @@ def test_layout_remaining_gaps():
 
 
 def test_more_gaps():
+    """Additional tests for coverage in fusion, folding, and axis rewriting."""
     import struct
-    from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
+
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
     from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 
     # --- 249-251, 280 ---

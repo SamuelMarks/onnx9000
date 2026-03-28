@@ -1,3 +1,5 @@
+"""Tests for constant folding with NaN and infinity values."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldin
 
 
 def test_cf_mock_nan_types():
+    """Test constant folding with mocked NaN and infinity outputs."""
     cf = ConstantFoldingPass()
 
     g = Graph("G1")

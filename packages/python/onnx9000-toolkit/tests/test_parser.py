@@ -13,7 +13,7 @@ def test_script_decorator_basic() -> None:
 
     @script
     def my_model(x, y):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         z = op.Add(x, y)
         w = op.Relu(z)
         return w
@@ -32,7 +32,7 @@ def test_script_decorator_binop() -> None:
 
     @script
     def my_model(x, y):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         a = x + y
         b = a - y
         c = b * x
@@ -53,7 +53,7 @@ def test_script_decorator_closure() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         a = op.Add(x, local_val)
         b = op.Mul(a, GLOBAL_VAR)
         return b
@@ -69,7 +69,7 @@ def test_script_decorator_multi_assign() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         (val, idx) = op.TopK(x, 5)
         return (val, idx)
 
@@ -83,7 +83,7 @@ def test_script_decorator_if() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         y = x
         y = x if 1 > 0 else op.Neg(x)
         return y
@@ -102,7 +102,7 @@ def test_script_decorator_for() -> None:
 
     @script
     def my_model(x, max_trip):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         res = x
         for _i in max_trip:
             res = res + x
@@ -118,12 +118,12 @@ def test_script_decorator_inlining() -> None:
 
     @script
     def inner_model(x):
-        """Tests the inner model functionality."""
+        """Test the inner model functionality."""
         return op.Relu(x)
 
     @script
     def outer_model(x):
-        """Tests the outer model functionality."""
+        """Test the outer model functionality."""
         y = op.Add(x, 1)
         z = inner_model(y)
         return z
@@ -139,7 +139,7 @@ def test_script_decorator_parse_error() -> None:
 
     @script
     def my_model(x) -> NoReturn:
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         raise RuntimeError("Oops")
 
     with pytest.raises(ValueError, match="Parse error at line"):
@@ -147,7 +147,7 @@ def test_script_decorator_parse_error() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         res = x
         while res < 10:
             res = res + x
@@ -163,7 +163,7 @@ def test_script_decorator_listcomp() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         res = list(x)
         return res
 
@@ -176,7 +176,7 @@ def test_script_decorator_annotation_and_empty_return() -> None:
 
     @script
     def my_model(x: "Float[10, 20]", y) -> None:
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         op.Add(x, y)
         return
 
@@ -190,7 +190,7 @@ def test_script_decorator_unsupported() -> None:
 
     @script
     def my_model(x):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         print(x)
         return x
 
@@ -203,7 +203,7 @@ def test_script_decorator_unsupported_binop() -> None:
 
     @script
     def my_model(x, y):
-        """Tests the my model functionality."""
+        """Test the my model functionality."""
         z = x % y
         return z
 
@@ -217,7 +217,7 @@ def test_script_parser_docstring() -> None:
 
     @script
     def dummy_func_with_doc() -> int:
-        """This is a dummy docstring"""
+        """Thi is a dummy docstring"""
         return 1
 
     dummy_func_with_doc.to_builder()
@@ -240,7 +240,7 @@ def test_parser_missing_lines() -> None:
 
     @script
     def model_comp(x):
-        """Tests the model comp functionality."""
+        """Test the model comp functionality."""
         return x != 5
 
     builder = model_comp.to_builder()
@@ -254,13 +254,14 @@ def test_parser_missing_lines() -> None:
 
         @script
         def model_list(x):
-            """Tests the model list functionality."""
+            """Test the model list functionality."""
             return [i for i in x]  # noqa: C416
 
         model_list.to_builder()
 
 
 def test_conftest_coverage_dummy():
+    """Test conftest coverage dummy."""
     import sys
     from .conftest import CovDummy
 

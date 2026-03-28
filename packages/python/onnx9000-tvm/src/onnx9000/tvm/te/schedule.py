@@ -22,7 +22,7 @@ class Stage:
     def split(
         self, parent: IterVar, factor: Optional[int] = None, nparts: Optional[int] = None
     ) -> tuple[IterVar, IterVar]:
-        """Evaluates or manipulates TVM AST nodes."""
+        """Evaluate or manipulates TVM AST nodes."""
         if parent not in self.axes:
             raise ValueError(f"Axis {parent} not found in stage.")
         idx = self.axes.index(parent)
@@ -83,7 +83,7 @@ class Stage:
     def tile(
         self, x_parent: IterVar, y_parent: IterVar, x_factor: int, y_factor: int
     ) -> tuple[IterVar, IterVar, IterVar, IterVar]:
-        """Evaluates or manipulates TVM AST nodes."""
+        """Evaluate or manipulates TVM AST nodes."""
         xo, xi = self.split(x_parent, factor=x_factor)
         yo, yi = self.split(y_parent, factor=y_factor)
 

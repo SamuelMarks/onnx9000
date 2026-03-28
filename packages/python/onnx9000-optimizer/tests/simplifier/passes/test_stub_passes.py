@@ -26,7 +26,7 @@ class DummyPass(GraphPass):
     """Represents the Dummy Pass class."""
 
     def run(self, graph: Graph) -> bool:
-        """Executes the run operation."""
+        """Execute the run operation."""
         super().run(graph)
         return True
 

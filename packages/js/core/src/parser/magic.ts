@@ -41,7 +41,7 @@ export async function detectFormat(file: File | Blob): Promise<ModelFormat> {
     // Actually, MLModel is also a zip sometimes, or has its own structure.
     // For now we assume a zip might be PyTorch (often .pt or .pth)
     if ('name' in file) {
-      const f = file as File;
+      const f = file;
       if (f.name.endsWith('.pt') || f.name.endsWith('.pth')) return 'pt';
     }
   }
@@ -49,13 +49,13 @@ export async function detectFormat(file: File | Blob): Promise<ModelFormat> {
   // Safetensors: Starts with 8-byte little-endian header length
   // Then JSON. We can heuristically check if it ends in safetensors
   if ('name' in file) {
-    const f = file as File;
+    const f = file;
     if (f.name.endsWith('.safetensors')) return 'safetensors';
   }
 
   // Default fallback for strictly ONNX
   if ('name' in file) {
-    const f = file as File;
+    const f = file;
     if (f.name.endsWith('.onnx')) return 'onnx';
   }
 

@@ -14,7 +14,7 @@ class DummyProfilerResult:
     """Represents the Dummy Profiler Result class."""
 
     def __init__(self, node_profiles):
-        """Initializes the instance."""
+        """Initialize the instance."""
         self.node_profiles = node_profiles
 
 

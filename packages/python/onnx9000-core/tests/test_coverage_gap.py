@@ -47,15 +47,15 @@ def test_execution_provider_base() -> None:
         """Represents the DummyEP class and its associated logic."""
 
         def get_supported_nodes(self, graph):
-            """Tests the get supported nodes functionality."""
+            """Test the get supported nodes functionality."""
             return []
 
         def allocate_tensors(self, tensors) -> None:
-            """Tests the allocate tensors functionality."""
+            """Test the allocate tensors functionality."""
             return None
 
         def execute(self, graph, context, inputs):
-            """Tests the execute functionality."""
+            """Test the execute functionality."""
             return {}
 
     ep = DummyEP({"device_id": "1"})

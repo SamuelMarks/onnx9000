@@ -16,7 +16,7 @@ class SimpleModel(Module):
     """Class SimpleModel implementation."""
 
     def forward(self, x):
-        """Tests the forward functionality."""
+        """Test the forward functionality."""
         return x * 2.0 + 1.0
 
 
@@ -45,7 +45,7 @@ def test_export_args_coverage(tmp_path) -> None:
     from onnx9000.converters.frontend.exporter import export
 
     def my_fn(a, b):
-        """Tests the my_fn functionality."""
+        """Test the my_fn functionality."""
         return a + b
 
     t1 = Tensor((10,), DType.FLOAT32, "a")
@@ -68,7 +68,7 @@ def test_export_dynamic_axes() -> None:
     from onnx9000.converters.frontend.exporter import export
 
     def my_fn(a):
-        """Tests the my_fn functionality."""
+        """Test the my_fn functionality."""
         return a
 
     t1 = Tensor((10,), DType.FLOAT32, "a")
@@ -92,7 +92,7 @@ def test_export_large_model(tmp_path) -> None:
     from onnx9000.core.dtypes import DType
 
     def my_fn(a):
-        """Tests the my_fn functionality."""
+        """Test the my_fn functionality."""
         return a
 
     t1 = Tensor((10,), DType.FLOAT32, "a")
@@ -116,7 +116,7 @@ def test_exporter_large_model(tmpdir) -> None:
     from onnx9000.converters.frontend.tensor import Tensor
 
     def simple_func(x):
-        """Tests the simple_func functionality."""
+        """Test the simple_func functionality."""
         return x
 
     out_file = tmpdir.join("huge.onnx")
@@ -134,7 +134,7 @@ def test_exporter_file_like_object() -> None:
     from onnx9000.converters.frontend.tensor import Tensor
 
     def simple_func(x):
-        """Tests the simple_func functionality."""
+        """Test the simple_func functionality."""
         return x
 
     t = Tensor(shape=(1,), dtype=DType.FLOAT32, name="x")

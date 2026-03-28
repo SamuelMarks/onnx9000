@@ -1,3 +1,5 @@
+"""Command-line interface for the ONNX to TFLite exporter."""
+
 import argparse
 import sys
 
@@ -6,6 +8,14 @@ from onnx9000.tflite_exporter.exporter import TFLiteExporter
 
 
 def main(args=None):
+    """Main entry point for the onnx2tf CLI.
+
+    Parses command-line arguments and triggers the ONNX to TFLite conversion.
+
+    Args:
+        args: Optional list of command-line arguments. Defaults to sys.argv[1:].
+
+    """
     # 281. Implement CLI: onnx9000 onnx2tf model.onnx -o model.tflite
     if args is None:
         args = sys.argv[1:]

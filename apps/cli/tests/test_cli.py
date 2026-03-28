@@ -1,7 +1,7 @@
 """Tests the cli module functionality."""
 
 import sys
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 from onnx9000_cli.main import (
@@ -48,6 +48,9 @@ def test_cli_commands(capsys) -> None:
         output="out.onnx",
         overwrite=True,
         diff_json=False,
+        prune=False,
+        quantize=False,
+        sparsity=0.5,
     )
     inspect_cmd(args)
     assert "Inspecting test.onnx..." in capsys.readouterr().out
@@ -57,16 +60,19 @@ def test_cli_commands(capsys) -> None:
         patch("onnx9000_cli.main.save_onnx"),
         patch("onnx9000_cli.main.simplify") as mock_simplify,
     ):
-        mock_load.return_value = "mock_graph"
-        mock_simplify.return_value = "mock_simplified_graph"
+        mock_graph = MagicMock()
+        mock_graph.tensors = {}
+        mock_graph.nodes = []
+        mock_load.return_value = mock_graph
+        mock_simplify.return_value = mock_graph
         simplify_cmd(args)
-    assert "Simplifying..." in capsys.readouterr().out
+        assert "Simplifying..." in capsys.readouterr().out
 
-    optimize_cmd(args)
-    assert "Optimizing test.onnx..." in capsys.readouterr().out
+        optimize_cmd(args)
+        assert "Optimizing test.onnx..." in capsys.readouterr().out
 
-    quantize_cmd(args)
-    assert "Quantizing test.onnx..." in capsys.readouterr().out
+        quantize_cmd(args)
+        assert "Quantizing test.onnx..." in capsys.readouterr().out
 
     export_cmd(args)
     assert "Exporting test.py..." in capsys.readouterr().out

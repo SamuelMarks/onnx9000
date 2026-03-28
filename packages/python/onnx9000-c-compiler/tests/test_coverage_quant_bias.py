@@ -1,3 +1,5 @@
+"""Tests for quantized convolution with bias in the C compiler."""
+
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.quantization import generate_qlinear_conv
 from onnx9000.core.ir import Node, Tensor
@@ -5,6 +7,7 @@ from onnx9000.core.dtypes import DType
 
 
 def test_qlinear_conv_bias():
+    """Test QLinearConv with bias."""
     b = C89Builder()
     n = Node("QLinearConv", ["X", "xS", "xZ", "W", "wS", "wZ", "yS", "yZ", "B"], ["Y"])
     # 9 inputs implies bias is included

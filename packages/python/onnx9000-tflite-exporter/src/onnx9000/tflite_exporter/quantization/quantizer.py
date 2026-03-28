@@ -1,8 +1,7 @@
-import logging
-import struct
+"""TFLite quantization utilities and weight quantizers."""
 
-import struct
 import logging
+import struct
 from typing import Dict, List
 from onnx9000.core.ir import Graph, Tensor
 from ..flatbuffer.schema import QuantizationParameters
@@ -11,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class TensorQuantization:
+    """Container for tensor quantization parameters."""
+
     def __init__(
         self,
         min: List[float],
@@ -19,6 +20,7 @@ class TensorQuantization:
         zero_point: List[int],
         quantized_dimension: int,
     ):
+        """Initialize TensorQuantization parameters."""
         self.min = min
         self.max = max
         self.scale = scale
@@ -27,12 +29,16 @@ class TensorQuantization:
 
 
 class Quantizer:
+    """TFLite model quantizer."""
+
     def __init__(self, graph: Graph, mode: str = "none"):
+        """Initialize the Quantizer with a graph and quantization mode."""
         self.graph = graph
         self.mode = mode
         self.quantization_map: Dict[str, TensorQuantization] = {}
 
     def get_quantization_offset(self, builder, tensor: Tensor) -> int:
+        """Create and return the FlatBuffer offset for a tensor's quantization parameters."""
         q = self.quantization_map.get(tensor.name)
         if not q:
             return 0
@@ -78,6 +84,7 @@ class Quantizer:
         )
 
     def quantize(self) -> None:
+        """Apply quantization to the graph based on the selected mode."""
         if self.mode == "none":
             return
         if self.mode == "fp16":
@@ -86,6 +93,7 @@ class Quantizer:
             self.quantize_int8()
 
     def quantize_fp16(self) -> None:
+        """Quantize the graph to FLOAT16."""
         # 241. Downcast FLOAT32 FlatBuffer arrays entirely to FLOAT16 bytes explicitly for FP16 models.
         for name, tensor in self.graph.tensors.items():
             if tensor.dtype == "float32" and tensor.is_initializer and tensor.data is not None:
@@ -93,6 +101,7 @@ class Quantizer:
                 tensor.data = self._float32_to_float16_bytes(tensor.data)
 
     def _float32_to_float16_bytes(self, f32_bytes: bytes) -> bytes:
+        """Convert float32 bytes to float16 bytes."""
         num_floats = len(f32_bytes) // 4
         f32_array = struct.unpack(f"<{num_floats}f", f32_bytes)
 
@@ -103,6 +112,7 @@ class Quantizer:
         return struct.pack(f"<{num_floats}H", *f16_array)
 
     def _to_half(self, val: float) -> int:
+        """Convert a single float32 to float16 (represented as an int)."""
         # Simplistic IEEE 754 float32 to float16 packing
         x = struct.unpack("<I", struct.pack("<f", val))[0]
 
@@ -126,6 +136,7 @@ class Quantizer:
         return bits & 0xFFFF
 
     def quantize_int8(self) -> None:
+        """Quantize the graph to INT8."""
         has_uint8 = False
         has_int16 = False
         minmax_extracted = 0

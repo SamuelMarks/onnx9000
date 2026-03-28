@@ -24,7 +24,7 @@ def export(
     custom_opsets: Optional[dict[str, int]] = None,
     do_constant_folding: bool = True,
 ) -> None:
-    """Exports a model into ONNX format."""
+    """Export a model into ONNX format."""
     if not isinstance(args, tuple):
         args = (args,)
     builder = trace(model, *args)

@@ -11,15 +11,15 @@ class DummyProvider(ExecutionProvider):
     """Represents the Dummy Provider class."""
 
     def get_supported_nodes(self, graph):
-        """Executes the get supported nodes operation."""
+        """Execute the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type == "Identity"]
 
     def allocate_tensors(self, tensors) -> None:
-        """Executes the allocate tensors operation."""
+        """Execute the allocate tensors operation."""
         self.allocated = True
 
     def execute(self, graph, context, inputs):
-        """Executes the execute operation."""
+        """Execute the execute operation."""
         res = {}
         for node in graph.nodes:
             if node.op_type == "Identity" and all(i in inputs for i in node.inputs):
@@ -31,15 +31,15 @@ class CPUProvider(ExecutionProvider):
     """Represents the C P U Provider class."""
 
     def get_supported_nodes(self, graph):
-        """Executes the get supported nodes operation."""
+        """Execute the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type in ["Add", "MemcpyToHost"]]
 
     def allocate_tensors(self, tensors) -> None:
-        """Executes the allocate tensors operation."""
+        """Execute the allocate tensors operation."""
         self.allocated = True
 
     def execute(self, graph, context, inputs):
-        """Executes the execute operation."""
+        """Execute the execute operation."""
         res = {}
         for node in graph.nodes:
             if node.op_type in ["Add", "MemcpyToHost"] and all(i in inputs for i in node.inputs):

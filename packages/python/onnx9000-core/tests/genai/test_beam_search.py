@@ -1,3 +1,6 @@
+"""Module providing functionality for test_beam_search."""
+
+
 def test_beam_search_logic():
     """Test beam search logic end-to-end with GeneratorParams and basic state."""
     from onnx9000.core.ir import Graph, Tensor

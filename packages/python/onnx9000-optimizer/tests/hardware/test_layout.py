@@ -7,7 +7,7 @@ from onnx9000.optimizer.hardware.layout import LayoutOptimizer
 
 
 def create_mock_graph():
-    """Tests the create_mock_graph functionality."""
+    """Test the create_mock_graph functionality."""
     g = Graph("mock_graph")
     t1 = Tensor("input", (1, 3, 224, 224), DType.FLOAT32)
     t2 = Tensor("output", (1, 16, 112, 112), DType.FLOAT32)

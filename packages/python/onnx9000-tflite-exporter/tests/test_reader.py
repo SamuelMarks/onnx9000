@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
@@ -6,6 +8,7 @@ from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator
 
 
 def test_flatbuffer_reader():
+    """Docstring."""
     builder = FlatBufferBuilder()
 
     str_offset = builder.create_string("test_string")
@@ -31,6 +34,7 @@ def test_flatbuffer_reader():
 
 
 def test_tflite_exporter_reader():
+    """Docstring."""
     exporter = TFLiteExporter()
     exporter.add_metadata("TestMeta", b"\x01\x02\x03")
     exporter.get_or_add_operator_code(BuiltinOperator.ADD)
@@ -50,6 +54,7 @@ def test_tflite_exporter_reader():
 
 
 def test_reader_edge_cases():
+    """Docstring."""
     reader = FlatBufferReader(b"short")
     assert not reader.check_magic_bytes("TFL3")
 

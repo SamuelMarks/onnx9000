@@ -1,3 +1,5 @@
+"""Minimal FlatBuffer builder implementation for TFLite export."""
+
 import struct
 from typing import Optional, Union
 

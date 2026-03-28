@@ -24,3 +24,6 @@ export async function save(graph: Graph): Promise<ArrayBuffer> {
   const bytes = serializeModelProto(graph);
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
+export * from './sparse.js';
+
+export * from './checker';

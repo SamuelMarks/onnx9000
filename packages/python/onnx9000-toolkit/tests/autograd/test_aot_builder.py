@@ -45,11 +45,11 @@ def test_stop_gradient() -> None:
     builder = AOTBuilder(g)
 
     def dummy_loss(graph, x, y, out):
-        """Tests the dummy loss functionality."""
+        """Test the dummy loss functionality."""
         graph.add_node(Node("Sub", [x, y], [out]))
 
     def dummy_opt(graph, lr, params):
-        """Tests the dummy opt functionality."""
+        """Test the dummy opt functionality."""
         pass
 
     bwd = builder.build_training_graph(dummy_loss, dummy_opt, "lr")
@@ -68,11 +68,11 @@ def test_scalar_gradient() -> None:
     builder = AOTBuilder(g)
 
     def dummy_loss(graph, x, y, out):
-        """Tests the dummy loss functionality."""
+        """Test the dummy loss functionality."""
         graph.add_node(Node("Sub", [x, y], [out]))
 
     def dummy_opt(graph, lr, params):
-        """Tests the dummy opt functionality."""
+        """Test the dummy opt functionality."""
         pass
 
     bwd = builder.build_training_graph(dummy_loss, dummy_opt, "lr")

@@ -1,21 +1,26 @@
+"""TensorFlow SavedModel (Protobuf) generation utilities."""
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class TFProtobufEncoder:
-    """
-    Zero-dependency TensorFlow SavedModel (Protobuf) Generator.
+    """Zero-dependency TensorFlow SavedModel (Protobuf) Generator.
     246. Implement zero-dependency saved_model.pb Protobuf generator.
     """
 
     def encode(self, model: dict) -> bytes:
+        """Encode a model dictionary into SavedModel Protobuf bytes."""
         logger.info("[onnx2tf] Encoding SavedModel Protobuf...")
         return b"\x0a\x14\x0a\x04\x54\x45\x53\x54"
 
 
 class SavedModelGenerator:
+    """Generator for TensorFlow SavedModel from ONNX graph."""
+
     def generate_from_onnx(self, graph) -> dict:
+        """Generate a TensorFlow SavedModel dictionary from an ONNX graph."""
         tf_nodes = []
 
         # 251. Map ONNX Initializers directly to TF Const nodes.
@@ -75,6 +80,7 @@ class SavedModelGenerator:
         return {"savedModelSchemaVersion": 1, "metaGraphs": [meta_graph]}
 
     def _map_op(self, onnx_op: str) -> str:
+        """Map ONNX operator type to TensorFlow operator type."""
         if onnx_op == "Add":
             return "AddV2"
         if onnx_op == "Mul":

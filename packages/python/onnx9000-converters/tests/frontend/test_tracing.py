@@ -36,15 +36,19 @@ def test_jit_decorator() -> None:
     """Tests the test jit decorator functionality."""
 
     def simple_model(x, w):
-        """Tests the simple_model functionality."""
+        """Test the simple_model functionality."""
         h = x @ w
         return h.relu()
 
     class MockT:
+        """Docstring."""
+
         def __matmul__(self, o):
+            """Docstring."""
             return MockT()
 
         def relu(self):
+            """Docstring."""
             return self
 
     simple_model(MockT(), MockT())

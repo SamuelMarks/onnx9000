@@ -13,7 +13,7 @@ class MyDictModule(Module):
     """Class MyDictModule implementation."""
 
     def forward(self, x):
-        """Tests the forward functionality."""
+        """Test the forward functionality."""
         return {"out1": x + 1, "out2": x * 2}
 
 
@@ -29,7 +29,7 @@ def test_tracer_fallback() -> None:
     """Tests the test_tracer_fallback functionality."""
 
     def err_func(x) -> NoReturn:
-        """Tests the err_func functionality."""
+        """Test the err_func functionality."""
         raise ValueError("Simulated eager error")
 
     x = Tensor((2, 2), DType.FLOAT32, "x")

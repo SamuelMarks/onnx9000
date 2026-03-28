@@ -12,7 +12,7 @@ class MyModel(Module):
     """Class MyModel implementation."""
 
     def __init__(self) -> None:
-        """Tests the __init__ functionality."""
+        """Test the __init__ functionality."""
         super().__init__()
         self.conv1 = Conv2d(3, 16, 3)
         self.bn1 = BatchNorm2d(16)

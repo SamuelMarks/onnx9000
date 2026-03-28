@@ -93,7 +93,7 @@ def test_tensor_init_bad_data() -> None:
         """Class Bad implementation."""
 
         def __array__(self):
-            """Tests the __array__ functionality."""
+            """Test the __array__ functionality."""
             raise ValueError("bad")
 
     t = Tensor(data=Bad())

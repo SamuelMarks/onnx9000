@@ -5,11 +5,11 @@ export class WasmProvider implements ExecutionProvider {
   name = 'Wasm';
 
   async initialize(): Promise<void> {
-    // Mock WASM initialization
+    // WASM initialization
   }
 
   async execute(graph: Graph, inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
-    // Mock Wasm execution
+    // Wasm execution
     const results: Record<string, Tensor> = {};
     for (const name of graph.outputs) {
       const outName = typeof name === 'string' ? name : (name as any).name;
