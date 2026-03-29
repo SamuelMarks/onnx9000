@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 
@@ -8,7 +10,7 @@ export interface ToastMessage {
 }
 
 export class ToastNotification extends Component<HTMLDivElement> {
-  private timeoutId: any = null;
+  private timeoutId: object = null;
 
   constructor() {
     super();

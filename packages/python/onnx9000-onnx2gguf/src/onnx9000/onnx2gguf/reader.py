@@ -1,8 +1,9 @@
 """Module providing onnx2gguf functionality."""
 
 import struct
-from typing import BinaryIO, Any
-from .builder import GGUFValueType, GGUFTensorType
+from typing import Any, BinaryIO
+
+from .builder import GGUFTensorType, GGUFValueType
 
 
 class GGUFReader:

@@ -2,10 +2,12 @@
 
 import json
 from typing import Any
-from onnx9000.core.ir import Graph, Node, Tensor
+
 from onnx9000.core.dtypes import DType
-from .reader import GGUFReader
+from onnx9000.core.ir import Graph, Node, Tensor
+
 from .builder import GGUFTensorType
+from .reader import GGUFReader
 
 
 def reverse_map_name(gguf_name: str) -> str:

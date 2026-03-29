@@ -1,10 +1,12 @@
-import time
 import os
 import tempfile
+import time
+
 import numpy as np
 
 try:
-    from safetensors.numpy import save_file as rust_save_file, load_file as rust_load_file
+    from safetensors.numpy import load_file as rust_load_file
+    from safetensors.numpy import save_file as rust_save_file
 
     HAS_RUST_SAFETENSORS = True
 except ImportError:
@@ -12,7 +14,8 @@ except ImportError:
 
 import pickle
 
-from onnx9000.toolkit.safetensors.parser import save_file as py_save_file, load_file as py_load_file
+from onnx9000.toolkit.safetensors.parser import load_file as py_load_file
+from onnx9000.toolkit.safetensors.parser import save_file as py_save_file
 
 
 def run_benchmark():
@@ -54,20 +57,20 @@ def run_benchmark():
         # Pickle
         t0 = time.perf_counter()
         with open(p_pkl, "rb") as f:
-            loaded_pkl = pickle.load(f)
+            pickle.load(f)
         t1 = time.perf_counter()
         print(f"Pickle load: {t1 - t0:.4f}s")
 
         # Py Safetensors
         t0 = time.perf_counter()
-        loaded_py = py_load_file(p_py)
+        py_load_file(p_py)
         t1 = time.perf_counter()
         print(f"Pure Python Safetensors load (mmap): {t1 - t0:.4f}s")
 
         # Rust Safetensors
         if HAS_RUST_SAFETENSORS:
             t0 = time.perf_counter()
-            loaded_rust = rust_load_file(p_rust)
+            rust_load_file(p_rust)
             t1 = time.perf_counter()
             print(f"Rust Safetensors load: {t1 - t0:.4f}s")
         else:

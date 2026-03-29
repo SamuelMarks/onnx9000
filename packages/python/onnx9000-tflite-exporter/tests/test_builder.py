@@ -36,12 +36,12 @@ def test_builder_edge_cases():
     assert builder.vtable is None
 
     # Test create_string with bytes
-    str_off = builder.create_string(b"bytes_string")
+    builder.create_string(b"bytes_string")
 
     # Test add_field_float64
     builder.start_object(1)
     builder.add_field_float64(0, 3.1415926535, 0.0)
-    root = builder.end_object()
+    builder.end_object()
 
     # Test end_object without start_object
     try:

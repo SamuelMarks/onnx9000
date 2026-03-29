@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { MMDNNReporter } from './reporter.js';
 

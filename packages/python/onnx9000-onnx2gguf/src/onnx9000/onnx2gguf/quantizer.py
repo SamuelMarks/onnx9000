@@ -1,6 +1,7 @@
 """Module providing onnx2gguf functionality."""
 
 import struct
+
 import numpy as np
 
 

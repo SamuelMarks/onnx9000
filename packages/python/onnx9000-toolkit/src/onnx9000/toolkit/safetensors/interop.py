@@ -1,6 +1,7 @@
 """Provide functionality for this module."""
 
 from typing import Any
+
 from .parser import load_file
 
 

@@ -6,18 +6,17 @@ module functions, handling subcommand dispatch and related errors cleanly.
 """
 
 import argparse
-import pytest
 import sys
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 # Mock the entire onnx9000_optimum namespace before importing functions that might rely on it
-
-
 from onnx9000_cli.main import (
+    optimum_cmd,
     optimum_export_cmd,
     optimum_optimize_cmd,
     optimum_quantize_cmd,
-    optimum_cmd,
 )
 
 

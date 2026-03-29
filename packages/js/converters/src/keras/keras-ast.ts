@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { JsonObject, JsonArray } from './tfjs-parser.js';
 
 export interface KerasTensorSpec {

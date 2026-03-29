@@ -1,8 +1,9 @@
 """Module docstring."""
 
-import pytest
 import io
 import struct
+
+import pytest
 from onnx9000.onnx2gguf.reader import GGUFReader
 
 

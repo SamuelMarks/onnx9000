@@ -2,7 +2,7 @@
 
 import struct
 from enum import Enum
-from typing import Any, Union, BinaryIO
+from typing import Any, BinaryIO, Union
 
 
 class GGUFValueType(Enum):

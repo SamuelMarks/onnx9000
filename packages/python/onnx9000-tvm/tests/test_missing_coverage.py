@@ -1,22 +1,22 @@
 """Tests for TVM missing coverage."""
 
-from onnx9000.tvm.relay.ty import TensorType, TupleType, FuncType
-import pytest
 import numpy as np
+import pytest
+from onnx9000.tvm.relay.expr import (
+    Call,
+    Constant,
+    Function,
+    If,
+    Let,
+    Op,
+    TupleExpr,
+    TupleGetItem,
+    Var,
+)
 from onnx9000.tvm.relay.parser import IRSpy, load_json, save_json
 from onnx9000.tvm.relay.printer import Printer, astext
 from onnx9000.tvm.relay.structural_equal import structural_equal
-from onnx9000.tvm.relay.expr import (
-    Var,
-    Constant,
-    Op,
-    Call,
-    TupleExpr,
-    TupleGetItem,
-    Let,
-    If,
-    Function,
-)
+from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
 
 
 def test_parser_coverage():
@@ -91,20 +91,20 @@ def test_load_json_errors():
     t1 = TensorType((1, 2), "float32")
     t2 = TupleType([t1])
     t3 = FuncType([t1], t2)
-    s1 = spy.serialize_type(t1)
-    s2 = spy.serialize_type(t2)
-    s3 = spy.serialize_type(t3)
-    s4 = spy.serialize_type(None)
+    spy.serialize_type(t1)
+    spy.serialize_type(t2)
+    spy.serialize_type(t3)
+    spy.serialize_type(None)
     import json
 
     v = Var("x", type_annotation=t3)
     f = Function([v], v, ret_type=t3)
-    nid = spy.get_id(f)
+    spy.get_id(f)
     j = save_json(f)
-    loaded = load_json(j)
+    load_json(j)
     l = Let(v, v, v)
     j2 = save_json(l)
-    loaded2 = load_json(j2)
+    load_json(j2)
 
 
 def test_from_onnx_convenience():
@@ -124,8 +124,8 @@ def test_from_onnx_convenience():
 
 def test_cse_nested_change():
     """Test cse nested change."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op, TupleExpr
     from onnx9000.tvm.relay.transform.cse import CommonSubexprEliminator
-    from onnx9000.tvm.relay.expr import Call, Op, TupleExpr, Constant
 
     op = Op("add")
     c1 = Constant(1)
@@ -141,11 +141,11 @@ def test_cse_nested_change():
 
 def test_dead_code_elimination():
     """Test dead code elimination."""
+    from onnx9000.tvm.relay.expr import Constant, Let, Var
     from onnx9000.tvm.relay.transform.dead_code_elimination import DeadCodeElimination
-    from onnx9000.tvm.relay.expr import Var, Let, Constant
 
     v1 = Var("x")
-    v2 = Var("y")
+    Var("y")
     c1 = Constant(1)
     l1 = Let(v1, c1, v1)
     res = DeadCodeElimination().visit(l1)
@@ -161,7 +161,7 @@ def test_dead_code_elimination():
     mutate_var(c1)
     dce.visit(c1)
     dce.visit = mutate_var
-    new_let = dce.visit_let(l1)
+    dce.visit_let(l1)
 
     class FakeDCE(DeadCodeElimination):
         """FakeDCE implementation."""
@@ -178,8 +178,8 @@ def test_dead_code_elimination():
 
 def test_fold_constant_coverage():
     """Test fold constant coverage."""
-    from onnx9000.tvm.relay.transform.fold_constant import fold_constant, ConstantFolder
-    from onnx9000.tvm.relay.expr import Call, Op, Constant, Var
+    from onnx9000.tvm.relay.expr import Call, Constant, Op, Var
+    from onnx9000.tvm.relay.transform.fold_constant import ConstantFolder, fold_constant
 
     c1 = Constant(1)
     c2 = Constant(2)
@@ -195,8 +195,8 @@ def test_fold_constant_coverage():
 
 def test_fusion_coverage():
     """Test fusion coverage."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.fusion import OpFusionDetector
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     c1 = Constant(1)
     call_conv = Call(Op("Conv"), [c1])
@@ -209,10 +209,10 @@ def test_fusion_coverage():
 
 def test_infer_type_coverage():
     """Test infer type coverage."""
-    from onnx9000.tvm.relay.transform.infer_type import TypeChecker
-    from onnx9000.tvm.relay.expr import Constant, Op, Call, Let, Var, If, Function
-    from onnx9000.tvm.relay.ty import TensorType
     import numpy as np
+    from onnx9000.tvm.relay.expr import Call, Constant, Function, If, Let, Op, Var
+    from onnx9000.tvm.relay.transform.infer_type import TypeChecker
+    from onnx9000.tvm.relay.ty import TensorType
 
     c = Constant(np.array([1, 2]))
     c.type_annotation = None
@@ -245,8 +245,8 @@ def test_infer_type_coverage():
 
 def test_layout_transform_coverage():
     """Test layout transform coverage."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.layout import LayoutTransform
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     c1 = Constant(1)
     c2 = Constant(2)
@@ -284,9 +284,9 @@ def test_memory_plan_coverage():
 
 def test_resolve_shape_coverage():
     """Test resolve shape coverage."""
+    from onnx9000.tvm.relay.expr import Constant, Function, Var
     from onnx9000.tvm.relay.transform.resolve_shape import ShapeResolver
-    from onnx9000.tvm.relay.ty import TensorType, TupleType, FuncType
-    from onnx9000.tvm.relay.expr import Var, Function, Constant
+    from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
 
     sr = ShapeResolver({"N": 4})
     t1 = TensorType(["N"], "float32")
@@ -319,8 +319,8 @@ def test_resolve_shape_coverage():
 
 def test_simplify_coverage():
     """Test simplify coverage."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op, Var
     from onnx9000.tvm.relay.transform.simplify import AlgebraicSimplifier
-    from onnx9000.tvm.relay.expr import Call, Op, Constant, Var
 
     v = Var("x")
     s = AlgebraicSimplifier()
@@ -346,8 +346,8 @@ def test_simplify_coverage():
 
 def test_unroll_let_coverage():
     """Test unroll let coverage."""
+    from onnx9000.tvm.relay.expr import Constant, Let, Var
     from onnx9000.tvm.relay.transform.unroll_let import LetUnroller
-    from onnx9000.tvm.relay.expr import Let, Var, Constant
 
     v = Var("x")
     c1 = Constant(1)
@@ -361,8 +361,8 @@ def test_unroll_let_coverage():
 
 def test_visitor_coverage():
     """Test visitor coverage."""
+    from onnx9000.tvm.relay.expr import Constant, Let, TupleExpr, TupleGetItem, Var
     from onnx9000.tvm.relay.visitor import ExprMutator
-    from onnx9000.tvm.relay.expr import TupleExpr, TupleGetItem, Var, Constant, Let
 
     em = ExprMutator()
 
@@ -389,8 +389,8 @@ def test_visitor_coverage():
 
 def test_parser_exception_branch():
     """Test parser exception branch."""
-    from onnx9000.tvm.relay.parser import IRSpy
     from onnx9000.tvm.relay.expr import Constant
+    from onnx9000.tvm.relay.parser import IRSpy
 
     spy = IRSpy()
     import numpy as np
@@ -412,8 +412,8 @@ def test_parser_exception_branch():
 
 def test_parser_type_coverage():
     """Test parser type coverage."""
-    from onnx9000.tvm.relay.parser import load_json
     import pytest
+    from onnx9000.tvm.relay.parser import load_json
 
     if True:
         res = load_json(
@@ -424,19 +424,19 @@ def test_parser_type_coverage():
 
 def test_parser_tuple():
     """Test parser tuple."""
-    from onnx9000.tvm.relay.parser import load_json, save_json, IRSpy
     from onnx9000.tvm.relay.expr import TupleExpr, Var
+    from onnx9000.tvm.relay.parser import IRSpy, load_json, save_json
 
     v = Var("x")
     te = TupleExpr([v])
     spy = IRSpy()
-    nid = spy.get_id(te)
+    spy.get_id(te)
     return None
 
 
 def test_te_tensor_repr_ops():
     """Test te tensor repr ops."""
-    from onnx9000.tvm.te.tensor import IterVar, ReduceAxis, ExprOp, Add, Sub, Mul, Div, Const
+    from onnx9000.tvm.te.tensor import Add, Const, Div, ExprOp, IterVar, Mul, ReduceAxis, Sub
 
     v = IterVar("x")
     r = ReduceAxis("y", (0, 10))
@@ -465,7 +465,7 @@ def test_te_tensor_repr_ops():
 
 def test_var_const_repr():
     """Test var const repr."""
-    from onnx9000.tvm.te.tensor import Var, Const
+    from onnx9000.tvm.te.tensor import Const, Var
 
     v = Var("x")
     c = Const(1)
@@ -475,8 +475,8 @@ def test_var_const_repr():
 
 def test_topi_more():
     """Test topi more."""
-    from onnx9000.tvm.te.topi import nn_matmul, nn_pool2d, nn_softmax, nn_layer_norm
     from onnx9000.tvm.te.tensor import placeholder
+    from onnx9000.tvm.te.topi import nn_layer_norm, nn_matmul, nn_pool2d, nn_softmax
 
     A = placeholder(shape=(2, 3), dtype="float32")
     B = placeholder(shape=(3, 4), dtype="float32")
@@ -502,8 +502,8 @@ def test_tir_reprs():
 
 def test_tir_printer():
     """Test tir printer."""
-    from onnx9000.tvm.tir.printer import TIRPrinter, astext
     from onnx9000.tvm.tir.expr import FloatImm, StringImm
+    from onnx9000.tvm.tir.printer import TIRPrinter, astext
     from onnx9000.tvm.tir.stmt import Evaluate
 
     p = TIRPrinter()
@@ -515,6 +515,8 @@ def test_tir_printer():
 
 def test_remaining_relay():
     """Test remaining relay."""
+    import numpy as np
+    from onnx9000.tvm.relay.expr import Call, Function, Op, TupleExpr, TupleGetItem, Var
     from onnx9000.tvm.relay.printer import astext
     from onnx9000.tvm.relay.structural_equal import structural_equal
     from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
@@ -523,9 +525,7 @@ def test_remaining_relay():
     from onnx9000.tvm.relay.transform.layout import transform_layout
     from onnx9000.tvm.relay.transform.simplify import simplify_algebra
     from onnx9000.tvm.relay.ty import Type
-    from onnx9000.tvm.relay.expr import Var, Call, Op, TupleGetItem, TupleExpr, Function
     from onnx9000.tvm.te.schedule import create_schedule
-    import numpy as np
 
     c1 = Constant(np.array([1]))
     c2 = Constant(np.array([1]))
@@ -535,7 +535,7 @@ def test_remaining_relay():
     eliminate_common_subexpr(c1)
     fuse_ops(c1)
     t = TupleExpr([c1])
-    tg = TupleGetItem(t, 0)
+    TupleGetItem(t, 0)
     infer_type(c1)
     transform_layout(c1, "NCHW", "NHWC")
     simplify_algebra(c1)
@@ -544,7 +544,7 @@ def test_remaining_relay():
 
 def test_remaining_te_schedule():
     """Test remaining te schedule."""
-    from onnx9000.tvm.te.schedule import create_schedule, Stage, Schedule
+    from onnx9000.tvm.te.schedule import Schedule, Stage, create_schedule
     from onnx9000.tvm.te.tensor import ComputeOp, IterVar, Tensor
 
     t = Tensor((10,), "float32", "A")
@@ -562,8 +562,8 @@ def test_remaining_te_schedule():
         stage.bind(IterVar("fake"), "threadIdx.x")
     with pytest.raises(ValueError):
         _ = s[Tensor((10,), "float32", "B")]
-    t_cw = s.cache_write(t, "global")
-    t_cr = s.cache_read(t, "shared", [t])
+    s.cache_write(t, "global")
+    s.cache_read(t, "shared", [t])
     stage.unroll(IterVar("x"))
     stage.vectorize(IterVar("x"))
     stage.tensorize(IterVar("x"), "intrin")
@@ -594,6 +594,8 @@ def test_remaining_schedule_operations():
 
 def test_the_rest_for_real():
     """Test the rest for real."""
+    import numpy as np
+    from onnx9000.tvm.relay.expr import Constant, TupleExpr, TupleGetItem
     from onnx9000.tvm.relay.printer import astext
     from onnx9000.tvm.relay.structural_equal import structural_equal
     from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
@@ -602,8 +604,6 @@ def test_the_rest_for_real():
     from onnx9000.tvm.relay.transform.layout import transform_layout
     from onnx9000.tvm.relay.transform.simplify import simplify_algebra
     from onnx9000.tvm.relay.ty import Type
-    from onnx9000.tvm.relay.expr import Constant, TupleExpr, TupleGetItem
-    import numpy as np
 
     c1 = Constant(np.array([1]))
     eliminate_common_subexpr(c1)
@@ -615,8 +615,8 @@ def test_the_rest_for_real():
     infer_type(t)
     tg = TupleGetItem(t, 0)
     infer_type(tg)
+    from onnx9000.tvm.relay.expr import Call, Function, If, Let, Op, Var
     from onnx9000.tvm.relay.parser import load_json, save_json
-    from onnx9000.tvm.relay.expr import Op, Call, Let, If, Function, Var
 
     v = Var("x")
     op = Op("add")
@@ -632,18 +632,18 @@ def test_the_rest_for_real():
 
 def test_all_remaining_parser_branches():
     """Test all remaining parser branches."""
-    from onnx9000.tvm.relay.parser import load_json, save_json
     from onnx9000.tvm.relay.expr import (
-        Op,
         Call,
-        Let,
-        If,
-        Function,
-        Var,
         Constant,
+        Function,
+        If,
+        Let,
+        Op,
         TupleExpr,
         TupleGetItem,
+        Var,
     )
+    from onnx9000.tvm.relay.parser import load_json, save_json
 
     v = Var("x")
     c = Constant(1)
@@ -662,12 +662,13 @@ def test_all_remaining_parser_branches():
 
 def test_frontend_safetensors():
     """Test frontend safetensors."""
-    from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
-    import tempfile
-    import os
     import json
+    import os
+    import tempfile
 
-    with tempfile.TemporaryDirectory() as d:
+    from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
+
+    with tempfile.TemporaryDirectory():
         path = "/tmp/model.safetensors"
         try:
             load_safetensors_weights(path)
@@ -677,7 +678,7 @@ def test_frontend_safetensors():
 
 def test_final_stragglers():
     """Test final stragglers."""
-    from onnx9000.tvm.relay.expr import Expr, Constant
+    from onnx9000.tvm.relay.expr import Constant, Expr
 
     e1 = Expr()
     e2 = Expr()
@@ -698,12 +699,12 @@ def test_final_stragglers():
             """Test   eq  ."""
             return True
 
-    NoArrayEq() == NoArrayEq()
+    _ = NoArrayEq() == NoArrayEq()
     _ = NoArrayEq().shape
     c1 = Constant(NoArrayEq())
     c2 = Constant(NoArrayEq())
     structural_equal(c1, c2)
-    from onnx9000.tvm.relay.expr import Let, Var, Function
+    from onnx9000.tvm.relay.expr import Function, Let, Var
 
     v = Var("some_new_var")
     l = Let(v, Constant(1), v)
@@ -716,8 +717,8 @@ def test_final_stragglers():
     from onnx9000.tvm.relay.transform.fusion import fuse_ops
 
     fuse_ops(Constant(1))
-    from onnx9000.tvm.relay.transform.infer_type import infer_type
     from onnx9000.tvm.relay.expr import TupleExpr, TupleGetItem
+    from onnx9000.tvm.relay.transform.infer_type import infer_type
 
     t = TupleExpr([Constant(1)])
     infer_type(t)
@@ -733,10 +734,11 @@ def test_final_stragglers():
 
 def test_build_module_formats():
     """Test build module formats."""
-    from onnx9000.tvm.build_module import bundle_artifacts
-    import tempfile
     import os
+    import tempfile
+
     import pytest
+    from onnx9000.tvm.build_module import bundle_artifacts
 
     with tempfile.TemporaryDirectory() as d:
         tar_path = os.path.join(d, "out.tar")
@@ -754,19 +756,19 @@ def test_build_module_formats():
 
 def test_build_c_target():
     """Test build c target."""
-    from onnx9000.tvm.build_module import build, Target
     import onnx9000.tvm.te as te
+    from onnx9000.tvm.build_module import Target, build
     from onnx9000.tvm.relay.expr import Function, Var
 
     v = Var("x")
     f = Function([v], v)
     tgt = Target("c")
-    res = build(f, target=tgt)
+    build(f, target=tgt)
 
 
 def test_build_module_rest():
     """Test build module rest."""
-    from onnx9000.tvm.build_module import load_graph_inputs_override, generate_npm_package
+    from onnx9000.tvm.build_module import generate_npm_package, load_graph_inputs_override
 
     o = load_graph_inputs_override("input1:f32[1],input2:i64[1]")
     assert o["input1"]["dtype"] == "f32"
@@ -780,8 +782,8 @@ def test_build_module_rest():
 
 def test_relay_printer_more():
     """Test relay printer more."""
+    from onnx9000.tvm.relay.expr import Constant, Let, Var
     from onnx9000.tvm.relay.printer import astext
-    from onnx9000.tvm.relay.expr import Let, Var, Constant
 
     v = Var("x")
     l = Let(v, Constant(1), Constant(2))
@@ -790,9 +792,9 @@ def test_relay_printer_more():
 
 def test_relay_structural_equal_more():
     """Test relay structural equal more."""
-    from onnx9000.tvm.relay.structural_equal import structural_equal
-    from onnx9000.tvm.relay.expr import Constant, Let, Var, Function
     import numpy as np
+    from onnx9000.tvm.relay.expr import Constant, Function, Let, Var
+    from onnx9000.tvm.relay.structural_equal import structural_equal
 
     c1 = Constant(np.array([1]))
     c2 = Constant(np.array([1]))
@@ -814,7 +816,7 @@ def test_relay_structural_equal_more():
 
 def test_relay_transforms():
     """Test relay transforms."""
-    from onnx9000.tvm.relay.expr import Constant, Var, TupleExpr, TupleGetItem
+    from onnx9000.tvm.relay.expr import Constant, TupleExpr, TupleGetItem, Var
     from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
     from onnx9000.tvm.relay.transform.fusion import fuse_ops
     from onnx9000.tvm.relay.transform.infer_type import infer_type
@@ -842,8 +844,8 @@ def test_relay_ty_repr():
 
 def test_relay_printer_even_more():
     """Test relay printer even more."""
+    from onnx9000.tvm.relay.expr import Constant, Let, Var
     from onnx9000.tvm.relay.printer import astext
-    from onnx9000.tvm.relay.expr import Let, Var, Constant
 
     v = Var("x")
     l = Let(v, Constant(1), Let(v, Constant(2), Constant(3)))
@@ -852,9 +854,9 @@ def test_relay_printer_even_more():
 
 def test_all_hacks():
     """Test all hacks."""
-    from onnx9000.tvm.relay.structural_equal import structural_equal
-    from onnx9000.tvm.relay.expr import Constant, Let, Var, Function
     import numpy as np
+    from onnx9000.tvm.relay.expr import Constant, Function, Let, Var
+    from onnx9000.tvm.relay.structural_equal import structural_equal
 
     class Thrower2:
         """Thrower2 implementation."""
@@ -915,8 +917,8 @@ def test_all_hacks():
     f = Function([v], v)
     se.var_map = MapSpy()
     se.equal(f, f)
-    from onnx9000.tvm.relay.transform.cse import CommonSubexprEliminator
     from onnx9000.tvm.relay.expr import Call, Op
+    from onnx9000.tvm.relay.transform.cse import CommonSubexprEliminator
 
     cse = CommonSubexprEliminator()
     op = Op("add")
@@ -930,8 +932,8 @@ def test_all_hacks():
     of = OpFusionDetector()
     of.fusable_rules = {"Conv": ["Relu"]}
     of.visit_call(r)
+    from onnx9000.tvm.relay.expr import TupleExpr, TupleGetItem
     from onnx9000.tvm.relay.transform.infer_type import TypeChecker
-    from onnx9000.tvm.relay.expr import TupleGetItem, TupleExpr
 
     tc = TypeChecker()
     te = TupleExpr([c1])
@@ -953,13 +955,13 @@ def test_all_hacks():
 
 def test_entrypoints_more():
     """Test entrypoints more."""
+    import numpy as np
+    from onnx9000.tvm.relay.expr import Constant
     from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
     from onnx9000.tvm.relay.transform.fusion import fuse_ops
     from onnx9000.tvm.relay.transform.infer_type import infer_type
     from onnx9000.tvm.relay.transform.layout import transform_layout
     from onnx9000.tvm.relay.transform.simplify import simplify_algebra
-    from onnx9000.tvm.relay.expr import Constant
-    import numpy as np
 
     c = Constant(np.array([1]))
     eliminate_common_subexpr(c)
@@ -971,8 +973,8 @@ def test_entrypoints_more():
 
 def test_cse_mutator():
     """Test cse mutator."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.cse import CommonSubexprEliminator
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     class MutatorCSE(CommonSubexprEliminator):
         """MutatorCSE implementation."""
@@ -992,8 +994,8 @@ def test_cse_mutator():
 
 def test_entrypoints_explicit():
     """Test entrypoints explicit."""
-    from onnx9000.tvm.relay.transform.fusion import fuse_ops
     from onnx9000.tvm.relay.expr import Constant
+    from onnx9000.tvm.relay.transform.fusion import fuse_ops
 
     c = Constant(1)
     fuse_ops(c)
@@ -1010,8 +1012,8 @@ def test_entrypoints_explicit():
 
 def test_infer_type_100():
     """Test infer type 100."""
+    from onnx9000.tvm.relay.expr import Constant, Let, Var
     from onnx9000.tvm.relay.transform.infer_type import TypeChecker
-    from onnx9000.tvm.relay.expr import Let, Constant, Var
 
     v = Var("x")
     l_inner = Let(v, Constant(2), v)
@@ -1030,8 +1032,8 @@ def test_ty_repr():
 
 def test_fusion_45():
     """Test fusion 45."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.fusion import OpFusionDetector
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     of = OpFusionDetector()
     c = Constant(1)
@@ -1042,16 +1044,16 @@ def test_fusion_45():
 
 def test_infer_type_137():
     """Test infer type 137."""
-    from onnx9000.tvm.relay.transform.infer_type import infer_type
     from onnx9000.tvm.relay.expr import Constant
+    from onnx9000.tvm.relay.transform.infer_type import infer_type
 
     infer_type(Constant(1), {})
 
 
 def test_layout_49():
     """Test layout 49."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.layout import LayoutTransform
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     lt = LayoutTransform("A", "B")
     lt.visit = lambda x: Op("mut") if isinstance(x, Op) else x
@@ -1060,8 +1062,8 @@ def test_layout_49():
 
 def test_simplify_47():
     """Test simplify 47."""
+    from onnx9000.tvm.relay.expr import Call, Constant, Op
     from onnx9000.tvm.relay.transform.simplify import AlgebraicSimplifier
-    from onnx9000.tvm.relay.expr import Call, Op, Constant
 
     s = AlgebraicSimplifier()
     s.visit = lambda x: Op("mut") if isinstance(x, Op) else x
@@ -1082,8 +1084,8 @@ def test_ty_7():
 
 def test_infer_type_137_real():
     """Test infer type 137 real."""
-    from onnx9000.tvm.relay.transform.infer_type import TypeChecker
     from onnx9000.tvm.relay.expr import Function, Var
+    from onnx9000.tvm.relay.transform.infer_type import TypeChecker
 
     v = Var("x")
     from onnx9000.tvm.relay.ty import TensorType
@@ -1111,10 +1113,11 @@ def test_ty_7_real():
 
 def test_load_safetensors_weights():
     """Test load safetensors weights."""
-    from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
-    import struct
     import json
+    import struct
     import tempfile
+
+    from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
 
     with tempfile.NamedTemporaryFile("wb") as f:
         header_data = json.dumps({"test": "data"}).encode("utf-8")
@@ -1127,8 +1130,8 @@ def test_load_safetensors_weights():
 
 def test_structural_equal_type_mismatch():
     """Test structural equal type mismatch."""
+    from onnx9000.tvm.relay.expr import Constant, Var
     from onnx9000.tvm.relay.structural_equal import structural_equal
-    from onnx9000.tvm.relay.expr import Var, Constant
 
     v = Var("x")
     c = Constant(1)

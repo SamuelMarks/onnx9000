@@ -1,13 +1,13 @@
-import unittest
 import os
 import tempfile
+import unittest
 import zipfile
 from pathlib import Path
-import numpy as np
 
+import numpy as np
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Node, Tensor, SparseTensor, Attribute, Constant
-from onnx9000.core.serializer import save, _serialize_shape
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, SparseTensor, Tensor
+from onnx9000.core.serializer import _serialize_shape, save
 
 
 class TestSerializerMore(unittest.TestCase):

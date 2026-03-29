@@ -1,27 +1,28 @@
 """Tests for packages/python/onnx9000-toolkit/tests/safetensors/test_parser_edge_cases.py."""
 
-import os
+import ctypes
 import io
-import mmap
 import json
+import mmap
+import os
 import struct
 import sys
-import ctypes
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
 from onnx9000.toolkit.safetensors.parser import (
     SafeTensors,
+    SafetensorsDuplicateKeyError,
     SafetensorsError,
     SafetensorsFileEmptyError,
     SafetensorsFileTooSmallError,
-    SafetensorsInvalidJSONError,
-    SafetensorsDuplicateKeyError,
     SafetensorsInvalidDtypeError,
-    save,
-    load,
-    check_safetensors,
+    SafetensorsInvalidJSONError,
     SafeTensorsSharded,
+    check_safetensors,
+    load,
+    save,
     save_sharded,
 )
 
@@ -84,7 +85,7 @@ def test_parser_edge_cases_and_mocks():
         p = os.path.join(d, "file.safetensors")
         with open(p, "wb") as f:
             f.write(save({"a": np.array([1, 2], dtype=np.int32)}))
-        original_madvise = mmap.mmap.madvise if hasattr(mmap.mmap, "madvise") else None
+        mmap.mmap.madvise if hasattr(mmap.mmap, "madvise") else None
         mock_mm = MagicMock()
         mock_mm.madvise.side_effect = Exception("madvise failed")
     with pytest.raises(SafetensorsInvalidJSONError, match="Tensor value must be a dict"):
@@ -297,7 +298,7 @@ def test_parser_edge_cases_and_mocks():
         empty_path = os.path.join(td, "empty.safetensors")
         with open(empty_path, "wb"):
             return None
-        assert check_safetensors(empty_path) == False
+        assert not check_safetensors(empty_path)
     with tempfile.TemporaryDirectory() as td:
         idx_path = os.path.join(td, "idx.json")
         with open(idx_path, "w") as f:

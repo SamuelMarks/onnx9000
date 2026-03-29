@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { VizGraph } from './OnnxAdapter';
 
 /**

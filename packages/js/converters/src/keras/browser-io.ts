@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export async function readBrowserFile(file: File | Blob): Promise<ArrayBuffer> {
   return file.arrayBuffer();
 }

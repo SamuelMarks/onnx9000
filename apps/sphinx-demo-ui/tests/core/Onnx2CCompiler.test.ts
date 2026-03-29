@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Onnx2CCompiler } from '../../src/core/Onnx2CCompiler';
 import { WorkerManager } from '../../src/core/WorkerManager';

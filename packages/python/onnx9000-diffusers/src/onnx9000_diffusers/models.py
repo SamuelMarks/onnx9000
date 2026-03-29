@@ -1,7 +1,8 @@
-import math
-import numpy as np
-from typing import List, Tuple, Optional, Any, Dict, Union
 import json
+import math
+from typing import Any, Dict, Optional, Tuple, Union
+
+import numpy as np
 
 
 class AutoencoderKL:

@@ -1,9 +1,9 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_coverage_final.py."""
 
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-from onnx9000.core.dtypes import DType
 from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
 
 def test_final_gaps():
@@ -61,9 +61,9 @@ def test_final_gaps():
 
 def test_layer_norm_no_scale():
     """Test layer norm no scale."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(1, 5), dtype=DType.FLOAT32)
@@ -75,9 +75,9 @@ def test_layer_norm_no_scale():
 
 def test_operations_gemv_no_alpha():
     """Test operations gemv no alpha."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["V_A"] = Tensor("V_A", shape=(1, 40), dtype=DType.FLOAT32)
@@ -90,9 +90,9 @@ def test_operations_gemv_no_alpha():
 
 def test_quantization_no_bias():
     """Test quantization no bias."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["QC_X"] = Tensor("QC_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)
@@ -113,9 +113,9 @@ def test_quantization_no_bias():
 
 def test_activations_no_scale_no_bias():
     """Test activations no scale no bias."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(1, 5), dtype=DType.FLOAT32)
@@ -127,9 +127,9 @@ def test_activations_no_scale_no_bias():
 
 def test_matmul_no_bias():
     """Test matmul no bias."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["A"] = Tensor("A", shape=(40, 50), dtype=DType.FLOAT32)
@@ -146,10 +146,11 @@ def test_matmul_no_bias():
 
 def test_qlinear_conv_no_bias():
     """Test qlinear conv no bias."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
-    from onnx9000.c_compiler.compiler import C89Compiler
     import struct
+
+    from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["QC_X"] = Tensor("QC_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)
@@ -171,8 +172,8 @@ def test_qlinear_conv_no_bias():
 def test_all_remaining_gaps():
     """Test all remaining gaps."""
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.intrinsics import emit_esp_nn_qlinear_conv, emit_esp_nn_qlinear_matmul
     from onnx9000.core.ir import Node
-    from onnx9000.c_compiler.intrinsics import emit_esp_nn_qlinear_matmul, emit_esp_nn_qlinear_conv
 
     b = C89Builder()
     emit_esp_nn_qlinear_matmul(b, Node("test"), "i1", "i2", "o", 1, 1, 1, 1, 1, 1, 1.0)
@@ -203,9 +204,9 @@ def test_all_remaining_gaps():
 
 def test_quant_no_target():
     """Test quant no target."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["Q_A"] = Tensor("Q_A", shape=(1, 2, 2), dtype=DType.INT8)
@@ -231,9 +232,9 @@ def test_quant_no_target():
 
 def test_operations_gemv_no_bias():
     """Test operations gemv no bias."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["V_A"] = Tensor("V_A", shape=(1, 40), dtype=DType.FLOAT32)

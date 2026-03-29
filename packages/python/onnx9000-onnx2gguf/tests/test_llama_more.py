@@ -1,8 +1,9 @@
 """Module docstring."""
 
+import io
+
 from onnx9000.core.ir import Graph
 from onnx9000.onnx2gguf.llama import extract_llama_metadata
-import io
 
 
 def test_convert_llama_not_tensor():

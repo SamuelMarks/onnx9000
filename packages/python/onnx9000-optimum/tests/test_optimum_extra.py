@@ -1,13 +1,14 @@
 """Tests for packages/python/onnx9000-optimum/tests/test_optimum_extra.py."""
 
-import pytest
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import onnx9000_optimum
+import onnx9000_optimum.architectures
 import onnx9000_optimum.export
 import onnx9000_optimum.optimize
 import onnx9000_optimum.quantize
-import onnx9000_optimum.architectures
+import pytest
 
 
 @patch("onnx9000_optimum.export.get_huggingface_model_files")
@@ -64,15 +65,16 @@ def test_quantize_model_flow(mock_save, mock_load):
 
 def test_missing_imports():
     """Test missing imports."""
+    import sys
+
     from onnx9000_optimum.export import (
+        _progress_bar,
         export_model,
         get_huggingface_model_files,
-        _progress_bar,
         warn_unsupported_ops,
     )
     from onnx9000_optimum.optimize import optimize_model
     from onnx9000_optimum.quantize import quantize_model
-    import sys
 
     with patch("builtins.__import__", side_effect=ImportError):
         with pytest.raises(SystemExit):
@@ -111,9 +113,10 @@ def test_auto_detect_others():
 
 def test_dummy_inputs():
     """Test dummy inputs."""
-    from onnx9000_optimum.export import create_dummy_inputs
     import sys
     from unittest.mock import MagicMock
+
+    from onnx9000_optimum.export import create_dummy_inputs
 
     mock_torch = MagicMock()
     with patch.dict(sys.modules, {"torch": mock_torch}):
@@ -124,9 +127,10 @@ def test_dummy_inputs():
 
 def test_export_other_tasks():
     """Test export other tasks."""
-    from onnx9000_optimum.export import export_model
     import sys
     from unittest.mock import MagicMock
+
+    from onnx9000_optimum.export import export_model
 
     mock_transformers = MagicMock()
     mock_transformers.AutoModelForSequenceClassification.from_pretrained.return_value = MagicMock()
@@ -148,8 +152,9 @@ def test_export_other_tasks():
 
 def test_export_exception():
     """Test export exception."""
-    from onnx9000_optimum.export import export_model
     import sys
+
+    from onnx9000_optimum.export import export_model
 
     mock_torch = MagicMock()
     mock_torch.no_grad = MagicMock()
@@ -172,11 +177,11 @@ def test_export_exception():
 def test_quantizer_methods():
     """Test quantizer methods."""
     from onnx9000_optimum.quantize import (
-        export_calibration_data,
-        blockwise_quantize,
-        awq_quantize,
-        smooth_quant,
         CalibrationDataReader,
+        awq_quantize,
+        blockwise_quantize,
+        export_calibration_data,
+        smooth_quant,
     )
 
     reader = CalibrationDataReader()
@@ -202,9 +207,9 @@ def test_export_tqdm_and_hub_success():
     tqdm_mock.tqdm = MagicMock(return_value=[1, 2, 3])
     with patch.dict(sys.modules, {"huggingface_hub": hf_mock, "tqdm": tqdm_mock}):
         from onnx9000_optimum.export import (
-            get_huggingface_model_files,
             _progress_bar,
             auto_detect_task,
+            get_huggingface_model_files,
         )
 
         assert get_huggingface_model_files("test") == "/tmp/test"
@@ -214,9 +219,10 @@ def test_export_tqdm_and_hub_success():
 
 def test_export_transformers_error():
     """Test export transformers error."""
-    from onnx9000_optimum.export import export_model
     import sys
     from unittest.mock import MagicMock
+
+    from onnx9000_optimum.export import export_model
 
     with patch.dict(sys.modules, {"transformers": None, "torch": MagicMock()}):
         with (
@@ -231,8 +237,9 @@ def test_export_transformers_error():
 
 def test_optimize_import_error():
     """Test optimize import error."""
-    from onnx9000_optimum.optimize import optimize_model
     import sys
+
+    from onnx9000_optimum.optimize import optimize_model
 
     with patch.dict("sys.modules", {"onnx9000.optimizer.simplifier.api": None}):
         with patch("onnx9000.core.parser.core.load", return_value=MagicMock()):

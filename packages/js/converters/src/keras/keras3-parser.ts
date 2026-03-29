@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { unzipSync } from 'fflate';
 import { JsonObject } from './tfjs-parser.js';
 

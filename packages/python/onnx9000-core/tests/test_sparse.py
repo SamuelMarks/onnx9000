@@ -290,7 +290,7 @@ def test_generate_json_report(tmp_path):
     p = os.path.join(tmp_path, "report.json")
     generate_json_report(g, p)
     assert os.path.exists(p)
-    with open(p, "r") as f:
+    with open(p) as f:
         d = json.load(f)
     assert "layers" in d
 

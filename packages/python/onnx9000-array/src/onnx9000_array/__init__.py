@@ -1,6 +1,7 @@
 """Python API for ONNX Array."""
 
-from typing import Any, Optional, Tuple, List
+from typing import Any, List, Optional, Tuple
+
 from onnx9000.core.ir import Tensor as CoreTensor
 
 

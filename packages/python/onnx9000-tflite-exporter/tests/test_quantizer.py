@@ -1,7 +1,8 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_quantizer.py."""
 
-import pytest
 import struct
+
+import pytest
 from onnx9000.core.ir import Graph, Tensor, ValueInfo
 from onnx9000.tflite_exporter.quantization.quantizer import Quantizer
 
@@ -28,7 +29,7 @@ def test_quantizer_fp16():
 
 def test_quantizer_int8():
     """Test quantizer int8."""
-    from onnx9000.core.ir import Node, Attribute
+    from onnx9000.core.ir import Attribute, Node
 
     graph = Graph("test")
     graph.tensors["Scale"] = Tensor(
@@ -65,9 +66,10 @@ def test_quantizer_none():
 
 def test_qdq_quantization_extraction():
     """Test qdq quantization extraction."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Attribute
-    from onnx9000.tflite_exporter.quantization.quantizer import Quantizer
     import struct
+
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+    from onnx9000.tflite_exporter.quantization.quantizer import Quantizer
 
     graph = Graph("TestGraph")
     graph.tensors["scale"] = Tensor(

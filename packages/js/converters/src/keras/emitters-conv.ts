@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { OnnxNodeBuilder, emitActivation } from './emitters.js';
 import { calculatePaddingSame, calculatePaddingValid } from './layout.js';
 

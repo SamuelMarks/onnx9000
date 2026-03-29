@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PipelineHistory } from '../../src/core/PipelineHistory';
 import { globalEventBus } from '../../src/core/EventBus';

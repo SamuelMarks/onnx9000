@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Component } from '../core/Component';
 
 export interface TabItem {

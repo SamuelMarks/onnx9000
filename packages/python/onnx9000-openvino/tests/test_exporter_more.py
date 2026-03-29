@@ -1,4 +1,5 @@
 import struct
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor, ValueInfo

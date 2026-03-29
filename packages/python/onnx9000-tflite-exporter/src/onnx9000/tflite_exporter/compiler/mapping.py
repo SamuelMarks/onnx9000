@@ -4,8 +4,8 @@ This module provides functions to convert ONNX data types and tensor shapes
 to their corresponding TFLite representations.
 """
 
-from typing import Union, Optional
 import logging
+from typing import Optional, Union
 
 from onnx9000.core.ir import DType
 

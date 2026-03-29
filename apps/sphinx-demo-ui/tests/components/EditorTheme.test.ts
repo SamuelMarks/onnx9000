@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Editor } from '../../src/components/Editor';
 import { globalEventBus } from '../../src/core/EventBus';

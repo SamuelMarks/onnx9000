@@ -117,9 +117,10 @@ def test_info_cmd_coverage(capsys):
     raising a `SystemExit` with the correct code. It also verifies that
     `info_webnn_cmd` properly prints the diagnostic information to standard output.
     """
-    from onnx9000_cli.main import info_cmd, info_webnn_cmd
     import argparse
+
     import pytest
+    from onnx9000_cli.main import info_cmd, info_webnn_cmd
 
     args = argparse.Namespace()
 
@@ -140,8 +141,9 @@ def test_info_cmd_with_func():
     A dummy function is injected into the arguments namespace, and this test
     ensures that the CLI successfully calls it when the command is invoked.
     """
-    from onnx9000_cli.main import info_cmd
     import argparse
+
+    from onnx9000_cli.main import info_cmd
 
     args = argparse.Namespace()
 
@@ -161,11 +163,12 @@ def test_coreml_cmd_coverage():
     scenarios where the underlying JavaScript CLI script is missing, successful
     subprocess execution, and handling of subprocess errors.
     """
-    from onnx9000_cli.main import coreml_cmd
     import argparse
-    import pytest
-    from unittest.mock import patch
     import subprocess
+    from unittest.mock import patch
+
+    import pytest
+    from onnx9000_cli.main import coreml_cmd
 
     args = argparse.Namespace(coreml_command="export", model="test.onnx")
 
@@ -196,9 +199,10 @@ def test_edit_cmd():
     handles cases where the model path does not exist, and gracefully handles
     `KeyboardInterrupt` exceptions triggered during the interactive session.
     """
-    from onnx9000_cli.main import edit_cmd
     import argparse
     from unittest.mock import patch
+
+    from onnx9000_cli.main import edit_cmd
 
     args = argparse.Namespace(model="test.onnx")
     with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
@@ -222,9 +226,10 @@ def test_prune_cmd():
     ability to remove specified nodes based on the arguments. It also validates
     behavior when no output path is explicitly provided.
     """
-    from onnx9000_cli.main import prune_cmd
     import argparse
     from unittest.mock import MagicMock, patch
+
+    from onnx9000_cli.main import prune_cmd
 
     args = argparse.Namespace(model="test.onnx", nodes="n1,n2", output="out.onnx")
     with (
@@ -261,9 +266,10 @@ def test_rename_input_cmd():
     `rename_input_cmd` accurately modifies the input name and propagates the
     changes to nodes connected to that input. It also tests omitting the output arg.
     """
-    from onnx9000_cli.main import rename_input_cmd
     import argparse
     from unittest.mock import MagicMock, patch
+
+    from onnx9000_cli.main import rename_input_cmd
 
     args = argparse.Namespace(model="test.onnx", old="A", new="B", output="out.onnx")
     with (
@@ -300,9 +306,10 @@ def test_change_batch_cmd():
     handling both static integer sizes and dynamic text representations
     by applying them to the shape attribute of the input tensors.
     """
-    from onnx9000_cli.main import change_batch_cmd
     import argparse
     from unittest.mock import MagicMock, patch
+
+    from onnx9000_cli.main import change_batch_cmd
 
     args = argparse.Namespace(model="test.onnx", size="4", output="out.onnx")
     with (
@@ -343,14 +350,15 @@ def test_mutate_cmd():
     such as removing a specific node, and applies these mutations successfully
     to the loaded ONNX graph structure.
     """
-    from onnx9000_cli.main import mutate_cmd
     import argparse
-    from unittest.mock import MagicMock, patch, mock_open
+    from unittest.mock import MagicMock, mock_open, patch
+
+    from onnx9000_cli.main import mutate_cmd
 
     args = argparse.Namespace(model="test.onnx", script="mut.json", output="out.onnx")
     with (
         patch("onnx9000_cli.main.load_onnx") as mock_load,
-        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.save_onnx"),
     ):
         with patch(
             "builtins.open", mock_open(read_data='[{"action": "remove_node", "node_name": "n1"}]')
@@ -370,7 +378,7 @@ def test_mutate_cmd():
     args.output = None
     with (
         patch("onnx9000_cli.main.load_onnx") as mock_load,
-        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.save_onnx"),
     ):
         with patch("builtins.open", mock_open(read_data="[]")):
             mock_load.return_value = MagicMock(nodes=[])
@@ -385,22 +393,23 @@ def test_stubs_coverage():
     that these commands can be invoked using standard arguments without crashing,
     and specifically that the optimum proxy commands invoke their respective APIs.
     """
+    import argparse
+    from unittest.mock import patch
+
+    import pytest
     from onnx9000_cli.main import (
+        compile_cmd,
+        convert_cmd,
+        export_cmd,
         inspect_cmd,
         optimize_cmd,
-        quantize_cmd,
-        export_cmd,
-        convert_cmd,
-        serve_cmd,
-        compile_cmd,
+        optimum_cmd,
         optimum_export_cmd,
         optimum_optimize_cmd,
         optimum_quantize_cmd,
-        optimum_cmd,
+        quantize_cmd,
+        serve_cmd,
     )
-    import argparse
-    from unittest.mock import patch
-    import pytest
 
     args = argparse.Namespace(
         model="test.onnx",
@@ -427,7 +436,7 @@ def test_stubs_coverage():
     inspect_cmd(args)
     with (
         patch("onnx9000_cli.main.load_onnx") as mock_load,
-        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.save_onnx"),
     ):
         mock_graph = MagicMock()
         mock_graph.tensors = {}

@@ -1,9 +1,10 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_cli.py."""
 
-import pytest
-from unittest.mock import patch, MagicMock
-from onnx9000.c_compiler.cli import main
 import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
+from onnx9000.c_compiler.cli import main
 from onnx9000.core.ir import Graph
 
 
@@ -53,7 +54,7 @@ def test_cli_success(capsys):
 
 def test_generator_extras():
     """Test generator extras."""
-    from onnx9000.c_compiler.project_generator import generate_cmakelists, generate_arduino_sketch
+    from onnx9000.c_compiler.project_generator import generate_arduino_sketch, generate_cmakelists
 
     cm = generate_cmakelists("pref_")
     assert "add_library(pref_model STATIC pref_model.c)" in cm
@@ -63,9 +64,10 @@ def test_generator_extras():
 
 def test_bundler():
     """Test bundler."""
-    from onnx9000.c_compiler.bundler import bundle_weights_bin, generate_memory_summary
-    import tempfile
     import os
+    import tempfile
+
+    from onnx9000.c_compiler.bundler import bundle_weights_bin, generate_memory_summary
 
     with tempfile.TemporaryDirectory() as tmpdir:
         bp = bundle_weights_bin(b"hello", tmpdir, "pref_")
@@ -79,8 +81,9 @@ def test_bundler():
 
 def test_cli_import_error(capsys):
     """Test cli import error."""
-    from unittest.mock import patch, MagicMock
     import sys
+    from unittest.mock import MagicMock, patch
+
     from onnx9000.c_compiler.cli import main
 
     with patch.object(sys, "argv", ["onnx2c", "exists.onnx"]):
@@ -107,8 +110,8 @@ def test_cli_import_error(capsys):
 def test_string_weights():
     """Test string weights."""
     from onnx9000.c_compiler.compiler import C89Compiler
-    from onnx9000.core.ir import Graph, Tensor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Graph, Tensor
 
     g = Graph("test")
     t = Tensor("test_str", shape=(2,), dtype=DType.STRING, data=[b"hello", b"world"])
@@ -123,12 +126,13 @@ def test_string_weights():
 
 def test_cli_extras(capsys):
     """Test cli extras."""
-    import sys
-    from onnx9000.c_compiler.cli import main
-    from unittest.mock import patch, MagicMock
-    from onnx9000.core.ir import Graph, Tensor, Constant
-    from onnx9000.core.dtypes import DType
     import struct
+    import sys
+    from unittest.mock import MagicMock, patch
+
+    from onnx9000.c_compiler.cli import main
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph, Tensor
 
     with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--no-math-h", "--no-opt"]):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
@@ -160,6 +164,7 @@ def test_cli_extras(capsys):
 def test_cli_with_opt(capsys):
     """Test cli with opt."""
     import types
+
     from onnx9000.core.ir import Graph
 
     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")

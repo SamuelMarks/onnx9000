@@ -137,8 +137,8 @@ class TFLiteExporter:
         version = 3
 
         # 278. Inject MediaPipe specific metadata blocks into TFLite optionally.
-        import os
         import logging
+        import os
 
         inject_mediapipe = os.environ.get("TFLITE_MEDIAPIPE_METADATA") == "1"
         if inject_mediapipe:

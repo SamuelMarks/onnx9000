@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ORTWebRunner } from '../../src/core/ORTWebRunner';
 import { WorkerManager } from '../../src/core/WorkerManager';

@@ -1,12 +1,13 @@
 """Tests for packages/python/onnx9000-toolkit/tests/conftest.py."""
 
+import inspect
+import random
 import sys
+
 import onnx9000.toolkit.script
 import onnx9000.toolkit.script.parser
-from onnx9000.toolkit.script.parser import ScriptParser
-import inspect
 from onnx9000.core.ir import Graph
-import random
+from onnx9000.toolkit.script.parser import ScriptParser
 
 Graph.__iter__ = lambda self: iter([CovDummy(), CovDummy()])
 
@@ -124,7 +125,7 @@ def cov_parse(self, func):
             args = [CovDummy()] * len(sig.parameters)
             for _ in range(20):
                 func(*args)
-    except Exception as e:
+    except Exception:
         return None
     finally:
         if has_globals:

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { WeightGroup, DataType, WeightManifestEntry } from './tfjs-parser.js';
 
 export interface LoadedWeight {

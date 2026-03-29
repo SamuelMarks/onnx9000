@@ -2,12 +2,13 @@
 
 import io
 import os
+
 import pytest
-from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.dtypes import DType
-from onnx9000.onnx2gguf.builder import GGUFWriter, GGUFValueType, GGUFTensorType
+from onnx9000.core.ir import Graph, Tensor
+from onnx9000.onnx2gguf.builder import GGUFTensorType, GGUFValueType, GGUFWriter
 from onnx9000.onnx2gguf.reader import GGUFReader
-from onnx9000.onnx2gguf.reverse import reverse_map_name, reconstruct_onnx, reverse_map_type
+from onnx9000.onnx2gguf.reverse import reconstruct_onnx, reverse_map_name, reverse_map_type
 
 
 def test_reverse_mapping():
@@ -64,7 +65,7 @@ def test_reconstruct_onnx():
     f.seek(0)
     reader = GGUFReader(f)
 
-    g = reconstruct_onnx(reader)
+    reconstruct_onnx(reader)
     pass
     pass
     pass

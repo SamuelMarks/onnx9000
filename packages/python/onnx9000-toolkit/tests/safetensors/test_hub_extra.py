@@ -1,7 +1,8 @@
 """Module providing functionality for test_hub_extra."""
 
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from onnx9000.toolkit.safetensors.hub import cached_download
 
 

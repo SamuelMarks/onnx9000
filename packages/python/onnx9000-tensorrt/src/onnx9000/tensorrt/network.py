@@ -1,7 +1,8 @@
 import ctypes
+
+from onnx9000.tensorrt.enums import ActivationType, DataType, ElementWiseOperation
 from onnx9000.tensorrt.ffi import ffi
 from onnx9000.tensorrt.structs import Dims
-from onnx9000.tensorrt.enums import DataType, ElementWiseOperation, ActivationType
 
 
 class ITensor:

@@ -1,14 +1,16 @@
 """Module providing onnx2gguf functionality."""
 
 from typing import Any
+
 from onnx9000.core.ir import Graph
+
 from .llama import extract_llama_metadata
 
 
 def extract_metadata(graph: Graph, arch_override: str = None) -> dict[str, Any]:
     """Extracts metadata."""
     arch = arch_override or infer_architecture(graph)
-    inferred = infer_architecture(graph)
+    infer_architecture(graph)
     if arch_override and arch_override not in [
         "llama",
         "mistral",

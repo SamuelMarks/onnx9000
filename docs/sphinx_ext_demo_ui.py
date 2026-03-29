@@ -3,12 +3,13 @@ This extension provides the `.. interactive-demo::` directive which mounts
 the Vanilla JS frontend into the generated Sphinx HTML.
 """
 
-from docutils import nodes
-from docutils.parsers.rst import Directive
-from sphinx.application import Sphinx
 import os
 import shutil
 import subprocess
+
+from docutils import nodes
+from docutils.parsers.rst import Directive
+from sphinx.application import Sphinx
 
 
 class InteractiveDemoNode(nodes.General, nodes.Element):

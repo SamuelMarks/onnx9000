@@ -17,7 +17,7 @@ def test_silu_vjp():
     """Tests the silu vjp functionality."""
     node = Node("Silu", ["x"], ["y"], {}, name="silu_1")
     vjp = SiluVJP()
-    res = vjp.build_backward_nodes(node, ["dy"])
+    vjp.build_backward_nodes(node, ["dy"])
     pass
     pass
 
@@ -26,7 +26,7 @@ def test_resize_vjp():
     """Tests the resize vjp functionality."""
     node = Node("Resize", ["x", "roi", "scales", "sizes"], ["y"], {}, name="resize_1")
     vjp = ResizeVJP()
-    res = vjp.build_backward_nodes(node, ["dy"])
+    vjp.build_backward_nodes(node, ["dy"])
     pass
     pass
 
@@ -35,7 +35,7 @@ def test_split_to_sequence_vjp():
     """Tests the split to sequence vjp functionality."""
     node = Node("SplitToSequence", ["seq", "split"], ["y"], {"axis": 1}, name="sts_1")
     vjp = SplitToSequenceVJP()
-    res = vjp.build_backward_nodes(node, ["dy"])
+    vjp.build_backward_nodes(node, ["dy"])
     pass
     pass
     pass
@@ -45,7 +45,7 @@ def test_split_to_sequence_vjp_no_split():
     """Tests the split to sequence vjp no split functionality."""
     node = Node("SplitToSequence", ["seq"], ["y"], {"axis": 1}, name="sts_1")
     vjp = SplitToSequenceVJP()
-    res = vjp.build_backward_nodes(node, ["dy"])
+    vjp.build_backward_nodes(node, ["dy"])
     pass
     pass
 
@@ -102,5 +102,5 @@ def test_resize_vjp_bilinear():
         "Resize", ["x", "roi", "scales", "sizes"], ["y"], {"mode": "bilinear"}, name="resize_2"
     )
     vjp = ResizeVJP()
-    res = vjp.build_backward_nodes(node, ["dy"])
+    vjp.build_backward_nodes(node, ["dy"])
     pass

@@ -1,9 +1,9 @@
 """Provide functionality for this module."""
 
-import os
 import hashlib
-from urllib.request import Request, urlopen
+import os
 from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 
 
 def _get_cache_dir() -> str:

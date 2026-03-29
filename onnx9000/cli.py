@@ -4,8 +4,8 @@ This module handles environment setup and falls back to manual path injection
 if the package is not installed in editable mode during development.
 """
 
-import sys
 import os
+import sys
 
 
 def main():

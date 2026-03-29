@@ -1,16 +1,17 @@
 import argparse
 import os
 import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from onnx9000_cli.main import (
-    optimize_cmd,
     onnx2gguf_cmd,
-    openvino_export_cmd,
     openvino_cmd,
-    sparse_prune_cmd,
-    sparse_de_sparsify_cmd,
+    openvino_export_cmd,
+    optimize_cmd,
     sparse_cmd,
+    sparse_de_sparsify_cmd,
+    sparse_prune_cmd,
 )
 
 
@@ -20,8 +21,8 @@ def test_optimize_cmd_prune():
     )
 
     with (
-        patch("onnx9000_cli.main.load_onnx") as mock_load,
-        patch("onnx9000_cli.main.save_onnx") as mock_save,
+        patch("onnx9000_cli.main.load_onnx"),
+        patch("onnx9000_cli.main.save_onnx"),
         patch("onnx9000.optimizer.sparse.modifier.GlobalMagnitudePruningModifier") as mock_prune,
         patch("onnx9000.optimizer.sparse.modifier.QuantizationModifier") as mock_quant,
     ):
@@ -51,8 +52,8 @@ def test_onnx2gguf_cmd_triton():
 
 
 def test_openvino_export_cmd():
-    from onnx9000.core.ir import Graph, ValueInfo
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Graph, ValueInfo
 
     graph = Graph("test")
     graph.inputs.append(ValueInfo("input1", (1, 3, 224, 224), DType.FLOAT32))
@@ -85,9 +86,9 @@ def test_openvino_cmd_missing_subcmd():
 
 
 def test_sparse_prune_cmd(tmp_path):
-    from onnx9000.core.ir import Graph, Constant
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph
 
     graph = Graph("test")
     tensor = Constant("w")
@@ -146,9 +147,10 @@ def test_sparse_cmd_missing_subcmd():
 
 
 def test_cli_more_branches():
-    from onnx9000_cli.main import main
     import sys
     from unittest.mock import patch
+
+    from onnx9000_cli.main import main
 
     with patch.object(
         sys,
@@ -228,9 +230,10 @@ def test_cli_more_branches():
 
 
 def test_openvino_export_shape_mock():
-    from onnx9000_cli.main import main
     import sys
-    from unittest.mock import patch, MagicMock
+    from unittest.mock import MagicMock, patch
+
+    from onnx9000_cli.main import main
 
     class MockInput:
         name = "input"
@@ -261,9 +264,10 @@ def test_openvino_export_shape_mock():
 
 
 def test_sparse_cmd_mock():
-    from onnx9000_cli.main import main
     import sys
     from unittest.mock import patch
+
+    from onnx9000_cli.main import main
 
     with patch.object(sys, "argv", ["onnx9000", "sparse"]):
         try:

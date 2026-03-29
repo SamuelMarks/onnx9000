@@ -385,8 +385,8 @@ class LayoutOptimizer:
 
     def evaluate_constants(self) -> None:
         """Statically evaluate constants and check for potential runtime issues (e.g., division by zero)."""
-        import struct
         import logging
+        import struct
 
         for node in self.graph.nodes:
             if node.op_type == "Div":
@@ -792,7 +792,7 @@ class LayoutOptimizer:
                 )
 
             if node.op_type == "Resize":
-                roi = node.inputs[1] if len(node.inputs) > 1 else None
+                node.inputs[1] if len(node.inputs) > 1 else None
                 scales = node.inputs[2] if len(node.inputs) > 2 else None
                 sizes = node.inputs[3] if len(node.inputs) > 3 else None
 

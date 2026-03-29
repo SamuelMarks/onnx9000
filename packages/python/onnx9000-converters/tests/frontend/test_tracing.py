@@ -1,7 +1,8 @@
 """Tests the tracing module functionality."""
 
-import onnx9000
 import onnx9000.core.ops
+
+import onnx9000
 
 "Module providing core logic and structural definitions."
 from onnx9000.converters.frontend.tensor import Tensor

@@ -1,16 +1,16 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_operators_coverage.py."""
 
 import pytest
+from onnx9000.core.ir import Attribute, Node
 from onnx9000.tflite_exporter.compiler.operators import (
     _map_cast,
     _map_sequence_rnn,
-    map_pool2d_options,
-    map_conv2d_options,
-    _map_transpose_conv,
-    map_depthwise_conv2d_options,
     _map_space_depth,
+    _map_transpose_conv,
+    map_conv2d_options,
+    map_depthwise_conv2d_options,
+    map_pool2d_options,
 )
-from onnx9000.core.ir import Node, Attribute
 
 
 class MockBuilder:

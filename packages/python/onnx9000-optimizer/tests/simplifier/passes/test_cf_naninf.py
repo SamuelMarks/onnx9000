@@ -40,10 +40,10 @@ def test_erf():
     mock_scipy.erf = lambda x: x
     sys.modules["scipy.special"] = mock_scipy
     sys.modules["scipy"] = MagicMock()
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     g = Graph("g")
     g.tensors["in"] = Constant(
@@ -61,13 +61,13 @@ def test_erf():
 
 
 def test_erf_inspect():
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+    import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
     from onnx9000.optimizer.simplifier.passes.constant_folding import (
         ConstantFoldingPass,
         _tensor_to_numpy,
     )
-    from onnx9000.core.dtypes import DType
-    import numpy as np
 
     t = Constant(
         "in",
@@ -80,9 +80,9 @@ def test_erf_inspect():
 
 
 def test_erf_inspect_exc():
-    from onnx9000.core.ir import Constant
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant
 
     t = Constant(
         "in",

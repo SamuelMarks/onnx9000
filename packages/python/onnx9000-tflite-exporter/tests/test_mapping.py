@@ -2,9 +2,9 @@
 
 import pytest
 from onnx9000.tflite_exporter.compiler.mapping import (
-    map_onnx_type_to_tflite,
-    map_onnx_shape_to_tflite,
     create_shape_signature,
+    map_onnx_shape_to_tflite,
+    map_onnx_type_to_tflite,
 )
 from onnx9000.tflite_exporter.flatbuffer.schema import TensorType
 

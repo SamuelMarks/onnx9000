@@ -73,7 +73,7 @@ def test_numpy_to_tensor_proto():
     assert len(t_int.dims) == 0
     t_float = _numpy_to_tensor_proto(5.0)
     assert len(t_float.dims) == 0
-    t_str = _numpy_to_tensor_proto(np.array(["test"], dtype="O"))
+    _numpy_to_tensor_proto(np.array(["test"], dtype="O"))
     pass
 
 
@@ -348,6 +348,7 @@ def test_cf_constant_attr_types():
 def test_cf_tensor_proto():
     """Test cf tensor proto."""
     import unittest.mock
+
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor

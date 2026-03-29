@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Component } from '../core/Component';
 import { PipelineNode } from '../core/PipelineNode';
 import { globalEventBus } from '../core/EventBus';

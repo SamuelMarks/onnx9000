@@ -1,8 +1,9 @@
-from onnx9000.tensorrt.registry import register_op
-from onnx9000.tensorrt.network import INetworkDefinition, ITensor
-from onnx9000.tensorrt.ffi import ffi
-from typing import Any, Dict
 import ctypes
+from typing import Any
+
+from onnx9000.tensorrt.ffi import ffi
+from onnx9000.tensorrt.network import INetworkDefinition, ITensor
+from onnx9000.tensorrt.registry import register_op
 
 
 @register_op("", "Conv")
@@ -12,16 +13,16 @@ def trt_conv(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
         raise RuntimeError("addConvolutionNd not found")
 
     in_name = node.inputs[0]
-    w_name = node.inputs[1]
+    node.inputs[1]
 
     input_tensor = tensors[in_name]
 
     # Needs to get weights and biases correctly from initializers.
     # We assume 'node.attributes' contains these for a zero-build demo.
     num_outputs = 1  # Example
-    kernel_size = ctypes.pointer(ctypes.c_int32(3))  # Example Dims wrapper
-    weights_ptr = ctypes.c_void_p(0)
-    bias_ptr = ctypes.c_void_p(0)
+    ctypes.pointer(ctypes.c_int32(3))  # Example Dims wrapper
+    ctypes.c_void_p(0)
+    ctypes.c_void_p(0)
 
     add_conv_func.restype = ctypes.c_void_p
     # The actual signature for addConvolutionNd:

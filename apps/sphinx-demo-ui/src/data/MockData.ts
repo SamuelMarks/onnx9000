@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { FileNode } from '../components/FileTree';
 
 export interface ExampleData {

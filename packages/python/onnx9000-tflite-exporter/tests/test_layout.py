@@ -1,10 +1,10 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_layout.py."""
 
 import struct
+
 import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
-from onnx9000.core.ir import Attribute
 
 
 def test_layout_keep_nchw():
@@ -77,8 +77,9 @@ def test_layout_cancel():
 
 def test_expand_1d_spatial_ops_pool():
     """Test expand 1d spatial ops pool."""
-    from onnx9000.core.ir import Attribute
     import struct
+
+    from onnx9000.core.ir import Attribute
 
     graph = Graph("test")
     graph.inputs.append(ValueInfo("X", (1, 3, 224), "float32"))
@@ -112,6 +113,7 @@ def test_expand_1d_spatial_ops_pool():
 def test_layout_fold_constants():
     """Test layout fold constants."""
     import struct
+
     from onnx9000.core.ir import Attribute
 
     graph = Graph("test")

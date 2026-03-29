@@ -1,5 +1,5 @@
 import ctypes
-from typing import List, Optional
+from typing import Optional
 
 
 class Dims(ctypes.Structure):

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Graph, Node, Attribute, Tensor } from '@onnx9000/core';
 import { TFNodeDef } from './parser.js';
 

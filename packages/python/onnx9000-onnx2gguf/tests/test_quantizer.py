@@ -1,7 +1,7 @@
 """Module docstring."""
 
-import pytest
 import numpy as np
+import pytest
 from onnx9000.onnx2gguf.quantizer import f32_to_f16, quantize_q4_0, quantize_q4_1, quantize_q8_0
 
 

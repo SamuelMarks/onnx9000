@@ -1,10 +1,11 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_coverage_gap3.py."""
 
-import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-from onnx9000.core.dtypes import DType
-from onnx9000.c_compiler.compiler import C89Compiler
 import struct
+
+import pytest
+from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
 
 def test_ast_builder_edges_2():
@@ -214,9 +215,9 @@ def test_missing_ops():
 
 def test_missing_quantization_and_spatial():
     """Test missing quantization and spatial."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test_miss")
     g.tensors["X_Q"] = Tensor("X_Q", shape=(1, 5), dtype=DType.FLOAT32)
@@ -238,9 +239,9 @@ def test_missing_quantization_and_spatial():
 
 def test_more_ops_and_broadcasting():
     """Test more ops and broadcasting."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test_more")
     g.tensors["X_S"] = Tensor("X_S", shape=(1, 5), dtype=DType.FLOAT32)
@@ -284,10 +285,11 @@ def test_more_ops_and_broadcasting():
 
 def test_missing_math_and_targets():
     """Test missing math and targets."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
-    from onnx9000.c_compiler.compiler import C89Compiler
     import struct
+
+    from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test_math")
     g.tensors["X"] = Tensor("X", shape=(1, 5), dtype=DType.FLOAT32)
@@ -316,9 +318,9 @@ def test_missing_math_and_targets():
 
 def test_missing_quant_and_pool():
     """Test missing quant and pool."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test_miss")
     g.tensors["X2D"] = Tensor("X2D", shape=(1, 3, 10, 10), dtype=DType.FLOAT32)
@@ -351,9 +353,9 @@ def test_intrinsics():
     """Test intrinsics."""
     from onnx9000.c_compiler.ast_builder import C89Builder
     from onnx9000.c_compiler.intrinsics import (
-        emit_cmsis_nn_qlinear_matmul,
-        emit_cmsis_nn_qlinear_conv,
         apply_simd_unroll,
+        emit_cmsis_nn_qlinear_conv,
+        emit_cmsis_nn_qlinear_matmul,
     )
     from onnx9000.core.ir import Node
 
@@ -396,9 +398,9 @@ def test_intrinsics():
 
 def test_target_cmsis():
     """Test target cmsis."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["Q_A"] = Tensor("Q_A", shape=(1, 2, 2), dtype=DType.INT8)
@@ -427,9 +429,9 @@ def test_target_cmsis():
 
 def test_target_esp():
     """Test target esp."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["Q_A"] = Tensor("Q_A", shape=(1, 2, 2), dtype=DType.INT8)
@@ -458,11 +460,11 @@ def test_target_esp():
 
 def test_phase_13_nlp_vision():
     """Test phase 13 nlp vision."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
+    from onnx9000.c_compiler.ast_builder import C89Builder
     from onnx9000.c_compiler.compiler import C89Compiler
     from onnx9000.c_compiler.nlp import emit_bpe_tokenizer
-    from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     b = C89Builder()
     emit_bpe_tokenizer(b, {"a": 1, "b": 2})
@@ -495,8 +497,8 @@ def test_phase_13_nlp_vision():
 
 def test_avx2():
     """Test avx2."""
-    from onnx9000.core.ir import Graph
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.ir import Graph
 
     g = Graph("test")
     c = C89Compiler(g, target="avx2")
@@ -506,9 +508,9 @@ def test_avx2():
 
 def test_missing_nlp_and_rnn():
     """Test missing nlp and rnn."""
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.core.dtypes import DType
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(1, 5), dtype=DType.FLOAT32)

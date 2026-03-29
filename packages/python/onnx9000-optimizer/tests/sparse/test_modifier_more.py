@@ -1,25 +1,26 @@
-import pytest
-import re
 import logging
+import re
 import struct
-from onnx9000.core.ir import Graph, Constant, Node, SparseTensor
+
+import pytest
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node, SparseTensor
 from onnx9000.optimizer.sparse.modifier import (
-    MagnitudePruningModifier,
-    GradualPruningModifier,
-    OBSPruningModifier,
-    FisherPruningModifier,
-    MovementPruningModifier,
     AccuracyAwarePruningModifier,
     AsymmetricSparseQuantizationModifier,
-    SparseQLinearConvModifier,
-    GlobalMagnitudePruningModifier,
-    QuantizationModifier,
-    NMPruningModifier,
-    Modifier,
-    parse_recipe,
-    apply_recipe,
     ConstantPruningModifier,
+    FisherPruningModifier,
+    GlobalMagnitudePruningModifier,
+    GradualPruningModifier,
+    MagnitudePruningModifier,
+    Modifier,
+    MovementPruningModifier,
+    NMPruningModifier,
+    OBSPruningModifier,
+    QuantizationModifier,
+    SparseQLinearConvModifier,
+    apply_recipe,
+    parse_recipe,
 )
 
 
@@ -263,10 +264,10 @@ def test_missing_modifier_lines():
 
 
 def test_quant_symmetric():
-    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
-    from onnx9000.core.ir import Graph, Constant
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph
+    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
 
     g = Graph("g")
     g.tensors["t"] = Constant(
@@ -292,10 +293,10 @@ def test_quant_symmetric():
 
 
 def test_quant_asymmetric_zero_scale():
-    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
-    from onnx9000.core.ir import Graph, Constant
-    from onnx9000.core.dtypes import DType
     import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph
+    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
 
     g = Graph("g")
     g.tensors["t"] = Constant(
@@ -321,9 +322,9 @@ def test_parse_recipe_unknown():
 
 
 def test_unknown_modifier_apply():
-    from onnx9000.optimizer.sparse.modifier import Modifier
-    from onnx9000.core.ir import Graph
     import pytest
+    from onnx9000.core.ir import Graph
+    from onnx9000.optimizer.sparse.modifier import Modifier
 
     mod = Modifier()
     if False:

@@ -1,7 +1,8 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_cli.py."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from onnx9000.tflite_exporter.cli import main
 
 

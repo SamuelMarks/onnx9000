@@ -1,7 +1,7 @@
 """EdgeTPU-specific graph optimizations and compatibility checks."""
 
 import logging
-from typing import List
+
 from onnx9000.core.ir import Graph, Node
 
 logger = logging.getLogger(__name__)

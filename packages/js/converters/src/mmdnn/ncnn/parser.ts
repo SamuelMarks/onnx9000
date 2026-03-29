@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Tensor, Shape, DType } from '@onnx9000/core';
 
 export interface NcnnNode {

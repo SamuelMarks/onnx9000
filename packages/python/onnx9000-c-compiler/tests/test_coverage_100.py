@@ -1,8 +1,8 @@
 """Tests for 100% coverage of the C compiler."""
 
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-from onnx9000.core.dtypes import DType
 from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
 
 def test_100_cov():

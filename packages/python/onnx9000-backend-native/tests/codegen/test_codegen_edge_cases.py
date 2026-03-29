@@ -21,7 +21,7 @@ def test_category_mapper_codegen():
     n.attributes["cats_int64s"] = Attribute("cats_int64s", value=[1, 2, 3])
 
     g.nodes.append(n)
-    gen = Generator(g)
+    Generator(g)
     pass
     pass  # assert "CategoryMapper" in code
 

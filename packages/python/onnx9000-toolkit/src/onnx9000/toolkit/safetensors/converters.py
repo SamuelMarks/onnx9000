@@ -1,7 +1,7 @@
 """Provide functionality for this module."""
 
-import os
 import glob
+import os
 from typing import Optional
 
 

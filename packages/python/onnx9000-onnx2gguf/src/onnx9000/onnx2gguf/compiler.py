@@ -1,12 +1,14 @@
 """Module providing onnx2gguf functionality."""
 
+import re
+from typing import Any, BinaryIO, Optional
+
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
+
+from .builder import GGUFTensorType, GGUFValueType, GGUFWriter
 from .naming import rename_tensor
 from .tokenizer import extract_tokenizer_metadata
-import re
-from typing import BinaryIO, Any, Optional
-from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.dtypes import DType
-from .builder import GGUFWriter, GGUFValueType, GGUFTensorType
 
 
 def get_gguf_type(dtype: int) -> GGUFTensorType:

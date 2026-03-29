@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+
 import numpy as np
 import pytest
 from onnx9000.converters.safetensors.loader import (
@@ -138,27 +139,28 @@ def test_split_qkv():
 
 def test_converters_loader_remaining():
     """Test converters loader remaining."""
+    import os
+    import tempfile
+
+    import numpy as np
     from onnx9000.converters.safetensors.loader import (
-        map_huggingface_to_onnx,
-        load_safetensors_to_graph,
-        load_and_patch_state_dict,
         convert_pytorch_to_safetensors,
         convert_tf_to_safetensors,
         dump_graph_to_safetensors,
-        validate_onnx_shapes_and_dtypes,
+        load_and_patch_state_dict,
+        load_safetensors_to_graph,
+        map_huggingface_to_onnx,
         unpack_awq,
+        validate_onnx_shapes_and_dtypes,
     )
-    from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.core.dtypes import DType
-    import tempfile
-    import os
-    import numpy as np
+    from onnx9000.core.ir import Graph, Node, Tensor
 
     w1 = map_huggingface_to_onnx({"c_attn.weight": np.ones((10, 30))})
     assert "q_proj.weight" in w1
     w2 = map_huggingface_to_onnx({"c_attn.bias": np.ones((30,))})
     assert "q_proj.bias" in w2
-    w3 = map_huggingface_to_onnx({"some.quant_map": np.ones((10,))})
+    map_huggingface_to_onnx({"some.quant_map": np.ones((10,))})
     pass  # assert "some.quant_map" in w3
     w4 = map_huggingface_to_onnx({"layer.kernel": np.ones((10,))})
     assert "layer.weight" in w4
@@ -244,15 +246,16 @@ def test_converters_loader_remaining():
 
 def test_converters_loader_edge_cases():
     """Test converters loader edge cases."""
+    import os
+    import tempfile
+
+    import numpy as np
     from onnx9000.converters.safetensors.loader import (
         load_safetensors_to_graph,
         map_huggingface_to_onnx,
     )
-    from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
     from onnx9000.core.dtypes import DType
-    import tempfile
-    import os
-    import numpy as np
+    from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 
     with tempfile.TemporaryDirectory() as d:
         from onnx9000.toolkit.safetensors.parser import save_file
@@ -269,20 +272,19 @@ def test_converters_loader_edge_cases():
         g.inputs.append(ValueInfo("out", shape=(1,), dtype=DType.FLOAT32))
         load_safetensors_to_graph(path, g)
         w = map_huggingface_to_onnx({"mem": memoryview(b"123")})
-        w_norm = map_huggingface_to_onnx(
-            {"LayerNorm.weight": np.ones(1), "GroupNorm.weight": np.ones(1)}
-        )
+        map_huggingface_to_onnx({"LayerNorm.weight": np.ones(1), "GroupNorm.weight": np.ones(1)})
         assert "mem" in w
 
 
 def test_constant_value_attribute_name():
     """Test constant value attribute name."""
-    from onnx9000.converters.safetensors.loader import load_safetensors_to_graph
-    from onnx9000.core.ir import Graph, Node, Tensor, Attribute
-    from onnx9000.core.dtypes import DType
-    import tempfile
     import os
+    import tempfile
+
     import numpy as np
+    from onnx9000.converters.safetensors.loader import load_safetensors_to_graph
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
     with tempfile.TemporaryDirectory() as d:
         from onnx9000.toolkit.safetensors.parser import save_file

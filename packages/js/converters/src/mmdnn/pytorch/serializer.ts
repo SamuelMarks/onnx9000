@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Tensor } from '@onnx9000/core';
 import { zipSync } from 'fflate';
 

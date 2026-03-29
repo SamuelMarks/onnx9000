@@ -1,8 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
+
 import onnx9000.tensorrt as trt
-import onnx9000.tensorrt.ffi as trt_ffi
 import onnx9000.tensorrt.builder as trt_builder
+import onnx9000.tensorrt.ffi as trt_ffi
 import onnx9000.tensorrt.network as trt_network
 import onnx9000.tensorrt.ops as trt_ops
 import onnx9000.tensorrt.ops_conv as trt_ops_conv
@@ -156,7 +157,7 @@ class TestTensorRTFFI(unittest.TestCase):
         sys.platform = "win32"
         # Since we just want to execute _load_library with a diff platform
         with patch("ctypes.util.find_library", return_value="dummy.dll"):
-            with patch("ctypes.CDLL", return_value=MagicMock()) as mock_cdll:
+            with patch("ctypes.CDLL", return_value=MagicMock()):
                 from onnx9000.tensorrt.ffi import TensorRTFFI
 
                 TensorRTFFI()
@@ -227,7 +228,7 @@ class TestTensorRTFFI(unittest.TestCase):
             mock_layer = MagicMock()
             mock_layer.getOutput.return_value = 999
             setattr(self.mock_lib, m, MagicMock(return_value=1234))
-            setattr(self.mock_lib, "ILayer_getOutput", MagicMock(return_value=999))
+            self.mock_lib.ILayer_getOutput = MagicMock(return_value=999)
 
         # Also mock getOutput(layer, idx) - we just mock getOutput function globally
         self.mock_lib.ILayer_getOutput = MagicMock(return_value=999)
@@ -381,7 +382,7 @@ class TestTensorRTFFI(unittest.TestCase):
             try:
                 func(net, node, tensors)
                 return None
-            except (RuntimeError, Exception) as e:
+            except (RuntimeError, Exception):
                 return None
             # Re-add to mock to test missing inputs
             for m in methods:

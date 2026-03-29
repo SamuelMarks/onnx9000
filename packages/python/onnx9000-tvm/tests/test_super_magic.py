@@ -1,8 +1,9 @@
 """Tests for packages/python/onnx9000-tvm/tests/test_super_magic.py."""
 
+import inspect
 import sys
 import types
-import inspect
+
 import onnx9000.tvm
 
 
@@ -82,8 +83,8 @@ class MockAny:
 def test_mega_cov():
     """Test mega cov."""
     import importlib
-    import pkgutil
     import inspect
+    import pkgutil
 
     def walk_packages(pkg):
         """Perform walk packages operation."""
@@ -116,7 +117,7 @@ def test_mega_cov():
         return None
 
     float(MockAny())
-    MockAny() != MockAny()
+    _ = MockAny() != MockAny()
 
     def call_func(func, inst=None):
         """Perform call func operation."""

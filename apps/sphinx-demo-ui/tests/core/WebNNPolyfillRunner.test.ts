@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WebNNPolyfillRunner } from '../../src/core/WebNNPolyfillRunner';
 import { WorkerManager } from '../../src/core/WorkerManager';

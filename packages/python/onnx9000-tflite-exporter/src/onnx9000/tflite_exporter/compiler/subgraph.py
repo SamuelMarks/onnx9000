@@ -8,12 +8,11 @@ operator/tensor mapping.
 from onnx9000.core.ir import Graph
 
 from ..exporter import TFLiteExporter
-from ..flatbuffer.schema import SubGraph, Tensor, BuiltinOperator
+from ..flatbuffer.schema import BuiltinOperator, SubGraph, Tensor
+from ..optimizations.edgetpu import EdgeTPUOptimizer
 from ..quantization.quantizer import Quantizer
 from .layout import LayoutOptimizer
 from .mapping import create_shape_signature, map_onnx_shape_to_tflite, map_onnx_type_to_tflite
-from ..quantization.quantizer import Quantizer
-from ..optimizations.edgetpu import EdgeTPUOptimizer
 
 
 def compile_graph_to_tflite(

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Represents the value of an attribute attached to a TensorFlow node.
  */

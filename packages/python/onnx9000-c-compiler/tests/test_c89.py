@@ -1,12 +1,13 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_c89.py."""
 
-from onnx9000.core.ir import Graph, Tensor, Constant, Node
-from onnx9000.core.dtypes import DType
-from onnx9000.c_compiler.compiler import C89Compiler
-from onnx9000.c_compiler.project_generator import generate_makefile, generate_main_c
 import os
-import subprocess
 import struct
+import subprocess
+
+from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.c_compiler.project_generator import generate_main_c, generate_makefile
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node, Tensor
 
 
 def test_phase_2():
@@ -37,7 +38,7 @@ def test_phase_2():
     with open("test_out/main.c", "w") as f:
         f.write(main_c)
     print("Testing GCC compilation...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Testing Clang compilation...")
@@ -80,7 +81,7 @@ def test_phase_3():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase3_", "phase3_"))
     print("Testing GCC compilation for Phase 3...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 3 verified!")
@@ -134,7 +135,7 @@ def test_phase_4():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase3_", "phase4_"))
     print("Testing GCC compilation for Phase 4...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 4 verified!")
@@ -224,7 +225,7 @@ def test_phase_5():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase4_", "phase5_"))
     print("Testing GCC compilation for Phase 5...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 5 verified!")
@@ -292,7 +293,7 @@ def test_phase_6():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase5_", "phase6_"))
     print("Testing GCC compilation for Phase 6...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 6 verified!")
@@ -357,7 +358,7 @@ def test_phase_7():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase6_", "phase7_"))
     print("Testing GCC compilation for Phase 7...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 7 verified!")
@@ -418,7 +419,7 @@ def test_phase_8():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase7_", "phase8_"))
     print("Testing GCC compilation for Phase 8...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 8 verified!")
@@ -463,7 +464,7 @@ def test_phase_9():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase8_", "phase9_"))
     print("Testing GCC compilation for Phase 9...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 9 verified!")
@@ -505,7 +506,7 @@ def test_phase_10():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase9_", "phase10_"))
     print("Testing GCC compilation for Phase 10...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10 verified!")
@@ -559,7 +560,7 @@ def test_phase_10b():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase10_", "phase10b_"))
     print("Testing GCC compilation for Phase 10b...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10b verified!")
@@ -615,7 +616,7 @@ def test_phase_11():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase10b_", "phase11_"))
     print("Testing GCC compilation for Phase 11...")
-    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
     pass  # assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 11 verified!")
@@ -624,8 +625,8 @@ def test_phase_11():
 def test_einsum():
     """Test einsum."""
     from onnx9000.c_compiler.compiler import C89Compiler
-    from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Graph, Node, Tensor
 
     g = Graph("test")
     g.nodes.append(Node("Einsum", ["A", "B"], ["C"], {"equation": b"ik,kj->ij"}))
@@ -642,8 +643,8 @@ def test_einsum():
 
 def test_einsum_coverage():
     """Test einsum coverage."""
-    from onnx9000.c_compiler.operations import generate_einsum
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.operations import generate_einsum
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -660,8 +661,8 @@ def test_einsum_coverage():
 
 def test_math_div():
     """Test math div."""
-    from onnx9000.c_compiler.operations import generate_elementwise_binary
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.operations import generate_elementwise_binary
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -673,11 +674,12 @@ def test_math_div():
 
 def test_mnist_integration():
     """Test mnist integration."""
-    import urllib.request
     import os
     import subprocess
-    from onnx9000.core.parser.core import load
+    import urllib.request
+
     from onnx9000.c_compiler.compiler import C89Compiler
+    from onnx9000.core.parser.core import load
 
     os.makedirs("test_out", exist_ok=True)
     url = "https://github.com/onnx/models/raw/main/validated/vision/classification/mnist/model/mnist-8.onnx"
@@ -717,9 +719,9 @@ def test_mnist_integration():
 
 def test_objdump_size():
     """Test objdump size."""
-    import subprocess
-    import shutil
     import os
+    import shutil
+    import subprocess
 
     if shutil.which("size") and os.path.exists("test_out/mnist_cli"):
         res = subprocess.run(["size", "test_out/mnist_cli"], capture_output=True, text=True)
@@ -729,12 +731,13 @@ def test_objdump_size():
 
 def test_cli_no_math_strip():
     """Test cli no math strip."""
-    from onnx9000.c_compiler.cli import main
-    from unittest.mock import patch, MagicMock
-    import sys
-    from onnx9000.core.ir import Graph, Tensor, Constant
-    from onnx9000.core.dtypes import DType
     import struct
+    import sys
+    from unittest.mock import MagicMock, patch
+
+    from onnx9000.c_compiler.cli import main
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph, Tensor
 
     with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--quiet", "--no-opt"]):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
@@ -774,11 +777,11 @@ def test_cli_no_math_strip():
                             try:
                                 main()
                                 raise SystemExit
-                            except SystemExit as e:
+                            except SystemExit:
                                 return None
                             try:
                                 raise SystemExit
-                            except SystemExit as e:
+                            except SystemExit:
                                 return None
 
 
@@ -797,8 +800,8 @@ def test_int64_macros():
 
 def test_slice_coverage():
     """Test slice coverage."""
-    from onnx9000.c_compiler.routing import generate_slice
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_slice
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -819,8 +822,8 @@ def test_slice_coverage():
 
 def test_gather_coverage():
     """Test gather coverage."""
-    from onnx9000.c_compiler.routing import generate_gather
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_gather
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -836,8 +839,8 @@ def test_gather_coverage():
 
 def test_gathernd_coverage():
     """Test gathernd coverage."""
-    from onnx9000.c_compiler.routing import generate_gathernd
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_gathernd
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -852,8 +855,8 @@ def test_gathernd_coverage():
 
 def test_scatter_elements_coverage():
     """Test scatter elements coverage."""
-    from onnx9000.c_compiler.routing import generate_scatter_elements
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_scatter_elements
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -871,8 +874,8 @@ def test_scatter_elements_coverage():
 
 def test_scatternd_coverage():
     """Test scatternd coverage."""
-    from onnx9000.c_compiler.routing import generate_scatternd
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_scatternd
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -890,8 +893,8 @@ def test_scatternd_coverage():
 
 def test_tile_expand_coverage():
     """Test tile expand coverage."""
-    from onnx9000.c_compiler.routing import generate_expand, generate_tile
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_expand, generate_tile
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -912,11 +915,12 @@ def test_tile_expand_coverage():
 
 def test_constant_of_shape_coverage():
     """Test constant of shape coverage."""
-    from onnx9000.c_compiler.routing import generate_constant_of_shape
-    from onnx9000.c_compiler.ast_builder import C89Builder
-    from onnx9000.core.ir import Node, Tensor
     import struct
+
+    from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_constant_of_shape
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
     v_tensor = Tensor("v", shape=(1,), dtype=DType.FLOAT32, data=struct.pack("<f", 5.5))
@@ -930,8 +934,8 @@ def test_constant_of_shape_coverage():
 
 def test_cumsum_reverse():
     """Test cumsum reverse."""
-    from onnx9000.c_compiler.routing import generate_cumsum, generate_reverse_sequence
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_cumsum, generate_reverse_sequence
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -952,8 +956,8 @@ def test_cumsum_reverse():
 
 def test_onehot_coverage():
     """Test onehot coverage."""
-    from onnx9000.c_compiler.routing import generate_onehot
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_onehot
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -968,8 +972,8 @@ def test_onehot_coverage():
 
 def test_d2s_coverage():
     """Test d2s coverage."""
-    from onnx9000.c_compiler.routing import generate_depth_to_space, generate_space_to_depth
     from onnx9000.c_compiler.ast_builder import C89Builder
+    from onnx9000.c_compiler.routing import generate_depth_to_space, generate_space_to_depth
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
@@ -989,8 +993,8 @@ def test_d2s_coverage():
 def test_dynamic_signature():
     """Test dynamic signature."""
     from onnx9000.c_compiler.compiler import C89Compiler
-    from onnx9000.core.ir import Graph, Tensor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Graph, Tensor
 
     g = Graph("t")
     g.inputs.append("A")
@@ -1005,10 +1009,10 @@ def test_dynamic_signature():
 
 def test_apple_silicon_compilation():
     """Test apple silicon compilation."""
-    import platform
-    import subprocess
-    import shutil
     import os
+    import platform
+    import shutil
+    import subprocess
 
     if (
         platform.system() == "Darwin"

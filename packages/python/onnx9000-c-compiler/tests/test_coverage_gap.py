@@ -1,10 +1,11 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_coverage_gap.py."""
 
-import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Constant
-from onnx9000.core.dtypes import DType
-from onnx9000.c_compiler.compiler import C89Compiler
 import struct
+
+import pytest
+from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node, Tensor
 
 
 def test_ast_builder_edges():

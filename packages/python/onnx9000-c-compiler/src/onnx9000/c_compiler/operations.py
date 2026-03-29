@@ -1,6 +1,7 @@
 """Operation implementations for ONNX to C89 generation."""
 
 import struct
+
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Node, Tensor

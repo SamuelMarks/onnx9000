@@ -1,9 +1,9 @@
 import ctypes
 import ctypes.util
+import logging
 import os
 import sys
-import logging
-from typing import Optional, Tuple, Dict, Any, Callable
+from typing import Any, Callable, Dict, Optional, Tuple
 
 logger = logging.getLogger("onnx9000.tensorrt.ffi")
 
@@ -11,8 +11,8 @@ logger = logging.getLogger("onnx9000.tensorrt.ffi")
 class TensorRTFFI:
     def __init__(self):
         self.lib: Optional[ctypes.CDLL] = None
-        self.version: Tuple[int, int, int] = (0, 0, 0)
-        self.pointers: Dict[int, Any] = {}
+        self.version: tuple[int, int, int] = (0, 0, 0)
+        self.pointers: dict[int, Any] = {}
         self._load_library()
         self._extract_version()
         self._setup_logging_callback()

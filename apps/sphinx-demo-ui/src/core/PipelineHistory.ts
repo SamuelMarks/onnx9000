@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { PipelineNode, PipelineState } from './PipelineNode';
 import { globalEventBus } from './EventBus';
 

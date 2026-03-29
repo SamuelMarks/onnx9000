@@ -1,19 +1,20 @@
 """Tests for packages/python/onnx9000-toolkit/tests/safetensors/test_parser_cov_extra.py."""
 
-import pytest
-import os
-import sys
 import ctypes
 import json
+import os
 import struct
-from unittest.mock import patch, MagicMock
+import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
 from onnx9000.toolkit.safetensors.parser import (
     SafeTensors,
     SafetensorsInvalidJSONError,
     load,
+    save_file,
     save_sharded,
 )
-from onnx9000.toolkit.safetensors.parser import save_file
 
 
 def test_mmap_madvise_exception(tmp_path):
@@ -143,8 +144,9 @@ def test_convert_pytorch_to_safetensors_mocked(tmp_path):
     state_dict = {"a": mock_torch.tensor([1.0]), "b": 42}
     with patch.dict(sys.modules, {"torch": mock_torch}):
         with patch("torch.load", return_value=state_dict) as mock_load:
-            from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
             import os
+
+            from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
 
             output_file = tmp_path / "model.safetensors"
             (tmp_path / "dummy.bin").write_text("")
@@ -197,8 +199,9 @@ def test_convert_tf_to_safetensors(tmp_path):
 def test_convert_pytorch_missing_torch():
     """Test convert pytorch missing torch."""
     import sys
-    from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
+
     import pytest
+    from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
 
     with patch.dict(sys.modules, {"torch": None}):
         with pytest.raises(ImportError, match="PyTorch is required"):
@@ -208,8 +211,9 @@ def test_convert_pytorch_missing_torch():
 def test_convert_tf_missing_tf():
     """Test convert tf missing tf."""
     import sys
-    from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
+
     import pytest
+    from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
 
     with patch.dict(sys.modules, {"tensorflow": None}):
         with pytest.raises(ImportError, match="TensorFlow is required"):
@@ -220,6 +224,7 @@ def test_convert_pytorch_no_bins(tmp_path):
     """Test convert pytorch no bins."""
     import sys
     from unittest.mock import MagicMock, patch
+
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
 
     with patch.dict(sys.modules, {"torch": MagicMock()}):

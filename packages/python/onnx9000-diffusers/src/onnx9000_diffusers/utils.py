@@ -1,9 +1,9 @@
+import json
 import math
 import os
-import urllib.request
-import json
 import shutil
-from typing import List, Tuple, Dict, Any
+import urllib.request
+from typing import Any, Dict, Tuple
 
 
 class PyTorchPCG:
@@ -29,7 +29,7 @@ class PyTorchPCG:
         return self.next_uint() / 4294967296.0
 
 
-def rand(shape: Tuple[int, ...], generator: PyTorchPCG) -> List[float]:
+def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
     """
     Generates a uniform tensor [0, 1) natively matching cross-platform PRNG.
 
@@ -46,7 +46,7 @@ def rand(shape: Tuple[int, ...], generator: PyTorchPCG) -> List[float]:
     return [generator.next_float() for _ in range(size)]
 
 
-def randn(shape: Tuple[int, ...], generator: PyTorchPCG) -> List[float]:
+def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
     """
     Generates a standard normal tensor (mean=0, std=1) natively using Box-Muller.
 
@@ -118,7 +118,7 @@ def fetch_hub_file(repo_id: str, filename: str, cache_dir: str) -> str:
     return out_path
 
 
-def parse_model_index(repo_id: str, cache_dir: str) -> Dict[str, Any]:
+def parse_model_index(repo_id: str, cache_dir: str) -> dict[str, Any]:
     """
     Provides native configuration parsing for `model_index.json`.
 
@@ -130,5 +130,5 @@ def parse_model_index(repo_id: str, cache_dir: str) -> Dict[str, Any]:
         dict: The parsed model index configuration.
     """
     path = fetch_hub_file(repo_id, "model_index.json", cache_dir)
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)

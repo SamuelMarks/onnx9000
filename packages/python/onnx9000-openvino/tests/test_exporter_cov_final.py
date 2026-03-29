@@ -196,9 +196,9 @@ def test_xml_builder():
 
 
 def test_export_all_missing_ops_2():
-    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-    from onnx9000.openvino.exporter import OpenVinoExporter
     import numpy as np
+    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+    from onnx9000.openvino.exporter import OpenVinoExporter
 
     g = Graph("g")
     g.inputs.append(Tensor("in", [1, 2, 3], DType.FLOAT32))
@@ -361,9 +361,9 @@ def test_xml_builder_more():
     n = XmlNode("test")
     n.add_child(XmlNode("<hello&>"))
 
-    res = n.to_string(indent=0, pretty=True)
+    n.to_string(indent=0, pretty=True)
 
-    res2 = n.to_string(indent=0, pretty=False)
+    n.to_string(indent=0, pretty=False)
     2
 
     b = XmlBuilder()

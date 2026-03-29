@@ -1,8 +1,9 @@
-from onnx9000.tensorrt.registry import register_op
-from onnx9000.tensorrt.network import INetworkDefinition, ITensor
-from onnx9000.tensorrt.ffi import ffi
-from typing import Any, Dict
 import ctypes
+from typing import Any
+
+from onnx9000.tensorrt.ffi import ffi
+from onnx9000.tensorrt.network import INetworkDefinition, ITensor
+from onnx9000.tensorrt.registry import register_op
 
 
 def _get_input(node, tensors, idx):

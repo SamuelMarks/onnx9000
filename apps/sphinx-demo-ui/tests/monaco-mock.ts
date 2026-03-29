@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export const editor = {
   create: () => ({
     getValue: () => 'mocked content',

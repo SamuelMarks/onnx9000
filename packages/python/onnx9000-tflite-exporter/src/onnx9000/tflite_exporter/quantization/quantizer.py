@@ -2,8 +2,9 @@
 
 import logging
 import struct
-from typing import Dict, List
+
 from onnx9000.core.ir import Graph, Tensor
+
 from ..flatbuffer.schema import QuantizationParameters
 
 logger = logging.getLogger(__name__)

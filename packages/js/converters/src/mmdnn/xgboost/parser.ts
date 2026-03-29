@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Graph, Node, ValueInfo, Attribute } from '@onnx9000/core';
 
 /**

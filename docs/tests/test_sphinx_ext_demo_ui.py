@@ -1,19 +1,19 @@
 """Tests for docs/tests/test_sphinx_ext_demo_ui.py."""
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import pytest
 from sphinx.application import Sphinx
 from sphinx_ext_demo_ui import (
-    InteractiveDemoNode,
     InteractiveDemoDirective,
-    visit_interactive_demo_node,
-    depart_interactive_demo_node,
-    setup,
+    InteractiveDemoNode,
     build_frontend,
     copy_frontend_assets,
+    depart_interactive_demo_node,
+    setup,
+    visit_interactive_demo_node,
 )
 
 

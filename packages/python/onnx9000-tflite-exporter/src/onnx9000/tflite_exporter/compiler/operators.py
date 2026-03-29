@@ -197,8 +197,6 @@ ELEMENTWISE_OPS = {
     "Gelu": TFLiteOperatorMapping(
         BuiltinOperator.GELU, BuiltinOptions.GeluOptions, lambda b, n, g=None: _map_gelu(b, n)
     ),
-    # 138. Emit PRelu
-    "PRelu": TFLiteOperatorMapping(BuiltinOperator.PRELU, BuiltinOptions.NONE),
     # 142. Emit L2_NORMALIZATION
     "LpNormalization": TFLiteOperatorMapping(
         BuiltinOperator.L2_NORMALIZATION,

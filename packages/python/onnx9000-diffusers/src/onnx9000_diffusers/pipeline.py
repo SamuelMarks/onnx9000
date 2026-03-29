@@ -1,9 +1,9 @@
-import gc
 import asyncio
-from typing import Optional, Callable, Dict, Any, List
+import gc
+from typing import Any, Callable, Dict, List, Optional
 
-from .utils import parse_model_index, PyTorchPCG, randn
-from .schedulers import Scheduler, EulerDiscreteScheduler
+from .schedulers import EulerDiscreteScheduler, Scheduler
+from .utils import PyTorchPCG, parse_model_index, randn
 
 
 class AbortSignal:
@@ -23,11 +23,11 @@ class DiffusionPipeline:
     Base Diffusion Pipeline matching the ONNX9000 specification for Phase 1.
     """
 
-    def __init__(self, model_index: Dict[str, Any], scheduler: Scheduler):
+    def __init__(self, model_index: dict[str, Any], scheduler: Scheduler):
         self.model_index = model_index
         self.scheduler = scheduler
         self._device = "cpu"
-        self._memory_arena: Dict[str, Any] = {}
+        self._memory_arena: dict[str, Any] = {}
 
     @classmethod
     def from_pretrained(
@@ -58,9 +58,9 @@ class DiffusionPipeline:
         prompt: str,
         num_inference_steps: int = 50,
         generator: Optional[PyTorchPCG] = None,
-        callback_on_step_end: Optional[Callable[[int, int, List[float]], None]] = None,
+        callback_on_step_end: Optional[Callable[[int, int, list[float]], None]] = None,
         abort_signal: Optional[AbortSignal] = None,
-    ) -> List[float]:
+    ) -> list[float]:
         """
         Asynchronous inference loop.
         """
@@ -86,7 +86,7 @@ class DiffusionPipeline:
         # Phase 1: Zero-copy WebGPU memory bridge simulation (we pass the list pointer directly)
         self._memory_arena["latents"] = latents
 
-        total_steps = len(timesteps)
+        len(timesteps)
 
         for step, t in enumerate(timesteps):
             # Phase 1: Support pipeline cancellation

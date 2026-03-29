@@ -1,10 +1,11 @@
 """Tests for packages/python/onnx9000-c-compiler/tests/test_coverage_gap2.py."""
 
-import pytest
-from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
-from onnx9000.core.dtypes import DType
-from onnx9000.c_compiler.compiler import C89Compiler
 import struct
+
+import pytest
+from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
 
 def test_compiler_misc():

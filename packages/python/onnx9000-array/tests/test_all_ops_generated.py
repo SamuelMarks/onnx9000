@@ -38,7 +38,7 @@ def test_array_classes():
     a.gpu()
     a.quantize_dynamic()
     a.evaluate()
-    c = onnx9000_array.Input("test", (2,), "float32")
+    onnx9000_array.Input("test", (2,), "float32")
 
 
 def test_array_data_method_bypass():

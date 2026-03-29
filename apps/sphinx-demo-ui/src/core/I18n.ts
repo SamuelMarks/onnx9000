@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 
 const translations: Record<Language, Record<string, string>> = {

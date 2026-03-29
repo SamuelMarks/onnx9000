@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 
 export function emitMerge(

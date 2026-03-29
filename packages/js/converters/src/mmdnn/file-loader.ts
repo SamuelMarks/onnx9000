@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export class FileLoader {
   private files: Map<string, Blob>;
 

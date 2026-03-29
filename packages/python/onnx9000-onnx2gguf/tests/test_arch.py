@@ -1,8 +1,8 @@
 """Module docstring."""
 
 import pytest
-from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Tensor
 from onnx9000.onnx2gguf.arch import extract_metadata, infer_architecture
 
 

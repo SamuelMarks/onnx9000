@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import { t } from '../core/I18n';

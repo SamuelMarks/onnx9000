@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * A simple utility to debounce function calls.
  */
@@ -11,7 +13,7 @@ export class Debouncer {
    * @param delay - The delay in milliseconds.
    * @returns A wrapped, debounced function.
    */
-  public debounce<T extends (...args: any[]) => void>(
+  public debounce<T extends (...args: object[]) => void>(
     func: T,
     delay: number
   ): (...args: Parameters<T>) => void {

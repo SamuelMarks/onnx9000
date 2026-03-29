@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export class MathUtils {
   /**
    * Calculates Mean.

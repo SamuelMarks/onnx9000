@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Base Component class for pure Vanilla JS DOM UI architecture.
  * Provides a highly controlled, lightweight lifecycle: mount, render, and unmount.

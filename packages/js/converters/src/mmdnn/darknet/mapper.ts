@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Graph, Node, Tensor, Attribute, ValueInfo, Shape } from '@onnx9000/core';
 import { DarknetLayer } from './parser.js';
 

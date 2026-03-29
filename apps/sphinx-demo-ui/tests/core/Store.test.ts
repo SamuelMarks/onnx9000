@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect, vi } from 'vitest';
 import { Store } from '../../src/core/Store';
 

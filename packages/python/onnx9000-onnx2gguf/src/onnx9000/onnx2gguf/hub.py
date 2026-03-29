@@ -1,9 +1,9 @@
 """Module providing onnx2gguf functionality."""
 
-import urllib.request
-import urllib.error
 import json
-from typing import Any, Tuple
+import urllib.error
+import urllib.request
+from typing import Any
 
 
 def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], str, str]:
@@ -20,7 +20,7 @@ def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], st
             config = json.loads(res.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch config: {e}")
-    except Exception as e:
+    except Exception:
         return None
     try:
         req = urllib.request.Request(f"{url}/tokenizer.json", headers=headers)
@@ -28,7 +28,7 @@ def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], st
             tokenizer = res.read().decode("utf-8")
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch tokenizer: {e}")
-    except Exception as e:
+    except Exception:
         return None
     return (config, tokenizer, f"https://huggingface.co/{repo_id}")
 

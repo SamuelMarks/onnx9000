@@ -1,11 +1,12 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_integration.py."""
 
-import pytest
 import struct
 import time
+
+import pytest
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
 from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
+from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
 from onnx9000.tflite_exporter.exporter import TFLiteExporter
 
 

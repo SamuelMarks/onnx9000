@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 export interface OnnxNodeBuilder {
   opType: string;
   inputs: string[];

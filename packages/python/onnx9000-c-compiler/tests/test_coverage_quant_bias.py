@@ -2,8 +2,8 @@
 
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.quantization import generate_qlinear_conv
-from onnx9000.core.ir import Node, Tensor
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Node, Tensor
 
 
 def test_qlinear_conv_bias():

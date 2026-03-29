@@ -67,7 +67,7 @@ def main(args=None):
         print(f"[onnx2tf] Using external weights from {parsed.external_weights}")
 
     if parsed.progress:
-        print(f"[onnx2tf] Enabling build progress tracking...")
+        print("[onnx2tf] Enabling build progress tracking...")
 
     if parsed.batch:
         print(f"[onnx2tf] Overriding dynamic batch size to {parsed.batch}")

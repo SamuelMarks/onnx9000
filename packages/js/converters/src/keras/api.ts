@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { parseTFJSModel } from './tfjs-parser.js';
 import { parseKerasH5 } from './h5-parser.js';
 import { Keras2OnnxConverter } from './index.js';

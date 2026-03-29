@@ -1,12 +1,13 @@
-import pytest
 import math
+
+import pytest
 from onnx9000_diffusers.schedulers import (
-    Scheduler,
-    EulerDiscreteScheduler,
-    LCMScheduler,
     DDPMWuerstchenScheduler,
+    EulerDiscreteScheduler,
     FlowMatchEulerDiscreteScheduler,
+    LCMScheduler,
     SASolverScheduler,
+    Scheduler,
 )
 
 

@@ -1,11 +1,12 @@
 import asyncio
 import math
-from typing import Any, Callable, Dict, Optional, Union, Generator, List
+from collections.abc import Generator
+from typing import Any, Callable, Dict, List, Optional, Union
 
 
 class DiffusionPipeline:
     def __init__(self, **kwargs: Any) -> None:
-        self.config: Dict[str, Any] = kwargs
+        self.config: dict[str, Any] = kwargs
         self.device: str = "cpu"
         self._is_aborted: bool = False
 
@@ -22,10 +23,10 @@ class DiffusionPipeline:
         callback_on_step_end: Optional[Callable[[int, int, int, Any], None]] = None,
         num_inference_steps: int = 50,
         **kwargs: Any,
-    ) -> Dict[str, List[float]]:
+    ) -> dict[str, list[float]]:
         """Asynchronous inference loop."""
         self._is_aborted = False
-        latents: List[float] = [0.0] * (64 * 64 * 4)  # dummy 1x4x64x64 latent
+        latents: list[float] = [0.0] * (64 * 64 * 4)  # dummy 1x4x64x64 latent
         for step in range(num_inference_steps):
             if self._is_aborted:
                 break

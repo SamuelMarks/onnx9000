@@ -5,16 +5,16 @@ import json
 import os
 import subprocess
 from unittest.mock import MagicMock, patch
-import pytest
 
+import pytest
 from onnx9000_cli.coverage import (
-    get_pypi_info,
-    generate_framework_snapshots,
     clone_and_parse_onnx_spec,
-    get_onnx9000_ops,
+    count_supported_framework_objects,
+    generate_framework_snapshots,
     generate_markdown_table,
     generate_summary_table,
-    count_supported_framework_objects,
+    get_onnx9000_ops,
+    get_pypi_info,
     update_compliance_md,
     update_coverage_cmd,
 )
@@ -186,7 +186,7 @@ def test_update_compliance_md_fallback(tmpdir):
 
     with patch("os.path.abspath", return_value=md_path):
         update_compliance_md("SUM")
-        with open(md_path, "r") as f:
+        with open(md_path) as f:
             content = f.read()
             assert "SUM" in content
 
@@ -209,9 +209,10 @@ def test_update_coverage_cmd_real(tmpdir):
 
 
 def test_all_coverage_commands():
-    from onnx9000_cli.main import main
     import sys
-    from unittest.mock import patch, MagicMock, mock_open
+    from unittest.mock import MagicMock, mock_open, patch
+
+    from onnx9000_cli.main import main
 
     class DummyProc:
         def __init__(self, stdout="dummy_stdout"):
@@ -244,7 +245,7 @@ def test_all_coverage_commands():
 
                                 try:
                                     cov.update_coverage_cmd(MagicMock())
-                                except Exception as e:
+                                except Exception:
                                     pass
                                 try:
                                     cov._force_100_coverage()
@@ -253,9 +254,10 @@ def test_all_coverage_commands():
 
 
 def test_coverage_cmd_exceptions():
-    import onnx9000_cli.coverage as cov
     import sys
-    from unittest.mock import patch, MagicMock, mock_open
+    from unittest.mock import MagicMock, mock_open, patch
+
+    import onnx9000_cli.coverage as cov
 
     # 1. Test missing README
     with patch("builtins.open", side_effect=FileNotFoundError):
@@ -312,8 +314,9 @@ def test_coverage_cmd_exceptions():
 
 
 def test_update_compliance_md_cov_more(tmpdir):
-    from onnx9000_cli.coverage import update_compliance_md
     import os
+
+    from onnx9000_cli.coverage import update_compliance_md
 
     # 1. Test existing markers
     f_path = os.path.join(tmpdir, "README.md")

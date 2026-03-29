@@ -1,9 +1,9 @@
-from typing import Callable, Dict, Tuple, Any
 import logging
+from typing import Any, Callable, Dict, Tuple
 
 logger = logging.getLogger("onnx9000.tensorrt.registry")
 
-_TRT_OP_REGISTRY: Dict[Tuple[str, str], Callable] = {}
+_TRT_OP_REGISTRY: dict[tuple[str, str], Callable] = {}
 
 
 def register_op(domain: str, op_name: str):

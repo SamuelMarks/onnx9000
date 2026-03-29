@@ -1,7 +1,7 @@
 """Tests the cli module functionality."""
 
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from onnx9000_cli.main import (

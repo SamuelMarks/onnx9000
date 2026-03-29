@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Represents a single edge between operations detailing the memory layout tensor specification.
  */

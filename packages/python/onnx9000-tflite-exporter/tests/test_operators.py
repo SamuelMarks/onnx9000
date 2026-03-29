@@ -1,12 +1,13 @@
 """Module docstring."""
 
-import pytest
 import struct
+
+import pytest
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.tflite_exporter.exporter import TFLiteExporter
-from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
-from onnx9000.tflite_exporter.flatbuffer.reader import FlatBufferReader
 from onnx9000.tflite_exporter.compiler.operators import ELEMENTWISE_OPS
+from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
+from onnx9000.tflite_exporter.exporter import TFLiteExporter
+from onnx9000.tflite_exporter.flatbuffer.reader import FlatBufferReader
 
 
 def test_compiler_all_operators():

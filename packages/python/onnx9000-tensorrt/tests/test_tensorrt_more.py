@@ -1,34 +1,35 @@
 import unittest
 from unittest.mock import MagicMock
+
 import onnx9000.tensorrt as trt
 import onnx9000.tensorrt.network as trt_network
 from onnx9000.tensorrt.ops import (
     trt_add,
-    trt_sub,
-    trt_mul,
-    trt_div,
-    trt_max,
-    trt_min,
-    trt_pow,
-    trt_equal,
-    trt_less,
-    trt_greater,
     trt_and,
-    trt_or,
-    trt_xor,
-    trt_leakyrelu,
+    trt_averagepool,
     trt_clip,
-    trt_reducesum,
-    trt_reducemean,
+    trt_div,
+    trt_equal,
+    trt_greater,
+    trt_leakyrelu,
+    trt_less,
+    trt_max,
+    trt_maxpool,
+    trt_min,
+    trt_mul,
+    trt_or,
+    trt_pow,
     trt_reducemax,
+    trt_reducemean,
     trt_reducemin,
     trt_reduceprod,
-    trt_maxpool,
-    trt_averagepool,
+    trt_reducesum,
+    trt_sub,
+    trt_xor,
 )
-from onnx9000.tensorrt.ops_dim import trt_reshape, trt_transpose, trt_concat, trt_slice, trt_gather
-from onnx9000.tensorrt.ops_matmul import trt_matmul
 from onnx9000.tensorrt.ops_conv import trt_conv
+from onnx9000.tensorrt.ops_dim import trt_concat, trt_gather, trt_reshape, trt_slice, trt_transpose
+from onnx9000.tensorrt.ops_matmul import trt_matmul
 
 
 class MockNode:
@@ -78,29 +79,29 @@ class TestOpsMore(unittest.TestCase):
             trt_or,
             trt_xor,
         ]:
-            setattr(self.mock_lib, "addElementWise", None)
+            self.mock_lib.addElementWise = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
-            setattr(self.mock_lib, "addElementWise", MagicMock(return_value=0))
+            self.mock_lib.addElementWise = MagicMock(return_value=0)
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
     def test_unary_failures(self):
         node = MockNode("X", ["in1"], ["out"])
         from onnx9000.tensorrt.ops import (
-            trt_exp,
-            trt_log,
-            trt_sqrt,
             trt_abs,
+            trt_elu,
+            trt_exp,
+            trt_hardsigmoid,
+            trt_log,
             trt_neg,
             trt_not,
             trt_relu,
-            trt_sigmoid,
-            trt_tanh,
-            trt_elu,
             trt_selu,
+            trt_sigmoid,
             trt_softplus,
-            trt_hardsigmoid,
+            trt_sqrt,
+            trt_tanh,
         )
 
         for fn in [
@@ -118,32 +119,32 @@ class TestOpsMore(unittest.TestCase):
             trt_softplus,
             trt_hardsigmoid,
         ]:
-            setattr(self.mock_lib, "addUnaryOperation", None)
-            setattr(self.mock_lib, "addActivation", None)
+            self.mock_lib.addUnaryOperation = None
+            self.mock_lib.addActivation = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
-            setattr(self.mock_lib, "addUnaryOperation", MagicMock(return_value=0))
-            setattr(self.mock_lib, "addActivation", MagicMock(return_value=0))
+            self.mock_lib.addUnaryOperation = MagicMock(return_value=0)
+            self.mock_lib.addActivation = MagicMock(return_value=0)
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
     def test_activation_failures(self):
         node = MockNode("X", ["in1"], ["out"], {"alpha": MockAttr(0.1)})
         for fn in [trt_leakyrelu, trt_clip]:
-            setattr(self.mock_lib, "addActivation", None)
+            self.mock_lib.addActivation = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
-            setattr(self.mock_lib, "addActivation", MagicMock(return_value=0))
+            self.mock_lib.addActivation = MagicMock(return_value=0)
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
     def test_reduce_failures(self):
         node = MockNode("X", ["in1"], ["out"], {"axes": MockAttr([0])})
         for fn in [trt_reducesum, trt_reducemean, trt_reducemax, trt_reducemin, trt_reduceprod]:
-            setattr(self.mock_lib, "addReduce", None)
+            self.mock_lib.addReduce = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
-            setattr(self.mock_lib, "addReduce", MagicMock(return_value=0))
+            self.mock_lib.addReduce = MagicMock(return_value=0)
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
@@ -159,15 +160,15 @@ class TestOpsMore(unittest.TestCase):
             },
         )
         for fn in [trt_maxpool, trt_averagepool]:
-            setattr(self.mock_lib, "addPoolingNd", None)
+            self.mock_lib.addPoolingNd = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
-            setattr(self.mock_lib, "addPoolingNd", MagicMock(return_value=0))
+            self.mock_lib.addPoolingNd = MagicMock(return_value=0)
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
     def test_dim_failures(self):
-        setattr(self.mock_lib, "addShuffle", None)
+        self.mock_lib.addShuffle = None
         with self.assertRaises(RuntimeError):
             trt_reshape(self.net, MockNode("X", ["in1"], ["out"]), self.tensors)
         with self.assertRaises(RuntimeError):
@@ -175,7 +176,7 @@ class TestOpsMore(unittest.TestCase):
                 self.net, MockNode("X", ["in1"], ["out"], {"perm": MockAttr([0])}), self.tensors
             )
 
-        setattr(self.mock_lib, "addConcatenation", None)
+        self.mock_lib.addConcatenation = None
         with self.assertRaises(RuntimeError):
             trt_concat(
                 self.net,
@@ -183,11 +184,11 @@ class TestOpsMore(unittest.TestCase):
                 self.tensors,
             )
 
-        setattr(self.mock_lib, "addSlice", None)
+        self.mock_lib.addSlice = None
         with self.assertRaises(RuntimeError):
             trt_slice(self.net, MockNode("X", ["in1", "in2", "in3"], ["out"]), self.tensors)
 
-        setattr(self.mock_lib, "addGather", None)
+        self.mock_lib.addGather = None
         with self.assertRaises(RuntimeError):
             trt_gather(
                 self.net,
@@ -196,20 +197,20 @@ class TestOpsMore(unittest.TestCase):
             )
 
         # Test ptr=0
-        setattr(self.mock_lib, "addShuffle", MagicMock(return_value=0))
+        self.mock_lib.addShuffle = MagicMock(return_value=0)
         # Doesn't raise on 0 but that's ok for these ones, just need to run it
 
     def test_matmul_failures(self):
-        setattr(self.mock_lib, "addMatrixMultiply", None)
+        self.mock_lib.addMatrixMultiply = None
         with self.assertRaises(RuntimeError):
             trt_matmul(self.net, MockNode("X", ["in1", "in2"], ["out"]), self.tensors)
 
     def test_conv_failures(self):
         node = MockNode("X", ["in1", "in2"], ["out"], {"kernel_shape": MockAttr([3, 3])})
-        setattr(self.mock_lib, "addConvolutionNd", None)
+        self.mock_lib.addConvolutionNd = None
         with self.assertRaises(RuntimeError):
             trt_conv(self.net, node, self.tensors)
-        setattr(self.mock_lib, "addConvolutionNd", MagicMock(return_value=0))
+        self.mock_lib.addConvolutionNd = MagicMock(return_value=0)
         with self.assertRaises(RuntimeError):
             trt_conv(self.net, node, self.tensors)
 

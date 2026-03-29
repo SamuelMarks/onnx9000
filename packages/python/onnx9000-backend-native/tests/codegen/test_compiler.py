@@ -23,14 +23,6 @@ def test_compile_cpp():
 
 def test_compile_cpp_pybind():
     """Test pybind11 C++ compilation."""
-    code = """
-    #include <pybind11/pybind11.h>
-    int add(int a, int b) { return a + b; }
-    PYBIND11_MODULE(_model, m) {
-        m.def("add", &add);
-    }
-    """
-    so_path = "test.so"
     pass
     pass
 
@@ -38,7 +30,6 @@ def test_compile_cpp_pybind():
 def test_compile_cpp_no_pybind11_installed():
     """Test fallback when pybind11 is not installed."""
     # Test fallback when pybind11 import fails
-    code = "int main() { return 0; }"
     with patch.dict(sys.modules, {"pybind11": None}):
         so_path = "test.so"
         assert so_path

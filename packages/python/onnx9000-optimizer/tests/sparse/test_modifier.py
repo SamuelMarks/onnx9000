@@ -1,15 +1,15 @@
 """Tests for sparse modifiers."""
 
 import pytest
-from onnx9000.core.ir import Graph, Constant, Node
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.core.sparse import pack_data, unpack_data
 from onnx9000.optimizer.sparse.modifier import (
-    parse_recipe,
-    MagnitudePruningModifier,
     GlobalMagnitudePruningModifier,
+    MagnitudePruningModifier,
     NMPruningModifier,
     apply_recipe,
+    parse_recipe,
 )
 
 
@@ -113,14 +113,14 @@ def test_apply_recipe():
 
 
 def test_modifier_extra():
+    import numpy as np
+    from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Constant, Graph
     from onnx9000.optimizer.sparse.modifier import (
         ConstantPruningModifier,
-        MagnitudePruningModifier,
         GlobalMagnitudePruningModifier,
+        MagnitudePruningModifier,
     )
-    from onnx9000.core.ir import Graph, Constant
-    from onnx9000.core.dtypes import DType
-    import numpy as np
 
     g = Graph("g")
     g.tensors["t"] = Constant(

@@ -57,8 +57,8 @@ def test_tracer_control_flow() -> None:
 
 def test_tracer_kwargs_outputs():
     """Test tracer kwargs outputs."""
-    from onnx9000.converters.frontend.tracer import trace
     from onnx9000.converters.frontend.tensor import Tensor
+    from onnx9000.converters.frontend.tracer import trace
     from onnx9000.core.dtypes import DType
 
     def my_func(x, w=1):

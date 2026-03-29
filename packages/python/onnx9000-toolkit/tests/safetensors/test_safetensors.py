@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+
 import pytest
 from onnx9000.toolkit.safetensors.parser import (
     SafeTensors,
@@ -71,6 +72,7 @@ def test_too_small_file():
 
 
 import json
+
 import numpy as np
 from onnx9000.toolkit.safetensors.parser import get_metadata, save
 
@@ -711,9 +713,7 @@ def test_int64_bounds():
         with open(path, "wb") as f:
             huge = 2**61
             header = (
-                f'{{"a": {{"dtype": "I8", "shape": [1], "data_offsets": [0, {huge}]}}}}'.encode(
-                    "utf-8"
-                )
+                f'{{"a": {{"dtype": "I8", "shape": [1], "data_offsets": [0, {huge}]}}}}'.encode()
             )
             f.write(struct.pack("<Q", len(header)))
             f.write(header)
@@ -761,8 +761,9 @@ def test_bfloat16_generation_security():
 
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "bf16.safetensors")
-        from onnx9000.toolkit.safetensors.parser import save
         import struct
+
+        from onnx9000.toolkit.safetensors.parser import save
 
         header = {"a": {"dtype": "BF16", "shape": [1], "data_offsets": [0, 2]}, "__metadata__": {}}
         import json
@@ -801,8 +802,8 @@ def test_huge_dimension_check():
             import struct
 
             dim = 2**51
-            header = f'{{"a": {{"dtype": "I8", "shape": [{dim}], "data_offsets": [0, 1]}}}}'.encode(
-                "utf-8"
+            header = (
+                f'{{"a": {{"dtype": "I8", "shape": [{dim}], "data_offsets": [0, 1]}}}}'.encode()
             )
             f.write(struct.pack("<Q", len(header)))
             f.write(header)
@@ -831,15 +832,15 @@ def test_json_recursion_limits():
 
 def test_converters_coverage():
     """Test converters coverage."""
+    import os
+    import sys
+    import tempfile
+
+    import pytest
     from onnx9000.toolkit.safetensors.converters import (
         convert_pytorch_to_safetensors,
         convert_tf_to_safetensors,
     )
-    import tempfile
-    import os
-    import pytest
-    import sys
-    import sys
 
     class MockTorch:
         """MockTorch implementation."""
@@ -895,7 +896,7 @@ def test_converters_coverage():
 
     with patch.dict(sys.modules, {"torch": MockTorch(), "tensorflow": MockTF()}):
         with tempfile.TemporaryDirectory() as d:
-            with open(os.path.join(d, "model.bin"), "wb") as bf:
+            with open(os.path.join(d, "model.bin"), "wb"):
                 return None
             convert_pytorch_to_safetensors(d, d)
             convert_tf_to_safetensors(d, os.path.join(d, "tf.safetensors"))
@@ -910,12 +911,13 @@ def test_converters_coverage():
 
 def test_hub_coverage():
     """Test hub coverage."""
-    from onnx9000.toolkit.safetensors.hub import _get_cache_dir, resolve_model_file, cached_download
-    import tempfile
     import os
-    import pytest
-    from unittest.mock import patch, MagicMock
+    import tempfile
+    from unittest.mock import MagicMock, patch
     from urllib.error import HTTPError
+
+    import pytest
+    from onnx9000.toolkit.safetensors.hub import _get_cache_dir, cached_download, resolve_model_file
 
     with patch.dict(os.environ, {"HF_HOME": "/tmp/hf"}):
         assert _get_cache_dir() == "/tmp/hf"
@@ -929,7 +931,7 @@ def test_hub_coverage():
             url = resolve_model_file("repo", "main")
             assert url.endswith(".safetensors")
         mock_urlopen.side_effect = HTTPError("url", 404, "Not Found", {}, None)
-        url2 = resolve_model_file("repo", "main")
+        resolve_model_file("repo", "main")
         pass
     with tempfile.TemporaryDirectory() as d:
         with patch("onnx9000.toolkit.safetensors.hub._get_cache_dir", return_value=d):
@@ -946,7 +948,7 @@ def test_hub_coverage():
                 )
                 assert path2 == path1
                 mock_response.read.side_effect = [b"hello", b""]
-                path3 = cached_download(
+                cached_download(
                     "https://huggingface.co/repo/resolve/main/file",
                     revision="dev",
                     force_download=True,
@@ -954,14 +956,14 @@ def test_hub_coverage():
                 import hashlib
 
                 expected_hash = hashlib.sha256(b"hello").hexdigest()
-                path4 = cached_download(
+                cached_download(
                     "https://huggingface.co/repo/resolve/main/file",
                     revision="dev",
                     expected_sha256=expected_hash,
                 )
                 mock_response.read.side_effect = [b"hello2", b""]
                 expected_hash2 = hashlib.sha256(b"hello2").hexdigest()
-                path5 = cached_download(
+                cached_download(
                     "https://huggingface.co/repo/resolve/main/file",
                     revision="dev",
                     expected_sha256=expected_hash2,
@@ -986,14 +988,15 @@ def test_parser_uncovered():
 
 def test_interop_real():
     """Test interop real."""
+    import os
+    import tempfile
+
+    import numpy as np
     from onnx9000.toolkit.safetensors.interop import (
+        load_flax_safetensors,
         load_pytorch_safetensors,
         load_tensorflow_safetensors,
-        load_flax_safetensors,
     )
-    import tempfile
-    import os
-    import numpy as np
     from onnx9000.toolkit.safetensors.parser import save_file
 
     with tempfile.TemporaryDirectory() as d:

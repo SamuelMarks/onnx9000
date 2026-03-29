@@ -1,20 +1,19 @@
 """Tests for packages/python/onnx9000-tvm/tests/test_all_nodes_cov.py."""
 
 from contextlib import suppress
+
 import pytest
 from onnx9000.tvm.relay.expr import (
-    Var,
-    Constant,
-    Op,
     Call,
+    Constant,
+    Function,
     If,
     Let,
+    Op,
     TupleExpr,
     TupleGetItem,
-    Function,
+    Var,
 )
-from onnx9000.tvm.relay.ty import TensorType, TupleType, FuncType
-from onnx9000.tvm.relay.visitor import ExprVisitor, ExprMutator
 from onnx9000.tvm.relay.printer import Printer as IRPrinter
 from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
 from onnx9000.tvm.relay.transform.dead_code_elimination import eliminate_dead_code
@@ -26,6 +25,8 @@ from onnx9000.tvm.relay.transform.memory_plan import plan_memory
 from onnx9000.tvm.relay.transform.resolve_shape import resolve_dynamic_shape
 from onnx9000.tvm.relay.transform.simplify import simplify_algebra
 from onnx9000.tvm.relay.transform.unroll_let import unroll_let
+from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
+from onnx9000.tvm.relay.visitor import ExprMutator, ExprVisitor
 
 
 def get_nodes():
@@ -124,42 +125,46 @@ def test_passes():
 
 def test_te_tir_nodes():
     """Test te tir nodes."""
-    from onnx9000.tvm.te.tensor import Tensor, ComputeOp, PlaceholderOp
+    from onnx9000.tvm.te.tensor import ComputeOp, PlaceholderOp, Tensor
+    from onnx9000.tvm.tir.expr import (
+        EQ,
+        GE,
+        GT,
+        LE,
+        LT,
+        NE,
+        Add,
+        And,
+        Div,
+        FloatImm,
+        IntImm,
+        Load,
+        Mod,
+        Mul,
+        Or,
+        StringImm,
+        Sub,
+        Xor,
+    )
+    from onnx9000.tvm.tir.expr import (
+        Call as TIRCall,
+    )
     from onnx9000.tvm.tir.expr import (
         Var as TIRVar,
-        IntImm,
-        FloatImm,
-        StringImm,
-        Add,
-        Sub,
-        Mul,
-        Div,
-        Mod,
-        EQ,
-        NE,
-        LT,
-        LE,
-        GT,
-        GE,
-        And,
-        Or,
-        Xor,
-        Call as TIRCall,
-        Load,
     )
+    from onnx9000.tvm.tir.printer import TIRPrinter
     from onnx9000.tvm.tir.stmt import (
         AssertStmt,
-        LetStmt,
-        Store,
-        For,
-        While,
-        IfThenElse,
-        Evaluate,
-        SeqStmt,
         Buffer,
+        Evaluate,
+        For,
+        IfThenElse,
+        LetStmt,
+        SeqStmt,
+        Store,
+        While,
     )
-    from onnx9000.tvm.tir.visitor import StmtVisitor, StmtMutator
-    from onnx9000.tvm.tir.printer import TIRPrinter
+    from onnx9000.tvm.tir.visitor import StmtMutator, StmtVisitor
 
     v = TIRVar("i")
     c = IntImm("int32", 1)

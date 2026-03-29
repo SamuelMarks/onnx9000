@@ -1,9 +1,10 @@
 """Module docstring."""
 
+import struct
+
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.tflite_exporter.tf_protobuf import TFProtobufEncoder, SavedModelGenerator
-import struct
+from onnx9000.tflite_exporter.tf_protobuf import SavedModelGenerator, TFProtobufEncoder
 
 
 def test_tf_protobuf_generation():

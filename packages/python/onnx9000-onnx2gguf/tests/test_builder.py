@@ -2,8 +2,9 @@
 
 import io
 import struct
+
 import pytest
-from onnx9000.onnx2gguf.builder import GGUFWriter, GGUFValueType, GGUFTensorType
+from onnx9000.onnx2gguf.builder import GGUFTensorType, GGUFValueType, GGUFWriter
 
 
 def test_gguf_writer_basic():

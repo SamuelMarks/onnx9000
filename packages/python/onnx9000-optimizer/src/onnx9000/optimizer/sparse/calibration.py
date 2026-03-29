@@ -1,7 +1,7 @@
 """Module for sparse calibration and loss simulation."""
 
 import math
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any, Optional, Tuple, Union
 
 
 class DataLoader:
@@ -12,7 +12,7 @@ class DataLoader:
         if isinstance(data, str):
             import json
 
-            with open(data, "r") as f:
+            with open(data) as f:
                 self.data = json.load(f)
         else:
             self.data = data

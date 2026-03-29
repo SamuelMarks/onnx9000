@@ -2,9 +2,9 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-import numpy as np
+from unittest.mock import MagicMock, patch
 
+import numpy as np
 import onnx9000.converters.frontend.builder as builder
 import onnx9000.converters.frontend.exporter as exporter
 import onnx9000.converters.frontend.jit as jit
@@ -108,7 +108,7 @@ class TestFrontendMore(unittest.TestCase):
 
         t = tensor.Tensor((1, 10))
         with builder.Tracing():
-            x = d(t)
+            d(t)
             # Try to test e and rn if possible, or just instantiate them
             self.assertIsInstance(e, embedding.Embedding)
             self.assertIsInstance(rn, rnn.RNN)

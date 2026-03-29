@@ -81,7 +81,7 @@ def test_ir_edge_cases() -> None:
 
 
 def test_sparse_ir():
-    from onnx9000.core.ir import SparseTensor, Attribute, Graph, Tensor
+    from onnx9000.core.ir import Attribute, Graph, SparseTensor, Tensor
 
     st = SparseTensor("sp")
     assert Attribute.infer_type(st) == "SPARSE_TENSOR"

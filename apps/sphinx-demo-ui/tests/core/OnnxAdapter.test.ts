@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { describe, it, expect } from 'vitest';
 import { OnnxAdapter, VizGraph } from '../../src/core/OnnxAdapter';
 

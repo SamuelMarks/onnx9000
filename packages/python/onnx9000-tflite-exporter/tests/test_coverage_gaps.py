@@ -1,14 +1,15 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_coverage_gaps.py."""
 
-import pytest
 import struct
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo, Attribute
+
+import pytest
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
+from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
+from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 from onnx9000.tflite_exporter.flatbuffer.reader import FlatBufferReader
-from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
-from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.quantization.quantizer import Quantizer
-from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
 
 
 def test_builder_gaps():
@@ -179,7 +180,7 @@ def test_layout_gaps():
     )
     graph.nodes.append(Node("Resize", ["X", "R", "S", "Sz"], ["R"]))
     graph.tensors["Sz"] = Tensor(
-        "Sz", shape=(4,), dtype="int64", is_initializer=True, data=struct.pack(f"<4q", 1, 2, 3, 4)
+        "Sz", shape=(4,), dtype="int64", is_initializer=True, data=struct.pack("<4q", 1, 2, 3, 4)
     )
     graph.nodes.append(Node("Div", ["X", "Zero"], ["D"]))
     graph.tensors["Zero"] = Tensor(
@@ -270,8 +271,8 @@ def test_exporter_gaps():
 
 def test_operators_gaps():
     """Test operators gaps."""
-    from onnx9000.core.ir import Graph, Node, Attribute
-    from onnx9000.tflite_exporter.compiler.operators import map_pool2d_options, map_conv2d_options
+    from onnx9000.core.ir import Attribute, Graph, Node
+    from onnx9000.tflite_exporter.compiler.operators import map_conv2d_options, map_pool2d_options
     from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
     b = FlatBufferBuilder(1024)
@@ -307,11 +308,12 @@ def test_operators_gaps():
 def test_subgraph_gaps_more():
     """Test subgraph gaps more."""
     import os
-    from onnx9000.core.ir import Graph, Node, Attribute
-    from onnx9000.tflite_exporter.exporter import TFLiteExporter
-    from onnx9000.tflite_exporter.compiler.operators import TFLiteOperatorMapping
-    from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator, BuiltinOptions
+
     import onnx9000.tflite_exporter.compiler.subgraph as sg
+    from onnx9000.core.ir import Attribute, Graph, Node
+    from onnx9000.tflite_exporter.compiler.operators import TFLiteOperatorMapping
+    from onnx9000.tflite_exporter.exporter import TFLiteExporter
+    from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator, BuiltinOptions
 
     graph = Graph("TestGraphPytorch")
     graph.metadata = {"producer_name": "pytorch"}
@@ -367,7 +369,7 @@ def test_exporter_edge_cases():
 
 def test_operators_gaps2():
     """Test operators gaps2."""
-    from onnx9000.core.ir import Graph, Node, Attribute
+    from onnx9000.core.ir import Attribute, Graph, Node
     from onnx9000.tflite_exporter.compiler.operators import _map_transpose_conv, map_conv2d_options
     from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 

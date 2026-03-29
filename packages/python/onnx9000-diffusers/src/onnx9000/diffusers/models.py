@@ -1,6 +1,3 @@
-from typing import List
-
-
 class AutoencoderKL:
     def encode(self, x: List[float]) -> List[float]:
         """Map VAE encode (Image -> Latent) operations natively."""

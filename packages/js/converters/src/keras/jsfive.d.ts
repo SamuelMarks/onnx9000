@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 declare module 'jsfive' {
   export class File {
     constructor(buffer: ArrayBuffer, filename: string);

@@ -1,8 +1,9 @@
 """Module docstring."""
 
 import io
-from onnx9000.core.ir import Graph, Tensor
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Tensor
 from onnx9000.onnx2gguf.compiler import compile_gguf, infer_architecture, sanitize_doc_string
 
 

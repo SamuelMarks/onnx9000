@@ -1,7 +1,7 @@
 """Tests for packages/python/onnx9000-optimizer/tests/simplifier/passes/test_webgpu.py."""
 
-import pytest
 import numpy as np
+import pytest
 
 
 def test_polyfill_webgpu():
@@ -95,8 +95,8 @@ def test_fp16_cast():
 def test_generate_reports(tmp_path):
     """Test generate reports."""
     from onnx9000.optimizer.simplifier.passes.webgpu import (
-        generate_html_report,
         generate_execution_schedule,
+        generate_html_report,
     )
 
     class MockNode:
@@ -128,10 +128,10 @@ def test_generate_reports(tmp_path):
 def test_fuse_methods():
     """Test fuse methods."""
     from onnx9000.optimizer.simplifier.passes.webgpu import (
-        fuse_swiglu,
         fuse_geglu,
-        replace_gather_with_lookup,
+        fuse_swiglu,
         inject_web_worker_boundaries,
+        replace_gather_with_lookup,
     )
 
     assert fuse_swiglu(None) is False

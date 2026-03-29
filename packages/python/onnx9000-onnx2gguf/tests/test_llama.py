@@ -1,7 +1,7 @@
 """Module docstring."""
 
-from onnx9000.core.ir import Graph, Tensor, Node
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.onnx2gguf.llama import extract_llama_metadata
 
 
@@ -22,5 +22,5 @@ def test_extract_llama():
     assert meta["llama.feed_forward_length"] == 11008
     assert meta["llama.vocab_size"] == 32000
     assert meta["llama.block_count"] == 1
-    assert meta["custom.is_swiglu"] == True
+    assert meta["custom.is_swiglu"]
     assert meta["llama.attention.layer_norm_rms_epsilon"] == 1e-6

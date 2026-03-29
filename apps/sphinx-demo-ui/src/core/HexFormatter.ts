@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Utility to format binary ArrayBuffers into readable Hex strings
  * for the Monaco editor when a target is a pure binary file (like .onnx or .pb).

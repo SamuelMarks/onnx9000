@@ -154,6 +154,7 @@ def generate_pad(
     in_shape = in_tensor.shape
     out_shape = out_tensor.shape
     import struct
+
     from onnx9000.core.ir import Constant
 
     if (
@@ -575,6 +576,7 @@ def generate_constant_of_shape(b, node, out_tensor, in_tensors, in_names, out_na
     b.emit("{")
     b.push_indent()
     import struct
+
     from onnx9000.core.dtypes import DType, to_cpp_type
     from onnx9000.core.profiler import resolve_volume
 

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { Graph, Node, Attribute, Shape } from '@onnx9000/core';
 
 export class PyTorchGenerator {

@@ -1,8 +1,9 @@
 """Module docstring."""
 
 import io
+
 import pytest
-from onnx9000.onnx2gguf.builder import GGUFWriter, GGUFValueType, GGUFTensorType
+from onnx9000.onnx2gguf.builder import GGUFTensorType, GGUFValueType, GGUFWriter
 from onnx9000.onnx2gguf.reader import GGUFReader
 
 

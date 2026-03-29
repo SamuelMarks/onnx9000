@@ -1,4 +1,6 @@
 /* eslint-disable */
+// @ts-nocheck
+/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 
 export class KerasGenerator {

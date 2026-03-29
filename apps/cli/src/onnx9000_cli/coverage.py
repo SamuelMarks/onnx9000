@@ -409,7 +409,7 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
             )
             commit_hash = commit_hash_proc.stdout.strip()
 
-            operators_md_path = os.path.join(temp_dir, "docs", "Operators.md")
+            os.path.join(temp_dir, "docs", "Operators.md")
             operators = []
             return {"commit": commit_hash, "operators": operators}
         except subprocess.CalledProcessError:
@@ -447,7 +447,7 @@ def get_onnx9000_ops() -> list[str]:
     for f in files:
         with open(f, encoding="utf-8") as fp:
             try:
-                tree = ast.parse(fp.read())
+                ast.parse(fp.read())
 
             except Exception:
                 pass

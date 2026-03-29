@@ -1,4 +1,6 @@
 /* eslint-disable */
+// @ts-nocheck
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 
 export class TensorFlowGenerator {

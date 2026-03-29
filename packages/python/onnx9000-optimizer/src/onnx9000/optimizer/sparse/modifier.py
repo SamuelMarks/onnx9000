@@ -1,13 +1,13 @@
 """Module for SparseML-style recipe modifiers and execution engine."""
 
-import re
-import random
 import logging
 import math
-from typing import Any, Dict, List, Optional, Union, Tuple
+import random
+import re
+from typing import Any, Optional, Tuple, Union
 
-from onnx9000.core.ir import Graph, Tensor, Constant, SparseTensor, Node, Attribute
-from onnx9000.core.sparse import unpack_data, pack_data, DType
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, SparseTensor, Tensor
+from onnx9000.core.sparse import DType, pack_data, unpack_data
 
 logger = logging.getLogger(__name__)
 
@@ -682,7 +682,7 @@ class NMPruningModifier(Modifier):
 
             abs_block = [(abs(v), idx) for idx, v in enumerate(block)]
             abs_block.sort(key=lambda x: x[0], reverse=True)
-            to_keep = set(idx for _, idx in abs_block[:n])
+            to_keep = {idx for _, idx in abs_block[:n]}
 
             new_block = []
             for idx, v in enumerate(block):
