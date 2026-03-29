@@ -52,7 +52,7 @@ class ConstantPruningModifier(Modifier):
         for pattern in self.params:
             for name, tensor in graph.tensors.items():
                 if isinstance(tensor, Constant) and re.match(pattern.replace("re:", ""), name):
-                    self._prune_tensor(tensor, 0.0)
+                    self._prune_tensor(tensor, getattr(self, "threshold", 0.0))
 
     def _prune_tensor(self, tensor: Constant, threshold: float) -> None:
         """Prune a single tensor based on a fixed threshold.
@@ -574,9 +574,6 @@ class QuantizationModifier(Modifier):
             zero_point = 0
             quant_values = [max(-128, min(127, int(round(v / scale)))) for v in values]
             dtype = DType.INT8
-
-        if scale == 0:
-            return
 
         newly_zeroed = sum(1 for v, q in zip(values, quant_values) if v != 0 and q == 0)
         if newly_zeroed > 0.1 * len(non_zero_values):

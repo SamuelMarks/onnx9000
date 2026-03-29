@@ -158,3 +158,173 @@ def test_other_stubs():
     from onnx9000.optimizer.sparse.modifier import manage_calibration_memory
 
     manage_calibration_memory(Graph("t"))
+
+
+def test_missing_modifier_lines():
+    g = create_simple_graph()
+
+    # 114: leave_unmasked
+    mod_mag = MagnitudePruningModifier(params=["re:weight1"], leave_unmasked=["weight1"])
+    mod_mag.apply(g)
+
+    # 135: idx = len(sorted_norms) - 1 in MagnitudePruningModifier
+    mod_mag2 = MagnitudePruningModifier(
+        params=["re:weight1"], final_sparsity=1.5
+    )  # out of bounds sparsity
+    mod_mag2.apply(g)
+
+    # 263: OBSPruning without calibration_data
+    OBSPruningModifier(params=["re:weight1"], sparsity=0.5).apply(g)
+
+    # 331: FisherPruning without grads
+    FisherPruningModifier(params=["re:weight1"], sparsity=0.5).apply(g)
+
+    # 391: MovementPruning without grads
+    MovementPruningModifier(params=["re:weight1"], sparsity=0.5).apply(g)
+
+    # 495: GlobalMagnitudePruningModifier with no matching tensors (return)
+    GlobalMagnitudePruningModifier(params=["re:nonexistent"], final_sparsity=0.5).apply(g)
+
+    # 500: GlobalMagnitudePruningModifier out of bounds sparsity
+    GlobalMagnitudePruningModifier(params=["re:weight1"], final_sparsity=1.5).apply(g)
+
+    # 572-576: QuantizationModifier symmetric (not asymmetric) with INT8
+    # We need to trigger line 572: which is symmetric quant and scale != 0
+    # Values are already [1..8] so scale won't be 0
+    mod_quant = QuantizationModifier(params=["re:weight1"], scheme="symmetric")
+    mod_quant.apply(g)
+
+    # 579: QuantizationModifier symmetric with scale == 0
+    # Create graph with only zeros
+    g_zero = Graph("zeros")
+    data = [0.0] * 8
+    binary_data = struct.pack("<8f", *data)
+    w_zero = Constant("weight_zero", values=binary_data, shape=(2, 4), dtype=DType.FLOAT32)
+    g_zero.add_tensor(w_zero)
+    g_zero.initializers.append("weight_zero")
+    QuantizationModifier(params=["re:weight_zero"], scheme="symmetric").apply(g_zero)
+
+    # 605-606: AsymmetricSparseQuantizationModifier
+    AsymmetricSparseQuantizationModifier(params=["re:weight1"]).apply(g)
+
+    # 682-684: NMPruningModifier len(block) < m
+    g_nm = Graph("nm")
+    w_nm = Constant(
+        "weight_nm", values=struct.pack("<3f", 1.0, 2.0, 3.0), shape=(1, 4), dtype=DType.FLOAT32
+    )
+    g_nm.add_tensor(w_nm)
+    NMPruningModifier(params=["re:weight_nm"], n=2, m=4).apply(g_nm)
+
+    # 739-740: parse_recipe with string that cannot be cast to float
+    recipe_str = """
+    modifiers:
+        - !MagnitudePruningModifier
+            params: ['re:weight1']
+            some_str: "hello"
+    """
+    apply_recipe(g, recipe_str)
+
+    # 748-770: parse_recipe for all other modifiers
+    recipe_str_all = """
+    modifiers:
+        - !ConstantPruningModifier
+            params: ['re:weight1']
+        - !GlobalMagnitudePruningModifier
+            params: ['re:weight1']
+        - !GradualPruningModifier
+            params: ['re:weight1']
+        - !OBSPruningModifier
+            params: ['re:weight1']
+        - !FisherPruningModifier
+            params: ['re:weight1']
+        - !MovementPruningModifier
+            params: ['re:weight1']
+        - !AccuracyAwarePruningModifier
+            params: ['re:weight1']
+        - !QuantizationModifier
+            params: ['re:weight1']
+        - !AsymmetricSparseQuantizationModifier
+            params: ['re:weight1']
+        - !SparseQLinearConvModifier
+        - !NMPruningModifier
+            params: ['re:weight1']
+            n: 2
+            m: 4
+    """
+    apply_recipe(g, recipe_str_all)
+
+    # 790: AccuracyAwarePruningModifier in apply_recipe
+    recipe_aa = """
+    modifiers:
+        - !AccuracyAwarePruningModifier
+            target_sparsity: 0.5
+    """
+    apply_recipe(g, recipe_aa)
+
+
+def test_quant_symmetric():
+    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
+    from onnx9000.core.ir import Graph, Constant
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    g = Graph("g")
+    g.tensors["t"] = Constant(
+        "t", values=np.array([1.0, -0.5, 0.1, 0.05]).tobytes(), dtype=DType.FLOAT32, shape=(4,)
+    )
+    g.initializers.append("t")
+
+    mod = QuantizationModifier(params=["re:t"], scheme="symmetric")
+    mod.apply(g)
+
+    import struct
+
+    assert g.tensors["t"].dtype == DType.INT8
+
+    # Also test scale == 0
+    g2 = Graph("g2")
+    g2.tensors["t2"] = Constant(
+        "t2", values=np.array([0.0, 0.0]).tobytes(), dtype=DType.FLOAT32, shape=(2,)
+    )
+    g2.initializers.append("t2")
+    mod2 = QuantizationModifier(params=["re:t2"], scheme="symmetric")
+    mod2.apply(g2)
+
+
+def test_quant_asymmetric_zero_scale():
+    from onnx9000.optimizer.sparse.modifier import QuantizationModifier
+    from onnx9000.core.ir import Graph, Constant
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    g = Graph("g")
+    g.tensors["t"] = Constant(
+        "t", values=np.array([1.0, 1.0]).tobytes(), dtype=DType.FLOAT32, shape=(2,)
+    )
+    g.initializers.append("t")
+
+    mod = QuantizationModifier(params=["re:t"], scheme="asymmetric")
+    mod.apply(g)
+
+
+def test_parse_recipe_unknown():
+    from onnx9000.optimizer.sparse.modifier import parse_recipe
+
+    recipe_str = """
+    modifiers:
+        - !UnknownModifier
+            params: ['re:weight1']
+    """
+    mods = parse_recipe(recipe_str)
+    assert len(mods) == 1
+    assert type(mods[0]).__name__ == "Modifier"
+
+
+def test_unknown_modifier_apply():
+    from onnx9000.optimizer.sparse.modifier import Modifier
+    from onnx9000.core.ir import Graph
+    import pytest
+
+    mod = Modifier()
+    with pytest.raises(NotImplementedError):
+        mod.apply(Graph("g"))

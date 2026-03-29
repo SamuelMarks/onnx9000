@@ -33,12 +33,12 @@ def _serialize_shape(shape: tuple[Union[int, str, DynamicDim], ...]) -> onnx_pb2
             if dim < 0:
                 dim_proto.dim_param = "?"
             else:
-                dim_proto.dim_value = dim
+                dim_proto.dim_value = int(dim)
         else:
             if dim < 0:
                 dim_proto.dim_param = "?"
             else:
-                dim_proto.dim_value = dim
+                dim_proto.dim_value = int(dim)
     return shape_proto
 
 
@@ -221,7 +221,7 @@ def serialize_model(
                 attr_proto.type = onnx_pb2.AttributeProto.TENSOR
             elif attr_obj.attr_type == "GRAPH":
                 if isinstance(attr_obj.value, Graph):
-                    attr_proto.g.CopyFrom(serialize_model(attr_obj.value))
+                    attr_proto.g.CopyFrom(serialize_model(attr_obj.value).graph)
                 else:
                     attr_proto.g.CopyFrom(attr_obj.value)
                 attr_proto.type = onnx_pb2.AttributeProto.GRAPH

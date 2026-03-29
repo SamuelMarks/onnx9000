@@ -132,6 +132,10 @@ def simulate_memory_plan(
 
     lifetimes = {}
 
+    for inp in graph.inputs:
+        inp_name = inp if isinstance(inp, str) else inp.name
+        lifetimes[inp_name] = [0, len(graph.nodes)]
+
     for i, n in enumerate(graph.nodes):
         for out in n.outputs:
             if out not in lifetimes:
@@ -139,13 +143,6 @@ def simulate_memory_plan(
         for inp in n.inputs:
             if inp in lifetimes:
                 lifetimes[inp][1] = max(lifetimes[inp][1], i)
-
-    for inp in graph.inputs:
-        inp_name = inp if isinstance(inp, str) else inp.name
-        if inp_name not in lifetimes:
-            lifetimes[inp_name] = [0, len(graph.nodes)]
-        else:
-            lifetimes[inp_name][1] = len(graph.nodes)
 
     active_tensors = set()
 

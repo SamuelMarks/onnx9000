@@ -84,10 +84,10 @@ class Attribute:
             return "FLOAT"
         if isinstance(value, str):
             return "STRING"
-        if isinstance(value, Tensor):
-            return "TENSOR"
         if isinstance(value, SparseTensor):
             return "SPARSE_TENSOR"
+        if isinstance(value, Tensor):
+            return "TENSOR"
         if isinstance(value, Graph):
             return "GRAPH"
         if isinstance(value, list):
@@ -99,10 +99,10 @@ class Attribute:
                 return "FLOATS"
             if isinstance(value[0], str):
                 return "STRINGS"
-            if isinstance(value[0], Tensor):
-                return "TENSORS"
             if isinstance(value[0], SparseTensor):
                 return "SPARSE_TENSORS"
+            if isinstance(value[0], Tensor):
+                return "TENSORS"
             if isinstance(value[0], Graph):
                 return "GRAPHS"
         return "UNKNOWN"

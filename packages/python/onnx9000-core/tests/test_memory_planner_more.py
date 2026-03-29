@@ -19,3 +19,16 @@ def test_memory_plan_more():
 
     arena = simulate_memory_plan(g, strategy="best_fit")
     assert arena.peak_memory > 0
+
+
+def test_planner_input_used():
+    from onnx9000.core.ir import Graph, Node, Tensor
+    from onnx9000.core.memory_planner import simulate_memory_plan
+
+    g = Graph("g")
+    g.inputs.append(Tensor("in", [1], "float32"))
+    g.add_node(Node("Add", ["in", "in"], ["out"]))
+    g.outputs.append(Tensor("out", [1], "float32"))
+    g.tensors["in"] = g.inputs[0]
+    g.tensors["out"] = g.outputs[0]
+    simulate_memory_plan(g)

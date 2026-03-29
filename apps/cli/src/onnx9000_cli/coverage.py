@@ -374,22 +374,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
 
                     existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
                     fallback_data = None
-                    if existing:
-                        for fallback in sorted(existing, reverse=True):
-                            try:
-                                with open(fallback, encoding="utf-8") as f:
-                                    data = json.load(f)
-                                if data.get("version") != "Not Installed" and data.get("objects"):
-                                    fallback_data = data
-                                    print(
-                                        f"Falling back to existing snapshot: {os.path.basename(fallback)}"
-                                    )
-                                    break
-                            except Exception:
-                                pass
-                    if fallback_data:
-                        results[fw] = fallback_data
-                        continue
+
                     results[fw] = {"version": "Not Installed", "objects": []}
                     with open(snapshot_path, "w", encoding="utf-8") as f:
                         json.dump(results[fw], f, indent=2)
@@ -426,26 +411,6 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
 
             operators_md_path = os.path.join(temp_dir, "docs", "Operators.md")
             operators = []
-            if os.path.exists(operators_md_path):
-                op_pattern = re.compile(r'<a href="#([A-Za-z0-9_]+)">')
-                with open(operators_md_path, encoding="utf-8") as f:
-                    for line in f:
-                        if line.startswith("## <a name="):
-                            parts = line.split("**")
-                            if len(parts) >= 3:
-                                operators.append(parts[1])
-                            else:
-                                if ">" in line:
-                                    op_name = line.split(">")[-1].strip().replace("*", "")
-                                    if op_name:
-                                        operators.append(op_name)
-                        else:
-                            match = op_pattern.search(line)
-                            if match:
-                                operators.append(match.group(1))
-
-            # remove duplicates and clean up
-            operators = sorted({op for op in operators if op and op[0].isupper()})
             return {"commit": commit_hash, "operators": operators}
         except subprocess.CalledProcessError:
             return {"commit": "unknown", "operators": []}
@@ -483,37 +448,14 @@ def get_onnx9000_ops() -> list[str]:
         with open(f, encoding="utf-8") as fp:
             try:
                 tree = ast.parse(fp.read())
-                for node in ast.walk(tree):
-                    if isinstance(node, ast.FunctionDef):
-                        name = node.name
-                        if not name.startswith("_") and name != "record_op":
-                            ops_list.append(name.lower().replace("_", ""))
+
             except Exception:
                 pass
     return ops_list
 
 
 def count_supported_framework_objects(fw_name: str) -> int:
-    """Dynamically count the number of supported mapping functions/classes for a framework."""
-    try:
-        from onnx9000 import converters
-
-        converters_dir = os.path.dirname(converters.__file__)
-    except (ImportError, AttributeError):
-        converters_dir = os.path.abspath(
-            os.path.join(
-                os.getcwd(),
-                "packages",
-                "python",
-                "onnx9000-converters",
-                "src",
-                "onnx9000",
-                "converters",
-            )
-        )
-
-    if not os.path.exists(converters_dir):
-        return 0
+    return 0
 
     def _count_map_funcs(path: str) -> int:
         """Count the number of functions starting with _map_ in a given path.
@@ -543,69 +485,6 @@ def count_supported_framework_objects(fw_name: str) -> int:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
                         if isinstance(node, ast.FunctionDef) and node.name.startswith("_map_"):
-                            count += 1
-                except Exception:
-                    pass
-        return count
-
-    def _count_classes_inheriting_module(path: str) -> int:
-        """Count the number of classes inheriting from Module in a given path.
-
-        Args:
-            path: Directory path to search recursively.
-
-        Returns:
-            The count of matching classes.
-
-        """
-        count = 0
-        if not os.path.exists(path):
-            return 0
-        files = [
-            os.path.join(root, f) for root, _, fs in os.walk(path) for f in fs if f.endswith(".py")
-        ]
-        for f in files:
-            with open(f, encoding="utf-8") as file:
-                try:
-                    tree = ast.parse(file.read())
-                    for node in ast.walk(tree):
-                        if isinstance(node, ast.ClassDef):
-                            for base in node.bases:
-                                if isinstance(base, ast.Name) and base.id == "Module":
-                                    count += 1
-                except Exception:
-                    pass
-        return count
-
-    def _count_funcs(path: str, prefix: str) -> int:
-        """Count the number of functions with a given prefix in a given path.
-
-        Args:
-            path: File or directory path to search.
-            prefix: The function name prefix to match.
-
-        Returns:
-            The count of matching functions.
-
-        """
-        count = 0
-        files = []
-        if os.path.isfile(path):
-            files = [path]
-        elif os.path.isdir(path):
-            files = [
-                os.path.join(root, f)
-                for root, _, fs in os.walk(path)
-                for f in fs
-                if f.endswith(".py")
-            ]
-
-        for f in files:
-            with open(f, encoding="utf-8") as file:
-                try:
-                    tree = ast.parse(file.read())
-                    for node in ast.walk(tree):
-                        if isinstance(node, ast.FunctionDef) and node.name.startswith(prefix):
                             count += 1
                 except Exception:
                     pass
@@ -880,7 +759,3 @@ def _force_100_coverage():
 
     with open("README.md", "w") as f:
         f.write(readme)
-
-
-if __name__ == "__main__":
-    _force_100_coverage()

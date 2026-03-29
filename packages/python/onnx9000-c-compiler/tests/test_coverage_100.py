@@ -66,7 +66,3 @@ def test_100_cov():
 
     comp = C89Compiler(g, target="esp-nn")
     h, c = comp.generate()
-
-
-if __name__ == "__main__":
-    test_100_cov()

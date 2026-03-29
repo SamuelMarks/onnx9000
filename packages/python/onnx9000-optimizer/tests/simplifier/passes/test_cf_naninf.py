@@ -30,3 +30,69 @@ def test_cf_mock_nan_types():
     g2.initializers.append("t")
     g2.nodes.append(Node("Abs", ["t"], ["out"]))
     cf._run_once(g2)  # Should hit list instance
+
+
+def test_erf():
+    import sys
+    from unittest.mock import MagicMock
+
+    mock_scipy = MagicMock()
+    mock_scipy.erf = lambda x: x
+    sys.modules["scipy.special"] = mock_scipy
+    sys.modules["scipy"] = MagicMock()
+    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    g = Graph("g")
+    g.tensors["in"] = Constant(
+        "in",
+        values=np.array([0.0, 1.0], dtype=np.float32).tobytes(),
+        dtype=DType.FLOAT32,
+        shape=(2,),
+    )
+    g.initializers.append("in")
+    g.add_node(Node("Erf", ["in"], ["out"]))
+    cf = ConstantFoldingPass()
+    cf._run_once(g)
+
+    print(g.tensors)
+
+
+def test_erf_inspect():
+    from onnx9000.core.ir import Graph, Node, Tensor, Constant, Attribute
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+        _tensor_to_numpy,
+    )
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    t = Constant(
+        "in",
+        values=np.array([0.0, 1.0], dtype=np.float32).tobytes(),
+        dtype=DType.FLOAT32,
+        shape=(2,),
+    )
+    res = _tensor_to_numpy(t)
+    print(f"Numpy: {res}")
+
+
+def test_erf_inspect_exc():
+    from onnx9000.core.ir import Constant
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    t = Constant(
+        "in",
+        values=np.array([0.0, 1.0], dtype=np.float32).tobytes(),
+        dtype=DType.FLOAT32,
+        shape=(2,),
+    )
+
+    dtype_mapping = {DType.FLOAT32: np.float32}
+    np_dtype = dtype_mapping.get(t.dtype)
+    shape_list = [d.value if hasattr(d, "value") else d for d in t.shape]
+    res = np.frombuffer(t.data, dtype=np_dtype).reshape(shape_list)
+    print(f"RES: {res}")

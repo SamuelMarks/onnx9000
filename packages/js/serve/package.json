@@ -2,5 +2,9 @@
   "name": "@onnx9000/serve",
   "version": "1.0.0",
   "description": "Edge-native inference server for ONNX models (KServe / OpenAI APIs)",
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/backend-web": "workspace:*"
+  }
 }

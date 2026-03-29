@@ -8,6 +8,20 @@ describe('WebGPUProvider Final', () => {
     expect(SPMM_CSR_WGSL).toBeDefined();
   });
 
+  it('should test createSparseBuffer', () => {
+    const provider = new WebGPUProvider({} as any);
+    (provider as any).device = { createBuffer: () => ({}) };
+    const result = (provider as any).createSparseBuffer({
+      format: 'CSR',
+      values: new Uint8Array(4),
+      row_ptr: new Uint8Array(4),
+      col_indices: new Uint8Array(4),
+    });
+    expect(result).not.toBeNull();
+    const resultNull = (provider as any).createSparseBuffer({ format: 'COO' });
+    expect(resultNull).toBeNull();
+  });
+
   it('should execute sparse MatMul and hit coverage', async () => {
     const provider = new WebGPUProvider({ sparsityThreshold: 0.5 });
 

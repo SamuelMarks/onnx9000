@@ -157,3 +157,24 @@ packages/js/*/src/**/*.js
 packages/js/*/src/**/*.js.map
 packages/js/*/src/**/*.d.ts
 packages/js/*/src/**/*.d.ts.map
+
+# More scratch scripts
+/patch*.py
+/test_*.py
+/tmp_*.txt
+/*_lines.txt
+/ruff_*.json
+/update_*.py
+/append_*.py
+/convert_*.py
+/convert_*.js
+/delete_*.py
+/finish.py
+/mark_*.py
+/md_patch.py
+/prune*.py
+/recover*.py
+/rewrite_*.py
+/syntax_*.js
+
+/snapshots/onnx-dummy_stdout.json

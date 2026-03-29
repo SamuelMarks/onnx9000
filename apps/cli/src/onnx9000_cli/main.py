@@ -290,6 +290,78 @@ def gguf2onnx_cmd(args: argparse.Namespace) -> None:
     print(f"Saved ONNX to {out_path}")
 
 
+def openvino_export_cmd(args: argparse.Namespace) -> None:
+    """Export an ONNX model to OpenVINO IR."""
+    import os
+
+    from onnx9000.core.parser.core import load as load_onnx
+    from onnx9000.openvino.exporter import OpenVinoExporter
+
+    print(f"Loading {args.model}...")
+    graph = load_onnx(args.model)
+
+    # Handle overrides
+    if args.shape:
+        for shape_str in args.shape:
+            name, dims = shape_str.split(":", 1)
+            parsed_dims = []
+            for d in dims.strip("[]").split(","):
+                d = d.strip()
+                if not d:
+                    continue
+                try:
+                    parsed_dims.append(int(d))
+                except ValueError:
+                    parsed_dims.append(d)
+            for inp in graph.inputs:
+                if inp.name == name:
+                    inp.shape = tuple(parsed_dims)
+
+    if args.dynamic_batch:
+        for inp in graph.inputs:
+            if len(inp.shape) > 0:
+                new_shape = list(inp.shape)
+                new_shape[0] = -1
+                inp.shape = tuple(new_shape)
+
+    # TODO: --data_type override support
+
+    print("Generating OpenVINO IR...")
+    exporter = OpenVinoExporter(graph, compress_to_fp16=args.fp16)
+    xml_str, bin_data = exporter.export()
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    base_name = os.path.splitext(os.path.basename(args.model))[0]
+
+    xml_path = os.path.join(args.output_dir, f"{base_name}.xml")
+    bin_path = os.path.join(args.output_dir, f"{base_name}.bin")
+    mapping_path = os.path.join(args.output_dir, f"{base_name}.mapping")
+
+    print("Writing XML...")
+    with open(xml_path, "w") as f:
+        f.write(xml_str)
+
+    print("Writing BIN...")
+    with open(bin_path, "wb") as f:
+        f.write(bin_data)
+
+    print("Writing mapping...")
+    with open(mapping_path, "w") as f:
+        f.write('<?xml version="1.0" ?>\n<mapping>\n</mapping>')
+
+    print(f"Successfully exported OpenVINO model to {args.output_dir}")
+
+
+def openvino_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for OpenVINO subcommand group."""
+    if not hasattr(args, "openvino_func"):
+        print("Missing openvino subcommand")
+        import sys
+
+        sys.exit(1)
+    args.openvino_func(args)
+
+
 def compile_cmd(args: argparse.Namespace) -> None:
     """Compile an ONNX model AOT."""
     print(f"Compiling {args.model}...")
@@ -366,23 +438,23 @@ def edit_cmd(args: argparse.Namespace) -> None:
 
 def sparse_prune_cmd(args: argparse.Namespace) -> None:
     """Prune an ONNX model using a SparseML recipe."""
-    from onnx9000.optimizer.sparse.modifier import apply_recipe
+    from onnx9000.core.ir import Constant
     from onnx9000.core.sparse import (
-        get_sparsity_report,
-        detect_theoretical_sparsity,
-        dense_to_coo,
-        collapse_sparse_tensors,
         analyze_topological_dead_ends,
+        collapse_sparse_tensors,
+        dense_to_coo,
+        detect_theoretical_sparsity,
+        get_sparsity_report,
         strip_dense_representation,
     )
-    from onnx9000.core.ir import Constant
+    from onnx9000.optimizer.sparse.modifier import apply_recipe
 
     print(f"Loading {args.model}...")
     graph = load_onnx(args.model)
 
     if args.recipe:
         print(f"Applying recipe from {args.recipe}...")
-        with open(args.recipe, "r") as f:
+        with open(args.recipe) as f:
             recipe_yaml = f.read()
         apply_recipe(graph, recipe_yaml)
     elif args.sparsity:
@@ -511,7 +583,7 @@ def mutate_cmd(args: argparse.Namespace) -> None:
     graph = load_onnx(args.model)
     import json
 
-    with open(args.script, "r") as f:
+    with open(args.script) as f:
         mutations = json.load(f)
 
     for mut in mutations:
@@ -691,6 +763,25 @@ def main() -> None:
     compile_parser = subparsers.add_parser("compile", help="Compile model AOT")
     compile_parser.add_argument("model", type=str, help="Path to the .onnx file")
     compile_parser.set_defaults(func=compile_cmd)
+
+    # OpenVINO
+    openvino_parser = subparsers.add_parser("openvino", help="OpenVINO toolchain integration")
+    openvino_sub = openvino_parser.add_subparsers(
+        dest="openvino_command", help="OpenVINO subcommands"
+    )
+
+    ov_exp = openvino_sub.add_parser("export", help="Export model to OpenVINO IR")
+    ov_exp.add_argument("model", type=str, help="Path to the input .onnx file")
+    ov_exp.add_argument("-o", "--output-dir", type=str, default=".", help="Output directory")
+    ov_exp.add_argument("--fp16", action="store_true", help="Downcast all weights to FP16")
+    ov_exp.add_argument(
+        "--shape", type=str, action="append", help="Shape override, e.g., 'input:[1,3,224,224]'"
+    )
+    ov_exp.add_argument("--data_type", type=str, action="append", help="Data type overrides")
+    ov_exp.add_argument("--dynamic-batch", action="store_true", help="Set batch size to dynamic -1")
+    ov_exp.set_defaults(openvino_func=openvino_export_cmd)
+
+    openvino_parser.set_defaults(func=openvino_cmd)
 
     # Optimum
     optimum_parser = subparsers.add_parser("optimum", help="HuggingFace Optimum integration")

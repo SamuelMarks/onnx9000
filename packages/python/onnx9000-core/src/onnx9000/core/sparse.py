@@ -27,11 +27,8 @@ def get_struct_fmt(dtype: DType) -> str:
         DType.BOOL: "?",
     }
     # FLOAT16 ('e') is supported in Python 3.6+
-    try:
-        if dtype == DType.FLOAT16:
-            return "e"
-    except (AttributeError, ValueError):
-        pass
+    if dtype == DType.FLOAT16:
+        return "e"
     return mapping.get(dtype, "B")
 
 

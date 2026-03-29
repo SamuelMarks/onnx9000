@@ -110,3 +110,35 @@ def test_apply_recipe():
     vals = unpack_data(w.data, w.dtype)
     assert vals == [0.0, 0.0, 0.0, 0.0, 5.0, 6.0, 7.0, 8.0]
     assert g.metadata_props["onnx9000_sparse_recipe"] == recipe
+
+
+def test_modifier_extra():
+    from onnx9000.optimizer.sparse.modifier import (
+        ConstantPruningModifier,
+        MagnitudePruningModifier,
+        GlobalMagnitudePruningModifier,
+    )
+    from onnx9000.core.ir import Graph, Constant
+    from onnx9000.core.dtypes import DType
+    import numpy as np
+
+    g = Graph("g")
+    g.tensors["t"] = Constant(
+        "t",
+        values=np.array([1.0, -0.5, 0.1, 0.05], dtype=np.float32).tobytes(),
+        dtype=DType.FLOAT32,
+        shape=(4,),
+    )
+    g.initializers.append("t")
+
+    mod = ConstantPruningModifier(params=["t"], threshold=0.2)
+    mod.apply(g)
+
+    # Check unpacked data
+    import struct
+
+    vals = struct.unpack("<4f", g.tensors["t"].data)
+    assert abs(vals[0] - 1.0) < 1e-5
+    assert abs(vals[1] + 0.5) < 1e-5
+    assert abs(vals[2]) < 1e-5
+    assert abs(vals[3]) < 1e-5

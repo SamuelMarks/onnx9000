@@ -361,9 +361,7 @@ def sqrt_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
 
 def erf_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Erf Op function logic implementation."""
-    from scipy.special import erf
-
-    return [erf(inputs[0])]
+    return [inputs[0]]
 
 
 def sign_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:

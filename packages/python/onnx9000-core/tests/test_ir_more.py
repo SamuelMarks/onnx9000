@@ -78,3 +78,18 @@ def test_ir_edge_cases() -> None:
     g_other_nodes2 = Graph("g")
     g_other_nodes2.add_node(Node("Op2", name="op1"))
     assert g_other_nodes != g_other_nodes2
+
+
+def test_sparse_ir():
+    from onnx9000.core.ir import SparseTensor, Attribute, Graph, Tensor
+
+    st = SparseTensor("sp")
+    assert Attribute.infer_type(st) == "SPARSE_TENSOR"
+    assert Attribute.infer_type([st]) == "SPARSE_TENSORS"
+    assert Attribute.infer_type(Graph("g")) == "GRAPH"
+    assert Attribute.infer_type([Graph("g")]) == "GRAPHS"
+    assert repr(st) == "ir.SparseTensor(name=sp, shape=(), format=COO)"
+    st2 = st.copy()
+    assert st2.name == "sp"
+    st3 = Tensor.copy(st)
+    assert st3.name == "sp"

@@ -1,0 +1,20 @@
+{
+  "name": "openvino-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/openvino-exporter": "workspace:*",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.4.11"
+  }
+}
