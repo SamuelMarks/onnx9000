@@ -43,7 +43,7 @@ def test_train_transformer_attention() -> None:
     # Pass empty params to optimizer since QKV are inputs, not initializers
     def opt_gen(gr, lr, p):
         """Test the opt gen functionality."""
-        pass
+        return None
 
     train_graph = builder.build_training_graph(loss_gen, opt_gen, "lr")
     assert train_graph is not None

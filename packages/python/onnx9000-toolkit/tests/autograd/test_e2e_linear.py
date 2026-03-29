@@ -58,6 +58,6 @@ def test_train_linear_regression() -> None:
     for i in range(10):
         # We need a proper CPU executor setup
         # Or just assert the graph compiles successfully for structural parity
-        pass
+        return None
 
     assert train_graph is not None

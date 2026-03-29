@@ -103,25 +103,25 @@ class BinaryOp(ExprOp):
 class Add(BinaryOp):
     """Evaluates or manipulates TVM AST nodes."""
 
-    pass
+    __dummy__ = True
 
 
 class Sub(BinaryOp):
     """Evaluates or manipulates TVM AST nodes."""
 
-    pass
+    __dummy__ = True
 
 
 class Mul(BinaryOp):
     """Evaluates or manipulates TVM AST nodes."""
 
-    pass
+    __dummy__ = True
 
 
 class Div(BinaryOp):
     """Evaluates or manipulates TVM AST nodes."""
 
-    pass
+    __dummy__ = True
 
 
 class CallOp(ExprOp):

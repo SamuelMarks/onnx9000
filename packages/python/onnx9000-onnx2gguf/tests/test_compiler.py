@@ -7,7 +7,7 @@ from onnx9000.onnx2gguf.compiler import compile_gguf, infer_architecture, saniti
 
 
 def test_compile_gguf():
-    """Docstring."""
+    """Provides functional implementation."""
     g = Graph("test")
     g.producer_name = "test_producer"
     g.model_version = 1
@@ -43,7 +43,7 @@ def test_compile_gguf():
 
 
 def test_compile_gguf_llama():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.core.dtypes import DType
     from onnx9000.onnx2gguf.compiler import get_gguf_type
 
@@ -62,7 +62,7 @@ def test_compile_gguf_llama():
 
 
 def test_compiler_helpers():
-    """Docstring."""
+    """Provides functional implementation."""
     g = Graph("mock")
     assert infer_architecture(g) == "unknown"
     g.name = "llama_model"

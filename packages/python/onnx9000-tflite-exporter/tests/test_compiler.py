@@ -11,7 +11,7 @@ from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator
 
 
 def test_compiler_subgraph_mapping():
-    """Docstring."""
+    """Provides functional implementation."""
     exporter = TFLiteExporter()
     graph = Graph("TestGraph")
 

@@ -25,3 +25,39 @@ jobs:
           sudo apt-get install edgetpu-compiler
       - name: Run Tests
         run: pnpm turbo run test --filter="./packages/js/*" --filter="./apps/*" --filter="!cli"
+
+  test-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run UI Tests
+        run: pnpm turbo run test --filter="@onnx9000/sphinx-demo-ui"
+
+  test-ui-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Playwright Browsers
+        run: pnpm --filter="@onnx9000/sphinx-demo-ui" exec playwright install --with-deps
+      - name: Run E2E Tests
+        run: pnpm turbo run test:e2e --filter="@onnx9000/sphinx-demo-ui"

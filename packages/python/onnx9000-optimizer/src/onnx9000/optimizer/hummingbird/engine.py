@@ -80,25 +80,25 @@ class TranspilationEngine:
 
     def _extract_global_constants(self, g: Graph, tree: TreeAbstractions) -> None:
         """Extract global constants into contiguous initialized Tensors."""
-        pass
+        return None
 
     def _handle_missing_values(self, tree: TreeAbstractions) -> None:
         """Handle structural missing values (NaN) within tensor operations."""
-        pass
+        return None
 
     def _handle_categorical_features(self, tree: TreeAbstractions) -> None:
         """Handle models with a mix of categorical and continuous features natively."""
-        pass
+        return None
 
     def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         # Transpile numerical threshold comparisons accurately
         """Execute the compile gemm operation."""
-        pass
+        return None
 
     def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         """Execute the compile tree traversal operation."""
-        pass
+        return None
 
     def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         """Execute the compile perfect tree operation."""
-        pass
+        return None

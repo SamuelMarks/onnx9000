@@ -30,15 +30,15 @@ def test_registry_duplicate() -> None:
 
     @reg.register_op("Add")
     def mock_add() -> None:
-        """Docstring."""
-        pass
+        """Provides functional implementation."""
+        return None
 
     mock_add()
 
     @reg.register_op("Add")
     def mock_add_again() -> None:
-        """Docstring."""
-        pass
+        """Provides functional implementation."""
+        return None
 
     mock_add_again()
 
@@ -53,8 +53,8 @@ def test_registry_new_domain() -> None:
 
     @reg.register_op("TestNewDomain", domain="custom.domain")
     def my_op() -> None:
-        """Docstring."""
-        pass
+        """Provides functional implementation."""
+        return None
 
     my_op()
 
@@ -67,8 +67,8 @@ def test_global_register_op() -> None:
 
     @register_op("GlobalMockOp", domain="global")
     def global_mock() -> None:
-        """Docstring."""
-        pass
+        """Provides functional implementation."""
+        return None
 
     global_mock()
 

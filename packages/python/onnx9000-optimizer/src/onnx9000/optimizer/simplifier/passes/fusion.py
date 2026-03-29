@@ -565,7 +565,7 @@ def run_all_fusions(graph: Graph) -> None:
         or fuse_batchnorm_into_gemm(graph)
         or map_aten_arange_to_range(graph)
     ):
-        pass
+        return None
 
 
 def fuse_linear_activation(graph: Graph) -> None:

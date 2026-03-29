@@ -23,7 +23,7 @@ class PerfectTreeCompiler:
 
     def _detect_and_trim_branches(self) -> None:
         """Detect and trim physically unreachable perfect tree branches."""
-        pass
+        return None
 
     def compile(self, g: Graph) -> None:
         """Compiles tree to PerfectTree operators."""
@@ -120,9 +120,9 @@ class PerfectTreeCompiler:
 
 def handle_perfect_multi_output(g: Graph) -> None:
     """Handle multi-output regression perfectly aligned."""
-    pass
+    return None
 
 
 def map_categorical_perfect(g: Graph) -> None:
     """Map categorical branches effectively within perfect node constraints."""
-    pass
+    return None

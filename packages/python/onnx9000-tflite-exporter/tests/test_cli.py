@@ -119,4 +119,4 @@ def test_cli_main_block():
         try:
             runpy.run_module("onnx9000.tflite_exporter.cli", run_name="__main__")
         except SystemExit:
-            pass
+            return None

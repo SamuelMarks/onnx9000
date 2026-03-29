@@ -155,7 +155,7 @@ def _numpy_to_tensor_proto(arr, name=""):
     t.data_type = dtype_mapping.get(arr.dtype.type, onnx_pb2.TensorProto.UNDEFINED)
     if t.data_type == onnx_pb2.TensorProto.UNDEFINED and arr.dtype == np.dtype("O"):
         # Might be strings, not handled yet
-        pass
+        return None
     else:
         # Ensure contiguous before tobytes()
         t.raw_data = np.ascontiguousarray(arr).tobytes()

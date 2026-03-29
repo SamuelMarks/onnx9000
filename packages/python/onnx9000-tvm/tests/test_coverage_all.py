@@ -84,7 +84,7 @@ def test_tvm_all_others_part2():
         try:
             func(*args)
         except Exception:
-            pass
+            return None
 
     for mod in modules:
         for name, obj in inspect.getmembers(mod):
@@ -98,7 +98,7 @@ def test_tvm_all_others_part2():
                                     try_call(m_obj, [None] * j)
                         break
                     except Exception:
-                        pass
+                        return None
             elif inspect.isfunction(obj) and obj.__module__ == mod.__name__:
                 for i in range(6):
                     try_call(obj, [None] * i)

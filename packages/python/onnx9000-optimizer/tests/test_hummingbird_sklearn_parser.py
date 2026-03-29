@@ -114,7 +114,7 @@ def test_sklearn_parser_all() -> None:
     class MockNoTree:
         """Represents the MockNoTree class and its associated logic."""
 
-        pass
+        __dummy__ = True
 
     ab = sp.parse_decision_tree_regressor(MockNoTree())
     assert hasattr(ab, "add_node")
@@ -122,7 +122,7 @@ def test_sklearn_parser_all() -> None:
     class MockNoTree2:
         """Represents the MockNoTree2 class and its associated logic."""
 
-        pass
+        __dummy__ = True
 
     ab2 = sp.parse_decision_tree_classifier(MockNoTree2())
     assert hasattr(ab2, "add_node")

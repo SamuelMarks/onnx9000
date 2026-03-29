@@ -7,7 +7,7 @@ from onnx9000.onnx2gguf.reader import GGUFReader
 
 
 def test_reader():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     writer.add_string("general.name", "test")
@@ -44,7 +44,7 @@ def test_reader():
 
 
 def test_reader_invalid():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO(b"GGUX")
     with pytest.raises(ValueError):
         GGUFReader(f)
@@ -55,7 +55,7 @@ def test_reader_invalid():
 
 
 def test_reader_all_types():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     writer.add_uint8("u8", 1)

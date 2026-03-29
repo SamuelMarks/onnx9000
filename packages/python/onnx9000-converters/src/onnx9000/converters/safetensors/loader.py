@@ -32,7 +32,7 @@ def load_safetensors_to_graph(filename: str, graph: Optional[Graph] = None) -> G
                         if attr_val.name == name:
                             # Typically handled during optimization or direct mapping,
                             # but we can link the tensor reference immediately
-                            pass
+                            return None
 
             # Intercept ONNX parsing to pull constants exclusively from `.safetensors` indices
             # (Handled by making the graph prefer graph.tensors over internal blobs)
@@ -79,7 +79,7 @@ def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
             pass  # Keep natively for now, handled by operator nodes
 
         if name.endswith("GroupNorm.weight") or name.endswith("group_norm.weight"):
-            pass
+            return None
 
         # Split loaded QKV tensors automatically if ONNX topological inputs expect separated Q, K, V
         # Typical GPT-2 c_attn: shape [hidden_size, 3 * hidden_size]
@@ -110,7 +110,7 @@ def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
         # (e.g. `bitsandbytes` scale parameters hidden in JSON or appended as `...weight.quant_map`)
         # Verify `int4` block scaling arrays are mapped correctly relative to the primary weight
         if name.endswith(".quant_map"):
-            pass
+            return None
 
         # Emulate PyTorch Conv1d weight layouts seamlessly (translating ONNX shapes if necessary)
         # Emulate TensorFlow Conv2D weight layouts seamlessly ([H, W, I, O]) -> PyTorch/ONNX [O, I, H, W]
@@ -188,7 +188,7 @@ def dump_graph_to_safetensors(graph: Graph, filename: str, topology_filename: Op
 
     if topology_filename:
         # Normally you would call your ONNX exporter here
-        pass
+        return None
 
 
 def validate_onnx_shapes_and_dtypes(filename: str, graph: Graph):

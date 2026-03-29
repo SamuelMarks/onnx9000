@@ -51,7 +51,7 @@ class MockEstimator:
 class MockEstimatorNoBooster:
     """Represents the Mock Estimator No Booster class."""
 
-    pass
+    __dummy__ = True
 
 
 def test_parse_lgbm_classifier():

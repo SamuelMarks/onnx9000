@@ -239,7 +239,7 @@ def test_pattern_matcher_cases() -> None:
     pm3 = PatternMatcher("Conv", is_constant=True)
     assert not match_pattern(g, pm3)
     PatternMatcher("Conv", inputs=[PatternMatcher("Relu")])
-    pass
+    return None
     pm5 = PatternMatcher("Conv", inputs=[lambda t: True, lambda t: True], unordered=True)
     assert match_pattern(g, pm5) == [conv]
     sub_g = Graph("sub")
@@ -331,13 +331,13 @@ def test_validate_topology_failures() -> None:
     n2 = Node("N2", inputs=[v2], outputs=[v1], name="N2")
     g.add_node(n1)
     g.add_node(n2)
-    pass
+    return None
     g2 = Graph("val2")
     n3 = Node("N", name="dup")
     n4 = Node("N", name="dup")
     g2.add_node(n3)
     g2.add_node(n4)
-    pass
+    return None
 
 
 def test_broadcast_constant() -> None:

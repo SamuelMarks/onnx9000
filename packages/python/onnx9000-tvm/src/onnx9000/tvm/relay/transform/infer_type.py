@@ -142,7 +142,7 @@ class TypeChecker(ExprVisitor):
 
         if expr.ret_type and expr.ret_type != ret_type:
             # Very naive equality check, in practice need Type matching
-            pass
+            return None
 
         # Restore environment
         for k, v in old_env.items():

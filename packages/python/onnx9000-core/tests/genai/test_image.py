@@ -4,7 +4,7 @@
 
 
 def test_image():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.image import (
         ClassifierFreeGuidance,
         ControlNetSupport,

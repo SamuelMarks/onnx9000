@@ -49,9 +49,9 @@ def test_chunking_external_and_embed(tmp_path):
     from onnx9000.genai.chunking import ChunkManager
 
     class MockModel:
-        """Docstring."""
+        """Provides functional implementation."""
 
-        pass
+        __dummy__ = True
 
     model = MockModel()
     out_path = os.path.join(tmp_path, "model.onnx")

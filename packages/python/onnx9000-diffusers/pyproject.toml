@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "onnx9000-diffusers"
+version = "0.1.0"
+description = "Web-Native Diffusion Pipelines & Schedulers"
+dependencies = [
+    "onnx9000-core"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/onnx9000_diffusers"]
+
+[tool.uv.sources]
+onnx9000-core = { workspace = true }

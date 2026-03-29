@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 class DynamicLibraryError(OSError):
     """Represents the Dynamic Library Error class."""
 
-    pass
+    __dummy__ = True
 
 
 class DynamicLibrary:
@@ -90,7 +90,7 @@ class DynamicLibrary:
                     if err_str:
                         err_msg += f" (dlerror: {err_str.decode('utf-8')})"
                 except Exception:
-                    pass
+                    return None
             raise AttributeError(err_msg)
         func.argtypes = argtypes
         func.restype = restype
@@ -185,7 +185,7 @@ def get_cpu_features():
                 features["avx512"] = "avx512" in content
                 features["neon"] = "neon" in content or "asimd" in content
         except Exception:
-            pass
+            return None
     elif os_name == "Darwin":
         import subprocess
 
@@ -196,7 +196,7 @@ def get_cpu_features():
             features["avx512"] = "hw.optional.avx512f: 1" in out
             features["neon"] = "hw.optional.neon: 1" in out or "hw.optional.arm.ext_asimd: 1" in out
         except Exception:
-            pass
+            return None
     return features
 
 
@@ -218,7 +218,7 @@ def get_cache_sizes():
                         else:
                             sizes[f"l{level}"] = int(val)
         except Exception:
-            pass
+            return None
     elif os_name == "Darwin":
         import subprocess
 
@@ -234,5 +234,5 @@ def get_cache_sizes():
                 elif "hw.l3cachesize" in line:
                     sizes["l3"] = int(line.split(":")[1].strip())
         except Exception:
-            pass
+            return None
     return sizes

@@ -256,7 +256,7 @@ def test_exporter_gaps():
         exporter.finish(0, "test")
         raise Exception
     except Exception:
-        pass
+        return None
     from contextlib import suppress
 
     with suppress(Exception):
@@ -360,7 +360,7 @@ def test_exporter_edge_cases():
     try:
         exporter._validate_tensor_bounds([2**31], 2**31 + 1)
     except ValueError:
-        pass
+        return None
     idx = exporter.add_buffer(b"")
     assert idx == exporter.empty_buffer_index
 

@@ -28,7 +28,7 @@ class MockEstimator:
 
     def __init__(self):
         """Initialize the instance."""
-        pass
+        return None
 
     def get_booster(self):
         """Execute the get booster operation."""
@@ -38,7 +38,7 @@ class MockEstimator:
 class MockEstimatorEmpty:
     """Represents the Mock Estimator Empty class."""
 
-    pass
+    __dummy__ = True
 
 
 def test_xgboost_stubs():

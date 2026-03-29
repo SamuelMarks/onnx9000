@@ -8,7 +8,7 @@ class PyTorchImporter:
 
     def from_pytorch(self, script_module, shape_list) -> IRModule:
         """Do the function."""
-        pass
+        return None
 
 
 def from_pytorch(script_module, shape_list) -> IRModule:

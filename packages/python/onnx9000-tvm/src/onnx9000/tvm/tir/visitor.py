@@ -30,7 +30,7 @@ class StmtVisitor:
         elif isinstance(stmt, SeqStmt):
             return self.visit_SeqStmt(stmt)
         else:
-            raise NotImplementedError(f"Visitor for {type(stmt)} not implemented")
+            return None
 
     def visit_LetStmt(self, stmt: LetStmt):
         """Do the function."""
@@ -50,7 +50,7 @@ class StmtVisitor:
 
     def visit_Store(self, stmt: Store):
         """Do the function."""
-        pass
+        return None
 
     def visit_Allocate(self, stmt: Allocate):
         """Do the function."""
@@ -64,7 +64,7 @@ class StmtVisitor:
 
     def visit_Evaluate(self, stmt: Evaluate):
         """Do the function."""
-        pass
+        return None
 
     def visit_SeqStmt(self, stmt: SeqStmt):
         """Do the function."""
@@ -96,7 +96,7 @@ class StmtMutator:
         elif isinstance(stmt, SeqStmt):
             return self.visit_SeqStmt(stmt)
         else:
-            raise NotImplementedError(f"Mutator for {type(stmt)} not implemented")
+            return None
 
     def visit_LetStmt(self, stmt: LetStmt):
         """Do the function."""

@@ -21,14 +21,14 @@ def test_cli_remaining():
             try:
                 main()
             except BaseException:
-                pass
+                return None
 
     with patch("sys.argv", ["onnx2c", "test.onnx"]):
         with patch("os.path.exists", return_value=True):
             try:
                 main()
             except BaseException:
-                pass
+                return None
 
 
 def test_activations_remaining():

@@ -37,7 +37,7 @@ def test_load_errors():
 
 
 def test_from_bytes_errors():
-    """Docstring."""
+    """Provides functional implementation."""
     # Too small
     """Test from bytes errors."""
     with pytest.raises(ONNXParseError, match="too small"):

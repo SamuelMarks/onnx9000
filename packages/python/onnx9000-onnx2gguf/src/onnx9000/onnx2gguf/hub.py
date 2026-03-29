@@ -21,7 +21,7 @@ def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], st
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch config: {e}")
     except Exception as e:
-        pass
+        return None
     try:
         req = urllib.request.Request(f"{url}/tokenizer.json", headers=headers)
         with urllib.request.urlopen(req) as res:
@@ -29,7 +29,7 @@ def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], st
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch tokenizer: {e}")
     except Exception as e:
-        pass
+        return None
     return (config, tokenizer, f"https://huggingface.co/{repo_id}")
 
 

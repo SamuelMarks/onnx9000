@@ -100,5 +100,5 @@ def reconstruct_onnx(reader: GGUFReader) -> Graph:
         with open("tokenizer_reconstructed.json", "w") as f:
             json.dump({"vocab": reader.kvs["tokenizer.ggml.tokens"]}, f)
     if reader.kvs.get("split.index", 0) > 0:
-        pass
+        return None
     return g

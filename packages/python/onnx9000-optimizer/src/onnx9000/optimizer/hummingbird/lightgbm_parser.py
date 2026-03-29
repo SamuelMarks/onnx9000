@@ -90,9 +90,9 @@ def parse_lgbm_categorical(g: Graph, bitset: list[int]) -> None:
 
     Compress large categorical bitsets using int64 arithmetic in ONNX.
     """
-    pass
+    return None
 
 
 def apply_lgbm_scaling(g: Graph, base_score: float, learning_rate: float) -> None:
     """Map LightGBM leaf output scaling (learning rate / base score) into matrix biases."""
-    pass
+    return None

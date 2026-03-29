@@ -79,52 +79,52 @@ def extract_tree_ensemble_attributes(node: Node):
 
 def parse_onnxml_linear(node: Node) -> None:
     """Provide explicit converter for LinearClassifier / LinearRegressor."""
-    pass
+    return None
 
 
 def parse_onnxml_svm(node: Node) -> None:
     """Provide explicit converter for SVMClassifier / SVMRegressor."""
-    pass
+    return None
 
 
 def parse_onnxml_scaler(node: Node) -> None:
     """Provide explicit converter for Scaler -> Add + Mul."""
-    pass
+    return None
 
 
 def parse_onnxml_normalizer(node: Node) -> None:
     """Execute the parse onnxml normalizer operation."""
-    pass
+    return None
 
 
 def parse_onnxml_binarizer(node: Node) -> None:
     """Execute the parse onnxml binarizer operation."""
-    pass
+    return None
 
 
 def parse_onnxml_onehot(node: Node) -> None:
     """Execute the parse onnxml onehot operation."""
-    pass
+    return None
 
 
 def parse_onnxml_imputer(node: Node) -> None:
     """Execute the parse onnxml imputer operation."""
-    pass
+    return None
 
 
 def parse_onnxml_feature_extractor(node: Node) -> None:
     """Provide explicit converter for ArrayFeatureExtractor -> ai.onnx.Gather."""
-    pass
+    return None
 
 
 def parse_onnxml_category_mapper(node: Node) -> None:
     """Provide explicit converter for CategoryMapper -> ai.onnx Gather/Where."""
-    pass
+    return None
 
 
 def parse_onnxml_zipmap(node: Node) -> None:
     """Provide explicit converter for ZipMap -> standard Tensors + external dictionaries."""
-    pass
+    return None
 
 
 def apply_onnxml_post_transform(g: Graph, node: Node) -> None:
@@ -141,4 +141,4 @@ def apply_onnxml_post_transform(g: Graph, node: Node) -> None:
 
 def ensure_static_shapes(g: Graph) -> None:
     """Ensure lowered ONNX subgraphs are perfectly statically shaped."""
-    pass
+    return None

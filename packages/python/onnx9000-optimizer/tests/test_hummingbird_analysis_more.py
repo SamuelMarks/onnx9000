@@ -91,7 +91,7 @@ def test_analyze_tree_depth_no_leaves():
     t4 = TreeAbstractions()
     t4.add_node(1, 0.5, -2, -2, 0.0)  # -2 is not -1, so it traces, but out of bounds.
     # Actually, we can just monkeypatch it or raise an error?
-    pass
+    return None
 
 
 def test_analyze_tree_depth_no_depths():
@@ -110,7 +110,7 @@ def test_analyze_tree_depth_no_depths():
     # now left_children is [-2, -1], right is [-2, -1]
     # trace(0, 1) -> left_children[0] is -2 -> trace(-2, 2)
     # left_children[-2] is the 0th element (-2) -> infinite loop.
-    pass
+    return None
 
     # A simpler way: we just make left_children = [-2], right_children = [-1]
     # and left_children[-2] doesn't exist? IndexError.
@@ -142,7 +142,7 @@ def test_analyze_tree_depth_no_depths():
 
     # Actually, if we just mock `abstractions.left_children` with a class that returns -1 when we want and raises StopIteration to break the loop? No.
     # Let's mock `depths` inside the function? Impossible.
-    pass
+    return None
 
     t = TreeAbstractions()
     t.features = [1]

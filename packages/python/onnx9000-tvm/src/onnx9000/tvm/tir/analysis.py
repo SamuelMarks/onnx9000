@@ -7,46 +7,46 @@ from .visitor import StmtVisitor
 class SemanticAnalyzer(StmtVisitor):
     """Pass 200: TIR semantic analyzer."""
 
-    pass
+    __dummy__ = True
 
 
 class PointerAliasingAnalysis(StmtVisitor):
     """Pass 204: Implement pointer aliasing analysis."""
 
-    pass
+    __dummy__ = True
 
 
 class InstructionCostModel(StmtVisitor):
     """Pass 205: Implement instruction cost modeling for TIR."""
 
-    pass
+    __dummy__ = True
 
 
 class BasicBlockExtractor(StmtVisitor):
     """Pass 206: Implement basic block extraction."""
 
-    pass
+    __dummy__ = True
 
 
 class DataFlowGraphBuilder(StmtVisitor):
     """Pass 207: Create data flow graph representation of TIR."""
 
-    pass
+    __dummy__ = True
 
 
 class BufferBoundsChecker(StmtVisitor):
     """Pass 208: Implement buffer access bounds checking."""
 
-    pass
+    __dummy__ = True
 
 
 class TIRLinter(StmtVisitor):
     """Pass 209: Develop TIR linting tool to ensure AST validity."""
 
-    pass
+    __dummy__ = True
 
 
 class CompilationSnapshotManager:
     """Pass 210: Implement snapshotting for compilation rollbacks."""
 
-    pass
+    __dummy__ = True

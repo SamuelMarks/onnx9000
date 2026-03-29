@@ -198,7 +198,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if shape_tensor_name in graph.tensors:
                 shape_tensor = graph.tensors[shape_tensor_name]
                 if hasattr(shape_tensor, "data") and shape_tensor.data:
-                    pass
+                    return None
 
             if not out_shape and hasattr(graph.tensors.get(shape_tensor_name, None), "values"):
                 vals = getattr(graph.tensors[shape_tensor_name], "values", None)
@@ -751,7 +751,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
         else:
             # Fallback for CustomOp or Unknown Ops
-            pass
+            return None
 
         for i, out_name in enumerate(node.outputs):
             if i < len(out_shapes):

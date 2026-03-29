@@ -62,7 +62,7 @@ def test_tracer_kwargs_outputs():
     from onnx9000.core.dtypes import DType
 
     def my_func(x, w=1):
-        """Docstring."""
+        """Provides functional implementation."""
         return (x, x)
 
     x = Tensor((2, 2), DType.FLOAT32)
@@ -70,7 +70,7 @@ def test_tracer_kwargs_outputs():
     assert len(builder.outputs) == 2
 
     def my_func_dict(x):
-        """Docstring."""
+        """Provides functional implementation."""
         return {"a": x, "b": x}
 
     builder = trace(my_func_dict, x)

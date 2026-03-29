@@ -4,7 +4,7 @@
 
 
 def test_ecosystem():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.ecosystem import (
         BenchmarksPub,
         DiscordBotTemplate,

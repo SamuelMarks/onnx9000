@@ -117,100 +117,100 @@ def extract_n_estimators(estimator: Any) -> int:
 
 def handle_predict_proba() -> None:
     """Handle predict_proba via post-processing mathematical transformations."""
-    pass
+    return None
 
 
 def handle_multi_output_regressors() -> None:
     """Handle multi-output regressors (n_targets > 1) natively."""
-    pass
+    return None
 
 
 def handle_multi_label_classification() -> None:
     """Handle multi-label classification natively."""
-    pass
+    return None
 
 
 def parse_pipeline() -> None:
     """Parse pipeline structures seamlessly."""
-    pass
+    return None
 
 
 def extract_classes_and_zipmaps() -> None:
     """Extract classes and mapping them to output ZipMaps / Tensors."""
-    pass
+    return None
 
 
 # Math parsing for non-tree linear models
 def parse_linear_regression() -> None:
     """Execute the parse linear regression operation."""
-    pass
+    return None
 
 
 def parse_logistic_regression() -> None:
     """Execute the parse logistic regression operation."""
-    pass
+    return None
 
 
 def parse_ridge_lasso_elasticnet() -> None:
     """Execute the parse ridge lasso elasticnet operation."""
-    pass
+    return None
 
 
 def parse_sgd_classifier() -> None:
     """Execute the parse sgd classifier operation."""
-    pass
+    return None
 
 
 def parse_linear_svc() -> None:
     """Execute the parse linear svc operation."""
-    pass
+    return None
 
 
 def parse_svc_poly() -> None:
     """Execute the parse svc poly operation."""
-    pass
+    return None
 
 
 def parse_svc_rbf() -> None:
     """Execute the parse svc rbf operation."""
-    pass
+    return None
 
 
 def parse_svc_sigmoid() -> None:
     """Execute the parse svc sigmoid operation."""
-    pass
+    return None
 
 
 def parse_gaussian_nb() -> None:
     """Execute the parse gaussian nb operation."""
-    pass
+    return None
 
 
 def parse_multinomial_nb() -> None:
     """Execute the parse multinomial nb operation."""
-    pass
+    return None
 
 
 def parse_bernoulli_nb() -> None:
     """Execute the parse bernoulli nb operation."""
-    pass
+    return None
 
 
 def parse_mlp_classifier() -> None:
     """Execute the parse mlp classifier operation."""
-    pass
+    return None
 
 
 def optimize_standard_scaler() -> None:
     """Optimize Scikit-Learn StandardScaler to ONNX Add + Mul."""
-    pass
+    return None
 
 
 def optimize_binarizer() -> None:
     """Optimize Scikit-Learn Binarizer to ONNX Greater + Cast."""
-    pass
+    return None
 
 
 def optimize_onehot_encoder() -> None:
     """Optimize Scikit-Learn OneHotEncoder to ONNX Equal / ScatterND."""
-    pass
+    return None

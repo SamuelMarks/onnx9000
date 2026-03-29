@@ -8,7 +8,7 @@ from .expr import Expr, Var
 class Stmt:
     """Base class for TIR statements."""
 
-    pass
+    __dummy__ = True
 
 
 class LetStmt(Stmt):

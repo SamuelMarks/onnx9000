@@ -4,7 +4,7 @@
 
 
 def test_audio():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.audio import (
         BarkModel,
         ContinuousAudioGenerator,

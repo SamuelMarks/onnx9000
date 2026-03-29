@@ -7,7 +7,7 @@ import struct
 
 
 def test_tf_protobuf_generation():
-    """Docstring."""
+    """Provides functional implementation."""
     graph = Graph("TestGraph")
     graph.tensors["X"] = Tensor("X", shape=(1, 10), dtype="float32", is_initializer=False)
 

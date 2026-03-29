@@ -633,7 +633,7 @@ class LayoutOptimizer:
                             "ReduceMin",
                             "ReduceProd",
                         ):
-                            pass
+                            return None
 
                     for producer_name in transpose_nodes_to_remove:
                         producer_idx, producer = next(

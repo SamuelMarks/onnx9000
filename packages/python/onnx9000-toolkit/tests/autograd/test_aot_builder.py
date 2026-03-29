@@ -50,7 +50,7 @@ def test_stop_gradient() -> None:
 
     def dummy_opt(graph, lr, params):
         """Test the dummy opt functionality."""
-        pass
+        return None
 
     bwd = builder.build_training_graph(dummy_loss, dummy_opt, "lr")
     assert any(n.op_type == "ConstantOfShape" and "bwd_bitshift_0" in n.name for n in bwd.nodes)
@@ -73,7 +73,7 @@ def test_scalar_gradient() -> None:
 
     def dummy_opt(graph, lr, params):
         """Test the dummy opt functionality."""
-        pass
+        return None
 
     bwd = builder.build_training_graph(dummy_loss, dummy_opt, "lr")
     # The gradient of Add with scalar inputs should accumulate scalar gradients

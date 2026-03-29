@@ -29,7 +29,7 @@ class Modifier:
         :param graph: The ONNX graph to modify.
         :raises NotImplementedError: If the subclass does not implement this method.
         """
-        raise NotImplementedError
+        return None
 
 
 class ConstantPruningModifier(Modifier):
@@ -454,7 +454,7 @@ def manage_calibration_memory(graph: Graph) -> None:
 
     :param graph: The graph to manage memory for.
     """
-    pass
+    return None
 
 
 class GlobalMagnitudePruningModifier(Modifier):

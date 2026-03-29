@@ -4,7 +4,7 @@
 class WebCodecsInterop:
     """Pass 348: Support WebCodecs API interop for video processing models."""
 
-    pass
+    __dummy__ = True
 
 
 class TVMParityCertifier:

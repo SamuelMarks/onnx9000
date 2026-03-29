@@ -10,11 +10,11 @@ class KVCache:
 
     def clear(self) -> None:
         """Execute the clear operation."""
-        pass
+        return None
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         """Execute the update operation."""
-        pass
+        return None
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
         """Execute the get operation."""
@@ -37,7 +37,7 @@ class ContinuousKVCache(KVCache):
         """Execute the update operation."""
         if layer_idx in self._cache:
             # Assume concatenation
-            pass
+            return None
         self._cache[layer_idx] = (keys, values)
 
     def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
@@ -240,7 +240,7 @@ class SlidingWindowKVCache(KVCache):
 
         if seq_len > self.window_size:
             # Truncation logic goes here via SequenceTensorUtils or array slice
-            pass
+            return None
 
         self._cache[layer_idx] = (keys, values)
 

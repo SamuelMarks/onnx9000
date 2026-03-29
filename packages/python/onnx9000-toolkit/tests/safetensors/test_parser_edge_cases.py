@@ -138,12 +138,12 @@ def test_parser_edge_cases_and_mocks():
                 try:
                     st_valid.get_pinned_tensor("a")
                 except TypeError:
-                    pass
+                    return None
                 mock_kernel32.VirtualLock.side_effect = Exception("virtuallock err")
                 try:
                     st_valid.get_pinned_tensor("a")
                 except TypeError:
-                    pass
+                    return None
     with patch.dict(
         sys.modules, {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None}
     ):
@@ -281,7 +281,7 @@ def test_parser_edge_cases_and_mocks():
             save({"proto": RealMockTensorProto()})
             raise ImportError
         except ImportError:
-            pass
+            return None
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "a.safetensors")
         with open(p, "wb") as f:
@@ -296,7 +296,7 @@ def test_parser_edge_cases_and_mocks():
     with tempfile.TemporaryDirectory() as td:
         empty_path = os.path.join(td, "empty.safetensors")
         with open(empty_path, "wb"):
-            pass
+            return None
         assert check_safetensors(empty_path) == False
     with tempfile.TemporaryDirectory() as td:
         idx_path = os.path.join(td, "idx.json")

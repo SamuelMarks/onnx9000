@@ -66,7 +66,7 @@ def test_extract_tree_ensemble_attributes():
     """Tests the extract tree ensemble attributes functionality."""
     n = Node("TreeEnsembleClassifier", [], [])
     n.attributes["class_ids"] = Attribute("class_ids", value=[1])
-    pass
+    return None
     res = extract_tree_ensemble_attributes(n)
     assert res["class_ids"] == [1]
 

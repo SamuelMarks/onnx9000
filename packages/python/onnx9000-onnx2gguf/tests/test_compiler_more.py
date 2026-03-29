@@ -8,7 +8,7 @@ import io
 
 @patch("onnx9000.onnx2gguf.compiler.extract_tokenizer_metadata")
 def test_compile_gguf_overrides(mock_tok):
-    """Docstring."""
+    """Provides functional implementation."""
     mock_tok.return_value = {
         "float_val": 3.14,
         "bool_val": True,

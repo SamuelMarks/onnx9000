@@ -14,7 +14,7 @@ def test_ast_script() -> None:
             return x
         else:
             for _i in range(10):
-                pass
+                return None
             while True:
                 break
         return x
@@ -37,7 +37,7 @@ def test_ast_parser_missing() -> None:
     def my_func(a, b, c=None):
         """Test the my_func functionality."""
         if True:
-            pass
+            return None
         return ((a, b), [a])
 
     my_func(1, 2, 3)

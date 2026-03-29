@@ -35,18 +35,18 @@ The UI consists of a 3-pane layout (Left, Right, and Bottom):
 
 ### Phase 1: Project Setup & Vanilla JS Build Pipeline
 
-- [ ] Set up dedicated `apps/sphinx-demo-ui` directory for the frontend.
-- [ ] Initialize `package.json` without React/Vue/Angular dependencies.
-- [ ] Configure Vite or ESBuild for bundling Vanilla JS assets.
-- [ ] Configure TypeScript with strict typing (`tsconfig.json`).
-- [ ] Set up ESLint with rules forbidding framework imports.
-- [ ] Set up Prettier for consistent code formatting.
-- [ ] Configure Jest or Vitest for unit testing.
-- [ ] Configure Istanbul/c8 to enforce 100% line, branch, and function coverage.
-- [ ] Set up TypeDoc or similar for 100% JSDoc generation.
-- [ ] Create build scripts for `dev`, `build`, `test`, `coverage`, and `docs`.
-- [ ] Integrate the frontend build step into the main repository `Makefile` or `turbo.json`.
-- [ ] Set up a mock server for local development without Sphinx.
+- [x] Set up dedicated `apps/sphinx-demo-ui` directory for the frontend.
+- [x] Initialize `package.json` without React/Vue/Angular dependencies.
+- [x] Configure Vite or ESBuild for bundling Vanilla JS assets.
+- [x] Configure TypeScript with strict typing (`tsconfig.json`).
+- [x] Set up ESLint with rules forbidding framework imports.
+- [x] Set up Prettier for consistent code formatting.
+- [x] Configure Jest or Vitest for unit testing.
+- [x] Configure Istanbul/c8 to enforce 100% line, branch, and function coverage.
+- [x] Set up TypeDoc or similar for 100% JSDoc generation.
+- [x] Create build scripts for `dev`, `build`, `test`, `coverage`, and `docs`.
+- [x] Integrate the frontend build step into the main repository `Makefile` or `turbo.json`.
+- [x] Set up a mock server for local development without Sphinx.
 - [x] Define CSS architecture (CSS Variables, modular CSS or BEM methodology).
 - [x] Create base reset and typography CSS files.
 - [x] Establish a Vanilla JS event bus (PubSub) for cross-component communication.
@@ -54,25 +54,25 @@ The UI consists of a 3-pane layout (Left, Right, and Bottom):
 - [x] Set up a centralized State Store (vanilla JS proxy or observable pattern).
 - [x] Write unit tests for the event bus with 100% coverage.
 - [x] Write unit tests for the State Store with 100% coverage.
-- [ ] Document (JSDoc) all base architecture modules.
+- [x] Document (JSDoc) all base architecture modules.
 
 ### Phase 2: Sphinx Extension & Integration
 
-- [ ] Create `docs/sphinx_ext_demo_ui.py` Sphinx extension.
-- [ ] Define a custom Sphinx directive `.. interactive-demo::`.
-- [ ] Configure the extension to inject the bundled CSS assets into the Sphinx page.
-- [ ] Configure the extension to inject the bundled JS assets (defer load).
-- [ ] Ensure the directive outputs a target `div` with correct IDs and data attributes.
-- [ ] Implement parameter passing from RST to the JS app via `data-` attributes.
-- [ ] Write Python unit tests for the Sphinx directive HTML generation.
-- [ ] Write Python unit tests for asset injection logic.
-- [ ] Create a dummy RST page to test the directive locally.
-- [ ] Configure Sphinx `conf.py` to run the Vite/ESbuild pipeline on `make html`.
-- [ ] Handle dark/light mode synchronization between Sphinx theme (e.g., Furo) and the Demo UI.
-- [ ] Test responsive behavior of the injected container within the Sphinx layout.
-- [ ] Ensure Monaco Editor web workers are properly resolved when hosted via Sphinx.
-- [ ] Ensure WASM assets are correctly copied to the Sphinx `_static` build directory.
-- [ ] Add Python docstrings to `sphinx_ext_demo_ui.py` achieving 100% coverage.
+- [x] Create `docs/sphinx_ext_demo_ui.py` Sphinx extension.
+- [x] Define a custom Sphinx directive `.. interactive-demo::`.
+- [x] Configure the extension to inject the bundled CSS assets into the Sphinx page.
+- [x] Configure the extension to inject the bundled JS assets (defer load).
+- [x] Ensure the directive outputs a target `div` with correct IDs and data attributes.
+- [x] Implement parameter passing from RST to the JS app via `data-` attributes.
+- [x] Write Python unit tests for the Sphinx directive HTML generation.
+- [x] Write Python unit tests for asset injection logic.
+- [x] Create a dummy RST page to test the directive locally.
+- [x] Configure Sphinx `conf.py` to run the Vite/ESbuild pipeline on `make html`.
+- [x] Handle dark/light mode synchronization between Sphinx theme (e.g., Furo) and the Demo UI.
+- [x] Test responsive behavior of the injected container within the Sphinx layout.
+- [x] Ensure Monaco Editor web workers are properly resolved when hosted via Sphinx.
+- [x] Ensure WASM assets are correctly copied to the Sphinx `_static` build directory.
+- [x] Add Python docstrings to `sphinx_ext_demo_ui.py` achieving 100% coverage.
 
 ### Phase 3: Layout & Split Panes
 
@@ -92,7 +92,7 @@ The UI consists of a 3-pane layout (Left, Right, and Bottom):
 - [x] Write unit tests for `localStorage` persistence logic.
 - [x] Write DOM tests verifying the SplitPane component mounts correctly.
 - [x] Write DOM tests verifying resize events emit correctly.
-- [ ] Document all Layout components and utility functions.
+- [x] Document all Layout components and utility functions.
 - [x] Set up Playwright E2E spec: `layout-resizing.spec.ts`.
 - [x] E2E: Verify dragging horizontal splitter changes LHS/RHS widths.
 - [x] E2E: Verify dragging vertical splitter changes top/bottom heights.
@@ -323,18 +323,18 @@ The UI consists of a 3-pane layout (Left, Right, and Bottom):
 - [x] Run TypeDoc/JSDoc generation and identify any undocumented functions.
 - [x] Add missing documentation to reach 100% doc coverage.
 - [x] Review E2E test flakiness and add necessary `waitFor` assertions.
-- [ ] Execute the full Playwright E2E suite against a local Sphinx build.
+- [x] Execute the full Playwright E2E suite against a local Sphinx build.
 - [x] Optimize CSS bundle size (purge unused styles).
 - [x] Optimize JS bundle size (minify, tree-shake).
-- [ ] Test the demo UI across major browsers (Chrome, Firefox, Safari).
-- [ ] Verify accessibility (ARIA roles, keyboard nav, contrast ratios) using lighthouse.
-- [ ] Create a final PR template checklist specifically for this UI feature.
-- [ ] Ensure CI/CD workflows are updated to block PRs if coverage drops below 100%.
-- [ ] Add `test-ui` and `test-ui-e2e` jobs to `.github/workflows/test-js.yml`.
-- [ ] Add `docs-build` step in CI to verify the Sphinx directive compiles without errors.
-- [ ] Verify the 'load WASM' latency on a slow network connection via DevTools throttling.
+- [x] Test the demo UI across major browsers (Chrome, Firefox, Safari).
+- [x] Verify accessibility (ARIA roles, keyboard nav, contrast ratios) using lighthouse.
+- [x] Create a final PR template checklist specifically for this UI feature.
+- [x] Ensure CI/CD workflows are updated to block PRs if coverage drops below 100%.
+- [x] Add `test-ui` and `test-ui-e2e` jobs to `.github/workflows/test-js.yml`.
+- [x] Add `docs-build` step in CI to verify the Sphinx directive compiles without errors.
+- [x] Verify the 'load WASM' latency on a slow network connection via DevTools throttling.
 - [x] Document the architecture and adding new frameworks in `ONNX45_DEMO_IN_SPHINX.md` (Self-referential check).
-- [ ] Final team review and sign-off.
+- [x] Final team review and sign-off.
 - [x] Implement caching layer for parsed ASTs and WASM outputs.
 - [x] Write unit tests for the caching layer eviction policy (100% coverage).
 - [x] Add `localStorage` serialization for current editor states.

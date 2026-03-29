@@ -6,7 +6,7 @@ from onnx9000.converters.sklearn.builder import SKLearnParser
 class DummyEstimator:
     """Represents the Dummy Estimator class."""
 
-    pass
+    __dummy__ = True
 
 
 class DummyPipeline:

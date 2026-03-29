@@ -125,7 +125,7 @@ def cov_parse(self, func):
             for _ in range(20):
                 func(*args)
     except Exception as e:
-        pass
+        return None
     finally:
         if has_globals:
             if orig_op is not None:

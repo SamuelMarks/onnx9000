@@ -4,7 +4,7 @@
 
 
 def test_qa():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.qa import (
         AttentionMapVisualizer,
         BeamSearchTreeVisualizer,

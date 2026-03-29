@@ -74,31 +74,31 @@ class BinaryOp(Expr):
 class Add(BinaryOp):
     """Core class for TVM AST node or pass."""
 
-    pass
+    __dummy__ = True
 
 
 class Sub(BinaryOp):
     """Core class for TVM AST node or pass."""
 
-    pass
+    __dummy__ = True
 
 
 class Mul(BinaryOp):
     """Core class for TVM AST node or pass."""
 
-    pass
+    __dummy__ = True
 
 
 class Div(BinaryOp):
     """Core class for TVM AST node or pass."""
 
-    pass
+    __dummy__ = True
 
 
 class Mod(BinaryOp):
     """Core class for TVM AST node or pass."""
 
-    pass
+    __dummy__ = True
 
 
 class EQ(BinaryOp):

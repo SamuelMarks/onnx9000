@@ -20,10 +20,10 @@ class Tuner:
         # 317: Verify semantic correctness of all tuned outputs against a golden standard.
         # 318: Provide API to restrict search space bounds (max memory usage).
         # 320: Support multi-device heterogenous tuning.
-        pass
+        return None
 
 
 class CostModel:
     """Pass 293: Build a local cost model (e.g., XGBoost or simple NN) in JS/Python."""
 
-    pass
+    __dummy__ = True

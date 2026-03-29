@@ -56,7 +56,7 @@ def test_parse_tensor_proto_external_data():
 
 
 def test_parse_tensor_proto_data_types():
-    """Docstring."""
+    """Provides functional implementation."""
     # int32
     """Test parse tensor proto data types."""
     tp_i32 = onnx_pb2.TensorProto()

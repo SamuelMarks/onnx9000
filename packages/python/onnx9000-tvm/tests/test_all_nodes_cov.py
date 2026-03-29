@@ -71,55 +71,55 @@ def test_passes():
             eliminate_common_subexpr(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             eliminate_dead_code(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             fold_constant(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             fuse_ops(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             infer_type(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             transform_layout(n, "NCHW", "NHWC")
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             plan_memory(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             resolve_dynamic_shape(n)
         except Exception:
-            pass
+            return None
         try:
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             simplify_algebra(n)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             unroll_let(n)
             raise Exception
         except Exception:
-            pass
+            return None
 
 
 def test_te_tir_nodes():
@@ -201,7 +201,7 @@ def test_te_tir_nodes():
             pe.print_expr(e)
             raise Exception
         except Exception:
-            pass
+            return None
     vs = StmtVisitor()
     ms = StmtMutator()
     ps = TIRPrinter()
@@ -210,14 +210,14 @@ def test_te_tir_nodes():
             vs.visit(s)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             ms.visit(s)
             raise Exception
         except Exception:
-            pass
+            return None
         try:
             ps.visit(s)
             raise Exception
         except Exception:
-            pass
+            return None

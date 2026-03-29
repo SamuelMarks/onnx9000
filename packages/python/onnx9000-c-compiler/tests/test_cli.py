@@ -154,7 +154,7 @@ def test_cli_extras(capsys):
                                 main()
                                 raise SystemExit
                             except SystemExit:
-                                pass
+                                return None
 
 
 def test_cli_with_opt(capsys):
@@ -180,4 +180,4 @@ def test_cli_with_opt(capsys):
                                 onnx9000.c_compiler.cli.main()
                                 raise SystemExit
                         except SystemExit:
-                            pass
+                            return None

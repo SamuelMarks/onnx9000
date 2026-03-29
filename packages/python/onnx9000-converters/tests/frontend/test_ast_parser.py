@@ -60,10 +60,10 @@ def test_script_compiler_for_while() -> None:
     def loops(x):
         """Test the loops functionality."""
         for _i in [1, 2]:
-            pass
+            return None
         while x:
             x -= 1
-            pass
+            return None
         return x
 
     loops(0)
@@ -85,7 +85,7 @@ def test_script_compiler_generic() -> None:
 
     def pass_func() -> None:
         """Test the pass_func functionality."""
-        pass
+        return None
 
     pass_func()
 

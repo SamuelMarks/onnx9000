@@ -1222,7 +1222,7 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
             # The values to map are in another list, wait, ONNX CategoryMapper uses
             # cats_int64s and cats_strings. It maps from one to another.
             # Usually cats_int64s to cats_strings, or vice versa.
-            pass
+            return None
 
     # Simple static switch statements for categorical routing (mock implementation)
     switch_code = f"""

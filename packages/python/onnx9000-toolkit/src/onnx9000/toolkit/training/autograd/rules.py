@@ -2275,10 +2275,10 @@ class ResizeVJP(VJPRule):
         if mode == "nearest":
             # For nearest, we can emulate it natively using ScatterND or pooling
             # But structurally, a reverse Resize (where mode="nearest") with inverted scales is common
-            pass
+            return None
         elif mode in ["linear", "bilinear"]:
             # Bilinear distributes gradients sparsely
-            pass
+            return None
 
         # Simplified structural return for validation parity
         node_a = Node(

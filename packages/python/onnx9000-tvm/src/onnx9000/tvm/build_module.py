@@ -87,7 +87,7 @@ class Target:
 
 def build(mod, target=None, params=None):
     """Implement a Python API."""
-    pass
+    return None
 
 
 def load_graph_inputs_override(cli_override_str: str) -> dict:

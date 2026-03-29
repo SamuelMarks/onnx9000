@@ -66,7 +66,7 @@ def test_containers() -> None:
     ml.append(Identity())
     ml.extend([Identity()])
     for _ in ml:
-        pass
+        return None
     md = ModuleDict({"a": Identity()})
     md["b"] = Identity()
     md.update({"c": Identity()})
@@ -222,7 +222,7 @@ def test_parameter_list() -> None:
     _ = pl[0]
     _ = pl[-1]
     for _p in pl:
-        pass
+        return None
 
 
 def test_moduledict_errors() -> None:

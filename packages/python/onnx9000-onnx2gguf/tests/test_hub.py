@@ -38,7 +38,7 @@ def test_fetch_hf_config(monkeypatch):
 
         def __exit__(self, *args):
             """Perform   exit   operation."""
-            pass
+            return None
 
     (cfg, tok, url) = fetch_hf_config("dummy/repo", "token")
     assert "architectures" in cfg

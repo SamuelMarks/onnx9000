@@ -4,7 +4,7 @@
 
 
 def test_security():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.security import (
         ChatTemplateSanitizer,
         ContentSafetyFilter,

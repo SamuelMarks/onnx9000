@@ -6,7 +6,7 @@ from onnx9000.onnx2gguf.llama import extract_llama_metadata
 
 
 def test_extract_llama():
-    """Docstring."""
+    """Provides functional implementation."""
     g = Graph("llama")
     g.add_tensor(Tensor("model.embed_tokens.weight", (32000, 4096), DType.FLOAT32))
     g.add_tensor(Tensor("model.layers.0.self_attn.q_proj.weight", (4096, 4096), DType.FLOAT32))

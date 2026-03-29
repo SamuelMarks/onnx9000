@@ -17,6 +17,7 @@ members = [
     "onnx9000-cli",
     "onnx9000-converters",
     "onnx9000-core",
+    "onnx9000-diffusers",
     "onnx9000-onnx2gguf",
     "onnx9000-openvino",
     "onnx9000-optimizer",
@@ -1145,6 +1146,17 @@ requires-dist = [
     { name = "numpy" },
     { name = "protobuf" },
 ]
+
+[[package]]
+name = "onnx9000-diffusers"
+version = "0.1.0"
+source = { editable = "packages/python/onnx9000-diffusers" }
+dependencies = [
+    { name = "onnx9000-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
 
 [[package]]
 name = "onnx9000-onnx2gguf"

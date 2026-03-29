@@ -13,85 +13,85 @@ from typing import Any, Optional, Union
 class SafetensorsError(Exception):
     """Base exception for Safetensors errors."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsHeaderTooLargeError(SafetensorsError):
     """Represent the SafetensorsHeaderTooLargeError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsInvalidHeaderError(SafetensorsError):
     """Represent the SafetensorsInvalidHeaderError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsInvalidJSONError(SafetensorsError):
     """Represent the SafetensorsInvalidJSONError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsDuplicateKeyError(SafetensorsError):
     """Represent the SafetensorsDuplicateKeyError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsInvalidOffsetError(SafetensorsError):
     """Represent the SafetensorsInvalidOffsetError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsOutOfBoundsError(SafetensorsError):
     """Represent the SafetensorsOutOfBoundsError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsOverlapError(SafetensorsError):
     """Represent the SafetensorsOverlapError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsAlignmentError(SafetensorsError):
     """Represent the SafetensorsAlignmentError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsInvalidDtypeError(SafetensorsError):
     """Represent the SafetensorsInvalidDtypeError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsShapeMismatchError(SafetensorsError):
     """Represent the SafetensorsShapeMismatchError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsFileEmptyError(SafetensorsError):
     """Represent the SafetensorsFileEmptyError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsFileTooSmallError(SafetensorsError):
     """Represent the SafetensorsFileTooSmallError object."""
 
-    pass
+    __dummy__ = True
 
 
 class SafetensorsWriteError(SafetensorsError):
     """Represent the SafetensorsWriteError object."""
 
-    pass
+    __dummy__ = True
 
 
 _DTYPE_SIZES = {
@@ -162,7 +162,7 @@ class SafeTensors:
                 try:
                     self.mm.madvise(mmap.MADV_WILLNEED)
                 except Exception:
-                    pass
+                    return None
             self.data_view = memoryview(self.mm)
         elif isinstance(data, bytes):
             self.file_size = len(data)

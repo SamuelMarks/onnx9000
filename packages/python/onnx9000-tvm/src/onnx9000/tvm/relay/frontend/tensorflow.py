@@ -8,7 +8,7 @@ class TFImporter:
 
     def from_tensorflow(self, graph_def, layout="NHWC") -> IRModule:
         """Do the function."""
-        pass
+        return None
 
 
 def from_tensorflow(graph_def, layout="NHWC") -> IRModule:

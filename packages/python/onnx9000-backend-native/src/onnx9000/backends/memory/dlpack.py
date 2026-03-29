@@ -33,7 +33,7 @@ class DLTensor(ctypes.Structure):
 class DLManagedTensor(ctypes.Structure):
     """Represents the D L Managed Tensor class."""
 
-    pass
+    __dummy__ = True
 
 
 DLManagedTensor._fields_ = [

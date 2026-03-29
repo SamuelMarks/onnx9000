@@ -4,7 +4,7 @@
 
 
 def test_safetensors_mocks():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.safetensors_mocks import (
         azure_blob_range_request,
         benchmark_1gb_layer_stream,

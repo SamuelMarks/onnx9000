@@ -161,19 +161,19 @@ def test_qdq_quantization_extraction():
 
         def start_object(self, n):
             """Perform start object operation."""
-            pass
+            return None
 
         def add_field_offset(self, f, v, d):
             """Perform add field offset operation."""
-            pass
+            return None
 
         def add_field_int8(self, f, v, d):
             """Perform add field int8 operation."""
-            pass
+            return None
 
         def add_field_int32(self, f, v, d):
             """Perform add field int32 operation."""
-            pass
+            return None
 
         def end_object(self):
             """Perform end object operation."""
@@ -189,15 +189,15 @@ def test_qdq_quantization_extraction():
 
         def start_vector(self, e, c, a):
             """Perform start vector operation."""
-            pass
+            return None
 
         def add_float32(self, v):
             """Perform add float32 operation."""
-            pass
+            return None
 
         def add_int32(self, v):
             """Perform add int32 operation."""
-            pass
+            return None
 
         def end_vector(self, l):
             """Perform end vector operation."""

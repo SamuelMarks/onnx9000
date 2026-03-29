@@ -7,7 +7,7 @@ from onnx9000.onnx2gguf.arch import extract_metadata, infer_architecture
 
 
 def test_arch_inference():
-    """Docstring."""
+    """Provides functional implementation."""
     for name in [
         "mistral",
         "mixtral",

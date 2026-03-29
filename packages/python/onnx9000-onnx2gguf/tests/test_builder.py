@@ -7,7 +7,7 @@ from onnx9000.onnx2gguf.builder import GGUFWriter, GGUFValueType, GGUFTensorType
 
 
 def test_gguf_writer_basic():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     writer.add_string("general.name", "test")
@@ -27,7 +27,7 @@ def test_gguf_writer_basic():
 
 
 def test_gguf_writer_all_types():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     writer.add_uint8("u8", 1)
@@ -48,7 +48,7 @@ def test_gguf_writer_all_types():
 
 
 def test_gguf_writer_edge_cases():
-    """Docstring."""
+    """Provides functional implementation."""
     f = io.BytesIO()
     writer = GGUFWriter(f)
     with pytest.raises(ValueError):

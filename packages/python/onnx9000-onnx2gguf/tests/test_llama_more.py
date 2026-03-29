@@ -6,7 +6,7 @@ import io
 
 
 def test_convert_llama_not_tensor():
-    """Docstring."""
+    """Provides functional implementation."""
     g = Graph("test")
     g.tensors["fake"] = "not a tensor"
     g.tensors["embed_tokens.weight"] = "not a tensor"

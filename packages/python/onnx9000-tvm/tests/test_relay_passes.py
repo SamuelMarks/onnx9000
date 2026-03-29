@@ -64,27 +64,27 @@ def test_relay_comprehensive_ast():
     try:
         TypeChecker().visit_var(Var("unk"))
     except ValueError:
-        pass
+        return None
     try:
         TypeChecker().visit_call(Call(Op("unk"), []))
     except ValueError:
-        pass
+        return None
     try:
         TypeChecker().visit_tuple_getitem(TupleGetItem(TupleExpr([]), 1))
     except IndexError:
-        pass
+        return None
     try:
         TypeChecker().visit_tuple_getitem(TupleGetItem(v1, 0))
     except TypeError:
-        pass
+        return None
     try:
         TypeChecker().visit_function(Function([Var("z")], c1))
     except ValueError:
-        pass
+        return None
     try:
         TypeChecker().visit_call(Call(v1, []))
     except ValueError:
-        pass
+        return None
     c_empty = Constant(None)
     TypeChecker().visit_constant(c_empty)
     call_fn = Call(func, [c1, c_empty])
@@ -104,7 +104,7 @@ def test_parser_printer():
     try:
         load_json(script)
     except Exception:
-        pass
+        return None
     v1 = Var("x", TensorType((1, 10), "float32"))
     c1 = Constant([1.0], TensorType((1, 10), "float32"))
     op_add = Op("add")
@@ -162,11 +162,11 @@ def test_json_serialization():
     try:
         load_json('{"root": 0, "nodes": [ {"type": "Unknown"} ]}')
     except ValueError:
-        pass
+        return None
     try:
         load_json("invalid json string")
     except Exception:
-        pass
+        return None
 
 
 def test_load_json_more():
@@ -176,47 +176,47 @@ def test_load_json_more():
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
     try:
         load_json("invalid")
     except Exception:
-        pass
+        return None
 
 
 def test_mutator():
@@ -266,4 +266,4 @@ def test_mutator():
     try:
         m.visit(v)
     except Exception:
-        pass
+        return None

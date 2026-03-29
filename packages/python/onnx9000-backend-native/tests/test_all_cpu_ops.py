@@ -16,7 +16,7 @@ def test_all_cpu_ops_via_registry() -> None:
             res = func([a, b, c, c, c, c], {})
             assert isinstance(res, list)
         except Exception:
-            pass
+            return None
 
 
 def test_complex_cpu_ops() -> None:

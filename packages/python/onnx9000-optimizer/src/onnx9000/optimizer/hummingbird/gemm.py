@@ -20,7 +20,7 @@ class GemmCompiler:
 
     def _detect_and_eliminate_redundant_thresholds(self) -> None:
         """Detect and eliminate redundant threshold checks across identical trees."""
-        pass
+        return None
 
     def compile(self, g: Graph) -> None:
         """Compiles tree to GEMM operators."""
@@ -106,19 +106,19 @@ class GemmCompiler:
 
     def _compress_matrix_a(self) -> None:
         """Compress Matrix A using one-hot/sparse representations."""
-        pass
+        return None
 
     def _implement_sparsity_optimizations(self) -> None:
         """Implement GEMM sparsity optimizations (removing dead matrix columns)."""
-        pass
+        return None
 
     def _pre_compute_scaling_factors(self) -> None:
         """Pre-compute scaling factors in GEMM matrices."""
-        pass
+        return None
 
     def _merge_bias_into_matrix_c(self, matrix_c: dict) -> None:
         """Merge bias additions directly into GEMM Matrix C."""
-        pass
+        return None
 
     def _build_matrix_a(self) -> dict:
         """Execute the build matrix a operation."""
@@ -148,7 +148,7 @@ def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any
 
     Optimize GEMM memory using block-diagonal matrix representations.
     """
-    pass
+    return None
 
 
 def compile_boosting_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
@@ -156,30 +156,30 @@ def compile_boosting_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: A
 
     Transpile Sum reduction over ensemble outputs natively.
     """
-    pass
+    return None
 
 
 def compile_partial_gemm(g: Graph, trees: list[TreeAbstractions], chunks: int) -> None:
     """Implement partial GEMM execution for trees evaluated in chunks."""
-    pass
+    return None
 
 
 def optimize_peak_vram_gemm(trees: list[TreeAbstractions]) -> None:
     """Measure and optimize peak VRAM usage of GEMM constants."""
-    pass
+    return None
 
 
 # Expose Regressor / Classifier / IsolationForest helpers
 def compile_decision_tree_regressor_gemm(g: Graph, tree: TreeAbstractions) -> None:
     """Execute the compile decision tree regressor gemm operation."""
-    pass
+    return None
 
 
 def compile_decision_tree_classifier_gemm(g: Graph, tree: TreeAbstractions) -> None:
     """Execute the compile decision tree classifier gemm operation."""
-    pass
+    return None
 
 
 def compile_isolation_forest_gemm(g: Graph, trees: list[TreeAbstractions]) -> None:
     """Execute the compile isolation forest gemm operation."""
-    pass
+    return None

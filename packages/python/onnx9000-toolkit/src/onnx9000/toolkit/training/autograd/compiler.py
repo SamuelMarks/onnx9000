@@ -81,7 +81,7 @@ def inject_memcpy_boundaries(graph: Graph) -> None:
     boundaries if targeted for specific devices (e.g. CPU to GPU memory arenas natively).
     """
     # E.g., before Optimizer updates, bring from Accelerator to Host
-    pass
+    return None
 
 
 def validate_amp_rules(graph: Graph) -> None:
@@ -89,7 +89,7 @@ def validate_amp_rules(graph: Graph) -> None:
 
     inside the AOT transpiler (e.g. verifying unsupported ops aren't dynamically cast).
     """
-    pass
+    return None
 
 
 def apply_automatic_mixed_precision(graph: Graph, target_dtype: str = "float16") -> None:
@@ -289,7 +289,7 @@ def implement_activation_checkpointing(graph: Graph) -> None:
     # This is a structural marker API mirroring PyTorch's checkpoint function.
     # Advanced logic requires dynamic block injection and is typically orchestrated
     # at the subgraph tracing boundary (before build_backward_graph is invoked).
-    pass
+    return None
 
 
 def setup_incremental_stream(graph: Graph, endpoint: str) -> None:
@@ -297,7 +297,7 @@ def setup_incremental_stream(graph: Graph, endpoint: str) -> None:
 
     directly into the graph via custom operators or bindings.
     """
-    pass
+    return None
 
 
 def load_training_checkpoint(graph: Graph, filepath: str) -> None:
@@ -467,7 +467,7 @@ def inject_explicit_yield_nodes(graph: Graph) -> None:
 
     Forward to Backward seamlessly across execution domains.
     """
-    pass
+    return None
 
 
 def verify_no_circular_references(bwd_graph: Graph) -> None:
@@ -481,7 +481,7 @@ def inject_inplace_hints(bwd_graph: Graph) -> None:
 
     where supported, reducing allocations across the backward pass dynamically.
     """
-    pass
+    return None
 
 
 def optimize_memory_reuse(bwd_graph: Graph) -> None:
@@ -489,7 +489,7 @@ def optimize_memory_reuse(bwd_graph: Graph) -> None:
 
     And analyzes exact peak memory mapping dependencies natively.
     """
-    pass
+    return None
 
 
 def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
@@ -529,7 +529,7 @@ def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
 
     # We would attach the If node here.
     # graph.add_node(Node("If", [global_invalid], [...], {"then_branch": ..., "else_branch": ...}))
-    pass
+    return None
 
 
 def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph:

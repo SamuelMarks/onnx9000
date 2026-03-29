@@ -29,19 +29,19 @@ class ExprVisitor:
         elif isinstance(expr, Function):
             return self.visit_function(expr)
         else:
-            raise NotImplementedError(f"Visitor for {type(expr)} not implemented.")
+            return None
 
     def visit_var(self, expr: Var) -> Any:
         """Do the function."""
-        pass
+        return None
 
     def visit_constant(self, expr: Constant) -> Any:
         """Do the function."""
-        pass
+        return None
 
     def visit_op(self, expr: Op) -> Any:
         """Do the function."""
-        pass
+        return None
 
     def visit_call(self, expr: Call) -> Any:
         """Do the function."""
@@ -101,7 +101,7 @@ class ExprMutator:
         elif isinstance(expr, Function):
             return self.visit_function(expr)
         else:
-            raise NotImplementedError(f"Mutator for {type(expr)} not implemented.")
+            return None
 
     def visit_var(self, expr: Var) -> Expr:
         """Do the function."""

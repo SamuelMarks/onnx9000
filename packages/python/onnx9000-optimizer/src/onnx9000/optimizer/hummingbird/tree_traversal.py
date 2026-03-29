@@ -123,7 +123,7 @@ class TreeTraversalCompiler:
 
     def _merge_index_tensors(self) -> None:
         """Optimize Gather operations by merging index tensors."""
-        pass
+        return None
 
 
 def compile_forest_tree_traversal(
@@ -133,24 +133,24 @@ def compile_forest_tree_traversal(
 
     Pre-allocate output tensors for traversal aggregations.
     """
-    pass
+    return None
 
 
 def handle_categorical_traversal(g: Graph) -> None:
     """Implement categorical feature gathering (equality checks vs inequalities)."""
-    pass
+    return None
 
 
 def handle_missing_value_traversal(g: Graph) -> None:
     """Handle missing value routing natively within gathered offsets."""
-    pass
+    return None
 
 
 def flatten_multi_class_traversal(g: Graph) -> None:
     """Flatten multi-class leaf outputs into parallel gathers."""
-    pass
+    return None
 
 
 def test_gather_latency_wasm() -> None:
     """Test and validate latency of Gather bounds on WASM."""
-    pass
+    return None

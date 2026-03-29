@@ -70,7 +70,7 @@ def test_cf_folding_with_subgraph_changed_trigger_cf():
 
 
 def test_cf_rewire_inputs_name():
-    """Docstring."""
+    """Provides functional implementation."""
     # Hit line 893: node.inputs[i] = new_name
     """Test cf rewire inputs name."""
     g = Graph("TestRewireInputsCF")

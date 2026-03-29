@@ -2,7 +2,7 @@
 
 
 def test_layout_gaps_more():
-    """Docstring."""
+    """Provides functional implementation."""
     import struct
 
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
@@ -37,7 +37,7 @@ def test_layout_gaps_more():
 
 
 def test_layout_remaining_gaps():
-    """Docstring."""
+    """Provides functional implementation."""
     import struct
 
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo

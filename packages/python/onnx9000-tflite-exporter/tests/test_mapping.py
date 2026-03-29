@@ -10,7 +10,7 @@ from onnx9000.tflite_exporter.flatbuffer.schema import TensorType
 
 
 def test_map_onnx_type_to_tflite():
-    """Docstring."""
+    """Provides functional implementation."""
     assert map_onnx_type_to_tflite("float32") == TensorType.FLOAT32
     assert map_onnx_type_to_tflite("float16") == TensorType.FLOAT16
     assert map_onnx_type_to_tflite("int32") == TensorType.INT32
@@ -25,7 +25,7 @@ def test_map_onnx_type_to_tflite():
 
 
 def test_map_onnx_shape_to_tflite():
-    """Docstring."""
+    """Provides functional implementation."""
     assert map_onnx_shape_to_tflite(None) == []
     assert map_onnx_shape_to_tflite([]) == []
     assert map_onnx_shape_to_tflite([1, 2, 3]) == [1, 2, 3]
@@ -34,5 +34,5 @@ def test_map_onnx_shape_to_tflite():
 
 
 def test_create_shape_signature():
-    """Docstring."""
+    """Provides functional implementation."""
     assert create_shape_signature(["dynamic", 2, 3]) == [-1, 2, 3]

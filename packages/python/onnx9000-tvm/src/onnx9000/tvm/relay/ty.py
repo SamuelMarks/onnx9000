@@ -19,7 +19,7 @@ class Type:
 
     """Base class for all types in the Relay type system."""
 
-    pass
+    __dummy__ = True
 
 
 @dataclass(eq=False)

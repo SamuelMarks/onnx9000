@@ -4,7 +4,7 @@
 
 
 def test_stability_coverage():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.stability import (
         BrowserWorkerIsolation,
         EndOfStreamError,

@@ -17,7 +17,7 @@ def test_wasm_size_warning():
 
 
 def test_compile_static_lib_cleanup():
-    """Docstring."""
+    """Provides functional implementation."""
     # If the object path exists, it should be removed
     """Test compile static lib cleanup."""
     with patch("subprocess.run"):

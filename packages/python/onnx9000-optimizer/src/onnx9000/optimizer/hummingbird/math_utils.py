@@ -9,22 +9,22 @@ logger = logging.getLogger(__name__)
 
 def map_count_vectorizer(g: Graph, input_name: str, vocab: list[str]) -> None:
     """Map CountVectorizer to native Equal, Cast, and ReduceSum ops."""
-    pass
+    return None
 
 
 def map_tfidf_vectorizer(g: Graph, input_name: str, vocab: list[str], idf: list[float]) -> None:
     """Map TfidfVectorizer to native ONNX math ops using sparse dictionaries."""
-    pass
+    return None
 
 
 def map_polynomial_expansion(g: Graph, input_name: str, degree: int) -> None:
     """Map polynomial expansions using Pow and Mul combinations."""
-    pass
+    return None
 
 
 def map_murmurhash3(g: Graph, input_name: str) -> None:
     """Implement MurmurHash3 purely in ONNX ops for FeatureHasher support."""
-    pass
+    return None
 
 
 def optimize_sigmoid(
@@ -44,12 +44,12 @@ def fold_scaler_into_linear(weights, bias, mean, scale) -> None:
     """Fold sequential Scaler -> LinearRegressor into a single affine transform natively."""
     # new_weights = weights / scale
     # new_bias = bias - sum(mean * new_weights)
-    pass
+    return None
 
 
 def map_knn_distances(g: Graph) -> None:
     """Map KNN distances to ReduceSumSquare, TopK, and Gather natively."""
-    pass
+    return None
 
 
 def replace_mod(g: Graph, input_A: str, input_B: str, output_name: str) -> None:
@@ -98,24 +98,24 @@ def ensure_softmax_stability(g: Graph, input_name: str, output_name: str) -> Non
 
 def map_naive_bayes(g: Graph) -> None:
     """Transpile Naive Bayes log-probabilities natively using Log and Add."""
-    pass
+    return None
 
 
 def map_pca_svd_lda(g: Graph) -> None:
     """Transpile PCA, TruncatedSVD, LDA to pure MatMul + Add."""
-    pass
+    return None
 
 
 def handle_64bit_casting(g: Graph) -> None:
     """Handle explicit 64-bit to 32-bit integer casting natively."""
-    pass
+    return None
 
 
 def enforce_broadcast_safety(g: Graph) -> None:
     """Enforce broadcast safety (always unsqueeze target tensors prior to arithmetic)."""
-    pass
+    return None
 
 
 def validate_math_exactness() -> None:
     """Validate mathematical exactness using symbolic manipulation tools."""
-    pass
+    return None

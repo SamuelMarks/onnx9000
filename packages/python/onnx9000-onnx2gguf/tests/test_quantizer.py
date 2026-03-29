@@ -6,7 +6,7 @@ from onnx9000.onnx2gguf.quantizer import f32_to_f16, quantize_q4_0, quantize_q4_
 
 
 def test_quantizer():
-    """Docstring."""
+    """Provides functional implementation."""
     # 32 floats (1 block)
     data = np.arange(32, dtype=np.float32).tobytes()
 

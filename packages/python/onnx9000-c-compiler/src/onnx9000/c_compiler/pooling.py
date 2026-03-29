@@ -253,7 +253,7 @@ def generate_reduction(
 
         b.emit(f"{out_name}[0] = val;")
     else:
-        pass
+        return None
 
     b.pop_indent()
     b.emit("}")

@@ -42,9 +42,9 @@ class WASMEmitter(StmtVisitor):
 
 def generate_ts_typings():
     """Pass 233: Generate TypeScript typings (.d.ts) for the emitted WASM binary."""
-    pass
+    return None
 
 
 def generate_js_wrapper():
     """Pass 234: Generate JS wrapper class to load and execute the WASM instance."""
-    pass
+    return None

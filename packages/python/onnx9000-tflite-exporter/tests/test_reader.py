@@ -8,7 +8,7 @@ from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator
 
 
 def test_flatbuffer_reader():
-    """Docstring."""
+    """Provides functional implementation."""
     builder = FlatBufferBuilder()
 
     str_offset = builder.create_string("test_string")
@@ -34,7 +34,7 @@ def test_flatbuffer_reader():
 
 
 def test_tflite_exporter_reader():
-    """Docstring."""
+    """Provides functional implementation."""
     exporter = TFLiteExporter()
     exporter.add_metadata("TestMeta", b"\x01\x02\x03")
     exporter.get_or_add_operator_code(BuiltinOperator.ADD)
@@ -54,7 +54,7 @@ def test_tflite_exporter_reader():
 
 
 def test_reader_edge_cases():
-    """Docstring."""
+    """Provides functional implementation."""
     reader = FlatBufferReader(b"short")
     assert not reader.check_magic_bytes("TFL3")
 

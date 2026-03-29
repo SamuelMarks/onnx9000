@@ -10,7 +10,7 @@ from onnx9000.tflite_exporter.compiler.operators import ELEMENTWISE_OPS
 
 
 def test_compiler_all_operators():
-    """Docstring."""
+    """Provides functional implementation."""
     for op_type, mapping in ELEMENTWISE_OPS.items():
         exporter = TFLiteExporter()
         graph = Graph("TestOpGraph")
@@ -96,7 +96,7 @@ def test_compiler_all_operators():
 
 
 def test_compiler_conv_properties():
-    """Docstring."""
+    """Provides functional implementation."""
     exporter = TFLiteExporter()
     graph = Graph("TestOpGraph")
     graph.tensors["X"] = Tensor("X", shape=(1, 10, 10, 3), dtype="float32", is_initializer=False)

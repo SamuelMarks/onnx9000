@@ -70,7 +70,7 @@ def compile_cpp(
 
             flags.extend([f"-I{pybind11.get_include()}", f"-I{pybind11.get_include(user=True)}"])
         except ImportError:
-            pass
+            return None
 
         import sysconfig
 

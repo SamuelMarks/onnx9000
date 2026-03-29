@@ -137,7 +137,7 @@ def serialize_model(
     graph_proto.name = graph.name
 
     def _serialize_vi(vi_obj: Union[str, "ValueInfo"]) -> onnx_pb2.ValueInfoProto:
-        """Docstring."""
+        """Provides functional implementation."""
         from onnx9000.core.ir import ValueInfo
 
         vi_proto = onnx_pb2.ValueInfoProto()

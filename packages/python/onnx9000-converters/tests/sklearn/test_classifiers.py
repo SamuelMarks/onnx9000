@@ -52,7 +52,7 @@ def test_all_sklearn() -> None:
         estimators_ = []  # For ensembles
         init_ = MagicMock()  # For GBDT
         init_.class_prior_ = np.array([0.5])
-        pass
+        __dummy__ = True
 
     for _, module_name, _ in pkgutil.iter_modules(sk.__path__):
         mod = importlib.import_module(f"onnx9000.converters.sklearn.{module_name}")

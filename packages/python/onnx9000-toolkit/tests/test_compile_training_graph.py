@@ -27,7 +27,7 @@ def test_compile_training_graph():
 
     def mock_optim(builder, params, grads, lr):
         """Mock optimizer function."""
-        pass
+        return None
 
     mock_optim(None, None, None, None)
 

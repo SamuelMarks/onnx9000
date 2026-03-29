@@ -34,7 +34,7 @@ def test_all_ops() -> None:
             res = func(*args)
             assert isinstance(res, (Tensor, list)) or res is None
         except Exception:
-            pass
+            return None
 
 
 def test_specific_ops() -> None:

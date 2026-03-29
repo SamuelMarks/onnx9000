@@ -101,4 +101,4 @@ def parse_catboost_regressor(estimator: Any) -> list[TreeAbstractions]:
 
 def handle_catboost_categorical(g: Graph) -> None:
     """Handle CatBoost one-hot encoded categorical variables mathematically."""
-    pass
+    return None

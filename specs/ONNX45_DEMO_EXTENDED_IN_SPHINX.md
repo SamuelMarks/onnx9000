@@ -116,68 +116,68 @@ To avoid cluttering the UI, we are introducing a **Progressive Pipeline UI**. Us
 ### Phase 15: Pipeline A - Optimization & Quantization (Olive)
 
 - [x] Add `Olive` / `onnx-simplifier` to Target Dropdown options (requires `.onnx` source).
-- [ ] Implement `OliveOptimizer` worker wrapper.
-- [ ] Define state logic for selecting "Optimize (Olive)".
+- [x] Implement `OliveOptimizer` worker wrapper.
+- [x] Define state logic for selecting "Optimize (Olive)".
 - [x] Expose Olive configuration UI (sliders for quantization level, toggle for INT8/FP16).
 - [x] Create `OliveConfigPanel` vanilla JS component.
 - [x] Mount `OliveConfigPanel` in RHS when Olive is selected.
 - [x] Write DOM tests for `OliveConfigPanel` inputs and state binding.
-- [ ] Integrate WASM build of `onnx-simplifier`.
-- [ ] Execute `onnx-simplifier` step in Web Worker.
-- [ ] Handle success/failure of simplification step.
-- [ ] Integrate WASM build of `Olive` (mocked or actual, depending on engine limits).
-- [ ] Implement dynamic graph diffing in `OnnxVisualizer`.
-- [ ] Highlight removed/fused nodes in red/green within the Visualizer tab.
-- [ ] Extract model size (bytes) before and after optimization.
-- [ ] Display compression ratio metric in the UI.
-- [ ] Write unit tests verifying size metric calculations.
+- [x] Integrate WASM build of `onnx-simplifier`.
+- [x] Execute `onnx-simplifier` step in Web Worker.
+- [x] Handle success/failure of simplification step.
+- [x] Integrate WASM build of `Olive` (mocked or actual, depending on engine limits).
+- [x] Implement dynamic graph diffing in `OnnxVisualizer`.
+- [x] Highlight removed/fused nodes in red/green within the Visualizer tab.
+- [x] Extract model size (bytes) before and after optimization.
+- [x] Display compression ratio metric in the UI.
+- [x] Write unit tests verifying size metric calculations.
 - [x] Write unit tests for Olive config state serialization.
-- [ ] Write unit tests for optimization worker payload formatting.
+- [x] Write unit tests for optimization worker payload formatting.
 - [x] Add 100% JSDoc to Pipeline A specific components.
 - [x] Create Playwright E2E spec: `pipeline-a-optimization.spec.ts`.
 - [x] E2E: Verify selecting Olive shows config panel.
-- [ ] E2E: Verify running optimization produces a smaller `.onnx` target.
-- [ ] E2E: Verify visualizer shows side-by-side or highlighted graph differences.
-- [ ] E2E: Verify promoting optimized ONNX sets it as new LHS source.
+- [x] E2E: Verify running optimization produces a smaller `.onnx` target.
+- [x] E2E: Verify visualizer shows side-by-side or highlighted graph differences.
+- [x] E2E: Verify promoting optimized ONNX sets it as new LHS source.
 - [x] Implement static shape inference toggle in Olive config.
 - [x] Implement transformer-specific optimizations (fusion) toggle.
 - [x] Write unit tests for static shape inference payload flag.
-- [ ] Ensure 100% coverage on Optimization logic.
-- [ ] Add optimization tutorial to Sphinx docs.
-- [ ] Verify Olive UI layout remains responsive on mobile.
+- [x] Ensure 100% coverage on Optimization logic.
+- [x] Add optimization tutorial to Sphinx docs.
+- [x] Verify Olive UI layout remains responsive on mobile.
 
 ### Phase 16: Pipeline A - Execution & Profiling (ORT Web/WebNN)
 
 - [x] Create `RunInferenceButton` in RHS Target header (visible only for runnable artifacts).
 - [x] Add `Execution Profiler` tab to Bottom Pane.
-- [ ] Implement `ORTWebRunner` wrapper class.
-- [ ] Implement `WebNNPolyfillRunner` wrapper class.
-- [ ] Create UI dropdown to select Execution Provider (WASM, WebGL, WebGPU, WebNN).
-- [ ] Write unit tests for EP selection and fallback logic.
-- [ ] Handle WebGPU/WebNN feature detection and disable unsupported dropdown options.
-- [ ] Integrate ORT Web session instantiation in a Web Worker.
+- [x] Implement `ORTWebRunner` wrapper class.
+- [x] Implement `WebNNPolyfillRunner` wrapper class.
+- [x] Create UI dropdown to select Execution Provider (WASM, WebGL, WebGPU, WebNN).
+- [x] Write unit tests for EP selection and fallback logic.
+- [x] Handle WebGPU/WebNN feature detection and disable unsupported dropdown options.
+- [x] Integrate ORT Web session instantiation in a Web Worker.
 - [x] Implement execution timer using `performance.now()`.
 - [x] Calculate Time To First Token (TTFT) for text-generation models.
 - [x] Calculate Tokens Per Second (TPS) metrics.
 - [x] Create `MetricsDashboard` component to display TPS, TTFT, and total latency.
 - [x] Mount `MetricsDashboard` in the Execution Profiler tab.
-- [ ] Plot latency variance using a lightweight vanilla JS canvas chart.
-- [ ] Track memory utilization during inference using Web Performance API (if available).
+- [x] Plot latency variance using a lightweight vanilla JS canvas chart.
+- [x] Track memory utilization during inference using Web Performance API (if available).
 - [x] Write unit tests for TTFT and TPS calculation math.
 - [x] Write DOM tests for `MetricsDashboard` rendering.
-- [ ] Write unit tests for canvas charting boundaries and data normalization.
-- [ ] Handle asynchronous inference loops for streaming outputs.
-- [ ] Dispatch `INFERENCE_CHUNK_RECEIVED` events to update UI progressively.
-- [ ] Write unit tests for inference event streaming.
+- [x] Write unit tests for canvas charting boundaries and data normalization.
+- [x] Handle asynchronous inference loops for streaming outputs.
+- [x] Dispatch `INFERENCE_CHUNK_RECEIVED` events to update UI progressively.
+- [x] Write unit tests for inference event streaming.
 - [x] Add 100% JSDoc to Execution Pipeline components.
 - [x] Create Playwright E2E spec: `pipeline-a-execution.spec.ts`.
 - [x] E2E: Verify "Run Inference" button is visible for `.onnx` files.
-- [ ] E2E: Verify executing runs without crashing and updates Console.
+- [x] E2E: Verify executing runs without crashing and updates Console.
 - [x] E2E: Verify Execution Profiler tab populates with latency data.
-- [ ] E2E: Verify streaming output updates UI continuously.
-- [ ] Ensure strict cleanup of ORT sessions (`session.release()`) to prevent memory leaks.
-- [ ] Add `finally` blocks in worker to guarantee memory cleanup on error.
-- [ ] Run coverage report and hit 100% on execution wrappers.
+- [x] E2E: Verify streaming output updates UI continuously.
+- [x] Ensure strict cleanup of ORT sessions (`session.release()`) to prevent memory leaks.
+- [x] Add `finally` blocks in worker to guarantee memory cleanup on error.
+- [x] Run coverage report and hit 100% on execution wrappers.
 
 ### Phase 17: Pipeline B - MLIR & IREE Compiler Flow
 

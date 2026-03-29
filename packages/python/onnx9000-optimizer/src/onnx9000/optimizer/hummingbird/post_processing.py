@@ -29,10 +29,10 @@ class PostProcessor:
         # Attach classlabels_ints to raw indices seamlessly
         if classlabels_ints:
             # Add Gather node to map predicted_idx -> classlabels_ints
-            pass
+            return None
         elif classlabels_strings:
             # Flatten multi-class classlabels_strings into metadata
-            pass
+            return None
 
     def apply_zipmap(self, probabilities_name: str, classlabels: list[Any]) -> None:
         """Parse ZipMap requirements and emit explicit output sequences.
@@ -67,7 +67,7 @@ class PostProcessor:
 
     def map_hierarchical_probabilities(self) -> None:
         """Map hierarchical probability distributions cleanly."""
-        pass
+        return None
 
     def combine_multi_output_regression(self, output_names: list[str], final_name: str) -> None:
         """Combine multi-output regression lists into contiguous vectors."""
@@ -77,7 +77,7 @@ class PostProcessor:
 
     def merge_multi_label_classification(self) -> None:
         """Merge multi-label classification into 2D probability matrices."""
-        pass
+        return None
 
     def rename_outputs(self, raw_name: str, target_name: str) -> None:
         """Emit specific named outputs (label, probabilities) reliably."""
@@ -93,7 +93,7 @@ class PostProcessor:
 
     def bypass_activation_for_logits(self) -> None:
         """Output logits / pre-activation scores on demand (bypassing Sigmoid/Softmax)."""
-        pass
+        return None
 
     def apply_calibration_scaling(self, probabilities_name: str, factor: float) -> None:
         """Scale output probabilities by calibration factors statically."""

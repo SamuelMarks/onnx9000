@@ -41,14 +41,14 @@ def test_jit_decorator() -> None:
         return h.relu()
 
     class MockT:
-        """Docstring."""
+        """Provides functional implementation."""
 
         def __matmul__(self, o):
-            """Docstring."""
+            """Provides functional implementation."""
             return MockT()
 
         def relu(self):
-            """Docstring."""
+            """Provides functional implementation."""
             return self
 
     simple_model(MockT(), MockT())

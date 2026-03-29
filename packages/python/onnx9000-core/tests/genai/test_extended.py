@@ -4,7 +4,7 @@
 
 
 def test_extended():
-    """Docstring."""
+    """Provides functional implementation."""
     from onnx9000.genai.extended import (
         ChunkedPrefiller,
         ContinuousBatchingQueue,

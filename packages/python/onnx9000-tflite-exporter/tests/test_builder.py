@@ -47,7 +47,7 @@ def test_builder_edge_cases():
     try:
         builder.end_object()
     except ValueError:
-        pass
+        return None
 
     # Test grow edge case (simulating initial 0 length or empty bb)
     empty_builder = FlatBufferBuilder()

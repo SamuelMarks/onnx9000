@@ -20,4 +20,4 @@ def infer_bounds(sch: Schedule) -> dict:
 class ScheduleSyntaxTree:
     """Pass 168: Generate schedule syntax trees for persistence."""
 
-    pass
+    __dummy__ = True

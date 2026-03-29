@@ -30,7 +30,7 @@ def resolve_model_file(repo_id: str, revision: str = "main") -> str:
             if response.status == 200:
                 return safetensors_url
     except HTTPError:
-        pass
+        return None
 
     bin_url = f"{base_url}/pytorch_model.bin"
     return bin_url
@@ -49,7 +49,7 @@ def cached_download(
     if "huggingface.co" in url and "/resolve/" not in url:
         # Assuming URL is like https://huggingface.co/user/repo/blob/main/file
         # which usually isn't what's passed, but just in case
-        pass
+        return None
     elif "huggingface.co" in url and "/resolve/main/" in url and revision != "main":
         url = url.replace("/resolve/main/", f"/resolve/{revision}/")
 

@@ -283,7 +283,7 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
             "Size",
             "Constant",
         ]:
-            pass
+            return None
 
         elif n.op_type in [
             "Reshape",
