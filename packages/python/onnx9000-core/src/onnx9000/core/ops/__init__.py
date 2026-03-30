@@ -3,6 +3,7 @@
 from typing import Any, Optional
 
 from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.registry import register_op
 
 
 def record_op(
@@ -15,276 +16,334 @@ def record_op(
     return Tensor(name=f"{op_type}_out", shape=(), dtype=dtype)
 
 
+from onnx9000.core.ops.torch_auto import *
+
+
+@register_op("Relu", "ai.onnx")
 def relu(x: Tensor) -> Tensor:
     """Compute Rectified Linear Unit."""
     return record_op("Relu", [x])
 
 
+@register_op("Abs", "ai.onnx")
 def abs(x: Tensor) -> Tensor:
     """Compute Absolute Value."""
     return record_op("Abs", [x])
 
 
+@register_op("Acos", "ai.onnx")
 def acos(x: Tensor) -> Tensor:
     """Compute Inverse Cosine."""
     return record_op("Acos", [x])
 
 
+@register_op("Acosh", "ai.onnx")
 def acosh(x: Tensor) -> Tensor:
     """Compute Inverse Hyperbolic Cosine."""
     return record_op("Acosh", [x])
 
 
+@register_op("Asin", "ai.onnx")
 def asin(x: Tensor) -> Tensor:
     """Compute Inverse Sine."""
     return record_op("Asin", [x])
 
 
+@register_op("Asinh", "ai.onnx")
 def asinh(x: Tensor) -> Tensor:
     """Compute Inverse Hyperbolic Sine."""
     return record_op("Asinh", [x])
 
 
+@register_op("Atan", "ai.onnx")
 def atan(x: Tensor) -> Tensor:
     """Compute Inverse Tangent."""
     return record_op("Atan", [x])
 
 
+@register_op("Atanh", "ai.onnx")
 def atanh(x: Tensor) -> Tensor:
     """Compute Inverse Hyperbolic Tangent."""
     return record_op("Atanh", [x])
 
 
+@register_op("Cos", "ai.onnx")
 def cos(x: Tensor) -> Tensor:
     """Compute Cosine."""
     return record_op("Cos", [x])
 
 
+@register_op("Cosh", "ai.onnx")
 def cosh(x: Tensor) -> Tensor:
     """Compute Hyperbolic Cosine."""
     return record_op("Cosh", [x])
 
 
+@register_op("Sin", "ai.onnx")
 def sin(x: Tensor) -> Tensor:
     """Compute Sine."""
     return record_op("Sin", [x])
 
 
+@register_op("Sinh", "ai.onnx")
 def sinh(x: Tensor) -> Tensor:
     """Compute Hyperbolic Sine."""
     return record_op("Sinh", [x])
 
 
+@register_op("Tan", "ai.onnx")
 def tan(x: Tensor) -> Tensor:
     """Compute Tangent."""
     return record_op("Tan", [x])
 
 
+@register_op("Max", "ai.onnx")
 def max(x: Tensor, y: Tensor) -> Tensor:
     """Compute Max."""
     return record_op("Max", [x, y])
 
 
+@register_op("Min", "ai.onnx")
 def min(x: Tensor, y: Tensor) -> Tensor:
     """Compute Min."""
     return record_op("Min", [x, y])
 
 
+@register_op("Where", "ai.onnx")
 def where(condition: Tensor, x: Tensor, y: Tensor) -> Tensor:
     """Compute Where."""
     return record_op("Where", [condition, x, y])
 
 
+@register_op("Cast", "ai.onnx")
 def cast(x: Tensor, to_type: int) -> Tensor:
     """Compute Cast."""
     return record_op("Cast", [x], {"to": to_type})
 
 
+@register_op("CastLike", "ai.onnx")
 def cast_like(x: Tensor, target: Tensor) -> Tensor:
     """Compute CastLike."""
     return record_op("CastLike", [x, target])
 
 
+@register_op("BitShift", "ai.onnx")
 def bitshift(x: Tensor, y: Tensor, direction: str) -> Tensor:
     """Compute BitShift."""
     return record_op("BitShift", [x, y], {"direction": direction})
 
 
+@register_op("BitwiseAnd", "ai.onnx")
 def bitwise_and(x: Tensor, y: Tensor) -> Tensor:
     """Compute BitwiseAnd."""
     return record_op("BitwiseAnd", [x, y])
 
 
+@register_op("BitwiseNot", "ai.onnx")
 def bitwise_not(x: Tensor) -> Tensor:
     """Compute BitwiseNot."""
     return record_op("BitwiseNot", [x])
 
 
+@register_op("BitwiseOr", "ai.onnx")
 def bitwise_or(x: Tensor, y: Tensor) -> Tensor:
     """Compute BitwiseOr."""
     return record_op("BitwiseOr", [x, y])
 
 
+@register_op("BitwiseXor", "ai.onnx")
 def bitwise_xor(x: Tensor, y: Tensor) -> Tensor:
     """Compute BitwiseXor."""
     return record_op("BitwiseXor", [x, y])
 
 
+@register_op("Ceil", "ai.onnx")
 def ceil(x: Tensor) -> Tensor:
     """Compute Ceil."""
     return record_op("Ceil", [x])
 
 
+@register_op("Floor", "ai.onnx")
 def floor(x: Tensor) -> Tensor:
     """Compute Floor."""
     return record_op("Floor", [x])
 
 
+@register_op("IsInf", "ai.onnx")
 def isinf(x: Tensor) -> Tensor:
     """Compute IsInf."""
     return record_op("IsInf", [x])
 
 
+@register_op("IsNaN", "ai.onnx")
 def isnan(x: Tensor) -> Tensor:
     """Compute IsNaN."""
     return record_op("IsNaN", [x])
 
 
+@register_op("Mod", "ai.onnx")
 def mod(x: Tensor, y: Tensor) -> Tensor:
     """Compute Modulo."""
     return record_op("Mod", [x, y])
 
 
+@register_op("Neg", "ai.onnx")
 def neg(x: Tensor) -> Tensor:
     """Compute Negation."""
     return record_op("Neg", [x])
 
 
+@register_op("Pow", "ai.onnx")
 def pow(x: Tensor, y: Tensor) -> Tensor:
     """Compute Power."""
     return record_op("Pow", [x, y])
 
 
+@register_op("Reciprocal", "ai.onnx")
 def reciprocal(x: Tensor) -> Tensor:
     """Compute Reciprocal."""
     return record_op("Reciprocal", [x])
 
 
+@register_op("Round", "ai.onnx")
 def round(x: Tensor) -> Tensor:
     """Compute Round."""
     return record_op("Round", [x])
 
 
+@register_op("Sign", "ai.onnx")
 def sign(x: Tensor) -> Tensor:
     """Compute Sign."""
     return record_op("Sign", [x])
 
 
+@register_op("Sigmoid", "ai.onnx")
 def sigmoid(x: Tensor) -> Tensor:
     """Compute Sigmoid."""
     return record_op("Sigmoid", [x])
 
 
+@register_op("Tanh", "ai.onnx")
 def tanh(x: Tensor) -> Tensor:
     """Compute Hyperbolic Tangent."""
     return record_op("Tanh", [x])
 
 
+@register_op("Elu", "ai.onnx")
 def elu(x: Tensor, alpha: float = 1.0) -> Tensor:
     """Compute Elu."""
     return record_op("Elu", [x], {"alpha": alpha})
 
 
+@register_op("Celu", "ai.onnx")
 def celu(x: Tensor, alpha: float = 1.0) -> Tensor:
     """Compute Celu."""
     return record_op("Celu", [x], {"alpha": alpha})
 
 
+@register_op("LeakyRelu", "ai.onnx")
 def leaky_relu(x: Tensor, alpha: float = 0.01) -> Tensor:
     """Compute LeakyRelu."""
     return record_op("LeakyRelu", [x], {"alpha": alpha})
 
 
+@register_op("Selu", "ai.onnx")
 def selu(x: Tensor, alpha: float = 1.67326, gamma: float = 1.0507) -> Tensor:
     """Compute Selu."""
     return record_op("Selu", [x], {"alpha": alpha, "gamma": gamma})
 
 
+@register_op("Softplus", "ai.onnx")
 def softplus(x: Tensor) -> Tensor:
     """Compute Softplus."""
     return record_op("Softplus", [x])
 
 
+@register_op("Softsign", "ai.onnx")
 def softsign(x: Tensor) -> Tensor:
     """Compute Softsign."""
     return record_op("Softsign", [x])
 
 
+@register_op("ThresholdedRelu", "ai.onnx")
 def thresholded_relu(x: Tensor, alpha: float = 1.0) -> Tensor:
     """Compute ThresholdedRelu."""
     return record_op("ThresholdedRelu", [x], {"alpha": alpha})
 
 
+@register_op("Mish", "ai.onnx")
 def mish(x: Tensor) -> Tensor:
     """Compute Mish."""
     return record_op("Mish", [x])
 
 
+@register_op("HardSigmoid", "ai.onnx")
 def hard_sigmoid(x: Tensor, alpha: float = 0.2, beta: float = 0.5) -> Tensor:
     """Compute HardSigmoid."""
     return record_op("HardSigmoid", [x], {"alpha": alpha, "beta": beta})
 
 
+@register_op("HardSwish", "ai.onnx")
 def hard_swish(x: Tensor) -> Tensor:
     """Compute HardSwish."""
     return record_op("HardSwish", [x])
 
 
+@register_op("Hardmax", "ai.onnx")
 def hardmax(x: Tensor, axis: int = -1) -> Tensor:
     """Compute Hardmax."""
     return record_op("Hardmax", [x], {"axis": axis})
 
 
+@register_op("Softmax", "ai.onnx")
 def softmax(x: Tensor, axis: int = -1) -> Tensor:
     """Compute Softmax."""
     return record_op("Softmax", [x], {"axis": axis})
 
 
+@register_op("LogSoftmax", "ai.onnx")
 def log_softmax(x: Tensor, axis: int = -1) -> Tensor:
     """Compute LogSoftmax."""
     return record_op("LogSoftmax", [x], {"axis": axis})
 
 
+@register_op("PRelu", "ai.onnx")
 def prelu(x: Tensor, slope: Tensor) -> Tensor:
     """Compute PRelu."""
     return record_op("PRelu", [x, slope])
 
 
+@register_op("RNN", "ai.onnx")
 def rnn(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
     """Compute RNN."""
     return record_op("RNN", [x, w, r])
 
 
+@register_op("LSTM", "ai.onnx")
 def lstm(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
     """Compute LSTM."""
     return record_op("LSTM", [x, w, r])
 
 
+@register_op("GRU", "ai.onnx")
 def gru(x: Tensor, w: Tensor, r: Tensor) -> Tensor:
     """Compute GRU."""
     return record_op("GRU", [x, w, r])
 
 
+@register_op("SequenceConstruct", "ai.onnx")
 def sequence_construct(inputs: list[Tensor]) -> Tensor:
     """Compute SequenceConstruct."""
     return record_op("SequenceConstruct", inputs)
 
 
+@register_op("SequenceEmpty", "ai.onnx")
 def sequence_empty(dtype: int) -> Tensor:
     """Compute SequenceEmpty."""
     return record_op("SequenceEmpty", [], {"dtype": dtype})
 
 
+@register_op("SequenceInsert", "ai.onnx")
 def sequence_insert(seq: Tensor, tensor: Tensor, position: Optional[Tensor] = None) -> Tensor:
     """Compute SequenceInsert."""
     inputs = [seq, tensor]
@@ -293,31 +352,37 @@ def sequence_insert(seq: Tensor, tensor: Tensor, position: Optional[Tensor] = No
     return record_op("SequenceInsert", inputs)
 
 
+@register_op("SequenceMap", "ai.onnx")
 def sequence_map(seq: Tensor) -> Tensor:
     """Compute SequenceMap."""
     return record_op("SequenceMap", [seq])
 
 
+@register_op("ConcatFromSequence", "ai.onnx")
 def concat_from_sequence(seq: Tensor, axis: int, new_axis: int = 0) -> Tensor:
     """Compute ConcatFromSequence."""
     return record_op("ConcatFromSequence", [seq], {"axis": axis, "new_axis": new_axis})
 
 
+@register_op("Constant", "ai.onnx")
 def constant(value: Any, dtype: int = 1) -> Tensor:
     """Compute Constant."""
     return record_op("Constant", [], {"value": value, "dtype": dtype})
 
 
+@register_op("ConstantOfShape", "ai.onnx")
 def constant_of_shape(input: Tensor, value: Any = 0.0, dtype: int = 1) -> Tensor:
     """Compute ConstantOfShape."""
     return record_op("ConstantOfShape", [input], {"value": value, "dtype": dtype})
 
 
+@register_op("Concat", "ai.onnx")
 def concat(inputs: list[Tensor], axis: int) -> Tensor:
     """Compute Concat."""
     return record_op("Concat", inputs, {"axis": axis})
 
 
+@register_op("QuantizeLinear", "ai.onnx")
 def quantize_linear(x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] = None) -> Tensor:
     """Compute QuantizeLinear."""
     inputs = [x, y_scale]
@@ -326,6 +391,7 @@ def quantize_linear(x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] =
     return record_op("QuantizeLinear", inputs)
 
 
+@register_op("DequantizeLinear", "ai.onnx")
 def dequantize_linear(x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor] = None) -> Tensor:
     """Compute DequantizeLinear."""
     inputs = [x, x_scale]
@@ -334,6 +400,7 @@ def dequantize_linear(x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor]
     return record_op("DequantizeLinear", inputs)
 
 
+@register_op("ConvTranspose", "ai.onnx")
 def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose."""
     inputs = [x, w]
@@ -370,21 +437,25 @@ def deform_conv(
     return record_op("DeformConv", inputs, kwargs)
 
 
+@register_op("LpNormalization", "ai.onnx")
 def lp_normalization(input: Tensor, axis: int = -1, p: int = 2) -> Tensor:
     """Compute LpNormalization."""
     return record_op("LpNormalization", [input], {"axis": axis, "p": p})
 
 
+@register_op("LpPool", "ai.onnx")
 def lp_pool(input: Tensor, kernel_shape: list[int], p: float = 2.0, **kwargs: Any) -> Tensor:
     """Compute LpPool."""
     return record_op("LpPool", [input], {"kernel_shape": kernel_shape, "p": p, **kwargs})
 
 
+@register_op("Det", "ai.onnx")
 def det(x: Tensor) -> Tensor:
     """Compute Det."""
     return record_op("Det", [x])
 
 
+@register_op("EyeLike", "ai.onnx")
 def eye_like(input: Tensor, dtype: int = 1, k: int = 0) -> Tensor:
     """Compute EyeLike."""
     return record_op("EyeLike", [input], {"dtype": dtype, "k": k})
@@ -409,11 +480,13 @@ def layer_normalization(
     )
 
 
+@register_op("MeanVarianceNormalization", "ai.onnx")
 def mean_variance_normalization(x: Tensor, axes: list[int]) -> Tensor:
     """Compute MeanVarianceNormalization."""
     return record_op("MeanVarianceNormalization", [x], {"axes": axes})
 
 
+@register_op("InstanceNormalization", "ai.onnx")
 def instance_normalization(
     input: Tensor, scale: Tensor, B: Tensor, epsilon: float = 1e-05
 ) -> Tensor:
@@ -421,16 +494,19 @@ def instance_normalization(
     return record_op("InstanceNormalization", [input, scale, B], {"epsilon": epsilon})
 
 
+@register_op("LessOrEqual", "ai.onnx")
 def less_or_equal(a: Tensor, b: Tensor) -> Tensor:
     """Compute LessOrEqual."""
     return record_op("LessOrEqual", [a, b])
 
 
+@register_op("GreaterOrEqual", "ai.onnx")
 def greater_or_equal(a: Tensor, b: Tensor) -> Tensor:
     """Compute GreaterOrEqual."""
     return record_op("GreaterOrEqual", [a, b])
 
 
+@register_op("Mean", "ai.onnx")
 def mean(inputs: list[Tensor]) -> Tensor:
     """Compute Mean."""
     return record_op("Mean", inputs)
@@ -481,6 +557,7 @@ def non_max_suppression(
     return record_op("NonMaxSuppression", inputs, {"center_point_box": center_point_box})
 
 
+@register_op("NonZero", "ai.onnx")
 def non_zero(x: Tensor) -> Tensor:
     """Compute NonZero."""
     return record_op("NonZero", [x])
@@ -548,6 +625,7 @@ def random_uniform_like(
     return record_op("RandomUniformLike", [input], attrs)
 
 
+@register_op("ReduceSumSquare", "ai.onnx")
 def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceSumSquare."""
     attrs = {"keepdims": keepdims}
@@ -556,6 +634,7 @@ def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: 
     return record_op("ReduceSumSquare", [data], attrs)
 
 
+@register_op("ReduceL1", "ai.onnx")
 def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceL1."""
     attrs = {"keepdims": keepdims}
@@ -564,6 +643,7 @@ def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
     return record_op("ReduceL1", [data], attrs)
 
 
+@register_op("ReduceL2", "ai.onnx")
 def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceL2."""
     attrs = {"keepdims": keepdims}
@@ -572,6 +652,7 @@ def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
     return record_op("ReduceL2", [data], attrs)
 
 
+@register_op("ReduceLogSum", "ai.onnx")
 def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceLogSum."""
     attrs = {"keepdims": keepdims}
@@ -580,6 +661,7 @@ def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int
     return record_op("ReduceLogSum", [data], attrs)
 
 
+@register_op("ReduceLogSumExp", "ai.onnx")
 def reduce_log_sum_exp(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceLogSumExp."""
     attrs = {"keepdims": keepdims}
@@ -588,11 +670,13 @@ def reduce_log_sum_exp(data: Tensor, axes: Optional[list[int]] = None, keepdims:
     return record_op("ReduceLogSumExp", [data], attrs)
 
 
+@register_op("Range", "ai.onnx")
 def range_op(start: Tensor, limit: Tensor, delta: Tensor) -> Tensor:
     """Compute Range."""
     return record_op("Range", [start, limit, delta])
 
 
+@register_op("RegexFullMatch", "ai.onnx")
 def regex_full_match(x: Tensor, pattern: str) -> Tensor:
     """Compute RegexFullMatch."""
     return record_op("RegexFullMatch", [x], {"pattern": pattern})
@@ -631,6 +715,7 @@ def reverse_sequence(
     )
 
 
+@register_op("Scatter", "ai.onnx")
 def scatter(data: Tensor, indices: Tensor, updates: Tensor, axis: int = 0) -> Tensor:
     """Compute Scatter."""
     return record_op("Scatter", [data, indices, updates], {"axis": axis})
@@ -651,21 +736,25 @@ def scatter_elements(
     )
 
 
+@register_op("ScatterND", "ai.onnx")
 def scatter_nd(data: Tensor, indices: Tensor, updates: Tensor, reduction: str = "none") -> Tensor:
     """Compute ScatterND."""
     return record_op("ScatterND", [data, indices, updates], {"reduction": reduction})
 
 
+@register_op("Shrink", "ai.onnx")
 def shrink(input: Tensor, bias: float = 0.0, lambd: float = 0.5) -> Tensor:
     """Compute Shrink."""
     return record_op("Shrink", [input], {"bias": bias, "lambd": lambd})
 
 
+@register_op("Size", "ai.onnx")
 def size(data: Tensor) -> Tensor:
     """Compute Size."""
     return record_op("Size", [data])
 
 
+@register_op("StringConcat", "ai.onnx")
 def string_concat(x: Tensor, y: Tensor) -> Tensor:
     """Compute StringConcat."""
     return record_op("StringConcat", [x, y])
@@ -689,11 +778,13 @@ def string_normalizer(
     return record_op("StringNormalizer", [x], attrs)
 
 
+@register_op("StringSplit", "ai.onnx")
 def string_split(x: Tensor, delimiter: str = "", maxsplit: int = -1) -> Tensor:
     """Compute StringSplit."""
     return record_op("StringSplit", [x], {"delimiter": delimiter, "maxsplit": maxsplit})
 
 
+@register_op("Trilu", "ai.onnx")
 def trilu(input: Tensor, k: Optional[Tensor] = None, upper: int = 1) -> Tensor:
     """Compute Trilu."""
     inputs = [input]
@@ -702,11 +793,13 @@ def trilu(input: Tensor, k: Optional[Tensor] = None, upper: int = 1) -> Tensor:
     return record_op("Trilu", inputs, {"upper": upper})
 
 
+@register_op("TopK", "ai.onnx")
 def topk(X: Tensor, K: Tensor, axis: int = -1, largest: int = 1, sorted: int = 1) -> Tensor:
     """Compute TopK."""
     return record_op("TopK", [X, K], {"axis": axis, "largest": largest, "sorted": sorted})
 
 
+@register_op("Unique", "ai.onnx")
 def unique(X: Tensor, axis: Optional[int] = None, sorted: int = 1) -> Tensor:
     """Compute Unique."""
     attrs = {"sorted": sorted}
@@ -715,11 +808,13 @@ def unique(X: Tensor, axis: Optional[int] = None, sorted: int = 1) -> Tensor:
     return record_op("Unique", [X], attrs)
 
 
+@register_op("SequenceAt", "ai.onnx")
 def sequence_at(input_sequence: Tensor, position: Tensor) -> Tensor:
     """Compute SequenceAt."""
     return record_op("SequenceAt", [input_sequence, position])
 
 
+@register_op("SplitToSequence", "ai.onnx")
 def split_to_sequence(
     input: Tensor, split: Optional[Tensor] = None, axis: int = 0, keepdims: int = 1
 ) -> Tensor:
@@ -730,6 +825,7 @@ def split_to_sequence(
     return record_op("SplitToSequence", inputs, {"axis": axis, "keepdims": keepdims})
 
 
+@register_op("SequenceErase", "ai.onnx")
 def sequence_erase(input_sequence: Tensor, position: Optional[Tensor] = None) -> Tensor:
     """Compute SequenceErase."""
     inputs = [input_sequence]
@@ -738,11 +834,13 @@ def sequence_erase(input_sequence: Tensor, position: Optional[Tensor] = None) ->
     return record_op("SequenceErase", inputs)
 
 
+@register_op("SequenceLength", "ai.onnx")
 def sequence_length(input_sequence: Tensor) -> Tensor:
     """Compute SequenceLength."""
     return record_op("SequenceLength", [input_sequence])
 
 
+@register_op("AffineGrid", "ai.onnx")
 def affine_grid(theta: Tensor, size: Tensor, align_corners: int = 0) -> Tensor:
     """Compute AffineGrid."""
     return record_op("AffineGrid", [theta, size], {"align_corners": align_corners})
@@ -766,11 +864,13 @@ def argmin(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: in
     )
 
 
+@register_op("Attention", "ai.onnx")
 def attention(Q: Tensor, K: Tensor, V: Tensor, **kwargs: Any) -> Tensor:
     """Compute Attention."""
     return record_op("Attention", [Q, K, V], kwargs)
 
 
+@register_op("Bernoulli", "ai.onnx")
 def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> Tensor:
     """Compute Bernoulli."""
     attrs: dict[str, Any] = {"seed": seed}
@@ -779,6 +879,7 @@ def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> 
     return record_op("Bernoulli", [input], attrs)
 
 
+@register_op("CenterCropPad", "ai.onnx")
 def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]] = None) -> Tensor:
     """Compute CenterCropPad."""
     attrs = {}
@@ -787,6 +888,7 @@ def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]]
     return record_op("CenterCropPad", [input_data, shape], attrs)
 
 
+@register_op("Constant", "ai.onnx")
 def clip(input: Tensor, min: Optional[Tensor] = None, max: Optional[Tensor] = None) -> Tensor:
     """Compute Clip."""
     inputs = [input]
@@ -818,6 +920,7 @@ def col2im(
     return record_op("Col2Im", [input, image_shape, block_shape], attrs)
 
 
+@register_op("Compress", "ai.onnx")
 def compress(input: Tensor, condition: Tensor, axis: Optional[int] = None) -> Tensor:
     """Compute Compress."""
     attrs = {}
@@ -844,6 +947,7 @@ def conv_integer(
     return record_op("ConvInteger", inputs, kwargs)
 
 
+@register_op("CumSum", "ai.onnx")
 def cumsum(x: Tensor, axis: Tensor, exclusive: int = 0, reverse: int = 0) -> Tensor:
     """Compute CumSum."""
     return record_op("CumSum", [x, axis], {"exclusive": exclusive, "reverse": reverse})
@@ -880,6 +984,7 @@ def dropout(
     return record_op("Dropout", inputs, {"seed": seed})
 
 
+@register_op("Reshape", "ai.onnx")
 def reshape(x: Tensor, shape: Tensor) -> Tensor:
     """Reshapes a tensor."""
     return record_op("Reshape", [x, shape])
@@ -915,72 +1020,86 @@ def max_pool(
     return record_op("MaxPool", [x], attr)
 
 
+@register_op("GlobalAveragePool", "ai.onnx")
 def global_average_pool(x: Tensor) -> Tensor:
     """Compute GlobalAveragePool."""
     return record_op("GlobalAveragePool", [x])
 
 
+@register_op("GlobalMaxPool", "ai.onnx")
 def global_max_pool(x: Tensor) -> Tensor:
     """Compute GlobalMaxPool."""
     return record_op("GlobalMaxPool", [x])
 
 
+@register_op("Transpose", "ai.onnx")
 def transpose(x: Tensor, perm: Optional[list[int]] = None) -> Tensor:
     """Transposes a tensor."""
     attributes = {"perm": perm} if perm is not None else {}
     return record_op("Transpose", [x], attributes)
 
 
+@register_op("Equal", "ai.onnx")
 def equal(x: Tensor, y: Tensor) -> Tensor:
     """Compute Equal."""
     return record_op("Equal", [x, y])
 
 
+@register_op("Greater", "ai.onnx")
 def greater(x: Tensor, y: Tensor) -> Tensor:
     """Compute Greater."""
     return record_op("Greater", [x, y])
 
 
+@register_op("Less", "ai.onnx")
 def less(x: Tensor, y: Tensor) -> Tensor:
     """Compute Less."""
     return record_op("Less", [x, y])
 
 
+@register_op("And", "ai.onnx")
 def and_(x: Tensor, y: Tensor) -> Tensor:
     """Compute And."""
     return record_op("And", [x, y])
 
 
+@register_op("Or", "ai.onnx")
 def or_(x: Tensor, y: Tensor) -> Tensor:
     """Compute Or."""
     return record_op("Or", [x, y])
 
 
+@register_op("Not", "ai.onnx")
 def not_(x: Tensor) -> Tensor:
     """Compute Not."""
     return record_op("Not", [x])
 
 
+@register_op("Add", "ai.onnx")
 def add(x: Tensor, y: Tensor) -> Tensor:
     """Compute Add."""
     return record_op("Add", [x, y])
 
 
+@register_op("Sub", "ai.onnx")
 def sub(x: Tensor, y: Tensor) -> Tensor:
     """Compute Sub."""
     return record_op("Sub", [x, y])
 
 
+@register_op("Mul", "ai.onnx")
 def mul(x: Tensor, y: Tensor) -> Tensor:
     """Compute Mul."""
     return record_op("Mul", [x, y])
 
 
+@register_op("Div", "ai.onnx")
 def div(x: Tensor, y: Tensor) -> Tensor:
     """Compute Div."""
     return record_op("Div", [x, y])
 
 
+@register_op("MatMul", "ai.onnx")
 def matmul(x: Tensor, y: Tensor) -> Tensor:
     """Compute MatMul."""
     return record_op("MatMul", [x, y])
@@ -1003,6 +1122,7 @@ def gemm(
     return record_op("Gemm", inputs, attributes)
 
 
+@register_op("ReduceSum", "ai.onnx")
 def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
     """Compute the sum of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
@@ -1011,6 +1131,7 @@ def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
     return record_op("ReduceSum", [x], attributes)
 
 
+@register_op("ReduceMean", "ai.onnx")
 def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
     """Compute the mean of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
@@ -1019,6 +1140,7 @@ def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tr
     return record_op("ReduceMean", [x], attributes)
 
 
+@register_op("ReduceMax", "ai.onnx")
 def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceMax."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
@@ -1027,6 +1149,7 @@ def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
     return record_op("ReduceMax", [x], attributes)
 
 
+@register_op("ReduceMin", "ai.onnx")
 def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceMin."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
@@ -1035,6 +1158,7 @@ def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
     return record_op("ReduceMin", [x], attributes)
 
 
+@register_op("ReduceProd", "ai.onnx")
 def reduce_prod(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceProd."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
@@ -1062,26 +1186,31 @@ def conv(
     return record_op("Conv", inputs, attributes)
 
 
+@register_op("DynamicQuantizeLinear", "ai.onnx")
 def dynamic_quantize_linear(x: Tensor) -> Any:
     """Compute DynamicQuantizeLinear."""
     return record_op("DynamicQuantizeLinear", [x])
 
 
+@register_op("Einsum", "ai.onnx")
 def einsum(inputs: list[Tensor], equation: str) -> Tensor:
     """Compute Einsum."""
     return record_op("Einsum", inputs, {"equation": equation})
 
 
+@register_op("Erf", "ai.onnx")
 def erf(input: Tensor) -> Tensor:
     """Compute Erf."""
     return record_op("Erf", [input])
 
 
+@register_op("Exp", "ai.onnx")
 def exp(input: Tensor) -> Tensor:
     """Compute Exp."""
     return record_op("Exp", [input])
 
 
+@register_op("Expand", "ai.onnx")
 def expand(input: Tensor, shape: Tensor) -> Tensor:
     """Execute the Expand process and return the computed results."""
     return record_op("Expand", [input, shape])
@@ -1103,51 +1232,61 @@ def slice(
     return record_op("Slice", inputs)
 
 
+@register_op("Tile", "ai.onnx")
 def tile(input: Tensor, repeats: Tensor) -> Tensor:
     """Compute Tile."""
     return record_op("Tile", [input, repeats])
 
 
+@register_op("Gather", "ai.onnx")
 def gather(data: Tensor, indices: Tensor, axis: int = 0) -> Tensor:
     """Compute Gather."""
     return record_op("Gather", [data, indices], {"axis": axis})
 
 
+@register_op("GatherND", "ai.onnx")
 def gather_nd(data: Tensor, indices: Tensor, batch_dims: int = 0) -> Tensor:
     """Compute GatherND."""
     return record_op("GatherND", [data, indices], {"batch_dims": batch_dims})
 
 
+@register_op("GatherElements", "ai.onnx")
 def gather_elements(data: Tensor, indices: Tensor, axis: int = 0) -> Tensor:
     """Compute GatherElements."""
     return record_op("GatherElements", [data, indices], {"axis": axis})
 
 
+@register_op("DepthToSpace", "ai.onnx")
 def depth_to_space(data: Tensor, blocksize: int, mode: str = "DCR") -> Tensor:
     """Compute DepthToSpace."""
     return record_op("DepthToSpace", [data], {"blocksize": blocksize, "mode": mode})
 
 
+@register_op("SpaceToDepth", "ai.onnx")
 def space_to_depth(data: Tensor, blocksize: int) -> Tensor:
     """Compute SpaceToDepth."""
     return record_op("SpaceToDepth", [data], {"blocksize": blocksize})
 
 
+@register_op("Sum", "ai.onnx")
 def sum(data: list[Tensor]) -> Tensor:
     """Compute Sum."""
     return record_op("Sum", data)
 
 
+@register_op("Swish", "ai.onnx")
 def swish(x: Tensor) -> Tensor:
     """Compute Swish."""
     return record_op("Swish", [x])
 
 
+@register_op("OneHot", "ai.onnx")
 def one_hot(indices: Tensor, depth: Tensor, values: Tensor, axis: int = -1) -> Tensor:
     """Compute OneHot."""
     return record_op("OneHot", [indices, depth, values], {"axis": axis})
 
 
+@register_op("LRN", "ai.onnx")
 def lrn(
     x: Tensor,
     alpha: float = 0.0001,
@@ -1168,3 +1307,243 @@ def group_normalization(
         [x, scale, b],
         {"epsilon": epsilon, "num_groups": num_groups},
     )
+
+
+@register_op("BatchNormalization", "ai.onnx")
+def batch_normalization(x: Tensor) -> Tensor:
+    """Compute BatchNormalization."""
+    return record_op("BatchNormalization", [x])
+
+
+@register_op("BitCast", "ai.onnx")
+def bit_cast(x: Tensor) -> Tensor:
+    """Compute BitCast."""
+    return record_op("BitCast", [x])
+
+
+@register_op("CumProd", "ai.onnx")
+def cum_prod(x: Tensor) -> Tensor:
+    """Compute CumProd."""
+    return record_op("CumProd", [x])
+
+
+@register_op("Flatten", "ai.onnx")
+def flatten(x: Tensor) -> Tensor:
+    """Compute Flatten."""
+    return record_op("Flatten", [x])
+
+
+@register_op("Gelu", "ai.onnx")
+def gelu(x: Tensor) -> Tensor:
+    """Compute Gelu."""
+    return record_op("Gelu", [x])
+
+
+@register_op("GlobalLpPool", "ai.onnx")
+def global_lp_pool(x: Tensor) -> Tensor:
+    """Compute GlobalLpPool."""
+    return record_op("GlobalLpPool", [x])
+
+
+@register_op("GridSample", "ai.onnx")
+def grid_sample(x: Tensor) -> Tensor:
+    """Compute GridSample."""
+    return record_op("GridSample", [x])
+
+
+@register_op("HammingWindow", "ai.onnx")
+def hamming_window(x: Tensor) -> Tensor:
+    """Compute HammingWindow."""
+    return record_op("HammingWindow", [x])
+
+
+@register_op("HannWindow", "ai.onnx")
+def hann_window(x: Tensor) -> Tensor:
+    """Compute HannWindow."""
+    return record_op("HannWindow", [x])
+
+
+@register_op("Identity", "ai.onnx")
+def identity(x: Tensor) -> Tensor:
+    """Compute Identity."""
+    return record_op("Identity", [x])
+
+
+@register_op("If", "ai.onnx")
+def if_op(x: Tensor) -> Tensor:
+    """Compute If."""
+    return record_op("If", [x])
+
+
+@register_op("ImageDecoder", "ai.onnx")
+def image_decoder(x: Tensor) -> Tensor:
+    """Compute ImageDecoder."""
+    return record_op("ImageDecoder", [x])
+
+
+@register_op("Log", "ai.onnx")
+def log(x: Tensor) -> Tensor:
+    """Compute Log."""
+    return record_op("Log", [x])
+
+
+@register_op("Loop", "ai.onnx")
+def loop(x: Tensor) -> Tensor:
+    """Compute Loop."""
+    return record_op("Loop", [x])
+
+
+@register_op("MatMulInteger", "ai.onnx")
+def mat_mul_integer(x: Tensor) -> Tensor:
+    """Compute MatMulInteger."""
+    return record_op("MatMulInteger", [x])
+
+
+@register_op("MaxRoiPool", "ai.onnx")
+def max_roi_pool(x: Tensor) -> Tensor:
+    """Compute MaxRoiPool."""
+    return record_op("MaxRoiPool", [x])
+
+
+@register_op("MaxUnpool", "ai.onnx")
+def max_unpool(x: Tensor) -> Tensor:
+    """Compute MaxUnpool."""
+    return record_op("MaxUnpool", [x])
+
+
+@register_op("NegativeLogLikelihoodLoss", "ai.onnx")
+def negative_log_likelihood_loss(x: Tensor) -> Tensor:
+    """Compute NegativeLogLikelihoodLoss."""
+    return record_op("NegativeLogLikelihoodLoss", [x])
+
+
+@register_op("Optional", "ai.onnx")
+def optional(x: Tensor) -> Tensor:
+    """Compute Optional."""
+    return record_op("Optional", [x])
+
+
+@register_op("OptionalGetElement", "ai.onnx")
+def optional_get_element(x: Tensor) -> Tensor:
+    """Compute OptionalGetElement."""
+    return record_op("OptionalGetElement", [x])
+
+
+@register_op("OptionalHasElement", "ai.onnx")
+def optional_has_element(x: Tensor) -> Tensor:
+    """Compute OptionalHasElement."""
+    return record_op("OptionalHasElement", [x])
+
+
+@register_op("Pad", "ai.onnx")
+def pad(x: Tensor) -> Tensor:
+    """Compute Pad."""
+    return record_op("Pad", [x])
+
+
+@register_op("QLinearConv", "ai.onnx")
+def q_linear_conv(x: Tensor) -> Tensor:
+    """Compute QLinearConv."""
+    return record_op("QLinearConv", [x])
+
+
+@register_op("QLinearMatMul", "ai.onnx")
+def q_linear_mat_mul(x: Tensor) -> Tensor:
+    """Compute QLinearMatMul."""
+    return record_op("QLinearMatMul", [x])
+
+
+@register_op("RMSNormalization", "ai.onnx")
+def rms_normalization(x: Tensor) -> Tensor:
+    """Compute RMSNormalization."""
+    return record_op("RMSNormalization", [x])
+
+
+@register_op("Range", "ai.onnx")
+def range_op2(x: Tensor) -> Tensor:
+    """Compute Range."""
+    return record_op("Range", [x])
+
+
+@register_op("RoiAlign", "ai.onnx")
+def roi_align(x: Tensor) -> Tensor:
+    """Compute RoiAlign."""
+    return record_op("RoiAlign", [x])
+
+
+@register_op("RotaryEmbedding", "ai.onnx")
+def rotary_embedding(x: Tensor) -> Tensor:
+    """Compute RotaryEmbedding."""
+    return record_op("RotaryEmbedding", [x])
+
+
+@register_op("STFT", "ai.onnx")
+def stft(x: Tensor) -> Tensor:
+    """Compute STFT."""
+    return record_op("STFT", [x])
+
+
+@register_op("Scan", "ai.onnx")
+def scan(x: Tensor) -> Tensor:
+    """Compute Scan."""
+    return record_op("Scan", [x])
+
+
+@register_op("Shape", "ai.onnx")
+def shape(x: Tensor) -> Tensor:
+    """Compute Shape."""
+    return record_op("Shape", [x])
+
+
+@register_op("SoftmaxCrossEntropyLoss", "ai.onnx")
+def softmax_cross_entropy_loss(x: Tensor) -> Tensor:
+    """Compute SoftmaxCrossEntropyLoss."""
+    return record_op("SoftmaxCrossEntropyLoss", [x])
+
+
+@register_op("Split", "ai.onnx")
+def split(x: Tensor) -> Tensor:
+    """Compute Split."""
+    return record_op("Split", [x])
+
+
+@register_op("Sqrt", "ai.onnx")
+def sqrt(x: Tensor) -> Tensor:
+    """Compute Sqrt."""
+    return record_op("Sqrt", [x])
+
+
+@register_op("Squeeze", "ai.onnx")
+def squeeze(x: Tensor) -> Tensor:
+    """Compute Squeeze."""
+    return record_op("Squeeze", [x])
+
+
+@register_op("TensorScatter", "ai.onnx")
+def tensor_scatter(x: Tensor) -> Tensor:
+    """Compute TensorScatter."""
+    return record_op("TensorScatter", [x])
+
+
+@register_op("TfIdfVectorizer", "ai.onnx")
+def tf_idf_vectorizer(x: Tensor) -> Tensor:
+    """Compute TfIdfVectorizer."""
+    return record_op("TfIdfVectorizer", [x])
+
+
+@register_op("Unsqueeze", "ai.onnx")
+def unsqueeze(x: Tensor) -> Tensor:
+    """Compute Unsqueeze."""
+    return record_op("Unsqueeze", [x])
+
+
+@register_op("Upsample", "ai.onnx")
+def upsample(x: Tensor) -> Tensor:
+    """Compute Upsample."""
+    return record_op("Upsample", [x])
+
+
+@register_op("Xor", "ai.onnx")
+def xor(x: Tensor) -> Tensor:
+    """Compute Xor."""
+    return record_op("Xor", [x])

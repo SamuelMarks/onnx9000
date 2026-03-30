@@ -77,13 +77,20 @@ The following architectural targets guide the development of the ecosystem. They
 - [ ] **ONNX42:** Triton Inference Server (Serverless Edge Serving Engine for Bun/Cloudflare).
 - [ ] **ONNX43:** Diffusers (Web-Native Diffusion Pipelines like SDXL, VAE).
 
-## 🔮 The "Next Next" Plan
+## 🔮 The "Next Next" Plan: Distributed MLOps
 
-Once the core specifications are complete, the `onnx9000` ecosystem will expand into a **Distributed MLOps Framework** as detailed in `ONNX_NEXT_NEXT_PLAN.md`. This will include:
+The `onnx9000` ecosystem is actively expanding into a **Distributed MLOps Framework** as detailed in `ONNX_NEXT_NEXT_PLAN.md`. This massive milestone is broken into 10 phases encompassing:
 
-1. P2P WebRTC tensor data channels bridging browser nodes.
-2. Distributed Pipeline Parallelism mapping Subgraphs across disparate devices.
-3. A zero-dependency Python MLOps server leveraging an embedded SQLite database for tracking metrics and models across the cluster.
+1. **Distributed Transport Layer:** WebRTC & WebSockets bridging Python and standard Browser JS.
+2. **Distributed Multi-Node Inference:** Graph partitioning and Pipeline Parallelism across P2P browser swarms.
+3. **Distributed & Federated Training:** Eager and AOT training loops over Ring-AllReduce topologies.
+4. **Unified MLOps SDK & CLI:** Centralized `onnx9000` CLI for artifact and metric tracking.
+5. **Zero-Dependency MLOps Server:** A pure-Python HTTP Server backed by SQLite for tracking experiments without Docker.
+6. **Model Registry:** Web-safe weight format management (`.safetensors`, GGUF).
+7. **Experiment Tracking:** Real-time run status and massive metric time-series ingestion.
+8. **MLOps Web Frontend:** High-performance dashboard for charts, sweeps, and model staging.
+9. **Fault Tolerance & Security:** Handling node dropouts, Split Brain, and end-to-end encryption.
+10. **End-to-End System Deployment:** Cloud integrations (AWS, Vercel) and 100-node simulated swarm testing.
 
 ## Framework Support Completeness
 

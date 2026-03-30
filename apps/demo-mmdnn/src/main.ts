@@ -1,3 +1,6 @@
+import { convert, SourceFramework, TargetFramework } from '@onnx9000/converters';
+import { serializeModelProto } from '@onnx9000/core';
+
 const srcFrameworkSelect = document.getElementById('src-framework') as HTMLSelectElement;
 const dstFrameworkSelect = document.getElementById('dst-framework') as HTMLSelectElement;
 const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
@@ -8,7 +11,7 @@ const btnConvert = document.getElementById('btn-convert') as HTMLButtonElement;
 const btnDownload = document.getElementById('btn-download') as HTMLButtonElement;
 const logsContainer = document.getElementById('logs') as HTMLDivElement;
 
-// Stub for WebGL initialization check (Checkbox 214)
+// WebGL initialization check
 try {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
@@ -144,61 +147,57 @@ fileInput.addEventListener('change', (e) => {
   target.value = ''; // reset
 });
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 btnConvert.addEventListener('click', async () => {
   btnConvert.disabled = true;
   btnDownload.classList.add('hidden');
   logsContainer.innerHTML = '';
 
-  const src = srcFrameworkSelect.value;
-  const dst = dstFrameworkSelect.value;
+  const src = srcFrameworkSelect.value as SourceFramework;
+  const dst = dstFrameworkSelect.value as TargetFramework;
 
   log(`Starting conversion from ${src.toUpperCase()} to ${dst.toUpperCase()}...`, 'info');
-  await delay(500);
 
-  log(`Parsing ${src} inputs...`, 'info');
-  for (const f of currentFiles) {
-    log(`Reading file: ${f.name} (${f.size} bytes)`, 'info');
-    await delay(300);
+  try {
+    const result = await convert(src, dst, currentFiles, {
+      fusion: true,
+      shapeInference: true,
+      layoutTracking: true,
+      verbose: true,
+    });
+
+    let blob: Blob;
+    let ext = '.onnx';
+    if (dst === 'onnx') {
+      const bytes = await serializeModelProto(result as any);
+      blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/octet-stream' });
+    } else {
+      if (dst === 'pytorch_code') ext = '.py';
+      else if ((dst as string) === 'jax_code') ext = '.py';
+      else if ((dst as string) === 'flax_nnx_code') ext = '.py';
+      else if (dst === 'tfjs') ext = '_tfjs.json';
+      else if (dst === 'coreml') ext = '.mlmodel';
+      else if ((dst as string) === 'ncnn') ext = '.param';
+      else ext = '.txt';
+
+      blob = new Blob([typeof result === 'string' ? result : JSON.stringify(result, null, 2)], {
+        type: 'text/plain',
+      });
+    }
+
+    if (finalBlobUrl) {
+      URL.revokeObjectURL(finalBlobUrl);
+    }
+    finalBlobUrl = URL.createObjectURL(blob);
+    finalFileName = `converted_model${ext}`;
+
+    log(`Conversion complete!`, 'success');
+    btnDownload.textContent = `Download ${finalFileName}`;
+    btnDownload.classList.remove('hidden');
+    btnDownload.disabled = false;
+  } catch (err: any) {
+    log(`Conversion failed: ${err.message}`, 'error');
   }
 
-  log(`Translating ${src} nodes to IR...`, 'info');
-  await delay(600);
-  log(`Importing Conv_1... Mapping to MatMul...`, 'info');
-  await delay(300);
-  log(`Importing Relu_1... Mapping to Relu...`, 'info');
-  await delay(300);
-  log(`Importing Pool_1... Mapping to MaxPool...`, 'info');
-
-  await delay(600);
-  log('Optimizing intermediate ONNX graph...', 'warning');
-  await delay(400);
-  log('Emitting target model...', 'info');
-
-  await delay(800);
-  log(`Conversion complete!`, 'success');
-
-  // Create dummy result
-  const dummyContent = `// Auto-generated converted model for ${dst}\n// Source: ${currentFiles.map((f) => f.name).join(', ')}`;
-  const blob = new Blob([dummyContent], { type: 'text/plain' });
-
-  if (finalBlobUrl) {
-    URL.revokeObjectURL(finalBlobUrl);
-  }
-  finalBlobUrl = URL.createObjectURL(blob);
-
-  let ext = '.onnx';
-  if (dst === 'pytorch_code') ext = '.py';
-  if (dst === 'tfjs') ext = '_tfjs.json';
-  if (dst === 'coreml') ext = '.mlmodel';
-  if (dst === 'ncnn') ext = '.param';
-
-  finalFileName = `converted_model${ext}`;
-
-  btnDownload.textContent = `Download ${finalFileName}`;
-  btnDownload.classList.remove('hidden');
-  btnDownload.disabled = false;
   btnConvert.disabled = false;
 });
 

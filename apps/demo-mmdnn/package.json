@@ -8,7 +8,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/converters": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.2.2",
     "vite": "^5.0.0"

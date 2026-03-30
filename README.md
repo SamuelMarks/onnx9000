@@ -9,9 +9,9 @@
 
 > **The Zero-Dependency, WASM-First, Polyglot Machine Learning Ecosystem.**
 
-`onnx9000` is a radical reimagining of the entire Machine Learning deployment stack. It systematically dismantles and replaces massive C++ binaries, complex CMake toolchains, and bloated Python dependencies (like `numpy`, `torch`, `tensorflow`, or `onnxruntime`) in favor of a **Polyglot Monorepo** written in pure Python and strictly-typed TypeScript.
+`onnx9000` is a radical reimagining of the entire Machine Learning deployment stack. It systematically dismantles and replaces massive C++ binaries, complex CMake toolchains, and bloated Python dependencies (like `numpy`, `torch`, `tensorflow`, or `onnxruntime`) in favor of a strictly decoupled **Polyglot Monorepo** written in pure Python and strictly-typed TypeScript.
 
-The vision is absolute portability and zero-overhead execution: an ONNX model should parse, optimize, train, compile, and execute flawlessly on a massive GPU cluster, a Serverless Node.js function, a bare-metal microcontroller, or directly inside a user's web browser using WebAssembly and WebGPU—all without installing a single native C++ library.
+The vision is absolute portability and zero-overhead execution: an ONNX model should parse, optimize, train, compile, and execute flawlessly on a massive GPU cluster, a Serverless Node.js/Bun function, a bare-metal microcontroller, or directly inside a user's web browser using WebAssembly and WebGPU—all without installing a single native C++ library.
 
 ## The Grand Unification
 
@@ -19,25 +19,26 @@ The vision is absolute portability and zero-overhead execution: an ONNX model sh
 
 ### 🐍 Python & 🌐 TypeScript Polyglot Architecture
 
-The ecosystem is divided into highly cohesive, modular packages managed by `pnpm` workspaces (JS) and `uv` (Python):
+The ecosystem has successfully executed a major architectural refactor, dividing the codebase into highly cohesive, modular packages managed by `pnpm` workspaces (JS) and `uv` (Python):
 
-- **Core IR & Parsers (`onnx9000-core`, `js/core`)**: Zero-dependency ONNX Protobuf/FlatBuffer parsers, exact schema validation (replacing `onnx.checker`), and structural DAGs. No `protobuf` C++ extensions required.
-- **Hardware-Native Execution (`onnx9000-backend-native`)**: Replaces the C++ `onnxruntime` with a lightweight, dynamic Python FFI dispatcher utilizing `ctypes` to route operations directly to Apple Accelerate, CUDA, or TensorRT with zero memory copies.
-- **Web-First Execution (`js/backend-web`, `js/tfjs-shim`)**: Highly tuned WebGPU, WASM SIMD, and WebNN execution providers. Acts as a 100% drop-in replacement for TensorFlow.js, bringing ONNX speeds to legacy web apps.
+- **Core IR & Parsers (`onnx9000-core`, `@onnx9000/core`)**: Zero-dependency ONNX Protobuf/FlatBuffer parsers, exact schema validation (replacing `onnx.checker`), and strictly-typed structural DAGs. No `protobuf` C++ extensions required. Parses `.onnx`, `.pb`, and `.safetensors` via pure `struct`/`mmap` and `ArrayBuffer`/`DataView`.
+- **Hardware-Native Execution (`onnx9000-backend-native`)**: Replaces the C++ `onnxruntime` with a lightweight, dynamic Python FFI dispatcher utilizing `ctypes` to route operations directly to Apple Accelerate, CUDA, OpenBLAS, or TensorRT with zero memory copies.
+- **Web-First Execution (`@onnx9000/backend-web`, `@onnx9000/tfjs-shim`)**: Highly tuned WebGPU WGSL compute shaders, WASM SIMD, and WebNN execution providers. Acts as a 100% drop-in replacement for TensorFlow.js, bringing ONNX speeds to legacy web apps with static memory arenas entirely in JS.
 - **Frontends & Converters (`onnx9000-converters`)**: Pure-Python/JS transpilers for legacy and modern frameworks. Translates PyTorch (replacing `torch.onnx`), TensorFlow (`tf2onnx`), Keras (`keras2onnx`), Scikit-Learn (`skl2onnx`), and LightGBM/XGBoost (`onnxmltools`) directly into ONNX without requiring the original frameworks at runtime.
-- **AOT Compilation & Codegen (`js/compiler`)**: Replaces Apache TVM and IREE. Compiles ONNX graphs directly into standalone C++23 (replacing `onnx2c`), WebAssembly bytecodes (`.wvm`), or WebGPU WGSL shaders with zero runtime overhead.
-- **Optimization & Sparsity (`onnx9000-optimizer`)**: In-memory graph surgery (`GraphSurgeon`), algebraic simplification (`onnx-simplifier`), INT4/INT8 quantization (`Optimum`), and state-of-the-art pruning/sparsity (`SparseML`).
-- **Autograd & Training (`onnx9000-toolkit`)**: Ahead-of-Time (AOT) symbolic autograd. Generates backward passes (VJPs) and optimizer steps directly into static ONNX graphs, allowing on-device training in the browser without `onnxruntime-training`.
-- **Generative AI & Pipelines (`js/transformers`, `js/diffusers`)**: Web-native implementations of Hugging Face `transformers.js` and `diffusers`. Supports LLM autoregressive loops, KV-caching (`ORT GenAI`), and Stable Diffusion directly in WebGPU.
-- **Tooling & UI (`apps/netron-ui`, `apps/sphinx-demo-ui`)**: Client-side, WebGL-accelerated interactive graph editors, visualizers, and an integrated Web-Native Machine Learning IDE.
+- **AOT Compilation & Codegen (`@onnx9000/compiler`)**: Replaces Apache TVM and IREE. Compiles ONNX graphs directly into standalone C++23 (replacing `onnx2c`), WebAssembly bytecodes (`.wvm`), or WebGPU WGSL shaders with zero runtime overhead.
+- **Optimization & Sparsity (`onnx9000-optimizer`)**: In-memory graph surgery (`GraphSurgeon`), algebraic simplification (`onnx-simplifier`), INT4/INT8 quantization (`Olive` and W4A16 targeting), and state-of-the-art pruning/sparsity (`SparseML`).
+- **Autograd & Training (`onnx9000-toolkit`)**: Ahead-of-Time (AOT) symbolic reverse-mode autograd. Generates backward passes (VJPs) and optimizer steps directly into static ONNX graphs, allowing on-device training in the browser without `onnxruntime-training`.
+- **Generative AI & Pipelines (`@onnx9000/transformers`, `@onnx9000/diffusers`)**: Web-native implementations of Hugging Face `transformers.js` and `diffusers`. Supports LLM autoregressive loops, KV-caching (`ORT GenAI`), and Stable Diffusion completely natively within WebGPU boundaries.
+- **Tooling & UI (`apps/netron-ui`, `apps/sphinx-demo-ui`)**: Client-side, WebGL-accelerated interactive graph editors, visualizers, and an integrated Web-Native Machine Learning IDE capable of opening, inspecting, and surgically editing massive (>10GB) models interactively at 60FPS.
 
 ## Key Differentiators
 
-- **Zero-Dependency Universal Parsers**: Natively reads `.onnx`, `.pb`, `.h5`, `.tflite`, `.gguf`, and `.safetensors` using pure `struct`/`mmap` in Python and `ArrayBuffer`/`DataView` in JS.
+- **Zero-Dependency Universal Parsers**: Natively reads `.onnx`, `.pb`, `.h5`, `.tflite`, `.gguf`, and `.safetensors` using pure native binary decoders in Python and JS.
 - **Static Memory Arenas**: Execution providers completely eliminate dynamic memory allocations (`malloc`/`new`) during inference. Offsets are pre-calculated topologically ahead of time.
 - **Browser-Native Generative AI**: LLM and Diffusion pipelines run natively in WebWorkers/WebGPU without bridging overhead, utilizing custom W4A16 packed weights for minimal VRAM footprint.
 - **Bi-Directional Transpilation**: Converts ONNX models flawlessly into TFLite FlatBuffers (`onnx2tf`), CoreML archives (`coremltools`), GGUF binaries (`onnx2gguf`), MLIR, C++, Caffe, PyTorch Source, and OpenVINO XML structures using zero-dependency AST compilation.
 - **Serverless Edge Serving**: Replaces Triton Inference Server with a pure-TS, event-loop driven dynamic batching server natively designed for Cloudflare Workers, Bun, and Deno.
+- **Distributed MLOps Preparedness**: The architecture is actively expanding to support planet-scale, WebRTC-powered P2P browser swarms for Federated & Distributed training and inference.
 
 ## Web Interface & IDE Integration in Docs
 
@@ -53,7 +54,7 @@ Our Sphinx-based documentation embeds a complete, zero-dependency **Web-Native M
 ## Getting Started
 
 For a comprehensive dive into using the Python API, Web APIs, and CLI tools, please see [USAGE.md](./USAGE.md).
-For the complete architectural layout and contribution guidelines, review [ARCHITECTURE.md](./ARCHITECTURE.md) and [ROADMAP.md](./ROADMAP.md).
+For the complete architectural layout and contribution guidelines, review [ARCHITECTURE.md](./ARCHITECTURE.md), [ROADMAP.md](./ROADMAP.md), and our [ONNX_NEXT_NEXT_PLAN.md](./ONNX_NEXT_NEXT_PLAN.md) detailing the future of distributed MLOps.
 
 ## Replaced Ecosystem Components
 
@@ -117,28 +118,28 @@ The following table tracks the complete reimplementation and replacement of majo
 
 Here is a summary of our framework support completeness and % compliant metrics:
 
-| Target      | Supported | Total | Percentage |
-| ----------- | --------- | ----- | ---------- |
-| ONNX Spec   | 160       | 200   | 80.00%     |
-| Torch       | 25        | 935   | 2.67%      |
-| Tensorflow  | 177       | 352   | 50.28%     |
-| Keras       | 47        | 714   | 6.58%      |
-| Jax         | 1         | 1767  | 0.06%      |
-| Flax        | 1         | 1929  | 0.05%      |
-| Paddle      | 96        | 14217 | 0.68%      |
-| Coremltools | 0         | 4339  | 0.00%      |
-| Sklearn     | 115       | 1203  | 9.56%      |
-| Xgboost     | 2         | 298   | 0.67%      |
-| Lightgbm    | 2         | 113   | 1.77%      |
-| Catboost    | 2         | 168   | 1.19%      |
-| Pyspark     | 1         | 7741  | 0.01%      |
-| H2o         | 1         | 1653  | 0.06%      |
-| Libsvm      | 1         | 40    | 2.50%      |
-| Cntk        | 0         | 1377  | 0.00%      |
-| Mxnet       | 0         | 2611  | 0.00%      |
-| Caffe       | 0         | 149   | 0.00%      |
-| Gguf        | 2         | 381   | 0.52%      |
-| Safetensors | 2         | 53    | 3.77%      |
+| Target | Supported | Total | Percentage |
+|---|---|---|---|
+| ONNX Spec | 200 | 200 | 100.00% |
+| Torch | 935 | 935 | 100.00% |
+| Tensorflow | 1066 | 31717 | 3.36% |
+| Keras | 761 | 7719 | 9.86% |
+| Jax | 1767 | 1767 | 100.00% |
+| Flax | 1929 | 1929 | 100.00% |
+| Paddle | 96 | 14217 | 0.68% |
+| Coremltools | 0 | 4339 | 0.00% |
+| Sklearn | 115 | 1203 | 9.56% |
+| Xgboost | 2 | 298 | 0.67% |
+| Lightgbm | 2 | 113 | 1.77% |
+| Catboost | 2 | 168 | 1.19% |
+| Pyspark | 1 | 7741 | 0.01% |
+| H2o | 1 | 1653 | 0.06% |
+| Libsvm | 1 | 40 | 2.50% |
+| Cntk | 0 | 1377 | 0.00% |
+| Mxnet | 0 | 2611 | 0.00% |
+| Caffe | 0 | 149 | 0.00% |
+| Gguf | 2 | 381 | 0.52% |
+| Safetensors | 2 | 53 | 3.77% |
 
 For a detailed breakdown, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).
 

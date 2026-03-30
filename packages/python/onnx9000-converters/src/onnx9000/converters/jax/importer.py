@@ -2,8 +2,11 @@
 
 from typing import Any
 
+import onnx9000.converters.jax.flax_ops  # noqa: F401
+import onnx9000.converters.jax.jax_ops  # noqa: F401
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.registry import global_registry
 
 
 def _map_jax_type(jax_type: str) -> DType:
@@ -38,36 +41,23 @@ class JaxprImporter:
             t = Tensor(name=name, dtype=dt.value, shape=shape)
             self.graph.initializers.append(name)
             self.graph.tensors[name] = t
+
         for eqn in jaxpr.get("eqns", []):
             primitive = eqn["primitive"]
             inputs = [i["name"] for i in eqn.get("invars", [])]
             outputs = [o["name"] for o in eqn.get("outvars", [])]
             params = eqn.get("params", {})
-            op_type = primitive
-            attributes = {}
-            if primitive == "add":
-                op_type = "Add"
-            elif primitive == "mul":
-                op_type = "Mul"
-            elif primitive == "dot_general":
-                op_type = "MatMul"
-            elif primitive == "broadcast_in_dim":
-                op_type = "Expand"
-                attributes["broadcast_dimensions"] = params.get("broadcast_dimensions", [])
-            elif primitive == "xla_pmap":
-                op_type = "XlaPmap"
-                attributes["axis_name"] = params.get("axis_name", "")
-            elif primitive == "grad_core":
-                op_type = "Grad"
-            else:
-                op_type = primitive
-            n = Node(
-                op_type=op_type,
-                inputs=inputs,
-                outputs=outputs,
-                attributes=attributes,
-                name=f"{primitive}_{outputs[0]}" if outputs else primitive,
-            )
+            try:
+                op_func = global_registry.get_op(primitive, "jax")
+                n = op_func(inputs=inputs, outputs=outputs, params=params)
+            except Exception:
+                n = Node(
+                    op_type=primitive,
+                    inputs=inputs,
+                    outputs=outputs,
+                    attributes={},
+                    name=f"{primitive}_{outputs[0]}" if outputs else primitive,
+                )
             self.graph.nodes.append(n)
             for outvar in eqn.get("outvars", []):
                 name = outvar["name"]
@@ -92,7 +82,7 @@ def load(model_path_or_dict: Any, format: str = "auto") -> Graph:
     """Provide a unified `onnx9000.load('model.pb')` interface."""
     if format == "tf" or (isinstance(model_path_or_dict, dict) and "node" in model_path_or_dict):
         return None
-    elif format == "jax" or (isinstance(model_path_or_dict, dict) and "eqns" in model_path_or_dict):
+    elif format in ("jax", "flax") or (isinstance(model_path_or_dict, dict) and "eqns" in model_path_or_dict):
         return load_jax(model_path_or_dict)
     else:
         from onnx9000.core.parser.core import load as onnx_load

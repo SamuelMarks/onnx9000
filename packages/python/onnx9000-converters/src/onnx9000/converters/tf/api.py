@@ -2,6 +2,7 @@
 
 import logging
 
+import onnx9000.converters.tf.extra_ops  # noqa: F401
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.tf.image_rng_ops import IMAGE_RNG_OPS_MAPPING
@@ -20,6 +21,7 @@ from onnx9000.converters.tf.reduction_ops import REDUCTION_OPS_MAPPING
 from onnx9000.converters.tf.tensor_ops import TENSOR_OPS_MAPPING
 from onnx9000.converters.tf.tflite_ops import TFLITE_OPS_MAPPING
 from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.registry import global_registry
 
 ALL_MAPPINGS = {}
 ALL_MAPPINGS.update(MATH_OPS_MAPPING)
@@ -44,6 +46,12 @@ def _convert_tfgraph(tf_graph: TFGraph, name: str = "tf_to_onnx") -> Graph:
             builder.add_constant(node.name, 0, 1, ())
             continue
         mapper = ALL_MAPPINGS.get(node.op)
+        if not mapper:
+            try:
+                mapper = global_registry.get_op(node.op, "tensorflow")
+            except Exception:
+                mapper = None
+
         if mapper:
             mapper(builder, node)
         else:

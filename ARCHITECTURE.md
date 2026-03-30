@@ -151,6 +151,17 @@ Found in `packages/python/onnx9000-toolkit`, this module performs graph-level Re
 - **Graph Editing & Visualization:** A WebGL-accelerated implementation of `Netron` and `onnx-modifier` allows users to open, inspect, and surgically edit massive (>10GB) models directly in the browser at 60FPS. Changes to the topology invoke real-time shape inference and validation before the modified `.onnx` is exported.
 - **Diagnostics & Profiling:** A complete port of `onnx-tool` evaluates MACs, FLOPs, and static memory footprint dynamically, giving engineers deep insights into computation bottlenecks without needing to execute the graph.
 
+(distributed-mlops-peer-to-peer-swarms)=
+
+## 11. Distributed MLOps & Peer-to-Peer Swarms
+
+To support the next generation of AI execution, `onnx9000` is expanding to include networking (`onnx9000-network`) and orchestration (`@onnx9000/mlops`) workspaces.
+
+- **WebRTC Transport:** A dedicated networking layer allowing browser nodes to establish direct P2P DataChannels, effectively clustering web browsers without server mediation.
+- **Distributed Inference:** Graph partitioning algorithms split massive workloads (e.g., Llama 70B) across a swarm of edge devices via Pipeline and Tensor Parallelism.
+- **Federated Training:** Implements `DistributedOptimizer` to support decentralized training and Ring-AllReduce natively over WebSockets and WebRTC.
+- **MLOps Server:** A zero-dependency, pure-Python experiment tracker with an embedded SQLite database for registering models, logging metrics, and orchestrating distributed node clusters.
+
 ## Framework Support Completeness
 
 For a detailed breakdown of our framework support completeness and % compliant metrics, please see [SUPPORTED_PER_FRAMEWORK.md](SUPPORTED_PER_FRAMEWORK.md).

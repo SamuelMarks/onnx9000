@@ -324,7 +324,12 @@ def openvino_export_cmd(args: argparse.Namespace) -> None:
                 new_shape[0] = -1
                 inp.shape = tuple(new_shape)
 
-    # TODO: --data_type override support
+    if getattr(args, "data_type", None):
+        for dtype_str in args.data_type:
+            name, dtype = dtype_str.split(":", 1)
+            for inp in graph.inputs:
+                if inp.name == name:
+                    inp.dtype = dtype.strip()
 
     print("Generating OpenVINO IR...")
     exporter = OpenVinoExporter(graph, compress_to_fp16=args.fp16)

@@ -328,6 +328,13 @@ onnx9000 ui ./model.onnx
 
 # Launch a dynamic batching inference API on port 8080
 onnx9000 serve ./model.onnx --port 8080 --batch-size 16
+
+# 🌐 Distributed MLOps & Swarm Execution (Upcoming)
+# Start the local zero-dependency MLOps experiment server
+onnx9000 server start --port 8080
+
+# Join a browser node to an existing distributed inference swarm
+onnx9000 cluster join wss://coordinator.local/swarm
 ```
 
 ## Framework Support Completeness
