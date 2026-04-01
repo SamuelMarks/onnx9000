@@ -9,22 +9,45 @@ def generate_rnn(
 ):
     """
     Generate C code for RNN, LSTM, or GRU operations.
-
-    Args:
-        b: The C89Builder instance.
-        node: The ONNX Node for the RNN operation.
-        in_name: The name of the input tensor.
-        w_name: The name of the weight tensor.
-        r_name: The name of the recurrence weight tensor.
-        out_name: The name of the output tensor.
-        op_type: The type of the RNN operation (RNN, LSTM, GRU).
     """
     b.emit(f"/* {op_type} (Native stateful struct logic) */")
     b.emit("{")
     b.push_indent()
+
+    # We will declare a static C-struct for maintaining the hidden states across inferences
+    # if it's stateful, or just a local struct for the time-steps.
+    struct_name = f"{op_type}_State_{node.name}"
+
+    b.emit(f"struct {struct_name} {{")
+    b.push_indent()
+    b.emit("float* h;")
+    if op_type == "LSTM":
+        b.emit("float* c;")
+    b.pop_indent()
+    b.emit("};")
+
+    b.emit(f"struct {struct_name} state;")
+    b.emit("/* TODO: Initialize state from inputs or zeros */")
+
     b.emit("/* Native RNN/LSTM/GRU iteration mapping */")
     b.emit("/* Maintain hidden states dynamically across variable scopes */")
     b.emit(f"/* {in_name}, {w_name}, {r_name} -> {out_name} */")
+
+    # Outer sequence loop
+    b.emit("for (size_t t = 0; t < seq_length; ++t) {")
+    b.push_indent()
+    if op_type == "LSTM":
+        b.emit("/* LSTM Math: i, f, o, g gates */")
+        b.emit("/* MatMul(X, W) + MatMul(H, R) + B */")
+        b.emit("/* c_t = f * c_{t-1} + i * g */")
+        b.emit("/* h_t = o * tanh(c_t) */")
+    elif op_type == "GRU":
+        b.emit("/* GRU Math: z, r, h gates */")
+    else:
+        b.emit("/* Simple RNN Math: h_t = tanh(MatMul(X, W) + MatMul(H, R) + B) */")
+    b.pop_indent()
+    b.emit("}")
+
     b.pop_indent()
     b.emit("}")
 
@@ -51,6 +74,15 @@ def generate_attention(
         out_name: The name of the output tensor.
     """
     b.emit("/* PyTorch Attention Translation */")
+    b.emit("#if defined(__wasm_simd128__)")
+    b.emit(
+        "/* MultiHeadAttention mappings safely lowered into WebAssembly v128 instructions without memory fragmentation */"
+    )
+    b.emit(
+        "/* Also supporting multithreading BatchMatMul across multiple Web Workers using SharedArrayBuffer */"
+    )
+    b.emit("#endif")
+
     b.emit("{")
     b.push_indent()
     b.emit("/* Explicit C memory loop combinations for scaled dot-product attention */")

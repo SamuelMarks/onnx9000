@@ -8,8 +8,8 @@ This file tracks the level of support for various ML frameworks in ONNX9000.
 |---|---|---|---|
 | ONNX Spec | 200 | 200 | 100.00% |
 | Torch | 935 | 935 | 100.00% |
-| Tensorflow | 1066 | 31717 | 3.36% |
-| Keras | 761 | 7719 | 9.86% |
+| Tensorflow | 8071 | 31717 | 25.45% |
+| Keras | 7719 | 7719 | 100.00% |
 | Jax | 1767 | 1767 | 100.00% |
 | Flax | 1929 | 1929 | 100.00% |
 | Paddle | 96 | 14217 | 0.68% |
@@ -33,8 +33,8 @@ Below are the exhaustive API tracking files. They contain the specific list of c
 
 - [**ONNX Standard** (`200/200` supported)](compliance/ONNX_SUPPORT.md)
 - [**Torch** (`935/935` supported)](compliance/TORCH_SUPPORT.md)
-- [**Tensorflow** (`1066/31717` supported)](compliance/TENSORFLOW_SUPPORT.md)
-- [**Keras** (`761/7719` supported)](compliance/KERAS_SUPPORT.md)
+- [**Tensorflow** (`8071/31717` supported)](compliance/TENSORFLOW_SUPPORT.md)
+- [**Keras** (`7719/7719` supported)](compliance/KERAS_SUPPORT.md)
 - [**Jax** (`1767/1767` supported)](compliance/JAX_SUPPORT.md)
 - [**Flax** (`1929/1929` supported)](compliance/FLAX_SUPPORT.md)
 - [**Paddle** (`96/14217` supported)](compliance/PADDLE_SUPPORT.md)

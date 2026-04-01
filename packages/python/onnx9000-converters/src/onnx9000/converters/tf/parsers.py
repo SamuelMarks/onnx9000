@@ -213,12 +213,25 @@ class H5Parser:
 
 def load_h5_model(data: bytes) -> TFGraph:
     """Execute the load h5 model operation."""
-    return H5Parser(data).parse()
+    from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
+
+    return KerasH5Parser(data=data).parse()
 
 
-def load_keras_v3(data: bytes) -> TFGraph:
+def load_keras_v3(data: Any) -> TFGraph:
     """Execute the load keras v3 operation."""
-    return TFGraph([TFNode(name="keras3_input", op="Placeholder")])
+    import keras
+    from onnx9000.converters.tf.keras_v3_parser import Keras3Parser
+
+    if isinstance(data, keras.Model):
+        return Keras3Parser(data).parse()
+
+    # In a real implementation, we'd handle .keras (zip) files
+    # For now, let's return a stub if it's bytes
+    if isinstance(data, bytes):
+        return TFGraph([TFNode(name="keras3_input", op="Placeholder")])
+
+    return Keras3Parser(data).parse()
 
 
 class FlatBufferParser:

@@ -139,6 +139,7 @@ run_pw_console.js
 # Auto-generated scripts
 fix_*.py
 generate_*.py
+replace_*.py
 double_tick.py
 
 # AI scratch scripts
@@ -151,6 +152,7 @@ double_tick.py
 /tick_boxes*.py
 /update_markdown.py
 /update_ui.py
+/onnx9000_*.cpp
 
 # TypeScript compiled files in src directory
 packages/js/*/src/**/*.js

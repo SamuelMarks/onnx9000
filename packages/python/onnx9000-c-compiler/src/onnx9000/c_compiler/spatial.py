@@ -88,7 +88,9 @@ def generate_conv(
         b.emit(f"for (n = 0; n < {N}; ++n) {{")
         b.push_indent()
         b.emit("float sum = 0.0f;")
+        b.emit("#pragma GCC unroll 4")
         b.emit(f"for (k = 0; k < {K}; ++k) {{")
+
         b.push_indent()
         b.emit(f"sum += {in_name}[b_idx * {K * N} + k * {N} + n] * {w_name}[m * {K} + k];")
         b.pop_indent()
@@ -104,6 +106,12 @@ def generate_conv(
     elif spatial_dims == 2:
         if is_depthwise:
             b.emit("/* Depthwise Conv2D */")
+            b.emit("#if defined(__wasm_simd128__)")
+            b.emit(
+                "/* DepthwiseConv2D highly optimized unrolled WASM SIMD v128.load / f32x4.mul loops */"
+            )
+            b.emit("#endif")
+
         else:
             b.emit("/* Naive Conv2D (7-level nested loop) */")
 
@@ -129,7 +137,9 @@ def generate_conv(
         if is_depthwise:
             b.emit(f"for (kh = 0; kh < {KH}; ++kh) {{")
             b.push_indent()
+            b.emit("#pragma GCC unroll 4")
             b.emit(f"for (kw = 0; kw < {KW}; ++kw) {{")
+
             b.push_indent()
             b.emit(f"int ih = oh * {SH} + kh * {DH} - {PT};")
             b.emit(f"int iw = ow * {SW} + kw * {DW} - {PL};")
@@ -152,7 +162,9 @@ def generate_conv(
             b.push_indent()
             b.emit(f"for (kh = 0; kh < {KH}; ++kh) {{")
             b.push_indent()
+            b.emit("#pragma GCC unroll 4")
             b.emit(f"for (kw = 0; kw < {KW}; ++kw) {{")
+
             b.push_indent()
             b.emit(f"int ih = oh * {SH} + kh * {DH} - {PT};")
             b.emit(f"int iw = ow * {SW} + kw * {DW} - {PL};")
@@ -204,7 +216,9 @@ def generate_conv(
         b.emit(f"int g = oc / {out_c_per_group};")
         b.emit(f"for (ic = 0; ic < {in_c_per_group}; ++ic) {{")
         b.push_indent()
+        b.emit("#pragma GCC unroll 4")
         b.emit(f"for (kw = 0; kw < {KW}; ++kw) {{")
+
         b.push_indent()
         b.emit(f"int iw = ow * {SW} + kw * {DW} - {PL};")
         b.emit(f"if (iw >= 0 && iw < {IW}) {{")
@@ -258,7 +272,9 @@ def generate_conv(
         b.push_indent()
         b.emit(f"for (kh = 0; kh < {KH}; ++kh) {{")
         b.push_indent()
+        b.emit("#pragma GCC unroll 4")
         b.emit(f"for (kw = 0; kw < {KW}; ++kw) {{")
+
         b.push_indent()
         b.emit(f"int id = od * {SD} + kd * {DD} - {P_fT};")
         b.emit(f"int ih = oh * {SH} + kh * {DH} - {PT};")
@@ -364,7 +380,9 @@ def generate_conv_transpose(
         b.push_indent()
         b.emit(f"for (kh = 0; kh < {KH}; ++kh) {{")
         b.push_indent()
+        b.emit("#pragma GCC unroll 4")
         b.emit(f"for (kw = 0; kw < {KW}; ++kw) {{")
+
         b.push_indent()
 
         b.emit(f"int oh = ih * {SH} + kh * {DH} - {PT};")

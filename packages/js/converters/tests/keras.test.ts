@@ -105,14 +105,14 @@ describe('Keras Module', () => {
       'config.json': new TextEncoder().encode(JSON.stringify({ class_name: 'Sequential' })),
       'metadata.json': new TextEncoder().encode(JSON.stringify({ keras_version: '3.0' })),
       'model.weights.h5': new Uint8Array([1, 2, 3]),
-      'weights/model.safetensors': new Uint8Array([4, 5, 6]),
+      'weights/model.weights.safetensors': new Uint8Array([4, 5, 6]),
     };
     const zipped = zipSync(files);
     const result = parseKeras3Zip(zipped);
     expect(result.config.class_name).toBe('Sequential');
     expect(result.metadata.keras_version).toBe('3.0');
-    expect(result.weights['model.weights.h5']).toBeDefined();
-    expect(result.weights['weights/model.safetensors']).toBeDefined();
+    expect(result.weightsH5).toBeDefined();
+    expect(result.weightsSafetensors).toBeDefined();
   });
 
   it('should test keras3-parser error handling', () => {

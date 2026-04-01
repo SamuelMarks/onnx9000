@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 import { WeightGroup, DataType, WeightManifestEntry } from './tfjs-parser.js';
 
 export interface LoadedWeight {
@@ -29,7 +27,7 @@ export async function downloadWeightShards(
     return res.arrayBuffer();
   };
 
-  const doFetch = fetcher || defaultFetcher;
+  const doFetch = fetcher !== undefined ? fetcher : defaultFetcher;
 
   for (const group of manifest) {
     // Download all shards for this group
@@ -79,9 +77,15 @@ function calculateByteLength(weight: WeightManifestEntry): number {
       return numElements * 8;
     case 'float16':
       return numElements * 2;
+    case 'int8':
     case 'uint8':
     case 'bool':
       return numElements;
+    case 'int4':
+    case 'uint4':
+      // 4-bit quantization packs 2 elements into 1 byte. 
+      // We must ceiling divide to ensure we allocate enough bytes for odd counts.
+      return Math.ceil(numElements / 2);
     case 'string':
       // String tensors in TFJS have a specific format in the buffer.
       // A simple size calculation doesn't work out of the box without parsing.

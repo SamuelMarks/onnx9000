@@ -82,7 +82,9 @@ def load(model_path_or_dict: Any, format: str = "auto") -> Graph:
     """Provide a unified `onnx9000.load('model.pb')` interface."""
     if format == "tf" or (isinstance(model_path_or_dict, dict) and "node" in model_path_or_dict):
         return None
-    elif format in ("jax", "flax") or (isinstance(model_path_or_dict, dict) and "eqns" in model_path_or_dict):
+    elif format in ("jax", "flax") or (
+        isinstance(model_path_or_dict, dict) and "eqns" in model_path_or_dict
+    ):
         return load_jax(model_path_or_dict)
     else:
         from onnx9000.core.parser.core import load as onnx_load

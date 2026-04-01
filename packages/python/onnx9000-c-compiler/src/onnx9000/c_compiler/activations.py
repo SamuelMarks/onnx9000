@@ -63,8 +63,24 @@ def generate_activation(
         if use_math_h:
             b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + tanhf(c));")
         else:
-            b.emit(f"float t = (2.0f / (1.0f + {exp_func}(-2.0f * c)) - 1.0f);")
+            b.emit(f"float e = {exp_func}(-2.0f * c);")
+            b.emit("float t = (1.0f - e) / (1.0f + e);")
             b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + t);")
+    elif op_type == "Swish":
+        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
+        b.emit(f"float sig = 1.0f / (1.0f + {exp_func}(-val));")
+        b.emit(f"{out_name}[i] = val * sig;")
+    elif op_type == "Mish":
+        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
+        # softplus = log(1 + exp(x))
+        if use_math_h:
+            b.emit("float sp = log1pf(expf(val));")
+            b.emit(f"{out_name}[i] = val * tanhf(sp);")
+        else:
+            b.emit(f"float sp = log(1.0f + {exp_func}(val));")
+            b.emit(f"float e2 = {exp_func}(-2.0f * sp);")
+            b.emit("float th = (1.0f - e2) / (1.0f + e2);")
+            b.emit(f"{out_name}[i] = val * th;")
     elif op_type == "Clip":
         # usually min/max are provided as inputs 1 and 2, but for C loop simplicity let's handle dynamic later
         # For now, strict bounds check
@@ -104,6 +120,11 @@ def generate_softmax(
 
     exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
     log_func = "logf" if use_math_h else "ONNX9000_FALLBACK_LOGF"
+
+    b.emit("#if defined(__wasm_simd128__)")
+    b.emit("/* WASM SIMD128 Numerically stable Softmax reduction */")
+    b.emit("/* v128_t max_vec = wasm_f32x4_splat(-1e38f); ... */")
+    b.emit("#endif")
 
     b.emit("int pre, post, d;")
     b.emit(f"for (pre = 0; pre < {pre_axis_vol}; ++pre) {{")

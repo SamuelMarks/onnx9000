@@ -43,8 +43,10 @@ class Tensor:
         name: Optional[str] = None,
         domain: str = "",
         data: Optional[Any] = None,
+        is_buffer: bool = False,
     ) -> None:
         """Initialize the frontend builder or trace context."""
+        self.is_buffer = is_buffer
         if data is not None:
             if not isinstance(data, np.ndarray):
                 try:
@@ -127,6 +129,10 @@ class Tensor:
         """Perform element-wise multiplication with another tensor or scalar."""
         return self._op("Mul", other)
 
+    def __matmul__(self, other: Any) -> "Tensor":
+        """Perform matrix multiplication with another tensor."""
+        return self._op("MatMul", other)
+
     def __rmul__(self, other: Any) -> "Tensor":
         """Perform element-wise multiplication with another tensor or scalar (right-sided)."""
         return self._op("Mul", other)
@@ -140,10 +146,6 @@ class Tensor:
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("Div", [other, self])
-
-    def __matmul__(self, other: Any) -> "Tensor":
-        """Perform matrix multiplication with another tensor."""
-        return self._op("MatMul", other)
 
     def __pow__(self, other: Any) -> "Tensor":
         """Raise the tensor to the power of another tensor or scalar."""
@@ -344,6 +346,10 @@ class Tensor:
     def softmax(self, dim=None) -> "Tensor":
         """Apply the softmax function to an n-dimensional input tensor along a specified dimension."""
         return self._op("Softmax", axis=dim)
+
+    def log_softmax(self, dim=None) -> "Tensor":
+        """Apply the log-softmax function to an n-dimensional input tensor along a specified dimension."""
+        return self._op("LogSoftmax", axis=dim)
 
     def where(self, condition, y) -> "Tensor":
         """Implement the where operation for the tensor."""

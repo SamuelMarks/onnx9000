@@ -54,6 +54,54 @@ export function emitLayerNormalization(
   ];
 }
 
+export function emitUnitNormalization(
+  inputName: string,
+  outputName: string,
+  axis: number,
+  name: string,
+): OnnxNodeBuilder[] {
+  return [
+    {
+      opType: 'LpNormalization',
+      inputs: [inputName],
+      outputs: [outputName],
+      name,
+      attributes: [
+        { name: 'axis', i: axis, type: 'INT' },
+        { name: 'p', i: 2, type: 'INT' },
+      ],
+    },
+  ];
+}
+
+export function emitGroupNormalization(
+  inputName: string,
+  outputName: string,
+  numGroups: number,
+  gammaName: string | undefined,
+  betaName: string | undefined,
+  epsilon: number,
+  name: string,
+): OnnxNodeBuilder[] {
+  const inputs = [inputName];
+  // ONNX GroupNormalization requires num_groups attribute, gamma and beta inputs
+  // If not provided, we insert empty strings so core validation handles it or inserts defaults
+  inputs.push(gammaName || '');
+  inputs.push(betaName || '');
+
+  return [
+    {
+      opType: 'GroupNormalization', // Available in ONNX 18+
+      inputs,
+      outputs: [outputName],
+      name,
+      attributes: [
+        { name: 'epsilon', f: epsilon, type: 'FLOAT' },
+        { name: 'num_groups', i: numGroups, type: 'INT' },
+      ],
+    },
+  ];
+}
 export function emitReshape(
   inputName: string,
   shapeName: string, // Tensor containing target shape

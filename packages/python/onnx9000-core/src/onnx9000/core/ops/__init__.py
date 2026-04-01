@@ -494,6 +494,91 @@ def instance_normalization(
     return record_op("InstanceNormalization", [input, scale, B], {"epsilon": epsilon})
 
 
+@register_op("KVCache", "onnx9000.custom")
+def kv_cache(
+    cache: Tensor, new_key: Tensor, new_value: Tensor, **kwargs: Any
+) -> tuple[Tensor, Tensor]:
+    """Compute Key-Value Cache update."""
+    return record_op("KVCache", [cache, new_key, new_value], kwargs)
+
+
+@register_op("RoPE", "onnx9000.custom")
+def rope(x: Tensor, cos: Tensor, sin: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Rotary Positional Embeddings."""
+    return record_op("RoPE", [x, cos, sin], kwargs)
+
+
+@register_op("DeformConv", "onnx9000.custom")
+def deform_conv(
+    x: Tensor, offset: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any
+) -> Tensor:
+    """Compute Deformable Convolution."""
+    inputs = [x, offset, w]
+    if b is not None:
+        inputs.append(b)
+    return record_op("DeformConv", inputs, kwargs)
+
+
+@register_op("DCT", "onnx9000.custom")
+def dct(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Discrete Cosine Transform."""
+    return record_op("DCT", [x], kwargs)
+
+
+@register_op("Roll", "onnx9000.custom")
+def roll(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Roll for windowed attention."""
+    return record_op("Roll", [x], kwargs)
+
+
+@register_op("Unroll", "onnx9000.custom")
+def unroll(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Unroll for windowed attention."""
+    return record_op("Unroll", [x], kwargs)
+
+
+@register_op("Tokenizer", "onnx9000.custom")
+def tokenizer(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Tokenization."""
+    return record_op("Tokenizer", [x], kwargs)
+
+
+@register_op("TextVectorization", "onnx9000.custom")
+def text_vectorization(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Text Vectorization."""
+    return record_op("TextVectorization", [x], kwargs)
+
+
+@register_op("FakeQuantize", "onnx9000.custom")
+def fake_quantize(x: Tensor, scale: Tensor, zero_point: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Fake Quantization."""
+    return record_op("FakeQuantize", [x, scale, zero_point], kwargs)
+
+
+@register_op("AllReduce", "onnx9000.custom")
+def all_reduce(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Collective AllReduce."""
+    return record_op("AllReduce", [x], kwargs)
+
+
+@register_op("AllGather", "onnx9000.custom")
+def all_gather(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Collective AllGather."""
+    return record_op("AllGather", [x], kwargs)
+
+
+@register_op("ReduceScatter", "onnx9000.custom")
+def reduce_scatter(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Collective ReduceScatter."""
+    return record_op("ReduceScatter", [x], kwargs)
+
+
+@register_op("Broadcast", "onnx9000.custom")
+def broadcast(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute Collective Broadcast."""
+    return record_op("Broadcast", [x], kwargs)
+
+
 @register_op("LessOrEqual", "ai.onnx")
 def less_or_equal(a: Tensor, b: Tensor) -> Tensor:
     """Compute LessOrEqual."""
@@ -1478,9 +1563,35 @@ def rotary_embedding(x: Tensor) -> Tensor:
 
 
 @register_op("STFT", "ai.onnx")
-def stft(x: Tensor) -> Tensor:
+def stft(
+    signal: Tensor,
+    frame_step: Tensor,
+    window_length: Tensor,
+    frame_length: Tensor,
+    window: Optional[Tensor] = None,
+    **kwargs: Any,
+) -> Tensor:
     """Compute STFT."""
-    return record_op("STFT", [x])
+    inputs = [signal, frame_step, window_length, frame_length]
+    if window is not None:
+        inputs.append(window)
+    return record_op("STFT", inputs, kwargs)
+
+
+@register_op("ISTFT", "ai.onnx")
+def istft(
+    signal: Tensor,
+    frame_step: Tensor,
+    window_length: Tensor,
+    frame_length: Tensor,
+    window: Optional[Tensor] = None,
+    **kwargs: Any,
+) -> Tensor:
+    """Compute ISTFT."""
+    inputs = [signal, frame_step, window_length, frame_length]
+    if window is not None:
+        inputs.append(window)
+    return record_op("ISTFT", inputs, kwargs)
 
 
 @register_op("Scan", "ai.onnx")

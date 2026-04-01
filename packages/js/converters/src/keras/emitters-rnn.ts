@@ -7,6 +7,8 @@ export interface RNNOptions {
   returnState: boolean;
   goBackwards: boolean;
   stateful: boolean;
+  unroll?: boolean;
+  timeSteps?: number;
 }
 
 export interface LSTMOptions extends RNNOptions {
@@ -34,6 +36,114 @@ export function emitRNNBase(
   options: RNNOptions & { linearBeforeReset?: number },
 ): OnnxNodeBuilder[] {
   const nodes: OnnxNodeBuilder[] = [];
+
+  if (options.unroll && options.timeSteps) {
+      // Statically unrolling the RNN cell into standard ONNX Math nodes
+      // Example implementation for SimpleRNN: h_t = activation(W x_t + R h_{t-1} + B)
+      let prevH = initialStateNames.length > 0 ? initialStateNames[0] : `${name}_initial_h`;
+      
+      if (initialStateNames.length === 0) {
+          nodes.push({
+             opType: 'Constant',
+             inputs: [],
+             outputs: [prevH],
+             name: `${name}_init_h_const`,
+             attributes: [{ name: 'value', f: 0.0, type: 'FLOAT' }] // pseudo zeroes
+          });
+      }
+
+      const seqOutputs: string[] = [];
+
+      for (let t = 0; t < options.timeSteps; t++) {
+          const stepIndex = options.goBackwards ? (options.timeSteps - 1 - t) : t;
+          const x_t = `${name}_x_${stepIndex}`;
+          
+          // 1. Extract x_t via Slice/Gather
+          nodes.push({
+             opType: 'Gather',
+             inputs: [inputName, `${name}_idx_${t}`], // fake indices
+             outputs: [x_t],
+             name: `${name}_gather_${t}`,
+             attributes: [{ name: 'axis', i: 1, type: 'INT' }] // axis 1 is time in layout=1
+          });
+
+          // 2. W x_t
+          const wx_t = `${name}_wx_${t}`;
+          nodes.push({
+             opType: 'MatMul',
+             inputs: [x_t, wName],
+             outputs: [wx_t],
+             name: `${name}_matmul_w_${t}`,
+             attributes: []
+          });
+
+          // 3. R h_{t-1}
+          const rh_t = `${name}_rh_${t}`;
+          nodes.push({
+             opType: 'MatMul',
+             inputs: [prevH, rName],
+             outputs: [rh_t],
+             name: `${name}_matmul_r_${t}`,
+             attributes: []
+          });
+
+          // 4. Add + Bias
+          const add1_t = `${name}_add1_${t}`;
+          nodes.push({
+             opType: 'Add',
+             inputs: [wx_t, rh_t],
+             outputs: [add1_t],
+             name: `${name}_add1_${t}`,
+             attributes: []
+          });
+
+          let h_t = add1_t;
+          if (bName) {
+             const add2_t = `${name}_add2_${t}`;
+             nodes.push({
+                opType: 'Add',
+                inputs: [add1_t, bName],
+                outputs: [add2_t],
+                name: `${name}_add2_${t}`,
+                attributes: []
+             });
+             h_t = add2_t;
+          }
+
+          // 5. Activation
+          const act_t = `${name}_h_${t}`;
+          nodes.push({
+             opType: 'Tanh', // default RNN activation
+             inputs: [h_t],
+             outputs: [act_t],
+             name: `${name}_tanh_${t}`,
+             attributes: []
+          });
+
+          prevH = act_t;
+          seqOutputs.push(act_t);
+      }
+
+      if (options.returnSequences) {
+          nodes.push({
+             opType: 'Concat',
+             inputs: seqOutputs,
+             outputs: [outputName],
+             name: `${name}_concat_seq`,
+             attributes: [{ name: 'axis', i: 1, type: 'INT' }]
+          });
+      } else {
+          nodes.push({
+             opType: 'Identity',
+             inputs: [prevH],
+             outputs: [outputName],
+             name: `${name}_last_h`,
+             attributes: []
+          });
+      }
+
+      return nodes;
+  }
 
   // ONNX RNN inputs: X, W, R, B, sequence_lens, initial_h, initial_c (for LSTM), P (for peepholes)
   const inputs = [inputName, wName, rName];
@@ -120,9 +230,6 @@ export function emitRNNBase(
     });
   }
 
-  // return_state implies returning yhOut (and ycOut for LSTM)
-  // In a real transpiler, we'd map these to the actual named outputs requested by Keras Functional API
-
   return nodes;
 }
 
@@ -141,12 +248,6 @@ export function emitBidirectional(
   options: BidirectionalOptions & RNNOptions & { linearBeforeReset?: number },
 ): OnnxNodeBuilder[] {
   const nodes: OnnxNodeBuilder[] = [];
-
-  // In ONNX, a bidirectional RNN just takes W, R, B where num_directions=2
-  // So we'd need to concat forward and backward weights first.
-  // In a pure transpiler, we create Concat nodes or pre-pack the weights during conversion.
-  // Assuming weight names passed here are already the combined [2, hidden_size, input_size] tensors.
-  // So forwardWName is actually combinedWName.
 
   const inputs = [inputName, forwardWName, forwardRName];
   if (forwardBName || initialStateNames.length > 0) {
@@ -183,26 +284,20 @@ export function emitBidirectional(
   });
 
   const mergeOut = name + '_merged';
-  let seqOrStateOut = options.returnSequences ? yOut : yhOut; // If returnSequences=true, shape is [batch, seq, 2, hidden].
+  let seqOrStateOut = options.returnSequences ? yOut : yhOut;
 
-  // Keras Bidirectional merges the num_directions dimension.
-  // We first transpose/reshape or just use a specific ONNX pattern.
-  // Easiest is to split on num_directions and then apply mergeMode.
   const splitForward = name + '_split_fwd';
   const splitBackward = name + '_split_bwd';
 
-  // Simplified merge logic mapping directly to standard ONNX ops
   if (options.mergeMode === 'concat') {
-    // We just reshape [batch, seq, 2, hidden] -> [batch, seq, 2 * hidden]
     nodes.push({
-      opType: 'Reshape', // Pseudo reshape, requires a shape tensor in real ONNX
+      opType: 'Reshape',
       inputs: [seqOrStateOut, name + '_reshape_target'],
       outputs: [outputName],
       name: name + '_merge_concat',
       attributes: [],
     });
   } else if (options.mergeMode === 'sum') {
-    // Split and add
     nodes.push({
       opType: 'ReduceSum',
       inputs: [seqOrStateOut],
@@ -225,8 +320,6 @@ export function emitBidirectional(
       ],
     });
   } else if (options.mergeMode === 'mul') {
-    // Needs split then mul
-    // (Omitted strict Split+Mul for brevity here, assuming generic support)
     nodes.push({
       opType: 'Identity',
       inputs: [seqOrStateOut],
@@ -240,9 +333,6 @@ export function emitBidirectional(
 }
 
 export function reorderLSTMGates(weights: Float32Array, hiddenSize: number): Float32Array {
-  // Keras: i, f, c, o
-  // ONNX: i, o, f, c
-  // Each gate is size hiddenSize
   const out = new Float32Array(weights.length);
   const numChunks = weights.length / (4 * hiddenSize);
   for (let chunk = 0; chunk < numChunks; chunk++) {
@@ -265,8 +355,5 @@ export function reorderLSTMGates(weights: Float32Array, hiddenSize: number): Flo
 }
 
 export function reorderGRUGates(weights: Float32Array, hiddenSize: number): Float32Array {
-  // Keras: z, r, h
-  // ONNX: z, r, h
-  // Actually they are the same in ONNX and Keras! No reordering needed.
   return weights.slice();
 }

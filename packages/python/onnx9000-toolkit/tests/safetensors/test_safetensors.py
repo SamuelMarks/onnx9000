@@ -493,7 +493,10 @@ def test_multiprocessing():
     """Test multiprocessing."""
     import multiprocessing
 
-    multiprocessing.set_start_method("spawn", force=True)
+    try:
+        multiprocessing.set_start_method("fork", force=True)
+    except ValueError:
+        pass
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "model.safetensors")
         save_file({"a": b"2" * 1000}, p)

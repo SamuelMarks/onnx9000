@@ -58,6 +58,9 @@ def record_op(op_type: str, inputs: list[Any], attributes: dict = None) -> Any:
     processed_inputs = []
     for inp in inputs:
         if isinstance(inp, Tensor):
+            if isinstance(inp, Parameter):
+                if not any(inp is p for p in builder.parameters):
+                    builder.parameters.append(inp)
             processed_inputs.append(inp)
         else:
             if not isinstance(inp, np.ndarray):

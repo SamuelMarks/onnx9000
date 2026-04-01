@@ -13,9 +13,9 @@ export async function handleConvertCommand(args: string[]) {
   // Parse arguments
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--src') {
+    if (arg === '--src' || arg === '--from') {
       src = args[++i] as SourceFramework;
-    } else if (arg === '--dst') {
+    } else if (arg === '--dst' || arg === '--to') {
       dst = args[++i] as TargetFramework;
     } else if (!arg.startsWith('--')) {
       filePaths.push(arg);

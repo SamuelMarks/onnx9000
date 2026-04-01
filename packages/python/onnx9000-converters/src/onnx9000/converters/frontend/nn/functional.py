@@ -30,6 +30,41 @@ def softmax(input: Tensor, dim: int = -1) -> Tensor:
     return input.softmax(dim)
 
 
+def log_softmax(input: Tensor, dim: int = -1) -> Tensor:
+    """Implement the log_softmax method."""
+    return input.log_softmax(dim)
+
+
+def max_pool2d(
+    input: Tensor,
+    kernel_size: Any,
+    stride: Any = None,
+    padding: Any = 0,
+    dilation: Any = 1,
+    ceil_mode: bool = False,
+    return_indices: bool = False,
+) -> Tensor:
+    """Implement the max_pool2d method."""
+    from onnx9000.converters.frontend.utils import record_op
+
+    def _pair(x):
+        return (x, x) if isinstance(x, int) else x
+
+    kernel_size_ = _pair(kernel_size)
+    stride_ = _pair(stride) if stride is not None else kernel_size_
+    padding_ = _pair(padding)
+    dilation_ = _pair(dilation)
+
+    attrs = {
+        "kernel_shape": list(kernel_size_),
+        "strides": list(stride_),
+        "pads": list(padding_) * 2,
+        "dilations": list(dilation_),
+        "ceil_mode": 1 if ceil_mode else 0,
+    }
+    return record_op("MaxPool", [input], attrs)
+
+
 def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tensor:
     """Implement the linear method."""
     res = input @ weight.T

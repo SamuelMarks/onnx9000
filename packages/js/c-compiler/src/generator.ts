@@ -1,4 +1,4 @@
-import { Graph, Node } from '@onnx9000/core';
+import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export class CGenerator {
   graph: Graph;
@@ -18,6 +18,18 @@ export class CGenerator {
       sanitized = 'v_' + sanitized;
     }
     return sanitized;
+  }
+
+  private getTensorSize(name: string): number {
+    const v = this.graph.inputs.find((x) => x.name === name) || this.graph.outputs.find((x) => x.name === name);
+    if (v) {
+      return v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1) || 256;
+    }
+    const t = this.graph.tensors[name];
+    if (t) {
+      return t.size || 256;
+    }
+    return 256;
   }
 
   public generateHeader(): string {
@@ -50,7 +62,7 @@ export class CGenerator {
     const firstOutputName = this.graph.outputs?.[0]?.name;
     const firstOutput = firstOutputName ? this.sanitize(firstOutputName) : 'output';
 
-    // Allocate intermediate buffers
+    // Allocate intermediate buffers and weights
     const intermediates = new Set<string>();
     for (const node of this.graph.nodes) {
       for (const out of node.outputs) {
@@ -73,10 +85,30 @@ export class CGenerator {
     intermediates.delete(firstInput);
 
     for (const intermediate of intermediates) {
-      if (this.emitCpp) {
-        lines.push(`    std::vector<float> ${intermediate}(256, 0.0f);`);
+      const originalName = Array.from(intermediates).find(n => this.sanitize(n) === intermediate) || intermediate;
+      const size = this.getTensorSize(originalName);
+      
+      const tensor = this.graph.tensors[originalName];
+      if (tensor && tensor.data) {
+        const maxVals = Math.min(size, 1024); // Limit inline weights for demo
+        const values: string[] = [];
+        if (tensor.data instanceof Uint8Array) {
+          const dv = new DataView(tensor.data.buffer, tensor.data.byteOffset, tensor.data.byteLength);
+          for (let i = 0; i < maxVals; i++) {
+            values.push(dv.getFloat32(i * 4, true).toFixed(6) + 'f');
+          }
+        }
+        if (this.emitCpp) {
+          lines.push(`    std::vector<float> ${intermediate} = {${values.join(', ')}};`);
+        } else {
+          lines.push(`    float ${intermediate}[${size}] = {${values.join(', ')}};`);
+        }
       } else {
-        lines.push(`    float ${intermediate}[256] = {0};`);
+        if (this.emitCpp) {
+          lines.push(`    std::vector<float> ${intermediate}(${size}, 0.0f);`);
+        } else {
+          lines.push(`    float ${intermediate}[${size}] = {0};`);
+        }
       }
     }
 
@@ -97,70 +129,74 @@ export class CGenerator {
       if (outputs.length === 0) continue;
 
       const out = outputs[0];
+      const outSize = this.getTensorSize(node.outputs[0] || "");
+      
       const in1 = inputs.length > 0 ? inputs[0] : '0';
+      const in1Size = inputs.length > 0 ? this.getTensorSize(node.inputs[0] || "") : 256;
+      
       const in2 = inputs.length > 1 ? inputs[1] : '0';
 
-      lines.push(`    // ${op} -> ${out}`);
+      lines.push(`    // ${op} -> ${out} (size: ${outSize})`);
 
       switch (op) {
         case 'Relu':
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
           lines.push(`      ${out}[i] = ${in1}[i] > 0 ? ${in1}[i] : 0;`);
           lines.push(`    }`);
           break;
         case 'Add':
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[i] + ${in2}[i];`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      ${out}[i] = ${in1}[i] + ${in2}[i % ${in1Size}];`);
           lines.push(`    }`);
           break;
         case 'Conv':
         case 'Conv2D':
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[i] * 0.5f;`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      float sum = 0.0f;`);
+          lines.push(`      for (int j = 0; j < 9; j++) sum += ${in1}[(i*9 + j) % ${in1Size}] * ${in2}[j % 9];`);
+          lines.push(`      ${out}[i] = sum;`);
           lines.push(`    }`);
           break;
         case 'MaxPool':
         case 'MaxPooling2D':
-          lines.push(`    for (int i = 0; i < 128; i++) {`);
-          lines.push(
-            `      ${out}[i] = ${in1}[i*2] > ${in1}[i*2+1] ? ${in1}[i*2] : ${in1}[i*2+1];`,
-          );
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      ${out}[i] = ${in1}[(i*2) % ${in1Size}] > ${in1}[(i*2+1) % ${in1Size}] ? ${in1}[(i*2) % ${in1Size}] : ${in1}[(i*2+1) % ${in1Size}];`);
           lines.push(`    }`);
           break;
         case 'GlobalAveragePool':
           lines.push(`    float sum_${out} = 0;`);
-          lines.push(`    for (int i = 0; i < 256; i++) sum_${out} += ${in1}[i];`);
-          lines.push(`    ${out}[0] = sum_${out} / 256.0f;`);
+          lines.push(`    for (int i = 0; i < ${in1Size}; i++) sum_${out} += ${in1}[i];`);
+          lines.push(`    ${out}[0] = sum_${out} / ${in1Size}.0f;`);
           break;
         case 'Flatten':
         case 'Identity':
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[i];`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      ${out}[i] = ${in1}[i % ${in1Size}];`);
           lines.push(`    }`);
           break;
         case 'Gemm':
         case 'MatMul':
         case 'Dense':
         case 'InnerProduct':
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[i] * 0.1f; // Dummy weight`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      float sum = 0.0f;`);
+          lines.push(`      for (int k = 0; k < ${in1Size}; k++) sum += ${in1}[k] * ${in2}[(i * ${in1Size} + k) % 1024];`);
+          lines.push(`      ${out}[i] = sum;`);
           lines.push(`    }`);
           break;
         case 'Softmax':
           lines.push(`    float max_val_${out} = ${in1}[0];`);
-          lines.push(
-            `    for (int i = 1; i < 256; i++) if (${in1}[i] > max_val_${out}) max_val_${out} = ${in1}[i];`,
-          );
+          lines.push(`    for (int i = 1; i < ${in1Size}; i++) if (${in1}[i] > max_val_${out}) max_val_${out} = ${in1}[i];`);
           lines.push(`    float sum_exp_${out} = 0;`);
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = expf(${in1}[i] - max_val_${out});`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      ${out}[i] = expf(${in1}[i % ${in1Size}] - max_val_${out});`);
           lines.push(`      sum_exp_${out} += ${out}[i];`);
           lines.push(`    }`);
-          lines.push(`    for (int i = 0; i < 256; i++) ${out}[i] /= sum_exp_${out};`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) ${out}[i] /= sum_exp_${out};`);
           break;
         default:
-          lines.push(`    for (int i = 0; i < 256; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[i];`);
+          lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
+          lines.push(`      ${out}[i] = ${in1}[i % ${in1Size}];`);
           lines.push(`    }`);
           break;
       }

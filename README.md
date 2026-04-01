@@ -122,8 +122,8 @@ Here is a summary of our framework support completeness and % compliant metrics:
 |---|---|---|---|
 | ONNX Spec | 200 | 200 | 100.00% |
 | Torch | 935 | 935 | 100.00% |
-| Tensorflow | 1066 | 31717 | 3.36% |
-| Keras | 761 | 7719 | 9.86% |
+| Tensorflow | 8071 | 31717 | 25.45% |
+| Keras | 7719 | 7719 | 100.00% |
 | Jax | 1767 | 1767 | 100.00% |
 | Flax | 1929 | 1929 | 100.00% |
 | Paddle | 96 | 14217 | 0.68% |

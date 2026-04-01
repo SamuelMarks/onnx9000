@@ -35,7 +35,7 @@ def get_attr(node: Node, name: str, default: Any = None) -> Any:
     """Execute the get attr operation."""
     for attr in node.attributes.values():
         if attr.name == name:
-            return attr.value
+            return attr.value if attr.value is not None else default
     return default
 
 
@@ -57,6 +57,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             env[inp] = ValueInfo(t.name, t.shape, t.dtype)
         elif hasattr(inp, "name"):
             env[inp.name] = inp
+
     for _tensor_name, tensor in graph.tensors.items():
         if tensor.is_initializer:
             env[tensor.name] = ValueInfo(tensor.name, tensor.shape, tensor.dtype)
@@ -185,6 +186,18 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [out_dtype] * len(node.outputs)
+
+        elif node.op_type == "Transpose":
+            in1 = env.get(node.inputs[0])
+            if in1:
+                in_shape = list(in1.shape)
+                perm = get_attr(node, "perm")
+                if perm:
+                    out_shape = tuple(in_shape[i] for i in perm)
+                else:
+                    out_shape = tuple(reversed(in_shape))
+                out_shapes = [out_shape] * len(node.outputs)
+                out_dtypes = [in1.dtype] * len(node.outputs)
 
         elif node.op_type == "Reshape":
             if len(node.inputs) < 2:
@@ -350,6 +363,108 @@ def infer_shapes_and_types(graph: Graph) -> None:
             out_shape = tuple(in_shape[:axis] + indices_shape + in_shape[axis + 1 :])
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [in1.dtype] * len(node.outputs)
+
+        elif node.op_type == "Flatten":
+            in1 = env.get(node.inputs[0])
+            if in1:
+                axis = get_attr(node, "axis", 1)
+                in_shape = list(in1.shape)
+                if axis < 0:
+                    axis += len(in_shape)
+                dim0 = 1
+                for i in range(axis):
+                    if isinstance(in_shape[i], int):
+                        dim0 *= in_shape[i]
+                    else:
+                        dim0 = DynamicDim("flatten_d0")
+                        break
+                dim1 = 1
+                for i in range(axis, len(in_shape)):
+                    if isinstance(in_shape[i], int):
+                        dim1 *= in_shape[i]
+                    else:
+                        dim1 = DynamicDim("flatten_d1")
+                        break
+                out_shapes = [(dim0, dim1)] * len(node.outputs)
+                out_dtypes = [in1.dtype] * len(node.outputs)
+
+        elif node.op_type == "NonMaxSuppression":
+            # Output is [num_selected_indices, 3]
+            out_shape = (DynamicDim("num_selected_indices"), 3)
+            out_shapes = [out_shape]
+            out_dtypes = [DType.INT64]
+
+        elif node.op_type == "FlashAttention":
+            # Inputs: Q, K, V
+            # Q: [B, H, S, D]
+            # Output: [B, H, S, D]
+            in1 = env.get(node.inputs[0])
+            if in1:
+                out_shapes = [in1.shape]
+                out_dtypes = [in1.dtype]
+
+        elif node.op_type == "RoPE":
+            # Inputs: x, cos, sin
+            # x: [B, S, H, D]
+            # Output: [B, S, H, D]
+            in1 = env.get(node.inputs[0])
+            if in1:
+                out_shapes = [in1.shape]
+                out_dtypes = [in1.dtype]
+
+        elif node.op_type in ["MaxPool", "AveragePool"]:
+            in1 = env.get(node.inputs[0])
+            if in1:
+                in_shape = list(in1.shape)
+                out_dtype = in1.dtype
+                kernel_shape = get_attr(node, "kernel_shape", [])
+                strides = get_attr(node, "strides", [1] * len(kernel_shape))
+                pads = get_attr(node, "pads", [0] * (2 * len(kernel_shape)))
+                dilations = get_attr(node, "dilations", [1] * len(kernel_shape))
+
+                spatial_dims = []
+                for i in range(len(kernel_shape)):
+                    try:
+                        in_dim = in_shape[2 + i]
+                        if isinstance(in_dim, (DynamicDim, str)):
+                            spatial_dims.append(DynamicDim(f"spatial_{i}"))
+                        else:
+                            k = kernel_shape[i]
+                            s = strides[i]
+                            p = pads[i] + pads[i + len(kernel_shape)]
+                            d = dilations[i]
+                            out_dim = (in_dim + p - ((k - 1) * d + 1)) // s + 1
+                            spatial_dims.append(out_dim)
+                    except Exception:
+                        spatial_dims.append(DynamicDim(f"spatial_{i}"))
+
+                out_shape = tuple(in_shape[:2] + spatial_dims)
+                out_shapes = [out_shape] * len(node.outputs)
+                out_dtypes = [out_dtype] * len(node.outputs)
+
+        elif node.op_type == "Flatten":
+            in1 = env.get(node.inputs[0])
+            if in1:
+                axis = get_attr(node, "axis", 1)
+                in_shape = list(in1.shape)
+                if axis < 0:
+                    axis += len(in_shape)
+                dim0 = 1
+                for i in range(axis):
+                    if isinstance(in_shape[i], int):
+                        dim0 *= in_shape[i]
+                    else:
+                        dim0 = DynamicDim("flatten_d0")
+                        break
+                dim1 = 1
+                for i in range(axis, len(in_shape)):
+                    if isinstance(in_shape[i], int):
+                        dim1 *= in_shape[i]
+                    else:
+                        dim1 = DynamicDim("flatten_d1")
+                        break
+                out_shapes = [(dim0, dim1)] * len(node.outputs)
+                out_dtypes = [in1.dtype] * len(node.outputs)
 
         elif node.op_type == "Slice":
             if len(node.inputs) < 1:

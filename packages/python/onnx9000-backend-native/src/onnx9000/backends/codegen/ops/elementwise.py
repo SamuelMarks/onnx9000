@@ -6,7 +6,7 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 from typing import Optional
 
 from onnx9000.backends.codegen.generator import Generator
-from onnx9000.backends.codegen.utils import get_omp_pragma
+from onnx9000.backends.codegen.utils import get_attribute, get_omp_pragma
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
@@ -66,7 +66,7 @@ def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 @registry.register_op("Elu")
 def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Elu operator."""
-    alpha = node.attributes.get("alpha", 1.0)
+    alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
         node,
         generator_context,
@@ -77,7 +77,7 @@ def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Gener
 @registry.register_op("Celu")
 def generate_celu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Celu operator."""
-    alpha = node.attributes.get("alpha", 1.0)
+    alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
         node,
         generator_context,
@@ -90,7 +90,7 @@ def generate_leaky_relu(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
     """Generate the code implementation for the Leaky Relu operator."""
-    alpha = node.attributes.get("alpha", 0.01)
+    alpha = get_attribute(node, "alpha", 0.01)
     return _generate_unary_op(
         node,
         generator_context,
@@ -101,8 +101,8 @@ def generate_leaky_relu(
 @registry.register_op("Selu")
 def generate_selu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Selu operator."""
-    alpha = node.attributes.get("alpha", 1.6732632423543772)
-    gamma = node.attributes.get("gamma", 1.0507009873554805)
+    alpha = get_attribute(node, "alpha", 1.6732632423543772)
+    gamma = get_attribute(node, "gamma", 1.0507009873554805)
     return _generate_unary_op(
         node,
         generator_context,
@@ -127,7 +127,7 @@ def generate_thresholded_relu(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
     """Generate the code implementation for the Thresholded Relu operator."""
-    alpha = node.attributes.get("alpha", 1.0)
+    alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
         node, generator_context, f"({{inp}} > static_cast<float>({alpha})) ? {{inp}} : 0.0f"
     )
@@ -146,8 +146,8 @@ def generate_hard_sigmoid(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
     """Generate the code implementation for the Hard Sigmoid operator."""
-    alpha = node.attributes.get("alpha", 0.2)
-    beta = node.attributes.get("beta", 0.5)
+    alpha = get_attribute(node, "alpha", 0.2)
+    beta = get_attribute(node, "beta", 0.5)
     return _generate_unary_op(
         node,
         generator_context,

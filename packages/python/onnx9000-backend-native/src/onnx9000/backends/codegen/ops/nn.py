@@ -3,9 +3,19 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
+from typing import Any
+
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
+
+
+def _get_attr(node: Node, name: str, default: Any) -> Any:
+    """Helper to safely retrieve attribute values."""
+    attr = node.attributes.get(name)
+    if attr is not None:
+        return attr.value
+    return default
 
 
 @registry.register_op("Attention")
@@ -46,9 +56,10 @@ def generate_conv(node: Node, generator_context: "onnx9000.backends.codegen.Gene
         b_var = generator_context.get_tensor_name(node.inputs[2])
         b_opt = f"std::optional<const {cpp_type}*>({b_var}.data)"
     out = generator_context.get_tensor_name(node.outputs[0])
-    strides = node.attributes.get("strides", [1, 1])
-    pads = node.attributes.get("pads", [0, 0, 0, 0])
-    dilations = node.attributes.get("dilations", [1, 1])
+
+    strides = _get_attr(node, "strides", [1, 1])
+    pads = _get_attr(node, "pads", [0, 0, 0, 0])
+    dilations = _get_attr(node, "dilations", [1, 1])
     return f"\n        // Conv (im2col + GEMM)\n        int64_t {out}_N = {x_var}.shape[0];\n        int64_t {out}_C = {x_var}.shape[1];\n        int64_t {out}_H = {x_var}.shape[2];\n        int64_t {out}_W = {x_var}.shape[3];\n\n        int64_t {out}_M = {w_var}.shape[0];\n        int64_t {out}_kH = {w_var}.shape[2];\n        int64_t {out}_kW = {w_var}.shape[3];\n\n        int64_t {out}_out_H = ({out}_H + {pads[0]} + {pads[2]} - {dilations[0]} * ({out}_kH - 1) - 1) / {strides[0]} + 1;\n        int64_t {out}_out_W = ({out}_W + {pads[1]} + {pads[3]} - {dilations[1]} * ({out}_kW - 1) - 1) / {strides[1]} + 1;\n\n        std::vector<int64_t> {out}_shape = {{{out}_N, {out}_M, {out}_out_H, {out}_out_W}};\n\n        int64_t {out}_size = {out}_N * {out}_M * {out}_out_H * {out}_out_W;\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        std::vector<{cpp_type}> {out}_col_buffer({out}_C * {out}_kH * {out}_kW * {out}_out_H * {out}_out_W);\n        \n        int64_t K = {out}_C * {out}_kH * {out}_kW;\n        int64_t N = {out}_out_H * {out}_out_W;\n\n        for (int64_t n = 0; n < {out}_N; ++n) {{\n            // im2col\n            for (int64_t c = 0; c < {out}_C; ++c) {{\n                for (int64_t kh = 0; kh < {out}_kH; ++kh) {{\n                    for (int64_t kw = 0; kw < {out}_kW; ++kw) {{\n                        int64_t col_row = c * {out}_kH * {out}_kW + kh * {out}_kW + kw;\n                        for (int64_t oh = 0; oh < {out}_out_H; ++oh) {{\n                            for (int64_t ow = 0; ow < {out}_out_W; ++ow) {{\n                                int64_t ih = oh * {strides[0]} - {pads[0]} + kh * {dilations[0]};\n                                int64_t iw = ow * {strides[1]} - {pads[1]} + kw * {dilations[1]};\n                                int64_t col_idx = col_row * N + oh * {out}_out_W + ow;\n                                if (ih >= 0 && ih < {out}_H && iw >= 0 && iw < {out}_W) {{\n                                    {out}_col_buffer[col_idx] = {x_var}.data[n * {out}_C * {out}_H * {out}_W + c * {out}_H * {out}_W + ih * {out}_W + iw];\n                                }} else {{\n                                    {out}_col_buffer[col_idx] = 0;\n                                }}\n                            }}\n                        }}\n                    }}\n                }}\n            }}\n            \n            // gemm\n            for (int64_t m = 0; m < {out}_M; ++m) {{\n                for (int64_t j = 0; j < N; ++j) {{\n                    {cpp_type} sum = 0;\n                    for (int64_t k = 0; k < K; ++k) {{\n                        sum += {w_var}.data[m * K + k] * {out}_col_buffer[k * N + j];\n                    }}\n                    if ({b_opt}.has_value()) {{\n                        sum += {b_opt}.value()[m];\n                    }}\n                    {out}.data[n * {out}_M * N + m * N + j] = sum;\n                }}\n            }}\n        }}\n"
 
 
@@ -64,7 +75,7 @@ def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    perm = node.attributes.get("perm", [])
+    perm = _get_attr(node, "perm", [])
 
     perm_logic = ""
     if not perm:
@@ -124,7 +135,7 @@ def generate_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    axis = node.attributes.get("axis", -1)
+    axis = _get_attr(node, "axis", -1)
 
     return f"""
         // Softmax
@@ -175,7 +186,7 @@ def generate_log_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator")
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    axis = node.attributes.get("axis", -1)
+    axis = _get_attr(node, "axis", -1)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
         f"{inp}_{in_buf}"
@@ -331,8 +342,8 @@ def generate_layer_normalization(node: Node, ctx: "onnx9000.backends.codegen.Gen
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(y_info.dtype)
-    axis = node.attributes.get("axis", -1)
-    epsilon = node.attributes.get("epsilon", 1e-05)
+    axis = _get_attr(node, "axis", -1)
+    epsilon = _get_attr(node, "epsilon", 1e-05)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
         f"{inp}_{in_buf}"
@@ -413,7 +424,7 @@ def generate_instance_normalization(node: Node, ctx: "onnx9000.backends.codegen.
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    epsilon = node.attributes.get("epsilon", 1e-05)
+    epsilon = _get_attr(node, "epsilon", 1e-05)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
         f"{inp}_{in_buf}"
@@ -466,9 +477,9 @@ def generate_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator"
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    kernel_shape = node.attributes.get("kernel_shape", [1, 1])
-    strides = node.attributes.get("strides", [1, 1])
-    pads = node.attributes.get("pads", [0, 0, 0, 0])
+    kernel_shape = _get_attr(node, "kernel_shape", [1, 1])
+    strides = _get_attr(node, "strides", [1, 1])
+    pads = _get_attr(node, "pads", [0, 0, 0, 0])
 
     return f"""
         // AveragePool
@@ -548,9 +559,9 @@ def generate_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    kernel_shape = node.attributes.get("kernel_shape", [1, 1])
-    strides = node.attributes.get("strides", [1, 1])
-    pads = node.attributes.get("pads", [0, 0, 0, 0])
+    kernel_shape = _get_attr(node, "kernel_shape", [1, 1])
+    strides = _get_attr(node, "strides", [1, 1])
+    pads = _get_attr(node, "pads", [0, 0, 0, 0])
 
     return f"""
         // MaxPool
@@ -731,7 +742,7 @@ def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    epsilon = node.attributes.get("epsilon", 1e-05)
+    epsilon = _get_attr(node, "epsilon", 1e-05)
     cpp_type = "float"
     if tensor_info.dtype is not None:
         from onnx9000.core.dtypes import to_cpp_type

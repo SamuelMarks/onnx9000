@@ -41,10 +41,12 @@ def generate_gemm(node: Node, generator_context: "onnx9000.backends.codegen.Gene
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    alpha = node.attributes.get("alpha", 1.0)
-    beta = node.attributes.get("beta", 1.0)
-    trans_a = node.attributes.get("trans_a", 0)
-    trans_b = node.attributes.get("trans_b", 0)
+    from onnx9000.backends.codegen.utils import get_attribute
+
+    alpha = get_attribute(node, "alpha", 1.0)
+    beta = get_attribute(node, "beta", 1.0)
+    trans_a = get_attribute(node, "trans_a", 0)
+    trans_b = get_attribute(node, "trans_b", 0)
     pragma = get_omp_pragma(f"{out}_size", extra="collapse(2)")
     bias_logic = f" + static_cast<{cpp_type}>({beta}) * {bias_var}.data[j]" if has_bias else ""
     cblas_trans_a = "CblasTrans" if trans_a else "CblasNoTrans"

@@ -164,8 +164,60 @@ def quantize_cmd(args: argparse.Namespace) -> None:
 
 
 def export_cmd(args: argparse.Namespace) -> None:
-    """Export a model to ONNX."""
-    print(f"Exporting {args.script}...")
+    """Export a model script to ONNX or other formats."""
+    print(f"Exporting {args.script} to {args.format}...")
+    import importlib.util
+    import os
+
+    from onnx9000.converters.frontend.nn.module import Module
+    from onnx9000.converters.frontend.tracer import trace
+
+    # Load the script as a module
+    spec = importlib.util.spec_from_file_location("export_script", args.script)
+    if spec is None or spec.loader is None:
+        print(f"Error: Could not load script {args.script}")
+        sys.exit(1)
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    # Search for any subclass of Module
+    model = None
+    for name in dir(module):
+        obj = getattr(module, name)
+        if isinstance(obj, type) and issubclass(obj, Module) and obj is not Module:
+            model = obj()
+            break
+
+    if model is None:
+        print("Error: No model found in script. Define a Module subclass.")
+        sys.exit(1)
+
+    # Try to find dummy input args
+    from onnx9000.converters import torch_like as torch
+
+    args_in = torch.randn(1, 1, 28, 28)
+
+    builder = trace(model, args_in)
+    graph = builder.to_graph()
+
+    output = args.output
+    if not output:
+        base = os.path.splitext(args.script)[0]
+        ext_map = {
+            "onnx": ".onnx",
+            "c": ".c",
+            "cpp": ".cpp",
+            "mlir": ".mlir",
+            "keras": ".py",
+            "wasm": ".js",
+        }
+        output = base + ext_map.get(args.format, ".out")
+
+    from onnx9000.core.exporter import export_graph
+
+    export_graph(graph, output, args.format)
+    print(f"Successfully exported to {output}")
 
 
 def optimum_export_cmd(args: argparse.Namespace) -> None:
@@ -219,7 +271,54 @@ def optimum_cmd(args: argparse.Namespace) -> None:
 
 def convert_cmd(args: argparse.Namespace) -> None:
     """Convert between model formats."""
-    print(f"Converting from {args.src} to {args.dst}...")
+    src_fmt = args.from_fmt or "onnx"
+    dst_fmt = args.to_fmt or "onnx"
+
+    print(f"Converting from {src_fmt} ({args.src}) to {dst_fmt}...")
+    import os
+
+    from onnx9000.core.ir import Graph
+
+    # Load source
+    if src_fmt == "onnx":
+        graph = load_onnx(args.src)
+    elif src_fmt == "keras":
+        import keras
+
+        model = keras.saving.load_model(args.src)
+        from onnx9000.converters.tf.api import convert_keras_to_onnx
+
+        graph = convert_keras_to_onnx(model)
+    elif src_fmt == "pytorch":
+        import torch
+
+        # Assume it's a scripted or exported model
+        # For now, let's just load it if it's a file
+        # This part is complex due to needing the class definition
+        print("PyTorch source conversion requires the model class to be available.")
+        return
+    else:
+        print(f"Unsupported source format: {src_fmt}")
+        return
+
+    output = args.output
+    if not output:
+        base = os.path.splitext(args.src)[0]
+        ext_map = {
+            "onnx": ".onnx",
+            "c": ".c",
+            "cpp": ".cpp",
+            "mlir": ".mlir",
+            "keras": ".py",
+            "pytorch": ".py",
+            "wasm": ".js",
+        }
+        output = base + "_converted" + ext_map.get(dst_fmt, ".out")
+
+    from onnx9000.core.exporter import export_graph
+
+    export_graph(graph, output, dst_fmt)
+    print(f"Successfully converted to {output}")
 
 
 def serve_cmd(args: argparse.Namespace) -> None:
@@ -750,8 +849,17 @@ def main() -> None:
 
     # Convert
     convert_parser = subparsers.add_parser("convert", help="Convert model formats")
-    convert_parser.add_argument("--src", type=str, required=True, help="Source format")
-    convert_parser.add_argument("--dst", type=str, required=True, help="Destination format")
+    convert_parser.add_argument("src", type=str, help="Source model path")
+    convert_parser.add_argument(
+        "--from", dest="from_fmt", type=str, help="Source format (onnx, keras, pytorch)"
+    )
+    convert_parser.add_argument(
+        "--to",
+        dest="to_fmt",
+        type=str,
+        help="Destination format (onnx, c, cpp, mlir, keras, pytorch, wasm)",
+    )
+    convert_parser.add_argument("-o", "--output", type=str, help="Output path")
     convert_parser.set_defaults(func=convert_cmd)
 
     # Serve
@@ -760,8 +868,12 @@ def main() -> None:
     serve_parser.set_defaults(func=serve_cmd)
 
     # Export
-    export_parser = subparsers.add_parser("export", help="Export to ONNX")
+    export_parser = subparsers.add_parser("export", help="Export to ONNX or other formats")
     export_parser.add_argument("script", type=str, help="Path to export script")
+    export_parser.add_argument(
+        "--format", type=str, default="onnx", help="Output format (onnx, c, cpp, mlir, keras, wasm)"
+    )
+    export_parser.add_argument("-o", "--output", type=str, help="Output path")
     export_parser.set_defaults(func=export_cmd)
 
     # Compile

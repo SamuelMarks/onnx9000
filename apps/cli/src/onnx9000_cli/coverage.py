@@ -847,18 +847,19 @@ def update_compliance_md(summary_md: str) -> None:
     with open(compliance_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-
     readme_path = os.path.abspath(os.path.join(os.getcwd(), "README.md"))
     if os.path.exists(readme_path):
         with open(readme_path, encoding="utf-8") as f:
             readme_content = f.read()
-        
+
         # Replace the table in README
         pattern = r"(Here is a summary of our framework support completeness and % compliant metrics:\n+)(.*?)(?=\n+For a detailed breakdown)"
         # We strip the "## Summary\n" heading from the generated summary_md if it exists
         clean_summary = summary_md.replace("## Summary\n", "").strip()
-        new_readme_content = re.sub(pattern, r"\g<1>" + clean_summary, readme_content, flags=re.DOTALL)
-        
+        new_readme_content = re.sub(
+            pattern, r"\g<1>" + clean_summary, readme_content, flags=re.DOTALL
+        )
+
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(new_readme_content)
 

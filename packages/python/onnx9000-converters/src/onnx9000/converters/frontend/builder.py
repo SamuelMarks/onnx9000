@@ -39,13 +39,18 @@ class GraphBuilder:
         for t in self.parameters:
             g.initializers.append(t.name)
             if t.name not in g.tensors:
+                data = t.numpy()
+                if data is None:
+                    import numpy as np
+
+                    data = np.zeros(tuple(t.shape) if t.shape else (), dtype=np.float32)
                 g.add_tensor(
                     IRTensor(
                         t.name,
                         tuple(t.shape) if t.shape else (),
                         t.dtype,
                         is_initializer=True,
-                        data=t.numpy().tobytes(),
+                        data=data.tobytes(),
                     )
                 )
         for n in self.nodes:
@@ -54,7 +59,7 @@ class GraphBuilder:
                     n.op_type,
                     [i.name for i in n.inputs],
                     [o.name for o in n.outputs],
-                    {k: IRAttribute(k, v) for (k, v) in (n.attributes or {}).items()},
+                    {k: IRAttribute(k, value=v) for (k, v) in (n.attributes or {}).items()},
                     name=n.name,
                     domain=n.domain,
                 )

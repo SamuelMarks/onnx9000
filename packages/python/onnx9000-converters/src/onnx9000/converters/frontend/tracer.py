@@ -40,46 +40,45 @@ class Proxy(Tensor):
 
 def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     """Traces a Python function into an ONNX GraphBuilder."""
+    from onnx9000.converters.frontend.tree import find_tensors, tree_map
+
     name = getattr(func, "__name__", func.__class__.__name__)
     builder = GraphBuilder(name=name)
-    proxy_args = []
-    for i, arg in enumerate(args):
+
+    def make_proxy(arg: Any) -> Any:
         if isinstance(arg, Tensor):
-            name = getattr(arg, "name", None) or f"input_{i}"
-            p = arg.__class__(arg.shape, arg.dtype, name=name)
+            p = arg.__class__(arg.shape, arg.dtype, name=arg.name)
             p.data = getattr(arg, "data", None)
-            builder.inputs.append(p)
-            proxy_args.append(p)
-        else:
-            proxy_args.append(arg)
-    proxy_kwargs = {}
-    for k, arg in kwargs.items():
-        if hasattr(arg, "shape") and hasattr(arg, "dtype"):
-            name = getattr(arg, "name", None) or f"kwinput_{k}"
-            p = arg.__class__(arg.shape, arg.dtype, name=name)
-            p.data = getattr(arg, "data", None)
-            builder.inputs.append(p)
-            proxy_kwargs[k] = p
-        else:
-            proxy_kwargs[k] = arg
+            if not any(p.name == i.name for i in builder.inputs):
+                builder.inputs.append(p)
+            return p
+        return arg
+
+    proxy_args = [tree_map(make_proxy, arg) for arg in args]
+    proxy_kwargs = {k: tree_map(make_proxy, v) for k, v in kwargs.items()}
+
     try:
         with Tracer(builder):
             outputs = func(*proxy_args, **proxy_kwargs)
     except Exception as e:
         raise RuntimeError(f"Tracing failed: {e}") from e
+
     if outputs is not None:
-        if isinstance(outputs, tuple):
-            builder.outputs.extend(outputs)
-        elif isinstance(outputs, dict):
-            builder.outputs.extend(outputs.values())
-        else:
-            builder.outputs.append(outputs)
+        builder.outputs.extend(find_tensors(outputs))
+
     return builder
 
 
 def script(func: Callable, *args: Any, **kwargs: Any) -> GraphBuilder:
-    """Script a Python function using AST translation."""
-    from onnx9000.converters.frontend.ast_parser import ScriptCompiler
+    """Script a Python function using TorchScript IR if available, otherwise AST translation."""
+    try:
+        import torch
+        from onnx9000.converters.torch.script import TorchScriptParser
 
-    compiler = ScriptCompiler(func)
-    return compiler.compile(*args, **kwargs)
+        parser = TorchScriptParser(func)
+        return parser.parse()
+    except (ImportError, Exception):
+        from onnx9000.converters.frontend.ast_parser import ScriptCompiler
+
+        compiler = ScriptCompiler(func)
+        return compiler.compile(*args, **kwargs)

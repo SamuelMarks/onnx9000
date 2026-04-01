@@ -109,7 +109,10 @@ export function emitActivation(
         inputs: [inputName],
         outputs: [outputName],
         name,
-        attributes: [],
+        attributes: [
+          { name: 'alpha', f: 1.6732632423543772848170429916717, type: 'FLOAT' },
+          { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' }
+        ],
       });
       break;
     case 'leaky_relu':
@@ -142,19 +145,36 @@ export function emitActivation(
       break;
     case 'swish':
     case 'silu':
-      const sigOut = name + '_sig';
       nodes.push({
         opType: 'Sigmoid',
         inputs: [inputName],
-        outputs: [sigOut],
+        outputs: [name + '_sig'],
         name: name + '_sigmoid',
         attributes: [],
       });
       nodes.push({
         opType: 'Mul',
-        inputs: [inputName, sigOut],
+        inputs: [inputName, name + '_sig'],
         outputs: [outputName],
         name: name + '_mul',
+        attributes: [],
+      });
+      break;
+    case 'hard_swish':
+      nodes.push({
+        opType: 'HardSwish',
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [],
+      });
+      break;
+    case 'mish':
+      nodes.push({
+        opType: 'Mish',
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
         attributes: [],
       });
       break;
@@ -164,7 +184,9 @@ export function emitActivation(
         inputs: [inputName],
         outputs: [outputName],
         name,
-        attributes: [],
+        attributes: [
+           { name: 'approximate', s: 'none', type: 'STRING' }
+        ],
       });
       break;
     case 'hard_sigmoid':

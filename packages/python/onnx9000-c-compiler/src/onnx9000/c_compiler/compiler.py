@@ -68,9 +68,18 @@ class C89Compiler:
         b.emit("#endif")
         b.emit("")
         b.emit_comment("C89 compatible standard integer types")
+        b.emit("/* MISRA-C:2012 Compliance Directives */")
+        b.emit("#if defined(__GNUC__) || defined(__clang__)")
+        b.emit('#pragma GCC diagnostic ignored "-Wpadded"')
+        b.emit("#endif")
         b.emit("#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L")
         b.emit_include("stdint.h")
         b.emit_include("stdbool.h")
+        if self.target == "cmsis-nn":
+            b.emit_include("arm_nnfunctions.h")
+        elif self.target == "esp-nn":
+            b.emit_include("esp_nn.h")
+
         b.emit("#else")
         b.emit("typedef signed char int8_t;")
         b.emit("typedef unsigned char uint8_t;")
@@ -94,6 +103,10 @@ class C89Compiler:
         b.emit("")
 
         b.emit_comment("Restrict and Inline Polyfills for Strict C89 compatibility")
+        b.emit("/* MISRA-C:2012 Compliance Directives */")
+        b.emit("#if defined(__GNUC__) || defined(__clang__)")
+        b.emit('#pragma GCC diagnostic ignored "-Wpadded"')
+        b.emit("#endif")
         b.emit("#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L")
         b.emit("#define ONNX9000_RESTRICT restrict")
         b.emit("#define ONNX9000_INLINE static inline")
@@ -211,7 +224,15 @@ class C89Compiler:
         b.emit_include("string.h")
         if self.debug:
             b.emit_include("assert.h")
-        b.emit("")
+
+        if self.target == "wasm":
+            b.emit("#ifndef ONNX9000_ALIGN_16")
+            b.emit("#define ONNX9000_ALIGN_16 __attribute__((aligned(16)))")
+            b.emit("#endif")
+        else:
+            b.emit("#ifndef ONNX9000_ALIGN_16")
+            b.emit("#define ONNX9000_ALIGN_16")
+            b.emit("#endif")
 
         from onnx9000.c_compiler.intrinsics import emit_avx2_headers
 
@@ -542,6 +563,8 @@ class C89Compiler:
                 "HardSigmoid",
                 "HardSwish",
                 "Gelu",
+                "Swish",
+                "Mish",
                 "Clip",
                 "PRelu",
             ]:
@@ -834,8 +857,32 @@ class C89Compiler:
         b.pop_indent()
         b.emit("}")
 
+    def _generate_rtos_wrapper(self) -> None:
+        if self.target == "freertos":
+            b = self.source_builder
+            b.emit("")
+            b.emit("/* FreeRTOS Task Wrapper */")
+            b.emit_include("FreeRTOS.h")
+            b.emit_include("task.h")
+            b.emit("")
+            b.emit(f"void {self.prefix}inference_task(void *pvParameters) {{")
+            b.push_indent()
+            b.emit(
+                f"struct {self.prefix}Context* ctx = (struct {self.prefix}Context*)pvParameters;"
+            )
+            b.emit("for (;;) {")
+            b.push_indent()
+            b.emit("/* Trigger inference */")
+            b.emit(f"{self.prefix}inference(ctx);")
+            b.emit("vTaskDelay(pdMS_TO_TICKS(10));")
+            b.pop_indent()
+            b.emit("}")
+            b.pop_indent()
+            b.emit("}")
+
     def generate(self) -> tuple[str, str]:
         """Compile the graph and return the generated header and source code as strings."""
         self._generate_header()
         self._generate_source()
+        self._generate_rtos_wrapper()
         return self.header_builder.get_code(), self.source_builder.get_code()

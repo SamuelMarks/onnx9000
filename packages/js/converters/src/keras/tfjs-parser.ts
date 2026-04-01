@@ -3,7 +3,7 @@
 /**
  * Defines the supported mathematical data types natively supported by Web-Native machine learning layers.
  */
-export type DataType = 'float32' | 'int32' | 'bool' | 'complex64' | 'string' | 'float16' | 'uint8';
+export type DataType = 'float32' | 'int32' | 'bool' | 'complex64' | 'string' | 'float16' | 'uint8' | 'int8' | 'int4' | 'uint4';
 
 /**
  * Represents a single weight entry in a TF.js manifest.
@@ -51,6 +51,7 @@ export interface TFJSLayersModel {
   convertedBy?: string;
   modelTopology: JsonObject; // The raw Keras JSON config
   weightsManifest: WeightGroup[];
+  signature?: JsonObject;
 }
 
 /**
@@ -125,5 +126,6 @@ export function parseTFJSModel(jsonText: string): TFJSModel {
     convertedBy: typeof parsed['convertedBy'] === 'string' ? parsed['convertedBy'] : undefined,
     modelTopology: parsed['modelTopology'] as JsonObject,
     weightsManifest,
+    signature: parsed['signature'] as JsonObject | undefined,
   } as TFJSModel;
 }

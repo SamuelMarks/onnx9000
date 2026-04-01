@@ -5,6 +5,7 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.ops.elementwise import _generate_binary_op, _generate_unary_op
+from onnx9000.backends.codegen.utils import get_attribute, get_omp_pragma
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
@@ -21,7 +22,7 @@ def generate_blackman_window(node: Node, ctx: "onnx9000.backends.codegen.Generat
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    periodic = node.attributes.get("periodic", 1)
+    periodic = get_attribute(node, "periodic", 1)
     return f"\n        // BlackmanWindow\n        int64_t window_size = {inp}.size() > 0 ? {inp}.data[0] : 0;\n        std::vector<int64_t> {out}_shape = {{window_size}};\n        \n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        {out}_{offset}.shape = {out}_shape; // Ensure shape is explicitly dynamic\n\n        if (window_size == 1) {{\n            {out}_{offset}.data[0] = static_cast<{cpp_type}>(1.0);\n        }} else if (window_size > 1) {{\n            double N = static_cast<double>({periodic} ? window_size : window_size - 1);\n            for (int64_t i = 0; i < window_size; ++i) {{\n                double x = 2.0 * M_PI * i / N;\n                double val = 0.42 - 0.5 * std::cos(x) + 0.08 * std::cos(2.0 * x);\n                {out}_{offset}.data[i] = static_cast<{cpp_type}>(val);\n            }}\n        }}\n    "
 
 
@@ -294,8 +295,6 @@ def generate_clip(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
         max_name = ctx.get_tensor_name(node.inputs[2])
         max_val = f"{max_name}.data[0]"
 
-    from onnx9000.backends.codegen.utils import get_omp_pragma
-
     pragma = get_omp_pragma(f"{inp}.size()")
 
     return f"""
@@ -365,7 +364,7 @@ def generate_sign(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 @registry.register_op("Mod")
 def generate_mod(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Mod operator."""
-    fmod_attr = getattr(node.attributes.get("fmod", 0), "value", 0)
+    fmod_attr = get_attribute(node, "fmod", 0)
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     from onnx9000.core.dtypes import DType
 
@@ -415,7 +414,7 @@ def generate_bitwise_not(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 @registry.register_op("BitShift")
 def generate_bitshift(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitshift operator."""
-    direction = getattr(node.attributes.get("direction"), "value", b"LEFT")
+    direction = get_attribute(node, "direction", b"LEFT")
     if direction == b"RIGHT":
         return _generate_binary_op(node, ctx, ">>")
     else:
@@ -537,8 +536,8 @@ def _generate_reduction(
 
         cpp_type = to_cpp_type(tensor_info.dtype)
 
-    axes = node.attributes.get("axes", [])
-    node.attributes.get("keepdims", 1)
+    axes = get_attribute(node, "axes", [])
+    get_attribute(node, "keepdims", 1)
 
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
 
@@ -627,9 +626,9 @@ def generate_dft(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
         from onnx9000.core.dtypes import to_cpp_type
 
         cpp_type = to_cpp_type(tensor_info.dtype)
-    node.attributes.get("axis", 1)
-    node.attributes.get("inverse", 0)
-    node.attributes.get("onesided", 0)
+    get_attribute(node, "axis", 1)
+    get_attribute(node, "inverse", 0)
+    get_attribute(node, "onesided", 0)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
         f"{inp}_{in_buf}"

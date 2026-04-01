@@ -26,6 +26,12 @@ class DType(enum.Enum):
     UINT32 = onnx_pb2.TensorProto.UINT32
     UINT64 = onnx_pb2.TensorProto.UINT64
     BFLOAT16 = onnx_pb2.TensorProto.BFLOAT16
+    FLOAT8E4M3FN = onnx_pb2.TensorProto.FLOAT8E4M3FN
+    FLOAT8E4M3FNUZ = onnx_pb2.TensorProto.FLOAT8E4M3FNUZ
+    FLOAT8E5M2 = onnx_pb2.TensorProto.FLOAT8E5M2
+    FLOAT8E5M2FNUZ = onnx_pb2.TensorProto.FLOAT8E5M2FNUZ
+    INT4 = onnx_pb2.TensorProto.INT4
+    UINT4 = onnx_pb2.TensorProto.UINT4
 
 
 def to_cpp_type(dtype: DType) -> str:

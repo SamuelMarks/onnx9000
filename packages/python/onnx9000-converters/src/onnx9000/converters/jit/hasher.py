@@ -23,5 +23,8 @@ def hash_graph(graph: Graph) -> str:
         hasher.update(str(tensor.shape).encode("utf-8"))
         hasher.update(str(tensor.dtype).encode("utf-8"))
         if tensor.is_initializer and tensor.data is not None:
-            hasher.update(tensor.data.tobytes()[:1024])
+            data = tensor.data
+            if hasattr(data, "tobytes"):
+                data = data.tobytes()
+            hasher.update(data[:1024])
     return hasher.hexdigest()

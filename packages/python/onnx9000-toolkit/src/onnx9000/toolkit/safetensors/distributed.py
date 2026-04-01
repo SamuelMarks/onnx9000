@@ -1,6 +1,6 @@
 """Provide functionality for this module."""
 
-from typing import Any, Dict
+from typing import List, Any, Dict
 
 from .parser import load_file
 

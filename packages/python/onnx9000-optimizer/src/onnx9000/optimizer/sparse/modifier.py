@@ -4,7 +4,7 @@ import logging
 import math
 import random
 import re
-from typing import Any, Optional, Tuple, Union
+from typing import List, Dict, Any, Optional, Tuple, Union
 
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, SparseTensor, Tensor
 from onnx9000.core.sparse import DType, pack_data, unpack_data

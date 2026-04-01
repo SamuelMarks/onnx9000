@@ -70,6 +70,83 @@ def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> Union[in
         return expr
 
 
+def simplify_expression(expr: str) -> str:
+    """Simplify a symbolic string expression (e.g. '(x * y) / y' -> 'x')."""
+    try:
+        node = ast.parse(expr, mode="eval").body
+        simplified = _simplify_ast(node)
+        return _ast_to_str(simplified)
+    except Exception:
+        return expr
+
+
+def _is_same(n1: Any, n2: Any) -> bool:
+    """Check if two AST nodes are structurally identical."""
+    return ast.dump(n1) == ast.dump(n2)
+
+
+def _is_zero(node: Any) -> bool:
+    """Check if an AST node is a constant zero."""
+    return isinstance(node, ast.Constant) and node.value == 0
+
+
+def _is_one(node: Any) -> bool:
+    """Check if an AST node is a constant one."""
+    return isinstance(node, ast.Constant) and node.value == 1
+
+
+def _simplify_ast(node: Any) -> Any:
+    """Recursively simplify an AST node."""
+    if isinstance(node, ast.BinOp):
+        left = _simplify_ast(node.left)
+        right = _simplify_ast(node.right)
+
+        # (x * y) / y -> x
+        if isinstance(node.op, ast.Div):
+            if isinstance(left, ast.BinOp) and isinstance(left.op, ast.Mult):
+                if _is_same(left.right, right):
+                    return left.left
+                if _is_same(left.left, right):
+                    return left.right
+
+        # x + 0 -> x, x * 1 -> x, etc.
+        if isinstance(node.op, ast.Add):
+            if _is_zero(right):
+                return left
+            if _is_zero(left):
+                return right
+        if isinstance(node.op, ast.Mult):
+            if _is_one(right):
+                return left
+            if _is_one(left):
+                return right
+            if _is_zero(right) or _is_zero(left):
+                return ast.Constant(0)
+
+        return ast.BinOp(left, node.op, right)
+    return node
+
+
+def _ast_to_str(node: Any) -> str:
+    """Convert a simplified AST node back to a string."""
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Constant):
+        return str(node.value)
+    if isinstance(node, ast.BinOp):
+        op_map = {
+            ast.Add: "+",
+            ast.Sub: "-",
+            ast.Mult: "*",
+            ast.Div: "/",
+            ast.FloorDiv: "//",
+            ast.Mod: "%",
+            ast.Pow: "**",
+        }
+        return f"({_ast_to_str(node.left)} {op_map[type(node.op)]} {_ast_to_str(node.right)})"
+    return str(node)
+
+
 def broadcast_shapes(
     shape_a: tuple[Union[int, DynamicDim], ...],
     shape_b: tuple[Union[int, DynamicDim], ...],
