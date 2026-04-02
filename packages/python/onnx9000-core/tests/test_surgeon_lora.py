@@ -1,6 +1,5 @@
 """Tests the surgeon lora module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.surgeon import merge_lora_adapters
 

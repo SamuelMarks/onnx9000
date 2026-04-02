@@ -1,9 +1,10 @@
 """Auto-generated core ops for torch compliance."""
 
-from typing import Any, Optional
+from typing import Any
+
 from onnx9000.core.ir import Tensor
-from onnx9000.core.registry import register_op
 from onnx9000.core.ops import record_op
+from onnx9000.core.registry import register_op
 
 
 @register_op("Boolstorage", "ai.onnx")

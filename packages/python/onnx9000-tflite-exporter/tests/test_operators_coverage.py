@@ -1,6 +1,5 @@
 """Tests for packages/python/onnx9000-tflite-exporter/tests/test_operators_coverage.py."""
 
-import pytest
 from onnx9000.core.ir import Attribute, Node
 from onnx9000.tflite_exporter.compiler.operators import (
     _map_cast,

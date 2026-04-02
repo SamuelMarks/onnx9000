@@ -870,7 +870,7 @@ export class LayoutOptimizer {
 
         if (sizes && this.graph.tensors[sizes]) {
           // Already explicitly defined sizes
-          const sizeTensor = this.graph.tensors[sizes]!;
+          const sizeTensor = this.graph.tensors[sizes];
           if (sizeTensor.dtype === 'int64') {
             console.warn(
               `[onnx2tf] Warning: Downcasting Int64 Resize 'sizes' tensor ${sizes} to Int32 for mobile compatibility.`,
@@ -878,7 +878,7 @@ export class LayoutOptimizer {
           }
         } else if (scales && this.graph.tensors[scales]) {
           // Compute sizes from scales
-          const scaleTensor = this.graph.tensors[scales]!;
+          const scaleTensor = this.graph.tensors[scales];
           const inName = node.inputs[0];
           const inInfo = inName
             ? this.graph.valueInfo.find((v) => v.name === inName) ||
@@ -978,7 +978,7 @@ export class LayoutOptimizer {
     }
 
     const dims = tensor.shape as number[];
-    const src = tensor.data as Float32Array;
+    const src = tensor.data;
     const dst = new Float32Array(src.length);
 
     if (perm.join(',') === '0,2,3,1') {

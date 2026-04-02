@@ -1,7 +1,6 @@
 """Compiler for transforming ONNX9000 IR to C89 code."""
 
 # Import memory planner to register Graph.simulate_memory_plan
-import onnx9000.core.memory_planner
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.data_unpacker import unpack_bytes_to_str
 from onnx9000.core.dtypes import DType, to_cpp_type
@@ -383,7 +382,7 @@ class C89Compiler:
             generate_where,
         )
         from onnx9000.c_compiler.control_flow import generate_if, generate_loop
-        from onnx9000.c_compiler.nlp import emit_bpe_tokenizer, generate_topk, generate_unique
+        from onnx9000.c_compiler.nlp import generate_topk, generate_unique
         from onnx9000.c_compiler.operations import (
             generate_elementwise_binary,
             generate_math_binary_call,

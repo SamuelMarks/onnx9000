@@ -2,7 +2,6 @@
 
 import struct
 
-import pytest
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 
@@ -79,8 +78,6 @@ def test_expand_1d_spatial_ops_pool():
     """Test expand 1d spatial ops pool."""
     import struct
 
-    from onnx9000.core.ir import Attribute
-
     graph = Graph("test")
     graph.inputs.append(ValueInfo("X", (1, 3, 224), "float32"))
     w_data = struct.pack(f"<{3 * 3 * 3}f", *[1.0] * 27)
@@ -113,8 +110,6 @@ def test_expand_1d_spatial_ops_pool():
 def test_layout_fold_constants():
     """Test layout fold constants."""
     import struct
-
-    from onnx9000.core.ir import Attribute
 
     graph = Graph("test")
     w_dw_data = struct.pack(f"<{27}f", *[1.0] * 27)

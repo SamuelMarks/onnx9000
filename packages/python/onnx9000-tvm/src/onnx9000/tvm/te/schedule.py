@@ -2,7 +2,7 @@
 
 from typing import Any, Optional
 
-from .tensor import ComputeOp, IterVar, Tensor
+from .tensor import IterVar, Tensor
 
 
 class Stage:

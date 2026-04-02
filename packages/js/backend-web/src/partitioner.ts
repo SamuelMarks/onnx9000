@@ -93,12 +93,12 @@ export class GraphPartitioner {
 
     let currentProviderName = this.providers[0]!.name;
     let currentNodes: Node[] = [];
-    let currentInputs = new Set<string>();
-    let currentOutputs = new Set<string>();
+    const currentInputs = new Set<string>();
+    const currentOutputs = new Set<string>();
 
     for (const node of graph.nodes) {
       let bestProvider = currentProviderName;
-      let supported = this.checkNodeSupported(node, currentProviderName);
+      const supported = this.checkNodeSupported(node, currentProviderName);
 
       if (!supported && this.providers.length > 1) {
         // Fallback required

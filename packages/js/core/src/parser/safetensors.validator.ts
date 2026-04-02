@@ -1,7 +1,9 @@
 import { SafeTensors, TensorInfo } from './safetensors.js';
 import { Graph } from '../ir/graph.js';
 
-// DType definition simplified from onnx to avoid protobuf dependency directly
+/**
+ * Enumeration of data types for validation, simplified from ONNX.
+ */
 export enum DType {
   UNDEFINED = 0,
   FLOAT = 1,
@@ -22,6 +24,11 @@ export enum DType {
   BFLOAT16 = 16,
 }
 
+/**
+ * Maps an internal DType enum value to its corresponding TypedArray name.
+ * @param dtype The numerical DType value
+ * @returns The string name of the corresponding JavaScript TypedArray
+ */
 export function toEmscriptenType(dtype: number): string {
   switch (dtype) {
     case DType.FLOAT:
@@ -55,6 +62,11 @@ export function toEmscriptenType(dtype: number): string {
   }
 }
 
+/**
+ * Validates that the shapes and data types in a Safetensors buffer match an ONNX Graph.
+ * @param buffer The Safetensors file data
+ * @param graph The reference ONNX Graph
+ */
 export function validateOnnxShapesAndDtypes(buffer: ArrayBuffer, graph: Graph): void {
   const st = new SafeTensors(buffer);
   const dtypeMap: Record<string, string> = {

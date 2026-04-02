@@ -1,4 +1,4 @@
-import { Graph } from '../ir/graph.js';
+import { Graph, ValueInfo } from '../ir/graph.js';
 import { Node, Attribute } from '../ir/node.js';
 import { Tensor, Shape, DType } from '../ir/tensor.js';
 import {
@@ -9,6 +9,11 @@ import {
   WIRE_TYPE_64BIT,
 } from './protobuf_writer.js';
 
+/**
+ * Serializes a Graph IR into an ONNX ModelProto bytes.
+ * @param graph The computational graph to serialize
+ * @returns Serialized ModelProto as Uint8Array
+ */
 export function serializeModelProto(graph: Graph): Uint8Array {
   const writer = new BufferWriter();
 
@@ -86,6 +91,11 @@ export function serializeModelProto(graph: Graph): Uint8Array {
   return writer.getResult();
 }
 
+/**
+ * Serializes a Node IR into a NodeProto.
+ * @param node The node to serialize
+ * @returns Serialized NodeProto
+ */
 function serializeNodeProto(node: Node): Uint8Array {
   const writer = new BufferWriter();
 
@@ -114,13 +124,10 @@ function serializeNodeProto(node: Node): Uint8Array {
   }
 
   // attributes (5)
-  let attrs: any = {};
-  if (node && node.attributes) {
-    attrs = node.attributes;
-  }
+  const attrs: Record<string, Attribute> = node.attributes || {};
   for (const [key, attr] of Object.entries(attrs)) {
     writer.writeTag(5, WIRE_TYPE_LENGTH_DELIMITED);
-    const attrBytes = serializeAttributeProto(key, attr as any);
+    const attrBytes = serializeAttributeProto(key, attr);
     writer.writeVarInt(attrBytes.length);
     writer.writeBytes(attrBytes);
   }
@@ -128,6 +135,12 @@ function serializeNodeProto(node: Node): Uint8Array {
   return writer.getResult();
 }
 
+/**
+ * Serializes an Attribute IR into an AttributeProto.
+ * @param name Attribute name
+ * @param attr Attribute data
+ * @returns Serialized AttributeProto
+ */
 function serializeAttributeProto(name: string, attr: Attribute): Uint8Array {
   const writer = new BufferWriter();
 
@@ -173,6 +186,11 @@ function serializeAttributeProto(name: string, attr: Attribute): Uint8Array {
   return writer.getResult();
 }
 
+/**
+ * Maps IR DType to ONNX TensorProto DataType enum.
+ * @param dtype Internal DType
+ * @returns ONNX enum value
+ */
 function mapDTypeToEnum(dtype: DType): number {
   switch (dtype) {
     case 'float32':
@@ -208,6 +226,12 @@ function mapDTypeToEnum(dtype: DType): number {
   }
 }
 
+/**
+ * Serializes a Tensor IR into a TensorProto.
+ * @param name Tensor name
+ * @param tensor Tensor data
+ * @returns Serialized TensorProto
+ */
 function serializeTensorProto(name: string, tensor: Tensor): Uint8Array {
   const writer = new BufferWriter();
 
@@ -239,7 +263,12 @@ function serializeTensorProto(name: string, tensor: Tensor): Uint8Array {
   return writer.getResult();
 }
 
-function serializeValueInfoProto(vi: any): Uint8Array {
+/**
+ * Serializes a ValueInfo IR into a ValueInfoProto.
+ * @param vi ValueInfo data
+ * @returns Serialized ValueInfoProto
+ */
+function serializeValueInfoProto(vi: ValueInfo): Uint8Array {
   const writer = new BufferWriter();
 
   // name (1)

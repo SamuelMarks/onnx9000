@@ -1,47 +1,84 @@
+/**
+ * Represents a node in the ONNX graph.
+ */
 export interface CheckerNode {
+  /** Operation type name */
   op_type: string;
+  /** Input names */
   inputs?: string[];
+  /** Output names */
   outputs?: string[];
+  /** Attribute values */
   attributes?: Record<string, number | string | number[] | string[] | boolean | object>;
 }
 
+/**
+ * Represents a tensor or initializer in the ONNX graph.
+ */
 export interface CheckerTensor {
+  /** Tensor name */
   name: string;
+  /** Data type (e.g., 'float', 'int32') */
   data_type: string;
+  /** Tensor shape */
   shape?: number[];
+  /** Whether it is an initializer */
   is_initializer?: boolean;
+  /** Storage location */
   data_location?: string;
+  /** External data information */
   external_data?: { location?: string };
+  /** Inline raw data */
   raw_data?: Uint8Array;
 }
 
+/**
+ * Represents the computational graph.
+ */
 export interface CheckerGraph {
+  /** Graph inputs */
   inputs?: CheckerTensor[];
+  /** Graph initializers */
   initializers?: CheckerTensor[];
+  /** Nodes in execution order */
   nodes?: CheckerNode[];
+  /** Graph output names */
   outputs?: string[];
 }
 
+/**
+ * Represents the ONNX model.
+ */
 export interface Model {
+  /** IR version */
   ir_version?: number;
+  /** Producer name */
   producer_name?: string;
+  /** Opset imports */
   opset_import?: { domain: string; version: number }[];
+  /** Main graph */
   graph?: CheckerGraph;
 }
 
-export interface Model {
-  ir_version?: number;
-  producer_name?: string;
-  opset_import?: { domain: string; version: number }[];
-  graph?: CheckerGraph;
-}
-
+/**
+ * Context for validation, storing errors and settings.
+ */
 export class ValidationContext {
+  /** Whether to be strict about errors */
   strict: boolean;
+  /** Whether to allow unrecognized operations */
   allow_unrecognized_ops: boolean;
+  /** Whether to skip shape inference during validation */
   skip_shape_inference: boolean;
+  /** Collected error messages */
   errors: string[];
 
+  /**
+   * Initializes a new ValidationContext.
+   * @param strict Whether to be strict
+   * @param allow_unrecognized_ops Whether to allow unrecognized ops
+   * @param skip_shape_inference Whether to skip shape inference
+   */
   constructor(strict = true, allow_unrecognized_ops = false, skip_shape_inference = false) {
     this.strict = strict;
     this.allow_unrecognized_ops = allow_unrecognized_ops;
@@ -50,8 +87,16 @@ export class ValidationContext {
   }
 }
 
+/**
+ * Registry for ONNX operator schemas.
+ */
 export class SchemaRegistry {
+  /** Map of domain_opset to op_type to schema */
   schemas: Record<string, Record<string, Record<string, string>>>;
+
+  /**
+   * Initializes the registry with default ONNX schemas.
+   */
   constructor() {
     this.schemas = {};
     for (let i = 1; i <= 21; i++) {
@@ -62,6 +107,12 @@ export class SchemaRegistry {
     }
   }
 
+  /**
+   * Registers a custom schema for a domain and opset.
+   * @param domain Schema domain
+   * @param opset Opset version
+   * @param schema_json Schema definition
+   */
   register_custom_schema(
     domain: string,
     opset: number,
@@ -70,17 +121,26 @@ export class SchemaRegistry {
     this.schemas[`${domain}_v${opset.toString()}`] = schema_json;
   }
 
+  /**
+   * Gets the schema for a specific operator.
+   * @param op_type Operator type
+   * @param opset Opset version
+   * @param domain Schema domain
+   * @returns The operator schema
+   */
   get_schema(op_type: string, opset: number, domain = 'ai.onnx') {
     const key = `${domain}_v${opset.toString()}`;
-    if (!this.schemas[key]) throw new Error(`Unsupported opset: ${key as unknown as string}`);
-    if (!this.schemas[key][op_type])
-      throw new Error(
-        `Unsupported op: ${op_type as unknown as string} in ${key as unknown as string}`,
-      );
+    if (!this.schemas[key]) throw new Error(`Unsupported opset: ${key}`);
+    if (!this.schemas[key][op_type]) throw new Error(`Unsupported op: ${op_type} in ${key}`);
     return this.schemas[key][op_type];
   }
 }
 
+/**
+ * Validates a tensor.
+ * @param tensor Tensor to validate
+ * @param ctx Validation context
+ */
 export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
   const validTypes = [
     'float',
@@ -100,7 +160,7 @@ export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
   if (tensor.shape) {
     for (const dim of tensor.shape) {
       if (typeof dim === 'number' && dim < -1) {
-        ctx.errors.push(`Invalid dim: ${(dim as unknown as number).toString()}`);
+        ctx.errors.push(`Invalid dim: ${dim.toString()}`);
       }
       if (typeof dim === 'number' && dim === -1 && tensor.is_initializer) {
         ctx.errors.push('Initializer cannot have -1 dim');
@@ -134,6 +194,13 @@ export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
   }
 }
 
+/**
+ * Validates an attribute against a schema type.
+ * @param attr_name Name of the attribute
+ * @param attr_val Value of the attribute
+ * @param schema_type Expected schema type
+ * @param ctx Validation context
+ */
 export function check_attribute(
   attr_name: string,
   attr_val: number | string | number[] | string[] | boolean | object,
@@ -151,7 +218,12 @@ export function check_attribute(
   }
 }
 
-function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
+/**
+ * Checks operation-specific constraints.
+ * @param node Node to check
+ * @param ctx Validation context
+ */
+export function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
   const op = node.op_type;
   if (['Add', 'Sub', 'Mul', 'Div'].includes(op)) {
     if ((node.inputs?.length || 0) !== 2) ctx.errors.push(`${op} requires 2 inputs`);
@@ -172,6 +244,12 @@ function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
   }
 }
 
+/**
+ * Validates an entire ONNX model.
+ * @param model Model to validate
+ * @param ctx Optional validation context
+ * @returns True if valid, throws error otherwise
+ */
 export function check_model(model: Model, ctx?: ValidationContext) {
   const c = ctx || new ValidationContext();
 
@@ -234,6 +312,12 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   return true;
 }
 
+/**
+ * Asynchronously validates an ONNX model.
+ * @param model Model to validate
+ * @param ctx Optional validation context
+ * @returns Promise resolving to true if valid
+ */
 export async function check_model_async(model: Model, ctx?: ValidationContext) {
   await Promise.resolve();
   return check_model(model, ctx);

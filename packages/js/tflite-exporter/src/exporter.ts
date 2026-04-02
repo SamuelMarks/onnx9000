@@ -147,7 +147,7 @@ export class TFLiteExporter {
     // Description
     const descOffset = this.builder.createString(description);
 
-    let metadataOffsets: number[] = [];
+    const metadataOffsets: number[] = [];
     for (const m of this.metadataList) {
       const nameOffset = this.builder.createString(m.name);
       metadataOffsets.push(Metadata.create(this.builder, nameOffset, m.bufferIndex));

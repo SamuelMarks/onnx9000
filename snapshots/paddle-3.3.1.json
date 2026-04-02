@@ -10564,7 +10564,7 @@
     {
       "name": "nn.Sequential",
       "type": "Class",
-      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | OrderedDict[str, Layer])"
+      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | Ordereddict[str, Layer])"
     },
     {
       "name": "nn.Conv1D",
@@ -14794,7 +14794,7 @@
     {
       "name": "nn.layer.container.param_guard",
       "type": "Function",
-      "signature": "(parameters: OrderedDict[str, Tensor]) -> Generator[None, None, None]"
+      "signature": "(parameters: Ordereddict[str, Tensor]) -> Generator[None, None, None]"
     },
     {
       "name": "nn.layer.container.Parameter",
@@ -14834,7 +14834,7 @@
     {
       "name": "nn.layer.container.Sequential",
       "type": "Class",
-      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | OrderedDict[str, Layer])"
+      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | Ordereddict[str, Layer])"
     },
     {
       "name": "nn.functional.celu",
@@ -34049,7 +34049,7 @@
     {
       "name": "distributed.fleet.recompute.recompute.Sequential",
       "type": "Class",
-      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | OrderedDict[str, Layer])"
+      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | Ordereddict[str, Layer])"
     },
     {
       "name": "distributed.fleet.recompute.recompute.detach_variable",
@@ -41854,7 +41854,7 @@
     {
       "name": "base.dygraph.base.param_guard",
       "type": "Function",
-      "signature": "(parameters: OrderedDict[str, Tensor]) -> Generator[None, None, None]"
+      "signature": "(parameters: Ordereddict[str, Tensor]) -> Generator[None, None, None]"
     },
     {
       "name": "base.dygraph.base.enabled",
@@ -43844,7 +43844,7 @@
     {
       "name": "vision.models.vgg.Sequential",
       "type": "Class",
-      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | OrderedDict[str, Layer])"
+      "signature": "(layers: Layer | tuple[str, Layer] | list[Any] | Ordereddict[str, Layer])"
     },
     {
       "name": "vision.models.vgg.model_urls",
@@ -69189,7 +69189,7 @@
     {
       "name": "jit.dy2static.program_translator.param_guard",
       "type": "Function",
-      "signature": "(parameters: OrderedDict[str, Tensor]) -> Generator[None, None, None]"
+      "signature": "(parameters: Ordereddict[str, Tensor]) -> Generator[None, None, None]"
     },
     {
       "name": "jit.dy2static.program_translator.switch_to_static_graph",

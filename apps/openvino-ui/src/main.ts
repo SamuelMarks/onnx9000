@@ -13,7 +13,9 @@ function showStatus(message: string, type: 'info' | 'success' | 'error') {
   statusDiv.innerHTML = message;
 }
 
-dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('click', () => {
+  fileInput.click();
+});
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
   dropzone.addEventListener(eventName, preventDefaults, false);
@@ -25,11 +27,23 @@ function preventDefaults(e: Event) {
 }
 
 ['dragenter', 'dragover'].forEach((eventName) => {
-  dropzone.addEventListener(eventName, () => dropzone.classList.add('active'), false);
+  dropzone.addEventListener(
+    eventName,
+    () => {
+      dropzone.classList.add('active');
+    },
+    false,
+  );
 });
 
 ['dragleave', 'drop'].forEach((eventName) => {
-  dropzone.addEventListener(eventName, () => dropzone.classList.remove('active'), false);
+  dropzone.addEventListener(
+    eventName,
+    () => {
+      dropzone.classList.remove('active');
+    },
+    false,
+  );
 });
 
 dropzone.addEventListener('drop', (e: DragEvent) => {

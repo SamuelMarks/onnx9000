@@ -1,8 +1,5 @@
 """Tests for a large graph with many operations in the C compiler."""
 
-import sys
-
-import pytest
 from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo

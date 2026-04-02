@@ -1,6 +1,5 @@
 """Tests the profiler checks more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.profiler_checks import OptimizationAnalyzer
 

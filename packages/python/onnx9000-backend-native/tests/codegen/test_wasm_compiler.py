@@ -1,7 +1,6 @@
 """Tests for the codegen compiler utilities."""
 
 import os
-import shutil
 import subprocess
 from unittest.mock import patch
 

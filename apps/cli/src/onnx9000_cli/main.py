@@ -277,8 +277,6 @@ def convert_cmd(args: argparse.Namespace) -> None:
     print(f"Converting from {src_fmt} ({args.src}) to {dst_fmt}...")
     import os
 
-    from onnx9000.core.ir import Graph
-
     # Load source
     if src_fmt == "onnx":
         graph = load_onnx(args.src)
@@ -290,8 +288,6 @@ def convert_cmd(args: argparse.Namespace) -> None:
 
         graph = convert_keras_to_onnx(model)
     elif src_fmt == "pytorch":
-        import torch
-
         # Assume it's a scripted or exported model
         # For now, let's just load it if it's a file
         # This part is complex due to needing the class definition
@@ -328,7 +324,6 @@ def serve_cmd(args: argparse.Namespace) -> None:
 
 def onnx2gguf_cmd(args: argparse.Namespace) -> None:
     """Convert ONNX to GGUF."""
-    import json
     import os
 
     try:
@@ -674,7 +669,9 @@ def change_batch_cmd(args: argparse.Namespace) -> None:
 
     for inp in graph.inputs:
         if len(inp.shape) > 0:
-            inp.shape[0] = new_size
+            s = list(inp.shape)
+            s[0] = new_size
+            inp.shape = tuple(s)
 
     out_path = args.output or args.model
     save_onnx(graph, out_path)

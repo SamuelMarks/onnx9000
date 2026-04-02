@@ -1,6 +1,6 @@
 """Tree utility for handling nested collections (list, tuple, dict)."""
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable
 
 
 def tree_map(fn: Callable, tree: Any) -> Any:
@@ -14,11 +14,21 @@ def tree_map(fn: Callable, tree: Any) -> Any:
     return fn(tree)
 
 
-def tree_flatten(tree: Any) -> Tuple[List[Any], Any]:
-    """Flatten a tree into a list of leaves and a treedef."""
+def tree_flatten(tree: Any) -> tuple[list[Any], Any]:
+    """Flatten a nested collection into a flat list of leaf elements and a structural definition.
+
+    Args:
+        tree: The nested collection (list, tuple, or dict) to flatten.
+
+    Returns:
+        A tuple containing:
+            - A list of leaf elements.
+            - A treedef object representing the original structure.
+    """
     leaves = []
 
     def _flatten(t):
+        """Recursively traverse the tree, collecting leaves and preserving structure."""
         if isinstance(t, list):
             return [_flatten(x) for x in t], list
         if isinstance(t, tuple):
@@ -32,8 +42,16 @@ def tree_flatten(tree: Any) -> Tuple[List[Any], Any]:
     return leaves, treedef
 
 
-def tree_unflatten(leaves: List[Any], treedef: Any) -> Any:
-    """Reconstruct a tree from leaves and a treedef."""
+def tree_unflatten(leaves: list[Any], treedef: Any) -> Any:
+    """Reconstruct a nested collection from a flat list of leaves and a structural definition.
+
+    Args:
+        leaves: The flat list of leaf elements.
+        treedef: The structural definition returned by tree_flatten.
+
+    Returns:
+        The reconstructed nested collection.
+    """
     structure, container = treedef
     if container is list:
         return [tree_unflatten(leaves, x) for x in structure]
@@ -44,13 +62,14 @@ def tree_unflatten(leaves: List[Any], treedef: Any) -> Any:
     return leaves[structure]
 
 
-def find_tensors(tree: Any) -> List[Any]:
+def find_tensors(tree: Any) -> list[Any]:
     """Recursively find all Tensor objects in a tree."""
     from onnx9000.converters.frontend.tensor import Tensor
 
     tensors = []
 
     def _find(t):
+        """Recursively traverse the tree and append found Tensor instances to the outer list."""
         if isinstance(t, Tensor):
             tensors.append(t)
         elif isinstance(t, (list, tuple)):

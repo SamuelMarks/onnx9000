@@ -1,6 +1,5 @@
 """Tests for the FlatBuffer builder used in the TFLite exporter."""
 
-import pytest
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
 

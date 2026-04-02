@@ -1,6 +1,5 @@
 """Tests for the EdgeTPU optimizer in the TFLite exporter."""
 
-import pytest
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.optimizations.edgetpu import EdgeTPUOptimizer
 

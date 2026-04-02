@@ -579,7 +579,7 @@
     {
       "name": "converters.mil.debugging_utils.extract_submodel",
       "type": "Function",
-      "signature": "(model: MLModel, outputs: List[str], inputs: Optional[List[str]], function_name: str) -> MLModel"
+      "signature": "(model: MLModel, outputs: list[str], inputs: Optional[list[str]], function_name: str) -> MLModel"
     },
     {
       "name": "converters.mil.testing_utils.coremltoolsutils",
@@ -989,7 +989,7 @@
     {
       "name": "converters.mil.mil.scope.add_graph_pass_scope",
       "type": "Function",
-      "signature": "(src_scopes: Dict[ScopeSource, List[str]], graph_pass_scopes: Dict[ScopeSource, List[str]]) -> Dict[ScopeSource, List[str]]"
+      "signature": "(src_scopes: Dict[ScopeSource, list[str]], graph_pass_scopes: Dict[ScopeSource, list[str]]) -> Dict[ScopeSource, list[str]]"
     },
     {
       "name": "converters.mil.mil.scope.ScopeInfo",
@@ -1234,7 +1234,7 @@
     {
       "name": "converters.mil.mil.block.add_graph_pass_scope",
       "type": "Function",
-      "signature": "(src_scopes: Dict[ScopeSource, List[str]], graph_pass_scopes: Dict[ScopeSource, List[str]]) -> Dict[ScopeSource, List[str]]"
+      "signature": "(src_scopes: Dict[ScopeSource, list[str]], graph_pass_scopes: Dict[ScopeSource, list[str]]) -> Dict[ScopeSource, list[str]]"
     },
     {
       "name": "converters.mil.mil.block.is_symbolic",
@@ -5029,7 +5029,7 @@
     {
       "name": "converters.mil.frontend.torch.internal_graph.extract_io_from_exir_program",
       "type": "Function",
-      "signature": "(exported_program) -> Tuple[List[TensorType], List[str], Dict[str, torch.Tensor], Dict[str, torch.Tensor], Dict[str, str], Dict[str, str]]"
+      "signature": "(exported_program) -> Tuple[List[TensorType], list[str], dict[str, torch.Tensor], dict[str, torch.Tensor], dict[str, str], dict[str, str]]"
     },
     {
       "name": "converters.mil.frontend.torch.internal_graph.TORCH_DTYPE_TO_NUM",
@@ -5044,17 +5044,17 @@
     {
       "name": "converters.mil.frontend.torch.internal_graph.InternalTorchIRBlock",
       "type": "Class",
-      "signature": "(parent: Optional[InternalTorchIRNode], nodes: Optional[List[InternalTorchIRNode]], inputs: Optional[List[str]], outputs: Optional[List[str]])"
+      "signature": "(parent: Optional[InternalTorchIRNode], nodes: Optional[List[InternalTorchIRNode]], inputs: Optional[list[str]], outputs: Optional[list[str]])"
     },
     {
       "name": "converters.mil.frontend.torch.internal_graph.InternalTorchIRNode",
       "type": "Class",
-      "signature": "(kind: str, inputs: List[str], outputs: List[str], kwinputs: Optional[Dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[Dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
+      "signature": "(kind: str, inputs: list[str], outputs: list[str], kwinputs: Optional[dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
     },
     {
       "name": "converters.mil.frontend.torch.internal_graph.InternalTorchIRGraph",
       "type": "Class",
-      "signature": "(params: Dict[str, np.ndarray], inputs: Dict[str, TensorType], outputs: List[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[Dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[Dict[str, str]], output_name_to_target_buffer_name: Optional[Dict[str, str]])"
+      "signature": "(params: dict[str, np.ndarray], inputs: dict[str, TensorType], outputs: list[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[dict[str, str]], output_name_to_target_buffer_name: Optional[dict[str, str]])"
     },
     {
       "name": "converters.mil.frontend.torch.converter.logger",
@@ -5184,12 +5184,12 @@
     {
       "name": "converters.mil.frontend.torch.converter.InternalTorchIRGraph",
       "type": "Class",
-      "signature": "(params: Dict[str, np.ndarray], inputs: Dict[str, TensorType], outputs: List[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[Dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[Dict[str, str]], output_name_to_target_buffer_name: Optional[Dict[str, str]])"
+      "signature": "(params: dict[str, np.ndarray], inputs: dict[str, TensorType], outputs: list[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[dict[str, str]], output_name_to_target_buffer_name: Optional[dict[str, str]])"
     },
     {
       "name": "converters.mil.frontend.torch.converter.InternalTorchIRNode",
       "type": "Class",
-      "signature": "(kind: str, inputs: List[str], outputs: List[str], kwinputs: Optional[Dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[Dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
+      "signature": "(kind: str, inputs: list[str], outputs: list[str], kwinputs: Optional[dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
     },
     {
       "name": "converters.mil.frontend.torch.converter.convert_nodes",
@@ -5224,7 +5224,7 @@
     {
       "name": "converters.mil.frontend.torch.converter.transform_inplace_ops",
       "type": "Function",
-      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[Dict[str, str]]) -> None"
+      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[dict[str, str]]) -> None"
     },
     {
       "name": "converters.mil.frontend.torch.converter.NUM_TO_NUMPY_DTYPE",
@@ -5274,7 +5274,7 @@
     {
       "name": "converters.mil.frontend.torch.converter.TorchConverter",
       "type": "Class",
-      "signature": "(loaded_model: Union[RecursiveScriptModule, ExportedProgram], inputs: Optional[List[TensorType]], outputs: Optional[List[TensorType]], cut_at_symbols: Optional[List[str]], opset_version: Optional[int], use_default_fp16_io: bool, states: Optional[List[StateType]])"
+      "signature": "(loaded_model: Union[RecursiveScriptModule, ExportedProgram], inputs: Optional[List[TensorType]], outputs: Optional[List[TensorType]], cut_at_symbols: Optional[list[str]], opset_version: Optional[int], use_default_fp16_io: bool, states: Optional[List[StateType]])"
     },
     {
       "name": "converters.mil.frontend.torch.exir_utils.logger",
@@ -5309,7 +5309,7 @@
     {
       "name": "converters.mil.frontend.torch.exir_utils.extract_io_from_exir_program",
       "type": "Function",
-      "signature": "(exported_program) -> Tuple[List[TensorType], List[str], Dict[str, torch.Tensor], Dict[str, torch.Tensor], Dict[str, str], Dict[str, str]]"
+      "signature": "(exported_program) -> Tuple[List[TensorType], list[str], dict[str, torch.Tensor], dict[str, torch.Tensor], dict[str, str], dict[str, str]]"
     },
     {
       "name": "converters.mil.frontend.torch.torchir_passes.logger",
@@ -5319,12 +5319,12 @@
     {
       "name": "converters.mil.frontend.torch.torchir_passes.InternalTorchIRGraph",
       "type": "Class",
-      "signature": "(params: Dict[str, np.ndarray], inputs: Dict[str, TensorType], outputs: List[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[Dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[Dict[str, str]], output_name_to_target_buffer_name: Optional[Dict[str, str]])"
+      "signature": "(params: dict[str, np.ndarray], inputs: dict[str, TensorType], outputs: list[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[dict[str, str]], output_name_to_target_buffer_name: Optional[dict[str, str]])"
     },
     {
       "name": "converters.mil.frontend.torch.torchir_passes.InternalTorchIRNode",
       "type": "Class",
-      "signature": "(kind: str, inputs: List[str], outputs: List[str], kwinputs: Optional[Dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[Dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
+      "signature": "(kind: str, inputs: list[str], outputs: list[str], kwinputs: Optional[dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
     },
     {
       "name": "converters.mil.frontend.torch.torchir_passes.generate_tensor_assignment_ops",
@@ -5344,7 +5344,7 @@
     {
       "name": "converters.mil.frontend.torch.torchir_passes.transform_inplace_ops",
       "type": "Function",
-      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[Dict[str, str]]) -> None"
+      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[dict[str, str]]) -> None"
     },
     {
       "name": "converters.mil.frontend.torch.torchir_passes.flatten_graph_input_values",
@@ -5409,7 +5409,7 @@
     {
       "name": "converters.mil.frontend.torch.load.TorchConverter",
       "type": "Class",
-      "signature": "(loaded_model: Union[RecursiveScriptModule, ExportedProgram], inputs: Optional[List[TensorType]], outputs: Optional[List[TensorType]], cut_at_symbols: Optional[List[str]], opset_version: Optional[int], use_default_fp16_io: bool, states: Optional[List[StateType]])"
+      "signature": "(loaded_model: Union[RecursiveScriptModule, ExportedProgram], inputs: Optional[List[TensorType]], outputs: Optional[List[TensorType]], cut_at_symbols: Optional[list[str]], opset_version: Optional[int], use_default_fp16_io: bool, states: Optional[List[StateType]])"
     },
     {
       "name": "converters.mil.frontend.torch.load.TorchFrontend",
@@ -5419,7 +5419,7 @@
     {
       "name": "converters.mil.frontend.torch.load.load",
       "type": "Function",
-      "signature": "(spec: Union[RecursiveScriptModule, ExportedProgram, str], inputs: List[TensorType], specification_version: int, debug: bool, outputs: Optional[List[TensorType]], cut_at_symbols: Optional[List[str]], use_default_fp16_io: bool, states: Optional[List[StateType]], kwargs) -> Program"
+      "signature": "(spec: Union[RecursiveScriptModule, ExportedProgram, str], inputs: List[TensorType], specification_version: int, debug: bool, outputs: Optional[List[TensorType]], cut_at_symbols: Optional[list[str]], use_default_fp16_io: bool, states: Optional[List[StateType]], kwargs) -> Program"
     },
     {
       "name": "converters.mil.frontend.torch.load.is_torch_model",
@@ -6064,17 +6064,17 @@
     {
       "name": "converters.mil.frontend.torch.test.test_passes.InternalTorchIRBlock",
       "type": "Class",
-      "signature": "(parent: Optional[InternalTorchIRNode], nodes: Optional[List[InternalTorchIRNode]], inputs: Optional[List[str]], outputs: Optional[List[str]])"
+      "signature": "(parent: Optional[InternalTorchIRNode], nodes: Optional[List[InternalTorchIRNode]], inputs: Optional[list[str]], outputs: Optional[list[str]])"
     },
     {
       "name": "converters.mil.frontend.torch.test.test_passes.InternalTorchIRGraph",
       "type": "Class",
-      "signature": "(params: Dict[str, np.ndarray], inputs: Dict[str, TensorType], outputs: List[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[Dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[Dict[str, str]], output_name_to_target_buffer_name: Optional[Dict[str, str]])"
+      "signature": "(params: dict[str, np.ndarray], inputs: dict[str, TensorType], outputs: list[str], nodes: Optional[List[InternalTorchIRNode]], buffers: Optional[dict[str, torch.Tensor]], input_name_to_source_buffer_name: Optional[dict[str, str]], output_name_to_target_buffer_name: Optional[dict[str, str]])"
     },
     {
       "name": "converters.mil.frontend.torch.test.test_passes.InternalTorchIRNode",
       "type": "Class",
-      "signature": "(kind: str, inputs: List[str], outputs: List[str], kwinputs: Optional[Dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[Dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
+      "signature": "(kind: str, inputs: list[str], outputs: list[str], kwinputs: Optional[dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
     },
     {
       "name": "converters.mil.frontend.torch.test.test_passes.flatten_graph_input_values",
@@ -6089,7 +6089,7 @@
     {
       "name": "converters.mil.frontend.torch.test.test_passes.transform_inplace_ops",
       "type": "Function",
-      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[Dict[str, str]]) -> None"
+      "signature": "(graph: InternalTorchIRGraph, name_remap_dict: Optional[dict[str, str]]) -> None"
     },
     {
       "name": "converters.mil.frontend.torch.test.test_passes.TestTorchPasses",
@@ -6134,7 +6134,7 @@
     {
       "name": "converters.mil.frontend.torch.test.test_internal_graph.InternalTorchIRNode",
       "type": "Class",
-      "signature": "(kind: str, inputs: List[str], outputs: List[str], kwinputs: Optional[Dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[Dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
+      "signature": "(kind: str, inputs: list[str], outputs: list[str], kwinputs: Optional[dict[str, str]], name: Optional[str], parent: Optional[Union[InternalTorchIRGraph, InternalTorchIRBlock]], attr: Optional[dict[str, Any]], blocks: Optional[List[InternalTorchIRBlock]], model_hierarchy: Optional[str], meta: Optional[Dict])"
     },
     {
       "name": "converters.mil.frontend.torch.test.test_internal_graph.TestTorchOps",
@@ -7514,7 +7514,7 @@
     {
       "name": "converters.mil.frontend.tensorflow.converter.get_output_names",
       "type": "Function",
-      "signature": "(outputs) -> Optional[List[str]]"
+      "signature": "(outputs) -> Optional[list[str]]"
     },
     {
       "name": "converters.mil.frontend.tensorflow.converter.simple_topsort",
@@ -7719,7 +7719,7 @@
     {
       "name": "converters.mil.frontend.tensorflow.load.get_output_names",
       "type": "Function",
-      "signature": "(outputs) -> Optional[List[str]]"
+      "signature": "(outputs) -> Optional[list[str]]"
     },
     {
       "name": "converters.mil.frontend.tensorflow.load.fill_outputs",
@@ -16699,7 +16699,7 @@
     {
       "name": "optimize.torch.quantization.modules.observers.NoopObserver",
       "type": "Class",
-      "signature": "(dtype: _torch.dtype, custom_op_name: str, factory_kwargs: _Dict[str, _Any])"
+      "signature": "(dtype: _torch.dtype, custom_op_name: str, factory_kwargs: _dict[str, _Any])"
     },
     {
       "name": "optimize.torch.quantization.modules.observers.CustomObserverBase",
@@ -17214,7 +17214,7 @@
     {
       "name": "models.compute_plan.MLModelStructureNeuralNetworkLayer",
       "type": "Class",
-      "signature": "(name: str, type: str, input_names: _List[str], output_names: _List[str], __proxy__: _Any)"
+      "signature": "(name: str, type: str, input_names: _list[str], output_names: _list[str], __proxy__: _Any)"
     },
     {
       "name": "models.compute_plan.MLModelStructureNeuralNetwork",
@@ -17249,12 +17249,12 @@
     {
       "name": "models.compute_plan.MLModelStructureProgramOperation",
       "type": "Class",
-      "signature": "(inputs: _Dict[str, MLModelStructureProgramArgument], operator_name: str, outputs: _List[MLModelStructureProgramNamedValueType], blocks: _List[MLModelStructureProgramBlock], __proxy__: _Any)"
+      "signature": "(inputs: _dict[str, MLModelStructureProgramArgument], operator_name: str, outputs: _List[MLModelStructureProgramNamedValueType], blocks: _List[MLModelStructureProgramBlock], __proxy__: _Any)"
     },
     {
       "name": "models.compute_plan.MLModelStructureProgramBlock",
       "type": "Class",
-      "signature": "(inputs: _List[MLModelStructureProgramNamedValueType], operations: _List[MLModelStructureProgramOperation], output_names: _List[str])"
+      "signature": "(inputs: _List[MLModelStructureProgramNamedValueType], operations: _List[MLModelStructureProgramOperation], output_names: _list[str])"
     },
     {
       "name": "models.compute_plan.MLModelStructureProgramFunction",
@@ -17264,7 +17264,7 @@
     {
       "name": "models.compute_plan.MLModelStructureProgram",
       "type": "Class",
-      "signature": "(functions: _Dict[str, MLModelStructureProgramFunction])"
+      "signature": "(functions: _dict[str, MLModelStructureProgramFunction])"
     },
     {
       "name": "models.compute_plan.MLModelStructurePipeline",
@@ -18324,7 +18324,7 @@
     {
       "name": "test.optimize.torch.palettization.test_sensitive_k_means.sensitvity_dict_for_compression",
       "type": "Function",
-      "signature": "() -> Dict[str, Any]"
+      "signature": "() -> dict[str, Any]"
     },
     {
       "name": "test.optimize.torch.palettization.test_sensitive_k_means.model_for_compression_custom_module",
@@ -18734,7 +18734,7 @@
     {
       "name": "test.optimize.torch.quantization.test_coreml_quantizer.get_node_map",
       "type": "Function",
-      "signature": "(model: torch.fx.GraphModule) -> Dict[str, Node]"
+      "signature": "(model: torch.fx.GraphModule) -> dict[str, Node]"
     },
     {
       "name": "test.optimize.torch.quantization.test_coreml_quantizer.config",
@@ -19214,7 +19214,7 @@
     {
       "name": "test.optimize.torch.quantization.test_utils.NoopObserver",
       "type": "Class",
-      "signature": "(dtype: _torch.dtype, custom_op_name: str, factory_kwargs: _Dict[str, _Any])"
+      "signature": "(dtype: _torch.dtype, custom_op_name: str, factory_kwargs: _dict[str, _Any])"
     },
     {
       "name": "test.optimize.torch.quantization.test_utils.test_quantization_utils_is_per_channel_quant",
@@ -19779,7 +19779,7 @@
     {
       "name": "test.optimize.torch.test_utils.test_validation_utils.validate_param_config",
       "type": "Function",
-      "signature": "(param_name: str, param: _torch.Tensor, module: _nn.Module, config: _Optional[_ModuleOptimizationConfig], checks_to_run: _List[str], module_level_advanced_options: _Optional[_Dict])"
+      "signature": "(param_name: str, param: _torch.Tensor, module: _nn.Module, config: _Optional[_ModuleOptimizationConfig], checks_to_run: _list[str], module_level_advanced_options: _Optional[_Dict])"
     },
     {
       "name": "test.optimize.torch.test_utils.test_validation_utils.ModulePostTrainingPalettizerConfig",
@@ -21609,7 +21609,7 @@
     {
       "name": "test.ml_program.test_utils.change_input_output_tensor_type",
       "type": "Function",
-      "signature": "(ml_model: _ct.models.MLModel, from_type: _proto.FeatureTypes_pb2.ArrayFeatureType, to_type: _proto.FeatureTypes_pb2.ArrayFeatureType, function_names: _Optional[_List[str]], input_names: _Optional[_List[str]], output_names: _Optional[_List[str]]) -> _ct.models.model.MLModel"
+      "signature": "(ml_model: _ct.models.MLModel, from_type: _proto.FeatureTypes_pb2.ArrayFeatureType, to_type: _proto.FeatureTypes_pb2.ArrayFeatureType, function_names: _Optional[_list[str]], input_names: _Optional[_list[str]], output_names: _Optional[_list[str]]) -> _ct.models.model.MLModel"
     },
     {
       "name": "test.ml_program.test_utils.load_spec",

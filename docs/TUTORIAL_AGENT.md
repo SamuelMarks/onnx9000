@@ -2,55 +2,62 @@
 orphan: true
 ---
 
-# Tutorial: Creating a Local AI Coding Assistant in ONNX9000
+# Tutorial: Agentic Workflows with onnx9000-toolkit
 
-> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+> **Ecosystem Context:** `onnx9000` operates as a **Zero-dependency**, **WASM-First**, **WebGPU-Native**, **Polyglot Monorepo**. It enables high-performance inference and agentic orchestration across browsers and edge devices without the overhead of heavy native runtimes.
 
-This tutorial demonstrates how to use the pure-Vanilla TypeScript Agent APIs inside `onnx9000` to build a zero-dependency, browser-local AI coding assistant.
+This tutorial demonstrates how to use the `onnx9000-toolkit` (Python) to build autonomous agentic workflows that can manipulate, optimize, and execute ONNX graphs using a tool-calling paradigm.
 
-Because `onnx9000` uses a native `AgentRunner` mapped tightly to an underlying Reason+Act loop, you do not need external API keys, Node.js servers, or complex Docker containers.
+## 1. Initializing the Agent Runner
 
-## 1. Defining Tools
+The `onnx9000-toolkit` provides a high-level `AgentRunner` designed for "Reason+Act" (ReAct) loops. It can bind to both native Python functions and remote ONNX-based tools.
 
-The `globalAgent` API allows you to bind native JavaScript functions. For a local coding assistant, we might want to expose a secure sandbox to evaluate Python code locally using `Pyodide`.
+```python
+from onnx9000.toolkit.agent import AgentRunner
 
-```typescript
-import { globalAgent, IAgentTool } from '../agent/Runner';
+# Define a custom tool for graph surgery
+def optimize_graph(graph_path: str):
+    # Logic to call onnx9000-optimizer
+    print(f"Optimizing graph at {graph_path}...")
+    return "Graph optimized successfully."
 
-globalAgent.registerTool({
-  name: 'Execute_Python',
-  description: 'Executes raw python syntax safely returning stdout logs.',
-  execute: async (codeString) => {
-    // Utilizing the underlying Pyodide WebWorker
-    const result = await runSandboxedCode(codeString);
-    return `Stdout: ${result}`;
-  },
-});
+agent = AgentRunner()
+agent.register_tool(
+    name="optimize_graph",
+    func=optimize_graph,
+    description="Optimizes an ONNX graph by fusing operators and pruning weights."
+)
 ```
 
-## 2. Setting Up the Agent DAG
+## 2. Tool-Calling with ONNX Graphs
 
-If you want a multi-stage approach (e.g. A "Planner" -> "Coder" -> "Critic"), you can define a structured graph.
+Agents in `onnx9000` can interact directly with model IRs. For example, you can ask an agent to "make this model 20% smaller" and it will coordinate between the `onnx9000-optimizer` and the core IR.
 
-```typescript
-const codingDAG = {
-  nodes: [
-    { id: 'planner', type: 'llm', prompt: 'Create a 3-step plan to solve the user request.' },
-    { id: 'coder', type: 'llm', prompt: 'Write the python code based on the plan.' },
-    { id: 'critic', type: 'tool', toolName: 'Execute_Python' },
-  ],
-  edges: [
-    { from: 'planner', to: 'coder' },
-    { from: 'coder', to: 'critic' },
-  ],
-};
-
-// Execute
-globalAgent.executeDAG(codingDAG, 'Sort an array using bubble sort.');
+```python
+# Run an agentic loop to reduce model size
+agent.run_loop("Load the model at './model.onnx', prune it to 80% sparsity, and save it as './pruned.onnx'.")
 ```
 
-## 3. Streaming and UI Hooks
+## 3. Defining Multi-Agent DAGs
 
-The IDE automatically hooks into `globalEvents.on("agentLog", ...)` and `globalEvents.on("agentStep", ...)`. If you build custom UIs, simply subscribe to these events to get real-time rendering of the thought process, exactly as the main `AgentInterface` tab does.
+For complex tasks, such as a "Planner" followed by a "Coder", `onnx9000-toolkit` supports structured Directed Acyclic Graphs (DAGs).
 
-You now have a fully functional local AI agent!
+```python
+dag = {
+    "nodes": [
+        {"id": "planner", "type": "llm", "prompt": "Create an optimization plan for this ResNet50 model."},
+        {"id": "optimizer", "type": "tool", "tool_name": "optimize_graph"},
+    ],
+    "edges": [
+        {"from": "planner", "to": "optimizer"}
+    ]
+}
+
+agent.execute_dag(dag, initial_input="./resnet50.onnx")
+```
+
+## 4. Integration with onnx9000-core
+
+The toolkit is designed to be fully compatible with `onnx9000-core` for final serialization and `onnx9000-backend-native` for local validation. This ensures that your agentic workflows are grounded in actual hardware performance metrics.
+
+You now have a powerful agentic system built on top of the most efficient ONNX stack available.

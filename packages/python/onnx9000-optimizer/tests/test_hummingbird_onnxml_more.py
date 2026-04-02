@@ -1,6 +1,5 @@
 """Tests the hummingbird onnxml more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.onnxml_parser import (
     apply_onnxml_post_transform,

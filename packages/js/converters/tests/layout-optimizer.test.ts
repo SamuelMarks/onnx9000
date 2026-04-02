@@ -18,14 +18,20 @@ describe('LayoutOptimizer', () => {
     const nodes: OnnxNodeLike[] = [
       {
         opType: 'Transpose',
+        inputs: ['in'],
+        outputs: ['t1'],
         attributes: [{ name: 'perm', ints: [0, 2, 3, 1] }],
       },
       {
         opType: 'Transpose',
+        inputs: ['t1'],
+        outputs: ['t2'],
         attributes: [{ name: 'perm', ints: [0, 3, 1, 2] }],
       },
       {
         opType: 'Relu',
+        inputs: ['t2'],
+        outputs: ['out'],
         attributes: [],
       },
     ];
@@ -39,10 +45,14 @@ describe('LayoutOptimizer', () => {
     const nodes: OnnxNodeLike[] = [
       {
         opType: 'Transpose',
+        inputs: ['in'],
+        outputs: ['t1'],
         attributes: [{ name: 'perm', ints: [0, 2, 3, 1] }],
       },
       {
         opType: 'Transpose',
+        inputs: ['t1'],
+        outputs: ['t2'],
         attributes: [{ name: 'perm', ints: [0, 2, 3, 1] }],
       },
     ];
@@ -55,11 +65,35 @@ describe('LayoutOptimizer', () => {
     const nodes: OnnxNodeLike[] = [
       {
         opType: 'Transpose',
+        inputs: ['in'],
+        outputs: ['t1'],
         attributes: [],
       },
       {
         opType: 'Transpose',
+        inputs: ['t1'],
+        outputs: ['t2'],
         attributes: [],
+      },
+    ];
+    const optimized = optimizer.optimize(nodes);
+    expect(optimized).toHaveLength(2);
+  });
+
+  it('does not optimize transposes on different tensors', () => {
+    const optimizer = new LayoutOptimizer();
+    const nodes: OnnxNodeLike[] = [
+      {
+        opType: 'Transpose',
+        inputs: ['in1'],
+        outputs: ['t1'],
+        attributes: [{ name: 'perm', ints: [0, 2, 3, 1] }],
+      },
+      {
+        opType: 'Transpose',
+        inputs: ['in2'], // different tensor
+        outputs: ['t2'],
+        attributes: [{ name: 'perm', ints: [0, 3, 1, 2] }],
       },
     ];
     const optimized = optimizer.optimize(nodes);

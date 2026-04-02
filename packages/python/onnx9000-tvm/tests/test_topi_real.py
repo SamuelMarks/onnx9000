@@ -1,6 +1,5 @@
 """Tests the topi functions semantically without dummy asserts."""
 
-import pytest
 from onnx9000.tvm.te.tensor import placeholder
 from onnx9000.tvm.te.topi import (
     nn_conv2d,

@@ -1,3 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
+/**
+ * Keras MMDNN submodule.
+ */
+export * from './generator.js';
 export * from './importer.js';

@@ -156,14 +156,14 @@ def test_floor():
 
 
 def test_tensor_coverage():
-    from onnx9000.converters.torch_like import tensor, zeros, ones, randn, jit, onnx
+    from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
     t1 = tensor([1.0])
-    t2 = tensor([1.0], dtype=DType.FLOAT32)
-    t3 = zeros(2, 2)
-    t4 = ones(2, 2)
-    t5 = randn(2, 2)
+    tensor([1.0], dtype=DType.FLOAT32)
+    zeros(2, 2)
+    ones(2, 2)
+    randn(2, 2)
 
     # jit and onnx mocks
     def dummy(x):
@@ -171,31 +171,31 @@ def test_tensor_coverage():
 
     try:
         jit.trace(dummy, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.trace(dummy, t1, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.script(dummy)
-    except:
+    except Exception:
         pass
     try:
         onnx.export(dummy, t1, "test.onnx")
-    except:
+    except Exception:
         pass
 
 
 def test_tensor_coverage():
-    from onnx9000.converters.torch_like import tensor, zeros, ones, randn, jit, onnx
+    from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
     t1 = tensor([1.0])
-    t2 = tensor([1.0], dtype=DType.FLOAT32)
-    t3 = zeros(2, 2)
-    t4 = ones(2, 2)
-    t5 = randn(2, 2)
+    tensor([1.0], dtype=DType.FLOAT32)
+    zeros(2, 2)
+    ones(2, 2)
+    randn(2, 2)
 
     # jit and onnx mocks
     def dummy(x):
@@ -203,31 +203,31 @@ def test_tensor_coverage():
 
     try:
         jit.trace(dummy, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.trace(dummy, t1, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.script(dummy)
-    except:
+    except Exception:
         pass
     try:
         onnx.export(dummy, t1, "test.onnx")
-    except:
+    except Exception:
         pass
 
 
 def test_tensor_coverage():
-    from onnx9000.converters.torch_like import tensor, zeros, ones, randn, jit, onnx
+    from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
     t1 = tensor([1.0])
-    t2 = tensor([1.0], dtype=DType.FLOAT32)
-    t3 = zeros(2, 2)
-    t4 = ones(2, 2)
-    t5 = randn(2, 2)
+    tensor([1.0], dtype=DType.FLOAT32)
+    zeros(2, 2)
+    ones(2, 2)
+    randn(2, 2)
 
     # jit and onnx mocks
     def dummy(x):
@@ -235,31 +235,31 @@ def test_tensor_coverage():
 
     try:
         jit.trace(dummy, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.trace(dummy, t1, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.script(dummy)
-    except:
+    except Exception:
         pass
     try:
         onnx.export(dummy, t1, "test.onnx")
-    except:
+    except Exception:
         pass
 
 
 def test_tensor_coverage():
-    from onnx9000.converters.torch_like import tensor, zeros, ones, randn, jit, onnx
+    from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
     t1 = tensor([1.0])
-    t2 = tensor([1.0], dtype=DType.FLOAT32)
-    t3 = zeros(2, 2)
-    t4 = ones(2, 2)
-    t5 = randn(2, 2)
+    tensor([1.0], dtype=DType.FLOAT32)
+    zeros(2, 2)
+    ones(2, 2)
+    randn(2, 2)
 
     # jit and onnx mocks
     def dummy(x):
@@ -267,17 +267,17 @@ def test_tensor_coverage():
 
     try:
         jit.trace(dummy, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.trace(dummy, t1, t1)
-    except:
+    except Exception:
         pass
     try:
         jit.script(dummy)
-    except:
+    except Exception:
         pass
     try:
         onnx.export(dummy, t1, "test.onnx")
-    except:
+    except Exception:
         pass

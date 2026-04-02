@@ -1,6 +1,6 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Any, Optional
+from typing import Optional
 
 
 class Expr:

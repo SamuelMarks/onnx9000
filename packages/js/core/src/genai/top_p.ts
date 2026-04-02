@@ -1,13 +1,21 @@
 import { Tensor } from '../index.js';
 import { LogitProcessor } from './logit_processors.js';
 
+/**
+ * Nucleus sampling processor that keeps only the top tokens with cumulative probability P.
+ */
 export class TopPLogitProcessor implements LogitProcessor {
+  /**
+   * Create a new TopPLogitProcessor.
+   * @param topP Cumulative probability threshold (0, 1].
+   */
   constructor(private topP: number) {
     if (topP <= 0 || topP > 1.0) {
       throw new Error('topP must be in (0, 1].');
     }
   }
 
+  /** Process logits with Top-P (nucleus) filtering. */
   process(inputIds: number[], logits: Tensor): Tensor {
     if (this.topP >= 1.0 || !(logits.data instanceof Float32Array)) {
       return logits;

@@ -1,6 +1,5 @@
 """TVM submodule for AST and optimization."""
 
-from .stmt import Stmt
 from .visitor import StmtVisitor
 
 

@@ -1,6 +1,5 @@
 """Tests the utils exhaustive module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.utils import (
     GradientProto,

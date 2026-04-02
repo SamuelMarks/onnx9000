@@ -1,8 +1,7 @@
 """Further tests for coverage gaps in the C compiler operations."""
 
-import pytest
 from onnx9000.c_compiler.ast_builder import C89Builder
-from onnx9000.c_compiler.operations import get_strides, resolve_broadcast_indices
+from onnx9000.c_compiler.operations import resolve_broadcast_indices
 
 
 def test_operations_gemm():

@@ -2,7 +2,6 @@
 
 from unittest.mock import patch
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.training import compile_training_graph
 

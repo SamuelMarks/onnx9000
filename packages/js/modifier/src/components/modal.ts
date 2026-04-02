@@ -57,7 +57,9 @@ export class AddNodeModal {
     const closeBtn = document.createElement('button');
     closeBtn.textContent = 'Cancel';
     closeBtn.style.marginLeft = '10px';
-    closeBtn.onclick = () => this.hide();
+    closeBtn.onclick = () => {
+      this.hide();
+    };
     this.container.appendChild(closeBtn);
   }
 

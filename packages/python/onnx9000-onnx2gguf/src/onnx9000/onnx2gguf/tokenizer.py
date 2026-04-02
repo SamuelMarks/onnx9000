@@ -1,6 +1,5 @@
 """Module providing onnx2gguf functionality."""
 
-import base64
 import json
 from typing import Any
 

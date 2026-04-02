@@ -39,12 +39,12 @@
     {
       "name": "cv",
       "type": "Function",
-      "signature": "(params: BoosterParam, dtrain: DMatrix, num_boost_round: int, nfold: int, stratified: bool, folds: XGBStratifiedKFold, metrics: Sequence[str], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], fpreproc: Optional[FPreProcCallable], as_pandas: bool, verbose_eval: Optional[Union[int, bool]], show_stdv: bool, seed: int, callbacks: Optional[Sequence[TrainingCallback]], shuffle: bool, custom_metric: Optional[Metric]) -> Union[Dict[str, float], PdDataFrame]"
+      "signature": "(params: BoosterParam, dtrain: DMatrix, num_boost_round: int, nfold: int, stratified: bool, folds: XGBStratifiedKFold, metrics: Sequence[str], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], fpreproc: Optional[FPreProcCallable], as_pandas: bool, verbose_eval: Optional[Union[int, bool]], show_stdv: bool, seed: int, callbacks: Optional[Sequence[TrainingCallback]], shuffle: bool, custom_metric: Optional[Metric]) -> Union[dict[str, float], PdDataFrame]"
     },
     {
       "name": "train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
+      "signature": "(params: dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
     },
     {
       "name": "config_context",
@@ -54,7 +54,7 @@
     {
       "name": "get_config",
       "type": "Function",
-      "signature": "() -> Dict[str, Any]"
+      "signature": "() -> dict[str, Any]"
     },
     {
       "name": "set_config",
@@ -84,7 +84,7 @@
     {
       "name": "XGBModel",
       "type": "Class",
-      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, List[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[Dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
+      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, list[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
     },
     {
       "name": "XGBRanker",
@@ -604,7 +604,7 @@
     {
       "name": "sklearn.train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
+      "signature": "(params: dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
     },
     {
       "name": "sklearn.XGBRankerMixIn",
@@ -629,7 +629,7 @@
     {
       "name": "sklearn.xgboost_model_doc",
       "type": "Function",
-      "signature": "(header: str, items: List[str], extra_parameters: Optional[str], end_note: Optional[str]) -> Callable[[TDoc], TDoc]"
+      "signature": "(header: str, items: list[str], extra_parameters: Optional[str], end_note: Optional[str]) -> Callable[[TDoc], TDoc]"
     },
     {
       "name": "sklearn.get_model_categories",
@@ -649,7 +649,7 @@
     {
       "name": "sklearn.XGBModel",
       "type": "Class",
-      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, List[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[Dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
+      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, list[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
     },
     {
       "name": "sklearn.PredtT",
@@ -699,7 +699,7 @@
     {
       "name": "federated.run_federated_server",
       "type": "Function",
-      "signature": "(n_workers: int, port: int, server_key_path: Optional[str], server_cert_path: Optional[str], client_cert_path: Optional[str], blocking: bool, timeout: int) -> Optional[Dict[str, Any]]"
+      "signature": "(n_workers: int, port: int, server_key_path: Optional[str], server_cert_path: Optional[str], client_cert_path: Optional[str], blocking: bool, timeout: int) -> Optional[dict[str, Any]]"
     },
     {
       "name": "plotting.PathLike",
@@ -714,7 +714,7 @@
     {
       "name": "plotting.XGBModel",
       "type": "Class",
-      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, List[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[Dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
+      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, list[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
     },
     {
       "name": "plotting.Axes",
@@ -829,7 +829,7 @@
     {
       "name": "training.train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
+      "signature": "(params: dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
     },
     {
       "name": "training.CVPack",
@@ -854,7 +854,7 @@
     {
       "name": "training.cv",
       "type": "Function",
-      "signature": "(params: BoosterParam, dtrain: DMatrix, num_boost_round: int, nfold: int, stratified: bool, folds: XGBStratifiedKFold, metrics: Sequence[str], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], fpreproc: Optional[FPreProcCallable], as_pandas: bool, verbose_eval: Optional[Union[int, bool]], show_stdv: bool, seed: int, callbacks: Optional[Sequence[TrainingCallback]], shuffle: bool, custom_metric: Optional[Metric]) -> Union[Dict[str, float], PdDataFrame]"
+      "signature": "(params: BoosterParam, dtrain: DMatrix, num_boost_round: int, nfold: int, stratified: bool, folds: XGBStratifiedKFold, metrics: Sequence[str], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], fpreproc: Optional[FPreProcCallable], as_pandas: bool, verbose_eval: Optional[Union[int, bool]], show_stdv: bool, seed: int, callbacks: Optional[Sequence[TrainingCallback]], shuffle: bool, custom_metric: Optional[Metric]) -> Union[dict[str, float], PdDataFrame]"
     },
     {
       "name": "libpath.XGBoostLibraryNotFound",
@@ -869,7 +869,7 @@
     {
       "name": "libpath.find_lib_path",
       "type": "Function",
-      "signature": "() -> List[str]"
+      "signature": "() -> list[str]"
     },
     {
       "name": "config.c_str",
@@ -894,7 +894,7 @@
     {
       "name": "config.get_config",
       "type": "Function",
-      "signature": "() -> Dict[str, Any]"
+      "signature": "() -> dict[str, Any]"
     },
     {
       "name": "config.config_context",
@@ -994,7 +994,7 @@
     {
       "name": "spark.SparkXGBClassifier",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, probability_col: str, raw_prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, probability_col: str, raw_prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.SparkXGBClassifierModel",
@@ -1004,7 +1004,7 @@
     {
       "name": "spark.SparkXGBRanker",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], qid_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], qid_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.SparkXGBRankerModel",
@@ -1014,7 +1014,7 @@
     {
       "name": "spark.SparkXGBRegressor",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.SparkXGBRegressorModel",
@@ -1079,7 +1079,7 @@
     {
       "name": "spark.data.XGBModel",
       "type": "Class",
-      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, List[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[Dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
+      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, list[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
     },
     {
       "name": "spark.data.get_logger",
@@ -1114,17 +1114,17 @@
     {
       "name": "spark.data.PartIter",
       "type": "Class",
-      "signature": "(data: Dict[str, List], device_id: Optional[int], kwargs: Any)"
+      "signature": "(data: dict[str, List], device_id: Optional[int], kwargs: Any)"
     },
     {
       "name": "spark.data.make_qdm",
       "type": "Function",
-      "signature": "(data: Dict[str, List[np.ndarray]], dev_ordinal: Optional[int], meta: Dict[str, Any], ref: Optional[DMatrix], params: Dict[str, Any]) -> DMatrix"
+      "signature": "(data: dict[str, List[np.ndarray]], dev_ordinal: Optional[int], meta: dict[str, Any], ref: Optional[DMatrix], params: dict[str, Any]) -> DMatrix"
     },
     {
       "name": "spark.data.create_dmatrix_from_partitions",
       "type": "Function",
-      "signature": "(iterator: Iterator[pd.DataFrame], feature_cols: Optional[Sequence[str]], dev_ordinal: Optional[int], use_qdm: bool, kwargs: Dict[str, Any], enable_sparse_data_optim: bool, has_validation_col: bool) -> Tuple[DMatrix, Optional[DMatrix]]"
+      "signature": "(iterator: Iterator[pd.DataFrame], feature_cols: Optional[Sequence[str]], dev_ordinal: Optional[int], use_qdm: bool, kwargs: dict[str, Any], enable_sparse_data_optim: bool, has_validation_col: bool) -> Tuple[DMatrix, Optional[DMatrix]]"
     },
     {
       "name": "spark.data.pred_contribs",
@@ -1159,7 +1159,7 @@
     {
       "name": "spark.estimator.SparkXGBRegressor",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.estimator.SparkXGBRegressorModel",
@@ -1169,7 +1169,7 @@
     {
       "name": "spark.estimator.SparkXGBClassifier",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, probability_col: str, raw_prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, probability_col: str, raw_prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.estimator.SparkXGBClassifierModel",
@@ -1179,7 +1179,7 @@
     {
       "name": "spark.estimator.SparkXGBRanker",
       "type": "Class",
-      "signature": "(features_col: Union[str, List[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], qid_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
+      "signature": "(features_col: Union[str, list[str]], label_col: str, prediction_col: str, pred_contrib_col: Optional[str], validation_indicator_col: Optional[str], weight_col: Optional[str], base_margin_col: Optional[str], qid_col: Optional[str], num_workers: int, device: Optional[str], force_repartition: bool, repartition_random_shuffle: bool, enable_sparse_data_optim: bool, launch_tracker_on_driver: bool, coll_cfg: Optional[Config], kwargs: Any)"
     },
     {
       "name": "spark.estimator.SparkXGBRankerModel",
@@ -1189,7 +1189,7 @@
     {
       "name": "spark.summary.XGBoostTrainingSummary",
       "type": "Class",
-      "signature": "(train_objective_history: Dict[str, List[float]], validation_objective_history: Dict[str, List[float]])"
+      "signature": "(train_objective_history: dict[str, list[float]], validation_objective_history: dict[str, list[float]])"
     },
     {
       "name": "dask.collective",
@@ -1279,7 +1279,7 @@
     {
       "name": "dask.XGBModel",
       "type": "Class",
-      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, List[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[Dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
+      "signature": "(max_depth: Optional[int], max_leaves: Optional[int], max_bin: Optional[int], grow_policy: Optional[str], learning_rate: Optional[float], n_estimators: Optional[int], verbosity: Optional[int], objective: SklObjective, booster: Optional[str], tree_method: Optional[str], n_jobs: Optional[int], gamma: Optional[float], min_child_weight: Optional[float], max_delta_step: Optional[float], subsample: Optional[float], sampling_method: Optional[str], colsample_bytree: Optional[float], colsample_bylevel: Optional[float], colsample_bynode: Optional[float], reg_alpha: Optional[float], reg_lambda: Optional[float], scale_pos_weight: Optional[float], base_score: Optional[Union[float, list[float]]], random_state: Optional[Union[np.random.RandomState, np.random.Generator, int]], missing: float, num_parallel_tree: Optional[int], monotone_constraints: Optional[Union[dict[str, int], str]], interaction_constraints: Optional[Union[str, Sequence[Sequence[str]]]], importance_type: Optional[str], device: Optional[str], validate_parameters: Optional[bool], enable_categorical: bool, feature_types: Optional[FeatureTypes], feature_weights: Optional[ArrayLike], max_cat_to_onehot: Optional[int], max_cat_threshold: Optional[int], multi_strategy: Optional[str], eval_metric: Optional[Union[str, List[Union[str, Callable]], Callable]], early_stopping_rounds: Optional[int], callbacks: Optional[List[TrainingCallback]], kwargs: Any)"
     },
     {
       "name": "dask.XGBRanker",
@@ -1299,7 +1299,7 @@
     {
       "name": "dask.xgboost_model_doc",
       "type": "Function",
-      "signature": "(header: str, items: List[str], extra_parameters: Optional[str], end_note: Optional[str]) -> Callable[[TDoc], TDoc]"
+      "signature": "(header: str, items: list[str], extra_parameters: Optional[str], end_note: Optional[str]) -> Callable[[TDoc], TDoc]"
     },
     {
       "name": "dask.RabitTracker",
@@ -1309,7 +1309,7 @@
     {
       "name": "dask.worker_train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
+      "signature": "(params: dict[str, Any], dtrain: DMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DMatrix, str]]], obj: Optional[PlainObj], maximize: Optional[bool], early_stopping_rounds: Optional[int], evals_result: Optional[TrainingCallback.EvalsLog], verbose_eval: Optional[Union[bool, int]], xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric]) -> Booster"
     },
     {
       "name": "dask.no_group_split",
@@ -1319,12 +1319,12 @@
     {
       "name": "dask.get_address_from_user",
       "type": "Function",
-      "signature": "(dconfig: Optional[Dict[str, Any]], coll_cfg: Config) -> Tuple[Optional[str], int]"
+      "signature": "(dconfig: Optional[dict[str, Any]], coll_cfg: Config) -> Tuple[Optional[str], int]"
     },
     {
       "name": "dask.get_n_threads",
       "type": "Function",
-      "signature": "(local_param: Dict[str, Any], worker: distributed.Worker) -> int"
+      "signature": "(local_param: dict[str, Any], worker: distributed.Worker) -> int"
     },
     {
       "name": "dask.TrainReturnT",
@@ -1359,7 +1359,7 @@
     {
       "name": "dask.train",
       "type": "Function",
-      "signature": "(client: distributed.Client, params: Dict[str, Any], dtrain: DaskDMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DaskDMatrix, str]]], obj: Optional[PlainObj], early_stopping_rounds: Optional[int], xgb_model: Optional[Booster], verbose_eval: Union[int, bool], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric], coll_cfg: Optional[CollConfig]) -> Any"
+      "signature": "(client: distributed.Client, params: dict[str, Any], dtrain: DaskDMatrix, num_boost_round: int, evals: Optional[Sequence[Tuple[DaskDMatrix, str]]], obj: Optional[PlainObj], early_stopping_rounds: Optional[int], xgb_model: Optional[Booster], verbose_eval: Union[int, bool], callbacks: Optional[Sequence[TrainingCallback]], custom_metric: Optional[Metric], coll_cfg: Optional[CollConfig]) -> Any"
     },
     {
       "name": "dask.predict",
@@ -1489,7 +1489,7 @@
     {
       "name": "dask.data.sort_data_by_qid",
       "type": "Function",
-      "signature": "(kwargs: List[Any]) -> Dict[str, List[Any]]"
+      "signature": "(kwargs: List[Any]) -> dict[str, List[Any]]"
     }
   ]
 }

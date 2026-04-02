@@ -1,7 +1,6 @@
 """Tests for packages/python/onnx9000-optimizer/tests/simplifier/passes/test_webgpu.py."""
 
 import numpy as np
-import pytest
 
 
 def test_polyfill_webgpu():

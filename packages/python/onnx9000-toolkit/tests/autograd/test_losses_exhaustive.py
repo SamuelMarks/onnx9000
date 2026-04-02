@@ -1,6 +1,5 @@
 """Tests the losses exhaustive module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Node
 from onnx9000.toolkit.training.autograd.losses import (
     add_categorical_crossentropy_loss,

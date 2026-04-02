@@ -1,7 +1,5 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Callable
-
 from .expr import Expr
 from .visitor import ExprVisitor
 

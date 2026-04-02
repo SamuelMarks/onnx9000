@@ -1,6 +1,5 @@
 """Module providing functionality for test_state_extra."""
 
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Tensor
 from onnx9000.genai.state import ContinuousKVCache

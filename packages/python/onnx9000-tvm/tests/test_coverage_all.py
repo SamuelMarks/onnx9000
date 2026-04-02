@@ -3,7 +3,6 @@
 
 def test_tvm_all_others_part2():
     """Exercise various TVM modules to improve code coverage."""
-    import glob
     import inspect
 
     # manual list of some modules to fully cover

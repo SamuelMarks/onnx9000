@@ -180,7 +180,7 @@ export class GraphMutator {
     const node = this.graph.nodes[index]!;
 
     // Healing logic: if it has exactly 1 input and 1 output, connect input to all downstream nodes consuming the output
-    let healedEdges: { consumer: Node; index: number; oldInput: string }[] = [];
+    const healedEdges: { consumer: Node; index: number; oldInput: string }[] = [];
     if (healEdges && node.inputs.length === 1 && node.outputs.length === 1) {
       const input = node.inputs[0]!;
       const output = node.outputs[0]!;
@@ -264,11 +264,11 @@ export class GraphMutator {
 
   // 9. & 10. & 11. Rename input/output globally
   private renameEdgeGlobally(oldName: string, newName: string) {
-    let affectedNodes: { node: Node; inputIndices: number[]; outputIndices: number[] }[] = [];
+    const affectedNodes: { node: Node; inputIndices: number[]; outputIndices: number[] }[] = [];
 
     for (const node of this.graph.nodes) {
-      let inIdxs: number[] = [];
-      let outIdxs: number[] = [];
+      const inIdxs: number[] = [];
+      const outIdxs: number[] = [];
       node.inputs.forEach((inp, idx) => {
         if (inp === oldName) inIdxs.push(idx);
       });
@@ -456,11 +456,7 @@ export class GraphMutator {
                 : 1);
 
     // We only strictly enforce if it's not a dynamic shape and expectedBytes > 0
-    if (
-      elements > 0 &&
-      newDataBuffer.byteLength !== expectedBytes &&
-      (expectedBytes as number) > 0
-    ) {
+    if (elements > 0 && newDataBuffer.byteLength !== expectedBytes && expectedBytes > 0) {
       throw new Error(
         `ArrayBuffer length ${newDataBuffer.byteLength} does not match expected length ${expectedBytes} for shape ${tensor.shape} and dtype ${tensor.dtype}`,
       );

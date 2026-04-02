@@ -13,7 +13,7 @@ def _get_input(node, tensors, idx):
 
 
 @register_op("", "Reshape")
-def trt_reshape(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reshape(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_shuffle_func = getattr(ffi.lib, "addShuffle", None)
     if not add_shuffle_func:
         raise RuntimeError("addShuffle not found")
@@ -26,7 +26,7 @@ def trt_reshape(network: INetworkDefinition, node: Any, tensors: Dict[str, ITens
 
 
 @register_op("", "Transpose")
-def trt_transpose(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_transpose(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_shuffle_func = getattr(ffi.lib, "addShuffle", None)
     if not add_shuffle_func:
         raise RuntimeError("addShuffle not found")
@@ -37,7 +37,7 @@ def trt_transpose(network: INetworkDefinition, node: Any, tensors: Dict[str, ITe
 
 
 @register_op("", "Concat")
-def trt_concat(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_concat(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_concat_func = getattr(ffi.lib, "addConcatenation", None)
     if not add_concat_func:
         raise RuntimeError("addConcatenation not found")
@@ -51,7 +51,7 @@ def trt_concat(network: INetworkDefinition, node: Any, tensors: Dict[str, ITenso
 
 
 @register_op("", "Slice")
-def trt_slice(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_slice(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_slice_func = getattr(ffi.lib, "addSlice", None)
     if not add_slice_func:
         raise RuntimeError("addSlice not found")
@@ -76,7 +76,7 @@ def trt_slice(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor
 
 
 @register_op("", "Gather")
-def trt_gather(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_gather(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_gather_func = getattr(ffi.lib, "addGather", None)
     if not add_gather_func:
         raise RuntimeError("addGather not found")

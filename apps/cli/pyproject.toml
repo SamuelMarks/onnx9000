@@ -10,6 +10,8 @@ dependencies = [
     "onnx9000-converters",
     "onnx9000-toolkit",
     "onnx9000-optimum",
+    "onnx9000-onnx2gguf",
+    "onnx9000-openvino",
 ]
 
 [project.scripts]
@@ -26,3 +28,5 @@ onnx9000-optimizer = { workspace = true }
 onnx9000-converters = { workspace = true }
 onnx9000-toolkit = { workspace = true }
 onnx9000-optimum = { workspace = true }
+onnx9000-onnx2gguf = { workspace = true }
+onnx9000-openvino = { workspace = true }

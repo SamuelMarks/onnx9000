@@ -25,7 +25,6 @@ def fp16_cast(graph, exclude_ops=("LayerNormalization", "Softmax")) -> bool:
     """Casts entire graph weights to FP16, excluding specified ops."""
     changed = False
     import numpy as np
-    from onnx9000.core.ir import Tensor
 
     for init in graph.initializers.values():
         if init.dtype == "float32":

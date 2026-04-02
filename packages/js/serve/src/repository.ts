@@ -69,8 +69,8 @@ export class ModelRepository {
     }
 
     // 164. Support explicit `.safetensors` weight loading seamlessly
-    let hasSafetensors = fs.existsSync(path.join(modelPath, 'model.safetensors'));
-    let hasOnnx = fs.existsSync(path.join(modelPath, 'model.onnx'));
+    const hasSafetensors = fs.existsSync(path.join(modelPath, 'model.safetensors'));
+    const hasOnnx = fs.existsSync(path.join(modelPath, 'model.onnx'));
 
     if (hasOnnx || hasSafetensors) {
       // 163. Handle zero-downtime deployments

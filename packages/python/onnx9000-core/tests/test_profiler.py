@@ -2,7 +2,6 @@
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor
-from onnx9000.core.profiler import ProfilerResult, profile
 
 
 def test_profiler_macs_flops_basic():

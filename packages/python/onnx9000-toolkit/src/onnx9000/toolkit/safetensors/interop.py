@@ -1,4 +1,4 @@
-"""Provide functionality for this module."""
+"""Provide interoperability functions for loading PyTorch, TensorFlow, and Flax safetensors."""
 
 from typing import Any
 

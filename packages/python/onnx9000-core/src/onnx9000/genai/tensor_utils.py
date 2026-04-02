@@ -1,8 +1,5 @@
 """Provide functionality for this module."""
 
-import struct
-
-from ..core.dtypes import DType
 from ..core.ir import Tensor
 
 

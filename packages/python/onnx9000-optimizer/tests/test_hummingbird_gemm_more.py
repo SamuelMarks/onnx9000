@@ -1,6 +1,5 @@
 """Tests the hummingbird gemm more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.engine import TreeAbstractions
 from onnx9000.optimizer.hummingbird.gemm import (

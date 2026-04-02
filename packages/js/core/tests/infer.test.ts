@@ -61,4 +61,16 @@ describe('inferShapes', () => {
     inferShapes(g);
     expect(g.valueInfo.length).toBe(0); // B is already in outputs
   });
+
+  it('should skip outputs already in valueInfo', () => {
+    const g = new Graph('test');
+    g.inputs.push(new ValueInfo('A', [1], 'float32'));
+    g.valueInfo.push(new ValueInfo('B', [1], 'float32'));
+
+    const n = new Node('Identity', ['A'], ['B']);
+    g.addNode(n);
+
+    inferShapes(g);
+    expect(g.valueInfo.length).toBe(1); // B is already in valueInfo, not added again
+  });
 });

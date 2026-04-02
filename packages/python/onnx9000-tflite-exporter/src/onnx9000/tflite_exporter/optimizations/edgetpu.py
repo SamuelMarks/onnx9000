@@ -2,7 +2,7 @@
 
 import logging
 
-from onnx9000.core.ir import Graph, Node
+from onnx9000.core.ir import Graph
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class EdgeTPUOptimizer:
         """Initialize the EdgeTPUOptimizer with a graph."""
         self.graph = graph
 
-    def optimize(self) -> List[str]:
+    def optimize(self) -> list[str]:
         """Apply EdgeTPU-specific optimizations to the graph."""
         warnings = []
 
@@ -60,7 +60,7 @@ class EdgeTPUOptimizer:
         # 270. Return warnings for the compatibility report
         return warnings
 
-    def _inject_edgetpu_padding(self, warnings: List[str]) -> None:
+    def _inject_edgetpu_padding(self, warnings: list[str]) -> None:
         """Inject padding into convolutions to satisfy EdgeTPU dimension requirements."""
         injected = 0
         for node in self.graph.nodes:
@@ -78,7 +78,7 @@ class EdgeTPUOptimizer:
                 f"Injected Zero-Padding into {injected} Convolutions to satisfy EdgeTPU dimension multiples (4/8 bytes)."
             )
 
-    def _verify_int8_compliance(self, warnings: List[str]) -> None:
+    def _verify_int8_compliance(self, warnings: list[str]) -> None:
         """Verify that the model is strictly INT8 quantized."""
         non_compliant = 0
         for v in self.graph.value_info:
@@ -89,7 +89,7 @@ class EdgeTPUOptimizer:
                 f"Warning: Model contains {non_compliant} Float32 tensors. Strict Full-Integer INT8 quantization compliance failed. EdgeTPU will fallback to CPU."
             )
 
-    def _analyze_nnapi_compatibility(self, warnings: List[str]) -> None:
+    def _analyze_nnapi_compatibility(self, warnings: list[str]) -> None:
         """Identify operations that break NNAPI compatibility."""
         incompatible_ops = {"Loop", "If", "NonZero", "Compress"}
         for node in self.graph.nodes:
@@ -98,7 +98,7 @@ class EdgeTPUOptimizer:
                     f"Warning: Operation {node.op_type} ({node.name}) breaks strict NNAPI compatibility."
                 )
 
-    def _rewrite_softmax(self, warnings: List[str]) -> None:
+    def _rewrite_softmax(self, warnings: list[str]) -> None:
         """Rewrite Softmax operations for EdgeTPU support."""
         rewritten = 0
         for node in self.graph.nodes:
@@ -109,7 +109,7 @@ class EdgeTPUOptimizer:
                 f"Rewrote {rewritten} Softmax operations using Taylor expansion subgraphs for EdgeTPU support."
             )
 
-    def _replace_1d_convolutions(self, warnings: List[str]) -> None:
+    def _replace_1d_convolutions(self, warnings: list[str]) -> None:
         """Replace 1D convolutions with 2D equivalents for mobile DSP compatibility."""
         replaced = 0
         for node in self.graph.nodes:
@@ -134,7 +134,7 @@ class EdgeTPUOptimizer:
                 f"Replaced {replaced} 1D Convolutions with 2D equivalents for EdgeTPU DSP compatibility."
             )
 
-    def _expand_matmul(self, warnings: List[str]) -> None:
+    def _expand_matmul(self, warnings: list[str]) -> None:
         """Expand MatMul operations into FullyConnected + Reshape."""
         expanded = 0
         for node in self.graph.nodes:
@@ -145,7 +145,7 @@ class EdgeTPUOptimizer:
                 f"Expanded {expanded} MatMul operations into FullyConnected + Reshape structures."
             )
 
-    def _emulate_leaky_relu(self, warnings: List[str]) -> None:
+    def _emulate_leaky_relu(self, warnings: list[str]) -> None:
         """Emulate LeakyRelu using Maximum(x, alpha * x)."""
         emulated = 0
         for node in self.graph.nodes:
@@ -156,7 +156,7 @@ class EdgeTPUOptimizer:
                 f"Emulated {emulated} LeakyRelu operations using Maximum(x, alpha * x) for older NNAPI targets."
             )
 
-    def _check_dynamic_strided_slice(self, warnings: List[str]) -> None:
+    def _check_dynamic_strided_slice(self, warnings: list[str]) -> None:
         """Check for dynamic StridedSlice operations."""
         for node in self.graph.nodes:
             if node.op_type == "Slice":
@@ -169,7 +169,7 @@ class EdgeTPUOptimizer:
                             )
                             break
 
-    def _expand_broadcasts(self, warnings: List[str]) -> None:
+    def _expand_broadcasts(self, warnings: list[str]) -> None:
         """Expand Broadcast operations statically."""
         expanded = 0
         for node in self.graph.nodes:

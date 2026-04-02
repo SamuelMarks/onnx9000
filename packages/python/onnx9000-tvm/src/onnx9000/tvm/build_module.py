@@ -1,11 +1,10 @@
 """TVM submodule for AST and optimization."""
 
 import json
-import os
 import tarfile
 import zipfile
 from io import BytesIO
-from typing import Any, Union
+from typing import Union
 
 
 def bundle_artifacts(

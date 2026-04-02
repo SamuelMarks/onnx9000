@@ -20,7 +20,7 @@ def _get_input(node, tensors, idx):
 
 
 @register_op("", "Add")
-def trt_add(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_add(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -47,7 +47,7 @@ def trt_add(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Sub")
-def trt_sub(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_sub(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -74,7 +74,7 @@ def trt_sub(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Mul")
-def trt_mul(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_mul(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -101,7 +101,7 @@ def trt_mul(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Div")
-def trt_div(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_div(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -128,7 +128,7 @@ def trt_div(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Max")
-def trt_max(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_max(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -155,7 +155,7 @@ def trt_max(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Min")
-def trt_min(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_min(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -182,7 +182,7 @@ def trt_min(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Pow")
-def trt_pow(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_pow(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -209,7 +209,7 @@ def trt_pow(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Equal")
-def trt_equal(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_equal(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -236,7 +236,7 @@ def trt_equal(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor
 
 
 @register_op("", "Less")
-def trt_less(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_less(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -263,7 +263,7 @@ def trt_less(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "Greater")
-def trt_greater(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_greater(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -290,7 +290,7 @@ def trt_greater(network: INetworkDefinition, node: Any, tensors: Dict[str, ITens
 
 
 @register_op("", "And")
-def trt_and(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_and(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -317,7 +317,7 @@ def trt_and(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Or")
-def trt_or(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_or(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -344,7 +344,7 @@ def trt_or(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
 
 
 @register_op("", "Xor")
-def trt_xor(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_xor(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_elementwise_func = getattr(ffi.lib, "addElementWise", None)
     if not add_elementwise_func:
         raise RuntimeError("addElementWise not found")
@@ -371,7 +371,7 @@ def trt_xor(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Exp")
-def trt_exp(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_exp(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -391,7 +391,7 @@ def trt_exp(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Log")
-def trt_log(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_log(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -411,7 +411,7 @@ def trt_log(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Sqrt")
-def trt_sqrt(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_sqrt(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -431,7 +431,7 @@ def trt_sqrt(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "Abs")
-def trt_abs(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_abs(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -451,7 +451,7 @@ def trt_abs(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Neg")
-def trt_neg(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_neg(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -471,7 +471,7 @@ def trt_neg(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Not")
-def trt_not(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_not(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_unary_func = getattr(ffi.lib, "addUnaryOperation", None)
     if not add_unary_func:
         raise RuntimeError("addUnaryOperation not found")
@@ -491,7 +491,7 @@ def trt_not(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Relu")
-def trt_relu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_relu(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -511,7 +511,7 @@ def trt_relu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "Sigmoid")
-def trt_sigmoid(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_sigmoid(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -531,7 +531,7 @@ def trt_sigmoid(network: INetworkDefinition, node: Any, tensors: Dict[str, ITens
 
 
 @register_op("", "Tanh")
-def trt_tanh(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_tanh(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -551,7 +551,7 @@ def trt_tanh(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "LeakyRelu")
-def trt_leakyrelu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_leakyrelu(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -571,7 +571,7 @@ def trt_leakyrelu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITe
 
 
 @register_op("", "Elu")
-def trt_elu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_elu(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -591,7 +591,7 @@ def trt_elu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor])
 
 
 @register_op("", "Selu")
-def trt_selu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_selu(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -611,7 +611,7 @@ def trt_selu(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "Softplus")
-def trt_softplus(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_softplus(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -631,7 +631,7 @@ def trt_softplus(network: INetworkDefinition, node: Any, tensors: Dict[str, ITen
 
 
 @register_op("", "Clip")
-def trt_clip(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_clip(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -651,7 +651,7 @@ def trt_clip(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]
 
 
 @register_op("", "HardSigmoid")
-def trt_hardsigmoid(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_hardsigmoid(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_act_func = getattr(ffi.lib, "addActivation", None)
     if not add_act_func:
         raise RuntimeError("addActivation not found")
@@ -671,7 +671,7 @@ def trt_hardsigmoid(network: INetworkDefinition, node: Any, tensors: Dict[str, I
 
 
 @register_op("", "MaxPool")
-def trt_maxpool(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_maxpool(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_pool_func = getattr(ffi.lib, "addPoolingNd", None)
     if not add_pool_func:
         raise RuntimeError("addPoolingNd not found")
@@ -697,7 +697,7 @@ def trt_maxpool(network: INetworkDefinition, node: Any, tensors: Dict[str, ITens
 
 
 @register_op("", "AveragePool")
-def trt_averagepool(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_averagepool(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_pool_func = getattr(ffi.lib, "addPoolingNd", None)
     if not add_pool_func:
         raise RuntimeError("addPoolingNd not found")
@@ -723,7 +723,7 @@ def trt_averagepool(network: INetworkDefinition, node: Any, tensors: Dict[str, I
 
 
 @register_op("", "ReduceMean")
-def trt_reducemean(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reducemean(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_reduce_func = getattr(ffi.lib, "addReduce", None)
     if not add_reduce_func:
         raise RuntimeError("addReduce not found")
@@ -761,7 +761,7 @@ def trt_reducemean(network: INetworkDefinition, node: Any, tensors: Dict[str, IT
 
 
 @register_op("", "ReduceSum")
-def trt_reducesum(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reducesum(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_reduce_func = getattr(ffi.lib, "addReduce", None)
     if not add_reduce_func:
         raise RuntimeError("addReduce not found")
@@ -799,7 +799,7 @@ def trt_reducesum(network: INetworkDefinition, node: Any, tensors: Dict[str, ITe
 
 
 @register_op("", "ReduceMax")
-def trt_reducemax(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reducemax(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_reduce_func = getattr(ffi.lib, "addReduce", None)
     if not add_reduce_func:
         raise RuntimeError("addReduce not found")
@@ -837,7 +837,7 @@ def trt_reducemax(network: INetworkDefinition, node: Any, tensors: Dict[str, ITe
 
 
 @register_op("", "ReduceMin")
-def trt_reducemin(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reducemin(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_reduce_func = getattr(ffi.lib, "addReduce", None)
     if not add_reduce_func:
         raise RuntimeError("addReduce not found")
@@ -875,7 +875,7 @@ def trt_reducemin(network: INetworkDefinition, node: Any, tensors: Dict[str, ITe
 
 
 @register_op("", "ReduceProd")
-def trt_reduceprod(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_reduceprod(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_reduce_func = getattr(ffi.lib, "addReduce", None)
     if not add_reduce_func:
         raise RuntimeError("addReduce not found")

@@ -1,8 +1,8 @@
 """TVM submodule for AST and optimization."""
 
 from ..analysis import topological_sort
-from ..expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
-from ..ty import TensorType, TupleType
+from ..expr import Expr
+from ..ty import TensorType
 
 
 class MemoryPlanner:

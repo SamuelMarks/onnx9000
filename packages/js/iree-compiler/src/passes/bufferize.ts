@@ -49,7 +49,7 @@ export function bufferizeLinalg(region: Region): void {
 
           const memrefOp = new Operation(op.opcode, [...newOperands, allocOp.results[0]!], []);
           newOps.push(memrefOp);
-          valueToMemRef.set(op.results[0]!, allocOp.results[0]!);
+          valueToMemRef.set(op.results[0], allocOp.results[0]!);
         } else {
           const mappedOp = new Operation(
             op.opcode,

@@ -1,7 +1,10 @@
-export const getKerasFusedConv2DWGSL = (
-    activation: string = 'relu',
-    useBias: boolean = true
-) => `
+/**
+ * WGSL Shader for Fused Keras Conv2D.
+ * @param activation Activation function name ('relu', 'swish', or 'linear').
+ * @param useBias Whether to include bias addition.
+ * @returns The WGSL shader source code.
+ */
+export const getKerasFusedConv2DWGSL = (activation: string = 'relu', useBias: boolean = true) => `
 // WGSL Shader for Fused Keras Conv2D -> NCHW Conv2D + BiasAdd + Activation
 // Utilizes workgroup shared memory for optimal tile-based Convolution computation
 @group(0) @binding(0) var<storage, read> input: array<f32>;

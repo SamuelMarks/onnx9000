@@ -3,9 +3,6 @@
 import argparse
 import sys
 
-from onnx9000.tflite_exporter.compiler.subgraph import compile_graph_to_tflite
-from onnx9000.tflite_exporter.exporter import TFLiteExporter
-
 
 def main(args=None):
     """Main entry point for the onnx2tf CLI.

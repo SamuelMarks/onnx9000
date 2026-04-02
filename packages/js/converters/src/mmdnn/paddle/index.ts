@@ -1,4 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
-export { PaddleParser } from './parser';
-export { PaddleMapper, translatePaddleShape } from './mapper';
+/** paddle MMDNN submodule. */
+export * from './parser.js';
+export * from './mapper.js';

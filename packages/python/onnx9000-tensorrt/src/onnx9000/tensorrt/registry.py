@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, Dict, Tuple
+from typing import Callable
 
 logger = logging.getLogger("onnx9000.tensorrt.registry")
 

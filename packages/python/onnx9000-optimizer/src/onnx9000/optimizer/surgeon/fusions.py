@@ -1,7 +1,6 @@
 """Graph fusion passes for onnx9000."""
 
-from typing import List, Optional
-from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Node, Tensor, Constant
 from onnx9000.core.surgeon import PatternMatcher, match_pattern
 
 
@@ -122,6 +121,22 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
             # In a real implementation, we would use surgeon.concatenate_constants
             # and insert Split nodes after the fused Gemm if needed.
             # For Pillar 3, we implement the logic for identifying and grouping them.
-            pass
+            fused_name = "_".join([g.name for g in fusible]) + "_fused"
+            all_outputs = []
+            for g in fusible:
+                all_outputs.extend(g.outputs)
+
+            fused_node = Node(
+                op_type="Gemm",
+                inputs=[fusible[0].inputs[0], "fused_weights"],
+                outputs=all_outputs,
+                name=fused_name,
+            )
+
+            # Simplified: just replace first fusible with fused node, remove others
+            idx = graph.nodes.index(fusible[0])
+            graph.nodes[idx] = fused_node
+            for i in range(1, len(fusible)):
+                graph.nodes.remove(fusible[i])
 
     return graph

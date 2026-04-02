@@ -139,7 +139,7 @@
     {
       "name": "SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "context",
@@ -194,7 +194,7 @@
     {
       "name": "taskcontext.ResourceInformation",
       "type": "Class",
-      "signature": "(name: str, addresses: List[str])"
+      "signature": "(name: str, addresses: list[str])"
     },
     {
       "name": "taskcontext.TaskContext",
@@ -569,7 +569,7 @@
     {
       "name": "util.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "util.JVM_BYTE_MIN",
@@ -689,7 +689,7 @@
     {
       "name": "util.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "util.globs",
@@ -1034,7 +1034,7 @@
     {
       "name": "shell.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "shell.SPARK_LOG_SCHEMA",
@@ -1044,7 +1044,7 @@
     {
       "name": "shell.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "shell.SQLContext",
@@ -1214,7 +1214,7 @@
     {
       "name": "accumulators.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "accumulators.globs",
@@ -1254,7 +1254,7 @@
     {
       "name": "worker.ResourceInformation",
       "type": "Class",
-      "signature": "(name: str, addresses: List[str])"
+      "signature": "(name: str, addresses: list[str])"
     },
     {
       "name": "worker.PythonEvalType",
@@ -1839,7 +1839,7 @@
     {
       "name": "profiler.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "profiler.MemoryTuple",
@@ -1914,7 +1914,7 @@
     {
       "name": "resource.ResourceInformation",
       "type": "Class",
-      "signature": "(name: str, addresses: List[str])"
+      "signature": "(name: str, addresses: list[str])"
     },
     {
       "name": "resource.TaskResourceRequest",
@@ -1924,7 +1924,7 @@
     {
       "name": "resource.TaskResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "resource.ExecutorResourceRequest",
@@ -1934,12 +1934,12 @@
     {
       "name": "resource.ExecutorResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, ExecutorResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, ExecutorResourceRequest]])"
     },
     {
       "name": "resource.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "resource.ResourceProfileBuilder",
@@ -1954,7 +1954,7 @@
     {
       "name": "resource.requests.ExecutorResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, ExecutorResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, ExecutorResourceRequest]])"
     },
     {
       "name": "resource.requests.TaskResourceRequest",
@@ -1964,7 +1964,7 @@
     {
       "name": "resource.requests.TaskResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "resource.profile.TaskResourceRequest",
@@ -1974,12 +1974,12 @@
     {
       "name": "resource.profile.TaskResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "resource.profile.ExecutorResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, ExecutorResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, ExecutorResourceRequest]])"
     },
     {
       "name": "resource.profile.ExecutorResourceRequest",
@@ -1989,7 +1989,7 @@
     {
       "name": "resource.profile.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "resource.profile.ResourceProfileBuilder",
@@ -1999,7 +1999,7 @@
     {
       "name": "resource.information.ResourceInformation",
       "type": "Class",
-      "signature": "(name: str, addresses: List[str])"
+      "signature": "(name: str, addresses: list[str])"
     },
     {
       "name": "streaming.StreamingContext",
@@ -2019,7 +2019,7 @@
     {
       "name": "streaming.util.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "streaming.util.RDD",
@@ -2199,7 +2199,7 @@
     {
       "name": "streaming.context.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "streaming.context.StorageLevel",
@@ -2279,7 +2279,7 @@
     {
       "name": "sql.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.Column",
@@ -2374,12 +2374,12 @@
     {
       "name": "sql.datasource.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.datasource.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.datasource.ColumnPath",
@@ -2529,7 +2529,7 @@
     {
       "name": "sql.catalog.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.catalog.StructType",
@@ -2589,7 +2589,7 @@
     {
       "name": "sql.observation.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.observation.CPickleSerializer",
@@ -2879,7 +2879,7 @@
     {
       "name": "sql.types.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.types.StructType",
@@ -3034,7 +3034,7 @@
     {
       "name": "sql.session.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.session.StructType",
@@ -3089,7 +3089,7 @@
     {
       "name": "sql.session.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.session.RDD",
@@ -3159,7 +3159,7 @@
     {
       "name": "sql.session.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.session.ProgressHandler",
@@ -3174,7 +3174,7 @@
     {
       "name": "sql.session.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.tvf.PySparkValueError",
@@ -3194,7 +3194,7 @@
     {
       "name": "sql.tvf.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.tvf.TableValuedFunction",
@@ -3284,7 +3284,7 @@
     {
       "name": "sql.udf.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.udf.DataTypeOrString",
@@ -3304,7 +3304,7 @@
     {
       "name": "sql.udf.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.udf.UserDefinedFunction",
@@ -3434,7 +3434,7 @@
     {
       "name": "sql.conversion.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.conversion.StructType",
@@ -3534,7 +3534,7 @@
     {
       "name": "sql.udtf.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.udtf.AnalyzeArgument",
@@ -3579,7 +3579,7 @@
     {
       "name": "sql.sql_formatter.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.sql_formatter.DataFrame",
@@ -3644,7 +3644,7 @@
     {
       "name": "sql.readwriter.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.readwriter.DataFrame",
@@ -3704,7 +3704,7 @@
     {
       "name": "sql.group.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.group.DataFrame",
@@ -3849,7 +3849,7 @@
     {
       "name": "sql.dataframe.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.dataframe.Column",
@@ -3899,7 +3899,7 @@
     {
       "name": "sql.dataframe.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.dataframe.RDD",
@@ -3944,7 +3944,7 @@
     {
       "name": "sql.dataframe.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.dataframe.GroupedData",
@@ -4029,7 +4029,7 @@
     {
       "name": "sql.context.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.context.DataFrame",
@@ -4089,7 +4089,7 @@
     {
       "name": "sql.context.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.context.AtomicValue",
@@ -4124,7 +4124,7 @@
     {
       "name": "sql.datasource_internal.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.datasource_internal.DataSourceStreamReader",
@@ -4299,7 +4299,7 @@
     {
       "name": "sql.plot.plotly.process_column_param",
       "type": "Function",
-      "signature": "(column: Optional[Union[str, List[str]]], data: DataFrame) -> List[str]"
+      "signature": "(column: Optional[Union[str, list[str]]], data: DataFrame) -> list[str]"
     },
     {
       "name": "sql.plot.math",
@@ -4739,22 +4739,22 @@
     {
       "name": "sql.streaming.listener.StreamingQueryProgress",
       "type": "Class",
-      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: Dict[str, int], eventTime: Dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: Dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: dict[str, int], eventTime: dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.streaming.listener.StateOperatorProgress",
       "type": "Class",
-      "signature": "(operatorName: str, numRowsTotal: int, numRowsUpdated: int, numRowsRemoved: int, allUpdatesTimeMs: int, allRemovalsTimeMs: int, commitTimeMs: int, memoryUsedBytes: int, numRowsDroppedByWatermark: int, numShufflePartitions: int, numStateStoreInstances: int, customMetrics: Dict[str, int], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(operatorName: str, numRowsTotal: int, numRowsUpdated: int, numRowsRemoved: int, allUpdatesTimeMs: int, allRemovalsTimeMs: int, commitTimeMs: int, memoryUsedBytes: int, numRowsDroppedByWatermark: int, numShufflePartitions: int, numStateStoreInstances: int, customMetrics: dict[str, int], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.streaming.listener.SourceProgress",
       "type": "Class",
-      "signature": "(description: str, startOffset: str, endOffset: str, latestOffset: str, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, metrics: Dict[str, str], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(description: str, startOffset: str, endOffset: str, latestOffset: str, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, metrics: dict[str, str], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.streaming.listener.SinkProgress",
       "type": "Class",
-      "signature": "(description: str, numOutputRows: int, metrics: Dict[str, str], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(description: str, numOutputRows: int, metrics: dict[str, str], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.streaming.stateful_processor.StatefulProcessorApiClient",
@@ -4939,7 +4939,7 @@
     {
       "name": "sql.streaming.readwriter.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.streaming.readwriter.SupportsProcess",
@@ -4989,7 +4989,7 @@
     {
       "name": "sql.streaming.query.StreamingQueryProgress",
       "type": "Class",
-      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: Dict[str, int], eventTime: Dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: Dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: dict[str, int], eventTime: dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.streaming.query.StreamingQuery",
@@ -5009,7 +5009,7 @@
     {
       "name": "sql.streaming.python_streaming_source_runner.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.streaming.python_streaming_source_runner.read_int",
@@ -5034,7 +5034,7 @@
     {
       "name": "sql.streaming.python_streaming_source_runner.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.streaming.python_streaming_source_runner.DataSourceStreamReader",
@@ -5764,7 +5764,7 @@
     {
       "name": "sql.classic.column.with_origin_to_class",
       "type": "Function",
-      "signature": "(cls_or_ignores: Optional[Union[Type[T], List[str]]], ignores: Optional[List[str]]) -> Union[Type[T], Callable[[Type[T]], Type[T]]]"
+      "signature": "(cls_or_ignores: Optional[Union[Type[T], list[str]]], ignores: Optional[list[str]]) -> Union[Type[T], Callable[[Type[T]], Type[T]]]"
     },
     {
       "name": "sql.classic.column.DataType",
@@ -5784,7 +5784,7 @@
     {
       "name": "sql.classic.column.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.classic.column.ColumnOrName",
@@ -5849,7 +5849,7 @@
     {
       "name": "sql.classic.dataframe.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.classic.dataframe.AnalysisException",
@@ -5994,7 +5994,7 @@
     {
       "name": "sql.classic.dataframe.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.classic.dataframe.PrimitiveType",
@@ -6049,7 +6049,7 @@
     {
       "name": "sql.classic.dataframe.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.classic.dataframe.GroupedData",
@@ -6259,7 +6259,7 @@
     {
       "name": "sql.pandas.serializers.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.pandas.serializers.LongType",
@@ -6509,7 +6509,7 @@
     {
       "name": "sql.pandas.types.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.pandas.types.NullType",
@@ -6689,17 +6689,17 @@
     {
       "name": "sql.pandas.typehints.infer_pandas_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any]) -> Optional[Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType]]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any]) -> Optional[Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType]]"
     },
     {
       "name": "sql.pandas.typehints.infer_arrow_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any]) -> Optional[Union[ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any]) -> Optional[Union[ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]]"
     },
     {
       "name": "sql.pandas.typehints.infer_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any], kind: str) -> Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType, ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any], kind: str) -> Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType, ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]"
     },
     {
       "name": "sql.pandas.typehints.infer_eval_type_for_udf",
@@ -6709,7 +6709,7 @@
     {
       "name": "sql.pandas.typehints.infer_group_arrow_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any]) -> Optional[Union[ArrowGroupedMapUDFType, ArrowGroupedMapIterUDFType]]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any]) -> Optional[Union[ArrowGroupedMapUDFType, ArrowGroupedMapIterUDFType]]"
     },
     {
       "name": "sql.pandas.typehints.infer_group_arrow_eval_type_from_func",
@@ -6719,7 +6719,7 @@
     {
       "name": "sql.pandas.typehints.infer_group_pandas_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any]) -> Optional[Union[PandasGroupedMapUDFType, PandasGroupedMapIterUDFType]]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any]) -> Optional[Union[PandasGroupedMapUDFType, PandasGroupedMapIterUDFType]]"
     },
     {
       "name": "sql.pandas.typehints.infer_group_pandas_eval_type_from_func",
@@ -6749,7 +6749,7 @@
     {
       "name": "sql.pandas.functions.infer_eval_type",
       "type": "Function",
-      "signature": "(sig: Signature, type_hints: Dict[str, Any], kind: str) -> Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType, ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]"
+      "signature": "(sig: Signature, type_hints: dict[str, Any], kind: str) -> Union[PandasScalarUDFType, PandasScalarIterUDFType, PandasGroupedAggUDFType, ArrowScalarUDFType, ArrowScalarIterUDFType, ArrowGroupedAggUDFType]"
     },
     {
       "name": "sql.pandas.functions.require_minimum_pandas_version",
@@ -6999,17 +6999,17 @@
     {
       "name": "sql.pandas.map_ops.ExecutorResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, ExecutorResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, ExecutorResourceRequest]])"
     },
     {
       "name": "sql.pandas.map_ops.TaskResourceRequests",
       "type": "Class",
-      "signature": "(_jvm: Optional[JVMView], _requests: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_jvm: Optional[JVMView], _requests: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.pandas.map_ops.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.pandas.map_ops.PythonEvalType",
@@ -7049,7 +7049,7 @@
     {
       "name": "sql.worker.write_into_data_source.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.write_into_data_source.PySparkRuntimeError",
@@ -7094,7 +7094,7 @@
     {
       "name": "sql.worker.write_into_data_source.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.write_into_data_source.DataSourceWriter",
@@ -7354,7 +7354,7 @@
     {
       "name": "sql.worker.analyze_udtf.read_arguments",
       "type": "Function",
-      "signature": "(infile: IO) -> Tuple[List[AnalyzeArgument], Dict[str, AnalyzeArgument]]"
+      "signature": "(infile: IO) -> Tuple[List[AnalyzeArgument], dict[str, AnalyzeArgument]]"
     },
     {
       "name": "sql.worker.analyze_udtf.main",
@@ -7374,7 +7374,7 @@
     {
       "name": "sql.worker.data_source_pushdown_filters.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.data_source_pushdown_filters.PySparkValueError",
@@ -7419,7 +7419,7 @@
     {
       "name": "sql.worker.data_source_pushdown_filters.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.data_source_pushdown_filters.DataSourceReader",
@@ -7624,7 +7624,7 @@
     {
       "name": "sql.worker.plan_data_source_read.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.plan_data_source_read.PySparkRuntimeError",
@@ -7674,7 +7674,7 @@
     {
       "name": "sql.worker.plan_data_source_read.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.plan_data_source_read.DataSourceReader",
@@ -7794,7 +7794,7 @@
     {
       "name": "sql.worker.commit_data_source_write.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.commit_data_source_write.capture_outputs",
@@ -7899,7 +7899,7 @@
     {
       "name": "sql.worker.create_data_source.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.create_data_source.PySparkTypeError",
@@ -7939,7 +7939,7 @@
     {
       "name": "sql.worker.create_data_source.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.create_data_source.CaseInsensitiveDict",
@@ -8029,7 +8029,7 @@
     {
       "name": "sql.worker.python_streaming_sink_runner.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.worker.python_streaming_sink_runner.capture_outputs",
@@ -8064,7 +8064,7 @@
     {
       "name": "sql.worker.python_streaming_sink_runner.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.python_streaming_sink_runner.WriterCommitMessage",
@@ -8174,7 +8174,7 @@
     {
       "name": "sql.worker.lookup_data_sources.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.worker.lookup_data_sources.handle_worker_exception",
@@ -8254,7 +8254,7 @@
     {
       "name": "sql.connect.datasource.DataSource",
       "type": "Class",
-      "signature": "(options: Dict[str, str])"
+      "signature": "(options: dict[str, str])"
     },
     {
       "name": "sql.connect.datasource.SparkSession",
@@ -8369,7 +8369,7 @@
     {
       "name": "sql.connect.observation.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.connect.observation.Column",
@@ -8489,7 +8489,7 @@
     {
       "name": "sql.connect.types.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.connect.types.ArrayType",
@@ -8554,7 +8554,7 @@
     {
       "name": "sql.connect.types.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.connect.types.PySparkValueError",
@@ -8584,7 +8584,7 @@
     {
       "name": "sql.connect.types.parse_attr_name",
       "type": "Function",
-      "signature": "(name: str) -> Optional[List[str]]"
+      "signature": "(name: str) -> Optional[list[str]]"
     },
     {
       "name": "sql.connect.types.verify_col_name",
@@ -8619,7 +8619,7 @@
     {
       "name": "sql.connect.session.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.session.DefaultChannelBuilder",
@@ -8634,7 +8634,7 @@
     {
       "name": "sql.connect.session.SQL",
       "type": "Class",
-      "signature": "(query: str, args: Optional[List[Column]], named_args: Optional[Dict[str, Column]], views: Optional[Sequence[SubqueryAlias]])"
+      "signature": "(query: str, args: Optional[List[Column]], named_args: Optional[dict[str, Column]], views: Optional[Sequence[SubqueryAlias]])"
     },
     {
       "name": "sql.connect.session.Range",
@@ -8734,7 +8734,7 @@
     {
       "name": "sql.connect.session.PySparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "sql.connect.session.Row",
@@ -8809,7 +8809,7 @@
     {
       "name": "sql.connect.session.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "sql.connect.session.pb2",
@@ -8889,7 +8889,7 @@
     {
       "name": "sql.connect.plan.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.connect.plan.check_dependencies",
@@ -8974,7 +8974,7 @@
     {
       "name": "sql.connect.plan.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.plan.UserDefinedFunction",
@@ -8999,12 +8999,12 @@
     {
       "name": "sql.connect.plan.DataSource",
       "type": "Class",
-      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[List[str]], predicates: Optional[List[str]], is_streaming: Optional[bool])"
+      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[list[str]], predicates: Optional[list[str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.plan.Read",
       "type": "Class",
-      "signature": "(table_name: str, options: Optional[Dict[str, str]], is_streaming: Optional[bool])"
+      "signature": "(table_name: str, options: Optional[dict[str, str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.plan.LocalRelation",
@@ -9074,7 +9074,7 @@
     {
       "name": "sql.connect.plan.Deduplicate",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], all_columns_as_keys: bool, column_names: Optional[List[str]], within_watermark: bool)"
+      "signature": "(child: Optional[LogicalPlan], all_columns_as_keys: bool, column_names: Optional[list[str]], within_watermark: bool)"
     },
     {
       "name": "sql.connect.plan.Sort",
@@ -9099,12 +9099,12 @@
     {
       "name": "sql.connect.plan.Join",
       "type": "Class",
-      "signature": "(left: Optional[LogicalPlan], right: LogicalPlan, on: Optional[Union[str, List[str], Column, List[Column]]], how: Optional[str])"
+      "signature": "(left: Optional[LogicalPlan], right: LogicalPlan, on: Optional[Union[str, list[str], Column, List[Column]]], how: Optional[str])"
     },
     {
       "name": "sql.connect.plan.AsOfJoin",
       "type": "Class",
-      "signature": "(left: LogicalPlan, right: LogicalPlan, left_as_of: Column, right_as_of: Column, on: Optional[Union[str, List[str], Column, List[Column]]], how: str, tolerance: Optional[Column], allow_exact_matches: bool, direction: str)"
+      "signature": "(left: LogicalPlan, right: LogicalPlan, left_as_of: Column, right_as_of: Column, on: Optional[Union[str, list[str], Column, List[Column]]], how: str, tolerance: Optional[Column], allow_exact_matches: bool, direction: str)"
     },
     {
       "name": "sql.connect.plan.LateralJoin",
@@ -9139,7 +9139,7 @@
     {
       "name": "sql.connect.plan.SQL",
       "type": "Class",
-      "signature": "(query: str, args: Optional[List[Column]], named_args: Optional[Dict[str, Column]], views: Optional[Sequence[SubqueryAlias]])"
+      "signature": "(query: str, args: Optional[List[Column]], named_args: Optional[dict[str, Column]], views: Optional[Sequence[SubqueryAlias]])"
     },
     {
       "name": "sql.connect.plan.Range",
@@ -9179,27 +9179,27 @@
     {
       "name": "sql.connect.plan.NAFill",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: Optional[List[str]], values: List[Any])"
+      "signature": "(child: Optional[LogicalPlan], cols: Optional[list[str]], values: List[Any])"
     },
     {
       "name": "sql.connect.plan.NADrop",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: Optional[List[str]], min_non_nulls: Optional[int])"
+      "signature": "(child: Optional[LogicalPlan], cols: Optional[list[str]], min_non_nulls: Optional[int])"
     },
     {
       "name": "sql.connect.plan.NAReplace",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: Optional[List[str]], replacements: Sequence[Tuple[Column, Column]])"
+      "signature": "(child: Optional[LogicalPlan], cols: Optional[list[str]], replacements: Sequence[Tuple[Column, Column]])"
     },
     {
       "name": "sql.connect.plan.StatSummary",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], statistics: List[str])"
+      "signature": "(child: Optional[LogicalPlan], statistics: list[str])"
     },
     {
       "name": "sql.connect.plan.StatDescribe",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: List[str])"
+      "signature": "(child: Optional[LogicalPlan], cols: list[str])"
     },
     {
       "name": "sql.connect.plan.StatCov",
@@ -9209,7 +9209,7 @@
     {
       "name": "sql.connect.plan.StatApproxQuantile",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: List[str], probabilities: List[float], relativeError: float)"
+      "signature": "(child: Optional[LogicalPlan], cols: list[str], probabilities: list[float], relativeError: float)"
     },
     {
       "name": "sql.connect.plan.StatCrosstab",
@@ -9219,7 +9219,7 @@
     {
       "name": "sql.connect.plan.StatFreqItems",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], cols: List[str], support: float)"
+      "signature": "(child: Optional[LogicalPlan], cols: list[str], support: float)"
     },
     {
       "name": "sql.connect.plan.StatSampleBy",
@@ -9394,12 +9394,12 @@
     {
       "name": "sql.connect.plan.MapPartitions",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], function: UserDefinedFunction, cols: List[str], is_barrier: bool, profile: Optional[ResourceProfile])"
+      "signature": "(child: Optional[LogicalPlan], function: UserDefinedFunction, cols: list[str], is_barrier: bool, profile: Optional[ResourceProfile])"
     },
     {
       "name": "sql.connect.plan.GroupMap",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, cols: List[str])"
+      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, cols: list[str])"
     },
     {
       "name": "sql.connect.plan.CoGroupMap",
@@ -9409,12 +9409,12 @@
     {
       "name": "sql.connect.plan.ApplyInPandasWithState",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, output_schema: str, state_schema: str, output_mode: str, timeout_conf: str, cols: List[str])"
+      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, output_schema: str, state_schema: str, output_mode: str, timeout_conf: str, cols: list[str])"
     },
     {
       "name": "sql.connect.plan.BaseTransformWithStateInPySpark",
       "type": "Class",
-      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, output_schema: Union[DataType, str], output_mode: str, time_mode: str, event_time_col_name: str, cols: List[str], initial_state_plan: Optional[LogicalPlan], initial_state_grouping_cols: Optional[Sequence[Column]])"
+      "signature": "(child: Optional[LogicalPlan], grouping_cols: Sequence[Column], function: UserDefinedFunction, output_schema: Union[DataType, str], output_mode: str, time_mode: str, event_time_col_name: str, cols: list[str], initial_state_plan: Optional[LogicalPlan], initial_state_grouping_cols: Optional[Sequence[Column]])"
     },
     {
       "name": "sql.connect.plan.TransformWithStateInPySpark",
@@ -9589,7 +9589,7 @@
     {
       "name": "sql.connect.merge.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.merge.LogicalPlan",
@@ -9804,12 +9804,12 @@
     {
       "name": "sql.connect.readwriter.Read",
       "type": "Class",
-      "signature": "(table_name: str, options: Optional[Dict[str, str]], is_streaming: Optional[bool])"
+      "signature": "(table_name: str, options: Optional[dict[str, str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.readwriter.DataSource",
       "type": "Class",
-      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[List[str]], predicates: Optional[List[str]], is_streaming: Optional[bool])"
+      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[list[str]], predicates: Optional[list[str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.readwriter.LogicalPlan",
@@ -9954,7 +9954,7 @@
     {
       "name": "sql.connect.conf.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.conf.RuntimeConf",
@@ -10124,7 +10124,7 @@
     {
       "name": "sql.connect.table_arg.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.table_arg.TableArg",
@@ -10249,7 +10249,7 @@
     {
       "name": "sql.connect.column.with_origin_to_class",
       "type": "Function",
-      "signature": "(cls_or_ignores: Optional[Union[Type[T], List[str]]], ignores: Optional[List[str]]) -> Union[Type[T], Callable[[Type[T]], Type[T]]]"
+      "signature": "(cls_or_ignores: Optional[Union[Type[T], list[str]]], ignores: Optional[list[str]]) -> Union[Type[T], Callable[[Type[T]], Type[T]]]"
     },
     {
       "name": "sql.connect.column.LiteralType",
@@ -10269,7 +10269,7 @@
     {
       "name": "sql.connect.column.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.column.WindowSpec",
@@ -10479,7 +10479,7 @@
     {
       "name": "sql.connect.expressions.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.expressions.WindowSpec",
@@ -10689,7 +10689,7 @@
     {
       "name": "sql.connect.dataframe.ResourceProfile",
       "type": "Class",
-      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[Dict[str, ExecutorResourceRequest]], _task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(_java_resource_profile: Optional[JavaObject], _exec_req: Optional[dict[str, ExecutorResourceRequest]], _task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.connect.dataframe.logger",
@@ -10969,7 +10969,7 @@
     {
       "name": "sql.connect.resource.profile.ResourceProfile",
       "type": "Class",
-      "signature": "(exec_req: Optional[Dict[str, ExecutorResourceRequest]], task_req: Optional[Dict[str, TaskResourceRequest]])"
+      "signature": "(exec_req: Optional[dict[str, ExecutorResourceRequest]], task_req: Optional[dict[str, TaskResourceRequest]])"
     },
     {
       "name": "sql.connect.proto.ml_pb2.spark_dot_connect_dot_relations__pb2",
@@ -13429,7 +13429,7 @@
     {
       "name": "sql.connect.client.ChannelBuilder",
       "type": "Class",
-      "signature": "(channelOptions: Optional[List[Tuple[str, Any]]], params: Optional[Dict[str, str]])"
+      "signature": "(channelOptions: Optional[List[Tuple[str, Any]]], params: Optional[dict[str, str]])"
     },
     {
       "name": "sql.connect.client.DefaultChannelBuilder",
@@ -13439,7 +13439,7 @@
     {
       "name": "sql.connect.client.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "sql.connect.streaming.readwriter.check_dependencies",
@@ -13454,7 +13454,7 @@
     {
       "name": "sql.connect.streaming.readwriter.DataSource",
       "type": "Class",
-      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[List[str]], predicates: Optional[List[str]], is_streaming: Optional[bool])"
+      "signature": "(format: Optional[str], schema: Optional[str], options: Optional[Mapping[str, str]], paths: Optional[list[str]], predicates: Optional[list[str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.streaming.readwriter.LogicalPlan",
@@ -13464,7 +13464,7 @@
     {
       "name": "sql.connect.streaming.readwriter.Read",
       "type": "Class",
-      "signature": "(table_name: str, options: Optional[Dict[str, str]], is_streaming: Optional[bool])"
+      "signature": "(table_name: str, options: Optional[dict[str, str]], is_streaming: Optional[bool])"
     },
     {
       "name": "sql.connect.streaming.readwriter.WriteStreamOperation",
@@ -13619,7 +13619,7 @@
     {
       "name": "sql.connect.streaming.query.StreamingQueryProgress",
       "type": "Class",
-      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: Dict[str, int], eventTime: Dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: Dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[Dict[str, Any]])"
+      "signature": "(id: uuid.UUID, runId: uuid.UUID, name: Optional[str], timestamp: str, batchId: int, batchDuration: int, durationMs: dict[str, int], eventTime: dict[str, str], stateOperators: List[StateOperatorProgress], sources: List[SourceProgress], sink: SinkProgress, numInputRows: int, inputRowsPerSecond: float, processedRowsPerSecond: float, observedMetrics: dict[str, Row], jprogress: Optional[JavaObject], jdict: Optional[dict[str, Any]])"
     },
     {
       "name": "sql.connect.streaming.query.PySparkStreamingQuery",
@@ -19359,7 +19359,7 @@
     {
       "name": "sql.connect.avro.functions.from_avro",
       "type": "Function",
-      "signature": "(data: ColumnOrName, jsonFormatSchema: str, options: Optional[Dict[str, str]]) -> Column"
+      "signature": "(data: ColumnOrName, jsonFormatSchema: str, options: Optional[dict[str, str]]) -> Column"
     },
     {
       "name": "sql.connect.avro.functions.to_avro",
@@ -19394,12 +19394,12 @@
     {
       "name": "sql.connect.protobuf.functions.from_protobuf",
       "type": "Function",
-      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[Dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
+      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
     },
     {
       "name": "sql.connect.protobuf.functions.to_protobuf",
       "type": "Function",
-      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[Dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
+      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
     },
     {
       "name": "sql.functions.builtin.PySparkTypeError",
@@ -19509,7 +19509,7 @@
     {
       "name": "sql.functions.builtin.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "sql.functions.builtin.DataFrame",
@@ -24824,7 +24824,7 @@
     {
       "name": "sql.avro.functions.from_avro",
       "type": "Function",
-      "signature": "(data: ColumnOrName, jsonFormatSchema: str, options: Optional[Dict[str, str]]) -> Column"
+      "signature": "(data: ColumnOrName, jsonFormatSchema: str, options: Optional[dict[str, str]]) -> Column"
     },
     {
       "name": "sql.avro.functions.to_avro",
@@ -24854,17 +24854,17 @@
     {
       "name": "sql.protobuf.functions.from_protobuf",
       "type": "Function",
-      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[Dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
+      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
     },
     {
       "name": "sql.protobuf.functions.to_protobuf",
       "type": "Function",
-      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[Dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
+      "signature": "(data: ColumnOrName, messageName: str, descFilePath: Optional[str], options: Optional[dict[str, str]], binaryDescriptorSet: Optional[bytes]) -> Column"
     },
     {
       "name": "errors.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "errors.AnalysisException",
@@ -24984,7 +24984,7 @@
     {
       "name": "errors.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "errors.PySparkNotImplementedError",
@@ -25109,7 +25109,7 @@
     {
       "name": "errors.exceptions.captured.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "errors.exceptions.captured.BasePythonException",
@@ -25314,7 +25314,7 @@
     {
       "name": "errors.exceptions.connect.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "errors.exceptions.connect.BasePythonException",
@@ -25394,12 +25394,12 @@
     {
       "name": "errors.exceptions.connect.SparkConnectGrpcException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], reason: Optional[str], sql_state: Optional[str], server_stacktrace: Optional[str], display_server_stacktrace: bool, contexts: Optional[List[BaseQueryContext]], grpc_status_code: grpc.StatusCode, breaking_change_info: Optional[Dict[str, Any]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], reason: Optional[str], sql_state: Optional[str], server_stacktrace: Optional[str], display_server_stacktrace: bool, contexts: Optional[List[BaseQueryContext]], grpc_status_code: grpc.StatusCode, breaking_change_info: Optional[dict[str, Any]])"
     },
     {
       "name": "errors.exceptions.connect.UnknownException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], reason: Optional[str], sql_state: Optional[str], server_stacktrace: Optional[str], display_server_stacktrace: bool, contexts: Optional[List[BaseQueryContext]], grpc_status_code: grpc.StatusCode, breaking_change_info: Optional[Dict[str, Any]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], reason: Optional[str], sql_state: Optional[str], server_stacktrace: Optional[str], display_server_stacktrace: bool, contexts: Optional[List[BaseQueryContext]], grpc_status_code: grpc.StatusCode, breaking_change_info: Optional[dict[str, Any]])"
     },
     {
       "name": "errors.exceptions.connect.AnalysisException",
@@ -25539,7 +25539,7 @@
     {
       "name": "errors.exceptions.base.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "errors.exceptions.base.AnalysisException",
@@ -25659,7 +25659,7 @@
     {
       "name": "errors.exceptions.base.PySparkAssertionError",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], data: Optional[Iterable[Row]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], data: Optional[Iterable[Row]])"
     },
     {
       "name": "errors.exceptions.base.PySparkNotImplementedError",
@@ -25844,7 +25844,7 @@
     {
       "name": "pandas.sql",
       "type": "Function",
-      "signature": "(query: str, index_col: Optional[Union[str, List[str]]], args: Optional[Union[Dict[str, Any], List]], kwargs: Any) -> DataFrame"
+      "signature": "(query: str, index_col: Optional[Union[str, list[str]]], args: Optional[Union[dict[str, Any], List]], kwargs: Any) -> DataFrame"
     },
     {
       "name": "pandas.correlation.SparkDataFrame",
@@ -25894,12 +25894,12 @@
     {
       "name": "pandas.correlation.compute",
       "type": "Function",
-      "signature": "(sdf: SparkDataFrame, groupKeys: List[str], method: str) -> SparkDataFrame"
+      "signature": "(sdf: SparkDataFrame, groupKeys: list[str], method: str) -> SparkDataFrame"
     },
     {
       "name": "pandas.sql_processor.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pandas.sql_processor.SDataFrame",
@@ -25934,7 +25934,7 @@
     {
       "name": "pandas.sql_processor.sql",
       "type": "Function",
-      "signature": "(query: str, index_col: Optional[Union[str, List[str]]], globals: Optional[Dict[str, Any]], locals: Optional[Dict[str, Any]], kwargs: Any) -> DataFrame"
+      "signature": "(query: str, index_col: Optional[Union[str, list[str]]], globals: Optional[dict[str, Any]], locals: Optional[dict[str, Any]], kwargs: Any) -> DataFrame"
     },
     {
       "name": "pandas.sql_processor.escape_sql_string",
@@ -25944,7 +25944,7 @@
     {
       "name": "pandas.sql_processor.SQLProcessor",
       "type": "Class",
-      "signature": "(scope: Dict[str, Any], statement: str, session: SparkSession)"
+      "signature": "(scope: dict[str, Any], statement: str, session: SparkSession)"
     },
     {
       "name": "pandas.frame.PySparkValueError",
@@ -26019,7 +26019,7 @@
     {
       "name": "pandas.frame.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.frame.StructType",
@@ -26109,7 +26109,7 @@
     {
       "name": "pandas.frame.compute",
       "type": "Function",
-      "signature": "(sdf: SparkDataFrame, groupKeys: List[str], method: str) -> SparkDataFrame"
+      "signature": "(sdf: SparkDataFrame, groupKeys: list[str], method: str) -> SparkDataFrame"
     },
     {
       "name": "pandas.frame.CORRELATION_VALUE_1_COLUMN",
@@ -26474,7 +26474,7 @@
     {
       "name": "pandas.accessors.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.accessors.StructType",
@@ -26639,7 +26639,7 @@
     {
       "name": "pandas.groupby.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.groupby.StructType",
@@ -26764,7 +26764,7 @@
     {
       "name": "pandas.groupby.compute",
       "type": "Function",
-      "signature": "(sdf: SparkDataFrame, groupKeys: List[str], method: str) -> SparkDataFrame"
+      "signature": "(sdf: SparkDataFrame, groupKeys: list[str], method: str) -> SparkDataFrame"
     },
     {
       "name": "pandas.groupby.CORRELATION_VALUE_1_COLUMN",
@@ -26899,7 +26899,7 @@
     {
       "name": "pandas.groupby.normalize_keyword_aggregation",
       "type": "Function",
-      "signature": "(kwargs: Dict[str, Tuple[Name, str]]) -> Tuple[Dict[Name, List[str]], List[str], List[Tuple]]"
+      "signature": "(kwargs: dict[str, Tuple[Name, str]]) -> Tuple[Dict[Name, list[str]], list[str], List[Tuple]]"
     },
     {
       "name": "pandas.indexing.F",
@@ -27099,7 +27099,7 @@
     {
       "name": "pandas.resample.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.resample.TimestampNTZType",
@@ -27359,7 +27359,7 @@
     {
       "name": "pandas.namespace.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.namespace.DataType",
@@ -27544,32 +27544,32 @@
     {
       "name": "pandas.namespace.read_csv",
       "type": "Function",
-      "signature": "(path: Union[str, List[str]], sep: str, header: Union[str, int, None], names: Optional[Union[str, List[str]]], index_col: Optional[Union[str, List[str]]], usecols: Optional[Union[List[int], List[str], Callable[[str], bool]]], dtype: Optional[Union[str, Dtype, Dict[str, Union[str, Dtype]]]], nrows: Optional[int], parse_dates: bool, quotechar: Optional[str], escapechar: Optional[str], comment: Optional[str], encoding: Optional[str], options: Any) -> Union[DataFrame, Series]"
+      "signature": "(path: Union[str, list[str]], sep: str, header: Union[str, int, None], names: Optional[Union[str, list[str]]], index_col: Optional[Union[str, list[str]]], usecols: Optional[Union[list[int], list[str], Callable[[str], bool]]], dtype: Optional[Union[str, Dtype, dict[str, Union[str, Dtype]]]], nrows: Optional[int], parse_dates: bool, quotechar: Optional[str], escapechar: Optional[str], comment: Optional[str], encoding: Optional[str], options: Any) -> Union[DataFrame, Series]"
     },
     {
       "name": "pandas.namespace.read_json",
       "type": "Function",
-      "signature": "(path: str, lines: bool, index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, lines: bool, index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_delta",
       "type": "Function",
-      "signature": "(path: str, version: Optional[str], timestamp: Optional[str], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, version: Optional[str], timestamp: Optional[str], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_table",
       "type": "Function",
-      "signature": "(name: str, index_col: Optional[Union[str, List[str]]]) -> DataFrame"
+      "signature": "(name: str, index_col: Optional[Union[str, list[str]]]) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_spark_io",
       "type": "Function",
-      "signature": "(path: Optional[str], format: Optional[str], schema: Union[str, StructType], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: Optional[str], format: Optional[str], schema: Union[str, StructType], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_parquet",
       "type": "Function",
-      "signature": "(path: str, columns: Optional[List[str]], index_col: Optional[List[str]], pandas_metadata: bool, options: Any) -> DataFrame"
+      "signature": "(path: str, columns: Optional[list[str]], index_col: Optional[list[str]], pandas_metadata: bool, options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_clipboard",
@@ -27579,27 +27579,27 @@
     {
       "name": "pandas.namespace.read_excel",
       "type": "Function",
-      "signature": "(io: Union[str, Any], sheet_name: Union[str, int, List[Union[str, int]], None], header: Union[int, List[int]], names: Optional[List], index_col: Optional[List[int]], usecols: Optional[Union[int, str, List[Union[int, str]], Callable[[str], bool]]], dtype: Optional[Dict[str, Union[str, Dtype]]], engine: Optional[str], converters: Optional[Dict], true_values: Optional[Any], false_values: Optional[Any], skiprows: Optional[Union[int, List[int]]], nrows: Optional[int], na_values: Optional[Any], keep_default_na: bool, verbose: bool, parse_dates: Union[bool, List, Dict], date_parser: Optional[Callable], thousands: Optional[str], comment: Optional[str], skipfooter: int, kwds: Any) -> Union[DataFrame, Series, Dict[str, Union[DataFrame, Series]]]"
+      "signature": "(io: Union[str, Any], sheet_name: Union[str, int, List[Union[str, int]], None], header: Union[int, list[int]], names: Optional[List], index_col: Optional[list[int]], usecols: Optional[Union[int, str, List[Union[int, str]], Callable[[str], bool]]], dtype: Optional[dict[str, Union[str, Dtype]]], engine: Optional[str], converters: Optional[Dict], true_values: Optional[Any], false_values: Optional[Any], skiprows: Optional[Union[int, list[int]]], nrows: Optional[int], na_values: Optional[Any], keep_default_na: bool, verbose: bool, parse_dates: Union[bool, List, Dict], date_parser: Optional[Callable], thousands: Optional[str], comment: Optional[str], skipfooter: int, kwds: Any) -> Union[DataFrame, Series, dict[str, Union[DataFrame, Series]]]"
     },
     {
       "name": "pandas.namespace.read_html",
       "type": "Function",
-      "signature": "(io: Union[str, Any], match: str, flavor: Optional[str], header: Optional[Union[int, List[int]]], index_col: Optional[Union[int, List[int]]], skiprows: Optional[Union[int, List[int], slice]], attrs: Optional[Dict[str, str]], parse_dates: bool, thousands: str, encoding: Optional[str], decimal: str, converters: Optional[Dict], na_values: Optional[Any], keep_default_na: bool, displayed_only: bool) -> List[DataFrame]"
+      "signature": "(io: Union[str, Any], match: str, flavor: Optional[str], header: Optional[Union[int, list[int]]], index_col: Optional[Union[int, list[int]]], skiprows: Optional[Union[int, list[int], slice]], attrs: Optional[dict[str, str]], parse_dates: bool, thousands: str, encoding: Optional[str], decimal: str, converters: Optional[Dict], na_values: Optional[Any], keep_default_na: bool, displayed_only: bool) -> List[DataFrame]"
     },
     {
       "name": "pandas.namespace.read_sql_table",
       "type": "Function",
-      "signature": "(table_name: str, con: str, schema: Optional[str], index_col: Optional[Union[str, List[str]]], columns: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(table_name: str, con: str, schema: Optional[str], index_col: Optional[Union[str, list[str]]], columns: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_sql_query",
       "type": "Function",
-      "signature": "(sql: str, con: str, index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(sql: str, con: str, index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.read_sql",
       "type": "Function",
-      "signature": "(sql: str, con: str, index_col: Optional[Union[str, List[str]]], columns: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(sql: str, con: str, index_col: Optional[Union[str, list[str]]], columns: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.to_datetime",
@@ -27624,7 +27624,7 @@
     {
       "name": "pandas.namespace.get_dummies",
       "type": "Function",
-      "signature": "(data: Union[DataFrame, Series], prefix: Optional[Union[str, List[str], Dict[str, str]]], prefix_sep: str, dummy_na: bool, columns: Optional[Union[Name, List[Name]]], sparse: bool, drop_first: bool, dtype: Optional[Union[str, Dtype]]) -> DataFrame"
+      "signature": "(data: Union[DataFrame, Series], prefix: Optional[Union[str, list[str], dict[str, str]]], prefix_sep: str, dummy_na: bool, columns: Optional[Union[Name, List[Name]]], sparse: bool, drop_first: bool, dtype: Optional[Union[str, Dtype]]) -> DataFrame"
     },
     {
       "name": "pandas.namespace.concat",
@@ -27634,7 +27634,7 @@
     {
       "name": "pandas.namespace.melt",
       "type": "Function",
-      "signature": "(frame: DataFrame, id_vars: Optional[Union[Name, List[Name]]], value_vars: Optional[Union[Name, List[Name]]], var_name: Optional[Union[str, List[str]]], value_name: str) -> DataFrame"
+      "signature": "(frame: DataFrame, id_vars: Optional[Union[Name, List[Name]]], value_vars: Optional[Union[Name, List[Name]]], var_name: Optional[Union[str, list[str]]], value_name: str) -> DataFrame"
     },
     {
       "name": "pandas.namespace.isna",
@@ -27679,7 +27679,7 @@
     {
       "name": "pandas.namespace.read_orc",
       "type": "Function",
-      "signature": "(path: str, columns: Optional[List[str]], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, columns: Optional[list[str]], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.namespace.json_normalize",
@@ -27699,7 +27699,7 @@
     {
       "name": "pandas.categorical.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.categorical.ps",
@@ -27839,7 +27839,7 @@
     {
       "name": "pandas.generic.sql_conf",
       "type": "Function",
-      "signature": "(pairs: Dict[str, Any], spark: Optional[SparkSession]) -> Iterator[None]"
+      "signature": "(pairs: dict[str, Any], spark: Optional[SparkSession]) -> Iterator[None]"
     },
     {
       "name": "pandas.generic.validate_arguments_and_invoke_function",
@@ -27984,7 +27984,7 @@
     {
       "name": "pandas.sql_formatter.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pandas.sql_formatter.get_lit_sql_str",
@@ -28014,7 +28014,7 @@
     {
       "name": "pandas.sql_formatter.sql",
       "type": "Function",
-      "signature": "(query: str, index_col: Optional[Union[str, List[str]]], args: Optional[Union[Dict[str, Any], List]], kwargs: Any) -> DataFrame"
+      "signature": "(query: str, index_col: Optional[Union[str, list[str]]], args: Optional[Union[dict[str, Any], List]], kwargs: Any) -> DataFrame"
     },
     {
       "name": "pandas.sql_formatter.PandasSQLStringFormatter",
@@ -28024,7 +28024,7 @@
     {
       "name": "pandas.config.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pandas.config.default_session",
@@ -28069,7 +28069,7 @@
     {
       "name": "pandas.config.DictWrapper",
       "type": "Class",
-      "signature": "(d: Dict[str, Option], prefix: str)"
+      "signature": "(d: dict[str, Option], prefix: str)"
     },
     {
       "name": "pandas.config.options",
@@ -28434,7 +28434,7 @@
     {
       "name": "pandas.series.compute",
       "type": "Function",
-      "signature": "(sdf: SparkDataFrame, groupKeys: List[str], method: str) -> SparkDataFrame"
+      "signature": "(sdf: SparkDataFrame, groupKeys: list[str], method: str) -> SparkDataFrame"
     },
     {
       "name": "pandas.series.CORRELATION_VALUE_1_COLUMN",
@@ -28559,7 +28559,7 @@
     {
       "name": "pandas.series.sql_conf",
       "type": "Function",
-      "signature": "(pairs: Dict[str, Any], spark: Optional[SparkSession]) -> Iterator[None]"
+      "signature": "(pairs: dict[str, Any], spark: Optional[SparkSession]) -> Iterator[None]"
     },
     {
       "name": "pandas.series.validate_arguments_and_invoke_function",
@@ -29744,7 +29744,7 @@
     {
       "name": "pandas.indexes.category.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "pandas.indexes.category.CategoricalIndex",
@@ -31504,32 +31504,32 @@
     {
       "name": "pandas.read_csv",
       "type": "Function",
-      "signature": "(path: Union[str, List[str]], sep: str, header: Union[str, int, None], names: Optional[Union[str, List[str]]], index_col: Optional[Union[str, List[str]]], usecols: Optional[Union[List[int], List[str], Callable[[str], bool]]], dtype: Optional[Union[str, Dtype, Dict[str, Union[str, Dtype]]]], nrows: Optional[int], parse_dates: bool, quotechar: Optional[str], escapechar: Optional[str], comment: Optional[str], encoding: Optional[str], options: Any) -> Union[DataFrame, Series]"
+      "signature": "(path: Union[str, list[str]], sep: str, header: Union[str, int, None], names: Optional[Union[str, list[str]]], index_col: Optional[Union[str, list[str]]], usecols: Optional[Union[list[int], list[str], Callable[[str], bool]]], dtype: Optional[Union[str, Dtype, dict[str, Union[str, Dtype]]]], nrows: Optional[int], parse_dates: bool, quotechar: Optional[str], escapechar: Optional[str], comment: Optional[str], encoding: Optional[str], options: Any) -> Union[DataFrame, Series]"
     },
     {
       "name": "pandas.read_json",
       "type": "Function",
-      "signature": "(path: str, lines: bool, index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, lines: bool, index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_delta",
       "type": "Function",
-      "signature": "(path: str, version: Optional[str], timestamp: Optional[str], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, version: Optional[str], timestamp: Optional[str], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_table",
       "type": "Function",
-      "signature": "(name: str, index_col: Optional[Union[str, List[str]]]) -> DataFrame"
+      "signature": "(name: str, index_col: Optional[Union[str, list[str]]]) -> DataFrame"
     },
     {
       "name": "pandas.read_spark_io",
       "type": "Function",
-      "signature": "(path: Optional[str], format: Optional[str], schema: Union[str, StructType], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: Optional[str], format: Optional[str], schema: Union[str, StructType], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_parquet",
       "type": "Function",
-      "signature": "(path: str, columns: Optional[List[str]], index_col: Optional[List[str]], pandas_metadata: bool, options: Any) -> DataFrame"
+      "signature": "(path: str, columns: Optional[list[str]], index_col: Optional[list[str]], pandas_metadata: bool, options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_clipboard",
@@ -31539,27 +31539,27 @@
     {
       "name": "pandas.read_excel",
       "type": "Function",
-      "signature": "(io: Union[str, Any], sheet_name: Union[str, int, List[Union[str, int]], None], header: Union[int, List[int]], names: Optional[List], index_col: Optional[List[int]], usecols: Optional[Union[int, str, List[Union[int, str]], Callable[[str], bool]]], dtype: Optional[Dict[str, Union[str, Dtype]]], engine: Optional[str], converters: Optional[Dict], true_values: Optional[Any], false_values: Optional[Any], skiprows: Optional[Union[int, List[int]]], nrows: Optional[int], na_values: Optional[Any], keep_default_na: bool, verbose: bool, parse_dates: Union[bool, List, Dict], date_parser: Optional[Callable], thousands: Optional[str], comment: Optional[str], skipfooter: int, kwds: Any) -> Union[DataFrame, Series, Dict[str, Union[DataFrame, Series]]]"
+      "signature": "(io: Union[str, Any], sheet_name: Union[str, int, List[Union[str, int]], None], header: Union[int, list[int]], names: Optional[List], index_col: Optional[list[int]], usecols: Optional[Union[int, str, List[Union[int, str]], Callable[[str], bool]]], dtype: Optional[dict[str, Union[str, Dtype]]], engine: Optional[str], converters: Optional[Dict], true_values: Optional[Any], false_values: Optional[Any], skiprows: Optional[Union[int, list[int]]], nrows: Optional[int], na_values: Optional[Any], keep_default_na: bool, verbose: bool, parse_dates: Union[bool, List, Dict], date_parser: Optional[Callable], thousands: Optional[str], comment: Optional[str], skipfooter: int, kwds: Any) -> Union[DataFrame, Series, dict[str, Union[DataFrame, Series]]]"
     },
     {
       "name": "pandas.read_html",
       "type": "Function",
-      "signature": "(io: Union[str, Any], match: str, flavor: Optional[str], header: Optional[Union[int, List[int]]], index_col: Optional[Union[int, List[int]]], skiprows: Optional[Union[int, List[int], slice]], attrs: Optional[Dict[str, str]], parse_dates: bool, thousands: str, encoding: Optional[str], decimal: str, converters: Optional[Dict], na_values: Optional[Any], keep_default_na: bool, displayed_only: bool) -> List[DataFrame]"
+      "signature": "(io: Union[str, Any], match: str, flavor: Optional[str], header: Optional[Union[int, list[int]]], index_col: Optional[Union[int, list[int]]], skiprows: Optional[Union[int, list[int], slice]], attrs: Optional[dict[str, str]], parse_dates: bool, thousands: str, encoding: Optional[str], decimal: str, converters: Optional[Dict], na_values: Optional[Any], keep_default_na: bool, displayed_only: bool) -> List[DataFrame]"
     },
     {
       "name": "pandas.read_sql_table",
       "type": "Function",
-      "signature": "(table_name: str, con: str, schema: Optional[str], index_col: Optional[Union[str, List[str]]], columns: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(table_name: str, con: str, schema: Optional[str], index_col: Optional[Union[str, list[str]]], columns: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_sql_query",
       "type": "Function",
-      "signature": "(sql: str, con: str, index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(sql: str, con: str, index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.read_sql",
       "type": "Function",
-      "signature": "(sql: str, con: str, index_col: Optional[Union[str, List[str]]], columns: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(sql: str, con: str, index_col: Optional[Union[str, list[str]]], columns: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.to_datetime",
@@ -31584,7 +31584,7 @@
     {
       "name": "pandas.get_dummies",
       "type": "Function",
-      "signature": "(data: Union[DataFrame, Series], prefix: Optional[Union[str, List[str], Dict[str, str]]], prefix_sep: str, dummy_na: bool, columns: Optional[Union[Name, List[Name]]], sparse: bool, drop_first: bool, dtype: Optional[Union[str, Dtype]]) -> DataFrame"
+      "signature": "(data: Union[DataFrame, Series], prefix: Optional[Union[str, list[str], dict[str, str]]], prefix_sep: str, dummy_na: bool, columns: Optional[Union[Name, List[Name]]], sparse: bool, drop_first: bool, dtype: Optional[Union[str, Dtype]]) -> DataFrame"
     },
     {
       "name": "pandas.concat",
@@ -31594,7 +31594,7 @@
     {
       "name": "pandas.melt",
       "type": "Function",
-      "signature": "(frame: DataFrame, id_vars: Optional[Union[Name, List[Name]]], value_vars: Optional[Union[Name, List[Name]]], var_name: Optional[Union[str, List[str]]], value_name: str) -> DataFrame"
+      "signature": "(frame: DataFrame, id_vars: Optional[Union[Name, List[Name]]], value_vars: Optional[Union[Name, List[Name]]], var_name: Optional[Union[str, list[str]]], value_name: str) -> DataFrame"
     },
     {
       "name": "pandas.isna",
@@ -31639,7 +31639,7 @@
     {
       "name": "pandas.read_orc",
       "type": "Function",
-      "signature": "(path: str, columns: Optional[List[str]], index_col: Optional[Union[str, List[str]]], options: Any) -> DataFrame"
+      "signature": "(path: str, columns: Optional[list[str]], index_col: Optional[Union[str, list[str]]], options: Any) -> DataFrame"
     },
     {
       "name": "pandas.json_normalize",
@@ -31654,7 +31654,7 @@
     {
       "name": "mllib.util.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.util.since",
@@ -31759,7 +31759,7 @@
     {
       "name": "mllib.fpm.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.fpm.JavaModelWrapper",
@@ -31819,7 +31819,7 @@
     {
       "name": "mllib.recommendation.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.recommendation.since",
@@ -31884,7 +31884,7 @@
     {
       "name": "mllib.classification.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.classification.since",
@@ -32024,7 +32024,7 @@
     {
       "name": "mllib.feature.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.feature.Vector",
@@ -32154,7 +32154,7 @@
     {
       "name": "mllib.regression.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.regression.Vector",
@@ -32249,7 +32249,7 @@
     {
       "name": "mllib.random.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.random.RDD",
@@ -32289,7 +32289,7 @@
     {
       "name": "mllib.common.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.common.CPickleSerializer",
@@ -32309,7 +32309,7 @@
     {
       "name": "mllib.common.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "mllib.common.callJavaFunc",
@@ -32414,7 +32414,7 @@
     {
       "name": "mllib.clustering.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "mllib.clustering.since",
@@ -32599,7 +32599,7 @@
     {
       "name": "mllib.evaluation.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "mllib.evaluation.StructType",
@@ -32629,12 +32629,12 @@
     {
       "name": "mllib.evaluation.RankingMetrics",
       "type": "Class",
-      "signature": "(predictionAndLabels: Union[RDD[Tuple[List[T], List[T]]], RDD[Tuple[List[T], List[T], List[float]]]])"
+      "signature": "(predictionAndLabels: Union[RDD[Tuple[List[T], List[T]]], RDD[Tuple[List[T], List[T], list[float]]]])"
     },
     {
       "name": "mllib.evaluation.MultilabelMetrics",
       "type": "Class",
-      "signature": "(predictionAndLabels: RDD[Tuple[List[float], List[float]]])"
+      "signature": "(predictionAndLabels: RDD[Tuple[list[float], list[float]]])"
     },
     {
       "name": "mllib.linalg.since",
@@ -32654,7 +32654,7 @@
     {
       "name": "mllib.linalg.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "mllib.linalg.StructType",
@@ -33334,7 +33334,7 @@
     {
       "name": "ml.util.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.util.is_remote",
@@ -33369,7 +33369,7 @@
     {
       "name": "ml.util.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.util.DataFrame",
@@ -33699,7 +33699,7 @@
     {
       "name": "ml.fpm.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.fpm.globs",
@@ -33824,7 +33824,7 @@
     {
       "name": "ml.recommendation.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.recommendation.globs",
@@ -34004,7 +34004,7 @@
     {
       "name": "ml.tuning.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.tuning.ParamGridBuilder",
@@ -34039,7 +34039,7 @@
     {
       "name": "ml.tuning.CrossValidatorModel",
       "type": "Class",
-      "signature": "(bestModel: Model, avgMetrics: Optional[List[float]], subModels: Optional[List[List[Model]]], stdMetrics: Optional[List[float]])"
+      "signature": "(bestModel: Model, avgMetrics: Optional[list[float]], subModels: Optional[List[List[Model]]], stdMetrics: Optional[list[float]])"
     },
     {
       "name": "ml.tuning.TrainValidationSplitReader",
@@ -34069,12 +34069,12 @@
     {
       "name": "ml.tuning.TrainValidationSplitModel",
       "type": "Class",
-      "signature": "(bestModel: Model, validationMetrics: Optional[List[float]], subModels: Optional[List[Model]])"
+      "signature": "(bestModel: Model, validationMetrics: Optional[list[float]], subModels: Optional[List[Model]])"
     },
     {
       "name": "ml.tuning.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.tuning.globs",
@@ -34354,7 +34354,7 @@
     {
       "name": "ml.classification.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.classification.F",
@@ -34389,7 +34389,7 @@
     {
       "name": "ml.classification.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.classification.T",
@@ -34449,7 +34449,7 @@
     {
       "name": "ml.classification.LogisticRegression",
       "type": "Class",
-      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, maxIter: int, regParam: float, elasticNetParam: float, tol: float, fitIntercept: bool, threshold: float, thresholds: Optional[List[float]], probabilityCol: str, rawPredictionCol: str, standardization: bool, weightCol: Optional[str], aggregationDepth: int, family: str, lowerBoundsOnCoefficients: Optional[Matrix], upperBoundsOnCoefficients: Optional[Matrix], lowerBoundsOnIntercepts: Optional[Vector], upperBoundsOnIntercepts: Optional[Vector], maxBlockSizeInMB: float)"
+      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, maxIter: int, regParam: float, elasticNetParam: float, tol: float, fitIntercept: bool, threshold: float, thresholds: Optional[list[float]], probabilityCol: str, rawPredictionCol: str, standardization: bool, weightCol: Optional[str], aggregationDepth: int, family: str, lowerBoundsOnCoefficients: Optional[Matrix], upperBoundsOnCoefficients: Optional[Matrix], lowerBoundsOnIntercepts: Optional[Vector], upperBoundsOnIntercepts: Optional[Vector], maxBlockSizeInMB: float)"
     },
     {
       "name": "ml.classification.LogisticRegressionModel",
@@ -34529,7 +34529,7 @@
     {
       "name": "ml.classification.NaiveBayes",
       "type": "Class",
-      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, probabilityCol: str, rawPredictionCol: str, smoothing: float, modelType: str, thresholds: Optional[List[float]], weightCol: Optional[str])"
+      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, probabilityCol: str, rawPredictionCol: str, smoothing: float, modelType: str, thresholds: Optional[list[float]], weightCol: Optional[str])"
     },
     {
       "name": "ml.classification.NaiveBayesModel",
@@ -34539,7 +34539,7 @@
     {
       "name": "ml.classification.MultilayerPerceptronClassifier",
       "type": "Class",
-      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, maxIter: int, tol: float, seed: Optional[int], layers: Optional[List[int]], blockSize: int, stepSize: float, solver: str, initialWeights: Optional[Vector], probabilityCol: str, rawPredictionCol: str)"
+      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, maxIter: int, tol: float, seed: Optional[int], layers: Optional[list[int]], blockSize: int, stepSize: float, solver: str, initialWeights: Optional[Vector], probabilityCol: str, rawPredictionCol: str)"
     },
     {
       "name": "ml.classification.MultilayerPerceptronClassificationModel",
@@ -34589,7 +34589,7 @@
     {
       "name": "ml.classification.FMClassifier",
       "type": "Class",
-      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, probabilityCol: str, rawPredictionCol: str, factorSize: int, fitIntercept: bool, fitLinear: bool, regParam: float, miniBatchFraction: float, initStd: float, maxIter: int, stepSize: float, tol: float, solver: str, thresholds: Optional[List[float]], seed: Optional[int])"
+      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, probabilityCol: str, rawPredictionCol: str, factorSize: int, fitIntercept: bool, fitLinear: bool, regParam: float, miniBatchFraction: float, initStd: float, maxIter: int, stepSize: float, tol: float, solver: str, thresholds: Optional[list[float]], seed: Optional[int])"
     },
     {
       "name": "ml.classification.FMClassificationModel",
@@ -34639,7 +34639,7 @@
     {
       "name": "ml.image.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.image.ImageSchema",
@@ -34739,7 +34739,7 @@
     {
       "name": "ml.functions.predict_batch_udf",
       "type": "Function",
-      "signature": "(make_predict_fn: Callable[[], PredictBatchFunction], return_type: DataType, batch_size: int, input_tensor_shapes: Optional[Union[List[Optional[List[int]]], Mapping[int, List[int]]]]) -> UserDefinedFunctionLike"
+      "signature": "(make_predict_fn: Callable[[], PredictBatchFunction], return_type: DataType, batch_size: int, input_tensor_shapes: Optional[Union[List[Optional[list[int]]], Mapping[int, list[int]]]]) -> UserDefinedFunctionLike"
     },
     {
       "name": "ml.feature.keyword_only",
@@ -34934,7 +34934,7 @@
     {
       "name": "ml.feature.Binarizer",
       "type": "Class",
-      "signature": "(threshold: float, inputCol: Optional[str], outputCol: Optional[str], thresholds: Optional[List[float]], inputCols: Optional[List[str]], outputCols: Optional[List[str]])"
+      "signature": "(threshold: float, inputCol: Optional[str], outputCol: Optional[str], thresholds: Optional[list[float]], inputCols: Optional[list[str]], outputCols: Optional[list[str]])"
     },
     {
       "name": "ml.feature.BucketedRandomProjectionLSH",
@@ -34949,7 +34949,7 @@
     {
       "name": "ml.feature.Bucketizer",
       "type": "Class",
-      "signature": "(splits: Optional[List[float]], inputCol: Optional[str], outputCol: Optional[str], handleInvalid: str, splitsArray: Optional[List[List[float]]], inputCols: Optional[List[str]], outputCols: Optional[List[str]])"
+      "signature": "(splits: Optional[list[float]], inputCol: Optional[str], outputCol: Optional[str], handleInvalid: str, splitsArray: Optional[List[list[float]]], inputCols: Optional[list[str]], outputCols: Optional[list[str]])"
     },
     {
       "name": "ml.feature.CountVectorizer",
@@ -34974,7 +34974,7 @@
     {
       "name": "ml.feature.FeatureHasher",
       "type": "Class",
-      "signature": "(numFeatures: int, inputCols: Optional[List[str]], outputCol: Optional[str], categoricalCols: Optional[List[str]])"
+      "signature": "(numFeatures: int, inputCols: Optional[list[str]], outputCol: Optional[str], categoricalCols: Optional[list[str]])"
     },
     {
       "name": "ml.feature.HashingTF",
@@ -34994,7 +34994,7 @@
     {
       "name": "ml.feature.Imputer",
       "type": "Class",
-      "signature": "(strategy: str, missingValue: float, inputCols: Optional[List[str]], outputCols: Optional[List[str]], inputCol: Optional[str], outputCol: Optional[str], relativeError: float)"
+      "signature": "(strategy: str, missingValue: float, inputCols: Optional[list[str]], outputCols: Optional[list[str]], inputCol: Optional[str], outputCol: Optional[str], relativeError: float)"
     },
     {
       "name": "ml.feature.ImputerModel",
@@ -35004,7 +35004,7 @@
     {
       "name": "ml.feature.Interaction",
       "type": "Class",
-      "signature": "(inputCols: Optional[List[str]], outputCol: Optional[str])"
+      "signature": "(inputCols: Optional[list[str]], outputCol: Optional[str])"
     },
     {
       "name": "ml.feature.MaxAbsScaler",
@@ -35049,7 +35049,7 @@
     {
       "name": "ml.feature.OneHotEncoder",
       "type": "Class",
-      "signature": "(inputCols: Optional[List[str]], outputCols: Optional[List[str]], handleInvalid: str, dropLast: bool, inputCol: Optional[str], outputCol: Optional[str])"
+      "signature": "(inputCols: Optional[list[str]], outputCols: Optional[list[str]], handleInvalid: str, dropLast: bool, inputCol: Optional[str], outputCol: Optional[str])"
     },
     {
       "name": "ml.feature.OneHotEncoderModel",
@@ -35064,7 +35064,7 @@
     {
       "name": "ml.feature.QuantileDiscretizer",
       "type": "Class",
-      "signature": "(numBuckets: int, inputCol: Optional[str], outputCol: Optional[str], relativeError: float, handleInvalid: str, numBucketsArray: Optional[List[int]], inputCols: Optional[List[str]], outputCols: Optional[List[str]])"
+      "signature": "(numBuckets: int, inputCol: Optional[str], outputCol: Optional[str], relativeError: float, handleInvalid: str, numBucketsArray: Optional[list[int]], inputCols: Optional[list[str]], outputCols: Optional[list[str]])"
     },
     {
       "name": "ml.feature.RobustScaler",
@@ -35099,7 +35099,7 @@
     {
       "name": "ml.feature.StringIndexer",
       "type": "Class",
-      "signature": "(inputCol: Optional[str], outputCol: Optional[str], inputCols: Optional[List[str]], outputCols: Optional[List[str]], handleInvalid: str, stringOrderType: str)"
+      "signature": "(inputCol: Optional[str], outputCol: Optional[str], inputCols: Optional[list[str]], outputCols: Optional[list[str]], handleInvalid: str, stringOrderType: str)"
     },
     {
       "name": "ml.feature.StringIndexerModel",
@@ -35109,17 +35109,17 @@
     {
       "name": "ml.feature.IndexToString",
       "type": "Class",
-      "signature": "(inputCol: Optional[str], outputCol: Optional[str], labels: Optional[List[str]])"
+      "signature": "(inputCol: Optional[str], outputCol: Optional[str], labels: Optional[list[str]])"
     },
     {
       "name": "ml.feature.StopWordsRemover",
       "type": "Class",
-      "signature": "(inputCol: Optional[str], outputCol: Optional[str], stopWords: Optional[List[str]], caseSensitive: bool, locale: Optional[str], inputCols: Optional[List[str]], outputCols: Optional[List[str]])"
+      "signature": "(inputCol: Optional[str], outputCol: Optional[str], stopWords: Optional[list[str]], caseSensitive: bool, locale: Optional[str], inputCols: Optional[list[str]], outputCols: Optional[list[str]])"
     },
     {
       "name": "ml.feature.TargetEncoder",
       "type": "Class",
-      "signature": "(inputCols: Optional[List[str]], outputCols: Optional[List[str]], labelCol: str, handleInvalid: str, targetType: str, smoothing: float, inputCol: Optional[str], outputCol: Optional[str])"
+      "signature": "(inputCols: Optional[list[str]], outputCols: Optional[list[str]], labelCol: str, handleInvalid: str, targetType: str, smoothing: float, inputCol: Optional[str], outputCol: Optional[str])"
     },
     {
       "name": "ml.feature.TargetEncoderModel",
@@ -35134,7 +35134,7 @@
     {
       "name": "ml.feature.VectorAssembler",
       "type": "Class",
-      "signature": "(inputCols: Optional[List[str]], outputCol: Optional[str], handleInvalid: str)"
+      "signature": "(inputCols: Optional[list[str]], outputCol: Optional[str], handleInvalid: str)"
     },
     {
       "name": "ml.feature.VectorIndexer",
@@ -35149,7 +35149,7 @@
     {
       "name": "ml.feature.VectorSlicer",
       "type": "Class",
-      "signature": "(inputCol: Optional[str], outputCol: Optional[str], indices: Optional[List[int]], names: Optional[List[str]])"
+      "signature": "(inputCol: Optional[str], outputCol: Optional[str], indices: Optional[list[int]], names: Optional[list[str]])"
     },
     {
       "name": "ml.feature.Word2Vec",
@@ -35224,7 +35224,7 @@
     {
       "name": "ml.feature.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.feature.globs",
@@ -35549,7 +35549,7 @@
     {
       "name": "ml.regression.AFTSurvivalRegression",
       "type": "Class",
-      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, fitIntercept: bool, maxIter: int, tol: float, censorCol: str, quantileProbabilities: List[float], quantilesCol: Optional[str], aggregationDepth: int, maxBlockSizeInMB: float)"
+      "signature": "(featuresCol: str, labelCol: str, predictionCol: str, fitIntercept: bool, maxIter: int, tol: float, censorCol: str, quantileProbabilities: list[float], quantilesCol: Optional[str], aggregationDepth: int, maxBlockSizeInMB: float)"
     },
     {
       "name": "ml.regression.AFTSurvivalRegressionModel",
@@ -35589,7 +35589,7 @@
     {
       "name": "ml.regression.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.regression.globs",
@@ -35784,7 +35784,7 @@
     {
       "name": "ml.common.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.common.RDD",
@@ -35794,7 +35794,7 @@
     {
       "name": "ml.common.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.common.C",
@@ -35999,7 +35999,7 @@
     {
       "name": "ml.pipeline.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.pipeline.DataFrame",
@@ -36019,7 +36019,7 @@
     {
       "name": "ml.pipeline.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.pipeline.Pipeline",
@@ -36144,7 +36144,7 @@
     {
       "name": "ml.stat.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.stat.globs",
@@ -36399,7 +36399,7 @@
     {
       "name": "ml.clustering.LDA",
       "type": "Class",
-      "signature": "(featuresCol: str, maxIter: int, seed: Optional[int], checkpointInterval: int, k: int, optimizer: str, learningOffset: float, learningDecay: float, subsamplingRate: float, optimizeDocConcentration: bool, docConcentration: Optional[List[float]], topicConcentration: Optional[float], topicDistributionCol: str, keepLastCheckpoint: bool)"
+      "signature": "(featuresCol: str, maxIter: int, seed: Optional[int], checkpointInterval: int, k: int, optimizer: str, learningOffset: float, learningDecay: float, subsamplingRate: float, optimizeDocConcentration: bool, docConcentration: Optional[list[float]], topicConcentration: Optional[float], topicDistributionCol: str, keepLastCheckpoint: bool)"
     },
     {
       "name": "ml.clustering.PowerIterationClustering",
@@ -36409,7 +36409,7 @@
     {
       "name": "ml.clustering.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.clustering.globs",
@@ -36494,7 +36494,7 @@
     {
       "name": "ml.base.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "ml.base.StructType",
@@ -36714,7 +36714,7 @@
     {
       "name": "ml.evaluation.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.evaluation.globs",
@@ -36739,7 +36739,7 @@
     {
       "name": "ml.linalg.StructField",
       "type": "Class",
-      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[Dict[str, Any]])"
+      "signature": "(name: str, dataType: DataType, nullable: bool, metadata: Optional[dict[str, Any]])"
     },
     {
       "name": "ml.linalg.StructType",
@@ -36904,7 +36904,7 @@
     {
       "name": "ml.torch.distributor.ResourceInformation",
       "type": "Class",
-      "signature": "(name: str, addresses: List[str])"
+      "signature": "(name: str, addresses: list[str])"
     },
     {
       "name": "ml.torch.distributor.DataFrame",
@@ -36914,7 +36914,7 @@
     {
       "name": "ml.torch.distributor.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.torch.distributor.BarrierTaskContext",
@@ -37019,12 +37019,12 @@
     {
       "name": "ml.connect.util.aggregate_dataframe",
       "type": "Function",
-      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_col_names: List[str], local_agg_fn: Callable[[pd.DataFrame], Any], merge_agg_state: Callable[[Any, Any], Any], agg_state_to_result: Callable[[Any], Any]) -> Any"
+      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_col_names: list[str], local_agg_fn: Callable[[pd.DataFrame], Any], merge_agg_state: Callable[[Any, Any], Any], agg_state_to_result: Callable[[Any], Any]) -> Any"
     },
     {
       "name": "ml.connect.util.transform_dataframe_column",
       "type": "Function",
-      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_cols: List[str], transform_fn: Callable[..., Any], output_cols: List[Tuple[str, str]]) -> Union[DataFrame, pd.DataFrame]"
+      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_cols: list[str], transform_fn: Callable[..., Any], output_cols: List[Tuple[str, str]]) -> Union[DataFrame, pd.DataFrame]"
     },
     {
       "name": "ml.connect.io_utils.Params",
@@ -37034,7 +37034,7 @@
     {
       "name": "ml.connect.io_utils.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.connect.io_utils.is_remote",
@@ -37149,7 +37149,7 @@
     {
       "name": "ml.connect.tuning.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "ml.connect.tuning.is_remote",
@@ -37169,7 +37169,7 @@
     {
       "name": "ml.connect.tuning.CrossValidatorModel",
       "type": "Class",
-      "signature": "(bestModel: Optional[Model], avgMetrics: Optional[List[float]], stdMetrics: Optional[List[float]])"
+      "signature": "(bestModel: Optional[Model], avgMetrics: Optional[list[float]], stdMetrics: Optional[list[float]])"
     },
     {
       "name": "ml.connect.classification.keyword_only",
@@ -37404,7 +37404,7 @@
     {
       "name": "ml.connect.feature.ArrayAssembler",
       "type": "Class",
-      "signature": "(inputCols: Optional[List[str]], outputCol: Optional[str], featureSizes: Optional[List[int]], handleInvalid: Optional[str])"
+      "signature": "(inputCols: Optional[list[str]], outputCol: Optional[str], featureSizes: Optional[list[int]], handleInvalid: Optional[str])"
     },
     {
       "name": "ml.connect.proto.check_dependencies",
@@ -37424,7 +37424,7 @@
     {
       "name": "ml.connect.proto.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "ml.connect.proto.TransformerRelation",
@@ -37444,7 +37444,7 @@
     {
       "name": "ml.connect.summarizer.aggregate_dataframe",
       "type": "Function",
-      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_col_names: List[str], local_agg_fn: Callable[[pd.DataFrame], Any], merge_agg_state: Callable[[Any, Any], Any], agg_state_to_result: Callable[[Any], Any]) -> Any"
+      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], input_col_names: list[str], local_agg_fn: Callable[[pd.DataFrame], Any], merge_agg_state: Callable[[Any, Any], Any], agg_state_to_result: Callable[[Any], Any]) -> Any"
     },
     {
       "name": "ml.connect.summarizer.SummarizerAggState",
@@ -37454,7 +37454,7 @@
     {
       "name": "ml.connect.summarizer.summarize_dataframe",
       "type": "Function",
-      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], column: str, metrics: List[str]) -> Dict[str, Any]"
+      "signature": "(dataframe: Union[DataFrame, pd.DataFrame], column: str, metrics: list[str]) -> dict[str, Any]"
     },
     {
       "name": "ml.connect.readwrite.check_dependencies",
@@ -37474,7 +37474,7 @@
     {
       "name": "ml.connect.readwrite.deserialize",
       "type": "Function",
-      "signature": "(ml_command_result_properties: Dict[str, Any]) -> Any"
+      "signature": "(ml_command_result_properties: dict[str, Any]) -> Any"
     },
     {
       "name": "ml.connect.readwrite.deserialize_param",
@@ -37504,7 +37504,7 @@
     {
       "name": "ml.connect.readwrite.SparkContext",
       "type": "Class",
-      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[List[str]], environment: Optional[Dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
+      "signature": "(master: Optional[str], appName: Optional[str], sparkHome: Optional[str], pyFiles: Optional[list[str]], environment: Optional[dict[str, Any]], batchSize: int, serializer: Serializer, conf: Optional[SparkConf], gateway: Optional[JavaGateway], jsc: Optional[JavaObject], profiler_cls: Type[BasicProfiler], udf_profiler_cls: Type[UDFBasicProfiler], memory_profiler_cls: Type[MemoryProfiler])"
     },
     {
       "name": "ml.connect.readwrite.SparkSession",
@@ -37569,7 +37569,7 @@
     {
       "name": "ml.connect.serialize.SparkConnectClient",
       "type": "Class",
-      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[Dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
+      "signature": "(connection: Union[str, ChannelBuilder], user_id: Optional[str], channel_options: Optional[List[Tuple[str, Any]]], retry_policy: Optional[dict[str, Any]], use_reattachable_execute: bool, session_hooks: Optional[list[SparkSession.Hook]], allow_arrow_batch_chunking: bool, preferred_arrow_chunk_size: Optional[int])"
     },
     {
       "name": "ml.connect.serialize.Params",
@@ -37584,12 +37584,12 @@
     {
       "name": "ml.connect.serialize.build_int_list",
       "type": "Function",
-      "signature": "(value: List[int]) -> pb2.Expression.Literal"
+      "signature": "(value: list[int]) -> pb2.Expression.Literal"
     },
     {
       "name": "ml.connect.serialize.build_float_list",
       "type": "Function",
-      "signature": "(value: List[float]) -> pb2.Expression.Literal"
+      "signature": "(value: list[float]) -> pb2.Expression.Literal"
     },
     {
       "name": "ml.connect.serialize.build_proto_udt",
@@ -37624,7 +37624,7 @@
     {
       "name": "ml.connect.serialize.deserialize",
       "type": "Function",
-      "signature": "(ml_command_result_properties: Dict[str, Any]) -> Any"
+      "signature": "(ml_command_result_properties: dict[str, Any]) -> Any"
     },
     {
       "name": "ml.connect.serialize.serialize_ml_params",
@@ -37634,7 +37634,7 @@
     {
       "name": "ml.connect.serialize.serialize_ml_params_values",
       "type": "Function",
-      "signature": "(values: Dict[str, Any], client: SparkConnectClient) -> pb2.MlParams"
+      "signature": "(values: dict[str, Any], client: SparkConnectClient) -> pb2.MlParams"
     },
     {
       "name": "ml.connect.pipeline.keyword_only",
@@ -37854,7 +37854,7 @@
     {
       "name": "ml.deepspeed.deepspeed_distributor.DeepspeedTorchDistributor",
       "type": "Class",
-      "signature": "(numGpus: int, nnodes: int, localMode: bool, useGpu: bool, deepspeedConfig: Optional[Union[str, Dict[str, Any]]])"
+      "signature": "(numGpus: int, nnodes: int, localMode: bool, useGpu: bool, deepspeedConfig: Optional[Union[str, dict[str, Any]]])"
     },
     {
       "name": "ml.param.is_remote_only",
@@ -38124,32 +38124,32 @@
     {
       "name": "pipelines.append_flow",
       "type": "Function",
-      "signature": "(target: str, name: Optional[str], spark_conf: Optional[Dict[str, str]]) -> Callable[[QueryFunction], None]"
+      "signature": "(target: str, name: Optional[str], spark_conf: Optional[dict[str, str]]) -> Callable[[QueryFunction], None]"
     },
     {
       "name": "pipelines.create_streaming_table",
       "type": "Function",
-      "signature": "(name: str, comment: Optional[str], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> None"
+      "signature": "(name: str, comment: Optional[str], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> None"
     },
     {
       "name": "pipelines.materialized_view",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.table",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.temporary_view",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.create_sink",
       "type": "Function",
-      "signature": "(name: str, format: str, options: Optional[Dict[str, str]]) -> None"
+      "signature": "(name: str, format: str, options: Optional[dict[str, str]]) -> None"
     },
     {
       "name": "pipelines.api.PySparkTypeError",
@@ -38164,12 +38164,12 @@
     {
       "name": "pipelines.api.validate_optional_list_of_str_arg",
       "type": "Function",
-      "signature": "(arg_name: str, arg_value: Optional[List[str]]) -> None"
+      "signature": "(arg_name: str, arg_value: Optional[list[str]]) -> None"
     },
     {
       "name": "pipelines.api.Flow",
       "type": "Class",
-      "signature": "(name: str, target: str, spark_conf: Dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
+      "signature": "(name: str, target: str, spark_conf: dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
     },
     {
       "name": "pipelines.api.QueryFunction",
@@ -38209,32 +38209,32 @@
     {
       "name": "pipelines.api.append_flow",
       "type": "Function",
-      "signature": "(target: str, name: Optional[str], spark_conf: Optional[Dict[str, str]]) -> Callable[[QueryFunction], None]"
+      "signature": "(target: str, name: Optional[str], spark_conf: Optional[dict[str, str]]) -> Callable[[QueryFunction], None]"
     },
     {
       "name": "pipelines.api.table",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.api.materialized_view",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.api.temporary_view",
       "type": "Function",
-      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[Dict[str, str]]) -> Union[Callable[[QueryFunction], None], None]"
+      "signature": "(query_function: Optional[QueryFunction], name: Optional[str], comment: Optional[str], spark_conf: Optional[dict[str, str]]) -> Union[Callable[[QueryFunction], None], None]"
     },
     {
       "name": "pipelines.api.create_streaming_table",
       "type": "Function",
-      "signature": "(name: str, comment: Optional[str], table_properties: Optional[Dict[str, str]], partition_cols: Optional[List[str]], cluster_by: Optional[List[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> None"
+      "signature": "(name: str, comment: Optional[str], table_properties: Optional[dict[str, str]], partition_cols: Optional[list[str]], cluster_by: Optional[list[str]], schema: Optional[Union[StructType, str]], format: Optional[str]) -> None"
     },
     {
       "name": "pipelines.api.create_sink",
       "type": "Function",
-      "signature": "(name: str, format: str, options: Optional[Dict[str, str]]) -> None"
+      "signature": "(name: str, format: str, options: Optional[dict[str, str]]) -> None"
     },
     {
       "name": "pipelines.spark_connect_graph_element_registry.PySparkTypeError",
@@ -38244,7 +38244,7 @@
     {
       "name": "pipelines.spark_connect_graph_element_registry.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pipelines.spark_connect_graph_element_registry.ConnectDataFrame",
@@ -38289,7 +38289,7 @@
     {
       "name": "pipelines.spark_connect_graph_element_registry.Flow",
       "type": "Class",
-      "signature": "(name: str, target: str, spark_conf: Dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
+      "signature": "(name: str, target: str, spark_conf: dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
     },
     {
       "name": "pipelines.spark_connect_graph_element_registry.GraphElementRegistry",
@@ -38349,7 +38349,7 @@
     {
       "name": "pipelines.spark_connect_pipeline.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pipelines.spark_connect_pipeline.PySparkValueError",
@@ -38369,12 +38369,12 @@
     {
       "name": "pipelines.spark_connect_pipeline.handle_pipeline_events",
       "type": "Function",
-      "signature": "(iter: Iterator[Dict[str, Any]]) -> None"
+      "signature": "(iter: Iterator[dict[str, Any]]) -> None"
     },
     {
       "name": "pipelines.spark_connect_pipeline.start_run",
       "type": "Function",
-      "signature": "(spark: SparkSession, dataflow_graph_id: str, full_refresh: Optional[Sequence[str]], full_refresh_all: bool, refresh: Optional[Sequence[str]], dry: bool, storage: str) -> Iterator[Dict[str, Any]]"
+      "signature": "(spark: SparkSession, dataflow_graph_id: str, full_refresh: Optional[Sequence[str]], full_refresh_all: bool, refresh: Optional[Sequence[str]], dry: bool, storage: str) -> Iterator[dict[str, Any]]"
     },
     {
       "name": "pipelines.type_error_utils.PySparkTypeError",
@@ -38384,12 +38384,12 @@
     {
       "name": "pipelines.type_error_utils.validate_optional_list_of_str_arg",
       "type": "Function",
-      "signature": "(arg_name: str, arg_value: Optional[List[str]]) -> None"
+      "signature": "(arg_name: str, arg_value: Optional[list[str]]) -> None"
     },
     {
       "name": "pipelines.block_connect_access.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "pipelines.block_connect_access.SparkConnectServiceStub",
@@ -38464,12 +38464,12 @@
     {
       "name": "pipelines.flow.Flow",
       "type": "Class",
-      "signature": "(name: str, target: str, spark_conf: Dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
+      "signature": "(name: str, target: str, spark_conf: dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
     },
     {
       "name": "pipelines.add_pipeline_analysis_context.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pipelines.add_pipeline_analysis_context.add_pipeline_analysis_context",
@@ -38484,7 +38484,7 @@
     {
       "name": "pipelines.graph_element_registry.Flow",
       "type": "Class",
-      "signature": "(name: str, target: str, spark_conf: Dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
+      "signature": "(name: str, target: str, spark_conf: dict[str, str], source_code_location: SourceCodeLocation, func: QueryFunction)"
     },
     {
       "name": "pipelines.graph_element_registry.PySparkRuntimeError",
@@ -38509,7 +38509,7 @@
     {
       "name": "pipelines.cli.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "pipelines.cli.PySparkTypeError",
@@ -38519,7 +38519,7 @@
     {
       "name": "pipelines.cli.SparkSession",
       "type": "Class",
-      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: Dict[str, Any])"
+      "signature": "(sparkContext: SparkContext, jsparkSession: Optional[JavaObject], options: dict[str, Any])"
     },
     {
       "name": "pipelines.cli.block_session_mutations",
@@ -38559,12 +38559,12 @@
     {
       "name": "pipelines.cli.start_run",
       "type": "Function",
-      "signature": "(spark: SparkSession, dataflow_graph_id: str, full_refresh: Optional[Sequence[str]], full_refresh_all: bool, refresh: Optional[Sequence[str]], dry: bool, storage: str) -> Iterator[Dict[str, Any]]"
+      "signature": "(spark: SparkSession, dataflow_graph_id: str, full_refresh: Optional[Sequence[str]], full_refresh_all: bool, refresh: Optional[Sequence[str]], dry: bool, storage: str) -> Iterator[dict[str, Any]]"
     },
     {
       "name": "pipelines.cli.handle_pipeline_events",
       "type": "Function",
-      "signature": "(iter: Iterator[Dict[str, Any]]) -> None"
+      "signature": "(iter: Iterator[dict[str, Any]]) -> None"
     },
     {
       "name": "pipelines.cli.add_pipeline_analysis_context",
@@ -38629,7 +38629,7 @@
     {
       "name": "pipelines.cli.parse_table_list",
       "type": "Function",
-      "signature": "(value: str) -> List[str]"
+      "signature": "(value: str) -> list[str]"
     },
     {
       "name": "pipelines.cli.main",
@@ -38649,7 +38649,7 @@
     {
       "name": "pipelines.block_session_mutations.PySparkException",
       "type": "Class",
-      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[Dict[str, str]], contexts: Optional[List[QueryContext]])"
+      "signature": "(message: Optional[str], errorClass: Optional[str], messageParameters: Optional[dict[str, str]], contexts: Optional[List[QueryContext]])"
     },
     {
       "name": "pipelines.block_session_mutations.Catalog",

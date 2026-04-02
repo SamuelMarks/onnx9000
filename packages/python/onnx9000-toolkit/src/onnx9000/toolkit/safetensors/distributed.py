@@ -1,6 +1,6 @@
-"""Provide functionality for this module."""
+"""Provide distributed loading strategies for sharded safetensors models."""
 
-from typing import List, Any, Dict
+from typing import Any
 
 from .parser import load_file
 
@@ -35,7 +35,7 @@ def load_sharded_tensors(
     return sharded_tensors
 
 
-def pipeline_parallel_loader(file_path: str, layers: List[str], rank: int) -> dict[str, Any]:
+def pipeline_parallel_loader(file_path: str, layers: list[str], rank: int) -> dict[str, Any]:
     """Pipeline parallelism loading strategies (Stream Layer N+1 while computing Layer N)."""
     tensors = load_file(file_path, device="cpu")
     # Only map tensors that belong to the specified pipeline layers

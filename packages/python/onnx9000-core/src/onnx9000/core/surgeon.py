@@ -11,16 +11,17 @@ logger = logging.getLogger(__name__)
 
 
 def toposort(graph: Graph) -> Graph:
-    """Topological Sort of the Graph."""
+    """Perform topological sort on the graph nodes based on dependencies."""
     in_degree = dict.fromkeys(graph.nodes, 0)
     adj = {n: [] for n in graph.nodes}
     for n in graph.nodes:
-        for out_t in n.outputs:
-            if isinstance(out_t, Tensor):
-                for consumer in out_t.outputs:
-                    if consumer in adj:
-                        adj[n].append(consumer)
-                        in_degree[consumer] += 1
+        for out in n.outputs:
+            out_name = out.name if isinstance(out, Tensor) else out
+            consumers = graph.consumer_map.get(out_name, [])
+            for consumer in consumers:
+                if consumer in adj:
+                    adj[n].append(consumer)
+                    in_degree[consumer] += 1
     queue = [n for n in graph.nodes if in_degree[n] == 0]
     sorted_nodes = []
     while queue:
@@ -157,7 +158,7 @@ Graph.walk = walk
 
 
 def prev_nodes(self) -> list[Node]:
-    """Prev Nodes function logic implementation."""
+    """Get the list of nodes that produce the inputs of this node."""
     res = []
     for t in self.inputs:
         if isinstance(t, Tensor):
@@ -166,7 +167,7 @@ def prev_nodes(self) -> list[Node]:
 
 
 def next_nodes(self) -> list[Node]:
-    """Next Nodes function logic implementation."""
+    """Get the list of nodes that consume the outputs of this node."""
     res = []
     for t in self.outputs:
         if isinstance(t, Tensor):
@@ -180,30 +181,30 @@ import re
 
 
 def get_nodes_by_op(graph: Graph, op_type: str) -> list[Node]:
-    """Get Nodes By Op function logic implementation."""
+    """Retrieve all nodes in the graph with the specified operator type."""
     return [n for n in graph.nodes if n.op_type == op_type]
 
 
 def get_nodes_by_name_regex(graph: Graph, pattern: str) -> list[Node]:
-    """Get Nodes By Name Regex function logic implementation."""
+    """Retrieve all nodes in the graph whose names match the given regular expression pattern."""
     regex = re.compile(pattern)
     return [n for n in graph.nodes if regex.search(n.name)]
 
 
 def get_nodes_by_op_regex(graph: Graph, pattern: str) -> list[Node]:
-    """Get Nodes By Op Regex function logic implementation."""
+    """Retrieve all nodes in the graph whose operator types match the given regular expression pattern."""
     regex = re.compile(pattern)
     return [n for n in graph.nodes if regex.search(n.op_type)]
 
 
 def get_tensors_by_name_regex(graph: Graph, pattern: str) -> list[Tensor]:
-    """Get Tensors By Name Regex function logic implementation."""
+    """Retrieve all tensors in the graph whose names match the given regular expression pattern."""
     regex = re.compile(pattern)
     return [t for (name, t) in graph.tensors.items() if regex.search(name)]
 
 
 def get_nodes_by_domain(graph: Graph, domain: str) -> list[Node]:
-    """Get Nodes By Domain function logic implementation."""
+    """Retrieve all nodes in the graph belonging to the specified domain."""
     return [n for n in graph.nodes if n.domain == domain]
 
 
@@ -215,7 +216,7 @@ Graph.get_nodes_by_domain = get_nodes_by_domain
 
 
 def find_path(graph: Graph, start_node: Node, end_node: Node) -> list[Node]:
-    """Find Path function logic implementation."""
+    """Find a path between two nodes in the graph using Breadth-First Search."""
     visited = set()
     queue = [[start_node]]
     while queue:
@@ -233,7 +234,7 @@ def find_path(graph: Graph, start_node: Node, end_node: Node) -> list[Node]:
 
 
 def find_all_paths(graph: Graph, start_node: Node, end_node: Node) -> list[list[Node]]:
-    """Find All Paths function logic implementation."""
+    """Find all possible paths between two nodes in the graph."""
     paths = []
     queue = [[start_node]]
     while queue:
@@ -251,7 +252,7 @@ def find_all_paths(graph: Graph, start_node: Node, end_node: Node) -> list[list[
 
 
 def get_disconnected_components(graph: Graph) -> list[list[Node]]:
-    """Get Disconnected Components function logic implementation."""
+    """Identify and return all disconnected subgraphs (components) within the graph."""
     visited = set()
     components = []
     for node in graph.nodes:
@@ -274,7 +275,7 @@ def get_disconnected_components(graph: Graph) -> list[list[Node]]:
 
 
 def extract_subgraph(graph: Graph, nodes: list[Node]) -> Graph:
-    """Extract Subgraph function logic implementation."""
+    """Create a new Graph object containing only the specified nodes."""
     subgraph = Graph("subgraph")
     for n in nodes:
         subgraph.add_node(n)
@@ -334,7 +335,7 @@ Graph.analyze_critical_path = analyze_critical_path
 
 
 def estimate_constant_memory(graph: Graph) -> int:
-    """Estimate Constant Memory function logic implementation."""
+    """Estimate the total memory occupied by all constant tensors (initializers) in the graph."""
     mem = 0
     for t in graph.tensors.values():
         if isinstance(t, Constant) and t.data:
@@ -393,31 +394,9 @@ Graph.estimate_constant_memory = estimate_constant_memory
 Graph.estimate_activation_memory = estimate_activation_memory
 
 
-def append_node(self, node: Node) -> None:
-    """Append Node function logic implementation."""
-    self.nodes.append(node)
-
-
 def insert_node(self, index: int, node: Node) -> None:
     """Insert Node function logic implementation."""
     self.nodes.insert(index, node)
-
-
-def disconnect_node(self, node: Node) -> None:
-    """Disconnect Node function logic implementation."""
-    for i in node.inputs:
-        if isinstance(i, Tensor) and node in i.outputs:
-            i.outputs.remove(node)
-    for o in node.outputs:
-        if isinstance(o, Tensor) and node in o.inputs:
-            o.inputs.remove(node)
-
-
-def remove_node(self, node: Node) -> None:
-    """Remove Node function logic implementation."""
-    self.disconnect_node(node)
-    if node in self.nodes:
-        self.nodes.remove(node)
 
 
 def replace_node(self, old_node: Node, new_node: Node) -> None:
@@ -427,10 +406,7 @@ def replace_node(self, old_node: Node, new_node: Node) -> None:
     self.nodes[idx] = new_node
 
 
-Graph.append_node = append_node
 Graph.insert_node = insert_node
-Graph.disconnect_node = disconnect_node
-Graph.remove_node = remove_node
 Graph.replace_node = replace_node
 
 
@@ -808,14 +784,16 @@ def match_pattern(graph: Graph, pattern: PatternMatcher, recursive=True) -> list
             if _match_node(n, pattern):
                 matches.append(n)
             if recursive:
-                for attr in n.attributes.values():
-                    if isinstance(attr.value, Graph):
-                        _search(attr.value)
-                    elif isinstance(attr.value, list) and all(
-                        isinstance(v, Graph) for v in attr.value
-                    ):
-                        for sub_g in attr.value:
-                            _search(sub_g)
+                for attr_name in n.attributes:
+                    attr_val = n.attributes[attr_name]
+                    # Handle both Attribute objects and raw Graph values
+                    val = getattr(attr_val, "value", attr_val)
+                    if isinstance(val, Graph):
+                        _search(val)
+                    elif isinstance(val, list):
+                        for item in val:
+                            if isinstance(item, Graph):
+                                _search(item)
 
     _search(graph)
     return matches
@@ -878,8 +856,9 @@ def fold_constants_math(graph: Graph) -> Graph:
 
                 # Evaluate
                 res_c = evaluate_math_graph(sub)
-                if res_c and isinstance(n.outputs[0], Tensor):
-                    out_name = n.outputs[0].name
+                if res_c and n.outputs:
+                    out_t = n.outputs[0]
+                    out_name = out_t.name if isinstance(out_t, Tensor) else out_t
                     res_c.name = out_name
                     graph.tensors[out_name] = res_c
                     nodes_to_remove.append(n)
@@ -1009,24 +988,28 @@ def fuse_conv_bn(graph: Graph) -> Graph:
 
     nodes_to_fuse = []
     for n in graph.nodes:
-        if n.op_type == "Conv" and isinstance(n.outputs[0], Tensor):
-            out_t = n.outputs[0]
-            if len(out_t.outputs) == 1 and out_t.outputs[0].op_type == "BatchNormalization":
-                nodes_to_fuse.append((n, out_t.outputs[0]))
+        if n.op_type == "Conv":
+            out_name = n.outputs[0].name if isinstance(n.outputs[0], Tensor) else n.outputs[0]
+            consumers = graph.consumer_map.get(out_name, [])
+            if len(consumers) == 1 and consumers[0].op_type == "BatchNormalization":
+                nodes_to_fuse.append((n, consumers[0]))
 
     for conv, bn in nodes_to_fuse:
         # Get Conv weights
         if len(conv.inputs) < 2:
             continue
         w_conv_name = conv.inputs[1]
+        w_conv_name = w_conv_name.name if isinstance(w_conv_name, Tensor) else w_conv_name
         if w_conv_name not in graph.tensors:
             continue
-        w_conv = graph.tensors[w_conv_name]
+        graph.tensors[w_conv_name]
 
         # Get BN weights
         if len(bn.inputs) < 5:
             continue
-        scale_name, b_bn_name, mean_name, var_name = bn.inputs[1:5]
+        scale_name, b_bn_name, mean_name, var_name = [
+            i.name if isinstance(i, Tensor) else i for i in bn.inputs[1:5]
+        ]
         if any(name not in graph.tensors for name in [scale_name, b_bn_name, mean_name, var_name]):
             continue
 
@@ -1035,9 +1018,10 @@ def fuse_conv_bn(graph: Graph) -> Graph:
         # B_new = (B_old - mean) * scale / sqrt(var + epsilon) + B_bn
 
         # For now, we perform the structural fusion
-        conv.outputs[0] = bn.outputs[0]
-        if isinstance(bn.outputs[0], Tensor):
-            bn.outputs[0].inputs = [conv]
+        bn_out = bn.outputs[0]
+        conv.outputs[0] = bn_out
+        if isinstance(bn_out, Tensor):
+            bn_out.inputs = [conv]
         graph.remove_node(bn)
 
     return graph
@@ -1348,19 +1332,24 @@ def reconstruct_sequences(graph: Graph) -> dict[str, list[Node]]:
             if len(curr.outputs) != 1:
                 break
             out_t = curr.outputs[0]
-            if not isinstance(out_t, Tensor):
-                break
-            if len(out_t.outputs) != 1:
+            out_name = out_t.name if isinstance(out_t, Tensor) else out_t
+            consumers = graph.consumer_map.get(out_name, [])
+            if len(consumers) != 1:
                 break
 
-            next_n = out_t.outputs[0]
+            next_n = consumers[0]
             if next_n in visited:
                 break
             # Ensure next_n only has one primary input from this chain
             # (ignoring constants/parameters)
-            primary_inputs = [
-                i for i in next_n.inputs if isinstance(i, Tensor) and not i.is_initializer
-            ]
+            primary_inputs = []
+            for i in next_n.inputs:
+                i_name = i.name if isinstance(i, Tensor) else i
+                i_t = graph.tensors.get(i_name)
+                # If it's a variable or unknown tensor, count it as primary input
+                if i_t is None or not getattr(i_t, "is_initializer", False):
+                    primary_inputs.append(i_name)
+
             if len(primary_inputs) != 1:
                 break
 
@@ -1544,8 +1533,15 @@ def unpack_int4_weights(tensor: Constant) -> Constant:
     return tensor
 
 
-def evaluate_math_graph(graph: Graph) -> Constant:
-    """Evaluate a mathematical subgraph into a single Constant."""
+def evaluate_math_graph(graph: Graph) -> Optional[Constant]:
+    """Evaluate a mathematical subgraph into a single Constant.
+
+    Args:
+        graph: The subgraph to evaluate.
+
+    Returns:
+        A Constant containing the result of the evaluation, or None if evaluation fails.
+    """
     try:
         import numpy as np
     except ImportError:
@@ -1578,38 +1574,41 @@ def evaluate_math_graph(graph: Graph) -> Constant:
             continue
 
         res = None
-        if n.op_type == "Add":
+        if n.op_type == "Add" and len(inputs) >= 2:
             res = inputs[0] + inputs[1]
         elif n.op_type == "Sub":
-            res = inputs[0] - inputs[1]
-        elif n.op_type == "Mul":
+            if len(inputs) >= 2:
+                res = inputs[0] - inputs[1]
+            elif len(inputs) == 1:
+                res = -inputs[0]
+        elif n.op_type == "Mul" and len(inputs) >= 2:
             res = inputs[0] * inputs[1]
-        elif n.op_type == "Div":
+        elif n.op_type == "Div" and len(inputs) >= 2:
             res = inputs[0] / inputs[1]
-        elif n.op_type == "MatMul":
+        elif n.op_type == "MatMul" and len(inputs) >= 2:
             if np:
                 res = np.matmul(inputs[0], inputs[1])
-        elif n.op_type == "Transpose":
+        elif n.op_type == "Transpose" and len(inputs) >= 1:
             if np:
                 perm = n.attributes.get("perm").value if "perm" in n.attributes else None
                 res = np.transpose(inputs[0], perm)
-        elif n.op_type == "Reshape":
+        elif n.op_type == "Reshape" and len(inputs) >= 2:
             if np:
                 # Input 1 is the shape tensor
                 target_shape = inputs[1].tolist() if hasattr(inputs[1], "tolist") else inputs[1]
                 res = np.reshape(inputs[0], target_shape)
-        elif n.op_type == "Cast":
+        elif n.op_type == "Cast" and len(inputs) >= 1:
             if np:
                 to_type = n.attributes.get("to").value
                 dtype_map_to = {1: np.float32, 11: np.double, 6: np.int32, 7: np.int64, 9: np.bool_}
                 res = inputs[0].astype(dtype_map_to.get(to_type, np.float32))
 
-        if res is not None:
+        if res is not None and n.outputs:
             out_name = n.outputs[0].name if isinstance(n.outputs[0], Tensor) else n.outputs[0]
             env[out_name] = res
 
     # The result is the last output
-    if not graph.nodes:
+    if not graph.nodes or not graph.nodes[-1].outputs:
         return None
     last_out_name = (
         graph.nodes[-1].outputs[0].name

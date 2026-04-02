@@ -127,7 +127,9 @@ export class SparsePrunerUI {
     this.updateStats();
     (document.getElementById('download-btn') as HTMLButtonElement).disabled = false;
 
-    steps.forEach((_, i) => this.highlightLayer(`Layer_${i}`, 'complete'));
+    steps.forEach((_, i) => {
+      this.highlightLayer(`Layer_${i}`, 'complete');
+    });
   }
 
   // Item 128: Provide visually updating accuracy charts (Chart.js/D3) during the browser-based calibration loop

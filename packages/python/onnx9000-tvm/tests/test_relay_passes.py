@@ -1,6 +1,5 @@
 """Tests for packages/python/onnx9000-tvm/tests/test_relay_passes.py."""
 
-import pytest
 from onnx9000.tvm.relay.expr import (
     Call,
     Constant,
@@ -12,7 +11,6 @@ from onnx9000.tvm.relay.expr import (
     TupleGetItem,
     Var,
 )
-from onnx9000.tvm.relay.module import IRModule
 from onnx9000.tvm.relay.transform.cse import eliminate_common_subexpr
 from onnx9000.tvm.relay.transform.dead_code_elimination import eliminate_dead_code
 from onnx9000.tvm.relay.transform.fold_constant import fold_constant
@@ -23,7 +21,7 @@ from onnx9000.tvm.relay.transform.memory_plan import plan_memory
 from onnx9000.tvm.relay.transform.resolve_shape import resolve_dynamic_shape
 from onnx9000.tvm.relay.transform.simplify import simplify_algebra
 from onnx9000.tvm.relay.transform.unroll_let import unroll_let
-from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
+from onnx9000.tvm.relay.ty import TensorType
 
 
 class MockData:
@@ -146,7 +144,7 @@ def test_parser_printer():
 def test_json_serialization():
     """Test json serialization."""
     from onnx9000.tvm.relay.parser import load_json, save_json
-    from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
+    from onnx9000.tvm.relay.ty import TensorType
 
     v1 = Var("x", TensorType((1, 10), "float32"))
     c1 = Constant([1.0], TensorType((1, 10), "float32"))

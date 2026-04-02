@@ -1,4 +1,3 @@
-import os
 import tempfile
 import unittest
 import zipfile
@@ -12,7 +11,6 @@ from onnx9000.core.serializer import _serialize_shape, save
 
 class TestSerializerMore(unittest.TestCase):
     def test_serialize_shape_float(self):
-        import onnx9000.core.onnx_pb2 as onnx_pb2
 
         shape = _serialize_shape([1.0, -1.0])
         self.assertEqual(shape.dim[0].dim_value, 1)

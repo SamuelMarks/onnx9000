@@ -8,7 +8,7 @@ from onnx9000.tensorrt.registry import register_op
 
 
 @register_op("", "MatMul")
-def trt_matmul(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_matmul(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_matmul_func = getattr(ffi.lib, "addMatrixMultiply", None)
     if not add_matmul_func:
         raise RuntimeError("addMatrixMultiply not found")

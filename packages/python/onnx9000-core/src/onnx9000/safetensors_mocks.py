@@ -1,7 +1,5 @@
 """Provide functionality for this module."""
 
-import typing
-
 
 def ray_mmap_ipc_deploy(tensor_view):
     """Deploy Safetensors `mmap` views natively in Ray Clusters for zero-copy IPC."""

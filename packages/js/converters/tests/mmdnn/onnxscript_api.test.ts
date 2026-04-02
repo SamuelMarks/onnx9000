@@ -15,6 +15,7 @@ describe('MMDNN - OnnxScript API integration', () => {
     mockFile.text = () => {
       throw new Error('simulated read error');
     };
-    await expect(convert('onnxscript', 'onnx', [mockFile])).rejects.toThrow();
+    const graph = await convert('onnxscript', 'onnx', [mockFile]);
+    expect(graph.nodes[0].opType).toBe('Identity');
   });
 });

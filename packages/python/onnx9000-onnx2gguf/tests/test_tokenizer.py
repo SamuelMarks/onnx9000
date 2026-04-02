@@ -1,6 +1,5 @@
 """Module docstring."""
 
-import pytest
 from onnx9000.onnx2gguf.tokenizer import extract_tokenizer_metadata
 
 

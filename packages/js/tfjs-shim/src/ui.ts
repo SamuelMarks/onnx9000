@@ -1,10 +1,20 @@
-// 293. Build interactive examples demonstrating the exact same Web Components code running on TF.js and the Shim simultaneously.
+/**
+ * A custom element that demonstrates a comparative benchmark between standard TF.js and the onnx9000 shim.
+ * It provides an interactive UI with two panels showing the code for both approaches and a button to run the comparison.
+ */
 export class TfjsShimDemoElement extends HTMLElement {
+  /**
+   * Initializes the TfjsShimDemoElement by attaching a shadow DOM.
+   */
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
+  /**
+   * Invoked when the element is added to the document's DOM.
+   * Renders the HTML structure and sets up the click event listener for the benchmark button.
+   */
   connectedCallback() {
     this.shadowRoot!.innerHTML = `
       <style>

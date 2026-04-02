@@ -21,8 +21,8 @@ def test_all_codegen_ops() -> None:
         g.tensors[f"in{i}"] = Tensor(f"in{i}", (2, 2), DType.FLOAT32)
         g.tensors[f"out{i}"] = Tensor(f"out{i}", (2, 2), DType.FLOAT32)
 
-    for op_type, func in global_registry._registry.items():
-        if op_type.startswith("ai.onnx.ml"):
+    for (domain, op_type, provider), func in global_registry._registry.items():
+        if domain == "ai.onnx.ml":
             continue
 
         import numpy as np
@@ -87,7 +87,7 @@ def test_all_codegen_ops() -> None:
         # We don't care if it produces valid C++ or crashes on specific assumptions,
         # we just want to execute it. Actually, some might throw KeyError or IndexError
         # if the node structure is completely wrong. Let's wrap in try/except.
-        node = Node(op_type.split("::")[-1], inputs, outputs, attributes={})
+        node = Node(op_type, inputs, outputs, attributes={}, domain=domain)
 
         # add dummy attributes as actual Attribute objects
         from onnx9000.core.ir import Attribute
@@ -99,18 +99,18 @@ def test_all_codegen_ops() -> None:
             func(node, gen)
 
         # Try with fewer inputs
-        node2 = Node(op_type.split("::")[-1], ["in0"], ["out0"], attributes=node.attributes)
+        node2 = Node(op_type, ["in0"], ["out0"], attributes=node.attributes, domain=domain)
         with contextlib.suppress(Exception):
             func(node2, gen)
 
         # Try with 2 inputs
-        node3 = Node(op_type.split("::")[-1], ["in0", "in1"], ["out0"], attributes=node.attributes)
+        node3 = Node(op_type, ["in0", "in1"], ["out0"], attributes=node.attributes, domain=domain)
         with contextlib.suppress(Exception):
             func(node3, gen)
 
         # Try with 3 inputs
         node4 = Node(
-            op_type.split("::")[-1], ["in0", "in1", "in2"], ["out0"], attributes=node.attributes
+            op_type, ["in0", "in1", "in2"], ["out0"], attributes=node.attributes, domain=domain
         )
         with contextlib.suppress(Exception):
             func(node4, gen)
@@ -126,15 +126,15 @@ def test_all_codegen_ops_broadcast() -> None:
     g.tensors["in2"] = Tensor("in2", (2, 2), DType.FLOAT32)
     g.tensors["out0"] = Tensor("out0", (2, 2), DType.FLOAT32)
 
-    for op_type, func in global_registry._registry.items():
-        if op_type.startswith("ai.onnx.ml"):
+    for (domain, op_type, provider), func in global_registry._registry.items():
+        if domain == "ai.onnx.ml":
             continue
 
-        node = Node(op_type.split("::")[-1], ["in0", "in1"], ["out0"], attributes={})
+        node = Node(op_type, ["in0", "in1"], ["out0"], attributes={}, domain=domain)
         with contextlib.suppress(Exception):
             func(node, gen)
 
-        node = Node(op_type.split("::")[-1], ["in0", "in1", "in2"], ["out0"], attributes={})
+        node = Node(op_type, ["in0", "in1", "in2"], ["out0"], attributes={}, domain=domain)
         with contextlib.suppress(Exception):
             func(node, gen)
 

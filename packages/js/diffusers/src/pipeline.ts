@@ -34,7 +34,7 @@ export class DiffusionPipeline {
       }
     }
 
-    let latents = new Array(64 * 64 * 4).fill(0.0);
+    const latents = new Array(64 * 64 * 4).fill(0.0);
     for (let step = 0; step < numInferenceSteps; step++) {
       if (this._isAborted) {
         throw new Error('Pipeline aborted.');

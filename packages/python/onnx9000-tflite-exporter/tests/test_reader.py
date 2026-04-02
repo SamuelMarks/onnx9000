@@ -1,6 +1,5 @@
 """Module docstring."""
 
-import pytest
 from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 from onnx9000.tflite_exporter.flatbuffer.reader import FlatBufferReader

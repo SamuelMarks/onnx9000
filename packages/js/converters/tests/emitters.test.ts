@@ -40,10 +40,16 @@ describe('emitters', () => {
       },
     ]);
     expect(emitActivation('selu', 'in', 'out', 'n')).toEqual([
-      { opType: 'Selu', inputs: ['in'], outputs: ['out'], name: 'n', attributes: [
-        { name: 'alpha', f: 1.6732632423543772848170429916717, type: 'FLOAT' },
-        { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' }
-      ] },
+      {
+        opType: 'Selu',
+        inputs: ['in'],
+        outputs: ['out'],
+        name: 'n',
+        attributes: [
+          { name: 'alpha', f: 1.6732632423543772848170429916717, type: 'FLOAT' },
+          { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' },
+        ],
+      },
     ]);
     expect(emitActivation('leaky_relu', 'in', 'out', 'n', { alpha: 0.1 })).toEqual([
       {
@@ -67,9 +73,13 @@ describe('emitters', () => {
       },
     ]);
     expect(emitActivation('gelu', 'in', 'out', 'n')).toEqual([
-      { opType: 'Gelu', inputs: ['in'], outputs: ['out'], name: 'n', attributes: [
-         { name: 'approximate', s: 'none', type: 'STRING' }
-      ] },
+      {
+        opType: 'Gelu',
+        inputs: ['in'],
+        outputs: ['out'],
+        name: 'n',
+        attributes: [{ name: 'approximate', s: 'none', type: 'STRING' }],
+      },
     ]);
     expect(emitActivation('hard_sigmoid', 'in', 'out', 'n')).toEqual([
       {

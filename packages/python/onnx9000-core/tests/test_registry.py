@@ -72,4 +72,4 @@ def test_global_register_op() -> None:
 
     global_mock()
 
-    assert "global.GlobalMockOp" in global_registry._registry
+    assert ("global", "GlobalMockOp", None) in global_registry._registry

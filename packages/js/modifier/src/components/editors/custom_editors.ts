@@ -233,7 +233,7 @@ function renderConstantEditor(container: HTMLElement, node: Node, mutator: Graph
   if (!attr) return;
 
   if (attr.type === 'TENSOR' && attr.value && (attr.value as any).data) {
-    const data = (attr.value as any).data as any;
+    const data = (attr.value as any).data;
     const len = data.length;
     if (len === undefined) {
       container.textContent = 'Constant empty or unsupported';

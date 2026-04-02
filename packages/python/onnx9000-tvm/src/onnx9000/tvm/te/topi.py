@@ -1,8 +1,6 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Any
-
-from .tensor import Tensor, compute, exp, max, placeholder, reduce_axis, sum, var
+from .tensor import Tensor, compute, exp, max, reduce_axis, sum
 
 
 def nn_conv2d(

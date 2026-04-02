@@ -3,7 +3,6 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
-from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.ops.elementwise import _generate_binary_op, _generate_unary_op
 from onnx9000.backends.codegen.utils import get_attribute, get_omp_pragma
 from onnx9000.core.ir import Node

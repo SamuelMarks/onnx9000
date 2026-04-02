@@ -23,7 +23,7 @@ try {
   console.error('WebGL init error:', e);
 }
 
-let currentFiles: File[] = [];
+const currentFiles: File[] = [];
 let finalBlobUrl: string | null = null;
 let finalFileName = 'model.onnx';
 

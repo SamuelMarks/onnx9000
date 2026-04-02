@@ -48,10 +48,8 @@ export class PolyfillMLTensor {
 
   // 167. Implement MLTensor.destroy() hooking directly into buffer.destroy().
   destroy() {
-    if (this.buffer) {
-      this.buffer.destroy();
-      this.buffer = null;
-    }
+    this.buffer?.destroy();
+    this.buffer = null;
     this.internalBuffer = null;
   }
 }

@@ -2,5 +2,9 @@
   "name": "@onnx9000/tfjs-shim",
   "version": "1.0.0",
   "description": "Drop-in TensorFlow.js API replacement using ONNX WebGPU backend",
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  }
 }

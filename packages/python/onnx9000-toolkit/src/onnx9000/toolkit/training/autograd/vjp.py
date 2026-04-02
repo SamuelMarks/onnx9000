@@ -7,8 +7,6 @@ gradients are propagated backward through individual ONNX operators.
 
 import abc
 
-from onnx9000.core.ir import Node
-
 
 class VJPRule(abc.ABC):
     """Base class for Vector-Jacobian Product rules.

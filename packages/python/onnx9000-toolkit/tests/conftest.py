@@ -2,10 +2,7 @@
 
 import inspect
 import random
-import sys
 
-import onnx9000.toolkit.script
-import onnx9000.toolkit.script.parser
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.script.parser import ScriptParser
 

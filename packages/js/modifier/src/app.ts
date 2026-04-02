@@ -153,7 +153,9 @@ export class ModifierApp {
             .then((data) => {
               this.exporter.downloadBlob('model_edited.onnx', data);
             })
-            .catch((e) => alert(e.message));
+            .catch((e) => {
+              alert(e.message);
+            });
         }
       },
       onDeduplicateConstants: () => {

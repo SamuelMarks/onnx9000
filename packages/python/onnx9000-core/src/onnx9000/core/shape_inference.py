@@ -1,21 +1,31 @@
 """Static shape inference module."""
 
-from typing import Any, Optional, Union
+from __future__ import annotations
+
+from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import ShapeInferenceError
 from onnx9000.core.ir import DynamicDim, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.symbolic import (
     broadcast_shapes,
-    evaluate_symbolic_expression,
     simplify_dim,
 )
 from onnx9000.core.utils import topological_sort
 
 
 def _promote_types(t1: DType, t2: DType) -> DType:
-    # A simple type promotion rule implementation
-    """Execute the promote types operation."""
+    """Execute the promote types operation.
+
+    A simple type promotion rule implementation that handles float and int types.
+
+    Args:
+        t1: The first data type.
+        t2: The second data type.
+
+    Returns:
+        The promoted data type.
+    """
     if t1 == t2:
         return t1
     if t1 == DType.FLOAT64 or t2 == DType.FLOAT64:
@@ -32,9 +42,24 @@ def _promote_types(t1: DType, t2: DType) -> DType:
 
 
 def get_attr(node: Node, name: str, default: Any = None) -> Any:
-    """Execute the get attr operation."""
+    """Retrieve an attribute value from a node.
+
+    Args:
+        node: The node to get the attribute from.
+        name: The name of the attribute.
+        default: The default value if the attribute is not found.
+
+    Returns:
+        The attribute value or the default.
+    """
+    if name in node.attributes:
+        attr = node.attributes[name]
+        if hasattr(attr, "value"):
+            return attr.value if attr.value is not None else default
+        return attr
+    # Fallback for when attributes are not keyed by name in the dict values
     for attr in node.attributes.values():
-        if attr.name == name:
+        if hasattr(attr, "name") and attr.name == name:
             return attr.value if attr.value is not None else default
     return default
 
@@ -43,6 +68,12 @@ def infer_shapes_and_types(graph: Graph) -> None:
     """Perform static shape and type inference on the given graph.
 
     Updates the graph.tensors and graph.value_info intrinsically.
+
+    Args:
+        graph: The computational graph to perform shape inference on.
+
+    Raises:
+        ShapeInferenceError: If the graph contains cycles or if there are shape mismatches.
     """
     try:
         sorted_nodes = topological_sort(graph)
@@ -59,8 +90,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             env[inp.name] = inp
 
     for _tensor_name, tensor in graph.tensors.items():
-        if tensor.is_initializer:
-            env[tensor.name] = ValueInfo(tensor.name, tensor.shape, tensor.dtype)
+        env[tensor.name] = ValueInfo(tensor.name, tensor.shape, tensor.dtype)
 
     for node in sorted_nodes:
         out_shapes = []
@@ -211,7 +241,9 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if shape_tensor_name in graph.tensors:
                 shape_tensor = graph.tensors[shape_tensor_name]
                 if hasattr(shape_tensor, "data") and shape_tensor.data:
-                    return None
+                    # Try to use data if available, otherwise continue to other logic
+                    if shape_tensor.data:
+                        out_shape = tuple(shape_tensor.data)
 
             if not out_shape and hasattr(graph.tensors.get(shape_tensor_name, None), "values"):
                 vals = getattr(graph.tensors[shape_tensor_name], "values", None)
@@ -412,60 +444,6 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 out_shapes = [in1.shape]
                 out_dtypes = [in1.dtype]
 
-        elif node.op_type in ["MaxPool", "AveragePool"]:
-            in1 = env.get(node.inputs[0])
-            if in1:
-                in_shape = list(in1.shape)
-                out_dtype = in1.dtype
-                kernel_shape = get_attr(node, "kernel_shape", [])
-                strides = get_attr(node, "strides", [1] * len(kernel_shape))
-                pads = get_attr(node, "pads", [0] * (2 * len(kernel_shape)))
-                dilations = get_attr(node, "dilations", [1] * len(kernel_shape))
-
-                spatial_dims = []
-                for i in range(len(kernel_shape)):
-                    try:
-                        in_dim = in_shape[2 + i]
-                        if isinstance(in_dim, (DynamicDim, str)):
-                            spatial_dims.append(DynamicDim(f"spatial_{i}"))
-                        else:
-                            k = kernel_shape[i]
-                            s = strides[i]
-                            p = pads[i] + pads[i + len(kernel_shape)]
-                            d = dilations[i]
-                            out_dim = (in_dim + p - ((k - 1) * d + 1)) // s + 1
-                            spatial_dims.append(out_dim)
-                    except Exception:
-                        spatial_dims.append(DynamicDim(f"spatial_{i}"))
-
-                out_shape = tuple(in_shape[:2] + spatial_dims)
-                out_shapes = [out_shape] * len(node.outputs)
-                out_dtypes = [out_dtype] * len(node.outputs)
-
-        elif node.op_type == "Flatten":
-            in1 = env.get(node.inputs[0])
-            if in1:
-                axis = get_attr(node, "axis", 1)
-                in_shape = list(in1.shape)
-                if axis < 0:
-                    axis += len(in_shape)
-                dim0 = 1
-                for i in range(axis):
-                    if isinstance(in_shape[i], int):
-                        dim0 *= in_shape[i]
-                    else:
-                        dim0 = DynamicDim("flatten_d0")
-                        break
-                dim1 = 1
-                for i in range(axis, len(in_shape)):
-                    if isinstance(in_shape[i], int):
-                        dim1 *= in_shape[i]
-                    else:
-                        dim1 = DynamicDim("flatten_d1")
-                        break
-                out_shapes = [(dim0, dim1)] * len(node.outputs)
-                out_dtypes = [in1.dtype] * len(node.outputs)
-
         elif node.op_type == "Slice":
             if len(node.inputs) < 1:
                 continue
@@ -484,8 +462,19 @@ def infer_shapes_and_types(graph: Graph) -> None:
             ends = []
             steps = []
 
-            def get_tensor_vals(idx, n=node, default_len=None):
-                """Execute the get tensor vals operation."""
+            def get_tensor_vals(
+                idx: int, n: Node = node, default_len: int | None = None
+            ) -> list[Any]:
+                """Retrieve constant values from a tensor at the given index.
+
+                Args:
+                    idx: The index of the input tensor.
+                    n: The node to get the tensor from.
+                    default_len: The default length to return if the tensor is not found.
+
+                Returns:
+                    A list of tensor values.
+                """
                 if len(n.inputs) > idx:
                     t_name = n.inputs[idx]
                     if t_name in graph.tensors and hasattr(graph.tensors[t_name], "values"):
@@ -866,7 +855,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
         else:
             # Fallback for CustomOp or Unknown Ops
-            return None
+            pass
 
         for i, out_name in enumerate(node.outputs):
             if i < len(out_shapes):

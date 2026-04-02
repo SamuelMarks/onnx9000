@@ -47,7 +47,7 @@ export class PeerRegistry {
     const nodes = Array.from(this.registry.get(model) || []);
     if (nodes.length === 0) return null;
 
-    let idx = this.roundRobinIdx.get(model) || 0;
+    const idx = this.roundRobinIdx.get(model) || 0;
     const node = nodes[idx % nodes.length];
     this.roundRobinIdx.set(model, idx + 1);
     return node || null;

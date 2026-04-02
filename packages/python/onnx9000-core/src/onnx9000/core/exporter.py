@@ -1,6 +1,7 @@
 """Unified Exporter for ONNX9000 IR Graphs."""
 
 import os
+
 from onnx9000.core.ir import Graph
 from onnx9000.core.serializer import save as save_onnx
 
@@ -39,8 +40,9 @@ def export_graph(graph: Graph, output_path: str, format: str):
             f.write(code)
 
     elif format == "wasm":
-        from onnx9000.converters.jit.compiler import compile_wasm
         from pathlib import Path
+
+        from onnx9000.converters.jit.compiler import compile_wasm
 
         # compile_wasm saves to a file and returns the path
         js_path = compile_wasm(graph, Path(os.path.dirname(output_path) or "."))
@@ -94,7 +96,7 @@ def generate_keras(graph: Graph) -> str:
     if len(graph.inputs) > 1:
         call_lines.append(f"        ({inputs_str}) = inputs")
     elif len(graph.inputs) == 1:
-        call_lines.append(f"        in_0 = inputs")
+        call_lines.append("        in_0 = inputs")
     else:
         call_lines.append("        pass")
 

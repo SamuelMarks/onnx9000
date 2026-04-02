@@ -3,9 +3,7 @@
 import io
 import os
 
-import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Tensor
 from onnx9000.onnx2gguf.builder import GGUFTensorType, GGUFValueType, GGUFWriter
 from onnx9000.onnx2gguf.reader import GGUFReader
 from onnx9000.onnx2gguf.reverse import reconstruct_onnx, reverse_map_name, reverse_map_type

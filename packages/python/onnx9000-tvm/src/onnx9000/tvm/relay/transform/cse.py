@@ -1,7 +1,5 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Any
-
 from ..expr import Call, Constant, Expr, Op, TupleExpr, TupleGetItem, Var
 from ..visitor import ExprMutator
 

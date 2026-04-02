@@ -1,7 +1,6 @@
 """Quantization tools for onnx9000 models, optimizing for web deployment."""
 
 import logging
-import os
 import sys
 
 logger = logging.getLogger(__name__)

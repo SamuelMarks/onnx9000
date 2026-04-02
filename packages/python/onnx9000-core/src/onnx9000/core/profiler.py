@@ -1,12 +1,11 @@
 """Advanced diagnostic utility for profiling MACs, FLOPs, parameters, and memory."""
 
-import sys
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, Variable
+from onnx9000.core.ir import Constant, DynamicDim, Graph, Node
 from onnx9000.core.shape_inference import infer_shapes_and_types
-from onnx9000.core.symbolic import evaluate_symbolic_expression, simplify_dim
+from onnx9000.core.symbolic import simplify_dim
 
 
 def dtype_size(dtype: DType) -> int:

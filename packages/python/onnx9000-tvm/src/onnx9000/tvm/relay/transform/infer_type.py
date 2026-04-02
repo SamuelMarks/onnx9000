@@ -1,7 +1,5 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Optional
-
 from ..expr import Call, Constant, Expr, Function, If, Let, Op, TupleExpr, TupleGetItem, Var
 from ..ty import FuncType, TensorType, TupleType, Type
 from ..visitor import ExprVisitor

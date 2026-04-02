@@ -418,25 +418,6 @@ def blackman_window(size: Tensor, output_datatype: int = 1, periodic: int = 1) -
     )
 
 
-def deform_conv(
-    x: Tensor,
-    w: Tensor,
-    offset: Tensor,
-    b: Optional[Tensor] = None,
-    mask: Optional[Tensor] = None,
-    **kwargs: Any,
-) -> Tensor:
-    """Compute DeformConv."""
-    inputs = [x, w, offset]
-    if b is not None:
-        inputs.append(b)
-    if mask is not None:
-        if b is None:
-            raise ValueError("Mask provided without Bias. ONNX requires sequential inputs.")
-        inputs.append(mask)
-    return record_op("DeformConv", inputs, kwargs)
-
-
 @register_op("LpNormalization", "ai.onnx")
 def lp_normalization(input: Tensor, axis: int = -1, p: int = 2) -> Tensor:
     """Compute LpNormalization."""
@@ -509,7 +490,7 @@ def rope(x: Tensor, cos: Tensor, sin: Tensor, **kwargs: Any) -> Tensor:
 
 
 @register_op("DeformConv", "onnx9000.custom")
-def deform_conv(
+def deform_conv_custom(
     x: Tensor, offset: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any
 ) -> Tensor:
     """Compute Deformable Convolution."""
@@ -1562,38 +1543,6 @@ def rotary_embedding(x: Tensor) -> Tensor:
     return record_op("RotaryEmbedding", [x])
 
 
-@register_op("STFT", "ai.onnx")
-def stft(
-    signal: Tensor,
-    frame_step: Tensor,
-    window_length: Tensor,
-    frame_length: Tensor,
-    window: Optional[Tensor] = None,
-    **kwargs: Any,
-) -> Tensor:
-    """Compute STFT."""
-    inputs = [signal, frame_step, window_length, frame_length]
-    if window is not None:
-        inputs.append(window)
-    return record_op("STFT", inputs, kwargs)
-
-
-@register_op("ISTFT", "ai.onnx")
-def istft(
-    signal: Tensor,
-    frame_step: Tensor,
-    window_length: Tensor,
-    frame_length: Tensor,
-    window: Optional[Tensor] = None,
-    **kwargs: Any,
-) -> Tensor:
-    """Compute ISTFT."""
-    inputs = [signal, frame_step, window_length, frame_length]
-    if window is not None:
-        inputs.append(window)
-    return record_op("ISTFT", inputs, kwargs)
-
-
 @register_op("Scan", "ai.onnx")
 def scan(x: Tensor) -> Tensor:
     """Compute Scan."""
@@ -1658,3 +1607,67 @@ def upsample(x: Tensor) -> Tensor:
 def xor(x: Tensor) -> Tensor:
     """Compute Xor."""
     return record_op("Xor", [x])
+
+
+@register_op("STFT", "ai.onnx")
+def stft(
+    signal: Tensor,
+    frame_step: Optional[Tensor] = None,
+    window_length: Optional[Tensor] = None,
+    frame_length: Optional[Tensor] = None,
+    window: Optional[Tensor] = None,
+    **kwargs: Any,
+) -> Tensor:
+    """Compute STFT."""
+    inputs = [signal]
+    if frame_step is not None:
+        inputs.append(frame_step)
+    if window_length is not None:
+        inputs.append(window_length)
+    if frame_length is not None:
+        inputs.append(frame_length)
+    if window is not None:
+        inputs.append(window)
+    return record_op("STFT", inputs, kwargs)
+
+
+@register_op("ISTFT", "ai.onnx")
+def istft(
+    signal: Tensor,
+    frame_step: Optional[Tensor] = None,
+    window_length: Optional[Tensor] = None,
+    frame_length: Optional[Tensor] = None,
+    window: Optional[Tensor] = None,
+    **kwargs: Any,
+) -> Tensor:
+    """Compute ISTFT."""
+    inputs = [signal]
+    if frame_step is not None:
+        inputs.append(frame_step)
+    if window_length is not None:
+        inputs.append(window_length)
+    if frame_length is not None:
+        inputs.append(frame_length)
+    if window is not None:
+        inputs.append(window)
+    return record_op("ISTFT", inputs, kwargs)
+
+
+@register_op("DeformConv", "ai.onnx")
+def deform_conv(
+    x: Tensor,
+    w: Tensor,
+    offset: Tensor,
+    b: Optional[Tensor] = None,
+    mask: Optional[Tensor] = None,
+    **kwargs: Any,
+) -> Tensor:
+    """Compute Deformable Convolution."""
+    inputs = [x, w, offset]
+    if b is not None:
+        inputs.append(b)
+    if mask is not None:
+        if b is None:
+            raise ValueError("Mask provided without Bias. ONNX requires sequential inputs.")
+        inputs.append(mask)
+    return record_op("DeformConv", inputs, kwargs)

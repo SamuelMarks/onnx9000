@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from onnx9000_diffusers.models import AutoencoderKL
 
 

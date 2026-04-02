@@ -1,4 +1,6 @@
+// @ts-ignore
 import ffi from 'ffi-napi';
+// @ts-ignore
 import ref from 'ref-napi';
 import * as os from 'os';
 

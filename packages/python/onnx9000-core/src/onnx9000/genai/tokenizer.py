@@ -1,7 +1,5 @@
 """Provide functionality for this module."""
 
-from typing import Union
-
 
 class TokenizerStream:
     """Stream decoder for real-time generation."""
@@ -161,7 +159,6 @@ class WordPieceTokenizer(Tokenizer):
 
     def encode(self, text: str) -> list[int]:
         """Execute the encode operation."""
-        import re
 
         words = text.split()
         token_ids = []

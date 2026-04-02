@@ -1,4 +1,4 @@
-import { JsonObject, JsonArray } from './tfjs-parser.js';
+import { JsonObject } from './tfjs-parser.js';
 
 export interface PyodideInterface {
   runPythonAsync: (code: string) => Promise<string>;
@@ -113,9 +113,11 @@ trace_model()
 
   const jsonStr = await pyodide.runPythonAsync(pythonScript);
   const parsed = JSON.parse(jsonStr) as JsonObject;
-  
+
   if (parsed['error']) {
-    throw new Error(`Pyodide Trace Error: ${parsed['error'] as string}\n${parsed['traceback'] as string}`);
+    throw new Error(
+      `Pyodide Trace Error: ${parsed['error'] as string}\n${parsed['traceback'] as string}`,
+    );
   }
 
   return parsed;

@@ -262,7 +262,6 @@ def test_parser_missing_lines() -> None:
 
 def test_conftest_coverage_dummy():
     """Test conftest coverage dummy."""
-    import sys
 
     from .conftest import CovDummy
 

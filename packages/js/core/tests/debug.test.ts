@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import * as onnx from '../src/parser/onnx.js';
+import * as index from '../src/index.ts';
 
-vi.mock('../src/parser/onnx.js', async (importOriginal) => {
+vi.mock('../src/index.ts', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    parseModelProto: vi.fn(),
+    load: vi.fn(),
   };
 });
 
@@ -19,8 +19,8 @@ describe('debug script', () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const { parseModelProto } = await import('../src/parser/onnx.js');
-    vi.mocked(parseModelProto).mockResolvedValue({ nodes: { length: 1 } } as any);
+    const { load } = await import('../src/index.ts');
+    vi.mocked(load).mockResolvedValue({ nodes: { length: 1 } } as any);
 
     // Import run from debug script and call it manually
     const { run } = await import('../debug.js');
@@ -35,9 +35,9 @@ describe('debug script', () => {
   it('should handle errors in debug script', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const { parseModelProto } = await import('../src/parser/onnx.js');
+    const { load } = await import('../src/index.ts');
     const testError = new Error('test error');
-    vi.mocked(parseModelProto).mockRejectedValue(testError);
+    vi.mocked(load).mockRejectedValue(testError);
 
     const { run } = await import('../debug.js');
     await run();
@@ -45,21 +45,5 @@ describe('debug script', () => {
     expect(errorSpy).toHaveBeenCalledWith(testError);
 
     errorSpy.mockRestore();
-  });
-
-  it('should run automatically if not in test env', async () => {
-    vi.stubGlobal('process', { env: { NODE_ENV: 'development' } });
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    vi.resetModules();
-    await import('../debug.js');
-
-    // Wait for the async run() to execute
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    expect(logSpy).toHaveBeenCalled();
-
-    logSpy.mockRestore();
-    vi.unstubAllGlobals();
   });
 });

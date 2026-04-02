@@ -20,7 +20,9 @@ export class KVCacheManager {
 
   constructor(public syncAdapter?: KVSyncAdapter) {
     // Eviction interval
-    setInterval(() => this.evictIdle(), 60000);
+    setInterval(() => {
+      this.evictIdle();
+    }, 60000);
   }
 
   // 112. Assign a unique `session_id` to chat streams to route requests back to their active KV cache.

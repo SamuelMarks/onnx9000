@@ -533,9 +533,6 @@ def map_aten_arange_to_range(graph: Graph) -> bool:
     changed = False
     for node in graph.nodes:
         if node.op_type == "arange" and getattr(node, "domain", "") == "aten":
-            import numpy as np
-            from onnx9000.core.ir import Constant
-
             # aten::arange(end, dtype, layout, device, pin_memory) -> Range(start, limit, delta)
             # or aten::arange(start, end, step, dtype, layout, device, pin_memory)
             # Simplest way: map inputs correctly if they map directly to Range

@@ -1,6 +1,5 @@
 """Tests the classifiers more module functionality."""
 
-import pytest
 from onnx9000.converters.sklearn.linear import _convert_linear_classifier
 from onnx9000.core.ir import Graph
 

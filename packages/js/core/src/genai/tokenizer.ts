@@ -1,5 +1,11 @@
+/**
+ * Interface for streaming token decoding.
+ */
 export interface TokenizerStream {
-  /** Add a token ID and return any completed string chunk. */
+  /**
+   * Add a token ID and return any completed string chunk.
+   * @param tokenId The next token ID in the sequence.
+   */
   put(tokenId: number): string;
 }
 
@@ -7,36 +13,65 @@ export interface TokenizerStream {
  * Base Tokenizer interface.
  */
 export interface Tokenizer {
-  /** Encode string into an array of token IDs. */
+  /**
+   * Encode string into an array of token IDs.
+   * @param text Input text.
+   */
   encode(text: string): number[];
 
-  /** Decode an array of token IDs into a string. */
+  /**
+   * Decode an array of token IDs into a string.
+   * @param tokenIds Sequence of token IDs.
+   * @param cleanUpTokenizationSpaces Whether to merge redundant spaces.
+   */
   decode(tokenIds: number[], cleanUpTokenizationSpaces?: boolean): string;
 
-  /** Convert single token ID to string */
+  /**
+   * Convert single token ID to string representation.
+   * @param tokenId Token ID.
+   */
   idToToken(tokenId: number): string;
 
-  /** Convert string token to ID */
+  /**
+   * Convert string token to its ID.
+   * @param token String token.
+   */
   tokenToId(token: string): number;
 
-  /** Batched encoding. */
+  /**
+   * Encode multiple strings in a batch.
+   * @param texts Array of input strings.
+   */
   encodeBatch(texts: string[]): number[][];
 
-  /** Batched decoding. */
+  /**
+   * Decode multiple sequences in a batch.
+   * @param batchIds Array of token sequences.
+   */
   decodeBatch(batchIds: number[][]): string[];
 
-  /** Create a stream instance for real-time decoding. */
+  /**
+   * Create a stream instance for real-time decoding.
+   */
   createStream(): TokenizerStream;
 }
 
+/**
+ * Basic streaming tokenizer implementation using a sliding cache.
+ */
 export class BasicTokenizerStream implements TokenizerStream {
   private tokenizer: Tokenizer;
   private cache: number[] = [];
 
+  /**
+   * Create a new BasicTokenizerStream.
+   * @param tokenizer The parent tokenizer.
+   */
   constructor(tokenizer: Tokenizer) {
     this.tokenizer = tokenizer;
   }
 
+  /** Add token to stream and return current decoded state. */
   put(tokenId: number): string {
     this.cache.push(tokenId);
     // Simple mock implementation
@@ -44,11 +79,16 @@ export class BasicTokenizerStream implements TokenizerStream {
   }
 }
 
+/**
+ * Fallback tokenizer that maps characters directly to character codes.
+ */
 export class BasicTokenizer implements Tokenizer {
+  /** Map characters to ASCII/UTF-8 codes. */
   encode(text: string): number[] {
     return text.split('').map((c) => c.charCodeAt(0));
   }
 
+  /** Map codes back to characters. */
   decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
     let text = String.fromCharCode(...tokenIds);
     if (cleanUpTokenizationSpaces) {
@@ -57,27 +97,35 @@ export class BasicTokenizer implements Tokenizer {
     return text;
   }
 
+  /** Convert code to char. */
   idToToken(tokenId: number): string {
     return String.fromCharCode(tokenId);
   }
 
+  /** Convert char to code. */
   tokenToId(token: string): number {
     return token.length > 0 ? token.charCodeAt(0) : 0;
   }
 
+  /** Batch encode strings. */
   encodeBatch(texts: string[]): number[][] {
     return texts.map((t) => this.encode(t));
   }
 
+  /** Batch decode token sequences. */
   decodeBatch(batchIds: number[][]): string[] {
     return batchIds.map((ids) => this.decode(ids));
   }
 
+  /** Create new stream. */
   createStream(): TokenizerStream {
     return new BasicTokenizerStream(this);
   }
 }
 
+/**
+ * Byte-Pair Encoding (BPE) Tokenizer implementation.
+ */
 export class BPETokenizer implements Tokenizer {
   private merges: [string, string][];
   private vocab: Map<string, number>;
@@ -85,6 +133,12 @@ export class BPETokenizer implements Tokenizer {
   private unkToken: string;
   private unkTokenId: number;
 
+  /**
+   * Create a new BPETokenizer.
+   * @param merges List of pair merges in order of priority.
+   * @param vocab Token to ID mapping.
+   * @param unkToken Unknown token string.
+   */
   constructor(merges: [string, string][], vocab: Map<string, number>, unkToken: string = '<unk>') {
     this.merges = merges;
     this.vocab = vocab;
@@ -96,6 +150,7 @@ export class BPETokenizer implements Tokenizer {
     }
   }
 
+  /** Helper to find all adjacent character pairs. */
   private getPairs(word: string[]): [string, string][] {
     const pairs: [string, string][] = [];
     let prevChar = word[0];
@@ -106,6 +161,7 @@ export class BPETokenizer implements Tokenizer {
     return pairs;
   }
 
+  /** Encode text using iterative pair merging. */
   encode(text: string): number[] {
     const words = text.split(/\s+/);
     const tokenIds: number[] = [];
@@ -150,6 +206,7 @@ export class BPETokenizer implements Tokenizer {
     return tokenIds;
   }
 
+  /** Decode sequences of BPE tokens. */
   decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
     let text = tokenIds.map((tid) => this.invVocab.get(tid) ?? this.unkToken).join('');
     if (cleanUpTokenizationSpaces) {
@@ -158,27 +215,35 @@ export class BPETokenizer implements Tokenizer {
     return text;
   }
 
+  /** Batch encode. */
   encodeBatch(texts: string[]): number[][] {
     return texts.map((t) => this.encode(t));
   }
 
+  /** Batch decode. */
   decodeBatch(batchIds: number[][]): string[] {
     return batchIds.map((ids) => this.decode(ids));
   }
 
+  /** Create stream. */
   createStream(): TokenizerStream {
     return new BasicTokenizerStream(this);
   }
 
+  /** Map ID to token. */
   idToToken(tokenId: number): string {
     return this.invVocab.get(tokenId) ?? this.unkToken;
   }
 
+  /** Map token to ID. */
   tokenToId(token: string): number {
     return this.vocab.get(token) ?? this.unkTokenId;
   }
 }
 
+/**
+ * WordPiece Tokenizer implementation (used by BERT).
+ */
 export class WordPieceTokenizer implements Tokenizer {
   private vocab: Map<string, number>;
   private invVocab: Map<number, string>;
@@ -186,6 +251,12 @@ export class WordPieceTokenizer implements Tokenizer {
   private unkTokenId: number;
   private maxInputCharsPerWord: number;
 
+  /**
+   * Create a new WordPieceTokenizer.
+   * @param vocab Token vocabulary.
+   * @param unkToken Unknown token marker.
+   * @param maxInputCharsPerWord Truncation limit for long strings.
+   */
   constructor(
     vocab: Map<string, number>,
     unkToken: string = '[UNK]',
@@ -201,6 +272,7 @@ export class WordPieceTokenizer implements Tokenizer {
     this.maxInputCharsPerWord = maxInputCharsPerWord;
   }
 
+  /** Encode text using greedy longest-match WordPiece algorithm. */
   encode(text: string): number[] {
     const words = text.split(/\s+/);
     const tokenIds: number[] = [];
@@ -249,6 +321,7 @@ export class WordPieceTokenizer implements Tokenizer {
     return tokenIds;
   }
 
+  /** Decode sequences of WordPiece tokens. */
   decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
     let text = '';
     for (const tid of tokenIds) {
@@ -269,27 +342,35 @@ export class WordPieceTokenizer implements Tokenizer {
     return text;
   }
 
+  /** Batch encode. */
   encodeBatch(texts: string[]): number[][] {
     return texts.map((t) => this.encode(t));
   }
 
+  /** Batch decode. */
   decodeBatch(batchIds: number[][]): string[] {
     return batchIds.map((ids) => this.decode(ids));
   }
 
+  /** Create stream. */
   createStream(): TokenizerStream {
     return new BasicTokenizerStream(this);
   }
 
+  /** Map ID to token string. */
   idToToken(tokenId: number): string {
     return this.invVocab.get(tokenId) ?? this.unkToken;
   }
 
+  /** Map token string to ID. */
   tokenToId(token: string): number {
     return this.vocab.get(token) ?? this.unkTokenId;
   }
 }
 
+/**
+ * Unigram Tokenizer implementation based on probabilistic subword models.
+ */
 export class UnigramTokenizer implements Tokenizer {
   private vocab: Map<string, number>; // Maps token to log prob score
   private tokenToIdMap: Map<string, number>;
@@ -297,6 +378,11 @@ export class UnigramTokenizer implements Tokenizer {
   private unkToken: string;
   private unkTokenId: number;
 
+  /**
+   * Create a new UnigramTokenizer.
+   * @param vocab Token vocabulary with log-probabilities.
+   * @param unkToken Unknown token marker.
+   */
   constructor(vocab: Map<string, number>, unkToken: string = '<unk>') {
     this.vocab = vocab;
     this.unkToken = unkToken;
@@ -311,6 +397,7 @@ export class UnigramTokenizer implements Tokenizer {
     this.unkTokenId = this.tokenToIdMap.get(unkToken) ?? 0;
   }
 
+  /** Encode text using the Viterbi algorithm to find the most probable segmentation. */
   encode(text: string): number[] {
     const words = text.split(/\s+/);
     const tokenIds: number[] = [];
@@ -355,6 +442,7 @@ export class UnigramTokenizer implements Tokenizer {
     return tokenIds;
   }
 
+  /** Decode Unigram token sequences. */
   decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
     let text = tokenIds.map((tid) => this.idToTokenMap.get(tid) ?? this.unkToken).join(' ');
     if (cleanUpTokenizationSpaces) {
@@ -363,28 +451,40 @@ export class UnigramTokenizer implements Tokenizer {
     return text;
   }
 
+  /** Batch encode. */
   encodeBatch(texts: string[]): number[][] {
     return texts.map((t) => this.encode(t));
   }
 
+  /** Batch decode. */
   decodeBatch(batchIds: number[][]): string[] {
     return batchIds.map((ids) => this.decode(ids));
   }
 
+  /** Create stream. */
   createStream(): TokenizerStream {
     return new BasicTokenizerStream(this);
   }
 
+  /** Map ID to token. */
   idToToken(tokenId: number): string {
     return this.idToTokenMap.get(tokenId) ?? this.unkToken;
   }
 
+  /** Map token to ID. */
   tokenToId(token: string): number {
     return this.tokenToIdMap.get(token) ?? this.unkTokenId;
   }
 }
 
+/**
+ * Utility to load tokenizers from HuggingFace-compatible JSON files.
+ */
 export class HuggingFaceTokenizerLoader {
+  /**
+   * Instantiate a Tokenizer from a JSON configuration.
+   * @param jsonContent Serialized tokenizer configuration.
+   */
   static loadFromJson(jsonContent: string): Tokenizer {
     const data = JSON.parse(jsonContent);
     const model = data.model || {};
@@ -428,28 +528,54 @@ export class HuggingFaceTokenizerLoader {
   }
 }
 
+/**
+ * Handles Unicode normalization for text preprocessing.
+ */
 export class UnicodeNormalizer {
+  /**
+   * Normalize text according to the specified Unicode form.
+   * @param text Input text.
+   * @param form Normalization form ('NFC', 'NFD', 'NFKC', 'NFKD').
+   */
   static normalize(text: string, form: string = 'NFC'): string {
     if (!['NFC', 'NFD', 'NFKC', 'NFKD'].includes(form)) {
       throw new Error(`Unsupported normalization form: ${form}`);
     }
     // Utilizing native JS String.prototype.normalize
-    return text.normalize(form as any);
+    return text.normalize(form as 'NFC' | 'NFD' | 'NFKC' | 'NFKD');
   }
 }
 
+/**
+ * Pre-tokenizer utilities for initial text splitting.
+ */
 export class PreTokenizer {
+  /**
+   * Split text by whitespace.
+   * @param text Input string.
+   * @returns Array of tokens.
+   */
   static whitespaceSplit(text: string): string[] {
     const matches = text.match(/\S+|\s+/g);
     return matches ? Array.from(matches) : [];
   }
 
+  /**
+   * Split text by punctuation and words.
+   * @param text Input string.
+   * @returns Array of tokens.
+   */
   static punctuationSplit(text: string): string[] {
     // Simple regex keeping letters and spaces grouped, splitting rest
     const matches = text.match(/[\w\s]+|[^\w\s]/g);
     return matches ? Array.from(matches) : [];
   }
 
+  /**
+   * Byte-level pre-tokenization.
+   * @param text Input string.
+   * @returns Array of tokens.
+   */
   static byteLevel(text: string): string[] {
     // Text encoder to translate to raw UTF-8 bytes then to string representations
     const encoder = new TextEncoder();
@@ -462,19 +588,48 @@ export class PreTokenizer {
   }
 }
 
-export class TokenTrie {
-  root: any = {};
+/**
+ * Trie node structure for token matching.
+ */
+export interface TokenTrieNode {
+  /** Children nodes indexed by character. */
+  [key: string]: TokenTrieNode | number | undefined;
+  /** Token ID if this node represents a complete token. */
+  id?: number;
 }
 
+/**
+ * Trie structure for efficient token lookups.
+ */
+export class TokenTrie {
+  /** Root node of the trie. */
+  root: TokenTrieNode = {};
+}
+
+/**
+ * Streaming UTF-8 decoder.
+ */
 export class StreamingUTF8Decoder {
+  /**
+   * Decode a byte chunk into a string.
+   * @param chunk Byte array chunk.
+   * @returns Decoded string.
+   */
   decode(chunk: Uint8Array): string {
     return new TextDecoder('utf-8').decode(chunk);
   }
 }
 
+/** Llama-specific tokenizer implementation placeholder. */
 export class LlamaTokenizer extends BasicTokenizer {}
+/** GPT-2 specific tokenizer implementation placeholder. */
 export class GPT2Tokenizer extends BasicTokenizer {}
 
+/**
+ * Load a tokenizer from a URL with fallback to basic tokenizer.
+ * @param url Tokenizer configuration URL.
+ * @returns Promise resolving to a Tokenizer instance.
+ */
 export async function loadTokenizerWithFallback(url: string): Promise<Tokenizer> {
   return new BasicTokenizer();
 }

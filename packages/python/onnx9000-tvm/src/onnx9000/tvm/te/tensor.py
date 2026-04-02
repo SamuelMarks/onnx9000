@@ -2,8 +2,6 @@
 
 from typing import Any, Callable, Optional, Union
 
-from ..tir.expr import Expr
-
 
 class ExprOp:
     """Base class for math ops on TE variables."""

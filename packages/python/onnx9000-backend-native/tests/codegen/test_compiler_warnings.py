@@ -1,7 +1,5 @@
 """Module providing functionality for test_compiler_warnings."""
 
-import os
-import warnings
 from unittest.mock import patch
 
 import pytest

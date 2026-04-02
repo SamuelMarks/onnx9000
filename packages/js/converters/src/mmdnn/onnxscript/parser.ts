@@ -1,12 +1,17 @@
-/* eslint-disable */
-// @ts-nocheck
 import { Graph, Node, ValueInfo } from '@onnx9000/core';
 
+/**
+ * Parser for ONNXScript Python code.
+ * Extracts a lightweight ONNX IR from text-based representations.
+ */
 export class OnnxScriptParser {
   /**
    * Parses ONNXScript Python code into a basic ONNX IR Graph.
    * This is a lightweight text-based AST parser designed to operate
    * natively in the JS browser environment without the Pyodide/Python runtime overhead.
+   *
+   * @param scriptContent The Python source code of the ONNXScript function.
+   * @returns A populated ONNX IR Graph.
    */
   public parseScript(scriptContent: string): Graph {
     const graph = new Graph('onnxscript-imported');
@@ -15,6 +20,7 @@ export class OnnxScriptParser {
     const lines = scriptContent.split('\n');
     let insideFunc = false;
 
+    // Use a fresh regex instance for each line or reset lastIndex
     const ioRegex = /([a-zA-Z0-9_]+):\s*FLOAT(?:\[(.*?)\])?/g;
 
     for (let line of lines) {
@@ -26,11 +32,12 @@ export class OnnxScriptParser {
         const sigMatch = line.match(/def\s+[a-zA-Z0-9_]+\s*\((.*?)\)(?:\s*->\s*(.*?))?:/);
         if (sigMatch) {
           const argsStr = sigMatch[1];
-          const retStr = sigMatch[2];
 
           // Parse inputs
-          let argMatch;
           if (argsStr) {
+            let argMatch;
+            // Reset regex because of global flag
+            ioRegex.lastIndex = 0;
             while ((argMatch = ioRegex.exec(argsStr)) !== null) {
               const name = argMatch[1];
               const shape = argMatch[2]
@@ -40,17 +47,6 @@ export class OnnxScriptParser {
                 graph.inputs.push(new ValueInfo(name, shape, 'float32'));
               }
             }
-          }
-
-          // Parse output (if named, else assume 'Y')
-          if (retStr && retStr.includes('FLOAT')) {
-            const shapeStr = retStr.match(/FLOAT\[(.*?)\]/);
-            const shape =
-              shapeStr && shapeStr[1]
-                ? shapeStr[1].split(',').map((s) => parseInt(s.trim(), 10))
-                : [-1];
-            // The parser doesn't natively know the output name until `return Y`
-            // Will push output value info during return
           }
         }
         continue;

@@ -42,6 +42,12 @@ export class PolyfillMLGraphBuilder {
   }
 
   // 18. Support builder.input(name, descriptor).
+  /**
+   * WebNN Input operation.
+   * @param name Input operand
+   * @param descriptor Input operand
+   * @returns Result operand
+   */
   input(name: string, descriptor: MLOperandDescriptor): MLOperand {
     // 19. Validate MLOperandDescriptor shapes strictly (Array of positive integers).
     for (const d of descriptor.dimensions) {
@@ -69,6 +75,12 @@ export class PolyfillMLGraphBuilder {
   }
 
   // 22. Support builder.constant(descriptor, bufferView).
+  /**
+   * WebNN Constant operation.
+   * @param descriptor Input operand
+   * @param bufferView Input operand
+   * @returns Result operand
+   */
   constant(descriptor: MLOperandDescriptor, bufferView: ArrayBufferView): MLOperand {
     const name = this.nextName('Constant');
     // 23. Extract ArrayBuffer values from constant() calls into onnx9000 Initializers natively.
@@ -86,7 +98,9 @@ export class PolyfillMLGraphBuilder {
   }
 
   async build(outputs: Record<string, MLOperand>): Promise<MLGraph> {
-    for (const [key, op] of Object.entries(outputs)) {
+    const entries = Object.entries(outputs);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, op] = entries[i]!;
       const polyOp = op as PolyfillMLOperand;
       if (polyOp.name !== key) {
         // Emit an identity node to map the name to the expected output key
@@ -97,19 +111,18 @@ export class PolyfillMLGraphBuilder {
         this.graph.outputs.push(new ValueInfo(polyOp.name, polyOp.shape, polyOp.dataType as any));
       }
     }
-    // 151. Execute onnx9000.shape_inference natively...
-    // 152. Execute onnx9000.optimizer natively...
     // Return PolyfillMLGraph (150)
     return new PolyfillMLGraph(this.graph);
   }
 
   private emitNode(
     opType: string,
-    inputs: MLOperand[],
+    inputs: (MLOperand | undefined)[],
     attributes: Record<string, Attribute> = {},
   ): MLOperand {
     const name = this.nextName(opType);
-    const inNames = inputs.map((i) => (i as PolyfillMLOperand).name);
+    const validInputs = inputs.filter((i): i is MLOperand => i !== undefined);
+    const inNames = validInputs.map((i) => (i as PolyfillMLOperand).name);
     const outName = `${name}_out`;
 
     // Simplistic shape/type inference for the polyfill (we rely on ONNX standard later, but provide a basic shape)
@@ -123,83 +136,221 @@ export class PolyfillMLGraphBuilder {
   }
 
   // Phase 3: Element-wise Binary & Unary Operations
+  /**
+   * WebNN Add operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   add(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Add', [a, b]);
   }
+  /**
+   * WebNN Sub operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   sub(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Sub', [a, b]);
   }
+  /**
+   * WebNN Mul operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   mul(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Mul', [a, b]);
   }
+  /**
+   * WebNN Div operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   div(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Div', [a, b]);
   }
+  /**
+   * WebNN Max operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   max(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Max', [a, b]);
   }
+  /**
+   * WebNN Min operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   min(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Min', [a, b]);
   }
+  /**
+   * WebNN Pow operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   pow(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Pow', [a, b]);
   }
+  /**
+   * WebNN Abs operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   abs(a: MLOperand): MLOperand {
     return this.emitNode('Abs', [a]);
   }
+  /**
+   * WebNN Ceil operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   ceil(a: MLOperand): MLOperand {
     return this.emitNode('Ceil', [a]);
   }
+  /**
+   * WebNN Floor operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   floor(a: MLOperand): MLOperand {
     return this.emitNode('Floor', [a]);
   }
+  /**
+   * WebNN Exp operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   exp(a: MLOperand): MLOperand {
     return this.emitNode('Exp', [a]);
   }
+  /**
+   * WebNN Log operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   log(a: MLOperand): MLOperand {
     return this.emitNode('Log', [a]);
   }
+  /**
+   * WebNN Cos operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   cos(a: MLOperand): MLOperand {
     return this.emitNode('Cos', [a]);
   }
+  /**
+   * WebNN Sin operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   sin(a: MLOperand): MLOperand {
     return this.emitNode('Sin', [a]);
   }
+  /**
+   * WebNN Tan operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   tan(a: MLOperand): MLOperand {
     return this.emitNode('Tan', [a]);
   }
+  /**
+   * WebNN Acos operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   acos(a: MLOperand): MLOperand {
     return this.emitNode('Acos', [a]);
   }
+  /**
+   * WebNN Asin operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   asin(a: MLOperand): MLOperand {
     return this.emitNode('Asin', [a]);
   }
+  /**
+   * WebNN Atan operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   atan(a: MLOperand): MLOperand {
     return this.emitNode('Atan', [a]);
   }
+  /**
+   * WebNN Sqrt operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   sqrt(a: MLOperand): MLOperand {
     return this.emitNode('Sqrt', [a]);
   }
+  /**
+   * WebNN Erf operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   erf(a: MLOperand): MLOperand {
     return this.emitNode('Erf', [a]);
   }
+  /**
+   * WebNN Sign operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   sign(a: MLOperand): MLOperand {
     return this.emitNode('Sign', [a]);
   }
+  /**
+   * WebNN Neg operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   neg(a: MLOperand): MLOperand {
     return this.emitNode('Neg', [a]);
   }
 
   // Phase 4: Activations & Non-Linearities
+  /**
+   * WebNN Relu operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   relu(a: MLOperand): MLOperand {
     return this.emitNode('Relu', [a]);
   }
+  /**
+   * WebNN Sigmoid operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   sigmoid(a: MLOperand): MLOperand {
     return this.emitNode('Sigmoid', [a]);
   }
+  /**
+   * WebNN Tanh operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   tanh(a: MLOperand): MLOperand {
     return this.emitNode('Tanh', [a]);
   }
+  /**
+   * WebNN Softmax operation.
+   * @param a Input operand
+   * @param axis? Input operand
+   * @returns Result operand
+   */
   softmax(a: MLOperand, axis?: number): MLOperand {
     return this.emitNode(
       'Softmax',
@@ -214,6 +365,12 @@ export class PolyfillMLGraphBuilder {
       options?.alpha !== undefined ? { alpha: new Attribute('alpha', 'FLOAT', options.alpha) } : {},
     );
   }
+  /**
+   * WebNN Elu operation.
+   * @param a Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   elu(a: MLOperand, options?: MLEluOptions): MLOperand {
     return this.emitNode(
       'Elu',
@@ -230,6 +387,12 @@ export class PolyfillMLGraphBuilder {
   hardSwish(a: MLOperand): MLOperand {
     return this.emitNode('HardSwish', [a]);
   }
+  /**
+   * WebNN Linear operation.
+   * @param a Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   linear(a: MLOperand, options?: any): MLOperand {
     const alpha = options?.alpha !== undefined ? options.alpha : 1.0;
     const beta = options?.beta !== undefined ? options.beta : 0.0;
@@ -245,18 +408,45 @@ export class PolyfillMLGraphBuilder {
     return this.emitNode('Add', [mulOp, betaOp]);
   }
 
+  /**
+   * WebNN Softplus operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   softplus(a: MLOperand): MLOperand {
     return this.emitNode('Softplus', [a]);
   }
+  /**
+   * WebNN Softsign operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   softsign(a: MLOperand): MLOperand {
     return this.emitNode('Softsign', [a]);
   }
+  /**
+   * WebNN Gelu operation.
+   * @param a Input operand
+   * @returns Result operand
+   */
   gelu(a: MLOperand): MLOperand {
     return this.emitNode('Gelu', [a]);
   }
+  /**
+   * WebNN Prelu operation.
+   * @param a Input operand
+   * @param slope Input operand
+   * @returns Result operand
+   */
   prelu(a: MLOperand, slope: MLOperand): MLOperand {
     return this.emitNode('PRelu', [a, slope]);
   }
+  /**
+   * WebNN Clamp operation.
+   * @param a Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   clamp(a: MLOperand, options?: MLClampOptions): MLOperand {
     const inputs = [a];
     if (options?.minValue) inputs.push(options.minValue);
@@ -271,9 +461,22 @@ export class PolyfillMLGraphBuilder {
   }
 
   // Phase 4: Matrix Multiplication & Linear Algebra
+  /**
+   * WebNN Matmul operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   matmul(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('MatMul', [a, b]);
   }
+  /**
+   * WebNN Gemm operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   gemm(a: MLOperand, b: MLOperand, options?: MLGemmOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.alpha !== undefined) attrs.alpha = new Attribute('alpha', 'FLOAT', options.alpha);
@@ -286,6 +489,12 @@ export class PolyfillMLGraphBuilder {
   }
 
   // Phase 8: Tensor Manipulation
+  /**
+   * WebNN Reshape operation.
+   * @param a Input operand
+   * @param newShape Input operand
+   * @returns Result operand
+   */
   reshape(a: MLOperand, newShape: number[]): MLOperand {
     const shapeOp = this.constant(
       { dataType: 'int64', dimensions: [newShape.length] },
@@ -293,6 +502,12 @@ export class PolyfillMLGraphBuilder {
     );
     return this.emitNode('Reshape', [a, shapeOp]);
   }
+  /**
+   * WebNN Transpose operation.
+   * @param a Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   transpose(a: MLOperand, options?: MLTransposeOptions): MLOperand {
     return this.emitNode(
       'Transpose',
@@ -300,6 +515,14 @@ export class PolyfillMLGraphBuilder {
       options?.permutation ? { perm: new Attribute('perm', 'INTS', options.permutation) } : {},
     );
   }
+  /**
+   * WebNN Slice operation.
+   * @param a Input operand
+   * @param starts Input operand
+   * @param sizes Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   slice(a: MLOperand, starts: number[], sizes: number[], options?: MLSliceOptions): MLOperand {
     const ends = starts.map((s, i) => s + sizes[i]!);
     const startsOp = this.constant(
@@ -336,6 +559,12 @@ export class PolyfillMLGraphBuilder {
     }
     return this.emitNode('Slice', inputs);
   }
+  /**
+   * WebNN Concat operation.
+   * @param inputs Input operand
+   * @param axis Input operand
+   * @returns Result operand
+   */
   concat(inputs: MLOperand[], axis: number): MLOperand {
     return this.emitNode('Concat', inputs, { axis: new Attribute('axis', 'INT', axis) });
   }
@@ -346,10 +575,10 @@ export class PolyfillMLGraphBuilder {
     // Simplistic return of multiple operands
     const name = this.nextName('Split');
     const inNames = [(a as PolyfillMLOperand).name];
-    let numOutputs = typeof splits === 'number' ? splits : splits.length;
+    const numOutputs = typeof splits === 'number' ? splits : splits.length;
     const outNames = Array.from({ length: numOutputs }, (_, i) => `${name}_out${i}`);
 
-    let inputs = [a];
+    const inputs = [a];
     if (Array.isArray(splits)) {
       inputs.push(
         this.constant(
@@ -369,6 +598,12 @@ export class PolyfillMLGraphBuilder {
     this.graph.addNode(node);
     return outNames.map((o) => new PolyfillMLOperand(o, a.dataType, []));
   }
+  /**
+   * WebNN Expand operation.
+   * @param a Input operand
+   * @param newShape Input operand
+   * @returns Result operand
+   */
   expand(a: MLOperand, newShape: number[]): MLOperand {
     const shapeOp = this.constant(
       { dataType: 'int64', dimensions: [newShape.length] },
@@ -376,6 +611,13 @@ export class PolyfillMLGraphBuilder {
     );
     return this.emitNode('Expand', [a, shapeOp]);
   }
+  /**
+   * WebNN Gather operation.
+   * @param a Input operand
+   * @param indices Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   gather(a: MLOperand, indices: MLOperand, options?: MLGatherOptions): MLOperand {
     return this.emitNode(
       'Gather',
@@ -406,6 +648,13 @@ export class PolyfillMLGraphBuilder {
     );
   }
 
+  /**
+   * WebNN Pad operation.
+   * @param a Input operand
+   * @param padding Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   pad(a: MLOperand, padding: number[], options?: MLPadOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.mode) attrs.mode = new Attribute('mode', 'STRING', options.mode);
@@ -421,6 +670,12 @@ export class PolyfillMLGraphBuilder {
     }
     return this.emitNode('Pad', inputs, attrs);
   }
+  /**
+   * WebNN Cast operation.
+   * @param a Input operand
+   * @param type Input operand
+   * @returns Result operand
+   */
   cast(a: MLOperand, type: MLOperandDataType): MLOperand {
     // Map webnn types to ONNX tensorproto types
     const typeMap: Record<string, number> = {
@@ -442,6 +697,13 @@ export class PolyfillMLGraphBuilder {
   }
 
   // Phase 5: Convolution & Pooling
+  /**
+   * WebNN Conv2D operation.
+   * @param input Input operand
+   * @param filter Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   conv2d(input: MLOperand, filter: MLOperand, options?: MLConv2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
@@ -634,15 +896,33 @@ export class PolyfillMLGraphBuilder {
   }
 
   // Phase 11: Logical & Relational Operations
+  /**
+   * WebNN Equal operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   equal(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Equal', [a, b]);
   }
+  /**
+   * WebNN Greater operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   greater(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Greater', [a, b]);
   }
   greaterOrEqual(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('GreaterOrEqual', [a, b]);
   }
+  /**
+   * WebNN Lesser operation.
+   * @param a Input operand
+   * @param b Input operand
+   * @returns Result operand
+   */
   lesser(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Less', [a, b]);
   }
@@ -661,6 +941,13 @@ export class PolyfillMLGraphBuilder {
   logicalXor(a: MLOperand, b: MLOperand): MLOperand {
     return this.emitNode('Xor', [a, b]);
   }
+  /**
+   * WebNN Where operation.
+   * @param condition Input operand
+   * @param trueValue Input operand
+   * @param falseValue Input operand
+   * @returns Result operand
+   */
   where(condition: MLOperand, trueValue: MLOperand, falseValue: MLOperand): MLOperand {
     return this.emitNode('Where', [condition, trueValue, falseValue]);
   }
@@ -706,6 +993,12 @@ export class PolyfillMLGraphBuilder {
     return [node, node];
   }
 
+  /**
+   * WebNN Triangular operation.
+   * @param input Input operand
+   * @param options? Input operand
+   * @returns Result operand
+   */
   triangular(input: MLOperand, options?: { upper?: boolean; diagonal?: number }): MLOperand {
     // Emulated via Trilu
     return this.emitNode('Trilu', [input], {

@@ -24,7 +24,9 @@ export class CanvasRenderer {
 
     this.setupEvents();
     this.resize();
-    window.addEventListener('resize', () => this.resize());
+    window.addEventListener('resize', () => {
+      this.resize();
+    });
   }
 
   setLayout(layout: GraphLayout) {

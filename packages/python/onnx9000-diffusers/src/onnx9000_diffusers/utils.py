@@ -3,7 +3,7 @@ import math
 import os
 import shutil
 import urllib.request
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
 class PyTorchPCG:
@@ -29,7 +29,7 @@ class PyTorchPCG:
         return self.next_uint() / 4294967296.0
 
 
-def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
+def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
     """
     Generates a uniform tensor [0, 1) natively matching cross-platform PRNG.
 
@@ -38,7 +38,7 @@ def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
         generator (PyTorchPCG): The PRNG instance.
 
     Returns:
-        List[float]: A flat list representing the tensor data.
+        list[float]: A flat list representing the tensor data.
     """
     size = 1
     for dim in shape:
@@ -46,7 +46,7 @@ def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
     return [generator.next_float() for _ in range(size)]
 
 
-def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
+def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
     """
     Generates a standard normal tensor (mean=0, std=1) natively using Box-Muller.
 
@@ -55,7 +55,7 @@ def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> List[float]:
         generator (PyTorchPCG): The PRNG instance.
 
     Returns:
-        List[float]: A flat list representing the standard normal tensor data.
+        list[float]: A flat list representing the standard normal tensor data.
     """
     size = 1
     for dim in shape:

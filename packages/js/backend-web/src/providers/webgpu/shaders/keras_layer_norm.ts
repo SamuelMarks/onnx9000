@@ -1,3 +1,7 @@
+/**
+ * WGSL Shader for Keras LayerNormalization.
+ * @returns The WGSL shader source code.
+ */
 export const getKerasLayerNormWGSL = () => `
 @group(0) @binding(0) var<storage, read> input: array<f32>;
 @group(0) @binding(1) var<storage, read> gamma: array<f32>;

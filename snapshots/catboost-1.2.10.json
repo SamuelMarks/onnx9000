@@ -124,7 +124,7 @@
     {
       "name": "MetricsPlotter",
       "type": "Class",
-      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+      "signature": "(train_metrics: List[Union[str, tp.dict[str, str]]], test_metrics: Optional[List[Union[str, tp.dict[str, str]]]], total_iterations: Optional[int])"
     },
     {
       "name": "XGBPlottingCallback",
@@ -779,7 +779,7 @@
     {
       "name": "widget.MetricsPlotter",
       "type": "Class",
-      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+      "signature": "(train_metrics: List[Union[str, tp.dict[str, str]]], test_metrics: Optional[List[Union[str, tp.dict[str, str]]]], total_iterations: Optional[int])"
     },
     {
       "name": "widget.XGBPlottingCallback",
@@ -799,7 +799,7 @@
     {
       "name": "widget.callbacks.MetricsPlotter",
       "type": "Class",
-      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+      "signature": "(train_metrics: List[Union[str, tp.dict[str, str]]], test_metrics: Optional[List[Union[str, tp.dict[str, str]]]], total_iterations: Optional[int])"
     },
     {
       "name": "widget.callbacks.XGBPlottingCallback",
@@ -839,7 +839,7 @@
     {
       "name": "widget.metrics_plotter.MetricsPlotter",
       "type": "Class",
-      "signature": "(train_metrics: List[Union[str, tp.Dict[str, str]]], test_metrics: Optional[List[Union[str, tp.Dict[str, str]]]], total_iterations: Optional[int])"
+      "signature": "(train_metrics: List[Union[str, tp.dict[str, str]]], test_metrics: Optional[List[Union[str, tp.dict[str, str]]]], total_iterations: Optional[int])"
     }
   ]
 }

@@ -38,111 +38,111 @@ export function emitRNNBase(
   const nodes: OnnxNodeBuilder[] = [];
 
   if (options.unroll && options.timeSteps) {
-      // Statically unrolling the RNN cell into standard ONNX Math nodes
-      // Example implementation for SimpleRNN: h_t = activation(W x_t + R h_{t-1} + B)
-      let prevH = initialStateNames.length > 0 ? initialStateNames[0] : `${name}_initial_h`;
-      
-      if (initialStateNames.length === 0) {
-          nodes.push({
-             opType: 'Constant',
-             inputs: [],
-             outputs: [prevH],
-             name: `${name}_init_h_const`,
-             attributes: [{ name: 'value', f: 0.0, type: 'FLOAT' }] // pseudo zeroes
-          });
+    // Statically unrolling the RNN cell into standard ONNX Math nodes
+    // Example implementation for SimpleRNN: h_t = activation(W x_t + R h_{t-1} + B)
+    let prevH = initialStateNames.length > 0 ? initialStateNames[0] : `${name}_initial_h`;
+
+    if (initialStateNames.length === 0) {
+      nodes.push({
+        opType: 'Constant',
+        inputs: [],
+        outputs: [prevH],
+        name: `${name}_init_h_const`,
+        attributes: [{ name: 'value', f: 0.0, type: 'FLOAT' }], // pseudo zeroes
+      });
+    }
+
+    const seqOutputs: string[] = [];
+
+    for (let t = 0; t < options.timeSteps; t++) {
+      const stepIndex = options.goBackwards ? options.timeSteps - 1 - t : t;
+      const x_t = `${name}_x_${stepIndex}`;
+
+      // 1. Extract x_t via Slice/Gather
+      nodes.push({
+        opType: 'Gather',
+        inputs: [inputName, `${name}_idx_${t}`], // fake indices
+        outputs: [x_t],
+        name: `${name}_gather_${t}`,
+        attributes: [{ name: 'axis', i: 1, type: 'INT' }], // axis 1 is time in layout=1
+      });
+
+      // 2. W x_t
+      const wx_t = `${name}_wx_${t}`;
+      nodes.push({
+        opType: 'MatMul',
+        inputs: [x_t, wName],
+        outputs: [wx_t],
+        name: `${name}_matmul_w_${t}`,
+        attributes: [],
+      });
+
+      // 3. R h_{t-1}
+      const rh_t = `${name}_rh_${t}`;
+      nodes.push({
+        opType: 'MatMul',
+        inputs: [prevH, rName],
+        outputs: [rh_t],
+        name: `${name}_matmul_r_${t}`,
+        attributes: [],
+      });
+
+      // 4. Add + Bias
+      const add1_t = `${name}_add1_${t}`;
+      nodes.push({
+        opType: 'Add',
+        inputs: [wx_t, rh_t],
+        outputs: [add1_t],
+        name: `${name}_add1_${t}`,
+        attributes: [],
+      });
+
+      let h_t = add1_t;
+      if (bName) {
+        const add2_t = `${name}_add2_${t}`;
+        nodes.push({
+          opType: 'Add',
+          inputs: [add1_t, bName],
+          outputs: [add2_t],
+          name: `${name}_add2_${t}`,
+          attributes: [],
+        });
+        h_t = add2_t;
       }
 
-      const seqOutputs: string[] = [];
+      // 5. Activation
+      const act_t = `${name}_h_${t}`;
+      nodes.push({
+        opType: 'Tanh', // default RNN activation
+        inputs: [h_t],
+        outputs: [act_t],
+        name: `${name}_tanh_${t}`,
+        attributes: [],
+      });
 
-      for (let t = 0; t < options.timeSteps; t++) {
-          const stepIndex = options.goBackwards ? (options.timeSteps - 1 - t) : t;
-          const x_t = `${name}_x_${stepIndex}`;
-          
-          // 1. Extract x_t via Slice/Gather
-          nodes.push({
-             opType: 'Gather',
-             inputs: [inputName, `${name}_idx_${t}`], // fake indices
-             outputs: [x_t],
-             name: `${name}_gather_${t}`,
-             attributes: [{ name: 'axis', i: 1, type: 'INT' }] // axis 1 is time in layout=1
-          });
+      prevH = act_t;
+      seqOutputs.push(act_t);
+    }
 
-          // 2. W x_t
-          const wx_t = `${name}_wx_${t}`;
-          nodes.push({
-             opType: 'MatMul',
-             inputs: [x_t, wName],
-             outputs: [wx_t],
-             name: `${name}_matmul_w_${t}`,
-             attributes: []
-          });
+    if (options.returnSequences) {
+      nodes.push({
+        opType: 'Concat',
+        inputs: seqOutputs,
+        outputs: [outputName],
+        name: `${name}_concat_seq`,
+        attributes: [{ name: 'axis', i: 1, type: 'INT' }],
+      });
+    } else {
+      nodes.push({
+        opType: 'Identity',
+        inputs: [prevH],
+        outputs: [outputName],
+        name: `${name}_last_h`,
+        attributes: [],
+      });
+    }
 
-          // 3. R h_{t-1}
-          const rh_t = `${name}_rh_${t}`;
-          nodes.push({
-             opType: 'MatMul',
-             inputs: [prevH, rName],
-             outputs: [rh_t],
-             name: `${name}_matmul_r_${t}`,
-             attributes: []
-          });
-
-          // 4. Add + Bias
-          const add1_t = `${name}_add1_${t}`;
-          nodes.push({
-             opType: 'Add',
-             inputs: [wx_t, rh_t],
-             outputs: [add1_t],
-             name: `${name}_add1_${t}`,
-             attributes: []
-          });
-
-          let h_t = add1_t;
-          if (bName) {
-             const add2_t = `${name}_add2_${t}`;
-             nodes.push({
-                opType: 'Add',
-                inputs: [add1_t, bName],
-                outputs: [add2_t],
-                name: `${name}_add2_${t}`,
-                attributes: []
-             });
-             h_t = add2_t;
-          }
-
-          // 5. Activation
-          const act_t = `${name}_h_${t}`;
-          nodes.push({
-             opType: 'Tanh', // default RNN activation
-             inputs: [h_t],
-             outputs: [act_t],
-             name: `${name}_tanh_${t}`,
-             attributes: []
-          });
-
-          prevH = act_t;
-          seqOutputs.push(act_t);
-      }
-
-      if (options.returnSequences) {
-          nodes.push({
-             opType: 'Concat',
-             inputs: seqOutputs,
-             outputs: [outputName],
-             name: `${name}_concat_seq`,
-             attributes: [{ name: 'axis', i: 1, type: 'INT' }]
-          });
-      } else {
-          nodes.push({
-             opType: 'Identity',
-             inputs: [prevH],
-             outputs: [outputName],
-             name: `${name}_last_h`,
-             attributes: []
-          });
-      }
-
-      return nodes;
+    return nodes;
   }
 
   // ONNX RNN inputs: X, W, R, B, sequence_lens, initial_h, initial_c (for LSTM), P (for peepholes)

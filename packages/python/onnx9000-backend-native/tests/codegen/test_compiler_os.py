@@ -1,9 +1,6 @@
 """Module providing functionality for test_compiler_os."""
 
-import os
 import subprocess
-import sys
-import tempfile
 from unittest.mock import patch
 
 import pytest

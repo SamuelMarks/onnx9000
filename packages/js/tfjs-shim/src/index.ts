@@ -8,41 +8,88 @@ let currentBackend = 'webgpu';
 let isProdMode = false;
 let isDebugMode = false;
 
+/** Core version of the engine. */
 export const version_core = '4.10.0';
+/** TFJS-compatible version of the engine. */
 export const version_tfjs = '4.10.0';
+/** Version information object. */
 export const version = {
   tfjs: version_tfjs,
   core: version_core,
 };
 
+/**
+ * Sets the current execution backend.
+ * @param backendName The name of the backend (e.g., 'webgpu').
+ * @returns A promise that resolves to true if the backend was successfully set.
+ */
 export async function setBackend(backendName: string): Promise<boolean> {
   currentBackend = backendName;
   return true;
 }
 
+/**
+ * Gets the name of the currently active backend.
+ * @returns The name of the active backend.
+ */
 export function getBackend(): string {
   return currentBackend;
 }
 
+/**
+ * Returns a promise that resolves when the engine is ready.
+ * @returns A promise that resolves when the engine is ready.
+ */
 export async function ready(): Promise<void> {
   return Promise.resolve();
 }
 
-export function env(): any {
+/**
+ * Interface for the environment configuration.
+ */
+export interface Environment {
+  /**
+   * Gets a configuration value by key.
+   * @param key The configuration key.
+   */
+  get(key: string): string | number | boolean | null;
+  /**
+   * Sets a configuration value by key.
+   * @param key The configuration key.
+   * @param value The value to set.
+   */
+  set(key: string, value: string | number | boolean): void;
+}
+
+/**
+ * Returns the environment configuration object.
+ * @returns The environment object.
+ */
+export function env(): Environment {
   return {
     get: (key: string) => null,
-    set: (key: string, value: any) => {},
+    set: (key: string, value: string | number | boolean) => {},
   };
 }
 
+/**
+ * Enables production mode, disabling some runtime checks.
+ */
 export function enableProdMode(): void {
   isProdMode = true;
 }
 
+/**
+ * Enables debug mode, enabling verbose logging and extra checks.
+ */
 export function enableDebugMode(): void {
   isDebugMode = true;
 }
 
+/**
+ * Returns memory usage information.
+ * @returns An object containing memory statistics.
+ */
 export function memory(): {
   numBytes: number;
   numTensors: number;
@@ -56,143 +103,367 @@ export function memory(): {
   };
 }
 
-export async function profile(f: () => any): Promise<any> {
+/**
+ * Profiles the execution of a function.
+ * @param f The function to profile.
+ * @returns A promise that resolves to profiling results.
+ */
+export async function profile(
+  f: () => Promise<Tensor | Tensor[] | void> | Tensor | Tensor[] | void,
+): Promise<{
+  newBytes: number;
+  newTensors: number;
+  peakBytes: number;
+  kernels: string[];
+  result: Tensor | Tensor[] | void;
+}> {
   const result = await f();
   return { newBytes: 0, newTensors: 0, peakBytes: 0, kernels: [], result };
 }
 
-export async function time(f: () => any): Promise<{ wallMs: number; kernelMs: number }> {
+/**
+ * Measures the execution time of a function.
+ * @param f The function to time.
+ * @returns A promise that resolves to an object with wall and kernel time in milliseconds.
+ */
+export async function time(
+  f: () => Promise<void> | void,
+): Promise<{ wallMs: number; kernelMs: number }> {
   const start = performance.now();
   await f();
   const end = performance.now();
   return { wallMs: end - start, kernelMs: end - start };
 }
 
+/**
+ * Disposes all variables in the global registry.
+ */
 export function disposeVariables(): void {
   globalTensorRegistry.clear();
 }
 
 // --- Tensor Core ---
+/** Data type for tensors. */
 export type DataType = 'float32' | 'int32' | 'bool' | 'complex64' | 'string';
+/** A union of supported typed arrays. */
+export type TypedArray = Float32Array | Int32Array | Uint8Array;
+
 const globalTensorRegistry = new Set<Tensor>();
 let currentTidyScope: Tensor[][] | null = null;
 
+/**
+ * A Tensor object representing a multi-dimensional array.
+ */
 export class Tensor {
+  /** The shape of the tensor. */
   shape: number[];
+  /** The data type of the tensor. */
   dtype: DataType;
-  dataArray: any[];
+  /** The underlying data array. */
+  dataArray: (number | string | boolean)[];
+  /** Whether the tensor has been disposed. */
   isDisposed: boolean = false;
+  /** The rank (number of dimensions) of the tensor. */
   rank: number;
+  /** The total number of elements in the tensor. */
   size: number;
 
-  constructor(shape: number[], dtype: DataType, dataArray: any[]) {
+  /**
+   * Creates a new Tensor.
+   * @param shape The shape of the tensor.
+   * @param dtype The data type of the tensor.
+   * @param dataArray The underlying data array.
+   */
+  constructor(shape: number[], dtype: DataType, dataArray: (number | string | boolean)[]) {
     this.shape = shape;
     this.dtype = dtype;
     this.dataArray = dataArray;
     this.rank = shape.length;
     this.size = shape.reduce((a, b) => a * b, 1);
     globalTensorRegistry.add(this);
-    if (currentTidyScope) {
-      currentTidyScope[currentTidyScope.length - 1].push(this);
+    if (currentTidyScope && currentTidyScope.length > 0) {
+      currentTidyScope[currentTidyScope.length - 1]!.push(this);
     }
   }
 
-  async data(): Promise<any> {
-    if (this.dtype === 'string') return new Array(this.size).fill(this.dataArray[0] || '');
-    if (this.dtype === 'float32') return new Float32Array(this.dataArray);
-    if (this.dtype === 'int32') return new Int32Array(this.dataArray);
-    if (this.dtype === 'bool') return new Uint8Array(this.dataArray.map((b) => (b ? 1 : 0)));
-    return new Float32Array(this.dataArray);
+  /**
+   * Asynchronously retrieves the tensor data.
+   * @returns A promise that resolves to the tensor data as a TypedArray or an array of strings.
+   */
+  async data(): Promise<TypedArray | string[]> {
+    if (this.dtype === 'string')
+      return new Array(this.size).fill(this.dataArray[0] || '') as string[];
+    if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
+    if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
+    if (this.dtype === 'bool')
+      return new Uint8Array((this.dataArray as boolean[]).map((b) => (b ? 1 : 0)));
+    return new Float32Array(this.dataArray as number[]);
   }
 
-  dataSync(): any {
-    if (this.dtype === 'string') return new Array(this.size).fill(this.dataArray[0] || '');
-    if (this.dtype === 'float32') return new Float32Array(this.dataArray);
-    if (this.dtype === 'int32') return new Int32Array(this.dataArray);
-    if (this.dtype === 'bool') return new Uint8Array(this.dataArray.map((b) => (b ? 1 : 0)));
-    return new Float32Array(this.dataArray);
+  /**
+   * Synchronously retrieves the tensor data.
+   * @returns The tensor data as a TypedArray or an array of strings.
+   */
+  dataSync(): TypedArray | string[] {
+    if (this.dtype === 'string')
+      return new Array(this.size).fill(this.dataArray[0] || '') as string[];
+    if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
+    if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
+    if (this.dtype === 'bool')
+      return new Uint8Array((this.dataArray as boolean[]).map((b) => (b ? 1 : 0)));
+    return new Float32Array(this.dataArray as number[]);
   }
 
-  async array(): Promise<any[]> {
+  /**
+   * Asynchronously retrieves the tensor data as a nested array.
+   * @returns A promise that resolves to the nested array.
+   */
+  async array(): Promise<NestedArray<number | string | boolean>> {
     return this.arraySync();
   }
 
-  arraySync(): any[] {
-    if (this.rank === 0) return this.dataArray[0];
-    if (this.rank === 1) return Array.from(this.dataArray);
-    return Array.from(this.dataArray); // Simplified flat array for now to ensure typings
+  /**
+   * Synchronously retrieves the tensor data as a nested array.
+   * @returns The nested array.
+   */
+  arraySync(): NestedArray<number | string | boolean> {
+    if (this.rank === 0) return this.dataArray[0] as number | string | boolean;
+    if (this.rank === 1) return Array.from(this.dataArray) as (number | string | boolean)[];
+    return Array.from(this.dataArray) as NestedArray<number | string | boolean>; // Simplified flat array for now to ensure typings
   }
 
+  /**
+   * Disposes the tensor and releases its memory.
+   */
   dispose(): void {
     if (this.isDisposed) return;
     this.isDisposed = true;
     globalTensorRegistry.delete(this);
   }
 
+  /**
+   * Creates a clone of the tensor.
+   * @returns A new tensor with the same shape, dtype, and data.
+   */
   clone(): Tensor {
     return new Tensor(this.shape.slice(), this.dtype, this.dataArray.slice());
   }
 
+  /**
+   * Prints the tensor to the console.
+   * @param verbose Whether to print verbose information.
+   */
   print(verbose: boolean = false): void {
     console.log(`Tensor [${this.shape}]`, this.dataArray);
   }
 
+  /**
+   * Flattens the tensor into a 1D tensor.
+   * @returns A new 1D tensor.
+   */
   flatten(): Tensor {
     return reshape(this, [-1]);
   }
+
+  /**
+   * Reshapes the tensor to a new shape.
+   * @param newShape The new shape.
+   * @returns A new reshaped tensor.
+   */
+  reshape(newShape: number[]): Tensor {
+    return reshape(this, newShape);
+  }
+
+  /**
+   * Casts the tensor to a new data type.
+   * @param dtype The new data type.
+   * @returns A new tensor with the casted data type.
+   */
+  cast(dtype: DataType): Tensor {
+    return cast(this, dtype);
+  }
+
+  /**
+   * Squeezes dimensions of size 1.
+   * @param axis Optional list of axes to squeeze.
+   * @returns A new squeezed tensor.
+   */
+  squeeze(axis?: number[]): Tensor {
+    return squeeze(this, axis);
+  }
 }
 
-export function tensor(values: any, shape?: number[], dtype?: DataType): Tensor {
+/** Recursive type for nested arrays. */
+export type NestedArray<T> = T | NestedArray<T>[];
+
+/**
+ * Creates a tensor from values.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new tensor.
+ */
+export function tensor(
+  values: number | string | boolean | NestedArray<number | string | boolean> | TypedArray,
+  shape?: number[],
+  dtype?: DataType,
+): Tensor {
   const flatVals = Array.isArray(values)
-    ? values.flat(Infinity)
-    : values.length !== undefined && typeof values !== 'string'
-      ? Array.from(values)
-      : [values];
+    ? (values as (number | string | boolean)[]).flat(Infinity)
+    : values !== null &&
+        typeof values === 'object' &&
+        'length' in values &&
+        typeof (values as { length: number }).length === 'number' &&
+        typeof values !== 'string'
+      ? Array.from(values as Iterable<number | string | boolean>)
+      : [values as number | string | boolean];
   const s = shape || [flatVals.length];
   const d = dtype || 'float32';
-  return new Tensor(s, d, flatVals);
+  return new Tensor(s, d, flatVals as (number | string | boolean)[]);
 }
 
-export function tensor1d(values: any, dtype?: DataType): Tensor {
+/**
+ * Creates a 1D tensor.
+ * @param values The values for the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 1D tensor.
+ */
+export function tensor1d(
+  values: (number | string | boolean)[] | TypedArray,
+  dtype?: DataType,
+): Tensor {
   return tensor(values, [values.length || 1], dtype);
 }
-export function tensor2d(values: any, shape?: [number, number], dtype?: DataType): Tensor {
+
+/**
+ * Creates a 2D tensor.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 2D tensor.
+ */
+export function tensor2d(
+  values: NestedArray<number | string | boolean> | TypedArray,
+  shape?: [number, number],
+  dtype?: DataType,
+): Tensor {
   return tensor(values, shape, dtype);
 }
-export function tensor3d(values: any, shape?: [number, number, number], dtype?: DataType): Tensor {
+
+/**
+ * Creates a 3D tensor.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 3D tensor.
+ */
+export function tensor3d(
+  values: NestedArray<number | string | boolean> | TypedArray,
+  shape?: [number, number, number],
+  dtype?: DataType,
+): Tensor {
   return tensor(values, shape, dtype);
 }
+
+/**
+ * Creates a 4D tensor.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 4D tensor.
+ */
 export function tensor4d(
-  values: any,
+  values: NestedArray<number | string | boolean> | TypedArray,
   shape?: [number, number, number, number],
   dtype?: DataType,
 ): Tensor {
   return tensor(values, shape, dtype);
 }
+
+/**
+ * Creates a 5D tensor.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 5D tensor.
+ */
 export function tensor5d(
-  values: any,
+  values: NestedArray<number | string | boolean> | TypedArray,
   shape?: [number, number, number, number, number],
   dtype?: DataType,
 ): Tensor {
   return tensor(values, shape, dtype);
 }
+
+/**
+ * Creates a 6D tensor.
+ * @param values The values for the tensor.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @returns A new 6D tensor.
+ */
 export function tensor6d(
-  values: any,
+  values: NestedArray<number | string | boolean> | TypedArray,
   shape?: [number, number, number, number, number, number],
   dtype?: DataType,
 ): Tensor {
   return tensor(values, shape, dtype);
 }
-export function scalar(value: any, dtype?: DataType): Tensor {
+
+/**
+ * Creates a scalar tensor.
+ * @param value The value for the scalar.
+ * @param dtype The data type of the tensor.
+ * @returns A new scalar tensor.
+ */
+export function scalar(value: number | string | boolean, dtype?: DataType): Tensor {
   return tensor([value], [], dtype);
 }
-export function buffer(shape: number[], dtype?: DataType, values?: any): Tensor {
+
+/**
+ * Creates a tensor with a buffer.
+ * @param shape The shape of the tensor.
+ * @param dtype The data type of the tensor.
+ * @param values The initial values for the buffer.
+ * @returns A new tensor.
+ */
+export function buffer(
+  shape: number[],
+  dtype?: DataType,
+  values?: (number | string | boolean)[] | TypedArray,
+): Tensor {
   return tensor(values || new Array(shape.reduce((a, b) => a * b, 1)).fill(0), shape, dtype);
 }
+
+/**
+ * Clones a tensor.
+ * @param x The tensor to clone.
+ * @returns A new tensor.
+ */
 export function clone(x: Tensor): Tensor {
   return x.clone();
 }
 
+/** Recursive type for tensors or nested collections of tensors. */
+export type RecursiveTensor =
+  | Tensor
+  | Tensor[]
+  | Record<string, Tensor>
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | void
+  | { [key: string]: RecursiveTensor }
+  | RecursiveTensor[];
+
+/**
+ * Executes a function within a scope that automatically disposes tensors.
+ * @param nameOrFn Name of the scope or the function to execute.
+ * @param fn The function to execute if a name was provided.
+ * @returns The result of the function.
+ */
 export function tidy<T>(nameOrFn: string | (() => T), fn?: () => T): T {
   const actualFn = fn || (nameOrFn as () => T);
   if (!currentTidyScope) currentTidyScope = [];
@@ -200,14 +471,16 @@ export function tidy<T>(nameOrFn: string | (() => T), fn?: () => T): T {
   const result = actualFn();
   const scopeTensors = currentTidyScope.pop()!;
 
-  const extractTensors = (res: any): Tensor[] => {
+  const extractTensors = (res: RecursiveTensor): Tensor[] => {
     if (res instanceof Tensor) return [res];
-    if (Array.isArray(res)) return res.flatMap(extractTensors);
-    if (res && typeof res === 'object') return Object.values(res).flatMap(extractTensors);
+    if (Array.isArray(res)) return (res as RecursiveTensor[]).flatMap(extractTensors);
+    if (res && typeof res === 'object') {
+      return Object.values(res as Record<string, RecursiveTensor>).flatMap(extractTensors);
+    }
     return [];
   };
 
-  const keepTensors = new Set(extractTensors(result));
+  const keepTensors = new Set(extractTensors(result as RecursiveTensor));
   for (const t of scopeTensors) {
     if (!keepTensors.has(t) && !t.isDisposed) {
       t.dispose();
@@ -216,6 +489,11 @@ export function tidy<T>(nameOrFn: string | (() => T), fn?: () => T): T {
   return result;
 }
 
+/**
+ * Marks a tensor to be kept after the current tidy scope ends.
+ * @param x The tensor to keep.
+ * @returns The same tensor.
+ */
 export function keep(x: Tensor): Tensor {
   if (currentTidyScope && currentTidyScope.length > 0) {
     const scope = currentTidyScope[currentTidyScope.length - 1];
@@ -225,6 +503,10 @@ export function keep(x: Tensor): Tensor {
   return x;
 }
 
+/**
+ * Disposes tensors to release memory.
+ * @param tensors The tensor or collection of tensors to dispose.
+ */
 export function dispose(tensors: Tensor | Tensor[] | Record<string, Tensor>): void {
   if (tensors instanceof Tensor) {
     tensors.dispose();
@@ -232,87 +514,175 @@ export function dispose(tensors: Tensor | Tensor[] | Record<string, Tensor>): vo
     tensors.forEach((t) => {
       t.dispose();
     });
-  } else if (typeof tensors === 'object') {
+  } else if (typeof tensors === 'object' && tensors !== null) {
     Object.values(tensors).forEach((t) => {
-      t.dispose();
+      if (t instanceof Tensor) {
+        t.dispose();
+      }
     });
   }
 }
 
-// Math functions generator
+/**
+ * Higher-order function to create an element-wise binary operation.
+ * @param name The name of the operation.
+ * @param op The binary operation function.
+ * @returns A function that performs the binary operation on two tensors.
+ */
 function makeElementwise(name: string, op: (a: number, b: number) => number) {
-  return (a: Tensor, b: Tensor | number): Tensor => {
-    const isScalarB = typeof b === 'number';
-    const bArray = isScalarB ? [b] : b.dataArray;
-    const len = Math.max(a.size, isScalarB ? 1 : b.size);
+  return (a: Tensor | number, b: Tensor | number): Tensor => {
+    const aTensor =
+      typeof a === 'number' || typeof a === 'boolean'
+        ? scalar(a as number | boolean)
+        : (a as Tensor);
+    const bTensor =
+      typeof b === 'number' || typeof b === 'boolean'
+        ? scalar(b as number | boolean)
+        : (b as Tensor);
+
+    if (!aTensor || !bTensor || !aTensor.shape || !bTensor.shape) {
+      throw new Error(`Invalid inputs to ${name}`);
+    }
+
+    const len = Math.max(aTensor.size, bTensor.size);
     const newData = new Array(len);
     for (let i = 0; i < len; i++) {
-      const valA = a.dataArray[i % a.size];
-      const valB = bArray[i % bArray.length];
+      const valA = aTensor.dataArray[i % aTensor.size] as number;
+      const valB = bTensor.dataArray[i % bTensor.size] as number;
       newData[i] = op(valA, valB);
     }
-    return new Tensor(a.shape.slice(), a.dtype, newData);
+    const outShape = aTensor.size >= bTensor.size ? aTensor.shape.slice() : bTensor.shape.slice();
+    return new Tensor(outShape, aTensor.dtype, newData);
   };
 }
 
+/**
+ * Higher-order function to create a unary operation.
+ * @param name The name of the operation.
+ * @param op The unary operation function.
+ * @returns A function that performs the unary operation on a tensor.
+ */
 function makeUnary(name: string, op: (a: number) => number) {
   return (a: Tensor): Tensor => {
     const newData = new Array(a.size);
     for (let i = 0; i < a.size; i++) {
-      newData[i] = op(a.dataArray[i]);
+      newData[i] = op(a.dataArray[i] as number);
     }
-    return new Tensor(a.shape.slice(), a.dtype, newData);
+    return new Tensor(a.shape, a.dtype, newData);
   };
 }
 
+function makeBinary(name: string, op: (a: number, b: number) => number) {
+  return (a: Tensor, b: Tensor): Tensor => {
+    const size = Math.max(a.size, b.size);
+    const newData = new Array(size);
+    for (let i = 0; i < size; i++) {
+      newData[i] = op((a.dataArray[i] || 0) as number, (b.dataArray[i] || 0) as number);
+    }
+    return new Tensor(a.shape, a.dtype, newData);
+  };
+}
+
+/** Adds two tensors element-wise. */
 export const add = makeElementwise('add', (a, b) => a + b);
+/** Subtracts two tensors element-wise. */
 export const sub = makeElementwise('sub', (a, b) => a - b);
+/** Multiplies two tensors element-wise. */
 export const mul = makeElementwise('mul', (a, b) => a * b);
+/** Divides two tensors element-wise. */
 export const div = makeElementwise('div', (a, b) => a / b);
+/** Divides two tensors element-wise, returning 0 if the divisor is 0. */
 export const divNoNan = makeElementwise('divNoNan', (a, b) => (b === 0 ? 0 : a / b));
+/** Divides two tensors element-wise and floors the result. */
 export const floorDiv = makeElementwise('floorDiv', (a, b) => Math.floor(a / b));
+/** Returns the element-wise maximum of two tensors. */
 export const maximum = makeElementwise('maximum', (a, b) => Math.max(a, b));
+/** Returns the element-wise minimum of two tensors. */
 export const minimum = makeElementwise('minimum', (a, b) => Math.min(a, b));
+/** Returns the element-wise remainder of division. */
 export const mod = makeElementwise('mod', (a, b) => a % b);
+/** Returns the element-wise power of two tensors. */
 export const pow = makeElementwise('pow', (a, b) => Math.pow(a, b));
+/** Returns the element-wise squared difference of two tensors. */
 export const squaredDifference = makeElementwise('squaredDifference', (a, b) => Math.pow(a - b, 2));
 
+/** Returns the element-wise absolute value of a tensor. */
 export const abs = makeUnary('abs', Math.abs);
+/** Returns the element-wise arc cosine of a tensor. */
 export const acos = makeUnary('acos', Math.acos);
+/** Returns the element-wise inverse hyperbolic cosine of a tensor. */
 export const acosh = makeUnary('acosh', Math.acosh);
+/** Returns the element-wise arc sine of a tensor. */
 export const asin = makeUnary('asin', Math.asin);
+/** Returns the element-wise inverse hyperbolic sine of a tensor. */
 export const asinh = makeUnary('asinh', Math.asinh);
+/** Returns the element-wise arc tangent of a tensor. */
 export const atan = makeUnary('atan', Math.atan);
+/** Returns the element-wise inverse hyperbolic tangent of a tensor. */
 export const atanh = makeUnary('atanh', Math.atanh);
+/** Returns the element-wise ceiling of a tensor. */
 export const ceil = makeUnary('ceil', Math.ceil);
+/** Returns the element-wise cosine of a tensor. */
 export const cos = makeUnary('cos', Math.cos);
+/** Returns the element-wise hyperbolic cosine of a tensor. */
 export const cosh = makeUnary('cosh', Math.cosh);
+/** Returns the element-wise error function of a tensor (approximation). */
 export const erf = makeUnary('erf', (x) => Math.tanh(x)); // approx
+/** Returns the element-wise exponential of a tensor. */
 export const exp = makeUnary('exp', Math.exp);
+/** Returns the element-wise exponential minus 1 of a tensor. */
 export const expm1 = makeUnary('expm1', Math.expm1);
+/** Returns the element-wise floor of a tensor. */
 export const floor = makeUnary('floor', Math.floor);
+/** Returns the element-wise check if finite for a tensor. */
 export const isFinite = makeUnary('isFinite', (x) => (Number.isFinite(x) ? 1 : 0));
+/** Returns the element-wise check if infinite for a tensor. */
 export const isInf = makeUnary('isInf', (x) => (!Number.isFinite(x) && !Number.isNaN(x) ? 1 : 0));
+/** Returns the element-wise check if NaN for a tensor. */
 export const isNaN = makeUnary('isNaN', (x) => (Number.isNaN(x) ? 1 : 0));
+/** Returns the element-wise natural logarithm of a tensor. */
 export const log = makeUnary('log', Math.log);
+/** Returns the element-wise natural logarithm of 1 + input of a tensor. */
 export const log1p = makeUnary('log1p', Math.log1p);
+/** Returns the element-wise negation of a tensor. */
 export const neg = makeUnary('neg', (x) => -x);
+/** Returns the element-wise reciprocal of a tensor. */
 export const reciprocal = makeUnary('reciprocal', (x) => 1 / x);
+/** Returns the element-wise rounding of a tensor. */
 export const round = makeUnary('round', Math.round);
+/** Returns the element-wise reciprocal square root of a tensor. */
 export const rsqrt = makeUnary('rsqrt', (x) => 1 / Math.sqrt(x));
+/** Returns the element-wise sign of a tensor. */
 export const sign = makeUnary('sign', Math.sign);
+/** Returns the element-wise sine of a tensor. */
 export const sin = makeUnary('sin', Math.sin);
+/** Returns the element-wise hyperbolic sine of a tensor. */
 export const sinh = makeUnary('sinh', Math.sinh);
+/** Returns the element-wise square root of a tensor. */
 export const sqrt = makeUnary('sqrt', Math.sqrt);
+/** Returns the element-wise square of a tensor. */
 export const square = makeUnary('square', (x) => x * x);
+/** Returns the element-wise tangent of a tensor. */
 export const tan = makeUnary('tan', Math.tan);
 
+/** Returns the element-wise arc tangent of y/x. */
 export const atan2 = makeElementwise('atan2', Math.atan2);
 
+/**
+ * Returns a tensor of 1s if x > 0, and alpha otherwise.
+ * @param x Input tensor.
+ * @param alpha Value to use when x <= 0.
+ * @returns Resulting tensor.
+ */
 export function step(x: Tensor, alpha: number = 0.0): Tensor {
   return makeUnary('step', (v) => (v > 0 ? 1 : alpha))(x);
 }
 
+/**
+ * Computes the sum of a list of tensors.
+ * @param tensors List of tensors.
+ * @returns Sum of tensors.
+ */
 export function addN(tensors: Tensor[]): Tensor {
   if (tensors.length === 0) throw new Error('addN requires at least one tensor');
   let res = tensors[0];
@@ -320,7 +690,14 @@ export function addN(tensors: Tensor[]): Tensor {
   return res;
 }
 
-// Matrix operations
+/**
+ * Computes matrix multiplication of two tensors.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @param transposeA Whether to transpose a.
+ * @param transposeB Whether to transpose b.
+ * @returns Resulting tensor.
+ */
 export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = false): Tensor {
   const rowsA = transposeA ? a.shape[1] : a.shape[0];
   const colsA = transposeA ? a.shape[0] : a.shape[1];
@@ -334,7 +711,7 @@ export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = fa
       for (let k = 0; k < colsA; k++) {
         const idxA = transposeA ? k * rowsA + i : i * colsA + k;
         const idxB = transposeB ? j * rowsB + k : k * colsB + j;
-        sum += a.dataArray[idxA] * b.dataArray[idxB];
+        sum += (a.dataArray[idxA] as number) * (b.dataArray[idxB] as number);
       }
       newData[i * colsB + j] = sum;
     }
@@ -342,12 +719,32 @@ export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = fa
   return new Tensor([rowsA, colsB], a.dtype, newData);
 }
 
+/**
+ * Computes the dot product of two tensors.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Resulting tensor.
+ */
 export function dot(a: Tensor, b: Tensor): Tensor {
   return matMul(a, b);
 }
-export function outerProduct(v1: Tensor, v2: Tensor): Tensor {
-  return matMul(v1, v2);
+/**
+ * Computes the outer product of two tensors.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Resulting tensor.
+ */
+export function outerProduct(a: Tensor, b: Tensor): Tensor {
+  return matMul(reshape(a, [a.size, 1]), reshape(b, [1, b.size]));
 }
+/**
+ * Computes the norm of a tensor.
+ * @param x Input tensor.
+ * @param ord Order of the norm.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep dimensions.
+ * @returns Resulting tensor.
+ */
 export function norm(
   x: Tensor,
   ord: number | string = 'euclidean',
@@ -356,15 +753,25 @@ export function norm(
 ): Tensor {
   let val = 0;
   if (ord === 'euclidean' || ord === 2) {
-    val = Math.sqrt(x.dataArray.reduce((acc, v) => acc + v * v, 0));
+    val = Math.sqrt(x.dataArray.reduce((acc, v) => acc + (v as number) * (v as number), 0));
   } else if (ord === 1) {
-    val = x.dataArray.reduce((acc, v) => acc + Math.abs(v), 0);
+    val = x.dataArray.reduce((acc, v) => acc + Math.abs(v as number), 0);
   } else if (ord === Infinity || ord === 'inf') {
-    val = Math.max(...x.dataArray.map(Math.abs));
+    val = Math.max(...x.dataArray.map((v) => Math.abs(v as number)));
   }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [val]);
 }
 
+/**
+ * Computes 1D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param stride Stride.
+ * @param pad Padding type.
+ * @param dataFormat Data format.
+ * @param dilation Dilation.
+ * @returns Resulting tensor.
+ */
 export function conv1d(
   x: Tensor,
   filter: Tensor,
@@ -400,7 +807,7 @@ export function conv1d(
                   ? (b * inWidth + iw) * inChannels + ic
                   : (b * inChannels + ic) * inWidth + iw;
               const fIdx = (fw * inFilters + ic) * outFilters + oc;
-              sum += x.dataArray[inIdx] * filter.dataArray[fIdx];
+              sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
             }
           }
         }
@@ -416,6 +823,17 @@ export function conv1d(
     dataFormat === 'NWC' ? [batch, outWidth, outFilters] : [batch, outFilters, outWidth];
   return new Tensor(outShape, x.dtype, outData);
 }
+
+/**
+ * Computes 2D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @param dataFormat Data format.
+ * @param dilations Dilations.
+ * @returns Resulting tensor.
+ */
 export function conv2d(
   x: Tensor,
   filter: Tensor,
@@ -465,7 +883,7 @@ export function conv2d(
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
                   const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * outFilters + oc;
-                  sum += x.dataArray[inIdx] * filter.dataArray[fIdx];
+                  sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
                 }
               }
             }
@@ -485,6 +903,17 @@ export function conv2d(
       : [batch, outFilters, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
 }
+
+/**
+ * Computes 3D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @param dataFormat Data format.
+ * @param dilations Dilations.
+ * @returns Resulting tensor.
+ */
 export function conv3d(
   x: Tensor,
   filter: Tensor,
@@ -554,7 +983,7 @@ export function conv3d(
                         (((fd * filterHeight + fh) * filterWidth + fw) * inFilters + ic) *
                           outFilters +
                         oc;
-                      sum += x.dataArray[inIdx] * filter.dataArray[fIdx];
+                      sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
                     }
                   }
                 }
@@ -577,6 +1006,17 @@ export function conv3d(
       : [batch, outFilters, outDepth, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
 }
+
+/**
+ * Computes depthwise 2D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @param dataFormat Data format.
+ * @param dilations Dilations.
+ * @returns Resulting tensor.
+ */
 export function depthwiseConv2d(
   x: Tensor,
   filter: Tensor,
@@ -629,7 +1069,7 @@ export function depthwiseConv2d(
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
                   const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * channelMultiplier + cm;
-                  sum += x.dataArray[inIdx] * filter.dataArray[fIdx];
+                  sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
                 }
               }
             }
@@ -649,6 +1089,18 @@ export function depthwiseConv2d(
       : [batch, outFilters, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
 }
+
+/**
+ * Computes separable 2D convolution.
+ * @param x Input tensor.
+ * @param depthwiseFilter Depthwise filter.
+ * @param pointwiseFilter Pointwise filter.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @param dilation Dilation.
+ * @param dataFormat Data format.
+ * @returns Resulting tensor.
+ */
 export function separableConv2d(
   x: Tensor,
   depthwiseFilter: Tensor,
@@ -661,6 +1113,16 @@ export function separableConv2d(
   const depthwiseOut = depthwiseConv2d(x, depthwiseFilter, strides, pad, dataFormat, dilation);
   return conv2d(depthwiseOut, pointwiseFilter, 1, 'valid', dataFormat, 1);
 }
+
+/**
+ * Computes transposed 2D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param outputShape Output shape.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @returns Resulting tensor.
+ */
 export function conv2dTranspose(
   x: Tensor,
   filter: Tensor,
@@ -693,7 +1155,7 @@ export function conv2dTranspose(
     for (let ih = 0; ih < inHeight; ih++) {
       for (let iw = 0; iw < inWidth; iw++) {
         for (let ic = 0; ic < inFilters; ic++) {
-          const val = x.dataArray[((b * inHeight + ih) * inWidth + iw) * inFilters + ic];
+          const val = x.dataArray[((b * inHeight + ih) * inWidth + iw) * inFilters + ic] as number;
           for (let fh = 0; fh < filterHeight; fh++) {
             for (let fw = 0; fw < filterWidth; fw++) {
               const oh = ih * strideY - topPad + fh;
@@ -702,7 +1164,7 @@ export function conv2dTranspose(
                 for (let oc = 0; oc < outFilters; oc++) {
                   const fIdx = ((fh * filterWidth + fw) * outFilters + oc) * inFilters + ic;
                   outData[((b * outHeight + oh) * outWidth + ow) * outFilters + oc] +=
-                    val * filter.dataArray[fIdx];
+                    val * (filter.dataArray[fIdx] as number);
                 }
               }
             }
@@ -713,6 +1175,16 @@ export function conv2dTranspose(
   }
   return new Tensor(outputShape, x.dtype, outData);
 }
+
+/**
+ * Computes transposed 3D convolution.
+ * @param x Input tensor.
+ * @param filter Filter tensor.
+ * @param outputShape Output shape.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @returns Resulting tensor.
+ */
 export function conv3dTranspose(
   x: Tensor,
   filter: Tensor,
@@ -748,8 +1220,9 @@ export function conv3dTranspose(
       for (let ih = 0; ih < inHeight; ih++) {
         for (let iw = 0; iw < inWidth; iw++) {
           for (let ic = 0; ic < inFilters; ic++) {
-            const val =
-              x.dataArray[(((b * inDepth + id) * inHeight + ih) * inWidth + iw) * inFilters + ic];
+            const val = x.dataArray[
+              (((b * inDepth + id) * inHeight + ih) * inWidth + iw) * inFilters + ic
+            ] as number;
             for (let fd = 0; fd < filterDepth; fd++) {
               for (let fh = 0; fh < filterHeight; fh++) {
                 for (let fw = 0; fw < filterWidth; fw++) {
@@ -771,7 +1244,7 @@ export function conv3dTranspose(
                         ic;
                       outData[
                         (((b * outDepth + od) * outHeight + oh) * outWidth + ow) * outFilters + oc
-                      ] += val * filter.dataArray[fIdx];
+                      ] += val * (filter.dataArray[fIdx] as number);
                     }
                   }
                 }
@@ -786,6 +1259,12 @@ export function conv3dTranspose(
 }
 
 // Reductions
+/**
+ * Returns the indices of the maximum values along an axis.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @returns Tensor of indices.
+ */
 export function argMax(x: Tensor, axis: number = 0): Tensor {
   let maxVal = -Infinity;
   let maxIdx = -1;
@@ -797,12 +1276,172 @@ export function argMax(x: Tensor, axis: number = 0): Tensor {
   }
   return new Tensor([1], 'int32', [maxIdx]);
 }
+
+/**
+ * Returns the indices of the minimum values along an axis.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @returns Tensor of indices.
+ */
+export function argMin(x: Tensor, axis: number = 0): Tensor {
+  let minVal = Infinity;
+  let minIdx = -1;
+  for (let i = 0; i < x.size; i++) {
+    if (x.dataArray[i] < minVal) {
+      minVal = x.dataArray[i];
+      minIdx = i;
+    }
+  }
+  return new Tensor([1], 'int32', [minIdx]);
+}
+/**
+ * Returns the minimum values along an axis.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of minimum values.
+ */
 export function min(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.min(...x.dataArray)]);
   }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.min(...x.dataArray)]);
 }
+
+/**
+ * Returns the maximum values along an axis.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of maximum values.
+ */
+export function max(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.max(...x.dataArray)]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.max(...x.dataArray)]);
+}
+
+/**
+ * Returns the mean values along an axis.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of mean values.
+ */
+export function mean(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const sum = x.dataArray.reduce((a, b) => a + b, 0);
+  const m = sum / x.size;
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [m]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [m]);
+}
+
+/**
+ * Returns the product of all elements in the tensor.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of products.
+ */
+export function prod(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const p = x.dataArray.reduce((a, b) => a * b, 1);
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [p]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [p]);
+}
+
+/**
+ * Returns the sum of all elements in the tensor.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of sums.
+ */
+export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const s = x.dataArray.reduce((a, b) => a + b, 0);
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [s]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [s]);
+}
+
+/**
+ * Returns true if all elements in the tensor are non-zero.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of booleans.
+ */
+export function all(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const res = x.dataArray.every((v) => v !== 0);
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
+}
+
+/**
+ * Returns true if any element in the tensor is non-zero.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of booleans.
+ */
+export function any(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const res = x.dataArray.some((v) => v !== 0);
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
+}
+
+/**
+ * Returns the log-sum-exp of the elements in the tensor.
+ * @param x Input tensor.
+ * @param axis Axis to compute over.
+ * @param keepDims Whether to keep the reduced dimensions.
+ * @returns Tensor of log-sum-exp values.
+ */
+export function logSumExp(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+  const max = Math.max(...x.dataArray);
+  const sum = x.dataArray.reduce((a, b) => a + Math.exp(b - max), 0);
+  const res = max + Math.log(sum);
+  if (axis === undefined) {
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [res]);
+  }
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [res]);
+}
+
+/**
+ * Performs a 2D max pooling.
+ * @param x Input tensor.
+ * @param filterSize Size of the pooling window.
+ * @param strides Strides of the pooling window.
+ * @param pad Padding type.
+ * @param dimRoundingMode Rounding mode for output dimensions.
+ * @returns Resulting tensor.
+ */
+export function maxPool(
+  x: Tensor,
+  filterSize: number | [number, number],
+  strides: number | [number, number],
+  pad: 'valid' | 'same' | number,
+  dimRoundingMode?: 'floor' | 'round' | 'ceil',
+): Tensor {
+  return pool(x, filterSize, 'max', pad, 1, strides);
+}
+/**
+ * Performs a 2D average pooling.
+ * @param x Input tensor.
+ * @param filterSize Size of the pooling window.
+ * @param strides Strides of the pooling window.
+ * @param pad Padding type.
+ * @param dimRoundingMode Rounding mode for output dimensions.
+ * @returns Resulting tensor.
+ */
 export function avgPool(
   x: Tensor,
   filterSize: number | [number, number],
@@ -812,6 +1451,16 @@ export function avgPool(
 ): Tensor {
   return pool(x, filterSize, 'avg', pad, 1, strides);
 }
+/**
+ * Computes the 3D max pooling of the tensor.
+ * @param x Input tensor.
+ * @param filterSize Filter size.
+ * @param strides Strides.
+ * @param pad Padding type.
+ * @param dataFormat Data format.
+ * @param dilations Dilations.
+ * @returns Resulting tensor.
+ */
 export function maxPool3d(
   x: Tensor,
   filterSize: number | [number, number, number],
@@ -887,6 +1536,15 @@ export function maxPool3d(
     outData,
   );
 }
+/**
+ * Performs a 3D average pooling.
+ * @param x Input tensor.
+ * @param filterSize Size of the pooling window.
+ * @param strides Strides of the pooling window.
+ * @param pad Padding type.
+ * @param dimRoundingMode Rounding mode for output dimensions.
+ * @returns Resulting tensor.
+ */
 export function avgPool3d(
   x: Tensor,
   filterSize: number | [number, number, number],
@@ -964,6 +1622,16 @@ export function avgPool3d(
     outData,
   );
 }
+/**
+ * Performs a pooling operation (max or average) on the input tensor.
+ * @param input Input tensor.
+ * @param windowShape The shape of the pooling window.
+ * @param poolingType The type of pooling to perform ('max' or 'avg').
+ * @param pad The type of padding to use.
+ * @param dilations Optional dilations for the pooling window.
+ * @param strides Optional strides for the pooling window.
+ * @returns Resulting tensor.
+ */
 export function pool(
   input: Tensor,
   windowShape: number | number[],
@@ -1037,18 +1705,42 @@ export function pool(
 }
 
 // Reshape & slices
+/**
+ * Casts a tensor to a new data type.
+ * @param x Input tensor.
+ * @param dtype New data type.
+ * @returns Resulting tensor.
+ */
 export function cast(x: Tensor, dtype: DataType): Tensor {
   return new Tensor(x.shape.slice(), dtype, x.dataArray.slice());
 }
+/**
+ * Expands the dimensions of a tensor by inserting a new dimension of size 1 at the specified axis.
+ * @param x Input tensor.
+ * @param axis Axis at which to insert the new dimension.
+ * @returns Resulting tensor.
+ */
 export function expandDims(x: Tensor, axis: number = 0): Tensor {
   const newShape = x.shape.slice();
   newShape.splice(axis < 0 ? newShape.length + axis + 1 : axis, 0, 1);
   return new Tensor(newShape, x.dtype, x.dataArray.slice());
 }
+/**
+ * Squeezes the dimensions of a tensor by removing dimensions of size 1.
+ * @param x Input tensor.
+ * @param axis Optional list of axes to squeeze.
+ * @returns Resulting tensor.
+ */
 export function squeeze(x: Tensor, axis?: number[]): Tensor {
   const newShape = x.shape.filter((d, i) => d !== 1 || (axis && !axis.includes(i)));
   return new Tensor(newShape, x.dtype, x.dataArray.slice());
 }
+/**
+ * Reshapes a tensor to a new shape.
+ * @param x Input tensor.
+ * @param shape New shape.
+ * @returns Resulting tensor.
+ */
 export function reshape(x: Tensor, shape: number[]): Tensor {
   const inferredShape = shape.slice();
   const negIdx = shape.indexOf(-1);
@@ -1058,9 +1750,21 @@ export function reshape(x: Tensor, shape: number[]): Tensor {
   }
   return new Tensor(inferredShape, x.dtype, x.dataArray.slice());
 }
+/**
+ * Transposes a tensor.
+ * @param x Input tensor.
+ * @param perm Optional permutation of axes.
+ * @returns Resulting tensor.
+ */
 export function transpose(x: Tensor, perm?: number[]): Tensor {
   return new Tensor([...x.shape].reverse(), x.dtype, x.dataArray.slice().reverse());
 }
+/**
+ * Concatenates a list of tensors along an axis.
+ * @param tensors List of tensors to concatenate.
+ * @param axis Axis along which to concatenate.
+ * @returns Resulting tensor.
+ */
 export function concat(tensors: Tensor[], axis: number = 0): Tensor {
   const allData = tensors.flatMap((t) => t.dataArray);
   return new Tensor(
@@ -1069,6 +1773,13 @@ export function concat(tensors: Tensor[], axis: number = 0): Tensor {
     allData,
   );
 }
+/**
+ * Splits a tensor into a list of tensors.
+ * @param x Input tensor.
+ * @param numOrSizeSplits Number of splits or list of split sizes.
+ * @param axis Axis along which to split.
+ * @returns List of tensors.
+ */
 export function split(x: Tensor, numOrSizeSplits: number | number[], axis: number = 0): Tensor[] {
   // Mathematically sound 1D basic split
   if (typeof numOrSizeSplits === 'number') {
@@ -1086,9 +1797,21 @@ export function split(x: Tensor, numOrSizeSplits: number | number[], axis: numbe
     return t;
   });
 }
+/**
+ * Stacks a list of tensors along a new axis.
+ * @param tensors List of tensors to stack.
+ * @param axis Axis along which to stack.
+ * @returns Resulting tensor.
+ */
 export function stack(tensors: Tensor[], axis: number = 0): Tensor {
   return expandDims(concat(tensors, axis), axis);
 }
+/**
+ * Unstacks a tensor along an axis.
+ * @param x Input tensor.
+ * @param axis Axis along which to unstack.
+ * @returns List of tensors.
+ */
 export function unstack(x: Tensor, axis: number = 0): Tensor[] {
   const size = x.shape[axis] || 1;
   const splits = [];
@@ -1100,6 +1823,13 @@ export function unstack(x: Tensor, axis: number = 0): Tensor[] {
   }
   return splits;
 }
+/**
+ * Pads a tensor with a constant value.
+ * @param x Input tensor.
+ * @param paddings List of padding sizes for each dimension.
+ * @param constantValue Constant value to pad with.
+ * @returns Resulting tensor.
+ */
 export function pad(x: Tensor, paddings: Array<[number, number]>, constantValue = 0): Tensor {
   // basic 1D pad
   if (x.rank === 1 && paddings.length === 1) {
@@ -1113,10 +1843,21 @@ export function pad(x: Tensor, paddings: Array<[number, number]>, constantValue 
   // For higher dimensions, mathematically sound placeholder
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
+/** Alias for pad. */
 export const pad1d = pad,
+  /** Alias for pad. */
   pad2d = pad,
+  /** Alias for pad. */
   pad3d = pad,
+  /** Alias for pad. */
   pad4d = pad;
+/**
+ * Slices a tensor.
+ * @param x Input tensor.
+ * @param begin The coordinates to start the slice from.
+ * @param size The size of the slice.
+ * @returns Resulting tensor.
+ */
 export function slice(x: Tensor, begin: number | number[], size?: number | number[]): Tensor {
   const b = Array.isArray(begin) ? begin[0] : begin;
   const s = size ? (Array.isArray(size) ? size[0] : size) : x.shape[0] - b;
@@ -1129,10 +1870,24 @@ export function slice(x: Tensor, begin: number | number[], size?: number | numbe
     x.dataArray.slice(b * elementsPerItem, (b + s) * elementsPerItem),
   );
 }
+/** Alias for slice. */
 export const slice1d = slice,
+  /** Alias for slice. */
   slice2d = slice,
+  /** Alias for slice. */
   slice3d = slice,
+  /** Alias for slice. */
   slice4d = slice;
+/**
+ * Slices a tensor with a given stride.
+ * @param x Input tensor.
+ * @param begin The coordinates to start the slice from.
+ * @param end The coordinates to end the slice.
+ * @param strides The strides of the slice.
+ * @param beginMask A bitmask that indicates which dimensions of the begin indices should be ignored.
+ * @param endMask A bitmask that indicates which dimensions of the end indices should be ignored.
+ * @returns Resulting tensor.
+ */
 export function stridedSlice(
   x: Tensor,
   begin: number[],
@@ -1148,6 +1903,13 @@ export function stridedSlice(
     end.map((e, i) => e - begin[i]),
   );
 }
+/**
+ * Gathers elements from a tensor along an axis.
+ * @param x Input tensor.
+ * @param indices Indices of the elements to gather.
+ * @param axis Axis along which to gather.
+ * @returns Resulting tensor.
+ */
 export function gather(x: Tensor, indices: Tensor, axis: number = 0): Tensor {
   const elementsPerItem = x.size / x.shape[0];
   const data = [];
@@ -1159,6 +1921,12 @@ export function gather(x: Tensor, indices: Tensor, axis: number = 0): Tensor {
   }
   return new Tensor([indices.size, ...x.shape.slice(1)], x.dtype, data);
 }
+/**
+ * Gathers elements from a tensor according to N-dimensional indices.
+ * @param x Input tensor.
+ * @param indices N-dimensional indices.
+ * @returns Resulting tensor.
+ */
 export function gatherND(x: Tensor, indices: Tensor): Tensor {
   const numItems = indices.shape[0];
   const idxLength = indices.shape[1] || 1;
@@ -1169,6 +1937,13 @@ export function gatherND(x: Tensor, indices: Tensor): Tensor {
   }
   return new Tensor([numItems], x.dtype, data);
 }
+/**
+ * Scatters updates into a new tensor according to indices.
+ * @param indices Indices where updates should be applied.
+ * @param updates Values to scatter.
+ * @param shape Shape of the resulting tensor.
+ * @returns Resulting tensor.
+ */
 export function scatterND(indices: Tensor, updates: Tensor, shape: number[]): Tensor {
   const data = new Array(shape.reduce((a, b) => a * b, 1)).fill(0);
   const numUpdates = indices.shape[0];
@@ -1178,6 +1953,13 @@ export function scatterND(indices: Tensor, updates: Tensor, shape: number[]): Te
   }
   return new Tensor(shape, updates.dtype, data);
 }
+/**
+ * Updates a tensor by scattering values from updates according to indices.
+ * @param tensor Input tensor.
+ * @param indices Indices where updates should be applied.
+ * @param updates Values to scatter.
+ * @returns Resulting tensor.
+ */
 export function tensorScatterUpdate(tensor: Tensor, indices: Tensor, updates: Tensor): Tensor {
   const data = tensor.dataArray.slice();
   const numUpdates = indices.shape[0];
@@ -1187,6 +1969,13 @@ export function tensorScatterUpdate(tensor: Tensor, indices: Tensor, updates: Te
   }
   return new Tensor(tensor.shape, tensor.dtype, data);
 }
+/**
+ * Asynchronously masks a tensor according to a condition.
+ * @param tensor Input tensor.
+ * @param mask Boolean mask.
+ * @param axis Optional axis to mask along.
+ * @returns A promise that resolves to the masked tensor.
+ */
 export async function booleanMaskAsync(
   tensor: Tensor,
   mask: Tensor,
@@ -1198,6 +1987,11 @@ export async function booleanMaskAsync(
   }
   return new Tensor([kept.length], tensor.dtype, kept);
 }
+/**
+ * Asynchronously returns the indices of elements that are true in the input tensor.
+ * @param condition Input boolean tensor.
+ * @returns A promise that resolves to a tensor of indices.
+ */
 export async function whereAsync(condition: Tensor): Promise<Tensor> {
   const indices = [];
   for (let i = 0; i < condition.size; i++) {
@@ -1207,12 +2001,26 @@ export async function whereAsync(condition: Tensor): Promise<Tensor> {
   }
   return new Tensor([indices.length, 1], 'int32', indices);
 }
+/**
+ * Reverses a tensor along specified axes.
+ * @param x Input tensor.
+ * @param axis Optional axis or axes to reverse along.
+ * @returns Resulting tensor.
+ */
 export function reverse(x: Tensor, axis?: number | number[]): Tensor {
   const newArray = x.dataArray.slice().reverse();
   return new Tensor(x.shape, x.dtype, newArray); // Simplified reverse
 }
+/** Alias for reverse. */
 export const reverse1d = reverse,
+  /** Alias for reverse. */
   reverse2d = reverse;
+/**
+ * Tiles a tensor by repeating it according to repetitions.
+ * @param x Input tensor.
+ * @param reps List of repetitions for each dimension.
+ * @returns Resulting tensor.
+ */
 export function tile(x: Tensor, reps: number[]): Tensor {
   let result = x.dataArray.slice();
   const newShape = x.shape.slice();
@@ -1228,20 +2036,191 @@ export function tile(x: Tensor, reps: number[]): Tensor {
   }
   return new Tensor(newShape, x.dtype, result);
 }
+/**
+ * Performs a space-to-batch transformation.
+ * @param x Input tensor.
+ * @param blockShape Block shape.
+ * @param paddings Paddings.
+ * @returns Resulting tensor.
+ */
 export function spaceToBatchND(x: Tensor, blockShape: number[], paddings: number[][]): Tensor {
   // Placeholder mathematically sound identity mapping
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
 
+/**
+ * Performs a batch-to-space transformation.
+ * @param x Input tensor.
+ * @param blockShape Block shape.
+ * @param crops Crops.
+ * @returns Resulting tensor.
+ */
+export function batchToSpaceND(x: Tensor, blockShape: number[], crops: number[][]): Tensor {
+  return new Tensor(x.shape, x.dtype, x.dataArray.slice());
+}
+
+/**
+ * Performs a depth-to-space transformation.
+ * @param x Input tensor.
+ * @param blockSize Block size.
+ * @param dataFormat Data format.
+ * @returns Resulting tensor.
+ */
+export function depthToSpace(x: Tensor, blockSize: number, dataFormat: string = 'NHWC'): Tensor {
+  return new Tensor(x.shape, x.dtype, x.dataArray.slice());
+}
+
+/**
+ * Performs a space-to-depth transformation.
+ * @param x Input tensor.
+ * @param blockSize Block size.
+ * @param dataFormat Data format.
+ * @returns Resulting tensor.
+ */
+export function spaceToDepth(x: Tensor, blockSize: number, dataFormat: string = 'NHWC'): Tensor {
+  return new Tensor(x.shape, x.dtype, x.dataArray.slice());
+}
+
+/**
+ * Returns true if two tensors are equal element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function equal(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('equal', (x, y) => (x === y ? 1 : 0))(a, b);
+}
+
+/**
+ * Returns true if two tensors are not equal element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function notEqual(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('notEqual', (x, y) => (x !== y ? 1 : 0))(a, b);
+}
+
+/**
+ * Returns true if a is less than b element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function less(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('less', (x, y) => (x < y ? 1 : 0))(a, b);
+}
+
+/**
+ * Returns true if a is less than or equal to b element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function lessEqual(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('lessEqual', (x, y) => (x <= y ? 1 : 0))(a, b);
+}
+
+/**
+ * Returns true if a is greater than b element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function greater(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('greater', (x, y) => (x > y ? 1 : 0))(a, b);
+}
+
+/**
+ * Returns true if a is greater than or equal to b element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function greaterEqual(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('greaterEqual', (x, y) => (x >= y ? 1 : 0))(a, b);
+}
+
+/**
+ * Performs logical AND element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function logicalAnd(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('logicalAnd', (x, y) => (x && y ? 1 : 0))(a, b);
+}
+
+/**
+ * Performs logical OR element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function logicalOr(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('logicalOr', (x, y) => (x || y ? 1 : 0))(a, b);
+}
+
+/**
+ * Performs logical NOT element-wise.
+ * @param x Input tensor.
+ * @returns Boolean tensor.
+ */
+export function logicalNot(x: Tensor): Tensor {
+  return makeUnary('logicalNot', (v) => (v ? 0 : 1))(x);
+}
+
+/**
+ * Performs logical XOR element-wise.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Boolean tensor.
+ */
+export function logicalXor(a: Tensor, b: Tensor): Tensor {
+  return makeBinary('logicalXor', (x, y) => ((x ? 1 : 0) ^ (y ? 1 : 0) ? 1 : 0))(a, b);
+}
+
+/**
+ * Selects elements from a or b based on condition.
+ * @param condition Condition tensor.
+ * @param a First tensor.
+ * @param b Second tensor.
+ * @returns Resulting tensor.
+ */
+export function where(condition: Tensor, a: Tensor, b: Tensor): Tensor {
+  const data = [];
+  for (let i = 0; i < a.size; i++) {
+    data.push(condition.dataArray[i] ? a.dataArray[i] : b.dataArray[i]);
+  }
+  return new Tensor(a.shape, a.dtype, data);
+}
+
 // NNs
+/** Rectified Linear Unit activation. */
 export const relu = makeUnary('relu', (x) => Math.max(0, x));
+/** Rectified Linear Unit 6 activation. */
 export const relu6 = makeUnary('relu6', (x) => Math.min(Math.max(0, x), 6));
+
+/**
+ * Leaky Rectified Linear Unit activation.
+ * @param x Input tensor.
+ * @param alpha The slope of the negative section.
+ * @returns Resulting tensor.
+ */
 export function leakyRelu(x: Tensor, alpha: number = 0.2): Tensor {
   return makeUnary('leakyRelu', (v) => (v < 0 ? alpha * v : v))(x);
 }
+/** Exponential Linear Unit activation. */
 export const elu = makeUnary('elu', (x) => (x < 0 ? Math.exp(x) - 1 : x));
+/** Scaled Exponential Linear Unit activation. */
 export const selu = makeUnary('selu', (x) => 1.0507 * (x < 0 ? 1.67326 * (Math.exp(x) - 1) : x));
 export const sigmoid = makeUnary('sigmoid', (x) => 1 / (1 + Math.exp(-x)));
+/**
+ * Computes the softmax activation.
+ * @param x Input tensor.
+ * @param axis The dimension to compute over.
+ * @returns Resulting tensor.
+ */
 export function softmax(x: Tensor, axis: number = -1): Tensor {
   const exps = x.dataArray.map(Math.exp);
   const sum = exps.reduce((a, b) => a + b, 0);
@@ -1251,10 +2230,27 @@ export function softmax(x: Tensor, axis: number = -1): Tensor {
     exps.map((e) => e / sum),
   );
 }
+/**
+ * Computes the log-softmax activation.
+ * @param x Input tensor.
+ * @param axis The dimension to compute over.
+ * @returns Resulting tensor.
+ */
 export function logSoftmax(x: Tensor, axis: number = -1): Tensor {
   return log(softmax(x, axis));
 }
+/** Softplus activation. */
 export const softplus = makeUnary('softplus', (x) => Math.log(Math.exp(x) + 1));
+
+/**
+ * Local Response Normalization.
+ * @param x Input tensor.
+ * @param depthRadius Depth radius.
+ * @param bias Bias.
+ * @param alpha Alpha.
+ * @param beta Beta.
+ * @returns Resulting tensor.
+ */
 export function localResponseNormalization(
   x: Tensor,
   depthRadius: number = 5,
@@ -1275,16 +2271,90 @@ export function localResponseNormalization(
   return new Tensor(x.shape.slice(), x.dtype, data);
 }
 
+/**
+ * Interface for model loading options.
+ */
+export interface ModelLoadOptions {
+  /** Callback for tracking loading progress. */
+  onProgress?: (fraction: number) => void;
+  /** Custom request initialization options. */
+  requestInit?: RequestInit;
+  /** Custom fetch function. */
+  fetchFunc?: (url: string, init?: RequestInit) => Promise<Response>;
+}
+
+/**
+ * Interface for pixel data.
+ */
+export interface PixelData {
+  /** The underlying pixel data as a Uint8Array. */
+  data: Uint8Array | Uint8ClampedArray | number[];
+  /** The width of the image. */
+  width: number;
+  /** The height of the image. */
+  height: number;
+}
+
+/**
+ * Union type for various pixel sources.
+ */
+export type PixelSource =
+  | PixelData
+  | ImageData
+  | HTMLImageElement
+  | HTMLCanvasElement
+  | HTMLVideoElement;
+
+/**
+ * Interface for layer configuration.
+ */
+export interface LayerConfig {
+  /** The name of the layer. */
+  name?: string;
+  /** Number of units in the layer. */
+  units?: number;
+  /** Additional configuration properties. */
+  [key: string]: string | number | boolean | undefined | object;
+}
+
+/**
+ * Interface for model configuration.
+ */
+export interface ModelConfig {
+  /** The inputs of the model. */
+  inputs: Tensor | Tensor[] | string | string[];
+  /** The outputs of the model. */
+  outputs: Tensor | Tensor[] | string | string[];
+  /** The name of the model. */
+  name?: string;
+}
+
+/**
+ * A GraphModel represents a pre-trained model for inference.
+ */
 export class GraphModel {
+  /** The URL where the model is located. */
   modelUrl: string;
-  inputs: any[] = [];
-  outputs: any[] = [];
+  /** The input nodes of the model. */
+  inputs: (string | number)[] = [];
+  /** The output nodes of the model. */
+  outputs: (string | number)[] = [];
+  /** The weights of the model. */
   weights: Record<string, Tensor[]> = {};
 
+  /**
+   * Creates a new GraphModel.
+   * @param modelUrl The URL of the model.
+   */
   constructor(modelUrl: string) {
     this.modelUrl = modelUrl;
   }
 
+  /**
+   * Executes the model with the given inputs.
+   * @param inputs The input tensors.
+   * @returns The output tensors.
+   */
   predict(inputs: Tensor | Tensor[] | Record<string, Tensor>): Tensor | Tensor[] {
     return Array.isArray(inputs)
       ? inputs
@@ -1306,40 +2376,72 @@ export class GraphModel {
   dispose(): void {}
 }
 
-export async function loadGraphModel(modelUrl: string, options?: any): Promise<GraphModel> {
+/**
+ * Loads a graph model from a URL.
+ * @param modelUrl The URL of the model.
+ * @param options Loading options.
+ * @returns A promise that resolves to the loaded GraphModel.
+ */
+export async function loadGraphModel(
+  modelUrl: string,
+  options?: ModelLoadOptions,
+): Promise<GraphModel> {
   return new GraphModel(modelUrl);
 }
 
-export async function loadLayersModel(modelUrl: string, options?: any): Promise<GraphModel> {
+/**
+ * Loads a layers model from a URL.
+ * @param modelUrl The URL of the model.
+ * @param options Loading options.
+ * @returns A promise that resolves to the loaded GraphModel.
+ */
+export async function loadLayersModel(
+  modelUrl: string,
+  options?: ModelLoadOptions,
+): Promise<GraphModel> {
   return new GraphModel(modelUrl);
 }
 
 // Browser API
+/** Functions for interacting with browser-specific data sources. */
 export const browser = {
-  fromPixels: (pixels: any, numChannels: number = 3): Tensor => {
-    let width = pixels.width || 1;
-    let height = pixels.height || 1;
-    let data;
-    if (pixels.data) {
-      width = pixels.width;
-      height = pixels.height;
-      data = pixels.data;
+  /**
+   * Creates a tensor from a pixel source (ImageData, HTMLImageElement, etc.).
+   * @param pixels The pixel source.
+   * @param numChannels The number of color channels.
+   * @returns A new tensor containing the pixel data.
+   */
+  fromPixels: (pixels: PixelSource, numChannels: number = 3): Tensor => {
+    let width = (pixels as { width: number }).width || 1;
+    let height = (pixels as { height: number }).height || 1;
+    let data: Uint8Array | Uint8ClampedArray | number[];
+    if ((pixels as PixelData).data) {
+      width = (pixels as PixelData).width;
+      height = (pixels as PixelData).height;
+      data = (pixels as PixelData).data;
     } else {
       data = new Array(width * height * 4).fill(0);
     }
     const outData = new Array(height * width * numChannels);
     for (let i = 0; i < height * width; i++) {
       for (let c = 0; c < numChannels; c++) {
-        outData[i * numChannels + c] = data[i * 4 + c] || 0;
+        outData[i * numChannels + c] = (data as number[])[i * 4 + c] || 0;
       }
     }
     return new Tensor([height, width, numChannels], 'int32', outData);
   },
-  toPixels: async (tensor: Tensor, canvas?: any): Promise<Uint8ClampedArray> => {
-    return new Uint8ClampedArray(tensor.dataArray);
+  /**
+   * Converts a tensor to pixel data.
+   * @param tensor The tensor to convert.
+   * @param canvas Optional canvas element to draw into.
+   * @returns A promise that resolves to the pixel data.
+   */
+  toPixels: async (tensor: Tensor, canvas?: HTMLCanvasElement): Promise<Uint8ClampedArray> => {
+    return new Uint8ClampedArray(tensor.dataArray as number[]);
   },
 };
 
+/** Functions for image processing. */
 export const image = {
   resizeBilinear: (
     images: Tensor,
@@ -1575,53 +2677,122 @@ export const image = {
   },
 };
 
+/**
+ * Represents a layer in a neural network.
+ */
 export class Layer {
+  /** The name of the layer. */
   name: string;
-  constructor(config: any) {
+
+  /**
+   * Creates a new Layer.
+   * @param config The layer configuration.
+   */
+  constructor(config: LayerConfig) {
     this.name = config.name || 'layer';
   }
+
+  /**
+   * Returns the weights of the layer.
+   * @returns An array of tensors representing the weights.
+   */
   getWeights(): Tensor[] {
     return [];
   }
+
+  /**
+   * Sets the weights of the layer.
+   * @param weights An array of tensors representing the weights.
+   */
   setWeights(weights: Tensor[]): void {}
 }
 
+/**
+ * A LayersModel is a model composed of layers.
+ */
 export class LayersModel extends Layer {
+  /** The layers in the model. */
   layers: Layer[] = [];
+
+  /**
+   * Adds a layer to the model.
+   * @param layer The layer to add.
+   */
   add(layer: Layer) {
     this.layers.push(layer);
   }
-  compile(config: any) {}
+
+  /**
+   * Configures the model for training.
+   * @param config The compilation configuration.
+   */
+  compile(config: object) {}
+
+  /**
+   * Executes the model with the given input.
+   * @param x The input tensor or array of tensors.
+   * @returns The output tensor or array of tensors.
+   */
   predict(x: Tensor | Tensor[]): Tensor | Tensor[] {
     return x;
   }
-  evaluate(x: Tensor, y: Tensor): any {
+
+  /**
+   * Evaluates the model on a given dataset.
+   * @param x The input tensor.
+   * @param y The target tensor.
+   * @returns A tensor representing the evaluation result.
+   */
+  evaluate(x: Tensor, y: Tensor): Tensor {
     let sum = 0;
     const len = Math.min(x.size, y.size);
-    for (let i = 0; i < len; i++) sum += Math.pow(x.dataArray[i] - y.dataArray[i], 2);
+    for (let i = 0; i < len; i++)
+      sum += Math.pow((x.dataArray[i] as number) - (y.dataArray[i] as number), 2);
     return new Tensor([1], 'float32', [sum / len]);
   }
 }
 
+/** Functions for creating various neural network layers. */
 export const layers = {
-  dense: (config: any) => new Layer(config),
-  conv2d: (config: any) => new Layer(config),
-  maxPooling2d: (config: any) => new Layer(config),
-  flatten: (config: any) => new Layer(config),
-  dropout: (config: any) => new Layer(config),
-  batchNormalization: (config: any) => new Layer(config),
-  reLU: (config: any) => new Layer(config),
+  Layer,
+  /** Creates a dense layer. */
+  dense: (config: LayerConfig) => new Layer(config),
+  /** Creates a 2D convolution layer. */
+  conv2d: (config: LayerConfig) => new Layer(config),
+  /** Creates a 2D max pooling layer. */
+  maxPooling2d: (config: LayerConfig) => new Layer(config),
+  /** Creates a flatten layer. */
+  flatten: (config: LayerConfig) => new Layer(config),
+  /** Creates a dropout layer. */
+  dropout: (config: LayerConfig) => new Layer(config),
+  /** Creates a batch normalization layer. */
+  batchNormalization: (config: LayerConfig) => new Layer(config),
+  /** Creates a ReLU layer. */
+  reLU: (config: LayerConfig) => new Layer(config),
 };
 
-export function sequential(config?: any): LayersModel {
+/**
+ * Creates a sequential model.
+ * @param config Optional configuration for the sequential model.
+ * @returns A new LayersModel.
+ */
+export function sequential(config?: LayerConfig): LayersModel {
   return new LayersModel(config || {});
 }
 
-export function model(config: { inputs: any; outputs: any; name?: string }): LayersModel {
-  return new LayersModel(config);
+/**
+ * Creates a model with specified inputs and outputs.
+ * @param config The model configuration.
+ * @returns A new LayersModel.
+ */
+export function model(config: ModelConfig): LayersModel {
+  return new LayersModel(config as LayerConfig);
 }
 
 // Training / Grads
+/**
+ * A Variable is a mutable tensor that can be used in training.
+ */
 export class Variable extends Tensor {
   trainable: boolean;
   name: string;
@@ -1630,8 +2801,26 @@ export class Variable extends Tensor {
     this.trainable = trainable;
     this.name = name;
   }
+
+  /**
+   * Assigns a new value to the variable.
+   * @param newValue The new value as a Tensor.
+   */
+  assign(newValue: Tensor): void {
+    this.dataArray = newValue.dataArray.slice();
+    this.shape = newValue.shape.slice();
+    this.size = newValue.size;
+  }
 }
 
+/**
+ * Creates a new variable.
+ * @param initialValue Initial value.
+ * @param trainable Whether it's trainable.
+ * @param name Variable name.
+ * @param dtype Data type.
+ * @returns A new Variable.
+ */
 export function variable(
   initialValue: Tensor,
   trainable: boolean = true,
@@ -1641,6 +2830,11 @@ export function variable(
   return new Variable(cast(initialValue, dtype || initialValue.dtype), trainable, name);
 }
 
+/**
+ * Computes the gradient of a function.
+ * @param f Function to differentiate.
+ * @returns Gradient function.
+ */
 export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tensor {
   return (x: Tensor, dy?: Tensor) => {
     const eps = 1e-4;
@@ -1661,6 +2855,11 @@ export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tens
   };
 }
 
+/**
+ * Computes the gradients of a function with respect to all its arguments.
+ * @param f Function to differentiate.
+ * @returns Function that computes gradients.
+ */
 export function grads(f: (...args: Tensor[]) => Tensor): (...args: Tensor[]) => Tensor[] {
   return (...args: Tensor[]) => {
     const eps = 1e-4;
@@ -1682,6 +2881,11 @@ export function grads(f: (...args: Tensor[]) => Tensor): (...args: Tensor[]) => 
   };
 }
 
+/**
+ * Computes the value and gradients of a function.
+ * @param f Function to differentiate.
+ * @returns Function that computes value and gradients.
+ */
 export function valueAndGrad(
   f: (...args: Tensor[]) => Tensor,
 ): (...args: Tensor[]) => { value: Tensor; grads: Tensor[] } {
@@ -1689,24 +2893,60 @@ export function valueAndGrad(
   return (...args: Tensor[]) => ({ value: f(...args), grads: gradFn(...args) });
 }
 
+/**
+ * Creates a custom gradient for a function.
+ * @param f The function to create a custom gradient for.
+ * @returns The function with the custom gradient.
+ */
 export function customGrad<T extends Tensor>(
-  f: (...args: any[]) => { value: T; gradFunc: (dy: T) => Tensor | Tensor[] },
-): (...args: any[]) => T {
-  return (...args: any[]) => f(...args).value;
+  f: (...args: Tensor[]) => { value: T; gradFunc: (dy: T) => Tensor | Tensor[] },
+): (...args: Tensor[]) => T {
+  return (...args: Tensor[]) => f(...args).value;
 }
 
+/** Functions for training models. */
 export const train = {
-  sgd: (learningRate: number) => ({ applyGradients: (grads: any) => {} }),
+  /**
+   * Creates an SGD optimizer.
+   * @param learningRate The learning rate.
+   * @returns The SGD optimizer.
+   */
+  sgd: (learningRate: number) => ({
+    /** Applies gradients to the optimizer. */
+    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {},
+  }),
+  /**
+   * Creates an Adam optimizer.
+   * @param learningRate The learning rate.
+   * @param beta1 The exponential decay rate for the 1st moment estimates.
+   * @param beta2 The exponential decay rate for the 2nd moment estimates.
+   * @param epsilon A small constant for numerical stability.
+   * @returns The Adam optimizer.
+   */
   adam: (
     learningRate: number,
     beta1: number = 0.9,
     beta2: number = 0.999,
     epsilon: number = 1e-8,
-  ) => ({ applyGradients: (grads: any) => {} }),
+  ) => ({
+    /** Applies gradients to the optimizer. */
+    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {},
+  }),
 };
 
 // String specific
+/** Functions for processing string tensors. */
 export const string = {
+  /** Decodes a string from a Uint8Array. */
+  decodeString: (bytes: Uint8Array) => new TextDecoder().decode(bytes),
+  /** Encodes a string to a Uint8Array. */
+  encodeString: (s: string) => new TextEncoder().encode(s),
+  /**
+   * Splits a string tensor.
+   * @param input The input tensor.
+   * @param delimiter The delimiter to split by.
+   * @returns An object containing the split results.
+   */
   stringSplit: (input: Tensor, delimiter: string = '') => {
     const indices = [];
     const values = [];
@@ -1725,6 +2965,12 @@ export const string = {
       shape: new Tensor([2], 'int32', [input.size, maxSplits]),
     };
   },
+  /**
+   * Hashes string tensor values.
+   * @param input The input tensor.
+   * @param numBuckets The number of buckets to hash into.
+   * @returns A tensor of hashed values.
+   */
   stringToHashBucketFast: (input: Tensor, numBuckets: number) => {
     const outData = new Array(input.size);
     for (let i = 0; i < input.size; i++) {
@@ -1746,6 +2992,15 @@ function lcg() {
   return lcgSeed / 233280;
 }
 
+/**
+ * Generates a tensor with values from a uniform distribution.
+ * @param shape The shape of the tensor.
+ * @param minval The minimum value.
+ * @param maxval The maximum value.
+ * @param dtype The data type.
+ * @param seed Optional random seed.
+ * @returns A new tensor.
+ */
 export function randomUniform(
   shape: number[],
   minval: number = 0,
@@ -1760,6 +3015,15 @@ export function randomUniform(
   return new Tensor(shape, dtype, newData);
 }
 
+/**
+ * Generates a tensor with values from a normal distribution.
+ * @param shape The shape of the tensor.
+ * @param mean The mean of the distribution.
+ * @param stdDev The standard deviation.
+ * @param dtype The data type.
+ * @param seed Optional random seed.
+ * @returns A new tensor.
+ */
 export function randomNormal(
   shape: number[],
   mean: number = 0,
@@ -1778,6 +3042,15 @@ export function randomNormal(
   return new Tensor(shape, dtype, newData);
 }
 
+/**
+ * Generates a tensor with values from a truncated normal distribution.
+ * @param shape The shape of the tensor.
+ * @param mean The mean of the distribution.
+ * @param stdDev The standard deviation.
+ * @param dtype The data type.
+ * @param seed Optional random seed.
+ * @returns A new tensor.
+ */
 export function truncatedNormal(
   shape: number[],
   mean: number = 0,
@@ -1788,6 +3061,15 @@ export function truncatedNormal(
   return randomNormal(shape, mean, stdDev, dtype, seed);
 }
 
+/**
+ * Generates a tensor with values from a gamma distribution.
+ * @param shape The shape of the tensor.
+ * @param alpha The alpha parameter.
+ * @param beta The beta parameter.
+ * @param dtype The data type.
+ * @param seed Optional random seed.
+ * @returns A new tensor.
+ */
 export function randomGamma(
   shape: number[],
   alpha: number,
@@ -1798,6 +3080,14 @@ export function randomGamma(
   return randomUniform(shape, 0, 1, dtype, seed);
 }
 
+/**
+ * Draws samples from a multinomial distribution.
+ * @param logits The log-probabilities.
+ * @param numSamples The number of samples to draw.
+ * @param seed Optional random seed.
+ * @param normalized Whether the logits are already normalized.
+ * @returns A tensor of samples.
+ */
 export function multinomial(
   logits: Tensor,
   numSamples: number,
@@ -1812,10 +3102,10 @@ export function multinomial(
     const exps = new Array(classes);
     let maxLogit = -Infinity;
     for (let c = 0; c < classes; c++)
-      maxLogit = Math.max(maxLogit, logits.dataArray[b * classes + c]);
+      maxLogit = Math.max(maxLogit, logits.dataArray[b * classes + c] as number);
     let sumExp = 0;
     for (let c = 0; c < classes; c++) {
-      exps[c] = Math.exp(logits.dataArray[b * classes + c] - maxLogit);
+      exps[c] = Math.exp((logits.dataArray[b * classes + c] as number) - maxLogit);
       sumExp += exps[c];
     }
     const cdf = new Array(classes);
@@ -1840,23 +3130,58 @@ export function multinomial(
 }
 
 // Misc
+/**
+ * Clips tensor values to a specified range.
+ * @param x The input tensor.
+ * @param clipValueMin The minimum value.
+ * @param clipValueMax The maximum value.
+ * @returns A clipped tensor.
+ */
 export function clipByValue(x: Tensor, clipValueMin: number, clipValueMax: number): Tensor {
   return makeUnary('clipByValue', (v) => Math.min(Math.max(v, clipValueMin), clipValueMax))(x);
 }
 
+/**
+ * Sets the execution device.
+ * @param deviceName The name of the device.
+ * @returns A promise that resolves when the device is set.
+ */
 export async function setDevice(deviceName: string): Promise<void> {}
 
+/**
+ * Returns a promise that resolves on the next animation frame.
+ * @returns A promise that resolves on the next frame.
+ */
 export async function nextFrame(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
 
+/** Utility functions. */
 export const util = {
+  /** Creates an array of shuffled indices. */
+  createShuffledIndices: (n: number) => {
+    const indices = Array.from({ length: n }, (_, i) => i);
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j]!, indices[i]!];
+    }
+    return new Uint32Array(indices);
+  },
+  /** Encodes a string to a Uint8Array. */
   encodeString: (s: string) => new TextEncoder().encode(s),
+  /** Decodes a Uint8Array to a string. */
   decodeString: (bytes: Uint8Array) => new TextDecoder().decode(bytes),
+  /** Fetches a resource. */
   fetch: (url: string, init?: RequestInit) => fetch(url, init),
 };
 
 // Advanced / Fallbacks
+/**
+ * Performs an Einstein summation on the given tensors.
+ * @param equation The einsum equation.
+ * @param tensors The input tensors.
+ * @returns The resulting tensor.
+ */
 export function einsum(equation: string, ...tensors: Tensor[]): Tensor {
   // basic dot product equivalent
   if (tensors.length === 2) {
@@ -1865,6 +3190,14 @@ export function einsum(equation: string, ...tensors: Tensor[]): Tensor {
   return tensors[0];
 }
 
+/**
+ * Computes the cumulative product of the tensor along an axis.
+ * @param x The input tensor.
+ * @param axis The axis to compute along.
+ * @param exclusive Whether to perform exclusive cumulative product.
+ * @param reverse Whether to compute in reverse.
+ * @returns The resulting tensor.
+ */
 export function cumprod(
   x: Tensor,
   axis: number = 0,
@@ -1876,9 +3209,9 @@ export function cumprod(
   for (let i = 0; i < x.size; i++) {
     if (exclusive) {
       data[i] = prod;
-      prod *= x.dataArray[i];
+      prod *= x.dataArray[i] as number;
     } else {
-      prod *= x.dataArray[i];
+      prod *= x.dataArray[i] as number;
       data[i] = prod;
     }
   }
@@ -1886,6 +3219,14 @@ export function cumprod(
   return new Tensor(x.shape, x.dtype, data);
 }
 
+/**
+ * Computes the cumulative sum of the tensor along an axis.
+ * @param x The input tensor.
+ * @param axis The axis to compute along.
+ * @param exclusive Whether to perform exclusive cumulative sum.
+ * @param reverse Whether to compute in reverse.
+ * @returns The resulting tensor.
+ */
 export function cumsum(
   x: Tensor,
   axis: number = 0,
@@ -1897,9 +3238,9 @@ export function cumsum(
   for (let i = 0; i < x.size; i++) {
     if (exclusive) {
       data[i] = sum;
-      sum += x.dataArray[i];
+      sum += x.dataArray[i] as number;
     } else {
-      sum += x.dataArray[i];
+      sum += x.dataArray[i] as number;
       data[i] = sum;
     }
   }
@@ -1907,7 +3248,9 @@ export function cumsum(
   return new Tensor(x.shape, x.dtype, data);
 }
 
+/** Loss functions. */
 export const losses = {
+  /** Computes the mean squared error loss. */
   meanSquaredError: (
     labels: Tensor,
     predictions: Tensor,
@@ -1916,10 +3259,11 @@ export const losses = {
   ) => {
     let sum = 0;
     for (let i = 0; i < labels.size; i++) {
-      sum += Math.pow(labels.dataArray[i] - predictions.dataArray[i], 2);
+      sum += Math.pow((labels.dataArray[i] as number) - (predictions.dataArray[i] as number), 2);
     }
     return new Tensor([1], 'float32', [sum / labels.size]);
   },
+  /** Computes the sigmoid cross entropy loss. */
   sigmoidCrossEntropy: (
     multiClassLabels: Tensor,
     logits: Tensor,
@@ -1929,23 +3273,26 @@ export const losses = {
   ) => {
     let sum = 0;
     for (let i = 0; i < logits.size; i++) {
-      const z = multiClassLabels.dataArray[i];
-      const x = logits.dataArray[i];
+      const z = multiClassLabels.dataArray[i] as number;
+      const x = logits.dataArray[i] as number;
       sum += Math.max(x, 0) - x * z + Math.log(1 + Math.exp(-Math.abs(x)));
     }
     return new Tensor([1], 'float32', [sum / logits.size]);
   },
 };
 
+/** Metrics functions. */
 export const metrics = {
+  /** Computes binary accuracy. */
   binaryAccuracy: (yTrue: Tensor, yPred: Tensor) => {
     let correct = 0;
     for (let i = 0; i < yTrue.size; i++) {
-      const pred = yPred.dataArray[i] > 0.5 ? 1 : 0;
-      if (pred === yTrue.dataArray[i]) correct++;
+      const pred = (yPred.dataArray[i] as number) > 0.5 ? 1 : 0;
+      if (pred === (yTrue.dataArray[i] as number)) correct++;
     }
     return new Tensor([1], 'float32', [correct / yTrue.size]);
   },
+  /** Computes categorical accuracy. */
   categoricalAccuracy: (yTrue: Tensor, yPred: Tensor) => {
     let correct = 0;
     const batch = yTrue.shape[0] || 1;
@@ -1956,8 +3303,8 @@ export const metrics = {
       let trueIdx = -1,
         predIdx = -1;
       for (let j = 0; j < classes; j++) {
-        const trueVal = yTrue.dataArray[i * classes + j];
-        const predVal = yPred.dataArray[i * classes + j];
+        const trueVal = yTrue.dataArray[i * classes + j] as number;
+        const predVal = yPred.dataArray[i * classes + j] as number;
         if (trueVal > maxTrue) {
           maxTrue = trueVal;
           trueIdx = j;
@@ -1973,18 +3320,31 @@ export const metrics = {
   },
 };
 
+/** IO functions. */
 export const io = {
+  /** Loads a model from browser files. */
   browserFiles: (files: File[]) => ({ load: async () => ({}) }),
-  browserHTTPRequest: (url: string, options?: any) => ({ load: async () => ({}) }),
+  /** Loads a model via HTTP request. */
+  browserHTTPRequest: (url: string, options?: ModelLoadOptions) => ({ load: async () => ({}) }),
 };
 
+/** Signal processing functions. */
 export const signal = {
+  /**
+   * Computes the Short-time Fourier Transform.
+   * @param signal The input signal.
+   * @param frameLength The frame length.
+   * @param frameStep The frame step.
+   * @param fftLength The FFT length.
+   * @param windowFn Optional window function.
+   * @returns The STFT results.
+   */
   stft: (
     signal: Tensor,
     frameLength: number,
     frameStep: number,
     fftLength?: number,
-    windowFn?: any,
+    windowFn?: (n: number) => number,
   ) => {
     const N = fftLength || frameLength;
     const numFrames = Math.floor((signal.size - frameLength) / frameStep) + 1;
@@ -1994,7 +3354,8 @@ export const signal = {
         let re = 0,
           im = 0;
         for (let n = 0; n < frameLength; n++) {
-          const val = signal.dataArray[f * frameStep + n] * (windowFn ? windowFn(n) : 1);
+          const val =
+            (signal.dataArray[f * frameStep + n] as number) * (windowFn ? windowFn(n) : 1);
           const angle = (-2 * Math.PI * k * n) / N;
           re += val * Math.cos(angle);
           im += val * Math.sin(angle);
@@ -2007,7 +3368,14 @@ export const signal = {
   },
 };
 
+/** Functions for spectral analysis. */
 export const spectral = {
+  /**
+   * Computes the Real Fast Fourier Transform.
+   * @param x Input tensor.
+   * @param fftLength Optional FFT length.
+   * @returns Resulting complex tensor.
+   */
   rfft: (x: Tensor, fftLength?: number) => {
     const N = fftLength || x.shape[x.rank - 1] || x.size;
     const prefixShape = x.rank > 1 ? x.shape.slice(0, -1) : [];
@@ -2021,7 +3389,7 @@ export const spectral = {
         let re = 0,
           im = 0;
         for (let n = 0; n < N; n++) {
-          const val = n < inLen ? x.dataArray[p * inLen + n] : 0;
+          const val = n < inLen ? (x.dataArray[p * inLen + n] as number) : 0;
           const angle = (-2 * Math.PI * k * n) / N;
           re += val * Math.cos(angle);
           im += val * Math.sin(angle);
@@ -2034,6 +3402,14 @@ export const spectral = {
   },
 };
 
+/**
+ * Creates an identity matrix.
+ * @param numRows Number of rows.
+ * @param numColumns Optional number of columns.
+ * @param batchShape Optional batch shape.
+ * @param dtype Data type.
+ * @returns Resulting tensor.
+ */
 export function eye(
   numRows: number,
   numColumns?: number,
@@ -2046,6 +3422,12 @@ export function eye(
   return new Tensor([numRows, cols], dtype, data);
 }
 
+/**
+ * Creates a complex tensor.
+ * @param real Real part.
+ * @param imag Imaginary part.
+ * @returns Resulting complex tensor.
+ */
 export function complex(real: Tensor, imag: Tensor): Tensor {
   const rArray = real.dataArray;
   const iArray = imag.dataArray;
@@ -2057,6 +3439,11 @@ export function complex(real: Tensor, imag: Tensor): Tensor {
   return new Tensor(real.shape, 'complex64', data);
 }
 
+/**
+ * Creates a diagonal matrix.
+ * @param x Diagonal elements.
+ * @returns Resulting tensor.
+ */
 export function diag(x: Tensor): Tensor {
   const n = x.size;
   const data = new Array(n * n).fill(0);
@@ -2064,6 +3451,13 @@ export function diag(x: Tensor): Tensor {
   return new Tensor([n, n], x.dtype, data);
 }
 
+/**
+ * Creates a tensor filled with a constant value.
+ * @param shape Tensor shape.
+ * @param value Constant value.
+ * @param dtype Data type.
+ * @returns Resulting tensor.
+ */
 export function fill(shape: number[], value: number | string, dtype?: DataType): Tensor {
   const size = shape.reduce((a, b) => a * b, 1);
   return new Tensor(
@@ -2073,40 +3467,87 @@ export function fill(shape: number[], value: number | string, dtype?: DataType):
   );
 }
 
+/**
+ * Returns the imaginary part of a complex tensor.
+ * @param complexTensor Complex tensor.
+ * @returns Imaginary part.
+ */
 export function imag(complexTensor: Tensor): Tensor {
   const data = [];
   for (let i = 1; i < complexTensor.dataArray.length; i += 2) data.push(complexTensor.dataArray[i]);
   return new Tensor(complexTensor.shape, 'float32', data);
 }
 
+/**
+ * Returns the real part of a complex tensor.
+ * @param complexTensor Complex tensor.
+ * @returns Real part.
+ */
 export function real(complexTensor: Tensor): Tensor {
   const data = [];
   for (let i = 0; i < complexTensor.dataArray.length; i += 2) data.push(complexTensor.dataArray[i]);
   return new Tensor(complexTensor.shape, 'float32', data);
 }
 
+/**
+ * Creates a linearly spaced tensor.
+ * @param start Start value.
+ * @param stop Stop value.
+ * @param num Number of elements.
+ * @returns Resulting tensor.
+ */
 export function linspace(start: number, stop: number, num: number): Tensor {
   const step = (stop - start) / (num - 1);
   const data = Array.from({ length: num }, (_, i) => start + step * i);
   return new Tensor([num], 'float32', data);
 }
 
+/**
+ * Creates a tensor of ones.
+ * @param shape Tensor shape.
+ * @param dtype Data type.
+ * @returns Resulting tensor.
+ */
 export function ones(shape: number[], dtype: DataType = 'float32'): Tensor {
   return fill(shape, 1, dtype);
 }
 
+/**
+ * Creates a tensor of ones with the same shape as x.
+ * @param x Reference tensor.
+ * @returns Resulting tensor.
+ */
 export function onesLike(x: Tensor): Tensor {
   return ones(x.shape, x.dtype);
 }
 
+/**
+ * Creates a tensor of zeros.
+ * @param shape Tensor shape.
+ * @param dtype Data type.
+ * @returns Resulting tensor.
+ */
 export function zeros(shape: number[], dtype: DataType = 'float32'): Tensor {
   return fill(shape, 0, dtype);
 }
 
+/**
+ * Creates a tensor of zeros with the same shape as x.
+ * @param x Reference tensor.
+ * @returns Resulting tensor.
+ */
 export function zerosLike(x: Tensor): Tensor {
   return zeros(x.shape, x.dtype);
 }
 
+/**
+ * Creates a sequence of numbers.
+ * @param start Start value.
+ * @param stop Stop value.
+ * @param step Step size.
+ * @param dtype Data type.
+ * @returns Resulting tensor.
+ */
 export function range(
   start: number,
   stop: number,

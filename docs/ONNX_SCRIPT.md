@@ -1,25 +1,31 @@
-# onnx9000.script Documentation
+# onnx9000-toolkit: Fluent Scripting
 
-> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+`onnx9000-toolkit` provides a **zero-dependency**, **WASM-First** authoring environment for ONNX. Built as a core pillar of our polyglot monorepo, it allows developers to define complex model architectures using pure Python without the overhead of official C++ Protobuf bindings or heavy framework dependencies.
 
-`onnx9000.script` provides a fluent, pure-Python authoring environment for ONNX, similar to Microsoft's ONNXScript and Quantco's Spox, but built entirely without the C++ `protobuf` extension. This makes it perfect for generating ONNX models dynamically directly in browser environments (like Pyodide/WASM).
+> **Ecosystem Context:** By leveraging our internal IR, `onnx9000-toolkit` supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets directly in browser environments (like Pyodide/WASM).
 
 ## Features
 
-- **Dynamic Op Namespace**: Use `op.Add(A, B)` or `op.Relu(X)`.
+- **Zero-Dependency**: Operates entirely on raw Python structures, making it extremely lightweight for edge deployment.
+- **Dynamic Op Namespace**: Use `op.Add(A, B)` or `op.Relu(X)` with full IDE autocomplete support.
 - **Operator Overloading**: Use standard Python operators (`A + B`, `A * B`, `A > B`).
 - **Control Flow**: Supports mapping `if`, `for`, and `while` statements natively into ONNX `If` and `Loop` subgraphs.
-- **Type Annotations**: Annotate inputs to strictly bind them to graph `ValueInfoProto`.
+- **Type Annotations**: Annotate inputs to strictly bind them to the internal `onnx9000-core` IR.
 
 ## Usage
 
 ```python
-from onnx9000.script import script, op
+from onnx9000.toolkit.script import script, op
 from onnx9000.core.dtypes import DType
 
 @script
 def my_model(x):
-    return op.Relu(x + 1)
+    # Arithmetic is automatically converted to ONNX ops
+    return op.Relu(x + 1.0)
 
-model_proto = my_model.to_builder().to_onnx()
+# Compiles the Python AST into a zero-dependency onnx9000-core Graph
+model = my_model.to_graph()
+
+# Serialize to standard .onnx format (no external libraries needed)
+model.save("my_model.onnx")
 ```

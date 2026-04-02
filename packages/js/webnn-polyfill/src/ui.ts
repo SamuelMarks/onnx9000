@@ -1,6 +1,14 @@
+import { MLProfileEntry, MLGraphInfo } from './interfaces.js';
+
+/**
+ * UI helper for WebNN Polyfill to display diagnostics and feedback.
+ */
 export class PolyfillUI {
   private container: HTMLDivElement;
 
+  /**
+   * Creates a new PolyfillUI and attaches it to the document body if available.
+   */
   constructor() {
     this.container = document.createElement('div');
     this.container.id = 'webnn-polyfill-ui-container';
@@ -16,8 +24,12 @@ export class PolyfillUI {
     }
   }
 
-  // 256. Provide visual feedback (spinners/bars) during long I/O operations natively.
-  showSpinner(message: string) {
+  /**
+   * Shows a spinner with a message.
+   * @param message Message to display.
+   * @returns A function to hide the spinner.
+   */
+  showSpinner(message: string): () => void {
     const el = document.createElement('div');
     el.style.background = 'rgba(0,0,0,0.8)';
     el.style.color = '#0f0';
@@ -33,8 +45,11 @@ export class PolyfillUI {
     };
   }
 
-  // 261. Expose interactive HTML Flamegraphs highlighting operations.
-  showFlamegraph(profileData: any) {
+  /**
+   * Exposes interactive HTML Flamegraphs highlighting operations.
+   * @param profileData Profiling data for operations.
+   */
+  showFlamegraph(profileData: MLProfileEntry[]): void {
     const el = document.createElement('div');
     el.style.background = '#222';
     el.style.color = '#fff';
@@ -62,8 +77,11 @@ export class PolyfillUI {
     }, 5000);
   }
 
-  // 277. Render graph connections dynamically in console UI.
-  logGraphConsoleUI(graphInfo: any) {
+  /**
+   * Render graph connections dynamically in console UI.
+   * @param graphInfo Information about the graph structure.
+   */
+  logGraphConsoleUI(graphInfo: MLGraphInfo): void {
     console.log('%c[WebNN Polyfill AST]', 'color: #bada55; font-weight: bold;');
     for (const node of graphInfo.nodes) {
       console.log(`  ├─ ${node.opType} (${node.name})`);
@@ -72,8 +90,11 @@ export class PolyfillUI {
     }
   }
 
-  // 202. Expose a diagnostic flag on window.ML allowing developers to see the translated ONNX AST visually.
-  showAST(graphInfo: any) {
+  /**
+   * Expose a diagnostic flag on window.ML allowing developers to see the translated ONNX AST visually.
+   * @param graphInfo Information about the graph structure.
+   */
+  showAST(graphInfo: MLGraphInfo): void {
     const el = document.createElement('div');
     el.style.background = '#111';
     el.style.color = '#0ff';
@@ -86,11 +107,18 @@ export class PolyfillUI {
 
     const closeBtn = document.createElement('button');
     closeBtn.textContent = 'Close';
-    closeBtn.onclick = () => this.container.removeChild(el);
+    closeBtn.onclick = () => {
+      if (this.container.contains(el)) {
+        this.container.removeChild(el);
+      }
+    };
     el.appendChild(closeBtn);
 
     this.container.appendChild(el);
   }
 }
 
-export const polyfillUI = new PolyfillUI();
+/**
+ * Global instance of PolyfillUI.
+ */
+export const polyfillUI: PolyfillUI = new PolyfillUI();

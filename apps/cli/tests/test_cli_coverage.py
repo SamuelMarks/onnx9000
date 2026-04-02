@@ -431,24 +431,53 @@ def test_stubs_coverage():
         prune=False,
         sparsity=0.5,
         output=None,
+        format="onnx",
+        from_fmt="tf",
+        to_fmt="onnx",
     )
 
     inspect_cmd(args)
     with (
         patch("onnx9000_cli.main.load_onnx") as mock_load,
         patch("onnx9000_cli.main.save_onnx"),
+        patch("importlib.util.spec_from_file_location") as mock_spec,
+        patch("importlib.util.module_from_spec") as mock_module_from_spec,
+        patch("onnx9000.converters.frontend.tracer.trace") as mock_trace,
+        patch("onnx9000.core.exporter.export_graph"),
     ):
         mock_graph = MagicMock()
         mock_graph.tensors = {}
         mock_graph.nodes = []
         mock_load.return_value = mock_graph
+
+        mock_tracer = MagicMock()
+        mock_tracer.to_graph.return_value = mock_graph
+        mock_trace_cm = MagicMock()
+        mock_trace_cm.__enter__.return_value = mock_tracer
+        mock_trace.return_value = mock_trace_cm
+
+        mock_s = MagicMock()
+        mock_s.loader = MagicMock()
+        mock_spec.return_value = mock_s
+
+        mock_m = MagicMock()
+        from onnx9000.converters.frontend.nn.module import Module
+
+        class MockModel(Module):
+            def forward(self, x):
+                return x
+
+        mock_m.MyModel = MockModel
+        mock_module_from_spec.return_value = mock_m
+        mock_m.__dir__ = lambda self=None: ["MyModel"]
+
         optimize_cmd(args)
         quantize_cmd(args)
 
-    export_cmd(args)
-    convert_cmd(args)
-    serve_cmd(args)
-    compile_cmd(args)
+        export_cmd(args)
+        convert_cmd(args)
+        serve_cmd(args)
+        compile_cmd(args)
 
     with patch("onnx9000_optimum.export.export_model") as m1:
         optimum_export_cmd(args)

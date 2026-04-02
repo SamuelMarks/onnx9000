@@ -1,6 +1,5 @@
 """Module providing functionality for test_shape_inference_gap10."""
 
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.shape_inference import infer_shapes_and_types

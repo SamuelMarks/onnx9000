@@ -1,30 +1,81 @@
-import { Graph, Node, Tensor, ValueInfo, DType } from '@onnx9000/core';
+import { Graph, Node, Tensor, ValueInfo, DType, Attribute } from '@onnx9000/core';
 import { XmlBuilder, XmlNode } from './xml_builder';
 
+/**
+ * Options for OpenVINO export.
+ */
 export interface OpenVinoExportOptions {
+  /** The OpenVINO IR version (default: '11'). */
   version?: string;
+  /** Whether to compress float32 tensors to float16 (default: false). */
   compressToFp16?: boolean;
+  /** Whether to clamp dynamic shapes to 1 (default: false). */
   clampDynamic?: boolean;
 }
 
+/**
+ * Context for handling an ONNX operator during OpenVINO export.
+ */
+export interface OpHandlerContext {
+  /** The OpenVinoExporter instance. */
+  exporter: OpenVinoExporter;
+  /** The ONNX node being exported. */
+  node: Node;
+  /** The OpenVINO layer being built. */
+  layer: XmlNode;
+  /** The data node of the OpenVINO layer. */
+  data: XmlNode;
+  /** The list of input names for this node. */
+  inputsToMap: string[];
+  /** The unique ID of the layer. */
+  layerId: number;
+  /** The parent layers node. */
+  layers: XmlNode;
+}
+
+/**
+ * A function that handles a specific ONNX operator type.
+ */
+export type OpHandler = (context: OpHandlerContext) => void;
+
+/**
+ * The OpenVinoExporter class translates an onnx9000 Core IR Graph into OpenVINO IR (XML/BIN).
+ */
 export class OpenVinoExporter {
+  /** The ONNX graph to export. */
   graph: Graph;
+  /** The OpenVINO IR version. */
   version: string;
+  /** Whether to compress float32 to float16. */
   compressToFp16: boolean;
+  /** Whether to clamp dynamic shapes. */
   clampDynamic: boolean;
   private nodeIdCounter: number = 0;
+  /** Maps layer names to their IDs. */
   layerIds: Map<string, number> = new Map();
+  /** Maps port names to their layer and port IDs. */
   portIds: Map<string, { layerId: number; portId: number }> = new Map();
+  /** Buffer for binary data. */
   binBuffer: Uint8Array[] = [];
   private binCache: Map<string, { offset: number; size: number }> = new Map();
   private edges: XmlNode[] = [];
   private portCounters: Map<number, number> = new Map();
 
+  private static handlers: Map<string, OpHandler> = new Map();
+
+  /**
+   * Initializes a new OpenVinoExporter.
+   * @param graph - The ONNX graph.
+   * @param options - Export options.
+   */
   constructor(graph: Graph, options: OpenVinoExportOptions = {}) {
     this.graph = graph;
     this.version = options.version || '11';
     this.compressToFp16 = options.compressToFp16 || false;
     this.clampDynamic = options.clampDynamic || false;
+    if (OpenVinoExporter.handlers.size === 0) {
+      OpenVinoExporter.initializeHandlers();
+    }
   }
 
   private nextId(): number {
@@ -37,7 +88,15 @@ export class OpenVinoExporter {
     return p;
   }
 
-  private emitDynamicConst(
+  /**
+   * Emits a constant layer with dynamic data.
+   * @param name - The name of the constant.
+   * @param data - The numeric data.
+   * @param shape - The shape of the data.
+   * @param dtype - The data type.
+   * @returns The created layer node and its output port ID.
+   */
+  public emitDynamicConst(
     name: string,
     data: number[],
     shape: number[],
@@ -67,11 +126,11 @@ export class OpenVinoExporter {
     const view = new DataView(buffer);
     for (let i = 0; i < data.length; i++) {
       if (dtype === 'int64') {
-        view.setBigInt64(i * 8, BigInt(data[i] as number), true); // little-endian
+        view.setBigInt64(i * 8, BigInt(data[i] ?? 0), true); // little-endian
       } else if (dtype === 'int32') {
-        view.setInt32(i * 4, data[i] as number, true);
+        view.setInt32(i * 4, data[i] ?? 0, true);
       } else if (dtype === 'float32') {
-        view.setFloat32(i * 4, data[i] as number, true);
+        view.setFloat32(i * 4, data[i] ?? 0, true);
       }
     }
 
@@ -138,17 +197,22 @@ export class OpenVinoExporter {
   }
 
   private uint8ArrayToString(arr: Uint8Array): string {
-    // Fast arbitrary byte array to string for deduplication map keys
     let str = '';
     for (let i = 0; i < arr.length; i++) {
-      str += String.fromCharCode(arr[i] || 0);
+      str += String.fromCharCode(arr[i] ?? 0);
     }
     return str;
   }
 
-  private emitShape(shape: (number | string)[], tagName: string = 'port'): XmlNode {
+  /**
+   * Emits a shape as an XML node.
+   * @param shape - The shape dimensions.
+   * @param tagName - The XML tag name (default: 'port').
+   * @returns The shape XML node.
+   */
+  public emitShape(shape: (number | string)[], tagName: string = 'port'): XmlNode {
     const portNode = new XmlNode(tagName);
-    for (let dim of shape) {
+    for (const dim of shape) {
       let dimVal = dim.toString();
       if (dimVal === '-1' || (typeof dim === 'string' && isNaN(Number(dim)))) {
         dimVal = this.clampDynamic ? '1' : '-1';
@@ -179,6 +243,10 @@ export class OpenVinoExporter {
     this.edges.push(edge);
   }
 
+  /**
+   * Exports the ONNX graph to OpenVINO IR.
+   * @returns An object containing the XML string and binary data.
+   */
   export(): { xml: string; bin: Uint8Array } {
     const net = new XmlNode('net');
     net.setAttribute('name', this.graph.name || 'onnx9000_model');
@@ -186,7 +254,6 @@ export class OpenVinoExporter {
 
     const layers = new XmlNode('layers');
 
-    // Track consumed parameters to prevent emitting unused Parameters
     const consumedInputs = new Set<string>();
     for (const node of this.graph.nodes) {
       for (const inp of node.inputs) {
@@ -194,10 +261,8 @@ export class OpenVinoExporter {
       }
     }
 
-    // Map Parameters
     for (const valInfo of this.graph.inputs) {
       if (!consumedInputs.has(valInfo.name)) continue;
-
       const layerId = this.nextId();
       this.layerIds.set(valInfo.name, layerId);
 
@@ -226,7 +291,6 @@ export class OpenVinoExporter {
       layers.addChild(layer);
     }
 
-    // Map Constants
     for (const initName of this.graph.initializers) {
       const tensor = this.graph.tensors[initName];
       if (!tensor) continue;
@@ -254,7 +318,6 @@ export class OpenVinoExporter {
         );
 
         if (this.compressToFp16 && tensor.dtype === 'float32') {
-          // Global FP16 cast via float32 -> fp16 view map
           const f32 = new Float32Array(
             tensor.data.buffer,
             tensor.data.byteOffset,
@@ -262,11 +325,10 @@ export class OpenVinoExporter {
           );
           const f16 = new Uint16Array(f32.length);
           for (let i = 0; i < f32.length; i++) {
-            // Simple FP32 to FP16 converter
-            const f = f32[i] || 0;
+            const f = f32[i] ?? 0;
             const buffer = new ArrayBuffer(4);
             new Float32Array(buffer)[0] = f;
-            const uint32 = new Uint32Array(buffer)[0] || 0;
+            const uint32 = new Uint32Array(buffer)[0] ?? 0;
             const sign = (uint32 >> 16) & 0x8000;
             const exponent = ((uint32 >> 23) & 0xff) - 127 + 15;
             let fraction = (uint32 >> 13) & 0x3ff;
@@ -316,7 +378,6 @@ export class OpenVinoExporter {
       layers.addChild(layer);
     }
 
-    // Map Nodes
     for (const node of this.graph.nodes) {
       const layerId = this.nextId();
       const layerName = node.name || `${node.opType}_${layerId}`;
@@ -426,7 +487,6 @@ export class OpenVinoExporter {
       const data = new XmlNode('data');
 
       const binaryOps = [
-        'Add',
         'Subtract',
         'Multiply',
         'Divide',
@@ -442,449 +502,31 @@ export class OpenVinoExporter {
         'LogicalAnd',
         'LogicalOr',
         'LogicalXor',
+        'Add',
       ];
       if (binaryOps.includes(ovType)) {
         data.setAttribute('auto_broadcast', 'numpy');
       }
-      if (node.attributes) {
-        if (node.opType === 'MatMul' || node.opType === 'Gemm') {
-          const transA = node.attributes['transA']?.value ? 'true' : 'false';
-          const transB = node.attributes['transB']?.value ? 'true' : 'false';
-          data.setAttribute('transpose_a', transA);
-          data.setAttribute('transpose_b', transB);
-        } else if (node.opType === 'Conv') {
-          if (node.attributes['strides']) {
-            data.setAttribute('strides', (node.attributes['strides'].value as any[]).join(','));
-          }
-          if (node.attributes['dilations']) {
-            data.setAttribute('dilations', (node.attributes['dilations'].value as any[]).join(','));
-          }
-          if (node.attributes['pads']) {
-            const pads = node.attributes['pads'].value as any[];
-            if (pads.length === 4) {
-              data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
-              data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
-            } else {
-              const half = Math.floor(pads.length / 2);
-              data.setAttribute('pads_begin', pads.slice(0, half).join(','));
-              data.setAttribute('pads_end', pads.slice(half).join(','));
-            }
-          }
-          if (node.attributes['auto_pad']) {
-            const autoPadMap: Record<string, string> = {
-              VALID: 'valid',
-              SAME_UPPER: 'same_upper',
-              SAME_LOWER: 'same_lower',
-            };
-            data.setAttribute(
-              'auto_pad',
-              autoPadMap[node.attributes['auto_pad'].value as string] || 'explicit',
-            );
-          }
-        } else if (node.opType === 'MaxPool' || node.opType === 'AveragePool') {
-          if (node.attributes['kernel_shape']) {
-            data.setAttribute('kernel', (node.attributes['kernel_shape'].value as any[]).join(','));
-          }
-          if (node.attributes['strides']) {
-            data.setAttribute('strides', (node.attributes['strides'].value as any[]).join(','));
-          }
-          if (node.attributes['pads']) {
-            const pads = node.attributes['pads'].value as any[];
-            if (pads.length === 4) {
-              data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
-              data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
-            } else {
-              const half = Math.floor(pads.length / 2);
-              data.setAttribute('pads_begin', pads.slice(0, half).join(','));
-              data.setAttribute('pads_end', pads.slice(half).join(','));
-            }
-          }
-          if (node.attributes['auto_pad']) {
-            const autoPadMap: Record<string, string> = {
-              VALID: 'valid',
-              SAME_UPPER: 'same_upper',
-              SAME_LOWER: 'same_lower',
-            };
-            data.setAttribute(
-              'auto_pad',
-              autoPadMap[node.attributes['auto_pad'].value as string] || 'explicit',
-            );
-          }
-          if (node.opType === 'AveragePool' && node.attributes['count_include_pad']) {
-            data.setAttribute(
-              'exclude-pad',
-              node.attributes['count_include_pad'].value ? 'false' : 'true',
-            );
-          }
-        } else if (node.opType === 'Gelu') {
-          const approx = node.attributes['approximate'];
-          if (approx && approx.value === 'tanh') {
-            data.setAttribute('approximation_mode', 'tanh');
-          } else {
-            data.setAttribute('approximation_mode', 'erf');
-          }
-        } else if (node.opType === 'Softmax') {
-          const attr = node.attributes['axis'];
-          if (attr && attr.value !== undefined && attr.value !== null) {
-            data.setAttribute('axis', attr.value.toString());
-          }
-        } else if (node.opType === 'Concat' || node.opType === 'Split') {
-          const attr = node.attributes['axis'];
-          if (attr && attr.value !== undefined && attr.value !== null) {
-            data.setAttribute('axis', attr.value.toString());
-          }
-        } else if (node.opType === 'Pad') {
-          if (node.attributes && node.attributes['pads']) {
-            const padsData = node.attributes['pads'].value as number[];
-            const mid = Math.floor(padsData.length / 2);
-            const padsBegin = padsData.slice(0, mid);
-            const padsEnd = padsData.slice(mid);
 
-            const bNode = this.emitDynamicConst(
-              (node.name || `pads_begin_${layerId}`) + '_pads_begin',
-              padsBegin,
-              [padsBegin.length],
-              'int64',
-            );
-            const eNode = this.emitDynamicConst(
-              (node.name || `pads_end_${layerId}`) + '_pads_end',
-              padsEnd,
-              [padsEnd.length],
-              'int64',
-            );
-            layers.addChild(bNode.layerNode);
-            layers.addChild(eNode.layerNode);
-            inputsToMap.push((node.name || `pads_begin_${layerId}`) + '_pads_begin');
-            inputsToMap.push((node.name || `pads_end_${layerId}`) + '_pads_end');
-
-            let val = 0.0;
-            if (node.attributes['value']) {
-              val = node.attributes['value'].value as number;
-            }
-            const vNode = this.emitDynamicConst(
-              (node.name || `pad_value_${layerId}`) + '_pad_value',
-              [val],
-              [1],
-              'float32',
-            );
-            layers.addChild(vNode.layerNode);
-            inputsToMap.push((node.name || `pad_value_${layerId}`) + '_pad_value');
-          } else if (node.inputs.length === 2) {
-            const vNode = this.emitDynamicConst(
-              (node.name || `pad_value_${layerId}`) + '_pad_value',
-              [0.0],
-              [1],
-              'float32',
-            );
-            layers.addChild(vNode.layerNode);
-            inputsToMap.push((node.name || `pad_value_${layerId}`) + '_pad_value');
-          }
-        } else if (node.opType === 'Gather') {
-          const attr = node.attributes['batch_dims'];
-          if (attr && attr.value !== undefined && attr.value !== null) {
-            data.setAttribute('batch_dims', attr.value.toString());
-          }
-          if (node.attributes['axis'] && inputsToMap.length === 2) {
-            const axisVal = node.attributes['axis'].value as number;
-            const axisNode = this.emitDynamicConst(
-              (node.name || `gather_axis_${layerId}`) + '_gather_axis',
-              [axisVal],
-              [1],
-              'int64',
-            );
-            layers.addChild(axisNode.layerNode);
-            inputsToMap.push((node.name || `gather_axis_${layerId}`) + '_gather_axis');
-          }
-        } else if (node.opType === 'Slice') {
-          ovType = 'StridedSlice';
-          layer.setAttribute('type', 'StridedSlice');
-          data.setAttribute('begin_mask', '');
-          data.setAttribute('end_mask', '');
-          data.setAttribute('new_axis_mask', '');
-          data.setAttribute('shrink_axis_mask', '');
-          data.setAttribute('ellipsis_mask', '');
-        } else if (
-          ['ReduceMean', 'ReduceMax', 'ReduceMin', 'ReduceSum', 'ReduceProd'].includes(node.opType)
-        ) {
-          const attr = node.attributes['keepdims'];
-          if (attr && attr.value !== undefined && attr.value !== null) {
-            data.setAttribute('keep_dims', attr.value ? 'true' : 'false');
-          }
-        } else if (['ArgMax', 'ArgMin'].includes(node.opType)) {
-          const keep = node.attributes['keepdims'];
-          if (keep && keep.value !== undefined && keep.value !== null) {
-            data.setAttribute('keep_dims', keep.value ? 'true' : 'false');
-          }
-          const axis = node.attributes['axis'];
-          if (axis && axis.value !== undefined && axis.value !== null) {
-            data.setAttribute('axis', axis.value.toString());
-          }
-        } else if (node.opType === 'Resize') {
-          const mode = node.attributes['mode'];
-          if (mode && mode.value !== undefined && mode.value !== null) {
-            data.setAttribute('mode', mode.value.toString());
-          }
-          const coordMode = node.attributes['coordinate_transformation_mode'];
-          if (coordMode && coordMode.value !== undefined && coordMode.value !== null) {
-            data.setAttribute('coordinate_transformation_mode', coordMode.value.toString());
-          }
-          data.setAttribute('shape_calculation_mode', 'sizes');
-          const nearestMode = node.attributes['nearest_mode'];
-          if (nearestMode && nearestMode.value !== undefined && nearestMode.value !== null) {
-            data.setAttribute('nearest_mode', nearestMode.value.toString());
-          }
-        } else if (['SpaceToDepth', 'DepthToSpace'].includes(node.opType)) {
-          const blocksize = node.attributes['blocksize'];
-          if (blocksize && blocksize.value !== undefined && blocksize.value !== null) {
-            data.setAttribute('block_size', blocksize.value.toString());
-          }
-          const mode = node.attributes['mode'];
-          if (mode && mode.value !== undefined && mode.value !== null) {
-            data.setAttribute('mode', mode.value.toString());
-          }
-        } else if (node.opType === 'NonMaxSuppression') {
-          if (node.attributes && node.attributes['center_point_box']) {
-            const val = node.attributes['center_point_box'].value;
-            data.setAttribute('box_encoding', val ? 'center' : 'corner');
-          } else {
-            data.setAttribute('box_encoding', 'corner');
-          }
-          data.setAttribute('sort_result_descending', 'false');
-        } else if (node.opType === 'RoiAlign') {
-          if (node.attributes && node.attributes['mode']) {
-            data.setAttribute('mode', (node.attributes['mode']?.value as any)?.toString());
-          } else {
-            data.setAttribute('mode', 'avg');
-          }
-        } else if (node.opType === 'QuantizeLinear' || node.opType === 'DequantizeLinear') {
-          data.setAttribute('levels', '256');
-        } else if (node.opType === 'Einsum') {
-          const eq = node.attributes['equation'];
-          if (eq && eq.value !== undefined && eq.value !== null) {
-            data.setAttribute('equation', eq.value.toString());
-          }
-        } else if (
-          node.opType === 'LayerNormalization' ||
-          node.opType === 'InstanceNormalization'
-        ) {
-          const eps = node.attributes['epsilon'];
-          if (eps && eps.value !== undefined && eps.value !== null) {
-            data.setAttribute('eps', eps.value.toString());
-          }
-          if (node.opType === 'LayerNormalization') {
-            const axis = node.attributes['axis'];
-            if (axis && axis.value !== undefined && axis.value !== null) {
-              data.setAttribute('axes', axis.value.toString());
-            }
-          }
-          data.setAttribute('normalize_variance', 'true');
-          data.setAttribute('eps_mode', 'add');
-        } else if (node.opType === 'LpNormalization') {
-          const axis = node.attributes['axis'];
-          if (axis && axis.value !== undefined && axis.value !== null) {
-            data.setAttribute('axes', axis.value.toString());
-          }
-          const p = node.attributes['p'];
-          if (p && p.value !== undefined && p.value !== null) {
-            data.setAttribute('p', p.value.toString());
-          }
-        } else if (node.opType === 'BatchNormalization') {
-          const eps = node.attributes['epsilon'];
-          if (eps && eps.value !== undefined && eps.value !== null) {
-            data.setAttribute('eps', eps.value.toString());
-          }
-        } else if (node.opType === 'Dropout') {
-          // Handled implicitly by graph surgeon usually
-        } else if (node.opType === 'If') {
-          if (node.attributes['then_branch']) {
-            const subGraph = node.attributes['then_branch'].value as Graph;
-            const subExporter = new OpenVinoExporter(subGraph, {
-              version: this.version,
-              compressToFp16: this.compressToFp16,
-            });
-            subExporter.export();
-            new XmlNode('body');
-          }
-          if (node.attributes['else_branch']) {
-            const elseGraph = node.attributes['else_branch'].value as Graph;
-            const elseExporter = new OpenVinoExporter(elseGraph, {
-              version: this.version,
-              compressToFp16: this.compressToFp16,
-            });
-            elseExporter.export();
-            new XmlNode('body');
-          }
-        } else if (node.opType === 'Loop' || node.opType === 'Scan') {
-          if (node.attributes['body']) {
-            const subGraph = node.attributes['body'].value as Graph;
-            const subExporter = new OpenVinoExporter(subGraph, {
-              version: this.version,
-              compressToFp16: this.compressToFp16,
-            });
-            subExporter.export();
-            new XmlNode('body');
-          }
-        }
+      const handler = OpenVinoExporter.handlers.get(node.opType);
+      if (handler) {
+        handler({
+          exporter: this,
+          node,
+          layer,
+          data,
+          inputsToMap,
+          layerId,
+          layers,
+        });
+        ovType = layer.attributes['type'] ?? ovType;
       }
 
-      // Always add data block for FakeQuantize
       if (Object.keys(data.attributes).length > 0 || ovType === 'FakeQuantize') {
         if (ovType === 'FakeQuantize' && !data.attributes['levels']) {
           data.setAttribute('levels', '256');
         }
         layer.addChild(data);
-      }
-
-      if (node.opType === 'Cast') {
-        ovType = 'Convert';
-        layer.setAttribute('type', 'Convert');
-        if (node.attributes && node.attributes['to']) {
-          const toDtype = node.attributes['to'].value as string;
-          data.setAttribute('destination_type', this.mapDtype(toDtype as DType));
-        }
-      } else if (node.opType === 'GridSample') {
-        ovType = 'GridSample';
-        layer.setAttribute('type', 'GridSample');
-        if (node.attributes && node.attributes['mode']) {
-          data.setAttribute('mode', (node.attributes['mode']?.value as any)?.toString());
-        }
-        if (node.attributes && node.attributes['padding_mode']) {
-          data.setAttribute(
-            'padding_mode',
-            (node.attributes['padding_mode']?.value as any)?.toString(),
-          );
-        }
-        if (node.attributes && node.attributes['align_corners']) {
-          data.setAttribute(
-            'align_corners',
-            node.attributes['align_corners'].value ? 'true' : 'false',
-          );
-        }
-      } else if (node.opType === 'Size') {
-        const shapeLayerId = this.nextId();
-        const shapeName = (node.name || `shapeof_${layerId}`) + '_shapeof';
-        const shapeLayer = new XmlNode('layer')
-          .setAttribute('id', shapeLayerId.toString())
-          .setAttribute('name', shapeName)
-          .setAttribute('type', 'ShapeOf')
-          .setAttribute('version', 'opset1');
-
-        const shapeInNode = new XmlNode('input');
-        const shapeInPort = this.nextPort(shapeLayerId);
-        shapeInNode.addChild(new XmlNode('port').setAttribute('id', shapeInPort.toString()));
-        shapeLayer.addChild(shapeInNode);
-
-        if (node.inputs.length > 0) {
-          const fromIds = this.portIds.get(node.inputs[0] as string);
-          if (fromIds) {
-            this.addEdge(fromIds.layerId, fromIds.portId, shapeLayerId, shapeInPort);
-          }
-        }
-
-        const shapeOutNode = new XmlNode('output');
-        const shapeOutPort = this.nextPort(shapeLayerId);
-        shapeOutNode.addChild(
-          new XmlNode('port')
-            .setAttribute('id', shapeOutPort.toString())
-            .setAttribute('precision', 'i64'),
-        );
-        shapeLayer.addChild(shapeOutNode);
-
-        layers.addChild(shapeLayer);
-
-        const axesConst = this.emitDynamicConst(
-          (node.name || `axes_${layerId}`) + '_axes',
-          [0],
-          [1],
-          'int64',
-        );
-        layers.addChild(axesConst.layerNode);
-
-        ovType = 'ReduceProd';
-        layer.setAttribute('type', 'ReduceProd');
-        data.setAttribute('keep_dims', 'false');
-
-        inputsToMap = [shapeName, (node.name || `axes_${layerId}`) + '_axes'];
-        this.portIds.set(shapeName, { layerId: shapeLayerId, portId: shapeOutPort });
-      } else if (node.opType === 'Flatten') {
-        const shapeData = [0, -1];
-        const constNode = this.emitDynamicConst(
-          (node.name || `flatten_shape_${layerId}`) + '_flatten_shape',
-          shapeData,
-          [2],
-          'int64',
-        );
-        layers.addChild(constNode.layerNode);
-        inputsToMap.push((node.name || `flatten_shape_${layerId}`) + '_flatten_shape');
-      } else if (node.opType === 'Transpose' && node.attributes && node.attributes['perm']) {
-        const permData = node.attributes['perm'].value as number[];
-        const constNode = this.emitDynamicConst(
-          (node.name || `transpose_perm_${layerId}`) + '_transpose_perm',
-          permData,
-          [permData.length],
-          'int64',
-        );
-        layers.addChild(constNode.layerNode);
-        inputsToMap.push((node.name || `transpose_perm_${layerId}`) + '_transpose_perm');
-      } else if (
-        ['ReduceMean', 'ReduceMax', 'ReduceMin', 'ReduceSum', 'ReduceProd'].includes(node.opType)
-      ) {
-        if (node.attributes && node.attributes['axes']) {
-          const axesData = node.attributes['axes'].value as number[];
-          const constNode = this.emitDynamicConst(
-            (node.name || `reduce_axes_${layerId}`) + '_reduce_axes',
-            axesData,
-            [axesData.length],
-            'int64',
-          );
-          layers.addChild(constNode.layerNode);
-          inputsToMap.push((node.name || `reduce_axes_${layerId}`) + '_reduce_axes');
-        }
-      } else if (node.opType === 'GatherElements') {
-        ovType = 'GatherElements';
-        layer.setAttribute('type', 'GatherElements');
-        if (node.attributes && node.attributes['axis']) {
-          const axisVal = node.attributes['axis'].value as number;
-          const axisNode = this.emitDynamicConst(
-            (node.name || `gather_el_axis_${layerId}`) + '_gather_el_axis',
-            [axisVal],
-            [1],
-            'int64',
-          );
-          layers.addChild(axisNode.layerNode);
-          inputsToMap.push((node.name || `gather_el_axis_${layerId}`) + '_gather_el_axis');
-        }
-      } else if (node.opType === 'ConstantOfShape') {
-        let val = [0.0];
-        let dtype: DType = 'float32';
-        if (node.attributes && node.attributes['value']) {
-          const valTensor = node.attributes['value'].value as any;
-          if (valTensor.dtype === 'float32') {
-            val = [new Float32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] || 0.0];
-            dtype = 'float32';
-          } else if (valTensor.dtype === 'int64') {
-            const bi =
-              new BigInt64Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] || 0n;
-            val = [Number(bi)];
-            dtype = 'int64';
-          } else if (valTensor.dtype === 'int32') {
-            val = [new Int32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] || 0];
-            dtype = 'int32';
-          }
-        }
-
-        const constNode = this.emitDynamicConst(
-          (node.name || `scalar_val_${layerId}`) + '_scalar_val',
-          val,
-          [1],
-          dtype,
-        );
-        layers.addChild(constNode.layerNode);
-        inputsToMap = [
-          (node.name || `scalar_val_${layerId}`) + '_scalar_val',
-          node.inputs[0] as string,
-        ];
-        ovType = 'Broadcast';
       }
 
       const inNode = new XmlNode('input');
@@ -894,7 +536,7 @@ export class OpenVinoExporter {
         port.setAttribute('id', inputPort.toString());
         inNode.addChild(port);
 
-        const fromIds = this.portIds.get(inp as string);
+        const fromIds = this.portIds.get(inp);
         if (fromIds) {
           this.addEdge(fromIds.layerId, fromIds.portId, layerId, inputPort);
         } else if (inp !== '') {
@@ -966,7 +608,6 @@ export class OpenVinoExporter {
       }
     }
 
-    // Map Results
     for (const valInfo of this.graph.outputs) {
       const fromIds = this.portIds.get(valInfo.name);
       if (!fromIds) continue;
@@ -1025,5 +666,427 @@ export class OpenVinoExporter {
     }
 
     return { xml: xmlStr, bin: binArray };
+  }
+
+  private static initializeHandlers() {
+    const h = OpenVinoExporter.handlers;
+
+    const setAttr = (
+      data: XmlNode,
+      node: Node,
+      attr: string,
+      ovAttr: string,
+      defaultValue?: string,
+    ) => {
+      const a = node.attributes[attr];
+      if (a && a.value !== undefined && a.value !== null) {
+        data.setAttribute(ovAttr, a.value.toString());
+      } else if (defaultValue !== undefined) {
+        data.setAttribute(ovAttr, defaultValue);
+      }
+    };
+
+    const setListAttr = (data: XmlNode, node: Node, attr: string, ovAttr: string) => {
+      const a = node.attributes[attr];
+      if (a && Array.isArray(a.value)) {
+        data.setAttribute(ovAttr, a.value.join(','));
+      }
+    };
+
+    h.set('MatMul', ({ node, data }) => {
+      const transA = node.attributes['transA']?.value ? 'true' : 'false';
+      const transB = node.attributes['transB']?.value ? 'true' : 'false';
+      data.setAttribute('transpose_a', transA);
+      data.setAttribute('transpose_b', transB);
+    });
+    h.set('Gemm', h.get('MatMul')!);
+
+    h.set('Conv', ({ node, data }) => {
+      setListAttr(data, node, 'strides', 'strides');
+      setListAttr(data, node, 'dilations', 'dilations');
+      const padsAttr = node.attributes['pads'];
+      if (padsAttr && Array.isArray(padsAttr.value)) {
+        const pads = padsAttr.value as number[];
+        if (pads.length === 4) {
+          data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
+          data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
+        } else {
+          const half = Math.floor(pads.length / 2);
+          data.setAttribute('pads_begin', pads.slice(0, half).join(','));
+          data.setAttribute('pads_end', pads.slice(half).join(','));
+        }
+      }
+      const autoPad = node.attributes['auto_pad']?.value as string;
+      if (autoPad) {
+        const autoPadMap: Record<string, string> = {
+          VALID: 'valid',
+          SAME_UPPER: 'same_upper',
+          SAME_LOWER: 'same_lower',
+        };
+        data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
+      }
+    });
+
+    const poolHandler: OpHandler = ({ node, data }) => {
+      setListAttr(data, node, 'kernel_shape', 'kernel');
+      setListAttr(data, node, 'strides', 'strides');
+      const padsAttr = node.attributes['pads'];
+      if (padsAttr && Array.isArray(padsAttr.value)) {
+        const pads = padsAttr.value as number[];
+        if (pads.length === 4) {
+          data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
+          data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
+        } else {
+          const half = Math.floor(pads.length / 2);
+          data.setAttribute('pads_begin', pads.slice(0, half).join(','));
+          data.setAttribute('pads_end', pads.slice(half).join(','));
+        }
+      }
+      const autoPad = node.attributes['auto_pad']?.value as string;
+      if (autoPad) {
+        const autoPadMap: Record<string, string> = {
+          VALID: 'valid',
+          SAME_UPPER: 'same_upper',
+          SAME_LOWER: 'same_lower',
+        };
+        data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
+      }
+      if (node.opType === 'AveragePool' && node.attributes['count_include_pad']) {
+        data.setAttribute(
+          'exclude-pad',
+          node.attributes['count_include_pad'].value ? 'false' : 'true',
+        );
+      }
+    };
+    h.set('MaxPool', poolHandler);
+    h.set('AveragePool', poolHandler);
+
+    h.set('Gelu', ({ node, data }) => {
+      const approx = node.attributes['approximate']?.value;
+      data.setAttribute('approximation_mode', approx === 'tanh' ? 'tanh' : 'erf');
+    });
+
+    h.set('Softmax', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
+    h.set('Concat', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
+    h.set('Split', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
+
+    h.set('Pad', ({ exporter, node, inputsToMap, layerId, layers }) => {
+      const padsAttr = node.attributes['pads'];
+      if (padsAttr && Array.isArray(padsAttr.value)) {
+        const padsData = padsAttr.value as number[];
+        const mid = Math.floor(padsData.length / 2);
+        const padsBegin = padsData.slice(0, mid);
+        const padsEnd = padsData.slice(mid);
+
+        const bNode = exporter.emitDynamicConst(
+          (node.name || `pads_begin_${layerId}`) + '_pads_begin',
+          padsBegin,
+          [padsBegin.length],
+          'int64',
+        );
+        const eNode = exporter.emitDynamicConst(
+          (node.name || `pads_end_${layerId}`) + '_pads_end',
+          padsEnd,
+          [padsEnd.length],
+          'int64',
+        );
+        layers.addChild(bNode.layerNode);
+        layers.addChild(eNode.layerNode);
+        inputsToMap.push((node.name || `pads_begin_${layerId}`) + '_pads_begin');
+        inputsToMap.push((node.name || `pads_end_${layerId}`) + '_pads_end');
+
+        const val = (node.attributes['value']?.value as number) || 0.0;
+        const vNode = exporter.emitDynamicConst(
+          (node.name || `pad_value_${layerId}`) + '_pad_value',
+          [val],
+          [1],
+          'float32',
+        );
+        layers.addChild(vNode.layerNode);
+        inputsToMap.push((node.name || `pad_value_${layerId}`) + '_pad_value');
+      } else if (node.inputs.length === 2) {
+        const vNode = exporter.emitDynamicConst(
+          (node.name || `pad_value_${layerId}`) + '_pad_value',
+          [0.0],
+          [1],
+          'float32',
+        );
+        layers.addChild(vNode.layerNode);
+        inputsToMap.push((node.name || `pad_value_${layerId}`) + '_pad_value');
+      }
+    });
+
+    h.set('Gather', ({ exporter, node, data, inputsToMap, layerId, layers }) => {
+      setAttr(data, node, 'batch_dims', 'batch_dims');
+      const axisAttr = node.attributes['axis'];
+      if (axisAttr && axisAttr.value !== undefined && inputsToMap.length === 2) {
+        const axisVal = axisAttr.value as number;
+        const axisNode = exporter.emitDynamicConst(
+          (node.name || `gather_axis_${layerId}`) + '_gather_axis',
+          [axisVal],
+          [1],
+          'int64',
+        );
+        layers.addChild(axisNode.layerNode);
+        inputsToMap.push((node.name || `gather_axis_${layerId}`) + '_gather_axis');
+      }
+    });
+
+    h.set('Slice', ({ layer, data }) => {
+      layer.setAttribute('type', 'StridedSlice');
+      data.setAttribute('begin_mask', '');
+      data.setAttribute('end_mask', '');
+      data.setAttribute('new_axis_mask', '');
+      data.setAttribute('shrink_axis_mask', '');
+      data.setAttribute('ellipsis_mask', '');
+    });
+
+    const reduceHandler: OpHandler = ({ node, data, exporter, layerId, layers, inputsToMap }) => {
+      const keepdims = node.attributes['keepdims']?.value;
+      if (keepdims !== undefined) {
+        data.setAttribute('keep_dims', keepdims ? 'true' : 'false');
+      }
+      const axesAttr = node.attributes['axes'];
+      if (axesAttr && Array.isArray(axesAttr.value)) {
+        const axesData = axesAttr.value as number[];
+        const constNode = exporter.emitDynamicConst(
+          (node.name || `reduce_axes_${layerId}`) + '_reduce_axes',
+          axesData,
+          [axesData.length],
+          'int64',
+        );
+        layers.addChild(constNode.layerNode);
+        inputsToMap.push((node.name || `reduce_axes_${layerId}`) + '_reduce_axes');
+      }
+    };
+    h.set('ReduceMean', reduceHandler);
+    h.set('ReduceMax', reduceHandler);
+    h.set('ReduceMin', reduceHandler);
+    h.set('ReduceSum', reduceHandler);
+    h.set('ReduceProd', reduceHandler);
+
+    const argHandler: OpHandler = ({ node, data }) => {
+      const keep = node.attributes['keepdims']?.value;
+      if (keep !== undefined) data.setAttribute('keep_dims', keep ? 'true' : 'false');
+      setAttr(data, node, 'axis', 'axis');
+    };
+    h.set('ArgMax', argHandler);
+    h.set('ArgMin', argHandler);
+
+    h.set('Resize', ({ node, data }) => {
+      setAttr(data, node, 'mode', 'mode');
+      setAttr(data, node, 'coordinate_transformation_mode', 'coordinate_transformation_mode');
+      data.setAttribute('shape_calculation_mode', 'sizes');
+      setAttr(data, node, 'nearest_mode', 'nearest_mode');
+    });
+
+    const s2dHandler: OpHandler = ({ node, data }) => {
+      setAttr(data, node, 'blocksize', 'block_size');
+      setAttr(data, node, 'mode', 'mode');
+    };
+    h.set('SpaceToDepth', s2dHandler);
+    h.set('DepthToSpace', s2dHandler);
+
+    h.set('NonMaxSuppression', ({ node, data }) => {
+      const center = node.attributes['center_point_box']?.value;
+      data.setAttribute('box_encoding', center ? 'center' : 'corner');
+      data.setAttribute('sort_result_descending', 'false');
+    });
+
+    h.set('RoiAlign', ({ node, data }) => {
+      const mode = node.attributes['mode']?.value;
+      data.setAttribute('mode', mode ? mode.toString() : 'avg');
+    });
+
+    h.set('QuantizeLinear', ({ data }) => data.setAttribute('levels', '256'));
+    h.set('DequantizeLinear', h.get('QuantizeLinear')!);
+
+    h.set('Einsum', ({ node, data }) => setAttr(data, node, 'equation', 'equation'));
+
+    const normHandler: OpHandler = ({ node, data }) => {
+      setAttr(data, node, 'epsilon', 'eps');
+      if (node.opType === 'LayerNormalization') {
+        setAttr(data, node, 'axis', 'axes');
+      }
+      data.setAttribute('normalize_variance', 'true');
+      data.setAttribute('eps_mode', 'add');
+    };
+    h.set('LayerNormalization', normHandler);
+    h.set('InstanceNormalization', normHandler);
+
+    h.set('LpNormalization', ({ node, data }) => {
+      setAttr(data, node, 'axis', 'axes');
+      setAttr(data, node, 'p', 'p');
+    });
+
+    h.set('BatchNormalization', ({ node, data }) => setAttr(data, node, 'epsilon', 'eps'));
+
+    h.set('If', ({ exporter, node }) => {
+      const thenBranch = node.attributes['then_branch']?.value as Graph;
+      if (thenBranch) {
+        const subExporter = new OpenVinoExporter(thenBranch, {
+          version: exporter.version,
+          compressToFp16: exporter.compressToFp16,
+        });
+        subExporter.export();
+      }
+      const elseBranch = node.attributes['else_branch']?.value as Graph;
+      if (elseBranch) {
+        const subExporter = new OpenVinoExporter(elseBranch, {
+          version: exporter.version,
+          compressToFp16: exporter.compressToFp16,
+        });
+        subExporter.export();
+      }
+    });
+
+    h.set('Loop', ({ exporter, node }) => {
+      const body = node.attributes['body']?.value as Graph;
+      if (body) {
+        const subExporter = new OpenVinoExporter(body, {
+          version: exporter.version,
+          compressToFp16: exporter.compressToFp16,
+        });
+        subExporter.export();
+      }
+    });
+    h.set('Scan', h.get('Loop')!);
+
+    h.set('Cast', ({ exporter, node, layer, data }) => {
+      layer.setAttribute('type', 'Convert');
+      const to = node.attributes['to']?.value as DType;
+      if (to) {
+        data.setAttribute('destination_type', exporter.mapDtype(to));
+      }
+    });
+
+    h.set('GridSample', ({ node, data }) => {
+      setAttr(data, node, 'mode', 'mode');
+      setAttr(data, node, 'padding_mode', 'padding_mode');
+      const align = node.attributes['align_corners']?.value;
+      if (align !== undefined) {
+        data.setAttribute('align_corners', align ? 'true' : 'false');
+      }
+    });
+
+    h.set('Size', ({ exporter, node, layer, data, inputsToMap, layerId, layers }) => {
+      const shapeLayerId = exporter.nextId();
+      const shapeName = (node.name || `shapeof_${layerId}`) + '_shapeof';
+      const shapeLayer = new XmlNode('layer')
+        .setAttribute('id', shapeLayerId.toString())
+        .setAttribute('name', shapeName)
+        .setAttribute('type', 'ShapeOf')
+        .setAttribute('version', 'opset1');
+
+      const shapeInNode = new XmlNode('input');
+      const shapeInPort = exporter.nextPort(shapeLayerId);
+      shapeInNode.addChild(new XmlNode('port').setAttribute('id', shapeInPort.toString()));
+      shapeLayer.addChild(shapeInNode);
+
+      if (node.inputs.length > 0) {
+        const fromIds = exporter.portIds.get(node.inputs[0] as string);
+        if (fromIds) {
+          exporter['addEdge'](fromIds.layerId, fromIds.portId, shapeLayerId, shapeInPort);
+        }
+      }
+
+      const shapeOutNode = new XmlNode('output');
+      const shapeOutPort = exporter.nextPort(shapeLayerId);
+      shapeOutNode.addChild(
+        new XmlNode('port')
+          .setAttribute('id', shapeOutPort.toString())
+          .setAttribute('precision', 'i64'),
+      );
+      shapeLayer.addChild(shapeOutNode);
+      layers.addChild(shapeLayer);
+
+      const axesConst = exporter.emitDynamicConst(
+        (node.name || `axes_${layerId}`) + '_axes',
+        [0],
+        [1],
+        'int64',
+      );
+      layers.addChild(axesConst.layerNode);
+
+      layer.setAttribute('type', 'ReduceProd');
+      data.setAttribute('keep_dims', 'false');
+
+      inputsToMap.length = 0;
+      inputsToMap.push(shapeName, (node.name || `axes_${layerId}`) + '_axes');
+      exporter.portIds.set(shapeName, { layerId: shapeLayerId, portId: shapeOutPort });
+    });
+
+    h.set('Flatten', ({ exporter, node, inputsToMap, layerId, layers }) => {
+      const constNode = exporter.emitDynamicConst(
+        (node.name || `flatten_shape_${layerId}`) + '_flatten_shape',
+        [0, -1],
+        [2],
+        'int64',
+      );
+      layers.addChild(constNode.layerNode);
+      inputsToMap.push((node.name || `flatten_shape_${layerId}`) + '_flatten_shape');
+    });
+
+    h.set('Transpose', ({ exporter, node, inputsToMap, layerId, layers }) => {
+      const perm = node.attributes['perm']?.value as number[];
+      if (perm) {
+        const constNode = exporter.emitDynamicConst(
+          (node.name || `transpose_perm_${layerId}`) + '_transpose_perm',
+          perm,
+          [perm.length],
+          'int64',
+        );
+        layers.addChild(constNode.layerNode);
+        inputsToMap.push((node.name || `transpose_perm_${layerId}`) + '_transpose_perm');
+      }
+    });
+
+    h.set('GatherElements', ({ exporter, node, inputsToMap, layerId, layers }) => {
+      const axis = node.attributes['axis']?.value as number;
+      if (axis !== undefined) {
+        const axisNode = exporter.emitDynamicConst(
+          (node.name || `gather_el_axis_${layerId}`) + '_gather_el_axis',
+          [axis],
+          [1],
+          'int64',
+        );
+        layers.addChild(axisNode.layerNode);
+        inputsToMap.push((node.name || `gather_el_axis_${layerId}`) + '_gather_el_axis');
+      }
+    });
+
+    h.set('ConstantOfShape', ({ exporter, node, layer, inputsToMap, layerId, layers }) => {
+      let val = [0.0];
+      let dtype: DType = 'float32';
+      const valAttr = node.attributes['value']?.value;
+      if (valAttr instanceof Tensor) {
+        const valTensor = valAttr;
+        if (valTensor.dtype === 'float32' && valTensor.data) {
+          val = [new Float32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0.0];
+          dtype = 'float32';
+        } else if (valTensor.dtype === 'int64' && valTensor.data) {
+          const bi =
+            new BigInt64Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0n;
+          val = [Number(bi)];
+          dtype = 'int64';
+        } else if (valTensor.dtype === 'int32' && valTensor.data) {
+          val = [new Int32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0];
+          dtype = 'int32';
+        }
+      }
+
+      const constNode = exporter.emitDynamicConst(
+        (node.name || `scalar_val_${layerId}`) + '_scalar_val',
+        val,
+        [1],
+        dtype,
+      );
+      layers.addChild(constNode.layerNode);
+      const originalInput = inputsToMap[0];
+      inputsToMap.length = 0;
+      inputsToMap.push((node.name || `scalar_val_${layerId}`) + '_scalar_val');
+      if (originalInput) inputsToMap.push(originalInput);
+      layer.setAttribute('type', 'Broadcast');
+    });
   }
 }

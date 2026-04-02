@@ -1,24 +1,40 @@
 """Numerical debugger for onnx9000."""
 
-from typing import Dict, Any, List
+from typing import Any
+
 import numpy as np
+from onnx9000.core.execution import ExecutionContext, SessionOptions
 from onnx9000.core.ir import Graph, Tensor
-from onnx9000.core.execution import ExecutionContext
 
 
 class NumericalDebugger:
     """Utility to compare activations between source and target models/EPs."""
 
     def __init__(self, graph: Graph):
+        """Initialize the NumericalDebugger with a graph.
+
+        Args:
+            graph: The ONNX graph to debug.
+        """
         self.graph = graph
 
-    def compare(self, inputs: Dict[str, np.ndarray], ep1: Any, ep2: Any) -> Dict[str, float]:
-        """Compare activations of all nodes between two execution providers."""
+    def compare(self, inputs: dict[str, np.ndarray], ep1: Any, ep2: Any) -> dict[str, float]:
+        """Compare activations of all nodes between two execution providers.
+
+        Args:
+            inputs: Dictionary mapping input names to numpy arrays.
+            ep1: The first execution provider (e.g., CPU).
+            ep2: The second execution provider (e.g., CUDA).
+
+        Returns:
+            Dictionary mapping tensor names to their Mean Absolute Error (MAE).
+        """
         # ep1 and ep2 should be ExecutionProviders
 
-        ctx = ExecutionContext()
+        options = SessionOptions()
+        ctx = ExecutionContext(options=options)
         # Convert numpy inputs to Tensor objects
-        input_tensors = {k: Tensor(name=k, data=v, shape=v.shape) for k, v in inputs.items()}
+        input_tensors = {k: Tensor(name=k, data=v, shape=list(v.shape)) for k, v in inputs.items()}
 
         res1 = ep1.execute(self.graph, ctx, input_tensors)
         res2 = ep2.execute(self.graph, ctx, input_tensors)

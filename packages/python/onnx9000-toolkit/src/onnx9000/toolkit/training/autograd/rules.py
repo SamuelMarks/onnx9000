@@ -2271,7 +2271,8 @@ class ResizeVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
 
-        mode = fwd_node.attributes.get("mode", "nearest").lower()
+        mode_attr = fwd_node.attributes.get("mode", "nearest")
+        mode = mode_attr.value.lower() if hasattr(mode_attr, "value") else str(mode_attr).lower()
         if mode == "nearest":
             # For nearest, we can emulate it natively using ScatterND or pooling
             # But structurally, a reverse Resize (where mode="nearest") with inverted scales is common

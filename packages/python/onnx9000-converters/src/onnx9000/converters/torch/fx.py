@@ -11,22 +11,45 @@ class FXParser:
     """Parser for torch.fx.GraphModule."""
 
     def __init__(self, gm: torch.fx.GraphModule) -> None:
-        """Initialize the FX parser."""
+        """Initialize the FX parser.
+
+        Args:
+            gm: The torch.fx.GraphModule to parse.
+        """
         self.gm = gm
         self.graph = gm.graph
         self.builder = GraphBuilder(name=getattr(gm, "__class__", "FXGraph").__name__)
         self.node_map = {}
 
     def _get_dtype(self, torch_dtype: torch.dtype) -> DType:
-        """Map Torch dtype to DType."""
-        if torch_dtype == torch.float32:
-            return DType.FLOAT32
-        if torch_dtype == torch.int64:
-            return DType.INT64
-        return DType.FLOAT32
+        """Map Torch dtype to onnx9000 DType.
+
+        Args:
+            torch_dtype: The Torch data type to map.
+
+        Returns:
+            The corresponding onnx9000 DType.
+        """
+        mapping = {
+            torch.float32: DType.FLOAT32,
+            torch.float64: DType.FLOAT64,
+            torch.int32: DType.INT32,
+            torch.int64: DType.INT64,
+            torch.bool: DType.BOOL,
+            torch.uint8: DType.UINT8,
+            torch.int8: DType.INT8,
+        }
+        return mapping.get(torch_dtype, DType.FLOAT32)
 
     def _get_shape(self, shape_tuple) -> tuple:
-        """Handle symbolic shapes (SymInt) from torch.export."""
+        """Handle symbolic shapes (SymInt) from torch.export.
+
+        Args:
+            shape_tuple: The shape tuple which may contain symbolic ints.
+
+        Returns:
+            A tuple of ints or strings for symbolic dimensions.
+        """
         if shape_tuple is None:
             return ()
         out_shape = []
@@ -38,13 +61,21 @@ class FXParser:
         return tuple(out_shape)
 
     def parse(self) -> GraphBuilder:
-        """Parse the FX graph into a GraphBuilder."""
+        """Parse the FX graph into a GraphBuilder.
+
+        Returns:
+            The populated GraphBuilder.
+        """
         for node in self.graph.nodes:
             self._parse_node(node)
         return self.builder
 
     def _parse_node(self, node: torch.fx.Node) -> None:
-        """Parse a single FX node."""
+        """Parse a single FX node and add it to the builder.
+
+        Args:
+            node: The FX node to parse.
+        """
         if node.op == "placeholder":
             # Input
             shape_info = node.meta.get("tensor_meta", None)

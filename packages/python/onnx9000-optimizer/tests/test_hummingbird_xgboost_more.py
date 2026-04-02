@@ -1,6 +1,5 @@
 """Tests the hummingbird xgboost more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.xgboost_catboost_parser import (
     handle_catboost_categorical,
@@ -43,7 +42,6 @@ class MockEstimatorEmpty:
 
 def test_xgboost_stubs():
     """Tests the xgboost stubs functionality."""
-    import onnx9000.optimizer.hummingbird.xgboost_catboost_parser
 
     res1 = parse_xgb_classifier(MockEstimator())
     assert len(res1) == 1

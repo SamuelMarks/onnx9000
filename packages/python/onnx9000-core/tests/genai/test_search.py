@@ -2,7 +2,6 @@
 
 import struct
 
-import pytest
 from onnx9000.core.ir import Tensor
 from onnx9000.genai.search import GreedySearch, MultinomialSampling
 
@@ -112,7 +111,6 @@ def test_search_missing():
 
 def test_search_38():
     """Test search 38."""
-    import math
     import struct
 
     from onnx9000.core.ir import Tensor

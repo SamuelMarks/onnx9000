@@ -15,7 +15,7 @@ export async function handleInspectCommand(args: string[]) {
 
   console.log(`Inspecting ${file}...`);
   const ext = path.extname(file).toLowerCase();
-  
+
   if (ext === '.keras' || ext === '.h5') {
     console.log(`
 Model Summary: ${path.basename(file)}

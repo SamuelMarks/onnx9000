@@ -2,7 +2,6 @@
 
 import struct
 
-import pytest
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.tflite_exporter.tf_protobuf import SavedModelGenerator, TFProtobufEncoder
 

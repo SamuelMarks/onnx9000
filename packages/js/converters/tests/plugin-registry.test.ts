@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { registerCustomKerasLayer, getCustomKerasLayerEmitter } from '../src/keras/plugin-registry.js';
+import {
+  registerCustomKerasLayer,
+  getCustomKerasLayerEmitter,
+} from '../src/keras/plugin-registry.js';
 import { Keras2OnnxConverter } from '../src/keras/index.js';
 
 describe('Keras Custom Layer Plugin Registry', () => {
   it('registers and retrieves custom layers', () => {
     const customEmitter = vi.fn().mockReturnValue([]);
     registerCustomKerasLayer('MyCustomLayer', customEmitter);
-    
+
     const retrieved = getCustomKerasLayerEmitter('MyCustomLayer');
     expect(retrieved).toBe(customEmitter);
   });
@@ -19,7 +22,7 @@ describe('Keras Custom Layer Plugin Registry', () => {
         inputs: ['in_custom'],
         outputs: ['out_custom'],
         attributes: [],
-      }
+      },
     ]);
     registerCustomKerasLayer('MagicalAttention', customEmitter);
 
@@ -30,7 +33,10 @@ describe('Keras Custom Layer Plugin Registry', () => {
         class_name: 'Sequential',
         config: {
           layers: [
-            { class_name: 'InputLayer', config: { name: 'in1', batch_input_shape: [null, 10], dtype: 'float32' } },
+            {
+              class_name: 'InputLayer',
+              config: { name: 'in1', batch_input_shape: [null, 10], dtype: 'float32' },
+            },
             { class_name: 'MagicalAttention', config: { name: 'MagicalAttention', num_heads: 8 } },
           ],
         },

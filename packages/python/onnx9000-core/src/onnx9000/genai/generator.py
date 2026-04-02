@@ -1,7 +1,11 @@
-"""Provide functionality for this module."""
+"""Base implementation of the stateful generation engine for the onnx9000 ecosystem.
+
+This module provides the core Generator class which orchestrates the prefill and
+decoding phases of autoregressive model generation.
+"""
 
 import struct
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator
 
 from ..core.ir import Tensor
 from .state import State
@@ -9,31 +13,82 @@ from .types import GeneratorParams
 
 
 class Generator:
-    """Base Generator class for stateful decoding."""
+    """Orchestrates the autoregressive generation process for a stateful model.
+
+    The Generator manages the transition between the initial prefill phase
+    and the subsequent incremental decoding steps, utilizing a state object
+    to maintain KV caches and other persistent information.
+    """
 
     def __init__(self, state: State, params: GeneratorParams):
-        """Initialize the instance."""
+        """Initialize the Generator with a specific execution state and generation parameters.
+
+        Args:
+            state: The stateful context for the model, including KV caches.
+            params: Configuration for the generation process (e.g., max_tokens, sampling).
+        """
         self.state = state
         self.params = params
 
     async def compute_logits(self, input_ids: Tensor) -> Tensor:
-        """Compute logits for the current state."""
+        """Perform forward pass to compute logits for the given input identifiers.
+
+        Args:
+            input_ids: A tensor of token IDs to process.
+
+        Returns:
+            A Tensor containing the output logits for the last token in each sequence.
+        """
         return None
 
     def compute_logits_sync(self, input_ids: Tensor) -> Tensor:
-        """Compute logits synchronously (if supported)."""
+        """Compute logits synchronously.
+
+        This is a blocking version of compute_logits for backends that do not
+        support asynchronous execution.
+
+        Args:
+            input_ids: A tensor of token IDs to process.
+
+        Returns:
+            A Tensor containing the output logits.
+        """
         return None
 
     async def prefill(self, prompt_ids: Tensor) -> Tensor:
-        """Process pre-fill phase."""
+        """Process the initial prompt to populate the KV cache and get first logits.
+
+        Args:
+            prompt_ids: The initial prompt token identifiers.
+
+        Returns:
+            The logits produced by processing the full prompt.
+        """
         return None
 
     async def decode_step(self, token_id: int) -> Tensor:
-        """Process a single decoding step."""
+        """Process a single new token and update the generation state.
+
+        Args:
+            token_id: The ID of the most recently generated or sampled token.
+
+        Returns:
+            The logits for the next token prediction.
+        """
         return Tensor(name="dummy", shape=[], data=None)
 
     async def generate(self, prompt_ids: Tensor) -> AsyncIterator[int]:
-        """High-level generation API. Yields tokens as they are generated."""
+        """Generate a sequence of tokens from a given prompt.
+
+        This is the primary entry point for generation. It yields tokens one-by-one
+        as they are produced by the model.
+
+        Args:
+            prompt_ids: The starting prompt for generation.
+
+        Yields:
+            Generated token IDs until an EOS condition is met or limits are reached.
+        """
         current_tokens = 0
         prompt_len = prompt_ids.shape[-1] if prompt_ids.shape else 0
 
@@ -60,7 +115,16 @@ class Generator:
             current_tokens += 1
 
     def sample(self, logits: Tensor) -> int:
-        """Sample the next token from logits."""
+        """Select the next token ID from the predicted probability distribution.
+
+        Currently implements greedy sampling (argmax).
+
+        Args:
+            logits: The output logits from the model's last layer.
+
+        Returns:
+            The ID of the selected next token.
+        """
         # Simple argmax greedy search
         if logits.data is None:
             return 0
@@ -87,5 +151,12 @@ class Generator:
         return max_idx if max_idx != -1 else 0
 
     def is_eos(self, token_id: int) -> bool:
-        """Execute the is_eos operation."""
+        """Check if the given token ID represents an End-Of-Sequence marker.
+
+        Args:
+            token_id: The token ID to check.
+
+        Returns:
+            True if the token is an EOS token, False otherwise.
+        """
         return False

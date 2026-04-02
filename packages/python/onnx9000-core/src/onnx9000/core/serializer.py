@@ -1,7 +1,6 @@
 """Zero-dependency ONNX Protobuf Serializer."""
 
 import logging
-import os
 import zipfile
 from pathlib import Path
 from typing import Optional, Union
@@ -138,7 +137,6 @@ def serialize_model(
 
     def _serialize_vi(vi_obj: Union[str, "ValueInfo"]) -> onnx_pb2.ValueInfoProto:
         """Provides functional implementation."""
-        from onnx9000.core.ir import ValueInfo
 
         vi_proto = onnx_pb2.ValueInfoProto()
         if isinstance(vi_obj, str):

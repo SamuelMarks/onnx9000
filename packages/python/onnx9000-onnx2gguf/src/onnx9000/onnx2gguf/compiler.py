@@ -1,10 +1,9 @@
 """Module providing onnx2gguf functionality."""
 
-import re
 from typing import Any, BinaryIO, Optional
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Tensor
 
 from .builder import GGUFTensorType, GGUFValueType, GGUFWriter
 from .naming import rename_tensor

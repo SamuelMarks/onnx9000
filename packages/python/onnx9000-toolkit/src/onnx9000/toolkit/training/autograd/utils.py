@@ -42,7 +42,6 @@ def calculate_gradient_payload_size(graph: Graph) -> int:
     profile(graph)
     # The profiler might not explicitly split out just the outputs.
     # So we compute it natively here based on graph outputs.
-    from onnx9000.core.dtypes import DType
 
     def dtype_size(dtype_str: str) -> int:
         """Execute the dtype size operation."""

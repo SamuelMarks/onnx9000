@@ -1,10 +1,7 @@
 import ctypes
-import weakref
-from typing import Any, Optional
 
 from onnx9000.tensorrt.enums import MemoryPoolType
 from onnx9000.tensorrt.ffi import ffi
-from onnx9000.tensorrt.structs import Dims
 
 
 class BuilderConfig:

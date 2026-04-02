@@ -1,11 +1,10 @@
 import ctypes
-from typing import Optional
 
 
 class Dims(ctypes.Structure):
     _fields_ = [("nbDims", ctypes.c_int32), ("d", ctypes.c_int32 * 8)]
 
-    def __init__(self, shape: List[int]):
+    def __init__(self, shape: list[int]):
         super().__init__()
         self.nbDims = len(shape)
         if self.nbDims > 8:

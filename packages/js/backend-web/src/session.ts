@@ -44,7 +44,7 @@ export class InferenceSession {
       g.name = modelData;
     }
 
-    let providers: ExecutionProvider[] = [];
+    const providers: ExecutionProvider[] = [];
     return new InferenceSession(g, providers, options);
   }
 
@@ -71,7 +71,7 @@ export class InferenceSession {
     // 183. Partition the onnx9000 graph into "WebNN Regions" and "WASM/WebGPU Regions"
     const regions = this.partitioner.partition(this.graph);
 
-    let currentTensors: Record<string, Tensor> = { ...inputs };
+    const currentTensors: Record<string, Tensor> = { ...inputs };
 
     // 187. Execute regions sequentially, copying outputs from WebNN to WASM and vice-versa
     for (const region of regions) {

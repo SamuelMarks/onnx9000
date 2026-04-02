@@ -1,19 +1,21 @@
-import logging
-import math
-from typing import Any, Optional, Union
+"""ONNX Model and Tensor Checker implementation."""
+
+from typing import Any, Optional
 
 from onnx9000.core.exceptions import UnsupportedOpError, UnsupportedOpsetError, ValidationError
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.core.registry import global_registry
+from onnx9000.core.ir import Node, Tensor
 
 
 class ValidationContext:
+    """Context for model validation, tracking errors and configuration."""
+
     def __init__(
         self,
         strict: bool = True,
         allow_unrecognized_ops: bool = False,
         skip_shape_inference: bool = False,
     ):
+        """Initialize the ValidationContext."""
         self.strict = strict
         self.allow_unrecognized_ops = allow_unrecognized_ops
         self.skip_shape_inference = skip_shape_inference
@@ -21,7 +23,10 @@ class ValidationContext:
 
 
 class SchemaRegistry:
+    """Registry for ONNX operator schemas across different domains and opsets."""
+
     def __init__(self):
+        """Initialize the SchemaRegistry with default ONNX schemas."""
         self.schemas = {}
         for i in range(1, 22):
             self.schemas[f"ai.onnx_v{i}"] = {"Conv": {"pads": "ints", "strides": "ints"}}
@@ -29,9 +34,11 @@ class SchemaRegistry:
             self.schemas[f"ai.onnx.ml_v{i}"] = {"TreeEnsembleClassifier": {}}
 
     def register_custom_schema(self, domain: str, opset: int, schema_json: dict[str, Any]):
+        """Register a custom schema for a specific domain and opset."""
         self.schemas[f"{domain}_v{opset}"] = schema_json
 
     def get_schema(self, op_type: str, opset: int, domain: str = "ai.onnx"):
+        """Get the schema for a specific operator."""
         key = f"{domain}_v{opset}"
         if key not in self.schemas:
             raise UnsupportedOpsetError(f"Unsupported opset: {key}")
@@ -41,6 +48,7 @@ class SchemaRegistry:
 
 
 def check_tensor(tensor: Tensor, ctx: ValidationContext):
+    """Check a tensor for validity against ONNX rules."""
     if tensor.data_type not in [
         "float",
         "float16",
@@ -78,6 +86,7 @@ def check_tensor(tensor: Tensor, ctx: ValidationContext):
 
 
 def check_attribute(attr_name: str, attr_val: Any, schema_type: str, ctx: ValidationContext):
+    """Check a node attribute for validity."""
     if schema_type == "ints":
         if not isinstance(attr_val, list) or not all(isinstance(x, int) for x in attr_val):
             ctx.errors.append(f"Expected ints for {attr_name}")
@@ -87,6 +96,7 @@ def check_attribute(attr_name: str, attr_val: Any, schema_type: str, ctx: Valida
 
 
 def _check_op_specific(node: Node, ctx: ValidationContext):
+    """Perform operator-specific validity checks."""
     op = node.op_type
     if op in ["Add", "Sub", "Mul", "Div"]:
         if len(node.inputs) != 2:
@@ -112,6 +122,7 @@ def _check_op_specific(node: Node, ctx: ValidationContext):
 
 
 def check_model(model: Any, ctx: Optional[ValidationContext] = None):
+    """Check a whole model for validity."""
     ctx = ctx or ValidationContext()
 
     if getattr(model, "ir_version", 0) < 3 or getattr(model, "ir_version", 0) > 10:
@@ -166,4 +177,5 @@ def check_model(model: Any, ctx: Optional[ValidationContext] = None):
 
 
 async def check_model_async(model: Any, ctx: Optional[ValidationContext] = None):
+    """Check a whole model for validity asynchronously."""
     return check_model(model, ctx)

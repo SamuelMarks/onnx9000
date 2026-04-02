@@ -1,8 +1,7 @@
 """Tests the profiler edge cases module functionality."""
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor
-from onnx9000.core.profiler import profile
+from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor
 
 
 def test_profiler_resnet50_mock():

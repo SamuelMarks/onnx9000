@@ -3,7 +3,6 @@
 import os
 
 import numpy as np
-import pytest
 from onnx9000.backends.codegen.compiler import compile_cpp, load_pybind_module
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.dtypes import DType
@@ -27,7 +26,6 @@ def test_compile_add_graph():
     code = gen.generate()
 
     so_path = compile_cpp("", use_pybind=True)  # dummy to get path
-    import os
 
     mod_name = os.path.basename(so_path).split(".")[0]
     code = gen.generate(pybind_module_name=mod_name)

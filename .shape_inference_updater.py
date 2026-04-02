@@ -1,5 +1,3 @@
-import os
-
 symbolic_code = '''"""Symbolic mathematical evaluation module for ONNX shapes."""
 
 from typing import Union, Any

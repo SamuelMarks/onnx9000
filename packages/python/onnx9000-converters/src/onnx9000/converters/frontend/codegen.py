@@ -67,6 +67,21 @@ def generate_pytorch(builder: GraphBuilder) -> str:
     return "\n".join(lines)
 
 
+def generate_keras(builder: GraphBuilder) -> str:
+    """Generate Keras source code from a GraphBuilder."""
+    lines = [
+        "import keras",
+        "from keras import layers",
+        "",
+        f"def {builder.name}_model():",
+        '    """Generated Keras model."""',
+        f"    inputs = [layers.Input(shape=tuple(i.shape[1:])) for i in {builder.inputs}]",
+        "    # Keras codegen is a work in progress",
+        "    return keras.Model(inputs=inputs, outputs=inputs)",
+    ]
+    return "\n".join(lines)
+
+
 def generate_jax(builder: GraphBuilder) -> str:
     """Generate JAX source code from a GraphBuilder."""
     lines = [

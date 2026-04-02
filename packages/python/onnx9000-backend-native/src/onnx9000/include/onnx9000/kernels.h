@@ -1,8 +1,8 @@
 #pragma once
 
 #include "tensor.h"
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 #if defined(__AVX512F__)
 #include <immintrin.h>
@@ -21,44 +21,43 @@ namespace onnx9000 {
 namespace kernels {
 
 template <typename T>
-void add(const Tensor<T>& a, const Tensor<T>& b, Tensor<T>& out) {
-    size_t n = out.size();
-    T* __restrict__ pa = a.data;
-    T* __restrict__ pb = b.data;
-    T* __restrict__ pout = out.data;
+void add(const Tensor<T> &a, const Tensor<T> &b, Tensor<T> &out) {
+  size_t n = out.size();
+  T *__restrict__ pa = a.data;
+  T *__restrict__ pb = b.data;
+  T *__restrict__ pout = out.data;
 
-    #pragma omp parallel for
-    for (size_t i = 0; i < n; ++i) {
-        #pragma GCC unroll 4
-        pout[i] = pa[i] + pb[i];
-    }
+#pragma omp parallel for
+  for (size_t i = 0; i < n; ++i) {
+#pragma GCC unroll 4
+    pout[i] = pa[i] + pb[i];
+  }
 }
 
 template <typename T>
-void mul(const Tensor<T>& a, const Tensor<T>& b, Tensor<T>& out) {
-    size_t n = out.size();
-    T* __restrict__ pa = a.data;
-    T* __restrict__ pb = b.data;
-    T* __restrict__ pout = out.data;
+void mul(const Tensor<T> &a, const Tensor<T> &b, Tensor<T> &out) {
+  size_t n = out.size();
+  T *__restrict__ pa = a.data;
+  T *__restrict__ pb = b.data;
+  T *__restrict__ pout = out.data;
 
-    #pragma omp parallel for
-    for (size_t i = 0; i < n; ++i) {
-        #pragma GCC unroll 4
-        pout[i] = pa[i] * pb[i];
-    }
+#pragma omp parallel for
+  for (size_t i = 0; i < n; ++i) {
+#pragma GCC unroll 4
+    pout[i] = pa[i] * pb[i];
+  }
 }
 
-template <typename T>
-void relu(const Tensor<T>& in, Tensor<T>& out) {
-    size_t n = out.size();
-    T* __restrict__ pin = in.data;
-    T* __restrict__ pout = out.data;
+template <typename T> void relu(const Tensor<T> &in, Tensor<T> &out) {
+  size_t n = out.size();
+  T *__restrict__ pin = in.data;
+  T *__restrict__ pout = out.data;
 
-    #pragma omp parallel for
-    for (size_t i = 0; i < n; ++i) {
-        #pragma GCC unroll 4
-        pout[i] = pin[i] > 0 ? pin[i] : 0;
-    }
+#pragma omp parallel for
+  for (size_t i = 0; i < n; ++i) {
+#pragma GCC unroll 4
+    pout[i] = pin[i] > 0 ? pin[i] : 0;
+  }
 }
 
 } // namespace kernels

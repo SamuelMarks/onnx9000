@@ -46,7 +46,10 @@ def test_cli_commands(capsys) -> None:
         strip_metadata=False,
         sort_value_info=False,
         output="out.onnx",
+        format="onnx",
         overwrite=True,
+        from_fmt="tf",
+        to_fmt="onnx",
         diff_json=False,
         prune=False,
         quantize=False,
@@ -59,12 +62,38 @@ def test_cli_commands(capsys) -> None:
         patch("onnx9000_cli.main.load_onnx") as mock_load,
         patch("onnx9000_cli.main.save_onnx"),
         patch("onnx9000_cli.main.simplify") as mock_simplify,
+        patch("importlib.util.spec_from_file_location") as mock_spec,
+        patch("importlib.util.module_from_spec") as mock_module_from_spec,
+        patch("onnx9000.converters.frontend.tracer.trace") as mock_trace,
+        patch("onnx9000.core.exporter.export_graph"),
     ):
         mock_graph = MagicMock()
         mock_graph.tensors = {}
         mock_graph.nodes = []
         mock_load.return_value = mock_graph
         mock_simplify.return_value = mock_graph
+
+        mock_tracer = MagicMock()
+        mock_tracer.to_graph.return_value = mock_graph
+        mock_trace_cm = MagicMock()
+        mock_trace_cm.__enter__.return_value = mock_tracer
+        mock_trace.return_value = mock_trace_cm
+
+        mock_s = MagicMock()
+        mock_s.loader = MagicMock()
+        mock_spec.return_value = mock_s
+
+        mock_m = MagicMock()
+        from onnx9000.converters.frontend.nn.module import Module
+
+        class MockModel(Module):
+            def forward(self, x):
+                return x
+
+        mock_m.MyModel = MockModel
+        mock_module_from_spec.return_value = mock_m
+        mock_m.__dir__ = lambda self=None: ["MyModel"]
+
         simplify_cmd(args)
         assert "Simplifying..." in capsys.readouterr().out
 
@@ -74,17 +103,17 @@ def test_cli_commands(capsys) -> None:
         quantize_cmd(args)
         assert "Quantizing test.onnx..." in capsys.readouterr().out
 
-    export_cmd(args)
-    assert "Exporting test.py..." in capsys.readouterr().out
+        export_cmd(args)
+        assert "Exporting test.py" in capsys.readouterr().out
 
-    convert_cmd(args)
-    assert "Converting from tf to onnx..." in capsys.readouterr().out
+        convert_cmd(args)
+        assert "Converting from tf" in capsys.readouterr().out
 
-    serve_cmd(args)
-    assert "Serving test.onnx on local server..." in capsys.readouterr().out
+        serve_cmd(args)
+        assert "Serving test.onnx on local server..." in capsys.readouterr().out
 
-    compile_cmd(args)
-    assert "Compiling test.onnx..." in capsys.readouterr().out
+        compile_cmd(args)
+        assert "Compiling test.onnx..." in capsys.readouterr().out
 
 
 @patch("sys.argv", ["onnx9000", "inspect", "model.onnx"])

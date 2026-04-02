@@ -267,7 +267,7 @@ class IdentityEliminationPass(GraphPass):
                                 ):
                                     new_c1_data = t1_data * t2_data
                                     new_c1_name = f"{node.name}_dist_c1"
-                                    from onnx9000.core.ir import Attribute, Constant, Node
+                                    from onnx9000.core.ir import Constant, Node
 
                                     new_c1 = Constant(
                                         new_c1_name,

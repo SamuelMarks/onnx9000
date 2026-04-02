@@ -2,10 +2,9 @@
 
 import struct
 
-import pytest
 from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Constant, Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def test_ast_builder_edges():

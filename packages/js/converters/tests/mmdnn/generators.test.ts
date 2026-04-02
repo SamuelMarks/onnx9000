@@ -12,6 +12,12 @@ describe('Fallback Generators', () => {
     graph.inputs = [{ name: 'input_1', type: 'tensor', shape: [1, 3, 224, 224] }];
     graph.outputs = [{ name: 'output_1', type: 'tensor', shape: [1, 1000] }];
     graph.valueInfo = [{ name: 'weight_1', type: 'tensor', shape: [32, 3, 3, 3] }];
+    graph.tensors['weight_1'] = {
+      name: 'weight_1',
+      shape: [32, 3, 3, 3],
+      dataType: 1,
+      data: new Uint8Array(32 * 3 * 3 * 3 * 4),
+    } as any;
 
     const convNode = new Node(
       'Conv',
@@ -156,11 +162,11 @@ describe('Fallback Generators', () => {
     expect(code).toContain('MaxPooling2D(');
     expect(code).toContain('Flatten(');
     expect(code).toContain('Dense(');
-    expect(code).toContain("Activation('softmax'");
+    expect(code).toContain('ops.softmax(');
     expect(code).toContain('GlobalAveragePooling2D(');
     expect(code).toContain('Add(');
     expect(code).toContain('AveragePooling2D(');
-    expect(code).toContain('matmul_out  # Fallback for UnknownOp');
+    expect(code).toContain('Fallback for UnknownOp');
   });
 
   it('should handle empty graph gracefully', () => {

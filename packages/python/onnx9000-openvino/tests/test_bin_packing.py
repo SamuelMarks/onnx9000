@@ -1,7 +1,7 @@
 import struct
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.openvino.exporter import OpenVinoExporter
 
 

@@ -38,7 +38,9 @@ export class DynamicBatcher {
       if (this.queue.length >= this.maxBatchSize) {
         this.flush();
       } else if (!this.timeoutHandle) {
-        this.timeoutHandle = setTimeout(() => this.flush(), this.batchTimeoutMs);
+        this.timeoutHandle = setTimeout(() => {
+          this.flush();
+        }, this.batchTimeoutMs);
       }
     });
   }

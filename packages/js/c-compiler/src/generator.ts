@@ -21,9 +21,14 @@ export class CGenerator {
   }
 
   private getTensorSize(name: string): number {
-    const v = this.graph.inputs.find((x) => x.name === name) || this.graph.outputs.find((x) => x.name === name);
+    const v =
+      this.graph.inputs.find((x) => x.name === name) ||
+      this.graph.outputs.find((x) => x.name === name);
     if (v) {
-      return v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1) || 256;
+      return (
+        v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1) ||
+        256
+      );
     }
     const t = this.graph.tensors[name];
     if (t) {
@@ -85,15 +90,20 @@ export class CGenerator {
     intermediates.delete(firstInput);
 
     for (const intermediate of intermediates) {
-      const originalName = Array.from(intermediates).find(n => this.sanitize(n) === intermediate) || intermediate;
+      const originalName =
+        Array.from(intermediates).find((n) => this.sanitize(n) === intermediate) || intermediate;
       const size = this.getTensorSize(originalName);
-      
+
       const tensor = this.graph.tensors[originalName];
       if (tensor && tensor.data) {
         const maxVals = Math.min(size, 1024); // Limit inline weights for demo
         const values: string[] = [];
         if (tensor.data instanceof Uint8Array) {
-          const dv = new DataView(tensor.data.buffer, tensor.data.byteOffset, tensor.data.byteLength);
+          const dv = new DataView(
+            tensor.data.buffer,
+            tensor.data.byteOffset,
+            tensor.data.byteLength,
+          );
           for (let i = 0; i < maxVals; i++) {
             values.push(dv.getFloat32(i * 4, true).toFixed(6) + 'f');
           }
@@ -129,11 +139,11 @@ export class CGenerator {
       if (outputs.length === 0) continue;
 
       const out = outputs[0];
-      const outSize = this.getTensorSize(node.outputs[0] || "");
-      
+      const outSize = this.getTensorSize(node.outputs[0] || '');
+
       const in1 = inputs.length > 0 ? inputs[0] : '0';
-      const in1Size = inputs.length > 0 ? this.getTensorSize(node.inputs[0] || "") : 256;
-      
+      const in1Size = inputs.length > 0 ? this.getTensorSize(node.inputs[0] || '') : 256;
+
       const in2 = inputs.length > 1 ? inputs[1] : '0';
 
       lines.push(`    // ${op} -> ${out} (size: ${outSize})`);
@@ -153,14 +163,18 @@ export class CGenerator {
         case 'Conv2D':
           lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
           lines.push(`      float sum = 0.0f;`);
-          lines.push(`      for (int j = 0; j < 9; j++) sum += ${in1}[(i*9 + j) % ${in1Size}] * ${in2}[j % 9];`);
+          lines.push(
+            `      for (int j = 0; j < 9; j++) sum += ${in1}[(i*9 + j) % ${in1Size}] * ${in2}[j % 9];`,
+          );
           lines.push(`      ${out}[i] = sum;`);
           lines.push(`    }`);
           break;
         case 'MaxPool':
         case 'MaxPooling2D':
           lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
-          lines.push(`      ${out}[i] = ${in1}[(i*2) % ${in1Size}] > ${in1}[(i*2+1) % ${in1Size}] ? ${in1}[(i*2) % ${in1Size}] : ${in1}[(i*2+1) % ${in1Size}];`);
+          lines.push(
+            `      ${out}[i] = ${in1}[(i*2) % ${in1Size}] > ${in1}[(i*2+1) % ${in1Size}] ? ${in1}[(i*2) % ${in1Size}] : ${in1}[(i*2+1) % ${in1Size}];`,
+          );
           lines.push(`    }`);
           break;
         case 'GlobalAveragePool':
@@ -180,13 +194,17 @@ export class CGenerator {
         case 'InnerProduct':
           lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
           lines.push(`      float sum = 0.0f;`);
-          lines.push(`      for (int k = 0; k < ${in1Size}; k++) sum += ${in1}[k] * ${in2}[(i * ${in1Size} + k) % 1024];`);
+          lines.push(
+            `      for (int k = 0; k < ${in1Size}; k++) sum += ${in1}[k] * ${in2}[(i * ${in1Size} + k) % 1024];`,
+          );
           lines.push(`      ${out}[i] = sum;`);
           lines.push(`    }`);
           break;
         case 'Softmax':
           lines.push(`    float max_val_${out} = ${in1}[0];`);
-          lines.push(`    for (int i = 1; i < ${in1Size}; i++) if (${in1}[i] > max_val_${out}) max_val_${out} = ${in1}[i];`);
+          lines.push(
+            `    for (int i = 1; i < ${in1Size}; i++) if (${in1}[i] > max_val_${out}) max_val_${out} = ${in1}[i];`,
+          );
           lines.push(`    float sum_exp_${out} = 0;`);
           lines.push(`    for (int i = 0; i < ${outSize}; i++) {`);
           lines.push(`      ${out}[i] = expf(${in1}[i % ${in1Size}] - max_val_${out});`);

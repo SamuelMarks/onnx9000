@@ -1,3 +1,6 @@
+/**
+ * Error thrown for general safetensors issues.
+ */
 export class SafetensorsError extends Error {
   constructor(message: string) {
     super(message);
@@ -5,19 +8,58 @@ export class SafetensorsError extends Error {
   }
 }
 
+/**
+ * Error thrown when the safetensors header size exceeds the allowed limit.
+ */
 export class SafetensorsHeaderTooLargeError extends SafetensorsError {}
+/**
+ * Error thrown when the safetensors header is invalid (e.g. not UTF-8).
+ */
 export class SafetensorsInvalidHeaderError extends SafetensorsError {}
+/**
+ * Error thrown when the safetensors header JSON is invalid.
+ */
 export class SafetensorsInvalidJSONError extends SafetensorsError {}
+/**
+ * Error thrown when duplicate tensor names are found in the header.
+ */
 export class SafetensorsDuplicateKeyError extends SafetensorsError {}
+/**
+ * Error thrown when tensor data offsets are invalid (e.g. begin > end).
+ */
 export class SafetensorsInvalidOffsetError extends SafetensorsError {}
+/**
+ * Error thrown when tensor data offsets are out of file boundaries.
+ */
 export class SafetensorsOutOfBoundsError extends SafetensorsError {}
+/**
+ * Error thrown when tensor data regions overlap.
+ */
 export class SafetensorsOverlapError extends SafetensorsError {}
+/**
+ * Error thrown when tensor data is not properly aligned.
+ */
 export class SafetensorsAlignmentError extends SafetensorsError {}
+/**
+ * Error thrown when an invalid or unsupported dtype is encountered.
+ */
 export class SafetensorsInvalidDtypeError extends SafetensorsError {}
+/**
+ * Error thrown when there is a mismatch in tensor shape or volume.
+ */
 export class SafetensorsShapeMismatchError extends SafetensorsError {}
+/**
+ * Error thrown when the safetensors file is empty.
+ */
 export class SafetensorsFileEmptyError extends SafetensorsError {}
+/**
+ * Error thrown when the safetensors file is too small to contain a header.
+ */
 export class SafetensorsFileTooSmallError extends SafetensorsError {}
 
+/**
+ * Supported data types in safetensors format.
+ */
 export type Dtype =
   | 'F64'
   | 'F32'
@@ -33,6 +75,9 @@ export type Dtype =
   | 'U8'
   | 'BOOL';
 
+/**
+ * Sizes in bytes for each supported dtype.
+ */
 const DTYPE_SIZES: Record<Dtype, number> = {
   F64: 8,
   F32: 4,
@@ -49,6 +94,11 @@ const DTYPE_SIZES: Record<Dtype, number> = {
   BOOL: 1,
 };
 
+/**
+ * Calculates the total number of elements in a shape.
+ * @param shape Dimensions array
+ * @returns Total element count
+ */
 function calculateVolume(shape: number[]): number {
   if (!Array.isArray(shape)) {
     throw new SafetensorsShapeMismatchError('Shape must be an array');
@@ -63,20 +113,79 @@ function calculateVolume(shape: number[]): number {
   return vol;
 }
 
+/**
+ * Metadata for a single tensor in a safetensors file.
+ */
 export interface TensorInfo {
   dtype: Dtype;
   shape: number[];
   data_offsets: [number, number];
 }
 
+/**
+ * Interface for WebGPU Buffer objects.
+ */
+export interface GPUBuffer {
+  getMappedRange(): ArrayBuffer;
+  unmap(): void;
+}
+
+/**
+ * Interface for WebGPU Device objects.
+ */
+export interface GPUDevice {
+  createBuffer(descriptor: { size: number; usage: number; mappedAtCreation: boolean }): GPUBuffer;
+  queue: {
+    writeBuffer(
+      buffer: GPUBuffer,
+      bufferOffset: number,
+      data: ArrayBuffer | ArrayBufferView,
+      dataOffset: number,
+      size: number,
+    ): void;
+  };
+}
+
+/**
+ * Interface for Pyodide or Emscripten modules.
+ */
+export interface EmscriptenModule {
+  _malloc(size: number): number;
+  HEAPU8: Uint8Array;
+}
+
+/**
+ * Interface for Pyodide instance.
+ */
+export interface PyodideInstance {
+  _module: EmscriptenModule;
+  HEAPU8: Uint8Array;
+}
+
+/**
+ * Interface for Emscripten FS.
+ */
+export interface EmscriptenFS {
+  lookupPath(path: string): { node: { contents: Uint8Array } };
+}
+
+/**
+ * Represents a parsed safetensors file.
+ */
 export class SafeTensors {
   public readonly metadata: Record<string, string>;
   public readonly metadataLength: number;
   public readonly tensors: Record<string, TensorInfo>;
   private readonly buffer: ArrayBuffer | SharedArrayBuffer;
   private readonly headerSize: number;
+  private readonly endiannessOverride?: 'LE' | 'BE' | undefined;
 
-  constructor(buffer: ArrayBuffer | SharedArrayBuffer) {
+  /**
+   * Initializes SafeTensors from a buffer.
+   * @param buffer The file content buffer
+   * @param endianness Optional endianness override for testing
+   */
+  constructor(buffer: ArrayBuffer | SharedArrayBuffer, endianness?: 'LE' | 'BE') {
     if (buffer.byteLength === 0) {
       throw new SafetensorsFileEmptyError('File is empty');
     }
@@ -85,6 +194,7 @@ export class SafeTensors {
     }
 
     this.buffer = buffer;
+    this.endiannessOverride = endianness;
     const view = new DataView(buffer);
 
     // Read 8-byte little-endian unsigned integer
@@ -108,7 +218,7 @@ export class SafeTensors {
       throw new SafetensorsInvalidHeaderError(`Invalid UTF-8 header: ${e}`);
     }
 
-    let headerObj: Record<string, any>;
+    let headerObj: Record<string, TensorInfo | Record<string, string>>;
     try {
       headerObj = JSON.parse(headerStr);
       if (typeof headerObj !== 'object' || headerObj === null || Array.isArray(headerObj)) {
@@ -118,7 +228,7 @@ export class SafeTensors {
       throw new SafetensorsInvalidJSONError(`Invalid JSON header: ${e}`);
     }
 
-    this.metadata = headerObj.__metadata__ || {};
+    this.metadata = (headerObj.__metadata__ as Record<string, string>) || {};
     this.metadataLength = Object.keys(this.metadata).length;
 
     for (const [k, v] of Object.entries(this.metadata)) {
@@ -135,7 +245,8 @@ export class SafeTensors {
     this.tensors = {};
     const seenRegions: [number, number][] = [];
 
-    for (const [name, info] of Object.entries(headerObj)) {
+    for (const [name, infoRaw] of Object.entries(headerObj)) {
+      const info = infoRaw as TensorInfo;
       if (this.tensors[name]) {
         throw new SafetensorsDuplicateKeyError(`Duplicate tensor name: ${name}`);
       }
@@ -184,12 +295,18 @@ export class SafeTensors {
     }
   }
 
+  /**
+   * Retrieves raw bytes for a tensor.
+   * @param name Tensor name
+   * @param copy Whether to return a copy
+   * @returns Raw data as Uint8Array
+   */
   public getTensor(name: string, copy: boolean = false): Uint8Array {
     if (!this.tensors[name]) {
       throw new Error(`Tensor ${name} not found`);
     }
 
-    const info = this.tensors[name];
+    const info = this.tensors[name]!;
     const [begin, end] = info.data_offsets;
     const absBegin = 8 + this.headerSize + begin;
     const length = end - begin;
@@ -205,6 +322,12 @@ export class SafeTensors {
     return new Uint8Array(this.buffer, absBegin, length);
   }
 
+  /**
+   * Retrieves a typed array for a tensor.
+   * @param name Tensor name
+   * @param copy Whether to return a copy
+   * @returns Appropriately typed array
+   */
   public getTypedArray(
     name: string,
     copy: boolean = false,
@@ -223,18 +346,17 @@ export class SafeTensors {
     if (!info) throw new Error(`Tensor ${name} not found`);
     const uint8 = this.getTensor(name, copy);
     let { buffer, byteOffset, byteLength } = uint8;
-    let requiresCopy = false;
 
     const enforceAlignment = (elementSize: number) => {
-      if (byteOffset % elementSize !== 0 || (getEndianness() === 'BE' && elementSize > 1)) {
+      const currentEndianness = this.endiannessOverride || getEndianness();
+      if (byteOffset % elementSize !== 0 || (currentEndianness === 'BE' && elementSize > 1)) {
         // Unaligned buffer fallback or Big-Endian fallback: explicitly copy to aligned array
         const slice = new Uint8Array(buffer.slice(byteOffset, byteOffset + byteLength));
         buffer = slice.buffer;
         byteOffset = slice.byteOffset;
         byteLength = slice.byteLength;
-        requiresCopy = true;
 
-        if (getEndianness() === 'BE' && elementSize > 1) {
+        if (currentEndianness === 'BE' && elementSize > 1) {
           swapEndianness(buffer, byteOffset, byteLength, elementSize);
         }
       }
@@ -287,18 +409,26 @@ export class SafeTensors {
     }
   }
 
+  /**
+   * Gets all tensor names.
+   * @returns Array of tensor names
+   */
   public keys(): string[] {
     return Object.keys(this.tensors);
   }
 
   /**
    * Support zero-copy injection of weights directly into WebGPU GPUBuffer natively.
+   * @param device WebGPU device
+   * @param name Tensor name
+   * @param usage Buffer usage flags
+   * @returns WebGPU buffer
    */
   public createGPUBuffer(
-    device: any,
+    device: GPUDevice,
     name: string,
     usage: number = 4 /* STORAGE */ | 128 /* COPY_DST */,
-  ): any {
+  ): GPUBuffer {
     const tensor = this.getTensor(name);
     const alignedSize = Math.ceil(tensor.byteLength / 4) * 4; // WebGPU requires 4-byte aligned mapped buffers
 
@@ -315,23 +445,29 @@ export class SafeTensors {
     return gpuBuffer;
   }
 
+  /**
+   * Injects tensor data into an existing GPU queue.
+   * @param device WebGPU device
+   * @param gpuBuffer Target GPU buffer
+   * @param name Tensor name
+   * @param bufferOffset Offset in the target buffer
+   */
   public injectToGPUQueue(
-    device: any,
-    gpuBuffer: any,
+    device: GPUDevice,
+    gpuBuffer: GPUBuffer,
     name: string,
     bufferOffset: number = 0,
   ): void {
     const tensor = this.getTensor(name);
-    device.queue.writeBuffer(
-      gpuBuffer,
-      bufferOffset,
-      tensor.buffer,
-      tensor.byteOffset,
-      tensor.byteLength,
-    );
+    device.queue.writeBuffer(gpuBuffer, bufferOffset, tensor, 0, tensor.byteLength);
   }
 }
 
+/**
+ * Fetches the header of a safetensors file from a URL.
+ * @param url File URL
+ * @returns Header information
+ */
 export async function fetchSafetensorsHeader(url: string) {
   if (url.startsWith('hf://')) {
     url = url.replace('hf://', 'https://huggingface.co/');
@@ -380,7 +516,10 @@ export async function fetchSafetensorsHeader(url: string) {
 
     // Emulate streaming by extracting everything from the downloaded buffer
     return {
-      headerObj: { ...st.tensors, __metadata__: st.metadata },
+      headerObj: { ...st.tensors, __metadata__: st.metadata } as Record<
+        string,
+        TensorInfo | Record<string, string>
+      >,
       headerSize: 0, // Not needed since we have full buffer
       fullBuffer: fullBuf, // Expose this so chunks don't fetch again
     };
@@ -409,7 +548,7 @@ export async function fetchSafetensorsHeader(url: string) {
   const bufHeader = await resHeader.arrayBuffer();
   const decoder = new TextDecoder('utf-8', { fatal: true });
   const headerStr = decoder.decode(bufHeader);
-  let headerObj: Record<string, any>;
+  let headerObj: Record<string, TensorInfo | Record<string, string>>;
   try {
     headerObj = JSON.parse(headerStr);
     if (typeof headerObj !== 'object' || headerObj === null || Array.isArray(headerObj)) {
@@ -421,6 +560,16 @@ export async function fetchSafetensorsHeader(url: string) {
   return { headerObj, headerSize, fullBuffer: undefined };
 }
 
+/**
+ * Fetches a specific chunk of data from a safetensors file.
+ * @param url File URL
+ * @param headerSize Size of the header
+ * @param begin Offset start
+ * @param end Offset end
+ * @param fullBuffer Pre-fetched full buffer if available
+ * @param onProgress Callback for progress updates
+ * @returns Chunk data as Uint8Array
+ */
 export async function fetchSafetensorsChunk(
   url: string,
   headerSize: number,
@@ -576,6 +725,12 @@ export async function fetchSafetensorsChunk(
   }
 }
 
+/**
+ * Generator that yields tensors from a safetensors file.
+ * @param url File URL
+ * @param options Loading options
+ * @yields Tensor data and info
+ */
 export async function* loadTensors(
   url: string,
   options: { concurrency?: number; cleanupViews?: boolean; pattern?: string | RegExp } = {},
@@ -616,7 +771,7 @@ export async function* loadTensors(
       if (options.cleanupViews && typeof result.data !== 'undefined') {
         // By reassigning we lose the view, but we can't force GC in pure JS.
         // It helps V8 discard the huge buffers when looping.
-        (result as any).data = null;
+        (result as { name: string; info: TensorInfo; data: Uint8Array | null }).data = null;
       }
     }
 
@@ -624,6 +779,11 @@ export async function* loadTensors(
   }
 }
 
+/**
+ * Pads a buffer to 8-byte alignment.
+ * @param buffer Input buffer
+ * @returns Padded buffer
+ */
 export function padTo8Bytes(buffer: Uint8Array): Uint8Array {
   const remainder = buffer.byteLength % 8;
   if (remainder === 0) return buffer;
@@ -636,6 +796,9 @@ export function padTo8Bytes(buffer: Uint8Array): Uint8Array {
 /**
  * Creates an ArrayBuffer or SharedArrayBuffer with a graceful fallback to ArrayBuffer
  * if SharedArrayBuffer is blocked by Cross-Origin-Opener-Policy (COOP) headers.
+ * @param byteLength Size in bytes
+ * @param shared Whether to try creating a SharedArrayBuffer
+ * @returns New buffer
  */
 export function createBuffer(
   byteLength: number,
@@ -654,11 +817,17 @@ export function createBuffer(
   return new ArrayBuffer(byteLength);
 }
 
+/**
+ * Serializes tensors into safetensors format.
+ * @param tensors Map of tensors to save
+ * @param metadata Optional file metadata
+ * @returns Serialized bytes as Uint8Array
+ */
 export function saveSafetensors(
   tensors: Record<string, Uint8Array | { data: Uint8Array; dtype?: string; shape?: number[] }>,
   metadata?: Record<string, string>,
 ): Uint8Array {
-  const header: Record<string, any> = {};
+  const header: Record<string, TensorInfo | Record<string, string>> = {};
   const meta = metadata || {};
   if (!meta['format']) meta['format'] = 'pt';
   if (!meta['version']) meta['version'] = '1.0';
@@ -688,7 +857,7 @@ export function saveSafetensors(
 
     const size = data.byteLength;
     header[name] = {
-      dtype: dtype,
+      dtype: dtype as Dtype,
       shape: shape,
       data_offsets: [offset, offset + size],
     };
@@ -736,6 +905,11 @@ export function saveSafetensors(
   return outBuffer;
 }
 
+/**
+ * Checks if a buffer contains valid safetensors data.
+ * @param buffer Input buffer
+ * @returns True if valid
+ */
 export function checkSafetensors(buffer: ArrayBuffer | SharedArrayBuffer): boolean {
   try {
     new SafeTensors(buffer);
@@ -746,6 +920,10 @@ export function checkSafetensors(buffer: ArrayBuffer | SharedArrayBuffer): boole
   }
 }
 
+/**
+ * Detects system endianness.
+ * @returns 'LE' or 'BE'
+ */
 export function getEndianness(): 'LE' | 'BE' {
   const arr32 = new Uint32Array([0x12345678]);
   const arr8 = new Uint8Array(arr32.buffer);
@@ -754,6 +932,13 @@ export function getEndianness(): 'LE' | 'BE' {
   return 'LE'; // Default assume LE
 }
 
+/**
+ * Swaps endianness in a buffer.
+ * @param buffer Target buffer
+ * @param byteOffset Offset start
+ * @param byteLength Length to swap
+ * @param elementSize Size of each element
+ */
 export function swapEndianness(
   buffer: ArrayBuffer | SharedArrayBuffer,
   byteOffset: number,
@@ -765,29 +950,40 @@ export function swapEndianness(
     for (let j = 0; j < Math.floor(elementSize / 2); j++) {
       const idx1 = i + j;
       const idx2 = i + elementSize - 1 - j;
-      const tmp = view[idx1] as number;
-      view[idx1] = view[idx2] as number;
+      const tmp = view[idx1]!;
+      view[idx1] = view[idx2]!;
       view[idx2] = tmp;
     }
   }
 }
+
+/**
+ * Decodes bfloat16 data into float32.
+ * @param uint16Array Input data
+ * @returns Decoded float32 array
+ */
 export function decodeBfloat16(uint16Array: Uint16Array): Float32Array {
   const float32 = new Float32Array(uint16Array.length);
   const float32view = new DataView(float32.buffer);
   const isLE = getEndianness() === 'LE';
   for (let i = 0; i < uint16Array.length; i++) {
-    const h = uint16Array[i] as number;
+    const h = uint16Array[i]!;
     float32view.setUint16(i * 4 + (isLE ? 2 : 0), h, isLE);
     float32view.setUint16(i * 4 + (isLE ? 0 : 2), 0, isLE);
   }
   return float32;
 }
 
+/**
+ * Decodes float16 data into float32.
+ * @param uint16Array Input data
+ * @returns Decoded float32 array
+ */
 export function decodeFloat16(uint16Array: Uint16Array): Float32Array {
   const float32 = new Float32Array(uint16Array.length);
   const uint32 = new Uint32Array(float32.buffer);
   for (let i = 0; i < uint16Array.length; i++) {
-    const h = uint16Array[i] as number;
+    const h = uint16Array[i]!;
     const sign = (h & 0x8000) << 16;
     let exp = (h & 0x7c00) >> 10;
     let frac = h & 0x03ff;
@@ -818,21 +1014,40 @@ export function decodeFloat16(uint16Array: Uint16Array): Float32Array {
   return float32;
 }
 
-export function _mallocSafetensors(byteLength: number, module: any): any {
+/**
+ * Allocates memory in an Emscripten module.
+ * @param byteLength Number of bytes
+ * @param module Emscripten module
+ * @returns Pointer to allocated memory
+ */
+export function _mallocSafetensors(byteLength: number, module: EmscriptenModule): number {
   // Implement Emscripten _malloc wrapper in JS to pre-allocate exact payload sizes safely
   const ptr = module._malloc(byteLength);
   if (!ptr) throw new Error('Emscripten OOM (Out of Memory) allocating tensor payload');
   return ptr;
 }
 
-export function passToPyodideWASM(tensor: Uint8Array, pyodide: any): number {
+/**
+ * Passes a tensor to Pyodide WASM memory.
+ * @param tensor Tensor data
+ * @param pyodide Pyodide instance
+ * @returns Pointer to data in WASM memory
+ */
+export function passToPyodideWASM(tensor: Uint8Array, pyodide: PyodideInstance): number {
   // Pass Safetensors pointers directly into Pyodide WASM memory
   const ptr = _mallocSafetensors(tensor.byteLength, pyodide._module);
   const wasmMemory = pyodide.HEAPU8;
   wasmMemory.set(tensor, ptr);
   return ptr;
 }
-export function extractFromPyodideFS(FS: any, path: string): SafeTensors {
+
+/**
+ * Extracts a SafeTensors object from Pyodide's virtual filesystem.
+ * @param FS Emscripten FS
+ * @param path File path
+ * @returns Parsed SafeTensors object
+ */
+export function extractFromPyodideFS(FS: EmscriptenFS, path: string): SafeTensors {
   const node = FS.lookupPath(path).node;
   // In emscripten/pyodide FS, a file node's contents are usually under `node.contents` which is a Uint8Array.
   if (!node || !node.contents) throw new Error('Could not extract Uint8Array from Pyodide FS');
@@ -848,9 +1063,13 @@ export function extractFromPyodideFS(FS: any, path: string): SafeTensors {
   return new SafeTensors(node.contents.slice().buffer); // Simulated zero copy for the sake of abstraction
 }
 
+/**
+ * Benchmarks parsing a safetensors header with 10,000 keys.
+ * @returns Benchmark results
+ */
 export async function benchmark10kKeys() {
   // Generate a massive header with 10,000 keys
-  const header: Record<string, any> = {};
+  const header: Record<string, TensorInfo> = {};
   for (let i = 0; i < 10000; i++) {
     header[`key_${i}`] = { dtype: 'F64', shape: [1], data_offsets: [i * 8, (i + 1) * 8] };
   }

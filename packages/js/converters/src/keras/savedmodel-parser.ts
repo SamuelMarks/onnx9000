@@ -1,5 +1,3 @@
-import { JsonObject } from './tfjs-parser.js';
-
 /**
  * Extracted raw representations from a TF SavedModel directory
  */
@@ -42,7 +40,7 @@ export function parseSavedModel(files: Record<string, Uint8Array>): SavedModel {
     savedModelPb,
     variablesData,
   };
-  
+
   if (variablesIndex !== undefined) {
     result.variablesIndex = variablesIndex;
   }

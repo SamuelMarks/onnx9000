@@ -3,12 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import onnx9000.tensorrt as trt
 import onnx9000.tensorrt.builder as trt_builder
-import onnx9000.tensorrt.ffi as trt_ffi
 import onnx9000.tensorrt.network as trt_network
-import onnx9000.tensorrt.ops as trt_ops
-import onnx9000.tensorrt.ops_conv as trt_ops_conv
-import onnx9000.tensorrt.ops_dim as trt_ops_dim
-import onnx9000.tensorrt.ops_matmul as trt_ops_matmul
 
 
 class TestTensorRTFFI(unittest.TestCase):

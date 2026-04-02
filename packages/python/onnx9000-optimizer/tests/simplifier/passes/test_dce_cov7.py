@@ -1,9 +1,8 @@
 """Module providing functionality for test_dce_cov7."""
 
 import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
 def test_string_fallback():

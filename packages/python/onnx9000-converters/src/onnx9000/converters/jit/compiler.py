@@ -134,13 +134,9 @@ def compile_wasm(graph: Graph, out_dir: Path) -> Path:
     if not shutil.which(compiler):
         compiler = "emcc"  # fallback
         if not shutil.which(compiler):
-            logger.warning(
-                f"Emscripten compiler '{compiler}' not found. Skipping compilation, but .cpp is generated."
+            raise CompilationError(
+                f"Emscripten compiler '{compiler}' not found. Please install it to use JIT compilation to WASM."
             )
-            # Create a dummy .js file to satisfy the return type if we just want to see it "work" in spirit
-            with open(js_path, "w") as f:
-                f.write("// Emscripten not found. Compilation skipped.\n")
-            return js_path
 
     # Locate include directory
     import onnx9000.backends.codegen as codegen

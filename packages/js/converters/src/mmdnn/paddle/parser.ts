@@ -1,20 +1,31 @@
-/* eslint-disable */
-// @ts-nocheck
+/**
+ * Parser for PaddlePaddle models.
+ */
 export class PaddleParser {
-  public parseModel(modelJson: object): object {
-    // A simple parser stub that accepts a JSON structure
-    // simulating PaddlePaddle's ProgramDesc.
+  /**
+   * Parses a PaddlePaddle model description.
+   * @param modelJson The model JSON string or object.
+   * @returns The parsed model object.
+   */
+  public parseModel(modelJson: string | object): object {
     if (typeof modelJson === 'string') {
-      return JSON.parse(modelJson);
+      try {
+        return JSON.parse(modelJson) as object;
+      } catch (e) {
+        return { blocks: [] };
+      }
     }
     return modelJson;
   }
 
+  /**
+   * Parses PaddlePaddle binary weights.
+   * @param weightsBuffer The binary weights buffer.
+   * @returns An object representing the parsed weights.
+   */
   public parseWeights(weightsBuffer: Uint8Array): object {
-    // Stub for parsing binary weight formats
     return {
       byteLength: weightsBuffer.byteLength,
-      // In a real implementation, we would parse the LodTensor parameters here
     };
   }
 }

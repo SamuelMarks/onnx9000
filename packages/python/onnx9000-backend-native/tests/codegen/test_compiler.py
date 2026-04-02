@@ -1,6 +1,5 @@
 """Tests for the codegen compiler utilities."""
 
-import importlib
 import subprocess
 import sys
 from unittest.mock import patch

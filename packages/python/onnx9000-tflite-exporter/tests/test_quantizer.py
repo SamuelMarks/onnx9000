@@ -2,7 +2,6 @@
 
 import struct
 
-import pytest
 from onnx9000.core.ir import Graph, Tensor, ValueInfo
 from onnx9000.tflite_exporter.quantization.quantizer import Quantizer
 

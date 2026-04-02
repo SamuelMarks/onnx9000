@@ -15,6 +15,9 @@ export class PolyfillMLGraph implements MLGraph {
   }
 
   // 159-168. MLTensor lifecycle (destroy)
+  /**
+   * WebNN Destroy operation.
+   */
   destroy(): void {
     // Release resources, clear graph
     this.onnxGraph = new Graph('destroyed');

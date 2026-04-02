@@ -66,7 +66,7 @@ export function reconstructONNX(reader: GGUFReader): Graph {
     const shape = [...info.shape].reverse().map((x) => Number(x));
     const dtype = reverseMapType(info.type);
 
-    const t = new Tensor(onnxName, shape, dtype as any);
+    const t = new Tensor(onnxName, shape, dtype);
     t.data = reader.getTensor(name);
     g.addTensor(t);
     g.initializers.push(onnxName);

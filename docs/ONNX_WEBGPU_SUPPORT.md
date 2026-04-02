@@ -1,45 +1,49 @@
-# ONNX Ops Supported by WebGPU Backend
+# WebGPU-Native ONNX Support
 
-> **Ecosystem Context:** `onnx9000` operates as a zero-dependency, Polyglot Monorepo. Through its integrated Web IDE (`apps/sphinx-demo-ui`), it supports real-time transpilation and offline conversions across C++, PyTorch, MLIR, CoreML, and Caffe targets without native backends.
+`onnx9000` is built for modern hardware. Our **WebGPU-Native** backend (`@onnx9000/backend-web` in JS, or `onnx9000-backend-web` via Pyodide in Python) translates the `onnx9000-core` IR directly into optimized WGSL compute shaders.
 
-The onnx9000 pure Python authoring API can generate any ONNX operator dynamically. However, when executing those models via the WebGPU backend in Pyodide, the following opset 18+ subset is supported:
+> **Ecosystem Context:** As a **zero-dependency, Polyglot Monorepo**, `onnx9000` enables high-performance inference in the browser without relying on heavy C++ runtimes or official ONNX Runtime binaries.
 
-## Mathematics
+## Supported Operators (Opset 18+)
 
-- Add
-- Sub
-- Mul
-- Div
-- Pow
-- MatMul
-- Gemm
-- Neg
+The following subset of ONNX operators is currently optimized for WebGPU execution:
 
-## Neural Network
+### Mathematics
 
-- Relu
-- Sigmoid
-- Tanh
-- Conv
-- MaxPool
-- AveragePool
-- Softmax
+- **Add, Sub, Mul, Div, Pow**: Element-wise operations with broadcast support.
+- **MatMul, Gemm**: Tiled matrix multiplication optimized for GPU compute groups.
+- **Neg, Exp, Log, Sqrt, Reciprocal**: Standard unary operations.
 
-## Tensor Operations
+### Neural Network
 
-- Reshape
-- Transpose
-- Squeeze
-- Unsqueeze
-- Concat
-- Slice
-- Gather
-- ScatterND
+- **Relu, Sigmoid, Tanh, Gelu, Silu**: Common activation functions.
+- **Conv, ConvTranspose**: Highly optimized kernels for image processing.
+- **MaxPool, AveragePool, GlobalAveragePool**: Spatial pooling.
+- **Softmax, LogSoftmax**: Optimized for numerical stability.
 
-## Control Flow
+### Tensor Operations
 
-- If
-- Loop
-- Scan
+- **Reshape, Transpose, Squeeze, Unsqueeze**: Metadata-only operations (zero-copy when possible).
+- **Concat, Slice, Gather, ScatterND**: Data movement kernels.
+- **LayerNormalization, BatchNormalization**: Standard normalization layers.
 
-_Custom operators can be dynamically compiled to WGSL if a `@onnx9000.kernel` decorator is provided alongside the `@onnx9000.script` authoring logic._
+### Control Flow
+
+- **If, Loop, Scan**: Supported via conditional execution and iterative shader dispatch.
+
+## Custom Shaders
+
+`onnx9000` allows for dynamic kernel generation. If an operator is not natively supported, you can provide a custom WGSL kernel:
+
+```typescript
+import { registerKernel } from '@onnx9000/backend-web';
+
+registerKernel('MyCustomOp', {
+  wgsl: `
+    @compute @workgroup_size(64)
+    fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+      // Custom WGSL logic here
+    }
+  `,
+});
+```

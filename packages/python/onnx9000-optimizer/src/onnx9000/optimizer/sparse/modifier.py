@@ -1,12 +1,11 @@
 """Module for SparseML-style recipe modifiers and execution engine."""
 
 import logging
-import math
 import random
 import re
-from typing import List, Dict, Any, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
-from onnx9000.core.ir import Attribute, Constant, Graph, Node, SparseTensor, Tensor
+from onnx9000.core.ir import Constant, Graph, SparseTensor
 from onnx9000.core.sparse import DType, pack_data, unpack_data
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,7 @@ class Modifier:
 class ConstantPruningModifier(Modifier):
     """Applying static masks to constants."""
 
-    def __init__(self, params: List[str] = None, **kwargs) -> None:
+    def __init__(self, params: list[str] = None, **kwargs) -> None:
         """Initialize the constant pruning modifier.
 
         :param params: List of tensor name patterns to prune.
@@ -76,10 +75,10 @@ class MagnitudePruningModifier(Modifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         init_sparsity: float = 0.0,
         final_sparsity: float = 0.0,
-        leave_unmasked: List[str] = None,
+        leave_unmasked: list[str] = None,
         **kwargs,
     ) -> None:
         """Initialize the magnitude pruning modifier.
@@ -158,7 +157,7 @@ class GradualPruningModifier(MagnitudePruningModifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         init_sparsity: float = 0.0,
         final_sparsity: float = 0.5,
         start_step: int = 0,
@@ -214,9 +213,9 @@ class OBSPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         sparsity: float = 0.5,
-        calibration_data: Optional[List[Any]] = None,
+        calibration_data: Optional[list[Any]] = None,
         **kwargs,
     ) -> None:
         """Initialize the OBS pruning modifier.
@@ -282,9 +281,9 @@ class FisherPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         sparsity: float = 0.5,
-        gradients: Optional[Dict[str, List[float]]] = None,
+        gradients: Optional[dict[str, list[float]]] = None,
         **kwargs,
     ) -> None:
         """Initialize the Fisher pruning modifier.
@@ -343,9 +342,9 @@ class MovementPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         sparsity: float = 0.5,
-        gradients: Optional[Dict[str, List[float]]] = None,
+        gradients: Optional[dict[str, list[float]]] = None,
         **kwargs,
     ) -> None:
         """Initialize the movement pruning modifier.
@@ -403,7 +402,7 @@ class AccuracyAwarePruningModifier(Modifier):
 
     def __init__(
         self,
-        params: List[str] = None,
+        params: list[str] = None,
         initial_sparsity: float = 0.0,
         target_sparsity: float = 0.8,
         min_accuracy: float = 0.95,
@@ -460,7 +459,7 @@ def manage_calibration_memory(graph: Graph) -> None:
 class GlobalMagnitudePruningModifier(Modifier):
     """Global Magnitude Pruning modifier."""
 
-    def __init__(self, params: List[str] = None, final_sparsity: float = 0.0, **kwargs) -> None:
+    def __init__(self, params: list[str] = None, final_sparsity: float = 0.0, **kwargs) -> None:
         """Initialize the global magnitude pruning modifier.
 
         :param params: List of tensor patterns.
@@ -522,7 +521,7 @@ class GlobalMagnitudePruningModifier(Modifier):
 class QuantizationModifier(Modifier):
     """Quantization modifier (Injecting QAT/PTQ INT8 layers)."""
 
-    def __init__(self, params: List[str] = None, **kwargs) -> None:
+    def __init__(self, params: list[str] = None, **kwargs) -> None:
         """Initialize the quantization modifier.
 
         :param params: List of tensor patterns.
@@ -593,7 +592,7 @@ class QuantizationModifier(Modifier):
 class AsymmetricSparseQuantizationModifier(QuantizationModifier):
     """Item 81: Support asymmetric sparse-quantization cleanly."""
 
-    def __init__(self, params: List[str] = None, **kwargs) -> None:
+    def __init__(self, params: list[str] = None, **kwargs) -> None:
         """Initialize the asymmetric sparse quantization modifier.
 
         :param params: List of tensor patterns.
@@ -627,7 +626,7 @@ class SparseQLinearConvModifier(Modifier):
 class NMPruningModifier(Modifier):
     """N:M structured pruning modifier (e.g. 2:4 sparsity for Nvidia Ampere)."""
 
-    def __init__(self, params: List[str] = None, n: int = 2, m: int = 4, **kwargs) -> None:
+    def __init__(self, params: list[str] = None, n: int = 2, m: int = 4, **kwargs) -> None:
         """Initialize the N:M pruning modifier.
 
         :param params: List of tensor patterns.
@@ -700,7 +699,7 @@ class NMPruningModifier(Modifier):
         tensor.metadata_props["nm_bitmask"] = "".join(map(str, bitmask))
 
 
-def parse_recipe(yaml_text: str) -> List[Modifier]:
+def parse_recipe(yaml_text: str) -> list[Modifier]:
     """Simple zero-dependency YAML parser for SparseML recipes.
 
     :param yaml_text: The YAML recipe text.
@@ -769,7 +768,7 @@ def parse_recipe(yaml_text: str) -> List[Modifier]:
     return instances
 
 
-def apply_recipe(graph: Graph, recipe: Union[str, List[Modifier]]) -> None:
+def apply_recipe(graph: Graph, recipe: Union[str, list[Modifier]]) -> None:
     """Apply a SparseML-style recipe to an ONNX graph.
 
     :param graph: The ONNX graph to modify.

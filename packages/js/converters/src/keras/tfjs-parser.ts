@@ -3,7 +3,17 @@
 /**
  * Defines the supported mathematical data types natively supported by Web-Native machine learning layers.
  */
-export type DataType = 'float32' | 'int32' | 'bool' | 'complex64' | 'string' | 'float16' | 'uint8' | 'int8' | 'int4' | 'uint4';
+export type DataType =
+  | 'float32'
+  | 'int32'
+  | 'bool'
+  | 'complex64'
+  | 'string'
+  | 'float16'
+  | 'uint8'
+  | 'int8'
+  | 'int4'
+  | 'uint4';
 
 /**
  * Represents a single weight entry in a TF.js manifest.

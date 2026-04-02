@@ -1,6 +1,6 @@
 import { Graph, ValueInfo } from '../ir/graph.js';
-import { Node, Attribute, AttributeType } from '../ir/node.js';
-import { Tensor, Shape, DType, DynamicDim } from '../ir/tensor.js';
+import { Node, Attribute, AttributeType, AttributeValue } from '../ir/node.js';
+import { Tensor, Shape, DType } from '../ir/tensor.js';
 import {
   Reader,
   readVarInt,
@@ -11,6 +11,12 @@ import {
   WIRE_TYPE_LENGTH_DELIMITED,
 } from './protobuf.js';
 
+/**
+ * Maps ONNX enum values to IR DType.
+ * @param dataType ONNX enum value representing the data type.
+ * @returns The corresponding internal DType string.
+ * @throws Error if the data type is not supported.
+ */
 function mapDataType(dataType: number): DType {
   switch (dataType) {
     case 1:
@@ -46,6 +52,11 @@ function mapDataType(dataType: number): DType {
   }
 }
 
+/**
+ * Maps ONNX enum values to AttributeType.
+ * @param type ONNX enum value representing the attribute type.
+ * @returns The corresponding internal AttributeType string.
+ */
 function mapAttributeType(type: number): AttributeType {
   switch (type) {
     case 1:
@@ -77,6 +88,11 @@ function mapAttributeType(type: number): AttributeType {
   }
 }
 
+/**
+ * Parses an ONNX ModelProto from a Reader.
+ * @param reader A protobuf Reader instance containing the model data.
+ * @returns A Promise that resolves to the parsed Graph representation.
+ */
 export async function parseModelProto(reader: Reader): Promise<Graph> {
   const end = reader.getLength();
   const graph = new Graph('');
@@ -142,6 +158,12 @@ export async function parseModelProto(reader: Reader): Promise<Graph> {
   return graph;
 }
 
+/**
+ * Parses an ONNX GraphProto.
+ * @param reader A protobuf Reader instance.
+ * @param limit The end position for this graph proto.
+ * @param graph The Graph object to populate with parsed nodes and tensors.
+ */
 async function parseGraphProto(reader: Reader, limit: number, graph: Graph): Promise<void> {
   try {
     while (reader.getPosition() < limit) {
@@ -181,6 +203,12 @@ async function parseGraphProto(reader: Reader, limit: number, graph: Graph): Pro
   }
 }
 
+/**
+ * Parses an ONNX NodeProto.
+ * @param reader A protobuf Reader instance.
+ * @param limit The end position for this node proto.
+ * @returns A Promise that resolves to the parsed Node.
+ */
 async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
   const inputs: string[] = [];
   const outputs: string[] = [];
@@ -230,6 +258,12 @@ async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
   return new Node(opType, inputs, outputs, attributes, name, domain, docString);
 }
 
+/**
+ * Parses an ONNX ValueInfoProto.
+ * @param reader A protobuf Reader instance.
+ * @param limit The end position for this ValueInfo proto.
+ * @returns A Promise that resolves to the parsed ValueInfo.
+ */
 async function parseValueInfoProto(reader: Reader, limit: number): Promise<ValueInfo> {
   let name = '';
   const shape: Shape = [];
@@ -271,7 +305,6 @@ async function parseValueInfoProto(reader: Reader, limit: number): Promise<Value
                       const dTag = await readTag(reader);
                       if (dTag.fieldNumber === 1) {
                         // dim_value
-                        // Wait, readVarInt can't read Varint zigzag or negative properly, but dimensions are positive
                         dimVal = await readVarInt(reader);
                       } else if (dTag.fieldNumber === 2) {
                         // dim_param
@@ -303,10 +336,16 @@ async function parseValueInfoProto(reader: Reader, limit: number): Promise<Value
   return new ValueInfo(name, shape, dtype);
 }
 
+/**
+ * Parses an ONNX AttributeProto.
+ * @param reader A protobuf Reader instance.
+ * @param limit The end position for this attribute proto.
+ * @returns A Promise that resolves to the parsed Attribute.
+ */
 async function parseAttributeProto(reader: Reader, limit: number): Promise<Attribute> {
   let name = '';
   let typeNum = 0;
-  let value: any = null;
+  let value: AttributeValue = null;
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);
@@ -350,59 +389,62 @@ async function parseAttributeProto(reader: Reader, limit: number): Promise<Attri
         break;
       case 7: // floats
         {
+          const floats: number[] = (value as number[]) || [];
           if (tag.wireType === WIRE_TYPE_LENGTH_DELIMITED) {
             const fLen = await readVarInt(reader);
             const fLimit = reader.getPosition() + fLen;
-            value = [];
             while (reader.getPosition() < fLimit) {
               const buf = await reader.readBytes(4);
               const dv = new DataView(buf.buffer, buf.byteOffset, 4);
-              value.push(dv.getFloat32(0, true));
+              floats.push(dv.getFloat32(0, true));
             }
           } else {
             const buf = await reader.readBytes(4);
             const dv = new DataView(buf.buffer, buf.byteOffset, 4);
-            value = value || [];
-            value.push(dv.getFloat32(0, true));
+            floats.push(dv.getFloat32(0, true));
           }
+          value = floats;
         }
         break;
       case 8: // ints
         {
+          const ints: bigint[] = (value as bigint[]) || [];
           if (tag.wireType === WIRE_TYPE_LENGTH_DELIMITED) {
             const iLen = await readVarInt(reader);
             const iLimit = reader.getPosition() + iLen;
-            value = [];
             while (reader.getPosition() < iLimit) {
-              value.push(await readVarInt64(reader));
+              ints.push(await readVarInt64(reader));
             }
           } else {
-            value = value || [];
-            value.push(await readVarInt64(reader));
+            ints.push(await readVarInt64(reader));
           }
+          value = ints;
         }
         break;
       case 9: // strings
         {
+          const strings: string[] = (value as string[]) || [];
           const strLen = await readVarInt(reader);
-          value = value || [];
-          value.push(await readString(reader, strLen));
+          strings.push(await readString(reader, strLen));
+          value = strings;
         }
         break;
       case 10: // tensors
         {
+          const tensors: Tensor[] = (value as Tensor[]) || [];
           const tensLen = await readVarInt(reader);
-          value = value || [];
-          value.push(await parseTensorProto(reader, reader.getPosition() + tensLen, false));
+          tensors.push(await parseTensorProto(reader, reader.getPosition() + tensLen, false));
+          value = tensors;
         }
         break;
       case 11: // graphs
         {
+          const graphs: Graph[] = (value as Graph[]) || [];
           const grLen = await readVarInt(reader);
-          value = value || [];
           const gr = new Graph('');
           await parseGraphProto(reader, reader.getPosition() + grLen, gr);
-          value.push(gr);
+          graphs.push(gr);
+          value = graphs;
         }
         break;
       default:
@@ -417,6 +459,13 @@ async function parseAttributeProto(reader: Reader, limit: number): Promise<Attri
   return new Attribute(name, mapAttributeType(typeNum), value);
 }
 
+/**
+ * Parses an ONNX TensorProto.
+ * @param reader A protobuf Reader instance.
+ * @param limit The end position for this tensor proto.
+ * @param isInitializer Whether this tensor is an initializer (part of the model weights).
+ * @returns A Promise that resolves to the parsed Tensor.
+ */
 async function parseTensorProto(
   reader: Reader,
   limit: number,
@@ -437,10 +486,10 @@ async function parseTensorProto(
           const pLen = await readVarInt(reader);
           const pLimit = reader.getPosition() + pLen;
           while (reader.getPosition() < pLimit) {
-            dims.push(await readVarInt(reader));
+            dims.push(Number(await readVarInt(reader)));
           }
         } else {
-          dims.push(await readVarInt(reader));
+          dims.push(Number(await readVarInt(reader)));
         }
         break;
       case 2: // data_type
@@ -504,11 +553,13 @@ async function parseTensorProto(
   return new Tensor(name, dims, dtype, isInitializer, false, rawData, externalData);
 }
 
-// 149. Memory optimization explicitly exported
-export function releaseArrayBuffer(buffer: ArrayBuffer | null) {
+/**
+ * Explicitly releases an ArrayBuffer reference by nulling it out.
+ * @param buffer The ArrayBuffer to release.
+ */
+export function releaseArrayBuffer(buffer: ArrayBuffer | null): void {
   if (buffer) {
-    // In pure JS, we can't manually force GC, but we can null out references.
-    // Real V8 memory release happens when there are no detached references.
+    // Note: This only nulls the local reference; actual release depends on GC.
     buffer = null;
   }
 }

@@ -111,7 +111,7 @@ export function compileGGUF(
   for (const initName of graph.initializers) {
     const t = graph.tensors[initName];
     if (t) {
-      let ggufName = initName.replace(/model\.layers\.(\d+)/g, 'blk.$1');
+      const ggufName = initName.replace(/model\.layers\.(\d+)/g, 'blk.$1');
       const shape = t.shape.map((s) => (typeof s === 'number' ? BigInt(s) : 1n)).reverse();
       const type = getGGUFType(t.dtype);
       writer.addTensorInfo(ggufName, shape, type, currentOffset);

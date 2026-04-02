@@ -69,7 +69,10 @@ describe('keras-ast', () => {
       class_name: 'Functional',
       config: {
         input_layers: [['in1', 0, 0]],
-        output_layers: [['dense1', 0, 0], ['dense1', 1, 0]],
+        output_layers: [
+          ['dense1', 0, 0],
+          ['dense1', 1, 0],
+        ],
         layers: [
           {
             class_name: 'InputLayer',
@@ -83,7 +86,7 @@ describe('keras-ast', () => {
             config: {},
             inbound_nodes: [
               [['in1', 0, 0, {}]],
-              [['in1', 0, 0, {}]] // Re-used!
+              [['in1', 0, 0, {}]], // Re-used!
             ],
           },
         ],

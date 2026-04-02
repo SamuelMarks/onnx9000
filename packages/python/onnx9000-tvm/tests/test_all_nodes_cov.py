@@ -1,8 +1,5 @@
 """Tests for packages/python/onnx9000-tvm/tests/test_all_nodes_cov.py."""
 
-from contextlib import suppress
-
-import pytest
 from onnx9000.tvm.relay.expr import (
     Call,
     Constant,
@@ -25,7 +22,7 @@ from onnx9000.tvm.relay.transform.memory_plan import plan_memory
 from onnx9000.tvm.relay.transform.resolve_shape import resolve_dynamic_shape
 from onnx9000.tvm.relay.transform.simplify import simplify_algebra
 from onnx9000.tvm.relay.transform.unroll_let import unroll_let
-from onnx9000.tvm.relay.ty import FuncType, TensorType, TupleType
+from onnx9000.tvm.relay.ty import TensorType
 from onnx9000.tvm.relay.visitor import ExprMutator, ExprVisitor
 
 
@@ -125,7 +122,6 @@ def test_passes():
 
 def test_te_tir_nodes():
     """Test te tir nodes."""
-    from onnx9000.tvm.te.tensor import ComputeOp, PlaceholderOp, Tensor
     from onnx9000.tvm.tir.expr import (
         EQ,
         GE,
@@ -155,7 +151,6 @@ def test_te_tir_nodes():
     from onnx9000.tvm.tir.printer import TIRPrinter
     from onnx9000.tvm.tir.stmt import (
         AssertStmt,
-        Buffer,
         Evaluate,
         For,
         IfThenElse,

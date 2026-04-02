@@ -1,5 +1,8 @@
-/* eslint-disable */
-// @ts-nocheck
+/**
+ * Entry point for the @onnx9000/converters package.
+ * Provides APIs for Keras, MMDNN, and multi-framework model translations.
+ */
+
 export * from './keras/api.js';
 export * from './keras/index.js';
 export * from './mmdnn/api.js';
@@ -20,4 +23,7 @@ export * from './mmdnn/darknet/index.js';
 export * from './mmdnn/ncnn/index.js';
 export * from './mmdnn/paddle/index.js';
 export * from './mmdnn/verification/index.js';
-export * as mmdnn from './mmdnn/index.js';
+
+import * as mmdnnNamespace from './mmdnn/index.js';
+/** MMDNN namespace for legacy multi-framework conversions. */
+export const mmdnn = mmdnnNamespace;

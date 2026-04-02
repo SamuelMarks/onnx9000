@@ -51,33 +51,44 @@ DLManagedTensor._fields_ = [
 
 
 class DynamicDim:
-    """Class DynamicDim implementation."""
+    """Represents a dimension that can be either a symbolic string or an integer."""
 
     def __init__(self, value: Union[str, int]) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a DynamicDim.
+
+        Args:
+            value: The symbolic name or integer value of the dimension.
+        """
         self.value = value
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the DynamicDim."""
         return f"DynamicDim({self.value})"
 
     def __str__(self) -> str:
-        """Execute str magic method operation."""
+        """Return the string value of the dimension."""
         return str(self.value)
 
     def __eq__(self, other: Any) -> bool:
-        """Execute eq magic method operation."""
+        """Check equality with another DynamicDim or value."""
         if isinstance(other, DynamicDim):
             return self.value == other.value
         return False
 
 
 class Attribute:
-    """Class Attribute implementation."""
+    """Represents an attribute of a Node."""
 
     @staticmethod
     def infer_type(value: Any) -> str:
-        """Infer Type function logic implementation."""
+        """Infer the ONNX attribute type from a Python value.
+
+        Args:
+            value: The Python value to infer the type for.
+
+        Returns:
+            A string representing the inferred ONNX attribute type.
+        """
         if isinstance(value, int):
             return "INT"
         if isinstance(value, float):
@@ -108,17 +119,23 @@ class Attribute:
         return "UNKNOWN"
 
     def __init__(self, name: str, attr_type: Optional[str] = None, value: Any = None) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize an Attribute.
+
+        Args:
+            name: The name of the attribute.
+            attr_type: The ONNX type of the attribute. If None, it is inferred.
+            value: The value of the attribute.
+        """
         self.name = name
         self.value = value
         self.attr_type = attr_type if attr_type is not None else Attribute.infer_type(value)
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the Attribute."""
         return f"Attribute(name={self.name}, type={self.attr_type}, value={self.value})"
 
     def __eq__(self, other: Any) -> bool:
-        """Execute eq magic method operation."""
+        """Check equality with another Attribute."""
         if not isinstance(other, Attribute):
             return False
         return (
@@ -129,16 +146,22 @@ class Attribute:
 
 
 class ValueInfo:
-    """Class ValueInfo implementation."""
+    """Represents metadata about a Tensor (name, shape, and type)."""
 
     def __init__(self, name: str, shape: tuple[Union[int, DynamicDim], ...], dtype: DType) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize ValueInfo.
+
+        Args:
+            name: The name of the value.
+            shape: The shape of the tensor.
+            dtype: The data type of the tensor.
+        """
         self.name = name
         self.shape = shape
         self.dtype = dtype
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the ValueInfo."""
         return f"ValueInfo(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
 
@@ -154,7 +177,16 @@ class Tensor:
         requires_grad=True,
         data=None,
     ) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a Tensor.
+
+        Args:
+            name: Unique name of the tensor.
+            shape: Shape tuple, can contain DynamicDim objects.
+            dtype: DType of the tensor.
+            is_initializer: Whether this tensor is a constant initializer.
+            requires_grad: Whether this tensor requires gradients.
+            data: Raw data bytes if it is an initializer.
+        """
         self.name = name
         self.inputs: list[Node] = []
         self.outputs: list[Node] = []
@@ -167,15 +199,19 @@ class Tensor:
         self.lifespan: tuple[int, int] = (-1, -1)
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the Tensor."""
         return f"ir.Tensor(name={self.name})"
 
     def __hash__(self) -> int:
-        """Execute hash magic method operation."""
+        """Return the hash of the Tensor object."""
         return object.__hash__(self)
 
     def copy(self) -> "Tensor":
-        """Copy function logic implementation."""
+        """Return a deep copy of the Tensor.
+
+        Returns:
+            A new Tensor object with copied attributes.
+        """
         if isinstance(self, Constant):
             return Constant(self.name, values=self.data, shape=self.shape, dtype=self.dtype)
         elif isinstance(self, SparseTensor):
@@ -193,13 +229,13 @@ class Tensor:
             return Variable(self.name, shape=self.shape, dtype=self.dtype)
 
     def clear_inputs(self) -> None:
-        """Disconnect from producer."""
+        """Disconnect the tensor from its producer nodes."""
         for n in self.inputs:
             n.outputs = [o for o in n.outputs if o is not self]
         self.inputs.clear()
 
     def clear_outputs(self) -> None:
-        """Disconnect from all consumers."""
+        """Disconnect the tensor from all its consumer nodes."""
         for n in self.outputs:
             n.inputs = [i for i in n.inputs if i is not self]
         self.outputs.clear()
@@ -219,7 +255,18 @@ class SparseTensor(Tensor):
         col_indices: Optional["Constant"] = None,
         block_dims: Optional[tuple[int, ...]] = None,
     ) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a SparseTensor.
+
+        Args:
+            name: Unique name of the sparse tensor.
+            values: Constant containing the non-zero values.
+            indices: Constant containing the indices of non-zero values.
+            dims: Original dense shape of the tensor.
+            format: Sparse format (e.g., 'COO', 'CSR', 'CSC').
+            row_ptr: Row pointers for CSR format.
+            col_indices: Column indices for CSC format.
+            block_dims: Block dimensions for blocked formats.
+        """
         super().__init__(name)
         self.values = values
         self.indices = indices
@@ -231,11 +278,15 @@ class SparseTensor(Tensor):
         self.is_initializer = True
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the SparseTensor."""
         return f"ir.SparseTensor(name={self.name}, shape={self.shape}, format={self.format})"
 
     def copy(self) -> "SparseTensor":
-        """Copy function logic implementation."""
+        """Return a deep copy of the SparseTensor.
+
+        Returns:
+            A new SparseTensor object.
+        """
         return SparseTensor(
             self.name,
             values=self.values.copy() if self.values else None,
@@ -249,7 +300,7 @@ class SparseTensor(Tensor):
 
 
 class Variable(Tensor):
-    """Internal Representation of a dynamic tensor."""
+    """Internal Representation of a dynamic tensor whose values are computed at runtime."""
 
     def __init__(
         self,
@@ -257,26 +308,40 @@ class Variable(Tensor):
         shape: Optional[tuple[Union[int, DynamicDim], ...]] = None,
         dtype: Optional[DType] = None,
     ) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a Variable tensor.
+
+        Args:
+            name: Unique name of the tensor.
+            shape: Shape of the tensor.
+            dtype: Data type of the tensor.
+        """
         super().__init__(name)
         self.shape = shape or ()
         self.dtype = dtype
 
     def is_dynamic(self) -> bool:
-        """Is Dynamic function logic implementation."""
+        """Check if any dimension of the tensor is dynamic.
+
+        Returns:
+            True if any dimension is symbolic or unknown (-1).
+        """
         return any(isinstance(dim, DynamicDim) or dim == -1 for dim in self.shape)
 
     def is_empty(self) -> bool:
-        """Is Empty function logic implementation."""
+        """Check if the tensor has an empty shape.
+
+        Returns:
+            True if the shape tuple is empty.
+        """
         return len(self.shape) == 0
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the Variable."""
         return f"ir.Variable(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
 
 class Constant(Tensor):
-    """Internal Representation of a static tensor."""
+    """Internal Representation of a static tensor with fixed values."""
 
     def __init__(
         self,
@@ -285,7 +350,14 @@ class Constant(Tensor):
         shape: Optional[tuple[Union[int, DynamicDim], ...]] = None,
         dtype: Optional[DType] = None,
     ) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a Constant tensor.
+
+        Args:
+            name: Unique name of the tensor.
+            values: Raw data bytes for the tensor.
+            shape: Shape of the tensor.
+            dtype: Data type of the tensor.
+        """
         super().__init__(name)
         self.data = values
         self.shape = shape or ()
@@ -293,25 +365,35 @@ class Constant(Tensor):
         self.is_initializer = True
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the Constant."""
         return f"ir.Constant(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
     @property
     def values(self):
-        """Values function logic implementation."""
+        """Get the raw data bytes of the constant."""
         return self.data
 
     @values.setter
     def values(self, val) -> None:
-        """Values function logic implementation."""
+        """Set the raw data bytes of the constant."""
         self.data = val
 
     def __dlpack_device__(self) -> tuple[int, int]:
-        """Execute dlpack device magic method operation."""
+        """Return the DLPack device info (CPU)."""
         return (1, 0)
 
     def __dlpack__(self, stream: Optional[int] = None) -> Any:
-        """Execute dlpack magic method operation."""
+        """Export the constant as a DLPack capsule.
+
+        Args:
+            stream: Optional stream for synchronization.
+
+        Returns:
+            A PyCapsule containing the DLManagedTensor.
+
+        Raises:
+            ValueError: If the tensor has no data or has dynamic shapes.
+        """
         if self.data is None:
             raise ValueError("Cannot create DLPack capsule for a tensor with no data.")
         for dim in self.shape:
@@ -347,7 +429,7 @@ class Constant(Tensor):
 
 
 class Node:
-    """Internal Representation of an operation."""
+    """Internal Representation of an operation node in the graph."""
 
     def __init__(
         self,
@@ -358,7 +440,16 @@ class Node:
         name: str = "",
         domain: str = "",
     ) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize an Operation Node.
+
+        Args:
+            op_type: The ONNX operator type (e.g., 'Add', 'Conv').
+            inputs: List of input tensors or tensor names.
+            outputs: List of output tensors or tensor names.
+            attributes: Dictionary of node attributes.
+            name: Unique name of the node.
+            domain: The domain of the operator (default is ai.onnx).
+        """
         self.op_type = op_type
         self.inputs = inputs or []
         self.outputs = outputs or []
@@ -374,25 +465,25 @@ class Node:
 
     @property
     def op(self) -> str:
-        """Op function logic implementation."""
+        """Get the operator type."""
         return self.op_type
 
     @op.setter
     def op(self, value: str) -> None:
-        """Op function logic implementation."""
+        """Set the operator type."""
         self.op_type = value
 
     @property
     def attrs(self) -> dict[str, Attribute]:
-        """Attrs function logic implementation."""
+        """Get the node attributes."""
         return self.attributes
 
     def __hash__(self) -> int:
-        """Execute hash magic method operation."""
+        """Return the hash of the Node object."""
         return object.__hash__(self)
 
     def __eq__(self, other: Any) -> bool:
-        """Execute eq magic method operation."""
+        """Check equality with another Node."""
         if not isinstance(other, Node):
             return False
         if self.op_type != other.op_type:
@@ -410,7 +501,14 @@ class Node:
         return in_names1 == in_names2 and out_names1 == out_names2
 
     def copy(self, tensor_map=None) -> "Node":
-        """Copy function logic implementation."""
+        """Return a deep copy of the Node.
+
+        Args:
+            tensor_map: Mapping of old tensor names to new Tensor objects.
+
+        Returns:
+            A new Node object with copied attributes and linked tensors.
+        """
         tensor_map = tensor_map or {}
         new_inputs = [
             tensor_map.get(i.name, i) if isinstance(i, Tensor) else i for i in self.inputs
@@ -431,15 +529,15 @@ class Node:
         )
 
     def i(self, idx: int = 0) -> Any:
-        """Retrieve input tensor utility."""
+        """Retrieve the input tensor at the specified index."""
         return self.inputs[idx]
 
     def o(self, idx: int = 0) -> Any:
-        """Retrieve output tensor utility."""
+        """Retrieve the output tensor at the specified index."""
         return self.outputs[idx]
 
     def __repr__(self) -> str:
-        """Execute repr magic method operation."""
+        """Return a string representation of the Node."""
         in_str = [i.name if isinstance(i, Tensor) else str(i) for i in self.inputs]
         out_str = [o.name if isinstance(o, Tensor) else str(o) for o in self.outputs]
         return f"ir.Node({self.op_type}, {in_str} -> {out_str})"
@@ -449,7 +547,11 @@ class Graph:
     """Internal Representation of a complete topological execution plan."""
 
     def __init__(self, name: str) -> None:
-        """Initialize the class with necessary attributes."""
+        """Initialize a Graph.
+
+        Args:
+            name: The name of the graph.
+        """
         self.name = name
         self.nodes: list[Node] = []
         self.tensors: dict[str, Tensor] = {}
@@ -470,13 +572,27 @@ class Graph:
         self.consumer_map: dict[str, list[Node]] = {}
 
     def _intern_string(self, s: str) -> str:
-        """Execute the intern string operation."""
+        """Intern a string to save memory and ensure uniqueness.
+
+        Args:
+            s: The string to intern.
+
+        Returns:
+            The interned string.
+        """
         if s not in self._string_pool:
             self._string_pool[s] = s
         return self._string_pool[s]
 
     def _uniquify_node_name(self, base_name: str) -> str:
-        """Execute the uniquify node name operation."""
+        """Generate a unique name for a node.
+
+        Args:
+            base_name: The desired base name.
+
+        Returns:
+            A unique node name.
+        """
         if not base_name:
             base_name = "node"
         if base_name not in self._node_name_counter:
@@ -490,7 +606,14 @@ class Graph:
                 return new_name
 
     def _uniquify_tensor_name(self, base_name: str) -> str:
-        """Execute the uniquify tensor name operation."""
+        """Generate a unique name for a tensor.
+
+        Args:
+            base_name: The desired base name.
+
+        Returns:
+            A unique tensor name.
+        """
         if not base_name:
             base_name = "tensor"
         if base_name not in self._tensor_name_counter:
@@ -504,31 +627,94 @@ class Graph:
                 return new_name
 
     def add_tensor(self, tensor: Tensor) -> None:
-        """Add Tensor function logic implementation."""
+        """Add a Tensor to the graph.
+
+        Args:
+            tensor: The Tensor object to add.
+        """
         if tensor.name in self.tensors and self.tensors[tensor.name] is not tensor:
             tensor.name = self._uniquify_tensor_name(tensor.name)
         tensor.name = self._intern_string(tensor.name)
         self.tensors[tensor.name] = tensor
 
     def add_node(self, node: Node) -> None:
-        """Add Node function logic implementation."""
+        """Add a Node to the graph and update connectivity maps.
+
+        Ensures node name uniqueness, updates producer/consumer maps, and maintains
+        tensor-node bi-directional links.
+
+        Args:
+            node: The Node object to add to the graph.
+        """
         if any(n.name == node.name for n in self.nodes) and node.name:
             node.name = self._uniquify_node_name(node.name)
         elif not node.name:
             node.name = self._uniquify_node_name(node.op_type)
         node.name = self._intern_string(node.name)
         self.nodes.append(node)
+
         for o in node.outputs:
+            o_name = o.name if isinstance(o, Tensor) else o
+            self.producer_map[o_name] = node
             if isinstance(o, Tensor):
-                self.producer_map[o.name] = node
+                if node not in o.inputs:
+                    o.inputs.append(node)
+
         for i in node.inputs:
+            i_name = i.name if isinstance(i, Tensor) else i
+            if i_name not in self.consumer_map:
+                self.consumer_map[i_name] = []
+            if node not in self.consumer_map[i_name]:
+                self.consumer_map[i_name].append(node)
             if isinstance(i, Tensor):
-                if i.name not in self.consumer_map:
-                    self.consumer_map[i.name] = []
-                self.consumer_map[i.name].append(node)
+                if node not in i.outputs:
+                    i.outputs.append(node)
+
+    def disconnect_node(self, node: Node) -> None:
+        """Disconnect a node from all its input and output tensors.
+
+        Args:
+            node: The Node object to disconnect.
+        """
+        for i in node.inputs:
+            if isinstance(i, Tensor) and node in i.outputs:
+                i.outputs.remove(node)
+        for o in node.outputs:
+            if isinstance(o, Tensor) and node in o.inputs:
+                o.inputs.remove(node)
+
+    def append_node(self, node: Node) -> None:
+        """Alias for add_node.
+
+        Args:
+            node: The Node object to add.
+        """
+        self.add_node(node)
+
+    def remove_node(self, node: Node) -> None:
+        """Remove a Node from the graph and update connectivity maps.
+
+        Args:
+            node: The Node object to remove.
+        """
+        self.disconnect_node(node)
+        if node in self.nodes:
+            self.nodes.remove(node)
+
+        # Update producer map
+        for o in node.outputs:
+            o_name = o.name if isinstance(o, Tensor) else o
+            if self.producer_map.get(o_name) == node:
+                del self.producer_map[o_name]
+
+        # Update consumer map
+        for i in node.inputs:
+            i_name = i.name if isinstance(i, Tensor) else i
+            if i_name in self.consumer_map and node in self.consumer_map[i_name]:
+                self.consumer_map[i_name].remove(node)
 
     def __eq__(self, other: Any) -> bool:
-        """Execute eq magic method operation."""
+        """Check equality with another Graph."""
         if not isinstance(other, Graph):
             return False
         if self.name != other.name:
@@ -538,7 +724,11 @@ class Graph:
         return all(n1 == n2 for n1, n2 in zip(self.nodes, other.nodes))
 
     def copy(self) -> "Graph":
-        """Copy function logic implementation."""
+        """Return a deep copy of the Graph.
+
+        Returns:
+            A new Graph object with all nodes and tensors copied.
+        """
         g = Graph(self.name)
         g.doc_string = self.doc_string
         g.producer_name = self.producer_name
@@ -559,18 +749,25 @@ class Graph:
         return g
 
     def tensors(self):
-        """Lazy evaluation dictionary generator or returns the dict."""
+        """Return the dictionary of tensors in the graph."""
         return self.tensors
 
     def get_node(self, name: str) -> Optional[Node]:
-        """Get Node function logic implementation."""
+        """Find a node by its name.
+
+        Args:
+            name: The name of the node to find.
+
+        Returns:
+            The Node object if found, else None.
+        """
         for n in self.nodes:
             if n.name == name:
                 return n
         return None
 
     def print_visualizer(self) -> None:
-        """Print Visualizer function logic implementation."""
+        """Print a visual summary of the graph topology to the log."""
         logger.info(f"=== Graph: {self.name} ===")
         in_names = [i.name for i in self.inputs]
         out_names = [o.name for o in self.outputs]

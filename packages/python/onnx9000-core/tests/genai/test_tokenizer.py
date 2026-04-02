@@ -1,7 +1,7 @@
 """Tests for packages/python/onnx9000-core/tests/genai/test_tokenizer.py."""
 
 import pytest
-from onnx9000.genai.tokenizer import BPETokenizer, Tokenizer, TokenizerStream
+from onnx9000.genai.tokenizer import BPETokenizer, Tokenizer
 
 
 class BasicTokenizer(Tokenizer):
@@ -94,10 +94,8 @@ def test_tokenizer_base():
 
 def test_tokenizer_edge_cases():
     """Test tokenizer edge cases."""
-    import pytest
     from onnx9000.genai.tokenizer import (
         BPETokenizer,
-        Tokenizer,
         UnigramTokenizer,
         WordPieceTokenizer,
     )
@@ -125,7 +123,6 @@ def test_tokenizer_edge_cases():
 
 def test_model_not_implemented():
     """Test model not implemented."""
-    import pytest
     from onnx9000.genai.model import Model
     from onnx9000.genai.types import ModelParams
 
@@ -144,7 +141,6 @@ def test_generator_eos():
 
 def test_search_not_implemented():
     """Test search not implemented."""
-    import pytest
     from onnx9000.genai.search import BeamSearchAlgorithm, BeamSearchState
 
     algo = BeamSearchAlgorithm(BeamSearchState(1, 1))
@@ -208,7 +204,6 @@ def test_state_caches_clear():
 
 def test_cache_errors():
     """Test cache errors."""
-    import pytest
     from onnx9000.core.ir import Tensor
     from onnx9000.genai.state import (
         GroupedQueryAttentionCache,
@@ -268,7 +263,6 @@ def test_logit_processors_missing():
         ForcedEOSLogitProcessor,
         NoBadWordsLogitProcessor,
         NoRepeatNGramLogitProcessor,
-        TemperatureLogitProcessor,
     )
 
     t_none = Tensor(name="x", shape=(1, 10), data=None)
@@ -283,7 +277,6 @@ def test_logit_processors_missing():
     assert p([1], t_none) is t_none
     p = AllowedWordsLogitProcessor([1])
     assert p([1], t_none) is t_none
-    import struct
 
     Tensor(name="x", shape=(1, 2), data=bytearray(8), dtype=type("mock", (), {"itemsize": 4}))
     p = ForcedBOSLogitProcessor(1)
@@ -367,7 +360,6 @@ def test_wordpiece_decode_space():
 
 def test_tokenizer_loader():
     """Test tokenizer loader."""
-    import json
 
     from onnx9000.genai.tokenizer import (
         HuggingFaceTokenizerLoader,
@@ -381,7 +373,6 @@ def test_tokenizer_loader():
     uni_cfg = '{"model": {"type": "Unigram", "vocab": [["a", 0.0]], "unk_token": "<unk>"}}'
     uni_loaded = HuggingFaceTokenizerLoader.load_from_json(uni_cfg)
     assert isinstance(uni_loaded, UnigramTokenizer)
-    import pytest
 
     with pytest.raises(ValueError):
         HuggingFaceTokenizerLoader.load_from_json('{"model": {"type": "Unknown"}}')
@@ -389,10 +380,8 @@ def test_tokenizer_loader():
 
 def test_tokenizer_components_rest():
     """Test tokenizer components rest."""
-    import json
 
-    import pytest
-    from onnx9000.genai.tokenizer import HuggingFaceTokenizerLoader, PreTokenizer, UnicodeNormalizer
+    from onnx9000.genai.tokenizer import PreTokenizer, UnicodeNormalizer
 
     with pytest.raises(ValueError):
         UnicodeNormalizer.normalize("a", "BAD")

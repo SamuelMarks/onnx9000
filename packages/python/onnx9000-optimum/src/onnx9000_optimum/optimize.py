@@ -1,10 +1,8 @@
 """Model optimization tools for onnx9000 graphs."""
 
-import json
 import logging
 import os
 import sys
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 

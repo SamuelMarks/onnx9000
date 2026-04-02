@@ -1,7 +1,6 @@
 """Tests the compiler exhaustive module functionality."""
 
 import json
-import os
 
 import pytest
 from onnx9000.core.ir import Graph, Node, Tensor

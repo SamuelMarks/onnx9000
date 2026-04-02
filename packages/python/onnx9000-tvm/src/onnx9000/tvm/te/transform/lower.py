@@ -2,7 +2,6 @@
 
 from ...tir.stmt import SeqStmt, Stmt
 from ..schedule import Schedule
-from ..tensor import Tensor
 
 
 def lower(sch: Schedule, args: list, name: str = "main", simple_mode: bool = False) -> Stmt:

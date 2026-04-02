@@ -3,7 +3,7 @@
 
 def test_beam_search_logic():
     """Test beam search logic end-to-end with GeneratorParams and basic state."""
-    from onnx9000.core.ir import Graph, Tensor
+    from onnx9000.core.ir import Graph
     from onnx9000.genai.search import BeamSearchState
     from onnx9000.genai.state import KVCache, State
     from onnx9000.genai.types import GeneratorParams

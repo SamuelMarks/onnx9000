@@ -6,32 +6,76 @@ from onnx9000.converters.frontend.tensor import Tensor
 
 
 def relu(input: Tensor) -> Tensor:
-    """Implement the relu method."""
+    """Apply the rectified linear unit (ReLU) activation function element-wise.
+
+    Args:
+        input: The input tensor.
+
+    Returns:
+        The output tensor after applying ReLU.
+    """
     return input.relu()
 
 
 def sigmoid(input: Tensor) -> Tensor:
-    """Implement the sigmoid method."""
+    """Apply the sigmoid activation function element-wise.
+
+    Args:
+        input: The input tensor.
+
+    Returns:
+        The output tensor after applying sigmoid.
+    """
     return input.sigmoid()
 
 
 def tanh(input: Tensor) -> Tensor:
-    """Implement the tanh method."""
+    """Apply the hyperbolic tangent (Tanh) activation function element-wise.
+
+    Args:
+        input: The input tensor.
+
+    Returns:
+        The output tensor after applying Tanh.
+    """
     return input.tanh()
 
 
 def gelu(input: Tensor) -> Tensor:
-    """Implement the gelu method."""
+    """Apply the Gaussian Error Linear Unit (GELU) activation function element-wise.
+
+    Args:
+        input: The input tensor.
+
+    Returns:
+        The output tensor after applying GELU.
+    """
     return input.gelu()
 
 
 def softmax(input: Tensor, dim: int = -1) -> Tensor:
-    """Implement the softmax method."""
+    """Apply the softmax function to the input tensor along a specified dimension.
+
+    Args:
+        input: The input tensor.
+        dim: The dimension along which softmax will be computed.
+
+    Returns:
+        The output tensor after applying softmax.
+    """
     return input.softmax(dim)
 
 
 def log_softmax(input: Tensor, dim: int = -1) -> Tensor:
-    """Implement the log_softmax method."""
+    """Apply the natural logarithm of the softmax function to the input tensor along a dimension.
+
+    Args:
+        input: The input tensor.
+        dim: The dimension along which log_softmax will be computed.
+
+    Returns:
+        The output tensor after applying log_softmax.
+    """
     return input.log_softmax(dim)
 
 
@@ -44,10 +88,24 @@ def max_pool2d(
     ceil_mode: bool = False,
     return_indices: bool = False,
 ) -> Tensor:
-    """Implement the max_pool2d method."""
+    """Apply a 2D max pooling over an input signal composed of several input planes.
+
+    Args:
+        input: The input tensor (N, C, H, W).
+        kernel_size: The size of the window to take a max over.
+        stride: The stride of the window. Default value is kernel_size.
+        padding: Implicit zero padding to be added on both sides.
+        dilation: The spacing between window elements.
+        ceil_mode: When True, will use ceil instead of floor to compute the output shape.
+        return_indices: If True, will return the max indices along with the outputs.
+
+    Returns:
+        The output tensor after max pooling.
+    """
     from onnx9000.converters.frontend.utils import record_op
 
     def _pair(x):
+        """Helper to convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
     kernel_size_ = _pair(kernel_size)
@@ -66,7 +124,16 @@ def max_pool2d(
 
 
 def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tensor:
-    """Implement the linear method."""
+    """Apply a linear transformation to the incoming data: y = xW^T + b.
+
+    Args:
+        input: The input tensor (*, in_features).
+        weight: The learnable weights of the module of shape (out_features, in_features).
+        bias: The learnable bias of the module of shape (out_features).
+
+    Returns:
+        The output tensor (*, out_features).
+    """
     res = input @ weight.T
     if bias is not None:
         res = res + bias
@@ -82,11 +149,24 @@ def conv2d(
     dilation: Any = 1,
     groups: int = 1,
 ) -> Tensor:
-    """Implement the conv2d method."""
+    """Apply a 2D convolution over an input image composed of several input planes.
+
+    Args:
+        input: Input tensor of shape (N, C_in, H, W).
+        weight: Filters of shape (C_out, C_in / groups, kH, kW).
+        bias: Optional bias tensor of shape (C_out).
+        stride: Stride of the convolution.
+        padding: Zero-padding added to both sides of the input.
+        dilation: Spacing between kernel elements.
+        groups: Number of blocked connections from input channels to output channels.
+
+    Returns:
+        The output tensor of shape (N, C_out, H_out, W_out).
+    """
     from onnx9000.converters.frontend.utils import record_op
 
     def _pair(x):
-        """Implement the _pair method."""
+        """Helper to convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
     attrs = {
@@ -103,7 +183,18 @@ def conv2d(
 
 
 def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0.0) -> Tensor:
-    """Implement the pad method."""
+    """Pad the input tensor using various modes.
+
+    Args:
+        input: The input tensor.
+        pad: m-elements tuple, where m/2 is the number of dimensions to pad.
+             Format is (left, right, top, bottom, front, back) starting from last dim.
+        mode: 'constant', 'reflect' or 'replicate'.
+        value: fill value for 'constant' padding.
+
+    Returns:
+        The padded tensor.
+    """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
@@ -134,7 +225,18 @@ def interpolate(
     mode: str = "nearest",
     align_corners: Optional[bool] = None,
 ) -> Tensor:
-    """Implement the interpolate method."""
+    """Down/up samples the input to either the given size or the given scale factor.
+
+    Args:
+        input: The input tensor.
+        size: Output spatial size.
+        scale_factor: Multiplier for spatial size.
+        mode: The interpolation mode: 'nearest' or 'bilinear'.
+        align_corners: Whether to align corners for bilinear interpolation.
+
+    Returns:
+        The interpolated tensor.
+    """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op
@@ -163,7 +265,15 @@ def interpolate(
 
 
 def one_hot(tensor: Tensor, num_classes: int = -1) -> Tensor:
-    """Implement the one_hot method."""
+    """Return a tensor where the last dimension is one-hot encoded.
+
+    Args:
+        tensor: The input tensor containing class indices.
+        num_classes: Total number of classes. If -1, it's inferred from the input.
+
+    Returns:
+        The one-hot encoded tensor.
+    """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
     from onnx9000.converters.frontend.utils import record_op

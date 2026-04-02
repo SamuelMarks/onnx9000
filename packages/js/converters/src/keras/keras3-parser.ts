@@ -29,7 +29,7 @@ export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
   for (const entry of Object.entries(unzipped)) {
     const filename = entry[0];
     const fileData = entry[1];
-    
+
     if (filename === 'config.json' || filename.endsWith('/config.json')) {
       const text = new TextDecoder().decode(fileData);
       // We safely cast the output of JSON.parse to JsonObject to avoid any/unknown
@@ -39,7 +39,10 @@ export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
       metadata = JSON.parse(text) as JsonObject;
     } else if (filename === 'model.weights.h5' || filename.endsWith('/model.weights.h5')) {
       weightsH5 = fileData;
-    } else if (filename === 'model.weights.safetensors' || filename.endsWith('/model.weights.safetensors')) {
+    } else if (
+      filename === 'model.weights.safetensors' ||
+      filename.endsWith('/model.weights.safetensors')
+    ) {
       weightsSafetensors = fileData;
     }
   }

@@ -1,6 +1,5 @@
 """Tests for advanced tracing with nested collections."""
 
-import pytest
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import trace

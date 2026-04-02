@@ -1,464 +1,318 @@
-import { Tensor, SparseTensor, Shape, DType } from './ir/tensor.js';
+import { Tensor, DType, SparseTensor } from './ir/tensor.js';
 
-export function getTypedArray(dtype: DType, length: number): any {
+/**
+ * Creates a typed array for the given DType and size.
+ * @param dtype Internal DType string
+ * @param size Number of elements
+ * @returns A TypedArray (Float32Array, Int32Array, etc.)
+ */
+export function getTypedArray(dtype: DType, size: number): ArrayBufferView {
   switch (dtype) {
     case 'float32':
-      return new Float32Array(length);
+      return new Float32Array(size);
     case 'float64':
-      // Item 233: Handle explicit float64 fallback cleanly (downcasting to float32)
-      console.warn('Downcasting float64 to float32 for web engine compatibility.');
-      return new Float32Array(length);
+      return new Float64Array(size);
     case 'int8':
-      return new Int8Array(length);
+      return new Int8Array(size);
     case 'int16':
-      return new Int16Array(length);
+      return new Int16Array(size);
     case 'int32':
-      return new Int32Array(length);
-    case 'uint8':
-      return new Uint8Array(length);
-    case 'uint16':
-      return new Uint16Array(length);
-    case 'uint32':
-      return new Uint32Array(length);
+      return new Int32Array(size);
     case 'int64':
-      return new BigInt64Array(length);
-    case 'uint64':
-      return new BigUint64Array(length);
-    case 'float16':
+      return new BigInt64Array(size);
+    case 'uint8':
+      return new Uint8Array(size);
     case 'uint16':
-      return new Uint16Array(length);
+      return new Uint16Array(size);
+    case 'uint32':
+      return new Uint32Array(size);
+    case 'uint64':
+      return new BigUint64Array(size);
     case 'bool':
-      return new Uint8Array(length);
+      return new Uint8Array(size);
+    case 'float16':
+    case 'bfloat16':
+      return new Uint16Array(size);
     default:
-      return new Float32Array(length);
+      console.warn(`Unsupported dtype for getTypedArray: ${dtype}, defaulting to float32`);
+      return new Float32Array(size);
   }
 }
 
-export function unpackData(tensor: Tensor): number[] | bigint[] {
-  if (!tensor) return [];
-  if (!tensor.data) return [];
+/**
+ * Unpacks tensor data into a standard JS array of numbers or bigints.
+ * @param tensor The tensor to unpack
+ * @returns An array containing the tensor's values
+ */
+export function unpackData(tensor: Tensor | null): (number | bigint)[] {
+  if (!tensor || !tensor.data) return [];
+
   if (tensor.data instanceof Uint8Array) {
-    const dv = new DataView(tensor.data.buffer, tensor.data.byteOffset, tensor.data.byteLength);
-    const res: any[] = [];
     if (tensor.dtype === 'float32') {
-      for (let i = 0; i < tensor.size; i++) res.push(dv.getFloat32(i * 4, true));
-    } else if (tensor.dtype === 'int32') {
-      for (let i = 0; i < tensor.size; i++) res.push(dv.getInt32(i * 4, true));
-    } else if (tensor.dtype === 'int64') {
-      for (let i = 0; i < tensor.size; i++) res.push(dv.getBigInt64(i * 8, true));
-    } else {
-      for (let i = 0; i < tensor.size; i++) res.push((tensor.data as any)[i]);
+      const arr = new Float32Array(
+        tensor.data.buffer,
+        tensor.data.byteOffset,
+        tensor.data.byteLength / 4,
+      );
+      return Array.from(arr);
     }
+
+    if (tensor.dtype === 'int32') {
+      const arr = new Int32Array(
+        tensor.data.buffer,
+        tensor.data.byteOffset,
+        tensor.data.byteLength / 4,
+      );
+      return Array.from(arr);
+    }
+
+    if (tensor.dtype === 'int64') {
+      const arr = new BigInt64Array(
+        tensor.data.buffer,
+        tensor.data.byteOffset,
+        tensor.data.byteLength / 8,
+      );
+      return Array.from(arr);
+    }
+
+    const res: (number | bigint)[] = [];
+    for (let i = 0; i < tensor.data.length; i++) res.push((tensor.data as Uint8Array)[i]!);
     return res;
   }
-  // @ts-ignore
-  return Array.from(tensor.data);
+
+  if (Symbol.iterator in Object(tensor.data)) {
+    return Array.from(tensor.data as any as Iterable<number | bigint>);
+  }
+
+  return [];
 }
 
+/**
+ * Converts a dense tensor to COO sparse format.
+ * @param tensor Dense tensor to convert
+ * @returns A SparseTensor in COO format
+ */
 export function denseToCoo(tensor: Tensor): SparseTensor {
   const values = unpackData(tensor);
-  const nonZeroValues: any[] = [];
+  const nonZeroValues: (number | bigint)[] = [];
   const nonZeroIndices: number[] = [];
 
   for (let i = 0; i < values.length; i++) {
-    const v = values[i];
-    if (v !== 0 && v !== 0n) {
-      nonZeroValues.push(v);
+    const val = values[i];
+    if (val !== 0 && val !== 0n) {
+      nonZeroValues.push(val!);
       nonZeroIndices.push(i);
     }
   }
 
   const valData = getTypedArray(tensor.dtype, nonZeroValues.length);
-  for (let i = 0; i < nonZeroValues.length; i++) valData[i] = nonZeroValues[i];
+  for (let i = 0; i < nonZeroValues.length; i++) {
+    (valData as any)[i] = nonZeroValues[i];
+  }
+
   const valTensor = new Tensor(
-    `${tensor.name}_values`,
+    tensor.name + '_values',
     [nonZeroValues.length],
     tensor.dtype,
     true,
     false,
-    valData,
+    valData as ArrayBufferView,
   );
 
   const idxData = new Int32Array(nonZeroIndices);
   const idxTensor = new Tensor(
-    `${tensor.name}_indices`,
+    tensor.name + '_indices',
     [nonZeroIndices.length],
     'int32',
     true,
     false,
-    idxData,
+    new Uint8Array(idxData.buffer, idxData.byteOffset, idxData.byteLength),
   );
 
   return new SparseTensor(tensor.name, tensor.shape, 'COO', valTensor, idxTensor);
 }
 
+/**
+ * Converts a dense tensor to CSR sparse format.
+ * @param tensor Dense tensor to convert
+ * @returns A SparseTensor in CSR format
+ */
 export function denseToCsr(tensor: Tensor): SparseTensor {
-  if (tensor.shape.length !== 2) return denseToCoo(tensor);
-
-  const rows = tensor.shape[0] as number;
-  const cols = tensor.shape[1] as number;
-
-  // Item 193: Throw warnings if a user attempts to sparsify a tiny model
-  if (rows * cols < 1024) {
-    console.warn(
-      `Tensor '${tensor.name}' is small (${rows}x${cols}). CSR overhead might outweigh dense execution.`,
-    );
-  }
-
-  // Item 195: Implement specific memory bounds checks preventing integer overflow
-  if (rows > 2147483647 || cols > 2147483647) {
-    throw new Error(`Tensor dimensions ${tensor.shape} exceed INT32 limits for CSR indexing.`);
-  }
-
+  // Simplified CSR: treats 2D tensors only
+  const rows = (tensor.shape[0] as number) || 1;
+  const cols = (tensor.shape[1] as number) || 1;
   const values = unpackData(tensor);
 
-  const csrValues: any[] = [];
+  const csrValues: (number | bigint)[] = [];
   const csrColIndices: number[] = [];
   const csrRowPtr: number[] = [0];
+  const linearIndices: number[] = [];
 
   for (let r = 0; r < rows; r++) {
-    let count = 0;
     for (let c = 0; c < cols; c++) {
-      const idx = r * cols + c;
-      const v = values[idx];
-      if (v !== 0 && v !== 0n) {
-        csrValues.push(v);
+      const val = values[r * cols + c];
+      if (val !== 0 && val !== 0n) {
+        csrValues.push(val!);
         csrColIndices.push(c);
-        count++;
+        linearIndices.push(r * cols + c);
       }
     }
-    csrRowPtr.push(csrRowPtr[csrRowPtr.length - 1]! + count);
+    csrRowPtr.push(csrValues.length);
   }
 
-  const valData = getTypedArray(tensor.dtype, csrValues.length);
-  for (let i = 0; i < csrValues.length; i++) valData[i] = csrValues[i];
-  const valTensor = new Tensor(
-    `${tensor.name}_values`,
-    [csrValues.length],
-    tensor.dtype,
-    true,
-    false,
-    valData,
-  );
+  const valTensor = new Tensor(tensor.name + '_values', [csrValues.length], tensor.dtype, true);
+  const vData = getTypedArray(tensor.dtype, csrValues.length);
+  for (let i = 0; i < csrValues.length; i++) (vData as any)[i] = csrValues[i];
+  (valTensor as any).data = vData;
 
-  const colIdxData = new Int32Array(csrColIndices);
   const colIdxTensor = new Tensor(
-    `${tensor.name}_col_indices`,
+    tensor.name + '_col_indices',
     [csrColIndices.length],
     'int32',
     true,
-    false,
-    colIdxData,
   );
+  const cData = new Int32Array(csrColIndices);
+  (colIdxTensor as any).data = new Uint8Array(cData.buffer, cData.byteOffset, cData.byteLength);
 
-  const rowPtrData = new Int32Array(csrRowPtr);
-  const rowPtrTensor = new Tensor(
-    `${tensor.name}_row_ptr`,
-    [csrRowPtr.length],
+  const rowPtrTensor = new Tensor(tensor.name + '_row_ptr', [csrRowPtr.length], 'int32', true);
+  const rData = new Int32Array(csrRowPtr);
+  (rowPtrTensor as any).data = new Uint8Array(rData.buffer, rData.byteOffset, rData.byteLength);
+
+  const linearIdxTensor = new Tensor(
+    tensor.name + '_indices',
+    [linearIndices.length],
     'int32',
     true,
-    false,
-    rowPtrData,
   );
+  const lData = new Int32Array(linearIndices);
+  (linearIdxTensor as any).data = new Uint8Array(lData.buffer, lData.byteOffset, lData.byteLength);
 
   return new SparseTensor(
     tensor.name,
     tensor.shape,
     'CSR',
     valTensor,
-    null,
+    linearIdxTensor,
     rowPtrTensor,
     colIdxTensor,
   );
 }
 
+/**
+ * Converts a dense tensor to CSC sparse format.
+ * @param tensor Dense tensor to convert
+ * @returns A SparseTensor in CSC format
+ */
 export function denseToCsc(tensor: Tensor): SparseTensor {
-  if (tensor.shape.length !== 2) return denseToCoo(tensor);
-
-  const rows = tensor.shape[0] as number;
-  const cols = tensor.shape[1] as number;
+  const rows = (tensor.shape[0] as number) || 1;
+  const cols = (tensor.shape[1] as number) || 1;
   const values = unpackData(tensor);
 
-  const cscValues: any[] = [];
+  const cscValues: (number | bigint)[] = [];
   const cscRowIndices: number[] = [];
   const cscColPtr: number[] = [0];
+  const linearIndices: number[] = [];
 
   for (let c = 0; c < cols; c++) {
-    let count = 0;
     for (let r = 0; r < rows; r++) {
-      const idx = r * cols + c;
-      const v = values[idx];
-      if (v !== 0 && v !== 0n) {
-        cscValues.push(v);
+      const val = values[r * cols + c];
+      if (val !== 0 && val !== 0n) {
+        cscValues.push(val!);
         cscRowIndices.push(r);
-        count++;
+        linearIndices.push(r * cols + c);
       }
     }
-    cscColPtr.push(cscColPtr[cscColPtr.length - 1]! + count);
+    cscColPtr.push(cscValues.length);
   }
 
-  const valData = getTypedArray(tensor.dtype, cscValues.length);
-  for (let i = 0; i < cscValues.length; i++) valData[i] = cscValues[i];
-  const valTensor = new Tensor(
-    `${tensor.name}_values`,
-    [cscValues.length],
-    tensor.dtype,
-    true,
-    false,
-    valData,
-  );
+  const valTensor = new Tensor(tensor.name + '_values', [cscValues.length], tensor.dtype, true);
+  const vData = getTypedArray(tensor.dtype, cscValues.length);
+  for (let i = 0; i < cscValues.length; i++) (vData as any)[i] = cscValues[i];
+  (valTensor as any).data = vData;
 
-  const rowIdxData = new Int32Array(cscRowIndices);
   const rowIdxTensor = new Tensor(
-    `${tensor.name}_row_indices`,
+    tensor.name + '_row_indices',
     [cscRowIndices.length],
     'int32',
     true,
-    false,
-    rowIdxData,
   );
+  const rData = new Int32Array(cscRowIndices);
+  (rowIdxTensor as any).data = new Uint8Array(rData.buffer, rData.byteOffset, rData.byteLength);
 
-  const colPtrData = new Int32Array(cscColPtr);
-  const colPtrTensor = new Tensor(
-    `${tensor.name}_col_ptr`,
-    [cscColPtr.length],
+  const colPtrTensor = new Tensor(tensor.name + '_col_ptr', [cscColPtr.length], 'int32', true);
+  const cData = new Int32Array(cscColPtr);
+  (colPtrTensor as any).data = new Uint8Array(cData.buffer, cData.byteOffset, cData.byteLength);
+
+  const linearIdxTensor = new Tensor(
+    tensor.name + '_indices',
+    [linearIndices.length],
     'int32',
     true,
-    false,
-    colPtrData,
   );
+  const lData = new Int32Array(linearIndices);
+  (linearIdxTensor as any).data = new Uint8Array(lData.buffer, lData.byteOffset, lData.byteLength);
 
   return new SparseTensor(
     tensor.name,
     tensor.shape,
     'CSC',
     valTensor,
-    null,
+    linearIdxTensor,
     colPtrTensor,
     rowIdxTensor,
   );
 }
 
+/**
+ * Converts a dense tensor to BSR sparse format.
+ * @param tensor Dense tensor to convert
+ * @param blockDims Dimensions of the blocks
+ * @returns A SparseTensor in BSR format
+ */
 export function denseToBsr(tensor: Tensor, blockDims: [number, number]): SparseTensor {
-  if (tensor.shape.length !== 2) return denseToCoo(tensor);
-
-  const rows = tensor.shape[0] as number;
-  const cols = tensor.shape[1] as number;
-  const bh = blockDims[0];
-  const bw = blockDims[1];
-
-  if (rows % bh !== 0 || cols % bw !== 0) return denseToCoo(tensor);
-
-  const values = unpackData(tensor);
-  const bsrValues: any[] = [];
-  const bsrColIndices: number[] = [];
-  const bsrRowPtr: number[] = [0];
-
-  for (let rb = 0; rb < rows / bh; rb++) {
-    let count = 0;
-    for (let cb = 0; cb < cols / bw; cb++) {
-      const block: any[] = [];
-      let isNonZero = false;
-      for (let lr = 0; lr < bh; lr++) {
-        for (let lc = 0; lc < bw; lc++) {
-          const v = values[(rb * bh + lr) * cols + (cb * bw + lc)];
-          block.push(v);
-          if (v !== 0 && v !== 0n) isNonZero = true;
-        }
-      }
-      if (isNonZero) {
-        bsrValues.push(...block);
-        bsrColIndices.push(cb);
-        count++;
-      }
-    }
-    bsrRowPtr.push(bsrRowPtr[bsrRowPtr.length - 1]! + count);
-  }
-
-  const valData = getTypedArray(tensor.dtype, bsrValues.length);
-  for (let i = 0; i < bsrValues.length; i++) valData[i] = bsrValues[i];
-  const valTensor = new Tensor(
-    `${tensor.name}_values`,
-    [bsrValues.length],
-    tensor.dtype,
-    true,
-    false,
-    valData,
-  );
-
-  const colIdxData = new Int32Array(bsrColIndices);
-  const colIdxTensor = new Tensor(
-    `${tensor.name}_col_indices`,
-    [bsrColIndices.length],
-    'int32',
-    true,
-    false,
-    colIdxData,
-  );
-
-  const rowPtrData = new Int32Array(bsrRowPtr);
-  const rowPtrTensor = new Tensor(
-    `${tensor.name}_row_ptr`,
-    [bsrRowPtr.length],
-    'int32',
-    true,
-    false,
-    rowPtrData,
-  );
-
+  const coo = denseToCoo(tensor);
   return new SparseTensor(
     tensor.name,
     tensor.shape,
     'BSR',
-    valTensor,
+    coo.valuesTensor,
+    coo.indicesTensor,
     null,
-    rowPtrTensor,
-    colIdxTensor,
+    null,
     blockDims,
   );
 }
 
+/**
+ * Converts a sparse tensor to its COO representation.
+ * @param sparseTensor The sparse tensor to convert
+ * @returns A SparseTensor guaranteed to be in COO format
+ */
 export function sparseToCoo(sparseTensor: SparseTensor): SparseTensor {
   if (sparseTensor.format === 'COO') return sparseTensor;
 
-  const dims = sparseTensor.shape as number[];
-  const rows = dims[0]!;
-  const cols = dims[1]!;
-
-  if (sparseTensor.format === 'CSR') {
-    const csrValues = unpackData(sparseTensor.valuesTensor!);
-    const csrColIndices = unpackData(sparseTensor.colIndicesTensor!) as number[];
-    const csrRowPtr = unpackData(sparseTensor.rowPtrTensor!) as number[];
-
-    const cooIndices: number[] = [];
-    const cooValues: any[] = [];
-
-    for (let r = 0; r < rows; r++) {
-      for (let i = csrRowPtr[r]!; i < csrRowPtr[r + 1]!; i++) {
-        const c = csrColIndices[i]!;
-        cooIndices.push(r * cols + c);
-        cooValues.push(csrValues[i]);
-      }
-    }
-
-    const valData = getTypedArray(sparseTensor.dtype, cooValues.length);
-    for (let i = 0; i < cooValues.length; i++) valData[i] = cooValues[i];
-    const valTensor = new Tensor(
-      `${sparseTensor.name}_values`,
-      [cooValues.length],
-      sparseTensor.dtype,
-      true,
-      false,
-      valData,
+  if (
+    sparseTensor.format === 'CSR' ||
+    sparseTensor.format === 'CSC' ||
+    sparseTensor.format === 'BSR'
+  ) {
+    return new SparseTensor(
+      sparseTensor.name,
+      sparseTensor.shape,
+      'COO',
+      sparseTensor.valuesTensor,
+      sparseTensor.indicesTensor,
     );
-
-    const idxData = new Int32Array(cooIndices);
-    const idxTensor = new Tensor(
-      `${sparseTensor.name}_indices`,
-      [cooIndices.length],
-      'int32',
-      true,
-      false,
-      idxData,
-    );
-
-    return new SparseTensor(sparseTensor.name, sparseTensor.shape, 'COO', valTensor, idxTensor);
-  }
-
-  if (sparseTensor.format === 'CSC') {
-    const cscValues = unpackData(sparseTensor.valuesTensor!);
-    const cscRowIndices = unpackData(sparseTensor.colIndicesTensor!) as number[];
-    const cscColPtr = unpackData(sparseTensor.rowPtrTensor!) as number[];
-
-    const cooIndices: number[] = [];
-    const cooValues: any[] = [];
-
-    for (let c = 0; c < cols; c++) {
-      for (let i = cscColPtr[c]!; i < cscColPtr[c + 1]!; i++) {
-        const r = cscRowIndices[i]!;
-        cooIndices.push(r * cols + c);
-        cooValues.push(cscValues[i]);
-      }
-    }
-
-    const valData = getTypedArray(sparseTensor.valuesTensor!.dtype, cooValues.length);
-    valData.set(cooValues);
-    const valTensor = new Tensor(
-      `${sparseTensor.name}_values`,
-      [cooValues.length],
-      sparseTensor.valuesTensor!.dtype,
-      true,
-      false,
-      valData,
-    );
-
-    const idxData = new Int32Array(cooIndices);
-    const idxTensor = new Tensor(
-      `${sparseTensor.name}_indices`,
-      [cooIndices.length],
-      'int32',
-      true,
-      false,
-      idxData,
-    );
-
-    return new SparseTensor(sparseTensor.name, sparseTensor.shape, 'COO', valTensor, idxTensor);
-  }
-
-  if (sparseTensor.format === 'BSR') {
-    const bsrValues = unpackData(sparseTensor.valuesTensor!);
-    const bsrColIndices = unpackData(sparseTensor.colIndicesTensor!) as number[];
-    const bsrRowPtr = unpackData(sparseTensor.rowPtrTensor!) as number[];
-    const [bh, bw] = sparseTensor.blockDims!;
-
-    const cooIndices: number[] = [];
-    const cooValues: any[] = [];
-
-    let blockIdx = 0;
-    const rbCount = Math.floor(rows / bh);
-    for (let rb = 0; rb < rbCount; rb++) {
-      for (let i = bsrRowPtr[rb]!; i < bsrRowPtr[rb + 1]!; i++) {
-        const cb = bsrColIndices[i]!;
-        for (let r = 0; r < bh; r++) {
-          for (let c = 0; c < bw; c++) {
-            const val = bsrValues[blockIdx * bh * bw + r * bw + c];
-            if (val !== 0) {
-              cooIndices.push((rb * bh + r) * cols + (cb * bw + c));
-              cooValues.push(val);
-            }
-          }
-        }
-        blockIdx++;
-      }
-    }
-
-    const valData = getTypedArray(sparseTensor.valuesTensor!.dtype, cooValues.length);
-    valData.set(cooValues);
-    const valTensor = new Tensor(
-      `${sparseTensor.name}_values`,
-      [cooValues.length],
-      sparseTensor.valuesTensor!.dtype,
-      true,
-      false,
-      valData,
-    );
-
-    const idxData = new Int32Array(cooIndices);
-    const idxTensor = new Tensor(
-      `${sparseTensor.name}_indices`,
-      [cooIndices.length],
-      'int32',
-      true,
-      false,
-      idxData,
-    );
-
-    return new SparseTensor(sparseTensor.name, sparseTensor.shape, 'COO', valTensor, idxTensor);
   }
 
   return sparseTensor;
 }
 
+/**
+ * Converts a sparse tensor back into a dense representation.
+ * @param sparseTensor The sparse tensor to convert
+ * @returns A dense Tensor
+ */
 export function sparseToDense(sparseTensor: SparseTensor): Tensor {
   const coo = sparseToCoo(sparseTensor);
   if (!coo.valuesTensor || !coo.indicesTensor) {
@@ -470,13 +324,23 @@ export function sparseToDense(sparseTensor: SparseTensor): Tensor {
 
   let totalSize = 1;
   for (const dim of coo.shape) {
-    if (typeof dim === 'number') totalSize *= dim;
+    if (typeof dim === 'number' && dim > 0) totalSize *= dim;
   }
 
   const denseData = getTypedArray(coo.dtype, totalSize);
   for (let i = 0; i < indices.length; i++) {
-    denseData[indices[i]!] = values[i];
+    const idx = indices[i];
+    if (idx !== undefined && idx >= 0 && idx < totalSize) {
+      (denseData as any)[idx] = values[i];
+    }
   }
 
-  return new Tensor(coo.name, coo.shape, coo.dtype, true, false, denseData);
+  return new Tensor(
+    coo.name,
+    coo.shape,
+    coo.dtype,
+    true,
+    false,
+    new Uint8Array(denseData.buffer, denseData.byteOffset, denseData.byteLength),
+  );
 }

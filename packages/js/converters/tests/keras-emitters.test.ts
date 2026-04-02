@@ -4,6 +4,8 @@ import { emitPool, emitGlobalPool } from '../src/keras/emitters-pool.js';
 import {
   emitBatchNormalization,
   emitLayerNormalization,
+  emitUnitNormalization,
+  emitGroupNormalization,
   emitReshape,
   emitFlatten,
   emitTranspose,
@@ -165,6 +167,30 @@ describe('emitters-norm', () => {
     const pad2 = emitPad('in', 'out', 'pads', undefined, 'reflect', 'pad2');
     expect(pad2[0].inputs.length).toBe(2);
   });
+
+  test('emitUnitNormalization', () => {
+    const nodes = emitUnitNormalization('in', 'out', -1, 'unit_norm');
+    expect(nodes[0].opType).toBe('LpNormalization');
+    expect(nodes[0].attributes?.find((a) => a.name === 'p')?.i).toBe(2);
+  });
+
+  test('emitGroupNormalization', () => {
+    const nodes = emitGroupNormalization('in', 'out', 32, 'gamma', 'beta', 1e-5, 'gn');
+    expect(nodes[0].opType).toBe('GroupNormalization');
+    expect(nodes[0].inputs).toEqual(['in', 'gamma', 'beta']);
+    expect(nodes[0].attributes?.find((a) => a.name === 'num_groups')?.i).toBe(32);
+
+    const nodesNoWeights = emitGroupNormalization(
+      'in',
+      'out',
+      16,
+      undefined,
+      undefined,
+      1e-5,
+      'gn2',
+    );
+    expect(nodesNoWeights[0].inputs).toEqual(['in', '', '']);
+  });
 });
 
 describe('emitters-merge', () => {
@@ -305,6 +331,43 @@ describe('emitters-rnn', () => {
       },
     );
     expect(nodesStateWithInitial[0].inputs).toEqual(['in', 'w', 'r', '', '', 'h0']);
+  });
+
+  test('emitRNNBase with unrolling', () => {
+    const nodes = emitRNNBase('RNN', 'in', 'out', 'w', 'r', 'b', [], 'rnn_unroll', {
+      returnSequences: true,
+      returnState: false,
+      goBackwards: false,
+      stateful: false,
+      unroll: true,
+      timeSteps: 2,
+    });
+    // For 2 timesteps: 2x(Gather, MatMul, MatMul, Add, Add, Tanh) + Concat = 13 nodes?
+    // Wait, let's check.
+    // t=0: Gather, MatMul(W), MatMul(R), Add, Add(B), Tanh
+    // t=1: Gather, MatMul(W), MatMul(R), Add, Add(B), Tanh
+    // Plus 1 initial constant for prevH if no initial state.
+    // Plus 1 Concat.
+    // Total = 1 (Const) + 6 + 6 + 1 (Concat) = 14 nodes.
+    expect(nodes.length).toBe(14);
+    expect(nodes[0].opType).toBe('Constant');
+    expect(nodes[nodes.length - 1].opType).toBe('Concat');
+  });
+
+  test('emitRNNBase with unrolling and initial state', () => {
+    const nodes = emitRNNBase('RNN', 'in', 'out', 'w', 'r', undefined, ['h0'], 'rnn_unroll_h0', {
+      returnSequences: false,
+      returnState: false,
+      goBackwards: true,
+      stateful: false,
+      unroll: true,
+      timeSteps: 2,
+    });
+    // t=0, t=1 (Gather, MatMul, MatMul, Add, Tanh) = 5 nodes each.
+    // Identity at end.
+    // Total = 10 + 1 = 11 nodes.
+    expect(nodes.length).toBe(11);
+    expect(nodes[10].opType).toBe('Identity');
   });
 
   test('emitBidirectional', () => {

@@ -28,7 +28,9 @@ export function compileGraphToTFLite(
   const compatibilityWarnings = edgeTpuOptimizer.optimize();
   if (compatibilityWarnings.length > 0) {
     console.log('[onnx2tf] EdgeTPU Compatibility Report:');
-    compatibilityWarnings.forEach((w) => console.log(`  - ${w}`));
+    compatibilityWarnings.forEach((w) => {
+      console.log(`  - ${w}`);
+    });
   }
 
   const quantCtx: QuantizationContext = { mode: quantMode };

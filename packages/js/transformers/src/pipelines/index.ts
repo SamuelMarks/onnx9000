@@ -1,9 +1,9 @@
 export class Callable extends Function {
   constructor() {
     super('...args', 'return this._call(...args)');
-    let self = this.bind(this);
+    const self = this.bind(this);
     Object.setPrototypeOf(self, this.constructor.prototype);
-    return self as any;
+    return self;
   }
 }
 

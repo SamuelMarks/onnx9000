@@ -1,3 +1,6 @@
+/**
+ * Supported ONNX data types in onnx9000.
+ */
 export type DType =
   | 'float32'
   | 'float64'
@@ -14,19 +17,47 @@ export type DType =
   | 'float16'
   | 'bfloat16';
 
+/**
+ * Represents a dynamic dimension, which can be a symbolic name or -1.
+ */
 export type DynamicDim = string | -1;
+
+/**
+ * Represents the shape of a tensor as an array of dimensions.
+ */
 export type Shape = (number | DynamicDim)[];
 
+/**
+ * Internal Representation of a Tensor (Edge).
+ */
 export class Tensor {
+  /** Unique identifier for the tensor instance. */
   id: string;
+  /** Name of the tensor in the graph. */
   name: string;
+  /** Shape of the tensor. */
   shape: Shape;
+  /** Data type of the tensor. */
   dtype: DType;
+  /** Whether this tensor is a constant initializer. */
   isInitializer: boolean;
+  /** Whether to track gradients for this tensor (for training). */
   requiresGrad: boolean;
+  /** The actual data buffer view, if loaded. */
   data: ArrayBufferView | null;
+  /** Optional metadata for externally stored data. */
   externalData?: { location: string; offset: number; length: number } | undefined;
 
+  /**
+   * Create a new Tensor.
+   * @param name Name of the tensor.
+   * @param shape Shape of the tensor.
+   * @param dtype Data type of the tensor.
+   * @param isInitializer Whether it's an initializer.
+   * @param requiresGrad Whether it requires gradient.
+   * @param data Optional data buffer.
+   * @param externalData Optional external data metadata.
+   */
   constructor(
     name: string,
     shape: Shape,
@@ -51,6 +82,9 @@ export class Tensor {
     }
   }
 
+  /**
+   * Get the total number of elements in the tensor.
+   */
   get size(): number {
     let s = 1;
     for (const dim of this.shape) {
@@ -61,6 +95,11 @@ export class Tensor {
     return s;
   }
 
+  /**
+   * Format the tensor data as a human-readable string.
+   * @param limit Maximum number of elements to include.
+   * @returns A formatted string representing the tensor data.
+   */
   formatData(limit: number = 100): string {
     if (!this.data) return 'No data';
     const values: number[] = [];
@@ -109,6 +148,10 @@ export class Tensor {
     return `[${values.join(', ')}]`;
   }
 
+  /**
+   * Create a deep copy of the tensor.
+   * @returns A new Tensor instance with copied metadata.
+   */
   copy(): Tensor {
     if (this instanceof SparseTensor) {
       return new SparseTensor(
@@ -142,16 +185,39 @@ export class Tensor {
   }
 }
 
+/**
+ * Storage formats for Sparse Tensors.
+ */
 export type SparseFormat = 'COO' | 'CSR' | 'CSC' | 'BSR';
 
+/**
+ * Internal Representation of a Sparse Tensor.
+ */
 export class SparseTensor extends Tensor {
+  /** Tensor containing the non-zero values. */
   valuesTensor: Tensor | null;
+  /** Tensor containing the indices. */
   indicesTensor: Tensor | null;
+  /** Tensor containing the row pointers (for CSR/CSC). */
   rowPtrTensor: Tensor | null;
+  /** Tensor containing the column indices (for CSR/CSC). */
   colIndicesTensor: Tensor | null;
+  /** The storage format used. */
   format: SparseFormat;
+  /** Block dimensions for BSR format. */
   blockDims?: [number, number];
 
+  /**
+   * Create a new SparseTensor.
+   * @param name Name of the tensor.
+   * @param shape Logical shape.
+   * @param format Storage format.
+   * @param valuesTensor Values tensor.
+   * @param indicesTensor Indices tensor.
+   * @param rowPtrTensor Row pointers tensor.
+   * @param colIndicesTensor Column indices tensor.
+   * @param blockDims Block dimensions.
+   */
   constructor(
     name: string,
     shape: Shape,

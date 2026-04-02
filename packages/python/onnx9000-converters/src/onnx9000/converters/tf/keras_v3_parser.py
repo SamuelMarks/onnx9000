@@ -1,6 +1,7 @@
 """Keras 3 functional model parser."""
 
 from typing import Any
+
 import keras
 from onnx9000.converters.tf.parsers import TFGraph, TFNode
 

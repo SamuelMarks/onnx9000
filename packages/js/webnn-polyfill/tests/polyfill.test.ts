@@ -12,7 +12,7 @@ describe('WebNN Polyfill Environment & Context', () => {
     const ml = new PolyfillML();
     const context = await ml.createContext();
     expect(context).toBeInstanceOf(PolyfillMLContext);
-    const limits = context.opSupportLimits!();
+    const limits = context.opSupportLimits();
     expect(limits.input.dataTypes).toContain('float32');
   });
 

@@ -1,10 +1,8 @@
 """Tests the shape inference gap5 module functionality."""
 
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
-from onnx9000.core.symbolic import DynamicDim
 
 
 def test_split():

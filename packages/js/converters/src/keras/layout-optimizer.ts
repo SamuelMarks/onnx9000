@@ -15,6 +15,8 @@ export interface LayoutEdge {
  */
 export interface OnnxNodeLike {
   opType: string;
+  inputs: string[];
+  outputs: string[];
   attributes: { name: string; ints?: number[] }[];
 }
 
@@ -80,9 +82,14 @@ export class LayoutOptimizer {
     const optimized: OnnxNodeLike[] = [];
     for (let i = 0; i < graphNodes.length; i++) {
       const node = graphNodes[i];
-      if (node!.opType === 'Transpose' && i + 1 < graphNodes.length) {
+      if (
+        node!.opType === 'Transpose' &&
+        i + 1 < graphNodes.length &&
+        graphNodes[i + 1]!.opType === 'Transpose'
+      ) {
         const nextNode = graphNodes[i + 1];
-        if (nextNode!.opType === 'Transpose') {
+        // Only optimize if they share the same tensor path
+        if (nextNode!.inputs[0] === node!.outputs[0]) {
           const perm1 = node!.attributes.find((a) => a.name === 'perm')?.ints;
           const perm2 = nextNode!.attributes.find((a) => a.name === 'perm')?.ints;
 

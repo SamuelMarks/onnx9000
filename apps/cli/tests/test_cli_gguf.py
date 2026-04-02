@@ -6,9 +6,8 @@ executions are properly initiated with the correct file operations and compiler 
 """
 
 import argparse
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import pytest
 from onnx9000_cli.main import gguf2onnx_cmd, onnx2gguf_cmd
 
 

@@ -4,12 +4,12 @@
     {
       "name": "Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     },
     {
       "name": "Dataset",
       "type": "Class",
-      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
     },
     {
       "name": "Sequence",
@@ -29,7 +29,7 @@
     {
       "name": "early_stopping",
       "type": "Function",
-      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, List[float]]) -> _EarlyStoppingCallback"
+      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, list[float]]) -> _EarlyStoppingCallback"
     },
     {
       "name": "log_evaluation",
@@ -39,7 +39,7 @@
     {
       "name": "record_evaluation",
       "type": "Function",
-      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+      "signature": "(eval_result: dict[str, dict[str, List[Any]]]) -> Callable"
     },
     {
       "name": "reset_parameter",
@@ -54,12 +54,12 @@
     {
       "name": "cv",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, List[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> Dict[str, Union[List[float], CVBooster]]"
+      "signature": "(params: dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, list[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> dict[str, Union[list[float], CVBooster]]"
     },
     {
       "name": "train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+      "signature": "(params: dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[list[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
     },
     {
       "name": "LGBMClassifier",
@@ -84,7 +84,7 @@
     {
       "name": "create_tree_digraph",
       "type": "Function",
-      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
+      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[list[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
     },
     {
       "name": "plot_importance",
@@ -94,7 +94,7 @@
     {
       "name": "plot_metric",
       "type": "Function",
-      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[List[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
+      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[list[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
     },
     {
       "name": "plot_split_value_histogram",
@@ -104,7 +104,7 @@
     {
       "name": "plot_tree",
       "type": "Function",
-      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[list[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
     },
     {
       "name": "DaskLGBMClassifier",
@@ -254,12 +254,12 @@
     {
       "name": "engine.Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     },
     {
       "name": "engine.Dataset",
       "type": "Class",
-      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
     },
     {
       "name": "engine.LightGBMError",
@@ -274,7 +274,7 @@
     {
       "name": "engine.train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+      "signature": "(params: dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[list[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
     },
     {
       "name": "engine.CVBooster",
@@ -284,17 +284,17 @@
     {
       "name": "engine.cv",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, List[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> Dict[str, Union[List[float], CVBooster]]"
+      "signature": "(params: dict[str, Any], train_set: Dataset, num_boost_round: int, folds: Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]], _LGBMBaseCrossValidator]], nfold: int, stratified: bool, shuffle: bool, metrics: Optional[Union[str, list[str]]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], fpreproc: Optional[_LGBM_PreprocFunction], seed: int, callbacks: Optional[List[Callable]], eval_train_metric: bool, return_cvbooster: bool) -> dict[str, Union[list[float], CVBooster]]"
     },
     {
       "name": "sklearn.Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     },
     {
       "name": "sklearn.Dataset",
       "type": "Class",
-      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
     },
     {
       "name": "sklearn.LightGBMError",
@@ -304,7 +304,7 @@
     {
       "name": "sklearn.record_evaluation",
       "type": "Function",
-      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+      "signature": "(eval_result: dict[str, dict[str, List[Any]]]) -> Callable"
     },
     {
       "name": "sklearn.SKLEARN_INSTALLED",
@@ -329,7 +329,7 @@
     {
       "name": "sklearn.train",
       "type": "Function",
-      "signature": "(params: Dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[List[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
+      "signature": "(params: dict[str, Any], train_set: Dataset, num_boost_round: int, valid_sets: Optional[List[Dataset]], valid_names: Optional[list[str]], feval: Optional[Union[_LGBM_CustomMetricFunction, List[_LGBM_CustomMetricFunction]]], init_model: Optional[Union[str, Path, Booster]], keep_training_booster: bool, callbacks: Optional[List[Callable]]) -> Booster"
     },
     {
       "name": "sklearn.LGBMModel",
@@ -354,7 +354,7 @@
     {
       "name": "plotting.Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     },
     {
       "name": "plotting.GRAPHVIZ_INSTALLED",
@@ -389,22 +389,22 @@
     {
       "name": "plotting.plot_metric",
       "type": "Function",
-      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[List[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
+      "signature": "(booster: Union[Dict, LGBMModel], metric: Optional[str], dataset_names: Optional[list[str]], ax: Optional[matplotlib.axes.Axes], xlim: Optional[Tuple[float, float]], ylim: Optional[Tuple[float, float]], title: Optional[str], xlabel: Optional[str], ylabel: Optional[str], figsize: Optional[Tuple[float, float]], dpi: Optional[int], grid: bool) -> Any"
     },
     {
       "name": "plotting.create_tree_digraph",
       "type": "Function",
-      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
+      "signature": "(booster: Union[Booster, LGBMModel], tree_index: int, show_info: Optional[list[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], max_category_values: int, kwargs: Any) -> Any"
     },
     {
       "name": "plotting.plot_tree",
       "type": "Function",
-      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[List[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
+      "signature": "(booster: Union[Booster, LGBMModel], ax: Optional[matplotlib.axes.Axes], tree_index: int, figsize: Optional[Tuple[float, float]], dpi: Optional[int], show_info: Optional[list[str]], precision: Optional[int], orientation: str, example_case: Optional[Union[np.ndarray, pd_DataFrame]], kwargs: Any) -> Any"
     },
     {
       "name": "callback.Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     },
     {
       "name": "callback.CVBooster",
@@ -419,7 +419,7 @@
     {
       "name": "callback.CallbackEnv",
       "type": "Class",
-      "signature": "(model: Union[Booster, CVBooster], params: Dict[str, Any], iteration: int, begin_iteration: int, end_iteration: int, evaluation_result_list: Optional[_ListOfEvalResultTuples])"
+      "signature": "(model: Union[Booster, CVBooster], params: dict[str, Any], iteration: int, begin_iteration: int, end_iteration: int, evaluation_result_list: Optional[_ListOfEvalResultTuples])"
     },
     {
       "name": "callback.log_evaluation",
@@ -429,7 +429,7 @@
     {
       "name": "callback.record_evaluation",
       "type": "Function",
-      "signature": "(eval_result: Dict[str, Dict[str, List[Any]]]) -> Callable"
+      "signature": "(eval_result: dict[str, dict[str, List[Any]]]) -> Callable"
     },
     {
       "name": "callback.reset_parameter",
@@ -439,7 +439,7 @@
     {
       "name": "callback.early_stopping",
       "type": "Function",
-      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, List[float]]) -> _EarlyStoppingCallback"
+      "signature": "(stopping_rounds: int, first_metric_only: bool, verbose: bool, min_delta: Union[float, list[float]]) -> _EarlyStoppingCallback"
     },
     {
       "name": "basic.CFFI_INSTALLED",
@@ -559,12 +559,12 @@
     {
       "name": "basic.Dataset",
       "type": "Class",
-      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[Dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
+      "signature": "(data: _LGBM_TrainDataType, label: Optional[_LGBM_LabelType], reference: Optional[Dataset], weight: Optional[_LGBM_WeightType], group: Optional[_LGBM_GroupType], init_score: Optional[_LGBM_InitScoreType], feature_name: _LGBM_FeatureNameConfiguration, categorical_feature: _LGBM_CategoricalFeatureConfiguration, params: Optional[dict[str, Any]], free_raw_data: bool, position: Optional[_LGBM_PositionType])"
     },
     {
       "name": "basic.Booster",
       "type": "Class",
-      "signature": "(params: Optional[Dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
+      "signature": "(params: Optional[dict[str, Any]], train_set: Optional[Dataset], model_file: Optional[Union[str, Path]], model_str: Optional[str])"
     }
   ]
 }

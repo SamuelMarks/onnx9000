@@ -2,7 +2,7 @@
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.tvm.relay.frontend.onnx import ONNXImporter, from_onnx
+from onnx9000.tvm.relay.frontend.onnx import from_onnx
 
 
 def test_from_onnx_full():

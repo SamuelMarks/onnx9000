@@ -1,8 +1,6 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Optional
-
-from ..expr import Call, Constant, Expr, Op
+from ..expr import Call, Expr, Op
 from ..visitor import ExprMutator
 
 

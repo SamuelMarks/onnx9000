@@ -1,6 +1,5 @@
 """Tests the hummingbird math more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.math_utils import (
     clamp_nan_to_zero,

@@ -654,7 +654,6 @@ def enforce_webgpu_limits(graph: Graph) -> None:
     Validates tensor sizes, buffer bindings, and invocation limits natively.
     """
     max_buffer_size = 256 * 1024 * 1024  # 256MB WebGPU max buffer size by default
-    from onnx9000.core.dtypes import DType
 
     for t_name, t in graph.tensors.items():
         if t.shape:

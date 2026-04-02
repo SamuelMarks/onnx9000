@@ -36,7 +36,9 @@ export function createLambdaHandler(server: Onnx9000Server) {
         : 10000;
       // Timeout 100ms before actual Lambda timeout to respond gracefully
       setTimeout(
-        () => reject(new Error('Lambda Timeout Reached')),
+        () => {
+          reject(new Error('Lambda Timeout Reached'));
+        },
         Math.max(0, remainingTime - 100),
       );
     });

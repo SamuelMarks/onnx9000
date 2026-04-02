@@ -37,7 +37,9 @@ dropzone.addEventListener('drop', async (e) => {
   }
 });
 
-dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('click', () => {
+  fileInput.click();
+});
 
 fileInput.addEventListener('change', async (e) => {
   if (fileInput.files) {

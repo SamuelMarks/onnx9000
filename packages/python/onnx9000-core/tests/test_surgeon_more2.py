@@ -41,8 +41,11 @@ def test_estimate_macs_conv() -> None:
 def test_fold_constants_math_tensor_output() -> None:
     """Tests the fold constants math tensor output functionality."""
     g = Graph("fold")
-    c1 = Constant("c1", values=b"1")
-    c2 = Constant("c2", values=b"2")
+    # Use 4 bytes of data for float32 (e.g. 1.0 and 2.0)
+    import struct
+
+    c1 = Constant("c1", values=struct.pack("<f", 1.0))
+    c2 = Constant("c2", values=struct.pack("<f", 2.0))
     g.add_tensor(c1)
     g.add_tensor(c2)
     v_out = Variable("out")

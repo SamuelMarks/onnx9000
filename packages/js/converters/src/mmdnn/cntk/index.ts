@@ -1,3 +1,4 @@
-/* eslint-disable */
-// @ts-nocheck
+/** cntk MMDNN submodule. */
+export * from './parser.js';
+export * from './mapper.js';
 export * from './generator.js';

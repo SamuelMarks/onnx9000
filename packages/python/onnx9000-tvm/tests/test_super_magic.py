@@ -1,8 +1,6 @@
 """Tests for packages/python/onnx9000-tvm/tests/test_super_magic.py."""
 
 import inspect
-import sys
-import types
 
 import onnx9000.tvm
 
@@ -83,7 +81,6 @@ class MockAny:
 def test_mega_cov():
     """Test mega cov."""
     import importlib
-    import inspect
     import pkgutil
 
     def walk_packages(pkg):

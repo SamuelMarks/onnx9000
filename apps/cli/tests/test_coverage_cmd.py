@@ -6,13 +6,10 @@ import os
 import subprocess
 from unittest.mock import MagicMock, patch
 
-import pytest
 from onnx9000_cli.coverage import (
     clone_and_parse_onnx_spec,
-    count_supported_framework_objects,
     generate_framework_snapshots,
     generate_markdown_table,
-    generate_summary_table,
     get_onnx9000_ops,
     get_pypi_info,
     update_compliance_md,
@@ -209,10 +206,7 @@ def test_update_coverage_cmd_real(tmpdir):
 
 
 def test_all_coverage_commands():
-    import sys
     from unittest.mock import MagicMock, mock_open, patch
-
-    from onnx9000_cli.main import main
 
     class DummyProc:
         def __init__(self, stdout="dummy_stdout"):
@@ -254,7 +248,6 @@ def test_all_coverage_commands():
 
 
 def test_coverage_cmd_exceptions():
-    import sys
     from unittest.mock import MagicMock, mock_open, patch
 
     import onnx9000_cli.coverage as cov

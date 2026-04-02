@@ -3,7 +3,7 @@
 Central catalog for registering ONNX operators across the ecosystem.
 """
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from onnx9000.core.exceptions import UnsupportedOpError
 
@@ -25,32 +25,46 @@ class OperatorRegistry:
             "ai.onnx.contrib",
         ]
 
-    def register_op(self, op_type: str, domain: str = "") -> Callable[[Any], Any]:
+    def register_op(
+        self, op_type: str, domain: str = "", provider: Optional[str] = None
+    ) -> Callable[[Any], Any]:
         """Decorate to register a class or function for a specific ONNX op_type."""
 
         def wrapper(impl: Any) -> Any:
             """Wrap the implementation and register it."""
             if domain not in self._domains:
                 self._domains.append(domain)
-            full_op_type = f"{domain}.{op_type}" if domain else op_type
-            if full_op_type in self._registry:
-                pass  # Already registered, allow overwrite to support reloading
-            self._registry[full_op_type] = impl
+            key = (domain, op_type, provider)
+            self._registry[key] = impl
             return impl
 
         return wrapper
 
-    def get_op(self, op_type: str, domain: str = "") -> Any:
+    def get_op(self, op_type: str, domain: str = "", provider: Optional[str] = None) -> Any:
         """Retrieve the registered implementation for an ONNX operator."""
-        full_op_type = f"{domain}.{op_type}" if domain else op_type
-        if full_op_type not in self._registry:
-            raise UnsupportedOpError(full_op_type)
-        return self._registry[full_op_type]
+        key = (domain, op_type, provider)
+        if key not in self._registry:
+            # Fallback to no provider if specific one not found
+            fallback_key = (domain, op_type, None)
+            if fallback_key in self._registry:
+                return self._registry[fallback_key]
+            raise UnsupportedOpError(f"{domain}.{op_type} (provider={provider})")
+        return self._registry[key]
+
+    def get_all_registered(self, provider: Optional[str] = None) -> dict[str, Any]:
+        """Return all registered operators for a given provider."""
+        return {
+            f"{k[0]}.{k[1]}" if k[0] else k[1]: v
+            for k, v in self._registry.items()
+            if k[2] == provider
+        }
 
 
 global_registry = OperatorRegistry()
 
 
-def register_op(op_type: str, domain: str = "") -> Callable[[Any], Any]:
+def register_op(
+    op_type: str, domain: str = "", provider: Optional[str] = None
+) -> Callable[[Any], Any]:
     """Exposed decorator for registering ops."""
-    return global_registry.register_op(op_type, domain)
+    return global_registry.register_op(op_type, domain, provider=provider)

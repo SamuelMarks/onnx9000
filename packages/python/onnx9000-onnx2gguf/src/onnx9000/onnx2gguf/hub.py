@@ -6,7 +6,7 @@ import urllib.request
 from typing import Any
 
 
-def fetch_hf_config(repo_id: str, token: str = None) -> Tuple[dict[str, Any], str, str]:
+def fetch_hf_config(repo_id: str, token: str = None) -> tuple[dict[str, Any], str, str]:
     """Fetch hf config."""
     headers = {}
     if token:

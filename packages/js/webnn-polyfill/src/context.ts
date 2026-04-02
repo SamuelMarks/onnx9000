@@ -82,7 +82,7 @@ export class PolyfillMLContext implements MLContext {
 
     for (const [name, outTensor] of Object.entries(onnxOutputs)) {
       if (outputs[name] && outputs[name].internalBuffer && outTensor.data) {
-        const dest = new Uint8Array(outputs[name].internalBuffer!);
+        const dest = new Uint8Array(outputs[name].internalBuffer);
         const src = new Uint8Array(
           outTensor.data.buffer,
           outTensor.data.byteOffset,

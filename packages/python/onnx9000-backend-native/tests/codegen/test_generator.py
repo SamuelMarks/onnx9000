@@ -86,10 +86,7 @@ def test_generator() -> None:
 
 
 import os
-import shutil
 import tempfile
-
-import numpy as np
 
 
 def test_generator_constants() -> None:

@@ -1,9 +1,7 @@
 """Tests the profiler more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.profiler import ProfilerResult, get_attr, profile, profile_graph
-from onnx9000.core.symbolic import DynamicDim
 
 
 def test_profile_graph_decorator(capsys):

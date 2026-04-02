@@ -157,7 +157,7 @@ export class BPEEncoder {
     this.vocab = vocab;
     this.merges = new Map();
     for (let i = 0; i < merges.length; i++) {
-      const m = merges!;
+      const m = merges;
       this.merges.set(`${m[i]![0]} ${m[i]![1]}`, i);
     }
   }

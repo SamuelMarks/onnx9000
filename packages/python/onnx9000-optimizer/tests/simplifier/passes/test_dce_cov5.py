@@ -1,9 +1,7 @@
 """Module providing functionality for test_dce_cov5."""
 
-import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 

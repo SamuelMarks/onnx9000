@@ -1,6 +1,5 @@
 """Tests the hummingbird post processing more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.post_processing import PostProcessor
 

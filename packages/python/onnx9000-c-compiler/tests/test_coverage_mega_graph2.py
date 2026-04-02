@@ -1,14 +1,8 @@
 """Further tests for a large graph with complex operations in the C compiler."""
 
-import struct
-import sys
-from unittest.mock import patch
-
-import pytest
 from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_mega_graph_routing_coverage2():

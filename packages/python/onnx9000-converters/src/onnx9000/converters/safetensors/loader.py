@@ -1,10 +1,9 @@
 """Provide functionality for this module."""
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
-from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Tensor, ValueInfo
-from onnx9000.toolkit.safetensors.parser import SafeTensors, SafetensorsError
+from onnx9000.core.ir import Graph, ValueInfo
+from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
 def load_safetensors_to_graph(filename: str, graph: Optional[Graph] = None) -> Graph:
@@ -64,7 +63,6 @@ def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
 
     Resolve QKV (Query/Key/Value) weight concatenation differences across PyTorch and TF natively.
     """
-    import re
 
     import numpy as np
 

@@ -1,9 +1,8 @@
 import ctypes
 import ctypes.util
 import logging
-import os
 import sys
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger("onnx9000.tensorrt.ffi")
 

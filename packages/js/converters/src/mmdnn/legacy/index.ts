@@ -1,3 +1,2 @@
-/* eslint-disable */
-// @ts-nocheck
-export * from './quirks';
+/** legacy MMDNN submodule. */
+export * from './quirks.js';

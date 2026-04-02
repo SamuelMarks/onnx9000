@@ -1,6 +1,5 @@
 """Tests the hummingbird memory more module functionality."""
 
-import pytest
 from onnx9000.optimizer.hummingbird.memory import (
     TreeAbstractions,
     estimate_memory_footprint,

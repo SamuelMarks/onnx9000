@@ -1,7 +1,7 @@
 """Module docstring."""
 
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from onnx9000_optimum.export import _progress_bar, get_huggingface_model_files

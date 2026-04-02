@@ -1,6 +1,5 @@
 """Tests for sparse modifiers."""
 
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.core.sparse import pack_data, unpack_data
@@ -118,8 +117,6 @@ def test_modifier_extra():
     from onnx9000.core.ir import Constant, Graph
     from onnx9000.optimizer.sparse.modifier import (
         ConstantPruningModifier,
-        GlobalMagnitudePruningModifier,
-        MagnitudePruningModifier,
     )
 
     g = Graph("g")

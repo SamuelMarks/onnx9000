@@ -1,4 +1,4 @@
-"""Provide functionality for this module."""
+"""Provide utilities for converting PyTorch .bin and TensorFlow SavedModel files to safetensors format."""
 
 import glob
 import os

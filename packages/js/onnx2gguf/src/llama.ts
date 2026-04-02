@@ -17,7 +17,7 @@ export function extractLlamaMetadata(graph: Graph): Record<string, any> {
     }
   }
 
-  let headDim = Math.floor(hiddenSize / numHeads);
+  const headDim = Math.floor(hiddenSize / numHeads);
 
   for (const [name, t] of Object.entries(graph.tensors)) {
     if (name.endsWith('layers.0.self_attn.q_proj.weight') && t.shape.length === 2) {

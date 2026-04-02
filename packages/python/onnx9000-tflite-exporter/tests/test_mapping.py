@@ -1,6 +1,5 @@
 """Module docstring."""
 
-import pytest
 from onnx9000.tflite_exporter.compiler.mapping import (
     create_shape_signature,
     map_onnx_shape_to_tflite,

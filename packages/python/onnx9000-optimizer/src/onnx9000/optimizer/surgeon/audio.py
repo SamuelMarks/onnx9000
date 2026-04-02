@@ -1,8 +1,7 @@
 """Audio-specific graph optimizations for onnx9000."""
 
-import numpy as np
-from onnx9000.core.ir import Graph, Node, Constant, Tensor
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph
 
 
 def fold_mel_weights(graph: Graph) -> Graph:

@@ -33,7 +33,9 @@ let currentModelBuffer: Uint8Array | null = null;
 // Tab Switching
 document.querySelectorAll('.tab').forEach((tab) => {
   tab.addEventListener('click', (e) => {
-    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach((t) => {
+      t.classList.remove('active');
+    });
     const t = e.target as HTMLElement;
     t.classList.add('active');
     currentFile = t.dataset.target as 'header' | 'source';
@@ -46,7 +48,9 @@ dropzone.addEventListener('dragover', (e) => {
   e.preventDefault();
   dropzone.classList.add('hover');
 });
-dropzone.addEventListener('dragleave', () => dropzone.classList.remove('hover'));
+dropzone.addEventListener('dragleave', () => {
+  dropzone.classList.remove('hover');
+});
 dropzone.addEventListener('drop', async (e) => {
   e.preventDefault();
   dropzone.classList.remove('hover');
@@ -54,7 +58,9 @@ dropzone.addEventListener('drop', async (e) => {
   if (file && file.name.endsWith('.onnx')) await handleFile(file);
 });
 
-dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('click', () => {
+  fileInput.click();
+});
 fileInput.addEventListener('change', async (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (file) await handleFile(file);

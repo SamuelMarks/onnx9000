@@ -3,11 +3,6 @@
 import sys
 from unittest.mock import MagicMock, patch
 
-import onnx9000_optimum
-import onnx9000_optimum.architectures
-import onnx9000_optimum.export
-import onnx9000_optimum.optimize
-import onnx9000_optimum.quantize
 import pytest
 
 
@@ -28,7 +23,6 @@ def test_export_model_flow(
     mock_exists.return_value = True
     mock_json_load.return_value = {"architectures": ["CausalLM"]}
     mock_pbar.return_value = [1]
-    import sys
 
     mock_torch = MagicMock()
     mock_torch.no_grad = MagicMock()
@@ -65,11 +59,9 @@ def test_quantize_model_flow(mock_save, mock_load):
 
 def test_missing_imports():
     """Test missing imports."""
-    import sys
 
     from onnx9000_optimum.export import (
         _progress_bar,
-        export_model,
         get_huggingface_model_files,
         warn_unsupported_ops,
     )
@@ -113,7 +105,6 @@ def test_auto_detect_others():
 
 def test_dummy_inputs():
     """Test dummy inputs."""
-    import sys
     from unittest.mock import MagicMock
 
     from onnx9000_optimum.export import create_dummy_inputs
@@ -127,7 +118,6 @@ def test_dummy_inputs():
 
 def test_export_other_tasks():
     """Test export other tasks."""
-    import sys
     from unittest.mock import MagicMock
 
     from onnx9000_optimum.export import export_model
@@ -152,7 +142,6 @@ def test_export_other_tasks():
 
 def test_export_exception():
     """Test export exception."""
-    import sys
 
     from onnx9000_optimum.export import export_model
 
@@ -198,7 +187,6 @@ def test_quantizer_methods():
 
 def test_export_tqdm_and_hub_success():
     """Test export tqdm and hub success."""
-    import sys
     from unittest.mock import MagicMock
 
     hf_mock = MagicMock()
@@ -219,7 +207,6 @@ def test_export_tqdm_and_hub_success():
 
 def test_export_transformers_error():
     """Test export transformers error."""
-    import sys
     from unittest.mock import MagicMock
 
     from onnx9000_optimum.export import export_model
@@ -237,7 +224,6 @@ def test_export_transformers_error():
 
 def test_optimize_import_error():
     """Test optimize import error."""
-    import sys
 
     from onnx9000_optimum.optimize import optimize_model
 

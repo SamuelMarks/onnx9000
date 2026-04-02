@@ -1,9 +1,8 @@
 """Advanced static memory arena planning and simulation."""
 
-from typing import Optional, Union
+from typing import Optional
 
-from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Constant, Graph, Node, Tensor, Variable
+from onnx9000.core.ir import Constant, Graph
 from onnx9000.core.profiler import dtype_size, resolve_volume
 
 

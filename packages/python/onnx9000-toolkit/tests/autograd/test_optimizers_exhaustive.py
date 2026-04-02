@@ -1,6 +1,5 @@
 """Tests the optimizers exhaustive module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.toolkit.training.autograd.optimizers import (
     add_adam_optimizer,

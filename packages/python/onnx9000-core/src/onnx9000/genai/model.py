@@ -4,7 +4,6 @@ from collections.abc import AsyncIterator
 
 from ..core.ir import Tensor
 from .generator import Generator
-from .state import State
 from .types import GeneratorParams, ModelParams
 
 

@@ -1,6 +1,5 @@
 """Tests for packages/python/onnx9000-toolkit/tests/safetensors/test_parser_edge_cases.py."""
 
-import ctypes
 import io
 import json
 import mmap

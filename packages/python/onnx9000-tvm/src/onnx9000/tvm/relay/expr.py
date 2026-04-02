@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Optional, Union
 
-from .ty import FuncType, Type
+from .ty import Type
 
 
 class Expr:

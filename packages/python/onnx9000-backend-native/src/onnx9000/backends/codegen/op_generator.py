@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from onnx9000.core.ir import Node
 
 if TYPE_CHECKING:
-    from onnx9000.backends.codegen.generator import Generator
+    pass
 
 
 class OpGenerator(abc.ABC):

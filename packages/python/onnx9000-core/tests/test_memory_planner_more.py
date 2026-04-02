@@ -1,4 +1,3 @@
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.memory_planner import simulate_memory_plan

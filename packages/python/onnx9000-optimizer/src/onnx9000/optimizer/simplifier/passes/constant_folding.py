@@ -364,38 +364,38 @@ class ConstantFoldingPass(GraphPass):
                             logger.warning(
                                 f"Skipping constant folding at {node.name} due to NaN/Inf generation."
                             )
-                            continue
-                        if isinstance(result, list):
-                            size = sum(r.nbytes for r in result)
                         else:
-                            size = result.nbytes
-                        if size <= self.max_size_mb * 1024 * 1024:
                             if isinstance(result, list):
-                                if len(result) > len(node.outputs):
-                                    raise IndexError("Split result length exceeds node outputs")
-                                for idx, res in enumerate(result):
+                                size = sum(r.nbytes for r in result)
+                            else:
+                                size = result.nbytes
+                            if size <= self.max_size_mb * 1024 * 1024:
+                                if isinstance(result, list):
+                                    if len(result) > len(node.outputs):
+                                        raise IndexError("Split result length exceeds node outputs")
+                                    for idx, res in enumerate(result):
+                                        const_node = Node(
+                                            op_type="Constant",
+                                            inputs=[],
+                                            outputs=[node.outputs[idx]],
+                                            attributes={"value": res},
+                                            name=f"folded_{node.name}_{idx}",
+                                        )
+                                        new_nodes.append(const_node)
+                                        known_values[node.outputs[idx]] = res
+                                else:
                                     const_node = Node(
                                         op_type="Constant",
                                         inputs=[],
-                                        outputs=[node.outputs[idx]],
-                                        attributes={"value": res},
-                                        name=f"folded_{node.name}_{idx}",
+                                        outputs=list(node.outputs),
+                                        attributes={"value": result},
+                                        name=f"folded_{node.name}",
                                     )
                                     new_nodes.append(const_node)
-                                    known_values[node.outputs[idx]] = res
-                            else:
-                                const_node = Node(
-                                    op_type="Constant",
-                                    inputs=[],
-                                    outputs=list(node.outputs),
-                                    attributes={"value": result},
-                                    name=f"folded_{node.name}",
-                                )
-                                new_nodes.append(const_node)
-                                known_values[node.outputs[0]] = result
-                            logger.info(f"Folded node {node.name} ({node.op_type})")
-                            folded = True
-                            changed = True
+                                    known_values[node.outputs[0]] = result
+                                logger.info(f"Folded node {node.name} ({node.op_type})")
+                                folded = True
+                                changed = True
                 except Exception as e:
                     import traceback
 
@@ -414,6 +414,8 @@ class ConstantFoldingPass(GraphPass):
 
     def _evaluate_node(self, op_type: str, inputs: list, attrs: dict, node=None):
         """Implement the _evaluate_node method or operation."""
+        if op_type == "Identity":
+            return inputs[0]
         if op_type == "Add":
             return np.add(inputs[0], inputs[1])
         if op_type == "Sub":

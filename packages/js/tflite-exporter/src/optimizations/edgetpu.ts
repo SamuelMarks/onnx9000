@@ -59,7 +59,7 @@ export class EdgeTPUOptimizer {
       if (node.opType === 'Conv' || node.opType === 'ConvTranspose') {
         const wName = node.inputs[1];
         if (wName && this.graph.tensors[wName]) {
-          const wTensor = this.graph.tensors[wName]!;
+          const wTensor = this.graph.tensors[wName];
           if (wTensor.shape && wTensor.shape.length >= 4) {
             // Check channel multiples (often shape[1] or shape[0] based on layout)
             const channels = wTensor.shape[1] as number;

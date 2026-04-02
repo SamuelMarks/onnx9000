@@ -68,7 +68,9 @@ export class TritonCompilerElement extends HTMLElement {
       e.preventDefault();
       dropzone.classList.add('hover');
     });
-    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('hover'));
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('hover');
+    });
     dropzone.addEventListener('drop', (e: any) => {
       e.preventDefault();
       dropzone.classList.remove('hover');

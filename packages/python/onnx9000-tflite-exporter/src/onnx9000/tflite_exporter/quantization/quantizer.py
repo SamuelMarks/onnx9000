@@ -15,10 +15,10 @@ class TensorQuantization:
 
     def __init__(
         self,
-        min: List[float],
-        max: List[float],
-        scale: List[float],
-        zero_point: List[int],
+        min: list[float],
+        max: list[float],
+        scale: list[float],
+        zero_point: list[int],
         quantized_dimension: int,
     ):
         """Initialize TensorQuantization parameters."""
@@ -36,7 +36,7 @@ class Quantizer:
         """Initialize the Quantizer with a graph and quantization mode."""
         self.graph = graph
         self.mode = mode
-        self.quantization_map: Dict[str, TensorQuantization] = {}
+        self.quantization_map: dict[str, TensorQuantization] = {}
 
     def get_quantization_offset(self, builder, tensor: Tensor) -> int:
         """Create and return the FlatBuffer offset for a tensor's quantization parameters."""

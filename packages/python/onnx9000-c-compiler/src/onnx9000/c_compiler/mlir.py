@@ -1,6 +1,6 @@
 """MLIR compiler for onnx9000."""
 
-from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.ir import Graph
 
 
 class MLIRCompiler:

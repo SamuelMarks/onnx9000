@@ -1,7 +1,7 @@
 """TVM submodule for AST and optimization."""
 
-from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from dataclasses import dataclass
+from typing import Union
 
 
 class Type:

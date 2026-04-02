@@ -1,7 +1,5 @@
 """Provides update badges module functionality."""
 
-import ast
-import glob
 import json
 import re
 

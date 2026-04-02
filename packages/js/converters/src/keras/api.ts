@@ -4,6 +4,12 @@ import { parseTFJSModel } from './tfjs-parser.js';
 import { parseKerasH5 } from './h5-parser.js';
 import { Keras2OnnxConverter } from './index.js';
 
+/**
+ * Converts a Keras model to ONNX format.
+ * @param modelData The Keras model topology as a JSON string (TF.js format) or an HDF5 ArrayBuffer.
+ * @param weightsBin Optional ArrayBuffer containing weights.
+ * @returns A Promise resolving to the serialized ONNX ModelProto as a Uint8Array.
+ */
 export async function keras2onnx(
   modelData: string | ArrayBuffer,
   weightsBin?: ArrayBuffer,

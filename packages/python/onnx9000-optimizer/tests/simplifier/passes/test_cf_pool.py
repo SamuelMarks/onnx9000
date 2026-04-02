@@ -309,7 +309,6 @@ def test_cf_constant_attr_types_1():
 
 def test_cf_constant_attr_types():
     """Test cf constant attr types."""
-    import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass

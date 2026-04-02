@@ -1,7 +1,8 @@
-/* eslint-disable */
-// @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 
+/**
+ * Emit a BatchNormalization node.
+ */
 export function emitBatchNormalization(
   inputName: string,
   outputName: string,
@@ -27,6 +28,9 @@ export function emitBatchNormalization(
   ];
 }
 
+/**
+ * Emit a LayerNormalization node.
+ */
 export function emitLayerNormalization(
   inputName: string,
   outputName: string,
@@ -54,6 +58,9 @@ export function emitLayerNormalization(
   ];
 }
 
+/**
+ * Emit a UnitNormalization (mapped to LpNormalization) node.
+ */
 export function emitUnitNormalization(
   inputName: string,
   outputName: string,
@@ -74,6 +81,9 @@ export function emitUnitNormalization(
   ];
 }
 
+/**
+ * Emit a GroupNormalization node.
+ */
 export function emitGroupNormalization(
   inputName: string,
   outputName: string,
@@ -84,14 +94,12 @@ export function emitGroupNormalization(
   name: string,
 ): OnnxNodeBuilder[] {
   const inputs = [inputName];
-  // ONNX GroupNormalization requires num_groups attribute, gamma and beta inputs
-  // If not provided, we insert empty strings so core validation handles it or inserts defaults
   inputs.push(gammaName || '');
   inputs.push(betaName || '');
 
   return [
     {
-      opType: 'GroupNormalization', // Available in ONNX 18+
+      opType: 'GroupNormalization',
       inputs,
       outputs: [outputName],
       name,
@@ -102,9 +110,13 @@ export function emitGroupNormalization(
     },
   ];
 }
+
+/**
+ * Emit a Reshape node.
+ */
 export function emitReshape(
   inputName: string,
-  shapeName: string, // Tensor containing target shape
+  shapeName: string,
   outputName: string,
   name: string,
 ): OnnxNodeBuilder[] {
@@ -114,11 +126,14 @@ export function emitReshape(
       inputs: [inputName, shapeName],
       outputs: [outputName],
       name,
-      attributes: [], // ONNX 14 allows 'allowzero' attribute, omitted for simplicity
+      attributes: [],
     },
   ];
 }
 
+/**
+ * Emit a Flatten node.
+ */
 export function emitFlatten(
   inputName: string,
   outputName: string,
@@ -136,6 +151,9 @@ export function emitFlatten(
   ];
 }
 
+/**
+ * Emit a Transpose node.
+ */
 export function emitTranspose(
   inputName: string,
   outputName: string,
@@ -153,10 +171,13 @@ export function emitTranspose(
   ];
 }
 
+/**
+ * Emit a Pad node.
+ */
 export function emitPad(
   inputName: string,
   outputName: string,
-  padsName: string, // Tensor containing paddings [x1_begin, x2_begin... x1_end, x2_end...]
+  padsName: string,
   constantValueName: string | undefined,
   mode: 'constant' | 'reflect' | 'edge',
   name: string,

@@ -1,4 +1,4 @@
-"""Provide functionality for this module."""
+"""Parser for the safetensors format."""
 
 import io
 import json
@@ -11,85 +11,85 @@ from typing import Any, Optional, Union
 
 
 class SafetensorsError(Exception):
-    """Base exception for Safetensors errors."""
+    """Base exception for all safetensors-related errors."""
 
     __dummy__ = True
 
 
 class SafetensorsHeaderTooLargeError(SafetensorsError):
-    """Represent the SafetensorsHeaderTooLargeError object."""
+    """Raised when the safetensors header size exceeds the allowed limit."""
 
     __dummy__ = True
 
 
 class SafetensorsInvalidHeaderError(SafetensorsError):
-    """Represent the SafetensorsInvalidHeaderError object."""
+    """Raised when the safetensors header is not valid UTF-8."""
 
     __dummy__ = True
 
 
 class SafetensorsInvalidJSONError(SafetensorsError):
-    """Represent the SafetensorsInvalidJSONError object."""
+    """Raised when the safetensors header is not valid JSON."""
 
     __dummy__ = True
 
 
 class SafetensorsDuplicateKeyError(SafetensorsError):
-    """Represent the SafetensorsDuplicateKeyError object."""
+    """Raised when the safetensors header contains duplicate tensor names."""
 
     __dummy__ = True
 
 
 class SafetensorsInvalidOffsetError(SafetensorsError):
-    """Represent the SafetensorsInvalidOffsetError object."""
+    """Raised when the tensor offsets are invalid (e.g., negative or reversed)."""
 
     __dummy__ = True
 
 
 class SafetensorsOutOfBoundsError(SafetensorsError):
-    """Represent the SafetensorsOutOfBoundsError object."""
+    """Raised when the tensor data extends beyond the file boundaries."""
 
     __dummy__ = True
 
 
 class SafetensorsOverlapError(SafetensorsError):
-    """Represent the SafetensorsOverlapError object."""
+    """Raised when two or more tensors have overlapping data regions."""
 
     __dummy__ = True
 
 
 class SafetensorsAlignmentError(SafetensorsError):
-    """Represent the SafetensorsAlignmentError object."""
+    """Raised when a tensor's data offset is not 8-byte aligned."""
 
     __dummy__ = True
 
 
 class SafetensorsInvalidDtypeError(SafetensorsError):
-    """Represent the SafetensorsInvalidDtypeError object."""
+    """Raised when an unknown or unsupported dtype is encountered."""
 
     __dummy__ = True
 
 
 class SafetensorsShapeMismatchError(SafetensorsError):
-    """Represent the SafetensorsShapeMismatchError object."""
+    """Raised when the tensor shape does not match its data size."""
 
     __dummy__ = True
 
 
 class SafetensorsFileEmptyError(SafetensorsError):
-    """Represent the SafetensorsFileEmptyError object."""
+    """Raised when attempting to load an empty file."""
 
     __dummy__ = True
 
 
 class SafetensorsFileTooSmallError(SafetensorsError):
-    """Represent the SafetensorsFileTooSmallError object."""
+    """Raised when the file is too small to contain a valid safetensors header."""
 
     __dummy__ = True
 
 
 class SafetensorsWriteError(SafetensorsError):
-    """Represent the SafetensorsWriteError object."""
+    """Raised when an error occurs while writing a safetensors file."""
 
     __dummy__ = True
 
@@ -112,7 +112,17 @@ _DTYPE_SIZES = {
 
 
 def _calculate_volume(shape: list[int]) -> int:
-    """Execute the _calculate_volume operation."""
+    """Calculate the total number of elements in a given shape.
+
+    Args:
+        shape: A list of integers representing the dimensions.
+
+    Returns:
+        The total volume (product of dimensions).
+
+    Raises:
+        SafetensorsShapeMismatchError: If the shape is invalid.
+    """
     if not isinstance(shape, list):
         raise SafetensorsShapeMismatchError("Shape must be an array/list")
     vol = 1
@@ -126,7 +136,7 @@ def _calculate_volume(shape: list[int]) -> int:
 
 
 class SafeTensors:
-    """Represent the SafeTensors object."""
+    """A memory-mapped reader for safetensors files."""
 
     def __init__(
         self,
@@ -134,7 +144,18 @@ class SafeTensors:
         mmap_hint: bool = True,
         verify_hash: Optional[str] = None,
     ):
-        """Initialize the instance."""
+        """Initialize the SafeTensors reader.
+
+        Args:
+            data: A path to a file, bytes, or a file-like object.
+            mmap_hint: Whether to use memory mapping hints if available.
+            verify_hash: Optional SHA256 hash to verify the entire file content.
+
+        Raises:
+            SafetensorsFileEmptyError: If the input data is empty.
+            SafetensorsFileTooSmallError: If the input data is too small.
+            TypeError: If the input data type is not supported.
+        """
         self.fd = None
         self.mm = None
         self.buffer = None
@@ -250,7 +271,7 @@ class SafeTensors:
         self._validate_header()
 
     def _validate_header(self):
-        """Execute the _validate_header operation."""
+        """Validate the safetensors header for consistency and correctness."""
         seen_regions = []
         for name, info in self.header.items():
             if not isinstance(info, dict):
@@ -319,7 +340,18 @@ class SafeTensors:
             )
 
     def get_tensor(self, name: str) -> memoryview:
-        """Execute the get_tensor operation."""
+        """Get a specific tensor as a memoryview.
+
+        Args:
+            name: The name of the tensor to retrieve.
+
+        Returns:
+            A memoryview of the tensor data.
+
+        Raises:
+            TypeError: If the name is not a string.
+            KeyError: If the tensor is not found.
+        """
         if not isinstance(name, str):
             raise TypeError(f"Key must be string, got {type(name)}")
         if name not in self.tensors:
@@ -357,18 +389,25 @@ class SafeTensors:
         return view
 
     def iter_tensors(self) -> Iterator[tuple[str, memoryview]]:
-        """Yield tensors lazily one by one."""
+        """Yield tensors lazily one by one.
+
+        Yields:
+            A tuple of (tensor name, tensor memoryview).
+        """
         for name in self.tensors:
             yield name, self.get_tensor(name)
 
     def get_pinned_tensor(self, name: str) -> memoryview:
-        """Provide memory-pinned buffer extraction (CUDA Pinned Memory emulation) if requested.
+        """Get a tensor and pin its memory (CUDA Pinned Memory emulation).
 
-        Allocates anonymous mmap memory, copies the tensor, and locks it to RAM (mlock) to prevent swapping to disk.
+        Args:
+            name: The name of the tensor to retrieve.
+
+        Returns:
+            A memoryview of the pinned tensor data.
         """
         import ctypes
         import mmap
-        import sys
 
         view = self.get_tensor(name)
         size = len(view)
@@ -420,17 +459,39 @@ class SafeTensors:
         return memoryview(pinned_mm)
 
     def get_tensors(self, *names: str) -> dict[str, memoryview]:
-        """Return multiple tensors in a dictionary."""
+        """Return multiple tensors in a dictionary.
+
+        Args:
+            *names: Variable length list of tensor names.
+
+        Returns:
+            A dictionary mapping names to memoryviews.
+        """
         return {name: self.get_tensor(name) for name in names}
 
     def get_memory_footprint(self) -> int:
-        """Calculate the total size of all tensor payloads in bytes."""
+        """Calculate the total size of all tensor payloads in bytes.
+
+        Returns:
+            Total size in bytes.
+        """
         return sum(
             info["data_offsets"][1] - info["data_offsets"][0] for info in self.tensors.values()
         )
 
     def get_onnx9000_tensor(self, name: str):
-        """Map a safetensor to a framework-agnostic onnx9000.core.ir.Tensor."""
+        """Map a safetensor to a framework-agnostic onnx9000.core.ir.Tensor.
+
+        Args:
+            name: The name of the tensor to retrieve.
+
+        Returns:
+            An onnx9000.core.ir.Tensor object.
+
+        Raises:
+            ImportError: If onnx9000.core is not available.
+            SafetensorsInvalidDtypeError: If the dtype cannot be mapped.
+        """
         try:
             from onnx9000.core.dtypes import DType
             from onnx9000.core.ir import Tensor
@@ -471,7 +532,20 @@ class SafeTensors:
         )
 
     def get_numpy(self, name: str, downcast_f16: bool = False, quantize_int8: bool = False):
-        """Execute the get_numpy operation."""
+        """Convert a tensor to a numpy array.
+
+        Args:
+            name: The name of the tensor to retrieve.
+            downcast_f16: Whether to downcast float32/float64 to float16.
+            quantize_int8: Whether to perform symmetric quantization to int8.
+
+        Returns:
+            A numpy array.
+
+        Raises:
+            ImportError: If numpy is not available.
+            SafetensorsInvalidDtypeError: If the dtype cannot be mapped.
+        """
         try:
             import numpy as np
         except ImportError:
@@ -517,19 +591,37 @@ class SafeTensors:
         return arr
 
     def keys(self) -> list[str]:
-        """Execute the keys operation."""
+        """Return the names of all tensors in the file.
+
+        Returns:
+            A list of tensor names.
+        """
         return list(self.tensors.keys())
 
     def __getitem__(self, key: str) -> memoryview:
-        """Execute the __getitem__ magic method."""
+        """Get a tensor by name using indexing.
+
+        Args:
+            key: The name of the tensor.
+
+        Returns:
+            A memoryview of the tensor data.
+        """
         return self.get_tensor(key)
 
     def __contains__(self, key: str) -> bool:
-        """Execute the __contains__ magic method."""
+        """Check if a tensor exists in the file.
+
+        Args:
+            key: The name of the tensor.
+
+        Returns:
+            True if the tensor exists, False otherwise.
+        """
         return key in self.tensors
 
     def _close(self):
-        """Execute the _close operation."""
+        """Close the file and release resources."""
         if hasattr(self, "data_view") and self.data_view is not None:
             self.data_view.release()
             self.data_view = None
@@ -544,20 +636,28 @@ class SafeTensors:
             self.fd = None
 
     def __del__(self):
-        """Execute the __del__ magic method."""
+        """Clean up resources when the object is deleted."""
         self._close()
 
     def __enter__(self):
-        """Execute the __enter__ magic method."""
+        """Enter the context manager."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Execute the __exit__ magic method."""
+        """Exit the context manager and close resources."""
         self._close()
 
 
 def save(tensors: dict[str, Any], metadata: Optional[dict[str, str]] = None) -> bytes:
-    """Serialize tensors and return raw bytes. Supports bytes, memoryview, np.ndarray, and ONNX TensorProto."""
+    """Serialize tensors and return raw bytes.
+
+    Args:
+        tensors: A dictionary mapping names to tensor-like objects (bytes, numpy arrays, etc.).
+        metadata: Optional dictionary of string metadata.
+
+    Returns:
+        The serialized safetensors data as bytes.
+    """
     header = {}
 
     # Support appending format version identifiers natively
@@ -681,7 +781,17 @@ def save_file(
     metadata: Optional[dict[str, str]] = None,
     overwrite: bool = True,
 ):
-    """Execute the save_file operation."""
+    """Save tensors to a file in safetensors format.
+
+    Args:
+        tensors: A dictionary mapping names to tensor-like objects.
+        filename: The path to the file to save.
+        metadata: Optional dictionary of string metadata.
+        overwrite: Whether to overwrite the file if it already exists.
+
+    Raises:
+        SafetensorsWriteError: If the file exists and overwrite is False.
+    """
     if not overwrite and os.path.exists(filename):
         raise SafetensorsWriteError(f"File {filename} already exists and overwrite=False")
     with open(filename, "wb") as f:
@@ -691,9 +801,16 @@ def save_file(
 def load_file(
     filename: str, prefix: str = "", pattern: Optional[str] = None, device: str = "cpu"
 ) -> dict[str, Any]:
-    """Load tensors into a dictionary, optionally filtering and prefixing keys.
+    """Load tensors from a safetensors file.
 
-    Filter keys natively using Regex (`safetensors.load_file(..., pattern=".*weight$")`).
+    Args:
+        filename: The path to the safetensors file.
+        prefix: Optional prefix to add to all loaded tensor names.
+        pattern: Optional regex pattern to filter tensor names.
+        device: Target device for loaded tensors (currently ignored).
+
+    Returns:
+        A dictionary mapping names to numpy arrays.
     """
     import re
 
@@ -716,7 +833,16 @@ def load_file(
 
 
 def load(data: bytes, prefix: str = "", pattern: Optional[str] = None) -> dict[str, Any]:
-    """Load tensors from bytes into a dictionary, optionally filtering and prefixing keys."""
+    """Load tensors from safetensors bytes.
+
+    Args:
+        data: The raw safetensors bytes.
+        prefix: Optional prefix to add to all loaded tensor names.
+        pattern: Optional regex pattern to filter tensor names.
+
+    Returns:
+        A dictionary mapping names to numpy arrays.
+    """
     import re
 
     result = {}
@@ -735,7 +861,14 @@ def load(data: bytes, prefix: str = "", pattern: Optional[str] = None) -> dict[s
 
 
 def check_safetensors(filename: str) -> bool:
-    """Execute the check_safetensors operation."""
+    """Check if a file is a valid safetensors file.
+
+    Args:
+        filename: The path to the file to check.
+
+    Returns:
+        True if the file is valid, False otherwise.
+    """
     try:
         with SafeTensors(filename):
             return True
@@ -747,13 +880,28 @@ check_file_validity = check_safetensors
 
 
 def get_metadata(filename: str) -> dict[str, str]:
-    """Output raw metadata dictionary explicitly."""
+    """Get the metadata from a safetensors file.
+
+    Args:
+        filename: The path to the safetensors file.
+
+    Returns:
+        A dictionary of metadata.
+    """
     with SafeTensors(filename) as st:
         return st.metadata
 
 
 def get_tensor(filename: str, key: str) -> memoryview:
-    """Extract single specific key natively."""
+    """Extract a single tensor from a safetensors file.
+
+    Args:
+        filename: The path to the safetensors file.
+        key: The name of the tensor to extract.
+
+    Returns:
+        A memoryview of the tensor data (copied to bytes to ensure safety after file close).
+    """
     with SafeTensors(filename) as st:
         # Since we use memoryview connected to mmap, we must extract and copy to bytes if we want to return safely.
         # However, the user might want a zero-copy view. Returning bytes is the safest if file is closed.
@@ -762,15 +910,31 @@ def get_tensor(filename: str, key: str) -> memoryview:
 
 
 def safe_open(filename: str, framework: str = "pt", device: str = "cpu"):
-    """Emulate the HuggingFace safetensors.safe_open API."""
+    """Open a safetensors file (emulates HuggingFace API).
+
+    Args:
+        filename: The path to the safetensors file.
+        framework: The framework to use (ignored).
+        device: The device to use (ignored).
+
+    Returns:
+        A SafeTensors reader object.
+    """
     return SafeTensors(filename)
 
 
 class SafeTensorsSharded:
-    """Represent the SafeTensorsSharded object."""
+    """A reader for sharded safetensors models."""
 
     def __init__(self, index_filename: str):
-        """Initialize the instance."""
+        """Initialize the sharded safetensors reader.
+
+        Args:
+            index_filename: The path to the index JSON file.
+
+        Raises:
+            SafetensorsError: If the index file is invalid.
+        """
         self.index_filename = index_filename
         self.base_dir = os.path.dirname(index_filename)
 
@@ -783,7 +947,17 @@ class SafeTensorsSharded:
         self._files = {}
 
     def _get_file(self, filename: str) -> SafeTensors:
-        """Execute the _get_file operation."""
+        """Get a SafeTensors reader for a specific shard file.
+
+        Args:
+            filename: The name of the shard file.
+
+        Returns:
+            A SafeTensors reader object.
+
+        Raises:
+            SafetensorsError: If path traversal is detected.
+        """
         if ".." in filename or filename.startswith("/") or filename.startswith("\\"):
             raise SafetensorsError(f"Path traversal detected in sharded index: {filename}")
         if filename not in self._files:
@@ -792,7 +966,17 @@ class SafeTensorsSharded:
         return self._files[filename]
 
     def get_tensor(self, name: str) -> memoryview:
-        """Execute the get_tensor operation."""
+        """Get a tensor from the sharded model.
+
+        Args:
+            name: The name of the tensor.
+
+        Returns:
+            A memoryview of the tensor data.
+
+        Raises:
+            KeyError: If the tensor is not found in the index.
+        """
         if name not in self.weight_map:
             raise KeyError(f"Tensor {name} not found in sharded index")
 
@@ -801,7 +985,17 @@ class SafeTensorsSharded:
         return st.get_tensor(name)
 
     def get_numpy(self, name: str):
-        """Execute the get_numpy operation."""
+        """Get a tensor from the sharded model as a numpy array.
+
+        Args:
+            name: The name of the tensor.
+
+        Returns:
+            A numpy array.
+
+        Raises:
+            KeyError: If the tensor is not found in the index.
+        """
         if name not in self.weight_map:
             raise KeyError(f"Tensor {name} not found in sharded index")
 
@@ -810,33 +1004,51 @@ class SafeTensorsSharded:
         return st.get_numpy(name)
 
     def keys(self) -> list[str]:
-        """Execute the keys operation."""
+        """Return the names of all tensors in the sharded model.
+
+        Returns:
+            A list of tensor names.
+        """
         return list(self.weight_map.keys())
 
     def __contains__(self, key: str) -> bool:
-        """Execute the __contains__ magic method."""
+        """Check if a tensor exists in the sharded model.
+
+        Args:
+            key: The name of the tensor.
+
+        Returns:
+            True if the tensor exists, False otherwise.
+        """
         return key in self.weight_map
 
     def __getitem__(self, key: str) -> memoryview:
-        """Execute the __getitem__ magic method."""
+        """Get a tensor by name using indexing.
+
+        Args:
+            key: The name of the tensor.
+
+        Returns:
+            A memoryview of the tensor data.
+        """
         return self.get_tensor(key)
 
     def _close(self):
-        """Execute the _close operation."""
+        """Close all shard files."""
         for st in self._files.values():
             st._close()
         self._files.clear()
 
     def __del__(self):
-        """Execute the __del__ magic method."""
+        """Clean up resources when the object is deleted."""
         self._close()
 
     def __enter__(self):
-        """Execute the __enter__ magic method."""
+        """Enter the context manager."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Execute the __exit__ magic method."""
+        """Exit the context manager and close resources."""
         self._close()
 
 
@@ -847,7 +1059,15 @@ def save_sharded(
     max_shard_size: int = 10 * 1024 * 1024 * 1024,
     prefix: str = "model",
 ):
-    """Export massive tensors by creating chunked sharded sets automatically."""
+    """Save tensors as a sharded safetensors model.
+
+    Args:
+        tensors: A dictionary mapping names to tensor-like objects.
+        base_dir: The directory to save the shards and index.
+        metadata: Optional dictionary of string metadata.
+        max_shard_size: Maximum size of each shard in bytes.
+        prefix: Prefix for the shard filenames.
+    """
     os.makedirs(base_dir, exist_ok=True)
 
     shards = []

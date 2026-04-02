@@ -2,7 +2,6 @@
 
 from unittest.mock import patch
 
-import pytest
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.utils import get_omp_pragma
 from onnx9000.core.dtypes import DType

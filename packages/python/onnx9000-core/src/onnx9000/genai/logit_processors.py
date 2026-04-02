@@ -141,7 +141,6 @@ class MinPLogitProcessor(LogitProcessor):
         if self.min_p >= 1.0 or logits.data is None:
             return logits
 
-        import math
         import struct
 
         itemsize = logits.dtype.itemsize if hasattr(logits.dtype, "itemsize") else 4

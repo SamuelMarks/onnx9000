@@ -1,6 +1,5 @@
 """Tests the preprocessing more module functionality."""
 
-import pytest
 from onnx9000.converters.sklearn.preprocessing import (
     convert_label_encoder,
     convert_normalizer,

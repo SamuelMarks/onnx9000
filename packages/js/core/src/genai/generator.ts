@@ -36,8 +36,10 @@ export abstract class Generator {
 
   /**
    * High-level generation API. Yields tokens as they are generated.
+   * @param promptIds Tensor containing input token IDs.
+   * @returns AsyncGenerator yielding token IDs.
    */
-  async *generate(promptIds: Tensor): AsyncGenerator<number, void, unknown> {
+  async *generate(promptIds: Tensor): AsyncGenerator<number, void, void> {
     let currentTokens = 0;
     const maxTokens =
       this.params.maxNewTokens ??
@@ -68,6 +70,8 @@ export abstract class Generator {
 
   /**
    * Sample the next token from logits.
+   * @param logits Tensor containing output logits.
+   * @returns Predicted token ID.
    */
   protected sample(logits: Tensor): number {
     // Basic greedy search implementation for now.
@@ -90,6 +94,11 @@ export abstract class Generator {
     throw new Error('Unsupported logit data type for sampling.');
   }
 
+  /**
+   * Check if token is an End-Of-Sequence token.
+   * @param tokenId Token ID to check.
+   * @returns Boolean indicating if token is EOS.
+   */
   protected isEos(tokenId: number): boolean {
     // Implement proper EOS checking logic with ModelParams
     return false; // placeholder

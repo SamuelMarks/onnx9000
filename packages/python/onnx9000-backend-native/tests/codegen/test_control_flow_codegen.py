@@ -1,6 +1,5 @@
 """Module providing functionality for test_control_flow_codegen."""
 
-import pytest
 from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor

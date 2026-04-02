@@ -219,9 +219,9 @@ export class SequenceFeatureExtractor {
     return {};
   }
   computeMelSpectrogram(audio: any): any {
-    let stft = this.wasmSTFT(audio);
-    let power = stft; // simplified
-    let mel = this.generateMelFilterbank();
+    const stft = this.wasmSTFT(audio);
+    const power = stft; // simplified
+    const mel = this.generateMelFilterbank();
     return this.applyLog10(power);
   }
   applyLog10(data: any): any {

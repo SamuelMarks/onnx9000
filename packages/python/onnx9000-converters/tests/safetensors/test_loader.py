@@ -4,7 +4,6 @@ import os
 import tempfile
 
 import numpy as np
-import pytest
 from onnx9000.converters.safetensors.loader import (
     load_and_patch_state_dict,
     load_safetensors_to_graph,

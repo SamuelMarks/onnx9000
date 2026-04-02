@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import struct
-from typing import Any
 
 import pytest
 from onnx9000.core.dtypes import DType

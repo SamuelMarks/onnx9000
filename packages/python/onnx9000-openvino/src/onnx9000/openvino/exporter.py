@@ -1,9 +1,9 @@
 import io
 import struct
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+from onnx9000.core.ir import Graph
 
 from .xml_builder import XmlBuilder, XmlNode
 
@@ -979,8 +979,9 @@ class OpenVinoExporter:
 
         # 4. Map Results (Outputs)
         for val_info in self.graph.outputs:
-            if val_info.name in self.port_ids:
-                from_layer, from_port = self.port_ids[val_info.name]
+            if val_info.name not in self.port_ids:
+                continue
+            from_layer, from_port = self.port_ids[val_info.name]
 
             layer_id = self._next_id()
             self.layer_ids[val_info.name + "_result"] = layer_id

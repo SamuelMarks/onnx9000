@@ -1,7 +1,6 @@
 """Tests the trees more module functionality."""
 
 import numpy as np
-import pytest
 from onnx9000.converters.sklearn.trees import _convert_tree_classifier
 from onnx9000.core.ir import Graph
 

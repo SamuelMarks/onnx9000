@@ -9,24 +9,22 @@ class DotPrinter(ExprVisitor):
     """Core class for TVM AST node or pass."""
 
     def __init__(self):
-        """Magic method."""
-        """Initialize."""
-        """Do the function."""
+        """Initialize the DOT printer with a header and empty node mapping."""
         self.result = "digraph IR {\n"
         self.node_ids = {}
 
     def get_id(self, expr: Expr) -> str:
-        """Do the function."""
+        """Get or create a unique identifier for an expression node."""
         if id(expr) not in self.node_ids:
             self.node_ids[id(expr)] = f"node_{len(self.node_ids)}"
         return self.node_ids[id(expr)]
 
     def _add_edge(self, src: Expr, dst: Expr, label: str = ""):
-        """Do the function."""
+        """Add an edge between two nodes in the DOT representation."""
         self.result += f'  {self.get_id(src)} -> {self.get_id(dst)} [label="{label}"];\n'
 
     def visit(self, expr: Expr) -> None:
-        """Do the function."""
+        """Perform a topological traversal and generate DOT nodes and edges."""
         nodes = topological_sort(expr)
 
         for node in nodes:

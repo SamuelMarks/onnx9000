@@ -54,7 +54,7 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
       return v;
     };
 
-    const resultTypes = node.outputs.map((out) => getONNXType(onnxGraph, out!));
+    const resultTypes = node.outputs.map((out) => getONNXType(onnxGraph, out));
     const resType = resultTypes[0]!;
 
     let op: Operation;
@@ -135,7 +135,7 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
         op = mhlo.dynamicSlice(
           getOperand(node.inputs[0]),
           [getOperand(node.inputs[1])],
-          (resType as TensorType).shape,
+          resType.shape,
           resType,
         );
         break;

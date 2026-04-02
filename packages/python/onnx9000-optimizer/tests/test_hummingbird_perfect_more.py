@@ -1,6 +1,5 @@
 """Tests the hummingbird perfect more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler

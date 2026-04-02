@@ -1,6 +1,5 @@
 """Tests the hummingbird lightgbm more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.lightgbm_parser import (
     apply_lgbm_scaling,

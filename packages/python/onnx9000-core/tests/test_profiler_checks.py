@@ -1,7 +1,7 @@
 """Tests the profiler checks module functionality."""
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+from onnx9000.core.ir import Constant, Graph, Node, Tensor
 from onnx9000.core.profiler_checks import OptimizationAnalyzer
 
 

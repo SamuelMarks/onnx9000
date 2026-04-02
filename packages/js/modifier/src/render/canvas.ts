@@ -176,7 +176,7 @@ export class GraphRenderer {
   // 42, 43, 44, 45. Distinct rendering
   drawNode(node: Node, layout: NodeLayout, graph: Graph) {
     // 277. Pseudo-instancing via offscreen canvas caching
-    let cacheKey =
+    const cacheKey =
       node.opType +
       (this.hoveredNodeId === node.id ? '_hover' : '') +
       (this.selectedNodeIds.has(node.id) ? '_sel' : '');

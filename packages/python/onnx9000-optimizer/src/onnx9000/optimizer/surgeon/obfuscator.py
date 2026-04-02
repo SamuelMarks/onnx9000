@@ -1,6 +1,6 @@
 """Model obfuscation for onnx9000."""
 
-from onnx9000.core.ir import Graph, Tensor, Node
+from onnx9000.core.ir import Graph
 
 
 def obfuscate_names(graph: Graph) -> Graph:

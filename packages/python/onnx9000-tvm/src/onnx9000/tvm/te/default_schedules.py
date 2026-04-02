@@ -1,7 +1,6 @@
 """TVM submodule for AST and optimization."""
 
 from .schedule import Schedule, create_schedule
-from .tensor import Tensor
 
 
 def default_x86_schedule(ops) -> Schedule:

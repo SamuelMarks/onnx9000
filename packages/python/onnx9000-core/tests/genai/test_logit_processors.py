@@ -95,7 +95,6 @@ from onnx9000.genai.logit_processors import (
 def test_min_p():
     """Test min p."""
     proc = MinPLogitProcessor(0.1)
-    import math
 
     logits = create_logits([1.0, 8.0, 10.0])
     out = proc([], logits)
@@ -242,7 +241,6 @@ def test_top_k_errors():
 
 def test_repetition_penalty_errors():
     """Test repetition penalty errors."""
-    from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import RepetitionPenaltyLogitProcessor
 
     with pytest.raises(ValueError):
@@ -254,7 +252,6 @@ def test_repetition_penalty_errors():
 
 def test_presence_frequency_errors():
     """Test presence frequency errors."""
-    from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import (
         FrequencyPenaltyLogitProcessor,
         PresencePenaltyLogitProcessor,
@@ -269,7 +266,7 @@ def test_presence_frequency_errors():
 
 def test_forced_bos_eos_errors():
     """Test forced bos eos errors."""
-    from onnx9000.genai.logit_processors import ForcedBOSLogitProcessor, ForcedEOSLogitProcessor
+    from onnx9000.genai.logit_processors import ForcedBOSLogitProcessor
 
     proc = ForcedBOSLogitProcessor(1)
     t = create_logits([1.0])
@@ -280,7 +277,6 @@ def test_forced_bos_eos_errors():
 
 def test_logit_bias_errors():
     """Test logit bias errors."""
-    from onnx9000.genai.logit_processors import LogitBiasProcessor
 
     proc = LogitBiasProcessor({})
     t = create_logits([1.0])
@@ -343,7 +339,6 @@ def test_logit_processors_more():
 
     from onnx9000.core.ir import Tensor
     from onnx9000.genai.logit_processors import (
-        ForcedEOSLogitProcessor,
         RepetitionPenaltyLogitProcessor,
     )
 
@@ -364,7 +359,6 @@ def test_logit_processors_more():
 def test_forced_eos_no_force():
     """Test forced eos no force."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
 
     eos = ForcedEOSLogitProcessor(max_length=5, eos_token_id=0)
     t = Tensor(name="", shape=(2,), data=bytearray(8), dtype=type("m", (), {"itemsize": 4}))
@@ -374,7 +368,6 @@ def test_forced_eos_no_force():
 def test_forced_eos_force():
     """Test forced eos force."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.genai.logit_processors import ForcedEOSLogitProcessor
 
     eos = ForcedEOSLogitProcessor(max_length=1, eos_token_id=0)
     t = Tensor(name="", shape=(2,), data=bytearray(8), dtype=type("m", (), {"itemsize": 4}))
@@ -404,7 +397,6 @@ def test_logit_bias_processor_restored():
     import struct
 
     from onnx9000.core.ir import Tensor
-    from onnx9000.genai.logit_processors import LogitBiasProcessor
 
     p = LogitBiasProcessor(bias_map={0: 1.0, 1: -1.0})
     data = bytearray(8)

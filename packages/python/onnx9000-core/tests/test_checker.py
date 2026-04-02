@@ -1,5 +1,4 @@
 import asyncio
-from typing import Any
 
 import pytest
 from onnx9000.core.checker import (
@@ -11,7 +10,6 @@ from onnx9000.core.checker import (
     check_tensor,
 )
 from onnx9000.core.exceptions import UnsupportedOpError, UnsupportedOpsetError, ValidationError
-from onnx9000.core.ir import Graph, Node, Tensor
 
 
 class MockTensor:

@@ -5,9 +5,7 @@ to their corresponding TFLite representations.
 """
 
 import logging
-from typing import Optional, Union
-
-from onnx9000.core.ir import DType
+from typing import Optional
 
 from ..flatbuffer.schema import TensorType
 

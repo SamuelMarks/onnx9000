@@ -1,14 +1,12 @@
 """Module docstring."""
 
 import importlib
-import sys
 
 import onnx9000_optimum
 import onnx9000_optimum.architectures
 import onnx9000_optimum.export
 import onnx9000_optimum.optimize
 import onnx9000_optimum.quantize
-import pytest
 
 
 def test_auto_detect_task():

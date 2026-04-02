@@ -7,7 +7,6 @@ import pytest
 from onnx9000.toolkit.safetensors.parser import (
     SafeTensors,
     SafetensorsAlignmentError,
-    SafetensorsDuplicateKeyError,
     SafetensorsError,
     SafetensorsFileEmptyError,
     SafetensorsFileTooSmallError,
@@ -452,7 +451,6 @@ def test_type_error_get_tensor():
 
 def test_missing_hf_keys_warning():
     """Test missing hf keys warning."""
-    import warnings
 
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
@@ -760,13 +758,10 @@ def test_xxe_json_injection():
 
 def test_bfloat16_generation_security():
     """Test bfloat16 generation security."""
-    import numpy as np
 
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "bf16.safetensors")
         import struct
-
-        from onnx9000.toolkit.safetensors.parser import save
 
         header = {"a": {"dtype": "BF16", "shape": [1], "data_offsets": [0, 2]}, "__metadata__": {}}
         import json
@@ -797,7 +792,6 @@ def test_loopback_reading():
 
 def test_huge_dimension_check():
     """Test huge dimension check."""
-    import json
 
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "huge_dim.safetensors")

@@ -4,8 +4,7 @@ import json
 import os
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Constant, Graph, Node, Tensor
-from onnx9000.core.profiler import profile
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.profiler_grouping import (
     export_csv,
     export_hierarchical_json,

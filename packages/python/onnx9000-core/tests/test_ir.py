@@ -2,6 +2,10 @@
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import DynamicDim, Graph, Node, Variable
+import sys
+
+print(f"DEBUG sys.path: {sys.path}")
+print(f"DEBUG Node class: {hex(id(Node))}")
 
 
 def test_dynamic_dim() -> None:
@@ -80,3 +84,27 @@ def test_graph(caplog) -> None:
     assert "Inputs: ['t1']" in caplog.text
     assert "Outputs: ['t2']" in caplog.text
     assert "Relu: ['t1'] -> ['t2']" in caplog.text
+
+    # Test remove_node
+    assert g.producer_map.get("t2") is n
+    g.remove_node(n)
+    assert len(g.nodes) == 0
+    assert "t2" not in g.producer_map
+    assert n not in g.consumer_map.get("t1", [])
+
+    # Test equality
+    g1 = Graph(name="g")
+    g2 = Graph(name="g")
+    assert g1 == g2
+    g2.name = "g2"
+    assert g1 != g2
+    assert g1 != "not a graph"
+
+    g1.name = "g"
+    g2.name = "g"
+    n1 = Node(op_type="Relu", inputs=["in"], outputs=["out"])
+    g1.add_node(n1)
+    assert g1 != g2
+    n2 = Node(op_type="Relu", inputs=["in"], outputs=["out"])
+    g2.add_node(n2)
+    assert g1 == g2

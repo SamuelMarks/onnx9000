@@ -1,12 +1,10 @@
 """Quantization utilities for onnx9000."""
 
-from typing import Dict, Any, List
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor, Constant
-from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph
 
 
-def quantize_ptq(graph: Graph, calibration_data: List[Dict[str, np.ndarray]] = None) -> Graph:
+def quantize_ptq(graph: Graph, calibration_data: list[dict[str, np.ndarray]] = None) -> Graph:
     """Post-training quantization with calibration dataset support."""
     # Algorithm:
     # 1. Collect activation statistics if calibration_data is provided.
@@ -22,6 +20,23 @@ def quantize_ptq(graph: Graph, calibration_data: List[Dict[str, np.ndarray]] = N
                 if isinstance(weight_tensor, Constant):
                     # Simple min-max quantization for demonstration
                     # In a real implementation, we'd use scales and zero points
-                    pass
+                    data = np.frombuffer(weight_tensor.data, dtype=np.float32)
+                    scale = (np.max(data) - np.min(data)) / 255.0
+                    zp = -np.min(data) / scale if scale != 0 else 0
+
+                    # Update tensor to be uint8
+                    weight_tensor.dtype = "uint8"
+                    weight_tensor.data = (
+                        ((data - np.min(data)) / (scale if scale != 0 else 1))
+                        .astype(np.uint8)
+                        .tobytes()
+                    )
+
+                    # Mark as quantized in metadata
+                    if not hasattr(graph, "metadata"):
+                        graph.metadata = {}
+                    graph.metadata[f"{weight_name}_quantized"] = "true"
+                    graph.metadata[f"{weight_name}_scale"] = str(scale)
+                    graph.metadata[f"{weight_name}_zp"] = str(zp)
 
     return graph

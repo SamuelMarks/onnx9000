@@ -162,7 +162,7 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
             opType = n.opType;
             name = n.name;
             if (opType === 'Constant' && n.attributes['value_string']) {
-              const v = String(n.attributes['value_string']!.value);
+              const v = String(n.attributes['value_string'].value);
               stringValue = v.length > 15 ? v.substring(0, 15) + '...' : v;
             }
           }
@@ -223,7 +223,7 @@ export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): Gr
             opType = n.opType;
             name = n.name;
             if (opType === 'Constant' && n.attributes['value_string']) {
-              const v = String(n.attributes['value_string']!.value);
+              const v = String(n.attributes['value_string'].value);
               stringValue = v.length > 15 ? v.substring(0, 15) + '...' : v;
             }
           }

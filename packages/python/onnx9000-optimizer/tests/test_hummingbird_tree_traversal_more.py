@@ -1,6 +1,5 @@
 """Tests the hummingbird tree traversal more module functionality."""
 
-import pytest
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.tree_traversal import (
     compile_forest_tree_traversal,

@@ -737,7 +737,7 @@ def test_cli_no_math_strip():
 
     from onnx9000.c_compiler.cli import main
     from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Constant, Graph, Tensor
+    from onnx9000.core.ir import Graph, Tensor
 
     with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--quiet", "--no-opt"]):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):

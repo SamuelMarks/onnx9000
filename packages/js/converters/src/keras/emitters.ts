@@ -111,7 +111,7 @@ export function emitActivation(
         name,
         attributes: [
           { name: 'alpha', f: 1.6732632423543772848170429916717, type: 'FLOAT' },
-          { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' }
+          { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' },
         ],
       });
       break;
@@ -184,9 +184,7 @@ export function emitActivation(
         inputs: [inputName],
         outputs: [outputName],
         name,
-        attributes: [
-           { name: 'approximate', s: 'none', type: 'STRING' }
-        ],
+        attributes: [{ name: 'approximate', s: 'none', type: 'STRING' }],
       });
       break;
     case 'hard_sigmoid':

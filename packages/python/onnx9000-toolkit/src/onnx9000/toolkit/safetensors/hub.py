@@ -1,4 +1,4 @@
-"""Provide functionality for this module."""
+"""Hugging Face Hub utilities for downloading and caching safetensors models."""
 
 import hashlib
 import os
@@ -7,7 +7,11 @@ from urllib.request import Request, urlopen
 
 
 def _get_cache_dir() -> str:
-    """Get the default Hugging Face cache directory."""
+    """Get the default Hugging Face cache directory.
+
+    Returns:
+        The path to the Hugging Face cache directory.
+    """
     if "HF_HOME" in os.environ:
         return os.environ["HF_HOME"]
     return os.path.expanduser("~/.cache/huggingface/hub")
@@ -16,7 +20,12 @@ def _get_cache_dir() -> str:
 def resolve_model_file(repo_id: str, revision: str = "main") -> str:
     """Auto-detect if a model repository defaults to .bin (PyTorch) vs .safetensors and prioritize .safetensors.
 
-    Returns the URL to the best available weights file.
+    Args:
+        repo_id: The Hugging Face repository ID.
+        revision: The repository revision (branch, tag, or commit hash).
+
+    Returns:
+        The URL to the best available weights file, or None if not found.
     """
     base_url = f"https://huggingface.co/{repo_id}/resolve/{revision}"
 
@@ -42,6 +51,18 @@ def cached_download(
     """Emulate huggingface_hub cached_download paths if the library is not installed.
 
     Downloads the file and caches it natively in the Hugging Face cache directory.
+
+    Args:
+        url: The URL to download from.
+        force_download: Whether to force a re-download if the file is already cached.
+        expected_sha256: Optional SHA256 hash to verify the downloaded file.
+        revision: The repository revision to use for Hugging Face URLs.
+
+    Returns:
+        The path to the cached file.
+
+    Raises:
+        RuntimeError: If the download fails or hash validation fails.
     """
     cache_dir = _get_cache_dir()
 

@@ -1,7 +1,7 @@
 """RNN/LSTM operation implementations for ONNX to C."""
 
 from onnx9000.c_compiler.ast_builder import C89Builder
-from onnx9000.core.ir import Node, Tensor
+from onnx9000.core.ir import Node
 
 
 def generate_rnn(

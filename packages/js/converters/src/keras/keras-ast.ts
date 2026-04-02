@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { JsonObject, JsonArray } from './tfjs-parser.js';
 
 export interface KerasTensorSpec {
@@ -22,7 +26,11 @@ export interface KerasModelTopology {
   signatures?: Record<string, { inputs: Record<string, string>; outputs: Record<string, string> }>; // e.g. "serving_default"
 }
 
-export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: string = '', rawSignatures?: JsonObject): KerasModelTopology {
+export function extractKerasTopology(
+  modelConfig: JsonObject,
+  parentPrefix: string = '',
+  rawSignatures?: JsonObject,
+): KerasModelTopology {
   const topology: KerasModelTopology = {
     inputs: [],
     outputs: [],
@@ -35,22 +43,22 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
       const sigObj = sigDef as JsonObject;
       const inputsObj = (sigObj['inputs'] as JsonObject) || {};
       const outputsObj = (sigObj['outputs'] as JsonObject) || {};
-      
+
       const parsedInputs: Record<string, string> = {};
       for (const [k, v] of Object.entries(inputsObj)) {
         if (typeof v === 'object' && v !== null && (v as JsonObject)['name']) {
-           parsedInputs[k] = (v as JsonObject)['name'] as string;
+          parsedInputs[k] = (v as JsonObject)['name'] as string;
         } else if (typeof v === 'string') {
-           parsedInputs[k] = v;
+          parsedInputs[k] = v;
         }
       }
 
       const parsedOutputs: Record<string, string> = {};
       for (const [k, v] of Object.entries(outputsObj)) {
         if (typeof v === 'object' && v !== null && (v as JsonObject)['name']) {
-           parsedOutputs[k] = (v as JsonObject)['name'] as string;
+          parsedOutputs[k] = (v as JsonObject)['name'] as string;
         } else if (typeof v === 'string') {
-           parsedOutputs[k] = v;
+          parsedOutputs[k] = v;
         }
       }
 
@@ -76,13 +84,15 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
 
       // Handle Sequential layers where class_name / config are not wrapped
       if (!lClassName && typeof layerObj['name'] === 'string') {
-        lName = layerObj['name'] as string;
-        lClassName = layerObj['className'] as string || 'Unknown';
-        lConfig = layerObj as JsonObject;
+        lName = layerObj['name'];
+        lClassName = (layerObj['className'] as string) || 'Unknown';
+        lConfig = layerObj;
       }
 
       const prefixedName = parentPrefix ? `${parentPrefix}/${lName}` : lName;
-      const inboundNodes: string[] = prevLayerName ? [`${parentPrefix ? parentPrefix + '/' + prevLayerName : prevLayerName}:0:0`] : [];
+      const inboundNodes: string[] = prevLayerName
+        ? [`${parentPrefix ? parentPrefix + '/' + prevLayerName : prevLayerName}:0:0`]
+        : [];
 
       // Identify first layer's input
       if (prevLayerName === undefined) {
@@ -94,13 +104,13 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         }
         const shape = shapeArray ? shapeArray.map((s) => (typeof s === 'number' ? s : null)) : [];
         const dtype = typeof lConfig['dtype'] === 'string' ? lConfig['dtype'] : 'float32';
-        
+
         topology.inputs.push({
           name: `${prefixedName}_input:0:0`,
           shape,
           dtype,
         });
-        
+
         // If the first layer isn't explicitly an InputLayer, we still feed it the synthetic input
         if (lClassName !== 'InputLayer') {
           inboundNodes.push(`${prefixedName}_input:0:0`);
@@ -109,7 +119,7 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
 
       if (lClassName === 'Functional' || lClassName === 'Sequential' || lClassName === 'Model') {
         const nestedTopology = extractKerasTopology(layerObj, prefixedName);
-        
+
         // Hoist nested nodes
         for (const [nName, nSpec] of nestedTopology.nodes.entries()) {
           topology.nodes.set(nName, nSpec);
@@ -118,35 +128,36 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         // Bridge connections. For sequential, we just connect the output of the previous layer to the input of the nested model
         // We know sequential nested models only have 1 input.
         if (nestedTopology.inputs.length > 0 && inboundNodes.length > 0) {
-           const nestedInput = nestedTopology.inputs[0];
-           if (nestedInput) {
-             const internalInputNodeName = nestedInput.name.split(':')[0] + ':0';
-             const internalInputNode = topology.nodes.get(internalInputNodeName);
-             // Re-wire internal nodes that depended on the nested input to depend on the parent's inbound
-             if (internalInputNode) {
-                for (const [nName, nSpec] of topology.nodes.entries()) {
-                   if (nName.startsWith(prefixedName)) {
-                      nSpec.inboundNodes = nSpec.inboundNodes.map((inNode: string) => inNode === nestedInput.name ? inboundNodes[0]! : inNode);
-                   }
+          const nestedInput = nestedTopology.inputs[0];
+          if (nestedInput) {
+            const internalInputNodeName = nestedInput.name.split(':')[0] + ':0';
+            const internalInputNode = topology.nodes.get(internalInputNodeName);
+            // Re-wire internal nodes that depended on the nested input to depend on the parent's inbound
+            if (internalInputNode) {
+              for (const [nName, nSpec] of topology.nodes.entries()) {
+                if (nName.startsWith(prefixedName)) {
+                  nSpec.inboundNodes = nSpec.inboundNodes.map((inNode: string) =>
+                    inNode === nestedInput.name ? inboundNodes[0]! : inNode,
+                  );
                 }
-                // Remove the now-redundant internal InputLayer node
-                topology.nodes.delete(internalInputNodeName);
-             }
-           }
-        }
-        
-        // Update prevLayerName to point to the last layer of the nested model
-        if (nestedTopology.outputs.length > 0) {
-           const outName = nestedTopology.outputs[0]?.name.split(':')[0];
-           if (outName) {
-             prevLayerName = outName;
-             // Strip parentPrefix if it was added, as prevLayerName is used in the loop
-             if (parentPrefix && prevLayerName.startsWith(parentPrefix + '/')) {
-                 prevLayerName = prevLayerName.substring(parentPrefix.length + 1);
-             }
-           }
+              }
+              // Remove the now-redundant internal InputLayer node
+              topology.nodes.delete(internalInputNodeName);
+            }
+          }
         }
 
+        // Update prevLayerName to point to the last layer of the nested model
+        if (nestedTopology.outputs.length > 0) {
+          const outName = nestedTopology.outputs[0]?.name.split(':')[0];
+          if (outName) {
+            prevLayerName = outName;
+            // Strip parentPrefix if it was added, as prevLayerName is used in the loop
+            if (parentPrefix && prevLayerName.startsWith(parentPrefix + '/')) {
+              prevLayerName = prevLayerName.substring(parentPrefix.length + 1);
+            }
+          }
+        }
       } else {
         topology.nodes.set(`${prefixedName}:0`, {
           className: lClassName,
@@ -187,7 +198,7 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         for (let nodeIndex = 0; nodeIndex < inboundNodesRaw.length; nodeIndex++) {
           const nodeGrpArr = inboundNodesRaw[nodeIndex] as JsonArray;
           const inputs: string[] = [];
-          
+
           for (const nodeInfo of nodeGrpArr) {
             const nodeInfoArr = nodeInfo as JsonArray;
             const srcLayer = nodeInfoArr[0] as string;
@@ -203,54 +214,59 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
       }
 
       if (lClassName === 'Functional' || lClassName === 'Sequential' || lClassName === 'Model') {
-         const nestedTopology = extractKerasTopology(layerObj, prefixedName);
-         
-         for (const [nName, nSpec] of nestedTopology.nodes.entries()) {
-            topology.nodes.set(nName, nSpec);
-         }
-         
-         // Store mapping: parent output name -> nested model's actual output name
-         if (nestedTopology.outputs.length > 0) {
-            // Assume 1:1 output mapping for simplicity in Sequential/Functional nests 
-            // where outputs[0] is the main output
-            nestedModelOutputMap.set(`${prefixedName}:0:0`, nestedTopology.outputs[0]!.name);
-         }
+        const nestedTopology = extractKerasTopology(layerObj, prefixedName);
 
-         // Map each inbound node group (execution instance of the nested model)
-         for (let instanceIdx = 0; instanceIdx < inboundNodesBase.length; instanceIdx++) {
-            const instanceInboundNodes = inboundNodesBase[instanceIdx];
-            
-            // For a functional model, it might have multiple inputs. 
-            // instanceInboundNodes maps 1:1 with nestedTopology.inputs
-            if (instanceInboundNodes && nestedTopology.inputs.length === instanceInboundNodes.length) {
-               for (let inIdx = 0; inIdx < nestedTopology.inputs.length; inIdx++) {
-                   const nestedInput = nestedTopology.inputs[inIdx];
-                   if (!nestedInput) continue;
-                   const nestedInputName = nestedInput.name; // e.g. nested_model/nested_in:0:0
-                   const nestedInputBaseName = nestedInputName.split(':')[0] + ':0'; // nested_model/nested_in:0
-                   
-                   // Re-wire
-                   for (const [nName, nSpec] of topology.nodes.entries()) {
-                       if (nName.startsWith(prefixedName)) {
-                           nSpec.inboundNodes = nSpec.inboundNodes.map((inN: string) => inN === nestedInputName ? instanceInboundNodes[inIdx]! : inN);
-                       }
-                   }
-                   topology.nodes.delete(nestedInputBaseName);
-               }
+        for (const [nName, nSpec] of nestedTopology.nodes.entries()) {
+          topology.nodes.set(nName, nSpec);
+        }
+
+        // Store mapping: parent output name -> nested model's actual output name
+        if (nestedTopology.outputs.length > 0) {
+          // Assume 1:1 output mapping for simplicity in Sequential/Functional nests
+          // where outputs[0] is the main output
+          nestedModelOutputMap.set(`${prefixedName}:0:0`, nestedTopology.outputs[0]!.name);
+        }
+
+        // Map each inbound node group (execution instance of the nested model)
+        for (let instanceIdx = 0; instanceIdx < inboundNodesBase.length; instanceIdx++) {
+          const instanceInboundNodes = inboundNodesBase[instanceIdx];
+
+          // For a functional model, it might have multiple inputs.
+          // instanceInboundNodes maps 1:1 with nestedTopology.inputs
+          if (
+            instanceInboundNodes &&
+            nestedTopology.inputs.length === instanceInboundNodes.length
+          ) {
+            for (let inIdx = 0; inIdx < nestedTopology.inputs.length; inIdx++) {
+              const nestedInput = nestedTopology.inputs[inIdx];
+              if (!nestedInput) continue;
+              const nestedInputName = nestedInput.name; // e.g. nested_model/nested_in:0:0
+              const nestedInputBaseName = nestedInputName.split(':')[0] + ':0'; // nested_model/nested_in:0
+
+              // Re-wire
+              for (const [nName, nSpec] of topology.nodes.entries()) {
+                if (nName.startsWith(prefixedName)) {
+                  nSpec.inboundNodes = nSpec.inboundNodes.map((inN: string) =>
+                    inN === nestedInputName ? instanceInboundNodes[inIdx]! : inN,
+                  );
+                }
+              }
+              topology.nodes.delete(nestedInputBaseName);
             }
-         }
-      } else {
-          for (let nodeIndex = 0; nodeIndex < inboundNodesBase.length; nodeIndex++) {
-            const currentInbound = inboundNodesBase[nodeIndex] || [];
-            topology.nodes.set(`${prefixedName}:${nodeIndex}`, {
-              className: lClassName,
-              name: `${prefixedName}:${nodeIndex}`,
-              layerName: lName, // Keep original name for weight lookup
-              nodeIndex,
-              inboundNodes: currentInbound,
-              config: lConfig,
-            });
           }
+        }
+      } else {
+        for (let nodeIndex = 0; nodeIndex < inboundNodesBase.length; nodeIndex++) {
+          const currentInbound = inboundNodesBase[nodeIndex] || [];
+          topology.nodes.set(`${prefixedName}:${nodeIndex}`, {
+            className: lClassName,
+            name: `${prefixedName}:${nodeIndex}`,
+            layerName: lName, // Keep original name for weight lookup
+            nodeIndex,
+            inboundNodes: currentInbound,
+            config: lConfig,
+          });
+        }
       }
     }
 
@@ -260,10 +276,10 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         const inName = inArr[0] as string;
         const inNodeIndex = inArr[1] as number;
         const inTensorIndex = inArr[2] as number;
-        
+
         let shape: (number | null)[] = [];
         let dtype = 'float32';
-        
+
         const layerNode = topology.nodes.get(`${inName}:0`);
         if (layerNode && layerNode.className === 'InputLayer') {
           if (layerNode.config['batch_input_shape']) {
@@ -282,7 +298,7 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         });
       }
     } else if (inputList && parentPrefix) {
-       for (const inLayer of inputList) {
+      for (const inLayer of inputList) {
         const inArr = inLayer as JsonArray;
         const inName = inArr[0] as string;
         const inNodeIndex = inArr[1] as number;
@@ -292,7 +308,7 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
           shape: [],
           dtype: 'float32',
         });
-       }
+      }
     }
 
     if (outputList) {
@@ -301,12 +317,12 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         const outName = outArr[0] as string;
         const outNodeIndex = outArr[1] as number;
         const outTensorIndex = outArr[2] as number;
-        
+
         let finalOutName = `${outName}:${outNodeIndex}:${outTensorIndex}`;
         if (parentPrefix) {
-           finalOutName = `${parentPrefix}/${finalOutName}`;
+          finalOutName = `${parentPrefix}/${finalOutName}`;
         }
-        
+
         // If an output points to a nested model (which was hoisted and no longer exists as a node),
         // we must rewire this output to the actual output of the nested model.
         // We look for a node with the same name as the output prefix to verify it's not missing.
@@ -314,7 +330,7 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         // To accurately track this without global state, we can scan the hoisted topology nodes
         // that begin with `finalOutName.split(':')[0] + '/'` and see if they were outputs...
         // But an easier way is to just push the name as is, and let the outer call or final pass resolve aliases.
-        
+
         topology.outputs.push({
           name: finalOutName,
           shape: [], // Inferred later
@@ -322,14 +338,14 @@ export function extractKerasTopology(modelConfig: JsonObject, parentPrefix: stri
         });
       }
     }
-    
+
     // Alias Resolution Pass:
     // If a model output points to a Functional layer, it must be re-wired to the Functional layer's output.
     for (let i = 0; i < topology.outputs.length; i++) {
-        const outNameRaw = topology.outputs[i]!.name;
-        if (nestedModelOutputMap.has(outNameRaw)) {
-            topology.outputs[i]!.name = nestedModelOutputMap.get(outNameRaw)!;
-        }
+      const outNameRaw = topology.outputs[i]!.name;
+      if (nestedModelOutputMap.has(outNameRaw)) {
+        topology.outputs[i]!.name = nestedModelOutputMap.get(outNameRaw)!;
+      }
     }
   } else {
     throw new Error(`Unsupported root model class: ${className}`);

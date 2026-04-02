@@ -1,18 +1,15 @@
 """Tests for remaining coverage gaps in the C compiler."""
 
-import os
 import struct
-import sys
 from unittest.mock import patch
 
-import pytest
 from onnx9000.c_compiler.activations import generate_activation
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.cli import main
 from onnx9000.c_compiler.data_unpacker import unpack_bytes_to_str
 from onnx9000.c_compiler.operations import generate_matmul, get_strides, resolve_broadcast_indices
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Node, Tensor
 
 
 def test_cli_remaining():

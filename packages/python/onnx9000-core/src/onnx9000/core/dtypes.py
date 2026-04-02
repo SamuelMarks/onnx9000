@@ -25,13 +25,13 @@ class DType(enum.Enum):
     FLOAT64 = onnx_pb2.TensorProto.DOUBLE
     UINT32 = onnx_pb2.TensorProto.UINT32
     UINT64 = onnx_pb2.TensorProto.UINT64
-    BFLOAT16 = onnx_pb2.TensorProto.BFLOAT16
-    FLOAT8E4M3FN = onnx_pb2.TensorProto.FLOAT8E4M3FN
-    FLOAT8E4M3FNUZ = onnx_pb2.TensorProto.FLOAT8E4M3FNUZ
-    FLOAT8E5M2 = onnx_pb2.TensorProto.FLOAT8E5M2
-    FLOAT8E5M2FNUZ = onnx_pb2.TensorProto.FLOAT8E5M2FNUZ
-    INT4 = onnx_pb2.TensorProto.INT4
-    UINT4 = onnx_pb2.TensorProto.UINT4
+    BFLOAT16 = getattr(onnx_pb2.TensorProto, "BFLOAT16", 16)
+    FLOAT8E4M3FN = getattr(onnx_pb2.TensorProto, "FLOAT8E4M3FN", 17)
+    FLOAT8E4M3FNUZ = getattr(onnx_pb2.TensorProto, "FLOAT8E4M3FNUZ", 18)
+    FLOAT8E5M2 = getattr(onnx_pb2.TensorProto, "FLOAT8E5M2", 19)
+    FLOAT8E5M2FNUZ = getattr(onnx_pb2.TensorProto, "FLOAT8E5M2FNUZ", 20)
+    INT4 = getattr(onnx_pb2.TensorProto, "INT4", 21)
+    UINT4 = getattr(onnx_pb2.TensorProto, "UINT4", 22)
 
 
 def to_cpp_type(dtype: DType) -> str:

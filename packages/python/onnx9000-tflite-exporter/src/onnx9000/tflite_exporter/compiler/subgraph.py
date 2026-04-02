@@ -12,7 +12,7 @@ from ..flatbuffer.schema import BuiltinOperator, SubGraph, Tensor
 from ..optimizations.edgetpu import EdgeTPUOptimizer
 from ..quantization.quantizer import Quantizer
 from .layout import LayoutOptimizer
-from .mapping import create_shape_signature, map_onnx_shape_to_tflite, map_onnx_type_to_tflite
+from .mapping import map_onnx_shape_to_tflite, map_onnx_type_to_tflite
 
 
 def compile_graph_to_tflite(

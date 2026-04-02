@@ -1,5 +1,4 @@
 import argparse
-import os
 import sys
 from unittest.mock import MagicMock, patch
 
@@ -86,8 +85,6 @@ def test_openvino_cmd_missing_subcmd():
 
 
 def test_sparse_prune_cmd(tmp_path):
-    import numpy as np
-    from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant, Graph
 
     graph = Graph("test")
@@ -147,7 +144,6 @@ def test_sparse_cmd_missing_subcmd():
 
 
 def test_cli_more_branches():
-    import sys
     from unittest.mock import patch
 
     from onnx9000_cli.main import main
@@ -230,7 +226,6 @@ def test_cli_more_branches():
 
 
 def test_openvino_export_shape_mock():
-    import sys
     from unittest.mock import MagicMock, patch
 
     from onnx9000_cli.main import main
@@ -264,7 +259,6 @@ def test_openvino_export_shape_mock():
 
 
 def test_sparse_cmd_mock():
-    import sys
     from unittest.mock import patch
 
     from onnx9000_cli.main import main

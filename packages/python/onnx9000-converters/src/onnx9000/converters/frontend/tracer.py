@@ -10,15 +10,27 @@ _tls = threading.local()
 
 
 class Tracer:
-    """Context manager that intercepts all Tensor operations."""
+    """Context manager for tracing operations on Tensor objects to build an ONNX graph.
+
+    This class intercepts operations on Tensor objects by setting an active GraphBuilder
+    in a thread-local storage.
+    """
 
     def __init__(self, builder: Optional[GraphBuilder] = None) -> None:
-        """Implement the __init__ method."""
+        """Initialize the Tracer with an optional GraphBuilder.
+
+        Args:
+            builder: The GraphBuilder to use for recording operations. If None, a new one is created.
+        """
         self.builder = builder or GraphBuilder()
         self.prev_builder: Optional[GraphBuilder] = None
 
     def __enter__(self) -> GraphBuilder:
-        """Implement the __enter__ method."""
+        """Activate the tracer, making its builder the active one in thread-local storage.
+
+        Returns:
+            The GraphBuilder instance associated with this tracer.
+        """
         self.prev_builder = get_active_builder()
         import onnx9000.converters.frontend.builder as builder_mod
 
@@ -27,7 +39,7 @@ class Tracer:
         return self.builder
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Implement the __exit__ method."""
+        """Deactivate the tracer and restore the previous GraphBuilder."""
         import onnx9000.converters.frontend.builder as builder_mod
 
         builder_mod._tls.builder = self.prev_builder
@@ -46,6 +58,7 @@ def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     builder = GraphBuilder(name=name)
 
     def make_proxy(arg: Any) -> Any:
+        """Helper to recursively convert Tensor objects in arguments to proxies for tracing."""
         if isinstance(arg, Tensor):
             p = arg.__class__(arg.shape, arg.dtype, name=arg.name)
             p.data = getattr(arg, "data", None)

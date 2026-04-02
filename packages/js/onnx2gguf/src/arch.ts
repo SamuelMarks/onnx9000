@@ -15,7 +15,7 @@ export function inferArchitecture(graph: Graph): string {
   if (name.includes('command-r')) return 'command-r';
   if (name.includes('bert')) return 'bert';
 
-  let text = Object.keys(graph.tensors).join('') + graph.nodes.map((n) => n.opType).join('');
+  const text = Object.keys(graph.tensors).join('') + graph.nodes.map((n) => n.opType).join('');
   if (text.toLowerCase().includes('llama')) return 'llama';
 
   return 'unknown';

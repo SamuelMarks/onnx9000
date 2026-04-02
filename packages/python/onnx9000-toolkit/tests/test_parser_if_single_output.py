@@ -1,6 +1,5 @@
 """Tests for parsing if-statements with a single output."""
 
-import pytest
 from onnx9000.toolkit.script import op, script
 
 

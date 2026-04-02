@@ -9,7 +9,7 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
   const handler = async (req: any, res: any) => {
     try {
       // Reconstruct full URL
-      const protocol = (req.socket as any).encrypted ? 'https' : 'http';
+      const protocol = req.socket.encrypted ? 'https' : 'http';
       const host = req.headers[':authority'] || req.headers.host || 'localhost';
       const urlStr = req.url || '/';
       const url = new URL(urlStr, `${protocol}://${host}`);
@@ -19,7 +19,9 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
       for (const [key, value] of Object.entries(req.headers)) {
         if (key.startsWith(':')) continue; // skip http2 pseudo-headers
         if (Array.isArray(value)) {
-          value.forEach((v) => headers.append(key, v));
+          value.forEach((v) => {
+            headers.append(key, v);
+          });
         } else if (value) {
           headers.append(key, value as string);
         }

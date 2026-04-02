@@ -1,8 +1,8 @@
 """Tests for the benchmark scripts."""
 
 from .memory_profiler import profile_memory
-from .ttft_benchmark import bench_ttft
 from .tps_benchmark import bench_tps
+from .ttft_benchmark import bench_ttft
 
 
 def test_profile_memory(capsys):

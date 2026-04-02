@@ -1,8 +1,7 @@
 """Tests the profiler dynamic module functionality."""
 
-import pytest
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
-from onnx9000.core.profiler import ProfilerResult, profile
+from onnx9000.core.profiler import profile
 from onnx9000.core.symbolic import DynamicDim
 
 

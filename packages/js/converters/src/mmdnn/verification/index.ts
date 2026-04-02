@@ -1,3 +1,2 @@
-/* eslint-disable */
-// @ts-nocheck
-export { ONNXNormalizer } from './normalizer.js';
+/** verification MMDNN submodule. */
+export * from './normalizer.js';

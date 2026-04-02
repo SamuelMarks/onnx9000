@@ -19,7 +19,7 @@ export class WebNNCompiler {
         if (typeof dim === 'string' || dim === -1) {
           return 1;
         }
-        return dim as number;
+        return dim;
       });
 
       this.operands.set(
@@ -732,7 +732,7 @@ export class WebNNCompiler {
       });
     } else {
       if (node.outputs[0] !== '') {
-        this.operands.set(node.outputs[0]!, result as MLOperand);
+        this.operands.set(node.outputs[0]!, result);
       }
     }
   }

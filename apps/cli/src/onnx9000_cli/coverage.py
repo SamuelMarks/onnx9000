@@ -44,6 +44,9 @@ def get_pypi_info(pkg_name: str) -> tuple[str, Optional[str]]:
 def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]]:
     """Generate API snapshots by querying PyPI and creating temporary venvs.
 
+    Args:
+        snapshots_dir: Directory where snapshots are stored.
+
     Returns:
         A dictionary mapping framework names to their version and exposed objects.
 
@@ -374,7 +377,6 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                     print(f"Failed to generate API snapshot for {fw}: {e}")
 
                     existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
-                    fallback_data = None
 
                     results[fw] = {"version": "Not Installed", "objects": []}
                     with open(snapshot_path, "w", encoding="utf-8") as f:
@@ -412,7 +414,7 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
             operators_md = os.path.join(temp_dir, "docs", "Operators.md")
             operators = []
             if os.path.exists(operators_md):
-                with open(operators_md, "r", encoding="utf-8") as f:
+                with open(operators_md, encoding="utf-8") as f:
                     for line in f:
                         if line.startswith('## <a name="') and '"></a><a name="' not in line:
                             # matches: ## <a name="Abs"></a>**Abs**
@@ -425,9 +427,7 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
                 import json
 
                 try:
-                    with open(
-                        "snapshots/onnx-657f5abe0846f25b103e83d9e580a3bc3e0677b8.json", "r"
-                    ) as f:
+                    with open("snapshots/onnx-657f5abe0846f25b103e83d9e580a3bc3e0677b8.json") as f:
                         data = json.load(f)
                         operators = data.get("operators", [])
                         commit_hash = data.get("commit", commit_hash)
@@ -481,8 +481,14 @@ def get_onnx9000_ops() -> list[str]:
 
 
 def count_supported_framework_objects(fw_name: str) -> int:
+    """Count the number of supported objects (layers/ops) for a given framework.
 
-    import sys
+    Args:
+        fw_name: Name of the framework.
+
+    Returns:
+        The count of supported objects.
+    """
 
     converters_dir = os.path.abspath(
         os.path.join(
@@ -497,6 +503,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
     )
 
     def _count_funcs(path: str, prefix: str) -> int:
+        """Count functions with a specific prefix in a directory."""
         count = 0
         files = []
         if os.path.isfile(path):
@@ -520,9 +527,10 @@ def count_supported_framework_objects(fw_name: str) -> int:
         return count
 
     def _count_classes_inheriting_module(path: str) -> int:
-        import json
-        import glob
+        """Count classes inheriting from Module in a directory."""
         import ast
+        import glob
+        import json
 
         snapshot_files = glob.glob(
             os.path.join(converters_dir, "..", "..", "..", "..", "..", "snapshots", "torch-*.json")
@@ -532,7 +540,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
 
         valid_torch_names = []
         if snapshot_files:
-            with open(snapshot_files[0], "r") as f:
+            with open(snapshot_files[0]) as f:
                 data = json.load(f)
                 valid_torch_names = [obj["name"] for obj in data.get("objects", [])]
 

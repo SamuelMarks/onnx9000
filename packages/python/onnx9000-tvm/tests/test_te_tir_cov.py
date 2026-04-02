@@ -1,7 +1,5 @@
 """Tests for TE and TIR coverage in TVM."""
 
-import pytest
-
 
 def test_tir_full():
     """Exercise TIR expressions, statements, and visitors for coverage."""
@@ -100,8 +98,8 @@ def test_te_full():
         default_webgpu_schedule,
         default_x86_schedule,
     )
-    from onnx9000.tvm.te.schedule import Schedule, Stage, create_schedule
-    from onnx9000.tvm.te.tensor import ComputeOp, PlaceholderOp, Tensor, compute, placeholder
+    from onnx9000.tvm.te.schedule import create_schedule
+    from onnx9000.tvm.te.tensor import compute, placeholder
     from onnx9000.tvm.te.topi import nn_conv2d, nn_layer_norm, nn_matmul, nn_pool2d, nn_softmax
 
     t = placeholder((10, 10), name="A")

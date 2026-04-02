@@ -3,7 +3,6 @@
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 from onnx9000.toolkit.training.autograd.losses import add_mse_loss
-from onnx9000.toolkit.training.autograd.optimizers import add_sgd_optimizer
 
 
 def test_train_transformer_attention() -> None:

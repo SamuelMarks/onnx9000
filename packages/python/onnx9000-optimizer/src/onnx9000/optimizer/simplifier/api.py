@@ -15,6 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 def _calculate_graph_size(graph: Graph) -> int:
+    """Calculate the approximate total size of the graph in bytes.
+
+    Args:
+        graph: The Graph object to evaluate.
+
+    Returns:
+        The total size in bytes.
+    """
     size = 0
     for init in graph.initializers:
         t = graph.tensors.get(init)

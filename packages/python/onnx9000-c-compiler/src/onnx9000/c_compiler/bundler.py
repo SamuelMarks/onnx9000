@@ -1,8 +1,6 @@
 """Packaging and CLI bundling for ONNX C Code Generator."""
 
-import base64
 import os
-from typing import Optional
 
 
 def bundle_weights_bin(weights_data: bytes, output_dir: str, prefix: str):

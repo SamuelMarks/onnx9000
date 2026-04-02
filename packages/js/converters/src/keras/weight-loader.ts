@@ -67,7 +67,7 @@ export async function downloadWeightShards(
   return loadedWeights;
 }
 
-function calculateByteLength(weight: WeightManifestEntry): number {
+export function calculateByteLength(weight: WeightManifestEntry): number {
   const numElements = weight.shape.reduce((a, b) => a * b, 1);
   switch (weight.dtype) {
     case 'float32':
@@ -83,7 +83,7 @@ function calculateByteLength(weight: WeightManifestEntry): number {
       return numElements;
     case 'int4':
     case 'uint4':
-      // 4-bit quantization packs 2 elements into 1 byte. 
+      // 4-bit quantization packs 2 elements into 1 byte.
       // We must ceiling divide to ensure we allocate enough bytes for odd counts.
       return Math.ceil(numElements / 2);
     case 'string':
@@ -93,6 +93,6 @@ function calculateByteLength(weight: WeightManifestEntry): number {
       // or we throw an error for unsupported format if it happens.
       throw new Error('String dtype byte length calculation is not trivially supported yet.');
     default:
-      throw new Error(`Unsupported dtype: ${weight.dtype}`);
+      throw new Error(`Unsupported dtype: ${String(weight.dtype)}`);
   }
 }

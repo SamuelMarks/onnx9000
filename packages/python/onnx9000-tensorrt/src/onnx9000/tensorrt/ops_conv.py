@@ -7,7 +7,7 @@ from onnx9000.tensorrt.registry import register_op
 
 
 @register_op("", "Conv")
-def trt_conv(network: INetworkDefinition, node: Any, tensors: Dict[str, ITensor]):
+def trt_conv(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
     add_conv_func = getattr(ffi.lib, "addConvolutionNd", None)
     if not add_conv_func:
         raise RuntimeError("addConvolutionNd not found")

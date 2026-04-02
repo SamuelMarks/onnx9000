@@ -1,7 +1,6 @@
 """Tests for packages/python/onnx9000-core/tests/genai/test_genai.py."""
 
 import asyncio
-import struct
 
 import pytest
 from onnx9000.core.ir import Graph, Tensor
@@ -44,7 +43,7 @@ class MockModel(Model):
 
     def create_generator(self, params):
         """Perform create generator operation."""
-        from onnx9000.genai.state import KVCache, State
+        from onnx9000.genai.state import State
 
         return MockGenerator(State(None, KVCache()), params)
 
@@ -178,7 +177,6 @@ def test_continuous_kv_cache():
 
 def test_paged_kv_cache():
     """Test paged kv cache."""
-    from onnx9000.genai.state import PagedKVCache
 
     cache = PagedKVCache(page_size=16)
     keys = Tensor(name="k", shape=(1, 2, 64), data=bytearray(128))
@@ -347,7 +345,6 @@ def test_huggingface_mocked_success():
 
         HuggingFaceIntegration.download_model("repo", "dir")
         mock_hub.snapshot_download.assert_called_once()
-    from onnx9000.genai.builder import GenAICLI
 
 
 def test_builder_21_fix():

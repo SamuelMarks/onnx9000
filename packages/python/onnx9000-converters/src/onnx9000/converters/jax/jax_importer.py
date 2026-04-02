@@ -1,135 +1,125 @@
-"""Advanced JAX importer."""
+"""JAX jaxpr to onnx9000 IR importer."""
 
-from typing import Any, Callable, Optional, Tuple
-import jax
-import jax.numpy as jnp
-from onnx9000.core.ir import Graph, Node, Tensor
+from typing import Any, Callable, Optional
+
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Variable
 
 
 class JAXImporter:
-    """Importer for JAX functions and jaxprs."""
+    """Importer for JAX computation graphs (jaxpr)."""
 
-    def __init__(self, func: Optional[Callable] = None) -> None:
-        """Initialize the JAX importer."""
-        self.func = func
-        self.graph = Graph(name="jax_model")
-        self.var_map: dict[Any, str] = {}
+    def __init__(self, graph_name: str = "jax_graph"):
+        """Initialize the JAXImporter."""
+        self.builder = Graph(graph_name)
+        self.var_map = {}
         self._var_counter = 0
 
     def get_var_name(self, var: Any) -> str:
-        """Get or create a unique name for a JAX variable or constant."""
-        if var in self.var_map:
-            return self.var_map[var]
+        """Get or create a unique name for a JAX variable.
 
-        if hasattr(var, "id"):
-            name = f"var_{var.id}"
-        elif isinstance(var, (int, float, bool)):
-            name = f"const_{self._var_counter}"
-            self._var_counter += 1
-            # Add as initializer
-            t = Tensor(name=name, dtype=DType.FLOAT32.value, shape=())
-            self.graph.initializers.append(name)
-            self.graph.tensors[name] = t
-        else:
-            name = f"var_{self._var_counter}"
-            self._var_counter += 1
+        Args:
+            var: The JAX variable or literal to get a name for.
 
-        self.var_map[var] = name
+        Returns:
+            A unique string name for the variable.
+        """
+        # Try to use var itself as key, but fall back to id(var) for unhashable types
+        try:
+            key = var
+            hash(key)
+        except TypeError:
+            key = id(var)
+
+        if key in self.var_map:
+            return self.var_map[key]
+
+        name = f"v{self._var_counter}"
+        self._var_counter += 1
+        self.var_map[key] = name
+
+        # Add to graph tensors if it has type info
+        if hasattr(var, "aval"):
+            shape = list(var.aval.shape)
+            dtype = self._map_dtype(var.aval.dtype)
+            self.builder.add_tensor(Variable(name, shape, dtype))
+
         return name
 
-    def import_func(self, *args: Any, **kwargs: Any) -> Graph:
-        """Import a JAX function by tracing it with given arguments."""
-        if self.func is None:
-            raise ValueError("Function must be provided to import_func.")
+    def import_func(self, func: Callable, *args: Any, **kwargs: Any) -> Graph:
+        """Trace a JAX function and import it into onnx9000 IR."""
+        import jax
 
-        # Phase 15: Pytree Resolution
-        flat_args, in_tree = jax.tree_util.tree_flatten((args, kwargs))
+        def flat_func(*args, **kwargs):
+            """Internal flattened function for JAX tracing."""
+            return func(*args, **kwargs)
 
-        def flat_func(*f_args):
-            f_args, f_kwargs = jax.tree_util.tree_unflatten(in_tree, f_args)
-            return self.func(*f_args, **f_kwargs)
+        jaxpr = jax.make_jaxpr(flat_func)(*args, **kwargs)
+        return self.import_jaxpr(jaxpr.jaxpr, jaxpr.consts)
 
-        jaxpr = jax.make_jaxpr(flat_func)(*flat_args)
-        return self.import_jaxpr(jaxpr.jaxpr)
-
-    def import_jaxpr(self, jaxpr: jax.core.Jaxpr) -> Graph:
-        """Import a JAX jaxpr object."""
-        # Handle inputs
+    def import_jaxpr(self, jaxpr: Any, consts: list[Any]) -> Graph:
+        """Import a JAX jaxpr structure into onnx9000 IR."""
+        # Add inputs
         for var in jaxpr.invars:
             name = self.get_var_name(var)
-            shape = var.aval.shape
-            dtype = self._map_dtype(var.aval.dtype)
-            t = Tensor(name=name, dtype=dtype.value, shape=shape)
-            self.graph.inputs.append(t)
-            self.graph.tensors[name] = t
+            self.builder.inputs.append(name)
 
-        # Handle constants
-        for var in jaxpr.constvars:
+        # Add constants
+        for var, val in zip(jaxpr.constvars, consts):
             name = self.get_var_name(var)
-            shape = var.aval.shape
-            dtype = self._map_dtype(var.aval.dtype)
-            t = Tensor(name=name, dtype=dtype.value, shape=shape)
-            self.graph.initializers.append(name)
-            self.graph.tensors[name] = t
+            import numpy as np
+            from onnx9000.core.ir import Constant
 
-        # Handle equations
+            c = Constant(name, values=np.array(val).tobytes(), shape=list(np.array(val).shape))
+            self.builder.add_tensor(c)
+
+        # Process equations
         for eqn in jaxpr.eqns:
-            primitive = eqn.primitive.name
-            inputs = [self.get_var_name(v) for v in eqn.invars]
-            outputs = [self.get_var_name(v) for v in eqn.outvars]
+            in_names = [self.get_var_name(v) for v in eqn.invars]
+            out_names = [self.get_var_name(v) for v in eqn.outvars]
 
-            # Map primitive to ONNX op
-            op_type = self._map_primitive(primitive)
+            # Simple primitive mapping
+            op_type = self._map_primitive(eqn.primitive.name)
 
             node = Node(
                 op_type=op_type,
-                inputs=inputs,
-                outputs=outputs,
-                attributes=eqn.params,
-                name=f"{op_type}_{outputs[0]}" if outputs else op_type,
+                inputs=in_names,
+                outputs=out_names,
+                attributes=dict(eqn.params.items()),
             )
-            self.graph.nodes.append(node)
+            self.builder.add_node(node)
 
-            # Add output tensors
-            for var in eqn.outvars:
-                name = self.get_var_name(var)
-                shape = var.aval.shape
-                dtype = self._map_dtype(var.aval.dtype)
-                t = Tensor(name=name, dtype=dtype.value, shape=shape)
-                self.graph.tensors[name] = t
-
-        # Handle outputs
+        # Add outputs
         for var in jaxpr.outvars:
             name = self.get_var_name(var)
-            if name in self.graph.tensors:
-                self.graph.outputs.append(self.graph.tensors[name])
+            self.builder.outputs.append(name)
 
-        return self.graph
+        return self.builder
 
     def _map_dtype(self, jax_dtype: Any) -> DType:
-        """Map JAX dtype to DType."""
-        if jax_dtype == jnp.float32:
+        """Map JAX dtype to onnx9000 DType."""
+        import numpy as np
+
+        if jax_dtype == np.float32:
             return DType.FLOAT32
-        if jax_dtype == jnp.int32:
+        if jax_dtype == np.int32:
             return DType.INT32
         return DType.FLOAT32
 
-    def _map_primitive(self, primitive: str) -> str:
-        """Map JAX primitive name to ONNX op type."""
+    def _map_primitive(self, name: str) -> str:
+        """Map JAX primitive name to ONNX op_type."""
         mapping = {
             "add": "Add",
             "sub": "Sub",
             "mul": "Mul",
             "div": "Div",
-            "dot_general": "MatMul",
-            "exp": "Exp",
-            "log": "Log",
             "sin": "Sin",
             "cos": "Cos",
+            "exp": "Exp",
+            "log": "Log",
             "tanh": "Tanh",
             "relu": "Relu",
-            "reshape": "Reshape",
-            "transpose": "Transpose",
+            "conv_general_dilated": "Conv",
+            "dot_general": "MatMul",
         }
-        return mapping.get(primitive, primitive)
+        return mapping.get(name, name.capitalize())

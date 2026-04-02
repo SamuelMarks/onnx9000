@@ -3,7 +3,7 @@
 import json
 import logging
 import struct
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, SparseTensor

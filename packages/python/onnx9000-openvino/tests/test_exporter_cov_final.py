@@ -196,8 +196,7 @@ def test_xml_builder():
 
 
 def test_export_all_missing_ops_2():
-    import numpy as np
-    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+    from onnx9000.core.ir import Attribute, Graph, Node, Tensor
     from onnx9000.openvino.exporter import OpenVinoExporter
 
     g = Graph("g")

@@ -101,7 +101,9 @@ const sidebar = document.getElementById('sidebar') as HTMLDivElement;
 // 244. Handle the "Drop ONNX file here" UX explicitly
 // 245. Validate file drop on all operating systems
 
-dropZone.addEventListener('click', () => fileUpload.click());
+dropZone.addEventListener('click', () => {
+  fileUpload.click();
+});
 
 fileUpload.addEventListener('change', (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
@@ -181,7 +183,9 @@ document.addEventListener('keydown', (e) => {
     } else if (e.key === 'Delete' || e.key === 'Backspace') {
       if (renderer.selectedNodes.length > 0) {
         const mutator = new GraphMutator(currentGraph);
-        renderer.selectedNodes.forEach((id) => mutator.removeNode(id));
+        renderer.selectedNodes.forEach((id) => {
+          mutator.removeNode(id);
+        });
         renderer.selectedNodes = [];
         renderSidebar(null);
         import('./layout/dag').then(({ computeLayout }) => {
@@ -381,9 +385,9 @@ closeHelpBtn.addEventListener('click', () => {
 });
 
 const renderer = new CanvasRenderer(canvas);
-let rootGraph: Graph | null = null;
+const rootGraph: Graph | null = null;
 let currentGraph: Graph | null = null;
-let graphStack: Graph[] = [];
+const graphStack: Graph[] = [];
 let currentSearchResults: string[] = [];
 let currentSearchIndex: number = 0;
 
@@ -395,9 +399,9 @@ breadcrumb.addEventListener('click', () => {
     currentGraph = parentGraph;
     if (graphStack.length === 0) {
       breadcrumb.style.display = 'none';
-      statusDiv.textContent = 'Rendered Model: ' + currentGraph!.name;
+      statusDiv.textContent = 'Rendered Model: ' + currentGraph.name;
     } else {
-      statusDiv.textContent = 'Rendered Subgraph: ' + currentGraph!.name;
+      statusDiv.textContent = 'Rendered Subgraph: ' + currentGraph.name;
     }
 
     // We must re-run layout worker
@@ -689,7 +693,7 @@ function renderSidebar(nodeId: string | null) {
                 for (let x = 0; x < lastW; x++) {
                   const val = fullF32[y * strideH + x]!;
                   // Normalize to 0-1
-                  let norm = (val - min) / range;
+                  const norm = (val - min) / range;
 
                   // Simple diverging colormap: min=blue, mid=black, max=red
                   let r = 0,
@@ -781,7 +785,7 @@ function renderSidebar(nodeId: string | null) {
           const consumers = currentGraph!.nodes
             .filter((n) => n.inputs.includes(o))
             .map((n) => n.name || n.opType);
-          let cStr = consumers.length > 0 ? consumers.join(', ') : 'Graph Output';
+          const cStr = consumers.length > 0 ? consumers.join(', ') : 'Graph Output';
           content += `<li><b>${o}</b> <span style="color:var(--text-muted)">&rarr; ${cStr}</span></li>`;
         }
       });
@@ -805,7 +809,7 @@ function renderSidebar(nodeId: string | null) {
         hasDouble = true;
       for (const i of node.inputs) {
         if (!i) continue;
-        const info = currentGraph!.inputs.find((vi) => vi.name === i) || currentGraph!.tensors[i];
+        const info = currentGraph.inputs.find((vi) => vi.name === i) || currentGraph.tensors[i];
         if (info && info.dtype === 'float64') hasDouble = true;
       }
       if (hasDouble) {

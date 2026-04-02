@@ -1,15 +1,11 @@
 """Tests for packages/python/onnx9000-optimizer/tests/simplifier/passes/test_fusion_cov.py."""
 
 import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.fusion import (
     fuse_batchnorm_into_conv,
     fuse_batchnorm_into_gemm,
-    fuse_consecutive_transpose,
-    fuse_linear_activation,
-    fuse_matmul_add,
     map_aten_arange_to_range,
 )
 

@@ -1,7 +1,6 @@
 """Tests for constant folding with NaN and infinity values."""
 
 import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
@@ -42,7 +41,7 @@ def test_erf():
     sys.modules["scipy"] = MagicMock()
     import numpy as np
     from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+    from onnx9000.core.ir import Constant, Graph, Node
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     g = Graph("g")
@@ -63,9 +62,8 @@ def test_erf():
 def test_erf_inspect():
     import numpy as np
     from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+    from onnx9000.core.ir import Constant
     from onnx9000.optimizer.simplifier.passes.constant_folding import (
-        ConstantFoldingPass,
         _tensor_to_numpy,
     )
 

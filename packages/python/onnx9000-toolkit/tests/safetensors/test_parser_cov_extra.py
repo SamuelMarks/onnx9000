@@ -1,6 +1,5 @@
 """Tests for packages/python/onnx9000-toolkit/tests/safetensors/test_parser_cov_extra.py."""
 
-import ctypes
 import json
 import os
 import struct
@@ -125,7 +124,6 @@ def test_save_sharded_raw_data(tmp_path):
 
 def test_convert_pytorch_to_safetensors_mocked(tmp_path):
     """Test convert pytorch to safetensors mocked."""
-    import sys
     from unittest.mock import MagicMock, patch
 
     mock_torch = MagicMock()
@@ -159,7 +157,6 @@ def test_convert_pytorch_to_safetensors_mocked(tmp_path):
 
 def test_convert_tf_to_safetensors(tmp_path):
     """Test convert tf to safetensors."""
-    import sys
     from unittest.mock import MagicMock, patch
 
     mock_tf = MagicMock()
@@ -198,7 +195,6 @@ def test_convert_tf_to_safetensors(tmp_path):
 
 def test_convert_pytorch_missing_torch():
     """Test convert pytorch missing torch."""
-    import sys
 
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
@@ -210,7 +206,6 @@ def test_convert_pytorch_missing_torch():
 
 def test_convert_tf_missing_tf():
     """Test convert tf missing tf."""
-    import sys
 
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
@@ -222,7 +217,6 @@ def test_convert_tf_missing_tf():
 
 def test_convert_pytorch_no_bins(tmp_path):
     """Test convert pytorch no bins."""
-    import sys
     from unittest.mock import MagicMock, patch
 
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors

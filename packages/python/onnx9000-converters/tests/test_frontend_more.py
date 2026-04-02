@@ -1,8 +1,6 @@
-import os
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 import onnx9000.converters.frontend.builder as builder
@@ -25,7 +23,6 @@ import onnx9000.converters.frontend.nn.rnn as rnn
 import onnx9000.converters.frontend.tensor as tensor
 import onnx9000.converters.frontend.tracer as tracer
 import onnx9000.converters.frontend.utils as utils
-from onnx9000.core.dtypes import DType
 
 
 class TestFrontendMore(unittest.TestCase):

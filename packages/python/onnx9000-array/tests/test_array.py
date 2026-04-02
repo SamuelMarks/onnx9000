@@ -1,7 +1,6 @@
 """Tests for packages/python/onnx9000-array/tests/test_array.py."""
 
 import onnx9000_array as np
-import pytest
 
 
 def test_core_instantiation():

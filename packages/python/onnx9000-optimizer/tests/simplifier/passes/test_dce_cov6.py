@@ -1,7 +1,6 @@
 """Tests for packages/python/onnx9000-optimizer/tests/simplifier/passes/test_dce_cov6.py."""
 
 import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass, IdentityEliminationPass

@@ -1,6 +1,6 @@
 import asyncio
 import gc
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 from .schedulers import EulerDiscreteScheduler, Scheduler
 from .utils import PyTorchPCG, parse_model_index, randn

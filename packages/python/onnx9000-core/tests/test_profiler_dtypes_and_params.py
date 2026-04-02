@@ -1,6 +1,5 @@
 """Tests the profiler dtypes and params module functionality."""
 
-import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.profiler import profile

@@ -3,9 +3,8 @@
 
 def test_layout_gaps_more():
     """Provides functional implementation."""
-    import struct
 
-    from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
+    from onnx9000.core.ir import Graph, Node, ValueInfo
     from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 
     # 53, 59-62 process_edge_cases

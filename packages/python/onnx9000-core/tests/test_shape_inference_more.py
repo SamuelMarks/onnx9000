@@ -1,7 +1,7 @@
 """Tests the shape inference more module functionality."""
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 

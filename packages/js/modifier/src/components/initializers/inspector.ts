@@ -159,7 +159,7 @@ export class InitializerInspector {
     input.onchange = (e) => {
       const val = parseFloat((e.target as HTMLInputElement).value);
       if (!Number.isNaN(val)) {
-        const newArr = new (arr.constructor as any)(1);
+        const newArr = new arr.constructor(1);
         newArr[0] = val;
         this.mutator.updateInitializer(tensor.name, newArr);
       }
@@ -178,7 +178,7 @@ export class InitializerInspector {
     const zeroBtn = document.createElement('button');
     zeroBtn.textContent = 'Zero Out';
     zeroBtn.onclick = () => {
-      const newArr = new (arr.constructor as any)(arr.length); // auto 0-filled
+      const newArr = new arr.constructor(arr.length); // auto 0-filled
       this.mutator.updateInitializer(tensor.name, newArr);
     };
     actDiv.appendChild(zeroBtn);
@@ -187,7 +187,7 @@ export class InitializerInspector {
     const noiseBtn = document.createElement('button');
     noiseBtn.textContent = 'Add Noise (Fuzz)';
     noiseBtn.onclick = () => {
-      const newArr = new (arr.constructor as any)(arr.length);
+      const newArr = new arr.constructor(arr.length);
       for (let i = 0; i < arr.length; i++) {
         newArr[i] = arr[i] + (Math.random() - 0.5) * 0.1 * (arr[i] || 1); // small relative noise
       }
@@ -199,7 +199,7 @@ export class InitializerInspector {
     const pruneBtn = document.createElement('button');
     pruneBtn.textContent = 'Prune (< 1e-3)';
     pruneBtn.onclick = () => {
-      const newArr = new (arr.constructor as any)(arr.length);
+      const newArr = new arr.constructor(arr.length);
       for (let i = 0; i < arr.length; i++) {
         newArr[i] = Math.abs(arr[i]) < 1e-3 ? 0 : arr[i];
       }
@@ -256,7 +256,7 @@ export class InitializerInspector {
         const file = e.target.files[0];
         if (file) {
           const ab = await file.arrayBuffer();
-          const newArr = new (arr.constructor as any)(ab);
+          const newArr = new arr.constructor(ab);
           this.mutator.updateInitializer(tensor.name, newArr);
         }
       };

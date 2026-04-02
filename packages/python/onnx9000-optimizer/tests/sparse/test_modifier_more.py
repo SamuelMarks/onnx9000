@@ -1,5 +1,3 @@
-import logging
-import re
 import struct
 
 import pytest
@@ -278,8 +276,6 @@ def test_quant_symmetric():
     mod = QuantizationModifier(params=["re:t"], scheme="symmetric")
     mod.apply(g)
 
-    import struct
-
     assert g.tensors["t"].dtype == DType.INT8
 
     # Also test scale == 0
@@ -309,7 +305,6 @@ def test_quant_asymmetric_zero_scale():
 
 
 def test_parse_recipe_unknown():
-    from onnx9000.optimizer.sparse.modifier import parse_recipe
 
     recipe_str = """
     modifiers:
@@ -322,7 +317,6 @@ def test_parse_recipe_unknown():
 
 
 def test_unknown_modifier_apply():
-    import pytest
     from onnx9000.core.ir import Graph
     from onnx9000.optimizer.sparse.modifier import Modifier
 

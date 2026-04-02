@@ -1,6 +1,5 @@
 """Tests the hummingbird analysis more module functionality."""
 
-import pytest
 from onnx9000.optimizer.hummingbird.analysis import analyze_tree_depth
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
@@ -157,7 +156,6 @@ def test_analyze_tree_depth_no_depths():
 
 def test_analyze_tree_depth_no_depths_mock(monkeypatch):
     """Tests the analyze tree depth no depths mock functionality."""
-    import onnx9000.optimizer.hummingbird.analysis
 
     class FakeTree:
         """Represents the FakeTree class and its associated logic."""
