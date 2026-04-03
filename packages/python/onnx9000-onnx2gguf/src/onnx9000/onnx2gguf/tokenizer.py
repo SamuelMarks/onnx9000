@@ -7,7 +7,7 @@ from typing import Any
 def extract_tokenizer_metadata(
     tokenizer_json_str: str = None, vocab_size: int = 0
 ) -> dict[str, Any]:
-    """Extracts tokenizer metadata."""
+    """Extract tokenizer metadata."""
     meta = {}
     if not tokenizer_json_str:
         meta["tokenizer.ggml.model"] = "llama"

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 
 from onnx9000.tensorrt.enums import MemoryPoolType
@@ -5,10 +7,14 @@ from onnx9000.tensorrt.ffi import ffi
 
 
 class BuilderConfig:
+    """BuilderConfig class."""
+
     def __init__(self, ptr: int):
+        """Initialize."""
         self.ptr = ptr
 
     def set_memory_pool_limit(self, pool_type: MemoryPoolType, size: int):
+        """Execute set_memory_pool_limit."""
         if hasattr(ffi.lib, "setMemoryPoolLimit"):
             ffi.lib.setMemoryPoolLimit(
                 ctypes.c_void_p(self.ptr), ctypes.c_int(pool_type.value), ctypes.c_size_t(size)
@@ -18,18 +24,25 @@ class BuilderConfig:
 
 
 class NetworkDefinition:
+    """NetworkDefinition class."""
+
     def __init__(self, ptr: int):
+        """Initialize."""
         self.ptr = ptr
         self.tensors = {}
 
     def destroy(self):
+        """Execute destroy."""
         destroy_func = getattr(ffi.lib, "destroyNetworkDefinition", None)
         if destroy_func:
             destroy_func(ctypes.c_void_p(self.ptr))
 
 
 class Builder:
+    """Builder class."""
+
     def __init__(self, logger_callback=None):
+        """Initialize."""
         if not ffi.lib:
             raise RuntimeError("TensorRT library not loaded")
 
@@ -48,11 +61,15 @@ class Builder:
         # Let's write a mock vtable for ILogger for Linux x64 or use standard fallback policies if we are building a zero-build parser.
 
         class ILoggerVTable(ctypes.Structure):
+            """ILoggerVTable class."""
+
             _fields_ = [
                 ("log", ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p))
             ]
 
         class ILogger(ctypes.Structure):
+            """ILogger class."""
+
             _fields_ = [("vtable", ctypes.POINTER(ILoggerVTable))]
 
         self.vtable = ILoggerVTable(ffi._c_log_callback)
@@ -71,6 +88,7 @@ class Builder:
         ffi.register_pointer(self.ptr, self)
 
     def create_network(self) -> NetworkDefinition:
+        """Execute create_network."""
         create_network = getattr(ffi.lib, "createNetworkV2", None)
         if not create_network:
             raise RuntimeError("createNetworkV2 not found")
@@ -86,6 +104,7 @@ class Builder:
         return NetworkDefinition(net_ptr)
 
     def create_builder_config(self) -> BuilderConfig:
+        """Execute create_builder_config."""
         create_config = getattr(ffi.lib, "createBuilderConfig", None)
         if not create_config:
             raise RuntimeError("createBuilderConfig not found")
@@ -95,6 +114,7 @@ class Builder:
         return BuilderConfig(cfg_ptr)
 
     def destroy(self):
+        """Execute destroy."""
         if not self.ptr:
             return
         destroy_builder = getattr(ffi.lib, "destroyInferBuilder", None)
@@ -104,4 +124,5 @@ class Builder:
         self.ptr = None
 
     def __del__(self):
+        """Initialize."""
         self.destroy()

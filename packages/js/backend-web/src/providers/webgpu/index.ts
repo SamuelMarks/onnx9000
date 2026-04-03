@@ -11,8 +11,8 @@ export class WebGPUProvider implements ExecutionProvider {
   private device: any = null;
   private options: WebGPUOptions;
 
-  constructor(options: WebGPUOptions = { sparsityThreshold: 0.6, useFP16: false }) {
-    this.options = options;
+  constructor(options: WebGPUOptions = {}) {
+    this.options = { sparsityThreshold: 0.6, useFP16: false, ...options };
   }
 
   async initialize(): Promise<void> {
@@ -31,19 +31,23 @@ export class WebGPUProvider implements ExecutionProvider {
       if (node.opType === 'MatMul') {
         const weightName = node.inputs[1];
         const weight = weightName ? graph.tensors[weightName] : undefined;
-        if (weight && (weight as any).format && (weight as any).format !== 'dense') {
-          const sparsity = this.calculateSparsity(weight);
-          if (sparsity > (this.options.sparsityThreshold || 0.6)) {
-            console.log(
-              `Dispatching Sparse MatMul for ${node.name} (sparsity: ${sparsity.toFixed(2)})`,
-            );
-            // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
-          } else {
-            console.log(
-              `Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul for ${node.name}`,
-            );
-            // Use standard MatMul shader
-          }
+
+        if (!weight) continue;
+        const fmt = (weight as any).format;
+        if (!fmt) continue;
+        if (fmt === 'dense') continue;
+
+        const sparsity = this.calculateSparsity(weight);
+        if (sparsity > this.options.sparsityThreshold!) {
+          console.log(
+            `Dispatching Sparse MatMul for ${node.name} (sparsity: ${sparsity.toFixed(2)})`,
+          );
+          // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
+        } else {
+          console.log(
+            `Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul for ${node.name}`,
+          );
+          // Use standard MatMul shader
         }
       }
     }

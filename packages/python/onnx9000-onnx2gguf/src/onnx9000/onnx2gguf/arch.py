@@ -8,7 +8,7 @@ from .llama import extract_llama_metadata
 
 
 def extract_metadata(graph: Graph, arch_override: str = None) -> dict[str, Any]:
-    """Extracts metadata."""
+    """Extract metadata."""
     arch = arch_override or infer_architecture(graph)
     infer_architecture(graph)
     if arch_override and arch_override not in [

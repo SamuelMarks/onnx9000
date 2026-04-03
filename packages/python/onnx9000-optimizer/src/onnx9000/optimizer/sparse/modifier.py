@@ -700,7 +700,7 @@ class NMPruningModifier(Modifier):
 
 
 def parse_recipe(yaml_text: str) -> list[Modifier]:
-    """Simple zero-dependency YAML parser for SparseML recipes.
+    """Parse a SparseML recipe using a simple zero-dependency YAML parser.
 
     :param yaml_text: The YAML recipe text.
     :return: List of parsed Modifier instances.

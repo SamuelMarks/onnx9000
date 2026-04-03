@@ -58,7 +58,7 @@ def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     builder = GraphBuilder(name=name)
 
     def make_proxy(arg: Any) -> Any:
-        """Helper to recursively convert Tensor objects in arguments to proxies for tracing."""
+        """Recursively convert Tensor objects in arguments to proxies for tracing."""
         if isinstance(arg, Tensor):
             p = arg.__class__(arg.shape, arg.dtype, name=arg.name)
             p.data = getattr(arg, "data", None)

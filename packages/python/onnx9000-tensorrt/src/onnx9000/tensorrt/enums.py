@@ -1,7 +1,11 @@
+"""Module docstring."""
+
 import enum
 
 
 class DataType(enum.IntEnum):
+    """DataType class."""
+
     kFLOAT = 0
     kHALF = 1
     kINT8 = 2
@@ -13,6 +17,8 @@ class DataType(enum.IntEnum):
 
 
 class ElementWiseOperation(enum.IntEnum):
+    """ElementWiseOperation class."""
+
     kSUM = 0
     kPROD = 1
     kMAX = 2
@@ -31,12 +37,16 @@ class ElementWiseOperation(enum.IntEnum):
 
 
 class PoolingType(enum.IntEnum):
+    """PoolingType class."""
+
     kMAX = 0
     kAVERAGE = 1
     kMAX_AVERAGE_BLEND = 2
 
 
 class ActivationType(enum.IntEnum):
+    """ActivationType class."""
+
     kRELU = 0
     kSIGMOID = 1
     kTANH = 2
@@ -52,12 +62,16 @@ class ActivationType(enum.IntEnum):
 
 
 class ScaleMode(enum.IntEnum):
+    """ScaleMode class."""
+
     kUNIFORM = 0
     kCHANNEL = 1
     kELEMENTWISE = 2
 
 
 class UnaryOperation(enum.IntEnum):
+    """UnaryOperation class."""
+
     kEXP = 0
     kLOG = 1
     kSQRT = 2
@@ -85,6 +99,8 @@ class UnaryOperation(enum.IntEnum):
 
 
 class ReduceOperation(enum.IntEnum):
+    """ReduceOperation class."""
+
     kSUM = 0
     kPROD = 1
     kMAX = 2
@@ -93,17 +109,23 @@ class ReduceOperation(enum.IntEnum):
 
 
 class MatrixOperation(enum.IntEnum):
+    """MatrixOperation class."""
+
     kNONE = 0
     kTRANSPOSE = 1
     kVECTOR = 2
 
 
 class TopKOperation(enum.IntEnum):
+    """TopKOperation class."""
+
     kMAX = 0
     kMIN = 1
 
 
 class MemoryPoolType(enum.IntEnum):
+    """MemoryPoolType class."""
+
     kWORKSPACE = 0
     kDLA_MANAGED_SRAM = 1
     kDLA_LOCAL_DRAM = 2
@@ -111,12 +133,16 @@ class MemoryPoolType(enum.IntEnum):
 
 
 class OptProfileSelector(enum.IntEnum):
+    """OptProfileSelector class."""
+
     kMIN = 0
     kOPT = 1
     kMAX = 2
 
 
 class BuilderFlag(enum.IntEnum):
+    """BuilderFlag class."""
+
     kFP16 = 0
     kINT8 = 1
     kDEBUG = 2

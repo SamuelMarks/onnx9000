@@ -19,3 +19,13 @@ describe('MLIR Optimization Passes', () => {
     expect(block.operations.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+it('should optimize attention', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+  block.pushOperation(new Operation('web.linalg.matmul', [], [], {}));
+
+  const optimizer = new Optimizer();
+  optimizer.optimizeAttentionPatterns(region);
+});

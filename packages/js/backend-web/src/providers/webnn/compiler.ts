@@ -143,7 +143,8 @@ export class WebNNCompiler {
   private extractFloat32TensorData(tensorName: string | undefined): number[] | null {
     if (!tensorName) return null;
     const tensor = this.graph.tensors[tensorName];
-    if (!tensor || !tensor.data) return null;
+    if (!tensor) return null;
+    if (!tensor.data) return null;
     const data = new Float32Array(
       tensor.data.buffer,
       tensor.data.byteOffset,
@@ -300,8 +301,8 @@ export class WebNNCompiler {
         break;
       case 'Clip': {
         const clampOpts: MLClampOptions = {};
-        if (inputs[1]) clampOpts.minValue = inputs[1];
-        if (inputs[2]) clampOpts.maxValue = inputs[2];
+        if (inputs[1] != null) clampOpts.minValue = inputs[1];
+        if (inputs[2] != null) clampOpts.maxValue = inputs[2];
         result = this.builder.clamp(inputs[0]!, clampOpts);
         break;
       }
@@ -335,7 +336,7 @@ export class WebNNCompiler {
       case 'Transpose': {
         const perm = this.getIntsAttribute(node, 'perm');
         const opts: MLTransposeOptions = {};
-        if (perm !== undefined) opts.permutation = perm;
+        if (perm) opts.permutation = perm;
         result = this.builder.transpose(inputs[0]!, opts);
         break;
       }

@@ -71,3 +71,58 @@ describe('WVM Interpreter', () => {
     expect(() => vm.runSync()).toThrow('VM Error: WebGPU Context Lost');
   });
 });
+
+it('should throw on unknown opcode', () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+  const bc = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x99]);
+  const vm = new WVMInterpreter(bc, ctx);
+  expect(() => vm.runSync()).toThrow('Unknown opcode');
+});
+
+it('should call HALBindings with valid device', () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+  HALBindings.register(ctx, { valid: true });
+
+  // hit cmd_create
+  const bc1 = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x03, 0xff]);
+  const vm1 = new WVMInterpreter(bc1, ctx);
+  vm1.runSync();
+
+  // Call the buffer_subspan directly from the registry
+  mod.imports.get('hal.buffer_subspan')();
+});
+
+it('covers runAsync missing branches', async () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+
+  // 100 operations to hit yield
+  const ops = new Array(100).fill(0x01);
+  const bc = new Uint8Array([0x57, 0x56, 0x4d, 0x30, ...ops, 0xff]);
+  const vm = new WVMInterpreter(bc, ctx);
+  await vm.runAsync();
+
+  // hit unknown opcode in runAsync
+  const bcUnknown = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x99]);
+  const vmUnknown = new WVMInterpreter(bcUnknown, ctx);
+  await expect(vmUnknown.runAsync()).rejects.toThrow('Unknown opcode');
+});
+
+it('covers runSync debug logging', () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+  const bc = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0xff]);
+  const vm = new WVMInterpreter(bc, ctx);
+  vm.runSync(true);
+});
+
+it('covers dummy cases for 0x01 and 0x02', async () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+  const bc = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x01, 0x02, 0xff]);
+  const vm = new WVMInterpreter(bc, ctx);
+  vm.runSync();
+  await vm.runAsync();
+});

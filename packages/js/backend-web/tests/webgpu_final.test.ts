@@ -53,6 +53,58 @@ describe('WebGPUProvider Final', () => {
     expect(sparsity).toBe(0.75);
   });
 
+  it('should request f16 features when useFP16 is true', async () => {
+    const provider = new WebGPUProvider({ useFP16: true });
+    // Mock navigator.gpu
+    const mockRequestDevice = vi.fn().mockResolvedValue('device_fp16');
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        gpu: {
+          requestAdapter: vi.fn().mockResolvedValue({
+            requestDevice: mockRequestDevice,
+          }),
+        },
+      },
+      configurable: true,
+    });
+    await provider.initialize();
+    expect(mockRequestDevice).toHaveBeenCalledWith({ requiredFeatures: ['shader-f16'] });
+  });
+
+  it('should ignore missing weight inputs for MatMul', async () => {
+    const provider = new WebGPUProvider({});
+    const g = new Graph('g');
+    // MatMul with only 1 input
+    g.nodes.push(new Node('MatMul', ['x'], ['y']));
+    g.tensors['x'] = new Tensor('x', [2, 2], 'float32');
+
+    // Should not throw and just pass through without dispatching Sparse
+    const res = await provider.execute(g, { x: g.tensors['x'] });
+    expect(res).toEqual({});
+  });
+
+  it('should ignore dense weights and unfound weights', async () => {
+    const provider = new WebGPUProvider({});
+    const g = new Graph('g');
+    g.nodes.push(new Node('MatMul', ['in', 'w'], ['out']));
+    g.tensors['w'] = new Tensor('w', [2, 2], 'float32', false, true, new Float32Array([1]));
+    (g.tensors['w'] as any).format = 'dense';
+
+    g.nodes.push(new Node('MatMul', ['in2', 'w_missing'], ['out2']));
+
+    g.nodes.push(new Node('MatMul', ['in3', 'w_no_format'], ['out3']));
+    g.tensors['w_no_format'] = new Tensor(
+      'w_no_format',
+      [2, 2],
+      'float32',
+      false,
+      true,
+      new Float32Array([1]),
+    );
+
+    const res = await provider.execute(g, {});
+    expect(res).toEqual({});
+  });
   it('should fallback for low sparsity', async () => {
     const provider = new WebGPUProvider({ sparsityThreshold: 0.8 });
     (provider as any).device = {};

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 from typing import Any
 
@@ -8,6 +10,7 @@ from onnx9000.tensorrt.registry import register_op
 
 @register_op("", "Conv")
 def trt_conv(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_conv."""
     add_conv_func = getattr(ffi.lib, "addConvolutionNd", None)
     if not add_conv_func:
         raise RuntimeError("addConvolutionNd not found")

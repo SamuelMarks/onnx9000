@@ -34,9 +34,13 @@ def test_jax_importer_basic():
 @pytest.mark.skipif(not JAX_AVAILABLE, reason="JAX not available")
 def test_jax_importer_constants():
     """Test JAX import with constants."""
+    if not JAX_AVAILABLE:
+        return
+
+    c = jnp.array([2.0], dtype=jnp.float32)
 
     def const_func(x):
-        return x * 2.0
+        return x * c
 
     importer = JAXImporter()
     x = np.ones((1,), dtype=np.float32)
@@ -60,3 +64,65 @@ def test_jax_importer_primitive_mapping():
     assert importer._map_primitive("add") == "Add"
     assert importer._map_primitive("dot_general") == "MatMul"
     assert importer._map_primitive("unknown") == "Unknown"
+
+    # test unhashable var
+    unhashable = [1, 2, 3]  # lists are unhashable
+    name1 = importer.get_var_name(unhashable)
+    name2 = importer.get_var_name(unhashable)
+    assert name1 == name2
+
+
+from onnx9000.converters.jax.importer import load_jax, _map_jax_type, load
+from onnx9000.core.dtypes import DType
+
+
+def test_map_jax_type():
+    assert _map_jax_type("f32") == DType.FLOAT32
+    assert _map_jax_type("i32") == DType.INT32
+    assert _map_jax_type("other") == DType.FLOAT32
+
+
+def test_load_jax_with_consts():
+    jaxpr_dict = {
+        "invars": [{"name": "in1", "type": "f32", "shape": [1]}],
+        "outvars": [{"name": "out1", "type": "f32", "shape": [1]}],
+        "constvars": [{"name": "c1", "type": "f32", "shape": [1]}],
+        "eqns": [
+            {
+                "primitive": "add",
+                "invars": [{"name": "in1"}, {"name": "c1"}],
+                "outvars": [{"name": "out1", "type": "f32", "shape": [1]}],
+                "params": {},
+            },
+            {
+                "primitive": "unknown_primitive",
+                "invars": [{"name": "out1"}],
+                "outvars": [{"name": "out2", "type": "f32", "shape": [1]}],
+                "params": {},
+            },
+        ],
+    }
+    graph = load_jax(jaxpr_dict)
+    assert graph is not None
+    assert "c1" in graph.initializers
+
+    nodes = graph.nodes
+    assert any(n.op_type == "unknown_primitive" for n in nodes)
+
+
+def test_load_auto_format():
+    assert load({}, format="tf") is None
+    assert load({"node": []}) is None
+
+    jaxpr = {"eqns": []}
+    assert load(jaxpr) is not None
+    assert load({}, format="jax") is not None
+
+    import sys
+    from unittest.mock import MagicMock, patch
+
+    with patch.dict(
+        sys.modules,
+        {"onnx9000.core.parser.core": MagicMock(load=MagicMock(return_value="onnx_loaded"))},
+    ):
+        assert load("model.pb", format="onnx") == "onnx_loaded"

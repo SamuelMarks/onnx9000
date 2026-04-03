@@ -1,3 +1,5 @@
+"""OpenVINO exporter module."""
+
 import io
 import struct
 from typing import Any
@@ -9,6 +11,8 @@ from .xml_builder import XmlBuilder, XmlNode
 
 
 class OpenVinoExporter:
+    """Exports an ONNX9000 Graph to OpenVINO IR format."""
+
     def __init__(
         self,
         graph: Graph,
@@ -16,6 +20,7 @@ class OpenVinoExporter:
         compress_to_fp16: bool = False,
         clamp_dynamic: bool = False,
     ):
+        """Initialize the OpenVinoExporter."""
         self.graph = graph
         self.version = version
         self.compress_to_fp16 = compress_to_fp16
@@ -141,6 +146,7 @@ class OpenVinoExporter:
         self.edges.append(edge)
 
     def export(self) -> tuple[str, bytes]:
+        """Export the graph and return the XML string and BIN bytes."""
         net = XmlNode("net")
         net.set_attribute("name", self.graph.name or "onnx9000_model")
         net.set_attribute("version", self.version)

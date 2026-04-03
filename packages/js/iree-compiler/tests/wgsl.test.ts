@@ -23,3 +23,17 @@ describe('WGSL Lowering', () => {
     expect(wgsl).toContain('let flat_idx = global_id.y * 64u + global_id.x;');
   });
 });
+
+it('covers WGSLRunner execution stub', async () => {
+  const { WGSLRunner } = await import('../src/passes/lower_wgsl.js');
+  const runner = new WGSLRunner();
+  await runner.executeGraph(null);
+});
+
+it('covers fallback options for wgsl', () => {
+  const emitter = new WGSLEmitter();
+  const region = new Region();
+  const wgsl = emitter.emit(region, {});
+  expect(wgsl).not.toContain('enable f16;');
+  expect(wgsl).toContain('@workgroup_size(64,1,1)');
+});

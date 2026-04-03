@@ -59,3 +59,34 @@ describe('Bufferization Pass', () => {
     expect(mappedGenericOp!.operands.length).toBe(2); // one original + one alloc
   });
 });
+
+it('should cover fallback branches for fill and matmul', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+
+  const tensorType = new TensorType([2, 2], 'f32');
+  const fillVal = new Value({ id: 'f32' });
+  const unmappedOut = new Value(tensorType);
+
+  const fillOp = new Operation('web.linalg.fill', [fillVal, unmappedOut], [tensorType]);
+  block.pushOperation(fillOp);
+
+  const matmulOp = new Operation(
+    'web.linalg.matmul',
+    [unmappedOut, unmappedOut, unmappedOut],
+    [tensorType],
+  );
+  block.pushOperation(matmulOp);
+
+  const genericOp = new Operation('web.some.tensor.op', [unmappedOut], [tensorType]);
+  block.pushOperation(genericOp);
+
+  bufferizeLinalg(region);
+
+  const fillMapped = block.operations.find((o) => o.opcode === 'web.linalg.fill');
+  expect(fillMapped!.operands[1]).toBe(unmappedOut);
+
+  const matmulMapped = block.operations.find((o) => o.opcode === 'web.linalg.matmul');
+  expect(matmulMapped!.operands[0]).toBe(unmappedOut);
+});

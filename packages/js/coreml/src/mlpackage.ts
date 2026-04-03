@@ -36,12 +36,14 @@ export class MLPackageBuilder {
     const manifest: any = {
       itemInfoEntries: {
         'Data/com.apple.CoreML/model.mlmodel': {
-          author: sanitizeMetadataString(this.model.description?.metadata?.author) || 'onnx9000',
-          description:
-            sanitizeMetadataString(
-              this.options.visionFrameworkDescription ||
-                this.model.description?.metadata?.shortDescription,
-            ) || 'Converted via onnx9000',
+          author: this.model.description?.metadata?.author
+            ? sanitizeMetadataString(this.model.description.metadata.author)
+            : 'onnx9000',
+          description: this.options.visionFrameworkDescription
+            ? sanitizeMetadataString(this.options.visionFrameworkDescription)
+            : this.model.description?.metadata?.shortDescription
+              ? sanitizeMetadataString(this.model.description.metadata.shortDescription)
+              : 'Converted via onnx9000',
         },
       },
       rootModelIdentifier: 'Data/com.apple.CoreML/model.mlmodel',

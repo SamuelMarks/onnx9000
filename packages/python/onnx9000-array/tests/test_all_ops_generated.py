@@ -17,11 +17,11 @@ def test_all_ops_dynamic():
             try:
                 getattr(onnx9000_array, op)(a)
             except Exception:
-                return None
+                pass
             try:
                 getattr(onnx9000_array, op)(a, a)
             except Exception:
-                return None
+                pass
 
 
 def test_array_classes():

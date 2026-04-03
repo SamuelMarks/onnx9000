@@ -7,7 +7,61 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_shape_folding_fallback():
+def test_cf_shape_gaps():
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+
+    cf = ConstantFoldingPass()
+    g = Graph("G")
+    g.tensors["X"] = Tensor("X", None, DType.FLOAT32)  # missing shape
+    g.inputs.append(ValueInfo("X", None, DType.FLOAT32))
+    g.nodes.append(Node("Shape", ["X"], ["out"]))
+    cf._run_once(g)  # Hit `if x_shape is None: return False`
+
+    g2 = Graph("G2")
+    t_val = Tensor("t_val", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32).tobytes())
+    g2.nodes.append(Node("Constant", [], ["out"], {"value": t_val}))
+
+    class MockAttr:
+        attr_type = "TENSOR"
+        value = b"test"
+
+    g2.nodes.append(Node("Constant", [], ["out2"], {"value": MockAttr()}))
+
+    from unittest.mock import patch
+
+    with patch(
+        "onnx9000.core.parser.core.parse_tensor_proto",
+        return_value=Tensor(
+            "t", (1,), DType.FLOAT32, data=np.array([2.0], dtype=np.float32).tobytes()
+        ),
+    ):
+        cf._run_once(g2)  # Hit `elif hasattr(val, "attr_type")`
+
+
+def test_cf_shape_dynamic():
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.core.ir import DynamicDim
+
+    cf = ConstantFoldingPass()
+    g = Graph("G")
+    g.inputs.append(ValueInfo("X", (DynamicDim("A"), 2), DType.FLOAT32))
+    g.nodes.append(Node("Shape", ["X"], ["out"]))
+    cf._run_once(g)
+
+
+def test_cf_gaps_misc():
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+
+    cf = ConstantFoldingPass()
+
+    # Missing BitwiseShift OTHER
+    assert (
+        cf._evaluate_node("BitShift", [np.array([4]), np.array([1])], {"direction": "OTHER"})
+        is None
+    )
+
+    # Missing Conv
+    assert cf._evaluate_node("Conv", [], {}) is None
     """Test shape folding fallback."""
     g = Graph("TestShapeFallback")
     g.inputs = [ValueInfo("X", (2, 3), DType.FLOAT32)]

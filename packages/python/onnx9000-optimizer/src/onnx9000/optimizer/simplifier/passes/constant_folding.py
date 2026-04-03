@@ -11,7 +11,7 @@ MAX_CONSTANT_SIZE_BYTES = 10 * 1024 * 1024
 
 
 def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0):
-    """Evaluates a pooling operation (Max or Average) using NumPy."""
+    """Evaluate a pooling operation (Max or Average) using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
     spatial_dims = len(kernel_shape)
@@ -19,15 +19,22 @@ def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0)
     pad_width = [(0, 0), (0, 0)]
     if pads:
         for i in range(spatial_dims):
-            pad_width.append((pads[i], pads[i + spatial_dims]))
+            pad_width.append((int(pads[i]), int(pads[i + spatial_dims])))
     else:
         for i in range(spatial_dims):
             pad_width.append((0, 0))
 
     if pool_mode == "max":
-        x_padded = np.pad(x, pad_width, mode="constant", constant_values=-np.inf)
+        pad_val = float("-inf")
     else:
-        x_padded = np.pad(x, pad_width, mode="constant", constant_values=0)
+        pad_val = 0.0
+
+    padded_shape = [x.shape[i] + pad_width[i][0] + pad_width[i][1] for i in range(len(x.shape))]
+    x_padded = np.full(padded_shape, pad_val, dtype=x.dtype)
+    slices = tuple(
+        slice(pad_width[i][0], pad_width[i][0] + x.shape[i]) for i in range(len(x.shape))
+    )
+    x_padded[slices] = x
 
     output_shape = [x.shape[0], x.shape[1]]
     strides_w = [x_padded.strides[0], x_padded.strides[1]]
@@ -54,13 +61,19 @@ def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0)
     axes_to_reduce = tuple(range(2 + spatial_dims, 2 + 2 * spatial_dims))
 
     if pool_mode == "max":
-        return x_w.max(axis=axes_to_reduce)
+        res = x_w
+        for ax in sorted(axes_to_reduce, reverse=True):
+            res = np.max(res, axis=ax)
+        return res
     elif pool_mode == "avg":
-        return x_w.mean(axis=axes_to_reduce)
+        res = x_w
+        for ax in sorted(axes_to_reduce, reverse=True):
+            res = np.mean(res, axis=ax)
+        return res
 
 
 def _evaluate_conv(x, w, b, strides, pads, dilations, group):
-    """Evaluates a convolution operation using NumPy."""
+    """Evaluate a convolution operation using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
     spatial_dims = len(x.shape) - 2
@@ -74,9 +87,14 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
 
     pad_width = [(0, 0), (0, 0)]
     for i in range(spatial_dims):
-        pad_width.append((pads[i], pads[i + spatial_dims]))
+        pad_width.append((int(pads[i]), int(pads[i + spatial_dims])))
 
-    x_padded = np.pad(x, pad_width, mode="constant", constant_values=0)
+    padded_shape = [x.shape[i] + pad_width[i][0] + pad_width[i][1] for i in range(len(x.shape))]
+    x_padded = np.zeros(padded_shape, dtype=x.dtype)
+    slices = tuple(
+        slice(pad_width[i][0], pad_width[i][0] + x.shape[i]) for i in range(len(x.shape))
+    )
+    x_padded[slices] = x
 
     kernel_shape = list(w.shape[2:])
     eff_kernel_size = [k + (k - 1) * (d - 1) for k, d in zip(kernel_shape, dilations)]
@@ -128,7 +146,7 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
 
 
 def _numpy_to_tensor_proto(arr, name=""):
-    """Converts a NumPy array to an ONNX TensorProto."""
+    """Convert a NumPy array to an ONNX TensorProto."""
     from onnx9000.core import onnx_pb2
 
     if isinstance(arr, (int, float, bool)):
@@ -163,7 +181,7 @@ def _numpy_to_tensor_proto(arr, name=""):
 
 
 def _tensor_to_numpy(tensor):
-    """Converts an ONNX Tensor to a NumPy array."""
+    """Convert an ONNX Tensor to a NumPy array."""
     from onnx9000.core.dtypes import DType
 
     if isinstance(tensor.data, np.ndarray):
@@ -304,7 +322,12 @@ class ConstantFoldingPass(GraphPass):
                 if not inp_tensor and node.inputs[0] in graph.tensors:
                     inp_tensor = graph.tensors[node.inputs[0]]
 
-                if inp_tensor and hasattr(inp_tensor, "shape") and len(inp_tensor.shape) > 0:
+                if (
+                    inp_tensor
+                    and hasattr(inp_tensor, "shape")
+                    and inp_tensor.shape is not None
+                    and len(inp_tensor.shape) > 0
+                ):
                     from onnx9000.core.ir import DynamicDim
 
                     if not any(
@@ -349,7 +372,7 @@ class ConstantFoldingPass(GraphPass):
                     if result is not None:
 
                         def _has_nan_inf(val):
-                            """Checks if a value (NumPy array, float, or list) contains NaN or Infinity."""
+                            """Check if a value (NumPy array, float, or list) contains NaN or Infinity."""
                             if isinstance(val, np.ndarray):
                                 if np.issubdtype(val.dtype, np.number):
                                     return np.any(np.isnan(val)) or np.any(np.isinf(val))
@@ -701,17 +724,19 @@ class ConstantFoldingPass(GraphPass):
             ndims = inputs[0].ndim
             pad_width = [(pads[i], pads[i + ndims]) for i in range(ndims)]
             if mode == "constant":
-                return np.pad(inputs[0], pad_width, mode=mode, constant_values=value)
+                return np.pad(inputs[0], pad_width, "constant", constant_values=value)
             elif mode == "reflect":
-                return np.pad(inputs[0], pad_width, mode="reflect")
+                return np.pad(inputs[0], pad_width, "reflect")
             elif mode == "edge":
-                return np.pad(inputs[0], pad_width, mode="edge")
+                return np.pad(inputs[0], pad_width, "edge")
             return None
         if op_type == "ConstantOfShape":
             shape = tuple(inputs[0].tolist()) if len(inputs) > 0 else ()
             val = attrs.get("value", np.array([0], dtype=np.float32))
             if isinstance(val, Tensor):
                 val = val.data
+            if isinstance(val, bytes):
+                val = np.frombuffer(val, dtype=np.float32)
             elif isinstance(val, list):
                 val = np.array(val)
             val = val.item() if val.size == 1 else val[0]

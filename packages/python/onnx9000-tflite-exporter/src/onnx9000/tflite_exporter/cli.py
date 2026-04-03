@@ -5,7 +5,7 @@ import sys
 
 
 def main(args=None):
-    """Main entry point for the onnx2tf CLI.
+    """Execute main entry point for the onnx2tf CLI.
 
     Parses command-line arguments and triggers the ONNX to TFLite conversion.
 

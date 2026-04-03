@@ -27,4 +27,26 @@ describe('Autotuner Passes', () => {
 
     expect(op.attributes.tiling_sizes).toEqual([16, 16]);
   });
+
+  it('covers missing branches', async () => {
+    const tuner = new MetaScheduleAutotuner();
+    expect(tuner.getHeuristicFallback('wasm')).toEqual([1, 1, 1]);
+    expect(tuner.getHeuristicFallback('unknown')).toEqual([1, 1, 1]);
+
+    const op = new Operation('unknown', [], []);
+    tuner.mutateTilingSizes(op, [2, 2]);
+    expect(op.attributes.tiling_sizes).toBeUndefined();
+
+    tuner.showDashboard();
+
+    const region = new Region();
+    const block = new Block(region);
+    region.pushBlock(block);
+    block.pushOperation(op);
+    tuner.loadIreeConfig(JSON.stringify({ optimalTileSizes: [8, 8] }), region);
+    expect(op.attributes.tiling_sizes).toBeUndefined();
+
+    const time = await tuner.profileWGSL({}, 'shader');
+    expect(typeof time).toBe('number');
+  });
 });

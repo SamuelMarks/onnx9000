@@ -1,4 +1,4 @@
-"""Frontend Sub-Package
+"""Frontend Sub-Package.
 
 Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
@@ -101,7 +101,7 @@ class Tensor:
         return f"Tensor(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
     def _op(self, op_type: str, *args, **kwargs) -> Any:
-        """A helper method to apply a unary or binary operation to the tensor, generating a new tensor."""
+        """Apply a unary or binary operation to the tensor, generating a new tensor."""
         from onnx9000.converters.frontend.utils import record_op
 
         inputs = [self] + list(args)

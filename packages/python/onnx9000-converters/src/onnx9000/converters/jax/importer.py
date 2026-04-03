@@ -79,7 +79,7 @@ def load_jax(jaxpr_dict: dict[str, Any]) -> Graph:
 
 
 def load(model_path_or_dict: Any, format: str = "auto") -> Graph:
-    """Provide a unified `onnx9000.load('model.pb')` interface."""
+    """Load a model using a unified interface."""
     if format == "tf" or (isinstance(model_path_or_dict, dict) and "node" in model_path_or_dict):
         return None
     elif format in ("jax", "flax") or (

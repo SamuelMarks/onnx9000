@@ -7,7 +7,7 @@ from onnx9000.core.ir import Graph, Tensor
 
 
 def extract_llama_metadata(graph: Graph) -> dict[str, Any]:
-    """Extracts llama metadata."""
+    """Extract llama metadata."""
     meta = {}
     vocab_size = 32000
     hidden_size = 4096

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 from typing import Any
 
@@ -14,10 +16,13 @@ def _get_input(node, tensors, idx):
 
 @register_op("", "Reshape")
 def trt_reshape(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_reshape."""
     add_shuffle_func = getattr(ffi.lib, "addShuffle", None)
     if not add_shuffle_func:
         raise RuntimeError("addShuffle not found")
     in1 = _get_input(node, tensors, 0)
+    if in1 is None:
+        raise RuntimeError("Missing input for Reshape")
     add_shuffle_func.restype = ctypes.c_void_p
     add_shuffle_func.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
     ptr = add_shuffle_func(ctypes.c_void_p(network.ptr), ctypes.c_void_p(in1.ptr))
@@ -27,6 +32,7 @@ def trt_reshape(network: INetworkDefinition, node: Any, tensors: dict[str, ITens
 
 @register_op("", "Transpose")
 def trt_transpose(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_transpose."""
     add_shuffle_func = getattr(ffi.lib, "addShuffle", None)
     if not add_shuffle_func:
         raise RuntimeError("addShuffle not found")
@@ -38,6 +44,7 @@ def trt_transpose(network: INetworkDefinition, node: Any, tensors: dict[str, ITe
 
 @register_op("", "Concat")
 def trt_concat(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_concat."""
     add_concat_func = getattr(ffi.lib, "addConcatenation", None)
     if not add_concat_func:
         raise RuntimeError("addConcatenation not found")
@@ -52,6 +59,7 @@ def trt_concat(network: INetworkDefinition, node: Any, tensors: dict[str, ITenso
 
 @register_op("", "Slice")
 def trt_slice(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_slice."""
     add_slice_func = getattr(ffi.lib, "addSlice", None)
     if not add_slice_func:
         raise RuntimeError("addSlice not found")
@@ -77,6 +85,7 @@ def trt_slice(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor
 
 @register_op("", "Gather")
 def trt_gather(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_gather."""
     add_gather_func = getattr(ffi.lib, "addGather", None)
     if not add_gather_func:
         raise RuntimeError("addGather not found")

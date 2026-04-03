@@ -18,7 +18,7 @@ describe('KerasWebNNCompiler', () => {
       'beta' as any,
       'mean' as any,
       'var' as any,
-      { padding: [1, 1], strides: [1, 1] },
+      { padding: [1, 1], strides: [1, 1], dilations: [2, 2], groups: 2, epsilon: 1e-5 },
     );
 
     expect(res).toBe('relu_out');
@@ -28,6 +28,18 @@ describe('KerasWebNNCompiler', () => {
       'mean',
       'var',
       expect.objectContaining({ scale: 'gamma' }),
+    );
+
+    // hit default arguments
+    compiler.buildConv2DBNRelu(
+      'in' as any,
+      'w' as any,
+      undefined,
+      'gamma' as any,
+      'beta' as any,
+      'mean' as any,
+      'var' as any,
+      {},
     );
   });
 
@@ -39,10 +51,18 @@ describe('KerasWebNNCompiler', () => {
 
     const res = compiler.buildSeparableConv2D('in' as any, 'dw' as any, 'pw' as any, 'b' as any, {
       inChannels: 3,
+      padding: [1, 1],
+      strides: [2, 2],
+      dilations: [2, 2],
     });
 
     expect(res).toBe('point_out');
     expect(builder.conv2d).toHaveBeenCalledTimes(2);
+
+    // hit default arguments
+    compiler.buildSeparableConv2D('in' as any, 'dw' as any, 'pw' as any, undefined, {
+      inChannels: 3,
+    });
   });
 
   it('should executeAsync', async () => {

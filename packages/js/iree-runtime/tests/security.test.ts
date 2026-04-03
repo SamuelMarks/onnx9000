@@ -23,3 +23,10 @@ describe('Security and Sandbox', () => {
     );
   });
 });
+
+it('covers missing security methods', async () => {
+  const { VM_Security_Manager } = await import('../src/security.js');
+  const data = new ArrayBuffer(0);
+  expect(VM_Security_Manager.sanitizeImportedData(data)).toBe(data);
+  VM_Security_Manager.logPassTelemetry('test', 1.0);
+});

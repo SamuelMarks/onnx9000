@@ -12,7 +12,7 @@ from onnx9000.core.dtypes import DType
 def infer_elementwise_shape(
     shape1: tuple[Union[int, str]], shape2: tuple[Union[int, str]]
 ) -> tuple[Union[int, str]]:
-    """Basic NumPy-style broadcasting shape inference."""
+    """Perform NumPy-style broadcasting shape inference."""
     (len1, len2) = (len(shape1), len(shape2))
     max_len = max(len1, len2)
     s1 = (1,) * (max_len - len1) + shape1
@@ -33,7 +33,7 @@ def infer_elementwise_shape(
 def infer_matmul_shape(
     shape1: tuple[Union[int, str]], shape2: tuple[Union[int, str]]
 ) -> tuple[Union[int, str]]:
-    """Basic MatMul shape inference."""
+    """Infer the shape of a MatMul operation."""
     if len(shape1) < 1 or len(shape2) < 1:
         raise ValueError("MatMul requires arrays of rank >= 1.")
     if len(shape1) == 1 and len(shape2) == 1:
@@ -47,7 +47,7 @@ def infer_matmul_shape(
 
 
 def record_op(op_type: str, inputs: list[Any], attributes: dict = None) -> Any:
-    """Helper to record an operation if a Tracing context is active."""
+    """Record an operation if a Tracing context is active."""
     import numpy as np
     from onnx9000.converters.frontend.builder import get_active_builder
     from onnx9000.converters.frontend.tensor import Node, Parameter, Tensor

@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 class TFProtobufEncoder:
     """Zero-dependency TensorFlow SavedModel (Protobuf) Generator.
+
     246. Implement zero-dependency saved_model.pb Protobuf generator.
     """
 

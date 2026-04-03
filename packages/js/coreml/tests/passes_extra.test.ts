@@ -37,4 +37,58 @@ describe('Passes Extras', () => {
 
     expect(block.operations[1]!.attributes['ane_hint_fused_pad']).toEqual([1, 1]);
   });
+
+  it('covers CSE array inputs', async () => {
+    const {
+      deadCodeElimination,
+      commonSubexpressionElimination,
+      constantFolding,
+      Program,
+      Function,
+      Block,
+      Var,
+      Operation,
+      TensorType,
+      MILDataType,
+    } = await import('../src/index.js');
+
+    const prog = new Program();
+    const fn = new Function('main', [], []);
+    const b = new Block('block0');
+    b.operations = [];
+    b.outputs = [];
+
+    const v1 = new Var('v1', new TensorType(MILDataType.FLOAT32, [1]));
+    const op1 = new Operation('const', { val: new Float32Array([1.0]) }, [v1]);
+    op1.attributes['val'] = new Float32Array([1.0]);
+
+    const v2 = new Var('v2', new TensorType(MILDataType.FLOAT32, [1]));
+    const op2 = new Operation('const', { val: new Float32Array([1.0]) }, [v2]);
+    op2.attributes['val'] = new Float32Array([1.0]);
+
+    const v3 = new Var('v3', new TensorType(MILDataType.FLOAT32, [1]));
+    const op3 = new Operation('concat', { inputs: [v1, v2] }, [v3]);
+
+    const op4 = new Operation('add', { arr: [v1, v2], single: v1 }, [
+      new Var('out_add', new TensorType(MILDataType.FLOAT32, [1])),
+    ]);
+
+    const unk = new Var('unkn', new TensorType(MILDataType.FLOAT32, [1]));
+    const op5 = new Operation('add', { arr: [unk], single: unk }, [
+      new Var('out_unk', new TensorType(MILDataType.FLOAT32, [1])),
+    ]);
+    b.inputs.push(unk);
+
+    b.operations.push(op1, op2, op3, op4, op5);
+    b.outputs.push(v3, op4.outputs[0], op5.outputs[0]);
+    fn.blocks['block0'] = b;
+    prog.functions['main'] = fn;
+
+    deadCodeElimination(b);
+
+    commonSubexpressionElimination(b);
+    expect(op3.inputs['inputs']).toBeDefined();
+
+    constantFolding(b);
+  });
 });

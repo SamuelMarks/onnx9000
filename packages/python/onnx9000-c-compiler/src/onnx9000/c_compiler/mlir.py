@@ -7,10 +7,12 @@ class MLIRCompiler:
     """Compiler for transforming ONNX9000 IR to MLIR (TOSA/Linalg)."""
 
     def __init__(self, graph: Graph):
+        """Initialize the MLIRCompiler with a target graph."""
         self.graph = graph
         self.lines = []
 
     def emit(self, line: str):
+        """Emit a line of MLIR source code."""
         self.lines.append(line)
 
     def generate_tosa(self) -> str:

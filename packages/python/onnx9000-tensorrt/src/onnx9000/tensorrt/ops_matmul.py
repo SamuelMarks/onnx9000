@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 from typing import Any
 
@@ -9,6 +11,7 @@ from onnx9000.tensorrt.registry import register_op
 
 @register_op("", "MatMul")
 def trt_matmul(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+    """Execute trt_matmul."""
     add_matmul_func = getattr(ffi.lib, "addMatrixMultiply", None)
     if not add_matmul_func:
         raise RuntimeError("addMatrixMultiply not found")

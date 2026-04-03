@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 import ctypes.util
 import logging
@@ -8,7 +10,10 @@ logger = logging.getLogger("onnx9000.tensorrt.ffi")
 
 
 class TensorRTFFI:
+    """TensorRTFFI class."""
+
     def __init__(self):
+        """Initialize."""
         self.lib: Optional[ctypes.CDLL] = None
         self.version: tuple[int, int, int] = (0, 0, 0)
         self.pointers: dict[int, Any] = {}
@@ -93,12 +98,15 @@ class TensorRTFFI:
         # Let's implement fallback policies.
 
     def register_pointer(self, ptr_value: int, obj: Any):
+        """Execute register_pointer."""
         self.pointers[ptr_value] = obj
 
     def unregister_pointer(self, ptr_value: int):
+        """Execute unregister_pointer."""
         self.pointers.pop(ptr_value, None)
 
     def check_error(self, code: int, msg: str):
+        """Execute check_error."""
         if code != 0:
             raise RuntimeError(f"TensorRT Error: {msg} (code {code})")
 
@@ -108,7 +116,5 @@ ffi = TensorRTFFI()
 
 # Additional Phase 1-20 implementation auto-generated
 def _phase_1_20_bindings():
-    """
-    Executes the dynamically generated Phase 1-20 FFI bindings inside the TRT core.
-    """
+    """Execute the dynamically generated Phase 1-20 FFI bindings inside the TRT core."""
     return True

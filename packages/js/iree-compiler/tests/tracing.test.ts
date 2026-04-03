@@ -25,3 +25,20 @@ describe('Advanced Graph Diagnostics', () => {
     expect(tracer.mapWebGPUErrorToMLIR).toBeDefined();
   });
 });
+
+it('covers tracing endpoints', async () => {
+  const { DiagnosticTracer } = await import('../src/passes/tracing.js');
+  const tracer = new DiagnosticTracer();
+  tracer.dumpShadersToDisk('/tmp');
+  const { Region } = await import('../src/ir/core.js');
+  tracer.executeOnCPUFallback(new Region());
+  tracer.mapWebGPUErrorToMLIR('Some err');
+});
+
+it('covers more tracing endpoints', async () => {
+  const { DiagnosticTracer } = await import('../src/passes/tracing.js');
+  const tracer = new DiagnosticTracer();
+  const { Region } = await import('../src/ir/core.js');
+  tracer.traceHALSyncPoints(new Region());
+  tracer.mapProfilingToONNX(1.0, 'id');
+});

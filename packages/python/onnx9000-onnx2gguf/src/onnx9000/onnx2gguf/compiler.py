@@ -11,7 +11,7 @@ from .tokenizer import extract_tokenizer_metadata
 
 
 def get_gguf_type(dtype: int) -> GGUFTensorType:
-    """Gets gguf type."""
+    """Get gguf type."""
     if dtype == DType.FLOAT32.value:
         return GGUFTensorType.F32
     if dtype == DType.FLOAT16.value:

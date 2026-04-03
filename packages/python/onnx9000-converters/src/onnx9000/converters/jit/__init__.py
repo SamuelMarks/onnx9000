@@ -14,7 +14,7 @@ from onnx9000.core.parser.core import load
 def compile(
     model_path: Union[str, Path], target: str = "cpp", out_dir: Union[str, Path, None] = None
 ) -> Union[CompiledModel, Path]:
-    """Main JIT compilation entry point.
+    """Execute main JIT compilation entry point.
 
     Reads an ONNX file, generates C++, compiles it, and returns a callable Python wrapper.
     If target is 'wasm', returns the path to the generated JS file.

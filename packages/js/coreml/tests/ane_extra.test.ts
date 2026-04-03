@@ -82,10 +82,11 @@ describe('ANE Optimization Passes (Extended)', () => {
     const block = b.createBlock('b0');
 
     const indices = b.createVar('indices', b.tensor(MILDataType.INT32, [1]));
-    b.addOp('gather', { indices }, [indices]);
+    b.addOp('gather', { indices: [indices] }, [indices]); // Array branch
+    b.addOp('gather', { indices }, [indices]); // Non-array branch
 
     optimizeForANE(block);
-    expect(block.operations[0]!.attributes['ane_hint_precompute_gather']).toBe(true);
+    expect(block.operations[1]!.attributes['ane_hint_precompute_gather']).toBe(true);
   });
 
   it('detects massive convs for split concat', () => {
@@ -100,5 +101,50 @@ describe('ANE Optimization Passes (Extended)', () => {
     optimizeForANE(block);
     expect(block.operations[0]!.attributes['ane_hint_split_concat']).toBe(true);
     expect(block.operations[0]!.attributes['ane_hint_pad_channels']).toBe(31);
+  });
+
+  it('detects thermal throttling on consecutive matmuls', () => {
+    const b = new Builder();
+    b.createFunction('test', [], []);
+    const block = b.createBlock('b0');
+
+    for (let i = 0; i < 22; i++) {
+      const x = b.createVar(`x${i}`, b.tensor(MILDataType.FLOAT32, [1]));
+      b.addOp('matmul', { x, y: x }, [b.createVar(`y${i}`, b.tensor(MILDataType.FLOAT32, [1]))]);
+    }
+
+    // Also hit the else if (op.opType !== 'cast' && op.opType !== 'reshape') branch
+    b.addOp('add', { x: b.createVar('x', b.tensor(MILDataType.FLOAT32, [1])) }, []);
+
+    expect(() => verifyANECompatibility(block)).not.toThrow();
+  });
+
+  it('casts const ops to fp16', async () => {
+    const { optimizeForANE } = await import('../src/mil/ane_passes.js');
+    const b = new Builder();
+    b.createFunction('test', [], []);
+    const block = b.createBlock('b0');
+
+    const v = b.createVar('v', b.tensor(MILDataType.FLOAT32, [1]));
+    b.addOp('const', { val: new Float32Array([1.0]) }, [v]);
+
+    optimizeForANE(block);
+    expect(v.type.dataType).toBe(MILDataType.FLOAT16);
+  });
+
+  it('splits massive convolutions with array weight', async () => {
+    const { optimizeForANE } = await import('../src/mil/ane_passes.js');
+    const b = new Builder();
+    b.createFunction('test', [], []);
+    const block = b.createBlock('b0');
+
+    const w = b.createVar('w', b.tensor(MILDataType.FLOAT32, [32768, 1, 1, 1]));
+    const out = b.createVar('out', b.tensor(MILDataType.FLOAT32, [1]));
+
+    // use array for weight
+    b.addOp('conv', { weight: [w] }, [out]);
+
+    optimizeForANE(block);
+    expect(block.operations[0]!.attributes['ane_hint_split_concat']).toBe(true);
   });
 });

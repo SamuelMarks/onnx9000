@@ -85,6 +85,27 @@ describe('ONNXToMILConverter', () => {
         },
         { name: 'n', opType: 'If', inputs: ['in3'], outputs: ['out1'], attributes: {} },
         { name: 'n', opType: 'Loop', inputs: ['in2'], outputs: ['out2'], attributes: {} },
+        {
+          name: 'n',
+          opType: 'LayerNormalization',
+          inputs: ['in2'],
+          outputs: ['out3'],
+          attributes: {},
+        },
+        {
+          name: 'n',
+          opType: 'InstanceNormalization',
+          inputs: ['in2'],
+          outputs: ['out4'],
+          attributes: {},
+        },
+        {
+          name: 'n',
+          opType: 'BatchNormalization',
+          inputs: ['in2'],
+          outputs: ['out5'],
+          attributes: {},
+        },
       ],
     };
 
@@ -93,6 +114,9 @@ describe('ONNXToMILConverter', () => {
     graph.outputs = [
       { name: 'out1', dtype: 'float32', shape: [1] },
       { name: 'out2', dtype: 'float32', shape: [1] },
+      { name: 'out3', dtype: 'float32', shape: [1] },
+      { name: 'out4', dtype: 'float32', shape: [1] },
+      { name: 'out5', dtype: 'float32', shape: [1] },
     ];
 
     const converter = new ONNXToMILConverter(graph, { dynamicBatching: true });

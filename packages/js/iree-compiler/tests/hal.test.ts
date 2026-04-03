@@ -7,6 +7,8 @@ describe('Web HAL Dialect', () => {
     const cmdBufferType = new hal.CommandBufferType();
     const bufferType = new hal.BufferType();
     const execType = new hal.ExecutableType();
+    const deviceType = new hal.DeviceType();
+    const bufferViewType = new hal.BufferViewType([1], 'f32');
 
     const cmdBuffer = new Value(cmdBufferType, {} as Operation);
     const buffer = new Value(bufferType, {} as Operation);
@@ -39,4 +41,36 @@ describe('Web HAL Dialect', () => {
     expect(text).toContain('web.hal.executable.create');
     expect(text).toContain('target_backend');
   });
+
+  it('buffer view type', () => {
+    const view = new hal.BufferViewType([1], 'f32');
+    expect(view.id).toBe('hal.buffer_view');
+    expect(view.shape).toEqual([1]);
+    expect(view.elementType).toBe('f32');
+  });
+});
+
+it('should print graph without attributes', () => {
+  const region = new Region();
+  const op = hal.bufferSubspan(
+    new Value(new hal.BufferType(), {} as Operation),
+    0,
+    100,
+    new hal.BufferType(),
+  );
+  const block = new Block(region);
+  region.pushBlock(block);
+  block.pushOperation(op);
+
+  const text = hal.printHalGraph(region);
+  expect(text).toContain('web.hal.buffer.subspan');
+});
+
+it('covers print without results', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+  block.pushOperation(new Operation('test.no_results', [], []));
+  const txt = hal.printHalGraph(region);
+  expect(txt).toContain('%_ = test.no_results');
 });

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ctypes
 
 from onnx9000.tensorrt.enums import DataType
@@ -6,21 +8,29 @@ from onnx9000.tensorrt.structs import Dims
 
 
 class ITensor:
+    """ITensor class."""
+
     def __init__(self, ptr: int, name: str):
+        """Initialize."""
         self.ptr = ptr
         self.name = name
 
     def __repr__(self):
+        """Initialize."""
         return f"<ITensor name='{self.name}'>"
 
 
 class INetworkDefinition:
+    """INetworkDefinition class."""
+
     def __init__(self, ptr: int):
+        """Initialize."""
         self.ptr = ptr
         self.tensors = {}
         ffi.register_pointer(self.ptr, self)
 
     def add_input(self, name: str, dtype: DataType, dims: Dims) -> ITensor:
+        """Execute add_input."""
         add_input_func = getattr(ffi.lib, "addInput", None)
         if not add_input_func:
             raise RuntimeError("addInput not found")
@@ -44,6 +54,7 @@ class INetworkDefinition:
         return tensor
 
     def mark_output(self, tensor: ITensor):
+        """Execute mark_output."""
         mark_output_func = getattr(ffi.lib, "markOutput", None)
         if not mark_output_func:
             raise RuntimeError("markOutput not found")
@@ -52,6 +63,7 @@ class INetworkDefinition:
         mark_output_func(ctypes.c_void_p(self.ptr), ctypes.c_void_p(tensor.ptr))
 
     def destroy(self):
+        """Execute destroy."""
         if not self.ptr:
             return
         destroy_net = getattr(ffi.lib, "destroyNetworkDefinition", None)
@@ -61,15 +73,20 @@ class INetworkDefinition:
         self.ptr = None
 
     def __del__(self):
+        """Initialize."""
         self.destroy()
 
 
 class IBuilderConfig:
+    """IBuilderConfig class."""
+
     def __init__(self, ptr: int):
+        """Initialize."""
         self.ptr = ptr
         ffi.register_pointer(self.ptr, self)
 
     def destroy(self):
+        """Execute destroy."""
         if not self.ptr:
             return
         destroy_cfg = getattr(ffi.lib, "destroyBuilderConfig", None)
@@ -79,4 +96,5 @@ class IBuilderConfig:
         self.ptr = None
 
     def __del__(self):
+        """Initialize."""
         self.destroy()

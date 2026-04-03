@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import onnx9000.tensorrt.ops
 import onnx9000.tensorrt.ops_conv
 import onnx9000.tensorrt.ops_dim

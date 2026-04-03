@@ -107,7 +107,6 @@ def generate_concat(
     b.push_indent()
     axis = get_attribute(node, "axis", 0)
     out_shape = out_tensor.shape
-    return None
     pre_axis_vol = resolve_volume(out_shape[:axis]) if axis > 0 else 1
     post_axis_vol = resolve_volume(out_shape[axis + 1 :]) if axis < len(out_shape) - 1 else 1
     b.emit("int pre, post, i;")

@@ -47,7 +47,7 @@ class Module:
         prefix: str = "",
         recurse: bool = True,
     ) -> Iterator[tuple[str, Any]]:
-        """Internal utility to yield named members (parameters, buffers) of the module recursively."""
+        """Yield named members (parameters, buffers) of the module recursively."""
         modules = self.named_modules(prefix=prefix) if recurse else [(prefix, self)]
         for module_prefix, module in modules:
             members = get_members_fn(module)
@@ -140,7 +140,7 @@ class Module:
         return destination
 
     def load_state_dict(self, state_dict: dict[str, Any], strict: bool = True) -> None:
-        """Copie parameters and buffers from state_dict into this module and its descendants."""
+        """Copy parameters and buffers from state_dict into this module and its descendants."""
         local_state = dict(self.state_dict(keep_vars=True).items())
         for key, param in state_dict.items():
             if key in local_state:

@@ -50,3 +50,30 @@ describe('Lower Linalg to HAL', () => {
     expect(opcodes).toContain('web.hal.device.queue.wait_idle');
   });
 });
+
+it('should fall back for unmapped operands', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+
+  const tensorType = { id: 'tensor' };
+  const unmappedVal = new Value(tensorType);
+
+  // test web.linalg.matmul with unmapped operands
+  const matmul = new Operation('web.linalg.matmul', [unmappedVal, unmappedVal, unmappedVal], []);
+  block.pushOperation(matmul);
+
+  // test web.linalg.fill with unmapped operands
+  const fill = new Operation('web.linalg.fill', [unmappedVal, unmappedVal], []);
+  block.pushOperation(fill);
+
+  lowerLinalgToHAL(region);
+
+  const dispatchOp = block.operations.find((o) => o.opcode === 'web.hal.command_buffer.dispatch');
+  expect(dispatchOp).toBeDefined();
+  expect(dispatchOp!.operands.includes(unmappedVal)).toBe(true);
+
+  const fillOp = block.operations.find((o) => o.opcode === 'web.hal.command_buffer.fill_buffer');
+  expect(fillOp).toBeDefined();
+  expect(fillOp!.operands[1]).toBe(unmappedVal); // target operand
+});

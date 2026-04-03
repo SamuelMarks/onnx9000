@@ -160,6 +160,42 @@ def test_parse_functions() -> None:
     assert node.op == "Custom_op"
 
 
+def test_h5_parser_stub() -> None:
+    from onnx9000.converters.tf.parsers import H5Parser
+
+    parser = H5Parser(b"")
+    graph = parser.parse()
+    assert graph.nodes[0].name == "h5_input"
+
+
+def test_load_keras_v3_fallback() -> None:
+    import sys
+    from unittest.mock import MagicMock, patch
+
+    keras_mock = MagicMock()
+
+    class DummyModel:
+        pass
+
+    keras_mock.Model = DummyModel
+    sys.modules["keras"] = keras_mock
+
+    with patch("onnx9000.converters.tf.keras_v3_parser.Keras3Parser") as mock_parser:
+        mock_graph = MagicMock()
+        mock_graph.nodes = [MagicMock()]
+        mock_graph.nodes[0].name = "keras3_input"
+        mock_parser.return_value.parse.return_value = mock_graph
+
+        # Test with keras.Model
+        model = DummyModel()
+        graph = load_keras_v3(model)
+        assert graph.nodes[0].name == "keras3_input"
+
+        # Test with generic data (not bytes, not keras.Model)
+        graph2 = load_keras_v3("string_data")
+        assert graph2.nodes[0].name == "keras3_input"
+
+
 def test_log_unsupported_node(caplog) -> None:
     """Tests the log unsupported node functionality."""
     node = TFNode("n", "op")

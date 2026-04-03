@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { Type, Value, Region, Operation, Block } from '../src/ir/core.js';
 import * as vm from '../src/dialects/web/vm.js';
-import { lowerHALToVM, BytecodeEmitter, disassembleWVM } from '../src/passes/lower_vm.js';
+import {
+  lowerHALToVM,
+  BytecodeEmitter,
+  disassembleWVM,
+  optimizeAndAllocateRegisters,
+} from '../src/passes/lower_vm.js';
 
 describe('Web VM Dialect', () => {
   it('should create vm ops', () => {
@@ -48,4 +53,42 @@ describe('Web VM Dialect', () => {
     expect(asm).toContain('WVM0 Header OK');
     expect(asm).toContain('Module');
   });
+});
+
+it('covers disassemble cases', () => {
+  const buf = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x01, 0x02, 0x03, 0xff]);
+  const asm = disassembleWVM(buf);
+  expect(asm).toContain('Module');
+  expect(asm).toContain('Func');
+  expect(asm).toContain('Call');
+  expect(asm).toContain('Unknown(0xff)');
+});
+
+it('should hit emit bytecode cases', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+  block.pushOperation(new Operation('web.vm.func', [], []));
+  block.pushOperation(new Operation('web.vm.call', [], []));
+  block.pushOperation(new Operation('unknown.op', [], []));
+
+  const emitter = new BytecodeEmitter();
+  const bytecode = emitter.emit(region);
+  expect(bytecode.length).toBeGreaterThan(4);
+});
+
+it('should optimize and allocate registers', () => {
+  expect(() => optimizeAndAllocateRegisters(new Region())).not.toThrow();
+});
+
+it('should lower other hal ops', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+
+  block.pushOperation(new Operation('web.hal.command_buffer.dispatch', [], []));
+  block.pushOperation(new Operation('web.hal.buffer.subspan', [], []));
+
+  lowerHALToVM(region);
+  expect(region.blocks.length).toBe(1);
 });

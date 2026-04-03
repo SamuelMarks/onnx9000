@@ -10,19 +10,19 @@ class GGUFReader:
     """Provides functionality for G G U F Reader."""
 
     def __init__(self, f: BinaryIO):
-        """Initializes a new instance of the class."""
+        """Initialize a new instance of the class."""
         self.f = f
         self.kvs = {}
         self.tensors = {}
         self._read_header()
 
     def _read_string(self) -> str:
-        """read string."""
+        """Read string."""
         length = struct.unpack("<Q", self.f.read(8))[0]
         return self.f.read(length).decode("utf-8")
 
     def _read_val(self, vtype: GGUFValueType) -> Any:
-        """read val."""
+        """Read val."""
         if vtype == GGUFValueType.UINT8:
             return struct.unpack("<B", self.f.read(1))[0]
         elif vtype == GGUFValueType.INT8:
@@ -59,7 +59,7 @@ class GGUFReader:
             raise ValueError(f"Unknown value type: {vtype}")
 
     def _read_header(self):
-        """read header."""
+        """Read header."""
         magic = self.f.read(4)
         if magic != b"GGUF":
             raise ValueError("Not a GGUF file")
@@ -91,7 +91,7 @@ class GGUFReader:
         self.data_start = self.f.tell()
 
     def get_tensor(self, name: str) -> bytes:
-        """Gets tensor."""
+        """Get tensor."""
         if name not in self.tensors:
             raise KeyError(name)
         t = self.tensors[name]

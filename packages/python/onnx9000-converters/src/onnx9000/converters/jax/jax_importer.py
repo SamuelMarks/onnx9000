@@ -51,7 +51,7 @@ class JAXImporter:
         import jax
 
         def flat_func(*args, **kwargs):
-            """Internal flattened function for JAX tracing."""
+            """Execute internal flattened function for JAX tracing."""
             return func(*args, **kwargs)
 
         jaxpr = jax.make_jaxpr(flat_func)(*args, **kwargs)

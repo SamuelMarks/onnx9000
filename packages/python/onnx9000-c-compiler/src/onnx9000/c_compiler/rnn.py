@@ -7,9 +7,7 @@ from onnx9000.core.ir import Node
 def generate_rnn(
     b: C89Builder, node: Node, in_name: str, w_name: str, r_name: str, out_name: str, op_type: str
 ):
-    """
-    Generate C code for RNN, LSTM, or GRU operations.
-    """
+    """Generate C code for RNN, LSTM, or GRU operations."""
     b.emit(f"/* {op_type} (Native stateful struct logic) */")
     b.emit("{")
     b.push_indent()

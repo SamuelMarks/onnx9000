@@ -105,7 +105,7 @@ def max_pool2d(
     from onnx9000.converters.frontend.utils import record_op
 
     def _pair(x):
-        """Helper to convert int or tuple to (int, int)."""
+        """Convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
     kernel_size_ = _pair(kernel_size)
@@ -166,7 +166,7 @@ def conv2d(
     from onnx9000.converters.frontend.utils import record_op
 
     def _pair(x):
-        """Helper to convert int or tuple to (int, int)."""
+        """Convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
     attrs = {

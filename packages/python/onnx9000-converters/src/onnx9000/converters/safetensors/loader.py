@@ -7,7 +7,7 @@ from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
 def load_safetensors_to_graph(filename: str, graph: Optional[Graph] = None) -> Graph:
-    """Convert `.safetensors` mappings directly into ONNX `Initializer` tensors
+    """Convert `.safetensors` mappings directly into ONNX `Initializer` tensors.
 
     within a GraphSurgeon (onnx9000.core.ir) Graph representation.
     """
@@ -59,11 +59,10 @@ def load_safetensors_to_graph(filename: str, graph: Optional[Graph] = None) -> G
 
 
 def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
-    """Provide dynamic transposition hooks: `tensor.transpose_on_load()`
+    """Provide dynamic transposition hooks: `tensor.transpose_on_load()`.
 
     Resolve QKV (Query/Key/Value) weight concatenation differences across PyTorch and TF natively.
     """
-
     import numpy as np
 
     out = {}

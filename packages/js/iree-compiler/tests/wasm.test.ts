@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { Type, Value, Region, Operation, Block } from '../src/ir/core.js';
 import * as scf from '../src/dialects/web/scf.js';
-import { lowerLinalgToSCF, WASMEmitter } from '../src/passes/lower_wasm.js';
+import {
+  lowerLinalgToSCF,
+  WASMEmitter,
+  unrollLoops,
+  vectorizeLoops,
+} from '../src/passes/lower_wasm.js';
 
 describe('Web SCF Dialect & WASM Lowering', () => {
   it('should create scf ops', () => {
@@ -50,4 +55,19 @@ describe('Web SCF Dialect & WASM Lowering', () => {
     expect(wasm[0]).toBe(0x00);
     expect(wasm[1]).toBe(0x61);
   });
+});
+
+it('should unroll and vectorize', () => {
+  const region = new Region();
+  expect(() => unrollLoops(region)).not.toThrow();
+  expect(() => vectorizeLoops(region)).not.toThrow();
+});
+
+it('should push non-linalg op in scf lowering', () => {
+  const region = new Region();
+  const block = new Block(region);
+  region.pushBlock(block);
+  block.pushOperation(new Operation('web.other.op', [], []));
+  lowerLinalgToSCF(region);
+  expect(region.blocks[0].operations[0].opcode).toBe('web.other.op');
 });
