@@ -1,9 +1,10 @@
 """Test coverage for Keras 2 H5 model parser."""
 
 import json
-import pytest
-import numpy as np
 from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
 from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 
 
@@ -99,7 +100,7 @@ def test_keras_h5_parser_get_weights():
     # Simplified weight test using real h5py-like structure if possible or just mocking the call
     parser = MagicMock()
     parser.f = mock_file
-    weights = KerasH5Parser.get_weights(parser)
+    KerasH5Parser.get_weights(parser)
     # If visititems worked, weights should be populated
     # But h5py.Dataset check might fail. Let's use a real-ish check.
 

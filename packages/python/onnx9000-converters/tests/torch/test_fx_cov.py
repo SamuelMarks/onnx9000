@@ -12,8 +12,8 @@ try:
 except ImportError:
     TORCH_AVAILABLE = False
 
-from onnx9000.converters.torch.fx import FXParser
 from onnx9000.converters.torch.export import ExportParser
+from onnx9000.converters.torch.fx import FXParser
 
 
 @pytest.mark.skipif(not TORCH_AVAILABLE, reason="Torch not available")
@@ -71,7 +71,7 @@ def test_fx_parser_nodes():
     mock_attr.shape = [2, 2]
     mock_attr.dtype = torch.float32
     mock_attr.detach().cpu().numpy.return_value = np.array([[1, 2], [3, 4]])
-    setattr(mock_gm, "my_attr", mock_attr)
+    mock_gm.my_attr = mock_attr
 
     parser = FXParser(mock_gm)
 

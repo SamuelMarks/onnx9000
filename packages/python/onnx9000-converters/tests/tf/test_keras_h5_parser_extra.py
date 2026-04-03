@@ -1,9 +1,10 @@
 """Test coverage for Keras 2 H5 model parser - additional gaps."""
 
 import json
-import pytest
-import numpy as np
 from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
 from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 
 
@@ -46,8 +47,8 @@ def test_keras_h5_parser_parse_empty():
 
 def test_keras_h5_parser_get_weights_dataset():
     """Verify collect_weights hits Dataset check (line 129)."""
-    import onnx9000.converters.tf.keras_h5_parser as parser_mod
     import h5py
+    import onnx9000.converters.tf.keras_h5_parser as parser_mod
 
     mock_file = MagicMock()
     mock_file.__contains__.side_effect = lambda x: x == "model_weights"

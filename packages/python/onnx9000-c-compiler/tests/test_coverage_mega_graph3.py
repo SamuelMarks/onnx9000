@@ -1,7 +1,7 @@
 import numpy as np
+from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.c_compiler.compiler import C89Compiler
 
 
 def test_compiler_rtos_and_wasm():

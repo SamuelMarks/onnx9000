@@ -89,8 +89,8 @@ def test_cf_math_ops2():
         )
         is not None
     )
-    from onnx9000.core.ir import Tensor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Tensor
 
     t = Tensor("t", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32).tobytes())
     assert cf._evaluate_node("ConstantOfShape", [np.array([2])], {"value": t}) is not None

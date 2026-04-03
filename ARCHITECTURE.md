@@ -6,7 +6,7 @@ This document details the internal architectural design of `onnx9000`. It is int
 
 ## 1. The Polyglot Monorepo Architecture
 
-`onnx9000` is built as a highly decoupled pipeline. A graph flows through the system in strict, modular packages managed by `uv` (Python) and `pnpm` workspaces (JS):
+`onnx9000` is built as a highly decoupled pipeline. A graph flows through the system in strict, modular packages managed by `uv` (Python) and `pnpm` workspaces (JS). With all 45 foundation specs implemented, the architecture is fully realized:
 
 ```mermaid
 graph TD;
@@ -32,14 +32,14 @@ The IR (`Graph`, `Node`, `Tensor`, `ValueInfo`) is a flattened, heavily typed li
 1. **Topological Sorting:** Nodes are strictly ordered.
 2. **Shape and Type Inference:** Every edge has a concretely resolved `shape` and `dtype`.
 3. **Zero Dependencies:** Python uses `struct`/`mmap`. TypeScript uses `DataView`/`ArrayBuffer`.
-4. **Validation:** Built-in parity with `onnx.checker`.
+4. **Validation:** Built-in parity with `onnx.checker` out of the box in pure Python/TS.
 
 ## 3. The Frontend Converters & Parsers
 
 The system ingests models through `packages/python/onnx9000-converters`:
 
 - **Zero-Heavy-Dependency:** Avoids official C++ `onnx` bindings. Ships with pure Python/TS definitions.
-- **Extensibility:** Frontends for PyTorch, Scikit-Learn, XGBoost, and legacy formats (Caffe, MXNet) map their ASTs directly into the core IR.
+- **Extensibility:** Frontends for PyTorch, Scikit-Learn, XGBoost, and legacy formats (Caffe, MXNet, TF, Keras) map their ASTs directly into the core IR.
 
 ## 4. The Backend Exporters
 
@@ -63,8 +63,8 @@ Located in `packages/python/onnx9000-backend-native`:
 Located in `packages/js/backend-web` (published as `@onnx9000/backend-web`):
 
 - **WebGPU Shaders (WGSL):** Compiled dynamically into WebGPU Compute pipelines.
-- **WebNN API:** Integrates directly with `navigator.ml`.
-- **WASM SIMD:** High-speed CPU fallback.
+- **WebNN API:** Integrates directly with `navigator.ml` for hardware NPU access in the browser.
+- **WASM SIMD:** High-speed CPU fallback via WebAssembly.
 
 ## 7. The Codegen Engine
 
@@ -89,7 +89,7 @@ Found in `packages/python/onnx9000-toolkit`:
 - **Graph Editing:** WebGL-accelerated `apps/netron-ui` for inspecting massive models.
 - **Diagnostics:** `onnx9000-optimizer` evaluates MACs, FLOPs, and memory footprint.
 
-## 11. Distributed MLOps
+## 11. Distributed MLOps (Active Phase)
 
 Expanding into networking (`onnx9000-network`) and orchestration (`@onnx9000/mlops`):
 

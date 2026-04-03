@@ -1,6 +1,6 @@
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
@@ -23,8 +23,6 @@ def test_cf_last_few():
     # 424: new_node IS NOT None
     n1b = Node("Abs", ["t"], ["out1b"])
     g.nodes.append(n1b)
-
-    original_partial = cf._partial_fold
 
     def mock_partial(n, k):
         if n.name == "Abs" and n.outputs == ["out1b"]:

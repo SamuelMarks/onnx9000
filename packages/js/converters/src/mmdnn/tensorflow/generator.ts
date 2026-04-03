@@ -58,7 +58,7 @@ export class TensorFlowGenerator {
     }
 
     // Initializers
-    for (const [tName, _] of Object.entries(this.graph.tensors)) {
+    for (const [tName] of Object.entries(this.graph.tensors)) {
       code += `        self.${this.sanitize(tName)} = tf.constant([0.0]) # mock\n`;
     }
 

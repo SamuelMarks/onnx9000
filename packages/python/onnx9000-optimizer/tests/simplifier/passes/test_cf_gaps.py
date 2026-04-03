@@ -39,8 +39,8 @@ def test_cf_shape_gaps():
 
 
 def test_cf_shape_dynamic():
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
     from onnx9000.core.ir import DynamicDim
+    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     cf = ConstantFoldingPass()
     g = Graph("G")

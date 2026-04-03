@@ -12,9 +12,9 @@ def test_interpolate_align_corners_unsupported() -> None:
     assert res is None
 
 
+from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.nn import functional as F
 from onnx9000.core.dtypes import DType
-from onnx9000.converters.frontend.builder import Tracing, GraphBuilder
 
 
 def test_activations():
@@ -57,7 +57,7 @@ def test_pad():
     x = Tensor(name="x", shape=(1, 1, 2, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_pad")
     with Tracing(b):
-        y = F.pad(x, (1, 1), mode="constant", value=0.0)
+        F.pad(x, (1, 1), mode="constant", value=0.0)
         assert b.nodes[-1].op_type == "Pad"
         assert b.nodes[-1].attributes["mode"] == "constant"
 
@@ -68,10 +68,10 @@ def test_upsample():
     with Tracing(b):
         # interpolate fails if size is not None in current implementation
         # F.interpolate(x, size=(16, 16)...) returns None! (line 262-263)
-        y = F.interpolate(x, scale_factor=2.0, mode="nearest", align_corners=None)
+        F.interpolate(x, scale_factor=2.0, mode="nearest", align_corners=None)
         assert b.nodes[-1].op_type == "Resize"
 
-        y = F.interpolate(x, scale_factor=(2.0, 2.0), mode="nearest", align_corners=None)
+        F.interpolate(x, scale_factor=(2.0, 2.0), mode="nearest", align_corners=None)
         assert b.nodes[-1].op_type == "Resize"
 
         assert (
@@ -85,12 +85,12 @@ def test_one_hot():
     x = Tensor(name="x", shape=(1, 3), dtype=DType.INT64)
     b = GraphBuilder("test_one_hot")
     with Tracing(b):
-        y = F.one_hot(x, num_classes=10)
+        F.one_hot(x, num_classes=10)
         assert b.nodes[-1].op_type == "OneHot"
     x = Tensor(name="x", shape=(1, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_log_softmax")
     with Tracing(b):
-        y = F.log_softmax(x, dim=1)
+        F.log_softmax(x, dim=1)
         assert b.nodes[-1].op_type == "LogSoftmax"
 
 
@@ -98,12 +98,10 @@ def test_max_pool2d():
     x = Tensor(name="x", shape=(1, 3, 224, 224), dtype=DType.FLOAT32)
     b = GraphBuilder("test_max_pool2d")
     with Tracing(b):
-        y1 = F.max_pool2d(x, kernel_size=2)
+        F.max_pool2d(x, kernel_size=2)
         assert b.nodes[-1].op_type == "MaxPool"
         assert b.nodes[-1].attributes["kernel_shape"] == [2, 2]
 
-        y2 = F.max_pool2d(
-            x, kernel_size=(3, 3), stride=1, padding=(1, 1), dilation=2, ceil_mode=True
-        )
+        F.max_pool2d(x, kernel_size=(3, 3), stride=1, padding=(1, 1), dilation=2, ceil_mode=True)
         assert b.nodes[-1].op_type == "MaxPool"
         assert b.nodes[-1].attributes["kernel_shape"] == [3, 3]

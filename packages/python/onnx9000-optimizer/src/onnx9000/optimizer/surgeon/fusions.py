@@ -1,6 +1,6 @@
 """Graph fusion passes for onnx9000."""
 
-from onnx9000.core.ir import Graph, Node, Tensor, Constant
+from onnx9000.core.ir import Constant, Graph, Node, Tensor
 from onnx9000.core.surgeon import PatternMatcher, match_pattern
 
 

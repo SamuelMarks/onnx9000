@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from onnx9000.tensorrt.ops_dim import trt_reshape
 
 

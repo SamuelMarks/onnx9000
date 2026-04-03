@@ -1,9 +1,10 @@
 import math
+from unittest.mock import patch
+
 import numpy as np
 import pytest
 from onnx9000_diffusers.schedulers import EulerDiscreteScheduler
-from onnx9000_diffusers.utils import set_progress_bar_config, fetch_hub_file
-from unittest.mock import patch
+from onnx9000_diffusers.utils import fetch_hub_file, set_progress_bar_config
 
 
 def test_euler_scale():

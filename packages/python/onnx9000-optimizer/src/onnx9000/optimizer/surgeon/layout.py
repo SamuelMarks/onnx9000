@@ -30,7 +30,7 @@ def optimize_layouts(graph: Graph, target_layout: str = "NHWC") -> Graph:
                             new_t_name = f"{consumer.name}_layout_pushed"
                             consumer.inputs[0] = n.inputs[0]
                             # Create new transpose after consumer
-                            from onnx9000.core.ir import Node, Attribute
+                            from onnx9000.core.ir import Attribute, Node
 
                             new_node = Node(
                                 "Transpose",

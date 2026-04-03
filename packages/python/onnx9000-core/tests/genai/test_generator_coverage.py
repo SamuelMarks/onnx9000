@@ -1,6 +1,7 @@
 """Test coverage gaps for the Generator class in the GenAI module."""
 
 import asyncio
+
 import pytest
 from onnx9000.core.ir import Tensor
 from onnx9000.genai.generator import Generator

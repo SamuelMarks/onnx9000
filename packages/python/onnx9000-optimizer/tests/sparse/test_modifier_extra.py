@@ -1,8 +1,8 @@
 """Final coverage for optimizer sparse modifier."""
 
 import pytest
-from onnx9000.optimizer.sparse.modifier import MagnitudePruningModifier, NMPruningModifier
 from onnx9000.core.ir import Graph, Node
+from onnx9000.optimizer.sparse.modifier import MagnitudePruningModifier, NMPruningModifier
 
 
 def test_sparse_modifier_gaps():
@@ -20,7 +20,7 @@ def test_sparse_modifier_gaps():
 
 def test_nm_pruning_modifier_gap():
     """Verify line 715 logic for NMPruningModifier."""
-    graph = Graph("test_nm")
+    Graph("test_nm")
     # NMPruningModifier takes (params, n, m)
     mod = NMPruningModifier(["weight"], n=2, m=4)
     try:

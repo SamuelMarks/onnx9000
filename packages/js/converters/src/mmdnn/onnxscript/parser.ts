@@ -70,7 +70,7 @@ export class OnnxScriptParser {
         const opType = assignMatch[2];
         const ins = assignMatch[3].split(',').map((s) => s.trim());
 
-        const node = new Node(opType, ins, outs, {}, `${opType}_${outs[0]}`);
+        const node = new Node(opType, ins, outs, {}, `${opType}_${outs[0] || 'out'}`);
         graph.nodes.push(node);
       }
     }

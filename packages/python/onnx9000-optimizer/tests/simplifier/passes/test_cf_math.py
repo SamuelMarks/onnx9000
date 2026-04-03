@@ -43,16 +43,16 @@ def test_cf_math_ops():
 
     bool_t = np.array([True])
     bool_f = np.array([False])
-    assert cf._evaluate_node("And", [bool_t, bool_f], {}) == False
-    assert cf._evaluate_node("Or", [bool_t, bool_f], {}) == True
-    assert cf._evaluate_node("Not", [bool_t], {}) == False
-    assert cf._evaluate_node("Xor", [bool_t, bool_t], {}) == False
+    assert not cf._evaluate_node("And", [bool_t, bool_f], {})
+    assert cf._evaluate_node("Or", [bool_t, bool_f], {})
+    assert not cf._evaluate_node("Not", [bool_t], {})
+    assert not cf._evaluate_node("Xor", [bool_t, bool_t], {})
 
-    assert cf._evaluate_node("Equal", [a, a], {}) == True
-    assert cf._evaluate_node("Greater", [b, a], {}) == True
-    assert cf._evaluate_node("Less", [a, b], {}) == True
-    assert cf._evaluate_node("GreaterOrEqual", [a, a], {}) == True
-    assert cf._evaluate_node("LessOrEqual", [a, a], {}) == True
+    assert cf._evaluate_node("Equal", [a, a], {})
+    assert cf._evaluate_node("Greater", [b, a], {})
+    assert cf._evaluate_node("Less", [a, b], {})
+    assert cf._evaluate_node("GreaterOrEqual", [a, a], {})
+    assert cf._evaluate_node("LessOrEqual", [a, a], {})
 
     int_a = np.array([4])
     int_b = np.array([1])
@@ -66,19 +66,14 @@ def test_cf_math_ops():
     assert cf._evaluate_node("BitwiseXor", [np.array([3]), np.array([1])], {}) == 2
 
     inf_val = np.array([float("inf")])
-    assert cf._evaluate_node("IsInf", [inf_val], {}) == True
-    assert (
-        cf._evaluate_node("IsInf", [inf_val], {"detect_positive": 1, "detect_negative": 0}) == True
+    assert cf._evaluate_node("IsInf", [inf_val], {})
+    assert cf._evaluate_node("IsInf", [inf_val], {"detect_positive": 1, "detect_negative": 0})
+    assert cf._evaluate_node(
+        "IsInf", [np.array([float("-inf")])], {"detect_positive": 0, "detect_negative": 1}
     )
-    assert (
-        cf._evaluate_node(
-            "IsInf", [np.array([float("-inf")])], {"detect_positive": 0, "detect_negative": 1}
-        )
-        == True
-    )
-    assert cf._evaluate_node("IsInf", [a], {"detect_positive": 0, "detect_negative": 0}) == False
+    assert not cf._evaluate_node("IsInf", [a], {"detect_positive": 0, "detect_negative": 0})
 
-    assert cf._evaluate_node("IsNaN", [np.array([float("nan")])], {}) == True
+    assert cf._evaluate_node("IsNaN", [np.array([float("nan")])], {})
 
     assert cf._evaluate_node("Erf", [a], {}) is not None
     assert cf._evaluate_node("Relu", [a_neg], {}) == 0.0

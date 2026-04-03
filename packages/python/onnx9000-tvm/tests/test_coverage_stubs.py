@@ -1,6 +1,6 @@
 from onnx9000.tvm.ecosystem import TVMParityCertifier
-from onnx9000.tvm.relay.frontend.pytorch import from_pytorch, PyTorchImporter
-from onnx9000.tvm.relay.frontend.tensorflow import from_tensorflow, TFImporter
+from onnx9000.tvm.relay.frontend.pytorch import PyTorchImporter, from_pytorch
+from onnx9000.tvm.relay.frontend.tensorflow import TFImporter, from_tensorflow
 from onnx9000.tvm.relay.module import IRModule
 from onnx9000.tvm.relay.span import Span, set_span
 
@@ -15,7 +15,7 @@ def test_stubs():
     mod2 = IRModule()
     mod.update(mod2)
     try:
-        from onnx9000.tvm.relay.expr import Var, Function
+        from onnx9000.tvm.relay.expr import Function, Var
 
         v = Var("x", None)
         f = Function([], None, None, None)
@@ -32,9 +32,9 @@ def test_stubs():
 
 
 def test_relay_parser_misses():
-    from onnx9000.tvm.relay.parser import save_json
-    from onnx9000.tvm.relay.expr import Expr
     import pytest
+    from onnx9000.tvm.relay.expr import Expr
+    from onnx9000.tvm.relay.parser import save_json
 
     class UnknownExpr(Expr):
         pass

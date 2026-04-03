@@ -1,8 +1,9 @@
+import urllib.error
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from onnx9000.onnx2gguf.hub import fetch_hf_config
 from onnx9000.onnx2gguf.reverse import reconstruct_onnx
-import urllib.error
 
 
 def test_hub_fetch_tokenizer_exception():

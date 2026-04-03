@@ -44,7 +44,7 @@ export function parsePbtxt(text: string): TFGraphDef {
   const nodeBlocks = text.split(/node\s*\{/);
 
   for (let i = 1; i < nodeBlocks.length; i++) {
-    const block = nodeBlocks[i]!;
+    const block = nodeBlocks[i] as string;
     const node: TFNodeDef = {
       name: '',
       op: '',
@@ -53,23 +53,23 @@ export function parsePbtxt(text: string): TFGraphDef {
     };
 
     const nameM = block.match(/name:\s*"([^"]*)"/);
-    if (nameM) node.name = nameM[1]!;
+    if (nameM) node.name = nameM[1] as string;
 
     const opM = block.match(/op:\s*"([^"]*)"/);
-    if (opM) node.op = opM[1]!;
+    if (opM) node.op = opM[1] as string;
 
     const inputMs = block.matchAll(/input:\s*"([^"]*)"/g);
-    for (const m of inputMs) node.input.push(m[1]!);
+    for (const m of inputMs) node.input.push(m[1] as string);
 
     // Improved attribute parsing using a more flexible block-based extraction
     const attrRegex = /attr\s*\{([\s\S]*?)\n\s*\}/g;
     let aMatch;
     while ((aMatch = attrRegex.exec(block)) !== null) {
-      const attrContent = aMatch[1]!;
+      const attrContent = aMatch[1] as string;
       const keyMatch = attrContent.match(/key:\s*"([^"]*)"/);
       if (!keyMatch) continue;
 
-      const key = keyMatch[1]!;
+      const key = keyMatch[1] as string;
       const attr: TFAttrValue = {};
 
       if (attrContent.includes('type:')) {
@@ -82,22 +82,22 @@ export function parsePbtxt(text: string): TFGraphDef {
       }
       if (attrContent.includes('i:')) {
         const m = attrContent.match(/i:\s*(-?\d+)/);
-        if (m) attr.i = parseInt(m[1]!, 10);
+        if (m) attr.i = parseInt(m[1] as string, 10);
       }
       if (attrContent.includes('f:')) {
         const m = attrContent.match(/f:\s*(-?\d+\.?\d*)/);
-        if (m) attr.f = parseFloat(m[1]!);
+        if (m) attr.f = parseFloat(m[1] as string);
       }
       if (attrContent.includes('shape {') || attrContent.includes('tensor_shape {')) {
         const dims: number[] = [];
         const dimMatches = attrContent.matchAll(/dim\s*\{\s*size:\s*(-?\d+)\s*\}/g);
         for (const dm of dimMatches) {
-          dims.push(parseInt(dm[1]!, 10));
+          dims.push(parseInt(dm[1] as string, 10));
         }
         if (attrContent.includes('tensor {')) {
           const dtypeMatch = attrContent.match(/dtype:\s*([A-Z0-9_]+)/);
           attr.tensor = {
-            dtype: dtypeMatch ? dtypeMatch[1]! : 'DT_FLOAT',
+            dtype: dtypeMatch ? (dtypeMatch[1] as string) : 'DT_FLOAT',
             shape: dims,
           };
         } else {
@@ -108,7 +108,7 @@ export function parsePbtxt(text: string): TFGraphDef {
         const listI: number[] = [];
         const iMatches = attrContent.matchAll(/i:\s*(-?\d+)/g);
         for (const im of iMatches) {
-          listI.push(parseInt(im[1]!, 10));
+          listI.push(parseInt(im[1] as string, 10));
         }
         attr.list = { i: listI };
       }
@@ -120,17 +120,17 @@ export function parsePbtxt(text: string): TFGraphDef {
     if (Object.keys(node.attr).length === 0 && block.includes('key:')) {
       const keys = block.matchAll(/key:\s*"([^"]*)"/g);
       for (const km of keys) {
-        const k = km[1]!;
+        const k = km[1] as string;
         const val: TFAttrValue = {};
         if (block.includes(`key: "${k}"`)) {
-          const sub = block.split(`key: "${k}"`)[1]!;
+          const sub = block.split(`key: "${k}"`)[1] as string;
           if (sub.includes('i:')) {
             const m = sub.match(/i:\s*(-?\d+)/);
-            if (m) val.i = parseInt(m[1]!, 10);
+            if (m) val.i = parseInt(m[1] as string, 10);
           }
           if (sub.includes('f:')) {
             const m = sub.match(/f:\s*(-?\d+\.?\d*)/);
-            if (m) val.f = parseFloat(m[1]!);
+            if (m) val.f = parseFloat(m[1] as string);
           }
           node.attr[k] = val;
         }
@@ -155,5 +155,6 @@ export function parsePbtxt(text: string): TFGraphDef {
  * @returns The parsed GraphDef structure.
  */
 export function parseTFProto(_buffer: Uint8Array): TFGraphDef {
+  void _buffer;
   return { node: [] };
 }

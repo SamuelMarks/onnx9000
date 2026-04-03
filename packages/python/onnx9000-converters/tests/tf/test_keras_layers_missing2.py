@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from onnx9000.converters.tf.keras_layers import (
-    _map_keras_embedding,
-    _map_keras_spatial_dropout,
-    _map_keras_layers__attention,
     _map_keras_bidirectional,
+    _map_keras_embedding,
+    _map_keras_layers__attention,
     _map_keras_layers__masking,
+    _map_keras_spatial_dropout,
 )
 
 

@@ -1,5 +1,5 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Variable, ValueInfo, DType
+from onnx9000.core.ir import DType, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.surgeon.obfuscator import obfuscate_names
 
 

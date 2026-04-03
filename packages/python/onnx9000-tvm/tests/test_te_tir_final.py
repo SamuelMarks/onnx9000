@@ -1,14 +1,15 @@
 """Coverage tests for TE and TIR in TVM."""
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+from onnx9000.tvm.relay.module import IRModule
 from onnx9000.tvm.te.default_schedules import (
-    default_x86_schedule,
     default_arm_schedule,
     default_wasm_schedule,
     default_webgpu_schedule,
+    default_x86_schedule,
 )
-from onnx9000.tvm.relay.module import IRModule
 
 
 def test_default_schedules():

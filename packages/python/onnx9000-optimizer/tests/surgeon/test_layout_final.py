@@ -1,5 +1,5 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Attribute, Tensor, Variable
+from onnx9000.core.ir import Attribute, Graph, Node, Tensor, Variable
 from onnx9000.optimizer.surgeon.layout import optimize_layouts
 
 

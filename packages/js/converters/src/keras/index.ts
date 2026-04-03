@@ -241,7 +241,8 @@ export class Keras2OnnxConverter {
           toNhwcPerm = [0, 2, 3, 1];
         }
 
-        const originalInput = rn.inputs[0]!;
+        const originalInput = rn.inputs[0];
+        if (!originalInput) throw new Error('Missing input');
         const nchwInputName = `${originalInput}_to_nchw`;
 
         layoutNodes.push({
@@ -274,7 +275,8 @@ export class Keras2OnnxConverter {
           }
         }
 
-        const originalOutput = rn.outputs[0]!;
+        const originalOutput = rn.outputs[0];
+        if (!originalOutput) throw new Error('Missing output');
         const nchwOutputName = `${originalOutput}_nchw`;
 
         rn.outputs[0] = nchwOutputName;
@@ -495,7 +497,7 @@ export class Keras2OnnxConverter {
     for (const inp of inputs) {
       const topIn = this.topology.inputs.find((x) => x.name === inp);
       let shape: Shape = [-1, -1, -1, -1];
-      if (topIn && topIn.shape && topIn.shape.length > 0) {
+      if (topIn && topIn.shape.length > 0) {
         shape = topIn.shape.map((s, idx) => {
           if (s === null) return idx === 0 ? 'batch_size' : -1;
           return s;
@@ -526,7 +528,7 @@ export class Keras2OnnxConverter {
     for (const out of outputs) {
       const topOut = this.topology.outputs.find((x) => x.name === out);
       let shape: Shape = [-1, -1];
-      if (topOut && topOut.shape && topOut.shape.length > 0) {
+      if (topOut && topOut.shape.length > 0) {
         shape = topOut.shape.map((s, idx) => {
           if (s === null) return idx === 0 ? 'batch_size' : -1;
           return s;

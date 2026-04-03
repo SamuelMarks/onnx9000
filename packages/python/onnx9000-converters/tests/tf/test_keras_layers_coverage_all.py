@@ -1,8 +1,9 @@
 """Test discovery and execution for all Keras mapping functions."""
 
-import pytest
 from unittest.mock import MagicMock
+
 import onnx9000.converters.tf.keras_layers as kl
+import pytest
 
 
 def test_execute_all_keras_mappings():
@@ -46,11 +47,12 @@ def test_execute_all_keras_mappings():
 
 def test_keras_layers_branches():
     from unittest.mock import MagicMock
+
     from onnx9000.converters.tf.keras_layers import (
+        _map_keras_attention_base,
         _map_keras_conv_base,
         _map_keras_pool_base,
         _map_keras_rnn_base,
-        _map_keras_attention_base,
     )
 
     class TFNodeMock:
@@ -144,9 +146,9 @@ def test_keras_layers_branches():
     # Reshape and specialized
     from onnx9000.converters.tf.keras_layers import (
         _map_keras_cropping,
+        _map_keras_spatial_dropout,
         _map_keras_upsampling,
         _map_keras_zero_padding,
-        _map_keras_spatial_dropout,
     )
 
     c1 = TFNodeMock("c1", "Cropping", ["i"], {"cropping": 1})
@@ -230,8 +232,9 @@ def test_keras_layers_branches():
 
 def test_execute_all_keras_mappings_with_inputs():
     """Execute all functions again but WITH dummy inputs to traverse the AST generation branch."""
-    import onnx9000.converters.tf.keras_layers as kl
     from unittest.mock import MagicMock
+
+    import onnx9000.converters.tf.keras_layers as kl
 
     builder = MagicMock()
     builder.make_node.return_value = ["dummy_out", "dummy_out2", "dummy_out3", "dummy_out4"]

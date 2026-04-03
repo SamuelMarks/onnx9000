@@ -1,10 +1,11 @@
-import pytest
 from unittest.mock import MagicMock, patch
-from onnx9000.tensorrt.registry import _TRT_OP_REGISTRY
+
 import onnx9000.tensorrt.ops
+import onnx9000.tensorrt.ops_conv
 import onnx9000.tensorrt.ops_dim
 import onnx9000.tensorrt.ops_matmul
-import onnx9000.tensorrt.ops_conv
+import pytest
+from onnx9000.tensorrt.registry import _TRT_OP_REGISTRY
 
 
 def test_missing_inputs_all():

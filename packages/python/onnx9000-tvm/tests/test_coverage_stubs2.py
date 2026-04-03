@@ -1,7 +1,7 @@
-from onnx9000.tvm.relay.expr import Call, Var, Op, Function, TupleExpr
-from onnx9000.tvm.relay.ty import TensorType, FuncType
-from onnx9000.tvm.relay.transform.infer_type import TypeChecker
 import pytest
+from onnx9000.tvm.relay.expr import Call, Function, Op, TupleExpr, Var
+from onnx9000.tvm.relay.transform.infer_type import TypeChecker
+from onnx9000.tvm.relay.ty import FuncType, TensorType
 
 
 def test_infer_type_call():

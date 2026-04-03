@@ -1,8 +1,9 @@
 """Tests the ir module functionality."""
 
+import sys
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import DynamicDim, Graph, Node, Variable
-import sys
 
 print(f"DEBUG sys.path: {sys.path}")
 print(f"DEBUG Node class: {hex(id(Node))}")

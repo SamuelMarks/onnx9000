@@ -305,24 +305,26 @@ export async function convert(
       const { parsePrototxt, parseCaffemodel } = await import('./caffe/parser.js');
       const { CaffeMapper } = await import('./caffe/mapper.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       graph = new Graph('caffe-imported');
       try {
-        const text = await file0!.text();
-        const parsed = (parsePrototxt(text) as { layer: CaffeLayer[] }) || { layer: [] };
+        const text = await file0.text();
+        const parsed = parsePrototxt(text) as { layer: CaffeLayer[] };
         if (files.length > 1) {
           reporter.info('Parsing Caffe weights...');
-          const file1 = files[1]!;
+          const file1 = files[1];
+          if (!file1) throw new Error('Missing weights file');
           const arrayBuffer = await file1.arrayBuffer();
           const weightsParsed = (await parseCaffemodel(new Uint8Array(arrayBuffer))) as {
             layer: CaffeLayer[];
           };
           const weightsMap = new Map<string, CaffeLayer>();
-          for (const layer of weightsParsed.layer || []) {
+          for (const layer of weightsParsed.layer) {
             if (layer.name) {
               weightsMap.set(layer.name, layer);
             }
           }
-          for (const layer of parsed.layer || []) {
+          for (const layer of parsed.layer) {
             if (layer.name) {
               const wt = weightsMap.get(layer.name);
               if (wt && wt.blobs) {
@@ -332,12 +334,12 @@ export async function convert(
           }
         }
         const mapper = new CaffeMapper();
-        for (const layer of parsed.layer || []) {
+        for (const layer of parsed.layer) {
           const nodes = mapper.map(layer, graph);
           graph.nodes.push(...nodes);
         }
         if (graph.nodes.length === 0) throw new Error('No nodes mapped');
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse caffe model');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
@@ -346,17 +348,18 @@ export async function convert(
       const { parseMxNetSymbol } = await import('./mxnet/parser.js');
       const { MxNetMapper } = await import('./mxnet/mapper.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       graph = new Graph('mxnet-imported');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parsed = parseMxNetSymbol(text) as MxNetSymbol;
         const mapper = new MxNetMapper();
-        for (const node of parsed.nodes || []) {
+        for (const node of parsed.nodes) {
           const outNodes = mapper.map(node, graph);
           graph.nodes.push(...outNodes);
         }
         if (graph.nodes.length === 0) throw new Error('No nodes mapped');
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse mxnet model');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
@@ -365,17 +368,18 @@ export async function convert(
       const { parsePbtxt } = await import('./tensorflow/parser.js');
       const { TFMapper } = await import('./tensorflow/mapper.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       graph = new Graph('tensorflow-imported');
       try {
-        const text = await file0!.text();
-        const parsed = parsePbtxt(text) || { node: [] };
+        const text = await file0.text();
+        const parsed = parsePbtxt(text) as { node: import('./tensorflow/parser.js').TFNodeDef[] };
         const mapper = new TFMapper();
-        for (const node of parsed.node || []) {
+        for (const node of parsed.node) {
           const nodes = mapper.map(node, graph);
           graph.nodes.push(...nodes);
         }
         if (graph.nodes.length === 0) throw new Error('No nodes mapped');
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse tensorflow model');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
@@ -384,20 +388,21 @@ export async function convert(
       const { PaddleParser } = await import('./paddle/parser.js');
       const { PaddleMapper } = await import('./paddle/mapper.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       graph = new Graph('paddle-imported');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new PaddleParser();
-        const parsed = (parser.parseModel(text) as PaddleModel) || { blocks: [] };
+        const parsed = parser.parseModel(text) as PaddleModel;
         const mapper = new PaddleMapper();
-        for (const block of parsed.blocks || []) {
-          for (const op of block.ops || []) {
+        for (const block of parsed.blocks) {
+          for (const op of block.ops) {
             const nodes = mapper.map(op, graph);
             graph.nodes.push(...nodes);
           }
         }
         if (graph.nodes.length === 0) throw new Error('No nodes mapped');
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse paddlepaddle model');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
@@ -405,11 +410,12 @@ export async function convert(
     } else if (source === 'scikitlearn') {
       const { ScikitLearnParser } = await import('./scikitlearn/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new ScikitLearnParser();
         graph = parser.parseModel(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse scikitlearn model');
         graph = new Graph('scikitlearn-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
@@ -417,11 +423,12 @@ export async function convert(
     } else if (source === 'lightgbm') {
       const { LightGBMParser } = await import('./lightgbm/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new LightGBMParser();
         graph = parser.parseModel(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse lightgbm model');
         graph = new Graph('lightgbm-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
@@ -429,11 +436,12 @@ export async function convert(
     } else if (source === 'xgboost') {
       const { XGBoostParser } = await import('./xgboost/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new XGBoostParser();
         graph = parser.parseModel(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse xgboost model');
         graph = new Graph('xgboost-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
@@ -441,11 +449,12 @@ export async function convert(
     } else if (source === 'catboost') {
       const { CatBoostParser } = await import('./catboost/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new CatBoostParser();
         graph = parser.parseModel(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse catboost model');
         graph = new Graph('catboost-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
@@ -453,11 +462,12 @@ export async function convert(
     } else if (source === 'sparkml') {
       const { SparkMLParser } = await import('./sparkml/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new SparkMLParser();
         graph = parser.parseModel(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse sparkml model');
         graph = new Graph('sparkml-imported');
         graph.nodes.push(new Node('Identity', ['features'], ['prediction'], {}, 'identity'));
@@ -465,11 +475,12 @@ export async function convert(
     } else if (source === 'onnxscript') {
       const { OnnxScriptParser } = await import('./onnxscript/parser.js');
       const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
       try {
-        const text = await file0!.text();
+        const text = await file0.text();
         const parser = new OnnxScriptParser();
         graph = parser.parseScript(text);
-      } catch (e) {
+      } catch {
         reporter.warn('Failed to parse onnxscript model');
         graph = new Graph('onnxscript-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));

@@ -1,7 +1,8 @@
 """Coverage tests for ONNX frontend in TVM."""
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from onnx9000.tvm.relay.frontend.onnx import ONNXImporter
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Graph, ValueInfo, Node, Tensor
+from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.openvino.exporter import OpenVinoExporter
 
 

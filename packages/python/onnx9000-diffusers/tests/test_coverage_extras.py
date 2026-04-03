@@ -1,13 +1,14 @@
 import math
+
 import numpy as np
 import pytest
 from onnx9000_diffusers.models import AutoencoderKL
 from onnx9000_diffusers.pipeline import DiffusionPipeline
 from onnx9000_diffusers.schedulers import (
-    Scheduler,
     FlowMatchEulerDiscreteScheduler,
-    SASolverScheduler,
     LCMScheduler,
+    SASolverScheduler,
+    Scheduler,
 )
 
 

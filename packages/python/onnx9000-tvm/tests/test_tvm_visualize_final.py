@@ -1,19 +1,20 @@
 """Coverage tests for TVM Relay visualization."""
 
-import pytest
 from unittest.mock import MagicMock
-from onnx9000.tvm.relay.visualize import DotPrinter, to_dot
+
+import pytest
 from onnx9000.tvm.relay.expr import (
     Call,
-    Op,
-    Var,
     Constant,
+    Function,
+    If,
+    Let,
+    Op,
     TupleExpr,
     TupleGetItem,
-    Let,
-    If,
-    Function,
+    Var,
 )
+from onnx9000.tvm.relay.visualize import DotPrinter, to_dot
 
 
 def test_dot_printer_all_types():
@@ -28,14 +29,14 @@ def test_dot_printer_all_types():
 
     # Tuple
     tup = TupleExpr([x, y])
-    tgi = TupleGetItem(tup, 0)
+    TupleGetItem(tup, 0)
 
     # Let
-    let = Let(x, c, y)
+    Let(x, c, y)
 
     # If
     cond = Var("cond")
-    if_expr = If(cond, x, y)
+    If(cond, x, y)
 
     # Function
     func = Function([x, y], call_expr)

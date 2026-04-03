@@ -1,8 +1,9 @@
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
+from onnx9000.toolkit.safetensors.hub import cached_download, resolve_model_file
 from onnx9000.toolkit.safetensors.parser import SafeTensors
-from onnx9000.toolkit.safetensors.hub import resolve_model_file, cached_download
-from unittest.mock import patch, MagicMock
 
 
 def test_hub_extra():

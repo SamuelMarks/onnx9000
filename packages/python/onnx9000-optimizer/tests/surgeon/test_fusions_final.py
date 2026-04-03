@@ -1,5 +1,5 @@
 import pytest
-from onnx9000.core.ir import Graph, Node, Constant
+from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.optimizer.surgeon.fusions import fuse_horizontal_gemm
 
 

@@ -11,7 +11,7 @@ export class PaddleParser {
     if (typeof modelJson === 'string') {
       try {
         return JSON.parse(modelJson) as object;
-      } catch (e) {
+      } catch {
         return { blocks: [] };
       }
     }

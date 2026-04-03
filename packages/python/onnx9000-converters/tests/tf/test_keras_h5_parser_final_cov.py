@@ -1,11 +1,12 @@
 """Final coverage gaps for Keras 2 H5 model parser."""
 
-import os
 import json
-import pytest
-import numpy as np
-from unittest.mock import MagicMock, patch
+import os
 import sys
+from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
 
 # We need to test lines 10-11 by forcing h5py to be None
 # This is tricky because it's at module level.

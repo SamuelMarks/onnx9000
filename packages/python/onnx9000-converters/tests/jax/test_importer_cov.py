@@ -72,7 +72,7 @@ def test_jax_importer_primitive_mapping():
     assert name1 == name2
 
 
-from onnx9000.converters.jax.importer import load_jax, _map_jax_type, load
+from onnx9000.converters.jax.importer import _map_jax_type, load, load_jax
 from onnx9000.core.dtypes import DType
 
 

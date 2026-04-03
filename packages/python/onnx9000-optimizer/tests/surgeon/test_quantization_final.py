@@ -1,6 +1,6 @@
-import pytest
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Constant
+import pytest
+from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.optimizer.surgeon.quantization import quantize_ptq
 
 
@@ -16,7 +16,7 @@ def test_quantize_ptq_basic():
     n1 = Node("Conv", ["X", "W"], ["Y"], {}, "conv")
     graph.nodes = [n1]
 
-    quantized = quantize_ptq(graph)
+    quantize_ptq(graph)
 
     assert graph.tensors["W"].dtype == "uint8"
     assert "W_quantized" in graph.metadata

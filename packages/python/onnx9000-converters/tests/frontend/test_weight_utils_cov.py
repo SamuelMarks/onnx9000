@@ -1,12 +1,12 @@
 """Tests for frontend weight_utils."""
 
+from unittest.mock import MagicMock
+
 import numpy as np
 import pytest
-
-from unittest.mock import MagicMock
 from onnx9000.converters.frontend.weight_utils import export_state_dict, universal_weight_bridge
-from onnx9000.core.ir import Graph, Tensor, Constant
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, Graph, Tensor
 
 
 def test_export_state_dict():

@@ -159,7 +159,7 @@ export class KerasGenerator {
       const sanitized = this.sanitize(input.name);
       const shape =
         input.shape.length > 0
-          ? input.shape[0] === -1 || input.shape[0] === null
+          ? input.shape[0] === -1 || typeof input.shape[0] === 'string'
             ? input.shape.slice(1)
             : input.shape
           : [1];
@@ -171,39 +171,41 @@ export class KerasGenerator {
     for (const input of this.graph.inputs) {
       nodeOutputs[input.name] = this.sanitize(input.name);
     }
-    for (const [name, _] of Object.entries(this.graph.tensors)) {
+    for (const [name] of Object.entries(this.graph.tensors)) {
       nodeOutputs[name] = `np.load('${this.sanitize(name)}.npy')`;
     }
 
     for (const node of this.graph.nodes) {
       const sanitizedOutputs = node.outputs.map((o) => this.sanitize(o));
       const lhs =
-        sanitizedOutputs.length === 1 ? sanitizedOutputs[0] : `(${sanitizedOutputs.join(', ')})`;
+        sanitizedOutputs.length === 1
+          ? sanitizedOutputs[0] || 'None'
+          : `(${sanitizedOutputs.join(', ')})`;
       const inputs = node.inputs.map((i) => nodeOutputs[i] || 'None');
 
       let rhs = '';
       if (node.opType === 'Relu') {
-        rhs = `keras.layers.ReLU()(${inputs[0]})`;
+        rhs = `keras.layers.ReLU()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Add') {
         rhs = `keras.layers.Add()([${inputs.join(', ')}])`;
       } else if (node.opType === 'Conv') {
-        rhs = `keras.layers.Conv2D(filters=64, kernel_size=3)(${inputs[0]})`;
+        rhs = `keras.layers.Conv2D(filters=64, kernel_size=3)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'MaxPool') {
-        rhs = `keras.layers.MaxPooling2D()(${inputs[0]})`;
+        rhs = `keras.layers.MaxPooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'AveragePool') {
-        rhs = `keras.layers.AveragePooling2D()(${inputs[0]})`;
+        rhs = `keras.layers.AveragePooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'GlobalAveragePool') {
-        rhs = `keras.layers.GlobalAveragePooling2D()(${inputs[0]})`;
+        rhs = `keras.layers.GlobalAveragePooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Flatten') {
-        rhs = `keras.layers.Flatten()(${inputs[0]})`;
+        rhs = `keras.layers.Flatten()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Gemm' || node.opType === 'Dense') {
-        rhs = `keras.layers.Dense(units=10)(${inputs[0]})`;
+        rhs = `keras.layers.Dense(units=10)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Softmax') {
-        rhs = `ops.softmax(${inputs[0]})`;
+        rhs = `ops.softmax(${inputs[0] || 'None'})`;
       } else if (node.opType === 'LSTM') {
-        rhs = `keras.layers.LSTM(units=128)(${inputs[0]})`;
+        rhs = `keras.layers.LSTM(units=128)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'GRU') {
-        rhs = `keras.layers.GRU(units=128)(${inputs[0]})`;
+        rhs = `keras.layers.GRU(units=128)(${inputs[0] || 'None'})`;
       } else {
         rhs = `Fallback for ${node.opType}`;
       }

@@ -96,28 +96,39 @@ quantized_graph = quantize(optimized_graph, q_config)
 
 ## 🌐 TypeScript & Web Ecosystem
 
-### WebGPU Inference
+### WebGPU / WebNN Inference
 
-`@onnx9000/backend-web` turns your AST into optimized WebGPU WGSL shaders.
+`@onnx9000/backend-web` turns your AST into optimized WebGPU WGSL shaders or leverages WebNN for NPU access.
 
 ```typescript
 import { load } from '@onnx9000/core';
-import { InferenceSession, WebGPUProvider } from '@onnx9000/backend-web';
+import { InferenceSession, WebGPUProvider, WebNNProvider } from '@onnx9000/backend-web';
 
 async function runModel(modelUrl: string) {
   const buffer = await (await fetch(modelUrl)).arrayBuffer();
   const graph = load(buffer);
 
-  const webgpu = new WebGPUProvider();
-  await webgpu.initialize();
+  const provider = new WebNNProvider(); // or WebGPUProvider
+  await provider.initialize();
 
-  const session = new InferenceSession(graph, [webgpu]);
+  const session = new InferenceSession(graph, [provider]);
 
   const inputData = new Float32Array(1 * 3 * 224 * 224).fill(0.5);
   const results = await session.run(['output'], {
     input: { data: inputData, shape: [1, 3, 224, 224], dtype: 'float32' },
   });
 }
+```
+
+### High-level GenAI (Diffusers & Transformers)
+
+You can run full pipelines using the built-in `@onnx9000/diffusers` or `@onnx9000/transformers`.
+
+```typescript
+import { StableDiffusionPipeline } from '@onnx9000/diffusers';
+
+const pipe = await StableDiffusionPipeline.fromPretrained('runwayml/stable-diffusion-v1-5');
+const image = await pipe.generate('a futuristic city skyline at sunset');
 ```
 
 ### TensorFlow.js Drop-in Shim
@@ -150,6 +161,6 @@ onnx9000 convert --src keras --dst onnx ./model.h5
 onnx9000 convert --src onnx --dst cpp ./model.onnx --output model.h
 onnx9000 convert --src onnx --dst gguf ./model.onnx --output model.gguf
 
-# Launch UI
+# Launch Netron UI
 onnx9000 ui ./model.onnx
 ```

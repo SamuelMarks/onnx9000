@@ -1,9 +1,9 @@
-import pytest
 import numpy as np
-from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
+import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.tflite_exporter.exporter import TFLiteExporter
+from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
+from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
 

@@ -1,7 +1,8 @@
 """Comprehensive tests for onnx9000-diffusers to reach 100% coverage."""
 
-import pytest
 import asyncio
+
+import pytest
 from onnx9000.diffusers.models import AutoencoderKL, UNet2DConditionModel
 from onnx9000.diffusers.pipeline import DiffusionPipeline, set_progress_bar_config
 from onnx9000.diffusers.registry import register_op

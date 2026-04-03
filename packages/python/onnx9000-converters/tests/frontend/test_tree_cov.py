@@ -1,7 +1,7 @@
 """Tests for frontend tree."""
 
-from onnx9000.converters.frontend.tree import tree_map, tree_flatten, tree_unflatten, find_tensors
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.converters.frontend.tree import find_tensors, tree_flatten, tree_map, tree_unflatten
 from onnx9000.core.dtypes import DType
 
 
