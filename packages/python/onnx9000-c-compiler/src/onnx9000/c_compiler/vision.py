@@ -16,8 +16,7 @@ def generate_nms(
     score_threshold: str,
     out_name: str,
 ):
-    """
-    Generate C code for the Non-Maximum Suppression (NMS) operation.
+    """Generate C code for the Non-Maximum Suppression (NMS) operation.
 
     Args:
         b: The C89Builder instance.
@@ -29,6 +28,7 @@ def generate_nms(
         iou_threshold: The IOU threshold.
         score_threshold: The score threshold.
         out_name: The name of the output tensor.
+
     """
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -43,8 +43,7 @@ def generate_nms(
 def generate_resize(
     b: C89Builder, node: Node, out_tensor: Tensor, in_tensor: Tensor, in_name: str, out_name: str
 ):
-    """
-    Generate C code for the Resize operation.
+    """Generate C code for the Resize operation.
 
     Args:
         b: The C89Builder instance.
@@ -53,6 +52,7 @@ def generate_resize(
         in_tensor: The input tensor.
         in_name: The name of the input tensor.
         out_name: The name of the output tensor.
+
     """
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

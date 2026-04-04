@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import os
 from unittest.mock import MagicMock, patch
 
@@ -6,6 +8,7 @@ from onnx9000_diffusers.utils import fetch_hub_file
 
 
 def test_fetch_hub_file_success(tmp_path):
+    """Docstring for D103."""
     cache = tmp_path / "cache"
     cache.mkdir()
 
@@ -19,6 +22,7 @@ def test_fetch_hub_file_success(tmp_path):
 
 
 def test_fetch_hub_file_error_removes(tmp_path):
+    """Docstring for D103."""
     cache = tmp_path / "cache"
     cache.mkdir()
 

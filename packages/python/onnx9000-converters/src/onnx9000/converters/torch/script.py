@@ -14,6 +14,7 @@ class TorchScriptParser:
 
         Args:
             func_or_module: A Torch function or module to parse.
+
         """
         name = "TorchScriptGraph"
         if isinstance(func_or_module, torch.jit.ScriptModule):
@@ -34,6 +35,7 @@ class TorchScriptParser:
 
         Returns:
             The corresponding onnx9000 DType.
+
         """
         if torch_dtype == torch.float32:
             return DType.FLOAT32
@@ -52,6 +54,7 @@ class TorchScriptParser:
 
         Returns:
             The populated GraphBuilder.
+
         """
         # Handle inputs (first input is usually 'self' for modules)
         for i, val in enumerate(self.graph.inputs()):
@@ -93,6 +96,7 @@ class TorchScriptParser:
 
         Args:
             node: The TorchScript node to parse.
+
         """
         kind = node.kind()
         inputs = [self.value_map.get(v) for v in node.inputs() if v in self.value_map]

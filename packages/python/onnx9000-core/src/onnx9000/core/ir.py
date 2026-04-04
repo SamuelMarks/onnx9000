@@ -58,6 +58,7 @@ class DynamicDim:
 
         Args:
             value: The symbolic name or integer value of the dimension.
+
         """
         self.value = value
 
@@ -88,6 +89,7 @@ class Attribute:
 
         Returns:
             A string representing the inferred ONNX attribute type.
+
         """
         if isinstance(value, int):
             return "INT"
@@ -125,6 +127,7 @@ class Attribute:
             name: The name of the attribute.
             attr_type: The ONNX type of the attribute. If None, it is inferred.
             value: The value of the attribute.
+
         """
         self.name = name
         self.value = value
@@ -155,6 +158,7 @@ class ValueInfo:
             name: The name of the value.
             shape: The shape of the tensor.
             dtype: The data type of the tensor.
+
         """
         self.name = name
         self.shape = shape
@@ -186,6 +190,7 @@ class Tensor:
             is_initializer: Whether this tensor is a constant initializer.
             requires_grad: Whether this tensor requires gradients.
             data: Raw data bytes if it is an initializer.
+
         """
         self.name = name
         self.inputs: list[Node] = []
@@ -195,6 +200,7 @@ class Tensor:
         self.is_initializer: bool = is_initializer
         self.requires_grad: bool = requires_grad
         self.data: Optional[Union[bytes, memoryview, bytearray]] = data
+        self.sharding: Optional[tuple[Optional[str], ...]] = None
         self.buffer_id: Optional[int] = None
         self.lifespan: tuple[int, int] = (-1, -1)
 
@@ -211,6 +217,7 @@ class Tensor:
 
         Returns:
             A new Tensor object with copied attributes.
+
         """
         if isinstance(self, Constant):
             return Constant(self.name, values=self.data, shape=self.shape, dtype=self.dtype)
@@ -266,6 +273,7 @@ class SparseTensor(Tensor):
             row_ptr: Row pointers for CSR format.
             col_indices: Column indices for CSC format.
             block_dims: Block dimensions for blocked formats.
+
         """
         super().__init__(name)
         self.values = values
@@ -286,6 +294,7 @@ class SparseTensor(Tensor):
 
         Returns:
             A new SparseTensor object.
+
         """
         return SparseTensor(
             self.name,
@@ -314,6 +323,7 @@ class Variable(Tensor):
             name: Unique name of the tensor.
             shape: Shape of the tensor.
             dtype: Data type of the tensor.
+
         """
         super().__init__(name)
         self.shape = shape or ()
@@ -324,6 +334,7 @@ class Variable(Tensor):
 
         Returns:
             True if any dimension is symbolic or unknown (-1).
+
         """
         return any(isinstance(dim, DynamicDim) or dim == -1 for dim in self.shape)
 
@@ -332,6 +343,7 @@ class Variable(Tensor):
 
         Returns:
             True if the shape tuple is empty.
+
         """
         return len(self.shape) == 0
 
@@ -357,6 +369,7 @@ class Constant(Tensor):
             values: Raw data bytes for the tensor.
             shape: Shape of the tensor.
             dtype: Data type of the tensor.
+
         """
         super().__init__(name)
         self.data = values
@@ -393,6 +406,7 @@ class Constant(Tensor):
 
         Raises:
             ValueError: If the tensor has no data or has dynamic shapes.
+
         """
         if self.data is None:
             raise ValueError("Cannot create DLPack capsule for a tensor with no data.")
@@ -449,6 +463,7 @@ class Node:
             attributes: Dictionary of node attributes.
             name: Unique name of the node.
             domain: The domain of the operator (default is ai.onnx).
+
         """
         self.op_type = op_type
         self.inputs = inputs or []
@@ -508,6 +523,7 @@ class Node:
 
         Returns:
             A new Node object with copied attributes and linked tensors.
+
         """
         tensor_map = tensor_map or {}
         new_inputs = [
@@ -551,6 +567,7 @@ class Graph:
 
         Args:
             name: The name of the graph.
+
         """
         self.name = name
         self.nodes: list[Node] = []
@@ -563,6 +580,7 @@ class Graph:
         self.value_info: list[ValueInfo] = []
         self.initializers: list[str] = []
         self.sparse_initializers: list[str] = []
+        self.outer_scope_variables: list[str] = []
         self.opset_imports: dict[str, int] = {}
         self.doc_string: str = ""
         self.producer_name: str = "onnx9000"
@@ -579,6 +597,7 @@ class Graph:
 
         Returns:
             The interned string.
+
         """
         if s not in self._string_pool:
             self._string_pool[s] = s
@@ -592,6 +611,7 @@ class Graph:
 
         Returns:
             A unique node name.
+
         """
         if not base_name:
             base_name = "node"
@@ -613,6 +633,7 @@ class Graph:
 
         Returns:
             A unique tensor name.
+
         """
         if not base_name:
             base_name = "tensor"
@@ -631,6 +652,7 @@ class Graph:
 
         Args:
             tensor: The Tensor object to add.
+
         """
         if tensor.name in self.tensors and self.tensors[tensor.name] is not tensor:
             tensor.name = self._uniquify_tensor_name(tensor.name)
@@ -645,6 +667,7 @@ class Graph:
 
         Args:
             node: The Node object to add to the graph.
+
         """
         if any(n.name == node.name for n in self.nodes) and node.name:
             node.name = self._uniquify_node_name(node.name)
@@ -675,6 +698,7 @@ class Graph:
 
         Args:
             node: The Node object to disconnect.
+
         """
         for i in node.inputs:
             if isinstance(i, Tensor) and node in i.outputs:
@@ -688,6 +712,7 @@ class Graph:
 
         Args:
             node: The Node object to add.
+
         """
         self.add_node(node)
 
@@ -696,6 +721,7 @@ class Graph:
 
         Args:
             node: The Node object to remove.
+
         """
         self.disconnect_node(node)
         if node in self.nodes:
@@ -728,6 +754,7 @@ class Graph:
 
         Returns:
             A new Graph object with all nodes and tensors copied.
+
         """
         g = Graph(self.name)
         g.doc_string = self.doc_string
@@ -760,6 +787,7 @@ class Graph:
 
         Returns:
             The Node object if found, else None.
+
         """
         for n in self.nodes:
             if n.name == name:
@@ -779,3 +807,29 @@ class Graph:
             out_str = [o.name if isinstance(o, Tensor) else str(o) for o in node.outputs]
             logger.info(f"  [{idx}] {node.op_type}: {in_str} -> {out_str}")
         logger.info("=========================")
+
+
+class QuantizedTensor(Tensor):
+    """Internal Representation of a Quantized Tensor."""
+
+    def __init__(  # noqa: D107
+        self,
+        name: str,
+        type: str,
+        block_size: int,
+        shape=None,
+        dtype=None,
+        is_initializer=True,
+        requires_grad=False,
+        data=None,
+    ) -> None:
+        super().__init__(
+            name=name,
+            shape=shape,
+            dtype=dtype,
+            is_initializer=is_initializer,
+            requires_grad=requires_grad,
+            data=data,
+        )
+        self.qtype = type
+        self.block_size = block_size

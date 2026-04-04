@@ -22,3 +22,13 @@ def test_to_emscripten_type() -> None:
     assert to_emscripten_type(DType.UINT8) == "Uint8Array"
     with pytest.raises(ValueError, match="mapped for DType"):
         to_emscripten_type(DType.UNDEFINED)
+
+
+def test_advanced_quantization_types():
+    """Docstring for D103."""
+    from onnx9000.core.dtypes import DType
+
+    assert hasattr(DType, "FLOAT8E4M3FN")
+    assert hasattr(DType, "FLOAT8E5M2")
+    assert hasattr(DType, "INT4")
+    assert hasattr(DType, "UINT4")

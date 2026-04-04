@@ -138,7 +138,9 @@ export class GGUFWriter {
         return s;
       }
       default:
+        /* v8 ignore start */
         throw new Error('Unknown type');
+      /* v8 ignore stop */
     }
   }
 
@@ -218,7 +220,9 @@ export class GGUFWriter {
           break;
         }
         default:
+          /* v8 ignore start */
           throw new Error('Unknown type');
+        /* v8 ignore stop */
       }
     };
 

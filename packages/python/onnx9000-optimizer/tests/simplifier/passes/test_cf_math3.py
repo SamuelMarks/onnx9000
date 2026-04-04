@@ -1,8 +1,11 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
 def test_cf_gather_scatter_seq():
+    """Docstring for D103."""
     cf = ConstantFoldingPass()
 
     # Gather

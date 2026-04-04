@@ -8,6 +8,7 @@ from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldin
 
 
 def test_cf_shape_gaps():
+    """Docstring for D103."""
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     cf = ConstantFoldingPass()
@@ -39,6 +40,7 @@ def test_cf_shape_gaps():
 
 
 def test_cf_shape_dynamic():
+    """Docstring for D103."""
     from onnx9000.core.ir import DynamicDim
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
@@ -50,6 +52,7 @@ def test_cf_shape_dynamic():
 
 
 def test_cf_gaps_misc():
+    """Docstring for D103."""
     from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
     cf = ConstantFoldingPass()

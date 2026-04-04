@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -5,6 +7,8 @@ from onnx9000.tensorrt.ops_matmul import trt_matmul
 
 
 def test_matmul_fail():
+    """Docstring for D103."""
+
     class MockNode:
         def __init__(self):
             self.inputs = ["in1", "in2"]

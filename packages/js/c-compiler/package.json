@@ -9,7 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@onnx9000/core": "workspace:^",
+    "@onnx9000/core": "workspace:*",
     "pyodide": "^0.26.4"
   },
   "devDependencies": {

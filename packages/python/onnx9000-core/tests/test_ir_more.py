@@ -81,6 +81,7 @@ def test_ir_edge_cases() -> None:
 
 
 def test_sparse_ir():
+    """Docstring for D103."""
     from onnx9000.core.ir import Attribute, Graph, SparseTensor, Tensor
 
     st = SparseTensor("sp")

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from unittest.mock import patch
 
 import pytest
@@ -5,6 +7,7 @@ from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
 def test_import_errors():
+    """Docstring for D103."""
     import builtins
 
     original_import = builtins.__import__

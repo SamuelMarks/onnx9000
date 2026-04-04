@@ -25,6 +25,7 @@ def _promote_types(t1: DType, t2: DType) -> DType:
 
     Returns:
         The promoted data type.
+
     """
     if t1 == t2:
         return t1
@@ -51,6 +52,7 @@ def get_attr(node: Node, name: str, default: Any = None) -> Any:
 
     Returns:
         The attribute value or the default.
+
     """
     if name in node.attributes:
         attr = node.attributes[name]
@@ -74,6 +76,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
     Raises:
         ShapeInferenceError: If the graph contains cycles or if there are shape mismatches.
+
     """
     try:
         sorted_nodes = topological_sort(graph)
@@ -474,6 +477,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
                 Returns:
                     A list of tensor values.
+
                 """
                 if len(n.inputs) > idx:
                     t_name = n.inputs[idx]
@@ -855,7 +859,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
         else:
             # Fallback for CustomOp or Unknown Ops
-            pass
+            out_shapes, out_dtypes = [], []
 
         for i, out_name in enumerate(node.outputs):
             if i < len(out_shapes):

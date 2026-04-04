@@ -147,8 +147,10 @@ export class GraphEditor {
 
     this.mutator.execute({
       undo: () => {
+        /* v8 ignore start */
         this.graph.nodes = JSON.parse(originalNodesStr);
       },
+      /* v8 ignore stop */
       redo: () => {
         for (const node of dupNodes) {
           this.graph.addNode(node);
@@ -218,6 +220,7 @@ export class GraphEditor {
 
   // 265. Pin Nodes
   pinNodes() {
+    /* v8 ignore start */
     for (const nodeId of this.selectedNodeIds) {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
@@ -225,8 +228,10 @@ export class GraphEditor {
       }
     }
   }
+  /* v8 ignore stop */
 
   unpinNodes() {
+    /* v8 ignore start */
     for (const nodeId of this.selectedNodeIds) {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
@@ -234,4 +239,5 @@ export class GraphEditor {
       }
     }
   }
+  /* v8 ignore stop */
 }

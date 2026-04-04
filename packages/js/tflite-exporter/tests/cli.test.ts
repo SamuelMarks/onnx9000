@@ -72,3 +72,23 @@ describe('TFLite Compiler - CLI', () => {
     mockLog.mockRestore();
   });
 });
+
+describe('CLI Additions', () => {
+  it('should process micro, progress, and external-weights', async () => {
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await onnx2tfCli(['model.onnx', '--micro', '--progress', '--external-weights', 'weights.bin']);
+
+    expect(mockLog).toHaveBeenCalledWith(
+      expect.stringContaining('Using external weights from weights.bin'),
+    );
+    expect(mockLog).toHaveBeenCalledWith(
+      expect.stringContaining('Enabling build progress tracking...'),
+    );
+    expect(mockLog).toHaveBeenCalledWith(
+      expect.stringContaining('Generating TFLite Micro compatible schema'),
+    );
+
+    mockLog.mockRestore();
+  });
+});

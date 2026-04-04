@@ -77,12 +77,14 @@ from onnx9000.core.dtypes import DType
 
 
 def test_map_jax_type():
+    """Docstring for D103."""
     assert _map_jax_type("f32") == DType.FLOAT32
     assert _map_jax_type("i32") == DType.INT32
     assert _map_jax_type("other") == DType.FLOAT32
 
 
 def test_load_jax_with_consts():
+    """Docstring for D103."""
     jaxpr_dict = {
         "invars": [{"name": "in1", "type": "f32", "shape": [1]}],
         "outvars": [{"name": "out1", "type": "f32", "shape": [1]}],
@@ -111,6 +113,7 @@ def test_load_jax_with_consts():
 
 
 def test_load_auto_format():
+    """Docstring for D103."""
     assert load({}, format="tf") is None
     assert load({"node": []}) is None
 

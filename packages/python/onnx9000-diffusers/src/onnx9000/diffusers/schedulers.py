@@ -11,6 +11,7 @@ class Scheduler:
 
         Args:
             num_train_timesteps: Total number of training timesteps.
+
         """
         self.num_train_timesteps: int = num_train_timesteps
         self.timesteps: list[int] = list(range(num_train_timesteps - 1, -1, -1))
@@ -20,6 +21,7 @@ class Scheduler:
 
         Args:
             num_inference_steps: Number of inference steps to take.
+
         """
         step_ratio = self.num_train_timesteps // num_inference_steps
         self.timesteps = [i * step_ratio for i in range(num_inference_steps)][::-1]
@@ -38,6 +40,7 @@ class DDIMScheduler(Scheduler):
 
         Returns:
             The denoised sample at the previous timestep.
+
         """
         alpha_prod_t = 1.0 - (timestep / self.num_train_timesteps)
         beta_prod_t = 1 - alpha_prod_t
@@ -60,6 +63,7 @@ class DDPMScheduler(Scheduler):
 
         Returns:
             The denoised sample.
+
         """
         alpha_t = 1.0 - (timestep / self.num_train_timesteps)
         return [(s - (1 - alpha_t) * o) / math.sqrt(alpha_t) for s, o in zip(sample, model_output)]
@@ -78,6 +82,7 @@ class EulerDiscreteScheduler(Scheduler):
 
         Returns:
             The updated sample.
+
         """
         sigma = timestep / self.num_train_timesteps
         return [s + o * sigma for s, o in zip(sample, model_output)]
@@ -96,5 +101,6 @@ class LCMScheduler(Scheduler):
 
         Returns:
             The consistent latent sample.
+
         """
         return [s - o for s, o in zip(sample, model_output)]

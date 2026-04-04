@@ -12,6 +12,7 @@ class DataLoader:
 
         Args:
             data: A list of data dictionaries or a path to a JSON file.
+
         """
         if isinstance(data, str):
             import json
@@ -27,6 +28,7 @@ class DataLoader:
 
         Returns:
             The DataLoader instance.
+
         """
         return self
 
@@ -38,6 +40,7 @@ class DataLoader:
 
         Raises:
             StopIteration: If there are no more items.
+
         """
         if self.current_idx >= len(self.data):
             self.current_idx = 0
@@ -56,6 +59,7 @@ def cross_entropy_loss(y_pred: list[list[float]], y_true: list[int]) -> float:
 
     Returns:
         The average cross-entropy loss.
+
     """
     # y_pred: batch_size x num_classes (logits)
     # y_true: batch_size (class indices)
@@ -87,6 +91,7 @@ def evaluate_accuracy(y_pred: list[list[float]], y_true: list[int]) -> float:
 
     Returns:
         The accuracy as a float between 0 and 1.
+
     """
     correct = 0
     batch_size = len(y_pred)

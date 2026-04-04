@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import math
 from unittest.mock import patch
 
@@ -8,6 +10,7 @@ from onnx9000_diffusers.utils import fetch_hub_file, set_progress_bar_config
 
 
 def test_euler_scale():
+    """Docstring for D103."""
     euler = EulerDiscreteScheduler()
     euler.set_timesteps(10)
     assert len(euler.scale_model_input([1.0], euler.timesteps[0])) == 1
@@ -15,6 +18,7 @@ def test_euler_scale():
 
 
 def test_utils_progress():
+    """Docstring for D103."""
     set_progress_bar_config(False)
     from onnx9000_diffusers.utils import global_progress_bar_config
 
@@ -22,6 +26,7 @@ def test_utils_progress():
 
 
 def test_utils_fetch_error(tmp_path):
+    """Docstring for D103."""
     cache = tmp_path / "cache"
     cache.mkdir()
 

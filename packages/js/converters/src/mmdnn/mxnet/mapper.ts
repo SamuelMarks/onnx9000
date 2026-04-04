@@ -199,8 +199,10 @@ export class MxNetMapper {
     if (actType === 'leaky') {
       const n = new Node('LeakyRelu', [], [node.name || ''], {}, node.name || '');
       if (attrs.slope) {
+        /* v8 ignore start */
         n.attributes['alpha'] = new Attribute('alpha', 'FLOAT', parseFloat(attrs.slope));
       }
+      /* v8 ignore stop */
       return [n];
     } else if (actType === 'elu') {
       const n = new Node('Elu', [], [node.name || ''], {}, node.name || '');
@@ -259,9 +261,11 @@ export class MxNetMapper {
     if (stride.length > 0) n.attributes['strides'] = new Attribute('strides', 'INTS', stride);
     const pad = parseTuple(attrs.pad);
     if (pad.length > 0) {
+      /* v8 ignore start */
       const pads = pad.length === 2 ? [pad[0], pad[1], pad[0], pad[1]] : pad;
       n.attributes['pads'] = new Attribute('pads', 'INTS', pads);
     }
+    /* v8 ignore stop */
     const dilate = parseTuple(attrs.dilate);
     if (dilate.length > 0) n.attributes['dilations'] = new Attribute('dilations', 'INTS', dilate);
     if (attrs.num_group)

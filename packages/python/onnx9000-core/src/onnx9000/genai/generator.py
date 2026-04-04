@@ -26,6 +26,7 @@ class Generator:
         Args:
             state: The stateful context for the model, including KV caches.
             params: Configuration for the generation process (e.g., max_tokens, sampling).
+
         """
         self.state = state
         self.params = params
@@ -38,6 +39,7 @@ class Generator:
 
         Returns:
             A Tensor containing the output logits for the last token in each sequence.
+
         """
         return None
 
@@ -52,6 +54,7 @@ class Generator:
 
         Returns:
             A Tensor containing the output logits.
+
         """
         return None
 
@@ -63,6 +66,7 @@ class Generator:
 
         Returns:
             The logits produced by processing the full prompt.
+
         """
         return None
 
@@ -74,6 +78,7 @@ class Generator:
 
         Returns:
             The logits for the next token prediction.
+
         """
         return Tensor(name="dummy", shape=[], data=None)
 
@@ -88,6 +93,7 @@ class Generator:
 
         Yields:
             Generated token IDs until an EOS condition is met or limits are reached.
+
         """
         current_tokens = 0
         prompt_len = prompt_ids.shape[-1] if prompt_ids.shape else 0
@@ -124,6 +130,7 @@ class Generator:
 
         Returns:
             The ID of the selected next token.
+
         """
         # Simple argmax greedy search
         if logits.data is None:
@@ -158,5 +165,6 @@ class Generator:
 
         Returns:
             True if the token is an EOS token, False otherwise.
+
         """
         return False

@@ -24,6 +24,7 @@ def tree_flatten(tree: Any) -> tuple[list[Any], Any]:
         A tuple containing:
             - A list of leaf elements.
             - A treedef object representing the original structure.
+
     """
     leaves = []
 
@@ -51,6 +52,7 @@ def tree_unflatten(leaves: list[Any], treedef: Any) -> Any:
 
     Returns:
         The reconstructed nested collection.
+
     """
     structure, container = treedef
     if container is list:

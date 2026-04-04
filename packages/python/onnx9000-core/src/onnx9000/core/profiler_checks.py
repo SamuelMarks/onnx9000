@@ -26,7 +26,7 @@ class OptimizationAnalyzer:
         for n in self.graph.nodes:
             if n.op_type == "Cast":
                 # if input dtype == output dtype
-                pass  # simplification for now
+                continue
 
     def _check_unused_initializers(self):
         """Execute the check unused initializers operation."""

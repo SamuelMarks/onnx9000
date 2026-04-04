@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, Variable
 from onnx9000.optimizer.surgeon.layout import optimize_layouts
 
 
 def test_optimize_layouts_push():
+    """Docstring for D103."""
     # Create graph: Input -> Transpose(NCHW->NHWC) -> Relu -> Output
     graph = Graph("test_graph")
     t1 = Variable("X", [1, 3, 224, 224], "float32")

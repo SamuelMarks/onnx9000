@@ -113,7 +113,10 @@ def _sanitize_string(s: str) -> str:
 
 
 def serialize_model(
-    graph: Graph, base_dir: Optional[Path] = None, external_file: Optional[str] = None
+    graph: Graph,
+    base_dir: Optional[Path] = None,
+    external_file: Optional[str] = None,
+    opset: int = 14,
 ) -> onnx_pb2.ModelProto:
     """Serialize an internal ir.Graph back into an ONNX ModelProto."""
     model_proto = onnx_pb2.ModelProto()
@@ -127,17 +130,21 @@ def serialize_model(
         prop.key = _sanitize_string(key)
         prop.value = _sanitize_string(val)
 
-    for domain, version in graph.opset_imports.items():
-        opset = model_proto.opset_import.add()
-        opset.domain = domain
-        opset.version = version
+    if not graph.opset_imports:
+        opset_import = model_proto.opset_import.add()
+        opset_import.domain = ""
+        opset_import.version = opset
+    else:
+        for domain, version in graph.opset_imports.items():
+            opset_import = model_proto.opset_import.add()
+            opset_import.domain = domain
+            opset_import.version = version
 
     graph_proto = model_proto.graph
     graph_proto.name = graph.name
 
     def _serialize_vi(vi_obj: Union[str, "ValueInfo"]) -> onnx_pb2.ValueInfoProto:
         """Provides functional implementation."""
-
         vi_proto = onnx_pb2.ValueInfoProto()
         if isinstance(vi_obj, str):
             vi_proto.name = vi_obj
@@ -228,7 +235,11 @@ def serialize_model(
 
 
 def save(
-    graph: Graph, file_path: Union[str, Path], external_data: bool = False, compress: bool = False
+    graph: Graph,
+    file_path: Union[str, Path],
+    external_data: bool = False,
+    compress: bool = False,
+    opset: int = 14,
 ) -> None:
     """Save an internal ir.Graph to an ONNX file."""
     file_path = Path(file_path)
@@ -240,7 +251,7 @@ def save(
         external_file = model_name + ".data"
 
     try:
-        model_proto = serialize_model(graph, base_dir, external_file)
+        model_proto = serialize_model(graph, base_dir, external_file, opset)
         binary_data = model_proto.SerializeToString()
 
         if compress:
@@ -260,6 +271,6 @@ def save(
         raise SerializationError(f"Failed to save ONNX model to {file_path}: {e}") from e
 
 
-def to_bytes(graph: Graph) -> bytes:
+def to_bytes(graph: Graph, opset: int = 14) -> bytes:
     """Serialize an internal ir.Graph to ONNX binary format."""
-    return serialize_model(graph).SerializeToString()
+    return serialize_model(graph, opset=opset).SerializeToString()

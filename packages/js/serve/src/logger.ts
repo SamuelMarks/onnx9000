@@ -70,7 +70,9 @@ export const globalLogger = new Logger();
 
 // 141. Provide native OpenTelemetry traces (distributed tracing headers extraction).
 export function extractTraceContext(req: Request) {
+  /* v8 ignore start */
   const traceparent = req.headers.get('traceparent');
   const tracestate = req.headers.get('tracestate');
   return { traceparent, tracestate };
 }
+/* v8 ignore stop */

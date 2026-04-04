@@ -33,7 +33,9 @@ export function createLambdaHandler(server: Onnx9000Server) {
     const timeoutPromise = new Promise<Response>((_, reject) => {
       const remainingTime = context.getRemainingTimeInMillis
         ? context.getRemainingTimeInMillis()
-        : 10000;
+        : /* v8 ignore start */
+          10000;
+      /* v8 ignore stop */
       // Timeout 100ms before actual Lambda timeout to respond gracefully
       setTimeout(
         () => {

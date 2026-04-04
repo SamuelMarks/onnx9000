@@ -38,3 +38,9 @@ export async function save(graph: Graph): Promise<ArrayBuffer> {
 
 export * from './sparse.js';
 export * from './checker.js';
+export * from './primitives.js';
+export * from './models/index.js';
+
+export * from './macros.js';
+
+export * from './sharding.js';

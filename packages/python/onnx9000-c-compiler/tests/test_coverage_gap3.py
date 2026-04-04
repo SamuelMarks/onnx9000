@@ -284,7 +284,6 @@ def test_more_ops_and_broadcasting():
 
 def test_missing_math_and_targets():
     """Test missing math and targets."""
-
     from onnx9000.c_compiler.compiler import C89Compiler
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Graph, Node, Tensor

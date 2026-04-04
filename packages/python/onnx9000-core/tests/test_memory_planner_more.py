@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.memory_planner import simulate_memory_plan
 
 
 def test_memory_plan_more():
+    """Docstring for D103."""
     g = Graph("g1")
     g.inputs.append(ValueInfo("in", [100], DType.FLOAT32))
     g.tensors["in"] = Tensor("in", shape=[100], dtype=DType.FLOAT32)
@@ -21,6 +24,7 @@ def test_memory_plan_more():
 
 
 def test_planner_input_used():
+    """Docstring for D103."""
     from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.core.memory_planner import simulate_memory_plan
 

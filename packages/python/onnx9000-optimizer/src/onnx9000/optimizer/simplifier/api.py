@@ -22,6 +22,7 @@ def _calculate_graph_size(graph: Graph) -> int:
 
     Returns:
         The total size in bytes.
+
     """
     size = 0
     for init in graph.initializers:

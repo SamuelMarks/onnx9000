@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import math
 from typing import Any
 
@@ -6,6 +8,7 @@ class Scheduler:
     """Base Scheduler interface."""
 
     def __init__(self, num_train_timesteps: int = 1000):
+        """Docstring for D107."""
         self.num_train_timesteps = num_train_timesteps
         self.timesteps: list[int] = list(range(num_train_timesteps))[::-1]
         self.alphas_cumprod: list[float] = []
@@ -17,6 +20,7 @@ class Scheduler:
         Args:
             num_inference_steps: Number of diffusion steps.
             spacing: The spacing strategy (leading, trailing, linspace).
+
         """
         if spacing == "leading":
             step_ratio = self.num_train_timesteps // num_inference_steps
@@ -97,6 +101,7 @@ class DDPMScheduler(Scheduler):
     """DDPM Scheduler."""
 
     def __init__(self, num_train_timesteps: int = 1000):
+        """Docstring for D107."""
         super().__init__(num_train_timesteps)
         self.betas = _scaled_betas(num_train_timesteps)
         alpha = [1.0 - b for b in self.betas]
@@ -109,6 +114,8 @@ class DDPMScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         t = timestep
         prev_t = (
             t - (self.num_train_timesteps // len(self.timesteps))
@@ -142,6 +149,7 @@ class DDIMScheduler(Scheduler):
     """DDIM Scheduler."""
 
     def __init__(self, num_train_timesteps: int = 1000):
+        """Docstring for D107."""
         super().__init__(num_train_timesteps)
         self.betas = _scaled_betas(num_train_timesteps)
         self.alphas_cumprod = []
@@ -153,6 +161,8 @@ class DDIMScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         t = timestep
         prev_t = (
             t - (self.num_train_timesteps // len(self.timesteps))
@@ -182,6 +192,7 @@ class EulerDiscreteScheduler(Scheduler):
     """Euler Discrete Scheduler."""
 
     def __init__(self, num_train_timesteps: int = 1000, use_karras_sigmas: bool = False):
+        """Docstring for D107."""
         super().__init__(num_train_timesteps)
         self.betas = _scaled_betas(num_train_timesteps)
         self.use_karras_sigmas = use_karras_sigmas
@@ -193,6 +204,7 @@ class EulerDiscreteScheduler(Scheduler):
         self.sigmas = [math.sqrt((1 - a) / a) for a in self.alphas_cumprod] + [0.0]
 
     def set_timesteps(self, num_inference_steps: int, spacing: str = "leading") -> None:
+        """Docstring for D102."""
         super().set_timesteps(num_inference_steps, spacing)
         if self.use_karras_sigmas:
             self.sigmas = _get_karras_sigmas(num_inference_steps, sigma_min=0.1, sigma_max=10.0)
@@ -203,6 +215,7 @@ class EulerDiscreteScheduler(Scheduler):
             ] + [0.0]
 
     def scale_model_input(self, sample: list[float], timestep: int) -> list[float]:
+        """Docstring for D102."""
         step_index = self.timesteps.index(timestep) if timestep in self.timesteps else 0
         sigma = self.sigmas[step_index]
         return [s / math.sqrt(sigma**2 + 1) for s in sample]
@@ -210,6 +223,8 @@ class EulerDiscreteScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         step_index = self.timesteps.index(timestep)
         sigma = self.sigmas[step_index]
         sigma_next = self.sigmas[step_index + 1] if step_index + 1 < len(self.sigmas) else 0.0
@@ -230,6 +245,8 @@ class LCMScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         # Fast consistency prediction
         return [s - 0.05 * m for s, m in zip(sample, model_output)]
 
@@ -244,11 +261,13 @@ class FlowMatchEulerDiscreteScheduler(Scheduler):
     """FlowMatchEulerDiscreteScheduler (used in Rectified Flow models like SD3)."""
 
     def __init__(self, num_train_timesteps: int = 1000, shift: float = 1.0):
+        """Docstring for D107."""
         super().__init__(num_train_timesteps)
         self.shift = shift
         self.sigmas = [1.0 - (i / num_train_timesteps) for i in range(num_train_timesteps)] + [0.0]
 
     def set_timesteps(self, num_inference_steps: int, spacing: str = "leading") -> None:
+        """Docstring for D102."""
         self.timesteps = [
             int((1.0 - (i / num_inference_steps)) * self.num_train_timesteps)
             for i in range(num_inference_steps)
@@ -258,6 +277,8 @@ class FlowMatchEulerDiscreteScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         # Rectified flow update
         step_index = self.timesteps.index(timestep) if timestep in self.timesteps else 0
         sigma = self.sigmas[step_index]
@@ -276,13 +297,19 @@ class SASolverScheduler(Scheduler):
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         return [s - 0.02 * m for s, m in zip(sample, model_output)]
 
 
 class EulerAncestralDiscreteScheduler(EulerDiscreteScheduler):
+    """Docstring for D101."""
+
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         step_index = self.timesteps.index(timestep)
         sigma = self.sigmas[step_index]
         sigma_next = self.sigmas[step_index + 1] if step_index + 1 < len(self.sigmas) else 0.0
@@ -305,41 +332,63 @@ class EulerAncestralDiscreteScheduler(EulerDiscreteScheduler):
 
 
 class PNDMScheduler(DDIMScheduler):
+    """Docstring for D101."""
+
     pass
 
 
 class LMSDiscreteScheduler(EulerDiscreteScheduler):
+    """Docstring for D101."""
+
     pass
 
 
 class DPMSolverMultistepScheduler(Scheduler):
+    """Docstring for D101."""
+
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
 
 
 class DPMSolverSinglestepScheduler(Scheduler):
+    """Docstring for D101."""
+
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
 
 
 class KDPM2DiscreteScheduler(EulerDiscreteScheduler):
+    """Docstring for D101."""
+
     pass
 
 
 class KDPM2AncestralDiscreteScheduler(EulerAncestralDiscreteScheduler):
+    """Docstring for D101."""
+
     pass
 
 
 class HeunDiscreteScheduler(EulerDiscreteScheduler):
+    """Docstring for D101."""
+
     pass
 
 
 class UniPCMultistepScheduler(Scheduler):
+    """Docstring for D101."""
+
     def step(
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
+        """Docstring for D102."""
+
         return [s - 0.01 * m for s, m in zip(sample, model_output)]

@@ -3,8 +3,15 @@
   "version": "1.0.0",
   "description": "Edge-native inference server for ONNX models (KServe / OpenAI APIs)",
   "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@onnx9000/core": "workspace:*",
     "@onnx9000/backend-web": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "1.6.0"
   }
 }

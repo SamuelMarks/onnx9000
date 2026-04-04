@@ -81,3 +81,61 @@ describe('FlatBufferReader', () => {
     expect(desc).toBe('onnx9000_flatc_validation');
   });
 });
+
+describe('FlatBufferReader - extra', () => {
+  it('should test getInt16, getFloat32, getRootAsModel, getInt8', () => {
+    const builder = new FlatBufferBuilder();
+    builder.startObject(4);
+    builder.addFieldInt16(0, 123, 0);
+    builder.addFieldFloat32(1, 45.6, 0.0);
+    builder.addFieldInt8(2, 10, 0);
+    const root = builder.endObject();
+    builder.finish(root);
+
+    const buf = builder.asUint8Array();
+    const reader = new FlatBufferReader(buf);
+
+    const rootModel = reader.getRootAsModel(); // will get the root offset pointing to the root object
+    const tableLoc = reader.getRoot();
+
+    expect(reader.getInt16(tableLoc, 0, 0)).toBe(123);
+    expect(reader.getFloat32(tableLoc, 1, 0)).toBeCloseTo(45.6);
+    expect(reader.getInt8(tableLoc, 2, 0)).toBe(10);
+
+    // test defaults
+    expect(reader.getInt16(tableLoc, 5, 42)).toBe(42);
+    expect(reader.getFloat32(tableLoc, 5, 3.14)).toBeCloseTo(3.14);
+    expect(reader.getInt8(tableLoc, 5, 7)).toBe(7);
+  });
+});
+
+describe('FlatBufferReader - indirect', () => {
+  it('should test getVectorLength, getVectorItemOffset, getIndirectOffset', () => {
+    const builder = new FlatBufferBuilder();
+    builder.startVector(4, 2, 4);
+    builder.addInt32(111);
+    builder.addInt32(222);
+    const vecOff = builder.endVector(2);
+
+    builder.startObject(1);
+    builder.addFieldOffset(0, vecOff, 0);
+    const root = builder.endObject();
+    builder.finish(root);
+
+    const buf = builder.asUint8Array();
+    const reader = new FlatBufferReader(buf);
+    const tableLoc = reader.getRoot();
+
+    const indirectVecOff = reader.getIndirectOffset(tableLoc, 0);
+    expect(reader.getVectorLength(indirectVecOff)).toBe(2);
+
+    const item0 = reader.getVectorItemOffset(indirectVecOff, 0, 4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    expect(view.getInt32(item0, true)).toBe(222);
+
+    const item1 = reader.getVectorItemOffset(indirectVecOff, 1, 4);
+    expect(view.getInt32(item1, true)).toBe(111);
+
+    expect(reader.getIndirectOffset(tableLoc, 5)).toBe(0); // non-existent offset
+  });
+});

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import urllib.error
 from unittest.mock import MagicMock, patch
 
@@ -7,6 +9,8 @@ from onnx9000.onnx2gguf.reverse import reconstruct_onnx
 
 
 def test_hub_fetch_tokenizer_exception():
+    """Docstring for D103."""
+
     def mock_urlopen(req, *args, **kwargs):
         if "config.json" in req.full_url:
             res = MagicMock()
@@ -20,6 +24,8 @@ def test_hub_fetch_tokenizer_exception():
 
 
 def test_hub_fetch_tokenizer_httperror():
+    """Docstring for D103."""
+
     def mock_urlopen(req, *args, **kwargs):
         if "config.json" in req.full_url:
             res = MagicMock()
@@ -35,6 +41,8 @@ def test_hub_fetch_tokenizer_httperror():
 
 
 def test_gguf2onnx_split():
+    """Docstring for D103."""
+
     class MockReader:
         def __init__(self):
             self.kvs = {"split.index": 1, "tokenizer.ggml.tokens": []}
@@ -44,6 +52,8 @@ def test_gguf2onnx_split():
 
 
 def test_gguf2onnx_success():
+    """Docstring for D103."""
+
     class MockReader2:
         def __init__(self):
             self.kvs = {"general.name": "success"}

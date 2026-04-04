@@ -161,6 +161,7 @@ def test_parse_functions() -> None:
 
 
 def test_h5_parser_stub() -> None:
+    """Docstring for D103."""
     from onnx9000.converters.tf.parsers import H5Parser
 
     parser = H5Parser(b"")
@@ -169,6 +170,7 @@ def test_h5_parser_stub() -> None:
 
 
 def test_load_keras_v3_fallback() -> None:
+    """Docstring for D103."""
     import sys
     from unittest.mock import MagicMock, patch
 

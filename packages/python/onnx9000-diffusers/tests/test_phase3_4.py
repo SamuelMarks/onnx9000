@@ -1,8 +1,11 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000_diffusers.models import AutoencoderKL
 
 
 def test_autoencoderkl_wrapper():
+    """Docstring for D103."""
     vae = AutoencoderKL(scaling_factor=0.18215, channels=4)
     # Test Encoding
     img = np.random.randn(2, 3, 512, 512).astype(np.float32)
@@ -17,6 +20,7 @@ def test_autoencoderkl_wrapper():
 
 
 def test_autoencoderkl_slicing():
+    """Docstring for D103."""
     vae = AutoencoderKL(scaling_factor=0.18215, channels=4)
     vae.enable_slicing(slice_size=1)
     latents = np.random.randn(3, 4, 64, 64).astype(np.float32)

@@ -170,11 +170,16 @@ class GraphBuilder:
                             visited_tensors.add(inp)
                             queue.append(inp)
                     for k, v in producer.attributes.items():
-                        if isinstance(v, GraphBuilder):
-                            sub_outputs = [out["name"] for out in v.outputs]
-                            sub_inputs = [inp["name"] for inp in v.inputs]
-                            v_extracted = v.extract_subgraph(sub_inputs, sub_outputs)
-                            producer.attributes[k] = v_extracted
+                        v_obj = getattr(v, "value", v)
+                        if isinstance(v_obj, GraphBuilder):
+                            sub_outputs = [out["name"] for out in v_obj.outputs]
+                            sub_inputs = [inp["name"] for inp in v_obj.inputs]
+                            v_extracted = v_obj.extract_subgraph(sub_inputs, sub_outputs)
+                            # Replace the value inside the attribute if it's an Attribute object
+                            if hasattr(v, "value"):
+                                v.value = v_extracted
+                            else:
+                                producer.attributes[k] = v_extracted
         for node in self.nodes:
             if node.name in required_nodes:
                 sub_builder.add_node(
@@ -279,6 +284,8 @@ class GraphBuilder:
             node_proto.input.extend(node.inputs)
             node_proto.output.extend(node.outputs)
             for k, v in node.attributes.items():
+                if hasattr(v, "value"):
+                    v = v.value
                 attr = pb.AttributeProto()
                 attr.name = k
                 if isinstance(v, float):

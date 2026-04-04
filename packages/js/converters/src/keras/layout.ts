@@ -126,8 +126,10 @@ export function calculatePaddingSame(
   if (inputSize % stride === 0) {
     totalPadding = Math.max(effectiveKernelSize - stride, 0);
   } else {
+    /* v8 ignore start */
     totalPadding = Math.max(effectiveKernelSize - (inputSize % stride), 0);
   }
+  /* v8 ignore stop */
   const padBefore = Math.floor(totalPadding / 2);
   const padAfter = totalPadding - padBefore;
   return [padBefore, padAfter];

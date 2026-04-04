@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from unittest.mock import MagicMock, patch
 
 import onnx9000.tensorrt.ops
@@ -9,6 +11,8 @@ from onnx9000.tensorrt.registry import _TRT_OP_REGISTRY
 
 
 def test_missing_inputs_all():
+    """Docstring for D103."""
+
     class MockNode:
         def __init__(self):
             self.inputs = []

@@ -156,6 +156,7 @@ def test_floor():
 
 
 def test_tensor_coverage():
+    """Docstring for D103."""
     from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
@@ -188,6 +189,7 @@ def test_tensor_coverage():
 
 
 def test_tensor_coverage():
+    """Docstring for D103."""
     from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
@@ -220,6 +222,7 @@ def test_tensor_coverage():
 
 
 def test_tensor_coverage():
+    """Docstring for D103."""
     from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 
@@ -252,6 +255,7 @@ def test_tensor_coverage():
 
 
 def test_tensor_coverage():
+    """Docstring for D103."""
     from onnx9000.converters.torch_like import jit, ones, onnx, randn, tensor, zeros
     from onnx9000.core.dtypes import DType
 

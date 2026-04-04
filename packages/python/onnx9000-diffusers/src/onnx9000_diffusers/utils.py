@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import json
 import math
 import os
@@ -7,17 +9,18 @@ from typing import Any
 
 
 class PyTorchPCG:
-    """
-    A PCG32 pseudo-random number generator that matches JS implementations
+    """A PCG32 pseudo-random number generator that matches JS implementations
     to ensure cross-platform seed determinism.
     """
 
     def __init__(self, seed: int):
+        """Docstring for D107."""
         self.state = int(seed) & 0xFFFFFFFFFFFFFFFF
         self.inc = 1442695040888963407
         self.next_uint()
 
     def next_uint(self) -> int:
+        """Docstring for D102."""
         oldstate = self.state
         self.state = (oldstate * 6364136223846793005 + self.inc) & 0xFFFFFFFFFFFFFFFF
         xorshifted = ((oldstate >> 18) ^ oldstate) >> 27
@@ -30,8 +33,7 @@ class PyTorchPCG:
 
 
 def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
-    """
-    Generates a uniform tensor [0, 1) natively matching cross-platform PRNG.
+    """Generates a uniform tensor [0, 1) natively matching cross-platform PRNG.
 
     Args:
         shape (Tuple[int, ...]): The dimensions of the output tensor.
@@ -39,6 +41,7 @@ def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
 
     Returns:
         list[float]: A flat list representing the tensor data.
+
     """
     size = 1
     for dim in shape:
@@ -47,8 +50,7 @@ def rand(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
 
 
 def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
-    """
-    Generates a standard normal tensor (mean=0, std=1) natively using Box-Muller.
+    """Generates a standard normal tensor (mean=0, std=1) natively using Box-Muller.
 
     Args:
         shape (Tuple[int, ...]): The dimensions of the output tensor.
@@ -56,6 +58,7 @@ def randn(shape: tuple[int, ...], generator: PyTorchPCG) -> list[float]:
 
     Returns:
         list[float]: A flat list representing the standard normal tensor data.
+
     """
     size = 1
     for dim in shape:
@@ -75,6 +78,7 @@ class ProgressBarConfig:
     """Global configuration for CLI progress bars."""
 
     def __init__(self):
+        """Docstring for D107."""
         self.enabled = True
 
 
@@ -87,8 +91,7 @@ def set_progress_bar_config(enabled: bool) -> None:
 
 
 def fetch_hub_file(repo_id: str, filename: str, cache_dir: str) -> str:
-    """
-    Downloads a file from Hugging Face Hub with OS caching.
+    """Downloads a file from Hugging Face Hub with OS caching.
 
     Args:
         repo_id (str): The Hugging Face model repository ID.
@@ -97,6 +100,7 @@ def fetch_hub_file(repo_id: str, filename: str, cache_dir: str) -> str:
 
     Returns:
         str: Path to the cached downloaded file.
+
     """
     os.makedirs(cache_dir, exist_ok=True)
     safe_repo = repo_id.replace("/", "--")
@@ -119,8 +123,7 @@ def fetch_hub_file(repo_id: str, filename: str, cache_dir: str) -> str:
 
 
 def parse_model_index(repo_id: str, cache_dir: str) -> dict[str, Any]:
-    """
-    Provides native configuration parsing for `model_index.json`.
+    """Provides native configuration parsing for `model_index.json`.
 
     Args:
         repo_id (str): The model repository ID.
@@ -128,6 +131,7 @@ def parse_model_index(repo_id: str, cache_dir: str) -> dict[str, Any]:
 
     Returns:
         dict: The parsed model index configuration.
+
     """
     path = fetch_hub_file(repo_id, "model_index.json", cache_dir)
     with open(path, encoding="utf-8") as f:

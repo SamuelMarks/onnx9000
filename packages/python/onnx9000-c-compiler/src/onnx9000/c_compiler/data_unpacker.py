@@ -13,6 +13,7 @@ def dtype_to_struct_fmt(dtype: DType) -> str:
 
     Returns:
         The corresponding struct format character.
+
     """
     mapping = {
         DType.FLOAT32: "f",
@@ -43,6 +44,7 @@ def unpack_bytes_to_str(data: bytes, dtype: DType, force_float32: bool = True) -
 
     Returns:
         A formatted string of C literals suitable for inclusion in a C array.
+
     """
     # 219: Bit-packed boolean arrays
     if dtype == DType.BOOL and len(data) > 0:

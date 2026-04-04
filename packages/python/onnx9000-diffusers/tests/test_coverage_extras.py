@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import math
 
 import numpy as np
@@ -13,12 +15,14 @@ from onnx9000_diffusers.schedulers import (
 
 
 def test_models_tiling():
+    """Docstring for D103."""
     vae = AutoencoderKL("test")
     vae.enable_tiling(128)
     assert getattr(vae, "_tile_size", None) == 128
 
 
 def test_pipeline_device():
+    """Docstring for D103."""
     pipe = DiffusionPipeline({}, None)
     pipe.to("mps")
     assert getattr(pipe, "_device", None) == "mps"
@@ -26,6 +30,7 @@ def test_pipeline_device():
 
 
 def test_scheduler_base():
+    """Docstring for D103."""
     sched = Scheduler()
     sched.set_timesteps(10, spacing="linspace")
     assert len(sched.timesteps) == 10
@@ -43,6 +48,7 @@ def test_scheduler_base():
 
 
 def test_other_schedulers():
+    """Docstring for D103."""
     lcm = LCMScheduler()
     assert lcm.step([1.0], 0, [2.0]) == [1.95]
 

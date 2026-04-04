@@ -53,3 +53,43 @@ def test_script_parser_missing_lines() -> None:
             return y
 
         p.parse(f4)
+
+
+def test_parser_if_both_branches_missing():
+    """Docstring for D103."""
+    import ast
+
+    from onnx9000.toolkit.script.builder import GraphBuilder as Builder
+    from onnx9000.toolkit.script.parser import ScriptParser as Parser
+
+    def my_func(cond):
+        if cond:
+            x = 1.0  # noqa: F841
+        else:
+            pass
+        return cond
+
+    p = Parser({})
+    import pytest
+
+    with pytest.raises(ValueError):
+        p.parse(my_func)
+
+
+def test_parser_visit_name_unknown():
+    """Docstring for D103."""
+    from onnx9000.toolkit.script.parser import ScriptParser as Parser
+
+    def my_func():
+        return fake_unresolved_name_12345
+
+    p = Parser({})
+    import pytest
+
+    with pytest.raises(ValueError, match="Unknown variable: fake_unresolved_name_12345"):
+        import ast
+        import inspect
+        import textwrap
+
+        node = ast.parse(textwrap.dedent(inspect.getsource(my_func)))
+        p.visit(node)

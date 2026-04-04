@@ -233,7 +233,6 @@ class SlidingWindowKVCache(KVCache):
 
     def update(self, keys: Tensor, values: Tensor, layer_idx: int) -> None:
         """Execute the update operation."""
-
         # Simulation of sliding window truncation along sequence length
         seq_len = keys.shape[2] if len(keys.shape) > 2 else keys.shape[1]
 

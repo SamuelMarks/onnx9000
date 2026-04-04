@@ -12,6 +12,7 @@ class AutoencoderKL:
 
         Returns:
             Latent representation.
+
         """
         return [val * 0.18215 for val in x]
 
@@ -23,6 +24,7 @@ class AutoencoderKL:
 
         Returns:
             Reconstructed image data.
+
         """
         return [(val / 0.18215) for val in x]
 
@@ -42,5 +44,6 @@ class UNet2DConditionModel:
 
         Returns:
             Denoised latent sample.
+
         """
         return [s - (timestep * 0.01) for s in sample]

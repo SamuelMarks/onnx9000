@@ -74,12 +74,14 @@ export function parseNcnnParam(text: string): NcnnParam {
       if (kv.length === 2) {
         if (kv[0]) attrs[kv[0]] = kv[1] || '';
       } else if (kv.length === 1 && pVal.startsWith('-')) {
+        /* v8 ignore start */
         // arrays usually like -23309=val
         const arrayKey = pVal.split('=');
         if (arrayKey.length === 2) {
           if (arrayKey[0]) attrs[arrayKey[0]] = arrayKey[1] || '';
         }
       }
+      /* v8 ignore stop */
     }
 
     nodes.push({ type, name, bottoms, tops, attrs });

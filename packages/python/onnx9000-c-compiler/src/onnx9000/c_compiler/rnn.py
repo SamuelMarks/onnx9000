@@ -59,8 +59,7 @@ def generate_attention(
     mask_name: str,
     out_name: str,
 ):
-    """
-    Generate C code for the Attention operation.
+    """Generate C code for the Attention operation.
 
     Args:
         b: The C89Builder instance.
@@ -70,6 +69,7 @@ def generate_attention(
         bias_name: The name of the bias tensor.
         mask_name: The name of the mask tensor.
         out_name: The name of the output tensor.
+
     """
     b.emit("/* PyTorch Attention Translation */")
     b.emit("#if defined(__wasm_simd128__)")

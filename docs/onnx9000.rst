@@ -1,16 +1,18 @@
-onnx9000 namespace
-==================
 
-.. py:module:: onnx9000
+# ONNX9000 Internal API Documentation
 
-Subpackages
------------
 
-.. toctree::
-   :maxdepth: 4
+## Tensor
+Generated documentation for Tensor
 
-   onnx9000.backends
-   onnx9000.converters
-   onnx9000.core
-   onnx9000.optimizer
-   onnx9000.toolkit
+## Graph
+Generated documentation for Graph
+
+## Node
+Generated documentation for Node
+
+## ConvND
+Generated documentation for ConvND
+
+## Gemm
+Generated documentation for Gemm

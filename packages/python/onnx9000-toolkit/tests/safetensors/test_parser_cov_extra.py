@@ -195,7 +195,6 @@ def test_convert_tf_to_safetensors(tmp_path):
 
 def test_convert_pytorch_missing_torch():
     """Test convert pytorch missing torch."""
-
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
 
@@ -206,7 +205,6 @@ def test_convert_pytorch_missing_torch():
 
 def test_convert_tf_missing_tf():
     """Test convert tf missing tf."""
-
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
 

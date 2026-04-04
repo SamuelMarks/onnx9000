@@ -145,7 +145,6 @@ def test_matmul_no_bias():
 
 def test_qlinear_conv_no_bias():
     """Test qlinear conv no bias."""
-
     from onnx9000.c_compiler.compiler import C89Compiler
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Graph, Node, Tensor

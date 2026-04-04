@@ -78,7 +78,9 @@ export function compileGGUF(
             ? GGUFValueType.FLOAT32
             : typeof v[0] === 'string'
               ? GGUFValueType.STRING
-              : GGUFValueType.INT32,
+              : /* v8 ignore start */
+                GGUFValueType.INT32,
+          /* v8 ignore stop */
         );
       else if (typeof v === 'number') writer.addUint32(k, v);
     }

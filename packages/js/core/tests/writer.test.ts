@@ -104,7 +104,7 @@ describe('onnx_writer', () => {
     const node = new Node('Relu', ['input'], ['output'], {}, 'relu1');
     graph.nodes.push(node);
 
-    const bytes = serializeModelProto(graph);
+    const bytes = serializeModelProto(graph, 17);
     expect(bytes).toBeInstanceOf(Uint8Array);
     expect(bytes.length).toBeGreaterThan(0);
 

@@ -42,7 +42,6 @@ class MockEstimatorEmpty:
 
 def test_xgboost_stubs():
     """Tests the xgboost stubs functionality."""
-
     res1 = parse_xgb_classifier(MockEstimator())
     assert len(res1) == 1
     assert len(parse_xgb_classifier(MockEstimatorEmpty())) == 0

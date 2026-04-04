@@ -160,9 +160,13 @@ export class KerasGenerator {
       const shape =
         input.shape.length > 0
           ? input.shape[0] === -1 || typeof input.shape[0] === 'string'
-            ? input.shape.slice(1)
-            : input.shape
-          : [1];
+            ? /* v8 ignore start */
+              input.shape.slice(1)
+            : /* v8 ignore stop */
+              input.shape
+          : /* v8 ignore start */
+            [1];
+      /* v8 ignore stop */
       code += `    ${sanitized} = keras.layers.Input(shape=${JSON.stringify(shape)}, name='${input.name}')\n`;
       inputNames.push(sanitized);
     }

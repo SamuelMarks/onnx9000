@@ -928,7 +928,7 @@ def restore_layouts(graph: Graph, target_layout: str = "NCHW") -> Graph:
     for n in graph.nodes:
         if n.op_type == "Conv":
             # If target is NCHW but graph is NHWC (Keras style), insert transposes
-            pass
+            continue
     return graph
 
 
@@ -1541,6 +1541,7 @@ def evaluate_math_graph(graph: Graph) -> Optional[Constant]:
 
     Returns:
         A Constant containing the result of the evaluation, or None if evaluation fails.
+
     """
     try:
         import numpy as np

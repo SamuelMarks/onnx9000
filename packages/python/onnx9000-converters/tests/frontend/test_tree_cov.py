@@ -6,6 +6,8 @@ from onnx9000.core.dtypes import DType
 
 
 def test_tree_map():
+    """Docstring for D103."""
+
     def inc(x):
         return x + 1
 
@@ -17,6 +19,7 @@ def test_tree_map():
 
 
 def test_tree_flatten_unflatten():
+    """Docstring for D103."""
     tree = [{"a": 1}, (2, 3), 4]
     leaves, treedef = tree_flatten(tree)
     assert leaves == [1, 2, 3, 4]
@@ -31,6 +34,7 @@ def test_tree_flatten_unflatten():
 
 
 def test_find_tensors():
+    """Docstring for D103."""
     t1 = Tensor(name="t1", shape=(1,), dtype=DType.FLOAT32)
     t2 = Tensor(name="t2", shape=(2,), dtype=DType.FLOAT32)
 

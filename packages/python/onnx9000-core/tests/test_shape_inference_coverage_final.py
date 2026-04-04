@@ -6,6 +6,7 @@ from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
 def test_shape_inference_transpose():
+    """Docstring for D103."""
     g = Graph("test")
     # Transpose without perm
     t1 = Tensor("A", (2, 3, 4), DType.FLOAT32)
@@ -25,6 +26,7 @@ def test_shape_inference_transpose():
 
 
 def test_shape_inference_flatten():
+    """Docstring for D103."""
     g = Graph("test")
     t1 = Tensor("A", (2, 3, 4, 5), DType.FLOAT32)
     g.add_tensor(t1)
@@ -60,6 +62,7 @@ def test_shape_inference_flatten():
 
 
 def test_shape_inference_nms():
+    """Docstring for D103."""
     g = Graph("test")
     n = Node("NonMaxSuppression", ["boxes", "scores"], ["selected_indices"])
     g.add_node(n)
@@ -69,6 +72,7 @@ def test_shape_inference_nms():
 
 
 def test_shape_inference_flash_attention_and_rope():
+    """Docstring for D103."""
     g = Graph("test")
     g.add_tensor(Tensor("Q", (1, 8, 128, 64), DType.FLOAT32))
     n1 = Node("FlashAttention", ["Q", "K", "V"], ["O"])
@@ -81,6 +85,7 @@ def test_shape_inference_flash_attention_and_rope():
 
 
 def test_shape_inference_missing_in1():
+    """Docstring for D103."""
     # Test 'if not in1: continue' branches
     g = Graph("test")
     # Cast with missing input
@@ -95,6 +100,7 @@ def test_shape_inference_missing_in1():
 
 
 def test_shape_inference_fallback():
+    """Docstring for D103."""
     g = Graph("test")
     # Unknown op
     n = Node("UnknownOp", ["A"], ["B"])
@@ -106,6 +112,7 @@ def test_shape_inference_fallback():
 
 
 def test_shape_inference_custom_output_fallback():
+    """Docstring for D103."""
     # To hit the custom output fallback, we need an op that is matched but doesn't fill all out_shapes
     # Let's use FlashAttention but give it more outputs than 1
     g = Graph("test")
@@ -119,6 +126,7 @@ def test_shape_inference_custom_output_fallback():
 
 
 def test_shape_inference_custom_output_fallback_no_input():
+    """Docstring for D103."""
     # Op with no inputs and extra outputs
     g = Graph("test")
     n = Node("NonMaxSuppression", [], ["O1", "O2"])

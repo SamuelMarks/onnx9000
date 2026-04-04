@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import ast
 import builtins
 import struct

@@ -13,6 +13,7 @@ def relu(input: Tensor) -> Tensor:
 
     Returns:
         The output tensor after applying ReLU.
+
     """
     return input.relu()
 
@@ -25,6 +26,7 @@ def sigmoid(input: Tensor) -> Tensor:
 
     Returns:
         The output tensor after applying sigmoid.
+
     """
     return input.sigmoid()
 
@@ -37,6 +39,7 @@ def tanh(input: Tensor) -> Tensor:
 
     Returns:
         The output tensor after applying Tanh.
+
     """
     return input.tanh()
 
@@ -49,6 +52,7 @@ def gelu(input: Tensor) -> Tensor:
 
     Returns:
         The output tensor after applying GELU.
+
     """
     return input.gelu()
 
@@ -62,6 +66,7 @@ def softmax(input: Tensor, dim: int = -1) -> Tensor:
 
     Returns:
         The output tensor after applying softmax.
+
     """
     return input.softmax(dim)
 
@@ -75,6 +80,7 @@ def log_softmax(input: Tensor, dim: int = -1) -> Tensor:
 
     Returns:
         The output tensor after applying log_softmax.
+
     """
     return input.log_softmax(dim)
 
@@ -101,6 +107,7 @@ def max_pool2d(
 
     Returns:
         The output tensor after max pooling.
+
     """
     from onnx9000.converters.frontend.utils import record_op
 
@@ -133,6 +140,7 @@ def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tens
 
     Returns:
         The output tensor (*, out_features).
+
     """
     res = input @ weight.T
     if bias is not None:
@@ -162,6 +170,7 @@ def conv2d(
 
     Returns:
         The output tensor of shape (N, C_out, H_out, W_out).
+
     """
     from onnx9000.converters.frontend.utils import record_op
 
@@ -194,6 +203,7 @@ def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0
 
     Returns:
         The padded tensor.
+
     """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
@@ -236,6 +246,7 @@ def interpolate(
 
     Returns:
         The interpolated tensor.
+
     """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter
@@ -273,6 +284,7 @@ def one_hot(tensor: Tensor, num_classes: int = -1) -> Tensor:
 
     Returns:
         The one-hot encoded tensor.
+
     """
     import numpy as np
     from onnx9000.converters.frontend.tensor import Parameter

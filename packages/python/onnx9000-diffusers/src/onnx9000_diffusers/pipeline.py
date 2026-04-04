@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import asyncio
 import gc
 from typing import Any, Callable, Optional
@@ -7,23 +9,27 @@ from .utils import PyTorchPCG, parse_model_index, randn
 
 
 class AbortSignal:
+    """Docstring for D101."""
+
     def __init__(self):
+        """Docstring for D107."""
         self._aborted = False
 
     def abort(self):
+        """Docstring for D102."""
         self._aborted = True
 
     @property
     def aborted(self) -> bool:
+        """Docstring for D102."""
         return self._aborted
 
 
 class DiffusionPipeline:
-    """
-    Base Diffusion Pipeline matching the ONNX9000 specification for Phase 1.
-    """
+    """Base Diffusion Pipeline matching the ONNX9000 specification for Phase 1."""
 
     def __init__(self, model_index: dict[str, Any], scheduler: Scheduler):
+        """Docstring for D107."""
         self.model_index = model_index
         self.scheduler = scheduler
         self._device = "cpu"
@@ -33,9 +39,7 @@ class DiffusionPipeline:
     def from_pretrained(
         cls, pretrained_model_name_or_path: str, cache_dir: str = ".cache"
     ) -> "DiffusionPipeline":
-        """
-        Dynamically fetches model configurations from local paths or Hugging Face Hub.
-        """
+        """Dynamically fetches model configurations from local paths or Hugging Face Hub."""
         # Phase 1: Implement `from_pretrained` dynamic fetching from local paths or Hugging Face Hub.
         # Phase 1: Manage unified caching of downloaded components via OS Cache.
         model_index = parse_model_index(pretrained_model_name_or_path, cache_dir)
@@ -61,9 +65,7 @@ class DiffusionPipeline:
         callback_on_step_end: Optional[Callable[[int, int, list[float]], None]] = None,
         abort_signal: Optional[AbortSignal] = None,
     ) -> list[float]:
-        """
-        Asynchronous inference loop.
-        """
+        """Asynchronous inference loop."""
         # Phase 1: Implement asynchronous inference loop
         self.scheduler.set_timesteps(num_inference_steps)
         timesteps = self.scheduler.timesteps

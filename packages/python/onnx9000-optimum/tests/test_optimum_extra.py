@@ -59,7 +59,6 @@ def test_quantize_model_flow(mock_save, mock_load):
 
 def test_missing_imports():
     """Test missing imports."""
-
     from onnx9000_optimum.export import (
         _progress_bar,
         get_huggingface_model_files,
@@ -142,7 +141,6 @@ def test_export_other_tasks():
 
 def test_export_exception():
     """Test export exception."""
-
     from onnx9000_optimum.export import export_model
 
     mock_torch = MagicMock()
@@ -224,7 +222,6 @@ def test_export_transformers_error():
 
 def test_optimize_import_error():
     """Test optimize import error."""
-
     from onnx9000_optimum.optimize import optimize_model
 
     with patch.dict("sys.modules", {"onnx9000.optimizer.simplifier.api": None}):

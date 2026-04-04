@@ -7,8 +7,7 @@ import re
 
 
 def get_attribute(node, name, default=None):
-    """
-    Get an attribute value from an ONNX node.
+    """Get an attribute value from an ONNX node.
 
     Args:
         node: The ONNX Node.
@@ -17,6 +16,7 @@ def get_attribute(node, name, default=None):
 
     Returns:
         The attribute value or the default value.
+
     """
     if node.attributes and name in node.attributes:
         return node.attributes[name].value

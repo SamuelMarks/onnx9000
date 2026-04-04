@@ -71,3 +71,30 @@ def test_ir_missing() -> None:
     assert g != g2
     g_copy = g.copy()
     assert Graph.tensors(g_copy) is not None
+
+
+def test_quantized_tensor():
+    """Docstring for D103."""
+    from onnx9000.core.ir import QuantizedTensor
+
+    q = QuantizedTensor("q", "Q8_0", 32)
+    assert q.qtype == "Q8_0"
+    assert q.block_size == 32
+
+
+def test_quantized_tensor_args():
+    """Docstring for D103."""
+    from onnx9000.core.ir import QuantizedTensor
+
+    q = QuantizedTensor(
+        "q",
+        type="Q4_0",
+        block_size=32,
+        shape=[32],
+        dtype=1,
+        is_initializer=False,
+        requires_grad=True,
+        data=b"123",
+    )
+    assert q.qtype == "Q4_0"
+    assert q.block_size == 32

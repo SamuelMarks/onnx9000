@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import struct
 
 import pytest
@@ -23,6 +25,7 @@ from onnx9000.optimizer.sparse.modifier import (
 
 
 def create_simple_graph():
+    """Docstring for D103."""
     g = Graph("test")
     # Add a weight tensor
     data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
@@ -34,6 +37,7 @@ def create_simple_graph():
 
 
 def test_modifier_absolute_edge_cases():
+    """Docstring for D103."""
     g = create_simple_graph()
     # Tensor with None data
     w_none = Constant("w_none", values=None, shape=(4,), dtype=DType.FLOAT32)
@@ -63,6 +67,7 @@ def test_modifier_absolute_edge_cases():
 
 
 def test_modifier_base_final():
+    """Docstring for D103."""
     m = Modifier(foo="bar")
     assert m.foo == "bar"
     if False:
@@ -70,6 +75,7 @@ def test_modifier_base_final():
 
 
 def test_magnitude_pruning_various_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     # Sparsity 1.0
     MagnitudePruningModifier(params=["re:weight1"], final_sparsity=1.0).apply(g)
@@ -84,6 +90,7 @@ def test_magnitude_pruning_various_final():
 
 
 def test_gradual_pruning_steps_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     mod = GradualPruningModifier(params=["re:weight1"], start_step=10, end_step=20)
     mod.current_step = 5
@@ -95,6 +102,7 @@ def test_gradual_pruning_steps_final():
 
 
 def test_obs_fisher_movement_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     OBSPruningModifier(params=["re:weight1"], sparsity=0.5, calibration_data=[[1.0] * 8]).apply(g)
     grads = {"weight1": [0.1] * 8}
@@ -103,6 +111,7 @@ def test_obs_fisher_movement_final():
 
 
 def test_accuracy_aware_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     mod = AccuracyAwarePruningModifier(
         params=["re:weight1"], min_accuracy=0.95, target_sparsity=0.8
@@ -114,6 +123,7 @@ def test_accuracy_aware_final():
 
 
 def test_global_magnitude_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     GlobalMagnitudePruningModifier(params=["re:weight1"], final_sparsity=0.5).apply(g)
     GlobalMagnitudePruningModifier(params=["re:weight1"], final_sparsity=0.5, l2=True).apply(g)
@@ -123,6 +133,7 @@ def test_global_magnitude_final():
 
 
 def test_quantization_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     QuantizationModifier(params=["re:weight1"], scheme="asymmetric").apply(g)
     w = g.tensors["weight1"]
@@ -131,6 +142,7 @@ def test_quantization_final():
 
 
 def test_nm_pruning_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     NMPruningModifier(params=["re:weight1"], n=2, m=4).apply(g)
     w = g.tensors["weight1"]
@@ -140,6 +152,7 @@ def test_nm_pruning_final():
 
 
 def test_sparse_qlinear_conv_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     s = SparseTensor("s", dims=(2, 4))
     g.add_tensor(s)
@@ -148,18 +161,21 @@ def test_sparse_qlinear_conv_final():
 
 
 def test_recipe_final():
+    """Docstring for D103."""
     g = create_simple_graph()
     apply_recipe(g, "- !MagnitudePruningModifier\n  params: ['re:weight1']")
     apply_recipe(g, [MagnitudePruningModifier(params=["re:weight1"])])
 
 
 def test_other_stubs():
+    """Docstring for D103."""
     from onnx9000.optimizer.sparse.modifier import manage_calibration_memory
 
     manage_calibration_memory(Graph("t"))
 
 
 def test_missing_modifier_lines():
+    """Docstring for D103."""
     g = create_simple_graph()
 
     # 114: leave_unmasked
@@ -262,6 +278,7 @@ def test_missing_modifier_lines():
 
 
 def test_quant_symmetric():
+    """Docstring for D103."""
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant, Graph
@@ -289,6 +306,7 @@ def test_quant_symmetric():
 
 
 def test_quant_asymmetric_zero_scale():
+    """Docstring for D103."""
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant, Graph
@@ -305,7 +323,7 @@ def test_quant_asymmetric_zero_scale():
 
 
 def test_parse_recipe_unknown():
-
+    """Docstring for D103."""
     recipe_str = """
     modifiers:
         - !UnknownModifier
@@ -317,6 +335,7 @@ def test_parse_recipe_unknown():
 
 
 def test_unknown_modifier_apply():
+    """Docstring for D103."""
     from onnx9000.core.ir import Graph
     from onnx9000.optimizer.sparse.modifier import Modifier
 

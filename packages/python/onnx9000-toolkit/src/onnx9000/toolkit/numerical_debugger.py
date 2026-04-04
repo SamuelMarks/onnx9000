@@ -15,6 +15,7 @@ class NumericalDebugger:
 
         Args:
             graph: The ONNX graph to debug.
+
         """
         self.graph = graph
 
@@ -28,6 +29,7 @@ class NumericalDebugger:
 
         Returns:
             Dictionary mapping tensor names to their Mean Absolute Error (MAE).
+
         """
         # ep1 and ep2 should be ExecutionProviders
 

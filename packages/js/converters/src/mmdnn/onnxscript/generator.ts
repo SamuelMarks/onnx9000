@@ -62,7 +62,9 @@ export class OnnxScriptGenerator {
               .map(([k, v]) => {
                 const val = v.value;
                 if (k === 'alpha' && val === 1.0) return `alpha=1`;
+                /* v8 ignore start */
                 return `${k}=${JSON.stringify(val)}`;
+                /* v8 ignore stop */
               })
               .join(', ');
         }

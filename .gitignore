@@ -180,3 +180,20 @@ packages/js/*/src/**/*.d.ts.map
 /syntax_*.js
 
 /snapshots/onnx-dummy_stdout.json
+
+# Extra AI scratch and temp files
+.hypothesis/
+add_*.py
+generate_*.js
+debug.py
+final_fixes.py
+run_fuzz.py
+print_uncovered.js
+MODEL_ZOO_PLAN*.md
+coverage_js.txt
+missing.txt
+docs/typedoc_mock.md
+*.wasm
+*.tar.gz
+*.zip
+coverage_report.txt

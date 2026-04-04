@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
@@ -5,6 +7,7 @@ from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 
 
 def test_compiler_rtos_and_wasm():
+    """Docstring for D103."""
     g = Graph("RtosWasm")
     g.inputs.append(ValueInfo("X", (2,), DType.FLOAT32))
     g.outputs.append("Y")
@@ -19,6 +22,7 @@ def test_compiler_rtos_and_wasm():
 
 
 def test_activations_swish_mish():
+    """Docstring for D103."""
     g = Graph("SwishMish")
     g.inputs.append(ValueInfo("X", (2,), DType.FLOAT32))
     g.outputs.extend(["Y_swish", "Y_mish"])
@@ -34,6 +38,7 @@ def test_activations_swish_mish():
 
 
 def test_concat_complex():
+    """Docstring for D103."""
     g = Graph("ConcatComplex")
     g.tensors["X1"] = Tensor("X1", (2, 3, 4), DType.FLOAT32)
     g.tensors["X2"] = Tensor("X2", (2, 3, 4), DType.FLOAT32)
@@ -53,6 +58,7 @@ def test_concat_complex():
 
 
 def test_gru():
+    """Docstring for D103."""
     g = Graph("GRU")
     g.tensors["X"] = Tensor("X", (2, 3, 4), DType.FLOAT32)
     g.tensors["W"] = Tensor("W", (1, 6, 4), DType.FLOAT32)
@@ -73,6 +79,7 @@ def test_gru():
 
 
 def test_rnn():
+    """Docstring for D103."""
     g = Graph("RNN")
     g.tensors["X"] = Tensor("X", (2, 3, 4), DType.FLOAT32)
     g.tensors["W"] = Tensor("W", (1, 6, 4), DType.FLOAT32)

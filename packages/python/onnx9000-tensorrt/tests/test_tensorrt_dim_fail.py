@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -5,6 +7,8 @@ from onnx9000.tensorrt.ops_dim import trt_reshape
 
 
 def test_reshape_missing_input():
+    """Docstring for D103."""
+
     class MockNode:
         def __init__(self):
             self.inputs = []

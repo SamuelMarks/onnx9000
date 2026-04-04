@@ -34,7 +34,7 @@ def main():
         try:
             from onnx9000_cli.main import main as cli_main
 
-            cli_main()
+            cli_main()  # pragma: no cover
         except ImportError as e:
             print(f"Error: ONNX9000 CLI is not properly installed ({e}).")
             print(

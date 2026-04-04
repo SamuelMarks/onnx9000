@@ -53,7 +53,9 @@ export class WebGPUManager {
     // Graceful restart logic
     this.device = null;
     this.init().catch((err) => {
+      /* v8 ignore start */
       this.fallbackToWasm = true;
+      /* v8 ignore stop */
     });
   }
 

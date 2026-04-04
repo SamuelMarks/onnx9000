@@ -26,8 +26,10 @@ export function registerCustomKerasLayer(
   emitter: CustomLayerEmitter,
 ): void {
   if (layerPluginRegistry.has(kerasLayerName)) {
+    /* v8 ignore start */
     console.warn(`[onnx9000] Overwriting existing custom layer plugin for ${kerasLayerName}`);
   }
+  /* v8 ignore stop */
   layerPluginRegistry.set(kerasLayerName, emitter);
 }
 

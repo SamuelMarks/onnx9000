@@ -38,6 +38,7 @@ def test_codegen_pytorch():
 
 
 def test_codegen_pytorch_no_outputs():
+    """Docstring for D103."""
     builder = GraphBuilder(name="MyModel")
     assert "return None" in generate_pytorch(builder)
 
@@ -81,6 +82,7 @@ def test_codegen_jax():
 
 
 def test_codegen_jax_no_outputs():
+    """Docstring for D103."""
     builder = GraphBuilder(name="MyModel")
     assert "return None" in generate_jax(builder)
 

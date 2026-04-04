@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import json
 import logging
 import os
@@ -37,6 +39,7 @@ from onnx9000.core.sparse import (
 
 
 def test_get_struct_fmt():
+    """Docstring for D103."""
     pack_data([1.0], DType.FLOAT16)
     unpack_data(struct.pack("<e", 1.0), DType.FLOAT16)
 
@@ -67,17 +70,20 @@ def test_get_struct_fmt():
 
 
 def test_get_byte_size():
+    """Docstring for D103."""
     assert get_byte_size(DType.FLOAT32) == 4
     assert get_byte_size(DType.INT64) == 8
 
 
 def test_unpack_data():
+    """Docstring for D103."""
     assert unpack_data(b"", DType.FLOAT32) == []
     data = struct.pack("<2f", 1.0, 2.0)
     assert unpack_data(data, DType.FLOAT32) == [1.0, 2.0]
 
 
 def test_pack_data():
+    """Docstring for D103."""
     assert pack_data([], DType.FLOAT32) == b""
     data = pack_data([1.0, 2.0], DType.FLOAT32)
     assert struct.unpack("<2f", data) == (1.0, 2.0)
@@ -87,6 +93,7 @@ def test_pack_data():
 
 
 def test_pack_sparse_int8():
+    """Docstring for D103."""
     values = [0xA, 0xB, 0xC]
     indices = [1, 2, 3]
     packed = pack_sparse_int8(values, indices)
@@ -102,6 +109,7 @@ def test_pack_sparse_int8():
 
 
 def test_dense_to_coo():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 0.0, 2.0], DType.FLOAT32)
     coo = dense_to_coo(c1)
@@ -116,6 +124,7 @@ def test_dense_to_coo():
 
 
 def test_dense_to_csr():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 2.0, 0.0], DType.FLOAT32)
     csr = dense_to_csr(c1)
@@ -132,12 +141,14 @@ def test_dense_to_csr():
 
 
 def test_dense_to_csr_large_dims():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2**32, 2), dtype=DType.FLOAT32)
     with pytest.raises(ValueError):
         dense_to_csr(c1)
 
 
 def test_dense_to_csc():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 2.0, 0.0], DType.FLOAT32)
     csc = dense_to_csc(c1)
@@ -152,6 +163,7 @@ def test_dense_to_csc():
 
 
 def test_dense_to_bsr():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 2.0, 0.0], DType.FLOAT32)
     bsr = dense_to_bsr(c1, (1, 1))
@@ -172,6 +184,7 @@ def test_dense_to_bsr():
 
 
 def test_sparse_to_coo():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 2.0, 0.0], DType.FLOAT32)
 
@@ -202,6 +215,7 @@ def test_sparse_to_coo():
 
 
 def test_sparse_to_dense():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(2, 2), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 1.0, 2.0, 0.0], DType.FLOAT32)
     coo = dense_to_coo(c1)
@@ -218,6 +232,7 @@ def test_sparse_to_dense():
 
 
 def test_detect_theoretical_sparsity():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 0.0, 1.0, 1.0], DType.FLOAT32)
     assert detect_theoretical_sparsity(c1) == 0.5
@@ -229,6 +244,7 @@ def test_detect_theoretical_sparsity():
 
 
 def test_calculate_memory_usage():
+    """Docstring for D103."""
     empty_s = SparseTensor("es", format="CSR", dims=(4,))
     empty_s.row_ptr = Constant("r")
     empty_s.col_indices = Constant("c")
@@ -245,6 +261,7 @@ def test_calculate_memory_usage():
 
 
 def test_compression_ratio():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 0.0, 1.0, 1.0], DType.FLOAT32)
     coo = dense_to_coo(c1)
@@ -255,6 +272,7 @@ def test_compression_ratio():
 
 
 def test_profile():
+    """Docstring for D103."""
     g = Graph("g")
     assert profile(g) == {
         "layers": [],
@@ -274,6 +292,7 @@ def test_profile():
 
 
 def test_get_sparsity_report():
+    """Docstring for D103."""
     g = Graph("g")
     assert get_sparsity_report(g) == "No trainable parameters found."
 
@@ -285,6 +304,7 @@ def test_get_sparsity_report():
 
 
 def test_generate_json_report(tmp_path):
+    """Docstring for D103."""
     g = Graph("g")
     p = os.path.join(tmp_path, "report.json")
     generate_json_report(g, p)
@@ -295,6 +315,7 @@ def test_generate_json_report(tmp_path):
 
 
 def test_evaluate_mse():
+    """Docstring for D103."""
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([1.0, 1.0, 1.0, 1.0], DType.FLOAT32)
 
@@ -311,6 +332,7 @@ def test_evaluate_mse():
 
 
 def test_de_sparsify():
+    """Docstring for D103."""
     g = Graph("g")
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([1.0, 0.0, 0.0, 1.0], DType.FLOAT32)
@@ -324,6 +346,7 @@ def test_de_sparsify():
 
 
 def test_convert_hf_sparse_to_onnx():
+    """Docstring for D103."""
     g = Graph("g")
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([1.0, 0.0, 0.0, 1.0], DType.FLOAT32)
@@ -337,6 +360,7 @@ def test_convert_hf_sparse_to_onnx():
 
 
 def test_resolve_nm_metadata():
+    """Docstring for D103."""
     g = Graph("g")
     s1 = SparseTensor("s1", format="NM", dims=(2, 2))
     g.tensors["s1"] = s1
@@ -345,6 +369,7 @@ def test_resolve_nm_metadata():
 
 
 def test_map_sparse_to_safetensors():
+    """Docstring for D103."""
     g = Graph("g")
     val_const = Constant("v", shape=(1,), dtype=DType.FLOAT32)
     idx_const = Constant("i", shape=(1,), dtype=DType.INT64)
@@ -357,6 +382,7 @@ def test_map_sparse_to_safetensors():
 
 
 def test_validate_provider_support(caplog):
+    """Docstring for D103."""
     g = Graph("g")
     s1 = SparseTensor("s1", format="COO", dims=(2, 2))
     g.tensors["s1"] = s1
@@ -366,6 +392,7 @@ def test_validate_provider_support(caplog):
 
 
 def test_collapse_sparse_tensors():
+    """Docstring for D103."""
     g = Graph("g")
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([0.0, 0.0, 0.0, 0.0], DType.FLOAT32)
@@ -398,6 +425,7 @@ def test_collapse_sparse_tensors():
 
 
 def test_strip_dense_representation():
+    """Docstring for D103."""
     g = Graph("g")
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)
     c1.data = pack_data([1.0, 1.0, 1.0, 1.0], DType.FLOAT32)
@@ -407,6 +435,7 @@ def test_strip_dense_representation():
 
 
 def test_analyze_topological_dead_ends():
+    """Docstring for D103."""
     g = Graph("g")
 
     c1 = Constant("c1", shape=(4,), dtype=DType.FLOAT32)

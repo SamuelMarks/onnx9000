@@ -284,7 +284,7 @@ class Generator:
             try:
                 subprocess.run(["clang-format", "-i", cpp_path], check=True, capture_output=True)
             except (subprocess.CalledProcessError, FileNotFoundError):
-                pass  # clang-format might not be installed
+                run_clang_format = False
 
         cmake_content = f"""cmake_minimum_required(VERSION 3.14)
 project({self.class_name}Project)

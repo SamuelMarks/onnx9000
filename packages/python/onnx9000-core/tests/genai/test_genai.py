@@ -177,7 +177,6 @@ def test_continuous_kv_cache():
 
 def test_paged_kv_cache():
     """Test paged kv cache."""
-
     cache = PagedKVCache(page_size=16)
     keys = Tensor(name="k", shape=(1, 2, 64), data=bytearray(128))
     values = Tensor(name="v", shape=(1, 2, 64), data=bytearray(128))

@@ -186,17 +186,28 @@ def generate_qlinear_matmul(
     b.push_indent()
     b.emit("for (n = 0; n < N; ++n) {")
     b.push_indent()
-    b.emit("int32_t sum = 0;")
-    b.emit("for (k = 0; k < K; ++k) {")
-    b.push_indent()
-    idxA = "b * M * K + (m * K + k)"
-    idxB = "b * K * N + (k * N + n)"
-    b.emit(f"sum += ((int32_t){in1}[{idxA}] - zp1) * ((int32_t){in2}[{idxB}] - zp2);")
-    b.pop_indent()
-    b.emit("}")
+    from onnx9000.c_compiler.spatial import get_attribute
+
+    use_block_q4_0 = get_attribute(node, "use_block_q4_0", 0)
+
+    if use_block_q4_0:
+        b.emit("float float_out = 0.0f;")
+        b.emit(f"/* Assuming block_q4_0/block_q8_0 format for {in1} and {in2} */")
+        b.emit(
+            f"ggml_vec_dot_q4_0_q8_0(K, &float_out, &((const block_q4_0*){in1})[b * M * (K/32) + m * (K/32)], &((const block_q8_0*){in2})[b * N * (K/32) + n * (K/32)]);"
+        )
+    else:
+        b.emit("int32_t sum = 0;")
+        b.emit("for (k = 0; k < K; ++k) {")
+        b.push_indent()
+        idxA = "b * M * K + (m * K + k)"
+        idxB = "b * K * N + (k * N + n)"
+        b.emit(f"sum += ((int32_t){in1}[{idxA}] - zp1) * ((int32_t){in2}[{idxB}] - zp2);")
+        b.pop_indent()
+        b.emit("}")
+        b.emit("float float_out = (float)sum * real_multiplier;")
 
     out_idx = "b * M * N + (m * N + n)"
-    b.emit("float float_out = (float)sum * real_multiplier;")
     b.emit(
         "float rounded = float_out >= 0.0f ? (float)(int)(float_out + 0.5f) : (float)(int)(float_out - 0.5f);"
     )

@@ -14,7 +14,7 @@ import {
  * @param graph The computational graph to serialize
  * @returns Serialized ModelProto as Uint8Array
  */
-export function serializeModelProto(graph: Graph): Uint8Array {
+export function serializeModelProto(graph: Graph, opset: number = 14): Uint8Array {
   const writer = new BufferWriter();
 
   // ir_version (1)
@@ -35,7 +35,7 @@ export function serializeModelProto(graph: Graph): Uint8Array {
   opsetWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
   opsetWriter.writeString('');
   opsetWriter.writeTag(2, WIRE_TYPE_VARINT);
-  opsetWriter.writeVarInt64(14); // Opset 14
+  opsetWriter.writeVarInt64(opset);
   const opsetBytes = opsetWriter.getResult();
   writer.writeTag(8, WIRE_TYPE_LENGTH_DELIMITED);
   writer.writeVarInt(opsetBytes.length);

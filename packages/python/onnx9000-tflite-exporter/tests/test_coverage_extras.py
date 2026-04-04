@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import numpy as np
 import pytest
 from onnx9000.core.dtypes import DType
@@ -8,6 +10,7 @@ from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
 
 def test_layout_expand_tile():
+    """Docstring for D103."""
     g = Graph("ExpandTile")
     g.inputs.append(ValueInfo("X", (1, 3, 2, 2), DType.FLOAT32))
 
@@ -28,6 +31,7 @@ def test_layout_expand_tile():
 
 
 def test_exporter_extras():
+    """Docstring for D103."""
     exporter = TFLiteExporter()
     exporter.builder = FlatBufferBuilder(1024)
 
@@ -53,6 +57,7 @@ def test_exporter_extras():
 
 
 def test_builder_grow_zero():
+    """Docstring for D103."""
     b = FlatBufferBuilder(0)
     assert len(b.bb) == 0
     b.grow_buffer()

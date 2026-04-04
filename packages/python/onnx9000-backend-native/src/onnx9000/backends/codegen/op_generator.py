@@ -8,9 +8,6 @@ from typing import TYPE_CHECKING
 
 from onnx9000.core.ir import Node
 
-if TYPE_CHECKING:
-    pass
-
 
 class OpGenerator(abc.ABC):
     """Interface for C++ operator writers."""

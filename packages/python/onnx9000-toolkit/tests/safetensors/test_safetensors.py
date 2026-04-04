@@ -451,7 +451,6 @@ def test_type_error_get_tensor():
 
 def test_missing_hf_keys_warning():
     """Test missing hf keys warning."""
-
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
         save_file({"a": b"1"}, path, {"some_key": "val"})
@@ -758,7 +757,6 @@ def test_xxe_json_injection():
 
 def test_bfloat16_generation_security():
     """Test bfloat16 generation security."""
-
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "bf16.safetensors")
         import struct
@@ -792,7 +790,6 @@ def test_loopback_reading():
 
 def test_huge_dimension_check():
     """Test huge dimension check."""
-
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "huge_dim.safetensors")
         with open(path, "wb") as f:

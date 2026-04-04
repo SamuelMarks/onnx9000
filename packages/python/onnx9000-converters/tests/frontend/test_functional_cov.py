@@ -18,6 +18,7 @@ from onnx9000.core.dtypes import DType
 
 
 def test_activations():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_acts")
     with Tracing(b):
@@ -34,6 +35,7 @@ def test_activations():
 
 
 def test_linear():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 2), dtype=DType.FLOAT32)
     w = Tensor(name="w", shape=(3, 2), dtype=DType.FLOAT32)
     b_t = Tensor(name="b", shape=(3,), dtype=DType.FLOAT32)
@@ -44,6 +46,7 @@ def test_linear():
 
 
 def test_conv2d():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 3, 224, 224), dtype=DType.FLOAT32)
     w = Tensor(name="w", shape=(16, 3, 3, 3), dtype=DType.FLOAT32)
     bias = Tensor(name="bias", shape=(16,), dtype=DType.FLOAT32)
@@ -54,6 +57,7 @@ def test_conv2d():
 
 
 def test_pad():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 1, 2, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_pad")
     with Tracing(b):
@@ -63,6 +67,7 @@ def test_pad():
 
 
 def test_upsample():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 3, 8, 8), dtype=DType.FLOAT32)
     b = GraphBuilder("test_upsample")
     with Tracing(b):
@@ -82,6 +87,7 @@ def test_upsample():
 
 
 def test_one_hot():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 3), dtype=DType.INT64)
     b = GraphBuilder("test_one_hot")
     with Tracing(b):
@@ -95,6 +101,7 @@ def test_one_hot():
 
 
 def test_max_pool2d():
+    """Docstring for D103."""
     x = Tensor(name="x", shape=(1, 3, 224, 224), dtype=DType.FLOAT32)
     b = GraphBuilder("test_max_pool2d")
     with Tracing(b):

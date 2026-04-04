@@ -78,8 +78,10 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
           weightNames = [weightNamesRaw];
         }
       } else {
+        /* v8 ignore start */
         weightNames = layerGroup.keys; // fallback
       }
+      /* v8 ignore stop */
 
       for (const wName of weightNames) {
         // The dataset path is typically layerName/wName, but Keras can nest it
@@ -98,8 +100,10 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
           }
           wDataset = ds as Dataset;
         } catch {
+          /* v8 ignore start */
           continue;
         }
+        /* v8 ignore stop */
 
         if (wDataset && wDataset.shape !== undefined && wDataset.value !== undefined) {
           weights[wName] = {

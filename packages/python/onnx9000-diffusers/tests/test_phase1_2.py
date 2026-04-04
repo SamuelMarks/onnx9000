@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import asyncio
 import os
 import shutil
@@ -23,6 +25,7 @@ from onnx9000_diffusers.utils import PyTorchPCG, rand, randn
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_dummy_model():
+    """Docstring for D103."""
     os.makedirs(".cache", exist_ok=True)
     yield
     if os.path.exists(".cache"):
@@ -30,6 +33,7 @@ def setup_dummy_model():
 
 
 def test_diffusion_pipeline_phase1():
+    """Docstring for D103."""
     os.makedirs(".cache", exist_ok=True)
     with open(".cache/hf-internal-testing--tiny-stable-diffusion-torch_model_index.json", "w") as f:
         f.write('{"_class_name": "StableDiffusionPipeline"}')
@@ -58,6 +62,7 @@ def test_diffusion_pipeline_phase1():
 
 
 def test_pipeline_abort():
+    """Docstring for D103."""
     pipeline = DiffusionPipeline({"_class_name": "Dummy"}, EulerDiscreteScheduler())
     signal = AbortSignal()
     signal.abort()
@@ -70,6 +75,7 @@ def test_pipeline_abort():
 
 
 def test_schedulers_phase2():
+    """Docstring for D103."""
     schedulers = [
         DDIMScheduler(),
         DDPMScheduler(),
@@ -96,6 +102,7 @@ def test_schedulers_phase2():
 
 
 def test_utils_prng():
+    """Docstring for D103."""
     gen1 = PyTorchPCG(123)
     gen2 = PyTorchPCG(123)
 

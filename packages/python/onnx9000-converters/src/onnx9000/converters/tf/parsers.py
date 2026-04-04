@@ -37,6 +37,7 @@ class TFGraph:
 
         Returns:
             A list of nodes in topological order.
+
         """
         visited: set[str] = set()
         sorted_nodes: list[TFNode] = []
@@ -47,6 +48,7 @@ class TFGraph:
 
             Args:
                 n_name: The name of the node to visit.
+
             """
             if n_name in visited:
                 return
@@ -77,6 +79,7 @@ class TFGraph:
 
         Returns:
             A list of placeholder nodes.
+
         """
         return [n for n in self.nodes if n.op == "Placeholder"]
 
@@ -85,6 +88,7 @@ class TFGraph:
 
         Returns:
             A list of nodes that are not used as inputs to other nodes.
+
         """
         outputs: list[TFNode] = []
         input_names = set()
@@ -104,6 +108,7 @@ class TFGraph:
 
         Returns:
             A new TFGraph containing the subgraph.
+
         """
         subgraph = TFGraph()
         node_map = {n.name: n for n in self.nodes}
@@ -129,6 +134,7 @@ class ProtobufParser:
 
         Args:
             data: The binary protobuf data to parse.
+
         """
         self.data = data
         self.offset = 0
@@ -138,6 +144,7 @@ class ProtobufParser:
 
         Returns:
             The parsed varint.
+
         """
         result = 0
         shift = 0
@@ -155,6 +162,7 @@ class ProtobufParser:
 
         Returns:
             The parsed bytes.
+
         """
         length = self.read_varint()
         res = self.data[self.offset : self.offset + length]
@@ -166,6 +174,7 @@ class ProtobufParser:
 
         Returns:
             The parsed string.
+
         """
         return self.read_bytes().decode("utf-8")
 
@@ -177,6 +186,7 @@ class ProtobufParser:
 
         Returns:
             A parsed TFNode.
+
         """
         name = ""
         op = ""
@@ -203,6 +213,7 @@ class ProtobufParser:
 
         Returns:
             A parsed TFGraph.
+
         """
         graph = TFGraph()
         while self.offset < len(self.data):
@@ -225,6 +236,7 @@ class ProtobufParser:
 
         Args:
             wire_type: The wire type of the field to skip.
+
         """
         if wire_type == 0:
             self.read_varint()
@@ -245,6 +257,7 @@ def parse_graphdef(data: bytes) -> TFGraph:
 
     Returns:
         A parsed TFGraph.
+
     """
     parser = ProtobufParser(data)
     return parser.parse_graph_def()
@@ -258,6 +271,7 @@ def parse_saved_model(data: bytes) -> TFGraph:
 
     Returns:
         A parsed TFGraph.
+
     """
     return parse_graphdef(data)
 
@@ -270,6 +284,7 @@ def extract_variables(variables_dir: str) -> dict[str, bytes]:
 
     Returns:
         A mapping of variable names to their values.
+
     """
     return {variables_dir: b"0000"}
 
@@ -282,6 +297,7 @@ class H5Parser:
 
         Args:
             data: The binary H5 data.
+
         """
         self.data = data
 
@@ -290,6 +306,7 @@ class H5Parser:
 
         Returns:
             A stub TFGraph.
+
         """
         return TFGraph([TFNode(name="h5_input", op="Placeholder")])
 
@@ -302,6 +319,7 @@ def load_h5_model(data: bytes) -> TFGraph:
 
     Returns:
         A parsed TFGraph.
+
     """
     from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 
@@ -316,6 +334,7 @@ def load_keras_v3(data: Any) -> TFGraph:
 
     Returns:
         A parsed TFGraph.
+
     """
     import keras
     from onnx9000.converters.tf.keras_v3_parser import Keras3Parser
@@ -339,6 +358,7 @@ class FlatBufferParser:
 
         Args:
             data: The binary FlatBuffer data.
+
         """
         self.data = data
 
@@ -347,6 +367,7 @@ class FlatBufferParser:
 
         Returns:
             A stub TFGraph.
+
         """
         return TFGraph([TFNode(name="tflite_input", op="Placeholder")])
 
@@ -359,6 +380,7 @@ def parse_tflite(data: bytes) -> TFGraph:
 
     Returns:
         A parsed TFGraph.
+
     """
     return FlatBufferParser(data).parse()
 
@@ -371,6 +393,7 @@ def map_tf_shape_to_onnx(shape: list[int]) -> list[int]:
 
     Returns:
         The ONNX shape.
+
     """
     return [dim if dim > 0 else -1 for dim in shape]
 
@@ -380,6 +403,7 @@ def log_unsupported_node(node: TFNode) -> None:
 
     Args:
         node: The unsupported TFNode.
+
     """
     logging.warning(f"Unsupported TF Node encountered: {node.op} (name: {node.name})")
 
@@ -392,6 +416,7 @@ def fallback_to_custom_op(node: TFNode) -> TFNode:
 
     Returns:
         The modified TFNode.
+
     """
     node.op = f"Custom_{node.op}"
     return node

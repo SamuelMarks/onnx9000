@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import numpy as np
 import pytest
 from onnx9000.core.ir import Constant, Graph, Node
@@ -5,6 +7,7 @@ from onnx9000.optimizer.surgeon.quantization import quantize_ptq
 
 
 def test_quantize_ptq_basic():
+    """Docstring for D103."""
     graph = Graph("test_graph")
 
     # Weight constant

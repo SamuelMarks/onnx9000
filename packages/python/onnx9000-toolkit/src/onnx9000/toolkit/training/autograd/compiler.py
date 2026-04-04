@@ -308,7 +308,7 @@ def load_training_checkpoint(graph: Graph, filepath: str) -> None:
         state_dict = json.load(f)
     for init, _ in state_dict.items():
         if init in graph.tensors:
-            pass  # update tensor data
+            continue  # update tensor data
 
 
 def validate_training_graph(graph: Graph) -> None:

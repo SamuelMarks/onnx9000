@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from typing import Any
 
 """Tests the missing coverage module functionality."""

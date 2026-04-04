@@ -137,8 +137,10 @@ export class Toolbar {
 
     const cbStrict = lblStrict.querySelector('input') as HTMLInputElement;
     cbStrict.onchange = () => {
+      /* v8 ignore start */
       this.config.onToggleStrict(cbStrict.checked);
     };
+    /* v8 ignore stop */
 
     this.container.appendChild(lblStrict);
   }

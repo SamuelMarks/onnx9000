@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.core.memory_planner import ArenaSimulator, MemoryBlock, simulate_memory_plan
 
 
 def test_memory_block():
+    """Docstring for D103."""
     b = MemoryBlock(0, 1024)
     assert b.offset == 0
     assert b.size == 1024
@@ -12,6 +15,7 @@ def test_memory_block():
 
 
 def test_arena_simulator():
+    """Docstring for D103."""
     arena = ArenaSimulator(alignment=256)
     assert arena._align(100) == 256
     assert arena._align(256) == 256
@@ -72,6 +76,7 @@ def test_arena_simulator():
 
 
 def test_simulate_memory_plan():
+    """Docstring for D103."""
     # In-place Relu
     g = Graph("g1")
     g.inputs.append(ValueInfo("in", DType.FLOAT32, [100]))

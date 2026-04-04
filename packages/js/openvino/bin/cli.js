@@ -83,8 +83,10 @@ function main() {
   console.log(`Successfully exported OpenVINO model.`);
 }
 
+/* v8 ignore start */
 if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
+/* v8 ignore stop */
 
 export { main };

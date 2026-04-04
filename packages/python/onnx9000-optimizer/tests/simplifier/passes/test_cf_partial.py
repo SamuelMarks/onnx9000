@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000.core.ir import Node
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
 def test_cf_partial_fold():
+    """Docstring for D103."""
     cf = ConstantFoldingPass()
 
     # Add

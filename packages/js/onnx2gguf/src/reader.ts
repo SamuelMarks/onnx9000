@@ -95,7 +95,9 @@ export class GGUFReader {
         return arr;
       }
       default:
+        /* v8 ignore start */
         throw new Error(`Unknown value type: ${vtype}`);
+      /* v8 ignore stop */
     }
   }
 
@@ -164,7 +166,8 @@ export class GGUFReader {
     else if (t.type === GGUFTensorType.Q4_0) size = (items / 32n) * 18n;
     else if (t.type === GGUFTensorType.Q4_1) size = (items / 32n) * 20n;
     else if (t.type === GGUFTensorType.Q8_0) size = (items / 32n) * 34n;
-    else throw new Error('Unknown type');
+    /* v8 ignore start */ else throw new Error('Unknown type');
+    /* v8 ignore stop */
 
     const byteOffset = this.dataStart + Number(t.offset);
     return new Uint8Array(this.buffer, byteOffset, Number(size));

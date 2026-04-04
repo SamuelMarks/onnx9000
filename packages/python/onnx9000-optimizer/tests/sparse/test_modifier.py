@@ -112,6 +112,7 @@ def test_apply_recipe():
 
 
 def test_modifier_extra():
+    """Docstring for D103."""
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant, Graph

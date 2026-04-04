@@ -10,6 +10,7 @@ from onnx9000.core.ir import Constant, Graph, Tensor
 
 
 def test_export_state_dict():
+    """Docstring for D103."""
     graph = Graph(name="mygraph")
     t1 = Constant(
         name="a/b",
@@ -42,6 +43,7 @@ def test_export_state_dict():
 
 
 def test_universal_weight_bridge():
+    """Docstring for D103."""
     weights = {"w": np.array([1.0])}
 
     # pytorch
@@ -79,6 +81,7 @@ def test_universal_weight_bridge():
 
 
 def test_export_state_dict_import_error():
+    """Docstring for D103."""
     import sys
 
     with pytest.MonkeyPatch.context() as m:

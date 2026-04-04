@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import os
 from unittest.mock import MagicMock, patch
 
@@ -7,6 +9,8 @@ from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
 def test_hub_extra():
+    """Docstring for D103."""
+
     # 44-45
     def mock_urlopen(*args, **kwargs):
         from urllib.error import HTTPError
@@ -21,6 +25,7 @@ def test_hub_extra():
 
 
 def test_get_onnx9000_tensor():
+    """Docstring for D103."""
     parser = SafeTensors.__new__(SafeTensors)
     parser.tensors = {
         "t1": {"dtype": "F32", "shape": [2, 2], "data_offsets": [0, 16]},

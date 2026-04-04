@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import unittest
 
 import numpy as np
@@ -6,7 +8,10 @@ from onnx9000.core.parser.core import _parse_attribute, parse_model, parse_spars
 
 
 class TestParserSparse(unittest.TestCase):
+    """Docstring for D101."""
+
     def test_parse_sparse_tensor(self):
+        """Docstring for D102."""
         sparse = onnx_pb2.SparseTensorProto()
         sparse.dims.extend([2, 2])
         sparse.values.data_type = 1
@@ -35,6 +40,7 @@ class TestParserSparse(unittest.TestCase):
         self.assertEqual(pa2.attr_type, "SPARSE_TENSORS")
 
     def test_model_sparse(self):
+        """Docstring for D102."""
         # We need to test the model with a sparse_initializer
         model = onnx_pb2.ModelProto()
         model.graph.name = "test"

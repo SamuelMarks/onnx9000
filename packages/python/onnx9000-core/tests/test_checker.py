@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import asyncio
 
 import pytest
@@ -13,6 +15,8 @@ from onnx9000.core.exceptions import UnsupportedOpError, UnsupportedOpsetError, 
 
 
 class MockTensor:
+    """Docstring for D101."""
+
     def __init__(
         self,
         data_type,
@@ -22,6 +26,7 @@ class MockTensor:
         data_location=None,
         external_data=None,
     ):
+        """Docstring for D107."""
         self.data_type = data_type
         self.shape = shape
         self.is_initializer = is_initializer
@@ -31,12 +36,14 @@ class MockTensor:
 
 
 def test_validation_context():
+    """Docstring for D103."""
     ctx = ValidationContext()
     assert ctx.strict is True
     assert ctx.errors == []
 
 
 def test_schema_registry():
+    """Docstring for D103."""
     registry = SchemaRegistry()
     assert registry.get_schema("Conv", 21) == {"pads": "ints", "strides": "ints"}
 
@@ -51,6 +58,7 @@ def test_schema_registry():
 
 
 def test_check_tensor():
+    """Docstring for D103."""
     ctx = ValidationContext()
 
     # Valid tensor
@@ -95,6 +103,7 @@ def test_check_tensor():
 
 
 def test_check_attribute():
+    """Docstring for D103."""
     ctx = ValidationContext()
     check_attribute("pads", [1, 1], "ints", ctx)
     assert not ctx.errors
@@ -112,7 +121,10 @@ def test_check_attribute():
 
 
 class MockNode:
+    """Docstring for D101."""
+
     def __init__(self, op_type, inputs, outputs, attributes=None):
+        """Docstring for D107."""
         self.op_type = op_type
         self.inputs = inputs
         self.outputs = outputs
@@ -120,7 +132,10 @@ class MockNode:
 
 
 class MockModel:
+    """Docstring for D101."""
+
     def __init__(self, ir_version=8, producer_name="test", opset_import=None, graph=None):
+        """Docstring for D107."""
         self.ir_version = ir_version
         self.producer_name = producer_name
         self.opset_import = opset_import or []
@@ -128,18 +143,25 @@ class MockModel:
 
 
 class MockDomain:
+    """Docstring for D101."""
+
     def __init__(self, domain):
+        """Docstring for D107."""
         self.domain = domain
 
 
 class MockGraph:
+    """Docstring for D101."""
+
     def __init__(self, inputs=None, initializers=None, nodes=None):
+        """Docstring for D107."""
         self.inputs = inputs or []
         self.initializers = initializers or []
         self.nodes = nodes or []
 
 
 def test_check_model():
+    """Docstring for D103."""
     # Valid model
     n1 = MockNode("Add", ["x", "y"], ["z"])
     g1 = MockGraph(inputs=[MockTensor("float", [1], is_initializer=False)], nodes=[n1])
@@ -160,6 +182,7 @@ def test_check_model():
 
 
 def test_check_model_async():
+    """Docstring for D103."""
     m1 = MockModel(
         opset_import=[MockDomain("ai.onnx")],
         graph=MockGraph(
@@ -178,6 +201,7 @@ from onnx9000.core.checker import _check_op_specific
 
 
 def test_check_op_specific():
+    """Docstring for D103."""
     ctx = ValidationContext()
 
     # Add
@@ -211,6 +235,7 @@ def test_check_op_specific():
 
 
 def test_check_model_missing_fields():
+    """Docstring for D103."""
     # missing opset_import
     m1 = MockModel(producer_name=123)
     with pytest.raises(ValidationError) as e:

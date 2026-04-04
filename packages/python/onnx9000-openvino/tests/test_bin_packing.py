@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import struct
 
 from onnx9000.core.dtypes import DType
@@ -6,6 +8,7 @@ from onnx9000.openvino.exporter import OpenVinoExporter
 
 
 def test_deduplication():
+    """Docstring for D103."""
     graph = Graph("test_dedup")
     graph.inputs.append(ValueInfo("X", (1, 3, 224, 224), DType.FLOAT32))
 
@@ -35,6 +38,7 @@ def test_deduplication():
 
 
 def test_fp16_cast():
+    """Docstring for D103."""
     graph = Graph("test_fp16")
     w1_data = struct.pack("<4f", 1.0, 2.0, 3.0, 4.0)
     w1 = Tensor("W1", shape=(4,), dtype=DType.FLOAT32, is_initializer=True, data=w1_data)

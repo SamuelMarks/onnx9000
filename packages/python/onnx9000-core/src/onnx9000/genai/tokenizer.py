@@ -159,7 +159,6 @@ class WordPieceTokenizer(Tokenizer):
 
     def encode(self, text: str) -> list[int]:
         """Execute the encode operation."""
-
         words = text.split()
         token_ids = []
         for word in words:

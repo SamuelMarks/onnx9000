@@ -36,6 +36,7 @@ class C89Compiler:
             debug: Enable debug assertions and checks in generated code.
             align: Memory alignment for tensor buffers.
             indent: Number of spaces for code indentation.
+
         """
         self.align = align
         self.indent = indent

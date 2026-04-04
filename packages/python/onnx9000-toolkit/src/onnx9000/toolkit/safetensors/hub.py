@@ -11,6 +11,7 @@ def _get_cache_dir() -> str:
 
     Returns:
         The path to the Hugging Face cache directory.
+
     """
     if "HF_HOME" in os.environ:
         return os.environ["HF_HOME"]
@@ -26,6 +27,7 @@ def resolve_model_file(repo_id: str, revision: str = "main") -> str:
 
     Returns:
         The URL to the best available weights file, or None if not found.
+
     """
     base_url = f"https://huggingface.co/{repo_id}/resolve/{revision}"
 
@@ -63,6 +65,7 @@ def cached_download(
 
     Raises:
         RuntimeError: If the download fails or hash validation fails.
+
     """
     cache_dir = _get_cache_dir()
 

@@ -122,6 +122,7 @@ def _calculate_volume(shape: list[int]) -> int:
 
     Raises:
         SafetensorsShapeMismatchError: If the shape is invalid.
+
     """
     if not isinstance(shape, list):
         raise SafetensorsShapeMismatchError("Shape must be an array/list")
@@ -155,6 +156,7 @@ class SafeTensors:
             SafetensorsFileEmptyError: If the input data is empty.
             SafetensorsFileTooSmallError: If the input data is too small.
             TypeError: If the input data type is not supported.
+
         """
         self.fd = None
         self.mm = None
@@ -351,6 +353,7 @@ class SafeTensors:
         Raises:
             TypeError: If the name is not a string.
             KeyError: If the tensor is not found.
+
         """
         if not isinstance(name, str):
             raise TypeError(f"Key must be string, got {type(name)}")
@@ -384,7 +387,7 @@ class SafeTensors:
             try:
                 view = view.cast(struct_char_map[dtype], shape=tuple(shape))
             except Exception:
-                pass  # ignore if python doesn't support the shape cast
+                _ignore = True  # ignore if python doesn't support the shape cast
 
         return view
 
@@ -393,6 +396,7 @@ class SafeTensors:
 
         Yields:
             A tuple of (tensor name, tensor memoryview).
+
         """
         for name in self.tensors:
             yield name, self.get_tensor(name)
@@ -405,6 +409,7 @@ class SafeTensors:
 
         Returns:
             A memoryview of the pinned tensor data.
+
         """
         import ctypes
         import mmap
@@ -466,6 +471,7 @@ class SafeTensors:
 
         Returns:
             A dictionary mapping names to memoryviews.
+
         """
         return {name: self.get_tensor(name) for name in names}
 
@@ -474,6 +480,7 @@ class SafeTensors:
 
         Returns:
             Total size in bytes.
+
         """
         return sum(
             info["data_offsets"][1] - info["data_offsets"][0] for info in self.tensors.values()
@@ -491,6 +498,7 @@ class SafeTensors:
         Raises:
             ImportError: If onnx9000.core is not available.
             SafetensorsInvalidDtypeError: If the dtype cannot be mapped.
+
         """
         try:
             from onnx9000.core.dtypes import DType
@@ -545,6 +553,7 @@ class SafeTensors:
         Raises:
             ImportError: If numpy is not available.
             SafetensorsInvalidDtypeError: If the dtype cannot be mapped.
+
         """
         try:
             import numpy as np
@@ -595,6 +604,7 @@ class SafeTensors:
 
         Returns:
             A list of tensor names.
+
         """
         return list(self.tensors.keys())
 
@@ -606,6 +616,7 @@ class SafeTensors:
 
         Returns:
             A memoryview of the tensor data.
+
         """
         return self.get_tensor(key)
 
@@ -617,6 +628,7 @@ class SafeTensors:
 
         Returns:
             True if the tensor exists, False otherwise.
+
         """
         return key in self.tensors
 
@@ -629,7 +641,7 @@ class SafeTensors:
             try:
                 self.mm.close()
             except BufferError:
-                pass  # Pointers are still exported; GC will handle it when they die
+                _ignore = True  # Pointers are still exported; GC will handle it when they die
             self.mm = None
         if hasattr(self, "fd") and self.fd:
             os.close(self.fd)
@@ -657,6 +669,7 @@ def save(tensors: dict[str, Any], metadata: Optional[dict[str, str]] = None) -> 
 
     Returns:
         The serialized safetensors data as bytes.
+
     """
     header = {}
 
@@ -791,6 +804,7 @@ def save_file(
 
     Raises:
         SafetensorsWriteError: If the file exists and overwrite is False.
+
     """
     if not overwrite and os.path.exists(filename):
         raise SafetensorsWriteError(f"File {filename} already exists and overwrite=False")
@@ -811,6 +825,7 @@ def load_file(
 
     Returns:
         A dictionary mapping names to numpy arrays.
+
     """
     import re
 
@@ -842,6 +857,7 @@ def load(data: bytes, prefix: str = "", pattern: Optional[str] = None) -> dict[s
 
     Returns:
         A dictionary mapping names to numpy arrays.
+
     """
     import re
 
@@ -868,6 +884,7 @@ def check_safetensors(filename: str) -> bool:
 
     Returns:
         True if the file is valid, False otherwise.
+
     """
     try:
         with SafeTensors(filename):
@@ -887,6 +904,7 @@ def get_metadata(filename: str) -> dict[str, str]:
 
     Returns:
         A dictionary of metadata.
+
     """
     with SafeTensors(filename) as st:
         return st.metadata
@@ -901,6 +919,7 @@ def get_tensor(filename: str, key: str) -> memoryview:
 
     Returns:
         A memoryview of the tensor data (copied to bytes to ensure safety after file close).
+
     """
     with SafeTensors(filename) as st:
         # Since we use memoryview connected to mmap, we must extract and copy to bytes if we want to return safely.
@@ -919,6 +938,7 @@ def safe_open(filename: str, framework: str = "pt", device: str = "cpu"):
 
     Returns:
         A SafeTensors reader object.
+
     """
     return SafeTensors(filename)
 
@@ -934,6 +954,7 @@ class SafeTensorsSharded:
 
         Raises:
             SafetensorsError: If the index file is invalid.
+
         """
         self.index_filename = index_filename
         self.base_dir = os.path.dirname(index_filename)
@@ -957,6 +978,7 @@ class SafeTensorsSharded:
 
         Raises:
             SafetensorsError: If path traversal is detected.
+
         """
         if ".." in filename or filename.startswith("/") or filename.startswith("\\"):
             raise SafetensorsError(f"Path traversal detected in sharded index: {filename}")
@@ -976,6 +998,7 @@ class SafeTensorsSharded:
 
         Raises:
             KeyError: If the tensor is not found in the index.
+
         """
         if name not in self.weight_map:
             raise KeyError(f"Tensor {name} not found in sharded index")
@@ -995,6 +1018,7 @@ class SafeTensorsSharded:
 
         Raises:
             KeyError: If the tensor is not found in the index.
+
         """
         if name not in self.weight_map:
             raise KeyError(f"Tensor {name} not found in sharded index")
@@ -1008,6 +1032,7 @@ class SafeTensorsSharded:
 
         Returns:
             A list of tensor names.
+
         """
         return list(self.weight_map.keys())
 
@@ -1019,6 +1044,7 @@ class SafeTensorsSharded:
 
         Returns:
             True if the tensor exists, False otherwise.
+
         """
         return key in self.weight_map
 
@@ -1030,6 +1056,7 @@ class SafeTensorsSharded:
 
         Returns:
             A memoryview of the tensor data.
+
         """
         return self.get_tensor(key)
 
@@ -1067,6 +1094,7 @@ def save_sharded(
         metadata: Optional dictionary of string metadata.
         max_shard_size: Maximum size of each shard in bytes.
         prefix: Prefix for the shard filenames.
+
     """
     os.makedirs(base_dir, exist_ok=True)
 

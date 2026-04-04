@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from unittest.mock import MagicMock
 
 import pytest
@@ -11,7 +13,10 @@ from onnx9000.converters.tf.keras_layers import (
 
 
 class TFNodeMock:
+    """Docstring for D101."""
+
     def __init__(self, name, op, inputs, attr):
+        """Docstring for D107."""
         self.name = name
         self.op = op
         self.inputs = inputs
@@ -19,6 +24,7 @@ class TFNodeMock:
 
 
 def test_missing_lines_specifically():
+    """Docstring for D103."""
     builder = MagicMock()
     builder.make_node.return_value = ["dummy", "dummy2"]
 

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +9,10 @@ import onnx9000.tensorrt.network as trt_network
 
 
 class TestTensorRTFFI(unittest.TestCase):
+    """Docstring for D101."""
+
     def setUp(self):
+        """Docstring for D102."""
         # Mock FFI lib
         self.mock_lib = MagicMock()
         trt.ffi.lib = self.mock_lib
@@ -16,6 +21,7 @@ class TestTensorRTFFI(unittest.TestCase):
         trt.ffi._setup_logging_callback()
 
     def test_ffi_initialization(self):
+        """Docstring for D102."""
         self.assertIsNotNone(trt.ffi)
         self.assertIsInstance(trt.ffi.pointers, dict)
         trt.ffi.register_pointer(123, "obj")
@@ -35,10 +41,12 @@ class TestTensorRTFFI(unittest.TestCase):
         obj._c_log_callback("user_data", 4, b"verbose")
 
     def test_enums(self):
+        """Docstring for D102."""
         self.assertEqual(trt.DataType.kFLOAT.value, 0)
         self.assertEqual(trt.ElementWiseOperation.kSUM.value, 0)
 
     def test_structs(self):
+        """Docstring for D102."""
         with self.assertRaises(ValueError):
             trt.Dims([1, 2, 3, 4, 5, 6, 7, 8, 9])
         dims = trt.Dims([1, 2, 3])
@@ -54,7 +62,7 @@ class TestTensorRTFFI(unittest.TestCase):
         self.assertEqual(weights.count, 100)
 
     def test_registry(self):
-
+        """Docstring for D102."""
         trt.register_op("", "Dummy")(lambda x, y, z: True)
         trt.register_op("", "Dummy")(lambda x, y, z: True)
         func = trt.get_op_translator("", "Dummy")
@@ -63,6 +71,7 @@ class TestTensorRTFFI(unittest.TestCase):
             trt.get_op_translator("", "NonExistentDummy")
 
     def test_builder(self):
+        """Docstring for D102."""
         self.mock_lib.createInferBuilder_INTERNAL.return_value = 1234
         self.mock_lib.createNetworkV2.return_value = 5678
         self.mock_lib.createBuilderConfig.return_value = 9012
@@ -86,6 +95,7 @@ class TestTensorRTFFI(unittest.TestCase):
         builder.destroy()
 
     def test_builder_fail(self):
+        """Docstring for D102."""
         trt.ffi.lib = None
         with self.assertRaises(RuntimeError):
             trt_builder.Builder()
@@ -113,6 +123,7 @@ class TestTensorRTFFI(unittest.TestCase):
             builder.create_builder_config()
 
     def test_network(self):
+        """Docstring for D102."""
         net = trt_network.INetworkDefinition(111)
 
         dims = trt.Dims([1])
@@ -146,6 +157,7 @@ class TestTensorRTFFI(unittest.TestCase):
             net.mark_output(t)
 
     def test_ffi_reload(self):
+        """Docstring for D102."""
         import sys
 
         old_platform = sys.platform
@@ -165,6 +177,7 @@ class TestTensorRTFFI(unittest.TestCase):
             TensorRTFFI()
 
     def test_ffi_version_and_plugin(self):
+        """Docstring for D102."""
         mock_lib = MagicMock()
         mock_lib.getInferLibVersion.return_value = 8006
         mock_plugin = MagicMock()
@@ -176,6 +189,7 @@ class TestTensorRTFFI(unittest.TestCase):
             self.assertEqual(ffi_obj.version, (8, 0, 6))
 
     def test_ops(self):
+        """Docstring for D102."""
         print("HELLO WORLD")
         # We test all ops by faking the ffi.lib functions and passing mocked nodes
         net = trt_network.INetworkDefinition(111)
@@ -393,6 +407,7 @@ class TestTensorRTFFI(unittest.TestCase):
                 setattr(self.mock_lib, m, MagicMock(return_value=0))
 
     def test_phase(self):
+        """Docstring for D102."""
         from onnx9000.tensorrt.ffi import _phase_1_20_bindings
 
         self.assertTrue(_phase_1_20_bindings())

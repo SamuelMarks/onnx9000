@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import onnx9000.core.ops as ops
 import onnx9000.core.ops.torch_auto as torch_auto
 import pytest

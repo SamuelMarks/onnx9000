@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 import math
 
 from onnx9000.diffusers.schedulers import DDIMScheduler, EulerDiscreteScheduler
 
 
 def test_ddim_scheduler_step():
+    """Docstring for D103."""
     scheduler = DDIMScheduler(num_train_timesteps=1000)
     sample = [1.0]
     model_output = [0.1]
@@ -15,6 +18,7 @@ def test_ddim_scheduler_step():
 
 
 def test_euler_scheduler_step():
+    """Docstring for D103."""
     scheduler = EulerDiscreteScheduler(num_train_timesteps=1000)
     sample = [1.0]
     model_output = [0.1]

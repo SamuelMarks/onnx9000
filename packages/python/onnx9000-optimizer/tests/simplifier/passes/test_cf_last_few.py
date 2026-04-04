@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
@@ -5,6 +7,7 @@ from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldin
 
 
 def test_cf_last_few():
+    """Docstring for D103."""
     cf = ConstantFoldingPass()
 
     g = Graph("G")

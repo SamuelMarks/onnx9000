@@ -1,8 +1,11 @@
+"""Module docstring."""
+
 import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
 def test_cf_reductions():
+    """Docstring for D103."""
     cf = ConstantFoldingPass()
     a = np.ones((2, 2))
     b = np.array([0])

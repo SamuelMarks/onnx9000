@@ -21,6 +21,7 @@ class Tracer:
 
         Args:
             builder: The GraphBuilder to use for recording operations. If None, a new one is created.
+
         """
         self.builder = builder or GraphBuilder()
         self.prev_builder: Optional[GraphBuilder] = None
@@ -30,6 +31,7 @@ class Tracer:
 
         Returns:
             The GraphBuilder instance associated with this tracer.
+
         """
         self.prev_builder = get_active_builder()
         import onnx9000.converters.frontend.builder as builder_mod

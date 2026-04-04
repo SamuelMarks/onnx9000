@@ -25,10 +25,7 @@ export class CGenerator {
       this.graph.inputs.find((x) => x.name === name) ||
       this.graph.outputs.find((x) => x.name === name);
     if (v) {
-      return (
-        v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1) ||
-        256
-      );
+      return v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1);
     }
     const t = this.graph.tensors[name];
     if (t) {
@@ -90,13 +87,12 @@ export class CGenerator {
     intermediates.delete(firstInput);
 
     for (const intermediate of intermediates) {
-      const originalName =
-        Array.from(intermediates).find((n) => this.sanitize(n) === intermediate) || intermediate;
+      const originalName = intermediate;
       const size = this.getTensorSize(originalName);
 
       const tensor = this.graph.tensors[originalName];
       if (tensor && tensor.data) {
-        const maxVals = Math.min(size, 1024); // Limit inline weights for demo
+        const maxVals = Math.min(size, 1024, Math.floor(tensor.data.byteLength / 4)); // Limit inline weights for demo
         const values: string[] = [];
         if (tensor.data instanceof Uint8Array) {
           const dv = new DataView(

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import tempfile
 import unittest
 import zipfile
@@ -10,13 +12,16 @@ from onnx9000.core.serializer import _serialize_shape, save
 
 
 class TestSerializerMore(unittest.TestCase):
-    def test_serialize_shape_float(self):
+    """Docstring for D101."""
 
+    def test_serialize_shape_float(self):
+        """Docstring for D102."""
         shape = _serialize_shape([1.0, -1.0])
         self.assertEqual(shape.dim[0].dim_value, 1)
         self.assertEqual(shape.dim[1].dim_param, "?")
 
     def test_serialize_sparse_and_external_and_compress(self):
+        """Docstring for D102."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "model.onnx"
             g = Graph("test")

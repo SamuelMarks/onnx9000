@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import struct
 
 import pytest
@@ -7,6 +9,7 @@ from onnx9000.openvino.exporter import OpenVinoExporter
 
 
 def test_export_unsupported_dtype():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("x", (1,), DType.FLOAT16))
     exporter = OpenVinoExporter(g)
@@ -15,6 +18,7 @@ def test_export_unsupported_dtype():
 
 
 def test_clamp_dynamic():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("x", ["batch", 3, -1], DType.FLOAT32))
     g.nodes.append(Node("Relu", ["x"], ["y"]))
@@ -25,6 +29,7 @@ def test_clamp_dynamic():
 
 
 def test_dynamic_const_dtypes():
+    """Docstring for D103."""
     g = Graph("g")
     exporter = OpenVinoExporter(g)
 
@@ -40,6 +45,7 @@ def test_dynamic_const_dtypes():
 
 
 def test_conv_nodes():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3, 224, 224), DType.FLOAT32))
     g.inputs.append(ValueInfo("W", (16, 3, 3, 3), DType.FLOAT32))
@@ -84,6 +90,7 @@ def test_conv_nodes():
 
 
 def test_pool_nodes():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3, 224, 224), DType.FLOAT32))
     n1 = Node(
@@ -121,6 +128,7 @@ def test_pool_nodes():
 
 
 def test_gelu_softmax_concat_split():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
     g.nodes.append(
@@ -139,6 +147,7 @@ def test_gelu_softmax_concat_split():
 
 
 def test_pad_op():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
     g.inputs.append(ValueInfo("Pads", (4,), DType.INT64))
@@ -166,6 +175,7 @@ def test_pad_op():
 
 
 def test_gather_slice_reduce_argmax():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -208,6 +218,7 @@ def test_gather_slice_reduce_argmax():
 
 
 def test_resize_space_nms_roi():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -262,6 +273,7 @@ def test_resize_space_nms_roi():
 
 
 def test_norms():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -296,6 +308,7 @@ def test_norms():
 
 
 def test_dropout_cast_gridsample():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -321,6 +334,7 @@ def test_dropout_cast_gridsample():
 
 
 def test_size_flatten_transpose():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -334,6 +348,7 @@ def test_size_flatten_transpose():
 
 
 def test_gather_elements_constantofshape():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -365,6 +380,7 @@ def test_gather_elements_constantofshape():
 
 
 def test_control_flow():
+    """Docstring for D103."""
     sub_g1 = Graph("sub1")
     sub_g1.inputs.append(ValueInfo("a", (1,), DType.BOOL))
     sub_g1.nodes.append(Node("Relu", ["a"], ["b"]))
@@ -398,6 +414,7 @@ def test_control_flow():
 
 
 def test_mat_gemm():
+    """Docstring for D103."""
     g = Graph("g")
     g.inputs.append(ValueInfo("A", (2, 2), DType.FLOAT32))
     g.inputs.append(ValueInfo("B", (2, 2), DType.FLOAT32))

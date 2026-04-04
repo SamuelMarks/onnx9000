@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from .pipeline import AbortSignal, DiffusionPipeline
 from .schedulers import (
     DDIMScheduler,

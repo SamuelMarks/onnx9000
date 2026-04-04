@@ -382,24 +382,6 @@ def concat(inputs: list[Tensor], axis: int) -> Tensor:
     return record_op("Concat", inputs, {"axis": axis})
 
 
-@register_op("QuantizeLinear", "ai.onnx")
-def quantize_linear(x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] = None) -> Tensor:
-    """Compute QuantizeLinear."""
-    inputs = [x, y_scale]
-    if y_zero_point is not None:
-        inputs.append(y_zero_point)
-    return record_op("QuantizeLinear", inputs)
-
-
-@register_op("DequantizeLinear", "ai.onnx")
-def dequantize_linear(x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor] = None) -> Tensor:
-    """Compute DequantizeLinear."""
-    inputs = [x, x_scale]
-    if x_zero_point is not None:
-        inputs.append(x_zero_point)
-    return record_op("DequantizeLinear", inputs)
-
-
 @register_op("ConvTranspose", "ai.onnx")
 def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose."""
@@ -409,6 +391,7 @@ def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: A
     return record_op("ConvTranspose", inputs, kwargs)
 
 
+@register_op("BlackmanWindow", "ai.onnx")
 def blackman_window(size: Tensor, output_datatype: int = 1, periodic: int = 1) -> Tensor:
     """Compute BlackmanWindow."""
     return record_op(
@@ -442,6 +425,7 @@ def eye_like(input: Tensor, dtype: int = 1, k: int = 0) -> Tensor:
     return record_op("EyeLike", [input], {"dtype": dtype, "k": k})
 
 
+@register_op("LayerNormalization", "ai.onnx")
 def layer_normalization(
     x: Tensor,
     scale: Tensor,
@@ -578,6 +562,7 @@ def mean(inputs: list[Tensor]) -> Tensor:
     return record_op("Mean", inputs)
 
 
+@register_op("MelWeightMatrix", "ai.onnx")
 def mel_weight_matrix(
     num_mel_bins: Tensor,
     dft_length: Tensor,
@@ -591,6 +576,7 @@ def mel_weight_matrix(
     return record_op("MelWeightMatrix", inputs, {"output_datatype": output_datatype})
 
 
+@register_op("Multinomial", "ai.onnx")
 def multinomial(input: Tensor, dtype: int = 6, sample_size: int = 1, seed: float = 0.0) -> Tensor:
     """Compute Multinomial."""
     return record_op(
@@ -600,6 +586,7 @@ def multinomial(input: Tensor, dtype: int = 6, sample_size: int = 1, seed: float
     )
 
 
+@register_op("NonMaxSuppression", "ai.onnx")
 def non_max_suppression(
     boxes: Tensor,
     scores: Tensor,
@@ -629,6 +616,7 @@ def non_zero(x: Tensor) -> Tensor:
     return record_op("NonZero", [x])
 
 
+@register_op("RandomNormal", "ai.onnx")
 def random_normal(
     dtype: int = 1,
     mean: float = 0.0,
@@ -646,6 +634,7 @@ def random_normal(
     )
 
 
+@register_op("RandomNormalLike", "ai.onnx")
 def random_normal_like(
     input: Tensor,
     dtype: Optional[int] = None,
@@ -660,6 +649,7 @@ def random_normal_like(
     return record_op("RandomNormalLike", [input], attrs)
 
 
+@register_op("RandomUniform", "ai.onnx")
 def random_uniform(
     dtype: int = 1,
     high: float = 1.0,
@@ -677,6 +667,7 @@ def random_uniform(
     )
 
 
+@register_op("RandomUniformLike", "ai.onnx")
 def random_uniform_like(
     input: Tensor,
     dtype: Optional[int] = None,
@@ -748,6 +739,7 @@ def regex_full_match(x: Tensor, pattern: str) -> Tensor:
     return record_op("RegexFullMatch", [x], {"pattern": pattern})
 
 
+@register_op("Resize", "ai.onnx")
 def resize(
     x: Tensor,
     roi: Optional[Tensor] = None,
@@ -770,6 +762,7 @@ def resize(
     return record_op("Resize", inputs, kwargs)
 
 
+@register_op("ReverseSequence", "ai.onnx")
 def reverse_sequence(
     input: Tensor, sequence_lens: Tensor, batch_axis: int = 1, time_axis: int = 0
 ) -> Tensor:
@@ -787,6 +780,7 @@ def scatter(data: Tensor, indices: Tensor, updates: Tensor, axis: int = 0) -> Te
     return record_op("Scatter", [data, indices, updates], {"axis": axis})
 
 
+@register_op("ScatterElements", "ai.onnx")
 def scatter_elements(
     data: Tensor,
     indices: Tensor,
@@ -826,6 +820,7 @@ def string_concat(x: Tensor, y: Tensor) -> Tensor:
     return record_op("StringConcat", [x, y])
 
 
+@register_op("StringNormalizer", "ai.onnx")
 def string_normalizer(
     x: Tensor,
     case_change_action: str = "NONE",
@@ -912,6 +907,7 @@ def affine_grid(theta: Tensor, size: Tensor, align_corners: int = 0) -> Tensor:
     return record_op("AffineGrid", [theta, size], {"align_corners": align_corners})
 
 
+@register_op("Argmax", "ai.onnx")
 def argmax(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: int = 0) -> Tensor:
     """Compute ArgMax."""
     return record_op(
@@ -921,6 +917,7 @@ def argmax(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: in
     )
 
 
+@register_op("Argmin", "ai.onnx")
 def argmin(data: Tensor, axis: int = 0, keepdims: int = 1, select_last_index: int = 0) -> Tensor:
     """Compute ArgMin."""
     return record_op(
@@ -967,6 +964,7 @@ def clip(input: Tensor, min: Optional[Tensor] = None, max: Optional[Tensor] = No
     return record_op("Clip", inputs)
 
 
+@register_op("Col2im", "ai.onnx")
 def col2im(
     input: Tensor,
     image_shape: Tensor,
@@ -995,6 +993,7 @@ def compress(input: Tensor, condition: Tensor, axis: Optional[int] = None) -> Te
     return record_op("Compress", [input, condition], attrs)
 
 
+@register_op("ConvInteger", "ai.onnx")
 def conv_integer(
     x: Tensor,
     w: Tensor,
@@ -1019,6 +1018,7 @@ def cumsum(x: Tensor, axis: Tensor, exclusive: int = 0, reverse: int = 0) -> Ten
     return record_op("CumSum", [x, axis], {"exclusive": exclusive, "reverse": reverse})
 
 
+@register_op("Dft", "ai.onnx")
 def dft(
     input: Tensor,
     dft_length: Optional[Tensor] = None,
@@ -1033,6 +1033,7 @@ def dft(
     return record_op("DFT", inputs, {"axis": axis, "inverse": inverse, "onesided": onesided})
 
 
+@register_op("Dropout", "ai.onnx")
 def dropout(
     data: Tensor,
     ratio: Optional[Tensor] = None,
@@ -1056,6 +1057,7 @@ def reshape(x: Tensor, shape: Tensor) -> Tensor:
     return record_op("Reshape", [x, shape])
 
 
+@register_op("AveragePool", "ai.onnx")
 def average_pool(
     x: Tensor,
     kernel_shape: list[int],
@@ -1071,6 +1073,7 @@ def average_pool(
     return record_op("AveragePool", [x], attr)
 
 
+@register_op("MaxPool", "ai.onnx")
 def max_pool(
     x: Tensor,
     kernel_shape: list[int],
@@ -1171,6 +1174,7 @@ def matmul(x: Tensor, y: Tensor) -> Tensor:
     return record_op("MatMul", [x, y])
 
 
+@register_op("Gemm", "ai.onnx")
 def gemm(
     x: Tensor,
     y: Tensor,
@@ -1233,6 +1237,7 @@ def reduce_prod(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tr
     return record_op("ReduceProd", [x], attributes)
 
 
+@register_op("Conv", "ai.onnx")
 def conv(
     x: Tensor,
     w: Tensor,
@@ -1282,6 +1287,7 @@ def expand(input: Tensor, shape: Tensor) -> Tensor:
     return record_op("Expand", [input, shape])
 
 
+@register_op("Slice", "ai.onnx")
 def slice(
     data: Tensor,
     starts: Tensor,
@@ -1364,6 +1370,7 @@ def lrn(
     return record_op("LRN", [x], {"alpha": alpha, "beta": beta, "bias": bias, "size": size})
 
 
+@register_op("GroupNormalization", "ai.onnx")
 def group_normalization(
     x: Tensor, scale: Tensor, b: Tensor, epsilon: float = 1e-05, num_groups: int = 1
 ) -> Tensor:
@@ -1520,9 +1527,9 @@ def q_linear_mat_mul(x: Tensor) -> Tensor:
 
 
 @register_op("RMSNormalization", "ai.onnx")
-def rms_normalization(x: Tensor) -> Tensor:
+def rms_normalization(x: Tensor, scale: Tensor) -> Tensor:
     """Compute RMSNormalization."""
-    return record_op("RMSNormalization", [x])
+    return record_op("RMSNormalization", [x, scale])
 
 
 @register_op("Range", "ai.onnx")
@@ -1671,3 +1678,302 @@ def deform_conv(
             raise ValueError("Mask provided without Bias. ONNX requires sequential inputs.")
         inputs.append(mask)
     return record_op("DeformConv", inputs, kwargs)
+
+
+@register_op("Fmod", "ai.onnx")
+def fmod(x: Tensor, y: Tensor) -> Tensor:
+    """Compute Fmod."""
+    return record_op("Fmod", [x, y])
+
+
+@register_op("Log2", "ai.onnx")
+def log2(x: Tensor) -> Tensor:
+    """Compute Log2."""
+    return record_op("Log2", [x])
+
+
+@register_op("Log10", "ai.onnx")
+def log10(x: Tensor) -> Tensor:
+    """Compute Log10."""
+    return record_op("Log10", [x])
+
+
+@register_op("Expm1", "ai.onnx")
+def expm1(x: Tensor) -> Tensor:
+    """Compute Expm1."""
+    return record_op("Expm1", [x])
+
+
+@register_op("Log1p", "ai.onnx")
+def log1p(x: Tensor) -> Tensor:
+    """Compute Log1p."""
+    return record_op("Log1p", [x])
+
+
+@register_op("IsFinite", "ai.onnx")
+def isfinite(x: Tensor) -> Tensor:
+    """Compute IsFinite."""
+    return record_op("IsFinite", [x])
+
+
+@register_op("LogicalAnd", "ai.onnx")
+def logical_and(x: Tensor, y: Tensor) -> Tensor:
+    """Compute LogicalAnd."""
+    return record_op("LogicalAnd", [x, y])
+
+
+@register_op("LogicalOr", "ai.onnx")
+def logical_or(x: Tensor, y: Tensor) -> Tensor:
+    """Compute LogicalOr."""
+    return record_op("LogicalOr", [x, y])
+
+
+@register_op("LogicalXor", "ai.onnx")
+def logical_xor(x: Tensor, y: Tensor) -> Tensor:
+    """Compute LogicalXor."""
+    return record_op("LogicalXor", [x, y])
+
+
+@register_op("LogicalNot", "ai.onnx")
+def logical_not(x: Tensor) -> Tensor:
+    """Compute LogicalNot."""
+    return record_op("LogicalNot", [x])
+
+
+@register_op("Im2Col", "ai.onnx")
+def im2col(x: Tensor) -> Tensor:
+    """Compute Im2Col."""
+    return record_op("Im2Col", [x])
+
+
+@register_op("Repeat", "ai.onnx")
+def repeat(x: Tensor, repeats: Tensor) -> Tensor:
+    """Compute Repeat."""
+    return record_op("Repeat", [x, repeats])
+
+
+@register_op("Conv1D", "ai.onnx")
+def conv1d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute Conv1D."""
+    return record_op("Conv1D", [x, w] + ([b] if b else []))
+
+
+@register_op("Conv2D", "ai.onnx")
+def conv2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute Conv2D."""
+    return record_op("Conv2D", [x, w] + ([b] if b else []))
+
+
+@register_op("Conv3D", "ai.onnx")
+def conv3d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute Conv3D."""
+    return record_op("Conv3D", [x, w] + ([b] if b else []))
+
+
+@register_op("ConvTranspose1D", "ai.onnx")
+def conv_transpose1d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute ConvTranspose1D."""
+    return record_op("ConvTranspose1D", [x, w] + ([b] if b else []))
+
+
+@register_op("ConvTranspose2D", "ai.onnx")
+def conv_transpose2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute ConvTranspose2D."""
+    return record_op("ConvTranspose2D", [x, w] + ([b] if b else []))
+
+
+@register_op("ConvTranspose3D", "ai.onnx")
+def conv_transpose3d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute ConvTranspose3D."""
+    return record_op("ConvTranspose3D", [x, w] + ([b] if b else []))
+
+
+@register_op("DepthwiseConv2D", "ai.onnx")
+def depthwise_conv2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+    """Compute DepthwiseConv2D."""
+    return record_op("DepthwiseConv2D", [x, w] + ([b] if b else []))
+
+
+@register_op("DeformableConv2D", "ai.onnx")
+def deformable_conv2d(
+    x: Tensor, w: Tensor, offset: Tensor, b: Optional[Tensor] = None, **kwargs: Any
+) -> Tensor:
+    """Compute DeformableConv2D."""
+    return record_op("DeformableConv2D", [x, w, offset] + ([b] if b else []))
+
+
+@register_op("MaxPool1D", "ai.onnx")
+def max_pool1d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute MaxPool1D."""
+    return record_op("MaxPool1D", [x])
+
+
+@register_op("MaxPool2D", "ai.onnx")
+def max_pool2d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute MaxPool2D."""
+    return record_op("MaxPool2D", [x])
+
+
+@register_op("MaxPool3D", "ai.onnx")
+def max_pool3d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute MaxPool3D."""
+    return record_op("MaxPool3D", [x])
+
+
+@register_op("AveragePool1D", "ai.onnx")
+def average_pool1d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute AveragePool1D."""
+    return record_op("AveragePool1D", [x])
+
+
+@register_op("AveragePool2D", "ai.onnx")
+def average_pool2d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute AveragePool2D."""
+    return record_op("AveragePool2D", [x])
+
+
+@register_op("AveragePool3D", "ai.onnx")
+def average_pool3d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute AveragePool3D."""
+    return record_op("AveragePool3D", [x])
+
+
+@register_op("AdaptiveMaxPool2D", "ai.onnx")
+def adaptive_max_pool2d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute AdaptiveMaxPool2D."""
+    return record_op("AdaptiveMaxPool2D", [x])
+
+
+@register_op("AdaptiveAvgPool2D", "ai.onnx")
+def adaptive_avg_pool2d(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute AdaptiveAvgPool2D."""
+    return record_op("AdaptiveAvgPool2D", [x])
+
+
+@register_op("LocalResponseNorm", "ai.onnx")
+def local_response_norm(
+    x: Tensor, size: int, alpha: float = 0.0001, beta: float = 0.75, bias: float = 1.0
+) -> Tensor:
+    """Compute LocalResponseNorm."""
+    return record_op("LocalResponseNorm", [x])
+
+
+@register_op("AdaLN", "ai.onnx")
+def adaln(x: Tensor, shift: Tensor, scale: Tensor) -> Tensor:
+    """Compute AdaLN."""
+    return record_op("AdaLN", [x, shift, scale])
+
+
+@register_op("Silu", "ai.onnx")
+def silu(x: Tensor) -> Tensor:
+    """Compute Silu."""
+    return record_op("Silu", [x])
+
+
+@register_op("SwiGLU", "ai.onnx")
+def swiglu(x: Tensor, y: Tensor) -> Tensor:
+    """Compute SwiGLU."""
+    return record_op("SwiGLU", [x, y])
+
+
+@register_op("GeGLU", "ai.onnx")
+def geglu(x: Tensor, y: Tensor) -> Tensor:
+    """Compute GeGLU."""
+    return record_op("GeGLU", [x, y])
+
+
+@register_op("ReGLU", "ai.onnx")
+def reglu(x: Tensor, y: Tensor) -> Tensor:
+    """Compute ReGLU."""
+    return record_op("ReGLU", [x, y])
+
+
+@register_op("MultiHeadAttention", "ai.onnx")
+def multi_head_attention(query: Tensor, key: Tensor, value: Tensor, **kwargs: Any) -> Tensor:
+    """Compute MultiHeadAttention."""
+    return record_op("MultiHeadAttention", [query, key, value])
+
+
+@register_op("GroupedQueryAttention", "ai.onnx")
+def grouped_query_attention(query: Tensor, key: Tensor, value: Tensor, **kwargs: Any) -> Tensor:
+    """Compute GroupedQueryAttention."""
+    return record_op("GroupedQueryAttention", [query, key, value])
+
+
+@register_op("MultiQueryAttention", "ai.onnx")
+def multi_query_attention(query: Tensor, key: Tensor, value: Tensor, **kwargs: Any) -> Tensor:
+    """Compute MultiQueryAttention."""
+    return record_op("MultiQueryAttention", [query, key, value])
+
+
+@register_op("FlashAttention", "ai.onnx")
+def flash_attention(query: Tensor, key: Tensor, value: Tensor, **kwargs: Any) -> Tensor:
+    """Compute FlashAttention."""
+    return record_op("FlashAttention", [query, key, value])
+
+
+@register_op("PagedAttention", "ai.onnx")
+def paged_attention(
+    query: Tensor,
+    key_cache: Tensor,
+    value_cache: Tensor,
+    block_tables: Tensor,
+    context_lens: Tensor,
+    **kwargs: Any,
+) -> Tensor:
+    """Compute PagedAttention."""
+    return record_op("PagedAttention", [query, key_cache, value_cache, block_tables, context_lens])
+
+
+@register_op("RoPE1D", "ai.onnx")
+def rope1d(x: Tensor, freqs: Tensor, **kwargs: Any) -> Tensor:
+    """Compute RoPE1D."""
+    return record_op("RoPE1D", [x, freqs])
+
+
+@register_op("RoPE2D", "ai.onnx")
+def rope2d(x: Tensor, freqs: Tensor, **kwargs: Any) -> Tensor:
+    """Compute RoPE2D."""
+    return record_op("RoPE2D", [x, freqs])
+
+
+@register_op("RoPE3D", "ai.onnx")
+def rope3d(x: Tensor, freqs: Tensor, **kwargs: Any) -> Tensor:
+    """Compute RoPE3D."""
+    return record_op("RoPE3D", [x, freqs])
+
+
+@register_op("ALiBi", "ai.onnx")
+def alibi(x: Tensor, **kwargs: Any) -> Tensor:
+    """Compute ALiBi."""
+    return record_op("ALiBi", [x])
+
+
+@register_op("SlidingWindowAttention", "ai.onnx")
+def sliding_window_attention(
+    query: Tensor, key: Tensor, value: Tensor, window_size: int, **kwargs: Any
+) -> Tensor:
+    """Compute SlidingWindowAttention."""
+    return record_op("SlidingWindowAttention", [query, key, value])
+
+
+@register_op("StateSpaceModel", "ai.onnx")
+def state_space_model(x: Tensor, a: Tensor, b: Tensor, c: Tensor, **kwargs: Any) -> Tensor:
+    """Compute StateSpaceModel."""
+    return record_op("StateSpaceModel", [x, a, b, c])
+
+
+@register_op("QuantizeLinear", "ai.onnx")
+def quantize_linear(
+    x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] = None, **kwargs: Any
+) -> Tensor:
+    """Compute QuantizeLinear."""
+    return record_op("QuantizeLinear", [x, y_scale] + ([y_zero_point] if y_zero_point else []))
+
+
+@register_op("DequantizeLinear", "ai.onnx")
+def dequantize_linear(
+    x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor] = None, **kwargs: Any
+) -> Tensor:
+    """Compute DequantizeLinear."""
+    return record_op("DequantizeLinear", [x, x_scale] + ([x_zero_point] if x_zero_point else []))

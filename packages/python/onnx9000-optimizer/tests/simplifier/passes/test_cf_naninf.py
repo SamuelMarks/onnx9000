@@ -70,6 +70,7 @@ def test_cf_mock_nan_types():
 
 
 def test_erf():
+    """Docstring for D103."""
     import sys
     from unittest.mock import MagicMock
 
@@ -98,6 +99,7 @@ def test_erf():
 
 
 def test_erf_inspect():
+    """Docstring for D103."""
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant
@@ -116,6 +118,7 @@ def test_erf_inspect():
 
 
 def test_erf_inspect_exc():
+    """Docstring for D103."""
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant

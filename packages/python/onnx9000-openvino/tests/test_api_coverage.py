@@ -1,9 +1,12 @@
+"""Module docstring."""
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, ValueInfo
 from onnx9000.openvino.api import export_model
 
 
 def test_api_export_model():
+    """Docstring for D103."""
     graph = Graph("test_params")
     graph.inputs.append(ValueInfo("x", (1, 3, 224, 224), DType.FLOAT32))
     node = Node("Relu", inputs=["x"], outputs=["y"])

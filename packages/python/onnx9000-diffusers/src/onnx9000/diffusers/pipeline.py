@@ -12,6 +12,7 @@ class DiffusionPipeline:
 
         Args:
             **kwargs: Configuration components (models, schedulers, etc.).
+
         """
         self.config: dict[str, Any] = kwargs
         self.device: str = "cpu"
@@ -29,6 +30,7 @@ class DiffusionPipeline:
 
         Returns:
             An instance of DiffusionPipeline.
+
         """
         return cls(model_path=pretrained_model_name_or_path, **kwargs)
 
@@ -49,6 +51,7 @@ class DiffusionPipeline:
 
         Returns:
             Dictionary containing the generated image data.
+
         """
         self._is_aborted = False
         latents: list[float] = [0.0] * (64 * 64 * 4)  # dummy 1x4x64x64 latent
@@ -72,5 +75,6 @@ def set_progress_bar_config(**kwargs: Any) -> None:
 
     Args:
         **kwargs: Progress bar configuration settings.
+
     """
     return None

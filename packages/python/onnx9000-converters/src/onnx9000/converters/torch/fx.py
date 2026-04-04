@@ -15,6 +15,7 @@ class FXParser:
 
         Args:
             gm: The torch.fx.GraphModule to parse.
+
         """
         self.gm = gm
         self.graph = gm.graph
@@ -29,6 +30,7 @@ class FXParser:
 
         Returns:
             The corresponding onnx9000 DType.
+
         """
         mapping = {
             torch.float32: DType.FLOAT32,
@@ -49,6 +51,7 @@ class FXParser:
 
         Returns:
             A tuple of ints or strings for symbolic dimensions.
+
         """
         if shape_tuple is None:
             return ()
@@ -65,6 +68,7 @@ class FXParser:
 
         Returns:
             The populated GraphBuilder.
+
         """
         for node in self.graph.nodes:
             self._parse_node(node)
@@ -75,6 +79,7 @@ class FXParser:
 
         Args:
             node: The FX node to parse.
+
         """
         if node.op == "placeholder":
             # Input

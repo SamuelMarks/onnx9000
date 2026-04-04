@@ -23,6 +23,7 @@ class JAXImporter:
 
         Returns:
             A unique string name for the variable.
+
         """
         # Try to use var itself as key, but fall back to id(var) for unhashable types
         try:

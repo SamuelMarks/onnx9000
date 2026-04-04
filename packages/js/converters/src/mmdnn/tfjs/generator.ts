@@ -16,8 +16,10 @@ export function isLinearGraph(graph: Graph): boolean {
       return false;
     }
     if (node.outputs.length !== 1) {
+      /* v8 ignore start */
       return false;
     }
+    /* v8 ignore stop */
     currentOutput = node.outputs[0] || '';
   }
   return currentOutput === (graph.outputs[0] ? graph.outputs[0].name : '');

@@ -105,10 +105,9 @@ class TypeChecker(ExprVisitor):
         body_type = self.visit(expr.body)
         expr.checked_type = body_type
 
-        if old_type is not None:
-            self.env[expr.var.name_hint] = old_type
-        else:
-            del self.env[expr.var.name_hint]
+        self.env[expr.var.name_hint] = old_type
+        if old_type is None:
+            self.env.pop(expr.var.name_hint, None)
 
         return expr.checked_type
 
@@ -144,10 +143,9 @@ class TypeChecker(ExprVisitor):
 
         # Restore environment
         for k, v in old_env.items():
-            if v is not None:
-                self.env[k] = v
-            else:
-                del self.env[k]
+            self.env[k] = v
+            if v is None:
+                self.env.pop(k, None)
 
         func_type = FuncType(arg_types=arg_types, ret_type=ret_type)
         expr.checked_type = func_type

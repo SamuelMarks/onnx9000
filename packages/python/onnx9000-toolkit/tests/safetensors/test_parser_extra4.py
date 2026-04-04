@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import os
 
 import numpy as np
@@ -6,6 +8,7 @@ from onnx9000.toolkit.safetensors.parser import SafeTensors, SafetensorsInvalidD
 
 
 def test_parser_coverage():
+    """Docstring for D103."""
     parser = SafeTensors.__new__(SafeTensors)
     parser.tensors = {
         "t1": {"dtype": "UNKN", "shape": [2, 2], "data_offsets": [0, 16]},

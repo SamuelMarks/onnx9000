@@ -216,7 +216,7 @@ def test_q_linear_mat_mul() -> None:
 def test_rms_normalization() -> None:
     """Test rms_normalization."""
     t = Tensor(name="x", shape=(1,), dtype=1)
-    res = rms_normalization(t)
+    res = rms_normalization(t, Tensor(name="s", shape=(1,), dtype=1))
     assert res.name == "RMSNormalization_out"
 
 

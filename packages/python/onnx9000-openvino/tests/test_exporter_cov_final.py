@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
@@ -6,6 +8,7 @@ from onnx9000.openvino.xml_builder import XmlNode
 
 
 def test_export_all_missing_ops():
+    """Docstring for D103."""
     graph = Graph("test_all")
     graph.inputs.append(ValueInfo("x", (1, 3, 224, 224), DType.FLOAT32))
 
@@ -166,6 +169,7 @@ def test_export_all_missing_ops():
 
 
 def test_missing_input_pointer():
+    """Docstring for D103."""
     graph = Graph("test_missing")
     graph.inputs.append(ValueInfo("x", (1, 3, 224, 224), DType.FLOAT32))
     graph.nodes.append(Node("Relu", ["missing_input"], ["y"]))
@@ -175,12 +179,14 @@ def test_missing_input_pointer():
 
 
 def test_edge_duplication():
+    """Docstring for D103."""
     exporter = OpenVinoExporter(Graph("dummy"))
     exporter._add_edge("1", "2", "3", "4")
     exporter._add_edge("1", "2", "3", "4")  # duplicate
 
 
 def test_uninitialized_tensor():
+    """Docstring for D103."""
     graph = Graph("dummy")
     graph.initializers.append("w")
     exporter = OpenVinoExporter(graph)
@@ -189,6 +195,7 @@ def test_uninitialized_tensor():
 
 
 def test_xml_builder():
+    """Docstring for D103."""
     node = XmlNode("test")
     node.add_child(XmlNode("child"))
     node.add_child(XmlNode("child"))
@@ -196,6 +203,7 @@ def test_xml_builder():
 
 
 def test_export_all_missing_ops_2():
+    """Docstring for D103."""
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor
     from onnx9000.openvino.exporter import OpenVinoExporter
 
@@ -355,6 +363,7 @@ def test_export_all_missing_ops_2():
 
 
 def test_xml_builder_more():
+    """Docstring for D103."""
     from onnx9000.openvino.xml_builder import XmlBuilder, XmlNode
 
     n = XmlNode("test")

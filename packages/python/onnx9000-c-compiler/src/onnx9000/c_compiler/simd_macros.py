@@ -1,0 +1,68 @@
+"""SIMD Macros and block-quantized dot products."""
+
+from onnx9000.c_compiler.ast_builder import C89Builder
+
+
+def emit_simd_macros(b: C89Builder):
+    """Emit SIMD macros and block-quantized dot product functions."""
+    b.emit("/* SIMD Macros */")
+    b.emit("#if defined(__ARM_NEON)")
+    b.emit("#include <arm_neon.h>")
+    b.emit("#define VEC_ADD(a, b) vaddq_f32(a, b)")
+    b.emit("#elif defined(__wasm_simd128__)")
+    b.emit("#include <wasm_simd128.h>")
+    b.emit("#define VEC_ADD(a, b) wasm_f32x4_add(a, b)")
+    b.emit("#else")
+    b.emit("/* scalar fallback */")
+    b.emit("#define VEC_ADD(a, b) ((a) + (b))")
+    b.emit("#endif")
+    b.emit("")
+
+    b.emit("/* Block-quantized Q4_0 structure */")
+    b.emit("typedef struct {")
+    b.push_indent()
+    b.emit("float d;")
+    b.emit("uint8_t qs[16]; /* 32 elements (4-bit) */")
+    b.pop_indent()
+    b.emit("} block_q4_0;")
+    b.emit("")
+
+    b.emit("/* Block-quantized Q8_0 structure */")
+    b.emit("typedef struct {")
+    b.push_indent()
+    b.emit("float d;")
+    b.emit("int8_t qs[32];")
+    b.pop_indent()
+    b.emit("} block_q8_0;")
+    b.emit("")
+
+    b.emit(
+        "static void ggml_vec_dot_q4_0_q8_0(const int n, float * restrict s, const void * restrict vx, const void * restrict vy) {"
+    )
+    b.push_indent()
+    b.emit("const block_q4_0 * restrict x = (const block_q4_0 *)vx;")
+    b.emit("const block_q8_0 * restrict y = (const block_q8_0 *)vy;")
+    b.emit("int i, j;")
+    b.emit("float sum = 0.0f;")
+    b.emit("for (i = 0; i < n / 32; ++i) {")
+    b.push_indent()
+    b.emit("float d0 = x[i].d;")
+    b.emit("float d1 = y[i].d;")
+    b.emit("int32_t isum = 0;")
+    b.emit("for (j = 0; j < 16; ++j) {")
+    b.push_indent()
+    b.emit("uint8_t v0 = x[i].qs[j];")
+    b.emit("int8_t v1_0 = y[i].qs[j];")
+    b.emit("int8_t v1_1 = y[i].qs[j + 16];")
+    b.emit("int8_t v0_0 = (v0 & 0x0F) - 8;")
+    b.emit("int8_t v0_1 = (v0 >> 4) - 8;")
+    b.emit("isum += v0_0 * v1_0 + v0_1 * v1_1;")
+    b.pop_indent()
+    b.emit("}")
+    b.emit("sum += d0 * d1 * isum;")
+    b.pop_indent()
+    b.emit("}")
+    b.emit("*s = sum;")
+    b.pop_indent()
+    b.emit("}")
+    b.emit("")

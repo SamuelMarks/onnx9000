@@ -10,10 +10,11 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@onnx9000/core": "workspace:^",
+    "@onnx9000/core": "workspace:*",
     "@onnx9000/coreml": "workspace:^",
     "fflate": "^0.8.2",
     "jsfive": "^0.4.0",
     "pyodide": "^0.26.4"
-  }
+  },
+  "type": "module"
 }

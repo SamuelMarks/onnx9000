@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from typing import Any, Callable
 
 

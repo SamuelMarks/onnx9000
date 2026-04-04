@@ -3,7 +3,6 @@
 
 def test_layout_gaps_more():
     """Provides functional implementation."""
-
     from onnx9000.core.ir import Graph, Node, ValueInfo
     from onnx9000.tflite_exporter.compiler.layout import LayoutOptimizer
 

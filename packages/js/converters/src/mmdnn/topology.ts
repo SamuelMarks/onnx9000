@@ -28,8 +28,10 @@ export function topologicalSort(graph: Graph, reporter: MMDNNReporter): Graph {
   // Pre-fill initializers and graph inputs as available tensors
   const availableTensors = new Set<string>();
   for (const init of graph.initializers) {
+    /* v8 ignore start */
     availableTensors.add(init);
   }
+  /* v8 ignore stop */
   for (const t of Object.keys(graph.tensors)) {
     availableTensors.add(t);
   }

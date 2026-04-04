@@ -277,7 +277,6 @@ def test_forced_bos_eos_errors():
 
 def test_logit_bias_errors():
     """Test logit bias errors."""
-
     proc = LogitBiasProcessor({})
     t = create_logits([1.0])
     assert proc([], t) is t

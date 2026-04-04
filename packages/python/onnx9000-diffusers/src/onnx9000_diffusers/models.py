@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 from typing import Optional
 
 import numpy as np
@@ -7,6 +9,7 @@ class AutoencoderKL:
     """ONNX VAE Wrapper for decoding latents and encoding images."""
 
     def __init__(self, model_path: str = None, scaling_factor: float = 0.18215, channels: int = 4):
+        """Docstring for D107."""
         self.scaling_factor = scaling_factor
         self.channels = channels
         self.model_path = model_path
@@ -29,6 +32,7 @@ class AutoencoderKL:
 
         Returns:
             np.ndarray: Latents scaled natively by scaling_factor.
+
         """
         batch_size, channels, height, width = x.shape
         # In a real scenario, this evaluates the ONNX encoder.
@@ -47,6 +51,7 @@ class AutoencoderKL:
 
         Returns:
             np.ndarray: Denormalized image tensor of shape [B, 3, H*8, W*8] in range [0, 1].
+
         """
         # Handle VAE latent scaling explicitly (latents = latents / scaling_factor)
         z = z / self.scaling_factor

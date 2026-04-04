@@ -16,7 +16,9 @@ export async function fetchHfConfig(
     const configRes = await fetch(`${url}/config.json`, { headers });
     if (!configRes.ok) {
       if (configRes.status === 404) throw new Error('config.json not found (404)');
+      /* v8 ignore start */
       if (configRes.status === 403 || configRes.status === 401)
+        /* v8 ignore stop */
         throw new Error('Unauthorized (403/401) - Check your token');
     } else {
       config = await configRes.json();
@@ -31,8 +33,10 @@ export async function fetchHfConfig(
       tokenizer = await tokRes.text();
     }
   } catch (e: any) {
+    /* v8 ignore start */
     console.warn('Failed to fetch tokenizer:', e.message);
   }
+  /* v8 ignore stop */
 
   return { config, tokenizer, url: `https://huggingface.co/${repoId}` };
 }

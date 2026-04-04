@@ -56,4 +56,10 @@ describe('XmlBuilder', () => {
     expect(node.attributes['a']).toBe('1');
     expect(node.children).toContain('child');
   });
+
+  it('should handle empty declaration', () => {
+    const builder = new XmlBuilder('root');
+    builder.setDeclaration('');
+    expect(builder.toString()).toBe('<root />');
+  });
 });

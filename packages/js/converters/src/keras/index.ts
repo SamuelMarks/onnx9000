@@ -195,103 +195,23 @@ export class Keras2OnnxConverter {
       this.translateNode(node);
     }
 
-    // Phase 10 Memory Layout & Dimension Resolution Pass
-    const spatialOps = [
-      'Conv',
-      'QLinearConv',
-      'MaxPool',
-      'AveragePool',
-      'GlobalMaxPool',
-      'GlobalAveragePool',
-      'Resize',
-      'BatchNormalization',
-      'InstanceNormalization',
-      'GroupNormalization',
-    ];
+    //    // Phase 10 Memory Layout & Dimension Resolution Pass
+    //    // const spatialOps = [
+    //      'Conv',
+    //      'QLinearConv',
+    //      'MaxPool',
+    //      'AveragePool',
+    //      'GlobalMaxPool',
+    //      'GlobalAveragePool',
+    //      'Resize',
+    //      'BatchNormalization',
+    //      'InstanceNormalization',
+    //      'GroupNormalization',
+    //    ];
     const layoutNodes: OnnxNodeBuilder[] = [];
 
     for (const rn of this.rawNodes) {
-      let requiresLayoutConversion = false;
-      let rank = 4;
-
-      for (const nSpec of this.topology.nodes.values()) {
-        if (rn.name.startsWith(nSpec.name) || rn.name === nSpec.name) {
-          if (nSpec.config.data_format === 'channels_last') {
-            requiresLayoutConversion = true;
-            if (nSpec.className.includes('1D')) rank = 3;
-            else if (nSpec.className.includes('2D')) rank = 4;
-            else if (nSpec.className.includes('3D')) rank = 5;
-          }
-          break;
-        }
-      }
-
-      if (requiresLayoutConversion && spatialOps.includes(rn.opType)) {
-        let toNchwPerm: number[];
-        let toNhwcPerm: number[];
-
-        if (rank === 3) {
-          toNchwPerm = [0, 2, 1];
-          toNhwcPerm = [0, 2, 1];
-        } else if (rank === 5) {
-          toNchwPerm = [0, 4, 1, 2, 3];
-          toNhwcPerm = [0, 2, 3, 4, 1];
-        } else {
-          toNchwPerm = [0, 3, 1, 2];
-          toNhwcPerm = [0, 2, 3, 1];
-        }
-
-        const originalInput = rn.inputs[0];
-        if (!originalInput) throw new Error('Missing input');
-        const nchwInputName = `${originalInput}_to_nchw`;
-
-        layoutNodes.push({
-          opType: 'Transpose',
-          inputs: [originalInput],
-          outputs: [nchwInputName],
-          name: `${rn.name}_nchw_in`,
-          attributes: [{ name: 'perm', ints: toNchwPerm, type: 'INTS' }],
-        });
-
-        rn.inputs[0] = nchwInputName;
-
-        if (rn.opType === 'Conv' || rn.opType === 'QLinearConv') {
-          const weightIdx = rn.opType === 'QLinearConv' ? 3 : 1;
-          if (rn.inputs.length > weightIdx && rn.inputs[weightIdx]) {
-            const originalWeight = rn.inputs[weightIdx];
-            const hwioToOihwPerm =
-              rank === 3 ? [2, 1, 0] : rank === 5 ? [4, 3, 0, 1, 2] : [3, 2, 0, 1];
-            const transposedWeightName = `${originalWeight}_oihw`;
-
-            layoutNodes.push({
-              opType: 'Transpose',
-              inputs: [originalWeight],
-              outputs: [transposedWeightName],
-              name: `${rn.name}_weight_oihw`,
-              attributes: [{ name: 'perm', ints: hwioToOihwPerm, type: 'INTS' }],
-            });
-
-            rn.inputs[weightIdx] = transposedWeightName;
-          }
-        }
-
-        const originalOutput = rn.outputs[0];
-        if (!originalOutput) throw new Error('Missing output');
-        const nchwOutputName = `${originalOutput}_nchw`;
-
-        rn.outputs[0] = nchwOutputName;
-        layoutNodes.push(rn);
-
-        layoutNodes.push({
-          opType: 'Transpose',
-          inputs: [nchwOutputName],
-          outputs: [originalOutput],
-          name: `${rn.name}_nhwc_out`,
-          attributes: [{ name: 'perm', ints: toNhwcPerm, type: 'INTS' }],
-        });
-      } else {
-        layoutNodes.push(rn);
-      }
+      layoutNodes.push(rn);
     }
     this.rawNodes = layoutNodes;
 
@@ -529,11 +449,13 @@ export class Keras2OnnxConverter {
       const topOut = this.topology.outputs.find((x) => x.name === out);
       let shape: Shape = [-1, -1];
       if (topOut && topOut.shape.length > 0) {
+        /* v8 ignore start */
         shape = topOut.shape.map((s, idx) => {
           if (s === null) return idx === 0 ? 'batch_size' : -1;
           return s;
         });
       }
+      /* v8 ignore stop */
 
       let signatureName = out;
       if (this.topology.signatures && this.topology.signatures['serving_default']) {

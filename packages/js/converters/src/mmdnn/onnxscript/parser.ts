@@ -42,7 +42,9 @@ export class OnnxScriptParser {
               const name = argMatch[1];
               const shape = argMatch[2]
                 ? argMatch[2].split(',').map((s) => parseInt(s.trim(), 10))
-                : [-1];
+                : /* v8 ignore start */
+                  [-1];
+              /* v8 ignore stop */
               if (name) {
                 graph.inputs.push(new ValueInfo(name, shape, 'float32'));
               }

@@ -1,3 +1,5 @@
+"""Module docstring."""
+
 import tempfile
 import unittest
 from pathlib import Path
@@ -26,7 +28,10 @@ import onnx9000.converters.frontend.utils as utils
 
 
 class TestFrontendMore(unittest.TestCase):
+    """Docstring for D101."""
+
     def test_builder(self):
+        """Docstring for D102."""
         gb = builder.GraphBuilder("test_graph")
         t1 = tensor.Tensor((1, 2), name="t1")
         t2 = tensor.Tensor((2, 1), name="t2")
@@ -40,6 +45,8 @@ class TestFrontendMore(unittest.TestCase):
         self.assertEqual(graph.name, "test_graph")
 
     def test_exporter(self):
+        """Docstring for D102."""
+
         class SimpleModule(module.Module):
             def __init__(self):
                 super().__init__()
@@ -65,6 +72,8 @@ class TestFrontendMore(unittest.TestCase):
             self.assertTrue(p.exists())
 
     def test_jit(self):
+        """Docstring for D102."""
+
         @jit.jit
         def my_func(x):
             return functional.relu(x)
@@ -74,11 +83,13 @@ class TestFrontendMore(unittest.TestCase):
         self.assertIsInstance(res, builder.GraphBuilder)
 
     def test_models(self):
+        """Docstring for D102."""
         # resnet contains conv, pool, linear, etc.
         resnet = models.ResNet18()
         self.assertIsInstance(resnet, module.Module)
 
     def test_nn_containers_identity_flatten(self):
+        """Docstring for D102."""
         s = containers.Sequential(linear.Linear(2, 2), identity.Identity(), flatten.Flatten())
         t = tensor.Tensor((1, 2))
         # Need to trace it to get output
@@ -87,6 +98,7 @@ class TestFrontendMore(unittest.TestCase):
             self.assertIsInstance(out, tensor.Tensor)
 
     def test_nn_conv_pool_normalization(self):
+        """Docstring for D102."""
         c = conv.Conv2d(3, 16, 3)
         mp = pool.MaxPool2d(2)
         bn = normalization.BatchNorm2d(16)
@@ -99,6 +111,7 @@ class TestFrontendMore(unittest.TestCase):
             self.assertIsInstance(x, tensor.Tensor)
 
     def test_nn_dropout_embedding_rnn(self):
+        """Docstring for D102."""
         d = dropout.Dropout(0.5)
         e = embedding.Embedding(10, 3)
         rn = rnn.RNN(10, 20)
@@ -111,6 +124,7 @@ class TestFrontendMore(unittest.TestCase):
             self.assertIsInstance(rn, rnn.RNN)
 
     def test_init(self):
+        """Docstring for D102."""
         t = tensor.Tensor((2, 2))
         # Since t.data is None initially, we can just check it doesn't crash,
         # or mock data. Let's provide some numpy data.
@@ -120,12 +134,15 @@ class TestFrontendMore(unittest.TestCase):
         self.assertTrue((t.data == 0).all())
 
     def test_functional(self):
+        """Docstring for D102."""
         t = tensor.Tensor((1, 2))
         with builder.Tracing():
             res = functional.relu(t)
             self.assertIsInstance(res, tensor.Tensor)
 
     def test_tracer(self):
+        """Docstring for D102."""
+
         def simple_func(x):
             return functional.relu(x)
 
@@ -134,6 +151,7 @@ class TestFrontendMore(unittest.TestCase):
         self.assertTrue(len(gb.nodes) > 0)
 
     def test_utils(self):
+        """Docstring for D102."""
         res = utils.infer_elementwise_shape((1, 3), (2, 1))
         self.assertEqual(res, (2, 3))
         res_matmul = utils.infer_matmul_shape((2, 3), (3, 4))

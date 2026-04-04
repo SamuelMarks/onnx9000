@@ -51,5 +51,7 @@ export function runCli(args: string[]) {
 
 // If invoked directly
 if (typeof require !== 'undefined' && require.main === module) {
+  /* v8 ignore start */
   runCli(process.argv.slice(2));
 }
+/* v8 ignore stop */

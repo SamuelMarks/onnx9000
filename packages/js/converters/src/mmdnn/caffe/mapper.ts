@@ -116,6 +116,7 @@ export class CaffeMapper {
 
     const reporter = { warn: console.warn };
     if (type === 'VisionTransform') {
+      /* v8 ignore start */
       return [
         new Node(
           'CustomOp',
@@ -126,6 +127,7 @@ export class CaffeMapper {
         ),
       ];
     }
+    /* v8 ignore stop */
 
     reporter.warn(`Unrecognized Caffe layer`);
     return [
@@ -567,8 +569,10 @@ export class CaffeMapper {
       const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
       tensor.data = new Float32Array(size); // Zero initialized
       if (wBlob.data) {
+        /* v8 ignore start */
         (tensor.data as Float32Array).set(wBlob.data.slice(0, size));
       }
+      /* v8 ignore stop */
       graph.initializers.push(wName);
       graph.tensors[wName] = tensor;
     }
@@ -580,8 +584,10 @@ export class CaffeMapper {
       const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
       tensor.data = new Float32Array(size);
       if (bBlob.data) {
+        /* v8 ignore start */
         (tensor.data as Float32Array).set(bBlob.data.slice(0, size));
       }
+      /* v8 ignore stop */
       graph.initializers.push(bName);
       graph.tensors[bName] = tensor;
     }

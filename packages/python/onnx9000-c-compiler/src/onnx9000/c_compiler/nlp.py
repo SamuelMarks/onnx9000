@@ -13,8 +13,7 @@ def generate_topk(
     out_val_name: str,
     out_idx_name: str,
 ):
-    """
-    Generate C code for the TopK operation.
+    """Generate C code for the TopK operation.
 
     Args:
         b: The C89Builder instance.
@@ -24,6 +23,7 @@ def generate_topk(
         k_name: The name of the K parameter.
         out_val_name: The name of the output values tensor.
         out_idx_name: The name of the output indices tensor.
+
     """
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -35,8 +35,7 @@ def generate_topk(
 
 
 def generate_unique(b: C89Builder, node: Node, out_tensor: Tensor, in_name: str, out_val_name: str):
-    """
-    Generate C code for the Unique operation.
+    """Generate C code for the Unique operation.
 
     Args:
         b: The C89Builder instance.
@@ -44,6 +43,7 @@ def generate_unique(b: C89Builder, node: Node, out_tensor: Tensor, in_name: str,
         out_tensor: The output tensor.
         in_name: The name of the input tensor.
         out_val_name: The name of the output values tensor.
+
     """
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -54,12 +54,12 @@ def generate_unique(b: C89Builder, node: Node, out_tensor: Tensor, in_name: str,
 
 
 def emit_bpe_tokenizer(b: C89Builder, vocab: dict):
-    """
-    Emit C code for a BPE tokenizer using a given vocabulary.
+    """Emit C code for a BPE tokenizer using a given vocabulary.
 
     Args:
         b: The C89Builder instance.
         vocab: A dictionary mapping tokens to IDs.
+
     """
     b.emit("/* BPE Tokenizer Dictionary */")
     b.emit(f"const int bpe_vocab_size = {len(vocab)};")

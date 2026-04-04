@@ -46,6 +46,7 @@ def test_execute_all_keras_mappings():
 
 
 def test_keras_layers_branches():
+    """Docstring for D103."""
     from unittest.mock import MagicMock
 
     from onnx9000.converters.tf.keras_layers import (

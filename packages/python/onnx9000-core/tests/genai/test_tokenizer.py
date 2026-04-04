@@ -360,7 +360,6 @@ def test_wordpiece_decode_space():
 
 def test_tokenizer_loader():
     """Test tokenizer loader."""
-
     from onnx9000.genai.tokenizer import (
         HuggingFaceTokenizerLoader,
         UnigramTokenizer,
@@ -380,7 +379,6 @@ def test_tokenizer_loader():
 
 def test_tokenizer_components_rest():
     """Test tokenizer components rest."""
-
     from onnx9000.genai.tokenizer import PreTokenizer, UnicodeNormalizer
 
     with pytest.raises(ValueError):
