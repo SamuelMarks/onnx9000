@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for phase1 2."""
 
 import asyncio
 import os
@@ -48,11 +48,13 @@ def test_diffusion_pipeline_phase1():
     called_steps = []
 
     def callback(step, timestep, latents):
+        """Callback."""
         called_steps.append(step)
 
     pipeline.scheduler = DDIMScheduler()
 
     async def run():
+        """Run."""
         return await pipeline("dummy prompt", num_inference_steps=2, callback_on_step_end=callback)
 
     latents = asyncio.run(run())
@@ -68,6 +70,7 @@ def test_pipeline_abort():
     signal.abort()
 
     async def run():
+        """Run."""
         await pipeline("dummy", num_inference_steps=2, abort_signal=signal)
 
     with pytest.raises(InterruptedError):

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for pattern matcher."""
 
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.pattern_matcher import (

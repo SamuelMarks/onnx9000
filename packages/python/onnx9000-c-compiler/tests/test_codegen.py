@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for codegen."""
 
 from onnx9000.c_compiler.codegen import BaseCodegenVisitor, CFamilyCodegen, PythonFamilyCodegen
 from onnx9000.core.ir import Graph, Node

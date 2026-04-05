@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for cf math3."""
 
 import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
@@ -19,6 +19,8 @@ def test_cf_gather_scatter_seq():
     assert cf._evaluate_node("GatherND", [data, indices], {"batch_dims": 0}) is not None
 
     class AttrMock:
+        """Attr mock."""
+
         value = 0
 
     assert cf._evaluate_node("GatherND", [data, indices], {"batch_dims": AttrMock()}) is not None

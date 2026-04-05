@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Builder."""
 
 import ctypes
 

@@ -59,7 +59,10 @@ def test_shape_inference_gaps():
 
     # Test get_attr with Attribute object that has name but not in keys
     class MockAttr:
+        """Mock attr."""
+
         def __init__(self, name, value):
+            """Init."""
             self.name = name
             self.value = value
 
@@ -102,7 +105,8 @@ def test_registry_gaps():
 
     @register_op("DomainOp", domain="my_domain")
     def my_op():
-        pass
+        """My op."""
+        assert True
 
     all_ops = global_registry.get_all_registered()
     assert "my_domain.DomainOp" in all_ops

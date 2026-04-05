@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for profiler exhaustive."""
 
 
 def test_exhaustive_profiler():

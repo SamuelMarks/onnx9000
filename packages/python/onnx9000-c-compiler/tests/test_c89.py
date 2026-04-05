@@ -38,8 +38,8 @@ def test_phase_2():
     with open("test_out/main.c", "w") as f:
         f.write(main_c)
     print("Testing GCC compilation...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Testing Clang compilation...")
     res_clang = subprocess.run(
@@ -81,8 +81,8 @@ def test_phase_3():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase3_", "phase3_"))
     print("Testing GCC compilation for Phase 3...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 3 verified!")
 
@@ -135,8 +135,8 @@ def test_phase_4():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase3_", "phase4_"))
     print("Testing GCC compilation for Phase 4...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 4 verified!")
 
@@ -225,8 +225,8 @@ def test_phase_5():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase4_", "phase5_"))
     print("Testing GCC compilation for Phase 5...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 5 verified!")
 
@@ -293,8 +293,8 @@ def test_phase_6():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase5_", "phase6_"))
     print("Testing GCC compilation for Phase 6...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 6 verified!")
 
@@ -358,8 +358,8 @@ def test_phase_7():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase6_", "phase7_"))
     print("Testing GCC compilation for Phase 7...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 7 verified!")
 
@@ -419,8 +419,8 @@ def test_phase_8():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase7_", "phase8_"))
     print("Testing GCC compilation for Phase 8...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 8 verified!")
 
@@ -464,8 +464,8 @@ def test_phase_9():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase8_", "phase9_"))
     print("Testing GCC compilation for Phase 9...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 9 verified!")
 
@@ -506,8 +506,8 @@ def test_phase_10():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase9_", "phase10_"))
     print("Testing GCC compilation for Phase 10...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10 verified!")
 
@@ -560,8 +560,8 @@ def test_phase_10b():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase10_", "phase10b_"))
     print("Testing GCC compilation for Phase 10b...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 10b verified!")
 
@@ -616,8 +616,8 @@ def test_phase_11():
     with open("test_out/main.c", "w") as f:
         f.write(main_c.replace("phase10b_", "phase11_"))
     print("Testing GCC compilation for Phase 11...")
-    subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
-    pass  # assert res_gcc.returncode == 0, res_gcc.stderr
+    res_gcc = subprocess.run(["make", "-C", "test_out", "CC=gcc"], capture_output=True, text=True)
+    assert res_gcc.returncode == 0, res_gcc.stderr
     subprocess.run(["make", "-C", "test_out", "clean"], check=True)
     print("Phase 11 verified!")
 

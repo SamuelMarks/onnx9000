@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for obfuscator final."""
 
 import pytest
 from onnx9000.core.ir import DType, Graph, Node, ValueInfo, Variable

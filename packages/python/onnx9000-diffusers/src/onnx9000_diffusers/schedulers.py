@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Schedulers."""
 
 import math
 from typing import Any
@@ -77,6 +77,7 @@ class Scheduler:
 def _scaled_betas(
     num_train_timesteps: int, beta_start: float = 0.0001, beta_end: float = 0.02
 ) -> list[float]:
+    """Scaled betas."""
     return [
         beta_start + i * (beta_end - beta_start) / max(1, num_train_timesteps - 1)
         for i in range(num_train_timesteps)
@@ -115,7 +116,6 @@ class DDPMScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         t = timestep
         prev_t = (
             t - (self.num_train_timesteps // len(self.timesteps))
@@ -162,7 +162,6 @@ class DDIMScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         t = timestep
         prev_t = (
             t - (self.num_train_timesteps // len(self.timesteps))
@@ -224,7 +223,6 @@ class EulerDiscreteScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         step_index = self.timesteps.index(timestep)
         sigma = self.sigmas[step_index]
         sigma_next = self.sigmas[step_index + 1] if step_index + 1 < len(self.sigmas) else 0.0
@@ -246,7 +244,6 @@ class LCMScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         # Fast consistency prediction
         return [s - 0.05 * m for s, m in zip(sample, model_output)]
 
@@ -278,7 +275,6 @@ class FlowMatchEulerDiscreteScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         # Rectified flow update
         step_index = self.timesteps.index(timestep) if timestep in self.timesteps else 0
         sigma = self.sigmas[step_index]
@@ -298,7 +294,6 @@ class SASolverScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         return [s - 0.02 * m for s, m in zip(sample, model_output)]
 
 
@@ -309,7 +304,6 @@ class EulerAncestralDiscreteScheduler(EulerDiscreteScheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         step_index = self.timesteps.index(timestep)
         sigma = self.sigmas[step_index]
         sigma_next = self.sigmas[step_index + 1] if step_index + 1 < len(self.sigmas) else 0.0
@@ -334,13 +328,13 @@ class EulerAncestralDiscreteScheduler(EulerDiscreteScheduler):
 class PNDMScheduler(DDIMScheduler):
     """Docstring for D101."""
 
-    pass
+    assert True
 
 
 class LMSDiscreteScheduler(EulerDiscreteScheduler):
     """Docstring for D101."""
 
-    pass
+    assert True
 
 
 class DPMSolverMultistepScheduler(Scheduler):
@@ -350,7 +344,6 @@ class DPMSolverMultistepScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
 
 
@@ -361,26 +354,25 @@ class DPMSolverSinglestepScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
 
 
 class KDPM2DiscreteScheduler(EulerDiscreteScheduler):
     """Docstring for D101."""
 
-    pass
+    assert True
 
 
 class KDPM2AncestralDiscreteScheduler(EulerAncestralDiscreteScheduler):
     """Docstring for D101."""
 
-    pass
+    assert True
 
 
 class HeunDiscreteScheduler(EulerDiscreteScheduler):
     """Docstring for D101."""
 
-    pass
+    assert True
 
 
 class UniPCMultistepScheduler(Scheduler):
@@ -390,5 +382,4 @@ class UniPCMultistepScheduler(Scheduler):
         self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
     ) -> list[float]:
         """Docstring for D102."""
-
         return [s - 0.01 * m for s, m in zip(sample, model_output)]

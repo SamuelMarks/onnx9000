@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Pytorch fx parser module."""
 
 import json
 from typing import Any
@@ -11,22 +11,26 @@ from onnx9000.core.registry import global_registry
 
 
 def _map_aten_add_Tensor(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten add tensor."""
     return Node(op_type="Add", inputs=inputs, outputs=outputs, name=f"add_{outputs[0]}")
 
 
 def _map_aten_mul_Tensor(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten mul tensor."""
     return Node(op_type="Mul", inputs=inputs, outputs=outputs, name=f"mul_{outputs[0]}")
 
 
 def _map_aten_convolution_default(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
+    """map aten convolution default."""
     return Node(op_type="Conv", inputs=inputs, outputs=outputs, name=f"conv_{outputs[0]}")
 
 
 def _map_aten_native_batch_norm_legit_no_training_default(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
+    """map aten native batch norm legit no training default."""
     return Node(
         op_type="BatchNorm", inputs=inputs, outputs=outputs, name=f"batch_norm_{outputs[0]}"
     )
@@ -35,16 +39,19 @@ def _map_aten_native_batch_norm_legit_no_training_default(
 def _map_aten_native_layer_norm_default(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
+    """map aten native layer norm default."""
     return Node(
         op_type="LayerNorm", inputs=inputs, outputs=outputs, name=f"layer_norm_{outputs[0]}"
     )
 
 
 def _map_aten_bmm_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten bmm default."""
     return Node(op_type="MatMul", inputs=inputs, outputs=outputs, name=f"bmm_{outputs[0]}")
 
 
 def _map_aten_mm_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten mm default."""
     return Node(op_type="MatMul", inputs=inputs, outputs=outputs, name=f"mm_{outputs[0]}")
 
 
@@ -52,30 +59,36 @@ def _map_aten_max_pool2d_with_indices_default(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
     # Discard indices if unused by returning only first output normally mapped
+    """map aten max pool2d with indices default."""
     return Node(
         op_type="MaxPool2D", inputs=inputs, outputs=outputs, name=f"max_pool2d_{outputs[0]}"
     )
 
 
 def _map_aten_gelu_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten gelu default."""
     return Node(op_type="Gelu", inputs=inputs, outputs=outputs, name=f"gelu_{outputs[0]}")
 
 
 def _map_aten_arange_start_step(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
+    """map aten arange start step."""
     return Node(op_type="Range", inputs=inputs, outputs=outputs, name=f"arange_{outputs[0]}")
 
 
 def _map_aten_where_self(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten where self."""
     return Node(op_type="Where", inputs=inputs, outputs=outputs, name=f"where_{outputs[0]}")
 
 
 def _map_aten_copy_(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten copy ."""
     return Node(op_type="Identity", inputs=inputs, outputs=outputs, name=f"copy_{outputs[0]}")
 
 
 def _map_aten_add_(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+    """map aten add ."""
     return Node(op_type="Add", inputs=inputs, outputs=outputs, name=f"add_{outputs[0]}")
 
 

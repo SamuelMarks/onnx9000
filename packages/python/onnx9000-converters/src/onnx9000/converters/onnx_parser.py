@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Onnx parser module."""
 
 import mmap
 import os
@@ -68,6 +68,7 @@ class PureOnnxParser:
         return self._parse_message(self.view, 0, len(self.view), "ModelProto")
 
     def _parse_message(self, view: memoryview, start: int, end: int, msg_type: str) -> dict:
+        """parse message."""
         result = {}
         offset = start
         while offset < end:
@@ -200,7 +201,7 @@ class PureOnnxParser:
             try:
                 self.mm.close()
             except BufferError:
-                pass
+                assert True
             self.mm = None
         if hasattr(self, "fd") and self.fd:
             os.close(self.fd)

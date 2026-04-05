@@ -22,11 +22,15 @@ def test_keras3_parser_subclassed_tracing():
     """Test tracing a subclassed model."""
 
     class MyModel(keras.Model):
+        """My model."""
+
         def __init__(self):
+            """Init."""
             super().__init__()
             self.dense = keras.layers.Dense(5)
 
         def call(self, x):
+            """Call."""
             return self.dense(x)
 
     model = MyModel()
@@ -40,7 +44,10 @@ def test_keras3_parser_subclassed_multi_input():
     """Test tracing a subclassed model with multiple inputs."""
 
     class MyMultiModel(keras.Model):
+        """My multi model."""
+
         def call(self, inputs):
+            """Call."""
             return inputs[0] + inputs[1]
 
     model = MyMultiModel()
@@ -53,7 +60,10 @@ def test_keras3_parser_no_input_shape():
     """Test error when no input shape is provided for subclassed model."""
 
     class MyModel(keras.Model):
+        """My model."""
+
         def call(self, x):
+            """Call."""
             return x
 
     model = MyModel()
@@ -83,7 +93,10 @@ def test_keras3_parser_get_tensor_name():
     parser = Keras3Parser(None)
 
     class MockTensor:
+        """Mock tensor."""
+
         def __init__(self, name):
+            """Init."""
             self.name = name
 
     t1 = MockTensor("real_name")
@@ -102,12 +115,16 @@ def test_keras3_parser_module_path_else():
     Keras3Parser(None)
 
     class CustomOp:
+        """Custom op."""
+
         def __init__(self):
+            """Init."""
             self.name = "custom"
             self._inbound_nodes = []
             self.weights = []
 
         def get_config(self):
+            """Get config."""
             return {}
 
     CustomOp()

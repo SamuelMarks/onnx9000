@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Init."""
 
 from .pipeline import AbortSignal, DiffusionPipeline
 from .schedulers import (

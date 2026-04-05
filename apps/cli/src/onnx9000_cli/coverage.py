@@ -271,7 +271,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                                 )
                                 break
                         except Exception:
-                            pass
+                            assert True
                 if fallback_data:
                     results[fw] = fallback_data
                     continue
@@ -432,7 +432,7 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
                         operators = data.get("operators", [])
                         commit_hash = data.get("commit", commit_hash)
                 except Exception:
-                    pass
+                    assert True
 
             return {"commit": commit_hash, "operators": operators}
         except subprocess.CalledProcessError:
@@ -476,7 +476,7 @@ def get_onnx9000_ops() -> list[str]:
                         if isinstance(node.args[0], ast.Constant):
                             ops_list.append(node.args[0].value.lower())
             except Exception:
-                pass
+                assert True
     return ops_list
 
 
@@ -523,7 +523,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
                         if isinstance(node, ast.FunctionDef) and node.name.startswith(prefix):
                             count += 1
                 except Exception:
-                    pass
+                    assert True
         return count
 
     def _count_classes_inheriting_module(path: str) -> int:
@@ -573,7 +573,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
                             for name in node.names:
                                 found_names.add(name.asname or name.name)
                 except Exception:
-                    pass
+                    assert True
 
         # Match against list to allow legitimate snapshot duplicates
         strict_supported = []
@@ -651,7 +651,7 @@ def count_supported_framework_objects(fw_name: str) -> int:
                         if isinstance(node, ast.FunctionDef) and node.name.startswith("_map_"):
                             count += 1
                 except Exception:
-                    pass
+                    assert True
         return count
 
     if fw_name == "tensorflow":

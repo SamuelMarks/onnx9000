@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for reader more."""
 
 import io
 import struct

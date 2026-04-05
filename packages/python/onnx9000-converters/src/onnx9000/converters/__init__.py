@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Init."""
 
 from onnx9000.converters.parsers import BaseParser, JAXprParser, PyTorchFXParser, XLAHLOParser
 

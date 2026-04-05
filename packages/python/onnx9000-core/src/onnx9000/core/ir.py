@@ -823,6 +823,7 @@ class QuantizedTensor(Tensor):
         requires_grad=False,
         data=None,
     ) -> None:
+        """Init."""
         super().__init__(
             name=name,
             shape=shape,

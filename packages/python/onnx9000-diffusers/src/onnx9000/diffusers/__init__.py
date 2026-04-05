@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Init."""
 
 from .models import AutoencoderKL, UNet2DConditionModel
 from .pipeline import DiffusionPipeline

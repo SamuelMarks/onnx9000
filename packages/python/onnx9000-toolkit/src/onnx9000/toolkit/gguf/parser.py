@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Parser module."""
 
 import mmap
 import os
@@ -59,21 +59,26 @@ class GGUFParser:
         self.data_offset = self.offset + padding
 
     def _read_bytes(self, n: int) -> bytes:
+        """read bytes."""
         data = self.view[self.offset : self.offset + n].tobytes()
         self.offset += n
         return data
 
     def _read_uint32(self) -> int:
+        """read uint32."""
         return struct.unpack("<I", self._read_bytes(4))[0]
 
     def _read_uint64(self) -> int:
+        """read uint64."""
         return struct.unpack("<Q", self._read_bytes(8))[0]
 
     def _read_string(self) -> str:
+        """read string."""
         length = self._read_uint64()
         return self._read_bytes(length).decode("utf-8")
 
     def _read_value(self) -> Any:
+        """read value."""
         vtype = self._read_uint32()
         if vtype == 0:
             return struct.unpack("<B", self._read_bytes(1))[0]  # UINT8

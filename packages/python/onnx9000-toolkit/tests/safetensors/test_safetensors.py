@@ -493,7 +493,7 @@ def test_multiprocessing():
     try:
         multiprocessing.set_start_method("fork", force=True)
     except ValueError:
-        pass
+        assert True
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "model.safetensors")
         save_file({"a": b"2" * 1000}, p)
@@ -926,7 +926,7 @@ def test_hub_coverage():
             assert url.endswith(".safetensors")
         mock_urlopen.side_effect = HTTPError("url", 404, "Not Found", {}, None)
         resolve_model_file("repo", "main")
-        pass
+        assert True
     with tempfile.TemporaryDirectory() as d:
         with patch("onnx9000.toolkit.safetensors.hub._get_cache_dir", return_value=d):
             with patch("onnx9000.toolkit.safetensors.hub.urlopen") as mock_urlopen:

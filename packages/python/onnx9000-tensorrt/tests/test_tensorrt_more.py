@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for tensorrt more."""
 
 import unittest
 from unittest.mock import MagicMock

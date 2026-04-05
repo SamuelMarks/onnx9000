@@ -34,11 +34,13 @@ class OpenVinoExporter:
         self._port_counters: dict[int, int] = {}  # layer_id -> next port
 
     def _next_id(self) -> int:
+        """Next id."""
         idx = self.node_id_counter
         self.node_id_counter += 1
         return idx
 
     def _next_port(self, layer_id: int) -> int:
+        """Next port."""
         if layer_id not in self._port_counters:
             self._port_counters[layer_id] = 0
         p = self._port_counters[layer_id]
@@ -48,6 +50,7 @@ class OpenVinoExporter:
     def _emit_dynamic_const(
         self, name: str, data: list, shape: list[int], dtype: DType
     ) -> tuple[int, int]:
+        """Emit dynamic const."""
         layer_id = self._next_id()
         self.layer_ids[name] = layer_id
 
@@ -96,6 +99,7 @@ class OpenVinoExporter:
         return layer, output_port
 
     def _map_dtype(self, dtype: DType) -> str:
+        """Map dtype."""
         mapping = {
             DType.FLOAT32: "f32",
             DType.FLOAT16: "f16",
@@ -119,6 +123,7 @@ class OpenVinoExporter:
         return mapped
 
     def _emit_shape(self, shape: list[Any], tag_name: str = "port") -> XmlNode:
+        """Emit shape."""
         port_node = XmlNode(tag_name)
         for dim in shape:
             dim_val = str(dim)
@@ -129,6 +134,7 @@ class OpenVinoExporter:
         return port_node
 
     def _add_edge(self, from_layer: int, from_port: int, to_layer: int, to_port: int):
+        """Add edge."""
         edge = XmlNode("edge")
         edge.set_attribute("from-layer", str(from_layer))
         edge.set_attribute("from-port", str(from_port))

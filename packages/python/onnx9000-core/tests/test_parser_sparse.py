@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parser sparse."""
 
 import unittest
 

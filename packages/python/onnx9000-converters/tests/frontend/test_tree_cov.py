@@ -9,6 +9,7 @@ def test_tree_map():
     """Docstring for D103."""
 
     def inc(x):
+        """Inc."""
         return x + 1
 
     assert tree_map(inc, 1) == 2

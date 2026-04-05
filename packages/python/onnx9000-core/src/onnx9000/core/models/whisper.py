@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Whisper."""
 
 from typing import Any, Optional
 
@@ -8,13 +8,17 @@ from onnx9000.core.primitives import ConvND, Gelu, Gemm, LayerNormalization, Mul
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class WhisperEncoderLayer:  # noqa: D101
+    """Whisper encoder layer."""
+
     def __init__(  # noqa: D107
         self, d_model: int, encoder_attention_heads: int, encoder_ffn_dim: int, prefix: str = ""
     ):
+        """Init."""
         self.prefix = prefix
         self.d_model = d_model
 
@@ -27,6 +31,7 @@ class WhisperEncoderLayer:  # noqa: D101
         self.final_layer_norm = LayerNormalization((d_model,))
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
         x_norm = self.self_attn_layer_norm(
             x,
@@ -58,6 +63,8 @@ class WhisperEncoderLayer:  # noqa: D101
 
 
 class WhisperEncoder:  # noqa: D101
+    """Whisper encoder."""
+
     def __init__(  # noqa: D107
         self,
         d_model: int = 512,
@@ -65,6 +72,7 @@ class WhisperEncoder:  # noqa: D101
         encoder_ffn_dim: int = 2048,
         encoder_layers: int = 6,
     ):
+        """Init."""
         self.d_model = d_model
         self.conv1 = ConvND(1, 80, d_model, kernel_size=3, padding=1)
         self.act1 = Gelu()
@@ -81,6 +89,7 @@ class WhisperEncoder:  # noqa: D101
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
         # Input x: [batch, 80, seq_len]
+        """Call."""
         x = self.conv1(
             x,
             get_param("conv1.weight", [self.d_model, 80, 3]),
@@ -115,9 +124,12 @@ class WhisperEncoder:  # noqa: D101
 
 
 class WhisperDecoderLayer:  # noqa: D101
+    """Whisper decoder layer."""
+
     def __init__(  # noqa: D107
         self, d_model: int, decoder_attention_heads: int, decoder_ffn_dim: int, prefix: str = ""
     ):
+        """Init."""
         self.prefix = prefix
         self.d_model = d_model
 
@@ -135,6 +147,7 @@ class WhisperDecoderLayer:  # noqa: D101
     def __call__(  # noqa: D102
         self, x: Tensor, encoder_hidden_states: Tensor, causal_mask: Optional[Tensor] = None
     ) -> Tensor:
+        """Call."""
         identity = x
         x_norm = self.self_attn_layer_norm(
             x,
@@ -175,6 +188,8 @@ class WhisperDecoderLayer:  # noqa: D101
 
 
 class WhisperDecoder:  # noqa: D101
+    """Whisper decoder."""
+
     def __init__(  # noqa: D107
         self,
         vocab_size: int = 51865,
@@ -183,6 +198,7 @@ class WhisperDecoder:  # noqa: D101
         decoder_ffn_dim: int = 2048,
         decoder_layers: int = 6,
     ):
+        """Init."""
         self.vocab_size = vocab_size
         self.d_model = d_model
 
@@ -198,6 +214,7 @@ class WhisperDecoder:  # noqa: D101
     def __call__(  # noqa: D102
         self, input_ids: Tensor, encoder_hidden_states: Tensor, causal_mask: Optional[Tensor] = None
     ) -> Tensor:
+        """Call."""
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -220,6 +237,8 @@ class WhisperDecoder:  # noqa: D101
 
 
 class Whisper:  # noqa: D101
+    """Whisper."""
+
     def __init__(  # noqa: D107
         self,
         d_model: int = 512,
@@ -231,6 +250,7 @@ class Whisper:  # noqa: D101
         decoder_layers: int = 6,
         vocab_size: int = 51865,
     ):
+        """Init."""
         self.encoder = WhisperEncoder(
             d_model=d_model,
             encoder_attention_heads=encoder_attention_heads,
@@ -246,12 +266,14 @@ class Whisper:  # noqa: D101
         )
 
     def __call__(self, input_features: Tensor, decoder_input_ids: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         encoder_hidden_states = self.encoder(input_features)
         out = self.decoder(decoder_input_ids, encoder_hidden_states)
         return out
 
 
 def whisper_tiny(**kwargs: Any) -> Whisper:  # noqa: D103
+    """Whisper tiny."""
     return Whisper(
         d_model=384,
         encoder_attention_heads=6,

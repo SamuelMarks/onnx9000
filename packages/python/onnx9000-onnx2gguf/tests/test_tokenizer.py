@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for tokenizer."""
 
 from onnx9000.onnx2gguf.tokenizer import extract_tokenizer_metadata
 

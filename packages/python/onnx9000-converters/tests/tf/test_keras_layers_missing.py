@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for keras layers missing."""
 
 from unittest.mock import MagicMock
 

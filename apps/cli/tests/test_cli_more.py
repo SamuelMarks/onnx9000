@@ -163,42 +163,42 @@ def test_cli_more_branches():
             "out.onnx",
         ],
     ):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(
         sys, "argv", ["onnx9000", "openvino", "export", "dummy.onnx", "--o", "out.onnx"]
     ):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(sys, "argv", ["onnx9000", "onnx2gguf", "dummy.onnx", "out.gguf"]):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(
         sys,
         "argv",
         ["onnx9000", "sparse", "prune", "dummy.onnx", "--sparsity", "0.5", "-o", "out.onnx"],
     ):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(
         sys, "argv", ["onnx9000", "edit", "dummy.onnx", "--reshape", "input:?,224,224,,"]
     ):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(
         sys,
@@ -213,16 +213,16 @@ def test_cli_more_branches():
             "--dynamic-batch",
         ],
     ):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
     with patch.object(sys, "argv", ["onnx9000", "sparse"]):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass
 
 
 def test_openvino_export_shape_mock():
@@ -252,10 +252,9 @@ def test_openvino_export_shape_mock():
                     "--dynamic-batch",
                 ],
             ):
-                try:
-                    main()
-                except (Exception, SystemExit):
-                    pass
+                import pytest
+        with pytest.raises((Exception, SystemExit)):
+            main()
 
 
 def test_sparse_cmd_mock():
@@ -264,7 +263,7 @@ def test_sparse_cmd_mock():
     from onnx9000_cli.main import main
 
     with patch.object(sys, "argv", ["onnx9000", "sparse"]):
-        try:
+        import pytest
+
+        with pytest.raises((Exception, SystemExit)):
             main()
-        except (Exception, SystemExit):
-            pass

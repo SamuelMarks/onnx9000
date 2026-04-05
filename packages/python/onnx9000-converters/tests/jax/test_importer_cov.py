@@ -19,6 +19,7 @@ def test_jax_importer_basic():
     """Test basic JAX function import."""
 
     def simple_func(x, y):
+        """Simple func."""
         return jnp.sin(x) + y
 
     importer = JAXImporter()
@@ -40,6 +41,7 @@ def test_jax_importer_constants():
     c = jnp.array([2.0], dtype=jnp.float32)
 
     def const_func(x):
+        """Const func."""
         return x * c
 
     importer = JAXImporter()

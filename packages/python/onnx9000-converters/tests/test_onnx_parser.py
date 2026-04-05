@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for onnx parser."""
 
 import os
 import struct
@@ -80,7 +80,6 @@ def test_pure_onnx_parser():
         with PureOnnxParser(filename) as parser:
             model = parser.parse_model()
 
-            pass
             graph = model["graph"]
             assert graph.get("name") == "dummy_graph"
 
@@ -142,6 +141,7 @@ def test_pure_onnx_parser_all_branches(tmp_path):
     # We will craft a ModelProto that triggers the other branches in _parse_message
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -152,6 +152,7 @@ def test_pure_onnx_parser_all_branches(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_branches.onnx")
@@ -269,15 +270,9 @@ def test_pure_onnx_parser_all_branches(tmp_path):
 
     with PureOnnxParser(model_path) as parser:
         model = parser.parse_model()
-        pass  # ignored because of dummy file format
-        pass
-        pass
+        assert model is not None
+        assert "graph" in model
 
-        pass
-        pass
-        pass
-
-        pass
         graph = model["graph"]
         assert "node" in graph
 
@@ -288,32 +283,9 @@ def test_pure_onnx_parser_all_branches(tmp_path):
         assert node["op_type"] == "Add"
 
         node["attribute"]
-        pass
-        pass
-        pass
-
-        pass
-        pass
-        pass
-
-        pass
-        pass
-        pass
-
-        pass
-        pass
-        pass
-
-        pass
-        pass
-        pass
 
         assert "input" in graph
         graph["input"][0]
-        pass
-        pass
-        pass
-        pass
 
 
 def test_pure_onnx_parser_misc(tmp_path):
@@ -321,6 +293,7 @@ def test_pure_onnx_parser_misc(tmp_path):
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -331,6 +304,7 @@ def test_pure_onnx_parser_misc(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_misc.onnx")
@@ -355,6 +329,7 @@ def test_pure_onnx_parser_node_skip(tmp_path):
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -365,6 +340,7 @@ def test_pure_onnx_parser_node_skip(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_skip.onnx")
@@ -392,6 +368,7 @@ def test_pure_onnx_parser_tensor_misc(tmp_path):
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -402,6 +379,7 @@ def test_pure_onnx_parser_tensor_misc(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_misc2.onnx")
@@ -447,6 +425,7 @@ def test_pure_onnx_parser_tensor_packed_dims(tmp_path):
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -457,6 +436,7 @@ def test_pure_onnx_parser_tensor_packed_dims(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_misc3.onnx")
@@ -484,6 +464,7 @@ def test_pure_onnx_parser_node_skip(tmp_path):
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
     def write_varint(f, value):
+        """Write varint."""
         while True:
             byte = value & 0x7F
             value >>= 7
@@ -494,6 +475,7 @@ def test_pure_onnx_parser_node_skip(tmp_path):
                 break
 
     def write_tag(f, field_num, wire_type):
+        """Write tag."""
         write_varint(f, (field_num << 3) | wire_type)
 
     model_path = str(tmp_path / "model_skip.onnx")

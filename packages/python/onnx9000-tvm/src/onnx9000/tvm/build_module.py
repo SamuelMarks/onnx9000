@@ -52,9 +52,12 @@ class ModelRunner {
         const module = await WebAssembly.instantiate(wasmBytes, {});
         this.instance = module.instance;
     }
-    run() {
+    run(inputData) {
         if (!this.instance) throw new Error("Model not loaded");
-        // ... generic run
+        if (this.instance.exports.main) {
+            return this.instance.exports.main(inputData);
+        }
+        throw new Error("No main export found in WASM module");
     }
 }
 module.exports = { ModelRunner };

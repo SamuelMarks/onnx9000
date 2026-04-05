@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for memory planner more."""
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Tensor, ValueInfo

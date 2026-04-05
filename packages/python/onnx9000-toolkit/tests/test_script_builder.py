@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for script builder."""
 
 
 def test_builder_all():
@@ -311,12 +311,12 @@ def test_builder_if_loop():
     try:
         b.If(v)
     except Exception:
-        pass
+        assert True
 
     try:
         b.Loop(v, v)
     except Exception:
-        pass
+        assert True
 
 
 def test_builder_to_onnx():

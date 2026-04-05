@@ -1101,25 +1101,35 @@ version = "1.0.0"
 source = { editable = "apps/cli" }
 dependencies = [
     { name = "onnx9000-backend-native" },
+    { name = "onnx9000-c-compiler" },
     { name = "onnx9000-converters" },
     { name = "onnx9000-core" },
+    { name = "onnx9000-diffusers" },
     { name = "onnx9000-onnx2gguf" },
     { name = "onnx9000-openvino" },
     { name = "onnx9000-optimizer" },
     { name = "onnx9000-optimum" },
+    { name = "onnx9000-tensorrt" },
+    { name = "onnx9000-tflite-exporter" },
     { name = "onnx9000-toolkit" },
+    { name = "onnx9000-tvm" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "onnx9000-c-compiler", editable = "packages/python/onnx9000-c-compiler" },
     { name = "onnx9000-converters", editable = "packages/python/onnx9000-converters" },
     { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
+    { name = "onnx9000-diffusers", editable = "packages/python/onnx9000-diffusers" },
     { name = "onnx9000-onnx2gguf", editable = "packages/python/onnx9000-onnx2gguf" },
     { name = "onnx9000-openvino", editable = "packages/python/onnx9000-openvino" },
     { name = "onnx9000-optimizer", editable = "packages/python/onnx9000-optimizer" },
     { name = "onnx9000-optimum", editable = "packages/python/onnx9000-optimum" },
+    { name = "onnx9000-tensorrt", editable = "packages/python/onnx9000-tensorrt" },
+    { name = "onnx9000-tflite-exporter", editable = "packages/python/onnx9000-tflite-exporter" },
     { name = "onnx9000-toolkit", editable = "packages/python/onnx9000-toolkit" },
+    { name = "onnx9000-tvm", editable = "packages/python/onnx9000-tvm" },
 ]
 
 [[package]]

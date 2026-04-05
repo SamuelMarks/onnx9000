@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for jax pytorch."""
 
 import pytest
 from onnx9000.converters.jax.jax_ops import _map_jax_add_prim

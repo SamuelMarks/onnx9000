@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for gguf test."""
 
 import os
 import struct

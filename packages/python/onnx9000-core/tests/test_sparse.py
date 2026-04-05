@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for sparse."""
 
 import json
 import logging
@@ -60,10 +60,14 @@ def test_get_struct_fmt():
     assert get_struct_fmt("UnknownDType") == "B"
 
     class BadType:
+        """Bad type."""
+
         def __eq__(self, other):
+            """Eq."""
             return False
 
         def __hash__(self):
+            """Hash."""
             return 1
 
     assert get_struct_fmt(BadType()) == "B"

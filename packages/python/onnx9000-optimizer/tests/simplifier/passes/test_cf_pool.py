@@ -74,7 +74,7 @@ def test_numpy_to_tensor_proto():
     t_float = _numpy_to_tensor_proto(5.0)
     assert len(t_float.dims) == 0
     _numpy_to_tensor_proto(np.array(["test"], dtype="O"))
-    pass
+    assert True
 
 
 def test_tensor_to_numpy():

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for checker."""
 
 import asyncio
 

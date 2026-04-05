@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Resnet."""
 
 import logging
 from collections.abc import Sequence
@@ -10,10 +10,13 @@ from onnx9000.core.primitives import BatchNormalization, ConvND, Gemm, Relu
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class BasicBlock:  # noqa: D101
+    """Basic block."""
+
     expansion: int = 1
 
     def __init__(  # noqa: D107
@@ -24,6 +27,7 @@ class BasicBlock:  # noqa: D101
         downsample: bool = False,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.conv1 = ConvND(
             2, inplanes, planes, kernel_size=3, stride=stride, padding=1, bias=False
@@ -40,6 +44,7 @@ class BasicBlock:  # noqa: D101
             self.downsample_bn = BatchNormalization(planes * self.expansion)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
 
         out = self.conv1(
@@ -103,6 +108,7 @@ class ResNet:
     """ResNet implementation built using IR macros/primitives."""
 
     def __init__(self, block_type: type, layers: list[int], num_classes: int = 1000):  # noqa: D107
+        """Init."""
         self.inplanes = 64
         self.conv1 = ConvND(2, 3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = BatchNormalization(self.inplanes)
@@ -119,6 +125,7 @@ class ResNet:
     def _make_layer(
         self, block_type: type, planes: int, blocks: int, stride: int = 1, prefix: str = ""
     ) -> list[Any]:
+        """Make layer."""
         downsample = False
         if stride != 1 or self.inplanes != planes * block_type.expansion:
             downsample = True
@@ -133,6 +140,7 @@ class ResNet:
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
         # Initial Convolution
+        """Call."""
         x = self.conv1(
             x, get_param("conv1.weight", [self.conv1.out_channels, self.conv1.in_channels, 7, 7])
         )
@@ -164,8 +172,10 @@ class ResNet:
 
 
 def resnet18(**kwargs: Any) -> ResNet:  # noqa: D103
+    """Resnet 18."""
     return ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
 
 
 def resnet50(**kwargs: Any) -> ResNet:  # noqa: D103
+    """Resnet 50."""
     return ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)

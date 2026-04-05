@@ -38,6 +38,7 @@ def test_diffusion_pipeline_sync_wrapper():
     """Verify DiffusionPipeline execution and abortion using asyncio.run."""
 
     async def run_test():
+        """Test helper run_test."""
         pipe = DiffusionPipeline.from_pretrained("dummy_path", custom_attr=True)
         assert pipe.config["model_path"] == "dummy_path"
         assert pipe.config["custom_attr"] is True
@@ -45,6 +46,7 @@ def test_diffusion_pipeline_sync_wrapper():
         steps_completed = 0
 
         def callback(step, timestep, total_steps, latents):
+            """Callback."""
             nonlocal steps_completed
             steps_completed += 1
             if step == 2:
@@ -70,7 +72,9 @@ def test_registry_decorator():
 
     @register_op("ai.onnx", "TestOp")
     class TestOp:
-        pass
+        """Test fixture TestOp."""
+
+        assert True
 
     assert TestOp._domain == "ai.onnx"
     assert TestOp._op_name == "TestOp"

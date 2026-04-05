@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Convnext."""
 
 from typing import Any
 

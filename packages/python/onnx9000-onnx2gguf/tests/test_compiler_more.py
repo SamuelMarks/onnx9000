@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for compiler more."""
 
 import io
 from unittest.mock import patch

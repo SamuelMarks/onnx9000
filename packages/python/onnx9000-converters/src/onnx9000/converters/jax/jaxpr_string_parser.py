@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Jaxpr string parser module."""
 
 import re
 from typing import Any
@@ -19,7 +19,7 @@ def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
             continue
 
         if line.startswith("{"):
-            pass
+            assert True
         elif line.startswith("in ("):
             outs = line[4:-2].split(",")
             for o in outs:

@@ -12,6 +12,11 @@ dependencies = [
     "onnx9000-optimum",
     "onnx9000-onnx2gguf",
     "onnx9000-openvino",
+    "onnx9000-c-compiler",
+    "onnx9000-tensorrt",
+    "onnx9000-tvm",
+    "onnx9000-diffusers",
+    "onnx9000-tflite-exporter",
 ]
 
 [project.scripts]
@@ -30,3 +35,8 @@ onnx9000-toolkit = { workspace = true }
 onnx9000-optimum = { workspace = true }
 onnx9000-onnx2gguf = { workspace = true }
 onnx9000-openvino = { workspace = true }
+onnx9000-c-compiler = { workspace = true }
+onnx9000-tensorrt = { workspace = true }
+onnx9000-tvm = { workspace = true }
+onnx9000-diffusers = { workspace = true }
+onnx9000-tflite-exporter = { workspace = true }

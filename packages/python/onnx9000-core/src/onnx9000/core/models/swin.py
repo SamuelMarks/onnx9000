@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Swin."""
 
 from typing import Any
 
@@ -8,6 +8,7 @@ from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAt
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -22,6 +23,7 @@ class WindowAttention:
         qkv_bias: bool = True,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.dim = dim
         self.window_size = window_size
@@ -39,6 +41,7 @@ class WindowAttention:
         # We can pass it as mask to MultiHeadAttention if supported, but let's just
         # assume our MHA can take an alibi-like bias or we skip it for the high-level AST.
 
+        """Call."""
         x = self.attn(x, x, x)
         x = self.proj(
             x,
@@ -62,6 +65,7 @@ class SwinTransformerBlock:
         qkv_bias: bool = True,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.dim = dim
         self.input_resolution = input_resolution
@@ -88,6 +92,7 @@ class SwinTransformerBlock:
         self.mlp_fc2 = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
         x = self.norm1(
             x,
@@ -130,6 +135,8 @@ class SwinTransformerBlock:
 
 
 class SwinTransformer:  # noqa: D101
+    """Swin transformer."""
+
     def __init__(  # noqa: D107
         self,
         embed_dim: int = 96,
@@ -139,6 +146,7 @@ class SwinTransformer:  # noqa: D101
         mlp_ratio: float = 4.0,
         num_classes: int = 1000,
     ):
+        """Init."""
         if num_heads is None:
             num_heads = [3, 6, 12, 24]
         if depths is None:
@@ -183,6 +191,7 @@ class SwinTransformer:  # noqa: D101
         self.head = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         x = self.patch_embed(x)
 
         for block in self.layers:
@@ -205,4 +214,5 @@ class SwinTransformer:  # noqa: D101
 
 
 def swin_t(**kwargs: Any) -> SwinTransformer:  # noqa: D103
+    """Swin t."""
     return SwinTransformer(**kwargs)

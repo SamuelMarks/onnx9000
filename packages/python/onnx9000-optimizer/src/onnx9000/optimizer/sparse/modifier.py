@@ -26,7 +26,6 @@ class Modifier:
         """Apply the modifier to the given ONNX graph.
 
         :param graph: The ONNX graph to modify.
-        :raises NotImplementedError: If the subclass does not implement this method.
         """
         return None
 

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Ffi."""
 
 import ctypes
 import ctypes.util
@@ -22,6 +22,7 @@ class TensorRTFFI:
         self._setup_logging_callback()
 
     def _load_library(self):
+        """Load library."""
         lib_name = "nvinfer"
         if sys.platform.startswith("win"):
             lib_path = ctypes.util.find_library(lib_name) or "nvinfer.dll"
@@ -58,6 +59,7 @@ class TensorRTFFI:
             self.plugin_lib = None
 
     def _extract_version(self):
+        """Extract version."""
         if not self.lib:
             return
         # TRT C API provides getInferLibVersion
@@ -72,6 +74,7 @@ class TensorRTFFI:
             logger.info(f"TensorRT Version: {major}.{minor}.{patch}")
 
     def _setup_logging_callback(self):
+        """Setup logging callback."""
         if not self.lib:
             return
 
@@ -80,6 +83,7 @@ class TensorRTFFI:
         ILoggerCallback = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p)
 
         def _log_callback(user_data, severity, msg_bytes):
+            """Log callback."""
             msg = msg_bytes.decode("utf-8")
             if severity == 0 or severity == 1:
                 logger.error(f"[TRT] {msg}")

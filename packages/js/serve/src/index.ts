@@ -14,6 +14,7 @@ import { addDashboardRoutes } from './dashboard';
 import { globalLogger, LogLevel } from './logger';
 import { applyMiddlewares } from './middleware';
 import { runCli } from './cli';
+import { createTensorRTSession } from './tensorrt';
 
 export class Onnx9000Server {
   public router: Router;
@@ -59,6 +60,7 @@ export {
   globalMetrics,
   LogLevel,
   runCli,
+  createTensorRTSession,
   type EnsembleConfig,
   type KVSyncAdapter,
 };

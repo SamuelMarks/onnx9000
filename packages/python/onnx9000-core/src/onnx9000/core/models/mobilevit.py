@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Mobilevit."""
 
 from typing import Any, Optional
 

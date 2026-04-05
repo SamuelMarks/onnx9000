@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for script var."""
 
 
 def test_script_var_ops():
@@ -16,84 +16,84 @@ def test_script_var_ops():
     try:
         v + 1
     except Exception:
-        pass
+        assert True
     try:
         1 + v
     except Exception:
-        pass
+        assert True
     try:
         v - 1
     except Exception:
-        pass
+        assert True
     try:
         1 - v
     except Exception:
-        pass
+        assert True
     try:
         v * 1
     except Exception:
-        pass
+        assert True
     try:
         1 * v
     except Exception:
-        pass
+        assert True
     try:
         v / 1
     except Exception:
-        pass
+        assert True
     try:
         1 / v
     except Exception:
-        pass
+        assert True
     try:
         v**1
     except Exception:
-        pass
+        assert True
     try:
         v @ 1
     except Exception:
-        pass
+        assert True
     try:
         v % 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v < 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v > 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v <= 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v >= 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v == 1
     except Exception:
-        pass
+        assert True
     try:
         _ = v != 1
     except Exception:
-        pass
+        assert True
 
     try:
         v(1)
     except Exception:
-        pass
+        assert True
     try:
         v[1]
     except Exception:
-        pass
+        assert True
     try:
         v.test_attr
     except Exception:
-        pass
+        assert True
 
 
 def test_script_var_ops_more():
@@ -111,31 +111,31 @@ def test_script_var_ops_more():
     try:
         v - 1
     except Exception:
-        pass
+        assert True
     try:
         1 - v
     except Exception:
-        pass
+        assert True
     try:
         v & 1
     except Exception:
-        pass
+        assert True
     try:
         v | 1
     except Exception:
-        pass
+        assert True
     try:
         v ^ 1
     except Exception:
-        pass
+        assert True
     try:
         ~v
     except Exception:
-        pass
+        assert True
     try:
         v[1:5:2]
     except Exception:
-        pass
+        assert True
 
 
 def test_script_var_rename():

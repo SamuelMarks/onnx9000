@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Dit."""
 
 from typing import Any
 
@@ -9,6 +9,7 @@ from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAt
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -16,6 +17,7 @@ class DiTBlock:
     """Diffusion Transformer Block with AdaLN-Zero."""
 
     def __init__(self, hidden_size: int, num_heads: int, mlp_ratio: float = 4.0, prefix: str = ""):  # noqa: D107
+        """Init."""
         self.prefix = prefix
         self.hidden_size = hidden_size
         self.norm1 = LayerNormalization((hidden_size,), epsilon=1e-6)
@@ -29,6 +31,7 @@ class DiTBlock:
 
     def __call__(self, x: Tensor, c: Tensor) -> Tensor:  # noqa: D102
         # c is the timestep/condition embedding [B, hidden_size]
+        """Call."""
         from onnx9000.core.ops import split, squeeze
 
         # AdaLN-Zero mapping
@@ -108,6 +111,8 @@ class DiTBlock:
 
 
 class DiT:  # noqa: D101
+    """Di t."""
+
     def __init__(  # noqa: D107
         self,
         input_size: int = 32,
@@ -118,6 +123,7 @@ class DiT:  # noqa: D101
         num_heads: int = 16,
         mlp_ratio: float = 4.0,
     ):
+        """Init."""
         self.hidden_size = hidden_size
         self.patch_embed = PatchEmbed(
             input_size, patch_size, in_channels, hidden_size, prefix="x_embedder"
@@ -135,6 +141,7 @@ class DiT:  # noqa: D101
         self.out_channels = in_channels * patch_size * patch_size
 
     def __call__(self, x: Tensor, t: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         x = self.patch_embed(x)
 
         pos_embed = get_param("pos_embed", [1, self.patch_embed.num_patches, self.hidden_size])
@@ -183,4 +190,5 @@ class DiT:  # noqa: D101
 
 
 def dit_xl_2(**kwargs: Any) -> DiT:  # noqa: D103
+    """Dit xl 2."""
     return DiT(hidden_size=1152, depth=28, num_heads=16, **kwargs)

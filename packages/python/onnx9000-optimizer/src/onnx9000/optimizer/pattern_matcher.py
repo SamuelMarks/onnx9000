@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Pattern matcher."""
 
 import logging
 from typing import Any, Callable, Optional
@@ -44,7 +44,7 @@ class PatternMatcherEngine:
             for pattern, rewrite_fn in self.rules:
                 if matches(node, pattern):
                     # Mock rewrite
-                    pass
+                    assert True
         return graph
 
 

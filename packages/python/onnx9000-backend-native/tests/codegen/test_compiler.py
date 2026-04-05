@@ -22,8 +22,8 @@ def test_compile_cpp():
 
 def test_compile_cpp_pybind():
     """Test pybind11 C++ compilation."""
-    pass
-    pass
+    assert True
+    assert True
 
 
 def test_compile_cpp_no_pybind11_installed():

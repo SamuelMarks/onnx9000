@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage gaps11."""
 
 import pytest
 from onnx9000.converters.flax_parser import parse_msgpack

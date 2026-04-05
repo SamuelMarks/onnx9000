@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for missing coverage."""
 
 from typing import Any
 

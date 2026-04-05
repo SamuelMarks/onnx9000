@@ -42,6 +42,7 @@ def test_deeply_nested_tracing():
     """Verify that trace() handles deeply nested structures."""
 
     def func(nested_in):
+        """Func."""
         return [nested_in["a"][0] + 1]
 
     x = Tensor((1,), DType.FLOAT32, "x")

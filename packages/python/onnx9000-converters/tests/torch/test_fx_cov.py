@@ -21,7 +21,10 @@ def test_fx_parser_basic():
     """Test basic Torch FX parser."""
 
     class SimpleModule(torch.nn.Module):
+        """Simple module."""
+
         def forward(self, x, y):
+            """Forward."""
             return x + y
 
     m = SimpleModule()

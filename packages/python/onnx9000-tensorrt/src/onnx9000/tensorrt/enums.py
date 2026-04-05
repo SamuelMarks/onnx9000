@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Enums."""
 
 import enum
 

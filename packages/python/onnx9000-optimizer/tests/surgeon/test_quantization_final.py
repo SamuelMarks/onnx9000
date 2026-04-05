@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for quantization final."""
 
 import numpy as np
 import pytest

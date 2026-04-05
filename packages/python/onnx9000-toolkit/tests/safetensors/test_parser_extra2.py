@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parser extra2."""
 
 import os
 from unittest.mock import MagicMock, patch
@@ -13,6 +13,7 @@ def test_hub_extra():
 
     # 44-45
     def mock_urlopen(*args, **kwargs):
+        """Mock urlopen."""
         from urllib.error import HTTPError
 
         raise HTTPError("url", 404, "Not Found", {}, None)

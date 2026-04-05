@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Ops conv."""
 
 import ctypes
 from typing import Any

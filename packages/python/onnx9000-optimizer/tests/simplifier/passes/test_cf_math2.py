@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for cf math2."""
 
 import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
@@ -54,6 +54,8 @@ def test_cf_math_ops2():
     assert cf._evaluate_node("Split", [np.ones((4,)), np.array([2, 2])], {"axis": 0}) is not None
 
     class NodeMock:
+        """Node mock."""
+
         outputs = ["a", "b"]
 
     assert cf._evaluate_node("Split", [np.ones((4,))], {"axis": 0}, node=NodeMock()) is not None

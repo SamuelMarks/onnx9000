@@ -78,6 +78,7 @@ def test_export_wasm(tmp_path, monkeypatch):
 
     # Mock compile_wasm
     def mock_compile_wasm(graph, out_dir):
+        """Mock compile wasm."""
         p = Path(out_dir) / "temp.js"
         p.write_text("// dummy js")
         (Path(out_dir) / "temp.wasm").write_bytes(b"dummy wasm")
@@ -169,6 +170,7 @@ def test_export_wasm_existing(tmp_path, monkeypatch):
 
     # Mock compile_wasm to return a different path
     def mock_compile_wasm(graph, out_dir):
+        """Mock compile wasm."""
         p = Path(out_dir) / "temp.js"
         p.write_text("// dummy js")
         (Path(out_dir) / "temp.wasm").write_bytes(b"dummy wasm")
@@ -262,11 +264,13 @@ def test_export_wasm_format(tmp_path):
     import unittest.mock
 
     def fake_which(cmd):
+        """Fake which."""
         if cmd == "emcc":
             return "/usr/bin/emcc"
         return getattr(shutil, "_which", lambda x: "/usr/bin/emcc")(cmd)
 
     def fake_run(*args, **kwargs):
+        """Fake run."""
         import os
 
         from onnx9000.converters.jit.compiler import hash_graph

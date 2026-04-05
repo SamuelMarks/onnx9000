@@ -217,7 +217,7 @@ def test_script_parser_docstring() -> None:
 
     @script
     def dummy_func_with_doc() -> int:
-        """Thi is a dummy docstring"""
+        """Thi is a dummy docstring."""
         return 1
 
     dummy_func_with_doc.to_builder()

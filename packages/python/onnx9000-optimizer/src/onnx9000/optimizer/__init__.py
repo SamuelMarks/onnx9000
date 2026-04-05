@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Init."""
 
 from onnx9000.optimizer.pattern_matcher import (
     Pattern,

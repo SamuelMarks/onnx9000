@@ -22,9 +22,10 @@ class ONNXToFlaxNNXVisitor:
 
         # load_weights helper function
         lines.append("def load_weights(nnx_module, state_dict):")
-        lines.append("    # Simplified PyTree loader mapping names to state dict keys")
-        lines.append("    from flax.core import freeze, unfreeze")
-        lines.append("    pass")
+        lines.append("    # Map state dict to Flax nnx module parameters")
+        lines.append("    for name, value in state_dict.items():")
+        lines.append("        if hasattr(nnx_module, name):")
+        lines.append("            setattr(nnx_module, name, value)")
         lines.append("")
 
         class_name = f"Model_{self.graph.name or 'Generated'}"

@@ -66,7 +66,9 @@ def test_cli_commands(capsys) -> None:
         patch("importlib.util.module_from_spec") as mock_module_from_spec,
         patch("onnx9000.converters.frontend.tracer.trace") as mock_trace,
         patch("onnx9000.core.exporter.export_graph"),
+        patch("onnx9000.c_compiler.compiler.C89Compiler") as mock_compiler_cls,
     ):
+        mock_compiler_cls.return_value.generate.return_value = ("header_content", "source_content")
         mock_graph = MagicMock()
         mock_graph.tensors = {}
         mock_graph.nodes = []
@@ -87,7 +89,10 @@ def test_cli_commands(capsys) -> None:
         from onnx9000.converters.frontend.nn.module import Module
 
         class MockModel(Module):
+            """Mock model."""
+
             def forward(self, x):
+                """Forward."""
                 return x
 
         mock_m.MyModel = MockModel
@@ -107,7 +112,7 @@ def test_cli_commands(capsys) -> None:
         assert "Exporting test.py" in capsys.readouterr().out
 
         convert_cmd(args)
-        assert "Converting from tf" in capsys.readouterr().out
+        assert "Converting from onnx" in capsys.readouterr().out
 
         serve_cmd(args)
         assert "Serving test.onnx on local server..." in capsys.readouterr().out
@@ -143,6 +148,7 @@ def test_main_execution() -> None:
         [sys.executable, main_script, "--help"],
         capture_output=True,
         text=True,
+        env=os.environ,
     )
     assert result.returncode == 0
     assert "usage:" in result.stdout

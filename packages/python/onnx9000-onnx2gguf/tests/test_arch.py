@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for arch."""
 
 import pytest
 from onnx9000.core.dtypes import DType

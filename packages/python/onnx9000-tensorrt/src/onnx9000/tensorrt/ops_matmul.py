@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Ops matmul."""
 
 import ctypes
 from typing import Any

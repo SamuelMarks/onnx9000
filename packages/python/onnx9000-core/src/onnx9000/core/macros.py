@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Macros."""
 
 import functools
 from typing import Any, Callable, Optional
@@ -15,10 +15,12 @@ def ir_macro(name: str, domain: str = "ai.onnx9000.macro") -> Callable:
     """Decorator to register a function as an IR Macro."""
 
     def decorator(func: Callable) -> Callable:
+        """Decorator."""
         MACRO_REGISTRY[name] = func
 
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Wrapper."""
             tensors = []
             for arg in args:
                 if isinstance(arg, Tensor):

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage final."""
 
 import ast
 import builtins
@@ -31,6 +31,7 @@ def test_registry_fallback_coverage():
     reg = OperatorRegistry()
 
     def my_op():
+        """My op."""
         return "ok"
 
     reg.register_op("MyOp", domain="test")(my_op)
@@ -356,6 +357,7 @@ def test_numpy_import_error_coverage():
     real_import = builtins.__import__
 
     def mock_import(name, *args, **kwargs):
+        """Mock import."""
         if name == "numpy":
             raise ImportError("mock")
         return real_import(name, *args, **kwargs)

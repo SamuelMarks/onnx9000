@@ -507,7 +507,7 @@ def pointnet2_set_abstraction(xyz: Tensor, points: Tensor, w: Tensor) -> Tensor:
 # 24. Experimental & Future Architectures
 @ir_macro("xLSTM_Block")
 def xlstm_block(x: Tensor, i: Tensor, f: Tensor, c: Tensor, o: Tensor) -> Tensor:
-    """xLSTM Block (exponential gating)."""
+    """XLSTM Block (exponential gating)."""
     exp_f = ops.exp(f)
     exp_i = ops.exp(i)
     new_c = ops.add(ops.mul(exp_f, c), ops.mul(exp_i, x))

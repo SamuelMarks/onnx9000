@@ -174,7 +174,25 @@ def run_in_pyodide() -> bool:
 
 def generate_js_wrapper() -> str:
     """Implement a JS wrapper to run the Python optimizer directly in the browser."""
-    return "\nclass ONNX9000Optimizer {\n    constructor(pyodide) {\n        this.pyodide = pyodide;\n    }\n    optimize(graphBytes, target) {\n        // ... pyodide runPython logic ...\n    }\n}\n"
+    return """
+class ONNX9000Optimizer {
+    constructor(pyodide) {
+        this.pyodide = pyodide;
+    }
+    optimize(graphBytes, target) {
+        this.pyodide.globals.set("graph_bytes", graphBytes);
+        this.pyodide.globals.set("target", target);
+        return this.pyodide.runPython(`
+            from onnx9000.core.ir import Graph
+            from onnx9000.optimizer.hardware.api import HardwareOptimizer
+            graph = Graph.parse(graph_bytes)
+            optimizer = HardwareOptimizer(target)
+            opt_graph = optimizer.optimize(graph)
+            opt_graph.serialize()
+        `);
+    }
+}
+"""
 
 
 def generate_visual_dag_comparison(original_graph: Graph, optimized_graph: Graph) -> str:

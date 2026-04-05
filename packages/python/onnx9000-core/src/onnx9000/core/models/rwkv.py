@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Rwkv."""
 
 from typing import Any
 

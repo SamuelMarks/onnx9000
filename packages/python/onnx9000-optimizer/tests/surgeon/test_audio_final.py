@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for audio final."""
 
 import pytest
 from onnx9000.core.ir import Constant, Graph, Node
@@ -14,11 +14,15 @@ def test_fold_mel_weights_exception():
 
     # Mock graph.tensors to crash on setitem
     class CrashingDict(dict):
+        """Crashing dict."""
+
         def __init__(self, *args, **kwargs):
+            """Init."""
             super().__init__(*args, **kwargs)
             self.should_crash = False
 
         def __setitem__(self, key, value):
+            """Setitem."""
             if self.should_crash:
                 raise Exception("force crash")
             super().__setitem__(key, value)

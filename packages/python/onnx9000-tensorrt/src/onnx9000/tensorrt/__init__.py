@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Init."""
 
 import onnx9000.tensorrt.ops
 import onnx9000.tensorrt.ops_conv

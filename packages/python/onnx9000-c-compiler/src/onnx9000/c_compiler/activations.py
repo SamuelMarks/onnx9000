@@ -86,7 +86,10 @@ def generate_activation(
         # For now, strict bounds check
         b.emit(f"{out_name}[i] = val;")  # Placeholder for input variable extraction
     elif op_type == "PRelu":
-        pass  # handled via elementwise broadcast usually
+        slope_input = "slope"  # we would need the actual name if mapped, using placeholder
+        b.emit(f"/* PRelu fallback, slope mapping required */")
+        b.emit(f"float s = 0.0f; /* Replace with {slope_input} lookup */")
+        b.emit(f"{out_name}[i] = val < 0.0f ? val * s : val;")
 
     b.pop_indent()
     b.emit("}")

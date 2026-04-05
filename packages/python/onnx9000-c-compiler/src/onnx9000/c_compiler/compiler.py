@@ -858,6 +858,7 @@ class C89Compiler:
         b.emit("}")
 
     def _generate_rtos_wrapper(self) -> None:
+        """Generate rtos wrapper."""
         if self.target == "freertos":
             b = self.source_builder
             b.emit("")

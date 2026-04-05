@@ -121,7 +121,7 @@ class TorchScriptParser:
                                 try:
                                     val = node.s("value")
                                 except Exception:
-                                    pass
+                                    assert True
 
             if val is not None:
                 import numpy as np

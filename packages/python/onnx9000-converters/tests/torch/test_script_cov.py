@@ -21,6 +21,7 @@ def test_script_parser_basic_function():
     """Test TorchScript parser on a raw python function to hit jit.script logic."""
 
     def simple_func(x, y):
+        """Simple func."""
         return x + y
 
     parser = TorchScriptParser(simple_func)
@@ -33,6 +34,7 @@ def test_script_parser_control_flow():
     """Test TorchScript parser on control flow to hit prim::If."""
 
     def dummy_func(x):
+        """Dummy func."""
         return x
 
     parser = TorchScriptParser(dummy_func)
@@ -56,6 +58,7 @@ def test_script_parser_ops():
     """Test TorchScript parser mapping of sub and div."""
 
     def math_func(x, y):
+        """Math func."""
         return (x - y) / y
 
     parser = TorchScriptParser(math_func)
@@ -69,6 +72,7 @@ def test_script_parser_dtypes():
     """Test TorchScript parser dtype mapping logic."""
 
     def dummy_func(x):
+        """Dummy func."""
         return x
 
     parser = TorchScriptParser(dummy_func)
@@ -85,12 +89,15 @@ def test_script_parser_non_tensor_inputs():
     """Test TorchScript parser on non-tensor inputs."""
 
     def func_bool(x: bool) -> bool:
+        """Func bool."""
         return x
 
     def func_int(x: int) -> int:
+        """Func int."""
         return x
 
     def func_float(x: float) -> float:
+        """Func float."""
         return x
 
     p_bool = TorchScriptParser(func_bool)
@@ -111,7 +118,10 @@ def test_script_parser_script_module():
     """Test TorchScript parser on an already scripted module."""
 
     class DummyModule(torch.nn.Module):
+        """Dummy module."""
+
         def forward(self, x):
+            """Forward."""
             return x
 
     scripted = torch.jit.script(DummyModule())
@@ -124,6 +134,7 @@ def test_script_parser_constants_fallback():
     """Test TorchScript parser constants fallback."""
 
     def dummy_func(x):
+        """Dummy func."""
         return x
 
     parser = TorchScriptParser(dummy_func)
@@ -169,6 +180,7 @@ def test_script_parser_more_coverage():
     """Test TorchScript parser remaining coverage lines."""
 
     def dummy_func(x):
+        """Dummy func."""
         return x * 2.0
 
     parser = TorchScriptParser(dummy_func)
@@ -207,7 +219,10 @@ def test_script_parser_more_coverage():
 
     # Test parse scriptmodule continue
     class DummyModule(torch.nn.Module):
+        """Dummy module."""
+
         def forward(self, x):
+            """Forward."""
             return x
 
     scripted = torch.jit.script(DummyModule())

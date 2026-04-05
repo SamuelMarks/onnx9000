@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage extras."""
 
 import numpy as np
 import pytest
@@ -20,7 +20,10 @@ def test_layout_expand_tile():
     g.initializers.append("shape")
 
     class AttrMock:
+        """Attr mock."""
+
         def __init__(self, val):
+            """Init."""
             self.value = val
 
     g.nodes.append(Node("Transpose", ["X"], ["trans"], {"perm": AttrMock([0, 2, 3, 1])}))

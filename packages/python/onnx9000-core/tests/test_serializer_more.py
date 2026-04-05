@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for serializer more."""
 
 import tempfile
 import unittest

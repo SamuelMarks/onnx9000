@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parser extra3."""
 
 from unittest.mock import patch
 
@@ -13,6 +13,7 @@ def test_import_errors():
     original_import = builtins.__import__
 
     def mock_import(name, *args, **kwargs):
+        """Mock import."""
         if "onnx9000.core" in name or "numpy" in name:
             raise ImportError(f"Mocked ImportError for {name}")
         return original_import(name, *args, **kwargs)

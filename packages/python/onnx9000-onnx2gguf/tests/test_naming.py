@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for naming."""
 
 import pytest
 from onnx9000.onnx2gguf.naming import rename_tensor

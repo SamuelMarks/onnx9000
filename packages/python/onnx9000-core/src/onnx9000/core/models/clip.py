@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Clip."""
 
 from typing import Any
 
@@ -9,6 +9,7 @@ from onnx9000.core.primitives import Gemm
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -26,6 +27,7 @@ class CLIP:
         text_heads: int = 8,
         vocab_size: int = 49408,
     ):
+        """Init."""
         self.embed_dim = embed_dim
 
         # Vision
@@ -52,6 +54,7 @@ class CLIP:
         self.logit_scale = get_param("logit_scale", [1])
 
     def __call__(self, image: Tensor, text: Tensor) -> tuple[Tensor, Tensor]:  # noqa: D102
+        """Call."""
         image_features = self.visual(image)
 
         # We need a mask for text if padded, but let's assume packed for AST
@@ -73,4 +76,5 @@ class CLIP:
 
 
 def clip_vit_base_patch16(**kwargs: Any) -> CLIP:  # noqa: D103
+    """Clip vit base patch16."""
     return CLIP(**kwargs)

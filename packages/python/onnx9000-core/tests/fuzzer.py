@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Fuzzer."""
 
 import logging
 from typing import Any

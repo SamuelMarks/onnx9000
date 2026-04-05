@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for ops missing zoo."""
 
 import pytest
 from onnx9000.core.ir import Tensor

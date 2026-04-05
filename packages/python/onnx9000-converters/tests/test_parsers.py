@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parsers."""
 
 from onnx9000.converters.parsers import JAXprParser, PyTorchFXParser, XLAHLOParser
 from onnx9000.core.ir import Graph

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for sharding advanced."""
 
 import pytest
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor

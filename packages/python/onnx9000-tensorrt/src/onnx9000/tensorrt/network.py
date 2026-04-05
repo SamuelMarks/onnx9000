@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Network."""
 
 import ctypes
 

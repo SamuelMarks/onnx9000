@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for frontend more."""
 
 import tempfile
 import unittest
@@ -48,11 +48,15 @@ class TestFrontendMore(unittest.TestCase):
         """Docstring for D102."""
 
         class SimpleModule(module.Module):
+            """Simple module."""
+
             def __init__(self):
+                """Init."""
                 super().__init__()
                 self.l = linear.Linear(2, 2)
 
             def forward(self, x):
+                """Forward."""
                 return self.l(x)
 
         m = SimpleModule()
@@ -76,6 +80,7 @@ class TestFrontendMore(unittest.TestCase):
 
         @jit.jit
         def my_func(x):
+            """My func."""
             return functional.relu(x)
 
         t = tensor.Tensor((1, 2))
@@ -144,6 +149,7 @@ class TestFrontendMore(unittest.TestCase):
         """Docstring for D102."""
 
         def simple_func(x):
+            """Simple func."""
             return functional.relu(x)
 
         t = tensor.Tensor((1, 2))

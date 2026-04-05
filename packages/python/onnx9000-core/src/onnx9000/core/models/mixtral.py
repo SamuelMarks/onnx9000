@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Mixtral."""
 
 from typing import Any, Optional
 
@@ -14,11 +14,15 @@ from onnx9000.core.primitives import (
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class SparseMoE:  # noqa: D101
+    """Sparse mo e."""
+
     def __init__(self, num_experts: int, top_k: int, dim: int, ffn_dim: int, prefix: str = ""):  # noqa: D107
+        """Init."""
         self.prefix = prefix
         self.num_experts = num_experts
         self.top_k = top_k
@@ -32,6 +36,7 @@ class SparseMoE:  # noqa: D101
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
         # Routing
+        """Call."""
         logits = self.gate(x, get_param(f"{self.prefix}.gate.weight", [self.num_experts, self.dim]))
 
         from onnx9000.core.ops import constant, softmax
@@ -59,6 +64,8 @@ class SparseMoE:  # noqa: D101
 
 
 class MixtralBlock:  # noqa: D101
+    """Mixtral block."""
+
     def __init__(  # noqa: D107
         self,
         dim: int,
@@ -69,6 +76,7 @@ class MixtralBlock:  # noqa: D101
         top_k: int,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.dim = dim
         self.norm1 = RMSNorm((dim,))
@@ -77,6 +85,7 @@ class MixtralBlock:  # noqa: D101
         self.moe = SparseMoE(num_experts, top_k, dim, ffn_dim, prefix=f"{prefix}.moe")
 
     def __call__(self, x: Tensor, pos: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
         x_attn = self.attn(x_norm, x_norm, x_norm, mask=mask)
@@ -91,6 +100,8 @@ class MixtralBlock:  # noqa: D101
 
 
 class Mixtral:  # noqa: D101
+    """Mixtral."""
+
     def __init__(  # noqa: D107
         self,
         vocab_size: int = 32000,
@@ -103,6 +114,7 @@ class Mixtral:  # noqa: D101
         top_k: int = 2,
         max_seq_len: int = 4096,
     ):
+        """Init."""
         self.vocab_size = vocab_size
         self.dim = dim
         self.depth = depth
@@ -119,6 +131,7 @@ class Mixtral:  # noqa: D101
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
     def __call__(self, input_ids: Tensor, pos: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+        """Call."""
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -136,6 +149,7 @@ class Mixtral:  # noqa: D101
 
 
 def mixtral_8x7b(**kwargs: Any) -> Mixtral:  # noqa: D103
+    """Mixtral 8x7b."""
     return Mixtral(
         vocab_size=32000,
         dim=4096,

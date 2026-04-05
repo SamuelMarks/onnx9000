@@ -109,39 +109,39 @@ def test_te_full():
     try:
         s[B].split(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].tile(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].compute_at(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].compute_inline(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].compute_root(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].bind(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].parallel(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].vectorize(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         s[B].unroll(None, None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True
 
     default_x86_schedule([B])
     default_arm_schedule([B])
@@ -151,20 +151,20 @@ def test_te_full():
     try:
         nn_conv2d(t, t)
     except Exception:
-        return None
+        assert True
     try:
         nn_matmul(None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         nn_pool2d(t)
     except Exception:
-        return None
+        assert True
     try:
         nn_softmax(None, None, None)
     except Exception:
-        return None
+        assert True
     try:
         nn_layer_norm(None, None, None, None, None, None)
     except Exception:
-        return None
+        assert True

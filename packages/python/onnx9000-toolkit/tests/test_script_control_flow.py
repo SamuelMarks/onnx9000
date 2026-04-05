@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for script control flow."""
 
 
 def test_script_control_flow_all():

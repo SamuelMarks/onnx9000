@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for macros."""
 
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.macros import MacroExpander, MacroMatcher, ir_macro
@@ -9,6 +9,7 @@ def test_macro_decorator() -> None:
 
     @ir_macro("TestMacro")
     def test_m(x: Tensor) -> Tensor:
+        """Tests m."""
         return x
 
     x = Tensor(name="x", shape=[1], dtype=1)

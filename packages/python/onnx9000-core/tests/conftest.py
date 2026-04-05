@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for conftest."""
 
 import os
 import sys

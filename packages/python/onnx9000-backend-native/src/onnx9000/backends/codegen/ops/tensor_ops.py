@@ -1218,10 +1218,7 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
     if len(cats_int64s) > 0 and len(cats_strings) == 0:
         # Int to Int or String to Int. Let's assume Int to Int
         for i, val in enumerate(cats_int64s):
-            # The values to map are in another list, wait, ONNX CategoryMapper uses
-            # cats_int64s and cats_strings. It maps from one to another.
-            # Usually cats_int64s to cats_strings, or vice versa.
-            return None
+            pass
 
     # Simple static switch statements for categorical routing (mock implementation)
     switch_code = f"""

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Mamba."""
 
 from typing import Any
 
@@ -8,11 +8,15 @@ from onnx9000.core.primitives import ConvND, Gemm, RMSNorm, Silu, StateSpace
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class MambaBlock:  # noqa: D101
+    """Mamba block."""
+
     def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int, prefix: str = ""):  # noqa: D107
+        """Init."""
         self.prefix = prefix
         self.d_model = d_model
         self.d_state = d_state
@@ -40,6 +44,7 @@ class MambaBlock:  # noqa: D101
         self.out_proj = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
         x_norm = self.norm(x, get_param(f"{self.prefix}.norm.weight", [self.d_model]))
 
@@ -129,6 +134,8 @@ class MambaBlock:  # noqa: D101
 
 
 class Mamba:  # noqa: D101
+    """Mamba."""
+
     def __init__(  # noqa: D107
         self,
         vocab_size: int = 50277,
@@ -138,6 +145,7 @@ class Mamba:  # noqa: D101
         d_conv: int = 4,
         expand: int = 2,
     ):
+        """Init."""
         self.vocab_size = vocab_size
         self.d_model = d_model
 
@@ -149,6 +157,7 @@ class Mamba:  # noqa: D101
         self.lm_head = Gemm(trans_b=1)
 
     def __call__(self, input_ids: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -164,6 +173,7 @@ class Mamba:  # noqa: D101
 
 
 def mamba_130m(**kwargs: Any) -> Mamba:  # noqa: D103
+    """Mamba 130m."""
     return Mamba(
         vocab_size=50277, d_model=768, n_layer=24, d_state=16, d_conv=4, expand=2, **kwargs
     )

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for extras."""
 
 import urllib.error
 from unittest.mock import MagicMock, patch
@@ -12,6 +12,7 @@ def test_hub_fetch_tokenizer_exception():
     """Docstring for D103."""
 
     def mock_urlopen(req, *args, **kwargs):
+        """Mock urlopen."""
         if "config.json" in req.full_url:
             res = MagicMock()
             res.__enter__.return_value.read.return_value = b"{}"
@@ -27,6 +28,7 @@ def test_hub_fetch_tokenizer_httperror():
     """Docstring for D103."""
 
     def mock_urlopen(req, *args, **kwargs):
+        """Mock urlopen."""
         if "config.json" in req.full_url:
             res = MagicMock()
             res.__enter__.return_value.read.return_value = b"{}"
@@ -44,7 +46,10 @@ def test_gguf2onnx_split():
     """Docstring for D103."""
 
     class MockReader:
+        """Mock reader."""
+
         def __init__(self):
+            """Init."""
             self.kvs = {"split.index": 1, "tokenizer.ggml.tokens": []}
             self.tensors = {}
 
@@ -55,7 +60,10 @@ def test_gguf2onnx_success():
     """Docstring for D103."""
 
     class MockReader2:
+        """Mock reader 2."""
+
         def __init__(self):
+            """Init."""
             self.kvs = {"general.name": "success"}
             self.tensors = {}
 

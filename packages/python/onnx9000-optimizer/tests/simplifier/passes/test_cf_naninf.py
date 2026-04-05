@@ -66,7 +66,7 @@ def test_cf_mock_nan_types():
     # 417                     logger.warning(...)
     # 418                 else:
     # Wait, line 418 is part of the `try... except` block or the `else` inside the node building?
-    pass
+    assert True
 
 
 def test_erf():

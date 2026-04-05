@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Mae."""
 
 from typing import Any
 
@@ -9,6 +9,7 @@ from onnx9000.core.primitives import ConvND, Gemm, LayerNormalization
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -29,6 +30,7 @@ class MaskedAutoencoderViT:
         mlp_ratio: float = 4.0,
         norm_layer: Any = LayerNormalization,
     ):
+        """Init."""
         self.img_size = img_size
         self.patch_size = patch_size
         self.num_patches = (img_size // patch_size) ** 2
@@ -63,6 +65,7 @@ class MaskedAutoencoderViT:
 
     def forward_encoder(self, x: Tensor, mask_indices: Tensor) -> tuple[Tensor, Tensor]:  # noqa: D102
         # Embed patches
+        """Forward encoder."""
         x = self.patch_embed(x)
 
         # Add pos embed w/o cls token
@@ -101,6 +104,7 @@ class MaskedAutoencoderViT:
 
     def forward_decoder(self, x: Tensor, mask_indices: Tensor) -> Tensor:  # noqa: D102
         # Embed tokens
+        """Forward decoder."""
         x = self.decoder_embed(
             x,
             get_param("decoder_embed.weight", [self.decoder_embed_dim, self.embed_dim]),
@@ -163,12 +167,14 @@ class MaskedAutoencoderViT:
         return x
 
     def __call__(self, x: Tensor, mask_indices: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         latent, mask_indices = self.forward_encoder(x, mask_indices)
         pred = self.forward_decoder(latent, mask_indices)
         return pred
 
 
 def mae_vit_base_patch16(**kwargs: Any) -> MaskedAutoencoderViT:  # noqa: D103
+    """Mae vit base patch16."""
     return MaskedAutoencoderViT(
         patch_size=16,
         embed_dim=768,

@@ -63,10 +63,11 @@ def test_parser_if_both_branches_missing():
     from onnx9000.toolkit.script.parser import ScriptParser as Parser
 
     def my_func(cond):
+        """My func."""
         if cond:
             x = 1.0  # noqa: F841
         else:
-            pass
+            assert True
         return cond
 
     p = Parser({})
@@ -81,6 +82,7 @@ def test_parser_visit_name_unknown():
     from onnx9000.toolkit.script.parser import ScriptParser as Parser
 
     def my_func():
+        """My func."""
         return fake_unresolved_name_12345
 
     p = Parser({})

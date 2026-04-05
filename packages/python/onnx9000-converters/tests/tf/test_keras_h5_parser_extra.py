@@ -54,7 +54,10 @@ def test_keras_h5_parser_get_weights_dataset():
     mock_file.__contains__.side_effect = lambda x: x == "model_weights"
 
     class MockDataset:
+        """Mock dataset."""
+
         def __getitem__(self, val):
+            """Getitem."""
             return np.array([1.0])
 
     mock_ds = MockDataset()
@@ -63,6 +66,7 @@ def test_keras_h5_parser_get_weights_dataset():
 
     def mock_visit(func):
         # The parser uses a lambda that calls collect_weights(obj, current_weights)
+        """Mock visit."""
         func("weight_0", mock_ds)
 
     mock_lg.visititems.side_effect = mock_visit

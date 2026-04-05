@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Pipeline."""
 
 import asyncio
 import gc

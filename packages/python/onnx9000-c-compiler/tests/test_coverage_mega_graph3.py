@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage mega graph3."""
 
 import numpy as np
 from onnx9000.c_compiler.compiler import C89Compiler
@@ -48,7 +48,10 @@ def test_concat_complex():
     g.outputs.append("Y")
 
     class AttrMock:
+        """Attr mock."""
+
         def __init__(self, val):
+            """Init."""
             self.value = val
 
     g.nodes.append(Node("Concat", ["X1", "X2"], ["Y"], {"axis": AttrMock(1)}))

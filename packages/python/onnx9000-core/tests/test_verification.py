@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for verification."""
 
 import unittest
 
@@ -92,12 +92,15 @@ class TestVerification(unittest.TestCase):
         graph = IRGraph(nodes)
 
         def oracle_fn(idx):
+            """Oracle fn."""
             return torch.tensor([1.0, 2.0])
 
         def target_fn_pass(idx):
+            """Target fn pass."""
             return torch.tensor([1.0, 2.0])
 
         def target_fn_fail_at_1(idx):
+            """Target fn fail at 1."""
             if idx == 0:
                 return torch.tensor([1.0, 2.0])
             else:
@@ -161,7 +164,10 @@ def test_oracle_missing():
 
     # 79: Oracle model missing call
     class MockModel:
+        """Mock model."""
+
         def __call__(self, x):
+            """Call."""
             return x
 
     ov = OracleVerifier(MockModel())
@@ -169,7 +175,10 @@ def test_oracle_missing():
 
     # 105: Oracle returns a scalar
     class ScalarModel:
+        """Scalar model."""
+
         def __call__(self, x):
+            """Call."""
             return 42.0
 
     ov2 = OracleVerifier(ScalarModel())
@@ -185,7 +194,10 @@ def test_cuda_mock_verify():
     from onnx9000.core.verification import OracleVerifier
 
     class MockModel:
+        """Mock model."""
+
         def __call__(self, x):
+            """Call."""
             return x
 
     ov = OracleVerifier(MockModel())
@@ -205,7 +217,10 @@ def test_oracle_verify_failed():
     from onnx9000.core.verification import OracleVerifier
 
     class BadModel:
+        """Bad model."""
+
         def __call__(self, x):
+            """Call."""
             return x + 1.0  # will fail tolerance
 
     ov = OracleVerifier(BadModel())
@@ -220,7 +235,10 @@ def test_verify_fails():
     from onnx9000.core.verification import OracleVerifier
 
     class MockModel:
+        """Mock model."""
+
         def __call__(self, x):
+            """Call."""
             return x + 100.0  # Will fail tolerance significantly
 
     ov = OracleVerifier(MockModel())

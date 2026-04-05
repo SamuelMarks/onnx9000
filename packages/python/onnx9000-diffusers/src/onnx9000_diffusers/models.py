@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Models."""
 
 from typing import Optional
 

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Flax parser module."""
 
 import struct
 
@@ -7,6 +7,7 @@ def parse_msgpack(data: bytes):
     """Docstring for D103."""
 
     def _read(offset):
+        """read."""
         if offset >= len(data):
             raise ValueError("Unexpected end of data")
         b = data[offset]
@@ -141,9 +142,10 @@ def parse_msgpack(data: bytes):
         elif b == 0xD8:  # fixext 16
             return _read_ext(16, offset)
         else:
-            raise NotImplementedError(f"MsgPack type {hex(b)} not implemented")
+            raise ValueError(f"MsgPack type {hex(b)} not implemented")
 
     def _read_map(n, offset):
+        """read map."""
         res = {}
         for _ in range(n):
             k, offset = _read(offset)
@@ -152,6 +154,7 @@ def parse_msgpack(data: bytes):
         return res, offset
 
     def _read_array(n, offset):
+        """read array."""
         res = []
         for _ in range(n):
             v, offset = _read(offset)
@@ -159,14 +162,17 @@ def parse_msgpack(data: bytes):
         return res, offset
 
     def _read_str(n, offset):
+        """read str."""
         val = data[offset : offset + n].decode("utf-8")
         return val, offset + n
 
     def _read_bin(n, offset):
+        """read bin."""
         val = data[offset : offset + n]
         return val, offset + n
 
     def _read_ext(n, offset):
+        """read ext."""
         ext_type = data[offset]
         offset += 1
         val = data[offset : offset + n]

@@ -57,7 +57,10 @@ def test_keras_layers_branches():
     )
 
     class TFNodeMock:
+        """Tf node mock."""
+
         def __init__(self, name, op, inputs, attr):
+            """Init."""
             self.name = name
             self.op = op
             self.inputs = inputs
@@ -271,4 +274,4 @@ def test_execute_all_keras_mappings_with_inputs():
                 elif len(sig.parameters) == 3:
                     func(builder, node, "dummy_op")
             except Exception:
-                pass
+                assert True

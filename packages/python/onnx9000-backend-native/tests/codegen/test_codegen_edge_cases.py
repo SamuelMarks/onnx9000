@@ -20,9 +20,9 @@ def test_category_mapper_codegen():
     n.attributes["cats_int64s"] = Attribute("cats_int64s", value=[1, 2, 3])
 
     g.nodes.append(n)
-    Generator(g)
-    pass
-    pass  # assert "CategoryMapper" in code
+    gen = Generator(g)
+    code = gen.generate()
+    assert "CategoryMapper" in code
 
 
 def test_get_omp_pragma_unroll():

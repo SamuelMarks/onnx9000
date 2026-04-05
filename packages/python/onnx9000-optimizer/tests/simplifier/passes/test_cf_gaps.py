@@ -23,6 +23,8 @@ def test_cf_shape_gaps():
     g2.nodes.append(Node("Constant", [], ["out"], {"value": t_val}))
 
     class MockAttr:
+        """Mock attr."""
+
         attr_type = "TENSOR"
         value = b"test"
 

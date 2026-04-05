@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for reader."""
 
 from onnx9000.tflite_exporter.exporter import TFLiteExporter
 from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder

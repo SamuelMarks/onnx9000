@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for export."""
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo

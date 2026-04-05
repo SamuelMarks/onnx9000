@@ -1,4 +1,4 @@
-"""Final coverage tests for shape_inference.py"""
+"""Final coverage tests for shape_inference.py."""
 
 import pytest
 from onnx9000.core.ir import DType, DynamicDim, Graph, Node, Tensor, ValueInfo

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for flax parser."""
 
 import struct
 
@@ -124,7 +124,7 @@ def test_parse_msgpack_unexpected_end():
 
 def test_parse_msgpack_unimplemented():
     """Docstring for D103."""
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(ValueError):
         parse_msgpack(b"\xc1")
 
 

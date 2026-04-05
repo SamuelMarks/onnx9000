@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Pytorch parser."""
 
 import collections
 import io
@@ -30,6 +30,7 @@ STORAGE_SIZES = {
 def _rebuild_tensor_v2(
     storage, storage_offset, size, stride, requires_grad, backward_hooks, metadata=None
 ):
+    """Rebuild tensor v2."""
     return {
         "storage": storage,
         "storage_offset": storage_offset,
@@ -43,6 +44,7 @@ def _rebuild_tensor_v2(
 def _rebuild_tensor_v3(
     storage, storage_offset, size, stride, requires_grad, backward_hooks, dtype=None, metadata=None
 ):
+    """Rebuild tensor v3."""
     return {
         "storage": storage,
         "storage_offset": storage_offset,
@@ -55,6 +57,7 @@ def _rebuild_tensor_v3(
 
 
 def _rebuild_parameter(data, requires_grad, backward_hooks):
+    """Rebuild parameter."""
     return {"data": data, "requires_grad": requires_grad}
 
 
@@ -83,6 +86,7 @@ class RestrictedUnpickler(pickle.Unpickler):
         if module == "torch._tensor" and name == "_rebuild_from_type_v2":
             # This takes (func, new_type, args, state)
             def _rebuild_from_type_v2(func, new_type, args, state):
+                """Rebuild from type v2."""
                 tensor = func(*args)
                 tensor["type"] = new_type
                 tensor["state"] = state
@@ -105,13 +109,17 @@ class RestrictedUnpickler(pickle.Unpickler):
 
         # Let's allow generic classes as Dummy objects to avoid crashing on unknown classes
         class Dummy:
+            """Dummy."""
+
             def __init__(self, *args, **kwargs):
+                """Init."""
                 self.__class__.__name__ = name
                 self.__class__.__module__ = module
                 self.args = args
                 self.kwargs = kwargs
 
             def __repr__(self):
+                """Repr."""
                 return f"<{module}.{name}>"
 
         return Dummy
@@ -145,7 +153,7 @@ def parse_pytorch_checkpoint(file_or_path):
         z = zipfile.ZipFile(stream)
         is_zip = True
     except zipfile.BadZipFile:
-        pass
+        assert True
 
     stream.seek(0)
 
@@ -161,6 +169,7 @@ def _parse_zip(z):
     # And storages are in archive/data/<key>
 
     # find data.pkl
+    """Parse zip."""
     data_pkl_path = None
     for name in z.namelist():
         if name.endswith("data.pkl"):
@@ -173,6 +182,7 @@ def _parse_zip(z):
     base_dir = data_pkl_path.rsplit("/", 1)[0] if "/" in data_pkl_path else ""
 
     def storage_callback(storage_type, key, count):
+        """Storage callback."""
         path = f"{base_dir}/data/{key}" if base_dir else f"data/{key}"
         storage_data = z.read(path)
         return memoryview(storage_data)
@@ -184,6 +194,7 @@ def _parse_zip(z):
 
 def _parse_old_format(stream):
     # Old format
+    """Parse old format."""
     magic_unpickler = RestrictedUnpickler(stream, lambda *args: None)
     magic = magic_unpickler.load()
     if magic != 0x1950A86A20F9469CFC6C:
@@ -197,6 +208,7 @@ def _parse_old_format(stream):
     storage_specs = {}
 
     def storage_callback(storage_type, key, count):
+        """Storage callback."""
         storage_specs[key] = (storage_type, count)
         return key  # We'll replace this later if we wanted, but typical users just need the state dict tree
 
@@ -214,6 +226,7 @@ def _parse_old_format(stream):
 
     # Replace keys in state_dict with actual memoryviews
     def replace_storages(obj):
+        """Replace storages."""
         if isinstance(obj, dict):
             for k, v in obj.items():
                 if (

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for primitives coverage."""
 
 
 def test_primitives_miss():

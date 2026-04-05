@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage gap11."""
 
 import onnx9000.core.primitives as prim
 from onnx9000.core.ir import Graph, Node, Tensor

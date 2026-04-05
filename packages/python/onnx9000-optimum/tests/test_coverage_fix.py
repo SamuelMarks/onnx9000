@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage fix."""
 
 import sys
 from unittest.mock import patch

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for api coverage."""
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, ValueInfo

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Efficientnet."""
 
 from typing import Any
 
@@ -15,6 +15,7 @@ from onnx9000.core.primitives import (
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -22,6 +23,7 @@ class SqueezeExcitation:
     """Squeeze-and-Excitation block."""
 
     def __init__(self, in_channels: int, squeeze_channels: int, prefix: str = ""):  # noqa: D107
+        """Init."""
         self.prefix = prefix
         self.in_channels = in_channels
         self.squeeze_channels = squeeze_channels
@@ -31,6 +33,7 @@ class SqueezeExcitation:
         self.scale_act = Sigmoid()
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         scale = global_average_pool(x)
         scale = flatten(scale)
 
@@ -67,6 +70,7 @@ class MBConv:
         kernel_size: int,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -98,6 +102,7 @@ class MBConv:
         self.bn2 = BatchNormalization(out_channels)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
 
         if self.expand_ratio != 1:
@@ -165,6 +170,7 @@ class EfficientNet:
     """EfficientNet implementation built using IR macros/primitives."""
 
     def __init__(self, num_classes: int = 1000):  # noqa: D107
+        """Init."""
         self.num_classes = num_classes
         self.stem_conv = ConvND(2, 3, 32, kernel_size=3, stride=2, padding=1, bias=False)
         self.stem_bn = BatchNormalization(32)
@@ -180,6 +186,7 @@ class EfficientNet:
         self.classifier = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         x = self.stem_conv(
             x,
             get_param(
@@ -225,4 +232,5 @@ class EfficientNet:
 
 
 def efficientnet_b0(**kwargs: Any) -> EfficientNet:  # noqa: D103
+    """Efficientnet b0."""
     return EfficientNet(**kwargs)

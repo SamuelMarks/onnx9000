@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for sharding."""
 
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.sharding import (

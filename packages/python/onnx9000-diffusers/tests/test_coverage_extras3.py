@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage extras3."""
 
 import os
 from unittest.mock import MagicMock, patch
@@ -27,6 +27,7 @@ def test_fetch_hub_file_error_removes(tmp_path):
     cache.mkdir()
 
     def fail_copy(*args, **kwargs):
+        """Fail copy."""
         raise Exception("Mock Error")
 
     with patch("urllib.request.urlopen") as mock_urlopen:

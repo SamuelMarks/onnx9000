@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for mapping."""
 
 from onnx9000.tflite_exporter.compiler.mapping import (
     create_shape_signature,

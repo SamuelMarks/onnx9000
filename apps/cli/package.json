@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "uv run pytest tests",
+    "test": "PYTHONPATH=../.. uv run pytest tests",
     "test_js": "vitest run"
   },
   "devDependencies": {

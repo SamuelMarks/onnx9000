@@ -37,6 +37,7 @@ def test_generator_abort_signal():
     """Verify that the generation loop honors the abort_signal in GeneratorParams."""
 
     async def run():
+        """Run."""
         params = GeneratorParams(max_length=100, max_new_tokens=10, abort_signal=True)
         gen = MockGenerator(None, params)
         prompt = Tensor(name="prompt", shape=(1, 1), data=bytearray(4))
@@ -55,6 +56,7 @@ def test_generator_early_stopping():
     """Verify that generation stops early when an EOS token is encountered."""
 
     async def run():
+        """Run."""
         params = GeneratorParams(max_length=100, max_new_tokens=10, early_stopping=True)
         # Mock generator will return 1, and we set 1 as EOS
         gen = MockGenerator(None, params, eos_id=1)
@@ -76,6 +78,7 @@ def test_generator_max_tokens_none():
 
     async def run():
         # max_length=5, prompt_len=2 -> max_new_tokens should be 3
+        """Run."""
         params = GeneratorParams(max_length=5, max_new_tokens=None)
         gen = MockGenerator(None, params)
         prompt = Tensor(name="prompt", shape=(1, 2), data=bytearray(8))

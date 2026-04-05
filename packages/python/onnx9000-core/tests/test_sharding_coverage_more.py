@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for sharding coverage more."""
 
 
 def test_sharding_advanced_coverage():

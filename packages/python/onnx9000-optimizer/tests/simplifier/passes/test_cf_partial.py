@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for cf partial."""
 
 import numpy as np
 from onnx9000.core.ir import Node

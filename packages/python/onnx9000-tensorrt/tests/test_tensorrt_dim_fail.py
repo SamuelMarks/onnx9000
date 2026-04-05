@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for tensorrt dim fail."""
 
 from unittest.mock import MagicMock, patch
 
@@ -10,7 +10,10 @@ def test_reshape_missing_input():
     """Docstring for D103."""
 
     class MockNode:
+        """Mock node."""
+
         def __init__(self):
+            """Init."""
             self.inputs = []
             self.outputs = ["out"]
 

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parser extra5."""
 
 import os
 
@@ -78,7 +78,10 @@ def test_safetensors_sharded():
     from onnx9000.toolkit.safetensors.parser import SafeTensorsSharded
 
     class MockSharded:
+        """Mock sharded."""
+
         def __init__(self):
+            """Init."""
             self.weight_map = {"w": "w.safetensors"}
 
     sharded = SafeTensorsSharded.__new__(SafeTensorsSharded)
@@ -86,13 +89,18 @@ def test_safetensors_sharded():
     sharded._files = {}
 
     class MockFile:
+        """Mock file."""
+
         def get_numpy(self, name):
+            """Get numpy."""
             return "np_" + name
 
         def get_onnx9000_tensor(self, name):
+            """Get onnx9000 tensor."""
             return "t_" + name
 
         def get_tensor(self, name):
+            """Get tensor."""
             return "b_" + name
 
     sharded._get_file = lambda name: MockFile()
@@ -137,7 +145,10 @@ def test_parser_save_bfloat16(tmp_path):
     from onnx9000.toolkit.safetensors.parser import save_file
 
     class MockTensorProto:
+        """Mock tensor proto."""
+
         def __init__(self):
+            """Init."""
             self.raw_data = b"\x00\x00"
             self.dims = [1]
             self.data_type = ir.DType.BFLOAT16.value
@@ -152,7 +163,10 @@ def test_parser_sharded_size(tmp_path):
     from onnx9000.toolkit.safetensors.parser import save_sharded
 
     class DummyData:
+        """Dummy data."""
+
         def __init__(self, size):
+            """Init."""
             self.raw_data = b"x" * size
             self.dims = [size]
 

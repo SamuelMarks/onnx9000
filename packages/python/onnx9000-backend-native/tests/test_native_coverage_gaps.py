@@ -253,4 +253,5 @@ def test_codegen_ops_tensor_ops_coverage_gaps() -> None:
         },
     )
     code_cm = generate_categorymapper(node_cm, ctx)
-    assert code_cm is None
+    assert code_cm is not None
+    assert "CategoryMapper statically generated switch" in code_cm

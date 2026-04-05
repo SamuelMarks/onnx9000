@@ -15,7 +15,7 @@ def test_sparse_modifier_gaps():
     try:
         mod.apply_sparsity(0.5)
     except Exception:
-        pass
+        assert True
 
 
 def test_nm_pruning_modifier_gap():
@@ -28,4 +28,4 @@ def test_nm_pruning_modifier_gap():
         node = Node("Conv", ["x", "weight"], ["y"])
         mod._process_node_internal(node)
     except Exception:
-        pass
+        assert True

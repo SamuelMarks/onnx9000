@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for script op."""
 
 
 def test_script_op_make_vars():

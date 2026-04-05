@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for profiler coverage."""
 
 
 def test_profiler_modules():

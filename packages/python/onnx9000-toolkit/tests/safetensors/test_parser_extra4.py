@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for parser extra4."""
 
 import os
 

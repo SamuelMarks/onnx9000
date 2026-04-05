@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for tensorrt matmul fail."""
 
 from unittest.mock import MagicMock, patch
 
@@ -10,12 +10,17 @@ def test_matmul_fail():
     """Docstring for D103."""
 
     class MockNode:
+        """Mock node."""
+
         def __init__(self):
+            """Init."""
             self.inputs = ["in1", "in2"]
             self.outputs = ["out"]
             self.attributes = {}
 
     class MockTensor:
+        """Mock tensor."""
+
         ptr = 123
 
     node = MockNode()

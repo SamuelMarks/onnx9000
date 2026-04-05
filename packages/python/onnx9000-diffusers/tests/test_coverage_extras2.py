@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage extras2."""
 
 import math
 from unittest.mock import patch
@@ -32,6 +32,7 @@ def test_utils_fetch_error(tmp_path):
 
     def mock_urlopen(*args, **kwargs):
         # Create a dummy file before crashing to test os.remove
+        """Mock urlopen."""
         import os
 
         with open(os.path.join(cache, "testfile"), "w") as f:

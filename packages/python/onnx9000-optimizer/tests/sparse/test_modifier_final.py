@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for modifier final."""
 
 import pytest
 from onnx9000.core.ir import Graph

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for coverage gaps11."""
 
 import os
 import struct
@@ -24,6 +24,7 @@ def build_gguf():
 
     # Add all basic types
     def add_kv(k, vtype, pack_fmt, *vals):
+        """Add kv."""
         nonlocal out
         out += pack_string(k)
         out += struct.pack("<I", vtype)
@@ -46,6 +47,7 @@ def build_gguf():
 
     # Arrays 9
     def add_arr(k, atype, pack_fmt, vals):
+        """Add arr."""
         nonlocal out
         out += pack_string(k)
         out += struct.pack("<I", 9)
@@ -76,6 +78,7 @@ def build_gguf():
 
     # Write 5 tensors
     def add_tensor(name, n_dims, dims, ggml_type, offset):
+        """Add tensor."""
         nonlocal out
         out += pack_string(name)
         out += struct.pack("<I", n_dims)
@@ -218,7 +221,10 @@ def test_gguf_buffer_error(tmp_path):
     parser = GGUFParser(str(fpath))
 
     class MockMM:
+        """Mock mm."""
+
         def close(self):
+            """Close."""
             raise BufferError("mock error")
 
     parser.mm = MockMM()

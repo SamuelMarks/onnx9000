@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for sharding coverage."""
 
 
 def test_sharding_miss():

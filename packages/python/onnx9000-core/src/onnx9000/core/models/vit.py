@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Vit."""
 
 from typing import Any
 
@@ -15,6 +15,7 @@ from onnx9000.core.primitives import (
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+    """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
@@ -29,6 +30,7 @@ class PatchEmbed:
         embed_dim: int = 768,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.img_size = img_size
         self.patch_size = patch_size
@@ -36,6 +38,7 @@ class PatchEmbed:
         self.proj = ConvND(2, in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         x = self.proj(
             x,
             get_param(
@@ -64,6 +67,7 @@ class Block:
         qkv_bias: bool = False,
         prefix: str = "",
     ):
+        """Init."""
         self.prefix = prefix
         self.dim = dim
         self.norm1 = LayerNormalization((dim,), epsilon=1e-6)
@@ -76,6 +80,7 @@ class Block:
         self.mlp_hidden_dim = mlp_hidden_dim
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         identity = x
         x = self.norm1(
             x,
@@ -121,6 +126,7 @@ class VisionTransformer:
         mlp_ratio: float = 4.0,
         qkv_bias: bool = True,
     ):
+        """Init."""
         self.embed_dim = embed_dim
         self.num_classes = num_classes
         self.patch_embed = PatchEmbed(
@@ -145,6 +151,7 @@ class VisionTransformer:
         self.num_patches = self.patch_embed.num_patches
 
     def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+        """Call."""
         x = self.patch_embed(x)
 
         cls_token = get_param("cls_token", [1, 1, self.embed_dim])
@@ -181,4 +188,5 @@ class VisionTransformer:
 
 
 def vit_base_patch16_224(**kwargs: Any) -> VisionTransformer:  # noqa: D103
+    """Vit base patch16 224."""
     return VisionTransformer(patch_size=16, embed_dim=768, depth=12, num_heads=12, **kwargs)

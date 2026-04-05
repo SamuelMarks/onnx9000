@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Ops."""
 
 import ctypes
 from typing import Any
@@ -16,6 +16,7 @@ from onnx9000.tensorrt.registry import register_op
 
 
 def _get_input(node, tensors, idx):
+    """Get input."""
     if len(node.inputs) > idx:
         return tensors[node.inputs[idx]]
     return None

@@ -444,7 +444,9 @@ def test_stubs_coverage():
         patch("importlib.util.module_from_spec") as mock_module_from_spec,
         patch("onnx9000.converters.frontend.tracer.trace") as mock_trace,
         patch("onnx9000.core.exporter.export_graph"),
+        patch("onnx9000.c_compiler.compiler.C89Compiler") as mock_compiler_cls,
     ):
+        mock_compiler_cls.return_value.generate.return_value = ("header_content", "source_content")
         mock_graph = MagicMock()
         mock_graph.tensors = {}
         mock_graph.nodes = []
@@ -464,7 +466,10 @@ def test_stubs_coverage():
         from onnx9000.converters.frontend.nn.module import Module
 
         class MockModel(Module):
+            """Mock model."""
+
             def forward(self, x):
+                """Forward."""
                 return x
 
         mock_m.MyModel = MockModel

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for cf last few."""
 
 import numpy as np
 from onnx9000.core.dtypes import DType
@@ -28,6 +28,7 @@ def test_cf_last_few():
     g.nodes.append(n1b)
 
     def mock_partial(n, k):
+        """Mock partial."""
         if n.name == "Abs" and n.outputs == ["out1b"]:
             return (Node("Identity", ["t"], ["out1b"]), True)
         return (None, True)
@@ -44,10 +45,13 @@ def test_cf_last_few():
     g3 = Graph("G3")
 
     class MockVal:
+        """Mock val."""
+
         ndim = 1
         shape = (1,)
 
         def __array__(self):
+            """Array."""
             return np.array([1.0], dtype=np.float32)
 
     g3.nodes.append(Node("Constant", [], ["out3"], {"value": MockVal()}))

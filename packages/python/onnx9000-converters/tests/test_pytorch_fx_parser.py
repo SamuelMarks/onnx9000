@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for pytorch fx parser."""
 
 import pytest
 from onnx9000.converters.pytorch_fx_parser import PyTorchFXParser

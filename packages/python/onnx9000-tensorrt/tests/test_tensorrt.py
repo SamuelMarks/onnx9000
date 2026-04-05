@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for tensorrt."""
 
 import unittest
 from unittest.mock import MagicMock, patch
@@ -202,21 +202,29 @@ class TestTensorRTFFI(unittest.TestCase):
         tensors = {"in1": t1, "in2": t2, "in3": t3}
 
         class MockNode:
+            """Mock node."""
+
             def __init__(self, op_type, inputs, outputs, attrs=None):
+                """Init."""
                 self.op_type = op_type
                 self.inputs = inputs
                 self.outputs = outputs
                 self.attributes = attrs or {}
 
         class MockAttr:
+            """Mock attr."""
+
             def __init__(self, value):
+                """Init."""
                 self.value = value
 
             def __iter__(self):
+                """Iter."""
                 if isinstance(self.value, list):
                     return iter(self.value)
 
             def __int__(self):
+                """Int."""
                 return int(self.value)
 
         # To avoid RuntimeErrors on missing ffi methods, we assign them all

@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for cf math."""
 
 import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass

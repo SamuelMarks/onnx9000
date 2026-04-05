@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for schedulers."""
 
 import math
 

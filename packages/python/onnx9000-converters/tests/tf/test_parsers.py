@@ -177,7 +177,9 @@ def test_load_keras_v3_fallback() -> None:
     keras_mock = MagicMock()
 
     class DummyModel:
-        pass
+        """Dummy model."""
+
+        assert True
 
     keras_mock.Model = DummyModel
     sys.modules["keras"] = keras_mock

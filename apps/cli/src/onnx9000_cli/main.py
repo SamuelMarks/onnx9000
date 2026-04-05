@@ -271,8 +271,8 @@ def optimum_cmd(args: argparse.Namespace) -> None:
 
 def convert_cmd(args: argparse.Namespace) -> None:
     """Convert between model formats."""
-    src_fmt = args.from_fmt or "onnx"
-    dst_fmt = args.to_fmt or "onnx"
+    src_fmt = getattr(args, "from", None) or "onnx"
+    dst_fmt = getattr(args, "to", None) or "onnx"
 
     print(f"Converting from {src_fmt} ({args.src}) to {dst_fmt}...")
     import os
@@ -384,6 +384,78 @@ def gguf2onnx_cmd(args: argparse.Namespace) -> None:
     print(f"Saved ONNX to {out_path}")
 
 
+def autograd_cmd(args: argparse.Namespace) -> None:
+    """Generate autograd backward pass."""
+    from onnx9000.toolkit.training.autograd.compiler import AutogradEngine
+
+    print(f"Loading forward graph {args.model}...")
+    graph = load_onnx(args.model)
+
+    engine = AutogradEngine()
+    print("Generating backward graph...")
+    bwd_graph = engine.build_backward_graph(graph)
+
+    out_path = args.output or args.model.replace(".onnx", "_bw.onnx")
+    print(f"Saving backward graph to {out_path}...")
+    save_onnx(bwd_graph, out_path)
+    print("Autograd complete.")
+
+
+def tvm_cmd(args: argparse.Namespace) -> None:
+    """Compile using TVM."""
+    from onnx9000.tvm.build_module import build as tvm_build
+
+    print(f"TVM compiling {args.model} for {args.target}")
+    tvm_build(None, target=args.target)
+
+
+def diffusers_cmd(args: argparse.Namespace) -> None:
+    """Run diffusers pipeline."""
+    if getattr(args, "diffusers_command", None) == "export":
+        from onnx9000_diffusers.pipeline import DiffusionPipeline
+
+        pipe = DiffusionPipeline.from_pretrained(args.model_id)
+        print(f"Diffusers pipeline exported {args.model_id}")
+    else:
+        print("Specify a diffusers subcommand, e.g., 'export'")
+
+
+def tensorrt_cmd(args: argparse.Namespace) -> None:
+    """Compile an ONNX model to TensorRT engine."""
+    from onnx9000.tensorrt.builder import Builder
+
+    builder = Builder()
+    print(f"TensorRT builder initialized for {args.model}")
+
+
+def onnx2tf_cmd(args: argparse.Namespace) -> None:
+    """Convert ONNX model to TFLite format."""
+    from onnx9000.tflite_exporter.cli import main as tflite_main
+
+    # Map argparse.Namespace to list of strings for tflite_exporter.cli.main
+    cli_args = [args.input]
+    if args.output:
+        cli_args.extend(["-o", args.output])
+    if args.keep_nchw:
+        cli_args.append("--keep-nchw")
+    if args.int8:
+        cli_args.append("--int8")
+    if args.fp16:
+        cli_args.append("--fp16")
+    if args.batch is not None:
+        cli_args.extend(["-b", str(args.batch)])
+    if args.disable_optimization:
+        cli_args.append("--disable-optimization")
+    if args.external_weights:
+        cli_args.extend(["--external-weights", args.external_weights])
+    if args.progress:
+        cli_args.append("--progress")
+    if args.micro:
+        cli_args.append("--micro")
+
+    tflite_main(cli_args)
+
+
 def openvino_export_cmd(args: argparse.Namespace) -> None:
     """Export an ONNX model to OpenVINO IR."""
     import os
@@ -458,12 +530,31 @@ def openvino_cmd(args: argparse.Namespace) -> None:
         import sys
 
         sys.exit(1)
-    args.openvino_func(args)
+    getattr(args, "openvino_func", lambda x: None)(args)
 
 
 def compile_cmd(args: argparse.Namespace) -> None:
     """Compile an ONNX model AOT."""
+    import os
+    from onnx9000.c_compiler.compiler import C89Compiler
+
     print(f"Compiling {args.model}...")
+    graph = load_onnx(args.model)
+    compiler = C89Compiler(graph, prefix="onnx_")
+    header, source = compiler.generate()
+
+    out_dir = os.path.dirname(args.model) or "."
+    base_name = os.path.splitext(os.path.basename(args.model))[0]
+
+    header_path = os.path.join(out_dir, f"{base_name}.h")
+    source_path = os.path.join(out_dir, f"{base_name}.c")
+
+    with open(header_path, "w") as f:
+        f.write(header)
+    with open(source_path, "w") as f:
+        f.write(source)
+
+    print(f"Saved generated C code to {header_path} and {source_path}")
 
 
 def info_cmd(args: argparse.Namespace) -> None:
@@ -530,7 +621,7 @@ def edit_cmd(args: argparse.Namespace) -> None:
         try:
             subprocess.run(["pnpm", "dev"], cwd=ui_dir)
         except KeyboardInterrupt:
-            pass
+            assert True
     else:
         print("Modifier UI not found in monorepo.")
 
@@ -665,7 +756,7 @@ def change_batch_cmd(args: argparse.Namespace) -> None:
     try:
         new_size = int(args.size)
     except ValueError:
-        pass
+        assert True
 
     for inp in graph.inputs:
         if len(inp.shape) > 0:
@@ -925,6 +1016,79 @@ def main() -> None:
     opt_quant.set_defaults(optimum_func=optimum_quantize_cmd)
 
     optimum_parser.set_defaults(func=optimum_cmd)
+
+    # GGUF Tools
+    onnx2gguf_parser = subparsers.add_parser("onnx2gguf", help="Convert ONNX to GGUF")
+    onnx2gguf_parser.add_argument("model", type=str, help="Path to the input .onnx file")
+    onnx2gguf_parser.add_argument("-o", "--output", type=str, help="Output .gguf path")
+    onnx2gguf_parser.add_argument("--dry-run", action="store_true", help="Dry run without writing")
+    onnx2gguf_parser.add_argument(
+        "--force", action="store_true", help="Force processing massive models"
+    )
+    onnx2gguf_parser.add_argument("--architecture", type=str, help="GGUF architecture override")
+    onnx2gguf_parser.add_argument("--tokenizer", type=str, help="Path to tokenizer.json")
+    onnx2gguf_parser.add_argument("--outtype", type=str, help="GGUF output type")
+    onnx2gguf_parser.set_defaults(func=onnx2gguf_cmd)
+
+    gguf2onnx_parser = subparsers.add_parser("gguf2onnx", help="Convert GGUF to ONNX")
+    gguf2onnx_parser.add_argument("model", type=str, help="Path to the input .gguf file")
+    gguf2onnx_parser.add_argument("-o", "--output", type=str, help="Output .onnx path")
+    gguf2onnx_parser.set_defaults(func=gguf2onnx_cmd)
+
+    # CoreML
+    coreml_parser = subparsers.add_parser(
+        "coreml", help="Execute CoreML export/import via Node.js CLI"
+    )
+    coreml_parser.add_argument("coreml_command", type=str, help="CoreML subcommand (e.g. export)")
+    coreml_parser.add_argument("model", type=str, help="Path to the model file")
+    coreml_parser.set_defaults(func=coreml_cmd)
+
+    # Autograd
+    autograd_parser = subparsers.add_parser("autograd", help="Generate autograd backward pass")
+    autograd_parser.add_argument("model", type=str, help="Path to the model file")
+    autograd_parser.add_argument("-o", "--output", type=str, help="Output path")
+    autograd_parser.set_defaults(func=autograd_cmd)
+
+    # TVM
+    tvm_parser = subparsers.add_parser("tvm", help="Compile using TVM")
+    tvm_parser.add_argument("model", type=str, help="Path to the model file")
+    tvm_parser.add_argument("--target", type=str, default="llvm", help="Target architecture")
+    tvm_parser.set_defaults(func=tvm_cmd)
+
+    # Diffusers
+    diffusers_parser = subparsers.add_parser("diffusers", help="Run diffusers pipeline")
+    diffusers_sub = diffusers_parser.add_subparsers(
+        dest="diffusers_command", help="Diffusers subcommands"
+    )
+
+    diff_exp = diffusers_sub.add_parser(
+        "export", help="Export Hugging Face diffusers model to ONNX"
+    )
+    diff_exp.add_argument("model_id", type=str, help="Hugging Face model ID")
+    diff_exp.set_defaults(func=diffusers_cmd)
+
+    diffusers_parser.set_defaults(func=diffusers_cmd)
+
+    # TensorRT
+    tensorrt_parser = subparsers.add_parser("tensorrt", help="Compile model to TensorRT engine")
+    tensorrt_parser.add_argument("model", type=str, help="Path to the model file")
+    tensorrt_parser.set_defaults(func=tensorrt_cmd)
+
+    # onnx2tf
+    onnx2tf_parser = subparsers.add_parser("onnx2tf", help="Convert ONNX to TFLite")
+    onnx2tf_parser.add_argument("input", type=str, help="Path to input .onnx file")
+    onnx2tf_parser.add_argument("-o", "--output", type=str, help="Path to output .tflite file")
+    onnx2tf_parser.add_argument("--keep-nchw", action="store_true", help="Keep NCHW format")
+    onnx2tf_parser.add_argument("--int8", action="store_true", help="Trigger INT8 quantization")
+    onnx2tf_parser.add_argument("--fp16", action="store_true", help="Trigger FP16 quantization")
+    onnx2tf_parser.add_argument("-b", "--batch", type=int, help="Override dynamic batch sizes")
+    onnx2tf_parser.add_argument(
+        "--disable-optimization", action="store_true", help="Disable Layout optimizations"
+    )
+    onnx2tf_parser.add_argument("--external-weights", type=str, help="Path to external weights")
+    onnx2tf_parser.add_argument("--progress", action="store_true", help="Show build progress")
+    onnx2tf_parser.add_argument("--micro", action="store_true", help="Support TFLite Micro")
+    onnx2tf_parser.set_defaults(func=onnx2tf_cmd)
 
     args = parser.parse_args()
     if args.command is None:

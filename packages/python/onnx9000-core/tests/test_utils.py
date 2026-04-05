@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Tests for utils."""
 
 
 def test_topological_sort():
