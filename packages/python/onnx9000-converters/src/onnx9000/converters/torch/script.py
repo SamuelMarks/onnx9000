@@ -173,21 +173,29 @@ class TorchScriptParser:
 
         # Mapping common aten:: and prim:: ops
         op_type = kind.split("::")[-1]
-        if op_type == "add":
-            op_type = "Add"
-        elif op_type == "mul":
-            op_type = "Mul"
-        elif op_type == "sub":
-            op_type = "Sub"
-        elif op_type == "div":
-            op_type = "Div"
 
-        node_ir = Node(
-            op_type=op_type,
-            inputs=inputs,
-            outputs=outputs,
-            name=f"{op_type}_{outputs[0].name}" if outputs else f"{op_type}",
-        )
+        import onnx9000.converters.torch.torch_ops  # noqa: F401
+        from onnx9000.core.registry import global_registry
+
+        try:
+            op_func = global_registry.get_op(op_type.lower(), "torch")
+            node_ir = op_func(inputs=inputs, outputs=outputs, params={})
+        except Exception:
+            if op_type == "add":
+                op_type = "Add"
+            elif op_type == "mul":
+                op_type = "Mul"
+            elif op_type == "sub":
+                op_type = "Sub"
+            elif op_type == "div":
+                op_type = "Div"
+
+            node_ir = Node(
+                op_type=op_type,
+                inputs=inputs,
+                outputs=outputs,
+                name=f"{op_type}_{outputs[0].name}" if outputs else f"{op_type}",
+            )
 
         # Handle Control Flow (recursion for blocks)
         if kind == "prim::If":

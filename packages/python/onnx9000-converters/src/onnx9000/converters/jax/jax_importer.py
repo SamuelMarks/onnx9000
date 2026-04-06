@@ -78,16 +78,25 @@ class JAXImporter:
         for eqn in jaxpr.eqns:
             in_names = [self.get_var_name(v) for v in eqn.invars]
             out_names = [self.get_var_name(v) for v in eqn.outvars]
+            params = dict(eqn.params.items())
 
-            # Simple primitive mapping
-            op_type = self._map_primitive(eqn.primitive.name)
+            import onnx9000.converters.jax.jax_ops  # noqa: F401
+            from onnx9000.core.registry import global_registry
 
-            node = Node(
-                op_type=op_type,
-                inputs=in_names,
-                outputs=out_names,
-                attributes=dict(eqn.params.items()),
-            )
+            try:
+                op_func = global_registry.get_op(eqn.primitive.name, "jax")
+                node = op_func(inputs=in_names, outputs=out_names, params=params)
+            except Exception:
+                # Fallback to uppercase
+                op_type = eqn.primitive.name.capitalize()
+                node = Node(
+                    op_type=op_type,
+                    inputs=in_names,
+                    outputs=out_names,
+                    attributes=params,
+                    name=f"{op_type}_{out_names[0]}" if out_names else op_type,
+                )
+
             self.builder.add_node(node)
 
         # Add outputs
@@ -106,21 +115,3 @@ class JAXImporter:
         if jax_dtype == np.int32:
             return DType.INT32
         return DType.FLOAT32
-
-    def _map_primitive(self, name: str) -> str:
-        """Map JAX primitive name to ONNX op_type."""
-        mapping = {
-            "add": "Add",
-            "sub": "Sub",
-            "mul": "Mul",
-            "div": "Div",
-            "sin": "Sin",
-            "cos": "Cos",
-            "exp": "Exp",
-            "log": "Log",
-            "tanh": "Tanh",
-            "relu": "Relu",
-            "conv_general_dilated": "Conv",
-            "dot_general": "MatMul",
-        }
-        return mapping.get(name, name.capitalize())

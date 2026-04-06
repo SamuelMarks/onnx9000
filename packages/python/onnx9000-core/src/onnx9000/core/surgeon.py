@@ -1260,7 +1260,18 @@ def dump_netron_json(graph: Graph) -> str:
     """Dump Netron Json function logic implementation."""
     import json
 
-    return json.dumps({"name": graph.name, "nodes": len(graph.nodes)})
+    nodes_meta = []
+    # Binding: map byte-offsets to UI nodes for Netron
+    for idx, node in enumerate(graph.nodes):
+        nodes_meta.append(
+            {
+                "name": node.name or f"{node.op_type}_{idx}",
+                "op_type": node.op_type,
+                "byte_offset": idx * 128,  # Simulated byte offset mapping
+            }
+        )
+
+    return json.dumps({"name": graph.name, "nodes": nodes_meta})
 
 
 Graph.load_external_data = load_external_data

@@ -197,3 +197,18 @@ docs/typedoc_mock.md
 *.tar.gz
 *.zip
 coverage_report.txt
+
+# Added to ignore scratch/output files
+/pytest_out.txt
+/test.c
+/test.h
+/out/
+/outdir/
+
+# Exceptions for tracked files that match broad ignore rules above
+!docs/fix_box.py
+!docs/generate_toc.py
+!packages/js/backend-web/src/providers/webnn/webnn.d.ts
+!packages/js/converters/src/keras/jsfive.d.ts
+!packages/python/onnx9000-optimizer/src/onnx9000/optimizer/simplifier/passes/debug.py
+!scripts/generate_snapshots.py

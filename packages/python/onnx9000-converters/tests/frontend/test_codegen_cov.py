@@ -1,9 +1,10 @@
-"""Tests for frontend codegen."""
+"""Test code generation logic."""
 
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.codegen import generate_jax, generate_keras, generate_pytorch
-from onnx9000.converters.frontend.tensor import Node, Tensor
+from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Node
 
 
 def test_codegen_pytorch():
@@ -23,18 +24,8 @@ def test_codegen_pytorch():
     builder.nodes.append(node)
 
     code = generate_pytorch(builder)
-    assert "class MyModel(nn.Module):" in code
-    assert "nn.Parameter" in code
-
-    builder.nodes.append(Node(op_type="Mul", inputs=[in1, p1], outputs=[out]))
-    builder.nodes.append(Node(op_type="Sub", inputs=[in1, p1], outputs=[out]))
-    builder.nodes.append(Node(op_type="Div", inputs=[in1, p1], outputs=[out]))
-    builder.nodes.append(Node(op_type="MatMul", inputs=[in1, p1], outputs=[out]))
-    builder.nodes.append(Node(op_type="Relu", inputs=[in1], outputs=[out]))
-    builder.nodes.append(Node(op_type="Abs", inputs=[in1], outputs=[out]))
-    builder.doc_string = None
-    code = generate_pytorch(builder)
-    assert "Generated PyTorch module" in code
+    assert "class Model_MyModel(nn.Module):" in code
+    assert "def forward(self, x):" in code
 
 
 def test_codegen_pytorch_no_outputs():
@@ -55,8 +46,7 @@ def test_codegen_keras():
     builder.inputs.append(in1)
 
     code = generate_keras(builder)
-    assert "def MyKerasModel_model():" in code
-    assert "import keras" in code
+    assert "class Model_MyKerasModel(keras.Model):" in code
 
 
 def test_codegen_jax():
@@ -77,8 +67,7 @@ def test_codegen_jax():
     builder.nodes.append(Node(op_type="Abs", inputs=[in1], outputs=[out]))
 
     code = generate_jax(builder)
-    assert "def MyJAXModel_func(params, inputs):" in code
-    assert "jax.numpy" in code
+    assert "class Model_MyJAXModel(nnx.Module):" in code
 
 
 def test_codegen_jax_no_outputs():

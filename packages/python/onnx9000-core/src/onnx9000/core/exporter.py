@@ -6,6 +6,9 @@ from onnx9000.core.ir import Graph
 from onnx9000.core.serializer import save as save_onnx
 
 
+from onnx9000.core.tensorboard_exporter import export_tensorboard
+
+
 def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
     """Export an IR Graph to the specified format and save to output_path."""
     from onnx9000.core.shape_inference import infer_shapes_and_types
@@ -57,15 +60,37 @@ def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
                     os.remove(target_wasm)
                 os.rename(wasm_path, target_wasm)
 
-    elif format == "keras":
-        code = generate_keras(graph)
+    elif format in ("keras", "pytorch", "flax", "jax"):
+        if format == "keras":
+            code = generate_keras(graph)
+        elif format == "pytorch":
+            from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+
+            code = ONNXToPyTorchVisitor(graph).generate()
+        elif format in ("flax", "jax"):
+            from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+
+            code = ONNXToFlaxNNXVisitor(graph).generate()
+
         with open(output_path, "w") as f:
             f.write(code)
 
+        # Unit Testing Constraints: `editorconfig` formatters must be run programmatically
+        try:
+            import subprocess
+
+            subprocess.run(["ruff", "format", output_path], check=False, capture_output=True)
+            subprocess.run(
+                ["ruff", "check", "--fix", output_path], check=False, capture_output=True
+            )
+        except Exception:
+            pass
     elif format == "mlir":
         code = generate_mlir(graph)
         with open(output_path, "w") as f:
             f.write(code)
+    elif format == "tensorboard":
+        export_tensorboard(graph, output_path)
     else:
         raise ValueError(f"Unsupported format: {format}")
 

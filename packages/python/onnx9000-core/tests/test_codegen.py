@@ -117,7 +117,7 @@ def test_pytorch_codegen():
     assert "self.conv_0 = nn.Conv2d(" in code
     assert "self.linear_1 = nn.Linear(" in code
     assert "F.pad(" in code
-    assert "view(-1)" in code
+    assert "reshape(" in code
     assert "register_buffer('param_4'" in code
 
 
@@ -389,3 +389,314 @@ def test_keras_codegen_new_ops():
     assert (
         "Ensure OIHW to HWIO weight transpose happens here" not in code
     )  # well it's in Conv, not here
+
+
+def test_pytorch_codegen_missing_ops():
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    graph = Graph("test")
+
+    in1 = Tensor(name="x", shape=[1, 10])
+    graph.inputs.append(in1)
+
+    node1 = Node(
+        op_type="ConvTranspose",
+        inputs=[in1, Tensor(name="w", shape=[1, 1, 3, 3])],
+        outputs=[Tensor(name="y1")],
+    )
+    node2 = Node(
+        op_type="LayerNormalization", inputs=[node1.outputs[0]], outputs=[Tensor(name="y2")]
+    )
+    node3 = Node(op_type="BatchNorm", inputs=[node2.outputs[0]], outputs=[Tensor(name="y3")])
+    node4 = Node(
+        op_type="Transpose",
+        inputs=[node3.outputs[0]],
+        attributes={"perm": [1, 0]},
+        outputs=[Tensor(name="y4")],
+    )
+    node5 = Node(op_type="Resize", inputs=[node4.outputs[0]], outputs=[Tensor(name="y5")])
+    node6 = Node(op_type="Slice", inputs=[node5.outputs[0]], outputs=[Tensor(name="y6")])
+    node7 = Node(
+        op_type="GatherElements",
+        inputs=[node6.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y7")],
+    )
+    node8 = Node(
+        op_type="GatherND",
+        inputs=[node7.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y8")],
+    )
+    node9 = Node(
+        op_type="Tile", inputs=[node8.outputs[0], Tensor(name="idx")], outputs=[Tensor(name="y9")]
+    )
+    node10 = Node(
+        op_type="Einsum",
+        inputs=[node9.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y10")],
+    )
+    node11 = Node(op_type="UnknownOp", inputs=[node10.outputs[0]], outputs=[Tensor(name="y11")])
+
+    graph.nodes.extend(
+        [node1, node2, node3, node4, node5, node6, node7, node8, node9, node10, node11]
+    )
+
+    codegen = ONNXToPyTorchVisitor(graph)
+    code = codegen.generate()
+
+    assert "nn.ConvTranspose2d(" in code
+    assert "nn.LayerNorm(" in code
+    assert "nn.BatchNorm2d(" in code
+    assert "torch.permute(" in code
+    assert "F.interpolate(" in code
+    assert "[:, 1:5, ...]" in code
+    assert "torch.gather(" in code
+    assert "torch.tile(" in code
+    assert "torch.einsum(" in code
+
+
+def test_flax_codegen_missing_ops():
+    from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    graph = Graph("test")
+
+    in1 = Tensor(name="x", shape=[1, 10])
+    graph.inputs.append(in1)
+
+    node1 = Node(
+        op_type="ConvTranspose",
+        inputs=[in1, Tensor(name="w", shape=[1, 1, 3, 3])],
+        outputs=[Tensor(name="y1")],
+    )
+    node2 = Node(op_type="BatchNorm", inputs=[node1.outputs[0]], outputs=[Tensor(name="y2")])
+    node3 = Node(op_type="Split", inputs=[node2.outputs[0]], outputs=[Tensor(name="y3")])
+    node4 = Node(op_type="Einsum", inputs=[node3.outputs[0]], outputs=[Tensor(name="y4")])
+    node5 = Node(op_type="Softmax", inputs=[node4.outputs[0]], outputs=[Tensor(name="y5")])
+    node6 = Node(op_type="RandomNormal", inputs=[], outputs=[Tensor(name="y6")])
+    node7 = Node(op_type="Dropout", inputs=[node6.outputs[0]], outputs=[Tensor(name="y7")])
+    node8 = Node(op_type="RNN", inputs=[node7.outputs[0]], outputs=[Tensor(name="y8")])
+    node9 = Node(
+        op_type="If",
+        inputs=[Tensor(name="cond"), node8.outputs[0], node8.outputs[0]],
+        outputs=[Tensor(name="y9")],
+    )
+    node10 = Node(
+        op_type="Loop",
+        inputs=[Tensor(name="iters"), node9.outputs[0], Tensor(name="body")],
+        outputs=[Tensor(name="y10")],
+    )
+
+    graph.nodes.extend([node1, node2, node3, node4, node5, node6, node7, node8, node9, node10])
+
+    codegen = ONNXToFlaxNNXVisitor(graph)
+    code = codegen.generate()
+    assert "nnx.ConvTranspose(" in code
+    assert "nnx.BatchNorm(" in code
+    assert "jnp.split(" in code
+    assert "jnp.einsum(" in code
+    assert "jax.nn.softmax(" in code
+    assert "jax.random.normal(" in code
+    assert "nnx.Dropout(" in code
+    assert "nnx.Variable(" in code
+    assert "jax.lax.cond(" in code
+    assert "jax.lax.scan(" in code
+
+
+def test_keras_codegen_all_ops():
+    from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    graph = Graph("test")
+
+    in1 = Tensor(name="x", shape=[1, 10])
+    graph.inputs.append(in1)
+
+    node1 = Node(
+        op_type="Conv",
+        inputs=[in1, Tensor(name="w", shape=[1, 1, 3, 3])],
+        outputs=[Tensor(name="y1")],
+    )
+    node2 = Node(
+        op_type="ConvTranspose",
+        inputs=[node1.outputs[0], Tensor(name="w", shape=[1, 1, 3, 3])],
+        outputs=[Tensor(name="y2")],
+    )
+    node3 = Node(
+        op_type="MatMul",
+        inputs=[node2.outputs[0], Tensor(name="w", shape=[1, 1])],
+        outputs=[Tensor(name="y3")],
+    )
+    node4 = Node(
+        op_type="LayerNormalization", inputs=[node3.outputs[0]], outputs=[Tensor(name="y4")]
+    )
+    node5 = Node(op_type="BatchNorm", inputs=[node4.outputs[0]], outputs=[Tensor(name="y5")])
+    node6 = Node(
+        op_type="Add", inputs=[node5.outputs[0], Tensor(name="w")], outputs=[Tensor(name="y6")]
+    )
+    node7 = Node(op_type="Relu", inputs=[node6.outputs[0]], outputs=[Tensor(name="y7")])
+    node8 = Node(
+        op_type="Reshape", inputs=[node7.outputs[0], Tensor(name="w")], outputs=[Tensor(name="y8")]
+    )
+    node9 = Node(
+        op_type="Transpose",
+        inputs=[node8.outputs[0]],
+        attributes={"perm": [1, 0]},
+        outputs=[Tensor(name="y9")],
+    )
+    node10 = Node(op_type="Shape", inputs=[node9.outputs[0]], outputs=[Tensor(name="y10")])
+    node11 = Node(
+        op_type="Gather",
+        inputs=[node10.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y11")],
+    )
+    node12 = Node(
+        op_type="Einsum",
+        inputs=[node11.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y12")],
+    )
+    node13 = Node(op_type="UnknownOp", inputs=[node12.outputs[0]], outputs=[Tensor(name="y13")])
+
+    graph.nodes.extend(
+        [
+            node1,
+            node2,
+            node3,
+            node4,
+            node5,
+            node6,
+            node7,
+            node8,
+            node9,
+            node10,
+            node11,
+            node12,
+            node13,
+        ]
+    )
+    graph.outputs.append(node13.outputs[0])
+    graph.initializers.append("w")
+    graph.tensors["w"] = Tensor(name="w", shape=[1, 10])
+
+    codegen = ONNXToKerasVisitor(graph)
+    code = codegen.generate()
+    assert "layers.Conv2D(" in code
+    assert "layers.Conv2DTranspose(" in code
+    assert "layers.Dense(" in code
+    assert "layers.LayerNormalization(" in code
+    assert "layers.BatchNormalization(" in code
+    assert "ops.add(" in code
+    assert "ops.relu(" in code
+    assert "ops.reshape(" in code
+    assert "ops.transpose(" in code
+    assert "ops.shape(" in code
+    assert "ops.take(" in code
+    assert "ops.einsum(" in code
+
+
+def test_triton_codegen_ops():
+    from onnx9000.core.codegen.triton import TritonExporter
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    graph = Graph("test")
+    node1 = Node(op_type="FlashAttention", inputs=[], outputs=[Tensor(name="y1")])
+    node2 = Node(op_type="Conv", inputs=[], outputs=[Tensor(name="y2")])
+    node3 = Node(op_type="UnknownOp", inputs=[], outputs=[Tensor(name="y3")])
+    graph.nodes.extend([node1, node2, node3])
+
+    exporter = TritonExporter(graph)
+    code = exporter.export()
+
+    assert "@triton.jit" in code
+    assert "skipped for UnknownOp" in code
+
+
+def test_codegen_branches():
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+    from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+    from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+    from onnx9000.core.dtypes import DType
+
+    graph = Graph("branches")
+
+    t1 = Tensor(name="t1", shape=[1], dtype=DType.FLOAT32)
+    t2 = Tensor(name="t2", dtype=DType.FLOAT32)
+    graph.tensors["t1"] = t1
+    graph.tensors["t2"] = t2
+
+    # Add input without shape to test if len(node.inputs) > 1 else [] branches
+    graph.inputs.append(t1)
+
+    node1 = Node(op_type="Conv", inputs=["t1", "t2"], outputs=[Tensor(name="y1")])
+    node2 = Node(op_type="ConvTranspose", inputs=["t2", "t1"], outputs=[Tensor(name="y2")])
+    node3 = Node(op_type="MatMul", inputs=["t1", "t2"], outputs=[Tensor(name="y3")])
+    node4 = Node(op_type="BatchNorm", inputs=["t2", "t1"], outputs=[Tensor(name="y4")])
+
+    node5 = Node(op_type="Conv", inputs=["t1"], outputs=[Tensor(name="y5")])
+    node6 = Node(op_type="ConvTranspose", inputs=["t2"], outputs=[Tensor(name="y6")])
+    node7 = Node(op_type="MatMul", inputs=["t1"], outputs=[Tensor(name="y7")])
+    node8 = Node(op_type="BatchNorm", inputs=["t2"], outputs=[Tensor(name="y8")])
+
+    graph.nodes.extend([node1, node2, node3, node4, node5, node6, node7, node8])
+
+    graph.initializers.extend(["t1", "t2", "missing"])
+
+    # Run all 3 to hit all shapes
+    ONNXToPyTorchVisitor(graph).generate()
+    ONNXToFlaxNNXVisitor(graph).generate()
+
+    # Keras missing: multi output
+    graph.outputs.extend([t1, t2])
+    ONNXToKerasVisitor(graph).generate()
+
+
+def test_keras_inputs_outputs():
+    from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+    from onnx9000.core.ir import Graph, Tensor
+
+    g1 = Graph("g1")
+    g1.inputs.extend([Tensor(name="i1"), Tensor(name="i2")])
+    code1 = ONNXToKerasVisitor(g1).generate()
+    assert "i1 = inputs[0]" in code1
+    assert "return None" in code1
+
+    g2 = Graph("g2")
+    g2.inputs.append(Tensor(name="i1"))
+    code2 = ONNXToKerasVisitor(g2).generate()
+    assert "i1 = inputs" in code2
+
+    # test shapes
+    g3 = Graph("g3")
+    assert ONNXToKerasVisitor(g3)._get_shape(123) == []
+
+    # test group > 1 on flax and pytorch
+    from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+    from onnx9000.core.ir import Node
+
+    g4 = Graph("g4")
+    g4.nodes.append(
+        Node(
+            op_type="Conv",
+            inputs=[Tensor(name="i"), Tensor(name="w", shape=[1, 1, 3, 3])],
+            attributes={"group": 2},
+        )
+    )
+    ONNXToPyTorchVisitor(g4).generate()
+    ONNXToFlaxNNXVisitor(g4).generate()
+
+
+def test_missing_cov_codegen():
+    from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+    from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+    from onnx9000.core.ir import Graph
+
+    # Hit flax.py line 21
+    assert ONNXToFlaxNNXVisitor(Graph("empty"))._get_shape(123) == []
+
+    # Hit keras.py line 49
+    g = Graph("no_inputs")
+    # inputs is empty
+    code = ONNXToKerasVisitor(g).generate()
+    assert "def call(self, inputs=None):" in code

@@ -122,7 +122,9 @@ class FXParser:
                     inputs.append(arg)
 
             # Mapping common torch ops to ONNX-like names
+            import onnx9000.converters.torch.torch_ops  # noqa: F401
             from onnx9000.converters.torch.aten_map import ATEN_OP_MAP
+            from onnx9000.core.registry import global_registry
 
             mapped_op = ATEN_OP_MAP.get(op_type, op_type)
             if mapped_op == op_type:
@@ -135,13 +137,18 @@ class FXParser:
                     mapped_op = "Relu"
 
             output_tensor = Tensor(name=node.name)
-            node_ir = Node(
-                op_type=mapped_op,
-                inputs=inputs,
-                outputs=[output_tensor],
-                attributes=node.kwargs,
-                name=f"{mapped_op}_{node.name}",
-            )
+
+            try:
+                op_func = global_registry.get_op(mapped_op, "torch")
+                node_ir = op_func(inputs=inputs, outputs=[output_tensor], params=node.kwargs)
+            except Exception:
+                node_ir = Node(
+                    op_type=mapped_op,
+                    inputs=inputs,
+                    outputs=[output_tensor],
+                    attributes=node.kwargs,
+                    name=f"{mapped_op}_{node.name}",
+                )
 
             # Capture metadata hierarchy
             if "nn_module_stack" in node.meta:

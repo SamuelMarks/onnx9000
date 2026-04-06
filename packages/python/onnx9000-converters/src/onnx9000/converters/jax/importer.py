@@ -2,7 +2,6 @@
 
 from typing import Any
 
-import onnx9000.converters.jax.flax_ops  # noqa: F401
 import onnx9000.converters.jax.jax_ops  # noqa: F401
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor

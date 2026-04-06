@@ -63,9 +63,12 @@ def test_jax_importer_dtype_mapping():
 def test_jax_importer_primitive_mapping():
     """Test JAX primitive mapping."""
     importer = JAXImporter()
-    assert importer._map_primitive("add") == "Add"
-    assert importer._map_primitive("dot_general") == "MatMul"
-    assert importer._map_primitive("unknown") == "Unknown"
+
+    from onnx9000.core.registry import global_registry
+    import onnx9000.converters.jax.jax_ops  # noqa: F401
+
+    op_func = global_registry.get_op("add", "jax")
+    assert op_func is not None
 
     # test unhashable var
     unhashable = [1, 2, 3]  # lists are unhashable

@@ -121,3 +121,11 @@ def test_simulate_memory_plan():
 
     arena3 = simulate_memory_plan(g3)
     assert arena3.tensor_offsets["in"] == arena3.tensor_offsets["out"]
+
+
+def test_allocate_ragged():
+    from onnx9000.core.memory_planner import ArenaSimulator
+
+    arena = ArenaSimulator(alignment=16)
+    offset = arena.allocate_ragged("ragged", [10, 20, 30])
+    assert offset == 0

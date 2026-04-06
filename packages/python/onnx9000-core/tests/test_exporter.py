@@ -393,3 +393,40 @@ def test_ir_to_onnx_exporter():
     assert g.nodes[2].op_type == "CastLike"
     assert g.nodes[3].op_type == "IsNaN"
     assert g.nodes[4].op_type == "GroupNorm"
+
+
+def test_export_pytorch(tmp_path):
+    g = Graph("test")
+    out_path = str(tmp_path / "model.py")
+    export_graph(g, out_path, "pytorch")
+    assert os.path.exists(out_path)
+
+
+def test_export_flax(tmp_path):
+    g = Graph("test")
+    out_path = str(tmp_path / "model.py")
+    export_graph(g, out_path, "flax")
+    assert os.path.exists(out_path)
+
+
+def test_export_jax(tmp_path):
+    g = Graph("test")
+    out_path = str(tmp_path / "model.py")
+    export_graph(g, out_path, "jax")
+    assert os.path.exists(out_path)
+
+
+def test_exporter_missing_lines(tmp_path, monkeypatch):
+    from onnx9000.core.exporter import export_graph
+    from onnx9000.core.ir import Graph
+
+    g = Graph("test")
+
+    # Format "pytorch" exception branch
+    import subprocess
+
+    def fake_run(*args, **kwargs):
+        raise Exception("Ruff missing")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    export_graph(g, str(tmp_path / "model.py"), "pytorch")
