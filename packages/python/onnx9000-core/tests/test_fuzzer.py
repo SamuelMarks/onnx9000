@@ -75,8 +75,8 @@ def test_fuzzing(graph):
 
 def test_numerical_parity_pipeline():
     """6.1 Numerical Parity Pipeline (1e-5 Tolerance)"""
-    import torch
     import numpy as np
+    import torch
     from onnx9000.core.verification import check_tolerance
 
     # FP32
@@ -100,12 +100,12 @@ def test_numerical_parity_pipeline():
 
 def test_fuzzing_tensors():
     """Fuzzing Tensors: Inject boundary NaNs, Infs, -Infs, subnormals"""
-    import torch
     import numpy as np
+    import torch
     from onnx9000.core.verification import check_tolerance
 
     # Subnormal
-    subnormal = torch.tensor([1e-40], dtype=torch.float32)
+    torch.tensor([1e-40], dtype=torch.float32)
     # NaN and Infs
     anomalies = torch.tensor([float("nan"), float("inf"), float("-inf")], dtype=torch.float32)
 

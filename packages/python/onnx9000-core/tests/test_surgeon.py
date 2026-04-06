@@ -24,8 +24,8 @@ def test_toposort_basic() -> None:
 
 
 def test_surgeon_missing_lines():
-    from onnx9000.core.surgeon import map_alibi, map_gqa_mqa, visualize_browser_canvas
     from onnx9000.core.ir import Graph, Node, Tensor
+    from onnx9000.core.surgeon import map_alibi, map_gqa_mqa, visualize_browser_canvas
 
     g = Graph("test")
     g.nodes.append(Node("ALiBi", inputs=["a", "b"], outputs=["c"], name="alibi"))

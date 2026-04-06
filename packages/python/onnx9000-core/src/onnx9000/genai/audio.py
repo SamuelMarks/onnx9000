@@ -1,7 +1,7 @@
 """Provide audio generation functionality for GenAI."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class VITSModel:
     """Implementation for VITSModel."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the instance."""
         self.config = config
         self.is_loaded = False
@@ -18,7 +18,7 @@ class VITSModel:
         """Load the VITS model."""
         self.is_loaded = True
 
-    def synthesize(self, text: str) -> List[float]:
+    def synthesize(self, text: str) -> list[float]:
         """Synthesize audio from text."""
         if not self.is_loaded:
             raise RuntimeError("Model not loaded")
@@ -36,7 +36,7 @@ class BarkModel:
         """Set a history prompt for speaker cloning."""
         self.history_prompt = prompt
 
-    def generate(self, text: str) -> List[float]:
+    def generate(self, text: str) -> list[float]:
         """Generate audio."""
         return [0.0] * 10
 
@@ -48,7 +48,7 @@ class MusicGenModel:
         """Initialize the instance."""
         self.sample_rate = 32000
 
-    def generate_music(self, prompt: str, duration: int) -> List[float]:
+    def generate_music(self, prompt: str, duration: int) -> list[float]:
         """Generate music based on a prompt."""
         return [0.5] * (self.sample_rate * duration)
 
@@ -58,13 +58,13 @@ class StreamingAudioOutput:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.buffer: List[float] = []
+        self.buffer: list[float] = []
 
-    def push(self, audio_chunk: List[float]) -> None:
+    def push(self, audio_chunk: list[float]) -> None:
         """Push a chunk of audio to the stream."""
         self.buffer.extend(audio_chunk)
 
-    def pop(self, size: int) -> List[float]:
+    def pop(self, size: int) -> list[float]:
         """Pop a chunk of audio from the stream."""
         chunk = self.buffer[:size]
         self.buffer = self.buffer[size:]
@@ -76,7 +76,7 @@ class MelSpectrogramLoop:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.spectrograms: List[Any] = []
+        self.spectrograms: list[Any] = []
 
     def add_spectrogram(self, spec: Any) -> None:
         """Add a spectrogram."""
@@ -98,7 +98,7 @@ class WebAudioAPIIntegrator:
         """Create WebAudio context."""
         self.context_created = True
 
-    def play(self, audio: List[float]) -> bool:
+    def play(self, audio: list[float]) -> bool:
         """Play audio via WebAudio API."""
         return self.context_created and len(audio) > 0
 
@@ -110,7 +110,7 @@ class VocoderDecoder:
         """Initialize the instance."""
         self.upsample_rates = [8, 8, 2, 2]
 
-    def decode(self, mel: List[float]) -> List[float]:
+    def decode(self, mel: list[float]) -> list[float]:
         """Decode mel spectrogram to waveform."""
         return [m * 2.0 for m in mel]
 
@@ -120,13 +120,13 @@ class MultiSpeakerEmbeddings:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.embeddings: Dict[str, List[float]] = {}
+        self.embeddings: dict[str, list[float]] = {}
 
-    def register_speaker(self, name: str, embedding: List[float]) -> None:
+    def register_speaker(self, name: str, embedding: list[float]) -> None:
         """Register a speaker embedding."""
         self.embeddings[name] = embedding
 
-    def get_speaker(self, name: str) -> Optional[List[float]]:
+    def get_speaker(self, name: str) -> Optional[list[float]]:
         """Get a speaker embedding."""
         return self.embeddings.get(name)
 
@@ -154,7 +154,7 @@ class WavExporter:
         """Initialize the instance."""
         self.sample_rate = sample_rate
 
-    def export(self, audio: List[float], filepath: str) -> bool:
+    def export(self, audio: list[float], filepath: str) -> bool:
         """Export audio to a WAV file."""
         if not audio:
             return False

@@ -2,8 +2,8 @@
 
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
-from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
 from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
 
 
 def generate_pytorch(builder: GraphBuilder) -> str:

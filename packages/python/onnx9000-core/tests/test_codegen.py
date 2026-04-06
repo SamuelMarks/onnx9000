@@ -612,11 +612,11 @@ def test_triton_codegen_ops():
 
 
 def test_codegen_branches():
-    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
-    from onnx9000.core.ir import Graph, Node, Tensor
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Graph, Node, Tensor
 
     graph = Graph("branches")
 

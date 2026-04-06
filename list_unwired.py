@@ -1,5 +1,5 @@
-import os
 import ast
+import os
 
 
 def scan_imports(d):
@@ -10,7 +10,7 @@ def scan_imports(d):
                 continue
             path = os.path.join(root, f)
             try:
-                with open(path, "r") as file:
+                with open(path) as file:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
                         if isinstance(node, ast.Import):
@@ -18,7 +18,7 @@ def scan_imports(d):
                                 imports.add(n.name)
                         elif isinstance(node, ast.ImportFrom) and node.module:
                             imports.add(node.module)
-            except:
+            except Exception:
                 pass
     return imports
 

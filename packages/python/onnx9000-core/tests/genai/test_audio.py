@@ -1,15 +1,15 @@
 import pytest
 from onnx9000.genai.audio import (
-    VITSModel,
     BarkModel,
+    ContinuousAudioGenerator,
+    MelSpectrogramLoop,
+    MultiSpeakerEmbeddings,
     MusicGenModel,
     StreamingAudioOutput,
-    MelSpectrogramLoop,
-    WebAudioAPIIntegrator,
+    VITSModel,
     VocoderDecoder,
-    MultiSpeakerEmbeddings,
-    ContinuousAudioGenerator,
     WavExporter,
+    WebAudioAPIIntegrator,
 )
 
 

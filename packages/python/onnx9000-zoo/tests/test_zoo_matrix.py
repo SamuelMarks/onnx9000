@@ -416,7 +416,7 @@ def test_triton_export_on_llms():
 def test_c_compiler_on_vision():
     # Test that C compiler doesn't crash on standard vision ops
     for model_name in VISION_MODELS:
-        g = mock_graph_for_model(model_name)
+        mock_graph_for_model(model_name)
         # We don't enforce full generation since we don't have ValueInfos,
         # but compiling the instance shouldn't crash
         pass
@@ -424,9 +424,9 @@ def test_c_compiler_on_vision():
 
 
 def test_snapshot_codegen():
-    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
 
     for group in [
         VISION_MODELS,

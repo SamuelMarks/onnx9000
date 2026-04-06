@@ -1,6 +1,6 @@
 import re
 
-with open("MODEL_ZOO_PLAN8.md", "r") as f:
+with open("MODEL_ZOO_PLAN8.md") as f:
     lines = f.readlines()
 
 models = []
@@ -15,7 +15,7 @@ for line in lines:
 
 models_str = ",\n    ".join(f'"{m}"' for m in models)
 
-with open("packages/python/onnx9000-zoo/tests/test_zoo_matrix.py", "r") as f:
+with open("packages/python/onnx9000-zoo/tests/test_zoo_matrix.py") as f:
     content = f.read()
 
 import re

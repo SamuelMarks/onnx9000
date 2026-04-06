@@ -1,7 +1,7 @@
 """Provide QA and debugging functionality for GenAI workflows."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -12,9 +12,9 @@ class StepDebuggerUI:
     def __init__(self, mode: str = "cli") -> None:
         """Initialize the instance."""
         self.mode = mode
-        self.history: List[Dict[str, Any]] = []
+        self.history: list[dict[str, Any]] = []
 
-    def record_step(self, step_name: str, state: Dict[str, Any]) -> None:
+    def record_step(self, step_name: str, state: dict[str, Any]) -> None:
         """Record the state of a step for debugging."""
         self.history.append({"step": step_name, "state": state})
         logger.debug(f"Step {step_name} recorded.")
@@ -29,7 +29,7 @@ class AttentionMapVisualizer:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.maps: List[Any] = []
+        self.maps: list[Any] = []
 
     def add_map(self, attention_matrix: Any) -> None:
         """Add an attention map for visualization."""
@@ -45,13 +45,13 @@ class BeamSearchTreeVisualizer:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.tree: Dict[str, Any] = {"root": {}}
+        self.tree: dict[str, Any] = {"root": {}}
 
     def add_node(self, parent_id: str, node_id: str, score: float) -> None:
         """Add a node to the beam search tree."""
         self.tree[node_id] = {"parent": parent_id, "score": score}
 
-    def export_json(self) -> Dict[str, Any]:
+    def export_json(self) -> dict[str, Any]:
         """Export the tree as JSON."""
         return self.tree
 
@@ -63,7 +63,7 @@ class SamplingConfigLinter:
         """Initialize the instance."""
         self.rules = {"temperature_min": 0.0, "top_p_max": 1.0}
 
-    def lint(self, config: Dict[str, Any]) -> List[str]:
+    def lint(self, config: dict[str, Any]) -> list[str]:
         """Lint a sampling configuration."""
         errors = []
         if config.get("temperature", 1.0) < self.rules["temperature_min"]:
@@ -76,7 +76,7 @@ class ChromeTracer:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.events: List[Dict[str, Any]] = []
+        self.events: list[dict[str, Any]] = []
 
     def log_event(self, name: str, timestamp: float) -> None:
         """Log a tracing event."""
@@ -88,7 +88,7 @@ class BrokenModelSuite:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.broken_models: List[str] = []
+        self.broken_models: list[str] = []
 
     def register(self, model_id: str) -> None:
         """Register a known broken model."""
@@ -104,7 +104,7 @@ class HardwareBugDatabase:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.bugs: Dict[str, str] = {}
+        self.bugs: dict[str, str] = {}
 
     def add_bug(self, device: str, description: str) -> None:
         """Add a hardware bug."""
@@ -120,7 +120,7 @@ class TokenizerEdgeCasesTester:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.cases: List[str] = []
+        self.cases: list[str] = []
 
     def add_case(self, text: str) -> None:
         """Add a tokenizer edge case."""
@@ -152,7 +152,7 @@ class FeatureToggles:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.toggles: Dict[str, bool] = {}
+        self.toggles: dict[str, bool] = {}
 
     def enable(self, feature: str) -> None:
         """Enable a feature."""

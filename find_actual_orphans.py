@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 py_dir = "packages/python"
 py_pkgs = [p for p in os.listdir(py_dir) if os.path.isdir(os.path.join(py_dir, p))]
@@ -18,7 +18,7 @@ for p in js_pkgs:
         with open(os.path.join(js_dir, p, "package.json")) as f:
             data = json.load(f)
             js_import_names[p] = data["name"]
-    except:
+    except Exception:
         js_import_names[p] = f"@onnx9000/{p}"
 
 
@@ -32,7 +32,7 @@ def get_deps(pkg_dir, is_js=False):
                     data = json.load(f)
                     deps.extend(data.get("dependencies", {}).keys())
                     deps.extend(data.get("devDependencies", {}).keys())
-            except:
+            except Exception:
                 pass
     else:
         pyproject = os.path.join(pkg_dir, "pyproject.toml")
@@ -43,7 +43,7 @@ def get_deps(pkg_dir, is_js=False):
                     for p in py_pkgs:
                         if p in content and p != os.path.basename(pkg_dir):
                             deps.append(p)
-            except:
+            except Exception:
                 pass
     return deps
 
@@ -71,7 +71,7 @@ def scan_dir(d):
                 continue
             path = os.path.join(root, f)
             try:
-                with open(path, "r", encoding="utf-8") as file:
+                with open(path, encoding="utf-8") as file:
                     content = file.read()
                     for p, names in py_import_names.items():
                         for name in names:
@@ -80,7 +80,7 @@ def scan_dir(d):
                     for p, name in js_import_names.items():
                         if name in content:
                             direct_uses.add(js_import_names[p])
-            except:
+            except Exception:
                 pass
 
 

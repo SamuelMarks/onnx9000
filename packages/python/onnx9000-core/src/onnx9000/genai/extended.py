@@ -1,7 +1,7 @@
 """Provide extended generation functionality for GenAI workflows."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -11,9 +11,9 @@ class DraftingModel:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.drafts: List[str] = []
+        self.drafts: list[str] = []
 
-    def draft(self, prompt: str) -> List[str]:
+    def draft(self, prompt: str) -> list[str]:
         """Generate draft completions."""
         self.drafts = [prompt + " draft1", prompt + " draft2"]
         return self.drafts
@@ -39,7 +39,7 @@ class SelfConsistencyDecoder:
         """Initialize the instance."""
         self.num_samples = num_samples
 
-    def decode(self, samples: List[str]) -> str:
+    def decode(self, samples: list[str]) -> str:
         """Decode most consistent sample."""
         if not samples:
             return ""
@@ -54,13 +54,13 @@ class ContinuousBatchingQueue:
     def __init__(self, max_batch_size: int = 32) -> None:
         """Initialize the instance."""
         self.max_batch_size = max_batch_size
-        self.queue: List[Any] = []
+        self.queue: list[Any] = []
 
     def enqueue(self, request: Any) -> None:
         """Enqueue request."""
         self.queue.append(request)
 
-    def dequeue_batch(self) -> List[Any]:
+    def dequeue_batch(self) -> list[Any]:
         """Dequeue a batch of requests."""
         batch = self.queue[: self.max_batch_size]
         self.queue = self.queue[self.max_batch_size :]
@@ -72,9 +72,9 @@ class HiddenStateVisualizer:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.states: List[List[float]] = []
+        self.states: list[list[float]] = []
 
-    def record_state(self, state: List[float]) -> None:
+    def record_state(self, state: list[float]) -> None:
         """Record hidden state."""
         self.states.append(state)
 
@@ -99,7 +99,7 @@ class ChunkedPrefiller:
         """Initialize the instance."""
         self.chunk_size = chunk_size
 
-    def prefill(self, tokens: List[int]) -> List[List[int]]:
+    def prefill(self, tokens: list[int]) -> list[list[int]]:
         """Chunk tokens for prefilling."""
         return [tokens[i : i + self.chunk_size] for i in range(0, len(tokens), self.chunk_size)]
 
@@ -109,7 +109,7 @@ class DynamicParamAdjuster:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.params: Dict[str, float] = {}
+        self.params: dict[str, float] = {}
 
     def adjust(self, param: str, value: float) -> None:
         """Adjust parameter dynamically."""
@@ -121,7 +121,7 @@ class MultiTurnCache:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.cache: Dict[str, List[Any]] = {}
+        self.cache: dict[str, list[Any]] = {}
 
     def update(self, session_id: str, data: Any) -> None:
         """Update multi-turn cache."""

@@ -324,13 +324,14 @@ def convert_cmd(args: argparse.Namespace) -> None:
     elif src_fmt == "jax":
         import json
 
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             jaxpr_dict = json.load(f)
         from onnx9000.converters.parsers import JAXprParser
 
         graph = JAXprParser().parse(jaxpr_dict)
     elif src_fmt == "paddle":
         import os
+
         from onnx9000.converters.paddle.api import convert_paddle_to_onnx
 
         if os.path.isdir(args.src):
@@ -382,43 +383,43 @@ def convert_cmd(args: argparse.Namespace) -> None:
 
         graph = load_safetensors_to_graph(args.src)
     elif src_fmt == "caffe":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.catboost import parse_catboost_json
 
         graph = parse_catboost_json(data)
     elif src_fmt == "lightgbm":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.lightgbm import parse_lightgbm_json
 
         graph = parse_lightgbm_json(data)
     elif src_fmt == "xgboost":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.xgboost import parse_xgboost_json
 
         graph = parse_xgboost_json(data)
     elif src_fmt == "libsvm":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.libsvm import parse_libsvm
 
         graph = parse_libsvm(data)
     elif src_fmt == "h2o":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.h2o import parse_h2o
 
         graph = parse_h2o(data)
     elif src_fmt == "sparkml":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.sparkml import parse_sparkml_pipeline
 
         graph = parse_sparkml_pipeline(data)
     elif src_fmt == "coreml":
-        with open(args.src, "r") as f:
+        with open(args.src) as f:
             data = f.read()
         from onnx9000.converters.mltools.coreml import parse_coreml_model
 
@@ -510,7 +511,7 @@ def zoo_cmd(args: argparse.Namespace) -> None:
 
     try:
         from onnx9000.zoo.catalog import ModelCatalog
-        from onnx9000.zoo.tensors import SafeTensorsMmapParser, BFloat16Upcaster
+        from onnx9000.zoo.tensors import BFloat16Upcaster, SafeTensorsMmapParser
 
         print("Zoo subsystem loaded.")
         if args.zoo_command == "download":
@@ -531,12 +532,12 @@ def genai_cmd(args: argparse.Namespace) -> None:
     import sys
 
     try:
+        from onnx9000.genai.ecosystem import LangChainIntegration, LlamaIndexIntegration
         from onnx9000.genai.qa import (
-            StepDebuggerUI,
             AttentionMapVisualizer,
             BeamSearchTreeVisualizer,
+            StepDebuggerUI,
         )
-        from onnx9000.genai.ecosystem import LangChainIntegration, LlamaIndexIntegration
 
         print(f"Successfully initialized GenAI subsystem. Mode: {args.mode}")
     except ImportError as e:
@@ -645,8 +646,9 @@ def diffusers_cmd(args: argparse.Namespace) -> None:
 def jit_cmd(args: argparse.Namespace) -> None:
     """JIT Compile an ONNX model into a C++ extension or WASM."""
     print(f"JIT Compiling {args.model} to {args.target}...")
-    from onnx9000.converters.jit.compiler import compile_cpp, compile_wasm
     from pathlib import Path
+
+    from onnx9000.converters.jit.compiler import compile_cpp, compile_wasm
 
     graph = load_onnx(args.model)
     out_dir = Path(args.output).parent if args.output else Path(".")
@@ -666,7 +668,7 @@ def rocm_cmd(args: argparse.Namespace) -> None:
     from onnx9000.backends.rocm.executor import ROCmExecutor
 
     print(f"Initializing ROCm execution for {args.model}")
-    executor = ROCmExecutor()
+    ROCmExecutor()
     print("ROCm engine loaded.")
 
 
@@ -675,7 +677,7 @@ def cpu_cmd(args: argparse.Namespace) -> None:
     from onnx9000.backends.cpu.executor import CPUExecutionProvider
 
     print(f"Initializing CPU execution for {args.model}")
-    executor = CPUExecutionProvider()
+    CPUExecutionProvider()
     print("CPU engine loaded.")
 
 
@@ -684,7 +686,7 @@ def cuda_cmd(args: argparse.Namespace) -> None:
     from onnx9000.backends.cuda.executor import CUDAExecutor
 
     print(f"Initializing CUDA execution for {args.model}")
-    executor = CUDAExecutor()
+    CUDAExecutor()
     print("CUDA engine loaded.")
 
 
@@ -702,7 +704,7 @@ def apple_cmd(args: argparse.Namespace) -> None:
     from onnx9000.backends.apple.executor import AppleMetalExecutor
 
     print(f"Initializing Apple Metal execution for {args.model}")
-    executor = AppleMetalExecutor()
+    AppleMetalExecutor()
     print("Apple Metal engine loaded.")
 
 

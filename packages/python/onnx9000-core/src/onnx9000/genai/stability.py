@@ -1,7 +1,7 @@
 """Provide stability and error handling for GenAI workflows."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class InputShapeValidator:
         """Initialize the instance."""
         self.max_length = max_length
 
-    def validate(self, shape: List[int]) -> bool:
+    def validate(self, shape: list[int]) -> bool:
         """Validate input shape."""
         if not shape:
             return False

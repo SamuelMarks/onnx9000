@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import re
 
 roots = []
@@ -57,7 +57,7 @@ for pkg in os.listdir(js_dir):
                 for dep in deps:
                     if dep in packages:
                         edges["@onnx9000/" + pkg].append(dep)
-            except:
+            except Exception:
                 pass
 
 # Read App dependencies
@@ -74,7 +74,7 @@ for app in os.listdir(apps_dir):
                 for dep in deps:
                     if dep in packages:
                         edges["app:" + app].append(dep)
-            except:
+            except Exception:
                 pass
 
 # Python App/SDK

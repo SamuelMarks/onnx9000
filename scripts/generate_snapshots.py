@@ -1,7 +1,7 @@
-import sys
-import json
 import importlib
 import inspect
+import json
+import sys
 
 fw = sys.argv[1]
 out_path = sys.argv[2]
@@ -38,7 +38,7 @@ try:
             objects.append({"name": str(name), "type": "Object", "signature": ""})
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({"version": version, "objects": objects}, f)
-except Exception as e:
+except Exception:
     try:
         mod = importlib.import_module(fw)
         visited_mods = set()
@@ -107,6 +107,6 @@ except Exception as e:
         inspect_traverse(mod)
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump({"version": version, "objects": objects}, f)
-    except Exception as e2:
+    except Exception:
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump({"version": "Not Installed", "objects": []}, f)

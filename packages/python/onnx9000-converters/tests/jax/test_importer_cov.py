@@ -64,8 +64,8 @@ def test_jax_importer_primitive_mapping():
     """Test JAX primitive mapping."""
     importer = JAXImporter()
 
-    from onnx9000.core.registry import global_registry
     import onnx9000.converters.jax.jax_ops  # noqa: F401
+    from onnx9000.core.registry import global_registry
 
     op_func = global_registry.get_op("add", "jax")
     assert op_func is not None

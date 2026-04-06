@@ -1,7 +1,7 @@
 """SparkML JSON/Parquet parser for pure-Python ONNX conversion."""
 
-from typing import Any
 import json
+from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo

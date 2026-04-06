@@ -1,5 +1,5 @@
-import os
 import ast
+import os
 
 
 def get_all_py_files(d):
@@ -17,7 +17,7 @@ cli_files = [f for f in cli_files if "coverage" not in f and "test" not in f]
 imported_modules = set()
 
 for fpath in cli_files:
-    with open(fpath, "r") as f:
+    with open(fpath) as f:
         try:
             tree = ast.parse(f.read(), filename=fpath)
             for node in ast.walk(tree):
@@ -27,10 +27,10 @@ for fpath in cli_files:
                 elif isinstance(node, ast.ImportFrom):
                     if node.module:
                         imported_modules.add(node.module)
-        except Exception as e:
+        except Exception:
             pass
 
 print("Imported onnx9000 modules in CLI:")
-for m in sorted(list(imported_modules)):
+for m in sorted(imported_modules):
     if "onnx9000" in m:
         print(m)

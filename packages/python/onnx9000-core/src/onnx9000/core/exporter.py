@@ -4,8 +4,6 @@ import os
 
 from onnx9000.core.ir import Graph
 from onnx9000.core.serializer import save as save_onnx
-
-
 from onnx9000.core.tensorboard_exporter import export_tensorboard
 
 

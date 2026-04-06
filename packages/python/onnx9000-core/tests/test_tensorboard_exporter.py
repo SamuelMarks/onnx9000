@@ -1,6 +1,7 @@
-from onnx9000.core.tensorboard_exporter import export_tensorboard
-from onnx9000.core.ir import Graph, Node
 import os
+
+from onnx9000.core.ir import Graph, Node
+from onnx9000.core.tensorboard_exporter import export_tensorboard
 
 
 def test_export_tensorboard(tmp_path):

@@ -1,7 +1,7 @@
 """Provide security functionality for GenAI workflows."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ class PromptInjectionDetector:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.patterns: List[str] = ["ignore previous instructions", "system prompt"]
+        self.patterns: list[str] = ["ignore previous instructions", "system prompt"]
 
     def is_injected(self, prompt: str) -> bool:
         """Check if a prompt contains injection patterns."""
@@ -24,7 +24,7 @@ class ContentSafetyFilter:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.unsafe_words: List[str] = ["badword", "unsafe"]
+        self.unsafe_words: list[str] = ["badword", "unsafe"]
 
     def filter(self, text: str) -> str:
         """Filter unsafe content from text."""
@@ -74,7 +74,7 @@ class ChatTemplateSanitizer:
         """Initialize the instance."""
         self.allowed_roles = ["system", "user", "assistant"]
 
-    def sanitize(self, messages: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    def sanitize(self, messages: list[dict[str, str]]) -> list[dict[str, str]]:
         """Sanitize chat messages."""
         return [m for m in messages if m.get("role") in self.allowed_roles]
 
@@ -136,7 +136,7 @@ class KVCacheIsolator:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.caches: Dict[str, Any] = {}
+        self.caches: dict[str, Any] = {}
 
     def set_cache(self, session_id: str, cache: Any) -> None:
         """Set cache for a session."""
@@ -152,7 +152,7 @@ class CSPCompliance:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.policies: List[str] = ["default-src 'self'"]
+        self.policies: list[str] = ["default-src 'self'"]
 
     def add_policy(self, policy: str) -> None:
         """Add CSP policy."""

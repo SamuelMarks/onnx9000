@@ -35,12 +35,13 @@ def test_convert_cmd_branches():
     from onnx9000_cli.main import convert_cmd
 
     with patch("onnx9000.core.parser.core.load"):
-        with patch("onnx9000.core.exporter.export_graph") as mock_exp:
+        with patch("onnx9000.core.exporter.export_graph"):
             # src_fmt keras
             with patch("importlib.import_module"):
                 mock_keras = MagicMock()
                 mock_keras.saving.load_model.return_value = b"dummy"
                 import sys
+
                 import onnx9000.converters.tf.api
 
                 sys.modules["keras"] = mock_keras

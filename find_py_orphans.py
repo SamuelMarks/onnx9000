@@ -1,4 +1,5 @@
 import os
+
 import toml
 
 py_packages = set()
@@ -28,7 +29,7 @@ def read_deps(toml_path):
             for pkg in py_packages:
                 if pkg in sources:
                     referenced.add(pkg)
-    except:
+    except Exception:
         pass
 
 

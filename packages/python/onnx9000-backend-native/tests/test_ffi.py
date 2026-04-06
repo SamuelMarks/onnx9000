@@ -145,7 +145,7 @@ def test_dynamic_library_custom_env():
 @patch("platform.machine", return_value="AMD64")
 def test_dynamic_library_windows(mock_machine, mock_system):
     with patch("ctypes.util.find_library", return_value="msvcrt.dll"):
-        with patch("ctypes.CDLL") as mock_cdll:
+        with patch("ctypes.CDLL"):
             lib = DynamicLibrary("msvcrt")
             assert lib.os == "Windows"
 
@@ -158,7 +158,7 @@ def test_dynamic_library_windows(mock_machine, mock_system):
 def test_dynamic_library_linux():
     with patch("platform.system", return_value="Linux"):
         with patch("ctypes.util.find_library", return_value="libc.so.6"):
-            with patch("ctypes.CDLL") as mock_cdll:
+            with patch("ctypes.CDLL"):
                 lib = DynamicLibrary("c", versions=["6"])
                 assert lib.os == "Linux"
 

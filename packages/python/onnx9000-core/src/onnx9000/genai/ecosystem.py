@@ -1,7 +1,7 @@
 """Provide ecosystem integration functionality for GenAI."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ class LangChainIntegration:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.chains: List[str] = []
+        self.chains: list[str] = []
 
     def register_chain(self, chain_name: str) -> None:
         """Register a LangChain instance."""
@@ -29,7 +29,7 @@ class LlamaIndexIntegration:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.documents: List[str] = []
+        self.documents: list[str] = []
 
     def add_document(self, text: str) -> None:
         """Add a document to the index."""
@@ -45,7 +45,7 @@ class UnifiedPipelineModel:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.steps: List[str] = []
+        self.steps: list[str] = []
 
     def add_step(self, step: str) -> None:
         """Add a processing step."""
@@ -61,7 +61,7 @@ class GGUFConverter:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.options: Dict[str, Any] = {}
+        self.options: dict[str, Any] = {}
 
     def set_option(self, key: str, value: Any) -> None:
         """Set conversion option."""
@@ -78,7 +78,7 @@ class NuxtTypings:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.typings: Dict[str, str] = {}
+        self.typings: dict[str, str] = {}
 
     def add_typing(self, name: str, definition: str) -> None:
         """Add a TypeScript interface definition."""
@@ -95,7 +95,7 @@ class DiscordBotTemplate:
     def __init__(self, token: str) -> None:
         """Initialize the instance."""
         self.token = token
-        self.commands: Dict[str, str] = {}
+        self.commands: dict[str, str] = {}
 
     def register_command(self, name: str, response: str) -> None:
         """Register a bot command."""
@@ -111,13 +111,13 @@ class OfflineRAGVectorDB:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.vectors: Dict[str, List[float]] = {}
+        self.vectors: dict[str, list[float]] = {}
 
-    def insert(self, doc_id: str, vector: List[float]) -> None:
+    def insert(self, doc_id: str, vector: list[float]) -> None:
         """Insert a vector."""
         self.vectors[doc_id] = vector
 
-    def search(self, vector: List[float]) -> List[str]:
+    def search(self, vector: list[float]) -> list[str]:
         """Search for similar vectors."""
         return list(self.vectors.keys())
 
@@ -127,7 +127,7 @@ class BenchmarksPub:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.results: Dict[str, float] = {}
+        self.results: dict[str, float] = {}
 
     def publish(self, test_name: str, score: float) -> None:
         """Publish a benchmark score."""
@@ -143,7 +143,7 @@ class V1Certification:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.certified_models: List[str] = []
+        self.certified_models: list[str] = []
 
     def certify(self, model_id: str) -> None:
         """Certify a model for V1 release."""

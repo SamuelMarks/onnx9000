@@ -78,8 +78,8 @@ def test_extra_passes() -> None:
     graph.nodes.append(Node("Identity", ["A"], ["B"]))
     graph.nodes.append(Node("Add", ["B", "C"], ["D"]))
     graph.initializers = ["C", "unused_init"]
-    from onnx9000.core.ir import Tensor
     from onnx9000.core.dtypes import DType
+    from onnx9000.core.ir import Tensor
 
     graph.tensors["unused_init"] = Tensor(
         "unused_init", (1,), DType.FLOAT32, data=b"", is_initializer=True

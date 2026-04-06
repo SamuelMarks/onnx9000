@@ -1,6 +1,6 @@
 import re
 
-with open("packages/python/onnx9000-converters/src/onnx9000/converters/jax/jax_ops.py", "r") as f:
+with open("packages/python/onnx9000-converters/src/onnx9000/converters/jax/jax_ops.py") as f:
     content = f.read()
 
 real_ops_str = ""

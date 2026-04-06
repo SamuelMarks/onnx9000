@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 js_pkgs = set()
 js_dir = "packages/js"
@@ -8,7 +8,7 @@ for p in os.listdir(js_dir):
         with open(os.path.join(js_dir, p, "package.json")) as f:
             data = json.load(f)
             js_pkgs.add(data["name"])
-    except:
+    except Exception:
         pass
 
 used_in_apps = set()
@@ -24,7 +24,7 @@ for app in os.listdir(apps_dir):
                 )
                 for dep in deps:
                     used_in_apps.add(dep)
-        except:
+        except Exception:
             pass
 
 print("JS Packages not in any app:")

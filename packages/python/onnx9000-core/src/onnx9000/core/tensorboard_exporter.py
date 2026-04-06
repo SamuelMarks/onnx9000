@@ -20,7 +20,7 @@ def export_tensorboard(graph: Graph, log_dir: str) -> str:
             name = node.name or f"{node.op_type}_{idx}"
             if "ResNet" in graph.name or "LLaMA" in graph.name:
                 name = f"layer_{idx}/{name}"
-            meta = f"node:{name},op:{node.op_type},offset:{f.tell()}".encode("utf-8")
+            meta = f"node:{name},op:{node.op_type},offset:{f.tell()}".encode()
             f.write(struct.pack("I", len(meta)))
             f.write(meta)
 

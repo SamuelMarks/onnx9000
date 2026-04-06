@@ -14,9 +14,7 @@ const add = (a: Tensor) => new Tensor('Add_out', [], a.dtype, false, false, new 
 const matmul = (a: Tensor) =>
   new Tensor('MatMul_out', [], a.dtype, false, false, new Float32Array());
 
-function mapDictToAttributes(
-  dict: Record<string, string | number | boolean>,
-): Record<string, Attribute> {
+function mapDictToAttributes(dict: Record<string, unknown>): Record<string, Attribute> {
   const attrs: Record<string, Attribute> = {};
   for (const [k, v] of Object.entries(dict)) {
     let t: AttributeType = 'UNKNOWN';
@@ -38,7 +36,7 @@ function mapDictToAttributes(
 
 export abstract class BaseParser {
   /** Abstract base class for all frontend parsers. */
-  abstract parse(model: Record<string, string | number | boolean | null | undefined>): Graph;
+  abstract parse(model: unknown): Graph;
 }
 
 export class PyTorchFXParser extends BaseParser {
@@ -53,39 +51,30 @@ export class PyTorchFXParser extends BaseParser {
     };
   }
 
-  parse(model: Record<string, string | number | boolean | null | undefined>): Graph {
+  parse(model: unknown): Graph {
     const graph = new Graph('PyTorch_Exported');
-    if (!model) return graph;
+    if (!model || typeof model !== 'object') return graph;
 
-    const fx = model as Record<
-      string,
-      | string
-      | number
-      | boolean
-      | null
-      | undefined
-      | Record<string, string | number | boolean | null | undefined>[]
-    >;
-    if (fx.nodes && Array.isArray(fx.nodes)) {
+    const fx = model as Record<string, unknown>;
+    if (Array.isArray(fx.nodes)) {
       for (const node of fx.nodes) {
-        if (typeof node !== 'object' || node === null) continue;
-        const targetStr = typeof node.target === 'string' ? node.target : '';
-        const opStr = typeof node.op === 'string' ? node.op : '';
-        const nameStr = typeof node.name === 'string' ? node.name : '';
+        if (!node || typeof node !== 'object') continue;
+        const n = node as Record<string, unknown>;
+        const targetStr = typeof n.target === 'string' ? n.target : '';
+        const opStr = typeof n.op === 'string' ? n.op : '';
+        const nameStr = typeof n.name === 'string' ? n.name : '';
         const opType = (targetStr || opStr).replace('aten.', '').replace('.default', '');
-        const inputs = Array.isArray(node.args)
-          ? (node.args.filter(
-              (arg: string | number | boolean | null | undefined) => typeof arg === 'string',
-            ) as string[])
+        const inputs = Array.isArray(n.args)
+          ? n.args.filter((arg): arg is string => typeof arg === 'string')
           : [];
         const outputs = [nameStr];
         const rawKwargs =
-          typeof node.kwargs === 'object' && node.kwargs !== null
-            ? (node.kwargs as Record<string, string | number | boolean>)
+          typeof n.kwargs === 'object' && n.kwargs !== null
+            ? (n.kwargs as Record<string, unknown>)
             : {};
         const kwargs = mapDictToAttributes(rawKwargs);
-        const n = new Node(opType, inputs, outputs, kwargs, nameStr);
-        graph.nodes.push(n);
+        const newNode = new Node(opType, inputs, outputs, kwargs, nameStr);
+        graph.nodes.push(newNode);
 
         const t = new Tensor(nameStr, [], 'float32');
         graph.tensors[nameStr] = t;
@@ -97,9 +86,6 @@ export class PyTorchFXParser extends BaseParser {
 
 export class JAXprParser extends BaseParser {
   /** Intercepts JAX closed-form jaxpr representation and maps to GraphSurgeon IR. */
-  constructor() {
-    super();
-  }
 
   private mapJaxType(jaxType: string): DType {
     if (jaxType === 'f32') return 'float32';
@@ -107,76 +93,82 @@ export class JAXprParser extends BaseParser {
     return 'float32';
   }
 
-  parse(model: Record<string, string | number | boolean | null | undefined>): Graph {
+  parse(model: unknown): Graph {
     const graph = new Graph('JAX_Exported');
-    if (!model) return graph;
-    const jaxpr = model as Record<
-      string,
-      | string
-      | number
-      | boolean
-      | null
-      | undefined
-      | Record<string, string | number | boolean | null | undefined>[]
-    >;
+    if (!model || typeof model !== 'object') return graph;
 
-    if (jaxpr.invars && Array.isArray(jaxpr.invars)) {
+    const jaxpr = model as Record<string, unknown>;
+
+    if (Array.isArray(jaxpr.invars)) {
       for (const invar of jaxpr.invars) {
-        if (typeof invar !== 'object' || invar === null) continue;
-        const nameStr = typeof invar.name === 'string' ? invar.name : '';
-        const typeStr = typeof invar.type === 'string' ? invar.type : '';
-        const shapeArr = Array.isArray(invar.shape) ? (invar.shape as number[]) : [];
+        if (!invar || typeof invar !== 'object') continue;
+        const i = invar as Record<string, unknown>;
+        const nameStr = typeof i.name === 'string' ? i.name : '';
+        const typeStr = typeof i.type === 'string' ? i.type : '';
+        const shapeArr = Array.isArray(i.shape) ? (i.shape as number[]) : [];
         const t = new Tensor(nameStr, shapeArr, this.mapJaxType(typeStr));
         graph.inputs.push(new ValueInfo(nameStr, shapeArr, this.mapJaxType(typeStr)));
         graph.tensors[nameStr] = t;
       }
     }
 
-    if (jaxpr.constvars && Array.isArray(jaxpr.constvars)) {
+    if (Array.isArray(jaxpr.constvars)) {
       for (const constvar of jaxpr.constvars) {
-        if (typeof constvar !== 'object' || constvar === null) continue;
-        const nameStr = typeof constvar.name === 'string' ? constvar.name : '';
-        const typeStr = typeof constvar.type === 'string' ? constvar.type : '';
-        const shapeArr = Array.isArray(constvar.shape) ? (constvar.shape as number[]) : [];
+        if (!constvar || typeof constvar !== 'object') continue;
+        const c = constvar as Record<string, unknown>;
+        const nameStr = typeof c.name === 'string' ? c.name : '';
+        const typeStr = typeof c.type === 'string' ? c.type : '';
+        const shapeArr = Array.isArray(c.shape) ? (c.shape as number[]) : [];
         const t = new Tensor(nameStr, shapeArr, this.mapJaxType(typeStr), true);
         graph.initializers.push(nameStr);
         graph.tensors[nameStr] = t;
       }
     }
 
-    if (jaxpr.eqns && Array.isArray(jaxpr.eqns)) {
+    if (Array.isArray(jaxpr.eqns)) {
       for (const eqn of jaxpr.eqns) {
-        if (typeof eqn !== 'object' || eqn === null) continue;
-        const primStr = typeof eqn.primitive === 'string' ? eqn.primitive : '';
-        const inputs = Array.isArray(eqn.invars)
-          ? eqn.invars
-              .map((i: Record<string, string | number | boolean | null | undefined>) =>
-                typeof i === 'object' && i !== null && typeof i.name === 'string' ? i.name : '',
-              )
+        if (!eqn || typeof eqn !== 'object') continue;
+        const e = eqn as Record<string, unknown>;
+        const primStr = typeof e.primitive === 'string' ? e.primitive : '';
+        const inputs = Array.isArray(e.invars)
+          ? e.invars
+              .map((i: unknown) => {
+                if (i && typeof i === 'object' && 'name' in i) {
+                  const n = (i as Record<string, unknown>).name;
+                  return typeof n === 'string' ? n : '';
+                }
+                return '';
+              })
               .filter(Boolean)
           : [];
-        const outputs = Array.isArray(eqn.outvars)
-          ? eqn.outvars
-              .map((o: Record<string, string | number | boolean | null | undefined>) =>
-                typeof o === 'object' && o !== null && typeof o.name === 'string' ? o.name : '',
-              )
+        const outputs = Array.isArray(e.outvars)
+          ? e.outvars
+              .map((o: unknown) => {
+                if (o && typeof o === 'object' && 'name' in o) {
+                  const n = (o as Record<string, unknown>).name;
+                  return typeof n === 'string' ? n : '';
+                }
+                return '';
+              })
               .filter(Boolean)
           : [];
-        const nodeName = outputs.length > 0 ? `${primStr}_${outputs[0]}` : primStr;
+        const firstOutput = outputs[0] ?? '';
+        const nodeName = outputs.length > 0 ? `${primStr}_${firstOutput}` : primStr;
         const rawParams =
-          typeof eqn.params === 'object' && eqn.params !== null
-            ? (eqn.params as Record<string, string | number | boolean>)
+          typeof e.params === 'object' && e.params !== null
+            ? (e.params as Record<string, unknown>)
             : {};
         const params = mapDictToAttributes(rawParams);
         const n = new Node(primStr, inputs, outputs, params, nodeName);
         graph.nodes.push(n);
 
-        if (Array.isArray(eqn.outvars)) {
-          for (const outvar of eqn.outvars) {
-            if (typeof outvar !== 'object' || outvar === null) continue;
-            const outNameStr = typeof outvar.name === 'string' ? outvar.name : '';
-            const outTypeStr = typeof outvar.type === 'string' ? outvar.type : '';
-            const outShapeArr = Array.isArray(outvar.shape) ? (outvar.shape as number[]) : [];
+        if (Array.isArray(e.outvars)) {
+          for (const outvar of e.outvars) {
+            if (!outvar || typeof outvar !== 'object') continue;
+            const o = outvar as Record<string, unknown>;
+            const outNameStr = typeof o.name === 'string' ? o.name : '';
+            const outTypeStr = typeof o.type === 'string' ? o.type : '';
+            const outShapeArr = Array.isArray(o.shape) ? (o.shape as number[]) : [];
             const t = new Tensor(outNameStr, outShapeArr, this.mapJaxType(outTypeStr));
             graph.tensors[outNameStr] = t;
           }
@@ -184,10 +176,11 @@ export class JAXprParser extends BaseParser {
       }
     }
 
-    if (jaxpr.outvars && Array.isArray(jaxpr.outvars)) {
+    if (Array.isArray(jaxpr.outvars)) {
       for (const outvar of jaxpr.outvars) {
-        if (typeof outvar !== 'object' || outvar === null) continue;
-        const nameStr = typeof outvar.name === 'string' ? outvar.name : '';
+        if (!outvar || typeof outvar !== 'object') continue;
+        const o = outvar as Record<string, unknown>;
+        const nameStr = typeof o.name === 'string' ? o.name : '';
         const t = graph.tensors[nameStr];
         if (t) {
           graph.outputs.push(new ValueInfo(t.name, t.shape, t.dtype));
@@ -211,7 +204,11 @@ export class XLAHLOParser extends BaseParser {
     };
   }
 
-  parse(): Graph {
+  parse(model: unknown): Graph {
+    // Note: XLAHLOParser mock ignores model
+    if (model) {
+      /* ignored */
+    }
     const graph = new Graph('converted_graph');
     graph.name = 'XLA_Exported';
     return graph;

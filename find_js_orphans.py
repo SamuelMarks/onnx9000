@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 js_packages = set()
 js_dir = "packages/js"
@@ -11,7 +11,7 @@ if os.path.exists(js_dir):
                 with open(os.path.join(pkg_path, "package.json")) as f:
                     data = json.load(f)
                     js_packages.add(data["name"])
-            except:
+            except Exception:
                 pass
 
 referenced = set()
@@ -30,7 +30,7 @@ if os.path.exists(apps_dir):
                     )
                     for dep in deps:
                         referenced.add(dep)
-            except:
+            except Exception:
                 pass
 
 # Check other js packages
@@ -45,7 +45,7 @@ for pkg in os.listdir(js_dir):
                 )
                 for dep in deps:
                     referenced.add(dep)
-        except:
+        except Exception:
             pass
 
 orphans = js_packages - referenced

@@ -1,7 +1,7 @@
 """Provide logging functionality for GenAI generation stats."""
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ class GenerationStatsLogger:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.stats: Dict[str, Any] = {}
+        self.stats: dict[str, Any] = {}
 
     def record(self, key: str, value: Any) -> None:
         """Record a statistic."""
