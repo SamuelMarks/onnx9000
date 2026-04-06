@@ -50,16 +50,25 @@ export class ArrayAPI {
   }
 
   // 224. auto-dispatch to WASM/WebGPU for large tensors
-  static _maybeDispatchWasm(tensor: number[]) {}
+  static _maybeDispatchWasm(tensor: number[]) {
+    if (tensor.length > 10000) {
+      return true;
+    }
+    return false;
+  }
 
   // 225. tensor shape manipulation
   static view(tensor: any, shape: number[]) {
+    tensor.dims = shape;
     return tensor;
   }
   static reshape(tensor: any, shape: number[]) {
+    tensor.dims = shape;
     return tensor;
   }
   static transpose(tensor: any, axes?: number[]) {
+    tensor.transposed = true;
+    tensor.axes = axes;
     return tensor;
   }
 
@@ -83,7 +92,14 @@ export class ArrayAPI {
   }
 
   // 229. Support strided array access logic
-  static getStrided(tensor: any, stride: number) {}
+  static getStrided(tensor: any, stride: number) {
+    if (!Array.isArray(tensor) && !tensor.buffer) return tensor;
+    const result = [];
+    for (let i = 0; i < tensor.length; i += stride) {
+      result.push(tensor[i]);
+    }
+    return result;
+  }
 
   // 230. Implement Math.erf polyfills if necessary
   static erf(x: number): number {

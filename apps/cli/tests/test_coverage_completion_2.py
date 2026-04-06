@@ -1,6 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from onnx9000_cli.coverage import count_supported_framework_objects, clone_and_parse_onnx_spec
+from onnx9000_cli.coverage import clone_and_parse_onnx_spec, count_supported_framework_objects
 
 
 def test_clone_and_get_operators_fallback():
@@ -43,7 +44,7 @@ def test_count_supported_framework_objects_exceptions():
                 mock_open.return_value.__enter__.return_value.read.side_effect = Exception(
                     "Parse failed"
                 )
-                count = count_supported_framework_objects("sklearn")
+                count_supported_framework_objects("sklearn")
 
     with patch("os.path.isdir", return_value=True):
         with patch("glob.glob", return_value=["test.json"]):
@@ -131,7 +132,7 @@ def test_count_classes_inheriting_module_ast_nodes_2():
                             mock_open2.return_value.__enter__.return_value.read.return_value = (
                                 "class Class1: pass"
                             )
-                            count = count_supported_framework_objects("pytorch")
+                            count_supported_framework_objects("pytorch")
 
 
 def test_count_map_funcs_ast_nodes_2():
@@ -150,7 +151,7 @@ def test_count_map_funcs_ast_nodes_2():
 
 
 def test_coverage_ast_exceptions():
-    from onnx9000_cli.coverage import get_onnx9000_ops, count_supported_framework_objects
+    from onnx9000_cli.coverage import count_supported_framework_objects, get_onnx9000_ops
 
     with patch("os.path.exists", return_value=True):
         with patch("os.walk", return_value=[("/fake", [], ["test.py"])]):
@@ -224,9 +225,9 @@ def test_count_classes_inheriting_module_valid_ast():
 def test_count_supported_framework_objects_misc():
     from onnx9000_cli.coverage import count_supported_framework_objects
 
-    count = count_supported_framework_objects("coreml")
-    count = count_supported_framework_objects("tflite")
-    count = count_supported_framework_objects("gguf")
+    count_supported_framework_objects("coreml")
+    count_supported_framework_objects("tflite")
+    count_supported_framework_objects("gguf")
 
 
 def test_get_onnx9000_ops_success():

@@ -149,7 +149,31 @@ export class HALBindings {
   }
 }
 
-// 122. WASM WVM Interpreter (stub for <50kb C/C++ compiled version)
+// 122. WASM WVM Interpreter
 export class WASMWVMInterpreter {
-  // Uses Emscripten/WASM instance internally
+  private wasmModule: WebAssembly.Module | null = null;
+  private wasmInstance: WebAssembly.Instance | null = null;
+
+  constructor() {}
+
+  public async initialize(wasmBinary: ArrayBuffer): Promise<void> {
+    this.wasmModule = await WebAssembly.compile(wasmBinary);
+    this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, {
+      env: {
+        memory: new WebAssembly.Memory({ initial: 256 }),
+        abort: () => {
+          throw new Error('WASM Aborted');
+        },
+      },
+    });
+  }
+
+  public run(): void {
+    if (!this.wasmInstance) {
+      throw new Error('WASM not initialized');
+    }
+    if (typeof this.wasmInstance.exports.run === 'function') {
+      (this.wasmInstance.exports.run as Function)();
+    }
+  }
 }

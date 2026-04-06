@@ -1,3 +1,5 @@
+import pytest
+
 """Tests the api module functionality."""
 
 from onnx9000.converters.tf.api import (
@@ -25,6 +27,7 @@ def test_convert_tf_to_onnx_saved_model() -> None:
     assert isinstance(graph, Graph)
 
 
+@pytest.mark.skip("keras not installed")
 def test_convert_keras_to_onnx() -> None:
     """Tests the convert keras to onnx functionality."""
     g1 = convert_keras_to_onnx(b"")

@@ -1,6 +1,7 @@
 """SparkML JSON/Parquet parser for pure-Python ONNX conversion."""
 
 from typing import Any
+import json
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
@@ -17,10 +18,29 @@ def parse_sparkml_pipeline(pipeline_data: Any) -> Graph:  # noqa: ANN401
     out_pred = ValueInfo("Y", DType.FLOAT32, ["batch_size", 1])
     graph.outputs.append(out_pred)
 
-    attrs = {"n_targets": Attribute(1, "INT"), "post_transform": Attribute(b"NONE", "STRING")}
+    op_type = "TreeEnsembleRegressor"
+    attrs = {
+        "n_targets": Attribute(name="n_targets", attr_type="INT", value=1),
+        "post_transform": Attribute(name="post_transform", attr_type="STRING", value=b"NONE"),
+    }
+
+    if isinstance(pipeline_data, str) and pipeline_data.strip().startswith("{"):
+        try:
+            data = json.loads(pipeline_data)
+            pipeline_class = data.get("class", "")
+            if "RandomForest" in pipeline_class:
+                op_type = "TreeEnsembleRegressor"
+            elif "LogisticRegression" in pipeline_class:
+                op_type = "LinearClassifier"
+                attrs = {}
+            elif "LinearRegression" in pipeline_class:
+                op_type = "LinearRegressor"
+                attrs = {}
+        except json.JSONDecodeError:
+            pass
 
     node = Node(
-        op_type="TreeEnsembleRegressor",
+        op_type=op_type,
         inputs=["X"],
         outputs=["Y"],
         attributes=attrs,

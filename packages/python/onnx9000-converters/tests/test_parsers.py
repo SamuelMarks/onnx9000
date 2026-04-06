@@ -9,11 +9,41 @@ def test_pytorch_fx_parser():
     parser = PyTorchFXParser()
     assert isinstance(parser.parse(None), Graph)
 
+    import torch
+
+    class SimpleModule(torch.nn.Module):
+        def forward(self, x, y):
+            return x + y
+
+    m = SimpleModule()
+    fx_graph = torch.fx.symbolic_trace(m)
+    g = parser.parse(fx_graph)
+    assert isinstance(g, Graph)
+    assert len(g.nodes) > 0
+
+    class MockExportedProgram:
+        def __init__(self, gm):
+            self.graph_module = gm
+
+    ep = MockExportedProgram(fx_graph)
+    g2 = parser.parse(ep)
+    assert isinstance(g2, Graph)
+
 
 def test_jaxpr_parser():
     """Docstring for D103."""
     parser = JAXprParser()
-    assert isinstance(parser.parse(None), Graph)
+    mock_dict = {"invars": [], "constvars": [], "eqns": [], "outvars": []}
+    assert isinstance(parser.parse(mock_dict), Graph)
+
+    class MockJaxpr:
+        def __init__(self):
+            self.invars = []
+            self.constvars = []
+            self.eqns = []
+            self.outvars = []
+
+    assert isinstance(parser.parse(MockJaxpr()), Graph)
 
 
 def test_xla_hlo_parser():

@@ -119,7 +119,7 @@ describe('Coverage OpenVINO', () => {
     const int64Data = [1n, 2n];
     exp.emitDynamicConst('int64', int64Data, [2], 'int64');
     expect(() => exp.emitDynamicConst('bool', [true], [1], 'bool')).toThrow(
-      'Dynamic const for bool not implemented',
+      'Unsupported dtype for dynamic const: bool',
     );
 
     // hit cache

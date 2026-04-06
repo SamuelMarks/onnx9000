@@ -31,14 +31,20 @@ class PyTorchFXParser(BaseParser):
 
     def parse(self, model: Any) -> Graph:
         """Parses an ExportedProgram from torch.export.export."""
-        graph = Graph(name="PyTorch_Exported")
-        # In a real implementation:
-        # for node in model.graph.nodes:
-        #    if node.target in self.aten_to_ir:
-        #        op = self.aten_to_ir[node.target]
-        #        out = op(...)
-        #        graph.add_node(out.node)
-        return graph
+        if model is None:
+            return Graph(name="PyTorch_Exported")
+
+        if hasattr(model, "graph_module"):
+            from onnx9000.converters.torch.export import ExportParser
+
+            parser = ExportParser(model)
+        else:
+            from onnx9000.converters.torch.fx import FXParser
+
+            parser = FXParser(model)
+
+        builder = parser.parse()
+        return builder.to_graph()
 
 
 class JAXprParser(BaseParser):
@@ -46,16 +52,21 @@ class JAXprParser(BaseParser):
 
     def __init__(self):
         """Docstring for D107."""
-        self.jaxpr_to_ir = {
-            "add": add,
-            "dot_general": matmul,
-        }
+        pass
 
     def parse(self, model: Any) -> Graph:
-        """Parses a closed_jaxpr."""
-        graph = Graph(name="JAX_Exported")
-        # Real implementation parses jaxpr.eqns
-        return graph
+        """Parses a closed_jaxpr or dict jaxpr."""
+        if isinstance(model, dict):
+            from onnx9000.converters.jax.importer import load_jax
+
+            return load_jax(model)
+        else:
+            from onnx9000.converters.jax.jax_importer import JAXImporter
+
+            importer = JAXImporter()
+            # Handle actual jaxpr object, assuming consts are empty or accessible
+            consts = getattr(model, "consts", [])
+            return importer.import_jaxpr(model, consts)
 
 
 class XLAHLOParser(BaseParser):

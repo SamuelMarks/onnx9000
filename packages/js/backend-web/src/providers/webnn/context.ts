@@ -16,6 +16,16 @@ export class WebNNContextManager {
     options: MLContextOptions = { deviceType: 'npu', powerPreference: 'default' },
   ): Promise<void> {
     if (typeof navigator === 'undefined' || !navigator.ml) {
+      try {
+        // Attempt to load the polyfill dynamically to avoid cyclic dependency
+        const polyfillName = '@onnx9000/webnn-polyfill';
+        // @ts-ignore: Dynamic import of polyfill
+        await import(/* @vite-ignore */ polyfillName);
+      } catch (e) {
+        console.warn('Failed to load WebNN polyfill:', e);
+      }
+    }
+    if (typeof navigator === 'undefined' || !navigator.ml) {
       throw new Error('WebNN is not supported in this environment (navigator.ml is missing).');
     }
 

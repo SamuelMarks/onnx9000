@@ -3,9 +3,10 @@
 
 def test_sdk_cli_bindings():
     """Verify that autograd, tvm, and diffusers are exposed in the CLI."""
-    import onnx9000_cli.main as main
     import argparse
     from unittest.mock import patch
+
+    import onnx9000_cli.main as main
 
     args = argparse.Namespace(
         model="test.onnx",

@@ -23,11 +23,12 @@ describe('ArrayAPI', () => {
   });
 
   it('tensor manipulation', () => {
-    const t = [1, 2, 3, 4];
+    const t = [1, 2, 3, 4] as any;
     expect(ArrayAPI.view(t, [2, 2])).toBe(t);
     expect(ArrayAPI.reshape(t, [2, 2])).toBe(t);
     expect(ArrayAPI.transpose(t, [1, 0])).toBe(t);
-    expect(ArrayAPI._maybeDispatchWasm(t)).toBeUndefined();
+    expect(ArrayAPI._maybeDispatchWasm(t)).toBe(false);
+    expect(ArrayAPI._maybeDispatchWasm(new Array(10001).fill(0))).toBe(true);
   });
 
   it('type conversions', () => {
@@ -43,7 +44,8 @@ describe('ArrayAPI', () => {
   it('slice and stride', () => {
     const t = [1, 2, 3, 4];
     expect(ArrayAPI.slice(t, 1, 3)).toEqual([2, 3]);
-    expect(ArrayAPI.getStrided(t, 2)).toBeUndefined();
+    expect(ArrayAPI.getStrided(t, 2)).toEqual([1, 3]);
+    expect(ArrayAPI.getStrided('not array', 2)).toEqual('not array');
   });
 
   it('erf', () => {

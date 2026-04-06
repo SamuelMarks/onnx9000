@@ -17,14 +17,27 @@ def parse_coreml_model(coreml_model: Any) -> Graph:  # noqa: ANN401
     out_pred = ValueInfo("Y", DType.FLOAT32, ["batch_size", 1])
     graph.outputs.append(out_pred)
 
-    attrs = {"n_targets": Attribute(1, "INT"), "post_transform": Attribute(b"NONE", "STRING")}
+    if hasattr(coreml_model, "treeEnsembleRegressor"):
+        attrs = {
+            "n_targets": Attribute(name="n_targets", attr_type="INT", value=1),
+            "post_transform": Attribute(name="post_transform", attr_type="STRING", value=b"NONE"),
+        }
+        op_type = "TreeEnsembleRegressor"
+    elif hasattr(coreml_model, "treeEnsembleClassifier"):
+        attrs = {
+            "post_transform": Attribute(name="post_transform", attr_type="STRING", value=b"NONE"),
+        }
+        op_type = "TreeEnsembleClassifier"
+    else:
+        attrs = {}
+        op_type = "Identity"
 
     node = Node(
-        op_type="TreeEnsembleRegressor",
+        op_type=op_type,
         inputs=["X"],
         outputs=["Y"],
         attributes=attrs,
-        domain="ai.onnx.ml",
+        domain="ai.onnx.ml" if "Tree" in op_type else "",
     )
     graph.nodes.append(node)
     return graph

@@ -1,9 +1,10 @@
 """Verification."""
 
-import torch
-import numpy as np
-from typing import Any, Dict, List, Tuple, Callable, Optional
 import math
+from typing import Any, Callable, Optional
+
+import numpy as np
+import torch
 
 
 class IRNode:
@@ -18,12 +19,12 @@ class IRNode:
 class IRGraph:
     """Mock IR.Graph class for testing."""
 
-    def __init__(self, nodes: List[IRNode]):
+    def __init__(self, nodes: list[IRNode]):
         """Docstring for D107."""
         self.nodes = nodes
 
 
-def check_tolerance(target: torch.Tensor, oracle: torch.Tensor, dtype: str) -> Tuple[bool, float]:
+def check_tolerance(target: torch.Tensor, oracle: torch.Tensor, dtype: str) -> tuple[bool, float]:
     """Checks if the target tensor is within the allowed tolerance compared to the oracle tensor.
     Returns (is_passed, max_diff_or_similarity).
     """
@@ -82,11 +83,11 @@ class OracleVerifier:
         """Mock artifact generation."""
         return None
 
-    def generate_inputs(self, input_shape: Tuple[int, ...]) -> torch.Tensor:
+    def generate_inputs(self, input_shape: tuple[int, ...]) -> torch.Tensor:
         """Generates Gaussian noise inputs."""
         return torch.randn(input_shape)
 
-    def run_oracle(self, inputs: torch.Tensor) -> Tuple[torch.Tensor, int]:
+    def run_oracle(self, inputs: torch.Tensor) -> tuple[torch.Tensor, int]:
         """Runs the oracle model and returns the output and peak VRAM."""
         if torch.cuda.is_available():
             torch.cuda.reset_peak_memory_stats()
@@ -103,7 +104,7 @@ class OracleVerifier:
         with torch.no_grad():
             return self.oracle_model(inputs)
 
-    def verify(self, input_shape: Tuple[int, ...]) -> bool:
+    def verify(self, input_shape: tuple[int, ...]) -> bool:
         """Runs the verification pipeline."""
         reset_environment()
         ir = self.parse_to_ir()

@@ -194,6 +194,19 @@ btnConvert.addEventListener('click', async () => {
     btnDownload.textContent = `Download ${finalFileName}`;
     btnDownload.classList.remove('hidden');
     btnDownload.disabled = false;
+
+    // Render basic summary to the graph preview
+    const previewDiv = document.getElementById('graph-preview');
+    if (previewDiv) {
+      if (dst === 'onnx') {
+        const nodeCount = (result as any).nodes?.length || 0;
+        previewDiv.innerHTML = `<strong>ONNX Graph Generated</strong><br>Nodes: ${nodeCount}<br>Ready for download or 3D viewer.`;
+        previewDiv.style.color = '#fff';
+      } else {
+        previewDiv.innerHTML = `<strong>Text Output Generated</strong><br>Lines: ${String(result).split('\\n').length}`;
+        previewDiv.style.color = '#fff';
+      }
+    }
   } catch (err: any) {
     log(`Conversion failed: ${err.message}`, 'error');
   }

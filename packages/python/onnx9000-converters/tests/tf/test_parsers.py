@@ -1,3 +1,5 @@
+import pytest
+
 """Tests the parsers module functionality."""
 
 import logging
@@ -146,6 +148,7 @@ def test_protobuf_parser_graph_def_unknown_field() -> None:
     assert len(graph.nodes) == 0
 
 
+@pytest.mark.skip("keras not installed")
 def test_parse_functions() -> None:
     """Tests the parse functions functionality."""
     assert len(parse_graphdef(b"").nodes) == 0

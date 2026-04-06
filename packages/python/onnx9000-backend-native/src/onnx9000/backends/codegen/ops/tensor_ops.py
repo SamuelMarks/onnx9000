@@ -1215,10 +1215,11 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
         node.attributes["default_int64"].value if "default_int64" in node.attributes else -1
     )
 
+    cases_code = ""
     if len(cats_int64s) > 0 and len(cats_strings) == 0:
         # Int to Int or String to Int. Let's assume Int to Int
         for i, val in enumerate(cats_int64s):
-            pass
+            cases_code += f"                case {i}: {out}.data[i] = {val}; break;\n"
 
     # Simple static switch statements for categorical routing (mock implementation)
     switch_code = f"""
@@ -1226,7 +1227,7 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
         for (size_t i = 0; i < {inp}.size(); ++i) {{
             int64_t in_val = static_cast<int64_t>({inp}.data[i]);
             switch (in_val) {{
-                // Cases will be here if attributes matched
+{cases_code}
                 default: {out}.data[i] = {default_int64}; break;
             }}
         }}

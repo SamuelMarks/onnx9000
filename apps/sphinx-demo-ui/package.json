@@ -34,6 +34,10 @@
     "@onnx9000/coreml": "workspace:^",
     "@onnx9000/iree-compiler": "workspace:^",
     "@onnx9000/optimum": "workspace:^",
+    "@onnx9000/diffusers": "workspace:^",
+    "@onnx9000/tfjs-shim": "workspace:^",
+    "@onnx9000/transformers": "workspace:^",
+    "@onnx9000/webnn-polyfill": "workspace:^",
     "cytoscape": "^3.33.1",
     "monaco-editor": "^0.47.0",
     "pyodide": "^0.26.4"

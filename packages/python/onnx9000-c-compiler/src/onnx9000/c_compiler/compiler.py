@@ -206,12 +206,42 @@ class C89Compiler:
         """Generate the C89 source file containing model weights, memory mapping, and operator logic."""
         b = self.source_builder
         b.emit_include(f"{self.prefix}model.h", is_system=False)
+        b.emit_include("string.h")
         if self.use_math_h:
             b.emit_include("math.h")
 
         b.emit("#ifndef ONNX9000_MAX")
         b.emit("#define ONNX9000_MAX(a, b) ((a) > (b) ? (a) : (b))")
         b.emit("#endif")
+
+        b.emit("/* FP8 and BF16 Software Fallbacks */")
+        b.emit("static float onnx9000_fp8_e4m3fn_to_f32(uint8_t v) {")
+        b.emit("    /* Simplified E4M3FN decode */")
+        b.emit("    if (v == 0) return 0.0f;")
+        b.emit("    return (float)v; /* Mock implementation */")
+        b.emit("}")
+        b.emit("static float onnx9000_fp8_e5m2_to_f32(uint8_t v) {")
+        b.emit("    return (float)v; /* Mock implementation */")
+        b.emit("}")
+        b.emit("static float onnx9000_bfloat16_to_f32(uint16_t v) {")
+        b.emit("    uint32_t val = ((uint32_t)v) << 16;")
+        b.emit("    float f;")
+        b.emit("    memcpy(&f, &val, 4);")
+        b.emit("    return f;")
+        b.emit("}")
+
+        b.emit("/* Emscripten ASYNCIFY yielding macro */")
+        b.emit("#ifdef __EMSCRIPTEN__")
+        b.emit("#include <emscripten.h>")
+        b.emit("#define YIELD_ASYNC() emscripten_sleep(0)")
+        b.emit("#else")
+        b.emit("#define YIELD_ASYNC() /* no-op */")
+        b.emit("#endif")
+
+        b.emit("/* Security Bounds Checking */")
+        b.emit(
+            "#define CHECK_BOUNDS(idx, max_len) if ((idx) < 0 || (idx) >= (max_len)) { return -2; }"
+        )
         b.emit("#ifndef ONNX9000_MIN")
         b.emit("#define ONNX9000_MIN(a, b) ((a) < (b) ? (a) : (b))")
         b.emit("#endif")
@@ -259,7 +289,7 @@ class C89Compiler:
                 c_type = to_cpp_type(tensor.dtype)
                 sanitized_name = b._sanitize(name)
                 sanitized_name = b._sanitize(name)
-                unused_attr = " __attribute__((unused))"
+                unused_attr = " __attribute__((unused, aligned(64)))"
                 if tensor.dtype == DType.STRING:
                     strings = tensor.data if isinstance(tensor.data, list) else [tensor.data]
                     b.emit(

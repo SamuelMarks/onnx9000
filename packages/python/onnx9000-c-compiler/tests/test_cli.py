@@ -169,7 +169,22 @@ def test_cli_with_opt(capsys):
 
     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
     mock_module.parse_onnx_to_ir = lambda x: Graph("test_g")
-    with patch.dict(sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}):
+    mock_opt_module = types.ModuleType("onnx9000.optimizer.simplifier.api")
+    mock_opt_module.simplify = lambda x: x
+    mock_opt = types.ModuleType("onnx9000.optimizer.simplifier")
+    mock_opt.api = mock_opt_module
+    mock_opt_top = types.ModuleType("onnx9000.optimizer")
+    mock_opt_top.simplifier = mock_opt
+
+    with patch.dict(
+        sys.modules,
+        {
+            "onnx9000.converters.frontend.pyodide_wrapper": mock_module,
+            "onnx9000.optimizer.simplifier.api": mock_opt_module,
+            "onnx9000.optimizer.simplifier": mock_opt,
+            "onnx9000.optimizer": mock_opt_top,
+        },
+    ):
         with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--target", "arduino"]):
             with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
                 m_open = MagicMock()

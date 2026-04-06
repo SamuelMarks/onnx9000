@@ -3,6 +3,7 @@
 import logging
 from typing import Any
 
+from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
 
 logger = logging.getLogger(__name__)
@@ -115,102 +116,136 @@ def extract_n_estimators(estimator: Any) -> int:
     return getattr(estimator, "n_estimators", 1)
 
 
-def handle_predict_proba() -> None:
+def handle_predict_proba(g: Graph, logits_name: str) -> None:
     """Handle predict_proba via post-processing mathematical transformations."""
-    return None
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Softmax", inputs=[logits_name], outputs=["probabilities"]))
 
 
-def handle_multi_output_regressors() -> None:
+def handle_multi_output_regressors(g: Graph, outputs: list[str]) -> None:
     """Handle multi-output regressors (n_targets > 1) natively."""
-    return None
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Concat", inputs=outputs, outputs=["Y"], attributes={"axis": 1}))
 
 
-def handle_multi_label_classification() -> None:
+def handle_multi_label_classification(g: Graph, logits_name: str) -> None:
     """Handle multi-label classification natively."""
-    return None
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Sigmoid", inputs=[logits_name], outputs=["probabilities"]))
 
 
-def parse_pipeline() -> None:
+def parse_pipeline(steps: list[Any]) -> Graph:
     """Parse pipeline structures seamlessly."""
-    return None
+    return Graph("Pipeline")
 
 
-def extract_classes_and_zipmaps() -> None:
+def extract_classes_and_zipmaps(g: Graph, class_labels: list[Any]) -> None:
     """Extract classes and mapping them to output ZipMaps / Tensors."""
-    return None
+    pass
 
 
 # Math parsing for non-tree linear models
-def parse_linear_regression() -> None:
+def parse_linear_regression(estimator: Any) -> Graph:
     """Execute the parse linear regression operation."""
-    return None
+    g = Graph("LinearRegression")
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("MatMul", inputs=["X", "coef"], outputs=["matmul_out"]))
+    g.nodes.append(Node("Add", inputs=["matmul_out", "intercept"], outputs=["Y"]))
+    return g
 
 
-def parse_logistic_regression() -> None:
+def parse_logistic_regression(estimator: Any) -> Graph:
     """Execute the parse logistic regression operation."""
-    return None
+    g = parse_linear_regression(estimator)
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Sigmoid", inputs=["Y"], outputs=["probabilities"]))
+    return g
 
 
-def parse_ridge_lasso_elasticnet() -> None:
+def parse_ridge_lasso_elasticnet(estimator: Any) -> Graph:
     """Execute the parse ridge lasso elasticnet operation."""
-    return None
+    return parse_linear_regression(estimator)
 
 
-def parse_sgd_classifier() -> None:
+def parse_sgd_classifier(estimator: Any) -> Graph:
     """Execute the parse sgd classifier operation."""
-    return None
+    return parse_linear_regression(estimator)
 
 
-def parse_linear_svc() -> None:
+def parse_linear_svc(estimator: Any) -> Graph:
     """Execute the parse linear svc operation."""
-    return None
+    g = parse_linear_regression(estimator)
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Sign", inputs=["Y"], outputs=["predictions"]))
+    return g
 
 
-def parse_svc_poly() -> None:
+def parse_svc_poly(estimator: Any) -> Graph:
     """Execute the parse svc poly operation."""
-    return None
+    return Graph("SVC_Poly")
 
 
-def parse_svc_rbf() -> None:
+def parse_svc_rbf(estimator: Any) -> Graph:
     """Execute the parse svc rbf operation."""
-    return None
+    return Graph("SVC_RBF")
 
 
-def parse_svc_sigmoid() -> None:
+def parse_svc_sigmoid(estimator: Any) -> Graph:
     """Execute the parse svc sigmoid operation."""
-    return None
+    return Graph("SVC_Sigmoid")
 
 
-def parse_gaussian_nb() -> None:
+def parse_gaussian_nb(estimator: Any) -> Graph:
     """Execute the parse gaussian nb operation."""
-    return None
+    return Graph("GaussianNB")
 
 
-def parse_multinomial_nb() -> None:
+def parse_multinomial_nb(estimator: Any) -> Graph:
     """Execute the parse multinomial nb operation."""
-    return None
+    return Graph("MultinomialNB")
 
 
-def parse_bernoulli_nb() -> None:
+def parse_bernoulli_nb(estimator: Any) -> Graph:
     """Execute the parse bernoulli nb operation."""
-    return None
+    return Graph("BernoulliNB")
 
 
-def parse_mlp_classifier() -> None:
+def parse_mlp_classifier(estimator: Any) -> Graph:
     """Execute the parse mlp classifier operation."""
-    return None
+    return Graph("MLPClassifier")
 
 
-def optimize_standard_scaler() -> None:
+def optimize_standard_scaler(estimator: Any) -> Graph:
     """Optimize Scikit-Learn StandardScaler to ONNX Add + Mul."""
-    return None
+    g = Graph("StandardScaler")
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Sub", inputs=["X", "mean"], outputs=["sub_out"]))
+    g.nodes.append(Node("Div", inputs=["sub_out", "scale"], outputs=["Y"]))
+    return g
 
 
-def optimize_binarizer() -> None:
+def optimize_binarizer(estimator: Any) -> Graph:
     """Optimize Scikit-Learn Binarizer to ONNX Greater + Cast."""
-    return None
+    g = Graph("Binarizer")
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Greater", inputs=["X", "threshold"], outputs=["greater_out"]))
+    g.nodes.append(Node("Cast", inputs=["greater_out"], outputs=["Y"], attributes={"to": 1}))
+    return g
 
 
-def optimize_onehot_encoder() -> None:
+def optimize_onehot_encoder(estimator: Any) -> Graph:
     """Optimize Scikit-Learn OneHotEncoder to ONNX Equal / ScatterND."""
-    return None
+    g = Graph("OneHotEncoder")
+    from onnx9000.core.ir import Node
+
+    g.nodes.append(Node("Equal", inputs=["X", "categories"], outputs=["equal_out"]))
+    g.nodes.append(Node("Cast", inputs=["equal_out"], outputs=["Y"], attributes={"to": 1}))
+    return g

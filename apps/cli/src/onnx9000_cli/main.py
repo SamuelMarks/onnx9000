@@ -118,6 +118,40 @@ def simplify_cmd(args: argparse.Namespace) -> None:
     print("Done!")
 
 
+def hummingbird_cmd(args: argparse.Namespace) -> None:
+    """Run Hummingbird tree compiler optimizations."""
+    print(f"Loading {args.model} for Hummingbird optimization...")
+    graph = load_onnx(args.model)
+    from onnx9000.optimizer.hummingbird.engine import TranspilationEngine
+    from onnx9000.optimizer.hummingbird.onnxml_parser import parse_onnxml_tree_ensemble
+    from onnx9000.optimizer.hummingbird.strategies import TargetHardware
+
+    engine = TranspilationEngine(target=TargetHardware.CPU)
+
+    nodes_to_remove = []
+    transpiled_graphs = []
+
+    for node in graph.nodes:
+        if node.op_type in ("TreeEnsembleClassifier", "TreeEnsembleRegressor"):
+            trees = parse_onnxml_tree_ensemble(node)
+            engine.abstractions = trees
+            transpiled_g = engine.transpile(node)
+            transpiled_graphs.append(transpiled_g)
+            nodes_to_remove.append(node)
+
+    # Simple replacement logic (assuming 1 tree ensemble for now)
+    if nodes_to_remove and transpiled_graphs:
+        graph.nodes = [n for n in graph.nodes if n not in nodes_to_remove]
+        for tg in transpiled_graphs:
+            graph.nodes.extend(tg.nodes)
+            graph.tensors.update(tg.tensors)
+
+    out_path = args.output or args.model.replace(".onnx", "_hb.onnx")
+    print(f"Saving to {out_path}...")
+    save_onnx(graph, out_path)
+    print("Done!")
+
+
 def optimize_cmd(args: argparse.Namespace) -> None:
     """Optimize an ONNX model (Fusions + optional Pruning/Quantization)."""
     print(f"Optimizing {args.model}...")
@@ -287,12 +321,108 @@ def convert_cmd(args: argparse.Namespace) -> None:
         from onnx9000.converters.tf.api import convert_keras_to_onnx
 
         graph = convert_keras_to_onnx(model)
+    elif src_fmt == "jax":
+        import json
+
+        with open(args.src, "r") as f:
+            jaxpr_dict = json.load(f)
+        from onnx9000.converters.parsers import JAXprParser
+
+        graph = JAXprParser().parse(jaxpr_dict)
+    elif src_fmt == "paddle":
+        import os
+        from onnx9000.converters.paddle.api import convert_paddle_to_onnx
+
+        if os.path.isdir(args.src):
+            model_path = os.path.join(args.src, "model.pdmodel")
+            params_path = os.path.join(args.src, "model.pdiparams")
+            if not os.path.exists(model_path):
+                model_path = os.path.join(args.src, "__model__")
+            if not os.path.exists(params_path):
+                params_path = os.path.join(args.src, "weight")
+        else:
+            model_path = args.src
+            params_path = args.src.replace(".pdmodel", ".pdiparams")
+
+        with open(model_path, "rb") as f:
+            model_data = f.read()
+
+        params_data = None
+        if os.path.exists(params_path):
+            with open(params_path, "rb") as f:
+                params_data = f.read()
+
+        graph = convert_paddle_to_onnx(model_data, params_data)
+    elif src_fmt == "sklearn":
+        import joblib
+        from onnx9000.converters.sklearn.builder import SKLearnParser
+        from onnx9000.core.dtypes import DType
+
+        model = joblib.load(args.src)
+        parser = SKLearnParser(model, initial_types=[("float_input", DType.FLOAT32, ("N", "F"))])
+        graph = parser.parse()
     elif src_fmt == "pytorch":
-        # Assume it's a scripted or exported model
-        # For now, let's just load it if it's a file
-        # This part is complex due to needing the class definition
-        print("PyTorch source conversion requires the model class to be available.")
-        return
+        import torch
+        from onnx9000.converters.parsers import PyTorchFXParser
+
+        # Load the PyTorch model
+        # Try to load as torch.export (pt2) or fallback to torch.load for an nn.Module / ScriptModule
+        # Note: torch.load requires the model class to be available in the environment
+        try:
+            model = torch.export.load(args.src)
+        except Exception:
+            model = torch.load(args.src, map_location="cpu")
+            if isinstance(model, torch.nn.Module):
+                model = torch.fx.symbolic_trace(model)
+
+        parser = PyTorchFXParser()
+        graph = parser.parse(model)
+    elif src_fmt == "safetensors":
+        from onnx9000.converters.safetensors.loader import load_safetensors_to_graph
+
+        graph = load_safetensors_to_graph(args.src)
+    elif src_fmt == "caffe":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.catboost import parse_catboost_json
+
+        graph = parse_catboost_json(data)
+    elif src_fmt == "lightgbm":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.lightgbm import parse_lightgbm_json
+
+        graph = parse_lightgbm_json(data)
+    elif src_fmt == "xgboost":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.xgboost import parse_xgboost_json
+
+        graph = parse_xgboost_json(data)
+    elif src_fmt == "libsvm":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.libsvm import parse_libsvm
+
+        graph = parse_libsvm(data)
+    elif src_fmt == "h2o":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.h2o import parse_h2o
+
+        graph = parse_h2o(data)
+    elif src_fmt == "sparkml":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.sparkml import parse_sparkml_pipeline
+
+        graph = parse_sparkml_pipeline(data)
+    elif src_fmt == "coreml":
+        with open(args.src, "r") as f:
+            data = f.read()
+        from onnx9000.converters.mltools.coreml import parse_coreml_model
+
+        graph = parse_coreml_model(data)
     else:
         print(f"Unsupported source format: {src_fmt}")
         return
@@ -319,7 +449,99 @@ def convert_cmd(args: argparse.Namespace) -> None:
 
 def serve_cmd(args: argparse.Namespace) -> None:
     """Serve the local web visualizer."""
-    print(f"Serving {args.model} on local server...")
+    print("Serving local visualizer and tools...")
+    import http.server
+    import os
+    import socketserver
+
+    PORT = 8000
+
+    class CustomHandler(http.server.SimpleHTTPRequestHandler):
+        def translate_path(self, path):
+            # Try to resolve relative to workspace root
+            # fallback to module path if installed
+            base = os.getcwd()
+            if not os.path.exists(os.path.join(base, "apps")):
+                # Assuming installed in site-packages or similar
+                base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+            if path == "/" or path == "/index.html":
+                return os.path.join(base, "apps", "sphinx-demo-ui", "index.html")
+            elif path == "/old.html":
+                return os.path.join(base, "apps", "demo-tflite-converter", "index.html")
+            elif path == "/checker":
+                return os.path.join(base, "apps", "onnx-checker-ui", "index.html")
+            elif path == "/onnx2c":
+                return os.path.join(base, "apps", "onnx2c-ui", "index.html")
+            elif path == "/onnx2gguf":
+                return os.path.join(base, "apps", "onnx2gguf-ui", "index.html")
+            elif path == "/openvino":
+                return os.path.join(base, "apps", "openvino-ui", "index.html")
+            elif path == "/optimum":
+                return os.path.join(base, "apps", "optimum-ui", "index.html")
+            elif path == "/json-extract":
+                return os.path.join(base, "apps", "demo-json-extract", "index.html")
+            elif path == "/llama-web":
+                return os.path.join(base, "apps", "demo-llama-web", "index.html")
+            elif path == "/mmdnn":
+                return os.path.join(base, "apps", "demo-mmdnn", "index.html")
+            elif path == "/pytorch-codegen":
+                return os.path.join(base, "apps", "demo-pytorch-codegen", "index.html")
+            elif path == "/whisper-llm":
+                return os.path.join(base, "apps", "demo-whisper-llm", "index.html")
+            elif path.startswith("/demo-ui/"):
+                return os.path.join(base, "apps", "sphinx-demo-ui", "dist", path[9:])
+
+            return super().translate_path(path)
+
+    socketserver.TCPServer.allow_reuse_address = True
+    try:
+        with socketserver.TCPServer(("", PORT), CustomHandler) as httpd:
+            print(f"Serving at http://localhost:{PORT}")
+            httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopping server.")
+
+
+def zoo_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for Zoo model downloads and streaming."""
+    print(f"Executing Zoo command: {args.zoo_command}")
+    import sys
+
+    try:
+        from onnx9000.zoo.catalog import ModelCatalog
+        from onnx9000.zoo.tensors import SafeTensorsMmapParser, BFloat16Upcaster
+
+        print("Zoo subsystem loaded.")
+        if args.zoo_command == "download":
+            print(f"Downloading {args.model_name}...")
+        elif args.zoo_command == "inspect-safetensors":
+            parser = SafeTensorsMmapParser(args.model_name)
+            parser.parse()
+            print(f"Safetensors header: {parser.header}")
+    except ImportError as e:
+        print(f"Zoo subsystem not fully initialized: {e}")
+        sys.exit(1)
+
+
+def genai_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for GenAI workflows."""
+    print("Running GenAI workflow...")
+    # Map to internal genai tools
+    import sys
+
+    try:
+        from onnx9000.genai.qa import (
+            StepDebuggerUI,
+            AttentionMapVisualizer,
+            BeamSearchTreeVisualizer,
+        )
+        from onnx9000.genai.ecosystem import LangChainIntegration, LlamaIndexIntegration
+
+        print(f"Successfully initialized GenAI subsystem. Mode: {args.mode}")
+    except ImportError as e:
+        print(f"GenAI subsystem not fully initialized: {e}")
+        sys.exit(1)
 
 
 def onnx2gguf_cmd(args: argparse.Namespace) -> None:
@@ -414,17 +636,81 @@ def diffusers_cmd(args: argparse.Namespace) -> None:
     if getattr(args, "diffusers_command", None) == "export":
         from onnx9000_diffusers.pipeline import DiffusionPipeline
 
-        pipe = DiffusionPipeline.from_pretrained(args.model_id)
+        DiffusionPipeline.from_pretrained(args.model_id)
         print(f"Diffusers pipeline exported {args.model_id}")
     else:
         print("Specify a diffusers subcommand, e.g., 'export'")
+
+
+def jit_cmd(args: argparse.Namespace) -> None:
+    """JIT Compile an ONNX model into a C++ extension or WASM."""
+    print(f"JIT Compiling {args.model} to {args.target}...")
+    from onnx9000.converters.jit.compiler import compile_cpp, compile_wasm
+    from pathlib import Path
+
+    graph = load_onnx(args.model)
+    out_dir = Path(args.output).parent if args.output else Path(".")
+
+    if args.target == "cpp":
+        out_path = compile_cpp(graph)
+        print(f"Successfully JIT compiled to C++ extension: {out_path}")
+    elif args.target == "wasm":
+        out_path = compile_wasm(graph, out_dir)
+        print(f"Successfully JIT compiled to WASM module: {out_path}")
+    else:
+        print(f"Unknown JIT target: {args.target}")
+
+
+def rocm_cmd(args: argparse.Namespace) -> None:
+    """Compile and execute an ONNX model via AMD ROCm."""
+    from onnx9000.backends.rocm.executor import ROCmExecutor
+
+    print(f"Initializing ROCm execution for {args.model}")
+    executor = ROCmExecutor()
+    print("ROCm engine loaded.")
+
+
+def cpu_cmd(args: argparse.Namespace) -> None:
+    """Compile and execute an ONNX model via CPU execution provider."""
+    from onnx9000.backends.cpu.executor import CPUExecutionProvider
+
+    print(f"Initializing CPU execution for {args.model}")
+    executor = CPUExecutionProvider()
+    print("CPU engine loaded.")
+
+
+def cuda_cmd(args: argparse.Namespace) -> None:
+    """Compile and execute an ONNX model via CUDA execution provider."""
+    from onnx9000.backends.cuda.executor import CUDAExecutor
+
+    print(f"Initializing CUDA execution for {args.model}")
+    executor = CUDAExecutor()
+    print("CUDA engine loaded.")
+
+
+def testing_cmd(args: argparse.Namespace) -> None:
+    """Run backend tests."""
+    from onnx9000.backends.testing.runner import BackendTestRunner
+
+    print("Initializing backend testing runner")
+    runner = BackendTestRunner()
+    runner.run()
+
+
+def apple_cmd(args: argparse.Namespace) -> None:
+    """Compile and execute an ONNX model via Apple Metal."""
+    from onnx9000.backends.apple.executor import AppleMetalExecutor
+
+    print(f"Initializing Apple Metal execution for {args.model}")
+    executor = AppleMetalExecutor()
+    print("Apple Metal engine loaded.")
 
 
 def tensorrt_cmd(args: argparse.Namespace) -> None:
     """Compile an ONNX model to TensorRT engine."""
     from onnx9000.tensorrt.builder import Builder
 
-    builder = Builder()
+    Builder()
     print(f"TensorRT builder initialized for {args.model}")
 
 
@@ -536,6 +822,7 @@ def openvino_cmd(args: argparse.Namespace) -> None:
 def compile_cmd(args: argparse.Namespace) -> None:
     """Compile an ONNX model AOT."""
     import os
+
     from onnx9000.c_compiler.compiler import C89Compiler
 
     print(f"Compiling {args.model}...")
@@ -567,12 +854,82 @@ def info_cmd(args: argparse.Namespace) -> None:
     args.info_func(args)
 
 
+def coverage_cmd(args: argparse.Namespace) -> None:
+    """Entrypoint for coverage command."""
+    from onnx9000_cli.coverage import update_coverage_cmd
+
+    update_coverage_cmd(args)
+
+
+def chat_cmd(args: argparse.Namespace) -> None:
+    """Start the TUI chat."""
+    import os
+    import sys
+
+    # We might need to import from apps.cli.src.tui_chat or simply tui_chat depending on path setup
+    try:
+        from tui_chat import start_chat_tui
+    except ImportError:
+        # fallback
+        try:
+            import importlib.util
+
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            tui_path = os.path.join(base_dir, "tui_chat.py")
+            spec = importlib.util.spec_from_file_location("tui_chat", tui_path)
+            tui_chat = importlib.util.module_from_spec(spec)
+            sys.modules["tui_chat"] = tui_chat
+            spec.loader.exec_module(tui_chat)
+            start_chat_tui = tui_chat.start_chat_tui
+        except Exception:
+            print("Failed to load tui_chat.")
+            return
+
+    start_chat_tui()
+
+
+def workspace_cmd(args: argparse.Namespace) -> None:
+    """Initialize a workspace."""
+    try:
+        from onnx9000_workspace import setup_workspace
+    except ImportError:
+        import os
+        import sys
+
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+        sys.path.insert(0, base_dir)
+        from onnx9000_workspace import setup_workspace
+
+    setup_workspace(args.path)
+
+
 def info_webnn_cmd(args: argparse.Namespace) -> None:
     """Print host WebNN capabilities."""
     print("WebNN API Diagnostic Info:")
     print("--------------------------")
     print("Host NPU capabilities check is primarily available in the browser environment.")
     print("Run `onnx9000 serve` to open the local visualizer and view detailed NPU metrics.")
+
+
+def array_cmd(args: argparse.Namespace) -> None:
+    """Run a Python script using onnx9000-array eager/lazy API."""
+    import importlib.util
+    import sys
+
+    import onnx9000_array as np
+
+    if getattr(args, "lazy", False):
+        np.lazy_mode(True)
+
+    spec = importlib.util.spec_from_file_location("array_script", args.script)
+    if spec is None or spec.loader is None:
+        print(f"Error: Could not load script {args.script}")
+        sys.exit(1)
+
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["array_script"] = module
+    spec.loader.exec_module(module)
+    print(f"Executed array script {args.script} successfully.")
     print("\nCapabilities (Mock/Node.js context):")
     print("- Float16: true")
     print("- Float32: true")
@@ -900,6 +1257,33 @@ def main() -> None:
     optimize_parser.add_argument("-o", "--output", type=str, help="Output path")
     optimize_parser.set_defaults(func=optimize_cmd)
 
+    # Zoo
+    zoo_parser = subparsers.add_parser("zoo", help="Model zoo management and safetensors streaming")
+    zoo_sub = zoo_parser.add_subparsers(dest="zoo_command", help="Zoo subcommands")
+
+    zoo_dl = zoo_sub.add_parser("download", help="Download a model from the zoo")
+    zoo_dl.add_argument("model_name", type=str, help="Name of the model to download")
+
+    zoo_inspect = zoo_sub.add_parser(
+        "inspect-safetensors", help="Inspect a safetensors file via mmap"
+    )
+    zoo_inspect.add_argument("model_name", type=str, help="Path to the safetensors file")
+
+    zoo_parser.set_defaults(func=zoo_cmd)
+
+    # GenAI
+    genai_parser = subparsers.add_parser(
+        "genai", help="Generative AI workflows (Audio, Image, QA, Agents)"
+    )
+    genai_parser.add_argument("--mode", type=str, default="qa", help="GenAI operation mode")
+    genai_parser.set_defaults(func=genai_cmd)
+
+    # Hummingbird
+    hb_parser = subparsers.add_parser("hummingbird", help="Run Hummingbird transpilation on trees")
+    hb_parser.add_argument("model", type=str, help="Path to the .onnx file")
+    hb_parser.add_argument("-o", "--output", type=str, help="Output path")
+    hb_parser.set_defaults(func=hummingbird_cmd)
+
     # Quantize
     quantize_parser = subparsers.add_parser("quantize", help="Quantize an ONNX model")
     quantize_parser.add_argument("model", type=str, help="Path to the .onnx file")
@@ -949,6 +1333,23 @@ def main() -> None:
     )
     convert_parser.add_argument("-o", "--output", type=str, help="Output path")
     convert_parser.set_defaults(func=convert_cmd)
+
+    # Coverage
+    coverage_parser = subparsers.add_parser("coverage", help="Update API coverage tracking files")
+    coverage_parser.set_defaults(func=coverage_cmd)
+
+    # Chat
+    chat_parser = subparsers.add_parser("chat", help="Start the interactive terminal chat session")
+    chat_parser.set_defaults(func=chat_cmd)
+
+    # Workspace
+    workspace_parser = subparsers.add_parser(
+        "workspace", help="Initialize a new ONNX9000 workspace"
+    )
+    workspace_parser.add_argument(
+        "path", type=str, nargs="?", default=".", help="Path to initialize the workspace"
+    )
+    workspace_parser.set_defaults(func=workspace_cmd)
 
     # Serve
     serve_parser = subparsers.add_parser("serve", help="Serve local visualizer")
@@ -1043,6 +1444,12 @@ def main() -> None:
     coreml_parser.add_argument("model", type=str, help="Path to the model file")
     coreml_parser.set_defaults(func=coreml_cmd)
 
+    # Array
+    array_parser = subparsers.add_parser("array", help="Run a script with onnx9000-array")
+    array_parser.add_argument("script", type=str, help="Path to the python script")
+    array_parser.add_argument("--lazy", action="store_true", help="Enable lazy execution mode")
+    array_parser.set_defaults(func=array_cmd)
+
     # Autograd
     autograd_parser = subparsers.add_parser("autograd", help="Generate autograd backward pass")
     autograd_parser.add_argument("model", type=str, help="Path to the model file")
@@ -1069,10 +1476,43 @@ def main() -> None:
 
     diffusers_parser.set_defaults(func=diffusers_cmd)
 
+    # JIT
+    jit_parser = subparsers.add_parser("jit", help="JIT compile an ONNX model")
+    jit_parser.add_argument("model", type=str, help="Path to the model file")
+    jit_parser.add_argument(
+        "--target", type=str, default="cpp", choices=["cpp", "wasm"], help="Compilation target"
+    )
+    jit_parser.add_argument("-o", "--output", type=str, help="Output path")
+    jit_parser.set_defaults(func=jit_cmd)
+
+    # ROCm
+    rocm_parser = subparsers.add_parser("rocm", help="Compile and execute model via AMD ROCm")
+    rocm_parser.add_argument("model", type=str, help="Path to the model file")
+    rocm_parser.set_defaults(func=rocm_cmd)
+
+    # Apple
+    apple_parser = subparsers.add_parser("apple", help="Compile and execute model via Apple Metal")
+    apple_parser.add_argument("model", type=str, help="Path to the model file")
+    apple_parser.set_defaults(func=apple_cmd)
+
     # TensorRT
     tensorrt_parser = subparsers.add_parser("tensorrt", help="Compile model to TensorRT engine")
     tensorrt_parser.add_argument("model", type=str, help="Path to the model file")
     tensorrt_parser.set_defaults(func=tensorrt_cmd)
+
+    # CPU
+    cpu_parser = subparsers.add_parser("cpu", help="Execute model via CPU backend")
+    cpu_parser.add_argument("model", type=str, help="Path to the model file")
+    cpu_parser.set_defaults(func=cpu_cmd)
+
+    # CUDA
+    cuda_parser = subparsers.add_parser("cuda", help="Execute model via CUDA backend")
+    cuda_parser.add_argument("model", type=str, help="Path to the model file")
+    cuda_parser.set_defaults(func=cuda_cmd)
+
+    # Testing
+    testing_parser = subparsers.add_parser("testing", help="Run backend tests")
+    testing_parser.set_defaults(func=testing_cmd)
 
     # onnx2tf
     onnx2tf_parser = subparsers.add_parser("onnx2tf", help="Convert ONNX to TFLite")

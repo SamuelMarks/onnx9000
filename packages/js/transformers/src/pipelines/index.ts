@@ -191,8 +191,16 @@ export class ObjectDetectionPipeline extends Pipeline {
     this.denormalizeBbox();
     return { boxes: [[0, 0, 10, 10]], scores: [0.99], threshold, labels: ['object'] };
   }
-  wasmNMS() {}
-  denormalizeBbox() {}
+  wasmNMS() {
+    // Stub implementation to be filled with WebAssembly NMS integration
+    return [];
+  }
+  denormalizeBbox(boxes?: any[]) {
+    if (!boxes) return;
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = 0; j < boxes[i].length; j++) boxes[i][j] *= 255;
+    }
+  }
 }
 
 export class ZeroShotImageClassificationPipeline extends Pipeline {

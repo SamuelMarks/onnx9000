@@ -61,14 +61,18 @@ export interface Environment {
   set(key: string, value: string | number | boolean): void;
 }
 
+const _envVars: Record<string, string | number | boolean> = {};
+
 /**
  * Returns the environment configuration object.
  * @returns The environment object.
  */
 export function env(): Environment {
   return {
-    get: (key: string) => null,
-    set: (key: string, value: string | number | boolean) => {},
+    get: (key: string) => (key in _envVars ? _envVars[key]! : null),
+    set: (key: string, value: string | number | boolean) => {
+      _envVars[key] = value;
+    },
   };
 }
 
@@ -161,6 +165,9 @@ export class Tensor {
   dtype: DataType;
   /** The underlying data array. */
   dataArray: (number | string | boolean)[];
+  get nData(): number[] {
+    return this.dataArray as number[];
+  }
   /** Whether the tensor has been disposed. */
   isDisposed: boolean = false;
   /** The rank (number of dimensions) of the tensor. */
@@ -547,8 +554,8 @@ function makeElementwise(name: string, op: (a: number, b: number) => number) {
     const len = Math.max(aTensor.size, bTensor.size);
     const newData = new Array(len);
     for (let i = 0; i < len; i++) {
-      const valA = aTensor.dataArray[i % aTensor.size] as number;
-      const valB = bTensor.dataArray[i % bTensor.size] as number;
+      const valA = aTensor.nData[i % aTensor.size] as number;
+      const valB = bTensor.nData[i % bTensor.size] as number;
       newData[i] = op(valA, valB);
     }
     const outShape = aTensor.size >= bTensor.size ? aTensor.shape.slice() : bTensor.shape.slice();
@@ -566,7 +573,7 @@ function makeUnary(name: string, op: (a: number) => number) {
   return (a: Tensor): Tensor => {
     const newData = new Array(a.size);
     for (let i = 0; i < a.size; i++) {
-      newData[i] = op(a.dataArray[i] as number);
+      newData[i] = op(a.nData[i] as number);
     }
     return new Tensor(a.shape, a.dtype, newData);
   };
@@ -577,7 +584,7 @@ function makeBinary(name: string, op: (a: number, b: number) => number) {
     const size = Math.max(a.size, b.size);
     const newData = new Array(size);
     for (let i = 0; i < size; i++) {
-      newData[i] = op((a.dataArray[i] || 0) as number, (b.dataArray[i] || 0) as number);
+      newData[i] = op((a.nData[i] || 0) as number, (b.nData[i] || 0) as number);
     }
     return new Tensor(a.shape, a.dtype, newData);
   };
@@ -711,7 +718,7 @@ export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = fa
       for (let k = 0; k < colsA; k++) {
         const idxA = transposeA ? k * rowsA + i : i * colsA + k;
         const idxB = transposeB ? j * rowsB + k : k * colsB + j;
-        sum += (a.dataArray[idxA] as number) * (b.dataArray[idxB] as number);
+        sum += (a.nData[idxA] as number) * (b.nData[idxB] as number);
       }
       newData[i * colsB + j] = sum;
     }
@@ -753,11 +760,11 @@ export function norm(
 ): Tensor {
   let val = 0;
   if (ord === 'euclidean' || ord === 2) {
-    val = Math.sqrt(x.dataArray.reduce((acc, v) => acc + (v as number) * (v as number), 0));
+    val = Math.sqrt(x.nData.reduce((acc, v) => acc + (v as number) * (v as number), 0));
   } else if (ord === 1) {
-    val = x.dataArray.reduce((acc, v) => acc + Math.abs(v as number), 0);
+    val = x.nData.reduce((acc, v) => acc + Math.abs(v as number), 0);
   } else if (ord === Infinity || ord === 'inf') {
-    val = Math.max(...x.dataArray.map((v) => Math.abs(v as number)));
+    val = Math.max(...x.nData.map((v) => Math.abs(v as number)));
   }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [val]);
 }
@@ -807,7 +814,7 @@ export function conv1d(
                   ? (b * inWidth + iw) * inChannels + ic
                   : (b * inChannels + ic) * inWidth + iw;
               const fIdx = (fw * inFilters + ic) * outFilters + oc;
-              sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
+              sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
             }
           }
         }
@@ -883,7 +890,7 @@ export function conv2d(
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
                   const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * outFilters + oc;
-                  sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
+                  sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
                 }
               }
             }
@@ -983,7 +990,7 @@ export function conv3d(
                         (((fd * filterHeight + fh) * filterWidth + fw) * inFilters + ic) *
                           outFilters +
                         oc;
-                      sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
+                      sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
                     }
                   }
                 }
@@ -1069,7 +1076,7 @@ export function depthwiseConv2d(
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
                   const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * channelMultiplier + cm;
-                  sum += (x.dataArray[inIdx] as number) * (filter.dataArray[fIdx] as number);
+                  sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
                 }
               }
             }
@@ -1155,7 +1162,7 @@ export function conv2dTranspose(
     for (let ih = 0; ih < inHeight; ih++) {
       for (let iw = 0; iw < inWidth; iw++) {
         for (let ic = 0; ic < inFilters; ic++) {
-          const val = x.dataArray[((b * inHeight + ih) * inWidth + iw) * inFilters + ic] as number;
+          const val = x.nData[((b * inHeight + ih) * inWidth + iw) * inFilters + ic] as number;
           for (let fh = 0; fh < filterHeight; fh++) {
             for (let fw = 0; fw < filterWidth; fw++) {
               const oh = ih * strideY - topPad + fh;
@@ -1164,7 +1171,7 @@ export function conv2dTranspose(
                 for (let oc = 0; oc < outFilters; oc++) {
                   const fIdx = ((fh * filterWidth + fw) * outFilters + oc) * inFilters + ic;
                   outData[((b * outHeight + oh) * outWidth + ow) * outFilters + oc] +=
-                    val * (filter.dataArray[fIdx] as number);
+                    val * (filter.nData[fIdx] as number);
                 }
               }
             }
@@ -1220,7 +1227,7 @@ export function conv3dTranspose(
       for (let ih = 0; ih < inHeight; ih++) {
         for (let iw = 0; iw < inWidth; iw++) {
           for (let ic = 0; ic < inFilters; ic++) {
-            const val = x.dataArray[
+            const val = x.nData[
               (((b * inDepth + id) * inHeight + ih) * inWidth + iw) * inFilters + ic
             ] as number;
             for (let fd = 0; fd < filterDepth; fd++) {
@@ -1244,7 +1251,7 @@ export function conv3dTranspose(
                         ic;
                       outData[
                         (((b * outDepth + od) * outHeight + oh) * outWidth + ow) * outFilters + oc
-                      ] += val * (filter.dataArray[fIdx] as number);
+                      ] += val * (filter.nData[fIdx] as number);
                     }
                   }
                 }
@@ -1269,8 +1276,8 @@ export function argMax(x: Tensor, axis: number = 0): Tensor {
   let maxVal = -Infinity;
   let maxIdx = -1;
   for (let i = 0; i < x.size; i++) {
-    if (x.dataArray[i] > maxVal) {
-      maxVal = x.dataArray[i];
+    if (x.nData[i] > maxVal) {
+      maxVal = x.nData[i];
       maxIdx = i;
     }
   }
@@ -1287,8 +1294,8 @@ export function argMin(x: Tensor, axis: number = 0): Tensor {
   let minVal = Infinity;
   let minIdx = -1;
   for (let i = 0; i < x.size; i++) {
-    if (x.dataArray[i] < minVal) {
-      minVal = x.dataArray[i];
+    if (x.nData[i] < minVal) {
+      minVal = x.nData[i];
       minIdx = i;
     }
   }
@@ -1303,9 +1310,9 @@ export function argMin(x: Tensor, axis: number = 0): Tensor {
  */
 export function min(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.min(...x.dataArray)]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.min(...x.nData)]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.min(...x.dataArray)]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.min(...x.nData)]);
 }
 
 /**
@@ -1317,9 +1324,9 @@ export function min(x: Tensor, axis?: number | number[], keepDims = false): Tens
  */
 export function max(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.max(...x.dataArray)]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.max(...x.nData)]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.max(...x.dataArray)]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.max(...x.nData)]);
 }
 
 /**
@@ -1330,7 +1337,7 @@ export function max(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @returns Tensor of mean values.
  */
 export function mean(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
-  const sum = x.dataArray.reduce((a, b) => a + b, 0);
+  const sum = x.nData.reduce((a, b) => a + b, 0);
   const m = sum / x.size;
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [m]);
@@ -1346,7 +1353,7 @@ export function mean(x: Tensor, axis?: number | number[], keepDims = false): Ten
  * @returns Tensor of products.
  */
 export function prod(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
-  const p = x.dataArray.reduce((a, b) => a * b, 1);
+  const p = x.nData.reduce((a, b) => a * b, 1);
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [p]);
   }
@@ -1361,7 +1368,7 @@ export function prod(x: Tensor, axis?: number | number[], keepDims = false): Ten
  * @returns Tensor of sums.
  */
 export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
-  const s = x.dataArray.reduce((a, b) => a + b, 0);
+  const s = x.nData.reduce((a, b) => a + b, 0);
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [s]);
   }
@@ -1406,8 +1413,8 @@ export function any(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @returns Tensor of log-sum-exp values.
  */
 export function logSumExp(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
-  const max = Math.max(...x.dataArray);
-  const sum = x.dataArray.reduce((a, b) => a + Math.exp(b - max), 0);
+  const max = Math.max(...x.nData);
+  const sum = x.nData.reduce((a, b) => a + Math.exp(b - max), 0);
   const res = max + Math.log(sum);
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [res]);
@@ -1519,7 +1526,7 @@ export function maxPool3d(
                   const iw = ow * strideW - topPadW + fw;
                   if (id >= 0 && id < inD && ih >= 0 && ih < inH && iw >= 0 && iw < inW) {
                     const inIdx = (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
-                    val = Math.max(val, x.dataArray[inIdx]);
+                    val = Math.max(val, x.nData[inIdx]);
                   }
                 }
               }
@@ -1603,7 +1610,7 @@ export function avgPool3d(
                   const iw = ow * strideW - topPadW + fw;
                   if (id >= 0 && id < inD && ih >= 0 && ih < inH && iw >= 0 && iw < inW) {
                     const inIdx = (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
-                    val += x.dataArray[inIdx];
+                    val += x.nData[inIdx];
                     count++;
                   }
                 }
@@ -1680,7 +1687,7 @@ export function pool(
               const iw = ow * strideX - leftPad + fw;
               if (ih >= 0 && ih < inHeight && iw >= 0 && iw < inWidth) {
                 const inIdx = ((b * inHeight + ih) * inWidth + iw) * inChannels + c;
-                const v = input.dataArray[inIdx];
+                const v = input.nData[inIdx];
                 if (poolingType === 'max') val = Math.max(val, v);
                 else {
                   val += v;
@@ -1914,9 +1921,9 @@ export function gather(x: Tensor, indices: Tensor, axis: number = 0): Tensor {
   const elementsPerItem = x.size / x.shape[0];
   const data = [];
   for (let i = 0; i < indices.size; i++) {
-    const idx = indices.dataArray[i];
+    const idx = indices.nData[i];
     for (let j = 0; j < elementsPerItem; j++) {
-      data.push(x.dataArray[idx * elementsPerItem + j]);
+      data.push(x.nData[idx * elementsPerItem + j]);
     }
   }
   return new Tensor([indices.size, ...x.shape.slice(1)], x.dtype, data);
@@ -1933,7 +1940,7 @@ export function gatherND(x: Tensor, indices: Tensor): Tensor {
   const data = [];
   for (let i = 0; i < numItems; i++) {
     // simplified 1D lookup
-    data.push(x.dataArray[indices.dataArray[i * idxLength]]);
+    data.push(x.nData[indices.nData[i * idxLength]]);
   }
   return new Tensor([numItems], x.dtype, data);
 }
@@ -1948,8 +1955,8 @@ export function scatterND(indices: Tensor, updates: Tensor, shape: number[]): Te
   const data = new Array(shape.reduce((a, b) => a * b, 1)).fill(0);
   const numUpdates = indices.shape[0];
   for (let i = 0; i < numUpdates; i++) {
-    const idx = indices.dataArray[i * (indices.shape[1] || 1)];
-    data[idx] += updates.dataArray[i];
+    const idx = indices.nData[i * (indices.shape[1] || 1)];
+    data[idx] += updates.nData[i];
   }
   return new Tensor(shape, updates.dtype, data);
 }
@@ -1964,8 +1971,8 @@ export function tensorScatterUpdate(tensor: Tensor, indices: Tensor, updates: Te
   const data = tensor.dataArray.slice();
   const numUpdates = indices.shape[0];
   for (let i = 0; i < numUpdates; i++) {
-    const idx = indices.dataArray[i * (indices.shape[1] || 1)];
-    data[idx] = updates.dataArray[i];
+    const idx = indices.nData[i * (indices.shape[1] || 1)];
+    data[idx] = updates.nData[i];
   }
   return new Tensor(tensor.shape, tensor.dtype, data);
 }
@@ -1983,7 +1990,7 @@ export async function booleanMaskAsync(
 ): Promise<Tensor> {
   const kept = [];
   for (let i = 0; i < mask.size; i++) {
-    if (mask.dataArray[i]) kept.push(tensor.dataArray[i]);
+    if (mask.nData[i]) kept.push(tensor.nData[i]);
   }
   return new Tensor([kept.length], tensor.dtype, kept);
 }
@@ -1995,7 +2002,7 @@ export async function booleanMaskAsync(
 export async function whereAsync(condition: Tensor): Promise<Tensor> {
   const indices = [];
   for (let i = 0; i < condition.size; i++) {
-    if (condition.dataArray[i]) {
+    if (condition.nData[i]) {
       indices.push(i);
     }
   }
@@ -2190,7 +2197,7 @@ export function logicalXor(a: Tensor, b: Tensor): Tensor {
 export function where(condition: Tensor, a: Tensor, b: Tensor): Tensor {
   const data = [];
   for (let i = 0; i < a.size; i++) {
-    data.push(condition.dataArray[i] ? a.dataArray[i] : b.dataArray[i]);
+    data.push(condition.nData[i] ? a.nData[i] : b.nData[i]);
   }
   return new Tensor(a.shape, a.dtype, data);
 }
@@ -2222,7 +2229,7 @@ export const sigmoid = makeUnary('sigmoid', (x) => 1 / (1 + Math.exp(-x)));
  * @returns Resulting tensor.
  */
 export function softmax(x: Tensor, axis: number = -1): Tensor {
-  const exps = x.dataArray.map(Math.exp);
+  const exps = x.nData.map(Math.exp);
   const sum = exps.reduce((a, b) => a + b, 0);
   return new Tensor(
     x.shape.slice(),
@@ -2264,9 +2271,9 @@ export function localResponseNormalization(
     const start = Math.max(0, i - depthRadius);
     const end = Math.min(x.size, i + depthRadius + 1);
     for (let j = start; j < end; j++) {
-      sqSum += x.dataArray[j] * x.dataArray[j];
+      sqSum += x.nData[j] * x.nData[j];
     }
-    data[i] = x.dataArray[i] / Math.pow(bias + alpha * sqSum, beta);
+    data[i] = x.nData[i] / Math.pow(bias + alpha * sqSum, beta);
   }
   return new Tensor(x.shape.slice(), x.dtype, data);
 }
@@ -2373,7 +2380,12 @@ export class GraphModel {
     return this.predict(inputs);
   }
 
-  dispose(): void {}
+  dispose(): void {
+    this.weights = {};
+    this.inputs = [];
+    this.outputs = [];
+    this.modelUrl = '';
+  }
 }
 
 /**
@@ -2471,10 +2483,10 @@ export const image = {
           const xWeight = sourceX - x0;
 
           for (let c = 0; c < inC; c++) {
-            const v00 = images.dataArray[((b * inH + y0) * inW + x0) * inC + c];
-            const v10 = images.dataArray[((b * inH + y1) * inW + x0) * inC + c];
-            const v01 = images.dataArray[((b * inH + y0) * inW + x1) * inC + c];
-            const v11 = images.dataArray[((b * inH + y1) * inW + x1) * inC + c];
+            const v00 = images.nData[((b * inH + y0) * inW + x0) * inC + c];
+            const v10 = images.nData[((b * inH + y1) * inW + x0) * inC + c];
+            const v01 = images.nData[((b * inH + y0) * inW + x1) * inC + c];
+            const v11 = images.nData[((b * inH + y1) * inW + x1) * inC + c];
 
             const interp0 = v00 + (v01 - v00) * xWeight;
             const interp1 = v10 + (v11 - v10) * xWeight;
@@ -2509,7 +2521,7 @@ export const image = {
           const safeX = Math.max(0, Math.min(inW - 1, nearestX));
           for (let c = 0; c < inC; c++) {
             outData[((b * outH + y) * outW + x) * inC + c] =
-              images.dataArray[((b * inH + safeY) * inW + safeX) * inC + c];
+              images.nData[((b * inH + safeY) * inW + safeX) * inC + c];
           }
         }
       }
@@ -2530,11 +2542,11 @@ export const image = {
     const outData = new Array(numBoxes * outH * outW * inC).fill(extrapolationValue);
 
     for (let b = 0; b < numBoxes; b++) {
-      const bInd = boxInd.dataArray[b];
-      const y1 = boxes.dataArray[b * 4];
-      const x1 = boxes.dataArray[b * 4 + 1];
-      const y2 = boxes.dataArray[b * 4 + 2];
-      const x2 = boxes.dataArray[b * 4 + 3];
+      const bInd = boxInd.nData[b];
+      const y1 = boxes.nData[b * 4];
+      const x1 = boxes.nData[b * 4 + 1];
+      const y2 = boxes.nData[b * 4 + 2];
+      const x2 = boxes.nData[b * 4 + 3];
 
       const heightScale = outH > 1 ? ((y2 - y1) * (inH - 1)) / (outH - 1) : 0;
       const widthScale = outW > 1 ? ((x2 - x1) * (inW - 1)) / (outW - 1) : 0;
@@ -2555,13 +2567,12 @@ export const image = {
 
           for (let c = 0; c < inC; c++) {
             if (method === 'bilinear') {
-              const topLeft = image.dataArray[((bInd * inH + topYIdx) * inW + leftXIdx) * inC + c];
-              const topRight =
-                image.dataArray[((bInd * inH + topYIdx) * inW + rightXIdx) * inC + c];
+              const topLeft = image.nData[((bInd * inH + topYIdx) * inW + leftXIdx) * inC + c];
+              const topRight = image.nData[((bInd * inH + topYIdx) * inW + rightXIdx) * inC + c];
               const bottomLeft =
-                image.dataArray[((bInd * inH + bottomYIdx) * inW + leftXIdx) * inC + c];
+                image.nData[((bInd * inH + bottomYIdx) * inW + leftXIdx) * inC + c];
               const bottomRight =
-                image.dataArray[((bInd * inH + bottomYIdx) * inW + rightXIdx) * inC + c];
+                image.nData[((bInd * inH + bottomYIdx) * inW + rightXIdx) * inC + c];
 
               const top = topLeft + (topRight - topLeft) * xLerp;
               const bottom = bottomLeft + (bottomRight - bottomLeft) * xLerp;
@@ -2570,7 +2581,7 @@ export const image = {
               const nearestY = Math.round(inY);
               const nearestX = Math.round(inX);
               outData[((b * outH + y) * outW + x) * inC + c] =
-                image.dataArray[((bInd * inH + nearestY) * inW + nearestX) * inC + c];
+                image.nData[((bInd * inH + nearestY) * inW + nearestX) * inC + c];
             }
           }
         }
@@ -2589,25 +2600,25 @@ export const image = {
     const selected = [];
     const candidates = [];
     for (let i = 0; i < numBoxes; i++) {
-      if (scores.dataArray[i] > scoreThreshold) {
+      if (scores.nData[i] > scoreThreshold) {
         candidates.push(i);
       }
     }
-    candidates.sort((a, b) => scores.dataArray[b] - scores.dataArray[a]);
+    candidates.sort((a, b) => scores.nData[b] - scores.nData[a]);
 
     for (const c of candidates) {
       if (selected.length >= maxOutputSize) break;
       let keep = true;
       for (const s of selected) {
         // Calculate IoU
-        const y1A = boxes.dataArray[c * 4],
-          x1A = boxes.dataArray[c * 4 + 1],
-          y2A = boxes.dataArray[c * 4 + 2],
-          x2A = boxes.dataArray[c * 4 + 3];
-        const y1B = boxes.dataArray[s * 4],
-          x1B = boxes.dataArray[s * 4 + 1],
-          y2B = boxes.dataArray[s * 4 + 2],
-          x2B = boxes.dataArray[s * 4 + 3];
+        const y1A = boxes.nData[c * 4],
+          x1A = boxes.nData[c * 4 + 1],
+          y2A = boxes.nData[c * 4 + 2],
+          x2A = boxes.nData[c * 4 + 3];
+        const y1B = boxes.nData[s * 4],
+          x1B = boxes.nData[s * 4 + 1],
+          y2B = boxes.nData[s * 4 + 2],
+          x2B = boxes.nData[s * 4 + 3];
 
         const iY1 = Math.max(y1A, y1B),
           iX1 = Math.max(x1A, x1B);
@@ -2654,7 +2665,7 @@ export const image = {
       iouThreshold,
       scoreThreshold,
     );
-    const selectedScores = indices.dataArray.map((idx) => scores.dataArray[idx]);
+    const selectedScores = indices.nData.map((idx) => scores.nData[idx]);
     return {
       selectedIndices: indices,
       selectedScores: new Tensor([selectedScores.length], 'float32', selectedScores),
@@ -2668,7 +2679,7 @@ export const image = {
         for (let x = 0; x < w; x++) {
           for (let ch = 0; ch < c; ch++) {
             outData[((b * h + y) * w + x) * c + ch] =
-              img.dataArray[((b * h + y) * w + (w - 1 - x)) * c + ch];
+              img.nData[((b * h + y) * w + (w - 1 - x)) * c + ch];
           }
         }
       }
@@ -2692,19 +2703,24 @@ export class Layer {
     this.name = config.name || 'layer';
   }
 
+  /** The internal weights of the layer. */
+  private _weights: Tensor[] = [];
+
   /**
    * Returns the weights of the layer.
    * @returns An array of tensors representing the weights.
    */
   getWeights(): Tensor[] {
-    return [];
+    return this._weights;
   }
 
   /**
    * Sets the weights of the layer.
    * @param weights An array of tensors representing the weights.
    */
-  setWeights(weights: Tensor[]): void {}
+  setWeights(weights: Tensor[]): void {
+    this._weights = weights;
+  }
 }
 
 /**
@@ -2722,11 +2738,16 @@ export class LayersModel extends Layer {
     this.layers.push(layer);
   }
 
+  /** The internal compiled configuration. */
+  private _compiledConfig: object | null = null;
+
   /**
    * Configures the model for training.
    * @param config The compilation configuration.
    */
-  compile(config: object) {}
+  compile(config: object) {
+    this._compiledConfig = config;
+  }
 
   /**
    * Executes the model with the given input.
@@ -2747,7 +2768,7 @@ export class LayersModel extends Layer {
     let sum = 0;
     const len = Math.min(x.size, y.size);
     for (let i = 0; i < len; i++)
-      sum += Math.pow((x.dataArray[i] as number) - (y.dataArray[i] as number), 2);
+      sum += Math.pow((x.nData[i] as number) - (y.nData[i] as number), 2);
     return new Tensor([1], 'float32', [sum / len]);
   }
 }
@@ -2786,7 +2807,7 @@ export function sequential(config?: LayerConfig): LayersModel {
  * @returns A new LayersModel.
  */
 export function model(config: ModelConfig): LayersModel {
-  return new LayersModel(config as LayerConfig);
+  return new LayersModel(Object(config) as LayerConfig);
 }
 
 // Training / Grads
@@ -2842,12 +2863,12 @@ export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tens
     const yBaseline = f(x);
     for (let i = 0; i < x.size; i++) {
       const xPlus = x.clone();
-      xPlus.dataArray[i] += eps;
+      xPlus.nData[i] += eps;
       const yPlus = f(xPlus);
       let g = 0;
       for (let j = 0; j < yPlus.size; j++) {
-        const dyVal = dy ? dy.dataArray[j] : 1;
-        g += ((yPlus.dataArray[j] - yBaseline.dataArray[j]) / eps) * dyVal;
+        const dyVal = dy ? dy.nData[j] : 1;
+        g += ((yPlus.nData[j] - yBaseline.nData[j]) / eps) * dyVal;
       }
       gradsArr[i] = g;
     }
@@ -2868,11 +2889,11 @@ export function grads(f: (...args: Tensor[]) => Tensor): (...args: Tensor[]) => 
       const yBaseline = f(...args);
       for (let i = 0; i < x.size; i++) {
         const argsPlus = args.map((a) => a.clone());
-        argsPlus[argIdx].dataArray[i] += eps;
+        argsPlus[argIdx].nData[i] += eps;
         const yPlus = f(...argsPlus);
         let g = 0;
         for (let j = 0; j < yPlus.size; j++) {
-          g += (yPlus.dataArray[j] - yBaseline.dataArray[j]) / eps;
+          g += (yPlus.nData[j] - yBaseline.nData[j]) / eps;
         }
         gArray[i] = g;
       }
@@ -2913,7 +2934,17 @@ export const train = {
    */
   sgd: (learningRate: number) => ({
     /** Applies gradients to the optimizer. */
-    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {},
+    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {
+      if (Array.isArray(grads)) {
+        return grads.map((g) => mul(g, scalar(-learningRate)));
+      } else {
+        const updates: Record<string, Tensor> = {};
+        for (const key in grads) {
+          updates[key] = mul(grads[key]!, scalar(-learningRate));
+        }
+        return updates;
+      }
+    },
   }),
   /**
    * Creates an Adam optimizer.
@@ -2930,10 +2961,19 @@ export const train = {
     epsilon: number = 1e-8,
   ) => ({
     /** Applies gradients to the optimizer. */
-    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {},
+    applyGradients: (grads: Record<string, Tensor> | Tensor[]) => {
+      if (Array.isArray(grads)) {
+        return grads.map((g) => mul(g, scalar(-learningRate)));
+      } else {
+        const updates: Record<string, Tensor> = {};
+        for (const key in grads) {
+          updates[key] = mul(grads[key]!, scalar(-learningRate));
+        }
+        return updates;
+      }
+    },
   }),
 };
-
 // String specific
 /** Functions for processing string tensors. */
 export const string = {
@@ -2952,7 +2992,7 @@ export const string = {
     const values = [];
     let maxSplits = 0;
     for (let i = 0; i < input.size; i++) {
-      const parts = String(input.dataArray[i]).split(delimiter);
+      const parts = String(input.nData[i]).split(delimiter);
       maxSplits = Math.max(maxSplits, parts.length);
       for (let p = 0; p < parts.length; p++) {
         indices.push(i, p);
@@ -2975,7 +3015,7 @@ export const string = {
     const outData = new Array(input.size);
     for (let i = 0; i < input.size; i++) {
       let hash = 0;
-      const str = String(input.dataArray[i]);
+      const str = String(input.nData[i]);
       for (let j = 0; j < str.length; j++) {
         hash = (Math.imul(31, hash) + str.charCodeAt(j)) | 0;
       }
@@ -3102,10 +3142,10 @@ export function multinomial(
     const exps = new Array(classes);
     let maxLogit = -Infinity;
     for (let c = 0; c < classes; c++)
-      maxLogit = Math.max(maxLogit, logits.dataArray[b * classes + c] as number);
+      maxLogit = Math.max(maxLogit, logits.nData[b * classes + c] as number);
     let sumExp = 0;
     for (let c = 0; c < classes; c++) {
-      exps[c] = Math.exp((logits.dataArray[b * classes + c] as number) - maxLogit);
+      exps[c] = Math.exp((logits.nData[b * classes + c] as number) - maxLogit);
       sumExp += exps[c];
     }
     const cdf = new Array(classes);
@@ -3146,8 +3186,9 @@ export function clipByValue(x: Tensor, clipValueMin: number, clipValueMax: numbe
  * @param deviceName The name of the device.
  * @returns A promise that resolves when the device is set.
  */
-export async function setDevice(deviceName: string): Promise<void> {}
-
+export async function setDevice(deviceName: string): Promise<void> {
+  currentBackend = deviceName;
+}
 /**
  * Returns a promise that resolves on the next animation frame.
  * @returns A promise that resolves on the next frame.
@@ -3209,9 +3250,9 @@ export function cumprod(
   for (let i = 0; i < x.size; i++) {
     if (exclusive) {
       data[i] = prod;
-      prod *= x.dataArray[i] as number;
+      prod *= x.nData[i] as number;
     } else {
-      prod *= x.dataArray[i] as number;
+      prod *= x.nData[i] as number;
       data[i] = prod;
     }
   }
@@ -3238,9 +3279,9 @@ export function cumsum(
   for (let i = 0; i < x.size; i++) {
     if (exclusive) {
       data[i] = sum;
-      sum += x.dataArray[i] as number;
+      sum += x.nData[i] as number;
     } else {
-      sum += x.dataArray[i] as number;
+      sum += x.nData[i] as number;
       data[i] = sum;
     }
   }
@@ -3259,7 +3300,7 @@ export const losses = {
   ) => {
     let sum = 0;
     for (let i = 0; i < labels.size; i++) {
-      sum += Math.pow((labels.dataArray[i] as number) - (predictions.dataArray[i] as number), 2);
+      sum += Math.pow((labels.nData[i] as number) - (predictions.nData[i] as number), 2);
     }
     return new Tensor([1], 'float32', [sum / labels.size]);
   },
@@ -3273,8 +3314,8 @@ export const losses = {
   ) => {
     let sum = 0;
     for (let i = 0; i < logits.size; i++) {
-      const z = multiClassLabels.dataArray[i] as number;
-      const x = logits.dataArray[i] as number;
+      const z = multiClassLabels.nData[i] as number;
+      const x = logits.nData[i] as number;
       sum += Math.max(x, 0) - x * z + Math.log(1 + Math.exp(-Math.abs(x)));
     }
     return new Tensor([1], 'float32', [sum / logits.size]);
@@ -3287,8 +3328,8 @@ export const metrics = {
   binaryAccuracy: (yTrue: Tensor, yPred: Tensor) => {
     let correct = 0;
     for (let i = 0; i < yTrue.size; i++) {
-      const pred = (yPred.dataArray[i] as number) > 0.5 ? 1 : 0;
-      if (pred === (yTrue.dataArray[i] as number)) correct++;
+      const pred = (yPred.nData[i] as number) > 0.5 ? 1 : 0;
+      if (pred === (yTrue.nData[i] as number)) correct++;
     }
     return new Tensor([1], 'float32', [correct / yTrue.size]);
   },
@@ -3303,8 +3344,8 @@ export const metrics = {
       let trueIdx = -1,
         predIdx = -1;
       for (let j = 0; j < classes; j++) {
-        const trueVal = yTrue.dataArray[i * classes + j] as number;
-        const predVal = yPred.dataArray[i * classes + j] as number;
+        const trueVal = yTrue.nData[i * classes + j] as number;
+        const predVal = yPred.nData[i * classes + j] as number;
         if (trueVal > maxTrue) {
           maxTrue = trueVal;
           trueIdx = j;
@@ -3323,11 +3364,21 @@ export const metrics = {
 /** IO functions. */
 export const io = {
   /** Loads a model from browser files. */
-  browserFiles: (files: File[]) => ({ load: async () => ({}) }),
+  browserFiles: (files: File[]) => ({
+    load: async () => {
+      if (files.length === 0) throw new Error('No files provided');
+      return { modelTopology: {}, weightsManifest: [] };
+    },
+  }),
   /** Loads a model via HTTP request. */
-  browserHTTPRequest: (url: string, options?: ModelLoadOptions) => ({ load: async () => ({}) }),
+  browserHTTPRequest: (url: string, options?: ModelLoadOptions) => ({
+    load: async () => {
+      const res = await fetch(url, options as RequestInit);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      return res.json();
+    },
+  }),
 };
-
 /** Signal processing functions. */
 export const signal = {
   /**
@@ -3354,8 +3405,7 @@ export const signal = {
         let re = 0,
           im = 0;
         for (let n = 0; n < frameLength; n++) {
-          const val =
-            (signal.dataArray[f * frameStep + n] as number) * (windowFn ? windowFn(n) : 1);
+          const val = (signal.nData[f * frameStep + n] as number) * (windowFn ? windowFn(n) : 1);
           const angle = (-2 * Math.PI * k * n) / N;
           re += val * Math.cos(angle);
           im += val * Math.sin(angle);
@@ -3389,7 +3439,7 @@ export const spectral = {
         let re = 0,
           im = 0;
         for (let n = 0; n < N; n++) {
-          const val = n < inLen ? (x.dataArray[p * inLen + n] as number) : 0;
+          const val = n < inLen ? (x.nData[p * inLen + n] as number) : 0;
           const angle = (-2 * Math.PI * k * n) / N;
           re += val * Math.cos(angle);
           im += val * Math.sin(angle);
@@ -3447,7 +3497,7 @@ export function complex(real: Tensor, imag: Tensor): Tensor {
 export function diag(x: Tensor): Tensor {
   const n = x.size;
   const data = new Array(n * n).fill(0);
-  for (let i = 0; i < n; i++) data[i * n + i] = x.dataArray[i];
+  for (let i = 0; i < n; i++) data[i * n + i] = x.nData[i];
   return new Tensor([n, n], x.dtype, data);
 }
 
@@ -3474,7 +3524,7 @@ export function fill(shape: number[], value: number | string, dtype?: DataType):
  */
 export function imag(complexTensor: Tensor): Tensor {
   const data = [];
-  for (let i = 1; i < complexTensor.dataArray.length; i += 2) data.push(complexTensor.dataArray[i]);
+  for (let i = 1; i < complexTensor.nData.length; i += 2) data.push(complexTensor.nData[i]);
   return new Tensor(complexTensor.shape, 'float32', data);
 }
 
@@ -3485,7 +3535,7 @@ export function imag(complexTensor: Tensor): Tensor {
  */
 export function real(complexTensor: Tensor): Tensor {
   const data = [];
-  for (let i = 0; i < complexTensor.dataArray.length; i += 2) data.push(complexTensor.dataArray[i]);
+  for (let i = 0; i < complexTensor.nData.length; i += 2) data.push(complexTensor.nData[i]);
   return new Tensor(complexTensor.shape, 'float32', data);
 }
 

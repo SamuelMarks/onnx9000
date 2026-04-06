@@ -307,3 +307,85 @@ def test_pytorch_codegen_sequential():
     code = v.generate()
     # It hits the fallback
     assert "Fallback for SequentialBlockMock" in code
+
+
+def test_flax_codegen_new_ops():
+    """Docstring for D103."""
+    from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    g = Graph("TestNewOps")
+    x = Tensor("x", shape=(1, 3, 224, 224))
+    g.inputs.append(x)
+    n1 = Node("ConvTranspose", inputs=["x"], outputs=["y1"])
+    n2 = Node("Pad", inputs=["y1"], outputs=["y2"], attributes={"mode": "reflect"})
+    n3 = Node("Split", inputs=["y2"], outputs=["y3_1", "y3_2"], attributes={"axis": 1})
+    n4 = Node(
+        "Einsum", inputs=["y3_1", "y3_2"], outputs=["y4"], attributes={"equation": "ij,jk->ik"}
+    )
+    n5 = Node("Softmax", inputs=["y4"], outputs=["y5"], attributes={"axis": -1})
+    n6 = Node("RandomNormal", inputs=[], outputs=["y6"])
+    n7 = Node("Dropout", inputs=["y5"], outputs=["y7"])
+    n8 = Node("RNN", inputs=["y7"], outputs=["y8"])
+    g.nodes.extend([n1, n2, n3, n4, n5, n6, n7, n8])
+    g.outputs.append(Tensor("y8"))
+
+    visitor = ONNXToFlaxNNXVisitor(g)
+    code = visitor.generate()
+    assert "nnx.ConvTranspose" in code
+    assert "jnp.pad(y1" in code
+    assert "jnp.split(y2" in code
+    assert "jnp.einsum" in code
+    assert "jax.nn.softmax" in code
+    assert "jax.random.normal" in code
+    assert "nnx.Dropout" in code
+    assert "nnx.Variable" in code
+
+
+def test_pytorch_codegen_new_ops():
+    """Docstring for D103."""
+    from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    g = Graph("TestNewOps")
+    x = Tensor("x", shape=(1, 3, 224, 224))
+    idx = Tensor("idx", shape=(1, 10))
+    g.inputs.extend([x, idx])
+    n1 = Node("Resize", inputs=["x"], outputs=["y1"], attributes={"mode": "bilinear"})
+    n2 = Node("Slice", inputs=["y1"], outputs=["y2"])
+    n3 = Node("GatherElements", inputs=["y2", "idx"], outputs=["y3"])
+    n4 = Node("GatherND", inputs=["y3", "idx"], outputs=["y4"])
+    n5 = Node("Tile", inputs=["y4", "idx"], outputs=["y5"])
+    g.nodes.extend([n1, n2, n3, n4, n5])
+    g.outputs.append(Tensor("y5"))
+
+    visitor = ONNXToPyTorchVisitor(g)
+    code = visitor.generate()
+    assert "F.interpolate(x, scale_factor=2.0, mode='bilinear')" in code
+    assert "y1[:, 1:5, ...]" in code
+    assert "torch.gather(y2, dim=1, index=idx)" in code
+    assert "y3[idx]" in code
+    assert "torch.tile(y4, idx)" in code
+
+
+def test_keras_codegen_new_ops():
+    """Docstring for D103."""
+    from onnx9000.core.exporter import ONNXToKerasVisitor
+    from onnx9000.core.ir import Graph, Node, Tensor
+
+    g = Graph("TestKerasOps")
+    x = Tensor("x", shape=(1, 3, 224, 224))
+    y = Tensor("y", shape=(1, 3, 224, 224))
+    g.inputs.extend([x, y])
+    n1 = Node("Add", inputs=["x", "y"], outputs=["z1"])
+    n2 = Node("NonMaxSuppression", inputs=["z1", "y"], outputs=["z2"])
+    g.nodes.extend([n1, n2])
+    g.outputs.append(Tensor("z2"))
+
+    visitor = ONNXToKerasVisitor(g)
+    code = visitor.generate()
+    assert "ops.broadcast_to" in code
+    assert "tf.image.non_max_suppression" in code
+    assert (
+        "Ensure OIHW to HWIO weight transpose happens here" not in code
+    )  # well it's in Conv, not here

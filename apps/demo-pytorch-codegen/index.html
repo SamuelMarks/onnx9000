@@ -4,17 +4,21 @@
   <meta charset="UTF-8">
   <title>ONNX to PyTorch Code Gen</title>
   <style>
-    body { font-family: monospace; padding: 2rem; background: #1e1e1e; color: #fff; }
-    textarea { width: 100%; height: 80vh; background: #2d2d2d; color: #d4d4d4; border: 1px solid #444; padding: 1rem; }
+    body { font-family: monospace; padding: 2rem; background: #1e1e1e; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+    h1 { margin-top: 0; }
+    .drop-zone { border: 2px dashed #444; padding: 2rem; text-align: center; cursor: pointer; margin-bottom: 1rem; border-radius: 8px; }
+    .drop-zone.dragover { border-color: #007acc; background: rgba(0, 122, 204, 0.1); }
+    .hidden { display: none !important; }
+    textarea { flex-grow: 1; width: 100%; background: #2d2d2d; color: #d4d4d4; border: 1px solid #444; padding: 1rem; border-radius: 8px; resize: none; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
   </style>
 </head>
 <body>
   <h1>ONNX9000 PyTorch Generator</h1>
-  <p>Drop an ONNX file here to see the PyTorch code</p>
-  <textarea id="code" readonly></textarea>
-  <script type="module">
-    // Placeholder logic for UI wiring
-    console.log("UI wired up.");
-  </script>
+  <div id="drop-zone" class="drop-zone">
+    <p>Drag & drop an .onnx file here to generate PyTorch equivalent code</p>
+    <input type="file" id="file-input" accept=".onnx" class="hidden" />
+  </div>
+  <textarea id="code" readonly placeholder="PyTorch code will appear here..."></textarea>
+  <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

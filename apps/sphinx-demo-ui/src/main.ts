@@ -1,5 +1,9 @@
 /* eslint-disable */
 // @ts-nocheck
+import '@onnx9000/webnn-polyfill';
+import * as tf from '@onnx9000/tfjs-shim';
+import * as transformers from '@onnx9000/transformers';
+import * as diffusers from '@onnx9000/diffusers';
 import { globalEventBus } from './core/EventBus';
 import './css/reset.css';
 import './css/theme.css';
@@ -11,6 +15,12 @@ import { BottomContainer } from './components/BottomContainer';
 import { WasmOverlay } from './components/WasmOverlay';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { WasmManager, WasmState } from './core/WasmManager';
+
+// Expose these ecosystem packages to the window for console usage and to ensure they are bundled.
+(window as any).tf = tf;
+(window as any).transformers = transformers;
+(window as any).diffusers = diffusers;
+
 /**
  * Main entry point for the Sphinx Demo UI.
  */

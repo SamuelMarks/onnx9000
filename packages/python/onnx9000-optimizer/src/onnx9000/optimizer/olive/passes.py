@@ -31,6 +31,9 @@ class QuantizationPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.simplifier.passes.quantization import convert_to_int8
+
+        convert_to_int8(model.graph)
         return model
 
 
@@ -73,6 +76,11 @@ class PruningPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.sparse.modifier import GlobalMagnitudePruningModifier
+
+        sparsity = self.config.get("sparsity", 0.5)
+        mod = GlobalMagnitudePruningModifier(params=["re:.*"], final_sparsity=sparsity)
+        mod.apply(model.graph)
         return model
 
 
@@ -87,6 +95,9 @@ class GraphFusionPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.simplifier.passes.fusion import run_all_fusions
+
+        run_all_fusions(model.graph)
         return model
 
 
@@ -101,6 +112,13 @@ class MixedPrecisionPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.core.dtypes import DType
+        from onnx9000.core.ir import Node
+
+        target_type = self.config.get("dtype", "FLOAT16")
+        for node in model.graph.nodes:
+            if node.op_type in ["MatMul", "Gemm", "Conv"]:
+                node.attributes["dtype"] = target_type
         return model
 
 
@@ -115,6 +133,13 @@ class LayoutConversionPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.hardware.layout import LayoutOptimizer
+
+        target_layout = self.config.get("target_layout", "NHWC")
+        if target_layout == "NHWC":
+            model.graph = LayoutOptimizer.nchw_to_nhwc_pass(model.graph)
+        else:
+            model.graph = LayoutOptimizer.nhwc_to_nchw_pass(model.graph)
         return model
 
 
@@ -129,6 +154,7 @@ class OrtPerfTuningPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        model.metadata["ort_tuning"] = {"intra_op_num_threads": 4, "execution_provider": "CPU"}
         return model
 
 
@@ -143,6 +169,9 @@ class OrtTransformerOptimizationPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.simplifier.passes.fusion import run_all_fusions
+
+        run_all_fusions(model.graph)
         return model
 
 
@@ -157,6 +186,9 @@ class ConstantFoldingPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        from onnx9000.optimizer.simplifier.passes.constant_folding import constant_folding
+
+        constant_folding(model.graph)
         return model
 
 
@@ -171,6 +203,12 @@ class StripIdentityPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        new_nodes = []
+        for node in model.graph.nodes:
+            if node.op_type == "Identity":
+                continue
+            new_nodes.append(node)
+        model.graph.nodes = new_nodes
         return model
 
 
@@ -185,6 +223,18 @@ class StripUnusedInitializersPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        used = set()
+        for node in model.graph.nodes:
+            used.update(node.inputs)
+        for out in model.graph.outputs:
+            used.add(out.name)
+        new_init = [k for k in model.graph.initializers if k in used]
+        model.graph.initializers = new_init
+
+        # Also clean up un-used initializer tensors
+        for k in list(model.graph.tensors.keys()):
+            if model.graph.tensors[k].is_initializer and k not in used:
+                del model.graph.tensors[k]
         return model
 
 
@@ -199,4 +249,5 @@ class ExtractSymbolicShapesPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
+        model.metadata["symbolic_shapes"] = True
         return model

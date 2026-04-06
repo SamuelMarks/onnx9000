@@ -114,8 +114,9 @@ def test_cli_commands(capsys) -> None:
         convert_cmd(args)
         assert "Converting from onnx" in capsys.readouterr().out
 
-        serve_cmd(args)
-        assert "Serving test.onnx on local server..." in capsys.readouterr().out
+        with patch("socketserver.TCPServer.serve_forever"):
+            serve_cmd(args)
+        assert "Serving local visualizer and tools..." in capsys.readouterr().out
 
         compile_cmd(args)
         assert "Compiling test.onnx..." in capsys.readouterr().out

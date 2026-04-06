@@ -39,6 +39,11 @@ describe('Pipelines', () => {
       expect(p).toBeDefined();
       await expect(p._call('input')).resolves.toBeDefined();
     }
+    const od = new pipes.ObjectDetectionPipeline({}, {}, {}, {});
+    expect(od.wasmNMS()).toEqual([]);
+    const boxes = [[1, 2]];
+    od.denormalizeBbox(boxes);
+    expect(boxes[0][0]).toBe(255);
   });
 
   it('ModelOutput', () => {

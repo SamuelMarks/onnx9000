@@ -5,6 +5,12 @@ from onnx9000.core.ir import Graph, Node
 
 def constant_folding_pass(graph: Graph) -> Graph:
     """Execute the constant folding pass operation."""
+    try:
+        from onnx9000.optimizer.simplifier.passes.constant_folding import constant_folding
+
+        constant_folding(graph)
+    except ImportError:
+        pass
     return graph
 
 
@@ -96,11 +102,23 @@ def transpose_optimizer_pass(graph: Graph) -> Graph:
 
 def shape_folding_pass(graph: Graph) -> Graph:
     """Execute the shape folding pass operation."""
+    try:
+        from onnx9000.optimizer.simplifier.passes.shapes import ShapeInferencePass
+
+        ShapeInferencePass().run(graph)
+    except ImportError:
+        pass
     return graph
 
 
 def pattern_matching_pass(graph: Graph) -> Graph:
     """Execute the pattern matching pass operation."""
+    try:
+        from onnx9000.optimizer.simplifier.passes.fusion import run_all_fusions
+
+        run_all_fusions(graph)
+    except ImportError:
+        pass
     return graph
 
 

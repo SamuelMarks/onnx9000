@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { BaseImageProcessor, SequenceFeatureExtractor } from '../src/processors/index';
 
 describe('Processors', () => {
@@ -75,10 +75,30 @@ it('uncovered lines in processors 2', async () => {
 
   const imgProc = new BaseImageProcessor({});
   imgProc.webgpuResizeShader({});
-  BaseImageProcessor.drawBoundingBoxes({}, []);
-  BaseImageProcessor.drawSegmentationMask({}, {});
-});
 
+  const mockCtx = {
+    strokeStyle: '',
+    lineWidth: 0,
+    strokeRect: vi.fn(),
+    createImageData: vi.fn().mockReturnValue({ data: [] }),
+    putImageData: vi.fn(),
+  };
+  const mockCanvas = {
+    width: 10,
+    height: 10,
+    getContext: vi.fn().mockReturnValue(mockCtx),
+  };
+  BaseImageProcessor.drawBoundingBoxes(mockCanvas, [[0, 0, 10, 10]]);
+  BaseImageProcessor.drawSegmentationMask(mockCanvas, [1, 2, 3]);
+  expect(mockCanvas.getContext).toHaveBeenCalled();
+  expect(mockCtx.strokeRect).toHaveBeenCalled();
+  expect(mockCtx.createImageData).toHaveBeenCalled();
+  expect(mockCtx.putImageData).toHaveBeenCalled();
+
+  const obj = { data: new Uint8Array([1, 2, 3]) };
+  imgProc.optimizeRawPixelCopying(obj);
+  expect((obj as any).optimized).toBe(true);
+});
 it('uncovered lines in processors 3', async () => {
   const { BaseImageProcessor } = await import('../src/processors/index');
   const imgProc = new BaseImageProcessor({});

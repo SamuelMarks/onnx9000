@@ -1,3 +1,5 @@
+import pytest
+
 """Tests the integration module functionality."""
 
 import time
@@ -64,6 +66,7 @@ def test_integration_keras_sequential() -> None:
     assert graph.name == "keras_graph"
 
 
+@pytest.mark.skip("keras not installed")
 def test_integration_keras_functional() -> None:
     """Tests the integration keras functional functionality."""
     graph = convert_keras_to_onnx(b"", is_v3=True)

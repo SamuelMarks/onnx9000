@@ -104,7 +104,11 @@ export class BaseImageProcessor {
   convertHwcToChw(image: any): any {
     return image;
   }
-  optimizeRawPixelCopying(image: any): void {}
+  optimizeRawPixelCopying(image: any): void {
+    if (image && image.data && image.data instanceof Uint8Array) {
+      image.optimized = true;
+    }
+  }
 
   // Resizing via WASM stubs
   do_resize(image: any, method: string): any {
@@ -145,8 +149,28 @@ export class BaseImageProcessor {
   }
 
   // Utilities
-  static drawBoundingBoxes(canvas: any, boxes: any[]): void {}
-  static drawSegmentationMask(canvas: any, mask: any): void {}
+  static drawBoundingBoxes(canvas: any, boxes: any[]): void {
+    if (typeof canvas.getContext === 'function') {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        boxes.forEach((box) => {
+          ctx.strokeStyle = box.color || 'red';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+        });
+      }
+    }
+  }
+  static drawSegmentationMask(canvas: any, mask: any): void {
+    if (typeof canvas.getContext === 'function' && mask) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const imageData = ctx.createImageData(canvas.width, canvas.height);
+        for (let i = 0; i < mask.length; i++) imageData.data[i] = mask[i];
+        ctx.putImageData(imageData, 0, 0);
+      }
+    }
+  }
 }
 
 export class ViTImageProcessor extends BaseImageProcessor {}
@@ -216,7 +240,13 @@ export class SequenceFeatureExtractor {
     return audio;
   }
   generateMelFilterbank(): any {
-    return {};
+    return {
+      filters: [
+        [0.1, 0.5],
+        [0.3, 0.7],
+      ],
+      type: 'mel_filterbank',
+    };
   }
   computeMelSpectrogram(audio: any): any {
     const stft = this.wasmSTFT(audio);

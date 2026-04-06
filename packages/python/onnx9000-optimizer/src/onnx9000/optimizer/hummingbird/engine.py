@@ -91,14 +91,22 @@ class TranspilationEngine:
         return None
 
     def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
-        # Transpile numerical threshold comparisons accurately
         """Execute the compile gemm operation."""
-        return None
+        from onnx9000.optimizer.hummingbird.gemm import GemmCompiler
+
+        compiler = GemmCompiler(tree, batch_size)
+        compiler.compile(g)
 
     def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         """Execute the compile tree traversal operation."""
-        return None
+        from onnx9000.optimizer.hummingbird.tree_traversal import TreeTraversalCompiler
+
+        compiler = TreeTraversalCompiler(tree, batch_size)
+        compiler.compile(g)
 
     def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
         """Execute the compile perfect tree operation."""
-        return None
+        from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
+
+        compiler = PerfectTreeCompiler(tree, batch_size)
+        compiler.compile(g)

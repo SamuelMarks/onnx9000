@@ -9,7 +9,8 @@ export default defineConfig({
       fileName: 'sphinx-demo-ui',
       formats: ['es', 'umd']
     },
-    outDir: 'dist'
+    outDir: 'dist',
+    rollupOptions: { external: ['@onnx9000/webnn-polyfill'] }
   },
   optimizeDeps: {
     exclude: ['pyodide']

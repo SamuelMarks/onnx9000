@@ -1,15 +1,23 @@
-"""Provide functionality for this module."""
+"""Provide logging functionality for GenAI generation stats."""
+
+import logging
+from typing import Any, Dict
+
+logger = logging.getLogger(__name__)
 
 
 class GenerationStatsLogger:
-    """Represent the GenerationStatsLogger object."""
+    """Logs generation statistics."""
 
-    def log(self):
-        """Execute the log operation."""
-        return True
-
-    """Implementation for GenerationStatsLogger."""
-
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the instance."""
-        self._initialized = True
+        self.stats: Dict[str, Any] = {}
+
+    def record(self, key: str, value: Any) -> None:
+        """Record a statistic."""
+        self.stats[key] = value
+
+    def log(self) -> bool:
+        """Log current statistics."""
+        logger.info(f"Generation Stats: {self.stats}")
+        return True

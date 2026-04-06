@@ -41,6 +41,15 @@ def test_parse_jaxpr_string_advanced():
     res2 = parse_jaxpr_string(s2)
     assert res2["eqns"][0]["params"]["attr"] == "invalid_python_syntax"
 
+    # Trailing comma
+    s3 = """
+    { lambda ; a. let
+        b:f32[] = add[attr=123,] a 1
+      in (b,) }
+    """
+    res3 = parse_jaxpr_string(s3)
+    assert res3["eqns"][0]["params"]["attr"] == 123
+
 
 def test_parse_jaxpr_string_empty():
     """Docstring for D103."""

@@ -34,7 +34,7 @@ def test_activations_swish_mish():
     # Test without math.h
     c_comp2 = C89Compiler(g, use_math_h=False)
     h2, c2 = c_comp2.generate()
-    assert "FALLBACK_EXPF" in c2
+    assert "0.25f * x" in c2 or "m_tanh = x;" in c2
 
 
 def test_concat_complex():

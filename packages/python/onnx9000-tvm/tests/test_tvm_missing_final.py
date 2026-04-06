@@ -2,10 +2,10 @@
 
 import pytest
 from onnx9000.tvm.ecosystem import TVMParityCertifier
-from onnx9000.tvm.relay.parser import IRSpy, save_json, load_json
 from onnx9000.tvm.relay.expr import Constant, Var
-from onnx9000.tvm.relay.ty import TensorType
+from onnx9000.tvm.relay.parser import IRSpy, load_json, save_json
 from onnx9000.tvm.relay.span import Span, set_span
+from onnx9000.tvm.relay.ty import TensorType
 from onnx9000.tvm.tir.dtypes import is_supported
 
 

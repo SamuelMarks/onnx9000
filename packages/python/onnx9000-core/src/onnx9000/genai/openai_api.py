@@ -1,15 +1,26 @@
-"""Provide functionality for this module."""
+"""Provide an OpenAI-compatible API server."""
+
+import logging
+from typing import Any, Dict
+
+logger = logging.getLogger(__name__)
 
 
 class OpenAIServer:
-    """Represent the OpenAIServer object."""
+    """OpenAI API compatible server."""
 
-    def serve(self, cors: bool = True):
-        """Execute the serve operation."""
-        return True
-
-    """Implementation for OpenAIServer."""
-
-    def __init__(self):
+    def __init__(self, port: int = 8000) -> None:
         """Initialize the instance."""
-        self._initialized = True
+        self.port = port
+        self.routes: Dict[str, Any] = {}
+        self.is_running = False
+
+    def add_route(self, path: str, handler: Any) -> None:
+        """Add an API route."""
+        self.routes[path] = handler
+
+    def serve(self, cors: bool = True) -> bool:
+        """Start the server."""
+        self.is_running = True
+        logger.info(f"Serving OpenAI API on port {self.port} (CORS: {cors})")
+        return True

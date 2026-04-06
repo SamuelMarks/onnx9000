@@ -1,15 +1,17 @@
 """Module docstring."""
 
-import pytest
 import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 import onnx9000.__main__
 import onnx9000.cli
-from unittest.mock import patch, MagicMock
 
 
 def test_main_call():
     """Tests main call."""
-    with patch("onnx9000.cli.main") as mock_main:
+    with patch("onnx9000.cli.main"):
         with patch("onnx9000.__main__.__name__", "__main__"):
             assert True
 
@@ -33,7 +35,7 @@ def test_main_exec():
     """Tests main exec."""
     import runpy
 
-    with patch("onnx9000.cli.main") as mock_main:
+    with patch("onnx9000.cli.main"):
         try:
             runpy.run_module("onnx9000.__main__", run_name="__main__")
         except SystemExit:
@@ -53,7 +55,7 @@ def test_cli_run_main():
     """Tests cli run main."""
     import runpy
 
-    with patch("onnx9000.cli.main") as mock_main:
+    with patch("onnx9000.cli.main"):
         try:
             runpy.run_module("onnx9000.cli", run_name="__main__")
         except SystemExit:

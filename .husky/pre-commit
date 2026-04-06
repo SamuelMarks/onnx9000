@@ -10,13 +10,13 @@ echo "Building TypeScript packages..."
 npx turbo run build
 
 echo "Running Tests & Generating Coverage..."
-# 1. TypeScript tests
-npx turbo run test
-
-# 2. Python Tests (Generating coverage.json)
 # Export PYTHONPATH for all python source directories
 export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '\n' ':'):apps/cli/src
 
+# 1. TypeScript tests
+npx turbo run test --env-mode=loose
+
+# 2. Python Tests (Generating coverage.json)
 # Clear old coverage
 rm -f .coverage coverage.json
 

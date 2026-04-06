@@ -96,6 +96,7 @@ def test_tf_parsers_extra_coverage():
     except Exception:
         assert True
 
+    pytest.importorskip("keras")
     import keras
 
     inputs = keras.Input(shape=(10,))

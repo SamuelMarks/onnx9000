@@ -17,6 +17,8 @@ dependencies = [
     "onnx9000-tvm",
     "onnx9000-diffusers",
     "onnx9000-tflite-exporter",
+    "onnx9000-array",
+    "onnx9000-zoo",
 ]
 
 [project.scripts]
@@ -40,3 +42,5 @@ onnx9000-tensorrt = { workspace = true }
 onnx9000-tvm = { workspace = true }
 onnx9000-diffusers = { workspace = true }
 onnx9000-tflite-exporter = { workspace = true }
+onnx9000-array = { workspace = true }
+onnx9000-zoo = { workspace = true }

@@ -9,12 +9,18 @@ export class HubConfig {
   }
 }
 
+const _internalCache = new Map<string, any>();
+
 export class ModelCache {
-  static async clearCache() {}
-  static async getFromCache(key: string) {
-    return null;
+  static async clearCache() {
+    _internalCache.clear();
   }
-  static async putInCache(key: string, data: any) {}
+  static async getFromCache(key: string) {
+    return _internalCache.get(key) || null;
+  }
+  static async putInCache(key: string, data: any) {
+    _internalCache.set(key, data);
+  }
 }
 
 export class PreTrainedModel {

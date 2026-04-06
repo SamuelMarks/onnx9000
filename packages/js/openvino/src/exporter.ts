@@ -120,7 +120,7 @@ export class OpenVinoExporter {
     if (dtype === 'int64') byteLength = data.length * 8;
     else if (dtype === 'int32') byteLength = data.length * 4;
     else if (dtype === 'float32') byteLength = data.length * 4;
-    else throw new Error(`Dynamic const for ${dtype} not implemented`);
+    else throw new Error(`Unsupported dtype for dynamic const: ${dtype}`);
 
     const buffer = new ArrayBuffer(byteLength);
     const view = new DataView(buffer);

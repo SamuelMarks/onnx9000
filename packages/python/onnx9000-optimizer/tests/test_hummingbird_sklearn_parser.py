@@ -2,9 +2,42 @@
 
 from unittest.mock import MagicMock, Mock
 
+from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.sklearn_parser import (
     extract_n_estimators,
     parse_decision_tree_classifier,
+    handle_predict_proba,
+    handle_multi_output_regressors,
+    handle_multi_label_classification,
+    parse_pipeline,
+    extract_classes_and_zipmaps,
+    parse_linear_regression,
+    parse_logistic_regression,
+    parse_ridge_lasso_elasticnet,
+    parse_sgd_classifier,
+    parse_linear_svc,
+    parse_svc_poly,
+    parse_svc_rbf,
+    parse_svc_sigmoid,
+    parse_gaussian_nb,
+    parse_multinomial_nb,
+    parse_bernoulli_nb,
+    parse_mlp_classifier,
+    optimize_standard_scaler,
+    optimize_binarizer,
+    optimize_onehot_encoder,
+    parse_decision_tree_regressor,
+    parse_random_forest_classifier,
+    parse_random_forest_regressor,
+    parse_gradient_boosting_classifier,
+    parse_gradient_boosting_regressor,
+    parse_hist_gradient_boosting_classifier,
+    parse_hist_gradient_boosting_regressor,
+    parse_isolation_forest,
+    parse_ada_boost_classifier,
+    parse_ada_boost_regressor,
+    parse_extra_trees_classifier,
+    parse_extra_trees_regressor,
 )
 
 
@@ -48,16 +81,10 @@ def test_extract_n_estimators() -> None:
     assert extract_n_estimators(mock_dt) == 1
 
 
-def test_sklearn_parser_all() -> None:
-    """Tests the sklearn parser all functionality."""
-    from unittest.mock import MagicMock
-
+def test_trees() -> None:
     import numpy as np
-    import onnx9000.optimizer.hummingbird.sklearn_parser as sp
 
     class MockTree:
-        """Represents the MockTree class and its associated logic."""
-
         node_count = 3
         feature = np.array([0, -2, -2])
         threshold = np.array([0.5, -2.0, -2.0])
@@ -66,63 +93,72 @@ def test_sklearn_parser_all() -> None:
         value = np.array([[[1.0]], [[0.0]], [[1.0]]])
 
     class MockEst:
-        """Represents the MockEst class and its associated logic."""
-
         tree_ = MockTree()
-        estimators_ = [MockTree()]
         estimators_ = [MagicMock(tree_=MockTree())]
 
     m = MockEst()
 
-    # Test all functions
-    sp.parse_decision_tree_classifier(m)
-    sp.parse_decision_tree_regressor(m)
-    sp.parse_random_forest_classifier(m)
-    sp.parse_random_forest_regressor(m)
-    sp.parse_gradient_boosting_classifier(m)
-    sp.parse_gradient_boosting_regressor(m)
-    sp.parse_hist_gradient_boosting_classifier(m)
-    sp.parse_hist_gradient_boosting_regressor(m)
-    sp.parse_isolation_forest(m)
-    sp.parse_ada_boost_classifier(m)
-    sp.parse_ada_boost_regressor(m)
-    sp.parse_extra_trees_classifier(m)
-    sp.parse_extra_trees_regressor(m)
-    sp.extract_n_estimators(m)
-    sp.handle_predict_proba()
-    sp.handle_multi_output_regressors()
-    sp.handle_multi_label_classification()
-    sp.parse_pipeline()
-    sp.extract_classes_and_zipmaps()
-    sp.parse_linear_regression()
-    sp.parse_logistic_regression()
-    sp.parse_ridge_lasso_elasticnet()
-    sp.parse_sgd_classifier()
-    sp.parse_linear_svc()
-    sp.parse_svc_poly()
-    sp.parse_svc_rbf()
-    sp.parse_svc_sigmoid()
-    sp.parse_gaussian_nb()
-    sp.parse_multinomial_nb()
-    sp.parse_bernoulli_nb()
-    sp.parse_mlp_classifier()
-    sp.optimize_standard_scaler()
-    sp.optimize_binarizer()
-    sp.optimize_onehot_encoder()
+    parse_decision_tree_classifier(m)
+    parse_decision_tree_regressor(m)
+    parse_random_forest_classifier(m)
+    parse_random_forest_regressor(m)
+    parse_gradient_boosting_classifier(m)
+    parse_gradient_boosting_regressor(m)
+    parse_hist_gradient_boosting_classifier(m)
+    parse_hist_gradient_boosting_regressor(m)
+    parse_isolation_forest(m)
+    parse_ada_boost_classifier(m)
+    parse_ada_boost_regressor(m)
+    parse_extra_trees_classifier(m)
+    parse_extra_trees_regressor(m)
 
-    # Test no tree path
     class MockNoTree:
-        """Represents the MockNoTree class and its associated logic."""
-
         __dummy__ = True
 
-    ab = sp.parse_decision_tree_regressor(MockNoTree())
-    assert hasattr(ab, "add_node")
+    parse_decision_tree_regressor(MockNoTree())
+    parse_decision_tree_classifier(MockNoTree())
 
-    class MockNoTree2:
-        """Represents the MockNoTree2 class and its associated logic."""
 
-        __dummy__ = True
+def test_handlers():
+    g = Graph("test")
+    handle_predict_proba(g, "logits")
+    assert g.nodes[-1].op_type == "Softmax"
 
-    ab2 = sp.parse_decision_tree_classifier(MockNoTree2())
-    assert hasattr(ab2, "add_node")
+    handle_multi_output_regressors(g, ["o1", "o2"])
+    assert g.nodes[-1].op_type == "Concat"
+
+    handle_multi_label_classification(g, "logits")
+    assert g.nodes[-1].op_type == "Sigmoid"
+
+    parse_pipeline([])
+    extract_classes_and_zipmaps(g, [])
+
+
+def test_linear():
+    assert parse_linear_regression(None).name == "LinearRegression"
+    assert parse_logistic_regression(None).nodes[-1].op_type == "Sigmoid"
+    assert parse_ridge_lasso_elasticnet(None).name == "LinearRegression"
+    assert parse_sgd_classifier(None).name == "LinearRegression"
+    assert parse_linear_svc(None).nodes[-1].op_type == "Sign"
+
+
+def test_svc():
+    assert parse_svc_poly(None).name == "SVC_Poly"
+    assert parse_svc_rbf(None).name == "SVC_RBF"
+    assert parse_svc_sigmoid(None).name == "SVC_Sigmoid"
+
+
+def test_nb():
+    assert parse_gaussian_nb(None).name == "GaussianNB"
+    assert parse_multinomial_nb(None).name == "MultinomialNB"
+    assert parse_bernoulli_nb(None).name == "BernoulliNB"
+
+
+def test_mlp():
+    assert parse_mlp_classifier(None).name == "MLPClassifier"
+
+
+def test_scalers():
+    assert optimize_standard_scaler(None).nodes[-1].op_type == "Div"
+    assert optimize_binarizer(None).nodes[-1].op_type == "Cast"
+    assert optimize_onehot_encoder(None).nodes[-1].op_type == "Cast"

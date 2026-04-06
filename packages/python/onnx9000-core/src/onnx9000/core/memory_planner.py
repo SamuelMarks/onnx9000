@@ -37,6 +37,14 @@ class ArenaSimulator:
             return size
         return size + (self.alignment - (size % self.alignment))
 
+    def allocate_ragged(self, name: str, sizes: list[int]) -> int:
+        """Allocate tightly packed rugged tensor arrays sequentially with exact offsets."""
+        # Sum total sizes
+        total_size = sum(sizes)
+        # Allocate exactly without outer block alignment
+        offset = self.allocate_first_fit(name, total_size)
+        return offset
+
     def allocate_first_fit(self, name: str, size: int) -> int:
         """Execute the allocate first fit operation."""
         aligned_size = self._align(size)

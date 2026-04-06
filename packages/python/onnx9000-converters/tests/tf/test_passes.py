@@ -130,6 +130,35 @@ def test_dce_pass() -> None:
     assert g.nodes[1].name == "n4"
 
 
+def test_tf_optimize_graph_import_errors() -> None:
+    """Test import errors in passes."""
+    import sys
+
+    # remove from sys.modules
+    modules_to_remove = [m for m in sys.modules if m.startswith("onnx9000.optimizer.simplifier")]
+    for m in modules_to_remove:
+        del sys.modules[m]
+
+    import builtins
+
+    real_import = builtins.__import__
+
+    def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if "onnx9000.optimizer.simplifier" in name:
+            raise ImportError(f"Mocked import error for {name}")
+        return real_import(name, globals, locals, fromlist, level)
+
+    builtins.__import__ = mock_import
+    try:
+        g = _create_graph()
+        g = constant_folding_pass(g)
+        g = shape_folding_pass(g)
+        g = pattern_matching_pass(g)
+        assert len(g.nodes) == 0
+    finally:
+        builtins.__import__ = real_import
+
+
 def test_tf_optimize_graph() -> None:
     """Tests the tf optimize graph functionality."""
     g = _create_graph()
@@ -138,7 +167,7 @@ def test_tf_optimize_graph() -> None:
         op_type="Dropout", inputs=["out1"], outputs=["out2", "mask"], name="n2", attributes={}
     )
     n3 = Node(op_type="Relu", inputs=["out2"], outputs=["out"], name="n3", attributes={})
-    n4 = Node(op_type="Add", inputs=["out"], outputs=["dead_out"], name="n4", attributes={})
+    n4 = Node(op_type="Add", inputs=["out", "out"], outputs=["dead_out"], name="n4", attributes={})
     g.nodes = [n1, n2, n3, n4]
     g = tf_optimize_graph(g)
     assert len(g.nodes) == 1

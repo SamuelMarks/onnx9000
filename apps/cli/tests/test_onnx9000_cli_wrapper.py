@@ -2,11 +2,12 @@
 
 import os
 import sys
-import pytest
 from unittest import mock
 
-import onnx9000.cli
+import pytest
+
 import onnx9000.__main__
+import onnx9000.cli
 
 
 def test_cli_wrapper_success(monkeypatch):
@@ -89,7 +90,7 @@ def test_cli_wrapper_fallback_failure(monkeypatch):
 def test_main_block():
     """Test the __main__ block logic in cli.py."""
     with mock.patch("sys.argv", ["onnx9000"]):
-        with mock.patch("sys.exit") as mock_exit:
+        with mock.patch("sys.exit"):
             with mock.patch("onnx9000_cli.main.main") as mock_real_main:
                 with open(onnx9000.cli.__file__) as f:
                     code = compile(f.read(), onnx9000.cli.__file__, "exec")

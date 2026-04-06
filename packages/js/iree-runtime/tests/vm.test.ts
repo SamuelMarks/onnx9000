@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { Module, Context, WVMInterpreter, HALBindings } from '../src/vm.js';
 
 describe('WVM Interpreter', () => {
@@ -125,4 +125,57 @@ it('covers dummy cases for 0x01 and 0x02', async () => {
   const vm = new WVMInterpreter(bc, ctx);
   vm.runSync();
   await vm.runAsync();
+});
+
+import { WASMWVMInterpreter } from '../src/vm.js';
+
+describe('WASMWVMInterpreter', () => {
+  let compileSpy: any;
+  let instantiateSpy: any;
+
+  beforeAll(() => {
+    compileSpy = vi.spyOn(WebAssembly, 'compile').mockResolvedValue({} as any);
+    instantiateSpy = vi
+      .spyOn(WebAssembly, 'instantiate')
+      .mockImplementation(async (mod, imports) => {
+        return {
+          exports: {
+            run: () => {
+              if (imports?.env?.abort) {
+                // We simulate the Wasm calling abort directly here in test if needed,
+                // but actually the test is just checking we can throw or run
+              }
+            },
+          },
+        } as any;
+      });
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('should initialize and run', async () => {
+    const vm = new WASMWVMInterpreter();
+    await vm.initialize(new ArrayBuffer(10));
+    vm.run();
+  });
+
+  it('should throw if not initialized', () => {
+    const vm = new WASMWVMInterpreter();
+    expect(() => vm.run()).toThrow('WASM not initialized');
+  });
+
+  it('should throw if abort is called', async () => {
+    instantiateSpy.mockImplementationOnce(async (mod: any, imports: any) => {
+      return {
+        exports: {
+          run: () => imports.env.abort(),
+        },
+      } as any;
+    });
+    const vm = new WASMWVMInterpreter();
+    await vm.initialize(new ArrayBuffer(10));
+    expect(() => vm.run()).toThrow('WASM Aborted');
+  });
 });

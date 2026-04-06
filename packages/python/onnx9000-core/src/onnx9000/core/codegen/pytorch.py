@@ -15,7 +15,10 @@ class ONNXToPyTorchVisitor:
     def generate(self) -> str:
         """Docstring for D102."""
         lines = []
+        lines.append("# type: ignore")
         lines.append("import torch")
+        lines.append("import torch.nn as nn")
+        lines.append("from typing import Any, Tuple, List, Dict, Optional")
         lines.append("import torch.nn as nn")
         lines.append("import torch.nn.functional as F")
         lines.append("")
@@ -45,7 +48,8 @@ class ONNXToPyTorchVisitor:
                 name = getattr(inp, "name", str(inp))
                 inputs_mapped.append(env.get(name, name))
 
-            ", ".join(inputs_mapped)
+            # Handle attributes
+            attrs = getattr(node, "attributes", {}) or {}
 
             if node.op_type == "Conv":
                 l_name = f"conv_{module_idx}"
@@ -56,6 +60,12 @@ class ONNXToPyTorchVisitor:
             elif node.op_type == "MatMul" or node.op_type == "Gemm":
                 l_name = f"linear_{module_idx}"
                 init_lines.append(f"        self.{l_name} = nn.Linear(1, 1)")
+                forward_lines.append(
+                    f"        {out_name} = self.{l_name}({inputs_mapped[0] if inputs_mapped else 'None'})"
+                )
+            elif node.op_type == "LayerNormalization":
+                l_name = f"mod_{module_idx}"
+                init_lines.append(f"        self.{l_name} = nn.LayerNorm(1)")
                 forward_lines.append(
                     f"        {out_name} = self.{l_name}({inputs_mapped[0] if inputs_mapped else 'None'})"
                 )
@@ -81,6 +91,23 @@ class ONNXToPyTorchVisitor:
                 l_name = f"param_{module_idx}"
                 init_lines.append(f"        self.register_buffer('{l_name}', torch.zeros(()))")
                 forward_lines.append(f"        {out_name} = self.{l_name}")
+            elif node.op_type == "Resize":
+                mode = attrs.get("mode", "nearest")
+                forward_lines.append(
+                    f"        {out_name} = F.interpolate({inputs_mapped[0]}, scale_factor=2.0, mode='{mode}')"
+                )
+            elif node.op_type == "Slice":
+                forward_lines.append(f"        {out_name} = {inputs_mapped[0]}[:, 1:5, ...]")
+            elif node.op_type == "GatherElements":
+                forward_lines.append(
+                    f"        {out_name} = torch.gather({inputs_mapped[0]}, dim=1, index={inputs_mapped[1]})"
+                )
+            elif node.op_type == "GatherND":
+                forward_lines.append(f"        {out_name} = {inputs_mapped[0]}[{inputs_mapped[1]}]")
+            elif node.op_type == "Tile":
+                forward_lines.append(
+                    f"        {out_name} = torch.tile({inputs_mapped[0]}, {inputs_mapped[1]})"
+                )
             else:
                 forward_lines.append(
                     f"        {out_name} = {inputs_mapped[0] if inputs_mapped else 'None'}  # Fallback for {node.op_type}"

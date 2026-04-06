@@ -48,6 +48,44 @@ def generate_activation(
         beta = get_attribute(node, "beta", 0.5)
         b.emit(f"float s_val = {alpha}f * val + {beta}f;")
         b.emit(f"{out_name}[i] = s_val < 0.0f ? 0.0f : (s_val > 1.0f ? 1.0f : s_val);")
+    elif op_type == "Gelu":
+        # Taylor series approximation of GELU if math.h intrinsics missing or for fast approximate
+        b.emit("// Taylor series decomposition for GELU approximate")
+        b.emit("float x = val;")
+        b.emit("float x3 = x * x * x;")
+        b.emit("float tanh_in = 0.7978845608f * (x + 0.044715f * x3);")
+        if use_math_h:
+            b.emit("float tanh_out = tanhf(tanh_in);")
+        else:
+            # Taylor series for tanh up to x^5
+            b.emit("float t2 = tanh_in * tanh_in;")
+            b.emit("float t3 = t2 * tanh_in;")
+            b.emit("float t5 = t3 * t2;")
+            b.emit("float tanh_out = tanh_in - 0.3333333f * t3 + 0.1333333f * t5;")
+        b.emit(f"{out_name}[i] = 0.5f * x * (1.0f + tanh_out);")
+    elif op_type == "Swish":
+        # Swish(x) = x * Sigmoid(x)
+        b.emit("// Taylor series decomposition for Swish")
+        b.emit("float x = val;")
+        if use_math_h:
+            b.emit("float sig = 1.0f / (1.0f + expf(-x));")
+        else:
+            # Taylor series for sigmoid
+            b.emit("float sig = 0.5f + 0.25f * x - 0.0208333f * x * x * x;")
+            b.emit("sig = sig < 0.0f ? 0.0f : (sig > 1.0f ? 1.0f : sig);")
+        b.emit(f"{out_name}[i] = x * sig;")
+    elif op_type == "Mish":
+        # Mish(x) = x * Tanh(Softplus(x))
+        b.emit("// Taylor series decomposition for Mish")
+        b.emit("float x = val;")
+        if use_math_h:
+            b.emit("float sp = logf(1.0f + expf(x));")
+            b.emit("float m_tanh = tanhf(sp);")
+        else:
+            # Taylor approximation for Mish directly: x * x / 2 for small x
+            b.emit("float m_tanh = x;")  # Crude approximation if no math
+        b.emit(f"{out_name}[i] = x * m_tanh;")
+
     elif op_type == "HardSwish":
         b.emit("float s_val = val + 3.0f;")
         b.emit("s_val = s_val < 0.0f ? 0.0f : (s_val > 6.0f ? 6.0f : s_val);")
@@ -87,7 +125,7 @@ def generate_activation(
         b.emit(f"{out_name}[i] = val;")  # Placeholder for input variable extraction
     elif op_type == "PRelu":
         slope_input = "slope"  # we would need the actual name if mapped, using placeholder
-        b.emit(f"/* PRelu fallback, slope mapping required */")
+        b.emit("/* PRelu fallback, slope mapping required */")
         b.emit(f"float s = 0.0f; /* Replace with {slope_input} lookup */")
         b.emit(f"{out_name}[i] = val < 0.0f ? val * s : val;")
 

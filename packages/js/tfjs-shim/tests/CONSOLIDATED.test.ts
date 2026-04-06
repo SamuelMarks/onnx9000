@@ -386,4 +386,59 @@ describe('TFJS Shim Consolidated Tests', () => {
     runBtn.click();
     expect(el.shadowRoot.querySelector('#results').textContent).toContain('Results match!');
   });
+
+  it('should cover branch coverage missing parts', () => {
+    // tf.metrics.categoricalAccuracy without batch dimension
+    const yTrue = tf.tensor1d([0, 1, 0]);
+    const yPred = tf.tensor1d([0.1, 0.9, 0.0]);
+    const acc = tf.metrics.categoricalAccuracy(yTrue, yPred);
+    expect(acc.dataSync()[0]).toBe(1);
+
+    // tf.signal.stft with fftLength
+    const signal = tf.tensor1d([1, 2, 3, 4]);
+    const stftRes = tf.signal.stft(signal, 2, 2, 4);
+    expect(stftRes.shape).toEqual([2, 4]);
+
+    // tf.spectral.rfft with fftLength and 2D shape
+    const rfftInput = tf.tensor2d(
+      [
+        [1, 2],
+        [3, 4],
+      ],
+      [2, 2],
+    );
+    const rfftRes = tf.spectral.rfft(rfftInput, 4);
+    expect(rfftRes.shape).toEqual([2, 3]);
+
+    // tf.fill string fallback
+    const fillRes = tf.fill([2], 'test');
+    expect(fillRes.dtype).toBe('string');
+  });
+
+  it('should cover tf.io mock loaders', async () => {
+    // Mock fetch for browserHTTPRequest
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ mock: 'json' }),
+    } as any);
+
+    const requestLoader = tf.io.browserHTTPRequest('http://localhost');
+    const reqResult = await requestLoader.load();
+    expect(reqResult).toEqual({ mock: 'json' });
+
+    // Test failing fetch
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    } as any);
+    await expect(tf.io.browserHTTPRequest('http://localhost').load()).rejects.toThrow();
+
+    // Test browserFiles
+    const fileLoader = tf.io.browserFiles([new File([''], 'model.json')]);
+    const fileResult = await fileLoader.load();
+    expect(fileResult.modelTopology).toBeDefined();
+
+    // Test empty browserFiles
+    await expect(tf.io.browserFiles([]).load()).rejects.toThrow();
+  });
 });

@@ -1,8 +1,11 @@
 """Tests for Keras 3 parser coverage gaps."""
 
+import pytest
+
+pytest.importorskip("tensorflow")
+pytest.importorskip("keras")
 import keras
 import numpy as np
-import pytest
 from onnx9000.converters.tf.keras_v3_parser import Keras3Parser
 
 

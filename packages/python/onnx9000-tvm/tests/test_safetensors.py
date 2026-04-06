@@ -1,10 +1,11 @@
 """Tests for safetensors."""
 
+import json
+import struct
+import tempfile
+
 import pytest
 from onnx9000.tvm.relay.frontend.safetensors import load_safetensors_weights
-import tempfile
-import struct
-import json
 
 
 def test_load_safetensors_weights():

@@ -82,6 +82,7 @@ class ONNXToKerasVisitor:
         lines = [
             "import keras",
             "import numpy as np",
+            "import tensorflow as tf",
             "from keras import ops",
             "from keras.layers import Input, Dense, Conv2D, Flatten, MaxPooling2D, AveragePooling2D, GlobalAveragePooling2D, Add, Activation, BatchNormalization, Lambda, Permute, SimpleRNN, LSTM, GRU, Dot",
             "",
@@ -116,12 +117,14 @@ class ONNXToKerasVisitor:
                 inputs_mapped.append(env.get(name, name))
 
             in_str = inputs_mapped[0] if inputs_mapped else "None"
+            getattr(node, "attributes", {}) or {}
 
             if node.op_type == "Conv":
                 # Auto-inject spatial permutations mapping NCHW (ONNX) to NHWC (TF) mismatch or data_format
                 lines.append(
                     f"    {out_name}_conv = Conv2D(filters=32, kernel_size=(3,3), padding='same', data_format='channels_first')"
                 )
+                lines.append("    # Ensure OIHW to HWIO weight transpose happens here")
                 lines.append(f"    {out_name} = {out_name}_conv({in_str})")
             elif node.op_type == "Gemm" or node.op_type == "MatMul":
                 lines.append(f"    {out_name}_dense = Dense(units=10)")
@@ -129,13 +132,20 @@ class ONNXToKerasVisitor:
             elif node.op_type == "Relu":
                 lines.append(f"    {out_name} = ops.relu({in_str})")
             elif node.op_type == "Add":
-                lines.append(f"    {out_name} = Add()([{inputs_mapped[0]}, {inputs_mapped[1]}])")
+                lines.append(
+                    f"    {out_name}_broadcast = ops.broadcast_to({inputs_mapped[0]}, ops.shape({inputs_mapped[1]}))"
+                )
+                lines.append(f"    {out_name} = Add()([{out_name}_broadcast, {inputs_mapped[1]}])")
             elif node.op_type == "BatchNormalization":
                 lines.append(f"    {out_name}_bn = BatchNormalization(axis=1)")
                 lines.append(f"    {out_name} = {out_name}_bn({in_str})")
             elif node.op_type == "Transpose":
                 lines.append(f"    {out_name}_perm = Permute((2, 3, 1))")
                 lines.append(f"    {out_name} = {out_name}_perm({in_str})")
+            elif node.op_type == "NonMaxSuppression":
+                lines.append(
+                    f"    {out_name} = tf.image.non_max_suppression({inputs_mapped[0]}, {inputs_mapped[1]}, 100)"
+                )
             else:
                 lines.append(f"    {out_name} = {in_str}  # Fallback for {node.op_type}")
 

@@ -64,8 +64,14 @@ describe('Diffusers coverage', () => {
     const p = await idx.DiffusionPipeline.fromPretrained('repo');
     expect(p.modelIndex).toEqual({ a: 1 });
 
+    // Test failing parseModelIndex
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+    const pFailed = await idx.DiffusionPipeline.fromPretrained('repo-failed');
+    expect(pFailed.modelIndex).toEqual({});
+
     // test callback and normal call
     const cb = vi.fn();
+    p.scheduler.timesteps = []; // force the || 0 fallback
     const callP = await p.call('test', 2, undefined, cb);
     expect(cb).toHaveBeenCalledTimes(2);
 

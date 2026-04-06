@@ -1,0 +1,17 @@
+{
+  "name": "demo-whisper-llm",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/backend-web": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "typescript": "^5.0.0"
+  }
+}

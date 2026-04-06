@@ -1,7 +1,8 @@
 """Tests for coverage all the things."""
 
-import pytest
 import inspect
+
+import pytest
 
 
 def test_touch_everything():

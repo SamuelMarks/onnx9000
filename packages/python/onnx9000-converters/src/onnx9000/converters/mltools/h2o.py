@@ -1,6 +1,7 @@
 """H2O MOJO/POJO parser for pure-Python ONNX conversion."""
 
 from typing import Any
+import json
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
@@ -17,14 +18,35 @@ def parse_h2o(model_data: Any) -> Graph:  # noqa: ANN401
     out_pred = ValueInfo("Y", DType.FLOAT32, ["batch_size", 1])
     graph.outputs.append(out_pred)
 
-    attrs = {"n_targets": Attribute(1, "INT"), "post_transform": Attribute(b"NONE", "STRING")}
+    if isinstance(model_data, str) and model_data.strip().startswith("{"):
+        try:
+            data = json.loads(model_data)
+            algo = data.get("algo", "")
+            if algo == "xgboost":
+                op_type = "TreeEnsembleRegressor"
+                attrs = {"n_targets": Attribute(name="n_targets", attr_type="INT", value=1)}
+            elif algo == "deeplearning":
+                op_type = "MatMul"
+                attrs = {}
+            else:
+                op_type = "Identity"
+                attrs = {}
+        except json.JSONDecodeError:
+            op_type = "TreeEnsembleRegressor"
+            attrs = {"n_targets": Attribute(name="n_targets", attr_type="INT", value=1)}
+    else:
+        op_type = "TreeEnsembleRegressor"
+        attrs = {
+            "n_targets": Attribute(name="n_targets", attr_type="INT", value=1),
+            "post_transform": Attribute(name="post_transform", attr_type="STRING", value=b"NONE"),
+        }
 
     node = Node(
-        op_type="TreeEnsembleRegressor",
+        op_type=op_type,
         inputs=["X"],
         outputs=["Y"],
         attributes=attrs,
-        domain="ai.onnx.ml",
+        domain="ai.onnx.ml" if op_type.startswith("Tree") else "",
     )
     graph.nodes.append(node)
     return graph

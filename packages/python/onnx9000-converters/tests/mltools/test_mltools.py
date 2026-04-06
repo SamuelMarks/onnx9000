@@ -96,10 +96,58 @@ def test_xgboost() -> None:
 
 def test_others() -> None:
     """Tests the others functionality."""
-    assert parse_coreml_model(None) is not None
-    assert parse_h2o(None) is not None
-    assert parse_libsvm(None) is not None
-    assert parse_sparkml_pipeline(None) is not None
+
+    # CoreML
+    class MockCoreMLRegressor:
+        treeEnsembleRegressor = True
+
+    assert parse_coreml_model(MockCoreMLRegressor()).nodes[-1].op_type == "TreeEnsembleRegressor"
+
+    class MockCoreMLClassifier:
+        treeEnsembleClassifier = True
+
+    assert parse_coreml_model(MockCoreMLClassifier()).nodes[-1].op_type == "TreeEnsembleClassifier"
+
+    assert parse_coreml_model(None).nodes[-1].op_type == "Identity"
+
+    # H2O
+    assert parse_h2o(None).nodes[-1].op_type == "TreeEnsembleRegressor"
+    assert parse_h2o('{"algo": "deeplearning"}').nodes[-1].op_type == "MatMul"
+    assert parse_h2o('{"algo": "xgboost"}').nodes[-1].op_type == "TreeEnsembleRegressor"
+    assert parse_h2o('{"algo": "unknown"}').nodes[-1].op_type == "Identity"
+    assert parse_h2o("{bad json").nodes[-1].op_type == "TreeEnsembleRegressor"
+
+    # LibSVM
+    libsvm_text = "svm_type c_svc\n\nkernel_type rbf\nrho -0.2\nSV\n1.5 1:1 2:1\n"
+    g_libsvm = parse_libsvm(libsvm_text)
+    assert g_libsvm.nodes[-1].op_type == "SVMClassifier"
+    assert g_libsvm.nodes[-1].attributes["rho"].value == [-0.2]
+
+    libsvm_text_reg = "svm_type svr\nkernel_type linear\nSV\n"
+    g_libsvm_reg = parse_libsvm(libsvm_text_reg)
+    assert g_libsvm_reg.nodes[-1].op_type == "SVMRegressor"
+
+    # SparkML
+    assert parse_sparkml_pipeline(None).nodes[-1].op_type == "TreeEnsembleRegressor"
+    assert (
+        parse_sparkml_pipeline('{"class": "RandomForest"}').nodes[-1].op_type
+        == "TreeEnsembleRegressor"
+    )
+    assert (
+        parse_sparkml_pipeline(
+            '{"class": "org.apache.spark.ml.classification.LogisticRegressionModel"}'
+        )
+        .nodes[-1]
+        .op_type
+        == "LinearClassifier"
+    )
+    assert (
+        parse_sparkml_pipeline('{"class": "org.apache.spark.ml.regression.LinearRegressionModel"}')
+        .nodes[-1]
+        .op_type
+        == "LinearRegressor"
+    )
+    assert parse_sparkml_pipeline("{bad json").nodes[-1].op_type == "TreeEnsembleRegressor"
 
 
 def test_xgboost_softprob() -> None:

@@ -11,6 +11,12 @@
   },
   "dependencies": {
     "@onnx9000/core": "workspace:*",
-    "@onnx9000/onnx2gguf": "workspace:*"
+    "@onnx9000/onnx2gguf": "workspace:*",
+    "@onnx9000/serve": "workspace:*",
+    "@onnx9000/array": "workspace:*",
+    "@onnx9000/iree-runtime": "workspace:*",
+    "@onnx9000/tensorrt": "workspace:*",
+    "@onnx9000/triton-compiler": "workspace:*",
+    "@onnx9000/openvino-exporter": "workspace:*"
   }
 }

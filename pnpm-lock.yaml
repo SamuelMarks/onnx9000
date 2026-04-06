@@ -86,16 +86,63 @@ importers:
 
   apps/cli:
     dependencies:
+      '@onnx9000/array':
+        specifier: workspace:*
+        version: link:../../packages/js/array
       '@onnx9000/core':
         specifier: workspace:*
         version: link:../../packages/js/core
+      '@onnx9000/iree-runtime':
+        specifier: workspace:*
+        version: link:../../packages/js/iree-runtime
       '@onnx9000/onnx2gguf':
         specifier: workspace:*
         version: link:../../packages/js/onnx2gguf
+      '@onnx9000/openvino-exporter':
+        specifier: workspace:*
+        version: link:../../packages/js/openvino
+      '@onnx9000/serve':
+        specifier: workspace:*
+        version: link:../../packages/js/serve
+      '@onnx9000/tensorrt':
+        specifier: workspace:*
+        version: link:../../packages/js/tensorrt
+      '@onnx9000/triton-compiler':
+        specifier: workspace:*
+        version: link:../../packages/js/triton-compiler
     devDependencies:
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0)
+
+  apps/demo-json-extract:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-llama-web:
+    dependencies:
+      '@onnx9000/backend-web':
+        specifier: workspace:*
+        version: link:../../packages/js/backend-web
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
 
   apps/demo-mmdnn:
     dependencies:
@@ -113,6 +160,19 @@ importers:
         specifier: ^5.0.0
         version: 5.4.11(@types/node@25.5.0)
 
+  apps/demo-pytorch-codegen:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
   apps/demo-tflite-converter:
     dependencies:
       '@onnx9000/converters':
@@ -125,6 +185,22 @@ importers:
         specifier: workspace:*
         version: link:../../packages/js/tflite-exporter
     devDependencies:
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-whisper-llm:
+    dependencies:
+      '@onnx9000/backend-web':
+        specifier: workspace:*
+        version: link:../../packages/js/backend-web
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
       vite:
         specifier: ^5.4.11
         version: 5.4.11(@types/node@25.5.0)
@@ -269,12 +345,24 @@ importers:
       '@onnx9000/coreml':
         specifier: workspace:^
         version: link:../../packages/js/coreml
+      '@onnx9000/diffusers':
+        specifier: workspace:^
+        version: link:../../packages/js/diffusers
       '@onnx9000/iree-compiler':
         specifier: workspace:^
         version: link:../../packages/js/iree-compiler
       '@onnx9000/optimum':
         specifier: workspace:^
         version: link:../../packages/js/optimum
+      '@onnx9000/tfjs-shim':
+        specifier: workspace:^
+        version: link:../../packages/js/tfjs-shim
+      '@onnx9000/transformers':
+        specifier: workspace:^
+        version: link:../../packages/js/transformers
+      '@onnx9000/webnn-polyfill':
+        specifier: workspace:^
+        version: link:../../packages/js/webnn-polyfill
       cytoscape:
         specifier: ^3.33.1
         version: 3.33.1
@@ -602,7 +690,11 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
-  packages/js/tfjs-shim: {}
+  packages/js/tfjs-shim:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:^
+        version: link:../core
 
   packages/js/tflite-exporter:
     dependencies:

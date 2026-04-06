@@ -107,7 +107,8 @@ def test_tui_chat():
     sys.path.insert(0, "apps/cli/src")
     from tui_chat import start_chat_tui
 
-    start_chat_tui()
+    with patch("builtins.input", return_value="exit"):
+        start_chat_tui()
 
 
 def test_info_cmd_coverage(capsys):
@@ -481,7 +482,8 @@ def test_stubs_coverage():
 
         export_cmd(args)
         convert_cmd(args)
-        serve_cmd(args)
+        with patch("socketserver.TCPServer.serve_forever"):
+            serve_cmd(args)
         compile_cmd(args)
 
     with patch("onnx9000_optimum.export.export_model") as m1:
