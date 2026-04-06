@@ -64,7 +64,7 @@ class INetworkDefinition:
 
     def destroy(self):
         """Execute destroy."""
-        if not self.ptr:
+        if not self.ptr or getattr(ffi, "lib", None) is None:
             return
         destroy_net = getattr(ffi.lib, "destroyNetworkDefinition", None)
         if destroy_net:
@@ -87,7 +87,7 @@ class IBuilderConfig:
 
     def destroy(self):
         """Execute destroy."""
-        if not self.ptr:
+        if not self.ptr or getattr(ffi, "lib", None) is None:
             return
         destroy_cfg = getattr(ffi.lib, "destroyBuilderConfig", None)
         if destroy_cfg:

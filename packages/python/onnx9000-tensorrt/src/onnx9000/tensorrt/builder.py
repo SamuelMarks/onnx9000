@@ -116,7 +116,7 @@ class Builder:
 
     def destroy(self):
         """Execute destroy."""
-        if not self.ptr:
+        if not self.ptr or getattr(ffi, "lib", None) is None:
             return
         destroy_builder = getattr(ffi.lib, "destroyInferBuilder", None)
         if destroy_builder:
