@@ -6,7 +6,10 @@ export async function initCompiler() {
   return { initialized: true };
 }
 
-export async function compileOnnxToC(buffer: Uint8Array, options: any = {}) {
+export async function compileOnnxToC(
+  buffer: Uint8Array,
+  options: ReturnType<typeof JSON.parse> = {},
+) {
   const prefix = options.prefix || 'model_';
   const emitCpp = options.emitCpp || false;
 

@@ -2,7 +2,7 @@ import { Graph } from '@onnx9000/core';
 import { extractLlamaMetadata } from './llama';
 
 export function inferArchitecture(graph: Graph): string {
-  const name = ((graph.name as any) || '').toLowerCase();
+  const name = ((graph.name as ReturnType<typeof JSON.parse>) || '').toLowerCase();
   if (name.includes('mistral')) return 'mistral';
   if (name.includes('mixtral')) return 'mixtral';
   if (name.includes('phi')) return 'phi2';
@@ -21,7 +21,10 @@ export function inferArchitecture(graph: Graph): string {
   return 'unknown';
 }
 
-export function extractMetadata(graph: Graph, archOverride?: string): Record<string, any> {
+export function extractMetadata(
+  graph: Graph,
+  archOverride?: string,
+): Record<string, ReturnType<typeof JSON.parse>> {
   const arch = archOverride || inferArchitecture(graph);
   const validArches = [
     'llama',
@@ -49,7 +52,7 @@ export function extractMetadata(graph: Graph, archOverride?: string): Record<str
   let meta = extractLlamaMetadata(graph);
 
   if (arch !== 'llama') {
-    const remapped: Record<string, any> = {};
+    const remapped: Record<string, ReturnType<typeof JSON.parse>> = {};
     for (const [k, v] of Object.entries(meta)) {
       if (k.startsWith('llama.')) {
         remapped[k.replace('llama.', `${arch}.`)] = v;

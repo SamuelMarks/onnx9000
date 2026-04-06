@@ -22,7 +22,7 @@ describe('Final Coverage 3', () => {
 
   it('WebGPUManager multi-GPU target coverage', () => {
     const manager = new WebGPUManager();
-    manager.device = { mock: 'gpu' } as any;
+    manager.device = { mock: 'gpu' } as Object;
     manager.fallbackToWasm = false;
     const target = manager.getTargetDevice('some-model');
     expect(target.type).toBe('webgpu');

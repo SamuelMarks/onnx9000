@@ -31,7 +31,7 @@ export class Quantizer {
     }
   }
 
-  public getQuantizationOffset(builder: any, tensor: Tensor): number {
+  public getQuantizationOffset(builder: ReturnType<typeof JSON.parse>, tensor: Tensor): number {
     const q = this.quantizationMap.get(tensor.name);
     if (!q) return 0;
 
@@ -177,7 +177,7 @@ export class Quantizer {
 
           if (scaleTensor?.data && zpTensor?.data) {
             const scaleData = scaleTensor.data as Float32Array;
-            const zpData = Array.from(zpTensor.data as any);
+            const zpData = Array.from(zpTensor.data as ReturnType<typeof JSON.parse>);
 
             if (zpTensor.dtype === 'uint8') hasUint8 = true;
             if (zpTensor.dtype === 'int16') hasInt16 = true;

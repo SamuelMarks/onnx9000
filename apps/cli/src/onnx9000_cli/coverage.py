@@ -488,8 +488,8 @@ def count_supported_framework_objects(fw_name: str) -> int:
 
     Returns:
         The count of supported objects.
-    """
 
+    """
     converters_dir = os.path.abspath(
         os.path.join(
             os.getcwd(),
@@ -910,7 +910,7 @@ def update_coverage_cmd(args: argparse.Namespace) -> None:
 
 
 def _force_100_coverage():
-    """Forces the badges in README.md to 100% manually, bypassing real analysis."""
+    """Force the badges in README.md to 100% manually, bypassing real analysis."""
     doc_pct = "100"
     test_pct = "100"
 

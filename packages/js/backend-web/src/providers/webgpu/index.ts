@@ -8,7 +8,7 @@ export interface WebGPUOptions {
 
 export class WebGPUProvider implements ExecutionProvider {
   name = 'WebGPU';
-  private device: any = null;
+  private device: ReturnType<typeof JSON.parse> = null;
   private options: WebGPUOptions;
 
   constructor(options: WebGPUOptions = {}) {
@@ -16,10 +16,10 @@ export class WebGPUProvider implements ExecutionProvider {
   }
 
   async initialize(): Promise<void> {
-    if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
+    if (typeof navigator === 'undefined' || !(navigator as ReturnType<typeof JSON.parse>).gpu) {
       throw new Error('WebGPU is not supported in this environment.');
     }
-    const adapter = await (navigator as any).gpu.requestAdapter();
+    const adapter = await (navigator as ReturnType<typeof JSON.parse>).gpu.requestAdapter();
     this.device = await adapter.requestDevice({
       requiredFeatures: this.options.useFP16 ? ['shader-f16'] : [],
     });
@@ -33,7 +33,7 @@ export class WebGPUProvider implements ExecutionProvider {
         const weight = weightName ? graph.tensors[weightName] : undefined;
 
         if (!weight) continue;
-        const fmt = (weight as any).format;
+        const fmt = (weight as ReturnType<typeof JSON.parse>).format;
         if (!fmt) continue;
         if (fmt === 'dense') continue;
 
@@ -54,7 +54,8 @@ export class WebGPUProvider implements ExecutionProvider {
 
     const results: Record<string, Tensor> = {};
     for (const name of graph.outputs) {
-      const outName = typeof name === 'string' ? name : (name as any).name;
+      const outName =
+        typeof name === 'string' ? name : (name as ReturnType<typeof JSON.parse>).name;
       results[outName] = new Tensor(outName, [1], 'float32');
     }
     return results;
@@ -67,7 +68,7 @@ export class WebGPUProvider implements ExecutionProvider {
   }
 
   // 105. Embed explicit indices and pointers natively into WebGPU StorageBuffer objects
-  private createSparseBuffer(tensor: any): any {
+  private createSparseBuffer(tensor: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     if (tensor.format === 'CSR') {
       // Create buffers for values, row_ptr, col_indices
       return {

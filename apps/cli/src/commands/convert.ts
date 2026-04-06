@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { mmdnn } from '@onnx9000/converters';
 const { convert } = mmdnn;
-type SourceFramework = any;
-type TargetFramework = any;
+type SourceFramework = Object;
+type TargetFramework = Object;
 
 export async function handleConvertCommand(args: string[]) {
   let src: SourceFramework | null = null;

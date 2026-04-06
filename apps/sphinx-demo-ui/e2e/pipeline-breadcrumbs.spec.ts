@@ -64,7 +64,9 @@ test.describe('Pipeline Breadcrumbs', () => {
     const btn = page.locator('.demo-breadcrumb-item').nth(0);
     await btn.click();
 
-    const revertId = await page.evaluate(() => (window as any).__REVERT_ID__);
+    const revertId = await page.evaluate(
+      () => (window as ReturnType<typeof JSON.parse>).__REVERT_ID__
+    );
     expect(revertId).toBe('uuid-123');
   });
 });

@@ -17,14 +17,14 @@ test.describe('LHS (Source) Implementation', () => {
   });
 
   test('should verify changing LHS dropdown updates the file tree', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-lhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-lhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-lhs .demo-file-tree');
 
     // Default tree shows 'example' (which is the default dummy root we set originally)
     // Actually, in LHSContainer we default to LHS_SOURCES.keras
-    await expect(tree).toContainText('keras-model');
+    await expect(tree).toContainText('keras-mnist');
     await expect(tree).toContainText('model.h5');
 
     // Click to open dropdown
@@ -35,9 +35,9 @@ test.describe('LHS (Source) Implementation', () => {
     const item = listbox.locator('.demo-dropdown-item').filter({ hasText: 'Scikit-Learn' });
     await item.click();
 
-    // Verify tree updated to sklearn-pipeline
-    await expect(tree).toContainText('sklearn-pipeline');
-    await expect(tree).toContainText('pipeline.pkl');
+    // Verify tree updated to sklearn-rf
+    await expect(tree).toContainText('sklearn-rf');
+    await expect(tree).toContainText('pipeline.json');
   });
 
   test('should verify clicking an LHS file updates the LHS Monaco editor', async ({ page }) => {
@@ -45,20 +45,20 @@ test.describe('LHS (Source) Implementation', () => {
     const editorLines = page.locator('.demo-pane-lhs .demo-editor-container .view-lines');
 
     // Make sure we have the initial Keras files
-    await expect(tree).toContainText('keras-model');
+    await expect(tree).toContainText('keras-mnist');
 
     // Click model.h5
     const file1 = tree.locator('.demo-tree-file').filter({ hasText: 'model.h5' });
     await file1.click();
 
     // Editor updates
-    await expect(editorLines).toContainText('# /keras-model/model.h5');
+    await expect(editorLines).toContainText('# /keras-mnist/model.h5');
 
     // Click train.py
     const file2 = tree.locator('.demo-tree-file').filter({ hasText: 'train.py' });
     await file2.click();
 
     // Editor updates
-    await expect(editorLines).toContainText('# /keras-model/train.py');
+    await expect(editorLines).toContainText('import keras');
   });
 });

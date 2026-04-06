@@ -86,7 +86,7 @@ describe('CNTK Mapper', () => {
 
   const createNode = (
     op: string,
-    attributes: Record<string, any> = {},
+    attributes: Record<string, Object> = {},
     inputs: string[] = ['in1', 'in2'],
   ): CNTKNode => ({
     name: `test_${op}`,

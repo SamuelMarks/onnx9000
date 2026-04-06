@@ -8,7 +8,9 @@ describe('Transformers Exports', () => {
     const res = await pipe('hello');
     expect(res).toEqual([{ generated_text: 'hello [GENERATED]' }]);
 
-    await expect(t.pipeline('unknown')).rejects.toThrow('Unsupported task: unknown');
+    await expect(t.pipeline('unknown' as Parameters<typeof t.pipeline>[0])).rejects.toThrow(
+      'Unsupported task: unknown',
+    );
   });
 
   it('should export models', async () => {

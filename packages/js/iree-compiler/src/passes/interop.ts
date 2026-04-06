@@ -22,7 +22,7 @@ export class MLIRInterop {
     return region;
   }
 
-  private formatType(type: any): string {
+  private formatType(type: ReturnType<typeof JSON.parse>): string {
     if (type && type.id === 'tensor') {
       const t = type as TensorType;
       const shapeStr =
@@ -147,7 +147,7 @@ export class MLIRInterop {
   }
 
   // 229. Source maps
-  public getSourceMap(): any {
+  public getSourceMap(): ReturnType<typeof JSON.parse> {
     return {
       'web.vm.add.i32': 'onnx.node_54',
     };

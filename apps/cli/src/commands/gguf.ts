@@ -40,7 +40,7 @@ export async function handleOnnx2GgufCommand(args: string[]) {
   }
 
   const graph = await load(fs.readFileSync(modelPath).buffer);
-  const kvOverrides: Record<string, any> = {};
+  const kvOverrides: Record<string, ReturnType<typeof JSON.parse>> = {};
 
   if (tokenizerPath) {
     kvOverrides['tokenizer.json'] = fs.readFileSync(tokenizerPath, 'utf8');

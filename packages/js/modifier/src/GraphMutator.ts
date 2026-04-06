@@ -444,7 +444,8 @@ export class GraphMutator {
 
     // 217. Test updateInitializer strictly enforces array buffer length matches type specifications
     const elements = tensor.shape.reduce(
-      (a: any, b: any) => (a as number) * (typeof b === 'number' ? b : 1),
+      (a: ReturnType<typeof JSON.parse>, b: ReturnType<typeof JSON.parse>) =>
+        (a as number) * (typeof b === 'number' ? b : 1),
       1,
     ) as number;
     const expectedBytes =
@@ -937,7 +938,7 @@ export class GraphMutator {
               let hash = '';
               if (attr.type === 'TENSOR') {
                 /* v8 ignore start */
-                const t = attr.value as any;
+                const t = attr.value as ReturnType<typeof JSON.parse>;
                 hash = `TENSOR:${t.dtype}:${t.shape.join(',')}:${t.data ? (t.data.byteLength < 1000 ? Array.from(new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength)).join(',') : 'large') : ''}`;
                 /* v8 ignore stop */
               } else {

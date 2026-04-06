@@ -35,7 +35,7 @@ describe('TFJS Shim Consolidated Tests', () => {
     tf.maxPool3d(x5d, 2, 1, 1); // numeric pad
     tf.avgPool3d(x5d, 2, 1, 1); // numeric pad
 
-    (tf as any).pool(x4d, 2, 'max', 1, 1, 1); // numeric pad
+    (tf as Object).pool(x4d, 2, 'max', 1, 1, 1); // numeric pad
 
     tf.conv2d(x4d, w4d, 1, 1); // numeric pad
     tf.depthwiseConv2d(x4d, w4d, 1, 1); // numeric pad
@@ -58,11 +58,11 @@ describe('TFJS Shim Consolidated Tests', () => {
     tf.image.cropAndResize(img, boxes, boxInd, [2, 2], 'bilinear');
     tf.image.cropAndResize(img, boxes, boxInd, [2, 2], 'nearest');
 
-    tf.browser.fromPixels({ width: 2, height: 2 } as any);
+    tf.browser.fromPixels({ width: 2, height: 2 } as Object);
   });
 
   it('should cover LayersModel and Layer', () => {
-    const l = new (tf as any).layers.Layer({ name: 'test' });
+    const l = new (tf as Object).layers.Layer({ name: 'test' });
     expect(l.getWeights()).toEqual([]);
     l.setWeights([]);
 
@@ -75,22 +75,22 @@ describe('TFJS Shim Consolidated Tests', () => {
   });
 
   it('should cover model and grad', () => {
-    const m = model({ inputs: [], outputs: [] } as any);
+    const m = model({ inputs: [], outputs: [] } as Object);
     expect(m).toBeDefined();
 
     const f = (x: Tensor) => tf.sum(tf.mul(x, x));
-    const gradFn = grad(f as any);
+    const gradFn = grad(f as Object);
     const g = gradFn(tf.tensor1d([1, 2]), tf.tensor1d([1]));
     expect(g.size).toBe(2);
   });
 
   it('should cover grads and valueAndGrad', () => {
     const f = (x: Tensor) => tf.sum(tf.mul(x, x));
-    const gradFn = grads(f as any);
+    const gradFn = grads(f as Object);
     const g = gradFn(tf.tensor1d([1, 2]));
     expect(g[0].size).toBe(2);
 
-    const vgFn = valueAndGrad(f as any);
+    const vgFn = valueAndGrad(f as Object);
     const { value, grads: gs } = vgFn(tf.tensor1d([1, 2]));
     expect(value).toBeDefined();
     expect(gs.length).toBe(1);
@@ -98,7 +98,7 @@ describe('TFJS Shim Consolidated Tests', () => {
 
   it('should cover customGrad', () => {
     const f = (x: Tensor) => ({ value: x, gradFunc: (dy: Tensor) => dy });
-    const g = customGrad(f as any);
+    const g = customGrad(f as Object);
     g(a);
   });
 
@@ -236,7 +236,7 @@ describe('TFJS Shim Consolidated Tests', () => {
     tf.avgPool(x4d, 2, 2, 'valid');
 
     const x3d = tf.tensor(new Float32Array(8), [2, 2, 2]);
-    (tf as any).pool(x3d, 2, 'max', 'same'); // 3D input pool
+    (tf as Object).pool(x3d, 2, 'max', 'same'); // 3D input pool
 
     const x5d = tf.tensor(new Float32Array(64), [1, 4, 4, 4, 1]);
     const w5d = tf.tensor(new Float32Array(8), [2, 2, 2, 1, 1]);
@@ -277,7 +277,7 @@ describe('TFJS Shim Consolidated Tests', () => {
     tf.image.flipLeftRight(img);
 
     const pixels = { data: new Uint8Array(16), width: 2, height: 2 };
-    tf.browser.fromPixels(pixels as any);
+    tf.browser.fromPixels(pixels as Object);
     await tf.browser.toPixels(tf.tensor1d([0, 0.5, 1]));
   });
 
@@ -378,7 +378,7 @@ describe('TFJS Shim Consolidated Tests', () => {
   });
 
   it('should cover UI demo element', () => {
-    const el = document.createElement('tfjs-shim-demo') as any;
+    const el = document.createElement('tfjs-shim-demo') as Object;
     document.body.appendChild(el);
     expect(el.shadowRoot.innerHTML).toContain('TF.js vs onnx9000 Shim');
 
@@ -420,7 +420,7 @@ describe('TFJS Shim Consolidated Tests', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ mock: 'json' }),
-    } as any);
+    } as Object);
 
     const requestLoader = tf.io.browserHTTPRequest('http://localhost');
     const reqResult = await requestLoader.load();
@@ -430,7 +430,7 @@ describe('TFJS Shim Consolidated Tests', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
-    } as any);
+    } as Object);
     await expect(tf.io.browserHTTPRequest('http://localhost').load()).rejects.toThrow();
 
     // Test browserFiles

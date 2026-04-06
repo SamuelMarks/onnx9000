@@ -69,5 +69,5 @@ test('reconstructONNX', () => {
   expect(opTypes).toContain('QuantizeLinear');
   expect(opTypes).toContain('MatMul');
 
-  expect((g as any).reconstructedVocab).toEqual(['a', 'b']);
+  expect((g as Object).reconstructedVocab).toEqual(['a', 'b']);
 });

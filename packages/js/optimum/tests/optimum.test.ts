@@ -5,20 +5,20 @@ import { exportModel, optimize, simplify, quantize, Quantizer } from '../src/ind
 describe('@onnx9000/optimum', () => {
   const createMockGraph = () => {
     const graph = new Graph('TestGraph');
-    graph.inputs = [{ name: 'input_1', type: 'tensor', shape: [1, 3, 224, 224] }] as any;
+    graph.inputs = [{ name: 'input_1', type: 'tensor', shape: [1, 3, 224, 224] }] as Object;
     graph.outputs = [
       { name: 'output_1', type: 'tensor', shape: [1, 1000] },
       { name: 'identity_output', type: 'tensor', shape: [1, 1000] },
-    ] as any;
+    ] as Object;
     graph.initializers = ['weight_1', 'other_weight'];
     graph.tensors = {
-      weight_1: { dtype: 'float32', shape: [32, 3, 3, 3], buffer: new Float32Array(0) } as any,
-      other_weight: { dtype: 'int32', shape: [1], buffer: new Int32Array(0) } as any,
+      weight_1: { dtype: 'float32', shape: [32, 3, 3, 3], buffer: new Float32Array(0) } as Object,
+      other_weight: { dtype: 'int32', shape: [1], buffer: new Int32Array(0) } as Object,
     };
 
     const convNode = new Node('Conv', ['input_1', 'weight_1'], ['conv_out'], {
       strides: [1, 1],
-    } as any);
+    } as Object);
     const idNode = new Node('Identity', ['conv_out'], ['id_out']);
     const reluNode = new Node('Relu', ['id_out'], ['relu_out']);
 
@@ -91,7 +91,7 @@ describe('@onnx9000/optimum', () => {
   it('should not fuse Conv+Relu if Conv output has multiple consumers', async () => {
     const graph = createMockGraph();
     // Let's modify Extra to output to 'output_1' AND 'second_relu_out' to force it to be kept
-    graph.outputs.push({ name: 'second_relu_out', type: 'tensor', shape: [] } as any);
+    graph.outputs.push({ name: 'second_relu_out', type: 'tensor', shape: [] } as Object);
 
     const optGraph = await optimize(graph, { disableFusion: false });
 

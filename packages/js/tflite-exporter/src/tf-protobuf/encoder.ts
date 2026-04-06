@@ -11,7 +11,7 @@ export interface NodeDef {
   name: string;
   op: string;
   input: string[];
-  attr: Record<string, any>;
+  attr: Record<string, ReturnType<typeof JSON.parse>>;
 }
 
 export interface GraphDef {
@@ -22,7 +22,7 @@ export interface GraphDef {
 // 248. Define TF SignatureDef schema natively.
 export interface TensorInfo {
   dtype: number;
-  tensorShape: any; // TensorShapeProto
+  tensorShape: ReturnType<typeof JSON.parse>; // TensorShapeProto
   name: string;
 }
 
@@ -33,7 +33,7 @@ export interface SignatureDef {
 }
 
 export interface MetaGraphDef {
-  metaInfoDef: any;
+  metaInfoDef: ReturnType<typeof JSON.parse>;
   graphDef: GraphDef;
   signatureDef: Record<string, SignatureDef>;
 }

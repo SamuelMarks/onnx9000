@@ -17,7 +17,7 @@ test('onnx2gguf dry run', async () => {
 });
 
 test('onnx2gguf massive', async () => {
-  vi.spyOn(fs, 'statSync').mockReturnValue({ size: 80_000_000_000 } as any);
+  vi.spyOn(fs, 'statSync').mockReturnValue({ size: 80_000_000_000 } as Object);
   const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
   await handleOnnx2GgufCommand(['dummy.onnx']);
   expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Massive model detected'));
@@ -25,10 +25,10 @@ test('onnx2gguf massive', async () => {
 });
 
 test('onnx2gguf compile', async () => {
-  vi.spyOn(fs, 'statSync').mockReturnValue({ size: 100 } as any);
+  vi.spyOn(fs, 'statSync').mockReturnValue({ size: 100 } as Object);
   vi.spyOn(fs, 'readFileSync').mockReturnValue(Buffer.from(''));
   const writeSpy = vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-  vi.mocked(core.load).mockResolvedValue('graph' as any);
+  vi.mocked(core.load).mockResolvedValue('graph' as Object);
   vi.spyOn(onnx2gguf, 'compileGGUF').mockReturnValue(new ArrayBuffer(10));
 
   await handleOnnx2GgufCommand([
@@ -49,9 +49,9 @@ test('onnx2gguf compile', async () => {
 test('gguf2onnx reconstruct', async () => {
   vi.spyOn(fs, 'readFileSync').mockReturnValue(Buffer.from(''));
   const writeSpy = vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-  vi.spyOn(onnx2gguf, 'GGUFReader').mockImplementation(() => ({}) as any);
-  vi.spyOn(onnx2gguf, 'reconstructONNX').mockReturnValue('graph' as any);
-  vi.mocked(core.save).mockResolvedValue(new ArrayBuffer(10) as any);
+  vi.spyOn(onnx2gguf, 'GGUFReader').mockImplementation(() => ({}) as Object);
+  vi.spyOn(onnx2gguf, 'reconstructONNX').mockReturnValue('graph' as Object);
+  vi.mocked(core.save).mockResolvedValue(new ArrayBuffer(10) as Object);
 
   await handleGguf2OnnxCommand(['dummy.gguf', '-o', 'dummy.onnx']);
   expect(writeSpy).toHaveBeenCalled();

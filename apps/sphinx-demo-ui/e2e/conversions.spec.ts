@@ -27,7 +27,7 @@ test.describe('End-to-end format conversions', () => {
     await expect(overlay).toBeHidden({ timeout: 15000 });
   });
 
-  const runLHSConversion = async (page: any, sourceFramework: string) => {
+  const runLHSConversion = async (page: ReturnType<typeof JSON.parse>, sourceFramework: string) => {
     const sourceDropdown = page.locator('.demo-pane-lhs .demo-dropdown').first();
     await sourceDropdown.click();
     await page
@@ -40,7 +40,11 @@ test.describe('End-to-end format conversions', () => {
     await expect(rhsRunBtn).toBeEnabled({ timeout: 30000 });
   };
 
-  const testPermutation = async (page: any, target: string, expectedSnippet: string) => {
+  const testPermutation = async (
+    page: ReturnType<typeof JSON.parse>,
+    target: string,
+    expectedSnippet: string
+  ) => {
     const targetDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await targetDropdown.click();
     await page

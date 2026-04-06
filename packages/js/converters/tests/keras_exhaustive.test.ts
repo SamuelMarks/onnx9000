@@ -51,7 +51,7 @@ describe('Keras2OnnxConverter Exhaustive Coverage', () => {
     converter.convert();
 
     // Manual handler calls for rare ones
-    const handlers = (converter as any).handlers as Map<string, any>;
+    const handlers = (converter as Object).handlers as Map<string, Object>;
     for (const [className, handler] of handlers.entries()) {
       try {
         handler(

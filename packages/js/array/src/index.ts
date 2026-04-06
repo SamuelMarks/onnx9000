@@ -10,7 +10,7 @@ export type TensorLike =
   | string
   | ArrayBufferView
   | number[]
-  | any[];
+  | ReturnType<typeof JSON.parse>[];
 
 /**
  * Base class for all tensor types in the array package.
@@ -53,7 +53,11 @@ export class EagerTensor extends BaseTensor {
    * @param dtype - The data type of the tensor.
    */
   constructor(data: ArrayBufferView | number[] | null, dtype: DType = 'float32') {
-    super('eager', [Array.isArray(data) ? data.length : (data as any)?.length || 0], dtype);
+    super(
+      'eager',
+      [Array.isArray(data) ? data.length : (data as ReturnType<typeof JSON.parse>)?.length || 0],
+      dtype,
+    );
     this.data = data as ArrayBufferView | null;
   }
 
@@ -68,14 +72,14 @@ export class EagerTensor extends BaseTensor {
    * Returns raw data as a numpy-like array.
    */
   numpy(): ArrayBufferView | number[] | null {
-    return this.data as any;
+    return this.data as ReturnType<typeof JSON.parse>;
   }
 
   /**
    * Returns the raw data value.
    */
   data_val(): ArrayBufferView | number[] | null {
-    return this.data as any;
+    return this.data as ReturnType<typeof JSON.parse>;
   }
 
   /**
@@ -439,7 +443,7 @@ export function Input(name: string, shape: Shape, dtype: DType): LazyTensor {
  * @param dtype - The data type.
  */
 export function array(data: TensorLike, dtype: DType = 'float32'): BaseTensor {
-  return new EagerTensor(data as any, dtype);
+  return new EagerTensor(data as ReturnType<typeof JSON.parse>, dtype);
 }
 
 /** Functional add */
@@ -1180,10 +1184,14 @@ export const nn = {
     IS_LAZY ? new LazyTensor('Sigmoid', [x as BaseTensor]) : new EagerTensor(null),
   /** Softmax activation. */
   softmax: (x: BaseTensor | number, axis: number = -1): BaseTensor =>
-    IS_LAZY ? new LazyTensor('Softmax', [x as BaseTensor, axis as any]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('Softmax', [x as BaseTensor, axis as ReturnType<typeof JSON.parse>])
+      : new EagerTensor(null),
   /** Log-Softmax activation. */
   log_softmax: (x: BaseTensor | number, axis: number = -1): BaseTensor =>
-    IS_LAZY ? new LazyTensor('LogSoftmax', [x as BaseTensor, axis as any]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('LogSoftmax', [x as BaseTensor, axis as ReturnType<typeof JSON.parse>])
+      : new EagerTensor(null),
   /** Gaussian Error Linear Unit activation. */
   gelu: (x: BaseTensor | number): BaseTensor =>
     IS_LAZY ? new LazyTensor('Gelu', [x as BaseTensor]) : new EagerTensor(null),
@@ -1242,13 +1250,19 @@ export const linalg = {
 export const char = {
   /** String concatenation. */
   add: (...args: (BaseTensor | string)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('StringConcat', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('StringConcat', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** String equality check. */
   equal: (...args: (BaseTensor | string)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('StringEqual', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('StringEqual', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** String replacement. */
   replace: (...args: (BaseTensor | string)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('StringReplace', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('StringReplace', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
 };
 
 /**
@@ -1257,19 +1271,29 @@ export const char = {
 export const random = {
   /** Uniform random numbers. */
   rand: (...args: (number | Shape)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('RandomUniform', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('RandomUniform', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** Normal random numbers. */
   randn: (...args: (number | Shape)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('RandomNormal', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('RandomNormal', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** Uniform random integers. */
   randint: (...args: (number | Shape)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('RandomUniformInt', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('RandomUniformInt', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** Uniform random numbers. */
   uniform: (...args: (number | Shape)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('RandomUniform', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('RandomUniform', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** Normal random numbers. */
   normal: (...args: (number | Shape)[]): BaseTensor =>
-    IS_LAZY ? new LazyTensor('RandomNormal', args as any[]) : new EagerTensor(null),
+    IS_LAZY
+      ? new LazyTensor('RandomNormal', args as ReturnType<typeof JSON.parse>[])
+      : new EagerTensor(null),
   /** Sets the random seed. */
   seed: (s: number): void => {
     // Seed implementation

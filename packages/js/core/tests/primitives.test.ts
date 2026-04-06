@@ -10,7 +10,7 @@ import {
 } from '../src/primitives.js';
 
 class MockBaseNorm extends BaseNorm {
-  call(...args: any[]): Tensor {
+  call(...args: Object[]): Tensor {
     return new Tensor('mock', [], 1);
   }
 }

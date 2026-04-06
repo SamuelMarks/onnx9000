@@ -14,7 +14,7 @@ describe('TensorRT wrapper coverage', () => {
   it('handles tensorrt success', async () => {
     vi.doMock('@onnx9000/tensorrt', () => ({
       TensorRTProvider: class {
-        constructor(g: any) {}
+        constructor(g: Object) {}
       },
     }));
 

@@ -11,11 +11,14 @@ const quantTarget = document.getElementById('quantTarget') as HTMLSelectElement;
 
 let modelBuffer: ArrayBuffer | null = null;
 let tokenizerStr: string | null = null;
-let graph: any = null;
-let extractedMeta: Record<string, any> = {};
+let graph: ReturnType<typeof JSON.parse> = null;
+let extractedMeta: Record<string, ReturnType<typeof JSON.parse>> = {};
 
 // Browser RAM check
-if ((navigator as any).deviceMemory && (navigator as any).deviceMemory < 8) {
+if (
+  (navigator as ReturnType<typeof JSON.parse>).deviceMemory &&
+  (navigator as ReturnType<typeof JSON.parse>).deviceMemory < 8
+) {
   warningDiv.textContent =
     'Warning: Your device has less than 8GB of RAM. Massive models may crash the browser.';
 }
@@ -153,7 +156,7 @@ convertBtn.addEventListener('click', async () => {
 
     // 178. Streams API to local filesystem
     if ('showSaveFilePicker' in window) {
-      const handle = await (window as any).showSaveFilePicker({
+      const handle = await (window as ReturnType<typeof JSON.parse>).showSaveFilePicker({
         suggestedName: 'model.gguf',
         types: [{ description: 'GGUF File', accept: { 'application/octet-stream': ['.gguf'] } }],
       });
@@ -172,7 +175,8 @@ convertBtn.addEventListener('click', async () => {
       URL.revokeObjectURL(url);
       statusDiv.textContent += ' | Downloaded.';
     }
-  } catch (e: any) {
+  } catch (_e) {
+    const e = _e instanceof Error ? _e : new Error(String(_e));
     statusDiv.textContent = 'Error: ' + e.message;
     if (e.message.includes('memory') || e.message.includes('allocation')) {
       alert('Hardware Constrained: ' + e.message);

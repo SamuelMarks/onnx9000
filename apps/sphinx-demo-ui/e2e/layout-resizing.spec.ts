@@ -4,7 +4,16 @@ test.describe('Layout Resizing', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
-    await page.reload();
+    // Load WASM and wait for overlay to vanish
+    const overlayBtn = page.locator('.demo-wasm-overlay .demo-btn-primary');
+    if (await overlayBtn.isVisible()) {
+      await page.route('/onnx9000.wasm', async (route) => {
+        const dummyWasm = Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
+        await route.fulfill({ status: 200, contentType: 'application/wasm', body: dummyWasm });
+      });
+      await overlayBtn.click();
+      await page.locator('.demo-wasm-overlay').waitFor({ state: 'hidden' });
+    }
   });
 
   test('should verify dragging horizontal splitter changes LHS/RHS widths', async ({ page }) => {

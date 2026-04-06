@@ -23,7 +23,7 @@ describe('ArrayAPI', () => {
   });
 
   it('tensor manipulation', () => {
-    const t = [1, 2, 3, 4] as any;
+    const t = [1, 2, 3, 4] as Object;
     expect(ArrayAPI.view(t, [2, 2])).toBe(t);
     expect(ArrayAPI.reshape(t, [2, 2])).toBe(t);
     expect(ArrayAPI.transpose(t, [1, 0])).toBe(t);

@@ -17,9 +17,9 @@ import { Breadcrumbs } from './components/Breadcrumbs';
 import { WasmManager, WasmState } from './core/WasmManager';
 
 // Expose these ecosystem packages to the window for console usage and to ensure they are bundled.
-(window as any).tf = tf;
-(window as any).transformers = transformers;
-(window as any).diffusers = diffusers;
+(window as ReturnType<typeof JSON.parse>).tf = tf;
+(window as ReturnType<typeof JSON.parse>).transformers = transformers;
+(window as ReturnType<typeof JSON.parse>).diffusers = diffusers;
 
 /**
  * Main entry point for the Sphinx Demo UI.

@@ -2,9 +2,9 @@ import { Graph, Node } from '@onnx9000/core';
 
 export class Pattern {
   public opType: string;
-  public inputs: any[];
+  public inputs: ReturnType<typeof JSON.parse>[];
 
-  constructor(opType: string, inputs: any[] = []) {
+  constructor(opType: string, inputs: ReturnType<typeof JSON.parse>[] = []) {
     this.opType = opType;
     this.inputs = inputs;
   }

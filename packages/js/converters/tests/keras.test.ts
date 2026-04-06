@@ -169,12 +169,12 @@ describe('Keras Module', () => {
       {
         paths: ['shard1.bin'],
         weights: [
-          { name: 'w', shape: [2, 2], dtype: 'float32' as any },
-          { name: 'w2', shape: [2, 2], dtype: 'int32' as any },
-          { name: 'w3', shape: [2, 2], dtype: 'uint8' as any },
-          { name: 'w4', shape: [2, 2], dtype: 'bool' as any },
-          { name: 'w5', shape: [2, 2], dtype: 'complex64' as any },
-          { name: 'w6', shape: [2, 2], dtype: 'float16' as any },
+          { name: 'w', shape: [2, 2], dtype: 'float32' as Object },
+          { name: 'w2', shape: [2, 2], dtype: 'int32' as Object },
+          { name: 'w3', shape: [2, 2], dtype: 'uint8' as Object },
+          { name: 'w4', shape: [2, 2], dtype: 'bool' as Object },
+          { name: 'w5', shape: [2, 2], dtype: 'complex64' as Object },
+          { name: 'w6', shape: [2, 2], dtype: 'float16' as Object },
         ],
       },
     ];
@@ -188,7 +188,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'string' as any }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'string' as Object }],
       },
     ];
     const fetcher = async () => new Uint8Array(16).buffer;
@@ -199,7 +199,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'unknown' as any }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'unknown' as Object }],
       },
     ];
     const fetcher = async () => new Uint8Array(16).buffer;
@@ -210,7 +210,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'float32' as any }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'float32' as Object }],
       },
     ];
 

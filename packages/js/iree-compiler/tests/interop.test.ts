@@ -26,7 +26,7 @@ describe('MLIR Interop', () => {
     region.pushBlock(block);
 
     // Add args to block
-    block.args.push(new Value({ id: 'none' } as any));
+    block.args.push(new Value({ id: 'none' } as Object));
     block.args.push(new Value(new TensorType([2], 'float32')));
     block.args.push(new Value(new TensorType([2], 'int64')));
     block.args.push(new Value(new TensorType([-1], 'int32')));

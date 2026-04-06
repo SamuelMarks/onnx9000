@@ -7,7 +7,7 @@ describe('Coverage Modifier App interactions', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     const handler = {
-      get(target: any, prop: string) {
+      get(target: Object, prop: string) {
         if (prop === 'measureText') return vi.fn().mockReturnValue({ width: 10 });
         if (prop in target) return target[prop];
         return vi.fn();
@@ -30,11 +30,11 @@ describe('Coverage Modifier App interactions', () => {
     });
 
     // 1. autoFixMissingInitializers
-    if ((app as any).initializerInspector && (app as any).initializerInspector.config) {
-      if ((app as any).initializerInspector.config.onAutoFix)
-        (app as any).initializerInspector.config.onAutoFix();
-      if ((app as any).initializerInspector.config.onStripInitializers)
-        (app as any).initializerInspector.config.onStripInitializers();
+    if ((app as Object).initializerInspector && (app as Object).initializerInspector.config) {
+      if ((app as Object).initializerInspector.config.onAutoFix)
+        (app as Object).initializerInspector.config.onAutoFix();
+      if ((app as Object).initializerInspector.config.onStripInitializers)
+        (app as Object).initializerInspector.config.onStripInitializers();
     }
 
     // 2. Keyboard event for duplicate: ctrl+d

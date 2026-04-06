@@ -6,7 +6,7 @@ describe('debug.js', () => {
   it('should run debug script', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     // Mock load to return a dummy graph
-    vi.spyOn(index, 'load').mockResolvedValue({ nodes: [] } as any);
+    vi.spyOn(index, 'load').mockResolvedValue({ nodes: [] } as Object);
 
     process.env.DEBUG_FORCE_RUN = 'true';
     await run();

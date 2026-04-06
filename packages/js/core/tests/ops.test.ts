@@ -81,6 +81,6 @@ describe('Standard Operators', () => {
     // For AddOp, if both null, returns []
     expect(new AddOp().execute([], {})).toEqual([]);
     // If one null, returns the other one (fallback = a || b)
-    expect(new AddOp().execute([t, null as any], {})[0]).toBe(t);
+    expect(new AddOp().execute([t, null as Object], {})[0]).toBe(t);
   });
 });

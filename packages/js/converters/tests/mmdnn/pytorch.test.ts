@@ -26,17 +26,17 @@ describe('MMDNN - PyTorch Code Generation', () => {
       graph.tensors['ten'] = new Tensor('ten', [6, 7], 'float32');
 
       const generator = new PyTorchGenerator(graph);
-      expect((generator as any).getShape('inp')).toEqual([2, 3]);
-      expect((generator as any).getShape('val')).toEqual([4, 5]);
-      expect((generator as any).getShape('ten')).toEqual([6, 7]);
-      expect((generator as any).getShape('unknown')).toBeNull();
+      expect((generator as Object).getShape('inp')).toEqual([2, 3]);
+      expect((generator as Object).getShape('val')).toEqual([4, 5]);
+      expect((generator as Object).getShape('ten')).toEqual([6, 7]);
+      expect((generator as Object).getShape('unknown')).toBeNull();
     });
 
     it('should formatTuple correctly', () => {
       const graph = createGraph();
       const generator = new PyTorchGenerator(graph);
-      expect((generator as any).formatTuple([1])).toEqual('(1,)');
-      expect((generator as any).formatTuple([1, 2, 3])).toEqual('(1, 2, 3)');
+      expect((generator as Object).formatTuple([1])).toEqual('(1,)');
+      expect((generator as Object).formatTuple([1, 2, 3])).toEqual('(1, 2, 3)');
     });
 
     it('should generate Conv node', () => {
@@ -233,7 +233,7 @@ describe('MMDNN - PyTorch Code Generation', () => {
 
     it('should handle a missing node in the nodes array gracefully', () => {
       const graph = createGraph();
-      graph.nodes = [undefined as any]; // Force undefined
+      graph.nodes = [undefined as Object]; // Force undefined
       const code = new PyTorchGenerator(graph).generate();
       expect(code).toContain('pass'); // No error, just empty forward
     });
@@ -255,7 +255,7 @@ describe('MMDNN - PyTorch Code Generation', () => {
     it('should add prevNode to currentSeq and continue if prevNode has undefined outputs', () => {
       const graph = createGraph();
       graph.inputs = [new ValueInfo('x', [1], 'float32')];
-      const relu1 = new Node('Relu', ['x'], [undefined as any]);
+      const relu1 = new Node('Relu', ['x'], [undefined as Object]);
       const relu2 = new Node('Relu', ['x'], ['r2']);
       graph.nodes = [relu1, relu2];
       const code = new PyTorchGenerator(graph).generate();
@@ -275,7 +275,7 @@ describe('MMDNN - PyTorch Code Generation', () => {
       expect(PyTorchSerializer.getStorageClass('int8')).toBe('CharStorage');
       expect(PyTorchSerializer.getStorageClass('uint8')).toBe('ByteStorage');
       expect(PyTorchSerializer.getStorageClass('bool')).toBe('BoolStorage');
-      expect(PyTorchSerializer.getStorageClass('unknown' as any)).toBe('FloatStorage');
+      expect(PyTorchSerializer.getStorageClass('unknown' as Object)).toBe('FloatStorage');
     });
 
     it('should serialize empty tensors array', () => {
@@ -284,7 +284,7 @@ describe('MMDNN - PyTorch Code Generation', () => {
     });
 
     it('should skip undefined tensors gracefully', () => {
-      const bytes = PyTorchSerializer.serialize([undefined as any]);
+      const bytes = PyTorchSerializer.serialize([undefined as Object]);
       expect(bytes).toBeDefined();
     });
 

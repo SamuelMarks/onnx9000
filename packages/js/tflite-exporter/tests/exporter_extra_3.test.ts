@@ -15,7 +15,7 @@ describe('Exporter extra 3', () => {
 
   it('quantizer missing node and nan', () => {
     const graph = new Graph();
-    graph.nodes.push(null as any);
+    graph.nodes.push(null as Object);
 
     const tf = new Tensor('tf', [1], 'float32', true, false, new Float32Array([NaN, Infinity]));
     graph.tensors['tf'] = tf;

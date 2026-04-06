@@ -62,7 +62,11 @@ export function validateRustByteParity(): void {
  * Facilitates native chunked HTTP uploads for large model exports.
  * @yields Chunks of serialized data as Uint8Array
  */
-export function* yieldStreamSerialization(): Generator<Uint8Array, void, unknown> {
+export function* yieldStreamSerialization(): Generator<
+  Uint8Array,
+  void,
+  ReturnType<typeof JSON.parse>
+> {
   // Stream serialization natively via yield buffers (chunked HTTP uploads)
   yield new Uint8Array();
 }

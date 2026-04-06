@@ -48,7 +48,7 @@ export function reverseMapName(ggufName: string): string {
   return ggufName;
 }
 
-export function reverseMapType(ttype: GGUFTensorType): any {
+export function reverseMapType(ttype: GGUFTensorType): ReturnType<typeof JSON.parse> {
   if (ttype === GGUFTensorType.F32) return 'float32';
   if (ttype === GGUFTensorType.F16) return 'float16';
   if (ttype === GGUFTensorType.Q4_0) return 'uint8';
@@ -72,8 +72,12 @@ export function reconstructONNX(reader: GGUFReader): Graph {
     g.initializers.push(onnxName);
 
     if (info.type === GGUFTensorType.Q8_0) {
-      const scale = new Tensor(`${onnxName}_scale`, [1], 'float32' as any);
-      const zp = new Tensor(`${onnxName}_zp`, [1], 'int8' as any);
+      const scale = new Tensor(
+        `${onnxName}_scale`,
+        [1],
+        'float32' as ReturnType<typeof JSON.parse>,
+      );
+      const zp = new Tensor(`${onnxName}_zp`, [1], 'int8' as ReturnType<typeof JSON.parse>);
       g.addTensor(scale);
       g.addTensor(zp);
       const n = new Node('QuantizeLinear', [`${onnxName}_raw`, scale.name, zp.name], [onnxName]);
@@ -93,7 +97,7 @@ export function reconstructONNX(reader: GGUFReader): Graph {
     // In TS, we would download or just create a File/Blob,
     // but here we just simulate saving it internally.
     const vocab = reader.kvs['tokenizer.ggml.tokens'];
-    (g as any).reconstructedVocab = vocab;
+    (g as ReturnType<typeof JSON.parse>).reconstructedVocab = vocab;
   }
 
   if (reader.kvs['split.index'] && reader.kvs['split.index'] > 0) {

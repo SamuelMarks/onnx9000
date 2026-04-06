@@ -51,7 +51,7 @@ describe('Coverage tfjs-shim Extra', () => {
     });
     expect(res).toBeDefined();
 
-    const arr = res as any[];
+    const arr = res as Object[];
     tf.dispose([arr[0]]);
     tf.dispose(arr[1]);
   });

@@ -43,7 +43,7 @@ describe('Coverage Modifier 3', () => {
     const t8 = new Tensor('t8', [1], 'int8');
     const t32 = new Tensor('t32', [1], 'int32');
     const t64 = new Tensor('t64', [1], 'int64');
-    const tUnk = new Tensor('tUnk', [1], 'string' as any);
+    const tUnk = new Tensor('tUnk', [1], 'string' as Object);
     g.tensors['t16'] = t16;
     g.tensors['t8'] = t8;
     g.tensors['t32'] = t32;
@@ -62,7 +62,7 @@ describe('Coverage Modifier 3', () => {
     const g = new Graph('test');
     const mut = new GraphMutator(g);
 
-    g.addNode(new Node('Cast', ['a'], ['b'], { to: { value: 1 } } as any));
+    g.addNode(new Node('Cast', ['a'], ['b'], { to: { value: 1 } } as Object));
     g.addNode(new Node('Dropout', ['b'], ['c']));
     g.addNode(new Node('Constant', [], ['d']));
     g.outputs.push(new ValueInfo('c', [1], 'float32'));

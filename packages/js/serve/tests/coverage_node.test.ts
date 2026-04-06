@@ -12,10 +12,10 @@ describe('Node Serve', () => {
       }),
     };
 
-    const server = serveNode(mockServer as any, 0, false);
+    const server = serveNode(mockServer as Object, 0, false);
     await new Promise((resolve) => server.on('listening', resolve));
 
-    const port = (server.address() as any).port;
+    const port = (server.address() as Object).port;
 
     const res = await new Promise<http.IncomingMessage>((resolve) => {
       http.get(`http://localhost:${port}/test`, resolve);
@@ -49,10 +49,10 @@ describe('Node Serve', () => {
       }),
     };
 
-    const server = serveNode(mockServer as any, 0, false);
+    const server = serveNode(mockServer as Object, 0, false);
     await new Promise((resolve) => server.on('listening', resolve));
 
-    const port = (server.address() as any).port;
+    const port = (server.address() as Object).port;
 
     const res = await new Promise<http.IncomingMessage>((resolve) => {
       const req = http.request(
@@ -81,10 +81,10 @@ describe('Node Serve', () => {
       fetch: vi.fn().mockRejectedValue(new Error('crash')),
     };
 
-    const server = serveNode(mockServer as any, 0, false);
+    const server = serveNode(mockServer as Object, 0, false);
     await new Promise((resolve) => server.on('listening', resolve));
 
-    const port = (server.address() as any).port;
+    const port = (server.address() as Object).port;
 
     const res = await new Promise<http.IncomingMessage>((resolve) => {
       http.get(`http://localhost:${port}/test`, resolve);

@@ -15,7 +15,7 @@ describe('WebNNProvider extra coverage', () => {
       },
       configurable: true,
     });
-    (globalThis as any).MLGraphBuilder = class {
+    (globalThis as Object).MLGraphBuilder = class {
       build() {
         return {};
       }
@@ -23,7 +23,7 @@ describe('WebNNProvider extra coverage', () => {
 
     await p.initialize();
 
-    p.compiledGraph = { destroy: 123 } as any; // Not a function
+    p.compiledGraph = { destroy: 123 } as Object; // Not a function
     p.currentGraphId = 'g2'; // different
 
     try {
@@ -50,7 +50,7 @@ describe('WebNNProvider extra coverage', () => {
       },
       configurable: true,
     });
-    (globalThis as any).MLGraphBuilder = class {
+    (globalThis as Object).MLGraphBuilder = class {
       build() {
         return {};
       }
@@ -80,10 +80,10 @@ describe('WebNNProvider extra coverage', () => {
       },
       configurable: true,
     });
-    (globalThis as any).MLGraphBuilder = class {};
+    (globalThis as Object).MLGraphBuilder = class {};
     await p.initialize();
 
-    p.compiledGraph = { destroy: mockDestroy } as any;
+    p.compiledGraph = { destroy: mockDestroy } as Object;
     p.currentGraphId = 'g2';
 
     try {
@@ -95,7 +95,7 @@ describe('WebNNProvider extra coverage', () => {
   it('should throw when resultData is missing', async () => {
     const p = new WebNNProvider({});
     const g = new Graph('g');
-    g.outputs.push({ name: 'out1', shape: [1], dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out1', shape: [1], dtype: 'float32' } as Object);
 
     const mockCompute = vi.fn().mockResolvedValue({ outputs: {} }); // Missing 'out1'
     Object.defineProperty(globalThis, 'navigator', {
@@ -108,14 +108,14 @@ describe('WebNNProvider extra coverage', () => {
       },
       configurable: true,
     });
-    (globalThis as any).MLGraphBuilder = class {};
+    (globalThis as Object).MLGraphBuilder = class {};
     await p.initialize();
 
     // Make execute succeed but return missing output
-    p.compiledGraph = { destroy: undefined } as any;
+    p.compiledGraph = { destroy: undefined } as Object;
     p.currentGraphId = g.id;
-    p.allocateBuffer = () => ({}) as any;
-    (p as any).contextManager = {
+    p.allocateBuffer = () => ({}) as Object;
+    (p as Object).contextManager = {
       initialize: vi.fn().mockResolvedValue({ compute: mockCompute }),
       getContext: vi.fn().mockReturnValue({ compute: mockCompute }),
       getBuilder: vi.fn().mockReturnValue({}),

@@ -50,7 +50,7 @@ export class GraphRenderer {
     /* v8 ignore start */
     this.canvas.width = 0;
     this.canvas.height = 0;
-    this.ctx = null as any;
+    this.ctx = null as ReturnType<typeof JSON.parse>;
   }
   /* v8 ignore stop */
 

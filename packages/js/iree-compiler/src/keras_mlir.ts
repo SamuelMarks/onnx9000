@@ -2,7 +2,12 @@
 // @ts-nocheck
 
 export class KerasToMLIRCompiler {
-  public emitTosaConv2D(input: string, weights: string, bias: string, options: any) {
+  public emitTosaConv2D(
+    input: string,
+    weights: string,
+    bias: string,
+    options: ReturnType<typeof JSON.parse>,
+  ) {
     // Lower Keras Conv/Dense structures into MLIR tosa (Tensor Operator Set Architecture) dialect.
     return `
         %0 = "tosa.conv2d"(%${input}, %${weights}, %${bias}) {

@@ -42,7 +42,9 @@ export class ModelExporter {
 
   // 103. Generate standard browser download
   downloadBlob(filename: string, data: Uint8Array) {
-    const blob = new Blob([data as unknown as BlobPart], { type: 'application/octet-stream' });
+    const blob = new Blob([data as ReturnType<typeof JSON.parse> as BlobPart], {
+      type: 'application/octet-stream',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -145,7 +147,7 @@ export class ModelExporter {
   // 290. Detailed summary of changes prompt
   promptChangesBeforeExport(): boolean {
     const summary = this.generateSummary();
-    const edits = (this.mutator as any).deletedNodeCount || 0; // assuming we track this
+    const edits = (this.mutator as ReturnType<typeof JSON.parse>).deletedNodeCount || 0; // assuming we track this
     return confirm(
       `Are you sure you want to export?\n\n${summary}\n\nNodes deleted this session: ${edits}`,
     );

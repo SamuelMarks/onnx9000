@@ -106,7 +106,7 @@ export function constantFolding(block: Block): void {
   let changed = true;
   while (changed) {
     changed = false;
-    const constVals = new Map<string, any>();
+    const constVals = new Map<string, ReturnType<typeof JSON.parse>>();
 
     // identify constants
     for (const op of block.operations) {

@@ -10,7 +10,7 @@ describe('Sparse Extra Coverage Final', () => {
     expect(unpacked).toEqual([1n, 2n]);
 
     // Fallback for non-Uint8Array data
-    const t2 = new Tensor('t2', [2], 'float32', false, true, new Float32Array([1, 2]) as any);
+    const t2 = new Tensor('t2', [2], 'float32', false, true, new Float32Array([1, 2]) as Object);
     const unpacked2 = unpackData(t2);
     expect(unpacked2).toEqual([1, 2]);
   });
@@ -25,12 +25,12 @@ describe('Sparse Extra Coverage Final', () => {
       indicesTensor: null,
       dtype: 'float32',
     };
-    const dense = sparseToDense(st as any);
+    const dense = sparseToDense(st as Object);
     expect(dense.data).toBeNull();
   });
 
   it('getTypedArray fallback', () => {
-    const arr = getTypedArray('unknown' as any, 5);
+    const arr = getTypedArray('unknown' as Object, 5);
     expect(arr).toBeInstanceOf(Float32Array);
   });
 });

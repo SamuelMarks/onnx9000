@@ -9,16 +9,10 @@ def fuse_flash_attention(graph: Graph) -> Graph:
 
     Pattern: Softmax( (Q @ K.T) / scale ) @ V
     """
-    # Simple pattern for MatMul + Softmax + MatMul
-    # In practice, it often has Scale, Add (for mask), etc.
-
-    # Define a pattern matcher for the end of the chain
-    # V_MatMul(Softmax(...), V)
     v_matmul_pattern = PatternMatcher(op_type="MatMul")
 
     matches = match_pattern(graph, v_matmul_pattern)
     for v_matmul in matches:
-        # Check if one of the inputs is a Softmax
         softmax_node = None
         v_input = None
         for inp in v_matmul.inputs:
@@ -28,9 +22,6 @@ def fuse_flash_attention(graph: Graph) -> Graph:
                 v_input = inp
 
         if softmax_node:
-            # We found Softmax -> MatMul
-            # Now look for (Q @ K) / scale before Softmax
-            # Usually: Div(MatMul(Q, K), scale) -> Softmax
             div_node = None
             softmax_input = softmax_node.inputs[0]
             if (
@@ -41,7 +32,6 @@ def fuse_flash_attention(graph: Graph) -> Graph:
                 div_node = softmax_input.inputs[0]
 
             if div_node:
-                # Div -> Softmax -> MatMul
                 qk_matmul = None
                 div_input = div_node.inputs[0]
                 if (
@@ -52,28 +42,27 @@ def fuse_flash_attention(graph: Graph) -> Graph:
                     qk_matmul = div_input.inputs[0]
 
                 if qk_matmul:
-                    # Found the pattern! QK_MatMul -> Div -> Softmax -> V_MatMul
                     q = qk_matmul.inputs[0]
                     k = qk_matmul.inputs[1]
                     v = v_input
 
-                    # Create FlashAttention node
                     flash_attn = Node(
                         op_type="FlashAttention",
                         inputs=[q, k, v],
                         outputs=[v_matmul.outputs[0]],
                         name=f"FlashAttention_{v_matmul.name}",
-                        domain="com.microsoft",  # Or our custom domain
+                        domain="com.microsoft",
                     )
 
-                    # Replace the whole subgraph
-                    # In a real implementation, we'd use graph.replace_pattern or similar
-                    # For now, we manually update the graph
                     idx = graph.nodes.index(v_matmul)
                     graph.nodes[idx] = flash_attn
 
-                    # Mark intermediate nodes for cleanup
-                    # (In a real implementation, cleanup() would handle this)
+                    if qk_matmul in graph.nodes:
+                        graph.nodes.remove(qk_matmul)
+                    if div_node in graph.nodes:
+                        graph.nodes.remove(div_node)
+                    if softmax_node in graph.nodes:
+                        graph.nodes.remove(softmax_node)
 
     return graph
 
@@ -90,7 +79,6 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
     input_to_gemms = {}
     for node in graph.nodes:
         if node.op_type in ["Gemm", "MatMul"]:
-            # Primary input is usually the first one
             primary_input = (
                 node.inputs[0].name if hasattr(node.inputs[0], "name") else node.inputs[0]
             )
@@ -102,8 +90,6 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
         if len(gemms) < 2:
             continue
 
-        # Group gemms that can be fused (same attributes, compatible weights)
-        # For simplicity, we just fuse all Gemms sharing the same input if they have constant weights
         fusible = [
             g
             for g in gemms
@@ -114,28 +100,68 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
                 ),
                 Constant,
             )
+            and len(
+                graph.tensors.get(
+                    g.inputs[1].name if hasattr(g.inputs[1], "name") else g.inputs[1]
+                ).shape
+            )
+            == 2
         ]
 
         if len(fusible) >= 2:
-            # Create a single Gemm with concatenated weights
-            # In a real implementation, we would use surgeon.concatenate_constants
-            # and insert Split nodes after the fused Gemm if needed.
-            # For Pillar 3, we implement the logic for identifying and grouping them.
-            fused_name = "_".join([g.name for g in fusible]) + "_fused"
-            all_outputs = []
-            for g in fusible:
-                all_outputs.extend(g.outputs)
+            import struct
+            from onnx9000.core.dtypes import DType
 
-            fused_node = Node(
-                op_type="Gemm",
-                inputs=[fusible[0].inputs[0], "fused_weights"],
-                outputs=all_outputs,
-                name=fused_name,
+            concat_data = b""
+            shapes = []
+            for g in fusible:
+                weight_name = g.inputs[1].name if hasattr(g.inputs[1], "name") else g.inputs[1]
+                weight_c = graph.tensors.get(weight_name)
+                if weight_c.data is not None:
+                    concat_data += bytes(weight_c.data)
+                shapes.append(weight_c.shape)
+
+            fused_weights_name = "_".join([g.name for g in fusible]) + "_fused_weights"
+            fused_name = "_".join([g.name for g in fusible]) + "_fused"
+            fused_out = fused_name + "_out"
+
+            ref_weight_c = graph.tensors.get(
+                fusible[0].inputs[1].name
+                if hasattr(fusible[0].inputs[1], "name")
+                else fusible[0].inputs[1]
             )
 
-            # Simplified: just replace first fusible with fused node, remove others
+            fused_weight_c = Constant(
+                name=fused_weights_name,
+                values=concat_data,
+                shape=(shapes[0][0], sum(s[1] for s in shapes)),
+                dtype=ref_weight_c.dtype,
+            )
+            graph.add_tensor(fused_weight_c)
+
+            split_node = Node(
+                op_type="Split",
+                inputs=[fused_out],
+                outputs=[
+                    g.outputs[0].name if hasattr(g.outputs[0], "name") else g.outputs[0]
+                    for g in fusible
+                ],
+                attributes={"axis": 1, "split": [s[1] for s in shapes]},
+                name=fused_name + "_split",
+            )
+
+            fused_node = Node(
+                op_type="Gemm" if fusible[0].op_type == "Gemm" else "MatMul",
+                inputs=[fusible[0].inputs[0], fused_weights_name],
+                outputs=[fused_out],
+                name=fused_name,
+                attributes=fusible[0].attributes,
+            )
+
             idx = graph.nodes.index(fusible[0])
             graph.nodes[idx] = fused_node
+            graph.nodes.insert(idx + 1, split_node)
+
             for i in range(1, len(fusible)):
                 graph.nodes.remove(fusible[i])
 

@@ -1,7 +1,7 @@
 import { GGUFValueType, GGUFTensorType } from './builder';
 
 export class GGUFReader {
-  public kvs: Record<string, any> = {};
+  public kvs: Record<string, ReturnType<typeof JSON.parse>> = {};
   public tensors: Record<
     string,
     { name: string; shape: bigint[]; type: GGUFTensorType; offset: bigint }
@@ -24,7 +24,7 @@ export class GGUFReader {
     return str;
   }
 
-  private readVal(vtype: GGUFValueType): any {
+  private readVal(vtype: GGUFValueType): ReturnType<typeof JSON.parse> {
     switch (vtype) {
       case GGUFValueType.UINT8: {
         const v = this.view.getUint8(this.offset);

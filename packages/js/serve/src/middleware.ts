@@ -88,7 +88,7 @@ export function applyMiddlewares(handler: RequestHandler): RequestHandler {
 }
 
 // 153. Reject maliciously nested JSON request payloads
-export function safeJsonParse(jsonString: string): any {
+export function safeJsonParse(jsonString: string): ReturnType<typeof JSON.parse> {
   let depth = 0;
   for (let i = 0; i < jsonString.length; i++) {
     if (jsonString[i] === '{' || jsonString[i] === '[') depth++;

@@ -30,7 +30,7 @@ describe('MMDNN API Coverage Gaps Final V3', () => {
     ];
     for (const source of sources) {
       try {
-        await api.convertToGraph([errorFile], source as any);
+        await api.convertToGraph([errorFile], source as Object);
       } catch (e) {}
     }
   });
@@ -51,7 +51,7 @@ describe('MMDNN API Coverage Gaps Final V3', () => {
     ];
     for (const fw of frameworks) {
       try {
-        await api.convert(fw as any, 'tfjs', [fakeFile]);
+        await api.convert(fw as Object, 'tfjs', [fakeFile]);
       } catch (e) {}
     }
   });

@@ -1,10 +1,10 @@
 // 123. Runtime Module
 export class Module {
-  public globals: any[] = [];
+  public globals: ReturnType<typeof JSON.parse>[] = [];
   public memory: ArrayBuffer;
   public memoryView: DataView;
-  public functions: Array<any> = [];
-  public imports: Map<string, any> = new Map();
+  public functions: Array<ReturnType<typeof JSON.parse>> = [];
+  public imports: Map<string, ReturnType<typeof JSON.parse>> = new Map();
 
   constructor(memorySize: number = 1024 * 1024) {
     this.memory = new ArrayBuffer(memorySize);
@@ -16,7 +16,7 @@ export class Module {
 export class Context {
   public module: Module;
   public pc: number = 0;
-  public registers: any[] = new Array(256).fill(0);
+  public registers: ReturnType<typeof JSON.parse>[] = new Array(256).fill(0);
 
   constructor(module: Module) {
     this.module = module;
@@ -133,7 +133,7 @@ export class WVMInterpreter {
 
 // 127, 128. Bind HAL VM to actual API calls
 export class HALBindings {
-  public static register(context: Context, device: any) {
+  public static register(context: Context, device: ReturnType<typeof JSON.parse>) {
     context.loadImport('hal', 'cmd_create', () => {
       // maps to device.createCommandEncoder()
       if (!device) {

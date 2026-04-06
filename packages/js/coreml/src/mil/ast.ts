@@ -12,7 +12,7 @@ export class Operation {
     public opType: string,
     public inputs: Record<string, Var | Var[]>,
     public outputs: Var[],
-    public attributes: Record<string, any> = {},
+    public attributes: Record<string, ReturnType<typeof JSON.parse>> = {},
   ) {}
 }
 

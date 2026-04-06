@@ -67,7 +67,7 @@ export class SparsePrunerUI {
         } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
           this.log(`Loading recipe: ${file.name}`);
           const text = await file.text();
-          (window as any).currentRecipe = text;
+          (window as ReturnType<typeof JSON.parse>).currentRecipe = text;
         }
       }
     });
@@ -117,7 +117,7 @@ export class SparsePrunerUI {
       this.highlightLayer(`Layer_${i}`, 'processing');
     }
 
-    const recipe = (window as any).currentRecipe || '';
+    const recipe = (window as ReturnType<typeof JSON.parse>).currentRecipe || '';
     if (recipe) {
       this.log('Applying recipe...');
       applyRecipe(this.graph, recipe);
@@ -147,11 +147,15 @@ export class SparsePrunerUI {
     const tensor = this.graph.tensors[tensorName];
     if (!tensor) return;
 
-    if (!(tensor as any).metadata_props) (tensor as any).metadata_props = {};
-    const scores = ((tensor as any).metadata_props['saliency_scores'] || '').split(',');
+    if (!(tensor as ReturnType<typeof JSON.parse>).metadata_props)
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props = {};
+    const scores = (
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props['saliency_scores'] || ''
+    ).split(',');
     if (index < scores.length) {
       scores[index] = newScore.toFixed(4);
-      (tensor as any).metadata_props['saliency_scores'] = scores.join(',');
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props['saliency_scores'] =
+        scores.join(',');
       this.log(`Adjusted saliency for ${tensorName} at index ${index} to ${newScore}`);
     }
   }

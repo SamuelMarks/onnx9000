@@ -6,7 +6,7 @@ import { BufferReader } from '@onnx9000/core';
 export class MLPackageLoader {
   // 216. Implement .mlmodel and .mlpackage loader/unzipper in JS
   static async loadFromZip(
-    jszipInstance: any,
+    jszipInstance: ReturnType<typeof JSON.parse>,
     zipData: Uint8Array,
   ): Promise<{ model: Model; weights: Uint8Array }> {
     const zip = new jszipInstance();

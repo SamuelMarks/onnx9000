@@ -42,7 +42,7 @@ describe('Batcher & Memory & Logger', () => {
       maxRamPercent: 0.8,
       maxConcurrentExecutions: 1,
     });
-    (mm2 as any).currentRamUsage = 900;
+    (mm2 as Object).currentRamUsage = 900;
     await expect(mm2.requestLoad('huge', 150)).rejects.toThrow('503');
 
     await mm2.beginExecution();
@@ -50,7 +50,7 @@ describe('Batcher & Memory & Logger', () => {
     mm2.endExecution();
 
     const mockGc = vi.fn();
-    globalThis.gc = mockGc as any;
+    globalThis.gc = mockGc as Object;
     for (let i = 0; i < 100; i++) mm2.endExecution();
     expect(mockGc).toHaveBeenCalled();
     vi.unstubAllGlobals();
@@ -81,7 +81,7 @@ describe('Batcher & Memory & Logger', () => {
 
     // Test queue length 0 flush
     const b = new DynamicBatcher(executeMock);
-    (b as any).flush();
+    (b as Object).flush();
   });
   it('Logger export', async () => {
     globalLogger.exporterUrl = 'http://test';

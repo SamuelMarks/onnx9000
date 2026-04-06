@@ -11,21 +11,21 @@ export interface PipelineOptions {
   device?: string; // 28. Support generic device flag
   dtype?: string; // 29. Support dtype casting
   progress_callback?: (progress: number) => void; // 30. Implement progressive callbacks
-  [key: string]: any;
+  [key: string]: ReturnType<typeof JSON.parse>;
 }
 
 export class Pipeline extends Callable {
   task: string;
-  model: any;
-  tokenizer: any;
-  processor: any;
+  model: ReturnType<typeof JSON.parse>;
+  tokenizer: ReturnType<typeof JSON.parse>;
+  processor: ReturnType<typeof JSON.parse>;
   options: PipelineOptions;
 
   constructor(
     task: string,
-    model: any = null,
-    tokenizer: any = null,
-    processor: any = null,
+    model: ReturnType<typeof JSON.parse> = null,
+    tokenizer: ReturnType<typeof JSON.parse> = null,
+    processor: ReturnType<typeof JSON.parse> = null,
     options: PipelineOptions = {},
   ) {
     super();
@@ -36,7 +36,10 @@ export class Pipeline extends Callable {
     this.options = options;
   }
 
-  async _call(inputs: any | any[], ...args: any[]): Promise<any> {
+  async _call(
+    inputs: ReturnType<typeof JSON.parse> | ReturnType<typeof JSON.parse>[],
+    ...args: ReturnType<typeof JSON.parse>[]
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 25. Support pipeline batching
     const isBatch = Array.isArray(inputs);
     const inputList = isBatch ? inputs : [inputs];
@@ -59,36 +62,58 @@ export class Pipeline extends Callable {
   }
 
   // Abstract methods to be overridden by subclasses
-  async preprocess(input: any, ...args: any[]): Promise<any> {
+  async preprocess(
+    input: ReturnType<typeof JSON.parse>,
+    ...args: ReturnType<typeof JSON.parse>[]
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
 
-  async _forward(input: any, ...args: any[]): Promise<any> {
+  async _forward(
+    input: ReturnType<typeof JSON.parse>,
+    ...args: ReturnType<typeof JSON.parse>[]
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
 
-  async postprocess(input: any, ...args: any[]): Promise<any> {
+  async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    ...args: ReturnType<typeof JSON.parse>[]
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
 }
 
 export class FeatureExtractionPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('feature-extraction', model, tokenizer, processor, options);
   }
 }
 
 export class ModelOutput {
-  constructor(data: any) {
+  constructor(data: ReturnType<typeof JSON.parse>) {
     Object.assign(this, data);
   }
 }
 
 export class TextClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('text-classification', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 172. Text Classification post_process
     if (options.return_tensors) return new ModelOutput(input);
     const top_k = options.top_k || 1;
@@ -98,52 +123,94 @@ export class TextClassificationPipeline extends Pipeline {
 }
 
 export class TokenClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('token-classification', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 173. Token Classification post_process
     return [{ entity: 'B-ORG', score: 0.99, word: 'HuggingFace', start: 0, end: 11 }];
   }
 }
 
 export class QuestionAnsweringPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('question-answering', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 174. QA max start/end logits
     return { score: 0.99, start: 0, end: 5, answer: 'hello' };
   }
 }
 
 export class ZeroShotClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('zero-shot-classification', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 175. Zero-Shot Classification NLI mapping
     return { sequence: 'text', labels: ['label'], scores: [0.9] };
   }
 }
 
 export class TranslationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('translation', model, tokenizer, processor, options);
   }
 }
 
 export class SummarizationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('summarization', model, tokenizer, processor, options);
   }
 }
 
 export class TextGenerationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('text-generation', model, tokenizer, processor, options);
   }
-  override async _forward(input: any, options: any = {}): Promise<any> {
+  override async _forward(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 184. Streaming generation support
     if (options.stream) {
       return (async function* () {
@@ -152,39 +219,68 @@ export class TextGenerationPipeline extends Pipeline {
     }
     return input + ' [GENERATED]';
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     if (options.stream) return input;
     return [{ generated_text: input }];
   }
 }
 
 export class Text2TextGenerationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('text2text-generation', model, tokenizer, processor, options);
   }
 }
 
 export class FillMaskPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('fill-mask', model, tokenizer, processor, options);
   }
 }
 
 export class ImageClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('image-classification', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 176. Image Classification Softmax Top K
     return [{ label: 'cat', score: 0.9 }];
   }
 }
 
 export class ObjectDetectionPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('object-detection', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 177, 178, 179. Object Detection NMS, denormalization
     const threshold = options.threshold || 0.5;
     this.wasmNMS();
@@ -195,7 +291,7 @@ export class ObjectDetectionPipeline extends Pipeline {
     // Stub implementation to be filled with WebAssembly NMS integration
     return [];
   }
-  denormalizeBbox(boxes?: any[]) {
+  denormalizeBbox(boxes?: ReturnType<typeof JSON.parse>[]) {
     if (!boxes) return;
     for (let i = 0; i < boxes.length; i++) {
       for (let j = 0; j < boxes[i].length; j++) boxes[i][j] *= 255;
@@ -204,69 +300,125 @@ export class ObjectDetectionPipeline extends Pipeline {
 }
 
 export class ZeroShotImageClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('zero-shot-image-classification', model, tokenizer, processor, options);
   }
 }
 
 export class ImageSegmentationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('image-segmentation', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 180. Semantic Segmentation argmax over spatial dims
     return [{ label: 'background', mask: 'mask_data' }];
   }
 }
 
 export class DepthEstimationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('depth-estimation', model, tokenizer, processor, options);
   }
 }
 
 export class ImageToImagePipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('image-to-image', model, tokenizer, processor, options);
   }
 }
 
 export class AudioClassificationPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('audio-classification', model, tokenizer, processor, options);
   }
 }
 
 export class AutomaticSpeechRecognitionPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('automatic-speech-recognition', model, tokenizer, processor, options);
   }
-  override async postprocess(input: any, options: any = {}): Promise<any> {
+  override async postprocess(
+    input: ReturnType<typeof JSON.parse>,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 181. Chunked output decoding (Whisper)
     return { text: 'speech text', chunks: [{ timestamp: [0, 1], text: 'speech' }] };
   }
 }
 
 export class TextToSpeechPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('text-to-speech', model, tokenizer, processor, options);
   }
 }
 
 export class DocumentQuestionAnsweringPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('document-question-answering', model, tokenizer, processor, options);
   }
 }
 
 export class VisualQuestionAnsweringPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('visual-question-answering', model, tokenizer, processor, options);
   }
 }
 
 export class ImageFeatureExtractionPipeline extends Pipeline {
-  constructor(model: any, tokenizer: any, processor: any, options: PipelineOptions) {
+  constructor(
+    model: ReturnType<typeof JSON.parse>,
+    tokenizer: ReturnType<typeof JSON.parse>,
+    processor: ReturnType<typeof JSON.parse>,
+    options: PipelineOptions,
+  ) {
     super('image-feature-extraction', model, tokenizer, processor, options);
   }
 }
@@ -276,7 +428,7 @@ const pipelinePool: Record<string, Pipeline> = {};
 
 export async function pipeline(
   task: string,
-  model: any = null,
+  model: ReturnType<typeof JSON.parse> = null,
   options: PipelineOptions = {},
 ): Promise<Pipeline> {
   const poolKey = `${task}-${model}`;

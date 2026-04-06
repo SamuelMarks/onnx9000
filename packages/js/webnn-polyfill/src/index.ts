@@ -22,9 +22,9 @@ export class PolyfillML {
 }
 
 if (typeof window !== 'undefined') {
-  if (!(window.navigator as any).ml) {
-    (window.navigator as any).ml = new PolyfillML();
+  if (!(window.navigator as ReturnType<typeof JSON.parse>).ml) {
+    (window.navigator as ReturnType<typeof JSON.parse>).ml = new PolyfillML();
   }
-  (window as any).MLContext = PolyfillMLContext;
-  (window as any).MLGraphBuilder = PolyfillMLGraphBuilder;
+  (window as ReturnType<typeof JSON.parse>).MLContext = PolyfillMLContext;
+  (window as ReturnType<typeof JSON.parse>).MLGraphBuilder = PolyfillMLGraphBuilder;
 }

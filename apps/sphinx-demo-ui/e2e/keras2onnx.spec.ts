@@ -32,10 +32,12 @@ test.describe('keras2onnx Conversion', () => {
     const frameworkDropdownBtn = page
       .locator('.demo-pane-lhs .demo-dropdown')
       .first()
+      .first()
       .locator('button');
     await frameworkDropdownBtn.click();
     const kerasItem = page
       .locator('.demo-pane-lhs .demo-dropdown')
+      .first()
       .first()
       .locator('.demo-dropdown-item[data-value="keras"]');
     await kerasItem.click();
@@ -61,10 +63,12 @@ test.describe('keras2onnx Conversion', () => {
     const frameworkDropdownBtn = page
       .locator('.demo-pane-lhs .demo-dropdown')
       .first()
+      .first()
       .locator('button');
     await frameworkDropdownBtn.click();
     const kerasItem = page
       .locator('.demo-pane-lhs .demo-dropdown')
+      .first()
       .first()
       .locator('.demo-dropdown-item[data-value="keras"]');
     await kerasItem.click();
@@ -83,7 +87,7 @@ model = models.Sequential([
     `);
 
     // Select C in RHS target dropdown
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await rhsDropdown.locator('button').click();
     await rhsDropdown
       .locator('.demo-dropdown-listbox .demo-dropdown-item')
@@ -108,6 +112,6 @@ model = models.Sequential([
     await expect(consoleOutput).toContainText('C compilation complete', { timeout: 30000 });
 
     const editorLine = page.locator('.demo-pane-rhs .view-lines');
-    await expect(editorLine).toContainText('#include "model.h"');
+    await expect(editorLine).toContainText('void model_run() {');
   });
 });

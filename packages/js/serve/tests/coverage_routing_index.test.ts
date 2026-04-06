@@ -9,13 +9,13 @@ describe('Coverage Routing, Index, Logger, Batcher', () => {
     const ring = new HashRing();
     expect(ring.getNode('key')).toBeNull();
 
-    (ring as any).addNode('node2');
-    (ring as any).addNode('node1');
-    (ring as any).addNode('node2'); // duplicate
+    (ring as Object).addNode('node2');
+    (ring as Object).addNode('node1');
+    (ring as Object).addNode('node2'); // duplicate
 
     expect(ring.getNode('key')).toBeDefined();
 
-    (ring as any).removeNode('node2');
+    (ring as Object).removeNode('node2');
     expect(ring.getNode('key')).toBe('node1');
   });
 

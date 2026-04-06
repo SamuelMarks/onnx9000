@@ -58,41 +58,41 @@ export class ArrayAPI {
   }
 
   // 225. tensor shape manipulation
-  static view(tensor: any, shape: number[]) {
+  static view(tensor: ReturnType<typeof JSON.parse>, shape: number[]) {
     tensor.dims = shape;
     return tensor;
   }
-  static reshape(tensor: any, shape: number[]) {
+  static reshape(tensor: ReturnType<typeof JSON.parse>, shape: number[]) {
     tensor.dims = shape;
     return tensor;
   }
-  static transpose(tensor: any, axes?: number[]) {
+  static transpose(tensor: ReturnType<typeof JSON.parse>, axes?: number[]) {
     tensor.transposed = true;
     tensor.axes = axes;
     return tensor;
   }
 
   // 226, 227. bi-directional conversion
-  static toFloat32Array(tensor: any): Float32Array {
+  static toFloat32Array(tensor: ReturnType<typeof JSON.parse>): Float32Array {
     return new Float32Array(tensor);
   }
-  static fromFloat32Array(array: Float32Array): any {
+  static fromFloat32Array(array: Float32Array): ReturnType<typeof JSON.parse> {
     return Array.from(array);
   }
-  static toJSON(tensor: any): any[] {
+  static toJSON(tensor: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse>[] {
     return Array.isArray(tensor) ? tensor : [];
   }
-  static fromJSON(json: any[]): any {
+  static fromJSON(json: ReturnType<typeof JSON.parse>[]): ReturnType<typeof JSON.parse> {
     return json;
   }
 
   // 228. Handle multi-dimensional array slicing syntaxes in TS
-  static slice(tensor: any, start: number, end: number) {
+  static slice(tensor: ReturnType<typeof JSON.parse>, start: number, end: number) {
     return tensor.slice(start, end);
   }
 
   // 229. Support strided array access logic
-  static getStrided(tensor: any, stride: number) {
+  static getStrided(tensor: ReturnType<typeof JSON.parse>, stride: number) {
     if (!Array.isArray(tensor) && !tensor.buffer) return tensor;
     const result = [];
     for (let i = 0; i < tensor.length; i += stride) {

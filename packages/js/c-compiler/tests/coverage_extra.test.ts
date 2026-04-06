@@ -65,7 +65,7 @@ describe('Coverage Extra', () => {
     const graph = new Graph('test');
 
     // Line 29: shape with non-number or <= 0
-    graph.inputs.push({ name: 'in1', shape: [-1, 'unk'] as any, type: 'float32' });
+    graph.inputs.push({ name: 'in1', shape: [-1, 'unk'] as Object, type: 'float32' });
     graph.addNode(new Node('Relu', ['in1'], ['out1']));
 
     // Line 34: tensor with size 0

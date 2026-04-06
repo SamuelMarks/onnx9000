@@ -130,11 +130,11 @@ it('covers dummy cases for 0x01 and 0x02', async () => {
 import { WASMWVMInterpreter } from '../src/vm.js';
 
 describe('WASMWVMInterpreter', () => {
-  let compileSpy: any;
-  let instantiateSpy: any;
+  let compileSpy: Object;
+  let instantiateSpy: Object;
 
   beforeAll(() => {
-    compileSpy = vi.spyOn(WebAssembly, 'compile').mockResolvedValue({} as any);
+    compileSpy = vi.spyOn(WebAssembly, 'compile').mockResolvedValue({} as Object);
     instantiateSpy = vi
       .spyOn(WebAssembly, 'instantiate')
       .mockImplementation(async (mod, imports) => {
@@ -147,7 +147,7 @@ describe('WASMWVMInterpreter', () => {
               }
             },
           },
-        } as any;
+        } as Object;
       });
   });
 
@@ -167,12 +167,12 @@ describe('WASMWVMInterpreter', () => {
   });
 
   it('should throw if abort is called', async () => {
-    instantiateSpy.mockImplementationOnce(async (mod: any, imports: any) => {
+    instantiateSpy.mockImplementationOnce(async (mod: Object, imports: Object) => {
       return {
         exports: {
           run: () => imports.env.abort(),
         },
-      } as any;
+      } as Object;
     });
     const vm = new WASMWVMInterpreter();
     await vm.initialize(new ArrayBuffer(10));

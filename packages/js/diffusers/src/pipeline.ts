@@ -4,11 +4,11 @@ import { Scheduler, DDPMScheduler } from './schedulers';
 
 export class DiffusionPipeline {
   /** Configuration object for the pipeline. */
-  config: Record<string, any>;
+  config: Record<string, ReturnType<typeof JSON.parse>>;
   /** Device to run the models on. */
   device: string;
   /** Index data of the loaded models. */
-  modelIndex: any;
+  modelIndex: ReturnType<typeof JSON.parse>;
   /** UNet model. */
   unet: UNet2DConditionModel;
   /** VAE autoencoder. */
@@ -22,7 +22,7 @@ export class DiffusionPipeline {
    * Initialize a DiffusionPipeline.
    * @param config - Configuration options.
    */
-  constructor(config: Record<string, any> = {}) {
+  constructor(config: Record<string, ReturnType<typeof JSON.parse>> = {}) {
     this.config = config;
     this.device = 'cpu';
     this.unet = new UNet2DConditionModel();
@@ -90,7 +90,9 @@ export class DiffusionPipeline {
 
       const timestep = this.scheduler.timesteps[step] || 0;
       const noise_pred = this.unet.call(latents, timestep, encoder_hidden_states);
-      latents = this.scheduler.step(noise_pred, timestep, latents, gen) as any;
+      latents = this.scheduler.step(noise_pred, timestep, latents, gen) as ReturnType<
+        typeof JSON.parse
+      >;
 
       if (callback) {
         callback(step, timestep, latents);

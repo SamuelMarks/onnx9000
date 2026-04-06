@@ -81,7 +81,7 @@ test('UnigramTokenizer coverage', async () => {
   ]);
   const t = new UnigramTokenizer(vocab, scores, '<unk>');
   expect(t.encode('ab')).toBeDefined();
-  expect(t.encode('abc')).toBeDefined(); // c is unknown, whole thing unknown or partial?
+  expect(t.encode('abc')).toBeDefined(); // c is Object, whole thing unknown or partial?
   // The simplified unigram tokenizer probably falls back to unknown.
   expect(t.decode([3])).toBeDefined();
   expect(t.idToToken(3)).toBeDefined();

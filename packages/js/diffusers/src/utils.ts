@@ -74,7 +74,10 @@ export function setProgressBarConfig(enabled: boolean): void {
 /**
  * Downloads a file from Hugging Face Hub with IndexedDB caching (mocked for Node/CLI).
  */
-export async function fetchHubFile(repoId: string, filename: string): Promise<any> {
+export async function fetchHubFile(
+  repoId: string,
+  filename: string,
+): Promise<ReturnType<typeof JSON.parse>> {
   const url = `https://huggingface.co/${repoId}/resolve/main/${filename}`;
   const res = await fetch(url);
   if (!res.ok) {
@@ -86,6 +89,6 @@ export async function fetchHubFile(repoId: string, filename: string): Promise<an
 /**
  * Provides native configuration parsing for `model_index.json`.
  */
-export async function parseModelIndex(repoId: string): Promise<any> {
+export async function parseModelIndex(repoId: string): Promise<ReturnType<typeof JSON.parse>> {
   return await fetchHubFile(repoId, 'model_index.json');
 }

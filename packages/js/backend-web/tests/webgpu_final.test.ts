@@ -9,16 +9,16 @@ describe('WebGPUProvider Final', () => {
   });
 
   it('should test createSparseBuffer', () => {
-    const provider = new WebGPUProvider({} as any);
-    (provider as any).device = { createBuffer: () => ({}) };
-    const result = (provider as any).createSparseBuffer({
+    const provider = new WebGPUProvider({} as Object);
+    (provider as Object).device = { createBuffer: () => ({}) };
+    const result = (provider as Object).createSparseBuffer({
       format: 'CSR',
       values: new Uint8Array(4),
       row_ptr: new Uint8Array(4),
       col_indices: new Uint8Array(4),
     });
     expect(result).not.toBeNull();
-    const resultNull = (provider as any).createSparseBuffer({ format: 'COO' });
+    const resultNull = (provider as Object).createSparseBuffer({ format: 'COO' });
     expect(resultNull).toBeNull();
   });
 
@@ -28,7 +28,7 @@ describe('WebGPUProvider Final', () => {
     const mockDevice = {
       createBuffer: vi.fn().mockReturnValue({}),
     };
-    (provider as any).device = mockDevice;
+    (provider as Object).device = mockDevice;
 
     const g = new Graph('g');
     // Important: weights must be in tensors map and nodes must be in nodes array
@@ -39,17 +39,17 @@ describe('WebGPUProvider Final', () => {
       row_ptr: { byteLength: 4 },
       col_indices: { byteLength: 4 },
     };
-    g.tensors['w'] = w as any;
+    g.tensors['w'] = w as Object;
 
     const node = new Node('MatMul', ['in', 'w'], ['out']);
     g.nodes.push(node);
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
 
     const res = await provider.execute(g, {});
     expect(res['out']).toBeDefined();
 
     // Test calculateSparsity directly
-    const sparsity = (provider as any).calculateSparsity(w as any);
+    const sparsity = (provider as Object).calculateSparsity(w as Object);
     expect(sparsity).toBe(0.75);
   });
 
@@ -88,7 +88,7 @@ describe('WebGPUProvider Final', () => {
     const g = new Graph('g');
     g.nodes.push(new Node('MatMul', ['in', 'w'], ['out']));
     g.tensors['w'] = new Tensor('w', [2, 2], 'float32', false, true, new Float32Array([1]));
-    (g.tensors['w'] as any).format = 'dense';
+    (g.tensors['w'] as Object).format = 'dense';
 
     g.nodes.push(new Node('MatMul', ['in2', 'w_missing'], ['out2']));
 
@@ -107,7 +107,7 @@ describe('WebGPUProvider Final', () => {
   });
   it('should fallback for low sparsity', async () => {
     const provider = new WebGPUProvider({ sparsityThreshold: 0.8 });
-    (provider as any).device = {};
+    (provider as Object).device = {};
 
     const g = new Graph('g');
     const w = {
@@ -117,9 +117,9 @@ describe('WebGPUProvider Final', () => {
       row_ptr: { byteLength: 4 },
       col_indices: { byteLength: 4 },
     };
-    g.tensors['w'] = w as any;
+    g.tensors['w'] = w as Object;
     g.nodes.push(new Node('MatMul', ['in', 'w'], ['out']));
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
 
     const res = await provider.execute(g, {});
     expect(res['out']).toBeDefined();

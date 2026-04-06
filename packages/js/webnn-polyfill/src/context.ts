@@ -60,11 +60,13 @@ export class PolyfillMLContext implements MLContext {
   ): Promise<void> {
     // Dispatch is similar to compute but doesn't return anything natively, just writes directly to output tensors
     const session = new InferenceSession(graph.onnxGraph, this.providers);
-    const outputNames = graph.onnxGraph.outputs.map((o: any) => o.name);
+    const outputNames = graph.onnxGraph.outputs.map((o: ReturnType<typeof JSON.parse>) => o.name);
 
     const onnxInputs: Record<string, Tensor> = {};
     for (const [name, tensor] of Object.entries(inputs)) {
-      const inputInfo = graph.onnxGraph.inputs.find((i: any) => i.name === name);
+      const inputInfo = graph.onnxGraph.inputs.find(
+        (i: ReturnType<typeof JSON.parse>) => i.name === name,
+      );
       if (!inputInfo) {
         throw new DOMException(`Input ${name} not found in graph`, 'DataError');
       }
@@ -100,11 +102,13 @@ export class PolyfillMLContext implements MLContext {
     outputs: Record<string, ArrayBufferView>,
   ): Promise<MLComputeResult> {
     const session = new InferenceSession(graph.onnxGraph, this.providers);
-    const outputNames = graph.onnxGraph.outputs.map((o: any) => o.name);
+    const outputNames = graph.onnxGraph.outputs.map((o: ReturnType<typeof JSON.parse>) => o.name);
 
     const onnxInputs: Record<string, Tensor> = {};
     for (const [name, data] of Object.entries(inputs)) {
-      const inputInfo = graph.onnxGraph.inputs.find((i: any) => i.name === name);
+      const inputInfo = graph.onnxGraph.inputs.find(
+        (i: ReturnType<typeof JSON.parse>) => i.name === name,
+      );
       if (!inputInfo) {
         throw new DOMException(`Input ${name} not found in graph`, 'DataError');
       }

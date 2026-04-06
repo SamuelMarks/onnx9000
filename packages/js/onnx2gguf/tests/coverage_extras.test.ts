@@ -10,7 +10,7 @@ describe('Coverage onnx2gguf', () => {
 
   it('Compiler docString and mixed types', async () => {
     const g = new Graph('test');
-    (g as any).docString = 'hello';
+    (g as Object).docString = 'hello';
 
     const overrides = {
       'general.bool_val': true,

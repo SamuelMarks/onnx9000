@@ -2,7 +2,7 @@ import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export class BaseCodegenVisitor {
   public varCount: number = 0;
-  public env: Record<string, any> = {};
+  public env: Record<string, ReturnType<typeof JSON.parse>> = {};
 
   getVarName(prefix: string = 'v'): string {
     this.varCount++;

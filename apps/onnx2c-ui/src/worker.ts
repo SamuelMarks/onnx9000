@@ -17,7 +17,8 @@ self.onmessage = async (e) => {
       summary: result.summary,
       arenaSize: arenaSize,
     });
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     self.postMessage({ error: err.message });
   }
 };

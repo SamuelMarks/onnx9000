@@ -70,7 +70,47 @@ function emitFeatureDescription(feat: FeatureDescription): Uint8Array {
     writer.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
     writer.writeString(feat.shortDescription);
   }
-  // TODO: emit feature types
+  if (feat.type) {
+    const typeWriter = new Writer();
+    if (feat.type.int64Type) {
+      typeWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+      typeWriter.writeVarInt(0);
+    } else if (feat.type.doubleType) {
+      typeWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+      typeWriter.writeVarInt(0);
+    } else if (feat.type.stringType) {
+      typeWriter.writeTag(3, WIRE_TYPE_LENGTH_DELIMITED);
+      typeWriter.writeVarInt(0);
+    } else if (feat.type.imageType) {
+      const imgWriter = new Writer();
+      imgWriter.writeTag(1, WIRE_TYPE_VARINT);
+      imgWriter.writeVarInt(feat.type.imageType.width);
+      imgWriter.writeTag(2, WIRE_TYPE_VARINT);
+      imgWriter.writeVarInt(feat.type.imageType.height);
+      imgWriter.writeTag(3, WIRE_TYPE_VARINT);
+      imgWriter.writeVarInt(feat.type.imageType.colorSpace);
+      const imgBytes = imgWriter.finish();
+      typeWriter.writeTag(4, WIRE_TYPE_LENGTH_DELIMITED);
+      typeWriter.writeVarInt(imgBytes.length);
+      typeWriter.writeBytes(imgBytes);
+    } else if (feat.type.multiArrayType) {
+      const arrWriter = new Writer();
+      for (const dim of feat.type.multiArrayType.shape) {
+        arrWriter.writeTag(1, WIRE_TYPE_VARINT);
+        arrWriter.writeVarInt(dim);
+      }
+      arrWriter.writeTag(2, WIRE_TYPE_VARINT);
+      arrWriter.writeVarInt(feat.type.multiArrayType.dataType);
+      const arrBytes = arrWriter.finish();
+      typeWriter.writeTag(5, WIRE_TYPE_LENGTH_DELIMITED);
+      typeWriter.writeVarInt(arrBytes.length);
+      typeWriter.writeBytes(arrBytes);
+    }
+    const typeBytes = typeWriter.finish();
+    writer.writeTag(3, WIRE_TYPE_LENGTH_DELIMITED);
+    writer.writeVarInt(typeBytes.length);
+    writer.writeBytes(typeBytes);
+  }
   return writer.finish();
 }
 
@@ -92,13 +132,46 @@ function emitMetadata(meta: Metadata): Uint8Array {
     writer.writeTag(4, WIRE_TYPE_LENGTH_DELIMITED);
     writer.writeString(meta.license);
   }
-  // TODO: user defined metadata mapping
+  if (meta.creatorDefined) {
+    for (const key of Object.keys(meta.creatorDefined)) {
+      const val = meta.creatorDefined[key];
+      if (val !== undefined) {
+        const kvWriter = new Writer();
+        kvWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+        kvWriter.writeString(key);
+        kvWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+        kvWriter.writeString(val);
+        const kvBytes = kvWriter.finish();
+        writer.writeTag(5, WIRE_TYPE_LENGTH_DELIMITED);
+        writer.writeVarInt(kvBytes.length);
+        writer.writeBytes(kvBytes);
+      }
+    }
+  }
   return writer.finish();
 }
 
 function emitNeuralNetwork(nn: NeuralNetwork): Uint8Array {
   const writer = new Writer();
-  // TODO: layers
+  if (nn.layers) {
+    for (const layer of nn.layers) {
+      const layerWriter = new Writer();
+      layerWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+      layerWriter.writeString(layer.name);
+      for (const inp of layer.input) {
+        layerWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+        layerWriter.writeString(inp);
+      }
+      for (const out of layer.output) {
+        layerWriter.writeTag(3, WIRE_TYPE_LENGTH_DELIMITED);
+        layerWriter.writeString(out);
+      }
+      const layerBytes = layerWriter.finish();
+      writer.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+      writer.writeVarInt(layerBytes.length);
+      writer.writeBytes(layerBytes);
+    }
+  }
   return writer.finish();
 }
 
@@ -106,6 +179,33 @@ function emitMILSpecProgram(prog: MILSpecProgram): Uint8Array {
   const writer = new Writer();
   writer.writeTag(1, WIRE_TYPE_VARINT);
   writer.writeVarInt(prog.version);
-  // TODO: functions map
+  if (prog.functions) {
+    for (const funcName of Object.keys(prog.functions)) {
+      const funcObj = prog.functions[funcName];
+      if (funcObj !== undefined) {
+        const funcWriter = new Writer();
+        for (const inp of funcObj.inputs) {
+          const inpWriter = new Writer();
+          inpWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+          inpWriter.writeString(inp.name);
+          const inpBytes = inpWriter.finish();
+          funcWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+          funcWriter.writeVarInt(inpBytes.length);
+          funcWriter.writeBytes(inpBytes);
+        }
+        const funcBytes = funcWriter.finish();
+        const entryWriter = new Writer();
+        entryWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+        entryWriter.writeString(funcName);
+        entryWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+        entryWriter.writeVarInt(funcBytes.length);
+        entryWriter.writeBytes(funcBytes);
+        const entryBytes = entryWriter.finish();
+        writer.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+        writer.writeVarInt(entryBytes.length);
+        writer.writeBytes(entryBytes);
+      }
+    }
+  }
   return writer.finish();
 }

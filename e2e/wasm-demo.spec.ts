@@ -29,11 +29,11 @@ test.describe('WASM Sphinx Demo E2E', () => {
 
     // Make sure the code editor contains Keras code
     // The Monaco editor content is deeply nested. We can evaluate to check it.
-    await page.waitForFunction(() => !!(window as any).monaco && !!(window as any).monaco.editor);
+    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
     const lhsContent = await page.evaluate(() => {
-      return (window as any).monaco.editor
+      return (window as Object).monaco.editor
         .getModels()
-        .find((m: any) => m.uri.path.includes('train.py'))
+        .find((m: Object) => m.uri.path.includes('train.py'))
         ?.getValue();
     });
     expect(lhsContent).toContain('models.Sequential');
@@ -53,8 +53,8 @@ test.describe('WASM Sphinx Demo E2E', () => {
     await page.waitForTimeout(2000); // Wait for conversion ONNX -> C
 
     const modelCContent = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelC = models.find((m: any) => m.uri.path.includes('model.c'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
     expect(modelCContent).toContain('void model_run');
@@ -66,8 +66,8 @@ test.describe('WASM Sphinx Demo E2E', () => {
     await page.waitForTimeout(500);
 
     const modelHContent = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelH = models.find((m: any) => m.uri.path.includes('model.h'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelH = models.find((m: Object) => m.uri.path.includes('model.h'));
       return modelH ? modelH.getValue() : '';
     });
     expect(modelHContent).toContain('void model_run');
@@ -105,7 +105,7 @@ int main() {
       execSync(`gcc -std=c99 -o ${outPath} ${mainPath} ${modelCPath} -lm`);
       const result = execSync(outPath).toString();
       expect(result).toContain('SUCCESS');
-    } catch (e: any) {
+    } catch (e) {
       console.error(e.stdout ? e.stdout.toString() : e);
       console.error(e.stderr ? e.stderr.toString() : '');
       throw e;
@@ -123,7 +123,7 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as any).monaco && !!(window as any).monaco.editor);
+    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
 
     // Default should be C
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-pane-header .demo-dropdown-button');
@@ -136,8 +136,8 @@ int main() {
 
     // Get original C code
     const originalC = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelC = models.find((m: any) => m.uri.path.includes('model.c'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
 
@@ -145,9 +145,9 @@ int main() {
 
     // Change Keras code in LHS: e.g., change units from 128 to 256
     await page.evaluate(() => {
-      const kerasModel = (window as any).monaco.editor
+      const kerasModel = (window as Object).monaco.editor
         .getModels()
-        .find((m: any) => m.uri.path.includes('train.py'));
+        .find((m: Object) => m.uri.path.includes('train.py'));
       const val = kerasModel.getValue();
       kerasModel.setValue(val.replace('128', '256')); // Assuming 128 is in the keras input
     });
@@ -163,8 +163,8 @@ int main() {
 
     // Get new C code
     const newC = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelC = models.find((m: any) => m.uri.path.includes('model.c'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
 
@@ -180,7 +180,7 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as any).monaco && !!(window as any).monaco.editor);
+    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
 
     // Select ONNX Script from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
@@ -198,8 +198,8 @@ int main() {
 
     // Get generated ONNX Script Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelPy = models.find((m: any) => m.uri.path.includes('model.py'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelPy = models.find((m: Object) => m.uri.path.includes('model.py'));
       return modelPy ? modelPy.getValue() : '';
     });
 
@@ -216,7 +216,7 @@ int main() {
       // Execute the python script using uv to ensure onnxscript is available
       const result = execSync(`uv run --with onnxscript --with onnx python ${mainPath}`).toString();
       expect(result).toContain('SUCCESS: ONNXScript model generated correctly');
-    } catch (e: any) {
+    } catch (e) {
       console.error(e.stdout ? e.stdout.toString() : e);
       console.error(e.stderr ? e.stderr.toString() : '');
       throw e;
@@ -234,7 +234,7 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as any).monaco && !!(window as any).monaco.editor);
+    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
 
     // Select PyTorch from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
@@ -252,8 +252,8 @@ int main() {
 
     // Get generated PyTorch Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
-      const modelPy = models.find((m: any) => m.uri.path.includes('module.py'));
+      const models = (window as Object).monaco.editor.getModels();
+      const modelPy = models.find((m: Object) => m.uri.path.includes('module.py'));
       return modelPy ? modelPy.getValue() : '';
     });
 
@@ -271,7 +271,7 @@ int main() {
       // Execute the python script using uv to ensure torch is available
       const result = execSync(`uv run --with torch python ${mainPath}`).toString();
       expect(result).toContain('SUCCESS: PyTorch model generated correctly');
-    } catch (e: any) {
+    } catch (e) {
       console.error(e.stdout ? e.stdout.toString() : e);
       console.error(e.stderr ? e.stderr.toString() : '');
       throw e;
@@ -289,7 +289,7 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as any).monaco && !!(window as any).monaco.editor);
+    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
 
     // Select CNTK from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
@@ -307,9 +307,9 @@ int main() {
 
     // Get generated CNTK Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as any).monaco.editor.getModels();
+      const models = (window as Object).monaco.editor.getModels();
       const modelPy = models.find(
-        (m: any) => m.uri.path.includes('model.py') && m.uri.path.includes('output-cntk'),
+        (m: Object) => m.uri.path.includes('model.py') && m.uri.path.includes('output-cntk'),
       );
       return modelPy ? modelPy.getValue() : '';
     });
@@ -345,7 +345,7 @@ def softmax(*args, **kwargs): return "mock_out"
     try {
       const result = execSync(`python3 ${mainPath}`, { cwd: tmpDir }).toString();
       expect(result).toContain('SUCCESS: CNTK model generated correctly');
-    } catch (e: any) {
+    } catch (e) {
       console.error(e.stdout ? e.stdout.toString() : e);
       console.error(e.stderr ? e.stderr.toString() : '');
       throw e;

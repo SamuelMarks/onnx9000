@@ -995,16 +995,14 @@ def fuse_conv_bn(graph: Graph) -> Graph:
                 nodes_to_fuse.append((n, consumers[0]))
 
     for conv, bn in nodes_to_fuse:
-        # Get Conv weights
         if len(conv.inputs) < 2:
             continue
         w_conv_name = conv.inputs[1]
         w_conv_name = w_conv_name.name if isinstance(w_conv_name, Tensor) else w_conv_name
         if w_conv_name not in graph.tensors:
             continue
-        graph.tensors[w_conv_name]
+        w_conv_t = graph.tensors[w_conv_name]
 
-        # Get BN weights
         if len(bn.inputs) < 5:
             continue
         scale_name, b_bn_name, mean_name, var_name = [
@@ -1013,11 +1011,70 @@ def fuse_conv_bn(graph: Graph) -> Graph:
         if any(name not in graph.tensors for name in [scale_name, b_bn_name, mean_name, var_name]):
             continue
 
-        # In a real implementation, we would do the math here:
-        # W_new = W_old * scale / sqrt(var + epsilon)
-        # B_new = (B_old - mean) * scale / sqrt(var + epsilon) + B_bn
+        scale_t = graph.tensors[scale_name]
+        b_bn_t = graph.tensors[b_bn_name]
+        mean_t = graph.tensors[mean_name]
+        var_t = graph.tensors[var_name]
 
-        # For now, we perform the structural fusion
+        if any(
+            not hasattr(t, "data") or t.data is None
+            for t in [w_conv_t, scale_t, b_bn_t, mean_t, var_t]
+        ):
+            # Fallback to structural fusion if data isn't available
+            bn_out = bn.outputs[0]
+            conv.outputs[0] = bn_out
+            if isinstance(bn_out, Tensor):
+                bn_out.inputs = [conv]
+            graph.remove_node(bn)
+            continue
+
+        try:
+            w_old = np.frombuffer(w_conv_t.data, dtype=np.float32).reshape(w_conv_t.shape)
+            scale = np.frombuffer(scale_t.data, dtype=np.float32)
+            b_bn = np.frombuffer(b_bn_t.data, dtype=np.float32)
+            mean = np.frombuffer(mean_t.data, dtype=np.float32)
+            var = np.frombuffer(var_t.data, dtype=np.float32)
+
+            epsilon = bn.attributes.get("epsilon", 1e-05)
+
+            # W_new = W_old * (scale / sqrt(var + epsilon))
+            factor = scale / np.sqrt(var + epsilon)
+
+            # W_old shape is usually [M, C/group, kH, kW], where M is the number of output channels.
+            # Factor shape is [M]. We need to broadcast factor to multiply with W_old.
+            broadcast_factor = factor.reshape(-1, *[1] * (w_old.ndim - 1))
+            w_new = w_old * broadcast_factor
+
+            # B_new = (B_old - mean) * factor + B_bn
+            if len(conv.inputs) == 3:
+                b_conv_name = conv.inputs[2]
+                b_conv_name = b_conv_name.name if isinstance(b_conv_name, Tensor) else b_conv_name
+                b_conv_t = graph.tensors[b_conv_name]
+                if b_conv_t.data is not None:
+                    b_old = np.frombuffer(b_conv_t.data, dtype=np.float32)
+                else:
+                    b_old = np.zeros_like(mean)
+            else:
+                b_old = np.zeros_like(mean)
+                b_conv_name = f"{w_conv_name}_bias"
+                conv.inputs.append(b_conv_name)
+                from onnx9000.core.ir import Constant
+
+                b_conv_t = Constant(name=b_conv_name, shape=mean.shape, dtype=scale_t.dtype)
+                graph.add_tensor(b_conv_t)
+                graph.initializers.append(b_conv_name)
+
+            b_new = (b_old - mean) * factor + b_bn
+
+            w_conv_t.data = w_new.astype(np.float32).tobytes()
+            b_conv_t.data = b_new.astype(np.float32).tobytes()
+
+        except Exception as e:
+            import logging
+
+            logging.warning("Failed to fuse BatchNorm into Conv: %s", e)
+            continue
+
         bn_out = bn.outputs[0]
         conv.outputs[0] = bn_out
         if isinstance(bn_out, Tensor):

@@ -29,7 +29,7 @@ describe('MMDNN - CoreML Importer', () => {
     const loader = new FileLoader([fakeFile]);
     await loader.initialize();
 
-    (fflate.unzipSync as any).mockReturnValue({
+    (fflate.unzipSync as Object).mockReturnValue({
       'model.mlmodel': new Uint8Array([1, 2, 3]),
     });
 
@@ -44,7 +44,7 @@ describe('MMDNN - CoreML Importer', () => {
     const loader = new FileLoader([fakeFile]);
     await loader.initialize();
 
-    (fflate.unzipSync as any).mockReturnValue({
+    (fflate.unzipSync as Object).mockReturnValue({
       'some_other_file.txt': new Uint8Array([1, 2, 3]),
     });
 

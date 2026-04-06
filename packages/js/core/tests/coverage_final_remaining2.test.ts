@@ -31,8 +31,8 @@ describe('Final Remaining Coverage', () => {
     const out = new Tensor('out', [2, 2], 1, false, false, new Float32Array());
 
     // cast to any to bypass string[] typing since sharding code accesses sharding property
-    matmul.inputs = [t1 as any, t2 as any];
-    matmul.outputs = [out as any];
+    matmul.inputs = [t1 as Object, t2 as Object];
+    matmul.outputs = [out as Object];
 
     const other = new Node('Other');
     g.nodes.push(matmul, other);
@@ -72,7 +72,7 @@ describe('Final Remaining Coverage', () => {
 
     for (const key of Object.keys(ops)) {
       if (key.endsWith('Op')) {
-        const OpClass = (ops as any)[key];
+        const OpClass = (ops as Object)[key];
         try {
           const op = new OpClass();
           if (typeof op.execute === 'function') {

@@ -92,7 +92,8 @@ export class WebNNProvider implements ExecutionProvider {
       // 167. Call await builder.build(outputs)
       try {
         this.compiledGraph = await compiler.compile();
-      } catch (e: any) {
+      } catch (_e) {
+        const e = _e instanceof Error ? _e : new Error(String(_e));
         // 179. Gracefully catch and log NPU timeout or out-of-memory errors
         console.error('WebNN NPU Compilation failed:', e.message);
         throw new Error(`WebNN Compilation Error: ${e.message}`);
@@ -148,7 +149,8 @@ export class WebNNProvider implements ExecutionProvider {
       }
 
       return outputTensors;
-    } catch (e: any) {
+    } catch (_e) {
+      const e = _e instanceof Error ? _e : new Error(String(_e));
       // 179. Gracefully catch and log runtime errors
       console.error('WebNN NPU Execution failed:', e.message);
       throw new Error(`WebNN Execution Error: ${e.message}`);

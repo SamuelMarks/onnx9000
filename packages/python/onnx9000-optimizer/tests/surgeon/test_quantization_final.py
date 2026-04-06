@@ -22,5 +22,6 @@ def test_quantize_ptq_basic():
     quantize_ptq(graph)
 
     assert graph.tensors["W"].dtype == "uint8"
-    assert "W_quantized" in graph.metadata
-    assert float(graph.metadata["W_scale"]) > 0
+    assert "W_scale" in graph.tensors
+    assert "W_zero_point" in graph.tensors
+    assert any(n.op_type == "DequantizeLinear" for n in graph.nodes)

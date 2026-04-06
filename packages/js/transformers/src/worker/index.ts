@@ -5,7 +5,11 @@ export class WorkerPipeline {
     this.worker = new Worker(workerPath);
   }
 
-  async run(task: string, model: string, input: any): Promise<any> {
+  async run(
+    task: string,
+    model: string,
+    input: ReturnType<typeof JSON.parse>,
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substr(2, 9);
       const handler = (e: MessageEvent) => {
@@ -21,7 +25,11 @@ export class WorkerPipeline {
   }
 
   // 242. Zero-Copy transfer
-  async runZeroCopy(task: string, model: string, buffer: Float32Array): Promise<any> {
+  async runZeroCopy(
+    task: string,
+    model: string,
+    buffer: Float32Array,
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substr(2, 9);
       const handler = (e: MessageEvent) => {

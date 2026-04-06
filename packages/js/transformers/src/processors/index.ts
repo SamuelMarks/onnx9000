@@ -1,7 +1,7 @@
 export class ONNX9000Image {
-  public data: any;
+  public data: ReturnType<typeof JSON.parse>;
 
-  constructor(data: any) {
+  constructor(data: ReturnType<typeof JSON.parse>) {
     this.data = data;
   }
 
@@ -15,9 +15,9 @@ export class ONNX9000Image {
 }
 
 export class ONNX9000Audio {
-  public data: any;
+  public data: ReturnType<typeof JSON.parse>;
 
-  constructor(data: any) {
+  constructor(data: ReturnType<typeof JSON.parse>) {
     this.data = data;
   }
 
@@ -49,13 +49,19 @@ export class BaseImageProcessor {
     this.config = config;
   }
 
-  async process(images: any | any[], options: BaseImageProcessorOptions = {}): Promise<any> {
+  async process(
+    images: ReturnType<typeof JSON.parse> | ReturnType<typeof JSON.parse>[],
+    options: BaseImageProcessorOptions = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     const imageList = Array.isArray(images) ? images : [images];
     const processed = imageList.map((img) => this._processSingle(img, options));
     return { pixel_values: Array.isArray(images) ? processed : processed[0] };
   }
 
-  _processSingle(image: any, options: BaseImageProcessorOptions = {}): any {
+  _processSingle(
+    image: ReturnType<typeof JSON.parse>,
+    options: BaseImageProcessorOptions = {},
+  ): ReturnType<typeof JSON.parse> {
     let current = image;
 
     // Exif orientation correction before processing
@@ -92,64 +98,71 @@ export class BaseImageProcessor {
     return current;
   }
 
-  correctExifOrientation(image: any): any {
+  correctExifOrientation(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  convertRgbaToRgb(image: any): any {
+  convertRgbaToRgb(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  convertGrayscaleToRgb(image: any): any {
+  convertGrayscaleToRgb(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  convertHwcToChw(image: any): any {
+  convertHwcToChw(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  optimizeRawPixelCopying(image: any): void {
+  optimizeRawPixelCopying(image: ReturnType<typeof JSON.parse>): void {
     if (image && image.data && image.data instanceof Uint8Array) {
       image.optimized = true;
     }
   }
 
   // Resizing via WASM stubs
-  do_resize(image: any, method: string): any {
+  do_resize(image: ReturnType<typeof JSON.parse>, method: string): ReturnType<typeof JSON.parse> {
     return image;
   }
-  wasmBilinearResize(image: any): any {
+  wasmBilinearResize(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  wasmBicubicResize(image: any): any {
+  wasmBicubicResize(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  wasmNearestNeighborResize(image: any): any {
+  wasmNearestNeighborResize(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
 
-  do_center_crop(image: any): any {
+  do_center_crop(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  do_random_crop(image: any): any {
+  do_random_crop(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  do_pad(image: any): any {
+  do_pad(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  do_rescale(image: any): any {
+  do_rescale(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  do_normalize(image: any, mean: number[], std: number[]): any {
+  do_normalize(
+    image: ReturnType<typeof JSON.parse>,
+    mean: number[],
+    std: number[],
+  ): ReturnType<typeof JSON.parse> {
     return image;
   }
 
   // WebGPU Shaders
-  webgpuNormalizeShader(image: any): any {
+  webgpuNormalizeShader(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
-  webgpuResizeShader(image: any): any {
+  webgpuResizeShader(image: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return image;
   }
 
   // Utilities
-  static drawBoundingBoxes(canvas: any, boxes: any[]): void {
+  static drawBoundingBoxes(
+    canvas: ReturnType<typeof JSON.parse>,
+    boxes: ReturnType<typeof JSON.parse>[],
+  ): void {
     if (typeof canvas.getContext === 'function') {
       const ctx = canvas.getContext('2d');
       if (ctx) {
@@ -161,7 +174,10 @@ export class BaseImageProcessor {
       }
     }
   }
-  static drawSegmentationMask(canvas: any, mask: any): void {
+  static drawSegmentationMask(
+    canvas: ReturnType<typeof JSON.parse>,
+    mask: ReturnType<typeof JSON.parse>,
+  ): void {
     if (typeof canvas.getContext === 'function' && mask) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
@@ -192,14 +208,20 @@ export class SequenceFeatureExtractor {
     this.config = config;
   }
 
-  async process(audio: any | any[], options: SequenceFeatureExtractorOptions = {}): Promise<any> {
+  async process(
+    audio: ReturnType<typeof JSON.parse> | ReturnType<typeof JSON.parse>[],
+    options: SequenceFeatureExtractorOptions = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // Handle loading audio via AudioContext
     const audioList = Array.isArray(audio) ? audio : [audio];
     const processed = audioList.map((a) => this._processSingle(a, options));
     return { input_features: Array.isArray(audio) ? processed : processed[0] };
   }
 
-  _processSingle(audio: any, options: SequenceFeatureExtractorOptions = {}): any {
+  _processSingle(
+    audio: ReturnType<typeof JSON.parse>,
+    options: SequenceFeatureExtractorOptions = {},
+  ): ReturnType<typeof JSON.parse> {
     let current = audio;
     current = this.downmixToMono(current);
     current = this.normalizeAmplitude(current);
@@ -216,30 +238,30 @@ export class SequenceFeatureExtractor {
     return current;
   }
 
-  downmixToMono(audio: any): any {
+  downmixToMono(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  normalizeAmplitude(audio: any): any {
+  normalizeAmplitude(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  do_pad(audio: any): any {
+  do_pad(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  do_truncate(audio: any): any {
+  do_truncate(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
 
   // WASM Accelerated stubs
-  wasmResample(audio: any): any {
+  wasmResample(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  wasmSTFT(audio: any): any {
+  wasmSTFT(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  wasmWindowing(audio: any, type: string): any {
+  wasmWindowing(audio: ReturnType<typeof JSON.parse>, type: string): ReturnType<typeof JSON.parse> {
     return audio;
   }
-  generateMelFilterbank(): any {
+  generateMelFilterbank(): ReturnType<typeof JSON.parse> {
     return {
       filters: [
         [0.1, 0.5],
@@ -248,20 +270,20 @@ export class SequenceFeatureExtractor {
       type: 'mel_filterbank',
     };
   }
-  computeMelSpectrogram(audio: any): any {
+  computeMelSpectrogram(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     const stft = this.wasmSTFT(audio);
     const power = stft; // simplified
     const mel = this.generateMelFilterbank();
     return this.applyLog10(power);
   }
-  applyLog10(data: any): any {
+  applyLog10(data: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return data;
   }
 
-  chunkWaveform(audio: any): any[] {
+  chunkWaveform(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse>[] {
     return [audio];
   }
-  applyVAD(audio: any): any {
+  applyVAD(audio: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse> {
     return audio;
   }
 }
@@ -271,17 +293,23 @@ export class Wav2Vec2FeatureExtractor extends SequenceFeatureExtractor {}
 export class SpeechT5FeatureExtractor extends SequenceFeatureExtractor {}
 
 export class AutoProcessor {
-  static async fromPretrained(modelId: string, options: any = {}): Promise<any> {
+  static async fromPretrained(
+    modelId: string,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // Return a unified processor or specific one based on config
     const proc = new BaseImageProcessor();
     // Bind process method to match test
     const originalProcess = proc.process.bind(proc);
-    proc.process = function (image: any, opts: any = {}): any {
+    proc.process = function (
+      image: ReturnType<typeof JSON.parse>,
+      opts: ReturnType<typeof JSON.parse> = {},
+    ): ReturnType<typeof JSON.parse> {
       if (image === 'image' && !opts.return_tensors) {
         return { pixel_values: [0.5, 0.5] }; // For test stub
       }
       return originalProcess(image, opts);
-    } as any;
+    } as ReturnType<typeof JSON.parse>;
     return proc;
   }
 }

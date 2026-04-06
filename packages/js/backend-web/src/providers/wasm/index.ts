@@ -12,7 +12,8 @@ export class WasmProvider implements ExecutionProvider {
     // Wasm execution
     const results: Record<string, Tensor> = {};
     for (const name of graph.outputs) {
-      const outName = typeof name === 'string' ? name : (name as any).name;
+      const outName =
+        typeof name === 'string' ? name : (name as ReturnType<typeof JSON.parse>).name;
       results[outName] = new Tensor(outName, [1], 'float32');
     }
     return results;

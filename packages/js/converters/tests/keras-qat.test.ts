@@ -23,7 +23,7 @@ describe('Keras Phase 9 - Quantization-Aware Training & Dynamic Quantization', (
 
     const converter = new Keras2OnnxConverter(modelJson);
     converter.convert();
-    const finalNodes = (converter as any)._test_finalNodes as Node[];
+    const finalNodes = (converter as Object)._test_finalNodes as Node[];
 
     // There should be a QuantizeLinear and DequantizeLinear node preceding the MatMul in Dense
     const qNode = finalNodes.find((n) => n.opType === 'QuantizeLinear');
@@ -59,7 +59,7 @@ describe('Keras Phase 9 - Quantization-Aware Training & Dynamic Quantization', (
 
     const converter = new Keras2OnnxConverter(modelJson);
     converter.convert();
-    const finalNodes = (converter as any)._test_finalNodes as Node[];
+    const finalNodes = (converter as Object)._test_finalNodes as Node[];
 
     const matMulNBits = finalNodes.find((n) => n.opType === 'MatMulNBits');
     expect(matMulNBits).toBeDefined();

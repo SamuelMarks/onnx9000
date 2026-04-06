@@ -19,7 +19,7 @@ describe('keras-ast', () => {
       },
     };
 
-    const topology = extractKerasTopology(config as any);
+    const topology = extractKerasTopology(config as Object);
     expect(topology.inputs).toHaveLength(1);
     expect(topology.inputs[0].name).toBe('in1_input:0:0');
     expect(topology.inputs[0].shape).toEqual([null, 10]);
@@ -53,7 +53,7 @@ describe('keras-ast', () => {
       },
     };
 
-    const topology = extractKerasTopology(config as any);
+    const topology = extractKerasTopology(config as Object);
     expect(topology.inputs).toHaveLength(1);
     expect(topology.inputs[0].name).toBe('in1:0:0');
     expect(topology.inputs[0].shape).toEqual([null, 5]);
@@ -93,7 +93,7 @@ describe('keras-ast', () => {
       },
     };
 
-    const topology = extractKerasTopology(config as any);
+    const topology = extractKerasTopology(config as Object);
     expect(topology.nodes.has('dense1:0')).toBe(true);
     expect(topology.nodes.has('dense1:1')).toBe(true);
     expect(topology.nodes.get('dense1:0')?.inboundNodes).toEqual(['in1:0:0']);
@@ -101,7 +101,7 @@ describe('keras-ast', () => {
   });
 
   it('should throw on unknown topology', () => {
-    expect(() => extractKerasTopology({ class_name: 'Unknown', config: {} } as any)).toThrow(
+    expect(() => extractKerasTopology({ class_name: 'Unknown', config: {} } as Object)).toThrow(
       'Unsupported root model class: Unknown',
     );
   });

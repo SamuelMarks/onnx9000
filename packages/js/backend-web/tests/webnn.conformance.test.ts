@@ -14,7 +14,7 @@ describe('WebNN EP Conformance (Phase 18-20 Roadmap)', () => {
     try {
       await provider.initialize();
       expect(provider.name).toBe('WebNN'); // Reached if successful
-    } catch (e: any) {
+    } catch (e) {
       // In CI environments without WebNN, it falls back or throws
       expect(e).toBeDefined();
     }

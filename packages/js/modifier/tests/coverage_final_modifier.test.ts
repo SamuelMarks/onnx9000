@@ -20,7 +20,7 @@ describe('Coverage Modifier', () => {
       }),
     };
 
-    expect(() => mutator.execute(mockMutation as any)).toThrow('Strict Mode prevented');
+    expect(() => mutator.execute(mockMutation as Object)).toThrow('Strict Mode prevented');
     expect(mockMutation.undo).toHaveBeenCalled();
 
     // Also test empty undo/redo

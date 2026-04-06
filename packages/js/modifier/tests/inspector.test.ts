@@ -69,7 +69,7 @@ describe('InitializerInspector', () => {
 
   it('renders gracefully when unsupported dtype', () => {
     const buf = new Uint16Array([1]); // say, an unsupported type initially
-    const t = new Tensor('T', [1], 'float16' as any, true, false, buf);
+    const t = new Tensor('T', [1], 'float16' as Object, true, false, buf);
     insp.render(t);
     expect(container.textContent).toContain('Unsupported view for DType');
   });
@@ -155,7 +155,7 @@ describe('InitializerInspector', () => {
     const mockCtx = {
       fillRect: vi.fn(),
       strokeRect: vi.fn(),
-    } as unknown as CanvasRenderingContext2D;
+    } as Object as CanvasRenderingContext2D;
     HTMLCanvasElement.prototype.getContext = () => mockCtx;
 
     insp.render(t);

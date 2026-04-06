@@ -47,7 +47,7 @@ describe('Keras Custom Layer Plugin Registry', () => {
     converter.convert();
 
     expect(customEmitter).toHaveBeenCalled();
-    const callArgs = customEmitter.mock.calls[0] as any[];
+    const callArgs = customEmitter.mock.calls[0] as Object[];
     expect(callArgs[0]).toBe('MagicalAttention:0'); // nodeName
     expect(callArgs[4]).toEqual({ name: 'MagicalAttention', num_heads: 8 }); // config
   });

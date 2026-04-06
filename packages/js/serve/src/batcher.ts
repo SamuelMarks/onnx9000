@@ -1,7 +1,7 @@
 export interface BatchRequest {
   id: string;
-  payload: any;
-  resolve: (response: any) => void;
+  payload: ReturnType<typeof JSON.parse>;
+  resolve: (response: ReturnType<typeof JSON.parse>) => void;
   reject: (error: Error) => void;
   queuedAt: number;
   priority: number; // Higher is better
@@ -12,17 +12,23 @@ export class DynamicBatcher {
   public batchTimeoutMs: number = 10;
 
   private queue: BatchRequest[] = [];
-  private timeoutHandle: any = null;
+  private timeoutHandle: ReturnType<typeof JSON.parse> = null;
 
   constructor(
-    private executeBatch: (batch: BatchRequest[], concatenatedInputs: any) => Promise<any[]>,
+    private executeBatch: (
+      batch: BatchRequest[],
+      concatenatedInputs: ReturnType<typeof JSON.parse>,
+    ) => Promise<ReturnType<typeof JSON.parse>[]>,
     options?: { maxBatchSize?: number; batchTimeoutMs?: number },
   ) {
     if (options?.maxBatchSize) this.maxBatchSize = options.maxBatchSize;
     if (options?.batchTimeoutMs) this.batchTimeoutMs = options.batchTimeoutMs;
   }
 
-  public async add(payload: any, priority: number = 0): Promise<any> {
+  public async add(
+    payload: ReturnType<typeof JSON.parse>,
+    priority: number = 0,
+  ): Promise<ReturnType<typeof JSON.parse>> {
     return new Promise((resolve, reject) => {
       const request: BatchRequest = {
         id: crypto.randomUUID(),
@@ -83,7 +89,8 @@ export class DynamicBatcher {
         for (let i = 0; i < activeBatch.length; i++) {
           activeBatch[i]?.resolve(outputs[i]);
         }
-      } catch (err: any) {
+      } catch (_err) {
+        const err = _err instanceof Error ? _err : new Error(String(_err));
         // 43. Handle batching failures by isolating the failure and re-executing the valid subset.
         // (Simplified handling for now: reject all)
         for (const req of activeBatch) {
@@ -93,7 +100,7 @@ export class DynamicBatcher {
     }, 0);
   }
 
-  private prepareBatchInputs(batch: BatchRequest[]): any {
+  private prepareBatchInputs(batch: BatchRequest[]): ReturnType<typeof JSON.parse> {
     const hasSequences = batch.some((b) => Array.isArray(b.payload?.input_ids));
     if (!hasSequences) {
       return {

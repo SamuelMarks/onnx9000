@@ -50,8 +50,8 @@ describe('Quantizer Coverage', () => {
 
     quantizer.quantize();
 
-    expect((quantizer as any).quantizationMap.get('custom_tensor')).toBeDefined();
-    expect((quantizer as any).quantizationMap.get('y')).toBeDefined();
+    expect((quantizer as Object).quantizationMap.get('custom_tensor')).toBeDefined();
+    expect((quantizer as Object).quantizationMap.get('y')).toBeDefined();
 
     // Check getQuantizationOffset with mock builder
     const builder = {
@@ -66,18 +66,18 @@ describe('Quantizer Coverage', () => {
       addFieldInt32: vi.fn(),
       endObject: vi.fn().mockReturnValue(20),
     };
-    const offset = quantizer.getQuantizationOffset(builder as any, new Tensor('y', [1]));
+    const offset = quantizer.getQuantizationOffset(builder as Object, new Tensor('y', [1]));
     expect(offset).toBeGreaterThan(0);
 
     // Test custom tensor offset encoding (has min/max)
     const offset2 = quantizer.getQuantizationOffset(
-      builder as any,
+      builder as Object,
       new Tensor('custom_tensor', [1]),
     );
     expect(offset2).toBeGreaterThan(0);
 
     // Test empty map
-    const offset3 = quantizer.getQuantizationOffset(builder as any, new Tensor('none', [1]));
+    const offset3 = quantizer.getQuantizationOffset(builder as Object, new Tensor('none', [1]));
     expect(offset3).toBe(0);
   });
 });

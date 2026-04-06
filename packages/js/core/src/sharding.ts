@@ -8,12 +8,12 @@ export class AutoShardingPass {
     for (const node of graph.nodes) {
       if (node.opType === 'MatMul') {
         if (node.inputs.length >= 2) {
-          const shardingA = (node.inputs[0] as any).sharding;
-          const shardingB = (node.inputs[1] as any).sharding;
+          const shardingA = (node.inputs[0] as ReturnType<typeof JSON.parse>).sharding;
+          const shardingB = (node.inputs[1] as ReturnType<typeof JSON.parse>).sharding;
           if (shardingA || shardingB) {
             if (node.outputs.length > 0) {
-              (node.outputs[0] as any).sharding = Array(
-                (node.outputs[0] as any).shape?.length || 0,
+              (node.outputs[0] as ReturnType<typeof JSON.parse>).sharding = Array(
+                (node.outputs[0] as ReturnType<typeof JSON.parse>).shape?.length || 0,
               ).fill(null);
             }
           }

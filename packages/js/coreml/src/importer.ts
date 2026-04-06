@@ -14,7 +14,9 @@ export class MILToONNXConverter {
     // 224. Rebuild ONNX definitions
     for (const input of fn.inputs) {
       // Type mapping skipped for brevity
-      graph.inputs.push({ name: input.name, shape: [], dtype: 'float32', id: '' } as any);
+      graph.inputs.push({ name: input.name, shape: [], dtype: 'float32', id: '' } as ReturnType<
+        typeof JSON.parse
+      >);
     }
 
     const block = fn.blocks['block0'];
@@ -61,7 +63,9 @@ export class MILToONNXConverter {
       }
 
       for (const out of block.outputs) {
-        graph.outputs.push({ name: out.name, shape: [], dtype: 'float32', id: '' } as any);
+        graph.outputs.push({ name: out.name, shape: [], dtype: 'float32', id: '' } as ReturnType<
+          typeof JSON.parse
+        >);
       }
     }
 

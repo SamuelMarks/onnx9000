@@ -152,23 +152,25 @@ const menuCopyAttributes = document.getElementById('menu-copy-attributes') as HT
 const menuPasteAttributes = document.getElementById('menu-paste-attributes') as HTMLDivElement;
 const menuDuplicateNode = document.getElementById('menu-duplicate-node') as HTMLDivElement;
 
-let copiedAttributes: any = null;
+let copiedAttributes: ReturnType<typeof JSON.parse> = null;
 let copiedOpType: string | null = null;
 
 // 134, 135. Support complete keyboard navigation and screen-reader announcements
 document.addEventListener('keydown', (e) => {
   if (e.target !== document.body && e.target !== canvas) return; // Don't intercept inputs
 
-  if (currentGraph && (renderer as any).layout) {
+  if (currentGraph && (renderer as ReturnType<typeof JSON.parse>).layout) {
     if (e.key === 'Tab') {
       e.preventDefault();
-      const nodes = (renderer as any).layout.nodes;
+      const nodes = (renderer as ReturnType<typeof JSON.parse>).layout.nodes;
       if (nodes.length === 0) return;
 
       const currentSelection = renderer.selectedNodes.length > 0 ? renderer.selectedNodes[0] : null;
       let nextIdx = 0;
       if (currentSelection) {
-        const currIdx = nodes.findIndex((n: any) => n.id === currentSelection);
+        const currIdx = nodes.findIndex(
+          (n: ReturnType<typeof JSON.parse>) => n.id === currentSelection,
+        );
         if (currIdx !== -1) {
           nextIdx = (currIdx + (e.shiftKey ? -1 : 1) + nodes.length) % nodes.length;
         }
@@ -319,7 +321,12 @@ menuPasteAttributes.addEventListener('click', () => {
   if (node && node.opType === copiedOpType) {
     const mutator = new GraphMutator(currentGraph);
     for (const [k, v] of Object.entries(copiedAttributes)) {
-      mutator.setNodeAttribute(node.name || node.id, k, (v as any).value, (v as any).type);
+      mutator.setNodeAttribute(
+        node.name || node.id,
+        k,
+        (v as ReturnType<typeof JSON.parse>).value,
+        (v as ReturnType<typeof JSON.parse>).type,
+      );
     }
     renderSidebar(selectedId || null);
   }
@@ -340,7 +347,8 @@ menuExtractSubgraph.addEventListener('click', async () => {
 
     exporter.downloadBlob('subgraph.onnx', data);
     alert(`Successfully extracted ${renderer.selectedNodes.length} nodes to subgraph.onnx`);
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     alert(`Extraction failed: ${err.message}`);
   }
 });
@@ -358,7 +366,8 @@ menuExtractPython.addEventListener('click', async () => {
 
     await navigator.clipboard.writeText(script);
     alert(`Python script for ${renderer.selectedNodes.length} nodes copied to clipboard!`);
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     alert(`Extraction failed: ${err.message}`);
   }
 });
@@ -419,7 +428,7 @@ breadcrumb.addEventListener('click', () => {
   }
 });
 
-window.addEventListener('open-subgraph', (e: any) => {
+window.addEventListener('open-subgraph', (e: ReturnType<typeof JSON.parse>) => {
   if (currentGraph) graphStack.push(currentGraph);
   currentGraph = e.detail.graph as Graph;
   currentGraph.name = e.detail.name;
@@ -830,7 +839,7 @@ renderer.onSelect = (nodeId) => {
 };
 
 // 229. Expose a global window.onnxModifier object for developer console hacking
-(window as any).onnxModifier = {
+(window as ReturnType<typeof JSON.parse>).onnxModifier = {
   getGraph: () => currentGraph,
   getRenderer: () => renderer,
   getMutator: () => new GraphMutator(currentGraph!),

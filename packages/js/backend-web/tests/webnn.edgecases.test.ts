@@ -62,7 +62,7 @@ describe('WebNN Context Edge Cases', () => {
     });
     // @ts-ignore
     global.MLGraphBuilder = undefined;
-    (globalThis as any).MLGraphBuilder = undefined;
+    (globalThis as Object).MLGraphBuilder = undefined;
     await expect(WebNNContextManager.getInstance().initialize()).rejects.toThrow(
       'MLGraphBuilder is not available',
     );
@@ -116,7 +116,7 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
         shape: [1],
         id: 'out',
         dtype: 'float32',
-      } as any);
+      } as Object);
       await provider.execute(g, {
         in: new Tensor('in', [1], 'float32', false, true, new Float32Array([1])),
       });
@@ -164,9 +164,9 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     g.nodes.push(new Node('Split', ['in'], ['out16', 'out8', 'out64']));
-    g.outputs.push({ name: 'out16', shape: [1], id: 'o1', dtype: 'float16' } as any);
-    g.outputs.push({ name: 'out8', shape: [1], id: 'o2', dtype: 'int8' } as any);
-    g.outputs.push({ name: 'out64', shape: [1], id: 'o3', dtype: 'int64' } as any);
+    g.outputs.push({ name: 'out16', shape: [1], id: 'o1', dtype: 'float16' } as Object);
+    g.outputs.push({ name: 'out8', shape: [1], id: 'o2', dtype: 'int8' } as Object);
+    g.outputs.push({ name: 'out64', shape: [1], id: 'o3', dtype: 'int64' } as Object);
 
     await provider.execute(g, {
       in: new Tensor('in', [1], 'float32', false, true, new Float32Array([1])),
@@ -207,7 +207,7 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       shape: [1],
       id: 'out',
       dtype: 'float32',
-    } as any);
+    } as Object);
     await expect(provider.execute(g, {})).rejects.toThrow('WebNN Execution Error: NPU exploded');
   });
 
@@ -242,7 +242,7 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       shape: [1],
       id: 'out',
       dtype: 'float32',
-    } as any);
+    } as Object);
     await expect(provider.execute(g, {})).rejects.toThrow(
       'WebNN Compilation Error: Compile exploded',
     );
@@ -256,17 +256,17 @@ describe('WebNNCompiler Edge Cases', () => {
       input = vi.fn().mockReturnValue({});
       build = vi.fn().mockResolvedValue({});
     };
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: ['N'], id: 'in', dtype: 'float32' });
-    g.outputs.push({ name: 'in', shape: ['N'], id: 'in', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'in', shape: ['N'], id: 'in', dtype: 'float32' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
     expect(builder.input).toHaveBeenCalledWith('in', { dataType: 'float32', dimensions: [1] });
   });
 
   it('should handle missing inputs gracefully', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     // Intentionally omit input mapping for "missing_in"
@@ -278,7 +278,7 @@ describe('WebNNCompiler Edge Cases', () => {
   });
 
   it('should throw on unsupported nodes', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     g.nodes.push(new Node('NonZero', ['in'], ['out']));
@@ -288,55 +288,55 @@ describe('WebNNCompiler Edge Cases', () => {
   });
 
   it('should handle unsupported types', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
-    g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'complex64' as any });
+    g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'complex64' as Object });
     const compiler = new WebNNCompiler(g, builder);
     await expect(compiler.compile()).rejects.toThrow('Unsupported WebNN data type: complex64');
   });
 
   it('should map float64 to float32', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float64' });
-    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float64' } as any);
+    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float64' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
     expect(builder.input).toHaveBeenCalledWith('in', { dataType: 'float32', dimensions: [1] });
   });
 
   it('should map bool to uint8', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
-    g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'bool' as any });
-    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'bool' } as any);
+    g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'bool' as Object });
+    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'bool' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
     expect(builder.input).toHaveBeenCalledWith('in', { dataType: 'uint8', dimensions: [1] });
   });
 
   it('should map int64 to int32', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'int64' });
-    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'int64' } as any);
+    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'int64' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
     expect(builder.input).toHaveBeenCalledWith('in', { dataType: 'int32', dimensions: [1] });
   });
 
   it('should map uint64 to uint32', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'uint64' });
-    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'uint64' } as any);
+    g.outputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'uint64' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
     expect(builder.input).toHaveBeenCalledWith('in', { dataType: 'uint32', dimensions: [1] });
   });
 
   it('should trigger zero-dimension exception', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
     const shapeData = new Int32Array([0]);
     g.tensors['in'] = new Tensor('in', [1], 'int32', false, true, shapeData);
@@ -351,9 +351,9 @@ describe('WebNNCompiler Edge Cases', () => {
   });
 
   it('should throw error if output not found', async () => {
-    const builder = new (global as any).MLGraphBuilder();
+    const builder = new (global as Object).MLGraphBuilder();
     const g = new Graph('g');
-    g.outputs.push({ name: 'missing_out', shape: [1], id: 'o', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'missing_out', shape: [1], id: 'o', dtype: 'float32' } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await expect(compiler.compile()).rejects.toThrow(
       'Output missing_out not found in WebNN operands.',

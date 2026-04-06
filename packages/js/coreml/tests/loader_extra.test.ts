@@ -5,10 +5,10 @@ import { emitModel } from '../src/emitter.js';
 describe('MLPackageLoader', () => {
   it('loads from zip correctly', async () => {
     const model = { specificationVersion: 1 };
-    const modelBytes = emitModel(model as any);
+    const modelBytes = emitModel(model as Object);
 
     class MockZip {
-      files: Record<string, any> = {};
+      files: Record<string, Object> = {};
       async loadAsync() {
         this.files['Data/com.apple.CoreML/model.mlmodel'] = {
           async: async () => modelBytes,

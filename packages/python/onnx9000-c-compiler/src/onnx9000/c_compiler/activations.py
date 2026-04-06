@@ -120,13 +120,32 @@ def generate_activation(
             b.emit("float th = (1.0f - e2) / (1.0f + e2);")
             b.emit(f"{out_name}[i] = val * th;")
     elif op_type == "Clip":
-        # usually min/max are provided as inputs 1 and 2, but for C loop simplicity let's handle dynamic later
-        # For now, strict bounds check
-        b.emit(f"{out_name}[i] = val;")  # Placeholder for input variable extraction
+        min_name = None
+        max_name = None
+        if len(node.inputs) > 1 and node.inputs[1] and str(node.inputs[1]) != "":
+            min_name = node.inputs[1]
+            min_name = min_name.name if hasattr(min_name, "name") else min_name
+        if len(node.inputs) > 2 and node.inputs[2] and str(node.inputs[2]) != "":
+            max_name = node.inputs[2]
+            max_name = max_name.name if hasattr(max_name, "name") else max_name
+
+        if min_name and max_name:
+            b.emit(
+                f"{out_name}[i] = val < {min_name}[0] ? {min_name}[0] : (val > {max_name}[0] ? {max_name}[0] : val);"
+            )
+        elif min_name:
+            b.emit(f"{out_name}[i] = val < {min_name}[0] ? {min_name}[0] : val;")
+        elif max_name:
+            b.emit(f"{out_name}[i] = val > {max_name}[0] ? {max_name}[0] : val;")
+        else:
+            b.emit(f"{out_name}[i] = val;")
     elif op_type == "PRelu":
-        slope_input = "slope"  # we would need the actual name if mapped, using placeholder
-        b.emit("/* PRelu fallback, slope mapping required */")
-        b.emit(f"float s = 0.0f; /* Replace with {slope_input} lookup */")
+        if len(node.inputs) > 1:
+            slope_name = node.inputs[1]
+            slope_name = slope_name.name if hasattr(slope_name, "name") else slope_name
+            b.emit(f"float s = {slope_name}[0];")
+        else:
+            b.emit("float s = 0.0f;")
         b.emit(f"{out_name}[i] = val < 0.0f ? val * s : val;")
 
     b.pop_indent()

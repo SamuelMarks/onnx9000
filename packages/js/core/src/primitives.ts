@@ -31,7 +31,7 @@ export abstract class BaseNorm {
   /**
    * Applies normalization.
    */
-  abstract call(...args: any[]): Tensor;
+  abstract call(...args: ReturnType<typeof JSON.parse>[]): Tensor;
 }
 
 /**

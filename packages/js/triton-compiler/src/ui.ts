@@ -71,7 +71,7 @@ export class TritonCompilerElement extends HTMLElement {
     dropzone.addEventListener('dragleave', () => {
       dropzone.classList.remove('hover');
     });
-    dropzone.addEventListener('drop', (e: any) => {
+    dropzone.addEventListener('drop', (e: ReturnType<typeof JSON.parse>) => {
       e.preventDefault();
       dropzone.classList.remove('hover');
       const file = e.dataTransfer.files[0];
@@ -112,10 +112,10 @@ export class TritonCompilerElement extends HTMLElement {
     });
   }
 
-  bundle(graph: any) {
+  bundle(graph: ReturnType<typeof JSON.parse>) {
     const uniforms = graph.inputs
-      .filter((i: any) => i.shape && i.shape.length === 0)
-      .map((i: any) => i.name);
+      .filter((i: ReturnType<typeof JSON.parse>) => i.shape && i.shape.length === 0)
+      .map((i: ReturnType<typeof JSON.parse>) => i.name);
     return `
       export async function run(device, inputs) {
         const shaderModule = device.createShaderModule({ code: \`...\` });

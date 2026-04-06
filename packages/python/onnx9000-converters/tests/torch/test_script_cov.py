@@ -177,6 +177,35 @@ def test_script_parser_constants_fallback():
 
 @pytest.mark.skipif(not TORCH_AVAILABLE, reason="Torch not available")
 def test_script_parser_more_coverage():
+    pass
+
+
+def test_script_parser_div_fallback():
+    class Mod(torch.nn.Module):
+        def forward(self, x, y):
+            a = torch.div(x, y)
+            b = torch.sub(a, x)
+            c = torch.mul(b, y)
+            d = torch.add(c, x)
+            return d
+
+    sm = torch.jit.script(Mod())
+
+    import onnx9000.core.registry as registry
+
+    old_get = registry.global_registry.get_op
+
+    def fake_get(*args, **kwargs):
+        raise Exception("Fake")
+
+    registry.global_registry.get_op = fake_get
+    try:
+        from onnx9000.converters.torch.script import TorchScriptParser
+
+        p = TorchScriptParser(sm)
+        p.parse()
+    finally:
+        registry.global_registry.get_op = old_get
     """Test TorchScript parser remaining coverage lines."""
 
     def dummy_func(x):

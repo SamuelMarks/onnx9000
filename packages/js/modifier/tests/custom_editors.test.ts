@@ -18,7 +18,7 @@ describe('Custom Editors (Phase 10)', () => {
     panel = new PropertiesPanel(container, mutator);
   });
 
-  function renderNodeOp(opType: string, attrs: Record<string, any> = {}) {
+  function renderNodeOp(opType: string, attrs: Record<string, Object> = {}) {
     const node = mutator.addNode(opType, ['A'], ['B'], attrs);
     panel.renderNode(node, graph);
     return node;

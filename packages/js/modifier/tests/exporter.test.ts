@@ -116,7 +116,7 @@ describe('ModelExporter', () => {
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     mutator.addNode('Conv', [], []);
     // simulate edit count
-    (mutator as any).deletedNodeCount = 5;
+    (mutator as Object).deletedNodeCount = 5;
 
     const res = exporter.promptChangesBeforeExport();
     expect(res).toBe(true);

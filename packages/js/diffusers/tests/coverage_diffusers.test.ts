@@ -51,7 +51,7 @@ describe('Diffusers coverage', () => {
   it('registry decorator', () => {
     @reg.register_op('domain', 'name')
     class TestClass {}
-    expect((TestClass as any).domain).toBe('domain');
+    expect((TestClass as Object).domain).toBe('domain');
   });
 
   it('pipeline operations', async () => {
@@ -90,7 +90,7 @@ describe('Diffusers coverage', () => {
 
     // test free memory
     p.freeMemory();
-    expect((p as any)._isAborted).toBe(true);
+    expect((p as Object)._isAborted).toBe(true);
 
     vi.unstubAllGlobals();
   });

@@ -18,7 +18,7 @@ describe('Passes Extras', () => {
     fuseAdjacentOps(block);
 
     expect(block.operations[1]!.opType).toBe('identity');
-    expect((block.operations[1]!.inputs['x'] as any).name).toBe('x');
+    expect((block.operations[1]!.inputs['x'] as Object).name).toBe('x');
   });
 
   it('fuses slice with adjacent pad', () => {

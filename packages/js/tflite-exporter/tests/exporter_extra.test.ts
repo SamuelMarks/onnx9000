@@ -6,7 +6,7 @@ describe('Exporter Extra', () => {
     const exporter = new TFLiteExporter();
     let clearCalled = false;
     // mock builder.clear
-    (exporter as any).builder.clear = () => {
+    (exporter as Object).builder.clear = () => {
       clearCalled = true;
     };
     exporter.destroy();

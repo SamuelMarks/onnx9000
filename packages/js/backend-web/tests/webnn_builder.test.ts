@@ -8,16 +8,16 @@ describe('KerasWebNNCompiler', () => {
       batchNormalization: vi.fn().mockReturnValue('bn_out'),
       relu: vi.fn().mockReturnValue('relu_out'),
     };
-    const compiler = new KerasWebNNCompiler(builder as any, {} as any);
+    const compiler = new KerasWebNNCompiler(builder as Object, {} as Object);
 
     const res = compiler.buildConv2DBNRelu(
-      'in' as any,
-      'w' as any,
-      'b' as any,
-      'gamma' as any,
-      'beta' as any,
-      'mean' as any,
-      'var' as any,
+      'in' as Object,
+      'w' as Object,
+      'b' as Object,
+      'gamma' as Object,
+      'beta' as Object,
+      'mean' as Object,
+      'var' as Object,
       { padding: [1, 1], strides: [1, 1], dilations: [2, 2], groups: 2, epsilon: 1e-5 },
     );
 
@@ -32,13 +32,13 @@ describe('KerasWebNNCompiler', () => {
 
     // hit default arguments
     compiler.buildConv2DBNRelu(
-      'in' as any,
-      'w' as any,
+      'in' as Object,
+      'w' as Object,
       undefined,
-      'gamma' as any,
-      'beta' as any,
-      'mean' as any,
-      'var' as any,
+      'gamma' as Object,
+      'beta' as Object,
+      'mean' as Object,
+      'var' as Object,
       {},
     );
   });
@@ -47,20 +47,26 @@ describe('KerasWebNNCompiler', () => {
     const builder = {
       conv2d: vi.fn().mockReturnValueOnce('depth_out').mockReturnValueOnce('point_out'),
     };
-    const compiler = new KerasWebNNCompiler(builder as any, {} as any);
+    const compiler = new KerasWebNNCompiler(builder as Object, {} as Object);
 
-    const res = compiler.buildSeparableConv2D('in' as any, 'dw' as any, 'pw' as any, 'b' as any, {
-      inChannels: 3,
-      padding: [1, 1],
-      strides: [2, 2],
-      dilations: [2, 2],
-    });
+    const res = compiler.buildSeparableConv2D(
+      'in' as Object,
+      'dw' as Object,
+      'pw' as Object,
+      'b' as Object,
+      {
+        inChannels: 3,
+        padding: [1, 1],
+        strides: [2, 2],
+        dilations: [2, 2],
+      },
+    );
 
     expect(res).toBe('point_out');
     expect(builder.conv2d).toHaveBeenCalledTimes(2);
 
     // hit default arguments
-    compiler.buildSeparableConv2D('in' as any, 'dw' as any, 'pw' as any, undefined, {
+    compiler.buildSeparableConv2D('in' as Object, 'dw' as Object, 'pw' as Object, undefined, {
       inChannels: 3,
     });
   });
@@ -72,9 +78,9 @@ describe('KerasWebNNCompiler', () => {
     const context = {
       compute: vi.fn().mockResolvedValue({ outputs: { out: 'buffer' } }),
     };
-    const compiler = new KerasWebNNCompiler(builder as any, context as any);
+    const compiler = new KerasWebNNCompiler(builder as Object, context as Object);
 
-    const outputs = await compiler.executeAsync({ out: 'op' } as any, { in: 'buf' } as any);
+    const outputs = await compiler.executeAsync({ out: 'op' } as Object, { in: 'buf' } as Object);
     expect(outputs.out).toBe('buffer');
     expect(builder.build).toHaveBeenCalledWith({ out: 'op' });
     expect(context.compute).toHaveBeenCalledWith('compiled_graph', { in: 'buf' }, {});

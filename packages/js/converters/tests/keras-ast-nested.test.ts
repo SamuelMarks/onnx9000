@@ -42,7 +42,7 @@ describe('keras-ast nested models', () => {
       },
     };
 
-    const topology = extractKerasTopology(config as any);
+    const topology = extractKerasTopology(config as Object);
 
     expect(topology.inputs).toHaveLength(1);
     expect(topology.inputs[0].name).toBe('in1:0:0');
@@ -86,7 +86,7 @@ describe('keras-ast nested models', () => {
       },
     };
 
-    const topology = extractKerasTopology(config as any);
+    const topology = extractKerasTopology(config as Object);
     expect(topology.nodes.has('inner_seq/inner_dense:0')).toBe(true);
     expect(topology.inputs[0].name).toBe('input1_input:0:0');
   });

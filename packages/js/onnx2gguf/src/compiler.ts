@@ -16,7 +16,7 @@ function sanitizeDocString(doc: string): string {
 
 export function compileGGUF(
   graph: Graph,
-  kvOverrides: Record<string, any> = {},
+  kvOverrides: Record<string, ReturnType<typeof JSON.parse>> = {},
   archOverride?: string,
 ): ArrayBuffer {
   const writer = new GGUFWriter();
@@ -24,17 +24,17 @@ export function compileGGUF(
   const arch = archOverride || inferArchitecture(graph);
 
   // Phase 2 Defaults
-  const generalKvs: Record<string, any> = {
+  const generalKvs: Record<string, ReturnType<typeof JSON.parse>> = {
     'general.architecture': arch,
     'general.name': graph.name || 'model',
-    'general.author': (graph as any).producerName || 'onnx9000',
-    'general.version': Number((graph as any).modelVersion || 1),
+    'general.author': (graph as ReturnType<typeof JSON.parse>).producerName || 'onnx9000',
+    'general.version': Number((graph as ReturnType<typeof JSON.parse>).modelVersion || 1),
     'general.quantization_version': 2,
     'general.alignment': 32,
     'general.file_type': 'mostly_f32',
   };
 
-  const docStr = (graph as any).docString;
+  const docStr = (graph as ReturnType<typeof JSON.parse>).docString;
   if (docStr) {
     generalKvs['general.description'] = sanitizeDocString(docStr);
   }

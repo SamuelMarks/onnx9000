@@ -45,7 +45,7 @@ jobs:
       - name: Install uv and Sphinx
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv pip install sphinx furo sphinx-copybutton --system
+          uv pip install -r requirements-doc.txt --system
           
       # 318. Verify CI/CD pipeline triggers the TS frontend build
       - name: Build TS Web IDE

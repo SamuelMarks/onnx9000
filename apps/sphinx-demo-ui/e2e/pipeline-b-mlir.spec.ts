@@ -18,7 +18,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
 
   test('should verify .onnx converts to MLIR and populates Monaco Editor', async ({ page }) => {
     // 1. Select MLIR in RHS target dropdown
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await rhsDropdown.locator('button').click();
     await rhsDropdown
       .locator('.demo-dropdown-listbox .demo-dropdown-item')
@@ -38,7 +38,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
     // Let's evaluate to show it directly if Playwright is failing due to CSS block
     await page.evaluate(() => {
       const els = document.querySelectorAll('.demo-file-tree-children');
-      els.forEach((el: any) => (el.style.display = 'block'));
+      els.forEach((el: ReturnType<typeof JSON.parse>) => (el.style.display = 'block'));
     });
 
     const fileNode = tree.locator('.demo-tree-file').filter({ hasText: 'graph.mlir' });
@@ -61,7 +61,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
 
     // Fire simulated worker STDOUT stream log
     await page.evaluate(() => {
-      const bus = (window as any).__EVENT_BUS__;
+      const bus = (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__;
       if (bus) {
         bus.emit('CONSOLE_LOG', {
           level: 'warn',

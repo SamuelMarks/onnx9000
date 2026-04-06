@@ -7,7 +7,7 @@ describe('Exporter extra 5', () => {
   it('subgraph throws external data', () => {
     const graph = new Graph();
     const t = new Tensor('ext', [1], 'float32');
-    t.externalData = { location: 'file' } as any;
+    t.externalData = { location: 'file' } as Object;
     t.isInitializer = true;
     graph.tensors['ext'] = t;
     graph.initializers.push('ext');
@@ -17,7 +17,7 @@ describe('Exporter extra 5', () => {
 
   it('subgraph handles pytorch export markers', () => {
     const graph = new Graph('test');
-    (graph as any).producerName = 'pytorch';
+    (graph as Object).producerName = 'pytorch';
     const t = new Tensor('ext', [1], 'float32', false, true, new Float32Array([1]));
     graph.tensors['ext'] = t;
     graph.initializers.push('ext');
@@ -33,7 +33,7 @@ describe('Exporter extra 5', () => {
 
   it('subgraph handles boolean data fallback', () => {
     const graph = new Graph('test');
-    const t = new Tensor('b', [1], 'bool', false, true, [true] as any);
+    const t = new Tensor('b', [1], 'bool', false, true, [true] as Object);
     graph.tensors['b'] = t;
     graph.initializers.push('b');
 

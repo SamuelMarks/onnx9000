@@ -13,15 +13,15 @@ describe('Coverage gaps for WebNN Context', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    const orig = (globalThis as any).MLGraphBuilder;
-    delete (globalThis as any).MLGraphBuilder;
+    const orig = (globalThis as Object).MLGraphBuilder;
+    delete (globalThis as Object).MLGraphBuilder;
     // @ts-ignore
     delete global.MLGraphBuilder;
     const manager = WebNNContextManager.getInstance();
     await expect(manager.initialize()).rejects.toThrow(
       'MLGraphBuilder is not available in this environment.',
     );
-    (globalThis as any).MLGraphBuilder = orig;
+    (globalThis as Object).MLGraphBuilder = orig;
   });
 
   beforeEach(() => {
@@ -117,10 +117,10 @@ describe('Coverage gaps for WebNN Context', () => {
     });
 
     // Temporarily hide global MLGraphBuilder but provide it on globalThis
-    const orig = (globalThis as any).MLGraphBuilder;
+    const orig = (globalThis as Object).MLGraphBuilder;
     // @ts-ignore
     delete global.MLGraphBuilder;
-    (globalThis as any).MLGraphBuilder = class {
+    (globalThis as Object).MLGraphBuilder = class {
       constructor() {}
       input() {
         return { shape: [1] };
@@ -141,7 +141,7 @@ describe('Coverage gaps for WebNN Context', () => {
     expect(manager.getBuilder()).toBeDefined();
 
     // Restore
-    (globalThis as any).MLGraphBuilder = orig;
+    (globalThis as Object).MLGraphBuilder = orig;
   });
 
   it('should use window.MLGraphBuilder if window is defined', async () => {
@@ -185,7 +185,7 @@ describe('Coverage gaps for Session & Partitioner', () => {
       { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
-    g.outputs.push({ name: 'out', shape: [1], id: 'o', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out', shape: [1], id: 'o', dtype: 'float32' } as Object);
     const regions = p.partition(g);
     expect(regions.length).toBe(1);
     expect(regions[0]?.providerName).toBe('WebNN');
@@ -194,7 +194,7 @@ describe('Coverage gaps for Session & Partitioner', () => {
     const g = new Graph('partition_test');
     g.inputs.push({ name: 'in1', shape: [1], id: 'in1', dtype: 'float32' });
     g.nodes.push(new Node('Abs', ['in'], ['out2']));
-    g.outputs.push({ name: 'out2', shape: [1], id: 'out2', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out2', shape: [1], id: 'out2', dtype: 'float32' } as Object);
 
     // Node 1: Supported by Provider 1
     g.nodes.push(new Node('Add', ['in1', 'in1'], ['mid1']));
@@ -211,7 +211,7 @@ describe('Coverage gaps for Session & Partitioner', () => {
     const session = new InferenceSession(g, [wnnProvider, wasmProvider]);
 
     // Hack the partitioner to reject Sub in WebNN
-    const partitioner = (session as any).partitioner;
+    const partitioner = (session as Object).partitioner;
     const origCheck = partitioner.checkNodeSupported.bind(partitioner);
     partitioner.checkNodeSupported = (node: Node, pName: string) => {
       if (pName === 'WebNN' && node.opType === 'Sub') return false;
@@ -231,14 +231,14 @@ describe('Coverage gaps for Session & Partitioner', () => {
     const g = new Graph('g');
     g.inputs.push({ name: 'in1', shape: [1], id: 'in1', dtype: 'float32' });
     g.nodes.push(new Node('Abs', ['in'], ['out1']));
-    g.outputs.push({ name: 'out1', shape: [1], id: 'out1', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out1', shape: [1], id: 'out1', dtype: 'float32' } as Object);
     g.nodes.push(new Node('Add', ['in1', 'in1'], ['out1']));
 
     const p1 = { name: 'P1', initialize: async () => {}, execute: async () => ({}) };
     const session = new InferenceSession(g, [p1]);
 
     // Corrupt the partition regions
-    vi.spyOn((session as any).partitioner, 'partition').mockReturnValue([
+    vi.spyOn((session as Object).partitioner, 'partition').mockReturnValue([
       {
         providerName: 'FakeProvider',
         subGraph: g,
@@ -357,7 +357,7 @@ describe('WebNNProvider Edge Case Coverages', () => {
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     g.nodes.push(new Node('Abs', ['in'], ['out']));
-    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as Object);
 
     // First run compiles it
     await provider.execute(g, {
@@ -373,7 +373,7 @@ describe('WebNNProvider Edge Case Coverages', () => {
     const g2 = new Graph('g2');
     g2.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     g2.nodes.push(new Node('Abs', ['in'], ['out']));
-    g2.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as any);
+    g2.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as Object);
     await provider.execute(g2, {
       in: new Tensor('in', [1], 'float32', false, true, new Float32Array([1])),
     });
@@ -408,7 +408,7 @@ describe('WebNNProvider Edge Case Coverages', () => {
     const g = new Graph('g');
     g.inputs.push({ name: 'in1', shape: [1], id: 'in1', dtype: 'float32' });
     g.nodes.push(new Node('Abs', ['in1'], ['out']));
-    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as Object);
 
     await expect(
       provider.execute(g, {
@@ -460,17 +460,17 @@ describe('WebNNProvider allocateBuffer types', () => {
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
     g.nodes.push(new Node('Abs', ['in'], ['out1']));
-    g.outputs.push({ name: 'out1', shape: [1], id: 'o1', dtype: 'int32' } as any);
+    g.outputs.push({ name: 'out1', shape: [1], id: 'o1', dtype: 'int32' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out2']));
-    g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float16' } as any);
+    g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float16' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out3']));
-    g.outputs.push({ name: 'out3', shape: [1], id: 'o3', dtype: 'uint8' } as any);
+    g.outputs.push({ name: 'out3', shape: [1], id: 'o3', dtype: 'uint8' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out4']));
-    g.outputs.push({ name: 'out4', shape: [1], id: 'o4', dtype: 'int8' } as any);
+    g.outputs.push({ name: 'out4', shape: [1], id: 'o4', dtype: 'int8' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out5']));
-    g.outputs.push({ name: 'out5', shape: [1], id: 'o5', dtype: 'int64' } as any);
+    g.outputs.push({ name: 'out5', shape: [1], id: 'o5', dtype: 'int64' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out6']));
-    g.outputs.push({ name: 'out6', shape: [1], id: 'o6', dtype: 'unknown' as any } as any);
+    g.outputs.push({ name: 'out6', shape: [1], id: 'o6', dtype: 'unknown' as Object } as Object);
     await expect(
       provider.execute(g, {
         in: new Tensor('in', [1], 'float32', false, true, new Float32Array([1])),

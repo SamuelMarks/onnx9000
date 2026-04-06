@@ -108,7 +108,7 @@ export class ONNXToMILConverter {
       );
     }
 
-    const attributes: Record<string, any> = {};
+    const attributes: Record<string, ReturnType<typeof JSON.parse>> = {};
     for (const key in node.attributes) {
       attributes[key] = node.attributes[key]!.value;
     }

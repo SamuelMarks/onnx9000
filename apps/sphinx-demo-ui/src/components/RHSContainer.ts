@@ -26,7 +26,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
   private tree!: FileTree;
   private editor!: Editor;
   private splitPane!: SplitPane;
-  /* /* private outputCache = new Cache<any>(); */
+  /* /* private outputCache = new Cache<ReturnType<typeof JSON.parse>>(); */
   private olivePanel!: OliveConfigPanel;
   private runBtn!: HTMLButtonElement;
   private _boundLanguageChanged: () => void;
@@ -256,6 +256,8 @@ export class RHSContainer extends Component<HTMLDivElement> {
       } catch (e: object) {
         console.error(`[stderr] ${val} conversion failed: ${e.message}`);
       }
+    } else if (val === 'onnx') {
+      this.tree.selectFile('/output-onnx/model.onnx');
     }
   }
 

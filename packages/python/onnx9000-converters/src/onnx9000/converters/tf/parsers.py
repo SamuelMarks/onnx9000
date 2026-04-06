@@ -342,9 +342,22 @@ def load_keras_v3(data: Any) -> TFGraph:
     if isinstance(data, keras.Model):
         return Keras3Parser(data).parse()
 
-    # In a real implementation, we'd handle .keras (zip) files
-    # For now, let's return a stub if it's bytes
     if isinstance(data, bytes):
+        import io
+        import json
+        import zipfile
+
+        try:
+            with zipfile.ZipFile(io.BytesIO(data)) as zf:
+                if "config.json" in zf.namelist():
+                    with zf.open("config.json") as f:
+                        config_dict = json.load(f)
+                    return Keras3Parser(config_dict).parse()
+        except zipfile.BadZipFile:
+            import logging
+
+            logging.debug("Data is not a valid zip file; falling back to placeholder graph.")
+
         return TFGraph([TFNode(name="keras3_input", op="Placeholder")])
 
     return Keras3Parser(data).parse()

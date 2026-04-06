@@ -28,7 +28,7 @@ describe('Sparse Modifier', () => {
       new Float32Array([0.0, 1.0, 2.0, 3.0]),
     );
     const t3 = new Tensor('ignored', [4], 'float32', false, true, new Float32Array([1, 1, 1, 1]));
-    const t4 = new Tensor('no_data', [4], 'float32', false, true, null as any); // no data
+    const t4 = new Tensor('no_data', [4], 'float32', false, true, null as Object); // no data
     const t5 = new Tensor('empty_data', [0], 'float32', false, true, new Float32Array([])); // empty data
 
     // Let's force isInitializer!

@@ -148,14 +148,12 @@ def test_protobuf_parser_graph_def_unknown_field() -> None:
     assert len(graph.nodes) == 0
 
 
-@pytest.mark.skip("keras not installed")
 def test_parse_functions() -> None:
     """Tests the parse functions functionality."""
     assert len(parse_graphdef(b"").nodes) == 0
     assert len(parse_saved_model(b"").nodes) == 0
     assert extract_variables("v") == {"v": b"0000"}
     assert load_h5_model(b"").nodes[0].name == "h5_input"
-    assert load_keras_v3(b"").nodes[0].name == "keras3_input"
     assert parse_tflite(b"").nodes[0].name == "tflite_input"
     assert map_tf_shape_to_onnx([1, 2, -1, 0]) == [1, 2, -1, -1]
     node = TFNode("n", "op")
@@ -170,6 +168,32 @@ def test_h5_parser_stub() -> None:
     parser = H5Parser(b"")
     graph = parser.parse()
     assert graph.nodes[0].name == "h5_input"
+
+
+def test_load_keras_v3_bytes() -> None:
+    import io
+    import zipfile
+    import json
+    import sys
+    from unittest.mock import MagicMock, patch
+
+    sys.modules["keras"] = MagicMock()
+    sys.modules["keras"].Model = type("DummyModel", (), {})
+
+    # invalid zip
+    graph = load_keras_v3(b"invalidzip")
+    assert graph.nodes[0].name == "keras3_input"
+
+    # valid zip with config.json
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("config.json", json.dumps({"config": "value"}))
+
+    with patch("onnx9000.converters.tf.keras_v3_parser.Keras3Parser") as mock_parser:
+        mock_graph = TFGraph([TFNode(name="parsed", op="Placeholder")])
+        mock_parser.return_value.parse.return_value = mock_graph
+        graph2 = load_keras_v3(buf.getvalue())
+        assert graph2.nodes[0].name == "parsed"
 
 
 def test_load_keras_v3_fallback() -> None:

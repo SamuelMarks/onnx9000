@@ -68,8 +68,8 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Input', 'Conv1_W'],
         ['Conv1_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [3, 3, 3, 3] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [3, 3, 3, 3] } as Object,
         },
         'conv1',
       ),
@@ -84,9 +84,9 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Relu1_Out'],
         ['Pool1_Out'],
         {
-          kernel_shape: { name: 'kernel_shape', type: 'INTS', value: [3, 3] } as any,
-          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as any,
+          kernel_shape: { name: 'kernel_shape', type: 'INTS', value: [3, 3] } as Object,
+          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as Object,
         },
         'pool1',
       ),
@@ -155,8 +155,8 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Input', 'Conv1_W'],
         ['Conv1_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as Object,
         },
         'conv1',
       ),
@@ -178,9 +178,9 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Relu1_Out', 'DW_W'],
         ['DW_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [1, 1] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as any,
-          group: { name: 'group', type: 'INT', value: 32 } as any,
+          strides: { name: 'strides', type: 'INTS', value: [1, 1] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as Object,
+          group: { name: 'group', type: 'INT', value: 32 } as Object,
         },
         'dw_conv',
       ),
@@ -202,7 +202,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Relu6_Out', 'PW_W'],
         ['PW_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [1, 1] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [1, 1] } as Object,
         },
         'pw_conv',
       ),
@@ -243,8 +243,8 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['images', 'Conv1_W'],
         ['Conv1_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [1, 1, 1, 1] } as Object,
         },
         'conv1',
       ),
@@ -264,7 +264,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         'Split',
         ['Conv1_Out', 'Split_Size'],
         ['Split1', 'Split2'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
         'split',
       ),
     );
@@ -274,7 +274,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         'Concat',
         ['Split1', 'Split2', 'Add_Out'],
         ['Concat_Out'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
         'concat',
       ),
     );
@@ -326,8 +326,8 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['mels', 'Conv1_W'],
         ['Conv1_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [1] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [1, 1] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [1] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [1, 1] } as Object,
         },
         'conv1d_feat',
       ),
@@ -343,7 +343,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Gelu_Out'],
         ['Trans_Out'],
         {
-          perm: { name: 'perm', type: 'INTS', value: [0, 2, 1] } as any,
+          perm: { name: 'perm', type: 'INTS', value: [0, 2, 1] } as Object,
         },
         'trans_attn',
       ),
@@ -397,7 +397,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Image', 'Feat_W'],
         ['Feat_Out'],
         {
-          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as any,
+          strides: { name: 'strides', type: 'INTS', value: [2, 2] } as Object,
         },
         'backbone_conv',
       ),
@@ -418,8 +418,8 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Feat_Out', 'ASPP1_W'],
         ['Branch1_Out'],
         {
-          dilations: { name: 'dilations', type: 'INTS', value: [6, 6] } as any,
-          pads: { name: 'pads', type: 'INTS', value: [6, 6, 6, 6] } as any,
+          dilations: { name: 'dilations', type: 'INTS', value: [6, 6] } as Object,
+          pads: { name: 'pads', type: 'INTS', value: [6, 6, 6, 6] } as Object,
         },
         'aspp1',
       ),
@@ -441,7 +441,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         ['Pool_Out', '', 'Resize_Shape'],
         ['Branch2_Out'],
         {
-          mode: { name: 'mode', type: 'STRING', value: 'nearest' } as any,
+          mode: { name: 'mode', type: 'STRING', value: 'nearest' } as Object,
         },
         'aspp_resize',
       ),
@@ -453,7 +453,7 @@ describe('End-to-End Testing & Regression Validations', () => {
         'Concat',
         ['Branch1_Out', 'Branch2_Out'],
         ['Concat_Out'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
         'concat_aspp',
       ),
     );

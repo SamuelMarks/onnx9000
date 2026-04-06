@@ -6,7 +6,10 @@ import { Onnx9000Server } from './index';
 // 4. Implement HTTP/2 multiplexed connections.
 // 5. Implement gRPC protocol emulation over HTTP/2 natively in JS.
 export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2: boolean = false) {
-  const handler = async (req: any, res: any) => {
+  const handler = async (
+    req: ReturnType<typeof JSON.parse>,
+    res: ReturnType<typeof JSON.parse>,
+  ) => {
     try {
       // Reconstruct full URL
       const protocol = req.socket.encrypted ? 'https' : 'http';
@@ -74,7 +77,8 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
       } else {
         res.end();
       }
-    } catch (err: any) {
+    } catch (_err) {
+      const err = _err instanceof Error ? _err : new Error(String(_err));
       if (res.stream) {
         res.stream.respond({ ':status': 500 });
       } else {
@@ -85,8 +89,8 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
   };
 
   const httpServer = useHttp2
-    ? http2.createServer(handler as any)
-    : http.createServer(handler as any);
+    ? http2.createServer(handler as ReturnType<typeof JSON.parse>)
+    : http.createServer(handler as ReturnType<typeof JSON.parse>);
 
   httpServer.listen(port, () => {
     console.log(

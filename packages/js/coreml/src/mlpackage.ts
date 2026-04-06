@@ -33,7 +33,7 @@ export class MLPackageBuilder {
     const encoder = new TextEncoder();
 
     // 1. Generate Manifest.json
-    const manifest: any = {
+    const manifest: ReturnType<typeof JSON.parse> = {
       itemInfoEntries: {
         'Data/com.apple.CoreML/model.mlmodel': {
           author: this.model.description?.metadata?.author
@@ -158,7 +158,7 @@ class ModelRunner {
   }
 
   // Expects a zip library object like JSZip to be passed in to keep the core zero-dependency
-  async createZipArchive(jszipInstance: any): Promise<Uint8Array> {
+  async createZipArchive(jszipInstance: ReturnType<typeof JSON.parse>): Promise<Uint8Array> {
     const structure = this.buildDirectoryStructure();
     validateZipInputData(structure); // 281, 282. Sandbox execution check
 

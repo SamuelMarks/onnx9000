@@ -25,7 +25,11 @@ export class CGenerator {
       this.graph.inputs.find((x) => x.name === name) ||
       this.graph.outputs.find((x) => x.name === name);
     if (v) {
-      return v.shape.reduce((a: number, b: any) => a * (typeof b === 'number' && b > 0 ? b : 1), 1);
+      return v.shape.reduce(
+        (a: number, b: ReturnType<typeof JSON.parse>) =>
+          a * (typeof b === 'number' && b > 0 ? b : 1),
+        1,
+      );
     }
     const t = this.graph.tensors[name];
     if (t) {

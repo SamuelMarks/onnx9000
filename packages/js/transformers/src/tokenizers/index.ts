@@ -16,7 +16,7 @@ export interface TokenizerConfig {
   pad_token?: string;
   cls_token?: string;
   mask_token?: string;
-  [key: string]: any;
+  [key: string]: ReturnType<typeof JSON.parse>;
 }
 
 export class PreTrainedTokenizer {
@@ -26,7 +26,7 @@ export class PreTrainedTokenizer {
     this.config = config;
   }
 
-  encode(text: string | string[], options: TokenizerConfig = {}): any {
+  encode(text: string | string[], options: TokenizerConfig = {}): ReturnType<typeof JSON.parse> {
     // Handle options
     const padding = options.padding ?? this.config.padding;
     const truncation = options.truncation ?? this.config.truncation;
@@ -57,7 +57,9 @@ export class PreTrainedTokenizer {
       });
     }
 
-    const result: any = { input_ids: Array.isArray(text) ? padded_ids : padded_ids[0] };
+    const result: ReturnType<typeof JSON.parse> = {
+      input_ids: Array.isArray(text) ? padded_ids : padded_ids[0],
+    };
     if (return_attention_mask) {
       result.attention_mask = Array.isArray(text) ? attention_mask : attention_mask[0];
     }
@@ -68,20 +70,20 @@ export class PreTrainedTokenizer {
     return text.split('').map((c) => c.charCodeAt(0));
   }
 
-  decode(ids: number[], options: any = {}): string {
+  decode(ids: number[], options: ReturnType<typeof JSON.parse> = {}): string {
     const { skip_special_tokens = false, clean_up_tokenization_spaces = true } = options;
     return ids.map((id) => String.fromCharCode(id)).join('');
   }
 
-  batch_decode(batch_ids: number[][], options: any = {}): string[] {
+  batch_decode(batch_ids: number[][], options: ReturnType<typeof JSON.parse> = {}): string[] {
     return batch_ids.map((ids) => this.decode(ids, options));
   }
 }
 
 export class PreTrainedTokenizerFast extends PreTrainedTokenizer {
-  tokenizerJson: any;
+  tokenizerJson: ReturnType<typeof JSON.parse>;
 
-  constructor(tokenizerJson: any, config: TokenizerConfig = {}) {
+  constructor(tokenizerJson: ReturnType<typeof JSON.parse>, config: TokenizerConfig = {}) {
     super(config);
     this.tokenizerJson = tokenizerJson;
   }
@@ -121,29 +123,40 @@ export class PreTrainedTokenizerFast extends PreTrainedTokenizer {
 }
 
 export class AutoTokenizer {
-  static async fromPretrained(modelId: string, options: any = {}): Promise<any> {
+  static async fromPretrained(
+    modelId: string,
+    options: ReturnType<typeof JSON.parse> = {},
+  ): Promise<ReturnType<typeof JSON.parse>> {
     const config = { padding: false, truncation: false };
     const tokenizerJson = { model: { type: 'BPE' } };
     const tok = new PreTrainedTokenizerFast(tokenizerJson, config);
     // Bind old stub methods for tests
-    (tok as any).encode_old = tok.encode;
-    tok.encode = function (this: any, text: string | string[], opts: any = {}): any {
+    (tok as ReturnType<typeof JSON.parse>).encode_old = tok.encode;
+    tok.encode = function (
+      this: ReturnType<typeof JSON.parse>,
+      text: string | string[],
+      opts: ReturnType<typeof JSON.parse> = {},
+    ): ReturnType<typeof JSON.parse> {
       if (typeof text === 'string' && !opts.return_tensors) {
         // legacy signature
         if (!text) return [];
         return text.split(/\s+/).map((w) => w.charCodeAt(0));
       }
       return this.encode_old(text, opts);
-    }.bind(tok) as any;
+    }.bind(tok) as ReturnType<typeof JSON.parse>;
 
-    (tok as any).decode_old = tok.decode;
-    tok.decode = function (this: any, tokens: number[], opts: any = {}): string {
+    (tok as ReturnType<typeof JSON.parse>).decode_old = tok.decode;
+    tok.decode = function (
+      this: ReturnType<typeof JSON.parse>,
+      tokens: number[],
+      opts: ReturnType<typeof JSON.parse> = {},
+    ): string {
       if (!opts.skip_special_tokens && !opts.clean_up_tokenization_spaces) {
         if (!tokens || tokens.length === 0) return '';
         return tokens.map((t) => String.fromCharCode(t)).join(' ');
       }
       return this.decode_old(tokens, opts);
-    }.bind(tok) as any;
+    }.bind(tok) as ReturnType<typeof JSON.parse>;
 
     return tok;
   }

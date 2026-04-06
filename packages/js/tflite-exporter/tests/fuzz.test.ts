@@ -11,7 +11,7 @@ describe('TFLite Exporter Fuzzing & Memory', () => {
     // Node with no inputs/outputs
     badGraph.nodes.push(new Node('Add', [], [], {}, 'bad1'));
     // Node with undefined attributes
-    badGraph.nodes.push(new Node('Unknown', ['A'], ['B'], undefined as any, 'bad2'));
+    badGraph.nodes.push(new Node('Unknown', ['A'], ['B'], undefined as Object, 'bad2'));
 
     expect(() => {
       const offset = exporter.builder.startObject(0);

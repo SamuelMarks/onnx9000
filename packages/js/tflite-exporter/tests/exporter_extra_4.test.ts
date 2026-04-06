@@ -6,7 +6,7 @@ import { EdgeTPUOptimizer } from '../src/optimizations/edgetpu';
 describe('Exporter extra 4', () => {
   it('quantizer missing node', () => {
     const graph = new Graph();
-    graph.nodes.push(null as any);
+    graph.nodes.push(null as Object);
 
     const q = new Quantizer(graph, { mode: 'int8' });
     q.quantize();

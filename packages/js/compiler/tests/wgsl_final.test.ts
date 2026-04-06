@@ -7,7 +7,7 @@ describe('WGSL Emitter Final', () => {
     const g = new Graph('g');
     g.inputs.push(new ValueInfo('in1', [64], 'float32'));
     g.inputs.push(new ValueInfo('in2', [64], 'float32'));
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
 
     const ops = ['Add', 'Sub', 'Mul', 'Div', 'Relu', 'Exp', 'Log', 'Sqrt', 'ReduceSum', 'MatMul'];
     for (const op of ops) {

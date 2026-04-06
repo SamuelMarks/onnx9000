@@ -143,7 +143,7 @@ export function dynamicSlice(
 export function gather(
   operand: Value,
   startIndices: Value,
-  dimensionNumbers: Record<string, any>,
+  dimensionNumbers: Record<string, ReturnType<typeof JSON.parse>>,
   sliceSizes: number[],
   resultType: Type,
 ): Operation {
@@ -158,7 +158,7 @@ export function scatter(
   scatterIndices: Value,
   updates: Value,
   updateComputation: Region,
-  dimensionNumbers: Record<string, any>,
+  dimensionNumbers: Record<string, ReturnType<typeof JSON.parse>>,
   resultType: Type,
 ): Operation {
   return new Operation(

@@ -24,7 +24,7 @@ describe('Models', () => {
       models.AutoModelForSpeechSeq2Seq,
     ];
     for (const exp of list) {
-      const inst = new (exp as any)({ myconfig: 1 }, 'model');
+      const inst = new (exp as Object)({ myconfig: 1 }, 'model');
       expect(inst.config).toBeDefined();
       if (inst.generate) {
         await expect(inst.generate()).resolves.toBeDefined();

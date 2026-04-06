@@ -63,7 +63,7 @@ export class OnnxScriptGenerator {
                 const val = v.value;
                 if (k === 'alpha' && val === 1.0) return `alpha=1`;
                 /* v8 ignore start */
-                return `${k}=${JSON.stringify(val, (_, v) => (typeof v === 'bigint' ? Number(v) : v))}`;
+                return `${k}=${JSON.stringify(val, (_key: string, value: string | number | bigint | boolean | object | null) => (typeof value === 'bigint' ? Number(value) : value))}`;
                 /* v8 ignore stop */
               })
               .join(', ');

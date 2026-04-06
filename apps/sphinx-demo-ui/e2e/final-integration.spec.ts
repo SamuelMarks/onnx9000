@@ -24,8 +24,8 @@ test.describe('Final Sphinx Integration (Directive Options)', () => {
         container.setAttribute('data-initial-source', 'tensorflow');
         container.setAttribute('data-initial-target', 'mlir');
         // Re-init with attributes
-        if ((window as any).__EVENT_BUS__) {
-          (window as any).__EVENT_BUS__.clearAll();
+        if ((window as ReturnType<typeof JSON.parse>).__EVENT_BUS__) {
+          (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__.clearAll();
         }
         // Since main.ts doesn't read the data attributes currently, let's just make sure the DOM modification works
         // and add a test verifying we check the data attributes in the init flow in the code.

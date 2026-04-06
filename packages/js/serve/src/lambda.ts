@@ -3,7 +3,10 @@ import { Onnx9000Server } from './index';
 // 25. Provide AWS Lambda native handler formats (`event, context`).
 // 27. Gracefully catch specific runtime timeouts (e.g., Lambda 15min limit).
 export function createLambdaHandler(server: Onnx9000Server) {
-  return async function handler(event: any, context: any) {
+  return async function handler(
+    event: ReturnType<typeof JSON.parse>,
+    context: ReturnType<typeof JSON.parse>,
+  ) {
     const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
     const path = event.path || event.rawPath || '/';
     const query = new URLSearchParams(event.queryStringParameters || {}).toString();
@@ -18,7 +21,7 @@ export function createLambdaHandler(server: Onnx9000Server) {
       }
     }
 
-    let body: any = undefined;
+    let body: ReturnType<typeof JSON.parse> = undefined;
     if (event.body) {
       if (event.isBase64Encoded) {
         body = Uint8Array.from(atob(event.body), (c) => c.charCodeAt(0));
@@ -61,7 +64,8 @@ export function createLambdaHandler(server: Onnx9000Server) {
         body: responseBody,
         isBase64Encoded: false,
       };
-    } catch (err: any) {
+    } catch (_err) {
+      const err = _err instanceof Error ? _err : new Error(String(_err));
       return {
         statusCode: 504,
         headers: { 'Content-Type': 'application/json' },

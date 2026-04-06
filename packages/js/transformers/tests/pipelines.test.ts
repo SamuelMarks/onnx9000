@@ -52,7 +52,7 @@ describe('Pipelines', () => {
   });
 
   it('pipeline factory wrapper', async () => {
-    await expect(pipes.pipeline('unsupported_task' as any)).rejects.toThrow(
+    await expect(pipes.pipeline('unsupported_task' as Object)).rejects.toThrow(
       'Unsupported task: unsupported_task',
     );
   });
@@ -84,7 +84,7 @@ it('pipeline switch', async () => {
     'image-feature-extraction',
   ];
   for (const t of tasks) {
-    await pipes.pipeline(t as any);
+    await pipes.pipeline(t as Object);
   }
 });
 

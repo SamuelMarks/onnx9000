@@ -43,7 +43,7 @@ describe('KerasGenerator Coverage', () => {
       'other',
     ];
     for (const dtype of dtypes) {
-      const t = new Tensor('t', [2], dtype as any, true, false, new Uint8Array(8));
+      const t = new Tensor('t', [2], dtype as Object, true, false, new Uint8Array(8));
       const npy = gen.generateNpy(t);
       expect(npy.length).toBeGreaterThan(64);
       expect(npy[0]).toBe(0x93);

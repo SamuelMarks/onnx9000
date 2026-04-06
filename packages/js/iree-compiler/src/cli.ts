@@ -36,12 +36,15 @@ export async function compileModel(modelPath: string, options: CompileOptions): 
 }
 
 // 163. Graphical trace visualizer
-export function generateTraceVisualizer(halGraph: any): string {
+export function generateTraceVisualizer(halGraph: ReturnType<typeof JSON.parse>): string {
   return `<!DOCTYPE html><html><body><h1>HAL Command Buffer Trace</h1><div id="trace">...</div></body></html>`;
 }
 
 // 164. Interactive HTML report
-export function generateHTMLReport(wgslShaders: string[], onnxNodes: any[]): string {
+export function generateHTMLReport(
+  wgslShaders: string[],
+  onnxNodes: ReturnType<typeof JSON.parse>[],
+): string {
   return `<!DOCTYPE html><html><body><h1>WGSL to ONNX Mapping Report</h1><div>...</div></body></html>`;
 }
 

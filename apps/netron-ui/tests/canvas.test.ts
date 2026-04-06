@@ -75,7 +75,7 @@ describe('CanvasRenderer', () => {
       ],
       width: 200,
       height: 200,
-    } as any);
+    } as Object);
 
     renderer.setSearchResults(['1']);
     renderer.focusNode('1');
@@ -89,7 +89,7 @@ describe('CanvasRenderer', () => {
     canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: 50, clientY: 25 }));
 
     window.dispatchEvent(new Event('resize'));
-    renderer.setLayout({ nodes: [], edges: [], width: 0, height: 0 } as any);
+    renderer.setLayout({ nodes: [], edges: [], width: 0, height: 0 } as Object);
     expect(renderer).toBeDefined();
   });
 });
@@ -178,7 +178,7 @@ it('should hit edge render colors', () => {
         shape: '[1]',
       },
     ],
-  } as any);
+  } as Object);
 
   // Trigger grid < 0.2
   renderer.scale = 0.1;
@@ -202,7 +202,7 @@ it('should render out of bounds and specific node types', () => {
       { id: '4', name: 'constant', x: 30, y: 30, width: 10, height: 10, type: 'constant' },
     ],
     edges: [],
-  } as any);
+  } as Object);
 
   // Make '2' selected and '3' hovered
   renderer.selectedNode = '2';
@@ -253,7 +253,7 @@ it('should hit remaining edge branches', () => {
         shape: '[1]',
       }, // unknown
     ],
-  } as any);
+  } as Object);
 
   renderer.scale = 1.0;
   renderer.render();
@@ -267,7 +267,7 @@ it('should handle window mouse events for drag and hover', () => {
   renderer.setLayout({
     nodes: [{ id: '1', name: 'N1', x: 0, y: 0, width: 10, height: 10, type: 'node' }],
     edges: [],
-  } as any);
+  } as Object);
 
   // mousedown to start drag
   canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: 10, clientY: 10 }));
@@ -312,7 +312,7 @@ it('should render entirely out of bounds nodes', () => {
       },
     ],
     edges: [],
-  } as any);
+  } as Object);
 
   renderer.offsetX = 0;
   renderer.offsetY = 0;
@@ -333,7 +333,7 @@ it('should hit missing branch for centerGraph and focusNode', () => {
   // Focus node without layout (hits line 68 return)
   renderer.focusNode('unknown');
 
-  renderer.setLayout({ nodes: [], edges: [] } as any);
+  renderer.setLayout({ nodes: [], edges: [] } as Object);
   // Focus node not in layout (hits line 70 return)
   renderer.focusNode('unknown');
 });

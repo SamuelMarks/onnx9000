@@ -94,13 +94,13 @@ describe('Coverage Router & Middleware & Repository', () => {
 
     // test rate limit
     globalRateLimiter.capacity = 0; // immediate failure
-    (globalRateLimiter as any).buckets.clear();
+    (globalRateLimiter as Object).buckets.clear();
     req = new Request('http://localhost', { headers: { 'x-forwarded-for': '127.0.0.1' } });
     res = (await handler(req, {})) as Response;
     expect(res.status).toBe(429);
 
     globalRateLimiter.capacity = 100; // reset
-    (globalRateLimiter as any).buckets.clear();
+    (globalRateLimiter as Object).buckets.clear();
 
     // test payload too large
     req = new Request('http://localhost', { headers: { 'content-length': '100000000' } });

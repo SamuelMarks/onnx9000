@@ -41,7 +41,8 @@ async function processFile(file: File) {
     const graph = await load(arrayBuffer);
     const code = generatePyTorchCode(graph);
     codeArea.value = code;
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     codeArea.value = `# Error during processing:\n${err.message || err.toString()}`;
   }
 }

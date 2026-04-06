@@ -31,7 +31,7 @@ describe('index.ts deeper UI coverage', () => {
         W: { name: 'W', dtype: 'float32', shape: [1], size: 1, formatData: () => 'data' },
       },
       opsetImports: { '': 14, 'ai.onnx.ml': 2 },
-    } as any);
+    } as Object);
 
     // Load index
 
@@ -43,11 +43,11 @@ describe('index.ts deeper UI coverage', () => {
 
     // Simulate drop
     const dragover = new CustomEvent('dragover');
-    (dragover as any).dataTransfer = { files: [] };
+    (dragover as Object).dataTransfer = { files: [] };
     window.dispatchEvent(dragover);
 
     const drop = new CustomEvent('drop');
-    (drop as any).dataTransfer = { files: [new File([''], 'model.onnx')] };
+    (drop as Object).dataTransfer = { files: [new File([''], 'model.onnx')] };
     window.dispatchEvent(drop);
 
     // Wait for worker mock
@@ -124,7 +124,7 @@ it('should trigger parse and worker responses', async () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   // Click on node
   // It's rendered via canvas renderer
@@ -144,7 +144,7 @@ it('should test node selection directly', async () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 });
 
 it('should cover empty files logic', async () => {
@@ -168,21 +168,21 @@ it('should cover renderSidebar empty cases', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   // Simulate clicking away to hide sidebar
-  (globalThis as any).onSelectNode = (window as any).onSelectNode;
-  if ((window as any).onSelectNode) {
-    (window as any).onSelectNode(null);
+  (globalThis as Object).onSelectNode = (window as Object).onSelectNode;
+  if ((window as Object).onSelectNode) {
+    (window as Object).onSelectNode(null);
   }
 });
 
 it('should render sidebar for various nodes', () => {
-  if ((window as any).onSelectNode) (window as any).onSelectNode('input_1');
-  if ((window as any).onSelectNode) (window as any).onSelectNode('output_Y');
-  if ((window as any).onSelectNode) (window as any).onSelectNode('const_W');
-  if ((window as any).onSelectNode) (window as any).onSelectNode('1'); // Normal node
-  if ((window as any).onSelectNode) (window as any).onSelectNode('unknown_node_type'); // unknown
+  if ((window as Object).onSelectNode) (window as Object).onSelectNode('input_1');
+  if ((window as Object).onSelectNode) (window as Object).onSelectNode('output_Y');
+  if ((window as Object).onSelectNode) (window as Object).onSelectNode('const_W');
+  if ((window as Object).onSelectNode) (window as Object).onSelectNode('1'); // Normal node
+  if ((window as Object).onSelectNode) (window as Object).onSelectNode('unknown_node_type'); // unknown
 });
 
 it('should hit error branch', () => {
@@ -198,7 +198,7 @@ it('should hit error branch', () => {
       error: 'Simulated error',
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 });
 
 it('should test search results logic', () => {
@@ -244,12 +244,12 @@ it('should test tensor rendering (line 165+)', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
-  if ((window as any).onSelectNode) {
-    (window as any).onSelectNode('const_W');
-    (window as any).onSelectNode('const_W1D');
-    (window as any).onSelectNode('const_WBig');
+  if ((window as Object).onSelectNode) {
+    (window as Object).onSelectNode('const_W');
+    (window as Object).onSelectNode('const_W1D');
+    (window as Object).onSelectNode('const_WBig');
   }
 });
 
@@ -289,11 +289,11 @@ it('should test tensor rendering coverage branch', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
-  if ((window as any).onSelectNode) {
-    (window as any).onSelectNode('const_W');
-    (window as any).onSelectNode('const_W1D');
-    (window as any).onSelectNode('const_WBig');
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
+  if ((window as Object).onSelectNode) {
+    (window as Object).onSelectNode('const_W');
+    (window as Object).onSelectNode('const_W1D');
+    (window as Object).onSelectNode('const_WBig');
 
     // Also test the missing branches inside matrixText loop
     // Matrix needs to be larger than 10x10 to hit `rows < t.shape[0]` branch
@@ -318,7 +318,7 @@ it('should test tensor rendering coverage branch', () => {
         },
       },
     };
-    Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg2);
+    Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg2);
     const sbWMax = document.getElementById('search-box') as HTMLInputElement;
     sbWMax.value = 'WMax';
     sbWMax.dispatchEvent(new Event('input'));
@@ -348,7 +348,7 @@ it('should test tensor rendering coverage branch', () => {
         },
       },
     };
-    Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg3);
+    Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg3);
     const sbn1 = document.getElementById('search-box') as HTMLInputElement;
     sbn1.value = 'n1';
     sbn1.dispatchEvent(new Event('input'));
@@ -414,7 +414,7 @@ it('should render various nodes via search to cover lines 161-269', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const searchBox = document.getElementById('search-box') as HTMLInputElement;
   searchBox.value = 'W1';
@@ -484,7 +484,7 @@ it('should test node rendering details (line 228+)', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const searchBox = document.getElementById('search-box') as HTMLInputElement;
   searchBox.value = 'N1';
@@ -530,7 +530,7 @@ it('should hit inputs and outputs info rendering', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'I';
@@ -558,7 +558,7 @@ it('should click canvas specifically', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   // Simulate mousedown on N1
   // By default, scale=1, offset=0,0
@@ -590,7 +590,7 @@ it('should click canvas properly to hit input outputs info rendering', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'I';
   sb.dispatchEvent(new Event('input'));
@@ -640,7 +640,7 @@ it('should cover missing index lines 68-70 and 222-223', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'myval';
@@ -687,7 +687,7 @@ it('should cover empty name fallbacks and GRAPH attribute', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'Add';
@@ -735,7 +735,7 @@ it('should cover tensors rendering strictly', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   const clickNode = (name: string) => {
@@ -782,7 +782,7 @@ it('should cover producer/consumer name fallbacks', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'ValidName';
@@ -814,7 +814,7 @@ it('should cover unconsumed outputs', () => {
       },
     },
   };
-  Array.from((globalThis as any).workerInstances || [])[0].onmessage(workerMsg);
+  Array.from((globalThis as Object).workerInstances || [])[0].onmessage(workerMsg);
 
   const sb = document.getElementById('search-box') as HTMLInputElement;
   sb.value = 'AloneName';

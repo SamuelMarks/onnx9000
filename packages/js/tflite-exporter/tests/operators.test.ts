@@ -109,7 +109,7 @@ describe('TFLite Compiler - All Operators', () => {
         const extendedCode = reader.getInt32(opCodeObj, 3, 0);
         const finalCode = extendedCode !== 0 ? extendedCode : code < 0 ? code + 256 : code;
         expect(finalCode).toBe(mapping.builtinCode);
-      } catch (e: any) {
+      } catch (e) {
         throw new Error(`Failed on operator ${opType}: ${e.message}`);
       }
     }

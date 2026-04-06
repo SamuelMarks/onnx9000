@@ -27,22 +27,22 @@ describe('Coverage Keras Converter 2', () => {
 
     const converter = new Keras2OnnxConverter(JSON.stringify(kerasJson), new Map());
     // Since convert is heavily tested, we can just call handleEinsumDense directly for coverage
-    const nodes1 = (converter as any).handleEinsumDense(
+    const nodes1 = (converter as Object).handleEinsumDense(
       'in',
       'out',
       'einsum',
       'einsum_1',
       kerasJson.modelTopology.config.layers[0].config,
     );
-    expect(nodes1.find((n: any) => n.opType === 'Add')).toBeDefined();
+    expect(nodes1.find((n: Object) => n.opType === 'Add')).toBeDefined();
 
-    const nodes2 = (converter as any).handleEinsumDense(
+    const nodes2 = (converter as Object).handleEinsumDense(
       'in',
       'out',
       'einsum2',
       'einsum_2',
       kerasJson.modelTopology.config.layers[1].config,
     );
-    expect(nodes2.find((n: any) => n.opType === 'Identity')).toBeDefined();
+    expect(nodes2.find((n: Object) => n.opType === 'Identity')).toBeDefined();
   });
 });

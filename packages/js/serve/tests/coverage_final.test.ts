@@ -13,7 +13,7 @@ describe('Coverage Extra', () => {
     expect(manager.fallbackToWasm).toBe(true);
     expect(manager.getTargetDevice('test').type).toBe('wasm');
 
-    const mockNav = {} as any;
+    const mockNav = {} as Object;
     vi.stubGlobal('navigator', mockNav);
 
     // With navigator.gpu but no adapter
@@ -23,7 +23,7 @@ describe('Coverage Extra', () => {
     expect(manager.fallbackToWasm).toBe(true);
 
     // With navigator.gpu and adapter
-    let lostTrigger: any;
+    let lostTrigger: Object;
     const lostPromise = new Promise((resolve) => {
       lostTrigger = resolve;
     });
@@ -95,15 +95,15 @@ describe('Coverage Extra', () => {
       }),
     };
 
-    const server = serveNode(mockServer as any, 0, false);
+    const server = serveNode(mockServer as Object, 0, false);
     server.close();
   });
 
   it('WorkerPool handle message', () => {
     const p = new WorkerPool(1);
     p.init();
-    (p as any).handleWorkerMessage({}); // cover empty func
-    (p as any).workers[0].terminate(); // cover empty func
+    (p as Object).handleWorkerMessage({}); // cover empty func
+    (p as Object).workers[0].terminate(); // cover empty func
   });
 });
 

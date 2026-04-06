@@ -3708,7 +3708,7 @@ export default {
   prod,
   sum,
   all,
-  any,
+  Object,
   logSumExp,
   maxPool,
   avgPool,

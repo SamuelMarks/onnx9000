@@ -9,7 +9,7 @@ describe('Edge cases coverage', () => {
   });
 
   it('covers data() and dataSync() with unknown dtype', async () => {
-    const t = tf.tensor([1], [1], 'complex64' as any);
+    const t = tf.tensor([1], [1], 'complex64' as Object);
     expect(t.dataSync()).toBeInstanceOf(Float32Array);
     expect(await t.data()).toBeInstanceOf(Float32Array);
   });
@@ -23,13 +23,13 @@ describe('Edge cases coverage', () => {
     let tToDispose: tf.Tensor;
     const res = tf.tidy(() => {
       tToDispose = tf.tensor(1);
-      return null as any;
+      return null as Object;
     });
     expect(res).toBeNull();
     expect(tToDispose!.isDisposed).toBe(true);
   });
 
   it('covers invalid inputs to elementwise op', () => {
-    expect(() => tf.add(undefined as any, 1)).toThrow(/Invalid inputs to add/);
+    expect(() => tf.add(undefined as Object, 1)).toThrow(/Invalid inputs to add/);
   });
 });

@@ -56,8 +56,8 @@ describe('MIL Rewriter', () => {
 
     replaceVarUsage(block, oldY, newY);
 
-    expect((op1.inputs['y'] as any).name).toBe('new_y');
-    expect((op2.inputs['vals'] as any)[1].name).toBe('new_y');
+    expect((op1.inputs['y'] as Object).name).toBe('new_y');
+    expect((op2.inputs['vals'] as Object)[1].name).toBe('new_y');
     expect(block.outputs[0]!.name).toBe('new_y');
   });
 

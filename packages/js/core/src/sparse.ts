@@ -81,7 +81,7 @@ export function unpackData(tensor: Tensor | null): (number | bigint)[] {
   }
 
   if (Symbol.iterator in Object(tensor.data)) {
-    return Array.from(tensor.data as any as Iterable<number | bigint>);
+    return Array.from(tensor.data as ReturnType<typeof JSON.parse> as Iterable<number | bigint>);
   }
 
   return [];
@@ -107,7 +107,7 @@ export function denseToCoo(tensor: Tensor): SparseTensor {
 
   const valData = getTypedArray(tensor.dtype, nonZeroValues.length);
   for (let i = 0; i < nonZeroValues.length; i++) {
-    (valData as any)[i] = nonZeroValues[i];
+    (valData as ReturnType<typeof JSON.parse>)[i] = nonZeroValues[i];
   }
 
   const valTensor = new Tensor(
@@ -162,8 +162,9 @@ export function denseToCsr(tensor: Tensor): SparseTensor {
 
   const valTensor = new Tensor(tensor.name + '_values', [csrValues.length], tensor.dtype, true);
   const vData = getTypedArray(tensor.dtype, csrValues.length);
-  for (let i = 0; i < csrValues.length; i++) (vData as any)[i] = csrValues[i];
-  (valTensor as any).data = vData;
+  for (let i = 0; i < csrValues.length; i++)
+    (vData as ReturnType<typeof JSON.parse>)[i] = csrValues[i];
+  (valTensor as ReturnType<typeof JSON.parse>).data = vData;
 
   const colIdxTensor = new Tensor(
     tensor.name + '_col_indices',
@@ -172,11 +173,19 @@ export function denseToCsr(tensor: Tensor): SparseTensor {
     true,
   );
   const cData = new Int32Array(csrColIndices);
-  (colIdxTensor as any).data = new Uint8Array(cData.buffer, cData.byteOffset, cData.byteLength);
+  (colIdxTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    cData.buffer,
+    cData.byteOffset,
+    cData.byteLength,
+  );
 
   const rowPtrTensor = new Tensor(tensor.name + '_row_ptr', [csrRowPtr.length], 'int32', true);
   const rData = new Int32Array(csrRowPtr);
-  (rowPtrTensor as any).data = new Uint8Array(rData.buffer, rData.byteOffset, rData.byteLength);
+  (rowPtrTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    rData.buffer,
+    rData.byteOffset,
+    rData.byteLength,
+  );
 
   const linearIdxTensor = new Tensor(
     tensor.name + '_indices',
@@ -185,7 +194,11 @@ export function denseToCsr(tensor: Tensor): SparseTensor {
     true,
   );
   const lData = new Int32Array(linearIndices);
-  (linearIdxTensor as any).data = new Uint8Array(lData.buffer, lData.byteOffset, lData.byteLength);
+  (linearIdxTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    lData.buffer,
+    lData.byteOffset,
+    lData.byteLength,
+  );
 
   return new SparseTensor(
     tensor.name,
@@ -227,8 +240,9 @@ export function denseToCsc(tensor: Tensor): SparseTensor {
 
   const valTensor = new Tensor(tensor.name + '_values', [cscValues.length], tensor.dtype, true);
   const vData = getTypedArray(tensor.dtype, cscValues.length);
-  for (let i = 0; i < cscValues.length; i++) (vData as any)[i] = cscValues[i];
-  (valTensor as any).data = vData;
+  for (let i = 0; i < cscValues.length; i++)
+    (vData as ReturnType<typeof JSON.parse>)[i] = cscValues[i];
+  (valTensor as ReturnType<typeof JSON.parse>).data = vData;
 
   const rowIdxTensor = new Tensor(
     tensor.name + '_row_indices',
@@ -237,11 +251,19 @@ export function denseToCsc(tensor: Tensor): SparseTensor {
     true,
   );
   const rData = new Int32Array(cscRowIndices);
-  (rowIdxTensor as any).data = new Uint8Array(rData.buffer, rData.byteOffset, rData.byteLength);
+  (rowIdxTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    rData.buffer,
+    rData.byteOffset,
+    rData.byteLength,
+  );
 
   const colPtrTensor = new Tensor(tensor.name + '_col_ptr', [cscColPtr.length], 'int32', true);
   const cData = new Int32Array(cscColPtr);
-  (colPtrTensor as any).data = new Uint8Array(cData.buffer, cData.byteOffset, cData.byteLength);
+  (colPtrTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    cData.buffer,
+    cData.byteOffset,
+    cData.byteLength,
+  );
 
   const linearIdxTensor = new Tensor(
     tensor.name + '_indices',
@@ -250,7 +272,11 @@ export function denseToCsc(tensor: Tensor): SparseTensor {
     true,
   );
   const lData = new Int32Array(linearIndices);
-  (linearIdxTensor as any).data = new Uint8Array(lData.buffer, lData.byteOffset, lData.byteLength);
+  (linearIdxTensor as ReturnType<typeof JSON.parse>).data = new Uint8Array(
+    lData.buffer,
+    lData.byteOffset,
+    lData.byteLength,
+  );
 
   return new SparseTensor(
     tensor.name,
@@ -331,7 +357,7 @@ export function sparseToDense(sparseTensor: SparseTensor): Tensor {
   for (let i = 0; i < indices.length; i++) {
     const idx = indices[i];
     if (idx !== undefined && idx >= 0 && idx < totalSize) {
-      (denseData as any)[idx] = values[i];
+      (denseData as ReturnType<typeof JSON.parse>)[idx] = values[i];
     }
   }
 

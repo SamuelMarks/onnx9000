@@ -46,13 +46,13 @@ describe('MMDNN API Coverage', () => {
   });
 
   it('should call convertToCoreML', async () => {
-    const result = (await convertToCoreML(files)) as any;
+    const result = (await convertToCoreML(files)) as Object;
     expect(result).toBeDefined();
     expect(result.content).toContain('Exported coreml');
   });
 
   it('should call convertToPaddle', async () => {
-    const result = (await convertToPaddle(files)) as any;
+    const result = (await convertToPaddle(files)) as Object;
     expect(result).toBeDefined();
     expect(result.content).toContain('Exported paddle');
   });

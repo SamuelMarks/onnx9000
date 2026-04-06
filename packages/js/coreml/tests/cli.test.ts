@@ -3,9 +3,9 @@ import { resolve } from 'node:path';
 
 describe('CLI', () => {
   let originalArgv: string[];
-  let exitMock: any;
-  let errorMock: any;
-  let logMock: any;
+  let exitMock: Object;
+  let errorMock: Object;
+  let logMock: Object;
 
   beforeEach(() => {
     originalArgv = process.argv;
@@ -26,7 +26,7 @@ describe('CLI', () => {
       await import('../src/cli.js' + '?t=' + Date.now());
       // wait a tick for promises
       await new Promise((r) => setTimeout(r, 10));
-    } catch (e: any) {
+    } catch (e) {
       if (e.message !== 'exit') throw e;
     }
   };

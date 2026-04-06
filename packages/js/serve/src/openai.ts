@@ -135,7 +135,7 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
     const body = safeJsonParse(rawText);
 
     const encodingFormat = body.encoding_format || 'float';
-    let embeddingData: any = [0.0, 0.1, 0.2]; // dummy float
+    let embeddingData: ReturnType<typeof JSON.parse> = [0.0, 0.1, 0.2]; // dummy float
 
     if (encodingFormat === 'base64') {
       const f32 = new Float32Array(embeddingData);

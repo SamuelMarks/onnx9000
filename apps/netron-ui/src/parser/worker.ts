@@ -1,7 +1,10 @@
 import { BlobReader, BufferReader, parseModelProto, Graph } from '@onnx9000/core';
 import { computeLayout, FlowDirection } from '../layout/dag';
 
-export const messageHandler = async (e: MessageEvent, postMessage: (msg: any) => void) => {
+export const messageHandler = async (
+  e: MessageEvent,
+  postMessage: (msg: ReturnType<typeof JSON.parse>) => void,
+) => {
   try {
     const data = e.data;
     let graph: Graph | null = null;
@@ -25,7 +28,8 @@ export const messageHandler = async (e: MessageEvent, postMessage: (msg: any) =>
       const layout = computeLayout(graph, direction);
       postMessage({ type: 'PARSE_SUCCESS', graph, layout });
     }
-  } catch (error: any) {
+  } catch (_error) {
+    const error = _error instanceof Error ? _error : new Error(String(_error));
     postMessage({ type: 'PARSE_ERROR', error: error.message });
   }
 };

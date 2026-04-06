@@ -50,7 +50,7 @@ dropzone?.addEventListener('drop', async (e) => {
     };
 
     const ctx = new ValidationContext();
-    check_model(mockModel as any, ctx);
+    check_model(mockModel as ReturnType<typeof JSON.parse>, ctx);
 
     if (ctx.errors && ctx.errors.length > 0) {
       results.innerHTML =
@@ -65,7 +65,8 @@ dropzone?.addEventListener('drop', async (e) => {
     } else {
       results.innerHTML = `<div class="success">Model ${file.name} is structurally valid!</div>`;
     }
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     results.innerHTML = `<div class="error">Error: ${err.message}</div>`;
   }
 });

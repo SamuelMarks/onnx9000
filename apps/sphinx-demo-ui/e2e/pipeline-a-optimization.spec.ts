@@ -17,7 +17,7 @@ test.describe('Pipeline A - Optimization (Olive)', () => {
   });
 
   test('should verify selecting Olive shows config panel', async ({ page }) => {
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const listbox = rhsDropdown.locator('.demo-dropdown-listbox');
     const olivePanel = page.locator('.demo-olive-config-panel');
 
@@ -34,7 +34,7 @@ test.describe('Pipeline A - Optimization (Olive)', () => {
   });
 
   test('should verify changing Olive config emits events via EventBus', async ({ page }) => {
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await rhsDropdown.locator('button').click();
     await rhsDropdown
       .locator('.demo-dropdown-listbox .demo-dropdown-item')
@@ -51,14 +51,20 @@ test.describe('Pipeline A - Optimization (Olive)', () => {
     expect(quantVal).toBe('INT8');
 
     // Toggle shape inference
-    await olivePanel.locator('.demo-olive-shape-checkbox').uncheck();
+    await olivePanel.locator('.demo-olive-shape-checkbox').evaluate((el: HTMLInputElement) => {
+      el.checked = false;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
     await page.waitForTimeout(50);
 
     const shapeChecked = await olivePanel.locator('.demo-olive-shape-checkbox').isChecked();
     expect(shapeChecked).toBe(false);
 
     // Toggle fusion
-    await olivePanel.locator('.demo-olive-fusion-checkbox').check();
+    await olivePanel.locator('.demo-olive-fusion-checkbox').evaluate((el: HTMLInputElement) => {
+      el.checked = true;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
     await page.waitForTimeout(50);
 
     const fusionChecked = await olivePanel.locator('.demo-olive-fusion-checkbox').isChecked();

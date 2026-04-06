@@ -60,7 +60,8 @@ async function handleFile(file: File) {
 
   try {
     await processModel();
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     showError(err.message || err.toString());
   }
 }

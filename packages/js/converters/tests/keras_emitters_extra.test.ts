@@ -15,24 +15,24 @@ describe('Keras Emitters Exhaustive Coverage', () => {
   };
 
   it('should cover normalization emitters', () => {
-    emitGroupNormalization(builder as any, 'gn', ['in'], { groups: 32 });
-    emitBatchNormalization(builder as any, 'bn', ['in'], { epsilon: 1e-3 });
-    emitLayerNormalization(builder as any, 'ln', ['in'], { axis: -1 });
+    emitGroupNormalization(builder as Object, 'gn', ['in'], { groups: 32 });
+    emitBatchNormalization(builder as Object, 'bn', ['in'], { epsilon: 1e-3 });
+    emitLayerNormalization(builder as Object, 'ln', ['in'], { axis: -1 });
   });
 
   it('should cover merge emitters', () => {
     const inputs = ['in1', 'in2'];
-    emitMerge(builder as any, 'add', inputs, { mode: 'sum' });
-    emitMerge(builder as any, 'mul', inputs, { mode: 'mul' });
-    emitMerge(builder as any, 'sub', inputs, { mode: 'sub' });
-    emitMerge(builder as any, 'div', inputs, { mode: 'div' });
-    emitMerge(builder as any, 'ave', inputs, { mode: 'ave' });
-    emitMerge(builder as any, 'max', inputs, { mode: 'max' });
-    emitMerge(builder as any, 'min', inputs, { mode: 'min' });
+    emitMerge(builder as Object, 'add', inputs, { mode: 'sum' });
+    emitMerge(builder as Object, 'mul', inputs, { mode: 'mul' });
+    emitMerge(builder as Object, 'sub', inputs, { mode: 'sub' });
+    emitMerge(builder as Object, 'div', inputs, { mode: 'div' });
+    emitMerge(builder as Object, 'ave', inputs, { mode: 'ave' });
+    emitMerge(builder as Object, 'max', inputs, { mode: 'max' });
+    emitMerge(builder as Object, 'min', inputs, { mode: 'min' });
   });
 
   it('should cover base emitters and edge cases', () => {
-    emitDense(builder as any, 'dense', ['in'], { units: 10 });
+    emitDense(builder as Object, 'dense', ['in'], { units: 10 });
 
     const activations = [
       'relu',
@@ -61,7 +61,7 @@ describe('Keras Emitters Exhaustive Coverage', () => {
       });
     }
 
-    emitIdentity(builder as any, 'id', ['in'], {});
-    emitDense(builder as any, 'dense_no_cfg', ['in'], {} as any);
+    emitIdentity(builder as Object, 'id', ['in'], {});
+    emitDense(builder as Object, 'dense_no_cfg', ['in'], {} as Object);
   });
 });

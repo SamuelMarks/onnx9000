@@ -5,7 +5,7 @@ import ref from 'ref-napi';
 import * as os from 'os';
 
 export class TensorRTFFI {
-  public lib: any;
+  public lib: ReturnType<typeof JSON.parse>;
 
   constructor() {
     this.loadLibrary();

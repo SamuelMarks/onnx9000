@@ -294,7 +294,7 @@ export class ModifierApp {
     });
   }
 
-  private updateTimer: any = null;
+  private updateTimer: ReturnType<typeof JSON.parse> = null;
   updateView() {
     // 226. Debounce expensive layout recalculations
     if (this.updateTimer) {

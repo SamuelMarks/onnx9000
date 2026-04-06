@@ -79,7 +79,8 @@ export class Router {
               response.headers.set('Access-Control-Allow-Origin', '*');
             }
             return response;
-          } catch (err: any) {
+          } catch (_err) {
+            const err = _err instanceof Error ? _err : new Error(String(_err));
             return new Response(JSON.stringify({ error: err.message }), {
               status: 500,
               headers: {

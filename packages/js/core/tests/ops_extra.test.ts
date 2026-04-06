@@ -14,7 +14,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -24,8 +24,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AddOp should execute without throwing', () => {
@@ -39,7 +39,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -49,8 +49,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReluOp should execute without throwing', () => {
@@ -64,7 +64,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -74,8 +74,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SubOp should execute without throwing', () => {
@@ -89,7 +89,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -99,8 +99,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MulOp should execute without throwing', () => {
@@ -114,7 +114,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -124,8 +124,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('DivOp should execute without throwing', () => {
@@ -139,7 +139,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -149,8 +149,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('PowOp should execute without throwing', () => {
@@ -164,7 +164,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -174,8 +174,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ModOp should execute without throwing', () => {
@@ -189,7 +189,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -199,8 +199,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('FmodOp should execute without throwing', () => {
@@ -214,7 +214,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -224,8 +224,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SignOp should execute without throwing', () => {
@@ -239,7 +239,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -249,8 +249,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('NegOp should execute without throwing', () => {
@@ -264,7 +264,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -274,8 +274,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ExpOp should execute without throwing', () => {
@@ -289,7 +289,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -299,8 +299,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LogOp should execute without throwing', () => {
@@ -314,7 +314,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -324,8 +324,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Log2Op should execute without throwing', () => {
@@ -339,7 +339,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -349,8 +349,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Log10Op should execute without throwing', () => {
@@ -364,7 +364,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -374,8 +374,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Expm1Op should execute without throwing', () => {
@@ -389,7 +389,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -399,8 +399,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Log1pOp should execute without throwing', () => {
@@ -414,7 +414,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -424,8 +424,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SinOp should execute without throwing', () => {
@@ -439,7 +439,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -449,8 +449,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('CosOp should execute without throwing', () => {
@@ -464,7 +464,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -474,8 +474,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('TanOp should execute without throwing', () => {
@@ -489,7 +489,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -499,8 +499,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AsinOp should execute without throwing', () => {
@@ -514,7 +514,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -524,8 +524,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AcosOp should execute without throwing', () => {
@@ -539,7 +539,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -549,8 +549,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AtanOp should execute without throwing', () => {
@@ -564,7 +564,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -574,8 +574,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SinhOp should execute without throwing', () => {
@@ -589,7 +589,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -599,8 +599,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('CoshOp should execute without throwing', () => {
@@ -614,7 +614,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -624,8 +624,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AsinhOp should execute without throwing', () => {
@@ -639,7 +639,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -649,8 +649,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AcoshOp should execute without throwing', () => {
@@ -664,7 +664,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -674,8 +674,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AtanhOp should execute without throwing', () => {
@@ -689,7 +689,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -699,8 +699,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ErfOp should execute without throwing', () => {
@@ -714,7 +714,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -724,8 +724,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('IsNaNOp should execute without throwing', () => {
@@ -739,7 +739,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -749,8 +749,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('IsInfOp should execute without throwing', () => {
@@ -764,7 +764,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -774,8 +774,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('IsFiniteOp should execute without throwing', () => {
@@ -789,7 +789,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -799,8 +799,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BitwiseAndOp should execute without throwing', () => {
@@ -814,7 +814,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -824,8 +824,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BitwiseOrOp should execute without throwing', () => {
@@ -839,7 +839,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -849,8 +849,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BitwiseXorOp should execute without throwing', () => {
@@ -864,7 +864,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -874,8 +874,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BitwiseNotOp should execute without throwing', () => {
@@ -889,7 +889,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -899,8 +899,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BitShiftOp should execute without throwing', () => {
@@ -914,7 +914,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -924,8 +924,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LogicalAndOp should execute without throwing', () => {
@@ -939,7 +939,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -949,8 +949,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LogicalOrOp should execute without throwing', () => {
@@ -964,7 +964,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -974,8 +974,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LogicalXorOp should execute without throwing', () => {
@@ -989,7 +989,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -999,8 +999,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LogicalNotOp should execute without throwing', () => {
@@ -1014,7 +1014,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1024,8 +1024,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('EqualOp should execute without throwing', () => {
@@ -1039,7 +1039,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1049,8 +1049,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GreaterOp should execute without throwing', () => {
@@ -1064,7 +1064,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1074,8 +1074,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GreaterOrEqualOp should execute without throwing', () => {
@@ -1089,7 +1089,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1099,8 +1099,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LessOp should execute without throwing', () => {
@@ -1114,7 +1114,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1124,8 +1124,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LessOrEqualOp should execute without throwing', () => {
@@ -1139,7 +1139,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1149,8 +1149,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MaxOp should execute without throwing', () => {
@@ -1164,7 +1164,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1174,8 +1174,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MinOp should execute without throwing', () => {
@@ -1189,7 +1189,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1199,8 +1199,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceMaxOp should execute without throwing', () => {
@@ -1214,7 +1214,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1224,8 +1224,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceMinOp should execute without throwing', () => {
@@ -1239,7 +1239,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1249,8 +1249,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceSumOp should execute without throwing', () => {
@@ -1264,7 +1264,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1274,8 +1274,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceMeanOp should execute without throwing', () => {
@@ -1289,7 +1289,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1299,8 +1299,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceProdOp should execute without throwing', () => {
@@ -1314,7 +1314,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1324,8 +1324,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceL1Op should execute without throwing', () => {
@@ -1339,7 +1339,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1349,8 +1349,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceL2Op should execute without throwing', () => {
@@ -1364,7 +1364,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1374,8 +1374,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceLogSumOp should execute without throwing', () => {
@@ -1389,7 +1389,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1399,8 +1399,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceLogSumExpOp should execute without throwing', () => {
@@ -1414,7 +1414,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1424,8 +1424,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReduceSumSquareOp should execute without throwing', () => {
@@ -1439,7 +1439,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1449,8 +1449,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ArgMaxOp should execute without throwing', () => {
@@ -1464,7 +1464,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1474,8 +1474,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ArgMinOp should execute without throwing', () => {
@@ -1489,7 +1489,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1499,8 +1499,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('CastOp should execute without throwing', () => {
@@ -1514,7 +1514,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1524,8 +1524,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('CastLikeOp should execute without throwing', () => {
@@ -1539,7 +1539,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1549,8 +1549,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReshapeOp should execute without throwing', () => {
@@ -1564,7 +1564,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1574,8 +1574,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('FlattenOp should execute without throwing', () => {
@@ -1589,7 +1589,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1599,8 +1599,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SqueezeOp should execute without throwing', () => {
@@ -1614,7 +1614,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1624,8 +1624,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('UnsqueezeOp should execute without throwing', () => {
@@ -1639,7 +1639,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1649,8 +1649,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('TransposeOp should execute without throwing', () => {
@@ -1664,7 +1664,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1674,8 +1674,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ConcatOp should execute without throwing', () => {
@@ -1689,7 +1689,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1699,8 +1699,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SplitOp should execute without throwing', () => {
@@ -1714,7 +1714,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1724,8 +1724,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SliceOp should execute without throwing', () => {
@@ -1739,7 +1739,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1749,8 +1749,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GatherOp should execute without throwing', () => {
@@ -1764,7 +1764,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1774,8 +1774,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GatherElementsOp should execute without throwing', () => {
@@ -1789,7 +1789,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1799,8 +1799,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GatherNDOp should execute without throwing', () => {
@@ -1814,7 +1814,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1824,8 +1824,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ScatterOp should execute without throwing', () => {
@@ -1839,7 +1839,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1849,8 +1849,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ScatterElementsOp should execute without throwing', () => {
@@ -1864,7 +1864,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1874,8 +1874,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ScatterNDOp should execute without throwing', () => {
@@ -1889,7 +1889,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1899,8 +1899,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('PadOp should execute without throwing', () => {
@@ -1914,7 +1914,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1924,8 +1924,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('TileOp should execute without throwing', () => {
@@ -1939,7 +1939,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1949,8 +1949,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RepeatOp should execute without throwing', () => {
@@ -1964,7 +1964,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1974,8 +1974,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ExpandOp should execute without throwing', () => {
@@ -1989,7 +1989,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -1999,8 +1999,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('WhereOp should execute without throwing', () => {
@@ -2014,7 +2014,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2024,8 +2024,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('NonZeroOp should execute without throwing', () => {
@@ -2039,7 +2039,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2049,8 +2049,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SpaceToDepthOp should execute without throwing', () => {
@@ -2064,7 +2064,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2074,8 +2074,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('DepthToSpaceOp should execute without throwing', () => {
@@ -2089,7 +2089,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2099,8 +2099,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Col2ImOp should execute without throwing', () => {
@@ -2114,7 +2114,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2124,8 +2124,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Im2ColOp should execute without throwing', () => {
@@ -2139,7 +2139,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2149,8 +2149,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Conv1DOp should execute without throwing', () => {
@@ -2164,7 +2164,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2174,8 +2174,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Conv2DOp should execute without throwing', () => {
@@ -2189,7 +2189,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2199,8 +2199,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('Conv3DOp should execute without throwing', () => {
@@ -2214,7 +2214,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2224,8 +2224,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ConvTranspose1DOp should execute without throwing', () => {
@@ -2239,7 +2239,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2249,8 +2249,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ConvTranspose2DOp should execute without throwing', () => {
@@ -2264,7 +2264,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2274,8 +2274,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ConvTranspose3DOp should execute without throwing', () => {
@@ -2289,7 +2289,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2299,8 +2299,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('DepthwiseConv2DOp should execute without throwing', () => {
@@ -2314,7 +2314,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2324,8 +2324,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('DeformableConv2DOp should execute without throwing', () => {
@@ -2339,7 +2339,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2349,8 +2349,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MaxPool1DOp should execute without throwing', () => {
@@ -2364,7 +2364,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2374,8 +2374,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MaxPool2DOp should execute without throwing', () => {
@@ -2389,7 +2389,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2399,8 +2399,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MaxPool3DOp should execute without throwing', () => {
@@ -2414,7 +2414,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2424,8 +2424,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AveragePool1DOp should execute without throwing', () => {
@@ -2439,7 +2439,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2449,8 +2449,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AveragePool2DOp should execute without throwing', () => {
@@ -2464,7 +2464,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2474,8 +2474,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AveragePool3DOp should execute without throwing', () => {
@@ -2489,7 +2489,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2499,8 +2499,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AdaptiveMaxPool2DOp should execute without throwing', () => {
@@ -2514,7 +2514,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2524,8 +2524,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AdaptiveAvgPool2DOp should execute without throwing', () => {
@@ -2539,7 +2539,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2549,8 +2549,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('BatchNormOp should execute without throwing', () => {
@@ -2564,7 +2564,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2574,8 +2574,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LayerNormOp should execute without throwing', () => {
@@ -2589,7 +2589,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2599,8 +2599,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GroupNormOp should execute without throwing', () => {
@@ -2614,7 +2614,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2624,8 +2624,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('InstanceNormOp should execute without throwing', () => {
@@ -2639,7 +2639,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2649,8 +2649,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LocalResponseNormOp should execute without throwing', () => {
@@ -2664,7 +2664,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2674,8 +2674,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RMSNormOp should execute without throwing', () => {
@@ -2689,7 +2689,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2699,8 +2699,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('AdaLNOp should execute without throwing', () => {
@@ -2714,7 +2714,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2724,8 +2724,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LeakyReluOp should execute without throwing', () => {
@@ -2739,7 +2739,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2749,8 +2749,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('PReluOp should execute without throwing', () => {
@@ -2764,7 +2764,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2774,8 +2774,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('EluOp should execute without throwing', () => {
@@ -2789,7 +2789,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2799,8 +2799,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('CeluOp should execute without throwing', () => {
@@ -2814,7 +2814,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2824,8 +2824,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SeluOp should execute without throwing', () => {
@@ -2839,7 +2839,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2849,8 +2849,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SigmoidOp should execute without throwing', () => {
@@ -2864,7 +2864,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2874,8 +2874,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('HardSigmoidOp should execute without throwing', () => {
@@ -2889,7 +2889,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2899,8 +2899,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('TanhOp should execute without throwing', () => {
@@ -2914,7 +2914,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2924,8 +2924,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SoftsignOp should execute without throwing', () => {
@@ -2939,7 +2939,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2949,8 +2949,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SoftplusOp should execute without throwing', () => {
@@ -2964,7 +2964,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2974,8 +2974,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GeluOp should execute without throwing', () => {
@@ -2989,7 +2989,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -2999,8 +2999,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SiluOp should execute without throwing', () => {
@@ -3014,7 +3014,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3024,8 +3024,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('HardSwishOp should execute without throwing', () => {
@@ -3039,7 +3039,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3049,8 +3049,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MishOp should execute without throwing', () => {
@@ -3064,7 +3064,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3074,8 +3074,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SwiGLUOp should execute without throwing', () => {
@@ -3089,7 +3089,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3099,8 +3099,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GeGLUOp should execute without throwing', () => {
@@ -3114,7 +3114,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3124,8 +3124,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ReGLUOp should execute without throwing', () => {
@@ -3139,7 +3139,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3149,8 +3149,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MultiHeadAttentionOp should execute without throwing', () => {
@@ -3164,7 +3164,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3174,8 +3174,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GroupedQueryAttentionOp should execute without throwing', () => {
@@ -3189,7 +3189,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3199,8 +3199,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('MultiQueryAttentionOp should execute without throwing', () => {
@@ -3214,7 +3214,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3224,8 +3224,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('FlashAttentionOp should execute without throwing', () => {
@@ -3239,7 +3239,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3249,8 +3249,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('PagedAttentionOp should execute without throwing', () => {
@@ -3264,7 +3264,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3274,8 +3274,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RoPE1DOp should execute without throwing', () => {
@@ -3289,7 +3289,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3299,8 +3299,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RoPE2DOp should execute without throwing', () => {
@@ -3314,7 +3314,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3324,8 +3324,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RoPE3DOp should execute without throwing', () => {
@@ -3339,7 +3339,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3349,8 +3349,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('ALiBiOp should execute without throwing', () => {
@@ -3364,7 +3364,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3374,8 +3374,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('SlidingWindowAttentionOp should execute without throwing', () => {
@@ -3389,7 +3389,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3399,8 +3399,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('StateSpaceModelOp should execute without throwing', () => {
@@ -3414,7 +3414,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3424,8 +3424,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('RNNOp should execute without throwing', () => {
@@ -3439,7 +3439,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3449,8 +3449,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('LSTMOp should execute without throwing', () => {
@@ -3464,7 +3464,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3474,8 +3474,8 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 
   it('GRUOp should execute without throwing', () => {
@@ -3489,7 +3489,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([t1, t2], {})).not.toThrow();
 
     // Null execution
-    expect(() => op.execute([null as any], {})).not.toThrow();
+    expect(() => op.execute([null as Object], {})).not.toThrow();
 
     // Empty data execution
     const tEmpty = new Tensor('tEmpty', [2], 'float32', false, true, null);
@@ -3499,7 +3499,7 @@ describe('Auto-generated Operator Tests', () => {
     expect(() => op.execute([], {})).not.toThrow();
 
     // One null input for binary
-    expect(() => op.execute([t1, null as any], {})).not.toThrow();
-    expect(() => op.execute([null as any, t2], {})).not.toThrow();
+    expect(() => op.execute([t1, null as Object], {})).not.toThrow();
+    expect(() => op.execute([null as Object, t2], {})).not.toThrow();
   });
 });

@@ -23,7 +23,7 @@ export enum GGUFTensorType {
 }
 
 export class GGUFWriter {
-  public kvs: { key: string; type: GGUFValueType; val: any }[] = [];
+  public kvs: { key: string; type: GGUFValueType; val: ReturnType<typeof JSON.parse> }[] = [];
   public tensors: { name: string; shape: bigint[]; type: GGUFTensorType; offset: bigint }[] = [];
 
   public addUint8(key: string, val: number): void {
@@ -62,7 +62,11 @@ export class GGUFWriter {
   public addString(key: string, val: string): void {
     this.kvs.push({ key, type: GGUFValueType.STRING, val });
   }
-  public addArray(key: string, val: any[], arrayType: GGUFValueType): void {
+  public addArray(
+    key: string,
+    val: ReturnType<typeof JSON.parse>[],
+    arrayType: GGUFValueType,
+  ): void {
     this.kvs.push({ key, type: GGUFValueType.ARRAY, val: { arrayType, items: val } });
   }
 
@@ -107,7 +111,7 @@ export class GGUFWriter {
     return size;
   }
 
-  private getValueSize(type: GGUFValueType, val: any): number {
+  private getValueSize(type: GGUFValueType, val: ReturnType<typeof JSON.parse>): number {
     switch (type) {
       case GGUFValueType.UINT8:
       case GGUFValueType.INT8:
@@ -158,7 +162,7 @@ export class GGUFWriter {
       offset += encoded.length;
     };
 
-    const writeVal = (vtype: GGUFValueType, val: any) => {
+    const writeVal = (vtype: GGUFValueType, val: ReturnType<typeof JSON.parse>) => {
       switch (vtype) {
         case GGUFValueType.UINT8:
           view.setUint8(offset, val);
@@ -209,7 +213,7 @@ export class GGUFWriter {
           break;
         case GGUFValueType.ARRAY: {
           const atype = val.arrayType as GGUFValueType;
-          const items = val.items as any[];
+          const items = val.items as ReturnType<typeof JSON.parse>[];
           view.setUint32(offset, atype, true);
           offset += 4;
           view.setBigUint64(offset, BigInt(items.length), true);

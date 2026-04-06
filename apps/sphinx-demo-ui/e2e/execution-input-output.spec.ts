@@ -66,7 +66,9 @@ test.describe('Execution UI & Tensor Input Modals', () => {
     await generateBtn.click();
 
     // Verify toast was triggered, which implies random data config was requested
-    const toastMsg = await page.evaluate(() => (window as any).__LATEST_TOAST__);
+    const toastMsg = await page.evaluate(
+      () => (window as ReturnType<typeof JSON.parse>).__LATEST_TOAST__
+    );
     expect(toastMsg).toContain('Random data configured for execution');
   });
 

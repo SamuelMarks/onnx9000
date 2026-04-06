@@ -11,7 +11,10 @@ export interface CompressionOptions {
   kvCacheQuantization?: boolean; // 204. KV Cache quantization mappings for iOS 17+
 }
 
-export function applyCompression(block: Block, options: CompressionOptions): any {
+export function applyCompression(
+  block: Block,
+  options: CompressionOptions,
+): ReturnType<typeof JSON.parse> {
   let initialMem = 0;
   let compressedMem = 0;
 

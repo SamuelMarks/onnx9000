@@ -20,17 +20,17 @@ test.describe('Whisper LLM Demo E2E', () => {
             return new MediaStream();
         };
         // mock MediaRecorder
-        (window as any).MediaRecorder = class {
+        (window as Object).MediaRecorder = class {
             state = 'inactive';
-            stream: any;
-            constructor(stream: any) { this.stream = stream; }
+            stream: Object;
+            constructor(stream: Object) { this.stream = stream; }
             start() { this.state = 'recording'; }
             stop() { 
                 this.state = 'inactive'; 
                 if (this.onstop) this.onstop();
             }
-            onstop: any;
-            ondataavailable: any;
+            onstop: Object;
+            ondataavailable: Object;
         };
     });
 

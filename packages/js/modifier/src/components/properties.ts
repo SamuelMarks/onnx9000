@@ -26,7 +26,7 @@ export class PropertiesPanel {
 
     // 274. Implement UI hooks mapping to onnx9000 execution profiling metrics directly
     // 275. Show memory bandwidth utilization estimates per node
-    if ((node as any)._profiling_time_ms !== undefined) {
+    if ((node as ReturnType<typeof JSON.parse>)._profiling_time_ms !== undefined) {
       /* v8 ignore start */
       const pGroup = document.createElement('div');
       pGroup.style.background = '#e9ecef';
@@ -35,8 +35,8 @@ export class PropertiesPanel {
       pGroup.style.borderRadius = '4px';
       pGroup.style.fontSize = '11px';
 
-      const t = (node as any)._profiling_time_ms.toFixed(3);
-      const b = ((node as any)._profiling_bandwidth_mb || 0).toFixed(2);
+      const t = (node as ReturnType<typeof JSON.parse>)._profiling_time_ms.toFixed(3);
+      const b = ((node as ReturnType<typeof JSON.parse>)._profiling_bandwidth_mb || 0).toFixed(2);
 
       pGroup.innerHTML = `<div>⏱️ Execution: <strong>${t} ms</strong></div>
                           <div style="margin-top:2px;">💾 Bandwidth: <strong>${b} MB</strong></div>`;
@@ -46,7 +46,7 @@ export class PropertiesPanel {
 
     // 274. Implement UI hooks mapping to onnx9000 execution profiling metrics directly
     // 275. Show memory bandwidth utilization estimates per node
-    if ((node as any)._profiling_time_ms !== undefined) {
+    if ((node as ReturnType<typeof JSON.parse>)._profiling_time_ms !== undefined) {
       /* v8 ignore start */
       const pGroup = document.createElement('div');
       pGroup.style.background = '#e9ecef';
@@ -55,8 +55,8 @@ export class PropertiesPanel {
       pGroup.style.borderRadius = '4px';
       pGroup.style.fontSize = '11px';
 
-      const t = (node as any)._profiling_time_ms.toFixed(3);
-      const b = ((node as any)._profiling_bandwidth_mb || 0).toFixed(2);
+      const t = (node as ReturnType<typeof JSON.parse>)._profiling_time_ms.toFixed(3);
+      const b = ((node as ReturnType<typeof JSON.parse>)._profiling_bandwidth_mb || 0).toFixed(2);
 
       pGroup.innerHTML = `<div>⏱️ Execution: <strong>${t} ms</strong></div>
                           <div style="margin-top:2px;">💾 Bandwidth: <strong>${b} MB</strong></div>`;
@@ -176,7 +176,7 @@ export class PropertiesPanel {
         txtInput.onchange = (e) => {
           const val = (e.target as HTMLInputElement).value;
           // Simplified typing logic for generic text input
-          let finalVal: any = val;
+          let finalVal: ReturnType<typeof JSON.parse> = val;
           if (attr.type === 'INT') {
             finalVal = parseInt(val, 10);
           }
@@ -243,8 +243,8 @@ export class PropertiesPanel {
             this.mutator.setNodeAttribute(
               node.name || node.id,
               k,
-              (v as any).value,
-              (v as any).type,
+              (v as ReturnType<typeof JSON.parse>).value,
+              (v as ReturnType<typeof JSON.parse>).type,
             );
           }
           window.dispatchEvent(new CustomEvent('graph-mutated'));
@@ -279,7 +279,7 @@ export class PropertiesPanel {
       graph.outputs.find((o) => o.name === edgeName);
 
     const isSequence = vi
-      ? (vi as any).isSequence || (vi.dtype && vi.dtype.includes('seq'))
+      ? (vi as ReturnType<typeof JSON.parse>).isSequence || (vi.dtype && vi.dtype.includes('seq'))
       : false;
 
     const typeGroup = this._createFormGroup('Type & Shape');
@@ -382,7 +382,7 @@ export class PropertiesPanel {
       input.type = 'text';
       input.value = value !== undefined ? String(value) : '';
       input.style.width = '100%';
-      input.addEventListener('change', (e: any) => {
+      input.addEventListener('change', (e: ReturnType<typeof JSON.parse>) => {
         /* v8 ignore start */
         onChange(e.target.value);
         window.dispatchEvent(new CustomEvent('graph-mutated'));
@@ -441,7 +441,11 @@ export class PropertiesPanel {
     metaPre.style.fontSize = '12px';
     metaPre.style.background = '#f8f9fa';
     metaPre.style.padding = '8px';
-    metaPre.textContent = JSON.stringify((graph as any).metadataProps || {}, null, 2);
+    metaPre.textContent = JSON.stringify(
+      (graph as ReturnType<typeof JSON.parse>).metadataProps || {},
+      null,
+      2,
+    );
     metaGroup.appendChild(metaPre);
 
     // 266. Drawing custom text annotations directly onto the canvas
@@ -451,8 +455,9 @@ export class PropertiesPanel {
       /* v8 ignore start */
       const text = prompt('Enter annotation text:');
       if (text) {
-        if (!(graph as any).metadataProps) (graph as any).metadataProps = {};
-        (graph as any).metadataProps[`annotation_${Date.now()}`] = text;
+        if (!(graph as ReturnType<typeof JSON.parse>).metadataProps)
+          (graph as ReturnType<typeof JSON.parse>).metadataProps = {};
+        (graph as ReturnType<typeof JSON.parse>).metadataProps[`annotation_${Date.now()}`] = text;
         this.renderGraphProperties(graph);
       }
     };

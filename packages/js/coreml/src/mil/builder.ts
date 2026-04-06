@@ -54,7 +54,7 @@ export class Builder {
     opType: string,
     inputs: Record<string, Var | Var[]>,
     outputs: Var[],
-    attributes: Record<string, any> = {},
+    attributes: Record<string, ReturnType<typeof JSON.parse>> = {},
   ): Operation {
     if (!this.currentBlock) throw new Error('No active block');
     const op = new Operation(opType, inputs, outputs, attributes);

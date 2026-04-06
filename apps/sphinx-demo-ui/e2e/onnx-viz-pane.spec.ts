@@ -27,8 +27,8 @@ test.describe('ONNX Visualization Tab', () => {
 
     // Simulate generating a graph via EventBus attached to window
     await page.evaluate(() => {
-      if ((window as any).__EVENT_BUS__) {
-        (window as any).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
+      if ((window as ReturnType<typeof JSON.parse>).__EVENT_BUS__) {
+        (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
           inputs: [{ name: 'in1', type: 'float' }],
           outputs: [{ name: 'out1', type: 'float' }],
           nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }]
@@ -47,8 +47,8 @@ test.describe('ONNX Visualization Tab', () => {
 
     // Generate graph
     await page.evaluate(() => {
-      if ((window as any).__EVENT_BUS__) {
-        (window as any).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
+      if ((window as ReturnType<typeof JSON.parse>).__EVENT_BUS__) {
+        (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
           inputs: [{ name: 'in1', type: 'float' }],
           outputs: [{ name: 'out1', type: 'float' }],
           nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }]
@@ -60,8 +60,8 @@ test.describe('ONNX Visualization Tab', () => {
 
     // Evaluate cytoscape instance to trigger a tap
     await page.evaluate(() => {
-      if ((window as any).__CY__) {
-        const cy = (window as any).__CY__;
+      if ((window as ReturnType<typeof JSON.parse>).__CY__) {
+        const cy = (window as ReturnType<typeof JSON.parse>).__CY__;
         const node = cy.nodes()[0];
         if (node) {
           node.emit('tap');

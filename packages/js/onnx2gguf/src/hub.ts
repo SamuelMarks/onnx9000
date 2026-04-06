@@ -1,7 +1,7 @@
 export async function fetchHfConfig(
   repoId: string,
   token?: string,
-): Promise<{ config: any; tokenizer: string; url: string }> {
+): Promise<{ config: ReturnType<typeof JSON.parse>; tokenizer: string; url: string }> {
   const headers: Record<string, string> = {};
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -23,7 +23,8 @@ export async function fetchHfConfig(
     } else {
       config = await configRes.json();
     }
-  } catch (e: any) {
+  } catch (_e) {
+    const e = _e instanceof Error ? _e : new Error(String(_e));
     console.warn('Failed to fetch config:', e.message);
   }
 
@@ -32,7 +33,8 @@ export async function fetchHfConfig(
     if (tokRes.ok) {
       tokenizer = await tokRes.text();
     }
-  } catch (e: any) {
+  } catch (_e) {
+    const e = _e instanceof Error ? _e : new Error(String(_e));
     /* v8 ignore start */
     console.warn('Failed to fetch tokenizer:', e.message);
   }

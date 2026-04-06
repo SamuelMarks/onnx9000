@@ -18,15 +18,15 @@ describe('onnx9000.array', () => {
     np.lazy_mode(true);
     const x = np.Input('x', [1, 2], 'float32');
     expect(x).toBeInstanceOf(np.LazyTensor);
-    expect((x as any).opType).toBe('Input');
+    expect((x as Object).opType).toBe('Input');
 
     const y = np.add(x, 2);
     expect(y).toBeInstanceOf(np.LazyTensor);
-    expect((y as any).opType).toBe('Add');
+    expect((y as Object).opType).toBe('Add');
 
     const z = np.matmul(x, y);
     expect(z).toBeInstanceOf(np.LazyTensor);
-    expect((z as any).opType).toBe('MatMul');
+    expect((z as Object).opType).toBe('MatMul');
     np.lazy_mode(false);
   });
 
@@ -45,7 +45,7 @@ describe('onnx9000.array', () => {
     np.lazy_mode(true);
     const z = np.nn.relu(x);
     expect(z).toBeInstanceOf(np.LazyTensor);
-    expect((z as any).opType).toBe('Relu');
+    expect((z as Object).opType).toBe('Relu');
     np.lazy_mode(false);
   });
 
@@ -54,7 +54,7 @@ describe('onnx9000.array', () => {
     np.lazy_mode(true);
     const z = np.linalg.det(x);
     expect(z).toBeInstanceOf(np.LazyTensor);
-    expect((z as any).opType).toBe('Det');
+    expect((z as Object).opType).toBe('Det');
     np.lazy_mode(false);
   });
 
@@ -62,7 +62,7 @@ describe('onnx9000.array', () => {
     np.lazy_mode(true);
     const z = np.random.randn([2, 2]);
     expect(z).toBeInstanceOf(np.LazyTensor);
-    expect((z as any).opType).toBe('RandomNormal');
+    expect((z as Object).opType).toBe('RandomNormal');
     np.lazy_mode(false);
   });
 });

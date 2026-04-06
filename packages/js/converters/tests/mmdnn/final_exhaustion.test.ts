@@ -20,38 +20,38 @@ describe('MMDNN Submodule Final Gaps', () => {
   };
 
   it('should cover KerasGenerator additional branches', () => {
-    const gen = new KerasGenerator(mockOnnxGraph as any);
+    const gen = new KerasGenerator(mockOnnxGraph as Object);
     expect(gen.generateSource()).toContain('class Model_Generated');
 
     // empty graph
-    const emptyGen = new KerasGenerator({ nodes: [] } as any);
+    const emptyGen = new KerasGenerator({ nodes: [] } as Object);
     expect(emptyGen.generateSource()).toContain('pass');
   });
 
   it('should cover CaffeGenerator gaps', () => {
-    const gen = new CaffeGenerator(mockOnnxGraph as any);
+    const gen = new CaffeGenerator(mockOnnxGraph as Object);
     expect(gen.generate()).toContain('layer {');
   });
 
   it('should cover MXNetGenerator gaps', () => {
-    const gen = new MXNetGenerator(mockOnnxGraph as any);
+    const gen = new MXNetGenerator(mockOnnxGraph as Object);
     expect(gen.generate()).toContain('import mxnet');
   });
 
   it('should cover CNTKGenerator gaps', () => {
-    const gen = new CNTKGenerator(mockOnnxGraph as any);
+    const gen = new CNTKGenerator(mockOnnxGraph as Object);
     expect(gen.generate()).toContain('import cntk');
   });
 
   it('should cover TensorFlowGenerator gaps', () => {
-    const gen = new TensorFlowGenerator(mockOnnxGraph as any);
+    const gen = new TensorFlowGenerator(mockOnnxGraph as Object);
     expect(gen.generate()).toContain('import tensorflow');
   });
 
   it('should cover Normalizer gaps', () => {
     const norm = new ONNXNormalizer();
     try {
-      norm.normalize(mockOnnxGraph as any);
+      norm.normalize(mockOnnxGraph as Object);
     } catch (e) {}
   });
 
@@ -68,7 +68,7 @@ describe('MMDNN Submodule Final Gaps', () => {
       'onnxscript',
     ]) {
       try {
-        await api.convert(mockOnnxGraph as any, target as any);
+        await api.convert(mockOnnxGraph as Object, target as Object);
       } catch (e) {}
     }
   });

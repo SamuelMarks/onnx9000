@@ -46,7 +46,7 @@ describe('MMDNN - Core Files Full Coverage', () => {
       await loader.initialize(); // Coverage
 
       // Blob has no filename so it generates a blob_... name
-      const keys = Array.from((loader as any).files.keys());
+      const keys = Array.from((loader as Object).files.keys());
       expect(keys[0]).toContain('blob_');
 
       const sliceBuffer = await loader.readSlice(keys[0], 0, 5);
@@ -245,7 +245,7 @@ describe('MMDNN - Core Files Full Coverage', () => {
       graph.nodes = [relu];
 
       const outVI = new ValueInfo('B', [], 'float32');
-      outVI.shape = undefined as any;
+      outVI.shape = undefined as Object;
       graph.outputs = [outVI];
 
       const reporter = new MMDNNReporter(false);

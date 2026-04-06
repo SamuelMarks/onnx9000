@@ -97,7 +97,7 @@ it('uncovered lines in processors 2', async () => {
 
   const obj = { data: new Uint8Array([1, 2, 3]) };
   imgProc.optimizeRawPixelCopying(obj);
-  expect((obj as any).optimized).toBe(true);
+  expect((obj as Object).optimized).toBe(true);
 });
 it('uncovered lines in processors 3', async () => {
   const { BaseImageProcessor } = await import('../src/processors/index');

@@ -172,7 +172,7 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
 
   it('should cover context and graph edge cases', async () => {
     const gpuCtx = new PolyfillMLContext({ deviceType: 'gpu' });
-    const unknownCtx = new PolyfillMLContext({ deviceType: 'npu' as any });
+    const unknownCtx = new PolyfillMLContext({ deviceType: 'npu' as 'cpu' });
 
     context.opSupportLimits();
 
@@ -182,7 +182,8 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
       addNode: vi.fn(),
       addTensor: vi.fn(),
     };
-    const mockGraph = new PolyfillMLGraph(mockOnnxGraph as any);
+    type GraphType = ConstructorParameters<typeof PolyfillMLGraph>[0];
+    const mockGraph = new PolyfillMLGraph(mockOnnxGraph as object as GraphType);
 
     const tIn = await context.createTensor({ dataType: 'float32', dimensions: [1] });
     const tOut = await context.createTensor({ dataType: 'float32', dimensions: [1], usage: 1 });
@@ -203,7 +204,9 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
 
   it('should cover input validation gaps', () => {
     expect(() => builder.input('fail', { dataType: 'float32', dimensions: [-1] })).toThrow();
-    expect(() => builder.input('fail', { dataType: 'invalid' as any, dimensions: [1] })).toThrow();
+    expect(() =>
+      builder.input('fail', { dataType: 'invalid' as 'float32', dimensions: [1] }),
+    ).toThrow();
   });
 
   it('should cover MLTensor gaps', () => {

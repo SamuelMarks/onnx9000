@@ -16,7 +16,7 @@ vi.mock('../../src/keras/api.js', () => ({
 
 describe('MMDNN - Keras Importer', () => {
   it('should parse an empty or mock H5 file into a fallback graph', async () => {
-    (parseKerasH5 as any).mockImplementation(() => {
+    (parseKerasH5 as Object).mockImplementation(() => {
       throw new Error('Fake parse error');
     });
 
@@ -46,11 +46,11 @@ describe('MMDNN - Keras Importer', () => {
   });
 
   it('should create fallback graph if keras2onnx does not return a Graph', async () => {
-    (parseKerasH5 as any).mockImplementation(() => ({
+    (parseKerasH5 as Object).mockImplementation(() => ({
       kerasVersion: '2.0.0',
       backend: 'tensorflow',
     }));
-    (keras2onnx as any).mockResolvedValue(null);
+    (keras2onnx as Object).mockResolvedValue(null);
 
     const importer = new KerasImporter();
     const reporter = new MMDNNReporter();
@@ -72,12 +72,12 @@ describe('MMDNN - Keras Importer', () => {
   });
 
   it('should return the graph if keras2onnx returns a valid Graph', async () => {
-    (parseKerasH5 as any).mockImplementation(() => ({
+    (parseKerasH5 as Object).mockImplementation(() => ({
       kerasVersion: '2.0.0',
       backend: 'tensorflow',
     }));
     const mockGraph = new Graph('mock_keras');
-    (keras2onnx as any).mockResolvedValue(mockGraph);
+    (keras2onnx as Object).mockResolvedValue(mockGraph);
 
     const importer = new KerasImporter();
     const reporter = new MMDNNReporter();

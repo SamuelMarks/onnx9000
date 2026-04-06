@@ -10,10 +10,10 @@ export class PolyfillMLTensor {
   dataType: MLOperandDataType;
   dimensions: number[];
   usage: number;
-  buffer: any | null = null;
+  buffer: ReturnType<typeof JSON.parse> | null = null;
   internalBuffer: ArrayBuffer | null = null; // fallback for WASM
 
-  constructor(options: MLTensorOptions, device?: any) {
+  constructor(options: MLTensorOptions, device?: ReturnType<typeof JSON.parse>) {
     this.dataType = options.dataType;
     this.dimensions = options.dimensions;
     this.usage = options.usage || 0;

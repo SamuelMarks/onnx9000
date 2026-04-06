@@ -56,7 +56,7 @@ export class WGSLEmitter {
 
 // 114, 115, 116. WGSL Runner / Pipeline Generator (Stub)
 export class WGSLRunner {
-  async executeGraph(compiledGraph: any): Promise<void> {
+  async executeGraph(compiledGraph: ReturnType<typeof JSON.parse>): Promise<void> {
     // 114. Generate standard WebGPU pipelines directly from compiled shader string
     // 115. Execute following VM command buffer
     // 116. hal.device.queue.submit mapping

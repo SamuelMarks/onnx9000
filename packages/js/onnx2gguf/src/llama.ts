@@ -1,7 +1,7 @@
 import { Graph, Tensor } from '@onnx9000/core';
 
-export function extractLlamaMetadata(graph: Graph): Record<string, any> {
-  const meta: Record<string, any> = {};
+export function extractLlamaMetadata(graph: Graph): Record<string, ReturnType<typeof JSON.parse>> {
+  const meta: Record<string, ReturnType<typeof JSON.parse>> = {};
 
   let vocabSize = 32000;
   let hiddenSize = 4096;

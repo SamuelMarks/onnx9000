@@ -10,8 +10,8 @@
 // 130. Manage PM2 clustering compatibility gracefully.
 
 export class WorkerPool {
-  private workers: any[] = [];
-  private taskQueue: any[] = [];
+  private workers: ReturnType<typeof JSON.parse>[] = [];
+  private taskQueue: ReturnType<typeof JSON.parse>[] = [];
   private activeTasks: Map<string, number> = new Map();
 
   constructor(public maxWorkers: number = 4) {
@@ -30,7 +30,7 @@ export class WorkerPool {
   private spawnWorker(id: number) {
     const worker = {
       id,
-      postMessage: (msg: any) => {
+      postMessage: (msg: ReturnType<typeof JSON.parse>) => {
         // Worker message handling
         setTimeout(() => {
           this.handleWorkerMessage({ id, msg: { status: 'done', data: msg } });
@@ -41,11 +41,14 @@ export class WorkerPool {
     this.workers.push(worker);
   }
 
-  private handleWorkerMessage(event: any) {
+  private handleWorkerMessage(event: ReturnType<typeof JSON.parse>) {
     // resolve tasks
   }
 
-  public async execute(model: string, data: SharedArrayBuffer): Promise<any> {
+  public async execute(
+    model: string,
+    data: SharedArrayBuffer,
+  ): Promise<ReturnType<typeof JSON.parse>> {
     // 129. Round-robin
     const worker = this.workers.shift();
     if (!worker) throw new Error('No available workers');

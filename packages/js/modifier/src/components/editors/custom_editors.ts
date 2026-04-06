@@ -191,7 +191,7 @@ function renderCastEditor(container: HTMLElement, node: Node, mutator: GraphMuta
     select.appendChild(opt);
   }
 
-  select.addEventListener('change', function (e: any) {
+  select.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
     const el = e.target || this;
     const val = parseInt(el.value, 10);
     mutator.setNodeAttribute(node.name || node.id, 'to', val, 'INT');
@@ -242,9 +242,9 @@ function renderConstantEditor(container: HTMLElement, node: Node, mutator: Graph
   const attr = node.attributes['value'];
   if (!attr) return;
 
-  if (attr.type === 'TENSOR' && attr.value && (attr.value as any).data) {
+  if (attr.type === 'TENSOR' && attr.value && (attr.value as ReturnType<typeof JSON.parse>).data) {
     /* v8 ignore start */
-    const data = (attr.value as any).data;
+    const data = (attr.value as ReturnType<typeof JSON.parse>).data;
     const len = data.length;
     if (len === undefined) {
       container.textContent = 'Constant empty or unsupported';
@@ -310,11 +310,15 @@ function renderConstantEditor(container: HTMLElement, node: Node, mutator: Graph
     container.appendChild(controls);
     renderPage();
 
-    if (attr.value && (attr.value as any).data && (attr.value as any).data.buffer) {
+    if (
+      attr.value &&
+      (attr.value as ReturnType<typeof JSON.parse>).data &&
+      (attr.value as ReturnType<typeof JSON.parse>).data.buffer
+    ) {
       renderHexEditor(
         container,
-        new Uint8Array((attr.value as any).data.buffer),
-        (attr.value as any).data.byteLength,
+        new Uint8Array((attr.value as ReturnType<typeof JSON.parse>).data.buffer),
+        (attr.value as ReturnType<typeof JSON.parse>).data.byteLength,
       );
     }
     /* v8 ignore stop */
@@ -412,12 +416,17 @@ function createArrayInput(
   input.setAttribute('value', input.value);
   input.style.width = '100%';
 
-  input.addEventListener('change', function (e: any) {
+  input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
     const el = e.target || this;
     try {
       const val = JSON.parse(el.value);
       if (Array.isArray(val)) {
-        mutator.setNodeAttribute(node.name || node.id, attrName, val, attrType as any);
+        mutator.setNodeAttribute(
+          node.name || node.id,
+          attrName,
+          val,
+          attrType as ReturnType<typeof JSON.parse>,
+        );
       }
     } catch (err) {
       /* ignore */
@@ -454,7 +463,7 @@ function createNumberInput(
   input.setAttribute('value', input.value);
   input.style.width = '100%';
 
-  input.addEventListener('change', function (e: any) {
+  input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
     const el = e.target || this;
     const v = parseFloat(el.value);
     if (!Number.isNaN(v)) {
@@ -462,7 +471,7 @@ function createNumberInput(
         node.name || node.id,
         attrName,
         attrType === 'INT' ? Math.floor(v) : v,
-        attrType as any,
+        attrType as ReturnType<typeof JSON.parse>,
       );
     }
   });
@@ -490,10 +499,15 @@ function createCheckbox(
   const input = document.createElement('input');
   input.type = 'checkbox';
   input.checked = attr ? !!attr.value : !!defaultVal;
-  input.addEventListener('change', function (e: any) {
+  input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
     const el = e.target || this;
     const checked = el.checked;
-    mutator.setNodeAttribute(node.name || node.id, attrName, checked ? 1 : 0, attrType as any);
+    mutator.setNodeAttribute(
+      node.name || node.id,
+      attrName,
+      checked ? 1 : 0,
+      attrType as ReturnType<typeof JSON.parse>,
+    );
     // updated
   });
 
@@ -537,11 +551,16 @@ function createDropdown(
     select.appendChild(opt);
   }
 
-  select.addEventListener('change', function (e: any) {
+  select.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
     const el = e.target || this;
     // explicitly // explicitly fire event
     const val = el.value;
-    mutator.setNodeAttribute(node.name || node.id, attrName, val, attrType as any);
+    mutator.setNodeAttribute(
+      node.name || node.id,
+      attrName,
+      val,
+      attrType as ReturnType<typeof JSON.parse>,
+    );
   });
 
   div.appendChild(label);

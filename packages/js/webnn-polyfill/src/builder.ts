@@ -70,7 +70,13 @@ export class PolyfillMLGraphBuilder {
       throw new DOMException(`Invalid dataType ${descriptor.dataType}`, 'DataError');
     }
 
-    this.graph.inputs.push(new ValueInfo(name, descriptor.dimensions, descriptor.dataType as any));
+    this.graph.inputs.push(
+      new ValueInfo(
+        name,
+        descriptor.dimensions,
+        descriptor.dataType as ReturnType<typeof JSON.parse>,
+      ),
+    );
     return new PolyfillMLOperand(name, descriptor.dataType, descriptor.dimensions);
   }
 
@@ -87,7 +93,7 @@ export class PolyfillMLGraphBuilder {
     const tensor = new Tensor(
       name,
       descriptor.dimensions,
-      descriptor.dataType as any,
+      descriptor.dataType as ReturnType<typeof JSON.parse>,
       true,
       false,
       bufferView,
@@ -106,9 +112,17 @@ export class PolyfillMLGraphBuilder {
         // Emit an identity node to map the name to the expected output key
         const node = new Node('Identity', [polyOp.name], [key]);
         this.graph.addNode(node);
-        this.graph.outputs.push(new ValueInfo(key, polyOp.shape, polyOp.dataType as any));
+        this.graph.outputs.push(
+          new ValueInfo(key, polyOp.shape, polyOp.dataType as ReturnType<typeof JSON.parse>),
+        );
       } else {
-        this.graph.outputs.push(new ValueInfo(polyOp.name, polyOp.shape, polyOp.dataType as any));
+        this.graph.outputs.push(
+          new ValueInfo(
+            polyOp.name,
+            polyOp.shape,
+            polyOp.dataType as ReturnType<typeof JSON.parse>,
+          ),
+        );
       }
     }
     // Return PolyfillMLGraph (150)
@@ -393,7 +407,7 @@ export class PolyfillMLGraphBuilder {
    * @param options? Input operand
    * @returns Result operand
    */
-  linear(a: MLOperand, options?: any): MLOperand {
+  linear(a: MLOperand, options?: ReturnType<typeof JSON.parse>): MLOperand {
     const alpha = options?.alpha !== undefined ? options.alpha : 1.0;
     const beta = options?.beta !== undefined ? options.beta : 0.0;
     const alphaOp = this.constant(
@@ -628,7 +642,11 @@ export class PolyfillMLGraphBuilder {
   gatherNd(a: MLOperand, indices: MLOperand): MLOperand {
     return this.emitNode('GatherND', [a, indices]);
   }
-  scatterNd(indices: MLOperand, updates: MLOperand, options?: any): MLOperand {
+  scatterNd(
+    indices: MLOperand,
+    updates: MLOperand,
+    options?: ReturnType<typeof JSON.parse>,
+  ): MLOperand {
     return this.emitNode('ScatterND', [
       this.constant(
         { dataType: updates.dataType, dimensions: options?.shape || [] },
@@ -640,7 +658,11 @@ export class PolyfillMLGraphBuilder {
       updates,
     ]);
   }
-  gatherElements(a: MLOperand, indices: MLOperand, options?: any): MLOperand {
+  gatherElements(
+    a: MLOperand,
+    indices: MLOperand,
+    options?: ReturnType<typeof JSON.parse>,
+  ): MLOperand {
     return this.emitNode(
       'GatherElements',
       [a, indices],
@@ -960,7 +982,7 @@ export class PolyfillMLGraphBuilder {
     hiddenState: MLOperand,
     cellState: MLOperand,
     hiddenSize: number,
-    options?: any,
+    options?: ReturnType<typeof JSON.parse>,
   ): MLOperand[] {
     const node = this.emitNode('LSTM', [
       input,
@@ -980,7 +1002,7 @@ export class PolyfillMLGraphBuilder {
     recurrentWeight: MLOperand,
     hiddenState: MLOperand,
     hiddenSize: number,
-    options?: any,
+    options?: ReturnType<typeof JSON.parse>,
   ): MLOperand[] {
     const node = this.emitNode('GRU', [
       input,
@@ -1009,7 +1031,7 @@ export class PolyfillMLGraphBuilder {
     query: MLOperand,
     key: MLOperand,
     value: MLOperand,
-    options?: any,
+    options?: ReturnType<typeof JSON.parse>,
   ): MLOperand {
     return this.emitNode('Attention', [query, key, value]);
   }

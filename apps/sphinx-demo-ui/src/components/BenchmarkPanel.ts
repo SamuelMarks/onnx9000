@@ -47,7 +47,7 @@ export class BenchmarkPanel extends Component<HTMLDivElement> {
     const runPyodide = async (scriptBody: string) => {
       output.textContent = 'Running benchmark...';
       try {
-        const pyodide = (window as any).pyodide;
+        const pyodide = (window as ReturnType<typeof JSON.parse>).pyodide;
         if (!pyodide) {
           output.textContent = 'Pyodide not loaded. Please wait for WebAssembly runtime...';
           return;
@@ -68,7 +68,8 @@ res
 `;
         const res = await pyodide.runPythonAsync(pyCode);
         output.textContent = res || 'Finished with no output.';
-      } catch (err: any) {
+      } catch (_err) {
+        const err = _err instanceof Error ? _err : new Error(String(_err));
         output.textContent = `Error:\n${err.message}`;
       }
     };

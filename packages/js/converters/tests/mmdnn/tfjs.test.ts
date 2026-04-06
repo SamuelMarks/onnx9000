@@ -192,10 +192,10 @@ describe('TFJS Serializer', () => {
     expect(weightsBin).toBeInstanceOf(Uint8Array);
     expect(weightsBin.length).toBe(28); // 4 + 2 + 1 floats = 7 floats, 7 * 4 = 28 bytes
 
-    expect((modelJson as any).weightsManifest[0].weights).toHaveLength(3);
-    expect((modelJson as any).weightsManifest[0].weights[0].name).toBe('w1');
-    expect((modelJson as any).weightsManifest[0].weights[0].shape).toEqual([2, 2]);
-    expect((modelJson as any).weightsManifest[0].weights[1].name).toBe('w2');
-    expect((modelJson as any).weightsManifest[0].weights[2].name).toBe('w3');
+    expect((modelJson as Object).weightsManifest[0].weights).toHaveLength(3);
+    expect((modelJson as Object).weightsManifest[0].weights[0].name).toBe('w1');
+    expect((modelJson as Object).weightsManifest[0].weights[0].shape).toEqual([2, 2]);
+    expect((modelJson as Object).weightsManifest[0].weights[1].name).toBe('w2');
+    expect((modelJson as Object).weightsManifest[0].weights[2].name).toBe('w3');
   });
 });

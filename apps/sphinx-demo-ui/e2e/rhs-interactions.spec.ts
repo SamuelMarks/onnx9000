@@ -19,15 +19,15 @@ test.describe('RHS (Target) Implementation', () => {
   test('should verify changing RHS dropdown triggers the conversion flow / updates tree', async ({
     page
   }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
-    // Default tree shows 'output-onnx'
-    await expect(tree).toContainText('output-onnx');
-    await expect(tree).toContainText('model.onnx');
+    // Default tree shows 'output-c'
+    await expect(tree).toContainText('output-c');
+    await expect(tree).toContainText('model.c');
 
     // Click to open dropdown
     await button.click({ force: true });
@@ -48,19 +48,19 @@ test.describe('RHS (Target) Implementation', () => {
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
 
-    // Make sure we have the initial ONNX files
-    await expect(tree).toContainText('output-onnx');
+    // Make sure we have the initial C files
+    await expect(tree).toContainText('output-c');
 
-    // Click model.onnx
-    const file1 = tree.locator('.demo-tree-file').filter({ hasText: 'model.onnx' });
+    // Click model.c
+    const file1 = tree.locator('.demo-tree-file').filter({ hasText: 'model.c' });
     await file1.click({ force: true });
 
     // Editor updates
-    await expect(editorLines).toContainText('// Binary representation of /output-onnx/model.onnx');
+    await expect(editorLines).toContainText('#include "model.h"');
   });
 
   test('should compile C++ code when C++ target is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -76,7 +76,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should compile CoreML when Apple CoreML target is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -84,6 +84,11 @@ test.describe('RHS (Target) Implementation', () => {
 
     // Generate an ONNX binary first
     await page.locator('.demo-pane-lhs .demo-btn-run-conversion').click({ force: true });
+    // Wait for the ONNX to be generated (using the run button text as proxy)
+    await expect(page.locator('.demo-pane-lhs .demo-btn-run-conversion')).toHaveText(
+      'Run Conversion',
+      { timeout: 15000 }
+    );
 
     await button.click({ force: true });
     await listbox
@@ -92,11 +97,11 @@ test.describe('RHS (Target) Implementation', () => {
       .click({ force: true });
 
     // the manifest structure starts with {
-    await expect(editorLines).toContainText('{');
+    await expect(editorLines).toContainText('{', { timeout: 10000 });
   });
 
   test('should compile PyTorch when PyTorch target is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -115,7 +120,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should optimize Olive when Optimize (Olive) target is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -134,7 +139,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should generate MLIR when MLIR target is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -152,7 +157,7 @@ test.describe('RHS (Target) Implementation', () => {
   test('should simplify ONNX when Simplify (onnx-simplifier) target is selected', async ({
     page
   }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -171,7 +176,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should convert to target when Caffe is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
@@ -190,7 +195,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should convert to Keras when Keras is selected', async ({ page }) => {
-    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');

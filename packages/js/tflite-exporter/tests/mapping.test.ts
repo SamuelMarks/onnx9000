@@ -15,13 +15,13 @@ describe('mapping', () => {
     expect(mapOnnxTypeToTflite('bool')).toBe(TensorType.BOOL);
     expect(mapOnnxTypeToTflite('string')).toBe(TensorType.STRING);
     expect(mapOnnxTypeToTflite('float64')).toBe(TensorType.FLOAT32);
-    expect(mapOnnxTypeToTflite('unknown' as any)).toBe(TensorType.FLOAT32);
+    expect(mapOnnxTypeToTflite('unknown' as Object)).toBe(TensorType.FLOAT32);
   });
 
   it('mapOnnxShapeToTflite', () => {
     expect(mapOnnxShapeToTflite([])).toEqual([]);
     expect(mapOnnxShapeToTflite([1, -1, 3])).toEqual([1, -1, 3]);
-    expect(mapOnnxShapeToTflite(['batch' as any, 3])).toEqual([-1, 3]);
+    expect(mapOnnxShapeToTflite(['batch' as Object, 3])).toEqual([-1, 3]);
   });
 
   it('createShapeSignature', () => {

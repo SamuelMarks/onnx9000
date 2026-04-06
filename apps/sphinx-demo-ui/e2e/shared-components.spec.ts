@@ -21,12 +21,12 @@ test.describe('Shared UI Components (File Tree, Monaco, Dropdown)', () => {
 
   test('should verify dropdown opens, selects item, and closes', async ({ page }) => {
     // There are two dropdowns, let's grab the LHS one
-    const dropdown = page.locator('.demo-pane-lhs .demo-dropdown');
+    const dropdown = page.locator('.demo-pane-lhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
     const listbox = dropdown.locator('.demo-dropdown-listbox');
 
     // Initial state
-    await expect(button).toHaveText('Select Source Framework...');
+    await expect(button).toHaveText('Keras');
     await expect(listbox).toBeHidden();
 
     // Click to open
@@ -63,16 +63,16 @@ test.describe('Shared UI Components (File Tree, Monaco, Dropdown)', () => {
     const editorContainer = page.locator('.demo-pane-lhs .demo-editor-container');
     const lines = editorContainer.locator('.view-lines');
 
-    // Initial text should contain # Select a file...
-    await expect(lines).toContainText('# Select a file...');
+    // Initial text should contain the content of train.py since it's auto-selected
+    await expect(lines).toContainText('import keras');
 
     // Now click a file in the tree to update the editor
     const fileItem = page
       .locator('.demo-pane-lhs .demo-file-tree .demo-tree-file')
-      .filter({ hasText: 'model.py' });
+      .filter({ hasText: 'model.h5' });
     await fileItem.click();
 
-    // The editor should now show "# /example/model.py"
-    await expect(lines).toContainText('# /example/model.py');
+    // The editor should now show "# /keras-mnist/model.h5"
+    await expect(lines).toContainText('# /keras-mnist/model.h5');
   });
 });

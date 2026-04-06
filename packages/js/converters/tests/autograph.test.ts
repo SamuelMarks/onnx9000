@@ -64,7 +64,7 @@ def create_model():
 
     const result = await extractTraceViaPyodide(mockPyodide, code, [10]);
     expect(result['class_name']).toBe('Functional');
-    const config = result['config'] as any;
+    const config = result['config'] as Object;
     expect(config.name).toBe('TracedModel');
     expect(config.layers).toHaveLength(2);
     expect(config.layers[1].class_name).toBe('MatMul');

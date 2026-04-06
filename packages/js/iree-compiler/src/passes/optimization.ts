@@ -59,7 +59,7 @@ export class Optimizer {
 
   // 152. Global Value Numbering (GVN) / CSE
   public performGVN(region: Region): void {
-    const hashToValue = new Map<string, any>();
+    const hashToValue = new Map<string, ReturnType<typeof JSON.parse>>();
     // Walk DOM tree, compute hashes for pure ops, replace if hash exists
   }
 

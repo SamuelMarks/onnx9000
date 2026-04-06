@@ -129,9 +129,11 @@ class PyTorchFXParser:
             out = node_data.get("out")
 
             if op == "placeholder":
-                # Assuming out is the name of the tensor
-                # We need to construct a Tensor properly. For now we use dummy types/shapes
-                t = Tensor(name=out, shape=(1,), dtype=1)
+                meta_val = node_data.get("meta", {}).get("val", {})
+                shape = tuple(meta_val.get("shape", (1,)))
+                dtype_str = meta_val.get("dtype", "float32")
+
+                t = Tensor(name=out, shape=shape, dtype=dtype_str)
                 graph.inputs.append(t)
                 graph.tensors[out] = t
 

@@ -11,7 +11,7 @@ import * as safetensorsModule from '../src/parser/safetensors.ts';
 
 // We mock the whole module to control getEndianness
 vi.mock('../src/parser/safetensors.ts', async (importOriginal) => {
-  const actual = (await importOriginal()) as any;
+  const actual = (await importOriginal()) as Object;
   return {
     ...actual,
     getEndianness: vi.fn().mockReturnValue('LE'), // Default to LE
@@ -27,13 +27,13 @@ describe('Extra Coverage Gaps', () => {
     });
 
     it('unpackData fallback for non-iterable data', () => {
-      const t = new Tensor('t', [1], 'float32', true, false, { notIterable: true } as any);
+      const t = new Tensor('t', [1], 'float32', true, false, { notIterable: true } as Object);
       expect(unpackData(t)).toEqual([]);
     });
 
     it('sparseToCoo fallback for unknown format', () => {
       const st = new SparseTensor('st', [1], 'COO');
-      (st as any).format = 'UNKNOWN';
+      (st as Object).format = 'UNKNOWN';
       expect(sparseToCoo(st)).toBe(st);
     });
   });

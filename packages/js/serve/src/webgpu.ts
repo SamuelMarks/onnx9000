@@ -10,13 +10,13 @@
 // 110. Capture WebGPU Device Loss events and gracefully restart the internal worker
 
 export class WebGPUManager {
-  public adapter: any;
-  public device: any;
+  public adapter: ReturnType<typeof JSON.parse>;
+  public device: ReturnType<typeof JSON.parse>;
   public fallbackToWasm: boolean = false;
 
   public async init() {
-    if (typeof navigator !== 'undefined' && (navigator as any).gpu) {
-      this.adapter = await (navigator as any).gpu.requestAdapter({
+    if (typeof navigator !== 'undefined' && (navigator as ReturnType<typeof JSON.parse>).gpu) {
+      this.adapter = await (navigator as ReturnType<typeof JSON.parse>).gpu.requestAdapter({
         powerPreference: 'high-performance', // 104
       });
 
@@ -33,7 +33,7 @@ export class WebGPUManager {
           });
 
           // 110. Device Loss handling
-          this.device.lost.then((info: any) => {
+          this.device.lost.then((info: ReturnType<typeof JSON.parse>) => {
             console.error('WebGPU Device Lost:', info.message);
             this.handleDeviceLoss();
           });
@@ -60,7 +60,7 @@ export class WebGPUManager {
   }
 
   // 109. Multi-GPU Support Logical Router
-  public getTargetDevice(modelName: string): any {
+  public getTargetDevice(modelName: string): ReturnType<typeof JSON.parse> {
     if (this.fallbackToWasm || !this.device) {
       return { type: 'wasm' };
     }

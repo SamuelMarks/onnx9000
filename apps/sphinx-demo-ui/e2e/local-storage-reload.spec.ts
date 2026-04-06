@@ -17,7 +17,7 @@ test.describe('localStorage state preservation', () => {
   });
 
   test('verify page reload restores selected LHS source', async ({ page }) => {
-    const lhsDropdown = page.locator('.demo-pane-lhs .demo-dropdown');
+    const lhsDropdown = page.locator('.demo-pane-lhs .demo-dropdown').first();
 
     await lhsDropdown.locator('button').click();
     await lhsDropdown.locator('.demo-dropdown-item').filter({ hasText: 'TensorFlow' }).click();
@@ -29,12 +29,12 @@ test.describe('localStorage state preservation', () => {
     await page.reload();
 
     // Should remember TensorFlow
-    const newLhsDropdown = page.locator('.demo-pane-lhs .demo-dropdown');
+    const newLhsDropdown = page.locator('.demo-pane-lhs .demo-dropdown').first();
     await expect(newLhsDropdown.locator('button')).toHaveText('TensorFlow');
   });
 
   test('verify page reload restores selected RHS target', async ({ page }) => {
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
 
     await rhsDropdown.locator('button').click();
     await rhsDropdown.locator('.demo-dropdown-item').filter({ hasText: 'PyTorch' }).click();
@@ -46,7 +46,7 @@ test.describe('localStorage state preservation', () => {
     await page.reload();
 
     // Should remember PyTorch
-    const newRhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const newRhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await expect(newRhsDropdown.locator('button')).toHaveText('PyTorch');
   });
 });

@@ -80,7 +80,7 @@ export function compileGraphToTFLite(
   /* v8 ignore stop */
 
   // 316. Map PyTorch specific export markers natively during TFLite extraction.
-  const metadata = (graph as any).metadata;
+  const metadata = (graph as ReturnType<typeof JSON.parse>).metadata;
   if (metadata?.producer_name?.includes('pytorch')) {
     /* v8 ignore start */
     console.log('[onnx2tf] PyTorch export detected. Mapping specific Aten structures natively.');

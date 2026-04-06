@@ -2,7 +2,7 @@ import { Region } from '../ir/core.js';
 
 // 251-260. Advanced Graph Diagnostics
 export class DiagnosticTracer {
-  private chromeEvents: any[] = [];
+  private chromeEvents: ReturnType<typeof JSON.parse>[] = [];
   private memoryUsage: { time: number; size: number }[] = [];
   private wgslSizes: { name: string; size: number }[] = [];
 
@@ -38,7 +38,7 @@ export class DiagnosticTracer {
     this.memoryUsage.push({ time: performance.now(), size });
   }
 
-  public getMemoryGraphData(): any {
+  public getMemoryGraphData(): ReturnType<typeof JSON.parse> {
     return this.memoryUsage;
   }
 

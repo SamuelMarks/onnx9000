@@ -14,95 +14,103 @@ describe('Coverage OpenVINO', () => {
     graph.inputs.push(new ValueInfo('idx2', [1], 'int64'));
 
     graph.addNode(
-      new Node('MatMul', ['a', 'b'], ['c'], { transA: { value: 1 }, transB: { value: 1 } } as any),
+      new Node('MatMul', ['a', 'b'], ['c'], {
+        transA: { value: 1 },
+        transB: { value: 1 },
+      } as Object),
     );
     graph.addNode(
       new Node('Conv', ['c'], ['d'], {
         strides: { value: [1, 1] },
         pads: { value: [1, 1, 1, 1] },
         auto_pad: { value: 'SAME_UPPER' },
-      } as any),
+      } as Object),
     );
     graph.addNode(
       new Node('MaxPool', ['d'], ['e'], {
         strides: { value: [1, 1] },
         kernel_shape: { value: [2, 2] },
         pads: { value: [0, 0, 0, 0] },
-      } as any),
+      } as Object),
     );
-    graph.addNode(new Node('Gelu', ['e'], ['f'], { approximate: { value: 'tanh' } } as any));
-    graph.addNode(new Node('Softmax', ['f'], ['g'], { axis: { value: 1 } } as any));
+    graph.addNode(new Node('Gelu', ['e'], ['f'], { approximate: { value: 'tanh' } } as Object));
+    graph.addNode(new Node('Softmax', ['f'], ['g'], { axis: { value: 1 } } as Object));
     graph.addNode(
       new Node('Pad', ['g', 'pad_val'], ['h'], {
         mode: { value: 'reflect' },
         pads: { value: [1, 1, 1, 1] },
-      } as any),
+      } as Object),
     );
-    graph.addNode(new Node('Gather', ['h', 'idx'], ['i'], { axis: { value: 1 } } as any));
-    graph.addNode(new Node('Slice', ['i'], ['j'], {} as any));
+    graph.addNode(new Node('Gather', ['h', 'idx'], ['i'], { axis: { value: 1 } } as Object));
+    graph.addNode(new Node('Slice', ['i'], ['j'], {} as Object));
     graph.addNode(
-      new Node('ReduceMean', ['j'], ['k'], { keepdims: { value: 1 }, axes: { value: [0] } } as any),
+      new Node('ReduceMean', ['j'], ['k'], {
+        keepdims: { value: 1 },
+        axes: { value: [0] },
+      } as Object),
     );
     graph.addNode(
-      new Node('ArgMax', ['k'], ['l'], { axis: { value: 1 }, keepdims: { value: 1 } } as any),
+      new Node('ArgMax', ['k'], ['l'], { axis: { value: 1 }, keepdims: { value: 1 } } as Object),
     );
     graph.addNode(
       new Node('Resize', ['l'], ['m'], {
         mode: { value: 'linear' },
         coordinate_transformation_mode: { value: 'pytorch_half_pixel' },
-      } as any),
+      } as Object),
     );
-    graph.addNode(new Node('SpaceToDepth', ['m'], ['n'], { blocksize: { value: 2 } } as any));
+    graph.addNode(new Node('SpaceToDepth', ['m'], ['n'], { blocksize: { value: 2 } } as Object));
     graph.addNode(
-      new Node('NonMaxSuppression', ['n'], ['o'], { center_point_box: { value: 1 } } as any),
+      new Node('NonMaxSuppression', ['n'], ['o'], { center_point_box: { value: 1 } } as Object),
     );
-    graph.addNode(new Node('RoiAlign', ['o'], ['p'], { mode: { value: 'avg' } } as any));
-    graph.addNode(new Node('QuantizeLinear', ['p'], ['q'], {} as any));
-    graph.addNode(new Node('Einsum', ['q'], ['r'], { equation: { value: 'a,b->c' } } as any));
+    graph.addNode(new Node('RoiAlign', ['o'], ['p'], { mode: { value: 'avg' } } as Object));
+    graph.addNode(new Node('QuantizeLinear', ['p'], ['q'], {} as Object));
+    graph.addNode(new Node('Einsum', ['q'], ['r'], { equation: { value: 'a,b->c' } } as Object));
     graph.addNode(
-      new Node('LayerNormalization', ['r'], ['s'], { epsilon: { value: 1e-5 } } as any),
+      new Node('LayerNormalization', ['r'], ['s'], { epsilon: { value: 1e-5 } } as Object),
     );
     graph.addNode(
-      new Node('BatchNormalization', ['s'], ['t'], { epsilon: { value: 1e-5 } } as any),
+      new Node('BatchNormalization', ['s'], ['t'], { epsilon: { value: 1e-5 } } as Object),
     );
 
     // Complex nodes with subgraphs
     const ifNode = new Node('If', ['t'], ['u']);
-    ifNode.attributes['then_branch'] = { value: new Graph('then') } as any;
-    ifNode.attributes['else_branch'] = { value: new Graph('else') } as any;
+    ifNode.attributes['then_branch'] = { value: new Graph('then') } as Object;
+    ifNode.attributes['else_branch'] = { value: new Graph('else') } as Object;
     graph.addNode(ifNode);
 
     const loopNode = new Node('Loop', ['u'], ['v']);
-    loopNode.attributes['body'] = { value: new Graph('body') } as any;
+    loopNode.attributes['body'] = { value: new Graph('body') } as Object;
     graph.addNode(loopNode);
 
-    graph.addNode(new Node('Cast', ['v'], ['w'], { to: { value: 'float32' } } as any));
+    graph.addNode(new Node('Cast', ['v'], ['w'], { to: { value: 'float32' } } as Object));
     graph.addNode(
       new Node('GridSample', ['w'], ['x'], {
         align_corners: { value: 1 },
         mode: { value: 'bilinear' },
         padding_mode: { value: 'zeros' },
-      } as any),
+      } as Object),
     );
-    graph.addNode(new Node('Size', ['x'], ['y'], {} as any));
-    graph.addNode(new Node('Flatten', ['y'], ['z'], { axis: { value: 1 } } as any));
-    graph.addNode(new Node('Transpose', ['z'], ['aa'], { perm: { value: [1, 0] } } as any));
+    graph.addNode(new Node('Size', ['x'], ['y'], {} as Object));
+    graph.addNode(new Node('Flatten', ['y'], ['z'], { axis: { value: 1 } } as Object));
+    graph.addNode(new Node('Transpose', ['z'], ['aa'], { perm: { value: [1, 0] } } as Object));
     graph.addNode(
-      new Node('GatherElements', ['aa', 'idx2'], ['bb'], { axis: { value: 1 } } as any),
+      new Node('GatherElements', ['aa', 'idx2'], ['bb'], { axis: { value: 1 } } as Object),
     );
 
     const tVal = new Tensor('val', [1], 'float32', false, true, new Float32Array([1]));
-    graph.addNode(new Node('ConstantOfShape', ['bb'], ['cc'], { value: { value: tVal } } as any));
+    graph.addNode(
+      new Node('ConstantOfShape', ['bb'], ['cc'], { value: { value: tVal } } as Object),
+    );
 
     // Edge cases like pad length not 4
     graph.addNode(
       new Node('Conv', ['c'], ['d2'], {
         pads: { value: [1, 1] },
         dilations: { value: [1, 1] },
-      } as any),
+      } as Object),
     );
-    graph.addNode(new Node('Pad', ['g'], ['h2'], { mode: { value: 'constant' } } as any));
-    graph.addNode(new Node('ReduceMean', ['j'], ['k2'], { keepdims: { value: 0 } } as any));
+    graph.addNode(new Node('Pad', ['g'], ['h2'], { mode: { value: 'constant' } } as Object));
+    graph.addNode(new Node('ReduceMean', ['j'], ['k2'], { keepdims: { value: 0 } } as Object));
 
     const exp = new OpenVinoExporter(graph);
     const { xml, bin } = exp.export();
@@ -158,7 +166,7 @@ describe('Coverage OpenVINO', () => {
 
     // Since load is imported in bin/cli.js directly, we can mock @onnx9000/core
     vi.mock('@onnx9000/core', async () => {
-      const actual = (await vi.importActual('@onnx9000/core')) as any;
+      const actual = (await vi.importActual('@onnx9000/core')) as Object;
       return {
         ...actual,
         load: () => {

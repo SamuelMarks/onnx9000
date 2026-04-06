@@ -37,7 +37,7 @@ export async function fetchAndParseModel(
     }
   }
 
-  const blob = new Blob(chunks as unknown as BlobPart[]);
+  const blob = new Blob(chunks as ReturnType<typeof JSON.parse> as BlobPart[]);
   const modelReader = new BlobReader(blob);
   return parseModelProto(modelReader);
 }

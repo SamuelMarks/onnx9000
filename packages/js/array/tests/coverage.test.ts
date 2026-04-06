@@ -131,7 +131,7 @@ describe('onnx9000.array coverage', () => {
 
   test('all functional operations', () => {
     for (const opName of ops) {
-      const op = (np as any)[opName];
+      const op = (np as Object)[opName];
       if (typeof op !== 'function') continue;
 
       // Eager
@@ -149,7 +149,7 @@ describe('onnx9000.array coverage', () => {
   test('nn operations', () => {
     const nnOps = Object.keys(np.nn);
     for (const opName of nnOps) {
-      const op = (np.nn as any)[opName];
+      const op = (np.nn as Object)[opName];
 
       // Eager
       np.lazy_mode(false);
@@ -166,7 +166,7 @@ describe('onnx9000.array coverage', () => {
   test('linalg operations', () => {
     const linalgOps = Object.keys(np.linalg);
     for (const opName of linalgOps) {
-      const op = (np.linalg as any)[opName];
+      const op = (np.linalg as Object)[opName];
 
       // Eager
       np.lazy_mode(false);
@@ -183,7 +183,7 @@ describe('onnx9000.array coverage', () => {
   test('char operations', () => {
     const charOps = Object.keys(np.char);
     for (const opName of charOps) {
-      const op = (np.char as any)[opName];
+      const op = (np.char as Object)[opName];
 
       // Eager
       np.lazy_mode(false);
@@ -200,7 +200,7 @@ describe('onnx9000.array coverage', () => {
   test('random operations', () => {
     const randomOps = ['rand', 'randn', 'randint', 'uniform', 'normal'];
     for (const opName of randomOps) {
-      const op = (np.random as any)[opName];
+      const op = (np.random as Object)[opName];
 
       // Eager
       np.lazy_mode(false);

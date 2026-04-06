@@ -9,7 +9,7 @@ describe('Checker Extra Coverage', () => {
       graph: { inputs: [], initializers: [], nodes: [] },
     };
     const ctx = new ValidationContext();
-    expect(() => check_model(model as any, ctx)).toThrow();
+    expect(() => check_model(model as Object, ctx)).toThrow();
     expect(ctx.errors).toContain('Invalid ir_version');
   });
 

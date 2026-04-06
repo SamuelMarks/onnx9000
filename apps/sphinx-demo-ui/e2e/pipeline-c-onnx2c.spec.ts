@@ -18,7 +18,7 @@ test.describe('Pipeline C - Edge C/C++ Compilation (ONNX2C)', () => {
 
   test('should verify .onnx converts to C code', async ({ page }) => {
     // Select C in RHS target dropdown
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await rhsDropdown.locator('button').click();
     await rhsDropdown
       .locator('.demo-dropdown-listbox .demo-dropdown-item')
@@ -38,7 +38,7 @@ test.describe('Pipeline C - Edge C/C++ Compilation (ONNX2C)', () => {
 
   test('should verify .onnx converts to C++ code', async ({ page }) => {
     // Select C++ in RHS target dropdown
-    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
+    const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await rhsDropdown.locator('button').click();
     await rhsDropdown
       .locator('.demo-dropdown-listbox .demo-dropdown-item')

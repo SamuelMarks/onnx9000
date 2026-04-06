@@ -14,7 +14,7 @@ echo "Running Tests & Generating Coverage..."
 export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '\n' ':'):apps/cli/src
 
 # 1. TypeScript tests
-npx turbo run test --env-mode=loose
+npx turbo run test --env-mode=loose --concurrency=2
 
 # 2. Python Tests (Generating coverage.json)
 # Clear old coverage

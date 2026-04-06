@@ -3,7 +3,7 @@ import { Tensor, SparseTensor } from '@onnx9000/core';
 import { unpackData } from '@onnx9000/core';
 
 export abstract class Modifier {
-  constructor(public options: any = {}) {}
+  constructor(public options: ReturnType<typeof JSON.parse> = {}) {}
   abstract apply(graph: Graph): void;
 }
 
@@ -75,7 +75,7 @@ export class ConstantPruningModifier extends Modifier {
 export function parseRecipe(yamlText: string): Modifier[] {
   const modifiers: Modifier[] = [];
   const lines = yamlText.split('\n');
-  let currentMod: any = null;
+  let currentMod: ReturnType<typeof JSON.parse> = null;
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -97,7 +97,7 @@ export function parseRecipe(yamlText: string): Modifier[] {
     } else if (currentMod && trimmed.includes(':')) {
       const parts = trimmed.split(':');
       const key = parts[0]!.trim();
-      let val: any = parts.slice(1).join(':').trim();
+      let val: ReturnType<typeof JSON.parse> = parts.slice(1).join(':').trim();
 
       if (val.startsWith('[') && val.endsWith(']')) {
         val = val

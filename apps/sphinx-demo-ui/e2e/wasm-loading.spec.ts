@@ -11,11 +11,11 @@ test.describe('WASM Lazy Loading & Overlay', () => {
     await expect(overlay).toBeVisible();
 
     const title = page.locator('.demo-wasm-modal h2');
-    await expect(title).toHaveText('Interactive WASM Demo');
+    await expect(title).toHaveText('Loading AI Compiler Engine...');
 
     const loadButton = page.locator('.demo-btn-primary');
     await expect(loadButton).toBeVisible();
-    await expect(loadButton).toHaveText('Load WASM Live Demo');
+    await expect(loadButton).toHaveText('Start Demo');
   });
 
   test('should verify clicking load fetches WASM, shows progress, and removes overlay', async ({

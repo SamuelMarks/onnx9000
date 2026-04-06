@@ -35,18 +35,18 @@ it('should ignore inputs that are in initializers (line 44)', () => {
     outputs: [],
     tensors: {},
     initializers: ['A'],
-  } as any);
+  } as Object);
   expect(layout.nodes.find((n) => n.id === 'input_A')).toBeUndefined();
 });
 
 it('should skip adding edge if from or to box missing (line 210)', () => {
   const layout = computeLayout({
-    nodes: [new Node('Add', ['Missing'], ['Out'], {}, 'Node1', '') as any],
+    nodes: [new Node('Add', ['Missing'], ['Out'], {}, 'Node1', '') as Object],
     inputs: [],
     outputs: [],
     tensors: {},
     initializers: [],
-  } as any);
+  } as Object);
   expect(layout.edges.length).toBe(0);
 });
 
@@ -54,14 +54,14 @@ it('should cover fromBox/toBox missing combinations', () => {
   // need a graph where an edge is attempted to be added but one box is missing
   const layout = computeLayout({
     nodes: [
-      new Node('Add', ['Missing'], ['Out'], {}, 'Node1', '') as any,
-      new Node('Sub', ['Out'], ['Out2'], {}, 'Node2', '') as any,
+      new Node('Add', ['Missing'], ['Out'], {}, 'Node1', '') as Object,
+      new Node('Sub', ['Out'], ['Out2'], {}, 'Node2', '') as Object,
     ],
     inputs: [],
     outputs: [],
     tensors: {},
     initializers: [],
-  } as any);
+  } as Object);
   expect(layout.edges.length).toBe(1); // One edge from Node1 -> Node2
   // If we mock positions we could test !fromBox but graph logic always ensures positions for nodes it processes.
   // However, if we specify an edge from 'Missing' -> 'Node1', 'Missing' has no box!
@@ -115,6 +115,6 @@ it('should hit !toBox branch explicitly', () => {
     outputs: [],
     initializers: [],
     tensors: {},
-  } as any);
+  } as Object);
   expect(layout.edges.length).toBe(0);
 });

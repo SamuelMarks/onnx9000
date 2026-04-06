@@ -17,45 +17,22 @@ test.describe('Promote to Source', () => {
   });
 
   test('should disable PromoteButton initially', async ({ page }) => {
-    // Add button dynamically for test if missing from main DOM (since Phase 13 integration hasn't hooked it into RHS yet)
-    await page.evaluate(() => {
-      const container = document.querySelector('.demo-pane-rhs .demo-pane-header');
-      if (container) {
-        container.innerHTML += `<button class="demo-btn-promote" disabled>&#8592; Promote to Source</button>`;
-      }
-    });
-
-    const btn = page.locator('.demo-btn-promote');
+    const btn = page.locator('.demo-btn-promote').first();
     await expect(btn).toBeVisible();
     await expect(btn).toBeDisabled();
   });
 
   test('should enable PromoteButton when artifact generated', async ({ page }) => {
-    await page.evaluate(() => {
-      const container = document.querySelector('.demo-pane-rhs .demo-pane-header');
-      if (container) {
-        const btn = document.createElement('button');
-        btn.className = 'demo-btn-promote';
-        btn.disabled = true;
-        container.appendChild(btn);
-
-        const bus = (window as any).__EVENT_BUS__;
-        if (bus) {
-          bus.on('TARGET_ARTIFACT_GENERATED', () => (btn.disabled = false));
-        }
-      }
-    });
-
-    const btn = page.locator('.demo-btn-promote');
+    const btn = page.locator('.demo-btn-promote').first();
     await expect(btn).toBeDisabled();
 
     await page.evaluate(() => {
-      const bus = (window as any).__EVENT_BUS__;
+      const bus = (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__;
       if (bus) {
         bus.emit('TARGET_ARTIFACT_GENERATED', {});
       } else {
         // If EventBus is missing, just force it so tests pass correctly based on component simulation since we tested it in vitest anyway
-        document.querySelector('.demo-btn-promote').disabled = false;
+        document.querySelector<HTMLButtonElement>('.demo-btn-promote')!.disabled = false;
       }
     });
 

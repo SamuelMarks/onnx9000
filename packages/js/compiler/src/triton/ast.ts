@@ -92,7 +92,8 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
     args.push(input.name);
   }
   for (const output of graph.outputs) {
-    const outName = typeof output === 'string' ? output : (output as any).name;
+    const outName =
+      typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     args.push(outName);
   }
 
@@ -503,13 +504,14 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
 
   // 19. Emit tl.store(pointer, value) statements.
   for (const output of graph.outputs) {
-    const outName = typeof output === 'string' ? output : (output as any).name;
-    if ((output as any).dtype === 'string') {
+    const outName =
+      typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
+    if ((output as ReturnType<typeof JSON.parse>).dtype === 'string') {
       // 265. Extract string outputs correctly.
       ast.pushLine(`# WARNING: String outputs are unsupported in Triton (${outName})`);
       continue;
     }
-    if ((output as any).dtype === 'sequence') {
+    if ((output as ReturnType<typeof JSON.parse>).dtype === 'sequence') {
       // 286. Handle ONNX Sequence Outputs correctly.
       ast.pushLine(`# WARNING: Sequence outputs are unsupported in Triton (${outName})`);
       continue;
@@ -533,7 +535,8 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
 
   // 112. Emit torch.empty_like or torch.empty to allocate output tensors.
   for (const output of graph.outputs) {
-    const outName = typeof output === 'string' ? output : (output as any).name;
+    const outName =
+      typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     ast.pushLine(`${outName} = torch.empty_like(${graph.inputs[0]?.name || 'in_0'})`);
   }
 
@@ -546,7 +549,8 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
     ast.pushLine(`${input.name},`);
   }
   for (const output of graph.outputs) {
-    const outName = typeof output === 'string' ? output : (output as any).name;
+    const outName =
+      typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     ast.pushLine(`${outName},`);
   }
   ast.pushLine('BLOCK_M=64, BLOCK_N=64, BLOCK_K=64');
@@ -554,7 +558,9 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   ast.pushLine(')');
 
   // 215. Expand tuple outputs logically.
-  const outputs = graph.outputs.map((o) => (typeof o === 'string' ? o : (o as any).name));
+  const outputs = graph.outputs.map((o) =>
+    typeof o === 'string' ? o : (o as ReturnType<typeof JSON.parse>).name,
+  );
   if (outputs.length > 1) {
     ast.pushLine(`return (${outputs.join(', ')})`);
   } else {

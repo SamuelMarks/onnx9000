@@ -153,7 +153,7 @@ describe('ONNX Checker', () => {
 
 it('check_model handles missing fields and duplicates', () => {
   // missing opset_import
-  const m1: Model = { producer_name: '' as any };
+  const m1: Model = { producer_name: '' as Object };
   expect(() => check_model(m1)).toThrow(/opset_import missing/);
 
   // duplicate opset_import domain
@@ -192,7 +192,7 @@ it('check_model handles missing fields and duplicates', () => {
   expect(() => check_model(m6)).toThrow(/Dangling input x/);
 
   // Invalid producer name
-  const m7: Model = { producer_name: 123 as any, opset_import: [], graph: {} };
+  const m7: Model = { producer_name: 123 as Object, opset_import: [], graph: {} };
   expect(() => check_model(m7)).toThrow(/Invalid producer_name/);
 });
 

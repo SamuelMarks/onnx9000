@@ -23,7 +23,7 @@ describe('LayoutOptimizer Redundancy', () => {
       { opType: 'Reshape', inputs: ['r1', 's2'], outputs: ['r2'], name: 'r2', attributes: [] },
     ];
 
-    const optimized = optimizer.optimize(nodes as any);
+    const optimized = optimizer.optimize(nodes as Object);
     // Should fuse Transposes into Identity if they cancel out, or at least hit the lines
     expect(optimized).toBeDefined();
   });

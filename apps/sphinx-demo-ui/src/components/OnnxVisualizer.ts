@@ -107,7 +107,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
         ${data.attributes ? `<br/>Attrs: ${JSON.stringify(data.attributes)}` : ''}
       `;
 
-      const pos = evt.renderedPosition;
+      const pos = evt.renderedPosition || { x: 0, y: 0 };
       this.tooltip.style.left = `${pos.x + 15}px`;
       this.tooltip.style.top = `${pos.y + 15}px`;
       this.tooltip.style.display = 'block';

@@ -102,7 +102,7 @@ describe('KerasGraphOptimizer', () => {
       },
       { opType: 'StopGradient', name: 'stop', outputs: ['out3'], inputs: ['in3'], attributes: [] },
     ];
-    const optimized = optimizeFusedOps(nodes as any);
+    const optimized = optimizeFusedOps(nodes as Object);
     expect(optimized.some((n) => n.opType === 'Conv')).toBe(true);
     expect(optimized.some((n) => n.opType === 'Relu')).toBe(true);
     expect(optimized.some((n) => n.opType === 'MatMul')).toBe(true);
@@ -111,7 +111,7 @@ describe('KerasGraphOptimizer', () => {
 
   it('should apply quantization', () => {
     const weights = [{ name: 'w', dtype: 'float32', data: new Float32Array([1, 2, 3]) }];
-    const quantized = applyQuantization(weights as any, 'fp16');
+    const quantized = applyQuantization(weights as Object, 'fp16');
     expect(quantized[0].dtype).toBe('fp16');
   });
 });

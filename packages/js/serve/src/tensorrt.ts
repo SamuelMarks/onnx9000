@@ -1,6 +1,6 @@
 import { Graph } from '@onnx9000/core';
 
-export async function createTensorRTSession(graph: Graph): Promise<any> {
+export async function createTensorRTSession(graph: Graph): Promise<ReturnType<typeof JSON.parse>> {
   // Use dynamic import so it doesn't break environments without FFI (e.g. edge workers)
   try {
     const trt = await import('@onnx9000/tensorrt');

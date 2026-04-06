@@ -44,7 +44,7 @@ describe('Triton Generator Final 2', () => {
     const g = new Graph('g');
     g.inputs.push(new ValueInfo('x', [1], 'float32'));
     g.outputs.push(new ValueInfo('s', [1], 'string'));
-    g.outputs.push(new ValueInfo('seq', [1], 'sequence' as any));
+    g.outputs.push(new ValueInfo('seq', [1], 'sequence' as Object));
 
     const code = generateTriton(g);
     expect(code).toContain('WARNING: String outputs are unsupported');

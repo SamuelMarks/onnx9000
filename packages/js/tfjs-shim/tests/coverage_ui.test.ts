@@ -6,13 +6,13 @@ describe('Coverage UI', () => {
     const el = new TfjsShimDemoElement();
 
     let html = '';
-    let clickListener: any;
+    let clickListener: Object;
     const mockShadow = {
       innerHTML: '',
       querySelector: (sel: string) => {
         if (sel === '#run-btn') {
           return {
-            addEventListener: (evt: string, cb: any) => {
+            addEventListener: (evt: string, cb: Object) => {
               clickListener = cb;
             },
           };

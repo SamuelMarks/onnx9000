@@ -17,7 +17,7 @@ describe('Fallback Generators', () => {
       shape: [32, 3, 3, 3],
       dataType: 1,
       data: new Uint8Array(32 * 3 * 3 * 3 * 4),
-    } as any;
+    } as Object;
 
     const convNode = new Node(
       'Conv',

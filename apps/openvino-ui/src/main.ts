@@ -110,7 +110,8 @@ async function handleFiles(files: FileList) {
       `Success! Downloaded ${baseName}_openvino.zip<br>Original: ${originalSizeMB}MB -> OpenVINO: ${newSizeMB}MB`,
       'success',
     );
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     console.error(err);
     showStatus(`Error compiling model: ${err.message}`, 'error');
   }

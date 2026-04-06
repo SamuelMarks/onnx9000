@@ -42,12 +42,12 @@ it('Builder growBuffer to limit', () => {
   const b = new FlatBufferBuilder(2147483647 - 100); // Almost 2GB
   // Just force a resize
   try {
-    (b as any).growBuffer();
+    (b as Object).growBuffer();
   } catch (e) {}
 
   // Now it's at 2147483647
   try {
-    (b as any).growBuffer(); // throws
+    (b as Object).growBuffer(); // throws
   } catch (e) {}
 });
 
@@ -93,6 +93,6 @@ it('Builder endObject without startObject', () => {
 it('Builder prep grow', () => {
   const b = new FlatBufferBuilder(10);
   // this size will force it to grow
-  (b as any).prep(4, 20);
+  (b as Object).prep(4, 20);
   expect(b.asUint8Array().length).toBeGreaterThanOrEqual(0);
 });

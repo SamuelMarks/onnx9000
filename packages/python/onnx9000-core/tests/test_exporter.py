@@ -336,6 +336,14 @@ def test_export_onnx_format(tmp_path):
     assert os.path.exists(out_path)
 
 
+def test_export_tensorboard_format(tmp_path):
+    g = Graph("test_tb")
+    g.add_tensor(Variable("in"))
+    out_dir = str(tmp_path / "tb_logs")
+    export_graph(g, out_dir, format="tensorboard")
+    assert (tmp_path / "tb_logs").exists()
+
+
 def test_generate_keras_fallback():
     """Docstring for D103."""
     g = Graph("test")

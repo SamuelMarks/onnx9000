@@ -19,7 +19,7 @@ describe('Index Export', () => {
 describe('InferenceSession', () => {
   it('should run successfully with a provider', async () => {
     const g = new Graph('g');
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
 
     const provider = new WasmProvider();
     await provider.initialize();
@@ -49,7 +49,7 @@ describe('WebGPUProvider', () => {
   it('should execute correctly', async () => {
     const provider = new WebGPUProvider();
     const g = new Graph('g');
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
     const res = await provider.execute(g, {});
     expect(res['out']).toBeDefined();
   });
@@ -108,7 +108,7 @@ describe('WebNNProvider', () => {
 
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
-    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out', shape: [1], id: 'out', dtype: 'float32' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out']));
 
     const res = await provider.execute(g, {
@@ -125,7 +125,7 @@ describe('WasmProvider', () => {
     await provider.initialize();
 
     const g = new Graph('g');
-    g.outputs.push('out' as any);
+    g.outputs.push('out' as Object);
     const res = await provider.execute(g, {});
     expect(res['out']).toBeDefined();
   });
@@ -214,7 +214,7 @@ describe('Provider Object Name fallback coverage', () => {
   it('should handle Object.name in WasmProvider', async () => {
     const provider = new WasmProvider();
     const g = new Graph('g');
-    g.outputs.push({ name: 'out_obj' } as any);
+    g.outputs.push({ name: 'out_obj' } as Object);
     const res = await provider.execute(g, {});
     expect(res['out_obj']).toBeDefined();
   });
@@ -222,7 +222,7 @@ describe('Provider Object Name fallback coverage', () => {
   it('should handle Object.name in WebGPUProvider', async () => {
     const provider = new WebGPUProvider();
     const g = new Graph('g');
-    g.outputs.push({ name: 'out_obj' } as any);
+    g.outputs.push({ name: 'out_obj' } as Object);
     const res = await provider.execute(g, {});
     expect(res['out_obj']).toBeDefined();
   });
@@ -265,7 +265,7 @@ describe('Provider Object Name fallback coverage', () => {
 
     const g = new Graph('g');
     g.inputs.push({ name: 'in', shape: [1], id: 'in', dtype: 'float32' });
-    g.outputs.push({ name: 'out_obj', shape: [1], dtype: 'float32' } as any);
+    g.outputs.push({ name: 'out_obj', shape: [1], dtype: 'float32' } as Object);
     g.nodes.push(new Node('Abs', ['in'], ['out_obj']));
 
     const res = await provider.execute(g, {

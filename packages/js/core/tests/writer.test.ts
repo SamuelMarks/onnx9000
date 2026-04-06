@@ -199,7 +199,7 @@ describe('onnx_writer', () => {
 
     for (const type of types) {
       const graph = new Graph(`test_${type}`);
-      const tensor = new Tensor(`t_${type}`, [1], type as any, true, false, new Uint8Array([0]));
+      const tensor = new Tensor(`t_${type}`, [1], type as Object, true, false, new Uint8Array([0]));
       graph.tensors[`t_${type}`] = tensor;
       graph.initializers.push(`t_${type}`);
 
@@ -224,7 +224,7 @@ describe('onnx_writer', () => {
     const tensor = new Tensor(
       'x',
       [1],
-      'invalid_dtype' as any,
+      'invalid_dtype' as Object,
       true,
       false,
       new Float32Array([1.0]),

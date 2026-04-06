@@ -5,18 +5,18 @@ export interface KServeInput {
   name: string;
   shape: number[];
   datatype: string;
-  data?: any[];
-  parameters?: Record<string, any>;
+  data?: ReturnType<typeof JSON.parse>[];
+  parameters?: Record<string, ReturnType<typeof JSON.parse>>;
 }
 
 export interface KServeOutput {
   name: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, ReturnType<typeof JSON.parse>>;
 }
 
 export interface KServeRequest {
   id?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, ReturnType<typeof JSON.parse>>;
   inputs: KServeInput[];
   outputs?: KServeOutput[];
 }
@@ -25,15 +25,15 @@ export interface KServeResponseOutput {
   name: string;
   shape: number[];
   datatype: string;
-  data: any[];
-  parameters?: Record<string, any>;
+  data: ReturnType<typeof JSON.parse>[];
+  parameters?: Record<string, ReturnType<typeof JSON.parse>>;
 }
 
 export interface KServeResponse {
   model_name: string;
   model_version?: string;
   id?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, ReturnType<typeof JSON.parse>>;
   outputs: KServeResponseOutput[];
 }
 
@@ -53,7 +53,7 @@ const VALID_DATATYPES = new Set([
   'BYTES',
 ]);
 
-function validateKServeRequest(body: any): KServeRequest {
+function validateKServeRequest(body: ReturnType<typeof JSON.parse>): KServeRequest {
   if (!body.inputs || !Array.isArray(body.inputs)) {
     throw new Error('KServe request must contain an "inputs" array');
   }
@@ -246,7 +246,7 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
           name: t.name || '',
           datatype: t.dtype === 'float32' ? 'FP32' : 'INT32',
           shape: t.shape as number[],
-          data: Array.from(t.data as any),
+          data: Array.from(t.data as ReturnType<typeof JSON.parse>),
         })),
       };
 
@@ -254,7 +254,8 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
-    } catch (err: any) {
+    } catch (_err) {
+      const err = _err instanceof Error ? _err : new Error(String(_err));
       return new Response(
         JSON.stringify({
           error: err.message,

@@ -18,18 +18,18 @@ describe('tokenizers specific lines', () => {
 
   it('bpe, wordpiece, unigram', async () => {
     const bpe = new toks.PreTrainedTokenizerFast({}, {});
-    (bpe as any).tokenizerJson = { model: { type: 'BPE' } };
-    (bpe as any).wasmBpe = () => [1];
+    (bpe as Object).tokenizerJson = { model: { type: 'BPE' } };
+    (bpe as Object).wasmBpe = () => [1];
     expect(bpe._encode_single('a')).toEqual([1]);
 
     const wp = new toks.PreTrainedTokenizerFast({}, {});
-    (wp as any).tokenizerJson = { model: { type: 'WordPiece' } };
-    (wp as any).wasmWordPiece = () => [2];
+    (wp as Object).tokenizerJson = { model: { type: 'WordPiece' } };
+    (wp as Object).wasmWordPiece = () => [2];
     expect(wp._encode_single('a')).toEqual([2]);
 
     const ug = new toks.PreTrainedTokenizerFast({}, {});
-    (ug as any).tokenizerJson = { model: { type: 'Unigram' } };
-    (ug as any).wasmUnigram = () => [3];
+    (ug as Object).tokenizerJson = { model: { type: 'Unigram' } };
+    (ug as Object).wasmUnigram = () => [3];
     expect(ug._encode_single('a')).toEqual([3]);
   });
 

@@ -56,18 +56,18 @@ describe('Final Coverage Gaps', () => {
     expect(unpackData(t64)).toEqual([42n]);
 
     const tIter = new Tensor('tIter', [2], 'float32');
-    tIter.data = [1, 2] as any;
+    tIter.data = [1, 2] as Object;
     expect(unpackData(tIter)).toEqual([1, 2]);
 
     const tFail = new Tensor('tFail', [1], 'float32');
-    tFail.data = { [Symbol.iterator]: undefined } as any;
+    tFail.data = { [Symbol.iterator]: undefined } as Object;
     expect(unpackData(tFail)).toEqual([]);
   });
 
   it('SafeTensors coverage for errors and alignment', async () => {
     // Duplicate key in save
     const t = new Uint8Array([1]);
-    expect(() => saveSafetensors({ t1: t, 't1 ': t }.replace as any)).toThrow;
+    expect(() => saveSafetensors({ t1: t, 't1 ': t }.replace as Object)).toThrow;
     // We can't easily trigger duplicate key in JS object, but we can mock it
 
     // Invalid JSON

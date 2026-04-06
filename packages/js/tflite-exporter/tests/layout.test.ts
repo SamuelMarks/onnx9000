@@ -116,7 +116,7 @@ describe('LayoutOptimizer', () => {
       new Float32Array(27),
     );
     graph.nodes.push(
-      new Node('Conv', ['X1', 'W_dw'], ['Y1'], { group: { value: 3 } as any }, 'conv_dw'),
+      new Node('Conv', ['X1', 'W_dw'], ['Y1'], { group: { value: 3 } as Object }, 'conv_dw'),
     );
 
     // ConvTranspose

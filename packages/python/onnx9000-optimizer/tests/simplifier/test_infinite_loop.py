@@ -12,16 +12,11 @@ def test_infinite_loop_break():
     g.add_node(Node("Identity", ["a"], ["b"], {}, "id1"))
     g.add_node(Node("Identity", ["b"], ["c"], {}, "id2"))
 
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    def side_effect(graph, *args, **kwargs):
+        """Test the side effect functionality."""
+        graph.add_node(Node("Identity", ["a"], ["b"], {}, f"id{len(graph.nodes)}"))
 
-    with patch.object(ConstantFoldingPass, "run") as mock_cf:
-
-        def side_effect(graph):
-            """Test the side effect functionality."""
-            graph.add_node(Node("Identity", ["a"], ["b"], {}, "id1"))  # Fake nodes length changing
-
-        mock_cf.side_effect = side_effect
-
+    with patch("onnx9000.optimizer.simplifier.api.constant_folding", side_effect=side_effect):
         with patch("onnx9000.optimizer.simplifier.api.dead_code_elimination"):
             with patch("onnx9000.optimizer.simplifier.api.run_all_fusions"):
                 simplify(g, max_iterations=3)

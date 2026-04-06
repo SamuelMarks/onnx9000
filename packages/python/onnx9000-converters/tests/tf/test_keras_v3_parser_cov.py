@@ -1,43 +1,88 @@
 """Tests for Keras 3 parser coverage gaps."""
 
+import sys
+from unittest.mock import MagicMock
 import pytest
 
-pytest.importorskip("tensorflow")
-pytest.importorskip("keras")
-import keras
-import numpy as np
+# Mock keras and tensorflow
+keras_mock = MagicMock()
+sys.modules["keras"] = keras_mock
+sys.modules["tensorflow"] = MagicMock()
+
 from onnx9000.converters.tf.keras_v3_parser import Keras3Parser
+
+
+def create_mock_layer(name="layer", num_inbound=1):
+    layer = MagicMock()
+    layer.name = name
+    layer.get_config.return_value = {"units": 5}
+
+    # default module
+    layer.__class__.__module__ = "keras.layers"
+    layer.__class__.__name__ = "Dense"
+
+    w = MagicMock()
+    w.name = "kernel"
+    w.numpy.return_value = 1.0
+    w.dtype = "float32"
+    layer.weights = [w]
+    layer._inbound_nodes = []
+
+    for _ in range(num_inbound):
+        node = MagicMock()
+        in_tensor = MagicMock()
+        in_tensor.name = "in_tensor"
+        out_tensor = MagicMock()
+        out_tensor.name = "out_tensor"
+        node.input_tensors = [in_tensor]
+        node.output_tensors = [out_tensor]
+        layer._inbound_nodes.append(node)
+
+    return layer
 
 
 def test_keras3_parser_basic():
     """Test basic Keras 3 functional model parsing."""
-    inputs = keras.Input(shape=(10,))
-    outputs = keras.layers.Dense(5)(inputs)
-    model = keras.Model(inputs, outputs)
+    model = MagicMock()
+    model.built = True
+    model.operations = [create_mock_layer("Dense")]
 
     parser = Keras3Parser(model)
     graph = parser.parse()
     assert len(graph.nodes) > 0
-    assert any("Dense" in n.op for n in graph.nodes)
+    assert any(n.name == "Dense" for n in graph.nodes)
+
+
+def test_keras3_parser_input_layer():
+    """Test InputLayer conversion."""
+    model = MagicMock()
+    model.built = True
+    inp = create_mock_layer("Input")
+    inp.__class__.__name__ = "InputLayer"
+    model.operations = [inp]
+    parser = Keras3Parser(model)
+    graph = parser.parse()
+    assert any(n.op == "Placeholder" for n in graph.nodes)
 
 
 def test_keras3_parser_subclassed_tracing():
     """Test tracing a subclassed model."""
+    model = MagicMock()
+    model.built = False
 
-    class MyModel(keras.Model):
-        """My model."""
+    def model_call(inputs):
+        return inputs
 
-        def __init__(self):
-            """Init."""
-            super().__init__()
-            self.dense = keras.layers.Dense(5)
+    model.__call__ = model_call
 
-        def call(self, x):
-            """Call."""
-            return self.dense(x)
+    # We mock keras.Input and keras.Model to return a new mock model that IS built
+    built_model = MagicMock()
+    built_model.built = True
+    built_model.operations = [create_mock_layer("TracedDense")]
 
-    model = MyModel()
-    # Not built yet
+    keras_mock.Input = MagicMock(return_value=MagicMock())
+    keras_mock.Model = MagicMock(return_value=built_model)
+
     parser = Keras3Parser(model, input_shape=(None, 10))
     graph = parser.parse()
     assert len(graph.nodes) > 0
@@ -45,15 +90,21 @@ def test_keras3_parser_subclassed_tracing():
 
 def test_keras3_parser_subclassed_multi_input():
     """Test tracing a subclassed model with multiple inputs."""
+    model = MagicMock()
+    model.built = False
 
-    class MyMultiModel(keras.Model):
-        """My multi model."""
+    def model_call(inputs):
+        return inputs
 
-        def call(self, inputs):
-            """Call."""
-            return inputs[0] + inputs[1]
+    model.__call__ = model_call
 
-    model = MyMultiModel()
+    built_model = MagicMock()
+    built_model.built = True
+    built_model.operations = [create_mock_layer("MultiInput")]
+
+    keras_mock.Input = MagicMock(return_value=MagicMock())
+    keras_mock.Model = MagicMock(return_value=built_model)
+
     parser = Keras3Parser(model, input_shape=[(None, 10), (None, 10)])
     graph = parser.parse()
     assert len(graph.nodes) > 0
@@ -61,33 +112,27 @@ def test_keras3_parser_subclassed_multi_input():
 
 def test_keras3_parser_no_input_shape():
     """Test error when no input shape is provided for subclassed model."""
+    model = MagicMock()
+    model.built = False
+    model.input_shape = None
 
-    class MyModel(keras.Model):
-        """My model."""
-
-        def call(self, x):
-            """Call."""
-            return x
-
-    model = MyModel()
     parser = Keras3Parser(model)
-    with pytest.raises(ValueError, match="must be built or have input_shape"):
+    with pytest.raises(
+        ValueError, match="Subclassed Keras 3 model must be built or have input_shape to be parsed."
+    ):
         parser.parse()
 
 
 def test_keras3_parser_reused_layer():
     """Test parsing a model with reused layers (multiple inbound nodes)."""
-    inputs1 = keras.Input(shape=(10,), name="in1")
-    inputs2 = keras.Input(shape=(10,), name="in2")
-    shared_layer = keras.layers.Dense(5, name="shared")
-    out1 = shared_layer(inputs1)
-    out2 = shared_layer(inputs2)
-    model = keras.Model([inputs1, inputs2], [out1, out2])
+    model = MagicMock()
+    model.built = True
+    model.operations = [create_mock_layer("Shared", num_inbound=2)]
 
     parser = Keras3Parser(model)
     graph = parser.parse()
     # shared layer should have 2 nodes
-    shared_nodes = [n for n in graph.nodes if "shared" in n.name]
+    shared_nodes = [n for n in graph.nodes if "Shared" in n.name]
     assert len(shared_nodes) >= 2
 
 
@@ -115,21 +160,16 @@ def test_keras3_parser_get_tensor_name():
 
 def test_keras3_parser_module_path_else():
     """Test op_type generation for non-keras module."""
-    Keras3Parser(None)
+    model = MagicMock()
+    model.built = True
 
-    class CustomOp:
-        """Custom op."""
+    custom_layer = create_mock_layer("Custom")
+    custom_layer.__class__.__module__ = "my.custom.module"
+    custom_layer.__class__.__name__ = "MyLayer"
 
-        def __init__(self):
-            """Init."""
-            self.name = "custom"
-            self._inbound_nodes = []
-            self.weights = []
+    model.operations = [custom_layer]
 
-        def get_config(self):
-            """Get config."""
-            return {}
-
-    CustomOp()
-    # Manually trigger the module path logic if possible or mock it
-    # Keras3Parser.parse uses op.__class__.__module__
+    parser = Keras3Parser(model)
+    graph = parser.parse()
+    assert len(graph.nodes) > 0
+    assert graph.nodes[1].op == "my.custom.module.MyLayer"

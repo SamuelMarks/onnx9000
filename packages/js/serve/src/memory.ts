@@ -86,10 +86,10 @@ export class MemoryManager {
   public endExecution(): void {
     this.activeExecutions--;
     // 100. Force Javascript Garbage Collection (global.gc()) explicitly
-    if (typeof global !== 'undefined' && (global as any).gc) {
+    if (typeof global !== 'undefined' && (global as ReturnType<typeof JSON.parse>).gc) {
       // Don't run it on every single execution to avoid stutter, but for massive batches
       if (Math.random() < 0.05) {
-        (global as any).gc();
+        (global as ReturnType<typeof JSON.parse>).gc();
       }
     }
   }

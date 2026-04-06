@@ -1,9 +1,9 @@
 globalThis.Response = class Response {
   constructor() {}
-} as any;
+} as Object;
 globalThis.Request = class Request {
   constructor() {}
-} as any;
+} as Object;
 import { vi } from 'vitest';
 import { saveSafetensors, createBuffer, fetchSafetensorsChunk } from '../src/parser/safetensors';
 import {
@@ -41,7 +41,7 @@ import {
   loadTensors,
 } from '../src/parser/safetensors.js';
 
-function createDummySafeTensorsBuffer(headerObj: any, dataLength: number): ArrayBuffer {
+function createDummySafeTensorsBuffer(headerObj: Object, dataLength: number): ArrayBuffer {
   const headerStr = JSON.stringify(headerObj);
   let headerBytes = new TextEncoder().encode(headerStr);
   const pad = (8 - (headerBytes.byteLength % 8)) % 8;
@@ -171,10 +171,10 @@ describe('Safetensors Parser - Full Coverage', () => {
     expect(st.getTypedArray('bf16')).toBeInstanceOf(Uint16Array);
     expect(st.getTypedArray('bool')).toBeInstanceOf(Uint8Array);
 
-    st.tensors['c64'] = { dtype: 'C64' as any, shape: [1], data_offsets: [0, 8] };
+    st.tensors['c64'] = { dtype: 'C64' as Object, shape: [1], data_offsets: [0, 8] };
     expect(() => st.getTypedArray('c64')).toThrow(SafetensorsInvalidDtypeError);
 
-    st.tensors['unk'] = { dtype: 'UNK' as any, shape: [1], data_offsets: [0, 8] };
+    st.tensors['unk'] = { dtype: 'UNK' as Object, shape: [1], data_offsets: [0, 8] };
     expect(() => st.getTypedArray('unk')).toThrow(SafetensorsInvalidDtypeError);
 
     expect(() => st.getTypedArray('missing')).toThrow('Tensor missing not found');
@@ -238,7 +238,7 @@ describe('Safetensors Parser - Full Coverage', () => {
     const tensors = {
       a: { data: new Uint8Array([1, 2, 3]), dtype: 'F32', shape: [3] },
     };
-    const buffer = saveSafetensors(tensors as any, { mymeta: 'val' });
+    const buffer = saveSafetensors(tensors as Object, { mymeta: 'val' });
     expect(buffer).toBeInstanceOf(Uint8Array);
   });
 
@@ -247,7 +247,7 @@ describe('Safetensors Parser - Full Coverage', () => {
       get byteLength() {
         throw new Error('System Fault');
       },
-    } as unknown as ArrayBuffer;
+    } as Object as ArrayBuffer;
     expect(() => checkSafetensors(badBuffer)).toThrow('System Fault');
   });
 
@@ -281,10 +281,10 @@ describe('Safetensors Parser - Full Coverage', () => {
 });
 
 describe('Async Fetch Operations', () => {
-  let originalFetch: any;
-  let originalProcess: any;
-  let originalCaches: any;
-  let originalSetTimeout: any;
+  let originalFetch: Object;
+  let originalProcess: Object;
+  let originalCaches: Object;
+  let originalSetTimeout: Object;
 
   beforeEach(() => {
     originalFetch = globalThis.fetch;
@@ -293,14 +293,14 @@ describe('Async Fetch Operations', () => {
     originalSetTimeout = globalThis.setTimeout;
 
     globalThis.fetch = vi.fn();
-    globalThis.caches = undefined as any;
-    globalThis.process = { env: { HF_TOKEN: 'test_token' } } as any;
+    globalThis.caches = undefined as Object;
+    globalThis.process = { env: { HF_TOKEN: 'test_token' } } as Object;
 
     // Fast-forward retries immediately
-    globalThis.setTimeout = ((cb: any) => {
+    globalThis.setTimeout = ((cb: Object) => {
       cb();
       return 0;
-    }) as any;
+    }) as Object;
   });
 
   afterEach(() => {
@@ -320,11 +320,11 @@ describe('Async Fetch Operations', () => {
     const mockHeaderBytes = new Uint8Array(
       mockBuf,
       8,
-      Number(new DataView(mockBuf).getBigUint64(0, true)) as any,
+      Number(new DataView(mockBuf).getBigUint64(0, true)) as Object,
     );
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock
       .mockResolvedValueOnce({
         ok: true,
@@ -355,7 +355,7 @@ describe('Async Fetch Operations', () => {
     const buffer = createDummySafeTensorsBuffer(mockHeaderObj, 8);
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock.mockResolvedValueOnce({
       status: 200,
       ok: true,
@@ -374,7 +374,7 @@ describe('Async Fetch Operations', () => {
     view.setBigUint64(0, BigInt(10), true);
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock
       .mockResolvedValueOnce({
         ok: true,
@@ -400,7 +400,7 @@ describe('Async Fetch Operations', () => {
     view.setBigUint64(0, BigInt(mockHeaderBytes.byteLength), true);
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock
       .mockResolvedValueOnce({
         ok: true,
@@ -435,7 +435,7 @@ describe('Async Fetch Operations', () => {
 
   test('fetchSafetensorsChunk basic stream', async () => {
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
 
     const encoder = new TextEncoder();
     const chunk1 = encoder.encode('12');
@@ -466,9 +466,9 @@ describe('Async Fetch Operations', () => {
     const OriginalWS = globalThis.WebSocket;
     class MockWebSocket {
       binaryType: string = '';
-      onopen: any;
-      onmessage: any;
-      onerror: any;
+      onopen: Object;
+      onmessage: Object;
+      onerror: Object;
       close = vi.fn();
       send = vi.fn();
       constructor() {
@@ -480,7 +480,7 @@ describe('Async Fetch Operations', () => {
         }, 10);
       }
     }
-    globalThis.WebSocket = MockWebSocket as any;
+    globalThis.WebSocket = MockWebSocket as Object;
     const res = await fetchSafetensorsChunk('ws://test', 10, 0, 4);
     expect(res.byteLength).toBe(4);
     globalThis.WebSocket = OriginalWS;
@@ -490,9 +490,9 @@ describe('Async Fetch Operations', () => {
     const OriginalWS = globalThis.WebSocket;
     class MockWebSocket {
       binaryType: string = '';
-      onopen: any;
-      onmessage: any;
-      onerror: any;
+      onopen: Object;
+      onmessage: Object;
+      onerror: Object;
       close = vi.fn();
       send = vi.fn();
       constructor() {
@@ -501,7 +501,7 @@ describe('Async Fetch Operations', () => {
         }, 10);
       }
     }
-    globalThis.WebSocket = MockWebSocket as any;
+    globalThis.WebSocket = MockWebSocket as Object;
     await expect(fetchSafetensorsChunk('ws://test', 10, 0, 4)).rejects.toThrow(
       'WebSocket chunk fetch failed: Error: WS err',
     );
@@ -517,7 +517,7 @@ describe('Async Fetch Operations', () => {
     const buffer = createDummySafeTensorsBuffer(headerObj, 16);
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock.mockResolvedValueOnce({
       status: 200,
       ok: true,
@@ -535,7 +535,7 @@ describe('Async Fetch Operations', () => {
 
   test('fetchSafetensorsChunk retry on 429', async () => {
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock
       .mockResolvedValueOnce({
         status: 429,
@@ -555,7 +555,7 @@ describe('Async Fetch Operations', () => {
 
   test('fetchSafetensorsChunk various 4xx errors', async () => {
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
 
     // Test 404 (needs 3 retries to throw due to MAX_RETRIES)
     fetchMock.mockResolvedValue({ status: 404, ok: false, headers: new Headers() });
@@ -583,7 +583,7 @@ describe('Async Fetch Operations', () => {
       match: vi.fn().mockResolvedValue({ arrayBuffer: async () => new ArrayBuffer(8) }),
       put: vi.fn(),
     };
-    globalThis.caches = { open: vi.fn().mockResolvedValue(mockCache) } as any;
+    globalThis.caches = { open: vi.fn().mockResolvedValue(mockCache) } as Object;
 
     const mockBuf8 = createDummySafeTensorsBuffer(
       { a: { dtype: 'I8', shape: [8], data_offsets: [0, 8] } },
@@ -591,7 +591,7 @@ describe('Async Fetch Operations', () => {
     );
 
     const fetchMock = vi.fn();
-    globalThis.fetch = fetchMock as any;
+    globalThis.fetch = fetchMock as Object;
     fetchMock.mockResolvedValue({
       status: 200,
       ok: true,
@@ -609,7 +609,7 @@ describe('Async Fetch Operations', () => {
       match: vi.fn().mockResolvedValue({ arrayBuffer: async () => new ArrayBuffer(4) }),
       put: vi.fn(),
     };
-    globalThis.caches = { open: vi.fn().mockResolvedValue(mockCache) } as any;
+    globalThis.caches = { open: vi.fn().mockResolvedValue(mockCache) } as Object;
 
     const res = await fetchSafetensorsChunk('http://test', 10, 0, 4);
     expect(res.byteLength).toBe(4);
@@ -705,19 +705,19 @@ test('getEndianness BE', () => {
   const OriginalUint8Array = globalThis.Uint8Array;
 
   // Mock for BE
-  globalThis.Uint8Array = function (buf: any) {
+  globalThis.Uint8Array = function (buf: Object) {
     const arr = new OriginalUint8Array(buf);
     arr[0] = 0x12;
     return arr;
-  } as any;
+  } as Object;
   expect(getEndianness()).toBe('BE');
 
   // Mock for unknown
-  globalThis.Uint8Array = function (buf: any) {
+  globalThis.Uint8Array = function (buf: Object) {
     const arr = new OriginalUint8Array(buf);
     arr[0] = 0x99;
     return arr;
-  } as any;
+  } as Object;
   expect(getEndianness()).toBe('LE');
 
   globalThis.Uint8Array = OriginalUint8Array;
@@ -734,9 +734,9 @@ test('saveSafetensors dead branches', () => {
       ];
     }
     return OriginalEntries(obj);
-  } as any;
+  } as Object;
 
-  expect(() => saveSafetensors({ mock_duplicate: true } as any)).toThrowError(/Duplicate/);
+  expect(() => saveSafetensors({ mock_duplicate: true } as Object)).toThrowError(/Duplicate/);
   Object.entries = OriginalEntries;
 
   // SharedArrayBuffer creation
@@ -747,7 +747,7 @@ test('saveSafetensors dead branches', () => {
   const OriginalSAB = globalThis.SharedArrayBuffer;
   globalThis.SharedArrayBuffer = function () {
     throw new Error('Blocked');
-  } as any;
+  } as Object;
   const b2 = createBuffer(10, true);
   expect(b2).toBeInstanceOf(ArrayBuffer);
   globalThis.SharedArrayBuffer = OriginalSAB;
@@ -766,13 +766,13 @@ test('fetchSafetensorsChunk cache puts perfectly', async () => {
   const OrigRequest = globalThis.Request;
   globalThis.Response = class Response {
     constructor() {}
-  } as any;
+  } as Object;
   globalThis.Request = class Request {
     constructor() {}
-  } as any;
+  } as Object;
 
   const fetchMock = vi.fn();
-  globalThis.fetch = fetchMock as any;
+  globalThis.fetch = fetchMock as Object;
   fetchMock.mockResolvedValueOnce({
     ok: true,
     status: 200,
@@ -813,7 +813,7 @@ test('fetchSafetensorsChunk cache puts perfectly', async () => {
         putCalled++;
       },
     }),
-  } as any;
+  } as Object;
 
   // ArrayBuffer path
   await fetchSafetensorsChunk('http://test', 0, 0, 10);
@@ -834,7 +834,7 @@ test('fetchSafetensorsChunk hf:// and cache throw', async () => {
 
   // hf:// resolution
   const fetchMock = vi.fn();
-  globalThis.fetch = fetchMock as any;
+  globalThis.fetch = fetchMock as Object;
   fetchMock.mockResolvedValue({
     ok: true,
     status: 200,
@@ -848,7 +848,7 @@ test('fetchSafetensorsChunk hf:// and cache throw', async () => {
     open: async () => {
       throw new Error('Caches fail');
     },
-  } as any;
+  } as Object;
 
   await fetchSafetensorsChunk('hf://user/repo/file.bin', 0, 0, 10);
 
@@ -868,10 +868,10 @@ test('fetchSafetensorsHeader remaining branches', async () => {
     open: async () => {
       throw new Error('Caches fail');
     },
-  } as any;
+  } as Object;
 
   const fetchMock = vi.fn();
-  globalThis.fetch = fetchMock as any;
+  globalThis.fetch = fetchMock as Object;
   fetchMock
     .mockResolvedValueOnce({
       ok: true,

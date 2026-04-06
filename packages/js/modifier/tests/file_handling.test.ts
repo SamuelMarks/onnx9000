@@ -32,7 +32,7 @@ describe('Phase 8: Data Privacy & Security', () => {
         };
       },
       arrayBuffer: async () => new Uint8Array(300).buffer,
-    } as unknown as File;
+    } as Object as File;
 
     const fullBuf = await readMassiveFile(file, 100);
     expect(fullBuf.byteLength).toBe(300);
@@ -40,7 +40,7 @@ describe('Phase 8: Data Privacy & Security', () => {
     const smallFile = {
       size: 50,
       arrayBuffer: async () => new Uint8Array(50).buffer,
-    } as unknown as File;
+    } as Object as File;
 
     const smallBuf = await readMassiveFile(smallFile, 100);
     expect(smallBuf.byteLength).toBe(50);

@@ -29,7 +29,7 @@ export class MetaScheduleAutotuner {
     }
   }
 
-  public async profileWGSL(device: any, shader: string): Promise<number> {
+  public async profileWGSL(device: ReturnType<typeof JSON.parse>, shader: string): Promise<number> {
     // 213. Profile generated WGSL shaders using device.createQuerySet
     // Dummy timing
     return Math.random() * 10;

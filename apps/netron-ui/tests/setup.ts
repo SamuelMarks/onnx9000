@@ -1,5 +1,5 @@
-(globalThis as any).self = globalThis;
-(globalThis as any).postMessage = () => {};
+(globalThis as Object).self = globalThis;
+(globalThis as Object).postMessage = () => {};
 
 Object.defineProperty(globalThis, 'navigator', { value: { userAgent: 'node.js' }, writable: true });
 
@@ -41,17 +41,17 @@ const mockContext = {
 };
 
 if (typeof HTMLCanvasElement !== 'undefined') {
-  (HTMLCanvasElement as any).prototype.getContext = () => mockContext;
+  (HTMLCanvasElement as Object).prototype.getContext = () => mockContext;
 }
 
-(globalThis as any).workerInstances = [];
+(globalThis as Object).workerInstances = [];
 class MockWorker {
   constructor() {
-    (globalThis as any).workerInstances.push(this);
+    (globalThis as Object).workerInstances.push(this);
   }
-  onmessage: any;
-  onerror: any;
-  postMessage(data: any) {
+  onmessage: Object;
+  onerror: Object;
+  postMessage(data: Object) {
     if (this.onmessage) {
       this.onmessage({
         data: {
@@ -87,17 +87,17 @@ class MockWorker {
   }
   terminate() {}
 }
-(globalThis as any).Worker = MockWorker;
+(globalThis as Object).Worker = MockWorker;
 
 if (typeof Blob === 'undefined') {
-  (globalThis as any).Blob = class Blob {
-    constructor(public parts: any[]) {}
+  (globalThis as Object).Blob = class Blob {
+    constructor(public parts: Object[]) {}
   };
 }
 if (typeof File === 'undefined') {
-  (globalThis as any).File = class File extends Blob {
+  (globalThis as Object).File = class File extends Blob {
     constructor(
-      parts: any[],
+      parts: Object[],
       public name: string,
     ) {
       super(parts);

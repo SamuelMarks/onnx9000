@@ -20,7 +20,7 @@ test('fetchHfConfig 404', async () => {
 });
 
 test('fetchHfConfig success', async () => {
-  global.fetch = vi.fn().mockImplementation((url: string, opts: any) => {
+  global.fetch = vi.fn().mockImplementation((url: string, opts: Object) => {
     if (url.endsWith('config.json'))
       return Promise.resolve({
         ok: true,

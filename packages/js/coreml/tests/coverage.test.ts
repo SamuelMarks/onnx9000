@@ -59,7 +59,7 @@ describe('Coverage tests', () => {
   });
 
   it('covers converter attributes and graphs', () => {
-    const mockGraph: any = {
+    const mockGraph: Object = {
       inputs: [
         { name: 'cond', dtype: 'bool', shape: [1] },
         { name: 'a', dtype: 'float32', shape: [1] },
@@ -101,7 +101,7 @@ describe('Coverage tests', () => {
   });
 
   it('covers mlpackage metadata author and description', () => {
-    const onnxModel: any = {
+    const onnxModel: Object = {
       irVersion: 8n,
       opsetImport: [],
       producerName: 'test',

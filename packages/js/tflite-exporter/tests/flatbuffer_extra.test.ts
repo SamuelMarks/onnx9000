@@ -119,8 +119,8 @@ describe('Coverage FlatBuffer', () => {
 
   it('Builder growBuffer from 0 and finish without identifier', () => {
     const b = new FlatBufferBuilder(0);
-    (b as any).growBuffer();
-    expect((b as any).bb.length).toBeGreaterThan(0);
+    (b as Object).growBuffer();
+    expect((b as Object).bb.length).toBeGreaterThan(0);
 
     const b2 = new FlatBufferBuilder(100);
     b2.startObject(1);

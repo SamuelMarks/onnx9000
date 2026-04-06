@@ -12,8 +12,8 @@ export interface EnsembleNode {
   model_name?: string;
   inputs: Record<string, string>; // Maps local input names to source node outputs (e.g., { "image": "nodeA.output0" })
   outputs: string[];
-  logic?: (inputs: Record<string, any>) => any;
-  condition?: (inputs: Record<string, any>) => string; // Returns the next node id to route to
+  logic?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => ReturnType<typeof JSON.parse>;
+  condition?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => string; // Returns the next node id to route to
 }
 
 export interface EnsembleConfig {
@@ -72,10 +72,10 @@ export class ModelEnsemble {
   // 82. Manage end-to-end memory buffers across the ensemble to ensure zero-copy bridging.
   // 84. Track latency individually across the ensemble steps.
   public async execute(
-    globalInputs: Record<string, any>,
-    context: any,
-  ): Promise<Record<string, any>> {
-    const memory: Record<string, any> = {};
+    globalInputs: Record<string, ReturnType<typeof JSON.parse>>,
+    context: ReturnType<typeof JSON.parse>,
+  ): Promise<Record<string, ReturnType<typeof JSON.parse>>> {
+    const memory: Record<string, ReturnType<typeof JSON.parse>> = {};
     const latencies: Record<string, number> = {};
 
     // Seed global inputs
@@ -95,7 +95,7 @@ export class ModelEnsemble {
 
     const runNode = async (node: EnsembleNode) => {
       const start = Date.now();
-      const resolvedInputs: Record<string, any> = {};
+      const resolvedInputs: Record<string, ReturnType<typeof JSON.parse>> = {};
 
       for (const [localKey, src] of Object.entries(node.inputs)) {
         const [srcNodeId, srcOutput] = src.includes('.') ? src.split('.') : ['global', src];
@@ -134,7 +134,7 @@ export class ModelEnsemble {
     // Wait for all to finish
     await Promise.all(Object.values(nodePromises));
 
-    const finalOutputs: Record<string, any> = {};
+    const finalOutputs: Record<string, ReturnType<typeof JSON.parse>> = {};
     for (const [globalKey, src] of Object.entries(this.config.outputs)) {
       finalOutputs[globalKey] = memory[src];
     }

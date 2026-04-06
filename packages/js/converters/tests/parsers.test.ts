@@ -24,8 +24,8 @@ test('PyTorchFXParser', () => {
   expect(g2.nodes[0].opType).toBe('add');
   expect(g2.nodes[0].inputs).toEqual(['a', 'b']);
 
-  const add = (parser as any).atenToIr['aten.add.Tensor'];
-  const matmul = (parser as any).atenToIr['aten.mm.default'];
+  const add = (parser as Object).atenToIr['aten.add.Tensor'];
+  const matmul = (parser as Object).atenToIr['aten.mm.default'];
   const t = new Tensor('in', [1], 'float32', false, false, new Float32Array([1]));
   expect(add(t).name).toBe('Add_out');
   expect(matmul(t).name).toBe('MatMul_out');

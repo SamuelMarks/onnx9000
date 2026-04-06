@@ -3,7 +3,7 @@ import { Graph, Node, Tensor, Attribute } from '@onnx9000/core';
 import { WebNNCompiler } from '../src/providers/webnn/compiler.js';
 
 describe('WebNNCompiler specific lines coverage', () => {
-  let builder: any;
+  let builder: Object;
 
   beforeEach(() => {
     // @ts-ignore
@@ -117,7 +117,7 @@ describe('WebNNCompiler specific lines coverage', () => {
         return {};
       }
     };
-    builder = new (globalThis as any).MLGraphBuilder();
+    builder = new (globalThis as Object).MLGraphBuilder();
   });
 
   const compileNode = async (node: Node, setupGraph?: (g: Graph) => void) => {
@@ -131,7 +131,7 @@ describe('WebNNCompiler specific lines coverage', () => {
       shape: [1],
       id: 'o1',
       dtype: 'float32',
-    } as any);
+    } as Object);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
   };
@@ -162,7 +162,7 @@ describe('WebNNCompiler specific lines coverage', () => {
 
     const nSplit = new Node('Split', ['in1'], ['out', 'out2']);
     await compileNode(nSplit, (g) => {
-      g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as any);
+      g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as Object);
     });
 
     const nExpand = new Node('Expand', ['in1', 'in2'], ['out']);
@@ -293,7 +293,7 @@ describe('WebNNCompiler specific lines coverage', () => {
     await compileNode(n3, (g) => {
       g.tensors['pads'] = new Tensor('pads', [2], 'int32', false, true, new Int32Array([1, 1]));
       g.initializers.push('pads');
-      g.inputs.push({ name: 'not_found', shape: [], id: 'm4', dtype: 'float32' } as any);
+      g.inputs.push({ name: 'not_found', shape: [], id: 'm4', dtype: 'float32' } as Object);
     });
 
     // Line 147: !tensor.data in extractFloat32TensorData
@@ -303,14 +303,14 @@ describe('WebNNCompiler specific lines coverage', () => {
       g.tensors['pads'] = new Tensor('pads', [2], 'int32', false, true, new Int32Array([1, 1]));
       g.initializers.push('pads');
       g.tensors['no_data'] = new Tensor('no_data', [], 'float32', false, false, undefined);
-      g.inputs.push({ name: 'no_data', shape: [], id: 'm5', dtype: 'float32' } as any);
+      g.inputs.push({ name: 'no_data', shape: [], id: 'm5', dtype: 'float32' } as Object);
     });
   });
 
   it('covers Gemm with C and empty string input', async () => {
     const n = new Node('Gemm', ['in1', 'in2', 'in3'], ['out']);
     await compileNode(n, (g) => {
-      g.inputs.push({ name: 'in3', shape: [1], id: 'i3', dtype: 'float32' } as any);
+      g.inputs.push({ name: 'in3', shape: [1], id: 'i3', dtype: 'float32' } as Object);
     });
 
     // Line 157: name === ''
@@ -323,7 +323,7 @@ describe('WebNNCompiler specific lines coverage', () => {
     await compileNode(n, (g) => {
       g.tensors['dyn'] = new Tensor(
         'dyn',
-        ['batch' as any, 2],
+        ['batch' as Object, 2],
         'float32',
         false,
         true,

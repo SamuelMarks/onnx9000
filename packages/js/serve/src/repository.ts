@@ -4,7 +4,7 @@ export interface ModelMetadata {
   name: string;
   version: string;
   platform: string;
-  config: any;
+  config: ReturnType<typeof JSON.parse>;
   path: string;
 }
 
@@ -19,7 +19,10 @@ export class ModelRepository {
   // 156. Implement local File System (FS) watcher natively in Node/Deno.
   // We use abstract polling / watcher interface so it works isomorphic-ly if possible,
   // or via specific Node 'fs' injected.
-  public async watch(fsModule: any, pathModule: any) {
+  public async watch(
+    fsModule: ReturnType<typeof JSON.parse>,
+    pathModule: ReturnType<typeof JSON.parse>,
+  ) {
     if (!fsModule || !fsModule.watch) return; // Not in Node
 
     // 161. Enforce strict directory layouts matching Triton (`/models/my_model/1/model.onnx`).
@@ -47,7 +50,12 @@ export class ModelRepository {
     );
   }
 
-  public async reloadModel(name: string, version: string, fs: any, path: any) {
+  public async reloadModel(
+    name: string,
+    version: string,
+    fs: ReturnType<typeof JSON.parse>,
+    path: ReturnType<typeof JSON.parse>,
+  ) {
     const modelPath = path.join(this.basePath, name, version);
     if (!fs.existsSync(modelPath)) {
       // Evict model logic

@@ -10,9 +10,9 @@ describe('Coverage OpenVINO 3', () => {
     graph.inputs.push(new ValueInfo('pads', [4], 'int64'));
 
     graph.addNode(
-      new Node('AveragePool', ['a'], ['b'], { count_include_pad: { value: 1 } } as any),
+      new Node('AveragePool', ['a'], ['b'], { count_include_pad: { value: 1 } } as Object),
     );
-    graph.addNode(new Node('Pad', ['b', 'pads'], ['c'], { mode: { value: 'constant' } } as any)); // 2 inputs, mode constant -> hits 808-816
+    graph.addNode(new Node('Pad', ['b', 'pads'], ['c'], { mode: { value: 'constant' } } as Object)); // 2 inputs, mode constant -> hits 808-816
 
     const exp = new OpenVinoExporter(graph);
     const { xml } = exp.export();

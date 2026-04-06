@@ -41,7 +41,7 @@ describe('MMDNN - Model Zoo Validation & CI Integrity', () => {
         );
 
         // Target format doesn't matter much for the pure mock pipeline, just checking it doesn't crash
-        const result = await convert(model.framework as any, 'onnx', fileObjects, {
+        const result = await convert(model.framework as Object, 'onnx', fileObjects, {
           fusion: false,
           shapeInference: false,
           layoutTracking: false,

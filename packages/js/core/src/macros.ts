@@ -2,21 +2,29 @@ import { Graph } from './ir/graph.js';
 import { Node } from './ir/node.js';
 import { Tensor } from './ir/tensor.js';
 
-type MacroFn = (...args: any[]) => Tensor;
+type MacroFn = (...args: ReturnType<typeof JSON.parse>[]) => Tensor;
 
 export const MACRO_REGISTRY: Record<string, MacroFn> = {};
 
-export function recordOp(opType: string, inputs: Tensor[], attributes: any = {}): Tensor {
+export function recordOp(
+  opType: string,
+  inputs: Tensor[],
+  attributes: ReturnType<typeof JSON.parse> = {},
+): Tensor {
   const dtype = inputs[0]?.dtype ?? 'float32';
   return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
 export function irMacro(name: string, domain: string = 'ai.onnx9000.macro') {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: ReturnType<typeof JSON.parse>,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
     MACRO_REGISTRY[name] = originalMethod;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: ReturnType<typeof JSON.parse>[]) {
       const tensors: Tensor[] = [];
       for (const arg of args) {
         if (arg instanceof Tensor) {

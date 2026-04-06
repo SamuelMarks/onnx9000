@@ -19,7 +19,7 @@ describe('Tokenizers coverage', () => {
       if (Cls === toks.AutoTokenizer) {
         expect(await toks.AutoTokenizer.fromPretrained('a')).toBeDefined();
       } else {
-        const t = new (Cls as any)({});
+        const t = new (Cls as Object)({});
         expect(t).toBeDefined();
         if (t.encode) expect(t.encode('test')).toBeDefined();
         if (t.decode) expect(t.decode([1, 2, 3])).toBeDefined();

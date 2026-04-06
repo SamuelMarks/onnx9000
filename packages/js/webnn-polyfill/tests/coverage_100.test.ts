@@ -10,12 +10,14 @@ describe('Coverage 100 WebNN Polyfill', () => {
 
     // Let's create an operand with name identical to output key
     const op = new PolyfillMLOperand('same_name', 'float32', [1]);
-    (op as any).sourceNode = {
-      name: 'same_name',
-      inputs: [],
-      outputs: ['same_name'],
-      opType: 'Identity',
-    } as any;
+    Object.assign(op, {
+      sourceNode: {
+        name: 'same_name',
+        inputs: [],
+        outputs: ['same_name'],
+        opType: 'Identity',
+      },
+    });
 
     // Normally build takes a dict of outputs.
     const graph = await b.build({ same_name: op });

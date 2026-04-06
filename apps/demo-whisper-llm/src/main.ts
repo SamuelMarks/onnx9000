@@ -29,7 +29,8 @@ async function initModels() {
     // e.g. whisperSession = await InferenceSession.create('whisper-tiny.onnx', { executionProviders: ['webgpu'] });
     appendLog('[System] WebGPU backend ready (Mocked). Models loaded.');
     recordBtn.disabled = false;
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     appendLog(`[Error] Failed to initialize: ${err.message}`);
   }
 }
@@ -59,7 +60,8 @@ async function startRecording() {
     recordBtn.textContent = 'Stop Recording';
     recordBtn.classList.add('recording');
     appendLog('[Mic] Recording started...');
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     appendLog(`[Mic Error] Could not access microphone: ${err.message}`);
   }
 }

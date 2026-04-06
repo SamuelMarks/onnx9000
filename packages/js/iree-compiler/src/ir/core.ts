@@ -62,7 +62,7 @@ export class Operation {
   readonly opcode: string;
   readonly operands: Value[];
   readonly results: Value[];
-  readonly attributes: Record<string, any>;
+  readonly attributes: Record<string, ReturnType<typeof JSON.parse>>;
   readonly regions: Region[];
   parentBlock: Block | null = null;
 
@@ -70,7 +70,7 @@ export class Operation {
     opcode: string,
     operands: Value[] = [],
     resultTypes: Type[] = [],
-    attributes: Record<string, any> = {},
+    attributes: Record<string, ReturnType<typeof JSON.parse>> = {},
     regions: Region[] = [],
   ) {
     this.opcode = opcode;
@@ -79,7 +79,7 @@ export class Operation {
     this.regions = [...regions];
     for (const region of this.regions) {
       // Re-assigning the operation, though typescript makes it readonly in Region class, we can workaround if needed
-      (region as any).parentOperation = this;
+      (region as ReturnType<typeof JSON.parse>).parentOperation = this;
     }
 
     this.results = resultTypes.map((t) => new Value(t, this));

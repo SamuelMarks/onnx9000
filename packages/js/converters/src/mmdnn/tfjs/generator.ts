@@ -79,7 +79,7 @@ export function generateTFJSCode(graph: Graph): string {
   return code;
 }
 
-function stringifyOptions(obj: any): string {
+function stringifyOptions(obj: ReturnType<typeof JSON.parse>): string {
   return JSON.stringify(obj, (_, v) => (typeof v === 'bigint' ? Number(v) : v)).replace(/"/g, "'");
 }
 

@@ -168,7 +168,7 @@ btnConvert.addEventListener('click', async () => {
     let blob: Blob;
     let ext = '.onnx';
     if (dst === 'onnx') {
-      const bytes = await serializeModelProto(result as any);
+      const bytes = await serializeModelProto(result as ReturnType<typeof JSON.parse>);
       blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/octet-stream' });
     } else {
       if (dst === 'pytorch_code') ext = '.py';
@@ -199,7 +199,7 @@ btnConvert.addEventListener('click', async () => {
     const previewDiv = document.getElementById('graph-preview');
     if (previewDiv) {
       if (dst === 'onnx') {
-        const nodeCount = (result as any).nodes?.length || 0;
+        const nodeCount = (result as ReturnType<typeof JSON.parse>).nodes?.length || 0;
         previewDiv.innerHTML = `<strong>ONNX Graph Generated</strong><br>Nodes: ${nodeCount}<br>Ready for download or 3D viewer.`;
         previewDiv.style.color = '#fff';
       } else {
@@ -207,7 +207,8 @@ btnConvert.addEventListener('click', async () => {
         previewDiv.style.color = '#fff';
       }
     }
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     log(`Conversion failed: ${err.message}`, 'error');
   }
 

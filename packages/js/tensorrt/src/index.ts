@@ -2,7 +2,7 @@ import { trtFfi } from './ffi';
 import { DataType, ElementWiseOperation, ActivationType, BuilderFlag } from './enums';
 
 export class Builder {
-  public ptr: any;
+  public ptr: ReturnType<typeof JSON.parse>;
 
   constructor() {
     if (!trtFfi.lib) throw new Error('TensorRT library not loaded');
@@ -33,14 +33,14 @@ export class Builder {
 }
 
 export class NetworkDefinition {
-  public ptr: any;
-  public tensors: Record<string, any> = {};
+  public ptr: ReturnType<typeof JSON.parse>;
+  public tensors: Record<string, ReturnType<typeof JSON.parse>> = {};
 
-  constructor(ptr: any) {
+  constructor(ptr: ReturnType<typeof JSON.parse>) {
     this.ptr = ptr;
   }
 
-  markOutput(tensor: any) {
+  markOutput(tensor: ReturnType<typeof JSON.parse>) {
     trtFfi.lib.markOutput(this.ptr, tensor.ptr);
   }
 

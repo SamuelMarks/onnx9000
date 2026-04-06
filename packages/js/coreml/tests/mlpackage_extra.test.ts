@@ -8,17 +8,17 @@ describe('MLPackageBuilder', () => {
       specificationVersion: 4,
       description: {
         input: [
-          { name: 'in1', type: { tensorType: {} } as any },
+          { name: 'in1', type: { tensorType: {} } as Object },
           { name: 'in2' },
-          { name: 'in3', type: { tensorType: {} } as any },
+          { name: 'in3', type: { tensorType: {} } as Object },
         ],
-        output: [{ name: 'out1', type: { tensorType: {} } as any }, { name: 'out2' }],
+        output: [{ name: 'out1', type: { tensorType: {} } as Object }, { name: 'out2' }],
       },
     };
 
     const options = {
       stateful: true,
-      computePrecision: 'Float16' as any,
+      computePrecision: 'Float16' as Object,
       imageInputs: { in1: { blueBias: 0.1 } },
       sequenceInputs: ['in2'],
       outputMappings: { out1: 'mapped_out' },
@@ -32,8 +32,8 @@ describe('MLPackageBuilder', () => {
     const builder = new MLPackageBuilder(model, new Uint8Array([1, 2, 3]), options);
 
     class MockZip {
-      files: Record<string, any> = {};
-      file(name: string, data: any) {
+      files: Record<string, Object> = {};
+      file(name: string, data: Object) {
         this.files[name] = data;
       }
       async generateAsync() {
@@ -41,7 +41,7 @@ describe('MLPackageBuilder', () => {
       }
     }
 
-    const bytes = await builder.createZipArchive(MockZip as any);
+    const bytes = await builder.createZipArchive(MockZip as Object);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
@@ -50,8 +50,8 @@ describe('MLPackageBuilder', () => {
     const builder = new MLPackageBuilder(model, new Uint8Array(0));
 
     class MockZip {
-      files: Record<string, any> = {};
-      file(name: string, data: any) {
+      files: Record<string, Object> = {};
+      file(name: string, data: Object) {
         this.files[name] = data;
       }
       async generateAsync() {
@@ -59,7 +59,7 @@ describe('MLPackageBuilder', () => {
       }
     }
 
-    const bytes = await builder.createZipArchive(MockZip as any);
+    const bytes = await builder.createZipArchive(MockZip as Object);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
@@ -80,15 +80,15 @@ describe('MLPackageBuilder', () => {
     const builder = new MLPackageBuilder(model, new Uint8Array(0), options);
 
     class MockZip {
-      files: Record<string, any> = {};
-      file(name: string, data: any) {
+      files: Record<string, Object> = {};
+      file(name: string, data: Object) {
         this.files[name] = data;
       }
       async generateAsync() {
         return new Uint8Array([0]);
       }
     }
-    const bytes = await builder.createZipArchive(MockZip as any);
+    const bytes = await builder.createZipArchive(MockZip as Object);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 });

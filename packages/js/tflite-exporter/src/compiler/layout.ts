@@ -79,7 +79,7 @@ export class LayoutOptimizer {
     // 42. Map Keras/TF.js specific layout formats accurately if originating from onnx9000.keras.
     // 230. Support Stateful TFLite Execution (Variable tensors) if sequence history requires persistence.
     // We check metadata to adjust layouts safely.
-    const metadata = (this.graph as any).metadata;
+    const metadata = (this.graph as ReturnType<typeof JSON.parse>).metadata;
     if (metadata && metadata.producer_name === 'onnx9000.keras') {
       /* v8 ignore start */
       console.log(

@@ -1,8 +1,8 @@
 export function extractTokenizerMetadata(
   tokenizerJsonStr: string | null = null,
   vocabSize: number = 0,
-): Record<string, any> {
-  const meta: Record<string, any> = {};
+): Record<string, ReturnType<typeof JSON.parse>> {
+  const meta: Record<string, ReturnType<typeof JSON.parse>> = {};
 
   if (!tokenizerJsonStr) {
     meta['tokenizer.ggml.model'] = 'llama';
@@ -25,7 +25,7 @@ export function extractTokenizerMetadata(
     return meta;
   }
 
-  let t: any;
+  let t: ReturnType<typeof JSON.parse>;
   try {
     t = JSON.parse(tokenizerJsonStr);
   } catch (e) {
@@ -46,7 +46,9 @@ export function extractTokenizerMetadata(
 
   const vocab = model.vocab || {};
   if (typeof vocab === 'object' && vocab !== null && !Array.isArray(vocab)) {
-    const sortedVocab = Object.entries(vocab).sort((a: any, b: any) => a[1] - b[1]);
+    const sortedVocab = Object.entries(vocab).sort(
+      (a: ReturnType<typeof JSON.parse>, b: ReturnType<typeof JSON.parse>) => a[1] - b[1],
+    );
     let tokens = sortedVocab.map((x) => x[0]);
 
     if (vocabSize > 0 && tokens.length !== vocabSize) {

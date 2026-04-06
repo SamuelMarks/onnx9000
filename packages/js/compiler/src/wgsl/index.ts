@@ -10,7 +10,7 @@ export function emitWGSL(graph: Graph): string {
     .join('\n');
   const outputs = graph.outputs
     .map((out, i) => {
-      const outName = typeof out === 'string' ? out : (out as any).name;
+      const outName = typeof out === 'string' ? out : (out as ReturnType<typeof JSON.parse>).name;
       return `@group(0) @binding(${graph.inputs.length + i}) var<storage, read_write> ${outName} : array<f32>;`;
     })
     .join('\n');

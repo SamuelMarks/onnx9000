@@ -84,7 +84,7 @@ test('safetensors.node saveSafetensorsFileSync success', () => {
 test('safetensors.node saveSafetensorsFileSync ENOSPC', () => {
   const mockFs = {
     writeFileSync: vi.fn(() => {
-      const e = new Error('ENOSPC') as any;
+      const e = new Error('ENOSPC') as Object;
       e.code = 'ENOSPC';
       throw e;
     }),
@@ -97,7 +97,7 @@ test('safetensors.node saveSafetensorsFileSync ENOSPC', () => {
 
   const mockFs2 = {
     writeFileSync: vi.fn(() => {
-      const e = new Error('some error with ENOSPC inside') as any;
+      const e = new Error('some error with ENOSPC inside') as Object;
       throw e;
     }),
   };

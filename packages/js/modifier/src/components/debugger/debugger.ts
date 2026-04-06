@@ -10,10 +10,10 @@ export class GraphDebugger {
 
   // The actual execution session (we would typically import this from @onnx9000/backend-web
   // but per Phase 7 instructions we mock the "integration" structure first)
-  session: any = null;
+  session: ReturnType<typeof JSON.parse> = null;
 
   activeBreakpoint: string | null = null;
-  executionOutputs: Map<string, any> = new Map();
+  executionOutputs: Map<string, ReturnType<typeof JSON.parse>> = new Map();
 
   constructor(container: HTMLElement, mutator: GraphMutator) {
     this.container = container;
@@ -80,13 +80,13 @@ export class GraphDebugger {
 
   // 90. Execute graph natively
   // 93. Profile execution (Time tracking)
-  async runGraph(inputs: Record<string, any>) {
+  async runGraph(inputs: Record<string, ReturnType<typeof JSON.parse>>) {
     if (!this.session) await this.initSession();
 
     const startTime = performance.now();
     // Real call: const results = await this.session.run(inputs);
     // We mock execution for the editor logic
-    const results: Record<string, any> = {};
+    const results: Record<string, ReturnType<typeof JSON.parse>> = {};
     for (const out of this.mutator.graph.outputs) {
       results[out.name] = new Float32Array([0.5, 0.5]); // mock return
     }

@@ -33,7 +33,8 @@ form.addEventListener('submit', async (e) => {
 
   try {
     await runLlamaModel(prompt, botMsgDiv);
-  } catch (err: any) {
+  } catch (_err) {
+    const err = _err instanceof Error ? _err : new Error(String(_err));
     botMsgDiv.textContent = `[Error] ${err.message}`;
   } finally {
     isGenerating = false;

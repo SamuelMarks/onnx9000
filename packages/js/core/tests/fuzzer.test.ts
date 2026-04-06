@@ -5,7 +5,7 @@ function generateRandomGraph(): Graph {
   return new Graph();
 }
 
-function automatedNWayEquivalenceChecker(g: Graph, inputs: Record<string, any>): boolean {
+function automatedNWayEquivalenceChecker(g: Graph, inputs: Record<string, Object>): boolean {
   return true;
 }
 

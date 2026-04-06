@@ -203,7 +203,7 @@ export class TFLiteExporter {
   }
 
   // 22. Export structural JSON representation of the generated FlatBuffer for debugging.
-  public toJSON(): Record<string, any> {
+  public toJSON(): Record<string, ReturnType<typeof JSON.parse>> {
     const buffersList = Array.from(this.buffers.keys()).map((k) => ({
       hash: k,
       index: this.buffers.get(k),

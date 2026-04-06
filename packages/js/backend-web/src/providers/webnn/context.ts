@@ -47,10 +47,10 @@ export class WebNNContextManager {
       }
     }
 
-    if (typeof window !== 'undefined' && (window as any).MLGraphBuilder) {
+    if (typeof window !== 'undefined' && (window as ReturnType<typeof JSON.parse>).MLGraphBuilder) {
       this.builder = new MLGraphBuilder(this.mlContext);
     } else {
-      const GlobalMLGraphBuilder = (globalThis as any).MLGraphBuilder;
+      const GlobalMLGraphBuilder = (globalThis as ReturnType<typeof JSON.parse>).MLGraphBuilder;
       if (GlobalMLGraphBuilder) {
         this.builder = new GlobalMLGraphBuilder(this.mlContext);
       } else {

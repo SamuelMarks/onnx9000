@@ -56,7 +56,7 @@ export class InitializerInspector {
   }
 
   // 76. Inspector: Min, Max, Mean, Variance
-  private _renderStats(arr: any, tensor: Tensor) {
+  private _renderStats(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
     let min = Infinity;
     let max = -Infinity;
     let sum = 0;
@@ -89,7 +89,7 @@ export class InitializerInspector {
   }
 
   // 84. Track exact byte sizes
-  private _renderSize(arr: any) {
+  private _renderSize(arr: ReturnType<typeof JSON.parse>) {
     const sizeDiv = this._createSection('Memory Footprint');
     sizeDiv.innerHTML += `
       <div style="font-size: 11px;">
@@ -100,7 +100,7 @@ export class InitializerInspector {
   }
 
   // 77. Render small 2D weights as visual pixel grids (heatmaps)
-  private _renderHeatmap(arr: any, shape: (number | string)[]) {
+  private _renderHeatmap(arr: ReturnType<typeof JSON.parse>, shape: (number | string)[]) {
     // Only attempt 2D or 4D where last two dims are small
     const numDims = shape.length;
     if (numDims < 2) return;
@@ -148,7 +148,7 @@ export class InitializerInspector {
   }
 
   // 78. Support explicitly editing scalar initializer values via text
-  private _renderScalarEditor(arr: any, tensor: Tensor) {
+  private _renderScalarEditor(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
     if (arr.length !== 1) return;
 
     const div = this._createSection('Scalar Editor');
@@ -168,7 +168,7 @@ export class InitializerInspector {
     this.container.appendChild(div);
   }
 
-  private _renderActions(arr: any, tensor: Tensor) {
+  private _renderActions(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
     const actDiv = this._createSection('Actions');
     actDiv.style.display = 'flex';
     actDiv.style.flexDirection = 'column';
@@ -252,7 +252,7 @@ export class InitializerInspector {
       const fileIn = document.createElement('input');
       fileIn.type = 'file';
       fileIn.accept = '.bin';
-      fileIn.onchange = async (e: any) => {
+      fileIn.onchange = async (e: ReturnType<typeof JSON.parse>) => {
         const file = e.target.files[0];
         if (file) {
           const ab = await file.arrayBuffer();

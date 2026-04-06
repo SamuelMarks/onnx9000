@@ -7,7 +7,7 @@ describe('Coverage ModifierApp', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     const handler = {
-      get(target: any, prop: string) {
+      get(target: Object, prop: string) {
         if (prop === 'measureText') return vi.fn().mockReturnValue({ width: 10 });
         if (prop in target) return target[prop];
         return vi.fn();

@@ -267,3 +267,29 @@ def test_sparse_cmd_mock():
 
         with pytest.raises((Exception, SystemExit)):
             main()
+
+
+def test_hummingbird_cmd():
+    import argparse
+    from unittest.mock import MagicMock, patch
+    from onnx9000_cli.main import hummingbird_cmd
+
+    args = argparse.Namespace(model="test.onnx", output="out.onnx")
+    with patch("onnx9000_cli.main.load_onnx") as mock_load, patch("onnx9000_cli.main.save_onnx"):
+        mock_graph = MagicMock()
+        node = MagicMock(op_type="TreeEnsembleClassifier")
+        mock_graph.nodes = [node]
+        mock_load.return_value = mock_graph
+        with (
+            patch("onnx9000.optimizer.hummingbird.onnxml_parser.parse_onnxml_tree_ensemble"),
+            patch(
+                "onnx9000.optimizer.hummingbird.engine.TranspilationEngine.transpile"
+            ) as mock_transpile,
+        ):
+            mock_transpile.return_value = MagicMock(nodes=[], tensors={})
+            hummingbird_cmd(args)
+
+
+def test_tvm_cmd():
+    import argparse
+    from unittest.mock import MagicMock, patch

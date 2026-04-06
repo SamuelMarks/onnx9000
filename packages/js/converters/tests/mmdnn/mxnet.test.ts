@@ -217,7 +217,7 @@ test('parseMxNetSymbol', () => {
   expect(symbol.nodes[1].op).toBe('Convolution');
 });
 
-function buildMxNetParamBuffer(options: any) {
+function buildMxNetParamBuffer(options: Object) {
   const { magic, includeZeroCount, count, arrays, numNames, names } = options;
   let size = 8;
   if (includeZeroCount) size += 16;
