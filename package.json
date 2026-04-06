@@ -45,8 +45,8 @@
     "fflate": "^0.8.2"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "ffi-napi@4.0.3": "patches/ffi-napi@4.0.3.patch"
-    }
+    "neverBuiltDependencies": [
+      "ffi-napi"
+    ]
   }
 }

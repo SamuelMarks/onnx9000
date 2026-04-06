@@ -1,8 +1,9 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.coverage import (
     count_supported_framework_objects,
-    generate_summary_table,
     generate_markdown_table,
+    generate_summary_table,
 )
 
 
@@ -18,14 +19,14 @@ def test_generate_summary_table_branches():
     onnx_data = {"version": "1.0", "operators": ["Add"]}
     onnx9000_ops = ["add"]
     with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1):
-        res = generate_summary_table(frameworks_data, onnx_data, onnx9000_ops)
+        generate_summary_table(frameworks_data, onnx_data, onnx9000_ops)
 
     frameworks_data_no_obj = {
         "ONNX Spec": {"version": "1.0", "objects": []},
         "torch": {"version": "1.0", "objects": []},
     }
     with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=0):
-        res2 = generate_summary_table(frameworks_data_no_obj, onnx_data, onnx9000_ops)
+        generate_summary_table(frameworks_data_no_obj, onnx_data, onnx9000_ops)
 
 
 def test_generate_markdown_table_branches():
@@ -33,14 +34,14 @@ def test_generate_markdown_table_branches():
     onnx_data = {"version": "1.0", "operators": ["Add"]}
     onnx9000_ops = ["add"]
     with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=1):
-        res = generate_markdown_table(frameworks_data, onnx_data, onnx9000_ops)
+        generate_markdown_table(frameworks_data, onnx_data, onnx9000_ops)
 
     frameworks_data_no_obj = {
         "onnx": {"version": "1.0", "objects": []},
         "torch": {"version": "1.0", "objects": []},
     }
     with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=0):
-        res2 = generate_markdown_table(frameworks_data_no_obj, onnx_data, onnx9000_ops)
+        generate_markdown_table(frameworks_data_no_obj, onnx_data, onnx9000_ops)
 
 
 def test_generate_summary_table_unsupported_op():

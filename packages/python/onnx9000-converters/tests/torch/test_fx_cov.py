@@ -1,8 +1,8 @@
+import onnx9000.core.registry as registry
 import torch
 import torch.fx
 from onnx9000.converters.torch.fx import FXParser
 from onnx9000.converters.torch.script import TorchScriptParser
-import onnx9000.core.registry as registry
 
 
 def test_fx_dynamic_shape():

@@ -284,5 +284,7 @@ stubs.txt
 test_type.d.ts.map
 test_type.js.map
 
-\napps/cli/o\n
 /apps/cli/o
+/o
+/configs/onnx9000.yaml
+/test_tb_logs/

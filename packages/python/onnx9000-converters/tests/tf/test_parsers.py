@@ -172,9 +172,9 @@ def test_h5_parser_stub() -> None:
 
 def test_load_keras_v3_bytes() -> None:
     import io
-    import zipfile
     import json
     import sys
+    import zipfile
     from unittest.mock import MagicMock, patch
 
     sys.modules["keras"] = MagicMock()

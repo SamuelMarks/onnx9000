@@ -44,6 +44,7 @@ def test_fold_mel_weights_exception():
 def test_fold_mel_weights_success():
     """Test successful generation of Mel weights."""
     import struct
+
     from onnx9000.core.dtypes import DType
 
     graph = Graph("test_graph")

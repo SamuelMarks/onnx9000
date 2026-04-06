@@ -1,6 +1,7 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import main
 
 
@@ -51,7 +52,7 @@ def test_coverage_gaps_cmd133():
 
                         orig_isinstance = builtins.isinstance
 
-                        def fake_isinstance(obj, cls):
+                        def fake_isinstance(obj, cls, orig_isinstance=orig_isinstance):
                             if cls == torch.nn.Module:
                                 return True
                             return orig_isinstance(obj, cls)

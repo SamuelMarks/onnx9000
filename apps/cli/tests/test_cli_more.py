@@ -272,6 +272,7 @@ def test_sparse_cmd_mock():
 def test_hummingbird_cmd():
     import argparse
     from unittest.mock import MagicMock, patch
+
     from onnx9000_cli.main import hummingbird_cmd
 
     args = argparse.Namespace(model="test.onnx", output="out.onnx")

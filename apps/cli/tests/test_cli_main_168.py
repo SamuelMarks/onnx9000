@@ -1,5 +1,6 @@
 import argparse
 from unittest.mock import MagicMock, patch
+
 import pytest
 from onnx9000_cli.main import convert_cmd
 
@@ -46,7 +47,7 @@ def test_paddle_convert_isdir():
                 with patch(
                     "onnx9000.converters.paddle.api.convert_paddle_to_onnx",
                     return_value=MagicMock(),
-                ) as mock_conv:
+                ):
                     with patch("onnx9000.core.exporter.export_graph"):
                         convert_cmd(args)
 
@@ -61,6 +62,6 @@ def test_paddle_convert_isdir_fallback():
                 with patch(
                     "onnx9000.converters.paddle.api.convert_paddle_to_onnx",
                     return_value=MagicMock(),
-                ) as mock_conv:
+                ):
                     with patch("onnx9000.core.exporter.export_graph"):
                         convert_cmd(args)

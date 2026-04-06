@@ -1,17 +1,11 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main, convert_cmd, jit_cmd
+
+from onnx9000_cli.main import convert_cmd, jit_cmd, main
 
 
 def test_coverage_gaps_cmd154():
-    cmds = [
-        ["convert", "test.onnx", "--from", "paddle", "--to", "onnx", "-o", "out.onnx"],
-        ["convert", "test.onnx", "--from", "pytorch", "--to", "onnx", "-o", "out.onnx"],
-        ["jit", "test.onnx", "--target", "cpp"],
-        ["jit", "test.onnx", "--target", "wasm"],
-        ["jit", "test.onnx", "--target", "unknown"],
-    ]
 
     with (
         patch(

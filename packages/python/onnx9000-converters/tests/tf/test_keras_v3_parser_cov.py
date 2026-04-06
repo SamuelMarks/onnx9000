@@ -2,6 +2,7 @@
 
 import sys
 from unittest.mock import MagicMock
+
 import pytest
 
 # Mock keras and tensorflow

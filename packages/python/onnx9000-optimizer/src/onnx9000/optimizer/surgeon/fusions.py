@@ -110,6 +110,7 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
 
         if len(fusible) >= 2:
             import struct
+
             from onnx9000.core.dtypes import DType
 
             concat_data = b""

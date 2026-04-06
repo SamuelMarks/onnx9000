@@ -1,21 +1,21 @@
 import argparse
-import os
-import json
 import ast
+import json
+import os
 from unittest.mock import MagicMock, patch
-import pytest
 
+import pytest
 from onnx9000_cli.coverage import (
-    get_pypi_info,
-    generate_framework_snapshots,
+    _force_100_coverage,
     clone_and_parse_onnx_spec,
-    get_onnx9000_ops,
     count_supported_framework_objects,
-    generate_summary_table,
+    generate_framework_snapshots,
     generate_markdown_table,
+    generate_summary_table,
+    get_onnx9000_ops,
+    get_pypi_info,
     update_compliance_md,
     update_coverage_cmd,
-    _force_100_coverage,
 )
 
 
@@ -167,7 +167,7 @@ def test_generate_framework_snapshots_branches():
                                     ),
                                 ):
                                     pass
-                                res = generate_framework_snapshots("snapshots_dir")
+                                generate_framework_snapshots("snapshots_dir")
 
 
 def test_count_supported_framework_objects_all_branches():
@@ -223,9 +223,9 @@ def test_generate_framework_snapshots_exceptions():
 
         with patch("subprocess.run", side_effect=Exception("uv error")):
             with patch("glob.glob", return_value=["test.json"]):
-                with patch("builtins.open") as mock_open:
+                with patch("builtins.open"):
                     with patch("json.load", return_value={"version": "1.0", "objects": ["a"]}):
-                        res = generate_framework_snapshots("snapshots_dir")
+                        generate_framework_snapshots("snapshots_dir")
 
 
 def test_generate_framework_snapshots_subprocess_fallback():
@@ -234,7 +234,7 @@ def test_generate_framework_snapshots_subprocess_fallback():
 
         def fake_run(cmd, *args, **kwargs):
             mock = MagicMock()
-            if "uv" in cmd and "venv" in cmd and "--python" in cmd and not "/" in cmd[3]:
+            if "uv" in cmd and "venv" in cmd and "--python" in cmd and "/" not in cmd[3]:
                 # Force uv fallback to pyenv
                 raise Exception("uv missing")
             if "pyenv" in cmd and "versions" in cmd:
@@ -247,7 +247,7 @@ def test_generate_framework_snapshots_subprocess_fallback():
 
         with patch("subprocess.run", side_effect=fake_run):
             with patch("glob.glob", return_value=[]):
-                with patch("builtins.open") as mock_open:
+                with patch("builtins.open"):
                     with patch("json.load", return_value={"version": "1.0", "objects": ["a"]}):
                         try:
                             # Let's test with just "torch"
@@ -265,7 +265,7 @@ def test_generate_framework_snapshots_pyenv_install():
 
         def fake_run(cmd, *args, **kwargs):
             mock = MagicMock()
-            if "uv" in cmd and "venv" in cmd and "--python" in cmd and not "/" in cmd[3]:
+            if "uv" in cmd and "venv" in cmd and "--python" in cmd and "/" not in cmd[3]:
                 raise Exception("uv missing")
             if "pyenv" in cmd and "versions" in cmd:
                 mock.stdout = "3.9.0\n"  # Missing 3.10

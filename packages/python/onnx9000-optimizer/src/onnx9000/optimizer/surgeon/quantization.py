@@ -1,6 +1,7 @@
 """Quantization utilities for onnx9000."""
 
 import struct
+
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node

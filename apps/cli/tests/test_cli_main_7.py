@@ -1,7 +1,8 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main, hummingbird_cmd, optimize_cmd, quantize_cmd
+
+from onnx9000_cli.main import hummingbird_cmd, main, optimize_cmd, quantize_cmd
 
 
 def test_coverage_gaps_cmd7():

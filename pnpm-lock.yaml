@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  ffi-napi@4.0.3:
-    hash: 4igqxc4ao5wjaiw5r5nohrvx7i
-    path: patches/ffi-napi@4.0.3.patch
-
 importers:
 
   .:
@@ -675,7 +670,7 @@ importers:
         version: link:../core
       ffi-napi:
         specifier: ^4.0.3
-        version: 4.0.3(patch_hash=4igqxc4ao5wjaiw5r5nohrvx7i)
+        version: 4.0.3
       ref-array-napi:
         specifier: ^1.2.2
         version: 1.2.2
@@ -5478,7 +5473,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.3
 
-  ffi-napi@4.0.3(patch_hash=4igqxc4ao5wjaiw5r5nohrvx7i):
+  ffi-napi@4.0.3:
     dependencies:
       debug: 4.4.3
       get-uv-event-loop-napi-h: 1.0.6

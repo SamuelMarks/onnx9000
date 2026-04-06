@@ -1,7 +1,8 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main, export_cmd
+
+from onnx9000_cli.main import export_cmd, main
 
 
 class DummyModule:

@@ -1,6 +1,7 @@
 import argparse
 import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import convert_cmd
 
 

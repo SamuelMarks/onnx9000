@@ -1,7 +1,6 @@
 """Tests for surgeon_more3 to hit 100% coverage."""
 
 import numpy as np
-
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Variable
 from onnx9000.core.surgeon import fuse_conv_bn, map_alibi, unroll_scan
 

@@ -1,7 +1,8 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main, convert_cmd, jit_cmd
+
+from onnx9000_cli.main import convert_cmd, jit_cmd, main
 
 
 def test_coverage_gaps_cmd157():
@@ -18,8 +19,8 @@ def test_coverage_gaps_cmd157():
                         pass
 
                     mock_load.return_value = MockMod()
-                    with patch("torch.fx.symbolic_trace") as mock_trace:
-                        with patch("onnx9000.converters.parsers.PyTorchFXParser") as mock_parser:
+                    with patch("torch.fx.symbolic_trace"):
+                        with patch("onnx9000.converters.parsers.PyTorchFXParser"):
                             # Do not mock isinstance
                             try:
                                 convert_cmd(args)

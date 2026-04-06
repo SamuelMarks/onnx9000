@@ -1,6 +1,7 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import main
 
 
@@ -33,7 +34,7 @@ def test_coverage_gaps_cmd27():
             },
         ):
             with patch("os.path.exists", return_value=True):
-                with patch("subprocess.run") as mock_run:
+                with patch("subprocess.run"):
                     for cmd_args in cmds:
                         with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                             try:
@@ -44,7 +45,7 @@ def test_coverage_gaps_cmd27():
                                 pass
 
             with patch("os.path.exists", return_value=False):
-                with patch("subprocess.run") as mock_run:
+                with patch("subprocess.run"):
                     for cmd_args in cmds:
                         with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                             try:

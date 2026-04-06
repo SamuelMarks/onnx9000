@@ -1,6 +1,7 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import main
 
 
@@ -70,8 +71,9 @@ def test_coverage_gaps_cmd91():
                 for cmd_args in cmds:
                     with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                         try:
-                            from onnx9000_cli.main import convert_cmd
                             import argparse
+
+                            from onnx9000_cli.main import convert_cmd
 
                             args = argparse.Namespace()
                             args.src = cmd_args[1]

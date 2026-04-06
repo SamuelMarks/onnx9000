@@ -1,9 +1,10 @@
-import sys
 import argparse
+import sys
 import traceback
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main
+
 import pytest
+from onnx9000_cli.main import main
 
 
 def test_mega_coverage():
@@ -128,7 +129,7 @@ def test_mega_coverage():
             with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                 try:
                     main()
-                except Exception as e:
+                except Exception:
                     pass
                 except SystemExit:
                     pass

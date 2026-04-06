@@ -1,5 +1,6 @@
-import pytest
 import struct
+
+import pytest
 from onnx9000.core.ir import Constant, Graph, Node, Variable
 from onnx9000.optimizer.surgeon.audio import _unpack_scalar, fold_mel_weights
 

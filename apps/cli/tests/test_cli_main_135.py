@@ -1,6 +1,7 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import main
 
 
@@ -31,7 +32,9 @@ def test_coverage_gaps_cmd135():
 
                                                 orig_isinstance = builtins.isinstance
 
-                                                def safe_isinstance(obj, cls):
+                                                def safe_isinstance(
+                                                    obj, cls, orig_isinstance=orig_isinstance
+                                                ):
                                                     import torch
 
                                                     if getattr(

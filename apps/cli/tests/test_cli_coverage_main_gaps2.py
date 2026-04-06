@@ -1,7 +1,8 @@
 import ast
-import os
 import glob
-from unittest.mock import patch, MagicMock
+import os
+from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.coverage import count_supported_framework_objects
 
 

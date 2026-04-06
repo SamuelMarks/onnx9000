@@ -1,7 +1,8 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
-from onnx9000_cli.main import main, sparse_prune_cmd, sparse_de_sparsify_cmd, sparse_cmd
+
+from onnx9000_cli.main import main, sparse_cmd, sparse_de_sparsify_cmd, sparse_prune_cmd
 
 
 def test_coverage_gaps_cmd28():

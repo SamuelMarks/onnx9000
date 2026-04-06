@@ -1,14 +1,15 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import (
     main,
+    openvino_cmd,
+    openvino_export_cmd,
+    optimum_cmd,
     optimum_export_cmd,
     optimum_optimize_cmd,
     optimum_quantize_cmd,
-    optimum_cmd,
-    openvino_export_cmd,
-    openvino_cmd,
 )
 
 

@@ -1,6 +1,7 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import main
 
 
@@ -40,8 +41,9 @@ def test_coverage_gaps_cmd52():
 
 
 def test_custom_handler():
-    from onnx9000_cli.main import serve_cmd
     import http.server
+
+    from onnx9000_cli.main import serve_cmd
 
     with patch(
         "socketserver.TCPServer.__enter__", return_value=MagicMock(serve_forever=MagicMock())

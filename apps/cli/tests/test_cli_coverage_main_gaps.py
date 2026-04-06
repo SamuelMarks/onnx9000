@@ -12,8 +12,8 @@ from unittest.mock import MagicMock, patch
 from onnx9000_cli.coverage import (
     clone_and_parse_onnx_spec,
     count_supported_framework_objects,
-    update_compliance_md,
     generate_framework_snapshots,
+    update_compliance_md,
 )
 
 
@@ -80,7 +80,7 @@ def test_generate_framework_snapshots_existing_json_error():
             side_effect=[("1.0", "3.6")] + [("1.0", "3.10")] * 20,
         ):
             with patch("os.path.exists", return_value=True):
-                with patch("builtins.open") as mock_open:
+                with patch("builtins.open"):
                     with patch("json.load", side_effect=Exception("parse error")):
                         try:
                             generate_framework_snapshots("snapshots_dir")
@@ -93,7 +93,7 @@ def test_generate_framework_snapshots_unknown_version_fallback_json_error():
         mock_temp.return_value.__enter__.return_value = "tmpdir"
         with patch("onnx9000_cli.coverage.get_pypi_info", return_value=("unknown", "3.10")):
             with patch("glob.glob", return_value=["fallback.json"]):
-                with patch("builtins.open") as mock_open:
+                with patch("builtins.open"):
                     with patch("json.load", side_effect=Exception("parse error")):
                         try:
                             generate_framework_snapshots("snapshots_dir")

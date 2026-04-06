@@ -1,6 +1,5 @@
-import torch
 import pytest
-
+import torch
 from onnx9000.converters.torch.export import ExportParser
 
 

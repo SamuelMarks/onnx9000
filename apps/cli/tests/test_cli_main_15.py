@@ -1,20 +1,21 @@
-import sys
 import argparse
+import sys
 from unittest.mock import MagicMock, patch
+
 from onnx9000_cli.main import (
-    main,
-    simplify_cmd,
-    optimize_cmd,
-    quantize_cmd,
-    inspect_cmd,
-    edit_cmd,
-    prune_cmd,
-    sparse_prune_cmd,
-    sparse_de_sparsify_cmd,
-    sparse_cmd,
     change_batch_cmd,
+    edit_cmd,
+    inspect_cmd,
+    main,
     mutate_cmd,
+    optimize_cmd,
+    prune_cmd,
+    quantize_cmd,
     rename_input_cmd,
+    simplify_cmd,
+    sparse_cmd,
+    sparse_de_sparsify_cmd,
+    sparse_prune_cmd,
 )
 
 
