@@ -47,7 +47,9 @@ export function generateTFJSCode(graph: Graph): string {
     // Functional API
     const inputVars: string[] = [];
     for (const input of graph.inputs) {
-      const shapeStr = JSON.stringify(input.shape.map((s) => (s === -1 ? null : s)));
+      const shapeStr = JSON.stringify(
+        input.shape.map((s) => (Number(s) === -1 ? null : Number(s))),
+      );
       const varName = sanitizeName(input.name);
       code += `  const ${varName} = tf.input({ shape: ${shapeStr}.slice(1) });\n`;
       inputVars.push(varName);
@@ -75,6 +77,10 @@ export function generateTFJSCode(graph: Graph): string {
 
   code += `}\n`;
   return code;
+}
+
+function stringifyOptions(obj: any): string {
+  return JSON.stringify(obj, (_, v) => (typeof v === 'bigint' ? Number(v) : v)).replace(/"/g, "'");
 }
 
 function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
@@ -115,7 +121,7 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
       options.useBias = false;
     }
 
-    return `tf.layers.conv2d(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.conv2d(${stringifyOptions(options)})`;
   } else if (op === 'Gemm') {
     const wName = node.inputs[1];
     const wTensor = wName ? graph.tensors[wName] : undefined;
@@ -138,7 +144,7 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
       options.useBias = false;
     }
 
-    return `tf.layers.dense(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.dense(${stringifyOptions(options)})`;
   } else if (op === 'MaxPool' || op === 'AveragePool') {
     const kernelShapeAttr = node.attributes['kernel_shape'];
     if (kernelShapeAttr) options.poolSize = kernelShapeAttr.value;
@@ -156,19 +162,19 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     options.dataFormat = 'channelsFirst';
 
     const func = op === 'MaxPool' ? 'maxPooling2d' : 'averagePooling2d';
-    return `tf.layers.${func}(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.${func}(${stringifyOptions(options)})`;
   } else if (op === 'BatchNormalization') {
     options.axis = 1; // channelsFirst => channel is at axis 1
-    return `tf.layers.batchNormalization(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.batchNormalization(${stringifyOptions(options)})`;
   } else if (op === 'Relu') {
-    return `tf.layers.reLU(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.reLU(${stringifyOptions(options)})`;
   } else if (op === 'GlobalAveragePool') {
     options.dataFormat = 'channelsFirst';
-    return `tf.layers.globalAveragePooling2d(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.globalAveragePooling2d(${stringifyOptions(options)})`;
   } else if (op === 'Flatten') {
     options.dataFormat = 'channelsFirst';
-    return `tf.layers.flatten(${JSON.stringify(options).replace(/"/g, "'")})`;
+    return `tf.layers.flatten(${stringifyOptions(options)})`;
   }
 
-  return `/* TODO: unimplemented ${op} */ tf.layers.dense(${JSON.stringify(options).replace(/"/g, "'")})`;
+  return `/* TODO: unimplemented ${op} */ tf.layers.dense(${stringifyOptions(options)})`;
 }

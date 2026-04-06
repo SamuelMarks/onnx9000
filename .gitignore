@@ -141,6 +141,12 @@ fix_*.py
 generate_*.py
 replace_*.py
 double_tick.py
+find_*.py
+list_*.py
+extract_*.py
+inject_*.py
+format_*.py
+.shape_inference_updater.py
 
 # AI scratch scripts
 /ast_*.txt

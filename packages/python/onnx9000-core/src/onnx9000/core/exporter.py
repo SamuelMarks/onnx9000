@@ -82,7 +82,7 @@ def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
                 ["ruff", "check", "--fix", output_path], check=False, capture_output=True
             )
         except Exception:
-            pass
+            _ignore = True
     elif format == "mlir":
         code = generate_mlir(graph)
         with open(output_path, "w") as f:

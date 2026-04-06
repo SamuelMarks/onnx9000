@@ -68,7 +68,7 @@ export class CNTKGenerator {
 
           const inp = this.sanitize(node.inputs[0]!);
           forwardLines.push(
-            `${out} = C.layers.Convolution2D(filter_shape=${JSON.stringify(kernelSize)}, num_filters=${Number(outChannels)}, strides=${JSON.stringify(strides)}, pad=${pad}, bias=${node.inputs.length > 2 ? 'True' : 'False'})(${inp})`,
+            `${out} = C.layers.Convolution2D(filter_shape=${JSON.stringify(kernelSize.map(Number))}, num_filters=${Number(outChannels)}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad}, bias=${node.inputs.length > 2 ? 'True' : 'False'})(${inp})`,
           );
           break;
         }
@@ -82,7 +82,7 @@ export class CNTKGenerator {
 
           const inp = this.sanitize(node.inputs[0]!);
           forwardLines.push(
-            `${out} = C.layers.${poolType}(filter_shape=${JSON.stringify(kernelSize)}, strides=${JSON.stringify(strides)}, pad=${pad})(${inp})`,
+            `${out} = C.layers.${poolType}(filter_shape=${JSON.stringify(kernelSize.map(Number))}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad})(${inp})`,
           );
           break;
         }

@@ -10,7 +10,8 @@
     "coverage": "vitest run --coverage",
     "docs": "typedoc --out docs src",
     "lint": "eslint src tests",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"**/*.css\""
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"**/*.css\"",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

@@ -150,10 +150,16 @@ class CPUMemoryPlanner:
         """Free all explicitly allocated memory."""
         with self._lock:
             if self.arena_mmap is not None:
-                self.arena_mmap.close()
+                try:
+                    self.arena_mmap.close()
+                except BufferError:
+                    _ignore = True
                 self.arena_mmap = None
             for mm in self.dynamic_allocations.values():
-                mm.close()
+                try:
+                    mm.close()
+                except BufferError:
+                    _ignore = True
             self.dynamic_allocations.clear()
             self.dynamic_sizes.clear()
 

@@ -10,7 +10,7 @@ def constant_folding_pass(graph: Graph) -> Graph:
 
         constant_folding(graph)
     except ImportError:
-        pass
+        _ignore = True
     return graph
 
 
@@ -107,7 +107,7 @@ def shape_folding_pass(graph: Graph) -> Graph:
 
         ShapeInferencePass().run(graph)
     except ImportError:
-        pass
+        _ignore = True
     return graph
 
 
@@ -118,7 +118,7 @@ def pattern_matching_pass(graph: Graph) -> Graph:
 
         run_all_fusions(graph)
     except ImportError:
-        pass
+        _ignore = True
     return graph
 
 

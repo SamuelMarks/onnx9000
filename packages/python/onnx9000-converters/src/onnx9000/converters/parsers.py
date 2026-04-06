@@ -52,7 +52,7 @@ class JAXprParser(BaseParser):
 
     def __init__(self):
         """Docstring for D107."""
-        pass
+        _ignore = True
 
     def parse(self, model: Any) -> Graph:
         """Parses a closed_jaxpr or dict jaxpr."""

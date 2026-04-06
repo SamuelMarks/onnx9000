@@ -75,13 +75,13 @@ class BrowserWorkerIsolation:
 class MalformedChatTemplateError(Exception):
     """Exception for malformed chat templates."""
 
-    pass
+    _ignore = True
 
 
 class EndOfStreamError(Exception):
     """Exception for end of stream conditions."""
 
-    pass
+    _ignore = True
 
 
 class OOMHandler:

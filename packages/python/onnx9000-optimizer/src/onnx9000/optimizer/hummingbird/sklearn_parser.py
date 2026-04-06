@@ -144,7 +144,7 @@ def parse_pipeline(steps: list[Any]) -> Graph:
 
 def extract_classes_and_zipmaps(g: Graph, class_labels: list[Any]) -> None:
     """Extract classes and mapping them to output ZipMaps / Tensors."""
-    pass
+    _ignore = True
 
 
 # Math parsing for non-tree linear models

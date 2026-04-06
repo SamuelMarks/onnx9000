@@ -43,6 +43,7 @@ class Builder:
 
     def __init__(self, logger_callback=None):
         """Initialize."""
+        self.ptr = None
         if not ffi.lib:
             raise RuntimeError("TensorRT library not loaded")
 

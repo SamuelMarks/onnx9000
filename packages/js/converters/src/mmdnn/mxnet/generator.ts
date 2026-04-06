@@ -70,7 +70,7 @@ export class MXNetGenerator {
 
           const layerName = this.sanitize(`conv_${node.name || out}`);
           initLines.push(
-            `self.${layerName} = gluon.nn.Conv2D(channels=${Number(outChannels)}, kernel_size=${JSON.stringify(kernelSize)}, strides=${JSON.stringify(strides)}, padding=${JSON.stringify((pads as number[]).slice(0, 2))}, use_bias=${node.inputs.length > 2 ? 'True' : 'False'})`,
+            `self.${layerName} = gluon.nn.Conv2D(channels=${Number(outChannels)}, kernel_size=${JSON.stringify(kernelSize.map(Number))}, strides=${JSON.stringify(strides.map(Number))}, padding=${JSON.stringify((pads as number[]).slice(0, 2).map(Number))}, use_bias=${node.inputs.length > 2 ? 'True' : 'False'})`,
           );
 
           const inp = this.sanitize(node.inputs[0]!);
@@ -86,7 +86,7 @@ export class MXNetGenerator {
 
           const layerName = this.sanitize(`pool_${node.name || out}`);
           initLines.push(
-            `self.${layerName} = gluon.nn.${poolType}(pool_size=${JSON.stringify(kernelSize)}, strides=${JSON.stringify(strides)}, padding=${JSON.stringify((pads as number[]).slice(0, 2))})`,
+            `self.${layerName} = gluon.nn.${poolType}(pool_size=${JSON.stringify(kernelSize.map(Number))}, strides=${JSON.stringify(strides.map(Number))}, padding=${JSON.stringify((pads as number[]).slice(0, 2).map(Number))})`,
           );
 
           const inp = this.sanitize(node.inputs[0]!);

@@ -167,7 +167,7 @@ export class KerasGenerator {
           : /* v8 ignore start */
             [1];
       /* v8 ignore stop */
-      code += `    ${sanitized} = keras.layers.Input(shape=${JSON.stringify(shape)}, name='${input.name}')\n`;
+      code += `    ${sanitized} = keras.layers.Input(shape=${JSON.stringify(shape.map(Number))}, name='${input.name}')\n`;
       inputNames.push(sanitized);
     }
 

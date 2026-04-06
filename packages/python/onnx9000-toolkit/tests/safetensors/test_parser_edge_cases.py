@@ -34,8 +34,8 @@ def test_parser_edge_cases_and_mocks():
         SafeTensors(b"123")
     b_io = io.BytesIO()
     b_io.write(save({"a": np.array([1, 2], dtype=np.int32)}))
-    st = SafeTensors(b_io)
-    assert "a" in st.keys()
+    with SafeTensors(b_io) as st:
+        assert "a" in st.keys()
 
     class StreamWithoutGetBuffer:
         """StreamWithoutGetBuffer implementation."""

@@ -37,7 +37,7 @@ def parse_sparkml_pipeline(pipeline_data: Any) -> Graph:  # noqa: ANN401
                 op_type = "LinearRegressor"
                 attrs = {}
         except json.JSONDecodeError:
-            pass
+            _ignore = True
 
     node = Node(
         op_type=op_type,
