@@ -54,6 +54,7 @@ def test_cli_commands(capsys) -> None:
         prune=False,
         quantize=False,
         sparsity=0.5,
+        port=0,
     )
     inspect_cmd(args)
     assert "Inspecting test.onnx..." in capsys.readouterr().out

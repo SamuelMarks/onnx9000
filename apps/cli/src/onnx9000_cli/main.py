@@ -455,7 +455,7 @@ def serve_cmd(args: argparse.Namespace) -> None:
     import os
     import socketserver
 
-    PORT = 8000
+    PORT = getattr(args, "port", 8000)
 
     class CustomHandler(http.server.SimpleHTTPRequestHandler):
         def translate_path(self, path):

@@ -2,7 +2,7 @@ name: Deploy Web IDE
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   contents: read
@@ -45,6 +45,7 @@ jobs:
       - name: Install uv and Sphinx
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv sync --all-extras
           uv pip install -r requirements-doc.txt --system
           
       # 318. Verify CI/CD pipeline triggers the TS frontend build
@@ -52,7 +53,7 @@ jobs:
         run: pnpm exec esbuild --bundle --format=esm docs/_static/ts/src/App.ts --outfile=docs/_static/app.bundle.js --minify
           
       - name: Build Sphinx Docs
-        run: make -C docs html
+        run: uv run make -C docs html
         
       # 320. Deploy to GitHub Pages
       - name: Setup Pages

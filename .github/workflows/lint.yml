@@ -24,10 +24,12 @@ jobs:
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Install Python tools
-        run: uv pip install ruff mypy --system
+        run: |
+          uv sync --all-extras
+          uv pip install ruff mypy --system
       - name: Run ESLint
         run: pnpm lint
       - name: Run Ruff
-        run: ruff check .
+        run: uv run ruff check .
       - name: Run Mypy
-        run: mypy .
+        run: uv run mypy .

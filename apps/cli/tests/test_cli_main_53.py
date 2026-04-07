@@ -7,7 +7,7 @@ from onnx9000_cli.main import main, serve_cmd
 
 def test_custom_handler():
     with patch("socketserver.TCPServer.serve_forever", side_effect=KeyboardInterrupt):
-        serve_cmd(argparse.Namespace())
+        serve_cmd(argparse.Namespace(port=0))
 
 
 def test_translate_path():
@@ -23,7 +23,7 @@ def test_translate_path():
             self.socket = MagicMock()
 
         with patch("socketserver.TCPServer.__init__", fake_init):
-            serve_cmd(argparse.Namespace())
+            serve_cmd(argparse.Namespace(port=0))
 
         if handler_cls:
             with patch(
