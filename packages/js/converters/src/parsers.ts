@@ -14,7 +14,9 @@ const add = (a: Tensor) => new Tensor('Add_out', [], a.dtype, false, false, new 
 const matmul = (a: Tensor) =>
   new Tensor('MatMul_out', [], a.dtype, false, false, new Float32Array());
 
-function mapDictToAttributes(dict: Record<string, object | null>): Record<string, Attribute> {
+function mapDictToAttributes(
+  dict: Record<string, string | number | boolean | object | null>,
+): Record<string, Attribute> {
   const attrs: Record<string, Attribute> = {};
   for (const [k, v] of Object.entries(dict)) {
     let t: AttributeType = 'UNKNOWN';
@@ -55,11 +57,11 @@ export class PyTorchFXParser extends BaseParser {
     const graph = new Graph('PyTorch_Exported');
     if (!model || typeof model !== 'object') return graph;
 
-    const fx = model as Record<string, object | null>;
+    const fx = model as Record<string, string | number | boolean | object | null>;
     if (Array.isArray(fx.nodes)) {
       for (const node of fx.nodes) {
         if (!node || typeof node !== 'object') continue;
-        const n = node as Record<string, object | null>;
+        const n = node as Record<string, string | number | boolean | object | null>;
         const targetStr = typeof n.target === 'string' ? n.target : '';
         const opStr = typeof n.op === 'string' ? n.op : '';
         const nameStr = typeof n.name === 'string' ? n.name : '';

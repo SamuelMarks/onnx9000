@@ -6,6 +6,11 @@ ruff format --config pyproject.toml
 fd -eh -ec -x clang-format --style=LLVM -i
 npx prettier --write "packages/**/*.ts" "apps/**/*.ts"
 
+echo "Running Static Analysis..."
+pnpm lint
+uv run ruff check .
+uv run mypy .
+
 echo "Building TypeScript packages..."
 npx turbo run build
 
