@@ -44,3 +44,4 @@ export * from './models/index.js';
 export * from './macros.js';
 
 export * from './sharding.js';
+console.log('hello');

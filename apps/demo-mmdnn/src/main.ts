@@ -1,5 +1,5 @@
 import { convert, SourceFramework, TargetFramework } from '@onnx9000/converters';
-import { serializeModelProto } from '@onnx9000/core';
+import { serializeModelProto, Graph } from '@onnx9000/core';
 
 const srcFrameworkSelect = document.getElementById('src-framework') as HTMLSelectElement;
 const dstFrameworkSelect = document.getElementById('dst-framework') as HTMLSelectElement;
@@ -168,7 +168,7 @@ btnConvert.addEventListener('click', async () => {
     let blob: Blob;
     let ext = '.onnx';
     if (dst === 'onnx') {
-      const bytes = await serializeModelProto(result as ReturnType<typeof JSON.parse>);
+      const bytes = await serializeModelProto(result as Graph);
       blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/octet-stream' });
     } else {
       if (dst === 'pytorch_code') ext = '.py';
@@ -199,7 +199,7 @@ btnConvert.addEventListener('click', async () => {
     const previewDiv = document.getElementById('graph-preview');
     if (previewDiv) {
       if (dst === 'onnx') {
-        const nodeCount = (result as ReturnType<typeof JSON.parse>).nodes?.length || 0;
+        const nodeCount = (result as Graph).nodes?.length || 0;
         previewDiv.innerHTML = `<strong>ONNX Graph Generated</strong><br>Nodes: ${nodeCount}<br>Ready for download or 3D viewer.`;
         previewDiv.style.color = '#fff';
       } else {
