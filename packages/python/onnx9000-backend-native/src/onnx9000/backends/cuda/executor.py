@@ -22,6 +22,7 @@ from onnx9000.backends.cuda.bindings import (
 from onnx9000.backends.cuda.compiler import CUDACompiler
 from onnx9000.backends.memory.cuda_arena import CUDAMemoryPlanner
 from onnx9000.core.ir import Graph, Node
+from onnx9000.core.registry import register_op
 
 logger = logging.getLogger(__name__)
 
@@ -180,11 +181,16 @@ class Dispatcher:
         if not self.initialized:
             self._cpu_fallback_node(node)
             return
-        if node.op_type == "MatMul":
-            self._execute_matmul(node)
-        elif node.op_type in ["Add", "Sub", "Mul"]:
-            self._execute_elementwise(node)
-        else:
+
+        from onnx9000.core.exceptions import UnsupportedOpError
+        from onnx9000.core.registry import global_registry
+
+        try:
+            op_impl = global_registry.get_op(node.op_type, provider="cuda")
+            op_impl(self, node)
+        except RuntimeError:
+            raise
+        except Exception:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -218,3 +224,23 @@ class Dispatcher:
                 _cuda_lib.cuStreamDestroy_v2(self.stream)
             except Exception as e:
                 logger.debug(f"CUDA stream destroy error: {e}")
+
+
+@register_op("MatMul", provider="cuda")
+def _cuda_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_matmul(node)
+
+
+@register_op("Add", provider="cuda")
+def _cuda_add(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node)
+
+
+@register_op("Sub", provider="cuda")
+def _cuda_sub(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node)
+
+
+@register_op("Mul", provider="cuda")
+def _cuda_mul(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node)

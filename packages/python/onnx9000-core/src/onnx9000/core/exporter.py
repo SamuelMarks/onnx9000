@@ -6,6 +6,16 @@ from onnx9000.core.ir import Graph
 from onnx9000.core.serializer import save as save_onnx
 from onnx9000.core.tensorboard_exporter import export_tensorboard
 
+EXPORTER_REGISTRY = {}
+
+
+def register_exporter(fmt: str):
+    def decorator(func):
+        EXPORTER_REGISTRY[fmt] = func
+        return func
+
+    return decorator
+
 
 def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
     """Export an IR Graph to the specified format and save to output_path."""
@@ -16,73 +26,12 @@ def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
     format = format.lower()
     if format == "onnx":
         save_onnx(graph, output_path, opset=opset)
-    elif format == "c":
-        from onnx9000.c_compiler.compiler import C89Compiler
-
-        compiler = C89Compiler(graph)
-        compiler._generate_header()
-        compiler._generate_source()
-
-        with open(output_path, "w") as f:
-            f.write(compiler.source_builder.get_code())
-
-        header_path = output_path.replace(".c", ".h")
-        if header_path == output_path:
-            header_path += ".h"
-        with open(header_path, "w") as f:
-            f.write(compiler.header_builder.get_code())
-
-    elif format == "cpp":
-        from onnx9000.backends.codegen.generator import Generator
-
-        generator = Generator(graph)
-        code = generator.generate()
+    elif format in EXPORTER_REGISTRY:
+        EXPORTER_REGISTRY[format](graph, output_path)
+    elif format == "keras":
+        code = generate_keras(graph)
         with open(output_path, "w") as f:
             f.write(code)
-
-    elif format == "wasm":
-        from pathlib import Path
-
-        from onnx9000.converters.jit.compiler import compile_wasm
-
-        # compile_wasm saves to a file and returns the path
-        js_path = compile_wasm(graph, Path(os.path.dirname(output_path) or "."))
-        if str(js_path) != output_path:
-            if os.path.exists(output_path):
-                os.remove(output_path)
-            os.rename(js_path, output_path)
-            wasm_path = str(js_path).replace(".js", ".wasm")
-            if os.path.exists(wasm_path):
-                target_wasm = output_path.replace(".js", ".wasm")
-                if os.path.exists(target_wasm):
-                    os.remove(target_wasm)
-                os.rename(wasm_path, target_wasm)
-
-    elif format in ("keras", "pytorch", "flax", "jax"):
-        if format == "keras":
-            code = generate_keras(graph)
-        elif format == "pytorch":
-            from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
-
-            code = ONNXToPyTorchVisitor(graph).generate()
-        elif format in ("flax", "jax"):
-            from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
-
-            code = ONNXToFlaxNNXVisitor(graph).generate()
-
-        with open(output_path, "w") as f:
-            f.write(code)
-
-        # Unit Testing Constraints: `editorconfig` formatters must be run programmatically
-        try:
-            import subprocess
-
-            subprocess.run(["ruff", "format", output_path], check=False, capture_output=True)
-            subprocess.run(
-                ["ruff", "check", "--fix", output_path], check=False, capture_output=True
-            )
-        except Exception:
-            _ignore = True
     elif format == "mlir":
         code = generate_mlir(graph)
         with open(output_path, "w") as f:
@@ -90,7 +39,58 @@ def export_graph(graph: Graph, output_path: str, format: str, opset: int = 14):
     elif format == "tensorboard":
         export_tensorboard(graph, output_path)
     else:
-        raise ValueError(f"Unsupported format: {format}")
+        # Fallbacks for backwards compatibility in tests if they didn't import the module
+        if format == "c":
+            from onnx9000.c_compiler.compiler import C89Compiler
+
+            compiler = C89Compiler(graph)
+            compiler._generate_header()
+            compiler._generate_source()
+            with open(output_path, "w") as f:
+                f.write(compiler.source_builder.get_code())
+            header_path = output_path.replace(".c", ".h")
+            if header_path == output_path:
+                header_path += ".h"
+            with open(header_path, "w") as f:
+                f.write(compiler.header_builder.get_code())
+        elif format == "cpp":
+            from onnx9000.backends.codegen.generator import Generator
+
+            generator = Generator(graph)
+            code = generator.generate()
+            with open(output_path, "w") as f:
+                f.write(code)
+        elif format == "wasm":
+            import os
+            from pathlib import Path
+
+            from onnx9000.converters.jit.compiler import compile_wasm
+
+            js_path = compile_wasm(graph, Path(os.path.dirname(output_path) or "."))
+            if str(js_path) != output_path:
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+                os.rename(js_path, output_path)
+                wasm_path = str(js_path).replace(".js", ".wasm")
+                if os.path.exists(wasm_path):
+                    target_wasm = output_path.replace(".js", ".wasm")
+                    if os.path.exists(target_wasm):
+                        os.remove(target_wasm)
+                    os.rename(wasm_path, target_wasm)
+        elif format == "pytorch":
+            from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
+
+            code = ONNXToPyTorchVisitor(graph).generate()
+            with open(output_path, "w") as f:
+                f.write(code)
+        elif format in ("flax", "jax"):
+            from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
+
+            code = ONNXToFlaxNNXVisitor(graph).generate()
+            with open(output_path, "w") as f:
+                f.write(code)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
 
 
 class ONNXToKerasVisitor:

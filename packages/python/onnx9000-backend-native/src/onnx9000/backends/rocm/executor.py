@@ -21,6 +21,7 @@ from onnx9000.backends.rocm.bindings import (
     rocblas_handle,
 )
 from onnx9000.core.ir import Graph, Node
+from onnx9000.core.registry import register_op
 
 logger = logging.getLogger(__name__)
 
@@ -115,11 +116,16 @@ class Dispatcher:
         if not self.initialized:
             self._cpu_fallback_node(node)
             return
-        if node.op_type == "MatMul":
-            self._execute_matmul(node)
-        elif node.op_type in ["Add", "Sub", "Conv"]:
-            self._cpu_fallback_node(node)
-        else:
+
+        from onnx9000.core.exceptions import UnsupportedOpError
+        from onnx9000.core.registry import global_registry
+
+        try:
+            op_impl = global_registry.get_op(node.op_type, provider="rocm")
+            op_impl(self, node)
+        except RuntimeError:
+            raise
+        except Exception:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -158,3 +164,8 @@ class Dispatcher:
                 _hip_lib.hipStreamDestroy(self.stream)
             except Exception as e:
                 logger.debug(f"HIP stream destroy error: {e}")
+
+
+@register_op("MatMul", provider="rocm")
+def _rocm_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_matmul(node)

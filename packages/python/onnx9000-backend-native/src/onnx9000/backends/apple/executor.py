@@ -12,6 +12,7 @@ from onnx9000.backends.apple.bindings import (
 from onnx9000.backends.cpu.executor import CPUExecutionProvider as CPUExecutor
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as MemoryPlanner
 from onnx9000.core.ir import Graph, Node
+from onnx9000.core.registry import register_op
 
 logger = logging.getLogger(__name__)
 
@@ -123,11 +124,15 @@ class Dispatcher:
 
     def _execute_node(self, node: Node) -> None:
         """Dispatch a single node."""
-        if node.op_type == "MatMul":
-            self._execute_matmul(node)
-        elif node.op_type in ["Add", "Sub", "Mul"]:
-            self._execute_elementwise(node, node.op_type)
-        else:
+        from onnx9000.core.exceptions import UnsupportedOpError
+        from onnx9000.core.registry import global_registry
+
+        try:
+            op_impl = global_registry.get_op(node.op_type, provider="apple")
+            op_impl(self, node)
+        except RuntimeError:
+            raise
+        except Exception:
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -141,3 +146,23 @@ class Dispatcher:
             name = getattr(out_tensor, "name", out_tensor)
             results[name] = self._get_tensor(name)
         return results
+
+
+@register_op("MatMul", provider="apple")
+def _apple_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_matmul(node)
+
+
+@register_op("Add", provider="apple")
+def _apple_add(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node, "Add")
+
+
+@register_op("Sub", provider="apple")
+def _apple_sub(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node, "Sub")
+
+
+@register_op("Mul", provider="apple")
+def _apple_mul(dispatcher: Dispatcher, node: Node) -> None:
+    dispatcher._execute_elementwise(node, "Mul")

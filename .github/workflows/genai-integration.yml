@@ -1,1 +1,27 @@
 name: GenAI Integration
+
+on: [push, pull_request]
+
+jobs:
+  test-genai:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install dependencies
+        run: pnpm install && uv sync --all-extras
+      - name: Run GenAI Python Tests
+        run: uv run pytest packages/python/onnx9000-core/tests/genai/

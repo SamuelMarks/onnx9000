@@ -183,7 +183,7 @@ def generate_softmax(
 
     b.emit("#if defined(__wasm_simd128__)")
     b.emit("/* WASM SIMD128 Numerically stable Softmax reduction */")
-    b.emit("/* v128_t max_vec = wasm_f32x4_splat(-1e38f); ... */")
+    b.emit("/* v128_t max_vec = wasm_f32x4_splat(-1e38f);  */")
     b.emit("#endif")
 
     b.emit("int pre, post, d;")
