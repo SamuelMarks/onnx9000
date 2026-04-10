@@ -2,7 +2,7 @@
 name = "onnx9000-tvm"
 version = "1.0.0"
 description = "Apache TVM (Ahead-of-Time Web Compiler) implementation"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core"
 ]

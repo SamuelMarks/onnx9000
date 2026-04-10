@@ -22,7 +22,7 @@ jobs:
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Install python dependencies
-        run: uv sync --all-extras
+        run: uv sync --all-extras --all-packages
       - name: Install workspace dependencies
         run: pnpm install
       - name: Run Tests

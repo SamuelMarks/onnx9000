@@ -2,7 +2,7 @@
 name = "onnx9000-cli"
 version = "1.0.0"
 description = "Unified CLI for ONNX9000 Ecosystem"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core",
     "onnx9000-backend-native",

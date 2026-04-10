@@ -2,7 +2,7 @@
 name = "onnx9000-toolkit"
 version = "1.0.0"
 description = "Eager Execution, Autograd, Scripting, and Utility APIs"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core",
     "onnx9000-optimizer"

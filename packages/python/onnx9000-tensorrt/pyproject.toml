@@ -2,7 +2,7 @@
 name = "onnx9000-tensorrt"
 version = "1.0.0"
 description = "Zero-Build TRT FFI Parser"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["onnx9000-core"]
 
 [build-system]

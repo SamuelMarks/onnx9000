@@ -2,7 +2,7 @@
 name = "onnx9000-zoo"
 version = "1.0.0"
 description = "Zoo synchronization and model catalog"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core",
     "huggingface-hub",

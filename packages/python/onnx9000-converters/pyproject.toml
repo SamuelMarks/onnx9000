@@ -2,7 +2,7 @@
 name = "onnx9000-converters"
 version = "1.0.0"
 description = "PyTorch, TensorFlow, Scikit-Learn, and Legacy Model to ONNX Exporters"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core"
 ]

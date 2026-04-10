@@ -45,7 +45,7 @@ jobs:
       - name: Install uv and Sphinx
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv sync --all-extras
+          uv sync --all-extras --all-packages
           uv pip install -r requirements-doc.txt --system --break-system-packages
           
       # 318. Verify CI/CD pipeline triggers the TS frontend build

@@ -18,6 +18,66 @@ Our mission: **Absolute Portability.** An ONNX model should parse, optimize, tra
 
 `onnx9000` replaces over 40+ disparate tools with a unified Intermediate Representation (IR). By decoupling the IR from the execution backend, we achieve seamless interoperability across the entire ML lifecycle.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Google Sans Normal', 'primaryColor': '#ffffff', 'primaryTextColor': '#20344b', 'primaryBorderColor': '#4285f4', 'lineColor': '#20344b', 'secondaryColor': '#57caff', 'tertiaryColor': '#5cdb6d', 'clusterBkg': '#ffffff', 'clusterBorder': '#20344b'}}}%%
+flowchart TD
+    classDef default fill:#ffffff,color:#20344b,stroke:#4285f4,stroke-width:2px,font-family:'Google Sans Normal';
+    classDef subhead fill:#f9ab00,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal',font-size:14px;
+    classDef core fill:#34a853,color:#ffffff,stroke:#20344b,stroke-width:3px,font-family:'Google Sans Medium',font-size:18px,font-weight:bold;
+    classDef execution fill:#ea4335,color:#ffffff,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+    classDef export fill:#57caff,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+    classDef serving fill:#ffd427,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+
+    subgraph IN["📥 1. Ingestion (Sources)"]
+        direction TB
+        F_ML("Frameworks<br/>(PyTorch, TF, JAX, Keras)"):::default
+        F_WT("Model Weights<br/>(.onnx, .safetensors, .gguf)"):::default
+    end
+
+    subgraph CORE["⚙️ 2. Core Hub: Optimization & Simplification"]
+        direction TB
+        IR(("onnx9000 Core IR<br/>(Unified AST)")):::core
+        OPT["Optimization & Simplification<br/>(Pruning, Quantization, Folding)"]:::subhead
+        MEM["Static Memory Planner<br/>(Zero-Malloc Arena)"]:::subhead
+        AUT["AOT Autograd<br/>(Training Generation)"]:::subhead
+        
+        IR --> OPT
+        OPT --> MEM
+        OPT <--> AUT
+    end
+
+    subgraph N2N["🔄 3. N-to-N Framework Conversion & Export-Only"]
+        direction TB
+        E_CODE["N-to-N Conversion<br/>(Translate to PyTorch, TF.js, Jax code)"]:::export
+        E_BIN["Export-Only Modalities<br/>(Standalone C, C++23, WASM)"]:::export
+        E_MOB["Mobile & Edge Formats<br/>(TFLite, CoreML, OpenVINO)"]:::export
+    end
+
+    subgraph INF_COMP["⚡ 4. Compilation & Inference"]
+        direction TB
+        C_TR["Compilation<br/>(IREE MLIR, Triton Kernels)"]:::execution
+        I_WEB["Web-First Inference<br/>(WebGPU, WebNN, WGSL, WASM)"]:::execution
+        I_NAT["Hardware-Native Inference<br/>(Zero-copy FFI to CUDA, Accelerate)"]:::execution
+    end
+
+    subgraph SERV["🌐 5. Serving & Distributed"]
+        direction TB
+        S_SRV["Serverless Serving<br/>(Triton over Bun, Deno, Cloudflare)"]:::serving
+        S_P2P["Distributed Inference & Training<br/>(WebRTC P2P Swarms)"]:::serving
+    end
+
+    %% Connections
+    F_ML -->|"Parse/Transpile"| IR
+    F_WT -->|"Native Decode"| IR
+    
+    %% Hub routing
+    MEM -->|"Code Gen / Transpile"| N2N
+    MEM -->|"Execute / Compile"| INF_COMP
+
+    %% Serving paths
+    INF_COMP -->|"Deploy"| SERV
+```
+
 ### 🐍 Python & 🌐 TypeScript Integration
 
 The ecosystem is divided into highly cohesive, modular packages managed by `uv` (Python) and `pnpm` workspaces (JS):

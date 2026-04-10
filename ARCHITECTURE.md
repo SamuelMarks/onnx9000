@@ -18,83 +18,104 @@ To understand the architecture, we must understand the crisis it solves. The tra
 The system operates as a universal, highly decoupled N-to-N converter and execution engine.
 
 ```mermaid
-graph TD;
-    subgraph "1. Ingestion (Frontends & Parsers)"
-        A["Frameworks: Torch, TF, Keras, JAX"] -->|"Transpiles to"| C("onnx9000-core IR AST");
-        B["Raw Weights: .onnx, .safetensors, .h5"] -->|"Parses to"| C;
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Google Sans Normal', 'primaryColor': '#ffffff', 'primaryTextColor': '#20344b', 'primaryBorderColor': '#4285f4', 'lineColor': '#20344b', 'secondaryColor': '#57caff', 'tertiaryColor': '#5cdb6d', 'clusterBkg': '#ffffff', 'clusterBorder': '#20344b'}}}%%
+flowchart TD
+    classDef default fill:#ffffff,color:#20344b,stroke:#4285f4,stroke-width:2px,font-family:'Google Sans Normal';
+    classDef subhead fill:#f9ab00,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal',font-size:14px;
+    classDef core fill:#34a853,color:#ffffff,stroke:#20344b,stroke-width:3px,font-family:'Google Sans Medium',font-size:18px,font-weight:bold;
+    classDef execution fill:#ea4335,color:#ffffff,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+    classDef export fill:#57caff,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+    classDef serving fill:#ffd427,color:#20344b,stroke:#20344b,stroke-width:2px,font-family:'Roboto Mono Normal';
+
+    subgraph IN["📥 1. Ingestion (Sources)"]
+        direction TB
+        F_ML("Frameworks<br/>(PyTorch, TF, JAX, Keras)"):::default
+        F_WT("Model Weights<br/>(.onnx, .safetensors, .gguf)"):::default
     end
 
-    subgraph "2. Transformation (IR & Optimizer)"
-        C --> D["Optimizer Suite\n(Surgeon, Simplifier, Quantization)"];
-        D --> AOT["AOT Autograd\n(Training generation)"];
-        AOT --> D;
+    subgraph CORE["⚙️ 2. Core Hub: Optimization & Simplification"]
+        direction TB
+        IR(("onnx9000 Core IR<br/>(Unified AST)")):::core
+        OPT["Optimization & Simplification<br/>(Pruning, Quantization, Folding)"]:::subhead
+        MEM["Static Memory Planner<br/>(Zero-Malloc Arena)"]:::subhead
+        AUT["AOT Autograd<br/>(Training Generation)"]:::subhead
+        
+        IR --> OPT
+        OPT --> MEM
+        OPT <--> AUT
     end
 
-    subgraph "3. Execution & Codegen (Backends)"
-        D --> E{"Execution Dispatcher"};
-        E -->|"Native FFI"| F["Bare Metal: CUDA, Accelerate, BLAS"];
-        E -->|"Web-First"| G["Browser: WebGPU, WebNN, WASM SIMD"];
-        E -->|"AOT Compiler"| H["Codegen: IREE, C++23, Triton"];
+    subgraph N2N["🔄 3. N-to-N Framework Conversion & Export-Only"]
+        direction TB
+        E_CODE["N-to-N Conversion<br/>(Translate to PyTorch, TF.js, Jax code)"]:::export
+        E_BIN["Export-Only Modalities<br/>(Standalone C, C++23, WASM)"]:::export
+        E_MOB["Mobile & Edge Formats<br/>(TFLite, CoreML, OpenVINO)"]:::export
     end
 
-    subgraph "4. Universal Translation (Exporters)"
-        D --> I{"Exporters"};
-        I -->|"Mobile"| J["TFLite, CoreML"];
-        I -->|"LLMs"| K["GGUF (llama.cpp)"];
-        I -->|"Source Code"| L["PyTorch / TF.js Code"];
+    subgraph INF_COMP["⚡ 4. Compilation & Inference"]
+        direction TB
+        C_TR["Compilation<br/>(IREE MLIR, Triton Kernels)"]:::execution
+        I_WEB["Web-First Inference<br/>(WebGPU, WebNN, WGSL, WASM)"]:::execution
+        I_NAT["Hardware-Native Inference<br/>(Zero-copy FFI to CUDA, Accelerate)"]:::execution
     end
+
+    subgraph SERV["🌐 5. Serving & Distributed"]
+        direction TB
+        S_SRV["Serverless Serving<br/>(Triton over Bun, Deno, Cloudflare)"]:::serving
+        S_P2P["Distributed Inference & Training<br/>(WebRTC P2P Swarms)"]:::serving
+    end
+
+    %% Connections
+    F_ML -->|"Parse/Transpile"| IR
+    F_WT -->|"Native Decode"| IR
+    
+    %% Hub routing
+    MEM -->|"Code Gen / Transpile"| N2N
+    MEM -->|"Execute / Compile"| INF_COMP
+
+    %% Serving paths
+    INF_COMP -->|"Deploy"| SERV
 ```
 
 ---
 
-## 3. Deep Dive: Component Lifecycle
+## 3. Deep Dive: The 5-Phase Component Lifecycle
 
-When presenting, walk through the lifecycle of a model as it moves through the `onnx9000` ecosystem.
+When presenting, walk through the lifecycle of a model as it moves through the `onnx9000` ecosystem. This lifecycle strictly follows the five phases outlined in the macro architecture.
 
-### A. The Ingestion Layer
+### A. Phase 1: Ingestion (Sources)
 Located in `packages/python/onnx9000-converters` and the core parsers.
-- **Native Decoders:** Instead of relying on the official C++ ONNX bindings, `onnx9000` ships with pure Python/TS decoders for Protobuf and FlatBuffers.
-- **Closed-form Parsing:** Capable of perfectly ingesting PyTorch AOTAutograd (`torch.export`), JAX `ClosedJaxpr`, and Keras 3 Functional graphs into the unified IR without requiring the original frameworks to be installed.
+- **Native Decoders:** Instead of relying on official C++ bindings, `onnx9000` ships with pure Python/TS decoders for Protobuf, FlatBuffers, Safetensors, and GGUF.
+- **Closed-form Parsing:** Capable of perfectly ingesting PyTorch AOTAutograd (`torch.export`), JAX `ClosedJaxpr`, and Keras 3 Functional graphs into the unified IR without requiring the original frameworks at runtime.
 - **Rescuing Legacy Models:** Bridges `.caffemodel`, `.pb`, and `.h5` into the modern era.
 
-### B. The Unified Core IR
-Located in `@onnx9000/core` (`packages/js/core` and `packages/python/onnx9000-core`). The Intermediate Representation (`Graph`, `Node`, `Tensor`, `ValueInfo`) is the beating heart of the project.
-- **Topological Guarantee:** Nodes are strictly ordered.
-- **Shape/Type Strictness:** Every edge has concretely resolved shapes and `dtype`.
-- **Zero-Stub Primitive Registry:** Full mapping of all core mathematical primitives with zero stubs.
+### B. Phase 2: Core Hub (Optimization & Simplification)
+Located in `@onnx9000/core` and `onnx9000-optimizer`.
+- **The Unified Core IR:** A strict N-dimensional AST where every edge has concretely resolved shapes and `dtype`. Features a zero-stub primitive registry.
+- **Optimization & Simplification:** In-memory graph surgery performing algebraic simplification, constant folding, sparsity pruning, and INT4/INT8 quantization.
+- **Static Memory Arenas:** A `MemoryPlanner` calculates exact tensor lifespans AOT. It assigns offsets within a single contiguous `MemoryArena`, guaranteeing zero dynamic allocations (`malloc`/`new`) at runtime.
+- **AOT Autograd:** Symbolic reverse-mode autograd generates the backward pass directly into the static graph, enabling training without a separate engine.
 
-### C. The Optimizer & Memory Planner
-Before execution, the graph undergoes extensive surgery (`onnx9000-optimizer`):
-- **Algebraic Simplification:** Constant folding, sparsity pruning, and INT4/INT8 quantization.
-- **Memory Arena Planning:** A `MemoryPlanner` calculates exact tensor lifespans AOT. It assigns offsets within a single contiguous `MemoryArena`, guaranteeing zero dynamic allocations at runtime.
+### C. Phase 3: N-to-N Framework Conversion & Export-Only
+`onnx9000` is not just a runtime; it is a universal translator (`@onnx9000/compiler` and `onnx9000-exporters`).
+- **N-to-N Code Generation:** Translates the optimized IR back into idiomatic framework source code (e.g., generating PyTorch `nn.Module`, TensorFlow.js code, or Jax models).
+- **Export-Only Modalities:** Generates standalone, zero-dependency C99, C++23, or WASM binaries tailored for embedded systems (TinyML) and microcontrollers.
+- **Mobile & Edge:** Seamless translation into hardware-specific formats like TFLite, Apple CoreML, and Intel OpenVINO.
 
-### D. Execution & Compilation
+### D. Phase 4: Compilation & Inference
+Execution is heavily decoupled into distinct modalities depending on the deployment target.
+- **Compilation:** Maps IR directly into MLIR (via IREE) for bytecode generation, or emits optimized `@triton.jit` kernels for maximum throughput on Nvidia/AMD GPUs.
+- **Web-First Inference (`@onnx9000/backend-web`):** Executes dynamically compiled WebGPU compute shaders (WGSL), WebNN API calls (direct NPU access), and WASM SIMD instructions right in the browser.
+- **Hardware-Native Inference (`onnx9000-backend-native`):** Uses ultra-lightweight Python FFI (`ctypes`) to invoke BLAS/CUDA endpoints directly on raw memory arenas, bypassing traditional C++ runtime wrappers entirely.
 
-**Web & Edge (`@onnx9000/backend-web`)**
-- **WebGPU Shaders (WGSL):** Dynamically compiled compute pipelines for the browser.
-- **WebNN API:** Direct NPU access via `navigator.ml`.
-- **Serverless Edge:** High-performance serving for Cloudflare Workers, Bun, and Deno.
-
-**Hardware Native (`onnx9000-backend-native`)**
-- Uses lightweight Python FFI (`ctypes`) dispatch to invoke BLAS/CUDA endpoints directly on raw memory arenas, completely bypassing traditional C++ runtime wrappers.
-
-**The Codegen Engine (`@onnx9000/compiler`)**
-- **C++ / TinyML:** Maps IR into standalone, zero-dependency C++23 source code (`onnx9000-c-compiler`).
-- **Web-MLIR (IREE):** Compiles graphs into `.wvm` bytecodes.
-- **Triton:** Generates optimized `@triton.jit` kernels for Nvidia GPUs.
+### E. Phase 5: Serving & Distributed
+The final mile of ML deployment, bringing models to the edge and the swarm.
+- **Serverless Serving:** Highly optimized serving wrappers utilizing Triton semantics, built natively for edge-runtimes like Cloudflare Workers, Bun, and Deno.
+- **Distributed MLOps (The Frontier):** Planet-Scale P2P Browser Swarms. Utilizes WebRTC DataChannels (`onnx9000-network`) to split workloads across edge devices via a `DistributedOptimizer` over Ring-AllReduce—completely eliminating centralized inference servers.
 
 ---
 
-## 4. Advanced Subsystems
-
-### Autograd & On-Device Training
-Found in `packages/python/onnx9000-toolkit`. Unlike runtimes that require a separate training engine, `onnx9000` features **AOT symbolic reverse-mode autograd**. It walks the IR DAG backwards, generating the backward pass directly into a static ONNX graph. This enables on-device federated training right in the browser.
-
-### The Universal IDE & Tooling
+## 4. Universal IDE & Tooling
+While not strictly part of the inference execution pipeline, `onnx9000` provides foundational tooling for the ML engineering lifecycle:
 - **`apps/netron-ui`**: A client-side, WebGL-accelerated interactive graph editor capable of parsing >10GB models at 60FPS.
-- **Universal Drop-ins**: `onnx9000` provides API shims (`@onnx9000/tfjs-shim`) to transparently replace `@tensorflow/tfjs` and other legacy tools.
-
-### Distributed MLOps (The Frontier)
-The future of `onnx9000` is **Planet-Scale P2P Browser Swarms**.
-- **WebRTC Transport:** Utilizing DataChannels for clustering web browsers (`onnx9000-network`).
-- **Distributed Inference & Training:** Splitting workloads across edge devices via a `DistributedOptimizer` over Ring-AllReduce without centralized servers.
+- **Universal Drop-ins**: API shims (`@onnx9000/tfjs-shim`) transparently replace `@tensorflow/tfjs` and other legacy tools within existing projects to incrementally bring the `onnx9000` speedup to legacy codebases.

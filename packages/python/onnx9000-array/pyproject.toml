@@ -2,7 +2,7 @@
 name = "onnx9000-array"
 version = "1.0.0"
 description = "Web-Native NumPy/Eager API for ONNX"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core",
     "numpy"

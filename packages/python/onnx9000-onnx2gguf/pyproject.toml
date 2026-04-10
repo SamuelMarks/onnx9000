@@ -2,7 +2,7 @@
 name = "onnx9000-onnx2gguf"
 version = "1.0.0"
 description = "Zero-dependency GGUF Exporter for ONNX9000"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "onnx9000-core",
     "onnx9000-toolkit"
