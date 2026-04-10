@@ -186,7 +186,7 @@ class Dispatcher:
         from onnx9000.core.registry import global_registry
 
         try:
-            op_impl = global_registry.get_op(node.op_type, provider="cuda")
+            op_impl = global_registry.get_op("", node.op_type, provider="cuda")
             op_impl(self, node)
         except RuntimeError:
             raise
@@ -226,21 +226,21 @@ class Dispatcher:
                 logger.debug(f"CUDA stream destroy error: {e}")
 
 
-@register_op("MatMul", provider="cuda")
+@register_op("", "MatMul", provider="cuda")
 def _cuda_matmul(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_matmul(node)
 
 
-@register_op("Add", provider="cuda")
+@register_op("", "Add", provider="cuda")
 def _cuda_add(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node)
 
 
-@register_op("Sub", provider="cuda")
+@register_op("", "Sub", provider="cuda")
 def _cuda_sub(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node)
 
 
-@register_op("Mul", provider="cuda")
+@register_op("", "Mul", provider="cuda")
 def _cuda_mul(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node)

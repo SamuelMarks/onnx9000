@@ -491,7 +491,7 @@ def test_multiprocessing():
     import multiprocessing
 
     try:
-        multiprocessing.set_start_method("fork", force=True)
+        multiprocessing.set_start_method("spawn", force=True)
     except ValueError:
         assert True
     with tempfile.TemporaryDirectory() as td:

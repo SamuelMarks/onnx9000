@@ -6,7 +6,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import register_op
 
 
-@register_op("add", "jax")
+@register_op("jax", "add")
 def _map_jax_add_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """Execute the _map_jax_add_prim operation."""
     return Node(
@@ -17,7 +17,7 @@ def _map_jax_add_prim(inputs: list[str], outputs: list[str], params: dict[str, A
     )
 
 
-@register_op("mul", "jax")
+@register_op("jax", "mul")
 def _map_jax_mul_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """Execute the _map_jax_mul_prim operation."""
     return Node(
@@ -28,7 +28,7 @@ def _map_jax_mul_prim(inputs: list[str], outputs: list[str], params: dict[str, A
     )
 
 
-@register_op("dot_general", "jax")
+@register_op("jax", "dot_general")
 def _map_jax_dot_general_prim(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
@@ -41,7 +41,7 @@ def _map_jax_dot_general_prim(
     )
 
 
-@register_op("broadcast_in_dim", "jax")
+@register_op("jax", "broadcast_in_dim")
 def _map_jax_broadcast_in_dim_prim(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
@@ -55,7 +55,7 @@ def _map_jax_broadcast_in_dim_prim(
     )
 
 
-@register_op("xla_pmap", "jax")
+@register_op("jax", "xla_pmap")
 def _map_jax_xla_pmap_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """Execute the _map_jax_xla_pmap_prim operation."""
     return Node(
@@ -67,7 +67,7 @@ def _map_jax_xla_pmap_prim(inputs: list[str], outputs: list[str], params: dict[s
     )
 
 
-@register_op("grad_core", "jax")
+@register_op("jax", "grad_core")
 def _map_jax_grad_core_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """Execute the _map_jax_grad_core_prim operation."""
     return Node(
@@ -78,7 +78,7 @@ def _map_jax_grad_core_prim(inputs: list[str], outputs: list[str], params: dict[
     )
 
 
-@register_op("sub", "jax")
+@register_op("jax", "sub")
 def _map_jax_sub_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax sub prim."""
     return Node(
@@ -89,7 +89,7 @@ def _map_jax_sub_prim(inputs: list[str], outputs: list[str], params: dict[str, A
     )
 
 
-@register_op("div", "jax")
+@register_op("jax", "div")
 def _map_jax_div_prim(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax div prim."""
     return Node(
@@ -100,7 +100,7 @@ def _map_jax_div_prim(inputs: list[str], outputs: list[str], params: dict[str, A
     )
 
 
-@register_op("conv_general_dilated", "jax")
+@register_op("jax", "conv_general_dilated")
 def _map_jax_conv_general_dilated(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
@@ -131,7 +131,7 @@ def _map_jax_conv_general_dilated(
     )
 
 
-@register_op("reduce_sum", "jax")
+@register_op("jax", "reduce_sum")
 def _map_jax_reduce_sum(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax reduce sum."""
     return Node(
@@ -143,7 +143,7 @@ def _map_jax_reduce_sum(inputs: list[str], outputs: list[str], params: dict[str,
     )
 
 
-@register_op("reduce_max", "jax")
+@register_op("jax", "reduce_max")
 def _map_jax_reduce_max(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax reduce max."""
     return Node(
@@ -155,7 +155,7 @@ def _map_jax_reduce_max(inputs: list[str], outputs: list[str], params: dict[str,
     )
 
 
-@register_op("reduce_min", "jax")
+@register_op("jax", "reduce_min")
 def _map_jax_reduce_min(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax reduce min."""
     return Node(
@@ -167,7 +167,7 @@ def _map_jax_reduce_min(inputs: list[str], outputs: list[str], params: dict[str,
     )
 
 
-@register_op("reduce_prod", "jax")
+@register_op("jax", "reduce_prod")
 def _map_jax_reduce_prod(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax reduce prod."""
     return Node(
@@ -179,7 +179,7 @@ def _map_jax_reduce_prod(inputs: list[str], outputs: list[str], params: dict[str
     )
 
 
-@register_op("reduce_window_max", "jax")
+@register_op("jax", "reduce_window_max")
 def _map_jax_reduce_window_max(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
@@ -197,7 +197,7 @@ def _map_jax_reduce_window_max(
     )
 
 
-@register_op("reduce_window_sum", "jax")
+@register_op("jax", "reduce_window_sum")
 def _map_jax_reduce_window_sum(
     inputs: list[str], outputs: list[str], params: dict[str, Any]
 ) -> Node:
@@ -215,7 +215,7 @@ def _map_jax_reduce_window_sum(
     )
 
 
-@register_op("pad", "jax")
+@register_op("jax", "pad")
 def _map_jax_pad(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax pad."""
     return Node(
@@ -227,7 +227,7 @@ def _map_jax_pad(inputs: list[str], outputs: list[str], params: dict[str, Any]) 
     )
 
 
-@register_op("slice", "jax")
+@register_op("jax", "slice")
 def _map_jax_slice(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax slice."""
     return Node(
@@ -243,7 +243,7 @@ def _map_jax_slice(inputs: list[str], outputs: list[str], params: dict[str, Any]
     )
 
 
-@register_op("dynamic_slice", "jax")
+@register_op("jax", "dynamic_slice")
 def _map_jax_dynamic_slice(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax dynamic slice."""
     return Node(
@@ -255,7 +255,7 @@ def _map_jax_dynamic_slice(inputs: list[str], outputs: list[str], params: dict[s
     )
 
 
-@register_op("gather", "jax")
+@register_op("jax", "gather")
 def _map_jax_gather(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax gather."""
     return Node(
@@ -267,7 +267,7 @@ def _map_jax_gather(inputs: list[str], outputs: list[str], params: dict[str, Any
     )
 
 
-@register_op("scatter", "jax")
+@register_op("jax", "scatter")
 def _map_jax_scatter(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax scatter."""
     return Node(
@@ -279,7 +279,7 @@ def _map_jax_scatter(inputs: list[str], outputs: list[str], params: dict[str, An
     )
 
 
-@register_op("cond", "jax")
+@register_op("jax", "cond")
 def _map_jax_cond(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax cond."""
     return Node(
@@ -294,7 +294,7 @@ def _map_jax_cond(inputs: list[str], outputs: list[str], params: dict[str, Any])
     )
 
 
-@register_op("scan", "jax")
+@register_op("jax", "scan")
 def _map_jax_scan(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax scan."""
     return Node(
@@ -306,7 +306,7 @@ def _map_jax_scan(inputs: list[str], outputs: list[str], params: dict[str, Any])
     )
 
 
-@register_op("while_loop", "jax")
+@register_op("jax", "while_loop")
 def _map_jax_while_loop(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
     """map jax while loop."""
     return Node(

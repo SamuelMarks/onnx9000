@@ -8,14 +8,14 @@ from onnx9000.core.registry import global_registry
 
 def test_jax_mapped():
     """Docstring for D103."""
-    op = global_registry.get_op("add", "jax")
+    op = global_registry.get_op("jax", "add")
     node = op(inputs=["x", "y"], outputs=["z"], params={})
     assert node.op_type == "Add"
 
 
 def test_pytorch_mapped():
     """Docstring for D103."""
-    op = global_registry.get_op("aten.convolution.default", "pytorch")
+    op = global_registry.get_op("pytorch", "aten.convolution.default")
     node = op(inputs=["x", "w"], outputs=["z"], params={})
     assert node.op_type == "Conv"
 

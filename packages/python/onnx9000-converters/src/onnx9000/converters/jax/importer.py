@@ -47,7 +47,7 @@ class JaxprImporter:
             outputs = [o["name"] for o in eqn.get("outvars", [])]
             params = eqn.get("params", {})
             try:
-                op_func = global_registry.get_op(primitive, "jax")
+                op_func = global_registry.get_op("jax", primitive)
                 n = op_func(inputs=inputs, outputs=outputs, params=params)
             except Exception:
                 n = Node(

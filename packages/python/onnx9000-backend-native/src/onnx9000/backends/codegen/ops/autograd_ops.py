@@ -8,7 +8,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("ReluGrad")
+@registry.register_op("", "ReluGrad")
 def generate_relu_grad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_relu_grad method or operation."""
     grad_out = ctx.get_tensor_name(node.inputs[0])
@@ -25,7 +25,7 @@ def generate_relu_grad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
     return f"\n        // ReluGrad\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {grad_in}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {fwd_in}.shape);\n        {pragma}\n        for (int64_t i = 0; i < {fwd_in}.size(); ++i) {{\n            {grad_in}.data[i] = ({fwd_in}.data[i] > 0.0f) ? {grad_out}.data[i] : 0.0f;\n        }}\n"
 
 
-@registry.register_op("SGDOptimizer")
+@registry.register_op("", "SGDOptimizer")
 def generate_sgd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sgd method or operation."""
     param = ctx.get_tensor_name(node.inputs[0])
@@ -35,7 +35,7 @@ def generate_sgd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return f"\n        // SGDOptimizer\n        {pragma}\n        for (int64_t i = 0; i < {param}.size(); ++i) {{\n            {param}.data[i] -= {lr}f * {grad}.data[i];\n        }}\n"
 
 
-@registry.register_op("AdamWOptimizer")
+@registry.register_op("", "AdamWOptimizer")
 def generate_adamw(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_adamw method or operation."""
     param = ctx.get_tensor_name(node.inputs[0])

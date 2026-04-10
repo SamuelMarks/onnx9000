@@ -14,7 +14,7 @@ def test_all_codegen_ops() -> None:
     gen = Generator(g)
 
     # Register a dummy ML op to hit the continue branches
-    global_registry.register_op("TreeEnsembleClassifier", domain="ai.onnx.ml")(lambda n, c: "")
+    global_registry.register_op("ai.onnx.ml", "TreeEnsembleClassifier")(lambda n, c: "")
 
     # Pre-populate some tensors so get_tensor_name works if it tries to lookup
     for i in range(10):
@@ -157,19 +157,19 @@ def test_all_codegen_ops_extras() -> None:
 
     # Mod int, fmod=0
     n = Node("Mod", ["in0", "in1"], ["out0"], attributes={"fmod": Attribute("fmod", "INT", 0)})
-    global_registry.get_op("Mod")(n, gen)
+    global_registry.get_op("", "Mod")(n, gen)
 
     # Mod int, fmod=1
     n = Node("Mod", ["in0", "in1"], ["out0"], attributes={"fmod": Attribute("fmod", "INT", 1)})
-    global_registry.get_op("Mod")(n, gen)
+    global_registry.get_op("", "Mod")(n, gen)
 
     # Mod float, fmod=0
     n = Node("Mod", ["inf0", "inf1"], ["outf0"], attributes={"fmod": Attribute("fmod", "INT", 0)})
-    global_registry.get_op("Mod")(n, gen)
+    global_registry.get_op("", "Mod")(n, gen)
 
     # Mod float, fmod=1
     n = Node("Mod", ["inf0", "inf1"], ["outf0"], attributes={"fmod": Attribute("fmod", "INT", 1)})
-    global_registry.get_op("Mod")(n, gen)
+    global_registry.get_op("", "Mod")(n, gen)
 
     # BitShift RIGHT
     n = Node(
@@ -178,24 +178,24 @@ def test_all_codegen_ops_extras() -> None:
         ["out0"],
         attributes={"direction": Attribute("direction", "STRING", b"RIGHT")},
     )
-    global_registry.get_op("BitShift")(n, gen)
+    global_registry.get_op("", "BitShift")(n, gen)
 
     # Attention empty outputs
     n = Node("Attention", ["in0"], ["", "out0"])
-    global_registry.get_op("Attention")(n, gen)
+    global_registry.get_op("", "Attention")(n, gen)
 
     # Constant with value tensor
     tval = Tensor("t", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32))
     n = Node("Constant", [], ["outf0"], attributes={"value": Attribute("value", "TENSOR", tval)})
-    global_registry.get_op("Constant")(n, gen)
+    global_registry.get_op("", "Constant")(n, gen)
 
     tval2 = Tensor("t", (1,), DType.INT32, data=np.array([1], dtype=np.int32))
     n = Node("Constant", [], ["out0"], attributes={"value": Attribute("value", "TENSOR", tval2)})
-    global_registry.get_op("Constant")(n, gen)
+    global_registry.get_op("", "Constant")(n, gen)
 
     # RandomNormal
     n = Node("RandomNormal", [], ["outf0"])
-    global_registry.get_op("RandomNormal")(n, gen)
+    global_registry.get_op("", "RandomNormal")(n, gen)
 
     from onnx9000.backends.codegen.ops.tensor_ops import generate_same_shape_type_ops
 
@@ -205,4 +205,4 @@ def test_all_codegen_ops_extras() -> None:
     n = Node(
         "Constant", [], ["outf0"], attributes={"value": Attribute("value", "TENSOR", tval_list)}
     )
-    global_registry.get_op("Constant")(n, gen)
+    global_registry.get_op("", "Constant")(n, gen)

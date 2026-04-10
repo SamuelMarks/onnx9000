@@ -4,7 +4,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("SequenceEmpty")
+@registry.register_op("", "SequenceEmpty")
 def generate_sequence_empty(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_empty method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -18,7 +18,7 @@ def generate_sequence_empty(node: Node, ctx: "onnx9000.backends.codegen.Generato
     return f"\n        // SequenceEmpty (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("SequenceErase")
+@registry.register_op("", "SequenceErase")
 def generate_sequence_erase(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_erase method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -32,7 +32,7 @@ def generate_sequence_erase(node: Node, ctx: "onnx9000.backends.codegen.Generato
     return f"\n        // SequenceErase (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("SequenceInsert")
+@registry.register_op("", "SequenceInsert")
 def generate_sequence_insert(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_insert method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -46,7 +46,7 @@ def generate_sequence_insert(node: Node, ctx: "onnx9000.backends.codegen.Generat
     return f"\n        // SequenceInsert (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("SequenceLength")
+@registry.register_op("", "SequenceLength")
 def generate_sequence_length(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_length method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -55,7 +55,7 @@ def generate_sequence_length(node: Node, ctx: "onnx9000.backends.codegen.Generat
     return f"\n        // SequenceLength (Mock)\n        /* preallocated */\n        onnx9000::Tensor<int64_t> {out}(reinterpret_cast<int64_t*>((_global_arena.data() + {offset})), {{1}});\n        {out}.data[0] = 0; // Mock empty\n    "
 
 
-@registry.register_op("SequenceMap")
+@registry.register_op("", "SequenceMap")
 def generate_sequence_map(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_map method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -69,7 +69,7 @@ def generate_sequence_map(node: Node, ctx: "onnx9000.backends.codegen.Generator"
     return f"\n        // SequenceMap (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ConcatFromSequence")
+@registry.register_op("", "ConcatFromSequence")
 def generate_concat_from_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_concat_from_sequence method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -84,7 +84,7 @@ def generate_concat_from_sequence(node: Node, ctx: "onnx9000.backends.codegen.Ge
     return f"\n        // ConcatFromSequence (Mock)\n        std::vector<int64_t> {out}_shape = {{1}}; // Fallback shape if negative dimensions leak\n        int64_t {out}_size = 1;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("SplitToSequence")
+@registry.register_op("", "SplitToSequence")
 def generate_split_to_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_split_to_sequence method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -98,7 +98,7 @@ def generate_split_to_sequence(node: Node, ctx: "onnx9000.backends.codegen.Gener
     return f"\n        // SplitToSequence (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("SequenceConstruct")
+@registry.register_op("", "SequenceConstruct")
 def generate_sequence_construct(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_construct method or operation."""
     ctx.get_tensor_name(node.outputs[0])
@@ -111,7 +111,7 @@ def generate_sequence_construct(node: Node, ctx: "onnx9000.backends.codegen.Gene
     return "\n        // SequenceConstruct (Mock)\n        /* preallocated */\n"
 
 
-@registry.register_op("SequenceAt")
+@registry.register_op("", "SequenceAt")
 def generate_sequence_at(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sequence_at method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])

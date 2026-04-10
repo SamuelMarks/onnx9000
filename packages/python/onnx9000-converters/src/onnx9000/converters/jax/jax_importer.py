@@ -84,7 +84,7 @@ class JAXImporter:
             from onnx9000.core.registry import global_registry
 
             try:
-                op_func = global_registry.get_op(eqn.primitive.name, "jax")
+                op_func = global_registry.get_op("jax", eqn.primitive.name)
                 node = op_func(inputs=in_names, outputs=out_names, params=params)
             except Exception:
                 # Fallback to uppercase

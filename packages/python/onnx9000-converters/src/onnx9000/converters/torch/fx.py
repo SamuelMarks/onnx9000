@@ -139,7 +139,7 @@ class FXParser:
             output_tensor = Tensor(name=node.name)
 
             try:
-                op_func = global_registry.get_op(mapped_op, "torch")
+                op_func = global_registry.get_op("torch", mapped_op)
                 node_ir = op_func(inputs=inputs, outputs=[output_tensor], params=node.kwargs)
             except Exception:
                 node_ir = Node(

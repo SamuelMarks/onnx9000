@@ -15,7 +15,9 @@ def test_session_bytes_and_empty() -> None:
     g.add_tensor(Tensor("T", (1,), DType.FLOAT32, is_initializer=True))
     g.initializers.append("T")
     b = to_bytes(g)
-    s = InferenceSession(b, providers=None)
+    from onnx9000.core.parser.core import from_bytes
+
+    s = InferenceSession(from_bytes(b), providers=None)
     res = s.get_overridable_initializers()
     assert len(res) == 1
     assert res[0].name == "T"

@@ -67,7 +67,7 @@ def test_jax_importer_primitive_mapping():
     import onnx9000.converters.jax.jax_ops  # noqa: F401
     from onnx9000.core.registry import global_registry
 
-    op_func = global_registry.get_op("add", "jax")
+    op_func = global_registry.get_op("jax", "add")
     assert op_func is not None
 
     # test unhashable var

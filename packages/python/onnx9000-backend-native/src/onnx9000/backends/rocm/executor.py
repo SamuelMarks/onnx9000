@@ -121,7 +121,7 @@ class Dispatcher:
         from onnx9000.core.registry import global_registry
 
         try:
-            op_impl = global_registry.get_op(node.op_type, provider="rocm")
+            op_impl = global_registry.get_op("", node.op_type, provider="rocm")
             op_impl(self, node)
         except RuntimeError:
             raise
@@ -166,6 +166,6 @@ class Dispatcher:
                 logger.debug(f"HIP stream destroy error: {e}")
 
 
-@register_op("MatMul", provider="rocm")
+@register_op("", "MatMul", provider="rocm")
 def _rocm_matmul(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_matmul(node)

@@ -8,7 +8,6 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.execution import ExecutionContext, ExecutionProvider, RunOptions, SessionOptions
 from onnx9000.core.ir import Graph, Tensor
-from onnx9000.core.parser.core import from_bytes, load
 from onnx9000.core.utils import topological_sort
 
 logger = logging.getLogger(__name__)
@@ -83,17 +82,16 @@ class InferenceSession:
 
     def __init__(
         self,
-        path_or_bytes: Union[str, Path, bytes, Graph],
+        graph: Graph,
         providers: Optional[list[ExecutionProvider]] = None,
         options: Optional[SessionOptions] = None,
     ) -> None:
         """Initialize the InferenceSession with the target graph and providers."""
-        if isinstance(path_or_bytes, Graph):
-            self.graph = path_or_bytes
-        elif isinstance(path_or_bytes, bytes):
-            self.graph = from_bytes(path_or_bytes)
-        else:
-            self.graph = load(path_or_bytes)
+        if not isinstance(graph, Graph):
+            raise TypeError(
+                "InferenceSession requires an IR Graph object. Parsers are decoupled from execution."
+            )
+        self.graph = graph
         self.providers = providers or []
         self.options = options or SessionOptions()
         self._partition_graph()

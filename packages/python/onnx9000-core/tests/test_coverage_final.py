@@ -34,10 +34,10 @@ def test_registry_fallback_coverage():
         """My op."""
         return "ok"
 
-    reg.register_op("MyOp", domain="test")(my_op)
-    assert reg.get_op("MyOp", domain="test", provider="cuda") == my_op
+    reg.register_op("test", "MyOp")(my_op)
+    assert reg.get_op("test", "MyOp", provider="cuda") == my_op
     with pytest.raises(UnsupportedOpError):
-        reg.get_op("NonExistent", domain="test", provider="cuda")
+        reg.get_op("test", "NonExistent", provider="cuda")
 
 
 def test_symbolic_ast_to_str_fallback():

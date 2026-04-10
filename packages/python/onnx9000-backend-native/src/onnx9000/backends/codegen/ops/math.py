@@ -9,7 +9,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("BlackmanWindow")
+@registry.register_op("", "BlackmanWindow")
 def generate_blackman_window(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_blackman_window method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -25,7 +25,7 @@ def generate_blackman_window(node: Node, ctx: "onnx9000.backends.codegen.Generat
     return f"\n        // BlackmanWindow\n        int64_t window_size = {inp}.size() > 0 ? {inp}.data[0] : 0;\n        std::vector<int64_t> {out}_shape = {{window_size}};\n        \n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        {out}_{offset}.shape = {out}_shape; // Ensure shape is explicitly dynamic\n\n        if (window_size == 1) {{\n            {out}_{offset}.data[0] = static_cast<{cpp_type}>(1.0);\n        }} else if (window_size > 1) {{\n            double N = static_cast<double>({periodic} ? window_size : window_size - 1);\n            for (int64_t i = 0; i < window_size; ++i) {{\n                double x = 2.0 * M_PI * i / N;\n                double val = 0.42 - 0.5 * std::cos(x) + 0.08 * std::cos(2.0 * x);\n                {out}_{offset}.data[i] = static_cast<{cpp_type}>(val);\n            }}\n        }}\n    "
 
 
-@registry.register_op("Det")
+@registry.register_op("", "Det")
 def generate_det(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_det method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -41,7 +41,7 @@ def generate_det(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return f"\n        // Det (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Mean")
+@registry.register_op("", "Mean")
 def generate_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_mean method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -56,7 +56,7 @@ def generate_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     return f"\n        // Mean (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("MelWeightMatrix")
+@registry.register_op("", "MelWeightMatrix")
 def generate_mel_weight_matrix(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_mel_weight_matrix method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -71,7 +71,7 @@ def generate_mel_weight_matrix(node: Node, ctx: "onnx9000.backends.codegen.Gener
     return f"\n        // MelWeightMatrix (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Multinomial")
+@registry.register_op("", "Multinomial")
 def generate_multinomial(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_multinomial method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -86,7 +86,7 @@ def generate_multinomial(node: Node, ctx: "onnx9000.backends.codegen.Generator")
     return f"\n        // Multinomial (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ReduceSumSquare")
+@registry.register_op("", "ReduceSumSquare")
 def generate_reduce_sum_square(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_sum_square method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -102,7 +102,7 @@ def generate_reduce_sum_square(node: Node, ctx: "onnx9000.backends.codegen.Gener
     return f"\n        // ReduceSumSquare (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ReduceL1")
+@registry.register_op("", "ReduceL1")
 def generate_reduce_l1(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_l1 method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -118,7 +118,7 @@ def generate_reduce_l1(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
     return f"\n        // ReduceL1 (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ReduceL2")
+@registry.register_op("", "ReduceL2")
 def generate_reduce_l2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_l2 method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -134,7 +134,7 @@ def generate_reduce_l2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
     return f"\n        // ReduceL2 (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ReduceLogSum")
+@registry.register_op("", "ReduceLogSum")
 def generate_reduce_log_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_log_sum method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -150,7 +150,7 @@ def generate_reduce_log_sum(node: Node, ctx: "onnx9000.backends.codegen.Generato
     return f"\n        // ReduceLogSum (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ReduceLogSumExp")
+@registry.register_op("", "ReduceLogSumExp")
 def generate_reduce_log_sum_exp(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_log_sum_exp method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -166,7 +166,7 @@ def generate_reduce_log_sum_exp(node: Node, ctx: "onnx9000.backends.codegen.Gene
     return f"\n        // ReduceLogSumExp (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Shrink")
+@registry.register_op("", "Shrink")
 def generate_shrink(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_shrink method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -182,7 +182,7 @@ def generate_shrink(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     return f"\n        // Shrink (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Size")
+@registry.register_op("", "Size")
 def generate_size(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_size method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -198,79 +198,79 @@ def generate_size(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     return f"\n        // Size (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Abs")
+@registry.register_op("", "Abs")
 def generate_abs(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_abs method or operation."""
     return _generate_unary_op(node, ctx, "std::abs({inp})")
 
 
-@registry.register_op("Acos")
+@registry.register_op("", "Acos")
 def generate_acos(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_acos method or operation."""
     return _generate_unary_op(node, ctx, "std::acos({inp})")
 
 
-@registry.register_op("Acosh")
+@registry.register_op("", "Acosh")
 def generate_acosh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_acosh method or operation."""
     return _generate_unary_op(node, ctx, "std::acosh({inp})")
 
 
-@registry.register_op("Asin")
+@registry.register_op("", "Asin")
 def generate_asin(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_asin method or operation."""
     return _generate_unary_op(node, ctx, "std::asin({inp})")
 
 
-@registry.register_op("Asinh")
+@registry.register_op("", "Asinh")
 def generate_asinh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_asinh method or operation."""
     return _generate_unary_op(node, ctx, "std::asinh({inp})")
 
 
-@registry.register_op("Atan")
+@registry.register_op("", "Atan")
 def generate_atan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_atan method or operation."""
     return _generate_unary_op(node, ctx, "std::atan({inp})")
 
 
-@registry.register_op("Atanh")
+@registry.register_op("", "Atanh")
 def generate_atanh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_atanh method or operation."""
     return _generate_unary_op(node, ctx, "std::atanh({inp})")
 
 
-@registry.register_op("Cos")
+@registry.register_op("", "Cos")
 def generate_cos(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_cos method or operation."""
     return _generate_unary_op(node, ctx, "std::cos({inp})", vdsp_func="vvcosf")
 
 
-@registry.register_op("Cosh")
+@registry.register_op("", "Cosh")
 def generate_cosh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_cosh method or operation."""
     return _generate_unary_op(node, ctx, "std::cosh({inp})")
 
 
-@registry.register_op("Sin")
+@registry.register_op("", "Sin")
 def generate_sin(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sin method or operation."""
     return _generate_unary_op(node, ctx, "std::sin({inp})", vdsp_func="vvsinf")
 
 
-@registry.register_op("Sinh")
+@registry.register_op("", "Sinh")
 def generate_sinh(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sinh method or operation."""
     return _generate_unary_op(node, ctx, "std::sinh({inp})")
 
 
-@registry.register_op("Tan")
+@registry.register_op("", "Tan")
 def generate_tan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_tan method or operation."""
     return _generate_unary_op(node, ctx, "std::tan({inp})")
 
 
-@registry.register_op("Clip")
+@registry.register_op("", "Clip")
 def generate_clip(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_clip method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -310,49 +310,49 @@ def generate_clip(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     """
 
 
-@registry.register_op("Ceil")
+@registry.register_op("", "Ceil")
 def generate_ceil(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_ceil method or operation."""
     return _generate_unary_op(node, ctx, "std::ceil({inp})")
 
 
-@registry.register_op("Round")
+@registry.register_op("", "Round")
 def generate_round(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Round operator."""
     return _generate_unary_op(node, ctx, "std::round({inp})")
 
 
-@registry.register_op("Floor")
+@registry.register_op("", "Floor")
 def generate_floor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Floor operator."""
     return _generate_unary_op(node, ctx, "std::floor({inp})")
 
 
-@registry.register_op("IsInf")
+@registry.register_op("", "IsInf")
 def generate_isinf(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Isinf operator."""
     return _generate_unary_op(node, ctx, "std::isinf({inp})")
 
 
-@registry.register_op("IsNaN")
+@registry.register_op("", "IsNaN")
 def generate_isnan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Isnan operator."""
     return _generate_unary_op(node, ctx, "std::isnan({inp})")
 
 
-@registry.register_op("Neg")
+@registry.register_op("", "Neg")
 def generate_neg(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Neg operator."""
     return _generate_unary_op(node, ctx, "-{inp}")
 
 
-@registry.register_op("Reciprocal")
+@registry.register_op("", "Reciprocal")
 def generate_reciprocal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Reciprocal operator."""
     return _generate_unary_op(node, ctx, "1.0f / {inp}")
 
 
-@registry.register_op("Sign")
+@registry.register_op("", "Sign")
 def generate_sign(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Sign operator."""
     return _generate_unary_op(
@@ -360,7 +360,7 @@ def generate_sign(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     )
 
 
-@registry.register_op("Mod")
+@registry.register_op("", "Mod")
 def generate_mod(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Mod operator."""
     fmod_attr = get_attribute(node, "fmod", 0)
@@ -380,37 +380,37 @@ def generate_mod(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return _generate_binary_op(node, ctx, expr, is_function=True)
 
 
-@registry.register_op("Pow")
+@registry.register_op("", "Pow")
 def generate_pow(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Pow operator."""
     return _generate_binary_op(node, ctx, "std::pow({inp1}, {inp2})", is_function=True)
 
 
-@registry.register_op("BitwiseAnd")
+@registry.register_op("", "BitwiseAnd")
 def generate_bitwise_and(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitwise And operator."""
     return _generate_binary_op(node, ctx, "&")
 
 
-@registry.register_op("BitwiseOr")
+@registry.register_op("", "BitwiseOr")
 def generate_bitwise_or(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitwise Or operator."""
     return _generate_binary_op(node, ctx, "|")
 
 
-@registry.register_op("BitwiseXor")
+@registry.register_op("", "BitwiseXor")
 def generate_bitwise_xor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitwise Xor operator."""
     return _generate_binary_op(node, ctx, "^")
 
 
-@registry.register_op("BitwiseNot")
+@registry.register_op("", "BitwiseNot")
 def generate_bitwise_not(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitwise Not operator."""
     return _generate_unary_op(node, ctx, "~{inp}")
 
 
-@registry.register_op("BitShift")
+@registry.register_op("", "BitShift")
 def generate_bitshift(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Bitshift operator."""
     direction = get_attribute(node, "direction", b"LEFT")
@@ -420,7 +420,7 @@ def generate_bitshift(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
         return _generate_binary_op(node, ctx, "<<")
 
 
-@registry.register_op("Where")
+@registry.register_op("", "Where")
 def generate_where(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Where operator."""
     from onnx9000.backends.codegen.ops.elementwise import _generate_ternary_op
@@ -428,7 +428,7 @@ def generate_where(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     return _generate_ternary_op(node, ctx, "{inp1} ? {inp2} : {inp3}")
 
 
-@registry.register_op("Max")
+@registry.register_op("", "Max")
 def generate_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Max operator."""
     if len(node.inputs) == 2:
@@ -436,7 +436,7 @@ def generate_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return ""
 
 
-@registry.register_op("Min")
+@registry.register_op("", "Min")
 def generate_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Min operator."""
     if len(node.inputs) == 2:
@@ -444,73 +444,73 @@ def generate_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return ""
 
 
-@registry.register_op("Exp")
+@registry.register_op("", "Exp")
 def generate_exp(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_exp method or operation."""
     return _generate_unary_op(node, ctx, "std::exp({inp})", vdsp_func="vvexpf")
 
 
-@registry.register_op("Log")
+@registry.register_op("", "Log")
 def generate_log(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_log method or operation."""
     return _generate_unary_op(node, ctx, "std::log({inp})", vdsp_func="vvlogf")
 
 
-@registry.register_op("Sqrt")
+@registry.register_op("", "Sqrt")
 def generate_sqrt(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sqrt method or operation."""
     return _generate_unary_op(node, ctx, "std::sqrt({inp})", vdsp_func="vvsqrtf")
 
 
-@registry.register_op("Erf")
+@registry.register_op("", "Erf")
 def generate_erf(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_erf method or operation."""
     return _generate_unary_op(node, ctx, "std::erf({inp})")
 
 
-@registry.register_op("Equal")
+@registry.register_op("", "Equal")
 def generate_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_equal method or operation."""
     return _generate_binary_op(node, ctx, "==")
 
 
-@registry.register_op("Greater")
+@registry.register_op("", "Greater")
 def generate_greater(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_greater method or operation."""
     return _generate_binary_op(node, ctx, ">")
 
 
-@registry.register_op("Less")
+@registry.register_op("", "Less")
 def generate_less(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_less method or operation."""
     return _generate_binary_op(node, ctx, "<")
 
 
-@registry.register_op("LessOrEqual")
+@registry.register_op("", "LessOrEqual")
 def generate_less_or_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_less_or_equal method or operation."""
     return _generate_binary_op(node, ctx, "<=")
 
 
-@registry.register_op("GreaterOrEqual")
+@registry.register_op("", "GreaterOrEqual")
 def generate_greater_or_equal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_greater_or_equal method or operation."""
     return _generate_binary_op(node, ctx, ">=")
 
 
-@registry.register_op("And")
+@registry.register_op("", "And")
 def generate_and(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_and method or operation."""
     return _generate_binary_op(node, ctx, "&&")
 
 
-@registry.register_op("Or")
+@registry.register_op("", "Or")
 def generate_or(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_or method or operation."""
     return _generate_binary_op(node, ctx, "||")
 
 
-@registry.register_op("Not")
+@registry.register_op("", "Not")
 def generate_not(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_not method or operation."""
     return _generate_unary_op(node, ctx, "!{inp}")
@@ -566,19 +566,19 @@ def _generate_reduction(
     """
 
 
-@registry.register_op("ReduceSum")
+@registry.register_op("", "ReduceSum")
 def generate_reduce_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Execute the generate_reduce_sum operation."""
     return _generate_reduction(node, ctx, "ReduceSum", "0", "acc += {inp};")
 
 
-@registry.register_op("ReduceMean")
+@registry.register_op("", "ReduceMean")
 def generate_reduce_mean(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Execute the generate_reduce_mean operation."""
     return _generate_reduction(node, ctx, "ReduceMean", "0", "acc += {inp};", "acc /= {size};")
 
 
-@registry.register_op("ReduceMax")
+@registry.register_op("", "ReduceMax")
 def generate_reduce_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Execute the generate_reduce_max operation."""
     return _generate_reduction(
@@ -590,7 +590,7 @@ def generate_reduce_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
     )
 
 
-@registry.register_op("ReduceMin")
+@registry.register_op("", "ReduceMin")
 def generate_reduce_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Execute the generate_reduce_min operation."""
     return _generate_reduction(
@@ -598,7 +598,7 @@ def generate_reduce_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
     )
 
 
-@registry.register_op("ReduceProd")
+@registry.register_op("", "ReduceProd")
 def generate_reduce_prod(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reduce_prod method or operation."""
     _inp = ctx.get_tensor_name(node.inputs[0])
@@ -613,7 +613,7 @@ def generate_reduce_prod(node: Node, ctx: "onnx9000.backends.codegen.Generator")
     return f"\n        // ReduceProd (Mock)\n        /* preallocated */ // Mock scalar size\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\n"
 
 
-@registry.register_op("DFT")
+@registry.register_op("", "DFT")
 def generate_dft(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_dft method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])

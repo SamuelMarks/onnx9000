@@ -8,7 +8,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("Reshape")
+@registry.register_op("", "Reshape")
 def generate_reshape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reshape method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -35,25 +35,25 @@ def generate_reshape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
     """
 
 
-@registry.register_op("Flatten")
+@registry.register_op("", "Flatten")
 def generate_flatten(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_flatten method or operation."""
     return generate_reshape(node, ctx)
 
 
-@registry.register_op("Squeeze")
+@registry.register_op("", "Squeeze")
 def generate_squeeze(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_squeeze method or operation."""
     return generate_reshape(node, ctx)
 
 
-@registry.register_op("Unsqueeze")
+@registry.register_op("", "Unsqueeze")
 def generate_unsqueeze(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_unsqueeze method or operation."""
     return generate_reshape(node, ctx)
 
 
-@registry.register_op("CastLike")
+@registry.register_op("", "CastLike")
 def generate_cast_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_cast_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -77,7 +77,7 @@ def generate_cast_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 """
 
 
-@registry.register_op("Cast")
+@registry.register_op("", "Cast")
 def generate_cast(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_cast method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -101,7 +101,7 @@ def generate_cast(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
 """
 
 
-@registry.register_op("Expand")
+@registry.register_op("", "Expand")
 def generate_expand(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Expand operator."""
     return generate_reshape(node, ctx)

@@ -9,6 +9,7 @@ import os
 import sys
 
 from onnx9000.c_compiler.compiler import C89Compiler
+from onnx9000.core.parser.core import load
 
 
 def main():
@@ -51,15 +52,7 @@ def main():
 
     # We should have a way to get the ONNX Graph, ideally parse_onnx handles this and returns an ONNX Graph object
     # For testing and compilation, we must convert it to IR Graph
-    try:
-        from onnx9000.converters.frontend.pyodide_wrapper import parse_onnx_to_ir
-
-        graph = parse_onnx_to_ir(args.input_model)
-    except ImportError:
-        # Fallback directly to core parse
-        # Currently, onnx9000-core doesn't immediately load .onnx bytes into `Graph`. It uses `parse_onnx` which returns a raw `ModelProto`.
-        # Then, a Surgeon or Frontend converts it. So let's mock the loading here if it's missing, since this is python native
-        sys.exit(10)
+    graph = load(args.input_model)
 
     if not args.quiet:
         print(f"Model loaded. Nodes: {len(graph.nodes)}")
@@ -68,11 +61,10 @@ def main():
 
     # Phase 18: Optimization Passes
     if not args.no_opt:
-        from onnx9000.optimizer.simplifier.api import simplify
-
-        graph = simplify(graph)
         if not args.quiet:
-            print("Graph optimized via onnx9000.optimizer")
+            print(
+                "Warning: internal optimization passes in compiler are removed. Please run onnx9000-optimizer separately."
+            )
 
     # Phase 18: Strip debug
     for t in graph.tensors.values():

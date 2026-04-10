@@ -128,7 +128,7 @@ class Dispatcher:
         from onnx9000.core.registry import global_registry
 
         try:
-            op_impl = global_registry.get_op(node.op_type, provider="apple")
+            op_impl = global_registry.get_op("", node.op_type, provider="apple")
             op_impl(self, node)
         except RuntimeError:
             raise
@@ -148,21 +148,21 @@ class Dispatcher:
         return results
 
 
-@register_op("MatMul", provider="apple")
+@register_op("", "MatMul", provider="apple")
 def _apple_matmul(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_matmul(node)
 
 
-@register_op("Add", provider="apple")
+@register_op("", "Add", provider="apple")
 def _apple_add(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node, "Add")
 
 
-@register_op("Sub", provider="apple")
+@register_op("", "Sub", provider="apple")
 def _apple_sub(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node, "Sub")
 
 
-@register_op("Mul", provider="apple")
+@register_op("", "Mul", provider="apple")
 def _apple_mul(dispatcher: Dispatcher, node: Node) -> None:
     dispatcher._execute_elementwise(node, "Mul")

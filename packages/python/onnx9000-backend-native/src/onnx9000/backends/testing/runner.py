@@ -72,9 +72,12 @@ class ONNXBackendTestRunner:
         test_data_sets = sorted(glob.glob(os.path.join(test_dir, "test_data_set_*")))
         if not test_data_sets:
             return (False, "No test data sets found.")
+        from onnx9000.core.parser.core import load
+
         try:
+            graph = load(model_path)
             options = SessionOptions()
-            session = InferenceSession(model_path, providers=self.providers, options=options)
+            session = InferenceSession(graph, providers=self.providers, options=options)
             for ds in test_data_sets:
                 ds_path = Path(ds)
                 inputs = self.load_tensors(ds_path, "input")

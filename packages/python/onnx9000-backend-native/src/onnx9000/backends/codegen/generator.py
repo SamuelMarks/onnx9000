@@ -187,7 +187,7 @@ class Generator:
                 continue
 
             domain = getattr(node, "domain", "")
-            op_gen = registry.get_op(node.op_type, domain=domain)
+            op_gen = registry.get_op(domain, node.op_type)
             op_code = op_gen(node, self)
             op_codes.append(op_code)
 

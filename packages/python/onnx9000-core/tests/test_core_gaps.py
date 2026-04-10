@@ -101,9 +101,9 @@ def test_cleanup_gaps():
 def test_registry_gaps():
     """Test registry with domain and errors."""
     with pytest.raises(UnsupportedOpError):
-        global_registry.get_op("NonExistentOp", domain="test_domain")
+        global_registry.get_op("test_domain", "NonExistentOp")
 
-    @register_op("DomainOp", domain="my_domain")
+    @register_op("my_domain", "DomainOp")
     def my_op():
         """My op."""
         assert True

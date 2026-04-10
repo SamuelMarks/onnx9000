@@ -419,7 +419,7 @@ def test_c_compiler_on_vision():
         mock_graph_for_model(model_name)
         # We don't enforce full generation since we don't have ValueInfos,
         # but compiling the instance shouldn't crash
-        pass
+        assert True
         #
 
 

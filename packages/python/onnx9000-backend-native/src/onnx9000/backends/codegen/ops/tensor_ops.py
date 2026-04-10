@@ -7,7 +7,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("Constant")
+@registry.register_op("", "Constant")
 def generate_constant(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_constant method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -38,7 +38,7 @@ def generate_constant(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
     return f"\n        // Constant\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        \n        {cpp_type} {out}_data[] = {{{data_str}}};\n        for(int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = {out}_data[i % (sizeof({out}_data) / sizeof({cpp_type}))];\n        }}\n    "
 
 
-@registry.register_op("ConstantOfShape")
+@registry.register_op("", "ConstantOfShape")
 def generate_constant_of_shape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_constant_of_shape method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -81,7 +81,7 @@ def generate_constant_of_shape(node: Node, ctx: "onnx9000.backends.codegen.Gener
     """
 
 
-@registry.register_op("Concat")
+@registry.register_op("", "Concat")
 def generate_concat(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_concat method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -132,7 +132,7 @@ def generate_concat(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     return code
 
 
-@registry.register_op("Split")
+@registry.register_op("", "Split")
 def generate_split(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_split method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -186,7 +186,7 @@ def generate_split(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     return code
 
 
-@registry.register_op("Gather")
+@registry.register_op("", "Gather")
 def generate_gather(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_gather method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -242,7 +242,7 @@ def generate_gather(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     """
 
 
-@registry.register_op("QuantizeLinear")
+@registry.register_op("", "QuantizeLinear")
 def generate_quantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_quantize_linear method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -284,7 +284,7 @@ def generate_quantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generat
     return f"\n        // QuantizeLinear\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        int64_t axis = {axis};\n        if (axis < 0) axis += {in_obj}.shape.size();\n\n        int64_t num_elements = {in_obj}.size();\n        \n        // Simple scalar scale fallback if scale is 1D with size 1\n        if ({scale_obj}.size() == 1) {{\n            float scale = {scale_obj}.data[0];\n            int zp = {zp_logic};\n            for (int64_t i = 0; i < num_elements; ++i) {{\n                float val = {in_obj}.data[i];\n                {out}_{offset}.data[i] = static_cast<{cpp_type}>(std::round(val / scale) + zp);\n            }}\n        }} else {{\n            int64_t outer = 1;\n            for (int64_t i = 0; i < axis; ++i) outer *= {in_obj}.shape[i];\n            int64_t channels = {in_obj}.shape[axis];\n            int64_t inner = 1;\n            for (size_t i = axis + 1; i < {in_obj}.shape.size(); ++i) inner *= {in_obj}.shape[i];\n\n            for (int64_t o = 0; o < outer; ++o) {{\n                for (int64_t c = 0; c < channels; ++c) {{\n                    float scale = {scale_obj}.data[c];\n                    int zp = {y_zero_point} ? {y_zero_point}.data[c] : 0;\n                    for (int64_t i = 0; i < inner; ++i) {{\n                        float val = {in_obj}.data[o * channels * inner + c * inner + i];\n                        {out}_{offset}.data[o * channels * inner + c * inner + i] = static_cast<{cpp_type}>(std::round(val / scale) + zp);\n                    }}\n                }}\n            }}\n        }}\n    "
 
 
-@registry.register_op("DequantizeLinear")
+@registry.register_op("", "DequantizeLinear")
 def generate_dequantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_dequantize_linear method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -326,7 +326,7 @@ def generate_dequantize_linear(node: Node, ctx: "onnx9000.backends.codegen.Gener
     return f"\n        // DequantizeLinear\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        int64_t axis = {axis};\n        if (axis < 0) axis += {in_obj}.shape.size();\n\n        int64_t num_elements = {in_obj}.size();\n        \n        if ({scale_obj}.size() == 1) {{\n            float scale = {scale_obj}.data[0];\n            int zp = {zp_logic};\n            for (int64_t i = 0; i < num_elements; ++i) {{\n                {out}_{offset}.data[i] = static_cast<{cpp_type}>(({in_obj}.data[i] - zp) * scale);\n            }}\n        }} else {{\n            int64_t outer = 1;\n            for (int64_t i = 0; i < axis; ++i) outer *= {in_obj}.shape[i];\n            int64_t channels = {in_obj}.shape[axis];\n            int64_t inner = 1;\n            for (size_t i = axis + 1; i < {in_obj}.shape.size(); ++i) inner *= {in_obj}.shape[i];\n\n            for (int64_t o = 0; o < outer; ++o) {{\n                for (int64_t c = 0; c < channels; ++c) {{\n                    float scale = {scale_obj}.data[c];\n                    int zp = {x_zero_point} ? {x_zero_point}.data[c] : 0;\n                    for (int64_t i = 0; i < inner; ++i) {{\n                        {out}_{offset}.data[o * channels * inner + c * inner + i] = static_cast<{cpp_type}>(({in_obj}.data[o * channels * inner + c * inner + i] - zp) * scale);\n                    }}\n                }}\n            }}\n        }}\n    "
 
 
-@registry.register_op("EyeLike")
+@registry.register_op("", "EyeLike")
 def generate_eye_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_eye_like method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -342,7 +342,7 @@ def generate_eye_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
     return f"\n        // EyeLike (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("NonMaxSuppression")
+@registry.register_op("", "NonMaxSuppression")
 def generate_non_max_suppression(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_non_max_suppression method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -357,7 +357,7 @@ def generate_non_max_suppression(node: Node, ctx: "onnx9000.backends.codegen.Gen
     return f"\n        // NonMaxSuppression (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("NonZero")
+@registry.register_op("", "NonZero")
 def generate_non_zero(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_non_zero method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -406,7 +406,7 @@ def generate_non_zero(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
     """
 
 
-@registry.register_op("RandomNormal")
+@registry.register_op("", "RandomNormal")
 def generate_random_normal(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_random_normal method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -424,7 +424,7 @@ def generate_random_normal(node: Node, ctx: "onnx9000.backends.codegen.Generator
     return f"\n        // RandomNormal\n        std::vector<int64_t> {out}_shape = {{{', '.join(map(str, shape))}}};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        std::mt19range64 gen({seed} == 0 ? 12345 : static_cast<unsigned long>({seed}));\n        std::normal_distribution<{cpp_type}> dist(static_cast<{cpp_type}>({mean}), static_cast<{cpp_type}>({scale}));\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = dist(gen);\n        }}\n    "
 
 
-@registry.register_op("RandomNormalLike")
+@registry.register_op("", "RandomNormalLike")
 def generate_random_normal_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_random_normal_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -449,7 +449,7 @@ def generate_random_normal_like(node: Node, ctx: "onnx9000.backends.codegen.Gene
     return f"\n        // RandomNormalLike\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        std::mt19range64 gen({seed} == 0 ? 12345 : static_cast<unsigned long>({seed}));\n        std::normal_distribution<{cpp_type}> dist(static_cast<{cpp_type}>({mean}), static_cast<{cpp_type}>({scale}));\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = dist(gen);\n        }}\n    "
 
 
-@registry.register_op("RandomUniform")
+@registry.register_op("", "RandomUniform")
 def generate_random_uniform(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_random_uniform method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -467,7 +467,7 @@ def generate_random_uniform(node: Node, ctx: "onnx9000.backends.codegen.Generato
     return f"\n        // RandomUniform\n        std::vector<int64_t> {out}_shape = {{{', '.join(map(str, shape))}}};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        std::mt19range64 gen({seed} == 0 ? 12345 : static_cast<unsigned long>({seed}));\n        std::uniform_real_distribution<{cpp_type}> dist(static_cast<{cpp_type}>({low}), static_cast<{cpp_type}>({high}));\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = dist(gen);\n        }}\n    "
 
 
-@registry.register_op("RandomUniformLike")
+@registry.register_op("", "RandomUniformLike")
 def generate_random_uniform_like(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_random_uniform_like method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -492,7 +492,7 @@ def generate_random_uniform_like(node: Node, ctx: "onnx9000.backends.codegen.Gen
     return f"\n        // RandomUniformLike\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        std::mt19range64 gen({seed} == 0 ? 12345 : static_cast<unsigned long>({seed}));\n        std::uniform_real_distribution<{cpp_type}> dist(static_cast<{cpp_type}>({low}), static_cast<{cpp_type}>({high}));\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = dist(gen);\n        }}\n    "
 
 
-@registry.register_op("Range")
+@registry.register_op("", "Range")
 def generate_range(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_range method or operation."""
     start = ctx.get_tensor_name(node.inputs[0])
@@ -530,7 +530,7 @@ def generate_range(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     return f"\n        // Range\n        {cpp_type} start_val = {start_obj}.data[0];\n        {cpp_type} limit_val = {limit_obj}.data[0];\n        {cpp_type} delta_val = {delta_obj}.data[0];\n\n        int64_t num_elements = std::max((int64_t)std::ceil((limit_val - start_val) / delta_val), (int64_t)0);\n        \n        std::vector<int64_t> {out}_shape = {{num_elements}};\n        int64_t {out}_size = num_elements;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        for (int64_t i = 0; i < num_elements; ++i) {{\n            {out}_{offset}.data[i] = start_val + i * delta_val;\n        }}\n    "
 
 
-@registry.register_op("RegexFullMatch")
+@registry.register_op("", "RegexFullMatch")
 def generate_regex_full_match(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_regex_full_match method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -542,7 +542,7 @@ def generate_regex_full_match(node: Node, ctx: "onnx9000.backends.codegen.Genera
     return f"\n        // RegexFullMatch (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Resize")
+@registry.register_op("", "Resize")
 def generate_resize(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_resize method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -568,7 +568,7 @@ def generate_resize(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     return f"\n        // Resize\n        // Simplified fallback for compliance without massive image processing library code.\n        // In real implementations, this maps to N-dimensional interpolation.\n        \n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = 1;\n        \n        // This relies on python inference having set the correct shape beforehand, \n        // which ONNX spec normally ensures or user provides valid sizes/scales.\n        \n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        // Fallback mock copy if shapes match, or zero out\n        if ({out}_size == {in_obj}.size()) {{\n            if (reinterpret_cast<void*>({in_obj}.data) != reinterpret_cast<void*>((_global_arena.data() + {offset}))) {{\n                std::copy({in_obj}.data, {in_obj}.data + {out}_size, {out}_{offset}.data);\n            }}\n        }} else {{\n            std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n        }}\n    "
 
 
-@registry.register_op("ReverseSequence")
+@registry.register_op("", "ReverseSequence")
 def generate_reverse_sequence(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_reverse_sequence method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -584,7 +584,7 @@ def generate_reverse_sequence(node: Node, ctx: "onnx9000.backends.codegen.Genera
     return f"\n        // ReverseSequence (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("Scatter")
+@registry.register_op("", "Scatter")
 def generate_scatter(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_scatter method or operation."""
     ctx.get_tensor_name(node.inputs[0])
@@ -600,7 +600,7 @@ def generate_scatter(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
     return f"\n        // Scatter (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
-@registry.register_op("ScatterElements")
+@registry.register_op("", "ScatterElements")
 def generate_scatter_elements(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_scatter_elements method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -665,7 +665,7 @@ def generate_scatter_elements(node: Node, ctx: "onnx9000.backends.codegen.Genera
     """
 
 
-@registry.register_op("ScatterND")
+@registry.register_op("", "ScatterND")
 def generate_scatter_nd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_scatter_nd method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -722,7 +722,7 @@ def generate_scatter_nd(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
     """
 
 
-@registry.register_op("GatherElements")
+@registry.register_op("", "GatherElements")
 def generate_gather_elements(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_gather_elements method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -754,7 +754,7 @@ def generate_gather_elements(node: Node, ctx: "onnx9000.backends.codegen.Generat
     return f"\n        // GatherElements\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        int64_t axis = {axis};\n        if (axis < 0) axis += {in_obj}.shape.size();\n\n        int64_t rank = {in_obj}.shape.size();\n        std::vector<int64_t> current_idx(rank, 0);\n\n        auto increment_idx = [&]() -> bool {{\n            for (int64_t d = rank - 1; d >= 0; --d) {{\n                current_idx[d]++;\n                if (current_idx[d] < {idx_obj}.shape[d]) return true;\n                current_idx[d] = 0;\n            }}\n            return false;\n        }};\n\n        if ({out}_size > 0) {{\n            int64_t out_ptr = 0;\n            do {{\n                int64_t gather_idx = {idx_obj}.data[out_ptr];\n                if (gather_idx < 0) gather_idx += {in_obj}.shape[axis];\n\n                int64_t in_flat_idx = 0;\n                int64_t stride = 1;\n                for (int64_t d = rank - 1; d >= 0; --d) {{\n                    int64_t idx_val = (d == axis) ? gather_idx : current_idx[d];\n                    in_flat_idx += idx_val * stride;\n                    stride *= {in_obj}.shape[d];\n                }}\n                \n                {out}_{offset}.data[out_ptr] = {in_obj}.data[in_flat_idx];\n                out_ptr++;\n            }} while (increment_idx());\n        }}\n    "
 
 
-@registry.register_op("GatherND")
+@registry.register_op("", "GatherND")
 def generate_gathernd(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_gathernd method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -820,19 +820,19 @@ def generate_gathernd(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
     """
 
 
-@registry.register_op("GlobalLpPool")
+@registry.register_op("", "GlobalLpPool")
 def generate_globallppool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Globallppool operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("GridSample")
+@registry.register_op("", "GridSample")
 def generate_gridsample(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Gridsample operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("GroupNormalization")
+@registry.register_op("", "GroupNormalization")
 def generate_group_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_group_normalization method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -872,19 +872,19 @@ def generate_group_normalization(node: Node, ctx: "onnx9000.backends.codegen.Gen
     return f"\n        // GroupNormalization\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        if ({in_obj}.shape.size() >= 3) {{\n            int64_t batch = {in_obj}.shape[0];\n            int64_t channels = {in_obj}.shape[1];\n            int64_t spatial = 1;\n            for (size_t i = 2; i < {in_obj}.shape.size(); ++i) spatial *= {in_obj}.shape[i];\n\n            int64_t num_groups = {num_groups};\n            int64_t channels_per_group = channels / num_groups;\n\n            for (int64_t ib = 0; ib < batch; ++ib) {{\n                for (int64_t g = 0; g < num_groups; ++g) {{\n                    {cpp_type} mean = 0;\n                    int64_t g_size = channels_per_group * spatial;\n                    \n                    for (int64_t cg = 0; cg < channels_per_group; ++cg) {{\n                        int64_t ic = g * channels_per_group + cg;\n                        for (int64_t is = 0; is < spatial; ++is) {{\n                            mean += {in_obj}.data[ib * channels * spatial + ic * spatial + is];\n                        }}\n                    }}\n                    mean /= g_size;\n\n                    {cpp_type} variance = 0;\n                    for (int64_t cg = 0; cg < channels_per_group; ++cg) {{\n                        int64_t ic = g * channels_per_group + cg;\n                        for (int64_t is = 0; is < spatial; ++is) {{\n                            {cpp_type} diff = {in_obj}.data[ib * channels * spatial + ic * spatial + is] - mean;\n                            variance += diff * diff;\n                        }}\n                    }}\n                    variance /= g_size;\n\n                    {cpp_type} inv_std_dev = 1.0f / std::sqrt(variance + {epsilon}f);\n\n                    for (int64_t cg = 0; cg < channels_per_group; ++cg) {{\n                        int64_t ic = g * channels_per_group + cg;\n                        {cpp_type} s = {scale_obj}.data[ic];\n                        {cpp_type} bias = {b_obj}.data[ic];\n                        \n                        for (int64_t is = 0; is < spatial; ++is) {{\n                            {cpp_type} val = {in_obj}.data[ib * channels * spatial + ic * spatial + is];\n                            {out}_{offset}.data[ib * channels * spatial + ic * spatial + is] = (val - mean) * inv_std_dev * s + bias;\n                        }}\n                    }}\n                }}\n            }}\n        }}\n    "
 
 
-@registry.register_op("HammingWindow")
+@registry.register_op("", "HammingWindow")
 def generate_hammingwindow(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Hammingwindow operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("HannWindow")
+@registry.register_op("", "HannWindow")
 def generate_hannwindow(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Hannwindow operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Identity")
+@registry.register_op("", "Identity")
 def generate_identity(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_identity method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -929,13 +929,13 @@ def generate_same_shape_type_ops(node: Node, ctx: "onnx9000.backends.codegen.Gen
     return f"\n        // Mock Implementation for {node.op_type}\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        if ({out}_size > 0 && reinterpret_cast<void*>({in_obj}.data) != reinterpret_cast<void*>((_global_arena.data() + {offset}))) {{\n            std::copy({in_obj}.data, {in_obj}.data + {out}_size, {out}_{offset}.data);\n        }}\n    "
 
 
-@registry.register_op("ImageDecoder")
+@registry.register_op("", "ImageDecoder")
 def generate_imagedecoder(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Imagedecoder operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("LRN")
+@registry.register_op("", "LRN")
 def generate_lrn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_lrn method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -961,13 +961,13 @@ def generate_lrn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return f"\n        // LRN\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        if ({in_obj}.shape.size() >= 2) {{\n            int64_t batch = {in_obj}.shape[0];\n            int64_t channels = {in_obj}.shape[1];\n            int64_t spatial = 1;\n            for (size_t i = 2; i < {in_obj}.shape.size(); ++i) spatial *= {in_obj}.shape[i];\n\n            int64_t n_size = {size};\n            {cpp_type} alpha = {alpha};\n            {cpp_type} beta = {beta};\n            {cpp_type} bias = {bias};\n\n            for (int64_t ib = 0; ib < batch; ++ib) {{\n                for (int64_t ic = 0; ic < channels; ++ic) {{\n                    for (int64_t is = 0; is < spatial; ++is) {{\n                        {cpp_type} sum_sq = 0;\n                        int64_t start_c = std::max((int64_t)0, ic - n_size / 2);\n                        int64_t end_c = std::min(channels - 1, ic + (n_size - 1) / 2);\n                        \n                        for (int64_t c = start_c; c <= end_c; ++c) {{\n                            {cpp_type} val = {in_obj}.data[ib * channels * spatial + c * spatial + is];\n                            sum_sq += val * val;\n                        }}\n                        \n                        {cpp_type} val = {in_obj}.data[ib * channels * spatial + ic * spatial + is];\n                        {out}_{offset}.data[ib * channels * spatial + ic * spatial + is] = val / std::pow(bias + alpha * sum_sq / n_size, beta);\n                    }}\n                }}\n            }}\n        }}\n    "
 
 
-@registry.register_op("MatMulInteger")
+@registry.register_op("", "MatMulInteger")
 def generate_matmulinteger(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Matmulinteger operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("NegativeLogLikelihoodLoss")
+@registry.register_op("", "NegativeLogLikelihoodLoss")
 def generate_negativeloglikelihoodloss(
     node: Node, ctx: "onnx9000.backends.codegen.Generator"
 ) -> str:
@@ -975,7 +975,7 @@ def generate_negativeloglikelihoodloss(
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("OneHot")
+@registry.register_op("", "OneHot")
 def generate_onehot(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_onehot method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1014,79 +1014,79 @@ def generate_onehot(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     return f"\n        // OneHot\n        int64_t depth = static_cast<int64_t>({depth_obj}.data[0]);\n        int64_t axis = {axis};\n        if (axis < 0) axis += {in_obj}.shape.size() + 1;\n\n        std::vector<int64_t> {out}_shape;\n        for (int64_t i = 0; i < axis; ++i) {out}_shape.push_back({in_obj}.shape[i]);\n        {out}_shape.push_back(depth);\n        for (size_t i = axis; i < {in_obj}.shape.size(); ++i) {out}_shape.push_back({in_obj}.shape[i]);\n\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        {cpp_type} off_val = static_cast<{cpp_type}>({val_obj}.data[0]);\n        {cpp_type} on_val = static_cast<{cpp_type}>({val_obj}.data[1]);\n        \n        std::fill({out}_{offset}.data, {out}_{offset}.data + {out}_size, off_val);\n\n        int64_t pre_axis = 1;\n        for (int64_t i = 0; i < axis; ++i) pre_axis *= {out}_shape[i];\n        \n        int64_t post_axis = 1;\n        for (size_t i = axis + 1; i < {out}_shape.size(); ++i) post_axis *= {out}_shape[i];\n\n        for (int64_t p = 0; p < pre_axis; ++p) {{\n            for (int64_t s = 0; s < post_axis; ++s) {{\n                int64_t in_idx = p * post_axis + s;\n                int64_t val = static_cast<int64_t>({in_obj}.data[in_idx]);\n                if (val < 0) val += depth;\n                if (val >= 0 && val < depth) {{\n                    int64_t out_idx = p * depth * post_axis + val * post_axis + s;\n                    {out}_{offset}.data[out_idx] = on_val;\n                }}\n            }}\n        }}\n    "
 
 
-@registry.register_op("Optional")
+@registry.register_op("", "Optional")
 def generate_optional(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Optional operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("OptionalGetElement")
+@registry.register_op("", "OptionalGetElement")
 def generate_optionalgetelement(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Optionalgetelement operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("OptionalHasElement")
+@registry.register_op("", "OptionalHasElement")
 def generate_optionalhaselement(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Optionalhaselement operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("QLinearConv")
+@registry.register_op("", "QLinearConv")
 def generate_qlinearconv(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Qlinearconv operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("QLinearMatMul")
+@registry.register_op("", "QLinearMatMul")
 def generate_qlinearmatmul(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Qlinearmatmul operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("RMSNormalization")
+@registry.register_op("", "RMSNormalization")
 def generate_rmsnormalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Rmsnormalization operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("RoiAlign")
+@registry.register_op("", "RoiAlign")
 def generate_roialign(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Roialign operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("RotaryEmbedding")
+@registry.register_op("", "RotaryEmbedding")
 def generate_rotaryembedding(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Rotaryembedding operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("STFT")
+@registry.register_op("", "STFT")
 def generate_stft(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Stft operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Scan")
+@registry.register_op("", "Scan")
 def generate_scan(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Scan operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Shape")
+@registry.register_op("", "Shape")
 def generate_shape(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Shape operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("SoftmaxCrossEntropyLoss")
+@registry.register_op("", "SoftmaxCrossEntropyLoss")
 def generate_softmaxcrossentropyloss(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Softmaxcrossentropyloss operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Sum")
+@registry.register_op("", "Sum")
 def generate_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sum method or operation."""
     out = ctx.get_tensor_name(node.outputs[0])
@@ -1109,7 +1109,7 @@ def generate_sum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return f"\n        // Sum\n        std::vector<int64_t> {out}_shape = {inputs[0]}.shape;\n        int64_t {out}_size = {inputs[0]}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {out}_{offset}.data[i] = 0;\n            {' '.join([f'{out}_{offset}.data[i] += {inp}.data[i];' for inp in inputs])}\n        }}\n    "
 
 
-@registry.register_op("Swish")
+@registry.register_op("", "Swish")
 def generate_swish(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_swish method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1131,19 +1131,19 @@ def generate_swish(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     return f"\n        // Swish\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = {in_obj}.size();\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            {cpp_type} val = {in_obj}.data[i];\n            {out}_{offset}.data[i] = val / (1.0f + std::exp(-val));\n        }}\n    "
 
 
-@registry.register_op("TensorScatter")
+@registry.register_op("", "TensorScatter")
 def generate_tensorscatter(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Tensorscatter operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("TfIdfVectorizer")
+@registry.register_op("", "TfIdfVectorizer")
 def generate_tfidfvectorizer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Tfidfvectorizer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Tile")
+@registry.register_op("", "Tile")
 def generate_tile(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_tile method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1167,37 +1167,37 @@ def generate_tile(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     return f"\n        // Tile\n        std::vector<int64_t> {out}_shape = {shape_str};\n        \n        // Dynamically compute shape\n        if ({out}_shape.size() == 1 && {out}_shape[0] == -1) {{\n            {out}_shape.resize({in_obj}.shape.size());\n            for (size_t i=0; i<{in_obj}.shape.size(); ++i) {{\n                {out}_shape[i] = {in_obj}.shape[i] * {repeats_name}.data[i];\n            }}\n        }}\n\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        // Tile copy logic\n        int64_t in_size = 1;\n        for (auto d : {in_obj}.shape) in_size *= d;\n        \n        if (in_size > 0 && {out}_size > 0) {{\n            std::vector<int64_t> current_out_idx({out}_shape.size(), 0);\n            \n            auto inc_out = [&]() -> bool {{\n                for (int64_t d = {out}_shape.size() - 1; d >= 0; --d) {{\n                    current_out_idx[d]++;\n                    if (current_out_idx[d] < {out}_shape[d]) return true;\n                    current_out_idx[d] = 0;\n                }}\n                return false;\n            }};\n            \n            int64_t out_ptr = 0;\n            do {{\n                int64_t in_ptr = 0;\n                int64_t stride = 1;\n                for (int64_t d = {in_obj}.shape.size() - 1; d >= 0; --d) {{\n                    int64_t mapped_idx = current_out_idx[d] % {in_obj}.shape[d];\n                    in_ptr += mapped_idx * stride;\n                    stride *= {in_obj}.shape[d];\n                }}\n                {out}_{offset}.data[out_ptr++] = {in_obj}.data[in_ptr];\n            }} while (inc_out());\n        }}\n    "
 
 
-@registry.register_op("Upsample")
+@registry.register_op("", "Upsample")
 def generate_upsample(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Upsample operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Xor")
+@registry.register_op("", "Xor")
 def generate_xor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Xor operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("ArrayFeatureExtractor")
+@registry.register_op("", "ArrayFeatureExtractor")
 def generate_arrayfeatureextractor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Arrayfeatureextractor operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Binarizer")
+@registry.register_op("", "Binarizer")
 def generate_binarizer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Binarizer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("CastMap")
+@registry.register_op("", "CastMap")
 def generate_castmap(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Castmap operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("CategoryMapper")
+@registry.register_op("", "CategoryMapper")
 def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Categorymapper operator."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1239,121 +1239,121 @@ def generate_categorymapper(node: Node, ctx: "onnx9000.backends.codegen.Generato
     """
 
 
-@registry.register_op("DictVectorizer")
+@registry.register_op("", "DictVectorizer")
 def generate_dictvectorizer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Dictvectorizer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("FeatureVectorizer")
+@registry.register_op("", "FeatureVectorizer")
 def generate_featurevectorizer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Featurevectorizer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Imputer")
+@registry.register_op("", "Imputer")
 def generate_imputer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Imputer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("LabelEncoder")
+@registry.register_op("", "LabelEncoder")
 def generate_labelencoder(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Labelencoder operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("LinearClassifier")
+@registry.register_op("", "LinearClassifier")
 def generate_linearclassifier(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Linearclassifier operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("LinearRegressor")
+@registry.register_op("", "LinearRegressor")
 def generate_linearregressor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Linearregressor operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Normalizer")
+@registry.register_op("", "Normalizer")
 def generate_normalizer(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Normalizer operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("OneHotEncoder")
+@registry.register_op("", "OneHotEncoder")
 def generate_onehotencoder(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Onehotencoder operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("SVMClassifier")
+@registry.register_op("", "SVMClassifier")
 def generate_svmclassifier(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Svmclassifier operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("SVMRegressor")
+@registry.register_op("", "SVMRegressor")
 def generate_svmregressor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Svmregressor operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Scaler")
+@registry.register_op("", "Scaler")
 def generate_scaler(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Scaler operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("TreeEnsemble")
+@registry.register_op("", "TreeEnsemble")
 def generate_treeensemble(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Treeensemble operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("TreeEnsembleClassifier")
+@registry.register_op("", "TreeEnsembleClassifier")
 def generate_treeensembleclassifier(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Treeensembleclassifier operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("TreeEnsembleRegressor")
+@registry.register_op("", "TreeEnsembleRegressor")
 def generate_treeensembleregressor(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Treeensembleregressor operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("ZipMap")
+@registry.register_op("", "ZipMap")
 def generate_zipmap(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Zipmap operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Adagrad")
+@registry.register_op("", "Adagrad")
 def generate_adagrad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Adagrad operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Adam")
+@registry.register_op("", "Adam")
 def generate_adam(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Adam operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Gradient")
+@registry.register_op("", "Gradient")
 def generate_gradient(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Gradient operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Momentum")
+@registry.register_op("", "Momentum")
 def generate_momentum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Momentum operator."""
     return generate_same_shape_type_ops(node, ctx)
 
 
-@registry.register_op("Slice")
+@registry.register_op("", "Slice")
 def generate_slice(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_slice method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1474,7 +1474,7 @@ def generate_slice(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     '''
 
 
-@registry.register_op("DepthToSpace")
+@registry.register_op("", "DepthToSpace")
 def generate_depthtospace(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_depthtospace method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1545,7 +1545,7 @@ def generate_depthtospace(node: Node, ctx: "onnx9000.backends.codegen.Generator"
     '''
 
 
-@registry.register_op("SpaceToDepth")
+@registry.register_op("", "SpaceToDepth")
 def generate_spacetodepth2(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_spacetodepth2 method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1605,7 +1605,7 @@ def generate_spacetodepth2(node: Node, ctx: "onnx9000.backends.codegen.Generator
     """
 
 
-@registry.register_op("Compress")
+@registry.register_op("", "Compress")
 def generate_compress(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_compress method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1678,7 +1678,7 @@ def generate_compress(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
     """
 
 
-@registry.register_op("CumSum")
+@registry.register_op("", "CumSum")
 def generate_cumsum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_cumsum method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1752,7 +1752,7 @@ def generate_cumsum(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> s
     """
 
 
-@registry.register_op("Dropout")
+@registry.register_op("", "Dropout")
 def generate_dropout(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_dropout method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1774,7 +1774,7 @@ def generate_dropout(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
     return f"\n        // Dropout (Inference mode bypass)\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        if (reinterpret_cast<void*>({in_obj}.data) != reinterpret_cast<void*>((_global_arena.data() + {offset}))) {{\n            std::copy({in_obj}.data, {in_obj}.data + {out}_size, {out}_{offset}.data);\n        }}\n    "
 
 
-@registry.register_op("Trilu")
+@registry.register_op("", "Trilu")
 def generate_trilu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_trilu method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1808,7 +1808,7 @@ def generate_trilu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     return f"\n        // Trilu\n        std::vector<int64_t> {out}_shape = {in_obj}.shape;\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}_{offset}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        if ({in_obj}.shape.size() >= 2) {{\n            int64_t k_val = {k_logic};\n            int upper = {upper};\n            \n            int64_t H = {in_obj}.shape[{in_obj}.shape.size() - 2];\n            int64_t W = {in_obj}.shape[{in_obj}.shape.size() - 1];\n            \n            int64_t batch = {out}_size / (H * W);\n            \n            for (int64_t b = 0; b < batch; ++b) {{\n                for (int64_t r = 0; r < H; ++r) {{\n                    for (int64_t c = 0; c < W; ++c) {{\n                        int64_t idx = b * H * W + r * W + c;\n                        bool keep = upper ? (c >= r + k_val) : (c <= r + k_val);\n                        {out}_{offset}.data[idx] = keep ? {in_obj}.data[idx] : 0;\n                    }}\n                }}\n            }}\n        }} else {{\n            if ({out}_size > 0 && reinterpret_cast<void*>({in_obj}.data) != reinterpret_cast<void*>((_global_arena.data() + {offset}))) {{\n                std::copy({in_obj}.data, {in_obj}.data + {out}_size, {out}_{offset}.data);\n            }}\n        }}\n    "
 
 
-@registry.register_op("Pad")
+@registry.register_op("", "Pad")
 def generate_pad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_pad method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])
@@ -1866,7 +1866,7 @@ def generate_pad(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """
 
 
-@registry.register_op("Unique")
+@registry.register_op("", "Unique")
 def generate_unique(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_unique method or operation."""
     inp = ctx.get_tensor_name(node.inputs[0])

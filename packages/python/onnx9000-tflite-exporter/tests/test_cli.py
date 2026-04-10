@@ -111,13 +111,8 @@ def test_cli_empty_args():
             main()
 
 
-import runpy
-
-
 def test_cli_main_block():
     """Test cli main block."""
     with patch("sys.argv", ["onnx2tf", "--help"]):
-        try:
-            runpy.run_module("onnx9000.tflite_exporter.cli", run_name="__main__")
-        except SystemExit:
-            return None
+        with pytest.raises(SystemExit):
+            main()

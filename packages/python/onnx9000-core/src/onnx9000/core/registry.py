@@ -26,7 +26,7 @@ class OperatorRegistry:
         ]
 
     def register_op(
-        self, op_type: str, domain: str = "", provider: Optional[str] = None
+        self, domain: str, op_type: str, provider: Optional[str] = None
     ) -> Callable[[Any], Any]:
         """Decorate to register a class or function for a specific ONNX op_type."""
 
@@ -40,7 +40,7 @@ class OperatorRegistry:
 
         return wrapper
 
-    def get_op(self, op_type: str, domain: str = "", provider: Optional[str] = None) -> Any:
+    def get_op(self, domain: str, op_type: str, provider: Optional[str] = None) -> Any:
         """Retrieve the registered implementation for an ONNX operator."""
         key = (domain, op_type, provider)
         if key not in self._registry:
@@ -63,8 +63,6 @@ class OperatorRegistry:
 global_registry = OperatorRegistry()
 
 
-def register_op(
-    op_type: str, domain: str = "", provider: Optional[str] = None
-) -> Callable[[Any], Any]:
+def register_op(domain: str, op_type: str, provider: Optional[str] = None) -> Callable[[Any], Any]:
     """Exposed decorator for registering ops."""
-    return global_registry.register_op(op_type, domain, provider=provider)
+    return global_registry.register_op(domain, op_type, provider=provider)

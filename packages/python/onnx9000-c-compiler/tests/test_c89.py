@@ -743,9 +743,12 @@ def test_cli_no_math_strip():
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
             m_open = MagicMock()
             m_open.return_value.__enter__.return_value.read.return_value = "test"
-            with patch("onnx9000.c_compiler.cli.open", m_open):
+            g = Graph("t")
+            with (
+                patch("onnx9000.c_compiler.cli.open", m_open),
+                patch("onnx9000.c_compiler.cli.load", return_value=g),
+            ):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
-                    g = Graph("t")
                     g.tensors["A"] = Tensor(
                         "A", shape=(1,), dtype=DType.INT32, data=struct.pack("<i", 1)
                     )

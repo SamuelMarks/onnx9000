@@ -95,23 +95,23 @@ def _map_aten_add_(inputs: list[str], outputs: list[str], params: dict[str, Any]
 # Register them so the parser can use the global_registry as intended by the architecture
 from onnx9000.core.registry import register_op
 
-register_op("aten.add.Tensor", "pytorch")(_map_aten_add_Tensor)
-register_op("aten.mul.Tensor", "pytorch")(_map_aten_mul_Tensor)
-register_op("aten.convolution.default", "pytorch")(_map_aten_convolution_default)
-register_op("aten._native_batch_norm_legit_no_training.default", "pytorch")(
+register_op("pytorch", "aten.add.Tensor")(_map_aten_add_Tensor)
+register_op("pytorch", "aten.mul.Tensor")(_map_aten_mul_Tensor)
+register_op("pytorch", "aten.convolution.default")(_map_aten_convolution_default)
+register_op("pytorch", "aten._native_batch_norm_legit_no_training.default")(
     _map_aten_native_batch_norm_legit_no_training_default
 )
-register_op("aten.native_layer_norm.default", "pytorch")(_map_aten_native_layer_norm_default)
-register_op("aten.bmm.default", "pytorch")(_map_aten_bmm_default)
-register_op("aten.mm.default", "pytorch")(_map_aten_mm_default)
-register_op("aten.max_pool2d_with_indices.default", "pytorch")(
+register_op("pytorch", "aten.native_layer_norm.default")(_map_aten_native_layer_norm_default)
+register_op("pytorch", "aten.bmm.default")(_map_aten_bmm_default)
+register_op("pytorch", "aten.mm.default")(_map_aten_mm_default)
+register_op("pytorch", "aten.max_pool2d_with_indices.default")(
     _map_aten_max_pool2d_with_indices_default
 )
-register_op("aten.gelu.default", "pytorch")(_map_aten_gelu_default)
-register_op("aten.arange.start_step", "pytorch")(_map_aten_arange_start_step)
-register_op("aten.where.self", "pytorch")(_map_aten_where_self)
-register_op("aten.copy_", "pytorch")(_map_aten_copy_)
-register_op("aten.add_", "pytorch")(_map_aten_add_)
+register_op("pytorch", "aten.gelu.default")(_map_aten_gelu_default)
+register_op("pytorch", "aten.arange.start_step")(_map_aten_arange_start_step)
+register_op("pytorch", "aten.where.self")(_map_aten_where_self)
+register_op("pytorch", "aten.copy_")(_map_aten_copy_)
+register_op("pytorch", "aten.add_")(_map_aten_add_)
 
 
 class PyTorchFXParser:
@@ -139,7 +139,7 @@ class PyTorchFXParser:
 
             elif op == "call_function":
                 try:
-                    op_func = global_registry.get_op(target, "pytorch")
+                    op_func = global_registry.get_op("pytorch", target)
                     ir_node = op_func(inputs=args, outputs=[out] if out else [], params={})
                 except Exception:
                     ir_node = Node(

@@ -178,7 +178,7 @@ class TorchScriptParser:
         from onnx9000.core.registry import global_registry
 
         try:
-            op_func = global_registry.get_op(op_type.lower(), "torch")
+            op_func = global_registry.get_op("torch", op_type.lower())
             node_ir = op_func(inputs=inputs, outputs=outputs, params={})
         except Exception:
             if op_type == "add":

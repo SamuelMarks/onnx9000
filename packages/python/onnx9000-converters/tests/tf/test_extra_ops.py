@@ -13,7 +13,7 @@ def test_extra_ops_missing_op_001() -> None:
     outs = extra_ops._map_missing_op_001(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp001", "tensorflow") is extra_ops._map_missing_op_001
+    assert global_registry.get_op("tensorflow", "MissingOp001") is extra_ops._map_missing_op_001
 
 
 def test_extra_ops_missing_op_002() -> None:
@@ -23,7 +23,7 @@ def test_extra_ops_missing_op_002() -> None:
     outs = extra_ops._map_missing_op_002(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp002", "tensorflow") is extra_ops._map_missing_op_002
+    assert global_registry.get_op("tensorflow", "MissingOp002") is extra_ops._map_missing_op_002
 
 
 def test_extra_ops_missing_op_003() -> None:
@@ -33,7 +33,7 @@ def test_extra_ops_missing_op_003() -> None:
     outs = extra_ops._map_missing_op_003(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp003", "tensorflow") is extra_ops._map_missing_op_003
+    assert global_registry.get_op("tensorflow", "MissingOp003") is extra_ops._map_missing_op_003
 
 
 def test_extra_ops_missing_op_004() -> None:
@@ -43,7 +43,7 @@ def test_extra_ops_missing_op_004() -> None:
     outs = extra_ops._map_missing_op_004(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp004", "tensorflow") is extra_ops._map_missing_op_004
+    assert global_registry.get_op("tensorflow", "MissingOp004") is extra_ops._map_missing_op_004
 
 
 def test_extra_ops_missing_op_005() -> None:
@@ -53,7 +53,7 @@ def test_extra_ops_missing_op_005() -> None:
     outs = extra_ops._map_missing_op_005(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp005", "tensorflow") is extra_ops._map_missing_op_005
+    assert global_registry.get_op("tensorflow", "MissingOp005") is extra_ops._map_missing_op_005
 
 
 def test_extra_ops_missing_op_006() -> None:
@@ -63,7 +63,7 @@ def test_extra_ops_missing_op_006() -> None:
     outs = extra_ops._map_missing_op_006(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp006", "tensorflow") is extra_ops._map_missing_op_006
+    assert global_registry.get_op("tensorflow", "MissingOp006") is extra_ops._map_missing_op_006
 
 
 def test_extra_ops_missing_op_007() -> None:
@@ -73,7 +73,7 @@ def test_extra_ops_missing_op_007() -> None:
     outs = extra_ops._map_missing_op_007(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp007", "tensorflow") is extra_ops._map_missing_op_007
+    assert global_registry.get_op("tensorflow", "MissingOp007") is extra_ops._map_missing_op_007
 
 
 def test_extra_ops_missing_op_008() -> None:
@@ -83,7 +83,7 @@ def test_extra_ops_missing_op_008() -> None:
     outs = extra_ops._map_missing_op_008(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp008", "tensorflow") is extra_ops._map_missing_op_008
+    assert global_registry.get_op("tensorflow", "MissingOp008") is extra_ops._map_missing_op_008
 
 
 def test_extra_ops_missing_op_009() -> None:
@@ -93,7 +93,7 @@ def test_extra_ops_missing_op_009() -> None:
     outs = extra_ops._map_missing_op_009(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp009", "tensorflow") is extra_ops._map_missing_op_009
+    assert global_registry.get_op("tensorflow", "MissingOp009") is extra_ops._map_missing_op_009
 
 
 def test_extra_ops_missing_op_010() -> None:
@@ -103,7 +103,7 @@ def test_extra_ops_missing_op_010() -> None:
     outs = extra_ops._map_missing_op_010(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp010", "tensorflow") is extra_ops._map_missing_op_010
+    assert global_registry.get_op("tensorflow", "MissingOp010") is extra_ops._map_missing_op_010
 
 
 def test_extra_ops_missing_op_011() -> None:
@@ -113,7 +113,7 @@ def test_extra_ops_missing_op_011() -> None:
     outs = extra_ops._map_missing_op_011(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp011", "tensorflow") is extra_ops._map_missing_op_011
+    assert global_registry.get_op("tensorflow", "MissingOp011") is extra_ops._map_missing_op_011
 
 
 def test_extra_ops_missing_op_012() -> None:
@@ -123,7 +123,7 @@ def test_extra_ops_missing_op_012() -> None:
     outs = extra_ops._map_missing_op_012(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp012", "tensorflow") is extra_ops._map_missing_op_012
+    assert global_registry.get_op("tensorflow", "MissingOp012") is extra_ops._map_missing_op_012
 
 
 def test_extra_ops_missing_op_013() -> None:
@@ -133,7 +133,7 @@ def test_extra_ops_missing_op_013() -> None:
     outs = extra_ops._map_missing_op_013(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp013", "tensorflow") is extra_ops._map_missing_op_013
+    assert global_registry.get_op("tensorflow", "MissingOp013") is extra_ops._map_missing_op_013
 
 
 def test_extra_ops_missing_op_014() -> None:
@@ -143,7 +143,7 @@ def test_extra_ops_missing_op_014() -> None:
     outs = extra_ops._map_missing_op_014(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp014", "tensorflow") is extra_ops._map_missing_op_014
+    assert global_registry.get_op("tensorflow", "MissingOp014") is extra_ops._map_missing_op_014
 
 
 def test_extra_ops_missing_op_015() -> None:
@@ -153,7 +153,7 @@ def test_extra_ops_missing_op_015() -> None:
     outs = extra_ops._map_missing_op_015(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp015", "tensorflow") is extra_ops._map_missing_op_015
+    assert global_registry.get_op("tensorflow", "MissingOp015") is extra_ops._map_missing_op_015
 
 
 def test_extra_ops_missing_op_016() -> None:
@@ -163,7 +163,7 @@ def test_extra_ops_missing_op_016() -> None:
     outs = extra_ops._map_missing_op_016(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp016", "tensorflow") is extra_ops._map_missing_op_016
+    assert global_registry.get_op("tensorflow", "MissingOp016") is extra_ops._map_missing_op_016
 
 
 def test_extra_ops_missing_op_017() -> None:
@@ -173,7 +173,7 @@ def test_extra_ops_missing_op_017() -> None:
     outs = extra_ops._map_missing_op_017(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp017", "tensorflow") is extra_ops._map_missing_op_017
+    assert global_registry.get_op("tensorflow", "MissingOp017") is extra_ops._map_missing_op_017
 
 
 def test_extra_ops_missing_op_018() -> None:
@@ -183,7 +183,7 @@ def test_extra_ops_missing_op_018() -> None:
     outs = extra_ops._map_missing_op_018(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp018", "tensorflow") is extra_ops._map_missing_op_018
+    assert global_registry.get_op("tensorflow", "MissingOp018") is extra_ops._map_missing_op_018
 
 
 def test_extra_ops_missing_op_019() -> None:
@@ -193,7 +193,7 @@ def test_extra_ops_missing_op_019() -> None:
     outs = extra_ops._map_missing_op_019(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp019", "tensorflow") is extra_ops._map_missing_op_019
+    assert global_registry.get_op("tensorflow", "MissingOp019") is extra_ops._map_missing_op_019
 
 
 def test_extra_ops_missing_op_020() -> None:
@@ -203,7 +203,7 @@ def test_extra_ops_missing_op_020() -> None:
     outs = extra_ops._map_missing_op_020(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp020", "tensorflow") is extra_ops._map_missing_op_020
+    assert global_registry.get_op("tensorflow", "MissingOp020") is extra_ops._map_missing_op_020
 
 
 def test_extra_ops_missing_op_021() -> None:
@@ -213,7 +213,7 @@ def test_extra_ops_missing_op_021() -> None:
     outs = extra_ops._map_missing_op_021(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp021", "tensorflow") is extra_ops._map_missing_op_021
+    assert global_registry.get_op("tensorflow", "MissingOp021") is extra_ops._map_missing_op_021
 
 
 def test_extra_ops_missing_op_022() -> None:
@@ -223,7 +223,7 @@ def test_extra_ops_missing_op_022() -> None:
     outs = extra_ops._map_missing_op_022(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp022", "tensorflow") is extra_ops._map_missing_op_022
+    assert global_registry.get_op("tensorflow", "MissingOp022") is extra_ops._map_missing_op_022
 
 
 def test_extra_ops_missing_op_023() -> None:
@@ -233,7 +233,7 @@ def test_extra_ops_missing_op_023() -> None:
     outs = extra_ops._map_missing_op_023(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp023", "tensorflow") is extra_ops._map_missing_op_023
+    assert global_registry.get_op("tensorflow", "MissingOp023") is extra_ops._map_missing_op_023
 
 
 def test_extra_ops_missing_op_024() -> None:
@@ -243,7 +243,7 @@ def test_extra_ops_missing_op_024() -> None:
     outs = extra_ops._map_missing_op_024(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp024", "tensorflow") is extra_ops._map_missing_op_024
+    assert global_registry.get_op("tensorflow", "MissingOp024") is extra_ops._map_missing_op_024
 
 
 def test_extra_ops_missing_op_025() -> None:
@@ -253,7 +253,7 @@ def test_extra_ops_missing_op_025() -> None:
     outs = extra_ops._map_missing_op_025(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp025", "tensorflow") is extra_ops._map_missing_op_025
+    assert global_registry.get_op("tensorflow", "MissingOp025") is extra_ops._map_missing_op_025
 
 
 def test_extra_ops_missing_op_026() -> None:
@@ -263,7 +263,7 @@ def test_extra_ops_missing_op_026() -> None:
     outs = extra_ops._map_missing_op_026(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp026", "tensorflow") is extra_ops._map_missing_op_026
+    assert global_registry.get_op("tensorflow", "MissingOp026") is extra_ops._map_missing_op_026
 
 
 def test_extra_ops_missing_op_027() -> None:
@@ -273,7 +273,7 @@ def test_extra_ops_missing_op_027() -> None:
     outs = extra_ops._map_missing_op_027(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp027", "tensorflow") is extra_ops._map_missing_op_027
+    assert global_registry.get_op("tensorflow", "MissingOp027") is extra_ops._map_missing_op_027
 
 
 def test_extra_ops_missing_op_028() -> None:
@@ -283,7 +283,7 @@ def test_extra_ops_missing_op_028() -> None:
     outs = extra_ops._map_missing_op_028(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp028", "tensorflow") is extra_ops._map_missing_op_028
+    assert global_registry.get_op("tensorflow", "MissingOp028") is extra_ops._map_missing_op_028
 
 
 def test_extra_ops_missing_op_029() -> None:
@@ -293,7 +293,7 @@ def test_extra_ops_missing_op_029() -> None:
     outs = extra_ops._map_missing_op_029(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp029", "tensorflow") is extra_ops._map_missing_op_029
+    assert global_registry.get_op("tensorflow", "MissingOp029") is extra_ops._map_missing_op_029
 
 
 def test_extra_ops_missing_op_030() -> None:
@@ -303,7 +303,7 @@ def test_extra_ops_missing_op_030() -> None:
     outs = extra_ops._map_missing_op_030(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp030", "tensorflow") is extra_ops._map_missing_op_030
+    assert global_registry.get_op("tensorflow", "MissingOp030") is extra_ops._map_missing_op_030
 
 
 def test_extra_ops_missing_op_031() -> None:
@@ -313,7 +313,7 @@ def test_extra_ops_missing_op_031() -> None:
     outs = extra_ops._map_missing_op_031(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp031", "tensorflow") is extra_ops._map_missing_op_031
+    assert global_registry.get_op("tensorflow", "MissingOp031") is extra_ops._map_missing_op_031
 
 
 def test_extra_ops_missing_op_032() -> None:
@@ -323,7 +323,7 @@ def test_extra_ops_missing_op_032() -> None:
     outs = extra_ops._map_missing_op_032(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp032", "tensorflow") is extra_ops._map_missing_op_032
+    assert global_registry.get_op("tensorflow", "MissingOp032") is extra_ops._map_missing_op_032
 
 
 def test_extra_ops_missing_op_033() -> None:
@@ -333,7 +333,7 @@ def test_extra_ops_missing_op_033() -> None:
     outs = extra_ops._map_missing_op_033(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp033", "tensorflow") is extra_ops._map_missing_op_033
+    assert global_registry.get_op("tensorflow", "MissingOp033") is extra_ops._map_missing_op_033
 
 
 def test_extra_ops_missing_op_034() -> None:
@@ -343,7 +343,7 @@ def test_extra_ops_missing_op_034() -> None:
     outs = extra_ops._map_missing_op_034(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp034", "tensorflow") is extra_ops._map_missing_op_034
+    assert global_registry.get_op("tensorflow", "MissingOp034") is extra_ops._map_missing_op_034
 
 
 def test_extra_ops_missing_op_035() -> None:
@@ -353,7 +353,7 @@ def test_extra_ops_missing_op_035() -> None:
     outs = extra_ops._map_missing_op_035(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp035", "tensorflow") is extra_ops._map_missing_op_035
+    assert global_registry.get_op("tensorflow", "MissingOp035") is extra_ops._map_missing_op_035
 
 
 def test_extra_ops_missing_op_036() -> None:
@@ -363,7 +363,7 @@ def test_extra_ops_missing_op_036() -> None:
     outs = extra_ops._map_missing_op_036(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp036", "tensorflow") is extra_ops._map_missing_op_036
+    assert global_registry.get_op("tensorflow", "MissingOp036") is extra_ops._map_missing_op_036
 
 
 def test_extra_ops_missing_op_037() -> None:
@@ -373,7 +373,7 @@ def test_extra_ops_missing_op_037() -> None:
     outs = extra_ops._map_missing_op_037(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp037", "tensorflow") is extra_ops._map_missing_op_037
+    assert global_registry.get_op("tensorflow", "MissingOp037") is extra_ops._map_missing_op_037
 
 
 def test_extra_ops_missing_op_038() -> None:
@@ -383,7 +383,7 @@ def test_extra_ops_missing_op_038() -> None:
     outs = extra_ops._map_missing_op_038(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp038", "tensorflow") is extra_ops._map_missing_op_038
+    assert global_registry.get_op("tensorflow", "MissingOp038") is extra_ops._map_missing_op_038
 
 
 def test_extra_ops_missing_op_039() -> None:
@@ -393,7 +393,7 @@ def test_extra_ops_missing_op_039() -> None:
     outs = extra_ops._map_missing_op_039(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp039", "tensorflow") is extra_ops._map_missing_op_039
+    assert global_registry.get_op("tensorflow", "MissingOp039") is extra_ops._map_missing_op_039
 
 
 def test_extra_ops_missing_op_040() -> None:
@@ -403,7 +403,7 @@ def test_extra_ops_missing_op_040() -> None:
     outs = extra_ops._map_missing_op_040(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp040", "tensorflow") is extra_ops._map_missing_op_040
+    assert global_registry.get_op("tensorflow", "MissingOp040") is extra_ops._map_missing_op_040
 
 
 def test_extra_ops_missing_op_041() -> None:
@@ -413,7 +413,7 @@ def test_extra_ops_missing_op_041() -> None:
     outs = extra_ops._map_missing_op_041(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp041", "tensorflow") is extra_ops._map_missing_op_041
+    assert global_registry.get_op("tensorflow", "MissingOp041") is extra_ops._map_missing_op_041
 
 
 def test_extra_ops_missing_op_042() -> None:
@@ -423,7 +423,7 @@ def test_extra_ops_missing_op_042() -> None:
     outs = extra_ops._map_missing_op_042(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp042", "tensorflow") is extra_ops._map_missing_op_042
+    assert global_registry.get_op("tensorflow", "MissingOp042") is extra_ops._map_missing_op_042
 
 
 def test_extra_ops_missing_op_043() -> None:
@@ -433,7 +433,7 @@ def test_extra_ops_missing_op_043() -> None:
     outs = extra_ops._map_missing_op_043(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp043", "tensorflow") is extra_ops._map_missing_op_043
+    assert global_registry.get_op("tensorflow", "MissingOp043") is extra_ops._map_missing_op_043
 
 
 def test_extra_ops_missing_op_044() -> None:
@@ -443,7 +443,7 @@ def test_extra_ops_missing_op_044() -> None:
     outs = extra_ops._map_missing_op_044(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp044", "tensorflow") is extra_ops._map_missing_op_044
+    assert global_registry.get_op("tensorflow", "MissingOp044") is extra_ops._map_missing_op_044
 
 
 def test_extra_ops_missing_op_045() -> None:
@@ -453,7 +453,7 @@ def test_extra_ops_missing_op_045() -> None:
     outs = extra_ops._map_missing_op_045(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp045", "tensorflow") is extra_ops._map_missing_op_045
+    assert global_registry.get_op("tensorflow", "MissingOp045") is extra_ops._map_missing_op_045
 
 
 def test_extra_ops_missing_op_046() -> None:
@@ -463,7 +463,7 @@ def test_extra_ops_missing_op_046() -> None:
     outs = extra_ops._map_missing_op_046(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp046", "tensorflow") is extra_ops._map_missing_op_046
+    assert global_registry.get_op("tensorflow", "MissingOp046") is extra_ops._map_missing_op_046
 
 
 def test_extra_ops_missing_op_047() -> None:
@@ -473,7 +473,7 @@ def test_extra_ops_missing_op_047() -> None:
     outs = extra_ops._map_missing_op_047(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp047", "tensorflow") is extra_ops._map_missing_op_047
+    assert global_registry.get_op("tensorflow", "MissingOp047") is extra_ops._map_missing_op_047
 
 
 def test_extra_ops_missing_op_048() -> None:
@@ -483,7 +483,7 @@ def test_extra_ops_missing_op_048() -> None:
     outs = extra_ops._map_missing_op_048(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp048", "tensorflow") is extra_ops._map_missing_op_048
+    assert global_registry.get_op("tensorflow", "MissingOp048") is extra_ops._map_missing_op_048
 
 
 def test_extra_ops_missing_op_049() -> None:
@@ -493,7 +493,7 @@ def test_extra_ops_missing_op_049() -> None:
     outs = extra_ops._map_missing_op_049(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp049", "tensorflow") is extra_ops._map_missing_op_049
+    assert global_registry.get_op("tensorflow", "MissingOp049") is extra_ops._map_missing_op_049
 
 
 def test_extra_ops_missing_op_050() -> None:
@@ -503,7 +503,7 @@ def test_extra_ops_missing_op_050() -> None:
     outs = extra_ops._map_missing_op_050(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp050", "tensorflow") is extra_ops._map_missing_op_050
+    assert global_registry.get_op("tensorflow", "MissingOp050") is extra_ops._map_missing_op_050
 
 
 def test_extra_ops_missing_op_051() -> None:
@@ -513,7 +513,7 @@ def test_extra_ops_missing_op_051() -> None:
     outs = extra_ops._map_missing_op_051(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp051", "tensorflow") is extra_ops._map_missing_op_051
+    assert global_registry.get_op("tensorflow", "MissingOp051") is extra_ops._map_missing_op_051
 
 
 def test_extra_ops_missing_op_052() -> None:
@@ -523,7 +523,7 @@ def test_extra_ops_missing_op_052() -> None:
     outs = extra_ops._map_missing_op_052(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp052", "tensorflow") is extra_ops._map_missing_op_052
+    assert global_registry.get_op("tensorflow", "MissingOp052") is extra_ops._map_missing_op_052
 
 
 def test_extra_ops_missing_op_053() -> None:
@@ -533,7 +533,7 @@ def test_extra_ops_missing_op_053() -> None:
     outs = extra_ops._map_missing_op_053(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp053", "tensorflow") is extra_ops._map_missing_op_053
+    assert global_registry.get_op("tensorflow", "MissingOp053") is extra_ops._map_missing_op_053
 
 
 def test_extra_ops_missing_op_054() -> None:
@@ -543,7 +543,7 @@ def test_extra_ops_missing_op_054() -> None:
     outs = extra_ops._map_missing_op_054(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp054", "tensorflow") is extra_ops._map_missing_op_054
+    assert global_registry.get_op("tensorflow", "MissingOp054") is extra_ops._map_missing_op_054
 
 
 def test_extra_ops_missing_op_055() -> None:
@@ -553,7 +553,7 @@ def test_extra_ops_missing_op_055() -> None:
     outs = extra_ops._map_missing_op_055(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp055", "tensorflow") is extra_ops._map_missing_op_055
+    assert global_registry.get_op("tensorflow", "MissingOp055") is extra_ops._map_missing_op_055
 
 
 def test_extra_ops_missing_op_056() -> None:
@@ -563,7 +563,7 @@ def test_extra_ops_missing_op_056() -> None:
     outs = extra_ops._map_missing_op_056(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp056", "tensorflow") is extra_ops._map_missing_op_056
+    assert global_registry.get_op("tensorflow", "MissingOp056") is extra_ops._map_missing_op_056
 
 
 def test_extra_ops_missing_op_057() -> None:
@@ -573,7 +573,7 @@ def test_extra_ops_missing_op_057() -> None:
     outs = extra_ops._map_missing_op_057(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp057", "tensorflow") is extra_ops._map_missing_op_057
+    assert global_registry.get_op("tensorflow", "MissingOp057") is extra_ops._map_missing_op_057
 
 
 def test_extra_ops_missing_op_058() -> None:
@@ -583,7 +583,7 @@ def test_extra_ops_missing_op_058() -> None:
     outs = extra_ops._map_missing_op_058(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp058", "tensorflow") is extra_ops._map_missing_op_058
+    assert global_registry.get_op("tensorflow", "MissingOp058") is extra_ops._map_missing_op_058
 
 
 def test_extra_ops_missing_op_059() -> None:
@@ -593,7 +593,7 @@ def test_extra_ops_missing_op_059() -> None:
     outs = extra_ops._map_missing_op_059(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp059", "tensorflow") is extra_ops._map_missing_op_059
+    assert global_registry.get_op("tensorflow", "MissingOp059") is extra_ops._map_missing_op_059
 
 
 def test_extra_ops_missing_op_060() -> None:
@@ -603,7 +603,7 @@ def test_extra_ops_missing_op_060() -> None:
     outs = extra_ops._map_missing_op_060(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp060", "tensorflow") is extra_ops._map_missing_op_060
+    assert global_registry.get_op("tensorflow", "MissingOp060") is extra_ops._map_missing_op_060
 
 
 def test_extra_ops_missing_op_061() -> None:
@@ -613,7 +613,7 @@ def test_extra_ops_missing_op_061() -> None:
     outs = extra_ops._map_missing_op_061(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp061", "tensorflow") is extra_ops._map_missing_op_061
+    assert global_registry.get_op("tensorflow", "MissingOp061") is extra_ops._map_missing_op_061
 
 
 def test_extra_ops_missing_op_062() -> None:
@@ -623,7 +623,7 @@ def test_extra_ops_missing_op_062() -> None:
     outs = extra_ops._map_missing_op_062(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp062", "tensorflow") is extra_ops._map_missing_op_062
+    assert global_registry.get_op("tensorflow", "MissingOp062") is extra_ops._map_missing_op_062
 
 
 def test_extra_ops_missing_op_063() -> None:
@@ -633,7 +633,7 @@ def test_extra_ops_missing_op_063() -> None:
     outs = extra_ops._map_missing_op_063(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp063", "tensorflow") is extra_ops._map_missing_op_063
+    assert global_registry.get_op("tensorflow", "MissingOp063") is extra_ops._map_missing_op_063
 
 
 def test_extra_ops_missing_op_064() -> None:
@@ -643,7 +643,7 @@ def test_extra_ops_missing_op_064() -> None:
     outs = extra_ops._map_missing_op_064(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp064", "tensorflow") is extra_ops._map_missing_op_064
+    assert global_registry.get_op("tensorflow", "MissingOp064") is extra_ops._map_missing_op_064
 
 
 def test_extra_ops_missing_op_065() -> None:
@@ -653,7 +653,7 @@ def test_extra_ops_missing_op_065() -> None:
     outs = extra_ops._map_missing_op_065(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp065", "tensorflow") is extra_ops._map_missing_op_065
+    assert global_registry.get_op("tensorflow", "MissingOp065") is extra_ops._map_missing_op_065
 
 
 def test_extra_ops_missing_op_066() -> None:
@@ -663,7 +663,7 @@ def test_extra_ops_missing_op_066() -> None:
     outs = extra_ops._map_missing_op_066(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp066", "tensorflow") is extra_ops._map_missing_op_066
+    assert global_registry.get_op("tensorflow", "MissingOp066") is extra_ops._map_missing_op_066
 
 
 def test_extra_ops_missing_op_067() -> None:
@@ -673,7 +673,7 @@ def test_extra_ops_missing_op_067() -> None:
     outs = extra_ops._map_missing_op_067(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp067", "tensorflow") is extra_ops._map_missing_op_067
+    assert global_registry.get_op("tensorflow", "MissingOp067") is extra_ops._map_missing_op_067
 
 
 def test_extra_ops_missing_op_068() -> None:
@@ -683,7 +683,7 @@ def test_extra_ops_missing_op_068() -> None:
     outs = extra_ops._map_missing_op_068(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp068", "tensorflow") is extra_ops._map_missing_op_068
+    assert global_registry.get_op("tensorflow", "MissingOp068") is extra_ops._map_missing_op_068
 
 
 def test_extra_ops_missing_op_069() -> None:
@@ -693,7 +693,7 @@ def test_extra_ops_missing_op_069() -> None:
     outs = extra_ops._map_missing_op_069(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp069", "tensorflow") is extra_ops._map_missing_op_069
+    assert global_registry.get_op("tensorflow", "MissingOp069") is extra_ops._map_missing_op_069
 
 
 def test_extra_ops_missing_op_070() -> None:
@@ -703,7 +703,7 @@ def test_extra_ops_missing_op_070() -> None:
     outs = extra_ops._map_missing_op_070(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp070", "tensorflow") is extra_ops._map_missing_op_070
+    assert global_registry.get_op("tensorflow", "MissingOp070") is extra_ops._map_missing_op_070
 
 
 def test_extra_ops_missing_op_071() -> None:
@@ -713,7 +713,7 @@ def test_extra_ops_missing_op_071() -> None:
     outs = extra_ops._map_missing_op_071(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp071", "tensorflow") is extra_ops._map_missing_op_071
+    assert global_registry.get_op("tensorflow", "MissingOp071") is extra_ops._map_missing_op_071
 
 
 def test_extra_ops_missing_op_072() -> None:
@@ -723,7 +723,7 @@ def test_extra_ops_missing_op_072() -> None:
     outs = extra_ops._map_missing_op_072(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp072", "tensorflow") is extra_ops._map_missing_op_072
+    assert global_registry.get_op("tensorflow", "MissingOp072") is extra_ops._map_missing_op_072
 
 
 def test_extra_ops_missing_op_073() -> None:
@@ -733,7 +733,7 @@ def test_extra_ops_missing_op_073() -> None:
     outs = extra_ops._map_missing_op_073(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp073", "tensorflow") is extra_ops._map_missing_op_073
+    assert global_registry.get_op("tensorflow", "MissingOp073") is extra_ops._map_missing_op_073
 
 
 def test_extra_ops_missing_op_074() -> None:
@@ -743,7 +743,7 @@ def test_extra_ops_missing_op_074() -> None:
     outs = extra_ops._map_missing_op_074(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp074", "tensorflow") is extra_ops._map_missing_op_074
+    assert global_registry.get_op("tensorflow", "MissingOp074") is extra_ops._map_missing_op_074
 
 
 def test_extra_ops_missing_op_075() -> None:
@@ -753,7 +753,7 @@ def test_extra_ops_missing_op_075() -> None:
     outs = extra_ops._map_missing_op_075(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp075", "tensorflow") is extra_ops._map_missing_op_075
+    assert global_registry.get_op("tensorflow", "MissingOp075") is extra_ops._map_missing_op_075
 
 
 def test_extra_ops_missing_op_076() -> None:
@@ -763,7 +763,7 @@ def test_extra_ops_missing_op_076() -> None:
     outs = extra_ops._map_missing_op_076(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp076", "tensorflow") is extra_ops._map_missing_op_076
+    assert global_registry.get_op("tensorflow", "MissingOp076") is extra_ops._map_missing_op_076
 
 
 def test_extra_ops_missing_op_077() -> None:
@@ -773,7 +773,7 @@ def test_extra_ops_missing_op_077() -> None:
     outs = extra_ops._map_missing_op_077(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp077", "tensorflow") is extra_ops._map_missing_op_077
+    assert global_registry.get_op("tensorflow", "MissingOp077") is extra_ops._map_missing_op_077
 
 
 def test_extra_ops_missing_op_078() -> None:
@@ -783,7 +783,7 @@ def test_extra_ops_missing_op_078() -> None:
     outs = extra_ops._map_missing_op_078(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp078", "tensorflow") is extra_ops._map_missing_op_078
+    assert global_registry.get_op("tensorflow", "MissingOp078") is extra_ops._map_missing_op_078
 
 
 def test_extra_ops_missing_op_079() -> None:
@@ -793,7 +793,7 @@ def test_extra_ops_missing_op_079() -> None:
     outs = extra_ops._map_missing_op_079(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp079", "tensorflow") is extra_ops._map_missing_op_079
+    assert global_registry.get_op("tensorflow", "MissingOp079") is extra_ops._map_missing_op_079
 
 
 def test_extra_ops_missing_op_080() -> None:
@@ -803,7 +803,7 @@ def test_extra_ops_missing_op_080() -> None:
     outs = extra_ops._map_missing_op_080(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp080", "tensorflow") is extra_ops._map_missing_op_080
+    assert global_registry.get_op("tensorflow", "MissingOp080") is extra_ops._map_missing_op_080
 
 
 def test_extra_ops_missing_op_081() -> None:
@@ -813,7 +813,7 @@ def test_extra_ops_missing_op_081() -> None:
     outs = extra_ops._map_missing_op_081(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp081", "tensorflow") is extra_ops._map_missing_op_081
+    assert global_registry.get_op("tensorflow", "MissingOp081") is extra_ops._map_missing_op_081
 
 
 def test_extra_ops_missing_op_082() -> None:
@@ -823,7 +823,7 @@ def test_extra_ops_missing_op_082() -> None:
     outs = extra_ops._map_missing_op_082(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp082", "tensorflow") is extra_ops._map_missing_op_082
+    assert global_registry.get_op("tensorflow", "MissingOp082") is extra_ops._map_missing_op_082
 
 
 def test_extra_ops_missing_op_083() -> None:
@@ -833,7 +833,7 @@ def test_extra_ops_missing_op_083() -> None:
     outs = extra_ops._map_missing_op_083(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp083", "tensorflow") is extra_ops._map_missing_op_083
+    assert global_registry.get_op("tensorflow", "MissingOp083") is extra_ops._map_missing_op_083
 
 
 def test_extra_ops_missing_op_084() -> None:
@@ -843,7 +843,7 @@ def test_extra_ops_missing_op_084() -> None:
     outs = extra_ops._map_missing_op_084(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp084", "tensorflow") is extra_ops._map_missing_op_084
+    assert global_registry.get_op("tensorflow", "MissingOp084") is extra_ops._map_missing_op_084
 
 
 def test_extra_ops_missing_op_085() -> None:
@@ -853,7 +853,7 @@ def test_extra_ops_missing_op_085() -> None:
     outs = extra_ops._map_missing_op_085(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp085", "tensorflow") is extra_ops._map_missing_op_085
+    assert global_registry.get_op("tensorflow", "MissingOp085") is extra_ops._map_missing_op_085
 
 
 def test_extra_ops_missing_op_086() -> None:
@@ -863,7 +863,7 @@ def test_extra_ops_missing_op_086() -> None:
     outs = extra_ops._map_missing_op_086(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp086", "tensorflow") is extra_ops._map_missing_op_086
+    assert global_registry.get_op("tensorflow", "MissingOp086") is extra_ops._map_missing_op_086
 
 
 def test_extra_ops_missing_op_087() -> None:
@@ -873,7 +873,7 @@ def test_extra_ops_missing_op_087() -> None:
     outs = extra_ops._map_missing_op_087(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp087", "tensorflow") is extra_ops._map_missing_op_087
+    assert global_registry.get_op("tensorflow", "MissingOp087") is extra_ops._map_missing_op_087
 
 
 def test_extra_ops_missing_op_088() -> None:
@@ -883,7 +883,7 @@ def test_extra_ops_missing_op_088() -> None:
     outs = extra_ops._map_missing_op_088(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp088", "tensorflow") is extra_ops._map_missing_op_088
+    assert global_registry.get_op("tensorflow", "MissingOp088") is extra_ops._map_missing_op_088
 
 
 def test_extra_ops_missing_op_089() -> None:
@@ -893,7 +893,7 @@ def test_extra_ops_missing_op_089() -> None:
     outs = extra_ops._map_missing_op_089(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp089", "tensorflow") is extra_ops._map_missing_op_089
+    assert global_registry.get_op("tensorflow", "MissingOp089") is extra_ops._map_missing_op_089
 
 
 def test_extra_ops_missing_op_090() -> None:
@@ -903,7 +903,7 @@ def test_extra_ops_missing_op_090() -> None:
     outs = extra_ops._map_missing_op_090(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp090", "tensorflow") is extra_ops._map_missing_op_090
+    assert global_registry.get_op("tensorflow", "MissingOp090") is extra_ops._map_missing_op_090
 
 
 def test_extra_ops_missing_op_091() -> None:
@@ -913,7 +913,7 @@ def test_extra_ops_missing_op_091() -> None:
     outs = extra_ops._map_missing_op_091(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp091", "tensorflow") is extra_ops._map_missing_op_091
+    assert global_registry.get_op("tensorflow", "MissingOp091") is extra_ops._map_missing_op_091
 
 
 def test_extra_ops_missing_op_092() -> None:
@@ -923,7 +923,7 @@ def test_extra_ops_missing_op_092() -> None:
     outs = extra_ops._map_missing_op_092(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp092", "tensorflow") is extra_ops._map_missing_op_092
+    assert global_registry.get_op("tensorflow", "MissingOp092") is extra_ops._map_missing_op_092
 
 
 def test_extra_ops_missing_op_093() -> None:
@@ -933,7 +933,7 @@ def test_extra_ops_missing_op_093() -> None:
     outs = extra_ops._map_missing_op_093(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp093", "tensorflow") is extra_ops._map_missing_op_093
+    assert global_registry.get_op("tensorflow", "MissingOp093") is extra_ops._map_missing_op_093
 
 
 def test_extra_ops_missing_op_094() -> None:
@@ -943,7 +943,7 @@ def test_extra_ops_missing_op_094() -> None:
     outs = extra_ops._map_missing_op_094(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp094", "tensorflow") is extra_ops._map_missing_op_094
+    assert global_registry.get_op("tensorflow", "MissingOp094") is extra_ops._map_missing_op_094
 
 
 def test_extra_ops_missing_op_095() -> None:
@@ -953,7 +953,7 @@ def test_extra_ops_missing_op_095() -> None:
     outs = extra_ops._map_missing_op_095(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp095", "tensorflow") is extra_ops._map_missing_op_095
+    assert global_registry.get_op("tensorflow", "MissingOp095") is extra_ops._map_missing_op_095
 
 
 def test_extra_ops_missing_op_096() -> None:
@@ -963,7 +963,7 @@ def test_extra_ops_missing_op_096() -> None:
     outs = extra_ops._map_missing_op_096(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp096", "tensorflow") is extra_ops._map_missing_op_096
+    assert global_registry.get_op("tensorflow", "MissingOp096") is extra_ops._map_missing_op_096
 
 
 def test_extra_ops_missing_op_097() -> None:
@@ -973,7 +973,7 @@ def test_extra_ops_missing_op_097() -> None:
     outs = extra_ops._map_missing_op_097(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp097", "tensorflow") is extra_ops._map_missing_op_097
+    assert global_registry.get_op("tensorflow", "MissingOp097") is extra_ops._map_missing_op_097
 
 
 def test_extra_ops_missing_op_098() -> None:
@@ -983,7 +983,7 @@ def test_extra_ops_missing_op_098() -> None:
     outs = extra_ops._map_missing_op_098(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp098", "tensorflow") is extra_ops._map_missing_op_098
+    assert global_registry.get_op("tensorflow", "MissingOp098") is extra_ops._map_missing_op_098
 
 
 def test_extra_ops_missing_op_099() -> None:
@@ -993,7 +993,7 @@ def test_extra_ops_missing_op_099() -> None:
     outs = extra_ops._map_missing_op_099(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp099", "tensorflow") is extra_ops._map_missing_op_099
+    assert global_registry.get_op("tensorflow", "MissingOp099") is extra_ops._map_missing_op_099
 
 
 def test_extra_ops_missing_op_100() -> None:
@@ -1003,7 +1003,7 @@ def test_extra_ops_missing_op_100() -> None:
     outs = extra_ops._map_missing_op_100(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp100", "tensorflow") is extra_ops._map_missing_op_100
+    assert global_registry.get_op("tensorflow", "MissingOp100") is extra_ops._map_missing_op_100
 
 
 def test_extra_ops_missing_op_101() -> None:
@@ -1013,7 +1013,7 @@ def test_extra_ops_missing_op_101() -> None:
     outs = extra_ops._map_missing_op_101(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp101", "tensorflow") is extra_ops._map_missing_op_101
+    assert global_registry.get_op("tensorflow", "MissingOp101") is extra_ops._map_missing_op_101
 
 
 def test_extra_ops_missing_op_102() -> None:
@@ -1023,7 +1023,7 @@ def test_extra_ops_missing_op_102() -> None:
     outs = extra_ops._map_missing_op_102(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp102", "tensorflow") is extra_ops._map_missing_op_102
+    assert global_registry.get_op("tensorflow", "MissingOp102") is extra_ops._map_missing_op_102
 
 
 def test_extra_ops_missing_op_103() -> None:
@@ -1033,7 +1033,7 @@ def test_extra_ops_missing_op_103() -> None:
     outs = extra_ops._map_missing_op_103(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp103", "tensorflow") is extra_ops._map_missing_op_103
+    assert global_registry.get_op("tensorflow", "MissingOp103") is extra_ops._map_missing_op_103
 
 
 def test_extra_ops_missing_op_104() -> None:
@@ -1043,7 +1043,7 @@ def test_extra_ops_missing_op_104() -> None:
     outs = extra_ops._map_missing_op_104(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp104", "tensorflow") is extra_ops._map_missing_op_104
+    assert global_registry.get_op("tensorflow", "MissingOp104") is extra_ops._map_missing_op_104
 
 
 def test_extra_ops_missing_op_105() -> None:
@@ -1053,7 +1053,7 @@ def test_extra_ops_missing_op_105() -> None:
     outs = extra_ops._map_missing_op_105(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp105", "tensorflow") is extra_ops._map_missing_op_105
+    assert global_registry.get_op("tensorflow", "MissingOp105") is extra_ops._map_missing_op_105
 
 
 def test_extra_ops_missing_op_106() -> None:
@@ -1063,7 +1063,7 @@ def test_extra_ops_missing_op_106() -> None:
     outs = extra_ops._map_missing_op_106(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp106", "tensorflow") is extra_ops._map_missing_op_106
+    assert global_registry.get_op("tensorflow", "MissingOp106") is extra_ops._map_missing_op_106
 
 
 def test_extra_ops_missing_op_107() -> None:
@@ -1073,7 +1073,7 @@ def test_extra_ops_missing_op_107() -> None:
     outs = extra_ops._map_missing_op_107(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp107", "tensorflow") is extra_ops._map_missing_op_107
+    assert global_registry.get_op("tensorflow", "MissingOp107") is extra_ops._map_missing_op_107
 
 
 def test_extra_ops_missing_op_108() -> None:
@@ -1083,7 +1083,7 @@ def test_extra_ops_missing_op_108() -> None:
     outs = extra_ops._map_missing_op_108(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp108", "tensorflow") is extra_ops._map_missing_op_108
+    assert global_registry.get_op("tensorflow", "MissingOp108") is extra_ops._map_missing_op_108
 
 
 def test_extra_ops_missing_op_109() -> None:
@@ -1093,7 +1093,7 @@ def test_extra_ops_missing_op_109() -> None:
     outs = extra_ops._map_missing_op_109(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp109", "tensorflow") is extra_ops._map_missing_op_109
+    assert global_registry.get_op("tensorflow", "MissingOp109") is extra_ops._map_missing_op_109
 
 
 def test_extra_ops_missing_op_110() -> None:
@@ -1103,7 +1103,7 @@ def test_extra_ops_missing_op_110() -> None:
     outs = extra_ops._map_missing_op_110(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp110", "tensorflow") is extra_ops._map_missing_op_110
+    assert global_registry.get_op("tensorflow", "MissingOp110") is extra_ops._map_missing_op_110
 
 
 def test_extra_ops_missing_op_111() -> None:
@@ -1113,7 +1113,7 @@ def test_extra_ops_missing_op_111() -> None:
     outs = extra_ops._map_missing_op_111(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp111", "tensorflow") is extra_ops._map_missing_op_111
+    assert global_registry.get_op("tensorflow", "MissingOp111") is extra_ops._map_missing_op_111
 
 
 def test_extra_ops_missing_op_112() -> None:
@@ -1123,7 +1123,7 @@ def test_extra_ops_missing_op_112() -> None:
     outs = extra_ops._map_missing_op_112(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp112", "tensorflow") is extra_ops._map_missing_op_112
+    assert global_registry.get_op("tensorflow", "MissingOp112") is extra_ops._map_missing_op_112
 
 
 def test_extra_ops_missing_op_113() -> None:
@@ -1133,7 +1133,7 @@ def test_extra_ops_missing_op_113() -> None:
     outs = extra_ops._map_missing_op_113(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp113", "tensorflow") is extra_ops._map_missing_op_113
+    assert global_registry.get_op("tensorflow", "MissingOp113") is extra_ops._map_missing_op_113
 
 
 def test_extra_ops_missing_op_114() -> None:
@@ -1143,7 +1143,7 @@ def test_extra_ops_missing_op_114() -> None:
     outs = extra_ops._map_missing_op_114(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp114", "tensorflow") is extra_ops._map_missing_op_114
+    assert global_registry.get_op("tensorflow", "MissingOp114") is extra_ops._map_missing_op_114
 
 
 def test_extra_ops_missing_op_115() -> None:
@@ -1153,7 +1153,7 @@ def test_extra_ops_missing_op_115() -> None:
     outs = extra_ops._map_missing_op_115(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp115", "tensorflow") is extra_ops._map_missing_op_115
+    assert global_registry.get_op("tensorflow", "MissingOp115") is extra_ops._map_missing_op_115
 
 
 def test_extra_ops_missing_op_116() -> None:
@@ -1163,7 +1163,7 @@ def test_extra_ops_missing_op_116() -> None:
     outs = extra_ops._map_missing_op_116(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp116", "tensorflow") is extra_ops._map_missing_op_116
+    assert global_registry.get_op("tensorflow", "MissingOp116") is extra_ops._map_missing_op_116
 
 
 def test_extra_ops_missing_op_117() -> None:
@@ -1173,7 +1173,7 @@ def test_extra_ops_missing_op_117() -> None:
     outs = extra_ops._map_missing_op_117(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp117", "tensorflow") is extra_ops._map_missing_op_117
+    assert global_registry.get_op("tensorflow", "MissingOp117") is extra_ops._map_missing_op_117
 
 
 def test_extra_ops_missing_op_118() -> None:
@@ -1183,7 +1183,7 @@ def test_extra_ops_missing_op_118() -> None:
     outs = extra_ops._map_missing_op_118(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp118", "tensorflow") is extra_ops._map_missing_op_118
+    assert global_registry.get_op("tensorflow", "MissingOp118") is extra_ops._map_missing_op_118
 
 
 def test_extra_ops_missing_op_119() -> None:
@@ -1193,7 +1193,7 @@ def test_extra_ops_missing_op_119() -> None:
     outs = extra_ops._map_missing_op_119(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp119", "tensorflow") is extra_ops._map_missing_op_119
+    assert global_registry.get_op("tensorflow", "MissingOp119") is extra_ops._map_missing_op_119
 
 
 def test_extra_ops_missing_op_120() -> None:
@@ -1203,7 +1203,7 @@ def test_extra_ops_missing_op_120() -> None:
     outs = extra_ops._map_missing_op_120(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp120", "tensorflow") is extra_ops._map_missing_op_120
+    assert global_registry.get_op("tensorflow", "MissingOp120") is extra_ops._map_missing_op_120
 
 
 def test_extra_ops_missing_op_121() -> None:
@@ -1213,7 +1213,7 @@ def test_extra_ops_missing_op_121() -> None:
     outs = extra_ops._map_missing_op_121(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp121", "tensorflow") is extra_ops._map_missing_op_121
+    assert global_registry.get_op("tensorflow", "MissingOp121") is extra_ops._map_missing_op_121
 
 
 def test_extra_ops_missing_op_122() -> None:
@@ -1223,7 +1223,7 @@ def test_extra_ops_missing_op_122() -> None:
     outs = extra_ops._map_missing_op_122(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp122", "tensorflow") is extra_ops._map_missing_op_122
+    assert global_registry.get_op("tensorflow", "MissingOp122") is extra_ops._map_missing_op_122
 
 
 def test_extra_ops_missing_op_123() -> None:
@@ -1233,7 +1233,7 @@ def test_extra_ops_missing_op_123() -> None:
     outs = extra_ops._map_missing_op_123(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp123", "tensorflow") is extra_ops._map_missing_op_123
+    assert global_registry.get_op("tensorflow", "MissingOp123") is extra_ops._map_missing_op_123
 
 
 def test_extra_ops_missing_op_124() -> None:
@@ -1243,7 +1243,7 @@ def test_extra_ops_missing_op_124() -> None:
     outs = extra_ops._map_missing_op_124(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp124", "tensorflow") is extra_ops._map_missing_op_124
+    assert global_registry.get_op("tensorflow", "MissingOp124") is extra_ops._map_missing_op_124
 
 
 def test_extra_ops_missing_op_125() -> None:
@@ -1253,7 +1253,7 @@ def test_extra_ops_missing_op_125() -> None:
     outs = extra_ops._map_missing_op_125(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp125", "tensorflow") is extra_ops._map_missing_op_125
+    assert global_registry.get_op("tensorflow", "MissingOp125") is extra_ops._map_missing_op_125
 
 
 def test_extra_ops_missing_op_126() -> None:
@@ -1263,7 +1263,7 @@ def test_extra_ops_missing_op_126() -> None:
     outs = extra_ops._map_missing_op_126(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp126", "tensorflow") is extra_ops._map_missing_op_126
+    assert global_registry.get_op("tensorflow", "MissingOp126") is extra_ops._map_missing_op_126
 
 
 def test_extra_ops_missing_op_127() -> None:
@@ -1273,7 +1273,7 @@ def test_extra_ops_missing_op_127() -> None:
     outs = extra_ops._map_missing_op_127(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp127", "tensorflow") is extra_ops._map_missing_op_127
+    assert global_registry.get_op("tensorflow", "MissingOp127") is extra_ops._map_missing_op_127
 
 
 def test_extra_ops_missing_op_128() -> None:
@@ -1283,7 +1283,7 @@ def test_extra_ops_missing_op_128() -> None:
     outs = extra_ops._map_missing_op_128(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp128", "tensorflow") is extra_ops._map_missing_op_128
+    assert global_registry.get_op("tensorflow", "MissingOp128") is extra_ops._map_missing_op_128
 
 
 def test_extra_ops_missing_op_129() -> None:
@@ -1293,7 +1293,7 @@ def test_extra_ops_missing_op_129() -> None:
     outs = extra_ops._map_missing_op_129(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp129", "tensorflow") is extra_ops._map_missing_op_129
+    assert global_registry.get_op("tensorflow", "MissingOp129") is extra_ops._map_missing_op_129
 
 
 def test_extra_ops_missing_op_130() -> None:
@@ -1303,7 +1303,7 @@ def test_extra_ops_missing_op_130() -> None:
     outs = extra_ops._map_missing_op_130(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp130", "tensorflow") is extra_ops._map_missing_op_130
+    assert global_registry.get_op("tensorflow", "MissingOp130") is extra_ops._map_missing_op_130
 
 
 def test_extra_ops_missing_op_131() -> None:
@@ -1313,7 +1313,7 @@ def test_extra_ops_missing_op_131() -> None:
     outs = extra_ops._map_missing_op_131(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp131", "tensorflow") is extra_ops._map_missing_op_131
+    assert global_registry.get_op("tensorflow", "MissingOp131") is extra_ops._map_missing_op_131
 
 
 def test_extra_ops_missing_op_132() -> None:
@@ -1323,7 +1323,7 @@ def test_extra_ops_missing_op_132() -> None:
     outs = extra_ops._map_missing_op_132(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp132", "tensorflow") is extra_ops._map_missing_op_132
+    assert global_registry.get_op("tensorflow", "MissingOp132") is extra_ops._map_missing_op_132
 
 
 def test_extra_ops_missing_op_133() -> None:
@@ -1333,7 +1333,7 @@ def test_extra_ops_missing_op_133() -> None:
     outs = extra_ops._map_missing_op_133(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp133", "tensorflow") is extra_ops._map_missing_op_133
+    assert global_registry.get_op("tensorflow", "MissingOp133") is extra_ops._map_missing_op_133
 
 
 def test_extra_ops_missing_op_134() -> None:
@@ -1343,7 +1343,7 @@ def test_extra_ops_missing_op_134() -> None:
     outs = extra_ops._map_missing_op_134(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp134", "tensorflow") is extra_ops._map_missing_op_134
+    assert global_registry.get_op("tensorflow", "MissingOp134") is extra_ops._map_missing_op_134
 
 
 def test_extra_ops_missing_op_135() -> None:
@@ -1353,7 +1353,7 @@ def test_extra_ops_missing_op_135() -> None:
     outs = extra_ops._map_missing_op_135(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp135", "tensorflow") is extra_ops._map_missing_op_135
+    assert global_registry.get_op("tensorflow", "MissingOp135") is extra_ops._map_missing_op_135
 
 
 def test_extra_ops_missing_op_136() -> None:
@@ -1363,7 +1363,7 @@ def test_extra_ops_missing_op_136() -> None:
     outs = extra_ops._map_missing_op_136(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp136", "tensorflow") is extra_ops._map_missing_op_136
+    assert global_registry.get_op("tensorflow", "MissingOp136") is extra_ops._map_missing_op_136
 
 
 def test_extra_ops_missing_op_137() -> None:
@@ -1373,7 +1373,7 @@ def test_extra_ops_missing_op_137() -> None:
     outs = extra_ops._map_missing_op_137(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp137", "tensorflow") is extra_ops._map_missing_op_137
+    assert global_registry.get_op("tensorflow", "MissingOp137") is extra_ops._map_missing_op_137
 
 
 def test_extra_ops_missing_op_138() -> None:
@@ -1383,7 +1383,7 @@ def test_extra_ops_missing_op_138() -> None:
     outs = extra_ops._map_missing_op_138(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp138", "tensorflow") is extra_ops._map_missing_op_138
+    assert global_registry.get_op("tensorflow", "MissingOp138") is extra_ops._map_missing_op_138
 
 
 def test_extra_ops_missing_op_139() -> None:
@@ -1393,7 +1393,7 @@ def test_extra_ops_missing_op_139() -> None:
     outs = extra_ops._map_missing_op_139(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp139", "tensorflow") is extra_ops._map_missing_op_139
+    assert global_registry.get_op("tensorflow", "MissingOp139") is extra_ops._map_missing_op_139
 
 
 def test_extra_ops_missing_op_140() -> None:
@@ -1403,7 +1403,7 @@ def test_extra_ops_missing_op_140() -> None:
     outs = extra_ops._map_missing_op_140(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp140", "tensorflow") is extra_ops._map_missing_op_140
+    assert global_registry.get_op("tensorflow", "MissingOp140") is extra_ops._map_missing_op_140
 
 
 def test_extra_ops_missing_op_141() -> None:
@@ -1413,7 +1413,7 @@ def test_extra_ops_missing_op_141() -> None:
     outs = extra_ops._map_missing_op_141(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp141", "tensorflow") is extra_ops._map_missing_op_141
+    assert global_registry.get_op("tensorflow", "MissingOp141") is extra_ops._map_missing_op_141
 
 
 def test_extra_ops_missing_op_142() -> None:
@@ -1423,7 +1423,7 @@ def test_extra_ops_missing_op_142() -> None:
     outs = extra_ops._map_missing_op_142(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp142", "tensorflow") is extra_ops._map_missing_op_142
+    assert global_registry.get_op("tensorflow", "MissingOp142") is extra_ops._map_missing_op_142
 
 
 def test_extra_ops_missing_op_143() -> None:
@@ -1433,7 +1433,7 @@ def test_extra_ops_missing_op_143() -> None:
     outs = extra_ops._map_missing_op_143(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp143", "tensorflow") is extra_ops._map_missing_op_143
+    assert global_registry.get_op("tensorflow", "MissingOp143") is extra_ops._map_missing_op_143
 
 
 def test_extra_ops_missing_op_144() -> None:
@@ -1443,7 +1443,7 @@ def test_extra_ops_missing_op_144() -> None:
     outs = extra_ops._map_missing_op_144(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp144", "tensorflow") is extra_ops._map_missing_op_144
+    assert global_registry.get_op("tensorflow", "MissingOp144") is extra_ops._map_missing_op_144
 
 
 def test_extra_ops_missing_op_145() -> None:
@@ -1453,7 +1453,7 @@ def test_extra_ops_missing_op_145() -> None:
     outs = extra_ops._map_missing_op_145(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp145", "tensorflow") is extra_ops._map_missing_op_145
+    assert global_registry.get_op("tensorflow", "MissingOp145") is extra_ops._map_missing_op_145
 
 
 def test_extra_ops_missing_op_146() -> None:
@@ -1463,7 +1463,7 @@ def test_extra_ops_missing_op_146() -> None:
     outs = extra_ops._map_missing_op_146(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp146", "tensorflow") is extra_ops._map_missing_op_146
+    assert global_registry.get_op("tensorflow", "MissingOp146") is extra_ops._map_missing_op_146
 
 
 def test_extra_ops_missing_op_147() -> None:
@@ -1473,7 +1473,7 @@ def test_extra_ops_missing_op_147() -> None:
     outs = extra_ops._map_missing_op_147(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp147", "tensorflow") is extra_ops._map_missing_op_147
+    assert global_registry.get_op("tensorflow", "MissingOp147") is extra_ops._map_missing_op_147
 
 
 def test_extra_ops_missing_op_148() -> None:
@@ -1483,7 +1483,7 @@ def test_extra_ops_missing_op_148() -> None:
     outs = extra_ops._map_missing_op_148(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp148", "tensorflow") is extra_ops._map_missing_op_148
+    assert global_registry.get_op("tensorflow", "MissingOp148") is extra_ops._map_missing_op_148
 
 
 def test_extra_ops_missing_op_149() -> None:
@@ -1493,7 +1493,7 @@ def test_extra_ops_missing_op_149() -> None:
     outs = extra_ops._map_missing_op_149(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp149", "tensorflow") is extra_ops._map_missing_op_149
+    assert global_registry.get_op("tensorflow", "MissingOp149") is extra_ops._map_missing_op_149
 
 
 def test_extra_ops_missing_op_150() -> None:
@@ -1503,7 +1503,7 @@ def test_extra_ops_missing_op_150() -> None:
     outs = extra_ops._map_missing_op_150(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp150", "tensorflow") is extra_ops._map_missing_op_150
+    assert global_registry.get_op("tensorflow", "MissingOp150") is extra_ops._map_missing_op_150
 
 
 def test_extra_ops_missing_op_151() -> None:
@@ -1513,7 +1513,7 @@ def test_extra_ops_missing_op_151() -> None:
     outs = extra_ops._map_missing_op_151(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp151", "tensorflow") is extra_ops._map_missing_op_151
+    assert global_registry.get_op("tensorflow", "MissingOp151") is extra_ops._map_missing_op_151
 
 
 def test_extra_ops_missing_op_152() -> None:
@@ -1523,7 +1523,7 @@ def test_extra_ops_missing_op_152() -> None:
     outs = extra_ops._map_missing_op_152(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp152", "tensorflow") is extra_ops._map_missing_op_152
+    assert global_registry.get_op("tensorflow", "MissingOp152") is extra_ops._map_missing_op_152
 
 
 def test_extra_ops_missing_op_153() -> None:
@@ -1533,7 +1533,7 @@ def test_extra_ops_missing_op_153() -> None:
     outs = extra_ops._map_missing_op_153(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp153", "tensorflow") is extra_ops._map_missing_op_153
+    assert global_registry.get_op("tensorflow", "MissingOp153") is extra_ops._map_missing_op_153
 
 
 def test_extra_ops_missing_op_154() -> None:
@@ -1543,7 +1543,7 @@ def test_extra_ops_missing_op_154() -> None:
     outs = extra_ops._map_missing_op_154(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp154", "tensorflow") is extra_ops._map_missing_op_154
+    assert global_registry.get_op("tensorflow", "MissingOp154") is extra_ops._map_missing_op_154
 
 
 def test_extra_ops_missing_op_155() -> None:
@@ -1553,7 +1553,7 @@ def test_extra_ops_missing_op_155() -> None:
     outs = extra_ops._map_missing_op_155(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp155", "tensorflow") is extra_ops._map_missing_op_155
+    assert global_registry.get_op("tensorflow", "MissingOp155") is extra_ops._map_missing_op_155
 
 
 def test_extra_ops_missing_op_156() -> None:
@@ -1563,7 +1563,7 @@ def test_extra_ops_missing_op_156() -> None:
     outs = extra_ops._map_missing_op_156(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp156", "tensorflow") is extra_ops._map_missing_op_156
+    assert global_registry.get_op("tensorflow", "MissingOp156") is extra_ops._map_missing_op_156
 
 
 def test_extra_ops_missing_op_157() -> None:
@@ -1573,7 +1573,7 @@ def test_extra_ops_missing_op_157() -> None:
     outs = extra_ops._map_missing_op_157(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp157", "tensorflow") is extra_ops._map_missing_op_157
+    assert global_registry.get_op("tensorflow", "MissingOp157") is extra_ops._map_missing_op_157
 
 
 def test_extra_ops_missing_op_158() -> None:
@@ -1583,7 +1583,7 @@ def test_extra_ops_missing_op_158() -> None:
     outs = extra_ops._map_missing_op_158(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp158", "tensorflow") is extra_ops._map_missing_op_158
+    assert global_registry.get_op("tensorflow", "MissingOp158") is extra_ops._map_missing_op_158
 
 
 def test_extra_ops_missing_op_159() -> None:
@@ -1593,7 +1593,7 @@ def test_extra_ops_missing_op_159() -> None:
     outs = extra_ops._map_missing_op_159(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp159", "tensorflow") is extra_ops._map_missing_op_159
+    assert global_registry.get_op("tensorflow", "MissingOp159") is extra_ops._map_missing_op_159
 
 
 def test_extra_ops_missing_op_160() -> None:
@@ -1603,7 +1603,7 @@ def test_extra_ops_missing_op_160() -> None:
     outs = extra_ops._map_missing_op_160(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp160", "tensorflow") is extra_ops._map_missing_op_160
+    assert global_registry.get_op("tensorflow", "MissingOp160") is extra_ops._map_missing_op_160
 
 
 def test_extra_ops_missing_op_161() -> None:
@@ -1613,7 +1613,7 @@ def test_extra_ops_missing_op_161() -> None:
     outs = extra_ops._map_missing_op_161(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp161", "tensorflow") is extra_ops._map_missing_op_161
+    assert global_registry.get_op("tensorflow", "MissingOp161") is extra_ops._map_missing_op_161
 
 
 def test_extra_ops_missing_op_162() -> None:
@@ -1623,7 +1623,7 @@ def test_extra_ops_missing_op_162() -> None:
     outs = extra_ops._map_missing_op_162(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp162", "tensorflow") is extra_ops._map_missing_op_162
+    assert global_registry.get_op("tensorflow", "MissingOp162") is extra_ops._map_missing_op_162
 
 
 def test_extra_ops_missing_op_163() -> None:
@@ -1633,7 +1633,7 @@ def test_extra_ops_missing_op_163() -> None:
     outs = extra_ops._map_missing_op_163(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp163", "tensorflow") is extra_ops._map_missing_op_163
+    assert global_registry.get_op("tensorflow", "MissingOp163") is extra_ops._map_missing_op_163
 
 
 def test_extra_ops_missing_op_164() -> None:
@@ -1643,7 +1643,7 @@ def test_extra_ops_missing_op_164() -> None:
     outs = extra_ops._map_missing_op_164(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp164", "tensorflow") is extra_ops._map_missing_op_164
+    assert global_registry.get_op("tensorflow", "MissingOp164") is extra_ops._map_missing_op_164
 
 
 def test_extra_ops_missing_op_165() -> None:
@@ -1653,7 +1653,7 @@ def test_extra_ops_missing_op_165() -> None:
     outs = extra_ops._map_missing_op_165(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp165", "tensorflow") is extra_ops._map_missing_op_165
+    assert global_registry.get_op("tensorflow", "MissingOp165") is extra_ops._map_missing_op_165
 
 
 def test_extra_ops_missing_op_166() -> None:
@@ -1663,7 +1663,7 @@ def test_extra_ops_missing_op_166() -> None:
     outs = extra_ops._map_missing_op_166(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp166", "tensorflow") is extra_ops._map_missing_op_166
+    assert global_registry.get_op("tensorflow", "MissingOp166") is extra_ops._map_missing_op_166
 
 
 def test_extra_ops_missing_op_167() -> None:
@@ -1673,7 +1673,7 @@ def test_extra_ops_missing_op_167() -> None:
     outs = extra_ops._map_missing_op_167(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp167", "tensorflow") is extra_ops._map_missing_op_167
+    assert global_registry.get_op("tensorflow", "MissingOp167") is extra_ops._map_missing_op_167
 
 
 def test_extra_ops_missing_op_168() -> None:
@@ -1683,7 +1683,7 @@ def test_extra_ops_missing_op_168() -> None:
     outs = extra_ops._map_missing_op_168(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp168", "tensorflow") is extra_ops._map_missing_op_168
+    assert global_registry.get_op("tensorflow", "MissingOp168") is extra_ops._map_missing_op_168
 
 
 def test_extra_ops_missing_op_169() -> None:
@@ -1693,7 +1693,7 @@ def test_extra_ops_missing_op_169() -> None:
     outs = extra_ops._map_missing_op_169(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp169", "tensorflow") is extra_ops._map_missing_op_169
+    assert global_registry.get_op("tensorflow", "MissingOp169") is extra_ops._map_missing_op_169
 
 
 def test_extra_ops_missing_op_170() -> None:
@@ -1703,7 +1703,7 @@ def test_extra_ops_missing_op_170() -> None:
     outs = extra_ops._map_missing_op_170(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp170", "tensorflow") is extra_ops._map_missing_op_170
+    assert global_registry.get_op("tensorflow", "MissingOp170") is extra_ops._map_missing_op_170
 
 
 def test_extra_ops_missing_op_171() -> None:
@@ -1713,7 +1713,7 @@ def test_extra_ops_missing_op_171() -> None:
     outs = extra_ops._map_missing_op_171(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp171", "tensorflow") is extra_ops._map_missing_op_171
+    assert global_registry.get_op("tensorflow", "MissingOp171") is extra_ops._map_missing_op_171
 
 
 def test_extra_ops_missing_op_172() -> None:
@@ -1723,7 +1723,7 @@ def test_extra_ops_missing_op_172() -> None:
     outs = extra_ops._map_missing_op_172(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp172", "tensorflow") is extra_ops._map_missing_op_172
+    assert global_registry.get_op("tensorflow", "MissingOp172") is extra_ops._map_missing_op_172
 
 
 def test_extra_ops_missing_op_173() -> None:
@@ -1733,7 +1733,7 @@ def test_extra_ops_missing_op_173() -> None:
     outs = extra_ops._map_missing_op_173(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp173", "tensorflow") is extra_ops._map_missing_op_173
+    assert global_registry.get_op("tensorflow", "MissingOp173") is extra_ops._map_missing_op_173
 
 
 def test_extra_ops_missing_op_174() -> None:
@@ -1743,7 +1743,7 @@ def test_extra_ops_missing_op_174() -> None:
     outs = extra_ops._map_missing_op_174(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp174", "tensorflow") is extra_ops._map_missing_op_174
+    assert global_registry.get_op("tensorflow", "MissingOp174") is extra_ops._map_missing_op_174
 
 
 def test_extra_ops_missing_op_175() -> None:
@@ -1753,4 +1753,4 @@ def test_extra_ops_missing_op_175() -> None:
     outs = extra_ops._map_missing_op_175(builder, node)
     assert len(outs) == 1
     assert builder.graph.nodes[-1].op_type == "Identity"
-    assert global_registry.get_op("MissingOp175", "tensorflow") is extra_ops._map_missing_op_175
+    assert global_registry.get_op("tensorflow", "MissingOp175") is extra_ops._map_missing_op_175

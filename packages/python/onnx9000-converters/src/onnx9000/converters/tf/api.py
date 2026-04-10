@@ -48,7 +48,7 @@ def _convert_tfgraph(tf_graph: TFGraph, name: str = "tf_to_onnx") -> Graph:
         mapper = ALL_MAPPINGS.get(node.op)
         if not mapper:
             try:
-                mapper = global_registry.get_op(node.op, "tensorflow")
+                mapper = global_registry.get_op("tensorflow", node.op)
             except Exception:
                 mapper = None
 

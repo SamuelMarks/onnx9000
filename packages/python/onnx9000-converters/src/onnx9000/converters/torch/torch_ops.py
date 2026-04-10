@@ -22,10 +22,10 @@ def _create_mapper(op_type: str):
 
 # Register both the aten string format and the direct ONNX format for fallback
 for aten_op, onnx_op in ATEN_OP_MAP.items():
-    register_op(aten_op, "torch")(_create_mapper(onnx_op))
-    register_op(onnx_op, "torch")(_create_mapper(onnx_op))
+    register_op("torch", aten_op)(_create_mapper(onnx_op))
+    register_op("torch", onnx_op)(_create_mapper(onnx_op))
 
 # Handle some known aliases
-register_op("add", "torch")(_create_mapper("Add"))
-register_op("mul", "torch")(_create_mapper("Mul"))
-register_op("relu", "torch")(_create_mapper("Relu"))
+register_op("torch", "add")(_create_mapper("Add"))
+register_op("torch", "mul")(_create_mapper("Mul"))
+register_op("torch", "relu")(_create_mapper("Relu"))

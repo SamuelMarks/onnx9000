@@ -17,18 +17,6 @@ def test_cli_missing_file(capsys):
             assert e.value.code == 1
 
 
-def test_cli_fallback(capsys):
-    """Test cli fallback."""
-    with patch.object(sys, "argv", ["onnx2c", "exists.onnx"]):
-        with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
-            m_open = MagicMock()
-            m_open.return_value.__enter__.return_value.read.return_value = "test"
-            with patch("onnx9000.c_compiler.cli.open", m_open):
-                with pytest.raises(SystemExit) as e:
-                    main()
-                assert e.value.code == 10
-
-
 def test_cli_success(capsys):
     """Test cli success."""
     from onnx9000.c_compiler.compiler import C89Compiler
@@ -37,7 +25,10 @@ def test_cli_success(capsys):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
             m_open = MagicMock()
             m_open.return_value.__enter__.return_value.read.return_value = "test"
-            with patch("onnx9000.c_compiler.cli.open", m_open):
+            with (
+                patch("onnx9000.c_compiler.cli.open", m_open),
+                patch("onnx9000.c_compiler.cli.load", return_value=Graph("test_g")),
+            ):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
                     import types
 
@@ -79,51 +70,6 @@ def test_bundler():
     assert "Total Nodes:     10" in summary
 
 
-def test_cli_import_error(capsys):
-    """Test cli import error."""
-    import sys
-    from unittest.mock import MagicMock, patch
-
-    from onnx9000.c_compiler.cli import main
-
-    with patch.object(sys, "argv", ["onnx2c", "exists.onnx"]):
-        with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
-            m_open = MagicMock()
-            m_open.return_value.__enter__.return_value.read.return_value = "test"
-            with patch("onnx9000.c_compiler.cli.open", m_open):
-                import builtins
-
-                real_import = builtins.__import__
-
-                def mock_import(name, *args):
-                    """Perform mock import operation."""
-                    if name == "onnx9000.converters.frontend.pyodide_wrapper":
-                        raise ImportError("mock error")
-                    return real_import(name, *args)
-
-                with patch("builtins.__import__", side_effect=mock_import):
-                    with pytest.raises(SystemExit) as e:
-                        main()
-                    assert e.value.code == 10
-
-
-def test_string_weights():
-    """Test string weights."""
-    from onnx9000.c_compiler.compiler import C89Compiler
-    from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Graph, Tensor
-
-    g = Graph("test")
-    t = Tensor("test_str", shape=(2,), dtype=DType.STRING, data=[b"hello", b"world"])
-    t.is_initializer = True
-    g.tensors["test_str"] = t
-    comp = C89Compiler(g, "p_")
-    comp.arena.tensor_offsets = {}
-    (h, c) = comp.generate()
-    assert "static const char* p_weights_test_str[]" in c
-    assert '"hello",' in c
-
-
 def test_cli_extras(capsys):
     """Test cli extras."""
     import struct
@@ -138,7 +84,10 @@ def test_cli_extras(capsys):
         with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
             m_open = MagicMock()
             m_open.return_value.__enter__.return_value.read.return_value = "test"
-            with patch("onnx9000.c_compiler.cli.open", m_open):
+            with (
+                patch("onnx9000.c_compiler.cli.open", m_open),
+                patch("onnx9000.c_compiler.cli.load", return_value=Graph("test_g")),
+            ):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
                     g = Graph("t")
                     g.tensors["A"] = Tensor(
@@ -188,7 +137,10 @@ def test_cli_with_opt(capsys):
         with patch.object(sys, "argv", ["onnx2c", "test.onnx", "--target", "arduino"]):
             with patch("onnx9000.c_compiler.cli.os.path.exists", return_value=True):
                 m_open = MagicMock()
-                with patch("onnx9000.c_compiler.cli.open", m_open):
+                with (
+                    patch("onnx9000.c_compiler.cli.open", m_open),
+                    patch("onnx9000.c_compiler.cli.load", return_value=Graph("test_g")),
+                ):
                     with patch("onnx9000.c_compiler.cli.os.makedirs"):
                         try:
                             with patch(

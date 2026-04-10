@@ -54,7 +54,7 @@ def _generate_unary_op(
     """
 
 
-@registry.register_op("Relu")
+@registry.register_op("", "Relu")
 def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_relu method or operation."""
     return _generate_unary_op(
@@ -62,7 +62,7 @@ def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
     )
 
 
-@registry.register_op("Elu")
+@registry.register_op("", "Elu")
 def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Elu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
@@ -73,7 +73,7 @@ def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Gener
     )
 
 
-@registry.register_op("Celu")
+@registry.register_op("", "Celu")
 def generate_celu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Celu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
@@ -84,7 +84,7 @@ def generate_celu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
     )
 
 
-@registry.register_op("LeakyRelu")
+@registry.register_op("", "LeakyRelu")
 def generate_leaky_relu(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
@@ -97,7 +97,7 @@ def generate_leaky_relu(
     )
 
 
-@registry.register_op("Selu")
+@registry.register_op("", "Selu")
 def generate_selu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Selu operator."""
     alpha = get_attribute(node, "alpha", 1.6732632423543772)
@@ -109,19 +109,19 @@ def generate_selu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
     )
 
 
-@registry.register_op("Softplus")
+@registry.register_op("", "Softplus")
 def generate_softplus(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Softplus operator."""
     return _generate_unary_op(node, generator_context, "std::log(std::exp({inp}) + 1.0f)")
 
 
-@registry.register_op("Softsign")
+@registry.register_op("", "Softsign")
 def generate_softsign(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Softsign operator."""
     return _generate_unary_op(node, generator_context, "{inp} / (1.0f + std::abs({inp}))")
 
 
-@registry.register_op("ThresholdedRelu")
+@registry.register_op("", "ThresholdedRelu")
 def generate_thresholded_relu(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
@@ -132,7 +132,7 @@ def generate_thresholded_relu(
     )
 
 
-@registry.register_op("Mish")
+@registry.register_op("", "Mish")
 def generate_mish(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Mish operator."""
     return _generate_unary_op(
@@ -140,7 +140,7 @@ def generate_mish(node: Node, generator_context: "onnx9000.backends.codegen.Gene
     )
 
 
-@registry.register_op("HardSigmoid")
+@registry.register_op("", "HardSigmoid")
 def generate_hard_sigmoid(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
@@ -154,7 +154,7 @@ def generate_hard_sigmoid(
     )
 
 
-@registry.register_op("HardSwish")
+@registry.register_op("", "HardSwish")
 def generate_hard_swish(
     node: Node, generator_context: "onnx9000.backends.codegen.Generator"
 ) -> str:
@@ -166,13 +166,13 @@ def generate_hard_swish(
     )
 
 
-@registry.register_op("Sigmoid")
+@registry.register_op("", "Sigmoid")
 def generate_sigmoid(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sigmoid method or operation."""
     return _generate_unary_op(node, generator_context, "1.0f / (1.0f + std::exp(-{inp}))")
 
 
-@registry.register_op("Tanh")
+@registry.register_op("", "Tanh")
 def generate_tanh(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_tanh method or operation."""
     return _generate_unary_op(node, generator_context, "std::tanh({inp})", vdsp_func="vvtanhf")
@@ -243,7 +243,7 @@ def _generate_ternary_op(
     return f"\n        // Ternary Op: {node.op_type} (Broadcast Path)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        {pragma}\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            int64_t idx1 = onnx9000::broadcast_index(i, {out}.shape, {inp1}.shape, {inp1}.strides);\n            int64_t idx2 = onnx9000::broadcast_index(i, {out}.shape, {inp2}.shape, {inp2}.strides);\n            int64_t idx3 = onnx9000::broadcast_index(i, {out}.shape, {inp3}.shape, {inp3}.strides);\n            {out}.data[i] = {op_expr.format(inp1=f'{inp1}.data[idx1]', inp2=f'{inp2}.data[idx2]', inp3=f'{inp3}.data[idx3]')};\n        }}\n"
 
 
-@registry.register_op("PRelu")
+@registry.register_op("", "PRelu")
 def generate_prelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Prelu operator."""
     return _generate_binary_op(
@@ -251,25 +251,25 @@ def generate_prelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
     )
 
 
-@registry.register_op("Add")
+@registry.register_op("", "Add")
 def generate_add(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_add method or operation."""
     return _generate_binary_op(node, generator_context, "+", vdsp_func="vDSP_vadd")
 
 
-@registry.register_op("Sub")
+@registry.register_op("", "Sub")
 def generate_sub(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_sub method or operation."""
     return _generate_binary_op(node, generator_context, "-")
 
 
-@registry.register_op("Mul")
+@registry.register_op("", "Mul")
 def generate_mul(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_mul method or operation."""
     return _generate_binary_op(node, generator_context, "*", vdsp_func="vDSP_vmul")
 
 
-@registry.register_op("Div")
+@registry.register_op("", "Div")
 def generate_div(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_div method or operation."""
     return _generate_binary_op(node, generator_context, "/", vdsp_func="vDSP_vdiv")

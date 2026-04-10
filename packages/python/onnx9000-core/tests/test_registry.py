@@ -9,40 +9,40 @@ def test_registry_registration() -> None:
     """Tests the registry registration functionality."""
     reg = OperatorRegistry()
 
-    @reg.register_op("Add")
+    @reg.register_op("", "Add")
     def mock_add() -> str:
         """Test the mock add functionality."""
         return "added"
 
-    assert reg.get_op("Add")() == "added"
+    assert reg.get_op("", "Add")() == "added"
 
 
 def test_registry_unsupported() -> None:
     """Tests the registry unsupported functionality."""
     reg = OperatorRegistry()
     with pytest.raises(UnsupportedOpError):
-        reg.get_op("MissingOp")
+        reg.get_op("", "MissingOp")
 
 
 def test_registry_duplicate() -> None:
     """Tests the registry duplicate functionality."""
     reg = OperatorRegistry()
 
-    @reg.register_op("Add")
+    @reg.register_op("", "Add")
     def mock_add() -> None:
         """Provides functional implementation."""
         return None
 
     mock_add()
 
-    @reg.register_op("Add")
+    @reg.register_op("", "Add")
     def mock_add_again() -> None:
         """Provides functional implementation."""
         return None
 
     mock_add_again()
 
-    assert reg.get_op("Add") is mock_add_again
+    assert reg.get_op("", "Add") is mock_add_again
 
 
 def test_registry_new_domain() -> None:
@@ -51,7 +51,7 @@ def test_registry_new_domain() -> None:
 
     reg = OperatorRegistry()
 
-    @reg.register_op("TestNewDomain", domain="custom.domain")
+    @reg.register_op("custom.domain", "TestNewDomain")
     def my_op() -> None:
         """Provides functional implementation."""
         return None
@@ -65,7 +65,7 @@ def test_global_register_op() -> None:
     """Tests the global register op functionality."""
     from onnx9000.core.registry import global_registry, register_op
 
-    @register_op("GlobalMockOp", domain="global")
+    @register_op("global", "GlobalMockOp")
     def global_mock() -> None:
         """Provides functional implementation."""
         return None

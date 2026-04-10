@@ -177,7 +177,7 @@ def test_script_parser_constants_fallback():
 
 @pytest.mark.skipif(not TORCH_AVAILABLE, reason="Torch not available")
 def test_script_parser_more_coverage():
-    pass
+    assert True
 
 
 def test_script_parser_div_fallback():

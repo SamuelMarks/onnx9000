@@ -7,7 +7,7 @@ from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-@registry.register_op("If")
+@registry.register_op("", "If")
 def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_if method or operation."""
     cond_var = ctx.get_tensor_name(node.inputs[0])
@@ -18,13 +18,13 @@ def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     then_op_codes = []
     if then_graph:
         for then_node in then_graph.nodes:
-            op_gen = registry.get_op(then_node.op_type, domain=getattr(then_node, "domain", ""))
+            op_gen = registry.get_op(getattr(then_node, "domain", ""), then_node.op_type)
             then_op_codes.append(op_gen(then_node, ctx))
 
     else_op_codes = []
     if else_graph:
         for else_node in else_graph.nodes:
-            op_gen = registry.get_op(else_node.op_type, domain=getattr(else_node, "domain", ""))
+            op_gen = registry.get_op(getattr(else_node, "domain", ""), else_node.op_type)
             else_op_codes.append(op_gen(else_node, ctx))
 
     then_code = "\\n".join(then_op_codes)
@@ -49,7 +49,7 @@ def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     return "\\n".join(out_blocks)
 
 
-@registry.register_op("Loop")
+@registry.register_op("", "Loop")
 def generate_loop(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_loop method or operation."""
     max_trip_count = (
@@ -61,7 +61,7 @@ def generate_loop(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
     body_op_codes = []
     if body_graph:
         for body_node in body_graph.nodes:
-            op_gen = registry.get_op(body_node.op_type, domain=getattr(body_node, "domain", ""))
+            op_gen = registry.get_op(getattr(body_node, "domain", ""), body_node.op_type)
             body_op_codes.append(op_gen(body_node, ctx))
 
     body_code = "\\n".join(body_op_codes)

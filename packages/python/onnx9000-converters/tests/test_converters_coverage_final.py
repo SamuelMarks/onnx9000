@@ -103,7 +103,7 @@ def test_tf_parsers_extra_coverage():
         keras.Model = type("MockModel", (), {"built": True, "operations": []})
 
     class DummyModel(keras.Model):
-        pass
+        assert True
 
     model = DummyModel()
     load_keras_v3(model)

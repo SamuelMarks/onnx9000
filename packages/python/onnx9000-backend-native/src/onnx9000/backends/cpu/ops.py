@@ -6,37 +6,37 @@ import numpy as np
 from onnx9000.core.registry import global_registry, register_op
 
 
-@register_op(op_type="Add", provider="cpu")
+@register_op("", "Add", provider="cpu")
 def add_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the add op operation."""
     return [inputs[0] + inputs[1]]
 
 
-@register_op(op_type="Sub", provider="cpu")
+@register_op("", "Sub", provider="cpu")
 def sub_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the sub op operation."""
     return [inputs[0] - inputs[1]]
 
 
-@register_op(op_type="Mul", provider="cpu")
+@register_op("", "Mul", provider="cpu")
 def mul_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the mul op operation."""
     return [inputs[0] * inputs[1]]
 
 
-@register_op(op_type="Div", provider="cpu")
+@register_op("", "Div", provider="cpu")
 def div_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the div op operation."""
     return [inputs[0] / inputs[1]]
 
 
-@register_op(op_type="Pow", provider="cpu")
+@register_op("", "Pow", provider="cpu")
 def pow_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the pow op operation."""
     return [inputs[0] ** inputs[1]]
 
 
-@register_op(op_type="MatMul", provider="cpu")
+@register_op("", "MatMul", provider="cpu")
 def matmul_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the matmul op operation."""
     return [np.matmul(inputs[0], inputs[1])]
@@ -68,7 +68,7 @@ def im2col(
     return col
 
 
-@register_op(op_type="Conv", provider="cpu")
+@register_op("", "Conv", provider="cpu")
 def conv_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the conv op operation."""
     x = inputs[0]
@@ -112,32 +112,32 @@ def conv_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [out]
 
 
-@register_op(op_type="Relu", provider="cpu")
+@register_op("", "Relu", provider="cpu")
 def relu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the relu op operation."""
     return [np.maximum(0, inputs[0])]
 
 
-@register_op(op_type="Sigmoid", provider="cpu")
+@register_op("", "Sigmoid", provider="cpu")
 def sigmoid_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the sigmoid op operation."""
     return [1.0 / (1.0 + np.exp(-inputs[0]))]
 
 
-@register_op(op_type="Tanh", provider="cpu")
+@register_op("", "Tanh", provider="cpu")
 def tanh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the tanh op operation."""
     return [np.tanh(inputs[0])]
 
 
-@register_op(op_type="Gelu", provider="cpu")
+@register_op("", "Gelu", provider="cpu")
 def gelu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the gelu op operation."""
     x = inputs[0]
     return [0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * np.power(x, 3))))]
 
 
-@register_op(op_type="ReduceSum", provider="cpu")
+@register_op("", "ReduceSum", provider="cpu")
 def reducesum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the reducesum op operation."""
     axes = tuple(attrs.get("axes", []))
@@ -147,7 +147,7 @@ def reducesum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
     return [np.sum(inputs[0], axis=axes, keepdims=bool(keepdims))]
 
 
-@register_op(op_type="ReduceMean", provider="cpu")
+@register_op("", "ReduceMean", provider="cpu")
 def reducemean_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the reducemean op operation."""
     axes = tuple(attrs.get("axes", []))
@@ -157,7 +157,7 @@ def reducemean_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nd
     return [np.mean(inputs[0], axis=axes, keepdims=bool(keepdims))]
 
 
-@register_op(op_type="ReduceMax", provider="cpu")
+@register_op("", "ReduceMax", provider="cpu")
 def reducemax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the reducemax op operation."""
     axes = tuple(attrs.get("axes", []))
@@ -167,14 +167,14 @@ def reducemax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
     return [np.max(inputs[0], axis=axes, keepdims=bool(keepdims))]
 
 
-@register_op(op_type="Transpose", provider="cpu")
+@register_op("", "Transpose", provider="cpu")
 def transpose_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the transpose op operation."""
     perm = attrs.get("perm")
     return [np.transpose(inputs[0], axes=perm)]
 
 
-@register_op(op_type="Reshape", provider="cpu")
+@register_op("", "Reshape", provider="cpu")
 def reshape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the reshape op operation."""
     shape_tensor = inputs[1] if len(inputs) > 1 else attrs.get("shape", [])
@@ -187,7 +187,7 @@ def reshape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
     return [np.reshape(inputs[0], target_shape)]
 
 
-@register_op(op_type="Flatten", provider="cpu")
+@register_op("", "Flatten", provider="cpu")
 def flatten_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the flatten op operation."""
     axis = attrs.get("axis", 1)
@@ -198,21 +198,21 @@ def flatten_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
     return [np.reshape(x, new_shape)]
 
 
-@register_op(op_type="Concat", provider="cpu")
+@register_op("", "Concat", provider="cpu")
 def concat_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the concat op operation."""
     axis = attrs.get("axis", 0)
     return [np.concatenate(inputs, axis=axis)]
 
 
-@register_op(op_type="Gather", provider="cpu")
+@register_op("", "Gather", provider="cpu")
 def gather_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the gather op operation."""
     axis = attrs.get("axis", 0)
     return [np.take(inputs[0], inputs[1].astype(int), axis=axis)]
 
 
-@register_op(op_type="ScatterND", provider="cpu")
+@register_op("", "ScatterND", provider="cpu")
 def scatternd_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the scatternd op operation."""
     data = np.copy(inputs[0])
@@ -226,7 +226,7 @@ def scatternd_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
     return [data]
 
 
-@register_op(op_type="Slice", provider="cpu")
+@register_op("", "Slice", provider="cpu")
 def slice_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the slice op operation."""
     data = inputs[0]
@@ -240,7 +240,7 @@ def slice_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray
     return [data[tuple(slices)]]
 
 
-@register_op(op_type="Softmax", provider="cpu")
+@register_op("", "Softmax", provider="cpu")
 def softmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the softmax op operation."""
     axis = attrs.get("axis", -1)
@@ -250,7 +250,7 @@ def softmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
     return [exp_x / np.sum(exp_x, axis=axis, keepdims=True)]
 
 
-@register_op(op_type="LayerNormalization", provider="cpu")
+@register_op("", "LayerNormalization", provider="cpu")
 def layernorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the layernorm op operation."""
     x = inputs[0]
@@ -267,7 +267,7 @@ def layernorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
     return [out]
 
 
-@register_op(op_type="BatchNormalization", provider="cpu")
+@register_op("", "BatchNormalization", provider="cpu")
 def batchnorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Execute the batchnorm op operation."""
     x = inputs[0]
@@ -287,97 +287,97 @@ def batchnorm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nda
     return [out]
 
 
-@register_op(op_type="Abs", provider="cpu")
+@register_op("", "Abs", provider="cpu")
 def abs_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Abs Op function logic implementation."""
     return [np.abs(inputs[0])]
 
 
-@register_op(op_type="Acos", provider="cpu")
+@register_op("", "Acos", provider="cpu")
 def acos_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Acos Op function logic implementation."""
     return [np.arccos(inputs[0])]
 
 
-@register_op(op_type="Acosh", provider="cpu")
+@register_op("", "Acosh", provider="cpu")
 def acosh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Acosh Op function logic implementation."""
     return [np.arccosh(inputs[0])]
 
 
-@register_op(op_type="Asin", provider="cpu")
+@register_op("", "Asin", provider="cpu")
 def asin_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Asin Op function logic implementation."""
     return [np.arcsin(inputs[0])]
 
 
-@register_op(op_type="Asinh", provider="cpu")
+@register_op("", "Asinh", provider="cpu")
 def asinh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Asinh Op function logic implementation."""
     return [np.arcsinh(inputs[0])]
 
 
-@register_op(op_type="Atan", provider="cpu")
+@register_op("", "Atan", provider="cpu")
 def atan_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Atan Op function logic implementation."""
     return [np.arctan(inputs[0])]
 
 
-@register_op(op_type="Atanh", provider="cpu")
+@register_op("", "Atanh", provider="cpu")
 def atanh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Atanh Op function logic implementation."""
     return [np.arctanh(inputs[0])]
 
 
-@register_op(op_type="Cos", provider="cpu")
+@register_op("", "Cos", provider="cpu")
 def cos_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Cos Op function logic implementation."""
     return [np.cos(inputs[0])]
 
 
-@register_op(op_type="Cosh", provider="cpu")
+@register_op("", "Cosh", provider="cpu")
 def cosh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Cosh Op function logic implementation."""
     return [np.cosh(inputs[0])]
 
 
-@register_op(op_type="Sin", provider="cpu")
+@register_op("", "Sin", provider="cpu")
 def sin_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sin Op function logic implementation."""
     return [np.sin(inputs[0])]
 
 
-@register_op(op_type="Sinh", provider="cpu")
+@register_op("", "Sinh", provider="cpu")
 def sinh_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sinh Op function logic implementation."""
     return [np.sinh(inputs[0])]
 
 
-@register_op(op_type="Tan", provider="cpu")
+@register_op("", "Tan", provider="cpu")
 def tan_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Tan Op function logic implementation."""
     return [np.tan(inputs[0])]
 
 
-@register_op(op_type="Ceil", provider="cpu")
+@register_op("", "Ceil", provider="cpu")
 def ceil_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Ceil Op function logic implementation."""
     return [np.ceil(inputs[0])]
 
 
-@register_op(op_type="Floor", provider="cpu")
+@register_op("", "Floor", provider="cpu")
 def floor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Floor Op function logic implementation."""
     return [np.floor(inputs[0])]
 
 
-@register_op(op_type="Round", provider="cpu")
+@register_op("", "Round", provider="cpu")
 def round_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Round Op function logic implementation."""
     return [np.round(inputs[0])]
 
 
-@register_op(op_type="Clip", provider="cpu")
+@register_op("", "Clip", provider="cpu")
 def clip_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Clip Op function logic implementation."""
     a_min = inputs[1] if len(inputs) > 1 else None
@@ -385,37 +385,37 @@ def clip_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [np.clip(inputs[0], a_min, a_max)]
 
 
-@register_op(op_type="Exp", provider="cpu")
+@register_op("", "Exp", provider="cpu")
 def exp_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Exp Op function logic implementation."""
     return [np.exp(inputs[0])]
 
 
-@register_op(op_type="Log", provider="cpu")
+@register_op("", "Log", provider="cpu")
 def log_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Log Op function logic implementation."""
     return [np.log(inputs[0])]
 
 
-@register_op(op_type="Sqrt", provider="cpu")
+@register_op("", "Sqrt", provider="cpu")
 def sqrt_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sqrt Op function logic implementation."""
     return [np.sqrt(inputs[0])]
 
 
-@register_op(op_type="Erf", provider="cpu")
+@register_op("", "Erf", provider="cpu")
 def erf_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Erf Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="Sign", provider="cpu")
+@register_op("", "Sign", provider="cpu")
 def sign_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sign Op function logic implementation."""
     return [np.sign(inputs[0])]
 
 
-@register_op(op_type="Mod", provider="cpu")
+@register_op("", "Mod", provider="cpu")
 def mod_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Mod Op function logic implementation."""
     fmod = attrs.get("fmod", 0)
@@ -424,73 +424,73 @@ def mod_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     return [np.mod(inputs[0], inputs[1])]
 
 
-@register_op(op_type="IsInf", provider="cpu")
+@register_op("", "IsInf", provider="cpu")
 def isinf_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Isinf Op function logic implementation."""
     return [np.isinf(inputs[0])]
 
 
-@register_op(op_type="IsNaN", provider="cpu")
+@register_op("", "IsNaN", provider="cpu")
 def isnan_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Isnan Op function logic implementation."""
     return [np.isnan(inputs[0])]
 
 
-@register_op(op_type="Equal", provider="cpu")
+@register_op("", "Equal", provider="cpu")
 def equal_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Equal Op function logic implementation."""
     return [np.equal(inputs[0], inputs[1])]
 
 
-@register_op(op_type="Greater", provider="cpu")
+@register_op("", "Greater", provider="cpu")
 def greater_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Greater Op function logic implementation."""
     return [np.greater(inputs[0], inputs[1])]
 
 
-@register_op(op_type="GreaterOrEqual", provider="cpu")
+@register_op("", "GreaterOrEqual", provider="cpu")
 def greaterorequal_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Greaterorequal Op function logic implementation."""
     return [np.greater_equal(inputs[0], inputs[1])]
 
 
-@register_op(op_type="Less", provider="cpu")
+@register_op("", "Less", provider="cpu")
 def less_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Less Op function logic implementation."""
     return [np.less(inputs[0], inputs[1])]
 
 
-@register_op(op_type="LessOrEqual", provider="cpu")
+@register_op("", "LessOrEqual", provider="cpu")
 def lessorequal_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Lessorequal Op function logic implementation."""
     return [np.less_equal(inputs[0], inputs[1])]
 
 
-@register_op(op_type="And", provider="cpu")
+@register_op("", "And", provider="cpu")
 def and_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """And Op function logic implementation."""
     return [np.logical_and(inputs[0], inputs[1])]
 
 
-@register_op(op_type="Or", provider="cpu")
+@register_op("", "Or", provider="cpu")
 def or_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Or Op function logic implementation."""
     return [np.logical_or(inputs[0], inputs[1])]
 
 
-@register_op(op_type="Not", provider="cpu")
+@register_op("", "Not", provider="cpu")
 def not_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Not Op function logic implementation."""
     return [np.logical_not(inputs[0])]
 
 
-@register_op(op_type="Xor", provider="cpu")
+@register_op("", "Xor", provider="cpu")
 def xor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Xor Op function logic implementation."""
     return [np.logical_xor(inputs[0], inputs[1])]
 
 
-@register_op(op_type="BitShift", provider="cpu")
+@register_op("", "BitShift", provider="cpu")
 def bitshift_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Bitshift Op function logic implementation."""
     direction = attrs.get("direction", "RIGHT")
@@ -500,31 +500,31 @@ def bitshift_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndar
         return [np.left_shift(inputs[0], inputs[1])]
 
 
-@register_op(op_type="BitwiseAnd", provider="cpu")
+@register_op("", "BitwiseAnd", provider="cpu")
 def bitwiseand_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Bitwiseand Op function logic implementation."""
     return [np.bitwise_and(inputs[0], inputs[1])]
 
 
-@register_op(op_type="BitwiseNot", provider="cpu")
+@register_op("", "BitwiseNot", provider="cpu")
 def bitwisenot_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Bitwisenot Op function logic implementation."""
     return [np.bitwise_not(inputs[0])]
 
 
-@register_op(op_type="BitwiseOr", provider="cpu")
+@register_op("", "BitwiseOr", provider="cpu")
 def bitwiseor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Bitwiseor Op function logic implementation."""
     return [np.bitwise_or(inputs[0], inputs[1])]
 
 
-@register_op(op_type="BitwiseXor", provider="cpu")
+@register_op("", "BitwiseXor", provider="cpu")
 def bitwisexor_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Bitwisexor Op function logic implementation."""
     return [np.bitwise_xor(inputs[0], inputs[1])]
 
 
-@register_op(op_type="ReduceL1", provider="cpu")
+@register_op("", "ReduceL1", provider="cpu")
 def reducel1_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reducel1 Op function logic implementation."""
     axes = tuple(attrs.get("axes", []))
@@ -534,7 +534,7 @@ def reducel1_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndar
     return [np.sum(np.abs(inputs[0]), axis=axes, keepdims=bool(keepdims))]
 
 
-@register_op(op_type="ReduceL2", provider="cpu")
+@register_op("", "ReduceL2", provider="cpu")
 def reducel2_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reducel2 Op function logic implementation."""
     axes = tuple(attrs.get("axes", []))
@@ -544,7 +544,7 @@ def reducel2_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndar
     return [np.sqrt(np.sum(np.square(inputs[0]), axis=axes, keepdims=bool(keepdims)))]
 
 
-@register_op(op_type="ReduceLogSum", provider="cpu")
+@register_op("", "ReduceLogSum", provider="cpu")
 def reducelogsum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reducelogsum Op function logic implementation."""
     axes = tuple(attrs.get("axes", []))
@@ -554,7 +554,7 @@ def reducelogsum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.
     return [np.log(np.sum(inputs[0], axis=axes, keepdims=bool(keepdims)))]
 
 
-@register_op(op_type="ReduceLogSumExp", provider="cpu")
+@register_op("", "ReduceLogSumExp", provider="cpu")
 def reducelogsumexp_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reducelogsumexp Op function logic implementation."""
     axes = tuple(attrs.get("axes", []))
@@ -568,7 +568,7 @@ def reducelogsumexp_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[
     return [out]
 
 
-@register_op(op_type="ReduceSumSquare", provider="cpu")
+@register_op("", "ReduceSumSquare", provider="cpu")
 def reducesumsquare_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reducesumsquare Op function logic implementation."""
     axes = tuple(attrs.get("axes", []))
@@ -578,14 +578,14 @@ def reducesumsquare_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[
     return [np.sum(np.square(inputs[0]), axis=axes, keepdims=bool(keepdims))]
 
 
-@register_op(op_type="Einsum", provider="cpu")
+@register_op("", "Einsum", provider="cpu")
 def einsum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Einsum Op function logic implementation."""
     equation = attrs.get("equation", "")
     return [np.einsum(equation, *inputs)]
 
 
-@register_op(op_type="Cast", provider="cpu")
+@register_op("", "Cast", provider="cpu")
 def cast_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Cast Op function logic implementation."""
     to = attrs.get("to")
@@ -603,13 +603,13 @@ def cast_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [inputs[0].astype(np_types.get(to, np.float32))]
 
 
-@register_op(op_type="CastLike", provider="cpu")
+@register_op("", "CastLike", provider="cpu")
 def castlike_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Castlike Op function logic implementation."""
     return [inputs[0].astype(inputs[1].dtype)]
 
 
-@register_op(op_type="Gemm", provider="cpu")
+@register_op("", "Gemm", provider="cpu")
 def gemm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Gemm Op function logic implementation."""
     a = inputs[0]
@@ -626,55 +626,55 @@ def gemm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [alpha * np.matmul(a, b) + beta * c]
 
 
-@register_op(op_type="ConvTranspose", provider="cpu")
+@register_op("", "ConvTranspose", provider="cpu")
 def convtranspose_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Convtranspose Op function logic implementation."""
     return [np.zeros_like(inputs[0])]
 
 
-@register_op(op_type="MaxPool", provider="cpu")
+@register_op("", "MaxPool", provider="cpu")
 def maxpool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Maxpool Op function logic implementation."""
     return [np.max(inputs[0], axis=(-2, -1), keepdims=True)]
 
 
-@register_op(op_type="AveragePool", provider="cpu")
+@register_op("", "AveragePool", provider="cpu")
 def averagepool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Averagepool Op function logic implementation."""
     return [np.mean(inputs[0], axis=(-2, -1), keepdims=True)]
 
 
-@register_op(op_type="GlobalAveragePool", provider="cpu")
+@register_op("", "GlobalAveragePool", provider="cpu")
 def globalaveragepool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Globalaveragepool Op function logic implementation."""
     return [np.mean(inputs[0], axis=tuple(range(2, inputs[0].ndim)), keepdims=True)]
 
 
-@register_op(op_type="GlobalMaxPool", provider="cpu")
+@register_op("", "GlobalMaxPool", provider="cpu")
 def globalmaxpool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Globalmaxpool Op function logic implementation."""
     return [np.max(inputs[0], axis=tuple(range(2, inputs[0].ndim)), keepdims=True)]
 
 
-@register_op(op_type="GlobalLpPool", provider="cpu")
+@register_op("", "GlobalLpPool", provider="cpu")
 def globallppool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Globallppool Op function logic implementation."""
     return [np.sum(np.abs(inputs[0]), axis=tuple(range(2, inputs[0].ndim)), keepdims=True)]
 
 
-@register_op(op_type="MaxRoiPool", provider="cpu")
+@register_op("", "MaxRoiPool", provider="cpu")
 def maxroipool_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Maxroipool Op function logic implementation."""
     return [np.zeros((inputs[1].shape[0], inputs[0].shape[1], 1, 1), dtype=inputs[0].dtype)]
 
 
-@register_op(op_type="RoiAlign", provider="cpu")
+@register_op("", "RoiAlign", provider="cpu")
 def roialign_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Roialign Op function logic implementation."""
     return [np.zeros((inputs[1].shape[0], inputs[0].shape[1], 1, 1), dtype=inputs[0].dtype)]
 
 
-@register_op(op_type="InstanceNormalization", provider="cpu")
+@register_op("", "InstanceNormalization", provider="cpu")
 def instancenormalization_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Instancenormalization Op function logic implementation."""
     mean = np.mean(inputs[0], axis=tuple(range(2, inputs[0].ndim)), keepdims=True)
@@ -683,34 +683,34 @@ def instancenormalization_op(inputs: list[np.ndarray], attrs: dict[str, Any]) ->
     return [(inputs[0] - mean) / np.sqrt(var + epsilon) * inputs[1] + inputs[2]]
 
 
-@register_op(op_type="LRN", provider="cpu")
+@register_op("", "LRN", provider="cpu")
 def lrn_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Lrn Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="LeakyRelu", provider="cpu")
+@register_op("", "LeakyRelu", provider="cpu")
 def leakyrelu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Leakyrelu Op function logic implementation."""
     alpha = attrs.get("alpha", 0.01)
     return [np.where(inputs[0] > 0, inputs[0], inputs[0] * alpha)]
 
 
-@register_op(op_type="PRelu", provider="cpu")
+@register_op("", "PRelu", provider="cpu")
 def prelu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Prelu Op function logic implementation."""
     slope = inputs[1]
     return [np.where(inputs[0] > 0, inputs[0], inputs[0] * slope)]
 
 
-@register_op(op_type="Elu", provider="cpu")
+@register_op("", "Elu", provider="cpu")
 def elu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Elu Op function logic implementation."""
     alpha = attrs.get("alpha", 1.0)
     return [np.where(inputs[0] > 0, inputs[0], alpha * (np.exp(inputs[0]) - 1))]
 
 
-@register_op(op_type="Selu", provider="cpu")
+@register_op("", "Selu", provider="cpu")
 def selu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Selu Op function logic implementation."""
     alpha = attrs.get("alpha", 1.67326)
@@ -718,7 +718,7 @@ def selu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [gamma * np.where(inputs[0] > 0, inputs[0], alpha * (np.exp(inputs[0]) - 1))]
 
 
-@register_op(op_type="HardSigmoid", provider="cpu")
+@register_op("", "HardSigmoid", provider="cpu")
 def hardsigmoid_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Hardsigmoid Op function logic implementation."""
     alpha = attrs.get("alpha", 0.2)
@@ -726,7 +726,7 @@ def hardsigmoid_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.n
     return [np.clip(alpha * inputs[0] + beta, 0, 1)]
 
 
-@register_op(op_type="LogSoftmax", provider="cpu")
+@register_op("", "LogSoftmax", provider="cpu")
 def logsoftmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Logsoftmax Op function logic implementation."""
     axis = attrs.get("axis", -1)
@@ -734,19 +734,19 @@ def logsoftmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.nd
     return [inputs[0] - x_max - np.log(np.sum(np.exp(inputs[0] - x_max), axis=axis, keepdims=True))]
 
 
-@register_op(op_type="Softplus", provider="cpu")
+@register_op("", "Softplus", provider="cpu")
 def softplus_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Softplus Op function logic implementation."""
     return [np.log(np.exp(inputs[0]) + 1)]
 
 
-@register_op(op_type="Softsign", provider="cpu")
+@register_op("", "Softsign", provider="cpu")
 def softsign_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Softsign Op function logic implementation."""
     return [inputs[0] / (1 + np.abs(inputs[0]))]
 
 
-@register_op(op_type="Hardmax", provider="cpu")
+@register_op("", "Hardmax", provider="cpu")
 def hardmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Hardmax Op function logic implementation."""
     axis = attrs.get("axis", 1)
@@ -755,19 +755,19 @@ def hardmax_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
     return [res]
 
 
-@register_op(op_type="HardSwish", provider="cpu")
+@register_op("", "HardSwish", provider="cpu")
 def hardswish_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Hardswish Op function logic implementation."""
     return [inputs[0] * np.clip(inputs[0] / 6.0 + 0.5, 0.0, 1.0)]
 
 
-@register_op(op_type="Mish", provider="cpu")
+@register_op("", "Mish", provider="cpu")
 def mish_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Mish Op function logic implementation."""
     return [inputs[0] * np.tanh(np.log(1 + np.exp(inputs[0])))]
 
 
-@register_op(op_type="Shrink", provider="cpu")
+@register_op("", "Shrink", provider="cpu")
 def shrink_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Shrink Op function logic implementation."""
     bias = attrs.get("bias", 0.0)
@@ -779,37 +779,37 @@ def shrink_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarra
     ]
 
 
-@register_op(op_type="Dropout", provider="cpu")
+@register_op("", "Dropout", provider="cpu")
 def dropout_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Dropout Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="RNN", provider="cpu")
+@register_op("", "RNN", provider="cpu")
 def rnn_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Rnn Op function logic implementation."""
     return [np.zeros_like(inputs[0])]
 
 
-@register_op(op_type="LSTM", provider="cpu")
+@register_op("", "LSTM", provider="cpu")
 def lstm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Lstm Op function logic implementation."""
     return [np.zeros_like(inputs[0]), np.zeros_like(inputs[0]), np.zeros_like(inputs[0])]
 
 
-@register_op(op_type="GRU", provider="cpu")
+@register_op("", "GRU", provider="cpu")
 def gru_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Gru Op function logic implementation."""
     return [np.zeros_like(inputs[0]), np.zeros_like(inputs[0])]
 
 
-@register_op(op_type="GridSample", provider="cpu")
+@register_op("", "GridSample", provider="cpu")
 def gridsample_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Gridsample Op function logic implementation."""
     return [np.zeros_like(inputs[0])]
 
 
-@register_op(op_type="Pad", provider="cpu")
+@register_op("", "Pad", provider="cpu")
 def pad_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Pad Op function logic implementation."""
     pads = inputs[1]
@@ -825,46 +825,46 @@ def pad_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     ]
 
 
-@register_op(op_type="Resize", provider="cpu")
+@register_op("", "Resize", provider="cpu")
 def resize_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Resize Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="SpaceToDepth", provider="cpu")
+@register_op("", "SpaceToDepth", provider="cpu")
 def spacetodepth_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Spacetodepth Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="DepthToSpace", provider="cpu")
+@register_op("", "DepthToSpace", provider="cpu")
 def depthtospace_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Depthtospace Op function logic implementation."""
     return [inputs[0]]
 
 
-@register_op(op_type="Squeeze", provider="cpu")
+@register_op("", "Squeeze", provider="cpu")
 def squeeze_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Squeeze Op function logic implementation."""
     axes = tuple(inputs[1]) if len(inputs) > 1 else None
     return [np.squeeze(inputs[0], axis=axes)]
 
 
-@register_op(op_type="Unsqueeze", provider="cpu")
+@register_op("", "Unsqueeze", provider="cpu")
 def unsqueeze_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Unsqueeze Op function logic implementation."""
     axes = tuple(inputs[1])
     return [np.expand_dims(inputs[0], axis=axes)]
 
 
-@register_op(op_type="GatherElements", provider="cpu")
+@register_op("", "GatherElements", provider="cpu")
 def gatherelements_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Gatherelements Op function logic implementation."""
     return [np.take_along_axis(inputs[0], inputs[1].astype(int), axis=attrs.get("axis", 0))]
 
 
-@register_op(op_type="Scatter", provider="cpu")
-@register_op(op_type="ScatterElements", provider="cpu")
+@register_op("", "Scatter", provider="cpu")
+@register_op("", "ScatterElements", provider="cpu")
 def scatter_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Scatter Op function logic implementation."""
     data = np.copy(inputs[0])
@@ -872,45 +872,45 @@ def scatter_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarr
     return [data]
 
 
-@register_op(op_type="Constant", provider="cpu")
-@register_op(op_type="ConstantOfShape", provider="cpu")
+@register_op("", "Constant", provider="cpu")
+@register_op("", "ConstantOfShape", provider="cpu")
 def constantofshape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Constantofshape Op function logic implementation."""
     val = attrs.get("value", np.array([0], dtype=np.float32))
     return [np.full(tuple(inputs[0]), val[0])]
 
 
-@register_op(op_type="Tile", provider="cpu")
+@register_op("", "Tile", provider="cpu")
 def tile_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Tile Op function logic implementation."""
     return [np.tile(inputs[0], tuple(inputs[1]))]
 
 
-@register_op(op_type="Expand", provider="cpu")
+@register_op("", "Expand", provider="cpu")
 def expand_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Expand Op function logic implementation."""
     return [np.broadcast_to(inputs[0], tuple(inputs[1]))]
 
 
-@register_op(op_type="Shape", provider="cpu")
+@register_op("", "Shape", provider="cpu")
 def shape_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Shape Op function logic implementation."""
     return [np.array(inputs[0].shape, dtype=np.int64)]
 
 
-@register_op(op_type="Size", provider="cpu")
+@register_op("", "Size", provider="cpu")
 def size_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Size Op function logic implementation."""
     return [np.array(inputs[0].size, dtype=np.int64)]
 
 
-@register_op(op_type="NonZero", provider="cpu")
+@register_op("", "NonZero", provider="cpu")
 def nonzero_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Nonzero Op function logic implementation."""
     return [np.array(np.nonzero(inputs[0]))]
 
 
-@register_op(op_type="TopK", provider="cpu")
+@register_op("", "TopK", provider="cpu")
 def topk_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Topk Op function logic implementation."""
     k = int(inputs[1][0])
@@ -920,7 +920,7 @@ def topk_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]
     return [values, indices]
 
 
-@register_op(op_type="Unique", provider="cpu")
+@register_op("", "Unique", provider="cpu")
 def unique_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Implement Unique Op function logic."""
     (u, indices, inverse_indices, counts) = np.unique(
@@ -929,27 +929,27 @@ def unique_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarra
     return [u, indices, inverse_indices, counts]
 
 
-@register_op(op_type="CumSum", provider="cpu")
+@register_op("", "CumSum", provider="cpu")
 def cumsum_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Cumsum Op function logic implementation."""
     axis = int(inputs[1][0])
     return [np.cumsum(inputs[0], axis=axis)]
 
 
-@register_op(op_type="ReverseSequence", provider="cpu")
+@register_op("", "ReverseSequence", provider="cpu")
 def reversesequence_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Reversesequence Op function logic implementation."""
     return [np.flip(inputs[0], axis=attrs.get("batch_axis", 1))]
 
 
-@register_op(op_type="Compress", provider="cpu")
+@register_op("", "Compress", provider="cpu")
 def compress_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Compress Op function logic implementation."""
     axis = attrs.get("axis")
     return [np.compress(inputs[1].astype(bool), inputs[0], axis=axis)]
 
 
-@register_op(op_type="Trilu", provider="cpu")
+@register_op("", "Trilu", provider="cpu")
 def trilu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Trilu Op function logic implementation."""
     upper = attrs.get("upper", 1)
@@ -959,31 +959,31 @@ def trilu_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray
     return [np.tril(inputs[0], k=k)]
 
 
-@register_op(op_type="Col2Im", provider="cpu")
+@register_op("", "Col2Im", provider="cpu")
 def col2im_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Col2im Op function logic implementation."""
     return [np.zeros(tuple(inputs[1]), dtype=inputs[0].dtype)]
 
 
-@register_op(op_type="SequenceConstruct", provider="cpu")
+@register_op("", "SequenceConstruct", provider="cpu")
 def sequenceconstruct_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceconstruct Op function logic implementation."""
     return [inputs]
 
 
-@register_op(op_type="SequenceAt", provider="cpu")
+@register_op("", "SequenceAt", provider="cpu")
 def sequenceat_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceat Op function logic implementation."""
     return [inputs[0][int(inputs[1])]]
 
 
-@register_op(op_type="SequenceEmpty", provider="cpu")
+@register_op("", "SequenceEmpty", provider="cpu")
 def sequenceempty_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceempty Op function logic implementation."""
     return [[]]
 
 
-@register_op(op_type="SequenceErase", provider="cpu")
+@register_op("", "SequenceErase", provider="cpu")
 def sequenceerase_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceerase Op function logic implementation."""
     seq = list(inputs[0])
@@ -992,7 +992,7 @@ def sequenceerase_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np
     return [seq]
 
 
-@register_op(op_type="SequenceInsert", provider="cpu")
+@register_op("", "SequenceInsert", provider="cpu")
 def sequenceinsert_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequenceinsert Op function logic implementation."""
     seq = list(inputs[0])
@@ -1001,21 +1001,21 @@ def sequenceinsert_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[n
     return [seq]
 
 
-@register_op(op_type="SequenceLength", provider="cpu")
+@register_op("", "SequenceLength", provider="cpu")
 def sequencelength_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Sequencelength Op function logic implementation."""
     return [np.array(len(inputs[0]), dtype=np.int64)]
 
 
-@register_op(op_type="Split", provider="cpu")
-@register_op(op_type="SplitToSequence", provider="cpu")
+@register_op("", "Split", provider="cpu")
+@register_op("", "SplitToSequence", provider="cpu")
 def splittosequence_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Splittosequence Op function logic implementation."""
     axis = attrs.get("axis", 0)
     return [list(np.split(inputs[0], inputs[0].shape[axis], axis=axis))]
 
 
-@register_op(op_type="ConcatFromSequence", provider="cpu")
+@register_op("", "ConcatFromSequence", provider="cpu")
 def concatfromsequence_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Concatfromsequence Op function logic implementation."""
     axis = attrs.get("axis", 0)

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "packageManager": "pnpm@8.15.0",
   "private": true,
+  "type": "module",
   "description": "Zero-dependency, WASM-First ONNX execution and MLOps ecosystem",
   "scripts": {
     "build": "turbo run build",
