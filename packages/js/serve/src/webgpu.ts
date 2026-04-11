@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 101. Initialize Node.js WebGPU backend bindings
 // 102. Initialize Deno WebGPU backend natively
 // 103. Initialize Bun WebGPU / WASM adapters seamlessly

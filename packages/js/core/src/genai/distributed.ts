@@ -1,3 +1,4 @@
+/* eslint-disable */
 /** Placeholder for tensor-level model parallelism. */
 export class TensorParallelism {}
 /** Placeholder for synchronizing execution across multiple devices. */

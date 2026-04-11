@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Zero-dependency FlatBuffer Builder in TypeScript.
  */

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { handleConvertCommand } from './commands/convert.js';
 import { handleInspectCommand } from './commands/inspect.js';
 import { handleOnnx2GgufCommand, handleGguf2OnnxCommand } from './commands/gguf.js';

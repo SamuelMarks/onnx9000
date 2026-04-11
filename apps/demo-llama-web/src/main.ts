@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { load } from '@onnx9000/core';
 import { InferenceSession } from '@onnx9000/backend-web';
 

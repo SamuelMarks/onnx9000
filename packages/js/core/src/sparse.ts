@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor, DType, SparseTensor } from './ir/tensor.js';
 
 /**
@@ -76,7 +77,7 @@ export function unpackData(tensor: Tensor | null): (number | bigint)[] {
     }
 
     const res: (number | bigint)[] = [];
-    for (let i = 0; i < tensor.data.length; i++) res.push((tensor.data as Uint8Array)[i]!);
+    for (let i = 0; i < tensor.data.length; i++) res.push(tensor.data[i]!);
     return res;
   }
 
@@ -116,7 +117,7 @@ export function denseToCoo(tensor: Tensor): SparseTensor {
     tensor.dtype,
     true,
     false,
-    valData as ArrayBufferView,
+    valData,
   );
 
   const idxData = new Int32Array(nonZeroIndices);

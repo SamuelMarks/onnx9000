@@ -1,3 +1,4 @@
+/* eslint-disable */
 /// <reference lib="dom" />
 
 declare interface Navigator {

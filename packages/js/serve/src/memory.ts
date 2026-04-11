@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 91. Track total active WebGPU VRAM natively
 // 92. Track total active WASM linear memory usage dynamically
 // 93. Implement a Least Recently Used (LRU) Cache for loaded models

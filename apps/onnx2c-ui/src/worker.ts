@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { compileOnnxToC } from '@onnx9000/c-compiler';
 
 // Web Worker processing

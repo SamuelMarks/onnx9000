@@ -4,7 +4,8 @@
   "description": "Edge-native inference server for ONNX models (KServe / OpenAI APIs)",
   "main": "src/index.ts",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
     "@onnx9000/core": "workspace:*",

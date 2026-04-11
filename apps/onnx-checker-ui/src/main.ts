@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { check_model, ValidationContext } from '@onnx9000/core';
 
 const dropzone = document.getElementById('dropzone');

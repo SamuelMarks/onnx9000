@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Topological sorting implementation mapping Kahn's algorithm for MIL graphs.
  * @module

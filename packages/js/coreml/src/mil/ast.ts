@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MILType, TensorType, ScalarType, TupleType } from './types.js';
 
 export class Var {

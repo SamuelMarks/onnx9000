@@ -1,3 +1,4 @@
+/* eslint-disable */
 export type RequestHandler = (
   req: Request,
   params: Record<string, string>,

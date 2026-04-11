@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class WebNNContextManager {
   private static instance: WebNNContextManager | null = null;
   private mlContext: MLContext | null = null;

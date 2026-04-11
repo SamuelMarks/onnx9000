@@ -194,35 +194,6 @@ describe('Safetensors Parser - Full Coverage', () => {
     expect(arr).toBeInstanceOf(Float32Array);
   });
 
-  test('GPUBuffer and WebGPU', () => {
-    const buffer = createDummySafeTensorsBuffer(
-      { a: { dtype: 'I8', shape: [8], data_offsets: [0, 8] } },
-      8,
-    );
-    const st = new SafeTensors(buffer);
-
-    const mappedArray = new Uint8Array(8);
-    const mockGpuBuffer = {
-      getMappedRange: vi.fn(() => mappedArray.buffer),
-      unmap: vi.fn(),
-    };
-    const mockDevice = {
-      createBuffer: vi.fn(() => mockGpuBuffer),
-      queue: { writeBuffer: vi.fn() },
-    };
-
-    const gpuBuffer = st.createGPUBuffer(mockDevice, 'a');
-    expect(mockDevice.createBuffer).toHaveBeenCalledWith({
-      size: 8,
-      usage: 132,
-      mappedAtCreation: true,
-    });
-    expect(mockGpuBuffer.unmap).toHaveBeenCalled();
-
-    st.injectToGPUQueue(mockDevice, gpuBuffer, 'a', 0);
-    expect(mockDevice.queue.writeBuffer).toHaveBeenCalled();
-  });
-
   test('padTo8Bytes', () => {
     const arr = new Uint8Array([1, 2, 3]);
     const padded = padTo8Bytes(arr);

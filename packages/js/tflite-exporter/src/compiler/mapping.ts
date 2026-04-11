@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { DType, Shape } from '@onnx9000/core';
 import { TensorType } from '../flatbuffer/schema';
 

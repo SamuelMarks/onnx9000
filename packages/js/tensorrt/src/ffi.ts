@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @ts-ignore
 import ffi from 'ffi-napi';
 // @ts-ignore

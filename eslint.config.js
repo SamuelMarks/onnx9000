@@ -31,6 +31,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/.turbo/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/.turbo/**', '**/coverage/**', 'packages/js/core/src/wasm/**', 'apps/**/*.js', 'apps/**/*.d.ts', 'apps/**/*.js.map', 'apps/**/*.d.ts.map', '**/*.config.ts', '**/*.config.js'],
   },
 );

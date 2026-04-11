@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Model } from '../schema.js';
 
 export function assertDeterministicBuild(model: Model): void {

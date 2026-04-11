@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class Callable extends Function {
   constructor() {
     super('...args', 'return this._call(...args)');

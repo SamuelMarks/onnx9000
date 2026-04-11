@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "PYTHONPATH=../.. uv run pytest tests",
-    "test_js": "vitest run"
+    "test_js": "vitest run",
+    "lint": "eslint src --ext .ts"
   },
   "devDependencies": {
     "vitest": "^1.6.0"

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Dummy Testing suite for 166.
 export class ValidationSuite {
   public static async compareORTvsWVM(

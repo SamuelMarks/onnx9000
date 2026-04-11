@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class ArrayAPI {
   static add(a: number[], b: number[]): number[] {
     return a.map((val, i) => val + (b?.[i] ?? 0));

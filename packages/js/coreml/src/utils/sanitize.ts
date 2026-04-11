@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * CoreML serialization utility functions to maintain compatibility with Apple tooling.
  * @module

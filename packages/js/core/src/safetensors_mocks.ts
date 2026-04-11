@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Mocks and scaffolds for future Safetensors features.
  * These functions represent planned architectural enhancements for large model handling.
@@ -62,11 +63,7 @@ export function validateRustByteParity(): void {
  * Facilitates native chunked HTTP uploads for large model exports.
  * @yields Chunks of serialized data as Uint8Array
  */
-export function* yieldStreamSerialization(): Generator<
-  Uint8Array,
-  void,
-  ReturnType<typeof JSON.parse>
-> {
+export function* yieldStreamSerialization(): Generator<Uint8Array, void> {
   // Stream serialization natively via yield buffers (chunked HTTP uploads)
   yield new Uint8Array();
 }

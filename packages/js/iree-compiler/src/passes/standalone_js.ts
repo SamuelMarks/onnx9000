@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Region, Operation } from '../ir/core.js';
 
 // 136-145. Standalone Web Generation

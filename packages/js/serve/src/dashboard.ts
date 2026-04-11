@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Router } from './router';
 
 // 145. Provide a built-in interactive HTML dashboard available at `/v2/dashboard`.

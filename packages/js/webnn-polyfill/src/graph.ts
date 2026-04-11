@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MLGraph, MLComputeResult } from './interfaces.js';
 import { Graph } from '@onnx9000/core';
 

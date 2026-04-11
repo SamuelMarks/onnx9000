@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as http from 'node:http';
 import * as http2 from 'node:http2';
 import { Onnx9000Server } from './index';

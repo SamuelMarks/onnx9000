@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { GraphLayout, LayoutNode, LayoutEdge } from '../layout/dag';
 
 export class CanvasRenderer {

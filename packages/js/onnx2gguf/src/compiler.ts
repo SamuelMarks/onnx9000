@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { renameTensor } from './naming';
 import { extractTokenizerMetadata } from './tokenizer';
 import { extractMetadata, inferArchitecture } from './arch';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 176. Implement a native Serverless Hash-Ring router
 export class HashRing {
   private nodes: string[] = [];

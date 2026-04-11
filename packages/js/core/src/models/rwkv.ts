@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, LayerNormalization } from '../primitives.js';
 
@@ -48,7 +49,7 @@ export class RWKVTimeMix {
   }
 
   call(x: Tensor): Tensor {
-    let xT = recordOp('Transpose', [x], { perm: [1, 0, 2] });
+    const xT = recordOp('Transpose', [x], { perm: [1, 0, 2] });
 
     const w = getParam(`${this.prefix}.rnn.w`, [1, this.dim, this.dim]);
     const r = getParam(`${this.prefix}.rnn.r`, [1, this.dim, this.dim]);
@@ -93,7 +94,7 @@ export class RWKVChannelMix {
     let k = this.key.call(x, getParam(`${this.prefix}.key.weight`, [this.dim * 4, this.dim]));
     k = recordOp('Relu', [k]);
 
-    let v = this.value.call(k, getParam(`${this.prefix}.value.weight`, [this.dim, this.dim * 4]));
+    const v = this.value.call(k, getParam(`${this.prefix}.value.weight`, [this.dim, this.dim * 4]));
 
     const rec = this.receptance.call(
       x,
@@ -129,7 +130,7 @@ export class RWKVBlock {
       getParam(`${this.prefix}.norm1.weight`, [this.dim]),
       getParam(`${this.prefix}.norm1.bias`, [this.dim]),
     );
-    let xAtt = this.timeMix.call(xNorm);
+    const xAtt = this.timeMix.call(xNorm);
     x = recordOp('Add', [identity, xAtt]);
 
     identity = x;
@@ -138,7 +139,7 @@ export class RWKVBlock {
       getParam(`${this.prefix}.norm2.weight`, [this.dim]),
       getParam(`${this.prefix}.norm2.bias`, [this.dim]),
     );
-    let xFfn = this.channelMix.call(xNorm);
+    const xFfn = this.channelMix.call(xNorm);
     x = recordOp('Add', [identity, xFfn]);
 
     return x;

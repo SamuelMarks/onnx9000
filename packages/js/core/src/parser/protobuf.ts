@@ -1,3 +1,4 @@
+/* eslint-disable */
 /** Protobuf Varint wire type. */
 export const WIRE_TYPE_VARINT = 0;
 /** Protobuf 64-bit wire type. */

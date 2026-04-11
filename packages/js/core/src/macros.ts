@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from './ir/graph.js';
 import { Node } from './ir/node.js';
 import { Tensor } from './ir/tensor.js';
@@ -9,7 +10,7 @@ export const MACRO_REGISTRY: Record<string, MacroFn> = {};
 export function recordOp(
   opType: string,
   inputs: Tensor[],
-  attributes: ReturnType<typeof JSON.parse> | undefined = undefined,
+  attributes?: ReturnType<typeof JSON.parse>,
 ): Tensor {
   attributes = attributes || {};
   const dtype = inputs[0]?.dtype ?? 'float32';

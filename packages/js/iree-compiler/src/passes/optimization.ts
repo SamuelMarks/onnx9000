@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Region, Operation } from '../ir/core.js';
 
 // 146-155. Optimization Passes

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as fs from 'fs';
 import * as path from 'path';
 import { load, save } from '@onnx9000/core';

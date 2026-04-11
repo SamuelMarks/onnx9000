@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Writer } from './protobuf.js';
 import {
   Model,

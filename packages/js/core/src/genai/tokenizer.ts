@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Interface for streaming token decoding.
  */

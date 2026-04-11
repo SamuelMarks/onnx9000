@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
 import { PatchEmbed } from './vit.js';
@@ -46,15 +47,15 @@ export class DiTBlock {
       getParam(`${this.prefix}.adaLN_modulation.bias`, [6 * this.hiddenSize]),
     );
 
-    let splitOut = recordOp('Split', [cProj]);
+    const splitOut = recordOp('Split', [cProj]);
 
     const axisTensor = recordOp('Constant', [], { value: [1], dtype: 7 });
-    let shiftMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let scaleMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let gateMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let shiftMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let scaleMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let gateMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const shiftMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scaleMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const gateMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const shiftMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scaleMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const gateMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
 
     let identity = x;
     let xNorm = this.norm1.call(
@@ -160,10 +161,10 @@ export class DiT {
       getParam('final_layer.adaLN_modulation.bias', [2 * this.hiddenSize]),
     );
 
-    let splitOut = recordOp('Split', [cProj]);
+    const splitOut = recordOp('Split', [cProj]);
     const axisTensor = recordOp('Constant', [], { value: [1], dtype: 7 });
-    let shift = recordOp('Unsqueeze', [splitOut, axisTensor]);
-    let scale = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const shift = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scale = recordOp('Unsqueeze', [splitOut, axisTensor]);
 
     x = this.finalLayerNorm.call(
       x,

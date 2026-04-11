@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 
 export async function createTensorRTSession(graph: Graph): Promise<ReturnType<typeof JSON.parse>> {

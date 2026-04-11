@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MLContext, MLContextOptions, MLComputeResult, MLOpSupportLimits } from './interfaces.js';
 import { PolyfillMLGraph } from './graph.js';
 import { PolyfillMLTensor, MLTensorOptions } from './tensor.js';

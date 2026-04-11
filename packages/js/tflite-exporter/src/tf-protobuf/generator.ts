@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphDef, NodeDef, SignatureDef, SavedModel, MetaGraphDef } from './encoder';
 

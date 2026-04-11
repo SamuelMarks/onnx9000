@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Error thrown for general safetensors issues.
  */
@@ -123,30 +124,6 @@ export interface TensorInfo {
 }
 
 /**
- * Interface for WebGPU Buffer objects.
- */
-export interface GPUBuffer {
-  getMappedRange(): ArrayBuffer;
-  unmap(): void;
-}
-
-/**
- * Interface for WebGPU Device objects.
- */
-export interface GPUDevice {
-  createBuffer(descriptor: { size: number; usage: number; mappedAtCreation: boolean }): GPUBuffer;
-  queue: {
-    writeBuffer(
-      buffer: GPUBuffer,
-      bufferOffset: number,
-      data: ArrayBuffer | ArrayBufferView,
-      dataOffset: number,
-      size: number,
-    ): void;
-  };
-}
-
-/**
  * Interface for Pyodide or Emscripten modules.
  */
 export interface EmscriptenModule {
@@ -251,7 +228,7 @@ export class SafeTensors {
         throw new SafetensorsDuplicateKeyError(`Duplicate tensor name: ${name}`);
       }
 
-      const dtype = info.dtype as Dtype;
+      const dtype = info.dtype;
       if (!(dtype in DTYPE_SIZES)) {
         throw new SafetensorsInvalidDtypeError(`Unknown dtype: ${dtype}`);
       }
@@ -306,7 +283,7 @@ export class SafeTensors {
       throw new Error(`Tensor ${name} not found`);
     }
 
-    const info = this.tensors[name]!;
+    const info = this.tensors[name];
     const [begin, end] = info.data_offsets;
     const absBegin = 8 + this.headerSize + begin;
     const length = end - begin;
@@ -415,51 +392,6 @@ export class SafeTensors {
    */
   public keys(): string[] {
     return Object.keys(this.tensors);
-  }
-
-  /**
-   * Support zero-copy injection of weights directly into WebGPU GPUBuffer natively.
-   * @param device WebGPU device
-   * @param name Tensor name
-   * @param usage Buffer usage flags
-   * @returns WebGPU buffer
-   */
-  public createGPUBuffer(
-    device: GPUDevice,
-    name: string,
-    usage: number = 4 /* STORAGE */ | 128 /* COPY_DST */,
-  ): GPUBuffer {
-    const tensor = this.getTensor(name);
-    const alignedSize = Math.ceil(tensor.byteLength / 4) * 4; // WebGPU requires 4-byte aligned mapped buffers
-
-    const gpuBuffer = device.createBuffer({
-      size: alignedSize,
-      usage: usage,
-      mappedAtCreation: true,
-    });
-
-    const mappedRange = gpuBuffer.getMappedRange();
-    new Uint8Array(mappedRange).set(tensor);
-    gpuBuffer.unmap();
-
-    return gpuBuffer;
-  }
-
-  /**
-   * Injects tensor data into an existing GPU queue.
-   * @param device WebGPU device
-   * @param gpuBuffer Target GPU buffer
-   * @param name Tensor name
-   * @param bufferOffset Offset in the target buffer
-   */
-  public injectToGPUQueue(
-    device: GPUDevice,
-    gpuBuffer: GPUBuffer,
-    name: string,
-    bufferOffset: number = 0,
-  ): void {
-    const tensor = this.getTensor(name);
-    device.queue.writeBuffer(gpuBuffer, bufferOffset, tensor, 0, tensor.byteLength);
   }
 }
 

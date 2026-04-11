@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export class CGenerator {

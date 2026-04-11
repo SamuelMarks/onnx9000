@@ -288,3 +288,12 @@ test_type.js.map
 /o
 /configs/onnx9000.yaml
 /test_tb_logs/
+
+# Temporary Agent/Codemod Scripts & Logs
+TODO_FIXES.md
+*.old
+*_old.ts
+current_errors.txt
+files_with_errors.txt
+*.cjs
+removed.txt

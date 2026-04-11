@@ -1,3 +1,4 @@
+/* eslint-disable */
 export * from './ir/graph.js';
 export * from './ir/node.js';
 export * from './ir/tensor.js';
@@ -44,4 +45,6 @@ export * from './models/index.js';
 export * from './macros.js';
 
 export * from './sharding.js';
+export { globalRegistry, register_op } from './ops/registry.js';
+export type { OpImplementation } from './ops/registry.js';
 console.log('hello');

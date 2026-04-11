@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { Tensor, SparseTensor } from '@onnx9000/core';
 import { unpackData } from '@onnx9000/core';

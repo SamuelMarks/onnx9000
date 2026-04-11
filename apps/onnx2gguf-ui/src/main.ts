@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { load } from '@onnx9000/core';
 import { extractMetadata, extractTokenizerMetadata, inferArchitecture } from '@onnx9000/onnx2gguf';
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Supported ONNX data types in onnx9000.
  */

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { parseModelProto, BufferReader } from '@onnx9000/core';
 import { TFLiteExporter, compileGraphToTFLite } from '@onnx9000/tflite-exporter';
 

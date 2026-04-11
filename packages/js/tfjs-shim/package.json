@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
     "@onnx9000/core": "workspace:^"

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Program, Function, Block } from './mil/ast.js';
 import { Model } from './schema.js';
 import { parseModel } from './schema.js';

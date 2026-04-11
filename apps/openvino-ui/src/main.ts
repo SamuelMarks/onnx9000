@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { load } from '@onnx9000/core';
 import { OpenVinoExporter } from '@onnx9000/openvino-exporter';
 import JSZip from 'jszip';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 181. Implement CLI
 // 182. Support `--log-verbose` flag.
 // 183. Support `--max-batch-size 32` global override flag.

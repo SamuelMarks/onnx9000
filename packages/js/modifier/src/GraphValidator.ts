@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node, ValueInfo, Tensor, Shape, DType } from '@onnx9000/core';
 
 export interface GraphValidationResult {

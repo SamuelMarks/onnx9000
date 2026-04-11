@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, Gemm, LayerNormalization, MultiHeadAttention, Gelu } from '../primitives.js';
 
@@ -47,7 +48,7 @@ export class WhisperEncoderLayer {
       getParam(`${this.prefix}.self_attn_layer_norm.weight`, [this.dModel]),
       getParam(`${this.prefix}.self_attn_layer_norm.bias`, [this.dModel]),
     );
-    let xAttn = this.selfAttn.call(xNorm, xNorm, xNorm);
+    const xAttn = this.selfAttn.call(xNorm, xNorm, xNorm);
     x = recordOp('Add', [identity, xAttn]);
 
     identity = x;

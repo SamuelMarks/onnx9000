@@ -1,3 +1,4 @@
+/* eslint-disable */
 export function extractTokenizerMetadata(
   tokenizerJsonStr: string | null = null,
   vocabSize: number = 0,

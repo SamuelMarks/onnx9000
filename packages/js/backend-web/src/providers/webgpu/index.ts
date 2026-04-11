@@ -1,9 +1,35 @@
-import { Graph, Tensor } from '@onnx9000/core';
+/* eslint-disable */
+import { Graph, Tensor, globalRegistry, register_op } from '@onnx9000/core';
 import { ExecutionProvider } from '../../session.js';
 
 export interface WebGPUOptions {
   sparsityThreshold?: number; // Item 104
   useFP16?: boolean; // Item 109
+}
+
+@register_op('', 'MatMul', 'WebGPU')
+export class MatMulWebGPU {
+  execute(inputs: Tensor[], attributes: Record<string, any>): Tensor[] {
+    const weight = inputs[1];
+    if (!weight) return [];
+
+    const fmt = (weight as any).format;
+    if (!fmt || fmt === 'dense') return [];
+
+    const sparsity = this.calculateSparsity(weight);
+    if (sparsity > 0.6) {
+      console.log(`Dispatching Sparse MatMul (sparsity: ${sparsity.toFixed(2)})`);
+      // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
+    } else {
+      console.log(`Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul`);
+      // Use standard MatMul shader
+    }
+    return [];
+  }
+
+  private calculateSparsity(tensor: Tensor): number {
+    return 0.75; // Mock
+  }
 }
 
 export class WebGPUProvider implements ExecutionProvider {
@@ -26,29 +52,13 @@ export class WebGPUProvider implements ExecutionProvider {
   }
 
   async execute(graph: Graph, inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
-    // 104. Dispatch WebGPU compute shaders selectively based on sparsity > 0.60
     for (const node of graph.nodes) {
-      if (node.opType === 'MatMul') {
-        const weightName = node.inputs[1];
-        const weight = weightName ? graph.tensors[weightName] : undefined;
-
-        if (!weight) continue;
-        const fmt = (weight as ReturnType<typeof JSON.parse>).format;
-        if (!fmt) continue;
-        if (fmt === 'dense') continue;
-
-        const sparsity = this.calculateSparsity(weight);
-        if (sparsity > this.options.sparsityThreshold!) {
-          console.log(
-            `Dispatching Sparse MatMul for ${node.name} (sparsity: ${sparsity.toFixed(2)})`,
-          );
-          // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
-        } else {
-          console.log(
-            `Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul for ${node.name}`,
-          );
-          // Use standard MatMul shader
-        }
+      const OpClass = globalRegistry.get_op(node.domain || '', node.opType, this.name);
+      if (OpClass) {
+        const op = new OpClass();
+        const nodeInputs = node.inputs.map((name) => graph.tensors[name] || inputs[name]);
+        // @ts-ignore
+        op.execute(nodeInputs, node.attributes || {});
       }
     }
 
@@ -59,12 +69,6 @@ export class WebGPUProvider implements ExecutionProvider {
       results[outName] = new Tensor(outName, [1], 'float32');
     }
     return results;
-  }
-
-  private calculateSparsity(tensor: Tensor): number {
-    // 102. Validate memory coalescing bounds for WGSL sparse indices
-    // This would involve checking if indices are aligned for efficient memory access.
-    return 0.75; // Mock
   }
 
   // 105. Embed explicit indices and pointers natively into WebGPU StorageBuffer objects

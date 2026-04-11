@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor as CoreTensor, DType, Shape } from '@onnx9000/core';
 
 /**

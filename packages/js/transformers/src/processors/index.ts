@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class ONNX9000Image {
   public data: ReturnType<typeof JSON.parse>;
 

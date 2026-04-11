@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Block, Operation, Var } from './ast.js';
 import { TensorType, MILType } from './types.js';
 

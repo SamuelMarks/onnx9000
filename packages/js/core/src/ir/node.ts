@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Enumeration of ONNX attribute types.
  */

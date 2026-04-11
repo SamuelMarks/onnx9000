@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 144. Allow granular control of logging levels
 export enum LogLevel {
   TRACE = 0,

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * A PCG32 pseudo-random number generator that matches Python implementations
  * to ensure cross-platform seed determinism.

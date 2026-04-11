@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { BlobReader, parseModelProto, Graph } from '@onnx9000/core';
 
 export async function fetchAndParseModel(

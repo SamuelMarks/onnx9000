@@ -47,10 +47,6 @@ describe('WebGPUProvider Final', () => {
 
     const res = await provider.execute(g, {});
     expect(res['out']).toBeDefined();
-
-    // Test calculateSparsity directly
-    const sparsity = (provider as Object).calculateSparsity(w as Object);
-    expect(sparsity).toBe(0.75);
   });
 
   it('should request f16 features when useFP16 is true', async () => {

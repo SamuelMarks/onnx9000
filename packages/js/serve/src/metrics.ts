@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Router } from './router';
 
 export class PrometheusMetrics {

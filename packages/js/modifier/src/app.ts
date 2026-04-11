@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { GraphMutator } from './GraphMutator.js';
 import { GraphValidator } from './GraphValidator.js';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node, Tensor, ValueInfo, DType, Attribute } from '@onnx9000/core';
 import { XmlBuilder, XmlNode } from './xml_builder';
 

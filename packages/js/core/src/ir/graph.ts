@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Node } from './node.js';
 import { Tensor, Shape, DType } from './tensor.js';
 

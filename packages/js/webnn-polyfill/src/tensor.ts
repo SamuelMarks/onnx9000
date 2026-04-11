@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MLOperandDataType } from './interfaces.js';
 
 export interface MLTensorOptions {

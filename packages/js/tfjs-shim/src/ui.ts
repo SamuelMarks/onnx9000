@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * A custom element that demonstrates a comparative benchmark between standard TF.js and the onnx9000 shim.
  * It provides an interactive UI with two panels showing the code for both approaches and a button to run the comparison.

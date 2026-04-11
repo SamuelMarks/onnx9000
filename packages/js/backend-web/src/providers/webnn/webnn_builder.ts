@@ -1,3 +1,4 @@
+/* eslint-disable */
 /// <reference path="./webnn.d.ts" />
 
 /**

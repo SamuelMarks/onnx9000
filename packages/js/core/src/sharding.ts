@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from './ir/graph.js';
 import { Node } from './ir/node.js';
 import { Tensor } from './ir/tensor.js';

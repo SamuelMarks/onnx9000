@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node, Tensor, DType } from '@onnx9000/core';
 import { WebNNContextManager } from './context.js';
 

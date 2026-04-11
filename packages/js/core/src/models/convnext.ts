@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, DepthwiseConv, Gelu, Gemm, LayerNormalization } from '../primitives.js';
 

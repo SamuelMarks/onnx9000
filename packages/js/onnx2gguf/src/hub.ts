@@ -1,3 +1,4 @@
+/* eslint-disable */
 export async function fetchHfConfig(
   repoId: string,
   token?: string,

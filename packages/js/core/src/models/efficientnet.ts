@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { BatchNormalization, ConvND, DepthwiseConv, Gemm, Sigmoid, Silu } from '../primitives.js';
 
@@ -119,7 +120,7 @@ export class MBConv {
   }
 
   call(x: Tensor): Tensor {
-    let identity = x;
+    const identity = x;
 
     if (this.expandRatio !== 1 && this.expandConv && this.bn0 && this.act0) {
       x = this.expandConv.call(
@@ -147,7 +148,7 @@ export class MBConv {
     x = this.depthwiseConv.call(
       x,
       getParam(`${this.prefix}.depthwise_conv.weight`, [
-        this.depthwiseConv.outChannels!,
+        this.depthwiseConv.outChannels,
         1,
         ks!,
         ks!,

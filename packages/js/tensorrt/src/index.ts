@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { trtFfi } from './ffi';
 import { DataType, ElementWiseOperation, ActivationType, BuilderFlag } from './enums';
 

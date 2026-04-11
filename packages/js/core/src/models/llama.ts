@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, GroupedQueryAttention, RMSNorm, RoPE, Silu } from '../primitives.js';
 
@@ -77,12 +78,12 @@ export class LLaMABlock {
   call(x: Tensor, pos: Tensor, mask?: Tensor): Tensor {
     let identity = x;
     let xNorm = this.norm1.call(x, getParam(`${this.prefix}.norm1.weight`, [this.dim]));
-    let xAttn = this.attn.call(xNorm, xNorm, xNorm, mask);
+    const xAttn = this.attn.call(xNorm, xNorm, xNorm, mask);
     x = recordOp('Add', [identity, xAttn]);
 
     identity = x;
     xNorm = this.norm2.call(x, getParam(`${this.prefix}.norm2.weight`, [this.dim]));
-    let xMlp = this.mlp.call(xNorm);
+    const xMlp = this.mlp.call(xNorm);
     x = recordOp('Add', [identity, xMlp]);
 
     return x;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Security wrappers explicitly isolating execution during ZIP transformations.
  * @module

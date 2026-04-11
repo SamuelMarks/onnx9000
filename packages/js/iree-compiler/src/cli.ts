@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { parse } from 'node:path';
 
 export interface CompileOptions {

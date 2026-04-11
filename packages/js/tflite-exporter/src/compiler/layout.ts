@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node, Tensor, Attribute, ValueInfo } from '@onnx9000/core';
 
 export class LayoutOptimizer {

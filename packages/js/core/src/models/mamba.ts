@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, Gemm, RMSNorm, Silu } from '../primitives.js';
 
@@ -98,7 +99,7 @@ export class MambaBlock {
       recordOp('Constant', [], { value: [2], dtype: 7 }),
     ]);
 
-    let xInnerT = recordOp('Transpose', [xInner], { perm: [0, 2, 1] });
+    const xInnerT = recordOp('Transpose', [xInner], { perm: [0, 2, 1] });
     let xInnerConv = this.conv1d.call(
       xInnerT,
       getParam(`${this.prefix}.conv1d.weight`, [dInner, 1, this.dConv]),

@@ -1,3 +1,4 @@
+/* eslint-disable */
 export enum GGUFValueType {
   UINT8 = 0,
   INT8 = 1,

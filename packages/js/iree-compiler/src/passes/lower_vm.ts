@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as vm from '../dialects/web/vm.js';
 

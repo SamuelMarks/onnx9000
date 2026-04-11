@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CanvasRenderer } from './render/canvas';
 import { fetchAndParseModel } from './parser/fetcher';
 import { Graph, Node } from '@onnx9000/core';

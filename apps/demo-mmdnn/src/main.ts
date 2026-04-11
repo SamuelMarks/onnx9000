@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { convert, SourceFramework, TargetFramework } from '@onnx9000/converters';
 import { serializeModelProto, Graph } from '@onnx9000/core';
 

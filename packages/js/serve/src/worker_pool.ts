@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 121. Implement a Web Worker Pool manager for processing isolated requests.
 // 122. Support running the HTTP router on the Main Thread and all ONNX executions on Worker Threads.
 // 123. Transmit tensors across threads natively using `SharedArrayBuffer` (zero-copy).

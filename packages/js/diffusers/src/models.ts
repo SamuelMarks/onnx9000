@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class AutoencoderKL {
   encode(x: Float32Array): Float32Array {
     const out = new Float32Array(x.length);

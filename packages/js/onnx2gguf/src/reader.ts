@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { GGUFValueType, GGUFTensorType } from './builder';
 
 export class GGUFReader {

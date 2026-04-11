@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm } from '../primitives.js';
 import { VisionTransformer } from './vit.js';

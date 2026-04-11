@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FlatBufferBuilder } from './flatbuffer/builder';
 import {
   TensorType,

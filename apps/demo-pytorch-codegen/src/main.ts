@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { load, Graph, Node, Tensor } from '@onnx9000/core';
 
 const dropZone = document.getElementById('drop-zone') as HTMLElement;

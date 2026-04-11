@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { applyRecipe } from '@onnx9000/modifier';
 import { unpackData } from '@onnx9000/core';

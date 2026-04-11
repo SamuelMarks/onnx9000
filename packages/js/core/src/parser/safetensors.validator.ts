@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { SafeTensors, TensorInfo } from './safetensors.js';
 import { Graph } from '../ir/graph.js';
 

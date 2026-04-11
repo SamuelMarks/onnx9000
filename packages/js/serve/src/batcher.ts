@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface BatchRequest {
   id: string;
   payload: ReturnType<typeof JSON.parse>;

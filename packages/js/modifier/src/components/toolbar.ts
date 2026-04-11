@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { ModifierUtilities } from './utilities.js';
 

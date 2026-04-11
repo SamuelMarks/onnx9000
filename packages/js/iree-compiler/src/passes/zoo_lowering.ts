@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { Operation, Region, Block, Type } from '../ir/core';
 

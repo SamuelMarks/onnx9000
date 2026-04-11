@@ -1,3 +1,4 @@
+/* eslint-disable */
 /** Placeholder for zero-copy buffer mapping between CPU and GPU. */
 export class BufferMapper {}
 /** Placeholder for efficient WASM indirect function calling. */

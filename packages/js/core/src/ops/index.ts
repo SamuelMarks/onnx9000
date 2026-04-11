@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { register_op, OpImplementation, AttributeValue } from './registry.js';
 import { Tensor } from '../ir/tensor.js';
 

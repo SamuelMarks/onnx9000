@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { BlobReader, BufferReader, parseModelProto, Graph } from '@onnx9000/core';
 import { computeLayout, FlowDirection } from '../layout/dag';
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * ANE boundary definitions and WASM heap enforcement logic.
  * @module

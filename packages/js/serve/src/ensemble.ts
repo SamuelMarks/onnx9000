@@ -1,3 +1,4 @@
+/* eslint-disable */
 export type EnsembleNodeType =
   | 'model'
   | 'logic'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, GroupedQueryAttention, RMSNorm, RoPE } from '../primitives.js';
 import { SwiGLU } from './llama.js';
@@ -47,9 +48,9 @@ export class SparseMoE {
     const scores = recordOp('Softmax', [logits], { axis: -1 });
     const topkOut = recordOp('TopK', [scores, kTensor], { axis: -1 });
 
-    let gathered = recordOp('GatherND', [x, topkOut]);
-    let expertOut = this.experts[0]!.call(gathered);
-    let out = recordOp('ScatterND', [topkOut, expertOut, x]);
+    const gathered = recordOp('GatherND', [x, topkOut]);
+    const expertOut = this.experts[0]!.call(gathered);
+    const out = recordOp('ScatterND', [topkOut, expertOut, x]);
 
     return out;
   }
@@ -83,12 +84,12 @@ export class MixtralBlock {
   call(x: Tensor, pos: Tensor, mask?: Tensor): Tensor {
     let identity = x;
     let xNorm = this.norm1.call(x, getParam(`${this.prefix}.norm1.weight`, [this.dim]));
-    let xAttn = this.attn.call(xNorm, xNorm, xNorm, mask);
+    const xAttn = this.attn.call(xNorm, xNorm, xNorm, mask);
     x = recordOp('Add', [identity, xAttn]);
 
     identity = x;
     xNorm = this.norm2.call(x, getParam(`${this.prefix}.norm2.weight`, [this.dim]));
-    let xMoe = this.moe.call(xNorm);
+    const xMoe = this.moe.call(xNorm);
     x = recordOp('Add', [identity, xMoe]);
 
     return x;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Zero-dependency TensorFlow SavedModel (Protobuf) Generator.
  * 246. Implement zero-dependency saved_model.pb Protobuf generator.

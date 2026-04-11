@@ -3,8 +3,8 @@ export class Module {
   public globals: number[] = [];
   public memory: ArrayBuffer;
   public memoryView: DataView;
-  public functions: Function[] = [];
-  public imports: Map<string, Function> = new Map<string, Function>();
+  public functions: Array<(...args: unknown[]) => unknown> = [];
+  public imports: Map<string, (...args: unknown[]) => unknown> = new Map();
 
   constructor(memorySize: number = 1024 * 1024) {
     this.memory = new ArrayBuffer(memorySize);
@@ -23,7 +23,7 @@ export class Context {
   }
 
   // 126. Dynamic module loading
-  public loadImport(namespace: string, funcName: string, jsFunc: Function) {
+  public loadImport(namespace: string, funcName: string, jsFunc: (...args: unknown[]) => unknown) {
     this.module.imports.set(`${namespace}.${funcName}`, jsFunc);
   }
 }
@@ -67,10 +67,13 @@ export class WVMInterpreter {
     const bc = this.bytecode;
 
     while (this.context.pc < bc.length) {
-      const opcode = bc[this.context.pc++]!;
+      const currentPc = this.context.pc++;
+      const opcode = bc[currentPc];
+      if (opcode === undefined) throw new Error('Bytecode out of bounds');
+
       if (debugLogging) {
         console.log(
-          `[VM DEBUG] PC=${this.context.pc - 1} Opcode=0x${opcode.toString(16)} Registers=`,
+          `[VM DEBUG] PC=${String(this.context.pc - 1)} Opcode=0x${opcode.toString(16)} Registers=`,
           this.context.registers.slice(0, 10),
         ); // 167
       }
@@ -80,22 +83,32 @@ export class WVMInterpreter {
           break;
         case 0x02: // Func
           break;
-        case 0x03: // Call
+        case 0x03: {
+          // Call
           const name = 'hal.cmd_create'; // dummy logic
           const imp = this.context.module.imports.get(name);
           if (imp) imp();
           break;
-        case 0x04: // web.vm.add.i32
-          const rDst = bc[this.context.pc++]!;
-          const rLhs = bc[this.context.pc++]!;
-          const rRhs = bc[this.context.pc++]!;
+        }
+        case 0x04: {
+          // web.vm.add.i32
+          const pcDst = this.context.pc++;
+          const pcLhs = this.context.pc++;
+          const pcRhs = this.context.pc++;
+          const rDst = bc[pcDst];
+          const rLhs = bc[pcLhs];
+          const rRhs = bc[pcRhs];
+          if (rDst === undefined || rLhs === undefined || rRhs === undefined) {
+            throw new Error('Bytecode out of bounds');
+          }
           this.context.registers[rDst] =
             (this.context.registers[rLhs] ?? 0) + (this.context.registers[rRhs] ?? 0);
           break;
+        }
         case 0xff: // Return
           return;
         default:
-          throw new Error(`Unknown opcode: ${opcode}`);
+          throw new Error(`Unknown opcode: ${String(opcode)}`);
       }
     }
   }
@@ -107,21 +120,25 @@ export class WVMInterpreter {
     let stepCount = 0;
 
     while (this.context.pc < bc.length) {
-      const opcode = bc[this.context.pc++]!;
+      const currentPc = this.context.pc++;
+      const opcode = bc[currentPc];
+      if (opcode === undefined) throw new Error('Bytecode out of bounds');
+
       switch (opcode) {
         case 0x01:
           break;
         case 0x02:
           break;
-        case 0x03:
+        case 0x03: {
           const name = 'hal.cmd_create';
           const imp = this.context.module.imports.get(name);
           if (imp) await imp();
           break;
+        }
         case 0xff:
           return;
         default:
-          throw new Error(`Unknown opcode: ${opcode}`);
+          throw new Error(`Unknown opcode: ${String(opcode)}`);
       }
 
       if (++stepCount % 100 === 0) {
@@ -132,8 +149,8 @@ export class WVMInterpreter {
 }
 
 // 127, 128. Bind HAL VM to actual API calls
-export class HALBindings {
-  public static register(context: Context, device: object | null) {
+export const HALBindings = {
+  register(context: Context, device: object | null) {
     context.loadImport('hal', 'cmd_create', () => {
       // maps to device.createCommandEncoder()
       if (!device) {
@@ -145,16 +162,15 @@ export class HALBindings {
 
     context.loadImport('hal', 'buffer_subspan', () => {
       // 135. Tiny memory allocator logic if needed
+      return undefined;
     });
-  }
-}
+  },
+};
 
 // 122. WASM WVM Interpreter
 export class WASMWVMInterpreter {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
-
-  constructor() {}
 
   public async initialize(wasmBinary: ArrayBuffer): Promise<void> {
     this.wasmModule = await WebAssembly.compile(wasmBinary);
@@ -172,8 +188,9 @@ export class WASMWVMInterpreter {
     if (!this.wasmInstance) {
       throw new Error('WASM not initialized');
     }
-    if (typeof this.wasmInstance.exports.run === 'function') {
-      (this.wasmInstance.exports.run as Function)();
+    const runFunc = this.wasmInstance.exports.run as (...args: unknown[]) => unknown;
+    if (typeof runFunc === 'function') {
+      runFunc();
     }
   }
 }

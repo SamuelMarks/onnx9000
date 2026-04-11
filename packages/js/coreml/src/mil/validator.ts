@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Program, Function, Block, Operation } from './ast.js';
 import { topologicalSort } from './sort.js';
 

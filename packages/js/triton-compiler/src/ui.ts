@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class TritonCompilerElement extends HTMLElement {
   constructor() {
     super();

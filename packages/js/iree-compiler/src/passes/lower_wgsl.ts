@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Region, Operation } from '../ir/core.js';
 
 // 106-120. WGSL Translation

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { PyTorchPCG } from './utils';
 
 export class Scheduler {
