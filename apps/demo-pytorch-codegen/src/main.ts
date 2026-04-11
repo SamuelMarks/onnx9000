@@ -68,28 +68,29 @@ function generatePyTorchCode(graph: Graph): string {
   code += graph.inputs.map((i) => cleanName(i.name)).join(', ');
   code += `):\n`;
 
+  const opEmitters: Record<string, (inputs: string[], outputs: string[], node: Node) => string> = {
+    Relu: (inputs, outputs) => `        ${outputs[0]} = F.relu(${inputs[0]})\n`,
+    Conv: (inputs, outputs, node) =>
+      `        # Conv mapped to functional conv2d\n        ${outputs[0]} = F.conv2d(${inputs[0]}, self.${cleanName(node.inputs[1])})\n`,
+    MatMul: (inputs, outputs) =>
+      `        ${outputs[0]} = torch.matmul(${inputs[0]}, ${inputs[1]})\n`,
+    Add: (inputs, outputs) => `        ${outputs[0]} = ${inputs[0]} + ${inputs[1]}\n`,
+    Reshape: (inputs, outputs, node) =>
+      `        ${outputs[0]} = torch.reshape(${inputs[0]}, self.${cleanName(node.inputs[1])}.tolist())\n`,
+  };
+
   for (const node of graph.nodes) {
     code += `        # Node: ${node.name || node.opType}\n`;
-    const inputs = node.inputs.map(cleanName).join(', ');
-    const outputs = node.outputs.map(cleanName).join(', ');
+    const inputs = node.inputs.map(cleanName);
+    const outputs = node.outputs.map(cleanName);
 
-    if (node.opType === 'Relu') {
-      code += `        ${outputs} = F.relu(${inputs})\n`;
-    } else if (node.opType === 'Conv') {
-      code += `        # Conv mapped to functional conv2d\n`;
-      code += `        ${outputs} = F.conv2d(${inputs}, self.${cleanName(node.inputs[1])})\n`;
-    } else if (node.opType === 'MatMul') {
-      code += `        ${outputs} = torch.matmul(${inputs})\n`;
-    } else if (node.opType === 'Add') {
-      code += `        ${outputs} = ${cleanName(node.inputs[0])} + ${cleanName(node.inputs[1])}\n`;
-    } else if (node.opType === 'Reshape') {
-      code += `        ${outputs} = torch.reshape(${cleanName(node.inputs[0])}, self.${cleanName(node.inputs[1])}.tolist())\n`;
+    if (opEmitters[node.opType]) {
+      code += opEmitters[node.opType](inputs, outputs, node);
     } else {
-      code += `        # NotImplemented: ${node.opType}\n`;
-      code += `        ${outputs} = None\n`;
+      const opName = node.opType.toLowerCase();
+      code += `        ${outputs.join(', ')} = getattr(torch.ops.onnx, "${opName}")(${inputs.join(', ')})\n`;
     }
   }
-
   code += `\n        return `;
   code += graph.outputs.map((o) => cleanName(o.name)).join(', ');
   code += `\n`;

@@ -11,7 +11,7 @@ import { AttributeValue } from './ops/registry.js';
 function recordOp(
   opType: string,
   inputs: Tensor[],
-  attributes: Record<string, AttributeValue> = {},
+  attributes: Record<string, AttributeValue> | undefined = undefined,
 ): Tensor {
   // Basic shape inference could be added here, but for now we follow the Python pattern
   const dtype = inputs.length > 0 && inputs[0] ? inputs[0].dtype : 'float32';

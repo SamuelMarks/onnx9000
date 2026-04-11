@@ -81,7 +81,7 @@ describe('Final Coverage Gaps', () => {
 
 it('debug.js force run branch coverage', async () => {
   process.env.DEBUG_FORCE_RUN = 'true';
-  const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
   try {
     await import('../debug.js?gap=' + Date.now());
   } catch (e) {}

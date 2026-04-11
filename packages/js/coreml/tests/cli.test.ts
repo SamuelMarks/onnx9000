@@ -9,9 +9,9 @@ describe('CLI', () => {
 
   beforeEach(() => {
     originalArgv = process.argv;
-    exitMock = vi.spyOn(process, 'exit').mockImplementation(() => {});
-    errorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
-    logMock = vi.spyOn(console, 'log').mockImplementation(() => {});
+    exitMock = vi.spyOn(process, 'exit').mockImplementation(() => undefined);
+    errorMock = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    logMock = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.resetModules();
   });
 

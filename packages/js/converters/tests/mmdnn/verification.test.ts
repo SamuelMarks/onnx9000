@@ -106,7 +106,7 @@ describe('ONNXNormalizer', () => {
   });
 
   it('should verify parity', () => {
-    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const normalizer = new ONNXNormalizer();
     expect(normalizer.verifyParity()).toBe(true);
     expect(spy).toHaveBeenCalledWith(

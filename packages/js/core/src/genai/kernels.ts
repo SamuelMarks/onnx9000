@@ -16,7 +16,9 @@ export const webgpuKVCatShader = '';
 export const webgpuFlashAttentionShader = '';
 
 /** WASM SIMD implementation of FlashAttention (placeholder). */
-export function wasmFlashAttentionSimd(): void {}
+export function wasmFlashAttentionSimd(): void {
+  throw new Error('Not implemented: requires WASM SIMD execution target');
+}
 
 /** WGSL shader string for AWQ (Activation-aware Weight Quantization) dequantization. */
 export const webgpuAwqShader = '';

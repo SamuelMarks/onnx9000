@@ -11,16 +11,16 @@ describe('MMDNN - Core Files Full Coverage', () => {
   describe('MMDNNReporter', () => {
     it('should log with verbose=true', () => {
       const reporter = new MMDNNReporter(true);
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
       reporter.info('test info');
       expect(consoleLogSpy).toHaveBeenCalledWith('[INFO] test info');
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       reporter.warn('test warn');
       expect(consoleWarnSpy).toHaveBeenCalledWith('[WARN]: test warn');
 
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const consoleTraceSpy = vi.spyOn(console, 'trace').mockImplementation(() => {});
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleTraceSpy = vi.spyOn(console, 'trace').mockImplementation(() => undefined);
       expect(() => reporter.error('test error', 'node1')).toThrow(MMDNNError);
       expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] (Node: node1): test error');
       expect(consoleTraceSpy).toHaveBeenCalled();

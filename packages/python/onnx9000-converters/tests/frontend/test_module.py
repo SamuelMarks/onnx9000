@@ -15,6 +15,7 @@ def test_module_init_and_attr() -> None:
 
         def __init__(self) -> None:
             """Initialize the mock module with parameters, buffers, and sub-modules."""
+            self.initialized = False
             super().__init__()
             self.p = Parameter((10,), DType.FLOAT32, "p")
             self.b = Tensor((10,), DType.FLOAT32, "b")
@@ -49,6 +50,7 @@ def test_module_errors() -> None:
 
         def __init__(self) -> None:
             """Initialize the mock module with parameters, buffers, and sub-modules."""
+            self.initialized = False
 
         __dummy__ = True
 

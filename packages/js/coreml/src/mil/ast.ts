@@ -43,7 +43,7 @@ export class Function {
 }
 
 export class Program {
-  public functions: Record<string, Function> = {};
+  public functions: Record<string, Function> = {} as any;
 
   addFunction(fn: Function) {
     this.functions[fn.name] = fn;

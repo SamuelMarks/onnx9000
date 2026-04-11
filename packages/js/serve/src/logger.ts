@@ -29,7 +29,7 @@ export class Logger {
             message,
             ...meta,
           }),
-        }).catch(() => {}); // silent fail on export
+        }).catch(() => undefined); // silent fail on export
       } catch (err) {}
     }
   }

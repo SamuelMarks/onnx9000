@@ -11,7 +11,7 @@ describe('Pyodide AutoGraph Tracing', () => {
           traceback: 'Traceback (most recent call last):\n  ...',
         });
       },
-      loadPackage: async () => {},
+      loadPackage: async () => undefined,
     };
 
     await expect(extractTraceViaPyodide(mockPyodide, 'pass', [10])).rejects.toThrow(
@@ -46,7 +46,7 @@ describe('Pyodide AutoGraph Tracing', () => {
           },
         });
       },
-      loadPackage: async () => {},
+      loadPackage: async () => undefined,
     };
 
     const code = `

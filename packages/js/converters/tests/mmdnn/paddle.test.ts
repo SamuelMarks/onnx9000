@@ -285,7 +285,7 @@ describe('PaddleMapper', () => {
     const graph = new Graph();
     const layer = { type: 'unknown_op' };
 
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const nodes = mapper.map(layer, graph);
     expect(nodes).toHaveLength(0);
     expect(consoleSpy).toHaveBeenCalledWith('Unsupported Paddle layer type: unknown_op');

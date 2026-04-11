@@ -31,7 +31,7 @@ describe('mapping', () => {
 
 describe('mapping - extra', () => {
   it('mapOnnxTypeToTflite int64 and float32', () => {
-    const mockWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const mockWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     expect(mapOnnxTypeToTflite('int64', 'test_tensor')).toBe(TensorType.INT32);
     expect(mockWarn).toHaveBeenCalled();
     mockWarn.mockRestore();

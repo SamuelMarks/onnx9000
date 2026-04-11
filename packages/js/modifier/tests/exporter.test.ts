@@ -96,7 +96,9 @@ describe('ModelExporter', () => {
     mutator.addNode('Relu', [], []);
 
     const createSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:url');
-    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const clickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => undefined);
 
     exporter.exportStatsCSV();
     expect(createSpy).toHaveBeenCalled();
@@ -105,7 +107,7 @@ describe('ModelExporter', () => {
 
   it('239. saveSessionToLocalStorage stores graph summary', () => {
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
 
     exporter.saveSessionToLocalStorage();
     expect(setItemSpy).toHaveBeenCalledWith('onnx_modifier_session_graph', expect.any(String));

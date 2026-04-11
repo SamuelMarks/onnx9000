@@ -40,7 +40,7 @@ describe('BottomContainer', () => {
   it('should render and mount components', () => {
     const loggerSpy = vi
       .spyOn(Logger.getInstance(), 'startIntercepting')
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
 
     const container = new BottomContainer();
     const el = (container as object).element as HTMLElement;
@@ -50,7 +50,7 @@ describe('BottomContainer', () => {
   });
 
   it('should trigger onChange callback in Tabs', () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     const container = new BottomContainer();
     const tabs = (container as object).tabs;

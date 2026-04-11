@@ -36,7 +36,7 @@ export class WorkerPool {
           this.handleWorkerMessage({ id, msg: { status: 'done', data: msg } });
         }, 10);
       },
-      terminate: () => {},
+      terminate: () => undefined,
     };
     this.workers.push(worker);
   }

@@ -20,8 +20,11 @@ const DEFAULT_MAPPING: [RegExp, string][] = [
   [/^lm_head\.weight$/, 'output.weight'],
 ];
 
-export function renameTensor(name: string, overrides: Record<string, string> = {}): string {
-  for (const [patternStr, repl] of Object.entries(overrides)) {
+export function renameTensor(
+  name: string,
+  overrides: Record<string, string> | undefined = undefined,
+): string {
+  for (const [patternStr, repl] of Object.entries(overrides || {})) {
     const regex = new RegExp(patternStr);
     if (regex.test(name)) {
       return name.replace(regex, repl);

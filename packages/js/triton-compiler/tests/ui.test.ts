@@ -82,7 +82,9 @@ describe('TritonCompilerElement', () => {
 
   it('should handle save button click', () => {
     global.URL.createObjectURL = vi.fn().mockReturnValue('blob:test');
-    const aClickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const aClickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => undefined);
 
     (el.shadowRoot!.querySelector('#save') as HTMLElement).click();
     expect(aClickSpy).toHaveBeenCalled();

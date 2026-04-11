@@ -16,8 +16,8 @@ describe('debug script', () => {
   });
 
   it('should run debug script successfully', async () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const { load } = await import('../src/index.ts');
     vi.mocked(load).mockResolvedValue({ nodes: { length: 1 } } as Object);
@@ -33,7 +33,7 @@ describe('debug script', () => {
   });
 
   it('should handle errors in debug script', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const { load } = await import('../src/index.ts');
     const testError = new Error('test error');

@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 class InferenceSessionError(Onnx9000Error):
     """Raised when the InferenceSession fails to execute a graph."""
 
+    def __init__(self, message: str) -> None:
+        """Initialize the InferenceSessionError."""
+        super().__init__(message)
+
 
 class NodeArg:
     """Abstraction for inputs/outputs properties."""

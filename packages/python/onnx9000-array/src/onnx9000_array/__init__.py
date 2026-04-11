@@ -1129,9 +1129,17 @@ class random:
 class BroadcastError(Exception):
     """Raised when tensor shapes cannot be broadcast together."""
 
+    def __init__(self, shape1: tuple, shape2: tuple) -> None:
+        """Initialize the BroadcastError."""
+        super().__init__(f"Cannot broadcast shapes {shape1} and {shape2}")
+
 
 class TypeMismatchError(Exception):
     """Raised when tensor types do not match."""
+
+    def __init__(self, type1: str, type2: str) -> None:
+        """Initialize the TypeMismatchError."""
+        super().__init__(f"Type mismatch: {type1} vs {type2}")
 
 
 def onnx_function(func: Any) -> Any:

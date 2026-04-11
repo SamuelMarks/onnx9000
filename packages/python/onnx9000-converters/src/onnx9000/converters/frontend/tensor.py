@@ -436,3 +436,8 @@ class Tensor:
 
 class Parameter(Tensor):
     """Subclass of Tensor denoting trainable weights or fixed initializers."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize Parameter."""
+        super().__init__(*args, **kwargs)
+        self.requires_grad = kwargs.get("requires_grad", True)

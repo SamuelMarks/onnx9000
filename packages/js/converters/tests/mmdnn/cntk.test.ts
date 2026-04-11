@@ -271,7 +271,7 @@ describe('CNTK Mapper', () => {
 
   it('handles unknown OP gracefully', () => {
     const layer = createNode('UnknownOp');
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const nodes = mapper.map(layer, graph);
     expect(nodes).toEqual([]);
     expect(consoleSpy).toHaveBeenCalledWith('Unsupported CNTK node type: UnknownOp');

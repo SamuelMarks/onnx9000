@@ -12,6 +12,10 @@ from onnx9000.core.ir import QuantizedTensor, Tensor
 class GGUFError(Exception):
     """Docstring for D101."""
 
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
+
 
 class GGUFParser:
     """Docstring for D101."""

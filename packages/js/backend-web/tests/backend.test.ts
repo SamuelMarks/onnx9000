@@ -279,8 +279,8 @@ import { GraphPartitioner } from '../src/partitioner.js';
 
 describe('GraphPartitioner', () => {
   it('should generate distinct sub-graphs for fallback regions', () => {
-    const p1 = { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) };
-    const p2 = { name: 'WASM', initialize: async () => {}, execute: async () => ({}) };
+    const p1 = { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) };
+    const p2 = { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) };
 
     const partitioner = new GraphPartitioner([p1, p2], false);
 
@@ -295,7 +295,7 @@ describe('GraphPartitioner', () => {
   });
 
   it('should respect disableWebNNFallback flag', () => {
-    const p1 = { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) };
+    const p1 = { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) };
     const partitioner = new GraphPartitioner([p1], true);
 
     const g = new Graph('g');

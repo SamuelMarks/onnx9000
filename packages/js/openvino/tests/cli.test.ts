@@ -40,7 +40,7 @@ describe('OpenVino CLI', () => {
 
   it('should show help if no args', () => {
     process.argv = ['node', 'cli.js'];
-    const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
       throw new Error('exit');
     });
@@ -54,7 +54,7 @@ describe('OpenVino CLI', () => {
 
   it('should run export with args and create dir', () => {
     process.argv = ['node', 'cli.js', 'model.onnx', '-o', 'new_out'];
-    const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const existsSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(false);
 
     main();

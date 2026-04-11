@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 
 describe('Worker Initialization', () => {
   beforeAll(() => {
-    (globalThis as Object).self = { postMessage: () => {} };
+    (globalThis as Object).self = { postMessage: () => undefined };
   });
 
   it('should map self.onmessage (lines 31-33)', async () => {

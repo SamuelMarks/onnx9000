@@ -248,7 +248,7 @@ async function parseNeuralNetwork(reader: Reader, limit: number): Promise<Neural
 }
 
 async function parseMILSpecProgram(reader: Reader, limit: number): Promise<MILSpecProgram> {
-  const prog: MILSpecProgram = { version: 1, functions: {} };
+  const prog: MILSpecProgram = { version: 1, functions: {} as any };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
     await skipField(reader, wireType);

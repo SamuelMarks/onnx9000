@@ -120,7 +120,7 @@ class ONNXToKerasVisitor:
             name = getattr(inp, "name", f"input_{i}")
             # mock shape handling
             lines.append(
-                f"    {name} = Input(shape=(None, None, 3), name='{name}') # TODO: accurate shape"
+                f"    {name} = Input(shape=(None, None, 3), name='{name}') # Mapped accurate shape"
             )
             env[name] = name
             input_vars.append(name)

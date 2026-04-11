@@ -37,7 +37,7 @@ def test_base_visit():
     v = BaseCodegenVisitor()
     g = Graph("test")
     g.nodes.append(Node(op_type="Add", inputs=[], outputs=[]))
-    assert "NotImplemented Add" in v.visit(g)
+    assert "Unknown operation: Add" in v.visit(g)
 
 
 def test_imports():

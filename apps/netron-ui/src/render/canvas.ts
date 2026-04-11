@@ -14,7 +14,7 @@ export class CanvasRenderer {
   private lastMouseX: number = 0;
   private lastMouseY: number = 0;
 
-  public onSelect: (nodeId: string | null) => void = () => {};
+  public onSelect: (nodeId: string | null) => void = () => undefined;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;

@@ -95,7 +95,7 @@ describe('Custom Editors (Phase 10)', () => {
   });
 
   it('116. Cast editor', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
     renderNodeOp('Cast', {
       to: { name: 'to', type: 'INT', value: 1 }, // FLOAT
     });

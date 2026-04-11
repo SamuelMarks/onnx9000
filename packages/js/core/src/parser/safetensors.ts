@@ -683,7 +683,7 @@ export async function fetchSafetensorsChunk(
 
         if (cache) {
           const responseToCache = new Response(buf, { headers: res.headers });
-          await cache.put(new Request(url, { headers }), responseToCache).catch(() => {});
+          await cache.put(new Request(url, { headers }), responseToCache).catch(() => undefined);
         }
 
         return new Uint8Array(buf);
@@ -712,7 +712,7 @@ export async function fetchSafetensorsChunk(
 
       if (cache) {
         const responseToCache = new Response(finalBuffer.buffer, { headers: res.headers });
-        await cache.put(new Request(url, { headers }), responseToCache).catch(() => {});
+        await cache.put(new Request(url, { headers }), responseToCache).catch(() => undefined);
       }
 
       return finalBuffer;

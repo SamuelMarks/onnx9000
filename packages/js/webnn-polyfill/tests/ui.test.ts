@@ -35,7 +35,7 @@ describe('PolyfillUI', () => {
   });
 
   it('should log graph info to console', () => {
-    const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     ui.logGraphConsoleUI({
       nodes: [{ opType: 'Relu', name: 'r1', inputs: ['in'], outputs: ['out'] }],
     });

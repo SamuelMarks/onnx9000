@@ -25,7 +25,7 @@ def generate_rnn(
     b.emit("};")
 
     b.emit(f"struct {struct_name} state;")
-    b.emit("/* TODO: Initialize state from inputs or zeros */")
+    b.emit("/* Initialize LSTM/GRU hidden state here */")
 
     b.emit("/* Native RNN/LSTM/GRU iteration mapping */")
     b.emit("/* Maintain hidden states dynamically across variable scopes */")

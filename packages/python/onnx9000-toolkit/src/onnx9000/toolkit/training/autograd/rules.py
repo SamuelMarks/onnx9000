@@ -1955,9 +1955,17 @@ class RoundVJP(VJPRule):
 class FloorVJP(RoundVJP):
     """Autograd rule for Floor (returns 0)."""
 
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
+
 
 class CeilVJP(RoundVJP):
     """Autograd rule for Ceil (returns 0)."""
+
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
 
 
 class EqualVJP(RoundVJP):
@@ -1986,9 +1994,17 @@ class EqualVJP(RoundVJP):
 class LessVJP(EqualVJP):
     """Autograd rule for Less (returns 0)."""
 
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
+
 
 class GreaterVJP(EqualVJP):
     """Autograd rule for Greater (returns 0)."""
+
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
 
 
 class CeluVJP(VJPRule):
@@ -2611,13 +2627,25 @@ class RecurrentVJP(VJPRule):
 class ShapeVJP(RoundVJP):
     """Autograd rule for Shape (non-differentiable -> 0 gradient)."""
 
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
+
 
 class SizeVJP(RoundVJP):
     """Autograd rule for Size (non-differentiable -> 0 gradient)."""
 
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
+
 
 class BitShiftVJP(RoundVJP):
     """Autograd rule for the BitShift operation (returns 0)."""
+
+    def __init__(self, *args: "Any", **kwargs: "Any") -> None:
+        """Initialize."""
+        super().__init__(*args, **kwargs)
 
 
 class StopGradientVJP(RoundVJP):

@@ -3,18 +3,18 @@
 export const editor = {
   create: () => ({
     getValue: () => 'mocked content',
-    setValue: () => {},
-    layout: () => {},
-    dispose: () => {},
-    onDidChangeModelContent: () => ({ dispose: () => {} }),
-    setModel: () => {}
+    setValue: () => undefined,
+    layout: () => undefined,
+    dispose: () => undefined,
+    onDidChangeModelContent: () => ({ dispose: () => undefined }),
+    setModel: () => undefined
   }),
   createModel: (content: string) => ({
     getValue: () => content,
-    setValue: () => {},
-    dispose: () => {}
+    setValue: () => undefined,
+    dispose: () => undefined
   }),
-  setTheme: () => {}
+  setTheme: () => undefined
 };
 export const Uri = {
   parse: (str: string) => ({ path: str })

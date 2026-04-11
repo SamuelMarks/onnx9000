@@ -20,7 +20,7 @@ export class GraphEditor {
   selectedNodeIds: Set<string> = new Set();
   selectedEdges: Set<string> = new Set();
 
-  onSelectionChange: (selection: SelectionEvent[]) => void = () => {};
+  onSelectionChange: (selection: SelectionEvent[]) => void = () => undefined;
 
   constructor(graph: Graph, mutator: GraphMutator) {
     this.graph = graph;

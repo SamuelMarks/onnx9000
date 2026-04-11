@@ -28,14 +28,30 @@ class _DropoutNd(Module):
 class Dropout(_DropoutNd):
     """Dropout layer."""
 
+    def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
+        """Initialize."""
+        super().__init__(p=p, inplace=inplace)
+
 
 class Dropout1d(_DropoutNd):
     """Dropout1d layer."""
+
+    def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
+        """Initialize."""
+        super().__init__(p=p, inplace=inplace)
 
 
 class Dropout2d(_DropoutNd):
     """Dropout2d layer."""
 
+    def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
+        """Initialize."""
+        super().__init__(p=p, inplace=inplace)
+
 
 class Dropout3d(_DropoutNd):
     """Dropout3d layer."""
+
+    def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
+        """Initialize."""
+        super().__init__(p=p, inplace=inplace)

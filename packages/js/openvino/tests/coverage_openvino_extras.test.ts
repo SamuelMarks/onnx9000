@@ -155,7 +155,7 @@ describe('Coverage OpenVINO', () => {
     const origRead = fs.readFileSync;
     const origExit = process.exit;
 
-    fs.writeFileSync = () => {};
+    fs.writeFileSync = () => undefined;
     fs.readFileSync = () => Buffer.from([1, 2, 3]);
 
     let exited = false;

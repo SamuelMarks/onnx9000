@@ -4,9 +4,17 @@
 class Onnx9000Error(Exception):
     """Base class for exceptions in this module."""
 
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
+
 
 class CompilationError(Onnx9000Error):
     """Exception raised for errors during JIT compilation (e.g. g++ / emcc failure)."""
+
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
 
 
 class UnsupportedOpError(Onnx9000Error):
@@ -22,18 +30,38 @@ class UnsupportedOpError(Onnx9000Error):
 class ShapeMismatchError(Onnx9000Error):
     """Exception raised when tensor shapes do not match requirements for an operation."""
 
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
+
 
 class ONNXParseError(Onnx9000Error):
     """Exception raised when failing to parse an ONNX Protobuf file."""
+
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
 
 
 class ShapeInferenceError(Onnx9000Error):
     """Exception raised when static or symbolic shape inference fails."""
 
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
+
 
 class UnsupportedOpsetError(Onnx9000Error):
     """Exception raised when attempting to validate a model with an unsupported opset."""
 
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)
+
 
 class ValidationError(Onnx9000Error):
     """Exception raised when a model fails static validation checks."""
+
+    def __init__(self, message: str = "An error occurred") -> None:
+        """Initialize."""
+        super().__init__(message)

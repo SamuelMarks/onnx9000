@@ -182,7 +182,7 @@ describe('Coverage gaps for WebNN Context', () => {
 describe('Coverage gaps for Session & Partitioner', () => {
   it('should handle empty graph in partitioner', () => {
     const p = new GraphPartitioner([
-      { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
+      { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
     g.outputs.push({ name: 'out', shape: [1], id: 'o', dtype: 'float32' } as Object);
@@ -234,7 +234,7 @@ describe('Coverage gaps for Session & Partitioner', () => {
     g.outputs.push({ name: 'out1', shape: [1], id: 'out1', dtype: 'float32' } as Object);
     g.nodes.push(new Node('Add', ['in1', 'in1'], ['out1']));
 
-    const p1 = { name: 'P1', initialize: async () => {}, execute: async () => ({}) };
+    const p1 = { name: 'P1', initialize: async () => undefined, execute: async () => ({}) };
     const session = new InferenceSession(g, [p1]);
 
     // Corrupt the partition regions
@@ -258,8 +258,8 @@ describe('Coverage gaps for Session & Partitioner', () => {
 describe('Coverage gaps for Partitioner unsupported nodes', () => {
   it('should flag Attention and FlashAttention as unsupported', () => {
     const p = new GraphPartitioner([
-      { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
-      { name: 'WASM', initialize: async () => {}, execute: async () => ({}) },
+      { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
+      { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
     g.nodes.push(new Node('Attention', [], []));
@@ -270,8 +270,8 @@ describe('Coverage gaps for Partitioner unsupported nodes', () => {
 
   it('should flag RotaryEmbedding as unsupported', () => {
     const p = new GraphPartitioner([
-      { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
-      { name: 'WASM', initialize: async () => {}, execute: async () => ({}) },
+      { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
+      { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
     g.nodes.push(new Node('RotaryEmbedding', [], []));
@@ -281,8 +281,8 @@ describe('Coverage gaps for Partitioner unsupported nodes', () => {
 
   it('should flag dynamic Concat as unsupported', () => {
     const p = new GraphPartitioner([
-      { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
-      { name: 'WASM', initialize: async () => {}, execute: async () => ({}) },
+      { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
+      { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
     const n = new Node('Concat', [], []);
@@ -294,8 +294,8 @@ describe('Coverage gaps for Partitioner unsupported nodes', () => {
 
   it('should flag embedding Gather as unsupported', () => {
     const p = new GraphPartitioner([
-      { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
-      { name: 'WASM', initialize: async () => {}, execute: async () => ({}) },
+      { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
+      { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) },
     ]);
     const g = new Graph('g');
     const n = new Node('Gather', [], []);
@@ -308,8 +308,8 @@ describe('Coverage gaps for Partitioner unsupported nodes', () => {
   it('should throw if disableWebNNFallback is true and node unsupported', () => {
     const p = new GraphPartitioner(
       [
-        { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) },
-        { name: 'WASM', initialize: async () => {}, execute: async () => ({}) },
+        { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) },
+        { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) },
       ],
       true,
     );
@@ -420,8 +420,8 @@ describe('WebNNProvider Edge Case Coverages', () => {
 
 describe('Partitioner end-of-loop', () => {
   it('should skip WebNN if single node at end', () => {
-    const p1 = { name: 'WebNN', initialize: async () => {}, execute: async () => ({}) };
-    const p2 = { name: 'WASM', initialize: async () => {}, execute: async () => ({}) };
+    const p1 = { name: 'WebNN', initialize: async () => undefined, execute: async () => ({}) };
+    const p2 = { name: 'WASM', initialize: async () => undefined, execute: async () => ({}) };
     const partitioner = new GraphPartitioner([p1, p2], false);
     const g = new Graph('g');
     g.nodes.push(new Node('Add', ['in1', 'in2'], ['out1']));

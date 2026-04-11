@@ -8,7 +8,7 @@ describe('LocalStorage Error Handling', () => {
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     const editor = new Editor({ language: 'python', onChange: vi.fn() });
     editor.mount(document.body);

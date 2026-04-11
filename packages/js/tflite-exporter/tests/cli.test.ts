@@ -12,7 +12,7 @@ vi.mock('fs', () => ({
 describe('TFLite Compiler - CLI', () => {
   it('should error without inputs', async () => {
     const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => undefined as Object);
-    const mockError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const mockError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     await onnx2tfCli([]);
 
@@ -24,7 +24,7 @@ describe('TFLite Compiler - CLI', () => {
   });
 
   it('should process normal file with output and flags', async () => {
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await onnx2tfCli(['model.onnx', '-o', 'out.tflite', '--keep-nchw', '--fp16']);
 
@@ -39,7 +39,7 @@ describe('TFLite Compiler - CLI', () => {
   });
 
   it('should process disable optimization flag', async () => {
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await onnx2tfCli(['model.onnx', '--disable-optimization']);
 
@@ -51,7 +51,7 @@ describe('TFLite Compiler - CLI', () => {
   });
 
   it('should process int8 mode', async () => {
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await onnx2tfCli(['model.onnx', '--int8', '-b', '4']);
 
@@ -61,7 +61,7 @@ describe('TFLite Compiler - CLI', () => {
   });
 
   it('should process saved-model mode', async () => {
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await onnx2tfCli(['model.onnx', '--saved-model']);
 
@@ -75,7 +75,7 @@ describe('TFLite Compiler - CLI', () => {
 
 describe('CLI Additions', () => {
   it('should process micro, progress, and external-weights', async () => {
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await onnx2tfCli(['model.onnx', '--micro', '--progress', '--external-weights', 'weights.bin']);
 

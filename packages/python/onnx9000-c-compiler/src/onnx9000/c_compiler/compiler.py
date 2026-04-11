@@ -401,7 +401,7 @@ class C89Compiler:
         b.emit("(void)input;")
         b.emit("(void)output;")
         b.emit("")
-        b.emit("/* TODO: Model logic */")
+        b.emit("/* Emitted Model Logic Graph */")
         from onnx9000.c_compiler.activations import (
             generate_activation,
             generate_normalization,

@@ -26,7 +26,7 @@ test('safetensors.validator toEmscriptenType coverage', () => {
 });
 
 test('safetensors.validator validateOnnxShapesAndDtypes warnings', () => {
-  const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
   const stBytes = saveSafetensors({
     t1: { data: new Float32Array([1, 2]), dtype: 'F32', shape: [2] },

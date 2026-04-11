@@ -323,7 +323,7 @@ describe('GraphMutator', () => {
       mutator.addInput('X', 'float32', [1, 3, 224, 224]);
       mutator.addNode('Relu', ['X'], ['Y']);
 
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       mutator.removeInput('X');
 
       expect(warnSpy).toHaveBeenCalled();

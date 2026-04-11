@@ -193,9 +193,9 @@ class Module:
         if name in ("_parameters", "_buffers", "_modules", "training"):
             object.__setattr__(self, name, value)
             return
-        if not hasattr(self, "_parameters"):
-            raise AttributeError("cannot assign before Module.__init__() call")
         if isinstance(value, Parameter):
+            if not hasattr(self, "_parameters"):
+                raise AttributeError("cannot assign before Module.__init__() call")
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._buffers:
@@ -204,6 +204,8 @@ class Module:
                 del self._modules[name]
             self.register_parameter(name, value)
         elif isinstance(value, Module):
+            if not hasattr(self, "_modules"):
+                raise AttributeError("cannot assign before Module.__init__() call")
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._parameters:
@@ -212,6 +214,8 @@ class Module:
                 del self._buffers[name]
             self.add_module(name, value)
         elif isinstance(value, Tensor):
+            if not hasattr(self, "_buffers"):
+                raise AttributeError("cannot assign before Module.__init__() call")
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._parameters:
@@ -220,6 +224,9 @@ class Module:
                 del self._modules[name]
             self.register_buffer(name, value)
         else:
+            if not hasattr(self, "_parameters"):
+                object.__setattr__(self, name, value)
+                return
             if name in self._parameters:
                 del self._parameters[name]
             if name in self._buffers:

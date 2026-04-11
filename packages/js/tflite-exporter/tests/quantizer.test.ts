@@ -136,16 +136,16 @@ describe('TFLite Compiler - Quantizer', () => {
     // Verify extraction mapped back explicitly
     const offset1 = quantizer.getQuantizationOffset(
       {
-        startObject: () => {},
-        addFieldOffset: () => {},
-        addFieldInt8: () => {},
-        addFieldInt32: () => {},
+        startObject: () => undefined,
+        addFieldOffset: () => undefined,
+        addFieldInt8: () => undefined,
+        addFieldInt32: () => undefined,
         endObject: () => 42,
         createFloat32Vector: () => 1,
         createInt64Vector: () => 2,
-        startVector: () => {},
-        addFloat32: () => {},
-        writeInt32: () => {},
+        startVector: () => undefined,
+        addFloat32: () => undefined,
+        writeInt32: () => undefined,
         endVector: () => 3,
       } as Object,
       graph.tensors['X_quant'] || new Tensor('X_quant', [1], 'int8'),

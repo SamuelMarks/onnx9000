@@ -138,7 +138,7 @@ describe('LHSContainer', () => {
 
   it('should debounce editor change events', () => {
     vi.useFakeTimers();
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     const container = new LHSContainer();
     const editor = (container as object).editor;
@@ -204,7 +204,7 @@ describe('LHSContainer', () => {
     container.mount(document.body);
     const btn = (container as object).runBtn;
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     // simulate a failure by throwing
     (container as object).editor.getValue = () => {
       throw new Error('Simulated error');

@@ -26,7 +26,7 @@ describe('Sparse Operations', () => {
     expect(getTypedArray('float16', 10)).toBeInstanceOf(Uint16Array);
     expect(getTypedArray('bool', 10)).toBeInstanceOf(Uint8Array);
 
-    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     // @ts-ignore
     expect(getTypedArray('unknown', 10)).toBeInstanceOf(Float32Array);
     expect(spy).toHaveBeenCalled();

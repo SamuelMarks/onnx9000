@@ -129,7 +129,7 @@ describe('TensorInputModal', () => {
 
     // Mock an Image to load synchronously
 
-    let onloadCallback: () => void = () => {};
+    let onloadCallback: () => void = () => undefined;
 
     vi.spyOn(global, 'Image').mockImplementation(() => {
       return {

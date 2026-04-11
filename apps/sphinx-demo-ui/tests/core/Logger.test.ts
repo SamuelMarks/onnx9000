@@ -31,9 +31,9 @@ describe('Logger', () => {
     const logger = Logger.getInstance();
 
     // Silence the actual console for this test to avoid test output noise
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     logger.startIntercepting();
 
@@ -69,7 +69,7 @@ describe('Logger', () => {
     const objB: object = { a: objA };
     objA.b = objB; // circular
 
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     logger.startIntercepting();
     console.log(objA);
@@ -91,7 +91,7 @@ describe('Logger', () => {
 
   it('should stop intercepting correctly', () => {
     const logger = Logger.getInstance();
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     logger.startIntercepting();
     logger.stopIntercepting();

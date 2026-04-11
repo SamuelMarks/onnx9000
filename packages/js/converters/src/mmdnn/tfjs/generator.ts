@@ -176,5 +176,5 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     return `tf.layers.flatten(${stringifyOptions(options)})`;
   }
 
-  return `/* TODO: unimplemented ${op} */ tf.layers.dense(${stringifyOptions(options)})`;
+  throw new Error(`Unsupported operator: ${op}`);
 }

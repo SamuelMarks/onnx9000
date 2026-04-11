@@ -9,8 +9,9 @@ export const MACRO_REGISTRY: Record<string, MacroFn> = {};
 export function recordOp(
   opType: string,
   inputs: Tensor[],
-  attributes: ReturnType<typeof JSON.parse> = {},
+  attributes: ReturnType<typeof JSON.parse> | undefined = undefined,
 ): Tensor {
+  attributes = attributes || {};
   const dtype = inputs[0]?.dtype ?? 'float32';
   return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }

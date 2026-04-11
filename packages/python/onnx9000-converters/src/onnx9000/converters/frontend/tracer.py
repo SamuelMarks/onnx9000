@@ -51,6 +51,11 @@ class Tracer:
 class Proxy(Tensor):
     """Proxy tensor object that records operations instead of executing them."""
 
+    def __init__(self, name: str) -> None:
+        """Initialize Proxy."""
+        super().__init__([1.0], requires_grad=False)
+        self.name = name
+
 
 def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     """Traces a Python function into an ONNX GraphBuilder."""

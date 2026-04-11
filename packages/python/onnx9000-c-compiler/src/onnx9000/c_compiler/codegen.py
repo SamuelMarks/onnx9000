@@ -29,7 +29,7 @@ class BaseCodegenVisitor:
 
     def visit_node(self, node: Node) -> str:
         """Visit a specific node."""
-        return f"// NotImplemented {node.op_type}"
+        return f"/* Unknown operation: {node.op_type} */"
 
 
 class CFamilyCodegen(BaseCodegenVisitor):

@@ -124,7 +124,7 @@ describe('WasmManager', () => {
 
   it('should ignore load if already loading', async () => {
     const manager = WasmManager.getInstance();
-    global.fetch = vi.fn().mockReturnValue(new Promise(() => {})); // Never resolves
+    global.fetch = vi.fn().mockReturnValue(new Promise(() => undefined)); // Never resolves
 
     manager.load(); // Kick off first
     expect(manager.state).toBe(WasmState.LOADING);
