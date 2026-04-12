@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   build-and-deploy:
@@ -58,15 +56,12 @@ jobs:
       - name: Build Sphinx Docs
         run: uv run make -C docs html
         
-      # 320. Deploy to GitHub Pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # Deploy to external repository
+      - name: Deploy to external repository
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: 'docs/_build/html'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          personal_token: ${{ secrets.GH_PAT }}
+          external_repository: SamuelMarks/samuelmarks.github.io
+          publish_branch: master
+          publish_dir: docs/_build/html
+          destination_dir: onnx9000/ide
