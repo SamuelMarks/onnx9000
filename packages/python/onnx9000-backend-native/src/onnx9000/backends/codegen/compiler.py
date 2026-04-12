@@ -59,6 +59,7 @@ def compile_cpp(
         "-Wextra",
         "-Werror",
         "-Wno-sign-compare",
+        "-Wno-unknown-pragmas",
     ] + extra_flags
 
     include_dir = os.path.join(os.path.dirname(__file__), "..", "..", "include")
@@ -247,6 +248,7 @@ def compile_static_lib(
         "-Wextra",
         "-Werror",
         "-Wno-sign-compare",
+        "-Wno-unknown-pragmas",
     ] + extra_flags
 
     include_dir = os.path.join(os.path.dirname(__file__), "..", "..", "include")

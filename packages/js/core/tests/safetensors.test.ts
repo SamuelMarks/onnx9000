@@ -209,8 +209,8 @@ test('SharedArrayBuffer detection', () => {
   }
 });
 
-test('createBuffer gracefully falls back to ArrayBuffer', () => {
-  const { createBuffer } = require('../src/parser/safetensors.ts');
+test('createBuffer gracefully falls back to ArrayBuffer', async () => {
+  const { createBuffer } = await import('../src/parser/safetensors.js');
   const buf = createBuffer(10, true); // try to create SharedArrayBuffer if available
   expect(buf.byteLength).toBe(10);
   // It should either be an ArrayBuffer or a SharedArrayBuffer without throwing

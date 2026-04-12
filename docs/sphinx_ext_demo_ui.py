@@ -69,13 +69,17 @@ def build_frontend(app: Sphinx) -> None:
     if it hasn't been built, and copies the artifacts into the Sphinx static directory.
     """
     frontend_dir = os.path.abspath(os.path.join(app.srcdir, "../apps/sphinx-demo-ui"))
+    repo_root = os.path.abspath(os.path.join(app.srcdir, ".."))
     dist_dir = os.path.join(frontend_dir, "dist")
 
     # We only run build if 'dist' doesn't exist to speed up docs iteration.
     # In CI, it will build fresh.
     if not os.path.exists(dist_dir) or os.environ.get("FORCE_FRONTEND_BUILD") == "1":
         print("[onnx9000-demo] Building Vanilla JS frontend with Vite...")
-        subprocess.check_call(["pnpm", "run", "build"], cwd=frontend_dir)
+        subprocess.check_call(
+            ["pnpm", "turbo", "run", "build", "--filter", "@onnx9000/sphinx-demo-ui"],
+            cwd=repo_root,
+        )
         print("[onnx9000-demo] Frontend build complete.")
 
     # Normally Sphinx expects these in _static, but we can also just inject the raw paths if we copy them.
