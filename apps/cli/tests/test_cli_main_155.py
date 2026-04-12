@@ -13,10 +13,9 @@ def test_coverage_gaps_cmd155():
         ),
         patch("onnx9000_cli.main.save_onnx"),
     ):
+        original_import = __import__
         with patch("builtins.__import__") as mock_import:
             # We want to patch only torch
-            original_import = __builtins__["__import__"]
-
             def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
                 if name == "torch":
                     mock_torch = MagicMock()

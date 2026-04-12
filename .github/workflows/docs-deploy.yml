@@ -48,6 +48,9 @@ jobs:
           uv sync --all-extras --all-packages
           uv pip install -r requirements-doc.txt --system --break-system-packages
           
+      - name: Build JS Workspaces
+        run: pnpm turbo run build
+
       # 318. Verify CI/CD pipeline triggers the TS frontend build
       - name: Build TS Web IDE
         run: pnpm exec esbuild --bundle --format=esm docs/_static/ts/src/App.ts --outfile=docs/_static/app.bundle.js --minify
