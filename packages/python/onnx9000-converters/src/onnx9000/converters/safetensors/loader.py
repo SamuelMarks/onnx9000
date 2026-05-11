@@ -1,12 +1,12 @@
 """Provide functionality for this module."""
 
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.core.ir import Graph, ValueInfo
 from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
-def load_safetensors_to_graph(filename: str, graph: Optional[Graph] = None) -> Graph:
+def load_safetensors_to_graph(filename: str, graph: Graph | None = None) -> Graph:
     """Convert `.safetensors` mappings directly into ONNX `Initializer` tensors.
 
     within a GraphSurgeon (onnx9000.core.ir) Graph representation.
@@ -164,7 +164,7 @@ def convert_tf_to_safetensors(tf_dir: str, st_filename: str):
     save_file(np_dict, st_filename, metadata={"format": "tf"})
 
 
-def dump_graph_to_safetensors(graph: Graph, filename: str, topology_filename: Optional[str] = None):
+def dump_graph_to_safetensors(graph: Graph, filename: str, topology_filename: str | None = None):
     """Strip raw byte arrays from ModelProto and dump to .safetensors dynamically.
 
     Export ONNX model to a .onnx (topology only) and .safetensors (weights only) pair.

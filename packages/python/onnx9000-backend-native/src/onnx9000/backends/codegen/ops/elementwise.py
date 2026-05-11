@@ -14,7 +14,7 @@ def _generate_unary_op(
     node: Node,
     generator_context: "onnx9000.backends.codegen.Generator",
     op_expr: str,
-    vdsp_func: Optional[str] = None,
+    vdsp_func: str | None = None,
 ) -> str:
     """Implement the _generate_unary_op method or operation."""
     inp = generator_context.get_tensor_name(node.inputs[0])
@@ -182,7 +182,7 @@ def _generate_binary_op(
     node: Node,
     generator_context: "onnx9000.backends.codegen.Generator",
     op_expr: str,
-    vdsp_func: Optional[str] = None,
+    vdsp_func: str | None = None,
     is_function: bool = False,
 ) -> str:
     """Implement the _generate_binary_op method or operation."""

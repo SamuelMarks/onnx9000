@@ -1,7 +1,5 @@
 """Normalization layers."""
 
-from typing import Union
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.core.dtypes import DType
@@ -119,7 +117,7 @@ class LayerNorm(Module):
 
     def __init__(
         self,
-        normalized_shape: Union[int, tuple[int]],
+        normalized_shape: int | tuple[int],
         eps: float = 1e-05,
         elementwise_affine: bool = True,
         dtype: DType = DType.FLOAT32,

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,10 @@
     <title>ONNX to OpenVINO Converter</title>
     <style>
       body {
-        font-family: system-ui, -apple-system, sans-serif;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
         max-width: 800px;
         margin: 0 auto;
         padding: 2rem;
@@ -16,7 +19,7 @@
         background: white;
         padding: 2rem;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
       .dropzone {
         border: 2px dashed #ccc;
@@ -27,7 +30,8 @@
         cursor: pointer;
         transition: all 0.3s;
       }
-      .dropzone:hover, .dropzone.active {
+      .dropzone:hover,
+      .dropzone.active {
         border-color: #0056b3;
         background: #f0f8ff;
       }
@@ -38,7 +42,8 @@
         display: block;
         margin-bottom: 0.5rem;
       }
-      select, input {
+      select,
+      input {
         margin-right: 1rem;
       }
       #status {
@@ -47,31 +52,43 @@
         border-radius: 4px;
         display: none;
       }
-      .success { background: #d4edda; color: #155724; }
-      .error { background: #f8d7da; color: #721c24; }
-      .info { background: #e2e3e5; color: #383d41; }
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background: #e2e3e5;
+        color: #383d41;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Web-Native OpenVINO Compiler</h1>
-      <p>Convert ONNX models to Intel OpenVINO format strictly inside your browser (zero dependencies, zero server uploads).</p>
-      
+      <p>
+        Convert ONNX models to Intel OpenVINO format strictly inside your browser (zero
+        dependencies, zero server uploads).
+      </p>
+
       <div class="settings">
         <label>
-          <input type="checkbox" id="compressFp16" checked>
+          <input type="checkbox" id="compressFp16" checked />
           Compress Weights to FP16
         </label>
       </div>
 
       <div class="dropzone" id="dropzone">
-        <div id="drop-text">Drag & Drop an .onnx file here<br>or click to browse</div>
-        <input type="file" id="file-input" accept=".onnx" style="display: none;">
+        <div id="drop-text">Drag & Drop an .onnx file here<br />or click to browse</div>
+        <input type="file" id="file-input" accept=".onnx" style="display: none" />
       </div>
 
       <div id="status"></div>
     </div>
-    
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

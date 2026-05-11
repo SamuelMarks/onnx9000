@@ -1,6 +1,6 @@
 name: onnx2tf Conversion Failure
 description: File a bug report for issues converting an ONNX model into TensorFlow Lite or SavedModel formats.
-labels: ["bug", "onnx2tf"]
+labels: ['bug', 'onnx2tf']
 body:
   - type: markdown
     attributes:
@@ -11,7 +11,7 @@ body:
     attributes:
       label: onnx9000 Version
       description: Provide the specific package versions.
-      placeholder: "@onnx9000/tflite-exporter@1.0.x"
+      placeholder: '@onnx9000/tflite-exporter@1.0.x'
     validations:
       required: true
   - type: textarea

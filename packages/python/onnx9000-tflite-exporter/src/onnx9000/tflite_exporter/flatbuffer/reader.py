@@ -61,7 +61,7 @@ class FlatBufferReader:
         offset = self.get_field_offset(obj_offset, vtable_index)
         return struct.unpack_from("<f", self.bytes, offset)[0] if offset != 0 else def_val
 
-    def get_string(self, obj_offset: int, vtable_index: int) -> Optional[str]:
+    def get_string(self, obj_offset: int, vtable_index: int) -> str | None:
         """Get string field."""
         offset = self.get_field_offset(obj_offset, vtable_index)
         if offset == 0:

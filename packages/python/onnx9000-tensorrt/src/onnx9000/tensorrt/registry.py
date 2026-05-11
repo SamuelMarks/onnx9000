@@ -1,7 +1,7 @@
 """Registry."""
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 logger = logging.getLogger("onnx9000.tensorrt.registry")
 

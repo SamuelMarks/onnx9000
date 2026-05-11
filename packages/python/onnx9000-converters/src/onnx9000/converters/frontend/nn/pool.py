@@ -1,19 +1,19 @@
 """Pooling layers."""
 
-from typing import Any, Union
+from typing import Any
 
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 
 
-def _pair(x: Union[int, tuple[int, int]]) -> tuple[int, int]:
+def _pair(x: int | tuple[int, int]) -> tuple[int, int]:
     """Implement the _pair method."""
     if isinstance(x, int):
         return (x, x)
     return x
 
 
-def _single(x: Union[int, tuple[int]]) -> tuple[int]:
+def _single(x: int | tuple[int]) -> tuple[int]:
     """Implement the _single method."""
     if isinstance(x, int):
         return (x,)
@@ -53,10 +53,10 @@ class MaxPool1d(_MaxPoolNd):
 
     def __init__(
         self,
-        kernel_size: Union[int, tuple[int]],
-        stride: Union[int, tuple[int]] = None,
-        padding: Union[int, tuple[int]] = 0,
-        dilation: Union[int, tuple[int]] = 1,
+        kernel_size: int | tuple[int],
+        stride: int | tuple[int] = None,
+        padding: int | tuple[int] = 0,
+        dilation: int | tuple[int] = 1,
         ceil_mode: bool = False,
     ) -> None:
         """Implement the __init__ method."""
@@ -72,10 +72,10 @@ class MaxPool2d(_MaxPoolNd):
 
     def __init__(
         self,
-        kernel_size: Union[int, tuple[int, int]],
-        stride: Union[int, tuple[int, int]] = None,
-        padding: Union[int, tuple[int, int]] = 0,
-        dilation: Union[int, tuple[int, int]] = 1,
+        kernel_size: int | tuple[int, int],
+        stride: int | tuple[int, int] = None,
+        padding: int | tuple[int, int] = 0,
+        dilation: int | tuple[int, int] = 1,
         ceil_mode: bool = False,
     ) -> None:
         """Implement the __init__ method."""
@@ -119,9 +119,9 @@ class AvgPool1d(_AvgPoolNd):
 
     def __init__(
         self,
-        kernel_size: Union[int, tuple[int]],
-        stride: Union[int, tuple[int]] = None,
-        padding: Union[int, tuple[int]] = 0,
+        kernel_size: int | tuple[int],
+        stride: int | tuple[int] = None,
+        padding: int | tuple[int] = 0,
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
@@ -137,9 +137,9 @@ class AvgPool2d(_AvgPoolNd):
 
     def __init__(
         self,
-        kernel_size: Union[int, tuple[int, int]],
-        stride: Union[int, tuple[int, int]] = None,
-        padding: Union[int, tuple[int, int]] = 0,
+        kernel_size: int | tuple[int, int],
+        stride: int | tuple[int, int] = None,
+        padding: int | tuple[int, int] = 0,
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
@@ -168,6 +168,6 @@ class _AdaptiveAvgPoolNd(Module):
 class AdaptiveAvgPool2d(_AdaptiveAvgPoolNd):
     """AdaptiveAvgPool2d."""
 
-    def __init__(self, output_size: Union[int, tuple[int, int]]) -> None:
+    def __init__(self, output_size: int | tuple[int, int]) -> None:
         """Implement the __init__ method."""
         super().__init__(output_size)

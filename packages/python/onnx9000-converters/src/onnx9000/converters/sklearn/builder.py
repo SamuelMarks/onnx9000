@@ -1,7 +1,5 @@
 """Provide builder module functionality."""
 
-from typing import Optional
-
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 
@@ -13,7 +11,7 @@ class SKLearnParser:
         self,
         model: object,
         name: str = "sklearn_model",
-        initial_types: Optional[list[tuple]] = None,
+        initial_types: list[tuple] | None = None,
     ) -> None:
         """Initialize the instance."""
         self.model = model

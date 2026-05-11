@@ -30,7 +30,7 @@ class BarkModel:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.history_prompt: Optional[str] = None
+        self.history_prompt: str | None = None
 
     def set_history_prompt(self, prompt: str) -> None:
         """Set a history prompt for speaker cloning."""
@@ -126,7 +126,7 @@ class MultiSpeakerEmbeddings:
         """Register a speaker embedding."""
         self.embeddings[name] = embedding
 
-    def get_speaker(self, name: str) -> Optional[list[float]]:
+    def get_speaker(self, name: str) -> list[float] | None:
         """Get a speaker embedding."""
         return self.embeddings.get(name)
 

@@ -121,7 +121,7 @@ def _check_op_specific(node: Node, ctx: ValidationContext):
             ctx.errors.append(f"{op} missing attributes")
 
 
-def check_model(model: Any, ctx: Optional[ValidationContext] = None):
+def check_model(model: Any, ctx: ValidationContext | None = None):
     """Check a whole model for validity."""
     ctx = ctx or ValidationContext()
 
@@ -176,6 +176,6 @@ def check_model(model: Any, ctx: Optional[ValidationContext] = None):
     return True
 
 
-async def check_model_async(model: Any, ctx: Optional[ValidationContext] = None):
+async def check_model_async(model: Any, ctx: ValidationContext | None = None):
     """Check a whole model for validity asynchronously."""
     return check_model(model, ctx)

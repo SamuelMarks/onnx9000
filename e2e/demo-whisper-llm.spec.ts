@@ -15,23 +15,27 @@ test.describe('Whisper LLM Demo E2E', () => {
 
     // Override media devices to avoid permission prompt
     await page.addInitScript(() => {
-        // mock getUserMedia
-        navigator.mediaDevices.getUserMedia = async () => {
-            return new MediaStream();
-        };
-        // mock MediaRecorder
-        (window as Object).MediaRecorder = class {
-            state = 'inactive';
-            stream: Object;
-            constructor(stream: Object) { this.stream = stream; }
-            start() { this.state = 'recording'; }
-            stop() { 
-                this.state = 'inactive'; 
-                if (this.onstop) this.onstop();
-            }
-            onstop: Object;
-            ondataavailable: Object;
-        };
+      // mock getUserMedia
+      navigator.mediaDevices.getUserMedia = async () => {
+        return new MediaStream();
+      };
+      // mock MediaRecorder
+      (window as Object).MediaRecorder = class {
+        state = 'inactive';
+        stream: Object;
+        constructor(stream: Object) {
+          this.stream = stream;
+        }
+        start() {
+          this.state = 'recording';
+        }
+        stop() {
+          this.state = 'inactive';
+          if (this.onstop) this.onstop();
+        }
+        onstop: Object;
+        ondataavailable: Object;
+      };
     });
 
     // Let the mock init model text appear
@@ -39,14 +43,14 @@ test.describe('Whisper LLM Demo E2E', () => {
 
     const recordBtn = page.locator('#record-btn');
     await recordBtn.click();
-    
+
     await expect(recordBtn).toHaveText('Stop Recording');
     const logContent = await page.locator('#log').textContent();
     expect(logContent).toContain('Recording started');
 
     await recordBtn.click(); // Stop
     await expect(recordBtn).toHaveText('Start Recording');
-    
+
     const logContentAfter = await page.locator('#log').textContent();
     expect(logContentAfter).toContain('Recording stopped');
   });

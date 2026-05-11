@@ -29,7 +29,9 @@ test.describe('WASM Sphinx Demo E2E', () => {
 
     // Make sure the code editor contains Keras code
     // The Monaco editor content is deeply nested. We can evaluate to check it.
-    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
+    await page.waitForFunction(
+      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+    );
     const lhsContent = await page.evaluate(() => {
       return (window as Object).monaco.editor
         .getModels()
@@ -123,7 +125,9 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
+    await page.waitForFunction(
+      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+    );
 
     // Default should be C
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-pane-header .demo-dropdown-button');
@@ -180,7 +184,9 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
+    await page.waitForFunction(
+      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+    );
 
     // Select ONNX Script from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
@@ -234,7 +240,9 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
+    await page.waitForFunction(
+      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+    );
 
     // Select PyTorch from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');
@@ -289,7 +297,9 @@ int main() {
     await expect(page.locator('.demo-wasm-overlay')).toBeHidden({ timeout: 15000 });
 
     await page.waitForTimeout(2000);
-    await page.waitForFunction(() => !!(window as Object).monaco && !!(window as Object).monaco.editor);
+    await page.waitForFunction(
+      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+    );
 
     // Select CNTK from RHS Dropdown
     const rhsDropdown = page.locator('.demo-pane-rhs .demo-dropdown');

@@ -1,6 +1,5 @@
 """Exhaustive coverage test for Keras semantic mappers."""
 
-import pytest
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.keras_layers import KERAS_LAYERS_MAPPING
 from onnx9000.converters.tf.parsers import TFNode

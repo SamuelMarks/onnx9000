@@ -1,7 +1,8 @@
 """Tracer framework."""
 
 import threading
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder, get_active_builder
 from onnx9000.converters.frontend.tensor import Tensor
@@ -16,7 +17,7 @@ class Tracer:
     in a thread-local storage.
     """
 
-    def __init__(self, builder: Optional[GraphBuilder] = None) -> None:
+    def __init__(self, builder: GraphBuilder | None = None) -> None:
         """Initialize the Tracer with an optional GraphBuilder.
 
         Args:
@@ -24,7 +25,7 @@ class Tracer:
 
         """
         self.builder = builder or GraphBuilder()
-        self.prev_builder: Optional[GraphBuilder] = None
+        self.prev_builder: GraphBuilder | None = None
 
     def __enter__(self) -> GraphBuilder:
         """Activate the tracer, making its builder the active one in thread-local storage.

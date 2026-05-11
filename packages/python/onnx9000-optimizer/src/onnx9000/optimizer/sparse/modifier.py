@@ -214,7 +214,7 @@ class OBSPruningModifier(Modifier):
         self,
         params: list[str] = None,
         sparsity: float = 0.5,
-        calibration_data: Optional[list[Any]] = None,
+        calibration_data: list[Any] | None = None,
         **kwargs,
     ) -> None:
         """Initialize the OBS pruning modifier.
@@ -282,7 +282,7 @@ class FisherPruningModifier(Modifier):
         self,
         params: list[str] = None,
         sparsity: float = 0.5,
-        gradients: Optional[dict[str, list[float]]] = None,
+        gradients: dict[str, list[float]] | None = None,
         **kwargs,
     ) -> None:
         """Initialize the Fisher pruning modifier.
@@ -343,7 +343,7 @@ class MovementPruningModifier(Modifier):
         self,
         params: list[str] = None,
         sparsity: float = 0.5,
-        gradients: Optional[dict[str, list[float]]] = None,
+        gradients: dict[str, list[float]] | None = None,
         **kwargs,
     ) -> None:
         """Initialize the movement pruning modifier.
@@ -767,7 +767,7 @@ def parse_recipe(yaml_text: str) -> list[Modifier]:
     return instances
 
 
-def apply_recipe(graph: Graph, recipe: Union[str, list[Modifier]]) -> None:
+def apply_recipe(graph: Graph, recipe: str | list[Modifier]) -> None:
     """Apply a SparseML-style recipe to an ONNX graph.
 
     :param graph: The ONNX graph to modify.

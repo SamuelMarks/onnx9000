@@ -13,7 +13,7 @@ class BaseTensor(CoreTensor):
         name: str,
         shape: list[int],
         dtype: str,
-        op_type: Optional[str] = None,
+        op_type: str | None = None,
         inputs: list[Any] = None,
         data: Any = None,
     ):
@@ -36,7 +36,7 @@ class BaseTensor(CoreTensor):
 class EagerTensor(BaseTensor):
     """Eager execution tensor."""
 
-    def __init__(self, data: Any, dtype: Optional[str] = None):
+    def __init__(self, data: Any, dtype: str | None = None):
         """Initialize an eager tensor with data.
 
         Args:

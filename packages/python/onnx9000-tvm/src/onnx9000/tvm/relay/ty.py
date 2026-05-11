@@ -26,7 +26,7 @@ class Type:
 class TensorType(Type):
     """A tensor type with shape and dtype."""
 
-    shape: tuple[Union[int, str], ...]
+    shape: tuple[int | str, ...]
     dtype: str
 
 

@@ -14,9 +14,9 @@ class ModelParams:
         num_key_value_heads: int,
         hidden_size: int,
         vocab_size: int,
-        eos_token_id: Union[int, list[int]],
-        bos_token_id: Optional[int] = None,
-        pad_token_id: Optional[int] = None,
+        eos_token_id: int | list[int],
+        bos_token_id: int | None = None,
+        pad_token_id: int | None = None,
     ):
         """Initialize the instance."""
         self.max_sequence_length = max_sequence_length
@@ -36,7 +36,7 @@ class GeneratorParams:
     def __init__(
         self,
         max_length: int,
-        max_new_tokens: Optional[int] = None,
+        max_new_tokens: int | None = None,
         early_stopping: bool = True,
         num_beams: int = 1,
         temperature: float = 1.0,
@@ -45,8 +45,8 @@ class GeneratorParams:
         repetition_penalty: float = 1.0,
         num_return_sequences: int = 1,
         do_sample: bool = False,
-        seed: Optional[int] = None,
-        abort_signal: Optional[bool] = False,
+        seed: int | None = None,
+        abort_signal: bool | None = False,
     ):
         """Initialize the instance."""
         self.max_length = max_length

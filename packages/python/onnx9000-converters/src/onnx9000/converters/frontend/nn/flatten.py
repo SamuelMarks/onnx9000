@@ -1,7 +1,5 @@
 """Flatten layers."""
 
-from typing import Union
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 
@@ -23,7 +21,7 @@ class Flatten(Module):
 class Unflatten(Module):
     """Unflatten layer."""
 
-    def __init__(self, dim: Union[int, str], unflattened_size: Union[tuple[int], list]) -> None:
+    def __init__(self, dim: int | str, unflattened_size: tuple[int] | list) -> None:
         """Implement the __init__ method."""
         super().__init__()
         self.dim = dim

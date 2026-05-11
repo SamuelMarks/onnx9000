@@ -16,7 +16,7 @@ class KVCache:
         """Execute the update operation."""
         return None
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return None
 
@@ -40,7 +40,7 @@ class ContinuousKVCache(KVCache):
             return None
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 
@@ -63,7 +63,7 @@ class PagedKVCache(KVCache):
             self._pages[layer_idx] = []
         self._pages[layer_idx].append((keys, values))
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         pages = self._pages.get(layer_idx)
         if not pages:
@@ -111,7 +111,7 @@ class MultiHeadAttentionCache(KVCache):
             )
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 
@@ -138,7 +138,7 @@ class GroupedQueryAttentionCache(KVCache):
             )
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 
@@ -165,7 +165,7 @@ class MultiQueryAttentionCache(KVCache):
             )
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 
@@ -190,7 +190,7 @@ class SequenceBatchingKVCache(KVCache):
         # Simulate appending batched states
         self._cache[layer_idx].append((keys, values))
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         if layer_idx in self._cache and self._cache[layer_idx]:
             # Mock returning the batched tensor
@@ -214,7 +214,7 @@ class CrossAttentionCache(KVCache):
         """Execute the update operation."""
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 
@@ -242,7 +242,7 @@ class SlidingWindowKVCache(KVCache):
 
         self._cache[layer_idx] = (keys, values)
 
-    def get(self, layer_idx: int) -> Optional[tuple[Tensor, Tensor]]:
+    def get(self, layer_idx: int) -> tuple[Tensor, Tensor] | None:
         """Execute the get operation."""
         return self._cache.get(layer_idx)
 

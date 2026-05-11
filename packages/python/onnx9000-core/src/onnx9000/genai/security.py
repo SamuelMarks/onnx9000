@@ -142,7 +142,7 @@ class KVCacheIsolator:
         """Set cache for a session."""
         self.caches[session_id] = cache
 
-    def get_cache(self, session_id: str) -> Optional[Any]:
+    def get_cache(self, session_id: str) -> Any | None:
         """Get cache for a session."""
         return self.caches.get(session_id)
 

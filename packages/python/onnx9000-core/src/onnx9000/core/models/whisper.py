@@ -145,7 +145,7 @@ class WhisperDecoderLayer:  # noqa: D101
         self.final_layer_norm = LayerNormalization((d_model,))
 
     def __call__(  # noqa: D102
-        self, x: Tensor, encoder_hidden_states: Tensor, causal_mask: Optional[Tensor] = None
+        self, x: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
     ) -> Tensor:
         """Call."""
         identity = x
@@ -212,7 +212,7 @@ class WhisperDecoder:  # noqa: D101
         self.lm_head = Gemm(trans_b=1)
 
     def __call__(  # noqa: D102
-        self, input_ids: Tensor, encoder_hidden_states: Tensor, causal_mask: Optional[Tensor] = None
+        self, input_ids: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
     ) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gather

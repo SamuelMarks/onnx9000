@@ -4,8 +4,9 @@ Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
 """
 
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.tensor import Tensor

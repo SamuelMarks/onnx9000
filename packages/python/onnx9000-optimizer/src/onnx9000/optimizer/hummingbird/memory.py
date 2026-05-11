@@ -61,7 +61,7 @@ def select_optimal_strategy(
     abstractions: TreeAbstractions,
     target: TargetHardware,
     batch_size: int = 1,
-    force_strategy: Optional[Strategy] = None,
+    force_strategy: Strategy | None = None,
 ) -> Strategy:
     """Implement strategy selector based on hardware target, tree depth, sparsity, and batch size."""
     if force_strategy is not None:

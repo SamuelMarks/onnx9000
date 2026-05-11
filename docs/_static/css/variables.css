@@ -1,4 +1,3 @@
-
 :root {
   --color-background-primary: #ffffff;
   --color-background-secondary: #f8f9fa;
@@ -11,7 +10,7 @@
   --color-success: #198754;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --color-background-primary: #121212;
   --color-background-secondary: #1e1e1e;
   --color-background-border: #343a40;

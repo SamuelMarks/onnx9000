@@ -27,9 +27,9 @@ def _parse_dtype(data_type: int) -> DType:
         raise ONNXParseError(f"Unsupported ONNX TensorProto DataType: {data_type}") from None
 
 
-def _parse_shape(shape_proto: Any) -> tuple[Union[int, DynamicDim], ...]:
+def _parse_shape(shape_proto: Any) -> tuple[int | DynamicDim, ...]:
     """Parse ONNX shape proto."""
-    shape: list[Union[int, DynamicDim]] = []
+    shape: list[int | DynamicDim] = []
     for dim in shape_proto.dim:
         if dim.HasField("dim_value"):
             shape.append(dim.dim_value)
@@ -69,7 +69,7 @@ def _parse_attribute(attr: Any) -> Attribute:
     return Attribute(attr.name, "UNKNOWN", None)
 
 
-def parse_sparse_tensor_proto(sparse_init: Any, base_dir: Optional[Path] = None) -> "SparseTensor":
+def parse_sparse_tensor_proto(sparse_init: Any, base_dir: Path | None = None) -> "SparseTensor":
     """Parse a single ONNX SparseTensorProto into an ir.SparseTensor."""
     from onnx9000.core.ir import SparseTensor
 
@@ -82,11 +82,11 @@ def parse_sparse_tensor_proto(sparse_init: Any, base_dir: Optional[Path] = None)
     )
 
 
-def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
+def parse_tensor_proto(init: Any, base_dir: Path | None = None) -> Tensor:
     """Parse a single ONNX TensorProto into an ir.Tensor."""
     dtype = _parse_dtype(init.data_type)
     shape = tuple(init.dims)
-    data: Optional[Union[bytes, memoryview]] = None
+    data: bytes | memoryview | None = None
 
     if hasattr(init, "data_location") and init.data_location == 1:
         location = ""
@@ -126,7 +126,7 @@ def parse_tensor_proto(init: Any, base_dir: Optional[Path] = None) -> Tensor:
     return tensor
 
 
-def load_tensor(file_path: Union[str, Path]) -> Tensor:
+def load_tensor(file_path: str | Path) -> Tensor:
     """Read an ONNX Tensor file (.pb) and parses it into an ir.Tensor."""
     tensor_proto = onnx_pb2.TensorProto()
     with open(file_path, "rb") as f:
@@ -134,7 +134,7 @@ def load_tensor(file_path: Union[str, Path]) -> Tensor:
     return parse_tensor_proto(tensor_proto)
 
 
-def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
+def parse_model(model_proto: Any, base_dir: Path | None = None) -> Graph:
     """Parse an ONNX ModelProto into an ir.Graph."""
     graph_proto = model_proto.graph
     graph = Graph(name=graph_proto.name)
@@ -191,7 +191,7 @@ def parse_model(model_proto: Any, base_dir: Optional[Path] = None) -> Graph:
     return graph
 
 
-def load(file_path: Union[str, Path]) -> Graph:
+def load(file_path: str | Path) -> Graph:
     """Read an ONNX file and parses it into an ir.Graph."""
     path_obj = Path(file_path)
     with open(file_path, "rb") as f:

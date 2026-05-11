@@ -20,7 +20,7 @@ operators = {
 }
 
 
-def eval_expr(node: Any, context: dict[str, int]) -> Union[int, float, str]:
+def eval_expr(node: Any, context: dict[str, int]) -> int | float | str:
     """Execute the eval expr operation."""
     if isinstance(node, ast.Name):
         if node.id in context:
@@ -53,7 +53,7 @@ def eval_expr(node: Any, context: dict[str, int]) -> Union[int, float, str]:
         raise TypeError(node)
 
 
-def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> Union[int, str]:
+def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> int | str:
     """Evaluate a symbolic string expression given a context mapping variables to integers.
 
     Fallback to string if unresolved.
@@ -148,9 +148,9 @@ def _ast_to_str(node: Any) -> str:
 
 
 def broadcast_shapes(
-    shape_a: tuple[Union[int, DynamicDim], ...],
-    shape_b: tuple[Union[int, DynamicDim], ...],
-) -> tuple[Union[int, DynamicDim], ...]:
+    shape_a: tuple[int | DynamicDim, ...],
+    shape_b: tuple[int | DynamicDim, ...],
+) -> tuple[int | DynamicDim, ...]:
     """Apply standard NumPy broadcasting rules to two shapes, including dynamic dimensions."""
     max_len = max(len(shape_a), len(shape_b))
     padded_a = (1,) * (max_len - len(shape_a)) + shape_a
@@ -183,7 +183,7 @@ def broadcast_shapes(
     return tuple(result)
 
 
-def simplify_dim(dim: Union[int, DynamicDim, str]) -> Union[int, str]:
+def simplify_dim(dim: int | DynamicDim | str) -> int | str:
     """Execute the simplify dim operation."""
     if isinstance(dim, DynamicDim):
         return dim.value

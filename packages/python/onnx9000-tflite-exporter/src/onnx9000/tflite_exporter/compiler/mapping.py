@@ -12,7 +12,7 @@ from ..flatbuffer.schema import TensorType
 logger = logging.getLogger(__name__)
 
 
-def map_onnx_type_to_tflite(dtype: str, name: Optional[str] = None) -> TensorType:
+def map_onnx_type_to_tflite(dtype: str, name: str | None = None) -> TensorType:
     """Map ONNX dtypes to TFLite dtypes."""
     # 55. Map ONNX FLOAT -> TFLite FLOAT32.
     if dtype == "float32":

@@ -13,7 +13,7 @@ import urllib.request
 from typing import Any, Optional
 
 
-def get_pypi_info(pkg_name: str) -> tuple[str, Optional[str]]:
+def get_pypi_info(pkg_name: str) -> tuple[str, str | None]:
     """Get the latest version and required Python version for a PyPI package.
 
     Args:

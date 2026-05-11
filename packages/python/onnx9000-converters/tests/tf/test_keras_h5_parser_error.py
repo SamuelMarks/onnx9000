@@ -1,7 +1,7 @@
 """Test coverage for Keras 2 H5 model parser - error cases and module fallback."""
 
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

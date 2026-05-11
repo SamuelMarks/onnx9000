@@ -5,7 +5,7 @@ import { Editor } from '../../src/components/Editor';
 
 describe('LocalStorage Error Handling', () => {
   it('should gracefully handle localStorage parse/quota errors', () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    const setItemSpy = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

@@ -92,8 +92,6 @@ def test_jaxpr_importer_coverage():
     # Check load format args
     assert load(jaxpr, format="jax") is not None
 
-    import onnx9000.core.parser.core
-
     assert (
         load({"node": []}) is None
     )  # Handled by fallback tf ? Wait: if format == "tf" or (isinstance(model_path_or_dict, dict) and "node" in model_path_or_dict) returns None

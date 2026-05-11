@@ -21,8 +21,8 @@ class Expr:
 
     """Base class for all Relay expressions."""
 
-    checked_type: Optional[Type] = None
-    span: Optional[Any] = None
+    checked_type: Type | None = None
+    span: Any | None = None
 
 
 @dataclass(eq=False)
@@ -30,7 +30,7 @@ class Var(Expr):
     """A local variable in Relay."""
 
     name_hint: str
-    type_annotation: Optional[Type] = None
+    type_annotation: Type | None = None
 
 
 @dataclass(eq=False)
@@ -38,7 +38,7 @@ class Constant(Expr):
     """A constant tensor in Relay."""
 
     data: Any  # Can be a raw bytes/memoryview or numpy-like object
-    type_annotation: Optional[Type] = None
+    type_annotation: Type | None = None
 
 
 @dataclass(eq=False)
@@ -52,9 +52,9 @@ class Op(Expr):
 class Call(Expr):
     """A function/operator invocation."""
 
-    op: Union[Op, Expr]
+    op: Op | Expr
     args: list[Expr]
-    attrs: Optional[dict[str, Any]] = None
+    attrs: dict[str, Any] | None = None
 
 
 @dataclass(eq=False)
@@ -96,5 +96,5 @@ class Function(Expr):
 
     params: list[Var]
     body: Expr
-    ret_type: Optional[Type] = None
+    ret_type: Type | None = None
     type_params: list[Type] = field(default_factory=list)

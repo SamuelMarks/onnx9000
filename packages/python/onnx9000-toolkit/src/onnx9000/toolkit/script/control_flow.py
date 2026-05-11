@@ -43,7 +43,7 @@ class IfContextManager:
         """Return a branch context for defining the 'Else' block of the If statement."""
         return BranchContext(self.else_builder)
 
-    def build(self) -> Union[Var, tuple[Var, ...], None]:
+    def build(self) -> Var | tuple[Var, ...] | None:
         """Finalize the If operation, embedding the branches into the parent graph."""
         with self.parent_builder:
             return If(
@@ -71,7 +71,7 @@ class LoopContextManager:
         """Return a branch context for defining the body of the Loop."""
         return BranchContext(self.body_builder)
 
-    def build(self) -> Union[Var, tuple[Var, ...], None]:
+    def build(self) -> Var | tuple[Var, ...] | None:
         """Finalize the Loop operation, embedding its body into the parent graph."""
         with self.parent_builder:
             return Loop(

@@ -67,6 +67,38 @@ const frameworkRequirements: Record<string, { desc: string; check: (files: File[
     desc: 'Requires: .mlmodel',
     check: (files) => files.some((f) => f.name.endsWith('.mlmodel')),
   },
+  jax: {
+    desc: 'Requires: .json (jaxpr text)',
+    check: (files) => files.some((f) => f.name.endsWith('.json')),
+  },
+  h2o: {
+    desc: 'Requires: .zip (MOJO file)',
+    check: (files) => files.some((f) => f.name.endsWith('.zip')),
+  },
+  libsvm: {
+    desc: 'Requires: .svm or .txt',
+    check: (files) => files.some((f) => f.name.endsWith('.svm') || f.name.endsWith('.txt')),
+  },
+  sklearn: {
+    desc: 'Requires: .joblib or .json',
+    check: (files) => files.some((f) => f.name.endsWith('.joblib') || f.name.endsWith('.json')),
+  },
+  xgboost: {
+    desc: 'Requires: .json dump',
+    check: (files) => files.some((f) => f.name.endsWith('.json')),
+  },
+  catboost: {
+    desc: 'Requires: .json dump',
+    check: (files) => files.some((f) => f.name.endsWith('.json')),
+  },
+  lightgbm: {
+    desc: 'Requires: .txt or .json',
+    check: (files) => files.some((f) => f.name.endsWith('.txt') || f.name.endsWith('.json')),
+  },
+  pyspark: {
+    desc: 'Requires: .json dump',
+    check: (files) => files.some((f) => f.name.endsWith('.json')),
+  },
 };
 
 function updateHint() {

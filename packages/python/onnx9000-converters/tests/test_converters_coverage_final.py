@@ -1,17 +1,13 @@
 """Final coverage tests for onnx9000 toolkit."""
 
 import io
-import struct
 import zipfile
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import numpy as np
 import pytest
 import torch
 import torch.jit
-from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
-from onnx9000.converters.tf.keras_layers import KERAS_LAYERS_MAPPING
-from onnx9000.converters.tf.parsers import TFGraph, TFNode, load_h5_model, load_keras_v3
+from onnx9000.converters.tf.parsers import load_h5_model, load_keras_v3
 from onnx9000.converters.torch.export import ExportParser
 from onnx9000.converters.torch.fx import FXParser
 from onnx9000.converters.torch.script import TorchScriptParser

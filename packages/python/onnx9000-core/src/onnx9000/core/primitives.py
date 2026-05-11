@@ -96,7 +96,7 @@ class LayerNormalization(BaseNorm):
         self.normalized_shape = normalized_shape
         self.axis = -len(normalized_shape)
 
-    def __call__(self, x: Tensor, scale: Tensor, b: Optional[Tensor] = None) -> Tensor:
+    def __call__(self, x: Tensor, scale: Tensor, b: Tensor | None = None) -> Tensor:
         """Applies Layer Normalization.
 
         Args:
@@ -317,10 +317,10 @@ class ConvFamily:
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, list[int]],
-        stride: Union[int, list[int]] = 1,
-        padding: Union[int, list[int]] = 0,
-        dilation: Union[int, list[int]] = 1,
+        kernel_size: int | list[int],
+        stride: int | list[int] = 1,
+        padding: int | list[int] = 0,
+        dilation: int | list[int] = 1,
         groups: int = 1,
         bias: bool = True,
     ):
@@ -334,7 +334,7 @@ class ConvFamily:
         self.groups = groups
         self.bias = bias
 
-    def __call__(self, x: Tensor, w: Tensor, b: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         return x
 
@@ -347,10 +347,10 @@ class ConvND(ConvFamily):
         dims: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, list[int]],
-        stride: Union[int, list[int]] = 1,
-        padding: Union[int, list[int]] = 0,
-        dilation: Union[int, list[int]] = 1,
+        kernel_size: int | list[int],
+        stride: int | list[int] = 1,
+        padding: int | list[int] = 0,
+        dilation: int | list[int] = 1,
         groups: int = 1,
         bias: bool = True,
     ):
@@ -360,7 +360,7 @@ class ConvND(ConvFamily):
         )
         self.dims = dims
 
-    def __call__(self, x: Tensor, w: Tensor, b: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -390,10 +390,10 @@ class DepthwiseConv(ConvND):
         self,
         dims: int,
         channels: int,
-        kernel_size: Union[int, list[int]],
-        stride: Union[int, list[int]] = 1,
-        padding: Union[int, list[int]] = 0,
-        dilation: Union[int, list[int]] = 1,
+        kernel_size: int | list[int],
+        stride: int | list[int] = 1,
+        padding: int | list[int] = 0,
+        dilation: int | list[int] = 1,
         bias: bool = True,
     ):
         """Init."""
@@ -422,7 +422,7 @@ class Gemm:
         self.trans_a = trans_a
         self.trans_b = trans_b
 
-    def __call__(self, x: Tensor, y: Tensor, c: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, y: Tensor, c: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import gemm
 
@@ -438,7 +438,7 @@ class MultiHeadAttention:
         self.qkv_bias = qkv_bias
         self.out_bias = out_bias
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import attention
 
@@ -452,7 +452,7 @@ class MultiHeadAttention:
 class FlashAttention(MultiHeadAttention):
     """Standardized hardware-fused attention. Falls back to MultiHeadAttention if unsupported."""
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -472,7 +472,7 @@ class GroupedQueryAttention(MultiHeadAttention):
         super().__init__(num_heads, qkv_bias, out_bias)
         self.num_kv_heads = num_kv_heads
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -555,9 +555,9 @@ class RNN:
         x: Tensor,
         w: Tensor,
         r: Tensor,
-        b: Optional[Tensor] = None,
-        sequence_lens: Optional[Tensor] = None,
-        initial_h: Optional[Tensor] = None,
+        b: Tensor | None = None,
+        sequence_lens: Tensor | None = None,
+        initial_h: Tensor | None = None,
     ) -> Tensor:
         """Call."""
         from onnx9000.core.ops import rnn

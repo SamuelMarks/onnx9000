@@ -6,7 +6,8 @@ Handles mapping of variables, loops, conditionals, and node generation.
 import ast
 import inspect
 import textwrap
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.toolkit.script.builder import GraphBuilder

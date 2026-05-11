@@ -20,7 +20,7 @@ test.describe('PyTorch Codegen Demo E2E', () => {
     await fileChooser.setFiles({
       name: 'invalid.txt',
       mimeType: 'text/plain',
-      buffer: Buffer.from('this is not an onnx file')
+      buffer: Buffer.from('this is not an onnx file'),
     });
 
     const codeVal = await page.locator('#code').inputValue();

@@ -382,12 +382,76 @@ def convert_cmd(args: argparse.Namespace) -> None:
         from onnx9000.converters.safetensors.loader import load_safetensors_to_graph
 
         graph = load_safetensors_to_graph(args.src)
-    elif src_fmt == "caffe":
-        with open(args.src) as f:
-            data = f.read()
-        from onnx9000.converters.mltools.catboost import parse_catboost_json
+    elif src_fmt == "darknet":
+        if not args.weights:
+            print("Error: --weights argument is required for Darknet models.")
+            import sys
 
-        graph = parse_catboost_json(data)
+            sys.exit(1)
+        if not args.src.endswith(".cfg"):
+            print("Error: --model for Darknet should be a .cfg file.")
+            import sys
+
+            sys.exit(1)
+        from onnx9000.converters.darknet import DarknetConverter
+
+        parser = DarknetConverter(weights_path=args.weights)
+        graph = parser.parse(args.src)
+    elif src_fmt == "ncnn":
+        if not args.weights:
+            print("Error: --weights argument is required for NCNN models.")
+            import sys
+
+            sys.exit(1)
+        if not args.src.endswith(".param") or not args.weights.endswith(".bin"):
+            print("Error: --model must be .param and --weights must be .bin for NCNN.")
+            import sys
+
+            sys.exit(1)
+        from onnx9000.converters.ncnn import NCNNConverter
+
+        parser = NCNNConverter(weights_path=args.weights)
+        graph = parser.parse(args.src)
+    elif src_fmt == "caffe":
+        if not args.weights:
+            print("Error: --weights argument is required for Caffe models.")
+            import sys
+
+            sys.exit(1)
+        if not args.src.endswith(".prototxt") or not args.weights.endswith(".caffemodel"):
+            print("Error: --model must be .prototxt and --weights must be .caffemodel for Caffe.")
+            import sys
+
+            sys.exit(1)
+        from onnx9000.converters.caffe import CaffeConverter
+
+        parser = CaffeConverter(weights_path=args.weights)
+        graph = parser.parse(args.src)
+    elif src_fmt == "cntk":
+        if not args.src.endswith(".model"):
+            print("Error: --model for CNTK must be a .model file.")
+            import sys
+
+            sys.exit(1)
+        from onnx9000.converters.cntk import CNTKConverter
+
+        parser = CNTKConverter()
+        graph = parser.parse(args.src)
+    elif src_fmt == "mxnet":
+        if not args.weights:
+            print("Error: --weights argument is required for MXNet models.")
+            import sys
+
+            sys.exit(1)
+        if not args.src.endswith("-symbol.json") or not args.weights.endswith(".params"):
+            print("Error: --model must be -symbol.json and --weights must be .params for MXNet.")
+            import sys
+
+            sys.exit(1)
+        from onnx9000.converters.mxnet import MXNetConverter
+
+        parser = MXNetConverter(weights_path=args.weights)
+        graph = parser.parse(args.src)
     elif src_fmt == "lightgbm":
         with open(args.src) as f:
             data = f.read()
@@ -400,6 +464,31 @@ def convert_cmd(args: argparse.Namespace) -> None:
         from onnx9000.converters.mltools.xgboost import parse_xgboost_json
 
         graph = parse_xgboost_json(data)
+    elif src_fmt == "catboost":
+        with open(args.src) as f:
+            data = f.read()
+        from onnx9000.converters.mltools.catboost import parse_catboost_json
+
+        graph = parse_catboost_json(data)
+    elif src_fmt == "sklearn":
+        with open(args.src) as f:
+            data = f.read()
+        print(
+            "Warning: Safely reading sklearn pipeline JSON representation. joblib unpickling is disabled."
+        )
+        from onnx9000.converters.sklearn.parser import parse_sklearn_json
+
+        graph = parse_sklearn_json(data)
+    elif src_fmt == "paddle":
+        from onnx9000.converters.paddle.loader import load_paddle_to_graph
+
+        graph = load_paddle_to_graph(args.src)
+    elif src_fmt == "pyspark" or src_fmt == "sparkml":
+        with open(args.src) as f:
+            data = f.read()
+        from onnx9000.converters.mltools.sparkml import parse_sparkml_pipeline
+
+        graph = parse_sparkml_pipeline(data)
     elif src_fmt == "libsvm":
         with open(args.src) as f:
             data = f.read()
@@ -1325,7 +1414,10 @@ def main() -> None:
     convert_parser = subparsers.add_parser("convert", help="Convert model formats")
     convert_parser.add_argument("src", type=str, help="Source model path")
     convert_parser.add_argument(
-        "--from", dest="from_fmt", type=str, help="Source format (onnx, keras, pytorch)"
+        "--from",
+        dest="from_fmt",
+        type=str,
+        help="Source format (onnx, keras, pytorch, darknet, ncnn, caffe, cntk, mxnet, sklearn, xgboost, catboost, lightgbm, pyspark, paddle)",
     )
     convert_parser.add_argument(
         "--to",
@@ -1334,6 +1426,9 @@ def main() -> None:
         help="Destination format (onnx, c, cpp, mlir, keras, pytorch, wasm)",
     )
     convert_parser.add_argument("-o", "--output", type=str, help="Output path")
+    convert_parser.add_argument(
+        "--weights", type=str, help="Path to weights file (e.g., for Darknet)"
+    )
     convert_parser.set_defaults(func=convert_cmd)
 
     # Coverage

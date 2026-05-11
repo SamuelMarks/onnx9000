@@ -19,7 +19,7 @@ class CPUMemoryPlanner:
 
     def __init__(self) -> None:
         """Initialize the CPU memory planner."""
-        self.arena_mmap: Optional[mmap.mmap] = None
+        self.arena_mmap: mmap.mmap | None = None
         self.offsets: dict[str, tuple[int, int]] = {}
         self.current_offset: int = 0
         self.tensors_shape_dtype: dict[str, tuple[tuple[int, ...], str]] = {}

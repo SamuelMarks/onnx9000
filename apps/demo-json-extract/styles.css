@@ -1,5 +1,8 @@
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   margin: 0;
   padding: 0;
   background-color: #121212;
@@ -31,7 +34,9 @@ h1 {
   padding: 3rem 1rem;
   margin-bottom: 1.5rem;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 
 .drop-zone.dragover {
@@ -66,7 +71,9 @@ h1 {
   display: none !important;
 }
 
-.status-panel, .result-panel, .error-box {
+.status-panel,
+.result-panel,
+.error-box {
   margin-top: 1.5rem;
   padding: 1rem;
   background-color: #252526;
@@ -91,5 +98,7 @@ h1 {
   height: 100%;
   background-color: #007acc;
   width: 0%;
-  transition: width 0.3s, background-color 0.3s;
+  transition:
+    width 0.3s,
+    background-color 0.3s;
 }

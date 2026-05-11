@@ -110,7 +110,7 @@ class HardwareBugDatabase:
         """Add a hardware bug."""
         self.bugs[device] = description
 
-    def get_bugs(self, device: str) -> Optional[str]:
+    def get_bugs(self, device: str) -> str | None:
         """Get bugs for a device."""
         return self.bugs.get(device)
 
@@ -136,7 +136,7 @@ class LogitComparer:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.baseline: Optional[Any] = None
+        self.baseline: Any | None = None
 
     def set_baseline(self, logits: Any) -> None:
         """Set baseline logits."""

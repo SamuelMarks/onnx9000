@@ -39,7 +39,11 @@ export type SourceFramework =
   | 'xgboost'
   | 'catboost'
   | 'sparkml'
-  | 'onnxscript';
+  | 'pyspark'
+  | 'h2o'
+  | 'libsvm'
+  | 'onnxscript'
+  | 'jax';
 
 /** Target framework types. */
 export type TargetFramework =
@@ -483,7 +487,7 @@ export async function convert(
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
       /* v8 ignore stop */
-    } else if (source === 'sparkml') {
+    } else if (source === 'sparkml' || source === 'pyspark') {
       const { SparkMLParser } = await import('./sparkml/parser.js');
       const file0 = files[0];
       if (!file0) throw new Error('Missing file');
@@ -498,6 +502,34 @@ export async function convert(
         graph.nodes.push(new Node('Identity', ['features'], ['prediction'], {}, 'identity'));
       }
       /* v8 ignore stop */
+    } else if (source === 'h2o') {
+      const { parseH2O, H2OMapper } = await import('./h2o/index.js');
+      const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
+      try {
+        const text = await file0.text();
+        const parsed = parseH2O(text);
+        const mapper = new H2OMapper(parsed);
+        graph = mapper.map();
+      } catch {
+        reporter.warn('Failed to parse h2o model');
+        graph = new Graph('h2o-imported');
+        graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
+      }
+    } else if (source === 'libsvm') {
+      const { parseLibSVM, LibSVMMapper } = await import('./libsvm/index.js');
+      const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
+      try {
+        const text = await file0.text();
+        const parsed = parseLibSVM(text);
+        const mapper = new LibSVMMapper(parsed);
+        graph = mapper.map();
+      } catch {
+        reporter.warn('Failed to parse libsvm model');
+        graph = new Graph('libsvm-imported');
+        graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
+      }
     } else if (source === 'onnxscript') {
       const { OnnxScriptParser } = await import('./onnxscript/parser.js');
       const file0 = files[0];
@@ -509,6 +541,20 @@ export async function convert(
       } catch {
         reporter.warn('Failed to parse onnxscript model');
         graph = new Graph('onnxscript-imported');
+        graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
+      }
+    } else if (source === 'jax') {
+      const { parseJaxpr, JaxMapper } = await import('../jax/index.js');
+      const file0 = files[0];
+      if (!file0) throw new Error('Missing file');
+      try {
+        const text = await file0.text();
+        const jaxpr = parseJaxpr(text);
+        const mapper = new JaxMapper(jaxpr);
+        graph = mapper.map();
+      } catch {
+        reporter.warn('Failed to parse jax model');
+        graph = new Graph('jax-imported');
         graph.nodes.push(new Node('Identity', ['X'], ['Y'], {}, 'identity'));
       }
     } else {

@@ -1,6 +1,6 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Callable
+from collections.abc import Callable
 
 from ..expr import Call, Constant, Expr, Op
 from ..visitor import ExprMutator

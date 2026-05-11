@@ -19,7 +19,7 @@ def _generate_unique_name(prefix: str = "tmp") -> str:
 class Var:
     """Class Var implementation."""
 
-    def __init__(self, name: Optional[str] = None) -> None:
+    def __init__(self, name: str | None = None) -> None:
         """Initialize the symbolic variable with an optional specific name, otherwise auto-generates one."""
         self.name: str = name if name is not None else _generate_unique_name("var")
 

@@ -1,5 +1,3 @@
-import pytest
-
 """Tests the parsers module functionality."""
 
 import logging

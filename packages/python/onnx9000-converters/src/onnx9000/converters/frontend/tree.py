@@ -1,6 +1,7 @@
 """Tree utility for handling nested collections (list, tuple, dict)."""
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 
 def tree_map(fn: Callable, tree: Any) -> Any:

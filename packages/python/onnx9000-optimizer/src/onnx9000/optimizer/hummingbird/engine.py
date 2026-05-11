@@ -33,9 +33,9 @@ class TranspilationEngine:
     def transpile(
         self,
         model_obj: Any,
-        force_strategy: Optional[Strategy] = None,
+        force_strategy: Strategy | None = None,
         batch_size: Any = "N",
-        ensemble_weights: Optional[list[float]] = None,
+        ensemble_weights: list[float] | None = None,
     ) -> Graph:
         """Transpiles traditional ML models into ONNX Graph based on selected strategy.
 

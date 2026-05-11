@@ -10,7 +10,7 @@ class MemoryMapError(Onnx9000Error):
     """Exception raised when failing to memory-map a file."""
 
 
-def mmap_tensor_data(file_path: Union[str, Path], offset: int, length: int) -> memoryview:
+def mmap_tensor_data(file_path: str | Path, offset: int, length: int) -> memoryview:
     """Create a zero-copy memoryview of a specific chunk of a file.
 
     Ideal for loading large tensor initializers without loading the whole file into RAM.

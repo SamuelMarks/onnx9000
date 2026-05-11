@@ -1,6 +1,5 @@
 """Tests for jaxpr string parser."""
 
-import pytest
 from onnx9000.converters.jax.jaxpr_string_parser import parse_jaxpr_string
 
 

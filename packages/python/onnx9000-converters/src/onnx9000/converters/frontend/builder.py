@@ -5,7 +5,7 @@ computation graphs from native Python execution.
 """
 
 import threading
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.converters.frontend.tensor import Node, Tensor
 
@@ -78,7 +78,7 @@ class GraphBuilder:
 _tls = threading.local()
 
 
-def get_active_builder() -> Optional[GraphBuilder]:
+def get_active_builder() -> GraphBuilder | None:
     """Retrieve the active graph builder from thread local storage."""
     return getattr(_tls, "builder", None)
 
@@ -86,10 +86,10 @@ def get_active_builder() -> Optional[GraphBuilder]:
 class Tracing:
     """Context manager for tracing operations into a GraphBuilder."""
 
-    def __init__(self, builder: Optional[GraphBuilder] = None) -> None:
+    def __init__(self, builder: GraphBuilder | None = None) -> None:
         """Initialize the frontend builder or trace context."""
         self.builder = builder or GraphBuilder()
-        self.prev_builder: Optional[GraphBuilder] = None
+        self.prev_builder: GraphBuilder | None = None
 
     def __enter__(self) -> GraphBuilder:
         """Implement the __enter__ method."""

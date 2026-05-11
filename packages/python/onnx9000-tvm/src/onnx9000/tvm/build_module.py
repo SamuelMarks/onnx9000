@@ -7,9 +7,7 @@ from io import BytesIO
 from typing import Union
 
 
-def bundle_artifacts(
-    artifacts: dict[str, Union[str, bytes]], output_path: str, format: str = "tar.gz"
-):
+def bundle_artifacts(artifacts: dict[str, str | bytes], output_path: str, format: str = "tar.gz"):
     """Pass 324: Bundle output artifacts into a single .tar.gz or .zip."""
     if format == "tar.gz":
         with tarfile.open(output_path, "w:gz") as tar:
@@ -31,8 +29,8 @@ def bundle_artifacts(
 
 
 def generate_npm_package(
-    model_name: str, artifacts: dict[str, Union[str, bytes]]
-) -> dict[str, Union[str, bytes]]:
+    model_name: str, artifacts: dict[str, str | bytes]
+) -> dict[str, str | bytes]:
     """Pass 325: Generate an npm package structure."""
     pkg_json = {
         "name": f"@onnx9000-models/{model_name.lower()}",

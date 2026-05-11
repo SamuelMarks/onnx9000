@@ -4,8 +4,9 @@ This module defines how ONNX operators are mapped to TFLite operators,
 including the transformation of attributes into TFLite BuiltinOptions.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Optional
 
 from onnx9000.core.ir import Node
 
@@ -25,7 +26,7 @@ class TFLiteOperatorMapping:
 
     builtin_code: int
     builtin_options_type: int
-    create_options: Optional[Callable] = None
+    create_options: Callable | None = None
 
 
 def _map_cast(b, n):
@@ -878,7 +879,7 @@ def map_depthwise_conv2d_options(builder: any, node: Node, graph=None) -> int:
     return builder.end_object()
 
 
-def map_onnx_node_to_tflite(node: Node) -> Optional[TFLiteOperatorMapping]:
+def map_onnx_node_to_tflite(node: Node) -> TFLiteOperatorMapping | None:
     """Map an ONNX node to its TFLite operator mapping.
 
     Args:

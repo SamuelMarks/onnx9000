@@ -154,7 +154,7 @@ def nsstring(string: str) -> ctypes.c_void_p:
     return msg_send_str(NSString, stringWithUTF8String, string.encode("utf-8"))
 
 
-def mtl_create_system_default_device() -> Optional[ctypes.c_void_p]:
+def mtl_create_system_default_device() -> ctypes.c_void_p | None:
     """MTLCreateSystemDefaultDevice."""
     if not is_metal_available():
         return None

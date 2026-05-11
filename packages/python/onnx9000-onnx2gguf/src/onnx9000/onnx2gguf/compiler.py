@@ -34,7 +34,7 @@ def sanitize_doc_string(doc: str) -> str:
     return doc.strip()
 
 
-def compile_gguf(graph: Graph, out_f: BinaryIO, kv_overrides: Optional[dict[str, Any]] = None):
+def compile_gguf(graph: Graph, out_f: BinaryIO, kv_overrides: dict[str, Any] | None = None):
     """Compiles gguf."""
     writer = GGUFWriter(out_f)
     kv_overrides = kv_overrides or {}

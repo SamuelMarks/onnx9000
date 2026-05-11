@@ -6,9 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.registry import register_op
 
 
-def record_op(
-    op_type: str, inputs: list[Any], attributes: Optional[dict[str, Any]] = None
-) -> Tensor:
+def record_op(op_type: str, inputs: list[Any], attributes: dict[str, Any] | None = None) -> Tensor:
     """Record the operation and returns a dummy output tensor."""
     attributes = attributes or {}
     tensors = [inp for inp in inputs if hasattr(inp, "dtype")]
@@ -16,7 +14,7 @@ def record_op(
     return Tensor(name=f"{op_type}_out", shape=(), dtype=dtype)
 
 
-from onnx9000.core.ops.torch_auto import *
+import onnx9000.core.ops.torch_auto  # noqa: F401
 
 
 @register_op("ai.onnx", "Relu")
@@ -344,7 +342,7 @@ def sequence_empty(dtype: int) -> Tensor:
 
 
 @register_op("ai.onnx", "SequenceInsert")
-def sequence_insert(seq: Tensor, tensor: Tensor, position: Optional[Tensor] = None) -> Tensor:
+def sequence_insert(seq: Tensor, tensor: Tensor, position: Tensor | None = None) -> Tensor:
     """Compute SequenceInsert."""
     inputs = [seq, tensor]
     if position is not None:
@@ -383,7 +381,7 @@ def concat(inputs: list[Tensor], axis: int) -> Tensor:
 
 
 @register_op("ai.onnx", "ConvTranspose")
-def conv_transpose(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv_transpose(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose."""
     inputs = [x, w]
     if b is not None:
@@ -429,7 +427,7 @@ def eye_like(input: Tensor, dtype: int = 1, k: int = 0) -> Tensor:
 def layer_normalization(
     x: Tensor,
     scale: Tensor,
-    b: Optional[Tensor] = None,
+    b: Tensor | None = None,
     axis: int = -1,
     epsilon: float = 1e-05,
     stash_type: int = 1,
@@ -475,7 +473,7 @@ def rope(x: Tensor, cos: Tensor, sin: Tensor, **kwargs: Any) -> Tensor:
 
 @register_op("onnx9000.custom", "DeformConv")
 def deform_conv_custom(
-    x: Tensor, offset: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any
+    x: Tensor, offset: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any
 ) -> Tensor:
     """Compute Deformable Convolution."""
     inputs = [x, offset, w]
@@ -590,9 +588,9 @@ def multinomial(input: Tensor, dtype: int = 6, sample_size: int = 1, seed: float
 def non_max_suppression(
     boxes: Tensor,
     scores: Tensor,
-    max_output_boxes_per_class: Optional[Tensor] = None,
-    iou_threshold: Optional[Tensor] = None,
-    score_threshold: Optional[Tensor] = None,
+    max_output_boxes_per_class: Tensor | None = None,
+    iou_threshold: Tensor | None = None,
+    score_threshold: Tensor | None = None,
     center_point_box: int = 0,
 ) -> Tensor:
     """Compute NonMaxSuppression."""
@@ -637,7 +635,7 @@ def random_normal(
 @register_op("ai.onnx", "RandomNormalLike")
 def random_normal_like(
     input: Tensor,
-    dtype: Optional[int] = None,
+    dtype: int | None = None,
     mean: float = 0.0,
     scale: float = 1.0,
     seed: float = 0.0,
@@ -670,7 +668,7 @@ def random_uniform(
 @register_op("ai.onnx", "RandomUniformLike")
 def random_uniform_like(
     input: Tensor,
-    dtype: Optional[int] = None,
+    dtype: int | None = None,
     high: float = 1.0,
     low: float = 0.0,
     seed: float = 0.0,
@@ -683,7 +681,7 @@ def random_uniform_like(
 
 
 @register_op("ai.onnx", "ReduceSumSquare")
-def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
+def reduce_sum_square(data: Tensor, axes: list[int] | None = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceSumSquare."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
@@ -692,7 +690,7 @@ def reduce_sum_square(data: Tensor, axes: Optional[list[int]] = None, keepdims: 
 
 
 @register_op("ai.onnx", "ReduceL1")
-def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
+def reduce_l1(data: Tensor, axes: list[int] | None = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceL1."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
@@ -701,7 +699,7 @@ def reduce_l1(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
 
 
 @register_op("ai.onnx", "ReduceL2")
-def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
+def reduce_l2(data: Tensor, axes: list[int] | None = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceL2."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
@@ -710,7 +708,7 @@ def reduce_l2(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1)
 
 
 @register_op("ai.onnx", "ReduceLogSum")
-def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
+def reduce_log_sum(data: Tensor, axes: list[int] | None = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceLogSum."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
@@ -719,7 +717,7 @@ def reduce_log_sum(data: Tensor, axes: Optional[list[int]] = None, keepdims: int
 
 
 @register_op("ai.onnx", "ReduceLogSumExp")
-def reduce_log_sum_exp(data: Tensor, axes: Optional[list[int]] = None, keepdims: int = 1) -> Tensor:
+def reduce_log_sum_exp(data: Tensor, axes: list[int] | None = None, keepdims: int = 1) -> Tensor:
     """Compute ReduceLogSumExp."""
     attrs = {"keepdims": keepdims}
     if axes is not None:
@@ -742,9 +740,9 @@ def regex_full_match(x: Tensor, pattern: str) -> Tensor:
 @register_op("ai.onnx", "Resize")
 def resize(
     x: Tensor,
-    roi: Optional[Tensor] = None,
-    scales: Optional[Tensor] = None,
-    sizes: Optional[Tensor] = None,
+    roi: Tensor | None = None,
+    scales: Tensor | None = None,
+    sizes: Tensor | None = None,
     **kwargs: Any,
 ) -> Tensor:
     """Compute Resize."""
@@ -826,7 +824,7 @@ def string_normalizer(
     case_change_action: str = "NONE",
     is_case_sensitive: int = 0,
     locale: str = "",
-    stopwords: Optional[list[str]] = None,
+    stopwords: list[str] | None = None,
 ) -> Tensor:
     """Compute StringNormalizer."""
     attrs: dict[str, Any] = {
@@ -846,7 +844,7 @@ def string_split(x: Tensor, delimiter: str = "", maxsplit: int = -1) -> Tensor:
 
 
 @register_op("ai.onnx", "Trilu")
-def trilu(input: Tensor, k: Optional[Tensor] = None, upper: int = 1) -> Tensor:
+def trilu(input: Tensor, k: Tensor | None = None, upper: int = 1) -> Tensor:
     """Compute Trilu."""
     inputs = [input]
     if k is not None:
@@ -861,7 +859,7 @@ def topk(X: Tensor, K: Tensor, axis: int = -1, largest: int = 1, sorted: int = 1
 
 
 @register_op("ai.onnx", "Unique")
-def unique(X: Tensor, axis: Optional[int] = None, sorted: int = 1) -> Tensor:
+def unique(X: Tensor, axis: int | None = None, sorted: int = 1) -> Tensor:
     """Compute Unique."""
     attrs = {"sorted": sorted}
     if axis is not None:
@@ -877,7 +875,7 @@ def sequence_at(input_sequence: Tensor, position: Tensor) -> Tensor:
 
 @register_op("ai.onnx", "SplitToSequence")
 def split_to_sequence(
-    input: Tensor, split: Optional[Tensor] = None, axis: int = 0, keepdims: int = 1
+    input: Tensor, split: Tensor | None = None, axis: int = 0, keepdims: int = 1
 ) -> Tensor:
     """Compute SplitToSequence."""
     inputs = [input]
@@ -887,7 +885,7 @@ def split_to_sequence(
 
 
 @register_op("ai.onnx", "SequenceErase")
-def sequence_erase(input_sequence: Tensor, position: Optional[Tensor] = None) -> Tensor:
+def sequence_erase(input_sequence: Tensor, position: Tensor | None = None) -> Tensor:
     """Compute SequenceErase."""
     inputs = [input_sequence]
     if position is not None:
@@ -934,7 +932,7 @@ def attention(Q: Tensor, K: Tensor, V: Tensor, **kwargs: Any) -> Tensor:
 
 
 @register_op("ai.onnx", "Bernoulli")
-def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> Tensor:
+def bernoulli(input: Tensor, dtype: int | None = None, seed: float = 0.0) -> Tensor:
     """Compute Bernoulli."""
     attrs: dict[str, Any] = {"seed": seed}
     if dtype is not None:
@@ -943,7 +941,7 @@ def bernoulli(input: Tensor, dtype: Optional[int] = None, seed: float = 0.0) -> 
 
 
 @register_op("ai.onnx", "CenterCropPad")
-def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]] = None) -> Tensor:
+def center_crop_pad(input_data: Tensor, shape: Tensor, axes: list[int] | None = None) -> Tensor:
     """Compute CenterCropPad."""
     attrs = {}
     if axes is not None:
@@ -952,7 +950,7 @@ def center_crop_pad(input_data: Tensor, shape: Tensor, axes: Optional[list[int]]
 
 
 @register_op("ai.onnx", "Constant")
-def clip(input: Tensor, min: Optional[Tensor] = None, max: Optional[Tensor] = None) -> Tensor:
+def clip(input: Tensor, min: Tensor | None = None, max: Tensor | None = None) -> Tensor:
     """Compute Clip."""
     inputs = [input]
     if min is not None:
@@ -969,9 +967,9 @@ def col2im(
     input: Tensor,
     image_shape: Tensor,
     block_shape: Tensor,
-    dilations: Optional[list[int]] = None,
-    pads: Optional[list[int]] = None,
-    strides: Optional[list[int]] = None,
+    dilations: list[int] | None = None,
+    pads: list[int] | None = None,
+    strides: list[int] | None = None,
 ) -> Tensor:
     """Compute Col2Im."""
     attrs = {}
@@ -985,7 +983,7 @@ def col2im(
 
 
 @register_op("ai.onnx", "Compress")
-def compress(input: Tensor, condition: Tensor, axis: Optional[int] = None) -> Tensor:
+def compress(input: Tensor, condition: Tensor, axis: int | None = None) -> Tensor:
     """Compute Compress."""
     attrs = {}
     if axis is not None:
@@ -997,8 +995,8 @@ def compress(input: Tensor, condition: Tensor, axis: Optional[int] = None) -> Te
 def conv_integer(
     x: Tensor,
     w: Tensor,
-    x_zero_point: Optional[Tensor] = None,
-    w_zero_point: Optional[Tensor] = None,
+    x_zero_point: Tensor | None = None,
+    w_zero_point: Tensor | None = None,
     **kwargs: Any,
 ) -> Tensor:
     """Compute ConvInteger."""
@@ -1021,7 +1019,7 @@ def cumsum(x: Tensor, axis: Tensor, exclusive: int = 0, reverse: int = 0) -> Ten
 @register_op("ai.onnx", "Dft")
 def dft(
     input: Tensor,
-    dft_length: Optional[Tensor] = None,
+    dft_length: Tensor | None = None,
     axis: int = 1,
     inverse: int = 0,
     onesided: int = 0,
@@ -1036,8 +1034,8 @@ def dft(
 @register_op("ai.onnx", "Dropout")
 def dropout(
     data: Tensor,
-    ratio: Optional[Tensor] = None,
-    training_mode: Optional[Tensor] = None,
+    ratio: Tensor | None = None,
+    training_mode: Tensor | None = None,
     seed: int = 0,
 ) -> Tensor:
     """Compute Dropout."""
@@ -1061,8 +1059,8 @@ def reshape(x: Tensor, shape: Tensor) -> Tensor:
 def average_pool(
     x: Tensor,
     kernel_shape: list[int],
-    strides: Optional[list[int]] = None,
-    pads: Optional[list[int]] = None,
+    strides: list[int] | None = None,
+    pads: list[int] | None = None,
 ) -> Tensor:
     """Compute AveragePool."""
     attr = {"kernel_shape": kernel_shape}
@@ -1077,8 +1075,8 @@ def average_pool(
 def max_pool(
     x: Tensor,
     kernel_shape: list[int],
-    strides: Optional[list[int]] = None,
-    pads: Optional[list[int]] = None,
+    strides: list[int] | None = None,
+    pads: list[int] | None = None,
 ) -> Tensor:
     """Compute MaxPool."""
     attr = {"kernel_shape": kernel_shape}
@@ -1102,7 +1100,7 @@ def global_max_pool(x: Tensor) -> Tensor:
 
 
 @register_op("ai.onnx", "Transpose")
-def transpose(x: Tensor, perm: Optional[list[int]] = None) -> Tensor:
+def transpose(x: Tensor, perm: list[int] | None = None) -> Tensor:
     """Transposes a tensor."""
     attributes = {"perm": perm} if perm is not None else {}
     return record_op("Transpose", [x], attributes)
@@ -1178,7 +1176,7 @@ def matmul(x: Tensor, y: Tensor) -> Tensor:
 def gemm(
     x: Tensor,
     y: Tensor,
-    c: Optional[Tensor] = None,
+    c: Tensor | None = None,
     alpha: float = 1.0,
     beta: float = 1.0,
     trans_a: int = 0,
@@ -1193,7 +1191,7 @@ def gemm(
 
 
 @register_op("ai.onnx", "ReduceSum")
-def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
+def reduce_sum(x: Tensor, axes: list[int] | None = None, keepdims: bool = True) -> Tensor:
     """Compute the sum of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
@@ -1202,7 +1200,7 @@ def reduce_sum(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 @register_op("ai.onnx", "ReduceMean")
-def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
+def reduce_mean(x: Tensor, axes: list[int] | None = None, keepdims: bool = True) -> Tensor:
     """Compute the mean of the input tensor's element along the provided axes."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
@@ -1211,7 +1209,7 @@ def reduce_mean(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tr
 
 
 @register_op("ai.onnx", "ReduceMax")
-def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
+def reduce_max(x: Tensor, axes: list[int] | None = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceMax."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
@@ -1220,7 +1218,7 @@ def reduce_max(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 @register_op("ai.onnx", "ReduceMin")
-def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
+def reduce_min(x: Tensor, axes: list[int] | None = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceMin."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
@@ -1229,7 +1227,7 @@ def reduce_min(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tru
 
 
 @register_op("ai.onnx", "ReduceProd")
-def reduce_prod(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = True) -> Tensor:
+def reduce_prod(x: Tensor, axes: list[int] | None = None, keepdims: bool = True) -> Tensor:
     """Compute ReduceProd."""
     attributes: dict[str, Any] = {"keepdims": 1 if keepdims else 0}
     if axes is not None:
@@ -1241,9 +1239,9 @@ def reduce_prod(x: Tensor, axes: Optional[list[int]] = None, keepdims: bool = Tr
 def conv(
     x: Tensor,
     w: Tensor,
-    b: Optional[Tensor] = None,
-    strides: Optional[list[int]] = None,
-    pads: Optional[list[int]] = None,
+    b: Tensor | None = None,
+    strides: list[int] | None = None,
+    pads: list[int] | None = None,
 ) -> Tensor:
     """Compute an N-D convolution."""
     if strides is None:
@@ -1619,10 +1617,10 @@ def xor(x: Tensor) -> Tensor:
 @register_op("ai.onnx", "STFT")
 def stft(
     signal: Tensor,
-    frame_step: Optional[Tensor] = None,
-    window_length: Optional[Tensor] = None,
-    frame_length: Optional[Tensor] = None,
-    window: Optional[Tensor] = None,
+    frame_step: Tensor | None = None,
+    window_length: Tensor | None = None,
+    frame_length: Tensor | None = None,
+    window: Tensor | None = None,
     **kwargs: Any,
 ) -> Tensor:
     """Compute STFT."""
@@ -1641,10 +1639,10 @@ def stft(
 @register_op("ai.onnx", "ISTFT")
 def istft(
     signal: Tensor,
-    frame_step: Optional[Tensor] = None,
-    window_length: Optional[Tensor] = None,
-    frame_length: Optional[Tensor] = None,
-    window: Optional[Tensor] = None,
+    frame_step: Tensor | None = None,
+    window_length: Tensor | None = None,
+    frame_length: Tensor | None = None,
+    window: Tensor | None = None,
     **kwargs: Any,
 ) -> Tensor:
     """Compute ISTFT."""
@@ -1665,8 +1663,8 @@ def deform_conv(
     x: Tensor,
     w: Tensor,
     offset: Tensor,
-    b: Optional[Tensor] = None,
-    mask: Optional[Tensor] = None,
+    b: Tensor | None = None,
+    mask: Tensor | None = None,
     **kwargs: Any,
 ) -> Tensor:
     """Compute Deformable Convolution."""
@@ -1753,50 +1751,50 @@ def repeat(x: Tensor, repeats: Tensor) -> Tensor:
 
 
 @register_op("ai.onnx", "Conv1D")
-def conv1d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv1d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute Conv1D."""
     return record_op("Conv1D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "Conv2D")
-def conv2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv2d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute Conv2D."""
     return record_op("Conv2D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "Conv3D")
-def conv3d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv3d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute Conv3D."""
     return record_op("Conv3D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "ConvTranspose1D")
-def conv_transpose1d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv_transpose1d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose1D."""
     return record_op("ConvTranspose1D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "ConvTranspose2D")
-def conv_transpose2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv_transpose2d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose2D."""
     return record_op("ConvTranspose2D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "ConvTranspose3D")
-def conv_transpose3d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def conv_transpose3d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute ConvTranspose3D."""
     return record_op("ConvTranspose3D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "DepthwiseConv2D")
-def depthwise_conv2d(x: Tensor, w: Tensor, b: Optional[Tensor] = None, **kwargs: Any) -> Tensor:
+def depthwise_conv2d(x: Tensor, w: Tensor, b: Tensor | None = None, **kwargs: Any) -> Tensor:
     """Compute DepthwiseConv2D."""
     return record_op("DepthwiseConv2D", [x, w] + ([b] if b else []))
 
 
 @register_op("ai.onnx", "DeformableConv2D")
 def deformable_conv2d(
-    x: Tensor, w: Tensor, offset: Tensor, b: Optional[Tensor] = None, **kwargs: Any
+    x: Tensor, w: Tensor, offset: Tensor, b: Tensor | None = None, **kwargs: Any
 ) -> Tensor:
     """Compute DeformableConv2D."""
     return record_op("DeformableConv2D", [x, w, offset] + ([b] if b else []))
@@ -1965,7 +1963,7 @@ def state_space_model(x: Tensor, a: Tensor, b: Tensor, c: Tensor, **kwargs: Any)
 
 @register_op("ai.onnx", "QuantizeLinear")
 def quantize_linear(
-    x: Tensor, y_scale: Tensor, y_zero_point: Optional[Tensor] = None, **kwargs: Any
+    x: Tensor, y_scale: Tensor, y_zero_point: Tensor | None = None, **kwargs: Any
 ) -> Tensor:
     """Compute QuantizeLinear."""
     return record_op("QuantizeLinear", [x, y_scale] + ([y_zero_point] if y_zero_point else []))
@@ -1973,7 +1971,7 @@ def quantize_linear(
 
 @register_op("ai.onnx", "DequantizeLinear")
 def dequantize_linear(
-    x: Tensor, x_scale: Tensor, x_zero_point: Optional[Tensor] = None, **kwargs: Any
+    x: Tensor, x_scale: Tensor, x_zero_point: Tensor | None = None, **kwargs: Any
 ) -> Tensor:
     """Compute DequantizeLinear."""
     return record_op("DequantizeLinear", [x, x_scale] + ([x_zero_point] if x_zero_point else []))

@@ -41,7 +41,7 @@ def _make_var(val: Any) -> Var:
     return c_var
 
 
-def _make_vars(vals: Union[list[Any], tuple[Any, ...]]) -> list[Var]:
+def _make_vars(vals: list[Any] | tuple[Any, ...]) -> list[Var]:
     """Convert a collection of Python values into Constant Vars."""
     return [_make_var(v) for v in vals]
 
@@ -52,7 +52,7 @@ class OpNamespace:
     def __getattr__(self, op_type: str) -> Any:
         """Return a generator function for constructing an ONNX node of the specified op_type."""
 
-        def _node_builder(*args: Any, **kwargs: Any) -> Union[Var, tuple[Var, ...]]:
+        def _node_builder(*args: Any, **kwargs: Any) -> Var | tuple[Var, ...]:
             """Construct and adds an ONNX node to the currently active GraphBuilder."""
             inputs = []
             for arg in args:
@@ -112,7 +112,7 @@ def Constant(value: Any) -> Var:
 
 def If(
     cond: Any, then_branch: Any, else_branch: Any, num_outputs: int = 1
-) -> Union[Var, tuple[Var, ...], None]:
+) -> Var | tuple[Var, ...] | None:
     """Build an ONNX If operation with the given condition and branch subgraphs."""
     cond_var = _make_var(cond)
     out_vars = [Var() for _ in range(num_outputs)]
@@ -135,7 +135,7 @@ def If(
 
 def Loop(
     max_trip_count: Any, cond: Any, body: Any, num_outputs: int = 1
-) -> Union[Var, tuple[Var, ...], None]:
+) -> Var | tuple[Var, ...] | None:
     """Build an ONNX Loop operation with iteration limits, conditions, and a body subgraph."""
     mtc_var = _make_var(max_trip_count)
     cond_var = _make_var(cond)
@@ -157,9 +157,7 @@ def Loop(
     return tuple(out_vars)
 
 
-def Scan(
-    body: Any, num_scan_inputs: int, num_outputs: int = 1
-) -> Union[Var, tuple[Var, ...], None]:
+def Scan(body: Any, num_scan_inputs: int, num_outputs: int = 1) -> Var | tuple[Var, ...] | None:
     """Build an ONNX Scan operation to iterate a subgraph over one or more input tensors."""
     out_vars = [Var() for _ in range(num_outputs)]
     out_names = [v.name for v in out_vars]

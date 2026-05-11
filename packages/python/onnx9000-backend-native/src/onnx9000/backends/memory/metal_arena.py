@@ -13,7 +13,7 @@ class MetalMemoryPlanner:
     def __init__(self) -> None:
         """Initialize the Metal memory planner."""
         self.allocations: dict[str, ctypes.c_void_p] = {}
-        self.arena_ptr: Optional[ctypes.c_void_p] = None
+        self.arena_ptr: ctypes.c_void_p | None = None
         self.offsets: dict[str, tuple[int, int]] = {}
         self.current_offset: int = 0
         self.tensors_shape_dtype: dict[str, tuple[tuple[int, ...], str]] = {}

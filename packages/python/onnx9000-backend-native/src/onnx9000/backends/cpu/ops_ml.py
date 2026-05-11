@@ -1,6 +1,7 @@
 """CPU backend operations mapping for ai.onnx.ml domain."""
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 

@@ -37,7 +37,7 @@ class ShapeInferencePass(GraphPass):
                     graph.tensors[node.outputs[0]].shape = out_shape
         return changed
 
-    def _infer_shape(self, node: Node, shapes: dict) -> Optional[tuple]:
+    def _infer_shape(self, node: Node, shapes: dict) -> tuple | None:
         """Implement the _infer_shape method or operation."""
         if (
             node.op_type

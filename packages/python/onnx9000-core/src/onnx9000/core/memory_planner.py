@@ -14,7 +14,7 @@ class MemoryBlock:
         self.offset = offset
         self.size = size
         self.free = True
-        self.tensor_name: Optional[str] = None
+        self.tensor_name: str | None = None
 
     def __repr__(self):
         """Execute repr magic method operation."""

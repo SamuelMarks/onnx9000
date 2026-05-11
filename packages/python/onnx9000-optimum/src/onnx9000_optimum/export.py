@@ -9,7 +9,7 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
-def get_huggingface_model_files(model_id: str, cache_dir: Optional[str] = None) -> str:
+def get_huggingface_model_files(model_id: str, cache_dir: str | None = None) -> str:
     """Download model files and return local path."""
     try:
         from huggingface_hub import snapshot_download
@@ -119,10 +119,10 @@ def create_dummy_inputs(
 def export_model(
     model_id: str,
     output_dir: str,
-    task: Optional[str] = None,
-    opset: Optional[int] = 14,
+    task: str | None = None,
+    opset: int | None = 14,
     device: str = "cpu",
-    cache_dir: Optional[str] = None,
+    cache_dir: str | None = None,
     split: bool = False,
 ):
     """Trace and export a HuggingFace model to ONNX format."""

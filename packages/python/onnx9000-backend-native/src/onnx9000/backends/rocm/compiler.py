@@ -13,9 +13,7 @@ class ROCmCompiler:
     """Dynamic kernel JIT compiler using hipcc."""
 
     @staticmethod
-    def compile_kernel(
-        kernel_code: str, kernel_name: str, cache_dir: Optional[str] = None
-    ) -> bytes:
+    def compile_kernel(kernel_code: str, kernel_name: str, cache_dir: str | None = None) -> bytes:
         """Compile HIP C++ code to HSA code object."""
         if cache_dir is None:
             cache_dir = tempfile.gettempdir()

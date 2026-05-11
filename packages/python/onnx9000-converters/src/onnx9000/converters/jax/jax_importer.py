@@ -1,6 +1,7 @@
 """JAX jaxpr to onnx9000 IR importer."""
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Variable

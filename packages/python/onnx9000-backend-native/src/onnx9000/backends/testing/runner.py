@@ -63,7 +63,7 @@ class ONNXBackendTestRunner:
         arr = np.frombuffer(tensor.data, dtype=np_dtype)
         return arr.reshape(tensor.shape)
 
-    def run_node_test(self, test_dir: Union[str, Path]) -> tuple[bool, str]:
+    def run_node_test(self, test_dir: str | Path) -> tuple[bool, str]:
         """Execute a specific node test directory and compare outputs."""
         test_dir = Path(test_dir)
         model_path = test_dir / "model.onnx"

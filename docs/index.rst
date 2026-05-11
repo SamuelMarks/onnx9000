@@ -112,6 +112,8 @@ We have successfully implemented:
    ONNX_SCRIPT.md
    ONNX_WEBGPU_SUPPORT.md
    PROGRESSIVE_LOADING.md
+   TRITON_MAPPING.md
+   TUTORIAL_SPARSE.md
 
 .. toctree::
    :hidden:

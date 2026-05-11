@@ -53,7 +53,7 @@ DLManagedTensor._fields_ = [
 class DynamicDim:
     """Represents a dimension that can be either a symbolic string or an integer."""
 
-    def __init__(self, value: Union[str, int]) -> None:
+    def __init__(self, value: str | int) -> None:
         """Initialize a DynamicDim.
 
         Args:
@@ -120,7 +120,7 @@ class Attribute:
                 return "GRAPHS"
         return "UNKNOWN"
 
-    def __init__(self, name: str, attr_type: Optional[str] = None, value: Any = None) -> None:
+    def __init__(self, name: str, attr_type: str | None = None, value: Any = None) -> None:
         """Initialize an Attribute.
 
         Args:
@@ -151,7 +151,7 @@ class Attribute:
 class ValueInfo:
     """Represents metadata about a Tensor (name, shape, and type)."""
 
-    def __init__(self, name: str, shape: tuple[Union[int, DynamicDim], ...], dtype: DType) -> None:
+    def __init__(self, name: str, shape: tuple[int | DynamicDim, ...], dtype: DType) -> None:
         """Initialize ValueInfo.
 
         Args:
@@ -195,13 +195,13 @@ class Tensor:
         self.name = name
         self.inputs: list[Node] = []
         self.outputs: list[Node] = []
-        self.shape: tuple[Union[int, DynamicDim], ...] = shape or ()
-        self.dtype: Optional[DType] = dtype
+        self.shape: tuple[int | DynamicDim, ...] = shape or ()
+        self.dtype: DType | None = dtype
         self.is_initializer: bool = is_initializer
         self.requires_grad: bool = requires_grad
-        self.data: Optional[Union[bytes, memoryview, bytearray]] = data
-        self.sharding: Optional[tuple[Optional[str], ...]] = None
-        self.buffer_id: Optional[int] = None
+        self.data: bytes | memoryview | bytearray | None = data
+        self.sharding: tuple[str | None, ...] | None = None
+        self.buffer_id: int | None = None
         self.lifespan: tuple[int, int] = (-1, -1)
 
     def __repr__(self) -> str:
@@ -256,11 +256,11 @@ class SparseTensor(Tensor):
         name: str,
         values: Optional["Constant"] = None,
         indices: Optional["Constant"] = None,
-        dims: Optional[tuple[Union[int, DynamicDim], ...]] = None,
+        dims: tuple[int | DynamicDim, ...] | None = None,
         format: str = "COO",
         row_ptr: Optional["Constant"] = None,
         col_indices: Optional["Constant"] = None,
-        block_dims: Optional[tuple[int, ...]] = None,
+        block_dims: tuple[int, ...] | None = None,
     ) -> None:
         """Initialize a SparseTensor.
 
@@ -314,8 +314,8 @@ class Variable(Tensor):
     def __init__(
         self,
         name: str,
-        shape: Optional[tuple[Union[int, DynamicDim], ...]] = None,
-        dtype: Optional[DType] = None,
+        shape: tuple[int | DynamicDim, ...] | None = None,
+        dtype: DType | None = None,
     ) -> None:
         """Initialize a Variable tensor.
 
@@ -358,9 +358,9 @@ class Constant(Tensor):
     def __init__(
         self,
         name: str,
-        values: Optional[Union[bytes, memoryview, bytearray]] = None,
-        shape: Optional[tuple[Union[int, DynamicDim], ...]] = None,
-        dtype: Optional[DType] = None,
+        values: bytes | memoryview | bytearray | None = None,
+        shape: tuple[int | DynamicDim, ...] | None = None,
+        dtype: DType | None = None,
     ) -> None:
         """Initialize a Constant tensor.
 
@@ -395,7 +395,7 @@ class Constant(Tensor):
         """Return the DLPack device info (CPU)."""
         return (1, 0)
 
-    def __dlpack__(self, stream: Optional[int] = None) -> Any:
+    def __dlpack__(self, stream: int | None = None) -> Any:
         """Export the constant as a DLPack capsule.
 
         Args:
@@ -448,9 +448,9 @@ class Node:
     def __init__(
         self,
         op_type: str,
-        inputs: Optional[list[Union[str, Tensor]]] = None,
-        outputs: Optional[list[Union[str, Tensor]]] = None,
-        attributes: Optional[dict[str, Attribute]] = None,
+        inputs: list[str | Tensor] | None = None,
+        outputs: list[str | Tensor] | None = None,
+        attributes: dict[str, Attribute] | None = None,
         name: str = "",
         domain: str = "",
     ) -> None:
@@ -779,7 +779,7 @@ class Graph:
         """Return the dictionary of tensors in the graph."""
         return self.tensors
 
-    def get_node(self, name: str) -> Optional[Node]:
+    def get_node(self, name: str) -> Node | None:
         """Find a node by its name.
 
         Args:

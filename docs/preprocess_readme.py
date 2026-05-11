@@ -6,10 +6,12 @@ from jinja2 import Template
 
 def generate_docs():
     template_str = """
-# ONNX9000 Internal API Documentation
+ONNX9000 Internal API Documentation
+===================================
 
 {% for cls_name in classes %}
-## {{ cls_name }}
+{{ cls_name }}
+{{ "-" * cls_name|length }}
 Generated documentation for {{ cls_name }}
 {% endfor %}
 """

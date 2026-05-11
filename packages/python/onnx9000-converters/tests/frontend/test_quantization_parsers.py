@@ -1,4 +1,3 @@
-import pytest
 from onnx9000.converters.frontend.quantization import (
     AQTParser,
     AWQParser,

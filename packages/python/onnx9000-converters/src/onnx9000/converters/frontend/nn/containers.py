@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 from collections.abc import Iterable, Iterator
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter
@@ -31,7 +31,7 @@ class Sequential(Module):
 class ModuleList(Module):
     """Holds submodules in a list."""
 
-    def __init__(self, modules: Optional[Iterable[Module]] = None) -> None:
+    def __init__(self, modules: Iterable[Module] | None = None) -> None:
         """Implement the __init__ method."""
         super().__init__()
         if modules is not None:
@@ -57,7 +57,7 @@ class ModuleList(Module):
         """Implement the __len__ method."""
         return len(self._modules)
 
-    def __getitem__(self, idx: Union[int, slice]) -> Union[Module, "ModuleList"]:
+    def __getitem__(self, idx: int | slice) -> Union[Module, "ModuleList"]:
         """Implement the __getitem__ method."""
         if isinstance(idx, slice):
             return ModuleList(list(self.children())[idx])
@@ -70,7 +70,7 @@ class ModuleList(Module):
 class ModuleDict(Module):
     """Holds submodules in a dictionary."""
 
-    def __init__(self, modules: Optional[Any] = None) -> None:
+    def __init__(self, modules: Any | None = None) -> None:
         """Implement the __init__ method."""
         super().__init__()
         if modules is not None:
@@ -112,7 +112,7 @@ class ModuleDict(Module):
 class ParameterList(Module):
     """Holds parameters in a list."""
 
-    def __init__(self, parameters: Optional[Iterable[Parameter]] = None) -> None:
+    def __init__(self, parameters: Iterable[Parameter] | None = None) -> None:
         """Implement the __init__ method."""
         super().__init__()
         if parameters is not None:

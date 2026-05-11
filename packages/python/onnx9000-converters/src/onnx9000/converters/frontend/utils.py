@@ -4,14 +4,12 @@ Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
 """
 
-from typing import Any, Union
+from typing import Any
 
 from onnx9000.core.dtypes import DType
 
 
-def infer_elementwise_shape(
-    shape1: tuple[Union[int, str]], shape2: tuple[Union[int, str]]
-) -> tuple[Union[int, str]]:
+def infer_elementwise_shape(shape1: tuple[int | str], shape2: tuple[int | str]) -> tuple[int | str]:
     """Perform NumPy-style broadcasting shape inference."""
     (len1, len2) = (len(shape1), len(shape2))
     max_len = max(len1, len2)
@@ -30,9 +28,7 @@ def infer_elementwise_shape(
     return tuple(out_shape)
 
 
-def infer_matmul_shape(
-    shape1: tuple[Union[int, str]], shape2: tuple[Union[int, str]]
-) -> tuple[Union[int, str]]:
+def infer_matmul_shape(shape1: tuple[int | str], shape2: tuple[int | str]) -> tuple[int | str]:
     """Infer the shape of a MatMul operation."""
     if len(shape1) < 1 or len(shape2) < 1:
         raise ValueError("MatMul requires arrays of rank >= 1.")

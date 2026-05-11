@@ -1,6 +1,7 @@
 """TVM submodule for AST and optimization."""
 
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any, Optional, Union
 
 
 class ExprOp:
@@ -157,21 +158,21 @@ class ReduceOp(ExprOp):
         self.axis = axis
 
 
-def sum(source: ExprOp, axis: Union[ReduceAxis, list[ReduceAxis]]):
+def sum(source: ExprOp, axis: ReduceAxis | list[ReduceAxis]):
     """Evaluate or manipulates TVM AST nodes."""
     if not isinstance(axis, list):
         axis = [axis]
     return ReduceOp("sum", source, axis)
 
 
-def max(source: ExprOp, axis: Union[ReduceAxis, list[ReduceAxis]]):
+def max(source: ExprOp, axis: ReduceAxis | list[ReduceAxis]):
     """Evaluate or manipulates TVM AST nodes."""
     if not isinstance(axis, list):
         axis = [axis]
     return ReduceOp("max", source, axis)
 
 
-def min(source: ExprOp, axis: Union[ReduceAxis, list[ReduceAxis]]):
+def min(source: ExprOp, axis: ReduceAxis | list[ReduceAxis]):
     """Evaluate or manipulates TVM AST nodes."""
     if not isinstance(axis, list):
         axis = [axis]
@@ -249,7 +250,7 @@ def compute(
     fcompute: Callable,
     name: str = "compute",
     tag: str = "",
-    attrs: Optional[dict[str, Any]] = None,
+    attrs: dict[str, Any] | None = None,
 ) -> Tensor:
     """Evaluate or manipulates TVM AST nodes."""
     axis = [IterVar(f"ax{i}") for i in range(len(shape))]

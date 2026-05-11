@@ -61,7 +61,7 @@ class BrowserWorkerIsolation:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.worker_id: Optional[str] = None
+        self.worker_id: str | None = None
 
     def initialize_worker(self, worker_id: str) -> None:
         """Initialize a new worker."""

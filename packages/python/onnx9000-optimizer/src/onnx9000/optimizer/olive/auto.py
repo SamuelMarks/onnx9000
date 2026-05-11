@@ -13,7 +13,7 @@ class AutoOptimizer:
     """Orchestrates pass sequence."""
 
     def __init__(
-        self, target: Target, passes: list[Pass], config: Optional[dict[str, Any]] = None
+        self, target: Target, passes: list[Pass], config: dict[str, Any] | None = None
     ) -> None:
         """Initialize AutoOptimizer."""
         self.target = target

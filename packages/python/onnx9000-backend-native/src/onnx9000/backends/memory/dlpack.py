@@ -48,7 +48,7 @@ kDLROCM = 10
 kDLCUDAManaged = 13
 
 
-def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], DLDataType, int]:
+def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, tuple | None, DLDataType, int]:
     """Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
 
     Extract raw memory pointers (`data_ptr`) strictly natively.
@@ -84,7 +84,7 @@ def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple
     return (data_ptr, shape, strides, dl_tensor.dtype, device_type)
 
 
-def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, Optional[tuple], str]:
+def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, tuple | None, str]:
     """Consume NumPy `np.ndarray` directly via `__array_interface__` (Zero-copy)."""
     if not hasattr(array, "__array_interface__"):
         raise TypeError("Object does not support __array_interface__")

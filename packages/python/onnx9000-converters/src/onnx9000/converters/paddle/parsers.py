@@ -3,7 +3,7 @@
 import logging
 import struct
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 PADDLE_TO_ONNX_VERSION = {
     "2.0.0": 11,
@@ -377,7 +377,7 @@ class PaddleProtobufParser:
             raise ValueError(f"Unknown wire type: {wire_type}")
 
 
-def load_paddle_model(model_data: bytes, params_data: Optional[bytes] = None) -> PaddleGraph:
+def load_paddle_model(model_data: bytes, params_data: bytes | None = None) -> PaddleGraph:
     """load_paddle_model implementation."""
     parser = PaddleProtobufParser(model_data)
     graph = parser.parse_framework()

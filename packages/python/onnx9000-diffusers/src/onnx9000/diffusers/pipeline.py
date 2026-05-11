@@ -1,7 +1,8 @@
 """Pipelines for end-to-end diffusion inference."""
 
 import asyncio
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 
 class DiffusionPipeline:
@@ -37,7 +38,7 @@ class DiffusionPipeline:
     async def __call__(
         self,
         prompt: str,
-        callback_on_step_end: Optional[Callable[[int, int, int, Any], None]] = None,
+        callback_on_step_end: Callable[[int, int, int, Any], None] | None = None,
         num_inference_steps: int = 50,
         **kwargs: Any,
     ) -> dict[str, list[float]]:

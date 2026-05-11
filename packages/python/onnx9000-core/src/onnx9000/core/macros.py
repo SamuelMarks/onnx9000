@@ -1,7 +1,8 @@
 """Macros."""
 
 import functools
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.ops import record_op

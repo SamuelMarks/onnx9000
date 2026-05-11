@@ -133,7 +133,7 @@ class BenchmarksPub:
         """Publish a benchmark score."""
         self.results[test_name] = score
 
-    def get_score(self, test_name: str) -> Optional[float]:
+    def get_score(self, test_name: str) -> float | None:
         """Get a published score."""
         return self.results.get(test_name)
 

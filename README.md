@@ -1,4 +1,5 @@
 ![Model Zoo Coverage](https://img.shields.io/badge/Model_Zoo-300+_Models-orange)
+
 # ONNX9000 🚀
 
 [![Lint](https://github.com/SamuelMarks/onnx9000/actions/workflows/lint.yml/badge.svg)](https://github.com/SamuelMarks/onnx9000/actions/workflows/lint.yml)
@@ -40,7 +41,7 @@ flowchart TD
         OPT["Optimization & Simplification<br/>(Pruning, Quantization, Folding)"]:::subhead
         MEM["Static Memory Planner<br/>(Zero-Malloc Arena)"]:::subhead
         AUT["AOT Autograd<br/>(Training Generation)"]:::subhead
-        
+
         IR --> OPT
         OPT --> MEM
         OPT <--> AUT
@@ -69,7 +70,7 @@ flowchart TD
     %% Connections
     F_ML -->|"Parse/Transpile"| IR
     F_WT -->|"Native Decode"| IR
-    
+
     %% Hub routing
     MEM -->|"Code Gen / Transpile"| N2N
     MEM -->|"Execute / Compile"| INF_COMP
@@ -103,8 +104,9 @@ The ecosystem is divided into highly cohesive, modular packages managed by `uv` 
 
 ## Exhaustive Model Zoo & N-Way Translation
 
-We are proud to announce that the **ONNX9000 Exhaustive Model Zoo Replication & N-Way Translation Plan (v3.1)** is now **100% Complete**. 
+We are proud to announce that the **ONNX9000 Exhaustive Model Zoo Replication & N-Way Translation Plan (v3.1)** is now **100% Complete**.
 We have successfully implemented:
+
 - **Zero-Stub Primitive Registry:** Full mapping of all core mathematical primitives (`IR.Add`, `IR.MatMul`, `IR.ConvND`, `IR.MultiHeadAttention`, etc.) with zero stubs.
 - **Exhaustive Framework Ingestion:** Perfect, closed-form parsing of PyTorch AOTAutograd (`torch.export`), JAX `ClosedJaxpr`, and Keras 3 Functional graphs into the unified `onnx9000` Core IR.
 - **N-Way Round-Trip Codegen:** Absolute parity when transpiling from Core IR back to Native Python (PyTorch `nn.Module`, Flax `nnx.Module`, Keras Functional APIs) and zero-malloc static C/C++ backends.
@@ -121,64 +123,64 @@ The following tables track the reimplementation of major tools within the ONNX a
 
 ### ONNX Core & Converters
 
-| Component / Original Project | Description                                             | Tasks   | Status  |
-| :--------------------------- | :------------------------------------------------------ | :------ | :------ |
-| **ONNX Runtime**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX00_RUNTIME.md) | Core execution engine for evaluating ONNX models. | 317/317 | ✅ Full |
-| **ONNX Compliance**<br>[Original](https://github.com/onnx/onnx) • [Tasks](./specs/ONNX01_COMPLIANCE.md) | Standard testing suite validating correct evaluation. | 327/327 | ✅ Full |
-| **ORT Training**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX02_ORT_TRAINING.md) | Autograd and gradient tracking for ONNX models. | 303/303 | ✅ Full |
-| **ONNX Runtime Web**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX03_ORT_WEB.md) | In-browser execution engine (WASM/WebGPU). | 313/313 | ✅ Full |
+| Component / Original Project                                                                                                      | Description                                             | Tasks   | Status  |
+| :-------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------ | :------ | :------ |
+| **ONNX Runtime**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX00_RUNTIME.md)                     | Core execution engine for evaluating ONNX models.       | 317/317 | ✅ Full |
+| **ONNX Compliance**<br>[Original](https://github.com/onnx/onnx) • [Tasks](./specs/ONNX01_COMPLIANCE.md)                           | Standard testing suite validating correct evaluation.   | 327/327 | ✅ Full |
+| **ORT Training**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX02_ORT_TRAINING.md)                | Autograd and gradient tracking for ONNX models.         | 303/303 | ✅ Full |
+| **ONNX Runtime Web**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX03_ORT_WEB.md)                 | In-browser execution engine (WASM/WebGPU).              | 313/313 | ✅ Full |
 | **ORT Extensions**<br>[Original](https://github.com/microsoft/onnxruntime-extensions) • [Tasks](./specs/ONNX04_ORT_EXTENSIONS.md) | Custom operators for text, audio, and image processing. | 310/310 | ✅ Full |
-| **torch.onnx**<br>[Original](https://pytorch.org) • [Tasks](./specs/ONNX05_TORCH_EXPORTERS.md) | PyTorch to ONNX graph translation tools. | 326/326 | ✅ Full |
-| **ONNX Simplifier**<br>[Original](https://github.com/daquexian/onnx-simplifier) • [Tasks](./specs/ONNX07_ONNX_SIMPLIFIER.md) | Constant folding and algebraic rewriting. | 310/310 | ✅ Full |
-| **ONNXScript / Spox**<br>[Original](https://github.com/microsoft/onnxscript) • [Tasks](./specs/ONNX08_ONNXSCRIPT_SPOX.md) | Authoring ONNX graphs via a PyTorch-like API. | 306/306 | ✅ Full |
-| **ORT Native EP**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX09_ORT_NATIVE.md) | Native hardware execution providers (CUDA, CoreML). | 313/313 | ✅ Full |
-| **tf2onnx**<br>[Original](https://github.com/onnx/tensorflow-onnx) • [Tasks](./specs/ONNX10_TF2ONNX.md) | Converts TensorFlow to ONNX format. | 340/340 | ✅ Full |
-| **paddle2onnx**<br>[Original](https://github.com/PaddlePaddle/Paddle2ONNX) • [Tasks](./specs/ONNX11_PADDLE2ONNX.md) | Converts PaddlePaddle models to ONNX. | 324/324 | ✅ Full |
-| **skl2onnx**<br>[Original](https://github.com/onnx/sklearn-onnx) • [Tasks](./specs/ONNX12_SKL2ONNX.md) | Translates Scikit-Learn models to ONNX ML. | 311/311 | ✅ Full |
-| **onnxmltools**<br>[Original](https://github.com/onnx/onnxmltools) • [Tasks](./specs/ONNX13_ONNXMLTOOLS.md) | Translates LightGBM, XGBoost, CatBoost to ONNX ML. | 307/307 | ✅ Full |
-| **onnx-tool**<br>[Original](https://github.com/ThanatosShinji/onnx-tool) • [Tasks](./specs/ONNX17_ONNX_TOOL.md) | Profiling MACs, FLOPs, and static memory footprint. | 306/306 | ✅ Full |
-| **onnx-mlir**<br>[Original](https://github.com/onnx/onnx-mlir) • [Tasks](./specs/ONNX19_ONNXMLIR.md) | Compiles ONNX models to MLIR and C++ executables. | 320/320 | ✅ Full |
-| **ORT GenAI**<br>[Original](https://github.com/microsoft/onnxruntime-genai) • [Tasks](./specs/ONNX21_ORT_GENAI.md) | Specialized loops for Generative AI (LLMs, Whisper). | 300/300 | ✅ Full |
-| **keras2onnx & tfjs**<br>[Original](https://github.com/onnx/keras-onnx) • [Tasks](./specs/ONNX28_KERAS2ONNX.md) | Translates Keras and TensorFlow.js models into ONNX. | 300/300 | ✅ Full |
-| **onnx-modifier**<br>[Original](https://github.com/ZhangGe6/onnx-modifier) • [Tasks](./specs/ONNX29_ONNX_MODIFIER.md) | Web-based graphical editor for ONNX models. | 300/300 | ✅ Full |
-| **onnx-array-api**<br>[Original](https://github.com/sdpython/onnx-array-api) • [Tasks](./specs/ONNX30_ONNX_ARRAY_API.md) | NumPy-like eager execution API for ONNX. | 300/300 | ✅ Full |
-| **onnx2tf**<br>[Original](https://github.com/PINTO0309/onnx2tf) • [Tasks](./specs/ONNX32_ONNX2TF.md) | Web-Native TFLite & EdgeTPU Exporter. | 330/330 | ✅ Full |
-| **onnx2c / deepC**<br>[Original](https://github.com/ai-techsystems/deepC) • [Tasks](./specs/ONNX33_ONNX2C.md) | Web-Native TinyML & Embedded C99 Generator. | 300/300 | ✅ Full |
-| **onnx2gguf**<br>[Original](https://github.com/ggerganov/llama.cpp) • [Tasks](./specs/ONNX34_ONNX2GGUF.md) | Web-Native GGUF Compiler & Llama.cpp Bridge. | 300/300 | ✅ Full |
-| **ONNX-TensorRT**<br>[Original](https://github.com/onnx/onnx-tensorrt) • [Tasks](./specs/ONNX37_TENSORRT.md) | Zero-Build TRT FFI Parser. | 300/300 | ✅ Full |
-| **ONNX Checker**<br>[Original](https://github.com/onnx/onnx) • [Tasks](./specs/ONNX40_ONNX_CHECKER.md) | 100% Pure TS/Python Web-Native Schema Validator. | 300/300 | ✅ Full |
+| **torch.onnx**<br>[Original](https://pytorch.org) • [Tasks](./specs/ONNX05_TORCH_EXPORTERS.md)                                    | PyTorch to ONNX graph translation tools.                | 326/326 | ✅ Full |
+| **ONNX Simplifier**<br>[Original](https://github.com/daquexian/onnx-simplifier) • [Tasks](./specs/ONNX07_ONNX_SIMPLIFIER.md)      | Constant folding and algebraic rewriting.               | 310/310 | ✅ Full |
+| **ONNXScript / Spox**<br>[Original](https://github.com/microsoft/onnxscript) • [Tasks](./specs/ONNX08_ONNXSCRIPT_SPOX.md)         | Authoring ONNX graphs via a PyTorch-like API.           | 306/306 | ✅ Full |
+| **ORT Native EP**<br>[Original](https://github.com/microsoft/onnxruntime) • [Tasks](./specs/ONNX09_ORT_NATIVE.md)                 | Native hardware execution providers (CUDA, CoreML).     | 313/313 | ✅ Full |
+| **tf2onnx**<br>[Original](https://github.com/onnx/tensorflow-onnx) • [Tasks](./specs/ONNX10_TF2ONNX.md)                           | Converts TensorFlow to ONNX format.                     | 340/340 | ✅ Full |
+| **paddle2onnx**<br>[Original](https://github.com/PaddlePaddle/Paddle2ONNX) • [Tasks](./specs/ONNX11_PADDLE2ONNX.md)               | Converts PaddlePaddle models to ONNX.                   | 324/324 | ✅ Full |
+| **skl2onnx**<br>[Original](https://github.com/onnx/sklearn-onnx) • [Tasks](./specs/ONNX12_SKL2ONNX.md)                            | Translates Scikit-Learn models to ONNX ML.              | 311/311 | ✅ Full |
+| **onnxmltools**<br>[Original](https://github.com/onnx/onnxmltools) • [Tasks](./specs/ONNX13_ONNXMLTOOLS.md)                       | Translates LightGBM, XGBoost, CatBoost to ONNX ML.      | 307/307 | ✅ Full |
+| **onnx-tool**<br>[Original](https://github.com/ThanatosShinji/onnx-tool) • [Tasks](./specs/ONNX17_ONNX_TOOL.md)                   | Profiling MACs, FLOPs, and static memory footprint.     | 306/306 | ✅ Full |
+| **onnx-mlir**<br>[Original](https://github.com/onnx/onnx-mlir) • [Tasks](./specs/ONNX19_ONNXMLIR.md)                              | Compiles ONNX models to MLIR and C++ executables.       | 320/320 | ✅ Full |
+| **ORT GenAI**<br>[Original](https://github.com/microsoft/onnxruntime-genai) • [Tasks](./specs/ONNX21_ORT_GENAI.md)                | Specialized loops for Generative AI (LLMs, Whisper).    | 300/300 | ✅ Full |
+| **keras2onnx & tfjs**<br>[Original](https://github.com/onnx/keras-onnx) • [Tasks](./specs/ONNX28_KERAS2ONNX.md)                   | Translates Keras and TensorFlow.js models into ONNX.    | 300/300 | ✅ Full |
+| **onnx-modifier**<br>[Original](https://github.com/ZhangGe6/onnx-modifier) • [Tasks](./specs/ONNX29_ONNX_MODIFIER.md)             | Web-based graphical editor for ONNX models.             | 300/300 | ✅ Full |
+| **onnx-array-api**<br>[Original](https://github.com/sdpython/onnx-array-api) • [Tasks](./specs/ONNX30_ONNX_ARRAY_API.md)          | NumPy-like eager execution API for ONNX.                | 300/300 | ✅ Full |
+| **onnx2tf**<br>[Original](https://github.com/PINTO0309/onnx2tf) • [Tasks](./specs/ONNX32_ONNX2TF.md)                              | Web-Native TFLite & EdgeTPU Exporter.                   | 330/330 | ✅ Full |
+| **onnx2c / deepC**<br>[Original](https://github.com/ai-techsystems/deepC) • [Tasks](./specs/ONNX33_ONNX2C.md)                     | Web-Native TinyML & Embedded C99 Generator.             | 300/300 | ✅ Full |
+| **onnx2gguf**<br>[Original](https://github.com/ggerganov/llama.cpp) • [Tasks](./specs/ONNX34_ONNX2GGUF.md)                        | Web-Native GGUF Compiler & Llama.cpp Bridge.            | 300/300 | ✅ Full |
+| **ONNX-TensorRT**<br>[Original](https://github.com/onnx/onnx-tensorrt) • [Tasks](./specs/ONNX37_TENSORRT.md)                      | Zero-Build TRT FFI Parser.                              | 300/300 | ✅ Full |
+| **ONNX Checker**<br>[Original](https://github.com/onnx/onnx) • [Tasks](./specs/ONNX40_ONNX_CHECKER.md)                            | 100% Pure TS/Python Web-Native Schema Validator.        | 300/300 | ✅ Full |
 
 ### Ecosystem Tools
 
-| Component / Original Project | Description                                             | Tasks   | Status  |
-| :--------------------------- | :------------------------------------------------------ | :------ | :------ |
-| **Olive Optimizer**<br>[Original](https://github.com/microsoft/Olive) • [Tasks](./specs/ONNX06_OLIVE_OPTIMIZER.md) | Model optimization, compression, and quantization. | 310/310 | ✅ Full |
-| **GraphSurgeon**<br>[Original](https://github.com/NVIDIA/TensorRT) • [Tasks](./specs/ONNX14_GRAPHSURGEON.md) | Surgical modification and pruning of ONNX files. | 303/303 | ✅ Full |
-| **Hummingbird**<br>[Original](https://github.com/microsoft/hummingbird) • [Tasks](./specs/ONNX15_HUMMINGBIRD.md) | Transpiles traditional ML models into tensor math. | 320/320 | ✅ Full |
-| **Netron**<br>[Original](https://github.com/lutzroeder/netron) • [Tasks](./specs/ONNX16_NETRON.md) | Visualizes deep learning model topologies. | 103/103 | ✅ Full |
-| **Apache TVM**<br>[Original](https://github.com/apache/tvm) • [Tasks](./specs/ONNX20_TVM_COMPILER.md) | AOT machine learning compiler framework. | 350/350 | ✅ Full |
-| **safetensors**<br>[Original](https://github.com/huggingface/safetensors) • [Tasks](./specs/ONNX22_SAFETENSORS.md) | Zero-copy, secure tensor serialization format. | 309/309 | ✅ Full |
-| **Transformers.js**<br>[Original](https://github.com/xenova/transformers.js) • [Tasks](./specs/ONNX23_TRANSFORMERS_JS.md) | Runs Hugging Face models in the browser/Node.js. | 300/300 | ✅ Full |
-| **Optimum**<br>[Original](https://github.com/huggingface/optimum) • [Tasks](./specs/ONNX24_OPTIMUM.md) | Web-optimized export & quantization (W4A16, GPTQ). | 300/300 | ✅ Full |
-| **WebNN API**<br>[Original](https://www.w3.org/TR/webnn/) • [Tasks](./specs/ONNX25_WEBNN_EP.md) | Web API for accessing hardware accelerators (NPU). | 300/300 | ✅ Full |
-| **OpenXLA IREE**<br>[Original](https://github.com/openxla/iree) • [Tasks](./specs/ONNX26_APACHE_TVM_IREE.md) | AOT compilation to standalone VM bytecodes. | 300/300 | ✅ Full |
-| **coremltools**<br>[Original](https://github.com/apple/coremltools) • [Tasks](./specs/ONNX27_COREMLTOOLS.md) | Apple's tool for converting models into Core ML. | 300/300 | ✅ Full |
-| **MMdnn**<br>[Original](https://github.com/Microsoft/MMdnn) • [Tasks](./specs/ONNX31_MMDNN.md) | N-to-N converter between various frameworks. | 300/300 | ✅ Full |
-| **SparseML**<br>[Original](https://github.com/neuralmagic/sparseml) • [Tasks](./specs/ONNX35_SPARSEML.md) | Web-Native Sparsity & Pruning Engine. | 270/270 | ✅ Full |
-| **TF.js API Shim**<br>[Original](https://github.com/tensorflow/tfjs) • [Tasks](./specs/ONNX36_TFJS_SHIM.md) | WebGPU ONNX Drop-In Replacement for TF.js. | 300/300 | ✅ Full |
-| **Triton Compiler**<br>[Original](https://github.com/openai/triton) • [Tasks](./specs/ONNX38_TRITON.md) | Web-Native Custom Kernel Generator. | 300/300 | ✅ Full |
-| **WebNN Polyfill**<br>[Original](https://github.com/webmachinelearning/webnn-polyfill) • [Tasks](./specs/ONNX39_WEBNN_POLYFILL.md) | W3C API WebGPU/WASM Shim. | 300/300 | ✅ Full |
-| **OpenVINO**<br>[Original](https://github.com/openvinotoolkit/openvino) • [Tasks](./specs/ONNX41_OPENVINO.md) | Zero-dependency OpenVINO IR Compiler. | 300/300 | ✅ Full |
-| **Triton Server**<br>[Original](https://github.com/triton-inference-server/server) • [Tasks](./specs/ONNX42_TRITON_SERVER.md) | Serverless Edge Serving Engine (Bun/Cloudflare). | 300/300 | ✅ Full |
-| **Diffusers**<br>[Original](https://github.com/huggingface/diffusers) • [Tasks](./specs/ONNX43_DIFFUSERS.md) | Web-Native Diffusion Pipelines (SDXL, VAE). | 300/300 | ✅ Full |
+| Component / Original Project                                                                                                       | Description                                        | Tasks   | Status  |
+| :--------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------- | :------ | :------ |
+| **Olive Optimizer**<br>[Original](https://github.com/microsoft/Olive) • [Tasks](./specs/ONNX06_OLIVE_OPTIMIZER.md)                 | Model optimization, compression, and quantization. | 310/310 | ✅ Full |
+| **GraphSurgeon**<br>[Original](https://github.com/NVIDIA/TensorRT) • [Tasks](./specs/ONNX14_GRAPHSURGEON.md)                       | Surgical modification and pruning of ONNX files.   | 303/303 | ✅ Full |
+| **Hummingbird**<br>[Original](https://github.com/microsoft/hummingbird) • [Tasks](./specs/ONNX15_HUMMINGBIRD.md)                   | Transpiles traditional ML models into tensor math. | 320/320 | ✅ Full |
+| **Netron**<br>[Original](https://github.com/lutzroeder/netron) • [Tasks](./specs/ONNX16_NETRON.md)                                 | Visualizes deep learning model topologies.         | 103/103 | ✅ Full |
+| **Apache TVM**<br>[Original](https://github.com/apache/tvm) • [Tasks](./specs/ONNX20_TVM_COMPILER.md)                              | AOT machine learning compiler framework.           | 350/350 | ✅ Full |
+| **safetensors**<br>[Original](https://github.com/huggingface/safetensors) • [Tasks](./specs/ONNX22_SAFETENSORS.md)                 | Zero-copy, secure tensor serialization format.     | 309/309 | ✅ Full |
+| **Transformers.js**<br>[Original](https://github.com/xenova/transformers.js) • [Tasks](./specs/ONNX23_TRANSFORMERS_JS.md)          | Runs Hugging Face models in the browser/Node.js.   | 300/300 | ✅ Full |
+| **Optimum**<br>[Original](https://github.com/huggingface/optimum) • [Tasks](./specs/ONNX24_OPTIMUM.md)                             | Web-optimized export & quantization (W4A16, GPTQ). | 300/300 | ✅ Full |
+| **WebNN API**<br>[Original](https://www.w3.org/TR/webnn/) • [Tasks](./specs/ONNX25_WEBNN_EP.md)                                    | Web API for accessing hardware accelerators (NPU). | 300/300 | ✅ Full |
+| **OpenXLA IREE**<br>[Original](https://github.com/openxla/iree) • [Tasks](./specs/ONNX26_APACHE_TVM_IREE.md)                       | AOT compilation to standalone VM bytecodes.        | 300/300 | ✅ Full |
+| **coremltools**<br>[Original](https://github.com/apple/coremltools) • [Tasks](./specs/ONNX27_COREMLTOOLS.md)                       | Apple's tool for converting models into Core ML.   | 300/300 | ✅ Full |
+| **MMdnn**<br>[Original](https://github.com/Microsoft/MMdnn) • [Tasks](./specs/ONNX31_MMDNN.md)                                     | N-to-N converter between various frameworks.       | 300/300 | ✅ Full |
+| **SparseML**<br>[Original](https://github.com/neuralmagic/sparseml) • [Tasks](./specs/ONNX35_SPARSEML.md)                          | Web-Native Sparsity & Pruning Engine.              | 270/270 | ✅ Full |
+| **TF.js API Shim**<br>[Original](https://github.com/tensorflow/tfjs) • [Tasks](./specs/ONNX36_TFJS_SHIM.md)                        | WebGPU ONNX Drop-In Replacement for TF.js.         | 300/300 | ✅ Full |
+| **Triton Compiler**<br>[Original](https://github.com/openai/triton) • [Tasks](./specs/ONNX38_TRITON.md)                            | Web-Native Custom Kernel Generator.                | 300/300 | ✅ Full |
+| **WebNN Polyfill**<br>[Original](https://github.com/webmachinelearning/webnn-polyfill) • [Tasks](./specs/ONNX39_WEBNN_POLYFILL.md) | W3C API WebGPU/WASM Shim.                          | 300/300 | ✅ Full |
+| **OpenVINO**<br>[Original](https://github.com/openvinotoolkit/openvino) • [Tasks](./specs/ONNX41_OPENVINO.md)                      | Zero-dependency OpenVINO IR Compiler.              | 300/300 | ✅ Full |
+| **Triton Server**<br>[Original](https://github.com/triton-inference-server/server) • [Tasks](./specs/ONNX42_TRITON_SERVER.md)      | Serverless Edge Serving Engine (Bun/Cloudflare).   | 300/300 | ✅ Full |
+| **Diffusers**<br>[Original](https://github.com/huggingface/diffusers) • [Tasks](./specs/ONNX43_DIFFUSERS.md)                       | Web-Native Diffusion Pipelines (SDXL, VAE).        | 300/300 | ✅ Full |
 
 ### Custom Frontends & IDEs
 
-| Component | Description | Tasks | Status |
-| :--- | :--- | :--- | :--- |
-| **Interactive Demos (Sphinx)**<br>[Tasks](./specs/ONNX45_DEMO_IN_SPHINX.md) | In-browser model conversion demonstrations. | 289/289 | ✅ Full |
-| **Extended Demos (Sphinx)**<br>[Tasks](./specs/ONNX45_DEMO_EXTENDED_IN_SPHINX.md) | Multi-step pipelines (Quantization, MLIR). | 279/279 | ✅ Full |
-| **VS Code IDE**<br>[Tasks](./specs/ONNX44_VSCODE_IDE.md) | The Universal Web-Native IDE. | 0/1000 | ⏳ TODO |
+| Component                                                                         | Description                                 | Tasks   | Status  |
+| :-------------------------------------------------------------------------------- | :------------------------------------------ | :------ | :------ |
+| **Interactive Demos (Sphinx)**<br>[Tasks](./specs/ONNX45_DEMO_IN_SPHINX.md)       | In-browser model conversion demonstrations. | 289/289 | ✅ Full |
+| **Extended Demos (Sphinx)**<br>[Tasks](./specs/ONNX45_DEMO_EXTENDED_IN_SPHINX.md) | Multi-step pipelines (Quantization, MLIR).  | 279/279 | ✅ Full |
+| **VS Code IDE**<br>[Tasks](./specs/ONNX44_VSCODE_IDE.md)                          | The Universal Web-Native IDE.               | 0/1000  | ⏳ TODO |
 
 ## Framework Support Completeness
 

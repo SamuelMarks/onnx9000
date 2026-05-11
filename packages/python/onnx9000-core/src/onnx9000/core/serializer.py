@@ -16,7 +16,7 @@ class SerializationError(Onnx9000Error):
     """Exception raised for serialization errors."""
 
 
-def _serialize_shape(shape: tuple[Union[int, str, DynamicDim], ...]) -> onnx_pb2.TensorShapeProto:
+def _serialize_shape(shape: tuple[int | str | DynamicDim, ...]) -> onnx_pb2.TensorShapeProto:
     """Serialize our internal shape into ONNX TensorShapeProto."""
     shape_proto = onnx_pb2.TensorShapeProto()
     for dim in shape:
@@ -43,8 +43,8 @@ def _serialize_shape(shape: tuple[Union[int, str, DynamicDim], ...]) -> onnx_pb2
 
 def _serialize_tensor(
     tensor: "Tensor",
-    base_dir: Optional[Path] = None,
-    external_file: Optional[str] = None,
+    base_dir: Path | None = None,
+    external_file: str | None = None,
     offset: int = 0,
 ) -> tuple[onnx_pb2.TensorProto, int]:
     """Serialize our internal Tensor into ONNX TensorProto."""
@@ -79,8 +79,8 @@ def _serialize_tensor(
 
 def _serialize_sparse_tensor(
     sparse_tensor: "SparseTensor",
-    base_dir: Optional[Path] = None,
-    external_file: Optional[str] = None,
+    base_dir: Path | None = None,
+    external_file: str | None = None,
     offset: int = 0,
 ) -> tuple[onnx_pb2.SparseTensorProto, int]:
     """Serialize our internal SparseTensor into ONNX SparseTensorProto."""
@@ -114,8 +114,8 @@ def _sanitize_string(s: str) -> str:
 
 def serialize_model(
     graph: Graph,
-    base_dir: Optional[Path] = None,
-    external_file: Optional[str] = None,
+    base_dir: Path | None = None,
+    external_file: str | None = None,
     opset: int = 14,
 ) -> onnx_pb2.ModelProto:
     """Serialize an internal ir.Graph back into an ONNX ModelProto."""
@@ -236,7 +236,7 @@ def serialize_model(
 
 def save(
     graph: Graph,
-    file_path: Union[str, Path],
+    file_path: str | Path,
     external_data: bool = False,
     compress: bool = False,
     opset: int = 14,

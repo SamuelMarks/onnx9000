@@ -1,6 +1,6 @@
 """Module providing core logic and structural definitions."""
 
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 from onnx9000.core.ir import Graph
@@ -17,11 +17,11 @@ class CompiledModel:
         self._cpp_model = cpp_model
         self.graph = graph
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Union[np.ndarray, tuple[np.ndarray]]:
+    def __call__(self, *args: Any, **kwargs: Any) -> np.ndarray | tuple[np.ndarray]:
         """Implement the __call__ method or operation."""
         return self.forward(*args, **kwargs)
 
-    def forward(self, *args: Any, **kwargs: Any) -> Union[np.ndarray, tuple[np.ndarray]]:
+    def forward(self, *args: Any, **kwargs: Any) -> np.ndarray | tuple[np.ndarray]:
         """Implement the forward method or operation."""
         input_arrays: list[np.ndarray] = []
         if len(args) != len(self.graph.inputs):

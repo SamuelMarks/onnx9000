@@ -3,7 +3,8 @@
 Central catalog for registering ONNX operators across the ecosystem.
 """
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from onnx9000.core.exceptions import UnsupportedOpError
 
@@ -26,7 +27,7 @@ class OperatorRegistry:
         ]
 
     def register_op(
-        self, domain: str, op_type: str, provider: Optional[str] = None
+        self, domain: str, op_type: str, provider: str | None = None
     ) -> Callable[[Any], Any]:
         """Decorate to register a class or function for a specific ONNX op_type."""
 
@@ -40,7 +41,7 @@ class OperatorRegistry:
 
         return wrapper
 
-    def get_op(self, domain: str, op_type: str, provider: Optional[str] = None) -> Any:
+    def get_op(self, domain: str, op_type: str, provider: str | None = None) -> Any:
         """Retrieve the registered implementation for an ONNX operator."""
         key = (domain, op_type, provider)
         if key not in self._registry:
@@ -51,7 +52,7 @@ class OperatorRegistry:
             raise UnsupportedOpError(f"{domain}.{op_type} (provider={provider})")
         return self._registry[key]
 
-    def get_all_registered(self, provider: Optional[str] = None) -> dict[str, Any]:
+    def get_all_registered(self, provider: str | None = None) -> dict[str, Any]:
         """Return all registered operators for a given provider."""
         return {
             f"{k[0]}.{k[1]}" if k[0] else k[1]: v
@@ -63,6 +64,6 @@ class OperatorRegistry:
 global_registry = OperatorRegistry()
 
 
-def register_op(domain: str, op_type: str, provider: Optional[str] = None) -> Callable[[Any], Any]:
+def register_op(domain: str, op_type: str, provider: str | None = None) -> Callable[[Any], Any]:
     """Exposed decorator for registering ops."""
     return global_registry.register_op(domain, op_type, provider=provider)

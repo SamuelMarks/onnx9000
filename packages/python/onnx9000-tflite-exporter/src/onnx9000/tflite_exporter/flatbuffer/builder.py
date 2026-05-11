@@ -12,7 +12,7 @@ class FlatBufferBuilder:
         self.bb = bytearray(initial_size)
         self.space = initial_size
         self.minalign = 1
-        self.vtable: Optional[list[int]] = None
+        self.vtable: list[int] | None = None
         self.object_start = 0
         self.vtables: list[int] = []
 
@@ -132,16 +132,14 @@ class FlatBufferBuilder:
         self.place_int32(num_elems)
         return self.offset()
 
-    def create_byte_vector(
-        self, data: Union[bytes, bytearray, list[int]], alignment: int = 4
-    ) -> int:
+    def create_byte_vector(self, data: bytes | bytearray | list[int], alignment: int = 4) -> int:
         """Create a byte vector with specific alignment."""
         self.start_vector(1, len(data), alignment)
         self.space -= len(data)
         self.bb[self.space : self.space + len(data)] = data
         return self.end_vector(len(data))
 
-    def create_string(self, s: Union[str, bytes, bytearray]) -> int:
+    def create_string(self, s: str | bytes | bytearray) -> int:
         """Create a string or binary buffer."""
         if isinstance(s, str):
             utf8 = s.encode("utf-8")
@@ -255,7 +253,7 @@ class FlatBufferBuilder:
         self.vtable = None
         return vtableloc
 
-    def finish(self, root_table: int, identifier: Optional[str] = None) -> None:
+    def finish(self, root_table: int, identifier: str | None = None) -> None:
         """Finish the buffer."""
         self.prep(self.minalign, 8 if identifier else 4)
         if identifier:

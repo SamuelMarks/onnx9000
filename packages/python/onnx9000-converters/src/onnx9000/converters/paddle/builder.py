@@ -1,6 +1,6 @@
 """PaddlePaddle converter operations and graph builders."""
 
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.converters.paddle.parsers import PaddleNode
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -87,7 +87,7 @@ class PaddleToONNXGraphBuilder:
     def make_node_optional_inputs(
         self,
         op_type: str,
-        inputs: list[Optional[str]],
+        inputs: list[str | None],
         attributes: dict[str, Any],
         name_prefix: str,
         outputs: list[str] = None,

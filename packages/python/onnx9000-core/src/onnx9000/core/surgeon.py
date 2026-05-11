@@ -1,8 +1,8 @@
 """Module containing surgeon.py definitions."""
 
 import logging
-from collections.abc import Generator
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable, Generator
+from typing import Any, Optional, Union
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor, Variable
@@ -90,9 +90,9 @@ def simplify(graph: Graph) -> Graph:
 def walk(
     graph: Graph,
     mode: str = "dfs",
-    yield_type: Optional[str] = None,
+    yield_type: str | None = None,
     direction: str = "backward",
-) -> Generator[Union[Node, Tensor], None, None]:
+) -> Generator[Node | Tensor, None, None]:
     """Depth-First or Breadth-First traversal yielding Nodes and Tensors."""
     visited = set()
     output_names = {v.name for v in graph.outputs}
@@ -1005,9 +1005,9 @@ def fuse_conv_bn(graph: Graph) -> Graph:
 
         if len(bn.inputs) < 5:
             continue
-        scale_name, b_bn_name, mean_name, var_name = [
+        scale_name, b_bn_name, mean_name, var_name = (
             i.name if isinstance(i, Tensor) else i for i in bn.inputs[1:5]
-        ]
+        )
         if any(name not in graph.tensors for name in [scale_name, b_bn_name, mean_name, var_name]):
             continue
 
@@ -1601,7 +1601,7 @@ def unpack_int4_weights(tensor: Constant) -> Constant:
     return tensor
 
 
-def evaluate_math_graph(graph: Graph) -> Optional[Constant]:
+def evaluate_math_graph(graph: Graph) -> Constant | None:
     """Evaluate a mathematical subgraph into a single Constant.
 
     Args:

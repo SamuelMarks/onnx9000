@@ -1,9 +1,8 @@
 """Parsers."""
 
-import logging
 from typing import Any
 
-from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.ir import Graph
 from onnx9000.core.ops import add, matmul
 
 

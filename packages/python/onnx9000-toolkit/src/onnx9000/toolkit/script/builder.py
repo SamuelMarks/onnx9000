@@ -45,12 +45,12 @@ class GraphBuilder:
         self.nodes.append(node)
         self.node_by_name[node.name] = node
 
-    def add_input(self, name: str, dtype: DType, shape: tuple[Union[int, str], ...]) -> Var:
+    def add_input(self, name: str, dtype: DType, shape: tuple[int | str, ...]) -> Var:
         """Implement add_input."""
         self.inputs.append({"name": name, "dtype": dtype, "shape": shape})
         return Var(name=name)
 
-    def add_output(self, var: Var, name: Optional[str] = None) -> None:
+    def add_output(self, var: Var, name: str | None = None) -> None:
         """Implement add_output."""
         if name is not None:
             var.name = name
@@ -61,7 +61,7 @@ class GraphBuilder:
         self.initializers[name] = array
         return Var(name=name)
 
-    def get_node(self, name: str) -> Optional[Node]:
+    def get_node(self, name: str) -> Node | None:
         """Implement get_node."""
         return self.node_by_name.get(name)
 
@@ -374,7 +374,7 @@ class GraphBuilder:
             visit(node)
 
     @classmethod
-    def from_onnx(cls, model_proto: Union[pb.ModelProto, pb.GraphProto]) -> "GraphBuilder":
+    def from_onnx(cls, model_proto: pb.ModelProto | pb.GraphProto) -> "GraphBuilder":
         """Import an existing .onnx file into a GraphBuilder for editing."""
         graph_proto = model_proto.graph if hasattr(model_proto, "graph") else model_proto
         builder = cls(name=graph_proto.name)

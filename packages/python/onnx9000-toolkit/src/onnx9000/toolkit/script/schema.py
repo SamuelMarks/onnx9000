@@ -40,7 +40,7 @@ class SchemaRegistry:
         self.schemas[schema.name].append(schema)
         self.schemas[schema.name].sort(key=lambda s: s.since_version)
 
-    def get_schema(self, op_type: str, version: int) -> Optional[OpSchema]:
+    def get_schema(self, op_type: str, version: int) -> OpSchema | None:
         """Retrieve the highest compatible schema for a given operator type and target opset version."""
         if op_type not in self.schemas:
             return None

@@ -1,27 +1,27 @@
 """Convolution layers."""
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.core.dtypes import DType
 
 
-def _pair(x: Union[int, tuple[int, int]]) -> tuple[int, int]:
+def _pair(x: int | tuple[int, int]) -> tuple[int, int]:
     """Implement the _pair method."""
     if isinstance(x, int):
         return (x, x)
     return x
 
 
-def _single(x: Union[int, tuple[int]]) -> tuple[int]:
+def _single(x: int | tuple[int]) -> tuple[int]:
     """Implement the _single method."""
     if isinstance(x, int):
         return (x,)
     return x
 
 
-def _triple(x: Union[int, tuple[int, int, int]]) -> tuple[int, int, int]:
+def _triple(x: int | tuple[int, int, int]) -> tuple[int, int, int]:
     """Implement the _triple method."""
     if isinstance(x, int):
         return (x, x, x)
@@ -54,8 +54,8 @@ class _ConvNd(Module):
         self.dilation = dilation
         self.groups = groups
         self.padding_mode = padding_mode
-        self.weight: Optional[Parameter] = None
-        self.bias: Optional[Parameter] = None
+        self.weight: Parameter | None = None
+        self.bias: Parameter | None = None
 
     def forward(self, input: Tensor) -> Tensor:
         """Implement the forward method."""
@@ -81,10 +81,10 @@ class Conv1d(_ConvNd):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, tuple[int]],
-        stride: Union[int, tuple[int]] = 1,
-        padding: Union[int, tuple[int]] = 0,
-        dilation: Union[int, tuple[int]] = 1,
+        kernel_size: int | tuple[int],
+        stride: int | tuple[int] = 1,
+        padding: int | tuple[int] = 0,
+        dilation: int | tuple[int] = 1,
         groups: int = 1,
         bias: bool = True,
         padding_mode: str = "zeros",
@@ -123,10 +123,10 @@ class Conv2d(_ConvNd):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, tuple[int, int]],
-        stride: Union[int, tuple[int, int]] = 1,
-        padding: Union[int, tuple[int, int]] = 0,
-        dilation: Union[int, tuple[int, int]] = 1,
+        kernel_size: int | tuple[int, int],
+        stride: int | tuple[int, int] = 1,
+        padding: int | tuple[int, int] = 0,
+        dilation: int | tuple[int, int] = 1,
         groups: int = 1,
         bias: bool = True,
         padding_mode: str = "zeros",
@@ -165,10 +165,10 @@ class Conv3d(_ConvNd):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, tuple[int, int, int]],
-        stride: Union[int, tuple[int, int, int]] = 1,
-        padding: Union[int, tuple[int, int, int]] = 0,
-        dilation: Union[int, tuple[int, int, int]] = 1,
+        kernel_size: int | tuple[int, int, int],
+        stride: int | tuple[int, int, int] = 1,
+        padding: int | tuple[int, int, int] = 0,
+        dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
         bias: bool = True,
         padding_mode: str = "zeros",
@@ -228,8 +228,8 @@ class _ConvTransposeNd(Module):
         self.groups = groups
         self.dilation = dilation
         self.padding_mode = padding_mode
-        self.weight: Optional[Parameter] = None
-        self.bias: Optional[Parameter] = None
+        self.weight: Parameter | None = None
+        self.bias: Parameter | None = None
 
     def forward(self, input: Tensor) -> Tensor:
         """Implement the forward method."""
@@ -257,13 +257,13 @@ class ConvTranspose1d(_ConvTransposeNd):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, tuple[int]],
-        stride: Union[int, tuple[int]] = 1,
-        padding: Union[int, tuple[int]] = 0,
-        output_padding: Union[int, tuple[int]] = 0,
+        kernel_size: int | tuple[int],
+        stride: int | tuple[int] = 1,
+        padding: int | tuple[int] = 0,
+        output_padding: int | tuple[int] = 0,
         groups: int = 1,
         bias: bool = True,
-        dilation: Union[int, tuple[int]] = 1,
+        dilation: int | tuple[int] = 1,
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
@@ -302,13 +302,13 @@ class ConvTranspose2d(_ConvTransposeNd):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Union[int, tuple[int, int]],
-        stride: Union[int, tuple[int, int]] = 1,
-        padding: Union[int, tuple[int, int]] = 0,
-        output_padding: Union[int, tuple[int, int]] = 0,
+        kernel_size: int | tuple[int, int],
+        stride: int | tuple[int, int] = 1,
+        padding: int | tuple[int, int] = 0,
+        output_padding: int | tuple[int, int] = 0,
         groups: int = 1,
         bias: bool = True,
-        dilation: Union[int, tuple[int, int]] = 1,
+        dilation: int | tuple[int, int] = 1,
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:

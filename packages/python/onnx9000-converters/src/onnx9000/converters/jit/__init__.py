@@ -12,8 +12,8 @@ from onnx9000.core.parser.core import load
 
 
 def compile(
-    model_path: Union[str, Path], target: str = "cpp", out_dir: Union[str, Path, None] = None
-) -> Union[CompiledModel, Path]:
+    model_path: str | Path, target: str = "cpp", out_dir: str | Path | None = None
+) -> CompiledModel | Path:
     """Execute main JIT compilation entry point.
 
     Reads an ONNX file, generates C++, compiles it, and returns a callable Python wrapper.

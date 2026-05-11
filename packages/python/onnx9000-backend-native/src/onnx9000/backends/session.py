@@ -87,8 +87,8 @@ class InferenceSession:
     def __init__(
         self,
         graph: Graph,
-        providers: Optional[list[ExecutionProvider]] = None,
-        options: Optional[SessionOptions] = None,
+        providers: list[ExecutionProvider] | None = None,
+        options: SessionOptions | None = None,
     ) -> None:
         """Initialize the InferenceSession with the target graph and providers."""
         if not isinstance(graph, Graph):
@@ -189,9 +189,9 @@ class InferenceSession:
 
     def run(
         self,
-        output_names: Optional[list[str]],
+        output_names: list[str] | None,
         input_feed: dict[str, Tensor],
-        run_options: Optional[RunOptions] = None,
+        run_options: RunOptions | None = None,
     ) -> list[Tensor]:
         """Execute the graph and return the requested outputs."""
         if not output_names:
@@ -219,7 +219,7 @@ class InferenceSession:
         return results
 
     def run_with_iobinding(
-        self, iobinding: IOBinding, run_options: Optional[RunOptions] = None
+        self, iobinding: IOBinding, run_options: RunOptions | None = None
     ) -> None:
         """Run with IOBinding."""
         outputs = self.run(list(iobinding.outputs.keys()), iobinding.inputs, run_options)

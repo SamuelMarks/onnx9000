@@ -1,6 +1,6 @@
 """Module providing builder functionality."""
 
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.core.ir import Graph, Node, Tensor
@@ -91,7 +91,7 @@ class TFToONNXGraphBuilder:
     def make_node_optional_inputs(
         self,
         op_type: str,
-        inputs: list[Optional[str]],
+        inputs: list[str | None],
         attributes: dict[str, Any],
         name_prefix: str,
     ) -> list[str]:

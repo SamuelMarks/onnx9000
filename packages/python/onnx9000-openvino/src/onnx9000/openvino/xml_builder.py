@@ -9,8 +9,8 @@ class XmlNode:
     def __init__(
         self,
         name: str,
-        attributes: Optional[dict[str, str]] = None,
-        children: Optional[list[Union["XmlNode", str]]] = None,
+        attributes: dict[str, str] | None = None,
+        children: list[Union["XmlNode", str]] | None = None,
     ):
         """Initialize the XML node."""
         self.name = name
@@ -80,9 +80,9 @@ class XmlBuilder:
         self.declaration = decl
         return self
 
-    def __init__(self, root_name: Optional[str] = None):
+    def __init__(self, root_name: str | None = None):
         """Initialize the builder."""
-        self.root: Optional[XmlNode] = XmlNode(root_name) if root_name else None
+        self.root: XmlNode | None = XmlNode(root_name) if root_name else None
         self.declaration = '<?xml version="1.0" ?>'
 
     def to_string(self, pretty: bool = False) -> str:

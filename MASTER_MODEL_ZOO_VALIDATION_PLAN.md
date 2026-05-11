@@ -6,9 +6,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 1. The Mathematical Tolerance Oracle Matrix
-*Our Core IR runs completely devoid of vendor libraries. To ensure absolute parity, we instantiate vendor frameworks (PyTorch, JAX, TF) strictly in the `tests/` directory to generate golden outputs, which our IR must match under these precise statistical bounds.*
+
+_Our Core IR runs completely devoid of vendor libraries. To ensure absolute parity, we instantiate vendor frameworks (PyTorch, JAX, TF) strictly in the `tests/` directory to generate golden outputs, which our IR must match under these precise statistical bounds._
 
 ### 1.1 Precision Thresholds & Metrics
+
 - [x] **Absolute Error (MAE) Matrix:**
   - [x] FP64/FP32: `max_abs_err < 1e-6`
   - [x] FP16/BF16: `max_abs_err < 1e-3` (accumulating reductions bounded at `1e-2`)
@@ -28,7 +30,9 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
   - [x] Bitwise parity for integer operations (`ArgMax`, `NonZero`, `TopK`)
 
 ### 1.2 Multi-Platform Execution Validation
-*Every model in the zoo must compile and pass the above tolerances on all target hardware.*
+
+_Every model in the zoo must compile and pass the above tolerances on all target hardware._
+
 - [x] C++23 Reference Engine (GCC/Clang, Linux/macOS)
 - [x] C++23 MSVC (Windows)
 - [x] WASM SIMD (V8 / Node.js)
@@ -39,9 +43,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 2. Large Language Models (LLMs) & Foundation NLP
-*Validation requires exact logits parity, KV-cache state preservation parity, and equivalent RoPE/ALiBi implementations.*
+
+_Validation requires exact logits parity, KV-cache state preservation parity, and equivalent RoPE/ALiBi implementations._
 
 ### 2.1 The Llama Lineage (Meta)
+
 - [x] Llama 1 (7B, 13B, 33B, 65B) - Standard MHA, RoPE, RMSNorm
 - [x] Llama 2 (7B, 13B, 70B) - GQA injection
 - [x] Llama 3 (8B, 70B) - High-freq RoPE scaling, large vocab
@@ -49,12 +55,14 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] Llama 3.2 (1B, 3B, Vision variants)
 
 ### 2.2 The Qwen Lineage (Alibaba)
+
 - [x] Qwen 1.0 (7B, 14B, 72B)
 - [x] Qwen 1.5 (0.5B to 110B) - Dual-chunk attention mechanisms
 - [x] Qwen 2 (0.5B to 72B)
 - [x] Qwen 2.5 (0.5B to 72B) - Dynamic vocabulary scaling
 
 ### 2.3 The Mistral / Mixtral Lineage
+
 - [x] Mistral v0.1 (7B), v0.2, v0.3
 - [x] Mixtral 8x7B (Sparse Mixture of Experts routing parity)
 - [x] Mixtral 8x22B (Large scale MoE)
@@ -62,6 +70,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] Mistral Large / Pixtral (structural proxy verification)
 
 ### 2.4 The DeepSeek Lineage
+
 - [x] DeepSeek LLM (7B, 67B)
 - [x] DeepSeek Coder (1.3B, 6.7B, 33B)
 - [x] DeepSeek Math
@@ -69,17 +78,20 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] DeepSeek V3 (MoE with auxiliary loss structures)
 
 ### 2.5 The Gemma Lineage (Google)
+
 - [x] Gemma 1.0 (2B, 7B) - GeGLU, RMSNorm exact mapping
 - [x] Gemma 1.1 / RecurrentGemma
 - [x] Gemma 2.0 (2B, 9B, 27B) - Logit soft-capping, Local/Global alternating sliding windows
 
 ### 2.6 The Phi Lineage (Microsoft)
+
 - [x] Phi-1 / Phi-1.5 - Dense blocks
 - [x] Phi-2
 - [x] Phi-3 (Mini, Small, Medium) - Su-scaled RoPE, block-sparse attention
 - [x] Phi-3.5 (MoE variants)
 
 ### 2.7 Sub-Quadratic, Recurrent, & Alternative Architectures
+
 - [x] Mamba (130M, 370M, 790M, 1.4B, 2.8B) - Selective Scan mapping
 - [x] Mamba-2 - State Space Duality (SSD) operators
 - [x] Jamba - Hybrid Mamba + Transformer MoE
@@ -92,6 +104,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] Gated Linear Attention (GLA) Models
 
 ### 2.8 Legacy & Standard BERT/T5 Era
+
 - [x] BERT (Base, Large)
 - [x] RoBERTa, DistilBERT, ALBERT, DeBERTa (v1, v2, v3)
 - [x] T5 (Small, Base, Large, 3B, 11B)
@@ -103,9 +116,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 3. Computer Vision (Classification, Detection, Segmentation)
-*Validation requires sub-pixel parity for bounding box decoding, NMS operations, and upsampling bilinear/bicubic grids.*
+
+_Validation requires sub-pixel parity for bounding box decoding, NMS operations, and upsampling bilinear/bicubic grids._
 
 ### 3.1 Convolutional Foundations
+
 - [x] VGG (11, 13, 16, 19, +BatchNorm variants)
 - [x] ResNet (18, 34, 50, 101, 152)
 - [x] ResNeXt, Wide-ResNet
@@ -119,6 +134,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] ConvNeXt V2 (Global Response Normalization parity)
 
 ### 3.2 Vision Transformers (ViT) & Hybrids
+
 - [x] ViT (Tiny, Small, Base, Large, Huge) - Patch extraction parity
 - [x] DeiT (Data-efficient Image Transformers)
 - [x] Swin Transformer (V1) - Shifted Window cyclic shift operators
@@ -128,6 +144,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] BEiT, MAE (Masked Autoencoders)
 
 ### 3.3 Object Detection (YOLO Lineage & Anchor-Free)
+
 - [x] YOLOv3, YOLOv4, YOLOv5
 - [x] YOLOv6, YOLOv7
 - [x] YOLOv8, YOLOv9, YOLOv10
@@ -139,6 +156,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] RT-DETR (Real-Time DETR)
 
 ### 3.4 Segmentation & Zero-Shot
+
 - [x] U-Net, U-Net++, V-Net
 - [x] DeepLabV3, DeepLabV3+
 - [x] SAM (Segment Anything Model) - ViT-H encoder, Prompt decoder parity
@@ -146,6 +164,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] FastSAM, MobileSAM
 
 ### 3.5 Specialized Vision
+
 - [x] Florence-2 (Unified VQA/Detection/Captioning)
 - [x] DINOv2 (Self-supervised representations)
 - [x] SigLIP (Sigmoid Loss for Language Image Pre-Training)
@@ -154,7 +173,8 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 4. Multi-Modal & Vision-Language Models (VLMs)
-*Validation requires exact alignment between separate modality encoders (e.g., CLIP) merging into autoregressive decoders.*
+
+_Validation requires exact alignment between separate modality encoders (e.g., CLIP) merging into autoregressive decoders._
 
 - [x] LLaVA 1.5
 - [x] LLaVA-NeXT / LLaVA-OneVision (Dynamic high-res pooling)
@@ -169,9 +189,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 5. Generative AI (Diffusion, Flow, & Image/Video Synthesis)
-*Validation requires tracking latent space distributions across iterative scheduler steps (Euler, DDIM, DPM-Solver) without exploding error accumulations.*
+
+_Validation requires tracking latent space distributions across iterative scheduler steps (Euler, DDIM, DPM-Solver) without exploding error accumulations._
 
 ### 5.1 Image Diffusion Models
+
 - [x] Stable Diffusion 1.4 / 1.5
 - [x] Stable Diffusion 2.0 / 2.1
 - [x] Stable Diffusion XL (SDXL) - Dual text-encoder pooling
@@ -184,6 +206,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] Hunyuan-DiT
 
 ### 5.2 Conditioning & Control
+
 - [x] ControlNet (SD1.5, SDXL zero-conv residuals)
 - [x] T2I-Adapter
 - [x] IP-Adapter (Cross-attention latent injection)
@@ -191,11 +214,13 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] SDXL Turbo / SD3 Turbo
 
 ### 5.3 VAE & Autoencoders
+
 - [x] AutoencoderKL (Latent scaling exactness)
 - [x] VQ-GAN
 - [x] Tiled VAE logic (Memory conservation parity)
 
 ### 5.4 Video Generation
+
 - [x] Sora-like Structural Proxies (Open-Sora, Latte)
 - [x] CogVideoX (3D causal attention)
 - [x] Stable Video Diffusion (SVD)
@@ -204,15 +229,18 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 6. Audio, Speech, & Signal Processing
-*Validation requires exact signal processing parity: FFTs, Mel-filters, and 1D temporal causally padded convolutions.*
+
+_Validation requires exact signal processing parity: FFTs, Mel-filters, and 1D temporal causally padded convolutions._
 
 ### 6.1 Speech Recognition (ASR)
+
 - [x] Whisper (Tiny, Base, Small, Medium, Large-v1/v2/v3) - Decoding loop parity
 - [x] Wav2Vec 2.0
 - [x] HuBERT
 - [x] SeamlessM4T (Unit extraction)
 
 ### 6.2 Text-to-Speech (TTS)
+
 - [x] VITS (Variational Inference with adversarial learning)
 - [x] FastSpeech 2
 - [x] Tacotron 2
@@ -221,6 +249,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] Parler-TTS
 
 ### 6.3 Audio Generation & Vocoders
+
 - [x] MusicGen (Residual Vector Quantization decoding)
 - [x] AudioGen
 - [x] Stable Audio
@@ -232,9 +261,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 7. Spatio-Temporal, Video, & 3D Point Clouds
-*Validation focuses on massive 3D tensor permutations and sparse topology mappings.*
+
+_Validation focuses on massive 3D tensor permutations and sparse topology mappings._
 
 ### 7.1 Video Classification
+
 - [x] S3D (Separable 3D CNNs)
 - [x] X3D
 - [x] TimeSformer
@@ -242,6 +273,7 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] I3D (Inflated 3D ConvNets)
 
 ### 7.2 Point Cloud & 3D
+
 - [x] PointNet (Pointwise MLP pooling)
 - [x] PointNet++ (Set Abstraction layers, FPS sampling logic)
 - [x] VoxelNet
@@ -251,7 +283,8 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 8. Graph Neural Networks (GNNs)
-*Validation requires testing graph topologies of varying sparsity and degree distributions via `Gather`/`ScatterND` operations.*
+
+_Validation requires testing graph topologies of varying sparsity and degree distributions via `Gather`/`ScatterND` operations._
 
 - [x] GCN (Graph Convolutional Networks)
 - [x] GAT (Graph Attention Networks)
@@ -264,9 +297,11 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 ---
 
 ## 9. Time Series & Scientific Machine Learning
-*Validation focuses on cyclic operations, Fourier transforms, and complex attention topologies.*
+
+_Validation focuses on cyclic operations, Fourier transforms, and complex attention topologies._
 
 ### 9.1 Time Series Forecasting
+
 - [x] Informer
 - [x] Autoformer (Series decomposition blocks)
 - [x] PatchTST (Time series patchification)
@@ -274,12 +309,14 @@ This document strictly focuses on the **Model Zoo Catalog and Tolerance Validati
 - [x] N-BEATS, N-HiTS (Deep stacked MLPs)
 
 ### 9.2 Scientific / Biology
+
 - [x] AlphaFold 2 (Evoformer blocks, Invariant Point Attention)
 - [x] AlphaFold 3 (Subset module mapping)
 - [x] ESM-1b, ESM-2 (Evolutionary Scale Modeling)
 - [x] ESMFold
 
 ### 9.3 Earth Sciences / Weather
+
 - [x] GraphCast (GNNs on icosahedral grids)
 - [x] Pangu-Weather (3D Earth-specific ViTs)
 - [x] FourCastNet (Adaptive Fourier Neural Operator - AFNO blocks)

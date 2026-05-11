@@ -5,7 +5,7 @@ import os
 from typing import Optional
 
 
-def convert_pytorch_to_safetensors(input_dir: str, output_dir: Optional[str] = None):
+def convert_pytorch_to_safetensors(input_dir: str, output_dir: str | None = None):
     """Convert a directory of PyTorch .bin files to .safetensors."""
     try:
         import torch

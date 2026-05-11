@@ -58,7 +58,7 @@ class ZooCatalog:
         )
         self.conn.commit()
 
-    def get_model(self, model_id: str) -> Optional[dict[str, Any]]:
+    def get_model(self, model_id: str) -> dict[str, Any] | None:
         """Retrieve a model from the catalog.
 
         Args:
@@ -83,7 +83,7 @@ class ZooCatalog:
             }
         return None
 
-    def list_models(self, hub: Optional[str] = None) -> list[dict[str, Any]]:
+    def list_models(self, hub: str | None = None) -> list[dict[str, Any]]:
         """List all models in the catalog, optionally filtered by hub.
 
         Args:

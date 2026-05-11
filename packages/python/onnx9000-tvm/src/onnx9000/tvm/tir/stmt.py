@@ -55,7 +55,7 @@ class While(Stmt):
 class Store(Stmt):
     """Evaluates or manipulates TVM AST nodes."""
 
-    def __init__(self, buffer_var: Var, value: Expr, index: Expr, predicate: Optional[Expr] = None):
+    def __init__(self, buffer_var: Var, value: Expr, index: Expr, predicate: Expr | None = None):
         """Evaluate or manipulates TVM AST nodes."""
         self.buffer_var = buffer_var
         self.value = value
@@ -80,7 +80,7 @@ class Allocate(Stmt):
 class IfThenElse(Stmt):
     """Evaluates or manipulates TVM AST nodes."""
 
-    def __init__(self, condition: Expr, then_case: Stmt, else_case: Optional[Stmt] = None):
+    def __init__(self, condition: Expr, then_case: Stmt, else_case: Stmt | None = None):
         """Evaluate or manipulates TVM AST nodes."""
         self.condition = condition
         self.then_case = then_case

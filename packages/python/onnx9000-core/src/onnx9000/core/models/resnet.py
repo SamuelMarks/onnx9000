@@ -1,8 +1,8 @@
 """Resnet."""
 
 import logging
-from collections.abc import Sequence
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable, Sequence
+from typing import Any, Optional, Union
 
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, flatten, global_average_pool, max_pool

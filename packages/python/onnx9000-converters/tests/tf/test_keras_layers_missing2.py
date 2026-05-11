@@ -2,7 +2,6 @@
 
 from unittest.mock import MagicMock
 
-import pytest
 from onnx9000.converters.tf.keras_layers import (
     _map_keras_bidirectional,
     _map_keras_embedding,

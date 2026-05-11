@@ -1,7 +1,5 @@
 """Embedding layers."""
 
-from typing import Optional
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.core.dtypes import DType
@@ -14,7 +12,7 @@ class Embedding(Module):
         self,
         num_embeddings: int,
         embedding_dim: int,
-        padding_idx: Optional[int] = None,
+        padding_idx: int | None = None,
         dtype: DType = DType.FLOAT32,
     ) -> None:
         """Implement the __init__ method."""

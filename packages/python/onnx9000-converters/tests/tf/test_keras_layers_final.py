@@ -4,7 +4,6 @@ import inspect
 from unittest.mock import MagicMock
 
 import onnx9000.converters.tf.keras_layers as kl
-import pytest
 
 
 def test_execute_remaining_keras_mappings():

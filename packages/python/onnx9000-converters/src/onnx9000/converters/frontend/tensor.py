@@ -4,7 +4,7 @@ Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import numpy as np
 from onnx9000.core.dtypes import DType
@@ -18,8 +18,8 @@ class Node:
         op_type: str,
         inputs: list[Any],
         outputs: list[Any],
-        attributes: Optional[dict[str, Any]] = None,
-        name: Optional[str] = None,
+        attributes: dict[str, Any] | None = None,
+        name: str | None = None,
         domain: str = "",
     ) -> None:
         """Initialize the frontend builder or trace context."""
@@ -38,11 +38,11 @@ class Tensor:
 
     def __init__(
         self,
-        shape: Optional[tuple[Union[int, str]]] = None,
-        dtype: Optional[DType] = None,
-        name: Optional[str] = None,
+        shape: tuple[int | str] | None = None,
+        dtype: DType | None = None,
+        name: str | None = None,
         domain: str = "",
-        data: Optional[Any] = None,
+        data: Any | None = None,
         is_buffer: bool = False,
     ) -> None:
         """Initialize the frontend builder or trace context."""
@@ -77,7 +77,7 @@ class Tensor:
             self._name = name
 
     @property
-    def shape(self) -> tuple[Union[int, str]]:
+    def shape(self) -> tuple[int | str]:
         """Return the shape of the tensor as a tuple of integers."""
         return self._shape
 

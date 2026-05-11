@@ -62,7 +62,6 @@ def test_base_parser():
 
 def test_parsers_coverage_call():
     """Docstring for D103."""
-    import onnx9000.core.ops as ops
     from onnx9000.converters.parsers import JAXprParser, PyTorchFXParser, XLAHLOParser
 
     p = PyTorchFXParser()

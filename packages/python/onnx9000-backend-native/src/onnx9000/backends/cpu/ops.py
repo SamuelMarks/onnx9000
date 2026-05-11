@@ -1,6 +1,7 @@
 """CPU backend operations mapping."""
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 from onnx9000.core.registry import global_registry, register_op

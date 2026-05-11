@@ -4,7 +4,6 @@ import os
 import struct
 import tempfile
 
-import pytest
 from onnx9000.converters.onnx_parser import PureOnnxParser
 
 
@@ -117,7 +116,6 @@ def test_onnx_parser_errors():
 
 def test_onnx_parser_parse_model(tmp_path):
     """Docstring for D103."""
-    import os
 
     from onnx9000.converters.onnx_parser import PureOnnxParser
 
@@ -134,7 +132,6 @@ def test_onnx_parser_parse_model(tmp_path):
 
 def test_pure_onnx_parser_all_branches(tmp_path):
     """Docstring for D103."""
-    import struct
 
     from onnx9000.converters.onnx_parser import PureOnnxParser
 

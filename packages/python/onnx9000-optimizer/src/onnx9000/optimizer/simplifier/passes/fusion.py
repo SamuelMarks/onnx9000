@@ -44,7 +44,7 @@ class PatternMatcherFusion(FusionPass):
         for out in graph.outputs:
             usages[out] = usages.get(out, 0) + 1
 
-        def match_chain(start_node: Node, ops: list[str]) -> Optional[list[Node]]:
+        def match_chain(start_node: Node, ops: list[str]) -> list[Node] | None:
             """Implement the match_chain method or operation."""
             chain = [start_node]
             curr = start_node

@@ -10,7 +10,7 @@ from onnx9000.optimizer.olive.model import OliveModel
 class Pass(ABC):
     """Base class for Olive optimization passes."""
 
-    def __init__(self, name: str, config: Optional[dict[str, Any]] = None) -> None:
+    def __init__(self, name: str, config: dict[str, Any] | None = None) -> None:
         """Initialize the pass."""
         self.name = name
         self.config = config or {}
@@ -24,7 +24,7 @@ class QuantizationPass(Pass):
     """Base pass for quantization."""
 
     def __init__(
-        self, name: str = "QuantizationPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "QuantizationPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -41,7 +41,7 @@ class DynamicQuantizationPass(QuantizationPass):
     """Pass for dynamic quantization."""
 
     def __init__(
-        self, name: str = "DynamicQuantizationPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "DynamicQuantizationPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -51,7 +51,7 @@ class StaticQuantizationPass(QuantizationPass):
     """Pass for static quantization (with calibration logic)."""
 
     def __init__(
-        self, name: str = "StaticQuantizationPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "StaticQuantizationPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -61,7 +61,7 @@ class WeightOnlyQuantizationPass(QuantizationPass):
     """Pass for weight-only quantization."""
 
     def __init__(
-        self, name: str = "WeightOnlyQuantizationPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "WeightOnlyQuantizationPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -70,7 +70,7 @@ class WeightOnlyQuantizationPass(QuantizationPass):
 class PruningPass(Pass):
     """Pass for Sparsity pruning."""
 
-    def __init__(self, name: str = "PruningPass", config: Optional[dict[str, Any]] = None) -> None:
+    def __init__(self, name: str = "PruningPass", config: dict[str, Any] | None = None) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
 
@@ -87,9 +87,7 @@ class PruningPass(Pass):
 class GraphFusionPass(Pass):
     """Pass for graph fusion."""
 
-    def __init__(
-        self, name: str = "GraphFusionPass", config: Optional[dict[str, Any]] = None
-    ) -> None:
+    def __init__(self, name: str = "GraphFusionPass", config: dict[str, Any] | None = None) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
 
@@ -105,7 +103,7 @@ class MixedPrecisionPass(Pass):
     """Pass for mixed precision (FP16 / BFloat16)."""
 
     def __init__(
-        self, name: str = "MixedPrecisionPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "MixedPrecisionPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -126,7 +124,7 @@ class LayoutConversionPass(Pass):
     """Pass for LayoutConversion (NCHW <-> NHWC)."""
 
     def __init__(
-        self, name: str = "LayoutConversionPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "LayoutConversionPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -147,7 +145,7 @@ class OrtPerfTuningPass(Pass):
     """Pass for OrtPerfTuning (Thread/EP tuning suggestions)."""
 
     def __init__(
-        self, name: str = "OrtPerfTuningPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "OrtPerfTuningPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -162,7 +160,7 @@ class OrtTransformerOptimizationPass(Pass):
     """Pass for OrtTransformerOptimization (Attention/Gelu fusion)."""
 
     def __init__(
-        self, name: str = "OrtTransformerOptimizationPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "OrtTransformerOptimizationPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -179,7 +177,7 @@ class ConstantFoldingPass(Pass):
     """Run mathematical constant folding explicitly before quantization."""
 
     def __init__(
-        self, name: str = "ConstantFoldingPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "ConstantFoldingPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -196,7 +194,7 @@ class StripIdentityPass(Pass):
     """Strip Identity nodes explicitly before quantization."""
 
     def __init__(
-        self, name: str = "StripIdentityPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "StripIdentityPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -216,7 +214,7 @@ class StripUnusedInitializersPass(Pass):
     """Strip un-used initializers explicitly before quantization."""
 
     def __init__(
-        self, name: str = "StripUnusedInitializersPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "StripUnusedInitializersPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -242,7 +240,7 @@ class ExtractSymbolicShapesPass(Pass):
     """Extract symbolic shapes to validate layout transformations safely."""
 
     def __init__(
-        self, name: str = "ExtractSymbolicShapesPass", config: Optional[dict[str, Any]] = None
+        self, name: str = "ExtractSymbolicShapesPass", config: dict[str, Any] | None = None
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)

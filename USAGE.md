@@ -159,7 +159,7 @@ import { serve } from '@onnx9000/serve';
 import { load } from '@onnx9000/core';
 
 // Blazing fast inference on Edge functions
-const graph = load("model.onnx");
+const graph = load('model.onnx');
 serve(graph, { port: 3000, runtime: 'bun' });
 ```
 

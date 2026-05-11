@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import onnx9000.converters.tf.keras_layers as kl
-import pytest
 
 
 def test_execute_all_keras_mappings():
@@ -150,7 +149,6 @@ def test_keras_layers_branches():
     # Reshape and specialized
     from onnx9000.converters.tf.keras_layers import (
         _map_keras_cropping,
-        _map_keras_spatial_dropout,
         _map_keras_upsampling,
         _map_keras_zero_padding,
     )

@@ -1,10 +1,10 @@
 # ONNX9000 Roadmap
 
-This document outlines the current state and future milestones of the `onnx9000` ecosystem. 
+This document outlines the current state and future milestones of the `onnx9000` ecosystem.
 
 ## 🚀 Current Status: Ecosystem Complete
 
-We have successfully executed the **Polyglot Monorepo Refactor** and **implemented every major feature specification**. 
+We have successfully executed the **Polyglot Monorepo Refactor** and **implemented every major feature specification**.
 The massive single-directory Python monolith has been cleanly split into a highly modular, decoupled environment managed by `pnpm` and `uv` workspaces, and all planned frontends, backends, compilers, and applications are now live.
 
 - **Python Core:** The `onnx9000-core` package parses `.onnx`, `.pb`, and `.safetensors` files with zero external dependencies using `struct` and `mmap` directly to an AST.
@@ -16,6 +16,7 @@ The massive single-directory Python monolith has been cleanly split into a highl
 The following architectural targets guide the development of the ecosystem. **Almost all phases of the initial 45 specs are now complete (44/45).**
 
 ### Core Execution & Web Backends
+
 - [x] **ONNX00:** Runtime (Native Exec) Replication & Parity Tracker.
 - [x] **ONNX01:** ONNX Standard Compliance & Testing Tracker.
 - [x] **ONNX03:** ONNX Runtime Web Replication (`@onnx9000/backend-web`).
@@ -24,6 +25,7 @@ The following architectural targets guide the development of the ecosystem. **Al
 - [x] **ONNX39:** WebNN Polyfill (W3C API WebGPU/WASM Shim).
 
 ### Tooling, Parsing, and Optimizations
+
 - [x] **ONNX04:** ONNX Runtime Extensions Replication.
 - [x] **ONNX06:** Olive Optimizer Replication (Quantization and W4A16 targeting).
 - [x] **ONNX07:** ONNX Simplifier Replication.
@@ -34,6 +36,7 @@ The following architectural targets guide the development of the ecosystem. **Al
 - [x] **ONNX40:** ONNX Checker (100% Pure TS/Python Web-Native Schema Validator).
 
 ### Frontends & Converters (`onnx9000-converters`)
+
 - [x] **ONNX05:** Torch & TF Exporters Replication.
 - [x] **ONNX10:** `tf2onnx` Replication (Zero-dependency TF parsing).
 - [x] **ONNX11:** `paddle2onnx` Replication.
@@ -49,6 +52,7 @@ The following architectural targets guide the development of the ecosystem. **Al
 - [x] **ONNX37:** ONNX-TensorRT (Zero-Build TRT FFI Parser).
 
 ### Compilers & AOT (`@onnx9000/compiler`)
+
 - [x] **ONNX19:** `onnx-mlir` Replication (Compiling ONNX to C++23/WASM).
 - [x] **ONNX20:** Apache TVM Ahead-of-Time Web Compiler.
 - [x] **ONNX26:** OpenXLA IREE (WASM-Native MLIR Compiler).
@@ -57,12 +61,14 @@ The following architectural targets guide the development of the ecosystem. **Al
 - [x] **ONNX41:** OpenVINO Optimizer (Zero-dependency OpenVINO IR Compiler).
 
 ### Web UI & Applications (`apps/`)
+
 - [x] **ONNX16:** Netron Replication (`netron-ui`).
 - [x] **ONNX24:** HuggingFace Optimum UI (`optimum-ui`).
 - [x] **ONNX29:** `onnx-modifier` (Web-Native Graph Editor & Visualizer).
 - [x] **ONNX44:** VS Code Machine Learning OS (The Universal Web-Native IDE).
 
 ### High-Level APIs & GenAI
+
 - [x] **ONNX02:** ONNX Runtime Training Replication (AOT Symbolic Autograd).
 - [x] **ONNX08:** ONNXScript / Spox Replication (Fluent Model Authoring).
 - [x] **ONNX21:** ONNX Runtime GenAI (WASM-First Generative Execution).

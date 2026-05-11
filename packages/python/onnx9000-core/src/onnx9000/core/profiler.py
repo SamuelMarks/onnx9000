@@ -28,7 +28,7 @@ def dtype_size(dtype: DType) -> int:
     return mapping.get(dtype, 4)
 
 
-def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> Union[int, str]:
+def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> int | str:
     """Execute the resolve volume operation."""
     if not shape:
         return 1
@@ -83,17 +83,17 @@ class ProfilerResult:
 
     def __init__(self):
         """Initialize the instance."""
-        self.total_macs: Union[int, str] = 0
-        self.total_flops: Union[int, str] = 0
+        self.total_macs: int | str = 0
+        self.total_flops: int | str = 0
         self.total_params: int = 0
         self.total_memory_bytes: int = 0
         self.peak_activation_bytes: int = 0
 
         # Precision specific MACs
-        self.fp32_macs: Union[int, str] = 0
-        self.fp16_macs: Union[int, str] = 0
-        self.int8_macs: Union[int, str] = 0
-        self.int4_macs: Union[int, str] = 0
+        self.fp32_macs: int | str = 0
+        self.fp16_macs: int | str = 0
+        self.int8_macs: int | str = 0
+        self.int4_macs: int | str = 0
 
         self.node_profiles: list[dict] = []
         self.suggestions: list[str] = []
@@ -229,7 +229,7 @@ class ProfilerResult:
             pct = (count / self.total_flops) * 100
             print(f"{op}: {pct:.1f}% ({count} FLOPs)")
 
-    def get_cumulative_flops_up_to(self, node_name: str) -> Union[int, str]:
+    def get_cumulative_flops_up_to(self, node_name: str) -> int | str:
         """Execute the get cumulative flops up to operation."""
         total = 0
         for n in self.node_profiles:
@@ -239,7 +239,7 @@ class ProfilerResult:
         return total
 
 
-def _add_metric(a: Union[int, str], b: Union[int, str]) -> Union[int, str]:
+def _add_metric(a: int | str, b: int | str) -> int | str:
     """Execute the add metric operation."""
     if isinstance(a, int) and isinstance(b, int):
         return a + b

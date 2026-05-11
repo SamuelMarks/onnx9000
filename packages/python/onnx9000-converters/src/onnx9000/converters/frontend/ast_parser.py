@@ -2,7 +2,8 @@
 
 import ast
 import inspect
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.tensor import Node, Tensor

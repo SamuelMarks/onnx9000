@@ -7,7 +7,7 @@ from typing import Any, Union
 class DataLoader:
     """Lightweight DataLoader for calibration datasets."""
 
-    def __init__(self, data: Union[list[dict[str, Any]], str]) -> None:
+    def __init__(self, data: list[dict[str, Any]] | str) -> None:
         """Initialize with data list or path to JSON file.
 
         Args:

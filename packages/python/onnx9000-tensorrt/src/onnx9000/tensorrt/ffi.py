@@ -14,7 +14,7 @@ class TensorRTFFI:
 
     def __init__(self):
         """Initialize."""
-        self.lib: Optional[ctypes.CDLL] = None
+        self.lib: ctypes.CDLL | None = None
         self.version: tuple[int, int, int] = (0, 0, 0)
         self.pointers: dict[int, Any] = {}
         self._load_library()

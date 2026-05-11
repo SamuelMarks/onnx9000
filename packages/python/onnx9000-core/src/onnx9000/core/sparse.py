@@ -453,7 +453,7 @@ def detect_theoretical_sparsity(tensor: Constant, epsilon: float = 1e-06) -> flo
     return zeros / len(values)
 
 
-def calculate_memory_usage(tensor: Union[Constant, SparseTensor]) -> int:
+def calculate_memory_usage(tensor: Constant | SparseTensor) -> int:
     """Provide memory usage calculation (Dense vs Sparse byte comparison)."""
     if isinstance(tensor, Constant):
         return len(tensor.data) if tensor.data else 0
@@ -550,7 +550,7 @@ def generate_json_report(graph: Graph, output_path: str) -> None:
     logger.info(f"Sparsity report card saved to {output_path}")
 
 
-def evaluate_mse(original: Constant, pruned: Union[Constant, SparseTensor]) -> float:
+def evaluate_mse(original: Constant, pruned: Constant | SparseTensor) -> float:
     """Evaluate Mean Squared Error (MSE) degradation after applying a sparse mask."""
     orig_vals = unpack_data(original.data, original.dtype)
 

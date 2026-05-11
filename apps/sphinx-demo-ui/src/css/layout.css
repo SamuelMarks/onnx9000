@@ -45,8 +45,10 @@
 }
 
 /* Subtle hover highlights for the gutter */
-.demo-pane-divider-vertical:hover, .demo-pane-divider-vertical:active,
-.demo-pane-divider-horizontal:hover, .demo-pane-divider-horizontal:active {
+.demo-pane-divider-vertical:hover,
+.demo-pane-divider-vertical:active,
+.demo-pane-divider-horizontal:hover,
+.demo-pane-divider-horizontal:active {
   background-color: rgba(26, 115, 232, 0.05);
 }
 
@@ -73,8 +75,10 @@
   height: 4px;
 }
 
-.demo-pane-divider-vertical:hover::after, .demo-pane-divider-vertical:active::after,
-.demo-pane-divider-horizontal:hover::after, .demo-pane-divider-horizontal:active::after {
+.demo-pane-divider-vertical:hover::after,
+.demo-pane-divider-vertical:active::after,
+.demo-pane-divider-horizontal:hover::after,
+.demo-pane-divider-horizontal:active::after {
   background-color: var(--accent-color);
 }
 
@@ -86,7 +90,7 @@
   .demo-main-split {
     flex-direction: column !important;
   }
-  
+
   .demo-pane-lhs,
   .demo-pane-rhs {
     flex-basis: auto !important;

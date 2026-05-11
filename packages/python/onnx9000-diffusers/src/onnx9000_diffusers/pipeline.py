@@ -2,7 +2,8 @@
 
 import asyncio
 import gc
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from .schedulers import EulerDiscreteScheduler, Scheduler
 from .utils import PyTorchPCG, parse_model_index, randn
@@ -61,9 +62,9 @@ class DiffusionPipeline:
         self,
         prompt: str,
         num_inference_steps: int = 50,
-        generator: Optional[PyTorchPCG] = None,
-        callback_on_step_end: Optional[Callable[[int, int, list[float]], None]] = None,
-        abort_signal: Optional[AbortSignal] = None,
+        generator: PyTorchPCG | None = None,
+        callback_on_step_end: Callable[[int, int, list[float]], None] | None = None,
+        abort_signal: AbortSignal | None = None,
     ) -> list[float]:
         """Asynchronous inference loop."""
         # Phase 1: Implement asynchronous inference loop

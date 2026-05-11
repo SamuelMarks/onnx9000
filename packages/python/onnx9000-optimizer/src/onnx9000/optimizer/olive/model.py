@@ -11,7 +11,7 @@ class OliveModel:
     """Class OliveModel implementation."""
 
     graph: Graph
-    metadata: Optional[dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         """Initialize defaults."""

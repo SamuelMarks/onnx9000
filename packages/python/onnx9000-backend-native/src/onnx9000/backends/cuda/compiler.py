@@ -13,9 +13,7 @@ class CUDACompiler:
     """Dynamic kernel JIT compiler using nvcc."""
 
     @staticmethod
-    def compile_kernel(
-        kernel_code: str, kernel_name: str, cache_dir: Optional[str] = None
-    ) -> bytes:
+    def compile_kernel(kernel_code: str, kernel_name: str, cache_dir: str | None = None) -> bytes:
         """Compile CUDA C++ code to PTX."""
         if cache_dir is None:
             cache_dir = tempfile.gettempdir()

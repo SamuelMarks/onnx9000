@@ -21,7 +21,7 @@ test.describe('JSON Extractor Demo E2E', () => {
     await fileChooser.setFiles({
       name: 'invalid.txt',
       mimeType: 'text/plain',
-      buffer: Buffer.from('this is not an onnx file')
+      buffer: Buffer.from('this is not an onnx file'),
     });
 
     await expect(page.locator('#error-box')).toBeVisible();

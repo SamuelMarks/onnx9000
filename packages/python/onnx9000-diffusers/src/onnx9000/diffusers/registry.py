@@ -1,6 +1,7 @@
 """Registry."""
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 
 def register_op(domain: str, op_name: str) -> Callable:

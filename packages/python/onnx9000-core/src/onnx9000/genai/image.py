@@ -223,7 +223,7 @@ class Inpainting:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.mask: Optional[list[int]] = None
+        self.mask: list[int] | None = None
 
     def set_mask(self, mask: list[int]) -> None:
         """Set inpainting mask."""
@@ -241,7 +241,7 @@ class ControlNetSupport:
 
     def __init__(self) -> None:
         """Initialize the instance."""
-        self.control_image: Optional[list[int]] = None
+        self.control_image: list[int] | None = None
 
     def set_control_image(self, image: list[int]) -> None:
         """Set control image."""

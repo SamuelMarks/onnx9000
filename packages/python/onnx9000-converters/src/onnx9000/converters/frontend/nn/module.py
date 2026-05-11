@@ -1,8 +1,8 @@
 """Base Module framework mirroring PyTorch nn.Module."""
 
 from collections import OrderedDict
-from collections.abc import Iterator
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable, Iterator
+from typing import Any, Optional, Union
 
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 
@@ -12,12 +12,12 @@ class Module:
 
     def __init__(self) -> None:
         """Initialize the Module."""
-        self._parameters: dict[str, Optional[Parameter]] = OrderedDict()
-        self._buffers: dict[str, Optional[Tensor]] = OrderedDict()
-        self._modules: dict[str, Optional[Module]] = OrderedDict()
+        self._parameters: dict[str, Parameter | None] = OrderedDict()
+        self._buffers: dict[str, Tensor | None] = OrderedDict()
+        self._modules: dict[str, Module | None] = OrderedDict()
         self.training: bool = True
 
-    def register_parameter(self, name: str, param: Optional[Parameter]) -> None:
+    def register_parameter(self, name: str, param: Parameter | None) -> None:
         """Register a parameter to the module, making it available in state_dict and parameters()."""
         if not isinstance(name, str):
             raise TypeError("parameter name should be a string.")
@@ -25,7 +25,7 @@ class Module:
             raise TypeError("cannot assign to parameter, must be a Parameter or None")
         self._parameters[name] = param
 
-    def register_buffer(self, name: str, tensor: Optional[Tensor]) -> None:
+    def register_buffer(self, name: str, tensor: Tensor | None) -> None:
         """Register a buffer to the module, which is persistent state but not a parameter."""
         if not isinstance(name, str):
             raise TypeError("buffer name should be a string.")
@@ -104,7 +104,7 @@ class Module:
             yield module
 
     def named_modules(
-        self, memo: Optional[set["Module"]] = None, prefix: str = "", remove_duplicate: bool = True
+        self, memo: set["Module"] | None = None, prefix: str = "", remove_duplicate: bool = True
     ) -> Iterator[tuple[str, "Module"]]:
         """Yield an iterator over all modules in the network, yielding both the name and the module itself."""
         if memo is None:
@@ -121,7 +121,7 @@ class Module:
 
     def state_dict(
         self,
-        destination: Optional[dict[str, Any]] = None,
+        destination: dict[str, Any] | None = None,
         prefix: str = "",
         keep_vars: bool = False,
     ) -> dict[str, Any]:

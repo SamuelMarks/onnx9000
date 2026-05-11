@@ -58,7 +58,7 @@ class LLaMABlock:  # noqa: D101
         self.norm2 = RMSNorm((dim,))
         self.mlp = SwiGLU(dim, ffn_dim, prefix=f"{prefix}.mlp")
 
-    def __call__(self, x: Tensor, pos: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
@@ -105,7 +105,7 @@ class LLaMA:  # noqa: D101
         self.lm_head = Gemm(trans_b=1)
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
-    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Optional[Tensor] = None) -> Tensor:  # noqa: D102
+    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
         """Call."""
         from onnx9000.core.ops import gather
 

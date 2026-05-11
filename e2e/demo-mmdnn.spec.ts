@@ -16,7 +16,7 @@ test.describe('MMDNN Universal Converter Demo E2E', () => {
 
     const srcDropdown = page.locator('#src-framework');
     await srcDropdown.selectOption('mxnet');
-    
+
     await expect(page.locator('#drop-hint')).toHaveText('Requires: -symbol.json and .params');
 
     await srcDropdown.selectOption('ncnn');
@@ -32,11 +32,11 @@ test.describe('MMDNN Universal Converter Demo E2E', () => {
 
     // Use a fake text file
     await fileChooser.setFiles([
-        {
-            name: 'invalid.txt',
-            mimeType: 'text/plain',
-            buffer: Buffer.from('this is not an onnx file')
-        }
+      {
+        name: 'invalid.txt',
+        mimeType: 'text/plain',
+        buffer: Buffer.from('this is not an onnx file'),
+      },
     ]);
 
     await expect(page.locator('.files-list .file-item')).toBeVisible();

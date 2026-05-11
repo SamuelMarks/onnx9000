@@ -1,7 +1,8 @@
 """Verification."""
 
 import math
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -125,7 +126,7 @@ def bisect_dag(
     oracle_eval_fn: Callable[[int], torch.Tensor],
     target_eval_fn: Callable[[int], torch.Tensor],
     dtype: str = "FP32",
-) -> Optional[IRNode]:
+) -> IRNode | None:
     """Given a failing graph, incrementally evaluates the oracle and target up to node N
     to find the exact IR.Node where divergence exceeds the threshold.
     """

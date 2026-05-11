@@ -170,7 +170,7 @@ class Call(Expr):
 class Load(Expr):
     """Core class for TVM AST node or pass."""
 
-    def __init__(self, dtype: str, buffer_var: Var, index: Expr, predicate: Optional[Expr] = None):
+    def __init__(self, dtype: str, buffer_var: Var, index: Expr, predicate: Expr | None = None):
         """Magic method."""
         """Initialize."""
         """Do the function."""

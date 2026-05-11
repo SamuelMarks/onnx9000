@@ -141,7 +141,7 @@ class GGUFParser:
         else:
             raise GGUFError(f"Unsupported GGUF value type {vtype}")
 
-    def get_onnx9000_tensor(self, name: str) -> Union[Tensor, QuantizedTensor]:
+    def get_onnx9000_tensor(self, name: str) -> Tensor | QuantizedTensor:
         """Docstring for D102."""
         for t in self.tensors:
             if t["name"] == name:

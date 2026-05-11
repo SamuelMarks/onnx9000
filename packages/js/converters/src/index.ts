@@ -23,6 +23,9 @@ export * from './mmdnn/darknet/index.js';
 export * from './mmdnn/ncnn/index.js';
 export * from './mmdnn/paddle/index.js';
 export * from './mmdnn/verification/index.js';
+export * from './mmdnn/h2o/index.js';
+export * from './mmdnn/libsvm/index.js';
+export * from './jax/index.js';
 
 import * as mmdnnNamespace from './mmdnn/index.js';
 /** MMDNN namespace for legacy multi-framework conversions. */

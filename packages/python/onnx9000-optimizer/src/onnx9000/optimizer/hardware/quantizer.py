@@ -14,8 +14,8 @@ class Quantizer:
 
     @staticmethod
     def calculate_scale_zero_point(
-        min_val: Union[float, np.ndarray],
-        max_val: Union[float, np.ndarray],
+        min_val: float | np.ndarray,
+        max_val: float | np.ndarray,
         qmin: int,
         qmax: int,
         symmetric: bool = False,
@@ -166,7 +166,7 @@ class Quantizer:
         w_zero_point: np.ndarray,
         y_scale: np.ndarray,
         y_zero_point: np.ndarray,
-        B: Optional[np.ndarray] = None,
+        B: np.ndarray | None = None,
         pads: tuple[int, ...] = (0, 0, 0, 0),
         strides: tuple[int, ...] = (1, 1),
     ) -> np.ndarray:
@@ -260,7 +260,7 @@ class Quantizer:
         scales = np.zeros(num_channels, dtype=np.float32)
         zero_points = np.zeros(num_channels, dtype=np.int8)
         for i in range(num_channels):
-            slc: list[Union[slice, int]] = [slice(None)] * len(shape)
+            slc: list[slice | int] = [slice(None)] * len(shape)
             slc[axis] = i
             channel_data = tensor[tuple(slc)]
             min_val = np.min(channel_data)

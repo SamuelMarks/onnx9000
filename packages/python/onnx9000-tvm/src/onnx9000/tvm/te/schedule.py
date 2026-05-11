@@ -20,7 +20,7 @@ class Stage:
         self.double_buffer = False
 
     def split(
-        self, parent: IterVar, factor: Optional[int] = None, nparts: Optional[int] = None
+        self, parent: IterVar, factor: int | None = None, nparts: int | None = None
     ) -> tuple[IterVar, IterVar]:
         """Evaluate or manipulates TVM AST nodes."""
         if parent not in self.axes:
@@ -155,7 +155,7 @@ class Schedule:
 from typing import Union
 
 
-def create_schedule(ops: Union[Any, list[Any]]) -> Schedule:
+def create_schedule(ops: Any | list[Any]) -> Schedule:
     """Do the function."""
     if not isinstance(ops, list):
         ops = [ops]

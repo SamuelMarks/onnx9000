@@ -1,7 +1,7 @@
 """Exporter API."""
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
@@ -10,18 +10,18 @@ from onnx9000.core.serializer import serialize_model as build_model_proto
 
 
 def export(
-    model: Union[Module, Any],
-    args: Union[tuple, Tensor],
-    f: Union[str, Path, Any],
+    model: Module | Any,
+    args: tuple | Tensor,
+    f: str | Path | Any,
     export_params: bool = True,
     verbose: bool = False,
     training: Any = None,
-    input_names: Optional[list[str]] = None,
-    output_names: Optional[list[str]] = None,
+    input_names: list[str] | None = None,
+    output_names: list[str] | None = None,
     opset_version: int = 17,
-    dynamic_axes: Optional[dict[str, dict[int, str]]] = None,
-    keep_initializers_as_inputs: Optional[bool] = None,
-    custom_opsets: Optional[dict[str, int]] = None,
+    dynamic_axes: dict[str, dict[int, str]] | None = None,
+    keep_initializers_as_inputs: bool | None = None,
+    custom_opsets: dict[str, int] | None = None,
     do_constant_folding: bool = True,
 ) -> None:
     """Export a model into ONNX format."""
@@ -75,6 +75,6 @@ def export(
         f.write(model_proto.SerializeToString())
 
 
-def visualize(model_path: Union[str, Path]) -> str:
+def visualize(model_path: str | Path) -> str:
     """Implement the visualize method."""
     return ""

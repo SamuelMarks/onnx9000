@@ -1,6 +1,6 @@
 """Functional interface."""
 
-from typing import Any, Optional
+from typing import Any
 
 from onnx9000.converters.frontend.tensor import Tensor
 
@@ -130,7 +130,7 @@ def max_pool2d(
     return record_op("MaxPool", [input], attrs)
 
 
-def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tensor:
+def linear(input: Tensor, weight: Tensor, bias: Tensor | None = None) -> Tensor:
     """Apply a linear transformation to the incoming data: y = xW^T + b.
 
     Args:
@@ -151,7 +151,7 @@ def linear(input: Tensor, weight: Tensor, bias: Optional[Tensor] = None) -> Tens
 def conv2d(
     input: Tensor,
     weight: Tensor,
-    bias: Optional[Tensor] = None,
+    bias: Tensor | None = None,
     stride: Any = 1,
     padding: Any = 0,
     dilation: Any = 1,
@@ -230,10 +230,10 @@ def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0
 
 def interpolate(
     input: Tensor,
-    size: Optional[Any] = None,
-    scale_factor: Optional[Any] = None,
+    size: Any | None = None,
+    scale_factor: Any | None = None,
     mode: str = "nearest",
-    align_corners: Optional[bool] = None,
+    align_corners: bool | None = None,
 ) -> Tensor:
     """Down/up samples the input to either the given size or the given scale factor.
 

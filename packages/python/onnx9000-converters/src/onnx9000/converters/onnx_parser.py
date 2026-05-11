@@ -2,8 +2,6 @@
 
 import mmap
 import os
-import struct
-from typing import Any
 
 WIRETYPE_VARINT = 0
 WIRETYPE_FIXED64 = 1

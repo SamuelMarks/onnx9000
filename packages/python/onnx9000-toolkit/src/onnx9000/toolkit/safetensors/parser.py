@@ -141,9 +141,9 @@ class SafeTensors:
 
     def __init__(
         self,
-        data: Union[str, os.PathLike, bytes, io.IOBase],
+        data: str | os.PathLike | bytes | io.IOBase,
         mmap_hint: bool = True,
-        verify_hash: Optional[str] = None,
+        verify_hash: str | None = None,
     ):
         """Initialize the SafeTensors reader.
 
@@ -660,7 +660,7 @@ class SafeTensors:
         self._close()
 
 
-def save(tensors: dict[str, Any], metadata: Optional[dict[str, str]] = None) -> bytes:
+def save(tensors: dict[str, Any], metadata: dict[str, str] | None = None) -> bytes:
     """Serialize tensors and return raw bytes.
 
     Args:
@@ -791,7 +791,7 @@ def save(tensors: dict[str, Any], metadata: Optional[dict[str, str]] = None) -> 
 def save_file(
     tensors: dict[str, Any],
     filename: str,
-    metadata: Optional[dict[str, str]] = None,
+    metadata: dict[str, str] | None = None,
     overwrite: bool = True,
 ):
     """Save tensors to a file in safetensors format.
@@ -813,7 +813,7 @@ def save_file(
 
 
 def load_file(
-    filename: str, prefix: str = "", pattern: Optional[str] = None, device: str = "cpu"
+    filename: str, prefix: str = "", pattern: str | None = None, device: str = "cpu"
 ) -> dict[str, Any]:
     """Load tensors from a safetensors file.
 
@@ -847,7 +847,7 @@ def load_file(
     return result
 
 
-def load(data: bytes, prefix: str = "", pattern: Optional[str] = None) -> dict[str, Any]:
+def load(data: bytes, prefix: str = "", pattern: str | None = None) -> dict[str, Any]:
     """Load tensors from safetensors bytes.
 
     Args:
@@ -1082,7 +1082,7 @@ class SafeTensorsSharded:
 def save_sharded(
     tensors: dict[str, Any],
     base_dir: str,
-    metadata: Optional[dict[str, str]] = None,
+    metadata: dict[str, str] | None = None,
     max_shard_size: int = 10 * 1024 * 1024 * 1024,
     prefix: str = "model",
 ):

@@ -1,7 +1,5 @@
 """RNN layers."""
 
-from typing import Optional
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.core.dtypes import DType
@@ -43,7 +41,7 @@ class RNNBase(Module):
             self.bias_ih_l0 = Parameter((self.num_directions * hidden_size,), dtype, "bias_ih_l0")
             self.bias_hh_l0 = Parameter((self.num_directions * hidden_size,), dtype, "bias_hh_l0")
 
-    def forward(self, input: Tensor, hx: Optional[Tensor] = None) -> tuple[Tensor, Tensor]:
+    def forward(self, input: Tensor, hx: Tensor | None = None) -> tuple[Tensor, Tensor]:
         """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 
@@ -120,7 +118,7 @@ class LSTM(RNNBase):
         )
 
     def forward(
-        self, input: Tensor, hx: Optional[tuple[Tensor, Tensor]] = None
+        self, input: Tensor, hx: tuple[Tensor, Tensor] | None = None
     ) -> tuple[Tensor, tuple[Tensor, Tensor]]:
         """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
@@ -169,7 +167,7 @@ class GRU(RNNBase):
             dtype,
         )
 
-    def forward(self, input: Tensor, hx: Optional[Tensor] = None) -> tuple[Tensor, Tensor]:
+    def forward(self, input: Tensor, hx: Tensor | None = None) -> tuple[Tensor, Tensor]:
         """Implement the forward method."""
         from onnx9000.converters.frontend.utils import record_op
 

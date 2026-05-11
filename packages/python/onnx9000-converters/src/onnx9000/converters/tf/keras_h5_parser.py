@@ -1,7 +1,7 @@
 """Keras 2 H5 model parser."""
 
 import json
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 
@@ -16,7 +16,7 @@ from onnx9000.converters.tf.parsers import TFGraph, TFNode
 class KerasH5Parser:
     """Parser for Keras 2 H5 models."""
 
-    def __init__(self, filename: Optional[str] = None, data: Optional[bytes] = None) -> None:
+    def __init__(self, filename: str | None = None, data: bytes | None = None) -> None:
         """Initialize the Keras H5 parser."""
         if h5py is None:
             raise ImportError("h5py is required for KerasH5Parser.")

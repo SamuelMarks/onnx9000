@@ -6,7 +6,7 @@ build_wasm:
 
 docs: build_wasm
 	@echo "Generating Typedoc Markdown for JS API..."
-	export npm_config_yes=true && npx typedoc --options typedoc.json
+	pnpm exec typedoc --options typedoc.json
 	@echo "Building Sphinx documentation..."
 	uv run sphinx-build -M html docs docs/_build
 	@echo "Documentation built in docs/_build/html"

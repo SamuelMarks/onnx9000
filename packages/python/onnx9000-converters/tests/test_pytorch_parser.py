@@ -3,7 +3,6 @@
 import collections
 import io
 
-import pytest
 from onnx9000.converters.pytorch_parser import (
     RestrictedUnpickler,
     _rebuild_parameter,
@@ -75,7 +74,6 @@ def test_parse_pytorch_checkpoint_old():
     """Docstring for D103."""
     import io
     import pickle
-    import struct
 
     from onnx9000.converters.pytorch_parser import parse_pytorch_checkpoint
 
@@ -254,7 +252,6 @@ def test_pytorch_parser_old_format_storages():
 def test_parse_pytorch_checkpoint_zip_storage_missing_data_pkl():
     """Docstring for D103."""
     import io
-    import pickle
     import zipfile
 
     from onnx9000.converters.pytorch_parser import parse_pytorch_checkpoint
@@ -438,7 +435,6 @@ def test_restricted_unpickler_dummy_repr():
 
 def test_parse_pytorch_checkpoint_dict_like_bytes_fallback():
     """Docstring for D103."""
-    import io
 
     import pytest
     from onnx9000.converters.pytorch_parser import parse_pytorch_checkpoint

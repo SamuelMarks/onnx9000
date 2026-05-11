@@ -13,13 +13,14 @@
         --hover-accent: #005f9e;
         --drop-bg: #2d2d2d;
         --drop-hover: #3a3a3a;
-        --success-color: #4CAF50;
+        --success-color: #4caf50;
       }
 
       body {
         margin: 0;
         padding: 2rem;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-color);
       }
@@ -103,7 +104,7 @@
         display: flex;
         justify-content: space-between;
         padding: 0.5rem;
-        background: rgba(0,0,0,0.2);
+        background: rgba(0, 0, 0, 0.2);
         margin-bottom: 0.5rem;
         border-radius: 4px;
       }
@@ -135,7 +136,7 @@
         color: #888;
         cursor: not-allowed;
       }
-      
+
       button.success {
         background-color: var(--success-color);
       }
@@ -147,7 +148,7 @@
         padding: 1rem;
         height: 200px;
         overflow-y: auto;
-        font-family: "Consolas", "Monaco", monospace;
+        font-family: 'Consolas', 'Monaco', monospace;
         font-size: 0.9rem;
         margin-bottom: 2rem;
       }
@@ -157,10 +158,18 @@
         line-height: 1.4;
       }
 
-      .log-line.info { color: #d4d4d4; }
-      .log-line.success { color: #4CAF50; }
-      .log-line.warning { color: #ffeb3b; }
-      .log-line.error { color: #f44336; }
+      .log-line.info {
+        color: #d4d4d4;
+      }
+      .log-line.success {
+        color: #4caf50;
+      }
+      .log-line.warning {
+        color: #ffeb3b;
+      }
+      .log-line.error {
+        color: #f44336;
+      }
 
       .graph-preview {
         border: 1px solid var(--border-color);
@@ -173,7 +182,7 @@
         background-color: var(--drop-bg);
         color: #888;
       }
-      
+
       .hidden {
         display: none !important;
       }
@@ -195,6 +204,14 @@
             <option value="paddle">PaddlePaddle</option>
             <option value="keras">Keras</option>
             <option value="coreml">CoreML</option>
+            <option value="jax">JAX/Flax</option>
+            <option value="h2o">H2O MOJO</option>
+            <option value="libsvm">LibSVM</option>
+            <option value="sklearn">Scikit-Learn</option>
+            <option value="xgboost">XGBoost</option>
+            <option value="catboost">CatBoost</option>
+            <option value="lightgbm">LightGBM</option>
+            <option value="pyspark">PySpark</option>
           </select>
         </div>
 
@@ -213,8 +230,8 @@
       <div class="drop-zone" id="drop-zone">
         <p>Drag and drop model files here or click to select</p>
         <p class="hint" id="drop-hint">Requires: .prototxt and .caffemodel</p>
-        <input type="file" id="file-input" multiple style="display: none;" />
-        
+        <input type="file" id="file-input" multiple style="display: none" />
+
         <div class="files-list" id="files-list"></div>
       </div>
 

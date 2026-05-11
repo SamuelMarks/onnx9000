@@ -1,7 +1,7 @@
-@import url("css/variables.css");
-@import url("css/layout.css");
-@import url("css/canvas.css");
-@import url("css/components.css");
+@import url('css/variables.css');
+@import url('css/layout.css');
+@import url('css/canvas.css');
+@import url('css/components.css');
 
 /* Custom scrollbars for webkit */
 ::-webkit-scrollbar {
@@ -24,9 +24,25 @@
   scrollbar-color: var(--color-background-border) var(--color-background-secondary);
 }
 
-.ide-chat-container { font-family: sans-serif; background: var(--color-background-primary); }
-.ide-chat-msg { background: var(--color-background-secondary); }
-.ide-chat-input-area { background: var(--color-background-secondary); }
-.ide-chat-input { font-family: sans-serif; padding: 10px; border: 1px solid var(--color-background-border); border-radius: 4px; background: var(--color-background-primary); color: var(--color-foreground-primary); }
-.ide-chat-input:focus { outline: none; border-color: var(--color-primary); }
-
+.ide-chat-container {
+  font-family: sans-serif;
+  background: var(--color-background-primary);
+}
+.ide-chat-msg {
+  background: var(--color-background-secondary);
+}
+.ide-chat-input-area {
+  background: var(--color-background-secondary);
+}
+.ide-chat-input {
+  font-family: sans-serif;
+  padding: 10px;
+  border: 1px solid var(--color-background-border);
+  border-radius: 4px;
+  background: var(--color-background-primary);
+  color: var(--color-foreground-primary);
+}
+.ide-chat-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}

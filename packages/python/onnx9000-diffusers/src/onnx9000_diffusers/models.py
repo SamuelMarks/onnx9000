@@ -13,8 +13,8 @@ class AutoencoderKL:
         self.scaling_factor = scaling_factor
         self.channels = channels
         self.model_path = model_path
-        self._slice_size: Optional[int] = None
-        self._tile_size: Optional[int] = None
+        self._slice_size: int | None = None
+        self._tile_size: int | None = None
 
     def enable_slicing(self, slice_size: int = 1):
         """Enable VAE slicing to save VRAM by processing batches in smaller slices."""

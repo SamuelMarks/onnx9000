@@ -1,7 +1,8 @@
 """Pattern matcher."""
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from onnx9000.core.ir import Graph, Node
 
@@ -9,7 +10,7 @@ from onnx9000.core.ir import Graph, Node
 class Pattern:
     """Docstring for D101."""
 
-    def __init__(self, op_type: str, inputs: Optional[list[Any]] = None):
+    def __init__(self, op_type: str, inputs: list[Any] | None = None):
         """Docstring for D107."""
         self.op_type = op_type
         self.inputs = inputs or []
@@ -32,9 +33,9 @@ class PatternMatcherEngine:
 
     def __init__(self):
         """Docstring for D107."""
-        self.rules: list[tuple[Pattern, Callable[[Node], Optional[Node]]]] = []
+        self.rules: list[tuple[Pattern, Callable[[Node], Node | None]]] = []
 
-    def add_rule(self, pattern: Pattern, rewrite_fn: Callable[[Node], Optional[Node]]):
+    def add_rule(self, pattern: Pattern, rewrite_fn: Callable[[Node], Node | None]):
         """Docstring for D102."""
         self.rules.append((pattern, rewrite_fn))
 

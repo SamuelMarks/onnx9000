@@ -1,6 +1,6 @@
 """Paddle Vision, Text and Audio operations mapping."""
 
-from typing import Callable
+from collections.abc import Callable
 
 from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
