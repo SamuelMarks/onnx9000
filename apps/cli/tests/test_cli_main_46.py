@@ -8,6 +8,7 @@ from onnx9000_cli.main import main
 def test_coverage_gaps_cmd46():
     cmds = [
         ["apple", "test.onnx"],
+        ["webgpu", "test.onnx"],
         ["tensorrt", "test.onnx"],
         [
             "onnx2tf",

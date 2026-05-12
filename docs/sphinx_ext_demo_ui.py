@@ -77,7 +77,7 @@ def build_frontend(app: Sphinx) -> None:
     if not os.path.exists(dist_dir) or os.environ.get("FORCE_FRONTEND_BUILD") == "1":
         print("[onnx9000-demo] Building Vanilla JS frontend with Vite...")
         subprocess.check_call(
-            ["pnpm", "turbo", "run", "build", "--filter", "@onnx9000/sphinx-demo-ui"],
+            ["pnpm", "exec", "turbo", "run", "build", "--filter", "@onnx9000/sphinx-demo-ui"],
             cwd=repo_root,
         )
         print("[onnx9000-demo] Frontend build complete.")

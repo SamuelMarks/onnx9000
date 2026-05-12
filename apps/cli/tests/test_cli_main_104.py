@@ -85,6 +85,7 @@ def test_coverage_gaps_cmd104():
         ["cpu", "test.onnx"],
         ["cuda", "test.onnx"],
         ["apple", "test.onnx"],
+        ["webgpu", "test.onnx"],
         ["onnx2tf", "test.onnx", "out.pb", "--external-weights", "w.bin", "--progress", "--micro"],
         ["testing"],
         ["serve"],

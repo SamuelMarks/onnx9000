@@ -16,6 +16,7 @@ def test_coverage_gaps_cmd7():
         ["cpu", "test.onnx"],
         ["cuda", "test.onnx"],
         ["apple", "test.onnx"],
+        ["webgpu", "test.onnx"],
         ["onnx2tf", "test.onnx", "out"],
     ]
 

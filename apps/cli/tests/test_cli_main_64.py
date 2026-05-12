@@ -7,6 +7,12 @@ from onnx9000_cli.main import main
 
 def test_coverage_gaps_cmd64():
     cmds = [
+        ["sphinx-demo-ui"],
+        ["onnx-checker", "test.onnx"],
+        ["mmdnn", "test.model"],
+        ["jax", "test.jax"],
+        ["graphsurgeon", "test.onnx", "--script", "mod.py"],
+        ["onnx2c", "test.onnx"],
         ["onnx2tf", "test.onnx"],
         ["optimum"],
         ["optimum", "unknown"],

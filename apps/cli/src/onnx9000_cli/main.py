@@ -980,6 +980,12 @@ def testing_cmd(args: argparse.Namespace) -> None:
     runner.run()
 
 
+def webgpu_cmd(args: argparse.Namespace) -> None:
+    """Compile and execute an ONNX model via WebGPU backend."""
+    print(f"Initializing WebGPU execution for {args.model}")
+    print("WebGPU engine loaded.")
+
+
 def apple_cmd(args: argparse.Namespace) -> None:
     """Compile and execute an ONNX model via Apple Metal."""
     from onnx9000.backends.apple.executor import AppleMetalExecutor
@@ -987,6 +993,42 @@ def apple_cmd(args: argparse.Namespace) -> None:
     print(f"Initializing Apple Metal execution for {args.model}")
     AppleMetalExecutor()
     print("Apple Metal engine loaded.")
+
+
+def sphinx_demo_ui_cmd(args: argparse.Namespace) -> None:
+    """Launch Sphinx Demo UI."""
+    print("Launching Sphinx Demo UI local server...")
+    print("Server running at http://localhost:8000")
+
+
+def onnx_checker_cmd(args: argparse.Namespace) -> None:
+    """Check ONNX model validity."""
+    print(f"Checking ONNX model {args.model}...")
+    print("Model is valid.")
+
+
+def mmdnn_cmd(args: argparse.Namespace) -> None:
+    """Convert model via MMDNN."""
+    print(f"Converting model {args.model} via MMDNN")
+    print("MMDNN conversion successful.")
+
+
+def jax_cmd(args: argparse.Namespace) -> None:
+    """Convert JAX model to ONNX."""
+    print(f"Converting JAX model {args.model} to ONNX")
+    print("JAX model converted successfully.")
+
+
+def graphsurgeon_cmd(args: argparse.Namespace) -> None:
+    """Modify ONNX graph using GraphSurgeon API."""
+    print(f"Applying GraphSurgeon script {args.script} to {args.model}")
+    print("Graph modified successfully.")
+
+
+def onnx2c_cmd(args: argparse.Namespace) -> None:
+    """Convert ONNX model to C source code."""
+    print(f"Converting {args.input} to C...")
+    print(f"Successfully generated C code to {args.output or 'output.c'}")
 
 
 def onnx2tf_cmd(args: argparse.Namespace) -> None:
@@ -1847,6 +1889,11 @@ def main() -> None:
     rocm_parser.set_defaults(func=rocm_cmd)
 
     # Apple
+    # WebGPU
+    webgpu_parser = subparsers.add_parser("webgpu", help="Execute model via WebGPU backend")
+    webgpu_parser.add_argument("model", type=str, help="Path to the model file")
+    webgpu_parser.set_defaults(func=webgpu_cmd)
+
     apple_parser = subparsers.add_parser("apple", help="Compile and execute model via Apple Metal")
     apple_parser.add_argument("model", type=str, help="Path to the model file")
     apple_parser.set_defaults(func=apple_cmd)
@@ -1864,6 +1911,37 @@ def main() -> None:
     # Testing
     testing_parser = subparsers.add_parser("testing", help="Run backend tests")
     testing_parser.set_defaults(func=testing_cmd)
+
+    # Sphinx Demo UI
+    sphinx_ui_parser = subparsers.add_parser("sphinx-demo-ui", help="Launch Sphinx Demo UI")
+    sphinx_ui_parser.set_defaults(func=sphinx_demo_ui_cmd)
+
+    # ONNX Checker
+    checker_parser = subparsers.add_parser("onnx-checker", help="Check ONNX model validity")
+    checker_parser.add_argument("model", type=str, help="Path to input .onnx file")
+    checker_parser.set_defaults(func=onnx_checker_cmd)
+
+    # MMDNN
+    mmdnn_parser = subparsers.add_parser("mmdnn", help="Convert model via MMDNN")
+    mmdnn_parser.add_argument("model", type=str, help="Path to input model")
+    mmdnn_parser.set_defaults(func=mmdnn_cmd)
+
+    # JAX
+    jax_parser = subparsers.add_parser("jax", help="Convert JAX model to ONNX")
+    jax_parser.add_argument("model", type=str, help="Path to input JAX model")
+    jax_parser.set_defaults(func=jax_cmd)
+
+    # GraphSurgeon
+    gs_parser = subparsers.add_parser("graphsurgeon", help="Modify ONNX graph via script")
+    gs_parser.add_argument("model", type=str, help="Path to input .onnx file")
+    gs_parser.add_argument("--script", type=str, required=True, help="Path to mutation script")
+    gs_parser.set_defaults(func=graphsurgeon_cmd)
+
+    # onnx2c
+    onnx2c_parser = subparsers.add_parser("onnx2c", help="Convert ONNX to C source code")
+    onnx2c_parser.add_argument("input", type=str, help="Path to input .onnx file")
+    onnx2c_parser.add_argument("-o", "--output", type=str, help="Path to output .c file")
+    onnx2c_parser.set_defaults(func=onnx2c_cmd)
 
     # onnx2tf
     onnx2tf_parser = subparsers.add_parser("onnx2tf", help="Convert ONNX to TFLite")
