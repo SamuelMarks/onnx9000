@@ -4,7 +4,10 @@ version = "1.0.0"
 description = "PyTorch, TensorFlow, Scikit-Learn, and Legacy Model to ONNX Exporters"
 requires-python = ">=3.10"
 dependencies = [
-    "onnx9000-core"
+    "onnx9000-core",
+    "onnx9000-optimizer",
+    "onnx9000-backend-native",
+    "onnx9000-toolkit"
 ]
 
 [build-system]
@@ -17,3 +20,6 @@ packages = ["src/onnx9000"]
 [tool.uv.sources]
 onnx9000-core = { workspace = true }
 onnx9000-converters = { workspace = true }
+onnx9000-optimizer = { workspace = true }
+onnx9000-backend-native = { workspace = true }
+onnx9000-toolkit = { workspace = true }

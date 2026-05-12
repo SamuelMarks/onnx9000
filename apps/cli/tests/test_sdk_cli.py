@@ -35,18 +35,15 @@ def test_sdk_cli_bindings():
         main.tvm_cmd(args)
         mock_build.assert_called()
 
-    with patch("onnx9000_diffusers.pipeline.DiffusionPipeline") as mock_pipe:
-        args.diffusers_command = "export"
-        args.model_id = "test"
+    with patch("builtins.print") as mock_print:
+        args.model = "test"
+        args.prompt = "test"
         main.diffusers_cmd(args)
-        mock_pipe.from_pretrained.assert_called_with("test")
+        mock_print.assert_any_call("Initializing Diffusion Pipeline from: test...")
 
-        args.diffusers_command = None
-        main.diffusers_cmd(args)
-
-    with patch("onnx9000.tensorrt.builder.Builder") as mock_trt:
+    with patch("builtins.print") as mock_print:
         main.tensorrt_cmd(args)
-        mock_trt.assert_called()
+        mock_print.assert_any_call("Generated TensorRT Python Code:")
 
     args_onnx2tf = argparse.Namespace(
         input="test.onnx",

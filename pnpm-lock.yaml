@@ -109,6 +109,134 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0)
 
+  apps/demo-array:
+    dependencies:
+      '@onnx9000/array':
+        specifier: workspace:*
+        version: link:../../packages/js/array
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-autograd:
+    dependencies:
+      '@onnx9000/backend-web':
+        specifier: workspace:*
+        version: link:../../packages/js/backend-web
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-coreml:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/coreml':
+        specifier: workspace:*
+        version: link:../../packages/js/coreml
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-diffusers:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/diffusers':
+        specifier: workspace:*
+        version: link:../../packages/js/diffusers
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-graphsurgeon:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/modifier':
+        specifier: workspace:*
+        version: link:../../packages/js/modifier
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-hummingbird:
+    dependencies:
+      '@onnx9000/backend-web':
+        specifier: workspace:*
+        version: link:../../packages/js/backend-web
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-iree:
+    dependencies:
+      '@onnx9000/iree-compiler':
+        specifier: workspace:*
+        version: link:../../packages/js/iree-compiler
+      '@onnx9000/iree-runtime':
+        specifier: workspace:*
+        version: link:../../packages/js/iree-runtime
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-jax:
+    dependencies:
+      '@onnx9000/converters':
+        specifier: workspace:*
+        version: link:../../packages/js/converters
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
   apps/demo-json-extract:
     dependencies:
       '@onnx9000/core':
@@ -167,6 +295,67 @@ importers:
         specifier: ^5.4.11
         version: 5.4.11(@types/node@25.5.0)
 
+  apps/demo-serve:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/serve':
+        specifier: workspace:*
+        version: link:../../packages/js/serve
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-sparse:
+    dependencies:
+      '@onnx9000/backend-web':
+        specifier: workspace:*
+        version: link:../../packages/js/backend-web
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-tensorrt:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/tensorrt':
+        specifier: workspace:*
+        version: link:../../packages/js/tensorrt
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-tfjs-shim:
+    dependencies:
+      '@onnx9000/tfjs-shim':
+        specifier: workspace:*
+        version: link:../../packages/js/tfjs-shim
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
   apps/demo-tflite-converter:
     dependencies:
       '@onnx9000/converters':
@@ -183,6 +372,67 @@ importers:
         specifier: ^5.4.11
         version: 5.4.11(@types/node@25.5.0)
 
+  apps/demo-transformers:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/transformers':
+        specifier: workspace:*
+        version: link:../../packages/js/transformers
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-triton:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/triton-compiler':
+        specifier: workspace:*
+        version: link:../../packages/js/triton-compiler
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-tvm:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-webnn-polyfill:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+      '@onnx9000/webnn-polyfill':
+        specifier: workspace:*
+        version: link:../../packages/js/webnn-polyfill
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
   apps/demo-whisper-llm:
     dependencies:
       '@onnx9000/backend-web':
@@ -194,6 +444,19 @@ importers:
     devDependencies:
       typescript:
         specifier: ^5.0.0
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
+
+  apps/demo-zoo:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../../packages/js/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^5.4.11

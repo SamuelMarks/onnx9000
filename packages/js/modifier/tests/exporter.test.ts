@@ -106,7 +106,9 @@ describe('ModelExporter', () => {
   });
 
   it('239. saveSessionToLocalStorage stores graph summary', () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+    const mockStorage = { setItem: vi.fn(), getItem: vi.fn(), removeItem: vi.fn() };
+    Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
+    const setItemSpy = vi.spyOn(mockStorage, 'setItem');
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
 
     exporter.saveSessionToLocalStorage();

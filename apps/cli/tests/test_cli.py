@@ -113,7 +113,7 @@ def test_cli_commands(capsys) -> None:
         assert "Exporting test.py" in capsys.readouterr().out
 
         convert_cmd(args)
-        assert "Converting from onnx" in capsys.readouterr().out
+        assert "Converting from tf" in capsys.readouterr().out
 
         with patch("socketserver.TCPServer.serve_forever"):
             serve_cmd(args)

@@ -44,6 +44,8 @@ export * from './models/index.js';
 
 export * from './macros.js';
 
+export * from './codegen/pytorch.js';
+
 export * from './sharding.js';
 export { globalRegistry, register_op } from './ops/registry.js';
 export type { OpImplementation } from './ops/registry.js';

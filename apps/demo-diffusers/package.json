@@ -1,0 +1,18 @@
+{
+  "name": "demo-diffusers",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@onnx9000/diffusers": "workspace:*",
+    "@onnx9000/core": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "typescript": "^5.9.3"
+  }
+}

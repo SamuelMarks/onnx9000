@@ -80,6 +80,13 @@ def test_custom_handler():
                             "/mmdnn",
                             "/pytorch-codegen",
                             "/whisper-llm",
+                            "/tfjs-shim",
+                            "/iree",
+                            "/triton",
+                            "/coreml",
+                            "/tvm",
+                            "/tensorrt",
+                            "/diffusers",
                             "/other",
                         ]:
                             h.translate_path(p)

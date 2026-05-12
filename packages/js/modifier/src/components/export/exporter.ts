@@ -138,7 +138,11 @@ export class ModelExporter {
         nodes: this.mutator.graph.nodes.length,
         edges: this.mutator.graph.inputs.length + this.mutator.graph.outputs.length,
       };
-      localStorage.setItem('onnx_modifier_session_graph', JSON.stringify(skeleton));
+      if (window.localStorage) {
+        window.localStorage.setItem('onnx_modifier_session_graph', JSON.stringify(skeleton));
+      } else {
+        throw new Error('localStorage is not available');
+      }
       alert('Session state saved locally.');
     } catch (e) {
       alert('Failed to save session (might be too large).');

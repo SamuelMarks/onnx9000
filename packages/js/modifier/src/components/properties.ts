@@ -220,7 +220,7 @@ export class PropertiesPanel {
     copyBtn.onclick = () => {
       /* v8 ignore start */
       const attrs = JSON.stringify(node.attributes);
-      localStorage.setItem(
+      window.localStorage?.setItem(
         'copied_node_attributes',
         JSON.stringify({ opType: node.opType, attrs }),
       );
@@ -229,7 +229,7 @@ export class PropertiesPanel {
     /* v8 ignore stop */
     this.container.appendChild(copyBtn);
 
-    const pasteData = localStorage.getItem('copied_node_attributes');
+    const pasteData = window.localStorage?.getItem('copied_node_attributes');
     if (pasteData) {
       /* v8 ignore start */
       const parsed = JSON.parse(pasteData);

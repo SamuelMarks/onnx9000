@@ -2,6 +2,18 @@
 import { handleConvertCommand } from './commands/convert.js';
 import { handleInspectCommand } from './commands/inspect.js';
 import { handleOnnx2GgufCommand, handleGguf2OnnxCommand } from './commands/gguf.js';
+import { handleJsonExtractCommand } from './commands/json-extract.js';
+import { handlePytorchCodegenCommand } from './commands/pytorch-codegen.js';
+import { handleWhisperLlmCommand } from './commands/whisper-llm.js';
+import { handleLlamaWebCommand } from './commands/llama-web.js';
+import { handleTfjsShimCommand } from './commands/tfjs-shim.js';
+import { handleIreeCommand } from './commands/iree.js';
+import { handleTritonCommand } from './commands/triton.js';
+import { handleCoreMLCommand } from './commands/coreml.js';
+import { handleTvmCommand } from './commands/tvm.js';
+import { handleTensorRTCommand } from './commands/tensorrt.js';
+import { handleDiffusersCommand } from './commands/diffusers.js';
+import { handleTransformersCommand } from './commands/transformers.js';
 
 async function main() {
   const args = process.argv.slice(2);
@@ -9,10 +21,26 @@ async function main() {
     await handleConvertCommand(args.slice(1));
   } else if (args[0] === 'inspect') {
     await handleInspectCommand(args.slice(1));
+  } else if (args[0] === 'json-extract') {
+    await handleJsonExtractCommand(args.slice(1));
+  } else if (args[0] === 'pytorch-codegen') {
+    await handlePytorchCodegenCommand(args.slice(1));
+  } else if (args[0] === 'whisper-llm') {
+    await handleWhisperLlmCommand(args.slice(1));
+  } else if (args[0] === 'llama-web') {
+    await handleLlamaWebCommand(args.slice(1));
+  } else if (args[0] === 'tfjs-shim') {
+    handleTfjsShimCommand(args.slice(1));
   } else if (args[0] === 'onnx2gguf') {
     await handleOnnx2GgufCommand(args.slice(1));
   } else if (args[0] === 'gguf2onnx') {
     await handleGguf2OnnxCommand(args.slice(1));
+  } else if (args[0] === 'tvm') {
+    handleTvmCommand(args.slice(1));
+  } else if (args[0] === 'tensorrt') {
+    handleTensorRTCommand(args.slice(1));
+  } else if (args[0] === 'diffusers') {
+    handleDiffusersCommand(args.slice(1));
   } else if (args[0] === 'serve') {
     const serveModule = await import('@onnx9000/serve');
     serveModule.runCli(args.slice(1));
@@ -20,21 +48,21 @@ async function main() {
     const arrayModule = await import('@onnx9000/array');
     console.log('Loaded array module:', !!arrayModule);
   } else if (args[0] === 'iree') {
-    const ireeModule = await import('@onnx9000/iree-runtime');
-    console.log('Loaded iree-runtime module:', !!ireeModule);
+    await handleIreeCommand(args.slice(1));
   } else if (args[0] === 'tensorrt') {
     const tensorrtModule = await import('@onnx9000/tensorrt');
     console.log('Loaded tensorrt module:', !!tensorrtModule);
   } else if (args[0] === 'triton') {
-    const tritonModule = await import('@onnx9000/triton-compiler');
-    console.log('Loaded triton-compiler module:', !!tritonModule);
+    handleTritonCommand(args.slice(1));
   } else if (args[0] === 'openvino') {
     const ovModule = await import('@onnx9000/openvino-exporter');
     console.log('Loaded openvino-exporter module:', !!ovModule);
+  } else if (args[0] === 'transformers') {
+    await handleTransformersCommand(args.slice(1));
   } else {
     console.error('Usage: onnx9000 <command> [options]');
     console.error(
-      'Available commands: convert, inspect, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino',
+      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers',
     );
     process.exit(1);
   }

@@ -71,6 +71,10 @@ const frameworkRequirements: Record<string, { desc: string; check: (files: File[
     desc: 'Requires: .json (jaxpr text)',
     check: (files) => files.some((f) => f.name.endsWith('.json')),
   },
+  flax: {
+    desc: 'Requires: .msgpack or .json (Flax nnx state)',
+    check: (files) => files.some((f) => f.name.endsWith('.msgpack') || f.name.endsWith('.json')),
+  },
   h2o: {
     desc: 'Requires: .zip (MOJO file)',
     check: (files) => files.some((f) => f.name.endsWith('.zip')),
@@ -90,6 +94,10 @@ const frameworkRequirements: Record<string, { desc: string; check: (files: File[
   catboost: {
     desc: 'Requires: .json dump',
     check: (files) => files.some((f) => f.name.endsWith('.json')),
+  },
+  safetensors: {
+    desc: 'Requires: .safetensors',
+    check: (files) => files.some((f) => f.name.endsWith('.safetensors')),
   },
   lightgbm: {
     desc: 'Requires: .txt or .json',

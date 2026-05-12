@@ -68,13 +68,15 @@ def test_chunking_external_and_embed(tmp_path):
 
 def test_huggingface_download():
     """Test huggingface download."""
-    from unittest.mock import patch
+    import sys
+    from unittest.mock import MagicMock, patch
 
     from onnx9000.genai.huggingface import HuggingFaceIntegration
 
-    with patch("huggingface_hub.snapshot_download") as mock_snapshot:
+    mock_hf = MagicMock()
+    with patch.dict(sys.modules, {"huggingface_hub": mock_hf}):
         HuggingFaceIntegration.download_model("repo", "dir")
-        mock_snapshot.assert_called_once_with(repo_id="repo", local_dir="dir")
+        mock_hf.snapshot_download.assert_called_once_with(repo_id="repo", local_dir="dir")
 
 
 def test_model_unimplemented():

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ONNX9000 Autograd Engine Demo</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        padding: 20px;
+      }
+      .panel {
+        background: #f4f4f4;
+        padding: 15px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        min-height: 100px;
+        margin-bottom: 20px;
+      }
+      .btn {
+        padding: 10px 15px;
+        cursor: pointer;
+        background: #20344b;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-right: 10px;
+      }
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ONNX9000: Web Autograd Engine</h1>
+    <p>
+      This demo injects reverse-mode automatic differentiation nodes into an ONNX graph in the
+      browser.
+    </p>
+
+    <button id="grad-btn" class="btn">Generate Gradient Subgraph</button>
+
+    <h3>Autograd Output:</h3>
+    <div id="autograd-output" class="panel">Waiting...</div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

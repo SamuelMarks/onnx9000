@@ -21,6 +21,14 @@ test.describe('MMDNN Universal Converter Demo E2E', () => {
 
     await srcDropdown.selectOption('ncnn');
     await expect(page.locator('#drop-hint')).toHaveText('Requires: .param and .bin');
+
+    await srcDropdown.selectOption('flax');
+    await expect(page.locator('#drop-hint')).toHaveText(
+      'Requires: .msgpack or .json (Flax nnx state)',
+    );
+
+    await srcDropdown.selectOption('safetensors');
+    await expect(page.locator('#drop-hint')).toHaveText('Requires: .safetensors');
   });
 
   test('Uploading incorrect files disables convert button', async ({ page }) => {

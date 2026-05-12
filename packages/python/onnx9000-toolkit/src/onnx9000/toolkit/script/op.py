@@ -51,6 +51,8 @@ class OpNamespace:
 
     def __getattr__(self, op_type: str) -> Any:
         """Return a generator function for constructing an ONNX node of the specified op_type."""
+        if op_type.startswith("_"):
+            raise AttributeError(f"OpNamespace has no attribute '{op_type}'")
 
         def _node_builder(*args: Any, **kwargs: Any) -> Var | tuple[Var, ...]:
             """Construct and adds an ONNX node to the currently active GraphBuilder."""

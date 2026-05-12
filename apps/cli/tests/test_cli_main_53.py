@@ -45,6 +45,13 @@ def test_translate_path():
                         "/mmdnn",
                         "/pytorch-codegen",
                         "/whisper-llm",
+                        "/tfjs-shim",
+                        "/iree",
+                        "/triton",
+                        "/coreml",
+                        "/tvm",
+                        "/tensorrt",
+                        "/diffusers",
                         "/demo-ui/some.js",
                         "/other",
                     ]:

@@ -179,3 +179,12 @@ describe('WASMWVMInterpreter', () => {
     expect(() => vm.run()).toThrow('WASM Aborted');
   });
 });
+
+it('covers runSync web.vm.add.i32 out of bounds', () => {
+  const mod = new Module();
+  const ctx = new Context(mod);
+  // Add opcode but missing rhs/lhs
+  const bc = new Uint8Array([0x57, 0x56, 0x4d, 0x30, 0x04, 0x01, 0x02]);
+  const interp = new WVMInterpreter(bc, ctx);
+  expect(() => interp.runSync()).toThrow('Bytecode out of bounds');
+});
