@@ -14,6 +14,17 @@ import { handleTvmCommand } from './commands/tvm.js';
 import { handleTensorRTCommand } from './commands/tensorrt.js';
 import { handleDiffusersCommand } from './commands/diffusers.js';
 import { handleTransformersCommand } from './commands/transformers.js';
+import { handleEditCommand } from './commands/edit.js';
+import { handleAutogradCommand } from './commands/autograd.js';
+import { handleZooCommand } from './commands/zoo.js';
+import { handleHummingbirdCommand } from './commands/hummingbird.js';
+import { handleSparseCommand } from './commands/sparse.js';
+import { handleOptimumCommand } from './commands/optimum.js';
+import { handleSphinxDemoUICommand } from './commands/sphinx-demo-ui.js';
+import { handleExportCommand } from './commands/export.js';
+import { handleOnnx2TfCommand } from './commands/onnx2tf.js';
+import { handleOptimizeCommand } from './commands/optimize.js';
+import { handleSimplifyCommand } from './commands/simplify.js';
 
 async function main() {
   const args = process.argv.slice(2);
@@ -49,9 +60,6 @@ async function main() {
     console.log('Loaded array module:', !!arrayModule);
   } else if (args[0] === 'iree') {
     await handleIreeCommand(args.slice(1));
-  } else if (args[0] === 'tensorrt') {
-    const tensorrtModule = await import('@onnx9000/tensorrt');
-    console.log('Loaded tensorrt module:', !!tensorrtModule);
   } else if (args[0] === 'triton') {
     handleTritonCommand(args.slice(1));
   } else if (args[0] === 'openvino') {
@@ -59,10 +67,34 @@ async function main() {
     console.log('Loaded openvino-exporter module:', !!ovModule);
   } else if (args[0] === 'transformers') {
     await handleTransformersCommand(args.slice(1));
+  } else if (args[0] === 'coreml') {
+    await handleCoreMLCommand(args.slice(1));
+  } else if (args[0] === 'edit') {
+    await handleEditCommand(args.slice(1));
+  } else if (args[0] === 'autograd') {
+    await handleAutogradCommand(args.slice(1));
+  } else if (args[0] === 'zoo') {
+    await handleZooCommand(args.slice(1));
+  } else if (args[0] === 'hummingbird') {
+    await handleHummingbirdCommand(args.slice(1));
+  } else if (args[0] === 'sparse') {
+    await handleSparseCommand(args.slice(1));
+  } else if (args[0] === 'optimum') {
+    await handleOptimumCommand(args.slice(1));
+  } else if (args[0] === 'sphinx-demo-ui') {
+    await handleSphinxDemoUICommand(args.slice(1));
+  } else if (args[0] === 'export') {
+    await handleExportCommand(args.slice(1));
+  } else if (args[0] === 'onnx2tf') {
+    await handleOnnx2TfCommand(args.slice(1));
+  } else if (args[0] === 'optimize') {
+    await handleOptimizeCommand(args.slice(1));
+  } else if (args[0] === 'simplify') {
+    await handleSimplifyCommand(args.slice(1));
   } else {
     console.error('Usage: onnx9000 <command> [options]');
     console.error(
-      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers',
+      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers, coreml, edit, autograd, zoo, hummingbird, sparse, optimum, sphinx-demo-ui, export, onnx2tf, optimize, simplify',
     );
     process.exit(1);
   }

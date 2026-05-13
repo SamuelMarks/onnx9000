@@ -1,24 +1,21 @@
+# ONNX9000 Internal API Documentation
 
-ONNX9000 Internal API Documentation
-===================================
+## Tensor
 
-
-Tensor
-------
 Generated documentation for Tensor
 
-Graph
------
+## Graph
+
 Generated documentation for Graph
 
-Node
-----
+## Node
+
 Generated documentation for Node
 
-ConvND
-------
+## ConvND
+
 Generated documentation for ConvND
 
-Gemm
-----
+## Gemm
+
 Generated documentation for Gemm

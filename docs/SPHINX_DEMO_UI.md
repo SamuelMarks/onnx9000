@@ -21,3 +21,25 @@ onnx9000 sphinx-demo-ui
 ```
 
 This will start a local HTTP server and open the interactive environment in your default web browser.
+
+## Python SDK (Sphinx Extension)
+
+To integrate the Demo UI into your own Sphinx documentation, you can use the `onnx9000-sphinx-demo` Python SDK package.
+
+1. Add it to your `extensions` in `conf.py`:
+
+   ```python
+   extensions = [
+       "onnx9000.sphinx_demo",
+       # ... other extensions
+   ]
+   ```
+
+2. Use the directive in your RST or Markdown (via MyST) files:
+   ```rst
+   .. interactive-demo::
+      :initial-source: keras
+      :initial-target: onnx
+   ```
+
+This SDK handles the automatic build of the Vanilla TypeScript frontend and transparently injects the required assets into Sphinx's `_static` build directory.

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 20px; background: #f0f0f0; }
+      .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+      h1 { color: #333; }
+      textarea { width: 100%; height: 100px; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+      button { padding: 10px 20px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover { background: #0052a3; }
+      #output { margin-top: 20px; padding: 10px; background: #e6f2ff; border: 1px solid #b3d9ff; border-radius: 4px; min-height: 50px; white-space: pre-wrap;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ONNX9000 Agent Workflow Demo</h1>
+      <p>This demo uses the <code>AgentRunner</code> from <code>@onnx9000/core</code> to run an autonomous Reason+Act loop in the browser using <code>@onnx9000/backend-web</code>.</p>
+      
+      <textarea id="prompt" placeholder="Enter a task for the agent...">Calculate the 10th fibonacci number.</textarea>
+      <button id="runBtn">Run Agent</button>
+      
+      <div id="output">Waiting for input...</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

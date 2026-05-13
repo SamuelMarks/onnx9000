@@ -16,7 +16,7 @@ copyright = "2026, Samuel"
 author = "Samuel"
 
 extensions = [
-    "sphinx_ext_demo_ui",
+    "onnx9000.sphinx_demo",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",

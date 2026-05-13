@@ -1,7 +1,3 @@
----
-orphan: true
----
-
 # JSON Extraction (`json-extract`)
 
 ONNX9000 allows you to extract the full topology, metadata, and structural graph of an ONNX file into a standard, human-readable JSON format.
@@ -22,53 +18,62 @@ onnx9000 json-extract my_model.onnx -o output.json
 
 ## Python SDK
 
-In Python, you can utilize the core parser to load the graph and serialize it to JSON:
+In Python, the `onnx9000-json-extract` package provides a straightforward way to extract a JSON string representation from a loaded AST `Graph`. It automatically drops massive tensor buffers to keep the output readable and lightweight.
 
 ```python
-import json
 from onnx9000.core.parser.core import load
+from onnx9000.json_extract import extract_json
 
+# 1. Load the ONNX model into a Graph
 graph = load("my_model.onnx")
 
-def custom_serializer(obj):
-    if isinstance(obj, (bytes, bytearray)):
-        return f"[Buffer: {len(obj)} bytes]"
-    if hasattr(obj, "__dict__"):
-        return {k: v for k, v in obj.__dict__.items() if not k.startswith("_")}
-    if isinstance(obj, set):
-        return list(obj)
-    return str(obj)
+# 2. Extract JSON (automatically replaces raw buffers)
+json_data = extract_json(graph, indent=2)
 
-json_data = json.dumps(graph, default=custom_serializer, indent=2)
 print(json_data)
 ```
 
 ## JavaScript/TypeScript SDK
 
-In the browser or Node.js, the `load` method natively returns a JavaScript object that can be stringified:
+In the browser or Node.js, the `@onnx9000/json-extract` package provides a programmatic way to serialize the loaded AST while safely handling `BigInt` values and dropping large `ArrayBuffer` items for efficiency.
 
 ```typescript
 import { load } from '@onnx9000/core';
+import { extractJson } from '@onnx9000/json-extract';
 import * as fs from 'fs';
 
 const arrayBuffer = fs.readFileSync('my_model.onnx').buffer;
 const graph = await load(arrayBuffer);
 
-const jsonString = JSON.stringify(
-  graph,
-  (key, value) => {
-    if (key === 'data' && ArrayBuffer.isView(value)) {
-      return `[Buffer: ${value.byteLength} bytes]`;
-    }
-    if (typeof value === 'bigint') {
-      return value.toString() + 'n';
-    }
-    return value;
-  },
-  2,
-);
+// By default, drops buffers and replaces them with a summary like '[Buffer: 1024 bytes]'
+const jsonString = extractJson(graph, {
+  dropBuffers: true,
+  spaces: 2,
+});
 
 console.log(jsonString);
+```
+
+### Advanced TypeScript Options
+
+You can customize how buffers are dropped by supplying a custom `bufferReplacer`:
+
+```typescript
+import { extractJson, createOnnxJsonReplacer } from '@onnx9000/json-extract';
+
+const jsonString = extractJson(graph, {
+  dropBuffers: true,
+  bufferReplacer: (val) => `<Dropped ${val.byteLength} bytes for UI brevity>`,
+});
+```
+
+Or you can use `createOnnxJsonReplacer()` directly if you want to perform your own `JSON.stringify`:
+
+```typescript
+import { createOnnxJsonReplacer } from '@onnx9000/json-extract';
+
+const replacer = createOnnxJsonReplacer({ dropBuffers: true });
+const customString = JSON.stringify(graph, replacer, 4);
 ```
 
 ## Interactive Web Demo
