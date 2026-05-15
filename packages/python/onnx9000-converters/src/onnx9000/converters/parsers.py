@@ -56,11 +56,11 @@ class JAXprParser(BaseParser):
     def parse(self, model: Any) -> Graph:
         """Parses a closed_jaxpr or dict jaxpr."""
         if isinstance(model, dict):
-            from onnx9000.converters.jax.importer import load_jax
+            from onnx9000.jax.importer import load_jax
 
             return load_jax(model)
         else:
-            from onnx9000.converters.jax.jax_importer import JAXImporter
+            from onnx9000.jax.jax_importer import JAXImporter
 
             importer = JAXImporter()
             # Handle actual jaxpr object, assuming consts are empty or accessible

@@ -297,13 +297,13 @@ def test_coverage_gaps_cmd104():
                     compile_cpp=MagicMock(return_value="out.cpp"),
                     compile_wasm=MagicMock(return_value="out.js"),
                 ),
-                "onnx9000.backends.rocm.executor": MagicMock(ROCmExecutor=MagicMock()),
+                "onnx9000.backends.rocm.executor": MagicMock(Dispatcher=MagicMock()),
                 "onnx9000.backends.cpu.executor": MagicMock(CPUExecutor=MagicMock()),
-                "onnx9000.backends.cuda.executor": MagicMock(CUDAExecutor=MagicMock()),
+                "onnx9000.backends.cuda.executor": MagicMock(Dispatcher=MagicMock()),
                 "onnx9000.toolkit.testing.runner": MagicMock(
                     BackendTestRunner=MagicMock(return_value=MagicMock(run=MagicMock()))
                 ),
-                "onnx9000.backends.apple.executor": MagicMock(AppleMetalExecutor=MagicMock()),
+                "onnx9000.backends.apple.executor": MagicMock(Dispatcher=MagicMock()),
                 "onnx9000.tf.exporter": MagicMock(export_to_tf=MagicMock()),
                 "onnx9000.openvino.exporter": MagicMock(
                     OpenVinoExporter=MagicMock(

@@ -144,6 +144,9 @@ We have successfully implemented:
    PROGRESSIVE_LOADING.md
    TRITON_MAPPING.md
    TUTORIAL_SPARSE.md
+   HEADLESS_MODIFIERS.md
+   EXTENDED_CONVERTERS.md
+   CLI_UTILITIES.md
 
 .. toctree::
    :hidden:

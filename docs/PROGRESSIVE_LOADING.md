@@ -50,3 +50,7 @@ const session = await loadProgressive('https://models.onnx9000.ai/llama3-8b.onnx
 // Weights are fetched lazily during the first run
 const result = await session.run(inputs);
 ```
+
+.. interactive-demo::
+   :initial-source: script
+   :initial-target: onnx

@@ -29,3 +29,7 @@ Once an architecture is mapped to the core IR, it is automatically compatible wi
 - **Web-Native:** via `@onnx9000/backend-web` for zero-dependency WebGPU and WebNN execution.
 - **AOT Compilation:** via `@onnx9000/compiler` to generate `.wvm` or C++ binaries.
 - **Format Export:** via `onnx9000-onnx2gguf`, `@onnx9000/coreml`, or `onnx9000-tflite-exporter`.
+
+.. interactive-demo::
+   :initial-source: script
+   :initial-target: onnx

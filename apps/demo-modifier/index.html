@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Headless Graph Modifiers Demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 20px; background: #f0f0f0; }
+      .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+      h1 { color: #333; }
+      .controls { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+      input, button { padding: 8px; margin: 4px 0; }
+      button { background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover { background: #0052a3; }
+      #output { margin-top: 20px; padding: 10px; background: #e6f2ff; border: 1px solid #b3d9ff; border-radius: 4px; min-height: 50px; white-space: pre-wrap;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Headless Graph Modifiers</h1>
+      <p>This demo uses <code>@onnx9000/modifier</code> to perform headless graph modifications directly in the browser.</p>
+      
+      <div class="controls">
+        <h3>1. Initialize Graph</h3>
+        <button id="btnInit">Create Mock Graph</button>
+      </div>
+
+      <div class="controls">
+        <h3>2. Rename Input</h3>
+        <input type="text" id="oldInput" placeholder="Old name (e.g. input_0)" value="input_0" />
+        <input type="text" id="newInput" placeholder="New name" value="images" />
+        <button id="btnRename">Rename Input</button>
+      </div>
+
+      <div class="controls">
+        <h3>3. Change Batch Size</h3>
+        <input type="text" id="batchSize" placeholder="Batch Size" value="32" />
+        <button id="btnBatch">Change Batch</button>
+      </div>
+
+      <div id="output">Graph not initialized.</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

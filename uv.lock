@@ -10,12 +10,17 @@ resolution-markers = [
 [manifest]
 members = [
     "onnx9000-array",
+    "onnx9000-backend-apple",
+    "onnx9000-backend-cuda",
     "onnx9000-backend-native",
+    "onnx9000-backend-rocm",
+    "onnx9000-backend-webgpu",
     "onnx9000-c-compiler",
     "onnx9000-cli",
     "onnx9000-converters",
     "onnx9000-core",
     "onnx9000-diffusers",
+    "onnx9000-jax",
     "onnx9000-json-extract",
     "onnx9000-onnx2gguf",
     "onnx9000-openvino",
@@ -1223,6 +1228,50 @@ requires-dist = [
 ]
 
 [[package]]
+name = "onnx9000-backend-apple"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-backend-apple" }
+dependencies = [
+    { name = "onnx9000-backend-native" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0" },
+]
+provides-extras = ["test"]
+
+[[package]]
+name = "onnx9000-backend-cuda"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-backend-cuda" }
+dependencies = [
+    { name = "onnx9000-backend-native" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0" },
+]
+provides-extras = ["test"]
+
+[[package]]
 name = "onnx9000-backend-native"
 version = "1.0.0"
 source = { editable = "packages/python/onnx9000-backend-native" }
@@ -1232,6 +1281,50 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-backend-rocm"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-backend-rocm" }
+dependencies = [
+    { name = "onnx9000-backend-native" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0" },
+]
+provides-extras = ["test"]
+
+[[package]]
+name = "onnx9000-backend-webgpu"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-backend-webgpu" }
+dependencies = [
+    { name = "onnx9000-backend-native" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0" },
+]
+provides-extras = ["test"]
 
 [[package]]
 name = "onnx9000-c-compiler"
@@ -1250,11 +1343,16 @@ version = "1.0.0"
 source = { editable = "apps/cli" }
 dependencies = [
     { name = "onnx9000-array" },
+    { name = "onnx9000-backend-apple" },
+    { name = "onnx9000-backend-cuda" },
     { name = "onnx9000-backend-native" },
+    { name = "onnx9000-backend-rocm" },
+    { name = "onnx9000-backend-webgpu" },
     { name = "onnx9000-c-compiler" },
     { name = "onnx9000-converters" },
     { name = "onnx9000-core" },
     { name = "onnx9000-diffusers" },
+    { name = "onnx9000-jax" },
     { name = "onnx9000-onnx2gguf" },
     { name = "onnx9000-openvino" },
     { name = "onnx9000-optimizer" },
@@ -1269,11 +1367,16 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "onnx9000-array", editable = "packages/python/onnx9000-array" },
+    { name = "onnx9000-backend-apple", editable = "packages/python/onnx9000-backend-apple" },
+    { name = "onnx9000-backend-cuda", editable = "packages/python/onnx9000-backend-cuda" },
     { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
+    { name = "onnx9000-backend-rocm", editable = "packages/python/onnx9000-backend-rocm" },
+    { name = "onnx9000-backend-webgpu", editable = "packages/python/onnx9000-backend-webgpu" },
     { name = "onnx9000-c-compiler", editable = "packages/python/onnx9000-c-compiler" },
     { name = "onnx9000-converters", editable = "packages/python/onnx9000-converters" },
     { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
     { name = "onnx9000-diffusers", editable = "packages/python/onnx9000-diffusers" },
+    { name = "onnx9000-jax", editable = "packages/python/onnx9000-jax" },
     { name = "onnx9000-onnx2gguf", editable = "packages/python/onnx9000-onnx2gguf" },
     { name = "onnx9000-openvino", editable = "packages/python/onnx9000-openvino" },
     { name = "onnx9000-optimizer", editable = "packages/python/onnx9000-optimizer" },
@@ -1292,6 +1395,7 @@ source = { editable = "packages/python/onnx9000-converters" }
 dependencies = [
     { name = "onnx9000-backend-native" },
     { name = "onnx9000-core" },
+    { name = "onnx9000-jax" },
     { name = "onnx9000-optimizer" },
     { name = "onnx9000-toolkit" },
 ]
@@ -1300,6 +1404,7 @@ dependencies = [
 requires-dist = [
     { name = "onnx9000-backend-native", editable = "packages/python/onnx9000-backend-native" },
     { name = "onnx9000-core", editable = "packages/python/onnx9000-core" },
+    { name = "onnx9000-jax", editable = "packages/python/onnx9000-jax" },
     { name = "onnx9000-optimizer", editable = "packages/python/onnx9000-optimizer" },
     { name = "onnx9000-toolkit", editable = "packages/python/onnx9000-toolkit" },
 ]
@@ -1330,6 +1435,28 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "onnx9000-core", editable = "packages/python/onnx9000-core" }]
+
+[[package]]
+name = "onnx9000-jax"
+version = "1.0.0"
+source = { editable = "packages/python/onnx9000-jax" }
+dependencies = [
+    { name = "onnx9000-converters" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "onnx9000-converters", editable = "packages/python/onnx9000-converters" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0" },
+]
+provides-extras = ["test"]
 
 [[package]]
 name = "onnx9000-json-extract"

@@ -25,6 +25,18 @@ import { handleExportCommand } from './commands/export.js';
 import { handleOnnx2TfCommand } from './commands/onnx2tf.js';
 import { handleOptimizeCommand } from './commands/optimize.js';
 import { handleSimplifyCommand } from './commands/simplify.js';
+import { handleAgentCommand } from './commands/agent.js';
+import { handleAppleCommand } from './commands/apple.js';
+import { handleOnnx2cCommand } from './commands/onnx2c.js';
+import { handleCudaCommand } from './commands/cuda.js';
+import { handleJaxCommand } from './commands/jax.js';
+import { handleMmdnnCommand } from './commands/mmdnn.js';
+import { handleRocmCommand } from './commands/rocm.js';
+import { handleWasmCommand } from './commands/wasm.js';
+import { handleWebgpuCommand } from './commands/webgpu.js';
+import { handleWebnnPolyfillCommand } from './commands/webnn-polyfill.js';
+import { handleOnnxCheckerCommand } from './commands/onnx-checker.js';
+import { handleScriptCommand } from './commands/script.js';
 
 async function main() {
   const args = process.argv.slice(2);
@@ -91,10 +103,34 @@ async function main() {
     await handleOptimizeCommand(args.slice(1));
   } else if (args[0] === 'simplify') {
     await handleSimplifyCommand(args.slice(1));
+  } else if (args[0] === 'agent') {
+    handleAgentCommand(args.slice(1));
+  } else if (args[0] === 'apple') {
+    handleAppleCommand(args.slice(1));
+  } else if (args[0] === 'onnx2c') {
+    handleOnnx2cCommand(args.slice(1));
+  } else if (args[0] === 'cuda') {
+    handleCudaCommand(args.slice(1));
+  } else if (args[0] === 'jax') {
+    handleJaxCommand(args.slice(1));
+  } else if (args[0] === 'mmdnn') {
+    handleMmdnnCommand(args.slice(1));
+  } else if (args[0] === 'rocm') {
+    handleRocmCommand(args.slice(1));
+  } else if (args[0] === 'wasm') {
+    handleWasmCommand(args.slice(1));
+  } else if (args[0] === 'webgpu') {
+    handleWebgpuCommand(args.slice(1));
+  } else if (args[0] === 'webnn-polyfill') {
+    handleWebnnPolyfillCommand(args.slice(1));
+  } else if (args[0] === 'onnx-checker') {
+    handleOnnxCheckerCommand(args.slice(1));
+  } else if (args[0] === 'script') {
+    handleScriptCommand(args.slice(1));
   } else {
     console.error('Usage: onnx9000 <command> [options]');
     console.error(
-      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers, coreml, edit, autograd, zoo, hummingbird, sparse, optimum, sphinx-demo-ui, export, onnx2tf, optimize, simplify',
+      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers, coreml, edit, autograd, zoo, hummingbird, sparse, optimum, sphinx-demo-ui, export, onnx2tf, optimize, simplify, agent, apple, onnx2c, cuda, jax, mmdnn, onnx-checker, script',
     );
     process.exit(1);
   }
@@ -103,3 +139,4 @@ async function main() {
 if (require.main === module) {
   main().catch(console.error);
 }
+export { handleScriptCommand } from './commands/script.js';

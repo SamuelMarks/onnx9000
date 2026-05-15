@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Extended Format Converters Demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 20px; background: #f0f0f0; }
+      .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+      h1 { color: #333; }
+      .controls { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+      select, button, input { padding: 8px; margin: 4px 0; }
+      button { background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover { background: #0052a3; }
+      #output { margin-top: 20px; padding: 10px; background: #e6f2ff; border: 1px solid #b3d9ff; border-radius: 4px; min-height: 50px; white-space: pre-wrap;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Extended Format Converters</h1>
+      <p>This demo uses <code>@onnx9000/converters</code> to translate multi-framework models entirely in the browser.</p>
+      
+      <div class="controls">
+        <h3>1. Select Source Framework</h3>
+        <select id="srcFramework">
+          <option value="keras">Keras</option>
+          <option value="mxnet">MXNet</option>
+          <option value="paddle">PaddlePaddle</option>
+          <option value="xgboost">XGBoost</option>
+          <option value="darknet">Darknet</option>
+        </select>
+        
+        <h3>2. Target Framework</h3>
+        <select id="dstFramework">
+          <option value="onnx">ONNX</option>
+          <option value="coreml">CoreML</option>
+        </select>
+        
+        <h3>3. Upload Files</h3>
+        <input type="file" id="fileInput" multiple />
+        <br />
+        <button id="btnConvert">Convert Model</button>
+      </div>
+
+      <div id="output">Waiting for conversion...</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

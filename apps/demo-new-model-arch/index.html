@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Model Architecture Demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #333;
+      }
+      h1 {
+        color: #0056b3;
+      }
+      .panel {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f9f9f9;
+      }
+      button {
+        background-color: #0056b3;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-right: 0.5rem;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      button:hover:not(:disabled) {
+        background-color: #004494;
+      }
+      #output {
+        white-space: pre-wrap;
+        background-color: #eee;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        min-height: 150px;
+      }
+      textarea {
+        width: 100%;
+        height: 120px;
+        font-family: monospace;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>New Model Architecture Integration</h1>
+    <p>This demo illustrates parsing a custom framework graph (e.g., PyTorch AST) and lowering it to the standard ONNX9000 IR using zero-dependency JavaScript components.</p>
+    
+    <div class="panel">
+      <h3>Custom Architecture Definition</h3>
+      <textarea id="archInput">
+// Custom Model Definition
+class CustomViT {
+  constructor() {
+    this.name = "MyCustomVisionTransformer";
+    this.layers = 12;
+    this.heads = 8;
+  }
+}
+      </textarea>
+      <button id="parseBtn">Parse & Lower to IR</button>
+      <button id="resetBtn" disabled>Reset</button>
+    </div>
+
+    <div class="panel">
+      <h3>Compiler Output</h3>
+      <div id="output">Ready. Click "Parse & Lower to IR" to start.</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

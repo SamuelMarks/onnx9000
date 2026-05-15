@@ -7,7 +7,8 @@ dependencies = [
     "onnx9000-core",
     "onnx9000-optimizer",
     "onnx9000-backend-native",
-    "onnx9000-toolkit"
+    "onnx9000-toolkit",
+    "onnx9000-jax"
 ]
 
 [build-system]
@@ -23,3 +24,4 @@ onnx9000-converters = { workspace = true }
 onnx9000-optimizer = { workspace = true }
 onnx9000-backend-native = { workspace = true }
 onnx9000-toolkit = { workspace = true }
+onnx9000-jax = { workspace = true }

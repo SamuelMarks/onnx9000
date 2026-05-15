@@ -19,3 +19,7 @@ Unlike traditional runtimes that bundle heavy protobuf libraries and C++ runtime
 2. **Quantization:** Leverage `onnx9000-optimizer` to convert models to INT8, INT4, or GGUF formats, drastically reducing memory footprint.
 3. **Progressive Loading:** Use `@onnx9000/core` to stream model weights into memory only when needed, as detailed in `docs/PROGRESSIVE_LOADING.md`.
 4. **Platform Native Backends:** Export models specifically for target hardware using `@onnx9000/coreml` (iOS/macOS) or `onnx9000-tflite-exporter` (Android/EdgeTPU).
+
+.. interactive-demo::
+   :initial-source: script
+   :initial-target: onnx

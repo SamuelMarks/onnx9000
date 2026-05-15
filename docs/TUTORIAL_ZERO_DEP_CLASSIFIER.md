@@ -44,3 +44,7 @@ Traditional runtimes like ONNX Runtime or TensorFlow.js can be tens of megabytes
 - **No External Dependencies:** No need for heavy Protobuf libraries or complex C++ bindings.
 
 You now have a production-ready, ultra-lightweight image classifier!
+
+.. interactive-demo::
+   :initial-source: script
+   :initial-target: onnx

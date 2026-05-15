@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Optimizer Demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #333;
+      }
+      h1 {
+        color: #0056b3;
+      }
+      .panel {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f9f9f9;
+      }
+      button {
+        background-color: #0056b3;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-right: 0.5rem;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      button:hover:not(:disabled) {
+        background-color: #004494;
+      }
+      #output {
+        white-space: pre-wrap;
+        background-color: #eee;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        min-height: 150px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ONNX Graph Optimizer Demo</h1>
+    <p>This demo visualizes the onnx9000-optimizer pipeline executing standard graph transformation passes to eliminate dead nodes and fuse operations.</p>
+    
+    <div class="panel">
+      <h3>Optimizer Options</h3>
+      <label for="modelPath">Input ONNX Model</label>
+      <input type="text" id="modelPath" value="raw_model.onnx" />
+      
+      <label for="outputPath">Output ONNX Model</label>
+      <input type="text" id="outputPath" value="raw_model_opt.onnx" />
+      
+      <label for="passes">Optimization Passes</label>
+      <input type="text" id="passes" value="fuse_bn_into_conv,eliminate_deadend" />
+      
+      <button id="optimizeBtn">Run Optimizer</button>
+      <button id="resetBtn" disabled>Reset</button>
+    </div>
+
+    <div class="panel">
+      <h3>Terminal Output</h3>
+      <div id="output">Waiting to optimize...</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

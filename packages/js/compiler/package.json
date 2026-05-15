@@ -5,6 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "bin": {
+    "onnx9000-compiler": "dist/cli/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",

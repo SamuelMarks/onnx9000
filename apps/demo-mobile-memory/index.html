@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Memory Arena Demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #333;
+      }
+      h1 {
+        color: #0056b3;
+      }
+      .panel {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f9f9f9;
+      }
+      button {
+        background-color: #0056b3;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-right: 0.5rem;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      button:hover:not(:disabled) {
+        background-color: #004494;
+      }
+      .arena {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        background: #e9ecef;
+        padding: 8px;
+        border-radius: 4px;
+        min-height: 100px;
+      }
+      .memory-block {
+        background-color: #28a745;
+        color: white;
+        font-size: 0.75rem;
+        padding: 4px;
+        border-radius: 2px;
+        min-width: 40px;
+        text-align: center;
+        opacity: 0.8;
+      }
+      .memory-block.allocated {
+        background-color: #dc3545;
+      }
+      #output {
+        white-space: pre-wrap;
+        background-color: #eee;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        min-height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mobile Memory Best Practices</h1>
+    <p>This demo visualizes static memory arenas. Memory is pre-allocated as a fixed <code>ArrayBuffer</code> to eliminate dynamic allocations during inference, reducing latency and fragmentation on mobile edge devices.</p>
+    
+    <div class="panel">
+      <h3>Memory Controls</h3>
+      <button id="allocateBtn">Pre-allocate Arena (10MB)</button>
+      <button id="runInferenceBtn" disabled>Run Inference (Zero Allocation)</button>
+      <button id="freeBtn" disabled>Free Arena</button>
+    </div>
+
+    <div class="panel">
+      <h3>Memory Arena Visualizer</h3>
+      <div id="arena-container" class="arena">
+        <!-- Memory blocks will be injected here -->
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Profiler Log</h3>
+      <div id="output">Waiting for allocation...</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

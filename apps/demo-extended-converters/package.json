@@ -1,0 +1,19 @@
+{
+  "name": "demo-extended-converters",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*",
+    "@onnx9000/backend-web": "workspace:*",
+    "@onnx9000/converters": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "typescript": "^5.9.3"
+  }
+}
