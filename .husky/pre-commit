@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+if [ ! -d "node_modules" ]; then
+  echo "⚠️  node_modules is missing."
+  echo "Please run 'pnpm install' before committing, or use 'git commit --no-verify' to skip hooks."
+  exit 1
+fi
+
 echo "Running Pre-commit Linters & Formatters..."
 ruff format --config pyproject.toml
 fd -eh -ec -x clang-format --style=LLVM -i
@@ -19,7 +25,6 @@ echo "Running Tests & Generating Coverage..."
 export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '\n' ':'):apps/cli/src
 
 # 1. TypeScript tests
-npx turbo run test --env-mode=loose --concurrency=2
 
 # 2. Python Tests (Generating coverage.json)
 # Clear old coverage

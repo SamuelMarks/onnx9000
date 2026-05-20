@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONNX9000 Custom Ops Sandbox</title>
+    <style>
+      body { font-family: system-ui, sans-serif; background: #f4f4f5; color: #18181b; padding: 2rem; }
+      #sandbox-container { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      .op-registry { margin-top: 1rem; }
+      .op-item { background: #10b981; color: white; padding: 0.5rem; margin: 0.25rem; display: inline-block; border-radius: 4px; font-size: 0.875rem; }
+      button { background: #18181b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-bottom: 1rem; }
+      button:hover { background: #27272a; }
+      input { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; margin-right: 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Custom Ops Sandbox</h1>
+    
+    <div id="sandbox-container">
+      <h2>Register Op</h2>
+      <input type="text" id="op-name" placeholder="Enter custom op name..." />
+      <button id="register-op">Register</button>
+      
+      <h3>Registered Ops:</h3>
+      <div id="registry" class="op-registry"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

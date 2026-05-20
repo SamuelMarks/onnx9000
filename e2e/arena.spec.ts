@@ -3,30 +3,27 @@ import { test, expect } from '@playwright/test';
 test.describe('ONNX9000 Profiler & Arena', () => {
   test.beforeEach(async ({ page }) => {
     try {
-      await page.goto('/');
-      await page.waitForSelector('#ide-root', { state: 'attached', timeout: 5000 });
+      // Navigate to the demo-arena app
+      await page.goto('/apps/demo-arena/index.html');
+      await page.waitForSelector('#arena-container', { state: 'attached', timeout: 5000 });
     } catch (e) {
-      console.log('Skipping real nav', e);
+      console.log('Skipping real nav, app may not be served at /apps/...', e);
+      // Fallback or skip
       test.skip();
     }
   });
 
   test('Memory Arena Visualizer displays block sizes', async ({ page }) => {
-    // Check bottom panel where profiler & arena reside
-    const bottomPanel = page.locator('#ide-bottom');
-    await expect(bottomPanel).toBeVisible();
-
     const arenaContainer = page.locator('#arena-container');
     if (await arenaContainer.isVisible()) {
-      // Memory blocks have the class .memory-block
-      const blockCount = await page.locator('.memory-block').count();
-      // Initially might be 0, but the component should be rendered
-      expect(blockCount).toBeGreaterThanOrEqual(0);
-
       const refreshBtn = page.locator('button', { hasText: 'Refresh Arena' });
       if (await refreshBtn.isVisible()) {
         await refreshBtn.click();
       }
+
+      // Memory blocks have the class .memory-block
+      const blockCount = await page.locator('.memory-block').count();
+      expect(blockCount).toBeGreaterThan(0);
     }
   });
 
@@ -40,6 +37,8 @@ test.describe('ONNX9000 Profiler & Arena', () => {
         const metric = page.locator('.metric-value');
         if ((await metric.count()) > 0) {
           await expect(metric.first()).not.toBeEmpty();
+          const text = await metric.first().textContent();
+          expect(parseFloat(text || '0')).toBeGreaterThan(0);
         }
       }
     }

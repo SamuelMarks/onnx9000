@@ -58,3 +58,26 @@ test.describe('ONNX9000 Compiler & Execution', () => {
     }
   });
 });
+
+test.describe('ONNX9000 Generic AOT Compiler Demo', () => {
+  test.beforeEach(async ({ page }) => {
+    try {
+      await page.goto('/apps/demo-compile/index.html');
+      await page.waitForSelector('#compile-container', { state: 'attached', timeout: 5000 });
+    } catch (e) {
+      console.log('Skipping real nav, app may not be served at /apps/...', e);
+      test.skip();
+    }
+  });
+
+  test('Simulates AOT Compilation in the UI', async ({ page }) => {
+    const compileContainer = page.locator('#compile-container');
+    if (await compileContainer.isVisible()) {
+      const btn = page.locator('#btn-compile');
+      await btn.click();
+      
+      const output = page.locator('#output');
+      await expect(output).toContainText('AOT Compilation finished: model.bin', { timeout: 2000 });
+    }
+  });
+});

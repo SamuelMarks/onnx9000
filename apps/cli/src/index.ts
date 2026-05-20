@@ -1,3 +1,7 @@
+import { handleArena } from './commands/arena.js';
+import { handleSKL2ONNX } from './commands/skl2onnx.js';
+import { handleKeras2ONNX } from './commands/keras2onnx.js';
+import { handlePaddle2ONNX } from './commands/paddle2onnx.js';
 /* eslint-disable */
 import { handleConvertCommand } from './commands/convert.js';
 import { handleInspectCommand } from './commands/inspect.js';
@@ -37,6 +41,12 @@ import { handleWebgpuCommand } from './commands/webgpu.js';
 import { handleWebnnPolyfillCommand } from './commands/webnn-polyfill.js';
 import { handleOnnxCheckerCommand } from './commands/onnx-checker.js';
 import { handleScriptCommand } from './commands/script.js';
+import { handleMlirCommand } from './commands/mlir.js';
+import { handleMobileMemoryCommand } from './commands/mobile-memory.js';
+import { handleProgressiveLoadingCommand } from './commands/progressive-loading.js';
+import { handleTfliteCommand } from './commands/tflite.js';
+import { handleNewModelArchCommand } from './commands/new-model-arch.js';
+import { handleZeroDepClassifierCommand } from './commands/zero-dep-classifier.js';
 
 async function main() {
   const args = process.argv.slice(2);
@@ -127,10 +137,30 @@ async function main() {
     handleOnnxCheckerCommand(args.slice(1));
   } else if (args[0] === 'script') {
     handleScriptCommand(args.slice(1));
+  } else if (args[0] === 'mlir') {
+    handleMlirCommand(args.slice(1));
+  } else if (args[0] === 'mobile-memory') {
+    handleMobileMemoryCommand(args.slice(1));
+  } else if (args[0] === 'progressive-loading') {
+    handleProgressiveLoadingCommand(args.slice(1));
+  } else if (args[0] === 'tflite') {
+    await handleTfliteCommand(args.slice(1));
+  } else if (args[0] === 'new-model-arch') {
+    handleNewModelArchCommand(args.slice(1));
+  } else if (args[0] === 'zero-dep-classifier') {
+    handleZeroDepClassifierCommand(args.slice(1));
+  } else if (args[0] === 'paddle2onnx') {
+    handlePaddle2ONNX(args.slice(1));
+  } else if (args[0] === 'keras2onnx') {
+    handleKeras2ONNX(args.slice(1));
+  } else if (args[0] === 'skl2onnx') {
+    handleSKL2ONNX(args.slice(1));
+  } else if (args[0] === 'arena') {
+    handleArena(args.slice(1));
   } else {
     console.error('Usage: onnx9000 <command> [options]');
     console.error(
-      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers, coreml, edit, autograd, zoo, hummingbird, sparse, optimum, sphinx-demo-ui, export, onnx2tf, optimize, simplify, agent, apple, onnx2c, cuda, jax, mmdnn, onnx-checker, script',
+      'Available commands: convert, inspect, json-extract, pytorch-codegen, whisper-llm, llama-web, tfjs-shim, onnx2gguf, gguf2onnx, serve, array, iree, tensorrt, triton, openvino, transformers, coreml, edit, autograd, zoo, hummingbird, sparse, optimum, sphinx-demo-ui, export, onnx2tf, optimize, simplify, agent, apple, onnx2c, cuda, jax, mmdnn, onnx-checker, script, mlir, mobile-memory, progressive-loading, tflite, new-model-arch, zero-dep-classifier',
     );
     process.exit(1);
   }

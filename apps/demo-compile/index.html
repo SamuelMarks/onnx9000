@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONNX9000 Generic AOT Compiler Demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; background: #f4f4f5; color: #18181b; padding: 2rem; }
+      #compile-container { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      button { background: #18181b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem; }
+      button:hover { background: #27272a; }
+      #output { margin-top: 1rem; padding: 1rem; background: #e5e7eb; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Generic AOT Compiler</h1>
+    
+    <div id="compile-container">
+      <button id="btn-compile">Compile Model (AOT)</button>
+      <div id="output">Waiting for input...</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

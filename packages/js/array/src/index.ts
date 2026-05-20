@@ -39,7 +39,7 @@ export class BaseTensor extends CoreTensor {
     inputs: BaseTensor[] = [],
   ) {
     super(name, shape, dtype, false, true, null);
-    this.opType = opType;
+    if (opType !== undefined) this.opType = opType;
     this.inputs = inputs;
   }
 }
