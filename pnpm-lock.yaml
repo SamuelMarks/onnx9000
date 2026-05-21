@@ -1129,15 +1129,6 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.15)(jsdom@29.0.0)
 
-  packages/js/c_compiler:
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.9.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0)
-
   packages/js/compile:
     devDependencies:
       typescript:

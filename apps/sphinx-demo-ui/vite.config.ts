@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ['es', 'umd']
     },
     outDir: 'dist',
-    rollupOptions: { external: ['@onnx9000/webnn-polyfill'] }
+    rollupOptions: {}
   },
   optimizeDeps: {
     exclude: ['pyodide']

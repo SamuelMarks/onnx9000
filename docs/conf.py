@@ -31,6 +31,7 @@ myst_enable_extensions = [
     "colon_fence",
     "deflist",
 ]
+myst_fence_as_directive = ["mermaid"]
 suppress_warnings = ["myst.xref_missing", "myst.header", "misc.highlighting_failure"]
 source_suffix = {
     ".rst": "restructuredtext",
@@ -176,3 +177,4 @@ def setup(app):
 
 jsdoc_config_path = "../typedoc.json"
 myst_heading_anchors = 6
+mermaid_version = "10.9.0"
