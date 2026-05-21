@@ -12,223 +12,223 @@ These requirements must be validated for every phase and every feature introduce
 - [ ] **Error Handling (Rust parity):** Ensure any Rust-based backend tooling interacting with this pipeline has one big error enum (with `derive_more`), with strictly zero use of `unwrap` or `anyhow`.
 
 ## Phase 1: Core Pipeline Integration (`compileOnnxToC`)
-- [ ] Remove the hardcoded dummy `[0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]` WASM return payload.
-- [ ] Modify `compileOnnxToC` to deserialize the `Uint8Array` buffer using `@onnx9000/core` `BufferReader`.
-- [ ] Implement a topological sort over `Graph.nodes` to ensure dependency-ordered execution.
-- [ ] Implement a static shape inference pass over the topologically sorted graph.
-- [ ] Instantiate `CGenerator` (or `CppGenerator`) correctly based on `emitCpp` option.
-- [ ] Calculate the total memory footprint dynamically and accurately populate `generator.generateSummary()`.
-- [ ] Return the actual concatenated output of `generateHeader()`, `generateSource()`, and `generateCMakeLists()` if applicable.
-- [ ] Fail gracefully with a structured error if the `Graph` contains unimplemented ops.
+- [x] Remove the hardcoded dummy `[0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]` WASM return payload.
+- [x] Modify `compileOnnxToC` to deserialize the `Uint8Array` buffer using `@onnx9000/core` `BufferReader`.
+- [x] Implement a topological sort over `Graph.nodes` to ensure dependency-ordered execution.
+- [x] Implement a static shape inference pass over the topologically sorted graph.
+- [x] Instantiate `CGenerator` (or `CppGenerator`) correctly based on `emitCpp` option.
+- [x] Calculate the total memory footprint dynamically and accurately populate `generator.generateSummary()`.
+- [x] Return the actual concatenated output of `generateHeader()`, `generateSource()`, and `generateCMakeLists()` if applicable.
+- [x] Fail gracefully with a structured error if the `Graph` contains unimplemented ops.
 
 ## Phase 2: Memory Management & Types
-- [ ] Define `Tensor` struct representing multi-dimensional data (`rank`, `dims`, `strides`, `data` pointer).
-- [ ] Implement a pre-calculated static memory arena `float workspace[MAX_MEMORY_FOOTPRINT]`.
-- [ ] Implement offset mapping logic so each intermediate tensor points to a reused segment in the `workspace` based on liveness analysis.
-- [ ] Generate dynamic memory allocation pathways (`malloc`/`free`) when statically bounded sizes cannot be determined.
-- [ ] Ensure all multi-dimensional arrays are properly stride-aligned.
-- [ ] Implement SIMD memory alignment generation (e.g., `posix_memalign` or `__attribute__((aligned(32)))`).
-- [ ] Implement broadcasting utilities (scalar-to-tensor, 1D-to-ND, ND-to-ND).
+- [x] Define `Tensor` struct representing multi-dimensional data (`rank`, `dims`, `strides`, `data` pointer).
+- [x] Implement a pre-calculated static memory arena `float workspace[MAX_MEMORY_FOOTPRINT]`.
+- [x] Implement offset mapping logic so each intermediate tensor points to a reused segment in the `workspace` based on liveness analysis.
+- [x] Generate dynamic memory allocation pathways (`malloc`/`free`) when statically bounded sizes cannot be determined.
+- [x] Ensure all multi-dimensional arrays are properly stride-aligned.
+- [x] Implement SIMD memory alignment generation (e.g., `posix_memalign` or `__attribute__((aligned(32)))`).
+- [x] Implement broadcasting utilities (scalar-to-tensor, 1D-to-ND, ND-to-ND).
 
 ## Phase 3: Exhaustive ONNX Operator Implementations
 Each operator requires its own C/C++ generation logic, memory boundary checks, 100% doc coverage, and 100% unit test coverage validating mathematical equivalence.
 
 ### Neural Network: Convolutions & Pooling
-- [ ] `Conv` (1D, 2D, 3D support, handling `pads`, `strides`, `dilations`, `group`).
-- [ ] `ConvInteger`
-- [ ] `ConvTranspose`
-- [ ] `MaxPool`
-- [ ] `AveragePool`
-- [ ] `MaxUnpool`
-- [ ] `GlobalMaxPool`
-- [ ] `GlobalAveragePool`
-- [ ] `LpPool`
-- [ ] `GlobalLpPool`
+- [x] `Conv` (1D, 2D, 3D support, handling `pads`, `strides`, `dilations`, `group`).
+- [x] `ConvInteger`
+- [x] `ConvTranspose`
+- [x] `MaxPool`
+- [x] `AveragePool`
+- [x] `MaxUnpool`
+- [x] `GlobalMaxPool`
+- [x] `GlobalAveragePool`
+- [x] `LpPool`
+- [x] `GlobalLpPool`
 
 ### Neural Network: Normalization & Padding
-- [ ] `BatchNormalization` (handling `epsilon`, `momentum`, training mode false).
-- [ ] `InstanceNormalization`
-- [ ] `LayerNormalization`
-- [ ] `GroupNormalization`
-- [ ] `LocalResponseNormalization` (LRN)
-- [ ] `Pad`
-- [ ] `Dropout` (No-op during inference).
+- [x] `BatchNormalization` (handling `epsilon`, `momentum`, training mode false).
+- [x] `InstanceNormalization`
+- [x] `LayerNormalization`
+- [x] `GroupNormalization`
+- [x] `LocalResponseNormalization` (LRN)
+- [x] `Pad`
+- [x] `Dropout` (No-op during inference).
 
 ### Neural Network: Activations
-- [ ] `Relu`
-- [ ] `Sigmoid`
-- [ ] `Tanh`
-- [ ] `LeakyReLU`
-- [ ] `PRelu`
-- [ ] `Elu`
-- [ ] `Celu`
-- [ ] `Selu`
-- [ ] `Gelu`
-- [ ] `Softmax`
-- [ ] `LogSoftmax`
-- [ ] `Hardmax`
-- [ ] `HardSigmoid`
-- [ ] `HardSwish`
-- [ ] `Softplus`
-- [ ] `Softsign`
-- [ ] `Shrink`
-- [ ] `ThresholdedRelu`
+- [x] `Relu`
+- [x] `Sigmoid`
+- [x] `Tanh`
+- [x] `LeakyReLU`
+- [x] `PRelu`
+- [x] `Elu`
+- [x] `Celu`
+- [x] `Selu`
+- [x] `Gelu`
+- [x] `Softmax`
+- [x] `LogSoftmax`
+- [x] `Hardmax`
+- [x] `HardSigmoid`
+- [x] `HardSwish`
+- [x] `Softplus`
+- [x] `Softsign`
+- [x] `Shrink`
+- [x] `ThresholdedRelu`
 
 ### Math: Element-wise Arithmetic
-- [ ] `Add`
-- [ ] `Sub`
-- [ ] `Mul`
-- [ ] `Div`
-- [ ] `Pow`
-- [ ] `Mod`
-- [ ] `Abs`
-- [ ] `Neg`
-- [ ] `Sign`
-- [ ] `Exp`
-- [ ] `Log`
-- [ ] `Log10`
-- [ ] `Sqrt`
+- [x] `Add`
+- [x] `Sub`
+- [x] `Mul`
+- [x] `Div`
+- [x] `Pow`
+- [x] `Mod`
+- [x] `Abs`
+- [x] `Neg`
+- [x] `Sign`
+- [x] `Exp`
+- [x] `Log`
+- [x] `Log10`
+- [x] `Sqrt`
 
 ### Math: Element-wise Trigonometry & Advanced
-- [ ] `Acos`
-- [ ] `Acosh`
-- [ ] `Asin`
-- [ ] `Asinh`
-- [ ] `Atan`
-- [ ] `Atanh`
-- [ ] `Cos`
-- [ ] `Cosh`
-- [ ] `Sin`
-- [ ] `Sinh`
-- [ ] `Tan`
-- [ ] `Erf`
-- [ ] `Ceil`
-- [ ] `Floor`
-- [ ] `Round`
-- [ ] `Trunc`
+- [x] `Acos`
+- [x] `Acosh`
+- [x] `Asin`
+- [x] `Asinh`
+- [x] `Atan`
+- [x] `Atanh`
+- [x] `Cos`
+- [x] `Cosh`
+- [x] `Sin`
+- [x] `Sinh`
+- [x] `Tan`
+- [x] `Erf`
+- [x] `Ceil`
+- [x] `Floor`
+- [x] `Round`
+- [x] `Trunc`
 
 ### Math: Reductions
-- [ ] `ReduceMax`
-- [ ] `ReduceMin`
-- [ ] `ReduceMean`
-- [ ] `ReduceSum`
-- [ ] `ReduceSumSquare`
-- [ ] `ReduceProd`
-- [ ] `ReduceL1`
-- [ ] `ReduceL2`
-- [ ] `ReduceLogSum`
-- [ ] `ReduceLogSumExp`
+- [x] `ReduceMax`
+- [x] `ReduceMin`
+- [x] `ReduceMean`
+- [x] `ReduceSum`
+- [x] `ReduceSumSquare`
+- [x] `ReduceProd`
+- [x] `ReduceL1`
+- [x] `ReduceL2`
+- [x] `ReduceLogSum`
+- [x] `ReduceLogSumExp`
 
 ### Linear Algebra
-- [ ] `Gemm` (handling `alpha`, `beta`, `transA`, `transB`).
-- [ ] `MatMul` (Batched N-dimensional).
-- [ ] `MatMulInteger`
-- [ ] `MatMulInteger16`
-- [ ] `Det`
-- [ ] `Trilu`
-- [ ] `Einsum`
+- [x] `Gemm` (handling `alpha`, `beta`, `transA`, `transB`).
+- [x] `MatMul` (Batched N-dimensional).
+- [x] `MatMulInteger`
+- [x] `MatMulInteger16`
+- [x] `Det`
+- [x] `Trilu`
+- [x] `Einsum`
 
 ### Logical & Bitwise
-- [ ] `And`
-- [ ] `Or`
-- [ ] `Xor`
-- [ ] `Not`
-- [ ] `Equal`
-- [ ] `Greater`
-- [ ] `GreaterOrEqual`
-- [ ] `Less`
-- [ ] `LessOrEqual`
-- [ ] `IsNaN`
-- [ ] `IsInf`
-- [ ] `BitShift`
-- [ ] `BitwiseAnd`
-- [ ] `BitwiseNot`
-- [ ] `BitwiseOr`
-- [ ] `BitwiseXor`
+- [x] `And`
+- [x] `Or`
+- [x] `Xor`
+- [x] `Not`
+- [x] `Equal`
+- [x] `Greater`
+- [x] `GreaterOrEqual`
+- [x] `Less`
+- [x] `LessOrEqual`
+- [x] `IsNaN`
+- [x] `IsInf`
+- [x] `BitShift`
+- [x] `BitwiseAnd`
+- [x] `BitwiseNot`
+- [x] `BitwiseOr`
+- [x] `BitwiseXor`
 
 ### Tensor Manipulation: Shape & Reshaping
-- [ ] `Reshape` (Implement as zero-copy metadata change where memory layout allows).
-- [ ] `Flatten`
-- [ ] `Squeeze`
-- [ ] `Unsqueeze`
-- [ ] `Transpose`
-- [ ] `Shape`
-- [ ] `Size`
-- [ ] `Cast`
-- [ ] `CastLike`
+- [x] `Reshape` (Implement as zero-copy metadata change where memory layout allows).
+- [x] `Flatten`
+- [x] `Squeeze`
+- [x] `Unsqueeze`
+- [x] `Transpose`
+- [x] `Shape`
+- [x] `Size`
+- [x] `Cast`
+- [x] `CastLike`
 
 ### Tensor Manipulation: Slicing, Gathering & Scattering
-- [ ] `Concat`
-- [ ] `Split`
-- [ ] `Slice`
-- [ ] `Gather`
-- [ ] `GatherElements`
-- [ ] `GatherND`
-- [ ] `Scatter`
-- [ ] `ScatterElements`
-- [ ] `ScatterND`
-- [ ] `Tile`
-- [ ] `Expand`
-- [ ] `Compress`
-- [ ] `NonZero`
-- [ ] `Identity`
+- [x] `Concat`
+- [x] `Split`
+- [x] `Slice`
+- [x] `Gather`
+- [x] `GatherElements`
+- [x] `GatherND`
+- [x] `Scatter`
+- [x] `ScatterElements`
+- [x] `ScatterND`
+- [x] `Tile`
+- [x] `Expand`
+- [x] `Compress`
+- [x] `NonZero`
+- [x] `Identity`
 
 ### Constant Generation
-- [ ] `Constant`
-- [ ] `ConstantOfShape`
-- [ ] `EyeLike`
+- [x] `Constant`
+- [x] `ConstantOfShape`
+- [x] `EyeLike`
 
 ### Control Flow & Sequence
-- [ ] `If`
-- [ ] `Loop`
-- [ ] `Scan`
-- [ ] `SequenceAt`
-- [ ] `SequenceConstruct`
-- [ ] `SequenceEmpty`
-- [ ] `SequenceErase`
-- [ ] `SequenceInsert`
-- [ ] `SequenceLength`
-- [ ] `ReverseSequence`
+- [x] `If`
+- [x] `Loop`
+- [x] `Scan`
+- [x] `SequenceAt`
+- [x] `SequenceConstruct`
+- [x] `SequenceEmpty`
+- [x] `SequenceErase`
+- [x] `SequenceInsert`
+- [x] `SequenceLength`
+- [x] `ReverseSequence`
 
 ### RNN / Time Series
-- [ ] `RNN`
-- [ ] `LSTM`
-- [ ] `GRU`
+- [x] `RNN`
+- [x] `LSTM`
+- [x] `GRU`
 
 ### Vision & Object Detection
-- [ ] `NonMaxSuppression`
-- [ ] `RoiAlign`
-- [ ] `MaxRoiPool`
-- [ ] `GridSample`
-- [ ] `Resize`
-- [ ] `CenterCrop`
-- [ ] `SpaceToDepth`
-- [ ] `DepthToSpace`
+- [x] `NonMaxSuppression`
+- [x] `RoiAlign`
+- [x] `MaxRoiPool`
+- [x] `GridSample`
+- [x] `Resize`
+- [x] `CenterCrop`
+- [x] `SpaceToDepth`
+- [x] `DepthToSpace`
 
 ### Quantization
-- [ ] `QuantizeLinear`
-- [ ] `DequantizeLinear`
-- [ ] `DynamicQuantizeLinear`
-- [ ] `QLinearConv`
-- [ ] `QLinearMatMul`
+- [x] `QuantizeLinear`
+- [x] `DequantizeLinear`
+- [x] `DynamicQuantizeLinear`
+- [x] `QLinearConv`
+- [x] `QLinearMatMul`
 
 ## Phase 4: Weights Serialization & Formatting
-- [ ] Extract graph `initializer` arrays into a standardized byte format.
-- [ ] Generate a `model_weights.bin` output artifact to avoid massive C-file sizes.
-- [ ] Ensure Endian-agnostic generation and reading of `.bin` weights.
-- [ ] Generate C function `load_weights(const char* path)` utilizing `fread` for runtime population.
-- [ ] Implement FP16/INT8 dequantization hooks at the loader level to minimize disk footprint.
-- [ ] Guarantee 100% test coverage of the serialization and loading mechanism.
+- [x] Extract graph `initializer` arrays into a standardized byte format.
+- [x] Generate a `model_weights.bin` output artifact to avoid massive C-file sizes.
+- [x] Ensure Endian-agnostic generation and reading of `.bin` weights.
+- [x] Generate C function `load_weights(const char* path)` utilizing `fread` for runtime population.
+- [x] Implement FP16/INT8 dequantization hooks at the loader level to minimize disk footprint.
+- [x] Guarantee 100% test coverage of the serialization and loading mechanism.
 
 ## Phase 5: WASM Native Integration (`wasm-compiler`)
-- [ ] Integrate a real WebAssembly emitter (e.g., `binaryen` or `wabt`) instead of the hardcoded 8-byte array.
-- [ ] Translate ONNX IR directly into WASM opcode generation (or pipe the generated C through an Emscripten target in memory).
-- [ ] Allocate WASM `Memory` pages dynamically based on the inferred static memory bounds.
-- [ ] Expose JS-to-WASM bindings to write input tensors to WASM memory boundaries safely.
-- [ ] Ensure 100% documentation for the public `WasmCompiler` SDK methods.
+- [x] Integrate a real WebAssembly emitter (e.g., `binaryen` or `wabt`) instead of the hardcoded 8-byte array.
+- [x] Translate ONNX IR directly into WASM opcode generation (or pipe the generated C through an Emscripten target in memory).
+- [x] Allocate WASM `Memory` pages dynamically based on the inferred static memory bounds.
+- [x] Expose JS-to-WASM bindings to write input tensors to WASM memory boundaries safely.
+- [x] Ensure 100% documentation for the public `WasmCompiler` SDK methods.
 
 ## Phase 6: End-to-End Validation
-- [ ] Expand Playwright E2E tests (`e2e/wasm-demo.spec.ts`) to intercept Keras/ONNX generation and compile the actual C output using `gcc`.
-- [ ] Execute `a.out` inside the E2E test on realistic input tensors and assert against `onnxruntime` outputs.
-- [ ] Measure execution performance and memory footprint as part of CI reporting.
-- [ ] Use `AddressSanitizer` in the C execution step of the E2E tests to validate 100% memory safety.
+- [x] Expand Playwright E2E tests (`e2e/wasm-demo.spec.ts`) to intercept Keras/ONNX generation and compile the actual C output using `gcc`.
+- [x] Execute `a.out` inside the E2E test on realistic input tensors and assert against `onnxruntime` outputs.
+- [x] Measure execution performance and memory footprint as part of CI reporting.
+- [x] Use `AddressSanitizer` in the C execution step of the E2E tests to validate 100% memory safety.
