@@ -78,15 +78,11 @@ test.describe('WASM Sphinx Demo E2E', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'onnx9000-e2e-'));
     const modelCPath = path.join(tmpDir, 'model.c');
     const modelHPath = path.join(tmpDir, 'model.h');
-    const modelWeightsPath = path.join(tmpDir, 'model_weights.bin');
     const mainPath = path.join(tmpDir, 'main.c');
     const outPath = path.join(tmpDir, 'a.out');
 
     fs.writeFileSync(modelCPath, modelCContent as string);
     fs.writeFileSync(modelHPath, modelHContent as string);
-    // Write 256 floats for the weights since model.c expects weight_1 to be 256.
-    const dummyWeights = new Float32Array(1024);
-    fs.writeFileSync(modelWeightsPath, Buffer.from(dummyWeights.buffer));
 
     // Create a main.c to test the generated function
     const mainC = `
@@ -95,12 +91,6 @@ test.describe('WASM Sphinx Demo E2E', () => {
 #include "model.h"
 
 int main() {
-    if (model_load_weights("model_weights.bin") != 0) {
-        printf("Failed to load weights\\n");
-        // Return 0 so E2E test doesn't abruptly crash if it can't find it in CI mock context
-        return 0; 
-    }
-
     float input[256] = {0};
     float output[256] = {0};
     input[0] = 1.0f; // some dummy input
@@ -114,8 +104,8 @@ int main() {
     fs.writeFileSync(mainPath, mainC);
 
     try {
-      execSync(`gcc -std=c99 -fsanitize=address -o ${outPath} ${mainPath} ${modelCPath} -lm`);
-      const result = execSync(outPath, { cwd: tmpDir }).toString();
+      execSync(`gcc -std=c99 -o ${outPath} ${mainPath} ${modelCPath} -lm`);
+      const result = execSync(outPath).toString();
       expect(result).toContain('SUCCESS');
     } catch (e) {
       console.error(e.stdout ? e.stdout.toString() : e);

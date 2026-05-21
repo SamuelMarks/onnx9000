@@ -12,7 +12,7 @@ export class CGenerator {
     this.emitCpp = emitCpp;
   }
 
-  public sanitize(name: string): string {
+  private sanitize(name: string): string {
     if (!name) return 'unnamed';
     let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
     if (/^[0-9]/.test(sanitized)) {
@@ -21,28 +21,20 @@ export class CGenerator {
     return sanitized;
   }
 
-  public getTensorShape(name: string): (number | string)[] | null {
+  private getTensorSize(name: string): number {
     const v =
       this.graph.inputs.find((x) => x.name === name) ||
-      this.graph.outputs.find((x) => x.name === name) ||
-      this.graph.valueInfo.find((x) => x.name === name);
+      this.graph.outputs.find((x) => x.name === name);
     if (v) {
-      return v.shape;
+      return v.shape.reduce(
+        (a: number, b: ReturnType<typeof JSON.parse>) =>
+          a * (typeof b === 'number' && b > 0 ? b : 1),
+        1,
+      );
     }
     const t = this.graph.tensors[name];
     if (t) {
-      return t.shape;
-    }
-    return null;
-  }
-
-  private getTensorSize(name: string): number {
-    const shape = this.getTensorShape(name);
-    if (shape) {
-      return shape.reduce(
-        (a: number, b: string | number) => a * (typeof b === 'number' && b > 0 ? b : 1),
-        1,
-      );
+      return t.size || 256;
     }
     return 256;
   }
