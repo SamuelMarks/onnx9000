@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { Quantizer } from '../src/quantization/quantizer';
-import { EdgeTPUOptimizer } from '../src/optimizations/edgetpu';
-import { TFLiteExporter } from '../src/exporter';
-import { BuiltinOperator } from '../src/flatbuffer/schema';
+import { Quantizer } from '../src/quantization/quantizer.js';
+import { EdgeTPUOptimizer } from '../src/optimizations/edgetpu.js';
+import { TFLiteExporter } from '../src/exporter.js';
+import { BuiltinOperator } from '../src/flatbuffer/schema.js';
 
 describe('Exporter extra 3', () => {
   it('exporter json', () => {

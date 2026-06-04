@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TFLiteExporter } from '../src/exporter';
+import { TFLiteExporter } from '../src/exporter.js';
 import { Graph, Node } from '@onnx9000/core';
 
 describe('TFLite Exporter Fuzzing & Memory', () => {

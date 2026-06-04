@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { TFLiteExporter } from '../../src/exporter';
-import { compileGraphToTFLite } from '../../src/compiler/subgraph';
-import { LayoutOptimizer } from '../../src/compiler/layout';
+import { TFLiteExporter } from '../../src/exporter.js';
+import { compileGraphToTFLite } from '../../src/compiler/subgraph.js';
+import { LayoutOptimizer } from '../../src/compiler/layout.js';
 
 describe('End-to-End Testing & Regression Validations', () => {
   it('should measure compilation time under 5 seconds for a large dummy model', () => {

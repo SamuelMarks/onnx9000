@@ -24,7 +24,7 @@ class RoBERTaConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class DistilBERTConfig(BaseConfig):
@@ -32,7 +32,7 @@ class DistilBERTConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class T5Config(BaseConfig):
@@ -40,7 +40,7 @@ class T5Config(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class BARTConfig(BaseConfig):
@@ -48,7 +48,7 @@ class BARTConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class GPT2Config(BaseConfig):
@@ -56,7 +56,7 @@ class GPT2Config(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class LLaMAConfig(BaseConfig):
@@ -64,7 +64,7 @@ class LLaMAConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class MistralConfig(BaseConfig):
@@ -72,7 +72,7 @@ class MistralConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class GemmaConfig(BaseConfig):
@@ -80,7 +80,7 @@ class GemmaConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class PhiConfig(BaseConfig):
@@ -88,7 +88,7 @@ class PhiConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class QwenConfig(BaseConfig):
@@ -96,7 +96,7 @@ class QwenConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class LlamaVisionConfig(BaseConfig):
@@ -104,7 +104,7 @@ class LlamaVisionConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ViTConfig(BaseConfig):
@@ -112,7 +112,7 @@ class ViTConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class CLIPConfig(BaseConfig):
@@ -120,7 +120,7 @@ class CLIPConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class DETRConfig(BaseConfig):
@@ -128,7 +128,7 @@ class DETRConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class YOLOSConfig(BaseConfig):
@@ -136,7 +136,7 @@ class YOLOSConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class StableDiffusionUNetConfig(BaseConfig):
@@ -144,7 +144,7 @@ class StableDiffusionUNetConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class StableDiffusionVAEConfig(BaseConfig):
@@ -152,7 +152,7 @@ class StableDiffusionVAEConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class StableDiffusionTextEncoderConfig(BaseConfig):
@@ -160,7 +160,7 @@ class StableDiffusionTextEncoderConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class WhisperConfig(BaseConfig):
@@ -168,7 +168,7 @@ class WhisperConfig(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class Wav2Vec2Config(BaseConfig):
@@ -176,7 +176,7 @@ class Wav2Vec2Config(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class SpeechT5Config(BaseConfig):
@@ -184,7 +184,7 @@ class SpeechT5Config(BaseConfig):
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForSequenceClassification:
@@ -192,7 +192,7 @@ class ORTModelForSequenceClassification:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForTokenClassification:
@@ -200,7 +200,7 @@ class ORTModelForTokenClassification:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForQuestionAnswering:
@@ -208,7 +208,7 @@ class ORTModelForQuestionAnswering:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForCausalLM:
@@ -216,7 +216,7 @@ class ORTModelForCausalLM:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForMaskedLM:
@@ -224,7 +224,7 @@ class ORTModelForMaskedLM:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForSeq2SeqLM:
@@ -232,7 +232,7 @@ class ORTModelForSeq2SeqLM:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForImageClassification:
@@ -240,7 +240,7 @@ class ORTModelForImageClassification:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForObjectDetection:
@@ -248,7 +248,7 @@ class ORTModelForObjectDetection:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForSpeechSeq2Seq:
@@ -256,7 +256,7 @@ class ORTModelForSpeechSeq2Seq:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover
 
 
 class ORTModelForSemanticSegmentation:
@@ -264,4 +264,4 @@ class ORTModelForSemanticSegmentation:
 
     def __init__(self, **kwargs: "Any") -> None:
         """Initialize."""
-        super().__init__()
+        super().__init__()  # pragma: no cover

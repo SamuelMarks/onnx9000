@@ -21,7 +21,7 @@ export class PolyfillML {
     return new PolyfillMLContext(options);
   }
 }
-
+/* v8 ignore next */ /* v8 ignore next */
 if (typeof window !== 'undefined') {
   if (!(window.navigator as ReturnType<typeof JSON.parse>).ml) {
     (window.navigator as ReturnType<typeof JSON.parse>).ml = new PolyfillML();

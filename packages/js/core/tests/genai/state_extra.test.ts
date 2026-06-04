@@ -3,7 +3,7 @@ import {
   GroupedQueryAttentionCache,
   MultiQueryAttentionCache,
   MultiHeadAttentionCache,
-} from '../../src/genai/state';
+} from '../../src/genai/state.js';
 
 describe('state coverage', () => {
   it('should clear caches', () => {

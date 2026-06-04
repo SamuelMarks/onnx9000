@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as tf from '../src/index';
+import * as tf from '../src/index.js';
 
 describe('Coverage tfjs-shim Extra', () => {
   it('data() and dataSync()', async () => {

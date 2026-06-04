@@ -7,7 +7,7 @@ export default defineConfig({
       entry: 'src/main.ts',
       name: 'SphinxDemoUI',
       fileName: 'sphinx-demo-ui',
-      formats: ['es', 'umd']
+      formats: ['es']
     },
     outDir: 'dist',
     rollupOptions: {}

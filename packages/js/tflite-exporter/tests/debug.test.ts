@@ -1,9 +1,9 @@
 import { describe, it } from 'vitest';
-import { TFLiteExporter } from '../src/exporter';
-import { compileGraphToTFLite } from '../src/compiler/subgraph';
-import { FlatBufferReader } from '../src/flatbuffer/reader';
+import { TFLiteExporter } from '../src/exporter.js';
+import { compileGraphToTFLite } from '../src/compiler/subgraph.js';
+import { FlatBufferReader } from '../src/flatbuffer/reader.js';
 import { Graph, Tensor, Node } from '@onnx9000/core';
-import { BuiltinOperator } from '../src/flatbuffer/schema';
+import { BuiltinOperator } from '../src/flatbuffer/schema.js';
 
 describe('debug', () => {
   it('debug', () => {

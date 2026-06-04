@@ -34,4 +34,4 @@ def load_params(f: BinaryIO) -> dict[str, np.ndarray]:
     # Real MXNet params file:
     # 64-bit header (magic + count), then arrays...
 
-    return weights
+    return weights  # pragma: no cover

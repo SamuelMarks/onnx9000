@@ -69,5 +69,5 @@ def test_gguf_parser():
 
 
 if __name__ == "__main__":
-    test_gguf_parser()
-    print("GGUF test passed!")
+    test_gguf_parser()  # pragma: no cover
+    print("GGUF test passed!")  # pragma: no cover

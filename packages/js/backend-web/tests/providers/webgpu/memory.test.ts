@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WebGPUMemoryManager } from '../../../src/providers/webgpu/memory';
+import { WebGPUMemoryManager } from '../../../src/providers/webgpu/memory.js';
 import { Graph, Node } from '@onnx9000/core';
 
 describe('WebGPUMemoryManager', () => {

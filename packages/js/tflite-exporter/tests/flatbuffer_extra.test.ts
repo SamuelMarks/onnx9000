@@ -1,9 +1,9 @@
-import { BuiltinOperator } from '../src/flatbuffer/schema';
+import { BuiltinOperator } from '../src/flatbuffer/schema.js';
 import { describe, it, expect } from 'vitest';
-import { FlatBufferReader } from '../src/flatbuffer/reader';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder';
-import { Tensor as SchemaTensor, TensorType } from '../src/flatbuffer/schema';
-import { Operator as SchemaOperator, BuiltinOptions } from '../src/flatbuffer/schema';
+import { FlatBufferReader } from '../src/flatbuffer/reader.js';
+import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
+import { Tensor as SchemaTensor, TensorType } from '../src/flatbuffer/schema.js';
+import { Operator as SchemaOperator, BuiltinOptions } from '../src/flatbuffer/schema.js';
 import {
   OperatorCode,
   QuantizationParameters,
@@ -11,8 +11,8 @@ import {
   Buffer,
   Model,
   Metadata,
-} from '../src/flatbuffer/schema';
-import { TFLiteExporter } from '../src/exporter';
+} from '../src/flatbuffer/schema.js';
+import { TFLiteExporter } from '../src/exporter.js';
 
 describe('Coverage FlatBuffer', () => {
   it('Reader edges', () => {

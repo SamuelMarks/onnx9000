@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as core from '@onnx9000/core';
-import * as layout from '../src/layout/dag';
-import { messageHandler } from '../src/parser/worker';
+import * as layout from '../src/layout/dag.js';
+import { messageHandler } from '../src/parser/worker.js';
 
 describe('Worker messageHandler', () => {
   let postMessageData: Object = null;

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { serveNode } from '../src/node';
+import { serveNode } from '../src/node.js';
 
 let capturedHandler: Object;
 vi.mock('node:http2', () => ({

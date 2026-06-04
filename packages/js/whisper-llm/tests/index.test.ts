@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WhisperLlm } from '../src/index';
+import { WhisperLlm } from '../src/index.js';
 
 describe('WhisperLlm', () => {
   it('should transcribe audio', () => {

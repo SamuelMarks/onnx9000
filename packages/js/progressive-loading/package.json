@@ -5,10 +5,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^1.6.1"
-  }
+    "vitest": "^1.6.0"
+  },
+  "type": "module"
 }

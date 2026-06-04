@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, ValueInfo, Tensor } from '@onnx9000/core';
-import { computeLayout } from '../src/layout/dag';
+import { computeLayout } from '../src/layout/dag.js';
 
 describe('Layout computation', () => {
   it('should compute TB and LR layouts', () => {

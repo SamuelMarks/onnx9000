@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createTensorRTSession } from '../src/tensorrt';
+import { createTensorRTSession } from '../src/tensorrt.js';
 import { Graph } from '@onnx9000/core';
 
 describe('TensorRT wrapper coverage', () => {

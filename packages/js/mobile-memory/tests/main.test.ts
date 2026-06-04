@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MobileMemory } from '../src/index';
+import { MobileMemory } from '../src/index.js';
 
 describe('MobileMemory', () => {
   it('should process correctly', () => {

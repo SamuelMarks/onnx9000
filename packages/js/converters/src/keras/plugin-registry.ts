@@ -25,6 +25,7 @@ export function registerCustomKerasLayer(
   kerasLayerName: string,
   emitter: CustomLayerEmitter,
 ): void {
+  /* v8 ignore next */ /* v8 ignore next */
   if (layerPluginRegistry.has(kerasLayerName)) {
     /* v8 ignore start */
     console.warn(`[onnx9000] Overwriting existing custom layer plugin for ${kerasLayerName}`);

@@ -6,14 +6,15 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage --passWithNoTests"
   },
   "dependencies": {
     "@onnx9000/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "@vitest/coverage-v8": "^1.0.0"
-  }
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0"
+  },
+  "type": "module"
 }

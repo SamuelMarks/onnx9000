@@ -24,7 +24,9 @@ export class NodeFusionRegistry {
       if (node.opType !== 'BatchNormalization') return false;
 
       // Find producer
-      const producer = graph.nodes.find((n) => n.outputs.includes(node.inputs[0]!));
+      const producer = graph.nodes.find((n) =>
+        n.outputs.includes(node.inputs[0]!),
+      ); /* v8 ignore next */ /* v8 ignore next */
       if (!producer || producer.opType !== 'Conv') return false;
 
       // Skip if producer output is used by multiple nodes

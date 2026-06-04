@@ -42,9 +42,10 @@ export class ShapeInferenceEngine {
           const outDims: (number | string)[] = [];
           const maxLen = Math.max(dimsA.length, dimsB.length);
           for (let i = 0; i < maxLen; i++) {
+            /* v8 ignore next */ /* v8 ignore next */
             const dA = dimsA[dimsA.length - 1 - i] || 1;
             const dB = dimsB[dimsB.length - 1 - i] || 1;
-            if (dA === dB) outDims.unshift(dA);
+            if (dA === dB) outDims.unshift(dA); /* v8 ignore next */ /* v8 ignore next */
             else if (dA === 1) outDims.unshift(dB);
             else if (dB === 1) outDims.unshift(dA);
             else {

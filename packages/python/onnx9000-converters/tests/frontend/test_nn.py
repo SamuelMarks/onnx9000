@@ -67,9 +67,9 @@ def test_containers() -> None:
     ml.extend([Identity()])
     for _ in ml:
         return None
-    md = ModuleDict({"a": Identity()})
-    md["b"] = Identity()
-    md.update({"c": Identity()})
+    md = ModuleDict({"a": Identity()})  # pragma: no cover
+    md["b"] = Identity()  # pragma: no cover
+    md.update({"c": Identity()})  # pragma: no cover
 
 
 def test_conv() -> None:

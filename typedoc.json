@@ -1,16 +1,15 @@
 {
-  "entryPointStrategy": "expand",
+  "entryPointStrategy": "resolve",
   "entryPoints": [
-    "packages/js/core/src",
-    "packages/js/transformers/src",
-    "packages/js/compiler/src",
-    "apps/netron-ui/src",
-    "apps/optimum-ui/src"
+    "packages/js/core/src/index.ts",
+    "packages/js/transformers/src/index.ts",
+    "packages/js/compiler/src/index.ts"
   ],
   "tsconfig": "tsconfig.docs.json",
   "exclude": ["**/tests/**", "**/*.test.ts"],
   "skipErrorChecking": true,
   "plugin": ["typedoc-plugin-markdown"],
+  "outputFileStrategy": "modules",
   "out": "docs/js-api",
   "hideBreadcrumbs": true
 }

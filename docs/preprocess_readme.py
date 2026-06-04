@@ -9,17 +9,26 @@ def generate_docs():
 ONNX9000 Internal API Documentation
 ===================================
 
-{% for cls_name in classes %}
+{% for cls_name, doc in classes.items() %}
 {{ cls_name }}
 {{ "-" * cls_name|length }}
-Generated documentation for {{ cls_name }}
+{{ doc }}
 {% endfor %}
 """
     t = Template(template_str)
-    classes = ["Tensor", "Graph", "Node", "ConvND", "Gemm"]
+    classes = {
+        "Tensor": "Multi-dimensional array representing data.",
+        "Graph": "A computation graph consisting of nodes and edges.",
+        "Node": "An operation node in the computation graph.",
+        "ConvND": "N-dimensional convolution operator.",
+        "Gemm": "General matrix multiplication operator.",
+    }
     with open("onnx9000.rst", "w") as f:
         f.write(t.render(classes=classes))
     with open("typedoc_mock.md", "w") as f:
+        f.write(t.render(classes=classes))
+    # Also update docs/onnx9000.rst
+    with open("docs/onnx9000.rst", "w") as f:
         f.write(t.render(classes=classes))
 
 

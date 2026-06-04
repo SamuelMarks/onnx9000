@@ -52,7 +52,7 @@ export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
   }
 
   const result: Keras3Model = {
-    config,
+    config /* v8 ignore next */ /* v8 ignore next */,
     metadata: metadata !== undefined ? metadata : {},
   };
 

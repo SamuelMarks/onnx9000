@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as models from '../src/models/index';
+import * as models from '../src/models/index.js';
 
 describe('Models', () => {
   it('HubConfig', () => {

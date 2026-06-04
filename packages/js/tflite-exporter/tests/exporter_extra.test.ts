@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TFLiteExporter } from '../src/exporter';
+import { TFLiteExporter } from '../src/exporter.js';
 
 describe('Exporter Extra', () => {
   it('should call builder.clear in destroy if available', () => {

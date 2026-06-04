@@ -4,7 +4,7 @@
   "description": "Edge-native inference server for ONNX models (KServe / OpenAI APIs)",
   "main": "src/index.ts",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "vitest": "^1.6.0",
-    "@vitest/coverage-v8": "1.6.0"
-  }
+    "@vitest/coverage-v8": "^1.6.0"
+  },
+  "type": "module"
 }

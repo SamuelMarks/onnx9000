@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Keras2OnnxConverter } from '../src/keras/index';
+import { Keras2OnnxConverter } from '../src/keras/index.js';
 
 describe('Coverage Keras Converter 2', () => {
   it('handleEinsumDense', async () => {

@@ -1,11 +1,11 @@
 import { describe, it } from 'vitest';
-import { Generator } from '../../src/genai/generator';
-import { Tensor } from '../../src/ir/tensor';
-import { NoBadWordsLogitProcessor } from '../../src/genai/logit_processors';
-import { GreedySearch } from '../../src/genai/search';
-import { GroupedQueryAttentionCache, MultiQueryAttentionCache } from '../../src/genai/state';
-import { BasicTokenizer } from '../../src/genai/tokenizer';
-import { TopPLogitProcessor } from '../../src/genai/top_p';
+import { Generator } from '../../src/genai/generator.js';
+import { Tensor } from '../../src/ir/tensor.js';
+import { NoBadWordsLogitProcessor } from '../../src/genai/logit_processors.js';
+import { GreedySearch } from '../../src/genai/search.js';
+import { GroupedQueryAttentionCache, MultiQueryAttentionCache } from '../../src/genai/state.js';
+import { BasicTokenizer } from '../../src/genai/tokenizer.js';
+import { TopPLogitProcessor } from '../../src/genai/top_p.js';
 
 describe('missing4', () => {
   it('generator loops', async () => {

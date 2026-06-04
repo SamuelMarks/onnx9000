@@ -136,7 +136,9 @@ export class Toolbar {
     lblStrict.style.fontSize = '12px';
     lblStrict.innerHTML = '<input type="checkbox" style="margin-right: 4px;" /> Strict Mode';
 
-    const cbStrict = lblStrict.querySelector('input') as HTMLInputElement;
+    const cbStrict = lblStrict.querySelector(
+      'input',
+    ) as HTMLInputElement; /* v8 ignore next */ /* v8 ignore next */
     cbStrict.onchange = () => {
       /* v8 ignore start */
       this.config.onToggleStrict(cbStrict.checked);

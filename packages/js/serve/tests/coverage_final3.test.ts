@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { WorkerPool } from '../src/worker_pool';
-import { globalLogger, LogLevel } from '../src/logger';
-import { WebGPUManager } from '../src/webgpu';
-import { ModelRepository } from '../src/repository';
-import { MemoryManager } from '../src/memory';
-import { createLambdaHandler } from '../src/lambda';
-import { createServer } from '../src/index';
+import { WorkerPool } from '../src/worker_pool.js';
+import { globalLogger, LogLevel } from '../src/logger.js';
+import { WebGPUManager } from '../src/webgpu.js';
+import { ModelRepository } from '../src/repository.js';
+import { MemoryManager } from '../src/memory.js';
+import { createLambdaHandler } from '../src/lambda.js';
+import { createServer } from '../src/index.js';
 
 describe('Final Coverage 3', () => {
   it('WorkerPool gracefully handles missing os.cpus', async () => {

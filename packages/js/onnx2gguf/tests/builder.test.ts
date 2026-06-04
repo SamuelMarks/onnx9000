@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder';
+import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder.js';
 
 test('GGUFWriter basic', () => {
   const writer = new GGUFWriter();

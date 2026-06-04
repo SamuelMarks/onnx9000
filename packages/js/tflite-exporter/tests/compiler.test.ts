@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { TFLiteExporter } from '../src/exporter';
-import { compileGraphToTFLite } from '../src/compiler/subgraph';
-import { FlatBufferReader } from '../src/flatbuffer/reader';
+import { TFLiteExporter } from '../src/exporter.js';
+import { compileGraphToTFLite } from '../src/compiler/subgraph.js';
+import { FlatBufferReader } from '../src/flatbuffer/reader.js';
 import { Graph, Tensor } from '@onnx9000/core';
-import { BuiltinOperator } from '../src/flatbuffer/schema';
+import { BuiltinOperator } from '../src/flatbuffer/schema.js';
 
 describe('TFLite Compiler - SubGraph Mapping', () => {
   it('should compile an empty graph to a valid TFLite SubGraph', () => {

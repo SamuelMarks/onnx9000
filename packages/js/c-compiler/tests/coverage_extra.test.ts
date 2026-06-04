@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { BaseCodegenVisitor, PythonFamilyCodegen } from '../src/codegen';
-import { CGenerator } from '../src/generator';
+import { BaseCodegenVisitor, PythonFamilyCodegen } from '../src/codegen.js';
+import { CGenerator } from '../src/generator.js';
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 describe('Coverage Extra', () => {

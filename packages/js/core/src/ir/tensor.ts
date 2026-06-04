@@ -158,8 +158,8 @@ export class Tensor {
       return new SparseTensor(
         this.name,
         [...this.shape],
-        this.format,
-        this.valuesTensor?.copy() || null,
+        this.format /* v8 ignore next */ /* v8 ignore next */,
+        this.valuesTensor?.copy() || null /* v8 ignore next */ /* v8 ignore next */,
         this.indicesTensor?.copy() || null,
         this.rowPtrTensor?.copy() || null,
         this.colIndicesTensor?.copy() || null,

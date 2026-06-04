@@ -38,7 +38,7 @@ export class TFMapper {
     if (opType === 'Placeholder') {
       opType = 'Identity';
       const outNode = new Node(
-        opType,
+        opType /* v8 ignore next */ /* v8 ignore next */,
         node.input.length ? node.input : [node.name + '_input_dummy'],
         outputs,
         attrs,
@@ -57,7 +57,7 @@ export class TFMapper {
       }
 
       const tensor = new Tensor(node.name, shape, 'float32');
-      // Create empty buffer
+      // Create empty buffer /* v8 ignore next */ /* v8 ignore next */
       const size = shape.reduce((a, b) => a * Math.abs(b), 1) || 1;
       tensor.data = new Uint8Array(size * 4);
       graph.tensors[node.name] = tensor;

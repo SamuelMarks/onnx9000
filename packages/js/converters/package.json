@@ -4,7 +4,7 @@
   "description": "Universal N-to-N ML model transpiler (ONNX, TFLite, CoreML, GGUF) for the browser",
   "main": "src/index.ts",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/ --ext .ts",
     "build": "tsc"

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createServer } from '../src/index';
+import { createServer } from '../src/index.js';
 
 describe('Coverage OpenAI & KServe', () => {
   const server = createServer();

@@ -117,7 +117,7 @@ class TestVerification(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main()  # pragma: no cover
 
 
 def test_verify_tensor_int8_zero():

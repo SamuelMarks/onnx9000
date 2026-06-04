@@ -1,9 +1,9 @@
 import { test, expect, vi } from 'vitest';
-import * as node_safetensors from '../src/parser/safetensors.node';
+import * as node_safetensors from '../src/parser/safetensors.node.js';
 import {
   SafetensorsHeaderTooLargeError,
   SafetensorsInvalidJSONError,
-} from '../src/parser/safetensors';
+} from '../src/parser/safetensors.js';
 
 test('safetensors.node readSafetensorsHeaderSync success', () => {
   const mockFs = {

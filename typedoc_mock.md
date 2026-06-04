@@ -5,20 +5,20 @@ ONNX9000 Internal API Documentation
 
 Tensor
 ------
-Generated documentation for Tensor
+Multi-dimensional array representing data.
 
 Graph
 -----
-Generated documentation for Graph
+A computation graph consisting of nodes and edges.
 
 Node
 ----
-Generated documentation for Node
+An operation node in the computation graph.
 
 ConvND
 ------
-Generated documentation for ConvND
+N-dimensional convolution operator.
 
 Gemm
 ----
-Generated documentation for Gemm
+General matrix multiplication operator.

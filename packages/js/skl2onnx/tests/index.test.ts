@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { SKL2ONNXConverter } from '../src/index';
+import { SKL2ONNXConverter } from '../src/index.js';
 
 describe('SKL2ONNXConverter', () => {
   it('should convert a skl model', () => {

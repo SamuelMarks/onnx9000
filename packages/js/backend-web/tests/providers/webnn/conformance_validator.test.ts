@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WebNNLayoutValidator } from '../../../src/providers/webnn/conformance_validator';
+import { WebNNLayoutValidator } from '../../../src/providers/webnn/conformance_validator.js';
 import { Graph, Node, Attribute } from '@onnx9000/core';
 
 describe('WebNNLayoutValidator', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TritonServer } from '../src/index';
+import { TritonServer } from '../src/index.js';
 
 describe('TritonServer', () => {
   it('should process correctly', () => {

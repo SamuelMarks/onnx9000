@@ -14,9 +14,9 @@ def test_hub_extra():
     # 44-45
     def mock_urlopen(*args, **kwargs):
         """Mock urlopen."""
-        from urllib.error import HTTPError
+        from urllib.error import HTTPError  # pragma: no cover
 
-        raise HTTPError("url", 404, "Not Found", {}, None)
+        raise HTTPError("url", 404, "Not Found", {}, None)  # pragma: no cover
 
     with patch("urllib.request.urlopen", side_effect=mock_urlopen):
         assert resolve_model_file("foo/bar") is None

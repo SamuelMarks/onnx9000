@@ -5,15 +5,15 @@ globalThis.Request = class Request {
   constructor() {}
 } as Object;
 import { vi } from 'vitest';
-import { saveSafetensors, createBuffer, fetchSafetensorsChunk } from '../src/parser/safetensors';
+import { saveSafetensors, createBuffer, fetchSafetensorsChunk } from '../src/parser/safetensors.js';
 import {
   _mallocSafetensors,
   passToPyodideWASM,
   extractFromPyodideFS,
   benchmark10kKeys,
   SafeTensors,
-} from '../src/parser/safetensors';
-import { decodeFloat16, getEndianness, saveSafetensors } from '../src/parser/safetensors';
+} from '../src/parser/safetensors.js';
+import { decodeFloat16, getEndianness, saveSafetensors } from '../src/parser/safetensors.js';
 import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
 import {
   SafeTensors,

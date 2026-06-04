@@ -1,9 +1,9 @@
 import { describe, it } from 'vitest';
-import * as search from '../../src/genai/search';
-import * as tok from '../../src/genai/tokenizer';
-import * as lp from '../../src/genai/logit_processors';
-import * as state from '../../src/genai/state';
-import { Tensor } from '../../src/ir/tensor';
+import * as search from '../../src/genai/search.js';
+import * as tok from '../../src/genai/tokenizer.js';
+import * as lp from '../../src/genai/logit_processors.js';
+import * as state from '../../src/genai/state.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
 describe('missing11', () => {
   it('search 74', () => {

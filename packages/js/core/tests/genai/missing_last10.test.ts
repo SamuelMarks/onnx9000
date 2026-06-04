@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
-import * as tok from '../../src/genai/tokenizer';
-import * as lp from '../../src/genai/logit_processors';
-import { Tensor } from '../../src/ir/tensor';
+import * as tok from '../../src/genai/tokenizer.js';
+import * as lp from '../../src/genai/logit_processors.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
 describe('missing_last10', () => {
   it('logit_processors', () => {

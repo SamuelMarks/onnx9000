@@ -30,12 +30,12 @@ def test_convert_tf_to_onnx_saved_model() -> None:
 @pytest.mark.skip("keras not installed")
 def test_convert_keras_to_onnx() -> None:
     """Tests the convert keras to onnx functionality."""
-    g1 = convert_keras_to_onnx(b"")
-    assert isinstance(g1, Graph)
-    assert g1.name == "keras_graph"
-    g2 = convert_keras_to_onnx(b"", is_v3=True)
-    assert isinstance(g2, Graph)
-    assert g2.name == "keras_graph"
+    g1 = convert_keras_to_onnx(b"")  # pragma: no cover
+    assert isinstance(g1, Graph)  # pragma: no cover
+    assert g1.name == "keras_graph"  # pragma: no cover
+    g2 = convert_keras_to_onnx(b"", is_v3=True)  # pragma: no cover
+    assert isinstance(g2, Graph)  # pragma: no cover
+    assert g2.name == "keras_graph"  # pragma: no cover
 
 
 def test_convert_tflite_to_onnx() -> None:

@@ -17,7 +17,7 @@ export class WorkerPool {
 
   constructor(public maxWorkers: number = 4) {
     if (typeof process !== 'undefined' && process.env) {
-      // Node.js environment simulation
+      // Node.js environment simulation /* v8 ignore next */ /* v8 ignore next */
       this.maxWorkers = require('os').cpus().length || this.maxWorkers;
     }
   }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as idx from '../src/index';
-import { compileGGUF } from '../src/compiler';
+import * as idx from '../src/index.js';
+import { compileGGUF } from '../src/compiler.js';
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 describe('Coverage onnx2gguf', () => {

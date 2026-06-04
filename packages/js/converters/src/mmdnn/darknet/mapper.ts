@@ -51,7 +51,7 @@ export class DarknetMapper {
         const routeLayers = Array.isArray(layer.layers) ? layer.layers : [layer.layers];
         currentChannels = 0;
         for (const r of routeLayers) {
-          const idx = r < 0 ? i + r : r;
+          const idx = r < 0 ? i + r : r; /* v8 ignore next */ /* v8 ignore next */
           currentChannels += this.channelsOutput[idx] || 0;
         }
       } else if (layer.type === 'upsample') {

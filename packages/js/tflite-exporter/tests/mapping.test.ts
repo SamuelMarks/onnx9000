@@ -3,8 +3,8 @@ import {
   mapOnnxTypeToTflite,
   mapOnnxShapeToTflite,
   createShapeSignature,
-} from '../src/compiler/mapping';
-import { TensorType } from '../src/flatbuffer/schema';
+} from '../src/compiler/mapping.js';
+import { TensorType } from '../src/flatbuffer/schema.js';
 
 describe('mapping', () => {
   it('mapOnnxTypeToTflite', () => {

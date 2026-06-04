@@ -22,7 +22,7 @@ test.describe('WASM Lazy Loading & Overlay', () => {
     page
   }) => {
     // We mock the /onnx9000.wasm endpoint to simulate a slow WASM download
-    await page.route('/onnx9000.wasm', async (route) => {
+    await page.route('**/onnx9000.wasm', async (route) => {
       // Respond with a tiny dummy WASM valid header to satisfy instantiation (if we were actually instantiating)
       // Actually, since we use WebAssembly.compile, it needs a valid WASM magic number at least: \0asm
       // Hex: 00 61 73 6D 01 00 00 00
@@ -54,7 +54,7 @@ test.describe('WASM Lazy Loading & Overlay', () => {
 
   test('should show error state if WASM fetch fails', async ({ page }) => {
     // Intercept and fail the request
-    await page.route('/onnx9000.wasm', async (route) => {
+    await page.route('**/onnx9000.wasm', async (route) => {
       await route.fulfill({
         status: 500,
         contentType: 'text/plain',

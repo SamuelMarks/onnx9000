@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import * as mocks from '../src/safetensors_mocks';
+import * as mocks from '../src/safetensors_mocks.js';
 
 test('safetensors_mocks all functions can be called', () => {
   mocks.handleMultiGigabyteWasm32Models();

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { TFLiteExporter } from '../src/exporter';
-import { compileGraphToTFLite } from '../src/compiler/subgraph';
-import { FlatBufferReader } from '../src/flatbuffer/reader';
+import { TFLiteExporter } from '../src/exporter.js';
+import { compileGraphToTFLite } from '../src/compiler/subgraph.js';
+import { FlatBufferReader } from '../src/flatbuffer/reader.js';
 import { Graph, Tensor, Node, Attribute } from '@onnx9000/core';
-import { ELEMENTWISE_OPS } from '../src/compiler/operators';
+import { ELEMENTWISE_OPS } from '../src/compiler/operators.js';
 
 describe('TFLite Compiler - All Operators', () => {
   it('should map scalar vs tensor addition correctly', () => {

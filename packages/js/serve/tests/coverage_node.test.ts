@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { serveNode } from '../src/node';
+import { serveNode } from '../src/node.js';
 import * as http from 'node:http';
 
 describe('Node Serve', () => {

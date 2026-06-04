@@ -1,8 +1,8 @@
 import { describe, it } from 'vitest';
-import * as lp from '../../src/genai/logit_processors';
-import * as state from '../../src/genai/state';
-import * as tok from '../../src/genai/tokenizer';
-import { Tensor } from '../../src/ir/tensor';
+import * as lp from '../../src/genai/logit_processors.js';
+import * as state from '../../src/genai/state.js';
+import * as tok from '../../src/genai/tokenizer.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
 describe('missing8', () => {
   it('logit_processors 354-355, 377-378', () => {

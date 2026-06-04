@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, Tensor } from '@onnx9000/core';
-import { TFProtobufEncoder } from '../src/tf-protobuf/encoder';
-import { SavedModelGenerator } from '../src/tf-protobuf/generator';
+import { TFProtobufEncoder } from '../src/tf-protobuf/encoder.js';
+import { SavedModelGenerator } from '../src/tf-protobuf/generator.js';
 
 describe('TFLite Compiler - TF Protobuf', () => {
   it('should generate a valid tf representation of the graph', () => {

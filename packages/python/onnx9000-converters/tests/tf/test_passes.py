@@ -146,7 +146,7 @@ def test_tf_optimize_graph_import_errors() -> None:
     def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
         if "onnx9000.optimizer.simplifier" in name:
             raise ImportError(f"Mocked import error for {name}")
-        return real_import(name, globals, locals, fromlist, level)
+        return real_import(name, globals, locals, fromlist, level)  # pragma: no cover
 
     builtins.__import__ = mock_import
     try:

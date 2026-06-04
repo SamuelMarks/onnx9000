@@ -83,7 +83,7 @@ def test_parser_visit_name_unknown():
 
     def my_func():
         """My func."""
-        return fake_unresolved_name_12345
+        return fake_unresolved_name_12345  # pragma: no cover
 
     p = Parser({})
     import pytest

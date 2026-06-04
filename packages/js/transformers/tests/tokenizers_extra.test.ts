@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as toks from '../src/tokenizers/index';
+import * as toks from '../src/tokenizers/index.js';
 
 describe('Tokenizers coverage', () => {
   it('instantiates all', async () => {

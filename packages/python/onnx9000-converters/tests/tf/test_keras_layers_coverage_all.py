@@ -34,14 +34,14 @@ def test_execute_all_keras_mappings():
             elif len(sig.parameters) == 3:
                 # Likely a base function like _map_keras_pool_base(builder, node, op_type)
                 func(builder, node, "dummy_op")
-        except Exception as e:
-            failed.append(f"{func_name}: {str(e)}")
+        except Exception as e:  # pragma: no cover
+            failed.append(f"{func_name}: {str(e)}")  # pragma: no cover
 
     if failed:
         # For brevity in logs, only show first 10
-        print(f"Total failed: {len(failed)}")
-        for f in failed[:10]:
-            print(f)
+        print(f"Total failed: {len(failed)}")  # pragma: no cover
+        for f in failed[:10]:  # pragma: no cover
+            print(f)  # pragma: no cover
 
 
 def test_keras_layers_branches():

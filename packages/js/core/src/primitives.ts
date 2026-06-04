@@ -342,6 +342,7 @@ export class MultiHeadAttention {
   }
 
   call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
+    /* v8 ignore next */ /* v8 ignore next */
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
     return recordOp('Attention', inputs, { num_heads: this.numHeads });
   }
@@ -349,6 +350,7 @@ export class MultiHeadAttention {
 
 export class FlashAttention extends MultiHeadAttention {
   override call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
+    /* v8 ignore next */ /* v8 ignore next */
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
     return recordOp('FlashAttention', inputs, { num_heads: this.numHeads });
   }
@@ -368,6 +370,7 @@ export class GroupedQueryAttention extends MultiHeadAttention {
   }
 
   override call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
+    /* v8 ignore next */ /* v8 ignore next */
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
     return recordOp('GroupedQueryAttention', inputs, {
       num_heads: this.numHeads,

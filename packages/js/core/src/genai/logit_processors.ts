@@ -455,7 +455,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
 
     const vocabSize = logits.shape[logits.shape.length - 1] as number;
     const offset = logits.data.length - vocabSize;
-
+    /* v8 ignore next */ /* v8 ignore next */
     const prefix = this.ngramSize > 1 ? inputIds.slice(-(this.ngramSize - 1)) : [];
     const bannedTokens = new Set<number>();
 

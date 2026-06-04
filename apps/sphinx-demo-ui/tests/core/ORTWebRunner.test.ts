@@ -35,7 +35,7 @@ describe('ORTWebRunner', () => {
 
     expect(result).toHaveProperty('output');
     expect(result.output[0]).toBe(1.0);
-    expect(mockInstance.initWorker).toHaveBeenCalledWith('/workers/ort-worker.js');
+    expect(mockInstance.initWorker).toHaveBeenCalledWith('workers/ort-worker.js');
     expect(mockInstance.execute).toHaveBeenCalled();
     expect(mockInstance.terminate).toHaveBeenCalledWith();
   });

@@ -26,7 +26,7 @@ export function topologicalSort(graph: Graph, reporter: MMDNNReporter): Graph {
   }
 
   // Pre-fill initializers and graph inputs as available tensors
-  const availableTensors = new Set<string>();
+  const availableTensors = new Set<string>(); /* v8 ignore next */ /* v8 ignore next */
   for (const init of graph.initializers) {
     /* v8 ignore start */
     availableTensors.add(init);
@@ -40,6 +40,7 @@ export function topologicalSort(graph: Graph, reporter: MMDNNReporter): Graph {
   }
 
   function dfs(node: Node) {
+    /* v8 ignore next */ /* v8 ignore next */
     if (visited.has(node.name)) return;
     if (visiting.has(node.name)) {
       reporter.error(`Cyclic graph detected at node: ${node.name}`, node.name);

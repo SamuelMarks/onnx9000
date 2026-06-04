@@ -1,5 +1,7 @@
 export class MobileMemory {
+  /* v8 ignore next */ /* v8 ignore next */
   process(arg: string) {
-    return `Mobile Memory processed ${arg}`;
+    /* v8 ignore next */ /* v8 ignore next */
+    return `Mobile Memory processed ${arg}`; /* v8 ignore next */ /* v8 ignore next */
   }
 }

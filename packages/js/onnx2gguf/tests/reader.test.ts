@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder';
-import { GGUFReader } from '../src/reader';
+import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder.js';
+import { GGUFReader } from '../src/reader.js';
 
 test('GGUFReader basic', () => {
   const writer = new GGUFWriter();

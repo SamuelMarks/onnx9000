@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { BasicTokenizer, BasicTokenizerStream, BPETokenizer } from '../../src/genai/tokenizer';
+import { BasicTokenizer, BasicTokenizerStream, BPETokenizer } from '../../src/genai/tokenizer.js';
 
 test('BasicTokenizerStream basic coverage', () => {
   const t = new BasicTokenizer();

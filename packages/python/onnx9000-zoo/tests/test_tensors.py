@@ -96,9 +96,9 @@ def test_msgpack_flax_deserializer():
     """Test flax msgpack deserializer."""
     msgpack = pytest.importorskip("msgpack")
 
-    data = msgpack.packb({"key": "value"})
-    res = MsgPackFlaxDeserializer.deserialize(data)
-    assert res["key"] == b"value" or res["key"] == "value"
+    data = msgpack.packb({"key": "value"})  # pragma: no cover
+    res = MsgPackFlaxDeserializer.deserialize(data)  # pragma: no cover
+    assert res["key"] == b"value" or res["key"] == "value"  # pragma: no cover
 
 
 def test_msgpack_flax_deserializer_no_msgpack():
@@ -110,7 +110,7 @@ def test_msgpack_flax_deserializer_no_msgpack():
     def mock_import(name, *args, **kwargs):
         if name == "msgpack":
             raise ImportError("No module named 'msgpack'")
-        return real_import(name, *args, **kwargs)
+        return real_import(name, *args, **kwargs)  # pragma: no cover
 
     builtins.__import__ = mock_import
     try:

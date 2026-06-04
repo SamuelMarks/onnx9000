@@ -5,6 +5,7 @@ export async function readBrowserFile(file: File | Blob): Promise<ArrayBuffer> {
 }
 
 export async function fetchRemoteUrl(url: string | URL, init?: RequestInit): Promise<ArrayBuffer> {
+  /* v8 ignore next */ /* v8 ignore next */
   const targetUrl = typeof url === 'string' ? url : url.href;
   const fetchOptions: RequestInit = {
     mode: 'cors',

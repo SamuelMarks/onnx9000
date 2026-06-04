@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { extractTokenizerMetadata } from '../src/tokenizer';
+import { extractTokenizerMetadata } from '../src/tokenizer.js';
 
 test('extractTokenizerMetadata', () => {
   const meta = extractTokenizerMetadata();

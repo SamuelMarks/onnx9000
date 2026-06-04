@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ModifierApp } from '../src/app';
+import { ModifierApp } from '../src/app.js';
 import { Graph, Node } from '@onnx9000/core';
 
 describe('Coverage ModifierApp', () => {

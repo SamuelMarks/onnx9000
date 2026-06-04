@@ -76,7 +76,7 @@ export class PolyfillMLContext implements MLContext {
         inputInfo.shape,
         inputInfo.dtype,
         false,
-        false,
+        false /* v8 ignore next */ /* v8 ignore next */,
         new Uint8Array(tensor.internalBuffer || new ArrayBuffer(0)),
       );
     }

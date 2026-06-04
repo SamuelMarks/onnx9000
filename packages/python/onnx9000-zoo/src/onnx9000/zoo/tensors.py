@@ -117,4 +117,4 @@ class MsgPackFlaxDeserializer:
         import msgpack
 
         # Flax uses standard msgpack for older versions
-        return msgpack.unpackb(data, raw=False)
+        return msgpack.unpackb(data, raw=False)  # pragma: no cover

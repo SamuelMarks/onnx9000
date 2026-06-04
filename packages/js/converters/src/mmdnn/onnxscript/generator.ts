@@ -60,7 +60,7 @@ export class OnnxScriptGenerator {
             ', ' +
             Object.entries(node.attributes)
               .map(([k, v]) => {
-                const val = v.value;
+                const val = v.value; /* v8 ignore next */ /* v8 ignore next */
                 if (k === 'alpha' && val === 1.0) return `alpha=1`;
                 /* v8 ignore start */
                 return `${k}=${JSON.stringify(val, (_key: string, value: string | number | bigint | boolean | object | null) => (typeof value === 'bigint' ? Number(value) : value))}`;

@@ -26,8 +26,8 @@ def test_dynamic_library_load():
     try:
         lib = DynamicLibrary("c", use_cffi=False)
         assert lib.lib is not None
-    except DynamicLibraryError:
-        assert True
+    except DynamicLibraryError:  # pragma: no cover
+        assert True  # pragma: no cover
 
 
 def test_dynamic_library_not_found():
@@ -46,8 +46,8 @@ def test_dynamic_library_define_and_getattr():
         assert lib.getpid is not None
         pid = lib.getpid()
         assert isinstance(pid, int)
-    except DynamicLibraryError:
-        assert True
+    except DynamicLibraryError:  # pragma: no cover
+        assert True  # pragma: no cover
 
 
 def test_hardware_context_handle():
@@ -185,8 +185,8 @@ def test_dynamic_library_getattr():
         lib = DynamicLibrary("c")
         lib.define("getpid", [], ctypes.c_int)
         assert lib.getpid is not None
-    except DynamicLibraryError:
-        assert True
+    except DynamicLibraryError:  # pragma: no cover
+        assert True  # pragma: no cover
 
 
 def test_get_cpu_features_exception():
@@ -220,8 +220,8 @@ def test_dynamic_library_getattr_cached():
         _ = lib.getpid
         _ = lib.getpid
         assert lib.getpid is not None
-    except DynamicLibraryError:
-        assert True
+    except DynamicLibraryError:  # pragma: no cover
+        assert True  # pragma: no cover
 
 
 def test_get_cpu_features_linux_exception():

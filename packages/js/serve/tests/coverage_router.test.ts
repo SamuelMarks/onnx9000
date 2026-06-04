@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Router } from '../src/router';
-import { ModelRepository } from '../src/repository';
-import { MemoryManager } from '../src/memory';
-import { globalLogger, LogLevel } from '../src/logger';
+import { Router } from '../src/router.js';
+import { ModelRepository } from '../src/repository.js';
+import { MemoryManager } from '../src/memory.js';
+import { globalLogger, LogLevel } from '../src/logger.js';
 import {
   applyMiddlewares,
   bearerAuthMiddleware,
@@ -10,7 +10,7 @@ import {
   safeJsonParse,
   validateOnnxMagicBytes,
   globalRateLimiter,
-} from '../src/middleware';
+} from '../src/middleware.js';
 
 describe('Coverage Router & Middleware & Repository', () => {
   it('Router coverage', async () => {

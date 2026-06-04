@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as t from '../src/index';
+import * as t from '../src/index.js';
 
 describe('Index', () => {
   it('exports everything', () => {

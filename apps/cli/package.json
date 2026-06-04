@@ -19,5 +19,6 @@
     "@onnx9000/tensorrt": "workspace:*",
     "@onnx9000/triton-compiler": "workspace:*",
     "@onnx9000/openvino-exporter": "workspace:*"
-  }
+  },
+  "type": "module"
 }

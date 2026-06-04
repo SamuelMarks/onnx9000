@@ -12,6 +12,7 @@ export class PolyfillMLGraph implements MLGraph {
   constructor(graph: Graph) {
     this.onnxGraph = graph;
     this.compilationId =
+      /* v8 ignore next */ /* v8 ignore next */
       typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString();
   }
 

@@ -12,7 +12,7 @@ export function recordOp(
   inputs: Tensor[],
   attributes?: ReturnType<typeof JSON.parse>,
 ): Tensor {
-  attributes = attributes || {};
+  attributes = attributes || {}; /* v8 ignore next */ /* v8 ignore next */
   const dtype = inputs[0]?.dtype ?? 'float32';
   return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }

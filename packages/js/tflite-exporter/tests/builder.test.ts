@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder';
+import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
 
 describe('FlatBufferBuilder', () => {
   it('should create a basic flatbuffer object', () => {

@@ -7,7 +7,7 @@ test.describe('Execution UI & Tensor Input Modals', () => {
     // Load WASM
     const overlayBtn = page.locator('.demo-wasm-overlay .demo-btn-primary');
     if (await overlayBtn.isVisible()) {
-      await page.route('/onnx9000.wasm', async (route) => {
+      await page.route('**/onnx9000.wasm', async (route) => {
         const dummyWasm = Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
         await route.fulfill({ status: 200, contentType: 'application/wasm', body: dummyWasm });
       });

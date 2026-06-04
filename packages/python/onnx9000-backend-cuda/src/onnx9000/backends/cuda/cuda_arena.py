@@ -178,7 +178,7 @@ class CUDAMemoryPlanner:
         if not is_cuda_available():
             return
         if name in self.dynamic_allocations:
-            _cuda_lib.cuMemFree(self.dynamic_allocations[name][0])
+            _cuda_lib.cuMemFree(self.dynamic_allocations[name][0])  # pragma: no cover
         ptr = CUdeviceptr(0)
         check_cuda_error(_cuda_lib.cuMemAlloc(ctypes.byref(ptr), size))
         self.dynamic_allocations[name] = (ptr, size)

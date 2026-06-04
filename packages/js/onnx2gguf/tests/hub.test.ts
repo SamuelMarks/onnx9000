@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { fetchHfConfig, generateReadme } from '../src/hub';
+import { fetchHfConfig, generateReadme } from '../src/hub.js';
 
 test('generateReadme', () => {
   const readme = generateReadme('Llama-2-7b', 'meta-llama/Llama-2-7b', 'Q4_0');

@@ -3,10 +3,10 @@ import {
   toEmscriptenType,
   DType,
   validateOnnxShapesAndDtypes,
-} from '../src/parser/safetensors.validator';
-import { Graph } from '../src/ir/graph';
-import { Tensor } from '../src/ir/tensor';
-import { saveSafetensors } from '../src/parser/safetensors';
+} from '../src/parser/safetensors.validator.js';
+import { Graph } from '../src/ir/graph.js';
+import { Tensor } from '../src/ir/tensor.js';
+import { saveSafetensors } from '../src/parser/safetensors.js';
 
 test('safetensors.validator toEmscriptenType coverage', () => {
   expect(toEmscriptenType(DType.FLOAT)).toBe('Float32Array');

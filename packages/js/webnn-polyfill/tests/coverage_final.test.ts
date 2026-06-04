@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { PolyfillMLGraphBuilder } from '../src/builder';
-import { PolyfillMLContext } from '../src/context';
-import { PolyfillMLOperand } from '../src/operand';
-import { PolyfillMLTensor } from '../src/tensor';
-import { PolyfillMLGraph } from '../src/graph';
+import { PolyfillMLGraphBuilder } from '../src/builder.js';
+import { PolyfillMLContext } from '../src/context.js';
+import { PolyfillMLOperand } from '../src/operand.js';
+import { PolyfillMLTensor } from '../src/tensor.js';
+import { PolyfillMLGraph } from '../src/graph.js';
 import { PolyfillML } from '../src/index';
 
 // Mock the backend

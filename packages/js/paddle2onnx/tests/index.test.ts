@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Paddle2ONNXConverter } from '../src/index';
+import { Paddle2ONNXConverter } from '../src/index.js';
 
 describe('Paddle2ONNXConverter', () => {
   it('should convert a paddle model', () => {

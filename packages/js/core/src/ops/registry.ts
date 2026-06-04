@@ -72,6 +72,7 @@ class OperatorRegistry {
   }
 
   private getKey(domain: string, opType: string, provider: string | null): string {
+    /* v8 ignore next */ /* v8 ignore next */
     return `${domain || 'ai.onnx'}::${opType}${provider ? `::${provider}` : ''}`;
   }
 

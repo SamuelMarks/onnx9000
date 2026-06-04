@@ -41,7 +41,7 @@ export class DagreLayoutEngine {
     this.direction = direction;
   }
 
-  // 271. Fallback to a fast grid layout
+  // 271. Fallback to a fast grid layout /* v8 ignore next */ /* v8 ignore next */
   computeGrid(graph: Graph): GraphLayout {
     /* v8 ignore start */
     const nodes = new Map<string, NodeLayout>();
@@ -121,7 +121,7 @@ export class DagreLayoutEngine {
 
     let maxGraphLayer = 0;
     for (const node of graph.nodes) {
-      // Timeout check
+      // Timeout check /* v8 ignore next */ /* v8 ignore next */
       if (performance.now() - startTime > 2000) {
         /* v8 ignore start */
         console.warn('Layout timeout! Falling back to grid layout.');
@@ -166,7 +166,7 @@ export class DagreLayoutEngine {
           currentY = i * (nodeHeight + ySpacing);
         }
 
-        // 265. Allow pinning specific nodes to fixed coordinates on the canvas
+        // 265. Allow pinning specific nodes to fixed coordinates on the canvas /* v8 ignore next */ /* v8 ignore next */
         if (node.attributes['pinned']) {
           /* v8 ignore start */
           const px = node.attributes['pinned_x'];

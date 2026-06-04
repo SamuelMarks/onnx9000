@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { Graph, Tensor, Node } from '@onnx9000/core';
-import { extractLlamaMetadata } from '../src/llama';
+import { extractLlamaMetadata } from '../src/llama.js';
 
 test('extractLlamaMetadata', () => {
   const g = new Graph('llama');

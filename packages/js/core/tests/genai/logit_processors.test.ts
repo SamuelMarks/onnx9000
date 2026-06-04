@@ -3,8 +3,8 @@ import {
   RepetitionPenaltyLogitProcessor,
   TemperatureLogitProcessor,
   LogitProcessorList,
-} from '../../src/genai/logit_processors';
-import { Tensor } from '../../src/ir/tensor';
+} from '../../src/genai/logit_processors.js';
+import { Tensor } from '../../src/ir/tensor.js';
 import { test, expect } from 'vitest';
 import { describe, expect, it } from 'vitest';
 import { Tensor } from '../../src/index.js';

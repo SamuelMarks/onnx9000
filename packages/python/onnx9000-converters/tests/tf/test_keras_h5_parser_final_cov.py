@@ -16,8 +16,8 @@ def test_keras_h5_parser_close_and_dataset():
     """Verify close() method and collect_weights with real h5py objects if possible."""
     try:
         import h5py
-    except ImportError:
-        pytest.skip("h5py not installed")
+    except ImportError:  # pragma: no cover
+        pytest.skip("h5py not installed")  # pragma: no cover
 
     from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 
@@ -67,8 +67,8 @@ def test_keras_h5_parser_init_data():
     """Verify initialization with raw bytes data."""
     try:
         import h5py
-    except ImportError:
-        pytest.skip("h5py not installed")
+    except ImportError:  # pragma: no cover
+        pytest.skip("h5py not installed")  # pragma: no cover
 
     from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 

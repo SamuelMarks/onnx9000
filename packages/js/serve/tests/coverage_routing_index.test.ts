@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { HashRing, PeerRegistry, proxyRequest } from '../src/routing';
-import { globalLogger, LogLevel } from '../src/logger';
-import { DynamicBatcher } from '../src/batcher';
-import Onnx9000ServerInstance, { createServer } from '../src/index';
+import { HashRing, PeerRegistry, proxyRequest } from '../src/routing.js';
+import { globalLogger, LogLevel } from '../src/logger.js';
+import { DynamicBatcher } from '../src/batcher.js';
+import Onnx9000ServerInstance, { createServer } from '../src/index.js';
 
 describe('Coverage Routing, Index, Logger, Batcher', () => {
   it('Routing - HashRing', () => {

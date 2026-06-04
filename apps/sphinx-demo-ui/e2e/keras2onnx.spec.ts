@@ -7,7 +7,7 @@ test.describe('keras2onnx Conversion', () => {
     // Load WASM and wait for overlay to vanish
     const overlayBtn = page.locator('.demo-wasm-overlay .demo-btn-primary');
     if (await overlayBtn.isVisible()) {
-      await page.route('/onnx9000.wasm', async (route) => {
+      await page.route('**/onnx9000.wasm', async (route) => {
         const dummyWasm = Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
         await route.fulfill({ status: 200, contentType: 'application/wasm', body: dummyWasm });
       });
@@ -112,6 +112,6 @@ model = models.Sequential([
     await expect(consoleOutput).toContainText('C compilation complete', { timeout: 30000 });
 
     const editorLine = page.locator('.demo-pane-rhs .view-lines');
-    await expect(editorLine).toContainText('void model_run() {');
+    await expect(editorLine).toContainText('void model_run(const float* input, float* output) {');
   });
 });

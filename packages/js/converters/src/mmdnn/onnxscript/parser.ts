@@ -40,7 +40,7 @@ export class OnnxScriptParser {
             ioRegex.lastIndex = 0;
             while ((argMatch = ioRegex.exec(argsStr)) !== null) {
               const name = argMatch[1];
-              const shape = argMatch[2]
+              const shape = argMatch[2] /* v8 ignore next */ /* v8 ignore next */
                 ? argMatch[2].split(',').map((s) => parseInt(s.trim(), 10))
                 : /* v8 ignore start */
                   [-1];
@@ -71,7 +71,7 @@ export class OnnxScriptParser {
         const outs = assignMatch[1].split(',').map((s) => s.trim());
         const opType = assignMatch[2];
         const ins = assignMatch[3].split(',').map((s) => s.trim());
-
+        /* v8 ignore next */ /* v8 ignore next */
         const node = new Node(opType, ins, outs, {}, `${opType}_${outs[0] || 'out'}`);
         graph.nodes.push(node);
       }

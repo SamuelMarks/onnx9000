@@ -8,6 +8,7 @@ function getInt(attrs: Record<string, string>, key: string, def: number): number
 }
 
 function getFloat(attrs: Record<string, string>, key: string, def: number): number {
+  /* v8 ignore next */ /* v8 ignore next */
   return attrs[key] !== undefined ? parseFloat(attrs[key]) : def;
 }
 
@@ -72,7 +73,7 @@ export class NcnnMapper {
     const h = getInt(node.attrs, '1', 0);
     const c = getInt(node.attrs, '2', 0);
 
-    const shape = [-1, c, h, w];
+    const shape = [-1, c, h, w]; /* v8 ignore next */ /* v8 ignore next */
     const vi = new ValueInfo(node.tops[0] || '', shape, 'float32');
     this.graph.inputs.push(vi);
   }

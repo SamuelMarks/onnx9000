@@ -267,7 +267,7 @@ def test_export_wasm_format(tmp_path):
         """Fake which."""
         if cmd == "emcc":
             return "/usr/bin/emcc"
-        return getattr(shutil, "_which", lambda x: "/usr/bin/emcc")(cmd)
+        return getattr(shutil, "_which", lambda x: "/usr/bin/emcc")(cmd)  # pragma: no cover
 
     def fake_run(*args, **kwargs):
         """Fake run."""
@@ -434,7 +434,7 @@ def test_exporter_missing_lines(tmp_path, monkeypatch):
     import subprocess
 
     def fake_run(*args, **kwargs):
-        raise Exception("Ruff missing")
+        raise Exception("Ruff missing")  # pragma: no cover
 
     monkeypatch.setattr(subprocess, "run", fake_run)
     export_graph(g, str(tmp_path / "model.py"), "pytorch")

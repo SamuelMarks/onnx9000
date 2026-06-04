@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ProgressiveLoading } from '../src/index';
+import { ProgressiveLoading } from '../src/index.js';
 
 describe('ProgressiveLoading', () => {
   it('should process correctly', () => {

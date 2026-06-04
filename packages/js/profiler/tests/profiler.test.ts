@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Profiler } from '../src/index';
+import { Profiler } from '../src/index.js';
 
 describe('Profiler', () => {
   it('should calculate peak memory', async () => {

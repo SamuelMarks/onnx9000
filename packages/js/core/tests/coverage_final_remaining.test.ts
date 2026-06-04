@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Graph, ValueInfo } from '../src/ir/graph';
-import { Node } from '../src/ir/node';
-import { Tensor } from '../src/ir/tensor';
-import { inferShapes } from '../src/shape_inference/infer';
-import { AbsOp, AddOp, ReluOp } from '../src/ops/index';
+import { Graph, ValueInfo } from '../src/ir/graph.js';
+import { Node } from '../src/ir/node.js';
+import { Tensor } from '../src/ir/tensor.js';
+import { inferShapes } from '../src/shape_inference/infer.js';
+import { AbsOp, AddOp, ReluOp } from '../src/ops/index.js';
 import {
   unpackData,
   denseToCoo,
@@ -11,8 +11,8 @@ import {
   SparseTensor,
   getTypedArray,
   sparseToCoo,
-} from '../src/sparse';
-import { SafeTensors, saveSafetensors } from '../src/parser/safetensors';
+} from '../src/sparse.js';
+import { SafeTensors, saveSafetensors } from '../src/parser/safetensors.js';
 
 describe('Final Coverage Gaps', () => {
   it('inferShapes coverage for tracked outputs', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ArrayAPI } from '../src/array/index';
+import { ArrayAPI } from '../src/array/index.js';
 
 describe('ArrayAPI', () => {
   it('softmax, log_softmax, sigmoid', () => {

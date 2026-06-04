@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import * as pipes from '../src/pipelines/index';
+import * as pipes from '../src/pipelines/index.js';
 
 describe('Pipelines', () => {
   it('Pipeline empty init', async () => {

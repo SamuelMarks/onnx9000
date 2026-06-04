@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { ONNXToMILConverter } from '../src/converter';
-import { Model } from '../src/schema';
-import { MLPackageBuilder } from '../src/mlpackage';
-import { Block, Var, Operation } from '../src/mil/ast';
-import { MILDataType, TensorType, ScalarType } from '../src/mil/types';
-import { validateBlock } from '../src/mil/validator';
-import { inferShapes } from '../src/mil/rewriter';
-import { commonSubexpressionElimination } from '../src/mil/passes';
-import { optimizeForANE } from '../src/mil/ane_passes';
-import { applyCompression } from '../src/mil/compression';
+import { ONNXToMILConverter } from '../src/converter.js';
+import { Model } from '../src/schema.js';
+import { MLPackageBuilder } from '../src/mlpackage.js';
+import { Block, Var, Operation } from '../src/mil/ast.js';
+import { MILDataType, TensorType, ScalarType } from '../src/mil/types.js';
+import { validateBlock } from '../src/mil/validator.js';
+import { inferShapes } from '../src/mil/rewriter.js';
+import { commonSubexpressionElimination } from '../src/mil/passes.js';
+import { optimizeForANE } from '../src/mil/ane_passes.js';
+import { applyCompression } from '../src/mil/compression.js';
 
 describe('Coverage tests', () => {
   it('covers validator missing output', () => {

@@ -24,7 +24,7 @@ def test_fold_mel_weights_exception():
         def __setitem__(self, key, value):
             """Setitem."""
             if self.should_crash:
-                raise Exception("force crash")
+                raise Exception("force crash")  # pragma: no cover
             super().__setitem__(key, value)
 
     graph.tensors = CrashingDict()

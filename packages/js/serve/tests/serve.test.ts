@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createServer, DynamicBatcher, MemoryManager, globalMetrics } from '../src/index';
+import { createServer, DynamicBatcher, MemoryManager, globalMetrics } from '../src/index.js';
 
 describe('ONNX9000 Serve API', () => {
   const server = createServer();

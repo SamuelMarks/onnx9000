@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import * as idx from '../src/index';
-import * as models from '../src/models';
-import * as reg from '../src/registry';
-import * as scheds from '../src/schedulers';
-import * as utils from '../src/utils';
+import * as idx from '../src/index.js';
+import * as models from '../src/models.js';
+import * as reg from '../src/registry.js';
+import * as scheds from '../src/schedulers.js';
+import * as utils from '../src/utils.js';
 
 describe('Diffusers coverage', () => {
   it('index', () => {

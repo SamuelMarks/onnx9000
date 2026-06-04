@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { TfjsShimDemoElement } from '../src/ui';
+import { TfjsShimDemoElement } from '../src/ui.js';
 
 describe('Coverage UI', () => {
   it('TfjsShimDemoElement', () => {

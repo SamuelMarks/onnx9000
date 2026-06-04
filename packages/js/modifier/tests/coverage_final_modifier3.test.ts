@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GraphMutator } from '../src/GraphMutator';
+import { GraphMutator } from '../src/GraphMutator.js';
 import { Graph, Node, Tensor, ValueInfo, Attribute } from '@onnx9000/core';
 
 describe('Coverage Modifier 3', () => {

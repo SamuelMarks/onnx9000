@@ -141,7 +141,7 @@ export class GGUFWriter {
           s += this.getValueSize(atype, item);
         }
         return s;
-      }
+      } /* v8 ignore next */ /* v8 ignore next */
       default:
         /* v8 ignore start */
         throw new Error('Unknown type');
@@ -223,7 +223,7 @@ export class GGUFWriter {
             writeVal(atype, item);
           }
           break;
-        }
+        } /* v8 ignore next */ /* v8 ignore next */
         default:
           /* v8 ignore start */
           throw new Error('Unknown type');

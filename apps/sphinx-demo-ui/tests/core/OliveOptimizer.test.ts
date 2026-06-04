@@ -37,7 +37,7 @@ describe('OliveOptimizer', () => {
 
     const result = await optimizer.optimize(input, config);
     expect(result).toBeInstanceOf(Uint8Array);
-    expect(mockInstance.initWorker).toHaveBeenCalledWith('/workers/olive-worker.js');
+    expect(mockInstance.initWorker).toHaveBeenCalledWith('workers/olive-worker.js');
     expect(mockInstance.execute).toHaveBeenCalled();
     expect(mockInstance.terminate).toHaveBeenCalledWith();
   });
@@ -62,7 +62,7 @@ describe('OliveOptimizer', () => {
 
     const result = await optimizer.simplify(input);
     expect(result).toBeInstanceOf(Uint8Array);
-    expect(mockInstance.initWorker).toHaveBeenCalledWith('/workers/simplifier-worker.js');
+    expect(mockInstance.initWorker).toHaveBeenCalledWith('workers/simplifier-worker.js');
     expect(mockInstance.execute).toHaveBeenCalled();
     expect(mockInstance.terminate).toHaveBeenCalledWith();
   });

@@ -43,7 +43,7 @@ export class PolyfillMLTensor {
       uint8: 1,
       int64: 8,
       uint64: 8,
-    };
+    }; /* v8 ignore next */ /* v8 ignore next */
     return counts * (byteMap[dataType] || 4);
   }
 

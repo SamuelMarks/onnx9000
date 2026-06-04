@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, Tensor } from '@onnx9000/core';
-import { Quantizer } from '../src/quantization/quantizer';
+import { Quantizer } from '../src/quantization/quantizer.js';
 
 describe('TFLite Compiler - Quantizer', () => {
   it('should downcast float32 to float16', () => {

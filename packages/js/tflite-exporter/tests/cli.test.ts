@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { onnx2tfCli } from '../src/cli/index';
+import { onnx2tfCli } from '../src/cli/index.js';
 import fs from 'fs';
 
 vi.mock('fs', () => ({

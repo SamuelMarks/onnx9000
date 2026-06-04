@@ -21,12 +21,12 @@ def test_cli_remaining():
             except BaseException:
                 return None
 
-    with patch("sys.argv", ["onnx2c", "test.onnx"]):
-        with patch("os.path.exists", return_value=True):
-            try:
-                main()
-            except BaseException:
-                return None
+    with patch("sys.argv", ["onnx2c", "test.onnx"]):  # pragma: no cover
+        with patch("os.path.exists", return_value=True):  # pragma: no cover
+            try:  # pragma: no cover
+                main()  # pragma: no cover
+            except BaseException:  # pragma: no cover
+                return None  # pragma: no cover
 
 
 def test_activations_remaining():

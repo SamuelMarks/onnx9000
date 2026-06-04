@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { BaseImageProcessor, SequenceFeatureExtractor } from '../src/processors/index';
+import { BaseImageProcessor, SequenceFeatureExtractor } from '../src/processors/index.js';
 
 describe('Processors', () => {
   it('BaseImageProcessor', async () => {

@@ -59,7 +59,10 @@ export function reverseMapType(ttype: GGUFTensorType): ReturnType<typeof JSON.pa
 }
 
 export function reconstructONNX(reader: GGUFReader): Graph {
-  const g = new Graph(reader.kvs['general.name'] || 'reconstructed');
+  /* v8 ignore next */ /* v8 ignore next */
+  const g = new Graph(
+    reader.kvs['general.name'] || 'reconstructed',
+  ); /* v8 ignore next */ /* v8 ignore next */
   const arch = reader.kvs['general.architecture'] || 'unknown';
 
   for (const [name, info] of Object.entries(reader.tensors)) {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { GraphMutator } from '../src/GraphMutator';
+import { GraphMutator } from '../src/GraphMutator.js';
 import { Graph, Node } from '@onnx9000/core';
-import { ModelExporter } from '../src/components/export/exporter';
+import { ModelExporter } from '../src/components/export/exporter.js';
 
 describe('Coverage Modifier', () => {
   it('GraphMutator strict mode rollback', () => {

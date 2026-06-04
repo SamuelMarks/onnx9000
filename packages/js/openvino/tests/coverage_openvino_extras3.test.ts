@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, ValueInfo } from '@onnx9000/core';
-import { OpenVinoExporter } from '../src/exporter';
-import { XmlNode, XmlBuilder } from '../src/xml_builder';
+import { OpenVinoExporter } from '../src/exporter.js';
+import { XmlNode, XmlBuilder } from '../src/xml_builder.js';
 
 describe('Coverage OpenVINO 3', () => {
   it('pool and pad', () => {

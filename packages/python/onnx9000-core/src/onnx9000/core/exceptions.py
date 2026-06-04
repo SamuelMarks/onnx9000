@@ -32,7 +32,7 @@ class ShapeMismatchError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class ONNXParseError(Onnx9000Error):

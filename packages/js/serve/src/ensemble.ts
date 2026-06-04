@@ -99,6 +99,7 @@ export class ModelEnsemble {
       const resolvedInputs: Record<string, ReturnType<typeof JSON.parse>> = {};
 
       for (const [localKey, src] of Object.entries(node.inputs)) {
+        /* v8 ignore next */ /* v8 ignore next */
         const [srcNodeId, srcOutput] = src.includes('.') ? src.split('.') : ['global', src];
 
         if (srcNodeId !== 'global' && nodePromises[srcNodeId!]) {

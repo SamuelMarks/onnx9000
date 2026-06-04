@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, ValueInfo, Tensor } from '@onnx9000/core';
-import { Quantizer } from '../src/quantization/quantizer';
-import { EdgeTPUOptimizer } from '../src/optimizations/edgetpu';
+import { Quantizer } from '../src/quantization/quantizer.js';
+import { EdgeTPUOptimizer } from '../src/optimizations/edgetpu.js';
 
 describe('Exporter extra 4', () => {
   it('quantizer missing node', () => {

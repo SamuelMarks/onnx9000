@@ -4,7 +4,7 @@ test.describe('End-to-end format conversions', () => {
   test.beforeEach(async ({ page }) => {
     page.on('console', (msg) => console.log(msg.text()));
     // Intercept WASM download to skip wait time
-    await page.route('/onnx9000.wasm', async (route) => {
+    await page.route('**/onnx9000.wasm', async (route) => {
       const dummyWasm = Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
       await route.fulfill({
         status: 200,

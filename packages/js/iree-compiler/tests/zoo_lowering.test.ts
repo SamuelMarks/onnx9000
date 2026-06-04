@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ZooMLIRLoweringPass } from '../src/passes/zoo_lowering';
+import { ZooMLIRLoweringPass } from '../src/passes/zoo_lowering.js';
 import { Graph, Node } from '@onnx9000/core';
 
 describe('ZooMLIRLoweringPass', () => {

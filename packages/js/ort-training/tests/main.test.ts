@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ORTTraining } from '../src/index';
+import { ORTTraining } from '../src/index.js';
 
 describe('ORTTraining', () => {
   it('should process correctly', () => {

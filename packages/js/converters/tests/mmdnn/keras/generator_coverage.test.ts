@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { KerasGenerator } from '../../../src/mmdnn/keras/generator';
+import { KerasGenerator } from '../../../src/mmdnn/keras/generator.js';
 
 describe('KerasGenerator Coverage', () => {
   it('should sanitize names correctly', () => {

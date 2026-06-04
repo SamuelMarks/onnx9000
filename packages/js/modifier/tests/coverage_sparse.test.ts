@@ -5,7 +5,7 @@ import {
   MagnitudePruningModifier,
   ConstantPruningModifier,
   parseRecipe,
-} from '../src/sparse/modifier';
+} from '../src/sparse/modifier.js';
 
 describe('Sparse Modifier', () => {
   it('Parses and applies recipes directly', () => {

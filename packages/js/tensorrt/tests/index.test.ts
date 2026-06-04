@@ -1,5 +1,5 @@
 import { vi, describe, it, expect } from 'vitest';
-import { DataType, ElementWiseOperation } from '../src/enums';
+import { DataType, ElementWiseOperation } from '../src/enums.js';
 
 vi.mock('ffi-napi', () => {
   return {
@@ -11,7 +11,7 @@ vi.mock('ref-napi', () => {
   return { default: {} };
 });
 
-import { trtFfi } from '../src/ffi';
+import { trtFfi } from '../src/ffi.js';
 
 describe('TensorRT FFI', () => {
   it('should have correct enums', () => {

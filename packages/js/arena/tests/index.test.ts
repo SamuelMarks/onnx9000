@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MemoryArena } from '../src/index';
+import { MemoryArena } from '../src/index.js';
 
 describe('MemoryArena', () => {
   it('should plan memory', () => {

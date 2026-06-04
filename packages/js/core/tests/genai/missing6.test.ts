@@ -1,10 +1,10 @@
 import { describe, it } from 'vitest';
-import * as lp from '../../src/genai/logit_processors';
-import * as search from '../../src/genai/search';
-import * as state from '../../src/genai/state';
-import * as tok from '../../src/genai/tokenizer';
-import * as top_p from '../../src/genai/top_p';
-import { Tensor } from '../../src/ir/tensor';
+import * as lp from '../../src/genai/logit_processors.js';
+import * as search from '../../src/genai/search.js';
+import * as state from '../../src/genai/state.js';
+import * as tok from '../../src/genai/tokenizer.js';
+import * as top_p from '../../src/genai/top_p.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
 describe('missing6', () => {
   it('logit_processors 378,403-404,412', () => {

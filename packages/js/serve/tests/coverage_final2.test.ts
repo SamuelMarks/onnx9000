@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createServer } from '../src/index';
-import { createLambdaHandler } from '../src/lambda';
-import { globalMetrics } from '../src/metrics';
+import { createServer } from '../src/index.js';
+import { createLambdaHandler } from '../src/lambda.js';
+import { globalMetrics } from '../src/metrics.js';
 
 describe('Coverage Extra 2', () => {
   it('Dashboard', async () => {

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { f32ToF16, quantizeQ4_0, quantizeQ4_1, quantizeQ8_0 } from '../src/quantizer';
+import { f32ToF16, quantizeQ4_0, quantizeQ4_1, quantizeQ8_0 } from '../src/quantizer.js';
 
 test('quantizer', () => {
   const floats = new Float32Array(32);

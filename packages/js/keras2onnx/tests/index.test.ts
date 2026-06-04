@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Keras2ONNXConverter } from '../src/index';
+import { Keras2ONNXConverter } from '../src/index.js';
 
 describe('Keras2ONNXConverter', () => {
   it('should convert a keras model', () => {

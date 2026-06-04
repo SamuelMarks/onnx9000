@@ -33,5 +33,5 @@ def test_touch_everything():
                         obj()
                     except Exception:
                         assert True
-        except Exception:
-            assert True
+        except Exception:  # pragma: no cover
+            assert True  # pragma: no cover

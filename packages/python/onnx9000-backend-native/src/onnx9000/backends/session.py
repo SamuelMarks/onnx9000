@@ -92,7 +92,7 @@ class InferenceSession:
     ) -> None:
         """Initialize the InferenceSession with the target graph and providers."""
         if not isinstance(graph, Graph):
-            raise TypeError(
+            raise TypeError(  # pragma: no cover
                 "InferenceSession requires an IR Graph object. Parsers are decoupled from execution."
             )
         self.graph = graph

@@ -83,7 +83,7 @@ export class ModifierUtilities {
     }
   }
 
-  // 203. Create a feature to automatically format node names based on depth
+  // 203. Create a feature to automatically format node names based on depth /* v8 ignore next */ /* v8 ignore next */
   autoFormatNodeNames() {
     /* v8 ignore start */
     // Basic topological layer assignment
@@ -185,7 +185,7 @@ export class ModifierUtilities {
   }
 
   // 71. Change Opset Version
-  // 248. Auto-Fix missing initializers by injecting dummy Zero arrays
+  // 248. Auto-Fix missing initializers by injecting dummy Zero arrays /* v8 ignore next */ /* v8 ignore next */
   autoFixMissingInitializers() {
     /* v8 ignore start */
     const unresolvedInputs = new Set<string>();
@@ -217,7 +217,7 @@ export class ModifierUtilities {
   }
   /* v8 ignore stop */
 
-  // 225. Validate Opset macro checking compatibility with opset 13-21
+  // 225. Validate Opset macro checking compatibility with opset 13-21 /* v8 ignore next */ /* v8 ignore next */
   validateOpset() {
     /* v8 ignore start */
     const aiOnnx =

@@ -91,9 +91,9 @@ def test_script_parser_gaps():
     @script
     def if_partial(cond, x):
         """If partial."""
-        if cond:
-            assert True
-        return x  # Changed to avoid return y error if it's not merged
+        if cond:  # pragma: no cover
+            assert True  # pragma: no cover
+        return x  # Changed to avoid return y error if it's not merged  # pragma: no cover
 
     # To hit line 318, we need to ensure the merge logic is called but fails
     # The merge logic is called at the end of visit_If

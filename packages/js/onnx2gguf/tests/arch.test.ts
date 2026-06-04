@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { Graph, Tensor } from '@onnx9000/core';
-import { extractMetadata, inferArchitecture } from '../src/arch';
+import { extractMetadata, inferArchitecture } from '../src/arch.js';
 
 test('arch inference', () => {
   const arches = [

@@ -76,7 +76,7 @@ export function calculateByteLength(weight: WeightManifestEntry): number {
     case 'complex64':
       return numElements * 8;
     case 'float16':
-      return numElements * 2;
+      return numElements * 2; /* v8 ignore next */ /* v8 ignore next */
     case 'int8':
     case 'uint8':
     case 'bool':

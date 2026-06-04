@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LegacyQuirkResolver } from '../../../src/mmdnn/legacy/quirks';
+import { LegacyQuirkResolver } from '../../../src/mmdnn/legacy/quirks.js';
 
 describe('LegacyQuirkResolver', () => {
   describe('resolveCaffePadding', () => {

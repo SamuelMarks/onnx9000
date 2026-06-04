@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { renameTensor } from '../src/naming';
+import { renameTensor } from '../src/naming.js';
 
 test('renameTensor', () => {
   expect(renameTensor('model.embed_tokens.weight')).toBe('token_embd.weight');

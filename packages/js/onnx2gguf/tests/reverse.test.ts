@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
-import { reverseMapName, reverseMapType, reconstructONNX } from '../src/reverse';
-import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder';
-import { GGUFReader } from '../src/reader';
+import { reverseMapName, reverseMapType, reconstructONNX } from '../src/reverse.js';
+import { GGUFWriter, GGUFValueType, GGUFTensorType } from '../src/builder.js';
+import { GGUFReader } from '../src/reader.js';
 
 test('reverse mapping functions', () => {
   expect(reverseMapName('token_embd.weight')).toBe('model.embed_tokens.weight');

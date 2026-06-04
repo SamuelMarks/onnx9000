@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { WebGPUManager } from '../src/webgpu';
-import { WorkerPool } from '../src/worker_pool';
-import { serveNode } from '../src/node';
+import { WebGPUManager } from '../src/webgpu.js';
+import { WorkerPool } from '../src/worker_pool.js';
+import { serveNode } from '../src/node.js';
 
 describe('Coverage Extra', () => {
   it('WebGPUManager', async () => {

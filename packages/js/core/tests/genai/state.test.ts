@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
-import { Tensor } from '../../src/ir/tensor';
-import { GroupedQueryAttentionCache, MultiQueryAttentionCache } from '../../src/genai/state';
+import { Tensor } from '../../src/ir/tensor.js';
+import { GroupedQueryAttentionCache, MultiQueryAttentionCache } from '../../src/genai/state.js';
 
 test('GroupedQueryAttentionCache invalid heads', () => {
   const kvc = new GroupedQueryAttentionCache(1, 32);

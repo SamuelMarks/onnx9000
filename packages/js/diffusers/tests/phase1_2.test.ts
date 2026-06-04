@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { DiffusionPipeline } from '../src/pipeline';
+import { DiffusionPipeline } from '../src/pipeline.js';
 import {
   DDIMScheduler,
   DDPMScheduler,
@@ -13,7 +13,7 @@ import {
   HeunDiscreteScheduler,
   UniPCMultistepScheduler,
   EulerAncestralDiscreteScheduler,
-} from '../src/schedulers';
+} from '../src/schedulers.js';
 import { PyTorchPCG, rand, randn } from '../src/utils';
 
 // Mock fetch

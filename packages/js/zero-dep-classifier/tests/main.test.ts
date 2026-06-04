@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ZeroDepClassifier } from '../src/index';
+import { ZeroDepClassifier } from '../src/index.js';
 
 describe('ZeroDepClassifier', () => {
-  it('should process correctly', () => {
-    const obj = new ZeroDepClassifier();
-    expect(obj.process('test')).toBe('Zero Dep Classifier processed test');
+  it('processes', () => {
+    expect(new ZeroDepClassifier().process('test')).toBe('Zero Dep Classifier processed test');
   });
 });

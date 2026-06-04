@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest';
 import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { LayoutOptimizer } from '../src/compiler/layout';
+import { LayoutOptimizer } from '../src/compiler/layout.js';
 
 describe('debug', () => {
   it('debug', () => {

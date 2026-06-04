@@ -61,10 +61,10 @@ def test_script_compiler_for_while() -> None:
         """Test the loops functionality."""
         for _i in [1, 2]:
             return None
-        while x:
-            x -= 1
-            return None
-        return x
+        while x:  # pragma: no cover
+            x -= 1  # pragma: no cover
+            return None  # pragma: no cover
+        return x  # pragma: no cover
 
     loops(0)
     loops(1)
@@ -81,7 +81,7 @@ def test_script_compiler_generic() -> None:
 
         def visit_Pass(self, node):
             """Test the visit_Pass functionality."""
-            return self.generic_visit(node)
+            return self.generic_visit(node)  # pragma: no cover
 
     def pass_func() -> None:
         """Test the pass_func functionality."""

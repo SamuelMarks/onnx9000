@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { runCli } from '../src/cli';
-import { ModelEnsemble } from '../src/ensemble';
-import { KVCacheManager } from '../src/kv_cache';
+import { runCli } from '../src/cli.js';
+import { ModelEnsemble } from '../src/ensemble.js';
+import { KVCacheManager } from '../src/kv_cache.js';
 import { globalLogger } from '../src/logger';
 
 // Mock the serveNode so it doesn't spin up a server

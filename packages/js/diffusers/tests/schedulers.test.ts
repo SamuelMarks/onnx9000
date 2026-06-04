@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DDIMScheduler, EulerDiscreteScheduler } from '../src/schedulers';
+import { DDIMScheduler, EulerDiscreteScheduler } from '../src/schedulers.js';
 
 describe('Schedulers', () => {
   it('DDIM step', () => {

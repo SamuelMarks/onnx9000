@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { OpenVinoExporter } from '../src/exporter';
+import { OpenVinoExporter } from '../src/exporter.js';
 import { main as runCli } from '../bin/cli.js'; // to test cli
 
 describe('Coverage OpenVINO', () => {

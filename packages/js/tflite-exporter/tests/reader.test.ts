@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder';
-import { FlatBufferReader } from '../src/flatbuffer/reader';
-import { TFLiteExporter } from '../src/exporter';
-import { BuiltinOperator } from '../src/flatbuffer/schema';
+import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
+import { FlatBufferReader } from '../src/flatbuffer/reader.js';
+import { TFLiteExporter } from '../src/exporter.js';
+import { BuiltinOperator } from '../src/flatbuffer/schema.js';
 
 describe('FlatBufferReader', () => {
   it('should read generated flatbuffer back', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import * as layout from '../src/layout/dag';
-import { fetchAndParseModel } from '../src/parser/fetcher';
+import * as layout from '../src/layout/dag.js';
+import { fetchAndParseModel } from '../src/parser/fetcher.js';
 
 const mockContext = {
   fillRect: vi.fn(),
@@ -48,7 +48,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockContext);
 }
 
-import { CanvasRenderer } from '../src/render/canvas';
+import { CanvasRenderer } from '../src/render/canvas.js';
 
 describe('CanvasRenderer', () => {
   it('should initialize and run render loop', () => {

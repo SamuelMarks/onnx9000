@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { registry } from '../src/index';
+import { registry } from '../src/index.js';
 
 describe('CustomOps Registry', () => {
   it('should register and retrieve an op', () => {

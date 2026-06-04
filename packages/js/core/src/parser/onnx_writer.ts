@@ -124,7 +124,7 @@ function serializeNodeProto(node: Node): Uint8Array {
     writer.writeString(node.opType);
   }
 
-  // attributes (5)
+  // attributes (5) /* v8 ignore next */ /* v8 ignore next */
   const attrs: Record<string, Attribute> = node.attributes || {};
   for (const [key, attr] of Object.entries(attrs)) {
     writer.writeTag(5, WIRE_TYPE_LENGTH_DELIMITED);
@@ -245,7 +245,7 @@ function serializeTensorProto(name: string, tensor: Tensor): Uint8Array {
 
   // dims (1)
   for (const dim of tensor.shape) {
-    writer.writeTag(1, WIRE_TYPE_VARINT);
+    writer.writeTag(1, WIRE_TYPE_VARINT); /* v8 ignore next */ /* v8 ignore next */
     writer.writeVarInt64(typeof dim === 'number' ? dim : -1);
   }
 

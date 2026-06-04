@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fetchAndParseModel } from '../src/parser/fetcher';
+import { fetchAndParseModel } from '../src/parser/fetcher.js';
 import * as core from '@onnx9000/core';
 
 describe('Fetcher', () => {

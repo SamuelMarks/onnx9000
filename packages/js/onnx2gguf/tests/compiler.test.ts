@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { Graph, Tensor } from '@onnx9000/core';
-import { compileGGUF } from '../src/compiler';
+import { compileGGUF } from '../src/compiler.js';
 
 test('compileGGUF basic', () => {
   const g = new Graph('test');

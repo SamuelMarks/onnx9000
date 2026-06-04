@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { PolyfillMLGraphBuilder } from '../src/builder';
-import { PolyfillMLContext } from '../src/context';
-import { PolyfillMLOperand } from '../src/operand';
+import { PolyfillMLGraphBuilder } from '../src/builder.js';
+import { PolyfillMLContext } from '../src/context.js';
+import { PolyfillMLOperand } from '../src/operand.js';
 
 describe('Coverage 100 WebNN Polyfill', () => {
   it('builder build sync names', async () => {

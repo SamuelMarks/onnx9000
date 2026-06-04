@@ -35,7 +35,7 @@ describe('WebNNPolyfillRunner', () => {
 
     expect(result).toHaveProperty('output');
     expect(result.output[0]).toBe(2.0);
-    expect(mockInstance.initWorker).toHaveBeenCalledWith('/workers/webnn-worker.js');
+    expect(mockInstance.initWorker).toHaveBeenCalledWith('workers/webnn-worker.js');
     expect(mockInstance.execute).toHaveBeenCalled();
     expect(mockInstance.terminate).toHaveBeenCalledWith();
   });

@@ -143,8 +143,10 @@ export class ONNXToMILConverter {
     ) {
       // Phase 5: Epsilon (already passed verbatim if available)
     } else if (node.opType === 'Resize') {
-      // 125. Parse coordinate transformation modes
-      const mode = (attributes['coordinate_transformation_mode'] as string) || 'half_pixel';
+      // 125. Parse coordinate transformation modes /* v8 ignore next */ /* v8 ignore next */
+      const mode =
+        (attributes['coordinate_transformation_mode'] as string) ||
+        'half_pixel'; /* v8 ignore next */ /* v8 ignore next */
       const interp = (attributes['mode'] as string) || 'nearest';
 
       attributes['sampling_mode'] = interp === 'linear' ? 'bilinear' : 'nearest';

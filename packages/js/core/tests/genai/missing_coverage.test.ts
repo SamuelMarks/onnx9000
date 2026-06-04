@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { Generator } from '../../src/genai/generator';
-import { Tensor } from '../../src/ir/tensor';
+import { Generator } from '../../src/genai/generator.js';
+import { Tensor } from '../../src/ir/tensor.js';
 import {
   DiverseBeamSearchLogitProcessor,
   ContrastiveSearchLogitProcessor,
-} from '../../src/genai/logit_processors';
-import { Model } from '../../src/genai/model';
-import { BeamSearchAlgorithm, BeamSearchState } from '../../src/genai/search';
-import { QuantizedKVCache, OffloadedKVCache, PromptCacheManager } from '../../src/genai/state';
-import { SequenceTensorUtils } from '../../src/genai/tensor_utils';
+} from '../../src/genai/logit_processors.js';
+import { Model } from '../../src/genai/model.js';
+import { BeamSearchAlgorithm, BeamSearchState } from '../../src/genai/search.js';
+import { QuantizedKVCache, OffloadedKVCache, PromptCacheManager } from '../../src/genai/state.js';
+import { SequenceTensorUtils } from '../../src/genai/tensor_utils.js';
 import {
   PreTokenizer,
   TokenTrie,
@@ -16,8 +16,8 @@ import {
   LlamaTokenizer,
   GPT2Tokenizer,
   loadTokenizerWithFallback,
-} from '../../src/genai/tokenizer';
-import { TopPLogitProcessor } from '../../src/genai/top_p';
+} from '../../src/genai/tokenizer.js';
+import { TopPLogitProcessor } from '../../src/genai/top_p.js';
 
 describe('missing_coverage', () => {
   it('generator', async () => {

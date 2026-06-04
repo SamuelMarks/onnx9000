@@ -11,7 +11,7 @@ import {
   CheckerNode,
   CheckerGraph,
   Model,
-} from '../src/checker';
+} from '../src/checker.js';
 
 describe('ONNX Checker', () => {
   it('ValidationContext initializes correctly', () => {

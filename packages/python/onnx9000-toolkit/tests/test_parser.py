@@ -140,7 +140,7 @@ def test_script_decorator_parse_error() -> None:
     @script
     def my_model(x) -> NoReturn:
         """Test the my model functionality."""
-        raise RuntimeError("Oops")
+        raise RuntimeError("Oops")  # pragma: no cover
 
     if False:
         my_model.to_builder()

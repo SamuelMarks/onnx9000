@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { DynamicBatcher } from '../src/batcher';
-import { MemoryManager } from '../src/memory';
-import { globalLogger, LogLevel } from '../src/logger';
+import { DynamicBatcher } from '../src/batcher.js';
+import { MemoryManager } from '../src/memory.js';
+import { globalLogger, LogLevel } from '../src/logger.js';
 
 describe('Batcher & Memory & Logger', () => {
   it('MemoryManager coverage', async () => {

@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { handleOnnx2GgufCommand, handleGguf2OnnxCommand } from '../src/commands/gguf';
+import { handleOnnx2GgufCommand, handleGguf2OnnxCommand } from '../src/commands/gguf.js';
 import * as fs from 'fs';
 import * as onnx2gguf from '@onnx9000/onnx2gguf';
 import { load, save } from '@onnx9000/core';

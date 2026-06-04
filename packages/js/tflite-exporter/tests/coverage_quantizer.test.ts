@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Graph, Node, Tensor, Attribute } from '@onnx9000/core';
-import { Quantizer } from '../src/quantization/quantizer';
+import { Quantizer } from '../src/quantization/quantizer.js';
 
 describe('Quantizer Coverage', () => {
   it('should handle customQuantizationMap and fused_activation', () => {

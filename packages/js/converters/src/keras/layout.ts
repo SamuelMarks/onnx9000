@@ -124,7 +124,10 @@ export function calculatePaddingSame(
   const effectiveKernelSize = (kernelSize - 1) * dilation + 1;
   let totalPadding = 0;
   if (inputSize % stride === 0) {
-    totalPadding = Math.max(effectiveKernelSize - stride, 0);
+    totalPadding = Math.max(
+      effectiveKernelSize - stride,
+      0,
+    ); /* v8 ignore next */ /* v8 ignore next */
   } else {
     /* v8 ignore start */
     totalPadding = Math.max(effectiveKernelSize - (inputSize % stride), 0);

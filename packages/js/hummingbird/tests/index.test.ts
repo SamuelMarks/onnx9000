@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Hummingbird } from '../src/index';
+import { Hummingbird } from '../src/index.js';
 describe('hummingbird', () => {
   it('runs', () => {
     expect(new Hummingbird().run()).toBe('[hummingbird] processed');

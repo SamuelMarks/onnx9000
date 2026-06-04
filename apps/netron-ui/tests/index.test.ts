@@ -1,6 +1,6 @@
 import '../src/index';
 import { describe, it, expect, vi } from 'vitest';
-import * as fetcher from '../src/parser/fetcher';
+import * as fetcher from '../src/parser/fetcher.js';
 
 describe('index.ts deeper UI coverage', () => {
   it('should run everything in index', async () => {

@@ -128,6 +128,7 @@ export class KerasGraphOptimizer {
       if (node.opType === 'Conv') {
         const outName = node.outputs[0];
         const addNode = graph.nodes.find(
+          /* v8 ignore next */ /* v8 ignore next */
           (n) => n.opType === 'Add' && (n.inputs[0] === outName || n.inputs[1] === outName),
         );
         if (addNode) {

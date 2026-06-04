@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
-import { GreedySearch, BeamSearchAlgorithm, MultinomialSampling } from '../../src/genai/search';
-import { Tensor } from '../../src/ir/tensor';
+import { GreedySearch, BeamSearchAlgorithm, MultinomialSampling } from '../../src/genai/search.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
 test('GreedySearch selectNextToken coverage', () => {
   const s = new GreedySearch();

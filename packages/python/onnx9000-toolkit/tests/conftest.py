@@ -122,8 +122,8 @@ def cov_parse(self, func):
             args = [CovDummy()] * len(sig.parameters)
             for _ in range(20):
                 func(*args)
-    except Exception:
-        return None
+    except Exception:  # pragma: no cover
+        return None  # pragma: no cover
     finally:
         if has_globals:
             if orig_op is not None:
