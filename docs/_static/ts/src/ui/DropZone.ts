@@ -1,126 +1,126 @@
-/* v8 ignore next */ /* v8 ignore next */ import { BaseComponent } from './BaseComponent'; /* v8 ignore next */ /* v8 ignore next */
-import { $, $create, $on, $off } from '../core/DOM'; /* v8 ignore next */ /* v8 ignore next */
-import { globalEvents } from '../core/State'; /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-export class DropZone extends BaseComponent { /* v8 ignore next */ /* v8 ignore next */
-  private overlay: HTMLElement; /* v8 ignore next */ /* v8 ignore next */
-  private dropMessage: HTMLElement; /* v8 ignore next */ /* v8 ignore next */
-  private dragCounter = 0; /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  constructor() { /* v8 ignore next */ /* v8 ignore next */
-    super(document.body); /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    // Create overlay /* v8 ignore next */ /* v8 ignore next */
-    this.overlay = $create('div', { className: 'ide-drop-overlay' }); /* v8 ignore next */ /* v8 ignore next */
-    this.dropMessage = $create('div', { /* v8 ignore next */ /* v8 ignore next */
-      className: 'ide-drop-message', /* v8 ignore next */ /* v8 ignore next */
-      textContent: 'Drop .onnx, .safetensors, .py, or Directory here', /* v8 ignore next */ /* v8 ignore next */
-    }); /* v8 ignore next */ /* v8 ignore next */
-    this.overlay.appendChild(this.dropMessage); /* v8 ignore next */ /* v8 ignore next */
-    document.body.appendChild(this.overlay); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  mount(): void { /* v8 ignore next */ /* v8 ignore next */
-    // Bind global drag events /* v8 ignore next */ /* v8 ignore next */
-    const body = document.body; /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    this.bindEvent(body, 'dragenter', this.onDragEnter.bind(this)); /* v8 ignore next */ /* v8 ignore next */
-    this.bindEvent(body, 'dragleave', this.onDragLeave.bind(this)); /* v8 ignore next */ /* v8 ignore next */
-    this.bindEvent(body, 'dragover', this.onDragOver.bind(this)); /* v8 ignore next */ /* v8 ignore next */
-    this.bindEvent(body, 'drop', this.onDrop.bind(this)); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  private onDragEnter(e: Event): void { /* v8 ignore next */ /* v8 ignore next */
-    e.preventDefault(); /* v8 ignore next */ /* v8 ignore next */
-    this.dragCounter++; /* v8 ignore next */ /* v8 ignore next */
-    if (this.dragCounter === 1) { /* v8 ignore next */ /* v8 ignore next */
-      this.overlay.classList.add('is-active'); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  private onDragLeave(e: Event): void { /* v8 ignore next */ /* v8 ignore next */
-    e.preventDefault(); /* v8 ignore next */ /* v8 ignore next */
-    this.dragCounter--; /* v8 ignore next */ /* v8 ignore next */
-    if (this.dragCounter === 0) { /* v8 ignore next */ /* v8 ignore next */
-      this.overlay.classList.remove('is-active'); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  private onDragOver(e: Event): void { /* v8 ignore next */ /* v8 ignore next */
-    e.preventDefault(); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  private async onDrop(e: Event): void { /* v8 ignore next */ /* v8 ignore next */
-    e.preventDefault(); /* v8 ignore next */ /* v8 ignore next */
-    this.dragCounter = 0; /* v8 ignore next */ /* v8 ignore next */
-    this.overlay.classList.remove('is-active'); /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    const dragEvent = e as DragEvent; /* v8 ignore next */ /* v8 ignore next */
-    if (!dragEvent.dataTransfer) return; /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    const files: File[] = []; /* v8 ignore next */ /* v8 ignore next */
-    const items = dragEvent.dataTransfer.items; /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    if (items && items.length > 0) { /* v8 ignore next */ /* v8 ignore next */
-      const promises: Promise<void>[] = []; /* v8 ignore next */ /* v8 ignore next */
-      for (let i = 0; i < items.length; i++) { /* v8 ignore next */ /* v8 ignore next */
-        const item = items[i]; /* v8 ignore next */ /* v8 ignore next */
-        if (item.kind === 'file') { /* v8 ignore next */ /* v8 ignore next */
-          const entry = item.webkitGetAsEntry(); /* v8 ignore next */ /* v8 ignore next */
-          if (entry) { /* v8 ignore next */ /* v8 ignore next */
-            promises.push(this.traverseFileTree(entry, files)); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        } /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-      await Promise.all(promises); /* v8 ignore next */ /* v8 ignore next */
-    } else { /* v8 ignore next */ /* v8 ignore next */
-      // Fallback /* v8 ignore next */ /* v8 ignore next */
-      for (let i = 0; i < dragEvent.dataTransfer.files.length; i++) { /* v8 ignore next */ /* v8 ignore next */
-        files.push(dragEvent.dataTransfer.files[i]); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-    if (files.length > 0) { /* v8 ignore next */ /* v8 ignore next */
-      if (files.length === 1) { /* v8 ignore next */ /* v8 ignore next */
-        globalEvents.emit('filesDropped', files); /* v8 ignore next */ /* v8 ignore next */
-      } else { /* v8 ignore next */ /* v8 ignore next */
-        globalEvents.emit('directoryDropped', files); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  private traverseFileTree(item: any, files: File[]): Promise<void> { /* v8 ignore next */ /* v8 ignore next */
-    return new Promise((resolve) => { /* v8 ignore next */ /* v8 ignore next */
-      if (item.isFile) { /* v8 ignore next */ /* v8 ignore next */
-        item.file((file: File) => { /* v8 ignore next */ /* v8 ignore next */
-          // Keep a reference to its path if possible /* v8 ignore next */ /* v8 ignore next */
-          // file.webkitRelativePath is read-only usually, so we just append to files array /* v8 ignore next */ /* v8 ignore next */
-          Object.defineProperty(file, 'webkitRelativePath', { /* v8 ignore next */ /* v8 ignore next */
-            value: item.fullPath.replace(/^\//, ''), /* v8 ignore next */ /* v8 ignore next */
-            writable: false, /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-          files.push(file); /* v8 ignore next */ /* v8 ignore next */
-          resolve(); /* v8 ignore next */ /* v8 ignore next */
-        }); /* v8 ignore next */ /* v8 ignore next */
-      } else if (item.isDirectory) { /* v8 ignore next */ /* v8 ignore next */
-        const dirReader = item.createReader(); /* v8 ignore next */ /* v8 ignore next */
-        dirReader.readEntries((entries: any[]) => { /* v8 ignore next */ /* v8 ignore next */
-          const promises: Promise<void>[] = []; /* v8 ignore next */ /* v8 ignore next */
-          for (let i = 0; i < entries.length; i++) { /* v8 ignore next */ /* v8 ignore next */
-            promises.push(this.traverseFileTree(entries[i], files)); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          Promise.all(promises).then(() => resolve()); /* v8 ignore next */ /* v8 ignore next */
-        }); /* v8 ignore next */ /* v8 ignore next */
-      } else { /* v8 ignore next */ /* v8 ignore next */
-        resolve(); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    }); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-  unmount(): void { /* v8 ignore next */ /* v8 ignore next */
-    super.unmount(); /* v8 ignore next */ /* v8 ignore next */
-    if (this.overlay.parentNode) { /* v8 ignore next */ /* v8 ignore next */
-      this.overlay.parentNode.removeChild(this.overlay); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+  import { BaseComponent } from './BaseComponent';  
+import { $, $create, $on, $off } from '../core/DOM';  
+import { globalEvents } from '../core/State';  
+  
+export class DropZone extends BaseComponent {  
+  private overlay: HTMLElement;  
+  private dropMessage: HTMLElement;  
+  private dragCounter = 0;  
+  
+  constructor() {  
+    super(document.body);  
+  
+    // Create overlay  
+    this.overlay = $create('div', { className: 'ide-drop-overlay' });  
+    this.dropMessage = $create('div', {  
+      className: 'ide-drop-message',  
+      textContent: 'Drop .onnx, .safetensors, .py, or Directory here',  
+    });  
+    this.overlay.appendChild(this.dropMessage);  
+    document.body.appendChild(this.overlay);  
+  }  
+  
+  mount(): void {  
+    // Bind global drag events  
+    const body = document.body;  
+  
+    this.bindEvent(body, 'dragenter', this.onDragEnter.bind(this));  
+    this.bindEvent(body, 'dragleave', this.onDragLeave.bind(this));  
+    this.bindEvent(body, 'dragover', this.onDragOver.bind(this));  
+    this.bindEvent(body, 'drop', this.onDrop.bind(this));  
+  }  
+  
+  private onDragEnter(e: Event): void {  
+    e.preventDefault();  
+    this.dragCounter++;  
+    if (this.dragCounter === 1) {  
+      this.overlay.classList.add('is-active');  
+    }  
+  }  
+  
+  private onDragLeave(e: Event): void {  
+    e.preventDefault();  
+    this.dragCounter--;  
+    if (this.dragCounter === 0) {  
+      this.overlay.classList.remove('is-active');  
+    }  
+  }  
+  
+  private onDragOver(e: Event): void {  
+    e.preventDefault();  
+  }  
+  
+  private async onDrop(e: Event): void {  
+    e.preventDefault();  
+    this.dragCounter = 0;  
+    this.overlay.classList.remove('is-active');  
+  
+    const dragEvent = e as DragEvent;  
+    if (!dragEvent.dataTransfer) return;  
+  
+    const files: File[] = [];  
+    const items = dragEvent.dataTransfer.items;  
+  
+    if (items && items.length > 0) {  
+      const promises: Promise<void>[] = [];  
+      for (let i = 0; i < items.length; i++) {  
+        const item = items[i];  
+        if (item.kind === 'file') {  
+          const entry = item.webkitGetAsEntry();  
+          if (entry) {  
+            promises.push(this.traverseFileTree(entry, files));  
+          }  
+        }  
+      }  
+      await Promise.all(promises);  
+    } else {  
+      // Fallback  
+      for (let i = 0; i < dragEvent.dataTransfer.files.length; i++) {  
+        files.push(dragEvent.dataTransfer.files[i]);  
+      }  
+    }  
+  
+    if (files.length > 0) {  
+      if (files.length === 1) {  
+        globalEvents.emit('filesDropped', files);  
+      } else {  
+        globalEvents.emit('directoryDropped', files);  
+      }  
+    }  
+  }  
+  
+  private traverseFileTree(item: any, files: File[]): Promise<void> {  
+    return new Promise((resolve) => {  
+      if (item.isFile) {  
+        item.file((file: File) => {  
+          // Keep a reference to its path if possible  
+          // file.webkitRelativePath is read-only usually, so we just append to files array  
+          Object.defineProperty(file, 'webkitRelativePath', {  
+            value: item.fullPath.replace(/^\//, ''),  
+            writable: false,  
+          });  
+          files.push(file);  
+          resolve();  
+        });  
+      } else if (item.isDirectory) {  
+        const dirReader = item.createReader();  
+        dirReader.readEntries((entries: any[]) => {  
+          const promises: Promise<void>[] = [];  
+          for (let i = 0; i < entries.length; i++) {  
+            promises.push(this.traverseFileTree(entries[i], files));  
+          }  
+          Promise.all(promises).then(() => resolve());  
+        });  
+      } else {  
+        resolve();  
+      }  
+    });  
+  }  
+  
+  unmount(): void {  
+    super.unmount();  
+    if (this.overlay.parentNode) {  
+      this.overlay.parentNode.removeChild(this.overlay);  
+    }  
+  }  
 }
