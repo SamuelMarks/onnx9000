@@ -10,21 +10,23 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v6
         with:
           version: 9
 
@@ -33,7 +35,7 @@ jobs:
 
       # 319. Cache TS build artifacts
       - name: Cache TS Build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: docs/_static/app.bundle.js
           key: ${{ runner.os }}-esbuild-${{ hashFiles('docs/_static/ts/**/*.ts') }}
@@ -60,7 +62,7 @@ jobs:
       - name: Deploy to external repository
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.GH_PAT }}
+          personal_token: ${{ env.GH_PAT }}
           external_repository: SamuelMarks/samuelmarks.github.io
           publish_branch: master
           publish_dir: docs/_build/html
