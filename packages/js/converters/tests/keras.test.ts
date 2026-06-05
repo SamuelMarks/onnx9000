@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Keras2OnnxConverter } from '../src/keras/index.js';
 import { keras2onnx } from '../src/keras/api.js';
 import { parseKerasH5 } from '../src/keras/h5-parser.js';
 import { Keras2OnnxConverter } from '../src/keras/index.js';
@@ -169,12 +168,12 @@ describe('Keras Module', () => {
       {
         paths: ['shard1.bin'],
         weights: [
-          { name: 'w', shape: [2, 2], dtype: 'float32' as Object },
-          { name: 'w2', shape: [2, 2], dtype: 'int32' as Object },
-          { name: 'w3', shape: [2, 2], dtype: 'uint8' as Object },
-          { name: 'w4', shape: [2, 2], dtype: 'bool' as Object },
-          { name: 'w5', shape: [2, 2], dtype: 'complex64' as Object },
-          { name: 'w6', shape: [2, 2], dtype: 'float16' as Object },
+          { name: 'w', shape: [2, 2], dtype: 'float32' as any },
+          { name: 'w2', shape: [2, 2], dtype: 'int32' as any },
+          { name: 'w3', shape: [2, 2], dtype: 'uint8' as any },
+          { name: 'w4', shape: [2, 2], dtype: 'bool' as any },
+          { name: 'w5', shape: [2, 2], dtype: 'complex64' as any },
+          { name: 'w6', shape: [2, 2], dtype: 'float16' as any },
         ],
       },
     ];
@@ -188,7 +187,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'string' as Object }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'string' as any }],
       },
     ];
     const fetcher = async () => new Uint8Array(16).buffer;
@@ -199,7 +198,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'unknown' as Object }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'unknown' as any }],
       },
     ];
     const fetcher = async () => new Uint8Array(16).buffer;
@@ -210,7 +209,7 @@ describe('Keras Module', () => {
     const manifest = [
       {
         paths: ['shard1.bin'],
-        weights: [{ name: 'w', shape: [2, 2], dtype: 'float32' as Object }],
+        weights: [{ name: 'w', shape: [2, 2], dtype: 'float32' as any }],
       },
     ];
 

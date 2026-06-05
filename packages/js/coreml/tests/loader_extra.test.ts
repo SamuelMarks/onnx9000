@@ -5,7 +5,7 @@ import { emitModel } from '../src/emitter.js';
 describe('MLPackageLoader', () => {
   it('loads from zip correctly', async () => {
     const model = { specificationVersion: 1 };
-    const modelBytes = emitModel(model as Object);
+    const modelBytes = emitModel(model as any);
 
     class MockZip {
       files: Record<string, Object> = {};

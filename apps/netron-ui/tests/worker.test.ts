@@ -14,11 +14,11 @@ describe('Worker messageHandler', () => {
   });
 
   it('should parse buffer', async () => {
-    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as Object);
-    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as Object);
+    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as any);
+    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as any);
 
     await messageHandler(
-      { data: { type: 'PARSE_BUFFER', buffer: new Uint8Array([1]), direction: 'LR' } } as Object,
+      { data: { type: 'PARSE_BUFFER', buffer: new Uint8Array([1]), direction: 'LR' } } as any,
       postMessage,
     );
 
@@ -26,11 +26,11 @@ describe('Worker messageHandler', () => {
   });
 
   it('should parse buffer without direction', async () => {
-    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as Object);
-    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as Object);
+    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as any);
+    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as any);
 
     await messageHandler(
-      { data: { type: 'PARSE_BUFFER', buffer: new Uint8Array([1]) } } as Object,
+      { data: { type: 'PARSE_BUFFER', buffer: new Uint8Array([1]) } } as any,
       postMessage,
     );
 
@@ -38,18 +38,18 @@ describe('Worker messageHandler', () => {
   });
 
   it('should parse file', async () => {
-    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as Object);
-    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as Object);
+    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as any);
+    vi.spyOn(layout, 'computeLayout').mockReturnValue('Layout' as any);
 
-    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as Object, postMessage);
+    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as any, postMessage);
 
     expect(postMessageData).toEqual({ type: 'PARSE_SUCCESS', graph: 'Graph', layout: 'Layout' });
   });
 
   it('should handle missing graph', async () => {
-    vi.spyOn(core, 'parseModelProto').mockResolvedValue(null as Object);
+    vi.spyOn(core, 'parseModelProto').mockResolvedValue(null as any);
 
-    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as Object, postMessage);
+    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as any, postMessage);
 
     expect(postMessageData).toBeNull();
   });
@@ -57,7 +57,7 @@ describe('Worker messageHandler', () => {
   it('should emit error', async () => {
     vi.spyOn(core, 'parseModelProto').mockRejectedValue(new Error('Test error'));
 
-    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as Object, postMessage);
+    await messageHandler({ data: { type: 'PARSE_FILE', file: new Blob() } } as any, postMessage);
 
     expect(postMessageData).toEqual({ type: 'PARSE_ERROR', error: 'Test error' });
   });

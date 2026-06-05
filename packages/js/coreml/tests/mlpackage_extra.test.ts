@@ -8,17 +8,17 @@ describe('MLPackageBuilder', () => {
       specificationVersion: 4,
       description: {
         input: [
-          { name: 'in1', type: { tensorType: {} } as Object },
+          { name: 'in1', type: { tensorType: {} } as any },
           { name: 'in2' },
-          { name: 'in3', type: { tensorType: {} } as Object },
+          { name: 'in3', type: { tensorType: {} } as any },
         ],
-        output: [{ name: 'out1', type: { tensorType: {} } as Object }, { name: 'out2' }],
+        output: [{ name: 'out1', type: { tensorType: {} } as any }, { name: 'out2' }],
       },
     };
 
     const options = {
       stateful: true,
-      computePrecision: 'Float16' as Object,
+      computePrecision: 'Float16' as any,
       imageInputs: { in1: { blueBias: 0.1 } },
       sequenceInputs: ['in2'],
       outputMappings: { out1: 'mapped_out' },
@@ -41,7 +41,7 @@ describe('MLPackageBuilder', () => {
       }
     }
 
-    const bytes = await builder.createZipArchive(MockZip as Object);
+    const bytes = await builder.createZipArchive(MockZip as any);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
@@ -59,7 +59,7 @@ describe('MLPackageBuilder', () => {
       }
     }
 
-    const bytes = await builder.createZipArchive(MockZip as Object);
+    const bytes = await builder.createZipArchive(MockZip as any);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
@@ -88,7 +88,7 @@ describe('MLPackageBuilder', () => {
         return new Uint8Array([0]);
       }
     }
-    const bytes = await builder.createZipArchive(MockZip as Object);
+    const bytes = await builder.createZipArchive(MockZip as any);
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 });

@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "no-unused-vars": "off",
+    "typescript/no-wrapper-object-types": "off"
+  }
+}

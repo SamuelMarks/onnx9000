@@ -18,7 +18,7 @@ describe('Fetcher', () => {
       },
     });
 
-    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as Object);
+    vi.spyOn(core, 'parseModelProto').mockResolvedValue('Graph' as any);
 
     let prog = 0;
     const cb = (p: number) => {

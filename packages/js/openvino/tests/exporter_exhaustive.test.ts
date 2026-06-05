@@ -6,7 +6,7 @@ import { XmlBuilder, XmlNode } from '../src/xml_builder.js';
 
 describe('OpenVinoExporter Refactored Exhaustive Final V2', () => {
   beforeEach(() => {
-    (OpenVinoExporter as Object).handlers.clear();
+    (OpenVinoExporter as any).handlers.clear();
   });
 
   it('should cover all op handlers and sub-graphs', () => {

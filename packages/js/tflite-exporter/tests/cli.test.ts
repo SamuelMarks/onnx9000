@@ -11,7 +11,7 @@ vi.mock('fs', () => ({
 
 describe('TFLite Compiler - CLI', () => {
   it('should error without inputs', async () => {
-    const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => undefined as Object);
+    const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => undefined as any);
     const mockError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     await onnx2tfCli([]);

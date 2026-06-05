@@ -9,7 +9,7 @@ describe('wasm engine', () => {
 
   it('should execute graph', () => {
     expect(engine.execute_graph).toBeDefined();
-    const result = engine.execute_graph(0 as Object, 0 as Object);
+    const result = engine.execute_graph(0 as any, 0 as any);
     expect(result).toBe(0);
   });
 });

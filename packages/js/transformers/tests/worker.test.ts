@@ -23,7 +23,7 @@ class MockWorker {
     }, 0);
   }
 }
-(global as Object).Worker = MockWorker;
+(global as any).Worker = MockWorker;
 
 describe('WorkerPipeline', () => {
   it('constructs', () => {

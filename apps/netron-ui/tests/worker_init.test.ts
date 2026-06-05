@@ -2,20 +2,20 @@ import { describe, it, expect, beforeAll } from 'vitest';
 
 describe('Worker Initialization', () => {
   beforeAll(() => {
-    (globalThis as Object).self = { postMessage: () => undefined };
+    (globalThis as any).self = { postMessage: () => undefined };
   });
 
   it('should map self.onmessage (lines 31-33)', async () => {
     const w = await import('../src/parser/worker');
-    expect(typeof (globalThis as Object).self.onmessage).toBe('function');
+    expect(typeof (globalThis as any).self.onmessage).toBe('function');
 
     let posted = false;
-    const orig = (globalThis as Object).self.postMessage;
-    (globalThis as Object).self.postMessage = () => {
+    const orig = (globalThis as any).self.postMessage;
+    (globalThis as any).self.postMessage = () => {
       posted = true;
     };
-    await (globalThis as Object).self.onmessage({} as Object);
+    await (globalThis as any).self.onmessage({} as any);
     expect(posted).toBe(true);
-    (globalThis as Object).self.postMessage = orig;
+    (globalThis as any).self.postMessage = orig;
   });
 });

@@ -30,11 +30,11 @@ describe('Coverage Modifier App interactions', () => {
     });
 
     // 1. autoFixMissingInitializers
-    if ((app as Object).initializerInspector && (app as Object).initializerInspector.config) {
-      if ((app as Object).initializerInspector.config.onAutoFix)
-        (app as Object).initializerInspector.config.onAutoFix();
-      if ((app as Object).initializerInspector.config.onStripInitializers)
-        (app as Object).initializerInspector.config.onStripInitializers();
+    if ((app as any).initializerInspector && (app as any).initializerInspector.config) {
+      if ((app as any).initializerInspector.config.onAutoFix)
+        (app as any).initializerInspector.config.onAutoFix();
+      if ((app as any).initializerInspector.config.onStripInitializers)
+        (app as any).initializerInspector.config.onStripInitializers();
     }
 
     // 2. Keyboard event for duplicate: ctrl+d

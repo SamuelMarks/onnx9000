@@ -20,7 +20,7 @@ describe('Schema Emitter & Parser Coverage', () => {
       neuralNetwork: { layers: [] },
     };
 
-    const bytes = emitModel(model as Object);
+    const bytes = emitModel(model as any);
     expect(bytes).toBeInstanceOf(Uint8Array);
 
     const model2 = {
@@ -28,7 +28,7 @@ describe('Schema Emitter & Parser Coverage', () => {
       description: { input: [], output: [] },
       mlProgram: { version: 1, functions: {} },
     };
-    const bytes2 = emitModel(model2 as Object);
+    const bytes2 = emitModel(model2 as any);
     expect(bytes2).toBeInstanceOf(Uint8Array);
 
     const reader = new BufferReader(bytes);

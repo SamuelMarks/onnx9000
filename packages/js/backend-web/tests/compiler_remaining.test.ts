@@ -111,7 +111,7 @@ describe('WebNNCompiler remaining coverage', () => {
         return {};
       }
     };
-    builder = new (globalThis as Object).MLGraphBuilder();
+    builder = new (globalThis as any).MLGraphBuilder();
   });
 
   const compileNode = async (node: Node, setupGraph?: (g: Graph) => void) => {
@@ -128,7 +128,7 @@ describe('WebNNCompiler remaining coverage', () => {
       shape: [1],
       id: 'o1',
       dtype: 'float32',
-    } as Object);
+    } as any);
     const compiler = new WebNNCompiler(g, builder);
     await compiler.compile();
   };
@@ -280,7 +280,7 @@ describe('WebNNCompiler remaining coverage', () => {
   it('Split with explicit tensor array', async () => {
     const n = new Node('Split', ['in1', 'in2'], ['out', 'out2']);
     await compileNode(n, (g) => {
-      g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as Object);
+      g.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as any);
       g.tensors['in2'] = new Tensor('in2', [2], 'int32', false, true, new Int32Array([1, 1]));
     });
   });

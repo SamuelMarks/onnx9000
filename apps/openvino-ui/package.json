@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint src --ext .ts"
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "dependencies": {
     "@onnx9000/core": "workspace:*",

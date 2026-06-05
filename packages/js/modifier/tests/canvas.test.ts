@@ -40,12 +40,12 @@ describe('GraphRenderer', () => {
       strokeRect: vi.fn(),
       roundRect: vi.fn(),
       drawImage: vi.fn(),
-    } as Object as CanvasRenderingContext2D;
+    } as any as CanvasRenderingContext2D;
 
-    canvas.getContext = () => mockCtx as Object;
+    canvas.getContext = () => mockCtx as any;
     document.createElement = (tag) => {
       const el = originalCreateElement(tag);
-      if (tag === 'canvas') (el as Object).getContext = () => mockCtx;
+      if (tag === 'canvas') (el as any).getContext = () => mockCtx;
       return el;
     };
 

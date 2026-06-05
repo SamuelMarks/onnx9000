@@ -22,43 +22,41 @@ import { TopPLogitProcessor } from '../../src/genai/top_p.js';
 describe('missing_coverage', () => {
   it('generator', async () => {
     class MockGen extends Generator {
-      async prefill(p: Object) {
+      async prefill(p: any) {
         return new Tensor('a', [1, 2], 'float32', false, false, new Float32Array(2));
       }
-      async decodeStep(t: Object) {
+      async decodeStep(t: any) {
         return new Tensor('a', [1, 2], 'float32', false, false, new Float32Array(2));
       }
       createModel() {
-        return null as Object;
+        return null as any;
       }
     }
     const gen = new MockGen(
-      null as Object,
-      { earlyStopping: true, maxNewTokens: 1, abortSignal: false } as Object,
+      null as any,
+      { earlyStopping: true, maxNewTokens: 1, abortSignal: false } as any,
     );
 
     try {
-      (gen as Object).sample(
-        new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])),
-      );
+      (gen as any).sample(new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])));
     } catch (e) {
       expect(e.message).toBe('Unsupported logit data type for sampling.');
     }
-    expect((gen as Object).isEos(1)).toBe(false);
+    expect((gen as any).isEos(1)).toBe(false);
   });
 
   it('logit_processors', () => {
-    new DiverseBeamSearchLogitProcessor(1, 1, 1).process([], null as Object);
-    new ContrastiveSearchLogitProcessor(1).process([], null as Object);
+    new DiverseBeamSearchLogitProcessor(1, 1, 1).process([], null as any);
+    new ContrastiveSearchLogitProcessor(1).process([], null as any);
   });
 
   it('model', () => {
     class MockModel extends Model {
-      async predict(i: Object) {
-        return null as Object;
+      async predict(i: any) {
+        return null as any;
       }
-      createGenerator(p: Object) {
-        return null as Object;
+      createGenerator(p: any) {
+        return null as any;
       }
     }
     const m = new MockModel();
@@ -76,12 +74,12 @@ describe('missing_coverage', () => {
   it('state', () => {
     const cache1 = new QuantizedKVCache();
     cache1.clear();
-    cache1.update(null as Object, null as Object, 0);
+    cache1.update(null as any, null as any, 0);
     cache1.get(0);
 
     const cache2 = new OffloadedKVCache(1);
     cache2.clear();
-    cache2.update(null as Object, null as Object, 0);
+    cache2.update(null as any, null as any, 0);
     cache2.get(0);
 
     new PromptCacheManager().saveToIDB('', null);
@@ -123,7 +121,7 @@ describe('missing_coverage', () => {
 
   it('top_p', () => {
     const p = new TopPLogitProcessor(1.0);
-    p.process([], null as Object);
+    p.process([], null as any);
 
     const p2 = new TopPLogitProcessor(0.5);
     p2.process([], new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])));

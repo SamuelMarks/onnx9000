@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "dependencies": {
     "@onnx9000/core": "workspace:*",

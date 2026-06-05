@@ -20,13 +20,13 @@ describe('missing4', () => {
         return 1;
       }
       createModel() {
-        return null as Object;
+        return null as any;
       }
     }
 
     const g = new MockGen(
-      null as Object,
-      { maxNewTokens: 5, earlyStopping: true, abortSignal: { aborted: false } } as Object,
+      null as any,
+      { maxNewTokens: 5, earlyStopping: true, abortSignal: { aborted: false } } as any,
     );
     g.isEos = () => true; // force early stop
     for await (const t of g.generate(
@@ -34,10 +34,7 @@ describe('missing4', () => {
     )) {
     }
 
-    const g2 = new MockGen(
-      null as Object,
-      { maxNewTokens: 5, abortSignal: { aborted: true } } as Object,
-    );
+    const g2 = new MockGen(null as any, { maxNewTokens: 5, abortSignal: { aborted: true } } as any);
     g2.isEos = () => false; // force abort check
     for await (const t of g2.generate(
       new Tensor('x', [1, 1], 'int32', false, false, new Int32Array([1])),

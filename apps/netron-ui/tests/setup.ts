@@ -1,6 +1,6 @@
-/* v8 ignore next */ /* v8 ignore next */ (globalThis as Object).self =
+/* v8 ignore next */ /* v8 ignore next */ (globalThis as any).self =
   globalThis; /* v8 ignore next */ /* v8 ignore next */
-(globalThis as Object).postMessage = () => undefined; /* v8 ignore next */ /* v8 ignore next */
+(globalThis as any).postMessage = () => undefined; /* v8 ignore next */ /* v8 ignore next */
 /* v8 ignore next */ /* v8 ignore next */
 Object.defineProperty(globalThis, 'navigator', {
   value: { userAgent: 'node.js' },
@@ -53,16 +53,16 @@ const mockContext = {
 /* v8 ignore next */ /* v8 ignore next */
 if (typeof HTMLCanvasElement !== 'undefined') {
   /* v8 ignore next */ /* v8 ignore next */
-  (HTMLCanvasElement as Object).prototype.getContext = () =>
+  (HTMLCanvasElement as any).prototype.getContext = () =>
     mockContext; /* v8 ignore next */ /* v8 ignore next */
 } /* v8 ignore next */ /* v8 ignore next */
 /* v8 ignore next */ /* v8 ignore next */
-(globalThis as Object).workerInstances = []; /* v8 ignore next */ /* v8 ignore next */
+(globalThis as any).workerInstances = []; /* v8 ignore next */ /* v8 ignore next */
 class MockWorker {
   /* v8 ignore next */ /* v8 ignore next */
   constructor() {
     /* v8 ignore next */ /* v8 ignore next */
-    (globalThis as Object).workerInstances.push(this); /* v8 ignore next */ /* v8 ignore next */
+    (globalThis as any).workerInstances.push(this); /* v8 ignore next */ /* v8 ignore next */
   } /* v8 ignore next */ /* v8 ignore next */
   onmessage: Object; /* v8 ignore next */ /* v8 ignore next */
   onerror: Object; /* v8 ignore next */ /* v8 ignore next */
@@ -132,18 +132,18 @@ class MockWorker {
   } /* v8 ignore next */ /* v8 ignore next */
   terminate() {} /* v8 ignore next */ /* v8 ignore next */
 } /* v8 ignore next */ /* v8 ignore next */
-(globalThis as Object).Worker = MockWorker; /* v8 ignore next */ /* v8 ignore next */
+(globalThis as any).Worker = MockWorker; /* v8 ignore next */ /* v8 ignore next */
 /* v8 ignore next */ /* v8 ignore next */
 if (typeof Blob === 'undefined') {
   /* v8 ignore next */ /* v8 ignore next */
-  (globalThis as Object).Blob = class Blob {
+  (globalThis as any).Blob = class Blob {
     /* v8 ignore next */ /* v8 ignore next */
     constructor(public parts: Object[]) {} /* v8 ignore next */ /* v8 ignore next */
   }; /* v8 ignore next */ /* v8 ignore next */
 } /* v8 ignore next */ /* v8 ignore next */
 if (typeof File === 'undefined') {
   /* v8 ignore next */ /* v8 ignore next */
-  (globalThis as Object).File = class File extends Blob {
+  (globalThis as any).File = class File extends Blob {
     /* v8 ignore next */ /* v8 ignore next */
     constructor(
       /* v8 ignore next */ /* v8 ignore next */

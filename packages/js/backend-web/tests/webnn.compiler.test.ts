@@ -95,7 +95,7 @@ describe('WebNNCompiler mapping', () => {
     // Prepopulate generic inputs
     graph.inputs.push({ name: 'in1', shape: [1], id: 'i1', dtype: 'float32' });
     graph.inputs.push({ name: 'in2', shape: [1], id: 'i2', dtype: 'float32' });
-    graph.outputs.push({ name: 'out1', shape: [1], id: 'o1', dtype: 'float32' } as Object);
+    graph.outputs.push({ name: 'out1', shape: [1], id: 'o1', dtype: 'float32' } as any);
   });
 
   const simpleOps = [
@@ -222,7 +222,7 @@ describe('WebNNCompiler mapping', () => {
   });
 
   it('should map Split correctly', async () => {
-    graph.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as Object);
+    graph.outputs.push({ name: 'out2', shape: [1], id: 'o2', dtype: 'float32' } as any);
     graph.nodes.push(new Node('Split', ['in1'], ['out1', 'out2']));
     const compiler = new WebNNCompiler(graph, builder);
     await compiler.compile();

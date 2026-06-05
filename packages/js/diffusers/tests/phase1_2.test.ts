@@ -22,7 +22,7 @@ global.fetch = vi.fn(() =>
     ok: true,
     json: () => Promise.resolve({ _class_name: 'StableDiffusionPipeline' }),
   }),
-) as Object;
+) as any;
 
 describe('DiffusionPipeline Phase 1', () => {
   it('fromPretrained', async () => {

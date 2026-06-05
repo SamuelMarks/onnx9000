@@ -5,7 +5,7 @@
   "scripts": {
     "test": "PYTHONPATH=../.. uv run pytest tests",
     "test_js": "vitest run",
-    "lint": "eslint src --ext .ts"
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "devDependencies": {
     "vitest": "^1.6.0"

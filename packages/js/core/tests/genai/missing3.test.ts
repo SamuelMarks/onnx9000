@@ -23,19 +23,19 @@ describe('missing3', () => {
         return 1;
       }
       createModel() {
-        return null as Object;
+        return null as any;
       }
     }
     const gen1 = new MockGen(
-      null as Object,
-      { maxNewTokens: null, abortSignal: { aborted: true } } as Object,
+      null as any,
+      { maxNewTokens: null, abortSignal: { aborted: true } } as any,
     );
     for await (const t of gen1.generate(
       new Tensor('x', [1, 1], 'int32', false, false, new Int32Array([1])),
     )) {
     }
 
-    const gen2 = new MockGen(null as Object, { earlyStopping: true, maxNewTokens: null } as Object);
+    const gen2 = new MockGen(null as any, { earlyStopping: true, maxNewTokens: null } as any);
     gen2.isEos = () => true;
     for await (const t of gen2.generate(
       new Tensor('x', [1, 1], 'int32', false, false, new Int32Array([1])),

@@ -14,7 +14,7 @@ describe('OnnxScriptGenerator Coverage Gaps', () => {
   };
 
   it('should cover generator branches and complex nodes', () => {
-    const gen = new OnnxScriptGenerator(mockOnnxGraph as Object);
+    const gen = new OnnxScriptGenerator(mockOnnxGraph as any);
     const code = gen.generate();
     expect(code).toContain('import onnxscript');
 
@@ -23,7 +23,7 @@ describe('OnnxScriptGenerator Coverage Gaps', () => {
       ...mockOnnxGraph,
       nodes: [new Node('Conv', ['in', 'w'], ['c']), new Node('Add', ['c', 'in'], ['out'])],
     };
-    const gen2 = new OnnxScriptGenerator(complexGraph as Object);
+    const gen2 = new OnnxScriptGenerator(complexGraph as any);
     expect(gen2.generate()).toContain('op.Conv');
   });
 
@@ -37,7 +37,7 @@ describe('OnnxScriptGenerator Coverage Gaps', () => {
       initializers: [],
       valueInfo: [],
     };
-    const gen = new OnnxScriptGenerator(edgeGraph as Object);
+    const gen = new OnnxScriptGenerator(edgeGraph as any);
     expect(gen.generate()).toContain('def unnamed');
   });
 });

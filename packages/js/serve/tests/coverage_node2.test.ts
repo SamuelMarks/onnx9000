@@ -5,7 +5,7 @@ let capturedHandler: Object;
 vi.mock('node:http2', () => ({
   createServer: (handler: Object) => {
     capturedHandler = handler;
-    return { listen: vi.fn() } as Object;
+    return { listen: vi.fn() } as any;
   },
 }));
 
@@ -19,7 +19,7 @@ describe('Node Serve HTTP/2 Mock', () => {
       }),
     };
 
-    serveNode(mockServer as Object, 0, true);
+    serveNode(mockServer as any, 0, true);
     expect(capturedHandler).toBeDefined();
 
     const mockReq = {
@@ -45,7 +45,7 @@ describe('Node Serve HTTP/2 Mock', () => {
     const crashServer = {
       fetch: vi.fn().mockRejectedValue(new Error('crash')),
     };
-    serveNode(crashServer as Object, 0, true);
+    serveNode(crashServer as any, 0, true);
     await capturedHandler(mockReq, mockRes);
     expect(mockRes.stream.respond).toHaveBeenCalledWith({ ':status': 500 });
   });

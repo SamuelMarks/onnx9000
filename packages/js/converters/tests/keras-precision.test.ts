@@ -23,7 +23,7 @@ describe('Keras Phase 9 - Data Types & Precision', () => {
 
     const converter = new Keras2OnnxConverter(modelJson);
     converter.convert();
-    const rawNodes = (converter as Object).rawNodes as Object[];
+    const rawNodes = (converter as any).rawNodes as any[];
 
     // There should be a Cast node preceding the MatMul in Dense
     const castNode = rawNodes.find((n) => n.opType === 'Cast');
@@ -55,7 +55,7 @@ describe('Keras Phase 9 - Data Types & Precision', () => {
 
     const converter = new Keras2OnnxConverter(modelJson);
     converter.convert();
-    const rawNodes = (converter as Object).rawNodes as Object[];
+    const rawNodes = (converter as any).rawNodes as any[];
 
     const qNode = rawNodes.find((n) => n.opType === 'QLinearMatMul');
     expect(qNode).toBeDefined();
@@ -91,7 +91,7 @@ describe('Keras Phase 9 - Data Types & Precision', () => {
 
     const converter = new Keras2OnnxConverter(modelJson);
     converter.convert();
-    const rawNodes = (converter as Object).rawNodes as Object[];
+    const rawNodes = (converter as any).rawNodes as any[];
 
     const qNode = rawNodes.find((n) => n.opType === 'QLinearConv');
     expect(qNode).toBeDefined();

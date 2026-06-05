@@ -1,13 +1,5 @@
-import {
-  TypicalLogitProcessor,
-  RepetitionPenaltyLogitProcessor,
-  TemperatureLogitProcessor,
-  LogitProcessorList,
-} from '../../src/genai/logit_processors.js';
+import { test, expect, describe, it } from 'vitest';
 import { Tensor } from '../../src/ir/tensor.js';
-import { test, expect } from 'vitest';
-import { describe, expect, it } from 'vitest';
-import { Tensor } from '../../src/index.js';
 import {
   TemperatureLogitProcessor,
   TopKLogitProcessor,

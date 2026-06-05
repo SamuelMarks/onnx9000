@@ -39,7 +39,7 @@ describe('TFLite Compiler - Quantizer', () => {
         ['X', 'scale', 'zp'],
         ['X_quant'],
         {
-          axis: { name: 'axis', type: 'INT', value: 1 } as Object,
+          axis: { name: 'axis', type: 'INT', value: 1 } as any,
         },
         'q1',
       ),
@@ -60,7 +60,7 @@ describe('TFLite Compiler - Quantizer', () => {
         'QuantizeLinear',
         ['X2', 'scale2', 'zp2'],
         ['X_quant2'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
         'q2',
       ),
     );
@@ -80,7 +80,7 @@ describe('TFLite Compiler - Quantizer', () => {
         'QuantizeLinear',
         ['X3', 'scale3', 'zp3'],
         ['X_quant3'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
         'q3',
       ),
     );
@@ -100,7 +100,7 @@ describe('TFLite Compiler - Quantizer', () => {
         'DynamicQuantizeLinear',
         ['X4', 'scale4', 'zp4'],
         ['X_quant4'],
-        { axis: { name: 'axis', type: 'INT', value: 1 } as Object },
+        { axis: { name: 'axis', type: 'INT', value: 1 } as any },
         'q4',
       ),
     );
@@ -112,7 +112,7 @@ describe('TFLite Compiler - Quantizer', () => {
         ['X_quant', 'W_quant'],
         ['Y_quant'],
         {
-          fused_activation: { name: 'fused_activation', type: 'STRING', value: 'Relu6' } as Object,
+          fused_activation: { name: 'fused_activation', type: 'STRING', value: 'Relu6' } as any,
         },
         'conv_relu6',
       ),
@@ -123,7 +123,7 @@ describe('TFLite Compiler - Quantizer', () => {
         ['X_quant2', 'W_quant'],
         ['Y_quant2'],
         {
-          fused_activation: { name: 'fused_activation', type: 'STRING', value: 'Relu' } as Object,
+          fused_activation: { name: 'fused_activation', type: 'STRING', value: 'Relu' } as any,
         },
         'conv_relu',
       ),
@@ -147,7 +147,7 @@ describe('TFLite Compiler - Quantizer', () => {
         addFloat32: () => undefined,
         writeInt32: () => undefined,
         endVector: () => 3,
-      } as Object,
+      } as any,
       graph.tensors['X_quant'] || new Tensor('X_quant', [1], 'int8'),
     );
 

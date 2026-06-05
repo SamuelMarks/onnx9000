@@ -31,7 +31,7 @@ describe('ModifierApp (Integration)', () => {
       fillText: vi.fn(),
       setLineDash: vi.fn(),
       strokeRect: vi.fn(),
-    } as Object as CanvasRenderingContext2D;
+    } as any as CanvasRenderingContext2D;
     HTMLCanvasElement.prototype.getContext = () => mockCtx;
     graph = new Graph('TestApp');
     graph.nodes.push(new Node('Relu', ['X'], ['Y'], {}, 'ReluNode'));

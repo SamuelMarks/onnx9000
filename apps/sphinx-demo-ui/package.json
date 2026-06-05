@@ -9,7 +9,7 @@
     "test": "vitest run --passWithNoTests",
     "coverage": "vitest run --coverage",
     "docs": "typedoc --out docs src",
-    "lint": "eslint src tests",
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"**/*.css\"",
     "test:e2e": "playwright test"
   },

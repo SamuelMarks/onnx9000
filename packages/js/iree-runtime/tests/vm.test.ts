@@ -134,7 +134,7 @@ describe('WASMWVMInterpreter', () => {
   let instantiateSpy: Object;
 
   beforeAll(() => {
-    compileSpy = vi.spyOn(WebAssembly, 'compile').mockResolvedValue({} as Object);
+    compileSpy = vi.spyOn(WebAssembly, 'compile').mockResolvedValue({} as any);
     instantiateSpy = vi
       .spyOn(WebAssembly, 'instantiate')
       .mockImplementation(async (mod, imports) => {
@@ -147,7 +147,7 @@ describe('WASMWVMInterpreter', () => {
               }
             },
           },
-        } as Object;
+        } as any;
       });
   });
 
@@ -172,7 +172,7 @@ describe('WASMWVMInterpreter', () => {
         exports: {
           run: () => imports.env.abort(),
         },
-      } as Object;
+      } as any;
     });
     const vm = new WASMWVMInterpreter();
     await vm.initialize(new ArrayBuffer(10));

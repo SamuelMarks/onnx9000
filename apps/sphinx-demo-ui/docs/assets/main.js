@@ -1,2005 +1,2005 @@
-/* v8 ignore next */ /* v8 ignore next */ 'use strict'; /* v8 ignore next */ /* v8 ignore next */
-'use strict'; /* v8 ignore next */ /* v8 ignore next */
-(() => { /* v8 ignore next */ /* v8 ignore next */
-  var Ce = Object.create; /* v8 ignore next */ /* v8 ignore next */
-  var ne = Object.defineProperty; /* v8 ignore next */ /* v8 ignore next */
-  var Pe = Object.getOwnPropertyDescriptor; /* v8 ignore next */ /* v8 ignore next */
-  var Oe = Object.getOwnPropertyNames; /* v8 ignore next */ /* v8 ignore next */
-  var _e = Object.getPrototypeOf, /* v8 ignore next */ /* v8 ignore next */
-    Re = Object.prototype.hasOwnProperty; /* v8 ignore next */ /* v8 ignore next */
-  var Me = (t, e) => () => (e || t((e = { exports: {} }).exports, e), e.exports); /* v8 ignore next */ /* v8 ignore next */
-  var Fe = (t, e, n, r) => { /* v8 ignore next */ /* v8 ignore next */
-    if ((e && typeof e == 'object') || typeof e == 'function') /* v8 ignore next */ /* v8 ignore next */
-      for (let i of Oe(e)) /* v8 ignore next */ /* v8 ignore next */
-        !Re.call(t, i) && /* v8 ignore next */ /* v8 ignore next */
-          i !== n && /* v8 ignore next */ /* v8 ignore next */
-          ne(t, i, { get: () => e[i], enumerable: !(r = Pe(e, i)) || r.enumerable }); /* v8 ignore next */ /* v8 ignore next */
-    return t; /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var De = (t, e, n) => ( /* v8 ignore next */ /* v8 ignore next */
-    (n = t != null ? Ce(_e(t)) : {}), /* v8 ignore next */ /* v8 ignore next */
-    Fe(e || !t || !t.__esModule ? ne(n, 'default', { value: t, enumerable: !0 }) : n, t) /* v8 ignore next */ /* v8 ignore next */
-  ); /* v8 ignore next */ /* v8 ignore next */
-  var ae = Me((se, oe) => { /* v8 ignore next */ /* v8 ignore next */
-    (function () { /* v8 ignore next */ /* v8 ignore next */
-      var t = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        var n = new t.Builder(); /* v8 ignore next */ /* v8 ignore next */
-        return ( /* v8 ignore next */ /* v8 ignore next */
-          n.pipeline.add(t.trimmer, t.stopWordFilter, t.stemmer), /* v8 ignore next */ /* v8 ignore next */
-          n.searchPipeline.add(t.stemmer), /* v8 ignore next */ /* v8 ignore next */
-          e.call(n, n), /* v8 ignore next */ /* v8 ignore next */
-          n.build() /* v8 ignore next */ /* v8 ignore next */
-        ); /* v8 ignore next */ /* v8 ignore next */
-      }; /* v8 ignore next */ /* v8 ignore next */
-      t.version = '2.3.9'; /* v8 ignore next */ /* v8 ignore next */
-      ((t.utils = {}), /* v8 ignore next */ /* v8 ignore next */
-        (t.utils.warn = (function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return function (n) { /* v8 ignore next */ /* v8 ignore next */
-            e.console && console.warn && console.warn(n); /* v8 ignore next */ /* v8 ignore next */
-          }; /* v8 ignore next */ /* v8 ignore next */
-        })(this)), /* v8 ignore next */ /* v8 ignore next */
-        (t.utils.asString = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return e == null ? '' : e.toString(); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.utils.clone = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          if (e == null) return e; /* v8 ignore next */ /* v8 ignore next */
-          for (var n = Object.create(null), r = Object.keys(e), i = 0; i < r.length; i++) { /* v8 ignore next */ /* v8 ignore next */
-            var s = r[i], /* v8 ignore next */ /* v8 ignore next */
-              o = e[s]; /* v8 ignore next */ /* v8 ignore next */
-            if (Array.isArray(o)) { /* v8 ignore next */ /* v8 ignore next */
-              n[s] = o.slice(); /* v8 ignore next */ /* v8 ignore next */
-              continue; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (typeof o == 'string' || typeof o == 'number' || typeof o == 'boolean') { /* v8 ignore next */ /* v8 ignore next */
-              n[s] = o; /* v8 ignore next */ /* v8 ignore next */
-              continue; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            throw new TypeError('clone is not deep and does not support nested objects'); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return n; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.FieldRef = function (e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.docRef = e), (this.fieldName = n), (this._stringValue = r)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.FieldRef.joiner = '/'), /* v8 ignore next */ /* v8 ignore next */
-        (t.FieldRef.fromString = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.indexOf(t.FieldRef.joiner); /* v8 ignore next */ /* v8 ignore next */
-          if (n === -1) throw 'malformed field ref string'; /* v8 ignore next */ /* v8 ignore next */
-          var r = e.slice(0, n), /* v8 ignore next */ /* v8 ignore next */
-            i = e.slice(n + 1); /* v8 ignore next */ /* v8 ignore next */
-          return new t.FieldRef(i, r, e); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.FieldRef.prototype.toString = function () { /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            this._stringValue == null && /* v8 ignore next */ /* v8 ignore next */
-              (this._stringValue = this.fieldName + t.FieldRef.joiner + this.docRef), /* v8 ignore next */ /* v8 ignore next */
-            this._stringValue /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.Set = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        if (((this.elements = Object.create(null)), e)) { /* v8 ignore next */ /* v8 ignore next */
-          this.length = e.length; /* v8 ignore next */ /* v8 ignore next */
-          for (var n = 0; n < this.length; n++) this.elements[e[n]] = !0; /* v8 ignore next */ /* v8 ignore next */
-        } else this.length = 0; /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Set.complete = { /* v8 ignore next */ /* v8 ignore next */
-          intersect: function (e) { /* v8 ignore next */ /* v8 ignore next */
-            return e; /* v8 ignore next */ /* v8 ignore next */
-          }, /* v8 ignore next */ /* v8 ignore next */
-          union: function () { /* v8 ignore next */ /* v8 ignore next */
-            return this; /* v8 ignore next */ /* v8 ignore next */
-          }, /* v8 ignore next */ /* v8 ignore next */
-          contains: function () { /* v8 ignore next */ /* v8 ignore next */
-            return !0; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Set.empty = { /* v8 ignore next */ /* v8 ignore next */
-          intersect: function () { /* v8 ignore next */ /* v8 ignore next */
-            return this; /* v8 ignore next */ /* v8 ignore next */
-          }, /* v8 ignore next */ /* v8 ignore next */
-          union: function (e) { /* v8 ignore next */ /* v8 ignore next */
-            return e; /* v8 ignore next */ /* v8 ignore next */
-          }, /* v8 ignore next */ /* v8 ignore next */
-          contains: function () { /* v8 ignore next */ /* v8 ignore next */
-            return !1; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Set.prototype.contains = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return !!this.elements[e]; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Set.prototype.intersect = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n, /* v8 ignore next */ /* v8 ignore next */
-            r, /* v8 ignore next */ /* v8 ignore next */
-            i, /* v8 ignore next */ /* v8 ignore next */
-            s = []; /* v8 ignore next */ /* v8 ignore next */
-          if (e === t.Set.complete) return this; /* v8 ignore next */ /* v8 ignore next */
-          if (e === t.Set.empty) return e; /* v8 ignore next */ /* v8 ignore next */
-          (this.length < e.length ? ((n = this), (r = e)) : ((n = e), (r = this)), /* v8 ignore next */ /* v8 ignore next */
-            (i = Object.keys(n.elements))); /* v8 ignore next */ /* v8 ignore next */
-          for (var o = 0; o < i.length; o++) { /* v8 ignore next */ /* v8 ignore next */
-            var a = i[o]; /* v8 ignore next */ /* v8 ignore next */
-            a in r.elements && s.push(a); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return new t.Set(s); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Set.prototype.union = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return e === t.Set.complete /* v8 ignore next */ /* v8 ignore next */
-            ? t.Set.complete /* v8 ignore next */ /* v8 ignore next */
-            : e === t.Set.empty /* v8 ignore next */ /* v8 ignore next */
-              ? this /* v8 ignore next */ /* v8 ignore next */
-              : new t.Set(Object.keys(this.elements).concat(Object.keys(e.elements))); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.idf = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          var r = 0; /* v8 ignore next */ /* v8 ignore next */
-          for (var i in e) i != '_index' && (r += Object.keys(e[i]).length); /* v8 ignore next */ /* v8 ignore next */
-          var s = (n - r + 0.5) / (r + 0.5); /* v8 ignore next */ /* v8 ignore next */
-          return Math.log(1 + Math.abs(s)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Token = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.str = e || ''), (this.metadata = n || {})); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Token.prototype.toString = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this.str; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Token.prototype.update = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return ((this.str = e(this.str, this.metadata)), this); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Token.prototype.clone = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            (e = /* v8 ignore next */ /* v8 ignore next */
-              e || /* v8 ignore next */ /* v8 ignore next */
-              function (n) { /* v8 ignore next */ /* v8 ignore next */
-                return n; /* v8 ignore next */ /* v8 ignore next */
-              }), /* v8 ignore next */ /* v8 ignore next */
-            new t.Token(e(this.str, this.metadata), this.metadata) /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.tokenizer = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-        if (e == null || e == null) return []; /* v8 ignore next */ /* v8 ignore next */
-        if (Array.isArray(e)) /* v8 ignore next */ /* v8 ignore next */
-          return e.map(function (y) { /* v8 ignore next */ /* v8 ignore next */
-            return new t.Token(t.utils.asString(y).toLowerCase(), t.utils.clone(n)); /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        for (var r = e.toString().toLowerCase(), i = r.length, s = [], o = 0, a = 0; o <= i; o++) { /* v8 ignore next */ /* v8 ignore next */
-          var l = r.charAt(o), /* v8 ignore next */ /* v8 ignore next */
-            u = o - a; /* v8 ignore next */ /* v8 ignore next */
-          if (l.match(t.tokenizer.separator) || o == i) { /* v8 ignore next */ /* v8 ignore next */
-            if (u > 0) { /* v8 ignore next */ /* v8 ignore next */
-              var d = t.utils.clone(n) || {}; /* v8 ignore next */ /* v8 ignore next */
-              ((d.position = [a, u]), (d.index = s.length), s.push(new t.Token(r.slice(a, o), d))); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            a = o + 1; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        } /* v8 ignore next */ /* v8 ignore next */
-        return s; /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.tokenizer.separator = /[\s\-]+/)); /* v8 ignore next */ /* v8 ignore next */
-      ((t.Pipeline = function () { /* v8 ignore next */ /* v8 ignore next */
-        this._stack = []; /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.registeredFunctions = Object.create(null)), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.registerFunction = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          (n in this.registeredFunctions && /* v8 ignore next */ /* v8 ignore next */
-            t.utils.warn('Overwriting existing registered function: ' + n), /* v8 ignore next */ /* v8 ignore next */
-            (e.label = n), /* v8 ignore next */ /* v8 ignore next */
-            (t.Pipeline.registeredFunctions[e.label] = e)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.warnIfFunctionNotRegistered = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.label && e.label in this.registeredFunctions; /* v8 ignore next */ /* v8 ignore next */
-          n || /* v8 ignore next */ /* v8 ignore next */
-            t.utils.warn( /* v8 ignore next */ /* v8 ignore next */
-              `Function is not registered with pipeline. This may cause problems when serialising the index. /* v8 ignore next */ /* v8 ignore next */
-`, /* v8 ignore next */ /* v8 ignore next */
-              e /* v8 ignore next */ /* v8 ignore next */
-            ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.load = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = new t.Pipeline(); /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            e.forEach(function (r) { /* v8 ignore next */ /* v8 ignore next */
-              var i = t.Pipeline.registeredFunctions[r]; /* v8 ignore next */ /* v8 ignore next */
-              if (i) n.add(i); /* v8 ignore next */ /* v8 ignore next */
-              else throw new Error('Cannot load unregistered function: ' + r); /* v8 ignore next */ /* v8 ignore next */
-            }), /* v8 ignore next */ /* v8 ignore next */
-            n /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.add = function () { /* v8 ignore next */ /* v8 ignore next */
-          var e = Array.prototype.slice.call(arguments); /* v8 ignore next */ /* v8 ignore next */
-          e.forEach(function (n) { /* v8 ignore next */ /* v8 ignore next */
-            (t.Pipeline.warnIfFunctionNotRegistered(n), this._stack.push(n)); /* v8 ignore next */ /* v8 ignore next */
-          }, this); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.after = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          t.Pipeline.warnIfFunctionNotRegistered(n); /* v8 ignore next */ /* v8 ignore next */
-          var r = this._stack.indexOf(e); /* v8 ignore next */ /* v8 ignore next */
-          if (r == -1) throw new Error('Cannot find existingFn'); /* v8 ignore next */ /* v8 ignore next */
-          ((r = r + 1), this._stack.splice(r, 0, n)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.before = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          t.Pipeline.warnIfFunctionNotRegistered(n); /* v8 ignore next */ /* v8 ignore next */
-          var r = this._stack.indexOf(e); /* v8 ignore next */ /* v8 ignore next */
-          if (r == -1) throw new Error('Cannot find existingFn'); /* v8 ignore next */ /* v8 ignore next */
-          this._stack.splice(r, 0, n); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.remove = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = this._stack.indexOf(e); /* v8 ignore next */ /* v8 ignore next */
-          n != -1 && this._stack.splice(n, 1); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.run = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (var n = this._stack.length, r = 0; r < n; r++) { /* v8 ignore next */ /* v8 ignore next */
-            for (var i = this._stack[r], s = [], o = 0; o < e.length; o++) { /* v8 ignore next */ /* v8 ignore next */
-              var a = i(e[o], o, e); /* v8 ignore next */ /* v8 ignore next */
-              if (!(a == null || a === '')) /* v8 ignore next */ /* v8 ignore next */
-                if (Array.isArray(a)) for (var l = 0; l < a.length; l++) s.push(a[l]); /* v8 ignore next */ /* v8 ignore next */
-                else s.push(a); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            e = s; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.runString = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          var r = new t.Token(e, n); /* v8 ignore next */ /* v8 ignore next */
-          return this.run([r]).map(function (i) { /* v8 ignore next */ /* v8 ignore next */
-            return i.toString(); /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.reset = function () { /* v8 ignore next */ /* v8 ignore next */
-          this._stack = []; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Pipeline.prototype.toJSON = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this._stack.map(function (e) { /* v8 ignore next */ /* v8 ignore next */
-            return (t.Pipeline.warnIfFunctionNotRegistered(e), e.label); /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.Vector = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        ((this._magnitude = 0), (this.elements = e || [])); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.positionForIndex = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          if (this.elements.length == 0) return 0; /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var n = 0, /* v8 ignore next */ /* v8 ignore next */
-              r = this.elements.length / 2, /* v8 ignore next */ /* v8 ignore next */
-              i = r - n, /* v8 ignore next */ /* v8 ignore next */
-              s = Math.floor(i / 2), /* v8 ignore next */ /* v8 ignore next */
-              o = this.elements[s * 2]; /* v8 ignore next */ /* v8 ignore next */
-            i > 1 && (o < e && (n = s), o > e && (r = s), o != e); /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            ((i = r - n), (s = n + Math.floor(i / 2)), (o = this.elements[s * 2])); /* v8 ignore next */ /* v8 ignore next */
-          if (o == e || o > e) return s * 2; /* v8 ignore next */ /* v8 ignore next */
-          if (o < e) return (s + 1) * 2; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.insert = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          this.upsert(e, n, function () { /* v8 ignore next */ /* v8 ignore next */
-            throw 'duplicate index'; /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.upsert = function (e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-          this._magnitude = 0; /* v8 ignore next */ /* v8 ignore next */
-          var i = this.positionForIndex(e); /* v8 ignore next */ /* v8 ignore next */
-          this.elements[i] == e /* v8 ignore next */ /* v8 ignore next */
-            ? (this.elements[i + 1] = r(this.elements[i + 1], n)) /* v8 ignore next */ /* v8 ignore next */
-            : this.elements.splice(i, 0, e, n); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.magnitude = function () { /* v8 ignore next */ /* v8 ignore next */
-          if (this._magnitude) return this._magnitude; /* v8 ignore next */ /* v8 ignore next */
-          for (var e = 0, n = this.elements.length, r = 1; r < n; r += 2) { /* v8 ignore next */ /* v8 ignore next */
-            var i = this.elements[r]; /* v8 ignore next */ /* v8 ignore next */
-            e += i * i; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return (this._magnitude = Math.sqrt(e)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.dot = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var n = 0, /* v8 ignore next */ /* v8 ignore next */
-              r = this.elements, /* v8 ignore next */ /* v8 ignore next */
-              i = e.elements, /* v8 ignore next */ /* v8 ignore next */
-              s = r.length, /* v8 ignore next */ /* v8 ignore next */
-              o = i.length, /* v8 ignore next */ /* v8 ignore next */
-              a = 0, /* v8 ignore next */ /* v8 ignore next */
-              l = 0, /* v8 ignore next */ /* v8 ignore next */
-              u = 0, /* v8 ignore next */ /* v8 ignore next */
-              d = 0; /* v8 ignore next */ /* v8 ignore next */
-            u < s && d < o; /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            ((a = r[u]), /* v8 ignore next */ /* v8 ignore next */
-              (l = i[d]), /* v8 ignore next */ /* v8 ignore next */
-              a < l /* v8 ignore next */ /* v8 ignore next */
-                ? (u += 2) /* v8 ignore next */ /* v8 ignore next */
-                : a > l /* v8 ignore next */ /* v8 ignore next */
-                  ? (d += 2) /* v8 ignore next */ /* v8 ignore next */
-                  : a == l && ((n += r[u + 1] * i[d + 1]), (u += 2), (d += 2))); /* v8 ignore next */ /* v8 ignore next */
-          return n; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.similarity = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return this.dot(e) / this.magnitude() || 0; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.toArray = function () { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var e = new Array(this.elements.length / 2), n = 1, r = 0; /* v8 ignore next */ /* v8 ignore next */
-            n < this.elements.length; /* v8 ignore next */ /* v8 ignore next */
-            n += 2, r++ /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            e[r] = this.elements[n]; /* v8 ignore next */ /* v8 ignore next */
-          return e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Vector.prototype.toJSON = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this.elements; /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.stemmer = (function () { /* v8 ignore next */ /* v8 ignore next */
-        var e = { /* v8 ignore next */ /* v8 ignore next */
-            ational: 'ate', /* v8 ignore next */ /* v8 ignore next */
-            tional: 'tion', /* v8 ignore next */ /* v8 ignore next */
-            enci: 'ence', /* v8 ignore next */ /* v8 ignore next */
-            anci: 'ance', /* v8 ignore next */ /* v8 ignore next */
-            izer: 'ize', /* v8 ignore next */ /* v8 ignore next */
-            bli: 'ble', /* v8 ignore next */ /* v8 ignore next */
-            alli: 'al', /* v8 ignore next */ /* v8 ignore next */
-            entli: 'ent', /* v8 ignore next */ /* v8 ignore next */
-            eli: 'e', /* v8 ignore next */ /* v8 ignore next */
-            ousli: 'ous', /* v8 ignore next */ /* v8 ignore next */
-            ization: 'ize', /* v8 ignore next */ /* v8 ignore next */
-            ation: 'ate', /* v8 ignore next */ /* v8 ignore next */
-            ator: 'ate', /* v8 ignore next */ /* v8 ignore next */
-            alism: 'al', /* v8 ignore next */ /* v8 ignore next */
-            iveness: 'ive', /* v8 ignore next */ /* v8 ignore next */
-            fulness: 'ful', /* v8 ignore next */ /* v8 ignore next */
-            ousness: 'ous', /* v8 ignore next */ /* v8 ignore next */
-            aliti: 'al', /* v8 ignore next */ /* v8 ignore next */
-            iviti: 'ive', /* v8 ignore next */ /* v8 ignore next */
-            biliti: 'ble', /* v8 ignore next */ /* v8 ignore next */
-            logi: 'log' /* v8 ignore next */ /* v8 ignore next */
-          }, /* v8 ignore next */ /* v8 ignore next */
-          n = { icate: 'ic', ative: '', alize: 'al', iciti: 'ic', ical: 'ic', ful: '', ness: '' }, /* v8 ignore next */ /* v8 ignore next */
-          r = '[^aeiou]', /* v8 ignore next */ /* v8 ignore next */
-          i = '[aeiouy]', /* v8 ignore next */ /* v8 ignore next */
-          s = r + '[^aeiouy]*', /* v8 ignore next */ /* v8 ignore next */
-          o = i + '[aeiou]*', /* v8 ignore next */ /* v8 ignore next */
-          a = '^(' + s + ')?' + o + s, /* v8 ignore next */ /* v8 ignore next */
-          l = '^(' + s + ')?' + o + s + '(' + o + ')?$', /* v8 ignore next */ /* v8 ignore next */
-          u = '^(' + s + ')?' + o + s + o + s, /* v8 ignore next */ /* v8 ignore next */
-          d = '^(' + s + ')?' + i, /* v8 ignore next */ /* v8 ignore next */
-          y = new RegExp(a), /* v8 ignore next */ /* v8 ignore next */
-          p = new RegExp(u), /* v8 ignore next */ /* v8 ignore next */
-          b = new RegExp(l), /* v8 ignore next */ /* v8 ignore next */
-          g = new RegExp(d), /* v8 ignore next */ /* v8 ignore next */
-          L = /^(.+?)(ss|i)es$/, /* v8 ignore next */ /* v8 ignore next */
-          f = /^(.+?)([^s])s$/, /* v8 ignore next */ /* v8 ignore next */
-          m = /^(.+?)eed$/, /* v8 ignore next */ /* v8 ignore next */
-          S = /^(.+?)(ed|ing)$/, /* v8 ignore next */ /* v8 ignore next */
-          w = /.$/, /* v8 ignore next */ /* v8 ignore next */
-          k = /(at|bl|iz)$/, /* v8 ignore next */ /* v8 ignore next */
-          _ = new RegExp('([^aeiouylsz])\\1$'), /* v8 ignore next */ /* v8 ignore next */
-          B = new RegExp('^' + s + i + '[^aeiouwxy]$'), /* v8 ignore next */ /* v8 ignore next */
-          A = /^(.+?[^aeiou])y$/, /* v8 ignore next */ /* v8 ignore next */
-          j = /* v8 ignore next */ /* v8 ignore next */
-            /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/, /* v8 ignore next */ /* v8 ignore next */
-          $ = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/, /* v8 ignore next */ /* v8 ignore next */
-          V = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/, /* v8 ignore next */ /* v8 ignore next */
-          q = /^(.+?)(s|t)(ion)$/, /* v8 ignore next */ /* v8 ignore next */
-          C = /^(.+?)e$/, /* v8 ignore next */ /* v8 ignore next */
-          z = /ll$/, /* v8 ignore next */ /* v8 ignore next */
-          W = new RegExp('^' + s + i + '[^aeiouwxy]$'), /* v8 ignore next */ /* v8 ignore next */
-          N = function (c) { /* v8 ignore next */ /* v8 ignore next */
-            var v, P, T, h, x, O, M; /* v8 ignore next */ /* v8 ignore next */
-            if (c.length < 3) return c; /* v8 ignore next */ /* v8 ignore next */
-            if ( /* v8 ignore next */ /* v8 ignore next */
-              ((T = c.substr(0, 1)), /* v8 ignore next */ /* v8 ignore next */
-              T == 'y' && (c = T.toUpperCase() + c.substr(1)), /* v8 ignore next */ /* v8 ignore next */
-              (h = L), /* v8 ignore next */ /* v8 ignore next */
-              (x = f), /* v8 ignore next */ /* v8 ignore next */
-              h.test(c) ? (c = c.replace(h, '$1$2')) : x.test(c) && (c = c.replace(x, '$1$2')), /* v8 ignore next */ /* v8 ignore next */
-              (h = m), /* v8 ignore next */ /* v8 ignore next */
-              (x = S), /* v8 ignore next */ /* v8 ignore next */
-              h.test(c)) /* v8 ignore next */ /* v8 ignore next */
-            ) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((h = y), h.test(E[1]) && ((h = w), (c = c.replace(h, '')))); /* v8 ignore next */ /* v8 ignore next */
-            } else if (x.test(c)) { /* v8 ignore next */ /* v8 ignore next */
-              var E = x.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), /* v8 ignore next */ /* v8 ignore next */
-                (x = g), /* v8 ignore next */ /* v8 ignore next */
-                x.test(v) && /* v8 ignore next */ /* v8 ignore next */
-                  ((c = v), /* v8 ignore next */ /* v8 ignore next */
-                  (x = k), /* v8 ignore next */ /* v8 ignore next */
-                  (O = _), /* v8 ignore next */ /* v8 ignore next */
-                  (M = B), /* v8 ignore next */ /* v8 ignore next */
-                  x.test(c) /* v8 ignore next */ /* v8 ignore next */
-                    ? (c = c + 'e') /* v8 ignore next */ /* v8 ignore next */
-                    : O.test(c) /* v8 ignore next */ /* v8 ignore next */
-                      ? ((h = w), (c = c.replace(h, ''))) /* v8 ignore next */ /* v8 ignore next */
-                      : M.test(c) && (c = c + 'e'))); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (((h = A), h.test(c))) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), (c = v + 'i')); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (((h = j), h.test(c))) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), (P = E[2]), (h = y), h.test(v) && (c = v + e[P])); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (((h = $), h.test(c))) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), (P = E[2]), (h = y), h.test(v) && (c = v + n[P])); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (((h = V), (x = q), h.test(c))) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), (h = p), h.test(v) && (c = v)); /* v8 ignore next */ /* v8 ignore next */
-            } else if (x.test(c)) { /* v8 ignore next */ /* v8 ignore next */
-              var E = x.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1] + E[2]), (x = p), x.test(v) && (c = v)); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (((h = C), h.test(c))) { /* v8 ignore next */ /* v8 ignore next */
-              var E = h.exec(c); /* v8 ignore next */ /* v8 ignore next */
-              ((v = E[1]), /* v8 ignore next */ /* v8 ignore next */
-                (h = p), /* v8 ignore next */ /* v8 ignore next */
-                (x = b), /* v8 ignore next */ /* v8 ignore next */
-                (O = W), /* v8 ignore next */ /* v8 ignore next */
-                (h.test(v) || (x.test(v) && !O.test(v))) && (c = v)); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            return ( /* v8 ignore next */ /* v8 ignore next */
-              (h = z), /* v8 ignore next */ /* v8 ignore next */
-              (x = p), /* v8 ignore next */ /* v8 ignore next */
-              h.test(c) && x.test(c) && ((h = w), (c = c.replace(h, ''))), /* v8 ignore next */ /* v8 ignore next */
-              T == 'y' && (c = T.toLowerCase() + c.substr(1)), /* v8 ignore next */ /* v8 ignore next */
-              c /* v8 ignore next */ /* v8 ignore next */
-            ); /* v8 ignore next */ /* v8 ignore next */
-          }; /* v8 ignore next */ /* v8 ignore next */
-        return function (R) { /* v8 ignore next */ /* v8 ignore next */
-          return R.update(N); /* v8 ignore next */ /* v8 ignore next */
-        }; /* v8 ignore next */ /* v8 ignore next */
-      })()), /* v8 ignore next */ /* v8 ignore next */
-        t.Pipeline.registerFunction(t.stemmer, 'stemmer')); /* v8 ignore next */ /* v8 ignore next */
-      ((t.generateStopWordFilter = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        var n = e.reduce(function (r, i) { /* v8 ignore next */ /* v8 ignore next */
-          return ((r[i] = i), r); /* v8 ignore next */ /* v8 ignore next */
-        }, {}); /* v8 ignore next */ /* v8 ignore next */
-        return function (r) { /* v8 ignore next */ /* v8 ignore next */
-          if (r && n[r.toString()] !== r.toString()) return r; /* v8 ignore next */ /* v8 ignore next */
-        }; /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.stopWordFilter = t.generateStopWordFilter([ /* v8 ignore next */ /* v8 ignore next */
-          'a', /* v8 ignore next */ /* v8 ignore next */
-          'able', /* v8 ignore next */ /* v8 ignore next */
-          'about', /* v8 ignore next */ /* v8 ignore next */
-          'across', /* v8 ignore next */ /* v8 ignore next */
-          'after', /* v8 ignore next */ /* v8 ignore next */
-          'all', /* v8 ignore next */ /* v8 ignore next */
-          'almost', /* v8 ignore next */ /* v8 ignore next */
-          'also', /* v8 ignore next */ /* v8 ignore next */
-          'am', /* v8 ignore next */ /* v8 ignore next */
-          'among', /* v8 ignore next */ /* v8 ignore next */
-          'an', /* v8 ignore next */ /* v8 ignore next */
-          'and', /* v8 ignore next */ /* v8 ignore next */
-          'any', /* v8 ignore next */ /* v8 ignore next */
-          'are', /* v8 ignore next */ /* v8 ignore next */
-          'as', /* v8 ignore next */ /* v8 ignore next */
-          'at', /* v8 ignore next */ /* v8 ignore next */
-          'be', /* v8 ignore next */ /* v8 ignore next */
-          'because', /* v8 ignore next */ /* v8 ignore next */
-          'been', /* v8 ignore next */ /* v8 ignore next */
-          'but', /* v8 ignore next */ /* v8 ignore next */
-          'by', /* v8 ignore next */ /* v8 ignore next */
-          'can', /* v8 ignore next */ /* v8 ignore next */
-          'cannot', /* v8 ignore next */ /* v8 ignore next */
-          'could', /* v8 ignore next */ /* v8 ignore next */
-          'dear', /* v8 ignore next */ /* v8 ignore next */
-          'did', /* v8 ignore next */ /* v8 ignore next */
-          'do', /* v8 ignore next */ /* v8 ignore next */
-          'does', /* v8 ignore next */ /* v8 ignore next */
-          'either', /* v8 ignore next */ /* v8 ignore next */
-          'else', /* v8 ignore next */ /* v8 ignore next */
-          'ever', /* v8 ignore next */ /* v8 ignore next */
-          'every', /* v8 ignore next */ /* v8 ignore next */
-          'for', /* v8 ignore next */ /* v8 ignore next */
-          'from', /* v8 ignore next */ /* v8 ignore next */
-          'get', /* v8 ignore next */ /* v8 ignore next */
-          'got', /* v8 ignore next */ /* v8 ignore next */
-          'had', /* v8 ignore next */ /* v8 ignore next */
-          'has', /* v8 ignore next */ /* v8 ignore next */
-          'have', /* v8 ignore next */ /* v8 ignore next */
-          'he', /* v8 ignore next */ /* v8 ignore next */
-          'her', /* v8 ignore next */ /* v8 ignore next */
-          'hers', /* v8 ignore next */ /* v8 ignore next */
-          'him', /* v8 ignore next */ /* v8 ignore next */
-          'his', /* v8 ignore next */ /* v8 ignore next */
-          'how', /* v8 ignore next */ /* v8 ignore next */
-          'however', /* v8 ignore next */ /* v8 ignore next */
-          'i', /* v8 ignore next */ /* v8 ignore next */
-          'if', /* v8 ignore next */ /* v8 ignore next */
-          'in', /* v8 ignore next */ /* v8 ignore next */
-          'into', /* v8 ignore next */ /* v8 ignore next */
-          'is', /* v8 ignore next */ /* v8 ignore next */
-          'it', /* v8 ignore next */ /* v8 ignore next */
-          'its', /* v8 ignore next */ /* v8 ignore next */
-          'just', /* v8 ignore next */ /* v8 ignore next */
-          'least', /* v8 ignore next */ /* v8 ignore next */
-          'let', /* v8 ignore next */ /* v8 ignore next */
-          'like', /* v8 ignore next */ /* v8 ignore next */
-          'likely', /* v8 ignore next */ /* v8 ignore next */
-          'may', /* v8 ignore next */ /* v8 ignore next */
-          'me', /* v8 ignore next */ /* v8 ignore next */
-          'might', /* v8 ignore next */ /* v8 ignore next */
-          'most', /* v8 ignore next */ /* v8 ignore next */
-          'must', /* v8 ignore next */ /* v8 ignore next */
-          'my', /* v8 ignore next */ /* v8 ignore next */
-          'neither', /* v8 ignore next */ /* v8 ignore next */
-          'no', /* v8 ignore next */ /* v8 ignore next */
-          'nor', /* v8 ignore next */ /* v8 ignore next */
-          'not', /* v8 ignore next */ /* v8 ignore next */
-          'of', /* v8 ignore next */ /* v8 ignore next */
-          'off', /* v8 ignore next */ /* v8 ignore next */
-          'often', /* v8 ignore next */ /* v8 ignore next */
-          'on', /* v8 ignore next */ /* v8 ignore next */
-          'only', /* v8 ignore next */ /* v8 ignore next */
-          'or', /* v8 ignore next */ /* v8 ignore next */
-          'other', /* v8 ignore next */ /* v8 ignore next */
-          'our', /* v8 ignore next */ /* v8 ignore next */
-          'own', /* v8 ignore next */ /* v8 ignore next */
-          'rather', /* v8 ignore next */ /* v8 ignore next */
-          'said', /* v8 ignore next */ /* v8 ignore next */
-          'say', /* v8 ignore next */ /* v8 ignore next */
-          'says', /* v8 ignore next */ /* v8 ignore next */
-          'she', /* v8 ignore next */ /* v8 ignore next */
-          'should', /* v8 ignore next */ /* v8 ignore next */
-          'since', /* v8 ignore next */ /* v8 ignore next */
-          'so', /* v8 ignore next */ /* v8 ignore next */
-          'some', /* v8 ignore next */ /* v8 ignore next */
-          'than', /* v8 ignore next */ /* v8 ignore next */
-          'that', /* v8 ignore next */ /* v8 ignore next */
-          'the', /* v8 ignore next */ /* v8 ignore next */
-          'their', /* v8 ignore next */ /* v8 ignore next */
-          'them', /* v8 ignore next */ /* v8 ignore next */
-          'then', /* v8 ignore next */ /* v8 ignore next */
-          'there', /* v8 ignore next */ /* v8 ignore next */
-          'these', /* v8 ignore next */ /* v8 ignore next */
-          'they', /* v8 ignore next */ /* v8 ignore next */
-          'this', /* v8 ignore next */ /* v8 ignore next */
-          'tis', /* v8 ignore next */ /* v8 ignore next */
-          'to', /* v8 ignore next */ /* v8 ignore next */
-          'too', /* v8 ignore next */ /* v8 ignore next */
-          'twas', /* v8 ignore next */ /* v8 ignore next */
-          'us', /* v8 ignore next */ /* v8 ignore next */
-          'wants', /* v8 ignore next */ /* v8 ignore next */
-          'was', /* v8 ignore next */ /* v8 ignore next */
-          'we', /* v8 ignore next */ /* v8 ignore next */
-          'were', /* v8 ignore next */ /* v8 ignore next */
-          'what', /* v8 ignore next */ /* v8 ignore next */
-          'when', /* v8 ignore next */ /* v8 ignore next */
-          'where', /* v8 ignore next */ /* v8 ignore next */
-          'which', /* v8 ignore next */ /* v8 ignore next */
-          'while', /* v8 ignore next */ /* v8 ignore next */
-          'who', /* v8 ignore next */ /* v8 ignore next */
-          'whom', /* v8 ignore next */ /* v8 ignore next */
-          'why', /* v8 ignore next */ /* v8 ignore next */
-          'will', /* v8 ignore next */ /* v8 ignore next */
-          'with', /* v8 ignore next */ /* v8 ignore next */
-          'would', /* v8 ignore next */ /* v8 ignore next */
-          'yet', /* v8 ignore next */ /* v8 ignore next */
-          'you', /* v8 ignore next */ /* v8 ignore next */
-          'your' /* v8 ignore next */ /* v8 ignore next */
-        ])), /* v8 ignore next */ /* v8 ignore next */
-        t.Pipeline.registerFunction(t.stopWordFilter, 'stopWordFilter')); /* v8 ignore next */ /* v8 ignore next */
-      ((t.trimmer = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        return e.update(function (n) { /* v8 ignore next */ /* v8 ignore next */
-          return n.replace(/^\W+/, '').replace(/\W+$/, ''); /* v8 ignore next */ /* v8 ignore next */
-        }); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        t.Pipeline.registerFunction(t.trimmer, 'trimmer')); /* v8 ignore next */ /* v8 ignore next */
-      ((t.TokenSet = function () { /* v8 ignore next */ /* v8 ignore next */
-        ((this.final = !1), /* v8 ignore next */ /* v8 ignore next */
-          (this.edges = {}), /* v8 ignore next */ /* v8 ignore next */
-          (this.id = t.TokenSet._nextId), /* v8 ignore next */ /* v8 ignore next */
-          (t.TokenSet._nextId += 1)); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet._nextId = 1), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.fromArray = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (var n = new t.TokenSet.Builder(), r = 0, i = e.length; r < i; r++) n.insert(e[r]); /* v8 ignore next */ /* v8 ignore next */
-          return (n.finish(), n.root); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.fromClause = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return 'editDistance' in e /* v8 ignore next */ /* v8 ignore next */
-            ? t.TokenSet.fromFuzzyString(e.term, e.editDistance) /* v8 ignore next */ /* v8 ignore next */
-            : t.TokenSet.fromString(e.term); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.fromFuzzyString = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          for (var r = new t.TokenSet(), i = [{ node: r, editsRemaining: n, str: e }]; i.length; ) { /* v8 ignore next */ /* v8 ignore next */
-            var s = i.pop(); /* v8 ignore next */ /* v8 ignore next */
-            if (s.str.length > 0) { /* v8 ignore next */ /* v8 ignore next */
-              var o = s.str.charAt(0), /* v8 ignore next */ /* v8 ignore next */
-                a; /* v8 ignore next */ /* v8 ignore next */
-              (o in s.node.edges /* v8 ignore next */ /* v8 ignore next */
-                ? (a = s.node.edges[o]) /* v8 ignore next */ /* v8 ignore next */
-                : ((a = new t.TokenSet()), (s.node.edges[o] = a)), /* v8 ignore next */ /* v8 ignore next */
-                s.str.length == 1 && (a.final = !0), /* v8 ignore next */ /* v8 ignore next */
-                i.push({ node: a, editsRemaining: s.editsRemaining, str: s.str.slice(1) })); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (s.editsRemaining != 0) { /* v8 ignore next */ /* v8 ignore next */
-              if ('*' in s.node.edges) var l = s.node.edges['*']; /* v8 ignore next */ /* v8 ignore next */
-              else { /* v8 ignore next */ /* v8 ignore next */
-                var l = new t.TokenSet(); /* v8 ignore next */ /* v8 ignore next */
-                s.node.edges['*'] = l; /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-              if ( /* v8 ignore next */ /* v8 ignore next */
-                (s.str.length == 0 && (l.final = !0), /* v8 ignore next */ /* v8 ignore next */
-                i.push({ node: l, editsRemaining: s.editsRemaining - 1, str: s.str }), /* v8 ignore next */ /* v8 ignore next */
-                s.str.length > 1 && /* v8 ignore next */ /* v8 ignore next */
-                  i.push({ /* v8 ignore next */ /* v8 ignore next */
-                    node: s.node, /* v8 ignore next */ /* v8 ignore next */
-                    editsRemaining: s.editsRemaining - 1, /* v8 ignore next */ /* v8 ignore next */
-                    str: s.str.slice(1) /* v8 ignore next */ /* v8 ignore next */
-                  }), /* v8 ignore next */ /* v8 ignore next */
-                s.str.length == 1 && (s.node.final = !0), /* v8 ignore next */ /* v8 ignore next */
-                s.str.length >= 1) /* v8 ignore next */ /* v8 ignore next */
-              ) { /* v8 ignore next */ /* v8 ignore next */
-                if ('*' in s.node.edges) var u = s.node.edges['*']; /* v8 ignore next */ /* v8 ignore next */
-                else { /* v8 ignore next */ /* v8 ignore next */
-                  var u = new t.TokenSet(); /* v8 ignore next */ /* v8 ignore next */
-                  s.node.edges['*'] = u; /* v8 ignore next */ /* v8 ignore next */
-                } /* v8 ignore next */ /* v8 ignore next */
-                (s.str.length == 1 && (u.final = !0), /* v8 ignore next */ /* v8 ignore next */
-                  i.push({ node: u, editsRemaining: s.editsRemaining - 1, str: s.str.slice(1) })); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-              if (s.str.length > 1) { /* v8 ignore next */ /* v8 ignore next */
-                var d = s.str.charAt(0), /* v8 ignore next */ /* v8 ignore next */
-                  y = s.str.charAt(1), /* v8 ignore next */ /* v8 ignore next */
-                  p; /* v8 ignore next */ /* v8 ignore next */
-                (y in s.node.edges /* v8 ignore next */ /* v8 ignore next */
-                  ? (p = s.node.edges[y]) /* v8 ignore next */ /* v8 ignore next */
-                  : ((p = new t.TokenSet()), (s.node.edges[y] = p)), /* v8 ignore next */ /* v8 ignore next */
-                  s.str.length == 1 && (p.final = !0), /* v8 ignore next */ /* v8 ignore next */
-                  i.push({ /* v8 ignore next */ /* v8 ignore next */
-                    node: p, /* v8 ignore next */ /* v8 ignore next */
-                    editsRemaining: s.editsRemaining - 1, /* v8 ignore next */ /* v8 ignore next */
-                    str: d + s.str.slice(2) /* v8 ignore next */ /* v8 ignore next */
-                  })); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return r; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.fromString = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (var n = new t.TokenSet(), r = n, i = 0, s = e.length; i < s; i++) { /* v8 ignore next */ /* v8 ignore next */
-            var o = e[i], /* v8 ignore next */ /* v8 ignore next */
-              a = i == s - 1; /* v8 ignore next */ /* v8 ignore next */
-            if (o == '*') ((n.edges[o] = n), (n.final = a)); /* v8 ignore next */ /* v8 ignore next */
-            else { /* v8 ignore next */ /* v8 ignore next */
-              var l = new t.TokenSet(); /* v8 ignore next */ /* v8 ignore next */
-              ((l.final = a), (n.edges[o] = l), (n = l)); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return r; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.prototype.toArray = function () { /* v8 ignore next */ /* v8 ignore next */
-          for (var e = [], n = [{ prefix: '', node: this }]; n.length; ) { /* v8 ignore next */ /* v8 ignore next */
-            var r = n.pop(), /* v8 ignore next */ /* v8 ignore next */
-              i = Object.keys(r.node.edges), /* v8 ignore next */ /* v8 ignore next */
-              s = i.length; /* v8 ignore next */ /* v8 ignore next */
-            r.node.final && (r.prefix.charAt(0), e.push(r.prefix)); /* v8 ignore next */ /* v8 ignore next */
-            for (var o = 0; o < s; o++) { /* v8 ignore next */ /* v8 ignore next */
-              var a = i[o]; /* v8 ignore next */ /* v8 ignore next */
-              n.push({ prefix: r.prefix.concat(a), node: r.node.edges[a] }); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.prototype.toString = function () { /* v8 ignore next */ /* v8 ignore next */
-          if (this._str) return this._str; /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var e = this.final ? '1' : '0', n = Object.keys(this.edges).sort(), r = n.length, i = 0; /* v8 ignore next */ /* v8 ignore next */
-            i < r; /* v8 ignore next */ /* v8 ignore next */
-            i++ /* v8 ignore next */ /* v8 ignore next */
-          ) { /* v8 ignore next */ /* v8 ignore next */
-            var s = n[i], /* v8 ignore next */ /* v8 ignore next */
-              o = this.edges[s]; /* v8 ignore next */ /* v8 ignore next */
-            e = e + s + o.id; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.prototype.intersect = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var n = new t.TokenSet(), r = void 0, i = [{ qNode: e, output: n, node: this }]; /* v8 ignore next */ /* v8 ignore next */
-            i.length; /* v8 ignore next */ /* v8 ignore next */
-          ) { /* v8 ignore next */ /* v8 ignore next */
-            r = i.pop(); /* v8 ignore next */ /* v8 ignore next */
-            for ( /* v8 ignore next */ /* v8 ignore next */
-              var s = Object.keys(r.qNode.edges), /* v8 ignore next */ /* v8 ignore next */
-                o = s.length, /* v8 ignore next */ /* v8 ignore next */
-                a = Object.keys(r.node.edges), /* v8 ignore next */ /* v8 ignore next */
-                l = a.length, /* v8 ignore next */ /* v8 ignore next */
-                u = 0; /* v8 ignore next */ /* v8 ignore next */
-              u < o; /* v8 ignore next */ /* v8 ignore next */
-              u++ /* v8 ignore next */ /* v8 ignore next */
-            ) /* v8 ignore next */ /* v8 ignore next */
-              for (var d = s[u], y = 0; y < l; y++) { /* v8 ignore next */ /* v8 ignore next */
-                var p = a[y]; /* v8 ignore next */ /* v8 ignore next */
-                if (p == d || d == '*') { /* v8 ignore next */ /* v8 ignore next */
-                  var b = r.node.edges[p], /* v8 ignore next */ /* v8 ignore next */
-                    g = r.qNode.edges[d], /* v8 ignore next */ /* v8 ignore next */
-                    L = b.final && g.final, /* v8 ignore next */ /* v8 ignore next */
-                    f = void 0; /* v8 ignore next */ /* v8 ignore next */
-                  (p in r.output.edges /* v8 ignore next */ /* v8 ignore next */
-                    ? ((f = r.output.edges[p]), (f.final = f.final || L)) /* v8 ignore next */ /* v8 ignore next */
-                    : ((f = new t.TokenSet()), (f.final = L), (r.output.edges[p] = f)), /* v8 ignore next */ /* v8 ignore next */
-                    i.push({ qNode: g, output: f, node: b })); /* v8 ignore next */ /* v8 ignore next */
-                } /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return n; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.Builder = function () { /* v8 ignore next */ /* v8 ignore next */
-          ((this.previousWord = ''), /* v8 ignore next */ /* v8 ignore next */
-            (this.root = new t.TokenSet()), /* v8 ignore next */ /* v8 ignore next */
-            (this.uncheckedNodes = []), /* v8 ignore next */ /* v8 ignore next */
-            (this.minimizedNodes = {})); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.Builder.prototype.insert = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n, /* v8 ignore next */ /* v8 ignore next */
-            r = 0; /* v8 ignore next */ /* v8 ignore next */
-          if (e < this.previousWord) throw new Error('Out of order word insertion'); /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var i = 0; /* v8 ignore next */ /* v8 ignore next */
-            i < e.length && i < this.previousWord.length && e[i] == this.previousWord[i]; /* v8 ignore next */ /* v8 ignore next */
-            i++ /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            r++; /* v8 ignore next */ /* v8 ignore next */
-          (this.minimize(r), /* v8 ignore next */ /* v8 ignore next */
-            this.uncheckedNodes.length == 0 /* v8 ignore next */ /* v8 ignore next */
-              ? (n = this.root) /* v8 ignore next */ /* v8 ignore next */
-              : (n = this.uncheckedNodes[this.uncheckedNodes.length - 1].child)); /* v8 ignore next */ /* v8 ignore next */
-          for (var i = r; i < e.length; i++) { /* v8 ignore next */ /* v8 ignore next */
-            var s = new t.TokenSet(), /* v8 ignore next */ /* v8 ignore next */
-              o = e[i]; /* v8 ignore next */ /* v8 ignore next */
-            ((n.edges[o] = s), this.uncheckedNodes.push({ parent: n, char: o, child: s }), (n = s)); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          ((n.final = !0), (this.previousWord = e)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.Builder.prototype.finish = function () { /* v8 ignore next */ /* v8 ignore next */
-          this.minimize(0); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.TokenSet.Builder.prototype.minimize = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (var n = this.uncheckedNodes.length - 1; n >= e; n--) { /* v8 ignore next */ /* v8 ignore next */
-            var r = this.uncheckedNodes[n], /* v8 ignore next */ /* v8 ignore next */
-              i = r.child.toString(); /* v8 ignore next */ /* v8 ignore next */
-            (i in this.minimizedNodes /* v8 ignore next */ /* v8 ignore next */
-              ? (r.parent.edges[r.char] = this.minimizedNodes[i]) /* v8 ignore next */ /* v8 ignore next */
-              : ((r.child._str = i), (this.minimizedNodes[i] = r.child)), /* v8 ignore next */ /* v8 ignore next */
-              this.uncheckedNodes.pop()); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.Index = function (e) { /* v8 ignore next */ /* v8 ignore next */
-        ((this.invertedIndex = e.invertedIndex), /* v8 ignore next */ /* v8 ignore next */
-          (this.fieldVectors = e.fieldVectors), /* v8 ignore next */ /* v8 ignore next */
-          (this.tokenSet = e.tokenSet), /* v8 ignore next */ /* v8 ignore next */
-          (this.fields = e.fields), /* v8 ignore next */ /* v8 ignore next */
-          (this.pipeline = e.pipeline)); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Index.prototype.search = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return this.query(function (n) { /* v8 ignore next */ /* v8 ignore next */
-            var r = new t.QueryParser(e, n); /* v8 ignore next */ /* v8 ignore next */
-            r.parse(); /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Index.prototype.query = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var n = new t.Query(this.fields), /* v8 ignore next */ /* v8 ignore next */
-              r = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              i = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              s = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              o = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              a = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              l = 0; /* v8 ignore next */ /* v8 ignore next */
-            l < this.fields.length; /* v8 ignore next */ /* v8 ignore next */
-            l++ /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            i[this.fields[l]] = new t.Vector(); /* v8 ignore next */ /* v8 ignore next */
-          e.call(n, n); /* v8 ignore next */ /* v8 ignore next */
-          for (var l = 0; l < n.clauses.length; l++) { /* v8 ignore next */ /* v8 ignore next */
-            var u = n.clauses[l], /* v8 ignore next */ /* v8 ignore next */
-              d = null, /* v8 ignore next */ /* v8 ignore next */
-              y = t.Set.empty; /* v8 ignore next */ /* v8 ignore next */
-            u.usePipeline /* v8 ignore next */ /* v8 ignore next */
-              ? (d = this.pipeline.runString(u.term, { fields: u.fields })) /* v8 ignore next */ /* v8 ignore next */
-              : (d = [u.term]); /* v8 ignore next */ /* v8 ignore next */
-            for (var p = 0; p < d.length; p++) { /* v8 ignore next */ /* v8 ignore next */
-              var b = d[p]; /* v8 ignore next */ /* v8 ignore next */
-              u.term = b; /* v8 ignore next */ /* v8 ignore next */
-              var g = t.TokenSet.fromClause(u), /* v8 ignore next */ /* v8 ignore next */
-                L = this.tokenSet.intersect(g).toArray(); /* v8 ignore next */ /* v8 ignore next */
-              if (L.length === 0 && u.presence === t.Query.presence.REQUIRED) { /* v8 ignore next */ /* v8 ignore next */
-                for (var f = 0; f < u.fields.length; f++) { /* v8 ignore next */ /* v8 ignore next */
-                  var m = u.fields[f]; /* v8 ignore next */ /* v8 ignore next */
-                  o[m] = t.Set.empty; /* v8 ignore next */ /* v8 ignore next */
-                } /* v8 ignore next */ /* v8 ignore next */
-                break; /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-              for (var S = 0; S < L.length; S++) /* v8 ignore next */ /* v8 ignore next */
-                for ( /* v8 ignore next */ /* v8 ignore next */
-                  var w = L[S], k = this.invertedIndex[w], _ = k._index, f = 0; /* v8 ignore next */ /* v8 ignore next */
-                  f < u.fields.length; /* v8 ignore next */ /* v8 ignore next */
-                  f++ /* v8 ignore next */ /* v8 ignore next */
-                ) { /* v8 ignore next */ /* v8 ignore next */
-                  var m = u.fields[f], /* v8 ignore next */ /* v8 ignore next */
-                    B = k[m], /* v8 ignore next */ /* v8 ignore next */
-                    A = Object.keys(B), /* v8 ignore next */ /* v8 ignore next */
-                    j = w + '/' + m, /* v8 ignore next */ /* v8 ignore next */
-                    $ = new t.Set(A); /* v8 ignore next */ /* v8 ignore next */
-                  if ( /* v8 ignore next */ /* v8 ignore next */
-                    (u.presence == t.Query.presence.REQUIRED && /* v8 ignore next */ /* v8 ignore next */
-                      ((y = y.union($)), o[m] === void 0 && (o[m] = t.Set.complete)), /* v8 ignore next */ /* v8 ignore next */
-                    u.presence == t.Query.presence.PROHIBITED) /* v8 ignore next */ /* v8 ignore next */
-                  ) { /* v8 ignore next */ /* v8 ignore next */
-                    (a[m] === void 0 && (a[m] = t.Set.empty), (a[m] = a[m].union($))); /* v8 ignore next */ /* v8 ignore next */
-                    continue; /* v8 ignore next */ /* v8 ignore next */
-                  } /* v8 ignore next */ /* v8 ignore next */
-                  if ( /* v8 ignore next */ /* v8 ignore next */
-                    (i[m].upsert(_, u.boost, function (Qe, Ie) { /* v8 ignore next */ /* v8 ignore next */
-                      return Qe + Ie; /* v8 ignore next */ /* v8 ignore next */
-                    }), /* v8 ignore next */ /* v8 ignore next */
-                    !s[j]) /* v8 ignore next */ /* v8 ignore next */
-                  ) { /* v8 ignore next */ /* v8 ignore next */
-                    for (var V = 0; V < A.length; V++) { /* v8 ignore next */ /* v8 ignore next */
-                      var q = A[V], /* v8 ignore next */ /* v8 ignore next */
-                        C = new t.FieldRef(q, m), /* v8 ignore next */ /* v8 ignore next */
-                        z = B[q], /* v8 ignore next */ /* v8 ignore next */
-                        W; /* v8 ignore next */ /* v8 ignore next */
-                      (W = r[C]) === void 0 ? (r[C] = new t.MatchData(w, m, z)) : W.add(w, m, z); /* v8 ignore next */ /* v8 ignore next */
-                    } /* v8 ignore next */ /* v8 ignore next */
-                    s[j] = !0; /* v8 ignore next */ /* v8 ignore next */
-                  } /* v8 ignore next */ /* v8 ignore next */
-                } /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (u.presence === t.Query.presence.REQUIRED) /* v8 ignore next */ /* v8 ignore next */
-              for (var f = 0; f < u.fields.length; f++) { /* v8 ignore next */ /* v8 ignore next */
-                var m = u.fields[f]; /* v8 ignore next */ /* v8 ignore next */
-                o[m] = o[m].intersect(y); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          for (var N = t.Set.complete, R = t.Set.empty, l = 0; l < this.fields.length; l++) { /* v8 ignore next */ /* v8 ignore next */
-            var m = this.fields[l]; /* v8 ignore next */ /* v8 ignore next */
-            (o[m] && (N = N.intersect(o[m])), a[m] && (R = R.union(a[m]))); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          var c = Object.keys(r), /* v8 ignore next */ /* v8 ignore next */
-            v = [], /* v8 ignore next */ /* v8 ignore next */
-            P = Object.create(null); /* v8 ignore next */ /* v8 ignore next */
-          if (n.isNegated()) { /* v8 ignore next */ /* v8 ignore next */
-            c = Object.keys(this.fieldVectors); /* v8 ignore next */ /* v8 ignore next */
-            for (var l = 0; l < c.length; l++) { /* v8 ignore next */ /* v8 ignore next */
-              var C = c[l], /* v8 ignore next */ /* v8 ignore next */
-                T = t.FieldRef.fromString(C); /* v8 ignore next */ /* v8 ignore next */
-              r[C] = new t.MatchData(); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          for (var l = 0; l < c.length; l++) { /* v8 ignore next */ /* v8 ignore next */
-            var T = t.FieldRef.fromString(c[l]), /* v8 ignore next */ /* v8 ignore next */
-              h = T.docRef; /* v8 ignore next */ /* v8 ignore next */
-            if (N.contains(h) && !R.contains(h)) { /* v8 ignore next */ /* v8 ignore next */
-              var x = this.fieldVectors[T], /* v8 ignore next */ /* v8 ignore next */
-                O = i[T.fieldName].similarity(x), /* v8 ignore next */ /* v8 ignore next */
-                M; /* v8 ignore next */ /* v8 ignore next */
-              if ((M = P[h]) !== void 0) ((M.score += O), M.matchData.combine(r[T])); /* v8 ignore next */ /* v8 ignore next */
-              else { /* v8 ignore next */ /* v8 ignore next */
-                var E = { ref: h, score: O, matchData: r[T] }; /* v8 ignore next */ /* v8 ignore next */
-                ((P[h] = E), v.push(E)); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return v.sort(function (Te, ke) { /* v8 ignore next */ /* v8 ignore next */
-            return ke.score - Te.score; /* v8 ignore next */ /* v8 ignore next */
-          }); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Index.prototype.toJSON = function () { /* v8 ignore next */ /* v8 ignore next */
-          var e = Object.keys(this.invertedIndex) /* v8 ignore next */ /* v8 ignore next */
-              .sort() /* v8 ignore next */ /* v8 ignore next */
-              .map(function (r) { /* v8 ignore next */ /* v8 ignore next */
-                return [r, this.invertedIndex[r]]; /* v8 ignore next */ /* v8 ignore next */
-              }, this), /* v8 ignore next */ /* v8 ignore next */
-            n = Object.keys(this.fieldVectors).map(function (r) { /* v8 ignore next */ /* v8 ignore next */
-              return [r, this.fieldVectors[r].toJSON()]; /* v8 ignore next */ /* v8 ignore next */
-            }, this); /* v8 ignore next */ /* v8 ignore next */
-          return { /* v8 ignore next */ /* v8 ignore next */
-            version: t.version, /* v8 ignore next */ /* v8 ignore next */
-            fields: this.fields, /* v8 ignore next */ /* v8 ignore next */
-            fieldVectors: n, /* v8 ignore next */ /* v8 ignore next */
-            invertedIndex: e, /* v8 ignore next */ /* v8 ignore next */
-            pipeline: this.pipeline.toJSON() /* v8 ignore next */ /* v8 ignore next */
-          }; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Index.load = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = {}, /* v8 ignore next */ /* v8 ignore next */
-            r = {}, /* v8 ignore next */ /* v8 ignore next */
-            i = e.fieldVectors, /* v8 ignore next */ /* v8 ignore next */
-            s = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-            o = e.invertedIndex, /* v8 ignore next */ /* v8 ignore next */
-            a = new t.TokenSet.Builder(), /* v8 ignore next */ /* v8 ignore next */
-            l = t.Pipeline.load(e.pipeline); /* v8 ignore next */ /* v8 ignore next */
-          e.version != t.version && /* v8 ignore next */ /* v8 ignore next */
-            t.utils.warn( /* v8 ignore next */ /* v8 ignore next */
-              "Version mismatch when loading serialised index. Current version of lunr '" + /* v8 ignore next */ /* v8 ignore next */
-                t.version + /* v8 ignore next */ /* v8 ignore next */
-                "' does not match serialized index '" + /* v8 ignore next */ /* v8 ignore next */
-                e.version + /* v8 ignore next */ /* v8 ignore next */
-                "'" /* v8 ignore next */ /* v8 ignore next */
-            ); /* v8 ignore next */ /* v8 ignore next */
-          for (var u = 0; u < i.length; u++) { /* v8 ignore next */ /* v8 ignore next */
-            var d = i[u], /* v8 ignore next */ /* v8 ignore next */
-              y = d[0], /* v8 ignore next */ /* v8 ignore next */
-              p = d[1]; /* v8 ignore next */ /* v8 ignore next */
-            r[y] = new t.Vector(p); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          for (var u = 0; u < o.length; u++) { /* v8 ignore next */ /* v8 ignore next */
-            var d = o[u], /* v8 ignore next */ /* v8 ignore next */
-              b = d[0], /* v8 ignore next */ /* v8 ignore next */
-              g = d[1]; /* v8 ignore next */ /* v8 ignore next */
-            (a.insert(b), (s[b] = g)); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            a.finish(), /* v8 ignore next */ /* v8 ignore next */
-            (n.fields = e.fields), /* v8 ignore next */ /* v8 ignore next */
-            (n.fieldVectors = r), /* v8 ignore next */ /* v8 ignore next */
-            (n.invertedIndex = s), /* v8 ignore next */ /* v8 ignore next */
-            (n.tokenSet = a.root), /* v8 ignore next */ /* v8 ignore next */
-            (n.pipeline = l), /* v8 ignore next */ /* v8 ignore next */
-            new t.Index(n) /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-      ((t.Builder = function () { /* v8 ignore next */ /* v8 ignore next */
-        ((this._ref = 'id'), /* v8 ignore next */ /* v8 ignore next */
-          (this._fields = Object.create(null)), /* v8 ignore next */ /* v8 ignore next */
-          (this._documents = Object.create(null)), /* v8 ignore next */ /* v8 ignore next */
-          (this.invertedIndex = Object.create(null)), /* v8 ignore next */ /* v8 ignore next */
-          (this.fieldTermFrequencies = {}), /* v8 ignore next */ /* v8 ignore next */
-          (this.fieldLengths = {}), /* v8 ignore next */ /* v8 ignore next */
-          (this.tokenizer = t.tokenizer), /* v8 ignore next */ /* v8 ignore next */
-          (this.pipeline = new t.Pipeline()), /* v8 ignore next */ /* v8 ignore next */
-          (this.searchPipeline = new t.Pipeline()), /* v8 ignore next */ /* v8 ignore next */
-          (this.documentCount = 0), /* v8 ignore next */ /* v8 ignore next */
-          (this._b = 0.75), /* v8 ignore next */ /* v8 ignore next */
-          (this._k1 = 1.2), /* v8 ignore next */ /* v8 ignore next */
-          (this.termIndex = 0), /* v8 ignore next */ /* v8 ignore next */
-          (this.metadataWhitelist = [])); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.ref = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          this._ref = e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.field = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          if (/\//.test(e)) /* v8 ignore next */ /* v8 ignore next */
-            throw new RangeError("Field '" + e + "' contains illegal character '/'"); /* v8 ignore next */ /* v8 ignore next */
-          this._fields[e] = n || {}; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.b = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          e < 0 ? (this._b = 0) : e > 1 ? (this._b = 1) : (this._b = e); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.k1 = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          this._k1 = e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.add = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          var r = e[this._ref], /* v8 ignore next */ /* v8 ignore next */
-            i = Object.keys(this._fields); /* v8 ignore next */ /* v8 ignore next */
-          ((this._documents[r] = n || {}), (this.documentCount += 1)); /* v8 ignore next */ /* v8 ignore next */
-          for (var s = 0; s < i.length; s++) { /* v8 ignore next */ /* v8 ignore next */
-            var o = i[s], /* v8 ignore next */ /* v8 ignore next */
-              a = this._fields[o].extractor, /* v8 ignore next */ /* v8 ignore next */
-              l = a ? a(e) : e[o], /* v8 ignore next */ /* v8 ignore next */
-              u = this.tokenizer(l, { fields: [o] }), /* v8 ignore next */ /* v8 ignore next */
-              d = this.pipeline.run(u), /* v8 ignore next */ /* v8 ignore next */
-              y = new t.FieldRef(r, o), /* v8 ignore next */ /* v8 ignore next */
-              p = Object.create(null); /* v8 ignore next */ /* v8 ignore next */
-            ((this.fieldTermFrequencies[y] = p), /* v8 ignore next */ /* v8 ignore next */
-              (this.fieldLengths[y] = 0), /* v8 ignore next */ /* v8 ignore next */
-              (this.fieldLengths[y] += d.length)); /* v8 ignore next */ /* v8 ignore next */
-            for (var b = 0; b < d.length; b++) { /* v8 ignore next */ /* v8 ignore next */
-              var g = d[b]; /* v8 ignore next */ /* v8 ignore next */
-              if ((p[g] == null && (p[g] = 0), (p[g] += 1), this.invertedIndex[g] == null)) { /* v8 ignore next */ /* v8 ignore next */
-                var L = Object.create(null); /* v8 ignore next */ /* v8 ignore next */
-                ((L._index = this.termIndex), (this.termIndex += 1)); /* v8 ignore next */ /* v8 ignore next */
-                for (var f = 0; f < i.length; f++) L[i[f]] = Object.create(null); /* v8 ignore next */ /* v8 ignore next */
-                this.invertedIndex[g] = L; /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-              this.invertedIndex[g][o][r] == null && /* v8 ignore next */ /* v8 ignore next */
-                (this.invertedIndex[g][o][r] = Object.create(null)); /* v8 ignore next */ /* v8 ignore next */
-              for (var m = 0; m < this.metadataWhitelist.length; m++) { /* v8 ignore next */ /* v8 ignore next */
-                var S = this.metadataWhitelist[m], /* v8 ignore next */ /* v8 ignore next */
-                  w = g.metadata[S]; /* v8 ignore next */ /* v8 ignore next */
-                (this.invertedIndex[g][o][r][S] == null && (this.invertedIndex[g][o][r][S] = []), /* v8 ignore next */ /* v8 ignore next */
-                  this.invertedIndex[g][o][r][S].push(w)); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.calculateAverageFieldLengths = function () { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var e = Object.keys(this.fieldLengths), n = e.length, r = {}, i = {}, s = 0; /* v8 ignore next */ /* v8 ignore next */
-            s < n; /* v8 ignore next */ /* v8 ignore next */
-            s++ /* v8 ignore next */ /* v8 ignore next */
-          ) { /* v8 ignore next */ /* v8 ignore next */
-            var o = t.FieldRef.fromString(e[s]), /* v8 ignore next */ /* v8 ignore next */
-              a = o.fieldName; /* v8 ignore next */ /* v8 ignore next */
-            (i[a] || (i[a] = 0), (i[a] += 1), r[a] || (r[a] = 0), (r[a] += this.fieldLengths[o])); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          for (var l = Object.keys(this._fields), s = 0; s < l.length; s++) { /* v8 ignore next */ /* v8 ignore next */
-            var u = l[s]; /* v8 ignore next */ /* v8 ignore next */
-            r[u] = r[u] / i[u]; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          this.averageFieldLength = r; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.createFieldVectors = function () { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var e = {}, /* v8 ignore next */ /* v8 ignore next */
-              n = Object.keys(this.fieldTermFrequencies), /* v8 ignore next */ /* v8 ignore next */
-              r = n.length, /* v8 ignore next */ /* v8 ignore next */
-              i = Object.create(null), /* v8 ignore next */ /* v8 ignore next */
-              s = 0; /* v8 ignore next */ /* v8 ignore next */
-            s < r; /* v8 ignore next */ /* v8 ignore next */
-            s++ /* v8 ignore next */ /* v8 ignore next */
-          ) { /* v8 ignore next */ /* v8 ignore next */
-            for ( /* v8 ignore next */ /* v8 ignore next */
-              var o = t.FieldRef.fromString(n[s]), /* v8 ignore next */ /* v8 ignore next */
-                a = o.fieldName, /* v8 ignore next */ /* v8 ignore next */
-                l = this.fieldLengths[o], /* v8 ignore next */ /* v8 ignore next */
-                u = new t.Vector(), /* v8 ignore next */ /* v8 ignore next */
-                d = this.fieldTermFrequencies[o], /* v8 ignore next */ /* v8 ignore next */
-                y = Object.keys(d), /* v8 ignore next */ /* v8 ignore next */
-                p = y.length, /* v8 ignore next */ /* v8 ignore next */
-                b = this._fields[a].boost || 1, /* v8 ignore next */ /* v8 ignore next */
-                g = this._documents[o.docRef].boost || 1, /* v8 ignore next */ /* v8 ignore next */
-                L = 0; /* v8 ignore next */ /* v8 ignore next */
-              L < p; /* v8 ignore next */ /* v8 ignore next */
-              L++ /* v8 ignore next */ /* v8 ignore next */
-            ) { /* v8 ignore next */ /* v8 ignore next */
-              var f = y[L], /* v8 ignore next */ /* v8 ignore next */
-                m = d[f], /* v8 ignore next */ /* v8 ignore next */
-                S = this.invertedIndex[f]._index, /* v8 ignore next */ /* v8 ignore next */
-                w, /* v8 ignore next */ /* v8 ignore next */
-                k, /* v8 ignore next */ /* v8 ignore next */
-                _; /* v8 ignore next */ /* v8 ignore next */
-              (i[f] === void 0 /* v8 ignore next */ /* v8 ignore next */
-                ? ((w = t.idf(this.invertedIndex[f], this.documentCount)), (i[f] = w)) /* v8 ignore next */ /* v8 ignore next */
-                : (w = i[f]), /* v8 ignore next */ /* v8 ignore next */
-                (k = /* v8 ignore next */ /* v8 ignore next */
-                  (w * ((this._k1 + 1) * m)) / /* v8 ignore next */ /* v8 ignore next */
-                  (this._k1 * (1 - this._b + this._b * (l / this.averageFieldLength[a])) + m)), /* v8 ignore next */ /* v8 ignore next */
-                (k *= b), /* v8 ignore next */ /* v8 ignore next */
-                (k *= g), /* v8 ignore next */ /* v8 ignore next */
-                (_ = Math.round(k * 1e3) / 1e3), /* v8 ignore next */ /* v8 ignore next */
-                u.insert(S, _)); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            e[o] = u; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          this.fieldVectors = e; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.createTokenSet = function () { /* v8 ignore next */ /* v8 ignore next */
-          this.tokenSet = t.TokenSet.fromArray(Object.keys(this.invertedIndex).sort()); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.build = function () { /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            this.calculateAverageFieldLengths(), /* v8 ignore next */ /* v8 ignore next */
-            this.createFieldVectors(), /* v8 ignore next */ /* v8 ignore next */
-            this.createTokenSet(), /* v8 ignore next */ /* v8 ignore next */
-            new t.Index({ /* v8 ignore next */ /* v8 ignore next */
-              invertedIndex: this.invertedIndex, /* v8 ignore next */ /* v8 ignore next */
-              fieldVectors: this.fieldVectors, /* v8 ignore next */ /* v8 ignore next */
-              tokenSet: this.tokenSet, /* v8 ignore next */ /* v8 ignore next */
-              fields: Object.keys(this._fields), /* v8 ignore next */ /* v8 ignore next */
-              pipeline: this.searchPipeline /* v8 ignore next */ /* v8 ignore next */
-            }) /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Builder.prototype.use = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = Array.prototype.slice.call(arguments, 1); /* v8 ignore next */ /* v8 ignore next */
-          (n.unshift(this), e.apply(this, n)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.MatchData = function (e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-          for (var i = Object.create(null), s = Object.keys(r || {}), o = 0; o < s.length; o++) { /* v8 ignore next */ /* v8 ignore next */
-            var a = s[o]; /* v8 ignore next */ /* v8 ignore next */
-            i[a] = r[a].slice(); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          ((this.metadata = Object.create(null)), /* v8 ignore next */ /* v8 ignore next */
-            e !== void 0 && ((this.metadata[e] = Object.create(null)), (this.metadata[e][n] = i))); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.MatchData.prototype.combine = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (var n = Object.keys(e.metadata), r = 0; r < n.length; r++) { /* v8 ignore next */ /* v8 ignore next */
-            var i = n[r], /* v8 ignore next */ /* v8 ignore next */
-              s = Object.keys(e.metadata[i]); /* v8 ignore next */ /* v8 ignore next */
-            this.metadata[i] == null && (this.metadata[i] = Object.create(null)); /* v8 ignore next */ /* v8 ignore next */
-            for (var o = 0; o < s.length; o++) { /* v8 ignore next */ /* v8 ignore next */
-              var a = s[o], /* v8 ignore next */ /* v8 ignore next */
-                l = Object.keys(e.metadata[i][a]); /* v8 ignore next */ /* v8 ignore next */
-              this.metadata[i][a] == null && (this.metadata[i][a] = Object.create(null)); /* v8 ignore next */ /* v8 ignore next */
-              for (var u = 0; u < l.length; u++) { /* v8 ignore next */ /* v8 ignore next */
-                var d = l[u]; /* v8 ignore next */ /* v8 ignore next */
-                this.metadata[i][a][d] == null /* v8 ignore next */ /* v8 ignore next */
-                  ? (this.metadata[i][a][d] = e.metadata[i][a][d]) /* v8 ignore next */ /* v8 ignore next */
-                  : (this.metadata[i][a][d] = this.metadata[i][a][d].concat(e.metadata[i][a][d])); /* v8 ignore next */ /* v8 ignore next */
-              } /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.MatchData.prototype.add = function (e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-          if (!(e in this.metadata)) { /* v8 ignore next */ /* v8 ignore next */
-            ((this.metadata[e] = Object.create(null)), (this.metadata[e][n] = r)); /* v8 ignore next */ /* v8 ignore next */
-            return; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          if (!(n in this.metadata[e])) { /* v8 ignore next */ /* v8 ignore next */
-            this.metadata[e][n] = r; /* v8 ignore next */ /* v8 ignore next */
-            return; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-          for (var i = Object.keys(r), s = 0; s < i.length; s++) { /* v8 ignore next */ /* v8 ignore next */
-            var o = i[s]; /* v8 ignore next */ /* v8 ignore next */
-            o in this.metadata[e][n] /* v8 ignore next */ /* v8 ignore next */
-              ? (this.metadata[e][n][o] = this.metadata[e][n][o].concat(r[o])) /* v8 ignore next */ /* v8 ignore next */
-              : (this.metadata[e][n][o] = r[o]); /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.clauses = []), (this.allFields = e)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.wildcard = new String('*')), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.wildcard.NONE = 0), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.wildcard.LEADING = 1), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.wildcard.TRAILING = 2), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.presence = { OPTIONAL: 1, REQUIRED: 2, PROHIBITED: 3 }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.prototype.clause = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            'fields' in e || (e.fields = this.allFields), /* v8 ignore next */ /* v8 ignore next */
-            'boost' in e || (e.boost = 1), /* v8 ignore next */ /* v8 ignore next */
-            'usePipeline' in e || (e.usePipeline = !0), /* v8 ignore next */ /* v8 ignore next */
-            'wildcard' in e || (e.wildcard = t.Query.wildcard.NONE), /* v8 ignore next */ /* v8 ignore next */
-            e.wildcard & t.Query.wildcard.LEADING && /* v8 ignore next */ /* v8 ignore next */
-              e.term.charAt(0) != t.Query.wildcard && /* v8 ignore next */ /* v8 ignore next */
-              (e.term = '*' + e.term), /* v8 ignore next */ /* v8 ignore next */
-            e.wildcard & t.Query.wildcard.TRAILING && /* v8 ignore next */ /* v8 ignore next */
-              e.term.slice(-1) != t.Query.wildcard && /* v8 ignore next */ /* v8 ignore next */
-              (e.term = '' + e.term + '*'), /* v8 ignore next */ /* v8 ignore next */
-            'presence' in e || (e.presence = t.Query.presence.OPTIONAL), /* v8 ignore next */ /* v8 ignore next */
-            this.clauses.push(e), /* v8 ignore next */ /* v8 ignore next */
-            this /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.prototype.isNegated = function () { /* v8 ignore next */ /* v8 ignore next */
-          for (var e = 0; e < this.clauses.length; e++) /* v8 ignore next */ /* v8 ignore next */
-            if (this.clauses[e].presence != t.Query.presence.PROHIBITED) return !1; /* v8 ignore next */ /* v8 ignore next */
-          return !0; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.Query.prototype.term = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          if (Array.isArray(e)) /* v8 ignore next */ /* v8 ignore next */
-            return ( /* v8 ignore next */ /* v8 ignore next */
-              e.forEach(function (i) { /* v8 ignore next */ /* v8 ignore next */
-                this.term(i, t.utils.clone(n)); /* v8 ignore next */ /* v8 ignore next */
-              }, this), /* v8 ignore next */ /* v8 ignore next */
-              this /* v8 ignore next */ /* v8 ignore next */
-            ); /* v8 ignore next */ /* v8 ignore next */
-          var r = n || {}; /* v8 ignore next */ /* v8 ignore next */
-          return ((r.term = e.toString()), this.clause(r), this); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParseError = function (e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.name = 'QueryParseError'), (this.message = e), (this.start = n), (this.end = r)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParseError.prototype = new Error()), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.lexemes = []), /* v8 ignore next */ /* v8 ignore next */
-            (this.str = e), /* v8 ignore next */ /* v8 ignore next */
-            (this.length = e.length), /* v8 ignore next */ /* v8 ignore next */
-            (this.pos = 0), /* v8 ignore next */ /* v8 ignore next */
-            (this.start = 0), /* v8 ignore next */ /* v8 ignore next */
-            (this.escapeCharPositions = [])); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.run = function () { /* v8 ignore next */ /* v8 ignore next */
-          for (var e = t.QueryLexer.lexText; e; ) e = e(this); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.sliceString = function () { /* v8 ignore next */ /* v8 ignore next */
-          for ( /* v8 ignore next */ /* v8 ignore next */
-            var e = [], n = this.start, r = this.pos, i = 0; /* v8 ignore next */ /* v8 ignore next */
-            i < this.escapeCharPositions.length; /* v8 ignore next */ /* v8 ignore next */
-            i++ /* v8 ignore next */ /* v8 ignore next */
-          ) /* v8 ignore next */ /* v8 ignore next */
-            ((r = this.escapeCharPositions[i]), e.push(this.str.slice(n, r)), (n = r + 1)); /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            e.push(this.str.slice(n, this.pos)), /* v8 ignore next */ /* v8 ignore next */
-            (this.escapeCharPositions.length = 0), /* v8 ignore next */ /* v8 ignore next */
-            e.join('') /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.emit = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          (this.lexemes.push({ /* v8 ignore next */ /* v8 ignore next */
-            type: e, /* v8 ignore next */ /* v8 ignore next */
-            str: this.sliceString(), /* v8 ignore next */ /* v8 ignore next */
-            start: this.start, /* v8 ignore next */ /* v8 ignore next */
-            end: this.pos /* v8 ignore next */ /* v8 ignore next */
-          }), /* v8 ignore next */ /* v8 ignore next */
-            (this.start = this.pos)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.escapeCharacter = function () { /* v8 ignore next */ /* v8 ignore next */
-          (this.escapeCharPositions.push(this.pos - 1), (this.pos += 1)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.next = function () { /* v8 ignore next */ /* v8 ignore next */
-          if (this.pos >= this.length) return t.QueryLexer.EOS; /* v8 ignore next */ /* v8 ignore next */
-          var e = this.str.charAt(this.pos); /* v8 ignore next */ /* v8 ignore next */
-          return ((this.pos += 1), e); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.width = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this.pos - this.start; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.ignore = function () { /* v8 ignore next */ /* v8 ignore next */
-          (this.start == this.pos && (this.pos += 1), (this.start = this.pos)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.backup = function () { /* v8 ignore next */ /* v8 ignore next */
-          this.pos -= 1; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.acceptDigitRun = function () { /* v8 ignore next */ /* v8 ignore next */
-          var e, n; /* v8 ignore next */ /* v8 ignore next */
-          do ((e = this.next()), (n = e.charCodeAt(0))); /* v8 ignore next */ /* v8 ignore next */
-          while (n > 47 && n < 58); /* v8 ignore next */ /* v8 ignore next */
-          e != t.QueryLexer.EOS && this.backup(); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.prototype.more = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this.pos < this.length; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.EOS = 'EOS'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.FIELD = 'FIELD'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.TERM = 'TERM'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.EDIT_DISTANCE = 'EDIT_DISTANCE'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.BOOST = 'BOOST'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.PRESENCE = 'PRESENCE'), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexField = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return (e.backup(), e.emit(t.QueryLexer.FIELD), e.ignore(), t.QueryLexer.lexText); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexTerm = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          if ((e.width() > 1 && (e.backup(), e.emit(t.QueryLexer.TERM)), e.ignore(), e.more())) /* v8 ignore next */ /* v8 ignore next */
-            return t.QueryLexer.lexText; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexEditDistance = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return ( /* v8 ignore next */ /* v8 ignore next */
-            e.ignore(), /* v8 ignore next */ /* v8 ignore next */
-            e.acceptDigitRun(), /* v8 ignore next */ /* v8 ignore next */
-            e.emit(t.QueryLexer.EDIT_DISTANCE), /* v8 ignore next */ /* v8 ignore next */
-            t.QueryLexer.lexText /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexBoost = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          return (e.ignore(), e.acceptDigitRun(), e.emit(t.QueryLexer.BOOST), t.QueryLexer.lexText); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexEOS = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          e.width() > 0 && e.emit(t.QueryLexer.TERM); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.termSeparator = t.tokenizer.separator), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryLexer.lexText = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          for (;;) { /* v8 ignore next */ /* v8 ignore next */
-            var n = e.next(); /* v8 ignore next */ /* v8 ignore next */
-            if (n == t.QueryLexer.EOS) return t.QueryLexer.lexEOS; /* v8 ignore next */ /* v8 ignore next */
-            if (n.charCodeAt(0) == 92) { /* v8 ignore next */ /* v8 ignore next */
-              e.escapeCharacter(); /* v8 ignore next */ /* v8 ignore next */
-              continue; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            if (n == ':') return t.QueryLexer.lexField; /* v8 ignore next */ /* v8 ignore next */
-            if (n == '~') /* v8 ignore next */ /* v8 ignore next */
-              return ( /* v8 ignore next */ /* v8 ignore next */
-                e.backup(), /* v8 ignore next */ /* v8 ignore next */
-                e.width() > 0 && e.emit(t.QueryLexer.TERM), /* v8 ignore next */ /* v8 ignore next */
-                t.QueryLexer.lexEditDistance /* v8 ignore next */ /* v8 ignore next */
-              ); /* v8 ignore next */ /* v8 ignore next */
-            if (n == '^') /* v8 ignore next */ /* v8 ignore next */
-              return ( /* v8 ignore next */ /* v8 ignore next */
-                e.backup(), /* v8 ignore next */ /* v8 ignore next */
-                e.width() > 0 && e.emit(t.QueryLexer.TERM), /* v8 ignore next */ /* v8 ignore next */
-                t.QueryLexer.lexBoost /* v8 ignore next */ /* v8 ignore next */
-              ); /* v8 ignore next */ /* v8 ignore next */
-            if ((n == '+' && e.width() === 1) || (n == '-' && e.width() === 1)) /* v8 ignore next */ /* v8 ignore next */
-              return (e.emit(t.QueryLexer.PRESENCE), t.QueryLexer.lexText); /* v8 ignore next */ /* v8 ignore next */
-            if (n.match(t.QueryLexer.termSeparator)) return t.QueryLexer.lexTerm; /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser = function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          ((this.lexer = new t.QueryLexer(e)), /* v8 ignore next */ /* v8 ignore next */
-            (this.query = n), /* v8 ignore next */ /* v8 ignore next */
-            (this.currentClause = {}), /* v8 ignore next */ /* v8 ignore next */
-            (this.lexemeIdx = 0)); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.prototype.parse = function () { /* v8 ignore next */ /* v8 ignore next */
-          (this.lexer.run(), (this.lexemes = this.lexer.lexemes)); /* v8 ignore next */ /* v8 ignore next */
-          for (var e = t.QueryParser.parseClause; e; ) e = e(this); /* v8 ignore next */ /* v8 ignore next */
-          return this.query; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.prototype.peekLexeme = function () { /* v8 ignore next */ /* v8 ignore next */
-          return this.lexemes[this.lexemeIdx]; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.prototype.consumeLexeme = function () { /* v8 ignore next */ /* v8 ignore next */
-          var e = this.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          return ((this.lexemeIdx += 1), e); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.prototype.nextClause = function () { /* v8 ignore next */ /* v8 ignore next */
-          var e = this.currentClause; /* v8 ignore next */ /* v8 ignore next */
-          (this.query.clause(e), (this.currentClause = {})); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parseClause = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) /* v8 ignore next */ /* v8 ignore next */
-            switch (n.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.PRESENCE: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parsePresence; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.FIELD: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseField; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseTerm; /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var r = 'expected either a field or a term, found ' + n.type; /* v8 ignore next */ /* v8 ignore next */
-                throw ( /* v8 ignore next */ /* v8 ignore next */
-                  n.str.length >= 1 && (r += " with value '" + n.str + "'"), /* v8 ignore next */ /* v8 ignore next */
-                  new t.QueryParseError(r, n.start, n.end) /* v8 ignore next */ /* v8 ignore next */
-                ); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parsePresence = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.consumeLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) { /* v8 ignore next */ /* v8 ignore next */
-            switch (n.str) { /* v8 ignore next */ /* v8 ignore next */
-              case '-': /* v8 ignore next */ /* v8 ignore next */
-                e.currentClause.presence = t.Query.presence.PROHIBITED; /* v8 ignore next */ /* v8 ignore next */
-                break; /* v8 ignore next */ /* v8 ignore next */
-              case '+': /* v8 ignore next */ /* v8 ignore next */
-                e.currentClause.presence = t.Query.presence.REQUIRED; /* v8 ignore next */ /* v8 ignore next */
-                break; /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var r = "unrecognised presence operator'" + n.str + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(r, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            var i = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-            if (i == null) { /* v8 ignore next */ /* v8 ignore next */
-              var r = 'expecting term or field, found nothing'; /* v8 ignore next */ /* v8 ignore next */
-              throw new t.QueryParseError(r, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            switch (i.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.FIELD: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseField; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseTerm; /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var r = "expecting term or field, found '" + i.type + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(r, i.start, i.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parseField = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.consumeLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) { /* v8 ignore next */ /* v8 ignore next */
-            if (e.query.allFields.indexOf(n.str) == -1) { /* v8 ignore next */ /* v8 ignore next */
-              var r = e.query.allFields /* v8 ignore next */ /* v8 ignore next */
-                  .map(function (o) { /* v8 ignore next */ /* v8 ignore next */
-                    return "'" + o + "'"; /* v8 ignore next */ /* v8 ignore next */
-                  }) /* v8 ignore next */ /* v8 ignore next */
-                  .join(', '), /* v8 ignore next */ /* v8 ignore next */
-                i = "unrecognised field '" + n.str + "', possible fields: " + r; /* v8 ignore next */ /* v8 ignore next */
-              throw new t.QueryParseError(i, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            e.currentClause.fields = [n.str]; /* v8 ignore next */ /* v8 ignore next */
-            var s = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-            if (s == null) { /* v8 ignore next */ /* v8 ignore next */
-              var i = 'expecting term, found nothing'; /* v8 ignore next */ /* v8 ignore next */
-              throw new t.QueryParseError(i, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            switch (s.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseTerm; /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var i = "expecting term, found '" + s.type + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(i, s.start, s.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parseTerm = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.consumeLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) { /* v8 ignore next */ /* v8 ignore next */
-            ((e.currentClause.term = n.str.toLowerCase()), /* v8 ignore next */ /* v8 ignore next */
-              n.str.indexOf('*') != -1 && (e.currentClause.usePipeline = !1)); /* v8 ignore next */ /* v8 ignore next */
-            var r = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-            if (r == null) { /* v8 ignore next */ /* v8 ignore next */
-              e.nextClause(); /* v8 ignore next */ /* v8 ignore next */
-              return; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            switch (r.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseTerm); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.FIELD: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseField); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.EDIT_DISTANCE: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseEditDistance; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.BOOST: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseBoost; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.PRESENCE: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parsePresence); /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var i = "Unexpected lexeme type '" + r.type + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(i, r.start, r.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parseEditDistance = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.consumeLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) { /* v8 ignore next */ /* v8 ignore next */
-            var r = parseInt(n.str, 10); /* v8 ignore next */ /* v8 ignore next */
-            if (isNaN(r)) { /* v8 ignore next */ /* v8 ignore next */
-              var i = 'edit distance must be numeric'; /* v8 ignore next */ /* v8 ignore next */
-              throw new t.QueryParseError(i, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            e.currentClause.editDistance = r; /* v8 ignore next */ /* v8 ignore next */
-            var s = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-            if (s == null) { /* v8 ignore next */ /* v8 ignore next */
-              e.nextClause(); /* v8 ignore next */ /* v8 ignore next */
-              return; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            switch (s.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseTerm); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.FIELD: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseField); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.EDIT_DISTANCE: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseEditDistance; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.BOOST: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseBoost; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.PRESENCE: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parsePresence); /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var i = "Unexpected lexeme type '" + s.type + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(i, s.start, s.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (t.QueryParser.parseBoost = function (e) { /* v8 ignore next */ /* v8 ignore next */
-          var n = e.consumeLexeme(); /* v8 ignore next */ /* v8 ignore next */
-          if (n != null) { /* v8 ignore next */ /* v8 ignore next */
-            var r = parseInt(n.str, 10); /* v8 ignore next */ /* v8 ignore next */
-            if (isNaN(r)) { /* v8 ignore next */ /* v8 ignore next */
-              var i = 'boost must be numeric'; /* v8 ignore next */ /* v8 ignore next */
-              throw new t.QueryParseError(i, n.start, n.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            e.currentClause.boost = r; /* v8 ignore next */ /* v8 ignore next */
-            var s = e.peekLexeme(); /* v8 ignore next */ /* v8 ignore next */
-            if (s == null) { /* v8 ignore next */ /* v8 ignore next */
-              e.nextClause(); /* v8 ignore next */ /* v8 ignore next */
-              return; /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-            switch (s.type) { /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.TERM: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseTerm); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.FIELD: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parseField); /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.EDIT_DISTANCE: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseEditDistance; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.BOOST: /* v8 ignore next */ /* v8 ignore next */
-                return t.QueryParser.parseBoost; /* v8 ignore next */ /* v8 ignore next */
-              case t.QueryLexer.PRESENCE: /* v8 ignore next */ /* v8 ignore next */
-                return (e.nextClause(), t.QueryParser.parsePresence); /* v8 ignore next */ /* v8 ignore next */
-              default: /* v8 ignore next */ /* v8 ignore next */
-                var i = "Unexpected lexeme type '" + s.type + "'"; /* v8 ignore next */ /* v8 ignore next */
-                throw new t.QueryParseError(i, s.start, s.end); /* v8 ignore next */ /* v8 ignore next */
-            } /* v8 ignore next */ /* v8 ignore next */
-          } /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        (function (e, n) { /* v8 ignore next */ /* v8 ignore next */
-          typeof define == 'function' && define.amd /* v8 ignore next */ /* v8 ignore next */
-            ? define(n) /* v8 ignore next */ /* v8 ignore next */
-            : typeof se == 'object' /* v8 ignore next */ /* v8 ignore next */
-              ? (oe.exports = n()) /* v8 ignore next */ /* v8 ignore next */
-              : (e.lunr = n()); /* v8 ignore next */ /* v8 ignore next */
-        })(this, function () { /* v8 ignore next */ /* v8 ignore next */
-          return t; /* v8 ignore next */ /* v8 ignore next */
-        })); /* v8 ignore next */ /* v8 ignore next */
-    })(); /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  var re = []; /* v8 ignore next */ /* v8 ignore next */
-  function G(t, e) { /* v8 ignore next */ /* v8 ignore next */
-    re.push({ selector: e, constructor: t }); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  var U = class { /* v8 ignore next */ /* v8 ignore next */
-    constructor() { /* v8 ignore next */ /* v8 ignore next */
-      this.alwaysVisibleMember = null; /* v8 ignore next */ /* v8 ignore next */
-      (this.createComponents(document.body), /* v8 ignore next */ /* v8 ignore next */
-        this.ensureFocusedElementVisible(), /* v8 ignore next */ /* v8 ignore next */
-        this.listenForCodeCopies(), /* v8 ignore next */ /* v8 ignore next */
-        window.addEventListener('hashchange', () => this.ensureFocusedElementVisible()), /* v8 ignore next */ /* v8 ignore next */
-        document.body.style.display || /* v8 ignore next */ /* v8 ignore next */
-          (this.ensureFocusedElementVisible(), this.updateIndexVisibility(), this.scrollToHash())); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    createComponents(e) { /* v8 ignore next */ /* v8 ignore next */
-      re.forEach((n) => { /* v8 ignore next */ /* v8 ignore next */
-        e.querySelectorAll(n.selector).forEach((r) => { /* v8 ignore next */ /* v8 ignore next */
-          r.dataset.hasInstance || /* v8 ignore next */ /* v8 ignore next */
-            (new n.constructor({ el: r, app: this }), (r.dataset.hasInstance = String(!0))); /* v8 ignore next */ /* v8 ignore next */
-        }); /* v8 ignore next */ /* v8 ignore next */
-      }); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    filterChanged() { /* v8 ignore next */ /* v8 ignore next */
-      this.ensureFocusedElementVisible(); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    showPage() { /* v8 ignore next */ /* v8 ignore next */
-      document.body.style.display && /* v8 ignore next */ /* v8 ignore next */
-        (console.log('Show page'), /* v8 ignore next */ /* v8 ignore next */
-        document.body.style.removeProperty('display'), /* v8 ignore next */ /* v8 ignore next */
-        this.ensureFocusedElementVisible(), /* v8 ignore next */ /* v8 ignore next */
-        this.updateIndexVisibility(), /* v8 ignore next */ /* v8 ignore next */
-        this.scrollToHash()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    scrollToHash() { /* v8 ignore next */ /* v8 ignore next */
-      if (location.hash) { /* v8 ignore next */ /* v8 ignore next */
-        console.log('Scorlling'); /* v8 ignore next */ /* v8 ignore next */
-        let e = document.getElementById(location.hash.substring(1)); /* v8 ignore next */ /* v8 ignore next */
-        if (!e) return; /* v8 ignore next */ /* v8 ignore next */
-        e.scrollIntoView({ behavior: 'instant', block: 'start' }); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    ensureActivePageVisible() { /* v8 ignore next */ /* v8 ignore next */
-      let e = document.querySelector('.tsd-navigation .current'), /* v8 ignore next */ /* v8 ignore next */
-        n = e?.parentElement; /* v8 ignore next */ /* v8 ignore next */
-      for (; n && !n.classList.contains('.tsd-navigation'); ) /* v8 ignore next */ /* v8 ignore next */
-        (n instanceof HTMLDetailsElement && (n.open = !0), (n = n.parentElement)); /* v8 ignore next */ /* v8 ignore next */
-      if (e && !e.checkVisibility()) { /* v8 ignore next */ /* v8 ignore next */
-        let r = e.getBoundingClientRect().top - document.documentElement.clientHeight / 4; /* v8 ignore next */ /* v8 ignore next */
-        document.querySelector('.site-menu').scrollTop = r; /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    updateIndexVisibility() { /* v8 ignore next */ /* v8 ignore next */
-      let e = document.querySelector('.tsd-index-content'), /* v8 ignore next */ /* v8 ignore next */
-        n = e?.open; /* v8 ignore next */ /* v8 ignore next */
-      (e && (e.open = !0), /* v8 ignore next */ /* v8 ignore next */
-        document.querySelectorAll('.tsd-index-section').forEach((r) => { /* v8 ignore next */ /* v8 ignore next */
-          r.style.display = 'block'; /* v8 ignore next */ /* v8 ignore next */
-          let i = Array.from(r.querySelectorAll('.tsd-index-link')).every( /* v8 ignore next */ /* v8 ignore next */
-            (s) => s.offsetParent == null /* v8 ignore next */ /* v8 ignore next */
-          ); /* v8 ignore next */ /* v8 ignore next */
-          r.style.display = i ? 'none' : 'block'; /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        e && (e.open = n)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    ensureFocusedElementVisible() { /* v8 ignore next */ /* v8 ignore next */
-      if ( /* v8 ignore next */ /* v8 ignore next */
-        (this.alwaysVisibleMember && /* v8 ignore next */ /* v8 ignore next */
-          (this.alwaysVisibleMember.classList.remove('always-visible'), /* v8 ignore next */ /* v8 ignore next */
-          this.alwaysVisibleMember.firstElementChild.remove(), /* v8 ignore next */ /* v8 ignore next */
-          (this.alwaysVisibleMember = null)), /* v8 ignore next */ /* v8 ignore next */
-        !location.hash) /* v8 ignore next */ /* v8 ignore next */
-      ) /* v8 ignore next */ /* v8 ignore next */
-        return; /* v8 ignore next */ /* v8 ignore next */
-      let e = document.getElementById(location.hash.substring(1)); /* v8 ignore next */ /* v8 ignore next */
-      if (!e) return; /* v8 ignore next */ /* v8 ignore next */
-      let n = e.parentElement; /* v8 ignore next */ /* v8 ignore next */
-      for (; n && n.tagName !== 'SECTION'; ) n = n.parentElement; /* v8 ignore next */ /* v8 ignore next */
-      if (n && n.offsetParent == null) { /* v8 ignore next */ /* v8 ignore next */
-        ((this.alwaysVisibleMember = n), n.classList.add('always-visible')); /* v8 ignore next */ /* v8 ignore next */
-        let r = document.createElement('p'); /* v8 ignore next */ /* v8 ignore next */
-        (r.classList.add('warning'), /* v8 ignore next */ /* v8 ignore next */
-          (r.textContent = 'This member is normally hidden due to your filter settings.'), /* v8 ignore next */ /* v8 ignore next */
-          n.prepend(r)); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    listenForCodeCopies() { /* v8 ignore next */ /* v8 ignore next */
-      document.querySelectorAll('pre > button').forEach((e) => { /* v8 ignore next */ /* v8 ignore next */
-        let n; /* v8 ignore next */ /* v8 ignore next */
-        e.addEventListener('click', () => { /* v8 ignore next */ /* v8 ignore next */
-          (e.previousElementSibling instanceof HTMLElement && /* v8 ignore next */ /* v8 ignore next */
-            navigator.clipboard.writeText(e.previousElementSibling.innerText.trim()), /* v8 ignore next */ /* v8 ignore next */
-            (e.textContent = 'Copied!'), /* v8 ignore next */ /* v8 ignore next */
-            e.classList.add('visible'), /* v8 ignore next */ /* v8 ignore next */
-            clearTimeout(n), /* v8 ignore next */ /* v8 ignore next */
-            (n = setTimeout(() => { /* v8 ignore next */ /* v8 ignore next */
-              (e.classList.remove('visible'), /* v8 ignore next */ /* v8 ignore next */
-                (n = setTimeout(() => { /* v8 ignore next */ /* v8 ignore next */
-                  e.textContent = 'Copy'; /* v8 ignore next */ /* v8 ignore next */
-                }, 100))); /* v8 ignore next */ /* v8 ignore next */
-            }, 1e3))); /* v8 ignore next */ /* v8 ignore next */
-        }); /* v8 ignore next */ /* v8 ignore next */
-      }); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var ie = (t, e = 100) => { /* v8 ignore next */ /* v8 ignore next */
-    let n; /* v8 ignore next */ /* v8 ignore next */
-    return () => { /* v8 ignore next */ /* v8 ignore next */
-      (clearTimeout(n), (n = setTimeout(() => t(), e))); /* v8 ignore next */ /* v8 ignore next */
-    }; /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var de = De(ae()); /* v8 ignore next */ /* v8 ignore next */
-  async function le(t, e) { /* v8 ignore next */ /* v8 ignore next */
-    if (!window.searchData) return; /* v8 ignore next */ /* v8 ignore next */
-    let n = await fetch(window.searchData), /* v8 ignore next */ /* v8 ignore next */
-      r = new Blob([await n.arrayBuffer()]).stream().pipeThrough(new DecompressionStream('gzip')), /* v8 ignore next */ /* v8 ignore next */
-      i = await new Response(r).json(); /* v8 ignore next */ /* v8 ignore next */
-    ((t.data = i), /* v8 ignore next */ /* v8 ignore next */
-      (t.index = de.Index.load(i.index)), /* v8 ignore next */ /* v8 ignore next */
-      e.classList.remove('loading'), /* v8 ignore next */ /* v8 ignore next */
-      e.classList.add('ready')); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function he() { /* v8 ignore next */ /* v8 ignore next */
-    let t = document.getElementById('tsd-search'); /* v8 ignore next */ /* v8 ignore next */
-    if (!t) return; /* v8 ignore next */ /* v8 ignore next */
-    let e = { base: t.dataset.base + '/' }, /* v8 ignore next */ /* v8 ignore next */
-      n = document.getElementById('tsd-search-script'); /* v8 ignore next */ /* v8 ignore next */
-    (t.classList.add('loading'), /* v8 ignore next */ /* v8 ignore next */
-      n && /* v8 ignore next */ /* v8 ignore next */
-        (n.addEventListener('error', () => { /* v8 ignore next */ /* v8 ignore next */
-          (t.classList.remove('loading'), t.classList.add('failure')); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        n.addEventListener('load', () => { /* v8 ignore next */ /* v8 ignore next */
-          le(e, t); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        le(e, t))); /* v8 ignore next */ /* v8 ignore next */
-    let r = document.querySelector('#tsd-search input'), /* v8 ignore next */ /* v8 ignore next */
-      i = document.querySelector('#tsd-search .results'); /* v8 ignore next */ /* v8 ignore next */
-    if (!r || !i) throw new Error('The input field or the result list wrapper was not found'); /* v8 ignore next */ /* v8 ignore next */
-    let s = !1; /* v8 ignore next */ /* v8 ignore next */
-    (i.addEventListener('mousedown', () => (s = !0)), /* v8 ignore next */ /* v8 ignore next */
-      i.addEventListener('mouseup', () => { /* v8 ignore next */ /* v8 ignore next */
-        ((s = !1), t.classList.remove('has-focus')); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-      r.addEventListener('focus', () => t.classList.add('has-focus')), /* v8 ignore next */ /* v8 ignore next */
-      r.addEventListener('blur', () => { /* v8 ignore next */ /* v8 ignore next */
-        s || ((s = !1), t.classList.remove('has-focus')); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-      Ae(t, i, r, e)); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function Ae(t, e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-    n.addEventListener( /* v8 ignore next */ /* v8 ignore next */
-      'input', /* v8 ignore next */ /* v8 ignore next */
-      ie(() => { /* v8 ignore next */ /* v8 ignore next */
-        Ve(t, e, n, r); /* v8 ignore next */ /* v8 ignore next */
-      }, 200) /* v8 ignore next */ /* v8 ignore next */
-    ); /* v8 ignore next */ /* v8 ignore next */
-    let i = !1; /* v8 ignore next */ /* v8 ignore next */
-    (n.addEventListener('keydown', (s) => { /* v8 ignore next */ /* v8 ignore next */
-      ((i = !0), /* v8 ignore next */ /* v8 ignore next */
-        s.key == 'Enter' /* v8 ignore next */ /* v8 ignore next */
-          ? Ne(e, n) /* v8 ignore next */ /* v8 ignore next */
-          : s.key == 'Escape' /* v8 ignore next */ /* v8 ignore next */
-            ? n.blur() /* v8 ignore next */ /* v8 ignore next */
-            : s.key == 'ArrowUp' /* v8 ignore next */ /* v8 ignore next */
-              ? ue(e, -1) /* v8 ignore next */ /* v8 ignore next */
-              : s.key === 'ArrowDown' /* v8 ignore next */ /* v8 ignore next */
-                ? ue(e, 1) /* v8 ignore next */ /* v8 ignore next */
-                : (i = !1)); /* v8 ignore next */ /* v8 ignore next */
-    }), /* v8 ignore next */ /* v8 ignore next */
-      n.addEventListener('keypress', (s) => { /* v8 ignore next */ /* v8 ignore next */
-        i && s.preventDefault(); /* v8 ignore next */ /* v8 ignore next */
-      }), /* v8 ignore next */ /* v8 ignore next */
-      document.body.addEventListener('keydown', (s) => { /* v8 ignore next */ /* v8 ignore next */
-        s.altKey || /* v8 ignore next */ /* v8 ignore next */
-          s.ctrlKey || /* v8 ignore next */ /* v8 ignore next */
-          s.metaKey || /* v8 ignore next */ /* v8 ignore next */
-          (!n.matches(':focus') && s.key === '/' && (n.focus(), s.preventDefault())); /* v8 ignore next */ /* v8 ignore next */
-      })); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function Ve(t, e, n, r) { /* v8 ignore next */ /* v8 ignore next */
-    if (!r.index || !r.data) return; /* v8 ignore next */ /* v8 ignore next */
-    e.textContent = ''; /* v8 ignore next */ /* v8 ignore next */
-    let i = n.value.trim(), /* v8 ignore next */ /* v8 ignore next */
-      s; /* v8 ignore next */ /* v8 ignore next */
-    if (i) { /* v8 ignore next */ /* v8 ignore next */
-      let o = i /* v8 ignore next */ /* v8 ignore next */
-        .split(' ') /* v8 ignore next */ /* v8 ignore next */
-        .map((a) => (a.length ? `*${a}*` : '')) /* v8 ignore next */ /* v8 ignore next */
-        .join(' '); /* v8 ignore next */ /* v8 ignore next */
-      s = r.index.search(o); /* v8 ignore next */ /* v8 ignore next */
-    } else s = []; /* v8 ignore next */ /* v8 ignore next */
-    for (let o = 0; o < s.length; o++) { /* v8 ignore next */ /* v8 ignore next */
-      let a = s[o], /* v8 ignore next */ /* v8 ignore next */
-        l = r.data.rows[Number(a.ref)], /* v8 ignore next */ /* v8 ignore next */
-        u = 1; /* v8 ignore next */ /* v8 ignore next */
-      (l.name.toLowerCase().startsWith(i.toLowerCase()) && /* v8 ignore next */ /* v8 ignore next */
-        (u *= 1 + 1 / (1 + Math.abs(l.name.length - i.length))), /* v8 ignore next */ /* v8 ignore next */
-        (a.score *= u)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    if (s.length === 0) { /* v8 ignore next */ /* v8 ignore next */
-      let o = document.createElement('li'); /* v8 ignore next */ /* v8 ignore next */
-      o.classList.add('no-results'); /* v8 ignore next */ /* v8 ignore next */
-      let a = document.createElement('span'); /* v8 ignore next */ /* v8 ignore next */
-      ((a.textContent = 'No results found'), o.appendChild(a), e.appendChild(o)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    s.sort((o, a) => a.score - o.score); /* v8 ignore next */ /* v8 ignore next */
-    for (let o = 0, a = Math.min(10, s.length); o < a; o++) { /* v8 ignore next */ /* v8 ignore next */
-      let l = r.data.rows[Number(s[o].ref)], /* v8 ignore next */ /* v8 ignore next */
-        u = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="tsd-kind-icon"><use href="#icon-${l.kind}"></use></svg>`, /* v8 ignore next */ /* v8 ignore next */
-        d = ce(l.name, i); /* v8 ignore next */ /* v8 ignore next */
-      (globalThis.DEBUG_SEARCH_WEIGHTS && (d += ` (score: ${s[o].score.toFixed(2)})`), /* v8 ignore next */ /* v8 ignore next */
-        l.parent && /* v8 ignore next */ /* v8 ignore next */
-          (d = `<span class="parent"> /* v8 ignore next */ /* v8 ignore next */
-                ${ce(l.parent, i)}.</span>${d}`)); /* v8 ignore next */ /* v8 ignore next */
-      let y = document.createElement('li'); /* v8 ignore next */ /* v8 ignore next */
-      y.classList.value = l.classes ?? ''; /* v8 ignore next */ /* v8 ignore next */
-      let p = document.createElement('a'); /* v8 ignore next */ /* v8 ignore next */
-      ((p.href = r.base + l.url), (p.innerHTML = u + d), y.append(p), e.appendChild(y)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function ue(t, e) { /* v8 ignore next */ /* v8 ignore next */
-    let n = t.querySelector('.current'); /* v8 ignore next */ /* v8 ignore next */
-    if (!n) /* v8 ignore next */ /* v8 ignore next */
-      ((n = t.querySelector(e == 1 ? 'li:first-child' : 'li:last-child')), /* v8 ignore next */ /* v8 ignore next */
-        n && n.classList.add('current')); /* v8 ignore next */ /* v8 ignore next */
-    else { /* v8 ignore next */ /* v8 ignore next */
-      let r = n; /* v8 ignore next */ /* v8 ignore next */
-      if (e === 1) /* v8 ignore next */ /* v8 ignore next */
-        do r = r.nextElementSibling ?? void 0; /* v8 ignore next */ /* v8 ignore next */
-        while (r instanceof HTMLElement && r.offsetParent == null); /* v8 ignore next */ /* v8 ignore next */
-      else /* v8 ignore next */ /* v8 ignore next */
-        do r = r.previousElementSibling ?? void 0; /* v8 ignore next */ /* v8 ignore next */
-        while (r instanceof HTMLElement && r.offsetParent == null); /* v8 ignore next */ /* v8 ignore next */
-      r && (n.classList.remove('current'), r.classList.add('current')); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function Ne(t, e) { /* v8 ignore next */ /* v8 ignore next */
-    let n = t.querySelector('.current'); /* v8 ignore next */ /* v8 ignore next */
-    if ((n || (n = t.querySelector('li:first-child')), n)) { /* v8 ignore next */ /* v8 ignore next */
-      let r = n.querySelector('a'); /* v8 ignore next */ /* v8 ignore next */
-      (r && (window.location.href = r.href), e.blur()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function ce(t, e) { /* v8 ignore next */ /* v8 ignore next */
-    if (e === '') return t; /* v8 ignore next */ /* v8 ignore next */
-    let n = t.toLocaleLowerCase(), /* v8 ignore next */ /* v8 ignore next */
-      r = e.toLocaleLowerCase(), /* v8 ignore next */ /* v8 ignore next */
-      i = [], /* v8 ignore next */ /* v8 ignore next */
-      s = 0, /* v8 ignore next */ /* v8 ignore next */
-      o = n.indexOf(r); /* v8 ignore next */ /* v8 ignore next */
-    for (; o != -1; ) /* v8 ignore next */ /* v8 ignore next */
-      (i.push(K(t.substring(s, o)), `<b>${K(t.substring(o, o + r.length))}</b>`), /* v8 ignore next */ /* v8 ignore next */
-        (s = o + r.length), /* v8 ignore next */ /* v8 ignore next */
-        (o = n.indexOf(r, s))); /* v8 ignore next */ /* v8 ignore next */
-    return (i.push(K(t.substring(s))), i.join('')); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  var He = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }; /* v8 ignore next */ /* v8 ignore next */
-  function K(t) { /* v8 ignore next */ /* v8 ignore next */
-    return t.replace(/[&<>"'"]/g, (e) => He[e]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  var I = class { /* v8 ignore next */ /* v8 ignore next */
-    constructor(e) { /* v8 ignore next */ /* v8 ignore next */
-      ((this.el = e.el), (this.app = e.app)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var F = 'mousedown', /* v8 ignore next */ /* v8 ignore next */
-    fe = 'mousemove', /* v8 ignore next */ /* v8 ignore next */
-    H = 'mouseup', /* v8 ignore next */ /* v8 ignore next */
-    J = { x: 0, y: 0 }, /* v8 ignore next */ /* v8 ignore next */
-    pe = !1, /* v8 ignore next */ /* v8 ignore next */
-    ee = !1, /* v8 ignore next */ /* v8 ignore next */
-    Be = !1, /* v8 ignore next */ /* v8 ignore next */
-    D = !1, /* v8 ignore next */ /* v8 ignore next */
-    me = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); /* v8 ignore next */ /* v8 ignore next */
-  document.documentElement.classList.add(me ? 'is-mobile' : 'not-mobile'); /* v8 ignore next */ /* v8 ignore next */
-  me && /* v8 ignore next */ /* v8 ignore next */
-    'ontouchstart' in document.documentElement && /* v8 ignore next */ /* v8 ignore next */
-    ((Be = !0), (F = 'touchstart'), (fe = 'touchmove'), (H = 'touchend')); /* v8 ignore next */ /* v8 ignore next */
-  document.addEventListener(F, (t) => { /* v8 ignore next */ /* v8 ignore next */
-    ((ee = !0), (D = !1)); /* v8 ignore next */ /* v8 ignore next */
-    let e = F == 'touchstart' ? t.targetTouches[0] : t; /* v8 ignore next */ /* v8 ignore next */
-    ((J.y = e.pageY || 0), (J.x = e.pageX || 0)); /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  document.addEventListener(fe, (t) => { /* v8 ignore next */ /* v8 ignore next */
-    if (ee && !D) { /* v8 ignore next */ /* v8 ignore next */
-      let e = F == 'touchstart' ? t.targetTouches[0] : t, /* v8 ignore next */ /* v8 ignore next */
-        n = J.x - (e.pageX || 0), /* v8 ignore next */ /* v8 ignore next */
-        r = J.y - (e.pageY || 0); /* v8 ignore next */ /* v8 ignore next */
-      D = Math.sqrt(n * n + r * r) > 10; /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  document.addEventListener(H, () => { /* v8 ignore next */ /* v8 ignore next */
-    ee = !1; /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  document.addEventListener('click', (t) => { /* v8 ignore next */ /* v8 ignore next */
-    pe && (t.preventDefault(), t.stopImmediatePropagation(), (pe = !1)); /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  var X = class extends I { /* v8 ignore next */ /* v8 ignore next */
-    constructor(e) { /* v8 ignore next */ /* v8 ignore next */
-      (super(e), /* v8 ignore next */ /* v8 ignore next */
-        (this.className = this.el.dataset.toggle || ''), /* v8 ignore next */ /* v8 ignore next */
-        this.el.addEventListener(H, (n) => this.onPointerUp(n)), /* v8 ignore next */ /* v8 ignore next */
-        this.el.addEventListener('click', (n) => n.preventDefault()), /* v8 ignore next */ /* v8 ignore next */
-        document.addEventListener(F, (n) => this.onDocumentPointerDown(n)), /* v8 ignore next */ /* v8 ignore next */
-        document.addEventListener(H, (n) => this.onDocumentPointerUp(n))); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    setActive(e) { /* v8 ignore next */ /* v8 ignore next */
-      if (this.active == e) return; /* v8 ignore next */ /* v8 ignore next */
-      ((this.active = e), /* v8 ignore next */ /* v8 ignore next */
-        document.documentElement.classList.toggle('has-' + this.className, e), /* v8 ignore next */ /* v8 ignore next */
-        this.el.classList.toggle('active', e)); /* v8 ignore next */ /* v8 ignore next */
-      let n = (this.active ? 'to-has-' : 'from-has-') + this.className; /* v8 ignore next */ /* v8 ignore next */
-      (document.documentElement.classList.add(n), /* v8 ignore next */ /* v8 ignore next */
-        setTimeout(() => document.documentElement.classList.remove(n), 500)); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    onPointerUp(e) { /* v8 ignore next */ /* v8 ignore next */
-      D || (this.setActive(!0), e.preventDefault()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    onDocumentPointerDown(e) { /* v8 ignore next */ /* v8 ignore next */
-      if (this.active) { /* v8 ignore next */ /* v8 ignore next */
-        if (e.target.closest('.col-sidebar, .tsd-filter-group')) return; /* v8 ignore next */ /* v8 ignore next */
-        this.setActive(!1); /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    onDocumentPointerUp(e) { /* v8 ignore next */ /* v8 ignore next */
-      if (!D && this.active && e.target.closest('.col-sidebar')) { /* v8 ignore next */ /* v8 ignore next */
-        let n = e.target.closest('a'); /* v8 ignore next */ /* v8 ignore next */
-        if (n) { /* v8 ignore next */ /* v8 ignore next */
-          let r = window.location.href; /* v8 ignore next */ /* v8 ignore next */
-          (r.indexOf('#') != -1 && (r = r.substring(0, r.indexOf('#'))), /* v8 ignore next */ /* v8 ignore next */
-            n.href.substring(0, r.length) == r && setTimeout(() => this.setActive(!1), 250)); /* v8 ignore next */ /* v8 ignore next */
-        } /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var te; /* v8 ignore next */ /* v8 ignore next */
-  try { /* v8 ignore next */ /* v8 ignore next */
-    te = localStorage; /* v8 ignore next */ /* v8 ignore next */
-  } catch { /* v8 ignore next */ /* v8 ignore next */
-    te = { /* v8 ignore next */ /* v8 ignore next */
-      getItem() { /* v8 ignore next */ /* v8 ignore next */
-        return null; /* v8 ignore next */ /* v8 ignore next */
-      }, /* v8 ignore next */ /* v8 ignore next */
-      setItem() {} /* v8 ignore next */ /* v8 ignore next */
-    }; /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  var Q = te; /* v8 ignore next */ /* v8 ignore next */
-  var ye = document.head.appendChild(document.createElement('style')); /* v8 ignore next */ /* v8 ignore next */
-  ye.dataset.for = 'filters'; /* v8 ignore next */ /* v8 ignore next */
-  var Y = class extends I { /* v8 ignore next */ /* v8 ignore next */
-    constructor(e) { /* v8 ignore next */ /* v8 ignore next */
-      (super(e), /* v8 ignore next */ /* v8 ignore next */
-        (this.key = `filter-${this.el.name}`), /* v8 ignore next */ /* v8 ignore next */
-        (this.value = this.el.checked), /* v8 ignore next */ /* v8 ignore next */
-        this.el.addEventListener('change', () => { /* v8 ignore next */ /* v8 ignore next */
-          this.setLocalStorage(this.el.checked); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        this.setLocalStorage(this.fromLocalStorage()), /* v8 ignore next */ /* v8 ignore next */
-        (ye.innerHTML += `html:not(.${this.key}) .tsd-is-${this.el.name} { display: none; } /* v8 ignore next */ /* v8 ignore next */
-`), /* v8 ignore next */ /* v8 ignore next */
-        this.app.updateIndexVisibility()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    fromLocalStorage() { /* v8 ignore next */ /* v8 ignore next */
-      let e = Q.getItem(this.key); /* v8 ignore next */ /* v8 ignore next */
-      return e ? e === 'true' : this.el.checked; /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    setLocalStorage(e) { /* v8 ignore next */ /* v8 ignore next */
-      (Q.setItem(this.key, e.toString()), (this.value = e), this.handleValueChange()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    handleValueChange() { /* v8 ignore next */ /* v8 ignore next */
-      ((this.el.checked = this.value), /* v8 ignore next */ /* v8 ignore next */
-        document.documentElement.classList.toggle(this.key, this.value), /* v8 ignore next */ /* v8 ignore next */
-        this.app.filterChanged(), /* v8 ignore next */ /* v8 ignore next */
-        this.app.updateIndexVisibility()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  var Z = class extends I { /* v8 ignore next */ /* v8 ignore next */
-    constructor(e) { /* v8 ignore next */ /* v8 ignore next */
-      (super(e), /* v8 ignore next */ /* v8 ignore next */
-        (this.summary = this.el.querySelector('.tsd-accordion-summary')), /* v8 ignore next */ /* v8 ignore next */
-        (this.icon = this.summary.querySelector('svg')), /* v8 ignore next */ /* v8 ignore next */
-        (this.key = `tsd-accordion-${this.summary.dataset.key ?? this.summary.textContent.trim().replace(/\s+/g, '-').toLowerCase()}`)); /* v8 ignore next */ /* v8 ignore next */
-      let n = Q.getItem(this.key); /* v8 ignore next */ /* v8 ignore next */
-      ((this.el.open = n ? n === 'true' : this.el.open), /* v8 ignore next */ /* v8 ignore next */
-        this.el.addEventListener('toggle', () => this.update())); /* v8 ignore next */ /* v8 ignore next */
-      let r = this.summary.querySelector('a'); /* v8 ignore next */ /* v8 ignore next */
-      (r && /* v8 ignore next */ /* v8 ignore next */
-        r.addEventListener('click', () => { /* v8 ignore next */ /* v8 ignore next */
-          location.assign(r.href); /* v8 ignore next */ /* v8 ignore next */
-        }), /* v8 ignore next */ /* v8 ignore next */
-        this.update()); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-    update() { /* v8 ignore next */ /* v8 ignore next */
-      ((this.icon.style.transform = `rotate(${this.el.open ? 0 : -90}deg)`), /* v8 ignore next */ /* v8 ignore next */
-        Q.setItem(this.key, this.el.open.toString())); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  function ge(t) { /* v8 ignore next */ /* v8 ignore next */
-    let e = Q.getItem('tsd-theme') || 'os'; /* v8 ignore next */ /* v8 ignore next */
-    ((t.value = e), /* v8 ignore next */ /* v8 ignore next */
-      ve(e), /* v8 ignore next */ /* v8 ignore next */
-      t.addEventListener('change', () => { /* v8 ignore next */ /* v8 ignore next */
-        (Q.setItem('tsd-theme', t.value), ve(t.value)); /* v8 ignore next */ /* v8 ignore next */
-      })); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function ve(t) { /* v8 ignore next */ /* v8 ignore next */
-    document.documentElement.dataset.theme = t; /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  var Le; /* v8 ignore next */ /* v8 ignore next */
-  function be() { /* v8 ignore next */ /* v8 ignore next */
-    let t = document.getElementById('tsd-nav-script'); /* v8 ignore next */ /* v8 ignore next */
-    t && (t.addEventListener('load', xe), xe()); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  async function xe() { /* v8 ignore next */ /* v8 ignore next */
-    let t = document.getElementById('tsd-nav-container'); /* v8 ignore next */ /* v8 ignore next */
-    if (!t || !window.navigationData) return; /* v8 ignore next */ /* v8 ignore next */
-    let n = await (await fetch(window.navigationData)).arrayBuffer(), /* v8 ignore next */ /* v8 ignore next */
-      r = new Blob([n]).stream().pipeThrough(new DecompressionStream('gzip')), /* v8 ignore next */ /* v8 ignore next */
-      i = await new Response(r).json(); /* v8 ignore next */ /* v8 ignore next */
-    ((Le = t.dataset.base + '/'), (t.innerHTML = '')); /* v8 ignore next */ /* v8 ignore next */
-    for (let s of i) we(s, t, []); /* v8 ignore next */ /* v8 ignore next */
-    (window.app.createComponents(t), window.app.showPage(), window.app.ensureActivePageVisible()); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function we(t, e, n) { /* v8 ignore next */ /* v8 ignore next */
-    let r = e.appendChild(document.createElement('li')); /* v8 ignore next */ /* v8 ignore next */
-    if (t.children) { /* v8 ignore next */ /* v8 ignore next */
-      let i = [...n, t.text], /* v8 ignore next */ /* v8 ignore next */
-        s = r.appendChild(document.createElement('details')); /* v8 ignore next */ /* v8 ignore next */
-      ((s.className = t.class ? `${t.class} tsd-index-accordion` : 'tsd-index-accordion'), /* v8 ignore next */ /* v8 ignore next */
-        (s.dataset.key = i.join('$'))); /* v8 ignore next */ /* v8 ignore next */
-      let o = s.appendChild(document.createElement('summary')); /* v8 ignore next */ /* v8 ignore next */
-      ((o.className = 'tsd-accordion-summary'), /* v8 ignore next */ /* v8 ignore next */
-        (o.innerHTML = /* v8 ignore next */ /* v8 ignore next */
-          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-chevronDown"></use></svg>'), /* v8 ignore next */ /* v8 ignore next */
-        Ee(t, o)); /* v8 ignore next */ /* v8 ignore next */
-      let a = s.appendChild(document.createElement('div')); /* v8 ignore next */ /* v8 ignore next */
-      a.className = 'tsd-accordion-details'; /* v8 ignore next */ /* v8 ignore next */
-      let l = a.appendChild(document.createElement('ul')); /* v8 ignore next */ /* v8 ignore next */
-      l.className = 'tsd-nested-navigation'; /* v8 ignore next */ /* v8 ignore next */
-      for (let u of t.children) we(u, l, i); /* v8 ignore next */ /* v8 ignore next */
-    } else Ee(t, r, t.class); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  function Ee(t, e, n) { /* v8 ignore next */ /* v8 ignore next */
-    if (t.path) { /* v8 ignore next */ /* v8 ignore next */
-      let r = e.appendChild(document.createElement('a')); /* v8 ignore next */ /* v8 ignore next */
-      ((r.href = Le + t.path), /* v8 ignore next */ /* v8 ignore next */
-        n && (r.className = n), /* v8 ignore next */ /* v8 ignore next */
-        location.pathname === r.pathname && r.classList.add('current'), /* v8 ignore next */ /* v8 ignore next */
-        t.kind && /* v8 ignore next */ /* v8 ignore next */
-          (r.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="tsd-kind-icon"><use href="#icon-${t.kind}"></use></svg>`), /* v8 ignore next */ /* v8 ignore next */
-        (r.appendChild(document.createElement('span')).textContent = t.text)); /* v8 ignore next */ /* v8 ignore next */
-    } else e.appendChild(document.createElement('span')).textContent = t.text; /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  G(X, 'a[data-toggle]'); /* v8 ignore next */ /* v8 ignore next */
-  G(Z, '.tsd-index-accordion'); /* v8 ignore next */ /* v8 ignore next */
-  G(Y, '.tsd-filter-item input[type=checkbox]'); /* v8 ignore next */ /* v8 ignore next */
-  var Se = document.getElementById('tsd-theme'); /* v8 ignore next */ /* v8 ignore next */
-  Se && ge(Se); /* v8 ignore next */ /* v8 ignore next */
-  var je = new U(); /* v8 ignore next */ /* v8 ignore next */
-  Object.defineProperty(window, 'app', { value: je }); /* v8 ignore next */ /* v8 ignore next */
-  he(); /* v8 ignore next */ /* v8 ignore next */
-  be(); /* v8 ignore next */ /* v8 ignore next */
-})(); /* v8 ignore next */ /* v8 ignore next */
-/*! Bundled license information: /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-lunr/lunr.js: /* v8 ignore next */ /* v8 ignore next */
-  (** /* v8 ignore next */ /* v8 ignore next */
-   * lunr - http://lunrjs.com - A bit like Solr, but much smaller and not as bright - 2.3.9 /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   * @license MIT /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.utils /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.Set /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.tokenizer /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.Pipeline /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.Vector /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.stemmer /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.stopWordFilter /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.trimmer /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.TokenSet /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.Index /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
-  (*! /* v8 ignore next */ /* v8 ignore next */
-   * lunr.Builder /* v8 ignore next */ /* v8 ignore next */
-   * Copyright (C) 2020 Oliver Nightingale /* v8 ignore next */ /* v8 ignore next */
-   *) /* v8 ignore next */ /* v8 ignore next */
+  'use strict';  
+'use strict';  
+(() => {  
+  var Ce = Object.create;  
+  var ne = Object.defineProperty;  
+  var Pe = Object.getOwnPropertyDescriptor;  
+  var Oe = Object.getOwnPropertyNames;  
+  var _e = Object.getPrototypeOf,  
+    Re = Object.prototype.hasOwnProperty;  
+  var Me = (t, e) => () => (e || t((e = { exports: {} }).exports, e), e.exports);  
+  var Fe = (t, e, n, r) => {  
+    if ((e && typeof e == 'object') || typeof e == 'function')  
+      for (let i of Oe(e))  
+        !Re.call(t, i) &&  
+          i !== n &&  
+          ne(t, i, { get: () => e[i], enumerable: !(r = Pe(e, i)) || r.enumerable });  
+    return t;  
+  };  
+  var De = (t, e, n) => (  
+    (n = t != null ? Ce(_e(t)) : {}),  
+    Fe(e || !t || !t.__esModule ? ne(n, 'default', { value: t, enumerable: !0 }) : n, t)  
+  );  
+  var ae = Me((se, oe) => {  
+    (function () {  
+      var t = function (e) {  
+        var n = new t.Builder();  
+        return (  
+          n.pipeline.add(t.trimmer, t.stopWordFilter, t.stemmer),  
+          n.searchPipeline.add(t.stemmer),  
+          e.call(n, n),  
+          n.build()  
+        );  
+      };  
+      t.version = '2.3.9';  
+      ((t.utils = {}),  
+        (t.utils.warn = (function (e) {  
+          return function (n) {  
+            e.console && console.warn && console.warn(n);  
+          };  
+        })(this)),  
+        (t.utils.asString = function (e) {  
+          return e == null ? '' : e.toString();  
+        }),  
+        (t.utils.clone = function (e) {  
+          if (e == null) return e;  
+          for (var n = Object.create(null), r = Object.keys(e), i = 0; i < r.length; i++) {  
+            var s = r[i],  
+              o = e[s];  
+            if (Array.isArray(o)) {  
+              n[s] = o.slice();  
+              continue;  
+            }  
+            if (typeof o == 'string' || typeof o == 'number' || typeof o == 'boolean') {  
+              n[s] = o;  
+              continue;  
+            }  
+            throw new TypeError('clone is not deep and does not support nested objects');  
+          }  
+          return n;  
+        }),  
+        (t.FieldRef = function (e, n, r) {  
+          ((this.docRef = e), (this.fieldName = n), (this._stringValue = r));  
+        }),  
+        (t.FieldRef.joiner = '/'),  
+        (t.FieldRef.fromString = function (e) {  
+          var n = e.indexOf(t.FieldRef.joiner);  
+          if (n === -1) throw 'malformed field ref string';  
+          var r = e.slice(0, n),  
+            i = e.slice(n + 1);  
+          return new t.FieldRef(i, r, e);  
+        }),  
+        (t.FieldRef.prototype.toString = function () {  
+          return (  
+            this._stringValue == null &&  
+              (this._stringValue = this.fieldName + t.FieldRef.joiner + this.docRef),  
+            this._stringValue  
+          );  
+        }));  
+      ((t.Set = function (e) {  
+        if (((this.elements = Object.create(null)), e)) {  
+          this.length = e.length;  
+          for (var n = 0; n < this.length; n++) this.elements[e[n]] = !0;  
+        } else this.length = 0;  
+      }),  
+        (t.Set.complete = {  
+          intersect: function (e) {  
+            return e;  
+          },  
+          union: function () {  
+            return this;  
+          },  
+          contains: function () {  
+            return !0;  
+          }  
+        }),  
+        (t.Set.empty = {  
+          intersect: function () {  
+            return this;  
+          },  
+          union: function (e) {  
+            return e;  
+          },  
+          contains: function () {  
+            return !1;  
+          }  
+        }),  
+        (t.Set.prototype.contains = function (e) {  
+          return !!this.elements[e];  
+        }),  
+        (t.Set.prototype.intersect = function (e) {  
+          var n,  
+            r,  
+            i,  
+            s = [];  
+          if (e === t.Set.complete) return this;  
+          if (e === t.Set.empty) return e;  
+          (this.length < e.length ? ((n = this), (r = e)) : ((n = e), (r = this)),  
+            (i = Object.keys(n.elements)));  
+          for (var o = 0; o < i.length; o++) {  
+            var a = i[o];  
+            a in r.elements && s.push(a);  
+          }  
+          return new t.Set(s);  
+        }),  
+        (t.Set.prototype.union = function (e) {  
+          return e === t.Set.complete  
+            ? t.Set.complete  
+            : e === t.Set.empty  
+              ? this  
+              : new t.Set(Object.keys(this.elements).concat(Object.keys(e.elements)));  
+        }),  
+        (t.idf = function (e, n) {  
+          var r = 0;  
+          for (var i in e) i != '_index' && (r += Object.keys(e[i]).length);  
+          var s = (n - r + 0.5) / (r + 0.5);  
+          return Math.log(1 + Math.abs(s));  
+        }),  
+        (t.Token = function (e, n) {  
+          ((this.str = e || ''), (this.metadata = n || {}));  
+        }),  
+        (t.Token.prototype.toString = function () {  
+          return this.str;  
+        }),  
+        (t.Token.prototype.update = function (e) {  
+          return ((this.str = e(this.str, this.metadata)), this);  
+        }),  
+        (t.Token.prototype.clone = function (e) {  
+          return (  
+            (e =  
+              e ||  
+              function (n) {  
+                return n;  
+              }),  
+            new t.Token(e(this.str, this.metadata), this.metadata)  
+          );  
+        }));  
+      ((t.tokenizer = function (e, n) {  
+        if (e == null || e == null) return [];  
+        if (Array.isArray(e))  
+          return e.map(function (y) {  
+            return new t.Token(t.utils.asString(y).toLowerCase(), t.utils.clone(n));  
+          });  
+        for (var r = e.toString().toLowerCase(), i = r.length, s = [], o = 0, a = 0; o <= i; o++) {  
+          var l = r.charAt(o),  
+            u = o - a;  
+          if (l.match(t.tokenizer.separator) || o == i) {  
+            if (u > 0) {  
+              var d = t.utils.clone(n) || {};  
+              ((d.position = [a, u]), (d.index = s.length), s.push(new t.Token(r.slice(a, o), d)));  
+            }  
+            a = o + 1;  
+          }  
+        }  
+        return s;  
+      }),  
+        (t.tokenizer.separator = /[\s\-]+/));  
+      ((t.Pipeline = function () {  
+        this._stack = [];  
+      }),  
+        (t.Pipeline.registeredFunctions = Object.create(null)),  
+        (t.Pipeline.registerFunction = function (e, n) {  
+          (n in this.registeredFunctions &&  
+            t.utils.warn('Overwriting existing registered function: ' + n),  
+            (e.label = n),  
+            (t.Pipeline.registeredFunctions[e.label] = e));  
+        }),  
+        (t.Pipeline.warnIfFunctionNotRegistered = function (e) {  
+          var n = e.label && e.label in this.registeredFunctions;  
+          n ||  
+            t.utils.warn(  
+              `Function is not registered with pipeline. This may cause problems when serialising the index.  
+`,  
+              e  
+            );  
+        }),  
+        (t.Pipeline.load = function (e) {  
+          var n = new t.Pipeline();  
+          return (  
+            e.forEach(function (r) {  
+              var i = t.Pipeline.registeredFunctions[r];  
+              if (i) n.add(i);  
+              else throw new Error('Cannot load unregistered function: ' + r);  
+            }),  
+            n  
+          );  
+        }),  
+        (t.Pipeline.prototype.add = function () {  
+          var e = Array.prototype.slice.call(arguments);  
+          e.forEach(function (n) {  
+            (t.Pipeline.warnIfFunctionNotRegistered(n), this._stack.push(n));  
+          }, this);  
+        }),  
+        (t.Pipeline.prototype.after = function (e, n) {  
+          t.Pipeline.warnIfFunctionNotRegistered(n);  
+          var r = this._stack.indexOf(e);  
+          if (r == -1) throw new Error('Cannot find existingFn');  
+          ((r = r + 1), this._stack.splice(r, 0, n));  
+        }),  
+        (t.Pipeline.prototype.before = function (e, n) {  
+          t.Pipeline.warnIfFunctionNotRegistered(n);  
+          var r = this._stack.indexOf(e);  
+          if (r == -1) throw new Error('Cannot find existingFn');  
+          this._stack.splice(r, 0, n);  
+        }),  
+        (t.Pipeline.prototype.remove = function (e) {  
+          var n = this._stack.indexOf(e);  
+          n != -1 && this._stack.splice(n, 1);  
+        }),  
+        (t.Pipeline.prototype.run = function (e) {  
+          for (var n = this._stack.length, r = 0; r < n; r++) {  
+            for (var i = this._stack[r], s = [], o = 0; o < e.length; o++) {  
+              var a = i(e[o], o, e);  
+              if (!(a == null || a === ''))  
+                if (Array.isArray(a)) for (var l = 0; l < a.length; l++) s.push(a[l]);  
+                else s.push(a);  
+            }  
+            e = s;  
+          }  
+          return e;  
+        }),  
+        (t.Pipeline.prototype.runString = function (e, n) {  
+          var r = new t.Token(e, n);  
+          return this.run([r]).map(function (i) {  
+            return i.toString();  
+          });  
+        }),  
+        (t.Pipeline.prototype.reset = function () {  
+          this._stack = [];  
+        }),  
+        (t.Pipeline.prototype.toJSON = function () {  
+          return this._stack.map(function (e) {  
+            return (t.Pipeline.warnIfFunctionNotRegistered(e), e.label);  
+          });  
+        }));  
+      ((t.Vector = function (e) {  
+        ((this._magnitude = 0), (this.elements = e || []));  
+      }),  
+        (t.Vector.prototype.positionForIndex = function (e) {  
+          if (this.elements.length == 0) return 0;  
+          for (  
+            var n = 0,  
+              r = this.elements.length / 2,  
+              i = r - n,  
+              s = Math.floor(i / 2),  
+              o = this.elements[s * 2];  
+            i > 1 && (o < e && (n = s), o > e && (r = s), o != e);  
+          )  
+            ((i = r - n), (s = n + Math.floor(i / 2)), (o = this.elements[s * 2]));  
+          if (o == e || o > e) return s * 2;  
+          if (o < e) return (s + 1) * 2;  
+        }),  
+        (t.Vector.prototype.insert = function (e, n) {  
+          this.upsert(e, n, function () {  
+            throw 'duplicate index';  
+          });  
+        }),  
+        (t.Vector.prototype.upsert = function (e, n, r) {  
+          this._magnitude = 0;  
+          var i = this.positionForIndex(e);  
+          this.elements[i] == e  
+            ? (this.elements[i + 1] = r(this.elements[i + 1], n))  
+            : this.elements.splice(i, 0, e, n);  
+        }),  
+        (t.Vector.prototype.magnitude = function () {  
+          if (this._magnitude) return this._magnitude;  
+          for (var e = 0, n = this.elements.length, r = 1; r < n; r += 2) {  
+            var i = this.elements[r];  
+            e += i * i;  
+          }  
+          return (this._magnitude = Math.sqrt(e));  
+        }),  
+        (t.Vector.prototype.dot = function (e) {  
+          for (  
+            var n = 0,  
+              r = this.elements,  
+              i = e.elements,  
+              s = r.length,  
+              o = i.length,  
+              a = 0,  
+              l = 0,  
+              u = 0,  
+              d = 0;  
+            u < s && d < o;  
+          )  
+            ((a = r[u]),  
+              (l = i[d]),  
+              a < l  
+                ? (u += 2)  
+                : a > l  
+                  ? (d += 2)  
+                  : a == l && ((n += r[u + 1] * i[d + 1]), (u += 2), (d += 2)));  
+          return n;  
+        }),  
+        (t.Vector.prototype.similarity = function (e) {  
+          return this.dot(e) / this.magnitude() || 0;  
+        }),  
+        (t.Vector.prototype.toArray = function () {  
+          for (  
+            var e = new Array(this.elements.length / 2), n = 1, r = 0;  
+            n < this.elements.length;  
+            n += 2, r++  
+          )  
+            e[r] = this.elements[n];  
+          return e;  
+        }),  
+        (t.Vector.prototype.toJSON = function () {  
+          return this.elements;  
+        }));  
+      ((t.stemmer = (function () {  
+        var e = {  
+            ational: 'ate',  
+            tional: 'tion',  
+            enci: 'ence',  
+            anci: 'ance',  
+            izer: 'ize',  
+            bli: 'ble',  
+            alli: 'al',  
+            entli: 'ent',  
+            eli: 'e',  
+            ousli: 'ous',  
+            ization: 'ize',  
+            ation: 'ate',  
+            ator: 'ate',  
+            alism: 'al',  
+            iveness: 'ive',  
+            fulness: 'ful',  
+            ousness: 'ous',  
+            aliti: 'al',  
+            iviti: 'ive',  
+            biliti: 'ble',  
+            logi: 'log'  
+          },  
+          n = { icate: 'ic', ative: '', alize: 'al', iciti: 'ic', ical: 'ic', ful: '', ness: '' },  
+          r = '[^aeiou]',  
+          i = '[aeiouy]',  
+          s = r + '[^aeiouy]*',  
+          o = i + '[aeiou]*',  
+          a = '^(' + s + ')?' + o + s,  
+          l = '^(' + s + ')?' + o + s + '(' + o + ')?$',  
+          u = '^(' + s + ')?' + o + s + o + s,  
+          d = '^(' + s + ')?' + i,  
+          y = new RegExp(a),  
+          p = new RegExp(u),  
+          b = new RegExp(l),  
+          g = new RegExp(d),  
+          L = /^(.+?)(ss|i)es$/,  
+          f = /^(.+?)([^s])s$/,  
+          m = /^(.+?)eed$/,  
+          S = /^(.+?)(ed|ing)$/,  
+          w = /.$/,  
+          k = /(at|bl|iz)$/,  
+          _ = new RegExp('([^aeiouylsz])\\1$'),  
+          B = new RegExp('^' + s + i + '[^aeiouwxy]$'),  
+          A = /^(.+?[^aeiou])y$/,  
+          j =  
+            /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/,  
+          $ = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/,  
+          V = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/,  
+          q = /^(.+?)(s|t)(ion)$/,  
+          C = /^(.+?)e$/,  
+          z = /ll$/,  
+          W = new RegExp('^' + s + i + '[^aeiouwxy]$'),  
+          N = function (c) {  
+            var v, P, T, h, x, O, M;  
+            if (c.length < 3) return c;  
+            if (  
+              ((T = c.substr(0, 1)),  
+              T == 'y' && (c = T.toUpperCase() + c.substr(1)),  
+              (h = L),  
+              (x = f),  
+              h.test(c) ? (c = c.replace(h, '$1$2')) : x.test(c) && (c = c.replace(x, '$1$2')),  
+              (h = m),  
+              (x = S),  
+              h.test(c))  
+            ) {  
+              var E = h.exec(c);  
+              ((h = y), h.test(E[1]) && ((h = w), (c = c.replace(h, ''))));  
+            } else if (x.test(c)) {  
+              var E = x.exec(c);  
+              ((v = E[1]),  
+                (x = g),  
+                x.test(v) &&  
+                  ((c = v),  
+                  (x = k),  
+                  (O = _),  
+                  (M = B),  
+                  x.test(c)  
+                    ? (c = c + 'e')  
+                    : O.test(c)  
+                      ? ((h = w), (c = c.replace(h, '')))  
+                      : M.test(c) && (c = c + 'e')));  
+            }  
+            if (((h = A), h.test(c))) {  
+              var E = h.exec(c);  
+              ((v = E[1]), (c = v + 'i'));  
+            }  
+            if (((h = j), h.test(c))) {  
+              var E = h.exec(c);  
+              ((v = E[1]), (P = E[2]), (h = y), h.test(v) && (c = v + e[P]));  
+            }  
+            if (((h = $), h.test(c))) {  
+              var E = h.exec(c);  
+              ((v = E[1]), (P = E[2]), (h = y), h.test(v) && (c = v + n[P]));  
+            }  
+            if (((h = V), (x = q), h.test(c))) {  
+              var E = h.exec(c);  
+              ((v = E[1]), (h = p), h.test(v) && (c = v));  
+            } else if (x.test(c)) {  
+              var E = x.exec(c);  
+              ((v = E[1] + E[2]), (x = p), x.test(v) && (c = v));  
+            }  
+            if (((h = C), h.test(c))) {  
+              var E = h.exec(c);  
+              ((v = E[1]),  
+                (h = p),  
+                (x = b),  
+                (O = W),  
+                (h.test(v) || (x.test(v) && !O.test(v))) && (c = v));  
+            }  
+            return (  
+              (h = z),  
+              (x = p),  
+              h.test(c) && x.test(c) && ((h = w), (c = c.replace(h, ''))),  
+              T == 'y' && (c = T.toLowerCase() + c.substr(1)),  
+              c  
+            );  
+          };  
+        return function (R) {  
+          return R.update(N);  
+        };  
+      })()),  
+        t.Pipeline.registerFunction(t.stemmer, 'stemmer'));  
+      ((t.generateStopWordFilter = function (e) {  
+        var n = e.reduce(function (r, i) {  
+          return ((r[i] = i), r);  
+        }, {});  
+        return function (r) {  
+          if (r && n[r.toString()] !== r.toString()) return r;  
+        };  
+      }),  
+        (t.stopWordFilter = t.generateStopWordFilter([  
+          'a',  
+          'able',  
+          'about',  
+          'across',  
+          'after',  
+          'all',  
+          'almost',  
+          'also',  
+          'am',  
+          'among',  
+          'an',  
+          'and',  
+          'any',  
+          'are',  
+          'as',  
+          'at',  
+          'be',  
+          'because',  
+          'been',  
+          'but',  
+          'by',  
+          'can',  
+          'cannot',  
+          'could',  
+          'dear',  
+          'did',  
+          'do',  
+          'does',  
+          'either',  
+          'else',  
+          'ever',  
+          'every',  
+          'for',  
+          'from',  
+          'get',  
+          'got',  
+          'had',  
+          'has',  
+          'have',  
+          'he',  
+          'her',  
+          'hers',  
+          'him',  
+          'his',  
+          'how',  
+          'however',  
+          'i',  
+          'if',  
+          'in',  
+          'into',  
+          'is',  
+          'it',  
+          'its',  
+          'just',  
+          'least',  
+          'let',  
+          'like',  
+          'likely',  
+          'may',  
+          'me',  
+          'might',  
+          'most',  
+          'must',  
+          'my',  
+          'neither',  
+          'no',  
+          'nor',  
+          'not',  
+          'of',  
+          'off',  
+          'often',  
+          'on',  
+          'only',  
+          'or',  
+          'other',  
+          'our',  
+          'own',  
+          'rather',  
+          'said',  
+          'say',  
+          'says',  
+          'she',  
+          'should',  
+          'since',  
+          'so',  
+          'some',  
+          'than',  
+          'that',  
+          'the',  
+          'their',  
+          'them',  
+          'then',  
+          'there',  
+          'these',  
+          'they',  
+          'this',  
+          'tis',  
+          'to',  
+          'too',  
+          'twas',  
+          'us',  
+          'wants',  
+          'was',  
+          'we',  
+          'were',  
+          'what',  
+          'when',  
+          'where',  
+          'which',  
+          'while',  
+          'who',  
+          'whom',  
+          'why',  
+          'will',  
+          'with',  
+          'would',  
+          'yet',  
+          'you',  
+          'your'  
+        ])),  
+        t.Pipeline.registerFunction(t.stopWordFilter, 'stopWordFilter'));  
+      ((t.trimmer = function (e) {  
+        return e.update(function (n) {  
+          return n.replace(/^\W+/, '').replace(/\W+$/, '');  
+        });  
+      }),  
+        t.Pipeline.registerFunction(t.trimmer, 'trimmer'));  
+      ((t.TokenSet = function () {  
+        ((this.final = !1),  
+          (this.edges = {}),  
+          (this.id = t.TokenSet._nextId),  
+          (t.TokenSet._nextId += 1));  
+      }),  
+        (t.TokenSet._nextId = 1),  
+        (t.TokenSet.fromArray = function (e) {  
+          for (var n = new t.TokenSet.Builder(), r = 0, i = e.length; r < i; r++) n.insert(e[r]);  
+          return (n.finish(), n.root);  
+        }),  
+        (t.TokenSet.fromClause = function (e) {  
+          return 'editDistance' in e  
+            ? t.TokenSet.fromFuzzyString(e.term, e.editDistance)  
+            : t.TokenSet.fromString(e.term);  
+        }),  
+        (t.TokenSet.fromFuzzyString = function (e, n) {  
+          for (var r = new t.TokenSet(), i = [{ node: r, editsRemaining: n, str: e }]; i.length; ) {  
+            var s = i.pop();  
+            if (s.str.length > 0) {  
+              var o = s.str.charAt(0),  
+                a;  
+              (o in s.node.edges  
+                ? (a = s.node.edges[o])  
+                : ((a = new t.TokenSet()), (s.node.edges[o] = a)),  
+                s.str.length == 1 && (a.final = !0),  
+                i.push({ node: a, editsRemaining: s.editsRemaining, str: s.str.slice(1) }));  
+            }  
+            if (s.editsRemaining != 0) {  
+              if ('*' in s.node.edges) var l = s.node.edges['*'];  
+              else {  
+                var l = new t.TokenSet();  
+                s.node.edges['*'] = l;  
+              }  
+              if (  
+                (s.str.length == 0 && (l.final = !0),  
+                i.push({ node: l, editsRemaining: s.editsRemaining - 1, str: s.str }),  
+                s.str.length > 1 &&  
+                  i.push({  
+                    node: s.node,  
+                    editsRemaining: s.editsRemaining - 1,  
+                    str: s.str.slice(1)  
+                  }),  
+                s.str.length == 1 && (s.node.final = !0),  
+                s.str.length >= 1)  
+              ) {  
+                if ('*' in s.node.edges) var u = s.node.edges['*'];  
+                else {  
+                  var u = new t.TokenSet();  
+                  s.node.edges['*'] = u;  
+                }  
+                (s.str.length == 1 && (u.final = !0),  
+                  i.push({ node: u, editsRemaining: s.editsRemaining - 1, str: s.str.slice(1) }));  
+              }  
+              if (s.str.length > 1) {  
+                var d = s.str.charAt(0),  
+                  y = s.str.charAt(1),  
+                  p;  
+                (y in s.node.edges  
+                  ? (p = s.node.edges[y])  
+                  : ((p = new t.TokenSet()), (s.node.edges[y] = p)),  
+                  s.str.length == 1 && (p.final = !0),  
+                  i.push({  
+                    node: p,  
+                    editsRemaining: s.editsRemaining - 1,  
+                    str: d + s.str.slice(2)  
+                  }));  
+              }  
+            }  
+          }  
+          return r;  
+        }),  
+        (t.TokenSet.fromString = function (e) {  
+          for (var n = new t.TokenSet(), r = n, i = 0, s = e.length; i < s; i++) {  
+            var o = e[i],  
+              a = i == s - 1;  
+            if (o == '*') ((n.edges[o] = n), (n.final = a));  
+            else {  
+              var l = new t.TokenSet();  
+              ((l.final = a), (n.edges[o] = l), (n = l));  
+            }  
+          }  
+          return r;  
+        }),  
+        (t.TokenSet.prototype.toArray = function () {  
+          for (var e = [], n = [{ prefix: '', node: this }]; n.length; ) {  
+            var r = n.pop(),  
+              i = Object.keys(r.node.edges),  
+              s = i.length;  
+            r.node.final && (r.prefix.charAt(0), e.push(r.prefix));  
+            for (var o = 0; o < s; o++) {  
+              var a = i[o];  
+              n.push({ prefix: r.prefix.concat(a), node: r.node.edges[a] });  
+            }  
+          }  
+          return e;  
+        }),  
+        (t.TokenSet.prototype.toString = function () {  
+          if (this._str) return this._str;  
+          for (  
+            var e = this.final ? '1' : '0', n = Object.keys(this.edges).sort(), r = n.length, i = 0;  
+            i < r;  
+            i++  
+          ) {  
+            var s = n[i],  
+              o = this.edges[s];  
+            e = e + s + o.id;  
+          }  
+          return e;  
+        }),  
+        (t.TokenSet.prototype.intersect = function (e) {  
+          for (  
+            var n = new t.TokenSet(), r = void 0, i = [{ qNode: e, output: n, node: this }];  
+            i.length;  
+          ) {  
+            r = i.pop();  
+            for (  
+              var s = Object.keys(r.qNode.edges),  
+                o = s.length,  
+                a = Object.keys(r.node.edges),  
+                l = a.length,  
+                u = 0;  
+              u < o;  
+              u++  
+            )  
+              for (var d = s[u], y = 0; y < l; y++) {  
+                var p = a[y];  
+                if (p == d || d == '*') {  
+                  var b = r.node.edges[p],  
+                    g = r.qNode.edges[d],  
+                    L = b.final && g.final,  
+                    f = void 0;  
+                  (p in r.output.edges  
+                    ? ((f = r.output.edges[p]), (f.final = f.final || L))  
+                    : ((f = new t.TokenSet()), (f.final = L), (r.output.edges[p] = f)),  
+                    i.push({ qNode: g, output: f, node: b }));  
+                }  
+              }  
+          }  
+          return n;  
+        }),  
+        (t.TokenSet.Builder = function () {  
+          ((this.previousWord = ''),  
+            (this.root = new t.TokenSet()),  
+            (this.uncheckedNodes = []),  
+            (this.minimizedNodes = {}));  
+        }),  
+        (t.TokenSet.Builder.prototype.insert = function (e) {  
+          var n,  
+            r = 0;  
+          if (e < this.previousWord) throw new Error('Out of order word insertion');  
+          for (  
+            var i = 0;  
+            i < e.length && i < this.previousWord.length && e[i] == this.previousWord[i];  
+            i++  
+          )  
+            r++;  
+          (this.minimize(r),  
+            this.uncheckedNodes.length == 0  
+              ? (n = this.root)  
+              : (n = this.uncheckedNodes[this.uncheckedNodes.length - 1].child));  
+          for (var i = r; i < e.length; i++) {  
+            var s = new t.TokenSet(),  
+              o = e[i];  
+            ((n.edges[o] = s), this.uncheckedNodes.push({ parent: n, char: o, child: s }), (n = s));  
+          }  
+          ((n.final = !0), (this.previousWord = e));  
+        }),  
+        (t.TokenSet.Builder.prototype.finish = function () {  
+          this.minimize(0);  
+        }),  
+        (t.TokenSet.Builder.prototype.minimize = function (e) {  
+          for (var n = this.uncheckedNodes.length - 1; n >= e; n--) {  
+            var r = this.uncheckedNodes[n],  
+              i = r.child.toString();  
+            (i in this.minimizedNodes  
+              ? (r.parent.edges[r.char] = this.minimizedNodes[i])  
+              : ((r.child._str = i), (this.minimizedNodes[i] = r.child)),  
+              this.uncheckedNodes.pop());  
+          }  
+        }));  
+      ((t.Index = function (e) {  
+        ((this.invertedIndex = e.invertedIndex),  
+          (this.fieldVectors = e.fieldVectors),  
+          (this.tokenSet = e.tokenSet),  
+          (this.fields = e.fields),  
+          (this.pipeline = e.pipeline));  
+      }),  
+        (t.Index.prototype.search = function (e) {  
+          return this.query(function (n) {  
+            var r = new t.QueryParser(e, n);  
+            r.parse();  
+          });  
+        }),  
+        (t.Index.prototype.query = function (e) {  
+          for (  
+            var n = new t.Query(this.fields),  
+              r = Object.create(null),  
+              i = Object.create(null),  
+              s = Object.create(null),  
+              o = Object.create(null),  
+              a = Object.create(null),  
+              l = 0;  
+            l < this.fields.length;  
+            l++  
+          )  
+            i[this.fields[l]] = new t.Vector();  
+          e.call(n, n);  
+          for (var l = 0; l < n.clauses.length; l++) {  
+            var u = n.clauses[l],  
+              d = null,  
+              y = t.Set.empty;  
+            u.usePipeline  
+              ? (d = this.pipeline.runString(u.term, { fields: u.fields }))  
+              : (d = [u.term]);  
+            for (var p = 0; p < d.length; p++) {  
+              var b = d[p];  
+              u.term = b;  
+              var g = t.TokenSet.fromClause(u),  
+                L = this.tokenSet.intersect(g).toArray();  
+              if (L.length === 0 && u.presence === t.Query.presence.REQUIRED) {  
+                for (var f = 0; f < u.fields.length; f++) {  
+                  var m = u.fields[f];  
+                  o[m] = t.Set.empty;  
+                }  
+                break;  
+              }  
+              for (var S = 0; S < L.length; S++)  
+                for (  
+                  var w = L[S], k = this.invertedIndex[w], _ = k._index, f = 0;  
+                  f < u.fields.length;  
+                  f++  
+                ) {  
+                  var m = u.fields[f],  
+                    B = k[m],  
+                    A = Object.keys(B),  
+                    j = w + '/' + m,  
+                    $ = new t.Set(A);  
+                  if (  
+                    (u.presence == t.Query.presence.REQUIRED &&  
+                      ((y = y.union($)), o[m] === void 0 && (o[m] = t.Set.complete)),  
+                    u.presence == t.Query.presence.PROHIBITED)  
+                  ) {  
+                    (a[m] === void 0 && (a[m] = t.Set.empty), (a[m] = a[m].union($)));  
+                    continue;  
+                  }  
+                  if (  
+                    (i[m].upsert(_, u.boost, function (Qe, Ie) {  
+                      return Qe + Ie;  
+                    }),  
+                    !s[j])  
+                  ) {  
+                    for (var V = 0; V < A.length; V++) {  
+                      var q = A[V],  
+                        C = new t.FieldRef(q, m),  
+                        z = B[q],  
+                        W;  
+                      (W = r[C]) === void 0 ? (r[C] = new t.MatchData(w, m, z)) : W.add(w, m, z);  
+                    }  
+                    s[j] = !0;  
+                  }  
+                }  
+            }  
+            if (u.presence === t.Query.presence.REQUIRED)  
+              for (var f = 0; f < u.fields.length; f++) {  
+                var m = u.fields[f];  
+                o[m] = o[m].intersect(y);  
+              }  
+          }  
+          for (var N = t.Set.complete, R = t.Set.empty, l = 0; l < this.fields.length; l++) {  
+            var m = this.fields[l];  
+            (o[m] && (N = N.intersect(o[m])), a[m] && (R = R.union(a[m])));  
+          }  
+          var c = Object.keys(r),  
+            v = [],  
+            P = Object.create(null);  
+          if (n.isNegated()) {  
+            c = Object.keys(this.fieldVectors);  
+            for (var l = 0; l < c.length; l++) {  
+              var C = c[l],  
+                T = t.FieldRef.fromString(C);  
+              r[C] = new t.MatchData();  
+            }  
+          }  
+          for (var l = 0; l < c.length; l++) {  
+            var T = t.FieldRef.fromString(c[l]),  
+              h = T.docRef;  
+            if (N.contains(h) && !R.contains(h)) {  
+              var x = this.fieldVectors[T],  
+                O = i[T.fieldName].similarity(x),  
+                M;  
+              if ((M = P[h]) !== void 0) ((M.score += O), M.matchData.combine(r[T]));  
+              else {  
+                var E = { ref: h, score: O, matchData: r[T] };  
+                ((P[h] = E), v.push(E));  
+              }  
+            }  
+          }  
+          return v.sort(function (Te, ke) {  
+            return ke.score - Te.score;  
+          });  
+        }),  
+        (t.Index.prototype.toJSON = function () {  
+          var e = Object.keys(this.invertedIndex)  
+              .sort()  
+              .map(function (r) {  
+                return [r, this.invertedIndex[r]];  
+              }, this),  
+            n = Object.keys(this.fieldVectors).map(function (r) {  
+              return [r, this.fieldVectors[r].toJSON()];  
+            }, this);  
+          return {  
+            version: t.version,  
+            fields: this.fields,  
+            fieldVectors: n,  
+            invertedIndex: e,  
+            pipeline: this.pipeline.toJSON()  
+          };  
+        }),  
+        (t.Index.load = function (e) {  
+          var n = {},  
+            r = {},  
+            i = e.fieldVectors,  
+            s = Object.create(null),  
+            o = e.invertedIndex,  
+            a = new t.TokenSet.Builder(),  
+            l = t.Pipeline.load(e.pipeline);  
+          e.version != t.version &&  
+            t.utils.warn(  
+              "Version mismatch when loading serialised index. Current version of lunr '" +  
+                t.version +  
+                "' does not match serialized index '" +  
+                e.version +  
+                "'"  
+            );  
+          for (var u = 0; u < i.length; u++) {  
+            var d = i[u],  
+              y = d[0],  
+              p = d[1];  
+            r[y] = new t.Vector(p);  
+          }  
+          for (var u = 0; u < o.length; u++) {  
+            var d = o[u],  
+              b = d[0],  
+              g = d[1];  
+            (a.insert(b), (s[b] = g));  
+          }  
+          return (  
+            a.finish(),  
+            (n.fields = e.fields),  
+            (n.fieldVectors = r),  
+            (n.invertedIndex = s),  
+            (n.tokenSet = a.root),  
+            (n.pipeline = l),  
+            new t.Index(n)  
+          );  
+        }));  
+      ((t.Builder = function () {  
+        ((this._ref = 'id'),  
+          (this._fields = Object.create(null)),  
+          (this._documents = Object.create(null)),  
+          (this.invertedIndex = Object.create(null)),  
+          (this.fieldTermFrequencies = {}),  
+          (this.fieldLengths = {}),  
+          (this.tokenizer = t.tokenizer),  
+          (this.pipeline = new t.Pipeline()),  
+          (this.searchPipeline = new t.Pipeline()),  
+          (this.documentCount = 0),  
+          (this._b = 0.75),  
+          (this._k1 = 1.2),  
+          (this.termIndex = 0),  
+          (this.metadataWhitelist = []));  
+      }),  
+        (t.Builder.prototype.ref = function (e) {  
+          this._ref = e;  
+        }),  
+        (t.Builder.prototype.field = function (e, n) {  
+          if (/\//.test(e))  
+            throw new RangeError("Field '" + e + "' contains illegal character '/'");  
+          this._fields[e] = n || {};  
+        }),  
+        (t.Builder.prototype.b = function (e) {  
+          e < 0 ? (this._b = 0) : e > 1 ? (this._b = 1) : (this._b = e);  
+        }),  
+        (t.Builder.prototype.k1 = function (e) {  
+          this._k1 = e;  
+        }),  
+        (t.Builder.prototype.add = function (e, n) {  
+          var r = e[this._ref],  
+            i = Object.keys(this._fields);  
+          ((this._documents[r] = n || {}), (this.documentCount += 1));  
+          for (var s = 0; s < i.length; s++) {  
+            var o = i[s],  
+              a = this._fields[o].extractor,  
+              l = a ? a(e) : e[o],  
+              u = this.tokenizer(l, { fields: [o] }),  
+              d = this.pipeline.run(u),  
+              y = new t.FieldRef(r, o),  
+              p = Object.create(null);  
+            ((this.fieldTermFrequencies[y] = p),  
+              (this.fieldLengths[y] = 0),  
+              (this.fieldLengths[y] += d.length));  
+            for (var b = 0; b < d.length; b++) {  
+              var g = d[b];  
+              if ((p[g] == null && (p[g] = 0), (p[g] += 1), this.invertedIndex[g] == null)) {  
+                var L = Object.create(null);  
+                ((L._index = this.termIndex), (this.termIndex += 1));  
+                for (var f = 0; f < i.length; f++) L[i[f]] = Object.create(null);  
+                this.invertedIndex[g] = L;  
+              }  
+              this.invertedIndex[g][o][r] == null &&  
+                (this.invertedIndex[g][o][r] = Object.create(null));  
+              for (var m = 0; m < this.metadataWhitelist.length; m++) {  
+                var S = this.metadataWhitelist[m],  
+                  w = g.metadata[S];  
+                (this.invertedIndex[g][o][r][S] == null && (this.invertedIndex[g][o][r][S] = []),  
+                  this.invertedIndex[g][o][r][S].push(w));  
+              }  
+            }  
+          }  
+        }),  
+        (t.Builder.prototype.calculateAverageFieldLengths = function () {  
+          for (  
+            var e = Object.keys(this.fieldLengths), n = e.length, r = {}, i = {}, s = 0;  
+            s < n;  
+            s++  
+          ) {  
+            var o = t.FieldRef.fromString(e[s]),  
+              a = o.fieldName;  
+            (i[a] || (i[a] = 0), (i[a] += 1), r[a] || (r[a] = 0), (r[a] += this.fieldLengths[o]));  
+          }  
+          for (var l = Object.keys(this._fields), s = 0; s < l.length; s++) {  
+            var u = l[s];  
+            r[u] = r[u] / i[u];  
+          }  
+          this.averageFieldLength = r;  
+        }),  
+        (t.Builder.prototype.createFieldVectors = function () {  
+          for (  
+            var e = {},  
+              n = Object.keys(this.fieldTermFrequencies),  
+              r = n.length,  
+              i = Object.create(null),  
+              s = 0;  
+            s < r;  
+            s++  
+          ) {  
+            for (  
+              var o = t.FieldRef.fromString(n[s]),  
+                a = o.fieldName,  
+                l = this.fieldLengths[o],  
+                u = new t.Vector(),  
+                d = this.fieldTermFrequencies[o],  
+                y = Object.keys(d),  
+                p = y.length,  
+                b = this._fields[a].boost || 1,  
+                g = this._documents[o.docRef].boost || 1,  
+                L = 0;  
+              L < p;  
+              L++  
+            ) {  
+              var f = y[L],  
+                m = d[f],  
+                S = this.invertedIndex[f]._index,  
+                w,  
+                k,  
+                _;  
+              (i[f] === void 0  
+                ? ((w = t.idf(this.invertedIndex[f], this.documentCount)), (i[f] = w))  
+                : (w = i[f]),  
+                (k =  
+                  (w * ((this._k1 + 1) * m)) /  
+                  (this._k1 * (1 - this._b + this._b * (l / this.averageFieldLength[a])) + m)),  
+                (k *= b),  
+                (k *= g),  
+                (_ = Math.round(k * 1e3) / 1e3),  
+                u.insert(S, _));  
+            }  
+            e[o] = u;  
+          }  
+          this.fieldVectors = e;  
+        }),  
+        (t.Builder.prototype.createTokenSet = function () {  
+          this.tokenSet = t.TokenSet.fromArray(Object.keys(this.invertedIndex).sort());  
+        }),  
+        (t.Builder.prototype.build = function () {  
+          return (  
+            this.calculateAverageFieldLengths(),  
+            this.createFieldVectors(),  
+            this.createTokenSet(),  
+            new t.Index({  
+              invertedIndex: this.invertedIndex,  
+              fieldVectors: this.fieldVectors,  
+              tokenSet: this.tokenSet,  
+              fields: Object.keys(this._fields),  
+              pipeline: this.searchPipeline  
+            })  
+          );  
+        }),  
+        (t.Builder.prototype.use = function (e) {  
+          var n = Array.prototype.slice.call(arguments, 1);  
+          (n.unshift(this), e.apply(this, n));  
+        }),  
+        (t.MatchData = function (e, n, r) {  
+          for (var i = Object.create(null), s = Object.keys(r || {}), o = 0; o < s.length; o++) {  
+            var a = s[o];  
+            i[a] = r[a].slice();  
+          }  
+          ((this.metadata = Object.create(null)),  
+            e !== void 0 && ((this.metadata[e] = Object.create(null)), (this.metadata[e][n] = i)));  
+        }),  
+        (t.MatchData.prototype.combine = function (e) {  
+          for (var n = Object.keys(e.metadata), r = 0; r < n.length; r++) {  
+            var i = n[r],  
+              s = Object.keys(e.metadata[i]);  
+            this.metadata[i] == null && (this.metadata[i] = Object.create(null));  
+            for (var o = 0; o < s.length; o++) {  
+              var a = s[o],  
+                l = Object.keys(e.metadata[i][a]);  
+              this.metadata[i][a] == null && (this.metadata[i][a] = Object.create(null));  
+              for (var u = 0; u < l.length; u++) {  
+                var d = l[u];  
+                this.metadata[i][a][d] == null  
+                  ? (this.metadata[i][a][d] = e.metadata[i][a][d])  
+                  : (this.metadata[i][a][d] = this.metadata[i][a][d].concat(e.metadata[i][a][d]));  
+              }  
+            }  
+          }  
+        }),  
+        (t.MatchData.prototype.add = function (e, n, r) {  
+          if (!(e in this.metadata)) {  
+            ((this.metadata[e] = Object.create(null)), (this.metadata[e][n] = r));  
+            return;  
+          }  
+          if (!(n in this.metadata[e])) {  
+            this.metadata[e][n] = r;  
+            return;  
+          }  
+          for (var i = Object.keys(r), s = 0; s < i.length; s++) {  
+            var o = i[s];  
+            o in this.metadata[e][n]  
+              ? (this.metadata[e][n][o] = this.metadata[e][n][o].concat(r[o]))  
+              : (this.metadata[e][n][o] = r[o]);  
+          }  
+        }),  
+        (t.Query = function (e) {  
+          ((this.clauses = []), (this.allFields = e));  
+        }),  
+        (t.Query.wildcard = new String('*')),  
+        (t.Query.wildcard.NONE = 0),  
+        (t.Query.wildcard.LEADING = 1),  
+        (t.Query.wildcard.TRAILING = 2),  
+        (t.Query.presence = { OPTIONAL: 1, REQUIRED: 2, PROHIBITED: 3 }),  
+        (t.Query.prototype.clause = function (e) {  
+          return (  
+            'fields' in e || (e.fields = this.allFields),  
+            'boost' in e || (e.boost = 1),  
+            'usePipeline' in e || (e.usePipeline = !0),  
+            'wildcard' in e || (e.wildcard = t.Query.wildcard.NONE),  
+            e.wildcard & t.Query.wildcard.LEADING &&  
+              e.term.charAt(0) != t.Query.wildcard &&  
+              (e.term = '*' + e.term),  
+            e.wildcard & t.Query.wildcard.TRAILING &&  
+              e.term.slice(-1) != t.Query.wildcard &&  
+              (e.term = '' + e.term + '*'),  
+            'presence' in e || (e.presence = t.Query.presence.OPTIONAL),  
+            this.clauses.push(e),  
+            this  
+          );  
+        }),  
+        (t.Query.prototype.isNegated = function () {  
+          for (var e = 0; e < this.clauses.length; e++)  
+            if (this.clauses[e].presence != t.Query.presence.PROHIBITED) return !1;  
+          return !0;  
+        }),  
+        (t.Query.prototype.term = function (e, n) {  
+          if (Array.isArray(e))  
+            return (  
+              e.forEach(function (i) {  
+                this.term(i, t.utils.clone(n));  
+              }, this),  
+              this  
+            );  
+          var r = n || {};  
+          return ((r.term = e.toString()), this.clause(r), this);  
+        }),  
+        (t.QueryParseError = function (e, n, r) {  
+          ((this.name = 'QueryParseError'), (this.message = e), (this.start = n), (this.end = r));  
+        }),  
+        (t.QueryParseError.prototype = new Error()),  
+        (t.QueryLexer = function (e) {  
+          ((this.lexemes = []),  
+            (this.str = e),  
+            (this.length = e.length),  
+            (this.pos = 0),  
+            (this.start = 0),  
+            (this.escapeCharPositions = []));  
+        }),  
+        (t.QueryLexer.prototype.run = function () {  
+          for (var e = t.QueryLexer.lexText; e; ) e = e(this);  
+        }),  
+        (t.QueryLexer.prototype.sliceString = function () {  
+          for (  
+            var e = [], n = this.start, r = this.pos, i = 0;  
+            i < this.escapeCharPositions.length;  
+            i++  
+          )  
+            ((r = this.escapeCharPositions[i]), e.push(this.str.slice(n, r)), (n = r + 1));  
+          return (  
+            e.push(this.str.slice(n, this.pos)),  
+            (this.escapeCharPositions.length = 0),  
+            e.join('')  
+          );  
+        }),  
+        (t.QueryLexer.prototype.emit = function (e) {  
+          (this.lexemes.push({  
+            type: e,  
+            str: this.sliceString(),  
+            start: this.start,  
+            end: this.pos  
+          }),  
+            (this.start = this.pos));  
+        }),  
+        (t.QueryLexer.prototype.escapeCharacter = function () {  
+          (this.escapeCharPositions.push(this.pos - 1), (this.pos += 1));  
+        }),  
+        (t.QueryLexer.prototype.next = function () {  
+          if (this.pos >= this.length) return t.QueryLexer.EOS;  
+          var e = this.str.charAt(this.pos);  
+          return ((this.pos += 1), e);  
+        }),  
+        (t.QueryLexer.prototype.width = function () {  
+          return this.pos - this.start;  
+        }),  
+        (t.QueryLexer.prototype.ignore = function () {  
+          (this.start == this.pos && (this.pos += 1), (this.start = this.pos));  
+        }),  
+        (t.QueryLexer.prototype.backup = function () {  
+          this.pos -= 1;  
+        }),  
+        (t.QueryLexer.prototype.acceptDigitRun = function () {  
+          var e, n;  
+          do ((e = this.next()), (n = e.charCodeAt(0)));  
+          while (n > 47 && n < 58);  
+          e != t.QueryLexer.EOS && this.backup();  
+        }),  
+        (t.QueryLexer.prototype.more = function () {  
+          return this.pos < this.length;  
+        }),  
+        (t.QueryLexer.EOS = 'EOS'),  
+        (t.QueryLexer.FIELD = 'FIELD'),  
+        (t.QueryLexer.TERM = 'TERM'),  
+        (t.QueryLexer.EDIT_DISTANCE = 'EDIT_DISTANCE'),  
+        (t.QueryLexer.BOOST = 'BOOST'),  
+        (t.QueryLexer.PRESENCE = 'PRESENCE'),  
+        (t.QueryLexer.lexField = function (e) {  
+          return (e.backup(), e.emit(t.QueryLexer.FIELD), e.ignore(), t.QueryLexer.lexText);  
+        }),  
+        (t.QueryLexer.lexTerm = function (e) {  
+          if ((e.width() > 1 && (e.backup(), e.emit(t.QueryLexer.TERM)), e.ignore(), e.more()))  
+            return t.QueryLexer.lexText;  
+        }),  
+        (t.QueryLexer.lexEditDistance = function (e) {  
+          return (  
+            e.ignore(),  
+            e.acceptDigitRun(),  
+            e.emit(t.QueryLexer.EDIT_DISTANCE),  
+            t.QueryLexer.lexText  
+          );  
+        }),  
+        (t.QueryLexer.lexBoost = function (e) {  
+          return (e.ignore(), e.acceptDigitRun(), e.emit(t.QueryLexer.BOOST), t.QueryLexer.lexText);  
+        }),  
+        (t.QueryLexer.lexEOS = function (e) {  
+          e.width() > 0 && e.emit(t.QueryLexer.TERM);  
+        }),  
+        (t.QueryLexer.termSeparator = t.tokenizer.separator),  
+        (t.QueryLexer.lexText = function (e) {  
+          for (;;) {  
+            var n = e.next();  
+            if (n == t.QueryLexer.EOS) return t.QueryLexer.lexEOS;  
+            if (n.charCodeAt(0) == 92) {  
+              e.escapeCharacter();  
+              continue;  
+            }  
+            if (n == ':') return t.QueryLexer.lexField;  
+            if (n == '~')  
+              return (  
+                e.backup(),  
+                e.width() > 0 && e.emit(t.QueryLexer.TERM),  
+                t.QueryLexer.lexEditDistance  
+              );  
+            if (n == '^')  
+              return (  
+                e.backup(),  
+                e.width() > 0 && e.emit(t.QueryLexer.TERM),  
+                t.QueryLexer.lexBoost  
+              );  
+            if ((n == '+' && e.width() === 1) || (n == '-' && e.width() === 1))  
+              return (e.emit(t.QueryLexer.PRESENCE), t.QueryLexer.lexText);  
+            if (n.match(t.QueryLexer.termSeparator)) return t.QueryLexer.lexTerm;  
+          }  
+        }),  
+        (t.QueryParser = function (e, n) {  
+          ((this.lexer = new t.QueryLexer(e)),  
+            (this.query = n),  
+            (this.currentClause = {}),  
+            (this.lexemeIdx = 0));  
+        }),  
+        (t.QueryParser.prototype.parse = function () {  
+          (this.lexer.run(), (this.lexemes = this.lexer.lexemes));  
+          for (var e = t.QueryParser.parseClause; e; ) e = e(this);  
+          return this.query;  
+        }),  
+        (t.QueryParser.prototype.peekLexeme = function () {  
+          return this.lexemes[this.lexemeIdx];  
+        }),  
+        (t.QueryParser.prototype.consumeLexeme = function () {  
+          var e = this.peekLexeme();  
+          return ((this.lexemeIdx += 1), e);  
+        }),  
+        (t.QueryParser.prototype.nextClause = function () {  
+          var e = this.currentClause;  
+          (this.query.clause(e), (this.currentClause = {}));  
+        }),  
+        (t.QueryParser.parseClause = function (e) {  
+          var n = e.peekLexeme();  
+          if (n != null)  
+            switch (n.type) {  
+              case t.QueryLexer.PRESENCE:  
+                return t.QueryParser.parsePresence;  
+              case t.QueryLexer.FIELD:  
+                return t.QueryParser.parseField;  
+              case t.QueryLexer.TERM:  
+                return t.QueryParser.parseTerm;  
+              default:  
+                var r = 'expected either a field or a term, found ' + n.type;  
+                throw (  
+                  n.str.length >= 1 && (r += " with value '" + n.str + "'"),  
+                  new t.QueryParseError(r, n.start, n.end)  
+                );  
+            }  
+        }),  
+        (t.QueryParser.parsePresence = function (e) {  
+          var n = e.consumeLexeme();  
+          if (n != null) {  
+            switch (n.str) {  
+              case '-':  
+                e.currentClause.presence = t.Query.presence.PROHIBITED;  
+                break;  
+              case '+':  
+                e.currentClause.presence = t.Query.presence.REQUIRED;  
+                break;  
+              default:  
+                var r = "unrecognised presence operator'" + n.str + "'";  
+                throw new t.QueryParseError(r, n.start, n.end);  
+            }  
+            var i = e.peekLexeme();  
+            if (i == null) {  
+              var r = 'expecting term or field, found nothing';  
+              throw new t.QueryParseError(r, n.start, n.end);  
+            }  
+            switch (i.type) {  
+              case t.QueryLexer.FIELD:  
+                return t.QueryParser.parseField;  
+              case t.QueryLexer.TERM:  
+                return t.QueryParser.parseTerm;  
+              default:  
+                var r = "expecting term or field, found '" + i.type + "'";  
+                throw new t.QueryParseError(r, i.start, i.end);  
+            }  
+          }  
+        }),  
+        (t.QueryParser.parseField = function (e) {  
+          var n = e.consumeLexeme();  
+          if (n != null) {  
+            if (e.query.allFields.indexOf(n.str) == -1) {  
+              var r = e.query.allFields  
+                  .map(function (o) {  
+                    return "'" + o + "'";  
+                  })  
+                  .join(', '),  
+                i = "unrecognised field '" + n.str + "', possible fields: " + r;  
+              throw new t.QueryParseError(i, n.start, n.end);  
+            }  
+            e.currentClause.fields = [n.str];  
+            var s = e.peekLexeme();  
+            if (s == null) {  
+              var i = 'expecting term, found nothing';  
+              throw new t.QueryParseError(i, n.start, n.end);  
+            }  
+            switch (s.type) {  
+              case t.QueryLexer.TERM:  
+                return t.QueryParser.parseTerm;  
+              default:  
+                var i = "expecting term, found '" + s.type + "'";  
+                throw new t.QueryParseError(i, s.start, s.end);  
+            }  
+          }  
+        }),  
+        (t.QueryParser.parseTerm = function (e) {  
+          var n = e.consumeLexeme();  
+          if (n != null) {  
+            ((e.currentClause.term = n.str.toLowerCase()),  
+              n.str.indexOf('*') != -1 && (e.currentClause.usePipeline = !1));  
+            var r = e.peekLexeme();  
+            if (r == null) {  
+              e.nextClause();  
+              return;  
+            }  
+            switch (r.type) {  
+              case t.QueryLexer.TERM:  
+                return (e.nextClause(), t.QueryParser.parseTerm);  
+              case t.QueryLexer.FIELD:  
+                return (e.nextClause(), t.QueryParser.parseField);  
+              case t.QueryLexer.EDIT_DISTANCE:  
+                return t.QueryParser.parseEditDistance;  
+              case t.QueryLexer.BOOST:  
+                return t.QueryParser.parseBoost;  
+              case t.QueryLexer.PRESENCE:  
+                return (e.nextClause(), t.QueryParser.parsePresence);  
+              default:  
+                var i = "Unexpected lexeme type '" + r.type + "'";  
+                throw new t.QueryParseError(i, r.start, r.end);  
+            }  
+          }  
+        }),  
+        (t.QueryParser.parseEditDistance = function (e) {  
+          var n = e.consumeLexeme();  
+          if (n != null) {  
+            var r = parseInt(n.str, 10);  
+            if (isNaN(r)) {  
+              var i = 'edit distance must be numeric';  
+              throw new t.QueryParseError(i, n.start, n.end);  
+            }  
+            e.currentClause.editDistance = r;  
+            var s = e.peekLexeme();  
+            if (s == null) {  
+              e.nextClause();  
+              return;  
+            }  
+            switch (s.type) {  
+              case t.QueryLexer.TERM:  
+                return (e.nextClause(), t.QueryParser.parseTerm);  
+              case t.QueryLexer.FIELD:  
+                return (e.nextClause(), t.QueryParser.parseField);  
+              case t.QueryLexer.EDIT_DISTANCE:  
+                return t.QueryParser.parseEditDistance;  
+              case t.QueryLexer.BOOST:  
+                return t.QueryParser.parseBoost;  
+              case t.QueryLexer.PRESENCE:  
+                return (e.nextClause(), t.QueryParser.parsePresence);  
+              default:  
+                var i = "Unexpected lexeme type '" + s.type + "'";  
+                throw new t.QueryParseError(i, s.start, s.end);  
+            }  
+          }  
+        }),  
+        (t.QueryParser.parseBoost = function (e) {  
+          var n = e.consumeLexeme();  
+          if (n != null) {  
+            var r = parseInt(n.str, 10);  
+            if (isNaN(r)) {  
+              var i = 'boost must be numeric';  
+              throw new t.QueryParseError(i, n.start, n.end);  
+            }  
+            e.currentClause.boost = r;  
+            var s = e.peekLexeme();  
+            if (s == null) {  
+              e.nextClause();  
+              return;  
+            }  
+            switch (s.type) {  
+              case t.QueryLexer.TERM:  
+                return (e.nextClause(), t.QueryParser.parseTerm);  
+              case t.QueryLexer.FIELD:  
+                return (e.nextClause(), t.QueryParser.parseField);  
+              case t.QueryLexer.EDIT_DISTANCE:  
+                return t.QueryParser.parseEditDistance;  
+              case t.QueryLexer.BOOST:  
+                return t.QueryParser.parseBoost;  
+              case t.QueryLexer.PRESENCE:  
+                return (e.nextClause(), t.QueryParser.parsePresence);  
+              default:  
+                var i = "Unexpected lexeme type '" + s.type + "'";  
+                throw new t.QueryParseError(i, s.start, s.end);  
+            }  
+          }  
+        }),  
+        (function (e, n) {  
+          typeof define == 'function' && define.amd  
+            ? define(n)  
+            : typeof se == 'object'  
+              ? (oe.exports = n())  
+              : (e.lunr = n());  
+        })(this, function () {  
+          return t;  
+        }));  
+    })();  
+  });  
+  var re = [];  
+  function G(t, e) {  
+    re.push({ selector: e, constructor: t });  
+  }  
+  var U = class {  
+    constructor() {  
+      this.alwaysVisibleMember = null;  
+      (this.createComponents(document.body),  
+        this.ensureFocusedElementVisible(),  
+        this.listenForCodeCopies(),  
+        window.addEventListener('hashchange', () => this.ensureFocusedElementVisible()),  
+        document.body.style.display ||  
+          (this.ensureFocusedElementVisible(), this.updateIndexVisibility(), this.scrollToHash()));  
+    }  
+    createComponents(e) {  
+      re.forEach((n) => {  
+        e.querySelectorAll(n.selector).forEach((r) => {  
+          r.dataset.hasInstance ||  
+            (new n.constructor({ el: r, app: this }), (r.dataset.hasInstance = String(!0)));  
+        });  
+      });  
+    }  
+    filterChanged() {  
+      this.ensureFocusedElementVisible();  
+    }  
+    showPage() {  
+      document.body.style.display &&  
+        (console.log('Show page'),  
+        document.body.style.removeProperty('display'),  
+        this.ensureFocusedElementVisible(),  
+        this.updateIndexVisibility(),  
+        this.scrollToHash());  
+    }  
+    scrollToHash() {  
+      if (location.hash) {  
+        console.log('Scorlling');  
+        let e = document.getElementById(location.hash.substring(1));  
+        if (!e) return;  
+        e.scrollIntoView({ behavior: 'instant', block: 'start' });  
+      }  
+    }  
+    ensureActivePageVisible() {  
+      let e = document.querySelector('.tsd-navigation .current'),  
+        n = e?.parentElement;  
+      for (; n && !n.classList.contains('.tsd-navigation'); )  
+        (n instanceof HTMLDetailsElement && (n.open = !0), (n = n.parentElement));  
+      if (e && !e.checkVisibility()) {  
+        let r = e.getBoundingClientRect().top - document.documentElement.clientHeight / 4;  
+        document.querySelector('.site-menu').scrollTop = r;  
+      }  
+    }  
+    updateIndexVisibility() {  
+      let e = document.querySelector('.tsd-index-content'),  
+        n = e?.open;  
+      (e && (e.open = !0),  
+        document.querySelectorAll('.tsd-index-section').forEach((r) => {  
+          r.style.display = 'block';  
+          let i = Array.from(r.querySelectorAll('.tsd-index-link')).every(  
+            (s) => s.offsetParent == null  
+          );  
+          r.style.display = i ? 'none' : 'block';  
+        }),  
+        e && (e.open = n));  
+    }  
+    ensureFocusedElementVisible() {  
+      if (  
+        (this.alwaysVisibleMember &&  
+          (this.alwaysVisibleMember.classList.remove('always-visible'),  
+          this.alwaysVisibleMember.firstElementChild.remove(),  
+          (this.alwaysVisibleMember = null)),  
+        !location.hash)  
+      )  
+        return;  
+      let e = document.getElementById(location.hash.substring(1));  
+      if (!e) return;  
+      let n = e.parentElement;  
+      for (; n && n.tagName !== 'SECTION'; ) n = n.parentElement;  
+      if (n && n.offsetParent == null) {  
+        ((this.alwaysVisibleMember = n), n.classList.add('always-visible'));  
+        let r = document.createElement('p');  
+        (r.classList.add('warning'),  
+          (r.textContent = 'This member is normally hidden due to your filter settings.'),  
+          n.prepend(r));  
+      }  
+    }  
+    listenForCodeCopies() {  
+      document.querySelectorAll('pre > button').forEach((e) => {  
+        let n;  
+        e.addEventListener('click', () => {  
+          (e.previousElementSibling instanceof HTMLElement &&  
+            navigator.clipboard.writeText(e.previousElementSibling.innerText.trim()),  
+            (e.textContent = 'Copied!'),  
+            e.classList.add('visible'),  
+            clearTimeout(n),  
+            (n = setTimeout(() => {  
+              (e.classList.remove('visible'),  
+                (n = setTimeout(() => {  
+                  e.textContent = 'Copy';  
+                }, 100)));  
+            }, 1e3)));  
+        });  
+      });  
+    }  
+  };  
+  var ie = (t, e = 100) => {  
+    let n;  
+    return () => {  
+      (clearTimeout(n), (n = setTimeout(() => t(), e)));  
+    };  
+  };  
+  var de = De(ae());  
+  async function le(t, e) {  
+    if (!window.searchData) return;  
+    let n = await fetch(window.searchData),  
+      r = new Blob([await n.arrayBuffer()]).stream().pipeThrough(new DecompressionStream('gzip')),  
+      i = await new Response(r).json();  
+    ((t.data = i),  
+      (t.index = de.Index.load(i.index)),  
+      e.classList.remove('loading'),  
+      e.classList.add('ready'));  
+  }  
+  function he() {  
+    let t = document.getElementById('tsd-search');  
+    if (!t) return;  
+    let e = { base: t.dataset.base + '/' },  
+      n = document.getElementById('tsd-search-script');  
+    (t.classList.add('loading'),  
+      n &&  
+        (n.addEventListener('error', () => {  
+          (t.classList.remove('loading'), t.classList.add('failure'));  
+        }),  
+        n.addEventListener('load', () => {  
+          le(e, t);  
+        }),  
+        le(e, t)));  
+    let r = document.querySelector('#tsd-search input'),  
+      i = document.querySelector('#tsd-search .results');  
+    if (!r || !i) throw new Error('The input field or the result list wrapper was not found');  
+    let s = !1;  
+    (i.addEventListener('mousedown', () => (s = !0)),  
+      i.addEventListener('mouseup', () => {  
+        ((s = !1), t.classList.remove('has-focus'));  
+      }),  
+      r.addEventListener('focus', () => t.classList.add('has-focus')),  
+      r.addEventListener('blur', () => {  
+        s || ((s = !1), t.classList.remove('has-focus'));  
+      }),  
+      Ae(t, i, r, e));  
+  }  
+  function Ae(t, e, n, r) {  
+    n.addEventListener(  
+      'input',  
+      ie(() => {  
+        Ve(t, e, n, r);  
+      }, 200)  
+    );  
+    let i = !1;  
+    (n.addEventListener('keydown', (s) => {  
+      ((i = !0),  
+        s.key == 'Enter'  
+          ? Ne(e, n)  
+          : s.key == 'Escape'  
+            ? n.blur()  
+            : s.key == 'ArrowUp'  
+              ? ue(e, -1)  
+              : s.key === 'ArrowDown'  
+                ? ue(e, 1)  
+                : (i = !1));  
+    }),  
+      n.addEventListener('keypress', (s) => {  
+        i && s.preventDefault();  
+      }),  
+      document.body.addEventListener('keydown', (s) => {  
+        s.altKey ||  
+          s.ctrlKey ||  
+          s.metaKey ||  
+          (!n.matches(':focus') && s.key === '/' && (n.focus(), s.preventDefault()));  
+      }));  
+  }  
+  function Ve(t, e, n, r) {  
+    if (!r.index || !r.data) return;  
+    e.textContent = '';  
+    let i = n.value.trim(),  
+      s;  
+    if (i) {  
+      let o = i  
+        .split(' ')  
+        .map((a) => (a.length ? `*${a}*` : ''))  
+        .join(' ');  
+      s = r.index.search(o);  
+    } else s = [];  
+    for (let o = 0; o < s.length; o++) {  
+      let a = s[o],  
+        l = r.data.rows[Number(a.ref)],  
+        u = 1;  
+      (l.name.toLowerCase().startsWith(i.toLowerCase()) &&  
+        (u *= 1 + 1 / (1 + Math.abs(l.name.length - i.length))),  
+        (a.score *= u));  
+    }  
+    if (s.length === 0) {  
+      let o = document.createElement('li');  
+      o.classList.add('no-results');  
+      let a = document.createElement('span');  
+      ((a.textContent = 'No results found'), o.appendChild(a), e.appendChild(o));  
+    }  
+    s.sort((o, a) => a.score - o.score);  
+    for (let o = 0, a = Math.min(10, s.length); o < a; o++) {  
+      let l = r.data.rows[Number(s[o].ref)],  
+        u = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="tsd-kind-icon"><use href="#icon-${l.kind}"></use></svg>`,  
+        d = ce(l.name, i);  
+      (globalThis.DEBUG_SEARCH_WEIGHTS && (d += ` (score: ${s[o].score.toFixed(2)})`),  
+        l.parent &&  
+          (d = `<span class="parent">  
+                ${ce(l.parent, i)}.</span>${d}`));  
+      let y = document.createElement('li');  
+      y.classList.value = l.classes ?? '';  
+      let p = document.createElement('a');  
+      ((p.href = r.base + l.url), (p.innerHTML = u + d), y.append(p), e.appendChild(y));  
+    }  
+  }  
+  function ue(t, e) {  
+    let n = t.querySelector('.current');  
+    if (!n)  
+      ((n = t.querySelector(e == 1 ? 'li:first-child' : 'li:last-child')),  
+        n && n.classList.add('current'));  
+    else {  
+      let r = n;  
+      if (e === 1)  
+        do r = r.nextElementSibling ?? void 0;  
+        while (r instanceof HTMLElement && r.offsetParent == null);  
+      else  
+        do r = r.previousElementSibling ?? void 0;  
+        while (r instanceof HTMLElement && r.offsetParent == null);  
+      r && (n.classList.remove('current'), r.classList.add('current'));  
+    }  
+  }  
+  function Ne(t, e) {  
+    let n = t.querySelector('.current');  
+    if ((n || (n = t.querySelector('li:first-child')), n)) {  
+      let r = n.querySelector('a');  
+      (r && (window.location.href = r.href), e.blur());  
+    }  
+  }  
+  function ce(t, e) {  
+    if (e === '') return t;  
+    let n = t.toLocaleLowerCase(),  
+      r = e.toLocaleLowerCase(),  
+      i = [],  
+      s = 0,  
+      o = n.indexOf(r);  
+    for (; o != -1; )  
+      (i.push(K(t.substring(s, o)), `<b>${K(t.substring(o, o + r.length))}</b>`),  
+        (s = o + r.length),  
+        (o = n.indexOf(r, s)));  
+    return (i.push(K(t.substring(s))), i.join(''));  
+  }  
+  var He = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' };  
+  function K(t) {  
+    return t.replace(/[&<>"'"]/g, (e) => He[e]);  
+  }  
+  var I = class {  
+    constructor(e) {  
+      ((this.el = e.el), (this.app = e.app));  
+    }  
+  };  
+  var F = 'mousedown',  
+    fe = 'mousemove',  
+    H = 'mouseup',  
+    J = { x: 0, y: 0 },  
+    pe = !1,  
+    ee = !1,  
+    Be = !1,  
+    D = !1,  
+    me = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);  
+  document.documentElement.classList.add(me ? 'is-mobile' : 'not-mobile');  
+  me &&  
+    'ontouchstart' in document.documentElement &&  
+    ((Be = !0), (F = 'touchstart'), (fe = 'touchmove'), (H = 'touchend'));  
+  document.addEventListener(F, (t) => {  
+    ((ee = !0), (D = !1));  
+    let e = F == 'touchstart' ? t.targetTouches[0] : t;  
+    ((J.y = e.pageY || 0), (J.x = e.pageX || 0));  
+  });  
+  document.addEventListener(fe, (t) => {  
+    if (ee && !D) {  
+      let e = F == 'touchstart' ? t.targetTouches[0] : t,  
+        n = J.x - (e.pageX || 0),  
+        r = J.y - (e.pageY || 0);  
+      D = Math.sqrt(n * n + r * r) > 10;  
+    }  
+  });  
+  document.addEventListener(H, () => {  
+    ee = !1;  
+  });  
+  document.addEventListener('click', (t) => {  
+    pe && (t.preventDefault(), t.stopImmediatePropagation(), (pe = !1));  
+  });  
+  var X = class extends I {  
+    constructor(e) {  
+      (super(e),  
+        (this.className = this.el.dataset.toggle || ''),  
+        this.el.addEventListener(H, (n) => this.onPointerUp(n)),  
+        this.el.addEventListener('click', (n) => n.preventDefault()),  
+        document.addEventListener(F, (n) => this.onDocumentPointerDown(n)),  
+        document.addEventListener(H, (n) => this.onDocumentPointerUp(n)));  
+    }  
+    setActive(e) {  
+      if (this.active == e) return;  
+      ((this.active = e),  
+        document.documentElement.classList.toggle('has-' + this.className, e),  
+        this.el.classList.toggle('active', e));  
+      let n = (this.active ? 'to-has-' : 'from-has-') + this.className;  
+      (document.documentElement.classList.add(n),  
+        setTimeout(() => document.documentElement.classList.remove(n), 500));  
+    }  
+    onPointerUp(e) {  
+      D || (this.setActive(!0), e.preventDefault());  
+    }  
+    onDocumentPointerDown(e) {  
+      if (this.active) {  
+        if (e.target.closest('.col-sidebar, .tsd-filter-group')) return;  
+        this.setActive(!1);  
+      }  
+    }  
+    onDocumentPointerUp(e) {  
+      if (!D && this.active && e.target.closest('.col-sidebar')) {  
+        let n = e.target.closest('a');  
+        if (n) {  
+          let r = window.location.href;  
+          (r.indexOf('#') != -1 && (r = r.substring(0, r.indexOf('#'))),  
+            n.href.substring(0, r.length) == r && setTimeout(() => this.setActive(!1), 250));  
+        }  
+      }  
+    }  
+  };  
+  var te;  
+  try {  
+    te = localStorage;  
+  } catch {  
+    te = {  
+      getItem() {  
+        return null;  
+      },  
+      setItem() {}  
+    };  
+  }  
+  var Q = te;  
+  var ye = document.head.appendChild(document.createElement('style'));  
+  ye.dataset.for = 'filters';  
+  var Y = class extends I {  
+    constructor(e) {  
+      (super(e),  
+        (this.key = `filter-${this.el.name}`),  
+        (this.value = this.el.checked),  
+        this.el.addEventListener('change', () => {  
+          this.setLocalStorage(this.el.checked);  
+        }),  
+        this.setLocalStorage(this.fromLocalStorage()),  
+        (ye.innerHTML += `html:not(.${this.key}) .tsd-is-${this.el.name} { display: none; }  
+`),  
+        this.app.updateIndexVisibility());  
+    }  
+    fromLocalStorage() {  
+      let e = Q.getItem(this.key);  
+      return e ? e === 'true' : this.el.checked;  
+    }  
+    setLocalStorage(e) {  
+      (Q.setItem(this.key, e.toString()), (this.value = e), this.handleValueChange());  
+    }  
+    handleValueChange() {  
+      ((this.el.checked = this.value),  
+        document.documentElement.classList.toggle(this.key, this.value),  
+        this.app.filterChanged(),  
+        this.app.updateIndexVisibility());  
+    }  
+  };  
+  var Z = class extends I {  
+    constructor(e) {  
+      (super(e),  
+        (this.summary = this.el.querySelector('.tsd-accordion-summary')),  
+        (this.icon = this.summary.querySelector('svg')),  
+        (this.key = `tsd-accordion-${this.summary.dataset.key ?? this.summary.textContent.trim().replace(/\s+/g, '-').toLowerCase()}`));  
+      let n = Q.getItem(this.key);  
+      ((this.el.open = n ? n === 'true' : this.el.open),  
+        this.el.addEventListener('toggle', () => this.update()));  
+      let r = this.summary.querySelector('a');  
+      (r &&  
+        r.addEventListener('click', () => {  
+          location.assign(r.href);  
+        }),  
+        this.update());  
+    }  
+    update() {  
+      ((this.icon.style.transform = `rotate(${this.el.open ? 0 : -90}deg)`),  
+        Q.setItem(this.key, this.el.open.toString()));  
+    }  
+  };  
+  function ge(t) {  
+    let e = Q.getItem('tsd-theme') || 'os';  
+    ((t.value = e),  
+      ve(e),  
+      t.addEventListener('change', () => {  
+        (Q.setItem('tsd-theme', t.value), ve(t.value));  
+      }));  
+  }  
+  function ve(t) {  
+    document.documentElement.dataset.theme = t;  
+  }  
+  var Le;  
+  function be() {  
+    let t = document.getElementById('tsd-nav-script');  
+    t && (t.addEventListener('load', xe), xe());  
+  }  
+  async function xe() {  
+    let t = document.getElementById('tsd-nav-container');  
+    if (!t || !window.navigationData) return;  
+    let n = await (await fetch(window.navigationData)).arrayBuffer(),  
+      r = new Blob([n]).stream().pipeThrough(new DecompressionStream('gzip')),  
+      i = await new Response(r).json();  
+    ((Le = t.dataset.base + '/'), (t.innerHTML = ''));  
+    for (let s of i) we(s, t, []);  
+    (window.app.createComponents(t), window.app.showPage(), window.app.ensureActivePageVisible());  
+  }  
+  function we(t, e, n) {  
+    let r = e.appendChild(document.createElement('li'));  
+    if (t.children) {  
+      let i = [...n, t.text],  
+        s = r.appendChild(document.createElement('details'));  
+      ((s.className = t.class ? `${t.class} tsd-index-accordion` : 'tsd-index-accordion'),  
+        (s.dataset.key = i.join('$')));  
+      let o = s.appendChild(document.createElement('summary'));  
+      ((o.className = 'tsd-accordion-summary'),  
+        (o.innerHTML =  
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-chevronDown"></use></svg>'),  
+        Ee(t, o));  
+      let a = s.appendChild(document.createElement('div'));  
+      a.className = 'tsd-accordion-details';  
+      let l = a.appendChild(document.createElement('ul'));  
+      l.className = 'tsd-nested-navigation';  
+      for (let u of t.children) we(u, l, i);  
+    } else Ee(t, r, t.class);  
+  }  
+  function Ee(t, e, n) {  
+    if (t.path) {  
+      let r = e.appendChild(document.createElement('a'));  
+      ((r.href = Le + t.path),  
+        n && (r.className = n),  
+        location.pathname === r.pathname && r.classList.add('current'),  
+        t.kind &&  
+          (r.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="tsd-kind-icon"><use href="#icon-${t.kind}"></use></svg>`),  
+        (r.appendChild(document.createElement('span')).textContent = t.text));  
+    } else e.appendChild(document.createElement('span')).textContent = t.text;  
+  }  
+  G(X, 'a[data-toggle]');  
+  G(Z, '.tsd-index-accordion');  
+  G(Y, '.tsd-filter-item input[type=checkbox]');  
+  var Se = document.getElementById('tsd-theme');  
+  Se && ge(Se);  
+  var je = new U();  
+  Object.defineProperty(window, 'app', { value: je });  
+  he();  
+  be();  
+})();  
+/*! Bundled license information:  
+  
+lunr/lunr.js:  
+  (**  
+   * lunr - http://lunrjs.com - A bit like Solr, but much smaller and not as bright - 2.3.9  
+   * Copyright (C) 2020 Oliver Nightingale  
+   * @license MIT  
+   *)  
+  (*!  
+   * lunr.utils  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.Set  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.tokenizer  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.Pipeline  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.Vector  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.stemmer  
+   * Copyright (C) 2020 Oliver Nightingale  
+   * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt  
+   *)  
+  (*!  
+   * lunr.stopWordFilter  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.trimmer  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.TokenSet  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.Index  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
+  (*!  
+   * lunr.Builder  
+   * Copyright (C) 2020 Oliver Nightingale  
+   *)  
 */

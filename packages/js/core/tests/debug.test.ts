@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as index from '../src/index.ts';
 
 vi.mock('../src/index.ts', async (importOriginal) => {
-  const actual = (await importOriginal()) as Object;
+  const actual = (await importOriginal()) as any;
   return {
     ...actual,
     load: vi.fn(),
@@ -20,7 +20,7 @@ describe('debug script', () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const { load } = await import('../src/index.ts');
-    vi.mocked(load).mockResolvedValue({ nodes: { length: 1 } } as Object);
+    vi.mocked(load).mockResolvedValue({ nodes: { length: 1 } } as any);
 
     // Import run from debug script and call it manually
     const { run } = await import('../debug.js');

@@ -31,7 +31,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
+    ignores: ['packages/python/**', 'docs/_static/ts/src/compiler/GraphPartitioner.ts', 'docs/_static/ts/src/compiler/CEmitter.ts', 'docs/_static/ts/src/security/Obfuscator.ts', 'docs/_static/ts/src/security/DifferentialPrivacy.ts', 
       '**/dist/**',
       '**/node_modules/**',
       '**/.turbo/**',

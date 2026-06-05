@@ -31,22 +31,22 @@ describe('missing', () => {
     for (const mod of modules) {
       for (const k of Object.keys(mod)) {
         try {
-          (mod as Object)[k]();
+          (mod as any)[k]();
         } catch (e) {}
         try {
-          new (mod as Object)[k]();
+          new (mod as any)[k]();
         } catch (e) {}
         try {
-          (mod as Object)[k](null);
+          (mod as any)[k](null);
         } catch (e) {}
         try {
-          new (mod as Object)[k](null);
+          new (mod as any)[k](null);
         } catch (e) {}
         try {
-          (mod as Object)[k](null, null);
+          (mod as any)[k](null, null);
         } catch (e) {}
         try {
-          new (mod as Object)[k](null, null);
+          new (mod as any)[k](null, null);
         } catch (e) {}
       }
     }

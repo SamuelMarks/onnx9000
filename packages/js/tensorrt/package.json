@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run --passWithNoTests",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "dependencies": {
     "ffi-napi": "^4.0.3",
