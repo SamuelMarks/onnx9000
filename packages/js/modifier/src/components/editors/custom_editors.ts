@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Node } from '@onnx9000/core';
 import { GraphMutator } from '../../GraphMutator.js';
 
@@ -41,24 +40,21 @@ export function renderCustomEditor(params: CustomEditorParams): boolean {
       return true;
     case 'Loop':
       renderLoopEditor(container, node, mutator);
-      return true; /* v8 ignore next */ /* v8 ignore next */
-    case 'SequenceConstruct': /* v8 ignore next */ /* v8 ignore next */
+      return true;
+    case 'SequenceConstruct':
     case 'SequenceInsert':
-      /* v8 ignore start */
       renderSequenceEditor(container, node, mutator);
       return true;
-    /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
     case 'ScatterND':
-      /* v8 ignore start */
       renderScatterNDEditor(container, node, mutator);
       return true;
-    /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
-    case 'CastMap': /* v8 ignore next */ /* v8 ignore next */
+
+    case 'CastMap':
     case 'MapType': // placeholder for custom map attributes
-      /* v8 ignore start */
       renderMapEditor(container, node, mutator);
       return true;
-    /* v8 ignore stop */
+
     default:
       return false; // Not handled
   }
@@ -169,7 +165,7 @@ const TENSOR_TYPES = [
 function renderCastEditor(container: HTMLElement, node: Node, mutator: GraphMutator) {
   createHeader(container, 'Cast Settings');
 
-  const attr = node.attributes['to']; /* v8 ignore next */ /* v8 ignore next */
+  const attr = node.attributes['to'];
   const currentVal = attr ? Number(attr.value) : 1;
 
   const div = document.createElement('div');
@@ -193,19 +189,16 @@ function renderCastEditor(container: HTMLElement, node: Node, mutator: GraphMuta
   }
 
   select.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
-    /* v8 ignore next */ /* v8 ignore next */
     const el = e.target || this;
     const val = parseInt(el.value, 10);
     mutator.setNodeAttribute(node.name || node.id, 'to', val, 'INT');
 
-    // Bounds checking simulation /* v8 ignore next */ /* v8 ignore next */
+    // Bounds checking simulation
     if (val === 2 || val === 3 || val === 4 || val === 5) {
-      /* v8 ignore start */
       alert(
         'Warning: Casting to low-precision integer formats may result in bound clipping if the input tensor exceeds standard limits.',
       );
     }
-    /* v8 ignore stop */
   });
 
   div.appendChild(label);
@@ -215,7 +208,7 @@ function renderCastEditor(container: HTMLElement, node: Node, mutator: GraphMuta
 
 // 117. Specialized UI form for Constant
 // 284. Allow editing of tensor attributes visually via Hex editor
-/* v8 ignore start */
+
 function renderHexEditor(container: HTMLElement, data: Uint8Array, len: number) {
   const hexDiv = document.createElement('div');
   hexDiv.style.fontFamily = 'monospace';
@@ -235,17 +228,15 @@ function renderHexEditor(container: HTMLElement, data: Uint8Array, len: number) 
   hexDiv.textContent = 'Hex view:\n' + hexStr;
   container.appendChild(hexDiv);
 }
-/* v8 ignore stop */
 
 // 260. Render large constant tensors via paginated tables
 function renderConstantEditor(container: HTMLElement, node: Node, mutator: GraphMutator) {
   createHeader(container, 'Constant Value');
 
-  const attr = node.attributes['value']; /* v8 ignore next */ /* v8 ignore next */
+  const attr = node.attributes['value'];
   if (!attr) return;
-  /* v8 ignore next */ /* v8 ignore next */
+
   if (attr.type === 'TENSOR' && attr.value && (attr.value as ReturnType<typeof JSON.parse>).data) {
-    /* v8 ignore start */
     const data = (attr.value as ReturnType<typeof JSON.parse>).data;
     const len = data.length;
     if (len === undefined) {
@@ -323,7 +314,6 @@ function renderConstantEditor(container: HTMLElement, node: Node, mutator: Graph
         (attr.value as ReturnType<typeof JSON.parse>).data.byteLength,
       );
     }
-    /* v8 ignore stop */
   } else {
     const div = document.createElement('div');
     div.textContent = String(attr.value);
@@ -345,7 +335,7 @@ function renderLoopEditor(container: HTMLElement, node: Node, mutator: GraphMuta
 }
 
 // 234. Edit Sequence attributes
-/* v8 ignore start */
+
 function renderSequenceEditor(container: HTMLElement, node: Node, mutator: GraphMutator) {
   createHeader(container, 'Sequence Settings');
   // Sequences might not have direct attributes but if they have `position` or similar we render it
@@ -355,10 +345,9 @@ function renderSequenceEditor(container: HTMLElement, node: Node, mutator: Graph
     'Editing ONNX Sequence structure. (Inputs usually handle sequences dynamically)';
   container.appendChild(hint);
 }
-/* v8 ignore stop */
 
 // 272. ScatterND logic
-/* v8 ignore start */
+
 function renderScatterNDEditor(container: HTMLElement, node: Node, mutator: GraphMutator) {
   createHeader(container, 'ScatterND Settings');
   const attr = node.attributes['reduction'];
@@ -373,16 +362,14 @@ function renderScatterNDEditor(container: HTMLElement, node: Node, mutator: Grap
     attr ? String(attr.value) : 'none',
   );
 }
-/* v8 ignore stop */
 
 // 235. Map type attributes
-/* v8 ignore start */
+
 function renderMapEditor(container: HTMLElement, node: Node, mutator: GraphMutator) {
   createHeader(container, 'Map Settings');
   // For Map we might have map_form, map_type etc.
   createDropdown(container, node, mutator, 'cast_map_type', 'INT', ['1', '2', '3', '7'], '1');
 }
-/* v8 ignore stop */
 
 // ---- Helpers ----
 
@@ -419,7 +406,6 @@ function createArrayInput(
   input.style.width = '100%';
 
   input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
-    /* v8 ignore next */ /* v8 ignore next */
     const el = e.target || this;
     try {
       const val = JSON.parse(el.value);
@@ -461,19 +447,18 @@ function createNumberInput(
 
   const input = document.createElement('input');
   input.type = 'number';
-  input.step = attrType === 'FLOAT' ? '0.01' : '1'; /* v8 ignore next */ /* v8 ignore next */
+  input.step = attrType === 'FLOAT' ? '0.01' : '1';
   input.value = attr ? String(attr.value) : String(defaultVal);
   input.setAttribute('value', input.value);
   input.style.width = '100%';
 
   input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
-    /* v8 ignore next */ /* v8 ignore next */
     const el = e.target || this;
     const v = parseFloat(el.value);
     if (!Number.isNaN(v)) {
       mutator.setNodeAttribute(
         node.name || node.id,
-        attrName /* v8 ignore next */ /* v8 ignore next */,
+        attrName,
         attrType === 'INT' ? Math.floor(v) : v,
         attrType as ReturnType<typeof JSON.parse>,
       );
@@ -504,12 +489,11 @@ function createCheckbox(
   input.type = 'checkbox';
   input.checked = attr ? !!attr.value : !!defaultVal;
   input.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
-    /* v8 ignore next */ /* v8 ignore next */
     const el = e.target || this;
     const checked = el.checked;
     mutator.setNodeAttribute(
       node.name || node.id,
-      attrName /* v8 ignore next */ /* v8 ignore next */,
+      attrName,
       checked ? 1 : 0,
       attrType as ReturnType<typeof JSON.parse>,
     );
@@ -557,7 +541,6 @@ function createDropdown(
   }
 
   select.addEventListener('change', function (e: ReturnType<typeof JSON.parse>) {
-    /* v8 ignore next */ /* v8 ignore next */
     const el = e.target || this;
     // explicitly // explicitly fire event
     const val = el.value;

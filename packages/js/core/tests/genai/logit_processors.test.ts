@@ -14,6 +14,7 @@ import {
   NoRepeatNGramLogitProcessor,
   NoBadWordsLogitProcessor,
   AllowedWordsLogitProcessor,
+  TypicalLogitProcessor,
 } from '../../src/genai/logit_processors.js';
 import { TopPLogitProcessor } from '../../src/genai/top_p.js';
 

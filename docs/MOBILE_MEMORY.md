@@ -21,5 +21,5 @@ Unlike traditional runtimes that bundle heavy protobuf libraries and C++ runtime
 4. **Platform Native Backends:** Export models specifically for target hardware using `@onnx9000/coreml` (iOS/macOS) or `onnx9000-tflite-exporter` (Android/EdgeTPU).
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

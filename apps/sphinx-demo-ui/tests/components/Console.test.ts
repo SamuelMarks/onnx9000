@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Console } from '../../src/components/Console';

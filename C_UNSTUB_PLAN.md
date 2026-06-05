@@ -3,6 +3,7 @@
 This document dictates the complete, exhaustive roadmap to fully unstub the ONNX9000 C/C++ and WASM generator pipeline. Every task must adhere to the global project quality mandates.
 
 ## 0. Global Quality & Architectural Mandates
+
 These requirements must be validated for every phase and every feature introduced.
 
 - [ ] **100% Test Coverage:** Every new function, branch, and operator implementation must be fully covered by unit tests (AST generation) and E2E validation tests (compiler execution).
@@ -12,6 +13,7 @@ These requirements must be validated for every phase and every feature introduce
 - [ ] **Error Handling (Rust parity):** Ensure any Rust-based backend tooling interacting with this pipeline has one big error enum (with `derive_more`), with strictly zero use of `unwrap` or `anyhow`.
 
 ## Phase 1: Core Pipeline Integration (`compileOnnxToC`)
+
 - [x] Remove the hardcoded dummy `[0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]` WASM return payload.
 - [x] Modify `compileOnnxToC` to deserialize the `Uint8Array` buffer using `@onnx9000/core` `BufferReader`.
 - [x] Implement a topological sort over `Graph.nodes` to ensure dependency-ordered execution.
@@ -22,6 +24,7 @@ These requirements must be validated for every phase and every feature introduce
 - [x] Fail gracefully with a structured error if the `Graph` contains unimplemented ops.
 
 ## Phase 2: Memory Management & Types
+
 - [x] Define `Tensor` struct representing multi-dimensional data (`rank`, `dims`, `strides`, `data` pointer).
 - [x] Implement a pre-calculated static memory arena `float workspace[MAX_MEMORY_FOOTPRINT]`.
 - [x] Implement offset mapping logic so each intermediate tensor points to a reused segment in the `workspace` based on liveness analysis.
@@ -31,9 +34,11 @@ These requirements must be validated for every phase and every feature introduce
 - [x] Implement broadcasting utilities (scalar-to-tensor, 1D-to-ND, ND-to-ND).
 
 ## Phase 3: Exhaustive ONNX Operator Implementations
+
 Each operator requires its own C/C++ generation logic, memory boundary checks, 100% doc coverage, and 100% unit test coverage validating mathematical equivalence.
 
 ### Neural Network: Convolutions & Pooling
+
 - [x] `Conv` (1D, 2D, 3D support, handling `pads`, `strides`, `dilations`, `group`).
 - [x] `ConvInteger`
 - [x] `ConvTranspose`
@@ -46,6 +51,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `GlobalLpPool`
 
 ### Neural Network: Normalization & Padding
+
 - [x] `BatchNormalization` (handling `epsilon`, `momentum`, training mode false).
 - [x] `InstanceNormalization`
 - [x] `LayerNormalization`
@@ -55,6 +61,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `Dropout` (No-op during inference).
 
 ### Neural Network: Activations
+
 - [x] `Relu`
 - [x] `Sigmoid`
 - [x] `Tanh`
@@ -75,6 +82,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `ThresholdedRelu`
 
 ### Math: Element-wise Arithmetic
+
 - [x] `Add`
 - [x] `Sub`
 - [x] `Mul`
@@ -90,6 +98,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `Sqrt`
 
 ### Math: Element-wise Trigonometry & Advanced
+
 - [x] `Acos`
 - [x] `Acosh`
 - [x] `Asin`
@@ -108,6 +117,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `Trunc`
 
 ### Math: Reductions
+
 - [x] `ReduceMax`
 - [x] `ReduceMin`
 - [x] `ReduceMean`
@@ -120,6 +130,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `ReduceLogSumExp`
 
 ### Linear Algebra
+
 - [x] `Gemm` (handling `alpha`, `beta`, `transA`, `transB`).
 - [x] `MatMul` (Batched N-dimensional).
 - [x] `MatMulInteger`
@@ -129,6 +140,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `Einsum`
 
 ### Logical & Bitwise
+
 - [x] `And`
 - [x] `Or`
 - [x] `Xor`
@@ -147,6 +159,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `BitwiseXor`
 
 ### Tensor Manipulation: Shape & Reshaping
+
 - [x] `Reshape` (Implement as zero-copy metadata change where memory layout allows).
 - [x] `Flatten`
 - [x] `Squeeze`
@@ -158,6 +171,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `CastLike`
 
 ### Tensor Manipulation: Slicing, Gathering & Scattering
+
 - [x] `Concat`
 - [x] `Split`
 - [x] `Slice`
@@ -174,11 +188,13 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `Identity`
 
 ### Constant Generation
+
 - [x] `Constant`
 - [x] `ConstantOfShape`
 - [x] `EyeLike`
 
 ### Control Flow & Sequence
+
 - [x] `If`
 - [x] `Loop`
 - [x] `Scan`
@@ -191,11 +207,13 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `ReverseSequence`
 
 ### RNN / Time Series
+
 - [x] `RNN`
 - [x] `LSTM`
 - [x] `GRU`
 
 ### Vision & Object Detection
+
 - [x] `NonMaxSuppression`
 - [x] `RoiAlign`
 - [x] `MaxRoiPool`
@@ -206,6 +224,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `DepthToSpace`
 
 ### Quantization
+
 - [x] `QuantizeLinear`
 - [x] `DequantizeLinear`
 - [x] `DynamicQuantizeLinear`
@@ -213,6 +232,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] `QLinearMatMul`
 
 ## Phase 4: Weights Serialization & Formatting
+
 - [x] Extract graph `initializer` arrays into a standardized byte format.
 - [x] Generate a `model_weights.bin` output artifact to avoid massive C-file sizes.
 - [x] Ensure Endian-agnostic generation and reading of `.bin` weights.
@@ -221,6 +241,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] Guarantee 100% test coverage of the serialization and loading mechanism.
 
 ## Phase 5: WASM Native Integration (`wasm-compiler`)
+
 - [x] Integrate a real WebAssembly emitter (e.g., `binaryen` or `wabt`) instead of the hardcoded 8-byte array.
 - [x] Translate ONNX IR directly into WASM opcode generation (or pipe the generated C through an Emscripten target in memory).
 - [x] Allocate WASM `Memory` pages dynamically based on the inferred static memory bounds.
@@ -228,6 +249,7 @@ Each operator requires its own C/C++ generation logic, memory boundary checks, 1
 - [x] Ensure 100% documentation for the public `WasmCompiler` SDK methods.
 
 ## Phase 6: End-to-End Validation
+
 - [x] Expand Playwright E2E tests (`e2e/wasm-demo.spec.ts`) to intercept Keras/ONNX generation and compile the actual C output using `gcc`.
 - [x] Execute `a.out` inside the E2E test on realistic input tensors and assert against `onnxruntime` outputs.
 - [x] Measure execution performance and memory footprint as part of CI reporting.

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';

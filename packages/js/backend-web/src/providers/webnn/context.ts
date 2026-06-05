@@ -1,4 +1,3 @@
-/* eslint-disable */
 export class WebNNContextManager {
   private static instance: WebNNContextManager | null = null;
   private mlContext: MLContext | null = null;
@@ -20,7 +19,6 @@ export class WebNNContextManager {
       try {
         // Attempt to load the polyfill dynamically to avoid cyclic dependency
         const polyfillName = '@onnx9000/webnn-polyfill';
-        // @ts-ignore: Dynamic import of polyfill /* v8 ignore next */ /* v8 ignore next */
         await import(/* @vite-ignore */ polyfillName);
       } catch (e) {
         console.warn('Failed to load WebNN polyfill:', e);

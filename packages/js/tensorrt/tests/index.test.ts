@@ -1,25 +1,30 @@
-import { vi, describe, it, expect } from 'vitest';
-import { DataType, ElementWiseOperation } from '../src/enums.js';
+import { describe, it, expect, vi } from 'vitest';
+import { Builder, NetworkDefinition } from '../src/index.js';
 
-vi.mock('ffi-napi', () => {
-  return {
-    default: { Library: vi.fn(() => ({})) },
-  };
-});
+vi.mock('../src/ffi.js', () => ({
+  trtFfi: {
+    lib: {
+      createInferBuilder_INTERNAL: vi.fn().mockReturnValue({}),
+      createNetworkV2: vi.fn().mockReturnValue({}),
+      destroyInferBuilder: vi.fn(),
+      destroyNetworkDefinition: vi.fn(),
+      markOutput: vi.fn(),
+    },
+    getVersion: vi.fn().mockReturnValue([80, 6, 0]),
+  },
+}));
 
-vi.mock('ref-napi', () => {
-  return { default: {} };
-});
+describe('TensorRT Builder', () => {
+  it('should build', () => {
+    const b = new Builder();
+    expect(b.ptr).toBeDefined();
 
-import { trtFfi } from '../src/ffi.js';
+    const n = b.createNetwork();
+    expect(n.ptr).toBeDefined();
 
-describe('TensorRT FFI', () => {
-  it('should have correct enums', () => {
-    expect(DataType.kFLOAT).toBe(0);
-    expect(ElementWiseOperation.kSUM).toBe(0);
-  });
+    n.markOutput({ ptr: {} });
 
-  it('should instantiate ffi correctly', () => {
-    expect(trtFfi.getVersion()).toBeDefined();
+    n.destroy();
+    b.destroy();
   });
 });

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { GraphMutator } from './GraphMutator.js';
 import { GraphValidator } from './GraphValidator.js';
@@ -18,22 +17,18 @@ export interface ModifierAppConfig {
 
   // For coverage of the temp buttons
 }
-/* v8 ignore next */ /* v8 ignore next */
+
 export function __triggerCleanGraph(app: ModifierApp) {
-  /* v8 ignore start */
   app.utils.changeBatchSize(1);
 }
-/* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
 export function __triggerMakeDynamic(app: ModifierApp) {
-  /* v8 ignore start */
   app.utils.makeDynamic();
 }
-/* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
 export function __triggerStripInitializers(app: ModifierApp) {
-  /* v8 ignore start */
   app.utils.stripInitializers();
 }
-/* v8 ignore stop */
 
 export class ModifierApp {
   graph: Graph;
@@ -97,93 +92,77 @@ export class ModifierApp {
 
     // Toolbar (Top of Left Panel for now)
     new Toolbar(leftPanel, {
-      /* v8 ignore next */ /* v8 ignore next */
       onCleanGraph: () => {
-        /* v8 ignore start */
         this.utils.changeBatchSize(1);
         this.updateView();
       }, // Temp binding for test
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onMakeDynamic: () => {
-        /* v8 ignore start */
         this.utils.makeDynamic();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onFixMixedPrecision: () => {
-        /* v8 ignore start */
         this.mutator.fixMixedPrecision();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onRemoveTrainingNodes: () => {
-        /* v8 ignore start */
         this.mutator.removeTrainingNodes();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onFoldConstants: () => {
-        /* v8 ignore start */
         this.mutator.foldConstants();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onExtractWeights: () => {
-        /* v8 ignore start */
         this.mutator.extractWeights();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onSanitizeNames: () => {
-        /* v8 ignore start */
         this.mutator.sanitizeNames();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onValidateGraph: () => {
-        /* v8 ignore start */
         const res = this.validator.verify();
         alert(res.isValid ? 'Graph is Valid.' : 'Graph Invalid: ' + JSON.stringify(res, null, 2));
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onValidateOpset: () => {
-        /* v8 ignore start */
         this.utils.validateOpset();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onExportStats: () => {
-        /* v8 ignore start */
         this.exporter.exportStatsCSV();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onToggleStrict: (enabled: boolean) => {
-        /* v8 ignore start */
         this.mutator.strictMode = enabled;
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onFeedback: () => {
-        /* v8 ignore start */
         window.open(
           'https://github.com/samuel/ml-switcheroo/issues/new?title=[Modifier+Feedback]&body=Please%20describe%20your%20issue%20or%20feature%20request%3A',
           '_blank',
         );
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onExportGraphJSON: () => {
-        /* v8 ignore start */
         const win = window.open('', '_blank');
         if (win) {
           win.document.write('<pre>' + JSON.stringify(this.graph, null, 2) + '</pre>');
         }
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onSaveSession: () => {
-        /* v8 ignore start */
         this.exporter.saveSessionToLocalStorage();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onExportModel: () => {
-        /* v8 ignore start */
         if (this.exporter.promptChangesBeforeExport()) {
           this.exporter
             .exportModel()
@@ -195,25 +174,21 @@ export class ModifierApp {
             });
         }
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onDeduplicateConstants: () => {
-        /* v8 ignore start */
         this.mutator.deduplicateConstants();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onAutoFix: () => {
-        /* v8 ignore start */
         this.utils.autoFixMissingInitializers();
         this.updateView();
       },
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       onStripInitializers: () => {
-        /* v8 ignore start */
         this.utils.stripInitializers();
         this.updateView();
       },
-      /* v8 ignore stop */
     });
 
     // Properties
@@ -285,7 +260,7 @@ export class ModifierApp {
         if (document.activeElement?.tagName !== 'INPUT') {
           this.editor.deleteSelection();
           this.updateView();
-        } /* v8 ignore next */ /* v8 ignore next */
+        }
       } else if (e.key === 'd' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         if (this.editor.selectedNodeIds.size > 0) {

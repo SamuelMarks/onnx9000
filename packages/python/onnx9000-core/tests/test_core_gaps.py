@@ -106,7 +106,7 @@ def test_registry_gaps():
     @register_op("my_domain", "DomainOp")
     def my_op():
         """My op."""
-        assert True  # pragma: no cover
+        assert True
 
     all_ops = global_registry.get_all_registered()
     assert "my_domain.DomainOp" in all_ops

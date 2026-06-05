@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, Gemm, RMSNorm, Silu } from '../primitives.js';
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 export class ArrayAPI {
   static add(a: number[], b: number[]): number[] {
     return a.map((val, i) => val + (b?.[i] ?? 0));
@@ -47,7 +46,6 @@ export class ArrayAPI {
 
   // 223. dot_product
   static dot_product(a: number[], b: number[]): number {
-    /* v8 ignore next */ /* v8 ignore next */
     return a.reduce((sum, val, i) => sum + val * (b[i] ?? 0), 0);
   }
 

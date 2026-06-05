@@ -1,92 +1,67 @@
-/* v8 ignore next */ /* v8 ignore next */ import { Graph } from '@onnx9000/core'; /* v8 ignore next */ /* v8 ignore next */
-/* v8 ignore next */ /* v8 ignore next */
-document.addEventListener('DOMContentLoaded', () => {
-  /* v8 ignore next */ /* v8 ignore next */
-  const parseBtn = document.getElementById(
-    'parseBtn',
-  ) as HTMLButtonElement; /* v8 ignore next */ /* v8 ignore next */
-  const resetBtn = document.getElementById(
-    'resetBtn',
-  ) as HTMLButtonElement; /* v8 ignore next */ /* v8 ignore next */
-  const outputDiv = document.getElementById(
-    'output',
-  ) as HTMLDivElement; /* v8 ignore next */ /* v8 ignore next */
-  const archInput = document.getElementById(
-    'archInput',
-  ) as HTMLTextAreaElement; /* v8 ignore next */ /* v8 ignore next */
-  /* v8 ignore next */ /* v8 ignore next */
+import { Graph } from '@onnx9000/core';
+
+/**
+ * Initializes the new model architecture demo UI.
+ */
+export function initNewModelArchDemo(): void {
+  const parseBtn = document.getElementById('parseBtn') as HTMLButtonElement;
+  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+  const outputDiv = document.getElementById('output') as HTMLDivElement;
+  const archInput = document.getElementById('archInput') as HTMLTextAreaElement;
+
+  if (!parseBtn || !resetBtn || !outputDiv) return;
+
   const log = (msg: string) => {
-    /* v8 ignore next */ /* v8 ignore next */
-    outputDiv.textContent += msg + '\n'; /* v8 ignore next */ /* v8 ignore next */
-  }; /* v8 ignore next */ /* v8 ignore next */
-  /* v8 ignore next */ /* v8 ignore next */
+    outputDiv.textContent += msg + '\n';
+  };
+
   parseBtn.addEventListener('click', () => {
-    /* v8 ignore next */ /* v8 ignore next */
-    parseBtn.disabled = true; /* v8 ignore next */ /* v8 ignore next */
-    outputDiv.textContent = ''; /* v8 ignore next */ /* v8 ignore next */
-    /* v8 ignore next */ /* v8 ignore next */
-    log(
-      'Analyzing custom model architecture definition...',
-    ); /* v8 ignore next */ /* v8 ignore next */
-    /* v8 ignore next */ /* v8 ignore next */
+    parseBtn.disabled = true;
+    outputDiv.textContent = '';
+
+    log('Analyzing custom model architecture definition...');
+
     setTimeout(() => {
-      /* v8 ignore next */ /* v8 ignore next */
-      log('Building ONNX9000 Core IR representation...'); /* v8 ignore next */ /* v8 ignore next */
-      /* v8 ignore next */ /* v8 ignore next */
+      log('Building ONNX9000 Core IR representation...');
+
       try {
-        /* v8 ignore next */ /* v8 ignore next */
-        const g = new Graph(
-          'MyCustomVisionTransformer_IR',
-        ); /* v8 ignore next */ /* v8 ignore next */
-        /* v8 ignore next */ /* v8 ignore next */
-        g.inputs.push({
-          name: 'input_image',
-          shape: [1, 3, 224, 224],
-          dtype: 'float32',
-        }); /* v8 ignore next */ /* v8 ignore next */
-        g.outputs.push({
-          name: 'logits',
-          shape: [1, 1000],
-          dtype: 'float32',
-        }); /* v8 ignore next */ /* v8 ignore next */
+        const g = new Graph('MyCustomVisionTransformer_IR');
+
+        g.inputs.push({ name: 'input_image', shape: [1, 3, 224, 224], dtype: 'float32' });
+        g.outputs.push({ name: 'logits', shape: [1, 1000], dtype: 'float32' });
         g.nodes.push({
-          /* v8 ignore next */ /* v8 ignore next */
-          name: 'custom_vit_encoder' /* v8 ignore next */ /* v8 ignore next */,
-          opType: 'CustomViTEncoder' /* v8 ignore next */ /* v8 ignore next */,
-          inputs: ['input_image'] /* v8 ignore next */ /* v8 ignore next */,
-          outputs: ['logits'] /* v8 ignore next */ /* v8 ignore next */,
-          attributes: { layers: 12, heads: 8 } /* v8 ignore next */ /* v8 ignore next */,
-        }); /* v8 ignore next */ /* v8 ignore next */
-        /* v8 ignore next */ /* v8 ignore next */
+          name: 'custom_vit_encoder',
+          opType: 'CustomViTEncoder',
+          inputs: ['input_image'],
+          outputs: ['logits'],
+          attributes: { layers: 12, heads: 8 },
+        });
+
         setTimeout(() => {
-          /* v8 ignore next */ /* v8 ignore next */
-          log(
-            'Validating topological sort & static shapes...',
-          ); /* v8 ignore next */ /* v8 ignore next */
-          /* v8 ignore next */ /* v8 ignore next */
+          log('Validating topological sort & static shapes...');
+
           setTimeout(() => {
-            /* v8 ignore next */ /* v8 ignore next */
-            log(
-              'Architecture mapped to core IR successfully!',
-            ); /* v8 ignore next */ /* v8 ignore next */
-            log('\nGenerated IR JSON:'); /* v8 ignore next */ /* v8 ignore next */
-            log(JSON.stringify(g, null, 2)); /* v8 ignore next */ /* v8 ignore next */
-            resetBtn.disabled = false; /* v8 ignore next */ /* v8 ignore next */
-          }, 600); /* v8 ignore next */ /* v8 ignore next */
-        }, 500); /* v8 ignore next */ /* v8 ignore next */
+            log('Architecture mapped to core IR successfully!');
+            log('\nGenerated IR JSON:');
+            log(JSON.stringify(g, null, 2));
+            resetBtn.disabled = false;
+          }, 600);
+        }, 500);
       } catch (err: any) {
-        /* v8 ignore next */ /* v8 ignore next */
-        log('Error generating IR: ' + err.message); /* v8 ignore next */ /* v8 ignore next */
-        resetBtn.disabled = false; /* v8 ignore next */ /* v8 ignore next */
-      } /* v8 ignore next */ /* v8 ignore next */
-    }, 600); /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-  /* v8 ignore next */ /* v8 ignore next */
+        log('Error generating IR: ' + err.message);
+        resetBtn.disabled = false;
+      }
+    }, 600);
+  });
+
   resetBtn.addEventListener('click', () => {
-    /* v8 ignore next */ /* v8 ignore next */
-    outputDiv.textContent =
-      'Ready. Click "Parse & Lower to IR" to start.\n'; /* v8 ignore next */ /* v8 ignore next */
-    parseBtn.disabled = false; /* v8 ignore next */ /* v8 ignore next */
-    resetBtn.disabled = true; /* v8 ignore next */ /* v8 ignore next */
-  }); /* v8 ignore next */ /* v8 ignore next */
-});
+    outputDiv.textContent = 'Ready. Click "Parse & Lower to IR" to start.\n';
+    parseBtn.disabled = false;
+    resetBtn.disabled = true;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initNewModelArchDemo);
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initNewModelArchDemo();
+}

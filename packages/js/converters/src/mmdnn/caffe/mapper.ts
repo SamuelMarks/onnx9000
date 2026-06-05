@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Graph, Node, Attribute, Tensor } from '@onnx9000/core';
 
@@ -40,7 +39,6 @@ export function register_caffe_op(domain: string, opType: string) {
  * @returns {number[]} An array of 4 padding values.
  */
 function resolvePadding(param: object): number[] {
-  /* v8 ignore next */ /* v8 ignore next */
   if (!param) return [0, 0, 0, 0];
   let pad_h = 0,
     pad_w = 0;
@@ -62,7 +60,6 @@ function resolvePadding(param: object): number[] {
  * @returns {number[]} An array of 2 kernel size values.
  */
 function resolveKernel(param: object): number[] {
-  /* v8 ignore next */ /* v8 ignore next */
   if (!param) return [1, 1];
   let kh = 1,
     kw = 1;
@@ -84,7 +81,6 @@ function resolveKernel(param: object): number[] {
  * @returns {number[]} An array of 2 stride values.
  */
 function resolveStride(param: object): number[] {
-  /* v8 ignore next */ /* v8 ignore next */
   if (!param) return [1, 1];
   let sh = 1,
     sw = 1;
@@ -117,9 +113,8 @@ export class CaffeMapper {
       return caffeRegistry[type](layer, graph);
     }
 
-    const reporter = { warn: console.warn }; /* v8 ignore next */ /* v8 ignore next */
+    const reporter = { warn: console.warn };
     if (type === 'VisionTransform') {
-      /* v8 ignore start */
       return [
         new Node(
           'CustomOp',
@@ -130,12 +125,11 @@ export class CaffeMapper {
         ),
       ];
     }
-    /* v8 ignore stop */
 
     reporter.warn(`Unrecognized Caffe layer`);
     return [
       new Node(
-        'Identity' /* v8 ignore next */ /* v8 ignore next */,
+        'Identity',
         layer.bottom ? [layer.bottom[0]] : [],
         layer.top ? [layer.top[0]] : [],
         {},
@@ -200,7 +194,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'InnerProduct')
   mapInnerProduct(layer: object, graph: Graph): Node[] {
-    const param = layer.inner_product_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.inner_product_param || {};
     const inputs = [...(layer.bottom || [])];
     if (layer.blobs && layer.blobs.length > 0) {
       const wName = `${layer.name}_W`;
@@ -262,7 +256,6 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'Pooling')
   mapPooling(layer: object, graph: Graph): Node[] {
-    /* v8 ignore next */ /* v8 ignore next */
     const param = layer.pooling_param || {};
     const pads = resolvePadding(param);
     const kernel_shape = resolveKernel(param);
@@ -294,12 +287,10 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'LRN')
   mapLRN(layer: object, graph: Graph): Node[] {
-    /* v8 ignore next */ /* v8 ignore next */
     const param = layer.lrn_param || {};
     const size = param.local_size !== undefined ? param.local_size : 5;
     const alpha = param.alpha !== undefined ? param.alpha : 1.0;
-    const beta =
-      param.beta !== undefined ? param.beta : 0.75; /* v8 ignore next */ /* v8 ignore next */
+    const beta = param.beta !== undefined ? param.beta : 0.75;
     const k = param.k !== undefined ? param.k : 1.0;
 
     const node = new Node(
@@ -326,7 +317,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'Softmax')
   mapSoftmax(layer: object, graph: Graph): Node[] {
-    const param = layer.softmax_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.softmax_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
       'Softmax',
@@ -369,7 +360,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'Concat')
   mapConcat(layer: object, graph: Graph): Node[] {
-    const param = layer.concat_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.concat_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
       'Concat',
@@ -427,7 +418,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'BatchNorm')
   mapBatchNorm(layer: object, graph: Graph): Node[] {
-    const param = layer.batch_norm_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.batch_norm_param || {};
     const eps = param.eps !== undefined ? param.eps : 1e-5;
     const inputs = [...(layer.bottom || [])];
 
@@ -500,7 +491,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'Flatten')
   mapFlatten(layer: object, graph: Graph): Node[] {
-    const param = layer.flatten_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.flatten_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
       'Flatten',
@@ -546,8 +537,7 @@ export class CaffeMapper {
    */
   @register_caffe_op('caffe', 'Slice')
   mapSlice(layer: object, graph: Graph): Node[] {
-    /* v8 ignore next */ /* v8 ignore next */
-    const param = layer.slice_param || {}; /* v8 ignore next */ /* v8 ignore next */
+    const param = layer.slice_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     // Caffe slice points determine the cut sizes. In ONNX this maps to Split.
     const splitAttr: number[] = [];
@@ -570,43 +560,29 @@ export class CaffeMapper {
 
     const wName = `${layer.name}_W`;
     if (layer.blobs.length > 0) {
-      const wBlob = layer.blobs[0]; /* v8 ignore next */ /* v8 ignore next */
+      const wBlob = layer.blobs[0];
       const shape = wBlob.shape?.dim || [1]; // dummy shape if missing
-      const tensor = new Tensor(
-        wName,
-        shape,
-        'float32',
-        true,
-        false,
-      ); /* v8 ignore next */ /* v8 ignore next */
+      const tensor = new Tensor(wName, shape, 'float32', true, false);
       const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
-      tensor.data = new Float32Array(size); // Zero initialized /* v8 ignore next */ /* v8 ignore next */
+      tensor.data = new Float32Array(size); // Zero initialized
       if (wBlob.data) {
-        /* v8 ignore start */
         (tensor.data as Float32Array).set(wBlob.data.slice(0, size));
       }
-      /* v8 ignore stop */
+
       graph.initializers.push(wName);
       graph.tensors[wName] = tensor;
     }
     if (layer.blobs.length > 1) {
       const bName = `${layer.name}_B`;
-      const bBlob = layer.blobs[1]; /* v8 ignore next */ /* v8 ignore next */
+      const bBlob = layer.blobs[1];
       const shape = bBlob.shape?.dim || [1];
-      const tensor = new Tensor(
-        bName,
-        shape,
-        'float32',
-        true,
-        false,
-      ); /* v8 ignore next */ /* v8 ignore next */
+      const tensor = new Tensor(bName, shape, 'float32', true, false);
       const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
-      tensor.data = new Float32Array(size); /* v8 ignore next */ /* v8 ignore next */
+      tensor.data = new Float32Array(size);
       if (bBlob.data) {
-        /* v8 ignore start */
         (tensor.data as Float32Array).set(bBlob.data.slice(0, size));
       }
-      /* v8 ignore stop */
+
       graph.initializers.push(bName);
       graph.tensors[bName] = tensor;
     }

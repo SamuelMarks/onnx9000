@@ -19,7 +19,7 @@ class CaffeConverter(BaseParser):
         Args:
             weights_path: Path to the .caffemodel file.
         """
-        self.weights_path = weights_path  # pragma: no cover
+        self.weights_path = weights_path
 
     def parse(self, model: str) -> Graph:
         """Parse a Caffe .prototxt file and .caffemodel weights into an ONNX9000 Core IR Graph.
@@ -30,21 +30,21 @@ class CaffeConverter(BaseParser):
         Returns:
             The parsed ONNX9000 Core IR Graph.
         """
-        if os.path.exists(model):  # pragma: no cover
-            with open(model) as f:  # pragma: no cover
-                content = f.read()  # pragma: no cover
+        if os.path.exists(model):
+            with open(model) as f:
+                content = f.read()
         else:
-            content = model  # pragma: no cover
+            content = model
 
-        net_info = parse_prototxt(content)  # pragma: no cover
+        net_info = parse_prototxt(content)
 
-        with open(self.weights_path, "rb") as f:  # pragma: no cover
-            weights = load_caffemodel(f)  # pragma: no cover
+        with open(self.weights_path, "rb") as f:
+            weights = load_caffemodel(f)
 
-        mapper = CaffeMapper(net_info, weights)  # pragma: no cover
-        graph = mapper.map()  # pragma: no cover
+        mapper = CaffeMapper(net_info, weights)
+        graph = mapper.map()
 
-        return graph  # pragma: no cover
+        return graph
 
 
 __all__ = ["parse_prototxt", "load_caffemodel", "CaffeMapper", "CaffeConverter"]

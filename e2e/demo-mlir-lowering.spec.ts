@@ -11,7 +11,7 @@ test.describe('MLIR Lowering Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }
@@ -22,14 +22,16 @@ test.describe('MLIR Lowering Demo E2E', () => {
     await lowerBtn.click();
 
     const output = page.locator('#output');
-    
+
     // Check that it reaches the end of the pipeline
-    await expect(output).toContainText('MLIR Lowering Pipeline Completed Successfully!', { timeout: 10000 });
+    await expect(output).toContainText('MLIR Lowering Pipeline Completed Successfully!', {
+      timeout: 10000,
+    });
 
     const resetBtn = page.locator('#resetBtn');
     await expect(resetBtn).toBeEnabled();
     await resetBtn.click();
-    
+
     await expect(output).toContainText('Ready to compile', { timeout: 10000 });
   });
 });

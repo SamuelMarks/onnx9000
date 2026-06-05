@@ -14,7 +14,7 @@ def record_op(op_type: str, inputs: list[Any], attributes: dict[str, Any] | None
     return Tensor(name=f"{op_type}_out", shape=(), dtype=dtype)
 
 
-import onnx9000.core.ops.torch_auto  # noqa: F401
+import onnx9000.core.ops.torch_auto
 
 
 @register_op("ai.onnx", "Relu")

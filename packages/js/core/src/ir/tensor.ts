@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Supported ONNX data types in onnx9000.
  */
@@ -138,8 +137,7 @@ export class Tensor {
       }
     } else {
       for (let i = 0; i < maxVals; i++) {
-        // @ts-ignore
-        values.push(this.data[i]);
+        values.push((this.data as any)[i]);
       }
     }
 
@@ -158,8 +156,8 @@ export class Tensor {
       return new SparseTensor(
         this.name,
         [...this.shape],
-        this.format /* v8 ignore next */ /* v8 ignore next */,
-        this.valuesTensor?.copy() || null /* v8 ignore next */ /* v8 ignore next */,
+        this.format,
+        this.valuesTensor?.copy() || null,
         this.indicesTensor?.copy() || null,
         this.rowPtrTensor?.copy() || null,
         this.colIndicesTensor?.copy() || null,

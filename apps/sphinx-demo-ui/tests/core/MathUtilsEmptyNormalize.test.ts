@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect } from 'vitest';
 import { MathUtils } from '../../src/core/MathUtils';

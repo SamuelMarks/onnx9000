@@ -1,1 +1,1 @@
-export default ['packages/js/*']
+export default ['packages/js/*'];

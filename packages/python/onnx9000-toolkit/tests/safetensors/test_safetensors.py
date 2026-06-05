@@ -56,8 +56,8 @@ def test_empty_file():
         path = os.path.join(d, "empty.safetensors")
         with open(path, "wb"):
             return None
-        with pytest.raises(SafetensorsFileEmptyError):  # pragma: no cover
-            SafeTensors(path)  # pragma: no cover
+        with pytest.raises(SafetensorsFileEmptyError):
+            SafeTensors(path)
 
 
 def test_too_small_file():
@@ -492,8 +492,8 @@ def test_multiprocessing():
 
     try:
         multiprocessing.set_start_method("spawn", force=True)
-    except ValueError:  # pragma: no cover
-        assert True  # pragma: no cover
+    except ValueError:
+        assert True
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "model.safetensors")
         save_file({"a": b"2" * 1000}, p)
@@ -844,13 +844,13 @@ def test_converters_coverage():
 
             def numpy(self):
                 """Perform numpy operation."""
-                import numpy as np  # pragma: no cover
+                import numpy as np
 
-                return np.array([1], dtype=np.float32)  # pragma: no cover
+                return np.array([1], dtype=np.float32)
 
         def load(self, f, map_location):
             """Perform load operation."""
-            return {"a": self.Tensor(), "b": "not_tensor"}  # pragma: no cover
+            return {"a": self.Tensor(), "b": "not_tensor"}
 
     class MockTF:
         """MockTF implementation."""
@@ -860,27 +860,27 @@ def test_converters_coverage():
 
             def __init__(self, name):
                 """Perform   init   operation."""
-                self.name = name  # pragma: no cover
+                self.name = name
 
             def numpy(self):
                 """Perform numpy operation."""
-                import numpy as np  # pragma: no cover
+                import numpy as np
 
-                return np.array([2], dtype=np.float32)  # pragma: no cover
+                return np.array([2], dtype=np.float32)
 
         class Model:
             """Model implementation."""
 
             def __init__(self):
                 """Perform   init   operation."""
-                self.variables = [MockTF.Var("w:0"), MockTF.Var("b")]  # pragma: no cover
+                self.variables = [MockTF.Var("w:0"), MockTF.Var("b")]
 
         class SavedModel:
             """SavedModel implementation."""
 
             def load(self, d):
                 """Perform load operation."""
-                return MockTF.Model()  # pragma: no cover
+                return MockTF.Model()
 
         def __init__(self):
             """Perform   init   operation."""
@@ -892,15 +892,15 @@ def test_converters_coverage():
         with tempfile.TemporaryDirectory() as d:
             with open(os.path.join(d, "model.bin"), "wb"):
                 return None
-            convert_pytorch_to_safetensors(d, d)  # pragma: no cover
-            convert_tf_to_safetensors(d, os.path.join(d, "tf.safetensors"))  # pragma: no cover
-            with tempfile.TemporaryDirectory() as d2:  # pragma: no cover
-                convert_pytorch_to_safetensors(d2)  # pragma: no cover
-    with patch.dict(sys.modules, {"torch": None, "tensorflow": None}):  # pragma: no cover
-        with pytest.raises(ImportError):  # pragma: no cover
-            convert_pytorch_to_safetensors("dummy")  # pragma: no cover
-        with pytest.raises(ImportError):  # pragma: no cover
-            convert_tf_to_safetensors("dummy", "dummy")  # pragma: no cover
+            convert_pytorch_to_safetensors(d, d)
+            convert_tf_to_safetensors(d, os.path.join(d, "tf.safetensors"))
+            with tempfile.TemporaryDirectory() as d2:
+                convert_pytorch_to_safetensors(d2)
+    with patch.dict(sys.modules, {"torch": None, "tensorflow": None}):
+        with pytest.raises(ImportError):
+            convert_pytorch_to_safetensors("dummy")
+        with pytest.raises(ImportError):
+            convert_tf_to_safetensors("dummy", "dummy")
 
 
 def test_hub_coverage():

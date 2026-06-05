@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Tensor, Shape } from '@onnx9000/core';
 import { MMDNNReporter } from '../reporter.js';

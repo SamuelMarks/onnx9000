@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 /**
  * Translates a generic shape tuple from NHWC (Channels Last) to NCHW (Channels First) format.
@@ -124,15 +123,11 @@ export function calculatePaddingSame(
   const effectiveKernelSize = (kernelSize - 1) * dilation + 1;
   let totalPadding = 0;
   if (inputSize % stride === 0) {
-    totalPadding = Math.max(
-      effectiveKernelSize - stride,
-      0,
-    ); /* v8 ignore next */ /* v8 ignore next */
+    totalPadding = Math.max(effectiveKernelSize - stride, 0);
   } else {
-    /* v8 ignore start */
     totalPadding = Math.max(effectiveKernelSize - (inputSize % stride), 0);
   }
-  /* v8 ignore stop */
+
   const padBefore = Math.floor(totalPadding / 2);
   const padAfter = totalPadding - padBefore;
   return [padBefore, padAfter];

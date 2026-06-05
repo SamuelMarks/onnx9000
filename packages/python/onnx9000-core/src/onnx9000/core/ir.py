@@ -812,7 +812,7 @@ class Graph:
 class QuantizedTensor(Tensor):
     """Internal Representation of a Quantized Tensor."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         name: str,
         type: str,

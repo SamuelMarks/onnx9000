@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect } from 'vitest';
 import { HexFormatter } from '../../src/core/HexFormatter';

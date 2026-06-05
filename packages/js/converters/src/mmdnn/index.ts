@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Entry point for the MMDNN sub-module.
  * Orchestrates multi-framework model translations and visualizations.

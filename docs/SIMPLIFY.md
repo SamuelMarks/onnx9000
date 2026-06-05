@@ -16,5 +16,5 @@ onnx9000 simplify model.onnx -o model_sim.onnx
 ## Interactive Web Demo
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node, Tensor, ValueInfo, DType, Attribute } from '@onnx9000/core';
 import { XmlBuilder, XmlNode } from './xml_builder';
 
@@ -113,10 +112,7 @@ export class OpenVinoExporter {
     layer.setAttribute('version', 'opset1');
 
     const dataNode = new XmlNode('data');
-    dataNode.setAttribute(
-      'element_type',
-      this.mapDtype(dtype),
-    ); /* v8 ignore next */ /* v8 ignore next */
+    dataNode.setAttribute('element_type', this.mapDtype(dtype));
     const actualShape = shape.length > 0 ? shape : [1];
     dataNode.setAttribute('shape', actualShape.join(','));
 
@@ -130,13 +126,10 @@ export class OpenVinoExporter {
     const view = new DataView(buffer);
     for (let i = 0; i < data.length; i++) {
       if (dtype === 'int64') {
-        /* v8 ignore next */ /* v8 ignore next */
         view.setBigInt64(i * 8, BigInt(data[i] ?? 0), true); // little-endian
       } else if (dtype === 'int32') {
-        /* v8 ignore next */ /* v8 ignore next */
         view.setInt32(i * 4, data[i] ?? 0, true);
       } else if (dtype === 'float32') {
-        /* v8 ignore next */ /* v8 ignore next */
         view.setFloat32(i * 4, data[i] ?? 0, true);
       }
     }
@@ -173,60 +166,48 @@ export class OpenVinoExporter {
   private mapDtype(dtype: DType): string {
     switch (dtype) {
       case 'float32':
-        return this.compressToFp16 ? 'f16' : 'f32'; /* v8 ignore next */ /* v8 ignore next */
+        return this.compressToFp16 ? 'f16' : 'f32';
       case 'float64':
-        /* v8 ignore start */
         return 'f64';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'float16':
-        /* v8 ignore start */
         return 'f16';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'bfloat16':
-        /* v8 ignore start */
         return 'bf16';
-      /* v8 ignore stop */
+
       case 'int64':
         return 'i64';
       case 'int32':
-        return 'i32'; /* v8 ignore next */ /* v8 ignore next */
+        return 'i32';
       case 'int16':
-        /* v8 ignore start */
         return 'i16';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'int8':
-        /* v8 ignore start */
         return 'i8';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'uint64':
-        /* v8 ignore start */
         return 'u64';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'uint32':
-        /* v8 ignore start */
         return 'u32';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'uint16':
-        /* v8 ignore start */
         return 'u16';
-      /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
       case 'uint8':
-        /* v8 ignore start */
         return 'u8';
-      /* v8 ignore stop */
+
       case 'bool':
-        return 'boolean'; /* v8 ignore next */ /* v8 ignore next */
+        return 'boolean';
       default:
-        /* v8 ignore start */
         throw new Error(`Unsupported dtype for OpenVINO: ${dtype}`);
-      /* v8 ignore stop */
     }
   }
 
   private uint8ArrayToString(arr: Uint8Array): string {
     let str = '';
     for (let i = 0; i < arr.length; i++) {
-      /* v8 ignore next */ /* v8 ignore next */
       str += String.fromCharCode(arr[i] ?? 0);
     }
     return str;
@@ -241,12 +222,11 @@ export class OpenVinoExporter {
   public emitShape(shape: (number | string)[], tagName: string = 'port'): XmlNode {
     const portNode = new XmlNode(tagName);
     for (const dim of shape) {
-      let dimVal = dim.toString(); /* v8 ignore next */ /* v8 ignore next */
+      let dimVal = dim.toString();
       if (dimVal === '-1' || (typeof dim === 'string' && isNaN(Number(dim)))) {
-        /* v8 ignore start */
         dimVal = this.clampDynamic ? '1' : '-1';
       }
-      /* v8 ignore stop */
+
       const dimNode = new XmlNode('dim').addChild(dimVal);
       portNode.addChild(dimNode);
     }
@@ -263,17 +243,12 @@ export class OpenVinoExporter {
     for (const existing of this.edges) {
       if (
         existing.attributes['from-layer'] === fromLayer.toString() &&
-        existing.attributes['from-port'] ===
-          fromPort.toString() /* v8 ignore next */ /* v8 ignore next */ &&
+        existing.attributes['from-port'] === fromPort.toString() &&
         existing.attributes['to-layer'] === toLayer.toString() &&
-        /* v8 ignore start */
         existing.attributes['to-port'] === toPort.toString()
-        /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
       ) {
-        /* v8 ignore start */
         return;
       }
-      /* v8 ignore stop */
     }
     this.edges.push(edge);
   }
@@ -283,7 +258,7 @@ export class OpenVinoExporter {
    * @returns An object containing the XML string and binary data.
    */
   export(): { xml: string; bin: Uint8Array } {
-    const net = new XmlNode('net'); /* v8 ignore next */ /* v8 ignore next */
+    const net = new XmlNode('net');
     net.setAttribute('name', this.graph.name || 'onnx9000_model');
     net.setAttribute('version', this.version);
 
@@ -297,7 +272,6 @@ export class OpenVinoExporter {
     }
 
     for (const valInfo of this.graph.inputs) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (!consumedInputs.has(valInfo.name)) continue;
       const layerId = this.nextId();
       this.layerIds.set(valInfo.name, layerId);
@@ -310,7 +284,7 @@ export class OpenVinoExporter {
 
       const data = new XmlNode('data');
       const precisionStr = this.mapDtype(valInfo.dtype);
-      data.setAttribute('element_type', precisionStr); /* v8 ignore next */ /* v8 ignore next */
+      data.setAttribute('element_type', precisionStr);
       const actualShape = valInfo.shape.length > 0 ? valInfo.shape : [1];
       data.setAttribute('shape', actualShape.join(','));
       layer.addChild(data);
@@ -328,7 +302,7 @@ export class OpenVinoExporter {
     }
 
     for (const initName of this.graph.initializers) {
-      const tensor = this.graph.tensors[initName]; /* v8 ignore next */ /* v8 ignore next */
+      const tensor = this.graph.tensors[initName];
       if (!tensor) continue;
       const layerId = this.nextId();
       this.layerIds.set(initName, layerId);
@@ -342,7 +316,7 @@ export class OpenVinoExporter {
       const data = new XmlNode('data');
       if (tensor.dtype) {
         data.setAttribute('element_type', this.mapDtype(tensor.dtype));
-      } /* v8 ignore next */ /* v8 ignore next */
+      }
       const actualShape = tensor.shape.length > 0 ? tensor.shape : [1];
       data.setAttribute('shape', actualShape.join(','));
 
@@ -352,9 +326,8 @@ export class OpenVinoExporter {
           tensor.data.byteOffset,
           tensor.data.byteLength,
         );
-        /* v8 ignore next */ /* v8 ignore next */
+
         if (this.compressToFp16 && tensor.dtype === 'float32') {
-          /* v8 ignore start */
           const f32 = new Float32Array(
             tensor.data.buffer,
             tensor.data.byteOffset,
@@ -381,29 +354,25 @@ export class OpenVinoExporter {
           }
           uint8View = new Uint8Array(f16.buffer);
         }
-        /* v8 ignore stop */
 
         const hashKey = this.uint8ArrayToString(uint8View);
         const cacheHit = this.binCache.get(hashKey);
-        /* v8 ignore next */ /* v8 ignore next */
+
         if (cacheHit) {
-          /* v8 ignore start */
           data.setAttribute('offset', cacheHit.offset.toString());
           data.setAttribute('size', cacheHit.size.toString());
-          /* v8 ignore stop */
         } else {
           const totalLength = this.binBuffer.reduce((acc, val) => acc + val.length, 0);
           this.binBuffer.push(uint8View);
           data.setAttribute('offset', totalLength.toString());
           data.setAttribute('size', uint8View.length.toString());
           this.binCache.set(hashKey, { offset: totalLength, size: uint8View.length });
-        } /* v8 ignore next */ /* v8 ignore next */
+        }
       } else {
-        /* v8 ignore start */
         data.setAttribute('offset', '0');
         data.setAttribute('size', '0');
       }
-      /* v8 ignore stop */
+
       layer.addChild(data);
 
       const outputPort = this.nextPort(layerId);
@@ -516,13 +485,11 @@ export class OpenVinoExporter {
       let inputsToMap = node.inputs;
       if (
         (node.opType === 'Conv' || node.opType === 'ConvTranspose' || node.opType === 'Gemm') &&
-        node.inputs.length === 3 /* v8 ignore next */ /* v8 ignore next */
+        node.inputs.length === 3
       ) {
-        /* v8 ignore start */
         hasDecoupledBias = true;
         biasInpName = node.inputs[2] as string;
         inputsToMap = node.inputs.slice(0, 2);
-        /* v8 ignore stop */
       } else {
         inputsToMap = node.inputs.slice();
       }
@@ -562,17 +529,15 @@ export class OpenVinoExporter {
           inputsToMap,
           layerId,
           layers,
-        }); /* v8 ignore next */ /* v8 ignore next */
+        });
         ovType = layer.attributes['type'] ?? ovType;
       }
 
       if (Object.keys(data.attributes).length > 0 || ovType === 'FakeQuantize') {
-        /* v8 ignore next */ /* v8 ignore next */
         if (ovType === 'FakeQuantize' && !data.attributes['levels']) {
-          /* v8 ignore start */
           data.setAttribute('levels', '256');
         }
-        /* v8 ignore stop */
+
         layer.addChild(data);
       }
 
@@ -585,17 +550,10 @@ export class OpenVinoExporter {
 
         const fromIds = this.portIds.get(inp);
         if (fromIds) {
-          this.addEdge(
-            fromIds.layerId,
-            fromIds.portId,
-            layerId,
-            inputPort,
-          ); /* v8 ignore next */ /* v8 ignore next */
+          this.addEdge(fromIds.layerId, fromIds.portId, layerId, inputPort);
         } else if (inp !== '') {
-          /* v8 ignore start */
           throw new Error(`Missing input pointer: '${inp}' for node '${node.name || layerId}'`);
         }
-        /* v8 ignore stop */
       }
       if (inputsToMap.length > 0) {
         layer.addChild(inNode);
@@ -607,11 +565,9 @@ export class OpenVinoExporter {
         const port = new XmlNode('port');
         port.setAttribute('id', outputPort.toString());
         outNode.addChild(port);
-        /* v8 ignore next */ /* v8 ignore next */
+
         if (hasDecoupledBias) {
-          /* v8 ignore start */
           this.portIds.set(out + '_internal_nobias', { layerId, portId: outputPort });
-          /* v8 ignore stop */
         } else {
           this.portIds.set(out, { layerId, portId: outputPort });
         }
@@ -621,9 +577,8 @@ export class OpenVinoExporter {
       }
 
       layers.addChild(layer);
-      /* v8 ignore next */ /* v8 ignore next */
+
       if (hasDecoupledBias) {
-        /* v8 ignore start */
         for (const out of node.outputs) {
           const addLayerId = this.nextId();
           const addLayer = new XmlNode('layer');
@@ -663,11 +618,10 @@ export class OpenVinoExporter {
           layers.addChild(addLayer);
         }
       }
-      /* v8 ignore stop */
     }
 
     for (const valInfo of this.graph.outputs) {
-      const fromIds = this.portIds.get(valInfo.name); /* v8 ignore next */ /* v8 ignore next */
+      const fromIds = this.portIds.get(valInfo.name);
       if (!fromIds) continue;
 
       const layerId = this.nextId();
@@ -738,12 +692,10 @@ export class OpenVinoExporter {
     ) => {
       const a = node.attributes[attr];
       if (a && a.value !== undefined && a.value !== null) {
-        data.setAttribute(ovAttr, a.value.toString()); /* v8 ignore next */ /* v8 ignore next */
+        data.setAttribute(ovAttr, a.value.toString());
       } else if (defaultValue !== undefined) {
-        /* v8 ignore start */
         data.setAttribute(ovAttr, defaultValue);
       }
-      /* v8 ignore stop */
     };
 
     const setListAttr = (data: XmlNode, node: Node, attr: string, ovAttr: string) => {
@@ -754,10 +706,7 @@ export class OpenVinoExporter {
     };
 
     h.set('MatMul', ({ node, data }) => {
-      /* v8 ignore next */ /* v8 ignore next */
-      const transA = node.attributes['transA']?.value
-        ? 'true'
-        : 'false'; /* v8 ignore next */ /* v8 ignore next */
+      const transA = node.attributes['transA']?.value ? 'true' : 'false';
       const transB = node.attributes['transB']?.value ? 'true' : 'false';
       data.setAttribute('transpose_a', transA);
       data.setAttribute('transpose_b', transB);
@@ -785,7 +734,7 @@ export class OpenVinoExporter {
           VALID: 'valid',
           SAME_UPPER: 'same_upper',
           SAME_LOWER: 'same_lower',
-        }; /* v8 ignore next */ /* v8 ignore next */
+        };
         data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
       }
     });
@@ -798,22 +747,15 @@ export class OpenVinoExporter {
         const pads = padsAttr.value as number[];
         if (pads.length === 4) {
           data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
-          data.setAttribute(
-            'pads_end',
-            `${pads[2]},${pads[3]}`,
-          ); /* v8 ignore next */ /* v8 ignore next */
+          data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
         } else {
-          /* v8 ignore start */
           const half = Math.floor(pads.length / 2);
           data.setAttribute('pads_begin', pads.slice(0, half).join(','));
           data.setAttribute('pads_end', pads.slice(half).join(','));
         }
-        /* v8 ignore stop */
-      } /* v8 ignore next */ /* v8 ignore next */
-      const autoPad = node.attributes['auto_pad']
-        ?.value as string; /* v8 ignore next */ /* v8 ignore next */
+      }
+      const autoPad = node.attributes['auto_pad']?.value as string;
       if (autoPad) {
-        /* v8 ignore start */
         const autoPadMap: Record<string, string> = {
           VALID: 'valid',
           SAME_UPPER: 'same_upper',
@@ -821,10 +763,10 @@ export class OpenVinoExporter {
         };
         data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
       }
-      /* v8 ignore stop */
+
       if (node.opType === 'AveragePool' && node.attributes['count_include_pad']) {
         data.setAttribute(
-          'exclude-pad' /* v8 ignore next */ /* v8 ignore next */,
+          'exclude-pad',
           node.attributes['count_include_pad'].value ? 'false' : 'true',
         );
       }
@@ -833,8 +775,7 @@ export class OpenVinoExporter {
     h.set('AveragePool', poolHandler);
 
     h.set('Gelu', ({ node, data }) => {
-      const approx =
-        node.attributes['approximate']?.value; /* v8 ignore next */ /* v8 ignore next */
+      const approx = node.attributes['approximate']?.value;
       data.setAttribute('approximation_mode', approx === 'tanh' ? 'tanh' : 'erf');
     });
 
@@ -866,7 +807,7 @@ export class OpenVinoExporter {
         layers.addChild(eNode.layerNode);
         inputsToMap.push((node.name || `pads_begin_${layerId}`) + '_pads_begin');
         inputsToMap.push((node.name || `pads_end_${layerId}`) + '_pads_end');
-        /* v8 ignore next */ /* v8 ignore next */
+
         const val = (node.attributes['value']?.value as number) || 0.0;
         const vNode = exporter.emitDynamicConst(
           (node.name || `pad_value_${layerId}`) + '_pad_value',
@@ -938,7 +879,7 @@ export class OpenVinoExporter {
     h.set('ReduceProd', reduceHandler);
 
     const argHandler: OpHandler = ({ node, data }) => {
-      const keep = node.attributes['keepdims']?.value; /* v8 ignore next */ /* v8 ignore next */
+      const keep = node.attributes['keepdims']?.value;
       if (keep !== undefined) data.setAttribute('keep_dims', keep ? 'true' : 'false');
       setAttr(data, node, 'axis', 'axis');
     };
@@ -960,14 +901,13 @@ export class OpenVinoExporter {
     h.set('DepthToSpace', s2dHandler);
 
     h.set('NonMaxSuppression', ({ node, data }) => {
-      const center =
-        node.attributes['center_point_box']?.value; /* v8 ignore next */ /* v8 ignore next */
+      const center = node.attributes['center_point_box']?.value;
       data.setAttribute('box_encoding', center ? 'center' : 'corner');
       data.setAttribute('sort_result_descending', 'false');
     });
 
     h.set('RoiAlign', ({ node, data }) => {
-      const mode = node.attributes['mode']?.value; /* v8 ignore next */ /* v8 ignore next */
+      const mode = node.attributes['mode']?.value;
       data.setAttribute('mode', mode ? mode.toString() : 'avg');
     });
 
@@ -1038,7 +978,6 @@ export class OpenVinoExporter {
       setAttr(data, node, 'padding_mode', 'padding_mode');
       const align = node.attributes['align_corners']?.value;
       if (align !== undefined) {
-        /* v8 ignore next */ /* v8 ignore next */
         data.setAttribute('align_corners', align ? 'true' : 'false');
       }
     });
@@ -1136,17 +1075,14 @@ export class OpenVinoExporter {
       if (valAttr instanceof Tensor) {
         const valTensor = valAttr;
         if (valTensor.dtype === 'float32' && valTensor.data) {
-          /* v8 ignore next */ /* v8 ignore next */
           val = [new Float32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0.0];
           dtype = 'float32';
         } else if (valTensor.dtype === 'int64' && valTensor.data) {
           const bi =
-            /* v8 ignore next */ /* v8 ignore next */
             new BigInt64Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0n;
           val = [Number(bi)];
           dtype = 'int64';
         } else if (valTensor.dtype === 'int32' && valTensor.data) {
-          /* v8 ignore next */ /* v8 ignore next */
           val = [new Int32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0];
           dtype = 'int32';
         }

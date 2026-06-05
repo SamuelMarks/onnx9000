@@ -32,14 +32,14 @@ def test_lazy_coverage():
 
     try:
         cse.eliminate_common_subexpr(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.relay.transform.dead_code_elimination as dce
 
     try:
         dce.eliminate_dead_code(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.relay.transform.fold_constant as fc
 
     try:
@@ -50,8 +50,8 @@ def test_lazy_coverage():
 
     try:
         fu.fuse_ops(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.relay.transform.infer_type as it
 
     try:
@@ -62,14 +62,14 @@ def test_lazy_coverage():
 
     try:
         la.transform_layout(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.relay.transform.memory_plan as mp
 
     try:
         mp.plan_memory(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.relay.transform.resolve_shape as rs
 
     try:
@@ -98,8 +98,8 @@ def test_lazy_coverage():
 
     try:
         rv.ExprVisitor().visit(None)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     import onnx9000.tvm.te.default_schedules as ds
 
     try:

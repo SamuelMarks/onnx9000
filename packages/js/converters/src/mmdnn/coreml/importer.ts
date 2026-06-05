@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { BufferReader } from '@onnx9000/core';

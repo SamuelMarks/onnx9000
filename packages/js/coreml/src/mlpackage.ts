@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { emitModel } from './emitter.js';
 import { Model } from './schema.js';
 import { sanitizeMetadataString, sanitizeFilename } from './utils/sanitize.js';

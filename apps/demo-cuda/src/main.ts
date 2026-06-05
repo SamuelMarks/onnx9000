@@ -1,16 +1,17 @@
-/* v8 ignore next */ /* v8 ignore next */ const runBtn = document.getElementById(
-  'run-btn',
-) as HTMLButtonElement; /* v8 ignore next */ /* v8 ignore next */
-const out = document.getElementById(
-  'output',
-) as HTMLElement; /* v8 ignore next */ /* v8 ignore next */
-/* v8 ignore next */ /* v8 ignore next */
-runBtn.addEventListener('click', () => {
-  /* v8 ignore next */ /* v8 ignore next */
-  out.innerText = 'Initializing CUDA...'; /* v8 ignore next */ /* v8 ignore next */
-  setTimeout(() => {
-    /* v8 ignore next */ /* v8 ignore next */
-    out.innerText =
-      'CUDA engine loaded.\nExecution complete: SUCCESS'; /* v8 ignore next */ /* v8 ignore next */
-  }, 500); /* v8 ignore next */ /* v8 ignore next */
-});
+/**
+ * Initializes the CUDA demo.
+ */
+export function initCudaDemo(): void {
+  const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
+  const out = document.getElementById('output') as HTMLElement;
+
+  if (!runBtn || !out) return;
+
+  runBtn.addEventListener('click', () => {
+    out.innerText = 'Initializing CUDA...';
+    setTimeout(() => {
+      out.innerText = 'CUDA engine loaded.\nExecution complete: SUCCESS';
+    }, 500);
+  });
+}
+initCudaDemo();

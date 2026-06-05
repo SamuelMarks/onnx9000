@@ -15,9 +15,9 @@ def test_ast_script() -> None:
         else:
             for _i in range(10):
                 return None
-            while True:  # pragma: no cover
-                break  # pragma: no cover
-        return x  # pragma: no cover
+            while True:
+                break
+        return x
 
     my_func(True)
     my_func(False)

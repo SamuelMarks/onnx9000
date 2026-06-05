@@ -1,4 +1,3 @@
-/* eslint-disable */
 export class HubConfig {
   static endpoint: string = 'https://huggingface.co';
   static apiKey: string | null = null;

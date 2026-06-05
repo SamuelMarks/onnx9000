@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Router } from './router';
 import { safeJsonParse } from './middleware';
 
@@ -164,8 +163,8 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
         }
 
         const response: KServeResponse = {
-          /* v8 ignore next */ /* v8 ignore next */ model_name: params.model_name || '',
-          model_version: '1' /* v8 ignore next */ /* v8 ignore next */,
+          model_name: params.model_name || '',
+          model_version: '1',
           id: kserveReq.id || '1',
           parameters: {},
           outputs: kserveReq.inputs.map((input) => ({
@@ -230,7 +229,7 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
           false,
           true,
           input.data && input.datatype === 'FP32'
-            ? new Float32Array(input.data) /* v8 ignore next */ /* v8 ignore next */
+            ? new Float32Array(input.data)
             : new Int32Array(input.data || []),
         );
       }
@@ -239,12 +238,12 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
       const outputTensors = inputTensors; // Identity fallback without loaded model
 
       const response: KServeResponse = {
-        /* v8 ignore next */ /* v8 ignore next */ model_name: params.model_name || '',
+        model_name: params.model_name || '',
         model_version: '1',
         id: kserveReq.id || '1',
         parameters: {},
         outputs: Object.values(outputTensors).map((t) => ({
-          /* v8 ignore next */ /* v8 ignore next */ name: t.name || '',
+          name: t.name || '',
           datatype: t.dtype === 'float32' ? 'FP32' : 'INT32',
           shape: t.shape as number[],
           data: Array.from(t.data as ReturnType<typeof JSON.parse>),
@@ -256,7 +255,6 @@ export function addKServeRoutes(server: Onnx9000Server, router: Router) {
         headers: { 'Content-Type': 'application/json' },
       });
     } catch (_err) {
-      /* v8 ignore next */ /* v8 ignore next */
       const err = _err instanceof Error ? _err : new Error(String(_err));
       return new Response(
         JSON.stringify({

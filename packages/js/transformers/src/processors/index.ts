@@ -1,4 +1,3 @@
-/* eslint-disable */
 export class ONNX9000Image {
   public data: ReturnType<typeof JSON.parse>;
 
@@ -213,11 +212,9 @@ export class SequenceFeatureExtractor {
     audio: ReturnType<typeof JSON.parse> | ReturnType<typeof JSON.parse>[],
     options: SequenceFeatureExtractorOptions = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
-    // Handle loading audio via AudioContext /* v8 ignore next */ /* v8 ignore next */
+    // Handle loading audio via AudioContext
     const audioList = Array.isArray(audio) ? audio : [audio];
-    const processed = audioList.map((a) =>
-      this._processSingle(a, options),
-    ); /* v8 ignore next */ /* v8 ignore next */
+    const processed = audioList.map((a) => this._processSingle(a, options));
     return { input_features: Array.isArray(audio) ? processed : processed[0] };
   }
 

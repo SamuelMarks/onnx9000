@@ -25,5 +25,5 @@ onnx9000 optimize model.onnx --passes "fuse_bn_into_conv,eliminate_deadend" -o m
 ## Interactive Web Demo
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

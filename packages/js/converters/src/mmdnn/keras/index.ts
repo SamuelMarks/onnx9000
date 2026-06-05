@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Keras MMDNN submodule.
  */

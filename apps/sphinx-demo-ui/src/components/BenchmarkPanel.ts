@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Component } from '../core/Component';
 
 export class BenchmarkPanel extends Component<HTMLDivElement> {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Dynamic batching utilities to optimize singleton execution graphs into batch-enabled graphs natively.
  * @module

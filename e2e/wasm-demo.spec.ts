@@ -59,7 +59,8 @@ test.describe('WASM Sphinx Demo E2E', () => {
       const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
-    console.log("C CONTENT:\n" + modelCContent); expect(modelCContent).toContain('void model_run');
+    console.log('C CONTENT:\n' + modelCContent);
+    expect(modelCContent).toContain('void model_run');
 
     // The directory is expanded by default, click model.h
     await page

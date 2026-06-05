@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Graph, Tensor } from '@onnx9000/core';
 import { zipSync } from 'fflate';
 
@@ -75,12 +76,12 @@ export class KerasGenerator {
     else if (tensor.dtype === 'float16') dtype = '<f2';
     else if (tensor.dtype === 'float64') dtype = '<f8';
     else if (tensor.dtype === 'bool') dtype = '|b1';
-    /* v8 ignore next */ /* v8 ignore next */
+
     const shapeStr = `(${tensor.shape.join(', ') + (tensor.shape.length === 1 ? ',' : '')})`;
     let dictStr = `{'descr': '${dtype}', 'fortran_order': False, 'shape': ${shapeStr}, }`;
 
     let headerLen = dictStr.length + 1;
-    let padLen = 64 - ((10 + headerLen) % 64); /* v8 ignore next */ /* v8 ignore next */
+    let padLen = 64 - ((10 + headerLen) % 64);
     if (padLen < 0) padLen += 64;
     dictStr += ' '.repeat(padLen) + '\n';
 
@@ -155,19 +156,15 @@ export class KerasGenerator {
 
     const inputNames: string[] = [];
     for (const input of this.graph.inputs) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (this.isInitializer(input.name)) continue;
       const sanitized = this.sanitize(input.name);
       const shape =
-        input.shape.length > 0 /* v8 ignore next */ /* v8 ignore next */
+        input.shape.length > 0
           ? input.shape[0] === -1 || typeof input.shape[0] === 'string'
-            ? /* v8 ignore start */
-              input.shape.slice(1)
-            : /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
-              input.shape
-          : /* v8 ignore start */
-            [1];
-      /* v8 ignore stop */
+            ? input.shape.slice(1)
+            : input.shape
+          : [1];
+
       code += `    ${sanitized} = keras.layers.Input(shape=${JSON.stringify(shape.map(Number))}, name='${input.name}')\n`;
       inputNames.push(sanitized);
     }
@@ -183,43 +180,33 @@ export class KerasGenerator {
     for (const node of this.graph.nodes) {
       const sanitizedOutputs = node.outputs.map((o) => this.sanitize(o));
       const lhs =
-        sanitizedOutputs.length === 1 /* v8 ignore next */ /* v8 ignore next */
+        sanitizedOutputs.length === 1
           ? sanitizedOutputs[0] || 'None'
           : `(${sanitizedOutputs.join(', ')})`;
       const inputs = node.inputs.map((i) => nodeOutputs[i] || 'None');
 
       let rhs = '';
       if (node.opType === 'Relu') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.ReLU()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Add') {
         rhs = `keras.layers.Add()([${inputs.join(', ')}])`;
       } else if (node.opType === 'Conv') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.Conv2D(filters=64, kernel_size=3)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'MaxPool') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.MaxPooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'AveragePool') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.AveragePooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'GlobalAveragePool') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.GlobalAveragePooling2D()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Flatten') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.Flatten()(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Gemm' || node.opType === 'Dense') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.Dense(units=10)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'Softmax') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `ops.softmax(${inputs[0] || 'None'})`;
       } else if (node.opType === 'LSTM') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.LSTM(units=128)(${inputs[0] || 'None'})`;
       } else if (node.opType === 'GRU') {
-        /* v8 ignore next */ /* v8 ignore next */
         rhs = `keras.layers.GRU(units=128)(${inputs[0] || 'None'})`;
       } else {
         rhs = `Fallback for ${node.opType}`;
@@ -233,7 +220,6 @@ export class KerasGenerator {
     }
 
     const finalOutputs = this.graph.outputs.map(
-      /* v8 ignore next */ /* v8 ignore next */
       (o) => nodeOutputs[o.name] || this.sanitize(o.name) || 'None',
     );
     code += `    return keras.Model(inputs=[${inputNames.join(', ')}], outputs=[${finalOutputs.join(', ')}])\n`;

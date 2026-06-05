@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Graph } from '@onnx9000/core';
 
 /**
@@ -21,7 +22,6 @@ export class TensorFlowGenerator {
    * @returns Sanitized name.
    */
   private sanitize(name: string): string {
-    /* v8 ignore next */ /* v8 ignore next */
     if (!name) return 'unnamed';
     let s = name.replace(/[^a-zA-Z0-9_]/g, '_');
     if (/^[0-9]/.test(s)) s = 'v_' + s;

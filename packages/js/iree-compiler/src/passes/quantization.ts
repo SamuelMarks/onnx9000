@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Region, Operation } from '../ir/core.js';
 
 // 201-210. Dynamic Quantization Lowering

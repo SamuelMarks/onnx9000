@@ -11,7 +11,7 @@ test.describe('ONNX Script Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }

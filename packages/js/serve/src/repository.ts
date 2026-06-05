@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MemoryManager, ModelInstance } from './memory';
 
 export interface ModelMetadata {

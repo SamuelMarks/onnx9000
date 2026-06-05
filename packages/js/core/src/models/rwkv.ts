@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, LayerNormalization } from '../primitives.js';
 
@@ -11,7 +10,6 @@ function getParam(
 }
 
 function recordOp(opType: string, inputs: Tensor[], attr?: ReturnType<typeof JSON.parse>): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   const dtype = inputs[0]?.dtype ?? 'float32';
   return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }

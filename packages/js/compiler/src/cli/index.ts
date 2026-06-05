@@ -2,37 +2,32 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-/* v8 ignore next */ /* v8 ignore next */
+
 function printHelp() {
-  /* v8 ignore next */ /* v8 ignore next */
-  console.log(` /* v8 ignore next */ /* v8 ignore next */
-Usage: /* v8 ignore next */ /* v8 ignore next */
-  npx @onnx9000/compiler compile <model.onnx> [options] /* v8 ignore next */ /* v8 ignore next */
- /* v8 ignore next */ /* v8 ignore next */
-Options: /* v8 ignore next */ /* v8 ignore next */
-  --target-backend=<name>    Target backend (e.g., @onnx9000/backend-web) /* v8 ignore next */ /* v8 ignore next */
-  --optimize-level=<level>   Optimization level (O0, O1, O2, O3) /* v8 ignore next */ /* v8 ignore next */
-  --output=<path>            Output path for the compiled payload /* v8 ignore next */ /* v8 ignore next */
-  --help                     Print this help message /* v8 ignore next */ /* v8 ignore next */
-`); /* v8 ignore next */ /* v8 ignore next */
+  console.log(` 
+Usage: 
+  npx @onnx9000/compiler compile <model.onnx> [options] 
+ 
+Options: 
+  --target-backend=<name>    Target backend (e.g., @onnx9000/backend-web) 
+  --optimize-level=<level>   Optimization level (O0, O1, O2, O3) 
+  --output=<path>            Output path for the compiled payload 
+  --help                     Print this help message 
+`);
 }
 
 function main() {
   const args = process.argv.slice(2);
-  /* v8 ignore next */ /* v8 ignore next */
+
   if (args.length === 0 || args.includes('--help') || args[0] !== 'compile') {
-    /* v8 ignore next */ /* v8 ignore next */
-    printHelp(); /* v8 ignore next */ /* v8 ignore next */
-    process.exit(args.includes('--help') ? 0 : 1); /* v8 ignore next */ /* v8 ignore next */
+    printHelp();
+    process.exit(args.includes('--help') ? 0 : 1);
   }
 
-  const modelPath = args[1]; /* v8 ignore next */ /* v8 ignore next */
+  const modelPath = args[1];
   if (!modelPath || modelPath.startsWith('--')) {
-    /* v8 ignore next */ /* v8 ignore next */
-    console.error(
-      'Error: You must provide a path to an ONNX model.',
-    ); /* v8 ignore next */ /* v8 ignore next */
-    process.exit(1); /* v8 ignore next */ /* v8 ignore next */
+    console.error('Error: You must provide a path to an ONNX model.');
+    process.exit(1);
   }
 
   const options: Record<string, string> = {};
@@ -43,18 +38,14 @@ function main() {
       const key = parts[0];
       const value = parts[1];
       if (key) {
-        /* v8 ignore next */ /* v8 ignore next */
         options[key.substring(2)] = value || 'true';
       }
     }
   }
-  /* v8 ignore next */ /* v8 ignore next */
+
   if (!fs.existsSync(modelPath)) {
-    /* v8 ignore next */ /* v8 ignore next */
-    console.error(
-      `Error: Model file not found at ${modelPath}`,
-    ); /* v8 ignore next */ /* v8 ignore next */
-    process.exit(1); /* v8 ignore next */ /* v8 ignore next */
+    console.error(`Error: Model file not found at ${modelPath}`);
+    process.exit(1);
   }
 
   const backend = options['target-backend'] || '@onnx9000/backend-web';
@@ -79,17 +70,14 @@ function main() {
   console.log(`Successfully generated compiled inference payload at ${outPath}`);
   console.log(`Size: ${String(Buffer.byteLength(payload))} bytes`);
 }
-/* v8 ignore next */ /* v8 ignore next */
+
 if (import.meta.url === `file://${process.argv[1] || ''}`) {
-  /* v8 ignore next */ /* v8 ignore next */
   try {
-    /* v8 ignore next */ /* v8 ignore next */
-    main(); /* v8 ignore next */ /* v8 ignore next */
+    main();
   } catch (err: unknown) {
-    /* v8 ignore next */ /* v8 ignore next */
-    console.error(err); /* v8 ignore next */ /* v8 ignore next */
-    process.exit(1); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    console.error(err);
+    process.exit(1);
+  }
 }
 
 // Export for testing

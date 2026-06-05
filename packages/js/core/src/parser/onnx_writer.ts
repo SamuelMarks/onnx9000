@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, ValueInfo } from '../ir/graph.js';
 import { Node, Attribute } from '../ir/node.js';
 import { Tensor, Shape, DType } from '../ir/tensor.js';
@@ -124,7 +123,7 @@ function serializeNodeProto(node: Node): Uint8Array {
     writer.writeString(node.opType);
   }
 
-  // attributes (5) /* v8 ignore next */ /* v8 ignore next */
+  // attributes (5)
   const attrs: Record<string, Attribute> = node.attributes || {};
   for (const [key, attr] of Object.entries(attrs)) {
     writer.writeTag(5, WIRE_TYPE_LENGTH_DELIMITED);
@@ -245,7 +244,7 @@ function serializeTensorProto(name: string, tensor: Tensor): Uint8Array {
 
   // dims (1)
   for (const dim of tensor.shape) {
-    writer.writeTag(1, WIRE_TYPE_VARINT); /* v8 ignore next */ /* v8 ignore next */
+    writer.writeTag(1, WIRE_TYPE_VARINT);
     writer.writeVarInt64(typeof dim === 'number' ? dim : -1);
   }
 

@@ -80,7 +80,7 @@ def test_keras_h5_parser_get_weights():
     def mock_visit(func):
         # Call the lambda passed to visititems which calls collect_weights
         """Mock visit."""
-        func("weight_0", mock_ds)  # pragma: no cover
+        func("weight_0", mock_ds)
 
     mock_lg = MagicMock()
     mock_lg.visititems.side_effect = mock_visit

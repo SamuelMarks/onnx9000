@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Logger, LogLevel, LogEntry } from '../../src/core/Logger';

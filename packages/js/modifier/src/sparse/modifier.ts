@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { Tensor, SparseTensor } from '@onnx9000/core';
 import { unpackData } from '@onnx9000/core';
@@ -36,11 +35,9 @@ export class MagnitudePruningModifier extends Modifier {
     const threshold = idx >= 0 ? absValues[idx]! : -1;
 
     // We mutate the data in place or create new typed array
-    // @ts-ignore
     for (let i = 0; i < values.length; i++) {
       if (Math.abs(values[i]!) <= threshold) {
-        // @ts-ignore
-        tensor.data[i] = 0;
+        (tensor.data as any)[i] = 0;
       }
     }
   }
@@ -63,11 +60,9 @@ export class ConstantPruningModifier extends Modifier {
   private _pruneByThreshold(tensor: Tensor, threshold: number): void {
     if (!tensor.data) return;
     const values = unpackData(tensor) as number[];
-    // @ts-ignore
     for (let i = 0; i < values.length; i++) {
       if (Math.abs(values[i]!) <= threshold) {
-        // @ts-ignore
-        tensor.data[i] = 0;
+        (tensor.data as any)[i] = 0;
       }
     }
   }

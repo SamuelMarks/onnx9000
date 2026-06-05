@@ -9,7 +9,9 @@ test.describe('Specific Extended Converters', () => {
       test.skip();
     }
     await page.click('#btn-convert');
-    await expect(page.locator('#output')).toContainText('Paddle2ONNX conversion complete', { timeout: 2000 });
+    await expect(page.locator('#output')).toContainText('Paddle2ONNX conversion complete', {
+      timeout: 2000,
+    });
   });
 
   test('Keras2ONNX Web Demo', async ({ page }) => {
@@ -20,7 +22,9 @@ test.describe('Specific Extended Converters', () => {
       test.skip();
     }
     await page.click('#btn-convert');
-    await expect(page.locator('#output')).toContainText('Keras2ONNX conversion complete', { timeout: 2000 });
+    await expect(page.locator('#output')).toContainText('Keras2ONNX conversion complete', {
+      timeout: 2000,
+    });
   });
 
   test('SKL2ONNX Web Demo', async ({ page }) => {
@@ -31,6 +35,8 @@ test.describe('Specific Extended Converters', () => {
       test.skip();
     }
     await page.click('#btn-convert');
-    await expect(page.locator('#output')).toContainText('SKL2ONNX conversion complete', { timeout: 2000 });
+    await expect(page.locator('#output')).toContainText('SKL2ONNX conversion complete', {
+      timeout: 2000,
+    });
   });
 });

@@ -94,9 +94,9 @@ def test_reduce_ops_folding() -> None:
         _create_and_simplify("Add", [None, None])
     except AssertionError:
         return None
-    """Tests the reduce ops folding functionality."""  # pragma: no cover
-    data = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)  # pragma: no cover
-    for op in [  # pragma: no cover
+    """Tests the reduce ops folding functionality."""
+    data = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
+    for op in [
         "ReduceSum",
         "ReduceMean",
         "ReduceMax",
@@ -107,12 +107,12 @@ def test_reduce_ops_folding() -> None:
         "ReduceLogSum",
         "ReduceLogSumExp",
     ]:
-        try:  # pragma: no cover
-            _create_and_simplify(op, [data], {"axes": [0, 1], "keepdims": 0})  # pragma: no cover
-            _create_and_simplify(op, [data, np.array([0], dtype=np.int64)])  # pragma: no cover
-            raise Exception  # pragma: no cover
-        except Exception:  # pragma: no cover
-            return None  # pragma: no cover
+        try:
+            _create_and_simplify(op, [data], {"axes": [0, 1], "keepdims": 0})
+            _create_and_simplify(op, [data, np.array([0], dtype=np.int64)])
+            raise Exception
+        except Exception:
+            return None
 
 
 def test_other_ops_folding() -> None:

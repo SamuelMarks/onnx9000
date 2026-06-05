@@ -8,7 +8,7 @@ from onnx9000.core.ops import add, concat, flatten, gather, reshape, scatter_nd
 from onnx9000.core.primitives import ConvND, Gemm, LayerNormalization
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -16,7 +16,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class MaskedAutoencoderViT:
     """Masked Autoencoder with VisionTransformer backbone."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         img_size: int = 224,
         patch_size: int = 16,
@@ -63,7 +63,7 @@ class MaskedAutoencoderViT:
         self.decoder_norm = norm_layer((decoder_embed_dim,))
         self.decoder_pred = Gemm(trans_b=1)
 
-    def forward_encoder(self, x: Tensor, mask_indices: Tensor) -> tuple[Tensor, Tensor]:  # noqa: D102
+    def forward_encoder(self, x: Tensor, mask_indices: Tensor) -> tuple[Tensor, Tensor]:
         # Embed patches
         """Forward encoder."""
         x = self.patch_embed(x)
@@ -102,7 +102,7 @@ class MaskedAutoencoderViT:
 
         return x, mask_indices
 
-    def forward_decoder(self, x: Tensor, mask_indices: Tensor) -> Tensor:  # noqa: D102
+    def forward_decoder(self, x: Tensor, mask_indices: Tensor) -> Tensor:
         # Embed tokens
         """Forward decoder."""
         x = self.decoder_embed(
@@ -166,14 +166,14 @@ class MaskedAutoencoderViT:
         )
         return x
 
-    def __call__(self, x: Tensor, mask_indices: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, mask_indices: Tensor) -> Tensor:
         """Call."""
         latent, mask_indices = self.forward_encoder(x, mask_indices)
         pred = self.forward_decoder(latent, mask_indices)
         return pred
 
 
-def mae_vit_base_patch16(**kwargs: Any) -> MaskedAutoencoderViT:  # noqa: D103
+def mae_vit_base_patch16(**kwargs: Any) -> MaskedAutoencoderViT:
     """Mae vit base patch16."""
     return MaskedAutoencoderViT(
         patch_size=16,

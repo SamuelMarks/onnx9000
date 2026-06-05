@@ -44,10 +44,10 @@ class CNTKMapper:
                 node = Node("Add", inputs=inputs, outputs=outputs, name=name)
                 self.graph.add_node(node)
             else:
-                node = Node(  # pragma: no cover
+                node = Node(
                     op_type if op_type else "Identity", inputs=inputs, outputs=outputs, name=name
                 )
-                self.graph.add_node(node)  # pragma: no cover
+                self.graph.add_node(node)
 
         for out in self.model_info.get("outputs", []):
             t = self.get_tensor(out["name"])

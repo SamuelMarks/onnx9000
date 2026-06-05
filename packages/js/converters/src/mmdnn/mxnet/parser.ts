@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 export interface MxNetSymbol {
   nodes: MxNetNode[];

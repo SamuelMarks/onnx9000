@@ -11,7 +11,7 @@ test.describe('ONNX2TF Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }
@@ -25,16 +25,18 @@ test.describe('ONNX2TF Demo E2E', () => {
     await convertBtn.click();
 
     const output = page.locator('#output');
-    
+
     // Check that it reaches the end of the pipeline
     await expect(output).toContainText('Loading ONNX model', { timeout: 10000 });
-    await expect(output).toContainText('Converting to TFLite format with INT8 quantization', { timeout: 10000 });
+    await expect(output).toContainText('Converting to TFLite format with INT8 quantization', {
+      timeout: 10000,
+    });
     await expect(output).toContainText('onnx2tf conversion complete', { timeout: 10000 });
 
     const resetBtn = page.locator('#resetBtn');
     await expect(resetBtn).toBeEnabled();
     await resetBtn.click();
-    
+
     await expect(output).toContainText('Waiting to convert', { timeout: 10000 });
   });
 });

@@ -28,7 +28,7 @@ def parse_param(content: str) -> dict[str, Any]:
     for line in lines[2:]:
         parts = line.split()
         if not parts:
-            continue  # pragma: no cover
+            continue
 
         layer_type = parts[0]
         layer_name = parts[1]
@@ -51,8 +51,8 @@ def parse_param(content: str) -> dict[str, Any]:
                         params[int(k)] = float(v)
                     else:
                         params[int(k)] = int(v)
-                except ValueError:  # pragma: no cover
-                    params[int(k)] = v  # pragma: no cover
+                except ValueError:
+                    params[int(k)] = v
 
         layers.append(
             {

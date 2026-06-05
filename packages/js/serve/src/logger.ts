@@ -1,4 +1,3 @@
-/* eslint-disable */
 // 144. Allow granular control of logging levels
 export enum LogLevel {
   TRACE = 0,
@@ -30,7 +29,7 @@ export class Logger {
             message,
             ...meta,
           }),
-        }).catch(() => undefined); // silent fail on export /* v8 ignore next */ /* v8 ignore next */
+        }).catch(() => undefined); // silent fail on export
       } catch (err) {}
     }
   }
@@ -69,11 +68,9 @@ export class Logger {
 
 export const globalLogger = new Logger();
 
-// 141. Provide native OpenTelemetry traces (distributed tracing headers extraction). /* v8 ignore next */ /* v8 ignore next */
+// 141. Provide native OpenTelemetry traces (distributed tracing headers extraction).
 export function extractTraceContext(req: Request) {
-  /* v8 ignore start */
   const traceparent = req.headers.get('traceparent');
   const tracestate = req.headers.get('tracestate');
   return { traceparent, tracestate };
 }
-/* v8 ignore stop */

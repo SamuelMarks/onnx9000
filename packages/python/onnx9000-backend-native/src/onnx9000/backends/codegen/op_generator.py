@@ -25,4 +25,4 @@ class OpGenerator(abc.ABC):
             A string containing the generated C++ code.
 
         """
-        return ""  # pragma: no cover
+        return ""

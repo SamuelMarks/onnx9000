@@ -1,6 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
-
 export class KerasToMLIRCompiler {
   public emitTosaConv2D(
     input: string,

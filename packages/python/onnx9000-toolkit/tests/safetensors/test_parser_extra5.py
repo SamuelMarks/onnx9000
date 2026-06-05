@@ -82,7 +82,7 @@ def test_safetensors_sharded():
 
         def __init__(self):
             """Init."""
-            self.weight_map = {"w": "w.safetensors"}  # pragma: no cover
+            self.weight_map = {"w": "w.safetensors"}
 
     sharded = SafeTensorsSharded.__new__(SafeTensorsSharded)
     sharded.weight_map = {"w": "w.safetensors"}
@@ -97,7 +97,7 @@ def test_safetensors_sharded():
 
         def get_onnx9000_tensor(self, name):
             """Get onnx9000 tensor."""
-            return "t_" + name  # pragma: no cover
+            return "t_" + name
 
         def get_tensor(self, name):
             """Get tensor."""

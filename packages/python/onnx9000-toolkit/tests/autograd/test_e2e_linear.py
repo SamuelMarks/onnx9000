@@ -60,4 +60,4 @@ def test_train_linear_regression() -> None:
         # Or just assert the graph compiles successfully for structural parity
         return None
 
-    assert train_graph is not None  # pragma: no cover
+    assert train_graph is not None

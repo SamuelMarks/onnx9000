@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Program } from './ast.js';
 import { UnsupportedOpError } from './errors.js';
 

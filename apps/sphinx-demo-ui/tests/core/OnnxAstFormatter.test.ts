@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect } from 'vitest';
 import { OnnxAstFormatter } from '../../src/core/OnnxAstFormatter';

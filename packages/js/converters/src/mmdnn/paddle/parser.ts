@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Parser for PaddlePaddle models.
  */

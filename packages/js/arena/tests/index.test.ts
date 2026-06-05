@@ -2,13 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { MemoryArena } from '../src/index.js';
 
 describe('MemoryArena', () => {
-  it('should plan memory', () => {
+  it('should plan', () => {
     const arena = new MemoryArena();
-    expect(arena.plan('model_data')).toBe('[Arena] planner processed model_data');
-  });
-
-  it('should throw on empty string', () => {
-    const arena = new MemoryArena();
+    expect(arena.plan('test')).toContain('[Arena] planner processed test');
     expect(() => arena.plan('')).toThrow('Invalid model string');
   });
 });

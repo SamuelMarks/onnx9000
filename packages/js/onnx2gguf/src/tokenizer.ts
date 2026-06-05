@@ -1,4 +1,3 @@
-/* eslint-disable */
 export function extractTokenizerMetadata(
   tokenizerJsonStr: string | null = null,
   vocabSize: number = 0,
@@ -33,8 +32,8 @@ export function extractTokenizerMetadata(
     meta['tokenizer.ggml.model'] = 'llama';
     return meta;
   }
-  /* v8 ignore next */ /* v8 ignore next */
-  const model = t.model || {}; /* v8 ignore next */ /* v8 ignore next */
+
+  const model = t.model || {};
   const modelType = model.type || 'BPE';
 
   if (modelType === 'BPE') {
@@ -44,7 +43,7 @@ export function extractTokenizerMetadata(
   } else {
     meta['tokenizer.ggml.model'] = 'llama';
   }
-  /* v8 ignore next */ /* v8 ignore next */
+
   const vocab = model.vocab || {};
   if (typeof vocab === 'object' && vocab !== null && !Array.isArray(vocab)) {
     const sortedVocab = Object.entries(vocab).sort(

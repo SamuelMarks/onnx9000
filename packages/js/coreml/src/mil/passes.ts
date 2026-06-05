@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Operation, Block, Function } from './ast.js';
 
 export function deadCodeElimination(block: Block): void {

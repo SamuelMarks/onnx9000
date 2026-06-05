@@ -1,4 +1,3 @@
-/* eslint-disable */
 export class TritonCompilerElement extends HTMLElement {
   constructor() {
     super();
@@ -119,7 +118,7 @@ export class TritonCompilerElement extends HTMLElement {
       .map((i: ReturnType<typeof JSON.parse>) => i.name);
     return `
       export async function run(device, inputs) {
-        const shaderModule = device.createShaderModule({ code: \`...\` });
+        const shaderModule = device.createShaderModule({ code: '...' });
         const pipeline = await device.createComputePipelineAsync({
           layout: 'auto',
           compute: { module: shaderModule, entryPoint: 'main' }
@@ -133,7 +132,6 @@ export class TritonCompilerElement extends HTMLElement {
     // 138. Provide realtime syntax highlighting and formatting (simulated via basic text content for now)
     this.shadowRoot!.querySelector('#output')!.textContent = pythonCode;
     this.shadowRoot!.querySelector('#wgsl-output')!.textContent =
-      /* v8 ignore next */ /* v8 ignore next */
       wgslCode || '// WGSL output here...';
   }
 }

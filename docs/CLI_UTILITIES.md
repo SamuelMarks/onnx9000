@@ -9,7 +9,8 @@ Prints diagnostic information regarding the host system's neural processing unit
 ```bash
 onnx9000 info webnn
 ```
-*(Note: Full detailed NPU metrics are more reliably retrieved from the browser context by running `onnx9000 serve` and viewing the WebNN dashboard.)*
+
+_(Note: Full detailed NPU metrics are more reliably retrieved from the browser context by running `onnx9000 serve` and viewing the WebNN dashboard.)_
 
 ## `chat`
 

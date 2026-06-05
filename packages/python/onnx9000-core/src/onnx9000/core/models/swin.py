@@ -7,7 +7,7 @@ from onnx9000.core.ops import add, concat, flatten, reshape, roll
 from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAttention
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -15,7 +15,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class WindowAttention:
     """Window based multi-head self attention (W-MSA) module with relative position bias."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dim: int,
         window_size: tuple[int, int],
@@ -31,7 +31,7 @@ class WindowAttention:
         self.attn = MultiHeadAttention(num_heads=num_heads, qkv_bias=qkv_bias)
         self.proj = Gemm(trans_b=1)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         # B_, N, C = x.shape
         # Just use standard attention. The shift is handled outside.
         # Adding relative positional encoding is usually a bias
@@ -54,7 +54,7 @@ class WindowAttention:
 class SwinTransformerBlock:
     """Swin Transformer Block."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dim: int,
         input_resolution: tuple[int, int],
@@ -91,7 +91,7 @@ class SwinTransformerBlock:
         self.act = Gelu()
         self.mlp_fc2 = Gemm(trans_b=1)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         identity = x
         x = self.norm1(
@@ -134,10 +134,10 @@ class SwinTransformerBlock:
         return x
 
 
-class SwinTransformer:  # noqa: D101
+class SwinTransformer:
     """Swin transformer."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         embed_dim: int = 96,
         depths: list[int] = None,
@@ -190,7 +190,7 @@ class SwinTransformer:  # noqa: D101
         self.norm = LayerNormalization((int(embed_dim * 2 ** (len(depths) - 1)),))
         self.head = Gemm(trans_b=1)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         x = self.patch_embed(x)
 
@@ -213,6 +213,6 @@ class SwinTransformer:  # noqa: D101
         return x
 
 
-def swin_t(**kwargs: Any) -> SwinTransformer:  # noqa: D103
+def swin_t(**kwargs: Any) -> SwinTransformer:
     """Swin t."""
     return SwinTransformer(**kwargs)

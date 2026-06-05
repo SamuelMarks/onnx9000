@@ -1,4 +1,3 @@
-/* eslint-disable */
 export type Type = {
   readonly id: string;
 };

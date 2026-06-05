@@ -32,7 +32,7 @@ def test_registry_fallback_coverage():
 
     def my_op():
         """My op."""
-        return "ok"  # pragma: no cover
+        return "ok"
 
     reg.register_op("test", "MyOp")(my_op)
     assert reg.get_op("test", "MyOp", provider="cuda") == my_op

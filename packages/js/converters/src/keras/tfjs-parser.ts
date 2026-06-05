@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 /**
  * Defines the supported mathematical data types natively supported by Web-Native machine learning layers.

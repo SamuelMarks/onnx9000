@@ -7,15 +7,15 @@ from onnx9000.core.ops import add
 from onnx9000.core.primitives import ConvND, Gelu, Gemm, LayerNormalization, MultiHeadAttention
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
-class WhisperEncoderLayer:  # noqa: D101
+class WhisperEncoderLayer:
     """Whisper encoder layer."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self, d_model: int, encoder_attention_heads: int, encoder_ffn_dim: int, prefix: str = ""
     ):
         """Init."""
@@ -30,7 +30,7 @@ class WhisperEncoderLayer:  # noqa: D101
         self.fc2 = Gemm(trans_b=1)
         self.final_layer_norm = LayerNormalization((d_model,))
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         identity = x
         x_norm = self.self_attn_layer_norm(
@@ -62,10 +62,10 @@ class WhisperEncoderLayer:  # noqa: D101
         return add(identity, x_ffn)
 
 
-class WhisperEncoder:  # noqa: D101
+class WhisperEncoder:
     """Whisper encoder."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         d_model: int = 512,
         encoder_attention_heads: int = 8,
@@ -87,7 +87,7 @@ class WhisperEncoder:  # noqa: D101
         ]
         self.layer_norm = LayerNormalization((d_model,))
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         # Input x: [batch, 80, seq_len]
         """Call."""
         x = self.conv1(
@@ -123,10 +123,10 @@ class WhisperEncoder:  # noqa: D101
         return x
 
 
-class WhisperDecoderLayer:  # noqa: D101
+class WhisperDecoderLayer:
     """Whisper decoder layer."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self, d_model: int, decoder_attention_heads: int, decoder_ffn_dim: int, prefix: str = ""
     ):
         """Init."""
@@ -144,7 +144,7 @@ class WhisperDecoderLayer:  # noqa: D101
         self.fc2 = Gemm(trans_b=1)
         self.final_layer_norm = LayerNormalization((d_model,))
 
-    def __call__(  # noqa: D102
+    def __call__(
         self, x: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
     ) -> Tensor:
         """Call."""
@@ -187,10 +187,10 @@ class WhisperDecoderLayer:  # noqa: D101
         return add(identity, x_ffn)
 
 
-class WhisperDecoder:  # noqa: D101
+class WhisperDecoder:
     """Whisper decoder."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         vocab_size: int = 51865,
         d_model: int = 512,
@@ -211,7 +211,7 @@ class WhisperDecoder:  # noqa: D101
         self.layer_norm = LayerNormalization((d_model,))
         self.lm_head = Gemm(trans_b=1)
 
-    def __call__(  # noqa: D102
+    def __call__(
         self, input_ids: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
     ) -> Tensor:
         """Call."""
@@ -236,10 +236,10 @@ class WhisperDecoder:  # noqa: D101
         return x
 
 
-class Whisper:  # noqa: D101
+class Whisper:
     """Whisper."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         d_model: int = 512,
         encoder_attention_heads: int = 8,
@@ -265,14 +265,14 @@ class Whisper:  # noqa: D101
             decoder_layers=decoder_layers,
         )
 
-    def __call__(self, input_features: Tensor, decoder_input_ids: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, input_features: Tensor, decoder_input_ids: Tensor) -> Tensor:
         """Call."""
         encoder_hidden_states = self.encoder(input_features)
         out = self.decoder(decoder_input_ids, encoder_hidden_states)
         return out
 
 
-def whisper_tiny(**kwargs: Any) -> Whisper:  # noqa: D103
+def whisper_tiny(**kwargs: Any) -> Whisper:
     """Whisper tiny."""
     return Whisper(
         d_model=384,

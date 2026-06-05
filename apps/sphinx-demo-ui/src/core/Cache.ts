@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 /**
  * A simple TTL-based eviction cache for ASTs and WASM outputs.

@@ -15,56 +15,56 @@ def test_script_var_ops():
     # Let's see what op.Add does.
     try:
         v + 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         1 + v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v - 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         1 - v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v * 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         1 * v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v / 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         1 / v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v**1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v @ 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v % 1
     except Exception:
         assert True
     try:
         _ = v < 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         _ = v > 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         _ = v <= 1
     except Exception:
@@ -75,12 +75,12 @@ def test_script_var_ops():
         assert True
     try:
         _ = v == 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         _ = v != 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
 
     try:
         v(1)
@@ -88,8 +88,8 @@ def test_script_var_ops():
         assert True
     try:
         v[1]
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v.test_attr
     except Exception:
@@ -110,32 +110,32 @@ def test_script_var_ops_more():
 
     try:
         v - 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         1 - v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v & 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v | 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v ^ 1
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         ~v
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
     try:
         v[1:5:2]
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
 
 
 def test_script_var_rename():

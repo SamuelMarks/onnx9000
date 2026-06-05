@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Interface for streaming token decoding.
  */
@@ -168,7 +167,7 @@ export class BPETokenizer implements Tokenizer {
     const tokenIds: number[] = [];
 
     for (const word of words) {
-      let w = word.split(''); /* v8 ignore next */ /* v8 ignore next */
+      let w = word.split('');
       if (w.length === 0) continue;
 
       while (true) {
@@ -183,7 +182,7 @@ export class BPETokenizer implements Tokenizer {
             break;
           }
         }
-        /* v8 ignore next */ /* v8 ignore next */
+
         if (!bestPair) break;
 
         const newWord: string[] = [];
@@ -404,7 +403,6 @@ export class UnigramTokenizer implements Tokenizer {
     const tokenIds: number[] = [];
 
     for (const word of words) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (!word) continue;
 
       const n = word.length;
@@ -488,8 +486,8 @@ export class HuggingFaceTokenizerLoader {
    * @param jsonContent Serialized tokenizer configuration.
    */
   static loadFromJson(jsonContent: string): Tokenizer {
-    const data = JSON.parse(jsonContent); /* v8 ignore next */ /* v8 ignore next */
-    const model = data.model || {}; /* v8 ignore next */ /* v8 ignore next */
+    const data = JSON.parse(jsonContent);
+    const model = data.model || {};
     const modelType = model.type || '';
 
     if (modelType === 'BPE') {

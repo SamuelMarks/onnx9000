@@ -69,8 +69,8 @@ def test_integration_keras_sequential() -> None:
 @pytest.mark.skip("keras not installed")
 def test_integration_keras_functional() -> None:
     """Tests the integration keras functional functionality."""
-    graph = convert_keras_to_onnx(b"", is_v3=True)  # pragma: no cover
-    assert graph.name == "keras_graph"  # pragma: no cover
+    graph = convert_keras_to_onnx(b"", is_v3=True)
+    assert graph.name == "keras_graph"
 
 
 def test_integration_tflite_quantized() -> None:

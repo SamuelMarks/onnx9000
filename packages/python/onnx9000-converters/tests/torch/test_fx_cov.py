@@ -101,7 +101,7 @@ def test_fx_multiple_outputs():
 
     class MyMod(torch.nn.Module):
         def forward(self, x):
-            return torch.ops.aten.foo_bar(x)  # pragma: no cover
+            return torch.ops.aten.foo_bar(x)
 
     # Mocking torch.ops.aten.foo_bar or just using an unsupported op
     class Mod(torch.nn.Module):
@@ -136,7 +136,7 @@ def test_script_unknown_op():
 
     class Mod(torch.nn.Module):
         def forward(self, x):
-            return x + 1  # pragma: no cover
+            return x + 1
 
     sm = torch.jit.script(Mod())
 

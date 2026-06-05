@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, ValueInfo } from '../ir/graph.js';
 import { Tensor, Shape, DType } from '../ir/tensor.js';
 

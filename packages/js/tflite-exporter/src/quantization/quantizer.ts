@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node, Tensor, Attribute } from '@onnx9000/core';
 import { QuantizationParameters } from '../flatbuffer/schema';
 

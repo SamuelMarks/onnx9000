@@ -23,12 +23,12 @@ class WeightsReader:
             np.ndarray: Array of weights.
         """
         if num_elements == 0:
-            return np.zeros(0, dtype=np.float32)  # pragma: no cover
+            return np.zeros(0, dtype=np.float32)
 
         # NCNN tag is 4 bytes
         tag_data = self.f.read(4)
         if not tag_data:
-            return np.zeros(num_elements, dtype=np.float32)  # pragma: no cover
+            return np.zeros(num_elements, dtype=np.float32)
 
         tag = struct.unpack("I", tag_data)[0]
 

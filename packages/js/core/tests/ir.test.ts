@@ -79,12 +79,10 @@ describe('Tensor Format', () => {
   it('should generate uuid via math random if crypto missing', () => {
     // we can mock crypto to test the fallback
     const origCrypto = globalThis.crypto;
-    // @ts-ignore
     delete globalThis.crypto;
     const t = new Tensor('T', [2], 'float32');
     expect(t.id).toBeDefined();
     expect(typeof t.id).toBe('string');
-    // @ts-ignore
     globalThis.crypto = origCrypto;
   });
 
@@ -147,13 +145,11 @@ describe('Tensor Format', () => {
 describe('Graph specific', () => {
   it('should generate vi uuid via math random if crypto missing', () => {
     const origCrypto = globalThis.crypto;
-    // @ts-ignore
     delete globalThis.crypto;
     const g = new Graph('g1');
     const vi = new ValueInfo('V', [1], 'float32');
     expect(vi.id).toBeDefined();
     expect(g.id).toBeDefined();
-    // @ts-ignore
     globalThis.crypto = origCrypto;
   });
 });
@@ -169,11 +165,9 @@ describe('Node format/missing', () => {
 describe('Node format/missing', () => {
   it('should generate uuid via math random if crypto missing', () => {
     const origCrypto = globalThis.crypto;
-    // @ts-ignore
     delete globalThis.crypto;
     const n = new Node('Relu', [], []);
     expect(n.id).toBeDefined();
-    // @ts-ignore
     globalThis.crypto = origCrypto;
   });
 });

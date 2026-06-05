@@ -75,7 +75,7 @@ test.describe('ONNX9000 Generic AOT Compiler Demo', () => {
     if (await compileContainer.isVisible()) {
       const btn = page.locator('#btn-compile');
       await btn.click();
-      
+
       const output = page.locator('#output');
       await expect(output).toContainText('AOT Compilation finished: model.bin', { timeout: 2000 });
     }

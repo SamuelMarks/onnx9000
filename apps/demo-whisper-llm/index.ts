@@ -1,1 +1,6 @@
-/* v8 ignore next */ /* v8 ignore next */ // Whisper -> LLM demo
+/**
+ * Whisper -> LLM demo index.
+ */
+export function initWhisperLlmIndex(): void {
+  // Demo placeholder
+}

@@ -7,15 +7,15 @@ from onnx9000.core.ops import add, mul
 from onnx9000.core.primitives import ConvND, Gemm, RMSNorm, Silu, StateSpace
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
-class MambaBlock:  # noqa: D101
+class MambaBlock:
     """Mamba block."""
 
-    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int, prefix: str = ""):  # noqa: D107
+    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.d_model = d_model
@@ -43,7 +43,7 @@ class MambaBlock:  # noqa: D101
 
         self.out_proj = Gemm(trans_b=1)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         identity = x
         x_norm = self.norm(x, get_param(f"{self.prefix}.norm.weight", [self.d_model]))
@@ -133,10 +133,10 @@ class MambaBlock:  # noqa: D101
         return add(identity, out)
 
 
-class Mamba:  # noqa: D101
+class Mamba:
     """Mamba."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         vocab_size: int = 50277,
         d_model: int = 768,
@@ -156,7 +156,7 @@ class Mamba:  # noqa: D101
         self.norm = RMSNorm((d_model,))
         self.lm_head = Gemm(trans_b=1)
 
-    def __call__(self, input_ids: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, input_ids: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gather
 
@@ -172,7 +172,7 @@ class Mamba:  # noqa: D101
         return x
 
 
-def mamba_130m(**kwargs: Any) -> Mamba:  # noqa: D103
+def mamba_130m(**kwargs: Any) -> Mamba:
     """Mamba 130m."""
     return Mamba(
         vocab_size=50277, d_model=768, n_layer=24, d_state=16, d_conv=4, expand=2, **kwargs

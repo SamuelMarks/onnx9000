@@ -174,7 +174,7 @@ class TorchScriptParser:
         # Mapping common aten:: and prim:: ops
         op_type = kind.split("::")[-1]
 
-        import onnx9000.converters.torch.torch_ops  # noqa: F401
+        import onnx9000.converters.torch.torch_ops
         from onnx9000.core.registry import global_registry
 
         try:

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // 101. Initialize Node.js WebGPU backend bindings
 // 102. Initialize Deno WebGPU backend natively
 // 103. Initialize Bun WebGPU / WASM adapters seamlessly
@@ -54,9 +53,7 @@ export class WebGPUManager {
     // Graceful restart logic
     this.device = null;
     this.init().catch((err) => {
-      /* v8 ignore start */
       this.fallbackToWasm = true;
-      /* v8 ignore stop */
     });
   }
 

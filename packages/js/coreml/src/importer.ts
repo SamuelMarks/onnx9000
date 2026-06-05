@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node as ONNXNode, Tensor, Shape } from '@onnx9000/core';
 import { Program, Var, Operation } from './mil/ast.js';
 

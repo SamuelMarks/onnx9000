@@ -31,5 +31,5 @@ Once an architecture is mapped to the core IR, it is automatically compatible wi
 - **Format Export:** via `onnx9000-onnx2gguf`, `@onnx9000/coreml`, or `onnx9000-tflite-exporter`.
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

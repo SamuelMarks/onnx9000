@@ -8,7 +8,7 @@ from onnx9000.core.models.vit import VisionTransformer
 from onnx9000.core.primitives import Gemm
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -16,7 +16,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class CLIP:
     """CLIP Model composing Vision and Language networks."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         embed_dim: int = 512,
         vision_width: int = 768,
@@ -53,7 +53,7 @@ class CLIP:
         self.text_projection = Gemm(trans_b=1)
         self.logit_scale = get_param("logit_scale", [1])
 
-    def __call__(self, image: Tensor, text: Tensor) -> tuple[Tensor, Tensor]:  # noqa: D102
+    def __call__(self, image: Tensor, text: Tensor) -> tuple[Tensor, Tensor]:
         """Call."""
         image_features = self.visual(image)
 
@@ -75,6 +75,6 @@ class CLIP:
         return image_features, text_features
 
 
-def clip_vit_base_patch16(**kwargs: Any) -> CLIP:  # noqa: D103
+def clip_vit_base_patch16(**kwargs: Any) -> CLIP:
     """Clip vit base patch16."""
     return CLIP(**kwargs)

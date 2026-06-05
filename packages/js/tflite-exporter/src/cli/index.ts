@@ -1,4 +1,3 @@
-/* eslint-disable */
 import fs from 'fs';
 import path from 'path';
 import { parseModelProto, BufferReader } from '@onnx9000/core';

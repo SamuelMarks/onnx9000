@@ -13,15 +13,15 @@ from onnx9000.core.primitives import (
 )
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
-class SwiGLU:  # noqa: D101
+class SwiGLU:
     """Swi glu."""
 
-    def __init__(self, hidden_dim: int, ffn_dim: int, prefix: str = ""):  # noqa: D107
+    def __init__(self, hidden_dim: int, ffn_dim: int, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.hidden_dim = hidden_dim
@@ -31,7 +31,7 @@ class SwiGLU:  # noqa: D101
         self.w3 = Gemm(trans_b=1)  # Up
         self.act = Silu()
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         gate = self.w1(x, get_param(f"{self.prefix}.w1.weight", [self.ffn_dim, self.hidden_dim]))
         up = self.w3(x, get_param(f"{self.prefix}.w3.weight", [self.ffn_dim, self.hidden_dim]))
@@ -46,10 +46,10 @@ class SwiGLU:  # noqa: D101
         return down
 
 
-class LLaMABlock:  # noqa: D101
+class LLaMABlock:
     """L la ma block."""
 
-    def __init__(self, dim: int, num_heads: int, num_kv_heads: int, ffn_dim: int, prefix: str = ""):  # noqa: D107
+    def __init__(self, dim: int, num_heads: int, num_kv_heads: int, ffn_dim: int, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.dim = dim
@@ -58,7 +58,7 @@ class LLaMABlock:  # noqa: D101
         self.norm2 = RMSNorm((dim,))
         self.mlp = SwiGLU(dim, ffn_dim, prefix=f"{prefix}.mlp")
 
-    def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
@@ -77,10 +77,10 @@ class LLaMABlock:  # noqa: D101
         return x
 
 
-class LLaMA:  # noqa: D101
+class LLaMA:
     """L la ma."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         vocab_size: int = 32000,
         dim: int = 4096,
@@ -105,7 +105,7 @@ class LLaMA:  # noqa: D101
         self.lm_head = Gemm(trans_b=1)
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
-    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gather
 
@@ -124,14 +124,14 @@ class LLaMA:  # noqa: D101
         return x
 
 
-def llama_7b(**kwargs: Any) -> LLaMA:  # noqa: D103
+def llama_7b(**kwargs: Any) -> LLaMA:
     """Llama 7b."""
     return LLaMA(
         vocab_size=32000, dim=4096, num_heads=32, num_kv_heads=32, depth=32, ffn_dim=11008, **kwargs
     )
 
 
-def mistral_7b(**kwargs: Any) -> LLaMA:  # noqa: D103
+def mistral_7b(**kwargs: Any) -> LLaMA:
     """Mistral 7b."""
     return LLaMA(
         vocab_size=32000, dim=4096, num_heads=32, num_kv_heads=8, depth=32, ffn_dim=14336, **kwargs

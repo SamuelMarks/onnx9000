@@ -25,7 +25,7 @@ class CNTKConverter(BaseParser):
                 content = f.read()
         else:
             if isinstance(model, str):
-                content = model.encode("utf-8")  # pragma: no cover
+                content = model.encode("utf-8")
             else:
                 content = model
 

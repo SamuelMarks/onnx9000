@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { GGUFValueType, GGUFTensorType } from './builder';
 
 export class GGUFReader {
@@ -94,11 +93,9 @@ export class GGUFReader {
           arr.push(this.readVal(atype));
         }
         return arr;
-      } /* v8 ignore next */ /* v8 ignore next */
+      }
       default:
-        /* v8 ignore start */
         throw new Error(`Unknown value type: ${vtype}`);
-      /* v8 ignore stop */
     }
   }
 
@@ -165,11 +162,9 @@ export class GGUFReader {
     if (t.type === GGUFTensorType.F32) size = items * 4n;
     else if (t.type === GGUFTensorType.F16) size = items * 2n;
     else if (t.type === GGUFTensorType.Q4_0) size = (items / 32n) * 18n;
-    else if (t.type === GGUFTensorType.Q4_1)
-      size = (items / 32n) * 20n; /* v8 ignore next */ /* v8 ignore next */
+    else if (t.type === GGUFTensorType.Q4_1) size = (items / 32n) * 20n;
     else if (t.type === GGUFTensorType.Q8_0) size = (items / 32n) * 34n;
-    /* v8 ignore start */ else throw new Error('Unknown type');
-    /* v8 ignore stop */
+    else throw new Error('Unknown type');
 
     const byteOffset = this.dataStart + Number(t.offset);
     return new Uint8Array(this.buffer, byteOffset, Number(size));

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Tensor } from '@onnx9000/core';
 import { ExecutionProvider } from '../../session.js';
 

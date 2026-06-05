@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as scf from '../dialects/web/scf.js';
 

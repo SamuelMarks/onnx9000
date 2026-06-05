@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Router } from './router';
 import { addKServeRoutes } from './kserve';
 import { addOpenAIRoutes } from './openai';

@@ -32,5 +32,5 @@ This multi-layer architecture enables `@onnx9000/compiler` to emit fully self-co
 Because the entire compiler is available as a **WASM-First** package, you can perform these lowering steps directly in the browser or via a lightweight CLI. This enables a truly **Polyglot** development experience where models from any framework can be lowered to the metal with minimal latency.
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

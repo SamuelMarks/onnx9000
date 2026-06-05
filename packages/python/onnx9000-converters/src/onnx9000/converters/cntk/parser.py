@@ -25,7 +25,7 @@ def parse_cntk_model(data: bytes) -> dict[str, Any]:
     while decoder.pos < len(decoder.data):
         field, wire = decoder.read_tag()
         if field == 0:
-            break  # pragma: no cover
+            break
 
         if wire == 2:
             length = decoder.read_varint()

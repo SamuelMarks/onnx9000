@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { FlatBufferBuilder } from './builder';
 
 export enum TensorType {

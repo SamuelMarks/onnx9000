@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { renameTensor } from './naming';
 import { extractTokenizerMetadata } from './tokenizer';
 import { extractMetadata, inferArchitecture } from './arch';
@@ -12,7 +11,6 @@ function getGGUFType(dtype: string): GGUFTensorType {
 }
 
 function sanitizeDocString(doc: string): string {
-  /* v8 ignore next */ /* v8 ignore next */
   return doc ? doc.trim() : '';
 }
 
@@ -27,7 +25,7 @@ export function compileGGUF(
 
   // Phase 2 Defaults
   const generalKvs: Record<string, ReturnType<typeof JSON.parse>> = {
-    'general.architecture': arch /* v8 ignore next */ /* v8 ignore next */,
+    'general.architecture': arch,
     'general.name': graph.name || 'model',
     'general.author': (graph as ReturnType<typeof JSON.parse>).producerName || 'onnx9000',
     'general.version': Number((graph as ReturnType<typeof JSON.parse>).modelVersion || 1),
@@ -57,7 +55,7 @@ export function compileGGUF(
   // Phase 3 & 4
   const archMeta = extractMetadata(graph, archOverride);
   for (const [k, v] of Object.entries(archMeta)) {
-    if (typeof v === 'boolean') writer.addBool(k, v); /* v8 ignore next */ /* v8 ignore next */
+    if (typeof v === 'boolean') writer.addBool(k, v);
     else if (typeof v === 'string') writer.addString(k, v);
     else if (typeof v === 'number' && !Number.isInteger(v)) writer.addFloat32(k, v);
     else if (typeof v === 'number') writer.addUint32(k, v);
@@ -78,11 +76,9 @@ export function compileGGUF(
           v,
           typeof v[0] === 'number'
             ? GGUFValueType.FLOAT32
-            : typeof v[0] === 'string' /* v8 ignore next */ /* v8 ignore next */
+            : typeof v[0] === 'string'
               ? GGUFValueType.STRING
-              : /* v8 ignore start */
-                GGUFValueType.INT32,
-          /* v8 ignore stop */
+              : GGUFValueType.INT32,
         );
       else if (typeof v === 'number') writer.addUint32(k, v);
     }
@@ -115,10 +111,7 @@ export function compileGGUF(
   for (const initName of graph.initializers) {
     const t = graph.tensors[initName];
     if (t) {
-      const ggufName = initName.replace(
-        /model\.layers\.(\d+)/g,
-        'blk.$1',
-      ); /* v8 ignore next */ /* v8 ignore next */
+      const ggufName = initName.replace(/model\.layers\.(\d+)/g, 'blk.$1');
       const shape = t.shape.map((s) => (typeof s === 'number' ? BigInt(s) : 1n)).reverse();
       const type = getGGUFType(t.dtype);
       writer.addTensorInfo(ggufName, shape, type, currentOffset);

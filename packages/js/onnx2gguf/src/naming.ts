@@ -1,4 +1,3 @@
-/* eslint-disable */
 const DEFAULT_MAPPING: [RegExp, string][] = [
   [/^model\.embed_tokens\.weight$/, 'token_embd.weight'],
   [/^model\.layers\.(\d+)\.input_layernorm\.weight$/, 'blk.$1.attn_norm.weight'],

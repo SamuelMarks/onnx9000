@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as http from 'node:http';
 import * as http2 from 'node:http2';
 import { Onnx9000Server } from './index';
@@ -13,13 +12,8 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
   ) => {
     try {
       // Reconstruct full URL
-      const protocol = req.socket.encrypted
-        ? 'https'
-        : 'http'; /* v8 ignore next */ /* v8 ignore next */
-      const host =
-        req.headers[':authority'] ||
-        req.headers.host ||
-        'localhost'; /* v8 ignore next */ /* v8 ignore next */
+      const protocol = req.socket.encrypted ? 'https' : 'http';
+      const host = req.headers[':authority'] || req.headers.host || 'localhost';
       const urlStr = req.url || '/';
       const url = new URL(urlStr, `${protocol}://${host}`);
 
@@ -43,7 +37,6 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
       }
       const bodyBuffer = Buffer.concat(buffers);
       const init: RequestInit = {
-        /* v8 ignore next */ /* v8 ignore next */
         method: req.method || req.headers[':method'] || 'GET',
         headers,
       };
@@ -85,7 +78,6 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
         res.end();
       }
     } catch (_err) {
-      /* v8 ignore next */ /* v8 ignore next */
       const err = _err instanceof Error ? _err : new Error(String(_err));
       if (res.stream) {
         res.stream.respond({ ':status': 500 });
@@ -102,7 +94,6 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
 
   httpServer.listen(port, () => {
     console.log(
-      /* v8 ignore next */ /* v8 ignore next */
       `ONNX9000 Serve listening on port ${port} (Node.js ${useHttp2 ? 'HTTP/2' : 'HTTP/1.1'})`,
     );
   });

@@ -15,7 +15,6 @@ describe('Coverage gaps for WebNN Context', () => {
     });
     const orig = (globalThis as any).MLGraphBuilder;
     delete (globalThis as any).MLGraphBuilder;
-    // @ts-ignore
     delete global.MLGraphBuilder;
     const manager = WebNNContextManager.getInstance();
     await expect(manager.initialize()).rejects.toThrow(
@@ -34,7 +33,6 @@ describe('Coverage gaps for WebNN Context', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -71,7 +69,6 @@ describe('Coverage gaps for WebNN Context', () => {
       value: { ml: { createContext: mockCreateContext } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -118,7 +115,6 @@ describe('Coverage gaps for WebNN Context', () => {
 
     // Temporarily hide global MLGraphBuilder but provide it on globalThis
     const orig = (globalThis as any).MLGraphBuilder;
-    // @ts-ignore
     delete global.MLGraphBuilder;
     (globalThis as any).MLGraphBuilder = class {
       constructor() {}
@@ -335,7 +331,6 @@ describe('WebNNProvider Edge Case Coverages', () => {
       configurable: true,
     });
     const mockDestroy = vi.fn();
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -386,7 +381,6 @@ describe('WebNNProvider Edge Case Coverages', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue({}) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -439,7 +433,6 @@ describe('WebNNProvider allocateBuffer types', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {

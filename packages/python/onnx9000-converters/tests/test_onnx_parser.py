@@ -13,7 +13,7 @@ def write_varint(f, value):
         byte = value & 0x7F
         value >>= 7
         if value:
-            f.write(bytes([byte | 0x80]))  # pragma: no cover
+            f.write(bytes([byte | 0x80]))
         else:
             f.write(bytes([byte]))
             break
@@ -26,10 +26,10 @@ def write_tag(f, field_num, wire_type):
 
 def write_string(f, field_num, string_val):
     """Docstring for D103."""
-    write_tag(f, field_num, 2)  # pragma: no cover
-    b = string_val.encode("utf-8")  # pragma: no cover
-    write_varint(f, len(b))  # pragma: no cover
-    f.write(b)  # pragma: no cover
+    write_tag(f, field_num, 2)
+    b = string_val.encode("utf-8")
+    write_varint(f, len(b))
+    f.write(b)
 
 
 def test_pure_onnx_parser():
@@ -295,7 +295,7 @@ def test_pure_onnx_parser_misc(tmp_path):
             byte = value & 0x7F
             value >>= 7
             if value:
-                f.write(bytes([byte | 0x80]))  # pragma: no cover
+                f.write(bytes([byte | 0x80]))
             else:
                 f.write(bytes([byte]))
                 break
@@ -323,41 +323,41 @@ def test_pure_onnx_parser_misc(tmp_path):
 
 def test_pure_onnx_parser_node_skip(tmp_path):
     """Docstring for D103."""
-    from onnx9000.converters.onnx_parser import PureOnnxParser  # pragma: no cover
+    from onnx9000.converters.onnx_parser import PureOnnxParser
 
-    def write_varint(f, value):  # pragma: no cover
+    def write_varint(f, value):
         """Write varint."""
-        while True:  # pragma: no cover
-            byte = value & 0x7F  # pragma: no cover
-            value >>= 7  # pragma: no cover
-            if value:  # pragma: no cover
-                f.write(bytes([byte | 0x80]))  # pragma: no cover
+        while True:
+            byte = value & 0x7F
+            value >>= 7
+            if value:
+                f.write(bytes([byte | 0x80]))
             else:
-                f.write(bytes([byte]))  # pragma: no cover
-                break  # pragma: no cover
+                f.write(bytes([byte]))
+                break
 
-    def write_tag(f, field_num, wire_type):  # pragma: no cover
+    def write_tag(f, field_num, wire_type):
         """Write tag."""
-        write_varint(f, (field_num << 3) | wire_type)  # pragma: no cover
+        write_varint(f, (field_num << 3) | wire_type)
 
-    model_path = str(tmp_path / "model_skip.onnx")  # pragma: no cover
-    with open(model_path, "wb") as f:  # pragma: no cover
-        graph_bytes = bytearray()  # pragma: no cover
+    model_path = str(tmp_path / "model_skip.onnx")
+    with open(model_path, "wb") as f:
+        graph_bytes = bytearray()
 
-        node_bytes = bytearray()  # pragma: no cover
+        node_bytes = bytearray()
         # field 31 -> unknown on NodeProto
-        node_bytes.extend(bytes([31 << 3 | 0]))  # pragma: no cover
-        node_bytes.extend(bytes([42]))  # pragma: no cover
-        node_bytes.extend(bytes([0]))  # pragma: no cover
-        graph_bytes.extend(bytes([1 << 3 | 2, len(node_bytes)]))  # pragma: no cover
-        graph_bytes.extend(node_bytes)  # pragma: no cover
+        node_bytes.extend(bytes([31 << 3 | 0]))
+        node_bytes.extend(bytes([42]))
+        node_bytes.extend(bytes([0]))
+        graph_bytes.extend(bytes([1 << 3 | 2, len(node_bytes)]))
+        graph_bytes.extend(node_bytes)
 
-        write_tag(f, 7, 2)  # pragma: no cover
-        write_varint(f, len(graph_bytes))  # pragma: no cover
-        f.write(graph_bytes)  # pragma: no cover
+        write_tag(f, 7, 2)
+        write_varint(f, len(graph_bytes))
+        f.write(graph_bytes)
 
-    with PureOnnxParser(model_path) as parser:  # pragma: no cover
-        parser.parse_model()  # pragma: no cover
+    with PureOnnxParser(model_path) as parser:
+        parser.parse_model()
 
 
 def test_pure_onnx_parser_tensor_misc(tmp_path):
@@ -370,7 +370,7 @@ def test_pure_onnx_parser_tensor_misc(tmp_path):
             byte = value & 0x7F
             value >>= 7
             if value:
-                f.write(bytes([byte | 0x80]))  # pragma: no cover
+                f.write(bytes([byte | 0x80]))
             else:
                 f.write(bytes([byte]))
                 break
@@ -427,7 +427,7 @@ def test_pure_onnx_parser_tensor_packed_dims(tmp_path):
             byte = value & 0x7F
             value >>= 7
             if value:
-                f.write(bytes([byte | 0x80]))  # pragma: no cover
+                f.write(bytes([byte | 0x80]))
             else:
                 f.write(bytes([byte]))
                 break
@@ -466,7 +466,7 @@ def test_pure_onnx_parser_node_skip(tmp_path):
             byte = value & 0x7F
             value >>= 7
             if value:
-                f.write(bytes([byte | 0x80]))  # pragma: no cover
+                f.write(bytes([byte | 0x80]))
             else:
                 f.write(bytes([byte]))
                 break

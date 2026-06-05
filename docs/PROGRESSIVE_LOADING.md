@@ -52,5 +52,5 @@ const result = await session.run(inputs);
 ```
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

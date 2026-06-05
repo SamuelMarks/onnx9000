@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { FileNode } from '../components/FileTree';
 

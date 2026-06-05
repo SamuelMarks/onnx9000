@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { Agent } from '../src/index.js';
-describe('agent', () => {
-  it('runs', () => {
-    expect(new Agent().run()).toBe('[agent] processed');
+
+describe('Agent', () => {
+  it('should run', () => {
+    const a = new Agent();
+    expect(a.run()).toBe('[agent] processed');
   });
 });

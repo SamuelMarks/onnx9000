@@ -42,59 +42,55 @@ class JAXImporter:
 
         # Add to graph tensors if it has type info
         if hasattr(var, "aval"):
-            shape = list(var.aval.shape)  # pragma: no cover
-            dtype = self._map_dtype(var.aval.dtype)  # pragma: no cover
-            self.builder.add_tensor(Variable(name, shape, dtype))  # pragma: no cover
+            shape = list(var.aval.shape)
+            dtype = self._map_dtype(var.aval.dtype)
+            self.builder.add_tensor(Variable(name, shape, dtype))
 
         return name
 
     def import_func(self, func: Callable, *args: Any, **kwargs: Any) -> Graph:
         """Trace a JAX function and import it into onnx9000 IR."""
-        import jax  # pragma: no cover
+        import jax
 
-        def flat_func(*args, **kwargs):  # pragma: no cover
+        def flat_func(*args, **kwargs):
             """Execute internal flattened function for JAX tracing."""
-            return func(*args, **kwargs)  # pragma: no cover
+            return func(*args, **kwargs)
 
-        jaxpr = jax.make_jaxpr(flat_func)(*args, **kwargs)  # pragma: no cover
-        return self.import_jaxpr(jaxpr.jaxpr, jaxpr.consts)  # pragma: no cover
+        jaxpr = jax.make_jaxpr(flat_func)(*args, **kwargs)
+        return self.import_jaxpr(jaxpr.jaxpr, jaxpr.consts)
 
     def import_jaxpr(self, jaxpr: Any, consts: list[Any]) -> Graph:
         """Import a JAX jaxpr structure into onnx9000 IR."""
         # Add inputs
         for var in jaxpr.invars:
-            name = self.get_var_name(var)  # pragma: no cover
-            self.builder.inputs.append(name)  # pragma: no cover
+            name = self.get_var_name(var)
+            self.builder.inputs.append(name)
 
         # Add constants
         for var, val in zip(jaxpr.constvars, consts):
-            name = self.get_var_name(var)  # pragma: no cover
-            import numpy as np  # pragma: no cover
-            from onnx9000.core.ir import Constant  # pragma: no cover
+            name = self.get_var_name(var)
+            import numpy as np
+            from onnx9000.core.ir import Constant
 
-            c = Constant(
-                name, values=np.array(val).tobytes(), shape=list(np.array(val).shape)
-            )  # pragma: no cover
-            self.builder.add_tensor(c)  # pragma: no cover
+            c = Constant(name, values=np.array(val).tobytes(), shape=list(np.array(val).shape))
+            self.builder.add_tensor(c)
 
         # Process equations
         for eqn in jaxpr.eqns:
-            in_names = [self.get_var_name(v) for v in eqn.invars]  # pragma: no cover
-            out_names = [self.get_var_name(v) for v in eqn.outvars]  # pragma: no cover
-            params = dict(eqn.params.items())  # pragma: no cover
+            in_names = [self.get_var_name(v) for v in eqn.invars]
+            out_names = [self.get_var_name(v) for v in eqn.outvars]
+            params = dict(eqn.params.items())
 
-            import onnx9000.jax.jax_ops  # noqa: F401  # pragma: no cover
-            from onnx9000.core.registry import global_registry  # pragma: no cover
+            import onnx9000.jax.jax_ops
+            from onnx9000.core.registry import global_registry
 
-            try:  # pragma: no cover
-                op_func = global_registry.get_op("jax", eqn.primitive.name)  # pragma: no cover
-                node = op_func(
-                    inputs=in_names, outputs=out_names, params=params
-                )  # pragma: no cover
-            except Exception:  # pragma: no cover
+            try:
+                op_func = global_registry.get_op("jax", eqn.primitive.name)
+                node = op_func(inputs=in_names, outputs=out_names, params=params)
+            except Exception:
                 # Fallback to uppercase
-                op_type = eqn.primitive.name.capitalize()  # pragma: no cover
-                node = Node(  # pragma: no cover
+                op_type = eqn.primitive.name.capitalize()
+                node = Node(
                     op_type=op_type,
                     inputs=in_names,
                     outputs=out_names,
@@ -102,12 +98,12 @@ class JAXImporter:
                     name=f"{op_type}_{out_names[0]}" if out_names else op_type,
                 )
 
-            self.builder.add_node(node)  # pragma: no cover
+            self.builder.add_node(node)
 
         # Add outputs
         for var in jaxpr.outvars:
-            name = self.get_var_name(var)  # pragma: no cover
-            self.builder.outputs.append(name)  # pragma: no cover
+            name = self.get_var_name(var)
+            self.builder.outputs.append(name)
 
         return self.builder
 

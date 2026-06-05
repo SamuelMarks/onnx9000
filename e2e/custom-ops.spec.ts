@@ -23,7 +23,7 @@ test.describe('ONNX9000 Custom Ops Demo', () => {
       // Check if it's added to the registry list
       const registry = page.locator('.op-registry');
       await expect(registry).toContainText('MySuperCustomOp');
-      
+
       const opCount = await page.locator('.op-item').count();
       expect(opCount).toBeGreaterThan(0);
     }

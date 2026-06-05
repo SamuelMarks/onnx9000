@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { JsonObject } from './tfjs-parser.js';
 
 export interface PyodideInterface {

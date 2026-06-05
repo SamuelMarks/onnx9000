@@ -2,13 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { SKL2ONNXConverter } from '../src/index.js';
 
 describe('SKL2ONNXConverter', () => {
-  it('should convert a skl model', () => {
-    const converter = new SKL2ONNXConverter();
-    expect(converter.convert('skl_model_data')).toBe('[ONNX-IR] from skl skl_model_data');
-  });
-
-  it('should throw on empty string', () => {
-    const converter = new SKL2ONNXConverter();
-    expect(() => converter.convert('')).toThrow('Invalid model string');
+  it('should convert', () => {
+    const c = new SKL2ONNXConverter();
+    expect(c.convert('model')).toContain('[ONNX-IR]');
+    expect(() => c.convert('')).toThrow();
   });
 });

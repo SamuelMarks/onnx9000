@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 export interface DarknetLayer {
   type: string;
@@ -11,7 +11,7 @@ export function parseCfg(cfgStr: string): DarknetLayer[] {
   let currentLayer: DarknetLayer | null = null;
 
   for (let i = 0; i < lines.length; i++) {
-    const rawLine = lines[i]; /* v8 ignore next */ /* v8 ignore next */
+    const rawLine = lines[i];
     if (rawLine === undefined) continue;
 
     // Remove comments
@@ -31,7 +31,7 @@ export function parseCfg(cfgStr: string): DarknetLayer[] {
         if (valueStr.includes(',')) {
           const listVals = valueStr.split(',').map((v) => {
             const vTrim = v.trim();
-            const n = Number(vTrim); /* v8 ignore next */ /* v8 ignore next */
+            const n = Number(vTrim);
             return isNaN(n) ? vTrim : n;
           });
           currentLayer[key] = listVals;
@@ -65,7 +65,7 @@ export function parseWeights(buffer: ArrayBuffer): Float32Array {
   if (major * 10 + minor >= 2 && major < 1000 && minor < 1000) {
     offset = 20;
   }
-  /* v8 ignore next */ /* v8 ignore next */
+
   if (offset > buffer.byteLength) offset = buffer.byteLength;
 
   return new Float32Array(buffer, offset);

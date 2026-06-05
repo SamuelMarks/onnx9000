@@ -21,7 +21,7 @@ export class ONNXToPyTorchVisitor {
     // Register parameters/buffers
     let initParams = '';
     for (const name of Object.keys(this.graph.tensors)) {
-      const tensor = this.graph.tensors[name]; /* v8 ignore next */ /* v8 ignore next */
+      const tensor = this.graph.tensors[name];
       if (!tensor) continue;
       if (tensor.isInitializer) {
         const shapeStr = tensor.shape.join(', ');
@@ -38,15 +38,14 @@ export class ONNXToPyTorchVisitor {
 
     const opEmitters: Record<string, (inputs: string[], outputs: string[], node: Node) => string> =
       {
-        /* v8 ignore next */ /* v8 ignore next */
         Relu: (inputs, outputs) => `        ${outputs[0] || ''} = F.relu(${inputs[0] || ''})\n`,
-        Conv: (inputs, outputs, node /* v8 ignore next */ /* v8 ignore next */) =>
+        Conv: (inputs, outputs, node) =>
           `        # Conv mapped to functional conv2d\n        ${outputs[0] || ''} = F.conv2d(${inputs[0] || ''}, self.${cleanName(node.inputs[1] || '')})\n`,
-        MatMul: (inputs, outputs /* v8 ignore next */ /* v8 ignore next */) =>
+        MatMul: (inputs, outputs) =>
           `        ${outputs[0] || ''} = torch.matmul(${inputs[0] || ''}, ${inputs[1] || ''})\n`,
-        Add: (inputs, outputs /* v8 ignore next */ /* v8 ignore next */) =>
+        Add: (inputs, outputs) =>
           `        ${outputs[0] || ''} = ${inputs[0] || ''} + ${inputs[1] || ''}\n`,
-        Reshape: (inputs, outputs, node /* v8 ignore next */ /* v8 ignore next */) =>
+        Reshape: (inputs, outputs, node) =>
           `        ${outputs[0] || ''} = torch.reshape(${inputs[0] || ''}, self.${cleanName(node.inputs[1] || '')}.tolist())\n`,
       };
 

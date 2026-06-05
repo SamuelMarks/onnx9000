@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Tensor, Node } from '@onnx9000/core';
 
 import { GraphPartitioner } from './partitioner.js';

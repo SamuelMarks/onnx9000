@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Attribute, Tensor, Shape, DynamicDim } from '@onnx9000/core';
 

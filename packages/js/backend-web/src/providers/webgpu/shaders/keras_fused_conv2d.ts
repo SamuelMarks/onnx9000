@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * WGSL Shader for Fused Keras Conv2D.
  * @param activation Activation function name ('relu', 'swish', or 'linear').

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 export interface CNTKNode {
   name: string;

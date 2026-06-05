@@ -362,8 +362,8 @@ def test_exporter_edge_cases():
         exporter._validate_tensor_bounds([2**31], 2**31 + 1)
     except ValueError:
         return None
-    idx = exporter.add_buffer(b"")  # pragma: no cover
-    assert idx == exporter.empty_buffer_index  # pragma: no cover
+    idx = exporter.add_buffer(b"")
+    assert idx == exporter.empty_buffer_index
 
 
 def test_operators_gaps2():

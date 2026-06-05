@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { convert } from '@onnx9000/converters';
 import { globalEventBus } from '../core/EventBus';

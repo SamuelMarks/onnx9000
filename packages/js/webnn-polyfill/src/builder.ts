@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {
   MLContext,
   MLOperandDescriptor,
@@ -140,8 +139,8 @@ export class PolyfillMLGraphBuilder {
     const inNames = validInputs.map((i) => (i as PolyfillMLOperand).name);
     const outName = `${name}_out`;
 
-    // Simplistic shape/type inference for the polyfill (we rely on ONNX standard later, but provide a basic shape) /* v8 ignore next */ /* v8 ignore next */
-    const outType = inputs[0]?.dataType || 'float32'; /* v8 ignore next */ /* v8 ignore next */
+    // Simplistic shape/type inference for the polyfill (we rely on ONNX standard later, but provide a basic shape)
+    const outType = inputs[0]?.dataType || 'float32';
     const outShape = inputs[0]?.shape || []; // Broadcasting not strictly implemented here, just passing through
 
     const node = new Node(opType, inNames, [outName], attributes, name);
@@ -376,7 +375,7 @@ export class PolyfillMLGraphBuilder {
   leakyRelu(a: MLOperand, options?: MLLeakyReluOptions): MLOperand {
     return this.emitNode(
       'LeakyRelu',
-      [a] /* v8 ignore next */ /* v8 ignore next */,
+      [a],
       options?.alpha !== undefined ? { alpha: new Attribute('alpha', 'FLOAT', options.alpha) } : {},
     );
   }
@@ -389,7 +388,7 @@ export class PolyfillMLGraphBuilder {
   elu(a: MLOperand, options?: MLEluOptions): MLOperand {
     return this.emitNode(
       'Elu',
-      [a] /* v8 ignore next */ /* v8 ignore next */,
+      [a],
       options?.alpha !== undefined ? { alpha: new Attribute('alpha', 'FLOAT', options.alpha) } : {},
     );
   }
@@ -636,7 +635,7 @@ export class PolyfillMLGraphBuilder {
   gather(a: MLOperand, indices: MLOperand, options?: MLGatherOptions): MLOperand {
     return this.emitNode(
       'Gather',
-      [a, indices] /* v8 ignore next */ /* v8 ignore next */,
+      [a, indices],
       options?.axis !== undefined ? { axis: new Attribute('axis', 'INT', options.axis) } : {},
     );
   }
@@ -650,12 +649,9 @@ export class PolyfillMLGraphBuilder {
   ): MLOperand {
     return this.emitNode('ScatterND', [
       this.constant(
-        /* v8 ignore next */ /* v8 ignore next */
         { dataType: updates.dataType, dimensions: options?.shape || [] },
         new Float32Array(
-          /* v8 ignore next */ /* v8 ignore next */ options?.shape
-            ? options.shape.reduce((a: number, b: number) => a * b, 1)
-            : 0,
+          options?.shape ? options.shape.reduce((a: number, b: number) => a * b, 1) : 0,
         ),
       ),
       indices,
@@ -669,7 +665,7 @@ export class PolyfillMLGraphBuilder {
   ): MLOperand {
     return this.emitNode(
       'GatherElements',
-      [a, indices] /* v8 ignore next */ /* v8 ignore next */,
+      [a, indices],
       options?.axis !== undefined ? { axis: new Attribute('axis', 'INT', options.axis) } : {},
     );
   }
@@ -718,7 +714,7 @@ export class PolyfillMLGraphBuilder {
       float64: 11,
       uint32: 12,
       uint64: 13,
-    }; /* v8 ignore next */ /* v8 ignore next */
+    };
     return this.emitNode('Cast', [a], { to: new Attribute('to', 'INT', typeMap[type] || 1) });
   }
 
@@ -732,31 +728,16 @@ export class PolyfillMLGraphBuilder {
    */
   conv2d(input: MLOperand, filter: MLOperand, options?: MLConv2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.padding)
-      attrs.pads = new Attribute(
-        'pads',
-        'INTS',
-        options.padding,
-      ); /* v8 ignore next */ /* v8 ignore next */
-    if (options?.strides)
-      attrs.strides = new Attribute(
-        'strides',
-        'INTS',
-        options.strides,
-      ); /* v8 ignore next */ /* v8 ignore next */
-    if (options?.dilations)
-      attrs.dilations = new Attribute(
-        'dilations',
-        'INTS',
-        options.dilations,
-      ); /* v8 ignore next */ /* v8 ignore next */
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
     if (options?.groups) attrs.group = new Attribute('group', 'INT', options.groups);
     if (options?.autoPad) {
       const padMap: Record<string, string> = {
         explicit: 'NOTSET',
         'same-upper': 'SAME_UPPER',
         'same-lower': 'SAME_LOWER',
-      }; /* v8 ignore next */ /* v8 ignore next */
+      };
       attrs.auto_pad = new Attribute('auto_pad', 'STRING', padMap[options.autoPad] || 'NOTSET');
     }
     const inputs = [input, filter];
@@ -768,13 +749,8 @@ export class PolyfillMLGraphBuilder {
     filter: MLOperand,
     options?: MLConvTranspose2dOptions,
   ): MLOperand {
-    const attrs: Record<string, Attribute> = {}; /* v8 ignore next */ /* v8 ignore next */
-    if (options?.padding)
-      attrs.pads = new Attribute(
-        'pads',
-        'INTS',
-        options.padding,
-      ); /* v8 ignore next */ /* v8 ignore next */
+    const attrs: Record<string, Attribute> = {};
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
     if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
     if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
     if (options?.groups) attrs.group = new Attribute('group', 'INT', options.groups);
@@ -789,12 +765,7 @@ export class PolyfillMLGraphBuilder {
     if (options?.windowDimensions)
       attrs.kernel_shape = new Attribute('kernel_shape', 'INTS', options.windowDimensions);
     if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute(
-        'strides',
-        'INTS',
-        options.strides,
-      ); /* v8 ignore next */ /* v8 ignore next */
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
     if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
     if (options?.roundingType === 'ceil') attrs.ceil_mode = new Attribute('ceil_mode', 'INT', 1);
     return this.emitNode('MaxPool', [input], attrs);
@@ -820,109 +791,61 @@ export class PolyfillMLGraphBuilder {
   // Phase 9: Reduction
   reduceMean(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceMean', [input], {
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceSum(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceSum', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceMax', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceMin', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceProduct(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceProd', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceL1(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceL1', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceL2(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceL2', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   reduceLogSumExp(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ReduceLogSumExp', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axes: new Attribute(
-        'axes',
-        'INTS',
-        options?.axes || [],
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   argMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ArgMax', [input], {
-      axis: new Attribute(
-        'axis',
-        'INT',
-        options?.axes?.[0] || 0,
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || 0),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
   argMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('ArgMin', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axis: new Attribute(
-        'axis',
-        'INT',
-        options?.axes?.[0] || 0,
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || 0),
       keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
@@ -947,61 +870,48 @@ export class PolyfillMLGraphBuilder {
         new Float32Array(mean.shape.reduce((a, b) => a * b, 1)).fill(0),
       );
     return this.emitNode('BatchNormalization', [input, scale, bias, mean, variance], {
-      /* v8 ignore next */ /* v8 ignore next */
       epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
     });
   }
   instanceNormalization(input: MLOperand, options?: MLInstanceNormalizationOptions): MLOperand {
     const cDim = input.shape[1] || 1;
     const scale =
-      /* v8 ignore next */ /* v8 ignore next */
       options?.scale ||
       this.constant(
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(1),
       );
     const bias =
-      /* v8 ignore next */ /* v8 ignore next */
       options?.bias ||
       this.constant(
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(0),
       );
     return this.emitNode('InstanceNormalization', [input, scale, bias], {
-      /* v8 ignore next */ /* v8 ignore next */
       epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
     });
   }
   layerNormalization(input: MLOperand, options?: MLLayerNormalizationOptions): MLOperand {
-    /* v8 ignore next */ /* v8 ignore next */
     const cDim = input.shape[input.shape.length - 1] || 1;
     const scale =
-      /* v8 ignore next */ /* v8 ignore next */
       options?.scale ||
       this.constant(
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(1),
       );
     const bias =
-      /* v8 ignore next */ /* v8 ignore next */
       options?.bias ||
       this.constant(
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(0),
       );
     return this.emitNode('LayerNormalization', [input, scale, bias], {
-      /* v8 ignore next */ /* v8 ignore next */
-      axis: new Attribute(
-        'axis',
-        'INT',
-        options?.axes?.[0] || -1,
-      ) /* v8 ignore next */ /* v8 ignore next */,
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || -1),
       epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
     });
   }
   l2Normalization(input: MLOperand, options?: MLReduceOptions): MLOperand {
     return this.emitNode('LpNormalization', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
       axis: new Attribute('axis', 'INT', options?.axes?.[0] || -1),
       p: new Attribute('p', 'INT', 2),
     });
@@ -1077,11 +987,11 @@ export class PolyfillMLGraphBuilder {
     const node = this.emitNode('LSTM', [
       input,
       weight,
-      recurrentWeight /* v8 ignore next */ /* v8 ignore next */,
-      options?.bias /* v8 ignore next */ /* v8 ignore next */,
-      options?.sequenceLens /* v8 ignore next */ /* v8 ignore next */,
-      options?.initialH /* v8 ignore next */ /* v8 ignore next */,
-      options?.initialC /* v8 ignore next */ /* v8 ignore next */,
+      recurrentWeight,
+      options?.bias,
+      options?.sequenceLens,
+      options?.initialH,
+      options?.initialC,
       options?.P,
     ]);
     return [node, node, node]; // Return array for polyfill
@@ -1097,9 +1007,9 @@ export class PolyfillMLGraphBuilder {
     const node = this.emitNode('GRU', [
       input,
       weight,
-      recurrentWeight /* v8 ignore next */ /* v8 ignore next */,
-      options?.bias /* v8 ignore next */ /* v8 ignore next */,
-      options?.sequenceLens /* v8 ignore next */ /* v8 ignore next */,
+      recurrentWeight,
+      options?.bias,
+      options?.sequenceLens,
       options?.initialH,
     ]);
     return [node, node];
@@ -1114,7 +1024,6 @@ export class PolyfillMLGraphBuilder {
   triangular(input: MLOperand, options?: { upper?: boolean; diagonal?: number }): MLOperand {
     // Emulated via Trilu
     return this.emitNode('Trilu', [input], {
-      /* v8 ignore next */ /* v8 ignore next */
       upper: new Attribute('upper', 'INT', options?.upper ? 1 : 0),
     });
   }

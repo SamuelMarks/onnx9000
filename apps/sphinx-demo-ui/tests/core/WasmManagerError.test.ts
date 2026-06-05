@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WasmManager, WasmState } from '../../src/core/WasmManager';

@@ -11,7 +11,7 @@ test.describe('Zero Dependency Classifier Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }
@@ -22,7 +22,7 @@ test.describe('Zero Dependency Classifier Demo E2E', () => {
     await runBtn.click();
 
     const output = page.locator('#output');
-    
+
     // Check that it reaches the end of the pipeline
     await expect(output).toContainText('Classification Result:', { timeout: 10000 });
     await expect(output).toContainText('Label: TABBY_CAT', { timeout: 10000 });
@@ -31,7 +31,7 @@ test.describe('Zero Dependency Classifier Demo E2E', () => {
     const resetBtn = page.locator('#resetBtn');
     await expect(resetBtn).toBeEnabled();
     await resetBtn.click();
-    
+
     await expect(output).toContainText('Ready. Click', { timeout: 10000 });
   });
 });

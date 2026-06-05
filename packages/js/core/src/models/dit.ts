@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
 import { PatchEmbed } from './vit.js';

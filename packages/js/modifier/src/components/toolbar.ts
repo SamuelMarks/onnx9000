@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { ModifierUtilities } from './utilities.js';
 
@@ -136,14 +135,10 @@ export class Toolbar {
     lblStrict.style.fontSize = '12px';
     lblStrict.innerHTML = '<input type="checkbox" style="margin-right: 4px;" /> Strict Mode';
 
-    const cbStrict = lblStrict.querySelector(
-      'input',
-    ) as HTMLInputElement; /* v8 ignore next */ /* v8 ignore next */
+    const cbStrict = lblStrict.querySelector('input') as HTMLInputElement;
     cbStrict.onchange = () => {
-      /* v8 ignore start */
       this.config.onToggleStrict(cbStrict.checked);
     };
-    /* v8 ignore stop */
 
     this.container.appendChild(lblStrict);
   }

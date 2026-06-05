@@ -16,7 +16,7 @@ def test_import_errors():
         """Mock import."""
         if "onnx9000.core" in name or "numpy" in name:
             raise ImportError(f"Mocked ImportError for {name}")
-        return original_import(name, *args, **kwargs)  # pragma: no cover
+        return original_import(name, *args, **kwargs)
 
     with patch("builtins.__import__", side_effect=mock_import):
         parser = SafeTensors.__new__(SafeTensors)

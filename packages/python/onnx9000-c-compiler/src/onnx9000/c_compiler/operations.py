@@ -316,9 +316,9 @@ def generate_einsum(b, node, out_tensor, in_tensors, out, ins):
     if isinstance(equation, bytes):
         equation = equation.decode("utf-8")
     elif hasattr(equation, "value"):
-        equation = equation.value  # pragma: no cover
+        equation = equation.value
     if isinstance(equation, bytes):
-        equation = equation.decode("utf-8")  # pragma: no cover
+        equation = equation.decode("utf-8")
     elif not isinstance(equation, str):
         equation = str(equation)
 
@@ -329,42 +329,42 @@ def generate_einsum(b, node, out_tensor, in_tensors, out, ins):
     # Try cblas_sgemm mapping
     # A standard matrix multiply is "mk,kn->mn"
     if lhs == "mk,kn" and rhs == "mn" and len(ins) == 2:
-        shape_a = in_tensors[0].shape  # pragma: no cover
-        shape_b = in_tensors[1].shape  # pragma: no cover
-        m = shape_a[0]  # pragma: no cover
-        k = shape_a[1]  # pragma: no cover
-        n = shape_b[1]  # pragma: no cover
+        shape_a = in_tensors[0].shape
+        shape_b = in_tensors[1].shape
+        m = shape_a[0]
+        k = shape_a[1]
+        n = shape_b[1]
 
-        b.emit(f"/* Einsum mapped to cblas_sgemm: {equation} */")  # pragma: no cover
-        b.emit("#ifdef HAVE_CBLAS")  # pragma: no cover
-        b.emit(  # pragma: no cover
+        b.emit(f"/* Einsum mapped to cblas_sgemm: {equation} */")
+        b.emit("#ifdef HAVE_CBLAS")
+        b.emit(
             f"cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, {m}, {n}, {k}, 1.0f, {ins[0]}, {k}, {ins[1]}, {n}, 0.0f, {out}, {n});"
         )
-        b.emit("#else")  # pragma: no cover
+        b.emit("#else")
 
         # scalar fallback
-        b.emit("{")  # pragma: no cover
-        b.push_indent()  # pragma: no cover
-        b.emit("int i, j, l;")  # pragma: no cover
-        b.emit(f"for(i=0; i<{m}; ++i) {{")  # pragma: no cover
-        b.push_indent()  # pragma: no cover
-        b.emit(f"for(j=0; j<{n}; ++j) {{")  # pragma: no cover
-        b.push_indent()  # pragma: no cover
-        b.emit("float sum = 0.0f;")  # pragma: no cover
-        b.emit(f"for(l=0; l<{k}; ++l) {{")  # pragma: no cover
-        b.push_indent()  # pragma: no cover
-        b.emit(f"sum += {ins[0]}[i*{k}+l] * {ins[1]}[l*{n}+j];")  # pragma: no cover
-        b.pop_indent()  # pragma: no cover
-        b.emit("}")  # pragma: no cover
-        b.emit(f"{out}[i*{n}+j] = sum;")  # pragma: no cover
-        b.pop_indent()  # pragma: no cover
-        b.emit("}")  # pragma: no cover
-        b.pop_indent()  # pragma: no cover
-        b.emit("}")  # pragma: no cover
-        b.pop_indent()  # pragma: no cover
-        b.emit("}")  # pragma: no cover
-        b.emit("#endif")  # pragma: no cover
-        return  # pragma: no cover
+        b.emit("{")
+        b.push_indent()
+        b.emit("int i, j, l;")
+        b.emit(f"for(i=0; i<{m}; ++i) {{")
+        b.push_indent()
+        b.emit(f"for(j=0; j<{n}; ++j) {{")
+        b.push_indent()
+        b.emit("float sum = 0.0f;")
+        b.emit(f"for(l=0; l<{k}; ++l) {{")
+        b.push_indent()
+        b.emit(f"sum += {ins[0]}[i*{k}+l] * {ins[1]}[l*{n}+j];")
+        b.pop_indent()
+        b.emit("}")
+        b.emit(f"{out}[i*{n}+j] = sum;")
+        b.pop_indent()
+        b.emit("}")
+        b.pop_indent()
+        b.emit("}")
+        b.pop_indent()
+        b.emit("}")
+        b.emit("#endif")
+        return
 
     inputs_eq = lhs.split(",")
     dim_map = {}

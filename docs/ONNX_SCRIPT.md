@@ -29,8 +29,9 @@ model = my_model.to_graph()
 # Serialize to standard .onnx format (no external libraries needed)
 model.save("my_model.onnx")
 ```
+
 .. interactive-demo::
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

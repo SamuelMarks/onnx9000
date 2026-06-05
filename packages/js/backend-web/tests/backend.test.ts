@@ -83,7 +83,6 @@ describe('WebNNProvider', () => {
       configurable: true,
     });
 
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -183,7 +182,6 @@ describe('InferenceSession ORT Parity', () => {
     const g = new Graph('g');
     const p = new WasmProvider();
     const s = new InferenceSession(g, [p]);
-    // @ts-ignore
     await expect(s.run(['out'], { missing: null })).rejects.toThrow(
       'Input missing is null or undefined',
     );
@@ -240,7 +238,6 @@ describe('Provider Object Name fallback coverage', () => {
       configurable: true,
     });
 
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {

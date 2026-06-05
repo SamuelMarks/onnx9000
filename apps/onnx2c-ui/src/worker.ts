@@ -1,32 +1,24 @@
-/* v8 ignore next */ /* v8 ignore next */ /* eslint-disable */ /* v8 ignore next */ /* v8 ignore next */
-import { compileOnnxToC } from '@onnx9000/c-compiler'; /* v8 ignore next */ /* v8 ignore next */
-/* v8 ignore next */ /* v8 ignore next */
-// Web Worker processing /* v8 ignore next */ /* v8 ignore next */
-self.onmessage = async (e) => {
-  /* v8 ignore next */ /* v8 ignore next */
-  const { buffer, options } = e.data; /* v8 ignore next */ /* v8 ignore next */
-  /* v8 ignore next */ /* v8 ignore next */
+import { compileOnnxToC } from '@onnx9000/c-compiler';
+
+export const handleWorkerMessage = async (e: MessageEvent, postMessage: (msg: any) => void) => {
+  const { buffer, options } = e.data;
+
   try {
-    /* v8 ignore next */ /* v8 ignore next */
-    // 202: Execute code generation in Web Worker via pyodide mock/bindings /* v8 ignore next */ /* v8 ignore next */
-    const result = await compileOnnxToC(buffer, options); /* v8 ignore next */ /* v8 ignore next */
-    /* v8 ignore next */ /* v8 ignore next */
-    // Simulate arena size for 204 validation /* v8 ignore next */ /* v8 ignore next */
-    const arenaSize = 250000; // Simulated /* v8 ignore next */ /* v8 ignore next */
-    /* v8 ignore next */ /* v8 ignore next */
-    self.postMessage({
-      /* v8 ignore next */ /* v8 ignore next */
-      header: result.header /* v8 ignore next */ /* v8 ignore next */,
-      source: result.source /* v8 ignore next */ /* v8 ignore next */,
-      summary: result.summary /* v8 ignore next */ /* v8 ignore next */,
-      arenaSize: arenaSize /* v8 ignore next */ /* v8 ignore next */,
-    }); /* v8 ignore next */ /* v8 ignore next */
+    const result = await compileOnnxToC(buffer, options);
+    const arenaSize = 250000;
+
+    postMessage({
+      header: result.header,
+      source: result.source,
+      summary: result.summary,
+      arenaSize: arenaSize,
+    });
   } catch (_err) {
-    /* v8 ignore next */ /* v8 ignore next */
-    const err =
-      _err instanceof Error
-        ? _err
-        : new Error(String(_err)); /* v8 ignore next */ /* v8 ignore next */
-    self.postMessage({ error: err.message }); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    const err = _err instanceof Error ? _err : new Error(String(_err));
+    postMessage({ error: err.message });
+  }
 };
+
+if (typeof self !== 'undefined' && self.postMessage) {
+  self.onmessage = (e) => handleWorkerMessage(e, self.postMessage.bind(self));
+}

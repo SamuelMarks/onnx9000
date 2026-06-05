@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { Tabs } from './Tabs';

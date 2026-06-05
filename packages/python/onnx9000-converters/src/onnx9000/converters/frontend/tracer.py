@@ -54,8 +54,8 @@ class Proxy(Tensor):
 
     def __init__(self, name: str) -> None:
         """Initialize Proxy."""
-        super().__init__([1.0], requires_grad=False)  # pragma: no cover
-        self.name = name  # pragma: no cover
+        super().__init__([1.0], requires_grad=False)
+        self.name = name
 
 
 def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 

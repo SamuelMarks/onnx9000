@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 /**
  * Base Component class for pure Vanilla JS DOM UI architecture.

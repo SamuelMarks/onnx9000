@@ -38,4 +38,4 @@ def test_keras_h5_parser_module_level_import_fail():
     finally:
         # Clean up for other tests
         if "onnx9000.converters.tf.keras_h5_parser" in sys.modules:
-            del sys.modules["onnx9000.converters.tf.keras_h5_parser"]  # pragma: no cover
+            del sys.modules["onnx9000.converters.tf.keras_h5_parser"]

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as hal from '../dialects/web/hal.js';
 import * as memref from '../dialects/web/memref.js';

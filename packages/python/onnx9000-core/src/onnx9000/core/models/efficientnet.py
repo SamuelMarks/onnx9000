@@ -14,7 +14,7 @@ from onnx9000.core.primitives import (
 )
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -22,7 +22,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class SqueezeExcitation:
     """Squeeze-and-Excitation block."""
 
-    def __init__(self, in_channels: int, squeeze_channels: int, prefix: str = ""):  # noqa: D107
+    def __init__(self, in_channels: int, squeeze_channels: int, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.in_channels = in_channels
@@ -32,7 +32,7 @@ class SqueezeExcitation:
         self.fc2 = Gemm(trans_b=1)
         self.scale_act = Sigmoid()
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         scale = global_average_pool(x)
         scale = flatten(scale)
@@ -61,7 +61,7 @@ class SqueezeExcitation:
 class MBConv:
     """Mobile Inverted Bottleneck Convolution."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         in_channels: int,
         out_channels: int,
@@ -101,7 +101,7 @@ class MBConv:
         self.project_conv = ConvND(2, hidden_dim, out_channels, kernel_size=1, bias=False)
         self.bn2 = BatchNormalization(out_channels)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         identity = x
 
@@ -169,7 +169,7 @@ class MBConv:
 class EfficientNet:
     """EfficientNet implementation built using IR macros/primitives."""
 
-    def __init__(self, num_classes: int = 1000):  # noqa: D107
+    def __init__(self, num_classes: int = 1000):
         """Init."""
         self.num_classes = num_classes
         self.stem_conv = ConvND(2, 3, 32, kernel_size=3, stride=2, padding=1, bias=False)
@@ -185,7 +185,7 @@ class EfficientNet:
 
         self.classifier = Gemm(trans_b=1)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         x = self.stem_conv(
             x,
@@ -231,6 +231,6 @@ class EfficientNet:
         return x
 
 
-def efficientnet_b0(**kwargs: Any) -> EfficientNet:  # noqa: D103
+def efficientnet_b0(**kwargs: Any) -> EfficientNet:
     """Efficientnet b0."""
     return EfficientNet(**kwargs)

@@ -10,7 +10,7 @@ def test_macro_decorator() -> None:
     @ir_macro("TestMacro")
     def test_m(x: Tensor) -> Tensor:
         """Tests m."""
-        return x  # pragma: no cover
+        return x
 
     x = Tensor(name="x", shape=[1], dtype=1)
     out = test_m(x)

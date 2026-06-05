@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect, vi } from 'vitest';
 import { Dropdown } from '../../src/components/Dropdown';

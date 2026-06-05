@@ -1,4 +1,3 @@
-/* eslint-disable */
 // 181. Implement CLI
 // 182. Support `--log-verbose` flag.
 // 183. Support `--max-batch-size 32` global override flag.
@@ -19,13 +18,10 @@ export function runCli(args: string[]) {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--port' && i + 1 < args.length) {
-      /* v8 ignore next */ /* v8 ignore next */
       port = parseInt(args[++i] || '0', 10);
     } else if (arg === '--model-repository' && i + 1 < args.length) {
-      /* v8 ignore next */ /* v8 ignore next */
       modelRepository = args[++i] || '';
     } else if (arg === '--max-batch-size' && i + 1 < args.length) {
-      /* v8 ignore next */ /* v8 ignore next */
       maxBatchSize = parseInt(args[++i] || '0', 10);
     } else if (arg === '--log-verbose') {
       globalLogger.level = LogLevel.DEBUG;
@@ -53,9 +49,7 @@ export function runCli(args: string[]) {
   serveNode(server, port, useHttp2);
 }
 
-// If invoked directly /* v8 ignore next */ /* v8 ignore next */
+// If invoked directly
 if (typeof require !== 'undefined' && require.main === module) {
-  /* v8 ignore start */
   runCli(process.argv.slice(2));
 }
-/* v8 ignore stop */

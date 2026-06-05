@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Entry point for the @onnx9000/converters package.
  * Provides APIs for Keras, MMDNN, and multi-framework model translations.

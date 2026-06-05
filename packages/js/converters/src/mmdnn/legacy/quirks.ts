@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 export interface Node {
   opType: string;
@@ -46,7 +46,6 @@ export class LegacyQuirkResolver {
   static resolveMxnetFlatten(node: Node, rank: number): Node {
     const newNode = { ...node };
     if (newNode.opType === 'Flatten') {
-      /* v8 ignore next */ /* v8 ignore next */
       newNode.attributes = newNode.attributes ? { ...newNode.attributes } : {};
       if (rank === 0 || rank === 1) {
         newNode.attributes.axis = 0;
@@ -59,7 +58,6 @@ export class LegacyQuirkResolver {
 
   // 174. Strip unused training phase nodes (e.g., Accuracy, Loss) automatically from Caffe .prototxt.
   static stripCaffeTrainingNodes(layers: object[]): object[] {
-    /* v8 ignore next */ /* v8 ignore next */
     if (!layers) return [];
     const trainingNodeTypes = new Set([
       'Accuracy',

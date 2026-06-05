@@ -242,7 +242,7 @@ def test_serializer_error(monkeypatch) -> None:
 
     def mock_serialize_model(g, base_dir=None, external_file=None) -> Any:
         """Test the mock serialize model functionality."""
-        raise Exception("Mock error")  # pragma: no cover
+        raise Exception("Mock error")
 
     monkeypatch.setattr(s, "serialize_model", mock_serialize_model)
     with pytest.raises(SerializationError):

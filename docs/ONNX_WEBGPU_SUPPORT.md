@@ -51,5 +51,5 @@ registerKernel('MyCustomOp', {
 ## Interactive Web Demo
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

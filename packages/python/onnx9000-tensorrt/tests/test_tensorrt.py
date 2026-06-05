@@ -398,7 +398,7 @@ class TestTensorRTFFI(unittest.TestCase):
             # Remove from mock if it exists
             try:
                 func(net, node, tensors)
-                return None  # pragma: no cover
+                return None
             except (RuntimeError, Exception):
                 return None
             # Re-add to mock to test missing inputs

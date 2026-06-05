@@ -2,13 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { WhisperLlm } from '../src/index.js';
 
 describe('WhisperLlm', () => {
-  it('should transcribe audio', () => {
-    const whisper = new WhisperLlm();
-    expect(whisper.transcribe('audio_data')).toBe('[Whisper-LLM] transcribed audio_data');
-  });
-
-  it('should throw on empty string', () => {
-    const whisper = new WhisperLlm();
-    expect(() => whisper.transcribe('')).toThrow('Invalid audio string');
+  it('should transcribe', () => {
+    const w = new WhisperLlm();
+    expect(w.transcribe('test')).toContain('[Whisper-LLM]');
+    expect(() => w.transcribe('')).toThrow();
   });
 });

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node as ONNXNode } from '@onnx9000/core';
 import { Block, Operation, Var } from './ast.js';
 

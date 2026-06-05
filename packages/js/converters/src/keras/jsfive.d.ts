@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 declare module 'jsfive' {
   export class File {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** caffe MMDNN submodule. */
 export * from './parser.js';
 export * from './mapper.js';

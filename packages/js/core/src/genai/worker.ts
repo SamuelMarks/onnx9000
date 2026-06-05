@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Supported payload types for worker messages.
  */

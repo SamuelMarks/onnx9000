@@ -28,7 +28,7 @@ class CaffeMapper:
         """Map layers to an ONNX IR graph."""
         layers = self.net_info.get("layer", [])
         if not layers:
-            layers = self.net_info.get("layers", [])  # pragma: no cover
+            layers = self.net_info.get("layers", [])
 
         # Process input dimensions if they are specified top-level
         input_names = self.net_info.get("input", [])
@@ -40,8 +40,8 @@ class CaffeMapper:
                 t = self.get_tensor(name)
                 shape = []
                 if input_shapes and i < len(input_shapes):
-                    dims = input_shapes[i].get("dim", [])  # pragma: no cover
-                    shape = [int(d) for d in dims]  # pragma: no cover
+                    dims = input_shapes[i].get("dim", [])
+                    shape = [int(d) for d in dims]
                 elif input_dims:
                     # legacy input_dim is flat array of [n, c, h, w] for all inputs
                     start = i * 4
@@ -57,22 +57,20 @@ class CaffeMapper:
             tops = layer.get("top", [])
 
             if l_type == "Input":
-                shape_params = layer.get("input_param", [{}])[0].get(
-                    "shape", []
-                )  # pragma: no cover
-                for i, top in enumerate(tops):  # pragma: no cover
-                    t = self.get_tensor(top)  # pragma: no cover
-                    if shape_params and i < len(shape_params):  # pragma: no cover
-                        dims = shape_params[i].get("dim", [])  # pragma: no cover
-                        t.shape = tuple([int(d) for d in dims])  # pragma: no cover
-                    if t not in self.graph.inputs:  # pragma: no cover
-                        self.graph.inputs.append(t)  # pragma: no cover
+                shape_params = layer.get("input_param", [{}])[0].get("shape", [])
+                for i, top in enumerate(tops):
+                    t = self.get_tensor(top)
+                    if shape_params and i < len(shape_params):
+                        dims = shape_params[i].get("dim", [])
+                        t.shape = tuple([int(d) for d in dims])
+                    if t not in self.graph.inputs:
+                        self.graph.inputs.append(t)
 
             elif l_type == "Data":
-                for top in tops:  # pragma: no cover
-                    t = self.get_tensor(top)  # pragma: no cover
-                    if t not in self.graph.inputs:  # pragma: no cover
-                        self.graph.inputs.append(t)  # pragma: no cover
+                for top in tops:
+                    t = self.get_tensor(top)
+                    if t not in self.graph.inputs:
+                        self.graph.inputs.append(t)
 
             elif l_type == "Convolution":
                 param = layer.get("convolution_param", [{}])[0]
@@ -160,23 +158,19 @@ class CaffeMapper:
                 node = Node("Relu", inputs=inputs, outputs=outputs, name=name)
                 self.graph.add_node(node)
 
-            elif l_type == "Softmax":  # pragma: no cover
-                inputs = [self.get_tensor(b) for b in bottoms]  # pragma: no cover
-                outputs = [self.get_tensor(t) for t in tops]  # pragma: no cover
-                node = Node(
-                    "Softmax", inputs=inputs, outputs=outputs, name=name
-                )  # pragma: no cover
-                self.graph.add_node(node)  # pragma: no cover
+            elif l_type == "Softmax":
+                inputs = [self.get_tensor(b) for b in bottoms]
+                outputs = [self.get_tensor(t) for t in tops]
+                node = Node("Softmax", inputs=inputs, outputs=outputs, name=name)
+                self.graph.add_node(node)
 
             else:
                 # pass through or generic mapping
-                inputs = [self.get_tensor(b) for b in bottoms]  # pragma: no cover
-                outputs = [self.get_tensor(t) for t in tops]  # pragma: no cover
-                if inputs and outputs:  # pragma: no cover
-                    node = Node(
-                        l_type, inputs=inputs, outputs=outputs, name=name
-                    )  # pragma: no cover
-                    self.graph.add_node(node)  # pragma: no cover
+                inputs = [self.get_tensor(b) for b in bottoms]
+                outputs = [self.get_tensor(t) for t in tops]
+                if inputs and outputs:
+                    node = Node(l_type, inputs=inputs, outputs=outputs, name=name)
+                    self.graph.add_node(node)
 
         # Mark last tops as outputs if they are not used as bottoms
         all_bottoms = set()

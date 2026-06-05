@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Graph, Node, Attribute, Shape } from '@onnx9000/core';
 
@@ -86,13 +85,12 @@ export class PyTorchGenerator {
           canBeSeq &&
           dynIn.length === 1 &&
           dynIn[0] !== undefined &&
-          dynIn[0] === prevOut /* v8 ignore next */ /* v8 ignore next */ &&
+          dynIn[0] === prevOut &&
           (uses[prevOut] || []).length === 1
         ) {
           currentSeq.push(node);
         } else {
-          if (currentSeq.length > 1)
-            sequences.push([...currentSeq]); /* v8 ignore next */ /* v8 ignore next */
+          if (currentSeq.length > 1) sequences.push([...currentSeq]);
           currentSeq = canBeSeq && dynIn.length === 1 && dynIn[0] !== undefined ? [node] : [];
         }
       }
@@ -108,7 +106,6 @@ export class PyTorchGenerator {
     const registeredBuffers = new Set<string>();
     const registerBufferIfNeeded = (name: string) => {
       if (this.isInitializer(name) && !registeredBuffers.has(name)) {
-        /* v8 ignore next */ /* v8 ignore next */
         const shape = this.getShape(name) || [];
         initLines.push(
           `self.register_buffer('${this.sanitize(name)}', torch.empty(${this.formatTuple(shape)}))`,
@@ -123,19 +120,15 @@ export class PyTorchGenerator {
     const getNodeDecl = (node: Node): string | null => {
       const op = node.opType;
       if (op === 'Conv') {
-        /* v8 ignore next */ /* v8 ignore next */
         const wShape = this.getShape(node.inputs[1]!) || [1, 1, 3, 3];
-        const D = wShape.length - 2; /* v8 ignore next */ /* v8 ignore next */
-        const groups =
-          (node.attributes.group?.value as number) || 1; /* v8 ignore next */ /* v8 ignore next */
-        const out_channels = wShape[0] || 1; /* v8 ignore next */ /* v8 ignore next */
+        const D = wShape.length - 2;
+        const groups = (node.attributes.group?.value as number) || 1;
+        const out_channels = wShape[0] || 1;
         const in_channels = (wShape[1] || 1) * groups;
-        const kernel_size = wShape.slice(2); /* v8 ignore next */ /* v8 ignore next */
-        const stride =
-          (node.attributes.strides?.value as number[]) ||
-          Array(D).fill(1); /* v8 ignore next */ /* v8 ignore next */
+        const kernel_size = wShape.slice(2);
+        const stride = (node.attributes.strides?.value as number[]) || Array(D).fill(1);
         const pads = (node.attributes.pads?.value as number[]) || Array(D * 2).fill(0);
-        const padding = pads.slice(0, D); /* v8 ignore next */ /* v8 ignore next */
+        const padding = pads.slice(0, D);
         const bias = node.inputs.length > 2 ? 'True' : 'False';
         return `nn.Conv${D}d(in_channels=${in_channels}, out_channels=${out_channels}, kernel_size=${this.formatTuple(kernel_size)}, stride=${this.formatTuple(stride)}, padding=${this.formatTuple(padding)}, groups=${groups}, bias=${bias})`;
       } else if (op === 'Gemm' || op === 'MatMul') {
@@ -145,12 +138,8 @@ export class PyTorchGenerator {
         if (node.inputs.length > 1) {
           const wShape = this.getShape(node.inputs[1]!);
           if (wShape && wShape.length === 2) {
-            const transB =
-              (node.attributes.transB?.value as number) ||
-              0; /* v8 ignore next */ /* v8 ignore next */
-            in_features = transB
-              ? wShape[1] || 1
-              : wShape[0] || 1; /* v8 ignore next */ /* v8 ignore next */
+            const transB = (node.attributes.transB?.value as number) || 0;
+            in_features = transB ? wShape[1] || 1 : wShape[0] || 1;
             out_features = transB ? wShape[0] || 1 : wShape[1] || 1;
           }
         }
@@ -164,10 +153,7 @@ export class PyTorchGenerator {
         const type = op === 'MaxPool' ? 'MaxPool' : 'AvgPool';
         return `nn.${type}${D}d(kernel_size=${this.formatTuple(kShape)}, stride=${this.formatTuple(stride)}, padding=${this.formatTuple(padding)})`;
       } else if (op === 'BatchNormalization') {
-        /* v8 ignore next */ /* v8 ignore next */
-        const wShape = this.getShape(node.inputs[1]!) || [
-          1,
-        ]; /* v8 ignore next */ /* v8 ignore next */
+        const wShape = this.getShape(node.inputs[1]!) || [1];
         const num_features = wShape[0] || 1;
         const eps = (node.attributes.epsilon?.value as number) || 1e-5;
         const momentumOnnx = node.attributes.momentum?.value as number;
@@ -202,11 +188,8 @@ export class PyTorchGenerator {
         // If it's the LAST node in a sequence, we emit the call in forward
         const seq = sequences.find((s) => s[s.length - 1] === node);
         if (seq) {
-          const seqIndex = sequences.indexOf(seq) + 1; /* v8 ignore next */ /* v8 ignore next */
-          const inVar =
-            seq[0] && seq[0]!.inputs[0]
-              ? this.sanitize(seq[0]!.inputs[0]!)
-              : 'in'; /* v8 ignore next */ /* v8 ignore next */
+          const seqIndex = sequences.indexOf(seq) + 1;
+          const inVar = seq[0] && seq[0]!.inputs[0] ? this.sanitize(seq[0]!.inputs[0]!) : 'in';
           const outVar = node.outputs[0] ? this.sanitize(node.outputs[0]!) : 'out';
           forwardLines.push(`${outVar} = self.seq_${seqIndex}(${inVar})`);
         }
@@ -214,7 +197,7 @@ export class PyTorchGenerator {
       }
 
       const dynIn = getDynamicInputs(node).map((i) => this.sanitize(i));
-      const inVars = node.inputs.map((i /* v8 ignore next */ /* v8 ignore next */) =>
+      const inVars = node.inputs.map((i) =>
         i ? (this.isInitializer(i) ? `self.${this.sanitize(i)}` : this.sanitize(i)) : 'None',
       );
       const outVar = node.outputs[0] ? this.sanitize(node.outputs[0]!) : 'out';

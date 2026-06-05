@@ -1,4 +1,3 @@
-/* eslint-disable */
 export * from './ir/graph.js';
 export * from './ir/node.js';
 export * from './ir/tensor.js';

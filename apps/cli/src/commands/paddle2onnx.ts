@@ -1,9 +1,7 @@
-/* v8 ignore next */ /* v8 ignore next */ export function handlePaddle2ONNX(args: string[]) {
-  /* v8 ignore next */ /* v8 ignore next */
+export function handlePaddle2ONNX(args: string[]) {
   if (args.length === 0) {
-    /* v8 ignore next */ /* v8 ignore next */
-    console.error('Usage: onnx9000 paddle2onnx <model>'); /* v8 ignore next */ /* v8 ignore next */
-    process.exit(1); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
-  console.log(`Paddle2ONNX processed ${String(args[0])}`); /* v8 ignore next */ /* v8 ignore next */
+    console.error('Usage: onnx9000 paddle2onnx <model>');
+    process.exit(1);
+  }
+  console.log(`Paddle2ONNX processed ${String(args[0])}`);
 }

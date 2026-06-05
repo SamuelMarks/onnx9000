@@ -7,7 +7,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
 
 
-def parse_h2o(model_data: Any) -> Graph:  # noqa: ANN401
+def parse_h2o(model_data: Any) -> Graph:
     """Parse an H2O MOJO/POJO and return an ONNX Graph."""
     graph = Graph("H2O_Model")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

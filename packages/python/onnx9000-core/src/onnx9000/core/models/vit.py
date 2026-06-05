@@ -14,7 +14,7 @@ from onnx9000.core.primitives import (
 )
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -22,7 +22,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class PatchEmbed:
     """Image to Patch Embedding."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         img_size: int = 224,
         patch_size: int = 16,
@@ -37,7 +37,7 @@ class PatchEmbed:
         self.num_patches = (img_size // patch_size) * (img_size // patch_size)
         self.proj = ConvND(2, in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         x = self.proj(
             x,
@@ -59,7 +59,7 @@ class PatchEmbed:
 class Block:
     """Transformer Block."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dim: int,
         num_heads: int,
@@ -79,7 +79,7 @@ class Block:
         self.fc2 = Gemm(trans_b=1)
         self.mlp_hidden_dim = mlp_hidden_dim
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         identity = x
         x = self.norm1(
@@ -114,7 +114,7 @@ class Block:
 class VisionTransformer:
     """Vision Transformer."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         img_size: int = 224,
         patch_size: int = 16,
@@ -150,7 +150,7 @@ class VisionTransformer:
         self.head = Gemm(trans_b=1)
         self.num_patches = self.patch_embed.num_patches
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         x = self.patch_embed(x)
 
@@ -187,6 +187,6 @@ class VisionTransformer:
         return x
 
 
-def vit_base_patch16_224(**kwargs: Any) -> VisionTransformer:  # noqa: D103
+def vit_base_patch16_224(**kwargs: Any) -> VisionTransformer:
     """Vit base patch16 224."""
     return VisionTransformer(patch_size=16, embed_dim=768, depth=12, num_heads=12, **kwargs)

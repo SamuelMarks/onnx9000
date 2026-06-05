@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import '@onnx9000/webnn-polyfill';
 import * as tf from '@onnx9000/tfjs-shim';

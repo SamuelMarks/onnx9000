@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OliveConfigPanel } from '../../src/components/OliveConfigPanel';

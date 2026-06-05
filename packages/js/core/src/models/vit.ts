@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import {
   BatchNormalization,

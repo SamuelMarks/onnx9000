@@ -220,7 +220,6 @@ describe('onnx_writer', () => {
 
   it('should handle unsupported dtype by defaulting to float32', async () => {
     const graph = new Graph('unsupported_dtype');
-    // @ts-ignore
     const tensor = new Tensor(
       'x',
       [1],

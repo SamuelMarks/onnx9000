@@ -38,7 +38,7 @@ class Dropout1d(_DropoutNd):
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
         """Initialize."""
-        super().__init__(p=p, inplace=inplace)  # pragma: no cover
+        super().__init__(p=p, inplace=inplace)
 
 
 class Dropout2d(_DropoutNd):

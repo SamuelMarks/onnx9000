@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Program, Function, Block, Operation } from './ast.js';
 import { topologicalSort } from './sort.js';
 
@@ -45,7 +44,7 @@ export function validateBlock(block: Block): void {
             throw new Error(
               `Operation input ${inputVar.name} is not available in block ${block.name}`,
             );
-          } /* v8 ignore next */ /* v8 ignore next */
+          }
         }
       } else {
         if (!availableVars.has(inputs.name)) {

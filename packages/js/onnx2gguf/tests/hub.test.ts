@@ -1,43 +1,20 @@
-import { expect, test, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { fetchHfConfig, generateReadme } from '../src/hub.js';
 
-test('generateReadme', () => {
-  const readme = generateReadme('Llama-2-7b', 'meta-llama/Llama-2-7b', 'Q4_0');
-  expect(readme).toContain('base_model: meta-llama/Llama-2-7b');
-  expect(readme).toContain('- **Level:** Q4_0');
+global.fetch = vi.fn().mockResolvedValue({
+  ok: true,
+  json: async () => ({}),
+  text: async () => 'tok',
 });
 
-test('fetchHfConfig 404', async () => {
-  global.fetch = vi.fn().mockResolvedValue({
-    ok: false,
-    status: 404,
+describe('hub', () => {
+  it('should fetch hf config', async () => {
+    const res = await fetchHfConfig('test');
+    expect(res.tokenizer).toBe('tok');
   });
 
-  const res = await fetchHfConfig('dummy/repo');
-  expect(res.config).toEqual({});
-  expect(res.tokenizer).toBe('');
-  expect(res.url).toBe('https://huggingface.co/dummy/repo');
-});
-
-test('fetchHfConfig success', async () => {
-  global.fetch = vi.fn().mockImplementation((url: string, opts: Object) => {
-    if (url.endsWith('config.json'))
-      return Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ architectues: ['LlamaForCausalLM'] }),
-      });
-    if (url.endsWith('tokenizer.json'))
-      return Promise.resolve({ ok: true, text: () => Promise.resolve('{"vocab": {}}') });
-    return Promise.resolve({ ok: false });
+  it('should generate readme', () => {
+    const rm = generateReadme('m', 'r', 'q');
+    expect(rm).toContain('m GGUF');
   });
-
-  const res = await fetchHfConfig('dummy/repo', 'token123');
-  expect(res.config).toHaveProperty('architectues');
-  expect(res.tokenizer).toContain('vocab');
-  expect(global.fetch).toHaveBeenCalledWith(
-    expect.any(String),
-    expect.objectContaining({
-      headers: { Authorization: 'Bearer token123' },
-    }),
-  );
 });

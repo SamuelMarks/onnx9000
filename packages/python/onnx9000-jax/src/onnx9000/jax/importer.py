@@ -2,7 +2,7 @@
 
 from typing import Any
 
-import onnx9000.jax.jax_ops  # noqa: F401
+import onnx9000.jax.jax_ops
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.registry import global_registry

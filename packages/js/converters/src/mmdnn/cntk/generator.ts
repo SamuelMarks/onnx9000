@@ -1,6 +1,4 @@
-/* eslint-disable */
 // @ts-nocheck
-/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 
 export class CNTKGenerator {
@@ -11,7 +9,6 @@ export class CNTKGenerator {
   }
 
   private sanitize(name: string): string {
-    /* v8 ignore next */ /* v8 ignore next */
     if (!name) return 'unnamed';
     let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
     if (/^[0-9]/.test(sanitized)) {
@@ -21,18 +18,16 @@ export class CNTKGenerator {
   }
 
   private getShape(name: string): number[] | null {
-    /* v8 ignore next */ /* v8 ignore next */
     if (!name) return null;
     if (this.graph.tensors[name]) {
-      return this.graph.tensors[name].shape as number[]; /* v8 ignore next */ /* v8 ignore next */
+      return this.graph.tensors[name].shape as number[];
     }
-    /* v8 ignore start */
+
     const val = this.graph.valueInfo.find((v) => v.name === name);
     if (val) return val.shape as number[];
     const inp = this.graph.inputs.find((v) => v.name === name);
     if (inp) return inp.shape as number[];
     return null;
-    /* v8 ignore stop */
   }
 
   private isInitializer(name: string): boolean {
@@ -57,23 +52,19 @@ export class CNTKGenerator {
     }
 
     for (const node of this.graph.nodes) {
-      /* v8 ignore next */ /* v8 ignore next */
       const out = this.sanitize(node.outputs[0] || `out_${node.name || 'node'}`);
 
       switch (node.opType) {
         case 'Conv': {
-          const wShape = this.getShape(node.inputs[1]!); /* v8 ignore next */ /* v8 ignore next */
-          const outChannels = wShape ? wShape[0] : 32; /* v8 ignore next */ /* v8 ignore next */
+          const wShape = this.getShape(node.inputs[1]!);
+          const outChannels = wShape ? wShape[0] : 32;
           const kernelSize = wShape ? wShape.slice(2) : [3, 3];
           const strides = (node.attributes['strides']?.value as number[]) || [1, 1];
-          const pads = (node.attributes['pads']?.value as number[]) || [
-            0, 0, 0, 0,
-          ]; /* v8 ignore next */ /* v8 ignore next */
+          const pads = (node.attributes['pads']?.value as number[]) || [0, 0, 0, 0];
           const pad = (pads as number[]).some((p) => p > 0) ? 'True' : 'False';
 
           const inp = this.sanitize(node.inputs[0]!);
           forwardLines.push(
-            /* v8 ignore next */ /* v8 ignore next */
             `${out} = C.layers.Convolution2D(filter_shape=${JSON.stringify(kernelSize.map(Number))}, num_filters=${Number(outChannels)}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad}, bias=${node.inputs.length > 2 ? 'True' : 'False'})(${inp})`,
           );
           break;
@@ -83,9 +74,7 @@ export class CNTKGenerator {
           const poolType = node.opType === 'MaxPool' ? 'MaxPooling' : 'AveragePooling';
           const kernelSize = (node.attributes['kernel_shape']?.value as number[]) || [2, 2];
           const strides = (node.attributes['strides']?.value as number[]) || [2, 2];
-          const pads = (node.attributes['pads']?.value as number[]) || [
-            0, 0, 0, 0,
-          ]; /* v8 ignore next */ /* v8 ignore next */
+          const pads = (node.attributes['pads']?.value as number[]) || [0, 0, 0, 0];
           const pad = (pads as number[]).some((p) => p > 0) ? 'True' : 'False';
 
           const inp = this.sanitize(node.inputs[0]!);
@@ -112,15 +101,12 @@ export class CNTKGenerator {
         case 'Gemm':
         case 'MatMul': {
           const wShape = this.getShape(node.inputs[1]!);
-          const outFeatures = wShape /* v8 ignore next */ /* v8 ignore next */
+          const outFeatures = wShape
             ? node.attributes['transB']?.value
-              ? /* v8 ignore start */
-                wShape[0]
-              : /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
-                wShape[1]
-            : /* v8 ignore start */
-              10;
-          /* v8 ignore stop */
+              ? wShape[0]
+              : wShape[1]
+            : 10;
+
           const inp = this.sanitize(node.inputs[0]!);
           forwardLines.push(`${out} = C.layers.Dense(shape=${Number(outFeatures)})(${inp})`);
           break;
@@ -132,7 +118,7 @@ export class CNTKGenerator {
           break;
         }
         case 'Softmax': {
-          const inp = this.sanitize(node.inputs[0]!); /* v8 ignore next */ /* v8 ignore next */
+          const inp = this.sanitize(node.inputs[0]!);
           const axis = node.attributes['axis'] != null ? Number(node.attributes['axis'].value) : -1;
           forwardLines.push(`${out} = C.softmax(${inp}, axis=${axis})`);
           break;

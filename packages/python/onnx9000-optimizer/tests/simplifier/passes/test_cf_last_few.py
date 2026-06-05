@@ -30,7 +30,7 @@ def test_cf_last_few():
     def mock_partial(n, k):
         """Mock partial."""
         if n.name == "Abs" and n.outputs == ["out1b"]:
-            return (Node("Identity", ["t"], ["out1b"]), True)  # pragma: no cover
+            return (Node("Identity", ["t"], ["out1b"]), True)
         return (None, True)
 
     cf._partial_fold = mock_partial
@@ -52,7 +52,7 @@ def test_cf_last_few():
 
         def __array__(self):
             """Array."""
-            return np.array([1.0], dtype=np.float32)  # pragma: no cover
+            return np.array([1.0], dtype=np.float32)
 
     g3.nodes.append(Node("Constant", [], ["out3"], {"value": MockVal()}))
     cf._run_once(g3)

@@ -11,7 +11,7 @@ test.describe('Mobile Memory Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }
@@ -28,12 +28,14 @@ test.describe('Mobile Memory Demo E2E', () => {
     await expect(runInferenceBtn).toBeEnabled();
     await runInferenceBtn.click();
 
-    await expect(output).toContainText('Inference complete. No memory was allocated', { timeout: 10000 });
-    
+    await expect(output).toContainText('Inference complete. No memory was allocated', {
+      timeout: 10000,
+    });
+
     const freeBtn = page.locator('#freeBtn');
     await expect(freeBtn).toBeEnabled();
     await freeBtn.click();
-    
+
     await expect(output).toContainText('Arena memory freed', { timeout: 10000 });
   });
 });

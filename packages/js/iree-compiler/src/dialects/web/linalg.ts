@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Operation, Type, Value, Region } from '../../ir/core.js';
 
 // 31. AffineMap class

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Tensor, globalRegistry, register_op } from '@onnx9000/core';
 import { ExecutionProvider } from '../../session.js';
 
@@ -19,13 +18,10 @@ export class MatMulWebGPU {
     const sparsity = this.calculateSparsity(weight);
     if (sparsity > 0.6) {
       console.log(`Dispatching Sparse MatMul (sparsity: ${sparsity.toFixed(2)})`);
-      // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL /* v8 ignore next */ /* v8 ignore next */
+      // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
     } else {
-      /* v8 ignore next */ /* v8 ignore next */
-      console.log(
-        `Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul`,
-      ); /* v8 ignore next */ /* v8 ignore next */
-      // Use standard MatMul shader /* v8 ignore next */ /* v8 ignore next */
+      console.log(`Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul`);
+      // Use standard MatMul shader
     }
     return [];
   }
@@ -60,8 +56,7 @@ export class WebGPUProvider implements ExecutionProvider {
       if (OpClass) {
         const op = new OpClass();
         const nodeInputs = node.inputs.map((name) => graph.tensors[name] || inputs[name]);
-        // @ts-ignore /* v8 ignore next */ /* v8 ignore next */
-        op.execute(nodeInputs, node.attributes || {});
+        op.execute(nodeInputs as Tensor[], (node.attributes || {}) as any);
       }
     }
 

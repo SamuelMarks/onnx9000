@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';
 import * as linalg from '../dialects/web/linalg.js';

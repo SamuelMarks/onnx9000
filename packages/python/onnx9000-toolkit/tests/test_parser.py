@@ -255,7 +255,7 @@ def test_parser_missing_lines() -> None:
         @script
         def model_list(x):
             """Test the model list functionality."""
-            return [i for i in x]  # noqa: C416
+            return [i for i in x]  # noqa: C416  # noqa: C416
 
         model_list.to_builder()
 

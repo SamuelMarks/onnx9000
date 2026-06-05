@@ -1,4 +1,3 @@
-/* eslint-disable */
 export interface KVCacheEntry {
   sessionId: string;
   prefixHash?: string | undefined; // For prompt caching

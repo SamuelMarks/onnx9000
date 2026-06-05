@@ -1,4 +1,3 @@
-/* eslint-disable */
 export async function fetchHfConfig(
   repoId: string,
   token?: string,
@@ -16,17 +15,14 @@ export async function fetchHfConfig(
   try {
     const configRes = await fetch(`${url}/config.json`, { headers });
     if (!configRes.ok) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (configRes.status === 404) throw new Error('config.json not found (404)');
-      /* v8 ignore start */
+
       if (configRes.status === 403 || configRes.status === 401)
-        /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
         throw new Error('Unauthorized (403/401) - Check your token');
     } else {
       config = await configRes.json();
     }
   } catch (_e) {
-    /* v8 ignore next */ /* v8 ignore next */
     const e = _e instanceof Error ? _e : new Error(String(_e));
     console.warn('Failed to fetch config:', e.message);
   }
@@ -35,14 +31,12 @@ export async function fetchHfConfig(
     const tokRes = await fetch(`${url}/tokenizer.json`, { headers });
     if (tokRes.ok) {
       tokenizer = await tokRes.text();
-    } /* v8 ignore next */ /* v8 ignore next */
+    }
   } catch (_e) {
-    /* v8 ignore next */ /* v8 ignore next */
     const e = _e instanceof Error ? _e : new Error(String(_e));
-    /* v8 ignore start */
+
     console.warn('Failed to fetch tokenizer:', e.message);
   }
-  /* v8 ignore stop */
 
   return { config, tokenizer, url: `https://huggingface.co/${repoId}` };
 }

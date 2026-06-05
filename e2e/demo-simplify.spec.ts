@@ -11,7 +11,7 @@ test.describe('Simplify Demo E2E', () => {
     }
 
     const title = page.locator('h1');
-    if (await title.count() === 0) {
+    if ((await title.count()) === 0) {
       test.skip();
       return;
     }
@@ -22,7 +22,7 @@ test.describe('Simplify Demo E2E', () => {
     await simplifyBtn.click();
 
     const output = page.locator('#output');
-    
+
     // Check that it reaches the end of the pipeline
     await expect(output).toContainText('Loading ONNX model', { timeout: 10000 });
     await expect(output).toContainText('Simplifying graph', { timeout: 10000 });
@@ -31,7 +31,7 @@ test.describe('Simplify Demo E2E', () => {
     const resetBtn = page.locator('#resetBtn');
     await expect(resetBtn).toBeEnabled();
     await resetBtn.click();
-    
+
     await expect(output).toContainText('Waiting to simplify', { timeout: 10000 });
   });
 });

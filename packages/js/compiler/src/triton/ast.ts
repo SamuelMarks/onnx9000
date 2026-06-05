@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export interface TritonConfig {
@@ -58,10 +57,10 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   );
 
   // 4. Generate @triton.jit function decorators.
-  // 217. Emit specific # noqa or pylint suppression comments.
-  ast.pushLine('import triton  # noqa: F401');
-  ast.pushLine('import triton.language as tl  # noqa: F401');
-  ast.pushLine('import torch  # noqa: F401');
+  // 217. Emit specific
+  ast.pushLine('import triton');
+  ast.pushLine('import triton.language as tl');
+  ast.pushLine('import torch');
   ast.pushLine('');
   // 101. Wrap generated functions with @triton.autotune.
   // 102. Emit triton.Config lists.
@@ -82,7 +81,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   ast.pushLine(')');
   ast.pushLine('@triton.jit');
 
-  // 14. Handle translating ONNX string names to valid Python/Triton function names. /* v8 ignore next */ /* v8 ignore next */
+  // 14. Handle translating ONNX string names to valid Python/Triton function names.
   const funcName = graph.name.replace(/[^a-zA-Z0-9_]/g, '_') || 'fused_kernel';
 
   // 5. Generate function signatures mapping ONNX inputs to Triton pointers (*fp32).
@@ -94,7 +93,6 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   }
   for (const output of graph.outputs) {
     const outName =
-      /* v8 ignore next */ /* v8 ignore next */
       typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     args.push(outName);
   }
@@ -295,7 +293,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       // 151. Warn if a selected subgraph contains nodes that Triton cannot process.
       ast.pushLine(`# WARNING: Unsupported op ${node.opType} (159. Emit fallback comments)`);
       continue;
-    } /* v8 ignore next */ /* v8 ignore next */
+    }
     const out = sanitize(node.outputs[0] || ''); // 156. Sanitize all node names.
     const in0 = node.inputs[0] ? getOpName(node.inputs[0]).replace(/[^a-zA-Z0-9_]/g, '_') : '';
     const in1 = node.inputs[1] ? getOpName(node.inputs[1]).replace(/[^a-zA-Z0-9_]/g, '_') : '';
@@ -329,13 +327,11 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       // 192. Handle tl.bfloat16 casting natively.
       const toAttr = node.attributes.to;
       const to =
-        toAttr &&
-        typeof toAttr === 'object' &&
-        'value' in toAttr /* v8 ignore next */ /* v8 ignore next */
-          ? String(toAttr.value) /* v8 ignore next */ /* v8 ignore next */
-          : toAttr /* v8 ignore next */ /* v8 ignore next */
-            ? String(toAttr) /* v8 ignore next */ /* v8 ignore next */
-            : 'float32'; /* v8 ignore next */ /* v8 ignore next */
+        toAttr && typeof toAttr === 'object' && 'value' in toAttr
+          ? String(toAttr.value)
+          : toAttr
+            ? String(toAttr)
+            : 'float32';
       const tritonType = dtypeMap[to.toLowerCase()] || 'tl.float32';
       ast.pushLine(`${out} = tl.cast(${in0}, ${tritonType})`);
     } else if (node.opType === 'Sign') {
@@ -354,12 +350,10 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       // 198. Map BitShift left/right cleanly.
       const dirAttr = node.attributes.direction;
       const direction =
-        dirAttr &&
-        typeof dirAttr === 'object' &&
-        'value' in dirAttr /* v8 ignore next */ /* v8 ignore next */
-          ? String(dirAttr.value) /* v8 ignore next */ /* v8 ignore next */
-          : dirAttr /* v8 ignore next */ /* v8 ignore next */
-            ? String(dirAttr) /* v8 ignore next */ /* v8 ignore next */
+        dirAttr && typeof dirAttr === 'object' && 'value' in dirAttr
+          ? String(dirAttr.value)
+          : dirAttr
+            ? String(dirAttr)
             : 'LEFT';
       if (direction === 'LEFT') {
         ast.pushLine(`${out} = ${in0} << ${in1}`);
@@ -412,16 +406,13 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       // 38. Map ONNX Min to Triton tl.minimum(a, b).
       ast.pushLine(`${out} = tl.minimum(${in0}, ${in1})`);
     } else if (node.opType === 'Where') {
-      // 39. Map ONNX Where to Triton tl.where(condition, a, b). /* v8 ignore next */ /* v8 ignore next */
+      // 39. Map ONNX Where to Triton tl.where(condition, a, b).
       const in2 = node.inputs[2] ? getOpName(node.inputs[2]) : '';
       ast.pushLine(`${out} = tl.where(${in0}, ${in1}, ${in2})`);
     } else if (node.opType === 'Relu') {
       ast.pushLine(`${out} = tl.maximum(${in0}, 0.0)`);
     } else if (node.opType === 'Clip') {
-      /* v8 ignore next */ /* v8 ignore next */
-      const min = node.inputs[1]
-        ? getOpName(node.inputs[1])
-        : "-float('inf')"; /* v8 ignore next */ /* v8 ignore next */
+      const min = node.inputs[1] ? getOpName(node.inputs[1]) : "-float('inf')";
       const max = node.inputs[2] ? getOpName(node.inputs[2]) : "float('inf')";
       ast.pushLine(`${out} = tl.maximum(tl.minimum(${in0}, ${max}), ${min})`);
     } else if (node.opType === 'Tanh') {
@@ -431,10 +422,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       // 72. Generate fused LeakyRelu (tl.where(x > 0, x, x * alpha)).
       const alphaAttr = node.attributes.alpha;
       const alpha =
-        /* v8 ignore next */ /* v8 ignore next */
-        alphaAttr &&
-        typeof alphaAttr === 'object' &&
-        'value' in alphaAttr /* v8 ignore next */ /* v8 ignore next */
+        alphaAttr && typeof alphaAttr === 'object' && 'value' in alphaAttr
           ? alphaAttr.value
           : alphaAttr !== undefined
             ? alphaAttr
@@ -508,7 +496,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
       ast.pushLine(`${out} = tl.empty([BLOCK_M, BLOCK_N], dtype=tl.float32)`);
     } else if (node.opType === 'Constant') {
       // 145. Handle scalar Constant values by hardcoding them.
-      const valAttr = node.attributes.value; /* v8 ignore next */ /* v8 ignore next */
+      const valAttr = node.attributes.value;
       const value = valAttr ? valAttr.value : 0.0;
       ast.pushLine(`${out} = ${value}`);
     }
@@ -517,7 +505,6 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   // 19. Emit tl.store(pointer, value) statements.
   for (const output of graph.outputs) {
     const outName =
-      /* v8 ignore next */ /* v8 ignore next */
       typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     if ((output as ReturnType<typeof JSON.parse>).dtype === 'string') {
       // 265. Extract string outputs correctly.
@@ -549,10 +536,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   // 112. Emit torch.empty_like or torch.empty to allocate output tensors.
   for (const output of graph.outputs) {
     const outName =
-      /* v8 ignore next */ /* v8 ignore next */
-      typeof output === 'string'
-        ? output
-        : (output as ReturnType<typeof JSON.parse>).name; /* v8 ignore next */ /* v8 ignore next */
+      typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     ast.pushLine(`${outName} = torch.empty_like(${graph.inputs[0]?.name || 'in_0'})`);
   }
 
@@ -566,7 +550,6 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   }
   for (const output of graph.outputs) {
     const outName =
-      /* v8 ignore next */ /* v8 ignore next */
       typeof output === 'string' ? output : (output as ReturnType<typeof JSON.parse>).name;
     ast.pushLine(`${outName},`);
   }
@@ -575,7 +558,7 @@ export function generateTriton(graph: Graph, config: TritonConfig = {}): string 
   ast.pushLine(')');
 
   // 215. Expand tuple outputs logically.
-  const outputs = graph.outputs.map((o /* v8 ignore next */ /* v8 ignore next */) =>
+  const outputs = graph.outputs.map((o) =>
     typeof o === 'string' ? o : (o as ReturnType<typeof JSON.parse>).name,
   );
   if (outputs.length > 1) {

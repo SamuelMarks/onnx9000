@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 import { GGUFReader } from './reader';
 import { GGUFTensorType } from './builder';
@@ -59,10 +58,7 @@ export function reverseMapType(ttype: GGUFTensorType): ReturnType<typeof JSON.pa
 }
 
 export function reconstructONNX(reader: GGUFReader): Graph {
-  /* v8 ignore next */ /* v8 ignore next */
-  const g = new Graph(
-    reader.kvs['general.name'] || 'reconstructed',
-  ); /* v8 ignore next */ /* v8 ignore next */
+  const g = new Graph(reader.kvs['general.name'] || 'reconstructed');
   const arch = reader.kvs['general.architecture'] || 'unknown';
 
   for (const [name, info] of Object.entries(reader.tensors)) {

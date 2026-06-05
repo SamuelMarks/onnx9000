@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphLayout, NodeLayout, EdgeLayout, Point } from './layout.js';
 
@@ -46,14 +45,12 @@ export class GraphRenderer {
   hoveredNodeId: string | null = null;
   selectedNodeIds: Set<string> = new Set();
 
-  // 276. Cleanup /* v8 ignore next */ /* v8 ignore next */
+  // 276. Cleanup
   destroy() {
-    /* v8 ignore start */
     this.canvas.width = 0;
     this.canvas.height = 0;
     this.ctx = null as ReturnType<typeof JSON.parse>;
   }
-  /* v8 ignore stop */
 
   constructor(canvas: HTMLCanvasElement, config: Partial<CanvasConfig> = {}) {
     this.canvas = canvas;
@@ -106,9 +103,8 @@ export class GraphRenderer {
     this.clear();
     this.drawGrid();
 
-    // 194. Handle rendering of models with empty graphs gracefully /* v8 ignore next */ /* v8 ignore next */
+    // 194. Handle rendering of models with empty graphs gracefully
     if (graph.nodes.length === 0) {
-      /* v8 ignore start */
       this.ctx.save();
       this.applyTransform();
       this.ctx.fillStyle = '#6c757d';
@@ -123,7 +119,6 @@ export class GraphRenderer {
       this.ctx.restore();
       return;
     }
-    /* v8 ignore stop */
 
     this.ctx.save();
     this.applyTransform();
@@ -202,32 +197,23 @@ export class GraphRenderer {
       if (
         node.opType === 'NonMaxSuppression' ||
         node.opType === 'TopK' ||
-        node.opType === 'RoiAlign' /* v8 ignore next */ /* v8 ignore next */
+        node.opType === 'RoiAlign'
       ) {
-        /* v8 ignore start */
         octx.fillStyle = '#dc3545'; // RED warning for unsupported ops
       }
-      /* v8 ignore stop */
 
-      // 291. Add visual node highlighting based on inference path tracking. /* v8 ignore next */ /* v8 ignore next */
+      // 291. Add visual node highlighting based on inference path tracking.
       if (node.attributes['_inference_path_active']) octx.fillStyle = '#28a745'; // Green path
 
       octx.strokeStyle = this.config.edgeColor;
       octx.lineWidth = 2;
       octx.beginPath();
       if (typeof octx.roundRect === 'function') {
-        octx.roundRect(
-          5,
-          5,
-          layout.size.width,
-          layout.size.height,
-          8,
-        ); /* v8 ignore next */ /* v8 ignore next */
+        octx.roundRect(5, 5, layout.size.width, layout.size.height, 8);
       } else if (typeof octx.rect === 'function') {
-        /* v8 ignore start */
         octx.rect(5, 5, layout.size.width, layout.size.height);
       }
-      /* v8 ignore stop */
+
       octx.fill();
       octx.stroke();
 

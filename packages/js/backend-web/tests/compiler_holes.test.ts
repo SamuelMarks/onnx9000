@@ -6,7 +6,6 @@ describe('WebNNCompiler specific lines coverage', () => {
   let builder: Object;
 
   beforeEach(() => {
-    // @ts-ignore
     global.MLGraphBuilder = class {
       input() {
         return {};

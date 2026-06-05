@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Tensor } from '@onnx9000/core';
 
 export function extractLlamaMetadata(graph: Graph): Record<string, ReturnType<typeof JSON.parse>> {
@@ -34,7 +33,6 @@ export function extractLlamaMetadata(graph: Graph): Record<string, ReturnType<ty
   for (const name of Object.keys(graph.tensors)) {
     const match = name.match(/model\.layers\.(\d+)/);
     if (match) {
-      /* v8 ignore next */ /* v8 ignore next */
       layers.add(parseInt(match[1] || '', 10));
     }
   }

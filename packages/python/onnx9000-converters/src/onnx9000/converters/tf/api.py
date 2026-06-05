@@ -2,7 +2,7 @@
 
 import logging
 
-import onnx9000.converters.tf.extra_ops  # noqa: F401
+import onnx9000.converters.tf.extra_ops
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.tf.image_rng_ops import IMAGE_RNG_OPS_MAPPING

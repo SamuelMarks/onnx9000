@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph } from './ir/graph.js';
 import { Node } from './ir/node.js';
 import { Tensor } from './ir/tensor.js';
@@ -10,12 +9,10 @@ export class AutoShardingPass {
       if (node.opType === 'MatMul') {
         if (node.inputs.length >= 2) {
           const shardingA = (node.inputs[0] as ReturnType<typeof JSON.parse>).sharding;
-          const shardingB = (node.inputs[1] as ReturnType<typeof JSON.parse>)
-            .sharding; /* v8 ignore next */ /* v8 ignore next */
+          const shardingB = (node.inputs[1] as ReturnType<typeof JSON.parse>).sharding;
           if (shardingA || shardingB) {
             if (node.outputs.length > 0) {
               (node.outputs[0] as ReturnType<typeof JSON.parse>).sharding = Array(
-                /* v8 ignore next */ /* v8 ignore next */
                 (node.outputs[0] as ReturnType<typeof JSON.parse>).shape?.length || 0,
               ).fill(null);
             }

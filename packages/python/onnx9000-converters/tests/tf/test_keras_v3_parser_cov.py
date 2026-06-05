@@ -72,7 +72,7 @@ def test_keras3_parser_subclassed_tracing():
     model.built = False
 
     def model_call(inputs):
-        return inputs  # pragma: no cover
+        return inputs
 
     model.__call__ = model_call
 
@@ -95,7 +95,7 @@ def test_keras3_parser_subclassed_multi_input():
     model.built = False
 
     def model_call(inputs):
-        return inputs  # pragma: no cover
+        return inputs
 
     model.__call__ = model_call
 

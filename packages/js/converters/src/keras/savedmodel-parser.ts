@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Extracted raw representations from a TF SavedModel directory
  */

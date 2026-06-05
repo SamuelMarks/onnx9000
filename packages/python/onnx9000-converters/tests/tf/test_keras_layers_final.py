@@ -22,9 +22,9 @@ def test_execute_remaining_keras_mappings():
 
         def __getitem__(self, key):
             """Getitem."""
-            if key == "layer":  # common in bidirectional  # pragma: no cover
-                return {"config": {"name": "inner"}}  # pragma: no cover
-            return super().get(key, MagicMock())  # pragma: no cover
+            if key == "layer":  # common in bidirectional
+                return {"config": {"name": "inner"}}
+            return super().get(key, MagicMock())
 
     node.attr = DefaultDict()
 

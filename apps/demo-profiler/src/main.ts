@@ -1,15 +1,16 @@
-/* v8 ignore next */ /* v8 ignore next */ document
-  .getElementById('btn-run')
-  ?.addEventListener('click', () => {
-    /* v8 ignore next */ /* v8 ignore next */
-    const output = document.getElementById('output'); /* v8 ignore next */ /* v8 ignore next */
+/**
+ * Initializes the profiler demo.
+ */
+export function initProfilerDemo(): void {
+  document.getElementById('btn-run')?.addEventListener('click', () => {
+    const output = document.getElementById('output');
     if (output) {
-      /* v8 ignore next */ /* v8 ignore next */
-      output.textContent = 'Initializing profiler...\n'; /* v8 ignore next */ /* v8 ignore next */
+      output.textContent = 'Initializing profiler...\n';
       setTimeout(() => {
-        /* v8 ignore next */ /* v8 ignore next */
-        output.textContent += '[OK] Captured traces\n'; /* v8 ignore next */ /* v8 ignore next */
-        output.textContent += '[OK] execution complete'; /* v8 ignore next */ /* v8 ignore next */
-      }, 500); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
+        output.textContent += '[OK] Captured traces\n';
+        output.textContent += '[OK] execution complete';
+      }, 500);
+    }
   });
+}
+initProfilerDemo();

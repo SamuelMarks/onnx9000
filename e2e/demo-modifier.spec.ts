@@ -16,14 +16,14 @@ test.describe('Headless Graph Modifiers Demo', () => {
     const initBtn = page.locator('#btnInit');
     if (await initBtn.isVisible()) {
       await initBtn.click();
-      
+
       const output = page.locator('#output');
       await expect(output).toContainText('input_0');
       await expect(output).toContainText('output_0');
-      
+
       const renameBtn = page.locator('#btnRename');
       await renameBtn.click();
-      
+
       await expect(output).toContainText('images');
     }
   });

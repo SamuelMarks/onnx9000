@@ -4,7 +4,7 @@ const pages = [
   { url: '/apps/demo-ort-training/index.html', title: 'ORT Training', id: '#btn-run' },
   { url: '/apps/demo-olive-optimizer/index.html', title: 'Olive Optimizer', id: '#btn-run' },
   { url: '/apps/demo-triton-server/index.html', title: 'Triton Server', id: '#btn-run' },
-  { url: '/apps/demo-onnx-tool/index.html', title: 'ONNX Tool', id: '#btn-run' }
+  { url: '/apps/demo-onnx-tool/index.html', title: 'ONNX Tool', id: '#btn-run' },
 ];
 
 test.describe('Spec Orphans Web Demos', () => {

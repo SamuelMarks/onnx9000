@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 import { State } from './state.js';
 import { GeneratorParams } from './types.js';

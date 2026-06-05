@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphMutator } from '../GraphMutator.js';
 
@@ -26,9 +25,8 @@ export class PropertiesPanel {
     this.container.appendChild(title);
 
     // 274. Implement UI hooks mapping to onnx9000 execution profiling metrics directly
-    // 275. Show memory bandwidth utilization estimates per node /* v8 ignore next */ /* v8 ignore next */
+    // 275. Show memory bandwidth utilization estimates per node
     if ((node as ReturnType<typeof JSON.parse>)._profiling_time_ms !== undefined) {
-      /* v8 ignore start */
       const pGroup = document.createElement('div');
       pGroup.style.background = '#e9ecef';
       pGroup.style.padding = '8px';
@@ -43,12 +41,10 @@ export class PropertiesPanel {
                           <div style="margin-top:2px;">💾 Bandwidth: <strong>${b} MB</strong></div>`;
       this.container.appendChild(pGroup);
     }
-    /* v8 ignore stop */
 
     // 274. Implement UI hooks mapping to onnx9000 execution profiling metrics directly
-    // 275. Show memory bandwidth utilization estimates per node /* v8 ignore next */ /* v8 ignore next */
+    // 275. Show memory bandwidth utilization estimates per node
     if ((node as ReturnType<typeof JSON.parse>)._profiling_time_ms !== undefined) {
-      /* v8 ignore start */
       const pGroup = document.createElement('div');
       pGroup.style.background = '#e9ecef';
       pGroup.style.padding = '8px';
@@ -63,7 +59,6 @@ export class PropertiesPanel {
                           <div style="margin-top:2px;">💾 Bandwidth: <strong>${b} MB</strong></div>`;
       this.container.appendChild(pGroup);
     }
-    /* v8 ignore stop */
 
     // 56. Inline editable text fields for node name
     const nameGroup = this._createFormGroup('Name');
@@ -77,7 +72,6 @@ export class PropertiesPanel {
     nameInput.onchange = (e) => {
       const val = (e.target as HTMLInputElement).value;
       if (val) {
-        /* v8 ignore next */ /* v8 ignore next */
         this.mutator.renameNode(node.name || node.id, val);
       }
     };
@@ -95,7 +89,6 @@ export class PropertiesPanel {
     typeInput.onchange = (e) => {
       const val = (e.target as HTMLInputElement).value;
       if (val) {
-        /* v8 ignore next */ /* v8 ignore next */
         this.mutator.changeNodeOpType(node.name || node.id, val);
       }
     };
@@ -163,7 +156,6 @@ export class PropertiesPanel {
           try {
             const parsed = JSON.parse((e.target as HTMLInputElement).value);
             if (Array.isArray(parsed)) {
-              /* v8 ignore next */ /* v8 ignore next */
               this.mutator.setNodeAttribute(node.name || node.id, attr.name, parsed, attr.type);
             }
           } catch (err) {
@@ -186,7 +178,7 @@ export class PropertiesPanel {
           }
           if (attr.type === 'FLOAT') {
             finalVal = parseFloat(val);
-          } /* v8 ignore next */ /* v8 ignore next */
+          }
           this.mutator.setNodeAttribute(node.name || node.id, attr.name, finalVal, attr.type);
         };
         attrDiv.appendChild(txtInput);
@@ -199,9 +191,8 @@ export class PropertiesPanel {
     const exportBtn = document.createElement('button');
     exportBtn.textContent = 'Export Node to JSON';
     exportBtn.style.marginTop = '16px';
-    exportBtn.style.width = '100%'; /* v8 ignore next */ /* v8 ignore next */
+    exportBtn.style.width = '100%';
     exportBtn.onclick = () => {
-      /* v8 ignore start */
       // 261. Export Node to JSON
       const json = JSON.stringify(node, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
@@ -212,16 +203,15 @@ export class PropertiesPanel {
       a.click();
       URL.revokeObjectURL(url);
     };
-    /* v8 ignore stop */
+
     this.container.appendChild(exportBtn);
 
     // 262. Copy node attributes
     const copyBtn = document.createElement('button');
     copyBtn.textContent = 'Copy Attributes';
     copyBtn.style.marginTop = '8px';
-    copyBtn.style.width = '100%'; /* v8 ignore next */ /* v8 ignore next */
+    copyBtn.style.width = '100%';
     copyBtn.onclick = () => {
-      /* v8 ignore start */
       const attrs = JSON.stringify(node.attributes);
       window.localStorage?.setItem(
         'copied_node_attributes',
@@ -229,15 +219,11 @@ export class PropertiesPanel {
       );
       alert('Attributes copied to clipboard.');
     };
-    /* v8 ignore stop */
+
     this.container.appendChild(copyBtn);
-    /* v8 ignore next */ /* v8 ignore next */
-    const pasteData =
-      window.localStorage?.getItem(
-        'copied_node_attributes',
-      ); /* v8 ignore next */ /* v8 ignore next */
+
+    const pasteData = window.localStorage?.getItem('copied_node_attributes');
     if (pasteData) {
-      /* v8 ignore start */
       const parsed = JSON.parse(pasteData);
       if (parsed.opType === node.opType) {
         const pasteBtn = document.createElement('button');
@@ -259,7 +245,6 @@ export class PropertiesPanel {
         this.container.appendChild(pasteBtn);
       }
     }
-    /* v8 ignore stop */
   }
 
   renderEdge(edgeName: string, graph: Graph) {
@@ -291,7 +276,7 @@ export class PropertiesPanel {
 
     const typeGroup = this._createFormGroup('Type & Shape');
     if (vi) {
-      // 273. Support visualization of ONNX Sequence inputs/outputs. /* v8 ignore next */ /* v8 ignore next */
+      // 273. Support visualization of ONNX Sequence inputs/outputs.
       const seqLabel = isSequence ? '<span style="color: blue;">[Sequence]</span> ' : '';
       typeGroup.innerHTML = `<div>DType: ${seqLabel}<strong>${vi.dtype}</strong></div><div style="margin-top: 4px;">Shape:</div>`;
 
@@ -307,13 +292,11 @@ export class PropertiesPanel {
         dimInput.style.width = '40px';
         dimInput.style.textAlign = 'center';
         dimInput.addEventListener('change', () => {
-          /* v8 ignore start */
           const newShape = [...vi.shape];
           const val = dimInput.value.trim();
           newShape[idx] = isNaN(Number(val)) ? val : Number(val);
           this.mutator.overrideShape(vi.name, newShape, vi.dtype);
           window.dispatchEvent(new CustomEvent('graph-mutated'));
-          /* v8 ignore stop */
         });
         shapeContainer.appendChild(dimInput);
       });
@@ -386,48 +369,34 @@ export class PropertiesPanel {
       const group = document.createElement('div');
       group.innerHTML = `<label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">${label}</label>`;
       const input = document.createElement('input');
-      input.type = 'text'; /* v8 ignore next */ /* v8 ignore next */
+      input.type = 'text';
       input.value = value !== undefined ? String(value) : '';
       input.style.width = '100%';
       input.addEventListener('change', (e: ReturnType<typeof JSON.parse>) => {
-        /* v8 ignore start */
         onChange(e.target.value);
         window.dispatchEvent(new CustomEvent('graph-mutated'));
-        /* v8 ignore stop */
       });
       group.appendChild(input);
       form.appendChild(group);
     };
 
     createInput('Graph Name', graph.name, (val) => {
-      /* v8 ignore start */
       graph.name = val;
-      /* v8 ignore stop */
     });
     createInput('Domain', graph.domain, (val) => {
-      /* v8 ignore start */
       graph.domain = val;
-      /* v8 ignore stop */
     });
     createInput('Doc String', graph.docString, (val) => {
-      /* v8 ignore start */
       graph.docString = val;
-      /* v8 ignore stop */
     });
     createInput('Producer Name', graph.producerName, (val) => {
-      /* v8 ignore start */
       graph.producerName = val;
-      /* v8 ignore stop */
     });
     createInput('Producer Version', graph.producerVersion, (val) => {
-      /* v8 ignore start */
       graph.producerVersion = val;
-      /* v8 ignore stop */
     });
     createInput('Model Version', graph.modelVersion, (val) => {
-      /* v8 ignore start */
       graph.modelVersion = isNaN(Number(val)) ? 0 : Number(val);
-      /* v8 ignore stop */
     });
 
     // Opset imports
@@ -449,7 +418,6 @@ export class PropertiesPanel {
     metaPre.style.background = '#f8f9fa';
     metaPre.style.padding = '8px';
     metaPre.textContent = JSON.stringify(
-      /* v8 ignore next */ /* v8 ignore next */
       (graph as ReturnType<typeof JSON.parse>).metadataProps || {},
       null,
       2,
@@ -458,9 +426,8 @@ export class PropertiesPanel {
 
     // 266. Drawing custom text annotations directly onto the canvas
     const btnAddMeta = document.createElement('button');
-    btnAddMeta.textContent = 'Add Text Annotation'; /* v8 ignore next */ /* v8 ignore next */
+    btnAddMeta.textContent = 'Add Text Annotation';
     btnAddMeta.onclick = () => {
-      /* v8 ignore start */
       const text = prompt('Enter annotation text:');
       if (text) {
         if (!(graph as ReturnType<typeof JSON.parse>).metadataProps)
@@ -469,7 +436,7 @@ export class PropertiesPanel {
         this.renderGraphProperties(graph);
       }
     };
-    /* v8 ignore stop */
+
     metaGroup.appendChild(btnAddMeta);
     form.appendChild(metaGroup);
 

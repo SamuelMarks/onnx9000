@@ -1,16 +1,16 @@
-  import { $create } from '../core/DOM';  
-  
-export class Toast {  
-  private static container: HTMLElement;  
-  
-  static init(): void {  
-    if (!this.container) {  
-      this.container = $create('div', {  
-        className: 'ide-toast-container',  
-      });  
-      document.body.appendChild(this.container);  
-  
-      const style = $create('style', {  
+import { $create } from '../core/DOM';
+
+export class Toast {
+  private static container: HTMLElement;
+
+  static init(): void {
+    if (!this.container) {
+      this.container = $create('div', {
+        className: 'ide-toast-container',
+      });
+      document.body.appendChild(this.container);
+
+      const style = $create('style', {
         textContent: `  
           .ide-toast-container {  
             position: fixed;  
@@ -48,35 +48,35 @@ export class Toast {
           .ide-toast.warn {  
             border-left-color: #ffc107;  
           }  
-        `,  
-      });  
-      document.head.appendChild(style);  
-    }  
-  }  
-  
-  static show(  
-    message: string,  
-    type: 'info' | 'success' | 'warn' | 'error' = 'info',  
-    duration = 3000,  
-  ): void {  
-    this.init();  
-    const toast = $create('div', {  
-      className: `ide-toast ${type}`,  
-      textContent: message,  
-    });  
-    this.container.appendChild(toast);  
-  
-    // Trigger reflow to animate  
-    void toast.offsetWidth;  
-    toast.classList.add('show');  
-  
-    setTimeout(() => {  
-      toast.classList.remove('show');  
-      toast.addEventListener('transitionend', () => {  
-        if (toast.parentNode) {  
-          toast.parentNode.removeChild(toast);  
-        }  
-      });  
-    }, duration);  
-  }  
+        `,
+      });
+      document.head.appendChild(style);
+    }
+  }
+
+  static show(
+    message: string,
+    type: 'info' | 'success' | 'warn' | 'error' = 'info',
+    duration = 3000,
+  ): void {
+    this.init();
+    const toast = $create('div', {
+      className: `ide-toast ${type}`,
+      textContent: message,
+    });
+    this.container.appendChild(toast);
+
+    // Trigger reflow to animate
+    void toast.offsetWidth;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.addEventListener('transitionend', () => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      });
+    }, duration);
+  }
 }

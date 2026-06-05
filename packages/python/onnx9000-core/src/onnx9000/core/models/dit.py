@@ -8,7 +8,7 @@ from onnx9000.core.ops import add, mul
 from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAttention
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
@@ -16,7 +16,7 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa:
 class DiTBlock:
     """Diffusion Transformer Block with AdaLN-Zero."""
 
-    def __init__(self, hidden_size: int, num_heads: int, mlp_ratio: float = 4.0, prefix: str = ""):  # noqa: D107
+    def __init__(self, hidden_size: int, num_heads: int, mlp_ratio: float = 4.0, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.hidden_size = hidden_size
@@ -29,7 +29,7 @@ class DiTBlock:
         self.mlp_fc2 = Gemm(trans_b=1)
         self.adaLN_modulation = Gemm(trans_b=1)  # projects time_emb to shift, scale, gate
 
-    def __call__(self, x: Tensor, c: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, c: Tensor) -> Tensor:
         # c is the timestep/condition embedding [B, hidden_size]
         """Call."""
         from onnx9000.core.ops import split, squeeze
@@ -110,10 +110,10 @@ class DiTBlock:
         return x
 
 
-class DiT:  # noqa: D101
+class DiT:
     """Di t."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         input_size: int = 32,
         patch_size: int = 2,
@@ -140,7 +140,7 @@ class DiT:  # noqa: D101
 
         self.out_channels = in_channels * patch_size * patch_size
 
-    def __call__(self, x: Tensor, t: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, t: Tensor) -> Tensor:
         """Call."""
         x = self.patch_embed(x)
 
@@ -189,6 +189,6 @@ class DiT:  # noqa: D101
         return x
 
 
-def dit_xl_2(**kwargs: Any) -> DiT:  # noqa: D103
+def dit_xl_2(**kwargs: Any) -> DiT:
     """Dit xl 2."""
     return DiT(hidden_size=1152, depth=28, num_heads=16, **kwargs)

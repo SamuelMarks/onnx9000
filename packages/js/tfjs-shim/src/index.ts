@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @onnx9000/tfjs-shim - Drop-in replacement for TensorFlow.js
 
 import { Graph, Node, Tensor as OnnxTensor } from '@onnx9000/core';
@@ -69,7 +68,6 @@ const _envVars: Record<string, string | number | boolean> = {};
  */
 export function env(): Environment {
   return {
-    /* v8 ignore next */ /* v8 ignore next */
     get: (key: string) => (key in _envVars ? _envVars[key]! : null),
     set: (key: string, value: string | number | boolean) => {
       _envVars[key] = value;
@@ -200,10 +198,7 @@ export class Tensor {
    */
   async data(): Promise<TypedArray | string[]> {
     if (this.dtype === 'string')
-      /* v8 ignore next */ /* v8 ignore next */
-      return new Array(this.size).fill(
-        this.dataArray[0] || '',
-      ) as string[]; /* v8 ignore next */ /* v8 ignore next */
+      return new Array(this.size).fill(this.dataArray[0] || '') as string[];
     if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
     if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
     if (this.dtype === 'bool')
@@ -217,7 +212,6 @@ export class Tensor {
    */
   dataSync(): TypedArray | string[] {
     if (this.dtype === 'string')
-      /* v8 ignore next */ /* v8 ignore next */
       return new Array(this.size).fill(this.dataArray[0] || '') as string[];
     if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
     if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
@@ -344,7 +338,6 @@ export function tensor1d(
   values: (number | string | boolean)[] | TypedArray,
   dtype?: DataType,
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return tensor(values, [values.length || 1], dtype);
 }
 
@@ -563,7 +556,7 @@ function makeElementwise(name: string, op: (a: number, b: number) => number) {
       const valA = aTensor.nData[i % aTensor.size] as number;
       const valB = bTensor.nData[i % bTensor.size] as number;
       newData[i] = op(valA, valB);
-    } /* v8 ignore next */ /* v8 ignore next */
+    }
     const outShape = aTensor.size >= bTensor.size ? aTensor.shape.slice() : bTensor.shape.slice();
     return new Tensor(outShape, aTensor.dtype, newData);
   };
@@ -604,7 +597,7 @@ export const sub = makeElementwise('sub', (a, b) => a - b);
 export const mul = makeElementwise('mul', (a, b) => a * b);
 /** Divides two tensors element-wise. */
 export const div = makeElementwise('div', (a, b) => a / b);
-/** Divides two tensors element-wise, returning 0 if the divisor is 0. */ /* v8 ignore next */ /* v8 ignore next */
+/** Divides two tensors element-wise, returning 0 if the divisor is 0. */
 export const divNoNan = makeElementwise('divNoNan', (a, b) => (b === 0 ? 0 : a / b));
 /** Divides two tensors element-wise and floors the result. */
 export const floorDiv = makeElementwise('floorDiv', (a, b) => Math.floor(a / b));
@@ -712,21 +705,17 @@ export function addN(tensors: Tensor[]): Tensor {
  * @returns Resulting tensor.
  */
 export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = false): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const rowsA = transposeA ? a.shape[1] : a.shape[0]; /* v8 ignore next */ /* v8 ignore next */
-  const colsA = transposeA ? a.shape[0] : a.shape[1]; /* v8 ignore next */ /* v8 ignore next */
-  const rowsB = transposeB ? b.shape[1] : b.shape[0]; /* v8 ignore next */ /* v8 ignore next */
-  const colsB = transposeB ? b.shape[0] : b.shape[1]; /* v8 ignore next */ /* v8 ignore next */
+  const rowsA = transposeA ? a.shape[1] : a.shape[0];
+  const colsA = transposeA ? a.shape[0] : a.shape[1];
+  const rowsB = transposeB ? b.shape[1] : b.shape[0];
+  const colsB = transposeB ? b.shape[0] : b.shape[1];
   if (colsA !== rowsB) throw new Error(`Matrix size-incompatible`);
   const newData = new Array(rowsA * colsB).fill(0);
   for (let i = 0; i < rowsA; i++) {
     for (let j = 0; j < colsB; j++) {
       let sum = 0;
       for (let k = 0; k < colsA; k++) {
-        /* v8 ignore next */ /* v8 ignore next */
-        const idxA = transposeA
-          ? k * rowsA + i
-          : i * colsA + k; /* v8 ignore next */ /* v8 ignore next */
+        const idxA = transposeA ? k * rowsA + i : i * colsA + k;
         const idxB = transposeB ? j * rowsB + k : k * colsB + j;
         sum += (a.nData[idxA] as number) * (b.nData[idxB] as number);
       }
@@ -775,7 +764,7 @@ export function norm(
     val = x.nData.reduce((acc, v) => acc + Math.abs(v as number), 0);
   } else if (ord === Infinity || ord === 'inf') {
     val = Math.max(...x.nData.map((v) => Math.abs(v as number)));
-  } /* v8 ignore next */ /* v8 ignore next */
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [val]);
 }
 
@@ -859,16 +848,9 @@ export function conv2d(
   dataFormat: 'NHWC' | 'NCHW' = 'NHWC',
   dilations: number | [number, number] = 1,
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const strideY = Array.isArray(strides)
-    ? strides[0]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
-  const strideX = Array.isArray(strides)
-    ? strides[1]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
-  const dilY = Array.isArray(dilations)
-    ? dilations[0]
-    : dilations; /* v8 ignore next */ /* v8 ignore next */
+  const strideY = Array.isArray(strides) ? strides[0] : strides;
+  const strideX = Array.isArray(strides) ? strides[1] : strides;
+  const dilY = Array.isArray(dilations) ? dilations[0] : dilations;
   const dilX = Array.isArray(dilations) ? dilations[1] : dilations;
   const [batch, inHeight, inWidth, inChannels] =
     dataFormat === 'NHWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
@@ -1049,16 +1031,9 @@ export function depthwiseConv2d(
   dataFormat: 'NHWC' | 'NCHW' = 'NHWC',
   dilations: number | [number, number] = 1,
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const strideY = Array.isArray(strides)
-    ? strides[0]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
-  const strideX = Array.isArray(strides)
-    ? strides[1]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
-  const dilY = Array.isArray(dilations)
-    ? dilations[0]
-    : dilations; /* v8 ignore next */ /* v8 ignore next */
+  const strideY = Array.isArray(strides) ? strides[0] : strides;
+  const strideX = Array.isArray(strides) ? strides[1] : strides;
+  const dilY = Array.isArray(dilations) ? dilations[0] : dilations;
   const dilX = Array.isArray(dilations) ? dilations[1] : dilations;
   const [batch, inHeight, inWidth, inChannels] =
     dataFormat === 'NHWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
@@ -1161,10 +1136,7 @@ export function conv2dTranspose(
   strides: number | [number, number],
   pad: 'valid' | 'same' | number,
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const strideY = Array.isArray(strides)
-    ? strides[0]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
+  const strideY = Array.isArray(strides) ? strides[0] : strides;
   const strideX = Array.isArray(strides) ? strides[1] : strides;
   const [filterHeight, filterWidth, outFilters, inFilters] = filter.shape; // [H, W, outC, inC]
   const [batch, outHeight, outWidth, outC] = outputShape;
@@ -1226,13 +1198,8 @@ export function conv3dTranspose(
   strides: number | [number, number, number],
   pad: 'valid' | 'same',
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const strideD = Array.isArray(strides)
-    ? strides[0]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
-  const strideH = Array.isArray(strides)
-    ? strides[1]
-    : strides; /* v8 ignore next */ /* v8 ignore next */
+  const strideD = Array.isArray(strides) ? strides[0] : strides;
+  const strideH = Array.isArray(strides) ? strides[1] : strides;
   const strideW = Array.isArray(strides) ? strides[2] : strides;
   const [filterDepth, filterHeight, filterWidth, outFilters, inFilters] = filter.shape;
   const [batch, outDepth, outHeight, outWidth, outC] = outputShape;
@@ -1342,11 +1309,8 @@ export function argMin(x: Tensor, axis: number = 0): Tensor {
  */
 export function min(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   if (axis === undefined) {
-    /* v8 ignore next */ /* v8 ignore next */
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
-      Math.min(...x.nData),
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.min(...x.nData)]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.min(...x.nData)]);
 }
 
@@ -1360,7 +1324,7 @@ export function min(x: Tensor, axis?: number | number[], keepDims = false): Tens
 export function max(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.max(...x.nData)]);
-  } /* v8 ignore next */ /* v8 ignore next */
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.max(...x.nData)]);
 }
 
@@ -1376,7 +1340,7 @@ export function mean(x: Tensor, axis?: number | number[], keepDims = false): Ten
   const m = sum / x.size;
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [m]);
-  } /* v8 ignore next */ /* v8 ignore next */
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [m]);
 }
 
@@ -1390,10 +1354,8 @@ export function mean(x: Tensor, axis?: number | number[], keepDims = false): Ten
 export function prod(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   const p = x.nData.reduce((a, b) => a * b, 1);
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
-      p,
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [p]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [p]);
 }
 
@@ -1407,11 +1369,8 @@ export function prod(x: Tensor, axis?: number | number[], keepDims = false): Ten
 export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   const s = x.nData.reduce((a, b) => a + b, 0);
   if (axis === undefined) {
-    /* v8 ignore next */ /* v8 ignore next */
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
-      s,
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [s]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [s]);
 }
 
@@ -1425,11 +1384,8 @@ export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tens
 export function all(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   const res = x.dataArray.every((v) => v !== 0);
   if (axis === undefined) {
-    /* v8 ignore next */ /* v8 ignore next */
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [
-      res,
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
 }
 
@@ -1443,11 +1399,8 @@ export function all(x: Tensor, axis?: number | number[], keepDims = false): Tens
 export function any(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
   const res = x.dataArray.some((v) => v !== 0);
   if (axis === undefined) {
-    /* v8 ignore next */ /* v8 ignore next */
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [
-      res,
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
 }
 
@@ -1463,11 +1416,8 @@ export function logSumExp(x: Tensor, axis?: number | number[], keepDims = false)
   const sum = x.nData.reduce((a, b) => a + Math.exp(b - max), 0);
   const res = max + Math.log(sum);
   if (axis === undefined) {
-    /* v8 ignore next */ /* v8 ignore next */
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
-      res,
-    ]); /* v8 ignore next */ /* v8 ignore next */
-  } /* v8 ignore next */ /* v8 ignore next */
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [res]);
+  }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [res]);
 }
 
@@ -1524,25 +1474,14 @@ export function maxPool3d(
   pad: 'valid' | 'same' | number,
   dimRoundingMode?: 'floor' | 'round' | 'ceil',
 ): Tensor {
-  // mathematical soundness implementation for maxPool3d /* v8 ignore next */ /* v8 ignore next */
-  const filterD = Array.isArray(filterSize)
-    ? filterSize[0]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const filterH = Array.isArray(filterSize)
-    ? filterSize[1]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const filterW = Array.isArray(filterSize)
-    ? filterSize[2]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const strideD = Array.isArray(strides)
-    ? strides[0]
-    : strides || 1; /* v8 ignore next */ /* v8 ignore next */
-  const strideH = Array.isArray(strides)
-    ? strides[1]
-    : strides || 1; /* v8 ignore next */ /* v8 ignore next */
+  // mathematical soundness implementation for maxPool3d
+  const filterD = Array.isArray(filterSize) ? filterSize[0] : filterSize;
+  const filterH = Array.isArray(filterSize) ? filterSize[1] : filterSize;
+  const filterW = Array.isArray(filterSize) ? filterSize[2] : filterSize;
+  const strideD = Array.isArray(strides) ? strides[0] : strides || 1;
+  const strideH = Array.isArray(strides) ? strides[1] : strides || 1;
   const strideW = Array.isArray(strides) ? strides[2] : strides || 1;
   const [batch, inD, inH, inW, inC] =
-    /* v8 ignore next */ /* v8 ignore next */
     x.shape.length === 5 ? x.shape : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
 
   let padD = 0,
@@ -1598,9 +1537,7 @@ export function maxPool3d(
     }
   }
   return new Tensor(
-    /* v8 ignore next */ /* v8 ignore next */ x.shape.length === 5
-      ? [batch, outD, outH, outW, inC]
-      : [outD, outH, outW, inC],
+    x.shape.length === 5 ? [batch, outD, outH, outW, inC] : [outD, outH, outW, inC],
     x.dtype,
     outData,
   );
@@ -1621,25 +1558,13 @@ export function avgPool3d(
   pad: 'valid' | 'same' | number,
   dimRoundingMode?: 'floor' | 'round' | 'ceil',
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const filterD = Array.isArray(filterSize)
-    ? filterSize[0]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const filterH = Array.isArray(filterSize)
-    ? filterSize[1]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const filterW = Array.isArray(filterSize)
-    ? filterSize[2]
-    : filterSize; /* v8 ignore next */ /* v8 ignore next */
-  const strideD = Array.isArray(strides)
-    ? strides[0]
-    : strides || 1; /* v8 ignore next */ /* v8 ignore next */
-  const strideH = Array.isArray(strides)
-    ? strides[1]
-    : strides || 1; /* v8 ignore next */ /* v8 ignore next */
+  const filterD = Array.isArray(filterSize) ? filterSize[0] : filterSize;
+  const filterH = Array.isArray(filterSize) ? filterSize[1] : filterSize;
+  const filterW = Array.isArray(filterSize) ? filterSize[2] : filterSize;
+  const strideD = Array.isArray(strides) ? strides[0] : strides || 1;
+  const strideH = Array.isArray(strides) ? strides[1] : strides || 1;
   const strideW = Array.isArray(strides) ? strides[2] : strides || 1;
   const [batch, inD, inH, inW, inC] =
-    /* v8 ignore next */ /* v8 ignore next */
     x.shape.length === 5 ? x.shape : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
 
   let padD = 0,
@@ -1698,9 +1623,7 @@ export function avgPool3d(
     }
   }
   return new Tensor(
-    /* v8 ignore next */ /* v8 ignore next */ x.shape.length === 5
-      ? [batch, outD, outH, outW, inC]
-      : [outD, outH, outW, inC],
+    x.shape.length === 5 ? [batch, outD, outH, outW, inC] : [outD, outH, outW, inC],
     x.dtype,
     outData,
   );
@@ -1723,16 +1646,9 @@ export function pool(
   dilations?: number | number[],
   strides?: number | number[],
 ): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const filterHeight = Array.isArray(windowShape)
-    ? windowShape[0]
-    : windowShape; /* v8 ignore next */ /* v8 ignore next */
-  const filterWidth = Array.isArray(windowShape)
-    ? windowShape[1]
-    : windowShape; /* v8 ignore next */ /* v8 ignore next */
-  const strideY = Array.isArray(strides)
-    ? strides[0]
-    : strides || 1; /* v8 ignore next */ /* v8 ignore next */
+  const filterHeight = Array.isArray(windowShape) ? windowShape[0] : windowShape;
+  const filterWidth = Array.isArray(windowShape) ? windowShape[1] : windowShape;
+  const strideY = Array.isArray(strides) ? strides[0] : strides || 1;
   const strideX = Array.isArray(strides) ? strides[1] : strides || 1;
   const [batch, inHeight, inWidth, inChannels] =
     input.shape.length === 4 ? input.shape : [1, input.shape[0], input.shape[1], input.shape[2]];
@@ -1811,7 +1727,7 @@ export function cast(x: Tensor, dtype: DataType): Tensor {
  * @returns Resulting tensor.
  */
 export function expandDims(x: Tensor, axis: number = 0): Tensor {
-  const newShape = x.shape.slice(); /* v8 ignore next */ /* v8 ignore next */
+  const newShape = x.shape.slice();
   newShape.splice(axis < 0 ? newShape.length + axis + 1 : axis, 0, 1);
   return new Tensor(newShape, x.dtype, x.dataArray.slice());
 }
@@ -1822,7 +1738,6 @@ export function expandDims(x: Tensor, axis: number = 0): Tensor {
  * @returns Resulting tensor.
  */
 export function squeeze(x: Tensor, axis?: number[]): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   const newShape = x.shape.filter((d, i) => d !== 1 || (axis && !axis.includes(i)));
   return new Tensor(newShape, x.dtype, x.dataArray.slice());
 }
@@ -1904,7 +1819,6 @@ export function stack(tensors: Tensor[], axis: number = 0): Tensor {
  * @returns List of tensors.
  */
 export function unstack(x: Tensor, axis: number = 0): Tensor[] {
-  /* v8 ignore next */ /* v8 ignore next */
   const size = x.shape[axis] || 1;
   const splits = [];
   const chunk = x.size / size;
@@ -1951,8 +1865,7 @@ export const pad1d = pad,
  * @returns Resulting tensor.
  */
 export function slice(x: Tensor, begin: number | number[], size?: number | number[]): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
-  const b = Array.isArray(begin) ? begin[0] : begin; /* v8 ignore next */ /* v8 ignore next */
+  const b = Array.isArray(begin) ? begin[0] : begin;
   const s = size ? (Array.isArray(size) ? size[0] : size) : x.shape[0] - b;
   const elementsPerItem = x.size / x.shape[0];
   const newShape = x.shape.slice();
@@ -2181,7 +2094,6 @@ export function spaceToDepth(x: Tensor, blockSize: number, dataFormat: string = 
  * @returns Boolean tensor.
  */
 export function equal(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('equal', (x, y) => (x === y ? 1 : 0))(a, b);
 }
 
@@ -2192,7 +2104,6 @@ export function equal(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function notEqual(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('notEqual', (x, y) => (x !== y ? 1 : 0))(a, b);
 }
 
@@ -2203,7 +2114,6 @@ export function notEqual(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function less(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('less', (x, y) => (x < y ? 1 : 0))(a, b);
 }
 
@@ -2214,7 +2124,6 @@ export function less(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function lessEqual(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('lessEqual', (x, y) => (x <= y ? 1 : 0))(a, b);
 }
 
@@ -2225,7 +2134,6 @@ export function lessEqual(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function greater(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('greater', (x, y) => (x > y ? 1 : 0))(a, b);
 }
 
@@ -2236,7 +2144,6 @@ export function greater(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function greaterEqual(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('greaterEqual', (x, y) => (x >= y ? 1 : 0))(a, b);
 }
 
@@ -2276,7 +2183,6 @@ export function logicalNot(x: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function logicalXor(a: Tensor, b: Tensor): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeBinary('logicalXor', (x, y) => ((x ? 1 : 0) ^ (y ? 1 : 0) ? 1 : 0))(a, b);
 }
 
@@ -2308,12 +2214,11 @@ export const relu6 = makeUnary('relu6', (x) => Math.min(Math.max(0, x), 6));
  * @returns Resulting tensor.
  */
 export function leakyRelu(x: Tensor, alpha: number = 0.2): Tensor {
-  /* v8 ignore next */ /* v8 ignore next */
   return makeUnary('leakyRelu', (v) => (v < 0 ? alpha * v : v))(x);
 }
-/** Exponential Linear Unit activation. */ /* v8 ignore next */ /* v8 ignore next */
+/** Exponential Linear Unit activation. */
 export const elu = makeUnary('elu', (x) => (x < 0 ? Math.exp(x) - 1 : x));
-/** Scaled Exponential Linear Unit activation. */ /* v8 ignore next */ /* v8 ignore next */
+/** Scaled Exponential Linear Unit activation. */
 export const selu = makeUnary('selu', (x) => 1.0507 * (x < 0 ? 1.67326 * (Math.exp(x) - 1) : x));
 export const sigmoid = makeUnary('sigmoid', (x) => 1 / (1 + Math.exp(-x)));
 /**
@@ -2518,8 +2423,7 @@ export const browser = {
    * @returns A new tensor containing the pixel data.
    */
   fromPixels: (pixels: PixelSource, numChannels: number = 3): Tensor => {
-    /* v8 ignore next */ /* v8 ignore next */
-    let width = (pixels as { width: number }).width || 1; /* v8 ignore next */ /* v8 ignore next */
+    let width = (pixels as { width: number }).width || 1;
     let height = (pixels as { height: number }).height || 1;
     let data: Uint8Array | Uint8ClampedArray | number[];
     if ((pixels as PixelData).data) {
@@ -2558,16 +2462,12 @@ export const image = {
   ): Tensor => {
     const [batch, inH, inW, inC] = images.shape;
     const [outH, outW] = size;
-    const outData = new Array(batch * outH * outW * inC); /* v8 ignore next */ /* v8 ignore next */
-    const heightScale =
-      alignCorners && outH > 1
-        ? (inH - 1) / (outH - 1)
-        : inH / outH; /* v8 ignore next */ /* v8 ignore next */
+    const outData = new Array(batch * outH * outW * inC);
+    const heightScale = alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
     const widthScale = alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
 
     for (let b = 0; b < batch; b++) {
       for (let y = 0; y < outH; y++) {
-        /* v8 ignore next */ /* v8 ignore next */
         let sourceY = halfPixelCenters ? (y + 0.5) * heightScale - 0.5 : y * heightScale;
         sourceY = Math.max(0, Math.min(inH - 1, sourceY));
         const y0 = Math.floor(sourceY);
@@ -2575,7 +2475,6 @@ export const image = {
         const yWeight = sourceY - y0;
 
         for (let x = 0; x < outW; x++) {
-          /* v8 ignore next */ /* v8 ignore next */
           let sourceX = halfPixelCenters ? (x + 0.5) * widthScale - 0.5 : x * widthScale;
           sourceX = Math.max(0, Math.min(inW - 1, sourceX));
           const x0 = Math.floor(sourceX);
@@ -2606,26 +2505,17 @@ export const image = {
   ): Tensor => {
     const [batch, inH, inW, inC] = images.shape;
     const [outH, outW] = size;
-    const outData = new Array(batch * outH * outW * inC); /* v8 ignore next */ /* v8 ignore next */
-    const heightScale =
-      alignCorners && outH > 1
-        ? (inH - 1) / (outH - 1)
-        : inH / outH; /* v8 ignore next */ /* v8 ignore next */
+    const outData = new Array(batch * outH * outW * inC);
+    const heightScale = alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
     const widthScale = alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
 
     for (let b = 0; b < batch; b++) {
       for (let y = 0; y < outH; y++) {
-        /* v8 ignore next */ /* v8 ignore next */
-        let sourceY = halfPixelCenters
-          ? (y + 0.5) * heightScale
-          : y * heightScale; /* v8 ignore next */ /* v8 ignore next */
+        let sourceY = halfPixelCenters ? (y + 0.5) * heightScale : y * heightScale;
         const nearestY = alignCorners ? Math.round(sourceY) : Math.floor(sourceY);
         const safeY = Math.max(0, Math.min(inH - 1, nearestY));
         for (let x = 0; x < outW; x++) {
-          /* v8 ignore next */ /* v8 ignore next */
-          let sourceX = halfPixelCenters
-            ? (x + 0.5) * widthScale
-            : x * widthScale; /* v8 ignore next */ /* v8 ignore next */
+          let sourceX = halfPixelCenters ? (x + 0.5) * widthScale : x * widthScale;
           const nearestX = alignCorners ? Math.round(sourceX) : Math.floor(sourceX);
           const safeX = Math.max(0, Math.min(inW - 1, nearestX));
           for (let c = 0; c < inC; c++) {
@@ -2656,22 +2546,19 @@ export const image = {
       const x1 = boxes.nData[b * 4 + 1];
       const y2 = boxes.nData[b * 4 + 2];
       const x2 = boxes.nData[b * 4 + 3];
-      /* v8 ignore next */ /* v8 ignore next */
-      const heightScale =
-        outH > 1
-          ? ((y2 - y1) * (inH - 1)) / (outH - 1)
-          : 0; /* v8 ignore next */ /* v8 ignore next */
+
+      const heightScale = outH > 1 ? ((y2 - y1) * (inH - 1)) / (outH - 1) : 0;
       const widthScale = outW > 1 ? ((x2 - x1) * (inW - 1)) / (outW - 1) : 0;
 
       for (let y = 0; y < outH; y++) {
-        const inY = y1 * (inH - 1) + y * heightScale; /* v8 ignore next */ /* v8 ignore next */
+        const inY = y1 * (inH - 1) + y * heightScale;
         if (inY < 0 || inY > inH - 1) continue;
         const topYIdx = Math.floor(inY);
         const bottomYIdx = Math.min(inH - 1, Math.ceil(inY));
         const yLerp = inY - topYIdx;
 
         for (let x = 0; x < outW; x++) {
-          const inX = x1 * (inW - 1) + x * widthScale; /* v8 ignore next */ /* v8 ignore next */
+          const inX = x1 * (inW - 1) + x * widthScale;
           if (inX < 0 || inX > inW - 1) continue;
           const leftXIdx = Math.floor(inX);
           const rightXIdx = Math.min(inW - 1, Math.ceil(inX));
@@ -2719,7 +2606,6 @@ export const image = {
     candidates.sort((a, b) => scores.nData[b] - scores.nData[a]);
 
     for (const c of candidates) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (selected.length >= maxOutputSize) break;
       let keep = true;
       for (const s of selected) {
@@ -2742,7 +2628,7 @@ export const image = {
         const areaA = (y2A - y1A) * (x2A - x1A);
         const areaB = (y2B - y1B) * (x2B - x1B);
         const uArea = areaA + areaB - iArea;
-        /* v8 ignore next */ /* v8 ignore next */
+
         const iou = uArea > 0 ? iArea / uArea : 0;
         if (iou > iouThreshold) {
           keep = false;
@@ -2891,17 +2777,17 @@ export const layers = {
   Layer,
   /** Creates a dense layer. */
   dense: (config: LayerConfig) => new Layer(config),
-  /** Creates a 2D convolution layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a 2D convolution layer. */
   conv2d: (config: LayerConfig) => new Layer(config),
-  /** Creates a 2D max pooling layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a 2D max pooling layer. */
   maxPooling2d: (config: LayerConfig) => new Layer(config),
-  /** Creates a flatten layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a flatten layer. */
   flatten: (config: LayerConfig) => new Layer(config),
-  /** Creates a dropout layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a dropout layer. */
   dropout: (config: LayerConfig) => new Layer(config),
-  /** Creates a batch normalization layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a batch normalization layer. */
   batchNormalization: (config: LayerConfig) => new Layer(config),
-  /** Creates a ReLU layer. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Creates a ReLU layer. */
   reLU: (config: LayerConfig) => new Layer(config),
 };
 
@@ -2980,7 +2866,6 @@ export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tens
       const yPlus = f(xPlus);
       let g = 0;
       for (let j = 0; j < yPlus.size; j++) {
-        /* v8 ignore next */ /* v8 ignore next */
         const dyVal = dy ? dy.nData[j] : 1;
         g += ((yPlus.nData[j] - yBaseline.nData[j]) / eps) * dyVal;
       }
@@ -3322,9 +3207,9 @@ export const util = {
     }
     return new Uint32Array(indices);
   },
-  /** Encodes a string to a Uint8Array. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Encodes a string to a Uint8Array. */
   encodeString: (s: string) => new TextEncoder().encode(s),
-  /** Decodes a Uint8Array to a string. */ /* v8 ignore next */ /* v8 ignore next */
+  /** Decodes a Uint8Array to a string. */
   decodeString: (bytes: Uint8Array) => new TextDecoder().decode(bytes),
   /** Fetches a resource. */
   fetch: (url: string, init?: RequestInit) => fetch(url, init),
@@ -3449,7 +3334,7 @@ export const metrics = {
   },
   /** Computes categorical accuracy. */
   categoricalAccuracy: (yTrue: Tensor, yPred: Tensor) => {
-    let correct = 0; /* v8 ignore next */ /* v8 ignore next */
+    let correct = 0;
     const batch = yTrue.shape[0] || 1;
     const classes = yTrue.shape[1] || yTrue.size;
     for (let i = 0; i < batch; i++) {
@@ -3511,7 +3396,6 @@ export const signal = {
     fftLength?: number,
     windowFn?: (n: number) => number,
   ) => {
-    /* v8 ignore next */ /* v8 ignore next */
     const N = fftLength || frameLength;
     const numFrames = Math.floor((signal.size - frameLength) / frameStep) + 1;
     const outData = new Array(numFrames * N * 2).fill(0);
@@ -3542,13 +3426,9 @@ export const spectral = {
    * @returns Resulting complex tensor.
    */
   rfft: (x: Tensor, fftLength?: number) => {
-    /* v8 ignore next */ /* v8 ignore next */
     const N = fftLength || x.shape[x.rank - 1] || x.size;
     const prefixShape = x.rank > 1 ? x.shape.slice(0, -1) : [];
-    const prefixSize = prefixShape.reduce(
-      (a, b) => a * b,
-      1,
-    ); /* v8 ignore next */ /* v8 ignore next */
+    const prefixSize = prefixShape.reduce((a, b) => a * b, 1);
     const inLen = x.shape[x.rank - 1] || x.size;
     const outSize = Math.floor(N / 2) + 1;
     const outData = new Array(prefixSize * outSize * 2).fill(0);

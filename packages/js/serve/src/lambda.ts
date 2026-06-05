@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Onnx9000Server } from './index';
 
 // 25. Provide AWS Lambda native handler formats (`event, context`).
@@ -8,11 +7,7 @@ export function createLambdaHandler(server: Onnx9000Server) {
     event: ReturnType<typeof JSON.parse>,
     context: ReturnType<typeof JSON.parse>,
   ) {
-    /* v8 ignore next */ /* v8 ignore next */
-    const method =
-      event.httpMethod ||
-      event.requestContext?.http?.method ||
-      'GET'; /* v8 ignore next */ /* v8 ignore next */
+    const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
     const path = event.path || event.rawPath || '/';
     const query = new URLSearchParams(event.queryStringParameters || {}).toString();
     const url = `https://${event.headers?.host || 'localhost'}${path}${query ? '?' + query : ''}`;
@@ -39,12 +34,10 @@ export function createLambdaHandler(server: Onnx9000Server) {
 
     // Catch timeout
     const timeoutPromise = new Promise<Response>((_, reject) => {
-      const remainingTime =
-        context.getRemainingTimeInMillis /* v8 ignore next */ /* v8 ignore next */
-          ? context.getRemainingTimeInMillis()
-          : /* v8 ignore start */
-            10000;
-      /* v8 ignore stop */
+      const remainingTime = context.getRemainingTimeInMillis
+        ? context.getRemainingTimeInMillis()
+        : 10000;
+
       // Timeout 100ms before actual Lambda timeout to respond gracefully
       setTimeout(
         () => {
@@ -71,7 +64,6 @@ export function createLambdaHandler(server: Onnx9000Server) {
         isBase64Encoded: false,
       };
     } catch (_err) {
-      /* v8 ignore next */ /* v8 ignore next */
       const err = _err instanceof Error ? _err : new Error(String(_err));
       return {
         statusCode: 504,

@@ -159,7 +159,7 @@ def test_ecosystem_ide_more():
     try:
         from onnx9000.tvm.ecosystem import get_plugin_directory
 
-        get_plugin_directory()  # pragma: no cover
+        get_plugin_directory()
     except Exception:
         assert True
 
@@ -186,8 +186,8 @@ def test_span_more():
         assert True
     try:
         str(s1)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
 
 
 def test_dtypes_more():

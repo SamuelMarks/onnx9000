@@ -1,18 +1,16 @@
-/* v8 ignore next */ /* v8 ignore next */ document
-  .getElementById('btn-convert')
-  ?.addEventListener('click', () => {
-    /* v8 ignore next */ /* v8 ignore next */
-    const output = document.getElementById('output'); /* v8 ignore next */ /* v8 ignore next */
+/**
+ * Initializes the skl2onnx demo UI.
+ */
+export function initSkl2OnnxDemo(): void {
+  document.getElementById('btn-convert')?.addEventListener('click', () => {
+    const output = document.getElementById('output');
     if (output) {
-      /* v8 ignore next */ /* v8 ignore next */
-      output.textContent =
-        'Parsing Scikit-LearnScikit-Learn structure...\n'; /* v8 ignore next */ /* v8 ignore next */
+      output.textContent = 'Parsing Scikit-LearnScikit-Learn structure...\n';
       setTimeout(() => {
-        /* v8 ignore next */ /* v8 ignore next */
-        output.textContent +=
-          '[OK] Transpiled ops to ONNX nodes\n'; /* v8 ignore next */ /* v8 ignore next */
-        output.textContent +=
-          '[OK] SKL2ONNX conversion complete.'; /* v8 ignore next */ /* v8 ignore next */
-      }, 500); /* v8 ignore next */ /* v8 ignore next */
-    } /* v8 ignore next */ /* v8 ignore next */
+        output.textContent += '[OK] Transpiled ops to ONNX nodes\n';
+        output.textContent += '[OK] SKL2ONNX conversion complete.';
+      }, 500);
+    }
   });
+}
+initSkl2OnnxDemo();

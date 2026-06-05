@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 export class MMDNNError extends Error {
   constructor(message: string) {

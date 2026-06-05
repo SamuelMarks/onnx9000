@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 /**
  * Simple Publish-Subscribe Event Bus for decoupled cross-component communication.

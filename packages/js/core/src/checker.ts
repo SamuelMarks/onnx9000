@@ -170,7 +170,7 @@ export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
 
   if (tensor.data_location === 'EXTERNAL') {
     if (!tensor.external_data) {
-      ctx.errors.push('External data missing'); /* v8 ignore next */ /* v8 ignore next */
+      ctx.errors.push('External data missing');
     } else if ((tensor.external_data.location || '').includes('..')) {
       ctx.errors.push('Directory traversal not allowed in external data');
     }
@@ -226,25 +226,18 @@ export function check_attribute(
 export function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
   const op = node.op_type;
   if (['Add', 'Sub', 'Mul', 'Div'].includes(op)) {
-    /* v8 ignore next */ /* v8 ignore next */
     if ((node.inputs?.length || 0) !== 2) ctx.errors.push(`${op} requires 2 inputs`);
   } else if (op === 'Conv') {
-    /* v8 ignore next */ /* v8 ignore next */
     if ((node.inputs?.length || 0) < 2) ctx.errors.push('Conv requires at least 2 inputs');
     const pads = node.attributes?.pads as number[];
     if (pads.length > 0 && pads.length % 2 !== 0)
       ctx.errors.push('Conv pads must be 2 * spatial_dims');
   } else if (['If', 'Loop', 'Scan'].includes(op)) {
-    /* v8 ignore next */ /* v8 ignore next */
     if (!node.attributes?.then_branch && !node.attributes?.else_branch && !node.attributes?.body) {
       ctx.errors.push(`${op} requires subgraph attributes`);
     }
   } else if (op === 'TreeEnsembleClassifier') {
-    const required = [
-      'nodes_treeids',
-      'nodes_nodeids',
-      'nodes_featureids',
-    ]; /* v8 ignore next */ /* v8 ignore next */
+    const required = ['nodes_treeids', 'nodes_nodeids', 'nodes_featureids'];
     if (!required.every((k) => k in (node.attributes || {}))) {
       ctx.errors.push(`${op} missing attributes`);
     }
@@ -259,7 +252,7 @@ export function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
  */
 export function check_model(model: Model, ctx?: ValidationContext) {
   const c = ctx || new ValidationContext();
-  /* v8 ignore next */ /* v8 ignore next */
+
   if ((model.ir_version || 0) < 3 || (model.ir_version || 0) > 10) {
     c.errors.push('Invalid ir_version');
   }
@@ -300,7 +293,6 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   }
 
   for (const n of graph.nodes || []) {
-    /* v8 ignore next */ /* v8 ignore next */
     for (const out of n.outputs || []) {
       if (seen_names.has(out)) c.errors.push(`Duplicate node output ${out}`);
       seen_names.add(out);
@@ -308,7 +300,7 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   }
 
   for (const n of graph.nodes || []) {
-    _check_op_specific(n, c); /* v8 ignore next */ /* v8 ignore next */
+    _check_op_specific(n, c);
     for (const inp of n.inputs || []) {
       if (inp && !seen_names.has(inp)) c.errors.push(`Dangling input ${inp}`);
     }

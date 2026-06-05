@@ -13,15 +13,15 @@ from onnx9000.core.primitives import (
 )
 
 
-def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:  # noqa: D103
+def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
     """Get param."""
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
-class SparseMoE:  # noqa: D101
+class SparseMoE:
     """Sparse mo e."""
 
-    def __init__(self, num_experts: int, top_k: int, dim: int, ffn_dim: int, prefix: str = ""):  # noqa: D107
+    def __init__(self, num_experts: int, top_k: int, dim: int, ffn_dim: int, prefix: str = ""):
         """Init."""
         self.prefix = prefix
         self.num_experts = num_experts
@@ -34,7 +34,7 @@ class SparseMoE:  # noqa: D101
             SwiGLU(dim, ffn_dim, prefix=f"{prefix}.experts.{i}") for i in range(num_experts)
         ]
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         # Routing
         """Call."""
         logits = self.gate(x, get_param(f"{self.prefix}.gate.weight", [self.num_experts, self.dim]))
@@ -63,10 +63,10 @@ class SparseMoE:  # noqa: D101
         return out
 
 
-class MixtralBlock:  # noqa: D101
+class MixtralBlock:
     """Mixtral block."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dim: int,
         num_heads: int,
@@ -84,7 +84,7 @@ class MixtralBlock:  # noqa: D101
         self.norm2 = RMSNorm((dim,))
         self.moe = SparseMoE(num_experts, top_k, dim, ffn_dim, prefix=f"{prefix}.moe")
 
-    def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
@@ -99,10 +99,10 @@ class MixtralBlock:  # noqa: D101
         return x
 
 
-class Mixtral:  # noqa: D101
+class Mixtral:
     """Mixtral."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         vocab_size: int = 32000,
         dim: int = 4096,
@@ -130,7 +130,7 @@ class Mixtral:  # noqa: D101
         self.lm_head = Gemm(trans_b=1)
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
-    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gather
 
@@ -148,7 +148,7 @@ class Mixtral:  # noqa: D101
         return x
 
 
-def mixtral_8x7b(**kwargs: Any) -> Mixtral:  # noqa: D103
+def mixtral_8x7b(**kwargs: Any) -> Mixtral:
     """Mixtral 8x7b."""
     return Mixtral(
         vocab_size=32000,

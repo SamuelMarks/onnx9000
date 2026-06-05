@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphMutator } from '../GraphMutator.js';
 
@@ -83,9 +82,8 @@ export class ModifierUtilities {
     }
   }
 
-  // 203. Create a feature to automatically format node names based on depth /* v8 ignore next */ /* v8 ignore next */
+  // 203. Create a feature to automatically format node names based on depth
   autoFormatNodeNames() {
-    /* v8 ignore start */
     // Basic topological layer assignment
     const levels = new Map<string, number>();
     for (const init of this.mutator.graph.initializers) levels.set(init, 0);
@@ -121,7 +119,6 @@ export class ModifierUtilities {
       }
     }
   }
-  /* v8 ignore stop */
 
   // 69. Extract Subgraph
   extractSubgraph(selectedNodeIds: string[]): Graph {
@@ -185,9 +182,8 @@ export class ModifierUtilities {
   }
 
   // 71. Change Opset Version
-  // 248. Auto-Fix missing initializers by injecting dummy Zero arrays /* v8 ignore next */ /* v8 ignore next */
+  // 248. Auto-Fix missing initializers by injecting dummy Zero arrays
   autoFixMissingInitializers() {
-    /* v8 ignore start */
     const unresolvedInputs = new Set<string>();
     const producedEdges = new Set<string>();
 
@@ -215,11 +211,9 @@ export class ModifierUtilities {
     }
     alert(`Auto-fixed ${unresolvedInputs.size} missing initializers.`);
   }
-  /* v8 ignore stop */
 
-  // 225. Validate Opset macro checking compatibility with opset 13-21 /* v8 ignore next */ /* v8 ignore next */
+  // 225. Validate Opset macro checking compatibility with opset 13-21
   validateOpset() {
-    /* v8 ignore start */
     const aiOnnx =
       this.mutator.graph.opsetImports[''] || this.mutator.graph.opsetImports['ai.onnx'];
     if (aiOnnx && (aiOnnx < 13 || aiOnnx > 21)) {
@@ -231,7 +225,6 @@ export class ModifierUtilities {
     alert(`Opset version ${aiOnnx || 'unknown'} is within the recommended range.`);
     return true;
   }
-  /* v8 ignore stop */
 
   changeOpsetVersion(domain: string, version: number) {
     this.mutator.graph.opsetImports[domain] = version;

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Tensor } from '@onnx9000/core';
 import { zipSync } from 'fflate';
@@ -116,13 +115,12 @@ export class PyTorchSerializer {
       const storageType = PyTorchSerializer.getStorageClass(t.dtype);
       const dataStr = i.toString();
       const numElements = t.size;
-      /* v8 ignore next */ /* v8 ignore next */
+
       let shape = t.shape.map((s) => (typeof s === 'number' ? s : 1));
       if (shape.length === 0) shape = [1];
 
       const stride = new Array(shape.length).fill(1);
       for (let j = shape.length - 2; j >= 0; j--) {
-        /* v8 ignore next */ /* v8 ignore next */
         stride[j] = stride[j + 1] * (shape[j + 1] || 1);
       }
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 export interface OnnxNodeBuilder {
   opType: string;
@@ -99,7 +98,7 @@ export function emitActivation(
         opType: 'Elu',
         inputs: [inputName],
         outputs: [outputName],
-        name /* v8 ignore next */ /* v8 ignore next */,
+        name,
         attributes: [{ name: 'alpha', f: options?.alpha || 1.0, type: 'FLOAT' }],
       });
       break;
@@ -120,14 +119,14 @@ export function emitActivation(
         opType: 'LeakyRelu',
         inputs: [inputName],
         outputs: [outputName],
-        name /* v8 ignore next */ /* v8 ignore next */,
+        name,
         attributes: [{ name: 'alpha', f: options?.alpha || 0.3, type: 'FLOAT' }],
       });
       break;
     case 'prelu':
       // PReLU requires a learnable parameter 'slope' passed as an input. Assume it is options.alphaWeightName.
       nodes.push({
-        opType: 'PRelu' /* v8 ignore next */ /* v8 ignore next */,
+        opType: 'PRelu',
         inputs: [inputName, options?.alphaWeightName || ''],
         outputs: [outputName],
         name,
@@ -139,7 +138,7 @@ export function emitActivation(
         opType: 'ThresholdedRelu',
         inputs: [inputName],
         outputs: [outputName],
-        name /* v8 ignore next */ /* v8 ignore next */,
+        name,
         attributes: [{ name: 'alpha', f: options?.theta || 1.0, type: 'FLOAT' }],
       });
       break;

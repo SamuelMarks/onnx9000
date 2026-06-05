@@ -372,7 +372,7 @@ def mock_graph_for_model(model_name: str) -> Graph:
     elif model_name in SCIENTIFIC_MODELS:
         g.nodes.extend([Node("TreeEnsemble", ["x"], ["y"])])
     else:
-        g.nodes.extend([Node("Identity", ["x"], ["y"])])  # pragma: no cover
+        g.nodes.extend([Node("Identity", ["x"], ["y"])])
 
     return g
 

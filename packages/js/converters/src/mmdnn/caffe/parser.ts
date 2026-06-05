@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import {
   readVarInt,
@@ -26,7 +25,7 @@ export function parsePrototxt(text: string): object {
   let currentObj = result;
 
   for (let i = 0; i < lines.length; i++) {
-    const _l = lines[i]; /* v8 ignore next */ /* v8 ignore next */
+    const _l = lines[i];
     if (_l === undefined) continue;
     let line = _l.split('#')[0]!.trim();
     if (!line) continue;

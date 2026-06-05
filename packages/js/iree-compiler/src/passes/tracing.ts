@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Region } from '../ir/core.js';
 
 // 251-260. Advanced Graph Diagnostics

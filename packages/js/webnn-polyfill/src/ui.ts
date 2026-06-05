@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MLProfileEntry, MLGraphInfo } from './interfaces.js';
 
 /**

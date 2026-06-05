@@ -1,9 +1,7 @@
-/* eslint-disable */
 import { Graph } from '@onnx9000/core';
 import { extractLlamaMetadata } from './llama';
 
 export function inferArchitecture(graph: Graph): string {
-  /* v8 ignore next */ /* v8 ignore next */
   const name = ((graph.name as ReturnType<typeof JSON.parse>) || '').toLowerCase();
   if (name.includes('mistral')) return 'mistral';
   if (name.includes('mixtral')) return 'mixtral';

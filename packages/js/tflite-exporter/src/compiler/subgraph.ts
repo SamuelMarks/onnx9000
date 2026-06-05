@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph, Tensor } from '@onnx9000/core';
 import { TFLiteExporter } from '../exporter';
 import { mapOnnxShapeToTflite, mapOnnxTypeToTflite, createShapeSignature } from './mapping';
@@ -42,18 +41,15 @@ export function compileGraphToTFLite(
   let hasLoop = false;
   let hasIf = false;
   for (const node of graph.nodes) {
-    /* v8 ignore next */ /* v8 ignore next */
     if (node.opType === 'Loop') {
-      /* v8 ignore start */
       hasLoop = true;
       // 200. Map ONNX Loop to TFLite WHILE loops.
       console.warn(
         `[onnx2tf] Warning: ONNX Loop node ${node.name} encountered. Automatic SubGraph generation for 'WHILE' operations is currently a stub. TFLite compilation will be incomplete for this graph.`,
       );
     }
-    /* v8 ignore stop */ /* v8 ignore next */ /* v8 ignore next */
+
     if (node.opType === 'If') {
-      /* v8 ignore start */
       hasIf = true;
       // 198. Map ONNX If to TFLite IF control flow operators.
       // 199. Extract SubGraphs iteratively into the TFLite Flatbuffer to support IF branches.
@@ -61,34 +57,27 @@ export function compileGraphToTFLite(
         `[onnx2tf] Warning: ONNX If node ${node.name} encountered. Recursive SubGraph evaluation and 'IF' branch extraction is currently a stub.`,
       );
     }
-    /* v8 ignore stop */
 
-    // 320. Provide fallback mappings for HuggingFace Tokenizer custom nodes. /* v8 ignore next */ /* v8 ignore next */
+    // 320. Provide fallback mappings for HuggingFace Tokenizer custom nodes.
     if (node.domain === 'ai.onnx.contrib' && node.opType.includes('Tokenizer')) {
-      /* v8 ignore start */
       console.warn(
         `[onnx2tf] Warning: HuggingFace Tokenizer node ${node.name} found. Ensure TFLite runtime supports matching custom delegates.`,
       );
     }
-    /* v8 ignore stop */
   }
-  // 319. Catch nested loops (`Loop` inside `If`) and warn users about severe mobile performance degradation. /* v8 ignore next */ /* v8 ignore next */
+  // 319. Catch nested loops (`Loop` inside `If`) and warn users about severe mobile performance degradation.
   if (hasLoop && hasIf) {
-    /* v8 ignore start */
     console.warn(
       '[onnx2tf] Warning: Detected Loop and If control flow nodes in the same graph. TFLite execution on mobile DSPs may fallback to CPU, severely degrading performance.',
     );
   }
-  /* v8 ignore stop */
 
   // 316. Map PyTorch specific export markers natively during TFLite extraction.
-  const metadata = (graph as ReturnType<typeof JSON.parse>)
-    .metadata; /* v8 ignore next */ /* v8 ignore next */
+  const metadata = (graph as ReturnType<typeof JSON.parse>).metadata;
   if (metadata?.producer_name?.includes('pytorch')) {
-    /* v8 ignore start */
     console.log('[onnx2tf] PyTorch export detected. Mapping specific Aten structures natively.');
   }
-  /* v8 ignore stop */
+
   // 317. Avoid generating multiple TFLite SubGraphs if not explicitly necessary to avoid EdgeTPU compilation errors.
   // We strictly output 1 SubGraph containing the entire unrolled topology.
 
@@ -107,9 +96,7 @@ export function compileGraphToTFLite(
     if (t.isInitializer) {
       // 69. Resolve ONNX Initializers directly to TFLite Buffer indices.
       if (t.data) {
-        /* v8 ignore next */ /* v8 ignore next */
         if (t.dtype === 'string') {
-          /* v8 ignore start */
           // 72. Ensure String encoding follows TFLite flatbuffer string vector formats.
           // TFLite string buffers start with int32 count, then int32 offsets, then string data.
           // In JS ONNX parser, string data might be an array of strings.
@@ -132,13 +119,10 @@ export function compileGraphToTFLite(
           }
           view.setInt32(4 + strings.length * 4, currentOffset, true);
           bufferIndex = exporter.addBuffer(strBuf);
-          /* v8 ignore stop */
         } else {
-          let arrayData: Uint8Array; /* v8 ignore next */ /* v8 ignore next */
+          let arrayData: Uint8Array;
           if (t.data instanceof Uint8Array) {
-            /* v8 ignore start */
             arrayData = t.data;
-            /* v8 ignore stop */
           } else {
             arrayData = new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength);
           }
@@ -160,16 +144,14 @@ export function compileGraphToTFLite(
     const shapeOffset = exporter.builder.endVector(tfliteShape.length);
 
     // 66. Emit ShapeSignature vectors for TFLite dynamic shapes
-    let shapeSignatureOffset = 0; /* v8 ignore next */ /* v8 ignore next */
+    let shapeSignatureOffset = 0;
     if (tfliteShape.includes(-1)) {
-      /* v8 ignore start */
       exporter.builder.startVector(4, tfliteShape.length, 4);
       for (let j = tfliteShape.length - 1; j >= 0; j--) {
         exporter.builder.addInt32(tfliteShape[j]!);
       }
       shapeSignatureOffset = exporter.builder.endVector(tfliteShape.length);
     }
-    /* v8 ignore stop */
 
     const type = mapOnnxTypeToTflite(t.dtype, t.name);
 
@@ -223,31 +205,25 @@ export function compileGraphToTFLite(
 
   const operatorOffsets: number[] = [];
   for (const node of graph.nodes) {
-    const mapping = mapOnnxNodeToTFLite(node); /* v8 ignore next */ /* v8 ignore next */
+    const mapping = mapOnnxNodeToTFLite(node);
     if (!mapping) {
-      /* v8 ignore start */
       console.warn(`[onnx2tf] Unsupported operator: ${node.opType}`);
       continue;
     }
-    /* v8 ignore stop */
 
     // 271. Implement TFLite Custom Operator embedding in FlatBuffers (handling arbitrary string names).
     let customCode = '';
     if (mapping.builtinCode === BuiltinOperator.CUSTOM) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (stripCustomOps) {
-        /* v8 ignore start */
         console.warn(`[onnx2tf] Stripping experimental custom operator: ${node.opType}`);
         continue;
       }
-      /* v8 ignore stop */
+
       if (node.opType === 'NonMaxSuppression') {
-        customCode = 'TFLite_Detection_PostProcess'; // 272. Map NMS /* v8 ignore next */ /* v8 ignore next */
+        customCode = 'TFLite_Detection_PostProcess'; // 272. Map NMS
       } else if (node.domain === 'tf') {
-        /* v8 ignore start */
         // 273. Support Flex Delegates (Select TF ops) embedding TF operators within TFLite flatbuffers natively.
         customCode = `Flex${node.opType}`;
-        /* v8 ignore stop */
       } else {
         customCode = `${node.domain}_${node.opType}`;
       }
@@ -281,15 +257,12 @@ export function compileGraphToTFLite(
 
     // 276. Encode custom_options byte arrays securely for proprietary hardware runtimes.
     if (mapping.builtinCode === BuiltinOperator.CUSTOM) {
-      /* v8 ignore next */ /* v8 ignore next */
       if (node.attributes['custom_options']) {
-        /* v8 ignore start */
         const co = node.attributes['custom_options'].value as Uint8Array;
         if (co && co.length > 0) {
           customOptionsOffset = exporter.builder.createByteVector(co);
         }
       }
-      /* v8 ignore stop */
     } else {
       if (mapping.createOptions) {
         optionsOffset = mapping.createOptions(exporter.builder, node, graph);

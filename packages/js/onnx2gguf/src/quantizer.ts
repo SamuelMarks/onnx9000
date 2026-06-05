@@ -24,15 +24,14 @@ export function quantizeQ4_0(data: Uint8Array): Uint8Array {
     for (let j = 0; j < 32; j++) {
       const v = Math.abs(floats[i * 32 + j] || 0);
       if (v > amax) amax = v;
-    } /* v8 ignore next */ /* v8 ignore next */
-    const d = amax !== 0 ? amax / 7.0 : 0.0; /* v8 ignore next */ /* v8 ignore next */
+    }
+    const d = amax !== 0 ? amax / 7.0 : 0.0;
     const id = d !== 0 ? 1.0 / d : 0.0;
 
     view.setUint16(i * 18, float16ToUint16(d), true);
 
     for (let j = 0; j < 16; j++) {
-      let v0 =
-        Math.round((floats[i * 32 + j] || 0) * id) + 8; /* v8 ignore next */ /* v8 ignore next */
+      let v0 = Math.round((floats[i * 32 + j] || 0) * id) + 8;
       let v1 = Math.round((floats[i * 32 + j + 16] || 0) * id) + 8;
       v0 = Math.max(0, Math.min(15, v0));
       v1 = Math.max(0, Math.min(15, v1));
@@ -56,17 +55,15 @@ export function quantizeQ4_1(data: Uint8Array): Uint8Array {
       const v = floats[i * 32 + j] || 0;
       if (v < vmin) vmin = v;
       if (v > vmax) vmax = v;
-    } /* v8 ignore next */ /* v8 ignore next */
-    const d = vmax !== vmin ? (vmax - vmin) / 15.0 : 0.0; /* v8 ignore next */ /* v8 ignore next */
+    }
+    const d = vmax !== vmin ? (vmax - vmin) / 15.0 : 0.0;
     const id = d !== 0 ? 1.0 / d : 0.0;
 
     view.setUint16(i * 20, float16ToUint16(d), true);
     view.setUint16(i * 20 + 2, float16ToUint16(vmin), true);
 
     for (let j = 0; j < 16; j++) {
-      let v0 = Math.round(
-        ((floats[i * 32 + j] || 0) - vmin) * id,
-      ); /* v8 ignore next */ /* v8 ignore next */
+      let v0 = Math.round(((floats[i * 32 + j] || 0) - vmin) * id);
       let v1 = Math.round(((floats[i * 32 + j + 16] || 0) - vmin) * id);
       v0 = Math.max(0, Math.min(15, v0));
       v1 = Math.max(0, Math.min(15, v1));
@@ -88,8 +85,8 @@ export function quantizeQ8_0(data: Uint8Array): Uint8Array {
     for (let j = 0; j < 32; j++) {
       const v = Math.abs(floats[i * 32 + j] || 0);
       if (v > amax) amax = v;
-    } /* v8 ignore next */ /* v8 ignore next */
-    const d = amax !== 0 ? amax / 127.0 : 0.0; /* v8 ignore next */ /* v8 ignore next */
+    }
+    const d = amax !== 0 ? amax / 127.0 : 0.0;
     const id = d !== 0 ? 1.0 / d : 0.0;
 
     view.setUint16(i * 34, float16ToUint16(d), true);

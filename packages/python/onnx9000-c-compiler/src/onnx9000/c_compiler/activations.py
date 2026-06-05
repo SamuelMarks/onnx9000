@@ -96,60 +96,54 @@ def generate_activation(
         b.emit(f"{out_name}[i] = {log_func}({exp_func}(val) + 1.0f);")
     elif op_type == "Gelu":
         # Using Tanh approximation
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"  # pragma: no cover
-        b.emit("float c = 0.7978845608f * (val + 0.044715f * val * val * val);")  # pragma: no cover
-        if use_math_h:  # pragma: no cover
-            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + tanhf(c));")  # pragma: no cover
+        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
+        b.emit("float c = 0.7978845608f * (val + 0.044715f * val * val * val);")
+        if use_math_h:
+            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + tanhf(c));")
         else:
-            b.emit(f"float e = {exp_func}(-2.0f * c);")  # pragma: no cover
-            b.emit("float t = (1.0f - e) / (1.0f + e);")  # pragma: no cover
-            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + t);")  # pragma: no cover
+            b.emit(f"float e = {exp_func}(-2.0f * c);")
+            b.emit("float t = (1.0f - e) / (1.0f + e);")
+            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + t);")
     elif op_type == "Swish":
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"  # pragma: no cover
-        b.emit(f"float sig = 1.0f / (1.0f + {exp_func}(-val));")  # pragma: no cover
-        b.emit(f"{out_name}[i] = val * sig;")  # pragma: no cover
+        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
+        b.emit(f"float sig = 1.0f / (1.0f + {exp_func}(-val));")
+        b.emit(f"{out_name}[i] = val * sig;")
     elif op_type == "Mish":
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"  # pragma: no cover
+        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
         # softplus = log(1 + exp(x))
-        if use_math_h:  # pragma: no cover
-            b.emit("float sp = log1pf(expf(val));")  # pragma: no cover
-            b.emit(f"{out_name}[i] = val * tanhf(sp);")  # pragma: no cover
+        if use_math_h:
+            b.emit("float sp = log1pf(expf(val));")
+            b.emit(f"{out_name}[i] = val * tanhf(sp);")
         else:
-            b.emit(f"float sp = log(1.0f + {exp_func}(val));")  # pragma: no cover
-            b.emit(f"float e2 = {exp_func}(-2.0f * sp);")  # pragma: no cover
-            b.emit("float th = (1.0f - e2) / (1.0f + e2);")  # pragma: no cover
-            b.emit(f"{out_name}[i] = val * th;")  # pragma: no cover
+            b.emit(f"float sp = log(1.0f + {exp_func}(val));")
+            b.emit(f"float e2 = {exp_func}(-2.0f * sp);")
+            b.emit("float th = (1.0f - e2) / (1.0f + e2);")
+            b.emit(f"{out_name}[i] = val * th;")
     elif op_type == "Clip":
         min_name = None
         max_name = None
         if len(node.inputs) > 1 and node.inputs[1] and str(node.inputs[1]) != "":
-            min_name = node.inputs[1]  # pragma: no cover
-            min_name = min_name.name if hasattr(min_name, "name") else min_name  # pragma: no cover
+            min_name = node.inputs[1]
+            min_name = min_name.name if hasattr(min_name, "name") else min_name
         if len(node.inputs) > 2 and node.inputs[2] and str(node.inputs[2]) != "":
-            max_name = node.inputs[2]  # pragma: no cover
-            max_name = max_name.name if hasattr(max_name, "name") else max_name  # pragma: no cover
+            max_name = node.inputs[2]
+            max_name = max_name.name if hasattr(max_name, "name") else max_name
 
         if min_name and max_name:
-            b.emit(  # pragma: no cover
+            b.emit(
                 f"{out_name}[i] = val < {min_name}[0] ? {min_name}[0] : (val > {max_name}[0] ? {max_name}[0] : val);"
             )
         elif min_name:
-            b.emit(
-                f"{out_name}[i] = val < {min_name}[0] ? {min_name}[0] : val;"
-            )  # pragma: no cover
+            b.emit(f"{out_name}[i] = val < {min_name}[0] ? {min_name}[0] : val;")
         elif max_name:
-            b.emit(
-                f"{out_name}[i] = val > {max_name}[0] ? {max_name}[0] : val;"
-            )  # pragma: no cover
+            b.emit(f"{out_name}[i] = val > {max_name}[0] ? {max_name}[0] : val;")
         else:
             b.emit(f"{out_name}[i] = val;")
     elif op_type == "PRelu":
         if len(node.inputs) > 1:
-            slope_name = node.inputs[1]  # pragma: no cover
-            slope_name = (
-                slope_name.name if hasattr(slope_name, "name") else slope_name
-            )  # pragma: no cover
-            b.emit(f"float s = {slope_name}[0];")  # pragma: no cover
+            slope_name = node.inputs[1]
+            slope_name = slope_name.name if hasattr(slope_name, "name") else slope_name
+            b.emit(f"float s = {slope_name}[0];")
         else:
             b.emit("float s = 0.0f;")
         b.emit(f"{out_name}[i] = val < 0.0f ? val * s : val;")

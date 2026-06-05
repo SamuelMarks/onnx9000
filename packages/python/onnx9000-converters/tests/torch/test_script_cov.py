@@ -8,8 +8,8 @@ try:
     import torch
 
     TORCH_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    TORCH_AVAILABLE = False  # pragma: no cover
+except ImportError:
+    TORCH_AVAILABLE = False
 
 from onnx9000.converters.torch.script import TorchScriptParser
 from onnx9000.core.dtypes import DType
@@ -21,7 +21,7 @@ def test_script_parser_basic_function():
 
     def simple_func(x, y):
         """Simple func."""
-        return x + y  # pragma: no cover
+        return x + y
 
     parser = TorchScriptParser(simple_func)
     graph = parser.parse()
@@ -34,7 +34,7 @@ def test_script_parser_control_flow():
 
     def dummy_func(x):
         """Dummy func."""
-        return x  # pragma: no cover
+        return x
 
     parser = TorchScriptParser(dummy_func)
 
@@ -58,7 +58,7 @@ def test_script_parser_ops():
 
     def math_func(x, y):
         """Math func."""
-        return (x - y) / y  # pragma: no cover
+        return (x - y) / y
 
     parser = TorchScriptParser(math_func)
     graph = parser.parse()
@@ -72,7 +72,7 @@ def test_script_parser_dtypes():
 
     def dummy_func(x):
         """Dummy func."""
-        return x  # pragma: no cover
+        return x
 
     parser = TorchScriptParser(dummy_func)
     from onnx9000.core.dtypes import DType
@@ -89,15 +89,15 @@ def test_script_parser_non_tensor_inputs():
 
     def func_bool(x: bool) -> bool:
         """Func bool."""
-        return x  # pragma: no cover
+        return x
 
     def func_int(x: int) -> int:
         """Func int."""
-        return x  # pragma: no cover
+        return x
 
     def func_float(x: float) -> float:
         """Func float."""
-        return x  # pragma: no cover
+        return x
 
     p_bool = TorchScriptParser(func_bool)
     p_bool.parse()
@@ -121,7 +121,7 @@ def test_script_parser_script_module():
 
         def forward(self, x):
             """Forward."""
-            return x  # pragma: no cover
+            return x
 
     scripted = torch.jit.script(DummyModule())
     parser = TorchScriptParser(scripted)
@@ -134,7 +134,7 @@ def test_script_parser_constants_fallback():
 
     def dummy_func(x):
         """Dummy func."""
-        return x  # pragma: no cover
+        return x
 
     parser = TorchScriptParser(dummy_func)
 
@@ -182,11 +182,11 @@ def test_script_parser_more_coverage():
 def test_script_parser_div_fallback():
     class Mod(torch.nn.Module):
         def forward(self, x, y):
-            a = torch.div(x, y)  # pragma: no cover
-            b = torch.sub(a, x)  # pragma: no cover
-            c = torch.mul(b, y)  # pragma: no cover
-            d = torch.add(c, x)  # pragma: no cover
-            return d  # pragma: no cover
+            a = torch.div(x, y)
+            b = torch.sub(a, x)
+            c = torch.mul(b, y)
+            d = torch.add(c, x)
+            return d
 
     sm = torch.jit.script(Mod())
 
@@ -209,7 +209,7 @@ def test_script_parser_div_fallback():
 
     def dummy_func(x):
         """Dummy func."""
-        return x * 2.0  # pragma: no cover
+        return x * 2.0
 
     parser = TorchScriptParser(dummy_func)
     parser.parse()  # hits mul!
@@ -251,7 +251,7 @@ def test_script_parser_div_fallback():
 
         def forward(self, x):
             """Forward."""
-            return x  # pragma: no cover
+            return x
 
     scripted = torch.jit.script(DummyModule())
     parser2 = TorchScriptParser(scripted)

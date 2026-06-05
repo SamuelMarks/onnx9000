@@ -7,7 +7,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
 
 
-def parse_sparkml_pipeline(pipeline_data: Any) -> Graph:  # noqa: ANN401
+def parse_sparkml_pipeline(pipeline_data: Any) -> Graph:
     """Parse a SparkML Pipeline model and return an ONNX Graph."""
     graph = Graph("SparkML_Pipeline")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

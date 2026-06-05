@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Block, Operation, Var } from './ast.js';
 import { replaceOperation } from './rewriter.js';
 import { TensorType, MILDataType } from './types.js';

@@ -15,7 +15,6 @@ export class ProgressiveSession {
     this.options = options;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
   async run(_inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
     // 1. Metadata Fetch: Simulated fetching of first few KB
     // 2. Layer-on-Demand: Request specific ranges
@@ -28,7 +27,6 @@ export class ProgressiveSession {
 
     if (!this.isLoaded) {
       // Simulate chunking logic where maxChunkSize is used
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _chunkSize = this.options.maxChunkSize || 1024 * 1024;
       // In a real implementation we would fetch(this.url, { headers: { Range: `bytes=0-${_chunkSize}` } })
       this.isLoaded = true;
@@ -46,7 +44,6 @@ export class ProgressiveSession {
  * @param options Configuration options including chunk size limits.
  * @returns A ProgressiveSession capable of lazily evaluating layers.
  */
-// eslint-disable-next-line @typescript-eslint/require-await
 export async function loadProgressive(
   url: string,
   options: ProgressiveLoadOptions = {},

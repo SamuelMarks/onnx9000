@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { Node } from '@onnx9000/core';
@@ -24,9 +23,7 @@ export class NodeFusionRegistry {
       if (node.opType !== 'BatchNormalization') return false;
 
       // Find producer
-      const producer = graph.nodes.find((n) =>
-        n.outputs.includes(node.inputs[0]!),
-      ); /* v8 ignore next */ /* v8 ignore next */
+      const producer = graph.nodes.find((n) => n.outputs.includes(node.inputs[0]!));
       if (!producer || producer.opType !== 'Conv') return false;
 
       // Skip if producer output is used by multiple nodes

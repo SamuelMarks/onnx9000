@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Attribute } from '@onnx9000/core';
 
@@ -83,7 +83,7 @@ export class MxNetMapper {
     let op = 'Relu';
     if (actType === 'relu') op = 'Relu';
     else if (actType === 'sigmoid') op = 'Sigmoid';
-    else if (actType === 'tanh') op = 'Tanh'; /* v8 ignore next */ /* v8 ignore next */
+    else if (actType === 'tanh') op = 'Tanh';
     else if (actType === 'softrelu') op = 'Softplus'; // MXNet softrelu maps to ONNX Softplus
 
     return [new Node(op, [], [node.name || ''], {}, node.name || '')];
@@ -94,7 +94,7 @@ export class MxNetMapper {
     const attrs = node.attrs || {};
     const poolType = attrs.pool_type || 'max';
     const isGlobal = attrs.global_pool === 'True';
-    let op = 'MaxPool'; /* v8 ignore next */ /* v8 ignore next */
+    let op = 'MaxPool';
     if (poolType === 'max' && isGlobal) op = 'GlobalMaxPool';
     else if (poolType === 'avg' && isGlobal) op = 'GlobalAveragePool';
     else if (poolType === 'avg') op = 'AveragePool';
@@ -197,30 +197,20 @@ export class MxNetMapper {
     const attrs = node.attrs || {};
     const actType = attrs.act_type || 'leaky';
     if (actType === 'leaky') {
-      const n = new Node(
-        'LeakyRelu',
-        [],
-        [node.name || ''],
-        {},
-        node.name || '',
-      ); /* v8 ignore next */ /* v8 ignore next */
+      const n = new Node('LeakyRelu', [], [node.name || ''], {}, node.name || '');
       if (attrs.slope) {
-        /* v8 ignore start */
         n.attributes['alpha'] = new Attribute('alpha', 'FLOAT', parseFloat(attrs.slope));
       }
-      /* v8 ignore stop */
+
       return [n];
     } else if (actType === 'elu') {
-      /* v8 ignore next */ /* v8 ignore next */
       const n = new Node('Elu', [], [node.name || ''], {}, node.name || '');
       if (attrs.slope)
-        /* v8 ignore next */ /* v8 ignore next */
         n.attributes['alpha'] = new Attribute('alpha', 'FLOAT', parseFloat(attrs.slope));
       return [n];
     } else if (actType === 'prelu') {
-      /* v8 ignore next */ /* v8 ignore next */
       return [new Node('PRelu', [], [node.name || ''], {}, node.name || '')];
-    } /* v8 ignore next */ /* v8 ignore next */
+    }
     return [new Node('LeakyRelu', [], [node.name || ''], {}, node.name || '')];
   }
 
@@ -265,21 +255,18 @@ export class MxNetMapper {
     const n = new Node('ConvTranspose', [], [node.name || ''], {}, node.name || '');
     const kernel = parseTuple(attrs.kernel);
     if (kernel.length > 0)
-      /* v8 ignore next */ /* v8 ignore next */
       n.attributes['kernel_shape'] = new Attribute('kernel_shape', 'INTS', kernel);
-    const stride = parseTuple(attrs.stride); /* v8 ignore next */ /* v8 ignore next */
+    const stride = parseTuple(attrs.stride);
     if (stride.length > 0) n.attributes['strides'] = new Attribute('strides', 'INTS', stride);
-    const pad = parseTuple(attrs.pad); /* v8 ignore next */ /* v8 ignore next */
+    const pad = parseTuple(attrs.pad);
     if (pad.length > 0) {
-      /* v8 ignore start */
       const pads = pad.length === 2 ? [pad[0], pad[1], pad[0], pad[1]] : pad;
       n.attributes['pads'] = new Attribute('pads', 'INTS', pads);
     }
-    /* v8 ignore stop */
-    const dilate = parseTuple(attrs.dilate); /* v8 ignore next */ /* v8 ignore next */
+
+    const dilate = parseTuple(attrs.dilate);
     if (dilate.length > 0) n.attributes['dilations'] = new Attribute('dilations', 'INTS', dilate);
     if (attrs.num_group)
-      /* v8 ignore next */ /* v8 ignore next */
       n.attributes['group'] = new Attribute('group', 'INT', parseInt(attrs.num_group, 10));
     return [n];
   }

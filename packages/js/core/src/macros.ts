@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Graph } from './ir/graph.js';
 import { Node } from './ir/node.js';
 import { Tensor } from './ir/tensor.js';
@@ -12,7 +11,7 @@ export function recordOp(
   inputs: Tensor[],
   attributes?: ReturnType<typeof JSON.parse>,
 ): Tensor {
-  attributes = attributes || {}; /* v8 ignore next */ /* v8 ignore next */
+  attributes = attributes || {};
   const dtype = inputs[0]?.dtype ?? 'float32';
   return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }

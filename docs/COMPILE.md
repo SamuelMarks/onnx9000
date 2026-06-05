@@ -5,6 +5,7 @@ ONNX9000 provides a generic Ahead-of-Time (AOT) compiler infrastructure. It pars
 ## Web Demo
 
 A standalone web demo is available to visualize the compilation steps.
+
 ```bash
 cd apps/demo-compile
 npm run dev
@@ -13,6 +14,7 @@ npm run dev
 ## CLI Usage
 
 Use the CLI to perform AOT compilation on a given model:
+
 ```bash
 onnx9000 compile my_model.onnx
 ```

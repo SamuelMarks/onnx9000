@@ -19,5 +19,5 @@ onnx9000 onnx2tf model.onnx --int8 -o quantized.tflite
 ## Interactive Web Demo
 
 .. interactive-demo::
-   :initial-source: script
-   :initial-target: onnx
+:initial-source: script
+:initial-target: onnx

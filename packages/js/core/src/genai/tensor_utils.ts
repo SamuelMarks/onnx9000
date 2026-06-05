@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../ir/tensor.js';
 
 /**
@@ -51,8 +50,9 @@ export class SequenceTensorUtils {
       // Because TS data is flat typed array:
       for (let s = 0; s < oldSeqLen; s++) {
         for (let i = 0; i < innerVol; i++) {
-          // @ts-ignore
-          newData[newBatchOffset + s * innerVol + i] = oldData[oldBatchOffset + s * innerVol + i];
+          newData[newBatchOffset + s * innerVol + i] = (oldData as any)[
+            oldBatchOffset + s * innerVol + i
+          ];
         }
       }
     }

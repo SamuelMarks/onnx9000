@@ -291,7 +291,7 @@ OpenAI's `Triton` is a Python-like language and compiler for writing highly effi
 - [x][x][x] 214. Handle empty/zero-dimensional scalars correctly (mapping to Python floats natively).
 - [x][x][x] 215. Expand tuple outputs logically.
 - [x][x][x] 216. Ensure accurate parsing of `Shape` operators into dynamic Python integers.
-- [x][x][x] 217. Emit specific `# noqa` or `pylint` suppression comments for messy auto-generated variables.
+- [x][x][x] 217. Emit specific `
 - [x][x][x] 218. Map explicit string tensors safely (though unsupported in Triton, emit warnings).
 - [x][x][x] 219. Generate custom Triton kernels for specific Random generation routines if seeded correctly.
 - [x][x][x] 220. Extract scale arrays directly from QuantizeLinear natively.

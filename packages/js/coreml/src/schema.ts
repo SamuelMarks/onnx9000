@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {
   Reader,
   WIRE_TYPE_VARINT,

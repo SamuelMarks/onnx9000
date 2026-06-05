@@ -1,16 +1,9 @@
-/* v8 ignore next */ /* v8 ignore next */ const runBtn = document.getElementById(
-  'run-btn',
-) as HTMLButtonElement; /* v8 ignore next */ /* v8 ignore next */
-const out = document.getElementById(
-  'output',
-) as HTMLElement; /* v8 ignore next */ /* v8 ignore next */
-/* v8 ignore next */ /* v8 ignore next */
+const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
+const out = document.getElementById('output') as HTMLElement;
+
 runBtn.addEventListener('click', () => {
-  /* v8 ignore next */ /* v8 ignore next */
-  out.innerText = 'Initializing Apple Metal...'; /* v8 ignore next */ /* v8 ignore next */
+  out.innerText = 'Initializing Apple Metal...';
   setTimeout(() => {
-    /* v8 ignore next */ /* v8 ignore next */
-    out.innerText =
-      'Apple Metal engine loaded.\nExecution complete: SUCCESS'; /* v8 ignore next */ /* v8 ignore next */
-  }, 500); /* v8 ignore next */ /* v8 ignore next */
+    out.innerText = 'Apple Metal engine loaded.\nExecution complete: SUCCESS';
+  }, 500);
 });

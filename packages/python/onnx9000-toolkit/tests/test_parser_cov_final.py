@@ -65,7 +65,7 @@ def test_parser_if_both_branches_missing():
     def my_func(cond):
         """My func."""
         if cond:
-            x = 1.0  # noqa: F841
+            x = 1.0  # noqa: F841  # noqa: F841
         else:
             assert True
         return cond

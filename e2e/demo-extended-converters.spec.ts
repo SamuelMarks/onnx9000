@@ -17,23 +17,23 @@ test.describe('Extended Format Converters Demo', () => {
     const dstSelect = page.locator('#dstFramework');
     const convertBtn = page.locator('#btnConvert');
     const output = page.locator('#output');
-    
+
     if (await srcSelect.isVisible()) {
       await srcSelect.selectOption('keras');
       await dstSelect.selectOption('onnx');
-      
+
       // Need a dummy file to upload
       await page.setInputFiles('#fileInput', {
         name: 'model.h5',
         mimeType: 'application/octet-stream',
-        buffer: Buffer.from('dummy Keras file content')
+        buffer: Buffer.from('dummy Keras file content'),
       });
-      
+
       await convertBtn.click();
-      
+
       // Expect some processing indicator
       await expect(output).toContainText('Converting 1 file(s)');
-      
+
       // Wait for completion (either success or error, since it's a dummy file, likely error)
       await expect(output).toContainText(/Error|Successful/, { timeout: 10000 });
     }

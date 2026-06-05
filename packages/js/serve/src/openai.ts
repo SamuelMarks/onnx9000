@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Router } from './router';
 import { safeJsonParse } from './middleware';
 
@@ -18,10 +17,10 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
     const rawText = await req.text();
     const body = safeJsonParse(rawText);
 
-    // Simulate mapping model /* v8 ignore next */ /* v8 ignore next */
+    // Simulate mapping model
     const requestedModel = body.model || 'onnx9000-model';
 
-    // Parse messages /* v8 ignore next */ /* v8 ignore next */
+    // Parse messages
     const messages = body.messages || [];
     let promptString = '';
     // Apply dummy chat template logic
@@ -109,7 +108,7 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
       JSON.stringify({
         id: 'cmpl-123',
         object: 'text_completion',
-        created: Math.floor(Date.now() / 1000) /* v8 ignore next */ /* v8 ignore next */,
+        created: Math.floor(Date.now() / 1000),
         model: body.model || 'onnx9000-model',
         choices: [
           {
@@ -134,7 +133,7 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
   router.post('/v1/embeddings', async (req) => {
     const rawText = await req.text();
     const body = safeJsonParse(rawText);
-    /* v8 ignore next */ /* v8 ignore next */
+
     const encodingFormat = body.encoding_format || 'float';
     let embeddingData: ReturnType<typeof JSON.parse> = [0.0, 0.1, 0.2]; // dummy float
 
@@ -145,7 +144,7 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
       let b64 = '';
       for (let i = 0; i < b8.length; i++) {
         b64 += String.fromCharCode(b8[i] || 0);
-      } /* v8 ignore next */ /* v8 ignore next */
+      }
       embeddingData = typeof btoa !== 'undefined' ? btoa(b64) : Buffer.from(b8).toString('base64');
     }
 
@@ -158,7 +157,7 @@ export function addOpenAIRoutes(server: Onnx9000Server, router: Router) {
             embedding: embeddingData,
             index: 0,
           },
-        ] /* v8 ignore next */ /* v8 ignore next */,
+        ],
         model: body.model || 'onnx9000-embedding',
         usage: { prompt_tokens: 5, total_tokens: 5 },
       }),

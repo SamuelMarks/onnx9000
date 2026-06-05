@@ -4,9 +4,10 @@ The ONNX9000 Profiler and Memory Arena tools allow developers to analyze memory 
 
 ## Web Arena Demo
 
-A standalone web user interface is available to inspect and simulate memory blocks. 
+A standalone web user interface is available to inspect and simulate memory blocks.
 
 To run the demo:
+
 ```bash
 cd apps/demo-arena
 npm run dev
@@ -31,7 +32,7 @@ The JS SDK includes `@onnx9000/profiler` for in-browser metrics.
 ```javascript
 import { Profiler } from '@onnx9000/profiler';
 
-const profiler = new Profiler("model.onnx");
+const profiler = new Profiler('model.onnx');
 await profiler.run();
 console.log(profiler.peakMemory);
 ```

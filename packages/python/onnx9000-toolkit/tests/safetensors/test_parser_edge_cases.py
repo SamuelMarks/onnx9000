@@ -139,49 +139,47 @@ def test_parser_edge_cases_and_mocks():
                     st_valid.get_pinned_tensor("a")
                 except TypeError:
                     return None
-                mock_kernel32.VirtualLock.side_effect = Exception(
-                    "virtuallock err"
-                )  # pragma: no cover
-                try:  # pragma: no cover
-                    st_valid.get_pinned_tensor("a")  # pragma: no cover
-                except TypeError:  # pragma: no cover
-                    return None  # pragma: no cover
-    with patch.dict(  # pragma: no cover
+                mock_kernel32.VirtualLock.side_effect = Exception("virtuallock err")
+                try:
+                    st_valid.get_pinned_tensor("a")
+                except TypeError:
+                    return None
+    with patch.dict(
         sys.modules, {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None}
     ):
-        with pytest.raises(ImportError):  # pragma: no cover
-            st_valid.get_onnx9000_tensor("a")  # pragma: no cover
+        with pytest.raises(ImportError):
+            st_valid.get_onnx9000_tensor("a")
 
-    class MockDType:  # pragma: no cover
+    class MockDType:
         """MockDType implementation."""
 
-        FLOAT64 = "float64"  # pragma: no cover
-        FLOAT32 = "float32"  # pragma: no cover
-        FLOAT16 = "float16"  # pragma: no cover
-        BFLOAT16 = "bfloat16"  # pragma: no cover
-        INT64 = "int64"  # pragma: no cover
-        INT32 = "int32"  # pragma: no cover
-        INT16 = "int16"  # pragma: no cover
-        INT8 = "int8"  # pragma: no cover
-        UINT64 = "uint64"  # pragma: no cover
-        UINT32 = "uint32"  # pragma: no cover
-        UINT16 = "uint16"  # pragma: no cover
-        UINT8 = "uint8"  # pragma: no cover
-        BOOL = "bool"  # pragma: no cover
+        FLOAT64 = "float64"
+        FLOAT32 = "float32"
+        FLOAT16 = "float16"
+        BFLOAT16 = "bfloat16"
+        INT64 = "int64"
+        INT32 = "int32"
+        INT16 = "int16"
+        INT8 = "int8"
+        UINT64 = "uint64"
+        UINT32 = "uint32"
+        UINT16 = "uint16"
+        UINT8 = "uint8"
+        BOOL = "bool"
 
-    class MockTensor:  # pragma: no cover
+    class MockTensor:
         """MockTensor implementation."""
 
-        def __init__(self, **kwargs):  # pragma: no cover
+        def __init__(self, **kwargs):
             """Perform   init   operation."""
-            self.kwargs = kwargs  # pragma: no cover
+            self.kwargs = kwargs
 
-    mock_core = MagicMock()  # pragma: no cover
-    mock_dtypes = MagicMock()  # pragma: no cover
-    mock_dtypes.DType = MockDType  # pragma: no cover
-    mock_ir = MagicMock()  # pragma: no cover
-    mock_ir.Tensor = MockTensor  # pragma: no cover
-    with patch.dict(  # pragma: no cover
+    mock_core = MagicMock()
+    mock_dtypes = MagicMock()
+    mock_dtypes.DType = MockDType
+    mock_ir = MagicMock()
+    mock_ir.Tensor = MockTensor
+    with patch.dict(
         sys.modules,
         {
             "onnx9000.core": mock_core,
@@ -189,38 +187,38 @@ def test_parser_edge_cases_and_mocks():
             "onnx9000.core.ir": mock_ir,
         },
     ):
-        t = st_valid.get_onnx9000_tensor("a")  # pragma: no cover
-        assert t.kwargs["dtype"] == "uint8"  # pragma: no cover
-        st_valid.tensors["b"] = {"dtype": "UNKNOWN", "shape": [1]}  # pragma: no cover
-        with pytest.raises(SafetensorsInvalidDtypeError):  # pragma: no cover
-            st_valid.get_onnx9000_tensor("b")  # pragma: no cover
-    with patch.dict(sys.modules, {"numpy": None}):  # pragma: no cover
-        with pytest.raises(ImportError):  # pragma: no cover
-            st_valid.get_numpy("a")  # pragma: no cover
-    st_valid.tensors["c"] = {"dtype": "UNKNOWN", "shape": [1]}  # pragma: no cover
-    with pytest.raises(SafetensorsInvalidDtypeError):  # pragma: no cover
-        st_valid.get_numpy("c")  # pragma: no cover
-    st_float = SafeTensors(  # pragma: no cover
+        t = st_valid.get_onnx9000_tensor("a")
+        assert t.kwargs["dtype"] == "uint8"
+        st_valid.tensors["b"] = {"dtype": "UNKNOWN", "shape": [1]}
+        with pytest.raises(SafetensorsInvalidDtypeError):
+            st_valid.get_onnx9000_tensor("b")
+    with patch.dict(sys.modules, {"numpy": None}):
+        with pytest.raises(ImportError):
+            st_valid.get_numpy("a")
+    st_valid.tensors["c"] = {"dtype": "UNKNOWN", "shape": [1]}
+    with pytest.raises(SafetensorsInvalidDtypeError):
+        st_valid.get_numpy("c")
+    st_float = SafeTensors(
         save({"f32": np.array([1.0], dtype=np.float32), "f64": np.array([1.0], dtype=np.float64)})
     )
-    arr_f16_from_f32 = st_float.get_numpy("f32", downcast_f16=True)  # pragma: no cover
-    assert arr_f16_from_f32.dtype == np.float16  # pragma: no cover
-    arr_f16_from_f64 = st_float.get_numpy("f64", downcast_f16=True)  # pragma: no cover
-    assert arr_f16_from_f64.dtype == np.float16  # pragma: no cover
-    arr_int8_from_f32 = st_float.get_numpy("f32", quantize_int8=True)  # pragma: no cover
-    assert arr_int8_from_f32.dtype == np.int8  # pragma: no cover
+    arr_f16_from_f32 = st_float.get_numpy("f32", downcast_f16=True)
+    assert arr_f16_from_f32.dtype == np.float16
+    arr_f16_from_f64 = st_float.get_numpy("f64", downcast_f16=True)
+    assert arr_f16_from_f64.dtype == np.float16
+    arr_int8_from_f32 = st_float.get_numpy("f32", quantize_int8=True)
+    assert arr_int8_from_f32.dtype == np.int8
 
-    class DuplicateDict(dict):  # pragma: no cover
+    class DuplicateDict(dict):
         """DuplicateDict implementation."""
 
-        def items(self):  # pragma: no cover
+        def items(self):
             """Perform items operation."""
-            yield ("a", np.array([1]))  # pragma: no cover
-            yield ("a", np.array([2]))  # pragma: no cover
+            yield ("a", np.array([1]))
+            yield ("a", np.array([2]))
 
-    with pytest.raises(SafetensorsDuplicateKeyError):  # pragma: no cover
-        save(DuplicateDict())  # pragma: no cover
-    d = save(  # pragma: no cover
+    with pytest.raises(SafetensorsDuplicateKeyError):
+        save(DuplicateDict())
+    d = save(
         {
             "f16": np.array([1], dtype=np.float16),
             "i16": np.array([1], dtype=np.int16),
@@ -231,88 +229,86 @@ def test_parser_edge_cases_and_mocks():
             "bool": np.array([True], dtype=np.bool_),
         }
     )
-    st_d = SafeTensors(d)  # pragma: no cover
-    assert st_d.tensors["f16"]["dtype"] == "F16"  # pragma: no cover
-    assert st_d.tensors["i16"]["dtype"] == "I16"  # pragma: no cover
-    assert st_d.tensors["u64"]["dtype"] == "U64"  # pragma: no cover
-    assert st_d.tensors["u32"]["dtype"] == "U32"  # pragma: no cover
-    assert st_d.tensors["u16"]["dtype"] == "U16"  # pragma: no cover
-    assert st_d.tensors["u8"]["dtype"] == "U8"  # pragma: no cover
-    assert st_d.tensors["bool"]["dtype"] == "BOOL"  # pragma: no cover
+    st_d = SafeTensors(d)
+    assert st_d.tensors["f16"]["dtype"] == "F16"
+    assert st_d.tensors["i16"]["dtype"] == "I16"
+    assert st_d.tensors["u64"]["dtype"] == "U64"
+    assert st_d.tensors["u32"]["dtype"] == "U32"
+    assert st_d.tensors["u16"]["dtype"] == "U16"
+    assert st_d.tensors["u8"]["dtype"] == "U8"
+    assert st_d.tensors["bool"]["dtype"] == "BOOL"
 
-    class MockDTypeEnum:  # pragma: no cover
+    class MockDTypeEnum:
         """MockDTypeEnum implementation."""
 
-        FLOAT64 = MagicMock(value=11)  # pragma: no cover
-        FLOAT32 = MagicMock(value=1)  # pragma: no cover
-        FLOAT16 = MagicMock(value=10)  # pragma: no cover
-        INT64 = MagicMock(value=7)  # pragma: no cover
-        INT32 = MagicMock(value=6)  # pragma: no cover
-        INT16 = MagicMock(value=5)  # pragma: no cover
-        INT8 = MagicMock(value=3)  # pragma: no cover
-        UINT64 = MagicMock(value=8)  # pragma: no cover
-        UINT32 = MagicMock(value=12)  # pragma: no cover
-        UINT16 = MagicMock(value=4)  # pragma: no cover
-        UINT8 = MagicMock(value=2)  # pragma: no cover
-        BOOL = MagicMock(value=9)  # pragma: no cover
-        BFLOAT16 = MagicMock(value=16)  # pragma: no cover
+        FLOAT64 = MagicMock(value=11)
+        FLOAT32 = MagicMock(value=1)
+        FLOAT16 = MagicMock(value=10)
+        INT64 = MagicMock(value=7)
+        INT32 = MagicMock(value=6)
+        INT16 = MagicMock(value=5)
+        INT8 = MagicMock(value=3)
+        UINT64 = MagicMock(value=8)
+        UINT32 = MagicMock(value=12)
+        UINT16 = MagicMock(value=4)
+        UINT8 = MagicMock(value=2)
+        BOOL = MagicMock(value=9)
+        BFLOAT16 = MagicMock(value=16)
 
-    class MockTensorProto:  # pragma: no cover
+    class MockTensorProto:
         """MockTensorProto implementation."""
 
-        def __init__(self):  # pragma: no cover
+        def __init__(self):
             """Perform   init   operation."""
-            self.raw_data = b"1234"  # pragma: no cover
-            self.dims = [1]  # pragma: no cover
-            self.data_type = 1  # pragma: no cover
+            self.raw_data = b"1234"
+            self.dims = [1]
+            self.data_type = 1
 
-    MockTensorProto()  # pragma: no cover
-    with patch.dict(
-        sys.modules, {"onnx9000.core.dtypes": MagicMock(DType=MockDTypeEnum)}
-    ):  # pragma: no cover
-        try:  # pragma: no cover
-            from onnx9000.core.dtypes import DType  # pragma: no cover
+    MockTensorProto()
+    with patch.dict(sys.modules, {"onnx9000.core.dtypes": MagicMock(DType=MockDTypeEnum)}):
+        try:
+            from onnx9000.core.dtypes import DType
 
-            class RealMockTensorProto:  # pragma: no cover
+            class RealMockTensorProto:
                 """RealMockTensorProto implementation."""
 
-                def __init__(self):  # pragma: no cover
+                def __init__(self):
                     """Perform   init   operation."""
-                    self.raw_data = b"1234"  # pragma: no cover
-                    self.dims = [1]  # pragma: no cover
-                    self.data_type = DType.FLOAT32.value  # pragma: no cover
+                    self.raw_data = b"1234"
+                    self.dims = [1]
+                    self.data_type = DType.FLOAT32.value
 
-            save({"proto": RealMockTensorProto()})  # pragma: no cover
-            raise ImportError  # pragma: no cover
-        except ImportError:  # pragma: no cover
-            return None  # pragma: no cover
-    with tempfile.TemporaryDirectory() as td:  # pragma: no cover
-        p = os.path.join(td, "a.safetensors")  # pragma: no cover
-        with open(p, "wb") as f:  # pragma: no cover
-            f.write(save({"a": np.array([1])}))  # pragma: no cover
-        with patch.object(SafeTensors, "keys", return_value=[123]):  # pragma: no cover
-            from onnx9000.toolkit.safetensors.parser import load_file  # pragma: no cover
+            save({"proto": RealMockTensorProto()})
+            raise ImportError
+        except ImportError:
+            return None
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "a.safetensors")
+        with open(p, "wb") as f:
+            f.write(save({"a": np.array([1])}))
+        with patch.object(SafeTensors, "keys", return_value=[123]):
+            from onnx9000.toolkit.safetensors.parser import load_file
 
-            with pytest.raises(TypeError):  # pragma: no cover
-                load_file(p)  # pragma: no cover
-    res = load(save({"a": np.array([1])}), prefix="pre_", pattern="a")  # pragma: no cover
-    assert "pre_a" in res  # pragma: no cover
-    with tempfile.TemporaryDirectory() as td:  # pragma: no cover
-        empty_path = os.path.join(td, "empty.safetensors")  # pragma: no cover
-        with open(empty_path, "wb"):  # pragma: no cover
-            return None  # pragma: no cover
-        assert not check_safetensors(empty_path)  # pragma: no cover
-    with tempfile.TemporaryDirectory() as td:  # pragma: no cover
-        idx_path = os.path.join(td, "idx.json")  # pragma: no cover
-        with open(idx_path, "w") as f:  # pragma: no cover
-            json.dump({"weight_map": {"a": "a.safetensors"}}, f)  # pragma: no cover
-        with open(os.path.join(td, "a.safetensors"), "wb") as f:  # pragma: no cover
-            f.write(save({"a": np.array([1])}))  # pragma: no cover
-        sharded = SafeTensorsSharded(idx_path)  # pragma: no cover
-        with pytest.raises(KeyError):  # pragma: no cover
-            sharded.get_tensor("missing")  # pragma: no cover
-        with pytest.raises(KeyError):  # pragma: no cover
-            sharded.get_numpy("missing")  # pragma: no cover
-        assert len(sharded["a"]) > 0  # pragma: no cover
-    with tempfile.TemporaryDirectory() as td:  # pragma: no cover
-        save_sharded({"a": b"123"}, td, max_shard_size=100)  # pragma: no cover
+            with pytest.raises(TypeError):
+                load_file(p)
+    res = load(save({"a": np.array([1])}), prefix="pre_", pattern="a")
+    assert "pre_a" in res
+    with tempfile.TemporaryDirectory() as td:
+        empty_path = os.path.join(td, "empty.safetensors")
+        with open(empty_path, "wb"):
+            return None
+        assert not check_safetensors(empty_path)
+    with tempfile.TemporaryDirectory() as td:
+        idx_path = os.path.join(td, "idx.json")
+        with open(idx_path, "w") as f:
+            json.dump({"weight_map": {"a": "a.safetensors"}}, f)
+        with open(os.path.join(td, "a.safetensors"), "wb") as f:
+            f.write(save({"a": np.array([1])}))
+        sharded = SafeTensorsSharded(idx_path)
+        with pytest.raises(KeyError):
+            sharded.get_tensor("missing")
+        with pytest.raises(KeyError):
+            sharded.get_numpy("missing")
+        assert len(sharded["a"]) > 0
+    with tempfile.TemporaryDirectory() as td:
+        save_sharded({"a": b"123"}, td, max_shard_size=100)

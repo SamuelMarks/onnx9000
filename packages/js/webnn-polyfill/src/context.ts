@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MLContext, MLContextOptions, MLComputeResult, MLOpSupportLimits } from './interfaces.js';
 import { PolyfillMLGraph } from './graph.js';
 import { PolyfillMLTensor, MLTensorOptions } from './tensor.js';
@@ -76,7 +75,7 @@ export class PolyfillMLContext implements MLContext {
         inputInfo.shape,
         inputInfo.dtype,
         false,
-        false /* v8 ignore next */ /* v8 ignore next */,
+        false,
         new Uint8Array(tensor.internalBuffer || new ArrayBuffer(0)),
       );
     }

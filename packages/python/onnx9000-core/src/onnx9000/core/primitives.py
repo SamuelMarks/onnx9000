@@ -233,7 +233,7 @@ class BaseActivation:
 class Relu(BaseActivation):
     """ReLU activation."""
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import relu
 
@@ -243,7 +243,7 @@ class Relu(BaseActivation):
 class Sigmoid(BaseActivation):
     """Sigmoid activation."""
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import sigmoid
 
@@ -253,7 +253,7 @@ class Sigmoid(BaseActivation):
 class Tanh(BaseActivation):
     """Tanh activation."""
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import tanh
 
@@ -263,11 +263,11 @@ class Tanh(BaseActivation):
 class LeakyRelu(BaseActivation):
     """LeakyReLU activation."""
 
-    def __init__(self, alpha: float = 0.01) -> None:  # noqa: D107
+    def __init__(self, alpha: float = 0.01) -> None:
         """Init."""
         self.alpha = alpha
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import leaky_relu
 
@@ -277,11 +277,11 @@ class LeakyRelu(BaseActivation):
 class Gelu(BaseActivation):
     """GELU activation."""
 
-    def __init__(self, approximate: str = "none") -> None:  # noqa: D107
+    def __init__(self, approximate: str = "none") -> None:
         """Init."""
         self.approximate = approximate
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         return record_op("Gelu", [x], {"approximate": self.approximate})
 
@@ -289,7 +289,7 @@ class Gelu(BaseActivation):
 class Silu(BaseActivation):
     """SiLU / Swish activation."""
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import swish
 
@@ -303,7 +303,7 @@ class Swish(Silu):
 class Mish(BaseActivation):
     """Mish activation."""
 
-    def __call__(self, x: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import mish
 
@@ -313,7 +313,7 @@ class Mish(BaseActivation):
 class ConvFamily:
     """Shared base handling stride, padding, dilation, and groups."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         in_channels: int,
         out_channels: int,
@@ -334,7 +334,7 @@ class ConvFamily:
         self.groups = groups
         self.bias = bias
 
-    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:
         """Call."""
         return x
 
@@ -342,7 +342,7 @@ class ConvFamily:
 class ConvND(ConvFamily):
     """1D, 2D, 3D convolutions mapped via unified N-dimensional spatial iterators."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dims: int,
         in_channels: int,
@@ -360,7 +360,7 @@ class ConvND(ConvFamily):
         )
         self.dims = dims
 
-    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -386,7 +386,7 @@ class ConvND(ConvFamily):
 class DepthwiseConv(ConvND):
     """Syntactic sugar mapping to IR.Conv with groups = in_channels."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         dims: int,
         channels: int,
@@ -405,7 +405,7 @@ class DepthwiseConv(ConvND):
 class MatMul:
     """Standardize broadcasting rules (NumPy semantics)."""
 
-    def __call__(self, x: Tensor, y: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, y: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import matmul
 
@@ -415,14 +415,14 @@ class MatMul:
 class Gemm:
     """Standardize broadcasting rules (NumPy semantics)."""
 
-    def __init__(self, alpha: float = 1.0, beta: float = 1.0, trans_a: int = 0, trans_b: int = 0):  # noqa: D107
+    def __init__(self, alpha: float = 1.0, beta: float = 1.0, trans_a: int = 0, trans_b: int = 0):
         """Init."""
         self.alpha = alpha
         self.beta = beta
         self.trans_a = trans_a
         self.trans_b = trans_b
 
-    def __call__(self, x: Tensor, y: Tensor, c: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, y: Tensor, c: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gemm
 
@@ -432,13 +432,13 @@ class Gemm:
 class MultiHeadAttention:
     """Parametrized by num_heads, qkv_bias, out_bias. Reused across ViT, BERT, and Whisper."""
 
-    def __init__(self, num_heads: int, qkv_bias: bool = True, out_bias: bool = True):  # noqa: D107
+    def __init__(self, num_heads: int, qkv_bias: bool = True, out_bias: bool = True):
         """Init."""
         self.num_heads = num_heads
         self.qkv_bias = qkv_bias
         self.out_bias = out_bias
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import attention
 
@@ -452,7 +452,7 @@ class MultiHeadAttention:
 class FlashAttention(MultiHeadAttention):
     """Standardized hardware-fused attention. Falls back to MultiHeadAttention if unsupported."""
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -465,14 +465,14 @@ class FlashAttention(MultiHeadAttention):
 class GroupedQueryAttention(MultiHeadAttention):
     """Reused across LLaMA 2/3, Mistral. Maps KV head tiling to standard Attention."""
 
-    def __init__(  # noqa: D107
+    def __init__(
         self, num_heads: int, num_kv_heads: int, qkv_bias: bool = False, out_bias: bool = False
     ):
         """Init."""
         super().__init__(num_heads, qkv_bias, out_bias)
         self.num_kv_heads = num_kv_heads
 
-    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:  # noqa: D102
+    def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -489,13 +489,13 @@ class GroupedQueryAttention(MultiHeadAttention):
 class RoPE:
     """Standard 1D/2D RoPE reusable for LLMs and Vision."""
 
-    def __init__(self, dim: int, base: float = 10000.0, max_seq_len: int = 2048):  # noqa: D107
+    def __init__(self, dim: int, base: float = 10000.0, max_seq_len: int = 2048):
         """Init."""
         self.dim = dim
         self.base = base
         self.max_seq_len = max_seq_len
 
-    def __call__(self, x: Tensor, pos: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, pos: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -505,11 +505,11 @@ class RoPE:
 class AlibiBias:
     """Standardized linear bias matrices for attention masks."""
 
-    def __init__(self, num_heads: int):  # noqa: D107
+    def __init__(self, num_heads: int):
         """Init."""
         self.num_heads = num_heads
 
-    def __call__(self, mask: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, mask: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -519,14 +519,14 @@ class AlibiBias:
 class StateSpace:
     """Core primitive for Mamba (Parallel Scan / SSM convolution)."""
 
-    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int = 2):  # noqa: D107
+    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int = 2):
         """Init."""
         self.d_model = d_model
         self.d_state = d_state
         self.d_conv = d_conv
         self.expand = expand
 
-    def __call__(self, x: Tensor, dt: Tensor, A: Tensor, B: Tensor, C: Tensor, D: Tensor) -> Tensor:  # noqa: D102
+    def __call__(self, x: Tensor, dt: Tensor, A: Tensor, B: Tensor, C: Tensor, D: Tensor) -> Tensor:
         """Call."""
         from onnx9000.core.ops import record_op
 
@@ -545,12 +545,12 @@ class StateSpace:
 class RNN:
     """Standard RNN primitive for linear attention / RWKV time mixing."""
 
-    def __init__(self, hidden_size: int, direction: str = "forward"):  # noqa: D107
+    def __init__(self, hidden_size: int, direction: str = "forward"):
         """Init."""
         self.hidden_size = hidden_size
         self.direction = direction
 
-    def __call__(  # noqa: D102
+    def __call__(
         self,
         x: Tensor,
         w: Tensor,

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // 121. Implement a Web Worker Pool manager for processing isolated requests.
 // 122. Support running the HTTP router on the Main Thread and all ONNX executions on Worker Threads.
 // 123. Transmit tensors across threads natively using `SharedArrayBuffer` (zero-copy).
@@ -17,7 +16,7 @@ export class WorkerPool {
 
   constructor(public maxWorkers: number = 4) {
     if (typeof process !== 'undefined' && process.env) {
-      // Node.js environment simulation /* v8 ignore next */ /* v8 ignore next */
+      // Node.js environment simulation
       this.maxWorkers = require('os').cpus().length || this.maxWorkers;
     }
   }

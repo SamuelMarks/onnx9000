@@ -38,8 +38,8 @@ def test_export_state_dict():
         assert isinstance(state_dict["c"], torch.Tensor)
         assert state_dict["a.b"].tolist() == [1.0, 2.0]
         assert state_dict["c"].tolist() == [42]
-    except ImportError:  # pragma: no cover
-        assert isinstance(state_dict["a.b"], np.ndarray)  # pragma: no cover
+    except ImportError:
+        assert isinstance(state_dict["a.b"], np.ndarray)
 
 
 def test_universal_weight_bridge():

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Tensor } from '../index.js';
 
 /**

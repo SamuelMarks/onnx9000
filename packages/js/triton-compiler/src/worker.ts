@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { generateTriton } from '@onnx9000/compiler';
 
 self.onmessage = (e) => {

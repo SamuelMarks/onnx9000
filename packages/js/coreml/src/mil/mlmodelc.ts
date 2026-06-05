@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * CoreML Model Compiler WebAssembly implementations mapping to Apple's Native `coremlcompiler`.
  * @module

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Region, Operation } from '../ir/core.js';
 
 // 211-220. Target-Specific Autotuning

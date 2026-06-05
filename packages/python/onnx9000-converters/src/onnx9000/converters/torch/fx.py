@@ -122,7 +122,7 @@ class FXParser:
                     inputs.append(arg)
 
             # Mapping common torch ops to ONNX-like names
-            import onnx9000.converters.torch.torch_ops  # noqa: F401
+            import onnx9000.converters.torch.torch_ops
             from onnx9000.converters.torch.aten_map import ATEN_OP_MAP
             from onnx9000.core.registry import global_registry
 

@@ -33,7 +33,6 @@ describe('WebNN Context Edge Cases', () => {
       },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
     };
@@ -47,7 +46,6 @@ describe('WebNN Context Edge Cases', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue({}) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
     };
@@ -60,7 +58,6 @@ describe('WebNN Context Edge Cases', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue({}) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = undefined;
     (globalThis as any).MLGraphBuilder = undefined;
     await expect(WebNNContextManager.getInstance().initialize()).rejects.toThrow(
@@ -87,7 +84,6 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       configurable: true,
     });
     const mockDestroy = vi.fn();
-    // @ts-ignore
     global.MLGraphBuilder = class {
       constructor() {}
       input() {
@@ -140,7 +136,6 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       input() {
         return {};
@@ -179,7 +174,6 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       input() {
         return {};
@@ -217,7 +211,6 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
       value: { ml: { createContext: vi.fn().mockResolvedValue(mockContext) } },
       configurable: true,
     });
-    // @ts-ignore
     global.MLGraphBuilder = class {
       input() {
         return {};
@@ -251,7 +244,6 @@ describe('WebNNProvider buffer pool and execution edge cases', () => {
 
 describe('WebNNCompiler Edge Cases', () => {
   it('should handle dynamic shapes', async () => {
-    // @ts-ignore
     global.MLGraphBuilder = class {
       input = vi.fn().mockReturnValue({});
       build = vi.fn().mockResolvedValue({});

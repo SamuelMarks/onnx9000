@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Tensor, Attribute, ValueInfo, Shape } from '@onnx9000/core';
 import { DarknetLayer } from './parser.js';
@@ -51,7 +51,7 @@ export class DarknetMapper {
         const routeLayers = Array.isArray(layer.layers) ? layer.layers : [layer.layers];
         currentChannels = 0;
         for (const r of routeLayers) {
-          const idx = r < 0 ? i + r : r; /* v8 ignore next */ /* v8 ignore next */
+          const idx = r < 0 ? i + r : r;
           currentChannels += this.channelsOutput[idx] || 0;
         }
       } else if (layer.type === 'upsample') {

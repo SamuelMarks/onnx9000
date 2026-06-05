@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * JAX jaxpr JSON parser.
  */

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * H2O to ONNX IR mapper.
  */
@@ -17,7 +18,7 @@ export class H2OMapper {
 
     graph.inputs.push(new ValueInfo('X', [-1, 10], 'float32'));
     graph.outputs.push(new ValueInfo('Y', [-1, 1], 'float32'));
-    /* v8 ignore next */ /* v8 ignore next */
+
     const algo = typeof this.modelData.algo === 'string' ? this.modelData.algo : '';
     let opType = 'TreeEnsembleRegressor';
     const attrs: Record<string, Attribute> = {};

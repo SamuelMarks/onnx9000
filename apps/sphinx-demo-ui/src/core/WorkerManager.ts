@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { globalEventBus } from './EventBus';
 import { LogLevel } from './Logger';

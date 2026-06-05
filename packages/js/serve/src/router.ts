@@ -1,4 +1,3 @@
-/* eslint-disable */
 export type RequestHandler = (
   req: Request,
   params: Record<string, string>,
@@ -70,7 +69,6 @@ export class Router {
           for (let i = 0; i < route.keys.length; i++) {
             const key = route.keys[i];
             if (key) {
-              /* v8 ignore next */ /* v8 ignore next */
               params[key] = match[i + 1] || '';
             }
           }
@@ -82,7 +80,6 @@ export class Router {
             }
             return response;
           } catch (_err) {
-            /* v8 ignore next */ /* v8 ignore next */
             const err = _err instanceof Error ? _err : new Error(String(_err));
             return new Response(JSON.stringify({ error: err.message }), {
               status: 500,

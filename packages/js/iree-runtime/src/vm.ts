@@ -68,7 +68,7 @@ export class WVMInterpreter {
 
     while (this.context.pc < bc.length) {
       const currentPc = this.context.pc++;
-      const opcode = bc[currentPc]; /* v8 ignore next */ /* v8 ignore next */
+      const opcode = bc[currentPc];
       if (opcode === undefined) throw new Error('Bytecode out of bounds');
 
       if (debugLogging) {
@@ -102,7 +102,6 @@ export class WVMInterpreter {
             throw new Error('Bytecode out of bounds');
           }
           this.context.registers[rDst] =
-            /* v8 ignore next */ /* v8 ignore next */
             (this.context.registers[rLhs] ?? 0) + (this.context.registers[rRhs] ?? 0);
           break;
         }
@@ -122,7 +121,7 @@ export class WVMInterpreter {
 
     while (this.context.pc < bc.length) {
       const currentPc = this.context.pc++;
-      const opcode = bc[currentPc]; /* v8 ignore next */ /* v8 ignore next */
+      const opcode = bc[currentPc];
       if (opcode === undefined) throw new Error('Bytecode out of bounds');
 
       switch (opcode) {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import { Graph, Node, Attribute } from '@onnx9000/core';
 import { CNTKNode } from './parser.js';

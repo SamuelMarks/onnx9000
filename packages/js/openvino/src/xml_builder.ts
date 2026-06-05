@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Represents an XML node for building OpenVINO IR files.
  */

@@ -49,7 +49,7 @@ def test_torch_script_parser_extra_coverage():
     # Use real function instead of MagicMock
     def simple_func(x):
         """Simple func."""
-        return x + 1.0  # pragma: no cover
+        return x + 1.0
 
     sm = torch.jit.script(simple_func)
     parser = TorchScriptParser(sm)
@@ -108,20 +108,20 @@ def test_tf_parsers_extra_coverage():
 def test_torch_export_parser_coverage():
     """Test ExportParser coverage."""
     if not hasattr(torch, "export"):
-        pytest.skip("torch.export not available")  # pragma: no cover
+        pytest.skip("torch.export not available")
 
     class M(torch.nn.Module):
         """M."""
 
         def forward(self, x):
             """Forward."""
-            return x + 1  # pragma: no cover
+            return x + 1
 
     m = M()
     x = torch.randn(1, 2)
     try:
         ep = torch.export.export(m, (x,))
-        parser = ExportParser(ep)  # pragma: no cover
-        parser.parse()  # pragma: no cover
+        parser = ExportParser(ep)
+        parser.parse()
     except Exception:
         assert True

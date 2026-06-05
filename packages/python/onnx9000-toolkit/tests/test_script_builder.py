@@ -310,13 +310,13 @@ def test_builder_if_loop():
 
     try:
         b.If(v)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
 
     try:
         b.Loop(v, v)
-    except Exception:  # pragma: no cover
-        assert True  # pragma: no cover
+    except Exception:
+        assert True
 
 
 def test_builder_to_onnx():
