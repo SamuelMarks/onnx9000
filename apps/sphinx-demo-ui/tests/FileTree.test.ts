@@ -16,7 +16,7 @@ describe('FileTree', () => {
         selected = p;
       }
     });
-    document.body.appendChild(tree.element);
+    tree.mount(document.body);
 
     const fileNode = tree.element.querySelector(
       '[data-path="/file.txt"] .demo-file-tree-label'

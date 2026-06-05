@@ -31,7 +31,7 @@ global.ResizeObserver = class {
 describe('Editor', () => {
   it('should render and open files', () => {
     const editor = new Editor({ initialValue: 'test' });
-    document.body.appendChild(editor.element);
+    editor.mount(document.body);
 
     expect(editor.element.className).toContain('demo-editor-container');
 

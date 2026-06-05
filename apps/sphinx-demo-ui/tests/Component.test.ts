@@ -3,6 +3,10 @@ import { describe, it, expect } from 'vitest';
 import { Component } from '../src/core/Component.js';
 
 class TestComp extends Component<HTMLDivElement> {
+  constructor() {
+    super();
+    this.element = this.render();
+  }
   protected render() {
     return document.createElement('div');
   }
@@ -11,7 +15,7 @@ class TestComp extends Component<HTMLDivElement> {
 describe('Component', () => {
   it('should mount and unmount', () => {
     const comp = new TestComp();
-    document.body.appendChild(comp.element);
+    comp.mount(document.body);
     expect(document.body.contains(comp.element)).toBe(true);
 
     comp.unmount();

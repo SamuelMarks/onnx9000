@@ -15,7 +15,7 @@ vi.mock('../src/core/WasmManager.js', () => ({
 describe('WasmOverlay', () => {
   it('should render and load', async () => {
     const overlay = new WasmOverlay();
-    document.body.appendChild(overlay.element);
+    overlay.mount(document.body);
 
     const loadBtn = overlay.element.querySelector('.demo-btn-primary') as HTMLButtonElement;
     expect(loadBtn).not.toBeNull();

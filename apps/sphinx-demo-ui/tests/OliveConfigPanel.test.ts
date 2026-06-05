@@ -5,7 +5,7 @@ import { OliveConfigPanel } from '../src/components/OliveConfigPanel.js';
 describe('OliveConfigPanel', () => {
   it('should render and handle changes', () => {
     const panel = new OliveConfigPanel();
-    document.body.appendChild(panel.element);
+    panel.mount(document.body);
 
     const checkbox = panel.element.querySelector('.demo-olive-fusion-checkbox') as HTMLInputElement;
     checkbox.checked = true;

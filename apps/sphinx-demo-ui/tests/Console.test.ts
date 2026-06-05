@@ -6,7 +6,7 @@ import { globalEventBus } from '../src/core/EventBus.js';
 describe('Console', () => {
   it('should render and handle logs', () => {
     const consoleComp = new Console();
-    document.body.appendChild(consoleComp.element);
+    consoleComp.mount(document.body);
 
     globalEventBus.emit('CONSOLE_LOG', {
       level: 'info',

@@ -6,7 +6,7 @@ import { globalEventBus } from '../src/core/EventBus.js';
 describe('PromoteButton', () => {
   it('should render and react to events', () => {
     const btn = new PromoteButton();
-    document.body.appendChild(btn.element);
+    btn.mount(document.body);
 
     expect(btn.element.disabled).toBe(true);
 

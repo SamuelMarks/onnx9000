@@ -13,7 +13,7 @@ describe('Tabs', () => {
       ]
     });
 
-    document.body.appendChild(tabs.element);
+    tabs.mount(document.body);
     expect(tabs.getActiveTabId()).toBe('1');
 
     const btn2 = tabs.element.querySelector('#tab-2') as HTMLElement;
