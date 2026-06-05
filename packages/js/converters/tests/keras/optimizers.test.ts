@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { optimizeFusedOps, KerasGraphOptimizer } from '../src/keras/optimizers.js';
+import { optimizeFusedOps, KerasGraphOptimizer } from '../../src/keras/optimizers.js';
 
 describe('optimizers', () => {
   it('should optimize fused ops', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CaffeMapper } from '../src/mmdnn/caffe/mapper.js';
+import { CaffeMapper } from '../../../src/mmdnn/caffe/mapper.js';
 import { Graph } from '@onnx9000/core';
 
 describe('CaffeMapper', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { H2OMapper } from '../src/mmdnn/h2o/mapper.js';
+import { H2OMapper } from '../../../src/mmdnn/h2o/mapper.js';
 
 describe('H2OMapper', () => {
   it('should map h2o', () => {

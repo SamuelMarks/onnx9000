@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { emitActivation, emitDense, emitIdentity } from '../src/keras/emitters.js';
+import { emitActivation, emitDense, emitIdentity } from '../../src/keras/emitters.js';
 
 describe('emitters', () => {
   it('should emit activation', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Keras2OnnxConverter } from '../src/keras/index.js';
+import { Keras2OnnxConverter } from '../../src/keras/index.js';
 
-vi.mock('../src/keras/tfjs-parser.js', () => ({
+vi.mock('../../src/keras/tfjs-parser.js', () => ({
   parseTFJSModel: vi.fn().mockReturnValue({
     format: 'layers-model',
     modelTopology: { class_name: 'Sequential', config: { layers: [] } },

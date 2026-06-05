@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MXNetGenerator } from '../src/mmdnn/mxnet/generator.js';
+import { MXNetGenerator } from '../../../src/mmdnn/mxnet/generator.js';
 
 describe('MXNetGenerator', () => {
   it('should generate code', () => {

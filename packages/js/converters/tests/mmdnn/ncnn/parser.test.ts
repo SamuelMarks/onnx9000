@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseNcnnParam, NcnnBinParser } from '../src/mmdnn/ncnn/parser.js';
+import { parseNcnnParam, NcnnBinParser } from '../../../src/mmdnn/ncnn/parser.js';
 
 describe('ncnn parser', () => {
   it('should parse param', () => {

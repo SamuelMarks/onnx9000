@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DarknetMapper } from '../src/mmdnn/darknet/mapper.js';
+import { DarknetMapper } from '../../../src/mmdnn/darknet/mapper.js';
 import { Graph } from '@onnx9000/core';
 
 describe('DarknetMapper', () => {

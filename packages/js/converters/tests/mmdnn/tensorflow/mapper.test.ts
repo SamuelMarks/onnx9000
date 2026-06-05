@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TFMapper } from '../src/mmdnn/tensorflow/mapper.js';
+import { TFMapper } from '../../../src/mmdnn/tensorflow/mapper.js';
 import { Graph } from '@onnx9000/core';
 
 describe('TFMapper', () => {

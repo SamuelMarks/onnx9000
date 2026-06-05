@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { OnnxScriptGenerator } from '../src/mmdnn/onnxscript/generator.js';
+import { OnnxScriptGenerator } from '../../../src/mmdnn/onnxscript/generator.js';
 
 describe('OnnxScriptGenerator', () => {
   it('should generate', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PyTorchGenerator } from '../src/mmdnn/pytorch/generator.js';
+import { PyTorchGenerator } from '../../../src/mmdnn/pytorch/generator.js';
 
 describe('PyTorchGenerator', () => {
   it('should generate', () => {

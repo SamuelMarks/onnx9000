@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LegacyQuirkResolver } from '../src/mmdnn/legacy/quirks.js';
+import { LegacyQuirkResolver } from '../../../src/mmdnn/legacy/quirks.js';
 
 describe('legacy quirks', () => {
   it('should resolve caffe padding', () => {

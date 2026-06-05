@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseLibSVM } from '../src/mmdnn/libsvm/parser.js';
+import { parseLibSVM } from '../../../src/mmdnn/libsvm/parser.js';
 
 describe('libsvm parser', () => {
   it('should parse libsvm', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { PyTorchSerializer } from '../src/mmdnn/pytorch/serializer.js';
+import { PyTorchSerializer } from '../../../src/mmdnn/pytorch/serializer.js';
 
 vi.mock('fflate', () => ({ zipSync: vi.fn().mockReturnValue(new Uint8Array()) }));
 

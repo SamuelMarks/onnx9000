@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCfg } from '../src/mmdnn/darknet/parser.js';
+import { parseCfg } from '../../../src/mmdnn/darknet/parser.js';
 
 describe('darknet/parser', () => {
   it('should parse cfg', () => {

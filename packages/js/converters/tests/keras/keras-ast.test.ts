@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractKerasTopology } from '../src/keras/keras-ast.js';
+import { extractKerasTopology } from '../../src/keras/keras-ast.js';
 
 describe('keras-ast', () => {
   it('should extract topology', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { NodeFusionRegistry } from '../src/mmdnn/fusion.js';
+import { NodeFusionRegistry } from '../../src/mmdnn/fusion.js';
 import { Graph } from '@onnx9000/core';
 
 describe('fusion', () => {

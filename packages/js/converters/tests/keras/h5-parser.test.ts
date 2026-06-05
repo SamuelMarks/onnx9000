@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { parseKerasH5 } from '../src/keras/h5-parser.js';
+import { parseKerasH5 } from '../../src/keras/h5-parser.js';
 
 vi.mock('jsfive', () => ({
   File: class {

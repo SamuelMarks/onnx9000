@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { OnnxScriptParser } from '../src/mmdnn/onnxscript/parser.js';
+import { OnnxScriptParser } from '../../../src/mmdnn/onnxscript/parser.js';
 
 describe('OnnxScriptParser', () => {
   it('should parse', () => {

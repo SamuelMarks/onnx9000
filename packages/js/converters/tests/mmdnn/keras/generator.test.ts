@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { KerasGenerator } from '../src/mmdnn/keras/generator.js';
+import { KerasGenerator } from '../../../src/mmdnn/keras/generator.js';
 
 describe('KerasGenerator', () => {
   it('should generate code', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { readBrowserFile, fetchRemoteUrl } from '../src/keras/browser-io.js';
+import { readBrowserFile, fetchRemoteUrl } from '../../src/keras/browser-io.js';
 
 describe('browser-io', () => {
   it('should read file', async () => {

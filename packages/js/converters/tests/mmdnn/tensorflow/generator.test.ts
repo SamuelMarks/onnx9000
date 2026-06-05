@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TensorFlowGenerator } from '../src/mmdnn/tensorflow/generator.js';
+import { TensorFlowGenerator } from '../../../src/mmdnn/tensorflow/generator.js';
 
 describe('TensorFlowGenerator', () => {
   it('should generate code', () => {

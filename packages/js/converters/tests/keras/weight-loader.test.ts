@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateByteLength } from '../src/keras/weight-loader.js';
+import { calculateByteLength } from '../../src/keras/weight-loader.js';
 
 describe('weight-loader', () => {
   it('should calc byte length', () => {

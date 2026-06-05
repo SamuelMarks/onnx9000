@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parsePbtxt, parseTFProto } from '../src/mmdnn/tensorflow/parser.js';
+import { parsePbtxt, parseTFProto } from '../../../src/mmdnn/tensorflow/parser.js';
 
 describe('tf/parser', () => {
   it('should parse pbtxt', () => {

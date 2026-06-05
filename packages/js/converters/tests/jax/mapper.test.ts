@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { JaxMapper } from '../src/jax/mapper.js';
+import { JaxMapper } from '../../src/jax/mapper.js';
 
 describe('JaxMapper', () => {
   it('should map graph', () => {

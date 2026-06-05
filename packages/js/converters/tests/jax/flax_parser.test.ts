@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseFlaxState } from '../src/jax/flax_parser.js';
+import { parseFlaxState } from '../../src/jax/flax_parser.js';
 
 describe('flax_parser', () => {
   it('should parse json state', () => {

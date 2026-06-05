@@ -8,7 +8,7 @@ describe('parsers', () => {
       nodes: [{ target: 'aten.add.Tensor', args: ['a'], kwargs: {}, name: 'out' }],
     });
     expect(g.nodes.length).toBe(1);
-    expect(g.nodes[0].opType).toBe('add');
+    expect(g.nodes[0].opType).toBe('add.Tensor');
   });
 
   it('should parse jaxpr', () => {

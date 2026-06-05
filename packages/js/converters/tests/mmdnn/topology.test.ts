@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { topologicalSort } from '../src/mmdnn/topology.js';
+import { topologicalSort } from '../../src/mmdnn/topology.js';
 
 describe('topology sort', () => {
   it('should sort nodes', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { translateNhwcToNchw, calculatePaddingSame } from '../src/keras/layout.js';
+import { translateNhwcToNchw, calculatePaddingSame } from '../../src/keras/layout.js';
 
 describe('layout', () => {
   it('should translate nhwc', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ONNXNormalizer } from '../src/mmdnn/verification/normalizer.js';
+import { ONNXNormalizer } from '../../../src/mmdnn/verification/normalizer.js';
 
 describe('ONNXNormalizer', () => {
   it('should normalize graph', () => {

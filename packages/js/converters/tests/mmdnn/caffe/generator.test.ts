@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CaffeGenerator } from '../src/mmdnn/caffe/generator.js';
+import { CaffeGenerator } from '../../../src/mmdnn/caffe/generator.js';
 
 describe('CaffeGenerator', () => {
   it('should generate caffe code', () => {

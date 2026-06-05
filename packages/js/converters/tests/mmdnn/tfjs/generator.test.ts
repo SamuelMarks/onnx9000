@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateTFJSCode, isLinearGraph } from '../src/mmdnn/tfjs/generator.js';
+import { generateTFJSCode, isLinearGraph } from '../../../src/mmdnn/tfjs/generator.js';
 
 describe('TFJSGenerator', () => {
   it('should generate tfjs code', () => {

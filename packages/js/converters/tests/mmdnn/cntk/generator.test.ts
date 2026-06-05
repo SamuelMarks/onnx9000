@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CNTKGenerator } from '../src/mmdnn/cntk/generator.js';
+import { CNTKGenerator } from '../../../src/mmdnn/cntk/generator.js';
 
 describe('CNTKGenerator', () => {
   it('should generate', () => {

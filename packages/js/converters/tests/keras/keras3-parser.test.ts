@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { parseKeras3Zip } from '../src/keras/keras3-parser.js';
+import { parseKeras3Zip } from '../../src/keras/keras3-parser.js';
 
 vi.mock('fflate', () => ({
   unzipSync: vi.fn().mockReturnValue({

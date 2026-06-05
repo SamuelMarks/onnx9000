@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LibSVMMapper } from '../src/mmdnn/libsvm/mapper.js';
+import { LibSVMMapper } from '../../../src/mmdnn/libsvm/mapper.js';
 
 describe('LibSVMMapper', () => {
   it('should map libsvm', () => {

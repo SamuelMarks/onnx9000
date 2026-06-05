@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parsePrototxt } from '../src/mmdnn/caffe/parser.js';
+import { parsePrototxt } from '../../../src/mmdnn/caffe/parser.js';
 
 describe('caffe/parser', () => {
   it('should parse prototxt', () => {

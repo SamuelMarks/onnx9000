@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { NcnnMapper } from '../src/mmdnn/ncnn/mapper.js';
+import { NcnnMapper } from '../../../src/mmdnn/ncnn/mapper.js';
 
 describe('NcnnMapper', () => {
   it('should map ncnn', () => {

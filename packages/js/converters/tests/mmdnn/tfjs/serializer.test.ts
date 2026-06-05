@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { serializeTFJSWeights } from '../src/mmdnn/tfjs/serializer.js';
+import { serializeTFJSWeights } from '../../../src/mmdnn/tfjs/serializer.js';
 
 describe('TFJSSerializer', () => {
   it('should serialize weights', () => {
