@@ -29,12 +29,13 @@ def test_keras_h5_parser_module_level_import_fail():
     if "onnx9000.converters.tf.keras_h5_parser" in sys.modules:
         del sys.modules["onnx9000.converters.tf.keras_h5_parser"]
 
-    with patch.dict(sys.modules, {"h5py": None}):
-        # Block h5py and re-import
-        import onnx9000.converters.tf.keras_h5_parser as parser_mod
+    try:
+        with patch.dict(sys.modules, {"h5py": None}):
+            # Block h5py and re-import
+            import onnx9000.converters.tf.keras_h5_parser as parser_mod
 
-        assert parser_mod.h5py is None
-
-    # Clean up for other tests
-    if "onnx9000.converters.tf.keras_h5_parser" in sys.modules:
-        del sys.modules["onnx9000.converters.tf.keras_h5_parser"]  # pragma: no cover
+            assert parser_mod.h5py is None
+    finally:
+        # Clean up for other tests
+        if "onnx9000.converters.tf.keras_h5_parser" in sys.modules:
+            del sys.modules["onnx9000.converters.tf.keras_h5_parser"]  # pragma: no cover

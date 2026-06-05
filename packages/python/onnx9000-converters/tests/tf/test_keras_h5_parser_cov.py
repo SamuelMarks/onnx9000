@@ -87,17 +87,6 @@ def test_keras_h5_parser_get_weights():
     mock_file["model_weights"] = {"layer_1": mock_lg}
     mock_file["model_weights"].__iter__.return_value = ["layer_1"]
 
-    with (
-        patch("h5py.File", return_value=mock_file),
-        patch("onnx9000.converters.tf.keras_h5_parser.h5py.Dataset", new=MagicMock),
-    ):
-        # We need to ensure isinstance(mock_ds, h5py.Dataset) is true
-        # or just mock collect_weights inside get_weights
-        with patch("onnx9000.converters.tf.keras_h5_parser.h5py.Dataset", (MagicMock,)):
-            # Manually trigger collect_weights logic via a different approach if needed
-            # For now let's just mock the visititems more directly
-            assert True
-
     # Simplified weight test using real h5py-like structure if possible or just mocking the call
     parser = MagicMock()
     parser.f = mock_file

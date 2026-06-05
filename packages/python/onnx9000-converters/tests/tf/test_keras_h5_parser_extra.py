@@ -75,9 +75,8 @@ def test_keras_h5_parser_get_weights_dataset():
 
     # Patch both h5py.File (for __init__) and h5py.Dataset (for isinstance check)
     with patch("h5py.File", return_value=mock_file):
-        with patch("onnx9000.converters.tf.keras_h5_parser.h5py.Dataset", MockDataset):
-            parser = KerasH5Parser(filename="dummy.h5")
-            weights = parser.get_weights()
-            assert "layer_1" in weights
-            assert len(weights["layer_1"]) == 1
-            assert weights["layer_1"][0][0] == 1.0
+        parser = KerasH5Parser(filename="dummy.h5")
+        weights = parser.get_weights()
+        assert "layer_1" in weights
+        assert len(weights["layer_1"]) == 1
+        assert weights["layer_1"][0][0] == 1.0
