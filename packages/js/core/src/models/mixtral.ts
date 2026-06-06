@@ -2,32 +2,21 @@
  * @fileoverview mixtral.ts
  * Provides mixtral functionality for the core package.
  */
-import { Tensor } from "../ir/tensor.js";
-import { Gemm, GroupedQueryAttention, RMSNorm, RoPE } from "../primitives.js";
-import { SwiGLU } from "./llama.js";
+import { Tensor } from '../ir/tensor.js';
+import { Gemm, GroupedQueryAttention, RMSNorm, RoPE } from '../primitives.js';
+import { SwiGLU } from './llama.js';
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = "float32",
+  dtype: ReturnType<typeof JSON.parse> = 'float32',
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(
-  opType: string,
-  inputs: Tensor[],
-  attr?: ReturnType<typeof JSON.parse>,
-): Tensor {
-  const dtype = inputs[0]?.dtype ?? "float32";
-  return new Tensor(
-    `${opType}_out`,
-    [],
-    dtype,
-    false,
-    false,
-    new Float32Array(),
-  );
+function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
+  const dtype = inputs[0]?.dtype ?? 'float32';
+  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
 export class SparseMoE {
@@ -39,13 +28,7 @@ export class SparseMoE {
   public gate: Gemm;
   public experts: SwiGLU[];
 
-  constructor(
-    numExperts: number,
-    topK: number,
-    dim: number,
-    ffnDim: number,
-    prefix: string = "",
-  ) {
+  constructor(numExperts: number, topK: number, dim: number, ffnDim: number, prefix: string = '') {
     this.prefix = prefix;
     this.numExperts = numExperts;
     this.topK = topK;
@@ -64,13 +47,13 @@ export class SparseMoE {
       x,
       getParam(`${this.prefix}.gate.weight`, [this.numExperts, this.dim]),
     );
-    const kTensor = recordOp("Constant", [], { value: [this.topK], dtype: 7 });
-    const scores = recordOp("Softmax", [logits], { axis: -1 });
-    const topkOut = recordOp("TopK", [scores, kTensor], { axis: -1 });
+    const kTensor = recordOp('Constant', [], { value: [this.topK], dtype: 7 });
+    const scores = recordOp('Softmax', [logits], { axis: -1 });
+    const topkOut = recordOp('TopK', [scores, kTensor], { axis: -1 });
 
-    const gathered = recordOp("GatherND", [x, topkOut]);
-    const expertOut = this.experts[0]!.call(gathered);
-    const out = recordOp("ScatterND", [topkOut, expertOut, x]);
+    const gathered = recordOp('GatherND', [x, topkOut]);
+    const expertOut = this.experts[0]?.call(gathered);
+    const out = recordOp('ScatterND', [topkOut, expertOut, x]);
 
     return out;
   }
@@ -91,7 +74,7 @@ export class MixtralBlock {
     ffnDim: number,
     numExperts: number,
     topK: number,
-    prefix: string = "",
+    prefix: string = '',
   ) {
     this.prefix = prefix;
     this.dim = dim;
@@ -101,22 +84,16 @@ export class MixtralBlock {
     this.moe = new SparseMoE(numExperts, topK, dim, ffnDim, `${prefix}.moe`);
   }
 
-  call(x: Tensor, pos: Tensor, mask?: Tensor): Tensor {
+  call(x: Tensor, _pos: Tensor, mask?: Tensor): Tensor {
     let identity = x;
-    let xNorm = this.norm1.call(
-      x,
-      getParam(`${this.prefix}.norm1.weight`, [this.dim]),
-    );
+    let xNorm = this.norm1.call(x, getParam(`${this.prefix}.norm1.weight`, [this.dim]));
     const xAttn = this.attn.call(xNorm, xNorm, xNorm, mask);
-    x = recordOp("Add", [identity, xAttn]);
+    x = recordOp('Add', [identity, xAttn]);
 
     identity = x;
-    xNorm = this.norm2.call(
-      x,
-      getParam(`${this.prefix}.norm2.weight`, [this.dim]),
-    );
+    xNorm = this.norm2.call(x, getParam(`${this.prefix}.norm2.weight`, [this.dim]));
     const xMoe = this.moe.call(xNorm);
-    x = recordOp("Add", [identity, xMoe]);
+    x = recordOp('Add', [identity, xMoe]);
 
     return x;
   }
@@ -151,15 +128,7 @@ export class Mixtral {
     this.blocks = [];
     for (let i = 0; i < depth; i++) {
       this.blocks.push(
-        new MixtralBlock(
-          dim,
-          numHeads,
-          numKvHeads,
-          ffnDim,
-          numExperts,
-          topK,
-          `blocks.${i}`,
-        ),
+        new MixtralBlock(dim, numHeads, numKvHeads, ffnDim, numExperts, topK, `blocks.${i}`),
       );
     }
     this.norm = new RMSNorm([dim]);
@@ -169,8 +138,8 @@ export class Mixtral {
 
   call(inputIds: Tensor, pos: Tensor, mask?: Tensor): Tensor {
     let x = recordOp(
-      "Gather",
-      [getParam("tok_embeddings.weight", [this.vocabSize, this.dim]), inputIds],
+      'Gather',
+      [getParam('tok_embeddings.weight', [this.vocabSize, this.dim]), inputIds],
       { axis: 0 },
     );
     x = this.rope.call(x, pos);
@@ -179,11 +148,8 @@ export class Mixtral {
       x = block.call(x, pos, mask);
     }
 
-    x = this.norm.call(x, getParam("norm.weight", [this.dim]));
-    x = this.lmHead.call(
-      x,
-      getParam("output.weight", [this.vocabSize, this.dim]),
-    );
+    x = this.norm.call(x, getParam('norm.weight', [this.dim]));
+    x = this.lmHead.call(x, getParam('output.weight', [this.vocabSize, this.dim]));
     return x;
   }
 }

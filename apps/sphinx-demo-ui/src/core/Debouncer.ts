@@ -14,7 +14,7 @@ export class Debouncer {
    */
   public debounce<T extends (...args: object[]) => void>(
     func: T,
-    delay: number
+    delay: number,
   ): (...args: Parameters<T>) => void {
     return (...args: Parameters<T>) => {
       if (this.timeoutId) {

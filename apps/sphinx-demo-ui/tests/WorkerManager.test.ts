@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { WorkerManager } from '../src/core/WorkerManager.js';
 
 describe('WorkerManager', () => {

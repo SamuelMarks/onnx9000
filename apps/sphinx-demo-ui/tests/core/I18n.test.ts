@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/I18n';
 
 describe('I18n.ts', () => {

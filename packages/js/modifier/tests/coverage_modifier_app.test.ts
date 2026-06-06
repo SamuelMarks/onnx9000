@@ -1,15 +1,15 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { ModifierApp } from "../src/app.js";
-import { Graph, Node } from "@onnx9000/core";
 
-describe("Coverage ModifierApp", () => {
+import { Graph, Node } from '@onnx9000/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ModifierApp } from '../src/app.js';
+
+describe('Coverage ModifierApp', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     const handler = {
       get(target: Object, prop: string) {
-        if (prop === "measureText")
-          return vi.fn().mockReturnValue({ width: 10 });
+        if (prop === 'measureText') return vi.fn().mockReturnValue({ width: 10 });
         if (prop in target) return target[prop];
         return vi.fn();
       },
@@ -22,15 +22,15 @@ describe("Coverage ModifierApp", () => {
     vi.useRealTimers();
   });
 
-  it("covers app update flow", () => {
+  it('covers app update flow', () => {
     document.body.innerHTML = '<div id="app"></div>';
-    const g = new Graph("test");
-    g.opsetImports[""] = 10; // trigger deprecated warning
-    g.addNode(new Node("Relu", ["x"], ["y"]));
-    g.addNode(new Node("Add", ["y", "z"], ["out"]));
+    const g = new Graph('test');
+    g.opsetImports[''] = 10; // trigger deprecated warning
+    g.addNode(new Node('Relu', ['x'], ['y']));
+    g.addNode(new Node('Add', ['y', 'z'], ['out']));
 
     const app = new ModifierApp({
-      container: document.querySelector("#app") as HTMLElement,
+      container: document.querySelector('#app') as HTMLElement,
       initialGraph: g,
     });
 

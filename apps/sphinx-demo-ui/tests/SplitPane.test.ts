@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { SplitPane } from '../src/components/SplitPane.js';
 
 describe('SplitPane', () => {

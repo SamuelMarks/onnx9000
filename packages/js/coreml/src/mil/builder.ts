@@ -2,14 +2,8 @@
  * @fileoverview builder.ts
  * Provides builder functionality for the coreml package.
  */
-import { Program, Function, Block, Operation, Var } from "./ast.js";
-import {
-  MILType,
-  TensorType,
-  ScalarType,
-  TupleType,
-  MILDataType,
-} from "./types.js";
+import { Block, Function, Operation, Program, Var } from './ast.js';
+import { type MILDataType, type MILType, ScalarType, TensorType, TupleType } from './types.js';
 
 export class Builder {
   private program = new Program();
@@ -29,7 +23,7 @@ export class Builder {
   }
 
   createBlock(name: string): Block {
-    if (!this.currentFunction) throw new Error("No active function");
+    if (!this.currentFunction) throw new Error('No active function');
     const block = new Block(name);
     this.currentFunction.addBlock(block);
     this.currentBlock = block;
@@ -66,7 +60,7 @@ export class Builder {
     outputs: Var[],
     attributes: Record<string, ReturnType<typeof JSON.parse>> = {},
   ): Operation {
-    if (!this.currentBlock) throw new Error("No active block");
+    if (!this.currentBlock) throw new Error('No active block');
     const op = new Operation(opType, inputs, outputs, attributes);
     this.currentBlock.addOperation(op);
     return op;
@@ -76,25 +70,25 @@ export class Builder {
   add(x: Var, y: Var, name: string | null = null): Var {
     // Basic shape inference: assume same shape
     const outVar = this.createVar(name, x.type);
-    this.addOp("add", { x, y }, [outVar]);
+    this.addOp('add', { x, y }, [outVar]);
     return outVar;
   }
 
   sub(x: Var, y: Var, name: string | null = null): Var {
     const outVar = this.createVar(name, x.type);
-    this.addOp("sub", { x, y }, [outVar]);
+    this.addOp('sub', { x, y }, [outVar]);
     return outVar;
   }
 
   mul(x: Var, y: Var, name: string | null = null): Var {
     const outVar = this.createVar(name, x.type);
-    this.addOp("mul", { x, y }, [outVar]);
+    this.addOp('mul', { x, y }, [outVar]);
     return outVar;
   }
 
   relu(x: Var, name: string | null = null): Var {
     const outVar = this.createVar(name, x.type);
-    this.addOp("relu", { x }, [outVar]);
+    this.addOp('relu', { x }, [outVar]);
     return outVar;
   }
 }

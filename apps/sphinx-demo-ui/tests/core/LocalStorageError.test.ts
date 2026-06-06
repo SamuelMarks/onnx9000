@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Editor } from '../../src/components/Editor';
 
 describe('LocalStorage Error Handling', () => {
@@ -18,7 +18,7 @@ describe('LocalStorage Error Handling', () => {
     expect(() => registeredCallback()).not.toThrow();
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'Failed to save editor state to localStorage',
-      expect.any(Error)
+      expect.any(Error),
     );
 
     editor.unmount();

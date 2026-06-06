@@ -1,5 +1,5 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
 
 export default defineConfig({
   build: {
@@ -7,13 +7,13 @@ export default defineConfig({
       entry: 'src/main.ts',
       name: 'SphinxDemoUI',
       fileName: 'sphinx-demo-ui',
-      formats: ['es']
+      formats: ['es'],
     },
     outDir: 'dist',
-    rollupOptions: {}
+    rollupOptions: {},
   },
   optimizeDeps: {
-    exclude: ['pyodide']
+    exclude: ['pyodide'],
   },
   test: {
     environment: 'jsdom',
@@ -28,7 +28,7 @@ export default defineConfig({
       functions: 100,
       branches: 100,
       statements: 100,
-      exclude: ['e2e/**/*', 'src/main.ts', 'src/types/**/*', 'docs/**/*']
-    }
-  }
+      exclude: ['e2e/**/*', 'src/main.ts', 'src/types/**/*', 'docs/**/*'],
+    },
+  },
 });

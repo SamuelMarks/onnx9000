@@ -2,13 +2,13 @@
  * @fileoverview codegen.ts
  * Provides codegen functionality for the c-compiler package.
  */
-import { Graph, Node, Tensor } from "@onnx9000/core";
+import type { Graph, Node } from '@onnx9000/core';
 
 export class BaseCodegenVisitor {
   public varCount: number = 0;
   public env: Record<string, ReturnType<typeof JSON.parse>> = {};
 
-  getVarName(prefix: string = "v"): string {
+  getVarName(prefix: string = 'v'): string {
     this.varCount++;
     return `${prefix}${this.varCount}`;
   }
@@ -18,11 +18,11 @@ export class BaseCodegenVisitor {
     for (const node of graph.nodes) {
       code.push(this.visitNode(node));
     }
-    return code.join("\n");
+    return code.join('\n');
   }
 
-  visitNode(node: Node): string {
-    throw new Error("Not implemented");
+  visitNode(_node: Node): string {
+    throw new Error('Not implemented');
   }
 }
 
@@ -31,7 +31,7 @@ export class CFamilyCodegen extends BaseCodegenVisitor {
 
   constructor() {
     super();
-    this.includes = new Set(["<stddef.h>", "<stdint.h>"]);
+    this.includes = new Set(['<stddef.h>', '<stdint.h>']);
   }
 
   override visitNode(node: Node): string {
@@ -44,13 +44,13 @@ export class CFamilyCodegen extends BaseCodegenVisitor {
     for (const inc of Array.from(this.includes).sort()) {
       code.push(`#include ${inc}`);
     }
-    code.push("");
+    code.push('');
     code.push(`void forward_${graph.name}() {`);
     for (const node of graph.nodes) {
       code.push(this.visitNode(node));
     }
-    code.push("}");
-    return code.join("\n");
+    code.push('}');
+    return code.join('\n');
   }
 }
 
@@ -72,13 +72,13 @@ export class PythonFamilyCodegen extends BaseCodegenVisitor {
     for (const imp of Array.from(this.imports).sort()) {
       code.push(`import ${imp}`);
     }
-    code.push("");
+    code.push('');
     code.push(`class Model:`);
     code.push(`    def forward_${graph.name}(self):`);
     for (const node of graph.nodes) {
       code.push(this.visitNode(node));
     }
-    code.push("        pass");
-    return code.join("\n");
+    code.push('        pass');
+    return code.join('\n');
   }
 }

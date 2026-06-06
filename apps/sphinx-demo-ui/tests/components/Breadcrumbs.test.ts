@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/components/Breadcrumbs';
 
 describe('Breadcrumbs.ts', () => {
@@ -7,6 +7,6 @@ describe('Breadcrumbs.ts', () => {
     try {
       const obj = new (Module as any).Breadcrumbs();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

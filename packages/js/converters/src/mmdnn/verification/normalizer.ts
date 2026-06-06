@@ -1,6 +1,6 @@
 // @ts-nocheck
 // @ts-nocheck
-import { Graph, Node, ValueInfo } from "@onnx9000/core";
+import type { Graph, Node, ValueInfo } from '@onnx9000/core';
 
 export class ONNXNormalizer {
   /**
@@ -22,13 +22,13 @@ export class ONNXNormalizer {
     // Basic mapping of some framework-specific proprietary opcodes to ONNX equivalents.
     // Replace with full implementations for specific proprietary domains.
     for (const node of graph.nodes) {
-      if (node.opType === "CaffeScale") {
+      if (node.opType === 'CaffeScale') {
         // Stub: A real implementation would decompose into `Mul` and `Add`
-        node.opType = "Mul";
-        node.domain = "";
-      } else if (node.opType === "MxNetActivation") {
-        node.opType = "Relu";
-        node.domain = "";
+        node.opType = 'Mul';
+        node.domain = '';
+      } else if (node.opType === 'MxNetActivation') {
+        node.opType = 'Relu';
+        node.domain = '';
       }
     }
   }
@@ -40,7 +40,7 @@ export class ONNXNormalizer {
     const sanitize = (name: string): string => {
       if (!name) return name;
       // Replace anything not an alphanumeric character or underscore with an underscore
-      let sanitized = name.replace(/[^a-zA-Z0-9_]/g, "_");
+      let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
       // If the first character is a number, prepend an underscore to make it a valid C identifier
       if (/^[0-9]/.test(sanitized)) {
         sanitized = `_${sanitized}`;
@@ -82,8 +82,8 @@ export class ONNXNormalizer {
     for (const tensorName of Object.keys(graph.tensors)) {
       const tensor = graph.tensors[tensorName];
       if (!tensor) continue;
-      if (tensor.dtype === "float64") {
-        tensor.dtype = "float32";
+      if (tensor.dtype === 'float64') {
+        tensor.dtype = 'float32';
         if (tensor.data instanceof Float64Array) {
           tensor.data = new Float32Array(tensor.data);
         }
@@ -91,8 +91,8 @@ export class ONNXNormalizer {
     }
 
     const updateDType = (vi: ValueInfo) => {
-      if (vi.dtype === "float64") {
-        vi.dtype = "float32";
+      if (vi.dtype === 'float64') {
+        vi.dtype = 'float32';
       }
     };
 
@@ -121,9 +121,7 @@ export class ONNXNormalizer {
       for (const node of graph.nodes) {
         if (!usefulNodes.has(node)) {
           // If the node produces an output that is marked as useful
-          const producesUseful = node.outputs.some((out) =>
-            usefulTensors.has(out),
-          );
+          const producesUseful = node.outputs.some((out) => usefulTensors.has(out));
           if (producesUseful) {
             usefulNodes.add(node);
             changed = true;
@@ -168,7 +166,7 @@ export class ONNXNormalizer {
    */
   public verifyParity(): boolean {
     console.warn(
-      "Parity verification via WebGPU requires full runtime and is skipped by the normalizer.",
+      'Parity verification via WebGPU requires full runtime and is skipped by the normalizer.',
     );
     return true;
   }

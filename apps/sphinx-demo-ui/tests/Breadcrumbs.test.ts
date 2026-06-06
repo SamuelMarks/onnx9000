@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Breadcrumbs } from '../src/components/Breadcrumbs.js';
 import { globalEventBus } from '../src/core/EventBus.js';
-import { PipelineNode } from '../src/core/PipelineNode.js';
+import type { PipelineNode } from '../src/core/PipelineNode.js';
 
 describe('Breadcrumbs', () => {
   it('should render and react to events', () => {

@@ -1,10 +1,3 @@
-/**
- * @fileoverview parser.ts
- * Provides parser functionality for the converters package.
- */
-// @ts-nocheck
-import { Tensor, Shape, DType } from "@onnx9000/core";
-
 export interface NcnnNode {
   type: string;
   name: string;
@@ -24,7 +17,7 @@ export function parseNcnnParam(text: string): NcnnParam {
   const lines = text
     .split(/\r?\n/)
     .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("#"));
+    .filter((l) => l && !l.startsWith('#'));
 
   let magic = 0;
   let layerCount = 0;
@@ -33,7 +26,7 @@ export function parseNcnnParam(text: string): NcnnParam {
 
   let lineIdx = 0;
   // Magic number usually starts with 7767517
-  if (lines[lineIdx] === "7767517") {
+  if (lines[lineIdx] === '7767517') {
     magic = 7767517;
     lineIdx++;
   }
@@ -42,8 +35,8 @@ export function parseNcnnParam(text: string): NcnnParam {
     const currentLine = lines[lineIdx];
     if (!currentLine) return { magic, layerCount, blobCount, nodes };
     const counts = currentLine.split(/\s+/);
-    layerCount = parseInt(counts[0] || "0", 10);
-    blobCount = parseInt(counts[1] || "0", 10);
+    layerCount = parseInt(counts[0] || '0', 10);
+    blobCount = parseInt(counts[1] || '0', 10);
     lineIdx++;
   }
 
@@ -53,34 +46,34 @@ export function parseNcnnParam(text: string): NcnnParam {
     const parts = line.split(/\s+/);
     if (parts.length < 4) continue;
 
-    const type = parts[0] || "";
-    const name = parts[1] || "";
-    const bottomCount = parseInt(parts[2] || "0", 10);
-    const topCount = parseInt(parts[3] || "0", 10);
+    const type = parts[0] || '';
+    const name = parts[1] || '';
+    const bottomCount = parseInt(parts[2] || '0', 10);
+    const topCount = parseInt(parts[3] || '0', 10);
 
     let p = 4;
     const bottoms: string[] = [];
     for (let i = 0; i < bottomCount; i++) {
-      bottoms.push(parts[p++] || "");
+      bottoms.push(parts[p++] || '');
     }
 
     const tops: string[] = [];
     for (let i = 0; i < topCount; i++) {
-      tops.push(parts[p++] || "");
+      tops.push(parts[p++] || '');
     }
 
     const attrs: Record<string, string> = {};
     for (; p < parts.length; p++) {
       const pVal = parts[p];
       if (!pVal) continue;
-      const kv = pVal.split("=");
+      const kv = pVal.split('=');
       if (kv.length === 2) {
-        if (kv[0]) attrs[kv[0]] = kv[1] || "";
-      } else if (kv.length === 1 && pVal.startsWith("-")) {
+        if (kv[0]) attrs[kv[0]] = kv[1] || '';
+      } else if (kv.length === 1 && pVal.startsWith('-')) {
         // arrays usually like -23309=val
-        const arrayKey = pVal.split("=");
+        const arrayKey = pVal.split('=');
         if (arrayKey.length === 2) {
-          if (arrayKey[0]) attrs[arrayKey[0]] = arrayKey[1] || "";
+          if (arrayKey[0]) attrs[arrayKey[0]] = arrayKey[1] || '';
         }
       }
     }
@@ -119,11 +112,7 @@ export class NcnnBinParser {
   }
 
   readBytes(count: number): Uint8Array {
-    const bytes = new Uint8Array(
-      this.view.buffer,
-      this.view.byteOffset + this.offset,
-      count,
-    );
+    const bytes = new Uint8Array(this.view.buffer, this.view.byteOffset + this.offset, count);
     this.offset += count;
     // align to 4 bytes for ncnn
     const rem = this.offset % 4;

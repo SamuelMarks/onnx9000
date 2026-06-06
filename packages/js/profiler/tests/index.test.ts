@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { Profiler } from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import { Profiler } from '../src/index.js';
 
-describe("Profiler", () => {
-  it("should run", async () => {
-    const p = new Profiler("test");
+describe('Profiler', () => {
+  it('should run', async () => {
+    const p = new Profiler('test');
     await p.run();
     expect(p.peakMemory).toBe(42.5);
   });

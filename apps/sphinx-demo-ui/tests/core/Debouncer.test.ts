@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/Debouncer';
 
 describe('Debouncer.ts', () => {
@@ -7,6 +7,6 @@ describe('Debouncer.ts', () => {
     try {
       const obj = new (Module as any).Debouncer();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

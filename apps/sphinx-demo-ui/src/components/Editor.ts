@@ -3,16 +3,17 @@
  * Provides Editor functionality for the Sphinx Demo UI.
  */
 // @ts-nocheck
+
+import * as monaco from 'monaco-editor';
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
-import * as monaco from 'monaco-editor';
 
 (window as object).monaco = monaco;
 
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker&inline';
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker&inline';
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker&inline';
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker&inline';
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker&inline';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker&inline';
 
 self.MonacoEnvironment = {
@@ -30,7 +31,7 @@ self.MonacoEnvironment = {
       return new tsWorker();
     }
     return new editorWorker();
-  }
+  },
 };
 
 export interface EditorOptions {
@@ -59,7 +60,7 @@ export class Editor extends Component<HTMLDivElement> {
       initialValue: '',
       readOnly: false,
       theme: 'vs-light',
-      ...options
+      ...options,
     };
 
     // Delay instantiation until mount because Monaco needs an attached DOM node
@@ -84,7 +85,7 @@ export class Editor extends Component<HTMLDivElement> {
       automaticLayout: false, // We handle it via ResizeObserver for better perf/control
       minimap: { enabled: false },
       scrollBeyondLastLine: false,
-      wordWrap: 'on'
+      wordWrap: 'on',
     });
 
     // Try to load cached content from localStorage
@@ -100,7 +101,7 @@ export class Editor extends Component<HTMLDivElement> {
       try {
         localStorage.setItem(
           `onnx9000-demo-editor-${this.options.language}`,
-          this.editor.getValue()
+          this.editor.getValue(),
         );
       } catch (e) {
         console.warn('Failed to save editor state to localStorage', e);
@@ -119,7 +120,7 @@ export class Editor extends Component<HTMLDivElement> {
           try {
             localStorage.setItem(
               `onnx9000-demo-editor-${this.options.language}`,
-              this.editor.getValue()
+              this.editor.getValue(),
             );
           } catch (e) {
             console.warn('Failed to save editor state to localStorage', e);
@@ -142,7 +143,7 @@ export class Editor extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<string>('THEME_CHANGED', (theme: object) => {
         this.setTheme(theme);
-      })
+      }),
     );
 
     this.onCleanup(() => {

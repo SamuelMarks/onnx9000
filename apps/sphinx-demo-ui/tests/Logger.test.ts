@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
-import { Logger, LogLevel } from '../src/core/Logger.js';
+import { describe, expect, it } from 'vitest';
 import { globalEventBus } from '../src/core/EventBus.js';
+import { Logger } from '../src/core/Logger.js';
 
 describe('Logger', () => {
   it('should intercept and emit logs', () => {

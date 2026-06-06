@@ -1,5 +1,5 @@
 export function handleCudaCommand(args: string[]) {
-  if (args.length === 0 || args.includes("-h") || args.includes("--help")) {
+  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
     console.log(`Usage: onnx9000 cuda <model.onnx> 
  
 Execute model via CUDA backend. 
@@ -8,7 +8,7 @@ Execute model via CUDA backend.
     return;
   }
 
-  const model = args[0] || "";
+  const model = args[0] || '';
   console.log(`Initializing CUDA execution for ${model}`);
-  console.log("CUDA engine loaded.");
+  console.log('CUDA engine loaded.');
 }

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { WasmOverlay } from '../src/components/WasmOverlay.js';
 import { globalEventBus } from '../src/core/EventBus.js';
 
@@ -8,8 +8,8 @@ global.fetch = vi.fn().mockResolvedValue({ headers: new Headers() });
 vi.mock('../src/core/WasmManager.js', () => ({
   WasmState: { ERROR: 'error', LOADED: 'loaded' },
   WasmManager: {
-    getInstance: vi.fn().mockReturnValue({ load: vi.fn() })
-  }
+    getInstance: vi.fn().mockReturnValue({ load: vi.fn() }),
+  },
 }));
 
 describe('WasmOverlay', () => {

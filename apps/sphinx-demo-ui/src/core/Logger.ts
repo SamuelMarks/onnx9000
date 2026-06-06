@@ -8,7 +8,7 @@ import { globalEventBus } from './EventBus';
 export enum LogLevel {
   INFO = 'info',
   WARN = 'warn',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 export interface LogEntry {
@@ -96,7 +96,7 @@ export class Logger {
     const entry: LogEntry = {
       level,
       message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     globalEventBus.emit('CONSOLE_LOG', entry);
@@ -109,7 +109,7 @@ export class Logger {
     const entry: LogEntry = {
       level,
       message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     globalEventBus.emit('CONSOLE_LOG', entry);
   }

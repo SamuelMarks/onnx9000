@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { FileTree } from '../src/components/FileTree.js';
 
 describe('FileTree', () => {
@@ -10,16 +10,16 @@ describe('FileTree', () => {
         name: 'root',
         type: 'directory',
         path: '/',
-        children: [{ name: 'file.txt', type: 'file', path: '/file.txt' }]
+        children: [{ name: 'file.txt', type: 'file', path: '/file.txt' }],
       },
       onSelect: (p) => {
         selected = p;
-      }
+      },
     });
     tree.mount(document.body);
 
     const fileNode = tree.element.querySelector(
-      '[data-path="/file.txt"] .demo-file-tree-label'
+      '[data-path="/file.txt"] .demo-file-tree-label',
     ) as HTMLElement;
     fileNode?.click();
 

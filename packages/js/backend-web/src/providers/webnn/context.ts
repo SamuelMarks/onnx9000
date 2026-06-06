@@ -18,23 +18,21 @@ export class WebNNContextManager {
 
   async initialize(
     options: MLContextOptions = {
-      deviceType: "npu",
-      powerPreference: "default",
+      deviceType: 'npu',
+      powerPreference: 'default',
     },
   ): Promise<void> {
-    if (typeof navigator === "undefined" || !navigator.ml) {
+    if (typeof navigator === 'undefined' || !navigator.ml) {
       try {
         // Attempt to load the polyfill dynamically to avoid cyclic dependency
-        const polyfillName = "@onnx9000/webnn-polyfill";
+        const polyfillName = '@onnx9000/webnn-polyfill';
         await import(/* @vite-ignore */ polyfillName);
       } catch (e) {
-        console.warn("Failed to load WebNN polyfill:", e);
+        console.warn('Failed to load WebNN polyfill:', e);
       }
     }
-    if (typeof navigator === "undefined" || !navigator.ml) {
-      throw new Error(
-        "WebNN is not supported in this environment (navigator.ml is missing).",
-      );
+    if (typeof navigator === 'undefined' || !navigator.ml) {
+      throw new Error('WebNN is not supported in this environment (navigator.ml is missing).');
     }
 
     if (this.mlContext && this.builder) {
@@ -51,45 +49,39 @@ export class WebNNContextManager {
       try {
         this.mlContext = await navigator.ml.createContext();
       } catch (fallbackError) {
-        throw new Error(
-          `Failed to initialize WebNN context completely: ${fallbackError}`,
-        );
+        throw new Error(`Failed to initialize WebNN context completely: ${fallbackError}`);
       }
     }
 
-    if (
-      typeof window !== "undefined" &&
-      (window as ReturnType<typeof JSON.parse>).MLGraphBuilder
-    ) {
+    if (typeof window !== 'undefined' && (window as ReturnType<typeof JSON.parse>).MLGraphBuilder) {
       this.builder = new MLGraphBuilder(this.mlContext);
     } else {
-      const GlobalMLGraphBuilder = (globalThis as ReturnType<typeof JSON.parse>)
-        .MLGraphBuilder;
+      const GlobalMLGraphBuilder = (globalThis as ReturnType<typeof JSON.parse>).MLGraphBuilder;
       if (GlobalMLGraphBuilder) {
         this.builder = new GlobalMLGraphBuilder(this.mlContext);
       } else {
-        throw new Error("MLGraphBuilder is not available in this environment.");
+        throw new Error('MLGraphBuilder is not available in this environment.');
       }
     }
   }
 
   getContext(): MLContext {
     if (!this.mlContext) {
-      throw new Error("WebNN Context is not initialized.");
+      throw new Error('WebNN Context is not initialized.');
     }
     return this.mlContext;
   }
 
   getBuilder(): MLGraphBuilder {
     if (!this.builder) {
-      throw new Error("WebNN MLGraphBuilder is not initialized.");
+      throw new Error('WebNN MLGraphBuilder is not initialized.');
     }
     return this.builder;
   }
 
   getCapabilities(): MLOpSupportLimits | null {
     if (!this.mlContext) return null;
-    if (typeof this.mlContext.opSupportLimits === "function") {
+    if (typeof this.mlContext.opSupportLimits === 'function') {
       return this.mlContext.opSupportLimits();
     }
     return null;

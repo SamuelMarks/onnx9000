@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { WasmManager, WasmState } from '../src/core/WasmManager.js';
 
 describe('WasmManager', () => {
@@ -21,15 +21,15 @@ describe('WasmManager', () => {
                 return { done: false, value: new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]) };
               }
               return { done: true };
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     global.WebAssembly = {
       compile: vi.fn().mockResolvedValue({}),
-      instantiate: vi.fn().mockResolvedValue({})
+      instantiate: vi.fn().mockResolvedValue({}),
     } as any;
 
     await mgr.load();

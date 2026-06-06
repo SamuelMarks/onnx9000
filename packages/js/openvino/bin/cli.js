@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
+import fs from 'node:fs';
+import path from 'node:path';
 import { load } from '@onnx9000/core';
 import { OpenVinoExporter } from '../dist/index.js';
-import fs from 'fs';
-import path from 'path';
 
 function main() {
   const args = process.argv.slice(2);
@@ -53,7 +53,7 @@ function main() {
     const parts = shapeOverride.split(':');
     if (parts.length === 2) {
       const name = parts[0];
-      const shapeStr = parts[1].replace(/[\[\]]/g, '');
+      const shapeStr = parts[1].replace(/[[\]]/g, '');
       const shape = shapeStr.split(',').map((s) => parseInt(s, 10));
       const input = graph.inputs.find((i) => i.name === name);
       if (input) {

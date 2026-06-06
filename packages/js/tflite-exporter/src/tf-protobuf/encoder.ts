@@ -48,9 +48,9 @@ export class TFProtobufEncoder {
   // 254. Write saved_model/ directory structure entirely in a JSZip blob for easy browser download.
   // 260. Output the raw saved_model bundle instantly to the local filesystem via CLI.
 
-  public encode(model: SavedModel): Uint8Array {
+  public encode(_model: SavedModel): Uint8Array {
     // Mock encoding logic for GraphDef protobuf
-    console.log("[onnx2tf] Encoding SavedModel Protobuf...");
+    console.log('[onnx2tf] Encoding SavedModel Protobuf...');
     // Return a dummy buffer representing the .pb
     return new Uint8Array([0x0a, 0x14, 0x0a, 0x04, 0x54, 0x45, 0x53, 0x54]);
   }

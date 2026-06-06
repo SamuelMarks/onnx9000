@@ -2,10 +2,10 @@
  * @fileoverview loader.ts
  * Provides loader functionality for the coreml package.
  */
-import { Program, Function, Block } from "./mil/ast.js";
-import { Model } from "./schema.js";
-import { parseModel } from "./schema.js";
-import { BufferReader } from "@onnx9000/core";
+
+import { BufferReader } from '@onnx9000/core';
+import { Function, Program } from './mil/ast.js';
+import { type Model, parseModel } from './schema.js';
 
 export class MLPackageLoader {
   // 216. Implement .mlmodel and .mlpackage loader/unzipper in JS
@@ -17,18 +17,16 @@ export class MLPackageLoader {
     await zip.loadAsync(zipData);
 
     // Read model
-    const modelFile = zip.file("Data/com.apple.CoreML/model.mlmodel");
-    if (!modelFile) throw new Error("model.mlmodel not found in package");
-    const modelBytes = await modelFile.async("uint8array");
+    const modelFile = zip.file('Data/com.apple.CoreML/model.mlmodel');
+    if (!modelFile) throw new Error('model.mlmodel not found in package');
+    const modelBytes = await modelFile.async('uint8array');
 
     const reader = new BufferReader(modelBytes);
     const model = await parseModel(reader);
 
     // Read weights
-    const weightFile = zip.file("Data/com.apple.CoreML/weights/weight.bin");
-    const weights = weightFile
-      ? await weightFile.async("uint8array")
-      : new Uint8Array(0);
+    const weightFile = zip.file('Data/com.apple.CoreML/weights/weight.bin');
+    const weights = weightFile ? await weightFile.async('uint8array') : new Uint8Array(0);
 
     return { model, weights };
   }
@@ -40,7 +38,7 @@ export class MLPackageLoader {
     // Mock parsing MILSpec to Program AST
     if (model.mlProgram) {
       // iterate over model.mlProgram.functions and reconstruct the `Function` / `Block` objects
-      const fn = new Function("main", [], []);
+      const fn = new Function('main', [], []);
       prog.addFunction(fn);
     }
 

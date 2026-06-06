@@ -1,15 +1,15 @@
-import { describe, it, expect } from "vitest";
-import { Region, Operation, Block } from "../src/ir/core.js";
-import { Optimizer } from "../src/passes/optimization.js";
+import { describe, expect, it } from 'vitest';
+import { Block, Operation, Region } from '../src/ir/core.js';
+import { Optimizer } from '../src/passes/optimization.js';
 
-describe("MLIR Optimization Passes", () => {
-  it("should run all optimizations", () => {
+describe('MLIR Optimization Passes', () => {
+  it('should run all optimizations', () => {
     const region = new Region();
     const block = new Block(region);
     region.pushBlock(block);
 
-    block.pushOperation(new Operation("web.vm.add.i32", [], [], {}));
-    block.pushOperation(new Operation("web.mhlo.convolution", [], [], {}));
+    block.pushOperation(new Operation('web.vm.add.i32', [], [], {}));
+    block.pushOperation(new Operation('web.mhlo.convolution', [], [], {}));
 
     const optimizer = new Optimizer();
     expect(() => optimizer.runAll(region)).not.toThrow();
@@ -20,11 +20,11 @@ describe("MLIR Optimization Passes", () => {
   });
 });
 
-it("should optimize attention", () => {
+it('should optimize attention', () => {
   const region = new Region();
   const block = new Block(region);
   region.pushBlock(block);
-  block.pushOperation(new Operation("web.linalg.matmul", [], [], {}));
+  block.pushOperation(new Operation('web.linalg.matmul', [], [], {}));
 
   const optimizer = new Optimizer();
   optimizer.optimizeAttentionPatterns(region);

@@ -2,20 +2,20 @@
  * Supported ONNX data types in onnx9000.
  */
 export type DType =
-  | "float32"
-  | "float64"
-  | "int8"
-  | "int16"
-  | "int32"
-  | "int64"
-  | "uint8"
-  | "uint16"
-  | "uint32"
-  | "uint64"
-  | "bool"
-  | "string"
-  | "float16"
-  | "bfloat16";
+  | 'float32'
+  | 'float64'
+  | 'int8'
+  | 'int16'
+  | 'int32'
+  | 'int64'
+  | 'uint8'
+  | 'uint16'
+  | 'uint32'
+  | 'uint64'
+  | 'bool'
+  | 'string'
+  | 'float16'
+  | 'bfloat16';
 
 /**
  * Represents a dynamic dimension, which can be a symbolic name or -1.
@@ -46,9 +46,7 @@ export class Tensor {
   /** The actual data buffer view, if loaded. */
   data: ArrayBufferView | null;
   /** Optional metadata for externally stored data. */
-  externalData?:
-    | { location: string; offset: number; length: number }
-    | undefined;
+  externalData?: { location: string; offset: number; length: number } | undefined;
 
   /**
    * Create a new Tensor.
@@ -70,7 +68,7 @@ export class Tensor {
     externalData?: { location: string; offset: number; length: number },
   ) {
     this.id =
-      typeof crypto !== "undefined" && crypto.randomUUID
+      typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
         : Math.random().toString(36).substring(2);
     this.name = name;
@@ -90,7 +88,7 @@ export class Tensor {
   get size(): number {
     let s = 1;
     for (const dim of this.shape) {
-      if (typeof dim === "number" && dim > 0) {
+      if (typeof dim === 'number' && dim > 0) {
         s *= dim;
       }
     }
@@ -103,25 +101,19 @@ export class Tensor {
    * @returns A formatted string representing the tensor data.
    */
   formatData(limit: number = 100): string {
-    if (!this.data) return "No data";
+    if (!this.data) return 'No data';
     const values: number[] = [];
     const maxVals = Math.min(this.size, limit);
     // basic assumption: Float32Array or similar
     if (this.data instanceof Uint8Array) {
-      const dv = new DataView(
-        this.data.buffer,
-        this.data.byteOffset,
-        this.data.byteLength,
-      );
+      const dv = new DataView(this.data.buffer, this.data.byteOffset, this.data.byteLength);
       // if we just have raw bytes
-      if (this.dtype === "float32") {
-        for (let i = 0; i < maxVals; i++)
-          values.push(dv.getFloat32(i * 4, true));
-      } else if (this.dtype === "int64") {
+      if (this.dtype === 'float32') {
+        for (let i = 0; i < maxVals; i++) values.push(dv.getFloat32(i * 4, true));
+      } else if (this.dtype === 'int64') {
         // handle int64
-        for (let i = 0; i < maxVals; i++)
-          values.push(Number(dv.getBigInt64(i * 8, true)));
-      } else if (this.dtype === "float16") {
+        for (let i = 0; i < maxVals; i++) values.push(Number(dv.getBigInt64(i * 8, true)));
+      } else if (this.dtype === 'float16') {
         // approximate decoding float16
         for (let i = 0; i < maxVals; i++) {
           const val = dv.getUint16(i * 2, true);
@@ -129,13 +121,9 @@ export class Tensor {
           const sign = (val & 0x8000) >> 15;
           const exp = (val & 0x7c00) >> 10;
           const frac = val & 0x03ff;
-          values.push(
-            exp === 0
-              ? 0
-              : (sign ? -1 : 1) * Math.pow(2, exp - 15) * (1 + frac / 1024),
-          );
+          values.push(exp === 0 ? 0 : (sign ? -1 : 1) * 2 ** (exp - 15) * (1 + frac / 1024));
         }
-      } else if (this.dtype === "bfloat16") {
+      } else if (this.dtype === 'bfloat16') {
         for (let i = 0; i < maxVals; i++) {
           const val = dv.getUint16(i * 2, true);
           // bfloat16 is essentially float32 with truncated mantissa
@@ -154,9 +142,9 @@ export class Tensor {
     }
 
     if (this.size > maxVals) {
-      return `[${values.join(", ")} ... +${this.size - maxVals} elements]`;
+      return `[${values.join(', ')} ... +${this.size - maxVals} elements]`;
     }
-    return `[${values.join(", ")}]`;
+    return `[${values.join(', ')}]`;
   }
 
   /**
@@ -199,7 +187,7 @@ export class Tensor {
 /**
  * Storage formats for Sparse Tensors.
  */
-export type SparseFormat = "COO" | "CSR" | "CSC" | "BSR";
+export type SparseFormat = 'COO' | 'CSR' | 'CSC' | 'BSR';
 
 /**
  * Internal Representation of a Sparse Tensor.
@@ -232,14 +220,14 @@ export class SparseTensor extends Tensor {
   constructor(
     name: string,
     shape: Shape,
-    format: SparseFormat = "COO",
+    format: SparseFormat = 'COO',
     valuesTensor: Tensor | null = null,
     indicesTensor: Tensor | null = null,
     rowPtrTensor: Tensor | null = null,
     colIndicesTensor: Tensor | null = null,
     blockDims?: [number, number],
   ) {
-    super(name, shape, valuesTensor?.dtype || "float32", true);
+    super(name, shape, valuesTensor?.dtype || 'float32', true);
     this.format = format;
     this.valuesTensor = valuesTensor;
     this.indicesTensor = indicesTensor;

@@ -2,20 +2,8 @@
  * @fileoverview exporter.ts
  * Provides exporter functionality for the tflite-exporter package.
  */
-import { FlatBufferBuilder } from "./flatbuffer/builder";
-import {
-  TensorType,
-  BuiltinOperator,
-  BuiltinOptions,
-  OperatorCode,
-  QuantizationParameters,
-  Tensor,
-  Operator,
-  SubGraph,
-  Buffer,
-  Metadata,
-  Model,
-} from "./flatbuffer/schema";
+import { FlatBufferBuilder } from './flatbuffer/builder';
+import { Buffer, BuiltinOperator, Metadata, Model, OperatorCode } from './flatbuffer/schema';
 
 export class TFLiteExporter {
   public builder: FlatBufferBuilder;
@@ -25,8 +13,6 @@ export class TFLiteExporter {
   private buffers: Map<string, number> = new Map();
   private bufferOffsets: number[] = [];
   private emptyBufferIndex: number = 0;
-
-  private tensorsOffsets: number[] = [];
   private metadataList: { name: string; bufferIndex: number }[] = [];
 
   constructor() {
@@ -49,10 +35,7 @@ export class TFLiteExporter {
   }
 
   // 30. Provide a validation pass ensuring no TFLite tensor exceeds standard device bounds.
-  private validateTensorBounds(
-    shape: (number | string | -1)[],
-    size: number,
-  ): void {
+  private validateTensorBounds(shape: (number | string | -1)[], size: number): void {
     if (shape.length > 6) {
       console.warn(
         `[onnx2tf] Warning: Tensor has ${shape.length} dimensions. Edge devices often limit tensors to 4 or 5 dimensions.`,
@@ -100,17 +83,14 @@ export class TFLiteExporter {
   // 275. Automatically bump TFLite op versions
   public getOrAddOperatorCode(
     builtinCode: BuiltinOperator,
-    customCode: string = "",
+    customCode: string = '',
     version: number = -1,
   ): number {
     // Determine default version if not provided based on feature matrix
     if (version === -1) {
       version = 1;
       // ADD / MUL broadcast support technically bumped it to v2/v3 but standard TFLite parsers accept v1
-      if (
-        builtinCode === BuiltinOperator.ADD ||
-        builtinCode === BuiltinOperator.MUL
-      ) {
+      if (builtinCode === BuiltinOperator.ADD || builtinCode === BuiltinOperator.MUL) {
         version = 2; // Typically broadcast requires v2
       }
       if (builtinCode === BuiltinOperator.TRANSPOSE_CONV) {
@@ -130,12 +110,7 @@ export class TFLiteExporter {
     }
 
     const customOffset = customCode ? this.builder.createString(customCode) : 0;
-    const offset = OperatorCode.create(
-      this.builder,
-      builtinCode,
-      customOffset,
-      version,
-    );
+    const offset = OperatorCode.create(this.builder, builtinCode, customOffset, version);
 
     const index = this.operatorCodeOffsets.length;
     this.operatorCodeOffsets.push(offset);
@@ -144,10 +119,7 @@ export class TFLiteExporter {
     return index;
   }
 
-  public finish(
-    subgraphsOffset: number,
-    description: string = "onnx9000",
-  ): Uint8Array {
+  public finish(subgraphsOffset: number, description: string = 'onnx9000'): Uint8Array {
     // Write buffers
     this.builder.startVector(4, this.bufferOffsets.length, 4);
     for (let i = this.bufferOffsets.length - 1; i >= 0; i--) {
@@ -160,9 +132,7 @@ export class TFLiteExporter {
     for (let i = this.operatorCodeOffsets.length - 1; i >= 0; i--) {
       this.builder.addOffset(this.operatorCodeOffsets[i]!);
     }
-    const opCodesVecOffset = this.builder.endVector(
-      this.operatorCodeOffsets.length,
-    );
+    const opCodesVecOffset = this.builder.endVector(this.operatorCodeOffsets.length);
 
     // Description
     const descOffset = this.builder.createString(description);
@@ -170,9 +140,7 @@ export class TFLiteExporter {
     const metadataOffsets: number[] = [];
     for (const m of this.metadataList) {
       const nameOffset = this.builder.createString(m.name);
-      metadataOffsets.push(
-        Metadata.create(this.builder, nameOffset, m.bufferIndex),
-      );
+      metadataOffsets.push(Metadata.create(this.builder, nameOffset, m.bufferIndex));
     }
     let metadataVecOffset = 0;
     if (metadataOffsets.length > 0) {
@@ -190,11 +158,9 @@ export class TFLiteExporter {
     // If the environment demands it, we would add the metadata blocks into the FlatBuffer.
     // MediaPipe uses a standard Model metadata structure that embeds JSON/binary payloads
     // pointing to specific buffers mapped inside `metadata_buffer`.
-    const injectMediaPipe = process.env["TFLITE_MEDIAPIPE_METADATA"] === "1";
+    const injectMediaPipe = process.env.TFLITE_MEDIAPIPE_METADATA === '1';
     if (injectMediaPipe) {
-      console.log(
-        "[onnx2tf] Adding MediaPipe tracking metadata to FlatBuffer.",
-      );
+      console.log('[onnx2tf] Adding MediaPipe tracking metadata to FlatBuffer.');
     }
 
     const modelOffset = Model.create(
@@ -210,7 +176,7 @@ export class TFLiteExporter {
     );
 
     // 11. Implement TFLite version 3 header emission (`TFL3` magic bytes).
-    this.builder.finish(modelOffset, "TFL3");
+    this.builder.finish(modelOffset, 'TFL3');
 
     return this.builder.asUint8Array();
   }
@@ -221,7 +187,7 @@ export class TFLiteExporter {
     this.operatorCodeOffsets = [];
     this.buffers.clear();
     this.bufferOffsets = [];
-    if (typeof this.builder.clear === "function") {
+    if (typeof this.builder.clear === 'function') {
       this.builder.clear();
     }
   }
@@ -239,7 +205,7 @@ export class TFLiteExporter {
 
     return {
       version: 3,
-      description: "onnx9000",
+      description: 'onnx9000',
       buffersCount: this.bufferOffsets.length,
       operatorCodesCount: this.operatorCodeOffsets.length,
       buffers: buffersList,
@@ -250,7 +216,7 @@ export class TFLiteExporter {
 
   private hashBuffer(data: Uint8Array): string {
     // Simple hash (length + sampled bytes) for performance
-    if (data.length === 0) return "empty";
+    if (data.length === 0) return 'empty';
     let h = 0;
     for (let i = 0; i < Math.min(data.length, 256); i++) {
       h = (Math.imul(31, h) + data[i]!) | 0;

@@ -1,28 +1,28 @@
-import { describe, it, expect, vi } from "vitest";
-import { createServer } from "../src/index.js";
-import { createLambdaHandler } from "../src/lambda.js";
-import { globalMetrics } from "../src/metrics.js";
+import { describe, expect, it } from 'vitest';
+import { createServer } from '../src/index.js';
+import { createLambdaHandler } from '../src/lambda.js';
+import { globalMetrics } from '../src/metrics.js';
 
-describe("Coverage Extra 2", () => {
-  it("Dashboard", async () => {
+describe('Coverage Extra 2', () => {
+  it('Dashboard', async () => {
     const server = createServer();
-    const req = new Request("http://localhost/v2/dashboard");
+    const req = new Request('http://localhost/v2/dashboard');
     const res = await server.fetch(req);
     expect(res.status).toBe(200);
     const text = await res.text();
-    expect(text).toContain("<!DOCTYPE html>");
+    expect(text).toContain('<!DOCTYPE html>');
   });
 
-  it("Lambda Handler", async () => {
+  it('Lambda Handler', async () => {
     const server = createServer();
     const handler = createLambdaHandler(server);
 
     // Normal request
     const event = {
-      httpMethod: "POST",
-      path: "/v2/models/resnet/infer",
-      queryStringParameters: { test: "1" },
-      headers: { host: "localhost", "content-type": "application/json" },
+      httpMethod: 'POST',
+      path: '/v2/models/resnet/infer',
+      queryStringParameters: { test: '1' },
+      headers: { host: 'localhost', 'content-type': 'application/json' },
       body: '{"inputs":[]}',
     };
 
@@ -35,8 +35,8 @@ describe("Coverage Extra 2", () => {
 
     // Base64 body
     const b64Event = {
-      httpMethod: "POST",
-      path: "/v2/models/resnet/infer",
+      httpMethod: 'POST',
+      path: '/v2/models/resnet/infer',
       body: btoa('{"inputs":[]}'),
       isBase64Encoded: true,
     };
@@ -44,26 +44,26 @@ describe("Coverage Extra 2", () => {
     expect(res2.statusCode).toBe(200);
 
     // Timeout
-    const timeoutEvent = {
-      httpMethod: "GET",
-      path: "/metrics", // won't timeout normally, but we mock the remaining time
+    const _timeoutEvent = {
+      httpMethod: 'GET',
+      path: '/metrics', // won't timeout normally, but we mock the remaining time
     };
-    const timeoutContext = {
+    const _timeoutContext = {
       getRemainingTimeInMillis: () => 50, // less than 100 triggers almost immediately
     };
 
     // this actually might return 200 if metrics is too fast, but we can test the try/catch branch by passing an invalid body
     const badEvent = {
-      httpMethod: "POST",
-      path: "/v2/models/resnet/infer",
-      body: "{bad_json",
+      httpMethod: 'POST',
+      path: '/v2/models/resnet/infer',
+      body: '{bad_json',
       isBase64Encoded: false,
     };
     const res3 = await handler(badEvent, context);
     expect(res3.statusCode).toBe(400); // Wait, this returns 400 from server, not 504.
   });
 
-  it("Metrics methods", () => {
+  it('Metrics methods', () => {
     globalMetrics.setActiveRequests(1);
     globalMetrics.setGpuMemoryBytes(100);
     globalMetrics.setCpuMemoryBytes(100);
@@ -72,6 +72,6 @@ describe("Coverage Extra 2", () => {
     globalMetrics.recordQueueDuration(1);
 
     const text = globalMetrics.generateTextFormat();
-    expect(text).toContain("onnx9000_gpu_memory_bytes 100");
+    expect(text).toContain('onnx9000_gpu_memory_bytes 100');
   });
 });

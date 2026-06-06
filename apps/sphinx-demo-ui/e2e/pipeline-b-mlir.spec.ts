@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
     await expect(tree).toContainText('graph.mlir');
 
     // 3. Expand dir and click graph.mlir
-    const dirNode = tree.locator('.demo-tree-dir').first();
+    const _dirNode = tree.locator('.demo-tree-dir').first();
     // In our FileTree implementation, the root is auto-expanded by default, but maybe not in E2E context if it rebuilt?
     // Let's force an expansion just in case, or click the file if visible.
     // Wait, the label is in a display:none container!
@@ -50,7 +50,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
   });
 
   test('should verify compiler warnings appear in Console tab when processing', async ({
-    page
+    page,
   }) => {
     // Navigate to Console tab
     // Navigate to Console tab
@@ -66,7 +66,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
         bus.emit('CONSOLE_LOG', {
           level: 'warn',
           message: 'Warning: onnx-mlir ignored unroll pragma on MatMul',
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       } else {
         // Create the console output div if it doesn't exist

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { OnnxVisualizer } from '../src/components/OnnxVisualizer.js';
 
 vi.mock('cytoscape', () => {
@@ -9,7 +9,7 @@ vi.mock('cytoscape', () => {
     layout: () => ({ run: vi.fn() }),
     center: vi.fn(),
     on: vi.fn(),
-    destroy: vi.fn()
+    destroy: vi.fn(),
   });
   return { default: cytoscape };
 });

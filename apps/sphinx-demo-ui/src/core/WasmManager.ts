@@ -9,7 +9,7 @@ export enum WasmState {
   IDLE = 'IDLE',
   LOADING = 'LOADING',
   LOADED = 'LOADED',
-  ERROR = 'ERROR'
+  ERROR = 'ERROR',
 }
 
 /**
@@ -123,7 +123,7 @@ export class WasmManager {
           globalEventBus.emit('WASM_PROGRESS', {
             progress: this._progress,
             loaded: loaded || 0,
-            total: total || 0
+            total: total || 0,
           });
         }
       }
@@ -142,8 +142,8 @@ export class WasmManager {
 
       const instance = await WebAssembly.instantiate(module, {
         env: {
-          abort: () => console.error('WASM abort')
-        }
+          abort: () => console.error('WASM abort'),
+        },
       });
       this._instance = instance;
 
@@ -152,7 +152,7 @@ export class WasmManager {
       globalEventBus.emit('WASM_PROGRESS', {
         progress: this._progress,
         loaded: loaded || 0,
-        total: total || 0
+        total: total || 0,
       });
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);
       globalEventBus.emit('WASM_LOADED', this._instance);

@@ -6,17 +6,17 @@ export const editor = {
     layout: () => undefined,
     dispose: () => undefined,
     onDidChangeModelContent: () => ({
-      dispose: () => undefined
+      dispose: () => undefined,
     }),
-    setModel: () => undefined
+    setModel: () => undefined,
   }),
   createModel: (content: string) => ({
     getValue: () => content,
     setValue: () => undefined,
-    dispose: () => undefined
+    dispose: () => undefined,
   }),
-  setTheme: () => undefined
+  setTheme: () => undefined,
 };
 export const Uri = {
-  parse: (str: string) => ({ path: str })
+  parse: (str: string) => ({ path: str }),
 };

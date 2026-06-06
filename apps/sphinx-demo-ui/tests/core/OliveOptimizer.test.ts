@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/OliveOptimizer';
 
 describe('OliveOptimizer.ts', () => {
@@ -7,6 +7,6 @@ describe('OliveOptimizer.ts', () => {
     try {
       const obj = new (Module as any).OliveOptimizer();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

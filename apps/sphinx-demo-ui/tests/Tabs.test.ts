@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Tabs } from '../src/components/Tabs.js';
 
 describe('Tabs', () => {
@@ -9,8 +9,8 @@ describe('Tabs', () => {
     const tabs = new Tabs({
       tabs: [
         { id: '1', label: 'Tab 1', content: content1 },
-        { id: '2', label: 'Tab 2', content: content2 }
-      ]
+        { id: '2', label: 'Tab 2', content: content2 },
+      ],
     });
 
     tabs.mount(document.body);

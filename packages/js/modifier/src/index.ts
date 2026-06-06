@@ -2,20 +2,21 @@
  * @fileoverview index.ts
  * Provides index functionality for the modifier package.
  */
-export * from "./GraphMutator.js";
-export * from "./GraphValidator.js";
-export * from "./render/layout.js";
-export * from "./render/canvas.js";
-export * from "./ui/editor.js";
-export * from "./components/layout.js";
-export * from "./components/properties.js";
-export * from "./components/modal.js";
-export * from "./components/utilities.js";
-export * from "./components/toolbar.js";
-export * from "./app.js";
-export * from "./components/initializers/inspector.js";
-export * from "./components/debugger/debugger.js";
-export * from "./utils/file_handling.js";
-export * from "./components/editors/custom_editors.js";
-export * from "./sparse/modifier.js";
-export * from "./pattern_matcher.js";
+
+export * from './app.js';
+export * from './components/debugger/debugger.js';
+export * from './components/editors/custom_editors.js';
+export * from './components/initializers/inspector.js';
+export * from './components/layout.js';
+export * from './components/modal.js';
+export * from './components/properties.js';
+export * from './components/toolbar.js';
+export * from './components/utilities.js';
+export * from './GraphMutator.js';
+export * from './GraphValidator.js';
+export * from './pattern_matcher.js';
+export * from './render/canvas.js';
+export * from './render/layout.js';
+export * from './sparse/modifier.js';
+export * from './ui/editor.js';
+export * from './utils/file_handling.js';

@@ -8,11 +8,7 @@ function float16ToUint16(f: number): number {
 }
 
 export function f32ToF16(data: Uint8Array): Uint8Array {
-  const floats = new Float32Array(
-    data.buffer,
-    data.byteOffset,
-    data.byteLength / 4,
-  );
+  const floats = new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4);
   const out = new Uint16Array(floats.length);
   for (let i = 0; i < floats.length; i++) {
     out[i] = float16ToUint16(floats[i] || 0);
@@ -21,13 +17,8 @@ export function f32ToF16(data: Uint8Array): Uint8Array {
 }
 
 export function quantizeQ4_0(data: Uint8Array): Uint8Array {
-  const floats = new Float32Array(
-    data.buffer,
-    data.byteOffset,
-    data.byteLength / 4,
-  );
-  if (floats.length % 32 !== 0)
-    throw new Error("Q4_0 requires multiples of 32");
+  const floats = new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4);
+  if (floats.length % 32 !== 0) throw new Error('Q4_0 requires multiples of 32');
   const numBlocks = floats.length / 32;
   const out = new Uint8Array(numBlocks * 18);
   const view = new DataView(out.buffer);
@@ -55,13 +46,8 @@ export function quantizeQ4_0(data: Uint8Array): Uint8Array {
 }
 
 export function quantizeQ4_1(data: Uint8Array): Uint8Array {
-  const floats = new Float32Array(
-    data.buffer,
-    data.byteOffset,
-    data.byteLength / 4,
-  );
-  if (floats.length % 32 !== 0)
-    throw new Error("Q4_1 requires multiples of 32");
+  const floats = new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4);
+  if (floats.length % 32 !== 0) throw new Error('Q4_1 requires multiples of 32');
   const numBlocks = floats.length / 32;
   const out = new Uint8Array(numBlocks * 20);
   const view = new DataView(out.buffer);
@@ -92,13 +78,8 @@ export function quantizeQ4_1(data: Uint8Array): Uint8Array {
 }
 
 export function quantizeQ8_0(data: Uint8Array): Uint8Array {
-  const floats = new Float32Array(
-    data.buffer,
-    data.byteOffset,
-    data.byteLength / 4,
-  );
-  if (floats.length % 32 !== 0)
-    throw new Error("Q8_0 requires multiples of 32");
+  const floats = new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4);
+  if (floats.length % 32 !== 0) throw new Error('Q8_0 requires multiples of 32');
   const numBlocks = floats.length / 32;
   const out = new Uint8Array(numBlocks * 34);
   const view = new DataView(out.buffer);

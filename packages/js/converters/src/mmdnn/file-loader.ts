@@ -8,35 +8,32 @@ export class FileLoader {
 
   constructor(files: (File | Blob)[]) {
     const validExtensions = [
-      ".prototxt",
-      ".caffemodel", // caffe
-      ".json",
-      ".params", // mxnet
-      ".model", // cntk
-      ".cfg",
-      ".weights", // darknet
-      ".param",
-      ".bin", // ncnn
-      "__model__",
-      ".pdmodel",
-      ".pdiparams", // paddle
-      ".h5",
-      ".keras", // keras
-      ".mlmodel", // coreml
-      ".zip",
-      ".onnx", // onnx
-      ".pbtxt", // tensorflow text proto
-      ".pb", // tensorflow binary proto
-      ".txt", // generic fallback
-      ".py", // onnxscript
+      '.prototxt',
+      '.caffemodel', // caffe
+      '.json',
+      '.params', // mxnet
+      '.model', // cntk
+      '.cfg',
+      '.weights', // darknet
+      '.param',
+      '.bin', // ncnn
+      '__model__',
+      '.pdmodel',
+      '.pdiparams', // paddle
+      '.h5',
+      '.keras', // keras
+      '.mlmodel', // coreml
+      '.zip',
+      '.onnx', // onnx
+      '.pbtxt', // tensorflow text proto
+      '.pb', // tensorflow binary proto
+      '.txt', // generic fallback
+      '.py', // onnxscript
     ];
 
     for (const f of files) {
       if (f instanceof File) {
-        if (
-          !validExtensions.some((ext) => f.name.endsWith(ext)) &&
-          f.name !== "__model__"
-        ) {
+        if (!validExtensions.some((ext) => f.name.endsWith(ext)) && f.name !== '__model__') {
           throw new Error(`Unsupported file type: ${f.name}`);
         }
       }
@@ -83,21 +80,13 @@ export class FileLoader {
    * Approximates memory-mapping for massive files by using Blob slicing.
    * Allows parsing massive binaries iteratively.
    */
-  async readSlice(
-    name: string,
-    start: number,
-    end: number,
-  ): Promise<ArrayBuffer> {
+  async readSlice(name: string, start: number, end: number): Promise<ArrayBuffer> {
     const file = this.getFile(name);
     const slice = file.slice(start, end);
     return slice.arrayBuffer();
   }
 
-  async readSliceText(
-    name: string,
-    start: number,
-    end: number,
-  ): Promise<string> {
+  async readSliceText(name: string, start: number, end: number): Promise<string> {
     const file = this.getFile(name);
     const slice = file.slice(start, end);
     return slice.text();

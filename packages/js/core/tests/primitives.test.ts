@@ -1,16 +1,16 @@
-import { describe, it, expect } from "vitest";
-import { Relu, MatMul } from "../src/primitives.js";
+import { describe, expect, it } from 'vitest';
+import { MatMul, Relu } from '../src/primitives.js';
 
-describe("primitives", () => {
-  it("should call relu", () => {
+describe('primitives', () => {
+  it('should call relu', () => {
     const r = new Relu();
     const out = r.call({} as any);
-    expect(out.name).toBe("Relu_out");
+    expect(out.name).toBe('Relu_out');
   });
 
-  it("should call matmul", () => {
+  it('should call matmul', () => {
     const m = new MatMul();
     const out = m.call({} as any, {} as any);
-    expect(out.name).toBe("MatMul_out");
+    expect(out.name).toBe('MatMul_out');
   });
 });

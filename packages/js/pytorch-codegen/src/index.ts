@@ -4,6 +4,6 @@
  */
 export class Pytorchcodegen {
   run() {
-    return "[pytorch-codegen] processed";
+    return '[pytorch-codegen] processed';
   }
 }

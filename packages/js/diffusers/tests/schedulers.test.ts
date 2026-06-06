@@ -1,13 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
 import {
   DDIMScheduler,
   DDPMScheduler,
   EulerDiscreteScheduler,
   LCMScheduler,
-} from "../src/schedulers.js";
+} from '../src/schedulers.js';
 
-describe("diffusers schedulers", () => {
-  it("should step", () => {
+describe('diffusers schedulers', () => {
+  it('should step', () => {
     const ddim = new DDIMScheduler(100);
     const arr = [1, 2];
     expect(ddim.step([0, 0], 10, arr).length).toBe(2);

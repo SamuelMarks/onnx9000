@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Component } from '../src/core/Component.js';
 
 class TestComp extends Component<HTMLDivElement> {

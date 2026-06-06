@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('ONNX Visualization Tab', () => {
   test.beforeEach(async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('ONNX Visualization Tab', () => {
         (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
           inputs: [{ name: 'in1', type: 'float' }],
           outputs: [{ name: 'out1', type: 'float' }],
-          nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }]
+          nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }],
         });
       }
     });
@@ -51,7 +51,7 @@ test.describe('ONNX Visualization Tab', () => {
         (window as ReturnType<typeof JSON.parse>).__EVENT_BUS__.emit('ONNX_GRAPH_GENERATED', {
           inputs: [{ name: 'in1', type: 'float' }],
           outputs: [{ name: 'out1', type: 'float' }],
-          nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }]
+          nodes: [{ id: 'n1', name: 'Relu_1', opType: 'Relu', inputs: ['in1'], outputs: ['out1'] }],
         });
       }
     });

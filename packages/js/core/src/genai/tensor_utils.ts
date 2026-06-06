@@ -1,4 +1,4 @@
-import { Tensor } from "../ir/tensor.js";
+import { Tensor } from '../ir/tensor.js';
 
 /**
  * Utility class for manipulating Tensors specifically for sequence lengths.
@@ -9,9 +9,7 @@ export class SequenceTensorUtils {
    */
   static expandSequenceDimension(tensor: Tensor, newSeqLen: number): Tensor {
     if (tensor.shape.length < 2) {
-      throw new Error(
-        "Tensor must have at least 2 dimensions to expand sequence length.",
-      );
+      throw new Error('Tensor must have at least 2 dimensions to expand sequence length.');
     }
 
     const newShape = [...tensor.shape];
@@ -20,7 +18,7 @@ export class SequenceTensorUtils {
 
     // Calculate old and new volume
     const getVol = (shape: number[]) => shape.reduce((a, b) => a * b, 1);
-    const oldVol = getVol(tensor.shape as number[]);
+    const _oldVol = getVol(tensor.shape as number[]);
     const newVol = getVol(newShape as number[]);
 
     // Reallocate data buffer dynamically
@@ -42,9 +40,7 @@ export class SequenceTensorUtils {
     // Copy existing data. This assumes contiguous layout and dimension expansion at the end.
     // Wait, if it's [batch, seq, hidden_size], changing seq means reshaping the inner blocks.
     const batchSize = newShape[0] as number;
-    const innerVol = newShape
-      .slice(2)
-      .reduce((a, b) => (a as number) * (b as number), 1) as number;
+    const innerVol = newShape.slice(2).reduce((a, b) => (a as number) * (b as number), 1) as number;
 
     for (let b = 0; b < batchSize; b++) {
       const oldBatchOffset = b * oldSeqLen * innerVol;
@@ -61,13 +57,6 @@ export class SequenceTensorUtils {
       }
     }
 
-    return new Tensor(
-      tensor.name + "_expanded",
-      newShape,
-      tensor.dtype,
-      false,
-      false,
-      newData,
-    );
+    return new Tensor(`${tensor.name}_expanded`, newShape, tensor.dtype, false, false, newData);
   }
 }

@@ -1,4 +1,4 @@
-import { Tensor } from "../index.js";
+import type { Tensor } from '../index.js';
 
 /**
  * Interface for token search algorithms used in GenAI.
@@ -19,7 +19,7 @@ export class GreedySearch implements SearchAlgorithm {
   /**
    * Select the highest probability token.
    */
-  selectNextToken(logits: Tensor, inputIds: number[]): number {
+  selectNextToken(logits: Tensor, _inputIds: number[]): number {
     if (!(logits.data instanceof Float32Array)) {
       return 0;
     }
@@ -34,7 +34,7 @@ export class GreedySearch implements SearchAlgorithm {
       const data = logits.data;
       const val = data[offset + i]!;
 
-      if (isNaN(val) || (!isFinite(val) && val > 0)) {
+      if (Number.isNaN(val) || (!Number.isFinite(val) && val > 0)) {
         return 0;
       }
       if (val > maxVal) {
@@ -54,7 +54,7 @@ export class MultinomialSampling implements SearchAlgorithm {
   /**
    * Sample the next token.
    */
-  selectNextToken(logits: Tensor, inputIds: number[]): number {
+  selectNextToken(logits: Tensor, _inputIds: number[]): number {
     if (!(logits.data instanceof Float32Array)) {
       return 0;
     }
@@ -156,7 +156,7 @@ export class BeamSearchAlgorithm implements SearchAlgorithm {
   /**
    * Dummy implementation for interface compliance.
    */
-  selectNextToken(logits: Tensor, inputIds: number[]): number {
+  selectNextToken(_logits: Tensor, _inputIds: number[]): number {
     return 0; // Not used directly in traditional beam search loops
   }
 
@@ -165,17 +165,12 @@ export class BeamSearchAlgorithm implements SearchAlgorithm {
    * @param nextTokenLogits Logits for next token.
    * @param beamIdx Beam index.
    */
-  processLogits(
-    nextTokenLogits: Tensor,
-    beamIdx: number,
-  ): { val: number; idx: number }[] {
+  processLogits(nextTokenLogits: Tensor, _beamIdx: number): { val: number; idx: number }[] {
     if (!(nextTokenLogits.data instanceof Float32Array)) {
       return [];
     }
 
-    const vocabSize = nextTokenLogits.shape[
-      nextTokenLogits.shape.length - 1
-    ] as number;
+    const vocabSize = nextTokenLogits.shape[nextTokenLogits.shape.length - 1] as number;
     const data = nextTokenLogits.data;
     const offset = data.length - vocabSize;
 

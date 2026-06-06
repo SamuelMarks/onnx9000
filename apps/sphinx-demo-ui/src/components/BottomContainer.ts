@@ -4,12 +4,12 @@
  */
 // @ts-nocheck
 import { Component } from '../core/Component';
-import { Tabs } from './Tabs';
+import { globalEventBus } from '../core/EventBus';
+import { t } from '../core/I18n';
+import { Logger } from '../core/Logger';
 import { Console } from './Console';
 import { OnnxVisualizer } from './OnnxVisualizer';
-import { Logger } from '../core/Logger';
-import { t } from '../core/I18n';
-import { globalEventBus } from '../core/EventBus';
+import { Tabs } from './Tabs';
 
 export class BottomContainer extends Component<HTMLDivElement> {
   private tabs!: Tabs;
@@ -49,13 +49,13 @@ export class BottomContainer extends Component<HTMLDivElement> {
     this.tabs = new Tabs({
       tabs: [
         { id: 'console', label: t('bottom.console'), content: consolePanel },
-        { id: 'viz', label: t('bottom.visualizer'), content: vizPanel }
+        { id: 'viz', label: t('bottom.visualizer'), content: vizPanel },
       ],
       initialTabId: 'console',
       onChange: (tabId) => {
         console.log('Tab switched to:', tabId);
         globalEventBus.emit('TAB_CHANGED', tabId);
-      }
+      },
     });
 
     this.tabs.mount(container);

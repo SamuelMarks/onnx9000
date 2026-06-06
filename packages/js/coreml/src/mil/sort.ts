@@ -2,7 +2,7 @@
  * Topological sorting implementation mapping Kahn's algorithm for MIL graphs.
  * @module
  */
-import { Operation } from "./ast.js";
+import type { Operation } from './ast.js';
 
 /**
  * Topologically sorts an array of independent `mil.Operation` nodes ensuring input validity.
@@ -18,7 +18,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
 
   // Map each operation to a unique ID (based on output var name)
   for (const op of operations) {
-    const opId = op.outputs.map((o) => o.name).join(",");
+    const opId = op.outputs.map((o) => o.name).join(',');
     opMap.set(opId, op);
     inDegree.set(opId, 0);
     adjList.set(opId, []);
@@ -26,7 +26,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
 
   // Build the graph
   for (const op of operations) {
-    const opId = op.outputs.map((o) => o.name).join(",");
+    const opId = op.outputs.map((o) => o.name).join(',');
     for (const inputKey in op.inputs) {
       const inputs = op.inputs[inputKey]!;
       const inputArray = Array.isArray(inputs) ? inputs : [inputs];
@@ -35,7 +35,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
         // Find which operation produces this input
         for (const [otherId, otherOp] of opMap) {
           if (otherOp.outputs.some((o) => o.name === inputVar.name)) {
-            adjList.get(otherId)!.push(opId);
+            adjList.get(otherId)?.push(opId);
             inDegree.set(opId, inDegree.get(opId)! + 1);
             break;
           }
@@ -64,7 +64,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
   }
 
   if (sorted.length !== operations.length) {
-    throw new Error("Cycle detected in MIL graph operations");
+    throw new Error('Cycle detected in MIL graph operations');
   }
 
   return sorted;

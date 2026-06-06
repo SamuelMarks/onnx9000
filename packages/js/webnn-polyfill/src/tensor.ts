@@ -2,7 +2,7 @@
  * @fileoverview tensor.ts
  * Provides tensor functionality for the webnn-polyfill package.
  */
-import { MLOperandDataType } from "./interfaces.js";
+import type { MLOperandDataType } from './interfaces.js';
 
 export interface MLTensorOptions {
   dataType: MLOperandDataType;
@@ -17,10 +17,7 @@ export class PolyfillMLTensor {
   buffer: ReturnType<typeof JSON.parse> | null = null;
   internalBuffer: ArrayBuffer | null = null; // fallback for WASM
 
-  constructor(
-    options: MLTensorOptions,
-    device?: ReturnType<typeof JSON.parse>,
-  ) {
+  constructor(options: MLTensorOptions, device?: ReturnType<typeof JSON.parse>) {
     this.dataType = options.dataType;
     this.dimensions = options.dimensions;
     this.usage = options.usage || 0;
@@ -38,10 +35,7 @@ export class PolyfillMLTensor {
     }
   }
 
-  private calculateSize(
-    dataType: MLOperandDataType,
-    dimensions: number[],
-  ): number {
+  private calculateSize(dataType: MLOperandDataType, dimensions: number[]): number {
     const counts = dimensions.reduce((a, b) => a * b, 1);
     const byteMap: Record<string, number> = {
       float32: 4,

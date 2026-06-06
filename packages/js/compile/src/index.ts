@@ -7,6 +7,6 @@ export class Compile {
    * @returns A string representing the result.
    */
   run() {
-    return "[compile] processed";
+    return '[compile] processed';
   }
 }

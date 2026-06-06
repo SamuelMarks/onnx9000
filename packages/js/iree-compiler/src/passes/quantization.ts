@@ -2,7 +2,7 @@
  * @fileoverview quantization.ts
  * Provides quantization functionality for the iree-compiler package.
  */
-import { Region, Operation } from "../ir/core.js";
+import type { Region } from '../ir/core.js';
 
 // 201-210. Dynamic Quantization Lowering
 export class QuantizationOptimizer {
@@ -11,18 +11,18 @@ export class QuantizationOptimizer {
     // 202. Lower to Linalg min/max/scale/cast
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === "web.mhlo.dynamic_quantize_linear") {
+        if (op.opcode === 'web.mhlo.dynamic_quantize_linear') {
           // map to generic
         }
       }
     }
   }
 
-  public fuseQuantizedMatmul(region: Region): void {
+  public fuseQuantizedMatmul(_region: Region): void {
     // 203. Fuse quantize and matmul
   }
 
-  public lowerW4A16(region: Region): void {
+  public lowerW4A16(_region: Region): void {
     // 205. W4A16 explicit packing/unpacking lowering
   }
 
@@ -42,10 +42,7 @@ fn unpack_w4(val: u32, idx: u32) -> f32 {
     );
   }
 
-  public trackQuantizationSize(
-    originalSize: number,
-    quantizedSize: number,
-  ): void {
+  public trackQuantizationSize(originalSize: number, quantizedSize: number): void {
     // 209. Size tracking
     console.log(
       `[Quantization] Original: ${originalSize} bytes, Quantized: ${quantizedSize} bytes.`,

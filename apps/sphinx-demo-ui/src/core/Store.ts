@@ -34,7 +34,7 @@ export class Store<T extends object> {
           this._bus.emit('change', { property: propStr, value });
         }
         return true;
-      }
+      },
     });
   }
 
@@ -55,7 +55,7 @@ export class Store<T extends object> {
    */
   public onPropertyChange<K extends keyof T>(
     property: K,
-    callback: (value: T[K]) => void
+    callback: (value: T[K]) => void,
   ): () => void {
     return this._bus.on(`change:${String(property)}`, callback as (payload: object) => void);
   }

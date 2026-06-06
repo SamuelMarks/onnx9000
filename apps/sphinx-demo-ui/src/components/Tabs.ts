@@ -108,11 +108,11 @@ export class Tabs extends Component<HTMLDivElement> {
 
   private handleKeyDown(e: KeyboardEvent): void {
     const activeBtn = Array.from(this.tabButtons.values()).find(
-      (b) => b.getAttribute('tabindex') === '0'
+      (b) => b.getAttribute('tabindex') === '0',
     );
     if (!activeBtn) return;
 
-    let currentIndex = parseInt(activeBtn.getAttribute('data-index') || '0', 10);
+    const currentIndex = parseInt(activeBtn.getAttribute('data-index') || '0', 10);
     const maxIndex = this.options.tabs.length - 1;
 
     let newIndex = currentIndex;

@@ -1,53 +1,32 @@
-import { describe, it, expect } from "vitest";
-import { Generator } from "../../src/genai/generator.js";
-import { Tensor } from "../../src/ir/tensor.js";
+import { describe, expect, it } from 'vitest';
+import { Generator } from '../../src/genai/generator.js';
 import {
-  DiverseBeamSearchLogitProcessor,
   ContrastiveSearchLogitProcessor,
-} from "../../src/genai/logit_processors.js";
-import { Model } from "../../src/genai/model.js";
+  DiverseBeamSearchLogitProcessor,
+} from '../../src/genai/logit_processors.js';
+import { Model } from '../../src/genai/model.js';
+import { BeamSearchAlgorithm, BeamSearchState } from '../../src/genai/search.js';
+import { OffloadedKVCache, PromptCacheManager, QuantizedKVCache } from '../../src/genai/state.js';
+import { SequenceTensorUtils } from '../../src/genai/tensor_utils.js';
 import {
-  BeamSearchAlgorithm,
-  BeamSearchState,
-} from "../../src/genai/search.js";
-import {
-  QuantizedKVCache,
-  OffloadedKVCache,
-  PromptCacheManager,
-} from "../../src/genai/state.js";
-import { SequenceTensorUtils } from "../../src/genai/tensor_utils.js";
-import {
-  PreTokenizer,
-  TokenTrie,
-  StreamingUTF8Decoder,
-  LlamaTokenizer,
   GPT2Tokenizer,
+  LlamaTokenizer,
   loadTokenizerWithFallback,
-} from "../../src/genai/tokenizer.js";
-import { TopPLogitProcessor } from "../../src/genai/top_p.js";
+  PreTokenizer,
+  StreamingUTF8Decoder,
+  TokenTrie,
+} from '../../src/genai/tokenizer.js';
+import { TopPLogitProcessor } from '../../src/genai/top_p.js';
+import { Tensor } from '../../src/ir/tensor.js';
 
-describe("missing_coverage", () => {
-  it("generator", async () => {
+describe('missing_coverage', () => {
+  it('generator', async () => {
     class MockGen extends Generator {
-      async prefill(p: any) {
-        return new Tensor(
-          "a",
-          [1, 2],
-          "float32",
-          false,
-          false,
-          new Float32Array(2),
-        );
+      async prefill(_p: any) {
+        return new Tensor('a', [1, 2], 'float32', false, false, new Float32Array(2));
       }
-      async decodeStep(t: any) {
-        return new Tensor(
-          "a",
-          [1, 2],
-          "float32",
-          false,
-          false,
-          new Float32Array(2),
-        );
+      async decodeStep(_t: any) {
+        return new Tensor('a', [1, 2], 'float32', false, false, new Float32Array(2));
       }
       createModel() {
         return null as any;
@@ -59,26 +38,24 @@ describe("missing_coverage", () => {
     );
 
     try {
-      (gen as any).sample(
-        new Tensor("a", [1, 2], "int32", false, false, new Int32Array([1, 2])),
-      );
+      (gen as any).sample(new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])));
     } catch (e) {
-      expect(e.message).toBe("Unsupported logit data type for sampling.");
+      expect(e.message).toBe('Unsupported logit data type for sampling.');
     }
     expect((gen as any).isEos(1)).toBe(false);
   });
 
-  it("logit_processors", () => {
+  it('logit_processors', () => {
     new DiverseBeamSearchLogitProcessor(1, 1, 1).process([], null as any);
     new ContrastiveSearchLogitProcessor(1).process([], null as any);
   });
 
-  it("model", () => {
+  it('model', () => {
     class MockModel extends Model {
-      async predict(i: any) {
+      async predict(_i: any) {
         return null as any;
       }
-      createGenerator(p: any) {
+      createGenerator(_p: any) {
         return null as any;
       }
     }
@@ -87,27 +64,14 @@ describe("missing_coverage", () => {
     m.createTokenizer();
   });
 
-  it("search", () => {
+  it('search', () => {
     const s = new BeamSearchAlgorithm(new BeamSearchState(1, 1));
-    s.processLogits(
-      new Tensor("a", [1, 2], "int32", false, false, new Int32Array([1, 2])),
-      0,
-    );
-    s.processLogits(
-      new Tensor(
-        "a",
-        [1, 2],
-        "float32",
-        false,
-        false,
-        new Float32Array([1, 2]),
-      ),
-      0,
-    );
+    s.processLogits(new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])), 0);
+    s.processLogits(new Tensor('a', [1, 2], 'float32', false, false, new Float32Array([1, 2])), 0);
     s.pruneAndSortBeams([{ score: 1, tokens: [] }]);
   });
 
-  it("state", () => {
+  it('state', () => {
     const cache1 = new QuantizedKVCache();
     cache1.clear();
     cache1.update(null as any, null as any, 0);
@@ -118,53 +82,48 @@ describe("missing_coverage", () => {
     cache2.update(null as any, null as any, 0);
     cache2.get(0);
 
-    new PromptCacheManager().saveToIDB("", null);
+    new PromptCacheManager().saveToIDB('', null);
   });
 
-  it("tensor_utils", () => {
+  it('tensor_utils', () => {
     try {
       SequenceTensorUtils.expandSequenceDimension(
-        new Tensor("a", [1], "int32", false, false, new Int32Array(1)),
+        new Tensor('a', [1], 'int32', false, false, new Int32Array(1)),
         2,
       );
     } catch (e) {
-      expect(e.message).toBe(
-        "Tensor must have at least 2 dimensions to expand sequence length.",
-      );
+      expect(e.message).toBe('Tensor must have at least 2 dimensions to expand sequence length.');
     }
 
     SequenceTensorUtils.expandSequenceDimension(
-      new Tensor("a", [1, 1], "int32", false, false, new Int32Array(1)),
+      new Tensor('a', [1, 1], 'int32', false, false, new Int32Array(1)),
       2,
     );
     SequenceTensorUtils.expandSequenceDimension(
-      new Tensor("a", [1, 1], "float64", false, false, new Float64Array(1)),
+      new Tensor('a', [1, 1], 'float64', false, false, new Float64Array(1)),
       2,
     );
     SequenceTensorUtils.expandSequenceDimension(
-      new Tensor("a", [1, 1], "uint8", false, false, new Uint8Array(1)),
+      new Tensor('a', [1, 1], 'uint8', false, false, new Uint8Array(1)),
       2,
     );
   });
 
-  it("tokenizer", () => {
-    PreTokenizer.punctuationSplit("");
-    PreTokenizer.byteLevel("a");
+  it('tokenizer', () => {
+    PreTokenizer.punctuationSplit('');
+    PreTokenizer.byteLevel('a');
     new TokenTrie();
     new StreamingUTF8Decoder().decode(new Uint8Array(1));
     new LlamaTokenizer();
     new GPT2Tokenizer();
-    loadTokenizerWithFallback("");
+    loadTokenizerWithFallback('');
   });
 
-  it("top_p", () => {
+  it('top_p', () => {
     const p = new TopPLogitProcessor(1.0);
     p.process([], null as any);
 
     const p2 = new TopPLogitProcessor(0.5);
-    p2.process(
-      [],
-      new Tensor("a", [1, 2], "int32", false, false, new Int32Array([1, 2])),
-    );
+    p2.process([], new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])));
   });
 });

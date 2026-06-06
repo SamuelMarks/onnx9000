@@ -2,14 +2,8 @@
  * @fileoverview generator.ts
  * Provides generator functionality for the tflite-exporter package.
  */
-import { Graph, Node } from "@onnx9000/core";
-import {
-  GraphDef,
-  NodeDef,
-  SignatureDef,
-  SavedModel,
-  MetaGraphDef,
-} from "./encoder";
+import type { Graph } from '@onnx9000/core';
+import type { MetaGraphDef, NodeDef, SavedModel, SignatureDef } from './encoder';
 
 export class SavedModelGenerator {
   public generateFromONNX(graph: Graph): SavedModel {
@@ -21,17 +15,17 @@ export class SavedModelGenerator {
     for (const [name, tensor] of Object.entries(graph.tensors)) {
       if (tensor.isInitializer) {
         // 257. Extract ONNX strings to TF DT_STRING records.
-        let dtype = "DT_FLOAT";
-        if (tensor.dtype === "string") dtype = "DT_STRING";
-        else if (tensor.dtype === "int32") dtype = "DT_INT32";
-        else if (tensor.dtype === "int64") dtype = "DT_INT64";
+        let dtype = 'DT_FLOAT';
+        if (tensor.dtype === 'string') dtype = 'DT_STRING';
+        else if (tensor.dtype === 'int32') dtype = 'DT_INT32';
+        else if (tensor.dtype === 'int64') dtype = 'DT_INT64';
 
         tfNodes.push({
           name: name,
-          op: "Const",
+          op: 'Const',
           input: [],
           attr: {
-            value: { tensor: "dummy_value" }, // Would be full TensorProto logic
+            value: { tensor: 'dummy_value' }, // Would be full TensorProto logic
             dtype: { type: dtype },
           },
         });
@@ -56,17 +50,17 @@ export class SavedModelGenerator {
       serving_default: {
         inputs: {},
         outputs: {},
-        methodName: "tensorflow/serving/predict",
+        methodName: 'tensorflow/serving/predict',
       },
     };
 
     // 256. Handle TF1/TF2 legacy bridging markers inside the SavedModel.
     const metaGraph: MetaGraphDef = {
       metaInfoDef: {
-        tags: ["serve"],
+        tags: ['serve'],
         strippedOpList: { op: [] }, // Required by TF2
-        tensorflowVersion: "2.10.0", // Mimic modern compat layer
-        tensorflowGitVersion: "unknown",
+        tensorflowVersion: '2.10.0', // Mimic modern compat layer
+        tensorflowGitVersion: 'unknown',
       },
       graphDef: { node: tfNodes, versions: { producer: 175, minConsumer: 12 } },
       signatureDef: signatureDef,
@@ -81,10 +75,10 @@ export class SavedModelGenerator {
 
   private mapOp(onnxOp: string): string {
     // Basic mappings
-    if (onnxOp === "Add") return "AddV2";
-    if (onnxOp === "Mul") return "Mul";
-    if (onnxOp === "Relu") return "Relu";
+    if (onnxOp === 'Add') return 'AddV2';
+    if (onnxOp === 'Mul') return 'Mul';
+    if (onnxOp === 'Relu') return 'Relu';
     // 259. Map custom domains securely into TF CustomOp definitions.
-    return "Custom_" + onnxOp;
+    return `Custom_${onnxOp}`;
   }
 }

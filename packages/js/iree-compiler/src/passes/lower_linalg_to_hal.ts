@@ -2,15 +2,12 @@
  * @fileoverview lower_linalg_to_hal.ts
  * Provides lower_linalg_to_hal functionality for the iree-compiler package.
  */
-import { Block, Region, Operation, Value } from "../ir/core.js";
-import * as hal from "../dialects/web/hal.js";
-import * as memref from "../dialects/web/memref.js";
+
+import * as hal from '../dialects/web/hal.js';
+import { Operation, type Region, type Value } from '../ir/core.js';
 
 // 60-69. HAL lowering passes
-export function lowerLinalgToHAL(
-  region: Region,
-  fallbackBackend: string = "wasm",
-): void {
+export function lowerLinalgToHAL(region: Region, _fallbackBackend: string = 'wasm'): void {
   const memoryArenaSize = 1024 * 1024; // 1MB arena (dummy)
   const deviceType = new hal.DeviceType();
   const bufferType = new hal.BufferType();
@@ -21,14 +18,14 @@ export function lowerLinalgToHAL(
     const newOps: Operation[] = [];
 
     // Setup base device and cmd buffer
-    const getDeviceOp = new Operation("web.hal.device.get", [], [deviceType], {
+    const getDeviceOp = new Operation('web.hal.device.get', [], [deviceType], {
       default: true,
     });
     newOps.push(getDeviceOp);
 
     // 64. Static memory planning (dummy arena alloc)
     const arenaAllocOp = new Operation(
-      "web.hal.allocator.allocate",
+      'web.hal.allocator.allocate',
       [getDeviceOp.results[0]!],
       [bufferType],
       { size: memoryArenaSize },
@@ -36,15 +33,15 @@ export function lowerLinalgToHAL(
     newOps.push(arenaAllocOp);
 
     const createCmdBufOp = new Operation(
-      "web.hal.command_buffer.create",
+      'web.hal.command_buffer.create',
       [getDeviceOp.results[0]!],
       [cmdBufferType],
-      { mode: "one_shot" },
+      { mode: 'one_shot' },
     );
     newOps.push(createCmdBufOp);
 
     const beginCmdBufOp = new Operation(
-      "web.hal.command_buffer.begin",
+      'web.hal.command_buffer.begin',
       [createCmdBufOp.results[0]!],
       [],
     );
@@ -54,7 +51,7 @@ export function lowerLinalgToHAL(
     const memRefToSubspan = new Map<Value, Value>();
 
     for (const op of block.operations) {
-      if (op.opcode === "web.memref.alloc") {
+      if (op.opcode === 'web.memref.alloc') {
         // 65. Emit subspan
         const size = 256; // Compute proper size from shape
         const subspanOp = hal.bufferSubspan(
@@ -66,10 +63,7 @@ export function lowerLinalgToHAL(
         newOps.push(subspanOp);
         memRefToSubspan.set(op.results[0]!, subspanOp.results[0]!);
         currentOffset += size;
-      } else if (
-        op.opcode === "web.linalg.matmul" ||
-        op.opcode === "web.linalg.generic"
-      ) {
+      } else if (op.opcode === 'web.linalg.matmul' || op.opcode === 'web.linalg.generic') {
         // 61. Extract kernel, 62. Generate 3D grid, 63. Executable creation, 69. Target backends
 
         const kernelName = `kernel_${newOps.length}`;
@@ -85,12 +79,7 @@ export function lowerLinalgToHAL(
                     // dummy matmul kernel
                 }`;
 
-        const createExecOp = hal.executableCreate(
-          kernelName,
-          "wgsl",
-          wgslShader,
-          execType,
-        );
+        const createExecOp = hal.executableCreate(kernelName, 'wgsl', wgslShader, execType);
         newOps.push(createExecOp);
 
         // Rebind operands to subspans
@@ -106,7 +95,7 @@ export function lowerLinalgToHAL(
           bindings,
         );
         newOps.push(dispatchOp);
-      } else if (op.opcode === "web.linalg.fill") {
+      } else if (op.opcode === 'web.linalg.fill') {
         // 58. Fill buffer
         const fillVal = 0; // dummy
         const target = memRefToSubspan.get(op.operands[1]!) || op.operands[1]!;
@@ -123,7 +112,7 @@ export function lowerLinalgToHAL(
 
     // 66. Command buffer batching / End cmd buffer
     const endCmdBufOp = new Operation(
-      "web.hal.command_buffer.end",
+      'web.hal.command_buffer.end',
       [createCmdBufOp.results[0]!],
       [],
     );
@@ -131,17 +120,13 @@ export function lowerLinalgToHAL(
 
     // 67. Synchronization / submission
     const submitOp = new Operation(
-      "web.hal.device.queue.submit",
+      'web.hal.device.queue.submit',
       [getDeviceOp.results[0]!, createCmdBufOp.results[0]!],
       [],
     );
     newOps.push(submitOp);
 
-    const syncOp = new Operation(
-      "web.hal.device.queue.wait_idle",
-      [getDeviceOp.results[0]!],
-      [],
-    );
+    const syncOp = new Operation('web.hal.device.queue.wait_idle', [getDeviceOp.results[0]!], []);
     newOps.push(syncOp);
 
     block.operations.length = 0;

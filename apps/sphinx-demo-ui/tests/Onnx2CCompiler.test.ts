@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Onnx2CCompiler } from '../src/core/Onnx2CCompiler.js';
 
 vi.mock('../src/core/WorkerManager.js', () => ({
   WorkerManager: {
     getInstance: vi.fn().mockReturnValue({
-      execute: vi.fn().mockResolvedValue('float tensor_a[10]; malloc(40);')
-    })
-  }
+      execute: vi.fn().mockResolvedValue('float tensor_a[10]; malloc(40);'),
+    }),
+  },
 }));
 
 describe('Onnx2CCompiler', () => {

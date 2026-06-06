@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Editor } from '../src/components/Editor.js';
 
 vi.mock('monaco-editor', () => ({
@@ -10,16 +10,16 @@ vi.mock('monaco-editor', () => ({
       onDidChangeModelContent: vi.fn().mockReturnValue({ dispose: vi.fn() }),
       layout: vi.fn(),
       dispose: vi.fn(),
-      setModel: vi.fn()
+      setModel: vi.fn(),
     }),
     createModel: vi.fn().mockReturnValue({
       getValue: vi.fn().mockReturnValue('mock content'),
       setValue: vi.fn(),
-      dispose: vi.fn()
+      dispose: vi.fn(),
     }),
-    setTheme: vi.fn()
+    setTheme: vi.fn(),
   },
-  Uri: { parse: vi.fn() }
+  Uri: { parse: vi.fn() },
 }));
 
 global.ResizeObserver = class {

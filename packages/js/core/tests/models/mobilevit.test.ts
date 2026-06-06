@@ -1,23 +1,23 @@
-import { describe, it, expect, vi } from "vitest";
-import * as Module from "../../src/models/mobilevit";
+import { describe, expect, it } from 'vitest';
+import * as Module from '../../src/models/mobilevit';
 
-describe("mobilevit.ts", () => {
-  it("should instantiate and cover MobileViTBlock", () => {
+describe('mobilevit.ts', () => {
+  it('should instantiate and cover MobileViTBlock', () => {
     try {
       const obj = new (Module as any).MobileViTBlock();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should instantiate and cover MobileViT", () => {
+  it('should instantiate and cover MobileViT', () => {
     try {
       const obj = new (Module as any).MobileViT();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should call and cover mobilevitS", async () => {
+  it('should call and cover mobilevitS', async () => {
     try {
       const res = (Module as any).mobilevitS();
       if (res instanceof Promise) await res.catch(() => {});
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import tf from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import tf from '../src/index.js';
 
-describe("Tensor methods coverage", () => {
-  it("covers array() and arraySync()", async () => {
+describe('Tensor methods coverage', () => {
+  it('covers array() and arraySync()', async () => {
     const t0 = tf.scalar(42);
     expect(t0.arraySync()).toBe(42);
     expect(await t0.array()).toBe(42);

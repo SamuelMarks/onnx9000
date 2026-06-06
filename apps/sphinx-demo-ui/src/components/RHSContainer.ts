@@ -3,26 +3,26 @@
  * Provides RHSContainer functionality for the Sphinx Demo UI.
  */
 // @ts-nocheck
-import { globalEventBus } from '../core/EventBus';
-import { Component } from '../core/Component';
-import { Dropdown } from './Dropdown';
-import { FileTree } from './FileTree';
-import { Editor } from './Editor';
-import { SplitPane } from './SplitPane';
 
+import { compileOnnxToC } from '@onnx9000/c-compiler';
+import { convert } from '@onnx9000/converters';
+import { BufferReader, parseModelProto } from '@onnx9000/core';
+import { buildMLPackage, convertToCoreML } from '@onnx9000/coreml';
+import { MLIRInterop } from '@onnx9000/iree-compiler/dist/passes/interop.js';
+import { lowerONNXToMHLO } from '@onnx9000/iree-compiler/dist/passes/lower_onnx_to_mhlo.js';
+import { optimize, simplify } from '@onnx9000/optimum';
+import { Component } from '../core/Component';
+import { globalEventBus } from '../core/EventBus';
+import { t } from '../core/I18n';
+import type { VizGraph } from '../core/OnnxAdapter';
+import { OnnxAstFormatter } from '../core/OnnxAstFormatter';
 import { RHS_TARGETS } from '../data/MockData';
+import { Dropdown } from './Dropdown';
+import { Editor } from './Editor';
+import { FileTree } from './FileTree';
 import { OliveConfigPanel } from './OliveConfigPanel';
 import { PromoteButton } from './PromoteButton';
-import { t } from '../core/I18n';
-import { VizGraph } from '../core/OnnxAdapter';
-import { OnnxAstFormatter } from '../core/OnnxAstFormatter';
-import { compileOnnxToC } from '@onnx9000/c-compiler';
-import { BufferReader, parseModelProto } from '@onnx9000/core';
-import { convertToCoreML, buildMLPackage } from '@onnx9000/coreml';
-import { convert } from '@onnx9000/converters';
-import { optimize, simplify } from '@onnx9000/optimum';
-import { lowerONNXToMHLO } from '@onnx9000/iree-compiler/dist/passes/lower_onnx_to_mhlo.js';
-import { MLIRInterop } from '@onnx9000/iree-compiler/dist/passes/interop.js';
+import { SplitPane } from './SplitPane';
 
 export class RHSContainer extends Component<HTMLDivElement> {
   private dropdown!: Dropdown;
@@ -64,7 +64,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         const result = await compileOnnxToC(this.onnxBytes, { prefix: 'model_', emitCpp: isCpp });
 
         const target = RHS_TARGETS[val];
-        if (target && target.children) {
+        if (target?.children) {
           const headerNode = target.children.find((c) => c.name === 'model.h');
           const sourceNode = target.children.find((c) => c.name === `model.${ext}`);
 
@@ -87,7 +87,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         const model = {
           specificationVersion: 6,
-          mlProgram: program
+          mlProgram: program,
         };
 
         // Extract weights from the parsed graph for the CoreML package
@@ -95,7 +95,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         const weightChunks: Uint8Array[] = [];
         for (const initName of graph.initializers) {
           const t = graph.tensors[initName];
-          if (t && t.data) {
+          if (t?.data) {
             const buf = new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength);
             weightChunks.push(buf);
             totalWeightsLength += buf.length;
@@ -115,7 +115,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         if (manifestBytes) {
           const manifestJson = new TextDecoder().decode(manifestBytes);
           const coremlTarget = RHS_TARGETS.coreml;
-          if (coremlTarget && coremlTarget.children) {
+          if (coremlTarget?.children) {
             const manifestNode = coremlTarget.children.find((c) => c.name === 'Manifest.json');
             if (manifestNode) manifestNode.content = manifestJson;
           }
@@ -130,12 +130,12 @@ export class RHSContainer extends Component<HTMLDivElement> {
       console.log('[stdout] Converting ONNX to PyTorch...');
       try {
         const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream'
+          type: 'application/octet-stream',
         });
         const output = await convert('onnx', 'pytorch_code', [file]);
 
         const pytorchTarget = RHS_TARGETS.pytorch;
-        if (pytorchTarget && pytorchTarget.children) {
+        if (pytorchTarget?.children) {
           const pyNode = pytorchTarget.children.find((c) => c.name === 'module.py');
           if (pyNode)
             pyNode.content = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
@@ -152,7 +152,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         const oliveConfig = (this.olivePanel as object).config || {};
         const optimizeConfig: object = {
           level: oliveConfig.quantizationLevel === 'INT8' ? 'O3' : 'O2',
-          disableFusion: !oliveConfig.enableTransformerFusion
+          disableFusion: !oliveConfig.enableTransformerFusion,
         };
         const reader = new BufferReader(this.onnxBytes);
         const originalGraph = await parseModelProto(reader);
@@ -164,15 +164,15 @@ export class RHSContainer extends Component<HTMLDivElement> {
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {}
+            attributes: {},
           })),
           inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype })),
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
         const oliveTarget = RHS_TARGETS.olive;
-        if (oliveTarget && oliveTarget.children) {
+        if (oliveTarget?.children) {
           const optNode = oliveTarget.children.find((c) => c.name === 'optimized_model.onnx');
           if (optNode) optNode.content = astText;
         }
@@ -192,7 +192,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         const mlirText = interop.emitMLIR(region);
 
         const mlirTarget = RHS_TARGETS.mlir;
-        if (mlirTarget && mlirTarget.children) {
+        if (mlirTarget?.children) {
           const mlirNode = mlirTarget.children.find((c) => c.name === 'graph.mlir');
           if (mlirNode) mlirNode.content = mlirText;
         }
@@ -215,15 +215,15 @@ export class RHSContainer extends Component<HTMLDivElement> {
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {}
+            attributes: {},
           })),
           inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype })),
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
         const simplifierTarget = RHS_TARGETS['onnx-simplifier'];
-        if (simplifierTarget && simplifierTarget.children) {
+        if (simplifierTarget?.children) {
           const optNode = simplifierTarget.children.find((c) => c.name === 'simplified.onnx');
           if (optNode) optNode.content = astText;
         }
@@ -237,7 +237,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
       console.log(`[stdout] Converting ONNX to ${val}...`);
       try {
         const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream'
+          type: 'application/octet-stream',
         });
         const output = await convert('onnx', val as object, [file]);
 
@@ -245,7 +245,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         let fileNode: object = null;
         let filePath = '';
 
-        if (targetObj && targetObj.children && targetObj.children.length > 0) {
+        if (targetObj?.children && targetObj.children.length > 0) {
           fileNode = targetObj.children[0];
           if (fileNode) {
             fileNode.content =
@@ -310,7 +310,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         { value: 'tensorflow', label: 'TensorFlow' },
         { value: 'cntk', label: 'CNTK' },
         { value: 'pytorch', label: 'PyTorch' },
-        { value: 'onnxscript', label: 'ONNX Script' }
+        { value: 'onnxscript', label: 'ONNX Script' },
       ],
       placeholder: 'Select Target Framework...',
       initialValue: initialTarget,
@@ -322,10 +322,10 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.tree.updateData(RHS_TARGETS[val]);
           try {
             localStorage.setItem('onnx9000-demo-rhs-target', val);
-          } catch (e) {}
+          } catch (_e) {}
           this.regenerateOutput();
         }
-      }
+      },
     });
     this.dropdown.mount(actionContainer);
 
@@ -353,7 +353,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           console.log('Inference completed. Results generated.');
         } else {
           console.error(
-            '[stderr] Error: Failed to execute inference due to unallocated memory block.'
+            '[stderr] Error: Failed to execute inference due to unallocated memory block.',
           );
           console.error('Inference unsuccessful.');
         }
@@ -364,11 +364,11 @@ export class RHSContainer extends Component<HTMLDivElement> {
         if (isSuccess) {
           const targetId = this.dropdown.getValue() || 'onnx';
           const targetLabel =
-            this.dropdown['options'].items.find((i) => i.value === targetId)?.label || targetId;
+            this.dropdown.options.items.find((i) => i.value === targetId)?.label || targetId;
           globalEventBus.emit('PIPELINE_STEP_ADDED', {
             id: Date.now().toString(),
             description: `ONNX → ${targetLabel}`,
-            state: {}
+            state: {},
           });
         }
       }, 1000);
@@ -394,7 +394,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.splitPane = new SplitPane({
       orientation: 'vertical',
       initialSplitRatio: 0.3,
-      storageKey: 'onnx9000-demo-rhs-split'
+      storageKey: 'onnx9000-demo-rhs-split',
     });
     this.splitPane.mount(splitArea);
 
@@ -404,8 +404,8 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.tree = new FileTree({
       root: RHS_TARGETS[initialTarget] || RHS_TARGETS.onnx,
       onSelect: (path) => {
-        const node = this.tree['findNode'](this.tree['options'].root, path);
-        const content = node && node.content ? node.content : '// Binary representation of ' + path;
+        const node = this.tree.findNode(this.tree.options.root, path);
+        const content = node?.content ? node.content : `// Binary representation of ${path}`;
         const ext = path.split('.').pop();
         let lang = 'plaintext';
         if (ext === 'cpp' || ext === 'h' || ext === 'c') lang = 'cpp';
@@ -413,7 +413,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         if (ext === 'py') lang = 'python';
 
         this.editor.openFile(path, content, lang);
-      }
+      },
     });
     this.tree.mount(pane1);
 
@@ -426,7 +426,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.editor = new Editor({
       language: 'plaintext',
       initialValue: 'Select an output file...',
-      readOnly: true
+      readOnly: true,
     });
     this.editor.mount(pane2);
 
@@ -462,7 +462,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.onnxBytes = bytes;
           this.regenerateOutput();
         }
-      })
+      }),
     );
 
     this.onCleanup(
@@ -472,7 +472,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
           // Update the mock data payload so switching files remembers it
           const onnxTarget = RHS_TARGETS.onnx;
-          if (onnxTarget && onnxTarget.children) {
+          if (onnxTarget?.children) {
             const modelNode = onnxTarget.children.find((c) => c.name === 'model.onnx');
             if (modelNode) {
               modelNode.content = astText;
@@ -488,7 +488,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
             this.editor.openFile('/output-onnx/model.onnx', astText, 'plaintext');
           }
         }
-      })
+      }),
     );
 
     this.onCleanup(() => {

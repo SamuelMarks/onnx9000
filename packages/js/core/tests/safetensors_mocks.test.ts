@@ -1,7 +1,7 @@
-import { test, expect } from "vitest";
-import * as mocks from "../src/safetensors_mocks.js";
+import { expect, test } from 'vitest';
+import * as mocks from '../src/safetensors_mocks.js';
 
-test("safetensors_mocks all functions can be called", () => {
+test('safetensors_mocks all functions can be called', () => {
   mocks.handleMultiGigabyteWasm32Models();
   mocks.emulate64BitMemoryAddressing();
   mocks.integrateWebGPUChunkedPipeline();

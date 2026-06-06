@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { OnnxAstFormatter } from '../src/core/OnnxAstFormatter.js';
 
 describe('OnnxAstFormatter', () => {
@@ -14,9 +14,9 @@ describe('OnnxAstFormatter', () => {
           opType: 'Identity',
           inputs: ['in'],
           outputs: ['out'],
-          attributes: { test: 123 }
-        }
-      ]
+          attributes: { test: 123 },
+        },
+      ],
     });
     expect(text).toContain('op_type: "Identity"');
     expect(text).toContain('test');

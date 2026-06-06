@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/PipelineHistory';
 
 describe('PipelineHistory.ts', () => {
@@ -7,6 +7,6 @@ describe('PipelineHistory.ts', () => {
     try {
       const obj = new (Module as any).PipelineHistory();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

@@ -1,11 +1,11 @@
-import { Graph, Node } from "@onnx9000/core";
-import { GraphMutator } from "../GraphMutator.js";
+import { type Graph, Node } from '@onnx9000/core';
+import type { GraphMutator } from '../GraphMutator.js';
 
 /**
  * Event details for the GraphEditor
  */
 export interface SelectionEvent {
-  type: "node" | "edge";
+  type: 'node' | 'edge';
   id: string; // Node ID or Edge Name
 }
 
@@ -54,9 +54,8 @@ export class GraphEditor {
 
   private _notifySelection() {
     const events: SelectionEvent[] = [];
-    for (const id of this.selectedNodeIds) events.push({ type: "node", id });
-    for (const name of this.selectedEdges)
-      events.push({ type: "edge", id: name });
+    for (const id of this.selectedNodeIds) events.push({ type: 'node', id });
+    for (const name of this.selectedEdges) events.push({ type: 'edge', id: name });
     this.onSelectionChange(events);
   }
 
@@ -79,7 +78,7 @@ export class GraphEditor {
               node.inputs[idx] = edgeName;
             },
             redo: () => {
-              node.inputs[idx] = "";
+              node.inputs[idx] = '';
             },
           });
         }
@@ -101,7 +100,7 @@ export class GraphEditor {
         node.inputs = [...oldInputs];
       },
       redo: () => {
-        node.inputs = node.inputs.map(() => "");
+        node.inputs = node.inputs.map(() => '');
       },
     });
   }
@@ -109,9 +108,7 @@ export class GraphEditor {
   // 179. Handle copy/pasting subgraphs entirely
   // 259. Manage complex naming collisions when duplicating nodes
   duplicateSubgraph(nodeIds: string[]) {
-    const nodesToDuplicate = this.graph.nodes.filter((n) =>
-      nodeIds.includes(n.id),
-    );
+    const nodesToDuplicate = this.graph.nodes.filter((n) => nodeIds.includes(n.id));
     if (nodesToDuplicate.length === 0) return;
 
     // Track internal edges to rewire them appropriately
@@ -145,9 +142,7 @@ export class GraphEditor {
 
     // Rewire internal edges
     for (const node of dupNodes) {
-      node.inputs = node.inputs.map((inp) =>
-        renameMap.has(inp) ? renameMap.get(inp)! : inp,
-      );
+      node.inputs = node.inputs.map((inp) => (renameMap.has(inp) ? renameMap.get(inp)! : inp));
     }
 
     this.mutator.execute({
@@ -181,11 +176,7 @@ export class GraphEditor {
   }
 
   // 61. Edge dragging
-  connectPorts(
-    sourceEdgeName: string,
-    targetNodeId: string,
-    targetInputIndex: number,
-  ) {
+  connectPorts(sourceEdgeName: string, targetNodeId: string, targetInputIndex: number) {
     const targetNode = this.graph.nodes.find((n) => n.id === targetNodeId);
     if (!targetNode) return;
 
@@ -193,7 +184,7 @@ export class GraphEditor {
 
     this.mutator.execute({
       undo: () => {
-        targetNode.inputs[targetInputIndex] = oldInput || "";
+        targetNode.inputs[targetInputIndex] = oldInput || '';
       },
       redo: () => {
         targetNode.inputs[targetInputIndex] = sourceEdgeName;
@@ -202,19 +193,14 @@ export class GraphEditor {
   }
 
   // 202. Align Utilities
-  alignNodes(direction: "Left" | "Right" | "Center") {
+  alignNodes(direction: 'Left' | 'Right' | 'Center') {
     // The visual coordinates are technically controlled by the DagreLayoutEngine.
     // However, if we support manual coordinates, we would update them here.
     // For now, we update an attribute on the nodes that could hint the renderer.
     for (const nodeId of this.selectedNodeIds) {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
-        this.mutator.setNodeAttribute(
-          node.id,
-          "alignment",
-          direction,
-          "STRING",
-        );
+        this.mutator.setNodeAttribute(node.id, 'alignment', direction, 'STRING');
       }
     }
   }
@@ -226,7 +212,7 @@ export class GraphEditor {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
         // mock snapping by setting snapped attribute
-        this.mutator.setNodeAttribute(node.id, "snapped_grid", gridSize, "INT");
+        this.mutator.setNodeAttribute(node.id, 'snapped_grid', gridSize, 'INT');
       }
     }
   }
@@ -236,7 +222,7 @@ export class GraphEditor {
     for (const nodeId of this.selectedNodeIds) {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
-        this.mutator.setNodeAttribute(node.id, "pinned", 1, "INT");
+        this.mutator.setNodeAttribute(node.id, 'pinned', 1, 'INT');
       }
     }
   }
@@ -245,7 +231,7 @@ export class GraphEditor {
     for (const nodeId of this.selectedNodeIds) {
       const node = this.graph.nodes.find((n) => n.id === nodeId);
       if (node) {
-        this.mutator.removeNodeAttribute(node.id, "pinned");
+        this.mutator.removeNodeAttribute(node.id, 'pinned');
       }
     }
   }

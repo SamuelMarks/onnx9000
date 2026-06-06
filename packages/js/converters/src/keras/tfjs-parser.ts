@@ -3,16 +3,16 @@
  * Defines the supported mathematical data types natively supported by Web-Native machine learning layers.
  */
 export type DataType =
-  | "float32"
-  | "int32"
-  | "bool"
-  | "complex64"
-  | "string"
-  | "float16"
-  | "uint8"
-  | "int8"
-  | "int4"
-  | "uint4";
+  | 'float32'
+  | 'int32'
+  | 'bool'
+  | 'complex64'
+  | 'string'
+  | 'float16'
+  | 'uint8'
+  | 'int8'
+  | 'int4'
+  | 'uint4';
 
 /**
  * Represents a single weight entry in a TF.js manifest.
@@ -39,13 +39,7 @@ export interface WeightGroup {
 /**
  * Union type for JSON primitive values.
  */
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonArray
-  | JsonObject;
+export type JsonValue = string | number | boolean | null | JsonArray | JsonObject;
 /**
  * Array type for JSON values.
  */
@@ -61,7 +55,7 @@ export interface JsonObject {
  * Represents a TensorFlow.js 'layers-model' (analogous to Keras H5 or SavedModel topologies).
  */
 export interface TFJSLayersModel {
-  format: "layers-model";
+  format: 'layers-model';
   generatedBy?: string;
   convertedBy?: string;
   modelTopology: JsonObject; // The raw Keras JSON config
@@ -73,7 +67,7 @@ export interface TFJSLayersModel {
  * Represents a TensorFlow.js 'graph-model' (lower level frozen execution graphs).
  */
 export interface TFJSGraphModel {
-  format: "graph-model";
+  format: 'graph-model';
   generatedBy?: string;
   convertedBy?: string;
   modelTopology: {
@@ -98,36 +92,33 @@ export type TFJSModel = TFJSLayersModel | TFJSGraphModel;
  */
 export function parseTFJSModel(jsonText: string): TFJSModel {
   const parsed = JSON.parse(jsonText) as JsonObject;
-  if (
-    parsed["format"] !== "layers-model" &&
-    parsed["format"] !== "graph-model"
-  ) {
-    const top = parsed["modelTopology"] as JsonObject | undefined;
-    if (top !== undefined && top["node"] !== undefined) {
-      parsed["format"] = "graph-model";
-    } else if (top !== undefined && top["class_name"] !== undefined) {
-      parsed["format"] = "layers-model";
+  if (parsed.format !== 'layers-model' && parsed.format !== 'graph-model') {
+    const top = parsed.modelTopology as JsonObject | undefined;
+    if (top !== undefined && top.node !== undefined) {
+      parsed.format = 'graph-model';
+    } else if (top !== undefined && top.class_name !== undefined) {
+      parsed.format = 'layers-model';
     } else {
-      throw new Error("Unsupported or unrecognized TF.js model format");
+      throw new Error('Unsupported or unrecognized TF.js model format');
     }
   }
-  const manifestArray = parsed["weightsManifest"] as JsonArray;
+  const manifestArray = parsed.weightsManifest as JsonArray;
   const weightsManifest: WeightGroup[] = manifestArray.map((groupVal) => {
     const groupObj = groupVal as JsonObject;
-    const pathsArr = groupObj["paths"] as JsonArray;
-    const weightsArr = groupObj["weights"] as JsonArray;
+    const pathsArr = groupObj.paths as JsonArray;
+    const weightsArr = groupObj.weights as JsonArray;
     return {
       paths: pathsArr.map((p) => p as string),
       weights: weightsArr.map((wVal) => {
         const wObj = wVal as JsonObject;
-        const shapeArr = wObj["shape"] as JsonArray;
+        const shapeArr = wObj.shape as JsonArray;
         const entry: WeightManifestEntry = {
-          name: wObj["name"] as string,
+          name: wObj.name as string,
           shape: shapeArr.map((s) => s as number),
-          dtype: wObj["dtype"] as DataType,
+          dtype: wObj.dtype as DataType,
         };
-        if (wObj["quantization"]) {
-          entry.quantization = wObj["quantization"] as JsonObject as {
+        if (wObj.quantization) {
+          entry.quantization = wObj.quantization as JsonObject as {
             scale: number;
             min: number;
             dtype: string;
@@ -139,17 +130,11 @@ export function parseTFJSModel(jsonText: string): TFJSModel {
   });
 
   return {
-    format: parsed["format"] as "layers-model" | "graph-model",
-    generatedBy:
-      typeof parsed["generatedBy"] === "string"
-        ? parsed["generatedBy"]
-        : undefined,
-    convertedBy:
-      typeof parsed["convertedBy"] === "string"
-        ? parsed["convertedBy"]
-        : undefined,
-    modelTopology: parsed["modelTopology"] as JsonObject,
+    format: parsed.format as 'layers-model' | 'graph-model',
+    generatedBy: typeof parsed.generatedBy === 'string' ? parsed.generatedBy : undefined,
+    convertedBy: typeof parsed.convertedBy === 'string' ? parsed.convertedBy : undefined,
+    modelTopology: parsed.modelTopology as JsonObject,
     weightsManifest,
-    signature: parsed["signature"] as JsonObject | undefined,
+    signature: parsed.signature as JsonObject | undefined,
   } as TFJSModel;
 }

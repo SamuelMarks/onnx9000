@@ -18,14 +18,14 @@ export class PipelineValidator {
     lightgbm: ['.onnx'],
     xgboost: ['.onnx'],
     catboost: ['.onnx'],
-    sparkml: ['.onnx']
+    sparkml: ['.onnx'],
   };
 
   /**
    * Validates if a target framework is a valid next step for a given source framework.
    */
   public static isValidTransition(source: string, target: string): boolean {
-    const validTargets = this.VALID_TRANSITIONS[source.toLowerCase()];
+    const validTargets = PipelineValidator.VALID_TRANSITIONS[source.toLowerCase()];
     if (!validTargets) return false;
 
     return validTargets.includes(target.toLowerCase());
@@ -35,6 +35,6 @@ export class PipelineValidator {
    * Get all valid targets for a given source.
    */
   public static getValidTargets(source: string): string[] {
-    return this.VALID_TRANSITIONS[source.toLowerCase()] || [];
+    return PipelineValidator.VALID_TRANSITIONS[source.toLowerCase()] || [];
   }
 }

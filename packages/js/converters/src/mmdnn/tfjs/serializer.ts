@@ -3,7 +3,7 @@
  * Provides serializer functionality for the converters package.
  */
 // @ts-nocheck
-import { Graph, Tensor } from "@onnx9000/core";
+import type { Graph, Tensor } from '@onnx9000/core';
 
 export interface TFJSModelArtifacts {
   modelJson: object;
@@ -11,8 +11,8 @@ export interface TFJSModelArtifacts {
 }
 
 function sanitizeName(name: string): string {
-  if (/^[0-9]/.test(name)) return "v_" + name.replace(/[^a-zA-Z0-9_]/g, "_");
-  return name.replace(/[^a-zA-Z0-9_]/g, "_");
+  if (/^[0-9]/.test(name)) return `v_${name.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+  return name.replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
 export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
@@ -47,18 +47,14 @@ export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
 
   for (const w of weights) {
     if (w.data) {
-      const srcBytes = new Uint8Array(
-        w.data.buffer,
-        w.data.byteOffset,
-        w.data.byteLength,
-      );
+      const srcBytes = new Uint8Array(w.data.buffer, w.data.byteOffset, w.data.byteLength);
       weightsBin.set(srcBytes, offset);
 
       const shape = w.shape.map((s) => (s === -1 ? null : s));
-      let dtype = "float32";
-      if (w.dtype.includes("int")) dtype = "int32";
-      else if (w.dtype === "bool") dtype = "bool";
-      else if (w.dtype === "string") dtype = "string";
+      let dtype = 'float32';
+      if (w.dtype.includes('int')) dtype = 'int32';
+      else if (w.dtype === 'bool') dtype = 'bool';
+      else if (w.dtype === 'string') dtype = 'string';
 
       weightsManifestEntries.push({
         name: sanitizeName(w.name),
@@ -73,12 +69,12 @@ export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
   }
 
   const modelJson = {
-    format: "layers-model",
-    generatedBy: "onnx9000.mmdnn",
-    convertedBy: "onnx9000.mmdnn",
+    format: 'layers-model',
+    generatedBy: 'onnx9000.mmdnn',
+    convertedBy: 'onnx9000.mmdnn',
     weightsManifest: [
       {
-        paths: ["weights.bin"],
+        paths: ['weights.bin'],
         weights: weightsManifestEntries,
       },
     ],

@@ -1,42 +1,35 @@
-import { describe, it, expect } from "vitest";
-import { MLPackageBuilder } from "../src/mlpackage.js";
-import { Model } from "../src/schema.js";
+import { describe, expect, it } from 'vitest';
+import { MLPackageBuilder } from '../src/mlpackage.js';
+import type { Model } from '../src/schema.js';
 
-describe("MLPackageBuilder", () => {
-  it("covers all mlpackage options", async () => {
+describe('MLPackageBuilder', () => {
+  it('covers all mlpackage options', async () => {
     const model: Model = {
       specificationVersion: 4,
       description: {
         input: [
-          { name: "in1", type: { tensorType: {} } as any },
-          { name: "in2" },
-          { name: "in3", type: { tensorType: {} } as any },
+          { name: 'in1', type: { tensorType: {} } as any },
+          { name: 'in2' },
+          { name: 'in3', type: { tensorType: {} } as any },
         ],
-        output: [
-          { name: "out1", type: { tensorType: {} } as any },
-          { name: "out2" },
-        ],
+        output: [{ name: 'out1', type: { tensorType: {} } as any }, { name: 'out2' }],
       },
     };
 
     const options = {
       stateful: true,
-      computePrecision: "Float16" as any,
+      computePrecision: 'Float16' as any,
       imageInputs: { in1: { blueBias: 0.1 } },
-      sequenceInputs: ["in2"],
-      outputMappings: { out1: "mapped_out" },
-      classifierOutputs: ["out2"],
-      classLabels: ["cat", "dog"],
-      vocabularyFiles: { "vocab.txt": new Uint8Array([1, 2]) },
+      sequenceInputs: ['in2'],
+      outputMappings: { out1: 'mapped_out' },
+      classifierOutputs: ['out2'],
+      classLabels: ['cat', 'dog'],
+      vocabularyFiles: { 'vocab.txt': new Uint8Array([1, 2]) },
       generateSwiftBoilerplate: true,
-      visionFrameworkDescription: "MyVision",
+      visionFrameworkDescription: 'MyVision',
     };
 
-    const builder = new MLPackageBuilder(
-      model,
-      new Uint8Array([1, 2, 3]),
-      options,
-    );
+    const builder = new MLPackageBuilder(model, new Uint8Array([1, 2, 3]), options);
 
     class MockZip {
       files: Record<string, Object> = {};
@@ -52,7 +45,7 @@ describe("MLPackageBuilder", () => {
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
-  it("handles empty descriptions", async () => {
+  it('handles empty descriptions', async () => {
     const model: Model = { specificationVersion: 4 };
     const builder = new MLPackageBuilder(model, new Uint8Array(0));
 
@@ -70,19 +63,19 @@ describe("MLPackageBuilder", () => {
     expect(bytes).toBeInstanceOf(Uint8Array);
   });
 
-  it("handles falsy options for swift, stateful, image, unknown types", async () => {
+  it('handles falsy options for swift, stateful, image, unknown types', async () => {
     const model: Model = {
       specificationVersion: 4,
       description: {
-        input: [{ name: "in1" }],
-        output: [{ name: "out1" }],
+        input: [{ name: 'in1' }],
+        output: [{ name: 'out1' }],
       },
     };
 
     const options = {
       stateful: false,
       generateSwiftBoilerplate: true,
-      visionFrameworkDescription: "",
+      visionFrameworkDescription: '',
     };
     const builder = new MLPackageBuilder(model, new Uint8Array(0), options);
 

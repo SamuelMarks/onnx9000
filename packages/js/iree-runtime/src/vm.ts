@@ -27,11 +27,7 @@ export class Context {
   }
 
   // 126. Dynamic module loading
-  public loadImport(
-    namespace: string,
-    funcName: string,
-    jsFunc: (...args: unknown[]) => unknown,
-  ) {
+  public loadImport(namespace: string, funcName: string, jsFunc: (...args: unknown[]) => unknown) {
     this.module.imports.set(`${namespace}.${funcName}`, jsFunc);
   }
 }
@@ -56,16 +52,13 @@ export class WVMInterpreter {
       this.bytecode[2] !== 0x4d ||
       this.bytecode[3] !== 0x30
     ) {
-      throw new Error("Invalid WVM Bytecode");
+      throw new Error('Invalid WVM Bytecode');
     }
   }
 
   // 131, 132. ArrayBuffer passing
   public setInput(offset: number, data: ArrayBuffer) {
-    new Uint8Array(this.context.module.memory).set(
-      new Uint8Array(data),
-      offset,
-    );
+    new Uint8Array(this.context.module.memory).set(new Uint8Array(data), offset);
   }
 
   public getOutput(offset: number, length: number): ArrayBuffer {
@@ -80,7 +73,7 @@ export class WVMInterpreter {
     while (this.context.pc < bc.length) {
       const currentPc = this.context.pc++;
       const opcode = bc[currentPc];
-      if (opcode === undefined) throw new Error("Bytecode out of bounds");
+      if (opcode === undefined) throw new Error('Bytecode out of bounds');
 
       if (debugLogging) {
         console.log(
@@ -96,7 +89,7 @@ export class WVMInterpreter {
           break;
         case 0x03: {
           // Call
-          const name = "hal.cmd_create"; // dummy logic
+          const name = 'hal.cmd_create'; // dummy logic
           const imp = this.context.module.imports.get(name);
           if (imp) imp();
           break;
@@ -110,11 +103,10 @@ export class WVMInterpreter {
           const rLhs = bc[pcLhs];
           const rRhs = bc[pcRhs];
           if (rDst === undefined || rLhs === undefined || rRhs === undefined) {
-            throw new Error("Bytecode out of bounds");
+            throw new Error('Bytecode out of bounds');
           }
           this.context.registers[rDst] =
-            (this.context.registers[rLhs] ?? 0) +
-            (this.context.registers[rRhs] ?? 0);
+            (this.context.registers[rLhs] ?? 0) + (this.context.registers[rRhs] ?? 0);
           break;
         }
         case 0xff: // Return
@@ -134,7 +126,7 @@ export class WVMInterpreter {
     while (this.context.pc < bc.length) {
       const currentPc = this.context.pc++;
       const opcode = bc[currentPc];
-      if (opcode === undefined) throw new Error("Bytecode out of bounds");
+      if (opcode === undefined) throw new Error('Bytecode out of bounds');
 
       switch (opcode) {
         case 0x01:
@@ -142,7 +134,7 @@ export class WVMInterpreter {
         case 0x02:
           break;
         case 0x03: {
-          const name = "hal.cmd_create";
+          const name = 'hal.cmd_create';
           const imp = this.context.module.imports.get(name);
           if (imp) await imp();
           break;
@@ -163,16 +155,16 @@ export class WVMInterpreter {
 // 127, 128. Bind HAL VM to actual API calls
 export const HALBindings = {
   register(context: Context, device: object | null) {
-    context.loadImport("hal", "cmd_create", () => {
+    context.loadImport('hal', 'cmd_create', () => {
       // maps to device.createCommandEncoder()
       if (!device) {
         // 134. Handle WebGPU context loss
-        throw new Error("VM Error: WebGPU Context Lost");
+        throw new Error('VM Error: WebGPU Context Lost');
       }
-      return "command_buffer_ptr";
+      return 'command_buffer_ptr';
     });
 
-    context.loadImport("hal", "buffer_subspan", () => {
+    context.loadImport('hal', 'buffer_subspan', () => {
       // 135. Tiny memory allocator logic if needed
       return undefined;
     });
@@ -190,7 +182,7 @@ export class WASMWVMInterpreter {
       env: {
         memory: new WebAssembly.Memory({ initial: 256 }),
         abort: () => {
-          throw new Error("WASM Aborted");
+          throw new Error('WASM Aborted');
         },
       },
     });
@@ -198,12 +190,10 @@ export class WASMWVMInterpreter {
 
   public run(): void {
     if (!this.wasmInstance) {
-      throw new Error("WASM not initialized");
+      throw new Error('WASM not initialized');
     }
-    const runFunc = this.wasmInstance.exports.run as (
-      ...args: unknown[]
-    ) => unknown;
-    if (typeof runFunc === "function") {
+    const runFunc = this.wasmInstance.exports.run as (...args: unknown[]) => unknown;
+    if (typeof runFunc === 'function') {
       runFunc();
     }
   }

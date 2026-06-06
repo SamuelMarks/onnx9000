@@ -1,4 +1,4 @@
-import { Tensor } from "../index.js";
+import { Tensor } from '../index.js';
 
 /**
  * Interface for processors that modify model logits during generation.
@@ -23,12 +23,12 @@ export class TemperatureLogitProcessor implements LogitProcessor {
    */
   constructor(private temperature: number) {
     if (temperature <= 0.0) {
-      throw new Error("Temperature must be strictly positive.");
+      throw new Error('Temperature must be strictly positive.');
     }
   }
 
   /** Process logits with temperature scaling. */
-  process(inputIds: number[], logits: Tensor): Tensor {
+  process(_inputIds: number[], logits: Tensor): Tensor {
     if (this.temperature === 1.0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
@@ -60,12 +60,12 @@ export class TopKLogitProcessor implements LogitProcessor {
    */
   constructor(private topK: number) {
     if (topK <= 0) {
-      throw new Error("topK must be strictly positive.");
+      throw new Error('topK must be strictly positive.');
     }
   }
 
   /** Process logits with Top-K filtering. */
-  process(inputIds: number[], logits: Tensor): Tensor {
+  process(_inputIds: number[], logits: Tensor): Tensor {
     if (!(logits.data instanceof Float32Array)) {
       return logits;
     }
@@ -82,7 +82,7 @@ export class TopKLogitProcessor implements LogitProcessor {
     vals.sort((a, b) => b.val - a.val);
 
     if (vals.length > this.topK) {
-      const threshold = vals[this.topK - 1]!.val;
+      const threshold = vals[this.topK - 1]?.val;
       const newData = new Float32Array(logits.data);
 
       for (let i = 0; i < vocabSize; i++) {
@@ -115,17 +115,13 @@ export class RepetitionPenaltyLogitProcessor implements LogitProcessor {
    */
   constructor(private penalty: number) {
     if (penalty <= 0.0) {
-      throw new Error("Penalty must be strictly positive.");
+      throw new Error('Penalty must be strictly positive.');
     }
   }
 
   /** Process logits with repetition penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 1.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 1.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -188,12 +184,12 @@ export class MinPLogitProcessor implements LogitProcessor {
    */
   constructor(private minP: number) {
     if (minP <= 0.0 || minP > 1.0) {
-      throw new Error("minP must be in (0, 1].");
+      throw new Error('minP must be in (0, 1].');
     }
   }
 
   /** Process logits with Min-P filtering. */
-  process(inputIds: number[], logits: Tensor): Tensor {
+  process(_inputIds: number[], logits: Tensor): Tensor {
     if (this.minP >= 1.0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
@@ -248,11 +244,7 @@ export class PresencePenaltyLogitProcessor implements LogitProcessor {
 
   /** Process logits with presence penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 0.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 0.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -292,11 +284,7 @@ export class FrequencyPenaltyLogitProcessor implements LogitProcessor {
 
   /** Process logits with frequency penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 0.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 0.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -379,10 +367,7 @@ export class ForcedEOSLogitProcessor implements LogitProcessor {
 
   /** Force EOS token at the limit. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      inputIds.length === this.maxLength - 1 &&
-      logits.data instanceof Float32Array
-    ) {
+    if (inputIds.length === this.maxLength - 1 && logits.data instanceof Float32Array) {
       const vocabSize = logits.shape[logits.shape.length - 1] as number;
       const offset = logits.data.length - vocabSize;
       const newData = new Float32Array(logits.data);
@@ -416,7 +401,7 @@ export class LogitBiasProcessor implements LogitProcessor {
   constructor(private biasMap: Map<number, number>) {}
 
   /** Apply manual biases to logits. */
-  process(inputIds: number[], logits: Tensor): Tensor {
+  process(_inputIds: number[], logits: Tensor): Tensor {
     if (this.biasMap.size === 0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
@@ -427,7 +412,7 @@ export class LogitBiasProcessor implements LogitProcessor {
 
     for (const [tokenId, bias] of this.biasMap.entries()) {
       if (tokenId < vocabSize) {
-        const data = logits.data;
+        const _data = logits.data;
         newData[offset + tokenId]! += bias;
       }
     }
@@ -453,7 +438,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
    */
   constructor(private ngramSize: number) {
     if (ngramSize <= 0) {
-      throw new Error("ngramSize must be strictly positive");
+      throw new Error('ngramSize must be strictly positive');
     }
   }
 
@@ -470,8 +455,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
     const vocabSize = logits.shape[logits.shape.length - 1] as number;
     const offset = logits.data.length - vocabSize;
 
-    const prefix =
-      this.ngramSize > 1 ? inputIds.slice(-(this.ngramSize - 1)) : [];
+    const prefix = this.ngramSize > 1 ? inputIds.slice(-(this.ngramSize - 1)) : [];
     const bannedTokens = new Set<number>();
 
     for (let i = 0; i <= inputIds.length - this.ngramSize; i++) {
@@ -521,10 +505,7 @@ export class NoBadWordsLogitProcessor implements LogitProcessor {
 
   /** Block forbidden token sequences. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.badWordsIds.length === 0 ||
-      !(logits.data instanceof Float32Array)
-    ) {
+    if (this.badWordsIds.length === 0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
 
@@ -589,11 +570,8 @@ export class AllowedWordsLogitProcessor implements LogitProcessor {
   }
 
   /** Limit generation to allowed tokens. */
-  process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.allowedTokens.size === 0 ||
-      !(logits.data instanceof Float32Array)
-    ) {
+  process(_inputIds: number[], logits: Tensor): Tensor {
+    if (this.allowedTokens.size === 0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
 
@@ -622,13 +600,12 @@ export class AllowedWordsLogitProcessor implements LogitProcessor {
  * Typical sampling processor based on local information gain.
  */
 export class TypicalLogitProcessor implements LogitProcessor {
-  private mass: number;
   /** @param mass Targeted probability mass. */
   constructor(mass: number = 0.9) {
     this.mass = mass;
   }
   /** Placeholder for typical sampling implementation. */
-  process(inputIds: number[], scores: Tensor): Tensor {
+  process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;
   }
 }
@@ -643,13 +620,9 @@ export class DiverseBeamSearchLogitProcessor implements LogitProcessor {
    * @param numBeams Number of beams.
    * @param diversityPenalty Penalty for inter-group similarity.
    */
-  constructor(
-    private numBeamGroups: number,
-    private numBeams: number,
-    private diversityPenalty: number,
-  ) {}
+  constructor(_numBeamGroups: number, _numBeams: number, _diversityPenalty: number) {}
   /** Placeholder for diverse beam search implementation. */
-  process(inputIds: number[], scores: Tensor): Tensor {
+  process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;
   }
 }
@@ -659,9 +632,9 @@ export class DiverseBeamSearchLogitProcessor implements LogitProcessor {
  */
 export class ContrastiveSearchLogitProcessor implements LogitProcessor {
   /** @param penaltyAlpha Contrastive penalty alpha factor. */
-  constructor(private penaltyAlpha: number) {}
+  constructor(_penaltyAlpha: number) {}
   /** Placeholder for contrastive search implementation. */
-  process(inputIds: number[], scores: Tensor): Tensor {
+  process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;
   }
 }

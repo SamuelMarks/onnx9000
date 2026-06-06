@@ -1,16 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
-import * as idx from "../src/index.js";
-import * as models from "../src/models.js";
-import * as reg from "../src/registry.js";
-import * as scheds from "../src/schedulers.js";
-import * as utils from "../src/utils.js";
+import { describe, expect, it, vi } from 'vitest';
+import * as idx from '../src/index.js';
+import * as models from '../src/models.js';
+import * as reg from '../src/registry.js';
+import * as scheds from '../src/schedulers.js';
+import * as utils from '../src/utils.js';
 
-describe("Diffusers coverage", () => {
-  it("index", () => {
+describe('Diffusers coverage', () => {
+  it('index', () => {
     expect(idx).toBeDefined();
   });
 
-  it("models", () => {
+  it('models', () => {
     const vae = new models.AutoencoderKL();
     const f32 = new Float32Array([1, 2]);
     const enc = vae.encode(f32);
@@ -23,11 +23,11 @@ describe("Diffusers coverage", () => {
     expect(out[0]).toBeCloseTo(1 - 0.1);
   });
 
-  it("registry", () => {
+  it('registry', () => {
     expect(reg).toBeDefined();
   });
 
-  it("schedulers empty subclasses", () => {
+  it('schedulers empty subclasses', () => {
     expect(new scheds.PNDMScheduler()).toBeDefined();
     expect(new scheds.LMSDiscreteScheduler()).toBeDefined();
     expect(new scheds.DPMSolverMultistepScheduler()).toBeDefined();
@@ -39,7 +39,7 @@ describe("Diffusers coverage", () => {
     expect(new scheds.EulerAncestralDiscreteScheduler()).toBeDefined();
   });
 
-  it("LCMScheduler", () => {
+  it('LCMScheduler', () => {
     const s = new scheds.LCMScheduler(10);
     const out = s.step([1], 5, [2]);
     expect(out[0]).toBe(1);
@@ -48,45 +48,45 @@ describe("Diffusers coverage", () => {
     expect(outF[0]).toBe(1);
   });
 
-  it("registry decorator", () => {
-    @reg.register_op("domain", "name")
+  it('registry decorator', () => {
+    @reg.register_op('domain', 'name')
     class TestClass {}
-    expect((TestClass as any).domain).toBe("domain");
+    expect((TestClass as any).domain).toBe('domain');
   });
 
-  it("pipeline operations", async () => {
+  it('pipeline operations', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ a: 1 }),
     });
-    vi.stubGlobal("fetch", mockFetch);
+    vi.stubGlobal('fetch', mockFetch);
 
-    const p = await idx.DiffusionPipeline.fromPretrained("repo");
+    const p = await idx.DiffusionPipeline.fromPretrained('repo');
     expect(p.modelIndex).toEqual({ a: 1 });
 
     // Test failing parseModelIndex
-    mockFetch.mockRejectedValueOnce(new Error("Network error"));
-    const pFailed = await idx.DiffusionPipeline.fromPretrained("repo-failed");
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+    const pFailed = await idx.DiffusionPipeline.fromPretrained('repo-failed');
     expect(pFailed.modelIndex).toEqual({});
 
     // test callback and normal call
     const cb = vi.fn();
     p.scheduler.timesteps = []; // force the || 0 fallback
-    const callP = await p.call("test", 2, undefined, cb);
+    const _callP = await p.call('test', 2, undefined, cb);
     expect(cb).toHaveBeenCalledTimes(2);
 
     // test abort listener
     const ac = new AbortController();
-    const callP2 = p.call("test", 10, undefined, undefined, ac.signal);
+    const callP2 = p.call('test', 10, undefined, undefined, ac.signal);
     ac.abort();
-    await expect(callP2).rejects.toThrow("Pipeline aborted.");
+    await expect(callP2).rejects.toThrow('Pipeline aborted.');
 
     // test abort already signaled
     const ac2 = new AbortController();
     ac2.abort();
-    await expect(
-      p.call("test", 1, undefined, undefined, ac2.signal),
-    ).rejects.toThrow("Pipeline aborted.");
+    await expect(p.call('test', 1, undefined, undefined, ac2.signal)).rejects.toThrow(
+      'Pipeline aborted.',
+    );
 
     // test free memory
     p.freeMemory();
@@ -95,17 +95,15 @@ describe("Diffusers coverage", () => {
     vi.unstubAllGlobals();
   });
 
-  it("utils - setProgressBarConfig", () => {
+  it('utils - setProgressBarConfig', () => {
     utils.setProgressBarConfig(false);
     expect(utils.globalProgressBarConfig.enabled).toBe(false);
   });
 
-  it("utils - fetchHubFile error", async () => {
+  it('utils - fetchHubFile error', async () => {
     const mockFetch = vi.fn().mockResolvedValue({ ok: false });
-    vi.stubGlobal("fetch", mockFetch);
-    await expect(utils.fetchHubFile("repo", "file")).rejects.toThrow(
-      "Failed to fetch",
-    );
+    vi.stubGlobal('fetch', mockFetch);
+    await expect(utils.fetchHubFile('repo', 'file')).rejects.toThrow('Failed to fetch');
     vi.unstubAllGlobals();
   });
 });

@@ -3,7 +3,7 @@
  * Provides emitters-tfjs functionality for the converters package.
  */
 // @ts-nocheck
-import { OnnxNodeBuilder } from "./emitters.js";
+import type { OnnxNodeBuilder } from './emitters.js';
 
 export function mapTfjsOpToOnnx(
   opType: string,
@@ -13,7 +13,7 @@ export function mapTfjsOpToOnnx(
 ): OnnxNodeBuilder[] {
   const nodes: OnnxNodeBuilder[] = [];
 
-  let onnxOp = "";
+  let onnxOp = '';
   const attributes: {
     name: string;
     type?: string;
@@ -25,93 +25,93 @@ export function mapTfjsOpToOnnx(
   }[] = [];
 
   switch (opType) {
-    case "Add":
-    case "AddV2":
-      onnxOp = "Add";
+    case 'Add':
+    case 'AddV2':
+      onnxOp = 'Add';
       break;
-    case "Sub":
-      onnxOp = "Sub";
+    case 'Sub':
+      onnxOp = 'Sub';
       break;
-    case "Mul":
-      onnxOp = "Mul";
+    case 'Mul':
+      onnxOp = 'Mul';
       break;
-    case "RealDiv":
-    case "Div":
-      onnxOp = "Div";
+    case 'RealDiv':
+    case 'Div':
+      onnxOp = 'Div';
       break;
-    case "MatMul":
-      onnxOp = "MatMul";
+    case 'MatMul':
+      onnxOp = 'MatMul';
       break;
-    case "Square":
-      onnxOp = "Pow";
+    case 'Square':
+      onnxOp = 'Pow';
       /* needs exponent 2 input in ONNX but simplified here */ break;
-    case "Sqrt":
-      onnxOp = "Sqrt";
+    case 'Sqrt':
+      onnxOp = 'Sqrt';
       break;
-    case "Exp":
-      onnxOp = "Exp";
+    case 'Exp':
+      onnxOp = 'Exp';
       break;
-    case "Log":
-      onnxOp = "Log";
+    case 'Log':
+      onnxOp = 'Log';
       break;
-    case "Maximum":
-      onnxOp = "Max";
+    case 'Maximum':
+      onnxOp = 'Max';
       break;
-    case "Minimum":
-      onnxOp = "Min";
+    case 'Minimum':
+      onnxOp = 'Min';
       break;
-    case "Sum":
-      onnxOp = "ReduceSum";
+    case 'Sum':
+      onnxOp = 'ReduceSum';
       break;
-    case "Mean":
-      onnxOp = "ReduceMean";
+    case 'Mean':
+      onnxOp = 'ReduceMean';
       break;
-    case "Max":
-      onnxOp = "ReduceMax";
+    case 'Max':
+      onnxOp = 'ReduceMax';
       break;
-    case "Min":
-      onnxOp = "ReduceMin";
+    case 'Min':
+      onnxOp = 'ReduceMin';
       break;
-    case "ArgMax":
-      onnxOp = "ArgMax";
+    case 'ArgMax':
+      onnxOp = 'ArgMax';
       break;
-    case "ArgMin":
-      onnxOp = "ArgMin";
+    case 'ArgMin':
+      onnxOp = 'ArgMin';
       break;
-    case "Split":
-    case "SplitV":
-      onnxOp = "Split";
+    case 'Split':
+    case 'SplitV':
+      onnxOp = 'Split';
       break;
-    case "Concat":
-    case "ConcatV2":
-      onnxOp = "Concat";
+    case 'Concat':
+    case 'ConcatV2':
+      onnxOp = 'Concat';
       break;
-    case "Slice":
-      onnxOp = "Slice";
+    case 'Slice':
+      onnxOp = 'Slice';
       break;
-    case "StridedSlice":
-      onnxOp = "Slice";
+    case 'StridedSlice':
+      onnxOp = 'Slice';
       break; // Requires complex attribute mapping
-    case "Gather":
-    case "GatherV2":
-      onnxOp = "Gather";
+    case 'Gather':
+    case 'GatherV2':
+      onnxOp = 'Gather';
       break;
-    case "GatherNd":
-      onnxOp = "GatherND";
+    case 'GatherNd':
+      onnxOp = 'GatherND';
       break;
-    case "Where":
-      onnxOp = "Where";
+    case 'Where':
+      onnxOp = 'Where';
       break;
-    case "TensorScatterUpdate":
-      onnxOp = "ScatterND";
+    case 'TensorScatterUpdate':
+      onnxOp = 'ScatterND';
       break;
-    case "ResizeBilinear":
-      onnxOp = "Resize";
-      attributes.push({ name: "mode", s: "linear", type: "STRING" });
+    case 'ResizeBilinear':
+      onnxOp = 'Resize';
+      attributes.push({ name: 'mode', s: 'linear', type: 'STRING' });
       break;
-    case "ResizeNearestNeighbor":
-      onnxOp = "Resize";
-      attributes.push({ name: "mode", s: "nearest", type: "STRING" });
+    case 'ResizeNearestNeighbor':
+      onnxOp = 'Resize';
+      attributes.push({ name: 'mode', s: 'nearest', type: 'STRING' });
       break;
     default:
       throw new Error(`Unsupported TF.js Op: ${opType}`);

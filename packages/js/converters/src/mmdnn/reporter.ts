@@ -6,7 +6,7 @@
 export class MMDNNError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "MMDNNError";
+    this.name = 'MMDNNError';
   }
 }
 
@@ -29,7 +29,7 @@ export class MMDNNReporter {
   }
 
   warn(msg: string, nodeName?: string): void {
-    const prefix = nodeName ? `[WARN] (Node: ${nodeName}):` : "[WARN]:";
+    const prefix = nodeName ? `[WARN] (Node: ${nodeName}):` : '[WARN]:';
     const formatted = `${prefix} ${msg}`;
     this.warnings.push(formatted);
     if (this.verbose) {
@@ -38,7 +38,7 @@ export class MMDNNReporter {
   }
 
   error(msg: string, nodeName?: string): object {
-    const prefix = nodeName ? `[ERROR] (Node: ${nodeName}):` : "[ERROR]:";
+    const prefix = nodeName ? `[ERROR] (Node: ${nodeName}):` : '[ERROR]:';
     const formatted = `${prefix} ${msg}`;
     this.errors.push(formatted);
     if (this.verbose) {
@@ -50,13 +50,13 @@ export class MMDNNReporter {
 
   getReport(): string {
     return [
-      "--- MMDNN Conversion Report ---",
+      '--- MMDNN Conversion Report ---',
       `Logs: ${this.logs.length}`,
       `Warnings: ${this.warnings.length}`,
       `Errors: ${this.errors.length}`,
-      "",
+      '',
       ...this.warnings,
       ...this.errors,
-    ].join("\n");
+    ].join('\n');
   }
 }

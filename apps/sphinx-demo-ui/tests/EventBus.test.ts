@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { EventBus } from '../src/core/EventBus.js';
 
 describe('EventBus', () => {

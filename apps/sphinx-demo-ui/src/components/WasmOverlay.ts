@@ -5,8 +5,8 @@
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
-import { WasmManager, WasmState } from '../core/WasmManager';
 import { t } from '../core/I18n';
+import { WasmManager, WasmState } from '../core/WasmManager';
 
 /**
  * An overlay that blocks UI interaction until the heavy WASM binaries
@@ -116,7 +116,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
         const desc = this.element.querySelector('p');
         if (desc) desc.textContent = t('wasm.desc');
         if (this.loadButton) this.loadButton.textContent = t('wasm.start');
-      })
+      }),
     );
 
     // Listen to WASM progress events
@@ -146,7 +146,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
         } else {
           this.progressText.textContent = `${progress}%`;
         }
-      })
+      }),
     );
 
     // Listen to WASM state changes
@@ -165,7 +165,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
             this.unmount();
           }, 300); // 300ms transition time
         }
-      })
+      }),
     );
   }
 }

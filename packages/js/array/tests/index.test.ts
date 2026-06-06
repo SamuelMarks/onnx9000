@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
-import * as arr from "../src/index";
+import { describe, expect, it } from 'vitest';
+import * as arr from '../src/index';
 
-describe("array", () => {
-  it("should create EagerTensor", () => {
-    const t = new arr.EagerTensor([1, 2, 3], "float32");
+describe('array', () => {
+  it('should create EagerTensor', () => {
+    const t = new arr.EagerTensor([1, 2, 3], 'float32');
     expect(t.ndim).toBe(1);
     expect(t.numpy()).toEqual([1, 2, 3]);
     expect(t.data_val()).toEqual([1, 2, 3]);
@@ -14,19 +14,19 @@ describe("array", () => {
     t.dispose();
   });
 
-  it("should create LazyTensor", () => {
-    const t = new arr.LazyTensor("Add", []);
+  it('should create LazyTensor', () => {
+    const t = new arr.LazyTensor('Add', []);
     expect(t).toBeDefined();
   });
 
-  it("should toggle lazy evaluation", () => {
+  it('should toggle lazy evaluation', () => {
     arr.lazy_mode(true);
     expect(arr.IS_LAZY).toBe(true);
     arr.lazy_mode(false);
     expect(arr.IS_LAZY).toBe(false);
   });
 
-  it("should run operations eagerly", () => {
+  it('should run operations eagerly', () => {
     arr.lazy_mode(false);
     const t1 = new arr.EagerTensor([1, 2]);
     const t2 = new arr.EagerTensor([3, 4]);
@@ -79,7 +79,7 @@ describe("array", () => {
     expect(t1.T).toBeInstanceOf(arr.EagerTensor);
   });
 
-  it("should cover remaining ops in eager mode", () => {
+  it('should cover remaining ops in eager mode', () => {
     arr.lazy_mode(false);
     const t = new arr.EagerTensor([1]);
     expect(arr.less_equal(t)).toBeDefined();
@@ -206,9 +206,9 @@ describe("array", () => {
     expect(arr.random.seed(1)).toBeUndefined();
   });
 
-  it("should run operations lazily", () => {
+  it('should run operations lazily', () => {
     arr.lazy_mode(true);
-    const t = new arr.LazyTensor("Add", []);
+    const t = new arr.LazyTensor('Add', []);
     expect(arr.add(t, t)).toBeInstanceOf(arr.LazyTensor);
     expect(arr.subtract(t, t)).toBeInstanceOf(arr.LazyTensor);
     expect(arr.multiply(t, t)).toBeInstanceOf(arr.LazyTensor);
@@ -363,8 +363,8 @@ describe("array", () => {
     expect(arr.random.normal(1)).toBeInstanceOf(arr.LazyTensor);
   });
 
-  it("should construct Errors", () => {
-    expect(new arr.BroadcastError("test").message).toBe("test");
-    expect(new arr.TypeMismatchError("test").message).toBe("test");
+  it('should construct Errors', () => {
+    expect(new arr.BroadcastError('test').message).toBe('test');
+    expect(new arr.TypeMismatchError('test').message).toBe('test');
   });
 });

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { OliveConfigPanel } from '../src/components/OliveConfigPanel.js';
 
 describe('OliveConfigPanel', () => {

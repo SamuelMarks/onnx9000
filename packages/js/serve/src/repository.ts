@@ -2,7 +2,7 @@
  * @fileoverview repository.ts
  * Provides repository functionality for the serve package.
  */
-import { MemoryManager, ModelInstance } from "./memory";
+import type { MemoryManager, ModelInstance } from './memory';
 
 export interface ModelMetadata {
   name: string;
@@ -17,7 +17,7 @@ export class ModelRepository {
 
   constructor(
     public memoryManager: MemoryManager,
-    public basePath: string = "./models",
+    public basePath: string = './models',
   ) {}
 
   // 156. Implement local File System (FS) watcher natively in Node/Deno.
@@ -27,20 +27,20 @@ export class ModelRepository {
     fsModule: ReturnType<typeof JSON.parse>,
     pathModule: ReturnType<typeof JSON.parse>,
   ) {
-    if (!fsModule || !fsModule.watch) return; // Not in Node
+    if (!fsModule?.watch) return; // Not in Node
 
     // 161. Enforce strict directory layouts matching Triton (`/models/my_model/1/model.onnx`).
     fsModule.watch(
       this.basePath,
       { recursive: true },
-      async (eventType: string, filename: string) => {
+      async (_eventType: string, filename: string) => {
         // 157. Detect new `.onnx` models dropped into the `/models` directory and hot-load them instantly.
         // 158. Detect removed models and evict them from memory safely.
         if (
           filename &&
-          (filename.endsWith(".onnx") ||
-            filename.endsWith(".safetensors") ||
-            filename.endsWith("config.json"))
+          (filename.endsWith('.onnx') ||
+            filename.endsWith('.safetensors') ||
+            filename.endsWith('config.json'))
         ) {
           const parts = filename.split(pathModule.sep);
           if (parts.length >= 3) {
@@ -75,16 +75,14 @@ export class ModelRepository {
 
     // 162. Parse `config.json` automatically on folder ingest.
     let config = {};
-    const configPath = path.join(this.basePath, name, "config.json");
+    const configPath = path.join(this.basePath, name, 'config.json');
     if (fs.existsSync(configPath)) {
-      config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     }
 
     // 164. Support explicit `.safetensors` weight loading seamlessly
-    const hasSafetensors = fs.existsSync(
-      path.join(modelPath, "model.safetensors"),
-    );
-    const hasOnnx = fs.existsSync(path.join(modelPath, "model.onnx"));
+    const hasSafetensors = fs.existsSync(path.join(modelPath, 'model.safetensors'));
+    const hasOnnx = fs.existsSync(path.join(modelPath, 'model.onnx'));
 
     if (hasOnnx || hasSafetensors) {
       // 163. Handle zero-downtime deployments
@@ -95,14 +93,11 @@ export class ModelRepository {
         lastUsed: Date.now(),
         buffer: new ArrayBuffer(1024),
         unload: () => {
-          console.log("Unloaded", name, version);
+          console.log('Unloaded', name, version);
         },
       };
 
-      const loaded = await this.memoryManager.requestLoad(
-        instance.id,
-        instance.sizeBytes,
-      );
+      const loaded = await this.memoryManager.requestLoad(instance.id, instance.sizeBytes);
       if (loaded) {
         this.memoryManager.registerModel(instance);
 
@@ -110,7 +105,7 @@ export class ModelRepository {
         versions.push({
           name,
           version,
-          platform: hasSafetensors ? "safetensors" : "onnx",
+          platform: hasSafetensors ? 'safetensors' : 'onnx',
           config,
           path: modelPath,
         });

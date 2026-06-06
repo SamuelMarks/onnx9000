@@ -21,7 +21,7 @@ export class HexFormatter {
       const chunk = data.subarray(i, Math.min(i + 16, length));
 
       // Offset address
-      result += i.toString(16).padStart(8, '0') + '  ';
+      result += `${i.toString(16).padStart(8, '0')}  `;
 
       // Hex representation
       let hexPart1 = '';
@@ -33,9 +33,9 @@ export class HexFormatter {
           const byte = chunk[j];
           const hex = byte.toString(16).padStart(2, '0');
           if (j < 8) {
-            hexPart1 += hex + ' ';
+            hexPart1 += `${hex} `;
           } else {
-            hexPart2 += hex + ' ';
+            hexPart2 += `${hex} `;
           }
 
           // Printable ASCII or dot
@@ -55,7 +55,7 @@ export class HexFormatter {
         }
       }
 
-      result += hexPart1 + ' ' + hexPart2 + ' |' + asciiPart.replace(/\s+$/, '') + '|\n';
+      result += `${hexPart1} ${hexPart2} |${asciiPart.replace(/\s+$/, '')}|\n`;
     }
 
     if (data.length > maxLength) {

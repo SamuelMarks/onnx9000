@@ -2,8 +2,8 @@
  * @fileoverview api.ts
  * Provides api functionality for the openvino package.
  */
-import { Graph } from "@onnx9000/core";
-import { OpenVinoExporter, OpenVinoExportOptions } from "./exporter.js";
+import type { Graph } from '@onnx9000/core';
+import { OpenVinoExporter, type OpenVinoExportOptions } from './exporter.js';
 
 export function exportModel(
   onnxModel: Graph,

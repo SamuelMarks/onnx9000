@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
-import { parsePrototxt } from "../../../../src/mmdnn/caffe/parser.js";
-import { CaffeMapper } from "../../../../src/mmdnn/caffe/mapper.js";
-import { Graph } from "@onnx9000/core";
+import { Graph } from '@onnx9000/core';
+import { describe, expect, it } from 'vitest';
+import { CaffeMapper } from '../../../../src/mmdnn/caffe/mapper.js';
+import { parsePrototxt } from '../../../../src/mmdnn/caffe/parser.js';
 
-describe("Caffe ResNet-50 Parity", () => {
-  it("should map ResNet-50 shortcut blocks to ONNX", () => {
+describe('Caffe ResNet-50 Parity', () => {
+  it('should map ResNet-50 shortcut blocks to ONNX', () => {
     const prototxt = `
 
 name: "ResNet-50"
@@ -96,15 +96,13 @@ eltwise_param {
     const parser = { parsePrototxt };
     const model = parser.parsePrototxt(prototxt);
     const mapper = new CaffeMapper();
-    const graph = new Graph("resnet");
+    const graph = new Graph('resnet');
     for (const layer of model.layer) {
       mapper.map(layer, graph).forEach((n) => graph.addNode(n));
     }
 
-    expect(graph.nodes.some((n) => n.opType === "Conv")).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === "BatchNormalization")).toBe(
-      true,
-    );
-    expect(graph.nodes.some((n) => n.opType === "Add")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === 'Conv')).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === 'BatchNormalization')).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === 'Add')).toBe(true);
   });
 });

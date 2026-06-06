@@ -15,19 +15,19 @@ export class KerasPythonParser {
    * Initializes Pyodide if it hasn't been already.
    */
   public static async initPyodide(): Promise<PyodideInterface> {
-    if (this.pyodideInstance) {
-      return this.pyodideInstance;
+    if (KerasPythonParser.pyodideInstance) {
+      return KerasPythonParser.pyodideInstance;
     }
 
-    if (this.isLoading) {
+    if (KerasPythonParser.isLoading) {
       // Wait for the instance to be loaded
-      while (!this.pyodideInstance) {
+      while (!KerasPythonParser.pyodideInstance) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
-      return this.pyodideInstance;
+      return KerasPythonParser.pyodideInstance;
     }
 
-    this.isLoading = true;
+    KerasPythonParser.isLoading = true;
     console.log('[stdout] Fetching Pyodide runtime (lazily loaded on first Python execution)...');
 
     try {
@@ -41,18 +41,18 @@ export class KerasPythonParser {
           script.onerror = reject;
         });
       }
-      this.pyodideInstance = await (window as object).loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
+      KerasPythonParser.pyodideInstance = await (window as object).loadPyodide({
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/',
       });
       console.log('[stdout] Pyodide runtime loaded successfully.');
     } catch (e: any) {
       console.error('[stderr] Pyodide initialization failed:', e);
       throw e;
     } finally {
-      this.isLoading = false;
+      KerasPythonParser.isLoading = false;
     }
 
-    return this.pyodideInstance;
+    return KerasPythonParser.pyodideInstance;
   }
 
   /**
@@ -64,7 +64,7 @@ export class KerasPythonParser {
    * @throws {Error} If no models.Sequential definition is found.
    */
   public static async parse(pythonCode: string): Promise<object> {
-    const pyodide = await this.initPyodide();
+    const pyodide = await KerasPythonParser.initPyodide();
 
     // We inject a mocked 'keras' and 'tensorflow' environment into Pyodide.
     // This allows the python code to "run" and describe its shape without downloading

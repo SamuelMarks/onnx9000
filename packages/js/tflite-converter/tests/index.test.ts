@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { Tfliteconverter } from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import { Tfliteconverter } from '../src/index.js';
 
-describe("Tfliteconverter", () => {
-  it("should run", () => {
+describe('Tfliteconverter', () => {
+  it('should run', () => {
     expect(new Tfliteconverter().run()).toBeDefined();
   });
 });

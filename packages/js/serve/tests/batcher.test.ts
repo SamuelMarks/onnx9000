@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { DynamicBatcher } from "../src/batcher.js";
+import { describe, expect, it, vi } from 'vitest';
+import { DynamicBatcher } from '../src/batcher.js';
 
-describe("DynamicBatcher", () => {
-  it("should batch requests", async () => {
+describe('DynamicBatcher', () => {
+  it('should batch requests', async () => {
     vi.useFakeTimers();
     const execute = vi.fn().mockResolvedValue([{ out: 1 }, { out: 2 }]);
     const batcher = new DynamicBatcher(execute, { maxBatchSize: 2 });

@@ -3,20 +3,19 @@
  * Provides LHSContainer functionality for the Sphinx Demo UI.
  */
 // @ts-nocheck
-import { convert } from '@onnx9000/converters';
-import { globalEventBus } from '../core/EventBus';
-import { Component } from '../core/Component';
-import { Dropdown } from './Dropdown';
-import { FileTree } from './FileTree';
-import { Editor } from './Editor';
-import { SplitPane } from './SplitPane';
-import { LHS_FRAMEWORKS, LHS_EXAMPLES } from '../data/MockData';
-import { Debouncer } from '../core/Debouncer';
-import { t } from '../core/I18n';
-import { keras2onnx } from '@onnx9000/converters';
+import { convert, keras2onnx } from '@onnx9000/converters';
 import { BufferReader, parseModelProto, serializeModelProto } from '@onnx9000/core';
-import { VizGraph, VizNode } from '../core/OnnxAdapter';
+import { Component } from '../core/Component';
+import { Debouncer } from '../core/Debouncer';
+import { globalEventBus } from '../core/EventBus';
+import { t } from '../core/I18n';
 import { KerasPythonParser } from '../core/KerasPythonParser';
+import type { VizGraph, VizNode } from '../core/OnnxAdapter';
+import { LHS_EXAMPLES, LHS_FRAMEWORKS } from '../data/MockData';
+import { Dropdown } from './Dropdown';
+import { Editor } from './Editor';
+import { FileTree } from './FileTree';
+import { SplitPane } from './SplitPane';
 
 export class LHSContainer extends Component<HTMLDivElement> {
   private frameworkDropdown!: Dropdown;
@@ -71,8 +70,8 @@ export class LHSContainer extends Component<HTMLDivElement> {
         this.updateExampleDropdown(val);
         try {
           localStorage.setItem('onnx9000-demo-lhs-framework', val);
-        } catch (e) {}
-      }
+        } catch (_e) {}
+      },
     });
 
     this.exampleDropdown = new Dropdown({
@@ -83,8 +82,8 @@ export class LHSContainer extends Component<HTMLDivElement> {
         this.selectExample(fw, val);
         try {
           localStorage.setItem(`onnx9000-demo-lhs-example-${fw}`, val);
-        } catch (e) {}
-      }
+        } catch (_e) {}
+      },
     });
 
     this.frameworkDropdown.mount(dropdownsRow);
@@ -123,9 +122,9 @@ export class LHSContainer extends Component<HTMLDivElement> {
             }
           } catch (err: any) {
             console.warn(
-              `[stderr] Failed to parse editor content: ${err.message}. Falling back to default mnist model...`
+              `[stderr] Failed to parse editor content: ${err.message}. Falling back to default mnist model...`,
             );
-            parsed = JSON.parse(LHS_EXAMPLES['keras'][0].root.children![1].content!);
+            parsed = JSON.parse(LHS_EXAMPLES.keras[0].root.children?.[1].content!);
           }
 
           const modelJsonString = JSON.stringify(parsed);
@@ -138,9 +137,9 @@ export class LHSContainer extends Component<HTMLDivElement> {
             let lastOutput = '';
 
             layers.forEach((layer: object, idx: number) => {
-              const name = layer.config?.name || layer.class_name + '_' + idx;
+              const name = layer.config?.name || `${layer.class_name}_${idx}`;
               const input = lastOutput ? [lastOutput] : [];
-              const output = [name + ':0'];
+              const output = [`${name}:0`];
 
               nodes.push({
                 id: name,
@@ -148,7 +147,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 opType: layer.class_name,
                 inputs: layer.class_name === 'InputLayer' ? [] : input,
                 outputs: output,
-                attributes: {}
+                attributes: {},
               });
               lastOutput = output[0];
             });
@@ -159,11 +158,11 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 layers.length > 0
                   ? [{ name: layers[0].config?.name || 'input_1', type: 'float32' }]
                   : [],
-              outputs: layers.length > 0 ? [{ name: lastOutput, type: 'float32' }] : []
+              outputs: layers.length > 0 ? [{ name: lastOutput, type: 'float32' }] : [],
             };
           } else {
             console.log(
-              `[stdout] Conversion successful. Generated ${onnxBytes.byteLength} bytes of ONNX protobuf.`
+              `[stdout] Conversion successful. Generated ${onnxBytes.byteLength} bytes of ONNX protobuf.`,
             );
             console.log('[stdout] Parsing ONNX for visualization...');
             const reader = new BufferReader(onnxBytes);
@@ -177,10 +176,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 opType: n.opType,
                 inputs: n.inputs,
                 outputs: n.outputs,
-                attributes: {}
+                attributes: {},
               })),
               inputs: graph.inputs.map((i) => ({ name: i.name, type: i.dtype })),
-              outputs: graph.outputs.map((o) => ({ name: o.name, type: o.dtype }))
+              outputs: graph.outputs.map((o) => ({ name: o.name, type: o.dtype })),
             };
           }
         } else {
@@ -210,10 +209,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
               opType: n.opType,
               inputs: n.inputs,
               outputs: n.outputs,
-              attributes: {}
+              attributes: {},
             })),
             inputs: graph.inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-            outputs: graph.outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+            outputs: graph.outputs.map((o: object) => ({ name: o.name, type: o.dtype })),
           };
 
           onnxBytes = serializeModelProto(graph as object);
@@ -235,7 +234,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
         globalEventBus.emit('PIPELINE_STEP_ADDED', {
           id: Date.now().toString(),
           description: `${sourceLabel} -> ONNX`,
-          state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' }
+          state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' },
         });
       } catch (err: any) {
         console.error(`[stderr] Error: ${err.stack || err.message || err}`);
@@ -259,7 +258,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
     this.splitPane = new SplitPane({
       orientation: 'vertical',
       initialSplitRatio: 0.3,
-      storageKey: 'onnx9000-demo-lhs-split'
+      storageKey: 'onnx9000-demo-lhs-split',
     });
     this.splitPane.mount(splitArea);
 
@@ -269,13 +268,12 @@ export class LHSContainer extends Component<HTMLDivElement> {
     this.tree = new FileTree({
       root: { name: 'loading...', type: 'directory', path: '/' },
       onSelect: (path) => {
-        const node = this.tree['findNode'](this.tree['options'].root, path);
-        const content =
-          node && node.content
-            ? node.content
-            : '# ' + path + '\n\n// Example generated by ONNX9000 Demo\n';
+        const node = this.tree.findNode(this.tree.options.root, path);
+        const content = node?.content
+          ? node.content
+          : `# ${path}\n\n// Example generated by ONNX9000 Demo\n`;
         this.editor.openFile(path, content, 'python');
-      }
+      },
     });
     this.tree.mount(pane1);
 
@@ -286,7 +284,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
       onChange: this.debouncer.debounce((val: string) => {
         console.log('Debounced editor change:', val.length, 'bytes');
         // Trigger WASM conversion in the future
-      }, 500)
+      }, 500),
     });
     this.editor.mount(pane2);
 
@@ -338,11 +336,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
         this.tree.updateData(ex.root);
         if (ex.initialFile) {
           // Open initial file via mock logic
-          const node = this.tree['findNode'](ex.root, ex.initialFile);
-          const content =
-            node && node.content
-              ? node.content
-              : '# ' + ex.initialFile + '\n\n// Example generated by ONNX9000 Demo\n';
+          const node = this.tree.findNode(ex.root, ex.initialFile);
+          const content = node?.content
+            ? node.content
+            : `# ${ex.initialFile}\n\n// Example generated by ONNX9000 Demo\n`;
           this.editor.openFile(ex.initialFile, content, 'python');
         }
       }

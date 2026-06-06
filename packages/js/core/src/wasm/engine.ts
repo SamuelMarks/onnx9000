@@ -24,7 +24,7 @@ export function init(): void {
  * @param len Length of the serialized graph in bytes
  * @returns Status code (0 for success)
  */
-export function execute_graph(graph_ptr: usize, len: usize): i32 {
+export function execute_graph(_graph_ptr: usize, _len: usize): i32 {
   // Mock execution return code
   return 0;
 }

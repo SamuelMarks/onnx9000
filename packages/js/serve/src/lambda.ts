@@ -2,7 +2,7 @@
  * @fileoverview lambda.ts
  * Provides lambda functionality for the serve package.
  */
-import { Onnx9000Server } from "./index";
+import type { Onnx9000Server } from './index';
 
 // 25. Provide AWS Lambda native handler formats (`event, context`).
 // 27. Gracefully catch specific runtime timeouts (e.g., Lambda 15min limit).
@@ -11,24 +11,21 @@ export function createLambdaHandler(server: Onnx9000Server) {
     event: ReturnType<typeof JSON.parse>,
     context: ReturnType<typeof JSON.parse>,
   ) {
-    const method =
-      event.httpMethod || event.requestContext?.http?.method || "GET";
-    const path = event.path || event.rawPath || "/";
-    const query = new URLSearchParams(
-      event.queryStringParameters || {},
-    ).toString();
-    const url = `https://${event.headers?.host || "localhost"}${path}${query ? "?" + query : ""}`;
+    const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
+    const path = event.path || event.rawPath || '/';
+    const query = new URLSearchParams(event.queryStringParameters || {}).toString();
+    const url = `https://${event.headers?.host || 'localhost'}${path}${query ? `?${query}` : ''}`;
 
     const headers = new Headers();
     if (event.headers) {
       for (const [key, value] of Object.entries(event.headers)) {
-        if (typeof value === "string") {
+        if (typeof value === 'string') {
           headers.append(key, value);
         }
       }
     }
 
-    let body: ReturnType<typeof JSON.parse> = undefined;
+    let body: ReturnType<typeof JSON.parse>;
     if (event.body) {
       if (event.isBase64Encoded) {
         body = Uint8Array.from(atob(event.body), (c) => c.charCodeAt(0));
@@ -48,17 +45,14 @@ export function createLambdaHandler(server: Onnx9000Server) {
       // Timeout 100ms before actual Lambda timeout to respond gracefully
       setTimeout(
         () => {
-          reject(new Error("Lambda Timeout Reached"));
+          reject(new Error('Lambda Timeout Reached'));
         },
         Math.max(0, remainingTime - 100),
       );
     });
 
     try {
-      const response = await Promise.race([
-        server.fetch(request),
-        timeoutPromise,
-      ]);
+      const response = await Promise.race([server.fetch(request), timeoutPromise]);
 
       const responseHeaders: Record<string, string> = {};
       response.headers.forEach((value, key) => {
@@ -77,7 +71,7 @@ export function createLambdaHandler(server: Onnx9000Server) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
       return {
         statusCode: 504,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ error: err.message }),
         isBase64Encoded: false,
       };

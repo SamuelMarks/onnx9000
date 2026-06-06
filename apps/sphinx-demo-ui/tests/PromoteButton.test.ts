@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { PromoteButton } from '../src/components/PromoteButton.js';
 import { globalEventBus } from '../src/core/EventBus.js';
 

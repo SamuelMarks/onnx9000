@@ -1,17 +1,17 @@
-import { describe, it, expect, vi } from "vitest";
-import * as Module from "../../src/mmdnn/reporter";
+import { describe, expect, it } from 'vitest';
+import * as Module from '../../src/mmdnn/reporter';
 
-describe("reporter.ts", () => {
-  it("should instantiate and cover MMDNNError", () => {
+describe('reporter.ts', () => {
+  it('should instantiate and cover MMDNNError', () => {
     try {
       const obj = new (Module as any).MMDNNError();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should instantiate and cover MMDNNReporter", () => {
+  it('should instantiate and cover MMDNNReporter', () => {
     try {
       const obj = new (Module as any).MMDNNReporter();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

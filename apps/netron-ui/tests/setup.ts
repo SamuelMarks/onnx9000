@@ -1,8 +1,8 @@
 (globalThis as any).self = globalThis;
 (globalThis as any).postMessage = () => undefined;
 
-Object.defineProperty(globalThis, "navigator", {
-  value: { userAgent: "node.js" },
+Object.defineProperty(globalThis, 'navigator', {
+  value: { userAgent: 'node.js' },
   writable: true,
 });
 
@@ -49,7 +49,7 @@ const mockContext = {
   createPattern: () => ({}),
 };
 
-if (typeof HTMLCanvasElement !== "undefined") {
+if (typeof HTMLCanvasElement !== 'undefined') {
   (HTMLCanvasElement as any).prototype.getContext = () => mockContext;
 }
 
@@ -60,29 +60,29 @@ class MockWorker {
   }
   onmessage: Object;
   onerror: Object;
-  postMessage(data: Object) {
+  postMessage(_data: Object) {
     if (this.onmessage) {
       this.onmessage({
         data: {
-          type: "PARSE_SUCCESS",
+          type: 'PARSE_SUCCESS',
           layout: {
             nodes: [
               {
-                id: "1",
-                name: "AddNode",
-                opType: "Add",
-                type: "node",
+                id: '1',
+                name: 'AddNode',
+                opType: 'Add',
+                type: 'node',
               },
-              { id: "input_X", name: "X", type: "input" },
+              { id: 'input_X', name: 'X', type: 'input' },
               {
-                id: "output_Y",
-                name: "Y",
-                type: "output",
+                id: 'output_Y',
+                name: 'Y',
+                type: 'output',
               },
               {
-                id: "constant_W",
-                name: "W",
-                type: "constant",
+                id: 'constant_W',
+                name: 'W',
+                type: 'constant',
               },
             ],
             edges: [],
@@ -90,22 +90,22 @@ class MockWorker {
           graph: {
             nodes: [
               {
-                name: "AddNode",
-                opType: "Add",
-                inputs: ["X", "W"],
-                outputs: ["Y"],
+                name: 'AddNode',
+                opType: 'Add',
+                inputs: ['X', 'W'],
+                outputs: ['Y'],
                 attributes: {
-                  attr1: { type: "FLOAT", value: 1.0 },
+                  attr1: { type: 'FLOAT', value: 1.0 },
                 },
-                domain: "",
+                domain: '',
               },
             ],
             tensors: {
-              W: { name: "W", dtype: "float32", shape: [1], size: 1 },
+              W: { name: 'W', dtype: 'float32', shape: [1], size: 1 },
             },
-            inputs: [{ name: "X", dtype: "float32", shape: [1] }],
-            outputs: [{ name: "Y", dtype: "float32", shape: [1] }],
-            initializers: ["W"],
+            inputs: [{ name: 'X', dtype: 'float32', shape: [1] }],
+            outputs: [{ name: 'Y', dtype: 'float32', shape: [1] }],
+            initializers: ['W'],
           },
         },
       });
@@ -115,12 +115,12 @@ class MockWorker {
 }
 (globalThis as any).Worker = MockWorker;
 
-if (typeof Blob === "undefined") {
+if (typeof Blob === 'undefined') {
   (globalThis as any).Blob = class Blob {
     constructor(public parts: Object[]) {}
   };
 }
-if (typeof File === "undefined") {
+if (typeof File === 'undefined') {
   (globalThis as any).File = class File extends Blob {
     constructor(
       parts: Object[],

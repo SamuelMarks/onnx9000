@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { MetricsDashboard } from '../src/components/MetricsDashboard.js';
 
 describe('MetricsDashboard', () => {

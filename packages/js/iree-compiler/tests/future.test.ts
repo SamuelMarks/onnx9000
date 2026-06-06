@@ -1,24 +1,18 @@
-import { describe, it, expect } from "vitest";
-import {
-  generateTraceVisualizer,
-  generateHTMLReport,
-  compileInBrowserWorker,
-} from "../src/cli.js";
+import { describe, expect, it } from 'vitest';
+import { compileInBrowserWorker, generateHTMLReport, generateTraceVisualizer } from '../src/cli.js';
 
-describe("Full Parity & Future Hardening", () => {
-  it("should validate advanced visualizer reports", () => {
-    expect(generateTraceVisualizer({})).toContain("HAL Command Buffer Trace");
-    expect(generateHTMLReport(["shader"], [])).toContain(
-      "WGSL to ONNX Mapping",
-    );
+describe('Full Parity & Future Hardening', () => {
+  it('should validate advanced visualizer reports', () => {
+    expect(generateTraceVisualizer({})).toContain('HAL Command Buffer Trace');
+    expect(generateHTMLReport(['shader'], [])).toContain('WGSL to ONNX Mapping');
   });
 
-  it("should run compiler in worker", async () => {
+  it('should run compiler in worker', async () => {
     const buffer = new ArrayBuffer(10);
     const result = await compileInBrowserWorker(buffer, {
-      targetBackend: "webnn",
+      targetBackend: 'webnn',
       dumpMlir: false,
-      optimizeLevel: "O2",
+      optimizeLevel: 'O2',
     });
     expect(result.byteLength).toBe(0);
   });

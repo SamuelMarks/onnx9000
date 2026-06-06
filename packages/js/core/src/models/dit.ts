@@ -2,37 +2,21 @@
  * @fileoverview dit.ts
  * Provides dit functionality for the core package.
  */
-import { Tensor } from "../ir/tensor.js";
-import {
-  Gelu,
-  Gemm,
-  LayerNormalization,
-  MultiHeadAttention,
-} from "../primitives.js";
-import { PatchEmbed } from "./vit.js";
+import { Tensor } from '../ir/tensor.js';
+import { Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
+import { PatchEmbed } from './vit.js';
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = "float32",
+  dtype: ReturnType<typeof JSON.parse> = 'float32',
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(
-  opType: string,
-  inputs: Tensor[],
-  attr?: ReturnType<typeof JSON.parse>,
-): Tensor {
-  const dtype = inputs[0]?.dtype ?? "float32";
-  return new Tensor(
-    `${opType}_out`,
-    [],
-    dtype,
-    false,
-    false,
-    new Float32Array(),
-  );
+function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
+  const dtype = inputs[0]?.dtype ?? 'float32';
+  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
 export class DiTBlock {
@@ -46,12 +30,7 @@ export class DiTBlock {
   public mlpFc2: Gemm;
   public adaLNModulation: Gemm;
 
-  constructor(
-    hiddenSize: number,
-    numHeads: number,
-    mlpRatio: number = 4.0,
-    prefix: string = "",
-  ) {
+  constructor(hiddenSize: number, numHeads: number, _mlpRatio: number = 4.0, prefix: string = '') {
     this.prefix = prefix;
     this.hiddenSize = hiddenSize;
     this.norm1 = new LayerNormalization([hiddenSize], 1e-6);
@@ -67,22 +46,19 @@ export class DiTBlock {
   call(x: Tensor, c: Tensor): Tensor {
     const cProj = this.adaLNModulation.call(
       c,
-      getParam(`${this.prefix}.adaLN_modulation.weight`, [
-        6 * this.hiddenSize,
-        this.hiddenSize,
-      ]),
+      getParam(`${this.prefix}.adaLN_modulation.weight`, [6 * this.hiddenSize, this.hiddenSize]),
       getParam(`${this.prefix}.adaLN_modulation.bias`, [6 * this.hiddenSize]),
     );
 
-    const splitOut = recordOp("Split", [cProj]);
+    const splitOut = recordOp('Split', [cProj]);
 
-    const axisTensor = recordOp("Constant", [], { value: [1], dtype: 7 });
-    const shiftMsa = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const scaleMsa = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const gateMsa = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const shiftMlp = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const scaleMlp = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const gateMlp = recordOp("Unsqueeze", [splitOut, axisTensor]);
+    const axisTensor = recordOp('Constant', [], { value: [1], dtype: 7 });
+    const shiftMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scaleMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const gateMsa = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const shiftMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scaleMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const gateMlp = recordOp('Unsqueeze', [splitOut, axisTensor]);
 
     let identity = x;
     let xNorm = this.norm1.call(
@@ -91,15 +67,15 @@ export class DiTBlock {
       getParam(`${this.prefix}.norm1.bias`, [this.hiddenSize]),
     );
 
-    const oneTensor = recordOp("Constant", [], { value: [1.0], dtype: 1 });
-    let xModulated = recordOp("Add", [
-      recordOp("Mul", [recordOp("Add", [oneTensor, scaleMsa]), xNorm]),
+    const oneTensor = recordOp('Constant', [], { value: [1.0], dtype: 1 });
+    let xModulated = recordOp('Add', [
+      recordOp('Mul', [recordOp('Add', [oneTensor, scaleMsa]), xNorm]),
       shiftMsa,
     ]);
 
     let xAttn = this.attn.call(xModulated, xModulated, xModulated);
-    xAttn = recordOp("Mul", [gateMsa, xAttn]);
-    x = recordOp("Add", [identity, xAttn]);
+    xAttn = recordOp('Mul', [gateMsa, xAttn]);
+    x = recordOp('Add', [identity, xAttn]);
 
     identity = x;
     xNorm = this.norm2.call(
@@ -108,31 +84,25 @@ export class DiTBlock {
       getParam(`${this.prefix}.norm2.bias`, [this.hiddenSize]),
     );
 
-    xModulated = recordOp("Add", [
-      recordOp("Mul", [recordOp("Add", [oneTensor, scaleMlp]), xNorm]),
+    xModulated = recordOp('Add', [
+      recordOp('Mul', [recordOp('Add', [oneTensor, scaleMlp]), xNorm]),
       shiftMlp,
     ]);
 
     let xMlp = this.mlpFc1.call(
       xModulated,
-      getParam(`${this.prefix}.mlp.fc1.weight`, [
-        this.hiddenSize * 4,
-        this.hiddenSize,
-      ]),
+      getParam(`${this.prefix}.mlp.fc1.weight`, [this.hiddenSize * 4, this.hiddenSize]),
       getParam(`${this.prefix}.mlp.fc1.bias`, [this.hiddenSize * 4]),
     );
     xMlp = this.act.call(xMlp);
     xMlp = this.mlpFc2.call(
       xMlp,
-      getParam(`${this.prefix}.mlp.fc2.weight`, [
-        this.hiddenSize,
-        this.hiddenSize * 4,
-      ]),
+      getParam(`${this.prefix}.mlp.fc2.weight`, [this.hiddenSize, this.hiddenSize * 4]),
       getParam(`${this.prefix}.mlp.fc2.bias`, [this.hiddenSize]),
     );
 
-    xMlp = recordOp("Mul", [gateMlp, xMlp]);
-    x = recordOp("Add", [identity, xMlp]);
+    xMlp = recordOp('Mul', [gateMlp, xMlp]);
+    x = recordOp('Add', [identity, xMlp]);
 
     return x;
   }
@@ -159,20 +129,12 @@ export class DiT {
   ) {
     this.hiddenSize = hiddenSize;
     this.outChannels = inChannels * patchSize * patchSize;
-    this.patchEmbed = new PatchEmbed(
-      inputSize,
-      patchSize,
-      inChannels,
-      hiddenSize,
-      "x_embedder",
-    );
+    this.patchEmbed = new PatchEmbed(inputSize, patchSize, inChannels, hiddenSize, 'x_embedder');
     this.tEmbedder = new Gemm(1.0, 1.0, 0, 1);
 
     this.blocks = [];
     for (let i = 0; i < depth; i++) {
-      this.blocks.push(
-        new DiTBlock(hiddenSize, numHeads, mlpRatio, `blocks.${i}`),
-      );
+      this.blocks.push(new DiTBlock(hiddenSize, numHeads, mlpRatio, `blocks.${i}`));
     }
 
     this.finalLayerNorm = new LayerNormalization([hiddenSize], 1e-6);
@@ -183,17 +145,13 @@ export class DiT {
   call(x: Tensor, t: Tensor): Tensor {
     x = this.patchEmbed.call(x);
 
-    const posEmbed = getParam("pos_embed", [
-      1,
-      this.patchEmbed.numPatches,
-      this.hiddenSize,
-    ]);
-    x = recordOp("Add", [x, posEmbed]);
+    const posEmbed = getParam('pos_embed', [1, this.patchEmbed.numPatches, this.hiddenSize]);
+    x = recordOp('Add', [x, posEmbed]);
 
     const c = this.tEmbedder.call(
       t,
-      getParam("t_embedder.weight", [this.hiddenSize, this.hiddenSize]),
-      getParam("t_embedder.bias", [this.hiddenSize]),
+      getParam('t_embedder.weight', [this.hiddenSize, this.hiddenSize]),
+      getParam('t_embedder.bias', [this.hiddenSize]),
     );
 
     for (const block of this.blocks) {
@@ -202,36 +160,27 @@ export class DiT {
 
     const cProj = this.finalLayerAdaLN.call(
       c,
-      getParam("final_layer.adaLN_modulation.weight", [
-        2 * this.hiddenSize,
-        this.hiddenSize,
-      ]),
-      getParam("final_layer.adaLN_modulation.bias", [2 * this.hiddenSize]),
+      getParam('final_layer.adaLN_modulation.weight', [2 * this.hiddenSize, this.hiddenSize]),
+      getParam('final_layer.adaLN_modulation.bias', [2 * this.hiddenSize]),
     );
 
-    const splitOut = recordOp("Split", [cProj]);
-    const axisTensor = recordOp("Constant", [], { value: [1], dtype: 7 });
-    const shift = recordOp("Unsqueeze", [splitOut, axisTensor]);
-    const scale = recordOp("Unsqueeze", [splitOut, axisTensor]);
+    const splitOut = recordOp('Split', [cProj]);
+    const axisTensor = recordOp('Constant', [], { value: [1], dtype: 7 });
+    const shift = recordOp('Unsqueeze', [splitOut, axisTensor]);
+    const scale = recordOp('Unsqueeze', [splitOut, axisTensor]);
 
     x = this.finalLayerNorm.call(
       x,
-      getParam("final_layer.norm.weight", [this.hiddenSize]),
-      getParam("final_layer.norm.bias", [this.hiddenSize]),
+      getParam('final_layer.norm.weight', [this.hiddenSize]),
+      getParam('final_layer.norm.bias', [this.hiddenSize]),
     );
-    const oneTensor = recordOp("Constant", [], { value: [1.0], dtype: 1 });
-    x = recordOp("Add", [
-      recordOp("Mul", [recordOp("Add", [oneTensor, scale]), x]),
-      shift,
-    ]);
+    const oneTensor = recordOp('Constant', [], { value: [1.0], dtype: 1 });
+    x = recordOp('Add', [recordOp('Mul', [recordOp('Add', [oneTensor, scale]), x]), shift]);
 
     x = this.finalLayerProj.call(
       x,
-      getParam("final_layer.linear.weight", [
-        this.outChannels,
-        this.hiddenSize,
-      ]),
-      getParam("final_layer.linear.bias", [this.outChannels]),
+      getParam('final_layer.linear.weight', [this.outChannels, this.hiddenSize]),
+      getParam('final_layer.linear.bias', [this.outChannels]),
     );
     return x;
   }

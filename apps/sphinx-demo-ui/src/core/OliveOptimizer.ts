@@ -3,18 +3,15 @@
  * Provides OliveOptimizer functionality for the Sphinx Demo UI.
  */
 // @ts-nocheck
-import { WorkerManager } from './WorkerManager';
+
 import { globalEventBus } from './EventBus';
-import { Store } from './Store';
-import { Logger } from './Logger';
+import { WorkerManager } from './WorkerManager';
 
 /**
  * Worker wrapper for Olive and onnx-simplifier execution.
  * Interfaces with the WASM builds to optimize ONNX graphs.
  */
 export class OliveOptimizer {
-  private logger = Logger.getInstance();
-
   /**
    * Optimizes the ONNX binary graph using the specified configuration.
    *
@@ -28,7 +25,7 @@ export class OliveOptimizer {
       quantizationLevel: 'FP16' | 'INT8' | 'None';
       enableStaticShapeInference: boolean;
       enableTransformerFusion: boolean;
-    }
+    },
   ): Promise<Uint8Array> {
     console.log(`Starting Olive optimization...`, config);
     globalEventBus.emit('OLIVE_OPTIMIZATION_STARTED');
@@ -40,7 +37,7 @@ export class OliveOptimizer {
       WorkerManager.getInstance().initWorker('/workers/olive-worker.js');
       const optimizedBinary = (await WorkerManager.getInstance().execute('OPTIMIZE_ONNX', {
         binary: onnxBinary,
-        config: config
+        config: config,
       })) as Uint8Array;
 
       const newSize = optimizedBinary.byteLength;
@@ -71,7 +68,7 @@ export class OliveOptimizer {
     try {
       WorkerManager.getInstance().initWorker('/workers/simplifier-worker.js');
       const simplifiedBinary = (await WorkerManager.getInstance().execute('SIMPLIFY_ONNX', {
-        binary: onnxBinary
+        binary: onnxBinary,
       })) as Uint8Array;
       globalEventBus.emit('ONNX_SIMPLIFIER_SUCCESS');
       return simplifiedBinary;

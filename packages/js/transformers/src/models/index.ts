@@ -3,13 +3,13 @@
  * Provides index functionality for the transformers package.
  */
 export class HubConfig {
-  static endpoint: string = "https://huggingface.co";
+  static endpoint: string = 'https://huggingface.co';
   static apiKey: string | null = null;
   static setEndpoint(url: string) {
-    this.endpoint = url;
+    HubConfig.endpoint = url;
   }
   static setApiKey(key: string) {
-    this.apiKey = key;
+    HubConfig.apiKey = key;
   }
 }
 
@@ -54,8 +54,8 @@ export class PreTrainedModel {
   }
 
   async _call(
-    inputs: ReturnType<typeof JSON.parse>,
-    ...args: ReturnType<typeof JSON.parse>[]
+    _inputs: ReturnType<typeof JSON.parse>,
+    ..._args: ReturnType<typeof JSON.parse>[]
   ): Promise<ReturnType<typeof JSON.parse>> {
     // Cast inputs
     // Resolve batch sizes
@@ -70,8 +70,8 @@ export class PreTrainedModel {
 
 export class GenerationMixin extends PreTrainedModel {
   async generate(
-    inputs: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _inputs: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     return { sequences: [[0, 1, 2]] };
   }
@@ -79,17 +79,17 @@ export class GenerationMixin extends PreTrainedModel {
 
 export class AutoConfig {
   static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
+    _modelId: string,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
-    return { model_type: "bert", max_position_embeddings: 512 };
+    return { model_type: 'bert', max_position_embeddings: 512 };
   }
 }
 
 export class AutoFeatureExtractor {
   static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
+    _modelId: string,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     return {}; // Stub for Audio/Image processors
   }
@@ -97,74 +97,47 @@ export class AutoFeatureExtractor {
 
 // AutoClasses
 export class AutoModelForSequenceClassification extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForSequenceClassification({}, modelId, options);
   }
 }
 export class AutoModelForTokenClassification extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForTokenClassification({}, modelId, options);
   }
 }
 export class AutoModelForQuestionAnswering extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForQuestionAnswering({}, modelId, options);
   }
 }
 export class AutoModelForCausalLM extends GenerationMixin {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForCausalLM({}, modelId, options);
   }
 }
 export class AutoModelForMaskedLM extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForMaskedLM({}, modelId, options);
   }
 }
 export class AutoModelForSeq2SeqLM extends GenerationMixin {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForSeq2SeqLM({}, modelId, options);
   }
 }
 export class AutoModelForImageClassification extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForImageClassification({}, modelId, options);
   }
 }
 export class AutoModelForObjectDetection extends PreTrainedModel {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForObjectDetection({}, modelId, options);
   }
 }
 export class AutoModelForSpeechSeq2Seq extends GenerationMixin {
-  static async fromPretrained(
-    modelId: string,
-    options: ReturnType<typeof JSON.parse> = {},
-  ) {
+  static async fromPretrained(modelId: string, options: ReturnType<typeof JSON.parse> = {}) {
     return new AutoModelForSpeechSeq2Seq({}, modelId, options);
   }
 }

@@ -1,9 +1,9 @@
 /**
  * Common Primitive Registry for ONNX9000.
  */
-import { Tensor } from "./ir/tensor.js";
-import { Node } from "./ir/node.js";
-import { AttributeValue } from "./ops/registry.js";
+
+import { Tensor } from './ir/tensor.js';
+import type { AttributeValue } from './ops/registry.js';
 
 /**
  * Creates a generic dummy output tensor for ops.
@@ -11,18 +11,11 @@ import { AttributeValue } from "./ops/registry.js";
 function recordOp(
   opType: string,
   inputs: Tensor[],
-  attributes?: Record<string, AttributeValue>,
+  _attributes?: Record<string, AttributeValue>,
 ): Tensor {
   // Basic shape inference could be added here, but for now we follow the Python pattern
-  const dtype = inputs.length > 0 && inputs[0] ? inputs[0].dtype : "float32";
-  return new Tensor(
-    `${opType}_out`,
-    [],
-    dtype,
-    false,
-    false,
-    new Float32Array(),
-  );
+  const dtype = inputs.length > 0 && inputs[0] ? inputs[0].dtype : 'float32';
+  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
 /**
@@ -48,11 +41,7 @@ export class BatchNormalization extends BaseNorm {
   public numFeatures: number;
   public momentum: number;
 
-  constructor(
-    numFeatures: number,
-    epsilon: number = 1e-5,
-    momentum: number = 0.1,
-  ) {
+  constructor(numFeatures: number, epsilon: number = 1e-5, momentum: number = 0.1) {
     super(epsilon);
     this.numFeatures = numFeatures;
     this.momentum = momentum;
@@ -61,14 +50,8 @@ export class BatchNormalization extends BaseNorm {
   /**
    * Applies Batch Normalization.
    */
-  call(
-    x: Tensor,
-    scale: Tensor,
-    b: Tensor,
-    inputMean: Tensor,
-    inputVar: Tensor,
-  ): Tensor {
-    return recordOp("BatchNormalization", [x, scale, b, inputMean, inputVar], {
+  call(x: Tensor, scale: Tensor, b: Tensor, inputMean: Tensor, inputVar: Tensor): Tensor {
+    return recordOp('BatchNormalization', [x, scale, b, inputMean, inputVar], {
       epsilon: this.epsilon,
       momentum: this.momentum,
     });
@@ -93,7 +76,7 @@ export class LayerNormalization extends BaseNorm {
    */
   call(x: Tensor, scale: Tensor, b?: Tensor): Tensor {
     const inputs = b ? [x, scale, b] : [x, scale];
-    return recordOp("LayerNormalization", inputs, {
+    return recordOp('LayerNormalization', inputs, {
       axis: this.axis,
       epsilon: this.epsilon,
     });
@@ -115,7 +98,7 @@ export class RMSNorm extends BaseNorm {
    * Applies RMS Normalization.
    */
   call(x: Tensor, scale: Tensor): Tensor {
-    return recordOp("RMSNormalization", [x, scale], {});
+    return recordOp('RMSNormalization', [x, scale], {});
   }
 }
 
@@ -136,7 +119,7 @@ export class GroupNorm extends BaseNorm {
    * Applies Group Normalization.
    */
   call(x: Tensor, scale: Tensor, b: Tensor): Tensor {
-    return recordOp("GroupNormalization", [x, scale, b], {
+    return recordOp('GroupNormalization', [x, scale, b], {
       epsilon: this.epsilon,
       num_groups: this.numGroups,
     });
@@ -158,7 +141,7 @@ export class InstanceNorm extends BaseNorm {
    * Applies Instance Normalization.
    */
   call(x: Tensor, scale: Tensor, b: Tensor): Tensor {
-    return recordOp("InstanceNormalization", [x, scale, b], {
+    return recordOp('InstanceNormalization', [x, scale, b], {
       epsilon: this.epsilon,
     });
   }
@@ -170,12 +153,8 @@ export class InstanceNorm extends BaseNorm {
 export abstract class BaseActivation {
   abstract call(x: Tensor): Tensor;
 
-  generateLUT(
-    numPoints: number = 256,
-    rangeMin: number = -8.0,
-    rangeMax: number = 8.0,
-  ): Tensor {
-    return recordOp("Constant", [], {
+  generateLUT(numPoints: number = 256, rangeMin: number = -8.0, rangeMax: number = 8.0): Tensor {
+    return recordOp('Constant', [], {
       lut_range: [rangeMin, rangeMax],
       lut_points: numPoints,
       activation: this.constructor.name,
@@ -185,19 +164,19 @@ export abstract class BaseActivation {
 
 export class Relu extends BaseActivation {
   call(x: Tensor): Tensor {
-    return recordOp("Relu", [x]);
+    return recordOp('Relu', [x]);
   }
 }
 
 export class Sigmoid extends BaseActivation {
   call(x: Tensor): Tensor {
-    return recordOp("Sigmoid", [x]);
+    return recordOp('Sigmoid', [x]);
   }
 }
 
 export class Tanh extends BaseActivation {
   call(x: Tensor): Tensor {
-    return recordOp("Tanh", [x]);
+    return recordOp('Tanh', [x]);
   }
 }
 
@@ -208,24 +187,24 @@ export class LeakyRelu extends BaseActivation {
     this.alpha = alpha;
   }
   call(x: Tensor): Tensor {
-    return recordOp("LeakyRelu", [x], { alpha: this.alpha });
+    return recordOp('LeakyRelu', [x], { alpha: this.alpha });
   }
 }
 
 export class Gelu extends BaseActivation {
   public approximate: string;
-  constructor(approximate: string = "none") {
+  constructor(approximate: string = 'none') {
     super();
     this.approximate = approximate;
   }
   call(x: Tensor): Tensor {
-    return recordOp("Gelu", [x], { approximate: this.approximate });
+    return recordOp('Gelu', [x], { approximate: this.approximate });
   }
 }
 
 export class Silu extends BaseActivation {
   call(x: Tensor): Tensor {
-    return recordOp("Swish", [x]);
+    return recordOp('Swish', [x]);
   }
 }
 
@@ -233,7 +212,7 @@ export class Swish extends Silu {}
 
 export class Mish extends BaseActivation {
   call(x: Tensor): Tensor {
-    return recordOp("Mish", [x]);
+    return recordOp('Mish', [x]);
   }
 }
 
@@ -283,16 +262,7 @@ export class ConvND extends ConvFamily {
     groups: number = 1,
     bias: boolean = true,
   ) {
-    super(
-      inChannels,
-      outChannels,
-      kernelSize,
-      stride,
-      padding,
-      dilation,
-      groups,
-      bias,
-    );
+    super(inChannels, outChannels, kernelSize, stride, padding, dilation, groups, bias);
     this.dims = dims;
   }
 
@@ -300,18 +270,12 @@ export class ConvND extends ConvFamily {
     const ks = Array.isArray(this.kernelSize)
       ? this.kernelSize
       : Array(this.dims).fill(this.kernelSize);
-    const st = Array.isArray(this.stride)
-      ? this.stride
-      : Array(this.dims).fill(this.stride);
-    const pa = Array.isArray(this.padding)
-      ? this.padding
-      : Array(this.dims * 2).fill(this.padding);
-    const di = Array.isArray(this.dilation)
-      ? this.dilation
-      : Array(this.dims).fill(this.dilation);
+    const st = Array.isArray(this.stride) ? this.stride : Array(this.dims).fill(this.stride);
+    const pa = Array.isArray(this.padding) ? this.padding : Array(this.dims * 2).fill(this.padding);
+    const di = Array.isArray(this.dilation) ? this.dilation : Array(this.dims).fill(this.dilation);
 
     const inputs = b ? [x, w, b] : [x, w];
-    return recordOp("Conv", inputs, {
+    return recordOp('Conv', inputs, {
       kernel_shape: ks,
       strides: st,
       pads: pa,
@@ -331,23 +295,13 @@ export class DepthwiseConv extends ConvND {
     dilation: number | number[] = 1,
     bias: boolean = true,
   ) {
-    super(
-      dims,
-      channels,
-      channels,
-      kernelSize,
-      stride,
-      padding,
-      dilation,
-      channels,
-      bias,
-    );
+    super(dims, channels, channels, kernelSize, stride, padding, dilation, channels, bias);
   }
 }
 
 export class MatMul {
   call(x: Tensor, y: Tensor): Tensor {
-    return recordOp("MatMul", [x, y]);
+    return recordOp('MatMul', [x, y]);
   }
 }
 
@@ -357,12 +311,7 @@ export class Gemm {
   public transA: number;
   public transB: number;
 
-  constructor(
-    alpha: number = 1.0,
-    beta: number = 1.0,
-    transA: number = 0,
-    transB: number = 0,
-  ) {
+  constructor(alpha: number = 1.0, beta: number = 1.0, transA: number = 0, transB: number = 0) {
     this.alpha = alpha;
     this.beta = beta;
     this.transA = transA;
@@ -371,7 +320,7 @@ export class Gemm {
 
   call(x: Tensor, y: Tensor, c?: Tensor): Tensor {
     const inputs = c ? [x, y, c] : [x, y];
-    return recordOp("Gemm", inputs, {
+    return recordOp('Gemm', inputs, {
       alpha: this.alpha,
       beta: this.beta,
       transA: this.transA,
@@ -385,11 +334,7 @@ export class MultiHeadAttention {
   public qkvBias: boolean;
   public outBias: boolean;
 
-  constructor(
-    numHeads: number,
-    qkvBias: boolean = true,
-    outBias: boolean = true,
-  ) {
+  constructor(numHeads: number, qkvBias: boolean = true, outBias: boolean = true) {
     this.numHeads = numHeads;
     this.qkvBias = qkvBias;
     this.outBias = outBias;
@@ -397,14 +342,14 @@ export class MultiHeadAttention {
 
   call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
-    return recordOp("Attention", inputs, { num_heads: this.numHeads });
+    return recordOp('Attention', inputs, { num_heads: this.numHeads });
   }
 }
 
 export class FlashAttention extends MultiHeadAttention {
   override call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
-    return recordOp("FlashAttention", inputs, { num_heads: this.numHeads });
+    return recordOp('FlashAttention', inputs, { num_heads: this.numHeads });
   }
 }
 
@@ -423,7 +368,7 @@ export class GroupedQueryAttention extends MultiHeadAttention {
 
   override call(q: Tensor, k: Tensor, v: Tensor, mask?: Tensor): Tensor {
     const inputs = mask ? [q, k, v, mask] : [q, k, v];
-    return recordOp("GroupedQueryAttention", inputs, {
+    return recordOp('GroupedQueryAttention', inputs, {
       num_heads: this.numHeads,
       num_kv_heads: this.numKvHeads,
     });
@@ -442,7 +387,7 @@ export class RoPE {
   }
 
   call(x: Tensor, pos: Tensor): Tensor {
-    return recordOp("RoPE", [x, pos], { dim: this.dim, base: this.base });
+    return recordOp('RoPE', [x, pos], { dim: this.dim, base: this.base });
   }
 }
 
@@ -454,6 +399,6 @@ export class AlibiBias {
   }
 
   call(mask: Tensor): Tensor {
-    return recordOp("AlibiBias", [mask], { num_heads: this.numHeads });
+    return recordOp('AlibiBias', [mask], { num_heads: this.numHeads });
   }
 }

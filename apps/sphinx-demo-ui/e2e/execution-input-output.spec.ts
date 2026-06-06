@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Execution UI & Tensor Input Modals', () => {
   test.beforeEach(async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('Execution UI & Tensor Input Modals', () => {
 
     // Verify toast was triggered, which implies random data config was requested
     const toastMsg = await page.evaluate(
-      () => (window as ReturnType<typeof JSON.parse>).__LATEST_TOAST__
+      () => (window as ReturnType<typeof JSON.parse>).__LATEST_TOAST__,
     );
     expect(toastMsg).toContain('Random data configured for execution');
   });
@@ -92,7 +92,7 @@ test.describe('Execution UI & Tensor Input Modals', () => {
     await fileInput.setInputFiles({
       name: 'pixel.png',
       mimeType: 'image/png',
-      buffer
+      buffer,
     });
 
     // The canvas preview should become visible

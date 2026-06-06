@@ -1,65 +1,65 @@
-import { describe, it, expect, vi } from "vitest";
-import { runCli } from "../src/cli.js";
-import { ModelEnsemble } from "../src/ensemble.js";
-import { KVCacheManager } from "../src/kv_cache.js";
-import { globalLogger } from "../src/logger";
+import { describe, expect, it, vi } from 'vitest';
+import { runCli } from '../src/cli.js';
+import { ModelEnsemble } from '../src/ensemble.js';
+import { KVCacheManager } from '../src/kv_cache.js';
+import { globalLogger } from '../src/logger';
 
 // Mock the serveNode so it doesn't spin up a server
-vi.mock("../src/node", () => ({
+vi.mock('../src/node', () => ({
   serveNode: vi.fn(),
 }));
 
-describe("Serve Extra Coverage", () => {
-  it("cli.ts coverage", () => {
+describe('Serve Extra Coverage', () => {
+  it('cli.ts coverage', () => {
     runCli([
-      "--port",
-      "9090",
-      "--model-repository",
-      "./test-models",
-      "--max-batch-size",
-      "32",
-      "--log-verbose",
-      "--enable-prometheus",
-      "--gpu-only",
-      "--http2",
+      '--port',
+      '9090',
+      '--model-repository',
+      './test-models',
+      '--max-batch-size',
+      '32',
+      '--log-verbose',
+      '--enable-prometheus',
+      '--gpu-only',
+      '--http2',
     ]);
     expect(globalLogger.level).toBe(1); // DEBUG is usually 0
   });
 
-  it("ensemble.ts coverage", async () => {
+  it('ensemble.ts coverage', async () => {
     // Normal graph
     const ensemble = new ModelEnsemble({
-      name: "test",
-      inputs: ["input1"],
-      outputs: { out: "node3.out" },
+      name: 'test',
+      inputs: ['input1'],
+      outputs: { out: 'node3.out' },
       nodes: [
         {
-          id: "node1",
-          type: "model",
-          inputs: { x: "global.input1" },
-          outputs: ["output0"],
+          id: 'node1',
+          type: 'model',
+          inputs: { x: 'global.input1' },
+          outputs: ['output0'],
         },
         {
-          id: "node2",
-          type: "tokenizer",
-          inputs: { x: "node1.output0" },
-          outputs: ["input_ids"],
+          id: 'node2',
+          type: 'tokenizer',
+          inputs: { x: 'node1.output0' },
+          outputs: ['input_ids'],
         },
         {
-          id: "node3",
-          type: "logic",
-          inputs: { a: "node2.input_ids" },
-          outputs: ["out"],
+          id: 'node3',
+          type: 'logic',
+          inputs: { a: 'node2.input_ids' },
+          outputs: ['out'],
           logic: async (i) => i.a,
         },
-        { id: "node4", type: "post_processor", inputs: {}, outputs: ["out"] },
-        { id: "node5", type: "lora_adapter", inputs: {}, outputs: ["weights"] },
+        { id: 'node4', type: 'post_processor', inputs: {}, outputs: ['out'] },
+        { id: 'node5', type: 'lora_adapter', inputs: {}, outputs: ['weights'] },
         {
-          id: "node6",
-          type: "condition",
+          id: 'node6',
+          type: 'condition',
           inputs: {},
-          outputs: ["route"],
-          condition: () => "node7",
+          outputs: ['route'],
+          condition: () => 'node7',
         },
       ],
     });
@@ -71,18 +71,18 @@ describe("Serve Extra Coverage", () => {
     // Cycle graph
     expect(() => {
       new ModelEnsemble({
-        name: "cycle",
+        name: 'cycle',
         inputs: [],
         outputs: {},
         nodes: [
-          { id: "A", type: "model", inputs: { x: "B.out" }, outputs: ["out"] },
-          { id: "B", type: "model", inputs: { x: "A.out" }, outputs: ["out"] },
+          { id: 'A', type: 'model', inputs: { x: 'B.out' }, outputs: ['out'] },
+          { id: 'B', type: 'model', inputs: { x: 'A.out' }, outputs: ['out'] },
         ],
       });
-    }).toThrow("Infinite routing loop detected");
+    }).toThrow('Infinite routing loop detected');
   });
 
-  it("kv_cache.ts coverage", async () => {
+  it('kv_cache.ts coverage', async () => {
     vi.useFakeTimers();
     const syncAdapter = {
       save: vi.fn(),
@@ -93,38 +93,35 @@ describe("Serve Extra Coverage", () => {
     const kv = new KVCacheManager(syncAdapter);
 
     // Load from adapter
-    const data1 = await kv.getCache("session-1");
+    const data1 = await kv.getCache('session-1');
     expect(data1).toEqual(new Float32Array([1, 2, 3]));
-    expect(syncAdapter.load).toHaveBeenCalledWith("session-1");
+    expect(syncAdapter.load).toHaveBeenCalledWith('session-1');
 
     // Get from memory
-    const data2 = await kv.getCache("session-1");
+    const data2 = await kv.getCache('session-1');
     expect(data2).toEqual(new Float32Array([1, 2, 3]));
 
     // Set cache
-    await kv.setCache("session-2", new Float32Array([4, 5, 6]), "hash-1");
-    expect(syncAdapter.save).toHaveBeenCalledWith(
-      "session-2",
-      expect.any(Float32Array),
-    );
+    await kv.setCache('session-2', new Float32Array([4, 5, 6]), 'hash-1');
+    expect(syncAdapter.save).toHaveBeenCalledWith('session-2', expect.any(Float32Array));
 
     // Prompt cache
-    expect(kv.getPromptCache("hash-1")).toEqual(new Float32Array([4, 5, 6]));
-    expect(kv.getPromptCache("unknown")).toBeNull();
+    expect(kv.getPromptCache('hash-1')).toEqual(new Float32Array([4, 5, 6]));
+    expect(kv.getPromptCache('unknown')).toBeNull();
 
     // Load unknown from adapter
     syncAdapter.load.mockResolvedValueOnce(null);
-    expect(await kv.getCache("session-3")).toBeNull();
+    expect(await kv.getCache('session-3')).toBeNull();
 
     // Eviction
     kv.idleTimeoutMs = 100;
     vi.advanceTimersByTime(200000);
-    expect(kv.getPromptCache("hash-1")).toBeNull();
+    expect(kv.getPromptCache('hash-1')).toBeNull();
 
     // Flush
-    await kv.setCache("session-4", new Float32Array([0]), "hash-2");
+    await kv.setCache('session-4', new Float32Array([0]), 'hash-2');
     await kv.flushAll();
-    expect(kv.getPromptCache("hash-2")).toBeNull();
+    expect(kv.getPromptCache('hash-2')).toBeNull();
 
     // Ring Buffer
     const rb = kv.createRingBuffer(10);

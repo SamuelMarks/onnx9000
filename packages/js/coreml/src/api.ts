@@ -2,12 +2,12 @@
  * @fileoverview api.ts
  * Provides api functionality for the coreml package.
  */
-import { Graph } from "@onnx9000/core";
-import { ONNXToMILConverter } from "./converter.js";
-import { MILToONNXConverter } from "./importer.js";
-import { Program } from "./mil/ast.js";
-import { MLPackageBuilder } from "./mlpackage.js";
-import { Model } from "./schema.js";
+import type { Graph } from '@onnx9000/core';
+import { ONNXToMILConverter } from './converter.js';
+import { MILToONNXConverter } from './importer.js';
+import type { Program } from './mil/ast.js';
+import { MLPackageBuilder } from './mlpackage.js';
+import type { Model } from './schema.js';
 
 export function convertToCoreML(
   graph: Graph,
@@ -30,7 +30,7 @@ export function buildMLPackage(
     outputMappings?: Record<string, string>;
     stateful?: boolean;
     generateSwiftBoilerplate?: boolean;
-    computePrecision?: "Float16" | "Float32";
+    computePrecision?: 'Float16' | 'Float32';
     imageInputs?: Record<
       string,
       {

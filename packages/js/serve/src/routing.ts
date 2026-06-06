@@ -41,7 +41,7 @@ export class PeerRegistry {
     if (!this.registry.has(model)) {
       this.registry.set(model, new Set());
     }
-    this.registry.get(model)!.add(nodeUrl);
+    this.registry.get(model)?.add(nodeUrl);
   }
 
   // 179. Support generic round-robin load balancing
@@ -59,27 +59,21 @@ export class PeerRegistry {
 }
 
 // 177. If Node A doesn't have `Model X` in memory, transparently proxy
-export async function proxyRequest(
-  req: Request,
-  targetUrl: string,
-): Promise<Response> {
+export async function proxyRequest(req: Request, targetUrl: string): Promise<Response> {
   const headers = new Headers(req.headers);
   // 180. Forward HTTP client IPs perfectly via `X-Forwarded-For`
-  const clientIp =
-    req.headers.get("cf-connecting-ip") ||
-    req.headers.get("x-forwarded-for") ||
-    "";
+  const clientIp = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for') || '';
   if (clientIp) {
-    headers.set("X-Forwarded-For", clientIp);
+    headers.set('X-Forwarded-For', clientIp);
   }
 
   const init: RequestInit = {
     method: req.method,
     headers,
-    redirect: "manual",
+    redirect: 'manual',
   };
 
-  if (req.method !== "GET" && req.method !== "HEAD") {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     init.body = await req.arrayBuffer();
   }
 

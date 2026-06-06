@@ -8,12 +8,12 @@
 // 184. Support `--enable-prometheus` flag.
 // 185. Support `--gpu-only` flag throwing errors if WASM CPU fallback triggers.
 
-import { createServer, serveNode } from "./index";
-import { globalLogger, LogLevel } from "./logger";
+import { createServer, serveNode } from './index';
+import { globalLogger, LogLevel } from './logger';
 
 export function runCli(args: string[]) {
   let port = 8080;
-  let modelRepository = "./models";
+  let modelRepository = './models';
   let maxBatchSize = 8;
   let enablePrometheus = false;
   let gpuOnly = false;
@@ -21,19 +21,19 @@ export function runCli(args: string[]) {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === "--port" && i + 1 < args.length) {
-      port = parseInt(args[++i] || "0", 10);
-    } else if (arg === "--model-repository" && i + 1 < args.length) {
-      modelRepository = args[++i] || "";
-    } else if (arg === "--max-batch-size" && i + 1 < args.length) {
-      maxBatchSize = parseInt(args[++i] || "0", 10);
-    } else if (arg === "--log-verbose") {
+    if (arg === '--port' && i + 1 < args.length) {
+      port = parseInt(args[++i] || '0', 10);
+    } else if (arg === '--model-repository' && i + 1 < args.length) {
+      modelRepository = args[++i] || '';
+    } else if (arg === '--max-batch-size' && i + 1 < args.length) {
+      maxBatchSize = parseInt(args[++i] || '0', 10);
+    } else if (arg === '--log-verbose') {
       globalLogger.level = LogLevel.DEBUG;
-    } else if (arg === "--enable-prometheus") {
+    } else if (arg === '--enable-prometheus') {
       enablePrometheus = true;
-    } else if (arg === "--gpu-only") {
+    } else if (arg === '--gpu-only') {
       gpuOnly = true;
-    } else if (arg === "--http2") {
+    } else if (arg === '--http2') {
       useHttp2 = true;
     }
   }
@@ -54,6 +54,6 @@ export function runCli(args: string[]) {
 }
 
 // If invoked directly
-if (typeof require !== "undefined" && require.main === module) {
+if (typeof require !== 'undefined' && require.main === module) {
   runCli(process.argv.slice(2));
 }

@@ -19,21 +19,16 @@ export class WebGPUManager {
   public fallbackToWasm: boolean = false;
 
   public async init() {
-    if (
-      typeof navigator !== "undefined" &&
-      (navigator as ReturnType<typeof JSON.parse>).gpu
-    ) {
-      this.adapter = await (
-        navigator as ReturnType<typeof JSON.parse>
-      ).gpu.requestAdapter({
-        powerPreference: "high-performance", // 104
+    if (typeof navigator !== 'undefined' && (navigator as ReturnType<typeof JSON.parse>).gpu) {
+      this.adapter = await (navigator as ReturnType<typeof JSON.parse>).gpu.requestAdapter({
+        powerPreference: 'high-performance', // 104
       });
 
       if (this.adapter) {
         // 108. Enable Float16
         const requiredFeatures = [];
-        if (this.adapter.features.has("shader-f16")) {
-          requiredFeatures.push("shader-f16");
+        if (this.adapter.features.has('shader-f16')) {
+          requiredFeatures.push('shader-f16');
         }
 
         try {
@@ -43,11 +38,11 @@ export class WebGPUManager {
 
           // 110. Device Loss handling
           this.device.lost.then((info: ReturnType<typeof JSON.parse>) => {
-            console.error("WebGPU Device Lost:", info.message);
+            console.error('WebGPU Device Lost:', info.message);
             this.handleDeviceLoss();
           });
-        } catch (err) {
-          console.warn("WebGPU initialization failed, falling back to WASM");
+        } catch (_err) {
+          console.warn('WebGPU initialization failed, falling back to WASM');
           this.fallbackToWasm = true; // 107
         }
       } else {
@@ -61,16 +56,16 @@ export class WebGPUManager {
   private handleDeviceLoss() {
     // Graceful restart logic
     this.device = null;
-    this.init().catch((err) => {
+    this.init().catch((_err) => {
       this.fallbackToWasm = true;
     });
   }
 
   // 109. Multi-GPU Support Logical Router
-  public getTargetDevice(modelName: string): ReturnType<typeof JSON.parse> {
+  public getTargetDevice(_modelName: string): ReturnType<typeof JSON.parse> {
     if (this.fallbackToWasm || !this.device) {
-      return { type: "wasm" };
+      return { type: 'wasm' };
     }
-    return { type: "webgpu", device: this.device };
+    return { type: 'webgpu', device: this.device };
   }
 }

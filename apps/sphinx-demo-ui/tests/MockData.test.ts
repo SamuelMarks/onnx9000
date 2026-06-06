@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
-import { LHS_FRAMEWORKS, LHS_EXAMPLES, RHS_TARGETS } from '../src/data/MockData.js';
+import { describe, expect, it } from 'vitest';
+import { LHS_EXAMPLES, LHS_FRAMEWORKS, RHS_TARGETS } from '../src/data/MockData.js';
 
 describe('MockData', () => {
   it('should be valid', () => {

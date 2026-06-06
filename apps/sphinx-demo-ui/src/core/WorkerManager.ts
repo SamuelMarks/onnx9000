@@ -67,7 +67,7 @@ export class WorkerManager {
           globalEventBus.emit('CONSOLE_LOG', {
             level: LogLevel.INFO,
             message: msg.payload,
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         }
       }

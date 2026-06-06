@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { VizGraph } from './OnnxAdapter';
+import type { VizGraph } from './OnnxAdapter';
 
 /**
  * Utility to format an ONNX AST.

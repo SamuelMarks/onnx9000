@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/WorkerManager';
 
 describe('WorkerManager.ts', () => {
@@ -7,6 +7,6 @@ describe('WorkerManager.ts', () => {
     try {
       const obj = new (Module as any).WorkerManager();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

@@ -1,14 +1,12 @@
 // @ts-nocheck
-import { WorkerManager } from './WorkerManager';
+
 import { globalEventBus } from './EventBus';
-import { Logger } from './Logger';
+import { WorkerManager } from './WorkerManager';
 
 /**
  * Worker wrapper for WebNN polyfill execution.
  */
 export class WebNNPolyfillRunner {
-  private logger = Logger.getInstance();
-
   /**
    * Run inference on an ONNX model using WebNN polyfill.
    *
@@ -18,7 +16,7 @@ export class WebNNPolyfillRunner {
    */
   public async runInference(
     onnxBinary: Uint8Array,
-    inputs: Record<string, Float32Array | Int32Array>
+    inputs: Record<string, Float32Array | Int32Array>,
   ): Promise<Record<string, object>> {
     console.log(`Starting WebNN Polyfill execution...`);
     globalEventBus.emit('INFERENCE_STARTED');
@@ -29,7 +27,7 @@ export class WebNNPolyfillRunner {
       WorkerManager.getInstance().initWorker('/workers/webnn-worker.js');
       const outputs = (await WorkerManager.getInstance().execute('RUN_WEBNN', {
         binary: onnxBinary,
-        inputs
+        inputs,
       })) as Record<string, object>;
 
       const end = performance.now();

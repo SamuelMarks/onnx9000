@@ -4,6 +4,6 @@
  */
 export class Tfliteconverter {
   run() {
-    return "[tflite-converter] processed";
+    return '[tflite-converter] processed';
   }
 }

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { BottomContainer } from '../src/components/BottomContainer.js';
 import { Logger } from '../src/core/Logger.js';
 

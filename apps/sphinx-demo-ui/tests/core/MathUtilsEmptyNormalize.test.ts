@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { MathUtils } from '../../src/core/MathUtils';
 
 describe('MathUtils normalize edge cases', () => {

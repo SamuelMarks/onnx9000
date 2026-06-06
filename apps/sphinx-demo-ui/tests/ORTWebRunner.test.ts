@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ORTWebRunner } from '../src/core/ORTWebRunner.js';
 
 vi.mock('../src/core/WorkerManager.js', () => ({
@@ -7,9 +7,9 @@ vi.mock('../src/core/WorkerManager.js', () => ({
     getInstance: vi.fn().mockReturnValue({
       initWorker: vi.fn(),
       execute: vi.fn().mockResolvedValue({ y: {} }),
-      terminate: vi.fn()
-    })
-  }
+      terminate: vi.fn(),
+    }),
+  },
 }));
 
 describe('ORTWebRunner', () => {

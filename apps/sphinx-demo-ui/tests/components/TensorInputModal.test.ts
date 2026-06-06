@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/components/TensorInputModal';
 
 describe('TensorInputModal.ts', () => {
@@ -7,6 +7,6 @@ describe('TensorInputModal.ts', () => {
     try {
       const obj = new (Module as any).TensorInputModal();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

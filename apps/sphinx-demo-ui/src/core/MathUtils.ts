@@ -14,8 +14,8 @@ export class MathUtils {
    */
   public static variance(data: number[]): number {
     if (data.length === 0) return 0;
-    const m = this.mean(data);
-    const sumSquareDiff = data.reduce((acc, val) => acc + Math.pow(val - m, 2), 0);
+    const m = MathUtils.mean(data);
+    const sumSquareDiff = data.reduce((acc, val) => acc + (val - m) ** 2, 0);
     return sumSquareDiff / data.length;
   }
 

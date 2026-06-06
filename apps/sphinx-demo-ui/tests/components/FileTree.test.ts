@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/components/FileTree';
 
 describe('FileTree.ts', () => {
@@ -7,6 +7,6 @@ describe('FileTree.ts', () => {
     try {
       const obj = new (Module as any).FileTree();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

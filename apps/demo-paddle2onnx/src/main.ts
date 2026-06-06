@@ -3,13 +3,13 @@
  * Initializes the paddle2onnx demo.
  */
 export function initPaddle2OnnxDemo(): void {
-  document.getElementById("btn-convert")?.addEventListener("click", () => {
-    const output = document.getElementById("output");
+  document.getElementById('btn-convert')?.addEventListener('click', () => {
+    const output = document.getElementById('output');
     if (output) {
-      output.textContent = "Parsing PaddlePaddle structure...\n";
+      output.textContent = 'Parsing PaddlePaddle structure...\n';
       setTimeout(() => {
-        output.textContent += "[OK] Transpiled ops to ONNX nodes\n";
-        output.textContent += "[OK] Paddle2ONNX conversion complete.";
+        output.textContent += '[OK] Transpiled ops to ONNX nodes\n';
+        output.textContent += '[OK] Paddle2ONNX conversion complete.';
       }, 500);
     }
   });

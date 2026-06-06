@@ -12,28 +12,27 @@ export async function fetchHfConfig(
 }> {
   const headers: Record<string, string> = {};
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const url = `https://huggingface.co/${repoId}/resolve/main`;
 
   let config = {};
-  let tokenizer = "";
+  let tokenizer = '';
 
   try {
     const configRes = await fetch(`${url}/config.json`, { headers });
     if (!configRes.ok) {
-      if (configRes.status === 404)
-        throw new Error("config.json not found (404)");
+      if (configRes.status === 404) throw new Error('config.json not found (404)');
 
       if (configRes.status === 403 || configRes.status === 401)
-        throw new Error("Unauthorized (403/401) - Check your token");
+        throw new Error('Unauthorized (403/401) - Check your token');
     } else {
       config = await configRes.json();
     }
   } catch (_e) {
     const e = _e instanceof Error ? _e : new Error(String(_e));
-    console.warn("Failed to fetch config:", e.message);
+    console.warn('Failed to fetch config:', e.message);
   }
 
   try {
@@ -44,7 +43,7 @@ export async function fetchHfConfig(
   } catch (_e) {
     const e = _e instanceof Error ? _e : new Error(String(_e));
 
-    console.warn("Failed to fetch tokenizer:", e.message);
+    console.warn('Failed to fetch tokenizer:', e.message);
   }
 
   return { config, tokenizer, url: `https://huggingface.co/${repoId}` };

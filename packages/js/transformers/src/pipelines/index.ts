@@ -4,7 +4,7 @@
  */
 export class Callable extends Function {
   constructor() {
-    super("...args", "return this._call(...args)");
+    super('...args', 'return this._call(...args)');
     const self = this.bind(this);
     Object.setPrototypeOf(self, this.constructor.prototype);
     return self;
@@ -68,21 +68,21 @@ export class Pipeline extends Callable {
   // Abstract methods to be overridden by subclasses
   async preprocess(
     input: ReturnType<typeof JSON.parse>,
-    ...args: ReturnType<typeof JSON.parse>[]
+    ..._args: ReturnType<typeof JSON.parse>[]
   ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
 
   async _forward(
     input: ReturnType<typeof JSON.parse>,
-    ...args: ReturnType<typeof JSON.parse>[]
+    ..._args: ReturnType<typeof JSON.parse>[]
   ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
 
   async postprocess(
     input: ReturnType<typeof JSON.parse>,
-    ...args: ReturnType<typeof JSON.parse>[]
+    ..._args: ReturnType<typeof JSON.parse>[]
   ): Promise<ReturnType<typeof JSON.parse>> {
     return input;
   }
@@ -95,7 +95,7 @@ export class FeatureExtractionPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("feature-extraction", model, tokenizer, processor, options);
+    super('feature-extraction', model, tokenizer, processor, options);
   }
 }
 
@@ -112,7 +112,7 @@ export class TextClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("text-classification", model, tokenizer, processor, options);
+    super('text-classification', model, tokenizer, processor, options);
   }
   override async postprocess(
     input: ReturnType<typeof JSON.parse>,
@@ -122,7 +122,7 @@ export class TextClassificationPipeline extends Pipeline {
     if (options.return_tensors) return new ModelOutput(input);
     const top_k = options.top_k || 1;
     // Mock softmax and id2label
-    return [{ label: "positive", score: 0.99, top_k }];
+    return [{ label: 'positive', score: 0.99, top_k }];
   }
 }
 
@@ -133,16 +133,14 @@ export class TokenClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("token-classification", model, tokenizer, processor, options);
+    super('token-classification', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 173. Token Classification post_process
-    return [
-      { entity: "B-ORG", score: 0.99, word: "HuggingFace", start: 0, end: 11 },
-    ];
+    return [{ entity: 'B-ORG', score: 0.99, word: 'HuggingFace', start: 0, end: 11 }];
   }
 }
 
@@ -153,14 +151,14 @@ export class QuestionAnsweringPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("question-answering", model, tokenizer, processor, options);
+    super('question-answering', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 174. QA max start/end logits
-    return { score: 0.99, start: 0, end: 5, answer: "hello" };
+    return { score: 0.99, start: 0, end: 5, answer: 'hello' };
   }
 }
 
@@ -171,14 +169,14 @@ export class ZeroShotClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("zero-shot-classification", model, tokenizer, processor, options);
+    super('zero-shot-classification', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 175. Zero-Shot Classification NLI mapping
-    return { sequence: "text", labels: ["label"], scores: [0.9] };
+    return { sequence: 'text', labels: ['label'], scores: [0.9] };
   }
 }
 
@@ -189,7 +187,7 @@ export class TranslationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("translation", model, tokenizer, processor, options);
+    super('translation', model, tokenizer, processor, options);
   }
 }
 
@@ -200,7 +198,7 @@ export class SummarizationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("summarization", model, tokenizer, processor, options);
+    super('summarization', model, tokenizer, processor, options);
   }
 }
 
@@ -211,7 +209,7 @@ export class TextGenerationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("text-generation", model, tokenizer, processor, options);
+    super('text-generation', model, tokenizer, processor, options);
   }
   override async _forward(
     input: ReturnType<typeof JSON.parse>,
@@ -220,10 +218,10 @@ export class TextGenerationPipeline extends Pipeline {
     // 184. Streaming generation support
     if (options.stream) {
       return (async function* () {
-        yield input + " [GENERATED]";
+        yield `${input} [GENERATED]`;
       })();
     }
-    return input + " [GENERATED]";
+    return `${input} [GENERATED]`;
   }
   override async postprocess(
     input: ReturnType<typeof JSON.parse>,
@@ -241,7 +239,7 @@ export class Text2TextGenerationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("text2text-generation", model, tokenizer, processor, options);
+    super('text2text-generation', model, tokenizer, processor, options);
   }
 }
 
@@ -252,7 +250,7 @@ export class FillMaskPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("fill-mask", model, tokenizer, processor, options);
+    super('fill-mask', model, tokenizer, processor, options);
   }
 }
 
@@ -263,14 +261,14 @@ export class ImageClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("image-classification", model, tokenizer, processor, options);
+    super('image-classification', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 176. Image Classification Softmax Top K
-    return [{ label: "cat", score: 0.9 }];
+    return [{ label: 'cat', score: 0.9 }];
   }
 }
 
@@ -281,10 +279,10 @@ export class ObjectDetectionPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("object-detection", model, tokenizer, processor, options);
+    super('object-detection', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
+    _input: ReturnType<typeof JSON.parse>,
     options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 177, 178, 179. Object Detection NMS, denormalization
@@ -295,7 +293,7 @@ export class ObjectDetectionPipeline extends Pipeline {
       boxes: [[0, 0, 10, 10]],
       scores: [0.99],
       threshold,
-      labels: ["object"],
+      labels: ['object'],
     };
   }
   wasmNMS() {
@@ -317,13 +315,7 @@ export class ZeroShotImageClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super(
-      "zero-shot-image-classification",
-      model,
-      tokenizer,
-      processor,
-      options,
-    );
+    super('zero-shot-image-classification', model, tokenizer, processor, options);
   }
 }
 
@@ -334,14 +326,14 @@ export class ImageSegmentationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("image-segmentation", model, tokenizer, processor, options);
+    super('image-segmentation', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 180. Semantic Segmentation argmax over spatial dims
-    return [{ label: "background", mask: "mask_data" }];
+    return [{ label: 'background', mask: 'mask_data' }];
   }
 }
 
@@ -352,7 +344,7 @@ export class DepthEstimationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("depth-estimation", model, tokenizer, processor, options);
+    super('depth-estimation', model, tokenizer, processor, options);
   }
 }
 
@@ -363,7 +355,7 @@ export class ImageToImagePipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("image-to-image", model, tokenizer, processor, options);
+    super('image-to-image', model, tokenizer, processor, options);
   }
 }
 
@@ -374,7 +366,7 @@ export class AudioClassificationPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("audio-classification", model, tokenizer, processor, options);
+    super('audio-classification', model, tokenizer, processor, options);
   }
 }
 
@@ -385,16 +377,16 @@ export class AutomaticSpeechRecognitionPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("automatic-speech-recognition", model, tokenizer, processor, options);
+    super('automatic-speech-recognition', model, tokenizer, processor, options);
   }
   override async postprocess(
-    input: ReturnType<typeof JSON.parse>,
-    options: ReturnType<typeof JSON.parse> = {},
+    _input: ReturnType<typeof JSON.parse>,
+    _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 181. Chunked output decoding (Whisper)
     return {
-      text: "speech text",
-      chunks: [{ timestamp: [0, 1], text: "speech" }],
+      text: 'speech text',
+      chunks: [{ timestamp: [0, 1], text: 'speech' }],
     };
   }
 }
@@ -406,7 +398,7 @@ export class TextToSpeechPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("text-to-speech", model, tokenizer, processor, options);
+    super('text-to-speech', model, tokenizer, processor, options);
   }
 }
 
@@ -417,7 +409,7 @@ export class DocumentQuestionAnsweringPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("document-question-answering", model, tokenizer, processor, options);
+    super('document-question-answering', model, tokenizer, processor, options);
   }
 }
 
@@ -428,7 +420,7 @@ export class VisualQuestionAnsweringPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("visual-question-answering", model, tokenizer, processor, options);
+    super('visual-question-answering', model, tokenizer, processor, options);
   }
 }
 
@@ -439,7 +431,7 @@ export class ImageFeatureExtractionPipeline extends Pipeline {
     processor: ReturnType<typeof JSON.parse>,
     options: PipelineOptions,
   ) {
-    super("image-feature-extraction", model, tokenizer, processor, options);
+    super('image-feature-extraction', model, tokenizer, processor, options);
   }
 }
 
@@ -462,141 +454,71 @@ export async function pipeline(
 
   let pipe: Pipeline;
   switch (task) {
-    case "feature-extraction":
-      pipe = new FeatureExtractionPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'feature-extraction':
+      pipe = new FeatureExtractionPipeline(model, tokenizer, processor, options);
       break;
-    case "text-classification":
-      pipe = new TextClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'text-classification':
+      pipe = new TextClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "token-classification":
-      pipe = new TokenClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'token-classification':
+      pipe = new TokenClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "question-answering":
-      pipe = new QuestionAnsweringPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'question-answering':
+      pipe = new QuestionAnsweringPipeline(model, tokenizer, processor, options);
       break;
-    case "zero-shot-classification":
-      pipe = new ZeroShotClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'zero-shot-classification':
+      pipe = new ZeroShotClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "translation":
+    case 'translation':
       pipe = new TranslationPipeline(model, tokenizer, processor, options);
       break;
-    case "summarization":
+    case 'summarization':
       pipe = new SummarizationPipeline(model, tokenizer, processor, options);
       break;
-    case "text-generation":
+    case 'text-generation':
       pipe = new TextGenerationPipeline(model, tokenizer, processor, options);
       break;
-    case "text2text-generation":
-      pipe = new Text2TextGenerationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'text2text-generation':
+      pipe = new Text2TextGenerationPipeline(model, tokenizer, processor, options);
       break;
-    case "fill-mask":
+    case 'fill-mask':
       pipe = new FillMaskPipeline(model, tokenizer, processor, options);
       break;
-    case "image-classification":
-      pipe = new ImageClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'image-classification':
+      pipe = new ImageClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "object-detection":
+    case 'object-detection':
       pipe = new ObjectDetectionPipeline(model, tokenizer, processor, options);
       break;
-    case "zero-shot-image-classification":
-      pipe = new ZeroShotImageClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'zero-shot-image-classification':
+      pipe = new ZeroShotImageClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "image-segmentation":
-      pipe = new ImageSegmentationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'image-segmentation':
+      pipe = new ImageSegmentationPipeline(model, tokenizer, processor, options);
       break;
-    case "depth-estimation":
+    case 'depth-estimation':
       pipe = new DepthEstimationPipeline(model, tokenizer, processor, options);
       break;
-    case "image-to-image":
+    case 'image-to-image':
       pipe = new ImageToImagePipeline(model, tokenizer, processor, options);
       break;
-    case "audio-classification":
-      pipe = new AudioClassificationPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'audio-classification':
+      pipe = new AudioClassificationPipeline(model, tokenizer, processor, options);
       break;
-    case "automatic-speech-recognition":
-      pipe = new AutomaticSpeechRecognitionPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'automatic-speech-recognition':
+      pipe = new AutomaticSpeechRecognitionPipeline(model, tokenizer, processor, options);
       break;
-    case "text-to-speech":
+    case 'text-to-speech':
       pipe = new TextToSpeechPipeline(model, tokenizer, processor, options);
       break;
-    case "document-question-answering":
-      pipe = new DocumentQuestionAnsweringPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'document-question-answering':
+      pipe = new DocumentQuestionAnsweringPipeline(model, tokenizer, processor, options);
       break;
-    case "visual-question-answering":
-      pipe = new VisualQuestionAnsweringPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'visual-question-answering':
+      pipe = new VisualQuestionAnsweringPipeline(model, tokenizer, processor, options);
       break;
-    case "image-feature-extraction":
-      pipe = new ImageFeatureExtractionPipeline(
-        model,
-        tokenizer,
-        processor,
-        options,
-      );
+    case 'image-feature-extraction':
+      pipe = new ImageFeatureExtractionPipeline(model, tokenizer, processor, options);
       break;
     default:
       // 35. Ensure structured error throwing for unsupported pipeline/model combos.

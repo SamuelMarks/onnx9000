@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { WasmManager, WasmState } from '../../src/core/WasmManager';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { globalEventBus } from '../../src/core/EventBus';
+import { WasmManager, WasmState } from '../../src/core/WasmManager';
 
 global.WebAssembly = {
   compile: vi.fn().mockResolvedValue({}),
-  instantiate: vi.fn().mockResolvedValue({ exports: {} })
+  instantiate: vi.fn().mockResolvedValue({ exports: {} }),
 } as object as typeof WebAssembly;
 
 describe('WasmManager fallback error', () => {

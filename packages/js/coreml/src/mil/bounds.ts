@@ -2,9 +2,9 @@
  * ANE boundary definitions and WASM heap enforcement logic.
  * @module
  */
-import { Block, Operation, Var } from "./ast.js";
-import { TensorType, MILDataType } from "./types.js";
-import { ANELimitsExceededWarning } from "./errors.js";
+import type { Block } from './ast.js';
+import { ANELimitsExceededWarning } from './errors.js';
+import { MILDataType, TensorType } from './types.js';
 
 /**
  * Validates the statically resolvable constant memory footprint of the MIL block.
@@ -18,19 +18,16 @@ export function establishMemoryBounds(block: Block): void {
   let totalAllocated = 0;
 
   for (const op of block.operations) {
-    if (op.opType === "const") {
+    if (op.opType === 'const') {
       const out = op.outputs[0];
       if (out && out.type instanceof TensorType) {
         let size = 1;
         out.type.shape.forEach((d) => {
-          if (typeof d === "number") size *= d;
+          if (typeof d === 'number') size *= d;
         });
 
         // Add primitive memory allocation size
-        if (
-          out.type.dataType === MILDataType.FLOAT32 ||
-          out.type.dataType === MILDataType.INT32
-        ) {
+        if (out.type.dataType === MILDataType.FLOAT32 || out.type.dataType === MILDataType.INT32) {
           totalAllocated += size * 4;
         } else if (out.type.dataType === MILDataType.FLOAT16) {
           totalAllocated += size * 2;
@@ -40,7 +37,7 @@ export function establishMemoryBounds(block: Block): void {
 
         if (totalAllocated > MAX_HEAP_ALLOCATION_BYTES) {
           throw new ANELimitsExceededWarning(
-            "Max V8 Heap allocation exceeded during conversion > 2GB",
+            'Max V8 Heap allocation exceeded during conversion > 2GB',
           );
         }
       }

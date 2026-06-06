@@ -5,7 +5,7 @@
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
-import { LogEntry } from '../core/Logger';
+import type { LogEntry } from '../core/Logger';
 
 export class Console extends Component<HTMLDivElement> {
   private outputDiv!: HTMLDivElement;
@@ -46,7 +46,7 @@ export class Console extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<LogEntry>('CONSOLE_LOG', (entry) => {
         this.appendLog(entry);
-      })
+      }),
     );
   }
 

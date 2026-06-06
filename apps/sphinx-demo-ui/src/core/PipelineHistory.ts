@@ -1,6 +1,7 @@
 // @ts-nocheck
-import { PipelineNode, PipelineState } from './PipelineNode';
+
 import { globalEventBus } from './EventBus';
+import { PipelineNode, type PipelineState } from './PipelineNode';
 
 /**
  * Manages the state history of pipeline transitions.

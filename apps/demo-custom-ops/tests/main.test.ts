@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from 'vitest';
 
-describe("demo", () => {
+describe('demo', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <textarea id="prompt"></textarea>
@@ -9,19 +9,19 @@ describe("demo", () => {
     `;
   });
 
-  it("should run flow", async () => {
+  it('should run flow', async () => {
     // import to execute module top-level
     try {
-      await import("../src/main.js");
-    } catch (e) {}
+      await import('../src/main.js');
+    } catch (_e) {}
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const out = document.getElementById("output");
+    const btn = document.getElementById('runBtn');
+    const prompt = document.getElementById('prompt');
+    const _out = document.getElementById('output');
 
     if (btn) btn.click();
     if (prompt && btn) {
-      prompt.value = "test";
+      prompt.value = 'test';
       btn.click();
     }
 

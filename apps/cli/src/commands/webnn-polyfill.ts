@@ -1,5 +1,5 @@
 export function handleWebnnPolyfillCommand(args: string[]) {
-  if (args.includes("-h") || args.includes("--help")) {
+  if (args.includes('-h') || args.includes('--help')) {
     console.log(`Usage: onnx9000 webnn-polyfill 
  
 Run WebNN Polyfill diagnostic. 
@@ -8,6 +8,6 @@ Run WebNN Polyfill diagnostic.
     return;
   }
 
-  console.log("Testing WebNN Polyfill compatibility...");
-  console.log("WebNN Polyfill environment verified.");
+  console.log('Testing WebNN Polyfill compatibility...');
+  console.log('WebNN Polyfill environment verified.');
 }

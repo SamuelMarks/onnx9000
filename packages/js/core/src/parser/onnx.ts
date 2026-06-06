@@ -2,18 +2,18 @@
  * @fileoverview onnx.ts
  * Provides onnx functionality for the core package.
  */
-import { Graph, ValueInfo } from "../ir/graph.js";
-import { Node, Attribute, AttributeType, AttributeValue } from "../ir/node.js";
-import { Tensor, Shape, DType } from "../ir/tensor.js";
+import { Graph, ValueInfo } from '../ir/graph.js';
+import { Attribute, type AttributeType, type AttributeValue, Node } from '../ir/node.js';
+import { type DType, type Shape, Tensor } from '../ir/tensor.js';
 import {
-  Reader,
+  type Reader,
+  readString,
+  readTag,
   readVarInt,
   readVarInt64,
-  readTag,
   skipField,
-  readString,
   WIRE_TYPE_LENGTH_DELIMITED,
-} from "./protobuf.js";
+} from './protobuf.js';
 
 /**
  * Maps ONNX enum values to IR DType.
@@ -24,33 +24,33 @@ import {
 function mapDataType(dataType: number): DType {
   switch (dataType) {
     case 1:
-      return "float32";
+      return 'float32';
     case 2:
-      return "uint8";
+      return 'uint8';
     case 3:
-      return "int8";
+      return 'int8';
     case 4:
-      return "uint16";
+      return 'uint16';
     case 5:
-      return "int16";
+      return 'int16';
     case 6:
-      return "int32";
+      return 'int32';
     case 7:
-      return "int64";
+      return 'int64';
     case 8:
-      return "string";
+      return 'string';
     case 9:
-      return "bool";
+      return 'bool';
     case 10:
-      return "float16";
+      return 'float16';
     case 11:
-      return "float64";
+      return 'float64';
     case 12:
-      return "uint32";
+      return 'uint32';
     case 13:
-      return "uint64";
+      return 'uint64';
     case 16:
-      return "bfloat16";
+      return 'bfloat16';
     default:
       throw new Error(`Unsupported tensor data type: ${dataType}`);
   }
@@ -64,31 +64,31 @@ function mapDataType(dataType: number): DType {
 function mapAttributeType(type: number): AttributeType {
   switch (type) {
     case 1:
-      return "FLOAT";
+      return 'FLOAT';
     case 2:
-      return "INT";
+      return 'INT';
     case 3:
-      return "STRING";
+      return 'STRING';
     case 4:
-      return "TENSOR";
+      return 'TENSOR';
     case 5:
-      return "GRAPH";
+      return 'GRAPH';
     case 6:
-      return "FLOATS";
+      return 'FLOATS';
     case 7:
-      return "INTS";
+      return 'INTS';
     case 8:
-      return "STRINGS";
+      return 'STRINGS';
     case 9:
-      return "TENSORS";
+      return 'TENSORS';
     case 10:
-      return "GRAPHS";
+      return 'GRAPHS';
     case 11:
-      return "SPARSE_TENSOR";
+      return 'SPARSE_TENSOR';
     case 12:
-      return "SPARSE_TENSORS";
+      return 'SPARSE_TENSORS';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -99,7 +99,7 @@ function mapAttributeType(type: number): AttributeType {
  */
 export async function parseModelProto(reader: Reader): Promise<Graph> {
   const end = reader.getLength();
-  const graph = new Graph("");
+  const graph = new Graph('');
 
   try {
     while (reader.getPosition() < end) {
@@ -113,7 +113,7 @@ export async function parseModelProto(reader: Reader): Promise<Graph> {
         // opset_import
         const length = await readVarInt(reader);
         const limit = reader.getPosition() + length;
-        let domain = "";
+        let domain = '';
         let version = 1;
         while (reader.getPosition() < limit) {
           const innerTag = await readTag(reader);
@@ -128,7 +128,7 @@ export async function parseModelProto(reader: Reader): Promise<Graph> {
             await skipField(reader, innerTag.wireType);
           }
         }
-        graph.opsetImports[domain || ""] = version;
+        graph.opsetImports[domain || ''] = version;
       } else if (tag.fieldNumber === 2) {
         // producer_name
         const length = await readVarInt(reader);
@@ -154,7 +154,7 @@ export async function parseModelProto(reader: Reader): Promise<Graph> {
     }
   } catch (e) {
     console.warn(
-      "Model parsing failed partially due to corruption/truncation, returning partial graph:",
+      'Model parsing failed partially due to corruption/truncation, returning partial graph:',
       e,
     );
   }
@@ -168,59 +168,52 @@ export async function parseModelProto(reader: Reader): Promise<Graph> {
  * @param limit The end position for this graph proto.
  * @param graph The Graph object to populate with parsed nodes and tensors.
  */
-async function parseGraphProto(
-  reader: Reader,
-  limit: number,
-  graph: Graph,
-): Promise<void> {
+async function parseGraphProto(reader: Reader, limit: number, graph: Graph): Promise<void> {
   try {
     while (reader.getPosition() < limit) {
       const tag = await readTag(reader);
       switch (tag.fieldNumber) {
-        case 1: // node
+        case 1: {
+          // node
           const nodeLen = await readVarInt(reader);
-          const node = await parseNodeProto(
-            reader,
-            reader.getPosition() + nodeLen,
-          );
+          const node = await parseNodeProto(reader, reader.getPosition() + nodeLen);
           graph.addNode(node);
           break;
-        case 2: // name
+        }
+        case 2: {
+          // name
           const nameLen = await readVarInt(reader);
           graph.name = await readString(reader, nameLen);
           break;
-        case 5: // initializer
+        }
+        case 5: {
+          // initializer
           const initLen = await readVarInt(reader);
-          const tensor = await parseTensorProto(
-            reader,
-            reader.getPosition() + initLen,
-            true,
-          );
+          const tensor = await parseTensorProto(reader, reader.getPosition() + initLen, true);
           graph.addTensor(tensor);
           graph.initializers.push(tensor.name);
           break;
-        case 11: // input
+        }
+        case 11: {
+          // input
           const inLen = await readVarInt(reader);
-          const inInfo = await parseValueInfoProto(
-            reader,
-            reader.getPosition() + inLen,
-          );
+          const inInfo = await parseValueInfoProto(reader, reader.getPosition() + inLen);
           graph.inputs.push(inInfo);
           break;
-        case 12: // output
+        }
+        case 12: {
+          // output
           const outLen = await readVarInt(reader);
-          const outInfo = await parseValueInfoProto(
-            reader,
-            reader.getPosition() + outLen,
-          );
+          const outInfo = await parseValueInfoProto(reader, reader.getPosition() + outLen);
           graph.outputs.push(outInfo);
           break;
+        }
         default:
           await skipField(reader, tag.wireType);
       }
     }
   } catch (e) {
-    console.warn("Partial graph parsed due to truncation:", e);
+    console.warn('Partial graph parsed due to truncation:', e);
   }
 }
 
@@ -233,47 +226,58 @@ async function parseGraphProto(
 async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
   const inputs: string[] = [];
   const outputs: string[] = [];
-  let name = "";
-  let opType = "";
-  let domain = "";
-  let docString = "";
+  let name = '';
+  let opType = '';
+  let domain = '';
+  let docString = '';
   const attributes: Record<string, Attribute> = {};
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);
     switch (tag.fieldNumber) {
-      case 1: // input
+      case 1: {
+        // input
         const inLen = await readVarInt(reader);
         inputs.push(await readString(reader, inLen));
         break;
-      case 2: // output
+      }
+      case 2: {
+        // output
         const outLen = await readVarInt(reader);
         outputs.push(await readString(reader, outLen));
         break;
-      case 3: // name
+      }
+      case 3: {
+        // name
         const nameLen = await readVarInt(reader);
         name = await readString(reader, nameLen);
         break;
-      case 4: // op_type
+      }
+      case 4: {
+        // op_type
         const opLen = await readVarInt(reader);
         opType = await readString(reader, opLen);
         break;
-      case 7: // domain
+      }
+      case 7: {
+        // domain
         const domLen = await readVarInt(reader);
         domain = await readString(reader, domLen);
         break;
-      case 6: // doc_string
+      }
+      case 6: {
+        // doc_string
         const docLen = await readVarInt(reader);
         docString = await readString(reader, docLen);
         break;
-      case 5: // attribute
+      }
+      case 5: {
+        // attribute
         const attrLen = await readVarInt(reader);
-        const attr = await parseAttributeProto(
-          reader,
-          reader.getPosition() + attrLen,
-        );
+        const attr = await parseAttributeProto(reader, reader.getPosition() + attrLen);
         attributes[attr.name] = attr;
         break;
+      }
       default:
         await skipField(reader, tag.wireType);
     }
@@ -288,22 +292,22 @@ async function parseNodeProto(reader: Reader, limit: number): Promise<Node> {
  * @param limit The end position for this ValueInfo proto.
  * @returns A Promise that resolves to the parsed ValueInfo.
  */
-async function parseValueInfoProto(
-  reader: Reader,
-  limit: number,
-): Promise<ValueInfo> {
-  let name = "";
+async function parseValueInfoProto(reader: Reader, limit: number): Promise<ValueInfo> {
+  let name = '';
   const shape: Shape = [];
-  let dtype: DType = "float32";
+  let dtype: DType = 'float32';
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);
     switch (tag.fieldNumber) {
-      case 1: // name
+      case 1: {
+        // name
         const nameLen = await readVarInt(reader);
         name = await readString(reader, nameLen);
         break;
-      case 2: // type (TypeProto)
+      }
+      case 2: {
+        // type (TypeProto)
         const typeLen = await readVarInt(reader);
         const typeLimit = reader.getPosition() + typeLen;
         while (reader.getPosition() < typeLimit) {
@@ -355,6 +359,7 @@ async function parseValueInfoProto(
           }
         }
         break;
+      }
       default:
         await skipField(reader, tag.wireType);
     }
@@ -369,21 +374,20 @@ async function parseValueInfoProto(
  * @param limit The end position for this attribute proto.
  * @returns A Promise that resolves to the parsed Attribute.
  */
-async function parseAttributeProto(
-  reader: Reader,
-  limit: number,
-): Promise<Attribute> {
-  let name = "";
+async function parseAttributeProto(reader: Reader, limit: number): Promise<Attribute> {
+  let name = '';
   let typeNum = 0;
   let value: AttributeValue = null;
 
   while (reader.getPosition() < limit) {
     const tag = await readTag(reader);
     switch (tag.fieldNumber) {
-      case 1: // name
+      case 1: {
+        // name
         const nameLen = await readVarInt(reader);
         name = await readString(reader, nameLen);
         break;
+      }
       case 20: // type
         typeNum = await readVarInt(reader);
         break;
@@ -406,17 +410,13 @@ async function parseAttributeProto(
       case 5: // t
         {
           const tLen = await readVarInt(reader);
-          value = await parseTensorProto(
-            reader,
-            reader.getPosition() + tLen,
-            false,
-          );
+          value = await parseTensorProto(reader, reader.getPosition() + tLen, false);
         }
         break;
       case 6: // g
         {
           const gLen = await readVarInt(reader);
-          const g = new Graph("");
+          const g = new Graph('');
           await parseGraphProto(reader, reader.getPosition() + gLen, g);
           value = g;
         }
@@ -467,13 +467,7 @@ async function parseAttributeProto(
         {
           const tensors: Tensor[] = (value as Tensor[]) || [];
           const tensLen = await readVarInt(reader);
-          tensors.push(
-            await parseTensorProto(
-              reader,
-              reader.getPosition() + tensLen,
-              false,
-            ),
-          );
+          tensors.push(await parseTensorProto(reader, reader.getPosition() + tensLen, false));
           value = tensors;
         }
         break;
@@ -481,7 +475,7 @@ async function parseAttributeProto(
         {
           const graphs: Graph[] = (value as Graph[]) || [];
           const grLen = await readVarInt(reader);
-          const gr = new Graph("");
+          const gr = new Graph('');
           await parseGraphProto(reader, reader.getPosition() + grLen, gr);
           graphs.push(gr);
           value = graphs;
@@ -511,7 +505,7 @@ async function parseTensorProto(
   limit: number,
   isInitializer: boolean,
 ): Promise<Tensor> {
-  let name = "";
+  let name = '';
   const dims: number[] = [];
   let dataTypeNum = 0;
   let rawData: Uint8Array | null = null;
@@ -535,11 +529,14 @@ async function parseTensorProto(
       case 2: // data_type
         dataTypeNum = await readVarInt(reader);
         break;
-      case 8: // name
+      case 8: {
+        // name
         const nameLen = await readVarInt(reader);
         name = await readString(reader, nameLen);
         break;
-      case 9: // raw_data
+      }
+      case 9: {
+        // raw_data
         const rawLen = await readVarInt(reader);
         if (rawLen > 0) {
           rawData = await reader.readBytes(rawLen);
@@ -547,14 +544,16 @@ async function parseTensorProto(
           rawData = new Uint8Array(0);
         }
         break;
+      }
       case 14: // data_location
         dataLocation = await readVarInt(reader);
         break;
-      case 13: // external_data
+      case 13: {
+        // external_data
         const extLen = await readVarInt(reader);
         const extLimit = reader.getPosition() + extLen;
-        let extKey = "";
-        let extVal = "";
+        let extKey = '';
+        let extVal = '';
         while (reader.getPosition() < extLimit) {
           const innerTag = await readTag(reader);
           if (innerTag.fieldNumber === 1) {
@@ -573,6 +572,7 @@ async function parseTensorProto(
           externalDataMap[extKey] = extVal;
         }
         break;
+      }
       default:
         await skipField(reader, tag.wireType);
     }
@@ -581,24 +581,16 @@ async function parseTensorProto(
   const dtype = mapDataType(dataTypeNum);
 
   let externalData;
-  if (dataLocation === 1 || externalDataMap["location"]) {
+  if (dataLocation === 1 || externalDataMap.location) {
     // EXTERNAL
     externalData = {
-      location: externalDataMap["location"] || "",
-      offset: parseInt(externalDataMap["offset"] || "0", 10),
-      length: parseInt(externalDataMap["length"] || "0", 10),
+      location: externalDataMap.location || '',
+      offset: parseInt(externalDataMap.offset || '0', 10),
+      length: parseInt(externalDataMap.length || '0', 10),
     };
   }
 
-  return new Tensor(
-    name,
-    dims,
-    dtype,
-    isInitializer,
-    false,
-    rawData,
-    externalData,
-  );
+  return new Tensor(name, dims, dtype, isInitializer, false, rawData, externalData);
 }
 
 /**

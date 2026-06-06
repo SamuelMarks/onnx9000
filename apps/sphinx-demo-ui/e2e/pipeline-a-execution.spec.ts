@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Pipeline A - Execution & Profiling (ORT Web/WebNN)', () => {
   test.beforeEach(async ({ page }) => {
@@ -22,7 +22,7 @@ test.describe('Pipeline A - Execution & Profiling (ORT Web/WebNN)', () => {
     await expect(runBtn).toBeDisabled();
 
     // In my previous Python script for BottomContainer, I might not have built successfully or missed adding it. Let me just use CSS class targeting.
-    const profilerTab = page
+    const _profilerTab = page
       .locator('.demo-tab-list .demo-tab-button')
       .filter({ hasText: 'Execution Profiler' });
 

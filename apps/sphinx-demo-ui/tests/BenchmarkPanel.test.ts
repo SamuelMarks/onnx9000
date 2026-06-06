@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { BenchmarkPanel } from '../src/components/BenchmarkPanel.js';
 
 describe('BenchmarkPanel', () => {
@@ -12,7 +12,7 @@ describe('BenchmarkPanel', () => {
     const btns = panel.element.querySelectorAll('button');
     expect(btns.length).toBe(3);
 
-    btns[0]!.click();
+    btns[0]?.click();
     await new Promise((r) => setTimeout(r, 10));
     expect((global as any).window.pyodide.runPythonAsync).toHaveBeenCalled();
   });

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('WASM Lazy Loading & Overlay', () => {
   test.beforeEach(async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe('WASM Lazy Loading & Overlay', () => {
   });
 
   test('should verify clicking load fetches WASM, shows progress, and removes overlay', async ({
-    page
+    page,
   }) => {
     // We mock the /onnx9000.wasm endpoint to simulate a slow WASM download
     await page.route('**/onnx9000.wasm', async (route) => {
@@ -32,8 +32,8 @@ test.describe('WASM Lazy Loading & Overlay', () => {
         contentType: 'application/wasm',
         body: dummyWasm,
         headers: {
-          'Content-Length': dummyWasm.length.toString()
-        }
+          'Content-Length': dummyWasm.length.toString(),
+        },
       });
     });
 
@@ -58,7 +58,7 @@ test.describe('WASM Lazy Loading & Overlay', () => {
       await route.fulfill({
         status: 500,
         contentType: 'text/plain',
-        body: 'Internal Server Error'
+        body: 'Internal Server Error',
       });
     });
 

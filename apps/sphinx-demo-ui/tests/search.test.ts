@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { initSearch } from '../docs/assets/search.js';
 
 describe('search', () => {

@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
-import { CaffeMapper } from "../../../../src/mmdnn/caffe/mapper.js";
-import { parsePrototxt } from "../../../../src/mmdnn/caffe/parser.js";
-import { Graph } from "@onnx9000/core";
+import { Graph } from '@onnx9000/core';
+import { describe, expect, it } from 'vitest';
+import { CaffeMapper } from '../../../../src/mmdnn/caffe/mapper.js';
+import { parsePrototxt } from '../../../../src/mmdnn/caffe/parser.js';
 
-describe("Caffe Validation - AlexNet", () => {
-  it("should parse and map AlexNet architecture", () => {
+describe('Caffe Validation - AlexNet', () => {
+  it('should parse and map AlexNet architecture', () => {
     const prototxt = `
 name: "AlexNet"
 layer {
@@ -71,7 +71,7 @@ layer {
 
     const parsed = parsePrototxt(prototxt);
     const mapper = new CaffeMapper();
-    const graph = new Graph("alexnet");
+    const graph = new Graph('alexnet');
 
     for (const layer of parsed.layer) {
       const nodes = mapper.map(layer, graph);
@@ -81,11 +81,11 @@ layer {
     }
 
     const opTypes = graph.nodes.map((n) => n.opType);
-    expect(opTypes).toContain("Conv");
-    expect(opTypes).toContain("Relu");
-    expect(opTypes).toContain("LRN");
-    expect(opTypes).toContain("MaxPool");
-    expect(opTypes).toContain("Gemm");
-    expect(opTypes).toContain("Softmax");
+    expect(opTypes).toContain('Conv');
+    expect(opTypes).toContain('Relu');
+    expect(opTypes).toContain('LRN');
+    expect(opTypes).toContain('MaxPool');
+    expect(opTypes).toContain('Gemm');
+    expect(opTypes).toContain('Softmax');
   });
 });

@@ -4,6 +4,6 @@
  */
 export class Onnxchecker {
   run() {
-    return "[onnx-checker] processed";
+    return '[onnx-checker] processed';
   }
 }

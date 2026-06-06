@@ -5,7 +5,7 @@ export const editor = {
     setValue: vi.fn(),
     getValue: vi.fn().mockReturnValue('mock code'),
     onDidChangeModelContent: vi.fn().mockReturnValue({ dispose: vi.fn() }),
-    dispose: vi.fn()
+    dispose: vi.fn(),
   })),
-  setTheme: vi.fn()
+  setTheme: vi.fn(),
 };

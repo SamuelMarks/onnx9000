@@ -8,7 +8,7 @@ export class ArrayAPI {
   }
 
   // 218. softmax
-  static softmax(tensor: number[], axis?: number): number[] {
+  static softmax(tensor: number[], _axis?: number): number[] {
     const max = Math.max(...tensor);
     const exps = tensor.map((x) => Math.exp(x - max));
     const sum = exps.reduce((a, b) => a + b, 0);
@@ -16,7 +16,7 @@ export class ArrayAPI {
   }
 
   // 219. log_softmax
-  static log_softmax(tensor: number[], axis?: number): number[] {
+  static log_softmax(tensor: number[], _axis?: number): number[] {
     const max = Math.max(...tensor);
     const exps = tensor.map((x) => Math.exp(x - max));
     const sum = exps.reduce((a, b) => a + b, 0);
@@ -30,10 +30,7 @@ export class ArrayAPI {
   }
 
   // 221. get_top_k
-  static get_top_k(
-    tensor: number[],
-    k: number,
-  ): { values: number[]; indices: number[] } {
+  static get_top_k(tensor: number[], k: number): { values: number[]; indices: number[] } {
     const indexed = tensor.map((val, idx) => ({ val, idx }));
     indexed.sort((a, b) => b.val - a.val);
     const top = indexed.slice(0, k);
@@ -86,23 +83,15 @@ export class ArrayAPI {
   static fromFloat32Array(array: Float32Array): ReturnType<typeof JSON.parse> {
     return Array.from(array);
   }
-  static toJSON(
-    tensor: ReturnType<typeof JSON.parse>,
-  ): ReturnType<typeof JSON.parse>[] {
+  static toJSON(tensor: ReturnType<typeof JSON.parse>): ReturnType<typeof JSON.parse>[] {
     return Array.isArray(tensor) ? tensor : [];
   }
-  static fromJSON(
-    json: ReturnType<typeof JSON.parse>[],
-  ): ReturnType<typeof JSON.parse> {
+  static fromJSON(json: ReturnType<typeof JSON.parse>[]): ReturnType<typeof JSON.parse> {
     return json;
   }
 
   // 228. Handle multi-dimensional array slicing syntaxes in TS
-  static slice(
-    tensor: ReturnType<typeof JSON.parse>,
-    start: number,
-    end: number,
-  ) {
+  static slice(tensor: ReturnType<typeof JSON.parse>, start: number, end: number) {
     return tensor.slice(start, end);
   }
 
@@ -128,9 +117,7 @@ export class ArrayAPI {
       a5 = 1.061405429,
       p = 0.3275911;
     const t = 1.0 / (1.0 + p * x);
-    const y =
-      1.0 -
-      ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+    const y = 1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
     return sign * y;
   }
 }

@@ -3,9 +3,8 @@
  * Provides shape-inference functionality for the converters package.
  */
 // @ts-nocheck
-import { Graph } from "@onnx9000/core";
-import { Shape } from "@onnx9000/core";
-import { MMDNNReporter } from "./reporter.js";
+import type { Graph, Shape } from '@onnx9000/core';
+import type { MMDNNReporter } from './reporter.js';
 
 export class ShapeInferenceEngine {
   private shapeMap: Map<string, Shape>;
@@ -30,16 +29,12 @@ export class ShapeInferenceEngine {
     // Traverse topologically and deduce shapes
     for (const node of graph.nodes) {
       // Very basic example shape inference
-      if (
-        node.opType === "Relu" ||
-        node.opType === "Sigmoid" ||
-        node.opType === "Tanh"
-      ) {
+      if (node.opType === 'Relu' || node.opType === 'Sigmoid' || node.opType === 'Tanh') {
         const inputShape = this.shapeMap.get(node.inputs[0]!);
         if (inputShape) {
           this.shapeMap.set(node.outputs[0]!, inputShape);
         }
-      } else if (node.opType === "Add" || node.opType === "Mul") {
+      } else if (node.opType === 'Add' || node.opType === 'Mul') {
         // Broadcast
         const shapeA = this.shapeMap.get(node.inputs[0]!);
         const shapeB = this.shapeMap.get(node.inputs[1]!);
@@ -65,10 +60,7 @@ export class ShapeInferenceEngine {
           this.shapeMap.set(node.outputs[0]!, outDims);
         }
       } else {
-        reporter.warn(
-          `Missing shape inference rules for op: ${node.opType}`,
-          node.name,
-        );
+        reporter.warn(`Missing shape inference rules for op: ${node.opType}`, node.name);
       }
     }
 

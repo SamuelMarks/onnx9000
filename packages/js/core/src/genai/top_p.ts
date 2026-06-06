@@ -1,5 +1,5 @@
-import { Tensor } from "../index.js";
-import { LogitProcessor } from "./logit_processors.js";
+import { Tensor } from '../index.js';
+import type { LogitProcessor } from './logit_processors.js';
 
 /**
  * Nucleus sampling processor that keeps only the top tokens with cumulative probability P.
@@ -11,12 +11,12 @@ export class TopPLogitProcessor implements LogitProcessor {
    */
   constructor(private topP: number) {
     if (topP <= 0 || topP > 1.0) {
-      throw new Error("topP must be in (0, 1].");
+      throw new Error('topP must be in (0, 1].');
     }
   }
 
   /** Process logits with Top-P (nucleus) filtering. */
-  process(inputIds: number[], logits: Tensor): Tensor {
+  process(_inputIds: number[], logits: Tensor): Tensor {
     if (this.topP >= 1.0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
@@ -50,7 +50,7 @@ export class TopPLogitProcessor implements LogitProcessor {
     let thresholdIdx = vocabSize - 1;
 
     for (let i = 0; i < vocabSize; i++) {
-      cumulativeProb += vals[i]!.val;
+      cumulativeProb += vals[i]?.val;
       if (cumulativeProb > this.topP) {
         thresholdIdx = i;
         break;

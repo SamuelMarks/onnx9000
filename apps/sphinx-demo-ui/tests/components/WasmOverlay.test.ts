@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/components/WasmOverlay';
 
 describe('WasmOverlay.ts', () => {
@@ -7,6 +7,6 @@ describe('WasmOverlay.ts', () => {
     try {
       const obj = new (Module as any).WasmOverlay();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

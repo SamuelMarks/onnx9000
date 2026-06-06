@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { i18n, t } from '../src/core/I18n.js';
 
 describe('I18n', () => {

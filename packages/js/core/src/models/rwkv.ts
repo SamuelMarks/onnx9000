@@ -2,44 +2,33 @@
  * @fileoverview rwkv.ts
  * Provides rwkv functionality for the core package.
  */
-import { Tensor } from "../ir/tensor.js";
-import { Gemm, LayerNormalization } from "../primitives.js";
+import { Tensor } from '../ir/tensor.js';
+import { Gemm, LayerNormalization } from '../primitives.js';
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = "float32",
+  dtype: ReturnType<typeof JSON.parse> = 'float32',
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(
-  opType: string,
-  inputs: Tensor[],
-  attr?: ReturnType<typeof JSON.parse>,
-): Tensor {
-  const dtype = inputs[0]?.dtype ?? "float32";
-  return new Tensor(
-    `${opType}_out`,
-    [],
-    dtype,
-    false,
-    false,
-    new Float32Array(),
-  );
+function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
+  const dtype = inputs[0]?.dtype ?? 'float32';
+  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
 export class RNN {
   public hiddenSize: number;
   public direction: string;
 
-  constructor(hiddenSize: number, direction: string = "forward") {
+  constructor(hiddenSize: number, direction: string = 'forward') {
     this.hiddenSize = hiddenSize;
     this.direction = direction;
   }
 
   call(x: Tensor, w: Tensor, r: Tensor): Tensor {
-    return recordOp("RNN", [x, w, r], {
+    return recordOp('RNN', [x, w, r], {
       direction: this.direction,
       hidden_size: this.hiddenSize,
     });
@@ -55,7 +44,7 @@ export class RWKVTimeMix {
   public receptance: Gemm;
   public output: Gemm;
 
-  constructor(dim: number, prefix: string = "") {
+  constructor(dim: number, prefix: string = '') {
     this.prefix = prefix;
     this.dim = dim;
     this.rnn = new RNN(dim);
@@ -66,18 +55,15 @@ export class RWKVTimeMix {
   }
 
   call(x: Tensor): Tensor {
-    const xT = recordOp("Transpose", [x], { perm: [1, 0, 2] });
+    const xT = recordOp('Transpose', [x], { perm: [1, 0, 2] });
 
     const w = getParam(`${this.prefix}.rnn.w`, [1, this.dim, this.dim]);
     const r = getParam(`${this.prefix}.rnn.r`, [1, this.dim, this.dim]);
 
     let rnnOut = this.rnn.call(xT, w, r);
-    rnnOut = recordOp("Transpose", [rnnOut], { perm: [1, 0, 2] });
+    rnnOut = recordOp('Transpose', [rnnOut], { perm: [1, 0, 2] });
 
-    const k = this.key.call(
-      rnnOut,
-      getParam(`${this.prefix}.key.weight`, [this.dim, this.dim]),
-    );
+    const k = this.key.call(rnnOut, getParam(`${this.prefix}.key.weight`, [this.dim, this.dim]));
     const v = this.value.call(
       rnnOut,
       getParam(`${this.prefix}.value.weight`, [this.dim, this.dim]),
@@ -87,12 +73,9 @@ export class RWKVTimeMix {
       getParam(`${this.prefix}.receptance.weight`, [this.dim, this.dim]),
     );
 
-    const kv = recordOp("Mul", [k, v]);
-    let out = recordOp("Mul", [recordOp("Sigmoid", [rec]), kv]);
-    out = this.output.call(
-      out,
-      getParam(`${this.prefix}.output.weight`, [this.dim, this.dim]),
-    );
+    const kv = recordOp('Mul', [k, v]);
+    let out = recordOp('Mul', [recordOp('Sigmoid', [rec]), kv]);
+    out = this.output.call(out, getParam(`${this.prefix}.output.weight`, [this.dim, this.dim]));
 
     return out;
   }
@@ -105,7 +88,7 @@ export class RWKVChannelMix {
   public receptance: Gemm;
   public value: Gemm;
 
-  constructor(dim: number, prefix: string = "") {
+  constructor(dim: number, prefix: string = '') {
     this.prefix = prefix;
     this.dim = dim;
     this.key = new Gemm(1.0, 1.0, 0, 1);
@@ -114,22 +97,16 @@ export class RWKVChannelMix {
   }
 
   call(x: Tensor): Tensor {
-    let k = this.key.call(
-      x,
-      getParam(`${this.prefix}.key.weight`, [this.dim * 4, this.dim]),
-    );
-    k = recordOp("Relu", [k]);
+    let k = this.key.call(x, getParam(`${this.prefix}.key.weight`, [this.dim * 4, this.dim]));
+    k = recordOp('Relu', [k]);
 
-    const v = this.value.call(
-      k,
-      getParam(`${this.prefix}.value.weight`, [this.dim, this.dim * 4]),
-    );
+    const v = this.value.call(k, getParam(`${this.prefix}.value.weight`, [this.dim, this.dim * 4]));
 
     const rec = this.receptance.call(
       x,
       getParam(`${this.prefix}.receptance.weight`, [this.dim, this.dim]),
     );
-    const out = recordOp("Mul", [recordOp("Sigmoid", [rec]), v]);
+    const out = recordOp('Mul', [recordOp('Sigmoid', [rec]), v]);
 
     return out;
   }
@@ -143,7 +120,7 @@ export class RWKVBlock {
   public norm2: LayerNormalization;
   public channelMix: RWKVChannelMix;
 
-  constructor(dim: number, prefix: string = "") {
+  constructor(dim: number, prefix: string = '') {
     this.prefix = prefix;
     this.dim = dim;
     this.norm1 = new LayerNormalization([dim]);
@@ -160,7 +137,7 @@ export class RWKVBlock {
       getParam(`${this.prefix}.norm1.bias`, [this.dim]),
     );
     const xAtt = this.timeMix.call(xNorm);
-    x = recordOp("Add", [identity, xAtt]);
+    x = recordOp('Add', [identity, xAtt]);
 
     identity = x;
     xNorm = this.norm2.call(
@@ -169,7 +146,7 @@ export class RWKVBlock {
       getParam(`${this.prefix}.norm2.bias`, [this.dim]),
     );
     const xFfn = this.channelMix.call(xNorm);
-    x = recordOp("Add", [identity, xFfn]);
+    x = recordOp('Add', [identity, xFfn]);
 
     return x;
   }
@@ -182,11 +159,7 @@ export class RWKV {
   public norm: LayerNormalization;
   public head: Gemm;
 
-  constructor(
-    vocabSize: number = 50277,
-    dim: number = 768,
-    depth: number = 24,
-  ) {
+  constructor(vocabSize: number = 50277, dim: number = 768, depth: number = 24) {
     this.vocabSize = vocabSize;
     this.dim = dim;
 
@@ -201,8 +174,8 @@ export class RWKV {
 
   call(inputIds: Tensor): Tensor {
     let x = recordOp(
-      "Gather",
-      [getParam("embedding.weight", [this.vocabSize, this.dim]), inputIds],
+      'Gather',
+      [getParam('embedding.weight', [this.vocabSize, this.dim]), inputIds],
       { axis: 0 },
     );
 
@@ -210,12 +183,8 @@ export class RWKV {
       x = block.call(x);
     }
 
-    x = this.norm.call(
-      x,
-      getParam("norm.weight", [this.dim]),
-      getParam("norm.bias", [this.dim]),
-    );
-    x = this.head.call(x, getParam("head.weight", [this.vocabSize, this.dim]));
+    x = this.norm.call(x, getParam('norm.weight', [this.dim]), getParam('norm.bias', [this.dim]));
+    x = this.head.call(x, getParam('head.weight', [this.vocabSize, this.dim]));
 
     return x;
   }

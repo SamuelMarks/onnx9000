@@ -1,12 +1,11 @@
 // @ts-nocheck
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { WorkerManager } from '../../src/core/WorkerManager';
 
 class MockWorker {
   onmessage: object = null;
   postMessage = vi.fn();
   terminate = vi.fn();
-  constructor() {}
 }
 
 global.Worker = MockWorker as object;
@@ -20,7 +19,7 @@ describe('WorkerManager Streaming', () => {
     // A message with no pending request and not STREAM_STDOUT
     expect(() => {
       worker.onmessage({
-        data: { id: 'unknown', type: 'SOME_RANDOM_MSG' }
+        data: { id: 'unknown', type: 'SOME_RANDOM_MSG' },
       });
     }).not.toThrow();
   });

@@ -1,5 +1,5 @@
-import { Graph } from "../ir/graph.js";
-import { Tensor } from "../ir/tensor.js";
+import type { Graph } from '../ir/graph.js';
+import { Tensor } from '../ir/tensor.js';
 
 /**
  * KV Cache abstraction for self-attention layers.
@@ -63,7 +63,6 @@ export class PagedKVCache implements KVCache {
   /** Mapping of layer index to block pointers */
   public blockTables: Map<number, number[]> = new Map();
   private pages: Map<number, { keys: Tensor; values: Tensor }[]> = new Map();
-  private pageSize: number;
 
   /**
    * Create a new PagedKVCache.
@@ -88,7 +87,7 @@ export class PagedKVCache implements KVCache {
     if (!this.pages.has(layerIdx)) {
       this.pages.set(layerIdx, []);
     }
-    this.pages.get(layerIdx)!.push({ keys, values });
+    this.pages.get(layerIdx)?.push({ keys, values });
   }
 
   /**
@@ -109,7 +108,6 @@ export class PagedKVCache implements KVCache {
  */
 export class CrossLayerKVCache implements KVCache {
   private caches: Map<number, KVCache> = new Map();
-  private numLayers: number;
 
   /**
    * Create a cross-layer manager.
@@ -235,7 +233,6 @@ export class State {
 export class MultiHeadAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numHeads: number;
-  private headDim: number;
 
   /**
    * Create an MHA cache.
@@ -281,7 +278,6 @@ export class MultiHeadAttentionCache implements KVCache {
 export class GroupedQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number;
-  private headDim: number;
 
   /**
    * Create a GQA cache.
@@ -327,7 +323,6 @@ export class GroupedQueryAttentionCache implements KVCache {
 export class MultiQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number = 1;
-  private headDim: number;
 
   /**
    * Create an MQA cache.
@@ -386,7 +381,7 @@ export class SequenceBatchingKVCache implements KVCache {
     if (!this.cache.has(layerIdx)) {
       this.cache.set(layerIdx, []);
     }
-    this.cache.get(layerIdx)!.push({ keys, values });
+    this.cache.get(layerIdx)?.push({ keys, values });
   }
 
   /** Retrieves the latest batch KV for the layer. */
@@ -453,10 +448,7 @@ export class SlidingWindowKVCache implements KVCache {
    * @param layerIdx Layer index
    */
   update(keys: Tensor, values: Tensor, layerIdx: number): void {
-    const seqLen =
-      keys.shape.length > 2
-        ? (keys.shape[2] as number)
-        : (keys.shape[1] as number);
+    const seqLen = keys.shape.length > 2 ? (keys.shape[2] as number) : (keys.shape[1] as number);
     if (seqLen > this.windowSize) {
       // Implement sliding window truncation here via view logic
     }
@@ -489,10 +481,7 @@ export class PositionalEmbeddingUtils {
     ropeScale: number = 1.0,
     ropeTheta: number = 10000.0,
   ): [Tensor, Tensor] {
-    if (
-      !(query.data instanceof Float32Array) ||
-      !(key.data instanceof Float32Array)
-    ) {
+    if (!(query.data instanceof Float32Array) || !(key.data instanceof Float32Array)) {
       return [query, key];
     }
 
@@ -503,7 +492,7 @@ export class PositionalEmbeddingUtils {
 
       for (let pos = 0; pos < seqLen; pos++) {
         for (let i = 0; i < headDim; i += 2) {
-          const freq = (pos * ropeScale) / Math.pow(ropeTheta, i / headDim);
+          const freq = (pos * ropeScale) / ropeTheta ** (i / headDim);
           const sinVal = Math.sin(freq);
           const cosVal = Math.cos(freq);
 
@@ -520,14 +509,7 @@ export class PositionalEmbeddingUtils {
           }
         }
       }
-      return new Tensor(
-        t.name,
-        t.shape,
-        t.dtype,
-        t.isInitializer,
-        t.requiresGrad,
-        newData,
-      );
+      return new Tensor(t.name, t.shape, t.dtype, t.isInitializer, t.requiresGrad, newData);
     };
 
     return [applyToTensor(query), applyToTensor(key)];
@@ -546,13 +528,11 @@ export class PositionalEmbeddingUtils {
 
     const data = attentionScores.data;
     const newData = new Float32Array(data);
-    const seqLen = attentionScores.shape[
-      attentionScores.shape.length - 1
-    ] as number;
+    const seqLen = attentionScores.shape[attentionScores.shape.length - 1] as number;
 
     const slopes: number[] = [];
     for (let i = 1; i <= numHeads; i++) {
-      slopes.push(1.0 / Math.pow(2, (8.0 * i) / numHeads));
+      slopes.push(1.0 / 2 ** ((8.0 * i) / numHeads));
     }
 
     for (let headIdx = 0; headIdx < numHeads; headIdx++) {
@@ -590,13 +570,13 @@ export class QuantizedKVCache implements KVCache {
    * Create a quantized cache.
    * @param dtype Target quantization data type (e.g., 'int8')
    */
-  constructor(private dtype: string = "int8") {}
+  constructor(_dtype: string = 'int8') {}
   /** No-op clear. */
   clear(): void {}
   /** No-op update. */
-  update(keys: Tensor, values: Tensor, layerIdx: number): void {}
+  update(_keys: Tensor, _values: Tensor, _layerIdx: number): void {}
   /** No-op get. */
-  get(layerIdx: number): { keys: Tensor; values: Tensor } | null {
+  get(_layerIdx: number): { keys: Tensor; values: Tensor } | null {
     return null;
   }
 }
@@ -609,13 +589,13 @@ export class OffloadedKVCache implements KVCache {
    * Create an offloaded cache.
    * @param maxVramSize Maximum VRAM threshold before offloading occurs
    */
-  constructor(private maxVramSize: number) {}
+  constructor(_maxVramSize: number) {}
   /** No-op clear. */
   clear(): void {}
   /** No-op update. */
-  update(keys: Tensor, values: Tensor, layerIdx: number): void {}
+  update(_keys: Tensor, _values: Tensor, _layerIdx: number): void {}
   /** No-op get. */
-  get(layerIdx: number): { keys: Tensor; values: Tensor } | null {
+  get(_layerIdx: number): { keys: Tensor; values: Tensor } | null {
     return null;
   }
 }
@@ -629,5 +609,5 @@ export class PromptCacheManager {
    * @param prompt The prompt string used as key
    * @param state The generation state object to save
    */
-  async saveToIDB(prompt: string, state: State): Promise<void> {}
+  async saveToIDB(_prompt: string, _state: State): Promise<void> {}
 }

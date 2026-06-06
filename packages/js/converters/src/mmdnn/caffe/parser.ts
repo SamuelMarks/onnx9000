@@ -4,17 +4,17 @@
  */
 // @ts-nocheck
 import {
-  readVarInt,
-  readVarInt64,
+  BufferReader,
+  type Reader,
   readString,
   readTag,
+  readVarInt,
+  readVarInt64,
   skipField,
-  Reader,
-  BufferReader,
-  WIRE_TYPE_VARINT,
-  WIRE_TYPE_LENGTH_DELIMITED,
   WIRE_TYPE_32BIT,
-} from "@onnx9000/core";
+  WIRE_TYPE_LENGTH_DELIMITED,
+  WIRE_TYPE_VARINT,
+} from '@onnx9000/core';
 
 /**
  * Parses a Caffe prototxt string into a JavaScript object.
@@ -29,21 +29,21 @@ export function parsePrototxt(text: string): object {
     input_dim: [],
     input_shape: [],
   };
-  const lines = text.split("\n");
+  const lines = text.split('\n');
   const stack: object[] = [result];
   let currentObj = result;
 
   for (let i = 0; i < lines.length; i++) {
     const _l = lines[i];
     if (_l === undefined) continue;
-    let line = _l.split("#")[0]!.trim();
+    const line = _l.split('#')[0]?.trim();
     if (!line) continue;
 
-    if (line.endsWith("{")) {
+    if (line.endsWith('{')) {
       const key = line.slice(0, -1).trim();
       const newObj: object = {};
 
-      if (key === "layer" || key === "layers") {
+      if (key === 'layer' || key === 'layers') {
         result.layer.push(newObj);
         stack.push(newObj);
         currentObj = newObj;
@@ -59,38 +59,34 @@ export function parsePrototxt(text: string): object {
         stack.push(newObj);
         currentObj = newObj;
       }
-    } else if (line === "}") {
+    } else if (line === '}') {
       stack.pop();
       currentObj = stack[stack.length - 1];
     } else {
-      const colonIdx = line.indexOf(":");
+      const colonIdx = line.indexOf(':');
       if (colonIdx !== -1) {
         const key = line.substring(0, colonIdx).trim();
-        let valStr = line.substring(colonIdx + 1).trim();
+        const valStr = line.substring(colonIdx + 1).trim();
         let val: object = valStr;
         if (
           (valStr.startsWith('"') && valStr.endsWith('"')) ||
           (valStr.startsWith("'") && valStr.endsWith("'"))
         ) {
           val = valStr.substring(1, valStr.length - 1);
-        } else if (
-          !isNaN(Number(valStr)) &&
-          valStr !== "true" &&
-          valStr !== "false"
-        ) {
+        } else if (!Number.isNaN(Number(valStr)) && valStr !== 'true' && valStr !== 'false') {
           val = Number(valStr);
-        } else if (valStr === "true") {
+        } else if (valStr === 'true') {
           val = true;
-        } else if (valStr === "false") {
+        } else if (valStr === 'false') {
           val = false;
         }
 
         if (
-          key === "input" ||
-          key === "input_dim" ||
-          key === "bottom" ||
-          key === "top" ||
-          key === "dim"
+          key === 'input' ||
+          key === 'input_dim' ||
+          key === 'bottom' ||
+          key === 'top' ||
+          key === 'dim'
         ) {
           if (!currentObj[key]) {
             currentObj[key] = [];
@@ -165,10 +161,7 @@ async function parseLayerParameter(reader: Reader): Promise<object> {
       layer.type = await readString(reader, len);
     }
     // blobs (50) or V1 blobs (6)
-    else if (
-      (fieldNumber === 50 || fieldNumber === 6) &&
-      wireType === WIRE_TYPE_LENGTH_DELIMITED
-    ) {
+    else if ((fieldNumber === 50 || fieldNumber === 6) && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
       const len = await readVarInt(reader);
       const subReader = new BufferReader(await reader.readBytes(len));
       const blob = await parseBlobProto(subReader);
@@ -213,20 +206,15 @@ async function parseBlobProto(reader: Reader): Promise<object> {
     else if (fieldNumber === 5) {
       if (wireType === WIRE_TYPE_32BIT) {
         const bytes = await reader.readBytes(4);
-        const floatVal = new DataView(
-          bytes.buffer,
-          bytes.byteOffset,
-          bytes.byteLength,
-        ).getFloat32(0, true);
+        const floatVal = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getFloat32(
+          0,
+          true,
+        );
         blob.data.push(floatVal);
       } else if (wireType === WIRE_TYPE_LENGTH_DELIMITED) {
         const len = await readVarInt(reader);
         const bytes = await reader.readBytes(len);
-        const view = new DataView(
-          bytes.buffer,
-          bytes.byteOffset,
-          bytes.byteLength,
-        );
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
         for (let i = 0; i < len; i += 4) {
           blob.data.push(view.getFloat32(i, true));
         }

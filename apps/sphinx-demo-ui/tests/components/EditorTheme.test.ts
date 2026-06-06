@@ -1,8 +1,9 @@
 // @ts-nocheck
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import * as monaco from 'monaco-editor';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Editor } from '../../src/components/Editor';
 import { globalEventBus } from '../../src/core/EventBus';
-import * as monaco from 'monaco-editor';
 
 describe('Editor Theme Sync', () => {
   beforeEach(() => {

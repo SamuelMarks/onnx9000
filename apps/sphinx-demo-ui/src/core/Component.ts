@@ -22,7 +22,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
   public mount(parent: HTMLElement): void {
     if (!this.element) {
       throw new Error(
-        'Component element not initialized. Did you forget to set this.element in the constructor?'
+        'Component element not initialized. Did you forget to set this.element in the constructor?',
       );
     }
     parent.appendChild(this.element);
@@ -37,7 +37,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
   public replace(oldElement: HTMLElement): void {
     if (!this.element) {
       throw new Error(
-        'Component element not initialized. Did you forget to set this.element in the constructor?'
+        'Component element not initialized. Did you forget to set this.element in the constructor?',
       );
     }
     if (oldElement.parentNode) {
@@ -64,7 +64,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     this.cleanupFunctions = [];
 
     // Remove element if it exists in DOM
-    if (this.element && this.element.parentNode) {
+    if (this.element?.parentNode) {
       this.element.parentNode.removeChild(this.element);
     }
   }
@@ -81,7 +81,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     target: EventTarget,
     event: string,
     handler: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void {
     target.addEventListener(event, handler, options);
     this.cleanupFunctions.push(() => {

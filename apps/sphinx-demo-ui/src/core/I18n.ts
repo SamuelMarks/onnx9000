@@ -42,7 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
     'promote.button': 'Promote to Source',
     'promote.tooltip':
       'Use this pipeline step output as the new source file for further conversions.',
-    'console.clear': 'Clear Console'
+    'console.clear': 'Clear Console',
   },
   es: {
     'lhs.title': 'Contenedor Izquierdo',
@@ -80,7 +80,7 @@ const translations: Record<Language, Record<string, string>> = {
     'promote.button': 'Promover a Fuente',
     'promote.tooltip':
       'Usar esta salida del paso de la canalización como el nuevo archivo fuente para conversiones posteriores.',
-    'console.clear': 'Limpiar Consola'
+    'console.clear': 'Limpiar Consola',
   },
   fr: {
     'lhs.title': 'Conteneur Gauche',
@@ -116,7 +116,7 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': 'INT8 Dynamique',
     'promote.button': 'Promouvoir comme Source',
     'promote.tooltip': 'Utilisez la sortie de cette étape comme nouveau fichier source.',
-    'console.clear': 'Effacer la Console'
+    'console.clear': 'Effacer la Console',
   },
   de: {
     'lhs.title': 'Linker Container',
@@ -152,7 +152,7 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': 'Dynamisches INT8',
     'promote.button': 'Zur Quelle Hochstufen',
     'promote.tooltip': 'Verwenden Sie diese Ausgabe als neue Quelldatei.',
-    'console.clear': 'Konsole Leeren'
+    'console.clear': 'Konsole Leeren',
   },
   ja: {
     'lhs.title': '左側コンテナ',
@@ -188,8 +188,8 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': '動的 INT8',
     'promote.button': 'ソースに昇格',
     'promote.tooltip': 'このパイプラインステップの出力を新しいソースファイルとして使用します。',
-    'console.clear': 'コンソールをクリア'
-  }
+    'console.clear': 'コンソールをクリア',
+  },
 };
 
 class I18nManager {
@@ -224,8 +224,8 @@ class I18nManager {
   }
 
   public t(key: string, args?: Record<string, string>): string {
-    const langDict = translations[this.currentLang] || translations['en'];
-    let text = langDict[key] || translations['en'][key] || key;
+    const langDict = translations[this.currentLang] || translations.en;
+    let text = langDict[key] || translations.en[key] || key;
     if (args) {
       for (const [k, v] of Object.entries(args)) {
         text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);

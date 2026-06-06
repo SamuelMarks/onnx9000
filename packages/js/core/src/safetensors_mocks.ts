@@ -31,7 +31,7 @@ export function integrateWebGPUChunkedPipeline(): void {
  * Allows loading specific slices of tensors directly from disk to optimize memory.
  * @param sliceDims Dimensions of the slice to load
  */
-export function tensorParallelismLoadSlice(sliceDims: number[]): void {
+export function tensorParallelismLoadSlice(_sliceDims: number[]): void {
   // Tensor parallelism loading strategies (Load slice [:, 0:Dim/2] directly from disk)
 }
 

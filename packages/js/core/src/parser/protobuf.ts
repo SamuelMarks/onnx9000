@@ -45,7 +45,7 @@ export class BufferReader implements Reader {
   /** Read a single byte from the buffer. */
   async readByte(): Promise<number> {
     if (this.offset >= this.buffer.length) {
-      throw new Error("Unexpected end of buffer");
+      throw new Error('Unexpected end of buffer');
     }
     return this.buffer[this.offset++]!;
   }
@@ -53,7 +53,7 @@ export class BufferReader implements Reader {
   /** Read a fixed number of bytes from the buffer. */
   async readBytes(length: number): Promise<Uint8Array> {
     if (this.offset + length > this.buffer.length) {
-      throw new Error("Unexpected end of buffer");
+      throw new Error('Unexpected end of buffer');
     }
     const res = this.buffer.subarray(this.offset, this.offset + length);
     this.offset += length;
@@ -106,10 +106,7 @@ export class BlobReader implements Reader {
       this.offset + length > this.cacheStart + this.cache.length
     ) {
       const start = this.offset;
-      const end = Math.min(
-        this.blob.size,
-        start + Math.max(this.cacheSize, length),
-      );
+      const end = Math.min(this.blob.size, start + Math.max(this.cacheSize, length));
       const slice = this.blob.slice(start, end);
       const arrayBuffer = await slice.arrayBuffer();
       this.cache = new Uint8Array(arrayBuffer);
@@ -120,10 +117,10 @@ export class BlobReader implements Reader {
   /** Read a single byte from the blob. */
   async readByte(): Promise<number> {
     if (this.offset >= this.blob.size) {
-      throw new Error("Unexpected end of blob");
+      throw new Error('Unexpected end of blob');
     }
     await this.ensureCache(1);
-    const byte = this.cache![this.offset - this.cacheStart]!;
+    const byte = this.cache?.[this.offset - this.cacheStart]!;
     this.offset++;
     return byte;
   }
@@ -131,11 +128,11 @@ export class BlobReader implements Reader {
   /** Read a fixed number of bytes from the blob. */
   async readBytes(length: number): Promise<Uint8Array> {
     if (this.offset + length > this.blob.size) {
-      throw new Error("Unexpected end of blob");
+      throw new Error('Unexpected end of blob');
     }
     await this.ensureCache(length);
     const start = this.offset - this.cacheStart;
-    const res = this.cache!.subarray(start, start + length);
+    const res = this.cache?.subarray(start, start + length);
     this.offset += length;
     return res;
   }
@@ -195,10 +192,7 @@ export async function readVarInt64(reader: Reader): Promise<bigint> {
  * @param reader Input reader.
  * @param length Length of the string in bytes.
  */
-export async function readString(
-  reader: Reader,
-  length: number,
-): Promise<string> {
+export async function readString(reader: Reader, length: number): Promise<string> {
   const bytes = await reader.readBytes(length);
   return new TextDecoder().decode(bytes);
 }
@@ -207,9 +201,7 @@ export async function readString(
  * Read a field tag (field number and wire type).
  * @param reader Input reader.
  */
-export async function readTag(
-  reader: Reader,
-): Promise<{ fieldNumber: number; wireType: number }> {
+export async function readTag(reader: Reader): Promise<{ fieldNumber: number; wireType: number }> {
   const tag = await readVarInt(reader);
   return { fieldNumber: tag >> 3, wireType: tag & 7 };
 }
@@ -219,10 +211,7 @@ export async function readTag(
  * @param reader Input reader.
  * @param wireType Protobuf wire type.
  */
-export async function skipField(
-  reader: Reader,
-  wireType: number,
-): Promise<void> {
+export async function skipField(reader: Reader, wireType: number): Promise<void> {
   switch (wireType) {
     case WIRE_TYPE_VARINT:
       await readVarInt64(reader);
@@ -230,13 +219,14 @@ export async function skipField(
     case WIRE_TYPE_64BIT:
       await reader.skip(8);
       break;
-    case WIRE_TYPE_LENGTH_DELIMITED:
+    case WIRE_TYPE_LENGTH_DELIMITED: {
       const length = await readVarInt(reader);
       await reader.skip(length);
       break;
+    }
     case WIRE_TYPE_START_GROUP:
     case WIRE_TYPE_END_GROUP:
-      throw new Error("Groups are not supported");
+      throw new Error('Groups are not supported');
     case WIRE_TYPE_32BIT:
       await reader.skip(4);
       break;

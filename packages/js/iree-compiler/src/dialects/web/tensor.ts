@@ -2,10 +2,10 @@
  * @fileoverview tensor.ts
  * Provides tensor functionality for the iree-compiler package.
  */
-import { Operation, Type, Value } from "../../ir/core.js";
+import { Operation, type Type, type Value } from '../../ir/core.js';
 
 export class TensorType implements Type {
-  readonly id = "tensor";
+  readonly id = 'tensor';
   readonly shape: number[];
   readonly elementType: string;
 
@@ -15,16 +15,8 @@ export class TensorType implements Type {
   }
 }
 
-export function extract(
-  tensor: Value,
-  indices: Value[],
-  resultType: Type,
-): Operation {
-  return new Operation(
-    "web.tensor.extract",
-    [tensor, ...indices],
-    [resultType],
-  );
+export function extract(tensor: Value, indices: Value[], resultType: Type): Operation {
+  return new Operation('web.tensor.extract', [tensor, ...indices], [resultType]);
 }
 
 export function insert(
@@ -33,15 +25,11 @@ export function insert(
   indices: Value[],
   resultType: Type,
 ): Operation {
-  return new Operation(
-    "web.tensor.insert",
-    [tensor, scalar, ...indices],
-    [resultType],
-  );
+  return new Operation('web.tensor.insert', [tensor, scalar, ...indices], [resultType]);
 }
 
 export function splat(scalar: Value, resultType: Type): Operation {
-  return new Operation("web.tensor.splat", [scalar], [resultType]);
+  return new Operation('web.tensor.splat', [scalar], [resultType]);
 }
 
 export function pad(
@@ -52,7 +40,7 @@ export function pad(
   interiorPadding: number[],
   resultType: Type,
 ): Operation {
-  return new Operation("web.tensor.pad", [tensor, padValue], [resultType], {
+  return new Operation('web.tensor.pad', [tensor, padValue], [resultType], {
     edgePaddingLow,
     edgePaddingHigh,
     interiorPadding,

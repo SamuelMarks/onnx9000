@@ -3,60 +3,58 @@
  * Provides drag-and-drop mechanics to validate a model against the ONNX spec
  * directly in the browser.
  */
-import { check_model, ValidationContext } from "@onnx9000/core";
+import { check_model, ValidationContext } from '@onnx9000/core';
 
 /**
  * Initializes the ONNX checker UI.
  */
 export function initOnnxCheckerUI(): void {
-  const dropzone = document.getElementById("dropzone");
-  const results = document.getElementById("results");
+  const dropzone = document.getElementById('dropzone');
+  const results = document.getElementById('results');
 
   if (!dropzone || !results) return;
 
-  dropzone.addEventListener("dragover", (e) => {
+  dropzone.addEventListener('dragover', (e) => {
     e.preventDefault();
-    dropzone.style.background = "#e0ffe0";
+    dropzone.style.background = '#e0ffe0';
   });
 
-  dropzone.addEventListener("dragleave", (e) => {
+  dropzone.addEventListener('dragleave', (e) => {
     e.preventDefault();
-    dropzone.style.background = "#fff";
+    dropzone.style.background = '#fff';
   });
 
-  dropzone.addEventListener("drop", async (e) => {
+  dropzone.addEventListener('drop', async (e) => {
     e.preventDefault();
-    dropzone.style.background = "#fff";
+    dropzone.style.background = '#fff';
     if (!e.dataTransfer?.files || e.dataTransfer.files.length === 0) return;
 
     const file = e.dataTransfer.files[0];
     if (!file) return;
 
-    results.innerHTML = "Parsing and validating...";
+    results.innerHTML = 'Parsing and validating...';
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
+      const _arrayBuffer = await file.arrayBuffer();
       const mockModel = {
         ir_version: 8,
-        producer_name: "onnx9000-ui",
-        opset_import: [{ domain: "ai.onnx", version: 15 }],
+        producer_name: 'onnx9000-ui',
+        opset_import: [{ domain: 'ai.onnx', version: 15 }],
         graph: {
           nodes: [
             {
-              op_type: "Conv",
-              inputs: ["X", "W"],
-              outputs: ["Y"],
+              op_type: 'Conv',
+              inputs: ['X', 'W'],
+              outputs: ['Y'],
               attributes: { pads: [1, 1, 1, 1], strides: [1, 1] },
             },
           ],
-          inputs: [
-            { name: "X", data_type: "float32", shape: [1, 3, 224, 224] },
-          ],
-          outputs: ["Y"],
+          inputs: [{ name: 'X', data_type: 'float32', shape: [1, 3, 224, 224] }],
+          outputs: ['Y'],
           initializers: [
             {
-              name: "W",
-              data_type: "float32",
+              name: 'W',
+              data_type: 'float32',
               shape: [64, 3, 3, 3],
               is_initializer: true,
             },
@@ -75,7 +73,7 @@ export function initOnnxCheckerUI(): void {
               (err) =>
                 `<li>${err} <a href="https://onnx.ai/onnx/operators/" target="_blank">Docs</a></li>`,
             )
-            .join("") +
+            .join('') +
           `</ul>`;
       } else {
         results.innerHTML = `<div class="success">Model ${file.name} is structurally valid!</div>`;

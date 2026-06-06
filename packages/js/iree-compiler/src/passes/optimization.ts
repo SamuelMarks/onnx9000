@@ -2,7 +2,7 @@
  * @fileoverview optimization.ts
  * Provides optimization functionality for the iree-compiler package.
  */
-import { Region, Operation } from "../ir/core.js";
+import type { Region } from '../ir/core.js';
 
 // 146-155. Optimization Passes
 export class Optimizer {
@@ -11,7 +11,7 @@ export class Optimizer {
     for (const block of region.blocks) {
       for (const op of block.operations) {
         // Dummy pass that would pattern match: matmul -> scale -> softmax -> matmul
-        if (op.opcode === "web.linalg.matmul" /* ... */) {
+        if (op.opcode === 'web.linalg.matmul' /* ... */) {
           // fuse to web.linalg.attention
         }
       }
@@ -19,7 +19,7 @@ export class Optimizer {
   }
 
   // 147, 154. WebNN mapping & Apple NE vectorization
-  public mapToWebNN(region: Region): void {
+  public mapToWebNN(_region: Region): void {
     // Translate specific linalg patterns (e.g. conv2d, matmul) directly to a web.webnn dialect
   }
 
@@ -27,7 +27,7 @@ export class Optimizer {
   public removeConvolutionPadding(region: Region): void {
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === "web.mhlo.convolution") {
+        if (op.opcode === 'web.mhlo.convolution') {
           // Check if padding is > 0
           // Lower to web.mhlo.pad + valid convolution
         }
@@ -36,12 +36,12 @@ export class Optimizer {
   }
 
   // 149. Elementwise fusion
-  public fuseElementwise(region: Region): void {
+  public fuseElementwise(_region: Region): void {
     // Greedy fusion of web.mhlo.add, sub, mul, div sequences into generic or custom_call
   }
 
   // 150. Hoist shape calculations
-  public hoistShapeCalculations(region: Region): void {
+  public hoistShapeCalculations(_region: Region): void {
     // Move web.mhlo.dynamic_slice shape calculations out of scf.for/while loops
   }
 
@@ -52,7 +52,7 @@ export class Optimizer {
       while (i < block.operations.length) {
         const op = block.operations[i]!;
         // vm.add x, 0 -> x
-        if (op.opcode === "web.vm.add.i32" || op.opcode === "web.vm.add.f32") {
+        if (op.opcode === 'web.vm.add.i32' || op.opcode === 'web.vm.add.f32') {
           // Dummy check. Real code checks constants
           // If zero, replace usages
         }
@@ -62,8 +62,8 @@ export class Optimizer {
   }
 
   // 152. Global Value Numbering (GVN) / CSE
-  public performGVN(region: Region): void {
-    const hashToValue = new Map<string, ReturnType<typeof JSON.parse>>();
+  public performGVN(_region: Region): void {
+    const _hashToValue = new Map<string, ReturnType<typeof JSON.parse>>();
     // Walk DOM tree, compute hashes for pure ops, replace if hash exists
   }
 
@@ -71,9 +71,9 @@ export class Optimizer {
   public performDCE(region: Region): void {
     // Eliminate unused attributes and unused regions
     for (const block of region.blocks) {
-      const usedValues = new Set();
+      const _usedValues = new Set();
       for (let i = block.operations.length - 1; i >= 0; i--) {
-        const op = block.operations[i]!;
+        const _op = block.operations[i]!;
         // If pure op and results aren't in usedValues, remove it
         // Else add its operands to usedValues
       }
@@ -81,7 +81,7 @@ export class Optimizer {
   }
 
   // 155. Dynamic dimension propagation
-  public propagateDynamicDimensions(region: Region): void {
+  public propagateDynamicDimensions(_region: Region): void {
     // Push ?/symbolic bounds down to the HAL allocator layer
   }
 

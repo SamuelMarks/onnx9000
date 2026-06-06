@@ -3,12 +3,12 @@
  * Provides types functionality for the coreml package.
  */
 export enum MILDataType {
-  FLOAT32 = "fp32",
-  FLOAT16 = "fp16",
-  INT32 = "int32",
-  INT64 = "int64",
-  BOOL = "bool",
-  STRING = "string",
+  FLOAT32 = 'fp32',
+  FLOAT16 = 'fp16',
+  INT32 = 'int32',
+  INT64 = 'int64',
+  BOOL = 'bool',
+  STRING = 'string',
 }
 
 export abstract class MILType {
@@ -35,7 +35,7 @@ export class TensorType extends MILType {
     return false;
   }
   toString() {
-    return `tensor<${this.dataType}, [${this.shape.join(",")}]>`;
+    return `tensor<${this.dataType}, [${this.shape.join(',')}]>`;
   }
 }
 
@@ -71,6 +71,6 @@ export class TupleType extends MILType {
     return true;
   }
   toString() {
-    return `tuple<${this.elements.map((e) => e.toString()).join(", ")}>`;
+    return `tuple<${this.elements.map((e) => e.toString()).join(', ')}>`;
   }
 }

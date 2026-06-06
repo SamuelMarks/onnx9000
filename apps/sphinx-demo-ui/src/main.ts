@@ -4,19 +4,19 @@
  */
 // @ts-nocheck
 import '@onnx9000/webnn-polyfill';
+import * as diffusers from '@onnx9000/diffusers';
 import * as tf from '@onnx9000/tfjs-shim';
 import * as transformers from '@onnx9000/transformers';
-import * as diffusers from '@onnx9000/diffusers';
 import { globalEventBus } from './core/EventBus';
 import './css/reset.css';
 import './css/theme.css';
 import './css/layout.css';
-import { SplitPane } from './components/SplitPane';
+import { BottomContainer } from './components/BottomContainer';
+import { Breadcrumbs } from './components/Breadcrumbs';
 import { LHSContainer } from './components/LHSContainer';
 import { RHSContainer } from './components/RHSContainer';
-import { BottomContainer } from './components/BottomContainer';
+import { SplitPane } from './components/SplitPane';
 import { WasmOverlay } from './components/WasmOverlay';
-import { Breadcrumbs } from './components/Breadcrumbs';
 import { WasmManager, WasmState } from './core/WasmManager';
 
 // Expose these ecosystem packages to the window for console usage and to ensure they are bundled.
@@ -54,7 +54,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'horizontal',
     initialSplitRatio: 0.5,
     minSize: 200,
-    storageKey: 'onnx9000-demo-horizontal-split'
+    storageKey: 'onnx9000-demo-horizontal-split',
   });
 
   // 2. Create the Main Split (Vertical: Top Split | Bottom Pane)
@@ -62,7 +62,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'vertical',
     initialSplitRatio: 0.5, // 50% top, 50% bottom
     minSize: 150,
-    storageKey: 'onnx9000-demo-vertical-split'
+    storageKey: 'onnx9000-demo-vertical-split',
   });
 
   // 3. Mount containers
@@ -107,6 +107,7 @@ if (container) {
 };
 
 import { TensorInputModal } from './components/TensorInputModal';
+
 (window as object).__TensorInputModal__ = TensorInputModal;
 
 (window as object).__OPEN_MODAL__ = (inputs: object[]) => {
@@ -133,7 +134,7 @@ const observeTheme = () => {
 
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme', 'class']
+    attributeFilter: ['data-theme', 'class'],
   });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 };

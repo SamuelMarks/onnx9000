@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { TFLiteExporter } from "../src/exporter.js";
+import { describe, expect, it } from 'vitest';
+import { TFLiteExporter } from '../src/exporter.js';
 
-describe("Exporter Extra", () => {
-  it("should call builder.clear in destroy if available", () => {
+describe('Exporter Extra', () => {
+  it('should call builder.clear in destroy if available', () => {
     const exporter = new TFLiteExporter();
     let clearCalled = false;
     // mock builder.clear

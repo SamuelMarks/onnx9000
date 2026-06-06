@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { OliveOptimizer } from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import { OliveOptimizer } from '../src/index.js';
 
-describe("OliveOptimizer", () => {
-  it("should process correctly", () => {
+describe('OliveOptimizer', () => {
+  it('should process correctly', () => {
     const obj = new OliveOptimizer();
-    expect(obj.process("test")).toBe("Olive Optimizer processed test");
+    expect(obj.process('test')).toBe('Olive Optimizer processed test');
   });
 });

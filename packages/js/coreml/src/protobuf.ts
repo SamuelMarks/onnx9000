@@ -1,16 +1,3 @@
-/**
- * @fileoverview protobuf.ts
- * Provides protobuf functionality for the coreml package.
- */
-import {
-  readVarInt,
-  Reader,
-  WIRE_TYPE_VARINT,
-  WIRE_TYPE_64BIT,
-  WIRE_TYPE_LENGTH_DELIMITED,
-  WIRE_TYPE_32BIT,
-} from "@onnx9000/core";
-
 export class Writer {
   private chunks: Uint8Array[] = [];
   private length = 0;

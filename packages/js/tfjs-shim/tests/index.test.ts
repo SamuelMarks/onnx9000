@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import * as tf from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import * as tf from '../src/index.js';
 
-describe("tfjs-shim", () => {
-  it("should run ops", () => {
+describe('tfjs-shim', () => {
+  it('should run ops', () => {
     expect(tf.version).toBeDefined();
 
     const a = tf.tensor([1, 2]);

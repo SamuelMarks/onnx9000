@@ -1,5 +1,5 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
-import { resolve } from 'path';
 
 export default defineConfig({
   test: {
@@ -10,13 +10,13 @@ export default defineConfig({
     alias: [
       {
         find: /^monaco-editor.*/,
-        replacement: resolve(__dirname, './tests/__mocks__/monaco-editor.ts')
-      }
+        replacement: resolve(__dirname, './tests/__mocks__/monaco-editor.ts'),
+      },
     ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/**/*.ts']
-    }
-  }
+      include: ['src/**/*.ts'],
+    },
+  },
 });

@@ -1,4 +1,5 @@
 // @ts-nocheck
 /** ncnn MMDNN submodule. */
-export * from "./parser.js";
-export * from "./mapper.js";
+
+export * from './mapper.js';
+export * from './parser.js';

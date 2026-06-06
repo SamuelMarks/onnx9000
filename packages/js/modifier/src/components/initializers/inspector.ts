@@ -1,5 +1,5 @@
-import { Graph, Tensor } from "@onnx9000/core";
-import { GraphMutator } from "../../GraphMutator.js";
+import type { Tensor } from '@onnx9000/core';
+import type { GraphMutator } from '../../GraphMutator.js';
 
 /**
  * Visual editor for weight tensors and initializers.
@@ -15,11 +15,10 @@ export class InitializerInspector {
   }
 
   render(tensor: Tensor) {
-    this.container.innerHTML = "";
+    this.container.innerHTML = '';
 
     if (!tensor.data) {
-      this.container.textContent =
-        "No internal data present (external data or empty).";
+      this.container.textContent = 'No internal data present (external data or empty).';
       return;
     }
 
@@ -42,30 +41,14 @@ export class InitializerInspector {
     if (!tensor.data) return null;
     const buf = tensor.data.buffer;
     switch (tensor.dtype) {
-      case "float32":
-        return new Float32Array(
-          buf,
-          tensor.data.byteOffset,
-          tensor.data.byteLength / 4,
-        );
-      case "float64":
-        return new Float64Array(
-          buf,
-          tensor.data.byteOffset,
-          tensor.data.byteLength / 8,
-        );
-      case "int32":
-        return new Int32Array(
-          buf,
-          tensor.data.byteOffset,
-          tensor.data.byteLength / 4,
-        );
-      case "uint8":
-        return new Uint8Array(
-          buf,
-          tensor.data.byteOffset,
-          tensor.data.byteLength,
-        );
+      case 'float32':
+        return new Float32Array(buf, tensor.data.byteOffset, tensor.data.byteLength / 4);
+      case 'float64':
+        return new Float64Array(buf, tensor.data.byteOffset, tensor.data.byteLength / 8);
+      case 'int32':
+        return new Int32Array(buf, tensor.data.byteOffset, tensor.data.byteLength / 4);
+      case 'uint8':
+        return new Uint8Array(buf, tensor.data.byteOffset, tensor.data.byteLength);
       // For 16-bit we'd need float16 logic, fallback or null here.
       default:
         return null;
@@ -73,7 +56,7 @@ export class InitializerInspector {
   }
 
   // 76. Inspector: Min, Max, Mean, Variance
-  private _renderStats(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
+  private _renderStats(arr: ReturnType<typeof JSON.parse>, _tensor: Tensor) {
     let min = Infinity;
     let max = -Infinity;
     let sum = 0;
@@ -93,7 +76,7 @@ export class InitializerInspector {
     }
     const variance = len > 1 ? sqSum / (len - 1) : 0;
 
-    const statsDiv = this._createSection("Statistics");
+    const statsDiv = this._createSection('Statistics');
     statsDiv.innerHTML += `
       <div style="font-size: 11px;">
         <div><strong>Min:</strong> ${min.toFixed(4)}</div>
@@ -107,7 +90,7 @@ export class InitializerInspector {
 
   // 84. Track exact byte sizes
   private _renderSize(arr: ReturnType<typeof JSON.parse>) {
-    const sizeDiv = this._createSection("Memory Footprint");
+    const sizeDiv = this._createSection('Memory Footprint');
     sizeDiv.innerHTML += `
       <div style="font-size: 11px;">
         <strong>Bytes:</strong> ${arr.byteLength.toLocaleString()} B
@@ -117,10 +100,7 @@ export class InitializerInspector {
   }
 
   // 77. Render small 2D weights as visual pixel grids (heatmaps)
-  private _renderHeatmap(
-    arr: ReturnType<typeof JSON.parse>,
-    shape: (number | string)[],
-  ) {
+  private _renderHeatmap(arr: ReturnType<typeof JSON.parse>, shape: (number | string)[]) {
     // Only attempt 2D or 4D where last two dims are small
     const numDims = shape.length;
     if (numDims < 2) return;
@@ -129,25 +109,17 @@ export class InitializerInspector {
     const w = Number(shape[numDims - 1]);
 
     // Check if it's a small grid (e.g. up to 16x16)
-    if (
-      Number.isNaN(h) ||
-      Number.isNaN(w) ||
-      h > 16 ||
-      w > 16 ||
-      h < 1 ||
-      w < 1
-    )
-      return;
+    if (Number.isNaN(h) || Number.isNaN(w) || h > 16 || w > 16 || h < 1 || w < 1) return;
 
     // Pick first channel / filter
     const gridLen = h * w;
     if (arr.length < gridLen) return;
 
     const heatmapDiv = this._createSection(`Heatmap (First ${h}x${w} slice)`);
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = w * 10;
     canvas.height = h * 10;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Normalize
@@ -166,7 +138,7 @@ export class InitializerInspector {
         const color = Math.floor(norm * 255);
         ctx.fillStyle = `rgb(${color}, 100, ${255 - color})`;
         ctx.fillRect(x * 10, y * 10, 10, 10);
-        ctx.strokeStyle = "#fff";
+        ctx.strokeStyle = '#fff';
         ctx.lineWidth = 1;
         ctx.strokeRect(x * 10, y * 10, 10, 10);
       }
@@ -176,17 +148,14 @@ export class InitializerInspector {
   }
 
   // 78. Support explicitly editing scalar initializer values via text
-  private _renderScalarEditor(
-    arr: ReturnType<typeof JSON.parse>,
-    tensor: Tensor,
-  ) {
+  private _renderScalarEditor(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
     if (arr.length !== 1) return;
 
-    const div = this._createSection("Scalar Editor");
-    const input = document.createElement("input");
-    input.type = "number";
+    const div = this._createSection('Scalar Editor');
+    const input = document.createElement('input');
+    input.type = 'number';
     input.value = String(arr[0]);
-    input.style.width = "100%";
+    input.style.width = '100%';
     input.onchange = (e) => {
       const val = parseFloat((e.target as HTMLInputElement).value);
       if (!Number.isNaN(val)) {
@@ -200,14 +169,14 @@ export class InitializerInspector {
   }
 
   private _renderActions(arr: ReturnType<typeof JSON.parse>, tensor: Tensor) {
-    const actDiv = this._createSection("Actions");
-    actDiv.style.display = "flex";
-    actDiv.style.flexDirection = "column";
-    actDiv.style.gap = "4px";
+    const actDiv = this._createSection('Actions');
+    actDiv.style.display = 'flex';
+    actDiv.style.flexDirection = 'column';
+    actDiv.style.gap = '4px';
 
     // 79. Zero out an initializer
-    const zeroBtn = document.createElement("button");
-    zeroBtn.textContent = "Zero Out";
+    const zeroBtn = document.createElement('button');
+    zeroBtn.textContent = 'Zero Out';
     zeroBtn.onclick = () => {
       const newArr = new arr.constructor(arr.length); // auto 0-filled
       this.mutator.updateInitializer(tensor.name, newArr);
@@ -215,8 +184,8 @@ export class InitializerInspector {
     actDiv.appendChild(zeroBtn);
 
     // 80. Random noise injection
-    const noiseBtn = document.createElement("button");
-    noiseBtn.textContent = "Add Noise (Fuzz)";
+    const noiseBtn = document.createElement('button');
+    noiseBtn.textContent = 'Add Noise (Fuzz)';
     noiseBtn.onclick = () => {
       const newArr = new arr.constructor(arr.length);
       for (let i = 0; i < arr.length; i++) {
@@ -227,8 +196,8 @@ export class InitializerInspector {
     actDiv.appendChild(noiseBtn);
 
     // 85. Prune by magnitude
-    const pruneBtn = document.createElement("button");
-    pruneBtn.textContent = "Prune (< 1e-3)";
+    const pruneBtn = document.createElement('button');
+    pruneBtn.textContent = 'Prune (< 1e-3)';
     pruneBtn.onclick = () => {
       const newArr = new arr.constructor(arr.length);
       for (let i = 0; i < arr.length; i++) {
@@ -239,10 +208,10 @@ export class InitializerInspector {
     actDiv.appendChild(pruneBtn);
 
     // 83. Precision cast
-    const castBtn = document.createElement("button");
-    castBtn.textContent = "Cast to FP32";
+    const castBtn = document.createElement('button');
+    castBtn.textContent = 'Cast to FP32';
     castBtn.onclick = () => {
-      if (tensor.dtype !== "float32") {
+      if (tensor.dtype !== 'float32') {
         const origType = tensor.dtype;
         const fp32Arr = new Float32Array(arr.length);
         for (let i = 0; i < arr.length; i++) fp32Arr[i] = arr[i];
@@ -255,7 +224,7 @@ export class InitializerInspector {
           },
           redo: () => {
             this.mutator.graph.tensors[tensor.name]!.data = fp32Arr;
-            this.mutator.graph.tensors[tensor.name]!.dtype = "float32";
+            this.mutator.graph.tensors[tensor.name]!.dtype = 'float32';
           },
         });
       }
@@ -263,12 +232,12 @@ export class InitializerInspector {
     actDiv.appendChild(castBtn);
 
     // 81. Download
-    const downBtn = document.createElement("button");
-    downBtn.textContent = "Download .bin";
+    const downBtn = document.createElement('button');
+    downBtn.textContent = 'Download .bin';
     downBtn.onclick = () => {
-      const blob = new Blob([arr.buffer], { type: "application/octet-stream" });
+      const blob = new Blob([arr.buffer], { type: 'application/octet-stream' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `${tensor.name}.bin`;
       a.click();
@@ -277,12 +246,12 @@ export class InitializerInspector {
     actDiv.appendChild(downBtn);
 
     // 82. Upload
-    const upBtn = document.createElement("button");
-    upBtn.textContent = "Upload .bin";
+    const upBtn = document.createElement('button');
+    upBtn.textContent = 'Upload .bin';
     upBtn.onclick = () => {
-      const fileIn = document.createElement("input");
-      fileIn.type = "file";
-      fileIn.accept = ".bin";
+      const fileIn = document.createElement('input');
+      fileIn.type = 'file';
+      fileIn.accept = '.bin';
       fileIn.onchange = async (e: ReturnType<typeof JSON.parse>) => {
         const file = e.target.files[0];
         if (file) {
@@ -299,17 +268,17 @@ export class InitializerInspector {
   }
 
   private _createSection(title: string) {
-    const div = document.createElement("div");
-    div.style.marginBottom = "12px";
-    div.style.padding = "8px";
-    div.style.border = "1px solid #dee2e6";
-    div.style.borderRadius = "4px";
+    const div = document.createElement('div');
+    div.style.marginBottom = '12px';
+    div.style.padding = '8px';
+    div.style.border = '1px solid #dee2e6';
+    div.style.borderRadius = '4px';
 
-    const h = document.createElement("div");
+    const h = document.createElement('div');
     h.textContent = title;
-    h.style.fontWeight = "bold";
-    h.style.fontSize = "12px";
-    h.style.marginBottom = "4px";
+    h.style.fontWeight = 'bold';
+    h.style.fontSize = '12px';
+    h.style.marginBottom = '4px';
     div.appendChild(h);
 
     return div;

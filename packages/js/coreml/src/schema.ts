@@ -2,18 +2,7 @@
  * @fileoverview schema.ts
  * Provides schema functionality for the coreml package.
  */
-import {
-  Reader,
-  WIRE_TYPE_VARINT,
-  WIRE_TYPE_64BIT,
-  WIRE_TYPE_LENGTH_DELIMITED,
-  WIRE_TYPE_32BIT,
-  skipField,
-  readVarInt,
-  readString,
-  readTag,
-} from "@onnx9000/core";
-import { Writer } from "./protobuf.js";
+import { type Reader, readString, readTag, readVarInt, skipField } from '@onnx9000/core';
 
 export interface Model {
   specificationVersion: number;
@@ -44,9 +33,9 @@ export interface FeatureType {
   sequenceType?: SequenceFeatureType;
 }
 
-export interface Int64FeatureType {}
-export interface DoubleFeatureType {}
-export interface StringFeatureType {}
+export type Int64FeatureType = {};
+export type DoubleFeatureType = {};
+export type StringFeatureType = {};
 export interface ImageFeatureType {
   width: number;
   height: number;
@@ -56,8 +45,8 @@ export interface ArrayFeatureType {
   shape: number[];
   dataType: number; // 0=INVALID, 1=FLOAT32, 2=DOUBLE, 3=INT32, 4=FLOAT16
 }
-export interface DictionaryFeatureType {}
-export interface SequenceFeatureType {}
+export type DictionaryFeatureType = {};
+export type SequenceFeatureType = {};
 
 export interface Metadata {
   shortDescription?: string;
@@ -157,10 +146,7 @@ export async function parseModel(reader: Reader): Promise<Model> {
   return model;
 }
 
-async function parseModelDescription(
-  reader: Reader,
-  limit: number,
-): Promise<ModelDescription> {
+async function parseModelDescription(reader: Reader, limit: number): Promise<ModelDescription> {
   const desc: ModelDescription = { input: [], output: [] };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
@@ -190,11 +176,8 @@ async function parseModelDescription(
   return desc;
 }
 
-async function parseFeatureDescription(
-  reader: Reader,
-  limit: number,
-): Promise<FeatureDescription> {
-  const feat: FeatureDescription = { name: "" };
+async function parseFeatureDescription(reader: Reader, limit: number): Promise<FeatureDescription> {
+  const feat: FeatureDescription = { name: '' };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
     switch (fieldNumber) {
@@ -248,10 +231,7 @@ async function parseMetadata(reader: Reader, limit: number): Promise<Metadata> {
   return meta;
 }
 
-async function parseNeuralNetwork(
-  reader: Reader,
-  limit: number,
-): Promise<NeuralNetwork> {
+async function parseNeuralNetwork(reader: Reader, limit: number): Promise<NeuralNetwork> {
   const nn: NeuralNetwork = { layers: [] };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
@@ -260,10 +240,7 @@ async function parseNeuralNetwork(
   return nn;
 }
 
-async function parseMILSpecProgram(
-  reader: Reader,
-  limit: number,
-): Promise<MILSpecProgram> {
+async function parseMILSpecProgram(reader: Reader, limit: number): Promise<MILSpecProgram> {
   const prog: MILSpecProgram = { version: 1, functions: {} as any };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);

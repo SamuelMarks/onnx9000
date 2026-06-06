@@ -2,23 +2,20 @@
  * @fileoverview standalone_js.ts
  * Provides standalone_js functionality for the iree-compiler package.
  */
-import { Region, Operation } from "../ir/core.js";
+import type { Region } from '../ir/core.js';
 
 // 136-145. Standalone Web Generation
 export class StandaloneJSExporter {
-  emit(
-    region: Region,
-    modelWeightsUrl: string = "./weights.bin",
-  ): { js: string; html: string } {
+  emit(region: Region, modelWeightsUrl: string = './weights.bin'): { js: string; html: string } {
     const shaders: string[] = [];
-    let executionQueue: string = "";
+    let executionQueue: string = '';
 
     // Dummy extraction of shaders and execution steps from region
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === "web.hal.executable.create") {
+        if (op.opcode === 'web.hal.executable.create') {
           shaders.push(op.attributes.shader_code as string);
-        } else if (op.opcode === "web.hal.command_buffer.dispatch") {
+        } else if (op.opcode === 'web.hal.command_buffer.dispatch') {
           // 137, 141. Explicit, hardcoded dispatch queue (no loops)
           executionQueue += `    await dispatchKernel(device, pipelines[${shaders.length - 1}], 64, 64, 1);\n`;
         }

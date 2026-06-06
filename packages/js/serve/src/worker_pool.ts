@@ -15,13 +15,11 @@
 
 export class WorkerPool {
   private workers: ReturnType<typeof JSON.parse>[] = [];
-  private taskQueue: ReturnType<typeof JSON.parse>[] = [];
-  private activeTasks: Map<string, number> = new Map();
 
   constructor(public maxWorkers: number = 4) {
-    if (typeof process !== "undefined" && process.env) {
+    if (typeof process !== 'undefined' && process.env) {
       // Node.js environment simulation
-      this.maxWorkers = require("os").cpus().length || this.maxWorkers;
+      this.maxWorkers = require('node:os').cpus().length || this.maxWorkers;
     }
   }
 
@@ -37,7 +35,7 @@ export class WorkerPool {
       postMessage: (msg: ReturnType<typeof JSON.parse>) => {
         // Worker message handling
         setTimeout(() => {
-          this.handleWorkerMessage({ id, msg: { status: "done", data: msg } });
+          this.handleWorkerMessage({ id, msg: { status: 'done', data: msg } });
         }, 10);
       },
       terminate: () => undefined,
@@ -45,7 +43,7 @@ export class WorkerPool {
     this.workers.push(worker);
   }
 
-  private handleWorkerMessage(event: ReturnType<typeof JSON.parse>) {
+  private handleWorkerMessage(_event: ReturnType<typeof JSON.parse>) {
     // resolve tasks
   }
 
@@ -55,7 +53,7 @@ export class WorkerPool {
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 129. Round-robin
     const worker = this.workers.shift();
-    if (!worker) throw new Error("No available workers");
+    if (!worker) throw new Error('No available workers');
 
     this.workers.push(worker); // rotate
 

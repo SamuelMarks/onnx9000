@@ -1,35 +1,35 @@
-import { describe, it, expect, vi } from "vitest";
-import * as Module from "../../../src/dialects/web/memref";
+import { describe, expect, it } from 'vitest';
+import * as Module from '../../../src/dialects/web/memref';
 
-describe("memref.ts", () => {
-  it("should instantiate and cover MemRefType", () => {
+describe('memref.ts', () => {
+  it('should instantiate and cover MemRefType', () => {
     try {
       const obj = new (Module as any).MemRefType();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should call and cover alloc", async () => {
+  it('should call and cover alloc', async () => {
     try {
       const res = (Module as any).alloc();
       if (res instanceof Promise) await res.catch(() => {});
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should call and cover dealloc", async () => {
+  it('should call and cover dealloc', async () => {
     try {
       const res = (Module as any).dealloc();
       if (res instanceof Promise) await res.catch(() => {});
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should call and cover load", async () => {
+  it('should call and cover load', async () => {
     try {
       const res = (Module as any).load();
       if (res instanceof Promise) await res.catch(() => {});
-    } catch (e) {}
+    } catch (_e) {}
   });
-  it("should call and cover store", async () => {
+  it('should call and cover store', async () => {
     try {
       const res = (Module as any).store();
       if (res instanceof Promise) await res.catch(() => {});
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

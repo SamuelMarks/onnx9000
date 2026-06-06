@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
-import { GraphRenderer } from "../src/render/canvas.js";
-import { Graph } from "@onnx9000/core";
+import { Graph } from '@onnx9000/core';
+import { describe, expect, it } from 'vitest';
+import { GraphRenderer } from '../src/render/canvas.js';
 
-describe("GraphRenderer", () => {
-  it("should render graph", () => {
-    const canvas = document.createElement("canvas");
+describe('GraphRenderer', () => {
+  it('should render graph', () => {
+    const canvas = document.createElement('canvas');
     const renderer = new GraphRenderer(canvas);
-    const g = new Graph("test");
+    const g = new Graph('test');
 
     renderer.render(g, {
       nodes: new Map(),

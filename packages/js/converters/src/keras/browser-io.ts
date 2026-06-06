@@ -7,13 +7,10 @@ export async function readBrowserFile(file: File | Blob): Promise<ArrayBuffer> {
   return file.arrayBuffer();
 }
 
-export async function fetchRemoteUrl(
-  url: string | URL,
-  init?: RequestInit,
-): Promise<ArrayBuffer> {
-  const targetUrl = typeof url === "string" ? url : url.href;
+export async function fetchRemoteUrl(url: string | URL, init?: RequestInit): Promise<ArrayBuffer> {
+  const targetUrl = typeof url === 'string' ? url : url.href;
   const fetchOptions: RequestInit = {
-    mode: "cors",
+    mode: 'cors',
     ...init,
   };
 

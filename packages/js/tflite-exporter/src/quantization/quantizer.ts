@@ -2,11 +2,11 @@
  * @fileoverview quantizer.ts
  * Provides quantizer functionality for the tflite-exporter package.
  */
-import { Graph, Node, Tensor, Attribute } from "@onnx9000/core";
-import { QuantizationParameters } from "../flatbuffer/schema";
+import type { Graph, Tensor } from '@onnx9000/core';
+import { QuantizationParameters } from '../flatbuffer/schema';
 
 export interface QuantizationContext {
-  mode: "int8" | "fp16" | "none";
+  mode: 'int8' | 'fp16' | 'none';
   // 329. Allow custom tflite quantization schema extensions manually via JS API arguments.
   customQuantizationMap?: Record<string, TensorQuantization>;
 }
@@ -35,10 +35,7 @@ export class Quantizer {
     }
   }
 
-  public getQuantizationOffset(
-    builder: ReturnType<typeof JSON.parse>,
-    tensor: Tensor,
-  ): number {
+  public getQuantizationOffset(builder: ReturnType<typeof JSON.parse>, tensor: Tensor): number {
     const q = this.quantizationMap.get(tensor.name);
     if (!q) return 0;
 
@@ -62,8 +59,7 @@ export class Quantizer {
     // 232. Support scale (Float array) definitions.
     if (q.scale.length > 0) {
       builder.startVector(4, q.scale.length, 4);
-      for (let i = q.scale.length - 1; i >= 0; i--)
-        builder.addFloat32(q.scale[i]!);
+      for (let i = q.scale.length - 1; i >= 0; i--) builder.addFloat32(q.scale[i]!);
       scaleOffset = builder.endVector(q.scale.length);
     }
 
@@ -95,24 +91,24 @@ export class Quantizer {
   }
 
   public quantize(): void {
-    if (this.ctx.mode === "none") return;
+    if (this.ctx.mode === 'none') return;
 
-    if (this.ctx.mode === "fp16") {
+    if (this.ctx.mode === 'fp16') {
       this.quantizeFP16();
-    } else if (this.ctx.mode === "int8") {
+    } else if (this.ctx.mode === 'int8') {
       this.quantizeINT8();
     }
   }
 
   private quantizeFP16(): void {
     // 241. Downcast FLOAT32 FlatBuffer arrays entirely to FLOAT16 bytes explicitly for FP16 models.
-    for (const [name, tensor] of Object.entries(this.graph.tensors)) {
+    for (const [_name, tensor] of Object.entries(this.graph.tensors)) {
       if (
-        tensor.dtype === "float32" &&
+        tensor.dtype === 'float32' &&
         tensor.isInitializer &&
         tensor.data instanceof Float32Array
       ) {
-        tensor.dtype = "float16";
+        tensor.dtype = 'float16';
         // Convert f32 array to f16 bytes
         tensor.data = this.float32ToFloat16Array(tensor.data);
       }
@@ -173,10 +169,7 @@ export class Quantizer {
       const node = this.graph.nodes[i];
       if (!node) continue;
 
-      if (
-        node.opType === "QuantizeLinear" ||
-        node.opType === "DynamicQuantizeLinear"
-      ) {
+      if (node.opType === 'QuantizeLinear' || node.opType === 'DynamicQuantizeLinear') {
         const x = node.inputs[0];
         const yScale = node.inputs[1];
         const yZeroPoint = node.inputs[2];
@@ -188,15 +181,13 @@ export class Quantizer {
 
           if (scaleTensor?.data && zpTensor?.data) {
             const scaleData = scaleTensor.data as Float32Array;
-            const zpData = Array.from(
-              zpTensor.data as ReturnType<typeof JSON.parse>,
-            );
+            const zpData = Array.from(zpTensor.data as ReturnType<typeof JSON.parse>);
 
-            if (zpTensor.dtype === "uint8") hasUint8 = true;
-            if (zpTensor.dtype === "int16") hasInt16 = true;
+            if (zpTensor.dtype === 'uint8') hasUint8 = true;
+            if (zpTensor.dtype === 'int16') hasInt16 = true;
 
             // 238. Extract quantized_dimension correctly for Per-Channel ops.
-            const axis = (node.attributes["axis"]?.value as number) ?? 0;
+            const axis = (node.attributes.axis?.value as number) ?? 0;
 
             const q: TensorQuantization = {
               min: [],
@@ -211,17 +202,17 @@ export class Quantizer {
             if (q.scale.length === 1 && q.zeroPoint.length === 1) {
               const s = q.scale[0]!;
               const z = q.zeroPoint[0]!;
-              const qMin = zpTensor.dtype === "uint8" ? 0 : -128;
-              const qMax = zpTensor.dtype === "uint8" ? 255 : 127;
+              const qMin = zpTensor.dtype === 'uint8' ? 0 : -128;
+              const qMax = zpTensor.dtype === 'uint8' ? 255 : 127;
 
               // 144. Ensure fused activation bounds respect asymmetric INT8 limits natively.
               let minBound = (qMin - z) * s;
               let maxBound = (qMax - z) * s;
 
-              if (node.attributes["fused_activation"]) {
-                const act = node.attributes["fused_activation"].value as string;
-                if (act === "Relu") minBound = Math.max(0, minBound);
-                if (act === "Relu6") {
+              if (node.attributes.fused_activation) {
+                const act = node.attributes.fused_activation.value as string;
+                if (act === 'Relu') minBound = Math.max(0, minBound);
+                if (act === 'Relu6') {
                   minBound = Math.max(0, minBound);
                   maxBound = Math.min(6.0, maxBound);
                 }
@@ -233,7 +224,7 @@ export class Quantizer {
             }
 
             // 245. Validate resulting quantized schema against EdgeTPU compiler requirements natively.
-            if (q.scale.length > 1 && node.opType !== "QuantizeLinear") {
+            if (q.scale.length > 1 && node.opType !== 'QuantizeLinear') {
               console.warn(
                 `[onnx2tf] EdgeTPU Warning: Per-channel quantization on node ${node.name} might cause compilation failures if not aligned correctly.`,
               );
@@ -247,14 +238,10 @@ export class Quantizer {
     }
 
     if (hasUint8) {
-      console.log(
-        "[onnx2tf] Notice: Generating legacy UINT8 quantization schema.",
-      );
+      console.log('[onnx2tf] Notice: Generating legacy UINT8 quantization schema.');
     }
     if (hasInt16) {
-      console.log(
-        "[onnx2tf] Notice: Generating INT16x8 mixed precision quantization schema.",
-      );
+      console.log('[onnx2tf] Notice: Generating INT16x8 mixed precision quantization schema.');
     }
     if (minMaxExtracted > 0) {
       console.log(
@@ -263,7 +250,7 @@ export class Quantizer {
     }
 
     console.warn(
-      "[onnx2tf] Warning: INT8 AST lowering is experimental. Ensure your model uses standard QuantizeLinear/DequantizeLinear.",
+      '[onnx2tf] Warning: INT8 AST lowering is experimental. Ensure your model uses standard QuantizeLinear/DequantizeLinear.',
     );
   }
 }

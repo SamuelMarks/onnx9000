@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as Module from '../../src/core/EventBus';
 
 describe('EventBus.ts', () => {
@@ -7,6 +7,6 @@ describe('EventBus.ts', () => {
     try {
       const obj = new (Module as any).EventBus();
       expect(obj).toBeDefined();
-    } catch (e) {}
+    } catch (_e) {}
   });
 });

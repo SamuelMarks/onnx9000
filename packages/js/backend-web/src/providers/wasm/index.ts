@@ -2,28 +2,23 @@
  * @fileoverview index.ts
  * Provides index functionality for the backend-web package.
  */
-import { Graph, Tensor } from "@onnx9000/core";
-import { ExecutionProvider } from "../../session.js";
+import { type Graph, Tensor } from '@onnx9000/core';
+import type { ExecutionProvider } from '../../session.js';
 
 export class WasmProvider implements ExecutionProvider {
-  name = "Wasm";
+  name = 'Wasm';
 
   async initialize(): Promise<void> {
     // WASM initialization
   }
 
-  async execute(
-    graph: Graph,
-    inputs: Record<string, Tensor>,
-  ): Promise<Record<string, Tensor>> {
+  async execute(graph: Graph, _inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
     // Wasm execution
     const results: Record<string, Tensor> = {};
     for (const name of graph.outputs) {
       const outName =
-        typeof name === "string"
-          ? name
-          : (name as ReturnType<typeof JSON.parse>).name;
-      results[outName] = new Tensor(outName, [1], "float32");
+        typeof name === 'string' ? name : (name as ReturnType<typeof JSON.parse>).name;
+      results[outName] = new Tensor(outName, [1], 'float32');
     }
     return results;
   }
