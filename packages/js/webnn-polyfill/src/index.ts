@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the webnn-polyfill package.
+ */
 import {
   MLContextOptions,
   MLOperandDescriptor,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_onnx_to_mhlo.ts
+ * Provides lower_onnx_to_mhlo functionality for the iree-compiler package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';

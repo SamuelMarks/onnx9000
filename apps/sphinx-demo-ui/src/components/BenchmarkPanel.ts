@@ -1,3 +1,7 @@
+/**
+ * @fileoverview BenchmarkPanel.ts
+ * Provides BenchmarkPanel functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 

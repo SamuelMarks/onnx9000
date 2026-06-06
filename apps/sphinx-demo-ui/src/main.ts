@@ -1,3 +1,7 @@
+/**
+ * @fileoverview main.ts
+ * Provides main functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import '@onnx9000/webnn-polyfill';
 import * as tf from '@onnx9000/tfjs-shim';

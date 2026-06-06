@@ -1,3 +1,7 @@
+/**
+ * @fileoverview pytorch.ts
+ * Provides pytorch functionality for the core package.
+ */
 import { Graph } from '../ir/graph.js';
 import { Node } from '../ir/node.js';
 

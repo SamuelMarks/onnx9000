@@ -1,3 +1,7 @@
+/**
+ * @fileoverview toolbar.ts
+ * Provides toolbar functionality for the modifier package.
+ */
 import { Graph } from '@onnx9000/core';
 import { ModifierUtilities } from './utilities.js';
 

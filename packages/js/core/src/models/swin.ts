@@ -1,3 +1,7 @@
+/**
+ * @fileoverview swin.ts
+ * Provides swin functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
 import { PatchEmbed } from './vit.js';

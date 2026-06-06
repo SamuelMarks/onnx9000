@@ -1,3 +1,7 @@
+/**
+ * @fileoverview keras_mlir.ts
+ * Provides keras_mlir functionality for the iree-compiler package.
+ */
 export class KerasToMLIRCompiler {
   public emitTosaConv2D(
     input: string,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_linalg_to_hal.ts
+ * Provides lower_linalg_to_hal functionality for the iree-compiler package.
+ */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as hal from '../dialects/web/hal.js';
 import * as memref from '../dialects/web/memref.js';

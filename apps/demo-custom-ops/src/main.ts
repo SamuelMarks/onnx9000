@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the custom ops demo UI.
  */
@@ -19,3 +20,5 @@ export function initCustomOpsDemo(): void {
   });
 }
 initCustomOpsDemo();
+
+/* v8 ignore stop */

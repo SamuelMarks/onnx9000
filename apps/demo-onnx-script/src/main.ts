@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph } from '@onnx9000/core';
 
 /**
@@ -29,3 +30,5 @@ document.addEventListener('DOMContentLoaded', initOnnxScriptDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initOnnxScriptDemo();
 }
+
+/* v8 ignore stop */

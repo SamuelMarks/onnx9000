@@ -1,3 +1,7 @@
+/**
+ * @fileoverview security.ts
+ * Provides security functionality for the iree-runtime package.
+ */
 // 231-240. Security and Stability Features
 export const VM_Security_Manager = {
   // 231, 232, 233. ArrayBuffer bounds checking

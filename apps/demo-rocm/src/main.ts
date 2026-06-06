@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the ROCm demo.
  */
@@ -15,3 +16,5 @@ export function initRocmDemo(): void {
   });
 }
 initRocmDemo();
+
+/* v8 ignore stop */

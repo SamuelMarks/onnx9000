@@ -1,3 +1,7 @@
+/**
+ * @fileoverview reader.ts
+ * Provides reader functionality for the onnx2gguf package.
+ */
 import { GGUFValueType, GGUFTensorType } from './builder';
 
 export class GGUFReader {

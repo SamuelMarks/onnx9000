@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-pool.ts
+ * Provides emitters-pool functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 

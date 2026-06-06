@@ -1,3 +1,7 @@
+/**
+ * @fileoverview partitioner.ts
+ * Provides partitioner functionality for the backend-web package.
+ */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 import { ExecutionProvider } from './session.js';
 

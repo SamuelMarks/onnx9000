@@ -1,3 +1,7 @@
+/**
+ * @fileoverview spmm.ts
+ * Provides spmm functionality for the backend-web package.
+ */
 export const SPMM_COO_WGSL = `
 struct Uniforms {
     M: u32,

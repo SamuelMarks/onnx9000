@@ -1,3 +1,7 @@
+/**
+ * @fileoverview vit.ts
+ * Provides vit functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import {
   BatchNormalization,

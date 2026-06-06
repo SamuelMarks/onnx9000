@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { load, ONNXToPyTorchVisitor } from '@onnx9000/core';
 
 /**
@@ -56,3 +57,5 @@ export function initPytorchCodegenDemo(): void {
 }
 
 initPytorchCodegenDemo();
+
+/* v8 ignore stop */

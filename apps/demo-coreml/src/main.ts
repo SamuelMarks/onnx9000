@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph, Node } from '@onnx9000/core';
 import { convertToCoreML } from '@onnx9000/coreml';
 
@@ -45,3 +46,5 @@ convertBtn.addEventListener('click', () => {
     out.innerText = `Error: ${e.message}`;
   }
 });
+
+/* v8 ignore stop */

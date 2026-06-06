@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-attention.ts
+ * Provides emitters-attention functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview standalone_js.ts
+ * Provides standalone_js functionality for the iree-compiler package.
+ */
 import { Region, Operation } from '../ir/core.js';
 
 // 136-145. Standalone Web Generation

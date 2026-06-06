@@ -1,3 +1,7 @@
+/**
+ * @fileoverview SplitPane.ts
+ * Provides SplitPane functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 

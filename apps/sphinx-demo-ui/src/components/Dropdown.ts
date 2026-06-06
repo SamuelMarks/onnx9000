@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Dropdown.ts
+ * Provides Dropdown functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 

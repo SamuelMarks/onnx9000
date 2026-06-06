@@ -1,3 +1,7 @@
+/**
+ * @fileoverview linter.ts
+ * Provides linter functionality for the coreml package.
+ */
 import { Program } from './ast.js';
 import { UnsupportedOpError } from './errors.js';
 

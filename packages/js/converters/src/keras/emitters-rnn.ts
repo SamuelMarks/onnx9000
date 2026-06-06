@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-rnn.ts
+ * Provides emitters-rnn functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 

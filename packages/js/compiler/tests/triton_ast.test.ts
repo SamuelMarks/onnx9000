@@ -16,7 +16,7 @@ describe('triton ast', () => {
     const code = generateTriton(graph);
     expect(code).toContain('@triton.jit');
     expect(code).toContain('def test');
-    expect(code).toContain('C = A_tile + B_tile');
+    expect(code).toContain('C_var = A_tile + B_tile');
   });
 
   it('should handle AST properly', () => {

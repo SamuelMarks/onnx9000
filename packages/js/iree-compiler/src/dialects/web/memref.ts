@@ -1,3 +1,7 @@
+/**
+ * @fileoverview memref.ts
+ * Provides memref functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value } from '../../ir/core.js';
 
 export class MemRefType implements Type {

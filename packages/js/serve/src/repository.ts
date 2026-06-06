@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repository.ts
+ * Provides repository functionality for the serve package.
+ */
 import { MemoryManager, ModelInstance } from './memory';
 
 export interface ModelMetadata {

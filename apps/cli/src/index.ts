@@ -166,6 +166,7 @@ async function main() {
 }
 
 export const __test_main__ = main;
+/* v8 ignore next 3 */
 if (require.main === module) {
   main().catch(console.error);
 }

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-merge.ts
+ * Provides emitters-merge functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 

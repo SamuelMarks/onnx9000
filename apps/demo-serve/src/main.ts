@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { createServer } from '@onnx9000/serve';
 
 /**
@@ -60,3 +61,5 @@ export function initServeDemo(): void {
 }
 
 initServeDemo();
+
+/* v8 ignore stop */

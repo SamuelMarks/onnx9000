@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Web Worker script for compiling ONNX models to C code off the main UI thread.
+ * Prevents freezing the UI during compilation.
+ */
 import { compileOnnxToC } from '@onnx9000/c-compiler';
 
 export const handleWorkerMessage = async (e: MessageEvent, postMessage: (msg: any) => void) => {

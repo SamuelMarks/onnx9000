@@ -1,3 +1,7 @@
+/**
+ * @fileoverview kv_cache.ts
+ * Provides kv_cache functionality for the serve package.
+ */
 export interface KVCacheEntry {
   sessionId: string;
   prefixHash?: string | undefined; // For prompt caching

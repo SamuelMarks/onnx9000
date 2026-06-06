@@ -1,3 +1,7 @@
+/**
+ * @fileoverview autotuner.ts
+ * Provides autotuner functionality for the iree-compiler package.
+ */
 import { Region, Operation } from '../ir/core.js';
 
 // 211-220. Target-Specific Autotuning

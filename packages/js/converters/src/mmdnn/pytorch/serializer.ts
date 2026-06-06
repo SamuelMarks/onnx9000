@@ -1,3 +1,7 @@
+/**
+ * @fileoverview serializer.ts
+ * Provides serializer functionality for the converters package.
+ */
 // @ts-nocheck
 import { Tensor } from '@onnx9000/core';
 import { zipSync } from 'fflate';

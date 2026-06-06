@@ -1,3 +1,7 @@
+/**
+ * @fileoverview generator.ts
+ * Provides generator functionality for the converters package.
+ */
 // @ts-nocheck
 // @ts-nocheck
 import { Graph, Node } from '@onnx9000/core';

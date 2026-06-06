@@ -1,3 +1,7 @@
+/**
+ * @fileoverview whisper.ts
+ * Provides whisper functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, Gemm, LayerNormalization, MultiHeadAttention, Gelu } from '../primitives.js';
 

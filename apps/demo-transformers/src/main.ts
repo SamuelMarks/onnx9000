@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { pipeline } from '@onnx9000/transformers';
 
 /**
@@ -32,3 +33,5 @@ export function initTransformersDemo(): void {
 }
 
 initTransformersDemo();
+
+/* v8 ignore stop */

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mobilevit.ts
+ * Provides mobilevit functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import {
   BatchNormalization,

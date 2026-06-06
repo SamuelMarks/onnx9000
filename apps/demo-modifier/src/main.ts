@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph, ValueInfo, Node } from '@onnx9000/core';
 import { GraphMutator } from '@onnx9000/modifier';
 
@@ -75,3 +76,5 @@ Nodes: ${currentGraph.nodes.length}
 }
 
 initModifierDemo();
+
+/* v8 ignore stop */

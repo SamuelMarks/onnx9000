@@ -1,3 +1,7 @@
+/**
+ * @fileoverview OliveOptimizer.ts
+ * Provides OliveOptimizer functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { WorkerManager } from './WorkerManager';
 import { globalEventBus } from './EventBus';

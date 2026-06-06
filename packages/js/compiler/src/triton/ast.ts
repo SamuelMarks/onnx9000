@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ast.ts
+ * Provides ast functionality for the compiler package.
+ */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export interface TritonConfig {

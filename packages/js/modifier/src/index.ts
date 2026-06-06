@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the modifier package.
+ */
 export * from './GraphMutator.js';
 export * from './GraphValidator.js';
 export * from './render/layout.js';

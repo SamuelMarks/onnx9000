@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run --coverage --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
     "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "devDependencies": {

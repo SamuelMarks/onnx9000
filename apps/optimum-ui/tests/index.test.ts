@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
-describe('optimum-ui index', () => {
-  it('should be valid', async () => {
-    const mod = await import('../src/index.js');
-    expect(mod).toBeDefined();
+describe('optimum-ui', () => {
+  it('should export nothing', async () => {
+    const exports = await import('../src/index');
+    expect(Object.keys(exports)).toEqual([]);
   });
 });

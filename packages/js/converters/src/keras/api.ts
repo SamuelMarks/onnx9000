@@ -1,3 +1,7 @@
+/**
+ * @fileoverview api.ts
+ * Provides api functionality for the converters package.
+ */
 // @ts-nocheck
 import { parseTFJSModel } from './tfjs-parser.js';
 import { parseKerasH5 } from './h5-parser.js';

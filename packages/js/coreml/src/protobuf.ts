@@ -1,3 +1,7 @@
+/**
+ * @fileoverview protobuf.ts
+ * Provides protobuf functionality for the coreml package.
+ */
 import {
   readVarInt,
   Reader,

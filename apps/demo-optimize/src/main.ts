@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the optimize demo UI.
  */
@@ -52,3 +53,5 @@ document.addEventListener('DOMContentLoaded', initOptimizeDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initOptimizeDemo();
 }
+
+/* v8 ignore stop */

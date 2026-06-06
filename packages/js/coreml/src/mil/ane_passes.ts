@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ane_passes.ts
+ * Provides ane_passes functionality for the coreml package.
+ */
 import { Block, Operation, Var } from './ast.js';
 import { replaceOperation } from './rewriter.js';
 import { TensorType, MILDataType } from './types.js';

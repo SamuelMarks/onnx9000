@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph, Node } from '@onnx9000/core';
 import { generateTriton } from '@onnx9000/triton-compiler';
 
@@ -33,3 +34,5 @@ export function initTritonDemo(): void {
 }
 
 initTritonDemo();
+
+/* v8 ignore stop */

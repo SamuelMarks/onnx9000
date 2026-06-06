@@ -1,3 +1,7 @@
+/**
+ * @fileoverview importer.ts
+ * Provides importer functionality for the converters package.
+ */
 // @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Tensor, Shape } from '@onnx9000/core';

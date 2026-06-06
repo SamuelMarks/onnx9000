@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the Triton Server demo UI.
  */
@@ -13,3 +14,5 @@ export function initTritonServerDemo(): void {
   });
 }
 initTritonServerDemo();
+
+/* v8 ignore stop */

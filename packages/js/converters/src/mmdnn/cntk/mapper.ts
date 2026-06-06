@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mapper.ts
+ * Provides mapper functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph, Node, Attribute } from '@onnx9000/core';
 import { CNTKNode } from './parser.js';

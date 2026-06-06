@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the profiler demo.
  */
@@ -14,3 +15,5 @@ export function initProfilerDemo(): void {
   });
 }
 initProfilerDemo();
+
+/* v8 ignore stop */

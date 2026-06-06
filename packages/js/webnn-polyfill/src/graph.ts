@@ -1,3 +1,7 @@
+/**
+ * @fileoverview graph.ts
+ * Provides graph functionality for the webnn-polyfill package.
+ */
 import { MLGraph, MLComputeResult } from './interfaces.js';
 import { Graph } from '@onnx9000/core';
 

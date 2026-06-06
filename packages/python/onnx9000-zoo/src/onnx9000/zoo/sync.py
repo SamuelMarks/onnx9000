@@ -1,3 +1,6 @@
+"""
+Provides sync functionality.
+"""
 from typing import Any, Optional
 
 import requests

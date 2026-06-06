@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { compileModel } from '@onnx9000/iree-compiler/src/cli.js';
 import { Module, Context, WVMInterpreter, HALBindings } from '@onnx9000/iree-runtime/src/vm.js';
 
@@ -53,3 +54,5 @@ export function initIreeDemo(): void {
   });
 }
 initIreeDemo();
+
+/* v8 ignore stop */

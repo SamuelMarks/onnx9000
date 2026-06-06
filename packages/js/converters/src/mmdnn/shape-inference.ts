@@ -1,3 +1,7 @@
+/**
+ * @fileoverview shape-inference.ts
+ * Provides shape-inference functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { Shape } from '@onnx9000/core';

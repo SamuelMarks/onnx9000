@@ -39,7 +39,7 @@ Commands:
       recipe = args[rIndex + 1];
     }
 
-    console.log(`Loading model ${model || ''}...`);
+    console.log(`Loading model ${model}...`);
     if (recipe) {
       console.log(`Applying pruning recipe: ${recipe}`);
     } else {

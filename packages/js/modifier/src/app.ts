@@ -1,3 +1,7 @@
+/**
+ * @fileoverview app.ts
+ * Provides app functionality for the modifier package.
+ */
 import { Graph } from '@onnx9000/core';
 import { GraphMutator } from './GraphMutator.js';
 import { GraphValidator } from './GraphValidator.js';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Main entry point for the ONNX to GGUF converter UI.
+ * Handles model file upload, metadata extraction, user overrides, and GGUF serialization.
+ */
 import { load } from '@onnx9000/core';
 import { extractMetadata, extractTokenizerMetadata, inferArchitecture } from '@onnx9000/onnx2gguf';
 

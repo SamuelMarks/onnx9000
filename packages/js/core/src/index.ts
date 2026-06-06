@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the core package.
+ */
 export * from './ir/graph.js';
 export * from './ir/node.js';
 export * from './ir/tensor.js';

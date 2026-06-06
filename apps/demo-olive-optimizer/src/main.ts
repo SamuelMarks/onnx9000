@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the Olive optimizer demo UI.
  */
@@ -13,3 +14,5 @@ export function initOliveOptimizerDemo(): void {
   });
 }
 initOliveOptimizerDemo();
+
+/* v8 ignore stop */

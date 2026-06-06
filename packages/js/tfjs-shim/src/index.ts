@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the tfjs-shim package.
+ */
 // @onnx9000/tfjs-shim - Drop-in replacement for TensorFlow.js
 
 import { Graph, Node, Tensor as OnnxTensor } from '@onnx9000/core';

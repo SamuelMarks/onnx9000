@@ -1,3 +1,7 @@
+/**
+ * @fileoverview custom_editors.ts
+ * Provides custom_editors functionality for the modifier package.
+ */
 import { Node } from '@onnx9000/core';
 import { GraphMutator } from '../../GraphMutator.js';
 

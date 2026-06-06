@@ -1,3 +1,7 @@
+/**
+ * @fileoverview compiler.ts
+ * Provides compiler functionality for the onnx2gguf package.
+ */
 import { renameTensor } from './naming';
 import { extractTokenizerMetadata } from './tokenizer';
 import { extractMetadata, inferArchitecture } from './arch';

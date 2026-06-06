@@ -1,3 +1,7 @@
+/**
+ * @fileoverview quantizer.ts
+ * Provides quantizer functionality for the onnx2gguf package.
+ */
 function float16ToUint16(f: number): number {
   // Simplistic approximation for tests
   return Math.round(f * 1000) & 0xffff;

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the core package.
+ */
 export * from './resnet.js';
 export * from './efficientnet.js';
 export * from './convnext.js';

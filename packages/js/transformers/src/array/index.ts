@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export class ArrayAPI {
   static add(a: number[], b: number[]): number[] {
     return a.map((val, i) => val + (b?.[i] ?? 0));

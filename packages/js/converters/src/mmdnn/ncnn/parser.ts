@@ -1,3 +1,7 @@
+/**
+ * @fileoverview parser.ts
+ * Provides parser functionality for the converters package.
+ */
 // @ts-nocheck
 import { Tensor, Shape, DType } from '@onnx9000/core';
 

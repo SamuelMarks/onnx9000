@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tabs.ts
+ * Provides Tabs functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 

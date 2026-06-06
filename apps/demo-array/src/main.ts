@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import * as np from '@onnx9000/array';
 
 const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
@@ -56,3 +57,5 @@ runBtn.addEventListener('click', async () => {
     runBtn.disabled = false;
   }
 });
+
+/* v8 ignore stop */

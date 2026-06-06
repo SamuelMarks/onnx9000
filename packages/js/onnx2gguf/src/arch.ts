@@ -1,3 +1,7 @@
+/**
+ * @fileoverview arch.ts
+ * Provides arch functionality for the onnx2gguf package.
+ */
 import { Graph } from '@onnx9000/core';
 import { extractLlamaMetadata } from './llama';
 

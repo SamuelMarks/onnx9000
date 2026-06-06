@@ -1,3 +1,7 @@
+/**
+ * @fileoverview schedulers.ts
+ * Provides schedulers functionality for the diffusers package.
+ */
 import { PyTorchPCG } from './utils';
 
 export class Scheduler {

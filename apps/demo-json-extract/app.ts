@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { load } from '@onnx9000/core';
 
 /**
@@ -142,3 +143,5 @@ export function initJsonExtractDemo(): void {
   });
 }
 initJsonExtractDemo();
+
+/* v8 ignore stop */

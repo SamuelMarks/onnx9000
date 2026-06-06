@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the onnx2gguf package.
+ */
 export * from './builder.js';
 export * from './compiler.js';
 export * from './quantizer.js';

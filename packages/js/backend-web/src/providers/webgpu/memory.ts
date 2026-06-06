@@ -1,3 +1,7 @@
+/**
+ * @fileoverview memory.ts
+ * Provides memory functionality for the backend-web package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 
 export class WebGPUMemoryManager {

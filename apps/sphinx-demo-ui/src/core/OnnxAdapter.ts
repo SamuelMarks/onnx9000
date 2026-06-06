@@ -1,3 +1,7 @@
+/**
+ * @fileoverview OnnxAdapter.ts
+ * Provides OnnxAdapter functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 export interface VizNode {
   id: string;

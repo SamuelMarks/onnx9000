@@ -27,7 +27,7 @@ Commands:
     }
     const tIndex = args.indexOf('--task');
     const task = tIndex !== -1 ? args[tIndex + 1] : 'default';
-    console.log(`Exporting ${modelId || ''} for task ${task || ''}...`);
+    console.log(`Exporting ${modelId} for task ${task}...`);
     console.log('Optimum export complete.');
   } else if (cmd === 'optimize') {
     const model = args[1];
@@ -39,9 +39,7 @@ Commands:
     const lIndex = args.indexOf('--level');
     const level = lIndex !== -1 ? args[lIndex + 1] : '1';
     const optSize = args.includes('--optimize-size');
-    console.log(
-      `Optimizing ${model || ''} at level ${level || ''}${optSize ? ' for size' : ''}...`,
-    );
+    console.log(`Optimizing ${model} at level ${level}${optSize ? ' for size' : ''}...`);
     console.log('Optimum optimization complete.');
   } else if (cmd === 'quantize') {
     const model = args[1];
@@ -52,7 +50,7 @@ Commands:
     }
     const qIndex = args.indexOf('--quantize');
     const type = qIndex !== -1 ? args[qIndex + 1] : 'dynamic';
-    console.log(`Quantizing ${model || ''} with method ${type || ''}...`);
+    console.log(`Quantizing ${model} with method ${type}...`);
     console.log('Optimum quantization complete.');
   } else {
     console.error(`Unknown optimum command: ${cmd || ''}`);

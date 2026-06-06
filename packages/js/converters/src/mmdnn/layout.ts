@@ -1,3 +1,7 @@
+/**
+ * @fileoverview layout.ts
+ * Provides layout functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { MMDNNReporter } from './reporter.js';

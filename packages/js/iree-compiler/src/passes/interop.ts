@@ -1,3 +1,7 @@
+/**
+ * @fileoverview interop.ts
+ * Provides interop functionality for the iree-compiler package.
+ */
 import { Region, Operation, Block, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';
 

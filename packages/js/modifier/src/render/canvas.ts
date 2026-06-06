@@ -1,3 +1,7 @@
+/**
+ * @fileoverview canvas.ts
+ * Provides canvas functionality for the modifier package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphLayout, NodeLayout, EdgeLayout, Point } from './layout.js';
 

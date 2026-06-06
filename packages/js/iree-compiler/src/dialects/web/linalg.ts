@@ -1,3 +1,7 @@
+/**
+ * @fileoverview linalg.ts
+ * Provides linalg functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value, Region } from '../../ir/core.js';
 
 // 31. AffineMap class

@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Web Worker script for offloading heavy ONNX parsing and layout computation tasks.
+ * Listens for file parsing requests, runs the layout engine, and returns the computed UI representation
+ * to prevent blocking the main browser thread.
+ */
 import { BlobReader, BufferReader, parseModelProto, Graph } from '@onnx9000/core';
 import { computeLayout, FlowDirection } from '../layout/dag';
 

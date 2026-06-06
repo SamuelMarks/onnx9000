@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mamba.ts
+ * Provides mamba functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { ConvND, Gemm, RMSNorm, Silu } from '../primitives.js';
 

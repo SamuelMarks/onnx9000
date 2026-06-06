@@ -1,3 +1,7 @@
+/**
+ * @fileoverview jsfive.d.ts
+ * Provides jsfive.d functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 declare module 'jsfive' {
   export class File {

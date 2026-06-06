@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Handles the HTML5 Canvas rendering logic for the ONNX model graph.
+ * Manages drawing nodes, edges, grouping, text labels, zooming, panning, and hit-testing interactions.
+ */
 import { GraphLayout, LayoutNode, LayoutEdge } from '../layout/dag';
 
 export class CanvasRenderer {

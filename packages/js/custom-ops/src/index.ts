@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the custom-ops package.
+ */
 export class CustomOpRegistry {
   private ops: Map<string, Function>;
 

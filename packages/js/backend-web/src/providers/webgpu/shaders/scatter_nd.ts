@@ -1,3 +1,7 @@
+/**
+ * @fileoverview scatter_nd.ts
+ * Provides scatter_nd functionality for the backend-web package.
+ */
 export const GatherNDWGSL = ` 
 struct GatherNDUniforms { 
     input_strides: vec4<u32>, 

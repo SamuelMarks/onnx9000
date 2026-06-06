@@ -1,3 +1,7 @@
+/**
+ * @fileoverview tensor.ts
+ * Provides tensor functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value } from '../../ir/core.js';
 
 export class TensorType implements Type {

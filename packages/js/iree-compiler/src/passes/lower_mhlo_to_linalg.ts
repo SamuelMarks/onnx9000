@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_mhlo_to_linalg.ts
+ * Provides lower_mhlo_to_linalg functionality for the iree-compiler package.
+ */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';
 import * as linalg from '../dialects/web/linalg.js';

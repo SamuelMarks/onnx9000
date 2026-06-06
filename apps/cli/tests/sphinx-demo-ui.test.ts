@@ -80,7 +80,7 @@ describe('handleSphinxDemoUICommand', () => {
       await handleSphinxDemoUICommand([]);
     } catch (e) {}
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Sphinx Demo UI not found in monorepo.');
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Sphinx Demo UI directory not found.');
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 });

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview fusion.ts
+ * Provides fusion functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { Node } from '@onnx9000/core';

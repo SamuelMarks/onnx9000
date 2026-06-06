@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ui.ts
+ * Provides ui functionality for the triton-compiler package.
+ */
 export class TritonCompilerElement extends HTMLElement {
   constructor() {
     super();

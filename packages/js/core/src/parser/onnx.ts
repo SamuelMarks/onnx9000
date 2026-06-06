@@ -1,3 +1,7 @@
+/**
+ * @fileoverview onnx.ts
+ * Provides onnx functionality for the core package.
+ */
 import { Graph, ValueInfo } from '../ir/graph.js';
 import { Node, Attribute, AttributeType, AttributeValue } from '../ir/node.js';
 import { Tensor, Shape, DType } from '../ir/tensor.js';

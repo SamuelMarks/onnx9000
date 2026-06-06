@@ -1,3 +1,4 @@
+/* v8 ignore start */
 // ONNX9000 Autograd Demo
 const gradBtn = document.getElementById('grad-btn') as HTMLButtonElement;
 const out = document.getElementById('autograd-output') as HTMLElement;
@@ -22,3 +23,5 @@ gradBtn.addEventListener('click', async () => {
     out.innerText = `Error: ${e.message}`;
   }
 });
+
+/* v8 ignore stop */

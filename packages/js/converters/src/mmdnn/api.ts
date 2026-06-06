@@ -1,3 +1,7 @@
+/**
+ * @fileoverview api.ts
+ * Provides api functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph, BufferReader, parseModelProto, ValueInfo, Tensor, Node } from '@onnx9000/core';
 import { MMDNNReporter } from './reporter.js';

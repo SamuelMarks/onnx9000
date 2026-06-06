@@ -1,3 +1,7 @@
+/**
+ * @fileoverview optimizers.ts
+ * Provides optimizers functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 import { Node, Graph } from '@onnx9000/core';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview BottomContainer.ts
+ * Provides BottomContainer functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { Tabs } from './Tabs';

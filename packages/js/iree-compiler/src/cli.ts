@@ -1,3 +1,7 @@
+/**
+ * @fileoverview cli.ts
+ * Provides cli functionality for the iree-compiler package.
+ */
 import { parse } from 'node:path';
 
 export interface CompileOptions {

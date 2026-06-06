@@ -1,3 +1,7 @@
+/**
+ * @fileoverview importer.ts
+ * Provides importer functionality for the coreml package.
+ */
 import { Graph, Node as ONNXNode, Tensor, Shape } from '@onnx9000/core';
 import { Program, Var, Operation } from './mil/ast.js';
 

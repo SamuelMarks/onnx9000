@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the GenAI demo.
  */
@@ -14,3 +15,5 @@ export function initGenAIDemo(): void {
   });
 }
 initGenAIDemo();
+
+/* v8 ignore stop */

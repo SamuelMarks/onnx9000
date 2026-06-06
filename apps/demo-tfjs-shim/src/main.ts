@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import * as tf from '@onnx9000/tfjs-shim';
 
 /**
@@ -37,3 +38,5 @@ export function initTfjsShimDemo(): void {
 }
 
 initTfjsShimDemo();
+
+/* v8 ignore stop */

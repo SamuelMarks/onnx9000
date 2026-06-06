@@ -1,3 +1,7 @@
+/**
+ * @fileoverview layout.ts
+ * Provides layout functionality for the modifier package.
+ */
 export class LayoutBuilder {
   container: HTMLElement;
 

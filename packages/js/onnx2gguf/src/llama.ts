@@ -1,3 +1,7 @@
+/**
+ * @fileoverview llama.ts
+ * Provides llama functionality for the onnx2gguf package.
+ */
 import { Graph, Tensor } from '@onnx9000/core';
 
 export function extractLlamaMetadata(graph: Graph): Record<string, ReturnType<typeof JSON.parse>> {

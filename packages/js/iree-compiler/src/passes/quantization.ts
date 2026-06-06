@@ -1,3 +1,7 @@
+/**
+ * @fileoverview quantization.ts
+ * Provides quantization functionality for the iree-compiler package.
+ */
 import { Region, Operation } from '../ir/core.js';
 
 // 201-210. Dynamic Quantization Lowering

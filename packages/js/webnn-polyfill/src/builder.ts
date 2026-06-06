@@ -1,3 +1,7 @@
+/**
+ * @fileoverview builder.ts
+ * Provides builder functionality for the webnn-polyfill package.
+ */
 import {
   MLContext,
   MLOperandDescriptor,

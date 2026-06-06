@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
+    "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json",
+    "test": "vitest run --passWithNoTests --environment jsdom"
   },
   "dependencies": {
     "@onnx9000/c-compiler": "workspace:*",

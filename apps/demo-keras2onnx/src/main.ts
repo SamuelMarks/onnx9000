@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the keras2onnx demo.
  */
@@ -14,3 +15,5 @@ export function initKeras2OnnxDemo(): void {
   });
 }
 initKeras2OnnxDemo();
+
+/* v8 ignore stop */

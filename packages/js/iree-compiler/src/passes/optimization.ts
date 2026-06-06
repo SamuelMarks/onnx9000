@@ -1,3 +1,7 @@
+/**
+ * @fileoverview optimization.ts
+ * Provides optimization functionality for the iree-compiler package.
+ */
 import { Region, Operation } from '../ir/core.js';
 
 // 146-155. Optimization Passes

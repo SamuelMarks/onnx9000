@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the compiler package.
+ */
 import { Graph } from '@onnx9000/core';
 
 export function compileToIREE(graph: Graph): Uint8Array {

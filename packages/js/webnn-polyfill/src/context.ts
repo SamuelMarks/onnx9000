@@ -1,3 +1,7 @@
+/**
+ * @fileoverview context.ts
+ * Provides context functionality for the webnn-polyfill package.
+ */
 import { MLContext, MLContextOptions, MLComputeResult, MLOpSupportLimits } from './interfaces.js';
 import { PolyfillMLGraph } from './graph.js';
 import { PolyfillMLTensor, MLTensorOptions } from './tensor.js';

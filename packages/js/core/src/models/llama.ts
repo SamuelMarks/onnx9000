@@ -1,3 +1,7 @@
+/**
+ * @fileoverview llama.ts
+ * Provides llama functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, GroupedQueryAttention, RMSNorm, RoPE, Silu } from '../primitives.js';
 

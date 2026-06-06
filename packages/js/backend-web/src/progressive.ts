@@ -1,3 +1,7 @@
+/**
+ * @fileoverview progressive.ts
+ * Provides progressive functionality for the backend-web package.
+ */
 import { Tensor } from '@onnx9000/core';
 import { SessionOptions } from './session.js';
 

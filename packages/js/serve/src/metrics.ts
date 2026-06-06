@@ -1,3 +1,7 @@
+/**
+ * @fileoverview metrics.ts
+ * Provides metrics functionality for the serve package.
+ */
 import { Router } from './router';
 
 export class PrometheusMetrics {

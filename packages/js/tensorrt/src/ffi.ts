@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ffi.ts
+ * Provides ffi functionality for the tensorrt package.
+ */
 // @ts-ignore
 import ffi from 'ffi-napi';
 // @ts-ignore

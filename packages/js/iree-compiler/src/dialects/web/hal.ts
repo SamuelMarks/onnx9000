@@ -1,3 +1,7 @@
+/**
+ * @fileoverview hal.ts
+ * Provides hal functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value, Region } from '../../ir/core.js';
 
 // 51. web.hal.device

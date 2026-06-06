@@ -1,3 +1,7 @@
+/**
+ * @fileoverview models.ts
+ * Provides models functionality for the diffusers package.
+ */
 export class AutoencoderKL {
   encode(x: Float32Array): Float32Array {
     const out = new Float32Array(x.length);

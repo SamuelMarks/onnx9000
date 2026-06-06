@@ -1,3 +1,7 @@
+/**
+ * @fileoverview logger.ts
+ * Provides logger functionality for the serve package.
+ */
 // 144. Allow granular control of logging levels
 export enum LogLevel {
   TRACE = 0,

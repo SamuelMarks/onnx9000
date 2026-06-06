@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_wgsl.ts
+ * Provides lower_wgsl functionality for the iree-compiler package.
+ */
 import { Region, Operation } from '../ir/core.js';
 
 // 106-120. WGSL Translation

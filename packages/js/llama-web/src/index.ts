@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the llama-web package.
+ */
 export class LlamaWeb {
   public run(modelString: string): string {
     if (!modelString) {

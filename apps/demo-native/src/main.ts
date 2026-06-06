@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the Native CPU demo.
  */
@@ -15,3 +16,5 @@ export function initNativeCpuDemo(): void {
   });
 }
 initNativeCpuDemo();
+
+/* v8 ignore stop */

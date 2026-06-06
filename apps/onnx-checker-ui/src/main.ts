@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Browser-based User Interface for ONNX Model Validation.
+ * Provides drag-and-drop mechanics to validate a model against the ONNX spec
+ * directly in the browser.
+ */
 import { check_model, ValidationContext } from '@onnx9000/core';
 
 /**

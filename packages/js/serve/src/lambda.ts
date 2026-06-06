@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lambda.ts
+ * Provides lambda functionality for the serve package.
+ */
 import { Onnx9000Server } from './index';
 
 // 25. Provide AWS Lambda native handler formats (`event, context`).

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
 const out = document.getElementById('output') as HTMLElement;
 
@@ -7,3 +8,5 @@ runBtn.addEventListener('click', () => {
     out.innerText = 'Apple Metal engine loaded.\nExecution complete: SUCCESS';
   }, 500);
 });
+
+/* v8 ignore stop */

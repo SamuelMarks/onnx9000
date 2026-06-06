@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitter.ts
+ * Provides emitter functionality for the coreml package.
+ */
 import { Writer } from './protobuf.js';
 import {
   Model,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Breadcrumbs.ts
+ * Provides Breadcrumbs functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { PipelineNode } from '../core/PipelineNode';

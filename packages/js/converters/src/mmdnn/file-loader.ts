@@ -1,3 +1,7 @@
+/**
+ * @fileoverview file-loader.ts
+ * Provides file-loader functionality for the converters package.
+ */
 // @ts-nocheck
 export class FileLoader {
   private files: Map<string, Blob>;

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview RHSContainer.ts
+ * Provides RHSContainer functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { globalEventBus } from '../core/EventBus';
 import { Component } from '../core/Component';

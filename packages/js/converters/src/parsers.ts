@@ -1,3 +1,7 @@
+/**
+ * @fileoverview parsers.ts
+ * Provides parsers functionality for the converters package.
+ */
 // @ts-nocheck
 import {
   Graph,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_wasm.ts
+ * Provides lower_wasm functionality for the iree-compiler package.
+ */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as scf from '../dialects/web/scf.js';
 

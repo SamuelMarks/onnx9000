@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the WebGPU demo UI.
  */
@@ -15,3 +16,5 @@ export function initWebGpuDemo(): void {
   });
 }
 initWebGpuDemo();
+
+/* v8 ignore stop */

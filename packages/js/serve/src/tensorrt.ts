@@ -1,3 +1,7 @@
+/**
+ * @fileoverview tensorrt.ts
+ * Provides tensorrt functionality for the serve package.
+ */
 import { Graph } from '@onnx9000/core';
 
 export async function createTensorRTSession(graph: Graph): Promise<ReturnType<typeof JSON.parse>> {

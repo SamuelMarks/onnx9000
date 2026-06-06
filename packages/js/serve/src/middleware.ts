@@ -1,3 +1,7 @@
+/**
+ * @fileoverview middleware.ts
+ * Provides middleware functionality for the serve package.
+ */
 import { RequestHandler } from './router';
 
 // 148. Implement IP-based Rate Limiting (Token Bucket)

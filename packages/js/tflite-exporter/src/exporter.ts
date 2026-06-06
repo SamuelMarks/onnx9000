@@ -1,3 +1,7 @@
+/**
+ * @fileoverview exporter.ts
+ * Provides exporter functionality for the tflite-exporter package.
+ */
 import { FlatBufferBuilder } from './flatbuffer/builder';
 import {
   TensorType,

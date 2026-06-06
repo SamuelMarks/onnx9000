@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export class WorkerPipeline {
   worker: Worker;
 

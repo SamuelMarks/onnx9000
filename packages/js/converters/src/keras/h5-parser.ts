@@ -1,3 +1,7 @@
+/**
+ * @fileoverview h5-parser.ts
+ * Provides h5-parser functionality for the converters package.
+ */
 // @ts-nocheck
 import { File as Hdf5File, Group, Dataset } from 'jsfive';
 import { JsonObject } from './tfjs-parser.js';

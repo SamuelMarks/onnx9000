@@ -1,3 +1,7 @@
+/**
+ * @fileoverview GraphMutator.ts
+ * Provides GraphMutator functionality for the modifier package.
+ */
 import {
   Graph,
   Node,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview importer.ts
+ * Provides importer functionality for the converters package.
+ */
 // @ts-nocheck
 import { Graph } from '@onnx9000/core';
 import { BufferReader } from '@onnx9000/core';

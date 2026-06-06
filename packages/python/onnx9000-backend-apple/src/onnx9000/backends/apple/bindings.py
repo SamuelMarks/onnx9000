@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Apple Accelerate and Metal Bindings."""
 
 import ctypes

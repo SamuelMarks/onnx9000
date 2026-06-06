@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mae.ts
+ * Provides mae functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, LayerNormalization } from '../primitives.js';
 import { Block, PatchEmbed } from './vit.js';

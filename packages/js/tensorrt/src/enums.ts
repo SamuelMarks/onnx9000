@@ -1,3 +1,7 @@
+/**
+ * @fileoverview enums.ts
+ * Provides enums functionality for the tensorrt package.
+ */
 export enum DataType {
   kFLOAT = 0,
   kHALF = 1,

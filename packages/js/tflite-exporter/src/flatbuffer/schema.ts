@@ -1,3 +1,7 @@
+/**
+ * @fileoverview schema.ts
+ * Provides schema functionality for the tflite-exporter package.
+ */
 import { FlatBufferBuilder } from './builder';
 
 export enum TensorType {

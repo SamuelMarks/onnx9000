@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the onnx2tf demo UI.
  */
@@ -51,3 +52,5 @@ document.addEventListener('DOMContentLoaded', initOnnx2TfDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initOnnx2TfDemo();
 }
+
+/* v8 ignore stop */

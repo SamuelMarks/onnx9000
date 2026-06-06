@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { fetchSafetensorsHeader, loadTensors } from '@onnx9000/core';
 
 /**
@@ -66,3 +67,5 @@ export function initZooDemo(): void {
 }
 
 initZooDemo();
+
+/* v8 ignore stop */

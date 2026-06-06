@@ -1,3 +1,7 @@
+/**
+ * @fileoverview reverse.ts
+ * Provides reverse functionality for the onnx2gguf package.
+ */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 import { GGUFReader } from './reader';
 import { GGUFTensorType } from './builder';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the paddle2onnx package.
+ */
 export class Paddle2ONNXConverter {
   public convert(paddleModelString: string): string {
     if (!paddleModelString) {

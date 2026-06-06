@@ -1,3 +1,7 @@
+/**
+ * @fileoverview quantizer.ts
+ * Provides quantizer functionality for the tflite-exporter package.
+ */
 import { Graph, Node, Tensor, Attribute } from '@onnx9000/core';
 import { QuantizationParameters } from '../flatbuffer/schema';
 

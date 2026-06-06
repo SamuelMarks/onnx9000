@@ -1,3 +1,7 @@
+/**
+ * @fileoverview layout.ts
+ * Provides layout functionality for the modifier package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 
 export interface Point {

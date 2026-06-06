@@ -1,3 +1,7 @@
+/**
+ * @fileoverview tracing.ts
+ * Provides tracing functionality for the iree-compiler package.
+ */
 import { Region } from '../ir/core.js';
 
 // 251-260. Advanced Graph Diagnostics

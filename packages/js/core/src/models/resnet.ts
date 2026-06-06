@@ -1,3 +1,7 @@
+/**
+ * @fileoverview resnet.ts
+ * Provides resnet functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { recordOp } from '../macros.js';
 const add = (a: Tensor, b: Tensor) => recordOp('Add', [a, b]);

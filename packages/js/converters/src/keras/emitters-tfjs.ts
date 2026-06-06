@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-tfjs.ts
+ * Provides emitters-tfjs functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder } from './emitters.js';
 

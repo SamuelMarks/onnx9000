@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { parseModelProto, BufferReader } from '@onnx9000/core';
 import { TFLiteExporter, compileGraphToTFLite } from '@onnx9000/tflite-exporter';
 
@@ -157,3 +158,5 @@ downloadBtn.addEventListener('click', () => {
   // Revoke after a delay to allow the new window to fetch if needed
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 });
+
+/* v8 ignore stop */

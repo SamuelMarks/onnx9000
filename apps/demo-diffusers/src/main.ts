@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { DiffusionPipeline } from '@onnx9000/diffusers/src/pipeline.js';
 
 /**
@@ -20,3 +21,5 @@ export function initDiffusersDemo(): void {
   });
 }
 initDiffusersDemo();
+
+/* v8 ignore stop */

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview lower_vm.ts
+ * Provides lower_vm functionality for the iree-compiler package.
+ */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import * as vm from '../dialects/web/vm.js';
 

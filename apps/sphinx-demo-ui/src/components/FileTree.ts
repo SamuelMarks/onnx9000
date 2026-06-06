@@ -1,3 +1,7 @@
+/**
+ * @fileoverview FileTree.ts
+ * Provides FileTree functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 

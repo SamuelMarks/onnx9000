@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the Hummingbird transpiler demo.
  */
@@ -24,3 +25,5 @@ export function initHummingbirdDemo(): void {
   });
 }
 initHummingbirdDemo();
+
+/* v8 ignore stop */

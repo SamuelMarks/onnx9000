@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the tensorrt package.
+ */
 import { trtFfi } from './ffi';
 import { DataType, ElementWiseOperation, ActivationType, BuilderFlag } from './enums';
 

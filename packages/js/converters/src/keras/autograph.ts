@@ -1,3 +1,7 @@
+/**
+ * @fileoverview autograph.ts
+ * Provides autograph functionality for the converters package.
+ */
 // @ts-nocheck
 import { JsonObject } from './tfjs-parser.js';
 

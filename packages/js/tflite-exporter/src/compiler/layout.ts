@@ -1,3 +1,7 @@
+/**
+ * @fileoverview layout.ts
+ * Provides layout functionality for the tflite-exporter package.
+ */
 import { Graph, Node, Tensor, Attribute, ValueInfo } from '@onnx9000/core';
 
 export class LayoutOptimizer {

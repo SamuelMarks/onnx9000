@@ -1,3 +1,7 @@
+/**
+ * @fileoverview weight-loader.ts
+ * Provides weight-loader functionality for the converters package.
+ */
 // @ts-nocheck
 import { WeightGroup, DataType, WeightManifestEntry } from './tfjs-parser.js';
 

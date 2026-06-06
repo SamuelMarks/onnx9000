@@ -1,3 +1,7 @@
+/**
+ * @fileoverview properties.ts
+ * Provides properties functionality for the modifier package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphMutator } from '../GraphMutator.js';
 

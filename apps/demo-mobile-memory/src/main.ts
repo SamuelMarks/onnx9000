@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the mobile memory arena demo.
  */
@@ -75,3 +76,5 @@ document.addEventListener('DOMContentLoaded', initMobileMemoryDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initMobileMemoryDemo();
 }
+
+/* v8 ignore stop */

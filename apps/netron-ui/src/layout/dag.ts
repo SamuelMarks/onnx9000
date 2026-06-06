@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Defines data structures and algorithms for Directed Acyclic Graph (DAG) layout computation.
+ * This module is responsible for computing the visual layout of an ONNX graph,
+ * producing node and edge coordinates for either Top-Bottom (TB) or Left-Right (LR) directions.
+ */
 import { Graph, Node } from '@onnx9000/core';
 
 export type FlowDirection = 'TB' | 'LR';

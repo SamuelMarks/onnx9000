@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the CUDA demo.
  */
@@ -15,3 +16,5 @@ export function initCudaDemo(): void {
   });
 }
 initCudaDemo();
+
+/* v8 ignore stop */

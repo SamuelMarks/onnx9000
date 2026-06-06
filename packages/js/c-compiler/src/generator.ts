@@ -1,3 +1,7 @@
+/**
+ * @fileoverview generator.ts
+ * Provides generator functionality for the c-compiler package.
+ */
 import { Graph, Node, Tensor } from '@onnx9000/core';
 
 export class CGenerator {

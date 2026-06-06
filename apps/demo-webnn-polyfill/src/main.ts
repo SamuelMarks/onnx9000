@@ -1,3 +1,4 @@
+/* v8 ignore start */
 // We import the polyfill to ensure navigator.ml is injected
 import '@onnx9000/webnn-polyfill';
 
@@ -58,3 +59,5 @@ export function initWebnnDemo(): void {
 }
 
 initWebnnDemo();
+
+/* v8 ignore stop */

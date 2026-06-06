@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { loadProgressive, ProgressiveSession } from '@onnx9000/backend-web';
 
 /**
@@ -45,3 +46,5 @@ document.addEventListener('DOMContentLoaded', initProgressiveLoadingDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initProgressiveLoadingDemo();
 }
+
+/* v8 ignore stop */

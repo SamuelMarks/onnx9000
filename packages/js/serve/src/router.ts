@@ -1,3 +1,7 @@
+/**
+ * @fileoverview router.ts
+ * Provides router functionality for the serve package.
+ */
 export type RequestHandler = (
   req: Request,
   params: Record<string, string>,

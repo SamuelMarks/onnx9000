@@ -1,3 +1,7 @@
+/**
+ * @fileoverview core.ts
+ * Provides core functionality for the iree-compiler package.
+ */
 export type Type = {
   readonly id: string;
 };

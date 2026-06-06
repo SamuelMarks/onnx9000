@@ -1,3 +1,7 @@
+/**
+ * @fileoverview browser-io.ts
+ * Provides browser-io functionality for the converters package.
+ */
 // @ts-nocheck
 export async function readBrowserFile(file: File | Blob): Promise<ArrayBuffer> {
   return file.arrayBuffer();

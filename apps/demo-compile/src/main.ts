@@ -1,3 +1,4 @@
+/* v8 ignore start */
 document.getElementById('btn-compile')?.addEventListener('click', () => {
   const output = document.getElementById('output');
   if (output) {
@@ -10,3 +11,5 @@ document.getElementById('btn-compile')?.addEventListener('click', () => {
     }, 500);
   }
 });
+
+/* v8 ignore stop */

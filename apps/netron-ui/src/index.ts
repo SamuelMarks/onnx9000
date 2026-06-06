@@ -1,4 +1,10 @@
 // @ts-nocheck
+/**
+ * @fileoverview Main entry point for the ONNX9000 Netron-style UI.
+ * This file initializes the application, sets up the HTML structure,
+ * and attaches event listeners for user interactions such as file uploading,
+ * drag-and-drop, graph navigation, and keyboard shortcuts.
+ */
 import { CanvasRenderer } from './render/canvas';
 import { fetchAndParseModel } from './parser/fetcher';
 import { Graph, Node } from '@onnx9000/core';
@@ -531,7 +537,7 @@ function handleFile(file: File) {
   });
 
   // Worker for layout computation
-  const worker = new Worker(new URL('./parser/worker.ts', import.meta.url), {
+  var worker = new Worker(new URL('./parser/worker.ts', import.meta.url), {
     type: 'module',
   });
 

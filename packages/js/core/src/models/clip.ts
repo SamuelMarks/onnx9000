@@ -1,3 +1,7 @@
+/**
+ * @fileoverview clip.ts
+ * Provides clip functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm } from '../primitives.js';
 import { VisionTransformer } from './vit.js';

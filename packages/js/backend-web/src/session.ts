@@ -1,3 +1,7 @@
+/**
+ * @fileoverview session.ts
+ * Provides session functionality for the backend-web package.
+ */
 import { Graph, Tensor, Node } from '@onnx9000/core';
 
 import { GraphPartitioner } from './partitioner.js';

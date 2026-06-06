@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the serve package.
+ */
 import { Router } from './router';
 import { addKServeRoutes } from './kserve';
 import { addOpenAIRoutes } from './openai';

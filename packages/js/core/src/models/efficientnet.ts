@@ -1,3 +1,7 @@
+/**
+ * @fileoverview efficientnet.ts
+ * Provides efficientnet functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { BatchNormalization, ConvND, DepthwiseConv, Gemm, Sigmoid, Silu } from '../primitives.js';
 

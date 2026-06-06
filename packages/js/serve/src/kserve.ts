@@ -1,3 +1,7 @@
+/**
+ * @fileoverview kserve.ts
+ * Provides kserve functionality for the serve package.
+ */
 import { Router } from './router';
 import { safeJsonParse } from './middleware';
 

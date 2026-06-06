@@ -1,3 +1,7 @@
+/**
+ * @fileoverview model.ts
+ * Provides model functionality for the core package.
+ */
 import { Tokenizer, BasicTokenizer } from './tokenizer.js';
 import { ModelParams, GeneratorParams } from './types.js';
 import { Generator } from './generator.js';

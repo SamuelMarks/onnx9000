@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the optimum package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 
 export interface ExportConfig {

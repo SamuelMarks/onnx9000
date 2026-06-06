@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the MLIR lowering demo.
  */
@@ -65,3 +66,5 @@ document.addEventListener('DOMContentLoaded', initMlirLoweringDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initMlirLoweringDemo();
 }
+
+/* v8 ignore stop */

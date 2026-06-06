@@ -1,3 +1,7 @@
+/**
+ * @fileoverview deterministic.ts
+ * Provides deterministic functionality for the coreml package.
+ */
 import { Model } from '../schema.js';
 
 export function assertDeterministicBuild(model: Model): void {

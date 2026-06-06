@@ -1,3 +1,7 @@
+/**
+ * @fileoverview MockData.ts
+ * Provides MockData functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { FileNode } from '../components/FileTree';
 

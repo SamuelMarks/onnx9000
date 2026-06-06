@@ -1,3 +1,7 @@
+/**
+ * @fileoverview WorkerManager.ts
+ * Provides WorkerManager functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { globalEventBus } from './EventBus';
 import { LogLevel } from './Logger';

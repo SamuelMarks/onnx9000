@@ -1,3 +1,7 @@
+/**
+ * @fileoverview builder.ts
+ * Provides builder functionality for the onnx2gguf package.
+ */
 export enum GGUFValueType {
   UINT8 = 0,
   INT8 = 1,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview validator.ts
+ * Provides validator functionality for the coreml package.
+ */
 import { Program, Function, Block, Operation } from './ast.js';
 import { topologicalSort } from './sort.js';
 

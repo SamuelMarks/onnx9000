@@ -1,3 +1,7 @@
+/**
+ * @fileoverview pattern_matcher.ts
+ * Provides pattern_matcher functionality for the modifier package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 
 export class Pattern {

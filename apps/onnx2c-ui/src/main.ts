@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Main entry point for the ONNX to C compiler UI.
+ * Handles model file upload, integrates with Monaco Editor for viewing C code, and communicates with a Web Worker to compile models.
+ */
 import * as monaco from 'monaco-editor';
 
 /**

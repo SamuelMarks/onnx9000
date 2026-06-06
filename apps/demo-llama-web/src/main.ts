@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { load } from '@onnx9000/core';
 import { InferenceSession } from '@onnx9000/backend-web';
 
@@ -68,3 +69,5 @@ export function initLlamaWebDemo(): void {
 }
 
 initLlamaWebDemo();
+
+/* v8 ignore stop */

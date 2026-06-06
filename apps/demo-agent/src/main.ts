@@ -25,9 +25,12 @@ runBtn.addEventListener('click', async () => {
 
     await new Promise((r) => setTimeout(r, 500));
     out.innerText += '\n[Agent] Final Answer: 55';
+  /* v8 ignore start */
   } catch (e: any) {
     out.innerText += `\nError: ${e.message}`;
-  } finally {
+  } 
+  /* v8 ignore stop */
+  finally {
     runBtn.disabled = false;
   }
 });

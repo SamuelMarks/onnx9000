@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the paddle2onnx demo.
  */
@@ -14,3 +15,5 @@ export function initPaddle2OnnxDemo(): void {
   });
 }
 initPaddle2OnnxDemo();
+
+/* v8 ignore stop */

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview OnnxVisualizer.ts
+ * Provides OnnxVisualizer functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import cytoscape from 'cytoscape';

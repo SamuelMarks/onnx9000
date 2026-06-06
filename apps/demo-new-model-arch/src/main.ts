@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph } from '@onnx9000/core';
 
 /**
@@ -65,3 +66,5 @@ document.addEventListener('DOMContentLoaded', initNewModelArchDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initNewModelArchDemo();
 }
+
+/* v8 ignore stop */

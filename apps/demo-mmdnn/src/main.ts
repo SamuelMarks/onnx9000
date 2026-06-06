@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { convert, SourceFramework, TargetFramework } from '@onnx9000/converters';
 import { serializeModelProto, Graph } from '@onnx9000/core';
 
@@ -277,3 +278,5 @@ export function initMmdnnDemo() {
   updateHint();
 }
 initMmdnnDemo();
+
+/* v8 ignore stop */

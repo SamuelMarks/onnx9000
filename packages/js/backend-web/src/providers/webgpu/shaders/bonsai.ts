@@ -1,3 +1,7 @@
+/**
+ * @fileoverview bonsai.ts
+ * Provides bonsai functionality for the backend-web package.
+ */
 export const FusedLayerNormWGSL = ` 
 struct LayerNormUniforms { 
     N: u32, 

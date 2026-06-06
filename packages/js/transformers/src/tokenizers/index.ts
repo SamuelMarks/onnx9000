@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export interface TokenizerConfig {
   padding?: boolean | 'max_length' | 'longest';
   truncation?: boolean | 'only_first' | 'only_second' | 'longest_first';

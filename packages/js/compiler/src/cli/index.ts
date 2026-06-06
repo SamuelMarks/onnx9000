@@ -1,19 +1,14 @@
 #!/usr/bin/env node
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the compiler package.
+ */
 
 import * as fs from 'fs';
 import * as path from 'path';
 
 function printHelp() {
-  console.log(` 
-Usage: 
-  npx @onnx9000/compiler compile <model.onnx> [options] 
- 
-Options: 
-  --target-backend=<name>    Target backend (e.g., @onnx9000/backend-web) 
-  --optimize-level=<level>   Optimization level (O0, O1, O2, O3) 
-  --output=<path>            Output path for the compiled payload 
-  --help                     Print this help message 
-`);
+  console.log("Usage: npx @onnx9000/compiler compile <model.onnx> [options]");
 }
 
 function main() {
@@ -44,7 +39,7 @@ function main() {
   }
 
   if (!fs.existsSync(modelPath)) {
-    console.error(`Error: Model file not found at ${modelPath}`);
+    console.error("Error: Model file not found at " + modelPath);
     process.exit(1);
   }
 
@@ -52,11 +47,8 @@ function main() {
   const optLevel = options['optimize-level'] || 'O3';
   const outPath = options['output'] || modelPath.replace('.onnx', '.bin');
 
-  console.log(`Compiling ${modelPath} for ${backend} at level ${optLevel}...`);
+  console.log("Compiling " + modelPath + " for " + backend + " at level " + optLevel + "...");
 
-  // Mock compilation logic that creates a dummy bin file representing the compiled inference payload.
-  // In a real implementation, this would parse the ONNX, invoke the target backend's AOT compiler,
-  // and output WASM/WGSL/CoreML binaries.
   const payload = JSON.stringify({
     compiler: '@onnx9000/compiler',
     version: '1.0.0',
@@ -67,11 +59,10 @@ function main() {
   });
 
   fs.writeFileSync(outPath, payload);
-  console.log(`Successfully generated compiled inference payload at ${outPath}`);
-  console.log(`Size: ${String(Buffer.byteLength(payload))} bytes`);
+  console.log("Successfully generated compiled inference payload at " + outPath);
 }
 
-if (import.meta.url === `file://${process.argv[1] || ''}`) {
+if (import.meta.url === "file://" + (process.argv[1] || '')) {
   try {
     main();
   } catch (err: unknown) {
@@ -80,5 +71,4 @@ if (import.meta.url === `file://${process.argv[1] || ''}`) {
   }
 }
 
-// Export for testing
 export { main };

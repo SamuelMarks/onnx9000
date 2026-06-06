@@ -1,3 +1,7 @@
+/**
+ * @fileoverview vm.ts
+ * Provides vm functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value, Region, Block } from '../../ir/core.js';
 
 // 71. web.vm.module

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview webnn.d.ts
+ * Provides webnn.d functionality for the backend-web package.
+ */
 /// <reference lib="dom" />
 
 declare interface Navigator {

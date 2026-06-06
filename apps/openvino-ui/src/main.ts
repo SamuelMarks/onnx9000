@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Main entry point for the ONNX to OpenVINO compiler UI.
+ * Handles model file upload, OpenVINO XML/BIN generation, and ZIP packaging.
+ */
 import { load } from '@onnx9000/core';
 import { OpenVinoExporter } from '@onnx9000/openvino-exporter';
 import JSZip from 'jszip';

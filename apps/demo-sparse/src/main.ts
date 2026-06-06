@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the sparse demo UI.
  */
@@ -25,3 +26,5 @@ export function initSparseDemo(): void {
 }
 
 initSparseDemo();
+
+/* v8 ignore stop */

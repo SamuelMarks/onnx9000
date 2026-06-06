@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Provides utility functions for fetching and parsing ONNX models over the network.
+ * Handles downloading binary data via Streams, transforming GitHub blobs to raw URLs,
+ * and passing the result to the ONNX model parser.
+ */
 import { BlobReader, parseModelProto, Graph } from '@onnx9000/core';
 
 export async function fetchAndParseModel(

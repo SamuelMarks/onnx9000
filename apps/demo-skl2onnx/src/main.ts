@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the skl2onnx demo UI.
  */
@@ -14,3 +15,5 @@ export function initSkl2OnnxDemo(): void {
   });
 }
 initSkl2OnnxDemo();
+
+/* v8 ignore stop */

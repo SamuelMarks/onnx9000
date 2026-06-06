@@ -1,3 +1,7 @@
+/**
+ * @fileoverview context.ts
+ * Provides context functionality for the backend-web package.
+ */
 export class WebNNContextManager {
   private static instance: WebNNContextManager | null = null;
   private mlContext: MLContext | null = null;

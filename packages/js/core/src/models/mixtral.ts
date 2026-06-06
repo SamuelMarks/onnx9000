@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mixtral.ts
+ * Provides mixtral functionality for the core package.
+ */
 import { Tensor } from '../ir/tensor.js';
 import { Gemm, GroupedQueryAttention, RMSNorm, RoPE } from '../primitives.js';
 import { SwiGLU } from './llama.js';

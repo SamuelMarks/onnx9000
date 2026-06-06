@@ -1,3 +1,7 @@
+/**
+ * @fileoverview TensorInputModal.ts
+ * Provides TensorInputModal functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';

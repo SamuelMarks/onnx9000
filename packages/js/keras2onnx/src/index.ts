@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the keras2onnx package.
+ */
 export class Keras2ONNXConverter {
   public convert(kerasModelString: string): string {
     if (!kerasModelString) {

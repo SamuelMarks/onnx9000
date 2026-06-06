@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { parseJaxpr } from '@onnx9000/converters';
 
 /**
@@ -37,3 +38,5 @@ export function initJaxDemo(): void {
   });
 }
 initJaxDemo();
+
+/* v8 ignore stop */

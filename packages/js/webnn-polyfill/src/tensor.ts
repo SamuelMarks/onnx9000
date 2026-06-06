@@ -1,3 +1,7 @@
+/**
+ * @fileoverview tensor.ts
+ * Provides tensor functionality for the webnn-polyfill package.
+ */
 import { MLOperandDataType } from './interfaces.js';
 
 export interface MLTensorOptions {

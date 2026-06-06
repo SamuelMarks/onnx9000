@@ -1,3 +1,5 @@
+(global as any).Path2D = class Path2D { moveTo() {} bezierCurveTo() {} lineTo() {} };
+
 import { describe, it, expect, vi } from 'vitest';
 import * as layout from '../src/layout/dag.js';
 import { fetchAndParseModel } from '../src/parser/fetcher.js';

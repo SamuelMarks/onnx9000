@@ -11,7 +11,6 @@ export default defineConfig({
       '**/.git/**',
       'apps/**',
       'packages/python/**',
-      'tests/**',
     ],
     coverage: {
       provider: 'v8',

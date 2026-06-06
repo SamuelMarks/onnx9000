@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the converters package.
+ */
 // @ts-nocheck
 import { parseTFJSModel, JsonObject } from './tfjs-parser.js';
 import { extractKerasTopology, KerasModelTopology, KerasNodeSpec } from './keras-ast.js';

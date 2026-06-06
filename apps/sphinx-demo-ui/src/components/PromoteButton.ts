@@ -1,3 +1,7 @@
+/**
+ * @fileoverview PromoteButton.ts
+ * Provides PromoteButton functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';

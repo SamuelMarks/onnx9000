@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the ORT training demo.
  */
@@ -13,3 +14,5 @@ export function initOrtTrainingDemo(): void {
   });
 }
 initOrtTrainingDemo();
+
+/* v8 ignore stop */

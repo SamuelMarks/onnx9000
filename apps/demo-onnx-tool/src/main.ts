@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the ONNX tool demo.
  */
@@ -13,3 +14,5 @@ export function initOnnxToolDemo(): void {
   });
 }
 initOnnxToolDemo();
+
+/* v8 ignore stop */

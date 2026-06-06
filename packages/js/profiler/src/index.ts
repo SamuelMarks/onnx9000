@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the profiler package.
+ */
 export class Profiler {
   modelPath: string;
   peakMemory: number;

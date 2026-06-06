@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ast.ts
+ * Provides ast functionality for the coreml package.
+ */
 import { MILType, TensorType, ScalarType, TupleType } from './types.js';
 
 export class Var {

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { GraphMutator } from '@onnx9000/modifier';
 
 /**
@@ -48,3 +49,5 @@ export function initGraphSurgeonDemo(): void {
   });
 }
 initGraphSurgeonDemo();
+
+/* v8 ignore stop */

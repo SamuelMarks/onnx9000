@@ -1,3 +1,7 @@
+/**
+ * @fileoverview PipelineNode.ts
+ * Provides PipelineNode functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 export interface PipelineState {
   sourceFramework: string | null;

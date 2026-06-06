@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export class HubConfig {
   static endpoint: string = 'https://huggingface.co';
   static apiKey: string | null = null;

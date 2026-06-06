@@ -1,3 +1,7 @@
+/**
+ * @fileoverview hub.ts
+ * Provides hub functionality for the onnx2gguf package.
+ */
 export async function fetchHfConfig(
   repoId: string,
   token?: string,

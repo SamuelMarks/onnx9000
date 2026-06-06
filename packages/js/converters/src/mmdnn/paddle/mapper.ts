@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mapper.ts
+ * Provides mapper functionality for the converters package.
+ */
 // @ts-nocheck
 // @ts-nocheck
 import { Graph, Node, Attribute, Tensor, Shape, DynamicDim } from '@onnx9000/core';

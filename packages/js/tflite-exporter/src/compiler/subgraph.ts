@@ -1,3 +1,7 @@
+/**
+ * @fileoverview subgraph.ts
+ * Provides subgraph functionality for the tflite-exporter package.
+ */
 import { Graph, Tensor } from '@onnx9000/core';
 import { TFLiteExporter } from '../exporter';
 import { mapOnnxShapeToTflite, mapOnnxTypeToTflite, createShapeSignature } from './mapping';

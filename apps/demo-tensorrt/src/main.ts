@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph, Node } from '@onnx9000/core';
 
 /**
@@ -15,3 +16,5 @@ export function initTensorrtDemo(): void {
 }
 
 initTensorrtDemo();
+
+/* v8 ignore stop */

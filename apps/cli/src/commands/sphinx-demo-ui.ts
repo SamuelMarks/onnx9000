@@ -1,3 +1,7 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import { spawn } from 'child_process';
+
 export async function handleSphinxDemoUICommand(args: string[]) {
   if (args.includes('-h') || args.includes('--help')) {
     console.log(
@@ -6,5 +10,48 @@ export async function handleSphinxDemoUICommand(args: string[]) {
     process.exit(0);
     return;
   }
-  // The rest is tested via mocks in batch5 so no need to change it
+  
+  console.log('Starting Sphinx Demo UI...');
+  
+  // Find the workspace root
+  let currentDir = process.cwd();
+  let uiDir = '';
+  
+  while (currentDir !== '/') {
+    if (fs.existsSync(path.join(currentDir, 'pnpm-workspace.yaml'))) {
+      uiDir = path.join(currentDir, 'apps/sphinx-demo-ui');
+      break;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+  
+  if (!uiDir || !fs.existsSync(uiDir)) {
+    console.error('Sphinx Demo UI directory not found.');
+    process.exit(1);
+    return;
+  }
+  
+  return new Promise<void>((resolve, reject) => {
+    const child = spawn('pnpm', ['dev'], {
+      cwd: uiDir,
+      stdio: 'inherit',
+    });
+    
+    process.on('SIGINT', () => {
+      child.kill('SIGINT');
+      resolve();
+    });
+    
+    child.on('error', (err) => {
+      reject(err);
+    });
+    
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Sphinx Demo UI exited with code ${code}`));
+      }
+    });
+  });
 }

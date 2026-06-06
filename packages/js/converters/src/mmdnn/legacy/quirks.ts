@@ -1,3 +1,7 @@
+/**
+ * @fileoverview quirks.ts
+ * Provides quirks functionality for the converters package.
+ */
 // @ts-nocheck
 // @ts-nocheck
 export interface Node {

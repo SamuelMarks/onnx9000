@@ -1,3 +1,7 @@
+/**
+ * @fileoverview vm.ts
+ * Provides vm functionality for the iree-runtime package.
+ */
 // 123. Runtime Module
 export class Module {
   public globals: number[] = [];

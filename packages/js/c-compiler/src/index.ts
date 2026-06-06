@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the c-compiler package.
+ */
 export * from './codegen.js';
 export * from './generator.js';
 

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the coreml package.
+ */
 export * from './protobuf.js';
 export * from './schema.js';
 export * from './emitter.js';

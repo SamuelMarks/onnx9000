@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mapping.ts
+ * Provides mapping functionality for the tflite-exporter package.
+ */
 import { DType, Shape } from '@onnx9000/core';
 import { TensorType } from '../flatbuffer/schema';
 

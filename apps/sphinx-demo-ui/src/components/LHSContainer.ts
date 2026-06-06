@@ -1,3 +1,7 @@
+/**
+ * @fileoverview LHSContainer.ts
+ * Provides LHSContainer functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { convert } from '@onnx9000/converters';
 import { globalEventBus } from '../core/EventBus';

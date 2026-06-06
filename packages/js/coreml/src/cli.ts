@@ -1,3 +1,7 @@
+/**
+ * @fileoverview cli.ts
+ * Provides cli functionality for the coreml package.
+ */
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';

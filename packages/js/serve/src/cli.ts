@@ -1,3 +1,7 @@
+/**
+ * @fileoverview cli.ts
+ * Provides cli functionality for the serve package.
+ */
 // 181. Implement CLI
 // 182. Support `--log-verbose` flag.
 // 183. Support `--max-batch-size 32` global override flag.

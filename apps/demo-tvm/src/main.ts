@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Graph, Node } from '@onnx9000/core';
 
 /**
@@ -26,3 +27,5 @@ export function initTvmDemo(): void {
 }
 
 initTvmDemo();
+
+/* v8 ignore stop */

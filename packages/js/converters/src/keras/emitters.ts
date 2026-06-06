@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters.ts
+ * Provides emitters functionality for the converters package.
+ */
 // @ts-nocheck
 export interface OnnxNodeBuilder {
   opType: string;

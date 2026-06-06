@@ -1,3 +1,7 @@
+/**
+ * @fileoverview parser.ts
+ * Provides parser functionality for the converters package.
+ */
 // @ts-nocheck
 import {
   readVarInt,

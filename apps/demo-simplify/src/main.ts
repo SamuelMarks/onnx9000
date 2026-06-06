@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the simplify demo UI.
  */
@@ -50,3 +51,5 @@ document.addEventListener('DOMContentLoaded', initSimplifyDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initSimplifyDemo();
 }
+
+/* v8 ignore stop */

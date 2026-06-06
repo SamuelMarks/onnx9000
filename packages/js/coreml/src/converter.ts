@@ -1,3 +1,7 @@
+/**
+ * @fileoverview converter.ts
+ * Provides converter functionality for the coreml package.
+ */
 import { Graph as ONNXGraph, Node as ONNXNode, DType, Shape } from '@onnx9000/core';
 import { Builder } from './mil/builder.js';
 import { Program, Var } from './mil/ast.js';

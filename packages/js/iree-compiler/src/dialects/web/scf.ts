@@ -1,3 +1,7 @@
+/**
+ * @fileoverview scf.ts
+ * Provides scf functionality for the iree-compiler package.
+ */
 import { Operation, Type, Value, Region } from '../../ir/core.js';
 
 // 92. web.scf dialect

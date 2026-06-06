@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Logger.ts
+ * Provides Logger functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 import { globalEventBus } from './EventBus';
 

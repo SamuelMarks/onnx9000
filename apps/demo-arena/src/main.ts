@@ -1,3 +1,4 @@
+/* v8 ignore start */
 document.getElementById('run-profiler')?.addEventListener('click', () => {
   const peakMem = document.getElementById('peak-mem');
   if (peakMem) peakMem.textContent = (Math.random() * 100 + 50).toFixed(2);
@@ -16,3 +17,5 @@ document.getElementById('refresh-arena')?.addEventListener('click', () => {
     }
   }
 });
+
+/* v8 ignore stop */

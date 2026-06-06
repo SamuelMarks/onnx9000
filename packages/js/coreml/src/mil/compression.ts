@@ -1,3 +1,7 @@
+/**
+ * @fileoverview compression.ts
+ * Provides compression functionality for the coreml package.
+ */
 import { Block, Operation, Var } from './ast.js';
 import { TensorType, MILDataType } from './types.js';
 

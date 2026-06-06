@@ -1,3 +1,7 @@
+/**
+ * @fileoverview types.ts
+ * Provides types functionality for the coreml package.
+ */
 export enum MILDataType {
   FLOAT32 = 'fp32',
   FLOAT16 = 'fp16',

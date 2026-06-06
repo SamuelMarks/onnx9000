@@ -1,3 +1,7 @@
+/**
+ * @fileoverview operators.ts
+ * Provides operators functionality for the tflite-exporter package.
+ */
 import { Node } from '@onnx9000/core';
 import { BuiltinOperator, BuiltinOptions, TensorType, Padding } from '../flatbuffer/schema';
 

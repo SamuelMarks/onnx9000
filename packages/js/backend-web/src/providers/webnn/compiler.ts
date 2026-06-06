@@ -1,3 +1,7 @@
+/**
+ * @fileoverview compiler.ts
+ * Provides compiler functionality for the backend-web package.
+ */
 import { Graph, Node, Tensor, DType } from '@onnx9000/core';
 import { WebNNContextManager } from './context.js';
 

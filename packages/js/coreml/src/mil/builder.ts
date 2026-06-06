@@ -1,3 +1,7 @@
+/**
+ * @fileoverview builder.ts
+ * Provides builder functionality for the coreml package.
+ */
 import { Program, Function, Block, Operation, Var } from './ast.js';
 import { MILType, TensorType, ScalarType, TupleType, MILDataType } from './types.js';
 

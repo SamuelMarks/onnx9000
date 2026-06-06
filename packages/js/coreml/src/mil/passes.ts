@@ -1,3 +1,7 @@
+/**
+ * @fileoverview passes.ts
+ * Provides passes functionality for the coreml package.
+ */
 import { Operation, Block, Function } from './ast.js';
 
 export function deadCodeElimination(block: Block): void {

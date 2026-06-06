@@ -1,3 +1,7 @@
+/**
+ * @fileoverview printer.ts
+ * Provides printer functionality for the coreml package.
+ */
 import { Program, Function, Block, Operation, Var } from './ast.js';
 
 export class MILPrinter {

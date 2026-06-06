@@ -1,3 +1,7 @@
+/**
+ * @fileoverview pipeline.ts
+ * Provides pipeline functionality for the diffusers package.
+ */
 import { PyTorchPCG, parseModelIndex } from './utils';
 import { UNet2DConditionModel, AutoencoderKL } from './models';
 import { Scheduler, DDPMScheduler } from './schedulers';

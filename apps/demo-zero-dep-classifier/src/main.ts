@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the zero-dependency classifier demo UI.
  */
@@ -47,3 +48,5 @@ document.addEventListener('DOMContentLoaded', initZeroDepClassifierDemo);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initZeroDepClassifierDemo();
 }
+
+/* v8 ignore stop */

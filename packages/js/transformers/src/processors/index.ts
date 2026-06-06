@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export class ONNX9000Image {
   public data: ReturnType<typeof JSON.parse>;
 

@@ -1,3 +1,8 @@
+/**
+ * @fileoverview User Interface logic for the Sparse Pruner tool.
+ * Manages drag-and-drop of models and recipes, handles pruning operations
+ * visually, and reports progress and statistics back to the user interface.
+ */
 import { Graph } from '@onnx9000/core';
 import { applyRecipe } from '@onnx9000/modifier';
 import { unpackData } from '@onnx9000/core';

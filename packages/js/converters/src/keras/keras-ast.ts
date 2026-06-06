@@ -1,3 +1,7 @@
+/**
+ * @fileoverview keras-ast.ts
+ * Provides keras-ast functionality for the converters package.
+ */
 // @ts-nocheck
 import { JsonObject, JsonArray } from './tfjs-parser.js';
 

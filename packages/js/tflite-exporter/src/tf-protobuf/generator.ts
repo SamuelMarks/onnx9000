@@ -1,3 +1,7 @@
+/**
+ * @fileoverview generator.ts
+ * Provides generator functionality for the tflite-exporter package.
+ */
 import { Graph, Node } from '@onnx9000/core';
 import { GraphDef, NodeDef, SignatureDef, SavedModel, MetaGraphDef } from './encoder';
 

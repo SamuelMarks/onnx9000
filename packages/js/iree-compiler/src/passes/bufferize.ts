@@ -1,3 +1,7 @@
+/**
+ * @fileoverview bufferize.ts
+ * Provides bufferize functionality for the iree-compiler package.
+ */
 import { Block, Region, Operation, Value } from '../ir/core.js';
 import { TensorType } from '../dialects/web/tensor.js';
 import * as memref from '../dialects/web/memref.js';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview loader.ts
+ * Provides loader functionality for the coreml package.
+ */
 import { Program, Function, Block } from './mil/ast.js';
 import { Model } from './schema.js';
 import { parseModel } from './schema.js';

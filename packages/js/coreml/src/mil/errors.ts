@@ -1,3 +1,7 @@
+/**
+ * @fileoverview errors.ts
+ * Provides errors functionality for the coreml package.
+ */
 export class CoreMLExportError extends Error {
   constructor(message: string) {
     super(message);

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { mmdnn } from '@onnx9000/converters';
 
 /**
@@ -42,3 +43,5 @@ export function initExtendedConvertersDemo(): void {
   });
 }
 initExtendedConvertersDemo();
+
+/* v8 ignore stop */

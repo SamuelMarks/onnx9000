@@ -1,3 +1,7 @@
+/**
+ * @fileoverview mlpackage.ts
+ * Provides mlpackage functionality for the coreml package.
+ */
 import { emitModel } from './emitter.js';
 import { Model } from './schema.js';
 import { sanitizeMetadataString, sanitizeFilename } from './utils/sanitize.js';

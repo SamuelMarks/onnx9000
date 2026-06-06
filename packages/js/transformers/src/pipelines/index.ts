@@ -1,3 +1,7 @@
+/**
+ * @fileoverview index.ts
+ * Provides index functionality for the transformers package.
+ */
 export class Callable extends Function {
   constructor() {
     super('...args', 'return this._call(...args)');

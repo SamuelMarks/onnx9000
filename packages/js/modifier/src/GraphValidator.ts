@@ -1,3 +1,7 @@
+/**
+ * @fileoverview GraphValidator.ts
+ * Provides GraphValidator functionality for the modifier package.
+ */
 import { Graph, Node, ValueInfo, Tensor, Shape, DType } from '@onnx9000/core';
 
 export interface GraphValidationResult {

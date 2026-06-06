@@ -1,3 +1,7 @@
+/**
+ * @fileoverview schema.ts
+ * Provides schema functionality for the coreml package.
+ */
 import {
   Reader,
   WIRE_TYPE_VARINT,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview emitters-conv.ts
+ * Provides emitters-conv functionality for the converters package.
+ */
 // @ts-nocheck
 import { OnnxNodeBuilder, emitActivation } from './emitters.js';
 import { calculatePaddingSame, calculatePaddingValid } from './layout.js';

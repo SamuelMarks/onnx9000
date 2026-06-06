@@ -1,3 +1,7 @@
+/**
+ * @fileoverview I18n.ts
+ * Provides I18n functionality for the Sphinx Demo UI.
+ */
 // @ts-nocheck
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 

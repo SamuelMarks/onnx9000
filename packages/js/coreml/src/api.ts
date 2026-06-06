@@ -1,3 +1,7 @@
+/**
+ * @fileoverview api.ts
+ * Provides api functionality for the coreml package.
+ */
 import { Graph } from '@onnx9000/core';
 import { ONNXToMILConverter } from './converter.js';
 import { MILToONNXConverter } from './importer.js';

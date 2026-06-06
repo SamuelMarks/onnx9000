@@ -1,3 +1,7 @@
+/**
+ * @fileoverview tokenizer.ts
+ * Provides tokenizer functionality for the onnx2gguf package.
+ */
 export function extractTokenizerMetadata(
   tokenizerJsonStr: string | null = null,
   vocabSize: number = 0,

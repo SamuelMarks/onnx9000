@@ -1,3 +1,7 @@
+/**
+ * @fileoverview batcher.ts
+ * Provides batcher functionality for the serve package.
+ */
 export interface BatchRequest {
   id: string;
   payload: ReturnType<typeof JSON.parse>;

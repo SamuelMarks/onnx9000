@@ -1,3 +1,7 @@
+/**
+ * @fileoverview reporter.ts
+ * Provides reporter functionality for the converters package.
+ */
 // @ts-nocheck
 export class MMDNNError extends Error {
   constructor(message: string) {

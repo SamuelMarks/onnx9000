@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ensemble.ts
+ * Provides ensemble functionality for the serve package.
+ */
 export type EnsembleNodeType =
   | 'model'
   | 'logic'

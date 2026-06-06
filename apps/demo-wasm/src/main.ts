@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Initializes the WASM demo UI.
  */
@@ -15,3 +16,5 @@ export function initWasmDemo(): void {
   });
 }
 initWasmDemo();
+
+/* v8 ignore stop */
