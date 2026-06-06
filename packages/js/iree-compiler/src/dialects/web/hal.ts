@@ -2,21 +2,26 @@
  * @fileoverview hal.ts
  * Provides hal functionality for the iree-compiler package.
  */
-import { Operation, type Region, type Type, type Value } from '../../ir/core.js';
+import {
+  Operation,
+  type Region,
+  type Type,
+  type Value,
+} from "../../ir/core.js";
 
 // 51. web.hal.device
 export class DeviceType implements Type {
-  readonly id = 'hal.device';
+  readonly id = "hal.device";
 }
 
 // 52. web.hal.buffer
 export class BufferType implements Type {
-  readonly id = 'hal.buffer';
+  readonly id = "hal.buffer";
 }
 
 // 53. web.hal.buffer_view
 export class BufferViewType implements Type {
-  readonly id = 'hal.buffer_view';
+  readonly id = "hal.buffer_view";
   constructor(
     public readonly shape: number[],
     public readonly elementType: string,
@@ -25,12 +30,12 @@ export class BufferViewType implements Type {
 
 // 54. web.hal.command_buffer
 export class CommandBufferType implements Type {
-  readonly id = 'hal.command_buffer';
+  readonly id = "hal.command_buffer";
 }
 
 // 55. web.hal.executable
 export class ExecutableType implements Type {
-  readonly id = 'hal.executable';
+  readonly id = "hal.executable";
 }
 
 export function executableCreate(
@@ -39,7 +44,7 @@ export function executableCreate(
   shaderCode: string,
   resultType: ExecutableType,
 ): Operation {
-  return new Operation('web.hal.executable.create', [], [resultType], {
+  return new Operation("web.hal.executable.create", [], [resultType], {
     name,
     target_backend: targetBackend,
     shader_code: shaderCode,
@@ -56,7 +61,7 @@ export function commandBufferDispatch(
   bindings: Value[],
 ): Operation {
   return new Operation(
-    'web.hal.command_buffer.dispatch',
+    "web.hal.command_buffer.dispatch",
     [cmdBuffer, executable, ...bindings],
     [],
     {
@@ -75,7 +80,7 @@ export function commandBufferCopyBuffer(
   length: number,
 ): Operation {
   return new Operation(
-    'web.hal.command_buffer.copy_buffer',
+    "web.hal.command_buffer.copy_buffer",
     [cmdBuffer, sourceBuffer, targetBuffer],
     [],
     {
@@ -94,11 +99,16 @@ export function commandBufferFillBuffer(
   length: number,
   pattern: number,
 ): Operation {
-  return new Operation('web.hal.command_buffer.fill_buffer', [cmdBuffer, targetBuffer], [], {
-    target_offset: targetOffset,
-    length,
-    pattern,
-  });
+  return new Operation(
+    "web.hal.command_buffer.fill_buffer",
+    [cmdBuffer, targetBuffer],
+    [],
+    {
+      target_offset: targetOffset,
+      length,
+      pattern,
+    },
+  );
 }
 
 // 59. web.hal.buffer.subspan
@@ -108,7 +118,7 @@ export function bufferSubspan(
   length: number,
   resultType: BufferType,
 ): Operation {
-  return new Operation('web.hal.buffer.subspan', [buffer], [resultType], {
+  return new Operation("web.hal.buffer.subspan", [buffer], [resultType], {
     offset,
     length,
   });
@@ -116,21 +126,21 @@ export function bufferSubspan(
 
 // 68. Dynamic shapes (symbolic vars)
 export function dynamicShapeVar(name: string, resultType: Type): Operation {
-  return new Operation('web.hal.symbolic_shape_var', [], [resultType], {
+  return new Operation("web.hal.symbolic_shape_var", [], [resultType], {
     name,
   });
 }
 
 // 70. HAL textual printer
 export function printHalGraph(region: Region): string {
-  let output = 'HAL Execution Graph:\n';
+  let output = "HAL Execution Graph:\n";
   for (const block of region.blocks) {
     for (const op of block.operations) {
-      output += `  %${op.results.length ? 'result' : '_'} = ${op.opcode}`;
+      output += `  %${op.results.length ? "result" : "_"} = ${op.opcode}`;
       if (Object.keys(op.attributes).length > 0) {
         output += ` { ${JSON.stringify(op.attributes)} }`;
       }
-      output += '\n';
+      output += "\n";
     }
   }
   return output;

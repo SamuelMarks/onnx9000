@@ -1,17 +1,17 @@
-import * as fs from 'node:fs';
-import { load, ONNXToPyTorchVisitor } from '@onnx9000/core';
+import * as fs from "node:fs";
+import { load, ONNXToPyTorchVisitor } from "@onnx9000/core";
 
 export async function handlePytorchCodegenCommand(args: string[]) {
-  if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
-    console.log('Usage: onnx9000 pytorch-codegen <model.onnx> [-o output.py]');
+  if (args.length === 0 || args[0] === "-h" || args[0] === "--help") {
+    console.log("Usage: onnx9000 pytorch-codegen <model.onnx> [-o output.py]");
     process.exit(0);
     return;
   }
 
-  const modelPath = args[0] || '';
-  let outputPath = '';
-  if (args[1] === '-o' || args[1] === '--output') {
-    outputPath = args[2] || '';
+  const modelPath = args[0] || "";
+  let outputPath = "";
+  if (args[1] === "-o" || args[1] === "--output") {
+    outputPath = args[2] || "";
   }
 
   console.log(`Generating PyTorch code from ${modelPath}...`);

@@ -1,62 +1,62 @@
-import { describe, expect, it } from 'vitest';
-import { parseTFJSModel } from '../src/keras/tfjs-parser.js';
+import { describe, expect, it } from "vitest";
+import { parseTFJSModel } from "../src/keras/tfjs-parser.js";
 
-describe('tfjs-parser', () => {
-  it('should parse layers-model correctly with all fields', () => {
+describe("tfjs-parser", () => {
+  it("should parse layers-model correctly with all fields", () => {
     const json = {
-      format: 'layers-model',
-      generatedBy: 'Keras v2.3.0',
-      convertedBy: 'TensorFlow.js Converter v1.0.0',
+      format: "layers-model",
+      generatedBy: "Keras v2.3.0",
+      convertedBy: "TensorFlow.js Converter v1.0.0",
       modelTopology: {
-        class_name: 'Sequential',
-        config: { name: 'test_model', layers: [] },
+        class_name: "Sequential",
+        config: { name: "test_model", layers: [] },
       },
       weightsManifest: [
         {
-          paths: ['weights.bin'],
+          paths: ["weights.bin"],
           weights: [
             {
-              name: 'dense/kernel',
+              name: "dense/kernel",
               shape: [2, 2],
-              dtype: 'float32',
-              quantization: { scale: 0.1, min: 0.0, dtype: 'uint8' },
+              dtype: "float32",
+              quantization: { scale: 0.1, min: 0.0, dtype: "uint8" },
             },
           ],
         },
       ],
     };
     const model = parseTFJSModel(JSON.stringify(json));
-    expect(model.format).toBe('layers-model');
-    expect(model.generatedBy).toBe('Keras v2.3.0');
-    expect(model.convertedBy).toBe('TensorFlow.js Converter v1.0.0');
-    expect(model.weightsManifest[0].paths[0]).toBe('weights.bin');
-    expect(model.weightsManifest[0].weights[0].name).toBe('dense/kernel');
+    expect(model.format).toBe("layers-model");
+    expect(model.generatedBy).toBe("Keras v2.3.0");
+    expect(model.convertedBy).toBe("TensorFlow.js Converter v1.0.0");
+    expect(model.weightsManifest[0].paths[0]).toBe("weights.bin");
+    expect(model.weightsManifest[0].weights[0].name).toBe("dense/kernel");
     expect(model.weightsManifest[0].weights[0].quantization?.scale).toBe(0.1);
   });
 
-  it('should fall back to graph-model based on topology', () => {
+  it("should fall back to graph-model based on topology", () => {
     const json = {
       modelTopology: {
-        node: [{ name: 'Const', op: 'Const' }],
+        node: [{ name: "Const", op: "Const" }],
       },
       weightsManifest: [],
     };
     const model = parseTFJSModel(JSON.stringify(json));
-    expect(model.format).toBe('graph-model');
+    expect(model.format).toBe("graph-model");
   });
 
-  it('should fall back to layers-model based on topology class_name', () => {
+  it("should fall back to layers-model based on topology class_name", () => {
     const json = {
       modelTopology: {
-        class_name: 'Model',
+        class_name: "Model",
       },
       weightsManifest: [],
     };
     const model = parseTFJSModel(JSON.stringify(json));
-    expect(model.format).toBe('layers-model');
+    expect(model.format).toBe("layers-model");
   });
 
-  it('should throw for unrecognized format', () => {
+  it("should throw for unrecognized format", () => {
     const json = {
       modelTopology: {
         unknown: true,
@@ -64,7 +64,7 @@ describe('tfjs-parser', () => {
       weightsManifest: [],
     };
     expect(() => parseTFJSModel(JSON.stringify(json))).toThrow(
-      'Unsupported or unrecognized TF.js model format',
+      "Unsupported or unrecognized TF.js model format",
     );
   });
 });

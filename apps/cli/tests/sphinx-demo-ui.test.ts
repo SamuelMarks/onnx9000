@@ -1,9 +1,9 @@
-import * as child_process from 'node:child_process';
-import * as fs from 'node:fs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleSphinxDemoUICommand } from '../src/commands/sphinx-demo-ui.js';
+import * as child_process from "node:child_process";
+import * as fs from "node:fs";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { handleSphinxDemoUICommand } from "../src/commands/sphinx-demo-ui.js";
 
-vi.mock('fs', async (importOriginal) => {
+vi.mock("fs", async (importOriginal) => {
   const actual: any = await importOriginal();
   return {
     ...actual,
@@ -11,7 +11,7 @@ vi.mock('fs', async (importOriginal) => {
   };
 });
 
-vi.mock('child_process', async (importOriginal) => {
+vi.mock("child_process", async (importOriginal) => {
   const actual: any = await importOriginal();
   return {
     ...actual,
@@ -19,17 +19,19 @@ vi.mock('child_process', async (importOriginal) => {
   };
 });
 
-describe('handleSphinxDemoUICommand', () => {
+describe("handleSphinxDemoUICommand", () => {
   let consoleLogSpy: any;
   let consoleErrorSpy: any;
   let processExitSpy: any;
   let _cwdSpy: any;
 
   beforeEach(() => {
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    processExitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
-    _cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue('/mock/workspace');
+    consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    processExitSpy = vi
+      .spyOn(process, "exit")
+      .mockImplementation((() => {}) as any);
+    _cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/mock/workspace");
   });
 
   afterEach(() => {
@@ -38,24 +40,24 @@ describe('handleSphinxDemoUICommand', () => {
     vi.mocked(child_process.spawn).mockReset();
   });
 
-  it('should print help and exit if -h', async () => {
-    await handleSphinxDemoUICommand(['-h']);
+  it("should print help and exit if -h", async () => {
+    await handleSphinxDemoUICommand(["-h"]);
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Usage: onnx9000 sphinx-demo-ui'),
+      expect.stringContaining("Usage: onnx9000 sphinx-demo-ui"),
     );
     expect(processExitSpy).toHaveBeenCalledWith(0);
   });
 
-  it('should run pnpm dev when ui directory exists', async () => {
+  it("should run pnpm dev when ui directory exists", async () => {
     vi.mocked(fs.existsSync).mockImplementation((p: any) => {
-      if (p.endsWith('pnpm-workspace.yaml')) return true;
-      if (p.includes('sphinx-demo-ui')) return true;
+      if (p.endsWith("pnpm-workspace.yaml")) return true;
+      if (p.includes("sphinx-demo-ui")) return true;
       return false;
     });
 
     const mockChild = {
       on: vi.fn((event, cb) => {
-        if (event === 'close') {
+        if (event === "close") {
           setTimeout(() => cb(0), 10);
         }
       }),
@@ -64,14 +66,18 @@ describe('handleSphinxDemoUICommand', () => {
     vi.mocked(child_process.spawn).mockReturnValue(mockChild as any);
 
     await handleSphinxDemoUICommand([]);
-    expect(consoleLogSpy).toHaveBeenCalledWith('Starting Sphinx Demo UI...');
-    expect(child_process.spawn).toHaveBeenCalledWith('pnpm', ['dev'], expect.any(Object));
+    expect(consoleLogSpy).toHaveBeenCalledWith("Starting Sphinx Demo UI...");
+    expect(child_process.spawn).toHaveBeenCalledWith(
+      "pnpm",
+      ["dev"],
+      expect.any(Object),
+    );
   });
 
-  it('should exit when ui directory does not exist', async () => {
+  it("should exit when ui directory does not exist", async () => {
     vi.mocked(fs.existsSync).mockImplementation((p: any) => {
-      if (p.endsWith('pnpm-workspace.yaml')) return true;
-      if (p.includes('sphinx-demo-ui')) return false;
+      if (p.endsWith("pnpm-workspace.yaml")) return true;
+      if (p.includes("sphinx-demo-ui")) return false;
       return false;
     });
 
@@ -79,7 +85,9 @@ describe('handleSphinxDemoUICommand', () => {
       await handleSphinxDemoUICommand([]);
     } catch (_e) {}
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Sphinx Demo UI directory not found.');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Sphinx Demo UI directory not found.",
+    );
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 });

@@ -4,6 +4,6 @@
  */
 export class Genai {
   run() {
-    return '[genai] processed';
+    return "[genai] processed";
   }
 }

@@ -1,10 +1,10 @@
-import { Graph } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
-import { TFMapper } from '../../src/mmdnn/tensorflow/mapper.js';
-import { parsePbtxt } from '../../src/mmdnn/tensorflow/parser.js';
+import { Graph } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
+import { TFMapper } from "../../src/mmdnn/tensorflow/mapper.js";
+import { parsePbtxt } from "../../src/mmdnn/tensorflow/parser.js";
 
-describe('TensorFlow Parser and Mapper', () => {
-  it('parses basic nodes, attributes, and maps them', () => {
+describe("TensorFlow Parser and Mapper", () => {
+  it("parses basic nodes, attributes, and maps them", () => {
     const pbtxt = `
 node {
   name: "input_node"
@@ -64,7 +64,7 @@ node {
     const parsed = parsePbtxt(pbtxt);
     expect(parsed.node.length).toBe(5);
 
-    const graph = new Graph('test_graph');
+    const graph = new Graph("test_graph");
     graph.initializers = [];
     graph.tensors = {};
 
@@ -75,31 +75,31 @@ node {
     }
 
     // "Placeholder" gets mapped to Identity
-    expect(nodes[0].opType).toBe('Identity');
+    expect(nodes[0].opType).toBe("Identity");
 
     // "Const" doesn't produce a node, it becomes an initializer
-    expect(graph.initializers).toContain('weights');
+    expect(graph.initializers).toContain("weights");
     expect(graph.tensors.weights).toBeDefined();
     expect(graph.tensors.weights.shape).toEqual([32, 3, 3, 3]);
 
     // "Conv2D" maps to Conv
     const convNode = nodes[1];
-    expect(convNode.opType).toBe('Conv');
+    expect(convNode.opType).toBe("Conv");
     expect(convNode.attributes.strides.value).toEqual([2, 2]);
-    expect(convNode.attributes.auto_pad.value).toEqual('SAME_UPPER');
+    expect(convNode.attributes.auto_pad.value).toEqual("SAME_UPPER");
 
     // "Relu6" maps to Relu
-    expect(nodes[2].opType).toBe('Relu');
+    expect(nodes[2].opType).toBe("Relu");
 
     // "Add" maps to Add and has standard attributes
     const addNode = nodes[3];
-    expect(addNode.opType).toBe('Add');
+    expect(addNode.opType).toBe("Add");
     expect(addNode.attributes.i_val.value).toBe(42);
     expect(addNode.attributes.f_val.value).toBeCloseTo(3.14);
     expect(addNode.attributes.shape_val.value).toEqual([10]);
   });
 
-  it('handles empty and partial strings safely', () => {
+  it("handles empty and partial strings safely", () => {
     const pbtxt = `
 node {
   name: "bad_attr"
@@ -114,16 +114,16 @@ node {
     expect(parsed.node.length).toBe(1);
 
     const mapper = new TFMapper();
-    const graph = new Graph('test');
+    const graph = new Graph("test");
     graph.initializers = [];
     graph.tensors = {};
 
     const nodes = mapper.map(parsed.node[0], graph);
     expect(nodes.length).toBe(1);
-    expect(nodes[0].opType).toBe('Bad');
+    expect(nodes[0].opType).toBe("Bad");
   });
 
-  it('ignores malformed lines gracefully', () => {
+  it("ignores malformed lines gracefully", () => {
     const pbtxt = `
       invalid text here
       node {
@@ -134,10 +134,10 @@ node {
     `;
     const parsed = parsePbtxt(pbtxt);
     expect(parsed.node.length).toBe(1);
-    expect(parsed.node[0].name).toBe('test');
+    expect(parsed.node[0].name).toBe("test");
   });
 
-  it('handles Const without tensor shape gracefully', () => {
+  it("handles Const without tensor shape gracefully", () => {
     const pbtxt = `
 node {
   name: "weights_no_shape"
@@ -160,15 +160,15 @@ node {
     expect(parsed.node.length).toBe(2);
 
     const mapper = new TFMapper();
-    const graph = new Graph('test');
+    const graph = new Graph("test");
     graph.initializers = [];
     graph.tensors = {};
 
     mapper.map(parsed.node[0], graph);
     mapper.map(parsed.node[1], graph);
 
-    expect(graph.initializers).toContain('weights_no_shape');
-    expect(graph.initializers).toContain('weights_no_tensor');
+    expect(graph.initializers).toContain("weights_no_shape");
+    expect(graph.initializers).toContain("weights_no_tensor");
     expect(graph.tensors.weights_no_shape.shape).toEqual([1]);
     expect(graph.tensors.weights_no_tensor.shape).toEqual([1]);
   });

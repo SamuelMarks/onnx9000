@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from "vitest";
 
-describe('debug.js side-effect', () => {
-  it('should cover the side-effect when DEBUG_FORCE_RUN is true', async () => {
+describe("debug.js side-effect", () => {
+  it("should cover the side-effect when DEBUG_FORCE_RUN is true", async () => {
     // Set the env var BEFORE importing the module
-    process.env.DEBUG_FORCE_RUN = 'true';
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    process.env.DEBUG_FORCE_RUN = "true";
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
 
     // Import the module
     const debug = await import(`../debug.js?test=${Date.now()}`);

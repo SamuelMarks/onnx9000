@@ -270,7 +270,9 @@ export class SwarmInterface extends BaseComponent {
     let activeVoiceStream: MediaStream | null = null;
     voiceBtn.addEventListener('click', async () => {
       if (activeVoiceStream) {
-        activeVoiceStream.getTracks().forEach((t) => t.stop());
+        activeVoiceStream.getTracks().forEach((t) => {
+          t.stop();
+        });
         activeVoiceStream = null;
         voiceBtn.textContent = 'Enable Voice Chat';
         Toast.show('Voice Chat Disabled', 'info');

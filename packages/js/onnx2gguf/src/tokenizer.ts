@@ -9,23 +9,23 @@ export function extractTokenizerMetadata(
   const meta: Record<string, ReturnType<typeof JSON.parse>> = {};
 
   if (!tokenizerJsonStr) {
-    meta['tokenizer.ggml.model'] = 'llama';
+    meta["tokenizer.ggml.model"] = "llama";
     const tokens = [];
     const size = vocabSize > 0 ? vocabSize : 2;
     for (let i = 0; i < size; i++) {
-      tokens.push(vocabSize > 0 ? `[TOKEN_${i}]` : i === 0 ? '<s>' : '</s>');
+      tokens.push(vocabSize > 0 ? `[TOKEN_${i}]` : i === 0 ? "<s>" : "</s>");
     }
-    meta['tokenizer.ggml.tokens'] = tokens;
-    meta['tokenizer.ggml.scores'] = Array(size).fill(0.0);
-    meta['tokenizer.ggml.token_type'] = Array(size).fill(1);
-    meta['tokenizer.ggml.bos_token_id'] = 0;
-    meta['tokenizer.ggml.eos_token_id'] = 1;
-    meta['tokenizer.ggml.unknown_token_id'] = 0;
-    meta['tokenizer.ggml.padding_token_id'] = 0;
-    meta['tokenizer.ggml.separator_token_id'] = 0;
-    meta['tokenizer.ggml.add_bos_token'] = true;
-    meta['tokenizer.ggml.add_eos_token'] = false;
-    meta['tokenizer.chat_template'] = '';
+    meta["tokenizer.ggml.tokens"] = tokens;
+    meta["tokenizer.ggml.scores"] = Array(size).fill(0.0);
+    meta["tokenizer.ggml.token_type"] = Array(size).fill(1);
+    meta["tokenizer.ggml.bos_token_id"] = 0;
+    meta["tokenizer.ggml.eos_token_id"] = 1;
+    meta["tokenizer.ggml.unknown_token_id"] = 0;
+    meta["tokenizer.ggml.padding_token_id"] = 0;
+    meta["tokenizer.ggml.separator_token_id"] = 0;
+    meta["tokenizer.ggml.add_bos_token"] = true;
+    meta["tokenizer.ggml.add_eos_token"] = false;
+    meta["tokenizer.chat_template"] = "";
     return meta;
   }
 
@@ -33,25 +33,26 @@ export function extractTokenizerMetadata(
   try {
     t = JSON.parse(tokenizerJsonStr);
   } catch (_e) {
-    meta['tokenizer.ggml.model'] = 'llama';
+    meta["tokenizer.ggml.model"] = "llama";
     return meta;
   }
 
   const model = t.model || {};
-  const modelType = model.type || 'BPE';
+  const modelType = model.type || "BPE";
 
-  if (modelType === 'BPE') {
-    meta['tokenizer.ggml.model'] = 'gpt2';
-  } else if (modelType === 'Unigram') {
-    meta['tokenizer.ggml.model'] = 'llama';
+  if (modelType === "BPE") {
+    meta["tokenizer.ggml.model"] = "gpt2";
+  } else if (modelType === "Unigram") {
+    meta["tokenizer.ggml.model"] = "llama";
   } else {
-    meta['tokenizer.ggml.model'] = 'llama';
+    meta["tokenizer.ggml.model"] = "llama";
   }
 
   const vocab = model.vocab || {};
-  if (typeof vocab === 'object' && vocab !== null && !Array.isArray(vocab)) {
+  if (typeof vocab === "object" && vocab !== null && !Array.isArray(vocab)) {
     const sortedVocab = Object.entries(vocab).sort(
-      (a: ReturnType<typeof JSON.parse>, b: ReturnType<typeof JSON.parse>) => a[1] - b[1],
+      (a: ReturnType<typeof JSON.parse>, b: ReturnType<typeof JSON.parse>) =>
+        a[1] - b[1],
     );
     let tokens = sortedVocab.map((x) => x[0]);
 
@@ -67,28 +68,28 @@ export function extractTokenizerMetadata(
       }
     }
 
-    meta['tokenizer.ggml.tokens'] = tokens;
-    meta['tokenizer.ggml.scores'] = Array(tokens.length).fill(0.0);
-    meta['tokenizer.ggml.token_type'] = Array(tokens.length).fill(1);
+    meta["tokenizer.ggml.tokens"] = tokens;
+    meta["tokenizer.ggml.scores"] = Array(tokens.length).fill(0.0);
+    meta["tokenizer.ggml.token_type"] = Array(tokens.length).fill(1);
   }
 
   const merges = model.merges || [];
   if (merges.length > 0) {
-    meta['tokenizer.ggml.merges'] = merges;
+    meta["tokenizer.ggml.merges"] = merges;
   }
 
-  meta['tokenizer.ggml.bos_token_id'] =
+  meta["tokenizer.ggml.bos_token_id"] =
     t.added_tokens && t.added_tokens.length > 0 ? t.added_tokens[0].id || 0 : 0;
-  meta['tokenizer.ggml.eos_token_id'] =
+  meta["tokenizer.ggml.eos_token_id"] =
     t.added_tokens && t.added_tokens.length > 0
       ? t.added_tokens[t.added_tokens.length - 1].id || 1
       : 1;
-  meta['tokenizer.ggml.unknown_token_id'] = 0;
-  meta['tokenizer.ggml.padding_token_id'] = 0;
-  meta['tokenizer.ggml.separator_token_id'] = 0;
-  meta['tokenizer.ggml.add_bos_token'] = true;
-  meta['tokenizer.ggml.add_eos_token'] = false;
-  meta['tokenizer.chat_template'] = t.chat_template || '';
+  meta["tokenizer.ggml.unknown_token_id"] = 0;
+  meta["tokenizer.ggml.padding_token_id"] = 0;
+  meta["tokenizer.ggml.separator_token_id"] = 0;
+  meta["tokenizer.ggml.add_bos_token"] = true;
+  meta["tokenizer.ggml.add_eos_token"] = false;
+  meta["tokenizer.chat_template"] = t.chat_template || "";
 
   return meta;
 }

@@ -26,13 +26,13 @@ test.describe('Layout Resizing', () => {
 
     await page.mouse.move(
       dividerBox?.x + dividerBox?.width / 2,
-      dividerBox?.y + dividerBox?.height / 2,
+      dividerBox?.y + dividerBox?.height / 2
     );
     await page.mouse.down();
     await page.mouse.move(
       dividerBox?.x + dividerBox?.width / 2 + 100,
       dividerBox?.y + dividerBox?.height / 2,
-      { steps: 5 },
+      { steps: 5 }
     );
     await page.mouse.up();
 
@@ -52,13 +52,13 @@ test.describe('Layout Resizing', () => {
     // We'll just test that the dragging API functions without throwing errors or locking the UI because the actual height is constrained by minimums of content on smaller screens depending on Playwright viewport size.
     await page.mouse.move(
       dividerBox?.x + dividerBox?.width / 2,
-      dividerBox?.y + dividerBox?.height / 2,
+      dividerBox?.y + dividerBox?.height / 2
     );
     await page.mouse.down();
     await page.mouse.move(
       dividerBox?.x + dividerBox?.width / 2,
       dividerBox?.y + dividerBox?.height / 2 + 100,
-      { steps: 5 },
+      { steps: 5 }
     );
     await page.mouse.up();
 

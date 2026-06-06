@@ -2,7 +2,13 @@
  * @fileoverview schema.ts
  * Provides schema functionality for the coreml package.
  */
-import { type Reader, readString, readTag, readVarInt, skipField } from '@onnx9000/core';
+import {
+  type Reader,
+  readString,
+  readTag,
+  readVarInt,
+  skipField,
+} from "@onnx9000/core";
 
 export interface Model {
   specificationVersion: number;
@@ -146,7 +152,10 @@ export async function parseModel(reader: Reader): Promise<Model> {
   return model;
 }
 
-async function parseModelDescription(reader: Reader, limit: number): Promise<ModelDescription> {
+async function parseModelDescription(
+  reader: Reader,
+  limit: number,
+): Promise<ModelDescription> {
   const desc: ModelDescription = { input: [], output: [] };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
@@ -176,8 +185,11 @@ async function parseModelDescription(reader: Reader, limit: number): Promise<Mod
   return desc;
 }
 
-async function parseFeatureDescription(reader: Reader, limit: number): Promise<FeatureDescription> {
-  const feat: FeatureDescription = { name: '' };
+async function parseFeatureDescription(
+  reader: Reader,
+  limit: number,
+): Promise<FeatureDescription> {
+  const feat: FeatureDescription = { name: "" };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
     switch (fieldNumber) {
@@ -231,7 +243,10 @@ async function parseMetadata(reader: Reader, limit: number): Promise<Metadata> {
   return meta;
 }
 
-async function parseNeuralNetwork(reader: Reader, limit: number): Promise<NeuralNetwork> {
+async function parseNeuralNetwork(
+  reader: Reader,
+  limit: number,
+): Promise<NeuralNetwork> {
   const nn: NeuralNetwork = { layers: [] };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);
@@ -240,7 +255,10 @@ async function parseNeuralNetwork(reader: Reader, limit: number): Promise<Neural
   return nn;
 }
 
-async function parseMILSpecProgram(reader: Reader, limit: number): Promise<MILSpecProgram> {
+async function parseMILSpecProgram(
+  reader: Reader,
+  limit: number,
+): Promise<MILSpecProgram> {
   const prog: MILSpecProgram = { version: 1, functions: {} as any };
   while (reader.getPosition() < limit) {
     const { fieldNumber, wireType } = await readTag(reader);

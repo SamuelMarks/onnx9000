@@ -1,48 +1,48 @@
 /* v8 ignore start */
-import { load, ONNXToPyTorchVisitor } from '@onnx9000/core';
+import { load, ONNXToPyTorchVisitor } from "@onnx9000/core";
 
 /**
  * Initializes the PyTorch codegen demo UI.
  */
 export function initPytorchCodegenDemo(): void {
-  const dropZone = document.getElementById('drop-zone') as HTMLElement;
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  const codeArea = document.getElementById('code') as HTMLTextAreaElement;
+  const dropZone = document.getElementById("drop-zone") as HTMLElement;
+  const fileInput = document.getElementById("file-input") as HTMLInputElement;
+  const codeArea = document.getElementById("code") as HTMLTextAreaElement;
 
   if (!dropZone || !fileInput || !codeArea) return;
 
-  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener("click", () => fileInput.click());
 
-  fileInput.addEventListener('change', (e: Event) => {
+  fileInput.addEventListener("change", (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       processFile(target.files[0]);
     }
   });
 
-  dropZone.addEventListener('dragover', (e: DragEvent) => {
+  dropZone.addEventListener("dragover", (e: DragEvent) => {
     e.preventDefault();
-    dropZone.classList.add('dragover');
+    dropZone.classList.add("dragover");
   });
 
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('dragover');
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("dragover");
   });
 
-  dropZone.addEventListener('drop', (e: DragEvent) => {
+  dropZone.addEventListener("drop", (e: DragEvent) => {
     e.preventDefault();
-    dropZone.classList.remove('dragover');
+    dropZone.classList.remove("dragover");
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
       processFile(e.dataTransfer.files[0]);
     }
   });
 
   async function processFile(file: File) {
-    if (!file.name.endsWith('.onnx')) {
-      codeArea.value = '# Error: Please provide a valid .onnx file.';
+    if (!file.name.endsWith(".onnx")) {
+      codeArea.value = "# Error: Please provide a valid .onnx file.";
       return;
     }
-    codeArea.value = '# Loading and parsing ONNX AST...';
+    codeArea.value = "# Loading and parsing ONNX AST...";
     try {
       const arrayBuffer = await file.arrayBuffer();
       const graph = await load(arrayBuffer);

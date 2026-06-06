@@ -29,11 +29,11 @@ export interface MLContextOptions {
   /**
    * The preferred device type.
    */
-  deviceType?: 'cpu' | 'gpu' | 'npu';
+  deviceType?: "cpu" | "gpu" | "npu";
   /**
    * Power preference for the context.
    */
-  powerPreference?: 'default' | 'high-performance' | 'low-power';
+  powerPreference?: "default" | "high-performance" | "low-power";
 }
 
 /**
@@ -87,14 +87,14 @@ export interface MLGraph {
  * Valid data types for ML operands.
  */
 export type MLOperandDataType =
-  | 'float32'
-  | 'float16'
-  | 'int32'
-  | 'uint32'
-  | 'int8'
-  | 'uint8'
-  | 'int64'
-  | 'uint64';
+  | "float32"
+  | "float16"
+  | "int32"
+  | "uint32"
+  | "int8"
+  | "uint8"
+  | "int64"
+  | "uint64";
 
 /**
  * Describes an ML operand's shape and data type.
@@ -229,7 +229,7 @@ export interface MLPadOptions {
   /**
    * Padding mode.
    */
-  mode?: 'constant' | 'edge' | 'reflection' | 'symmetric';
+  mode?: "constant" | "edge" | "reflection" | "symmetric";
   /**
    * Constant value to use for padding.
    */
@@ -275,7 +275,7 @@ export interface MLConv2dOptions {
   /**
    * Automatic padding mode.
    */
-  autoPad?: 'explicit' | 'same-upper' | 'same-lower';
+  autoPad?: "explicit" | "same-upper" | "same-lower";
   /**
    * Number of groups for grouped convolution.
    */
@@ -283,11 +283,11 @@ export interface MLConv2dOptions {
   /**
    * Layout of the input data.
    */
-  inputLayout?: 'nchw' | 'nhwc';
+  inputLayout?: "nchw" | "nhwc";
   /**
    * Layout of the filter data.
    */
-  filterLayout?: 'oihw' | 'hwio' | 'ohwi' | 'ihwo';
+  filterLayout?: "oihw" | "hwio" | "ohwi" | "ihwo";
   /**
    * Optional bias operand.
    */
@@ -331,15 +331,15 @@ export interface MLPool2dOptions {
   /**
    * Automatic padding mode.
    */
-  autoPad?: 'explicit' | 'same-upper' | 'same-lower';
+  autoPad?: "explicit" | "same-upper" | "same-lower";
   /**
    * Layout of the data.
    */
-  layout?: 'nchw' | 'nhwc';
+  layout?: "nchw" | "nhwc";
   /**
    * Rounding type for output dimensions.
    */
-  roundingType?: 'floor' | 'ceil';
+  roundingType?: "floor" | "ceil";
   /**
    * Explicit output sizes.
    */
@@ -401,7 +401,7 @@ export interface MLInstanceNormalizationOptions {
   /**
    * Layout of the data.
    */
-  layout?: 'nchw' | 'nhwc';
+  layout?: "nchw" | "nhwc";
 }
 
 /**

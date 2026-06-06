@@ -42,7 +42,7 @@ export class KerasPythonParser {
         });
       }
       KerasPythonParser.pyodideInstance = await (window as object).loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/',
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
       });
       console.log('[stdout] Pyodide runtime loaded successfully.');
     } catch (e: any) {

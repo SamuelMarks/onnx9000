@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, it, test } from "vitest";
 import {
   AllowedWordsLogitProcessor,
   ForcedBOSLogitProcessor,
@@ -12,17 +12,17 @@ import {
   TemperatureLogitProcessor,
   TopKLogitProcessor,
   TypicalLogitProcessor,
-} from '../../src/genai/logit_processors.js';
-import { TopPLogitProcessor } from '../../src/genai/top_p.js';
-import { Tensor } from '../../src/ir/tensor.js';
+} from "../../src/genai/logit_processors.js";
+import { TopPLogitProcessor } from "../../src/genai/top_p.js";
+import { Tensor } from "../../src/ir/tensor.js";
 
 function createLogits(vals: number[]): Tensor {
   const data = new Float32Array(vals);
-  return new Tensor('logits', [1, vals.length], 1, false, false, data);
+  return new Tensor("logits", [1, vals.length], 1, false, false, data);
 }
 
-describe('Logit Processors', () => {
-  it('Temperature', () => {
+describe("Logit Processors", () => {
+  it("Temperature", () => {
     const proc = new TemperatureLogitProcessor(2.0);
     const logits = createLogits([2.0, 4.0]);
     const out = proc.process([], logits);
@@ -31,7 +31,7 @@ describe('Logit Processors', () => {
     expect(data[1]).toBe(2.0);
   });
 
-  it('TopK', () => {
+  it("TopK", () => {
     const proc = new TopKLogitProcessor(2);
     const logits = createLogits([1.0, 5.0, 3.0, 2.0]);
     const out = proc.process([], logits);
@@ -42,7 +42,7 @@ describe('Logit Processors', () => {
     expect(data[3]).toBe(-Infinity);
   });
 
-  it('Repetition Penalty', () => {
+  it("Repetition Penalty", () => {
     const proc = new RepetitionPenaltyLogitProcessor(2.0);
     const logits = createLogits([1.0, -1.0, 3.0]);
     const out = proc.process([1], logits);
@@ -52,7 +52,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(3.0);
   });
 
-  it('TopP', () => {
+  it("TopP", () => {
     const proc = new TopPLogitProcessor(0.9);
     const logits = createLogits([1.0, 9.0, 10.0]);
     const out = proc.process([], logits);
@@ -62,7 +62,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(10.0);
   });
 
-  it('LogitProcessorList', () => {
+  it("LogitProcessorList", () => {
     const lst = new LogitProcessorList([
       new TemperatureLogitProcessor(2.0),
       new TopKLogitProcessor(1),
@@ -74,7 +74,7 @@ describe('Logit Processors', () => {
     expect(data[1]).toBe(2.0);
   });
 
-  it('MinP', () => {
+  it("MinP", () => {
     const proc = new MinPLogitProcessor(0.1);
     const logits = createLogits([1.0, 8.0, 10.0]);
     const out = proc.process([], logits);
@@ -84,7 +84,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(10.0);
   });
 
-  it('Presence Penalty', () => {
+  it("Presence Penalty", () => {
     const proc = new PresencePenaltyLogitProcessor(1.5);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([1, 1], logits);
@@ -94,7 +94,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(6.0);
   });
 
-  it('Frequency Penalty', () => {
+  it("Frequency Penalty", () => {
     const proc = new FrequencyPenaltyLogitProcessor(1.5);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([1, 1], logits);
@@ -104,7 +104,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(6.0);
   });
 
-  it('ForcedBOS', () => {
+  it("ForcedBOS", () => {
     const proc = new ForcedBOSLogitProcessor(1);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([], logits);
@@ -114,7 +114,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(-Infinity);
   });
 
-  it('NoRepeatNGram', () => {
+  it("NoRepeatNGram", () => {
     const proc = new NoRepeatNGramLogitProcessor(2);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([0, 1, 0], logits);
@@ -124,7 +124,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(6.0);
   });
 
-  it('NoBadWords', () => {
+  it("NoBadWords", () => {
     const proc = new NoBadWordsLogitProcessor([[1, 2]]);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([1], logits);
@@ -134,7 +134,7 @@ describe('Logit Processors', () => {
     expect(data[2]).toBe(-Infinity);
   });
 
-  it('AllowedWords', () => {
+  it("AllowedWords", () => {
     const proc = new AllowedWordsLogitProcessor([0, 2]);
     const logits = createLogits([2.0, 4.0, 6.0]);
     const out = proc.process([], logits);
@@ -145,16 +145,16 @@ describe('Logit Processors', () => {
   });
 });
 
-test('TypicalLogitProcessor coverage', async () => {
+test("TypicalLogitProcessor coverage", async () => {
   const p = new TypicalLogitProcessor();
-  const t = new Tensor('t', 'float32', [1]);
+  const t = new Tensor("t", "float32", [1]);
   expect(p.process([], t)).toBe(t);
 });
 
-test('RepetitionPenaltyLogitProcessor val > 0', async () => {
+test("RepetitionPenaltyLogitProcessor val > 0", async () => {
   const p = new RepetitionPenaltyLogitProcessor(1.2);
 
-  const t = new Tensor('t', 'float32', [2]);
+  const t = new Tensor("t", "float32", [2]);
   t.data = new Float32Array([2.0, 2.0]);
 
   const out = p.process([0], t);
@@ -166,15 +166,15 @@ test('RepetitionPenaltyLogitProcessor val > 0', async () => {
   expect(out2.data[0]).toBeLessThan(-2.0);
 });
 
-test('Processor non-float32 return early', async () => {
+test("Processor non-float32 return early", async () => {
   const p = new RepetitionPenaltyLogitProcessor(1.2);
   const l = new LogitProcessorList([p]);
-  const t = new Tensor('t', 'int32', [1]);
+  const t = new Tensor("t", "int32", [1]);
   expect(l.process([], t)).toBe(t);
 });
 
-test('TemperatureLogitProcessor non-float32', async () => {
+test("TemperatureLogitProcessor non-float32", async () => {
   const p = new TemperatureLogitProcessor(1.2);
-  const t = new Tensor('t', 'int32', [1]);
+  const t = new Tensor("t", "int32", [1]);
   expect(p.process([], t)).toBe(t);
 });

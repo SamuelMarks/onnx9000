@@ -50,7 +50,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
       { code: 'es', label: 'Español' },
       { code: 'fr', label: 'Français' },
       { code: 'de', label: 'Deutsch' },
-      { code: 'ja', label: '日本語' },
+      { code: 'ja', label: '日本語' }
     ];
 
     langs.forEach((lang) => {
@@ -119,7 +119,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
       globalEventBus.on<PipelineNode>('PIPELINE_STEP_ADDED', (node) => {
         this.items.push(node);
         this.renderItems(crumbsDiv);
-      }),
+      })
     );
 
     this.onCleanup(
@@ -130,7 +130,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
           this.items = this.items.slice(0, idx);
           this.renderItems(crumbsDiv);
         }
-      }),
+      })
     );
   }
 }

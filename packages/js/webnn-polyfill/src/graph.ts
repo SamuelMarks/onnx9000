@@ -3,8 +3,8 @@
  * Provides graph functionality for the webnn-polyfill package.
  */
 
-import { Graph } from '@onnx9000/core';
-import type { MLGraph } from './interfaces.js';
+import { Graph } from "@onnx9000/core";
+import type { MLGraph } from "./interfaces.js";
 
 export class PolyfillMLGraph implements MLGraph {
   public onnxGraph: Graph;
@@ -16,7 +16,9 @@ export class PolyfillMLGraph implements MLGraph {
   constructor(graph: Graph) {
     this.onnxGraph = graph;
     this.compilationId =
-      typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString();
+      typeof crypto !== "undefined"
+        ? crypto.randomUUID()
+        : Math.random().toString();
   }
 
   // 159-168. MLTensor lifecycle (destroy)
@@ -25,6 +27,6 @@ export class PolyfillMLGraph implements MLGraph {
    */
   destroy(): void {
     // Release resources, clear graph
-    this.onnxGraph = new Graph('destroyed');
+    this.onnxGraph = new Graph("destroyed");
   }
 }

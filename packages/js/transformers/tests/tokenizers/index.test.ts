@@ -1,26 +1,26 @@
-import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/tokenizers/index';
+import { describe, expect, it } from "vitest";
+import * as Module from "../../src/tokenizers/index";
 
-describe('index.ts', () => {
-  it('should instantiate and cover PreTrainedTokenizer', () => {
+describe("index.ts", () => {
+  it("should instantiate and cover PreTrainedTokenizer", () => {
     try {
       const obj = new (Module as any).PreTrainedTokenizer();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover PreTrainedTokenizerFast', () => {
+  it("should instantiate and cover PreTrainedTokenizerFast", () => {
     try {
       const obj = new (Module as any).PreTrainedTokenizerFast();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover AutoTokenizer', () => {
+  it("should instantiate and cover AutoTokenizer", () => {
     try {
       const obj = new (Module as any).AutoTokenizer();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover BPEEncoder', () => {
+  it("should instantiate and cover BPEEncoder", () => {
     try {
       const obj = new (Module as any).BPEEncoder();
       expect(obj).toBeDefined();

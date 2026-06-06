@@ -1,10 +1,10 @@
-import { Graph } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
-import { DarknetMapper } from '../../../../src/mmdnn/darknet/mapper.js';
-import { parseCfg } from '../../../../src/mmdnn/darknet/parser.js';
+import { Graph } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
+import { DarknetMapper } from "../../../../src/mmdnn/darknet/mapper.js";
+import { parseCfg } from "../../../../src/mmdnn/darknet/parser.js";
 
-describe('Darknet YOLO v3 Validation', () => {
-  it('should parse and map a dummy YOLO v3 cfg', () => {
+describe("Darknet YOLO v3 Validation", () => {
+  it("should parse and map a dummy YOLO v3 cfg", () => {
     const cfg = `
 [net]
 batch=1
@@ -46,22 +46,23 @@ classes=80
     const layers = parseCfg(cfg);
     expect(layers.length).toBe(7);
 
-    const graph = new Graph('yolov3');
+    const graph = new Graph("yolov3");
     const weights = new Float32Array(10000);
     const mapper = new DarknetMapper(graph, weights);
 
     expect(() => mapper.map(layers)).not.toThrow();
 
-    const yoloLayer = layers.find((l) => l.type === 'yolo');
+    const yoloLayer = layers.find((l) => l.type === "yolo");
     expect(yoloLayer).toBeDefined();
     expect(yoloLayer?.anchors).toEqual([
-      10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326,
+      10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373,
+      326,
     ]);
 
     // Check nodes
-    expect(graph.nodes.some((n) => n.opType === 'Conv')).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === 'Add')).toBe(true); // shortcut
-    expect(graph.nodes.some((n) => n.opType === 'Resize')).toBe(true); // upsample
-    expect(graph.nodes.some((n) => n.opType === 'Concat')).toBe(true); // dual route
+    expect(graph.nodes.some((n) => n.opType === "Conv")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "Add")).toBe(true); // shortcut
+    expect(graph.nodes.some((n) => n.opType === "Resize")).toBe(true); // upsample
+    expect(graph.nodes.some((n) => n.opType === "Concat")).toBe(true); // dual route
   });
 });

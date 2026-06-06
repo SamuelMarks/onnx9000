@@ -16,7 +16,7 @@ export class OliveConfigPanel extends Component<HTMLDivElement> {
   private config: OliveConfig = {
     quantizationLevel: 'None',
     enableStaticShapeInference: true,
-    enableTransformerFusion: false,
+    enableTransformerFusion: false
   };
 
   constructor() {
@@ -90,10 +90,10 @@ export class OliveConfigPanel extends Component<HTMLDivElement> {
   protected onMount(): void {
     const quantSelect = this.element.querySelector('.demo-olive-quant-select') as HTMLSelectElement;
     const shapeCheckbox = this.element.querySelector(
-      '.demo-olive-shape-checkbox',
+      '.demo-olive-shape-checkbox'
     ) as HTMLInputElement;
     const fusionCheckbox = this.element.querySelector(
-      '.demo-olive-fusion-checkbox',
+      '.demo-olive-fusion-checkbox'
     ) as HTMLInputElement;
 
     this.addDOMListener(quantSelect, 'change', (e) => {

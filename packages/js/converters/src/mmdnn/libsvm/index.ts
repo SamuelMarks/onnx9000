@@ -4,5 +4,5 @@
  */
 // @ts-nocheck
 
-export * from './mapper.js';
-export * from './parser.js';
+export * from "./mapper.js";
+export * from "./parser.js";

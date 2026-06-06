@@ -155,7 +155,7 @@ export class MMdnn {
    * @returns An ONNX Graph mapping the MXNet structures.
    */
   static parseMXNet(jsonString: string): IModelGraph {
-    let data;
+    let data: any;
     try {
       data = JSON.parse(jsonString);
     } catch {

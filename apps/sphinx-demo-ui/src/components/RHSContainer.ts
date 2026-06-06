@@ -87,7 +87,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         const model = {
           specificationVersion: 6,
-          mlProgram: program,
+          mlProgram: program
         };
 
         // Extract weights from the parsed graph for the CoreML package
@@ -130,7 +130,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
       console.log('[stdout] Converting ONNX to PyTorch...');
       try {
         const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream',
+          type: 'application/octet-stream'
         });
         const output = await convert('onnx', 'pytorch_code', [file]);
 
@@ -152,7 +152,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         const oliveConfig = (this.olivePanel as object).config || {};
         const optimizeConfig: object = {
           level: oliveConfig.quantizationLevel === 'INT8' ? 'O3' : 'O2',
-          disableFusion: !oliveConfig.enableTransformerFusion,
+          disableFusion: !oliveConfig.enableTransformerFusion
         };
         const reader = new BufferReader(this.onnxBytes);
         const originalGraph = await parseModelProto(reader);
@@ -164,10 +164,10 @@ export class RHSContainer extends Component<HTMLDivElement> {
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {},
+            attributes: {}
           })),
           inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype })),
+          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -215,10 +215,10 @@ export class RHSContainer extends Component<HTMLDivElement> {
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {},
+            attributes: {}
           })),
           inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype })),
+          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -237,7 +237,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
       console.log(`[stdout] Converting ONNX to ${val}...`);
       try {
         const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream',
+          type: 'application/octet-stream'
         });
         const output = await convert('onnx', val as object, [file]);
 
@@ -310,7 +310,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         { value: 'tensorflow', label: 'TensorFlow' },
         { value: 'cntk', label: 'CNTK' },
         { value: 'pytorch', label: 'PyTorch' },
-        { value: 'onnxscript', label: 'ONNX Script' },
+        { value: 'onnxscript', label: 'ONNX Script' }
       ],
       placeholder: 'Select Target Framework...',
       initialValue: initialTarget,
@@ -325,7 +325,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           } catch (_e) {}
           this.regenerateOutput();
         }
-      },
+      }
     });
     this.dropdown.mount(actionContainer);
 
@@ -353,7 +353,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           console.log('Inference completed. Results generated.');
         } else {
           console.error(
-            '[stderr] Error: Failed to execute inference due to unallocated memory block.',
+            '[stderr] Error: Failed to execute inference due to unallocated memory block.'
           );
           console.error('Inference unsuccessful.');
         }
@@ -368,7 +368,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           globalEventBus.emit('PIPELINE_STEP_ADDED', {
             id: Date.now().toString(),
             description: `ONNX → ${targetLabel}`,
-            state: {},
+            state: {}
           });
         }
       }, 1000);
@@ -394,7 +394,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.splitPane = new SplitPane({
       orientation: 'vertical',
       initialSplitRatio: 0.3,
-      storageKey: 'onnx9000-demo-rhs-split',
+      storageKey: 'onnx9000-demo-rhs-split'
     });
     this.splitPane.mount(splitArea);
 
@@ -413,7 +413,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         if (ext === 'py') lang = 'python';
 
         this.editor.openFile(path, content, lang);
-      },
+      }
     });
     this.tree.mount(pane1);
 
@@ -426,7 +426,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.editor = new Editor({
       language: 'plaintext',
       initialValue: 'Select an output file...',
-      readOnly: true,
+      readOnly: true
     });
     this.editor.mount(pane2);
 
@@ -462,7 +462,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.onnxBytes = bytes;
           this.regenerateOutput();
         }
-      }),
+      })
     );
 
     this.onCleanup(
@@ -488,7 +488,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
             this.editor.openFile('/output-onnx/model.onnx', astText, 'plaintext');
           }
         }
-      }),
+      })
     );
 
     this.onCleanup(() => {

@@ -17,7 +17,7 @@ export class MLModelCCompiler {
   static compile(_mlmodelBytes: Uint8Array): Uint8Array {
     // In a full implementation, this calls coremlcompiler natively,
     // or mocks the binary header mappings required by the Apple Neural Engine specifically.
-    console.log('WASM fallback compilation to .mlmodelc mock invoked.');
+    console.log("WASM fallback compilation to .mlmodelc mock invoked.");
     return new Uint8Array(0); // stub
   }
 }

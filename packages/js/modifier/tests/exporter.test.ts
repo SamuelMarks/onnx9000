@@ -1,19 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
-import { ModelExporter } from '../src/components/export/exporter.js';
+import { describe, expect, it, vi } from "vitest";
+import { ModelExporter } from "../src/components/export/exporter.js";
 
-describe('ModelExporter', () => {
-  it('should export dot and csv', () => {
+describe("ModelExporter", () => {
+  it("should export dot and csv", () => {
     const mutator: any = {
       graph: {
-        inputs: [{ name: 'in' }],
+        inputs: [{ name: "in" }],
         outputs: [],
         nodes: [
           {
-            id: 'n1',
-            opType: 'Add',
-            name: 'n1',
-            inputs: ['in'],
-            outputs: ['out'],
+            id: "n1",
+            opType: "Add",
+            name: "n1",
+            inputs: ["in"],
+            outputs: ["out"],
           },
         ],
         initializers: [],
@@ -22,10 +22,10 @@ describe('ModelExporter', () => {
     };
     const exporter = new ModelExporter(mutator);
 
-    expect(exporter.generateGraphvizDot()).toContain('digraph G');
+    expect(exporter.generateGraphvizDot()).toContain("digraph G");
 
     // mock URL for CSV export
-    global.URL.createObjectURL = vi.fn().mockReturnValue('blob');
+    global.URL.createObjectURL = vi.fn().mockReturnValue("blob");
     global.URL.revokeObjectURL = vi.fn();
     exporter.exportStatsCSV();
     expect(global.URL.createObjectURL).toHaveBeenCalled();

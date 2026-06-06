@@ -2,21 +2,37 @@
  * @fileoverview swin.ts
  * Provides swin functionality for the core package.
  */
-import { Tensor } from '../ir/tensor.js';
-import { Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
-import { PatchEmbed } from './vit.js';
+import { Tensor } from "../ir/tensor.js";
+import {
+  Gelu,
+  Gemm,
+  LayerNormalization,
+  MultiHeadAttention,
+} from "../primitives.js";
+import { PatchEmbed } from "./vit.js";
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = 'float32',
+  dtype: ReturnType<typeof JSON.parse> = "float32",
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
-  const dtype = inputs[0]?.dtype ?? 'float32';
-  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+function recordOp(
+  opType: string,
+  inputs: Tensor[],
+  _attr?: ReturnType<typeof JSON.parse>,
+): Tensor {
+  const dtype = inputs[0]?.dtype ?? "float32";
+  return new Tensor(
+    `${opType}_out`,
+    [],
+    dtype,
+    false,
+    false,
+    new Float32Array(),
+  );
 }
 
 export class WindowAttention {
@@ -32,7 +48,7 @@ export class WindowAttention {
     windowSize: [number, number],
     numHeads: number,
     qkvBias: boolean = true,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.dim = dim;
@@ -77,7 +93,7 @@ export class SwinTransformerBlock {
     shiftSize: number = 0,
     mlpRatio: number = 4.0,
     qkvBias: boolean = true,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.dim = dim;
@@ -115,7 +131,7 @@ export class SwinTransformerBlock {
     );
 
     if (this.shiftSize > 0) {
-      x = recordOp('Roll', [x], {
+      x = recordOp("Roll", [x], {
         shifts: [-this.shiftSize, -this.shiftSize],
         axes: [1, 2],
       });
@@ -124,13 +140,13 @@ export class SwinTransformerBlock {
     x = this.attn.call(x);
 
     if (this.shiftSize > 0) {
-      x = recordOp('Roll', [x], {
+      x = recordOp("Roll", [x], {
         shifts: [this.shiftSize, this.shiftSize],
         axes: [1, 2],
       });
     }
 
-    x = recordOp('Add', [x, identity]);
+    x = recordOp("Add", [x, identity]);
 
     identity = x;
     x = this.norm2.call(
@@ -151,7 +167,7 @@ export class SwinTransformerBlock {
       getParam(`${this.prefix}.mlp_fc2.weight`, [this.dim, mlpDim]),
       getParam(`${this.prefix}.mlp_fc2.bias`, [this.dim]),
     );
-    x = recordOp('Add', [x, identity]);
+    x = recordOp("Add", [x, identity]);
 
     return x;
   }
@@ -175,7 +191,7 @@ export class SwinTransformer {
   ) {
     this.numClasses = numClasses;
     this.embedDim = embedDim;
-    this.patchEmbed = new PatchEmbed(224, 4, 3, embedDim, 'patch_embed');
+    this.patchEmbed = new PatchEmbed(224, 4, 3, embedDim, "patch_embed");
 
     this.layers = [];
     for (let iLayer = 0; iLayer < depths.length; iLayer++) {
@@ -214,14 +230,18 @@ export class SwinTransformer {
       x = block.call(x);
     }
 
-    x = recordOp('ReduceMean', [x], { axes: [1], keepdims: 0 });
+    x = recordOp("ReduceMean", [x], { axes: [1], keepdims: 0 });
 
     const lastDim = Math.floor(this.embedDim * 2 ** 3);
-    x = this.norm.call(x, getParam('norm.weight', [lastDim]), getParam('norm.bias', [lastDim]));
+    x = this.norm.call(
+      x,
+      getParam("norm.weight", [lastDim]),
+      getParam("norm.bias", [lastDim]),
+    );
     x = this.head.call(
       x,
-      getParam('head.weight', [this.numClasses, lastDim]),
-      getParam('head.bias', [this.numClasses]),
+      getParam("head.weight", [this.numClasses, lastDim]),
+      getParam("head.bias", [this.numClasses]),
     );
 
     return x;
@@ -229,5 +249,12 @@ export class SwinTransformer {
 }
 
 export function swinT(numClasses: number = 1000): SwinTransformer {
-  return new SwinTransformer(96, [2, 2, 6, 2], [3, 6, 12, 24], 7, 4.0, numClasses);
+  return new SwinTransformer(
+    96,
+    [2, 2, 6, 2],
+    [3, 6, 12, 24],
+    7,
+    4.0,
+    numClasses,
+  );
 }

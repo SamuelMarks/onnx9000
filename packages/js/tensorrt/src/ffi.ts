@@ -2,10 +2,9 @@
  * @fileoverview ffi.ts
  * Provides ffi functionality for the tensorrt package.
  */
-// @ts-expect-error
-
-import * as os from 'node:os';
-import ffi from 'ffi-napi';
+import * as os from "node:os";
+// @ts-expect-error - No types available for ffi-napi
+import ffi from "ffi-napi";
 
 export class TensorRTFFI {
   public lib: ReturnType<typeof JSON.parse>;
@@ -15,22 +14,25 @@ export class TensorRTFFI {
   }
 
   private loadLibrary() {
-    const isWindows = os.platform() === 'win32';
-    const libName = isWindows ? 'nvinfer.dll' : 'libnvinfer.so';
+    const isWindows = os.platform() === "win32";
+    const libName = isWindows ? "nvinfer.dll" : "libnvinfer.so";
 
     try {
       this.lib = ffi.Library(libName, {
-        getInferLibVersion: ['int', []],
-        createInferBuilder_INTERNAL: ['pointer', ['pointer', 'int']],
-        createNetworkV2: ['pointer', ['pointer', 'int32']],
-        destroyInferBuilder: ['void', ['pointer']],
-        destroyNetworkDefinition: ['void', ['pointer']],
-        addInput: ['pointer', ['pointer', 'string', 'int32', 'pointer']],
-        markOutput: ['void', ['pointer', 'pointer']],
-        addElementWise: ['pointer', ['pointer', 'pointer', 'pointer', 'int32']],
-        addActivation: ['pointer', ['pointer', 'pointer', 'int32']],
-        addMatrixMultiply: ['pointer', ['pointer', 'pointer', 'int32', 'pointer', 'int32']],
-        addPoolingNd: ['pointer', ['pointer', 'pointer', 'int32', 'pointer']],
+        getInferLibVersion: ["int", []],
+        createInferBuilder_INTERNAL: ["pointer", ["pointer", "int"]],
+        createNetworkV2: ["pointer", ["pointer", "int32"]],
+        destroyInferBuilder: ["void", ["pointer"]],
+        destroyNetworkDefinition: ["void", ["pointer"]],
+        addInput: ["pointer", ["pointer", "string", "int32", "pointer"]],
+        markOutput: ["void", ["pointer", "pointer"]],
+        addElementWise: ["pointer", ["pointer", "pointer", "pointer", "int32"]],
+        addActivation: ["pointer", ["pointer", "pointer", "int32"]],
+        addMatrixMultiply: [
+          "pointer",
+          ["pointer", "pointer", "int32", "pointer", "int32"],
+        ],
+        addPoolingNd: ["pointer", ["pointer", "pointer", "int32", "pointer"]],
       });
     } catch (e) {
       console.warn(`Could not load TensorRT library: ${e}`);

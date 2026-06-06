@@ -86,7 +86,7 @@ export class TensorInputModal extends Component<HTMLDivElement> {
         if (this.generateBtn) this.generateBtn.textContent = t('tensor.generate');
         if (this.submitBtn) this.submitBtn.textContent = t('tensor.submit');
         if (this.closeBtn) this.closeBtn.setAttribute('aria-label', t('tensor.close'));
-      }),
+      })
     );
   }
 
@@ -172,7 +172,7 @@ export class TensorInputModal extends Component<HTMLDivElement> {
     // The Web Worker will construct normal distribution floats for the inputs.
     globalEventBus.emit('SHOW_TOAST', {
       message: 'Random data configured for execution.',
-      type: 'info',
+      type: 'info'
     });
   }
 

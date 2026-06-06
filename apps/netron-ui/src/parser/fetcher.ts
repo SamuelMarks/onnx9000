@@ -3,27 +3,31 @@
  * Handles downloading binary data via Streams, transforming GitHub blobs to raw URLs,
  * and passing the result to the ONNX model parser.
  */
-import { BlobReader, type Graph, parseModelProto } from '@onnx9000/core';
+import { BlobReader, type Graph, parseModelProto } from "@onnx9000/core";
 
 export async function fetchAndParseModel(
   url: string,
   progressCallback?: (percent: number) => void,
 ): Promise<Graph> {
   // Convert GitHub blob URLs to raw automatically
-  if (url.includes('github.com') && url.includes('/blob/')) {
-    url = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+  if (url.includes("github.com") && url.includes("/blob/")) {
+    url = url
+      .replace("github.com", "raw.githubusercontent.com")
+      .replace("/blob/", "/");
   }
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to fetch model from ${url}: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch model from ${url}: ${response.statusText}`,
+    );
   }
 
-  const contentLength = response.headers.get('content-length');
+  const contentLength = response.headers.get("content-length");
   const total = contentLength ? parseInt(contentLength, 10) : 0;
 
   if (!response.body) {
-    throw new Error('ReadableStream not supported by browser.');
+    throw new Error("ReadableStream not supported by browser.");
   }
 
   const reader = response.body.getReader();

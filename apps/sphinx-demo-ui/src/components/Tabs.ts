@@ -108,7 +108,7 @@ export class Tabs extends Component<HTMLDivElement> {
 
   private handleKeyDown(e: KeyboardEvent): void {
     const activeBtn = Array.from(this.tabButtons.values()).find(
-      (b) => b.getAttribute('tabindex') === '0',
+      (b) => b.getAttribute('tabindex') === '0'
     );
     if (!activeBtn) return;
 

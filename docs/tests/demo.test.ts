@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ONNX9000Demo from '../_static/demo.js';
 
 describe('ONNX9000Demo', () => {
-  let doc;
-  let demo;
+  let doc: any;
+  let demo: any;
 
   beforeEach(() => {
     // Setup basic DOM

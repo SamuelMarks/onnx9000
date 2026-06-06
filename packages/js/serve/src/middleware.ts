@@ -2,12 +2,13 @@
  * @fileoverview middleware.ts
  * Provides middleware functionality for the serve package.
  */
-import type { RequestHandler } from './router';
+import type { RequestHandler } from "./router";
 
 // 148. Implement IP-based Rate Limiting (Token Bucket)
 // 149. Support User-ID based Rate Limiting
 export class RateLimiter {
-  private buckets: Map<string, { tokens: number; lastRefill: number }> = new Map();
+  private buckets: Map<string, { tokens: number; lastRefill: number }> =
+    new Map();
 
   constructor(
     public capacity: number = 100,
@@ -43,7 +44,9 @@ export class RateLimiter {
 export const globalRateLimiter = new RateLimiter();
 
 // 147. Expose an API to inject custom Auth Middlewares
-export type Middleware = (req: Request) => Promise<Response | null> | Response | null;
+export type Middleware = (
+  req: Request,
+) => Promise<Response | null> | Response | null;
 
 export const middlewares: Middleware[] = [];
 
@@ -55,13 +58,13 @@ export function addMiddleware(mw: Middleware) {
 export function bearerAuthMiddleware(validTokens: string[]): Middleware {
   const tokenSet = new Set(validTokens);
   return (req: Request) => {
-    const auth = req.headers.get('authorization');
-    if (!auth?.startsWith('Bearer ')) {
-      return new Response('Unauthorized', { status: 401 });
+    const auth = req.headers.get("authorization");
+    if (!auth?.startsWith("Bearer ")) {
+      return new Response("Unauthorized", { status: 401 });
     }
     const token = auth.substring(7);
     if (!tokenSet.has(token)) {
-      return new Response('Forbidden', { status: 403 });
+      return new Response("Forbidden", { status: 403 });
     }
     return null; // pass
   };
@@ -70,16 +73,19 @@ export function bearerAuthMiddleware(validTokens: string[]): Middleware {
 export function applyMiddlewares(handler: RequestHandler): RequestHandler {
   return async (req: Request, params: Record<string, string>) => {
     // 148, 150. Rate limit check (using IP header if behind proxy)
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
     if (!globalRateLimiter.consume(ip)) {
-      return new Response('Too Many Requests', { status: 429 });
+      return new Response("Too Many Requests", { status: 429 });
     }
 
     // 151. Reject excessively large payloads dynamically
-    const contentLength = parseInt(req.headers.get('content-length') || '0', 10);
+    const contentLength = parseInt(
+      req.headers.get("content-length") || "0",
+      10,
+    );
     if (contentLength > 1024 * 1024 * 50) {
       // 50MB limit
-      return new Response('Payload Too Large', { status: 413 });
+      return new Response("Payload Too Large", { status: 413 });
     }
 
     for (const mw of middlewares) {
@@ -92,15 +98,17 @@ export function applyMiddlewares(handler: RequestHandler): RequestHandler {
 }
 
 // 153. Reject maliciously nested JSON request payloads
-export function safeJsonParse(jsonString: string): ReturnType<typeof JSON.parse> {
+export function safeJsonParse(
+  jsonString: string,
+): ReturnType<typeof JSON.parse> {
   let depth = 0;
   for (let i = 0; i < jsonString.length; i++) {
-    if (jsonString[i] === '{' || jsonString[i] === '[') depth++;
-    else if (jsonString[i] === '}' || jsonString[i] === ']') depth--;
+    if (jsonString[i] === "{" || jsonString[i] === "[") depth++;
+    else if (jsonString[i] === "}" || jsonString[i] === "]") depth--;
 
     if (depth > 20) {
       // arbitrary depth limit
-      throw new Error('JSON payload too deeply nested');
+      throw new Error("JSON payload too deeply nested");
     }
   }
   return JSON.parse(jsonString);

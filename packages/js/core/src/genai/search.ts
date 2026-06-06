@@ -1,4 +1,4 @@
-import type { Tensor } from '../index.js';
+import type { Tensor } from "../index.js";
 
 /**
  * Interface for token search algorithms used in GenAI.
@@ -165,12 +165,17 @@ export class BeamSearchAlgorithm implements SearchAlgorithm {
    * @param nextTokenLogits Logits for next token.
    * @param beamIdx Beam index.
    */
-  processLogits(nextTokenLogits: Tensor, _beamIdx: number): { val: number; idx: number }[] {
+  processLogits(
+    nextTokenLogits: Tensor,
+    _beamIdx: number,
+  ): { val: number; idx: number }[] {
     if (!(nextTokenLogits.data instanceof Float32Array)) {
       return [];
     }
 
-    const vocabSize = nextTokenLogits.shape[nextTokenLogits.shape.length - 1] as number;
+    const vocabSize = nextTokenLogits.shape[
+      nextTokenLogits.shape.length - 1
+    ] as number;
     const data = nextTokenLogits.data;
     const offset = data.length - vocabSize;
 

@@ -1,49 +1,51 @@
 // @vitest-environment jsdom
 
-import { Graph } from '@onnx9000/core';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GraphDebugger } from '../src/components/debugger/debugger.js';
-import { GraphMutator } from '../src/GraphMutator.js';
+import { Graph } from "@onnx9000/core";
+import { beforeEach, describe, expect, it } from "vitest";
+import { GraphDebugger } from "../src/components/debugger/debugger.js";
+import { GraphMutator } from "../src/GraphMutator.js";
 
-describe('GraphDebugger (Phase 7)', () => {
+describe("GraphDebugger (Phase 7)", () => {
   let container: HTMLElement;
   let mutator: GraphMutator;
   let graph: Graph;
   let debug: GraphDebugger;
 
   beforeEach(() => {
-    graph = new Graph('Test');
+    graph = new Graph("Test");
     mutator = new GraphMutator(graph);
-    container = document.createElement('div');
+    container = document.createElement("div");
     debug = new GraphDebugger(container, mutator);
   });
 
-  it('86. initSession sets up environment', async () => {
+  it("86. initSession sets up environment", async () => {
     const s = await debug.initSession();
     expect(s.initialized).toBe(true);
     expect(debug.session).toBeDefined();
   });
 
-  it('87. setAsTemporaryOutput', () => {
-    mutator.addInput('Inp1', 'float32', [1, 2]);
+  it("87. setAsTemporaryOutput", () => {
+    mutator.addInput("Inp1", "float32", [1, 2]);
     const _vi = mutator.graph.inputs[0]!;
 
     // Add output
-    debug.setAsTemporaryOutput('Inp1');
-    expect(mutator.graph.outputs.some((o) => o.name === 'Inp1')).toBe(true);
+    debug.setAsTemporaryOutput("Inp1");
+    expect(mutator.graph.outputs.some((o) => o.name === "Inp1")).toBe(true);
 
     // Adding again doesn't duplicate
-    debug.setAsTemporaryOutput('Inp1');
-    expect(mutator.graph.outputs.filter((o) => o.name === 'Inp1').length).toBe(1);
+    debug.setAsTemporaryOutput("Inp1");
+    expect(mutator.graph.outputs.filter((o) => o.name === "Inp1").length).toBe(
+      1,
+    );
 
     mutator.undo();
     mutator.undo();
-    expect(mutator.graph.outputs.some((o) => o.name === 'Inp1')).toBe(false);
+    expect(mutator.graph.outputs.some((o) => o.name === "Inp1")).toBe(false);
   });
 
-  it('88. generateDummyData creates float arrays matching shape', () => {
-    mutator.addInput('InpA', 'float32', [1, 2, 2]);
-    mutator.addInput('InpB', 'float32', [3]);
+  it("88. generateDummyData creates float arrays matching shape", () => {
+    mutator.addInput("InpA", "float32", [1, 2, 2]);
+    mutator.addInput("InpB", "float32", [3]);
     const dummies = debug.generateDummyData();
 
     expect(dummies.InpA).toBeInstanceOf(Float32Array);
@@ -51,41 +53,41 @@ describe('GraphDebugger (Phase 7)', () => {
     expect(dummies.InpB?.length).toBe(3);
   });
 
-  it('89. renderInputForm displays form for manual overriding', () => {
-    mutator.addInput('InpA', 'float32', [1, 2]);
+  it("89. renderInputForm displays form for manual overriding", () => {
+    mutator.addInput("InpA", "float32", [1, 2]);
     debug.renderInputForm();
-    expect(container.innerHTML).toContain('Manual Input Override');
-    expect(container.innerHTML).toContain('InpA');
-    expect(container.querySelectorAll('input').length).toBe(1);
+    expect(container.innerHTML).toContain("Manual Input Override");
+    expect(container.innerHTML).toContain("InpA");
+    expect(container.querySelectorAll("input").length).toBe(1);
   });
 
-  it('90. 93. runGraph executes and returns profile metrics', async () => {
-    mutator.addInput('A', 'float32', [1]);
-    mutator.addOutput('B', 'float32', [1]);
+  it("90. 93. runGraph executes and returns profile metrics", async () => {
+    mutator.addInput("A", "float32", [1]);
+    mutator.addOutput("B", "float32", [1]);
 
     const { results, timeTaken } = await debug.runGraph({ A: [1.0] });
-    expect(results).toHaveProperty('B');
+    expect(results).toHaveProperty("B");
     expect(timeTaken).toBeGreaterThanOrEqual(0);
-    expect(debug.executionOutputs.has('B')).toBe(true);
+    expect(debug.executionOutputs.has("B")).toBe(true);
   });
 
-  it('91. renderOutputVisuals', () => {
-    debug.executionOutputs.set('B', new Float32Array([1.1, 2.2]));
+  it("91. renderOutputVisuals", () => {
+    debug.executionOutputs.set("B", new Float32Array([1.1, 2.2]));
     debug.renderOutputVisuals();
-    expect(container.innerHTML).toContain('Execution Results');
-    expect(container.innerHTML).toContain('1.1');
-    expect(container.innerHTML).toContain('2.2');
+    expect(container.innerHTML).toContain("Execution Results");
+    expect(container.innerHTML).toContain("1.1");
+    expect(container.innerHTML).toContain("2.2");
   });
 
-  it('92. runSubgraph', async () => {
-    const n1 = mutator.addNode('Op', ['A'], ['B']);
+  it("92. runSubgraph", async () => {
+    const n1 = mutator.addNode("Op", ["A"], ["B"]);
     const { results, timeTaken } = await debug.runSubgraph([n1.id]);
-    expect(results).toHaveProperty('dummy_subgraph_out');
+    expect(results).toHaveProperty("dummy_subgraph_out");
     expect(timeTaken).toBeGreaterThanOrEqual(0);
   });
 
-  it('94. 95. stepNext and setBreakpoint', async () => {
-    const n1 = mutator.addNode('Op', ['A'], ['B']);
+  it("94. 95. stepNext and setBreakpoint", async () => {
+    const n1 = mutator.addNode("Op", ["A"], ["B"]);
 
     // Without session it fails
     expect(debug.stepNext()).toBeNull();
@@ -104,12 +106,12 @@ describe('GraphDebugger (Phase 7)', () => {
     expect(r2.node.id).toBe(n1.id);
   });
 
-  it('87. setAsTemporaryOutput early returns for unknown edge', () => {
-    debug.setAsTemporaryOutput('NonExistent');
+  it("87. setAsTemporaryOutput early returns for unknown edge", () => {
+    debug.setAsTemporaryOutput("NonExistent");
     expect(mutator.graph.outputs.length).toBe(0);
   });
 
-  it('94. 95. stepNext early returns when no nodes', async () => {
+  it("94. 95. stepNext early returns when no nodes", async () => {
     await debug.initSession();
     expect(debug.stepNext()).toBeNull();
   });

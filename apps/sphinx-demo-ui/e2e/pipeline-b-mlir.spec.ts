@@ -38,7 +38,9 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
     // Let's evaluate to show it directly if Playwright is failing due to CSS block
     await page.evaluate(() => {
       const els = document.querySelectorAll('.demo-file-tree-children');
-      els.forEach((el: ReturnType<typeof JSON.parse>) => (el.style.display = 'block'));
+      els.forEach((el: ReturnType<typeof JSON.parse>) => {
+        el.style.display = 'block';
+      });
     });
 
     const fileNode = tree.locator('.demo-tree-file').filter({ hasText: 'graph.mlir' });
@@ -50,7 +52,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
   });
 
   test('should verify compiler warnings appear in Console tab when processing', async ({
-    page,
+    page
   }) => {
     // Navigate to Console tab
     // Navigate to Console tab
@@ -66,7 +68,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
         bus.emit('CONSOLE_LOG', {
           level: 'warn',
           message: 'Warning: onnx-mlir ignored unroll pragma on MatMul',
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       } else {
         // Create the console output div if it doesn't exist

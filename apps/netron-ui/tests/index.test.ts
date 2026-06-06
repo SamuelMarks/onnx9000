@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock('@onnx9000/core', () => {
+vi.mock("@onnx9000/core", () => {
   return {
     Graph: class {
       nodes: any[] = [];
@@ -12,15 +12,15 @@ vi.mock('@onnx9000/core', () => {
   };
 });
 
-vi.mock('@onnx9000/modifier/dist/GraphMutator.js', () => ({
+vi.mock("@onnx9000/modifier/dist/GraphMutator.js", () => ({
   GraphMutator: class {},
 }));
 
-vi.mock('@onnx9000/modifier/dist/components/export/exporter.js', () => ({
+vi.mock("@onnx9000/modifier/dist/components/export/exporter.js", () => ({
   ModelExporter: class {},
 }));
 
-vi.mock('../src/render/canvas', () => ({
+vi.mock("../src/render/canvas", () => ({
   CanvasRenderer: class {
     setLayout() {}
     setFilterControlEdges() {}
@@ -32,9 +32,9 @@ vi.mock('../src/render/canvas', () => ({
   },
 }));
 
-describe('index.ts', () => {
+describe("index.ts", () => {
   beforeEach(() => {
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
     vi.resetModules();
     (global as any).Worker = class Worker {
       postMessage() {}
@@ -42,22 +42,22 @@ describe('index.ts', () => {
     };
   });
 
-  it('should initialize UI on import', async () => {
-    await import('../src/index.ts');
-    expect(document.getElementById('view')).not.toBeNull();
-    expect(document.getElementById('status')).not.toBeNull();
+  it("should initialize UI on import", async () => {
+    await import("../src/index.ts");
+    expect(document.getElementById("view")).not.toBeNull();
+    expect(document.getElementById("status")).not.toBeNull();
   });
 
-  it('should handle file drop event on window', async () => {
-    await import('../src/index.ts');
-    const mockFile = new File(['mock content'], 'model.onnx', {
-      type: 'application/octet-stream',
+  it("should handle file drop event on window", async () => {
+    await import("../src/index.ts");
+    const mockFile = new File(["mock content"], "model.onnx", {
+      type: "application/octet-stream",
     });
-    const dropEvent = new Event('drop') as any;
+    const dropEvent = new Event("drop") as any;
     dropEvent.dataTransfer = { files: [mockFile] };
     window.dispatchEvent(dropEvent);
 
-    const dropZone = document.getElementById('drop-zone')!;
-    expect(dropZone.textContent).toContain('Loaded: model.onnx');
+    const dropZone = document.getElementById("drop-zone")!;
+    expect(dropZone.textContent).toContain("Loaded: model.onnx");
   });
 });

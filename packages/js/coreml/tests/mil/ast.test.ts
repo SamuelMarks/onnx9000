@@ -1,32 +1,32 @@
-import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/mil/ast';
+import { describe, expect, it } from "vitest";
+import * as Module from "../../src/mil/ast";
 
-describe('ast.ts', () => {
-  it('should instantiate and cover Var', () => {
+describe("ast.ts", () => {
+  it("should instantiate and cover Var", () => {
     try {
       const obj = new (Module as any).Var();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover Operation', () => {
+  it("should instantiate and cover Operation", () => {
     try {
       const obj = new (Module as any).Operation();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover Block', () => {
+  it("should instantiate and cover Block", () => {
     try {
       const obj = new (Module as any).Block();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover Function', () => {
+  it("should instantiate and cover MILFunction", () => {
     try {
-      const obj = new (Module as any).Function();
+      const obj = new (Module as any).MILFunction();
       expect(obj).toBeDefined();
     } catch (_e) {}
   });
-  it('should instantiate and cover Program', () => {
+  it("should instantiate and cover Program", () => {
     try {
       const obj = new (Module as any).Program();
       expect(obj).toBeDefined();

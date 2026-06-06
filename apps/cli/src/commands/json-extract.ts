@@ -1,17 +1,17 @@
-import * as fs from 'node:fs';
-import { load } from '@onnx9000/core';
+import * as fs from "node:fs";
+import { load } from "@onnx9000/core";
 
 export async function handleJsonExtractCommand(args: string[]) {
-  if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
-    console.log('Usage: onnx9000 json-extract <model.onnx> [-o output.json]');
+  if (args.length === 0 || args[0] === "-h" || args[0] === "--help") {
+    console.log("Usage: onnx9000 json-extract <model.onnx> [-o output.json]");
     process.exit(0);
     return;
   }
 
-  const modelPath = args[0] || '';
-  let outputPath = '';
-  if (args[1] === '-o' || args[1] === '--output') {
-    outputPath = args[2] || '';
+  const modelPath = args[0] || "";
+  let outputPath = "";
+  if (args[1] === "-o" || args[1] === "--output") {
+    outputPath = args[2] || "";
   }
 
   console.log(`Extracting JSON from ${modelPath}...`);
@@ -22,10 +22,10 @@ export async function handleJsonExtractCommand(args: string[]) {
   const jsonString = JSON.stringify(
     graph,
     (key, value) => {
-      if (key === 'data' && ArrayBuffer.isView(value)) {
+      if (key === "data" && ArrayBuffer.isView(value)) {
         return `[Buffer: ${value.byteLength.toString()} bytes]`;
       }
-      if (typeof value === 'bigint') {
+      if (typeof value === "bigint") {
         return `${value.toString()}n`;
       }
       return value as unknown;

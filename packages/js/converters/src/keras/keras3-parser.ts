@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { unzipSync } from 'fflate';
-import type { JsonObject } from './tfjs-parser.js';
+import { unzipSync } from "fflate";
+import type { JsonObject } from "./tfjs-parser.js";
 
 /**
  * Represents the extracted artifacts from a Keras 3 (.keras) archive.
@@ -31,25 +31,31 @@ export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
     const filename = entry[0];
     const fileData = entry[1];
 
-    if (filename === 'config.json' || filename.endsWith('/config.json')) {
+    if (filename === "config.json" || filename.endsWith("/config.json")) {
       const text = new TextDecoder().decode(fileData);
       // We safely cast the output of JSON.parse to JsonObject to avoid any/unknown
       config = JSON.parse(text) as JsonObject;
-    } else if (filename === 'metadata.json' || filename.endsWith('/metadata.json')) {
+    } else if (
+      filename === "metadata.json" ||
+      filename.endsWith("/metadata.json")
+    ) {
       const text = new TextDecoder().decode(fileData);
       metadata = JSON.parse(text) as JsonObject;
-    } else if (filename === 'model.weights.h5' || filename.endsWith('/model.weights.h5')) {
+    } else if (
+      filename === "model.weights.h5" ||
+      filename.endsWith("/model.weights.h5")
+    ) {
       weightsH5 = fileData;
     } else if (
-      filename === 'model.weights.safetensors' ||
-      filename.endsWith('/model.weights.safetensors')
+      filename === "model.weights.safetensors" ||
+      filename.endsWith("/model.weights.safetensors")
     ) {
       weightsSafetensors = fileData;
     }
   }
 
   if (config === undefined) {
-    throw new Error('Invalid Keras 3 format: missing config.json');
+    throw new Error("Invalid Keras 3 format: missing config.json");
   }
 
   const result: Keras3Model = {

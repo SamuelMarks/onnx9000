@@ -3,7 +3,7 @@
  * Provides generator functionality for the converters package.
  */
 // @ts-nocheck
-import type { Graph } from '@onnx9000/core';
+import type { Graph } from "@onnx9000/core";
 
 export class CaffeGenerator {
   graph: Graph;
@@ -13,8 +13,8 @@ export class CaffeGenerator {
   }
 
   private sanitize(name: string): string {
-    if (!name) return 'unnamed';
-    return name.replace(/[^a-zA-Z0-9_]/g, '_');
+    if (!name) return "unnamed";
+    return name.replace(/[^a-zA-Z0-9_]/g, "_");
   }
 
   private getShape(name: string): number[] | null {
@@ -35,10 +35,12 @@ export class CaffeGenerator {
   }
 
   generate(): string {
-    const lines = [`name: "${this.graph.name || 'Model'}"`];
+    const lines = [`name: "${this.graph.name || "Model"}"`];
 
     // Filter out initializers from inputs
-    const trueInputs = this.graph.inputs.filter((inp) => !this.isInitializer(inp.name));
+    const trueInputs = this.graph.inputs.filter(
+      (inp) => !this.isInitializer(inp.name),
+    );
 
     for (const inp of trueInputs) {
       const shape = this.getShape(inp.name) || [1, 3, 224, 224];
@@ -46,19 +48,23 @@ export class CaffeGenerator {
       lines.push(`  name: "${this.sanitize(inp.name)}"`);
       lines.push(`  type: "Input"`);
       lines.push(`  top: "${this.sanitize(inp.name)}"`);
-      lines.push(`  input_param { shape: { ${shape.map((d) => `dim: ${d}`).join(' ')} } }`);
+      lines.push(
+        `  input_param { shape: { ${shape.map((d) => `dim: ${d}`).join(" ")} } }`,
+      );
       lines.push(`}`);
     }
 
     for (const node of this.graph.nodes) {
-      const out = this.sanitize(node.outputs[0] || `out_${node.name || 'node'}`);
+      const out = this.sanitize(
+        node.outputs[0] || `out_${node.name || "node"}`,
+      );
       const inps = node.inputs.map((i) => this.sanitize(i));
 
       lines.push(`layer {`);
       lines.push(`  name: "${this.sanitize(node.name || out)}"`);
 
       switch (node.opType) {
-        case 'Conv': {
+        case "Conv": {
           lines.push(`  type: "Convolution"`);
           for (const inp of inps) {
             if (!this.isInitializer(inp)) lines.push(`  bottom: "${inp}"`);
@@ -67,7 +73,9 @@ export class CaffeGenerator {
           const wShape = this.getShape(node.inputs[1]!);
           const outChannels = wShape ? wShape[0] : 32;
           const kernelSize = wShape ? wShape.slice(2) : [3, 3];
-          const strides = (node.attributes.strides?.value as number[]) || [1, 1];
+          const strides = (node.attributes.strides?.value as number[]) || [
+            1, 1,
+          ];
 
           lines.push(`  convolution_param {`);
           lines.push(`    num_output: ${Number(outChannels)}`);
@@ -82,17 +90,20 @@ export class CaffeGenerator {
           lines.push(`  }`);
           break;
         }
-        case 'MaxPool':
-        case 'AveragePool': {
+        case "MaxPool":
+        case "AveragePool": {
           lines.push(`  type: "Pooling"`);
           for (const inp of inps) {
             if (!this.isInitializer(inp)) lines.push(`  bottom: "${inp}"`);
           }
           lines.push(`  top: "${out}"`);
 
-          const poolMethod = node.opType === 'MaxPool' ? 'MAX' : 'AVE';
-          const kernelSize = (node.attributes.kernel_shape?.value as number[]) || [2, 2];
-          const strides = (node.attributes.strides?.value as number[]) || [2, 2];
+          const poolMethod = node.opType === "MaxPool" ? "MAX" : "AVE";
+          const kernelSize = (node.attributes.kernel_shape
+            ?.value as number[]) || [2, 2];
+          const strides = (node.attributes.strides?.value as number[]) || [
+            2, 2,
+          ];
 
           lines.push(`  pooling_param {`);
           lines.push(`    pool: ${poolMethod}`);
@@ -107,38 +118,42 @@ export class CaffeGenerator {
           lines.push(`  }`);
           break;
         }
-        case 'Relu': {
+        case "Relu": {
           lines.push(`  type: "ReLU"`);
           lines.push(`  bottom: "${inps[0]}"`);
           lines.push(`  top: "${out}"`);
           break;
         }
-        case 'Flatten': {
+        case "Flatten": {
           lines.push(`  type: "Flatten"`);
           lines.push(`  bottom: "${inps[0]}"`);
           lines.push(`  top: "${out}"`);
           break;
         }
-        case 'Gemm':
-        case 'MatMul': {
+        case "Gemm":
+        case "MatMul": {
           lines.push(`  type: "InnerProduct"`);
           lines.push(`  bottom: "${inps[0]}"`);
           lines.push(`  top: "${out}"`);
           const wShape = this.getShape(node.inputs[1]!);
-          const outFeatures = wShape ? (node.attributes.transB?.value ? wShape[0] : wShape[1]) : 10;
+          const outFeatures = wShape
+            ? node.attributes.transB?.value
+              ? wShape[0]
+              : wShape[1]
+            : 10;
 
           lines.push(`  inner_product_param {`);
           lines.push(`    num_output: ${Number(outFeatures)}`);
           lines.push(`  }`);
           break;
         }
-        case 'Softmax': {
+        case "Softmax": {
           lines.push(`  type: "Softmax"`);
           lines.push(`  bottom: "${inps[0]}"`);
           lines.push(`  top: "${out}"`);
           break;
         }
-        case 'GlobalAveragePool': {
+        case "GlobalAveragePool": {
           lines.push(`  type: "Pooling"`);
           lines.push(`  bottom: "${inps[0]}"`);
           lines.push(`  top: "${out}"`);
@@ -148,7 +163,7 @@ export class CaffeGenerator {
           lines.push(`  }`);
           break;
         }
-        case 'Add': {
+        case "Add": {
           lines.push(`  type: "Eltwise"`);
           for (const inp of inps) {
             if (!this.isInitializer(inp)) lines.push(`  bottom: "${inp}"`);
@@ -168,6 +183,6 @@ export class CaffeGenerator {
       lines.push(`}`);
     }
 
-    return `${lines.join('\n')}\n`;
+    return `${lines.join("\n")}\n`;
   }
 }

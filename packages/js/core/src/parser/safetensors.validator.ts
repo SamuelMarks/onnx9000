@@ -1,5 +1,5 @@
-import type { Graph } from '../ir/graph.js';
-import { SafeTensors, type TensorInfo } from './safetensors.js';
+import type { Graph } from "../ir/graph.js";
+import { SafeTensors, type TensorInfo } from "./safetensors.js";
 
 /**
  * Enumeration of data types for validation, simplified from ONNX.
@@ -32,33 +32,33 @@ export enum DType {
 export function toEmscriptenType(dtype: number): string {
   switch (dtype) {
     case DType.FLOAT:
-      return 'Float32Array';
+      return "Float32Array";
     case DType.DOUBLE:
-      return 'Float64Array';
+      return "Float64Array";
     case DType.INT8:
-      return 'Int8Array';
+      return "Int8Array";
     case DType.INT16:
-      return 'Int16Array';
+      return "Int16Array";
     case DType.INT32:
-      return 'Int32Array';
+      return "Int32Array";
     case DType.INT64:
-      return 'BigInt64Array';
+      return "BigInt64Array";
     case DType.UINT8:
-      return 'Uint8Array';
+      return "Uint8Array";
     case DType.UINT16:
-      return 'Uint16Array';
+      return "Uint16Array";
     case DType.UINT32:
-      return 'Uint32Array';
+      return "Uint32Array";
     case DType.UINT64:
-      return 'BigUint64Array';
+      return "BigUint64Array";
     case DType.BOOL:
-      return 'Uint8Array';
+      return "Uint8Array";
     case DType.FLOAT16:
-      return 'Uint16Array';
+      return "Uint16Array";
     case DType.BFLOAT16:
-      return 'Uint16Array';
+      return "Uint16Array";
     default:
-      return 'Unknown';
+      return "Unknown";
   }
 }
 
@@ -67,22 +67,25 @@ export function toEmscriptenType(dtype: number): string {
  * @param buffer The Safetensors file data
  * @param graph The reference ONNX Graph
  */
-export function validateOnnxShapesAndDtypes(buffer: ArrayBuffer, graph: Graph): void {
+export function validateOnnxShapesAndDtypes(
+  buffer: ArrayBuffer,
+  graph: Graph,
+): void {
   const st = new SafeTensors(buffer);
   const dtypeMap: Record<string, string> = {
-    F64: 'Float64Array',
-    F32: 'Float32Array',
-    F16: 'Uint16Array',
-    I64: 'BigInt64Array',
-    I32: 'Int32Array',
-    I16: 'Int16Array',
-    I8: 'Int8Array',
-    U64: 'BigUint64Array',
-    U32: 'Uint32Array',
-    U16: 'Uint16Array',
-    U8: 'Uint8Array',
-    BOOL: 'Uint8Array',
-    BF16: 'Uint16Array',
+    F64: "Float64Array",
+    F32: "Float32Array",
+    F16: "Uint16Array",
+    I64: "BigInt64Array",
+    I32: "Int32Array",
+    I16: "Int16Array",
+    I8: "Int8Array",
+    U64: "BigUint64Array",
+    U32: "Uint32Array",
+    U16: "Uint16Array",
+    U8: "Uint8Array",
+    BOOL: "Uint8Array",
+    BF16: "Uint16Array",
   };
 
   for (const name of st.keys()) {
@@ -107,22 +110,22 @@ export function validateOnnxShapesAndDtypes(buffer: ArrayBuffer, graph: Graph): 
 
         // Extremely simplified mapping for testing parity
         const typeMatcher: Record<string, string> = {
-          float32: 'Float32Array',
-          float64: 'Float64Array',
-          int8: 'Int8Array',
-          int16: 'Int16Array',
-          int32: 'Int32Array',
-          int64: 'BigInt64Array',
-          uint8: 'Uint8Array',
-          uint16: 'Uint16Array',
-          uint32: 'Uint32Array',
-          uint64: 'BigUint64Array',
-          bool: 'Uint8Array',
-          float16: 'Uint16Array',
-          bfloat16: 'Uint16Array',
+          float32: "Float32Array",
+          float64: "Float64Array",
+          int8: "Int8Array",
+          int16: "Int16Array",
+          int32: "Int32Array",
+          int64: "BigInt64Array",
+          uint8: "Uint8Array",
+          uint16: "Uint16Array",
+          uint32: "Uint32Array",
+          uint64: "BigUint64Array",
+          bool: "Uint8Array",
+          float16: "Uint16Array",
+          bfloat16: "Uint16Array",
         };
 
-        const expectedStr = typeMatcher[onnxTypeStr] || 'Unknown';
+        const expectedStr = typeMatcher[onnxTypeStr] || "Unknown";
 
         if (stTypeStr !== expectedStr) {
           console.warn(

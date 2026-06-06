@@ -2,7 +2,7 @@
  * @fileoverview ast.ts
  * Provides ast functionality for the coreml package.
  */
-import type { MILType } from './types.js';
+import type { MILType } from "./types.js";
 
 export class Var {
   constructor(
@@ -32,7 +32,7 @@ export class Block {
   }
 }
 
-export class Function {
+export class MILFunction {
   public blocks: Record<string, Block> = {};
 
   constructor(
@@ -47,9 +47,9 @@ export class Function {
 }
 
 export class Program {
-  public functions: Record<string, Function> = {} as any;
+  public functions: Record<string, MILFunction> = {} as any;
 
-  addFunction(fn: Function) {
+  addFunction(fn: MILFunction) {
     this.functions[fn.name] = fn;
   }
 }

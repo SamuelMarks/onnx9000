@@ -52,7 +52,7 @@ export class SparseMoE {
     const topkOut = recordOp('TopK', [scores, kTensor], { axis: -1 });
 
     const gathered = recordOp('GatherND', [x, topkOut]);
-    const expertOut = this.experts[0]?.call(gathered);
+    const expertOut = this.experts[0]?.call(gathered) ?? gathered;
     const out = recordOp('ScatterND', [topkOut, expertOut, x]);
 
     return out;

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { OnnxNodeBuilder } from './emitters.js';
+import type { OnnxNodeBuilder } from "./emitters.js";
 
 /**
  * Emit a BatchNormalization node.
@@ -17,13 +17,13 @@ export function emitBatchNormalization(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'BatchNormalization',
+      opType: "BatchNormalization",
       inputs: [inputName, gammaName, betaName, meanName, varName],
       outputs: [outputName],
       name,
       attributes: [
-        { name: 'epsilon', f: epsilon, type: 'FLOAT' },
-        { name: 'momentum', f: momentum, type: 'FLOAT' },
+        { name: "epsilon", f: epsilon, type: "FLOAT" },
+        { name: "momentum", f: momentum, type: "FLOAT" },
       ],
     },
   ];
@@ -47,13 +47,13 @@ export function emitLayerNormalization(
 
   return [
     {
-      opType: 'LayerNormalization',
+      opType: "LayerNormalization",
       inputs,
       outputs: [outputName],
       name,
       attributes: [
-        { name: 'axis', i: axis, type: 'INT' },
-        { name: 'epsilon', f: epsilon, type: 'FLOAT' },
+        { name: "axis", i: axis, type: "INT" },
+        { name: "epsilon", f: epsilon, type: "FLOAT" },
       ],
     },
   ];
@@ -70,13 +70,13 @@ export function emitUnitNormalization(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'LpNormalization',
+      opType: "LpNormalization",
       inputs: [inputName],
       outputs: [outputName],
       name,
       attributes: [
-        { name: 'axis', i: axis, type: 'INT' },
-        { name: 'p', i: 2, type: 'INT' },
+        { name: "axis", i: axis, type: "INT" },
+        { name: "p", i: 2, type: "INT" },
       ],
     },
   ];
@@ -95,18 +95,18 @@ export function emitGroupNormalization(
   name: string,
 ): OnnxNodeBuilder[] {
   const inputs = [inputName];
-  inputs.push(gammaName || '');
-  inputs.push(betaName || '');
+  inputs.push(gammaName || "");
+  inputs.push(betaName || "");
 
   return [
     {
-      opType: 'GroupNormalization',
+      opType: "GroupNormalization",
       inputs,
       outputs: [outputName],
       name,
       attributes: [
-        { name: 'epsilon', f: epsilon, type: 'FLOAT' },
-        { name: 'num_groups', i: numGroups, type: 'INT' },
+        { name: "epsilon", f: epsilon, type: "FLOAT" },
+        { name: "num_groups", i: numGroups, type: "INT" },
       ],
     },
   ];
@@ -123,7 +123,7 @@ export function emitReshape(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'Reshape',
+      opType: "Reshape",
       inputs: [inputName, shapeName],
       outputs: [outputName],
       name,
@@ -143,11 +143,11 @@ export function emitFlatten(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'Flatten',
+      opType: "Flatten",
       inputs: [inputName],
       outputs: [outputName],
       name,
-      attributes: [{ name: 'axis', i: axis, type: 'INT' }],
+      attributes: [{ name: "axis", i: axis, type: "INT" }],
     },
   ];
 }
@@ -163,11 +163,11 @@ export function emitTranspose(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'Transpose',
+      opType: "Transpose",
       inputs: [inputName],
       outputs: [outputName],
       name,
-      attributes: [{ name: 'perm', ints: perm, type: 'INTS' }],
+      attributes: [{ name: "perm", ints: perm, type: "INTS" }],
     },
   ];
 }
@@ -180,21 +180,21 @@ export function emitPad(
   outputName: string,
   padsName: string,
   constantValueName: string | undefined,
-  mode: 'constant' | 'reflect' | 'edge',
+  mode: "constant" | "reflect" | "edge",
   name: string,
 ): OnnxNodeBuilder[] {
   const inputs = [inputName, padsName];
-  if (constantValueName && mode === 'constant') {
+  if (constantValueName && mode === "constant") {
     inputs.push(constantValueName);
   }
 
   return [
     {
-      opType: 'Pad',
+      opType: "Pad",
       inputs,
       outputs: [outputName],
       name,
-      attributes: [{ name: 'mode', s: mode, type: 'STRING' }],
+      attributes: [{ name: "mode", s: mode, type: "STRING" }],
     },
   ];
 }

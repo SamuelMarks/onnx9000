@@ -50,7 +50,7 @@ export class TopPLogitProcessor implements LogitProcessor {
     let thresholdIdx = vocabSize - 1;
 
     for (let i = 0; i < vocabSize; i++) {
-      cumulativeProb += vals[i]?.val;
+      cumulativeProb += vals[i]?.val ?? 0;
       if (cumulativeProb > this.topP) {
         thresholdIdx = i;
         break;

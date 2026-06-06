@@ -3,8 +3,8 @@
  * Provides h5-parser functionality for the converters package.
  */
 // @ts-nocheck
-import { type Dataset, type Group, File as Hdf5File } from 'jsfive';
-import type { JsonObject } from './tfjs-parser.js';
+import { type Dataset, type Group, File as Hdf5File } from "jsfive";
+import type { JsonObject } from "./tfjs-parser.js";
 
 export interface KerasH5Model {
   modelConfig: JsonObject;
@@ -20,32 +20,38 @@ export interface H5Weight {
 }
 
 export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
-  const f = new Hdf5File(buffer, 'model.h5');
+  const f = new Hdf5File(buffer, "model.h5");
 
   // Root attrs
-  const rootAttrs = (f as object as { attrs: Record<string, string | Uint8Array> }).attrs || {};
-  let modelConfigJson = '{}';
+  const rootAttrs =
+    (f as object as { attrs: Record<string, string | Uint8Array> }).attrs || {};
+  let modelConfigJson = "{}";
 
   if (rootAttrs.model_config) {
     const configRaw = rootAttrs.model_config;
     modelConfigJson =
-      typeof configRaw === 'string' ? configRaw : new TextDecoder().decode(configRaw);
+      typeof configRaw === "string"
+        ? configRaw
+        : new TextDecoder().decode(configRaw);
   } else {
-    throw new Error('HDF5 file does not contain a Keras model_config attribute.');
+    throw new Error(
+      "HDF5 file does not contain a Keras model_config attribute.",
+    );
   }
 
   const modelConfig = JSON.parse(modelConfigJson) as JsonObject;
 
-  let kerasVersion = 'unknown';
+  let kerasVersion = "unknown";
   if (rootAttrs.keras_version) {
     const vRaw = rootAttrs.keras_version;
-    kerasVersion = typeof vRaw === 'string' ? vRaw : new TextDecoder().decode(vRaw);
+    kerasVersion =
+      typeof vRaw === "string" ? vRaw : new TextDecoder().decode(vRaw);
   }
 
-  let backend = 'unknown';
+  let backend = "unknown";
   if (rootAttrs.backend) {
     const bRaw = rootAttrs.backend;
-    backend = typeof bRaw === 'string' ? bRaw : new TextDecoder().decode(bRaw);
+    backend = typeof bRaw === "string" ? bRaw : new TextDecoder().decode(bRaw);
   }
 
   const weights: Record<string, H5Weight> = {};
@@ -53,8 +59,8 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
   // Keras typically stores weights in /model_weights or root
   let weightsGroup: Group | undefined;
   try {
-    const potentialGroup = f.get('model_weights');
-    if (potentialGroup && 'keys' in potentialGroup) {
+    const potentialGroup = f.get("model_weights");
+    if (potentialGroup && "keys" in potentialGroup) {
       weightsGroup = potentialGroup as Group;
     }
   } catch {
@@ -70,14 +76,16 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
       } catch {
         continue;
       }
-      if (!layerGroup || !('keys' in layerGroup)) continue;
+      if (!layerGroup || !("keys" in layerGroup)) continue;
 
       const weightNamesRaw = layerGroup.attrs.weight_names;
       let weightNames: string[] = [];
       if (weightNamesRaw) {
         if (Array.isArray(weightNamesRaw)) {
-          weightNames = weightNamesRaw.map((v) => (typeof v === 'string' ? v : String(v)));
-        } else if (typeof weightNamesRaw === 'string') {
+          weightNames = weightNamesRaw.map((v) =>
+            typeof v === "string" ? v : String(v),
+          );
+        } else if (typeof weightNamesRaw === "string") {
           weightNames = [weightNamesRaw];
         }
       } else {
@@ -92,7 +100,7 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
           // Keras sometimes nests layerName -> layerName -> weight
           // Or layerName -> weight
           let ds: object = layerGroup.get(wName);
-          if (ds && 'keys' in (ds as Group)) {
+          if (ds && "keys" in (ds as Group)) {
             // It's a group, try to get the actual weight from inside it (using wName again or just the first key)
             const innerGroup = ds as Group;
             if (innerGroup.keys.length > 0) {
@@ -104,7 +112,11 @@ export function parseKerasH5(buffer: ArrayBuffer): KerasH5Model {
           continue;
         }
 
-        if (wDataset && wDataset.shape !== undefined && wDataset.value !== undefined) {
+        if (
+          wDataset &&
+          wDataset.shape !== undefined &&
+          wDataset.value !== undefined
+        ) {
           weights[wName] = {
             name: wName,
             shape: wDataset.shape,

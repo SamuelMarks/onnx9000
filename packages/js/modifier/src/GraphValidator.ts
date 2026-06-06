@@ -2,7 +2,7 @@
  * @fileoverview GraphValidator.ts
  * Provides GraphValidator functionality for the modifier package.
  */
-import type { DType, Graph, Node, Shape } from '@onnx9000/core';
+import type { DType, Graph, Node, Shape } from "@onnx9000/core";
 
 export interface GraphValidationResult {
   isValid: boolean;
@@ -61,7 +61,10 @@ export class GraphValidator {
     for (const node of this.graph.nodes) {
       let consumed = false;
       for (const out of node.outputs) {
-        if (consumedEdges.has(out) || this.graph.outputs.some((o) => o.name === out)) {
+        if (
+          consumedEdges.has(out) ||
+          this.graph.outputs.some((o) => o.name === out)
+        ) {
           consumed = true;
           break;
         }
@@ -75,7 +78,7 @@ export class GraphValidator {
     for (const node of this.graph.nodes) {
       for (const inp of node.inputs) {
         // empty strings are often used for optional inputs in ONNX
-        if (inp !== '' && !producedEdges.has(inp)) {
+        if (inp !== "" && !producedEdges.has(inp)) {
           result.unresolvedInputs.push(inp);
         }
       }
@@ -136,7 +139,7 @@ export class GraphValidator {
     }
 
     for (const node of this.graph.nodes) {
-      if (node.opType === 'MatMul' && node.inputs.length === 2) {
+      if (node.opType === "MatMul" && node.inputs.length === 2) {
         const shapeA = shapes.get(node.inputs[0]!);
         const shapeB = shapes.get(node.inputs[1]!);
         if (shapeA && shapeB && shapeA.length >= 2 && shapeB.length >= 2) {
@@ -146,17 +149,21 @@ export class GraphValidator {
             kA !== kB &&
             kA !== -1 &&
             kB !== -1 &&
-            typeof kA === 'number' &&
-            typeof kB === 'number'
+            typeof kA === "number" &&
+            typeof kB === "number"
           ) {
-            result.dimensionMismatches.push(`MatMul ${node.name}: ${kA} != ${kB}`);
+            result.dimensionMismatches.push(
+              `MatMul ${node.name}: ${kA} != ${kB}`,
+            );
           }
         }
 
         const typeA = dtypes.get(node.inputs[0]!);
         const typeB = dtypes.get(node.inputs[1]!);
         if (typeA && typeB && typeA !== typeB) {
-          result.typeMismatches.push(`MatMul ${node.name}: ${typeA} != ${typeB}`);
+          result.typeMismatches.push(
+            `MatMul ${node.name}: ${typeA} != ${typeB}`,
+          );
         }
       }
     }

@@ -9,7 +9,7 @@ vi.mock('cytoscape', () => {
     layout: () => ({ run: vi.fn() }),
     center: vi.fn(),
     on: vi.fn(),
-    destroy: vi.fn(),
+    destroy: vi.fn()
   });
   return { default: cytoscape };
 });

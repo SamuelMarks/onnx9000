@@ -6,7 +6,7 @@ describe('PipelineNode', () => {
   it('should create node', () => {
     const node = new PipelineNode(
       { sourceFramework: 'a', targetFramework: 'b', activeFile: '' },
-      'desc',
+      'desc'
     );
     expect(node.id).toBeDefined();
     expect(node.timestamp).toBeDefined();

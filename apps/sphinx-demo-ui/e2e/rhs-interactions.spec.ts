@@ -17,7 +17,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should verify changing RHS dropdown triggers the conversion flow / updates tree', async ({
-    page,
+    page
   }) => {
     const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');
@@ -43,7 +43,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should verify clicking an RHS file displays read-only content in RHS editor', async ({
-    page,
+    page
   }) => {
     const tree = page.locator('.demo-pane-rhs .demo-file-tree');
     const editorLines = page.locator('.demo-pane-rhs .demo-editor-container .view-lines');
@@ -87,7 +87,7 @@ test.describe('RHS (Target) Implementation', () => {
     // Wait for the ONNX to be generated (using the run button text as proxy)
     await expect(page.locator('.demo-pane-lhs .demo-btn-run-conversion')).toHaveText(
       'Run Conversion',
-      { timeout: 15000 },
+      { timeout: 15000 }
     );
 
     await button.click({ force: true });
@@ -155,7 +155,7 @@ test.describe('RHS (Target) Implementation', () => {
   });
 
   test('should simplify ONNX when Simplify (onnx-simplifier) target is selected', async ({
-    page,
+    page
   }) => {
     const dropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     const button = dropdown.locator('.demo-dropdown-button');

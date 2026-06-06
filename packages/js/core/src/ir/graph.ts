@@ -1,5 +1,5 @@
-import type { Node } from './node.js';
-import type { DType, Shape, Tensor } from './tensor.js';
+import type { Node } from "./node.js";
+import type { DType, Shape, Tensor } from "./tensor.js";
 
 /**
  * Represents metadata about a value (name, shape, dtype).
@@ -22,7 +22,7 @@ export class ValueInfo {
    */
   constructor(name: string, shape: Shape, dtype: DType) {
     this.id =
-      typeof crypto !== 'undefined' && crypto.randomUUID
+      typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
         : Math.random().toString(36).substring(2);
     this.name = name;
@@ -56,15 +56,15 @@ export class Graph {
   /** Map of opset domains to versions. */
   opsetImports: Record<string, number>;
   /** Name of the graph producer. */
-  producerName: string = '';
+  producerName: string = "";
   /** Version of the graph producer. */
-  producerVersion: string = '';
+  producerVersion: string = "";
   /** Version of the ONNX model. */
   modelVersion: number = 0;
   /** Domain of the graph. */
-  domain: string = '';
+  domain: string = "";
   /** Optional documentation string. */
-  docString: string = '';
+  docString: string = "";
   /** Custom metadata properties. */
   metadataProps: Record<string, string> = {};
 
@@ -74,7 +74,7 @@ export class Graph {
    */
   constructor(name: string) {
     this.id =
-      typeof crypto !== 'undefined' && crypto.randomUUID
+      typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
         : Math.random().toString(36).substring(2);
     this.name = name;
@@ -86,7 +86,7 @@ export class Graph {
     this.initializers = [];
     this.sparseInitializers = [];
     this.opsetImports = {};
-    this.docString = '';
+    this.docString = "";
     this.metadataProps = {};
   }
 

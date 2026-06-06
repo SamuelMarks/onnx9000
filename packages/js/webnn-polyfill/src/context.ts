@@ -8,29 +8,29 @@ import {
   InferenceSession,
   WasmProvider,
   WebGPUProvider,
-} from '@onnx9000/backend-web';
-import { Tensor } from '@onnx9000/core';
-import type { PolyfillMLGraph } from './graph.js';
+} from "@onnx9000/backend-web";
+import { Tensor } from "@onnx9000/core";
+import type { PolyfillMLGraph } from "./graph.js";
 import type {
   MLComputeResult,
   MLContext,
   MLContextOptions,
   MLOpSupportLimits,
-} from './interfaces.js';
-import { type MLTensorOptions, PolyfillMLTensor } from './tensor.js';
+} from "./interfaces.js";
+import { type MLTensorOptions, PolyfillMLTensor } from "./tensor.js";
 
 export class PolyfillMLContext implements MLContext {
   private providers: ExecutionProvider[] = [];
 
   constructor(options: MLContextOptions = {}) {
     this.options = options;
-    const deviceType = options.deviceType || 'cpu';
+    const deviceType = options.deviceType || "cpu";
 
     // 7. Route `deviceType: 'gpu'` requests directly to the `onnx9000` WebGPU backend.
     // 8. Route `deviceType: 'cpu'` requests directly to the `onnx9000` WASM SIMD backend.
-    if (deviceType === 'gpu') {
+    if (deviceType === "gpu") {
       this.providers.push(new WebGPUProvider());
-    } else if (deviceType === 'cpu') {
+    } else if (deviceType === "cpu") {
       this.providers.push(new WasmProvider());
     } else {
       // Default to WASM if unknown or npu explicitly requested on polyfill
@@ -44,7 +44,10 @@ export class PolyfillMLContext implements MLContext {
   }
 
   // 165. Implement context.readTensor(tensor, arrayBuffer) copying data natively.
-  async readTensor(tensor: PolyfillMLTensor, arrayBuffer: ArrayBuffer): Promise<void> {
+  async readTensor(
+    tensor: PolyfillMLTensor,
+    arrayBuffer: ArrayBuffer,
+  ): Promise<void> {
     if (tensor.internalBuffer) {
       const src = new Uint8Array(tensor.internalBuffer);
       const dst = new Uint8Array(arrayBuffer);
@@ -53,7 +56,10 @@ export class PolyfillMLContext implements MLContext {
   }
 
   // 166. Implement context.writeTensor(tensor, arrayBuffer) copying data natively.
-  async writeTensor(tensor: PolyfillMLTensor, arrayBuffer: ArrayBuffer): Promise<void> {
+  async writeTensor(
+    tensor: PolyfillMLTensor,
+    arrayBuffer: ArrayBuffer,
+  ): Promise<void> {
     if (tensor.internalBuffer) {
       const src = new Uint8Array(arrayBuffer);
       const dst = new Uint8Array(tensor.internalBuffer);
@@ -69,7 +75,9 @@ export class PolyfillMLContext implements MLContext {
   ): Promise<void> {
     // Dispatch is similar to compute but doesn't return anything natively, just writes directly to output tensors
     const session = new InferenceSession(graph.onnxGraph, this.providers);
-    const outputNames = graph.onnxGraph.outputs.map((o: ReturnType<typeof JSON.parse>) => o.name);
+    const outputNames = graph.onnxGraph.outputs.map(
+      (o: ReturnType<typeof JSON.parse>) => o.name,
+    );
 
     const onnxInputs: Record<string, Tensor> = {};
     for (const [name, tensor] of Object.entries(inputs)) {
@@ -77,7 +85,7 @@ export class PolyfillMLContext implements MLContext {
         (i: ReturnType<typeof JSON.parse>) => i.name === name,
       );
       if (!inputInfo) {
-        throw new DOMException(`Input ${name} not found in graph`, 'DataError');
+        throw new DOMException(`Input ${name} not found in graph`, "DataError");
       }
       onnxInputs[name] = new Tensor(
         name,
@@ -89,7 +97,10 @@ export class PolyfillMLContext implements MLContext {
       );
     }
 
-    const onnxOutputs: Record<string, Tensor> = await session.run(outputNames, onnxInputs);
+    const onnxOutputs: Record<string, Tensor> = await session.run(
+      outputNames,
+      onnxInputs,
+    );
 
     for (const [name, outTensor] of Object.entries(onnxOutputs)) {
       if (outputs[name]?.internalBuffer && outTensor.data) {
@@ -111,7 +122,9 @@ export class PolyfillMLContext implements MLContext {
     outputs: Record<string, ArrayBufferView>,
   ): Promise<MLComputeResult> {
     const session = new InferenceSession(graph.onnxGraph, this.providers);
-    const outputNames = graph.onnxGraph.outputs.map((o: ReturnType<typeof JSON.parse>) => o.name);
+    const outputNames = graph.onnxGraph.outputs.map(
+      (o: ReturnType<typeof JSON.parse>) => o.name,
+    );
 
     const onnxInputs: Record<string, Tensor> = {};
     for (const [name, data] of Object.entries(inputs)) {
@@ -119,14 +132,24 @@ export class PolyfillMLContext implements MLContext {
         (i: ReturnType<typeof JSON.parse>) => i.name === name,
       );
       if (!inputInfo) {
-        throw new DOMException(`Input ${name} not found in graph`, 'DataError');
+        throw new DOMException(`Input ${name} not found in graph`, "DataError");
       }
       // 171. Extract ArrayBufferView data dynamically from inputs.
-      onnxInputs[name] = new Tensor(name, inputInfo.shape, inputInfo.dtype, false, false, data);
+      onnxInputs[name] = new Tensor(
+        name,
+        inputInfo.shape,
+        inputInfo.dtype,
+        false,
+        false,
+        data,
+      );
     }
 
     // 172. Execute the onnx9000 internal session natively.
-    const onnxOutputs: Record<string, Tensor> = await session.run(outputNames, onnxInputs);
+    const onnxOutputs: Record<string, Tensor> = await session.run(
+      outputNames,
+      onnxInputs,
+    );
 
     // 173. Copy output values into the user's outputs ArrayBufferView directly.
     for (const [name, outTensor] of Object.entries(onnxOutputs)) {
@@ -156,7 +179,16 @@ export class PolyfillMLContext implements MLContext {
   opSupportLimits(): MLOpSupportLimits {
     return {
       input: {
-        dataTypes: ['float32', 'float16', 'int32', 'uint32', 'int8', 'uint8', 'int64', 'uint64'],
+        dataTypes: [
+          "float32",
+          "float16",
+          "int32",
+          "uint32",
+          "int8",
+          "uint8",
+          "int64",
+          "uint64",
+        ],
       },
     };
   }

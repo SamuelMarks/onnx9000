@@ -1,20 +1,20 @@
-import { describe, expect, it, vi } from 'vitest';
-import { serveNode } from '../src/node.js';
+import { describe, expect, it, vi } from "vitest";
+import { serveNode } from "../src/node.js";
 
 let capturedHandler: Object;
-vi.mock('node:http2', () => ({
+vi.mock("node:http2", () => ({
   createServer: (handler: Object) => {
     capturedHandler = handler;
     return { listen: vi.fn() } as any;
   },
 }));
 
-describe('Node Serve HTTP/2 Mock', () => {
-  it('handles HTTP/2 paths', async () => {
+describe("Node Serve HTTP/2 Mock", () => {
+  it("handles HTTP/2 paths", async () => {
     const mockServer = {
       fetch: vi.fn().mockResolvedValue({
         status: 200,
-        headers: new Headers({ 'x-test': '1' }),
+        headers: new Headers({ "x-test": "1" }),
         body: null,
       }),
     };
@@ -25,13 +25,13 @@ describe('Node Serve HTTP/2 Mock', () => {
     const mockReq = {
       socket: { encrypted: true },
       headers: {
-        ':authority': 'localhost',
-        ':method': 'POST',
-        'array-head': ['a', 'b'],
+        ":authority": "localhost",
+        ":method": "POST",
+        "array-head": ["a", "b"],
       },
-      url: '/test',
+      url: "/test",
       [Symbol.asyncIterator]: async function* () {
-        yield Buffer.from('hello');
+        yield Buffer.from("hello");
       },
     };
 
@@ -47,10 +47,10 @@ describe('Node Serve HTTP/2 Mock', () => {
 
     // Test the crash path for http2
     const crashServer = {
-      fetch: vi.fn().mockRejectedValue(new Error('crash')),
+      fetch: vi.fn().mockRejectedValue(new Error("crash")),
     };
     serveNode(crashServer as any, 0, true);
     await capturedHandler(mockReq, mockRes);
-    expect(mockRes.stream.respond).toHaveBeenCalledWith({ ':status': 500 });
+    expect(mockRes.stream.respond).toHaveBeenCalledWith({ ":status": 500 });
   });
 });

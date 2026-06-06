@@ -63,6 +63,7 @@ export class PagedKVCache implements KVCache {
   /** Mapping of layer index to block pointers */
   public blockTables: Map<number, number[]> = new Map();
   private pages: Map<number, { keys: Tensor; values: Tensor }[]> = new Map();
+  private pageSize: number;
 
   /**
    * Create a new PagedKVCache.
@@ -108,6 +109,7 @@ export class PagedKVCache implements KVCache {
  */
 export class CrossLayerKVCache implements KVCache {
   private caches: Map<number, KVCache> = new Map();
+  private numLayers: number;
 
   /**
    * Create a cross-layer manager.
@@ -233,6 +235,7 @@ export class State {
 export class MultiHeadAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numHeads: number;
+  private headDim: number;
 
   /**
    * Create an MHA cache.
@@ -278,6 +281,7 @@ export class MultiHeadAttentionCache implements KVCache {
 export class GroupedQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number;
+  private headDim: number;
 
   /**
    * Create a GQA cache.
@@ -323,6 +327,7 @@ export class GroupedQueryAttentionCache implements KVCache {
 export class MultiQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number = 1;
+  private headDim: number;
 
   /**
    * Create an MQA cache.
@@ -566,11 +571,6 @@ export class PositionalEmbeddingUtils {
  * Implementation of a quantized (low-precision) KV Cache.
  */
 export class QuantizedKVCache implements KVCache {
-  /**
-   * Create a quantized cache.
-   * @param dtype Target quantization data type (e.g., 'int8')
-   */
-  constructor(_dtype: string = 'int8') {}
   /** No-op clear. */
   clear(): void {}
   /** No-op update. */
@@ -585,11 +585,6 @@ export class QuantizedKVCache implements KVCache {
  * Implementation of a KV Cache that offloads tensors to secondary storage (CPU or disk).
  */
 export class OffloadedKVCache implements KVCache {
-  /**
-   * Create an offloaded cache.
-   * @param maxVramSize Maximum VRAM threshold before offloading occurs
-   */
-  constructor(_maxVramSize: number) {}
   /** No-op clear. */
   clear(): void {}
   /** No-op update. */

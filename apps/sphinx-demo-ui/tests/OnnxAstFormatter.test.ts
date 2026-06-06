@@ -14,9 +14,9 @@ describe('OnnxAstFormatter', () => {
           opType: 'Identity',
           inputs: ['in'],
           outputs: ['out'],
-          attributes: { test: 123 },
-        },
-      ],
+          attributes: { test: 123 }
+        }
+      ]
     });
     expect(text).toContain('op_type: "Identity"');
     expect(text).toContain('test');

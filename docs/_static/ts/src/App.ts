@@ -317,9 +317,9 @@ export class App {
 
               // 280. Extract raw weights to .bin buffer
               let totalBytes = 0;
-              this.currentModel.initializers.forEach(
-                (i) => (totalBytes += i.rawData?.byteLength || 0),
-              );
+              this.currentModel.initializers.forEach((i) => {
+                totalBytes += i.rawData?.byteLength || 0;
+              });
               const bin = new Uint8Array(totalBytes);
               let offset = 0;
 

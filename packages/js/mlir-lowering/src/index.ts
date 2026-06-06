@@ -4,6 +4,6 @@
  */
 export class Mlirlowering {
   run() {
-    return '[mlir-lowering] processed';
+    return "[mlir-lowering] processed";
   }
 }

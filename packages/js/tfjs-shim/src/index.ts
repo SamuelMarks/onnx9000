@@ -5,14 +5,14 @@
 // @onnx9000/tfjs-shim - Drop-in replacement for TensorFlow.js
 
 // --- Global Config and Envs ---
-let currentBackend = 'webgpu';
+let currentBackend = "webgpu";
 let _isProdMode = false;
 let _isDebugMode = false;
 
 /** Core version of the engine. */
-export const version_core = '4.10.0';
+export const version_core = "4.10.0";
 /** TFJS-compatible version of the engine. */
-export const version_tfjs = '4.10.0';
+export const version_tfjs = "4.10.0";
 /** Version information object. */
 export const version = {
   tfjs: version_tfjs,
@@ -114,7 +114,11 @@ export function memory(): {
  * @returns A promise that resolves to profiling results.
  */
 export async function profile(
-  f: () => Promise<Tensor | Tensor[] | undefined> | Tensor | Tensor[] | undefined,
+  f: () =>
+    | Promise<Tensor | Tensor[] | undefined>
+    | Tensor
+    | Tensor[]
+    | undefined,
 ): Promise<{
   newBytes: number;
   newTensors: number;
@@ -149,7 +153,7 @@ export function disposeVariables(): void {
 
 // --- Tensor Core ---
 /** Data type for tensors. */
-export type DataType = 'float32' | 'int32' | 'bool' | 'complex64' | 'string';
+export type DataType = "float32" | "int32" | "bool" | "complex64" | "string";
 /** A union of supported typed arrays. */
 export type TypedArray = Float32Array | Int32Array | Uint8Array;
 
@@ -182,7 +186,11 @@ export class Tensor {
    * @param dtype The data type of the tensor.
    * @param dataArray The underlying data array.
    */
-  constructor(shape: number[], dtype: DataType, dataArray: (number | string | boolean)[]) {
+  constructor(
+    shape: number[],
+    dtype: DataType,
+    dataArray: (number | string | boolean)[],
+  ) {
     this.shape = shape;
     this.dtype = dtype;
     this.dataArray = dataArray;
@@ -199,12 +207,16 @@ export class Tensor {
    * @returns A promise that resolves to the tensor data as a TypedArray or an array of strings.
    */
   async data(): Promise<TypedArray | string[]> {
-    if (this.dtype === 'string')
-      return new Array(this.size).fill(this.dataArray[0] || '') as string[];
-    if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
-    if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
-    if (this.dtype === 'bool')
-      return new Uint8Array((this.dataArray as boolean[]).map((b) => (b ? 1 : 0)));
+    if (this.dtype === "string")
+      return new Array(this.size).fill(this.dataArray[0] || "") as string[];
+    if (this.dtype === "float32")
+      return new Float32Array(this.dataArray as number[]);
+    if (this.dtype === "int32")
+      return new Int32Array(this.dataArray as number[]);
+    if (this.dtype === "bool")
+      return new Uint8Array(
+        (this.dataArray as boolean[]).map((b) => (b ? 1 : 0)),
+      );
     return new Float32Array(this.dataArray as number[]);
   }
 
@@ -213,12 +225,16 @@ export class Tensor {
    * @returns The tensor data as a TypedArray or an array of strings.
    */
   dataSync(): TypedArray | string[] {
-    if (this.dtype === 'string')
-      return new Array(this.size).fill(this.dataArray[0] || '') as string[];
-    if (this.dtype === 'float32') return new Float32Array(this.dataArray as number[]);
-    if (this.dtype === 'int32') return new Int32Array(this.dataArray as number[]);
-    if (this.dtype === 'bool')
-      return new Uint8Array((this.dataArray as boolean[]).map((b) => (b ? 1 : 0)));
+    if (this.dtype === "string")
+      return new Array(this.size).fill(this.dataArray[0] || "") as string[];
+    if (this.dtype === "float32")
+      return new Float32Array(this.dataArray as number[]);
+    if (this.dtype === "int32")
+      return new Int32Array(this.dataArray as number[]);
+    if (this.dtype === "bool")
+      return new Uint8Array(
+        (this.dataArray as boolean[]).map((b) => (b ? 1 : 0)),
+      );
     return new Float32Array(this.dataArray as number[]);
   }
 
@@ -236,7 +252,8 @@ export class Tensor {
    */
   arraySync(): NestedArray<number | string | boolean> {
     if (this.rank === 0) return this.dataArray[0] as number | string | boolean;
-    if (this.rank === 1) return Array.from(this.dataArray) as (number | string | boolean)[];
+    if (this.rank === 1)
+      return Array.from(this.dataArray) as (number | string | boolean)[];
     return Array.from(this.dataArray) as NestedArray<number | string | boolean>; // Simplified flat array for now to ensure typings
   }
 
@@ -312,21 +329,26 @@ export type NestedArray<T> = T | NestedArray<T>[];
  * @returns A new tensor.
  */
 export function tensor(
-  values: number | string | boolean | NestedArray<number | string | boolean> | TypedArray,
+  values:
+    | number
+    | string
+    | boolean
+    | NestedArray<number | string | boolean>
+    | TypedArray,
   shape?: number[],
   dtype?: DataType,
 ): Tensor {
   const flatVals = Array.isArray(values)
     ? (values as (number | string | boolean)[]).flat(Infinity)
     : values !== null &&
-        typeof values === 'object' &&
-        'length' in values &&
-        typeof (values as { length: number }).length === 'number' &&
-        typeof values !== 'string'
+        typeof values === "object" &&
+        "length" in values &&
+        typeof (values as { length: number }).length === "number" &&
+        typeof values !== "string"
       ? Array.from(values as Iterable<number | string | boolean>)
       : [values as number | string | boolean];
   const s = shape || [flatVals.length];
-  const d = dtype || 'float32';
+  const d = dtype || "float32";
   return new Tensor(s, d, flatVals as (number | string | boolean)[]);
 }
 
@@ -424,7 +446,10 @@ export function tensor6d(
  * @param dtype The data type of the tensor.
  * @returns A new scalar tensor.
  */
-export function scalar(value: number | string | boolean, dtype?: DataType): Tensor {
+export function scalar(
+  value: number | string | boolean,
+  dtype?: DataType,
+): Tensor {
   return tensor([value], [], dtype);
 }
 
@@ -440,7 +465,11 @@ export function buffer(
   dtype?: DataType,
   values?: (number | string | boolean)[] | TypedArray,
 ): Tensor {
-  return tensor(values || new Array(shape.reduce((a, b) => a * b, 1)).fill(0), shape, dtype);
+  return tensor(
+    values || new Array(shape.reduce((a, b) => a * b, 1)).fill(0),
+    shape,
+    dtype,
+  );
 }
 
 /**
@@ -481,9 +510,12 @@ export function tidy<T>(nameOrFn: string | (() => T), fn?: () => T): T {
 
   const extractTensors = (res: RecursiveTensor): Tensor[] => {
     if (res instanceof Tensor) return [res];
-    if (Array.isArray(res)) return (res as RecursiveTensor[]).flatMap(extractTensors);
-    if (res && typeof res === 'object') {
-      return Object.values(res as Record<string, RecursiveTensor>).flatMap(extractTensors);
+    if (Array.isArray(res))
+      return (res as RecursiveTensor[]).flatMap(extractTensors);
+    if (res && typeof res === "object") {
+      return Object.values(res as Record<string, RecursiveTensor>).flatMap(
+        extractTensors,
+      );
     }
     return [];
   };
@@ -515,14 +547,16 @@ export function keep(x: Tensor): Tensor {
  * Disposes tensors to release memory.
  * @param tensors The tensor or collection of tensors to dispose.
  */
-export function dispose(tensors: Tensor | Tensor[] | Record<string, Tensor>): void {
+export function dispose(
+  tensors: Tensor | Tensor[] | Record<string, Tensor>,
+): void {
   if (tensors instanceof Tensor) {
     tensors.dispose();
   } else if (Array.isArray(tensors)) {
     tensors.forEach((t) => {
       t.dispose();
     });
-  } else if (typeof tensors === 'object' && tensors !== null) {
+  } else if (typeof tensors === "object" && tensors !== null) {
     Object.values(tensors).forEach((t) => {
       if (t instanceof Tensor) {
         t.dispose();
@@ -540,11 +574,11 @@ export function dispose(tensors: Tensor | Tensor[] | Record<string, Tensor>): vo
 function makeElementwise(name: string, op: (a: number, b: number) => number) {
   return (a: Tensor | number, b: Tensor | number): Tensor => {
     const aTensor =
-      typeof a === 'number' || typeof a === 'boolean'
+      typeof a === "number" || typeof a === "boolean"
         ? scalar(a as number | boolean)
         : (a as Tensor);
     const bTensor =
-      typeof b === 'number' || typeof b === 'boolean'
+      typeof b === "number" || typeof b === "boolean"
         ? scalar(b as number | boolean)
         : (b as Tensor);
 
@@ -559,7 +593,10 @@ function makeElementwise(name: string, op: (a: number, b: number) => number) {
       const valB = bTensor.nData[i % bTensor.size] as number;
       newData[i] = op(valA, valB);
     }
-    const outShape = aTensor.size >= bTensor.size ? aTensor.shape.slice() : bTensor.shape.slice();
+    const outShape =
+      aTensor.size >= bTensor.size
+        ? aTensor.shape.slice()
+        : bTensor.shape.slice();
     return new Tensor(outShape, aTensor.dtype, newData);
   };
 }
@@ -592,89 +629,102 @@ function makeBinary(_name: string, op: (a: number, b: number) => number) {
 }
 
 /** Adds two tensors element-wise. */
-export const add = makeElementwise('add', (a, b) => a + b);
+export const add = makeElementwise("add", (a, b) => a + b);
 /** Subtracts two tensors element-wise. */
-export const sub = makeElementwise('sub', (a, b) => a - b);
+export const sub = makeElementwise("sub", (a, b) => a - b);
 /** Multiplies two tensors element-wise. */
-export const mul = makeElementwise('mul', (a, b) => a * b);
+export const mul = makeElementwise("mul", (a, b) => a * b);
 /** Divides two tensors element-wise. */
-export const div = makeElementwise('div', (a, b) => a / b);
+export const div = makeElementwise("div", (a, b) => a / b);
 /** Divides two tensors element-wise, returning 0 if the divisor is 0. */
-export const divNoNan = makeElementwise('divNoNan', (a, b) => (b === 0 ? 0 : a / b));
+export const divNoNan = makeElementwise("divNoNan", (a, b) =>
+  b === 0 ? 0 : a / b,
+);
 /** Divides two tensors element-wise and floors the result. */
-export const floorDiv = makeElementwise('floorDiv', (a, b) => Math.floor(a / b));
+export const floorDiv = makeElementwise("floorDiv", (a, b) =>
+  Math.floor(a / b),
+);
 /** Returns the element-wise maximum of two tensors. */
-export const maximum = makeElementwise('maximum', (a, b) => Math.max(a, b));
+export const maximum = makeElementwise("maximum", (a, b) => Math.max(a, b));
 /** Returns the element-wise minimum of two tensors. */
-export const minimum = makeElementwise('minimum', (a, b) => Math.min(a, b));
+export const minimum = makeElementwise("minimum", (a, b) => Math.min(a, b));
 /** Returns the element-wise remainder of division. */
-export const mod = makeElementwise('mod', (a, b) => a % b);
+export const mod = makeElementwise("mod", (a, b) => a % b);
 /** Returns the element-wise power of two tensors. */
-export const pow = makeElementwise('pow', (a, b) => a ** b);
+export const pow = makeElementwise("pow", (a, b) => a ** b);
 /** Returns the element-wise squared difference of two tensors. */
-export const squaredDifference = makeElementwise('squaredDifference', (a, b) => (a - b) ** 2);
+export const squaredDifference = makeElementwise(
+  "squaredDifference",
+  (a, b) => (a - b) ** 2,
+);
 
 /** Returns the element-wise absolute value of a tensor. */
-export const abs = makeUnary('abs', Math.abs);
+export const abs = makeUnary("abs", Math.abs);
 /** Returns the element-wise arc cosine of a tensor. */
-export const acos = makeUnary('acos', Math.acos);
+export const acos = makeUnary("acos", Math.acos);
 /** Returns the element-wise inverse hyperbolic cosine of a tensor. */
-export const acosh = makeUnary('acosh', Math.acosh);
+export const acosh = makeUnary("acosh", Math.acosh);
 /** Returns the element-wise arc sine of a tensor. */
-export const asin = makeUnary('asin', Math.asin);
+export const asin = makeUnary("asin", Math.asin);
 /** Returns the element-wise inverse hyperbolic sine of a tensor. */
-export const asinh = makeUnary('asinh', Math.asinh);
+export const asinh = makeUnary("asinh", Math.asinh);
 /** Returns the element-wise arc tangent of a tensor. */
-export const atan = makeUnary('atan', Math.atan);
+export const atan = makeUnary("atan", Math.atan);
 /** Returns the element-wise inverse hyperbolic tangent of a tensor. */
-export const atanh = makeUnary('atanh', Math.atanh);
+export const atanh = makeUnary("atanh", Math.atanh);
 /** Returns the element-wise ceiling of a tensor. */
-export const ceil = makeUnary('ceil', Math.ceil);
+export const ceil = makeUnary("ceil", Math.ceil);
 /** Returns the element-wise cosine of a tensor. */
-export const cos = makeUnary('cos', Math.cos);
+export const cos = makeUnary("cos", Math.cos);
 /** Returns the element-wise hyperbolic cosine of a tensor. */
-export const cosh = makeUnary('cosh', Math.cosh);
+export const cosh = makeUnary("cosh", Math.cosh);
 /** Returns the element-wise error function of a tensor (approximation). */
-export const erf = makeUnary('erf', (x) => Math.tanh(x)); // approx
+export const erf = makeUnary("erf", (x) => Math.tanh(x)); // approx
 /** Returns the element-wise exponential of a tensor. */
-export const exp = makeUnary('exp', Math.exp);
+export const exp = makeUnary("exp", Math.exp);
 /** Returns the element-wise exponential minus 1 of a tensor. */
-export const expm1 = makeUnary('expm1', Math.expm1);
+export const expm1 = makeUnary("expm1", Math.expm1);
 /** Returns the element-wise floor of a tensor. */
-export const floor = makeUnary('floor', Math.floor);
+export const floor = makeUnary("floor", Math.floor);
 /** Returns the element-wise check if finite for a tensor. */
-export const isFinite = makeUnary('isFinite', (x) => (Number.isFinite(x) ? 1 : 0));
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Must match TF.js API
+export const isFinite = makeUnary("isFinite", (x) =>
+  Number.isFinite(x) ? 1 : 0,
+);
 /** Returns the element-wise check if infinite for a tensor. */
-export const isInf = makeUnary('isInf', (x) => (!Number.isFinite(x) && !Number.isNaN(x) ? 1 : 0));
+export const isInf = makeUnary("isInf", (x) =>
+  !Number.isFinite(x) && !Number.isNaN(x) ? 1 : 0,
+);
 /** Returns the element-wise check if NaN for a tensor. */
-export const isNaN = makeUnary('isNaN', (x) => (Number.isNaN(x) ? 1 : 0));
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Must match TF.js API
+export const isNaN = makeUnary("isNaN", (x) => (Number.isNaN(x) ? 1 : 0));
 /** Returns the element-wise natural logarithm of a tensor. */
-export const log = makeUnary('log', Math.log);
+export const log = makeUnary("log", Math.log);
 /** Returns the element-wise natural logarithm of 1 + input of a tensor. */
-export const log1p = makeUnary('log1p', Math.log1p);
+export const log1p = makeUnary("log1p", Math.log1p);
 /** Returns the element-wise negation of a tensor. */
-export const neg = makeUnary('neg', (x) => -x);
+export const neg = makeUnary("neg", (x) => -x);
 /** Returns the element-wise reciprocal of a tensor. */
-export const reciprocal = makeUnary('reciprocal', (x) => 1 / x);
+export const reciprocal = makeUnary("reciprocal", (x) => 1 / x);
 /** Returns the element-wise rounding of a tensor. */
-export const round = makeUnary('round', Math.round);
+export const round = makeUnary("round", Math.round);
 /** Returns the element-wise reciprocal square root of a tensor. */
-export const rsqrt = makeUnary('rsqrt', (x) => 1 / Math.sqrt(x));
+export const rsqrt = makeUnary("rsqrt", (x) => 1 / Math.sqrt(x));
 /** Returns the element-wise sign of a tensor. */
-export const sign = makeUnary('sign', Math.sign);
+export const sign = makeUnary("sign", Math.sign);
 /** Returns the element-wise sine of a tensor. */
-export const sin = makeUnary('sin', Math.sin);
+export const sin = makeUnary("sin", Math.sin);
 /** Returns the element-wise hyperbolic sine of a tensor. */
-export const sinh = makeUnary('sinh', Math.sinh);
+export const sinh = makeUnary("sinh", Math.sinh);
 /** Returns the element-wise square root of a tensor. */
-export const sqrt = makeUnary('sqrt', Math.sqrt);
+export const sqrt = makeUnary("sqrt", Math.sqrt);
 /** Returns the element-wise square of a tensor. */
-export const square = makeUnary('square', (x) => x * x);
+export const square = makeUnary("square", (x) => x * x);
 /** Returns the element-wise tangent of a tensor. */
-export const tan = makeUnary('tan', Math.tan);
+export const tan = makeUnary("tan", Math.tan);
 
 /** Returns the element-wise arc tangent of y/x. */
-export const atan2 = makeElementwise('atan2', Math.atan2);
+export const atan2 = makeElementwise("atan2", Math.atan2);
 
 /**
  * Returns a tensor of 1s if x > 0, and alpha otherwise.
@@ -683,7 +733,7 @@ export const atan2 = makeElementwise('atan2', Math.atan2);
  * @returns Resulting tensor.
  */
 export function step(x: Tensor, alpha: number = 0.0): Tensor {
-  return makeUnary('step', (v) => (v > 0 ? 1 : alpha))(x);
+  return makeUnary("step", (v) => (v > 0 ? 1 : alpha))(x);
 }
 
 /**
@@ -692,7 +742,8 @@ export function step(x: Tensor, alpha: number = 0.0): Tensor {
  * @returns Sum of tensors.
  */
 export function addN(tensors: Tensor[]): Tensor {
-  if (tensors.length === 0) throw new Error('addN requires at least one tensor');
+  if (tensors.length === 0)
+    throw new Error("addN requires at least one tensor");
   let res = tensors[0];
   for (let i = 1; i < tensors.length; i++) res = add(res, tensors[i]);
   return res;
@@ -706,7 +757,12 @@ export function addN(tensors: Tensor[]): Tensor {
  * @param transposeB Whether to transpose b.
  * @returns Resulting tensor.
  */
-export function matMul(a: Tensor, b: Tensor, transposeA = false, transposeB = false): Tensor {
+export function matMul(
+  a: Tensor,
+  b: Tensor,
+  transposeA = false,
+  transposeB = false,
+): Tensor {
   const rowsA = transposeA ? a.shape[1] : a.shape[0];
   const colsA = transposeA ? a.shape[0] : a.shape[1];
   const rowsB = transposeB ? b.shape[1] : b.shape[0];
@@ -755,16 +811,18 @@ export function outerProduct(a: Tensor, b: Tensor): Tensor {
  */
 export function norm(
   x: Tensor,
-  ord: number | string = 'euclidean',
+  ord: number | string = "euclidean",
   _axis?: number | number[],
   keepDims = false,
 ): Tensor {
   let val = 0;
-  if (ord === 'euclidean' || ord === 2) {
-    val = Math.sqrt(x.nData.reduce((acc, v) => acc + (v as number) * (v as number), 0));
+  if (ord === "euclidean" || ord === 2) {
+    val = Math.sqrt(
+      x.nData.reduce((acc, v) => acc + (v as number) * (v as number), 0),
+    );
   } else if (ord === 1) {
     val = x.nData.reduce((acc, v) => acc + Math.abs(v as number), 0);
-  } else if (ord === Infinity || ord === 'inf') {
+  } else if (ord === Infinity || ord === "inf") {
     val = Math.max(...x.nData.map((v) => Math.abs(v as number)));
   }
   return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [val]);
@@ -784,19 +842,19 @@ export function conv1d(
   x: Tensor,
   filter: Tensor,
   stride: number,
-  pad: 'valid' | 'same' | number,
-  dataFormat: 'NWC' | 'NCW' = 'NWC',
+  pad: "valid" | "same" | number,
+  dataFormat: "NWC" | "NCW" = "NWC",
   dilation: number = 1,
 ): Tensor {
   const [batch, inWidth, inChannels] =
-    dataFormat === 'NWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[1]];
+    dataFormat === "NWC" ? x.shape : [x.shape[0], x.shape[2], x.shape[1]];
   const [filterWidth, inFilters, outFilters] = filter.shape;
   let padX = 0;
   let outWidth = Math.floor((inWidth - filterWidth) / stride + 1);
-  if (pad === 'same') {
+  if (pad === "same") {
     outWidth = Math.ceil(inWidth / stride);
     padX = Math.max(0, (outWidth - 1) * stride + filterWidth - inWidth);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padX = pad * 2;
     outWidth = Math.floor((inWidth + padX - filterWidth) / stride + 1);
   }
@@ -811,16 +869,17 @@ export function conv1d(
             const iw = ow * stride - leftPad + fw * dilation;
             if (iw >= 0 && iw < inWidth) {
               const inIdx =
-                dataFormat === 'NWC'
+                dataFormat === "NWC"
                   ? (b * inWidth + iw) * inChannels + ic
                   : (b * inChannels + ic) * inWidth + iw;
               const fIdx = (fw * inFilters + ic) * outFilters + oc;
-              sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
+              sum +=
+                (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
             }
           }
         }
         const outIdx =
-          dataFormat === 'NWC'
+          dataFormat === "NWC"
             ? (b * outWidth + ow) * outFilters + oc
             : (b * outFilters + oc) * outWidth + ow;
         outData[outIdx] = sum;
@@ -828,7 +887,9 @@ export function conv1d(
     }
   }
   const outShape =
-    dataFormat === 'NWC' ? [batch, outWidth, outFilters] : [batch, outFilters, outWidth];
+    dataFormat === "NWC"
+      ? [batch, outWidth, outFilters]
+      : [batch, outFilters, outWidth];
   return new Tensor(outShape, x.dtype, outData);
 }
 
@@ -846,8 +907,8 @@ export function conv2d(
   x: Tensor,
   filter: Tensor,
   strides: number | [number, number],
-  pad: 'valid' | 'same' | number,
-  dataFormat: 'NHWC' | 'NCHW' = 'NHWC',
+  pad: "valid" | "same" | number,
+  dataFormat: "NHWC" | "NCHW" = "NHWC",
   dilations: number | [number, number] = 1,
 ): Tensor {
   const strideY = Array.isArray(strides) ? strides[0] : strides;
@@ -855,18 +916,20 @@ export function conv2d(
   const dilY = Array.isArray(dilations) ? dilations[0] : dilations;
   const dilX = Array.isArray(dilations) ? dilations[1] : dilations;
   const [batch, inHeight, inWidth, inChannels] =
-    dataFormat === 'NHWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
+    dataFormat === "NHWC"
+      ? x.shape
+      : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
   const [filterHeight, filterWidth, inFilters, outFilters] = filter.shape;
   let padY = 0,
     padX = 0;
   let outHeight = Math.floor((inHeight - filterHeight) / strideY + 1);
   let outWidth = Math.floor((inWidth - filterWidth) / strideX + 1);
-  if (pad === 'same') {
+  if (pad === "same") {
     outHeight = Math.ceil(inHeight / strideY);
     outWidth = Math.ceil(inWidth / strideX);
     padY = Math.max(0, (outHeight - 1) * strideY + filterHeight - inHeight);
     padX = Math.max(0, (outWidth - 1) * strideX + filterWidth - inWidth);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padY = pad * 2;
     padX = pad * 2;
     outHeight = Math.floor((inHeight + padY - filterHeight) / strideY + 1);
@@ -887,17 +950,20 @@ export function conv2d(
                 const iw = ow * strideX - leftPad + fw * dilX;
                 if (ih >= 0 && ih < inHeight && iw >= 0 && iw < inWidth) {
                   const inIdx =
-                    dataFormat === 'NHWC'
+                    dataFormat === "NHWC"
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
-                  const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * outFilters + oc;
-                  sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
+                  const fIdx =
+                    ((fh * filterWidth + fw) * inFilters + ic) * outFilters +
+                    oc;
+                  sum +=
+                    (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
                 }
               }
             }
           }
           const outIdx =
-            dataFormat === 'NHWC'
+            dataFormat === "NHWC"
               ? ((b * outHeight + oh) * outWidth + ow) * outFilters + oc
               : ((b * outFilters + oc) * outHeight + oh) * outWidth + ow;
           outData[outIdx] = sum;
@@ -906,7 +972,7 @@ export function conv2d(
     }
   }
   const outShape =
-    dataFormat === 'NHWC'
+    dataFormat === "NHWC"
       ? [batch, outHeight, outWidth, outFilters]
       : [batch, outFilters, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
@@ -926,8 +992,8 @@ export function conv3d(
   x: Tensor,
   filter: Tensor,
   strides: number | [number, number, number],
-  pad: 'valid' | 'same',
-  dataFormat: 'NDHWC' | 'NCDHW' = 'NDHWC',
+  pad: "valid" | "same",
+  dataFormat: "NDHWC" | "NCDHW" = "NDHWC",
   dilations: number | [number, number, number] = 1,
 ): Tensor {
   const strideD = Array.isArray(strides) ? strides[0] : strides;
@@ -937,8 +1003,11 @@ export function conv3d(
   const dilH = Array.isArray(dilations) ? dilations[1] : dilations;
   const dilW = Array.isArray(dilations) ? dilations[2] : dilations;
   const [batch, inDepth, inHeight, inWidth, inChannels] =
-    dataFormat === 'NDHWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[3], x.shape[4], x.shape[1]];
-  const [filterDepth, filterHeight, filterWidth, inFilters, outFilters] = filter.shape;
+    dataFormat === "NDHWC"
+      ? x.shape
+      : [x.shape[0], x.shape[2], x.shape[3], x.shape[4], x.shape[1]];
+  const [filterDepth, filterHeight, filterWidth, inFilters, outFilters] =
+    filter.shape;
 
   let padD = 0,
     padH = 0,
@@ -947,7 +1016,7 @@ export function conv3d(
   let outHeight = Math.floor((inHeight - filterHeight) / strideH + 1);
   let outWidth = Math.floor((inWidth - filterWidth) / strideW + 1);
 
-  if (pad === 'same') {
+  if (pad === "same") {
     outDepth = Math.ceil(inDepth / strideD);
     outHeight = Math.ceil(inHeight / strideH);
     outWidth = Math.ceil(inWidth / strideW);
@@ -960,7 +1029,9 @@ export function conv3d(
   const topPad = Math.floor(padH / 2);
   const leftPad = Math.floor(padW / 2);
 
-  const outData = new Array(batch * outDepth * outHeight * outWidth * outFilters).fill(0);
+  const outData = new Array(
+    batch * outDepth * outHeight * outWidth * outFilters,
+  ).fill(0);
 
   for (let b = 0; b < batch; b++) {
     for (let od = 0; od < outDepth; od++) {
@@ -984,23 +1055,37 @@ export function conv3d(
                       iw < inWidth
                     ) {
                       const inIdx =
-                        dataFormat === 'NDHWC'
-                          ? (((b * inDepth + id) * inHeight + ih) * inWidth + iw) * inChannels + ic
-                          : (((b * inChannels + ic) * inDepth + id) * inHeight + ih) * inWidth + iw;
+                        dataFormat === "NDHWC"
+                          ? (((b * inDepth + id) * inHeight + ih) * inWidth +
+                              iw) *
+                              inChannels +
+                            ic
+                          : (((b * inChannels + ic) * inDepth + id) * inHeight +
+                              ih) *
+                              inWidth +
+                            iw;
                       const fIdx =
-                        (((fd * filterHeight + fh) * filterWidth + fw) * inFilters + ic) *
+                        (((fd * filterHeight + fh) * filterWidth + fw) *
+                          inFilters +
+                          ic) *
                           outFilters +
                         oc;
-                      sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
+                      sum +=
+                        (x.nData[inIdx] as number) *
+                        (filter.nData[fIdx] as number);
                     }
                   }
                 }
               }
             }
             const outIdx =
-              dataFormat === 'NDHWC'
-                ? (((b * outDepth + od) * outHeight + oh) * outWidth + ow) * outFilters + oc
-                : (((b * outFilters + oc) * outDepth + od) * outHeight + oh) * outWidth + ow;
+              dataFormat === "NDHWC"
+                ? (((b * outDepth + od) * outHeight + oh) * outWidth + ow) *
+                    outFilters +
+                  oc
+                : (((b * outFilters + oc) * outDepth + od) * outHeight + oh) *
+                    outWidth +
+                  ow;
             outData[outIdx] = sum;
           }
         }
@@ -1009,7 +1094,7 @@ export function conv3d(
   }
 
   const outShape =
-    dataFormat === 'NDHWC'
+    dataFormat === "NDHWC"
       ? [batch, outDepth, outHeight, outWidth, outFilters]
       : [batch, outFilters, outDepth, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
@@ -1029,8 +1114,8 @@ export function depthwiseConv2d(
   x: Tensor,
   filter: Tensor,
   strides: number | [number, number],
-  pad: 'valid' | 'same' | number,
-  dataFormat: 'NHWC' | 'NCHW' = 'NHWC',
+  pad: "valid" | "same" | number,
+  dataFormat: "NHWC" | "NCHW" = "NHWC",
   dilations: number | [number, number] = 1,
 ): Tensor {
   const strideY = Array.isArray(strides) ? strides[0] : strides;
@@ -1038,18 +1123,21 @@ export function depthwiseConv2d(
   const dilY = Array.isArray(dilations) ? dilations[0] : dilations;
   const dilX = Array.isArray(dilations) ? dilations[1] : dilations;
   const [batch, inHeight, inWidth, inChannels] =
-    dataFormat === 'NHWC' ? x.shape : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
-  const [filterHeight, filterWidth, inFilters, channelMultiplier] = filter.shape;
+    dataFormat === "NHWC"
+      ? x.shape
+      : [x.shape[0], x.shape[2], x.shape[3], x.shape[1]];
+  const [filterHeight, filterWidth, inFilters, channelMultiplier] =
+    filter.shape;
   let padY = 0,
     padX = 0;
   let outHeight = Math.floor((inHeight - filterHeight) / strideY + 1);
   let outWidth = Math.floor((inWidth - filterWidth) / strideX + 1);
-  if (pad === 'same') {
+  if (pad === "same") {
     outHeight = Math.ceil(inHeight / strideY);
     outWidth = Math.ceil(inWidth / strideX);
     padY = Math.max(0, (outHeight - 1) * strideY + filterHeight - inHeight);
     padX = Math.max(0, (outWidth - 1) * strideX + filterWidth - inWidth);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padY = pad * 2;
     padX = pad * 2;
     outHeight = Math.floor((inHeight + padY - filterHeight) / strideY + 1);
@@ -1073,16 +1161,20 @@ export function depthwiseConv2d(
                 const iw = ow * strideX - leftPad + fw * dilX;
                 if (ih >= 0 && ih < inHeight && iw >= 0 && iw < inWidth) {
                   const inIdx =
-                    dataFormat === 'NHWC'
+                    dataFormat === "NHWC"
                       ? ((b * inHeight + ih) * inWidth + iw) * inChannels + ic
                       : ((b * inChannels + ic) * inHeight + ih) * inWidth + iw;
-                  const fIdx = ((fh * filterWidth + fw) * inFilters + ic) * channelMultiplier + cm;
-                  sum += (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
+                  const fIdx =
+                    ((fh * filterWidth + fw) * inFilters + ic) *
+                      channelMultiplier +
+                    cm;
+                  sum +=
+                    (x.nData[inIdx] as number) * (filter.nData[fIdx] as number);
                 }
               }
             }
             const outIdx =
-              dataFormat === 'NHWC'
+              dataFormat === "NHWC"
                 ? ((b * outHeight + oh) * outWidth + ow) * outFilters + oc
                 : ((b * outFilters + oc) * outHeight + oh) * outWidth + ow;
             outData[outIdx] = sum;
@@ -1092,7 +1184,7 @@ export function depthwiseConv2d(
     }
   }
   const outShape =
-    dataFormat === 'NHWC'
+    dataFormat === "NHWC"
       ? [batch, outHeight, outWidth, outFilters]
       : [batch, outFilters, outHeight, outWidth];
   return new Tensor(outShape, x.dtype, outData);
@@ -1114,12 +1206,19 @@ export function separableConv2d(
   depthwiseFilter: Tensor,
   pointwiseFilter: Tensor,
   strides: number | [number, number],
-  pad: 'valid' | 'same',
+  pad: "valid" | "same",
   dilation: number | [number, number] = 1,
-  dataFormat: 'NHWC' | 'NCHW' = 'NHWC',
+  dataFormat: "NHWC" | "NCHW" = "NHWC",
 ): Tensor {
-  const depthwiseOut = depthwiseConv2d(x, depthwiseFilter, strides, pad, dataFormat, dilation);
-  return conv2d(depthwiseOut, pointwiseFilter, 1, 'valid', dataFormat, 1);
+  const depthwiseOut = depthwiseConv2d(
+    x,
+    depthwiseFilter,
+    strides,
+    pad,
+    dataFormat,
+    dilation,
+  );
+  return conv2d(depthwiseOut, pointwiseFilter, 1, "valid", dataFormat, 1);
 }
 
 /**
@@ -1136,7 +1235,7 @@ export function conv2dTranspose(
   filter: Tensor,
   outputShape: number[],
   strides: number | [number, number],
-  pad: 'valid' | 'same' | number,
+  pad: "valid" | "same" | number,
 ): Tensor {
   const strideY = Array.isArray(strides) ? strides[0] : strides;
   const strideX = Array.isArray(strides) ? strides[1] : strides;
@@ -1147,10 +1246,10 @@ export function conv2dTranspose(
 
   let padY = 0,
     padX = 0;
-  if (pad === 'same') {
+  if (pad === "same") {
     padY = Math.max(0, (inHeight - 1) * strideY + filterHeight - outHeight);
     padX = Math.max(0, (inWidth - 1) * strideX + filterWidth - outWidth);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padY = pad * 2;
     padX = pad * 2;
   }
@@ -1163,16 +1262,21 @@ export function conv2dTranspose(
     for (let ih = 0; ih < inHeight; ih++) {
       for (let iw = 0; iw < inWidth; iw++) {
         for (let ic = 0; ic < inFilters; ic++) {
-          const val = x.nData[((b * inHeight + ih) * inWidth + iw) * inFilters + ic] as number;
+          const val = x.nData[
+            ((b * inHeight + ih) * inWidth + iw) * inFilters + ic
+          ] as number;
           for (let fh = 0; fh < filterHeight; fh++) {
             for (let fw = 0; fw < filterWidth; fw++) {
               const oh = ih * strideY - topPad + fh;
               const ow = iw * strideX - leftPad + fw;
               if (oh >= 0 && oh < outHeight && ow >= 0 && ow < outWidth) {
                 for (let oc = 0; oc < outFilters; oc++) {
-                  const fIdx = ((fh * filterWidth + fw) * outFilters + oc) * inFilters + ic;
-                  outData[((b * outHeight + oh) * outWidth + ow) * outFilters + oc] +=
-                    val * (filter.nData[fIdx] as number);
+                  const fIdx =
+                    ((fh * filterWidth + fw) * outFilters + oc) * inFilters +
+                    ic;
+                  outData[
+                    ((b * outHeight + oh) * outWidth + ow) * outFilters + oc
+                  ] += val * (filter.nData[fIdx] as number);
                 }
               }
             }
@@ -1198,12 +1302,13 @@ export function conv3dTranspose(
   filter: Tensor,
   outputShape: number[],
   strides: number | [number, number, number],
-  pad: 'valid' | 'same',
+  pad: "valid" | "same",
 ): Tensor {
   const strideD = Array.isArray(strides) ? strides[0] : strides;
   const strideH = Array.isArray(strides) ? strides[1] : strides;
   const strideW = Array.isArray(strides) ? strides[2] : strides;
-  const [filterDepth, filterHeight, filterWidth, outFilters, inFilters] = filter.shape;
+  const [filterDepth, filterHeight, filterWidth, outFilters, inFilters] =
+    filter.shape;
   const [batch, outDepth, outHeight, outWidth, _outC] = outputShape;
   const inDepth = x.shape[1];
   const inHeight = x.shape[2];
@@ -1212,7 +1317,7 @@ export function conv3dTranspose(
   let padD = 0,
     padH = 0,
     padW = 0;
-  if (pad === 'same') {
+  if (pad === "same") {
     padD = Math.max(0, (inDepth - 1) * strideD + filterDepth - outDepth);
     padH = Math.max(0, (inHeight - 1) * strideH + filterHeight - outHeight);
     padW = Math.max(0, (inWidth - 1) * strideW + filterWidth - outWidth);
@@ -1221,7 +1326,9 @@ export function conv3dTranspose(
   const topPad = Math.floor(padH / 2);
   const leftPad = Math.floor(padW / 2);
 
-  const outData = new Array(batch * outDepth * outHeight * outWidth * outFilters).fill(0);
+  const outData = new Array(
+    batch * outDepth * outHeight * outWidth * outFilters,
+  ).fill(0);
 
   for (let b = 0; b < batch; b++) {
     for (let id = 0; id < inDepth; id++) {
@@ -1229,7 +1336,9 @@ export function conv3dTranspose(
         for (let iw = 0; iw < inWidth; iw++) {
           for (let ic = 0; ic < inFilters; ic++) {
             const val = x.nData[
-              (((b * inDepth + id) * inHeight + ih) * inWidth + iw) * inFilters + ic
+              (((b * inDepth + id) * inHeight + ih) * inWidth + iw) *
+                inFilters +
+                ic
             ] as number;
             for (let fd = 0; fd < filterDepth; fd++) {
               for (let fh = 0; fh < filterHeight; fh++) {
@@ -1247,11 +1356,16 @@ export function conv3dTranspose(
                   ) {
                     for (let oc = 0; oc < outFilters; oc++) {
                       const fIdx =
-                        (((fd * filterHeight + fh) * filterWidth + fw) * outFilters + oc) *
+                        (((fd * filterHeight + fh) * filterWidth + fw) *
+                          outFilters +
+                          oc) *
                           inFilters +
                         ic;
                       outData[
-                        (((b * outDepth + od) * outHeight + oh) * outWidth + ow) * outFilters + oc
+                        (((b * outDepth + od) * outHeight + oh) * outWidth +
+                          ow) *
+                          outFilters +
+                          oc
                       ] += val * (filter.nData[fIdx] as number);
                     }
                   }
@@ -1282,7 +1396,7 @@ export function argMax(x: Tensor, _axis: number = 0): Tensor {
       maxIdx = i;
     }
   }
-  return new Tensor([1], 'int32', [maxIdx]);
+  return new Tensor([1], "int32", [maxIdx]);
 }
 
 /**
@@ -1300,7 +1414,7 @@ export function argMin(x: Tensor, _axis: number = 0): Tensor {
       minIdx = i;
     }
   }
-  return new Tensor([1], 'int32', [minIdx]);
+  return new Tensor([1], "int32", [minIdx]);
 }
 /**
  * Returns the minimum values along an axis.
@@ -1309,11 +1423,19 @@ export function argMin(x: Tensor, _axis: number = 0): Tensor {
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of minimum values.
  */
-export function min(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function min(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.min(...x.nData)]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
+      Math.min(...x.nData),
+    ]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.min(...x.nData)]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [
+    Math.min(...x.nData),
+  ]);
 }
 
 /**
@@ -1323,11 +1445,19 @@ export function min(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of maximum values.
  */
-export function max(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function max(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [Math.max(...x.nData)]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [
+      Math.max(...x.nData),
+    ]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [Math.max(...x.nData)]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], x.dtype, [
+    Math.max(...x.nData),
+  ]);
 }
 
 /**
@@ -1337,7 +1467,11 @@ export function max(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of mean values.
  */
-export function mean(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function mean(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const sum = x.nData.reduce((a, b) => a + b, 0);
   const m = sum / x.size;
   if (axis === undefined) {
@@ -1353,7 +1487,11 @@ export function mean(x: Tensor, axis?: number | number[], keepDims = false): Ten
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of products.
  */
-export function prod(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function prod(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const p = x.nData.reduce((a, b) => a * b, 1);
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [p]);
@@ -1368,7 +1506,11 @@ export function prod(x: Tensor, axis?: number | number[], keepDims = false): Ten
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of sums.
  */
-export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function sum(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const s = x.nData.reduce((a, b) => a + b, 0);
   if (axis === undefined) {
     return new Tensor(keepDims ? x.shape.map(() => 1) : [], x.dtype, [s]);
@@ -1383,12 +1525,16 @@ export function sum(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of booleans.
  */
-export function all(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function all(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const res = x.dataArray.every((v) => v !== 0);
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], "bool", [res]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], "bool", [res]);
 }
 
 /**
@@ -1398,12 +1544,16 @@ export function all(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of booleans.
  */
-export function any(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function any(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const res = x.dataArray.some((v) => v !== 0);
   if (axis === undefined) {
-    return new Tensor(keepDims ? x.shape.map(() => 1) : [], 'bool', [res]);
+    return new Tensor(keepDims ? x.shape.map(() => 1) : [], "bool", [res]);
   }
-  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], 'bool', [res]);
+  return new Tensor(keepDims ? x.shape.map(() => 1) : [1], "bool", [res]);
 }
 
 /**
@@ -1413,7 +1563,11 @@ export function any(x: Tensor, axis?: number | number[], keepDims = false): Tens
  * @param keepDims Whether to keep the reduced dimensions.
  * @returns Tensor of log-sum-exp values.
  */
-export function logSumExp(x: Tensor, axis?: number | number[], keepDims = false): Tensor {
+export function logSumExp(
+  x: Tensor,
+  axis?: number | number[],
+  keepDims = false,
+): Tensor {
   const max = Math.max(...x.nData);
   const sum = x.nData.reduce((a, b) => a + Math.exp(b - max), 0);
   const res = max + Math.log(sum);
@@ -1436,10 +1590,10 @@ export function maxPool(
   x: Tensor,
   filterSize: number | [number, number],
   strides: number | [number, number],
-  pad: 'valid' | 'same' | number,
-  _dimRoundingMode?: 'floor' | 'round' | 'ceil',
+  pad: "valid" | "same" | number,
+  _dimRoundingMode?: "floor" | "round" | "ceil",
 ): Tensor {
-  return pool(x, filterSize, 'max', pad, 1, strides);
+  return pool(x, filterSize, "max", pad, 1, strides);
 }
 /**
  * Performs a 2D average pooling.
@@ -1454,10 +1608,10 @@ export function avgPool(
   x: Tensor,
   filterSize: number | [number, number],
   strides: number | [number, number],
-  pad: 'valid' | 'same' | number,
-  _dimRoundingMode?: 'floor' | 'round' | 'ceil',
+  pad: "valid" | "same" | number,
+  _dimRoundingMode?: "floor" | "round" | "ceil",
 ): Tensor {
-  return pool(x, filterSize, 'avg', pad, 1, strides);
+  return pool(x, filterSize, "avg", pad, 1, strides);
 }
 /**
  * Computes the 3D max pooling of the tensor.
@@ -1473,8 +1627,8 @@ export function maxPool3d(
   x: Tensor,
   filterSize: number | [number, number, number],
   strides: number | [number, number, number],
-  pad: 'valid' | 'same' | number,
-  _dimRoundingMode?: 'floor' | 'round' | 'ceil',
+  pad: "valid" | "same" | number,
+  _dimRoundingMode?: "floor" | "round" | "ceil",
 ): Tensor {
   // mathematical soundness implementation for maxPool3d
   const filterD = Array.isArray(filterSize) ? filterSize[0] : filterSize;
@@ -1484,7 +1638,9 @@ export function maxPool3d(
   const strideH = Array.isArray(strides) ? strides[1] : strides || 1;
   const strideW = Array.isArray(strides) ? strides[2] : strides || 1;
   const [batch, inD, inH, inW, inC] =
-    x.shape.length === 5 ? x.shape : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
+    x.shape.length === 5
+      ? x.shape
+      : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
 
   let padD = 0,
     padH = 0,
@@ -1492,14 +1648,14 @@ export function maxPool3d(
   let outD = Math.floor((inD - filterD) / strideD + 1);
   let outH = Math.floor((inH - filterH) / strideH + 1);
   let outW = Math.floor((inW - filterW) / strideW + 1);
-  if (pad === 'same') {
+  if (pad === "same") {
     outD = Math.ceil(inD / strideD);
     outH = Math.ceil(inH / strideH);
     outW = Math.ceil(inW / strideW);
     padD = Math.max(0, (outD - 1) * strideD + filterD - inD);
     padH = Math.max(0, (outH - 1) * strideH + filterH - inH);
     padW = Math.max(0, (outW - 1) * strideW + filterW - inW);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padD = pad * 2;
     padH = pad * 2;
     padW = pad * 2;
@@ -1525,21 +1681,32 @@ export function maxPool3d(
                   const id = od * strideD - topPadD + fd;
                   const ih = oh * strideH - topPadH + fh;
                   const iw = ow * strideW - topPadW + fw;
-                  if (id >= 0 && id < inD && ih >= 0 && ih < inH && iw >= 0 && iw < inW) {
-                    const inIdx = (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
+                  if (
+                    id >= 0 &&
+                    id < inD &&
+                    ih >= 0 &&
+                    ih < inH &&
+                    iw >= 0 &&
+                    iw < inW
+                  ) {
+                    const inIdx =
+                      (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
                     val = Math.max(val, x.nData[inIdx]);
                   }
                 }
               }
             }
-            outData[(((b * outD + od) * outH + oh) * outW + ow) * inC + c] = val;
+            outData[(((b * outD + od) * outH + oh) * outW + ow) * inC + c] =
+              val;
           }
         }
       }
     }
   }
   return new Tensor(
-    x.shape.length === 5 ? [batch, outD, outH, outW, inC] : [outD, outH, outW, inC],
+    x.shape.length === 5
+      ? [batch, outD, outH, outW, inC]
+      : [outD, outH, outW, inC],
     x.dtype,
     outData,
   );
@@ -1557,8 +1724,8 @@ export function avgPool3d(
   x: Tensor,
   filterSize: number | [number, number, number],
   strides: number | [number, number, number],
-  pad: 'valid' | 'same' | number,
-  _dimRoundingMode?: 'floor' | 'round' | 'ceil',
+  pad: "valid" | "same" | number,
+  _dimRoundingMode?: "floor" | "round" | "ceil",
 ): Tensor {
   const filterD = Array.isArray(filterSize) ? filterSize[0] : filterSize;
   const filterH = Array.isArray(filterSize) ? filterSize[1] : filterSize;
@@ -1567,7 +1734,9 @@ export function avgPool3d(
   const strideH = Array.isArray(strides) ? strides[1] : strides || 1;
   const strideW = Array.isArray(strides) ? strides[2] : strides || 1;
   const [batch, inD, inH, inW, inC] =
-    x.shape.length === 5 ? x.shape : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
+    x.shape.length === 5
+      ? x.shape
+      : [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]];
 
   let padD = 0,
     padH = 0,
@@ -1575,14 +1744,14 @@ export function avgPool3d(
   let outD = Math.floor((inD - filterD) / strideD + 1);
   let outH = Math.floor((inH - filterH) / strideH + 1);
   let outW = Math.floor((inW - filterW) / strideW + 1);
-  if (pad === 'same') {
+  if (pad === "same") {
     outD = Math.ceil(inD / strideD);
     outH = Math.ceil(inH / strideH);
     outW = Math.ceil(inW / strideW);
     padD = Math.max(0, (outD - 1) * strideD + filterD - inD);
     padH = Math.max(0, (outH - 1) * strideH + filterH - inH);
     padW = Math.max(0, (outW - 1) * strideW + filterW - inW);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padD = pad * 2;
     padH = pad * 2;
     padW = pad * 2;
@@ -1609,8 +1778,16 @@ export function avgPool3d(
                   const id = od * strideD - topPadD + fd;
                   const ih = oh * strideH - topPadH + fh;
                   const iw = ow * strideW - topPadW + fw;
-                  if (id >= 0 && id < inD && ih >= 0 && ih < inH && iw >= 0 && iw < inW) {
-                    const inIdx = (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
+                  if (
+                    id >= 0 &&
+                    id < inD &&
+                    ih >= 0 &&
+                    ih < inH &&
+                    iw >= 0 &&
+                    iw < inW
+                  ) {
+                    const inIdx =
+                      (((b * inD + id) * inH + ih) * inW + iw) * inC + c;
                     val += x.nData[inIdx];
                     count++;
                   }
@@ -1625,7 +1802,9 @@ export function avgPool3d(
     }
   }
   return new Tensor(
-    x.shape.length === 5 ? [batch, outD, outH, outW, inC] : [outD, outH, outW, inC],
+    x.shape.length === 5
+      ? [batch, outD, outH, outW, inC]
+      : [outD, outH, outW, inC],
     x.dtype,
     outData,
   );
@@ -1643,29 +1822,33 @@ export function avgPool3d(
 export function pool(
   input: Tensor,
   windowShape: number | number[],
-  poolingType: 'max' | 'avg',
-  pad: 'valid' | 'same' | number,
+  poolingType: "max" | "avg",
+  pad: "valid" | "same" | number,
   _dilations?: number | number[],
   strides?: number | number[],
 ): Tensor {
-  const filterHeight = Array.isArray(windowShape) ? windowShape[0] : windowShape;
+  const filterHeight = Array.isArray(windowShape)
+    ? windowShape[0]
+    : windowShape;
   const filterWidth = Array.isArray(windowShape) ? windowShape[1] : windowShape;
   const strideY = Array.isArray(strides) ? strides[0] : strides || 1;
   const strideX = Array.isArray(strides) ? strides[1] : strides || 1;
   const [batch, inHeight, inWidth, inChannels] =
-    input.shape.length === 4 ? input.shape : [1, input.shape[0], input.shape[1], input.shape[2]];
+    input.shape.length === 4
+      ? input.shape
+      : [1, input.shape[0], input.shape[1], input.shape[2]];
 
   let padY = 0,
     padX = 0;
   let outHeight = Math.floor((inHeight - filterHeight) / strideY + 1);
   let outWidth = Math.floor((inWidth - filterWidth) / strideX + 1);
 
-  if (pad === 'same') {
+  if (pad === "same") {
     outHeight = Math.ceil(inHeight / strideY);
     outWidth = Math.ceil(inWidth / strideX);
     padY = Math.max(0, (outHeight - 1) * strideY + filterHeight - inHeight);
     padX = Math.max(0, (outWidth - 1) * strideX + filterWidth - inWidth);
-  } else if (typeof pad === 'number') {
+  } else if (typeof pad === "number") {
     padY = pad * 2;
     padX = pad * 2;
     outHeight = Math.floor((inHeight + padY - filterHeight) / strideY + 1);
@@ -1680,16 +1863,17 @@ export function pool(
     for (let oh = 0; oh < outHeight; oh++) {
       for (let ow = 0; ow < outWidth; ow++) {
         for (let c = 0; c < inChannels; c++) {
-          let val = poolingType === 'max' ? -Infinity : 0;
+          let val = poolingType === "max" ? -Infinity : 0;
           let count = 0;
           for (let fh = 0; fh < filterHeight; fh++) {
             for (let fw = 0; fw < filterWidth; fw++) {
               const ih = oh * strideY - topPad + fh;
               const iw = ow * strideX - leftPad + fw;
               if (ih >= 0 && ih < inHeight && iw >= 0 && iw < inWidth) {
-                const inIdx = ((b * inHeight + ih) * inWidth + iw) * inChannels + c;
+                const inIdx =
+                  ((b * inHeight + ih) * inWidth + iw) * inChannels + c;
                 const v = input.nData[inIdx];
-                if (poolingType === 'max') val = Math.max(val, v);
+                if (poolingType === "max") val = Math.max(val, v);
                 else {
                   val += v;
                   count++;
@@ -1697,8 +1881,9 @@ export function pool(
               }
             }
           }
-          if (poolingType === 'avg') val /= Math.max(1, count);
-          outData[((b * outHeight + oh) * outWidth + ow) * inChannels + c] = val;
+          if (poolingType === "avg") val /= Math.max(1, count);
+          outData[((b * outHeight + oh) * outWidth + ow) * inChannels + c] =
+            val;
         }
       }
     }
@@ -1740,7 +1925,9 @@ export function expandDims(x: Tensor, axis: number = 0): Tensor {
  * @returns Resulting tensor.
  */
 export function squeeze(x: Tensor, axis?: number[]): Tensor {
-  const newShape = x.shape.filter((d, i) => d !== 1 || (axis && !axis.includes(i)));
+  const newShape = x.shape.filter(
+    (d, i) => d !== 1 || (axis && !axis.includes(i)),
+  );
   return new Tensor(newShape, x.dtype, x.dataArray.slice());
 }
 /**
@@ -1765,7 +1952,11 @@ export function reshape(x: Tensor, shape: number[]): Tensor {
  * @returns Resulting tensor.
  */
 export function transpose(x: Tensor, _perm?: number[]): Tensor {
-  return new Tensor([...x.shape].reverse(), x.dtype, x.dataArray.slice().reverse());
+  return new Tensor(
+    [...x.shape].reverse(),
+    x.dtype,
+    x.dataArray.slice().reverse(),
+  );
 }
 /**
  * Concatenates a list of tensors along an axis.
@@ -1788,19 +1979,33 @@ export function concat(tensors: Tensor[], _axis: number = 0): Tensor {
  * @param axis Axis along which to split.
  * @returns List of tensors.
  */
-export function split(x: Tensor, numOrSizeSplits: number | number[], _axis: number = 0): Tensor[] {
+export function split(
+  x: Tensor,
+  numOrSizeSplits: number | number[],
+  _axis: number = 0,
+): Tensor[] {
   // Mathematically sound 1D basic split
-  if (typeof numOrSizeSplits === 'number') {
+  if (typeof numOrSizeSplits === "number") {
     const splits = [];
     const size = Math.floor(x.size / numOrSizeSplits);
     for (let i = 0; i < numOrSizeSplits; i++) {
-      splits.push(new Tensor([size], x.dtype, x.dataArray.slice(i * size, (i + 1) * size)));
+      splits.push(
+        new Tensor(
+          [size],
+          x.dtype,
+          x.dataArray.slice(i * size, (i + 1) * size),
+        ),
+      );
     }
     return splits;
   }
   let offset = 0;
   return numOrSizeSplits.map((size) => {
-    const t = new Tensor([size], x.dtype, x.dataArray.slice(offset, offset + size));
+    const t = new Tensor(
+      [size],
+      x.dtype,
+      x.dataArray.slice(offset, offset + size),
+    );
     offset += size;
     return t;
   });
@@ -1826,7 +2031,11 @@ export function unstack(x: Tensor, axis: number = 0): Tensor[] {
   const chunk = x.size / size;
   for (let i = 0; i < size; i++) {
     splits.push(
-      new Tensor(x.shape.slice(1), x.dtype, x.dataArray.slice(i * chunk, (i + 1) * chunk)),
+      new Tensor(
+        x.shape.slice(1),
+        x.dtype,
+        x.dataArray.slice(i * chunk, (i + 1) * chunk),
+      ),
     );
   }
   return splits;
@@ -1838,7 +2047,11 @@ export function unstack(x: Tensor, axis: number = 0): Tensor[] {
  * @param constantValue Constant value to pad with.
  * @returns Resulting tensor.
  */
-export function pad(x: Tensor, paddings: Array<[number, number]>, constantValue = 0): Tensor {
+export function pad(
+  x: Tensor,
+  paddings: Array<[number, number]>,
+  constantValue = 0,
+): Tensor {
   // basic 1D pad
   if (x.rank === 1 && paddings.length === 1) {
     const [before, after] = paddings[0];
@@ -1866,7 +2079,11 @@ export const pad1d = pad,
  * @param size The size of the slice.
  * @returns Resulting tensor.
  */
-export function slice(x: Tensor, begin: number | number[], size?: number | number[]): Tensor {
+export function slice(
+  x: Tensor,
+  begin: number | number[],
+  size?: number | number[],
+): Tensor {
   const b = Array.isArray(begin) ? begin[0] : begin;
   const s = size ? (Array.isArray(size) ? size[0] : size) : x.shape[0] - b;
   const elementsPerItem = x.size / x.shape[0];
@@ -1952,7 +2169,11 @@ export function gatherND(x: Tensor, indices: Tensor): Tensor {
  * @param shape Shape of the resulting tensor.
  * @returns Resulting tensor.
  */
-export function scatterND(indices: Tensor, updates: Tensor, shape: number[]): Tensor {
+export function scatterND(
+  indices: Tensor,
+  updates: Tensor,
+  shape: number[],
+): Tensor {
   const data = new Array(shape.reduce((a, b) => a * b, 1)).fill(0);
   const numUpdates = indices.shape[0];
   for (let i = 0; i < numUpdates; i++) {
@@ -1968,7 +2189,11 @@ export function scatterND(indices: Tensor, updates: Tensor, shape: number[]): Te
  * @param updates Values to scatter.
  * @returns Resulting tensor.
  */
-export function tensorScatterUpdate(tensor: Tensor, indices: Tensor, updates: Tensor): Tensor {
+export function tensorScatterUpdate(
+  tensor: Tensor,
+  indices: Tensor,
+  updates: Tensor,
+): Tensor {
   const data = tensor.dataArray.slice();
   const numUpdates = indices.shape[0];
   for (let i = 0; i < numUpdates; i++) {
@@ -2007,7 +2232,7 @@ export async function whereAsync(condition: Tensor): Promise<Tensor> {
       indices.push(i);
     }
   }
-  return new Tensor([indices.length, 1], 'int32', indices);
+  return new Tensor([indices.length, 1], "int32", indices);
 }
 /**
  * Reverses a tensor along specified axes.
@@ -2051,7 +2276,11 @@ export function tile(x: Tensor, reps: number[]): Tensor {
  * @param paddings Paddings.
  * @returns Resulting tensor.
  */
-export function spaceToBatchND(x: Tensor, _blockShape: number[], _paddings: number[][]): Tensor {
+export function spaceToBatchND(
+  x: Tensor,
+  _blockShape: number[],
+  _paddings: number[][],
+): Tensor {
   // Placeholder mathematically sound identity mapping
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
@@ -2063,7 +2292,11 @@ export function spaceToBatchND(x: Tensor, _blockShape: number[], _paddings: numb
  * @param crops Crops.
  * @returns Resulting tensor.
  */
-export function batchToSpaceND(x: Tensor, _blockShape: number[], _crops: number[][]): Tensor {
+export function batchToSpaceND(
+  x: Tensor,
+  _blockShape: number[],
+  _crops: number[][],
+): Tensor {
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
 
@@ -2074,7 +2307,11 @@ export function batchToSpaceND(x: Tensor, _blockShape: number[], _crops: number[
  * @param dataFormat Data format.
  * @returns Resulting tensor.
  */
-export function depthToSpace(x: Tensor, _blockSize: number, _dataFormat: string = 'NHWC'): Tensor {
+export function depthToSpace(
+  x: Tensor,
+  _blockSize: number,
+  _dataFormat: string = "NHWC",
+): Tensor {
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
 
@@ -2085,7 +2322,11 @@ export function depthToSpace(x: Tensor, _blockSize: number, _dataFormat: string 
  * @param dataFormat Data format.
  * @returns Resulting tensor.
  */
-export function spaceToDepth(x: Tensor, _blockSize: number, _dataFormat: string = 'NHWC'): Tensor {
+export function spaceToDepth(
+  x: Tensor,
+  _blockSize: number,
+  _dataFormat: string = "NHWC",
+): Tensor {
   return new Tensor(x.shape, x.dtype, x.dataArray.slice());
 }
 
@@ -2096,7 +2337,7 @@ export function spaceToDepth(x: Tensor, _blockSize: number, _dataFormat: string 
  * @returns Boolean tensor.
  */
 export function equal(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('equal', (x, y) => (x === y ? 1 : 0))(a, b);
+  return makeBinary("equal", (x, y) => (x === y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2106,7 +2347,7 @@ export function equal(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function notEqual(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('notEqual', (x, y) => (x !== y ? 1 : 0))(a, b);
+  return makeBinary("notEqual", (x, y) => (x !== y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2116,7 +2357,7 @@ export function notEqual(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function less(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('less', (x, y) => (x < y ? 1 : 0))(a, b);
+  return makeBinary("less", (x, y) => (x < y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2126,7 +2367,7 @@ export function less(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function lessEqual(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('lessEqual', (x, y) => (x <= y ? 1 : 0))(a, b);
+  return makeBinary("lessEqual", (x, y) => (x <= y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2136,7 +2377,7 @@ export function lessEqual(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function greater(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('greater', (x, y) => (x > y ? 1 : 0))(a, b);
+  return makeBinary("greater", (x, y) => (x > y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2146,7 +2387,7 @@ export function greater(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function greaterEqual(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('greaterEqual', (x, y) => (x >= y ? 1 : 0))(a, b);
+  return makeBinary("greaterEqual", (x, y) => (x >= y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2156,7 +2397,7 @@ export function greaterEqual(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function logicalAnd(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('logicalAnd', (x, y) => (x && y ? 1 : 0))(a, b);
+  return makeBinary("logicalAnd", (x, y) => (x && y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2166,7 +2407,7 @@ export function logicalAnd(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function logicalOr(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('logicalOr', (x, y) => (x || y ? 1 : 0))(a, b);
+  return makeBinary("logicalOr", (x, y) => (x || y ? 1 : 0))(a, b);
 }
 
 /**
@@ -2175,7 +2416,7 @@ export function logicalOr(a: Tensor, b: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function logicalNot(x: Tensor): Tensor {
-  return makeUnary('logicalNot', (v) => (v ? 0 : 1))(x);
+  return makeUnary("logicalNot", (v) => (v ? 0 : 1))(x);
 }
 
 /**
@@ -2185,7 +2426,9 @@ export function logicalNot(x: Tensor): Tensor {
  * @returns Boolean tensor.
  */
 export function logicalXor(a: Tensor, b: Tensor): Tensor {
-  return makeBinary('logicalXor', (x, y) => ((x ? 1 : 0) ^ (y ? 1 : 0) ? 1 : 0))(a, b);
+  return makeBinary("logicalXor", (x, y) =>
+    (x ? 1 : 0) ^ (y ? 1 : 0) ? 1 : 0,
+  )(a, b);
 }
 
 /**
@@ -2205,9 +2448,9 @@ export function where(condition: Tensor, a: Tensor, b: Tensor): Tensor {
 
 // NNs
 /** Rectified Linear Unit activation. */
-export const relu = makeUnary('relu', (x) => Math.max(0, x));
+export const relu = makeUnary("relu", (x) => Math.max(0, x));
 /** Rectified Linear Unit 6 activation. */
-export const relu6 = makeUnary('relu6', (x) => Math.min(Math.max(0, x), 6));
+export const relu6 = makeUnary("relu6", (x) => Math.min(Math.max(0, x), 6));
 
 /**
  * Leaky Rectified Linear Unit activation.
@@ -2216,13 +2459,16 @@ export const relu6 = makeUnary('relu6', (x) => Math.min(Math.max(0, x), 6));
  * @returns Resulting tensor.
  */
 export function leakyRelu(x: Tensor, alpha: number = 0.2): Tensor {
-  return makeUnary('leakyRelu', (v) => (v < 0 ? alpha * v : v))(x);
+  return makeUnary("leakyRelu", (v) => (v < 0 ? alpha * v : v))(x);
 }
 /** Exponential Linear Unit activation. */
-export const elu = makeUnary('elu', (x) => (x < 0 ? Math.exp(x) - 1 : x));
+export const elu = makeUnary("elu", (x) => (x < 0 ? Math.exp(x) - 1 : x));
 /** Scaled Exponential Linear Unit activation. */
-export const selu = makeUnary('selu', (x) => 1.0507 * (x < 0 ? 1.67326 * (Math.exp(x) - 1) : x));
-export const sigmoid = makeUnary('sigmoid', (x) => 1 / (1 + Math.exp(-x)));
+export const selu = makeUnary(
+  "selu",
+  (x) => 1.0507 * (x < 0 ? 1.67326 * (Math.exp(x) - 1) : x),
+);
+export const sigmoid = makeUnary("sigmoid", (x) => 1 / (1 + Math.exp(-x)));
 /**
  * Computes the softmax activation.
  * @param x Input tensor.
@@ -2248,7 +2494,7 @@ export function logSoftmax(x: Tensor, axis: number = -1): Tensor {
   return log(softmax(x, axis));
 }
 /** Softplus activation. */
-export const softplus = makeUnary('softplus', (x) => Math.log(Math.exp(x) + 1));
+export const softplus = makeUnary("softplus", (x) => Math.log(Math.exp(x) + 1));
 
 /**
  * Local Response Normalization.
@@ -2363,7 +2609,9 @@ export class GraphModel {
    * @param inputs The input tensors.
    * @returns The output tensors.
    */
-  predict(inputs: Tensor | Tensor[] | Record<string, Tensor>): Tensor | Tensor[] {
+  predict(
+    inputs: Tensor | Tensor[] | Record<string, Tensor>,
+  ): Tensor | Tensor[] {
     return Array.isArray(inputs)
       ? inputs
       : inputs instanceof Tensor
@@ -2371,7 +2619,9 @@ export class GraphModel {
         : Object.values(inputs)[0];
   }
 
-  execute(inputs: Tensor | Tensor[] | Record<string, Tensor>): Tensor | Tensor[] {
+  execute(
+    inputs: Tensor | Tensor[] | Record<string, Tensor>,
+  ): Tensor | Tensor[] {
     return this.predict(inputs);
   }
 
@@ -2385,7 +2635,7 @@ export class GraphModel {
     this.weights = {};
     this.inputs = [];
     this.outputs = [];
-    this.modelUrl = '';
+    this.modelUrl = "";
   }
 }
 
@@ -2441,7 +2691,7 @@ export const browser = {
         outData[i * numChannels + c] = (data as number[])[i * 4 + c] || 0;
       }
     }
-    return new Tensor([height, width, numChannels], 'int32', outData);
+    return new Tensor([height, width, numChannels], "int32", outData);
   },
   /**
    * Converts a tensor to pixel data.
@@ -2449,7 +2699,10 @@ export const browser = {
    * @param canvas Optional canvas element to draw into.
    * @returns A promise that resolves to the pixel data.
    */
-  toPixels: async (tensor: Tensor, _canvas?: HTMLCanvasElement): Promise<Uint8ClampedArray> => {
+  toPixels: async (
+    tensor: Tensor,
+    _canvas?: HTMLCanvasElement,
+  ): Promise<Uint8ClampedArray> => {
     return new Uint8ClampedArray(tensor.dataArray as number[]);
   },
 };
@@ -2465,19 +2718,25 @@ export const image = {
     const [batch, inH, inW, inC] = images.shape;
     const [outH, outW] = size;
     const outData = new Array(batch * outH * outW * inC);
-    const heightScale = alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
-    const widthScale = alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
+    const heightScale =
+      alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
+    const widthScale =
+      alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
 
     for (let b = 0; b < batch; b++) {
       for (let y = 0; y < outH; y++) {
-        let sourceY = halfPixelCenters ? (y + 0.5) * heightScale - 0.5 : y * heightScale;
+        let sourceY = halfPixelCenters
+          ? (y + 0.5) * heightScale - 0.5
+          : y * heightScale;
         sourceY = Math.max(0, Math.min(inH - 1, sourceY));
         const y0 = Math.floor(sourceY);
         const y1 = Math.min(inH - 1, y0 + 1);
         const yWeight = sourceY - y0;
 
         for (let x = 0; x < outW; x++) {
-          let sourceX = halfPixelCenters ? (x + 0.5) * widthScale - 0.5 : x * widthScale;
+          let sourceX = halfPixelCenters
+            ? (x + 0.5) * widthScale - 0.5
+            : x * widthScale;
           sourceX = Math.max(0, Math.min(inW - 1, sourceX));
           const x0 = Math.floor(sourceX);
           const x1 = Math.min(inW - 1, x0 + 1);
@@ -2508,17 +2767,27 @@ export const image = {
     const [batch, inH, inW, inC] = images.shape;
     const [outH, outW] = size;
     const outData = new Array(batch * outH * outW * inC);
-    const heightScale = alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
-    const widthScale = alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
+    const heightScale =
+      alignCorners && outH > 1 ? (inH - 1) / (outH - 1) : inH / outH;
+    const widthScale =
+      alignCorners && outW > 1 ? (inW - 1) / (outW - 1) : inW / outW;
 
     for (let b = 0; b < batch; b++) {
       for (let y = 0; y < outH; y++) {
-        const sourceY = halfPixelCenters ? (y + 0.5) * heightScale : y * heightScale;
-        const nearestY = alignCorners ? Math.round(sourceY) : Math.floor(sourceY);
+        const sourceY = halfPixelCenters
+          ? (y + 0.5) * heightScale
+          : y * heightScale;
+        const nearestY = alignCorners
+          ? Math.round(sourceY)
+          : Math.floor(sourceY);
         const safeY = Math.max(0, Math.min(inH - 1, nearestY));
         for (let x = 0; x < outW; x++) {
-          const sourceX = halfPixelCenters ? (x + 0.5) * widthScale : x * widthScale;
-          const nearestX = alignCorners ? Math.round(sourceX) : Math.floor(sourceX);
+          const sourceX = halfPixelCenters
+            ? (x + 0.5) * widthScale
+            : x * widthScale;
+          const nearestX = alignCorners
+            ? Math.round(sourceX)
+            : Math.floor(sourceX);
           const safeX = Math.max(0, Math.min(inW - 1, nearestX));
           for (let c = 0; c < inC; c++) {
             outData[((b * outH + y) * outW + x) * inC + c] =
@@ -2534,13 +2803,15 @@ export const image = {
     boxes: Tensor,
     boxInd: Tensor,
     cropSize: [number, number],
-    method: 'bilinear' | 'nearest' = 'bilinear',
+    method: "bilinear" | "nearest" = "bilinear",
     extrapolationValue: number = 0,
   ): Tensor => {
     const numBoxes = boxes.shape[0];
     const [outH, outW] = cropSize;
     const [_, inH, inW, inC] = image.shape;
-    const outData = new Array(numBoxes * outH * outW * inC).fill(extrapolationValue);
+    const outData = new Array(numBoxes * outH * outW * inC).fill(
+      extrapolationValue,
+    );
 
     for (let b = 0; b < numBoxes; b++) {
       const bInd = boxInd.nData[b];
@@ -2567,22 +2838,35 @@ export const image = {
           const xLerp = inX - leftXIdx;
 
           for (let c = 0; c < inC; c++) {
-            if (method === 'bilinear') {
-              const topLeft = image.nData[((bInd * inH + topYIdx) * inW + leftXIdx) * inC + c];
-              const topRight = image.nData[((bInd * inH + topYIdx) * inW + rightXIdx) * inC + c];
+            if (method === "bilinear") {
+              const topLeft =
+                image.nData[
+                  ((bInd * inH + topYIdx) * inW + leftXIdx) * inC + c
+                ];
+              const topRight =
+                image.nData[
+                  ((bInd * inH + topYIdx) * inW + rightXIdx) * inC + c
+                ];
               const bottomLeft =
-                image.nData[((bInd * inH + bottomYIdx) * inW + leftXIdx) * inC + c];
+                image.nData[
+                  ((bInd * inH + bottomYIdx) * inW + leftXIdx) * inC + c
+                ];
               const bottomRight =
-                image.nData[((bInd * inH + bottomYIdx) * inW + rightXIdx) * inC + c];
+                image.nData[
+                  ((bInd * inH + bottomYIdx) * inW + rightXIdx) * inC + c
+                ];
 
               const top = topLeft + (topRight - topLeft) * xLerp;
               const bottom = bottomLeft + (bottomRight - bottomLeft) * xLerp;
-              outData[((b * outH + y) * outW + x) * inC + c] = top + (bottom - top) * yLerp;
+              outData[((b * outH + y) * outW + x) * inC + c] =
+                top + (bottom - top) * yLerp;
             } else {
               const nearestY = Math.round(inY);
               const nearestX = Math.round(inX);
               outData[((b * outH + y) * outW + x) * inC + c] =
-                image.nData[((bInd * inH + nearestY) * inW + nearestX) * inC + c];
+                image.nData[
+                  ((bInd * inH + nearestY) * inW + nearestX) * inC + c
+                ];
             }
           }
         }
@@ -2639,7 +2923,7 @@ export const image = {
       }
       if (keep) selected.push(c);
     }
-    return new Tensor([selected.length], 'int32', selected);
+    return new Tensor([selected.length], "int32", selected);
   },
   nonMaxSuppressionAsync: async (
     boxes: Tensor,
@@ -2648,7 +2932,13 @@ export const image = {
     iouThreshold: number = 0.5,
     scoreThreshold: number = Number.NEGATIVE_INFINITY,
   ): Promise<Tensor> => {
-    return image.nonMaxSuppression(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold);
+    return image.nonMaxSuppression(
+      boxes,
+      scores,
+      maxOutputSize,
+      iouThreshold,
+      scoreThreshold,
+    );
   },
   nonMaxSuppressionWithScore: (
     boxes: Tensor,
@@ -2669,7 +2959,11 @@ export const image = {
     const selectedScores = indices.nData.map((idx) => scores.nData[idx]);
     return {
       selectedIndices: indices,
-      selectedScores: new Tensor([selectedScores.length], 'float32', selectedScores),
+      selectedScores: new Tensor(
+        [selectedScores.length],
+        "float32",
+        selectedScores,
+      ),
     };
   },
   flipLeftRight: (img: Tensor): Tensor => {
@@ -2701,7 +2995,7 @@ export class Layer {
    * @param config The layer configuration.
    */
   constructor(config: LayerConfig) {
-    this.name = config.name || 'layer';
+    this.name = config.name || "layer";
   }
 
   /** The internal weights of the layer. */
@@ -2765,8 +3059,9 @@ export class LayersModel extends Layer {
   evaluate(x: Tensor, y: Tensor): Tensor {
     let sum = 0;
     const len = Math.min(x.size, y.size);
-    for (let i = 0; i < len; i++) sum += ((x.nData[i] as number) - (y.nData[i] as number)) ** 2;
-    return new Tensor([1], 'float32', [sum / len]);
+    for (let i = 0; i < len; i++)
+      sum += ((x.nData[i] as number) - (y.nData[i] as number)) ** 2;
+    return new Tensor([1], "float32", [sum / len]);
   }
 }
 
@@ -2814,8 +3109,16 @@ export function model(config: ModelConfig): LayersModel {
 export class Variable extends Tensor {
   trainable: boolean;
   name: string;
-  constructor(initialValue: Tensor, trainable: boolean = true, name: string = 'var') {
-    super(initialValue.shape.slice(), initialValue.dtype, initialValue.dataArray.slice());
+  constructor(
+    initialValue: Tensor,
+    trainable: boolean = true,
+    name: string = "var",
+  ) {
+    super(
+      initialValue.shape.slice(),
+      initialValue.dtype,
+      initialValue.dataArray.slice(),
+    );
     this.trainable = trainable;
     this.name = name;
   }
@@ -2842,10 +3145,14 @@ export class Variable extends Tensor {
 export function variable(
   initialValue: Tensor,
   trainable: boolean = true,
-  name: string = 'var',
+  name: string = "var",
   dtype?: DataType,
 ): Variable {
-  return new Variable(cast(initialValue, dtype || initialValue.dtype), trainable, name);
+  return new Variable(
+    cast(initialValue, dtype || initialValue.dtype),
+    trainable,
+    name,
+  );
 }
 
 /**
@@ -2853,7 +3160,9 @@ export function variable(
  * @param f Function to differentiate.
  * @returns Gradient function.
  */
-export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tensor {
+export function grad(
+  f: (x: Tensor) => Tensor,
+): (x: Tensor, dy?: Tensor) => Tensor {
   return (x: Tensor, dy?: Tensor) => {
     const eps = 1e-4;
     const gradsArr = new Array(x.size).fill(0);
@@ -2878,7 +3187,9 @@ export function grad(f: (x: Tensor) => Tensor): (x: Tensor, dy?: Tensor) => Tens
  * @param f Function to differentiate.
  * @returns Function that computes gradients.
  */
-export function grads(f: (...args: Tensor[]) => Tensor): (...args: Tensor[]) => Tensor[] {
+export function grads(
+  f: (...args: Tensor[]) => Tensor,
+): (...args: Tensor[]) => Tensor[] {
   return (...args: Tensor[]) => {
     const eps = 1e-4;
     return args.map((x, argIdx) => {
@@ -2987,7 +3298,7 @@ export const string = {
    * @param delimiter The delimiter to split by.
    * @returns An object containing the split results.
    */
-  stringSplit: (input: Tensor, delimiter: string = '') => {
+  stringSplit: (input: Tensor, delimiter: string = "") => {
     const indices = [];
     const values = [];
     let maxSplits = 0;
@@ -3000,9 +3311,9 @@ export const string = {
       }
     }
     return {
-      indices: new Tensor([indices.length / 2, 2], 'int32', indices),
-      values: new Tensor([values.length], 'string', values),
-      shape: new Tensor([2], 'int32', [input.size, maxSplits]),
+      indices: new Tensor([indices.length / 2, 2], "int32", indices),
+      values: new Tensor([values.length], "string", values),
+      shape: new Tensor([2], "int32", [input.size, maxSplits]),
     };
   },
   /**
@@ -3021,7 +3332,7 @@ export const string = {
       }
       outData[i] = Math.abs(hash) % numBuckets;
     }
-    return new Tensor(input.shape, 'int32', outData);
+    return new Tensor(input.shape, "int32", outData);
   },
 };
 
@@ -3045,7 +3356,7 @@ export function randomUniform(
   shape: number[],
   minval: number = 0,
   maxval: number = 1,
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
   seed?: number,
 ): Tensor {
   if (seed !== undefined) lcgSeed = seed;
@@ -3068,17 +3379,22 @@ export function randomNormal(
   shape: number[],
   mean: number = 0,
   stdDev: number = 1,
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
   seed?: number,
 ): Tensor {
   if (seed !== undefined) lcgSeed = seed;
-  const newData = new Array(shape.reduce((a, b) => a * b, 1)).fill(0).map(() => {
-    let u = 0,
-      v = 0;
-    while (u === 0) u = lcg();
-    while (v === 0) v = lcg();
-    return mean + stdDev * Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-  });
+  const newData = new Array(shape.reduce((a, b) => a * b, 1))
+    .fill(0)
+    .map(() => {
+      let u = 0,
+        v = 0;
+      while (u === 0) u = lcg();
+      while (v === 0) v = lcg();
+      return (
+        mean +
+        stdDev * Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v)
+      );
+    });
   return new Tensor(shape, dtype, newData);
 }
 
@@ -3095,7 +3411,7 @@ export function truncatedNormal(
   shape: number[],
   mean: number = 0,
   stdDev: number = 1,
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
   seed?: number,
 ): Tensor {
   return randomNormal(shape, mean, stdDev, dtype, seed);
@@ -3114,7 +3430,7 @@ export function randomGamma(
   shape: number[],
   _alpha: number,
   _beta: number = 1,
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
   seed?: number,
 ): Tensor {
   return randomUniform(shape, 0, 1, dtype, seed);
@@ -3166,7 +3482,7 @@ export function multinomial(
       outData[b * numSamples + s] = chosen;
     }
   }
-  return new Tensor([batch, numSamples], 'int32', outData);
+  return new Tensor([batch, numSamples], "int32", outData);
 }
 
 // Misc
@@ -3177,8 +3493,14 @@ export function multinomial(
  * @param clipValueMax The maximum value.
  * @returns A clipped tensor.
  */
-export function clipByValue(x: Tensor, clipValueMin: number, clipValueMax: number): Tensor {
-  return makeUnary('clipByValue', (v) => Math.min(Math.max(v, clipValueMin), clipValueMax))(x);
+export function clipByValue(
+  x: Tensor,
+  clipValueMin: number,
+  clipValueMax: number,
+): Tensor {
+  return makeUnary("clipByValue", (v) =>
+    Math.min(Math.max(v, clipValueMin), clipValueMax),
+  )(x);
 }
 
 /**
@@ -3300,9 +3622,10 @@ export const losses = {
   ) => {
     let sum = 0;
     for (let i = 0; i < labels.size; i++) {
-      sum += ((labels.nData[i] as number) - (predictions.nData[i] as number)) ** 2;
+      sum +=
+        ((labels.nData[i] as number) - (predictions.nData[i] as number)) ** 2;
     }
-    return new Tensor([1], 'float32', [sum / labels.size]);
+    return new Tensor([1], "float32", [sum / labels.size]);
   },
   /** Computes the sigmoid cross entropy loss. */
   sigmoidCrossEntropy: (
@@ -3318,7 +3641,7 @@ export const losses = {
       const x = logits.nData[i] as number;
       sum += Math.max(x, 0) - x * z + Math.log(1 + Math.exp(-Math.abs(x)));
     }
-    return new Tensor([1], 'float32', [sum / logits.size]);
+    return new Tensor([1], "float32", [sum / logits.size]);
   },
 };
 
@@ -3331,7 +3654,7 @@ export const metrics = {
       const pred = (yPred.nData[i] as number) > 0.5 ? 1 : 0;
       if (pred === (yTrue.nData[i] as number)) correct++;
     }
-    return new Tensor([1], 'float32', [correct / yTrue.size]);
+    return new Tensor([1], "float32", [correct / yTrue.size]);
   },
   /** Computes categorical accuracy. */
   categoricalAccuracy: (yTrue: Tensor, yPred: Tensor) => {
@@ -3357,7 +3680,7 @@ export const metrics = {
       }
       if (trueIdx === predIdx) correct++;
     }
-    return new Tensor([1], 'float32', [correct / batch]);
+    return new Tensor([1], "float32", [correct / batch]);
   },
 };
 
@@ -3366,7 +3689,7 @@ export const io = {
   /** Loads a model from browser files. */
   browserFiles: (files: File[]) => ({
     load: async () => {
-      if (files.length === 0) throw new Error('No files provided');
+      if (files.length === 0) throw new Error("No files provided");
       return { modelTopology: {}, weightsManifest: [] };
     },
   }),
@@ -3405,7 +3728,9 @@ export const signal = {
         let re = 0,
           im = 0;
         for (let n = 0; n < frameLength; n++) {
-          const val = (signal.nData[f * frameStep + n] as number) * (windowFn ? windowFn(n) : 1);
+          const val =
+            (signal.nData[f * frameStep + n] as number) *
+            (windowFn ? windowFn(n) : 1);
           const angle = (-2 * Math.PI * k * n) / N;
           re += val * Math.cos(angle);
           im += val * Math.sin(angle);
@@ -3414,7 +3739,7 @@ export const signal = {
         outData[(f * N + k) * 2 + 1] = im;
       }
     }
-    return new Tensor([numFrames, N], 'complex64', outData);
+    return new Tensor([numFrames, N], "complex64", outData);
   },
 };
 
@@ -3448,7 +3773,7 @@ export const spectral = {
         outData[(p * outSize + k) * 2 + 1] = im;
       }
     }
-    return new Tensor([...prefixShape, outSize], 'complex64', outData);
+    return new Tensor([...prefixShape, outSize], "complex64", outData);
   },
 };
 
@@ -3464,7 +3789,7 @@ export function eye(
   numRows: number,
   numColumns?: number,
   _batchShape?: number[],
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
 ): Tensor {
   const cols = numColumns || numRows;
   const data = new Array(numRows * cols).fill(0);
@@ -3486,7 +3811,7 @@ export function complex(real: Tensor, imag: Tensor): Tensor {
     data[i * 2] = rArray[i];
     data[i * 2 + 1] = iArray[i];
   }
-  return new Tensor(real.shape, 'complex64', data);
+  return new Tensor(real.shape, "complex64", data);
 }
 
 /**
@@ -3508,11 +3833,15 @@ export function diag(x: Tensor): Tensor {
  * @param dtype Data type.
  * @returns Resulting tensor.
  */
-export function fill(shape: number[], value: number | string, dtype?: DataType): Tensor {
+export function fill(
+  shape: number[],
+  value: number | string,
+  dtype?: DataType,
+): Tensor {
   const size = shape.reduce((a, b) => a * b, 1);
   return new Tensor(
     shape,
-    dtype || (typeof value === 'string' ? 'string' : 'float32'),
+    dtype || (typeof value === "string" ? "string" : "float32"),
     new Array(size).fill(value),
   );
 }
@@ -3524,8 +3853,9 @@ export function fill(shape: number[], value: number | string, dtype?: DataType):
  */
 export function imag(complexTensor: Tensor): Tensor {
   const data = [];
-  for (let i = 1; i < complexTensor.nData.length; i += 2) data.push(complexTensor.nData[i]);
-  return new Tensor(complexTensor.shape, 'float32', data);
+  for (let i = 1; i < complexTensor.nData.length; i += 2)
+    data.push(complexTensor.nData[i]);
+  return new Tensor(complexTensor.shape, "float32", data);
 }
 
 /**
@@ -3535,8 +3865,9 @@ export function imag(complexTensor: Tensor): Tensor {
  */
 export function real(complexTensor: Tensor): Tensor {
   const data = [];
-  for (let i = 0; i < complexTensor.nData.length; i += 2) data.push(complexTensor.nData[i]);
-  return new Tensor(complexTensor.shape, 'float32', data);
+  for (let i = 0; i < complexTensor.nData.length; i += 2)
+    data.push(complexTensor.nData[i]);
+  return new Tensor(complexTensor.shape, "float32", data);
 }
 
 /**
@@ -3549,7 +3880,7 @@ export function real(complexTensor: Tensor): Tensor {
 export function linspace(start: number, stop: number, num: number): Tensor {
   const step = (stop - start) / (num - 1);
   const data = Array.from({ length: num }, (_, i) => start + step * i);
-  return new Tensor([num], 'float32', data);
+  return new Tensor([num], "float32", data);
 }
 
 /**
@@ -3558,7 +3889,7 @@ export function linspace(start: number, stop: number, num: number): Tensor {
  * @param dtype Data type.
  * @returns Resulting tensor.
  */
-export function ones(shape: number[], dtype: DataType = 'float32'): Tensor {
+export function ones(shape: number[], dtype: DataType = "float32"): Tensor {
   return fill(shape, 1, dtype);
 }
 
@@ -3577,7 +3908,7 @@ export function onesLike(x: Tensor): Tensor {
  * @param dtype Data type.
  * @returns Resulting tensor.
  */
-export function zeros(shape: number[], dtype: DataType = 'float32'): Tensor {
+export function zeros(shape: number[], dtype: DataType = "float32"): Tensor {
   return fill(shape, 0, dtype);
 }
 
@@ -3602,7 +3933,7 @@ export function range(
   start: number,
   stop: number,
   step: number = 1,
-  dtype: DataType = 'float32',
+  dtype: DataType = "float32",
 ): Tensor {
   const num = Math.ceil((stop - start) / step);
   const data = Array.from({ length: num }, (_, i) => start + step * i);

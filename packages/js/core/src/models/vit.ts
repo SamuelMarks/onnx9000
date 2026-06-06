@@ -2,20 +2,37 @@
  * @fileoverview vit.ts
  * Provides vit functionality for the core package.
  */
-import { Tensor } from '../ir/tensor.js';
-import { ConvND, Gelu, Gemm, LayerNormalization, MultiHeadAttention } from '../primitives.js';
+import { Tensor } from "../ir/tensor.js";
+import {
+  ConvND,
+  Gelu,
+  Gemm,
+  LayerNormalization,
+  MultiHeadAttention,
+} from "../primitives.js";
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = 'float32',
+  dtype: ReturnType<typeof JSON.parse> = "float32",
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
-  const dtype = inputs[0]?.dtype ?? 'float32';
-  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+function recordOp(
+  opType: string,
+  inputs: Tensor[],
+  _attr?: ReturnType<typeof JSON.parse>,
+): Tensor {
+  const dtype = inputs[0]?.dtype ?? "float32";
+  return new Tensor(
+    `${opType}_out`,
+    [],
+    dtype,
+    false,
+    false,
+    new Float32Array(),
+  );
 }
 
 export class PatchEmbed {
@@ -30,13 +47,24 @@ export class PatchEmbed {
     patchSize: number = 16,
     inChans: number = 3,
     embedDim: number = 768,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.imgSize = imgSize;
     this.patchSize = patchSize;
-    this.numPatches = Math.floor(imgSize / patchSize) * Math.floor(imgSize / patchSize);
-    this.proj = new ConvND(2, inChans, embedDim, patchSize, patchSize, 0, 1, 1, false);
+    this.numPatches =
+      Math.floor(imgSize / patchSize) * Math.floor(imgSize / patchSize);
+    this.proj = new ConvND(
+      2,
+      inChans,
+      embedDim,
+      patchSize,
+      patchSize,
+      0,
+      1,
+      1,
+      false,
+    );
   }
 
   call(x: Tensor): Tensor {
@@ -50,8 +78,8 @@ export class PatchEmbed {
       ]),
       getParam(`${this.prefix}.proj.bias`, [this.proj.outChannels]),
     );
-    x = recordOp('Flatten', [x], { axis: 2 });
-    x = recordOp('Transpose', [x], { perm: [0, 2, 1] });
+    x = recordOp("Flatten", [x], { axis: 2 });
+    x = recordOp("Transpose", [x], { perm: [0, 2, 1] });
     return x;
   }
 }
@@ -72,7 +100,7 @@ export class Block {
     numHeads: number,
     mlpRatio: number = 4.0,
     qkvBias: boolean = false,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.dim = dim;
@@ -93,7 +121,7 @@ export class Block {
       getParam(`${this.prefix}.norm1.bias`, [this.dim]),
     );
     x = this.attn.call(x, x, x);
-    x = recordOp('Add', [x, identity]);
+    x = recordOp("Add", [x, identity]);
 
     identity = x;
     x = this.norm2.call(
@@ -112,7 +140,7 @@ export class Block {
       getParam(`${this.prefix}.fc2.weight`, [this.dim, this.mlpHiddenDim]),
       getParam(`${this.prefix}.fc2.bias`, [this.dim]),
     );
-    x = recordOp('Add', [x, identity]);
+    x = recordOp("Add", [x, identity]);
     return x;
   }
 }
@@ -139,11 +167,19 @@ export class VisionTransformer {
   ) {
     this.embedDim = embedDim;
     this.numClasses = numClasses;
-    this.patchEmbed = new PatchEmbed(imgSize, patchSize, inChans, embedDim, 'patch_embed');
+    this.patchEmbed = new PatchEmbed(
+      imgSize,
+      patchSize,
+      inChans,
+      embedDim,
+      "patch_embed",
+    );
 
     this.blocks = [];
     for (let i = 0; i < depth; i++) {
-      this.blocks.push(new Block(embedDim, numHeads, mlpRatio, qkvBias, `blocks.${i}`));
+      this.blocks.push(
+        new Block(embedDim, numHeads, mlpRatio, qkvBias, `blocks.${i}`),
+      );
     }
 
     this.norm = new LayerNormalization([embedDim], 1e-6);
@@ -154,11 +190,15 @@ export class VisionTransformer {
   call(x: Tensor): Tensor {
     x = this.patchEmbed.call(x);
 
-    const clsToken = getParam('cls_token', [1, 1, this.embedDim]);
-    x = recordOp('Concat', [clsToken, x], { axis: 1 });
+    const clsToken = getParam("cls_token", [1, 1, this.embedDim]);
+    x = recordOp("Concat", [clsToken, x], { axis: 1 });
 
-    const posEmbed = getParam('pos_embed', [1, this.numPatches + 1, this.embedDim]);
-    x = recordOp('Add', [x, posEmbed]);
+    const posEmbed = getParam("pos_embed", [
+      1,
+      this.numPatches + 1,
+      this.embedDim,
+    ]);
+    x = recordOp("Add", [x, posEmbed]);
 
     for (const block of this.blocks) {
       x = block.call(x);
@@ -166,26 +206,28 @@ export class VisionTransformer {
 
     x = this.norm.call(
       x,
-      getParam('norm.weight', [this.embedDim]),
-      getParam('norm.bias', [this.embedDim]),
+      getParam("norm.weight", [this.embedDim]),
+      getParam("norm.bias", [this.embedDim]),
     );
 
-    const starts = recordOp('Constant', [], { value: [0], dtype: 7 });
-    const ends = recordOp('Constant', [], { value: [1], dtype: 7 });
-    const axes = recordOp('Constant', [], { value: [1], dtype: 7 });
-    x = recordOp('Slice', [x, starts, ends, axes]);
+    const starts = recordOp("Constant", [], { value: [0], dtype: 7 });
+    const ends = recordOp("Constant", [], { value: [1], dtype: 7 });
+    const axes = recordOp("Constant", [], { value: [1], dtype: 7 });
+    x = recordOp("Slice", [x, starts, ends, axes]);
 
-    x = recordOp('Flatten', [x], { axis: 1 });
+    x = recordOp("Flatten", [x], { axis: 1 });
 
     x = this.head.call(
       x,
-      getParam('head.weight', [this.numClasses, this.embedDim]),
-      getParam('head.bias', [this.numClasses]),
+      getParam("head.weight", [this.numClasses, this.embedDim]),
+      getParam("head.bias", [this.numClasses]),
     );
     return x;
   }
 }
 
-export function vitBasePatch16_224(numClasses: number = 1000): VisionTransformer {
+export function vitBasePatch16_224(
+  numClasses: number = 1000,
+): VisionTransformer {
   return new VisionTransformer(224, 16, 3, numClasses, 768, 12, 12, 4.0, true);
 }

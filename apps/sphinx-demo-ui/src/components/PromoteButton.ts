@@ -35,14 +35,14 @@ export class PromoteButton extends Component<HTMLButtonElement> {
       globalEventBus.on<boolean>('WASM_PROCESSING_START', () => {
         this.isProcessing = true;
         this.element.disabled = true;
-      }),
+      })
     );
 
     this.onCleanup(
       globalEventBus.on<boolean>('WASM_PROCESSING_END', (success) => {
         this.isProcessing = false;
         this.element.disabled = !success;
-      }),
+      })
     );
 
     // Enable when an artifact is generated successfully
@@ -51,14 +51,14 @@ export class PromoteButton extends Component<HTMLButtonElement> {
         if (!this.isProcessing) {
           this.element.disabled = false;
         }
-      }),
+      })
     );
 
     // Clear disables it
     this.onCleanup(
       globalEventBus.on<object>('TARGET_CLEARED', () => {
         this.element.disabled = true;
-      }),
+      })
     );
   }
 }

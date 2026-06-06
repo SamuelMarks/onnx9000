@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
-import { Builder } from '../src/index.js';
+import { describe, expect, it, vi } from "vitest";
+import { Builder } from "../src/index.js";
 
-vi.mock('../src/ffi.js', () => ({
+vi.mock("../src/ffi.js", () => ({
   trtFfi: {
     lib: {
       createInferBuilder_INTERNAL: vi.fn().mockReturnValue({}),
@@ -14,8 +14,8 @@ vi.mock('../src/ffi.js', () => ({
   },
 }));
 
-describe('TensorRT Builder', () => {
-  it('should build', () => {
+describe("TensorRT Builder", () => {
+  it("should build", () => {
     const b = new Builder();
     expect(b.ptr).toBeDefined();
 

@@ -2,12 +2,12 @@
  * @fileoverview index.ts
  * Provides index functionality for the optimum package.
  */
-import { Graph, Node } from '@onnx9000/core';
+import { Graph, Node } from "@onnx9000/core";
 
 export interface ExportConfig {
   task?: string;
   opset?: number;
-  device?: 'cpu' | 'wasm' | 'webgpu' | 'webnn';
+  device?: "cpu" | "wasm" | "webgpu" | "webnn";
   cacheDir?: string;
   split?: boolean;
 }
@@ -17,11 +17,14 @@ export async function exportModel(
   outputDir: string,
   config: ExportConfig = {},
 ): Promise<void> {
-  console.log(`Exporting model ${modelId} to ${outputDir} with config:`, config);
+  console.log(
+    `Exporting model ${modelId} to ${outputDir} with config:`,
+    config,
+  );
 }
 
 export interface OptimizeConfig {
-  level?: 'O1' | 'O2' | 'O3' | 'O4';
+  level?: "O1" | "O2" | "O3" | "O4";
   disableFusion?: boolean;
   optimizeSize?: boolean;
 }
@@ -51,7 +54,10 @@ function removeUnusedNodes(nodes: Node[], outputs: string[]): Node[] {
   return currentNodes;
 }
 
-function removeIdentityAndDropout(nodes: Node[], graphOutputs: string[]): Node[] {
+function removeIdentityAndDropout(
+  nodes: Node[],
+  graphOutputs: string[],
+): Node[] {
   const replacementMap = new Map<string, string>();
   const resolve = (name: string): string => {
     let curr = name;
@@ -65,7 +71,7 @@ function removeIdentityAndDropout(nodes: Node[], graphOutputs: string[]): Node[]
   const graphOutputSet = new Set(graphOutputs);
 
   for (const node of nodes) {
-    if (node.opType === 'Identity' || node.opType === 'Dropout') {
+    if (node.opType === "Identity" || node.opType === "Dropout") {
       // For dropout, the first output is the tensor, second is mask (optional)
       const input = resolve(node.inputs[0]!);
       const output = node.outputs[0]!;
@@ -78,13 +84,29 @@ function removeIdentityAndDropout(nodes: Node[], graphOutputs: string[]): Node[]
 
       if (graphOutputSet.has(output)) {
         // Have to keep it to satisfy output interface
-        newNodes.push(new Node(node.opType, [input], node.outputs, node.attributes, node.name));
+        newNodes.push(
+          new Node(
+            node.opType,
+            [input],
+            node.outputs,
+            node.attributes,
+            node.name,
+          ),
+        );
       }
       continue;
     }
 
     const newInputs = node.inputs.map(resolve);
-    newNodes.push(new Node(node.opType, newInputs, node.outputs, node.attributes, node.name));
+    newNodes.push(
+      new Node(
+        node.opType,
+        newInputs,
+        node.outputs,
+        node.attributes,
+        node.name,
+      ),
+    );
   }
   return newNodes;
 }
@@ -96,7 +118,10 @@ function removeIdentityAndDropout(nodes: Node[], graphOutputs: string[]): Node[]
  * @param config Optimization configuration
  * @returns An optimized ONNX graph
  */
-export async function optimize(graph: Graph, config: OptimizeConfig = {}): Promise<Graph> {
+export async function optimize(
+  graph: Graph,
+  config: OptimizeConfig = {},
+): Promise<Graph> {
   const newGraph = new Graph(`${graph.name}_optimized`);
   newGraph.inputs = [...graph.inputs];
   newGraph.outputs = [...graph.outputs];
@@ -122,7 +147,7 @@ export async function optimize(graph: Graph, config: OptimizeConfig = {}): Promi
       const curr = currentNodes[i]!;
       if (skipSet.has(curr)) continue;
 
-      if (curr.opType === 'Conv') {
+      if (curr.opType === "Conv") {
         const outName = curr.outputs[0]!;
         // Find next node that uses this output
         const next = currentNodes.find((n) => n.inputs.includes(outName));
@@ -130,15 +155,17 @@ export async function optimize(graph: Graph, config: OptimizeConfig = {}): Promi
         // If it's a Relu and the Conv output is only used by this Relu
         if (
           next &&
-          next.opType === 'Relu' &&
+          next.opType === "Relu" &&
           next.inputs[0] === outName &&
           !graphOutputNames.includes(outName)
         ) {
           // Ensure it's the only consumer
-          const consumers = currentNodes.filter((n) => n.inputs.includes(outName));
+          const consumers = currentNodes.filter((n) =>
+            n.inputs.includes(outName),
+          );
           if (consumers.length === 1) {
             const fused = new Node(
-              'ConvRelu',
+              "ConvRelu",
               curr.inputs,
               next.outputs,
               curr.attributes,
@@ -165,18 +192,21 @@ export async function optimize(graph: Graph, config: OptimizeConfig = {}): Promi
  */
 export async function simplify(graph: Graph): Promise<Graph> {
   return optimize(graph, {
-    level: 'O1',
+    level: "O1",
     disableFusion: true,
   });
 }
 
 export interface QuantizeConfig {
-  method?: 'dynamic' | 'static';
+  method?: "dynamic" | "static";
   gptqBits?: number;
   gptqGroupSize?: number;
 }
 
-export async function quantize(graph: Graph, _config: QuantizeConfig = {}): Promise<Graph> {
+export async function quantize(
+  graph: Graph,
+  _config: QuantizeConfig = {},
+): Promise<Graph> {
   const newGraph = new Graph(`${graph.name}_quantized`);
   newGraph.nodes = [...graph.nodes];
   newGraph.inputs = [...graph.inputs];
@@ -187,8 +217,8 @@ export async function quantize(graph: Graph, _config: QuantizeConfig = {}): Prom
 
   for (const initName of newGraph.initializers) {
     const t = newGraph.tensors[initName];
-    if (t && t.dtype === 'float32') {
-      t.dtype = 'int8';
+    if (t && t.dtype === "float32") {
+      t.dtype = "int8";
     }
   }
   return newGraph;

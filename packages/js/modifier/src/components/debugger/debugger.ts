@@ -1,4 +1,4 @@
-import type { GraphMutator } from '../../GraphMutator.js';
+import type { GraphMutator } from "../../GraphMutator.js";
 
 /**
  * Handles Interactive Graph Execution & Debugging (Phase 7).
@@ -35,7 +35,9 @@ export class GraphDebugger {
 
     this.mutator.execute({
       undo: () => {
-        this.mutator.graph.outputs = this.mutator.graph.outputs.filter((o) => o.name !== edgeName);
+        this.mutator.graph.outputs = this.mutator.graph.outputs.filter(
+          (o) => o.name !== edgeName,
+        );
       },
       redo: () => {
         // Only push if not already an output
@@ -53,7 +55,7 @@ export class GraphDebugger {
       // Very basic mock logic
       let size = 1;
       for (const d of inp.shape) {
-        if (typeof d === 'number' && d > 0) size *= d;
+        if (typeof d === "number" && d > 0) size *= d;
       }
       const arr = new Float32Array(size);
       for (let i = 0; i < size; i++) arr[i] = Math.random();
@@ -64,14 +66,14 @@ export class GraphDebugger {
 
   // 89. Allow users to manually input values (Render form)
   renderInputForm() {
-    this.container.innerHTML = '<h3>Manual Input Override</h3>';
+    this.container.innerHTML = "<h3>Manual Input Override</h3>";
     for (const inp of this.mutator.graph.inputs) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = `<strong>${inp.name}</strong> [${inp.shape.join(',')}]`;
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `<strong>${inp.name}</strong> [${inp.shape.join(",")}]`;
 
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Comma separated values...';
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Comma separated values...";
       wrapper.appendChild(input);
       this.container.appendChild(wrapper);
     }
@@ -102,10 +104,10 @@ export class GraphDebugger {
 
   // 91. Display execution output tensor visually
   renderOutputVisuals() {
-    this.container.innerHTML = '<h3>Execution Results</h3>';
+    this.container.innerHTML = "<h3>Execution Results</h3>";
     for (const [name, tensorData] of this.executionOutputs.entries()) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = `<strong>${name}</strong>: [${Array.from(tensorData).slice(0, 5).join(', ')}...]`;
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `<strong>${name}</strong>: [${Array.from(tensorData).slice(0, 5).join(", ")}...]`;
       this.container.appendChild(wrapper);
     }
   }
@@ -132,7 +134,7 @@ export class GraphDebugger {
     const nextNode = this.mutator.graph.nodes[0];
     if (nextNode) {
       if (this.activeBreakpoint === nextNode.id) {
-        console.log('Paused at breakpoint:', nextNode.id);
+        console.log("Paused at breakpoint:", nextNode.id);
         return { paused: true, node: nextNode };
       }
       return { paused: false, node: nextNode };

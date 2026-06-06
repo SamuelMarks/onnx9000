@@ -82,11 +82,11 @@ export class TopKLogitProcessor implements LogitProcessor {
     vals.sort((a, b) => b.val - a.val);
 
     if (vals.length > this.topK) {
-      const threshold = vals[this.topK - 1]?.val;
+      const threshold = vals[this.topK - 1]?.val ?? -Infinity;
       const newData = new Float32Array(logits.data);
 
       for (let i = 0; i < vocabSize; i++) {
-        const data = logits.data;
+        const data = logits.data as Float32Array;
         if (data[offset + i]! < threshold) {
           newData[offset + i] = -Infinity;
         }
@@ -600,6 +600,7 @@ export class AllowedWordsLogitProcessor implements LogitProcessor {
  * Typical sampling processor based on local information gain.
  */
 export class TypicalLogitProcessor implements LogitProcessor {
+  private mass: number;
   /** @param mass Targeted probability mass. */
   constructor(mass: number = 0.9) {
     this.mass = mass;
@@ -614,13 +615,6 @@ export class TypicalLogitProcessor implements LogitProcessor {
  * Diverse beam search processor that penalizes sibling beams.
  */
 export class DiverseBeamSearchLogitProcessor implements LogitProcessor {
-  /**
-   * Create a new DiverseBeamSearchLogitProcessor.
-   * @param numBeamGroups Number of beam groups.
-   * @param numBeams Number of beams.
-   * @param diversityPenalty Penalty for inter-group similarity.
-   */
-  constructor(_numBeamGroups: number, _numBeams: number, _diversityPenalty: number) {}
   /** Placeholder for diverse beam search implementation. */
   process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;
@@ -631,8 +625,6 @@ export class DiverseBeamSearchLogitProcessor implements LogitProcessor {
  * Contrastive search processor that penalizes tokens based on context similarity.
  */
 export class ContrastiveSearchLogitProcessor implements LogitProcessor {
-  /** @param penaltyAlpha Contrastive penalty alpha factor. */
-  constructor(_penaltyAlpha: number) {}
   /** Placeholder for contrastive search implementation. */
   process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;

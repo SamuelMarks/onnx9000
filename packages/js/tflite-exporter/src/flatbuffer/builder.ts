@@ -54,7 +54,8 @@ export class FlatBufferBuilder {
     if (size > this.minalign) {
       this.minalign = size;
     }
-    const alignSize = (~(this.bb.length - this.space + additionalBytes) + 1) & (size - 1);
+    const alignSize =
+      (~(this.bb.length - this.space + additionalBytes) + 1) & (size - 1);
     while (this.space < alignSize + size + additionalBytes) {
       this.growBuffer();
     }
@@ -136,7 +137,11 @@ export class FlatBufferBuilder {
     this.place(this.offset() - offset + 4);
   }
 
-  public startVector(elemSize: number, numElems: number, alignment: number): void {
+  public startVector(
+    elemSize: number,
+    numElems: number,
+    alignment: number,
+  ): void {
     this.prep(4, elemSize * numElems);
     this.prep(alignment, elemSize * numElems);
   }
@@ -146,7 +151,10 @@ export class FlatBufferBuilder {
     return this.offset();
   }
 
-  public createByteVector(data: Uint8Array | number[], alignment: number = 4): number {
+  public createByteVector(
+    data: Uint8Array | number[],
+    alignment: number = 4,
+  ): number {
     this.startVector(1, data.length, alignment);
     this.space -= data.length;
     this.bb.set(data, this.space);
@@ -155,7 +163,7 @@ export class FlatBufferBuilder {
 
   public createString(s: string | Uint8Array): number {
     let utf8: Uint8Array;
-    if (typeof s === 'string') {
+    if (typeof s === "string") {
       utf8 = new TextEncoder().encode(s);
     } else {
       utf8 = s;
@@ -229,7 +237,9 @@ export class FlatBufferBuilder {
 
   public endObject(): number {
     if (this.vtable === null) {
-      throw new Error('FlatBufferBuilder: endObject called without startObject');
+      throw new Error(
+        "FlatBufferBuilder: endObject called without startObject",
+      );
     }
     this.addInt32(0); // placeholder for vtable offset
     const vtableloc = this.offset();
@@ -258,7 +268,10 @@ export class FlatBufferBuilder {
       if (vt1len === vt2len) {
         let match = true;
         for (let k = 2; k < vt1len; k += 2) {
-          if (this.view.getInt16(vt1 + k, true) !== this.view.getInt16(vt2 + k, true)) {
+          if (
+            this.view.getInt16(vt1 + k, true) !==
+            this.view.getInt16(vt2 + k, true)
+          ) {
             match = false;
             break;
           }
@@ -275,7 +288,11 @@ export class FlatBufferBuilder {
       this.view.setInt32(this.space, existingVtable - vtableloc, true);
     } else {
       this.vtables.push(this.offset());
-      this.view.setInt32(this.bb.length - vtableloc, this.offset() - vtableloc, true);
+      this.view.setInt32(
+        this.bb.length - vtableloc,
+        this.offset() - vtableloc,
+        true,
+      );
     }
 
     this.vtable = null;

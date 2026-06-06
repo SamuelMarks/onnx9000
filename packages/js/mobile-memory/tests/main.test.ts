@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { MobileMemory } from '../src/index.js';
+import { describe, expect, it } from "vitest";
+import { MobileMemory } from "../src/index.js";
 
-describe('MobileMemory', () => {
-  it('should process correctly', () => {
+describe("MobileMemory", () => {
+  it("should process correctly", () => {
     const obj = new MobileMemory();
-    expect(obj.process('test')).toBe('Mobile Memory processed test');
+    expect(obj.process("test")).toBe("Mobile Memory processed test");
   });
 });

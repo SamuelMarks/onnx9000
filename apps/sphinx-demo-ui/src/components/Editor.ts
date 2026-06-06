@@ -31,7 +31,7 @@ self.MonacoEnvironment = {
       return new tsWorker();
     }
     return new editorWorker();
-  },
+  }
 };
 
 export interface EditorOptions {
@@ -60,7 +60,7 @@ export class Editor extends Component<HTMLDivElement> {
       initialValue: '',
       readOnly: false,
       theme: 'vs-light',
-      ...options,
+      ...options
     };
 
     // Delay instantiation until mount because Monaco needs an attached DOM node
@@ -85,7 +85,7 @@ export class Editor extends Component<HTMLDivElement> {
       automaticLayout: false, // We handle it via ResizeObserver for better perf/control
       minimap: { enabled: false },
       scrollBeyondLastLine: false,
-      wordWrap: 'on',
+      wordWrap: 'on'
     });
 
     // Try to load cached content from localStorage
@@ -101,7 +101,7 @@ export class Editor extends Component<HTMLDivElement> {
       try {
         localStorage.setItem(
           `onnx9000-demo-editor-${this.options.language}`,
-          this.editor.getValue(),
+          this.editor.getValue()
         );
       } catch (e) {
         console.warn('Failed to save editor state to localStorage', e);
@@ -120,7 +120,7 @@ export class Editor extends Component<HTMLDivElement> {
           try {
             localStorage.setItem(
               `onnx9000-demo-editor-${this.options.language}`,
-              this.editor.getValue(),
+              this.editor.getValue()
             );
           } catch (e) {
             console.warn('Failed to save editor state to localStorage', e);
@@ -143,13 +143,15 @@ export class Editor extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<string>('THEME_CHANGED', (theme: object) => {
         this.setTheme(theme);
-      }),
+      })
     );
 
     this.onCleanup(() => {
       this.resizeObserver.disconnect();
       this.editor.dispose();
-      this.cachedModels.forEach((model) => model.dispose());
+      this.cachedModels.forEach((model) => {
+        model.dispose();
+      });
       this.cachedModels.clear();
     });
   }

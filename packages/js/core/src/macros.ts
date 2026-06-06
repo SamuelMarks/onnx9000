@@ -2,9 +2,9 @@
  * @fileoverview macros.ts
  * Provides macros functionality for the core package.
  */
-import type { Graph } from './ir/graph.js';
-import type { Node } from './ir/node.js';
-import { Tensor } from './ir/tensor.js';
+import type { Graph } from "./ir/graph.js";
+import type { Node } from "./ir/node.js";
+import { Tensor } from "./ir/tensor.js";
 
 type MacroFn = (...args: ReturnType<typeof JSON.parse>[]) => Tensor;
 
@@ -16,11 +16,18 @@ export function recordOp(
   attributes?: ReturnType<typeof JSON.parse>,
 ): Tensor {
   attributes = attributes || {};
-  const dtype = inputs[0]?.dtype ?? 'float32';
-  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+  const dtype = inputs[0]?.dtype ?? "float32";
+  return new Tensor(
+    `${opType}_out`,
+    [],
+    dtype,
+    false,
+    false,
+    new Float32Array(),
+  );
 }
 
-export function irMacro(name: string, _domain: string = 'ai.onnx9000.macro') {
+export function irMacro(name: string, _domain: string = "ai.onnx9000.macro") {
   return (
     _target: ReturnType<typeof JSON.parse>,
     _propertyKey: string,
@@ -47,7 +54,7 @@ export class MacroExpander {
     // Mock implementation
     const newNodes: Node[] = [];
     for (const node of graph.nodes) {
-      if (node.domain === 'ai.onnx9000.macro' && MACRO_REGISTRY[node.opType]) {
+      if (node.domain === "ai.onnx9000.macro" && MACRO_REGISTRY[node.opType]) {
         // Expand logic goes here
       } else {
         newNodes.push(node);

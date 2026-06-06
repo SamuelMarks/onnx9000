@@ -3,10 +3,10 @@
  * Provides emitters-merge functionality for the converters package.
  */
 // @ts-nocheck
-import type { OnnxNodeBuilder } from './emitters.js';
+import type { OnnxNodeBuilder } from "./emitters.js";
 
 export function emitMerge(
-  opType: 'Add' | 'Sub' | 'Mul' | 'Mean' | 'Max' | 'Min',
+  opType: "Add" | "Sub" | "Mul" | "Mean" | "Max" | "Min",
   inputNames: string[],
   outputName: string,
   name: string,
@@ -15,7 +15,7 @@ export function emitMerge(
 
   // ONNX Add, Sub, Mul, etc. generally take 2 inputs.
   // Except Mean, Max, Min which can take multiple inputs!
-  if (opType === 'Mean' || opType === 'Max' || opType === 'Min') {
+  if (opType === "Mean" || opType === "Max" || opType === "Min") {
     nodes.push({
       opType,
       inputs: inputNames,
@@ -26,7 +26,9 @@ export function emitMerge(
   } else {
     // For Add/Mul with > 2 inputs, we need to accumulate
     if (inputNames.length < 2) {
-      throw new Error(`Merge layer requires at least 2 inputs, got ${inputNames.length}`);
+      throw new Error(
+        `Merge layer requires at least 2 inputs, got ${inputNames.length}`,
+      );
     }
 
     let currentOut = inputNames[0];
@@ -57,11 +59,11 @@ export function emitConcat(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'Concat',
+      opType: "Concat",
       inputs: inputNames,
       outputs: [outputName],
       name,
-      attributes: [{ name: 'axis', i: axis, type: 'INT' }],
+      attributes: [{ name: "axis", i: axis, type: "INT" }],
     },
   ];
 }
@@ -79,7 +81,7 @@ export function emitDot(
   // Assuming default Dot (inner product):
   return [
     {
-      opType: 'MatMul',
+      opType: "MatMul",
       inputs: [input1Name, input2Name],
       outputs: [outputName],
       name,

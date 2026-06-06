@@ -2,7 +2,7 @@
  * @fileoverview modifier.ts
  * Provides modifier functionality for the modifier package.
  */
-import { type Graph, type Tensor, unpackData } from '@onnx9000/core';
+import { type Graph, type Tensor, unpackData } from "@onnx9000/core";
 
 export abstract class Modifier {
   constructor(public options: ReturnType<typeof JSON.parse> = {}) {}
@@ -16,7 +16,7 @@ export class MagnitudePruningModifier extends Modifier {
     const leaveUnmasked = this.options.leave_unmasked || [];
 
     for (const pattern of params) {
-      const regex = new RegExp(pattern.replace('re:', ''));
+      const regex = new RegExp(pattern.replace("re:", ""));
       for (const name in graph.tensors) {
         if (leaveUnmasked.includes(name)) continue;
         const tensor = graph.tensors[name]!;
@@ -49,7 +49,7 @@ export class ConstantPruningModifier extends Modifier {
   apply(graph: Graph): void {
     const params = this.options.params || [];
     for (const pattern of params) {
-      const regex = new RegExp(pattern.replace('re:', ''));
+      const regex = new RegExp(pattern.replace("re:", ""));
       for (const name in graph.tensors) {
         const tensor = graph.tensors[name]!;
         if (tensor.isInitializer && regex.test(name)) {
@@ -72,19 +72,19 @@ export class ConstantPruningModifier extends Modifier {
 
 export function parseRecipe(yamlText: string): Modifier[] {
   const modifiers: Modifier[] = [];
-  const lines = yamlText.split('\n');
+  const lines = yamlText.split("\n");
   let currentMod: ReturnType<typeof JSON.parse> = null;
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
+    if (!trimmed || trimmed.startsWith("#")) continue;
 
-    if (trimmed.startsWith('- !')) {
-      const type = trimmed.substring(3).split(' ')[0]!;
+    if (trimmed.startsWith("- !")) {
+      const type = trimmed.substring(3).split(" ")[0]!;
       currentMod = { type, options: {} };
-      if (type === 'MagnitudePruningModifier')
+      if (type === "MagnitudePruningModifier")
         modifiers.push(new MagnitudePruningModifier(currentMod.options));
-      else if (type === 'ConstantPruningModifier')
+      else if (type === "ConstantPruningModifier")
         modifiers.push(new ConstantPruningModifier(currentMod.options));
       else
         modifiers.push(
@@ -92,20 +92,20 @@ export function parseRecipe(yamlText: string): Modifier[] {
             apply() {}
           })(currentMod.options),
         );
-    } else if (currentMod && trimmed.includes(':')) {
-      const parts = trimmed.split(':');
+    } else if (currentMod && trimmed.includes(":")) {
+      const parts = trimmed.split(":");
       const key = parts[0]?.trim();
-      let val: ReturnType<typeof JSON.parse> = parts.slice(1).join(':').trim();
+      let val: ReturnType<typeof JSON.parse> = parts.slice(1).join(":").trim();
 
-      if (val.startsWith('[') && val.endsWith(']')) {
+      if (val.startsWith("[") && val.endsWith("]")) {
         val = val
           .substring(1, val.length - 1)
-          .split(',')
-          .map((s: string) => s.trim().replace(/['"]/g, ''));
+          .split(",")
+          .map((s: string) => s.trim().replace(/['"]/g, ""));
       } else if (!Number.isNaN(val)) {
         val = parseFloat(val);
       } else {
-        val = val.replace(/['"]/g, '');
+        val = val.replace(/['"]/g, "");
       }
       currentMod.options[key] = val;
     }

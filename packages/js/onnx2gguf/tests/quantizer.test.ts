@@ -1,8 +1,13 @@
-import { describe, expect, it } from 'vitest';
-import { f32ToF16, quantizeQ4_0, quantizeQ4_1, quantizeQ8_0 } from '../src/quantizer.js';
+import { describe, expect, it } from "vitest";
+import {
+  f32ToF16,
+  quantizeQ4_0,
+  quantizeQ4_1,
+  quantizeQ8_0,
+} from "../src/quantizer.js";
 
-describe('quantizer', () => {
-  it('should quantize', () => {
+describe("quantizer", () => {
+  it("should quantize", () => {
     const f32 = new Float32Array(32).fill(1.0);
     const u8 = new Uint8Array(f32.buffer);
 

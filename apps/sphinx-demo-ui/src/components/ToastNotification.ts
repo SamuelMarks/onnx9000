@@ -45,7 +45,7 @@ export class ToastNotification extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<ToastMessage>('SHOW_TOAST', (toast) => {
         this.show(toast);
-      }),
+      })
     );
   }
 }

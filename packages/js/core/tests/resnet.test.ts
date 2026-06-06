@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import { resnet18 } from '../src/models/resnet.js';
+import { describe, expect, it } from "vitest";
+import { resnet18 } from "../src/models/resnet.js";
 
-describe('ResNet', () => {
-  it('should create and call', () => {
+describe("ResNet", () => {
+  it("should create and call", () => {
     const model = resnet18();
     expect(model).toBeDefined();
     const out = model.call({} as any);

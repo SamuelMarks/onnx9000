@@ -1,5 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
-import { fetchSafetensorsHeader, SafeTensors } from '../src/parser/safetensors.js';
+import { describe, expect, it, vi } from "vitest";
+import {
+  fetchSafetensorsHeader,
+  SafeTensors,
+} from "../src/parser/safetensors.js";
 
 global.fetch = vi.fn().mockResolvedValue({
   ok: true,
@@ -15,8 +18,8 @@ global.fetch = vi.fn().mockResolvedValue({
   headers: new Headers(),
 });
 
-describe('safetensors', () => {
-  it('should parse', async () => {
+describe("safetensors", () => {
+  it("should parse", async () => {
     const buf = new Uint8Array(8 + 50);
     const view = new DataView(buf.buffer);
     view.setBigUint64(0, BigInt(19), true);
@@ -27,8 +30,8 @@ describe('safetensors', () => {
     expect(st.metadata).toBeDefined();
   });
 
-  it('should fetch header', async () => {
-    const res = await fetchSafetensorsHeader('http://test');
+  it("should fetch header", async () => {
+    const res = await fetchSafetensorsHeader("http://test");
     expect(res).toBeDefined();
   });
 });

@@ -34,7 +34,9 @@ export class MicrophoneManager {
 
   stop(): void {
     if (this.stream) {
-      this.stream.getTracks().forEach((t) => t.stop());
+      this.stream.getTracks().forEach((t) => {
+        t.stop();
+      });
       this.stream = null;
     }
     if (this.audioContext && this.audioContext.state !== 'closed') {

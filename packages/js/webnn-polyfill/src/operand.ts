@@ -2,7 +2,7 @@
  * @fileoverview operand.ts
  * Provides operand functionality for the webnn-polyfill package.
  */
-import type { MLOperand, MLOperandDataType } from './interfaces.js';
+import type { MLOperand, MLOperandDataType } from "./interfaces.js";
 
 export class PolyfillMLOperand implements MLOperand {
   dataType: MLOperandDataType;

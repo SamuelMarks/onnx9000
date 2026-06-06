@@ -49,13 +49,13 @@ export class BottomContainer extends Component<HTMLDivElement> {
     this.tabs = new Tabs({
       tabs: [
         { id: 'console', label: t('bottom.console'), content: consolePanel },
-        { id: 'viz', label: t('bottom.visualizer'), content: vizPanel },
+        { id: 'viz', label: t('bottom.visualizer'), content: vizPanel }
       ],
       initialTabId: 'console',
       onChange: (tabId) => {
         console.log('Tab switched to:', tabId);
         globalEventBus.emit('TAB_CHANGED', tabId);
-      },
+      }
     });
 
     this.tabs.mount(container);

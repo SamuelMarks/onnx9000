@@ -1,15 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import * as models from '../src/models/index.js';
+import { describe, expect, it } from "vitest";
+import * as models from "../src/models/index.js";
 
-describe('Models', () => {
-  it('HubConfig', () => {
-    models.HubConfig.setEndpoint('test');
-    expect(models.HubConfig.endpoint).toBe('test');
-    models.HubConfig.setApiKey('key');
-    expect(models.HubConfig.apiKey).toBe('key');
+describe("Models", () => {
+  it("HubConfig", () => {
+    models.HubConfig.setEndpoint("test");
+    expect(models.HubConfig.endpoint).toBe("test");
+    models.HubConfig.setApiKey("key");
+    expect(models.HubConfig.apiKey).toBe("key");
   });
 
-  it('Model classes', async () => {
+  it("Model classes", async () => {
     const list = [
       models.PreTrainedModel,
       models.GenerationMixin,
@@ -24,7 +24,7 @@ describe('Models', () => {
       models.AutoModelForSpeechSeq2Seq,
     ];
     for (const exp of list) {
-      const inst = new (exp as any)({ myconfig: 1 }, 'model');
+      const inst = new (exp as any)({ myconfig: 1 }, "model");
       expect(inst.config).toBeDefined();
       if (inst.generate) {
         await expect(inst.generate()).resolves.toBeDefined();
@@ -35,34 +35,52 @@ describe('Models', () => {
     }
   });
 
-  it('AutoModels', async () => {
-    await expect(models.AutoModel.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForCausalLM.fromPretrained('a')).resolves.toBeDefined();
+  it("AutoModels", async () => {
+    await expect(models.AutoModel.fromPretrained("a")).resolves.toBeDefined();
     await expect(
-      models.AutoModelForSequenceClassification.fromPretrained('a'),
+      models.AutoModelForCausalLM.fromPretrained("a"),
     ).resolves.toBeDefined();
-    await expect(models.AutoModelForTokenClassification.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForQuestionAnswering.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForMaskedLM.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForSeq2SeqLM.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForImageClassification.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForObjectDetection.fromPretrained('a')).resolves.toBeDefined();
-    await expect(models.AutoModelForSpeechSeq2Seq.fromPretrained('a')).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForSequenceClassification.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForTokenClassification.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForQuestionAnswering.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForMaskedLM.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForSeq2SeqLM.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForImageClassification.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForObjectDetection.fromPretrained("a"),
+    ).resolves.toBeDefined();
+    await expect(
+      models.AutoModelForSpeechSeq2Seq.fromPretrained("a"),
+    ).resolves.toBeDefined();
   });
 
-  it('ModelCache and config/feature', async () => {
+  it("ModelCache and config/feature", async () => {
     expect(models.ModelCache).toBeDefined();
-    await expect(models.AutoConfig.fromPretrained('id')).resolves.toBeDefined();
-    await expect(models.AutoFeatureExtractor.fromPretrained('id')).resolves.toBeDefined();
+    await expect(models.AutoConfig.fromPretrained("id")).resolves.toBeDefined();
+    await expect(
+      models.AutoFeatureExtractor.fromPretrained("id"),
+    ).resolves.toBeDefined();
   });
 });
 
-it('uncovered model methods', async () => {
+it("uncovered model methods", async () => {
   await models.ModelCache.clearCache();
-  await models.ModelCache.getFromCache('a');
-  await models.ModelCache.putInCache('a', 'b');
+  await models.ModelCache.getFromCache("a");
+  await models.ModelCache.putInCache("a", "b");
 
-  const inst = new models.PreTrainedModel({}, 'path');
+  const inst = new models.PreTrainedModel({}, "path");
   await inst.init();
   inst.dispose();
 });

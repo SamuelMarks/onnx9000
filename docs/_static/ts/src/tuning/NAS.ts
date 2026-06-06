@@ -67,7 +67,9 @@ export class NASPrimitives {
 
     graph.initializers.forEach((t) => {
       let size = 1;
-      t.dims.forEach((d) => (size *= d));
+      t.dims.forEach((d) => {
+        size *= d;
+      });
       score += size;
     });
 

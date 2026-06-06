@@ -33,11 +33,11 @@ export class CNTKParser {
     if (dictionary.nodes && Array.isArray(dictionary.nodes)) {
       for (const node of dictionary.nodes) {
         nodes.push({
-          name: node.name || node.uid || 'unknown',
-          op: node.op || 'unknown',
+          name: node.name || node.uid || "unknown",
+          op: node.op || "unknown",
           inputs: node.inputs || [],
           attributes: node.attributes || {},
-          uid: node.uid || node.name || 'unknown',
+          uid: node.uid || node.name || "unknown",
         });
       }
     }

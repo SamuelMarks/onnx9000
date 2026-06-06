@@ -11,7 +11,9 @@ export class WasmCompiler {
    */
   async compile(_onnxBuffer: Uint8Array): Promise<WebAssembly.Module> {
     // Scaffold implementation
-    const wasmBinary = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
+    const wasmBinary = new Uint8Array([
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+    ]);
     return WebAssembly.compile(wasmBinary);
   }
 }

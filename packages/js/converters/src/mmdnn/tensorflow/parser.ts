@@ -36,8 +36,8 @@ export interface TFGraphDef {
  * @throws Error if parsing fails.
  */
 export function parsePbtxt(text: string): TFGraphDef {
-  if (text.includes('invalid {')) {
-    throw new Error('Failed to parse TensorFlow PBTXT: Invalid syntax');
+  if (text.includes("invalid {")) {
+    throw new Error("Failed to parse TensorFlow PBTXT: Invalid syntax");
   }
 
   const nodes: TFNodeDef[] = [];
@@ -47,8 +47,8 @@ export function parsePbtxt(text: string): TFGraphDef {
   for (let i = 1; i < nodeBlocks.length; i++) {
     const block = nodeBlocks[i] as string;
     const node: TFNodeDef = {
-      name: '',
-      op: '',
+      name: "",
+      op: "",
       input: [],
       attr: {},
     };
@@ -64,48 +64,56 @@ export function parsePbtxt(text: string): TFGraphDef {
 
     // Improved attribute parsing using a more flexible block-based extraction
     const attrRegex = /attr\s*\{([\s\S]*?)\n\s*\}/g;
-    let aMatch;
-    while ((aMatch = attrRegex.exec(block)) !== null) {
+    let aMatch = attrRegex.exec(block);
+    while (aMatch !== null) {
       const attrContent = aMatch[1] as string;
       const keyMatch = attrContent.match(/key:\s*"([^"]*)"/);
-      if (!keyMatch) continue;
+      if (!keyMatch) {
+        aMatch = attrRegex.exec(block);
+        continue;
+      }
 
       const key = keyMatch[1] as string;
       const attr: TFAttrValue = {};
 
-      if (attrContent.includes('type:')) {
+      if (attrContent.includes("type:")) {
         const m = attrContent.match(/type:\s*([A-Z0-9_]+)/);
         if (m) attr.type = m[1];
       }
-      if (attrContent.includes('s:')) {
+      if (attrContent.includes("s:")) {
         const m = attrContent.match(/s:\s*"([^"]*)"/);
         if (m) attr.s = m[1];
       }
-      if (attrContent.includes('i:')) {
+      if (attrContent.includes("i:")) {
         const m = attrContent.match(/i:\s*(-?\d+)/);
         if (m) attr.i = parseInt(m[1] as string, 10);
       }
-      if (attrContent.includes('f:')) {
+      if (attrContent.includes("f:")) {
         const m = attrContent.match(/f:\s*(-?\d+\.?\d*)/);
         if (m) attr.f = parseFloat(m[1] as string);
       }
-      if (attrContent.includes('shape {') || attrContent.includes('tensor_shape {')) {
+      if (
+        attrContent.includes("shape {") ||
+        attrContent.includes("tensor_shape {")
+      ) {
         const dims: number[] = [];
-        const dimMatches = attrContent.matchAll(/dim\s*\{\s*size:\s*(-?\d+)\s*\}/g);
+        const dimMatches = attrContent.matchAll(
+          /dim\s*\{\s*size:\s*(-?\d+)\s*\}/g,
+        );
         for (const dm of dimMatches) {
           dims.push(parseInt(dm[1] as string, 10));
         }
-        if (attrContent.includes('tensor {')) {
+        if (attrContent.includes("tensor {")) {
           const dtypeMatch = attrContent.match(/dtype:\s*([A-Z0-9_]+)/);
           attr.tensor = {
-            dtype: dtypeMatch ? (dtypeMatch[1] as string) : 'DT_FLOAT',
+            dtype: dtypeMatch ? (dtypeMatch[1] as string) : "DT_FLOAT",
             shape: dims,
           };
         } else {
           attr.shape = dims;
         }
       }
-      if (attrContent.includes('list {')) {
+      if (attrContent.includes("list {")) {
         const listI: number[] = [];
         const iMatches = attrContent.matchAll(/i:\s*(-?\d+)/g);
         for (const im of iMatches) {
@@ -115,21 +123,22 @@ export function parsePbtxt(text: string): TFGraphDef {
       }
 
       node.attr[key] = attr;
+      aMatch = attrRegex.exec(block);
     }
 
     // Fallback for single-line value blocks if the above regex fails
-    if (Object.keys(node.attr).length === 0 && block.includes('key:')) {
+    if (Object.keys(node.attr).length === 0 && block.includes("key:")) {
       const keys = block.matchAll(/key:\s*"([^"]*)"/g);
       for (const km of keys) {
         const k = km[1] as string;
         const val: TFAttrValue = {};
         if (block.includes(`key: "${k}"`)) {
           const sub = block.split(`key: "${k}"`)[1] as string;
-          if (sub.includes('i:')) {
+          if (sub.includes("i:")) {
             const m = sub.match(/i:\s*(-?\d+)/);
             if (m) val.i = parseInt(m[1] as string, 10);
           }
-          if (sub.includes('f:')) {
+          if (sub.includes("f:")) {
             const m = sub.match(/f:\s*(-?\d+\.?\d*)/);
             if (m) val.f = parseFloat(m[1] as string);
           }
@@ -143,8 +152,8 @@ export function parsePbtxt(text: string): TFGraphDef {
     }
   }
 
-  if (text.includes('node {') && nodes.length === 0 && text.includes('test')) {
-    nodes.push({ name: 'test', op: 'Identity', input: [], attr: {} });
+  if (text.includes("node {") && nodes.length === 0 && text.includes("test")) {
+    nodes.push({ name: "test", op: "Identity", input: [], attr: {} });
   }
 
   return { node: nodes };

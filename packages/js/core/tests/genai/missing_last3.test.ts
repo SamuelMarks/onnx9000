@@ -1,50 +1,57 @@
-import { describe, it } from 'vitest';
-import * as lp from '../../src/genai/logit_processors.js';
-import * as state from '../../src/genai/state.js';
-import * as tok from '../../src/genai/tokenizer.js';
-import { Tensor } from '../../src/ir/tensor.js';
+import { describe, it } from "vitest";
+import * as lp from "../../src/genai/logit_processors.js";
+import * as state from "../../src/genai/state.js";
+import * as tok from "../../src/genai/tokenizer.js";
+import { Tensor } from "../../src/ir/tensor.js";
 
-describe('missing_last3', () => {
-  it('logit_processors 324,277,316-317', () => {
+describe("missing_last3", () => {
+  it("logit_processors 324,277,316-317", () => {
     new lp.MinPLogitProcessor(1.0).process(
       [],
-      new Tensor('a', [1, 2], 'float32', false, false, new Float32Array([1, 2])),
+      new Tensor(
+        "a",
+        [1, 2],
+        "float32",
+        false,
+        false,
+        new Float32Array([1, 2]),
+      ),
     );
 
     new lp.ForcedEOSLogitProcessor(2, 0).process(
       [1],
-      new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])),
+      new Tensor("a", [1, 2], "int32", false, false, new Int32Array([1, 2])),
     );
 
     new lp.MinPLogitProcessor(0.1).process(
       [],
-      new Tensor('a', [1, 2], 'int32', false, false, new Int32Array([1, 2])),
+      new Tensor("a", [1, 2], "int32", false, false, new Int32Array([1, 2])),
     );
   });
 
-  it('state 113-116, 122-123', () => {
+  it("state 113-116, 122-123", () => {
     const c = new state.MultiHeadAttentionCache(1);
     try {
       c.update(
-        new Tensor('a', [1, 99], 'int32', false, false, new Int32Array([1])),
-        new Tensor('b', [1, 99], 'int32', false, false, new Int32Array([1])),
+        new Tensor("a", [1, 99], "int32", false, false, new Int32Array([1])),
+        new Tensor("b", [1, 99], "int32", false, false, new Int32Array([1])),
         0,
       );
     } catch (_e) {}
     try {
       c.update(
-        new Tensor('a', [1, 1], 'int32', false, false, new Int32Array([1])),
-        new Tensor('b', [1, 99], 'int32', false, false, new Int32Array([1])),
+        new Tensor("a", [1, 1], "int32", false, false, new Int32Array([1])),
+        new Tensor("b", [1, 99], "int32", false, false, new Int32Array([1])),
         0,
       );
     } catch (_e) {}
   });
 
-  it('tokenizer 278-279, 210-212, 257', () => {
-    const b = new tok.WordPieceTokenizer(new Map([['a', 1]]));
+  it("tokenizer 278-279, 210-212, 257", () => {
+    const b = new tok.WordPieceTokenizer(new Map([["a", 1]]));
     b.decode([1, 2]);
 
-    const c = new tok.BPETokenizer([], new Map([['a', 1]]), '<unk>');
+    const c = new tok.BPETokenizer([], new Map([["a", 1]]), "<unk>");
     c.decode([1, 2]);
   });
 });

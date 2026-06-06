@@ -2,7 +2,7 @@
  * @fileoverview optimization.ts
  * Provides optimization functionality for the iree-compiler package.
  */
-import type { Region } from '../ir/core.js';
+import type { Region } from "../ir/core.js";
 
 // 146-155. Optimization Passes
 export class Optimizer {
@@ -11,7 +11,7 @@ export class Optimizer {
     for (const block of region.blocks) {
       for (const op of block.operations) {
         // Dummy pass that would pattern match: matmul -> scale -> softmax -> matmul
-        if (op.opcode === 'web.linalg.matmul' /* ... */) {
+        if (op.opcode === "web.linalg.matmul" /* ... */) {
           // fuse to web.linalg.attention
         }
       }
@@ -27,7 +27,7 @@ export class Optimizer {
   public removeConvolutionPadding(region: Region): void {
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === 'web.mhlo.convolution') {
+        if (op.opcode === "web.mhlo.convolution") {
           // Check if padding is > 0
           // Lower to web.mhlo.pad + valid convolution
         }
@@ -52,7 +52,7 @@ export class Optimizer {
       while (i < block.operations.length) {
         const op = block.operations[i]!;
         // vm.add x, 0 -> x
-        if (op.opcode === 'web.vm.add.i32' || op.opcode === 'web.vm.add.f32') {
+        if (op.opcode === "web.vm.add.i32" || op.opcode === "web.vm.add.f32") {
           // Dummy check. Real code checks constants
           // If zero, replace usages
         }

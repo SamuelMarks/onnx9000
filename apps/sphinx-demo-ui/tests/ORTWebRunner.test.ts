@@ -7,9 +7,9 @@ vi.mock('../src/core/WorkerManager.js', () => ({
     getInstance: vi.fn().mockReturnValue({
       initWorker: vi.fn(),
       execute: vi.fn().mockResolvedValue({ y: {} }),
-      terminate: vi.fn(),
-    }),
-  },
+      terminate: vi.fn()
+    })
+  }
 }));
 
 describe('ORTWebRunner', () => {

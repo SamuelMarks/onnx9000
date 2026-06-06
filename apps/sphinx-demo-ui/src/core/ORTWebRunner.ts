@@ -18,7 +18,7 @@ export class ORTWebRunner {
   public async runInference(
     onnxBinary: Uint8Array,
     inputs: Record<string, Float32Array | Int32Array>,
-    executionProvider: 'wasm' | 'webgl' | 'webgpu' = 'wasm',
+    executionProvider: 'wasm' | 'webgl' | 'webgpu' = 'wasm'
   ): Promise<Record<string, object>> {
     console.log(`Starting ORT Web execution (${executionProvider})...`);
     globalEventBus.emit('INFERENCE_STARTED');
@@ -30,7 +30,7 @@ export class ORTWebRunner {
       const outputs = (await WorkerManager.getInstance().execute('RUN_ORT', {
         binary: onnxBinary,
         inputs,
-        executionProvider,
+        executionProvider
       })) as Record<string, object>;
 
       const end = performance.now();

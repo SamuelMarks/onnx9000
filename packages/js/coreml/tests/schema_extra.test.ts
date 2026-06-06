@@ -1,9 +1,9 @@
-import { BufferReader } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
-import { parseModel } from '../src/schema.js';
+import { BufferReader } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
+import { parseModel } from "../src/schema.js";
 
-describe('Schema Extra Coverage', () => {
-  it('covers missing cases', async () => {
+describe("Schema Extra Coverage", () => {
+  it("covers missing cases", async () => {
     // We construct a raw protobuf to hit everything
     // Model:
     // 1 (varint): specVersion
@@ -45,16 +45,16 @@ describe('Schema Extra Coverage', () => {
     };
 
     const feat = [
-      ...writeBytes(writeTag(1, 2), Array.from(encodeString('f'))),
-      ...writeBytes(writeTag(2, 2), Array.from(encodeString('fdesc'))),
+      ...writeBytes(writeTag(1, 2), Array.from(encodeString("f"))),
+      ...writeBytes(writeTag(2, 2), Array.from(encodeString("fdesc"))),
       ...writeBytes(writeTag(999, 2), []), // skip field
     ];
 
     const meta = [
-      ...writeBytes(writeTag(1, 2), Array.from(encodeString('mdesc'))),
-      ...writeBytes(writeTag(2, 2), Array.from(encodeString('mver'))),
-      ...writeBytes(writeTag(3, 2), Array.from(encodeString('mauth'))),
-      ...writeBytes(writeTag(4, 2), Array.from(encodeString('mlic'))),
+      ...writeBytes(writeTag(1, 2), Array.from(encodeString("mdesc"))),
+      ...writeBytes(writeTag(2, 2), Array.from(encodeString("mver"))),
+      ...writeBytes(writeTag(3, 2), Array.from(encodeString("mauth"))),
+      ...writeBytes(writeTag(4, 2), Array.from(encodeString("mlic"))),
       ...writeBytes(writeTag(999, 2), []), // skip field
     ];
 
@@ -87,12 +87,12 @@ describe('Schema Extra Coverage', () => {
     const reader = new BufferReader(buf);
     const parsed = await parseModel(reader);
 
-    expect(parsed.description?.input[0]?.name).toBe('f');
-    expect(parsed.description?.metadata?.license).toBe('mlic');
+    expect(parsed.description?.input[0]?.name).toBe("f");
+    expect(parsed.description?.metadata?.license).toBe("mlic");
     expect(parsed.mlProgram?.version).toBe(1);
 
     // Test protobuf.ts Writer helpers directly
-    const { Writer } = await import('../src/protobuf.js');
+    const { Writer } = await import("../src/protobuf.js");
     const w = new Writer();
     w.writeVarInt64(10n);
     w.writeVarInt64(200n);
@@ -105,7 +105,7 @@ describe('Schema Extra Coverage', () => {
     expect(w.finish().length).toBeGreaterThan(0);
 
     // hit loader.ts parseToAST
-    const { MLPackageLoader } = await import('../src/loader.js');
+    const { MLPackageLoader } = await import("../src/loader.js");
     // mock parseToAST
     try {
       MLPackageLoader.parseToAST(parsed.mlProgram!);

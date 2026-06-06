@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
+import { describe, expect, it } from "vitest";
+import { FlatBufferBuilder } from "../src/flatbuffer/builder.js";
 
-describe('Coverage FlatBufferBuilder', () => {
-  it('Builder branches', () => {
+describe("Coverage FlatBufferBuilder", () => {
+  it("Builder branches", () => {
     const b = new FlatBufferBuilder();
 
     // addFieldInt8 default value
@@ -38,7 +38,7 @@ describe('Coverage FlatBufferBuilder', () => {
   });
 });
 
-it('Builder growBuffer to limit', () => {
+it("Builder growBuffer to limit", () => {
   const b = new FlatBufferBuilder(2147483647 - 100); // Almost 2GB
   // Just force a resize
   try {
@@ -51,46 +51,46 @@ it('Builder growBuffer to limit', () => {
   } catch (_e) {}
 });
 
-it('clear coverage', () => {
+it("clear coverage", () => {
   const b = new FlatBufferBuilder();
   b.clear();
 });
 
-it('Builder createByteVector and createString', () => {
+it("Builder createByteVector and createString", () => {
   const b = new FlatBufferBuilder();
   const vec = new Uint8Array([1, 2, 3]);
   const offset = b.createByteVector(vec, 1);
   expect(offset).toBeGreaterThan(0);
 
-  const strOffset = b.createString('hello');
+  const strOffset = b.createString("hello");
   expect(strOffset).toBeGreaterThan(0);
   const strOffset2 = b.createString(new Uint8Array([104, 105])); // "hi"
   expect(strOffset2).toBeGreaterThan(0);
 });
 
-it('Builder finish with identifier', () => {
+it("Builder finish with identifier", () => {
   const b = new FlatBufferBuilder();
   b.startObject(1);
   const root = b.endObject();
-  b.finish(root, 'TFL3');
+  b.finish(root, "TFL3");
 
   const buf = b.asUint8Array();
   expect(buf.length).toBeGreaterThan(4);
 });
 
-it('Builder addFloat64 addInt16', () => {
+it("Builder addFloat64 addInt16", () => {
   const b = new FlatBufferBuilder();
   b.startObject(2);
   b.addFieldFloat64(0, 1.5, 0.0);
   b.endObject();
 });
 
-it('Builder endObject without startObject', () => {
+it("Builder endObject without startObject", () => {
   const b = new FlatBufferBuilder();
-  expect(() => b.endObject()).toThrow('endObject called without startObject');
+  expect(() => b.endObject()).toThrow("endObject called without startObject");
 });
 
-it('Builder prep grow', () => {
+it("Builder prep grow", () => {
   const b = new FlatBufferBuilder(10);
   // this size will force it to grow
   (b as any).prep(4, 20);

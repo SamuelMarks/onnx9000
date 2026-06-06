@@ -3,11 +3,17 @@
  * Initializes the simplify demo UI.
  */
 export function initSimplifyDemo(): void {
-  const simplifyBtn = document.getElementById('simplifyBtn') as HTMLButtonElement;
-  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
-  const outputDiv = document.getElementById('output') as HTMLDivElement;
-  const modelPathInput = document.getElementById('modelPath') as HTMLInputElement;
-  const outputPathInput = document.getElementById('outputPath') as HTMLInputElement;
+  const simplifyBtn = document.getElementById(
+    "simplifyBtn",
+  ) as HTMLButtonElement;
+  const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
+  const outputDiv = document.getElementById("output") as HTMLDivElement;
+  const modelPathInput = document.getElementById(
+    "modelPath",
+  ) as HTMLInputElement;
+  const outputPathInput = document.getElementById(
+    "outputPath",
+  ) as HTMLInputElement;
 
   if (!simplifyBtn || !resetBtn || !outputDiv) return;
 
@@ -15,12 +21,12 @@ export function initSimplifyDemo(): void {
     outputDiv.textContent += `${msg}\n`;
   };
 
-  simplifyBtn.addEventListener('click', () => {
+  simplifyBtn.addEventListener("click", () => {
     simplifyBtn.disabled = true;
-    outputDiv.textContent = '';
+    outputDiv.textContent = "";
 
-    const model = modelPathInput?.value || '';
-    const output = outputPathInput?.value || '';
+    const model = modelPathInput?.value || "";
+    const output = outputPathInput?.value || "";
 
     log(`Loading ONNX model ${model}...`);
 
@@ -28,27 +34,30 @@ export function initSimplifyDemo(): void {
       log(`Simplifying graph...`);
 
       setTimeout(() => {
-        log(' - Folded 12 constants');
-        log(' - Eliminated 3 unreachable nodes');
+        log(" - Folded 12 constants");
+        log(" - Eliminated 3 unreachable nodes");
         log(`Saving simplified model to ${output}...`);
 
         setTimeout(() => {
-          log('Graph simplification complete.');
+          log("Graph simplification complete.");
           resetBtn.disabled = false;
         }, 500);
       }, 800);
     }, 500);
   });
 
-  resetBtn.addEventListener('click', () => {
-    outputDiv.textContent = 'Waiting to simplify...\n';
+  resetBtn.addEventListener("click", () => {
+    outputDiv.textContent = "Waiting to simplify...\n";
     simplifyBtn.disabled = false;
     resetBtn.disabled = true;
   });
 }
 
-document.addEventListener('DOMContentLoaded', initSimplifyDemo);
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
+document.addEventListener("DOMContentLoaded", initSimplifyDemo);
+if (
+  document.readyState === "complete" ||
+  document.readyState === "interactive"
+) {
   initSimplifyDemo();
 }
 

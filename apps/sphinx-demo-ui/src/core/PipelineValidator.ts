@@ -18,7 +18,7 @@ export class PipelineValidator {
     lightgbm: ['.onnx'],
     xgboost: ['.onnx'],
     catboost: ['.onnx'],
-    sparkml: ['.onnx'],
+    sparkml: ['.onnx']
   };
 
   /**

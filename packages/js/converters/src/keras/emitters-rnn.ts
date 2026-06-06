@@ -3,7 +3,7 @@
  * Provides emitters-rnn functionality for the converters package.
  */
 // @ts-nocheck
-import type { OnnxNodeBuilder } from './emitters.js';
+import type { OnnxNodeBuilder } from "./emitters.js";
 
 export interface RNNOptions {
   returnSequences: boolean;
@@ -24,11 +24,11 @@ export interface GRUOptions extends RNNOptions {
 }
 
 export interface BidirectionalOptions {
-  mergeMode: 'concat' | 'sum' | 'mul' | 'ave' | null;
+  mergeMode: "concat" | "sum" | "mul" | "ave" | null;
 }
 
 export function emitRNNBase(
-  opType: 'RNN' | 'LSTM' | 'GRU',
+  opType: "RNN" | "LSTM" | "GRU",
   inputName: string,
   outputName: string,
   wName: string,
@@ -43,15 +43,16 @@ export function emitRNNBase(
   if (options.unroll && options.timeSteps) {
     // Statically unrolling the RNN cell into standard ONNX Math nodes
     // Example implementation for SimpleRNN: h_t = activation(W x_t + R h_{t-1} + B)
-    let prevH = initialStateNames.length > 0 ? initialStateNames[0] : `${name}_initial_h`;
+    let prevH =
+      initialStateNames.length > 0 ? initialStateNames[0] : `${name}_initial_h`;
 
     if (initialStateNames.length === 0) {
       nodes.push({
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [prevH],
         name: `${name}_init_h_const`,
-        attributes: [{ name: 'value', f: 0.0, type: 'FLOAT' }], // pseudo zeroes
+        attributes: [{ name: "value", f: 0.0, type: "FLOAT" }], // pseudo zeroes
       });
     }
 
@@ -63,17 +64,17 @@ export function emitRNNBase(
 
       // 1. Extract x_t via Slice/Gather
       nodes.push({
-        opType: 'Gather',
+        opType: "Gather",
         inputs: [inputName, `${name}_idx_${t}`], // fake indices
         outputs: [x_t],
         name: `${name}_gather_${t}`,
-        attributes: [{ name: 'axis', i: 1, type: 'INT' }], // axis 1 is time in layout=1
+        attributes: [{ name: "axis", i: 1, type: "INT" }], // axis 1 is time in layout=1
       });
 
       // 2. W x_t
       const wx_t = `${name}_wx_${t}`;
       nodes.push({
-        opType: 'MatMul',
+        opType: "MatMul",
         inputs: [x_t, wName],
         outputs: [wx_t],
         name: `${name}_matmul_w_${t}`,
@@ -83,7 +84,7 @@ export function emitRNNBase(
       // 3. R h_{t-1}
       const rh_t = `${name}_rh_${t}`;
       nodes.push({
-        opType: 'MatMul',
+        opType: "MatMul",
         inputs: [prevH, rName],
         outputs: [rh_t],
         name: `${name}_matmul_r_${t}`,
@@ -93,7 +94,7 @@ export function emitRNNBase(
       // 4. Add + Bias
       const add1_t = `${name}_add1_${t}`;
       nodes.push({
-        opType: 'Add',
+        opType: "Add",
         inputs: [wx_t, rh_t],
         outputs: [add1_t],
         name: `${name}_add1_${t}`,
@@ -104,7 +105,7 @@ export function emitRNNBase(
       if (bName) {
         const add2_t = `${name}_add2_${t}`;
         nodes.push({
-          opType: 'Add',
+          opType: "Add",
           inputs: [add1_t, bName],
           outputs: [add2_t],
           name: `${name}_add2_${t}`,
@@ -116,7 +117,7 @@ export function emitRNNBase(
       // 5. Activation
       const act_t = `${name}_h_${t}`;
       nodes.push({
-        opType: 'Tanh', // default RNN activation
+        opType: "Tanh", // default RNN activation
         inputs: [h_t],
         outputs: [act_t],
         name: `${name}_tanh_${t}`,
@@ -129,15 +130,15 @@ export function emitRNNBase(
 
     if (options.returnSequences) {
       nodes.push({
-        opType: 'Concat',
+        opType: "Concat",
         inputs: seqOutputs,
         outputs: [outputName],
         name: `${name}_concat_seq`,
-        attributes: [{ name: 'axis', i: 1, type: 'INT' }],
+        attributes: [{ name: "axis", i: 1, type: "INT" }],
       });
     } else {
       nodes.push({
-        opType: 'Identity',
+        opType: "Identity",
         inputs: [prevH],
         outputs: [outputName],
         name: `${name}_last_h`,
@@ -151,15 +152,15 @@ export function emitRNNBase(
   // ONNX RNN inputs: X, W, R, B, sequence_lens, initial_h, initial_c (for LSTM), P (for peepholes)
   const inputs = [inputName, wName, rName];
   if (bName || initialStateNames.length > 0) {
-    inputs.push(bName || ''); // B
+    inputs.push(bName || ""); // B
   }
-  inputs.push(''); // sequence_lens (optional)
+  inputs.push(""); // sequence_lens (optional)
 
   for (const stateName of initialStateNames) {
     inputs.push(stateName);
   }
 
-  const direction = options.goBackwards ? 'reverse' : 'forward';
+  const direction = options.goBackwards ? "reverse" : "forward";
 
   // Outputs for ONNX RNNs: Y, Y_h, Y_c (for LSTM)
   // Y has shape [seq_length, num_directions, batch_size, hidden_size]
@@ -168,22 +169,22 @@ export function emitRNNBase(
   const ycOut = `${name}_Y_c`;
 
   const rnnOutputs = [yOut, yhOut];
-  if (opType === 'LSTM') {
+  if (opType === "LSTM") {
     rnnOutputs.push(ycOut);
   }
 
   const attributes = [
-    { name: 'direction', s: direction, type: 'STRING' },
+    { name: "direction", s: direction, type: "STRING" },
     // Keras RNNs expect input as [batch, seq, feature], ONNX expects [seq, batch, feature] by default
     // if opset 14+, layout=1 handles [batch, seq, feature]. Let's assume layout=1 is used.
-    { name: 'layout', i: 1, type: 'INT' },
+    { name: "layout", i: 1, type: "INT" },
   ];
 
   if (options.linearBeforeReset !== undefined) {
     attributes.push({
-      name: 'linear_before_reset',
+      name: "linear_before_reset",
       i: options.linearBeforeReset,
-      type: 'INT',
+      type: "INT",
     });
   }
 
@@ -200,7 +201,7 @@ export function emitRNNBase(
   // We need to squeeze the num_directions dimension (which is 1 for non-bidirectional).
   const squeezedY = `${name}_Y_squeezed`;
   nodes.push({
-    opType: 'Squeeze',
+    opType: "Squeeze",
     inputs: [yOut], // Assuming we squeeze axis 2 if rank is 4
     outputs: [squeezedY],
     name: `${name}_squeeze_dir`,
@@ -210,7 +211,7 @@ export function emitRNNBase(
   if (options.returnSequences) {
     // Just use the full sequence
     nodes.push({
-      opType: 'Identity',
+      opType: "Identity",
       inputs: [squeezedY],
       outputs: [outputName],
       name: `${name}_seq_out`,
@@ -221,7 +222,7 @@ export function emitRNNBase(
     // Y_h is [num_directions, batch_size, hidden_size]
     const squeezedYh = `${name}_Yh_squeezed`;
     nodes.push({
-      opType: 'Squeeze',
+      opType: "Squeeze",
       inputs: [yhOut], // squeeze axis 0
       outputs: [squeezedYh],
       name: `${name}_squeeze_yh`,
@@ -229,7 +230,7 @@ export function emitRNNBase(
     });
 
     nodes.push({
-      opType: 'Identity',
+      opType: "Identity",
       inputs: [squeezedYh],
       outputs: [outputName],
       name: `${name}_last_state_out`,
@@ -241,7 +242,7 @@ export function emitRNNBase(
 }
 
 export function emitBidirectional(
-  opType: 'RNN' | 'LSTM' | 'GRU',
+  opType: "RNN" | "LSTM" | "GRU",
   inputName: string,
   outputName: string,
   forwardWName: string,
@@ -258,9 +259,9 @@ export function emitBidirectional(
 
   const inputs = [inputName, forwardWName, forwardRName];
   if (forwardBName || initialStateNames.length > 0) {
-    inputs.push(forwardBName || '');
+    inputs.push(forwardBName || "");
   }
-  inputs.push(''); // sequence_lens
+  inputs.push(""); // sequence_lens
 
   for (const stateName of initialStateNames) {
     inputs.push(stateName);
@@ -271,18 +272,18 @@ export function emitBidirectional(
   const ycOut = `${name}_Y_c`;
 
   const rnnOutputs = [yOut, yhOut];
-  if (opType === 'LSTM') rnnOutputs.push(ycOut);
+  if (opType === "LSTM") rnnOutputs.push(ycOut);
 
   const attributes = [
-    { name: 'direction', s: 'bidirectional', type: 'STRING' },
-    { name: 'layout', i: 1, type: 'INT' },
+    { name: "direction", s: "bidirectional", type: "STRING" },
+    { name: "layout", i: 1, type: "INT" },
   ];
 
   if (options.linearBeforeReset !== undefined) {
     attributes.push({
-      name: 'linear_before_reset',
+      name: "linear_before_reset",
       i: options.linearBeforeReset,
-      type: 'INT',
+      type: "INT",
     });
   }
 
@@ -300,39 +301,39 @@ export function emitBidirectional(
   const _splitForward = `${name}_split_fwd`;
   const _splitBackward = `${name}_split_bwd`;
 
-  if (options.mergeMode === 'concat') {
+  if (options.mergeMode === "concat") {
     nodes.push({
-      opType: 'Reshape',
+      opType: "Reshape",
       inputs: [seqOrStateOut, `${name}_reshape_target`],
       outputs: [outputName],
       name: `${name}_merge_concat`,
       attributes: [],
     });
-  } else if (options.mergeMode === 'sum') {
+  } else if (options.mergeMode === "sum") {
     nodes.push({
-      opType: 'ReduceSum',
+      opType: "ReduceSum",
       inputs: [seqOrStateOut],
       outputs: [outputName],
       name: `${name}_merge_sum`,
       attributes: [
-        { name: 'axes', ints: [options.returnSequences ? 2 : 0], type: 'INTS' },
-        { name: 'keepdims', i: 0, type: 'INT' },
+        { name: "axes", ints: [options.returnSequences ? 2 : 0], type: "INTS" },
+        { name: "keepdims", i: 0, type: "INT" },
       ],
     });
-  } else if (options.mergeMode === 'ave') {
+  } else if (options.mergeMode === "ave") {
     nodes.push({
-      opType: 'ReduceMean',
+      opType: "ReduceMean",
       inputs: [seqOrStateOut],
       outputs: [outputName],
       name: `${name}_merge_ave`,
       attributes: [
-        { name: 'axes', ints: [options.returnSequences ? 2 : 0], type: 'INTS' },
-        { name: 'keepdims', i: 0, type: 'INT' },
+        { name: "axes", ints: [options.returnSequences ? 2 : 0], type: "INTS" },
+        { name: "keepdims", i: 0, type: "INT" },
       ],
     });
-  } else if (options.mergeMode === 'mul') {
+  } else if (options.mergeMode === "mul") {
     nodes.push({
-      opType: 'Identity',
+      opType: "Identity",
       inputs: [seqOrStateOut],
       outputs: [outputName],
       name: `${name}_merge_mul_stub`,
@@ -343,7 +344,10 @@ export function emitBidirectional(
   return nodes;
 }
 
-export function reorderLSTMGates(weights: Float32Array, hiddenSize: number): Float32Array {
+export function reorderLSTMGates(
+  weights: Float32Array,
+  hiddenSize: number,
+): Float32Array {
   const out = new Float32Array(weights.length);
   const numChunks = weights.length / (4 * hiddenSize);
   for (let chunk = 0; chunk < numChunks; chunk++) {
@@ -365,6 +369,9 @@ export function reorderLSTMGates(weights: Float32Array, hiddenSize: number): Flo
   return out;
 }
 
-export function reorderGRUGates(weights: Float32Array, _hiddenSize: number): Float32Array {
+export function reorderGRUGates(
+  weights: Float32Array,
+  _hiddenSize: number,
+): Float32Array {
   return weights.slice();
 }

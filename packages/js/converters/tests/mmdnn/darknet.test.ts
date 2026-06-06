@@ -1,10 +1,10 @@
-import { Graph } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
-import { DarknetMapper } from '../../src/mmdnn/darknet/mapper.js';
-import { parseCfg, parseWeights } from '../../src/mmdnn/darknet/parser.js';
+import { Graph } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
+import { DarknetMapper } from "../../src/mmdnn/darknet/mapper.js";
+import { parseCfg, parseWeights } from "../../src/mmdnn/darknet/parser.js";
 
-describe('MMDNN - Darknet Parser', () => {
-  it('should parse .cfg correctly', () => {
+describe("MMDNN - Darknet Parser", () => {
+  it("should parse .cfg correctly", () => {
     const cfg = `
 # Comment line
 [net]
@@ -41,21 +41,21 @@ classes=80
 `;
     const layers = parseCfg(cfg);
     expect(layers.length).toBe(6);
-    expect(layers[0]?.type).toBe('net');
+    expect(layers[0]?.type).toBe("net");
     expect(layers[0]?.width).toBe(416);
-    expect(layers[1]?.type).toBe('convolutional');
+    expect(layers[1]?.type).toBe("convolutional");
     expect(layers[1]?.batch_normalize).toBe(1);
     expect(layers[1]?.filters).toBe(32);
-    expect(layers[1]?.string_val).toBe('test');
-    expect(layers[2]?.type).toBe('maxpool');
-    expect(layers[3]?.type).toBe('shortcut');
-    expect(layers[4]?.type).toBe('route');
+    expect(layers[1]?.string_val).toBe("test");
+    expect(layers[2]?.type).toBe("maxpool");
+    expect(layers[3]?.type).toBe("shortcut");
+    expect(layers[4]?.type).toBe("route");
     expect(layers[4]?.layers).toEqual([-1, -4]);
-    expect(layers[5]?.type).toBe('yolo');
+    expect(layers[5]?.type).toBe("yolo");
     expect(layers[5]?.anchors).toEqual([10, 14, 23, 27]);
   });
 
-  it('should parse weights correctly', () => {
+  it("should parse weights correctly", () => {
     // Too small buffer
     const smallBuffer = new ArrayBuffer(8);
     let weights = parseWeights(smallBuffer);
@@ -108,8 +108,8 @@ classes=80
   });
 });
 
-describe('MMDNN - Darknet Mapper', () => {
-  it('should map darknet layers to ONNX nodes', () => {
+describe("MMDNN - Darknet Mapper", () => {
+  it("should map darknet layers to ONNX nodes", () => {
     const cfg = `
 [net]
 batch=1
@@ -165,7 +165,7 @@ classes=80
 classes=20
 `;
     const layers = parseCfg(cfg);
-    const graph = new Graph('darknet');
+    const graph = new Graph("darknet");
 
     // We need enough weights for all these layers to avoid crash
     // First conv: bn(4*32) + weights(32*3*3*3) = 128 + 864 = 992
@@ -181,34 +181,38 @@ classes=20
     const nodes = graph.nodes;
 
     // Check conv batch_norm mish
-    expect(nodes.some((n) => n.opType === 'Conv' && n.inputs.length === 2)).toBe(true);
-    expect(nodes.some((n) => n.opType === 'BatchNormalization')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Mish')).toBe(true);
+    expect(
+      nodes.some((n) => n.opType === "Conv" && n.inputs.length === 2),
+    ).toBe(true);
+    expect(nodes.some((n) => n.opType === "BatchNormalization")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Mish")).toBe(true);
 
     // Check conv no bn swish
-    expect(nodes.some((n) => n.opType === 'Conv' && n.inputs.length === 3)).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Sigmoid')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Mul')).toBe(true);
+    expect(
+      nodes.some((n) => n.opType === "Conv" && n.inputs.length === 3),
+    ).toBe(true);
+    expect(nodes.some((n) => n.opType === "Sigmoid")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Mul")).toBe(true);
 
     // Check pools
-    expect(nodes.some((n) => n.opType === 'MaxPool')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'AveragePool')).toBe(true);
+    expect(nodes.some((n) => n.opType === "MaxPool")).toBe(true);
+    expect(nodes.some((n) => n.opType === "AveragePool")).toBe(true);
 
     // Check gemm
-    expect(nodes.some((n) => n.opType === 'Gemm')).toBe(true);
+    expect(nodes.some((n) => n.opType === "Gemm")).toBe(true);
 
     // Check upsample (Resize)
-    expect(nodes.some((n) => n.opType === 'Resize')).toBe(true);
+    expect(nodes.some((n) => n.opType === "Resize")).toBe(true);
 
     // Check route (Identity for 1 input, Concat for >1)
-    expect(nodes.some((n) => n.opType === 'Identity')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Concat')).toBe(true);
+    expect(nodes.some((n) => n.opType === "Identity")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Concat")).toBe(true);
 
     // Check shortcut (Add)
-    expect(nodes.some((n) => n.opType === 'Add')).toBe(true);
+    expect(nodes.some((n) => n.opType === "Add")).toBe(true);
   });
 
-  it('should handle edge cases with missing properties or missing weights', () => {
+  it("should handle edge cases with missing properties or missing weights", () => {
     const cfg = `
 [net]
 
@@ -225,7 +229,7 @@ layers=0
 [upsample]
 `;
     const layers = parseCfg(cfg);
-    const graph = new Graph('darknet2');
+    const graph = new Graph("darknet2");
 
     // Insufficient weights
     const weights = new Float32Array(2);
@@ -233,25 +237,25 @@ layers=0
     mapper.map(layers);
 
     const nodes = graph.nodes;
-    expect(nodes.some((n) => n.opType === 'Conv')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'MaxPool')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Gemm')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Identity')).toBe(true);
-    expect(nodes.some((n) => n.opType === 'Resize')).toBe(true);
+    expect(nodes.some((n) => n.opType === "Conv")).toBe(true);
+    expect(nodes.some((n) => n.opType === "MaxPool")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Gemm")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Identity")).toBe(true);
+    expect(nodes.some((n) => n.opType === "Resize")).toBe(true);
   });
 
-  it('should map without net layer', () => {
-    const layers = [{ type: 'convolutional', filters: 3, size: 1 }];
-    const graph = new Graph('no_net');
+  it("should map without net layer", () => {
+    const layers = [{ type: "convolutional", filters: 3, size: 1 }];
+    const graph = new Graph("no_net");
     const mapper = new DarknetMapper(graph, new Float32Array(100));
     mapper.map(layers);
-    expect(graph.inputs[0]?.shape).toEqual(['batch_size', 3, 416, 416]);
-    expect(graph.outputs[0]?.shape).toEqual(['batch_size', -1, -1, -1]);
+    expect(graph.inputs[0]?.shape).toEqual(["batch_size", 3, 416, 416]);
+    expect(graph.outputs[0]?.shape).toEqual(["batch_size", -1, -1, -1]);
   });
 
-  it('should map unknown layer to nothing', () => {
-    const layers = [{ type: 'net' }, { type: 'unknown_layer' }];
-    const graph = new Graph('unknown');
+  it("should map unknown layer to nothing", () => {
+    const layers = [{ type: "net" }, { type: "unknown_layer" }];
+    const graph = new Graph("unknown");
     const mapper = new DarknetMapper(graph, new Float32Array(100));
     mapper.map(layers);
     expect(graph.nodes.length).toBe(0);

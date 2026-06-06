@@ -2,20 +2,37 @@
  * @fileoverview convnext.ts
  * Provides convnext functionality for the core package.
  */
-import { Tensor } from '../ir/tensor.js';
-import { ConvND, DepthwiseConv, Gelu, Gemm, LayerNormalization } from '../primitives.js';
+import { Tensor } from "../ir/tensor.js";
+import {
+  ConvND,
+  DepthwiseConv,
+  Gelu,
+  Gemm,
+  LayerNormalization,
+} from "../primitives.js";
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = 'float32',
+  dtype: ReturnType<typeof JSON.parse> = "float32",
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
-  const dtype = inputs[0]?.dtype ?? 'float32';
-  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+function recordOp(
+  opType: string,
+  inputs: Tensor[],
+  _attr?: ReturnType<typeof JSON.parse>,
+): Tensor {
+  const dtype = inputs[0]?.dtype ?? "float32";
+  return new Tensor(
+    `${opType}_out`,
+    [],
+    dtype,
+    false,
+    false,
+    new Float32Array(),
+  );
 }
 
 export class ConvNeXtBlock {
@@ -27,7 +44,7 @@ export class ConvNeXtBlock {
   public act: Gelu;
   public pwconv2: ConvND;
 
-  constructor(dim: number, _dropPath: number = 0.0, prefix: string = '') {
+  constructor(dim: number, _dropPath: number = 0.0, prefix: string = "") {
     this.prefix = prefix;
     this.dim = dim;
     this.dwconv = new DepthwiseConv(2, dim, 7, 1, 3, 1, false);
@@ -42,7 +59,12 @@ export class ConvNeXtBlock {
 
     let out = this.dwconv.call(
       x,
-      getParam(`${this.prefix}.dwconv.weight`, [this.dwconv.outChannels, 1, 7, 7]),
+      getParam(`${this.prefix}.dwconv.weight`, [
+        this.dwconv.outChannels,
+        1,
+        7,
+        7,
+      ]),
       getParam(`${this.prefix}.dwconv.bias`, [this.dwconv.outChannels]),
     );
 
@@ -75,7 +97,7 @@ export class ConvNeXtBlock {
       getParam(`${this.prefix}.pwconv2.bias`, [this.pwconv2.outChannels]),
     );
 
-    return recordOp('Add', [identity, out]);
+    return recordOp("Add", [identity, out]);
   }
 }
 
@@ -93,8 +115,8 @@ export class ConvNeXt {
     this.stemConv = new ConvND(2, inChans, 96, 4, 4, 0, 1, 1, false);
     this.stemNorm = new LayerNormalization([96], 1e-6);
 
-    this.block1 = new ConvNeXtBlock(96, 0.0, 'block1');
-    this.block2 = new ConvNeXtBlock(96, 0.0, 'block2');
+    this.block1 = new ConvNeXtBlock(96, 0.0, "block1");
+    this.block2 = new ConvNeXtBlock(96, 0.0, "block2");
 
     this.headNorm = new LayerNormalization([96], 1e-6);
     this.head = new Gemm(1.0, 1.0, 0, 1);
@@ -103,22 +125,35 @@ export class ConvNeXt {
   call(x: Tensor): Tensor {
     x = this.stemConv.call(
       x,
-      getParam('stem_conv.weight', [this.stemConv.outChannels, this.stemConv.inChannels, 4, 4]),
-      getParam('stem_conv.bias', [this.stemConv.outChannels]),
+      getParam("stem_conv.weight", [
+        this.stemConv.outChannels,
+        this.stemConv.inChannels,
+        4,
+        4,
+      ]),
+      getParam("stem_conv.bias", [this.stemConv.outChannels]),
     );
-    x = this.stemNorm.call(x, getParam('stem_norm.weight', [96]), getParam('stem_norm.bias', [96]));
+    x = this.stemNorm.call(
+      x,
+      getParam("stem_norm.weight", [96]),
+      getParam("stem_norm.bias", [96]),
+    );
 
     x = this.block1.call(x);
     x = this.block2.call(x);
 
-    x = recordOp('GlobalAveragePool', [x]);
-    x = recordOp('Flatten', [x]);
+    x = recordOp("GlobalAveragePool", [x]);
+    x = recordOp("Flatten", [x]);
 
-    x = this.headNorm.call(x, getParam('head_norm.weight', [96]), getParam('head_norm.bias', [96]));
+    x = this.headNorm.call(
+      x,
+      getParam("head_norm.weight", [96]),
+      getParam("head_norm.bias", [96]),
+    );
     x = this.head.call(
       x,
-      getParam('head.weight', [this.numClasses, 96]),
-      getParam('head.bias', [this.numClasses]),
+      getParam("head.weight", [this.numClasses, 96]),
+      getParam("head.bias", [this.numClasses]),
     );
 
     return x;

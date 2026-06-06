@@ -1,5 +1,5 @@
-import { type DType, type Graph, type Node, Tensor } from '@onnx9000/core';
-import { XmlBuilder, XmlNode } from './xml_builder';
+import { type DType, type Graph, type Node, Tensor } from "@onnx9000/core";
+import { XmlBuilder, XmlNode } from "./xml_builder";
 
 /**
  * Options for OpenVINO export.
@@ -70,7 +70,7 @@ export class OpenVinoExporter {
    */
   constructor(graph: Graph, options: OpenVinoExportOptions = {}) {
     this.graph = graph;
-    this.version = options.version || '11';
+    this.version = options.version || "11";
     this.compressToFp16 = options.compressToFp16 || false;
     this.clampDynamic = options.clampDynamic || false;
     if (OpenVinoExporter.handlers.size === 0) {
@@ -105,31 +105,31 @@ export class OpenVinoExporter {
     const layerId = this.nextId();
     this.layerIds.set(name, layerId);
 
-    const layer = new XmlNode('layer');
-    layer.setAttribute('id', layerId.toString());
-    layer.setAttribute('name', name);
-    layer.setAttribute('type', 'Const');
-    layer.setAttribute('version', 'opset1');
+    const layer = new XmlNode("layer");
+    layer.setAttribute("id", layerId.toString());
+    layer.setAttribute("name", name);
+    layer.setAttribute("type", "Const");
+    layer.setAttribute("version", "opset1");
 
-    const dataNode = new XmlNode('data');
-    dataNode.setAttribute('element_type', this.mapDtype(dtype));
+    const dataNode = new XmlNode("data");
+    dataNode.setAttribute("element_type", this.mapDtype(dtype));
     const actualShape = shape.length > 0 ? shape : [1];
-    dataNode.setAttribute('shape', actualShape.join(','));
+    dataNode.setAttribute("shape", actualShape.join(","));
 
     let byteLength = 0;
-    if (dtype === 'int64') byteLength = data.length * 8;
-    else if (dtype === 'int32') byteLength = data.length * 4;
-    else if (dtype === 'float32') byteLength = data.length * 4;
+    if (dtype === "int64") byteLength = data.length * 8;
+    else if (dtype === "int32") byteLength = data.length * 4;
+    else if (dtype === "float32") byteLength = data.length * 4;
     else throw new Error(`Unsupported dtype for dynamic const: ${dtype}`);
 
     const buffer = new ArrayBuffer(byteLength);
     const view = new DataView(buffer);
     for (let i = 0; i < data.length; i++) {
-      if (dtype === 'int64') {
+      if (dtype === "int64") {
         view.setBigInt64(i * 8, BigInt(data[i] ?? 0), true); // little-endian
-      } else if (dtype === 'int32') {
+      } else if (dtype === "int32") {
         view.setInt32(i * 4, data[i] ?? 0, true);
-      } else if (dtype === 'float32') {
+      } else if (dtype === "float32") {
         view.setFloat32(i * 4, data[i] ?? 0, true);
       }
     }
@@ -139,13 +139,16 @@ export class OpenVinoExporter {
     const cacheHit = this.binCache.get(hashKey);
 
     if (cacheHit) {
-      dataNode.setAttribute('offset', cacheHit.offset.toString());
-      dataNode.setAttribute('size', cacheHit.size.toString());
+      dataNode.setAttribute("offset", cacheHit.offset.toString());
+      dataNode.setAttribute("size", cacheHit.size.toString());
     } else {
-      const totalLength = this.binBuffer.reduce((acc, val) => acc + val.length, 0);
+      const totalLength = this.binBuffer.reduce(
+        (acc, val) => acc + val.length,
+        0,
+      );
       this.binBuffer.push(uint8View);
-      dataNode.setAttribute('offset', totalLength.toString());
-      dataNode.setAttribute('size', uint8View.length.toString());
+      dataNode.setAttribute("offset", totalLength.toString());
+      dataNode.setAttribute("size", uint8View.length.toString());
       this.binCache.set(hashKey, {
         offset: totalLength,
         size: uint8View.length,
@@ -155,10 +158,10 @@ export class OpenVinoExporter {
     layer.addChild(dataNode);
 
     const outputPort = this.nextPort(layerId);
-    const outNode = new XmlNode('output');
-    const port = this.emitShape(actualShape, 'port');
-    port.setAttribute('id', outputPort.toString());
-    port.setAttribute('precision', this.mapDtype(dtype));
+    const outNode = new XmlNode("output");
+    const port = this.emitShape(actualShape, "port");
+    port.setAttribute("id", outputPort.toString());
+    port.setAttribute("precision", this.mapDtype(dtype));
     outNode.addChild(port);
     layer.addChild(outNode);
 
@@ -168,48 +171,48 @@ export class OpenVinoExporter {
 
   private mapDtype(dtype: DType): string {
     switch (dtype) {
-      case 'float32':
-        return this.compressToFp16 ? 'f16' : 'f32';
-      case 'float64':
-        return 'f64';
+      case "float32":
+        return this.compressToFp16 ? "f16" : "f32";
+      case "float64":
+        return "f64";
 
-      case 'float16':
-        return 'f16';
+      case "float16":
+        return "f16";
 
-      case 'bfloat16':
-        return 'bf16';
+      case "bfloat16":
+        return "bf16";
 
-      case 'int64':
-        return 'i64';
-      case 'int32':
-        return 'i32';
-      case 'int16':
-        return 'i16';
+      case "int64":
+        return "i64";
+      case "int32":
+        return "i32";
+      case "int16":
+        return "i16";
 
-      case 'int8':
-        return 'i8';
+      case "int8":
+        return "i8";
 
-      case 'uint64':
-        return 'u64';
+      case "uint64":
+        return "u64";
 
-      case 'uint32':
-        return 'u32';
+      case "uint32":
+        return "u32";
 
-      case 'uint16':
-        return 'u16';
+      case "uint16":
+        return "u16";
 
-      case 'uint8':
-        return 'u8';
+      case "uint8":
+        return "u8";
 
-      case 'bool':
-        return 'boolean';
+      case "bool":
+        return "boolean";
       default:
         throw new Error(`Unsupported dtype for OpenVINO: ${dtype}`);
     }
   }
 
   private uint8ArrayToString(arr: Uint8Array): string {
-    let str = '';
+    let str = "";
     for (let i = 0; i < arr.length; i++) {
       str += String.fromCharCode(arr[i] ?? 0);
     }
@@ -222,33 +225,44 @@ export class OpenVinoExporter {
    * @param tagName - The XML tag name (default: 'port').
    * @returns The shape XML node.
    */
-  public emitShape(shape: (number | string)[], tagName: string = 'port'): XmlNode {
+  public emitShape(
+    shape: (number | string)[],
+    tagName: string = "port",
+  ): XmlNode {
     const portNode = new XmlNode(tagName);
     for (const dim of shape) {
       let dimVal = dim.toString();
-      if (dimVal === '-1' || (typeof dim === 'string' && Number.isNaN(Number(dim)))) {
-        dimVal = this.clampDynamic ? '1' : '-1';
+      if (
+        dimVal === "-1" ||
+        (typeof dim === "string" && Number.isNaN(Number(dim)))
+      ) {
+        dimVal = this.clampDynamic ? "1" : "-1";
       }
 
-      const dimNode = new XmlNode('dim').addChild(dimVal);
+      const dimNode = new XmlNode("dim").addChild(dimVal);
       portNode.addChild(dimNode);
     }
     return portNode;
   }
 
-  private addEdge(fromLayer: number, fromPort: number, toLayer: number, toPort: number) {
-    const edge = new XmlNode('edge');
-    edge.setAttribute('from-layer', fromLayer.toString());
-    edge.setAttribute('from-port', fromPort.toString());
-    edge.setAttribute('to-layer', toLayer.toString());
-    edge.setAttribute('to-port', toPort.toString());
+  private addEdge(
+    fromLayer: number,
+    fromPort: number,
+    toLayer: number,
+    toPort: number,
+  ) {
+    const edge = new XmlNode("edge");
+    edge.setAttribute("from-layer", fromLayer.toString());
+    edge.setAttribute("from-port", fromPort.toString());
+    edge.setAttribute("to-layer", toLayer.toString());
+    edge.setAttribute("to-port", toPort.toString());
 
     for (const existing of this.edges) {
       if (
-        existing.attributes['from-layer'] === fromLayer.toString() &&
-        existing.attributes['from-port'] === fromPort.toString() &&
-        existing.attributes['to-layer'] === toLayer.toString() &&
-        existing.attributes['to-port'] === toPort.toString()
+        existing.attributes["from-layer"] === fromLayer.toString() &&
+        existing.attributes["from-port"] === fromPort.toString() &&
+        existing.attributes["to-layer"] === toLayer.toString() &&
+        existing.attributes["to-port"] === toPort.toString()
       ) {
         return;
       }
@@ -261,11 +275,11 @@ export class OpenVinoExporter {
    * @returns An object containing the XML string and binary data.
    */
   export(): { xml: string; bin: Uint8Array } {
-    const net = new XmlNode('net');
-    net.setAttribute('name', this.graph.name || 'onnx9000_model');
-    net.setAttribute('version', this.version);
+    const net = new XmlNode("net");
+    net.setAttribute("name", this.graph.name || "onnx9000_model");
+    net.setAttribute("version", this.version);
 
-    const layers = new XmlNode('layers');
+    const layers = new XmlNode("layers");
 
     const consumedInputs = new Set<string>();
     for (const node of this.graph.nodes) {
@@ -279,24 +293,24 @@ export class OpenVinoExporter {
       const layerId = this.nextId();
       this.layerIds.set(valInfo.name, layerId);
 
-      const layer = new XmlNode('layer');
-      layer.setAttribute('id', layerId.toString());
-      layer.setAttribute('name', valInfo.name);
-      layer.setAttribute('type', 'Parameter');
-      layer.setAttribute('version', 'opset1');
+      const layer = new XmlNode("layer");
+      layer.setAttribute("id", layerId.toString());
+      layer.setAttribute("name", valInfo.name);
+      layer.setAttribute("type", "Parameter");
+      layer.setAttribute("version", "opset1");
 
-      const data = new XmlNode('data');
+      const data = new XmlNode("data");
       const precisionStr = this.mapDtype(valInfo.dtype);
-      data.setAttribute('element_type', precisionStr);
+      data.setAttribute("element_type", precisionStr);
       const actualShape = valInfo.shape.length > 0 ? valInfo.shape : [1];
-      data.setAttribute('shape', actualShape.join(','));
+      data.setAttribute("shape", actualShape.join(","));
       layer.addChild(data);
 
       const outputPort = this.nextPort(layerId);
-      const outNode = new XmlNode('output');
-      const port = this.emitShape(actualShape, 'port');
-      port.setAttribute('id', outputPort.toString());
-      port.setAttribute('precision', precisionStr);
+      const outNode = new XmlNode("output");
+      const port = this.emitShape(actualShape, "port");
+      port.setAttribute("id", outputPort.toString());
+      port.setAttribute("precision", precisionStr);
       outNode.addChild(port);
       layer.addChild(outNode);
 
@@ -310,18 +324,18 @@ export class OpenVinoExporter {
       const layerId = this.nextId();
       this.layerIds.set(initName, layerId);
 
-      const layer = new XmlNode('layer');
-      layer.setAttribute('id', layerId.toString());
-      layer.setAttribute('name', initName);
-      layer.setAttribute('type', 'Const');
-      layer.setAttribute('version', 'opset1');
+      const layer = new XmlNode("layer");
+      layer.setAttribute("id", layerId.toString());
+      layer.setAttribute("name", initName);
+      layer.setAttribute("type", "Const");
+      layer.setAttribute("version", "opset1");
 
-      const data = new XmlNode('data');
+      const data = new XmlNode("data");
       if (tensor.dtype) {
-        data.setAttribute('element_type', this.mapDtype(tensor.dtype));
+        data.setAttribute("element_type", this.mapDtype(tensor.dtype));
       }
       const actualShape = tensor.shape.length > 0 ? tensor.shape : [1];
-      data.setAttribute('shape', actualShape.join(','));
+      data.setAttribute("shape", actualShape.join(","));
 
       if (tensor.data && tensor.data.byteLength > 0) {
         let uint8View = new Uint8Array(
@@ -330,7 +344,7 @@ export class OpenVinoExporter {
           tensor.data.byteLength,
         );
 
-        if (this.compressToFp16 && tensor.dtype === 'float32') {
+        if (this.compressToFp16 && tensor.dtype === "float32") {
           const f32 = new Float32Array(
             tensor.data.buffer,
             tensor.data.byteOffset,
@@ -362,31 +376,34 @@ export class OpenVinoExporter {
         const cacheHit = this.binCache.get(hashKey);
 
         if (cacheHit) {
-          data.setAttribute('offset', cacheHit.offset.toString());
-          data.setAttribute('size', cacheHit.size.toString());
+          data.setAttribute("offset", cacheHit.offset.toString());
+          data.setAttribute("size", cacheHit.size.toString());
         } else {
-          const totalLength = this.binBuffer.reduce((acc, val) => acc + val.length, 0);
+          const totalLength = this.binBuffer.reduce(
+            (acc, val) => acc + val.length,
+            0,
+          );
           this.binBuffer.push(uint8View);
-          data.setAttribute('offset', totalLength.toString());
-          data.setAttribute('size', uint8View.length.toString());
+          data.setAttribute("offset", totalLength.toString());
+          data.setAttribute("size", uint8View.length.toString());
           this.binCache.set(hashKey, {
             offset: totalLength,
             size: uint8View.length,
           });
         }
       } else {
-        data.setAttribute('offset', '0');
-        data.setAttribute('size', '0');
+        data.setAttribute("offset", "0");
+        data.setAttribute("size", "0");
       }
 
       layer.addChild(data);
 
       const outputPort = this.nextPort(layerId);
-      const outNode = new XmlNode('output');
-      const port = this.emitShape(actualShape, 'port');
-      port.setAttribute('id', outputPort.toString());
+      const outNode = new XmlNode("output");
+      const port = this.emitShape(actualShape, "port");
+      port.setAttribute("id", outputPort.toString());
       if (tensor.dtype) {
-        port.setAttribute('precision', this.mapDtype(tensor.dtype));
+        port.setAttribute("precision", this.mapDtype(tensor.dtype));
       }
       outNode.addChild(port);
       layer.addChild(outNode);
@@ -400,97 +417,99 @@ export class OpenVinoExporter {
       const layerName = node.name || `${node.opType}_${layerId}`;
       this.layerIds.set(layerName, layerId);
 
-      const layer = new XmlNode('layer');
-      layer.setAttribute('id', layerId.toString());
-      layer.setAttribute('name', layerName);
-      layer.setAttribute('version', 'opset1');
+      const layer = new XmlNode("layer");
+      layer.setAttribute("id", layerId.toString());
+      layer.setAttribute("name", layerName);
+      layer.setAttribute("version", "opset1");
 
       const typeMapping: Record<string, string> = {
-        Sub: 'Subtract',
-        Mul: 'Multiply',
-        Div: 'Divide',
-        Pow: 'Power',
-        Max: 'Maximum',
-        Min: 'Minimum',
-        Ceil: 'Ceiling',
-        Conv: 'Convolution',
-        Relu: 'ReLU',
-        LeakyRelu: 'PRelu',
-        Sigmoid: 'Sigmoid',
-        Tanh: 'Tanh',
-        Elu: 'Elu',
-        Selu: 'Selu',
-        Softplus: 'SoftPlus',
-        Gelu: 'Gelu',
-        Softmax: 'SoftMax',
-        LogSoftmax: 'LogSoftmax',
-        PRelu: 'PRelu',
-        Clip: 'Clamp',
-        HardSigmoid: 'HardSigmoid',
-        AveragePool: 'AvgPool',
-        MaxPool: 'MaxPool',
-        Flatten: 'Reshape',
-        Reshape: 'Reshape',
-        Transpose: 'Transpose',
-        Squeeze: 'Squeeze',
-        Unsqueeze: 'Unsqueeze',
-        Concat: 'Concat',
-        Split: 'Split',
-        Gather: 'Gather',
-        GatherND: 'GatherND',
-        ScatterND: 'ScatterNDUpdate',
-        ScatterElements: 'ScatterElementsUpdate',
-        Shape: 'ShapeOf',
-        Tile: 'Tile',
-        Expand: 'Broadcast',
-        ConstantOfShape: 'Broadcast',
-        Cast: 'Convert',
-        Pad: 'Pad',
-        ReduceMean: 'ReduceMean',
-        ReduceMax: 'ReduceMax',
-        ReduceMin: 'ReduceMin',
-        ReduceSum: 'ReduceSum',
-        ReduceProd: 'ReduceProd',
-        ArgMax: 'ArgMax',
-        ArgMin: 'ArgMin',
-        TopK: 'TopK',
-        NonZero: 'NonZero',
-        Equal: 'Equal',
-        Not: 'LogicalNot',
-        And: 'LogicalAnd',
-        Or: 'LogicalOr',
-        Xor: 'LogicalXor',
-        Greater: 'Greater',
-        Less: 'Less',
-        GreaterOrEqual: 'GreaterEqual',
-        LessOrEqual: 'LessEqual',
-        Where: 'Select',
-        Resize: 'Interpolate',
-        SpaceToDepth: 'SpaceToDepth',
-        DepthToSpace: 'DepthToSpace',
-        NonMaxSuppression: 'NonMaxSuppression',
-        RoiAlign: 'ROIAlign',
-        CumSum: 'CumSum',
-        QuantizeLinear: 'FakeQuantize',
-        DequantizeLinear: 'FakeQuantize',
-        If: 'If',
-        Loop: 'TensorIterator',
-        Scan: 'TensorIterator',
-        Attention: 'ScaledDotProductAttention',
-        Gemm: 'MatMul',
-        Einsum: 'Einsum',
-        Round: 'Round',
-        BatchNormalization: 'BatchNormInference',
-        InstanceNormalization: 'MVN',
-        LayerNormalization: 'MVN',
-        LpNormalization: 'NormalizeL2',
+        Sub: "Subtract",
+        Mul: "Multiply",
+        Div: "Divide",
+        Pow: "Power",
+        Max: "Maximum",
+        Min: "Minimum",
+        Ceil: "Ceiling",
+        Conv: "Convolution",
+        Relu: "ReLU",
+        LeakyRelu: "PRelu",
+        Sigmoid: "Sigmoid",
+        Tanh: "Tanh",
+        Elu: "Elu",
+        Selu: "Selu",
+        Softplus: "SoftPlus",
+        Gelu: "Gelu",
+        Softmax: "SoftMax",
+        LogSoftmax: "LogSoftmax",
+        PRelu: "PRelu",
+        Clip: "Clamp",
+        HardSigmoid: "HardSigmoid",
+        AveragePool: "AvgPool",
+        MaxPool: "MaxPool",
+        Flatten: "Reshape",
+        Reshape: "Reshape",
+        Transpose: "Transpose",
+        Squeeze: "Squeeze",
+        Unsqueeze: "Unsqueeze",
+        Concat: "Concat",
+        Split: "Split",
+        Gather: "Gather",
+        GatherND: "GatherND",
+        ScatterND: "ScatterNDUpdate",
+        ScatterElements: "ScatterElementsUpdate",
+        Shape: "ShapeOf",
+        Tile: "Tile",
+        Expand: "Broadcast",
+        ConstantOfShape: "Broadcast",
+        Cast: "Convert",
+        Pad: "Pad",
+        ReduceMean: "ReduceMean",
+        ReduceMax: "ReduceMax",
+        ReduceMin: "ReduceMin",
+        ReduceSum: "ReduceSum",
+        ReduceProd: "ReduceProd",
+        ArgMax: "ArgMax",
+        ArgMin: "ArgMin",
+        TopK: "TopK",
+        NonZero: "NonZero",
+        Equal: "Equal",
+        Not: "LogicalNot",
+        And: "LogicalAnd",
+        Or: "LogicalOr",
+        Xor: "LogicalXor",
+        Greater: "Greater",
+        Less: "Less",
+        GreaterOrEqual: "GreaterEqual",
+        LessOrEqual: "LessEqual",
+        Where: "Select",
+        Resize: "Interpolate",
+        SpaceToDepth: "SpaceToDepth",
+        DepthToSpace: "DepthToSpace",
+        NonMaxSuppression: "NonMaxSuppression",
+        RoiAlign: "ROIAlign",
+        CumSum: "CumSum",
+        QuantizeLinear: "FakeQuantize",
+        DequantizeLinear: "FakeQuantize",
+        If: "If",
+        Loop: "TensorIterator",
+        Scan: "TensorIterator",
+        Attention: "ScaledDotProductAttention",
+        Gemm: "MatMul",
+        Einsum: "Einsum",
+        Round: "Round",
+        BatchNormalization: "BatchNormInference",
+        InstanceNormalization: "MVN",
+        LayerNormalization: "MVN",
+        LpNormalization: "NormalizeL2",
       };
       let ovType = typeMapping[node.opType] || node.opType;
       let hasDecoupledBias = false;
-      let biasInpName = '';
+      let biasInpName = "";
       let inputsToMap = node.inputs;
       if (
-        (node.opType === 'Conv' || node.opType === 'ConvTranspose' || node.opType === 'Gemm') &&
+        (node.opType === "Conv" ||
+          node.opType === "ConvTranspose" ||
+          node.opType === "Gemm") &&
         node.inputs.length === 3
       ) {
         hasDecoupledBias = true;
@@ -499,30 +518,30 @@ export class OpenVinoExporter {
       } else {
         inputsToMap = node.inputs.slice();
       }
-      layer.setAttribute('type', ovType);
+      layer.setAttribute("type", ovType);
 
-      const data = new XmlNode('data');
+      const data = new XmlNode("data");
 
       const binaryOps = [
-        'Subtract',
-        'Multiply',
-        'Divide',
-        'Power',
-        'Maximum',
-        'Minimum',
-        'Mod',
-        'Equal',
-        'Less',
-        'Greater',
-        'LessEqual',
-        'GreaterEqual',
-        'LogicalAnd',
-        'LogicalOr',
-        'LogicalXor',
-        'Add',
+        "Subtract",
+        "Multiply",
+        "Divide",
+        "Power",
+        "Maximum",
+        "Minimum",
+        "Mod",
+        "Equal",
+        "Less",
+        "Greater",
+        "LessEqual",
+        "GreaterEqual",
+        "LogicalAnd",
+        "LogicalOr",
+        "LogicalXor",
+        "Add",
       ];
       if (binaryOps.includes(ovType)) {
-        data.setAttribute('auto_broadcast', 'numpy');
+        data.setAttribute("auto_broadcast", "numpy");
       }
 
       const handler = OpenVinoExporter.handlers.get(node.opType);
@@ -539,37 +558,42 @@ export class OpenVinoExporter {
         ovType = layer.attributes.type ?? ovType;
       }
 
-      if (Object.keys(data.attributes).length > 0 || ovType === 'FakeQuantize') {
-        if (ovType === 'FakeQuantize' && !data.attributes.levels) {
-          data.setAttribute('levels', '256');
+      if (
+        Object.keys(data.attributes).length > 0 ||
+        ovType === "FakeQuantize"
+      ) {
+        if (ovType === "FakeQuantize" && !data.attributes.levels) {
+          data.setAttribute("levels", "256");
         }
 
         layer.addChild(data);
       }
 
-      const inNode = new XmlNode('input');
+      const inNode = new XmlNode("input");
       for (const inp of inputsToMap) {
         const inputPort = this.nextPort(layerId);
-        const port = new XmlNode('port');
-        port.setAttribute('id', inputPort.toString());
+        const port = new XmlNode("port");
+        port.setAttribute("id", inputPort.toString());
         inNode.addChild(port);
 
         const fromIds = this.portIds.get(inp);
         if (fromIds) {
           this.addEdge(fromIds.layerId, fromIds.portId, layerId, inputPort);
-        } else if (inp !== '') {
-          throw new Error(`Missing input pointer: '${inp}' for node '${node.name || layerId}'`);
+        } else if (inp !== "") {
+          throw new Error(
+            `Missing input pointer: '${inp}' for node '${node.name || layerId}'`,
+          );
         }
       }
       if (inputsToMap.length > 0) {
         layer.addChild(inNode);
       }
 
-      const outNode = new XmlNode('output');
+      const outNode = new XmlNode("output");
       for (const out of node.outputs) {
         const outputPort = this.nextPort(layerId);
-        const port = new XmlNode('port');
-        port.setAttribute('id', outputPort.toString());
+        const port = new XmlNode("port");
+        port.setAttribute("id", outputPort.toString());
         outNode.addChild(port);
 
         if (hasDecoupledBias) {
@@ -590,26 +614,33 @@ export class OpenVinoExporter {
       if (hasDecoupledBias) {
         for (const out of node.outputs) {
           const addLayerId = this.nextId();
-          const addLayer = new XmlNode('layer');
-          addLayer.setAttribute('id', addLayerId.toString());
-          addLayer.setAttribute('name', `${out}_bias_add`);
-          addLayer.setAttribute('type', 'Add');
-          addLayer.setAttribute('version', 'opset1');
+          const addLayer = new XmlNode("layer");
+          addLayer.setAttribute("id", addLayerId.toString());
+          addLayer.setAttribute("name", `${out}_bias_add`);
+          addLayer.setAttribute("type", "Add");
+          addLayer.setAttribute("version", "opset1");
 
-          const addData = new XmlNode('data').setAttribute('auto_broadcast', 'numpy');
+          const addData = new XmlNode("data").setAttribute(
+            "auto_broadcast",
+            "numpy",
+          );
           addLayer.addChild(addData);
 
-          const addInNode = new XmlNode('input');
+          const addInNode = new XmlNode("input");
 
           const p1 = this.nextPort(addLayerId);
-          addInNode.addChild(new XmlNode('port').setAttribute('id', p1.toString()));
+          addInNode.addChild(
+            new XmlNode("port").setAttribute("id", p1.toString()),
+          );
           const nobiasIds = this.portIds.get(`${out}_internal_nobias`);
           if (nobiasIds) {
             this.addEdge(nobiasIds.layerId, nobiasIds.portId, addLayerId, p1);
           }
 
           const p2 = this.nextPort(addLayerId);
-          addInNode.addChild(new XmlNode('port').setAttribute('id', p2.toString()));
+          addInNode.addChild(
+            new XmlNode("port").setAttribute("id", p2.toString()),
+          );
           const biasIds = this.portIds.get(biasInpName);
           if (biasIds) {
             this.addEdge(biasIds.layerId, biasIds.portId, addLayerId, p2);
@@ -617,9 +648,11 @@ export class OpenVinoExporter {
 
           addLayer.addChild(addInNode);
 
-          const addOutNode = new XmlNode('output');
+          const addOutNode = new XmlNode("output");
           const p3 = this.nextPort(addLayerId);
-          addOutNode.addChild(new XmlNode('port').setAttribute('id', p3.toString()));
+          addOutNode.addChild(
+            new XmlNode("port").setAttribute("id", p3.toString()),
+          );
           addLayer.addChild(addOutNode);
 
           this.portIds.set(out, { layerId: addLayerId, portId: p3 });
@@ -636,17 +669,17 @@ export class OpenVinoExporter {
       const layerId = this.nextId();
       this.layerIds.set(`${valInfo.name}_result`, layerId);
 
-      const layer = new XmlNode('layer');
-      layer.setAttribute('id', layerId.toString());
-      layer.setAttribute('name', `${valInfo.name}_result`);
-      layer.setAttribute('type', 'Result');
-      layer.setAttribute('version', 'opset1');
+      const layer = new XmlNode("layer");
+      layer.setAttribute("id", layerId.toString());
+      layer.setAttribute("name", `${valInfo.name}_result`);
+      layer.setAttribute("type", "Result");
+      layer.setAttribute("version", "opset1");
 
       const inputPort = this.nextPort(layerId);
-      const inNode = new XmlNode('input');
-      const port = this.emitShape(valInfo.shape, 'port');
-      port.setAttribute('id', inputPort.toString());
-      port.setAttribute('precision', this.mapDtype(valInfo.dtype));
+      const inNode = new XmlNode("input");
+      const port = this.emitShape(valInfo.shape, "port");
+      port.setAttribute("id", inputPort.toString());
+      port.setAttribute("precision", this.mapDtype(valInfo.dtype));
       inNode.addChild(port);
       layer.addChild(inNode);
 
@@ -656,18 +689,24 @@ export class OpenVinoExporter {
     }
     net.addChild(layers);
 
-    const edgesNode = new XmlNode('edges');
+    const edgesNode = new XmlNode("edges");
     for (const e of this.edges) {
       edgesNode.addChild(e);
     }
     net.addChild(edgesNode);
 
-    const rtInfo = new XmlNode('rt_info');
-    const metaData = new XmlNode('meta_data');
-    const moSettings = new XmlNode('MO_version').setAttribute('value', 'onnx9000');
-    const conversionParams = new XmlNode('cli_parameters');
+    const rtInfo = new XmlNode("rt_info");
+    const metaData = new XmlNode("meta_data");
+    const moSettings = new XmlNode("MO_version").setAttribute(
+      "value",
+      "onnx9000",
+    );
+    const conversionParams = new XmlNode("cli_parameters");
     conversionParams.addChild(
-      new XmlNode('compress_to_fp16').setAttribute('value', this.compressToFp16.toString()),
+      new XmlNode("compress_to_fp16").setAttribute(
+        "value",
+        this.compressToFp16.toString(),
+      ),
     );
     metaData.addChild(moSettings);
     metaData.addChild(conversionParams);
@@ -678,7 +717,10 @@ export class OpenVinoExporter {
     builder.setRoot(net);
     const xmlStr = builder.toString(true);
 
-    const totalLength = this.binBuffer.reduce((acc, val) => acc + val.length, 0);
+    const totalLength = this.binBuffer.reduce(
+      (acc, val) => acc + val.length,
+      0,
+    );
     const binArray = new Uint8Array(totalLength);
     let offset = 0;
     for (const chunk of this.binBuffer) {
@@ -707,92 +749,100 @@ export class OpenVinoExporter {
       }
     };
 
-    const setListAttr = (data: XmlNode, node: Node, attr: string, ovAttr: string) => {
+    const setListAttr = (
+      data: XmlNode,
+      node: Node,
+      attr: string,
+      ovAttr: string,
+    ) => {
       const a = node.attributes[attr];
       if (a && Array.isArray(a.value)) {
-        data.setAttribute(ovAttr, a.value.join(','));
+        data.setAttribute(ovAttr, a.value.join(","));
       }
     };
 
-    h.set('MatMul', ({ node, data }) => {
-      const transA = node.attributes.transA?.value ? 'true' : 'false';
-      const transB = node.attributes.transB?.value ? 'true' : 'false';
-      data.setAttribute('transpose_a', transA);
-      data.setAttribute('transpose_b', transB);
+    h.set("MatMul", ({ node, data }) => {
+      const transA = node.attributes.transA?.value ? "true" : "false";
+      const transB = node.attributes.transB?.value ? "true" : "false";
+      data.setAttribute("transpose_a", transA);
+      data.setAttribute("transpose_b", transB);
     });
-    h.set('Gemm', h.get('MatMul')!);
+    h.set("Gemm", h.get("MatMul")!);
 
-    h.set('Conv', ({ node, data }) => {
-      setListAttr(data, node, 'strides', 'strides');
-      setListAttr(data, node, 'dilations', 'dilations');
+    h.set("Conv", ({ node, data }) => {
+      setListAttr(data, node, "strides", "strides");
+      setListAttr(data, node, "dilations", "dilations");
       const padsAttr = node.attributes.pads;
       if (padsAttr && Array.isArray(padsAttr.value)) {
         const pads = padsAttr.value as number[];
         if (pads.length === 4) {
-          data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
-          data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
+          data.setAttribute("pads_begin", `${pads[0]},${pads[1]}`);
+          data.setAttribute("pads_end", `${pads[2]},${pads[3]}`);
         } else {
           const half = Math.floor(pads.length / 2);
-          data.setAttribute('pads_begin', pads.slice(0, half).join(','));
-          data.setAttribute('pads_end', pads.slice(half).join(','));
+          data.setAttribute("pads_begin", pads.slice(0, half).join(","));
+          data.setAttribute("pads_end", pads.slice(half).join(","));
         }
       }
       const autoPad = node.attributes.auto_pad?.value as string;
       if (autoPad) {
         const autoPadMap: Record<string, string> = {
-          VALID: 'valid',
-          SAME_UPPER: 'same_upper',
-          SAME_LOWER: 'same_lower',
+          VALID: "valid",
+          SAME_UPPER: "same_upper",
+          SAME_LOWER: "same_lower",
         };
-        data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
+        data.setAttribute("auto_pad", autoPadMap[autoPad] || "explicit");
       }
     });
 
     const poolHandler: OpHandler = ({ node, data }) => {
-      setListAttr(data, node, 'kernel_shape', 'kernel');
-      setListAttr(data, node, 'strides', 'strides');
+      setListAttr(data, node, "kernel_shape", "kernel");
+      setListAttr(data, node, "strides", "strides");
       const padsAttr = node.attributes.pads;
       if (padsAttr && Array.isArray(padsAttr.value)) {
         const pads = padsAttr.value as number[];
         if (pads.length === 4) {
-          data.setAttribute('pads_begin', `${pads[0]},${pads[1]}`);
-          data.setAttribute('pads_end', `${pads[2]},${pads[3]}`);
+          data.setAttribute("pads_begin", `${pads[0]},${pads[1]}`);
+          data.setAttribute("pads_end", `${pads[2]},${pads[3]}`);
         } else {
           const half = Math.floor(pads.length / 2);
-          data.setAttribute('pads_begin', pads.slice(0, half).join(','));
-          data.setAttribute('pads_end', pads.slice(half).join(','));
+          data.setAttribute("pads_begin", pads.slice(0, half).join(","));
+          data.setAttribute("pads_end", pads.slice(half).join(","));
         }
       }
       const autoPad = node.attributes.auto_pad?.value as string;
       if (autoPad) {
         const autoPadMap: Record<string, string> = {
-          VALID: 'valid',
-          SAME_UPPER: 'same_upper',
-          SAME_LOWER: 'same_lower',
+          VALID: "valid",
+          SAME_UPPER: "same_upper",
+          SAME_LOWER: "same_lower",
         };
-        data.setAttribute('auto_pad', autoPadMap[autoPad] || 'explicit');
+        data.setAttribute("auto_pad", autoPadMap[autoPad] || "explicit");
       }
 
-      if (node.opType === 'AveragePool' && node.attributes.count_include_pad) {
+      if (node.opType === "AveragePool" && node.attributes.count_include_pad) {
         data.setAttribute(
-          'exclude-pad',
-          node.attributes.count_include_pad.value ? 'false' : 'true',
+          "exclude-pad",
+          node.attributes.count_include_pad.value ? "false" : "true",
         );
       }
     };
-    h.set('MaxPool', poolHandler);
-    h.set('AveragePool', poolHandler);
+    h.set("MaxPool", poolHandler);
+    h.set("AveragePool", poolHandler);
 
-    h.set('Gelu', ({ node, data }) => {
+    h.set("Gelu", ({ node, data }) => {
       const approx = node.attributes.approximate?.value;
-      data.setAttribute('approximation_mode', approx === 'tanh' ? 'tanh' : 'erf');
+      data.setAttribute(
+        "approximation_mode",
+        approx === "tanh" ? "tanh" : "erf",
+      );
     });
 
-    h.set('Softmax', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
-    h.set('Concat', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
-    h.set('Split', ({ node, data }) => setAttr(data, node, 'axis', 'axis'));
+    h.set("Softmax", ({ node, data }) => setAttr(data, node, "axis", "axis"));
+    h.set("Concat", ({ node, data }) => setAttr(data, node, "axis", "axis"));
+    h.set("Split", ({ node, data }) => setAttr(data, node, "axis", "axis"));
 
-    h.set('Pad', ({ exporter, node, inputsToMap, layerId, layers }) => {
+    h.set("Pad", ({ exporter, node, inputsToMap, layerId, layers }) => {
       const padsAttr = node.attributes.pads;
       if (padsAttr && Array.isArray(padsAttr.value)) {
         const padsData = padsAttr.value as number[];
@@ -804,13 +854,13 @@ export class OpenVinoExporter {
           `${node.name || `pads_begin_${layerId}`}_pads_begin`,
           padsBegin,
           [padsBegin.length],
-          'int64',
+          "int64",
         );
         const eNode = exporter.emitDynamicConst(
           `${node.name || `pads_end_${layerId}`}_pads_end`,
           padsEnd,
           [padsEnd.length],
-          'int64',
+          "int64",
         );
         layers.addChild(bNode.layerNode);
         layers.addChild(eNode.layerNode);
@@ -822,7 +872,7 @@ export class OpenVinoExporter {
           `${node.name || `pad_value_${layerId}`}_pad_value`,
           [val],
           [1],
-          'float32',
+          "float32",
         );
         layers.addChild(vNode.layerNode);
         inputsToMap.push(`${node.name || `pad_value_${layerId}`}_pad_value`);
@@ -831,42 +881,58 @@ export class OpenVinoExporter {
           `${node.name || `pad_value_${layerId}`}_pad_value`,
           [0.0],
           [1],
-          'float32',
+          "float32",
         );
         layers.addChild(vNode.layerNode);
         inputsToMap.push(`${node.name || `pad_value_${layerId}`}_pad_value`);
       }
     });
 
-    h.set('Gather', ({ exporter, node, data, inputsToMap, layerId, layers }) => {
-      setAttr(data, node, 'batch_dims', 'batch_dims');
-      const axisAttr = node.attributes.axis;
-      if (axisAttr && axisAttr.value !== undefined && inputsToMap.length === 2) {
-        const axisVal = axisAttr.value as number;
-        const axisNode = exporter.emitDynamicConst(
-          `${node.name || `gather_axis_${layerId}`}_gather_axis`,
-          [axisVal],
-          [1],
-          'int64',
-        );
-        layers.addChild(axisNode.layerNode);
-        inputsToMap.push(`${node.name || `gather_axis_${layerId}`}_gather_axis`);
-      }
+    h.set(
+      "Gather",
+      ({ exporter, node, data, inputsToMap, layerId, layers }) => {
+        setAttr(data, node, "batch_dims", "batch_dims");
+        const axisAttr = node.attributes.axis;
+        if (
+          axisAttr &&
+          axisAttr.value !== undefined &&
+          inputsToMap.length === 2
+        ) {
+          const axisVal = axisAttr.value as number;
+          const axisNode = exporter.emitDynamicConst(
+            `${node.name || `gather_axis_${layerId}`}_gather_axis`,
+            [axisVal],
+            [1],
+            "int64",
+          );
+          layers.addChild(axisNode.layerNode);
+          inputsToMap.push(
+            `${node.name || `gather_axis_${layerId}`}_gather_axis`,
+          );
+        }
+      },
+    );
+
+    h.set("Slice", ({ layer, data }) => {
+      layer.setAttribute("type", "StridedSlice");
+      data.setAttribute("begin_mask", "");
+      data.setAttribute("end_mask", "");
+      data.setAttribute("new_axis_mask", "");
+      data.setAttribute("shrink_axis_mask", "");
+      data.setAttribute("ellipsis_mask", "");
     });
 
-    h.set('Slice', ({ layer, data }) => {
-      layer.setAttribute('type', 'StridedSlice');
-      data.setAttribute('begin_mask', '');
-      data.setAttribute('end_mask', '');
-      data.setAttribute('new_axis_mask', '');
-      data.setAttribute('shrink_axis_mask', '');
-      data.setAttribute('ellipsis_mask', '');
-    });
-
-    const reduceHandler: OpHandler = ({ node, data, exporter, layerId, layers, inputsToMap }) => {
+    const reduceHandler: OpHandler = ({
+      node,
+      data,
+      exporter,
+      layerId,
+      layers,
+      inputsToMap,
+    }) => {
       const keepdims = node.attributes.keepdims?.value;
       if (keepdims !== undefined) {
-        data.setAttribute('keep_dims', keepdims ? 'true' : 'false');
+        data.setAttribute("keep_dims", keepdims ? "true" : "false");
       }
       const axesAttr = node.attributes.axes;
       if (axesAttr && Array.isArray(axesAttr.value)) {
@@ -875,75 +941,87 @@ export class OpenVinoExporter {
           `${node.name || `reduce_axes_${layerId}`}_reduce_axes`,
           axesData,
           [axesData.length],
-          'int64',
+          "int64",
         );
         layers.addChild(constNode.layerNode);
-        inputsToMap.push(`${node.name || `reduce_axes_${layerId}`}_reduce_axes`);
+        inputsToMap.push(
+          `${node.name || `reduce_axes_${layerId}`}_reduce_axes`,
+        );
       }
     };
-    h.set('ReduceMean', reduceHandler);
-    h.set('ReduceMax', reduceHandler);
-    h.set('ReduceMin', reduceHandler);
-    h.set('ReduceSum', reduceHandler);
-    h.set('ReduceProd', reduceHandler);
+    h.set("ReduceMean", reduceHandler);
+    h.set("ReduceMax", reduceHandler);
+    h.set("ReduceMin", reduceHandler);
+    h.set("ReduceSum", reduceHandler);
+    h.set("ReduceProd", reduceHandler);
 
     const argHandler: OpHandler = ({ node, data }) => {
       const keep = node.attributes.keepdims?.value;
-      if (keep !== undefined) data.setAttribute('keep_dims', keep ? 'true' : 'false');
-      setAttr(data, node, 'axis', 'axis');
+      if (keep !== undefined)
+        data.setAttribute("keep_dims", keep ? "true" : "false");
+      setAttr(data, node, "axis", "axis");
     };
-    h.set('ArgMax', argHandler);
-    h.set('ArgMin', argHandler);
+    h.set("ArgMax", argHandler);
+    h.set("ArgMin", argHandler);
 
-    h.set('Resize', ({ node, data }) => {
-      setAttr(data, node, 'mode', 'mode');
-      setAttr(data, node, 'coordinate_transformation_mode', 'coordinate_transformation_mode');
-      data.setAttribute('shape_calculation_mode', 'sizes');
-      setAttr(data, node, 'nearest_mode', 'nearest_mode');
+    h.set("Resize", ({ node, data }) => {
+      setAttr(data, node, "mode", "mode");
+      setAttr(
+        data,
+        node,
+        "coordinate_transformation_mode",
+        "coordinate_transformation_mode",
+      );
+      data.setAttribute("shape_calculation_mode", "sizes");
+      setAttr(data, node, "nearest_mode", "nearest_mode");
     });
 
     const s2dHandler: OpHandler = ({ node, data }) => {
-      setAttr(data, node, 'blocksize', 'block_size');
-      setAttr(data, node, 'mode', 'mode');
+      setAttr(data, node, "blocksize", "block_size");
+      setAttr(data, node, "mode", "mode");
     };
-    h.set('SpaceToDepth', s2dHandler);
-    h.set('DepthToSpace', s2dHandler);
+    h.set("SpaceToDepth", s2dHandler);
+    h.set("DepthToSpace", s2dHandler);
 
-    h.set('NonMaxSuppression', ({ node, data }) => {
+    h.set("NonMaxSuppression", ({ node, data }) => {
       const center = node.attributes.center_point_box?.value;
-      data.setAttribute('box_encoding', center ? 'center' : 'corner');
-      data.setAttribute('sort_result_descending', 'false');
+      data.setAttribute("box_encoding", center ? "center" : "corner");
+      data.setAttribute("sort_result_descending", "false");
     });
 
-    h.set('RoiAlign', ({ node, data }) => {
+    h.set("RoiAlign", ({ node, data }) => {
       const mode = node.attributes.mode?.value;
-      data.setAttribute('mode', mode ? mode.toString() : 'avg');
+      data.setAttribute("mode", mode ? mode.toString() : "avg");
     });
 
-    h.set('QuantizeLinear', ({ data }) => data.setAttribute('levels', '256'));
-    h.set('DequantizeLinear', h.get('QuantizeLinear')!);
+    h.set("QuantizeLinear", ({ data }) => data.setAttribute("levels", "256"));
+    h.set("DequantizeLinear", h.get("QuantizeLinear")!);
 
-    h.set('Einsum', ({ node, data }) => setAttr(data, node, 'equation', 'equation'));
+    h.set("Einsum", ({ node, data }) =>
+      setAttr(data, node, "equation", "equation"),
+    );
 
     const normHandler: OpHandler = ({ node, data }) => {
-      setAttr(data, node, 'epsilon', 'eps');
-      if (node.opType === 'LayerNormalization') {
-        setAttr(data, node, 'axis', 'axes');
+      setAttr(data, node, "epsilon", "eps");
+      if (node.opType === "LayerNormalization") {
+        setAttr(data, node, "axis", "axes");
       }
-      data.setAttribute('normalize_variance', 'true');
-      data.setAttribute('eps_mode', 'add');
+      data.setAttribute("normalize_variance", "true");
+      data.setAttribute("eps_mode", "add");
     };
-    h.set('LayerNormalization', normHandler);
-    h.set('InstanceNormalization', normHandler);
+    h.set("LayerNormalization", normHandler);
+    h.set("InstanceNormalization", normHandler);
 
-    h.set('LpNormalization', ({ node, data }) => {
-      setAttr(data, node, 'axis', 'axes');
-      setAttr(data, node, 'p', 'p');
+    h.set("LpNormalization", ({ node, data }) => {
+      setAttr(data, node, "axis", "axes");
+      setAttr(data, node, "p", "p");
     });
 
-    h.set('BatchNormalization', ({ node, data }) => setAttr(data, node, 'epsilon', 'eps'));
+    h.set("BatchNormalization", ({ node, data }) =>
+      setAttr(data, node, "epsilon", "eps"),
+    );
 
-    h.set('If', ({ exporter, node }) => {
+    h.set("If", ({ exporter, node }) => {
       const thenBranch = node.attributes.then_branch?.value as Graph;
       if (thenBranch) {
         const subExporter = new OpenVinoExporter(thenBranch, {
@@ -962,7 +1040,7 @@ export class OpenVinoExporter {
       }
     });
 
-    h.set('Loop', ({ exporter, node }) => {
+    h.set("Loop", ({ exporter, node }) => {
       const body = node.attributes.body?.value as Graph;
       if (body) {
         const subExporter = new OpenVinoExporter(body, {
@@ -972,146 +1050,184 @@ export class OpenVinoExporter {
         subExporter.export();
       }
     });
-    h.set('Scan', h.get('Loop')!);
+    h.set("Scan", h.get("Loop")!);
 
-    h.set('Cast', ({ exporter, node, layer, data }) => {
-      layer.setAttribute('type', 'Convert');
+    h.set("Cast", ({ exporter, node, layer, data }) => {
+      layer.setAttribute("type", "Convert");
       const to = node.attributes.to?.value as DType;
       if (to) {
-        data.setAttribute('destination_type', exporter.mapDtype(to));
+        data.setAttribute("destination_type", exporter.mapDtype(to));
       }
     });
 
-    h.set('GridSample', ({ node, data }) => {
-      setAttr(data, node, 'mode', 'mode');
-      setAttr(data, node, 'padding_mode', 'padding_mode');
+    h.set("GridSample", ({ node, data }) => {
+      setAttr(data, node, "mode", "mode");
+      setAttr(data, node, "padding_mode", "padding_mode");
       const align = node.attributes.align_corners?.value;
       if (align !== undefined) {
-        data.setAttribute('align_corners', align ? 'true' : 'false');
+        data.setAttribute("align_corners", align ? "true" : "false");
       }
     });
 
-    h.set('Size', ({ exporter, node, layer, data, inputsToMap, layerId, layers }) => {
-      const shapeLayerId = exporter.nextId();
-      const shapeName = `${node.name || `shapeof_${layerId}`}_shapeof`;
-      const shapeLayer = new XmlNode('layer')
-        .setAttribute('id', shapeLayerId.toString())
-        .setAttribute('name', shapeName)
-        .setAttribute('type', 'ShapeOf')
-        .setAttribute('version', 'opset1');
+    h.set(
+      "Size",
+      ({ exporter, node, layer, data, inputsToMap, layerId, layers }) => {
+        const shapeLayerId = exporter.nextId();
+        const shapeName = `${node.name || `shapeof_${layerId}`}_shapeof`;
+        const shapeLayer = new XmlNode("layer")
+          .setAttribute("id", shapeLayerId.toString())
+          .setAttribute("name", shapeName)
+          .setAttribute("type", "ShapeOf")
+          .setAttribute("version", "opset1");
 
-      const shapeInNode = new XmlNode('input');
-      const shapeInPort = exporter.nextPort(shapeLayerId);
-      shapeInNode.addChild(new XmlNode('port').setAttribute('id', shapeInPort.toString()));
-      shapeLayer.addChild(shapeInNode);
+        const shapeInNode = new XmlNode("input");
+        const shapeInPort = exporter.nextPort(shapeLayerId);
+        shapeInNode.addChild(
+          new XmlNode("port").setAttribute("id", shapeInPort.toString()),
+        );
+        shapeLayer.addChild(shapeInNode);
 
-      if (node.inputs.length > 0) {
-        const fromIds = exporter.portIds.get(node.inputs[0] as string);
-        if (fromIds) {
-          exporter.addEdge(fromIds.layerId, fromIds.portId, shapeLayerId, shapeInPort);
+        if (node.inputs.length > 0) {
+          const fromIds = exporter.portIds.get(node.inputs[0] as string);
+          if (fromIds) {
+            exporter.addEdge(
+              fromIds.layerId,
+              fromIds.portId,
+              shapeLayerId,
+              shapeInPort,
+            );
+          }
         }
-      }
 
-      const shapeOutNode = new XmlNode('output');
-      const shapeOutPort = exporter.nextPort(shapeLayerId);
-      shapeOutNode.addChild(
-        new XmlNode('port')
-          .setAttribute('id', shapeOutPort.toString())
-          .setAttribute('precision', 'i64'),
-      );
-      shapeLayer.addChild(shapeOutNode);
-      layers.addChild(shapeLayer);
+        const shapeOutNode = new XmlNode("output");
+        const shapeOutPort = exporter.nextPort(shapeLayerId);
+        shapeOutNode.addChild(
+          new XmlNode("port")
+            .setAttribute("id", shapeOutPort.toString())
+            .setAttribute("precision", "i64"),
+        );
+        shapeLayer.addChild(shapeOutNode);
+        layers.addChild(shapeLayer);
 
-      const axesConst = exporter.emitDynamicConst(
-        `${node.name || `axes_${layerId}`}_axes`,
-        [0],
-        [1],
-        'int64',
-      );
-      layers.addChild(axesConst.layerNode);
+        const axesConst = exporter.emitDynamicConst(
+          `${node.name || `axes_${layerId}`}_axes`,
+          [0],
+          [1],
+          "int64",
+        );
+        layers.addChild(axesConst.layerNode);
 
-      layer.setAttribute('type', 'ReduceProd');
-      data.setAttribute('keep_dims', 'false');
+        layer.setAttribute("type", "ReduceProd");
+        data.setAttribute("keep_dims", "false");
 
-      inputsToMap.length = 0;
-      inputsToMap.push(shapeName, `${node.name || `axes_${layerId}`}_axes`);
-      exporter.portIds.set(shapeName, {
-        layerId: shapeLayerId,
-        portId: shapeOutPort,
-      });
-    });
+        inputsToMap.length = 0;
+        inputsToMap.push(shapeName, `${node.name || `axes_${layerId}`}_axes`);
+        exporter.portIds.set(shapeName, {
+          layerId: shapeLayerId,
+          portId: shapeOutPort,
+        });
+      },
+    );
 
-    h.set('Flatten', ({ exporter, node, inputsToMap, layerId, layers }) => {
+    h.set("Flatten", ({ exporter, node, inputsToMap, layerId, layers }) => {
       const constNode = exporter.emitDynamicConst(
         `${node.name || `flatten_shape_${layerId}`}_flatten_shape`,
         [0, -1],
         [2],
-        'int64',
+        "int64",
       );
       layers.addChild(constNode.layerNode);
-      inputsToMap.push(`${node.name || `flatten_shape_${layerId}`}_flatten_shape`);
+      inputsToMap.push(
+        `${node.name || `flatten_shape_${layerId}`}_flatten_shape`,
+      );
     });
 
-    h.set('Transpose', ({ exporter, node, inputsToMap, layerId, layers }) => {
+    h.set("Transpose", ({ exporter, node, inputsToMap, layerId, layers }) => {
       const perm = node.attributes.perm?.value as number[];
       if (perm) {
         const constNode = exporter.emitDynamicConst(
           `${node.name || `transpose_perm_${layerId}`}_transpose_perm`,
           perm,
           [perm.length],
-          'int64',
+          "int64",
         );
         layers.addChild(constNode.layerNode);
-        inputsToMap.push(`${node.name || `transpose_perm_${layerId}`}_transpose_perm`);
-      }
-    });
-
-    h.set('GatherElements', ({ exporter, node, inputsToMap, layerId, layers }) => {
-      const axis = node.attributes.axis?.value as number;
-      if (axis !== undefined) {
-        const axisNode = exporter.emitDynamicConst(
-          `${node.name || `gather_el_axis_${layerId}`}_gather_el_axis`,
-          [axis],
-          [1],
-          'int64',
+        inputsToMap.push(
+          `${node.name || `transpose_perm_${layerId}`}_transpose_perm`,
         );
-        layers.addChild(axisNode.layerNode);
-        inputsToMap.push(`${node.name || `gather_el_axis_${layerId}`}_gather_el_axis`);
       }
     });
 
-    h.set('ConstantOfShape', ({ exporter, node, layer, inputsToMap, layerId, layers }) => {
-      let val = [0.0];
-      let dtype: DType = 'float32';
-      const valAttr = node.attributes.value?.value;
-      if (valAttr instanceof Tensor) {
-        const valTensor = valAttr;
-        if (valTensor.dtype === 'float32' && valTensor.data) {
-          val = [new Float32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0.0];
-          dtype = 'float32';
-        } else if (valTensor.dtype === 'int64' && valTensor.data) {
-          const bi =
-            new BigInt64Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0n;
-          val = [Number(bi)];
-          dtype = 'int64';
-        } else if (valTensor.dtype === 'int32' && valTensor.data) {
-          val = [new Int32Array(valTensor.data.buffer, valTensor.data.byteOffset, 1)[0] ?? 0];
-          dtype = 'int32';
+    h.set(
+      "GatherElements",
+      ({ exporter, node, inputsToMap, layerId, layers }) => {
+        const axis = node.attributes.axis?.value as number;
+        if (axis !== undefined) {
+          const axisNode = exporter.emitDynamicConst(
+            `${node.name || `gather_el_axis_${layerId}`}_gather_el_axis`,
+            [axis],
+            [1],
+            "int64",
+          );
+          layers.addChild(axisNode.layerNode);
+          inputsToMap.push(
+            `${node.name || `gather_el_axis_${layerId}`}_gather_el_axis`,
+          );
         }
-      }
+      },
+    );
 
-      const constNode = exporter.emitDynamicConst(
-        `${node.name || `scalar_val_${layerId}`}_scalar_val`,
-        val,
-        [1],
-        dtype,
-      );
-      layers.addChild(constNode.layerNode);
-      const originalInput = inputsToMap[0];
-      inputsToMap.length = 0;
-      inputsToMap.push(`${node.name || `scalar_val_${layerId}`}_scalar_val`);
-      if (originalInput) inputsToMap.push(originalInput);
-      layer.setAttribute('type', 'Broadcast');
-    });
+    h.set(
+      "ConstantOfShape",
+      ({ exporter, node, layer, inputsToMap, layerId, layers }) => {
+        let val = [0.0];
+        let dtype: DType = "float32";
+        const valAttr = node.attributes.value?.value;
+        if (valAttr instanceof Tensor) {
+          const valTensor = valAttr;
+          if (valTensor.dtype === "float32" && valTensor.data) {
+            val = [
+              new Float32Array(
+                valTensor.data.buffer,
+                valTensor.data.byteOffset,
+                1,
+              )[0] ?? 0.0,
+            ];
+            dtype = "float32";
+          } else if (valTensor.dtype === "int64" && valTensor.data) {
+            const bi =
+              new BigInt64Array(
+                valTensor.data.buffer,
+                valTensor.data.byteOffset,
+                1,
+              )[0] ?? 0n;
+            val = [Number(bi)];
+            dtype = "int64";
+          } else if (valTensor.dtype === "int32" && valTensor.data) {
+            val = [
+              new Int32Array(
+                valTensor.data.buffer,
+                valTensor.data.byteOffset,
+                1,
+              )[0] ?? 0,
+            ];
+            dtype = "int32";
+          }
+        }
+
+        const constNode = exporter.emitDynamicConst(
+          `${node.name || `scalar_val_${layerId}`}_scalar_val`,
+          val,
+          [1],
+          dtype,
+        );
+        layers.addChild(constNode.layerNode);
+        const originalInput = inputsToMap[0];
+        inputsToMap.length = 0;
+        inputsToMap.push(`${node.name || `scalar_val_${layerId}`}_scalar_val`);
+        if (originalInput) inputsToMap.push(originalInput);
+        layer.setAttribute("type", "Broadcast");
+      },
+    );
   }
 }

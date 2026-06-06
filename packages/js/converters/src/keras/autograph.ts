@@ -3,7 +3,7 @@
  * Provides autograph functionality for the converters package.
  */
 // @ts-nocheck
-import type { JsonObject } from './tfjs-parser.js';
+import type { JsonObject } from "./tfjs-parser.js";
 
 export interface PyodideInterface {
   runPythonAsync: (code: string) => Promise<string>;
@@ -29,7 +29,7 @@ export async function extractTraceViaPyodide(
   inputShape: (number | null)[],
 ): Promise<JsonObject> {
   // We stringify the shape, converting JS nulls to Python Nones
-  const shapeStr = JSON.stringify(inputShape).replace(/null/g, 'None');
+  const shapeStr = JSON.stringify(inputShape).replace(/null/g, "None");
 
   const pythonScript = `
 import json
@@ -42,7 +42,7 @@ def trace_model():
         # User-provided model definition injected into local scope
         user_globals = {}
         exec("""
-${modelCode.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}
+${modelCode.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}
         """, user_globals)
         
         if 'create_model' not in user_globals:

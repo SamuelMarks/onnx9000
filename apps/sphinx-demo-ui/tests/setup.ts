@@ -2,7 +2,7 @@
   getItem: () => null,
   setItem: () => {},
   removeItem: () => {},
-  clear: () => {},
+  clear: () => {}
 };
 (global as any).Worker = class Worker {
   postMessage() {}

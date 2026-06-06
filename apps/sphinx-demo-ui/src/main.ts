@@ -54,7 +54,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'horizontal',
     initialSplitRatio: 0.5,
     minSize: 200,
-    storageKey: 'onnx9000-demo-horizontal-split',
+    storageKey: 'onnx9000-demo-horizontal-split'
   });
 
   // 2. Create the Main Split (Vertical: Top Split | Bottom Pane)
@@ -62,7 +62,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'vertical',
     initialSplitRatio: 0.5, // 50% top, 50% bottom
     minSize: 150,
-    storageKey: 'onnx9000-demo-vertical-split',
+    storageKey: 'onnx9000-demo-vertical-split'
   });
 
   // 3. Mount containers
@@ -134,7 +134,7 @@ const observeTheme = () => {
 
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme', 'class'],
+    attributeFilter: ['data-theme', 'class']
   });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 };

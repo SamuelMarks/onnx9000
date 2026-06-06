@@ -3,8 +3,8 @@
  * Provides index functionality for the transformers package.
  */
 export interface TokenizerConfig {
-  padding?: boolean | 'max_length' | 'longest';
-  truncation?: boolean | 'only_first' | 'only_second' | 'longest_first';
+  padding?: boolean | "max_length" | "longest";
+  truncation?: boolean | "only_first" | "only_second" | "longest_first";
   max_length?: number;
   stride?: number;
   return_tensors?: string;
@@ -30,14 +30,20 @@ export class PreTrainedTokenizer {
     this.config = config;
   }
 
-  encode(text: string | string[], options: TokenizerConfig = {}): ReturnType<typeof JSON.parse> {
+  encode(
+    text: string | string[],
+    options: TokenizerConfig = {},
+  ): ReturnType<typeof JSON.parse> {
     // Handle options
     const padding = options.padding ?? this.config.padding;
     const truncation = options.truncation ?? this.config.truncation;
     const max_length = options.max_length ?? this.config.max_length;
-    const _return_tensors = options.return_tensors ?? this.config.return_tensors;
+    const _return_tensors =
+      options.return_tensors ?? this.config.return_tensors;
     const return_attention_mask =
-      options.return_attention_mask ?? this.config.return_attention_mask ?? true;
+      options.return_attention_mask ??
+      this.config.return_attention_mask ??
+      true;
 
     const texts = Array.isArray(text) ? text : [text];
     const input_ids = texts.map((t) => this._encode_single(t));
@@ -50,7 +56,7 @@ export class PreTrainedTokenizer {
       attention_mask = attention_mask.map((arr) => arr.slice(0, max_length));
     }
 
-    if (padding === 'max_length' && max_length) {
+    if (padding === "max_length" && max_length) {
       padded_ids = padded_ids.map((arr) => {
         const padLen = Math.max(0, max_length - arr.length);
         return [...arr, ...Array(padLen).fill(0)];
@@ -65,21 +71,27 @@ export class PreTrainedTokenizer {
       input_ids: Array.isArray(text) ? padded_ids : padded_ids[0],
     };
     if (return_attention_mask) {
-      result.attention_mask = Array.isArray(text) ? attention_mask : attention_mask[0];
+      result.attention_mask = Array.isArray(text)
+        ? attention_mask
+        : attention_mask[0];
     }
     return result;
   }
 
   _encode_single(text: string): number[] {
-    return text.split('').map((c) => c.charCodeAt(0));
+    return text.split("").map((c) => c.charCodeAt(0));
   }
 
   decode(ids: number[], options: ReturnType<typeof JSON.parse> = {}): string {
-    const { skip_special_tokens = false, clean_up_tokenization_spaces = true } = options;
-    return ids.map((id) => String.fromCharCode(id)).join('');
+    const { skip_special_tokens = false, clean_up_tokenization_spaces = true } =
+      options;
+    return ids.map((id) => String.fromCharCode(id)).join("");
   }
 
-  batch_decode(batch_ids: number[][], options: ReturnType<typeof JSON.parse> = {}): string[] {
+  batch_decode(
+    batch_ids: number[][],
+    options: ReturnType<typeof JSON.parse> = {},
+  ): string[] {
     return batch_ids.map((ids) => this.decode(ids, options));
   }
 }
@@ -87,32 +99,35 @@ export class PreTrainedTokenizer {
 export class PreTrainedTokenizerFast extends PreTrainedTokenizer {
   tokenizerJson: ReturnType<typeof JSON.parse>;
 
-  constructor(tokenizerJson: ReturnType<typeof JSON.parse>, config: TokenizerConfig = {}) {
+  constructor(
+    tokenizerJson: ReturnType<typeof JSON.parse>,
+    config: TokenizerConfig = {},
+  ) {
     super(config);
     this.tokenizerJson = tokenizerJson;
   }
 
   override _encode_single(text: string): number[] {
-    if (this.tokenizerJson?.model?.type === 'BPE') {
+    if (this.tokenizerJson?.model?.type === "BPE") {
       return this.wasmBpe(text);
-    } else if (this.tokenizerJson?.model?.type === 'WordPiece') {
+    } else if (this.tokenizerJson?.model?.type === "WordPiece") {
       return this.wasmWordPiece(text);
-    } else if (this.tokenizerJson?.model?.type === 'Unigram') {
+    } else if (this.tokenizerJson?.model?.type === "Unigram") {
       return this.wasmUnigram(text);
     }
     return super._encode_single(text);
   }
 
   wasmBpe(text: string): number[] {
-    return text.split('').map((c) => c.charCodeAt(0) + 100);
+    return text.split("").map((c) => c.charCodeAt(0) + 100);
   }
 
   wasmWordPiece(text: string): number[] {
-    return text.split('').map((c) => c.charCodeAt(0) + 200);
+    return text.split("").map((c) => c.charCodeAt(0) + 200);
   }
 
   wasmUnigram(text: string): number[] {
-    return text.split('').map((c) => c.charCodeAt(0) + 300);
+    return text.split("").map((c) => c.charCodeAt(0) + 300);
   }
 
   word_ids(_batch_index: number = 0): number[] {
@@ -121,7 +136,10 @@ export class PreTrainedTokenizerFast extends PreTrainedTokenizer {
   char_to_token(_char_index: number, _batch_index: number = 0): number {
     return 0;
   }
-  token_to_chars(_token_index: number, _batch_index: number = 0): [number, number] {
+  token_to_chars(
+    _token_index: number,
+    _batch_index: number = 0,
+  ): [number, number] {
     return [0, 0];
   }
 }
@@ -132,7 +150,7 @@ export class AutoTokenizer {
     _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     const config = { padding: false, truncation: false };
-    const tokenizerJson = { model: { type: 'BPE' } };
+    const tokenizerJson = { model: { type: "BPE" } };
     const tok = new PreTrainedTokenizerFast(tokenizerJson, config);
     // Bind old stub methods for tests
     (tok as ReturnType<typeof JSON.parse>).encode_old = tok.encode;
@@ -141,7 +159,7 @@ export class AutoTokenizer {
       text: string | string[],
       opts: ReturnType<typeof JSON.parse> = {},
     ): ReturnType<typeof JSON.parse> {
-      if (typeof text === 'string' && !opts.return_tensors) {
+      if (typeof text === "string" && !opts.return_tensors) {
         // legacy signature
         if (!text) return [];
         return text.split(/\s+/).map((w) => w.charCodeAt(0));
@@ -156,8 +174,8 @@ export class AutoTokenizer {
       opts: ReturnType<typeof JSON.parse> = {},
     ): string {
       if (!opts.skip_special_tokens && !opts.clean_up_tokenization_spaces) {
-        if (!tokens || tokens.length === 0) return '';
-        return tokens.map((t) => String.fromCharCode(t)).join(' ');
+        if (!tokens || tokens.length === 0) return "";
+        return tokens.map((t) => String.fromCharCode(t)).join(" ");
       }
       return this.decode_old(tokens, opts);
     }.bind(tok) as ReturnType<typeof JSON.parse>;
@@ -180,7 +198,7 @@ export class BPEEncoder {
   }
 
   encode(text: string): number[] {
-    const chars = text.split('');
+    const chars = text.split("");
     const out = [];
     for (const c of chars) {
       if (this.vocab[c] !== undefined) {

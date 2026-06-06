@@ -1,34 +1,48 @@
-import { Graph, Tensor } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
+import { Graph, Tensor } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
 import {
   applyRecipe,
   ConstantPruningModifier,
   MagnitudePruningModifier,
-} from '../src/sparse/modifier.js';
+} from "../src/sparse/modifier.js";
 
-describe('Sparse Modifier', () => {
-  it('Parses and applies recipes directly', () => {
+describe("Sparse Modifier", () => {
+  it("Parses and applies recipes directly", () => {
     const graph = new Graph();
 
     const t1 = new Tensor(
-      'weight1',
+      "weight1",
       [4],
-      'float32',
+      "float32",
       false,
       true,
       new Float32Array([0.1, 0.9, -0.2, 0.5]),
     );
     const t2 = new Tensor(
-      'weight2',
+      "weight2",
       [4],
-      'float32',
+      "float32",
       false,
       true,
       new Float32Array([0.0, 1.0, 2.0, 3.0]),
     );
-    const t3 = new Tensor('ignored', [4], 'float32', false, true, new Float32Array([1, 1, 1, 1]));
-    const t4 = new Tensor('no_data', [4], 'float32', false, true, null as any); // no data
-    const t5 = new Tensor('empty_data', [0], 'float32', false, true, new Float32Array([])); // empty data
+    const t3 = new Tensor(
+      "ignored",
+      [4],
+      "float32",
+      false,
+      true,
+      new Float32Array([1, 1, 1, 1]),
+    );
+    const t4 = new Tensor("no_data", [4], "float32", false, true, null as any); // no data
+    const t5 = new Tensor(
+      "empty_data",
+      [0],
+      "float32",
+      false,
+      true,
+      new Float32Array([]),
+    ); // empty data
 
     // Let's force isInitializer!
     t1.isInitializer = true;
@@ -46,9 +60,9 @@ describe('Sparse Modifier', () => {
     };
 
     const mod1 = new MagnitudePruningModifier({
-      params: ['re:weight.*'],
+      params: ["re:weight.*"],
       final_sparsity: 0.5,
-      leave_unmasked: ['weight2'],
+      leave_unmasked: ["weight2"],
     });
     mod1.apply(graph);
 
@@ -58,7 +72,7 @@ describe('Sparse Modifier', () => {
     expect(Math.abs(d1[1] - 0.9)).toBeLessThan(1e-5);
 
     const mod2 = new ConstantPruningModifier({
-      params: ['re:weight2'],
+      params: ["re:weight2"],
       threshold: 0,
     });
     mod2.apply(graph);
@@ -67,13 +81,13 @@ describe('Sparse Modifier', () => {
     expect(d2[1]).toBe(1);
 
     const mod3 = new MagnitudePruningModifier({
-      params: ['re:.*'],
+      params: ["re:.*"],
       final_sparsity: 0,
     });
     mod3.apply(graph);
 
     const mod4 = new ConstantPruningModifier({
-      params: ['re:no_data', 're:empty_data'],
+      params: ["re:no_data", "re:empty_data"],
     });
     mod4.apply(graph);
 
@@ -96,8 +110,8 @@ describe('Sparse Modifier', () => {
   });
 });
 
-describe('Sparse Modifier Defaults', () => {
-  it('applies with defaults', () => {
+describe("Sparse Modifier Defaults", () => {
+  it("applies with defaults", () => {
     const graph = new Graph();
     const mod1 = new MagnitudePruningModifier({});
     mod1.apply(graph);

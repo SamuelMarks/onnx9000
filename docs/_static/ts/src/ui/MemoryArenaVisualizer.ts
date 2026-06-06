@@ -149,8 +149,12 @@ export class MemoryArenaVisualizer extends BaseComponent {
     globalEvents.on('nodeSelected', (node: any) => {
       this.activeBlocks.clear();
       if (node) {
-        node.inputs.forEach((i: string) => this.activeBlocks.add(i));
-        node.outputs.forEach((o: string) => this.activeBlocks.add(o));
+        node.inputs.forEach((i: string) => {
+          this.activeBlocks.add(i);
+        });
+        node.outputs.forEach((o: string) => {
+          this.activeBlocks.add(o);
+        });
       }
       this.render();
     });

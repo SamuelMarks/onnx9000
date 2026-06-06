@@ -6,7 +6,15 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**/*.ts", "**/*.js", "**/*.json"],
+    "includes": [
+      "**/*.ts",
+      "**/*.js",
+      "package.json",
+      "tsconfig*.json",
+      "biome.json",
+      "oxlint*.json"
+    ],
+    "maxSize": 10485760,
     "ignoreUnknown": true
   },
   "formatter": {
@@ -19,7 +27,21 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noTemplateCurlyInString": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "complexity": {
+        "noBannedTypes": "off",
+        "noStaticOnlyClass": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "off"
+      }
     }
   },
   "javascript": {

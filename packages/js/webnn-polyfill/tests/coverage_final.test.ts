@@ -1,11 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
-import { PolyfillMLGraphBuilder } from '../src/builder.js';
-import { PolyfillMLContext } from '../src/context.js';
-import { PolyfillMLGraph } from '../src/graph.js';
-import { PolyfillMLTensor } from '../src/tensor.js';
+import { describe, expect, it, vi } from "vitest";
+import { PolyfillMLGraphBuilder } from "../src/builder.js";
+import { PolyfillMLContext } from "../src/context.js";
+import { PolyfillMLGraph } from "../src/graph.js";
+import { PolyfillMLTensor } from "../src/tensor.js";
 
 // Mock the backend
-vi.mock('@onnx9000/backend-web', () => {
+vi.mock("@onnx9000/backend-web", () => {
   return {
     InferenceSession: vi.fn().mockImplementation(() => ({
       run: vi.fn().mockResolvedValue({
@@ -17,14 +17,14 @@ vi.mock('@onnx9000/backend-web', () => {
   };
 });
 
-describe('WebNN Polyfill Exhaustive Coverage', () => {
-  const context = new PolyfillMLContext({ deviceType: 'cpu' });
+describe("WebNN Polyfill Exhaustive Coverage", () => {
+  const context = new PolyfillMLContext({ deviceType: "cpu" });
   const builder = new PolyfillMLGraphBuilder(context);
 
-  const desc = { dataType: 'float32' as const, dimensions: [1] };
-  const a = builder.input('a', desc);
+  const desc = { dataType: "float32" as const, dimensions: [1] };
+  const a = builder.input("a", desc);
 
-  it('should cover all builder mapping methods and branches', async () => {
+  it("should cover all builder mapping methods and branches", async () => {
     // Math & Unary
     builder.add(a, a);
     builder.sub(a, a);
@@ -88,31 +88,34 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
     builder.split(a, [1]); // Array splits
     builder.split(a, 1);
     builder.concat([a, a], 0);
-    builder.pad(a, [0, 0], { mode: 'edge', value: 1.0 });
+    builder.pad(a, [0, 0], { mode: "edge", value: 1.0 });
     builder.gather(
       a,
-      builder.constant({ dataType: 'int32', dimensions: [1] }, new Int32Array([0])),
+      builder.constant(
+        { dataType: "int32", dimensions: [1] },
+        new Int32Array([0]),
+      ),
       { axis: 0 },
     );
     builder.gatherNd(a, a);
     builder.scatterNd(a, a, { shape: [1] });
     builder.gatherElements(a, a, { axis: 0 });
     builder.expand(a, [1]);
-    builder.cast(a, 'int32');
+    builder.cast(a, "int32");
     builder.triangular(a, { diagonal: 0, upper: true });
 
     // Pool/Conv
-    const x4d = builder.input('x4d', {
-      dataType: 'float32',
+    const x4d = builder.input("x4d", {
+      dataType: "float32",
       dimensions: [1, 1, 4, 4],
     });
     const w4d = builder.constant(
-      { dataType: 'float32', dimensions: [1, 1, 3, 3] },
+      { dataType: "float32", dimensions: [1, 1, 3, 3] },
       new Float32Array(9),
     );
     builder.conv2d(x4d, w4d, {
       padding: [1, 1, 1, 1],
-      autoPad: 'same-upper',
+      autoPad: "same-upper",
       bias: a,
     });
     builder.convTranspose2d(x4d, w4d, {
@@ -125,13 +128,13 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
       windowDimensions: [2, 2],
       strides: [1, 1],
       padding: [0, 0, 0, 0],
-      roundingType: 'ceil',
+      roundingType: "ceil",
     });
     builder.averagePool2d(x4d, {
       windowDimensions: [2, 2],
       strides: [1, 1],
       padding: [0, 0, 0, 0],
-      roundingType: 'ceil',
+      roundingType: "ceil",
     });
     builder.l2Pool2d(x4d, {
       windowDimensions: [2, 2],
@@ -167,7 +170,7 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
     builder.logicalAnd(a, a);
     builder.logicalOr(a, a);
     builder.logicalXor(a, a);
-    const cond = builder.input('cond', { dataType: 'uint8', dimensions: [1] });
+    const cond = builder.input("cond", { dataType: "uint8", dimensions: [1] });
     builder.where(cond, a, a);
 
     // Cell ops
@@ -185,15 +188,15 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
     await builder.build({ result: a });
   });
 
-  it('should cover context and graph edge cases', async () => {
-    const _gpuCtx = new PolyfillMLContext({ deviceType: 'gpu' });
-    const _unknownCtx = new PolyfillMLContext({ deviceType: 'npu' as 'cpu' });
+  it("should cover context and graph edge cases", async () => {
+    const _gpuCtx = new PolyfillMLContext({ deviceType: "gpu" });
+    const _unknownCtx = new PolyfillMLContext({ deviceType: "npu" as "cpu" });
 
     context.opSupportLimits();
 
     const mockOnnxGraph = {
-      outputs: [{ name: 'out' }],
-      inputs: [{ name: 'a', shape: [1], dtype: 'float32' }],
+      outputs: [{ name: "out" }],
+      inputs: [{ name: "a", shape: [1], dtype: "float32" }],
       addNode: vi.fn(),
       addTensor: vi.fn(),
     };
@@ -201,52 +204,63 @@ describe('WebNN Polyfill Exhaustive Coverage', () => {
     const mockGraph = new PolyfillMLGraph(mockOnnxGraph as object as GraphType);
 
     const tIn = await context.createTensor({
-      dataType: 'float32',
+      dataType: "float32",
       dimensions: [1],
     });
     const tOut = await context.createTensor({
-      dataType: 'float32',
+      dataType: "float32",
       dimensions: [1],
       usage: 1,
     });
 
     // dispatch/compute coverage with mocked session
-    await context.compute(mockGraph, { a: new Float32Array([1]) }, { out: new Float32Array([0]) });
+    await context.compute(
+      mockGraph,
+      { a: new Float32Array([1]) },
+      { out: new Float32Array([0]) },
+    );
     await context.dispatch(mockGraph, { a: tIn }, { out: tOut });
 
     // Invalid inputs
     await expect(
       context.compute(mockGraph, { invalid: new Float32Array(1) }, {}),
     ).rejects.toThrow();
-    await expect(context.dispatch(mockGraph, { invalid: tIn }, {})).rejects.toThrow();
+    await expect(
+      context.dispatch(mockGraph, { invalid: tIn }, {}),
+    ).rejects.toThrow();
 
     // graph lifecycle
     mockGraph.destroy();
   });
 
-  it('should cover input validation gaps', () => {
-    expect(() => builder.input('fail', { dataType: 'float32', dimensions: [-1] })).toThrow();
+  it("should cover input validation gaps", () => {
     expect(() =>
-      builder.input('fail', {
-        dataType: 'invalid' as 'float32',
+      builder.input("fail", { dataType: "float32", dimensions: [-1] }),
+    ).toThrow();
+    expect(() =>
+      builder.input("fail", {
+        dataType: "invalid" as "float32",
         dimensions: [1],
       }),
     ).toThrow();
   });
 
-  it('should cover MLTensor gaps', () => {
+  it("should cover MLTensor gaps", () => {
     const tensor = new PolyfillMLTensor({
-      dataType: 'float32',
+      dataType: "float32",
       dimensions: [1],
     });
-    expect(tensor.dataType).toBe('float32');
+    expect(tensor.dataType).toBe("float32");
     expect(tensor.dimensions).toEqual([1]);
     tensor.destroy();
 
     const mockDevice = {
       createBuffer: vi.fn().mockReturnValue({ destroy: vi.fn() }),
     };
-    const gpuTensor = new PolyfillMLTensor({ dataType: 'int32', dimensions: [4] }, mockDevice);
+    const gpuTensor = new PolyfillMLTensor(
+      { dataType: "int32", dimensions: [4] },
+      mockDevice,
+    );
     gpuTensor.destroy();
   });
 });

@@ -1,19 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
-import { validateBlock } from '../src/mil/validator.js';
+import { describe, expect, it, vi } from "vitest";
+import { validateBlock } from "../src/mil/validator.js";
 
-vi.mock('../src/sort.js', () => ({ topologicalSort: vi.fn() }));
+vi.mock("../src/sort.js", () => ({ topologicalSort: vi.fn() }));
 
-describe('validator', () => {
-  it('should validate', () => {
+describe("validator", () => {
+  it("should validate", () => {
     const block: any = {
-      name: 'test',
-      inputs: [{ name: 'in' }],
-      outputs: [{ name: 'out' }],
+      name: "test",
+      inputs: [{ name: "in" }],
+      outputs: [{ name: "out" }],
       operations: [
         {
-          opType: 'const',
-          inputs: { x: { name: 'in' } },
-          outputs: [{ name: 'out' }],
+          opType: "const",
+          inputs: { x: { name: "in" } },
+          outputs: [{ name: "out" }],
         },
       ],
     };

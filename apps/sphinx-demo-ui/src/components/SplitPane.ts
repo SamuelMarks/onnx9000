@@ -36,7 +36,7 @@ export class SplitPane extends Component<HTMLDivElement> {
     this.options = {
       initialSplitRatio: 0.5,
       minSize: 100,
-      ...options,
+      ...options
     };
 
     // Core element init must happen here now
@@ -248,8 +248,8 @@ export class SplitPane extends Component<HTMLDivElement> {
     // Dispatch a custom event from the element so tests or parent views can react
     this.element.dispatchEvent(
       new CustomEvent('split-resize', {
-        detail: { ratio: this.currentRatio },
-      }),
+        detail: { ratio: this.currentRatio }
+      })
     );
   }
 

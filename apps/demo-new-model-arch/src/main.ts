@@ -1,14 +1,16 @@
 /* v8 ignore start */
-import { Graph } from '@onnx9000/core';
+import { Graph } from "@onnx9000/core";
 
 /**
  * Initializes the new model architecture demo UI.
  */
 export function initNewModelArchDemo(): void {
-  const parseBtn = document.getElementById('parseBtn') as HTMLButtonElement;
-  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
-  const outputDiv = document.getElementById('output') as HTMLDivElement;
-  const _archInput = document.getElementById('archInput') as HTMLTextAreaElement;
+  const parseBtn = document.getElementById("parseBtn") as HTMLButtonElement;
+  const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
+  const outputDiv = document.getElementById("output") as HTMLDivElement;
+  const _archInput = document.getElementById(
+    "archInput",
+  ) as HTMLTextAreaElement;
 
   if (!parseBtn || !resetBtn || !outputDiv) return;
 
@@ -16,38 +18,38 @@ export function initNewModelArchDemo(): void {
     outputDiv.textContent += `${msg}\n`;
   };
 
-  parseBtn.addEventListener('click', () => {
+  parseBtn.addEventListener("click", () => {
     parseBtn.disabled = true;
-    outputDiv.textContent = '';
+    outputDiv.textContent = "";
 
-    log('Analyzing custom model architecture definition...');
+    log("Analyzing custom model architecture definition...");
 
     setTimeout(() => {
-      log('Building ONNX9000 Core IR representation...');
+      log("Building ONNX9000 Core IR representation...");
 
       try {
-        const g = new Graph('MyCustomVisionTransformer_IR');
+        const g = new Graph("MyCustomVisionTransformer_IR");
 
         g.inputs.push({
-          name: 'input_image',
+          name: "input_image",
           shape: [1, 3, 224, 224],
-          dtype: 'float32',
+          dtype: "float32",
         });
-        g.outputs.push({ name: 'logits', shape: [1, 1000], dtype: 'float32' });
+        g.outputs.push({ name: "logits", shape: [1, 1000], dtype: "float32" });
         g.nodes.push({
-          name: 'custom_vit_encoder',
-          opType: 'CustomViTEncoder',
-          inputs: ['input_image'],
-          outputs: ['logits'],
+          name: "custom_vit_encoder",
+          opType: "CustomViTEncoder",
+          inputs: ["input_image"],
+          outputs: ["logits"],
           attributes: { layers: 12, heads: 8 },
         });
 
         setTimeout(() => {
-          log('Validating topological sort & static shapes...');
+          log("Validating topological sort & static shapes...");
 
           setTimeout(() => {
-            log('Architecture mapped to core IR successfully!');
-            log('\nGenerated IR JSON:');
+            log("Architecture mapped to core IR successfully!");
+            log("\nGenerated IR JSON:");
             log(JSON.stringify(g, null, 2));
             resetBtn.disabled = false;
           }, 600);
@@ -59,15 +61,18 @@ export function initNewModelArchDemo(): void {
     }, 600);
   });
 
-  resetBtn.addEventListener('click', () => {
+  resetBtn.addEventListener("click", () => {
     outputDiv.textContent = 'Ready. Click "Parse & Lower to IR" to start.\n';
     parseBtn.disabled = false;
     resetBtn.disabled = true;
   });
 }
 
-document.addEventListener('DOMContentLoaded', initNewModelArchDemo);
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
+document.addEventListener("DOMContentLoaded", initNewModelArchDemo);
+if (
+  document.readyState === "complete" ||
+  document.readyState === "interactive"
+) {
   initNewModelArchDemo();
 }
 

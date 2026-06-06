@@ -1,10 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { ONNXToPyTorchVisitor } from '../src/codegen/pytorch.js';
+import { describe, expect, it } from "vitest";
+import { ONNXToPyTorchVisitor } from "../src/codegen/pytorch.js";
 
-describe('ONNXToPyTorchVisitor', () => {
-  it('should generate code', () => {
+describe("ONNXToPyTorchVisitor", () => {
+  it("should generate code", () => {
     const v = new ONNXToPyTorchVisitor({
-      name: 'test',
+      name: "test",
       inputs: [],
       outputs: [],
       tensors: {},
@@ -12,6 +12,6 @@ describe('ONNXToPyTorchVisitor', () => {
       nodes: [],
     } as any);
     const code = v.generate();
-    expect(code).toContain('import torch');
+    expect(code).toContain("import torch");
   });
 });

@@ -2,22 +2,25 @@
  * @fileoverview onnx_writer.ts
  * Provides onnx_writer functionality for the core package.
  */
-import type { Graph, ValueInfo } from '../ir/graph.js';
-import type { Attribute, Node } from '../ir/node.js';
-import type { DType, Tensor } from '../ir/tensor.js';
+import type { Graph, ValueInfo } from "../ir/graph.js";
+import type { Attribute, Node } from "../ir/node.js";
+import type { DType, Tensor } from "../ir/tensor.js";
 import {
   BufferWriter,
   WIRE_TYPE_32BIT,
   WIRE_TYPE_LENGTH_DELIMITED,
   WIRE_TYPE_VARINT,
-} from './protobuf_writer.js';
+} from "./protobuf_writer.js";
 
 /**
  * Serializes a Graph IR into an ONNX ModelProto bytes.
  * @param graph The computational graph to serialize
  * @returns Serialized ModelProto as Uint8Array
  */
-export function serializeModelProto(graph: Graph, opset: number = 14): Uint8Array {
+export function serializeModelProto(
+  graph: Graph,
+  opset: number = 14,
+): Uint8Array {
   const writer = new BufferWriter();
 
   // ir_version (1)
@@ -30,13 +33,13 @@ export function serializeModelProto(graph: Graph, opset: number = 14): Uint8Arra
     writer.writeString(graph.producerName);
   } else {
     writer.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
-    writer.writeString('onnx9000');
+    writer.writeString("onnx9000");
   }
 
   // opset_import (8)
   const opsetWriter = new BufferWriter();
   opsetWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
-  opsetWriter.writeString('');
+  opsetWriter.writeString("");
   opsetWriter.writeTag(2, WIRE_TYPE_VARINT);
   opsetWriter.writeVarInt64(opset);
   const opsetBytes = opsetWriter.getResult();
@@ -49,7 +52,7 @@ export function serializeModelProto(graph: Graph, opset: number = 14): Uint8Arra
 
   // name (2)
   graphWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
-  graphWriter.writeString(graph.name || 'model_graph');
+  graphWriter.writeString(graph.name || "model_graph");
 
   // nodes (1)
   for (const node of graph.nodes) {
@@ -153,22 +156,22 @@ function serializeAttributeProto(name: string, attr: Attribute): Uint8Array {
   // Type mapping:
   // FLOAT=1, INT=2, STRING=3, TENSOR=4, GRAPH=5
   // FLOATS=6, INTS=7, STRINGS=8, TENSORS=9, GRAPHS=10
-  if (attr.type === 'FLOAT') {
+  if (attr.type === "FLOAT") {
     writer.writeTag(20, WIRE_TYPE_VARINT);
     writer.writeVarInt(1);
     writer.writeTag(2, WIRE_TYPE_32BIT);
     writer.writeFloat(attr.value as number);
-  } else if (attr.type === 'INT') {
+  } else if (attr.type === "INT") {
     writer.writeTag(20, WIRE_TYPE_VARINT);
     writer.writeVarInt(2);
     writer.writeTag(3, WIRE_TYPE_VARINT);
     writer.writeVarInt64(attr.value as number);
-  } else if (attr.type === 'STRING') {
+  } else if (attr.type === "STRING") {
     writer.writeTag(20, WIRE_TYPE_VARINT);
     writer.writeVarInt(3);
     writer.writeTag(4, WIRE_TYPE_LENGTH_DELIMITED);
     writer.writeString(attr.value as string);
-  } else if (attr.type === 'INTS') {
+  } else if (attr.type === "INTS") {
     writer.writeTag(20, WIRE_TYPE_VARINT);
     writer.writeVarInt(7);
     const arr = attr.value as number[];
@@ -176,7 +179,7 @@ function serializeAttributeProto(name: string, attr: Attribute): Uint8Array {
       writer.writeTag(8, WIRE_TYPE_VARINT);
       writer.writeVarInt64(v);
     }
-  } else if (attr.type === 'FLOATS') {
+  } else if (attr.type === "FLOATS") {
     writer.writeTag(20, WIRE_TYPE_VARINT);
     writer.writeVarInt(6);
     const arr = attr.value as number[];
@@ -196,33 +199,33 @@ function serializeAttributeProto(name: string, attr: Attribute): Uint8Array {
  */
 function mapDTypeToEnum(dtype: DType): number {
   switch (dtype) {
-    case 'float32':
+    case "float32":
       return 1;
-    case 'uint8':
+    case "uint8":
       return 2;
-    case 'int8':
+    case "int8":
       return 3;
-    case 'uint16':
+    case "uint16":
       return 4;
-    case 'int16':
+    case "int16":
       return 5;
-    case 'int32':
+    case "int32":
       return 6;
-    case 'int64':
+    case "int64":
       return 7;
-    case 'string':
+    case "string":
       return 8;
-    case 'bool':
+    case "bool":
       return 9;
-    case 'float16':
+    case "float16":
       return 10;
-    case 'float64':
+    case "float64":
       return 11;
-    case 'uint32':
+    case "uint32":
       return 12;
-    case 'uint64':
+    case "uint64":
       return 13;
-    case 'bfloat16':
+    case "bfloat16":
       return 16;
     default:
       return 1;
@@ -248,7 +251,7 @@ function serializeTensorProto(name: string, tensor: Tensor): Uint8Array {
   // dims (1)
   for (const dim of tensor.shape) {
     writer.writeTag(1, WIRE_TYPE_VARINT);
-    writer.writeVarInt64(typeof dim === 'number' ? dim : -1);
+    writer.writeVarInt64(typeof dim === "number" ? dim : -1);
   }
 
   // raw_data (9)
@@ -293,12 +296,12 @@ function serializeValueInfoProto(vi: ValueInfo): Uint8Array {
   for (const dim of vi.shape) {
     // dim (1)
     const dimWriter = new BufferWriter();
-    if (typeof dim === 'number') {
+    if (typeof dim === "number") {
       dimWriter.writeTag(1, WIRE_TYPE_VARINT);
       dimWriter.writeVarInt64(dim);
     } else {
       dimWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
-      dimWriter.writeString(dim || '?');
+      dimWriter.writeString(dim || "?");
     }
     const dimBytes = dimWriter.getResult();
     shapeWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);

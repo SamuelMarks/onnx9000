@@ -17,7 +17,7 @@ test.describe('keras2onnx Conversion', () => {
   });
 
   test('should verify the bottom pane exists and has a console log when running conversion', async ({
-    page,
+    page
   }) => {
     // Verify bottom pane exists
     const bottomPane = page.locator('.demo-pane-bottom');

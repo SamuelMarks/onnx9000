@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { TritonServer } from '../src/index.js';
+import { describe, expect, it } from "vitest";
+import { TritonServer } from "../src/index.js";
 
-describe('TritonServer', () => {
-  it('should process correctly', () => {
+describe("TritonServer", () => {
+  it("should process correctly", () => {
     const obj = new TritonServer();
-    expect(obj.process('test')).toBe('Triton Server processed test');
+    expect(obj.process("test")).toBe("Triton Server processed test");
   });
 });

@@ -9,18 +9,18 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }]],
   use: {
     trace: 'on-first-retry',
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:5173'
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+      use: { ...devices['Desktop Chrome'] }
+    }
   ],
   webServer: {
     command: 'npx vite --host localhost --port 5173',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+    timeout: 120 * 1000
+  }
 });

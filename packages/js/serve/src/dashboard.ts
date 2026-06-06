@@ -2,11 +2,11 @@
  * @fileoverview dashboard.ts
  * Provides dashboard functionality for the serve package.
  */
-import type { Router } from './router';
+import type { Router } from "./router";
 
 // 145. Provide a built-in interactive HTML dashboard available at `/v2/dashboard`.
 export function addDashboardRoutes(router: Router) {
-  router.get('/v2/dashboard', async () => {
+  router.get("/v2/dashboard", async () => {
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -37,8 +37,8 @@ export function addDashboardRoutes(router: Router) {
     return new Response(html, {
       status: 200,
       headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Content-Security-Policy':
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy":
           "default-src 'self'; script-src 'self' 'unsafe-inline' https://d3js.org; style-src 'self' 'unsafe-inline';",
       },
     });

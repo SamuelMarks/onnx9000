@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/ui/editor';
+import { describe, expect, it } from "vitest";
+import * as Module from "../../src/ui/editor";
 
-describe('editor.ts', () => {
-  it('should instantiate and cover GraphEditor', () => {
+describe("editor.ts", () => {
+  it("should instantiate and cover GraphEditor", () => {
     try {
       const obj = new (Module as any).GraphEditor();
       expect(obj).toBeDefined();

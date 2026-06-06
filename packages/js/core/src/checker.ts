@@ -9,7 +9,10 @@ export interface CheckerNode {
   /** Output names */
   outputs?: string[];
   /** Attribute values */
-  attributes?: Record<string, number | string | number[] | string[] | boolean | object>;
+  attributes?: Record<
+    string,
+    number | string | number[] | string[] | boolean | object
+  >;
 }
 
 /**
@@ -79,7 +82,11 @@ export class ValidationContext {
    * @param allow_unrecognized_ops Whether to allow unrecognized ops
    * @param skip_shape_inference Whether to skip shape inference
    */
-  constructor(strict = true, allow_unrecognized_ops = false, skip_shape_inference = false) {
+  constructor(
+    strict = true,
+    allow_unrecognized_ops = false,
+    skip_shape_inference = false,
+  ) {
     this.strict = strict;
     this.allow_unrecognized_ops = allow_unrecognized_ops;
     this.skip_shape_inference = skip_shape_inference;
@@ -101,7 +108,7 @@ export class SchemaRegistry {
     this.schemas = {};
     for (let i = 1; i <= 21; i++) {
       this.schemas[`ai.onnx_v${i.toString()}`] = {
-        Conv: { pads: 'ints', strides: 'ints' },
+        Conv: { pads: "ints", strides: "ints" },
       };
     }
     for (let i = 1; i <= 4; i++) {
@@ -132,10 +139,11 @@ export class SchemaRegistry {
    * @param domain Schema domain
    * @returns The operator schema
    */
-  get_schema(op_type: string, opset: number, domain = 'ai.onnx') {
+  get_schema(op_type: string, opset: number, domain = "ai.onnx") {
     const key = `${domain}_v${opset.toString()}`;
     if (!this.schemas[key]) throw new Error(`Unsupported opset: ${key}`);
-    if (!this.schemas[key][op_type]) throw new Error(`Unsupported op: ${op_type} in ${key}`);
+    if (!this.schemas[key][op_type])
+      throw new Error(`Unsupported op: ${op_type} in ${key}`);
     return this.schemas[key][op_type];
   }
 }
@@ -147,15 +155,15 @@ export class SchemaRegistry {
  */
 export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
   const validTypes = [
-    'float',
-    'float16',
-    'int32',
-    'int64',
-    'string',
-    'bool',
-    'float8e4m3fn',
-    'float8e5m2',
-    'bfloat16',
+    "float",
+    "float16",
+    "int32",
+    "int64",
+    "string",
+    "bool",
+    "float8e4m3fn",
+    "float8e5m2",
+    "bfloat16",
   ];
   if (!validTypes.includes(tensor.data_type)) {
     ctx.errors.push(`Invalid data_type: ${tensor.data_type}`);
@@ -163,20 +171,20 @@ export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
 
   if (tensor.shape) {
     for (const dim of tensor.shape) {
-      if (typeof dim === 'number' && dim < -1) {
+      if (typeof dim === "number" && dim < -1) {
         ctx.errors.push(`Invalid dim: ${dim.toString()}`);
       }
-      if (typeof dim === 'number' && dim === -1 && tensor.is_initializer) {
-        ctx.errors.push('Initializer cannot have -1 dim');
+      if (typeof dim === "number" && dim === -1 && tensor.is_initializer) {
+        ctx.errors.push("Initializer cannot have -1 dim");
       }
     }
   }
 
-  if (tensor.data_location === 'EXTERNAL') {
+  if (tensor.data_location === "EXTERNAL") {
     if (!tensor.external_data) {
-      ctx.errors.push('External data missing');
-    } else if ((tensor.external_data.location || '').includes('..')) {
-      ctx.errors.push('Directory traversal not allowed in external data');
+      ctx.errors.push("External data missing");
+    } else if ((tensor.external_data.location || "").includes("..")) {
+      ctx.errors.push("Directory traversal not allowed in external data");
     }
   }
 
@@ -186,14 +194,14 @@ export function check_tensor(tensor: CheckerTensor, ctx: ValidationContext) {
     calculated_size += 0;
     if (tensor.shape) {
       for (const d of tensor.shape) {
-        if (typeof d === 'number' && d > 0) calculated_size *= d;
+        if (typeof d === "number" && d > 0) calculated_size *= d;
       }
     }
     if (
       tensor.raw_data.byteLength > 2 * 1024 * 1024 * 1024 &&
-      tensor.data_location !== 'EXTERNAL'
+      tensor.data_location !== "EXTERNAL"
     ) {
-      ctx.errors.push('Tensor exceeds 2GB');
+      ctx.errors.push("Tensor exceeds 2GB");
     }
   }
 }
@@ -211,12 +219,18 @@ export function check_attribute(
   schema_type: string,
   ctx: ValidationContext,
 ) {
-  if (schema_type === 'ints') {
-    if (!Array.isArray(attr_val) || !attr_val.every((x) => typeof x === 'number')) {
+  if (schema_type === "ints") {
+    if (
+      !Array.isArray(attr_val) ||
+      !attr_val.every((x) => typeof x === "number")
+    ) {
       ctx.errors.push(`Expected ints for ${attr_name}`);
     }
-  } else if (schema_type === 'floats') {
-    if (!Array.isArray(attr_val) || !attr_val.every((x) => typeof x === 'number')) {
+  } else if (schema_type === "floats") {
+    if (
+      !Array.isArray(attr_val) ||
+      !attr_val.every((x) => typeof x === "number")
+    ) {
       ctx.errors.push(`Expected floats for ${attr_name}`);
     }
   }
@@ -229,19 +243,25 @@ export function check_attribute(
  */
 export function _check_op_specific(node: CheckerNode, ctx: ValidationContext) {
   const op = node.op_type;
-  if (['Add', 'Sub', 'Mul', 'Div'].includes(op)) {
-    if ((node.inputs?.length || 0) !== 2) ctx.errors.push(`${op} requires 2 inputs`);
-  } else if (op === 'Conv') {
-    if ((node.inputs?.length || 0) < 2) ctx.errors.push('Conv requires at least 2 inputs');
+  if (["Add", "Sub", "Mul", "Div"].includes(op)) {
+    if ((node.inputs?.length || 0) !== 2)
+      ctx.errors.push(`${op} requires 2 inputs`);
+  } else if (op === "Conv") {
+    if ((node.inputs?.length || 0) < 2)
+      ctx.errors.push("Conv requires at least 2 inputs");
     const pads = node.attributes?.pads as number[];
     if (pads.length > 0 && pads.length % 2 !== 0)
-      ctx.errors.push('Conv pads must be 2 * spatial_dims');
-  } else if (['If', 'Loop', 'Scan'].includes(op)) {
-    if (!node.attributes?.then_branch && !node.attributes?.else_branch && !node.attributes?.body) {
+      ctx.errors.push("Conv pads must be 2 * spatial_dims");
+  } else if (["If", "Loop", "Scan"].includes(op)) {
+    if (
+      !node.attributes?.then_branch &&
+      !node.attributes?.else_branch &&
+      !node.attributes?.body
+    ) {
       ctx.errors.push(`${op} requires subgraph attributes`);
     }
-  } else if (op === 'TreeEnsembleClassifier') {
-    const required = ['nodes_treeids', 'nodes_nodeids', 'nodes_featureids'];
+  } else if (op === "TreeEnsembleClassifier") {
+    const required = ["nodes_treeids", "nodes_nodeids", "nodes_featureids"];
     if (!required.every((k) => k in (node.attributes || {}))) {
       ctx.errors.push(`${op} missing attributes`);
     }
@@ -258,16 +278,16 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   const c = ctx || new ValidationContext();
 
   if ((model.ir_version || 0) < 3 || (model.ir_version || 0) > 10) {
-    c.errors.push('Invalid ir_version');
+    c.errors.push("Invalid ir_version");
   }
 
-  if (typeof (model.producer_name || '') !== 'string') {
-    c.errors.push('Invalid producer_name');
+  if (typeof (model.producer_name || "") !== "string") {
+    c.errors.push("Invalid producer_name");
   }
 
   const opset_imports = model.opset_import || [];
   if (opset_imports.length === 0) {
-    c.errors.push('opset_import missing');
+    c.errors.push("opset_import missing");
   }
 
   const seen_domains = new Set<string>();
@@ -280,8 +300,8 @@ export function check_model(model: Model, ctx?: ValidationContext) {
 
   const graph = model.graph || {};
   if (Object.keys(graph).length === 0) {
-    c.errors.push('Graph is missing');
-    throw new Error(c.errors.join(', '));
+    c.errors.push("Graph is missing");
+    throw new Error(c.errors.join(", "));
   }
 
   const seen_names = new Set<string>();
@@ -291,7 +311,8 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   }
 
   for (const i of graph.initializers || []) {
-    if (seen_names.has(i.name)) c.errors.push(`Duplicate initializer ${i.name}`);
+    if (seen_names.has(i.name))
+      c.errors.push(`Duplicate initializer ${i.name}`);
     seen_names.add(i.name);
     check_tensor(i, c);
   }
@@ -311,7 +332,7 @@ export function check_model(model: Model, ctx?: ValidationContext) {
   }
 
   if (c.errors.length > 0) {
-    throw new Error(c.errors.join(', '));
+    throw new Error(c.errors.join(", "));
   }
   return true;
 }

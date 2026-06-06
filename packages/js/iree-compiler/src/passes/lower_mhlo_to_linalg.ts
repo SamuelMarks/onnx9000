@@ -3,9 +3,9 @@
  * Provides lower_mhlo_to_linalg functionality for the iree-compiler package.
  */
 
-import * as linalg from '../dialects/web/linalg.js';
-import type { TensorType } from '../dialects/web/tensor.js';
-import { Block, Operation, Region } from '../ir/core.js';
+import * as linalg from "../dialects/web/linalg.js";
+import type { TensorType } from "../dialects/web/tensor.js";
+import { Block, Operation, Region } from "../ir/core.js";
 
 // Dummy type maps and replacements for the checklist purposes
 // Real lowering would rebuild the graph and replace ops
@@ -15,16 +15,18 @@ export function lowerMHLOToLinalg(region: Region): void {
     const newOps: Operation[] = [];
 
     for (const op of block.operations) {
-      if (op.opcode === 'web.mhlo.add' || op.opcode === 'web.mhlo.subtract') {
+      if (op.opcode === "web.mhlo.add" || op.opcode === "web.mhlo.subtract") {
         const resType = op.results[0]?.type as TensorType;
         const lhs = op.operands[0]!;
         const rhs = op.operands[1]!;
 
-        const indexingMap = linalg.AffineMap.getMinorIdentity(resType.shape.length);
-        const iteratorTypes = resType.shape.map(() => 'parallel');
+        const indexingMap = linalg.AffineMap.getMinorIdentity(
+          resType.shape.length,
+        );
+        const iteratorTypes = resType.shape.map(() => "parallel");
 
         // We need an empty "out" tensor to accumulate into in Linalg on tensors
-        const emptyOut = new Operation('web.tensor.empty', [], [resType], {
+        const emptyOut = new Operation("web.tensor.empty", [], [resType], {
           shape: resType.shape,
         });
         newOps.push(emptyOut);
@@ -38,7 +40,7 @@ export function lowerMHLOToLinalg(region: Region): void {
 
         // Add the specific op logic
         const innerAdd = new Operation(
-          op.opcode.replace('mhlo', 'linalg'),
+          op.opcode.replace("mhlo", "linalg"),
           [a, b],
           [{ id: resType.elementType }],
         );
@@ -57,20 +59,29 @@ export function lowerMHLOToLinalg(region: Region): void {
         // Replace usage logic would go here
         // Re-bind old op results to new genericOp results
         newOps.push(genericOp);
-      } else if (op.opcode === 'web.mhlo.dot') {
+      } else if (op.opcode === "web.mhlo.dot") {
         const resType = op.results[0]?.type as TensorType;
 
-        const emptyOut = new Operation('web.tensor.empty', [], [resType], {
+        const emptyOut = new Operation("web.tensor.empty", [], [resType], {
           shape: resType.shape,
         });
         newOps.push(emptyOut);
 
-        const fillZero = new Operation('web.mhlo.constant', [], [{ id: resType.elementType }], {
-          value: 0.0,
-        });
+        const fillZero = new Operation(
+          "web.mhlo.constant",
+          [],
+          [{ id: resType.elementType }],
+          {
+            value: 0.0,
+          },
+        );
         newOps.push(fillZero);
 
-        const fillOp = linalg.fill(fillZero.results[0]!, emptyOut.results[0]!, resType);
+        const fillOp = linalg.fill(
+          fillZero.results[0]!,
+          emptyOut.results[0]!,
+          resType,
+        );
         newOps.push(fillOp);
 
         const matmulOp = linalg.matmul(

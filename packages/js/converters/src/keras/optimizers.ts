@@ -4,33 +4,33 @@
  */
 // @ts-nocheck
 
-import type { Graph } from '@onnx9000/core';
-import type { OnnxNodeBuilder } from './emitters.js';
+import type { Graph } from "@onnx9000/core";
+import type { OnnxNodeBuilder } from "./emitters.js";
 
 export function optimizeFusedOps(nodes: OnnxNodeBuilder[]): OnnxNodeBuilder[] {
   const optimized: OnnxNodeBuilder[] = [];
   for (const node of nodes) {
-    if (node.opType === '_FusedConv2D') {
+    if (node.opType === "_FusedConv2D") {
       optimized.push({
         ...node,
-        opType: 'Conv',
+        opType: "Conv",
         name: `${node.name}_unfused`,
         outputs: [`${node.name}_unfused`],
       });
       optimized.push({
-        opType: 'Relu',
+        opType: "Relu",
         inputs: [`${node.name}_unfused`],
         outputs: node.outputs,
         name: `${node.name}_relu`,
         attributes: [],
       });
-    } else if (node.opType === '_FusedMatMul') {
+    } else if (node.opType === "_FusedMatMul") {
       optimized.push({
         ...node,
-        opType: 'MatMul',
+        opType: "MatMul",
         name: `${node.name}_unfused`,
       });
-    } else if (node.opType === 'StopGradient') {
+    } else if (node.opType === "StopGradient") {
     } else {
       optimized.push(node);
     }
@@ -46,7 +46,7 @@ export interface WeightRecord {
 
 export function applyQuantization(
   weights: WeightRecord[],
-  targetPrecision: 'fp16' | 'int8',
+  targetPrecision: "fp16" | "int8",
 ): WeightRecord[] {
   return weights.map((w) => ({ ...w, dtype: targetPrecision }));
 }
@@ -69,7 +69,7 @@ export class KerasGraphOptimizer {
     let changed = true;
     while (changed) {
       changed = false;
-      const identities = graph.nodes.filter((n) => n.opType === 'Identity');
+      const identities = graph.nodes.filter((n) => n.opType === "Identity");
       for (const idNode of identities) {
         const inputName = idNode.inputs[0];
         const outputName = idNode.outputs[0];
@@ -96,10 +96,10 @@ export class KerasGraphOptimizer {
   private fuseConvBN(graph: Graph) {
     for (let i = 0; i < graph.nodes.length; i++) {
       const node = graph.nodes[i];
-      if (node.opType === 'Conv' || node.opType === 'QLinearConv') {
+      if (node.opType === "Conv" || node.opType === "QLinearConv") {
         const outName = node.outputs[0];
         const bnNode = graph.nodes.find(
-          (n) => n.opType === 'BatchNormalization' && n.inputs[0] === outName,
+          (n) => n.opType === "BatchNormalization" && n.inputs[0] === outName,
         );
 
         if (bnNode) {
@@ -114,10 +114,10 @@ export class KerasGraphOptimizer {
   private fuseDenseBN(graph: Graph) {
     for (let i = 0; i < graph.nodes.length; i++) {
       const node = graph.nodes[i];
-      if (node.opType === 'Gemm' || node.opType === 'MatMul') {
+      if (node.opType === "Gemm" || node.opType === "MatMul") {
         const outName = node.outputs[0];
         const bnNode = graph.nodes.find(
-          (n) => n.opType === 'BatchNormalization' && n.inputs[0] === outName,
+          (n) => n.opType === "BatchNormalization" && n.inputs[0] === outName,
         );
 
         if (bnNode) {
@@ -132,14 +132,18 @@ export class KerasGraphOptimizer {
   private fuseConvAddRelu(graph: Graph) {
     for (let i = 0; i < graph.nodes.length; i++) {
       const node = graph.nodes[i];
-      if (node.opType === 'Conv') {
+      if (node.opType === "Conv") {
         const outName = node.outputs[0];
         const addNode = graph.nodes.find(
-          (n) => n.opType === 'Add' && (n.inputs[0] === outName || n.inputs[1] === outName),
+          (n) =>
+            n.opType === "Add" &&
+            (n.inputs[0] === outName || n.inputs[1] === outName),
         );
         if (addNode) {
           const addOut = addNode.outputs[0];
-          const reluNode = graph.nodes.find((n) => n.opType === 'Relu' && n.inputs[0] === addOut);
+          const reluNode = graph.nodes.find(
+            (n) => n.opType === "Relu" && n.inputs[0] === addOut,
+          );
 
           if (reluNode) {
             reluNode.name = `${reluNode.name}_fused_conv_add`;
@@ -155,9 +159,11 @@ export class KerasGraphOptimizer {
       changed = false;
       for (let i = 0; i < graph.nodes.length; i++) {
         const node1 = graph.nodes[i];
-        if (node1.opType === 'Reshape') {
+        if (node1.opType === "Reshape") {
           const outName = node1.outputs[0];
-          const node2 = graph.nodes.find((n) => n.opType === 'Reshape' && n.inputs[0] === outName);
+          const node2 = graph.nodes.find(
+            (n) => n.opType === "Reshape" && n.inputs[0] === outName,
+          );
 
           if (node2) {
             node2.inputs[0] = node1.inputs[0];

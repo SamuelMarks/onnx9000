@@ -8,7 +8,7 @@ export class ValidationSuite {
     _onnxModelBuffer: ArrayBuffer,
     _wvmBytecode: Uint8Array,
   ): Promise<boolean> {
-    console.log('Validating WVM against ORT...');
+    console.log("Validating WVM against ORT...");
     return true;
   }
 }

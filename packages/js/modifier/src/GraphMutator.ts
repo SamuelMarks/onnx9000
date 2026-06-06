@@ -12,9 +12,9 @@ import {
   type Shape,
   Tensor,
   ValueInfo,
-} from '@onnx9000/core';
+} from "@onnx9000/core";
 
-import { GraphValidator } from './GraphValidator.js';
+import { GraphValidator } from "./GraphValidator.js";
 export interface GraphMutation {
   undo: () => void;
   redo: () => void;
@@ -44,7 +44,9 @@ export class GraphMutator {
       const res = validator.verify();
       if (!res.isValid) {
         mutation.undo(); // Rollback immediately
-        throw new Error(`Strict Mode prevented this action: ${JSON.stringify(res)}`);
+        throw new Error(
+          `Strict Mode prevented this action: ${JSON.stringify(res)}`,
+        );
       }
     }
 
@@ -71,7 +73,7 @@ export class GraphMutator {
   // 69. Implement Extract Subgraph
   extractSubgraph(nodeIds: string[]): Graph {
     const newGraph = new Graph(`${this.graph.name}_subgraph`);
-    newGraph.docString = 'Extracted Subgraph';
+    newGraph.docString = "Extracted Subgraph";
     newGraph.opsetImports = { ...this.graph.opsetImports };
     newGraph.producerName = this.graph.producerName;
     newGraph.producerVersion = this.graph.producerVersion;
@@ -90,7 +92,9 @@ export class GraphMutator {
         for (const input of node.inputs) {
           if (!input) continue;
           // If this input is NOT produced by another node in the subgraph, we need it as an input to the subgraph
-          const producer = this.graph.nodes.find((n) => n.outputs.includes(input));
+          const producer = this.graph.nodes.find((n) =>
+            n.outputs.includes(input),
+          );
           if (!producer || !selectedSet.has(producer.id)) {
             neededInputs.add(input);
           }
@@ -101,21 +105,29 @@ export class GraphMutator {
           providedOutputs.add(output);
 
           // Is it an output of the whole graph?
-          const isGraphOutput = this.graph.outputs.some((o) => o.name === output);
+          const isGraphOutput = this.graph.outputs.some(
+            (o) => o.name === output,
+          );
           if (isGraphOutput) {
             newGraph.outputs.push(
-              JSON.parse(JSON.stringify(this.graph.outputs.find((o) => o.name === output)!)),
+              JSON.parse(
+                JSON.stringify(
+                  this.graph.outputs.find((o) => o.name === output)!,
+                ),
+              ),
             );
             continue;
           }
 
           // Is it consumed by a node outside the subgraph?
-          const consumers = this.graph.nodes.filter((n) => n.inputs.includes(output));
+          const consumers = this.graph.nodes.filter((n) =>
+            n.inputs.includes(output),
+          );
           if (consumers.some((c) => !selectedSet.has(c.id))) {
             const vi = this.graph.inputs.find((i) => i.name === output) || {
               name: output,
-              shape: ['?'],
-              dtype: 'tensor',
+              shape: ["?"],
+              dtype: "tensor",
             };
             newGraph.outputs.push(JSON.parse(JSON.stringify(vi)));
           }
@@ -135,16 +147,20 @@ export class GraphMutator {
       } else {
         const vi = this.graph.inputs.find((i) => i.name === input) || {
           name: input,
-          shape: ['?'],
-          dtype: 'tensor',
+          shape: ["?"],
+          dtype: "tensor",
         };
         newGraph.inputs.push(JSON.parse(JSON.stringify(vi)));
       }
     }
 
     // Deduplicate inputs/outputs just in case
-    newGraph.inputs = Array.from(new Map(newGraph.inputs.map((i) => [i.name, i])).values());
-    newGraph.outputs = Array.from(new Map(newGraph.outputs.map((o) => [o.name, o])).values());
+    newGraph.inputs = Array.from(
+      new Map(newGraph.inputs.map((i) => [i.name, i])).values(),
+    );
+    newGraph.outputs = Array.from(
+      new Map(newGraph.outputs.map((o) => [o.name, o])).values(),
+    );
 
     return newGraph;
   }
@@ -155,7 +171,7 @@ export class GraphMutator {
     inputs: string[],
     outputs: string[],
     attributes: Record<string, Attribute> = {},
-    name: string = '',
+    name: string = "",
   ): Node {
     const node = new Node(opType, inputs, outputs, attributes, name);
     this.execute({
@@ -174,17 +190,20 @@ export class GraphMutator {
   // 5. Implement automatic edge healing
   removeNode(identifier: string | number, healEdges: boolean = false) {
     let index = -1;
-    if (typeof identifier === 'number') {
+    if (typeof identifier === "number") {
       index = identifier;
     } else {
-      index = this.graph.nodes.findIndex((n) => n.id === identifier || n.name === identifier);
+      index = this.graph.nodes.findIndex(
+        (n) => n.id === identifier || n.name === identifier,
+      );
     }
 
     if (index === -1) return;
     const node = this.graph.nodes[index]!;
 
     // Healing logic: if it has exactly 1 input and 1 output, connect input to all downstream nodes consuming the output
-    const healedEdges: { consumer: Node; index: number; oldInput: string }[] = [];
+    const healedEdges: { consumer: Node; index: number; oldInput: string }[] =
+      [];
     if (healEdges && node.inputs.length === 1 && node.outputs.length === 1) {
       const _input = node.inputs[0]!;
       const output = node.outputs[0]!;
@@ -252,7 +271,9 @@ export class GraphMutator {
 
   // 8. Support changeNodeOpType
   changeNodeOpType(nodeName: string, newOpType: string) {
-    const node = this.graph.nodes.find((n) => n.name === nodeName || n.id === nodeName);
+    const node = this.graph.nodes.find(
+      (n) => n.name === nodeName || n.id === nodeName,
+    );
     if (!node) return;
     const oldOpType = node.opType;
 
@@ -300,16 +321,24 @@ export class GraphMutator {
     this.execute({
       undo: () => {
         for (const { node, inputIndices, outputIndices } of affectedNodes) {
-          inputIndices.forEach((idx) => (node.inputs[idx] = oldName));
-          outputIndices.forEach((idx) => (node.outputs[idx] = oldName));
+          inputIndices.forEach((idx) => {
+            node.inputs[idx] = oldName;
+          });
+          outputIndices.forEach((idx) => {
+            node.outputs[idx] = oldName;
+          });
         }
         if (graphInpIdx !== -1) this.graph.inputs[graphInpIdx]!.name = oldName;
         if (graphOutIdx !== -1) this.graph.outputs[graphOutIdx]!.name = oldName;
       },
       redo: () => {
         for (const { node, inputIndices, outputIndices } of affectedNodes) {
-          inputIndices.forEach((idx) => (node.inputs[idx] = newName));
-          outputIndices.forEach((idx) => (node.outputs[idx] = newName));
+          inputIndices.forEach((idx) => {
+            node.inputs[idx] = newName;
+          });
+          outputIndices.forEach((idx) => {
+            node.outputs[idx] = newName;
+          });
         }
         if (graphInpIdx !== -1) this.graph.inputs[graphInpIdx]!.name = newName;
         if (graphOutIdx !== -1) this.graph.outputs[graphOutIdx]!.name = newName;
@@ -364,8 +393,8 @@ export class GraphMutator {
   // 14. Support addOutput
   addOutput(name: string, type?: DType, shape?: Shape) {
     // 216. Ensure `addOutput` automatically infers the correct shape from the requested edge.
-    let inferredType = type || 'float32';
-    let inferredShape = shape || ['?'];
+    let inferredType = type || "float32";
+    let inferredShape = shape || ["?"];
 
     if (!type || !shape) {
       const vi = this.graph.valueInfo.find((v) => v.name === name);
@@ -409,12 +438,19 @@ export class GraphMutator {
   }
 
   // 16. Support addInitializer
-  addInitializer(name: string, type: DType, shape: Shape, dataBuffer: ArrayBufferView) {
+  addInitializer(
+    name: string,
+    type: DType,
+    shape: Shape,
+    dataBuffer: ArrayBufferView,
+  ) {
     const tensor = new Tensor(name, shape, type, true, false, dataBuffer);
     this.execute({
       undo: () => {
         delete this.graph.tensors[name];
-        this.graph.initializers = this.graph.initializers.filter((i) => i !== name);
+        this.graph.initializers = this.graph.initializers.filter(
+          (i) => i !== name,
+        );
       },
       redo: () => {
         this.graph.tensors[name] = tensor;
@@ -451,25 +487,29 @@ export class GraphMutator {
     // 217. Test updateInitializer strictly enforces array buffer length matches type specifications
     const elements = tensor.shape.reduce(
       (a: ReturnType<typeof JSON.parse>, b: ReturnType<typeof JSON.parse>) =>
-        (a as number) * (typeof b === 'number' ? b : 1),
+        (a as number) * (typeof b === "number" ? b : 1),
       1,
     ) as number;
     const expectedBytes =
       elements *
-      (tensor.dtype === 'float32'
+      (tensor.dtype === "float32"
         ? 4
-        : tensor.dtype === 'float16'
+        : tensor.dtype === "float16"
           ? 2
-          : tensor.dtype === 'int8'
+          : tensor.dtype === "int8"
             ? 1
-            : tensor.dtype === 'int32'
+            : tensor.dtype === "int32"
               ? 4
-              : tensor.dtype === 'int64'
+              : tensor.dtype === "int64"
                 ? 8
                 : 1);
 
     // We only strictly enforce if it's not a dynamic shape and expectedBytes > 0
-    if (elements > 0 && newDataBuffer.byteLength !== expectedBytes && expectedBytes > 0) {
+    if (
+      elements > 0 &&
+      newDataBuffer.byteLength !== expectedBytes &&
+      expectedBytes > 0
+    ) {
       throw new Error(
         `ArrayBuffer length ${newDataBuffer.byteLength} does not match expected length ${expectedBytes} for shape ${tensor.shape} and dtype ${tensor.dtype}`,
       );
@@ -492,13 +532,22 @@ export class GraphMutator {
     if (index === -1) return;
     const vi = this.graph.inputs[index]!;
 
-    const tensor = new Tensor(name, vi.shape, vi.dtype, true, false, dataBuffer);
+    const tensor = new Tensor(
+      name,
+      vi.shape,
+      vi.dtype,
+      true,
+      false,
+      dataBuffer,
+    );
 
     this.execute({
       undo: () => {
         this.graph.inputs.splice(index, 0, vi);
         delete this.graph.tensors[name];
-        this.graph.initializers = this.graph.initializers.filter((i) => i !== name);
+        this.graph.initializers = this.graph.initializers.filter(
+          (i) => i !== name,
+        );
       },
       redo: () => {
         this.graph.inputs.splice(index, 1);
@@ -537,7 +586,9 @@ export class GraphMutator {
     attrValue: AttributeValue,
     attrType: AttributeType,
   ) {
-    const node = this.graph.nodes.find((n) => n.name === nodeName || n.id === nodeName);
+    const node = this.graph.nodes.find(
+      (n) => n.name === nodeName || n.id === nodeName,
+    );
     if (!node) return;
 
     const oldAttr = node.attributes[attrName];
@@ -556,7 +607,9 @@ export class GraphMutator {
 
   // 22. Support removeNodeAttribute
   removeNodeAttribute(nodeName: string, attrName: string) {
-    const node = this.graph.nodes.find((n) => n.name === nodeName || n.id === nodeName);
+    const node = this.graph.nodes.find(
+      (n) => n.name === nodeName || n.id === nodeName,
+    );
     if (!node) return;
     const oldAttr = node.attributes[attrName];
     if (!oldAttr) return;
@@ -644,7 +697,7 @@ export class GraphMutator {
   inferShapesGlobally() {
     // A simplified cascade calling core's inferShapes or doing our own pass
     // Requires importing from core
-    import('@onnx9000/core').then(({ inferShapes }) => {
+    import("@onnx9000/core").then(({ inferShapes }) => {
       inferShapes(this.graph);
     });
   }
@@ -655,27 +708,43 @@ export class GraphMutator {
       this.graph.valueInfo.find((vi) => vi.name === tensorName) ||
       this.graph.inputs.find((vi) => vi.name === tensorName) ||
       this.graph.outputs.find((vi) => vi.name === tensorName);
-    const oldVi = existing ? new ValueInfo(existing.name, existing.shape, existing.dtype) : null;
+    const oldVi = existing
+      ? new ValueInfo(existing.name, existing.shape, existing.dtype)
+      : null;
 
     this.execute({
       undo: () => {
         if (oldVi) {
-          const idx = this.graph.valueInfo.findIndex((vi) => vi.name === tensorName);
+          const idx = this.graph.valueInfo.findIndex(
+            (vi) => vi.name === tensorName,
+          );
           if (idx !== -1) this.graph.valueInfo[idx] = oldVi;
 
-          const inpIdx = this.graph.inputs.findIndex((i) => i.name === tensorName);
+          const inpIdx = this.graph.inputs.findIndex(
+            (i) => i.name === tensorName,
+          );
           if (inpIdx !== -1) this.graph.inputs[inpIdx] = oldVi;
-          const outIdx = this.graph.outputs.findIndex((o) => o.name === tensorName);
+          const outIdx = this.graph.outputs.findIndex(
+            (o) => o.name === tensorName,
+          );
           if (outIdx !== -1) this.graph.outputs[outIdx] = oldVi;
         } else {
-          this.graph.valueInfo = this.graph.valueInfo.filter((vi) => vi.name !== tensorName);
+          this.graph.valueInfo = this.graph.valueInfo.filter(
+            (vi) => vi.name !== tensorName,
+          );
         }
       },
       redo: () => {
         const vi = new ValueInfo(tensorName, newShape, newDType);
-        const idx = this.graph.valueInfo.findIndex((v) => v.name === tensorName);
-        const inpIdx = this.graph.inputs.findIndex((i) => i.name === tensorName);
-        const outIdx = this.graph.outputs.findIndex((o) => o.name === tensorName);
+        const idx = this.graph.valueInfo.findIndex(
+          (v) => v.name === tensorName,
+        );
+        const inpIdx = this.graph.inputs.findIndex(
+          (i) => i.name === tensorName,
+        );
+        const outIdx = this.graph.outputs.findIndex(
+          (o) => o.name === tensorName,
+        );
         if (idx !== -1) {
           this.graph.valueInfo[idx] = vi;
         } else if (inpIdx === -1 && outIdx === -1) {
@@ -732,13 +801,15 @@ export class GraphMutator {
         this.graph.nodes = originalNodes;
       },
       redo: () => {
-        this.graph.nodes = this.graph.nodes.filter((n) => requiredNodes.has(n.id));
+        this.graph.nodes = this.graph.nodes.filter((n) =>
+          requiredNodes.has(n.id),
+        );
       },
     });
   }
 
   // Phase 14: 136. Fix Mixed Precision
-  fixMixedPrecision(targetPrecision: 'FLOAT' | 'FLOAT16' = 'FLOAT') {
+  fixMixedPrecision(targetPrecision: "FLOAT" | "FLOAT16" = "FLOAT") {
     const originalNodes = JSON.stringify(this.graph.nodes);
     this.execute({
       undo: () => {
@@ -746,16 +817,16 @@ export class GraphMutator {
       },
       redo: () => {
         const dTypeMap: Record<string, DType> = {
-          FLOAT: 'float32',
-          FLOAT16: 'float16',
+          FLOAT: "float32",
+          FLOAT16: "float16",
         };
         const _targetDType = dTypeMap[targetPrecision];
         for (const node of this.graph.nodes) {
-          if (node.opType === 'Cast') {
+          if (node.opType === "Cast") {
             const toAttr = node.attributes.to;
             if (toAttr && (toAttr.value === 1 || toAttr.value === 10)) {
               // 1 = float, 10 = float16
-              toAttr.value = targetPrecision === 'FLOAT' ? 1 : 10;
+              toAttr.value = targetPrecision === "FLOAT" ? 1 : 10;
             }
           }
         }
@@ -765,8 +836,10 @@ export class GraphMutator {
 
   // Phase 14: 137. Remove Training Nodes
   removeTrainingNodes() {
-    const trainingOps = new Set(['Dropout', 'Gradient', 'YieldOp']);
-    const nodesToRemove = this.graph.nodes.filter((n) => trainingOps.has(n.opType));
+    const trainingOps = new Set(["Dropout", "Gradient", "YieldOp"]);
+    const nodesToRemove = this.graph.nodes.filter((n) =>
+      trainingOps.has(n.opType),
+    );
     if (nodesToRemove.length === 0) return;
 
     const originalNodes = JSON.stringify(this.graph.nodes);
@@ -784,17 +857,25 @@ export class GraphMutator {
           const maskOutEdge = node.outputs[1];
 
           for (const consumer of this.graph.nodes) {
-            consumer.inputs = consumer.inputs.map((i) => (i === outEdge ? inEdge : i));
+            consumer.inputs = consumer.inputs.map((i) =>
+              i === outEdge ? inEdge : i,
+            );
           }
-          const outIndex = this.graph.outputs.findIndex((o) => o.name === outEdge);
+          const outIndex = this.graph.outputs.findIndex(
+            (o) => o.name === outEdge,
+          );
           if (outIndex >= 0) {
             this.graph.outputs[outIndex]!.name = inEdge;
           }
           if (maskOutEdge) {
-            this.graph.outputs = this.graph.outputs.filter((o) => o.name !== maskOutEdge);
+            this.graph.outputs = this.graph.outputs.filter(
+              (o) => o.name !== maskOutEdge,
+            );
           }
         }
-        this.graph.nodes = this.graph.nodes.filter((n) => !trainingOps.has(n.opType));
+        this.graph.nodes = this.graph.nodes.filter(
+          (n) => !trainingOps.has(n.opType),
+        );
       },
     });
   }
@@ -817,7 +898,7 @@ export class GraphMutator {
         for (const out of this.graph.outputs) usedInputs.add(out.name);
 
         this.graph.nodes = this.graph.nodes.filter((n) => {
-          if (n.opType === 'Constant' && !usedInputs.has(n.outputs[0]!)) {
+          if (n.opType === "Constant" && !usedInputs.has(n.outputs[0]!)) {
             return false;
           }
           return true;
@@ -839,10 +920,16 @@ export class GraphMutator {
       redo: () => {
         const newInitializers: string[] = [];
         this.graph.nodes = this.graph.nodes.filter((node) => {
-          if (node.opType === 'Constant') {
+          if (node.opType === "Constant") {
             const attr = node.attributes.value;
-            if (attr && attr.type === 'TENSOR' && attr.value instanceof Tensor) {
-              const byteLength = attr.value.data ? attr.value.data.byteLength : 0;
+            if (
+              attr &&
+              attr.type === "TENSOR" &&
+              attr.value instanceof Tensor
+            ) {
+              const byteLength = attr.value.data
+                ? attr.value.data.byteLength
+                : 0;
               if (byteLength > thresholdBytes) {
                 const name = node.outputs[0];
                 if (name) {
@@ -895,7 +982,9 @@ export class GraphMutator {
           getSanitizedEdge(init);
         }
 
-        this.graph.initializers = this.graph.initializers.map((i) => edgeMap[i] || i);
+        this.graph.initializers = this.graph.initializers.map(
+          (i) => edgeMap[i] || i,
+        );
 
         for (const node of this.graph.nodes) {
           node.name = `node_${nodeCounter++}`;
@@ -936,18 +1025,18 @@ export class GraphMutator {
         const edgeRedirects = new Map<string, string>();
 
         for (const node of this.graph.nodes) {
-          if (node.opType === 'Constant') {
+          if (node.opType === "Constant") {
             const attr = node.attributes.value;
             if (attr) {
-              let hash = '';
-              if (attr.type === 'TENSOR') {
+              let hash = "";
+              if (attr.type === "TENSOR") {
                 const t = attr.value as ReturnType<typeof JSON.parse>;
-                hash = `TENSOR:${t.dtype}:${t.shape.join(',')}:${t.data ? (t.data.byteLength < 1000 ? Array.from(new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength)).join(',') : 'large') : ''}`;
+                hash = `TENSOR:${t.dtype}:${t.shape.join(",")}:${t.data ? (t.data.byteLength < 1000 ? Array.from(new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength)).join(",") : "large") : ""}`;
               } else {
                 hash = `${attr.type}:${String(attr.value)}`;
               }
 
-              if (hash !== 'TENSOR:large') {
+              if (hash !== "TENSOR:large") {
                 if (constantsMap.has(hash)) {
                   const keeper = constantsMap.get(hash)!;
                   edgeRedirects.set(node.outputs[0]!, keeper.outputs[0]!);
@@ -967,7 +1056,9 @@ export class GraphMutator {
               edgeRedirects.has(inp) ? edgeRedirects.get(inp)! : inp,
             );
           }
-          this.graph.nodes = this.graph.nodes.filter((n) => !toRemove.has(n.id));
+          this.graph.nodes = this.graph.nodes.filter(
+            (n) => !toRemove.has(n.id),
+          );
         }
       },
     });

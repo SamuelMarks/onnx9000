@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { parseModelProto, releaseArrayBuffer } from '../src/parser/onnx.js';
-import { BufferReader } from '../src/parser/protobuf.js';
+import { describe, expect, it } from "vitest";
+import { parseModelProto, releaseArrayBuffer } from "../src/parser/onnx.js";
+import { BufferReader } from "../src/parser/protobuf.js";
 
 // Minimal protobuf writer to generate specific bytes for testing
 class ProtoWriter {
@@ -54,15 +54,15 @@ class ProtoWriter {
   }
 }
 
-describe('ONNX Parser Coverage Gaps', () => {
-  it('handles unknown field in opsetImports (106, 107)', async () => {
+describe("ONNX Parser Coverage Gaps", () => {
+  it("handles unknown field in opsetImports (106, 107)", async () => {
     const w = new ProtoWriter();
 
     const opsetW = new ProtoWriter();
     opsetW.writeTag(1, 2); // domain
-    opsetW.writeString('test_domain');
+    opsetW.writeString("test_domain");
     opsetW.writeTag(3, 2); // unknown field, wireType 2
-    opsetW.writeString('unknown_data');
+    opsetW.writeString("unknown_data");
     opsetW.writeTag(2, 0); // version
     opsetW.writeVarInt(1);
 
@@ -74,22 +74,22 @@ describe('ONNX Parser Coverage Gaps', () => {
     expect(g.opsetImports.test_domain).toBe(1);
   });
 
-  it('handles modelVersion, docString and unknown field (123, 127, 131)', async () => {
+  it("handles modelVersion, docString and unknown field (123, 127, 131)", async () => {
     const w = new ProtoWriter();
     w.writeTag(5, 0); // model_version
     w.writeVarInt(2);
     w.writeTag(6, 2); // doc_string
-    w.writeString('doc');
+    w.writeString("doc");
     w.writeTag(99, 2); // unknown
-    w.writeString('junk');
+    w.writeString("junk");
 
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
     expect(g.modelVersion).toBe(2);
-    expect(g.docString).toBe('doc');
+    expect(g.docString).toBe("doc");
   });
 
-  it('handles corrupted model data (134-138)', async () => {
+  it("handles corrupted model data (134-138)", async () => {
     const w = new ProtoWriter();
     w.writeTag(1, 0);
     // Truncate
@@ -98,7 +98,7 @@ describe('ONNX Parser Coverage Gaps', () => {
     // Should warn, not throw
   });
 
-  it('handles corrupted graph data (178-180)', async () => {
+  it("handles corrupted graph data (178-180)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     gW.writeTag(1, 2); // node but cut it
@@ -108,14 +108,14 @@ describe('ONNX Parser Coverage Gaps', () => {
     await parseModelProto(reader);
   });
 
-  it('handles unknown node fields (224-225)', async () => {
+  it("handles unknown node fields (224-225)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const nW = new ProtoWriter();
     nW.writeTag(4, 2); // op_type
-    nW.writeString('Relu');
+    nW.writeString("Relu");
     nW.writeTag(99, 2); // unknown
-    nW.writeString('junk');
+    nW.writeString("junk");
 
     gW.writeTag(1, 2); // node
     gW.writeBytes(nW.build());
@@ -125,47 +125,47 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
-    expect(g.nodes[0].opType).toBe('Relu');
+    expect(g.nodes[0].opType).toBe("Relu");
   });
 
-  it('handles dim_param and unknown shape fields (275-280, 284, 288, 292, 297)', async () => {
+  it("handles dim_param and unknown shape fields (275-280, 284, 288, 292, 297)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const vW = new ProtoWriter();
     vW.writeTag(1, 2); // name
-    vW.writeString('in1');
+    vW.writeString("in1");
 
     const tTypeW = new ProtoWriter();
     const tShapeW = new ProtoWriter();
 
     const dimW = new ProtoWriter();
     dimW.writeTag(2, 2); // dim_param
-    dimW.writeString('N');
+    dimW.writeString("N");
     dimW.writeTag(99, 2); // unknown dim field
-    dimW.writeString('junk');
+    dimW.writeString("junk");
 
     tShapeW.writeTag(1, 2); // dim
     tShapeW.writeBytes(dimW.build());
     tShapeW.writeTag(99, 2); // unknown shape field
-    tShapeW.writeString('junk');
+    tShapeW.writeString("junk");
 
     tTypeW.writeTag(1, 0); // elem_type
     tTypeW.writeVarInt(1); // float32
     tTypeW.writeTag(2, 2); // shape
     tTypeW.writeBytes(tShapeW.build());
     tTypeW.writeTag(99, 2); // unknown tensor type field
-    tTypeW.writeString('junk');
+    tTypeW.writeString("junk");
 
     const typeW = new ProtoWriter();
     typeW.writeTag(1, 2); // tensor_type
     typeW.writeBytes(tTypeW.build());
     typeW.writeTag(99, 2); // unknown type field
-    typeW.writeString('junk');
+    typeW.writeString("junk");
 
     vW.writeTag(2, 2); // type
     vW.writeBytes(typeW.build());
     vW.writeTag(99, 2); // unknown value info field
-    vW.writeString('junk');
+    vW.writeString("junk");
 
     gW.writeTag(11, 2); // input
     gW.writeBytes(vW.build());
@@ -175,19 +175,19 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
-    expect(g.inputs[0].shape[0]).toBe('N');
+    expect(g.inputs[0].shape[0]).toBe("N");
   });
 
-  it('handles floats attribute (352-366) and ints attribute (371-380)', async () => {
+  it("handles floats attribute (352-366) and ints attribute (371-380)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const nW = new ProtoWriter();
     nW.writeTag(4, 2); // op_type
-    nW.writeString('Relu');
+    nW.writeString("Relu");
 
     const attrW1 = new ProtoWriter(); // floats list (length delimited)
     attrW1.writeTag(1, 2);
-    attrW1.writeString('attr_f_list');
+    attrW1.writeString("attr_f_list");
     attrW1.writeTag(20, 0);
     attrW1.writeVarInt(6); // FLOATS
     const floatsW = new ProtoWriter();
@@ -198,7 +198,7 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     const attrW2 = new ProtoWriter(); // floats (32-bit elements, wire type 5)
     attrW2.writeTag(1, 2);
-    attrW2.writeString('attr_f_32');
+    attrW2.writeString("attr_f_32");
     attrW2.writeTag(20, 0);
     attrW2.writeVarInt(6); // FLOATS
     attrW2.writeTag(7, 5);
@@ -208,7 +208,7 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     const attrW3 = new ProtoWriter(); // ints list (length delimited)
     attrW3.writeTag(1, 2);
-    attrW3.writeString('attr_i_list');
+    attrW3.writeString("attr_i_list");
     attrW3.writeTag(20, 0);
     attrW3.writeVarInt(7); // INTS
     const intsW = new ProtoWriter();
@@ -219,7 +219,7 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     const attrW4 = new ProtoWriter(); // ints (varint elements, wire type 0)
     attrW4.writeTag(1, 2);
-    attrW4.writeString('attr_i_0');
+    attrW4.writeString("attr_i_0");
     attrW4.writeTag(20, 0);
     attrW4.writeVarInt(7); // INTS
     attrW4.writeTag(8, 0);
@@ -244,24 +244,24 @@ describe('ONNX Parser Coverage Gaps', () => {
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
     const attrs = g.nodes[0].attributes;
-    if (!attrs.attr_f_list) throw new Error('missing attr_f_list');
+    if (!attrs.attr_f_list) throw new Error("missing attr_f_list");
     expect(attrs.attr_f_list.value).toEqual([1.5, 2.5]);
     expect(attrs.attr_f_32.value).toEqual([3.5, 4.5]);
     expect(attrs.attr_i_list.value).toEqual([10n, 20n]);
     expect(attrs.attr_i_0.value).toEqual([30n, 40n]);
   });
 
-  it('handles unknown attribute type (407-412)', async () => {
+  it("handles unknown attribute type (407-412)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const nW = new ProtoWriter();
     nW.writeTag(4, 2);
-    nW.writeString('Relu');
+    nW.writeString("Relu");
     const attrW = new ProtoWriter();
     attrW.writeTag(1, 2);
-    attrW.writeString('attr_unk');
+    attrW.writeString("attr_unk");
     attrW.writeTag(99, 2);
-    attrW.writeString('junk'); // unknown field in attr
+    attrW.writeString("junk"); // unknown field in attr
     nW.writeTag(5, 2);
     nW.writeBytes(attrW.build());
     gW.writeTag(1, 2);
@@ -272,13 +272,13 @@ describe('ONNX Parser Coverage Gaps', () => {
     await parseModelProto(reader);
   });
 
-  it('handles tensor types and raw data (435-440, 452-455, 474-475)', async () => {
+  it("handles tensor types and raw data (435-440, 452-455, 474-475)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const tW = new ProtoWriter();
 
     tW.writeTag(8, 2);
-    tW.writeString('t1');
+    tW.writeString("t1");
     tW.writeTag(2, 0);
     tW.writeVarInt(16); // dataType = bfloat16
 
@@ -295,16 +295,16 @@ describe('ONNX Parser Coverage Gaps', () => {
 
     // raw data
     tW.writeTag(9, 2);
-    tW.writeString('raw');
+    tW.writeString("raw");
 
     // external data
     const extW = new ProtoWriter();
     extW.writeTag(1, 2);
-    extW.writeString('location');
+    extW.writeString("location");
     extW.writeTag(2, 2);
-    extW.writeString('data.bin');
+    extW.writeString("data.bin");
     extW.writeTag(99, 2);
-    extW.writeString('junk'); // unknown field
+    extW.writeString("junk"); // unknown field
     tW.writeTag(13, 2);
     tW.writeBytes(extW.build());
 
@@ -319,24 +319,24 @@ describe('ONNX Parser Coverage Gaps', () => {
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
     const t = g.tensors[g.initializers[0]];
-    expect(t.name).toBe('t1');
+    expect(t.name).toBe("t1");
     expect(t.shape).toEqual([2, 3, 4]);
-    expect(t.dtype).toBe('bfloat16');
-    expect(t.externalData?.location).toBe('data.bin');
+    expect(t.dtype).toBe("bfloat16");
+    expect(t.externalData?.location).toBe("data.bin");
   });
 
-  it('covers remaining tensor datatypes', async () => {
+  it("covers remaining tensor datatypes", async () => {
     const types = [
-      { t: 2, s: 'uint8' },
-      { t: 3, s: 'int8' },
-      { t: 4, s: 'uint16' },
-      { t: 5, s: 'int16' },
-      { t: 9, s: 'bool' },
-      { t: 10, s: 'float16' },
-      { t: 11, s: 'float64' },
-      { t: 12, s: 'uint32' },
-      { t: 13, s: 'uint64' },
-      { t: 16, s: 'bfloat16' },
+      { t: 2, s: "uint8" },
+      { t: 3, s: "int8" },
+      { t: 4, s: "uint16" },
+      { t: 5, s: "int16" },
+      { t: 9, s: "bool" },
+      { t: 10, s: "float16" },
+      { t: 11, s: "float64" },
+      { t: 12, s: "uint32" },
+      { t: 13, s: "uint64" },
+      { t: 16, s: "bfloat16" },
     ];
 
     for (const type of types) {
@@ -358,12 +358,12 @@ describe('ONNX Parser Coverage Gaps', () => {
     }
   });
 
-  it('throws error on unsupported tensor type', async () => {
+  it("throws error on unsupported tensor type", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const tW = new ProtoWriter();
     tW.writeTag(8, 2);
-    tW.writeString('bad_t');
+    tW.writeString("bad_t");
     tW.writeTag(2, 0);
     tW.writeVarInt(999);
     gW.writeTag(5, 2);
@@ -375,12 +375,12 @@ describe('ONNX Parser Coverage Gaps', () => {
     await parseModelProto(reader);
   });
 
-  it('covers remaining attribute types', async () => {
+  it("covers remaining attribute types", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const nW = new ProtoWriter();
     nW.writeTag(4, 2);
-    nW.writeString('Test');
+    nW.writeString("Test");
 
     const addAttr = (typeNum: number, name: string) => {
       const aW = new ProtoWriter();
@@ -392,11 +392,11 @@ describe('ONNX Parser Coverage Gaps', () => {
     };
 
     const types = [
-      { t: 9, n: 'TENSORS' },
-      { t: 10, n: 'GRAPHS' },
-      { t: 11, n: 'SPARSE_TENSOR' },
-      { t: 12, n: 'SPARSE_TENSORS' },
-      { t: 99, n: 'UNKNOWN' },
+      { t: 9, n: "TENSORS" },
+      { t: 10, n: "GRAPHS" },
+      { t: 11, n: "SPARSE_TENSOR" },
+      { t: 12, n: "SPARSE_TENSORS" },
+      { t: 99, n: "UNKNOWN" },
     ];
 
     for (const type of types) {
@@ -412,18 +412,18 @@ describe('ONNX Parser Coverage Gaps', () => {
     const reader = new BufferReader(w.build());
     const g = await parseModelProto(reader);
     const attrs = g.nodes[0].attributes;
-    expect(attrs.TENSORS.type).toBe('TENSORS');
-    expect(attrs.GRAPHS.type).toBe('GRAPHS');
-    expect(attrs.SPARSE_TENSOR.type).toBe('SPARSE_TENSOR');
-    expect(attrs.SPARSE_TENSORS.type).toBe('SPARSE_TENSORS');
-    expect(attrs.UNKNOWN.type).toBe('UNKNOWN');
+    expect(attrs.TENSORS.type).toBe("TENSORS");
+    expect(attrs.GRAPHS.type).toBe("GRAPHS");
+    expect(attrs.SPARSE_TENSOR.type).toBe("SPARSE_TENSOR");
+    expect(attrs.SPARSE_TENSORS.type).toBe("SPARSE_TENSORS");
+    expect(attrs.UNKNOWN.type).toBe("UNKNOWN");
   });
-  it('handles empty raw_data (458-459)', async () => {
+  it("handles empty raw_data (458-459)", async () => {
     const w = new ProtoWriter();
     const gW = new ProtoWriter();
     const tW = new ProtoWriter();
     tW.writeTag(8, 2);
-    tW.writeString('empty_t');
+    tW.writeString("empty_t");
     tW.writeTag(2, 0); // data_type
     tW.writeVarInt(1); // float32
     tW.writeTag(9, 2); // raw_data
@@ -437,19 +437,19 @@ describe('ONNX Parser Coverage Gaps', () => {
     expect(g.tensors.empty_t.data).toEqual(new Uint8Array(0));
   });
 
-  it('covers releaseArrayBuffer (509-514)', () => {
+  it("covers releaseArrayBuffer (509-514)", () => {
     const buf = new ArrayBuffer(8);
     releaseArrayBuffer(buf);
     releaseArrayBuffer(null);
   });
 });
 
-it('handles externalDataMap location fallback', async () => {
+it("handles externalDataMap location fallback", async () => {
   const w = new ProtoWriter();
   const gW = new ProtoWriter();
   const tW = new ProtoWriter();
   tW.writeTag(8, 2);
-  tW.writeString('t2');
+  tW.writeString("t2");
   tW.writeTag(2, 0);
   tW.writeVarInt(1);
   tW.writeTag(14, 0);
@@ -460,5 +460,5 @@ it('handles externalDataMap location fallback', async () => {
   w.writeBytes(gW.build());
   const reader = new BufferReader(w.build());
   const g = await parseModelProto(reader);
-  expect(g.tensors[g.initializers[0]].externalData?.location).toBe('');
+  expect(g.tensors[g.initializers[0]].externalData?.location).toBe("");
 });

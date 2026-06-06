@@ -20,7 +20,9 @@ export class GraphSurgeon {
     const tempVisited = new Set<string>();
     const nameToNode = new Map<string, INode>();
 
-    nodes.forEach((n) => nameToNode.set(n.name, n));
+    nodes.forEach((n) => {
+      nameToNode.set(n.name, n);
+    });
 
     const visit = (nodeName: string) => {
       if (tempVisited.has(nodeName)) throw new Error(`Cycle detected in graph at node ${nodeName}`);
@@ -63,11 +65,15 @@ export class GraphSurgeon {
       const requiredInputs = new Set<string>();
 
       // Add all model outputs
-      this.model.outputs.forEach((out) => requiredInputs.add(out.name));
+      this.model.outputs.forEach((out) => {
+        requiredInputs.add(out.name);
+      });
 
       // Add all inputs of remaining nodes
       this.model.nodes.forEach((n) => {
-        n.inputs.forEach((inp) => requiredInputs.add(inp));
+        n.inputs.forEach((inp) => {
+          requiredInputs.add(inp);
+        });
       });
 
       const newNodes: INode[] = [];
@@ -92,7 +98,9 @@ export class GraphSurgeon {
     let foldedCount = 0;
 
     const initializers = new Set<string>();
-    this.model.initializers.forEach((i) => initializers.add(i.name));
+    this.model.initializers.forEach((i) => {
+      initializers.add(i.name);
+    });
 
     const newNodes: INode[] = [];
 
@@ -251,8 +259,12 @@ export class GraphSurgeon {
     const generatedOutputs = new Set<string>();
 
     newNodes.forEach((n) => {
-      n.inputs.forEach((i) => requiredInputs.add(i));
-      n.outputs.forEach((o) => generatedOutputs.add(o));
+      n.inputs.forEach((i) => {
+        requiredInputs.add(i);
+      });
+      n.outputs.forEach((o) => {
+        generatedOutputs.add(o);
+      });
     });
 
     // Filter initializers

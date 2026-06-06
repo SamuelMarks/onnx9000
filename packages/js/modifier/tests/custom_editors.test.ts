@@ -1,19 +1,19 @@
-import { describe, expect, it } from 'vitest';
-import { renderCustomEditor } from '../src/components/editors/custom_editors.js';
+import { describe, expect, it } from "vitest";
+import { renderCustomEditor } from "../src/components/editors/custom_editors.js";
 
-describe('custom_editors', () => {
-  it('should render conv editor', () => {
-    const container = document.createElement('div');
-    const node: any = { opType: 'Conv', attributes: {} };
+describe("custom_editors", () => {
+  it("should render conv editor", () => {
+    const container = document.createElement("div");
+    const node: any = { opType: "Conv", attributes: {} };
     const mutator: any = {};
 
     expect(renderCustomEditor({ container, node, mutator })).toBe(true);
-    expect(container.innerHTML).toContain('Conv Settings');
+    expect(container.innerHTML).toContain("Conv Settings");
   });
 
-  it('should not render unknown', () => {
-    const container = document.createElement('div');
-    const node: any = { opType: 'Unknown' };
+  it("should not render unknown", () => {
+    const container = document.createElement("div");
+    const node: any = { opType: "Unknown" };
     const mutator: any = {};
 
     expect(renderCustomEditor({ container, node, mutator })).toBe(false);

@@ -20,7 +20,7 @@ test.describe('Pipeline Breadcrumbs', () => {
     const breadcrumbs = page.locator('.demo-breadcrumbs-container');
     await expect(breadcrumbs).toBeVisible();
     await expect(breadcrumbs.locator('.demo-breadcrumb-placeholder')).toHaveText(
-      'Pipeline is empty. Select a source and generate a target.',
+      'Pipeline is empty. Select a source and generate a target.'
     );
   });
 
@@ -65,7 +65,7 @@ test.describe('Pipeline Breadcrumbs', () => {
     await btn.click();
 
     const revertId = await page.evaluate(
-      () => (window as ReturnType<typeof JSON.parse>).__REVERT_ID__,
+      () => (window as ReturnType<typeof JSON.parse>).__REVERT_ID__
     );
     expect(revertId).toBe('uuid-123');
   });

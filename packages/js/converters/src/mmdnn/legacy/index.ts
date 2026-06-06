@@ -1,3 +1,3 @@
 // @ts-nocheck
 /** legacy MMDNN submodule. */
-export * from './quirks.js';
+export * from "./quirks.js";

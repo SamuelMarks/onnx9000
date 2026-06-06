@@ -46,7 +46,9 @@ export abstract class BaseComponent {
   abstract mount(): void;
 
   unmount(): void {
-    this.unmountCallbacks.forEach((cb) => cb());
+    this.unmountCallbacks.forEach((cb) => {
+      cb();
+    });
     this.unmountCallbacks = [];
   }
 }

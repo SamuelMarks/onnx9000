@@ -10,7 +10,7 @@ test.describe('End-to-end format conversions', () => {
         status: 200,
         contentType: 'application/wasm',
         body: dummyWasm,
-        headers: { 'Content-Length': dummyWasm.length.toString() },
+        headers: { 'Content-Length': dummyWasm.length.toString() }
       });
     });
 
@@ -43,7 +43,7 @@ test.describe('End-to-end format conversions', () => {
   const testPermutation = async (
     page: ReturnType<typeof JSON.parse>,
     target: string,
-    expectedSnippet: string,
+    expectedSnippet: string
   ) => {
     const targetDropdown = page.locator('.demo-pane-rhs .demo-dropdown').first();
     await targetDropdown.click();

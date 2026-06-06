@@ -33,16 +33,19 @@ export class Onnx2CCompiler {
 
     // Very naive AST parser mock finding array declarations like: float tensor_abc[100];
     const arrayRegex = /(?:float|int|double)\s+\w+\[(\d+)\]/g;
-    let match;
-    while ((match = arrayRegex.exec(cSource)) !== null) {
+    let match = arrayRegex.exec(cSource);
+    while (match !== null) {
       // Assuming 4 bytes per float/int on average for this mock
       bytes += parseInt(match[1], 10) * 4;
+      match = arrayRegex.exec(cSource);
     }
 
     // Find mallocs: malloc(400)
     const mallocRegex = /malloc\s*\(\s*(\d+)\s*\)/g;
-    while ((match = mallocRegex.exec(cSource)) !== null) {
+    match = mallocRegex.exec(cSource);
+    while (match !== null) {
       bytes += parseInt(match[1], 10);
+      match = mallocRegex.exec(cSource);
     }
 
     return bytes;

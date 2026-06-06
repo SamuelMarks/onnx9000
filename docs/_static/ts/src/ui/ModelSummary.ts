@@ -60,14 +60,18 @@ export class ModelSummary extends BaseComponent {
           const dv = new DataView(init.rawData.buffer, init.rawData.byteOffset, 12);
           const nnz = dv.getUint32(0, true);
           let shapeSize = 1;
-          init.dims.forEach((d) => (shapeSize *= d));
+          init.dims.forEach((d) => {
+            shapeSize *= d;
+          });
           if (shapeSize > 0) {
             totalSparsity += shapeSize - nnz;
             paramElements += shapeSize;
           }
         } else {
           let shapeSize = 1;
-          init.dims.forEach((d) => (shapeSize *= d));
+          init.dims.forEach((d) => {
+            shapeSize *= d;
+          });
 
           // Check zeros directly
           if (init.dataType === 1) {

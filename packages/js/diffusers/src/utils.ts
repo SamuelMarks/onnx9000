@@ -14,7 +14,8 @@ export class PyTorchPCG {
 
   nextUint(): number {
     const oldstate = this.state;
-    this.state = (oldstate * 6364136223846793005n + this.inc) & 0xffffffffffffffffn;
+    this.state =
+      (oldstate * 6364136223846793005n + this.inc) & 0xffffffffffffffffn;
     const xorshifted = Number(((oldstate >> 18n) ^ oldstate) >> 27n);
     const rot = Number(oldstate >> 59n);
     return ((xorshifted >>> rot) | (xorshifted << (-rot & 31))) >>> 0;
@@ -89,6 +90,8 @@ export async function fetchHubFile(
 /**
  * Provides native configuration parsing for `model_index.json`.
  */
-export async function parseModelIndex(repoId: string): Promise<ReturnType<typeof JSON.parse>> {
-  return await fetchHubFile(repoId, 'model_index.json');
+export async function parseModelIndex(
+  repoId: string,
+): Promise<ReturnType<typeof JSON.parse>> {
+  return await fetchHubFile(repoId, "model_index.json");
 }

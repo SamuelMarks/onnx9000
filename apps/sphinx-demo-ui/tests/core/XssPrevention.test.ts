@@ -11,12 +11,12 @@ const mockCyInstance = {
   elements: vi.fn(() => ({ remove: vi.fn() })),
   add: vi.fn(),
   layout: vi.fn(() => ({ run: vi.fn() })),
-  fit: vi.fn(),
+  fit: vi.fn()
 };
 
 vi.mock('cytoscape', () => {
   return {
-    default: vi.fn(() => mockCyInstance),
+    default: vi.fn(() => mockCyInstance)
   };
 });
 
@@ -32,7 +32,7 @@ describe('XSS Prevention', () => {
     consoleComp.appendLog({
       level: LogLevel.INFO,
       message: xssPayload,
-      timestamp: new Date(),
+      timestamp: new Date()
     });
 
     const msgSpan = outputDiv.querySelector('.demo-console-msg') as HTMLElement;
@@ -55,13 +55,13 @@ describe('XSS Prevention', () => {
       type: 'operator',
       label: '<img src="x" onerror="window.__XSS_FLAG_2__=true;">',
       attributes: {
-        '<script>alert(1)</script>': 'val',
-      },
+        '<script>alert(1)</script>': 'val'
+      }
     };
 
     const mockEvt = {
       target: { data: () => maliciousData },
-      renderedPosition: { x: 0, y: 0 },
+      renderedPosition: { x: 0, y: 0 }
     };
 
     nodeTapCb(mockEvt);

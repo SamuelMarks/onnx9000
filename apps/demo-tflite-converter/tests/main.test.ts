@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from "vitest";
 
-describe('demo', () => {
+describe("demo", () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <textarea id="prompt"></textarea>
@@ -9,9 +9,9 @@ describe('demo', () => {
     `;
   });
 
-  it('should run flow', async () => {
+  it("should run flow", async () => {
     try {
-      await import('../app.js');
+      await import("../app.js");
     } catch (_e) {}
     expect(true).toBe(true);
   });

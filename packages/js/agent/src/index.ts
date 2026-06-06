@@ -7,6 +7,6 @@ export class Agent {
    * @returns A string representing the result.
    */
   run() {
-    return '[agent] processed';
+    return "[agent] processed";
   }
 }

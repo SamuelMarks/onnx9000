@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
-import { DynamicBatcher } from '../src/batcher.js';
-import { globalLogger, LogLevel } from '../src/logger.js';
-import { MemoryManager } from '../src/memory.js';
+import { describe, expect, it, vi } from "vitest";
+import { DynamicBatcher } from "../src/batcher.js";
+import { globalLogger, LogLevel } from "../src/logger.js";
+import { MemoryManager } from "../src/memory.js";
 
-describe('Batcher & Memory & Logger', () => {
-  it('MemoryManager coverage', async () => {
+describe("Batcher & Memory & Logger", () => {
+  it("MemoryManager coverage", async () => {
     const mm = new MemoryManager({
       maxVramBytes: 1000,
       maxRamBytes: 1000,
@@ -12,28 +12,28 @@ describe('Batcher & Memory & Logger', () => {
       maxConcurrentExecutions: 1,
     });
 
-    expect(await mm.requestLoad('model', 2000)).toBe(false);
+    expect(await mm.requestLoad("model", 2000)).toBe(false);
 
     mm.registerModel({
-      id: 'm1',
+      id: "m1",
       sizeBytes: 500,
       lastUsed: 0,
       buffer: new ArrayBuffer(0),
       unload: vi.fn(),
     });
-    mm.trackUsage('m1');
-    mm.trackUsage('unknown');
+    mm.trackUsage("m1");
+    mm.trackUsage("unknown");
 
-    expect(await mm.requestLoad('m2', 300)).toBe(true);
+    expect(await mm.requestLoad("m2", 300)).toBe(true);
 
     mm.registerModel({
-      id: 'm3',
+      id: "m3",
       sizeBytes: 300,
       lastUsed: 1,
       buffer: new ArrayBuffer(0),
       unload: vi.fn(),
     });
-    expect(await mm.requestLoad('m4', 200)).toBe(true);
+    expect(await mm.requestLoad("m4", 200)).toBe(true);
 
     // We actually need to just reset it and test
     const mm2 = new MemoryManager({
@@ -43,10 +43,10 @@ describe('Batcher & Memory & Logger', () => {
       maxConcurrentExecutions: 1,
     });
     (mm2 as any).currentRamUsage = 900;
-    await expect(mm2.requestLoad('huge', 150)).rejects.toThrow('503');
+    await expect(mm2.requestLoad("huge", 150)).rejects.toThrow("503");
 
     await mm2.beginExecution();
-    await expect(mm2.beginExecution()).rejects.toThrow('Max concurrent');
+    await expect(mm2.beginExecution()).rejects.toThrow("Max concurrent");
     mm2.endExecution();
 
     const mockGc = vi.fn();
@@ -55,8 +55,8 @@ describe('Batcher & Memory & Logger', () => {
     expect(mockGc).toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
-  it('Batcher coverage', async () => {
-    const executeMock = vi.fn().mockResolvedValue(['res1', 'res2']);
+  it("Batcher coverage", async () => {
+    const executeMock = vi.fn().mockResolvedValue(["res1", "res2"]);
     const batcher = new DynamicBatcher(executeMock, {
       maxBatchSize: 2,
       batchTimeoutMs: 10,
@@ -69,7 +69,7 @@ describe('Batcher & Memory & Logger', () => {
     expect(executeMock).toHaveBeenCalled();
 
     // Test sequence padding and attention mask
-    const executeMock2 = vi.fn().mockResolvedValue(['out1', 'out2']);
+    const executeMock2 = vi.fn().mockResolvedValue(["out1", "out2"]);
     const batcher2 = new DynamicBatcher(executeMock2, {
       maxBatchSize: 2,
       batchTimeoutMs: 10,
@@ -81,20 +81,20 @@ describe('Batcher & Memory & Logger', () => {
     await Promise.all([p3, p4]);
 
     // Test executeBatch rejecting
-    const executeMock3 = vi.fn().mockRejectedValue(new Error('batch crash'));
+    const executeMock3 = vi.fn().mockRejectedValue(new Error("batch crash"));
     const batcher3 = new DynamicBatcher(executeMock3, { maxBatchSize: 1 });
-    await expect(batcher3.add({ val: 1 })).rejects.toThrow('batch crash');
+    await expect(batcher3.add({ val: 1 })).rejects.toThrow("batch crash");
 
     // Test queue length 0 flush
     const b = new DynamicBatcher(executeMock);
     (b as any).flush();
   });
-  it('Logger export', async () => {
-    globalLogger.exporterUrl = 'http://test';
-    const fetchMock = vi.fn().mockRejectedValue(new Error('ignore'));
-    vi.stubGlobal('fetch', fetchMock);
+  it("Logger export", async () => {
+    globalLogger.exporterUrl = "http://test";
+    const fetchMock = vi.fn().mockRejectedValue(new Error("ignore"));
+    vi.stubGlobal("fetch", fetchMock);
     globalLogger.level = LogLevel.TRACE;
-    globalLogger.trace('trace');
+    globalLogger.trace("trace");
     expect(fetchMock).toHaveBeenCalled();
     vi.unstubAllGlobals();
   });

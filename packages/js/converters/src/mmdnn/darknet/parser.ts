@@ -10,7 +10,7 @@ export interface DarknetLayer {
 }
 
 export function parseCfg(cfgStr: string): DarknetLayer[] {
-  const lines = cfgStr.split('\n');
+  const lines = cfgStr.split("\n");
   const layers: DarknetLayer[] = [];
   let currentLayer: DarknetLayer | null = null;
 
@@ -19,21 +19,21 @@ export function parseCfg(cfgStr: string): DarknetLayer[] {
     if (rawLine === undefined) continue;
 
     // Remove comments
-    const line = rawLine.split('#')[0]?.trim();
+    const line = rawLine.split("#")[0]?.trim();
     if (!line) continue;
 
-    if (line.startsWith('[') && line.endsWith(']')) {
+    if (line.startsWith("[") && line.endsWith("]")) {
       const type = line.substring(1, line.length - 1).trim();
       currentLayer = { type };
       layers.push(currentLayer);
     } else if (currentLayer) {
-      const parts = line.split('=');
+      const parts = line.split("=");
       if (parts.length >= 2) {
         const key = parts[0]?.trim();
-        const valueStr = parts.slice(1).join('=').trim();
+        const valueStr = parts.slice(1).join("=").trim();
 
-        if (valueStr.includes(',')) {
-          const listVals = valueStr.split(',').map((v) => {
+        if (valueStr.includes(",")) {
+          const listVals = valueStr.split(",").map((v) => {
             const vTrim = v.trim();
             const n = Number(vTrim);
             return Number.isNaN(n) ? vTrim : n;
@@ -41,7 +41,7 @@ export function parseCfg(cfgStr: string): DarknetLayer[] {
           currentLayer[key] = listVals;
         } else {
           const n = Number(valueStr);
-          if (!Number.isNaN(n) && valueStr !== '') {
+          if (!Number.isNaN(n) && valueStr !== "") {
             currentLayer[key] = n;
           } else {
             currentLayer[key] = valueStr;

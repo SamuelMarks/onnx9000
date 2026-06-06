@@ -2,37 +2,37 @@
  * Initializes the LLaMA web demo UI.
  */
 export function initLlamaWebDemo(): void {
-  const form = document.getElementById('chat-form') as HTMLFormElement;
-  const input = document.getElementById('prompt-input') as HTMLInputElement;
-  const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
-  const messagesDiv = document.getElementById('messages') as HTMLElement;
+  const form = document.getElementById("chat-form") as HTMLFormElement;
+  const input = document.getElementById("prompt-input") as HTMLInputElement;
+  const sendBtn = document.getElementById("send-btn") as HTMLButtonElement;
+  const messagesDiv = document.getElementById("messages") as HTMLElement;
 
   if (!form || !input || !sendBtn || !messagesDiv) return;
 
   let isGenerating = false;
 
-  function addMessage(text: string, sender: 'user' | 'bot') {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender);
+  function addMessage(text: string, sender: "user" | "bot") {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", sender);
     msgDiv.textContent = text;
     messagesDiv.appendChild(msgDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
     return msgDiv;
   }
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (isGenerating || !input.value.trim()) return;
 
     const prompt = input.value.trim();
-    input.value = '';
-    addMessage(prompt, 'user');
+    input.value = "";
+    addMessage(prompt, "user");
 
     isGenerating = true;
     input.disabled = true;
     sendBtn.disabled = true;
 
-    const botMsgDiv = addMessage('...', 'bot');
+    const botMsgDiv = addMessage("...", "bot");
 
     try {
       await runLlamaModel(prompt, botMsgDiv);
@@ -48,12 +48,12 @@ export function initLlamaWebDemo(): void {
   });
 
   async function runLlamaModel(_prompt: string, element: HTMLElement) {
-    element.textContent = '';
+    element.textContent = "";
     const responses = [
-      'I am an AI assistant running locally via ONNX9000.',
-      ' The underlying engine uses WebGPU for high-throughput matrix multiplication.',
-      ' Because I run in your browser, no data is sent to a server.',
-      ' How else can I help you today?',
+      "I am an AI assistant running locally via ONNX9000.",
+      " The underlying engine uses WebGPU for high-throughput matrix multiplication.",
+      " Because I run in your browser, no data is sent to a server.",
+      " How else can I help you today?",
     ];
 
     for (let i = 0; i < responses.length; i++) {

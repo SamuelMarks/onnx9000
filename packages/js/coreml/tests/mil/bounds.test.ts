@@ -1,8 +1,8 @@
-import { describe, it } from 'vitest';
-import * as Module from '../../src/mil/bounds';
+import { describe, it } from "vitest";
+import * as Module from "../../src/mil/bounds";
 
-describe('bounds.ts', () => {
-  it('should call and cover establishMemoryBounds', async () => {
+describe("bounds.ts", () => {
+  it("should call and cover establishMemoryBounds", async () => {
     try {
       const res = (Module as any).establishMemoryBounds();
       if (res instanceof Promise) await res.catch(() => {});

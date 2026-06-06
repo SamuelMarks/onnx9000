@@ -3,7 +3,7 @@
  * Provides generator functionality for the converters package.
  */
 // @ts-nocheck
-import type { Graph, Node } from '@onnx9000/core';
+import type { Graph, Node } from "@onnx9000/core";
 
 export class PyTorchGenerator {
   graph: Graph;
@@ -13,7 +13,7 @@ export class PyTorchGenerator {
   }
 
   private sanitize(name: string): string {
-    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
+    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, "_");
     if (/^[0-9]/.test(sanitized)) {
       sanitized = `v_${sanitized}`;
     }
@@ -37,7 +37,7 @@ export class PyTorchGenerator {
 
   private formatTuple(arr: number[]): string {
     if (arr.length === 1) return `(${arr[0]},)`;
-    return `(${arr.join(', ')})`;
+    return `(${arr.join(", ")})`;
   }
 
   generate(): string {
@@ -57,15 +57,15 @@ export class PyTorchGenerator {
 
     const isSequentialNode = (node: Node) => {
       return [
-        'Conv',
-        'Gemm',
-        'MatMul',
-        'MaxPool',
-        'AveragePool',
-        'BatchNormalization',
-        'Relu',
-        'Sigmoid',
-        'Tanh',
+        "Conv",
+        "Gemm",
+        "MatMul",
+        "MaxPool",
+        "AveragePool",
+        "BatchNormalization",
+        "Relu",
+        "Sigmoid",
+        "Tanh",
       ].includes(node.opType);
     };
 
@@ -80,7 +80,8 @@ export class PyTorchGenerator {
       const canBeSeq = isSequentialNode(node);
 
       if (currentSeq.length === 0) {
-        if (canBeSeq && dynIn.length === 1 && dynIn[0] !== undefined) currentSeq.push(node);
+        if (canBeSeq && dynIn.length === 1 && dynIn[0] !== undefined)
+          currentSeq.push(node);
       } else {
         const prevNode = currentSeq[currentSeq.length - 1]!;
         const prevOut = prevNode.outputs[0];
@@ -95,7 +96,10 @@ export class PyTorchGenerator {
           currentSeq.push(node);
         } else {
           if (currentSeq.length > 1) sequences.push([...currentSeq]);
-          currentSeq = canBeSeq && dynIn.length === 1 && dynIn[0] !== undefined ? [node] : [];
+          currentSeq =
+            canBeSeq && dynIn.length === 1 && dynIn[0] !== undefined
+              ? [node]
+              : [];
         }
       }
     }
@@ -123,22 +127,24 @@ export class PyTorchGenerator {
 
     const getNodeDecl = (node: Node): string | null => {
       const op = node.opType;
-      if (op === 'Conv') {
+      if (op === "Conv") {
         const wShape = this.getShape(node.inputs[1]!) || [1, 1, 3, 3];
         const D = wShape.length - 2;
         const groups = (node.attributes.group?.value as number) || 1;
         const out_channels = wShape[0] || 1;
         const in_channels = (wShape[1] || 1) * groups;
         const kernel_size = wShape.slice(2);
-        const stride = (node.attributes.strides?.value as number[]) || Array(D).fill(1);
-        const pads = (node.attributes.pads?.value as number[]) || Array(D * 2).fill(0);
+        const stride =
+          (node.attributes.strides?.value as number[]) || Array(D).fill(1);
+        const pads =
+          (node.attributes.pads?.value as number[]) || Array(D * 2).fill(0);
         const padding = pads.slice(0, D);
-        const bias = node.inputs.length > 2 ? 'True' : 'False';
+        const bias = node.inputs.length > 2 ? "True" : "False";
         return `nn.Conv${D}d(in_channels=${in_channels}, out_channels=${out_channels}, kernel_size=${this.formatTuple(kernel_size)}, stride=${this.formatTuple(stride)}, padding=${this.formatTuple(padding)}, groups=${groups}, bias=${bias})`;
-      } else if (op === 'Gemm' || op === 'MatMul') {
+      } else if (op === "Gemm" || op === "MatMul") {
         let in_features = 1;
         let out_features = 1;
-        const bias = node.inputs.length > 2 ? 'True' : 'False';
+        const bias = node.inputs.length > 2 ? "True" : "False";
         if (node.inputs.length > 1) {
           const wShape = this.getShape(node.inputs[1]!);
           if (wShape && wShape.length === 2) {
@@ -148,26 +154,30 @@ export class PyTorchGenerator {
           }
         }
         return `nn.Linear(in_features=${in_features}, out_features=${out_features}, bias=${bias})`;
-      } else if (op === 'MaxPool' || op === 'AveragePool') {
-        const kShape = (node.attributes.kernel_shape?.value as number[]) || [2, 2];
+      } else if (op === "MaxPool" || op === "AveragePool") {
+        const kShape = (node.attributes.kernel_shape?.value as number[]) || [
+          2, 2,
+        ];
         const D = kShape.length;
-        const stride = (node.attributes.strides?.value as number[]) || Array(D).fill(1);
-        const pads = (node.attributes.pads?.value as number[]) || Array(D * 2).fill(0);
+        const stride =
+          (node.attributes.strides?.value as number[]) || Array(D).fill(1);
+        const pads =
+          (node.attributes.pads?.value as number[]) || Array(D * 2).fill(0);
         const padding = pads.slice(0, D);
-        const type = op === 'MaxPool' ? 'MaxPool' : 'AvgPool';
+        const type = op === "MaxPool" ? "MaxPool" : "AvgPool";
         return `nn.${type}${D}d(kernel_size=${this.formatTuple(kShape)}, stride=${this.formatTuple(stride)}, padding=${this.formatTuple(padding)})`;
-      } else if (op === 'BatchNormalization') {
+      } else if (op === "BatchNormalization") {
         const wShape = this.getShape(node.inputs[1]!) || [1];
         const num_features = wShape[0] || 1;
         const eps = (node.attributes.epsilon?.value as number) || 1e-5;
         const momentumOnnx = node.attributes.momentum?.value as number;
         const momentum = momentumOnnx !== undefined ? 1.0 - momentumOnnx : 0.1;
         return `nn.BatchNorm2d(num_features=${num_features}, eps=${eps}, momentum=${momentum})`;
-      } else if (op === 'Relu') {
+      } else if (op === "Relu") {
         return `nn.ReLU()`;
-      } else if (op === 'Sigmoid') {
+      } else if (op === "Sigmoid") {
         return `nn.Sigmoid()`;
-      } else if (op === 'Tanh') {
+      } else if (op === "Tanh") {
         return `nn.Tanh()`;
       }
       return null;
@@ -193,8 +203,12 @@ export class PyTorchGenerator {
         const seq = sequences.find((s) => s[s.length - 1] === node);
         if (seq) {
           const seqIndex = sequences.indexOf(seq) + 1;
-          const inVar = seq[0]?.inputs[0] ? this.sanitize(seq[0]?.inputs[0]!) : 'in';
-          const outVar = node.outputs[0] ? this.sanitize(node.outputs[0]!) : 'out';
+          const inVar = seq[0]?.inputs[0]
+            ? this.sanitize(seq[0]?.inputs[0] ?? "")
+            : "in";
+          const outVar = node.outputs[0]
+            ? this.sanitize(node.outputs[0] ?? "")
+            : "out";
           forwardLines.push(`${outVar} = self.seq_${seqIndex}(${inVar})`);
         }
         continue;
@@ -202,9 +216,13 @@ export class PyTorchGenerator {
 
       const _dynIn = getDynamicInputs(node).map((i) => this.sanitize(i));
       const inVars = node.inputs.map((i) =>
-        i ? (this.isInitializer(i) ? `self.${this.sanitize(i)}` : this.sanitize(i)) : 'None',
+        i
+          ? this.isInitializer(i)
+            ? `self.${this.sanitize(i)}`
+            : this.sanitize(i)
+          : "None",
       );
-      const outVar = node.outputs[0] ? this.sanitize(node.outputs[0]!) : 'out';
+      const outVar = node.outputs[0] ? this.sanitize(node.outputs[0]!) : "out";
 
       for (const i of node.inputs) {
         registerBufferIfNeeded(i);
@@ -213,27 +231,34 @@ export class PyTorchGenerator {
       const decl = getNodeDecl(node);
       if (
         decl &&
-        ['Conv', 'Gemm', 'MatMul', 'MaxPool', 'AveragePool', 'BatchNormalization'].includes(
-          node.opType,
-        )
+        [
+          "Conv",
+          "Gemm",
+          "MatMul",
+          "MaxPool",
+          "AveragePool",
+          "BatchNormalization",
+        ].includes(node.opType)
       ) {
         const nodeName = `${node.opType.toLowerCase()}_${nodeCounter++}`;
         initLines.push(`self.${nodeName} = ${decl}`);
         forwardLines.push(`${outVar} = self.${nodeName}(${inVars[0]})`);
-      } else if (node.opType === 'Relu') {
+      } else if (node.opType === "Relu") {
         forwardLines.push(`${outVar} = F.relu(${inVars[0]})`);
-      } else if (node.opType === 'Sigmoid') {
+      } else if (node.opType === "Sigmoid") {
         forwardLines.push(`${outVar} = torch.sigmoid(${inVars[0]})`);
-      } else if (node.opType === 'Tanh') {
+      } else if (node.opType === "Tanh") {
         forwardLines.push(`${outVar} = torch.tanh(${inVars[0]})`);
-      } else if (node.opType === 'Add') {
+      } else if (node.opType === "Add") {
         forwardLines.push(`${outVar} = ${inVars[0]} + ${inVars[1]}`);
-      } else if (node.opType === 'Mul') {
+      } else if (node.opType === "Mul") {
         forwardLines.push(`${outVar} = ${inVars[0]} * ${inVars[1]}`);
-      } else if (node.opType === 'Concat') {
+      } else if (node.opType === "Concat") {
         const axis = (node.attributes.axis?.value as number) || 0;
-        forwardLines.push(`${outVar} = torch.cat((${inVars.join(', ')}), dim=${axis})`);
-      } else if (node.opType === 'Reshape') {
+        forwardLines.push(
+          `${outVar} = torch.cat((${inVars.join(", ")}), dim=${axis})`,
+        );
+      } else if (node.opType === "Reshape") {
         if (this.isInitializer(node.inputs[1]!)) {
           // Try to inline the shape if possible
           const shapeTensor = this.graph.tensors[node.inputs[1]!];
@@ -251,44 +276,56 @@ export class PyTorchGenerator {
             continue;
           }
         }
-        forwardLines.push(`${outVar} = torch.reshape(${inVars[0]}, tuple(${inVars[1]}.tolist()))`);
-      } else if (node.opType === 'Transpose') {
+        forwardLines.push(
+          `${outVar} = torch.reshape(${inVars[0]}, tuple(${inVars[1]}.tolist()))`,
+        );
+      } else if (node.opType === "Transpose") {
         const perm = node.attributes.perm?.value as number[];
         if (perm) {
-          forwardLines.push(`${outVar} = ${inVars[0]}.permute(${perm.join(', ')})`);
+          forwardLines.push(
+            `${outVar} = ${inVars[0]}.permute(${perm.join(", ")})`,
+          );
         } else {
           forwardLines.push(`${outVar} = torch.transpose(${inVars[0]}, 0, 1)`); // default fallback
         }
       } else {
         // Fallback for unknown ops
         forwardLines.push(
-          `${outVar} = getattr(torch, '${node.opType.toLowerCase()}')(${inVars.join(', ')}) # WARNING: Unmapped op`,
+          `${outVar} = getattr(torch, '${node.opType.toLowerCase()}')(${inVars.join(", ")}) # WARNING: Unmapped op`,
         );
       }
     }
 
-    const inputArgs = this.graph.inputs.map((i) => this.sanitize(i.name)).join(', ');
-    const outputReturns = this.graph.outputs.map((o) => this.sanitize(o.name)).join(', ');
+    const inputArgs = this.graph.inputs
+      .map((i) => this.sanitize(i.name))
+      .join(", ");
+    const outputReturns = this.graph.outputs
+      .map((o) => this.sanitize(o.name))
+      .join(", ");
 
     const lines = [
-      'import torch',
-      'import torch.nn as nn',
-      'import torch.nn.functional as F',
-      '',
-      'class ONNXModel(nn.Module):',
-      '    def __init__(self):',
-      '        super(ONNXModel, self).__init__()',
-      ...(initLines.length > 0 ? initLines.map((l) => `        ${l}`) : ['        pass']),
-      '',
+      "import torch",
+      "import torch.nn as nn",
+      "import torch.nn.functional as F",
+      "",
+      "class ONNXModel(nn.Module):",
+      "    def __init__(self):",
+      "        super(ONNXModel, self).__init__()",
+      ...(initLines.length > 0
+        ? initLines.map((l) => `        ${l}`)
+        : ["        pass"]),
+      "",
       `    def forward(self, ${inputArgs}):`,
-      ...(forwardLines.length > 0 ? forwardLines.map((l) => `        ${l}`) : ['        pass']),
+      ...(forwardLines.length > 0
+        ? forwardLines.map((l) => `        ${l}`)
+        : ["        pass"]),
       `        return ${outputReturns}`,
-      '',
+      "",
       'if __name__ == "__main__":',
-      '    model = ONNXModel()',
+      "    model = ONNXModel()",
       '    print("SUCCESS: PyTorch model generated correctly")',
     ];
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 }

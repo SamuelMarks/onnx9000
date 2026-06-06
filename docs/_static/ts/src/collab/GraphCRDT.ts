@@ -138,7 +138,9 @@ export class GraphCRDT {
   // 533. Admin Locking
   public lockSubgraph(nodes: string[]): void {
     if (this.role === 'Admin') {
-      nodes.forEach((n) => this.lockedNodes.add(n));
+      nodes.forEach((n) => {
+        this.lockedNodes.add(n);
+      });
     }
   }
 

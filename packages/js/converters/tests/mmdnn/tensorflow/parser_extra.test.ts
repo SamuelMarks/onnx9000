@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import { parsePbtxt } from '../../../src/mmdnn/tensorflow/parser.js';
+import { describe, expect, it } from "vitest";
+import { parsePbtxt } from "../../../src/mmdnn/tensorflow/parser.js";
 
-describe('parsePbtxt extra', () => {
-  it('should parse tensor attribute and list attribute', () => {
+describe("parsePbtxt extra", () => {
+  it("should parse tensor attribute and list attribute", () => {
     const pbtxt = `
 node {
   name: "test"

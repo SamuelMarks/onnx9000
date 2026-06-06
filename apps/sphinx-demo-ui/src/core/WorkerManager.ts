@@ -67,7 +67,7 @@ export class WorkerManager {
           globalEventBus.emit('CONSOLE_LOG', {
             level: LogLevel.INFO,
             message: msg.payload,
-            timestamp: new Date(),
+            timestamp: new Date()
           });
         }
       }
@@ -76,7 +76,9 @@ export class WorkerManager {
     this.worker.onerror = (err) => {
       console.error('WebWorker crashed unexpectedly', err);
       // Reject all pending
-      this.pendingRequests.forEach((req) => req.reject(new Error('Worker crashed')));
+      this.pendingRequests.forEach((req) => {
+        req.reject(new Error('Worker crashed'));
+      });
       this.pendingRequests.clear();
     };
   }

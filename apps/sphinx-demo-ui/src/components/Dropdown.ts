@@ -206,7 +206,9 @@ export class Dropdown extends Component<HTMLDivElement> {
 
     // Remove focused classes
     const items = this.listbox.querySelectorAll('.demo-dropdown-item.focused');
-    items.forEach((i) => i.classList.remove('focused'));
+    items.forEach((i) => {
+      i.classList.remove('focused');
+    });
   }
 
   public select(value: string): void {

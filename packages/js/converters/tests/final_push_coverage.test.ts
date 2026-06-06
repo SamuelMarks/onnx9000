@@ -1,25 +1,25 @@
-import { describe, expect, it } from 'vitest';
-import { Keras2OnnxConverter } from '../src/keras/index.js';
-import { registerCustomKerasLayer } from '../src/keras/plugin-registry.js';
-import { calculateByteLength } from '../src/keras/weight-loader.js';
+import { describe, expect, it } from "vitest";
+import { Keras2OnnxConverter } from "../src/keras/index.js";
+import { registerCustomKerasLayer } from "../src/keras/plugin-registry.js";
+import { calculateByteLength } from "../src/keras/weight-loader.js";
 
-describe('Converters Final Push Coverage', () => {
-  it('should cover Keras FLOATS and FLOAT attributes', async () => {
+describe("Converters Final Push Coverage", () => {
+  it("should cover Keras FLOATS and FLOAT attributes", async () => {
     registerCustomKerasLayer(
-      'CustomAllTypesLayer',
+      "CustomAllTypesLayer",
       (nodeName, _layerName, inputs, outName, _config) => {
         return [
           {
-            opType: 'Custom',
+            opType: "Custom",
             inputs,
             outputs: [outName],
             name: nodeName,
             attributes: [
-              { name: 'valFs', floats: [1.0, 2.0], type: 'FLOATS' },
-              { name: 'valF', f: 3.14, type: 'FLOAT' },
-              { name: 'valI', i: 42, type: 'INT' },
-              { name: 'valS', s: 'hello', type: 'STRING' },
-              { name: 'valIs', ints: [1, 2, 3], type: 'INTS' },
+              { name: "valFs", floats: [1.0, 2.0], type: "FLOATS" },
+              { name: "valF", f: 3.14, type: "FLOAT" },
+              { name: "valI", i: 42, type: "INT" },
+              { name: "valS", s: "hello", type: "STRING" },
+              { name: "valIs", ints: [1, 2, 3], type: "INTS" },
             ],
           },
         ];
@@ -27,27 +27,27 @@ describe('Converters Final Push Coverage', () => {
     );
 
     const modelJson = JSON.stringify({
-      format: 'layers-model',
+      format: "layers-model",
       modelTopology: {
-        class_name: 'Functional',
+        class_name: "Functional",
         config: {
-          name: 'model',
+          name: "model",
           layers: [
             {
-              class_name: 'InputLayer',
-              name: 'in',
-              config: { batch_input_shape: [null, 10], name: 'in' },
+              class_name: "InputLayer",
+              name: "in",
+              config: { batch_input_shape: [null, 10], name: "in" },
               inbound_nodes: [],
             },
             {
-              class_name: 'CustomAllTypesLayer',
-              name: 'catl',
-              config: { name: 'catl' },
-              inbound_nodes: [[['in', 0, 0, {}]]],
+              class_name: "CustomAllTypesLayer",
+              name: "catl",
+              config: { name: "catl" },
+              inbound_nodes: [[["in", 0, 0, {}]]],
             },
           ],
-          input_layers: [['in', 0, 0]],
-          output_layers: [['catl', 0, 0]],
+          input_layers: [["in", 0, 0]],
+          output_layers: [["catl", 0, 0]],
         },
       },
       weightsManifest: [],
@@ -57,12 +57,16 @@ describe('Converters Final Push Coverage', () => {
     converter.convert();
   });
 
-  it('should cover weight-loader int4 and uint4', () => {
-    expect(calculateByteLength({ name: 'w1', shape: [10], dtype: 'int4' })).toBe(5);
-    expect(calculateByteLength({ name: 'w2', shape: [11], dtype: 'uint4' })).toBe(6);
+  it("should cover weight-loader int4 and uint4", () => {
+    expect(
+      calculateByteLength({ name: "w1", shape: [10], dtype: "int4" }),
+    ).toBe(5);
+    expect(
+      calculateByteLength({ name: "w2", shape: [11], dtype: "uint4" }),
+    ).toBe(6);
   });
 
-  it('should cover h5-parser fallbacks and errors', () => {
+  it("should cover h5-parser fallbacks and errors", () => {
     // We need to mock File class if we want to call parseKerasH5 for real,
     // but the implementation uses 'new Hdf5File(buffer, ...)'
     // Let's just try to hit the branches if possible.

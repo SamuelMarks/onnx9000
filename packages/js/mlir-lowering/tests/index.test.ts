@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import { Mlirlowering } from '../src/index.js';
+import { describe, expect, it } from "vitest";
+import { Mlirlowering } from "../src/index.js";
 
-describe('Mlirlowering', () => {
-  it('should run', () => {
+describe("Mlirlowering", () => {
+  it("should run", () => {
     expect(new Mlirlowering().run()).toBeDefined();
   });
 });

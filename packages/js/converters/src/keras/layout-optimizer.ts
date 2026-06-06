@@ -6,7 +6,7 @@ export interface LayoutEdge {
   sourceNode: string;
   targetNode: string;
   tensorName: string;
-  layout: 'NCHW' | 'NHWC' | 'NCDHW' | 'NDHWC' | 'NCW' | 'NWC' | 'UNKNOWN';
+  layout: "NCHW" | "NHWC" | "NCDHW" | "NDHWC" | "NCW" | "NWC" | "UNKNOWN";
 }
 
 /**
@@ -28,7 +28,7 @@ export class LayoutOptimizer {
    * Collection of recorded tensor edges in topological form.
    */
   public edges: LayoutEdge[] = [];
-  private layoutState = new Map<string, LayoutEdge['layout']>();
+  private layoutState = new Map<string, LayoutEdge["layout"]>();
 
   /**
    * Records a tensor's memory layout traversing between a source node to a target node.
@@ -42,7 +42,7 @@ export class LayoutOptimizer {
     tensorName: string,
     sourceNode: string,
     targetNode: string,
-    layout: LayoutEdge['layout'],
+    layout: LayoutEdge["layout"],
   ): void {
     this.edges.push({ sourceNode, targetNode, tensorName, layout });
     this.layoutState.set(tensorName, layout);
@@ -54,8 +54,8 @@ export class LayoutOptimizer {
    * @param tensorName Internal topological string identifier.
    * @returns The exact enumerated layout structure, or UNKNOWN if missing.
    */
-  public getLayout(tensorName: string): LayoutEdge['layout'] {
-    return this.layoutState.get(tensorName) || 'UNKNOWN';
+  public getLayout(tensorName: string): LayoutEdge["layout"] {
+    return this.layoutState.get(tensorName) || "UNKNOWN";
   }
 
   /**
@@ -65,9 +65,12 @@ export class LayoutOptimizer {
    * @param expectedLayout String identifying the consumer operator's layout specification requirement.
    * @returns A boolean determining if an explicit dynamic transpose needs emitting.
    */
-  public needsTranspose(tensorName: string, expectedLayout: LayoutEdge['layout']): boolean {
+  public needsTranspose(
+    tensorName: string,
+    expectedLayout: LayoutEdge["layout"],
+  ): boolean {
     const current = this.getLayout(tensorName);
-    if (current === 'UNKNOWN' || expectedLayout === 'UNKNOWN') return false;
+    if (current === "UNKNOWN" || expectedLayout === "UNKNOWN") return false;
     return current !== expectedLayout;
   }
 
@@ -82,15 +85,17 @@ export class LayoutOptimizer {
     for (let i = 0; i < graphNodes.length; i++) {
       const node = graphNodes[i];
       if (
-        node?.opType === 'Transpose' &&
+        node?.opType === "Transpose" &&
         i + 1 < graphNodes.length &&
-        graphNodes[i + 1]?.opType === 'Transpose'
+        graphNodes[i + 1]?.opType === "Transpose"
       ) {
         const nextNode = graphNodes[i + 1];
         // Only optimize if they share the same tensor path
         if (nextNode?.inputs[0] === node?.outputs[0]) {
-          const perm1 = node?.attributes.find((a) => a.name === 'perm')?.ints;
-          const perm2 = nextNode?.attributes.find((a) => a.name === 'perm')?.ints;
+          const perm1 = node?.attributes.find((a) => a.name === "perm")?.ints;
+          const perm2 = nextNode?.attributes.find(
+            (a) => a.name === "perm",
+          )?.ints;
 
           if (this.isIdentityPermutation(perm1, perm2)) {
             i++; // skip nextNode too

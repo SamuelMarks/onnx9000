@@ -2,14 +2,14 @@
  * @fileoverview importer.ts
  * Provides importer functionality for the coreml package.
  */
-import { Graph, Node as ONNXNode } from '@onnx9000/core';
-import type { Program } from './mil/ast.js';
+import { Graph, Node as ONNXNode } from "@onnx9000/core";
+import type { Program } from "./mil/ast.js";
 
 export class MILToONNXConverter {
   constructor(private program: Program) {}
 
   convert(): Graph {
-    const graph = new Graph('imported_coreml');
+    const graph = new Graph("imported_coreml");
 
     // We only support converting the 'main' function for now
     const fn = this.program.functions.main;
@@ -21,8 +21,8 @@ export class MILToONNXConverter {
       graph.inputs.push({
         name: input.name,
         shape: [],
-        dtype: 'float32',
-        id: '',
+        dtype: "float32",
+        id: "",
       } as ReturnType<typeof JSON.parse>);
     }
 
@@ -31,8 +31,8 @@ export class MILToONNXConverter {
       for (const op of block.operations) {
         // 223. Dequantize CoreML INT4/INT8 palettized weights statically
         if (
-          op.opType === 'constexpr_affine_dequantize' ||
-          op.opType === 'constexpr_lut_dequantize'
+          op.opType === "constexpr_affine_dequantize" ||
+          op.opType === "constexpr_lut_dequantize"
         ) {
           // 222. Extract `weight.bin` packed data back into ONNX
           // Mocking extraction mapping
@@ -57,11 +57,11 @@ export class MILToONNXConverter {
 
         const outputs = op.outputs.map((o) => {
           // 225. Handle Swift/Apple specific renaming back to standard ONNX tensor naming conventions
-          return o.name.replace(/([A-Z])/g, '_$1').toLowerCase();
+          return o.name.replace(/([A-Z])/g, "_$1").toLowerCase();
         });
 
         // 221. Handle explicit subgraphs (mocked)
-        if (op.opType === 'scaled_dot_product_attention') {
+        if (op.opType === "scaled_dot_product_attention") {
           // would generate explicit matmul, div, softmax, matmul
         }
 
@@ -73,8 +73,8 @@ export class MILToONNXConverter {
         graph.outputs.push({
           name: out.name,
           shape: [],
-          dtype: 'float32',
-          id: '',
+          dtype: "float32",
+          id: "",
         } as ReturnType<typeof JSON.parse>);
       }
     }
@@ -84,14 +84,14 @@ export class MILToONNXConverter {
 
   private inverseMapMILOp(opType: string): string {
     const map: Record<string, string> = {
-      add: 'Add',
-      sub: 'Sub',
-      mul: 'Mul',
-      conv: 'Conv',
-      matmul: 'MatMul',
-      linear: 'Gemm',
-      scaled_dot_product_attention: 'Attention', // or explicit subgraph
-      constexpr_affine_dequantize: 'DequantizeLinear',
+      add: "Add",
+      sub: "Sub",
+      mul: "Mul",
+      conv: "Conv",
+      matmul: "MatMul",
+      linear: "Gemm",
+      scaled_dot_product_attention: "Attention", // or explicit subgraph
+      constexpr_affine_dequantize: "DequantizeLinear",
     };
     return map[opType] || opType.charAt(0).toUpperCase() + opType.slice(1);
   }

@@ -2,7 +2,7 @@
  * Operator Registry for JS Core.
  */
 
-import type { Tensor } from '../ir/tensor.js';
+import type { Tensor } from "../ir/tensor.js";
 
 /**
  * Supported attribute value types in ONNX.
@@ -28,7 +28,10 @@ export interface OpImplementation {
    * @param attributes Dictionary of operator attributes.
    * @returns Array of output tensors.
    */
-  execute(inputs: Tensor[], attributes: Record<string, AttributeValue>): Tensor[];
+  execute(
+    inputs: Tensor[],
+    attributes: Record<string, AttributeValue>,
+  ): Tensor[];
 }
 
 /**
@@ -70,18 +73,24 @@ class OperatorRegistry {
     return impl;
   }
 
-  private getKey(domain: string, opType: string, provider: string | null): string {
-    return `${domain || 'ai.onnx'}::${opType}${provider ? `::${provider}` : ''}`;
+  private getKey(
+    domain: string,
+    opType: string,
+    provider: string | null,
+  ): string {
+    return `${domain || "ai.onnx"}::${opType}${provider ? `::${provider}` : ""}`;
   }
 
   /**
    * Get all registered operators for a provider.
    * @param provider Hardware provider name.
    */
-  getAllRegistered(provider: string | null = null): Record<string, new () => OpImplementation> {
+  getAllRegistered(
+    provider: string | null = null,
+  ): Record<string, new () => OpImplementation> {
     const result: Record<string, new () => OpImplementation> = {};
     for (const [key, value] of this.registry.entries()) {
-      const parts = key.split('::');
+      const parts = key.split("::");
       const p = parts.length > 2 ? parts[2] : null;
       if (p === (provider || null)) {
         result[`${parts[0]}::${parts[1]}`] = value;
@@ -102,6 +111,10 @@ export const globalRegistry = new OperatorRegistry();
  * @param opType Operator type name.
  * @param provider Hardware provider name.
  */
-export function register_op(domain: string, opType: string, provider: string | null = null) {
+export function register_op(
+  domain: string,
+  opType: string,
+  provider: string | null = null,
+) {
   return globalRegistry.register_op(domain, opType, provider);
 }

@@ -69,7 +69,7 @@ export class TensorEncryption {
   }
 
   public static async decryptModel(model: IModelGraph, password: string): Promise<IModelGraph> {
-    let docMeta;
+    let docMeta: any;
     try {
       docMeta = model.docString ? JSON.parse(model.docString) : {};
     } catch (_e) {

@@ -12,8 +12,12 @@ export class ShapeInference {
     // Create a dictionary of all known shapes
     const shapeDict = new Map<string, (number | string)[]>();
 
-    cloned.inputs.forEach((i) => shapeDict.set(i.name, [...i.dims]));
-    cloned.initializers.forEach((i) => shapeDict.set(i.name, [...i.dims]));
+    cloned.inputs.forEach((i) => {
+      shapeDict.set(i.name, [...i.dims]);
+    });
+    cloned.initializers.forEach((i) => {
+      shapeDict.set(i.name, [...i.dims]);
+    });
 
     // Pass forward
     cloned.nodes.forEach((node) => {

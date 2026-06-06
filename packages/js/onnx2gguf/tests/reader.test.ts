@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { GGUFWriter } from '../src/builder.js';
-import { GGUFReader } from '../src/reader.js';
+import { describe, expect, it } from "vitest";
+import { GGUFWriter } from "../src/builder.js";
+import { GGUFReader } from "../src/reader.js";
 
-describe('GGUFReader', () => {
-  it('should read', () => {
+describe("GGUFReader", () => {
+  it("should read", () => {
     const w = new GGUFWriter();
-    w.addUint8('u8', 1);
+    w.addUint8("u8", 1);
     const size = w.getHeaderSize();
     const buf = new ArrayBuffer(size);
     w.writeHeader(buf);

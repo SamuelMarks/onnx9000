@@ -2,8 +2,8 @@
  * @fileoverview validator.ts
  * Provides validator functionality for the coreml package.
  */
-import type { Block, Program } from './ast.js';
-import { topologicalSort } from './sort.js';
+import type { Block, Program } from "./ast.js";
+import { topologicalSort } from "./sort.js";
 
 export function validateMILProgram(program: Program): boolean {
   for (const fnName in program.functions) {
@@ -34,8 +34,10 @@ export function validateBlock(block: Block): void {
 
   for (const op of block.operations) {
     // For const ops, outputs are available
-    if (op.opType === 'const') {
-      op.outputs.forEach((o) => availableVars.add(o.name));
+    if (op.opType === "const") {
+      op.outputs.forEach((o) => {
+        availableVars.add(o.name);
+      });
       continue;
     }
 
@@ -52,7 +54,9 @@ export function validateBlock(block: Block): void {
         }
       } else {
         if (!availableVars.has(inputs.name)) {
-          throw new Error(`Operation input ${inputs.name} is not available in block ${block.name}`);
+          throw new Error(
+            `Operation input ${inputs.name} is not available in block ${block.name}`,
+          );
         }
       }
     }
@@ -66,7 +70,9 @@ export function validateBlock(block: Block): void {
   // Check block outputs
   for (const out of block.outputs) {
     if (!availableVars.has(out.name)) {
-      throw new Error(`Block output ${out.name} is not produced within block ${block.name}`);
+      throw new Error(
+        `Block output ${out.name} is not produced within block ${block.name}`,
+      );
     }
   }
 }

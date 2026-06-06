@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 import {
   calculatePaddingSame,
   calculatePaddingValid,
@@ -7,17 +7,17 @@ import {
   transposeConv2DWeights,
   transposeConv3DWeights,
   transposeDenseWeights,
-} from '../src/keras/layout.js';
+} from "../src/keras/layout.js";
 
-describe('layout transpositions', () => {
-  it('translateNhwcToNchw works for 3D, 4D, 5D', () => {
+describe("layout transpositions", () => {
+  it("translateNhwcToNchw works for 3D, 4D, 5D", () => {
     expect(translateNhwcToNchw([1, 10, 3])).toEqual([1, 3, 10]);
     expect(translateNhwcToNchw([1, 28, 28, 3])).toEqual([1, 3, 28, 28]);
     expect(translateNhwcToNchw([1, 16, 28, 28, 3])).toEqual([1, 3, 16, 28, 28]);
     expect(translateNhwcToNchw([1, 2])).toEqual([1, 2]); // unmodified
   });
 
-  it('transposeConv2DWeights', () => {
+  it("transposeConv2DWeights", () => {
     // [H, W, I, O] -> [O, I, H, W]
     // 1x1x1x2
     const input = new Float32Array([1.0, 2.0]);
@@ -30,7 +30,7 @@ describe('layout transpositions', () => {
     expect(Array.from(out2)).toEqual([1.0, 2.0]);
   });
 
-  it('transposeConv1DWeights', () => {
+  it("transposeConv1DWeights", () => {
     const input = new Float32Array([1.0, 2.0, 3.0, 4.0]); // L=2, I=1, O=2
     const out = transposeConv1DWeights(input, 2, 1, 2);
     // L=0,I=0,O=0 -> idx 0
@@ -45,13 +45,13 @@ describe('layout transpositions', () => {
     expect(Array.from(out)).toEqual([1.0, 3.0, 2.0, 4.0]);
   });
 
-  it('transposeConv3DWeights', () => {
+  it("transposeConv3DWeights", () => {
     const input = new Float32Array([1.0, 2.0]); // D=1, H=1, W=1, I=1, O=2
     const out = transposeConv3DWeights(input, 1, 1, 1, 1, 2);
     expect(Array.from(out)).toEqual([1.0, 2.0]);
   });
 
-  it('transposeDenseWeights', () => {
+  it("transposeDenseWeights", () => {
     const input = new Float32Array([1.0, 2.0, 3.0, 4.0]); // 2x2
     const out = transposeDenseWeights(input, 2, 2);
     // [I, O] -> [O, I]
@@ -62,7 +62,7 @@ describe('layout transpositions', () => {
     expect(Array.from(out)).toEqual([1.0, 3.0, 2.0, 4.0]);
   });
 
-  it('calculates padding', () => {
+  it("calculates padding", () => {
     expect(calculatePaddingSame(10, 3, 1, 1)).toEqual([1, 1]);
     expect(calculatePaddingSame(10, 4, 1, 1)).toEqual([1, 2]);
     expect(calculatePaddingValid()).toEqual([0, 0]);

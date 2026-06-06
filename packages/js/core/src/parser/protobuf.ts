@@ -120,7 +120,7 @@ export class BlobReader implements Reader {
       throw new Error('Unexpected end of blob');
     }
     await this.ensureCache(1);
-    const byte = this.cache?.[this.offset - this.cacheStart]!;
+    const byte = this.cache?.[this.offset - this.cacheStart] ?? 0;
     this.offset++;
     return byte;
   }
@@ -132,7 +132,7 @@ export class BlobReader implements Reader {
     }
     await this.ensureCache(length);
     const start = this.offset - this.cacheStart;
-    const res = this.cache?.subarray(start, start + length);
+    const res = this.cache?.subarray(start, start + length) ?? new Uint8Array();
     this.offset += length;
     return res;
   }

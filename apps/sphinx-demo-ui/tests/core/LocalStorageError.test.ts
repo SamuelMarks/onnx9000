@@ -18,7 +18,7 @@ describe('LocalStorage Error Handling', () => {
     expect(() => registeredCallback()).not.toThrow();
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'Failed to save editor state to localStorage',
-      expect.any(Error),
+      expect.any(Error)
     );
 
     editor.unmount();

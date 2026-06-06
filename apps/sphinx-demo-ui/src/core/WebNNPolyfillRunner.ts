@@ -16,7 +16,7 @@ export class WebNNPolyfillRunner {
    */
   public async runInference(
     onnxBinary: Uint8Array,
-    inputs: Record<string, Float32Array | Int32Array>,
+    inputs: Record<string, Float32Array | Int32Array>
   ): Promise<Record<string, object>> {
     console.log(`Starting WebNN Polyfill execution...`);
     globalEventBus.emit('INFERENCE_STARTED');
@@ -27,7 +27,7 @@ export class WebNNPolyfillRunner {
       WorkerManager.getInstance().initWorker('/workers/webnn-worker.js');
       const outputs = (await WorkerManager.getInstance().execute('RUN_WEBNN', {
         binary: onnxBinary,
-        inputs,
+        inputs
       })) as Record<string, object>;
 
       const end = performance.now();

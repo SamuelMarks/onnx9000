@@ -1,5 +1,5 @@
 export function handleSparseCommand(args: string[]) {
-  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
+  if (args.length === 0 || args.includes("-h") || args.includes("--help")) {
     console.log(`Usage: onnx9000 sparse <command> [options] 
  
 Commands: 
@@ -13,28 +13,28 @@ Commands:
   }
 
   const cmd = args[0];
-  if (cmd === 'prune') {
+  if (cmd === "prune") {
     const model = args[1];
-    if (!model || model.startsWith('-')) {
-      console.error('Usage: onnx9000 sparse prune <model.onnx> [options]');
+    if (!model || model.startsWith("-")) {
+      console.error("Usage: onnx9000 sparse prune <model.onnx> [options]");
       process.exit(1);
       return;
     }
 
-    let output = model.replace('.onnx', '_sparse.onnx');
-    const oIndex = args.indexOf('-o');
+    let output = model.replace(".onnx", "_sparse.onnx");
+    const oIndex = args.indexOf("-o");
     if (oIndex !== -1 && oIndex + 1 < args.length) {
       output = args[oIndex + 1];
     }
 
-    let sparsity = '0.0';
-    const sIndex = args.indexOf('--sparsity');
+    let sparsity = "0.0";
+    const sIndex = args.indexOf("--sparsity");
     if (sIndex !== -1 && sIndex + 1 < args.length) {
       sparsity = args[sIndex + 1];
     }
 
-    let recipe = '';
-    const rIndex = args.indexOf('--recipe');
+    let recipe = "";
+    const rIndex = args.indexOf("--recipe");
     if (rIndex !== -1 && rIndex + 1 < args.length) {
       recipe = args[rIndex + 1];
     }
@@ -46,9 +46,9 @@ Commands:
       console.log(`Pruning model to ${sparsity} sparsity...`);
     }
     console.log(`Saving sparse model to ${output}...`);
-    console.log('Sparsification complete.');
+    console.log("Sparsification complete.");
   } else {
-    console.error(`Unknown sparse command: ${cmd || ''}`);
+    console.error(`Unknown sparse command: ${cmd || ""}`);
     process.exit(1);
   }
 }

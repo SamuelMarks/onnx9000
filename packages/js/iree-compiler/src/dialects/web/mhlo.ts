@@ -2,7 +2,12 @@
  * @fileoverview mhlo.ts
  * Provides mhlo functionality for the iree-compiler package.
  */
-import { Operation, type Region, type Type, type Value } from '../../ir/core.js';
+import {
+  Operation,
+  type Region,
+  type Type,
+  type Value,
+} from "../../ir/core.js";
 
 function createElementwiseOp(opcode: string) {
   return (lhs: Value, rhs: Value, resultType: Type): Operation =>
@@ -14,20 +19,20 @@ function createUnaryOp(opcode: string) {
     new Operation(opcode, [operand], [resultType]);
 }
 
-export const add = createElementwiseOp('web.mhlo.add');
-export const subtract = createElementwiseOp('web.mhlo.subtract');
-export const multiply = createElementwiseOp('web.mhlo.multiply');
-export const divide = createElementwiseOp('web.mhlo.divide');
-export const maximum = createElementwiseOp('web.mhlo.maximum');
-export const minimum = createElementwiseOp('web.mhlo.minimum');
+export const add = createElementwiseOp("web.mhlo.add");
+export const subtract = createElementwiseOp("web.mhlo.subtract");
+export const multiply = createElementwiseOp("web.mhlo.multiply");
+export const divide = createElementwiseOp("web.mhlo.divide");
+export const maximum = createElementwiseOp("web.mhlo.maximum");
+export const minimum = createElementwiseOp("web.mhlo.minimum");
 
-export const exponential = createUnaryOp('web.mhlo.exponential');
-export const log = createUnaryOp('web.mhlo.log');
-export const cosine = createUnaryOp('web.mhlo.cosine');
-export const sine = createUnaryOp('web.mhlo.sine');
+export const exponential = createUnaryOp("web.mhlo.exponential");
+export const log = createUnaryOp("web.mhlo.log");
+export const cosine = createUnaryOp("web.mhlo.cosine");
+export const sine = createUnaryOp("web.mhlo.sine");
 
 export function dot(lhs: Value, rhs: Value, resultType: Type): Operation {
-  return new Operation('web.mhlo.dot', [lhs, rhs], [resultType]);
+  return new Operation("web.mhlo.dot", [lhs, rhs], [resultType]);
 }
 
 export function convolution(
@@ -40,7 +45,7 @@ export function convolution(
   windowReversal: boolean[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.mhlo.convolution', [lhs, rhs], [resultType], {
+  return new Operation("web.mhlo.convolution", [lhs, rhs], [resultType], {
     windowStrides,
     padding,
     lhsDilation,
@@ -57,7 +62,7 @@ export function reduce(
   resultTypes: Type[],
 ): Operation {
   return new Operation(
-    'web.mhlo.reduce',
+    "web.mhlo.reduce",
     [...operands, ...initValues],
     resultTypes,
     { dimensions },
@@ -77,7 +82,7 @@ export function reduceWindow(
   resultTypes: Type[],
 ): Operation {
   return new Operation(
-    'web.mhlo.reduce_window',
+    "web.mhlo.reduce_window",
     [...operands, ...initValues],
     resultTypes,
     {
@@ -91,8 +96,17 @@ export function reduceWindow(
   );
 }
 
-export function select(pred: Value, onTrue: Value, onFalse: Value, resultType: Type): Operation {
-  return new Operation('web.mhlo.select', [pred, onTrue, onFalse], [resultType]);
+export function select(
+  pred: Value,
+  onTrue: Value,
+  onFalse: Value,
+  resultType: Type,
+): Operation {
+  return new Operation(
+    "web.mhlo.select",
+    [pred, onTrue, onFalse],
+    [resultType],
+  );
 }
 
 export function broadcastInDim(
@@ -100,23 +114,31 @@ export function broadcastInDim(
   broadcastDimensions: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.mhlo.broadcast_in_dim', [operand], [resultType], {
+  return new Operation("web.mhlo.broadcast_in_dim", [operand], [resultType], {
     broadcastDimensions,
   });
 }
 
 export function reshape(operand: Value, resultType: Type): Operation {
-  return new Operation('web.mhlo.reshape', [operand], [resultType]);
+  return new Operation("web.mhlo.reshape", [operand], [resultType]);
 }
 
-export function transpose(operand: Value, permutation: number[], resultType: Type): Operation {
-  return new Operation('web.mhlo.transpose', [operand], [resultType], {
+export function transpose(
+  operand: Value,
+  permutation: number[],
+  resultType: Type,
+): Operation {
+  return new Operation("web.mhlo.transpose", [operand], [resultType], {
     permutation,
   });
 }
 
-export function concatenate(operands: Value[], dimension: number, resultType: Type): Operation {
-  return new Operation('web.mhlo.concatenate', operands, [resultType], {
+export function concatenate(
+  operands: Value[],
+  dimension: number,
+  resultType: Type,
+): Operation {
+  return new Operation("web.mhlo.concatenate", operands, [resultType], {
     dimension,
   });
 }
@@ -128,7 +150,7 @@ export function slice(
   strides: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.mhlo.slice', [operand], [resultType], {
+  return new Operation("web.mhlo.slice", [operand], [resultType], {
     startIndices,
     limitIndices,
     strides,
@@ -141,9 +163,14 @@ export function dynamicSlice(
   sliceSizes: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.mhlo.dynamic_slice', [operand, ...startIndices], [resultType], {
-    sliceSizes,
-  });
+  return new Operation(
+    "web.mhlo.dynamic_slice",
+    [operand, ...startIndices],
+    [resultType],
+    {
+      sliceSizes,
+    },
+  );
 }
 
 export function gather(
@@ -153,10 +180,15 @@ export function gather(
   sliceSizes: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.mhlo.gather', [operand, startIndices], [resultType], {
-    dimensionNumbers,
-    sliceSizes,
-  });
+  return new Operation(
+    "web.mhlo.gather",
+    [operand, startIndices],
+    [resultType],
+    {
+      dimensionNumbers,
+      sliceSizes,
+    },
+  );
 }
 
 export function scatter(
@@ -168,7 +200,7 @@ export function scatter(
   resultType: Type,
 ): Operation {
   return new Operation(
-    'web.mhlo.scatter',
+    "web.mhlo.scatter",
     [operand, scatterIndices, updates],
     [resultType],
     {

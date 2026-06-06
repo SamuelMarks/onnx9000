@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Attribute, type Graph, Node, Tensor } from '@onnx9000/core';
+import { Attribute, type Graph, Node, Tensor } from "@onnx9000/core";
 
 /**
  * A type representing a function that maps a Caffe layer to one or more ONNX Nodes.
@@ -25,8 +25,12 @@ const caffeRegistry: Record<string, MapperFn> = {};
  * @returns {(target: object, propertyKey: string, descriptor: PropertyDescriptor) => void} The decorator function.
  */
 export function register_caffe_op(domain: string, opType: string) {
-  return (target: object, _propertyKey: string, descriptor: PropertyDescriptor) => {
-    if (domain === 'caffe') {
+  return (
+    target: object,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) => {
+    if (domain === "caffe") {
       caffeRegistry[opType] = descriptor.value.bind(target);
     }
   };
@@ -64,7 +68,9 @@ function resolveKernel(param: object): number[] {
   let kh = 1,
     kw = 1;
   if (param.kernel_size !== undefined) {
-    const k = Array.isArray(param.kernel_size) ? param.kernel_size[0] : param.kernel_size;
+    const k = Array.isArray(param.kernel_size)
+      ? param.kernel_size[0]
+      : param.kernel_size;
     kh = k;
     kw = k;
   } else {
@@ -114,14 +120,14 @@ export class CaffeMapper {
     }
 
     const reporter = { warn: console.warn };
-    if (type === 'VisionTransform') {
+    if (type === "VisionTransform") {
       return [
         new Node(
-          'CustomOp',
+          "CustomOp",
           layer.bottom || [],
           layer.top || [],
-          { domain: new Attribute('domain', 'STRING', 'caffe') },
-          layer.name || 'vision_transform',
+          { domain: new Attribute("domain", "STRING", "caffe") },
+          layer.name || "vision_transform",
         ),
       ];
     }
@@ -129,11 +135,11 @@ export class CaffeMapper {
     reporter.warn(`Unrecognized Caffe layer`);
     return [
       new Node(
-        'Identity',
+        "Identity",
         layer.bottom ? [layer.bottom[0]] : [],
         layer.top ? [layer.top[0]] : [],
         {},
-        layer.name || 'fallback_identity',
+        layer.name || "fallback_identity",
       ),
     ];
   }
@@ -145,7 +151,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Conv node.
    */
-  @register_caffe_op('caffe', 'Convolution')
+  @register_caffe_op("caffe", "Convolution")
   mapConvolution(layer: object, _graph: Graph): Node[] {
     const param = layer.convolution_param || {};
     const pads = resolvePadding(param);
@@ -153,7 +159,9 @@ export class CaffeMapper {
     const strides = resolveStride(param);
     let dilations = [1, 1];
     if (param.dilation !== undefined) {
-      const d = Array.isArray(param.dilation) ? param.dilation[0] : param.dilation;
+      const d = Array.isArray(param.dilation)
+        ? param.dilation[0]
+        : param.dilation;
       dilations = [d, d];
     }
     const group = param.group !== undefined ? param.group : 1;
@@ -170,15 +178,15 @@ export class CaffeMapper {
     }
 
     const node = new Node(
-      'Conv',
+      "Conv",
       inputs,
       layer.top || [layer.name],
       {
-        pads: new Attribute('pads', 'INTS', pads),
-        kernel_shape: new Attribute('kernel_shape', 'INTS', kernel_shape),
-        strides: new Attribute('strides', 'INTS', strides),
-        dilations: new Attribute('dilations', 'INTS', dilations),
-        group: new Attribute('group', 'INT', group),
+        pads: new Attribute("pads", "INTS", pads),
+        kernel_shape: new Attribute("kernel_shape", "INTS", kernel_shape),
+        strides: new Attribute("strides", "INTS", strides),
+        dilations: new Attribute("dilations", "INTS", dilations),
+        group: new Attribute("group", "INT", group),
       },
       layer.name,
     );
@@ -192,7 +200,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Gemm node.
    */
-  @register_caffe_op('caffe', 'InnerProduct')
+  @register_caffe_op("caffe", "InnerProduct")
   mapInnerProduct(layer: object, _graph: Graph): Node[] {
     const _param = layer.inner_product_param || {};
     const inputs = [...(layer.bottom || [])];
@@ -206,13 +214,13 @@ export class CaffeMapper {
     }
     // Caffe InnerProduct does X * W^T
     const node = new Node(
-      'Gemm',
+      "Gemm",
       inputs,
       layer.top || [layer.name],
       {
-        alpha: new Attribute('alpha', 'FLOAT', 1.0),
-        beta: new Attribute('beta', 'FLOAT', 1.0),
-        transB: new Attribute('transB', 'INT', 1),
+        alpha: new Attribute("alpha", "FLOAT", 1.0),
+        beta: new Attribute("beta", "FLOAT", 1.0),
+        transB: new Attribute("transB", "INT", 1),
       },
       layer.name,
     );
@@ -226,23 +234,29 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Relu or LeakyRelu node.
    */
-  @register_caffe_op('caffe', 'ReLU')
+  @register_caffe_op("caffe", "ReLU")
   mapReLU(layer: object, _graph: Graph): Node[] {
     const param = layer.relu_param || {};
     const negative_slope = param.negative_slope || 0;
     if (negative_slope !== 0) {
       const node = new Node(
-        'LeakyRelu',
+        "LeakyRelu",
         layer.bottom || [],
         layer.top || [layer.name],
         {
-          alpha: new Attribute('alpha', 'FLOAT', negative_slope),
+          alpha: new Attribute("alpha", "FLOAT", negative_slope),
         },
         layer.name,
       );
       return [node];
     } else {
-      const node = new Node('Relu', layer.bottom || [], layer.top || [layer.name], {}, layer.name);
+      const node = new Node(
+        "Relu",
+        layer.bottom || [],
+        layer.top || [layer.name],
+        {},
+        layer.name,
+      );
       return [node];
     }
   }
@@ -254,7 +268,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Pool node.
    */
-  @register_caffe_op('caffe', 'Pooling')
+  @register_caffe_op("caffe", "Pooling")
   mapPooling(layer: object, _graph: Graph): Node[] {
     const param = layer.pooling_param || {};
     const pads = resolvePadding(param);
@@ -262,16 +276,16 @@ export class CaffeMapper {
     const strides = resolveStride(param);
 
     // pool = 0 (MAX), 1 (AVE), 2 (STOCHASTIC)
-    const poolType = param.pool === 1 ? 'AveragePool' : 'MaxPool';
+    const poolType = param.pool === 1 ? "AveragePool" : "MaxPool";
 
     const node = new Node(
       poolType,
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        pads: new Attribute('pads', 'INTS', pads),
-        kernel_shape: new Attribute('kernel_shape', 'INTS', kernel_shape),
-        strides: new Attribute('strides', 'INTS', strides),
+        pads: new Attribute("pads", "INTS", pads),
+        kernel_shape: new Attribute("kernel_shape", "INTS", kernel_shape),
+        strides: new Attribute("strides", "INTS", strides),
       },
       layer.name,
     );
@@ -285,7 +299,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX LRN node.
    */
-  @register_caffe_op('caffe', 'LRN')
+  @register_caffe_op("caffe", "LRN")
   mapLRN(layer: object, _graph: Graph): Node[] {
     const param = layer.lrn_param || {};
     const size = param.local_size !== undefined ? param.local_size : 5;
@@ -294,14 +308,14 @@ export class CaffeMapper {
     const k = param.k !== undefined ? param.k : 1.0;
 
     const node = new Node(
-      'LRN',
+      "LRN",
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        size: new Attribute('size', 'INT', size),
-        alpha: new Attribute('alpha', 'FLOAT', alpha),
-        beta: new Attribute('beta', 'FLOAT', beta),
-        bias: new Attribute('bias', 'FLOAT', k),
+        size: new Attribute("size", "INT", size),
+        alpha: new Attribute("alpha", "FLOAT", alpha),
+        beta: new Attribute("beta", "FLOAT", beta),
+        bias: new Attribute("bias", "FLOAT", k),
       },
       layer.name,
     );
@@ -315,16 +329,16 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Softmax node.
    */
-  @register_caffe_op('caffe', 'Softmax')
+  @register_caffe_op("caffe", "Softmax")
   mapSoftmax(layer: object, _graph: Graph): Node[] {
     const param = layer.softmax_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
-      'Softmax',
+      "Softmax",
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        axis: new Attribute('axis', 'INT', axis),
+        axis: new Attribute("axis", "INT", axis),
       },
       layer.name,
     );
@@ -338,16 +352,22 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX node.
    */
-  @register_caffe_op('caffe', 'Eltwise')
+  @register_caffe_op("caffe", "Eltwise")
   mapEltwise(layer: object, _graph: Graph): Node[] {
     const param = layer.eltwise_param || {};
     // operation: 0 (PROD), 1 (SUM), 2 (MAX)
     const op = param.operation !== undefined ? param.operation : 1;
-    let opType = 'Add';
-    if (op === 0) opType = 'Mul';
-    else if (op === 2) opType = 'Max';
+    let opType = "Add";
+    if (op === 0) opType = "Mul";
+    else if (op === 2) opType = "Max";
 
-    const node = new Node(opType, layer.bottom || [], layer.top || [layer.name], {}, layer.name);
+    const node = new Node(
+      opType,
+      layer.bottom || [],
+      layer.top || [layer.name],
+      {},
+      layer.name,
+    );
     return [node];
   }
 
@@ -358,16 +378,16 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Concat node.
    */
-  @register_caffe_op('caffe', 'Concat')
+  @register_caffe_op("caffe", "Concat")
   mapConcat(layer: object, _graph: Graph): Node[] {
     const param = layer.concat_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
-      'Concat',
+      "Concat",
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        axis: new Attribute('axis', 'INT', axis),
+        axis: new Attribute("axis", "INT", axis),
       },
       layer.name,
     );
@@ -381,7 +401,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the generated ONNX nodes.
    */
-  @register_caffe_op('caffe', 'Scale')
+  @register_caffe_op("caffe", "Scale")
   mapScale(layer: object, _graph: Graph): Node[] {
     const inputs = [...(layer.bottom || [])];
     if (layer.blobs && layer.blobs.length > 0) {
@@ -392,13 +412,15 @@ export class CaffeMapper {
 
     const nodes: Node[] = [];
     const mulTop =
-      layer.blobs && layer.blobs.length > 1 ? `${layer.name}_mul` : layer.top?.[0] || layer.name;
-    nodes.push(new Node('Mul', inputs, [mulTop], {}, `${layer.name}_Mul`));
+      layer.blobs && layer.blobs.length > 1
+        ? `${layer.name}_mul`
+        : layer.top?.[0] || layer.name;
+    nodes.push(new Node("Mul", inputs, [mulTop], {}, `${layer.name}_Mul`));
 
     if (layer.blobs && layer.blobs.length > 1) {
       nodes.push(
         new Node(
-          'Add',
+          "Add",
           [mulTop, `${layer.name}_B`],
           layer.top || [layer.name],
           {},
@@ -416,7 +438,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX BatchNormalization node.
    */
-  @register_caffe_op('caffe', 'BatchNorm')
+  @register_caffe_op("caffe", "BatchNorm")
   mapBatchNorm(layer: object, _graph: Graph): Node[] {
     const param = layer.batch_norm_param || {};
     const eps = param.eps !== undefined ? param.eps : 1e-5;
@@ -431,11 +453,11 @@ export class CaffeMapper {
     );
 
     const node = new Node(
-      'BatchNormalization',
+      "BatchNormalization",
       inputs,
       layer.top || [layer.name],
       {
-        epsilon: new Attribute('epsilon', 'FLOAT', eps),
+        epsilon: new Attribute("epsilon", "FLOAT", eps),
       },
       layer.name,
     );
@@ -449,18 +471,18 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Dropout node.
    */
-  @register_caffe_op('caffe', 'Dropout')
+  @register_caffe_op("caffe", "Dropout")
   mapDropout(layer: object, _graph: Graph): Node[] {
     const param = layer.dropout_param || {};
     const ratio = param.dropout_ratio !== undefined ? param.dropout_ratio : 0.5;
     // In many ONNX conversions, dropout is often mapped to Identity if ratio=0 or for inference
     // We map it to Dropout as requested
     const node = new Node(
-      'Dropout',
+      "Dropout",
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        ratio: new Attribute('ratio', 'FLOAT', ratio),
+        ratio: new Attribute("ratio", "FLOAT", ratio),
       },
       layer.name,
     );
@@ -474,11 +496,17 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Reshape node.
    */
-  @register_caffe_op('caffe', 'Reshape')
+  @register_caffe_op("caffe", "Reshape")
   mapReshape(layer: object, _graph: Graph): Node[] {
     const inputs = [...(layer.bottom || [])];
     inputs.push(`${layer.name}_shape`);
-    const node = new Node('Reshape', inputs, layer.top || [layer.name], {}, layer.name);
+    const node = new Node(
+      "Reshape",
+      inputs,
+      layer.top || [layer.name],
+      {},
+      layer.name,
+    );
     return [node];
   }
 
@@ -489,16 +517,16 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Flatten node.
    */
-  @register_caffe_op('caffe', 'Flatten')
+  @register_caffe_op("caffe", "Flatten")
   mapFlatten(layer: object, _graph: Graph): Node[] {
     const param = layer.flatten_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     const node = new Node(
-      'Flatten',
+      "Flatten",
       layer.bottom || [],
       layer.top || [layer.name],
       {
-        axis: new Attribute('axis', 'INT', axis),
+        axis: new Attribute("axis", "INT", axis),
       },
       layer.name,
     );
@@ -512,7 +540,7 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Identity nodes.
    */
-  @register_caffe_op('caffe', 'Split')
+  @register_caffe_op("caffe", "Split")
   mapSplit(layer: object, _graph: Graph): Node[] {
     // Caffe Split acts as a pass-through copying data to multiple tops
     const nodes: Node[] = [];
@@ -520,10 +548,12 @@ export class CaffeMapper {
     const bottoms = layer.bottom || [];
     if (tops.length > 0) {
       for (let i = 0; i < tops.length; i++) {
-        nodes.push(new Node('Identity', bottoms, [tops[i]], {}, `${layer.name}_${i}`));
+        nodes.push(
+          new Node("Identity", bottoms, [tops[i]], {}, `${layer.name}_${i}`),
+        );
       }
     } else {
-      nodes.push(new Node('Identity', bottoms, [layer.name], {}, layer.name));
+      nodes.push(new Node("Identity", bottoms, [layer.name], {}, layer.name));
     }
     return nodes;
   }
@@ -535,23 +565,31 @@ export class CaffeMapper {
    * @param {Graph} graph - The target ONNX Graph.
    * @returns {Node[]} An array containing the corresponding ONNX Split node.
    */
-  @register_caffe_op('caffe', 'Slice')
+  @register_caffe_op("caffe", "Slice")
   mapSlice(layer: object, _graph: Graph): Node[] {
     const param = layer.slice_param || {};
     const axis = param.axis !== undefined ? param.axis : 1;
     // Caffe slice points determine the cut sizes. In ONNX this maps to Split.
     const splitAttr: number[] = [];
     if (param.slice_point) {
-      const points = Array.isArray(param.slice_point) ? param.slice_point : [param.slice_point];
+      const points = Array.isArray(param.slice_point)
+        ? param.slice_point
+        : [param.slice_point];
       splitAttr.push(...points); // Placeholder for length vs point conversion
     }
     const attrs: Record<string, Attribute> = {
-      axis: new Attribute('axis', 'INT', axis),
+      axis: new Attribute("axis", "INT", axis),
     };
     if (splitAttr.length > 0) {
-      attrs.split = new Attribute('split', 'INTS', splitAttr);
+      attrs.split = new Attribute("split", "INTS", splitAttr);
     }
-    const node = new Node('Split', layer.bottom || [], layer.top || [], attrs, layer.name);
+    const node = new Node(
+      "Split",
+      layer.bottom || [],
+      layer.top || [],
+      attrs,
+      layer.name,
+    );
     return [node];
   }
 
@@ -562,8 +600,9 @@ export class CaffeMapper {
     if (layer.blobs.length > 0) {
       const wBlob = layer.blobs[0];
       const shape = wBlob.shape?.dim || [1]; // dummy shape if missing
-      const tensor = new Tensor(wName, shape, 'float32', true, false);
-      const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
+      const tensor = new Tensor(wName, shape, "float32", true, false);
+      const size =
+        shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
       tensor.data = new Float32Array(size); // Zero initialized
       if (wBlob.data) {
         (tensor.data as Float32Array).set(wBlob.data.slice(0, size));
@@ -576,8 +615,9 @@ export class CaffeMapper {
       const bName = `${layer.name}_B`;
       const bBlob = layer.blobs[1];
       const shape = bBlob.shape?.dim || [1];
-      const tensor = new Tensor(bName, shape, 'float32', true, false);
-      const size = shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
+      const tensor = new Tensor(bName, shape, "float32", true, false);
+      const size =
+        shape.reduce((a: number, b: number) => a * Math.abs(b), 1) || 1;
       tensor.data = new Float32Array(size);
       if (bBlob.data) {
         (tensor.data as Float32Array).set(bBlob.data.slice(0, size));

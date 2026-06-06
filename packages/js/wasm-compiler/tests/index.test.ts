@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
-import { WasmCompiler } from '../src/index.js';
+import { describe, expect, it, vi } from "vitest";
+import { WasmCompiler } from "../src/index.js";
 
-describe('WasmCompiler', () => {
-  it('should compile', async () => {
+describe("WasmCompiler", () => {
+  it("should compile", async () => {
     const c = new WasmCompiler();
 
     global.WebAssembly = {

@@ -62,22 +62,22 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             shape: 'round-rectangle',
             width: 'label',
             height: 'label',
-            padding: '10px',
-          },
+            padding: '10px'
+          }
         },
         {
           selector: '.onnx-input, .onnx-output',
           style: {
             'background-color': '#2b8a3e',
-            shape: 'ellipse',
-          },
+            shape: 'ellipse'
+          }
         },
         {
           selector: '.onnx-initializer',
           style: {
             'background-color': '#e67700',
-            shape: 'barrel',
-          },
+            shape: 'barrel'
+          }
         },
         {
           selector: 'edge',
@@ -92,13 +92,13 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             color: '#868e96',
             'text-background-color': '#ffffff',
             'text-background-opacity': 1,
-            'text-background-padding': '2px',
-          },
-        },
+            'text-background-padding': '2px'
+          }
+        }
       ],
       layout: {
-        name: 'preset',
-      },
+        name: 'preset'
+      }
     });
 
     this.cy.on('tap', 'node', (evt) => {
@@ -133,7 +133,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<VizGraph>('ONNX_GRAPH_GENERATED', (graph) => {
         this.renderGraph(graph);
-      }),
+      })
     );
 
     this.onCleanup(
@@ -145,7 +145,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             this.cy?.fit();
           }, 50);
         }
-      }),
+      })
     );
   }
 
@@ -170,7 +170,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
         directed: true,
         spacingFactor: 1.5,
         fit: true,
-        padding: 50,
+        padding: 50
       })
       .run();
 

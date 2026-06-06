@@ -3,14 +3,19 @@
  * Provides index functionality for the tensorrt package.
  */
 
-import { ActivationType, BuilderFlag, DataType, ElementWiseOperation } from './enums';
-import { trtFfi } from './ffi';
+import {
+  ActivationType,
+  BuilderFlag,
+  DataType,
+  ElementWiseOperation,
+} from "./enums";
+import { trtFfi } from "./ffi";
 
 export class Builder {
   public ptr: ReturnType<typeof JSON.parse>;
 
   constructor() {
-    if (!trtFfi.lib) throw new Error('TensorRT library not loaded');
+    if (!trtFfi.lib) throw new Error("TensorRT library not loaded");
     const ver = trtFfi.getVersion();
     const versionInt = ver[0]! * 10000 + ver[1]! * 100 + ver[2]! || 80600;
 
@@ -20,12 +25,12 @@ export class Builder {
     nullPtr.fill(0);
 
     this.ptr = trtFfi.lib.createInferBuilder_INTERNAL(nullPtr, versionInt);
-    if (!this.ptr) throw new Error('Failed to create Builder');
+    if (!this.ptr) throw new Error("Failed to create Builder");
   }
 
   createNetwork(): NetworkDefinition {
     const ptr = trtFfi.lib.createNetworkV2(this.ptr, 1 << 0);
-    if (!ptr) throw new Error('Failed to create NetworkDefinition');
+    if (!ptr) throw new Error("Failed to create NetworkDefinition");
     return new NetworkDefinition(ptr);
   }
 

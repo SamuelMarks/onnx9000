@@ -3,8 +3,8 @@
  * Provides emitter functionality for the coreml package.
  */
 
-import { WIRE_TYPE_LENGTH_DELIMITED, WIRE_TYPE_VARINT } from '@onnx9000/core';
-import { Writer } from './protobuf.js';
+import { WIRE_TYPE_LENGTH_DELIMITED, WIRE_TYPE_VARINT } from "@onnx9000/core";
+import { Writer } from "./protobuf.js";
 import type {
   FeatureDescription,
   Metadata,
@@ -12,7 +12,7 @@ import type {
   Model,
   ModelDescription,
   NeuralNetwork,
-} from './schema.js';
+} from "./schema.js";
 
 export function emitModel(model: Model): Uint8Array {
   const writer = new Writer();

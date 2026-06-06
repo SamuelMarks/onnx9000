@@ -20,7 +20,9 @@ export class Autograd {
     const tempVisited = new Set<string>();
     const nameToNode = new Map<string, INode>();
 
-    nodes.forEach((n) => nameToNode.set(n.name, n));
+    nodes.forEach((n) => {
+      nameToNode.set(n.name, n);
+    });
 
     const visit = (nodeName: string) => {
       if (tempVisited.has(nodeName)) throw new Error(`Cycle detected`);

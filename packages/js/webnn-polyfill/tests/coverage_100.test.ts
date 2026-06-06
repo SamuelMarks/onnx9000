@@ -1,21 +1,21 @@
-import { describe, expect, it } from 'vitest';
-import { PolyfillMLGraphBuilder } from '../src/builder.js';
-import { PolyfillMLContext } from '../src/context.js';
-import { PolyfillMLOperand } from '../src/operand.js';
+import { describe, expect, it } from "vitest";
+import { PolyfillMLGraphBuilder } from "../src/builder.js";
+import { PolyfillMLContext } from "../src/context.js";
+import { PolyfillMLOperand } from "../src/operand.js";
 
-describe('Coverage 100 WebNN Polyfill', () => {
-  it('builder build sync names', async () => {
+describe("Coverage 100 WebNN Polyfill", () => {
+  it("builder build sync names", async () => {
     const b = new PolyfillMLGraphBuilder(new PolyfillMLContext());
-    const _input = b.input('input', { dataType: 'float32', dimensions: [1] });
+    const _input = b.input("input", { dataType: "float32", dimensions: [1] });
 
     // Let's create an operand with name identical to output key
-    const op = new PolyfillMLOperand('same_name', 'float32', [1]);
+    const op = new PolyfillMLOperand("same_name", "float32", [1]);
     Object.assign(op, {
       sourceNode: {
-        name: 'same_name',
+        name: "same_name",
         inputs: [],
-        outputs: ['same_name'],
-        opType: 'Identity',
+        outputs: ["same_name"],
+        opType: "Identity",
       },
     });
 

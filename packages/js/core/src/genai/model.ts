@@ -3,10 +3,10 @@
  * Provides model functionality for the core package.
  */
 
-import type { Tensor } from '../ir/tensor.js';
-import type { Generator } from './generator.js';
-import { BasicTokenizer, type Tokenizer } from './tokenizer.js';
-import type { GeneratorParams, ModelParams } from './types.js';
+import type { Tensor } from "../ir/tensor.js";
+import type { Generator } from "./generator.js";
+import { BasicTokenizer, type Tokenizer } from "./tokenizer.js";
+import type { GeneratorParams, ModelParams } from "./types.js";
 
 /**
  * Base Model class for GenAI wrappers.
@@ -37,7 +37,10 @@ export abstract class Model {
    * @param params Generation parameters.
    * @returns AsyncGenerator yielding token IDs.
    */
-  async *generate(promptIds: Tensor, params: GeneratorParams): AsyncGenerator<number, void, void> {
+  async *generate(
+    promptIds: Tensor,
+    params: GeneratorParams,
+  ): AsyncGenerator<number, void, void> {
     const generator = this.createGenerator(params);
     yield* generator.generate(promptIds);
   }

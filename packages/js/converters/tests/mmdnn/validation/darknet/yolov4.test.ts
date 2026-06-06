@@ -1,10 +1,10 @@
-import { Graph } from '@onnx9000/core';
-import { describe, expect, it } from 'vitest';
-import { DarknetMapper } from '../../../../src/mmdnn/darknet/mapper.js';
-import { parseCfg } from '../../../../src/mmdnn/darknet/parser.js';
+import { Graph } from "@onnx9000/core";
+import { describe, expect, it } from "vitest";
+import { DarknetMapper } from "../../../../src/mmdnn/darknet/mapper.js";
+import { parseCfg } from "../../../../src/mmdnn/darknet/parser.js";
 
-describe('Darknet YOLO v4 Validation', () => {
-  it('should parse and map a dummy YOLO v4 cfg', () => {
+describe("Darknet YOLO v4 Validation", () => {
+  it("should parse and map a dummy YOLO v4 cfg", () => {
     const cfg = `
 [net]
 batch=1
@@ -40,21 +40,22 @@ classes=80
     const layers = parseCfg(cfg);
     expect(layers.length).toBe(6);
 
-    const graph = new Graph('yolov4');
+    const graph = new Graph("yolov4");
     const weights = new Float32Array(5000);
     const mapper = new DarknetMapper(graph, weights);
 
     expect(() => mapper.map(layers)).not.toThrow();
 
-    const yoloLayer = layers.find((l) => l.type === 'yolo');
+    const yoloLayer = layers.find((l) => l.type === "yolo");
     expect(yoloLayer).toBeDefined();
     expect(yoloLayer?.anchors).toEqual([
-      12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401,
+      12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459,
+      401,
     ]);
 
-    expect(graph.nodes.some((n) => n.opType === 'Conv')).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === 'MaxPool')).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === 'Identity')).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === 'Add')).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "Conv")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "MaxPool")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "Identity")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "Add")).toBe(true);
   });
 });

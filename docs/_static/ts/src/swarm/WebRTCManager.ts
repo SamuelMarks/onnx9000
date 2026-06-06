@@ -193,7 +193,9 @@ export class WebRTCManager {
         if (tensorBuffer.length === expectedChunks) {
           // 377. Reassemble received chunks and trigger execution
           let totalLen = 0;
-          tensorBuffer.forEach((b) => (totalLen += b.length));
+          tensorBuffer.forEach((b) => {
+            totalLen += b.length;
+          });
           const combined = new Uint8Array(totalLen);
           let offset = 0;
           tensorBuffer.forEach((b) => {
@@ -227,6 +229,8 @@ export class WebRTCManager {
     if (msg.type === 'tensor') {
       // Control signal preceding binary chunks
       expectedChunks = msg.payload.chunks;
+      // 376. Reassemble received tensor chunks
+      globalEvents.emit('swarmTensorReceived', { peerId, payload: msg.payload });
     } else if (msg.type === 'ping') {
       this.sendMessage(peerId, { type: 'pong', payload: msg.payload });
     } else if (msg.type === 'pong') {
@@ -234,9 +238,6 @@ export class WebRTCManager {
       const rtt = now - msg.payload;
       this.latencies.set(peerId, rtt);
       globalEvents.emit('swarmLatencyUpdate', { peerId, rtt });
-    } else if (msg.type === 'tensor') {
-      // 376. Reassemble received tensor chunks
-      globalEvents.emit('swarmTensorReceived', { peerId, payload: msg.payload });
     } else if (msg.type === 'sync') {
       globalEvents.emit('swarmSync', { peerId, payload: msg.payload });
     }

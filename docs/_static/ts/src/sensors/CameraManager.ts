@@ -36,7 +36,9 @@ export class CameraManager {
 
   stop(): void {
     if (this.stream) {
-      this.stream.getTracks().forEach((t) => t.stop());
+      this.stream.getTracks().forEach((t) => {
+        t.stop();
+      });
       this.stream = null;
     }
     this.isCapturing = false;

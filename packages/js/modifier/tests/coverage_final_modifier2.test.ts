@@ -1,15 +1,16 @@
 // @vitest-environment jsdom
 
-import { Graph, Node } from '@onnx9000/core';
-import { afterEach, beforeEach, describe, it, vi } from 'vitest';
-import { ModifierApp } from '../src/app.js';
+import { Graph, Node } from "@onnx9000/core";
+import { afterEach, beforeEach, describe, it, vi } from "vitest";
+import { ModifierApp } from "../src/app.js";
 
-describe('Coverage Modifier App interactions', () => {
+describe("Coverage Modifier App interactions", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     const handler = {
       get(target: Object, prop: string) {
-        if (prop === 'measureText') return vi.fn().mockReturnValue({ width: 10 });
+        if (prop === "measureText")
+          return vi.fn().mockReturnValue({ width: 10 });
         if (prop in target) return target[prop];
         return vi.fn();
       },
@@ -21,12 +22,12 @@ describe('Coverage Modifier App interactions', () => {
     vi.useRealTimers();
   });
 
-  it('covers autoFix and duplicated nodes via keyboard', () => {
+  it("covers autoFix and duplicated nodes via keyboard", () => {
     document.body.innerHTML = '<div id="app"></div>';
-    const g = new Graph('test');
-    g.addNode(new Node('Add', ['a', 'b'], ['c']));
+    const g = new Graph("test");
+    g.addNode(new Node("Add", ["a", "b"], ["c"]));
     const app = new ModifierApp({
-      container: document.querySelector('#app') as HTMLElement,
+      container: document.querySelector("#app") as HTMLElement,
       initialGraph: g,
     });
 
@@ -40,8 +41,8 @@ describe('Coverage Modifier App interactions', () => {
 
     // 2. Keyboard event for duplicate: ctrl+d
     app.editor.selectedNodeIds.add(g.nodes[0].id);
-    const event = new window.KeyboardEvent('keydown', {
-      key: 'd',
+    const event = new window.KeyboardEvent("keydown", {
+      key: "d",
       ctrlKey: true,
     });
     window.dispatchEvent(event);

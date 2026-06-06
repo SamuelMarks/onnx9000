@@ -1,18 +1,18 @@
-import { describe, expect, it } from 'vitest';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
+import { describe, expect, it } from "vitest";
+import { FlatBufferBuilder } from "../src/flatbuffer/builder.js";
 
-describe('FlatBufferBuilder', () => {
-  it('should create a basic flatbuffer object', () => {
+describe("FlatBufferBuilder", () => {
+  it("should create a basic flatbuffer object", () => {
     const builder = new FlatBufferBuilder();
 
-    const strOffset = builder.createString('test');
+    const strOffset = builder.createString("test");
 
     builder.startObject(2);
     builder.addFieldOffset(0, strOffset, 0);
     builder.addFieldInt32(1, 42, 0);
     const root = builder.endObject();
 
-    builder.finish(root, 'TEST');
+    builder.finish(root, "TEST");
     const buf = builder.asUint8Array();
 
     expect(buf.length).toBeGreaterThan(0);
@@ -26,6 +26,6 @@ describe('FlatBufferBuilder', () => {
       view.getUint8(6),
       view.getUint8(7),
     );
-    expect(magic).toBe('TEST');
+    expect(magic).toBe("TEST");
   });
 });

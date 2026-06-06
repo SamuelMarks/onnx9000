@@ -1,13 +1,13 @@
-import { describe, expect, it } from 'vitest';
-import { compileModel } from '../src/cli.js';
+import { describe, expect, it } from "vitest";
+import { compileModel } from "../src/cli.js";
 
-describe('End-to-End NLP Validation', () => {
-  it('181-190. should validate NLP compilation', async () => {
+describe("End-to-End NLP Validation", () => {
+  it("181-190. should validate NLP compilation", async () => {
     await expect(
-      compileModel('bert.onnx', {
-        targetBackend: 'wasm',
+      compileModel("bert.onnx", {
+        targetBackend: "wasm",
         dumpMlir: false,
-        optimizeLevel: 'O3',
+        optimizeLevel: "O3",
       }),
     ).resolves.not.toThrow();
   });

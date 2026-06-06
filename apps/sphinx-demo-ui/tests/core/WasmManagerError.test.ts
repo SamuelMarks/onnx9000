@@ -5,7 +5,7 @@ import { WasmManager, WasmState } from '../../src/core/WasmManager';
 
 global.WebAssembly = {
   compile: vi.fn().mockResolvedValue({}),
-  instantiate: vi.fn().mockResolvedValue({ exports: {} }),
+  instantiate: vi.fn().mockResolvedValue({ exports: {} })
 } as object as typeof WebAssembly;
 
 describe('WasmManager fallback error', () => {

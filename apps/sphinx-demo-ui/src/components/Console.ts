@@ -46,7 +46,7 @@ export class Console extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<LogEntry>('CONSOLE_LOG', (entry) => {
         this.appendLog(entry);
-      }),
+      })
     );
   }
 

@@ -11,13 +11,13 @@ describe('Console', () => {
     globalEventBus.emit('CONSOLE_LOG', {
       level: 'info',
       message: 'test msg',
-      timestamp: new Date(),
+      timestamp: new Date()
     });
 
     expect(consoleComp.element.innerHTML).toContain('test msg');
 
     const clearBtn = consoleComp.element.querySelector(
-      '.demo-console-clear-btn',
+      '.demo-console-clear-btn'
     ) as HTMLButtonElement;
     clearBtn.click();
 
