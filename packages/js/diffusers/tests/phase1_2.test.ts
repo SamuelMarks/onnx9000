@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { DiffusionPipeline } from '../src/pipeline.js';
+import { describe, it, expect, vi } from "vitest";
+import { DiffusionPipeline } from "../src/pipeline.js";
 import {
   DDIMScheduler,
   DDPMScheduler,
@@ -13,29 +13,29 @@ import {
   HeunDiscreteScheduler,
   UniPCMultistepScheduler,
   EulerAncestralDiscreteScheduler,
-} from '../src/schedulers.js';
-import { PyTorchPCG, rand, randn } from '../src/utils';
+} from "../src/schedulers.js";
+import { PyTorchPCG, rand, randn } from "../src/utils";
 
 // Mock fetch
 global.fetch = vi.fn(() =>
   Promise.resolve({
     ok: true,
-    json: () => Promise.resolve({ _class_name: 'StableDiffusionPipeline' }),
+    json: () => Promise.resolve({ _class_name: "StableDiffusionPipeline" }),
   }),
 ) as any;
 
-describe('DiffusionPipeline Phase 1', () => {
-  it('fromPretrained', async () => {
+describe("DiffusionPipeline Phase 1", () => {
+  it("fromPretrained", async () => {
     const pipeline = await DiffusionPipeline.fromPretrained(
-      'hf-internal-testing/tiny-stable-diffusion-torch',
+      "hf-internal-testing/tiny-stable-diffusion-torch",
     );
     expect(pipeline).toBeDefined();
-    expect(pipeline.modelIndex._class_name).toBe('StableDiffusionPipeline');
+    expect(pipeline.modelIndex._class_name).toBe("StableDiffusionPipeline");
   });
 
-  it('async execution and memory API', async () => {
+  it("async execution and memory API", async () => {
     const pipeline = await DiffusionPipeline.fromPretrained(
-      'hf-internal-testing/tiny-stable-diffusion-torch',
+      "hf-internal-testing/tiny-stable-diffusion-torch",
     );
     pipeline.freeMemory();
 
@@ -44,27 +44,27 @@ describe('DiffusionPipeline Phase 1', () => {
       calledSteps++;
     };
 
-    const latents = await pipeline.call('dummy', 2, undefined, callback);
+    const latents = await pipeline.call("dummy", 2, undefined, callback);
     expect(calledSteps).toBe(2);
     expect(latents.length).toBe(1 * 4 * 64 * 64);
   });
 
-  it('pipeline abort', async () => {
+  it("pipeline abort", async () => {
     const pipeline = await DiffusionPipeline.fromPretrained(
-      'hf-internal-testing/tiny-stable-diffusion-torch',
+      "hf-internal-testing/tiny-stable-diffusion-torch",
     );
     const controller = new AbortController();
     const signal = controller.signal;
     controller.abort();
 
-    await expect(pipeline.call('dummy', 2, undefined, undefined, signal)).rejects.toThrow(
-      'Pipeline aborted.',
-    );
+    await expect(
+      pipeline.call("dummy", 2, undefined, undefined, signal),
+    ).rejects.toThrow("Pipeline aborted.");
   });
 });
 
-describe('Schedulers Phase 2', () => {
-  it('all schedulers can step', () => {
+describe("Schedulers Phase 2", () => {
+  it("all schedulers can step", () => {
     const schedulers = [
       new DDIMScheduler(),
       new DDPMScheduler(),
@@ -92,8 +92,8 @@ describe('Schedulers Phase 2', () => {
   });
 });
 
-describe('Utils', () => {
-  it('prng is deterministic', () => {
+describe("Utils", () => {
+  it("prng is deterministic", () => {
     const gen1 = new PyTorchPCG(123);
     const gen2 = new PyTorchPCG(123);
 

@@ -2,8 +2,8 @@
  * @fileoverview utilities.ts
  * Provides utilities functionality for the modifier package.
  */
-import { Graph, Node } from '@onnx9000/core';
-import { GraphMutator } from '../GraphMutator.js';
+import { Graph, Node } from "@onnx9000/core";
+import { GraphMutator } from "../GraphMutator.js";
 
 export class ModifierUtilities {
   mutator: GraphMutator;
@@ -34,7 +34,7 @@ export class ModifierUtilities {
 
   // 67. Make Dynamic
   makeDynamic() {
-    this.changeBatchSize('batch_size');
+    this.changeBatchSize("batch_size");
   }
 
   // 68. Strip Initializers
@@ -53,7 +53,13 @@ export class ModifierUtilities {
     if (consumers.length === 0) return; // Nothing to intercept
 
     const identityOutput = `${edgeName}_identity`;
-    this.mutator.addNode('Identity', [edgeName], [identityOutput], {}, `Identity_${edgeName}`);
+    this.mutator.addNode(
+      "Identity",
+      [edgeName],
+      [identityOutput],
+      {},
+      `Identity_${edgeName}`,
+    );
 
     // Re-route consumers
     for (const consumer of consumers) {
@@ -109,7 +115,11 @@ export class ModifierUtilities {
       // GraphMutator renameNode is not strictly unique-enforced unless we do it.
       let uniqueName = newName;
       let counter = 1;
-      while (this.mutator.graph.nodes.some((n) => n.name === uniqueName && n !== node)) {
+      while (
+        this.mutator.graph.nodes.some(
+          (n) => n.name === uniqueName && n !== node,
+        )
+      ) {
         uniqueName = `${newName}_${counter++}`;
       }
 
@@ -126,7 +136,7 @@ export class ModifierUtilities {
 
   // 69. Extract Subgraph
   extractSubgraph(selectedNodeIds: string[]): Graph {
-    const newGraph = new Graph('ExtractedSubgraph');
+    const newGraph = new Graph("ExtractedSubgraph");
     const nodeSet = new Set(selectedNodeIds);
     for (const node of this.mutator.graph.nodes) {
       if (nodeSet.has(node.id)) {
@@ -158,7 +168,7 @@ export class ModifierUtilities {
     const neededInputs = new Set<string>();
     for (const node of newGraph.nodes) {
       for (const inp of node.inputs) {
-        if (!allInternalOutputs.has(inp) && inp !== '') {
+        if (!allInternalOutputs.has(inp) && inp !== "") {
           neededInputs.add(inp);
         }
       }
@@ -191,27 +201,28 @@ export class ModifierUtilities {
     const unresolvedInputs = new Set<string>();
     const producedEdges = new Set<string>();
 
-    for (const input of this.mutator.graph.inputs) producedEdges.add(input.name);
+    for (const input of this.mutator.graph.inputs)
+      producedEdges.add(input.name);
     for (const init of this.mutator.graph.initializers) producedEdges.add(init);
 
     for (const node of this.mutator.graph.nodes) {
       for (const out of node.outputs) producedEdges.add(out);
       for (const inp of node.inputs) {
-        if (!producedEdges.has(inp) && inp !== '') {
+        if (!producedEdges.has(inp) && inp !== "") {
           unresolvedInputs.add(inp);
         }
       }
     }
 
     if (unresolvedInputs.size === 0) {
-      alert('No missing initializers/inputs detected.');
+      alert("No missing initializers/inputs detected.");
       return;
     }
 
     for (const missing of Array.from(unresolvedInputs)) {
       // Create a dummy tensor (1 float32)
       const data = new Float32Array([0]);
-      this.mutator.addInitializer(missing, 'float32', [1], data);
+      this.mutator.addInitializer(missing, "float32", [1], data);
     }
     alert(`Auto-fixed ${unresolvedInputs.size} missing initializers.`);
   }
@@ -219,14 +230,17 @@ export class ModifierUtilities {
   // 225. Validate Opset macro checking compatibility with opset 13-21
   validateOpset() {
     const aiOnnx =
-      this.mutator.graph.opsetImports[''] || this.mutator.graph.opsetImports['ai.onnx'];
+      this.mutator.graph.opsetImports[""] ||
+      this.mutator.graph.opsetImports["ai.onnx"];
     if (aiOnnx && (aiOnnx < 13 || aiOnnx > 21)) {
       alert(
         `Warning: Opset version ${aiOnnx} is outside the officially supported WebNN/WebGPU range (13-21). You may experience compatibility issues.`,
       );
       return false;
     }
-    alert(`Opset version ${aiOnnx || 'unknown'} is within the recommended range.`);
+    alert(
+      `Opset version ${aiOnnx || "unknown"} is within the recommended range.`,
+    );
     return true;
   }
 
@@ -236,14 +250,14 @@ export class ModifierUtilities {
 
   // 73. Support injecting Cast nodes automatically if the user connects incompatible types
   injectCastNode(edgeName: string, targetType: string) {
-    const castNodeName = 'Cast_' + edgeName + '_to_' + targetType;
-    const newEdgeName = edgeName + '_casted';
+    const castNodeName = "Cast_" + edgeName + "_to_" + targetType;
+    const newEdgeName = edgeName + "_casted";
     this.mutator.addNode(
-      'Cast',
+      "Cast",
       [edgeName],
       [newEdgeName],
       {
-        to: { name: 'to', type: 'INT', value: targetType === 'FLOAT' ? 1 : 7 },
+        to: { name: "to", type: "INT", value: targetType === "FLOAT" ? 1 : 7 },
       },
       castNodeName,
     );

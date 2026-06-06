@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.transform.fusion import *
 
+
 def test_OpFusionDetector():
     try:
         obj = OpFusionDetector()
@@ -8,9 +9,9 @@ def test_OpFusionDetector():
     except Exception:
         pass
 
+
 def test_fuse_ops():
     try:
-        res = fuse_ops()
+        fuse_ops()
     except Exception:
         pass
-

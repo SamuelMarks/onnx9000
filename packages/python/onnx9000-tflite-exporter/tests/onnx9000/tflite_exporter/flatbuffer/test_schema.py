@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tflite_exporter.flatbuffer.schema import *
 
+
 def test_TensorType():
     try:
         obj = TensorType()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Padding():
     try:
@@ -15,12 +17,14 @@ def test_Padding():
     except Exception:
         pass
 
+
 def test_BuiltinOperator():
     try:
         obj = BuiltinOperator()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BuiltinOptions():
     try:
@@ -29,12 +33,14 @@ def test_BuiltinOptions():
     except Exception:
         pass
 
+
 def test_OperatorCode():
     try:
         obj = OperatorCode()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_QuantizationParameters():
     try:
@@ -43,12 +49,14 @@ def test_QuantizationParameters():
     except Exception:
         pass
 
+
 def test_Tensor():
     try:
         obj = Tensor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Operator():
     try:
@@ -57,12 +65,14 @@ def test_Operator():
     except Exception:
         pass
 
+
 def test_SubGraph():
     try:
         obj = SubGraph()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Buffer():
     try:
@@ -71,6 +81,7 @@ def test_Buffer():
     except Exception:
         pass
 
+
 def test_Metadata():
     try:
         obj = Metadata()
@@ -78,10 +89,10 @@ def test_Metadata():
     except Exception:
         pass
 
+
 def test_Model():
     try:
         obj = Model()
         assert obj is not None
     except Exception:
         pass
-

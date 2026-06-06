@@ -1,75 +1,86 @@
 import pytest
 from onnx9000.converters.frontend.nn.functional import *
 
+
 def test_relu():
     try:
-        res = relu()
+        relu()
     except Exception:
         pass
+
 
 def test_sigmoid():
     try:
-        res = sigmoid()
+        sigmoid()
     except Exception:
         pass
+
 
 def test_tanh():
     try:
-        res = tanh()
+        tanh()
     except Exception:
         pass
+
 
 def test_gelu():
     try:
-        res = gelu()
+        gelu()
     except Exception:
         pass
+
 
 def test_softmax():
     try:
-        res = softmax()
+        softmax()
     except Exception:
         pass
+
 
 def test_log_softmax():
     try:
-        res = log_softmax()
+        log_softmax()
     except Exception:
         pass
+
 
 def test_max_pool2d():
     try:
-        res = max_pool2d()
+        max_pool2d()
     except Exception:
         pass
+
 
 def test_linear():
     try:
-        res = linear()
+        linear()
     except Exception:
         pass
+
 
 def test_conv2d():
     try:
-        res = conv2d()
+        conv2d()
     except Exception:
         pass
+
 
 def test_pad():
     try:
-        res = pad()
+        pad()
     except Exception:
         pass
+
 
 def test_interpolate():
     try:
-        res = interpolate()
+        interpolate()
     except Exception:
         pass
+
 
 def test_one_hot():
     try:
-        res = one_hot()
+        one_hot()
     except Exception:
         pass
-

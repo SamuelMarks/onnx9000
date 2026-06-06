@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
-import { LayoutOptimizer } from '../src/compiler/layout.js';
+import { describe, it, expect } from "vitest";
+import { Graph, Node, Tensor, ValueInfo } from "@onnx9000/core";
+import { LayoutOptimizer } from "../src/compiler/layout.js";
 
-describe('Layout Modifications Accuracy', () => {
-  it('should maintain numerical accuracy during NCHW to NHWC layout transpositions', () => {
+describe("Layout Modifications Accuracy", () => {
+  it("should maintain numerical accuracy during NCHW to NHWC layout transpositions", () => {
     // 306. Check numerical accuracy of NCHW to NHWC layout modifications natively.
-    const graph = new Graph('TestGraph');
-    graph.inputs.push(new ValueInfo('X', [1, 2, 2, 2], 'float32'));
+    const graph = new Graph("TestGraph");
+    graph.inputs.push(new ValueInfo("X", [1, 2, 2, 2], "float32"));
 
     // NCHW tensor: [1, 2, 2, 2]
     // 1 batch, 2 channels, 2 height, 2 width
@@ -16,8 +16,15 @@ describe('Layout Modifications Accuracy', () => {
     // Flat: 1, 2, 3, 4, 5, 6, 7, 8
 
     const nchwData = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8]);
-    graph.tensors['W'] = new Tensor('W', [1, 2, 2, 2], 'float32', true, false, nchwData);
-    graph.nodes.push(new Node('Conv', ['X', 'W'], ['Y'], {}, 'conv1'));
+    graph.tensors["W"] = new Tensor(
+      "W",
+      [1, 2, 2, 2],
+      "float32",
+      true,
+      false,
+      nchwData,
+    );
+    graph.nodes.push(new Node("Conv", ["X", "W"], ["Y"], {}, "conv1"));
 
     const optimizer = new LayoutOptimizer(graph, false);
     optimizer.optimize();
@@ -45,7 +52,7 @@ describe('Layout Modifications Accuracy', () => {
     // O0, H1, W1, I0 = 4
     // O0, H1, W1, I1 = 8
 
-    const transposed = graph.tensors['W']!.data as Float32Array;
+    const transposed = graph.tensors["W"]!.data as Float32Array;
     expect(Array.from(transposed)).toEqual([1, 5, 2, 6, 3, 7, 4, 8]);
   });
 });

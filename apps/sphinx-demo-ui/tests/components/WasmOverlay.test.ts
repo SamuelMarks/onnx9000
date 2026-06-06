@@ -5,8 +5,8 @@ describe('WasmOverlay.ts', () => {
   it('should instantiate and cover WasmOverlay', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).WasmOverlay();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).WasmOverlay();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

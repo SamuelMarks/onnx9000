@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.converters.paddle.parsers import *
 
+
 def test_PaddleNode():
     try:
         obj = PaddleNode()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PaddleVar():
     try:
@@ -15,12 +17,14 @@ def test_PaddleVar():
     except Exception:
         pass
 
+
 def test_PaddleBlock():
     try:
         obj = PaddleBlock()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PaddleGraph():
     try:
@@ -29,6 +33,7 @@ def test_PaddleGraph():
     except Exception:
         pass
 
+
 def test_PaddleProtobufParser():
     try:
         obj = PaddleProtobufParser()
@@ -36,33 +41,37 @@ def test_PaddleProtobufParser():
     except Exception:
         pass
 
+
 def test_load_paddle_model():
     try:
-        res = load_paddle_model()
+        load_paddle_model()
     except Exception:
         pass
+
 
 def test_map_paddle_dtype():
     try:
-        res = map_paddle_dtype()
+        map_paddle_dtype()
     except Exception:
         pass
+
 
 def test_get_opset_version():
     try:
-        res = get_opset_version()
+        get_opset_version()
     except Exception:
         pass
+
 
 def test_fallback_paddle_op():
     try:
-        res = fallback_paddle_op()
+        fallback_paddle_op()
     except Exception:
         pass
+
 
 def test_log_unsupported_paddle_node():
     try:
-        res = log_unsupported_paddle_node()
+        log_unsupported_paddle_node()
     except Exception:
         pass
-

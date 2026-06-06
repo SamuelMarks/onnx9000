@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.frontend.onnx import *
 
+
 def test_ONNXImporter():
     try:
         obj = ONNXImporter()
@@ -8,9 +9,9 @@ def test_ONNXImporter():
     except Exception:
         pass
 
+
 def test_from_onnx():
     try:
-        res = from_onnx()
+        from_onnx()
     except Exception:
         pass
-

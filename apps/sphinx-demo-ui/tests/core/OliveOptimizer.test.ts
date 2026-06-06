@@ -5,8 +5,8 @@ describe('OliveOptimizer.ts', () => {
   it('should instantiate and cover OliveOptimizer', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).OliveOptimizer();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).OliveOptimizer();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

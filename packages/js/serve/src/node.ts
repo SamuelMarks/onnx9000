@@ -2,29 +2,33 @@
  * @fileoverview node.ts
  * Provides node functionality for the serve package.
  */
-import * as http from 'node:http';
-import * as http2 from 'node:http2';
-import { Onnx9000Server } from './index';
+import * as http from "node:http";
+import * as http2 from "node:http2";
+import { Onnx9000Server } from "./index";
 
 // 21. Provide `Node.js` specific entrypoint (`http` wrapper)
 // 4. Implement HTTP/2 multiplexed connections.
 // 5. Implement gRPC protocol emulation over HTTP/2 natively in JS.
-export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2: boolean = false) {
+export function serveNode(
+  server: Onnx9000Server,
+  port: number = 8080,
+  useHttp2: boolean = false,
+) {
   const handler = async (
     req: ReturnType<typeof JSON.parse>,
     res: ReturnType<typeof JSON.parse>,
   ) => {
     try {
       // Reconstruct full URL
-      const protocol = req.socket.encrypted ? 'https' : 'http';
-      const host = req.headers[':authority'] || req.headers.host || 'localhost';
-      const urlStr = req.url || '/';
+      const protocol = req.socket.encrypted ? "https" : "http";
+      const host = req.headers[":authority"] || req.headers.host || "localhost";
+      const urlStr = req.url || "/";
       const url = new URL(urlStr, `${protocol}://${host}`);
 
       // Reconstruct Request Headers
       const headers = new Headers();
       for (const [key, value] of Object.entries(req.headers)) {
-        if (key.startsWith(':')) continue; // skip http2 pseudo-headers
+        if (key.startsWith(":")) continue; // skip http2 pseudo-headers
         if (Array.isArray(value)) {
           value.forEach((v) => {
             headers.append(key, v);
@@ -41,11 +45,11 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
       }
       const bodyBuffer = Buffer.concat(buffers);
       const init: RequestInit = {
-        method: req.method || req.headers[':method'] || 'GET',
+        method: req.method || req.headers[":method"] || "GET",
         headers,
       };
 
-      if (init.method !== 'GET' && init.method !== 'HEAD') {
+      if (init.method !== "GET" && init.method !== "HEAD") {
         init.body = bodyBuffer;
       }
 
@@ -56,7 +60,7 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
       if (res.stream) {
         // HTTP/2
         const responseHeaders: Record<string, string | number> = {
-          ':status': response.status,
+          ":status": response.status,
         };
         response.headers.forEach((value, key) => {
           responseHeaders[key] = value;
@@ -84,7 +88,7 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
     } catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
       if (res.stream) {
-        res.stream.respond({ ':status': 500 });
+        res.stream.respond({ ":status": 500 });
       } else {
         res.statusCode = 500;
       }
@@ -98,7 +102,7 @@ export function serveNode(server: Onnx9000Server, port: number = 8080, useHttp2:
 
   httpServer.listen(port, () => {
     console.log(
-      `ONNX9000 Serve listening on port ${port} (Node.js ${useHttp2 ? 'HTTP/2' : 'HTTP/1.1'})`,
+      `ONNX9000 Serve listening on port ${port} (Node.js ${useHttp2 ? "HTTP/2" : "HTTP/1.1"})`,
     );
   });
 

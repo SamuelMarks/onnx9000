@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.core.utils import *
 
+
 def test_CyclicDependencyError():
     try:
         obj = CyclicDependencyError()
@@ -8,9 +9,9 @@ def test_CyclicDependencyError():
     except Exception:
         pass
 
+
 def test_topological_sort():
     try:
-        res = topological_sort()
+        topological_sort()
     except Exception:
         pass
-

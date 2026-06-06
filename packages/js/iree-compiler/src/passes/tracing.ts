@@ -2,7 +2,7 @@
  * @fileoverview tracing.ts
  * Provides tracing functionality for the iree-compiler package.
  */
-import { Region } from '../ir/core.js';
+import { Region } from "../ir/core.js";
 
 // 251-260. Advanced Graph Diagnostics
 export class DiagnosticTracer {
@@ -14,8 +14,8 @@ export class DiagnosticTracer {
   public beginPass(name: string): void {
     this.chromeEvents.push({
       name,
-      cat: 'compiler_pass',
-      ph: 'B',
+      cat: "compiler_pass",
+      ph: "B",
       ts: performance.now() * 1000,
       pid: 1,
       tid: 1,
@@ -25,8 +25,8 @@ export class DiagnosticTracer {
   public endPass(name: string): void {
     this.chromeEvents.push({
       name,
-      cat: 'compiler_pass',
-      ph: 'E',
+      cat: "compiler_pass",
+      ph: "E",
       ts: performance.now() * 1000,
       pid: 1,
       tid: 1,
@@ -48,7 +48,7 @@ export class DiagnosticTracer {
 
   // 253. Visualizing HAL Sync Bottlenecks
   public traceHALSyncPoints(region: Region): void {
-    console.log('Visualizing HAL WaitIdle / Semaphore Sync');
+    console.log("Visualizing HAL WaitIdle / Semaphore Sync");
   }
 
   // 254. Track total WGSL shader string size
@@ -58,7 +58,7 @@ export class DiagnosticTracer {
 
   // 255. Injecting Profiling Counters (GPU ticks)
   public injectGPUProfiling(wgsl: string): string {
-    return wgsl + '\n// Injected GPU Timestamp Query (WebGPU API)';
+    return wgsl + "\n// Injected GPU Timestamp Query (WebGPU API)";
   }
 
   // 256. Correlate GPU Profiling to ONNX
@@ -78,11 +78,15 @@ export class DiagnosticTracer {
 
   // 259. Fallback execution on CPU
   public executeOnCPUFallback(region: Region): void {
-    console.log('Executing numerically exact CPU fallback interpreter for debugging.');
+    console.log(
+      "Executing numerically exact CPU fallback interpreter for debugging.",
+    );
   }
 
   // 260. Capture WebGPU Validation errors
   public mapWebGPUErrorToMLIR(errorMsg: string): void {
-    console.log(`WebGPU Error: ${errorMsg} -> Originated from web.linalg.conv2d`);
+    console.log(
+      `WebGPU Error: ${errorMsg} -> Originated from web.linalg.conv2d`,
+    );
   }
 }

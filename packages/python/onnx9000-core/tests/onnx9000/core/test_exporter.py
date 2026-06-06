@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.exporter import *
 
+
 def test_ONNXToKerasVisitor():
     try:
         obj = ONNXToKerasVisitor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_IRToONNXExporter():
     try:
@@ -15,27 +17,30 @@ def test_IRToONNXExporter():
     except Exception:
         pass
 
+
 def test_register_exporter():
     try:
-        res = register_exporter()
+        register_exporter()
     except Exception:
         pass
+
 
 def test_export_graph():
     try:
-        res = export_graph()
+        export_graph()
     except Exception:
         pass
+
 
 def test_generate_keras():
     try:
-        res = generate_keras()
+        generate_keras()
     except Exception:
         pass
+
 
 def test_generate_mlir():
     try:
-        res = generate_mlir()
+        generate_mlir()
     except Exception:
         pass
-

@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.te.tensor import *
 
+
 def test_ExprOp():
     try:
         obj = ExprOp()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_IterVar():
     try:
@@ -15,12 +17,14 @@ def test_IterVar():
     except Exception:
         pass
 
+
 def test_ReduceAxis():
     try:
         obj = ReduceAxis()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Var():
     try:
@@ -29,12 +33,14 @@ def test_Var():
     except Exception:
         pass
 
+
 def test_Const():
     try:
         obj = Const()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BinaryOp():
     try:
@@ -43,12 +49,14 @@ def test_BinaryOp():
     except Exception:
         pass
 
+
 def test_Add():
     try:
         obj = Add()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Sub():
     try:
@@ -57,12 +65,14 @@ def test_Sub():
     except Exception:
         pass
 
+
 def test_Mul():
     try:
         obj = Mul()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Div():
     try:
@@ -71,12 +81,14 @@ def test_Div():
     except Exception:
         pass
 
+
 def test_CallOp():
     try:
         obj = CallOp()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceOp():
     try:
@@ -85,12 +97,14 @@ def test_ReduceOp():
     except Exception:
         pass
 
+
 def test_Tensor():
     try:
         obj = Tensor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TensorComputeOp():
     try:
@@ -99,12 +113,14 @@ def test_TensorComputeOp():
     except Exception:
         pass
 
+
 def test_PlaceholderOp():
     try:
         obj = PlaceholderOp()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ComputeOp():
     try:
@@ -113,63 +129,72 @@ def test_ComputeOp():
     except Exception:
         pass
 
+
 def test_exp():
     try:
-        res = exp()
+        exp()
     except Exception:
         pass
+
 
 def test_log():
     try:
-        res = log()
+        log()
     except Exception:
         pass
+
 
 def test_sigmoid():
     try:
-        res = sigmoid()
+        sigmoid()
     except Exception:
         pass
+
 
 def test_sum():
     try:
-        res = sum()
+        sum()
     except Exception:
         pass
+
 
 def test_max():
     try:
-        res = max()
+        max()
     except Exception:
         pass
+
 
 def test_min():
     try:
-        res = min()
+        min()
     except Exception:
         pass
+
 
 def test_var():
     try:
-        res = var()
+        var()
     except Exception:
         pass
+
 
 def test_placeholder():
     try:
-        res = placeholder()
+        placeholder()
     except Exception:
         pass
+
 
 def test_compute():
     try:
-        res = compute()
+        compute()
     except Exception:
         pass
+
 
 def test_reduce_axis():
     try:
-        res = reduce_axis()
+        reduce_axis()
     except Exception:
         pass
-

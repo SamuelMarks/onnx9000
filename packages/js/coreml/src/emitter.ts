@@ -2,7 +2,7 @@
  * @fileoverview emitter.ts
  * Provides emitter functionality for the coreml package.
  */
-import { Writer } from './protobuf.js';
+import { Writer } from "./protobuf.js";
 import {
   Model,
   ModelDescription,
@@ -12,8 +12,8 @@ import {
   MILSpecProgram,
   MILSpecFunction,
   MILSpecBlock,
-} from './schema.js';
-import { WIRE_TYPE_VARINT, WIRE_TYPE_LENGTH_DELIMITED } from '@onnx9000/core';
+} from "./schema.js";
+import { WIRE_TYPE_VARINT, WIRE_TYPE_LENGTH_DELIMITED } from "@onnx9000/core";
 
 export function emitModel(model: Model): Uint8Array {
   const writer = new Writer();

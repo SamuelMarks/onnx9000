@@ -3,7 +3,7 @@
  * Provides keras-ast functionality for the converters package.
  */
 // @ts-nocheck
-import { JsonObject, JsonArray } from './tfjs-parser.js';
+import { JsonObject, JsonArray } from "./tfjs-parser.js";
 
 export interface KerasTensorSpec {
   name: string; // e.g. "layer_name:node_index:tensor_index"
@@ -24,12 +24,15 @@ export interface KerasModelTopology {
   inputs: KerasTensorSpec[];
   outputs: KerasTensorSpec[];
   nodes: Map<string, KerasNodeSpec>; // Key is node name e.g. 'layer_name:0'
-  signatures?: Record<string, { inputs: Record<string, string>; outputs: Record<string, string> }>; // e.g. "serving_default"
+  signatures?: Record<
+    string,
+    { inputs: Record<string, string>; outputs: Record<string, string> }
+  >; // e.g. "serving_default"
 }
 
 export function extractKerasTopology(
   modelConfig: JsonObject,
-  parentPrefix: string = '',
+  parentPrefix: string = "",
   rawSignatures?: JsonObject,
 ): KerasModelTopology {
   const topology: KerasModelTopology = {
@@ -42,70 +45,78 @@ export function extractKerasTopology(
     topology.signatures = {};
     for (const [sigName, sigDef] of Object.entries(rawSignatures)) {
       const sigObj = sigDef as JsonObject;
-      const inputsObj = (sigObj['inputs'] as JsonObject) || {};
-      const outputsObj = (sigObj['outputs'] as JsonObject) || {};
+      const inputsObj = (sigObj["inputs"] as JsonObject) || {};
+      const outputsObj = (sigObj["outputs"] as JsonObject) || {};
 
       const parsedInputs: Record<string, string> = {};
       for (const [k, v] of Object.entries(inputsObj)) {
-        if (typeof v === 'object' && v !== null && (v as JsonObject)['name']) {
-          parsedInputs[k] = (v as JsonObject)['name'] as string;
-        } else if (typeof v === 'string') {
+        if (typeof v === "object" && v !== null && (v as JsonObject)["name"]) {
+          parsedInputs[k] = (v as JsonObject)["name"] as string;
+        } else if (typeof v === "string") {
           parsedInputs[k] = v;
         }
       }
 
       const parsedOutputs: Record<string, string> = {};
       for (const [k, v] of Object.entries(outputsObj)) {
-        if (typeof v === 'object' && v !== null && (v as JsonObject)['name']) {
-          parsedOutputs[k] = (v as JsonObject)['name'] as string;
-        } else if (typeof v === 'string') {
+        if (typeof v === "object" && v !== null && (v as JsonObject)["name"]) {
+          parsedOutputs[k] = (v as JsonObject)["name"] as string;
+        } else if (typeof v === "string") {
           parsedOutputs[k] = v;
         }
       }
 
-      topology.signatures[sigName] = { inputs: parsedInputs, outputs: parsedOutputs };
+      topology.signatures[sigName] = {
+        inputs: parsedInputs,
+        outputs: parsedOutputs,
+      };
     }
   }
 
-  const className = modelConfig['class_name'] as string;
-  const config = modelConfig['config'] as JsonObject;
+  const className = modelConfig["class_name"] as string;
+  const config = modelConfig["config"] as JsonObject;
 
   // To keep track of hoisted nested models outputs for wiring
   const nestedModelOutputMap = new Map<string, string>();
 
-  if (className === 'Sequential') {
-    const layersList = config['layers'] as JsonArray;
+  if (className === "Sequential") {
+    const layersList = config["layers"] as JsonArray;
     let prevLayerName: string | undefined = undefined;
 
     for (const layerVal of layersList) {
       const layerObj = layerVal as JsonObject;
-      let lClassName = layerObj['class_name'] as string;
-      let lConfig = layerObj['config'] as JsonObject;
-      let lName = lConfig['name'] as string;
+      let lClassName = layerObj["class_name"] as string;
+      let lConfig = layerObj["config"] as JsonObject;
+      let lName = lConfig["name"] as string;
 
       // Handle Sequential layers where class_name / config are not wrapped
-      if (!lClassName && typeof layerObj['name'] === 'string') {
-        lName = layerObj['name'];
-        lClassName = (layerObj['className'] as string) || 'Unknown';
+      if (!lClassName && typeof layerObj["name"] === "string") {
+        lName = layerObj["name"];
+        lClassName = (layerObj["className"] as string) || "Unknown";
         lConfig = layerObj;
       }
 
       const prefixedName = parentPrefix ? `${parentPrefix}/${lName}` : lName;
       const inboundNodes: string[] = prevLayerName
-        ? [`${parentPrefix ? parentPrefix + '/' + prevLayerName : prevLayerName}:0:0`]
+        ? [
+            `${parentPrefix ? parentPrefix + "/" + prevLayerName : prevLayerName}:0:0`,
+          ]
         : [];
 
       // Identify first layer's input
       if (prevLayerName === undefined) {
         let shapeArray: JsonArray | undefined = undefined;
-        if (lConfig['batch_input_shape']) {
-          shapeArray = lConfig['batch_input_shape'] as JsonArray;
-        } else if (lConfig['input_shape']) {
-          shapeArray = [null, ...(lConfig['input_shape'] as JsonArray)];
+        if (lConfig["batch_input_shape"]) {
+          shapeArray = lConfig["batch_input_shape"] as JsonArray;
+        } else if (lConfig["input_shape"]) {
+          shapeArray = [null, ...(lConfig["input_shape"] as JsonArray)];
         }
 
-        const shape = shapeArray ? shapeArray.map((s) => (typeof s === 'number' ? s : null)) : [];
-        const dtype = typeof lConfig['dtype'] === 'string' ? lConfig['dtype'] : 'float32';
+        const shape = shapeArray
+          ? shapeArray.map((s) => (typeof s === "number" ? s : null))
+          : [];
+        const dtype =
+          typeof lConfig["dtype"] === "string" ? lConfig["dtype"] : "float32";
 
         topology.inputs.push({
           name: `${prefixedName}_input:0:0`,
@@ -114,12 +125,16 @@ export function extractKerasTopology(
         });
 
         // If the first layer isn't explicitly an InputLayer, we still feed it the synthetic input
-        if (lClassName !== 'InputLayer') {
+        if (lClassName !== "InputLayer") {
           inboundNodes.push(`${prefixedName}_input:0:0`);
         }
       }
 
-      if (lClassName === 'Functional' || lClassName === 'Sequential' || lClassName === 'Model') {
+      if (
+        lClassName === "Functional" ||
+        lClassName === "Sequential" ||
+        lClassName === "Model"
+      ) {
         const nestedTopology = extractKerasTopology(layerObj, prefixedName);
 
         // Hoist nested nodes
@@ -132,14 +147,15 @@ export function extractKerasTopology(
         if (nestedTopology.inputs.length > 0 && inboundNodes.length > 0) {
           const nestedInput = nestedTopology.inputs[0];
           if (nestedInput) {
-            const internalInputNodeName = nestedInput.name.split(':')[0] + ':0';
+            const internalInputNodeName = nestedInput.name.split(":")[0] + ":0";
             const internalInputNode = topology.nodes.get(internalInputNodeName);
             // Re-wire internal nodes that depended on the nested input to depend on the parent's inbound
             if (internalInputNode) {
               for (const [nName, nSpec] of topology.nodes.entries()) {
                 if (nName.startsWith(prefixedName)) {
-                  nSpec.inboundNodes = nSpec.inboundNodes.map((inNode: string) =>
-                    inNode === nestedInput.name ? inboundNodes[0]! : inNode,
+                  nSpec.inboundNodes = nSpec.inboundNodes.map(
+                    (inNode: string) =>
+                      inNode === nestedInput.name ? inboundNodes[0]! : inNode,
                   );
                 }
               }
@@ -151,11 +167,11 @@ export function extractKerasTopology(
 
         // Update prevLayerName to point to the last layer of the nested model
         if (nestedTopology.outputs.length > 0) {
-          const outName = nestedTopology.outputs[0]?.name.split(':')[0];
+          const outName = nestedTopology.outputs[0]?.name.split(":")[0];
           if (outName) {
             prevLayerName = outName;
             // Strip parentPrefix if it was added, as prevLayerName is used in the loop
-            if (parentPrefix && prevLayerName.startsWith(parentPrefix + '/')) {
+            if (parentPrefix && prevLayerName.startsWith(parentPrefix + "/")) {
               prevLayerName = prevLayerName.substring(parentPrefix.length + 1);
             }
           }
@@ -176,28 +192,34 @@ export function extractKerasTopology(
     // Output of Sequential is the last layer
     if (prevLayerName) {
       topology.outputs.push({
-        name: `${parentPrefix ? parentPrefix + '/' + prevLayerName : prevLayerName}:0:0`,
+        name: `${parentPrefix ? parentPrefix + "/" + prevLayerName : prevLayerName}:0:0`,
         shape: [], // Typically dynamic or inferred later
-        dtype: 'float32',
+        dtype: "float32",
       });
     }
-  } else if (className === 'Functional' || className === 'Model') {
-    const layersList = config['layers'] as JsonArray;
-    const inputList = config['input_layers'] as JsonArray;
-    const outputList = config['output_layers'] as JsonArray;
+  } else if (className === "Functional" || className === "Model") {
+    const layersList = config["layers"] as JsonArray;
+    const inputList = config["input_layers"] as JsonArray;
+    const outputList = config["output_layers"] as JsonArray;
 
     for (const layerVal of layersList) {
       const layerObj = layerVal as JsonObject;
-      const lClassName = layerObj['class_name'] as string;
-      const lConfig = layerObj['config'] as JsonObject;
-      const lName = layerObj['name'] as string;
+      const lClassName = layerObj["class_name"] as string;
+      const lConfig = layerObj["config"] as JsonObject;
+      const lName = layerObj["name"] as string;
       const prefixedName = parentPrefix ? `${parentPrefix}/${lName}` : lName;
 
-      const inboundNodesRaw = layerObj['inbound_nodes'] as JsonArray | undefined;
+      const inboundNodesRaw = layerObj["inbound_nodes"] as
+        | JsonArray
+        | undefined;
       const inboundNodesBase: string[][] = [];
 
       if (inboundNodesRaw && inboundNodesRaw.length > 0) {
-        for (let nodeIndex = 0; nodeIndex < inboundNodesRaw.length; nodeIndex++) {
+        for (
+          let nodeIndex = 0;
+          nodeIndex < inboundNodesRaw.length;
+          nodeIndex++
+        ) {
           const nodeGrpArr = inboundNodesRaw[nodeIndex] as JsonArray;
           const inputs: string[] = [];
 
@@ -206,8 +228,12 @@ export function extractKerasTopology(
             const srcLayer = nodeInfoArr[0] as string;
             const srcNodeIndex = nodeInfoArr[1] as number;
             const srcTensorIndex = nodeInfoArr[2] as number;
-            const prefixedSrcLayer = parentPrefix ? `${parentPrefix}/${srcLayer}` : srcLayer;
-            inputs.push(`${prefixedSrcLayer}:${srcNodeIndex}:${srcTensorIndex}`);
+            const prefixedSrcLayer = parentPrefix
+              ? `${parentPrefix}/${srcLayer}`
+              : srcLayer;
+            inputs.push(
+              `${prefixedSrcLayer}:${srcNodeIndex}:${srcTensorIndex}`,
+            );
           }
           inboundNodesBase.push(inputs);
         }
@@ -215,7 +241,11 @@ export function extractKerasTopology(
         inboundNodesBase.push([]);
       }
 
-      if (lClassName === 'Functional' || lClassName === 'Sequential' || lClassName === 'Model') {
+      if (
+        lClassName === "Functional" ||
+        lClassName === "Sequential" ||
+        lClassName === "Model"
+      ) {
         const nestedTopology = extractKerasTopology(layerObj, prefixedName);
 
         for (const [nName, nSpec] of nestedTopology.nodes.entries()) {
@@ -226,11 +256,18 @@ export function extractKerasTopology(
         if (nestedTopology.outputs.length > 0) {
           // Assume 1:1 output mapping for simplicity in Sequential/Functional nests
           // where outputs[0] is the main output
-          nestedModelOutputMap.set(`${prefixedName}:0:0`, nestedTopology.outputs[0]!.name);
+          nestedModelOutputMap.set(
+            `${prefixedName}:0:0`,
+            nestedTopology.outputs[0]!.name,
+          );
         }
 
         // Map each inbound node group (execution instance of the nested model)
-        for (let instanceIdx = 0; instanceIdx < inboundNodesBase.length; instanceIdx++) {
+        for (
+          let instanceIdx = 0;
+          instanceIdx < inboundNodesBase.length;
+          instanceIdx++
+        ) {
           const instanceInboundNodes = inboundNodesBase[instanceIdx];
 
           // For a functional model, it might have multiple inputs.
@@ -243,13 +280,15 @@ export function extractKerasTopology(
               const nestedInput = nestedTopology.inputs[inIdx];
               if (!nestedInput) continue;
               const nestedInputName = nestedInput.name; // e.g. nested_model/nested_in:0:0
-              const nestedInputBaseName = nestedInputName.split(':')[0] + ':0'; // nested_model/nested_in:0
+              const nestedInputBaseName = nestedInputName.split(":")[0] + ":0"; // nested_model/nested_in:0
 
               // Re-wire
               for (const [nName, nSpec] of topology.nodes.entries()) {
                 if (nName.startsWith(prefixedName)) {
                   nSpec.inboundNodes = nSpec.inboundNodes.map((inN: string) =>
-                    inN === nestedInputName ? instanceInboundNodes[inIdx]! : inN,
+                    inN === nestedInputName
+                      ? instanceInboundNodes[inIdx]!
+                      : inN,
                   );
                 }
               }
@@ -258,7 +297,11 @@ export function extractKerasTopology(
           }
         }
       } else {
-        for (let nodeIndex = 0; nodeIndex < inboundNodesBase.length; nodeIndex++) {
+        for (
+          let nodeIndex = 0;
+          nodeIndex < inboundNodesBase.length;
+          nodeIndex++
+        ) {
           const currentInbound = inboundNodesBase[nodeIndex] || [];
           topology.nodes.set(`${prefixedName}:${nodeIndex}`, {
             className: lClassName,
@@ -280,16 +323,18 @@ export function extractKerasTopology(
         const inTensorIndex = inArr[2] as number;
 
         let shape: (number | null)[] = [];
-        let dtype = 'float32';
+        let dtype = "float32";
 
         const layerNode = topology.nodes.get(`${inName}:0`);
-        if (layerNode && layerNode.className === 'InputLayer') {
-          if (layerNode.config['batch_input_shape']) {
-            const shapeArray = layerNode.config['batch_input_shape'] as JsonArray;
-            shape = shapeArray.map((s) => (typeof s === 'number' ? s : null));
+        if (layerNode && layerNode.className === "InputLayer") {
+          if (layerNode.config["batch_input_shape"]) {
+            const shapeArray = layerNode.config[
+              "batch_input_shape"
+            ] as JsonArray;
+            shape = shapeArray.map((s) => (typeof s === "number" ? s : null));
           }
-          if (typeof layerNode.config['dtype'] === 'string') {
-            dtype = layerNode.config['dtype'];
+          if (typeof layerNode.config["dtype"] === "string") {
+            dtype = layerNode.config["dtype"];
           }
         }
 
@@ -308,7 +353,7 @@ export function extractKerasTopology(
         topology.inputs.push({
           name: `${parentPrefix}/${inName}:${inNodeIndex}:${inTensorIndex}`,
           shape: [],
-          dtype: 'float32',
+          dtype: "float32",
         });
       }
     }
@@ -336,7 +381,7 @@ export function extractKerasTopology(
         topology.outputs.push({
           name: finalOutName,
           shape: [], // Inferred later
-          dtype: 'float32',
+          dtype: "float32",
         });
       }
     }

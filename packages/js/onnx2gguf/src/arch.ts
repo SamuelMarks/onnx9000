@@ -2,27 +2,31 @@
  * @fileoverview arch.ts
  * Provides arch functionality for the onnx2gguf package.
  */
-import { Graph } from '@onnx9000/core';
-import { extractLlamaMetadata } from './llama';
+import { Graph } from "@onnx9000/core";
+import { extractLlamaMetadata } from "./llama";
 
 export function inferArchitecture(graph: Graph): string {
-  const name = ((graph.name as ReturnType<typeof JSON.parse>) || '').toLowerCase();
-  if (name.includes('mistral')) return 'mistral';
-  if (name.includes('mixtral')) return 'mixtral';
-  if (name.includes('phi')) return 'phi2';
-  if (name.includes('qwen')) return 'qwen2';
-  if (name.includes('gemma')) return 'gemma';
-  if (name.includes('starcoder')) return 'starcoder';
-  if (name.includes('falcon')) return 'falcon';
-  if (name.includes('bloom')) return 'bloom';
-  if (name.includes('stablelm')) return 'stablelm';
-  if (name.includes('command-r')) return 'command-r';
-  if (name.includes('bert')) return 'bert';
+  const name = (
+    (graph.name as ReturnType<typeof JSON.parse>) || ""
+  ).toLowerCase();
+  if (name.includes("mistral")) return "mistral";
+  if (name.includes("mixtral")) return "mixtral";
+  if (name.includes("phi")) return "phi2";
+  if (name.includes("qwen")) return "qwen2";
+  if (name.includes("gemma")) return "gemma";
+  if (name.includes("starcoder")) return "starcoder";
+  if (name.includes("falcon")) return "falcon";
+  if (name.includes("bloom")) return "bloom";
+  if (name.includes("stablelm")) return "stablelm";
+  if (name.includes("command-r")) return "command-r";
+  if (name.includes("bert")) return "bert";
 
-  const text = Object.keys(graph.tensors).join('') + graph.nodes.map((n) => n.opType).join('');
-  if (text.toLowerCase().includes('llama')) return 'llama';
+  const text =
+    Object.keys(graph.tensors).join("") +
+    graph.nodes.map((n) => n.opType).join("");
+  if (text.toLowerCase().includes("llama")) return "llama";
 
-  return 'unknown';
+  return "unknown";
 }
 
 export function extractMetadata(
@@ -31,35 +35,35 @@ export function extractMetadata(
 ): Record<string, ReturnType<typeof JSON.parse>> {
   const arch = archOverride || inferArchitecture(graph);
   const validArches = [
-    'llama',
-    'mistral',
-    'mixtral',
-    'phi2',
-    'qwen2',
-    'gemma',
-    'starcoder',
-    'falcon',
-    'bloom',
-    'stablelm',
-    'command-r',
-    'bert',
+    "llama",
+    "mistral",
+    "mixtral",
+    "phi2",
+    "qwen2",
+    "gemma",
+    "starcoder",
+    "falcon",
+    "bloom",
+    "stablelm",
+    "command-r",
+    "bert",
   ];
 
   if (archOverride && !validArches.includes(archOverride)) {
     throw new Error(`Unsupported strict architecture mapping: ${archOverride}`);
   }
 
-  if (arch === 'unknown') {
+  if (arch === "unknown") {
     return {};
   }
 
   let meta = extractLlamaMetadata(graph);
 
-  if (arch !== 'llama') {
+  if (arch !== "llama") {
     const remapped: Record<string, ReturnType<typeof JSON.parse>> = {};
     for (const [k, v] of Object.entries(meta)) {
-      if (k.startsWith('llama.')) {
-        remapped[k.replace('llama.', `${arch}.`)] = v;
+      if (k.startsWith("llama.")) {
+        remapped[k.replace("llama.", `${arch}.`)] = v;
       } else {
         remapped[k] = v;
       }
@@ -67,13 +71,13 @@ export function extractMetadata(
     meta = remapped;
   }
 
-  if (arch === 'mistral') {
-    meta['mistral.attention.sliding_window'] = 4096;
-  } else if (arch === 'gemma') {
-    meta['gemma.attention.layer_norm_rms_epsilon'] = 1e-6;
-  } else if (arch === 'mixtral') {
-    meta['mixtral.expert_count'] = 8;
-    meta['mixtral.expert_used_count'] = 2;
+  if (arch === "mistral") {
+    meta["mistral.attention.sliding_window"] = 4096;
+  } else if (arch === "gemma") {
+    meta["gemma.attention.layer_norm_rms_epsilon"] = 1e-6;
+  } else if (arch === "mixtral") {
+    meta["mixtral.expert_count"] = 8;
+    meta["mixtral.expert_used_count"] = 2;
   }
 
   return meta;

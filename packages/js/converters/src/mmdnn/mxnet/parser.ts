@@ -22,7 +22,11 @@ export function parseMxNetSymbol(jsonStr: string): MxNetSymbol {
 }
 
 export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   let offset = 0;
 
   // 1. Read Global Header
@@ -56,7 +60,9 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
     // v2 magic: 0xF993FAC9 (4187216585)
     // v1 magic: 0x0112 (274)
     if (tensorMagic !== 0xf993fac9 && tensorMagic !== 0x0112) {
-      throw new Error(`Invalid MXNet NDArray block magic: ${tensorMagic.toString(16)}`);
+      throw new Error(
+        `Invalid MXNet NDArray block magic: ${tensorMagic.toString(16)}`,
+      );
     }
 
     if (tensorMagic === 0xf993fac9) {
@@ -89,13 +95,25 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
     // 0: float32, 1: float64, 2: float16, 3: uint8, 4: int32, 5: int8, 6: int64
     let dataView: object;
     if (dtypeCode === 0) {
-      dataView = new Float32Array(buffer.buffer, buffer.byteOffset + offset, numElements);
+      dataView = new Float32Array(
+        buffer.buffer,
+        buffer.byteOffset + offset,
+        numElements,
+      );
       offset += numElements * 4;
     } else if (dtypeCode === 1) {
-      dataView = new Float64Array(buffer.buffer, buffer.byteOffset + offset, numElements);
+      dataView = new Float64Array(
+        buffer.buffer,
+        buffer.byteOffset + offset,
+        numElements,
+      );
       offset += numElements * 8;
     } else if (dtypeCode === 4) {
-      dataView = new Int32Array(buffer.buffer, buffer.byteOffset + offset, numElements);
+      dataView = new Int32Array(
+        buffer.buffer,
+        buffer.byteOffset + offset,
+        numElements,
+      );
       offset += numElements * 4;
     } else {
       throw new Error(`Unsupported MXNet dtype code: ${dtypeCode}`);
@@ -113,7 +131,9 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
   offset += 8;
 
   if (numNames !== numArrays) {
-    throw new Error(`Names count ${numNames} does not match arrays count ${numArrays}`);
+    throw new Error(
+      `Names count ${numNames} does not match arrays count ${numArrays}`,
+    );
   }
 
   const result: Record<string, object> = {};
@@ -121,7 +141,11 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
   for (let i = 0; i < numNames; i++) {
     const len = Number(view.getBigUint64(offset, true));
     offset += 8;
-    const nameStrBytes = new Uint8Array(buffer.buffer, buffer.byteOffset + offset, len);
+    const nameStrBytes = new Uint8Array(
+      buffer.buffer,
+      buffer.byteOffset + offset,
+      len,
+    );
     offset += len;
     const name = decoder.decode(nameStrBytes);
     result[name] = arrays[i];

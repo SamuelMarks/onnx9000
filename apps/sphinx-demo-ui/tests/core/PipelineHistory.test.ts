@@ -5,8 +5,8 @@ describe('PipelineHistory.ts', () => {
   it('should instantiate and cover PipelineHistory', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).PipelineHistory();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).PipelineHistory();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

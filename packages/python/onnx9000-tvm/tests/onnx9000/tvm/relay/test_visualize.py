@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.visualize import *
 
+
 def test_DotPrinter():
     try:
         obj = DotPrinter()
@@ -8,9 +9,9 @@ def test_DotPrinter():
     except Exception:
         pass
 
+
 def test_to_dot():
     try:
-        res = to_dot()
+        to_dot()
     except Exception:
         pass
-

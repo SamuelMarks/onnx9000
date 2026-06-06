@@ -2,20 +2,38 @@
  * @fileoverview efficientnet.ts
  * Provides efficientnet functionality for the core package.
  */
-import { Tensor } from '../ir/tensor.js';
-import { BatchNormalization, ConvND, DepthwiseConv, Gemm, Sigmoid, Silu } from '../primitives.js';
+import { Tensor } from "../ir/tensor.js";
+import {
+  BatchNormalization,
+  ConvND,
+  DepthwiseConv,
+  Gemm,
+  Sigmoid,
+  Silu,
+} from "../primitives.js";
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = 'float32',
+  dtype: ReturnType<typeof JSON.parse> = "float32",
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(opType: string, inputs: Tensor[], attr?: ReturnType<typeof JSON.parse>): Tensor {
-  const dtype = inputs[0]?.dtype ?? 'float32';
-  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+function recordOp(
+  opType: string,
+  inputs: Tensor[],
+  attr?: ReturnType<typeof JSON.parse>,
+): Tensor {
+  const dtype = inputs[0]?.dtype ?? "float32";
+  return new Tensor(
+    `${opType}_out`,
+    [],
+    dtype,
+    false,
+    false,
+    new Float32Array(),
+  );
 }
 
 export class SqueezeExcitation {
@@ -27,7 +45,11 @@ export class SqueezeExcitation {
   public fc2: Gemm;
   public scaleAct: Sigmoid;
 
-  constructor(inChannels: number, squeezeChannels: number, prefix: string = '') {
+  constructor(
+    inChannels: number,
+    squeezeChannels: number,
+    prefix: string = "",
+  ) {
     this.prefix = prefix;
     this.inChannels = inChannels;
     this.squeezeChannels = squeezeChannels;
@@ -38,23 +60,31 @@ export class SqueezeExcitation {
   }
 
   call(x: Tensor): Tensor {
-    let scale = recordOp('GlobalAveragePool', [x]);
-    scale = recordOp('Flatten', [scale]);
+    let scale = recordOp("GlobalAveragePool", [x]);
+    scale = recordOp("Flatten", [scale]);
 
-    const fc1W = getParam(`${this.prefix}.fc1.weight`, [this.squeezeChannels, this.inChannels]);
+    const fc1W = getParam(`${this.prefix}.fc1.weight`, [
+      this.squeezeChannels,
+      this.inChannels,
+    ]);
     const fc1B = getParam(`${this.prefix}.fc1.bias`, [this.squeezeChannels]);
     scale = this.fc1.call(scale, fc1W, fc1B);
     scale = this.act.call(scale);
 
-    const fc2W = getParam(`${this.prefix}.fc2.weight`, [this.inChannels, this.squeezeChannels]);
+    const fc2W = getParam(`${this.prefix}.fc2.weight`, [
+      this.inChannels,
+      this.squeezeChannels,
+    ]);
     const fc2B = getParam(`${this.prefix}.fc2.bias`, [this.inChannels]);
     scale = this.fc2.call(scale, fc2W, fc2B);
     scale = this.scaleAct.call(scale);
 
-    const shapeTensor = recordOp('Constant', [], { value: [-1, this.inChannels, 1, 1] });
-    scale = recordOp('Reshape', [scale, shapeTensor]);
+    const shapeTensor = recordOp("Constant", [], {
+      value: [-1, this.inChannels, 1, 1],
+    });
+    scale = recordOp("Reshape", [scale, shapeTensor]);
 
-    return recordOp('Mul', [x, scale]);
+    return recordOp("Mul", [x, scale]);
   }
 }
 
@@ -83,7 +113,7 @@ export class MBConv {
     expandRatio: number,
     stride: number,
     kernelSize: number,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.inChannels = inChannels;
@@ -95,7 +125,17 @@ export class MBConv {
     const hiddenDim = inChannels * expandRatio;
 
     if (expandRatio !== 1) {
-      this.expandConv = new ConvND(2, inChannels, hiddenDim, 1, 1, 0, 1, 1, false);
+      this.expandConv = new ConvND(
+        2,
+        inChannels,
+        hiddenDim,
+        1,
+        1,
+        0,
+        1,
+        1,
+        false,
+      );
       this.bn0 = new BatchNormalization(hiddenDim);
       this.act0 = new Silu();
     }
@@ -118,7 +158,17 @@ export class MBConv {
       `${prefix}.se`,
     );
 
-    this.projectConv = new ConvND(2, hiddenDim, outChannels, 1, 1, 0, 1, 1, false);
+    this.projectConv = new ConvND(
+      2,
+      hiddenDim,
+      outChannels,
+      1,
+      1,
+      0,
+      1,
+      1,
+      false,
+    );
     this.bn2 = new BatchNormalization(outChannels);
   }
 
@@ -186,7 +236,7 @@ export class MBConv {
     );
 
     if (this.useResConnect) {
-      x = recordOp('Add', [identity, x]);
+      x = recordOp("Add", [identity, x]);
     }
 
     return x;
@@ -211,8 +261,8 @@ export class EfficientNet {
     this.stemBn = new BatchNormalization(32);
     this.stemAct = new Silu();
 
-    this.block1 = new MBConv(32, 16, 1, 1, 3, 'block1');
-    this.block2 = new MBConv(16, 24, 6, 2, 3, 'block2');
+    this.block1 = new MBConv(32, 16, 1, 1, 3, "block1");
+    this.block2 = new MBConv(16, 24, 6, 2, 3, "block2");
 
     this.headConv = new ConvND(2, 24, 1280, 1, 1, 0, 1, 1, false);
     this.headBn = new BatchNormalization(1280);
@@ -224,14 +274,19 @@ export class EfficientNet {
   call(x: Tensor): Tensor {
     x = this.stemConv.call(
       x,
-      getParam('stem_conv.weight', [this.stemConv.outChannels, this.stemConv.inChannels, 3, 3]),
+      getParam("stem_conv.weight", [
+        this.stemConv.outChannels,
+        this.stemConv.inChannels,
+        3,
+        3,
+      ]),
     );
     x = this.stemBn.call(
       x,
-      getParam('stem_bn.weight', [this.stemBn.numFeatures]),
-      getParam('stem_bn.bias', [this.stemBn.numFeatures]),
-      getParam('stem_bn.running_mean', [this.stemBn.numFeatures]),
-      getParam('stem_bn.running_var', [this.stemBn.numFeatures]),
+      getParam("stem_bn.weight", [this.stemBn.numFeatures]),
+      getParam("stem_bn.bias", [this.stemBn.numFeatures]),
+      getParam("stem_bn.running_mean", [this.stemBn.numFeatures]),
+      getParam("stem_bn.running_var", [this.stemBn.numFeatures]),
     );
     x = this.stemAct.call(x);
 
@@ -240,23 +295,28 @@ export class EfficientNet {
 
     x = this.headConv.call(
       x,
-      getParam('head_conv.weight', [this.headConv.outChannels, this.headConv.inChannels, 1, 1]),
+      getParam("head_conv.weight", [
+        this.headConv.outChannels,
+        this.headConv.inChannels,
+        1,
+        1,
+      ]),
     );
     x = this.headBn.call(
       x,
-      getParam('head_bn.weight', [this.headBn.numFeatures]),
-      getParam('head_bn.bias', [this.headBn.numFeatures]),
-      getParam('head_bn.running_mean', [this.headBn.numFeatures]),
-      getParam('head_bn.running_var', [this.headBn.numFeatures]),
+      getParam("head_bn.weight", [this.headBn.numFeatures]),
+      getParam("head_bn.bias", [this.headBn.numFeatures]),
+      getParam("head_bn.running_mean", [this.headBn.numFeatures]),
+      getParam("head_bn.running_var", [this.headBn.numFeatures]),
     );
     x = this.headAct.call(x);
 
-    x = recordOp('GlobalAveragePool', [x]);
-    x = recordOp('Flatten', [x]);
+    x = recordOp("GlobalAveragePool", [x]);
+    x = recordOp("Flatten", [x]);
     x = this.classifier.call(
       x,
-      getParam('classifier.weight', [this.numClasses, 1280]),
-      getParam('classifier.bias', [this.numClasses]),
+      getParam("classifier.weight", [this.numClasses, 1280]),
+      getParam("classifier.bias", [this.numClasses]),
     );
 
     return x;

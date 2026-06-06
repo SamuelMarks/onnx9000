@@ -8,7 +8,10 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     exclude: ['e2e/**', 'node_modules/**'],
     alias: [
-      { find: /^monaco-editor.*/, replacement: resolve(__dirname, './tests/__mocks__/monaco-editor.ts') }
+      {
+        find: /^monaco-editor.*/,
+        replacement: resolve(__dirname, './tests/__mocks__/monaco-editor.ts')
+      }
     ],
     coverage: {
       provider: 'v8',

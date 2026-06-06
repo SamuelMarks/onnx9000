@@ -1,17 +1,17 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../../src/mmdnn/tensorflow/parser';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../../src/mmdnn/tensorflow/parser";
 
-describe('parser.ts', () => {
-  it('should call and cover parsePbtxt', async () => {
+describe("parser.ts", () => {
+  it("should call and cover parsePbtxt", async () => {
     try {
-       const res = (Module as any).parsePbtxt();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).parsePbtxt();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
-  it('should call and cover parseTFProto', async () => {
+  it("should call and cover parseTFProto", async () => {
     try {
-       const res = (Module as any).parseTFProto();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).parseTFProto();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.core.models.clip import *
 
+
 def test_CLIP():
     try:
         obj = CLIP()
@@ -8,15 +9,16 @@ def test_CLIP():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_clip_vit_base_patch16():
     try:
-        res = clip_vit_base_patch16()
+        clip_vit_base_patch16()
     except Exception:
         pass
-

@@ -42,7 +42,11 @@ export class KVCacheManager {
     if (this.syncAdapter) {
       const data = await this.syncAdapter.load(sessionId);
       if (data) {
-        this.cache.set(sessionId, { sessionId, data, lastAccessed: Date.now() });
+        this.cache.set(sessionId, {
+          sessionId,
+          data,
+          lastAccessed: Date.now(),
+        });
         return data;
       }
     }
@@ -52,8 +56,17 @@ export class KVCacheManager {
 
   // 111. Maintain continuous `past_key_values` dynamically
   // 114. Serialize KV Cache slices into binary strings for network persistence natively.
-  public async setCache(sessionId: string, data: Float32Array, prefixHash?: string) {
-    const entry: KVCacheEntry = { sessionId, prefixHash, data, lastAccessed: Date.now() };
+  public async setCache(
+    sessionId: string,
+    data: Float32Array,
+    prefixHash?: string,
+  ) {
+    const entry: KVCacheEntry = {
+      sessionId,
+      prefixHash,
+      data,
+      lastAccessed: Date.now(),
+    };
     this.cache.set(sessionId, entry);
 
     if (prefixHash) {

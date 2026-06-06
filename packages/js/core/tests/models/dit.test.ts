@@ -1,23 +1,23 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../src/models/dit';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../src/models/dit";
 
-describe('dit.ts', () => {
-  it('should instantiate and cover DiTBlock', () => {
+describe("dit.ts", () => {
+  it("should instantiate and cover DiTBlock", () => {
     try {
-       const obj = new (Module as any).DiTBlock();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).DiTBlock();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover DiT', () => {
+  it("should instantiate and cover DiT", () => {
     try {
-       const obj = new (Module as any).DiT();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).DiT();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should call and cover ditXl2', async () => {
+  it("should call and cover ditXl2", async () => {
     try {
-       const res = (Module as any).ditXl2();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).ditXl2();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

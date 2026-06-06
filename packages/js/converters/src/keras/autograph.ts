@@ -3,7 +3,7 @@
  * Provides autograph functionality for the converters package.
  */
 // @ts-nocheck
-import { JsonObject } from './tfjs-parser.js';
+import { JsonObject } from "./tfjs-parser.js";
 
 export interface PyodideInterface {
   runPythonAsync: (code: string) => Promise<string>;
@@ -29,7 +29,7 @@ export async function extractTraceViaPyodide(
   inputShape: (number | null)[],
 ): Promise<JsonObject> {
   // We stringify the shape, converting JS nulls to Python Nones
-  const shapeStr = JSON.stringify(inputShape).replace(/null/g, 'None');
+  const shapeStr = JSON.stringify(inputShape).replace(/null/g, "None");
 
   const pythonScript = `
 import json
@@ -42,7 +42,7 @@ def trace_model():
         # User-provided model definition injected into local scope
         user_globals = {}
         exec("""
-${modelCode.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}
+${modelCode.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}
         """, user_globals)
         
         if 'create_model' not in user_globals:
@@ -119,9 +119,9 @@ trace_model()
   const jsonStr = await pyodide.runPythonAsync(pythonScript);
   const parsed = JSON.parse(jsonStr) as JsonObject;
 
-  if (parsed['error']) {
+  if (parsed["error"]) {
     throw new Error(
-      `Pyodide Trace Error: ${parsed['error'] as string}\n${parsed['traceback'] as string}`,
+      `Pyodide Trace Error: ${parsed["error"] as string}\n${parsed["traceback"] as string}`,
     );
   }
 

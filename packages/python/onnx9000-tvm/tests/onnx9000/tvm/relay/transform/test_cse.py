@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.transform.cse import *
 
+
 def test_CommonSubexprEliminator():
     try:
         obj = CommonSubexprEliminator()
@@ -8,9 +9,9 @@ def test_CommonSubexprEliminator():
     except Exception:
         pass
 
+
 def test_eliminate_common_subexpr():
     try:
-        res = eliminate_common_subexpr()
+        eliminate_common_subexpr()
     except Exception:
         pass
-

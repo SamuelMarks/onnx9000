@@ -3,7 +3,7 @@
  * Provides weight-loader functionality for the converters package.
  */
 // @ts-nocheck
-import { WeightGroup, DataType, WeightManifestEntry } from './tfjs-parser.js';
+import { WeightGroup, DataType, WeightManifestEntry } from "./tfjs-parser.js";
 
 export interface LoadedWeight {
   name: string;
@@ -36,7 +36,9 @@ export async function downloadWeightShards(
 
   for (const group of manifest) {
     // Download all shards for this group
-    const shardBuffers = await Promise.all(group.paths.map((path) => doFetch(path)));
+    const shardBuffers = await Promise.all(
+      group.paths.map((path) => doFetch(path)),
+    );
 
     // Combine chunked .bin shards into a contiguous ArrayBuffer
     let totalLength = 0;
@@ -75,28 +77,30 @@ export async function downloadWeightShards(
 export function calculateByteLength(weight: WeightManifestEntry): number {
   const numElements = weight.shape.reduce((a, b) => a * b, 1);
   switch (weight.dtype) {
-    case 'float32':
-    case 'int32':
+    case "float32":
+    case "int32":
       return numElements * 4;
-    case 'complex64':
+    case "complex64":
       return numElements * 8;
-    case 'float16':
+    case "float16":
       return numElements * 2;
-    case 'int8':
-    case 'uint8':
-    case 'bool':
+    case "int8":
+    case "uint8":
+    case "bool":
       return numElements;
-    case 'int4':
-    case 'uint4':
+    case "int4":
+    case "uint4":
       // 4-bit quantization packs 2 elements into 1 byte.
       // We must ceiling divide to ensure we allocate enough bytes for odd counts.
       return Math.ceil(numElements / 2);
-    case 'string':
+    case "string":
       // String tensors in TFJS have a specific format in the buffer.
       // A simple size calculation doesn't work out of the box without parsing.
       // For now, let's assume we won't fully extract strings in this naive pass
       // or we throw an error for unsupported format if it happens.
-      throw new Error('String dtype byte length calculation is not trivially supported yet.');
+      throw new Error(
+        "String dtype byte length calculation is not trivially supported yet.",
+      );
     default:
       throw new Error(`Unsupported dtype: ${String(weight.dtype)}`);
   }

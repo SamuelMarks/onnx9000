@@ -4,6 +4,6 @@
  */
 export class Mmdnn {
   run() {
-    return '[mmdnn] processed';
+    return "[mmdnn] processed";
   }
 }

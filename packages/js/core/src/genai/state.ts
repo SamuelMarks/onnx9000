@@ -1,5 +1,5 @@
-import { Graph } from '../ir/graph.js';
-import { Tensor } from '../ir/tensor.js';
+import { Graph } from "../ir/graph.js";
+import { Tensor } from "../ir/tensor.js";
 
 /**
  * KV Cache abstraction for self-attention layers.
@@ -453,7 +453,10 @@ export class SlidingWindowKVCache implements KVCache {
    * @param layerIdx Layer index
    */
   update(keys: Tensor, values: Tensor, layerIdx: number): void {
-    const seqLen = keys.shape.length > 2 ? (keys.shape[2] as number) : (keys.shape[1] as number);
+    const seqLen =
+      keys.shape.length > 2
+        ? (keys.shape[2] as number)
+        : (keys.shape[1] as number);
     if (seqLen > this.windowSize) {
       // Implement sliding window truncation here via view logic
     }
@@ -486,7 +489,10 @@ export class PositionalEmbeddingUtils {
     ropeScale: number = 1.0,
     ropeTheta: number = 10000.0,
   ): [Tensor, Tensor] {
-    if (!(query.data instanceof Float32Array) || !(key.data instanceof Float32Array)) {
+    if (
+      !(query.data instanceof Float32Array) ||
+      !(key.data instanceof Float32Array)
+    ) {
       return [query, key];
     }
 
@@ -514,7 +520,14 @@ export class PositionalEmbeddingUtils {
           }
         }
       }
-      return new Tensor(t.name, t.shape, t.dtype, t.isInitializer, t.requiresGrad, newData);
+      return new Tensor(
+        t.name,
+        t.shape,
+        t.dtype,
+        t.isInitializer,
+        t.requiresGrad,
+        newData,
+      );
     };
 
     return [applyToTensor(query), applyToTensor(key)];
@@ -533,7 +546,9 @@ export class PositionalEmbeddingUtils {
 
     const data = attentionScores.data;
     const newData = new Float32Array(data);
-    const seqLen = attentionScores.shape[attentionScores.shape.length - 1] as number;
+    const seqLen = attentionScores.shape[
+      attentionScores.shape.length - 1
+    ] as number;
 
     const slopes: number[] = [];
     for (let i = 1; i <= numHeads; i++) {
@@ -575,7 +590,7 @@ export class QuantizedKVCache implements KVCache {
    * Create a quantized cache.
    * @param dtype Target quantization data type (e.g., 'int8')
    */
-  constructor(private dtype: string = 'int8') {}
+  constructor(private dtype: string = "int8") {}
   /** No-op clear. */
   clear(): void {}
   /** No-op update. */

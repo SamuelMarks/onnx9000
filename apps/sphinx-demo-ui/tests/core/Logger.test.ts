@@ -5,8 +5,8 @@ describe('Logger.ts', () => {
   it('should instantiate and cover Logger', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Logger();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Logger();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

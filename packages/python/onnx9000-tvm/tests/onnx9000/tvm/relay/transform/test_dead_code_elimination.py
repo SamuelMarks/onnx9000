@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.transform.dead_code_elimination import *
 
+
 def test_DeadCodeElimination():
     try:
         obj = DeadCodeElimination()
@@ -8,9 +9,9 @@ def test_DeadCodeElimination():
     except Exception:
         pass
 
+
 def test_eliminate_dead_code():
     try:
-        res = eliminate_dead_code()
+        eliminate_dead_code()
     except Exception:
         pass
-

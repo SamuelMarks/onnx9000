@@ -5,8 +5,8 @@ describe('WorkerManager.ts', () => {
   it('should instantiate and cover WorkerManager', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).WorkerManager();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).WorkerManager();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

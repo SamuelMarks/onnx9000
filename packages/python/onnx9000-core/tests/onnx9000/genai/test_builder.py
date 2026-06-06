@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.genai.builder import *
 
+
 def test_GenAIBuilder():
     try:
         obj = GenAIBuilder()
@@ -8,10 +9,10 @@ def test_GenAIBuilder():
     except Exception:
         pass
 
+
 def test_GenAICLI():
     try:
         obj = GenAICLI()
         assert obj is not None
     except Exception:
         pass
-

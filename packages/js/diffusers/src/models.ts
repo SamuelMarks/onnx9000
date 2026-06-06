@@ -16,7 +16,11 @@ export class AutoencoderKL {
 }
 
 export class UNet2DConditionModel {
-  call(sample: Float32Array, timestep: number, encoder_hidden_states: Float32Array): Float32Array {
+  call(
+    sample: Float32Array,
+    timestep: number,
+    encoder_hidden_states: Float32Array,
+  ): Float32Array {
     const out = new Float32Array(sample.length);
     for (let i = 0; i < sample.length; i++) {
       out[i] = sample[i]! - timestep * 0.01;

@@ -8,7 +8,7 @@ export class TfjsShimDemoElement extends HTMLElement {
    */
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
   }
 
   /**
@@ -51,13 +51,16 @@ tf.add(a, b).print();
       </div>
     `;
 
-    this.shadowRoot!.querySelector('#run-btn')!.addEventListener('click', () => {
-      this.shadowRoot!.querySelector('#results')!.textContent = `Running...
+    this.shadowRoot!.querySelector("#run-btn")!.addEventListener(
+      "click",
+      () => {
+        this.shadowRoot!.querySelector("#results")!.textContent = `Running...
 TF.js (WebGL): 14ms
 onnx9000 (WebGPU): 2ms
 
 Results match!`;
-    });
+      },
+    );
   }
 }
-customElements.define('tfjs-shim-demo', TfjsShimDemoElement);
+customElements.define("tfjs-shim-demo", TfjsShimDemoElement);

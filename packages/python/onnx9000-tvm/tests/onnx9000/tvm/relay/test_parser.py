@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.parser import *
 
+
 def test_IRSpy():
     try:
         obj = IRSpy()
@@ -8,15 +9,16 @@ def test_IRSpy():
     except Exception:
         pass
 
+
 def test_save_json():
     try:
-        res = save_json()
+        save_json()
     except Exception:
         pass
+
 
 def test_load_json():
     try:
-        res = load_json()
+        load_json()
     except Exception:
         pass
-

@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.tir.expr import *
 
+
 def test_Expr():
     try:
         obj = Expr()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Var():
     try:
@@ -15,12 +17,14 @@ def test_Var():
     except Exception:
         pass
 
+
 def test_IntImm():
     try:
         obj = IntImm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_FloatImm():
     try:
@@ -29,12 +33,14 @@ def test_FloatImm():
     except Exception:
         pass
 
+
 def test_StringImm():
     try:
         obj = StringImm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BinaryOp():
     try:
@@ -43,12 +49,14 @@ def test_BinaryOp():
     except Exception:
         pass
 
+
 def test_Add():
     try:
         obj = Add()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Sub():
     try:
@@ -57,12 +65,14 @@ def test_Sub():
     except Exception:
         pass
 
+
 def test_Mul():
     try:
         obj = Mul()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Div():
     try:
@@ -71,12 +81,14 @@ def test_Div():
     except Exception:
         pass
 
+
 def test_Mod():
     try:
         obj = Mod()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_EQ():
     try:
@@ -85,12 +97,14 @@ def test_EQ():
     except Exception:
         pass
 
+
 def test_NE():
     try:
         obj = NE()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LT():
     try:
@@ -99,12 +113,14 @@ def test_LT():
     except Exception:
         pass
 
+
 def test_LE():
     try:
         obj = LE()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GT():
     try:
@@ -113,12 +129,14 @@ def test_GT():
     except Exception:
         pass
 
+
 def test_GE():
     try:
         obj = GE()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_And():
     try:
@@ -127,12 +145,14 @@ def test_And():
     except Exception:
         pass
 
+
 def test_Or():
     try:
         obj = Or()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Xor():
     try:
@@ -141,6 +161,7 @@ def test_Xor():
     except Exception:
         pass
 
+
 def test_Call():
     try:
         obj = Call()
@@ -148,10 +169,10 @@ def test_Call():
     except Exception:
         pass
 
+
 def test_Load():
     try:
         obj = Load()
         assert obj is not None
     except Exception:
         pass
-

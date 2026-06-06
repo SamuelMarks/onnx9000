@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.relay.expr import *
 
+
 def test_Expr():
     try:
         obj = Expr()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Var():
     try:
@@ -15,12 +17,14 @@ def test_Var():
     except Exception:
         pass
 
+
 def test_Constant():
     try:
         obj = Constant()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Op():
     try:
@@ -29,12 +33,14 @@ def test_Op():
     except Exception:
         pass
 
+
 def test_Call():
     try:
         obj = Call()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TupleExpr():
     try:
@@ -43,12 +49,14 @@ def test_TupleExpr():
     except Exception:
         pass
 
+
 def test_TupleGetItem():
     try:
         obj = TupleGetItem()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Let():
     try:
@@ -57,6 +65,7 @@ def test_Let():
     except Exception:
         pass
 
+
 def test_If():
     try:
         obj = If()
@@ -64,10 +73,10 @@ def test_If():
     except Exception:
         pass
 
+
 def test_Function():
     try:
         obj = Function()
         assert obj is not None
     except Exception:
         pass
-

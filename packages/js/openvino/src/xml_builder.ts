@@ -53,17 +53,17 @@ export class XmlNode {
    * @returns The XML string representation.
    */
   toString(indent: number = 0, pretty: boolean = false): string {
-    const indentStr = pretty ? ' '.repeat(indent) : '';
-    const newline = pretty ? '\n' : '';
+    const indentStr = pretty ? " ".repeat(indent) : "";
+    const newline = pretty ? "\n" : "";
 
-    let attrStr = '';
+    let attrStr = "";
     for (const [key, value] of Object.entries(this.attributes)) {
       const escapedValue = String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
       attrStr += ` ${key}="${escapedValue}"`;
     }
 
@@ -71,11 +71,11 @@ export class XmlNode {
       return `${indentStr}<${this.name}${attrStr} />${newline}`;
     }
 
-    if (this.children.length === 1 && typeof this.children[0] === 'string') {
+    if (this.children.length === 1 && typeof this.children[0] === "string") {
       const escapedText = this.children[0]
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
       return `${indentStr}<${this.name}${attrStr}>${escapedText}</${this.name}>${newline}`;
     }
 
@@ -83,13 +83,13 @@ export class XmlNode {
     const childIndent = pretty ? indent + 4 : 0;
 
     for (const child of this.children) {
-      if (typeof child === 'string') {
+      if (typeof child === "string") {
         const escapedText = child
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
         if (pretty) {
-          result += ' '.repeat(childIndent) + escapedText + newline;
+          result += " ".repeat(childIndent) + escapedText + newline;
         } else {
           result += escapedText;
         }
@@ -148,8 +148,8 @@ export class XmlBuilder {
    * @returns The XML document string representation.
    */
   toString(pretty: boolean = false): string {
-    const newline = pretty ? '\n' : '';
-    let result = this.declaration ? `${this.declaration}${newline}` : '';
+    const newline = pretty ? "\n" : "";
+    let result = this.declaration ? `${this.declaration}${newline}` : "";
     if (this.root) {
       result += this.root.toString(0, pretty);
     }

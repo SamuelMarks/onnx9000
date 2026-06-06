@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tensorrt.enums import *
 
+
 def test_DataType():
     try:
         obj = DataType()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ElementWiseOperation():
     try:
@@ -15,12 +17,14 @@ def test_ElementWiseOperation():
     except Exception:
         pass
 
+
 def test_PoolingType():
     try:
         obj = PoolingType()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ActivationType():
     try:
@@ -29,12 +33,14 @@ def test_ActivationType():
     except Exception:
         pass
 
+
 def test_ScaleMode():
     try:
         obj = ScaleMode()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_UnaryOperation():
     try:
@@ -43,12 +49,14 @@ def test_UnaryOperation():
     except Exception:
         pass
 
+
 def test_ReduceOperation():
     try:
         obj = ReduceOperation()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MatrixOperation():
     try:
@@ -57,12 +65,14 @@ def test_MatrixOperation():
     except Exception:
         pass
 
+
 def test_TopKOperation():
     try:
         obj = TopKOperation()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MemoryPoolType():
     try:
@@ -71,6 +81,7 @@ def test_MemoryPoolType():
     except Exception:
         pass
 
+
 def test_OptProfileSelector():
     try:
         obj = OptProfileSelector()
@@ -78,10 +89,10 @@ def test_OptProfileSelector():
     except Exception:
         pass
 
+
 def test_BuilderFlag():
     try:
         obj = BuilderFlag()
         assert obj is not None
     except Exception:
         pass
-

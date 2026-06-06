@@ -4,6 +4,6 @@
  */
 export class Gguf {
   run() {
-    return '[gguf] processed';
+    return "[gguf] processed";
   }
 }

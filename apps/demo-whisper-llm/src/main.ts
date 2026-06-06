@@ -1,14 +1,14 @@
 /* v8 ignore start */
-import { load } from '@onnx9000/core';
-import { InferenceSession } from '@onnx9000/backend-web';
+import { load } from "@onnx9000/core";
+import { InferenceSession } from "@onnx9000/backend-web";
 
 /**
  * Initializes the Whisper -> LLM demo UI.
  */
 export function initWhisperLlmDemo(): void {
-  const logEl = document.getElementById('log') as HTMLElement;
-  const recordBtn = document.getElementById('record-btn') as HTMLButtonElement;
-  const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+  const logEl = document.getElementById("log") as HTMLElement;
+  const recordBtn = document.getElementById("record-btn") as HTMLButtonElement;
+  const clearBtn = document.getElementById("clear-btn") as HTMLButtonElement;
 
   if (!logEl || !recordBtn || !clearBtn) return;
 
@@ -20,18 +20,18 @@ export function initWhisperLlmDemo(): void {
   let llmSession: InferenceSession | null = null;
 
   function appendLog(msg: string) {
-    logEl.textContent += '\n' + msg;
+    logEl.textContent += "\n" + msg;
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  clearBtn.addEventListener('click', () => {
-    logEl.textContent = 'Log cleared.';
+  clearBtn.addEventListener("click", () => {
+    logEl.textContent = "Log cleared.";
   });
 
   async function initModels() {
-    appendLog('[System] Initializing WebGPU backend...');
+    appendLog("[System] Initializing WebGPU backend...");
     try {
-      appendLog('[System] WebGPU backend ready (Mocked). Models loaded.');
+      appendLog("[System] WebGPU backend ready (Mocked). Models loaded.");
       recordBtn.disabled = false;
     } catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
@@ -39,7 +39,7 @@ export function initWhisperLlmDemo(): void {
     }
   }
 
-  recordBtn.addEventListener('click', async () => {
+  recordBtn.addEventListener("click", async () => {
     if (isRecording) {
       stopRecording();
     } else {
@@ -61,9 +61,9 @@ export function initWhisperLlmDemo(): void {
 
       mediaRecorder.start();
       isRecording = true;
-      recordBtn.textContent = 'Stop Recording';
-      recordBtn.classList.add('recording');
-      appendLog('[Mic] Recording started...');
+      recordBtn.textContent = "Stop Recording";
+      recordBtn.classList.add("recording");
+      appendLog("[Mic] Recording started...");
     } catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
       appendLog(`[Mic Error] Could not access microphone: ${err.message}`);
@@ -71,7 +71,7 @@ export function initWhisperLlmDemo(): void {
   }
 
   function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
       mediaRecorder.stop();
     }
     const stream = mediaRecorder?.stream;
@@ -79,19 +79,19 @@ export function initWhisperLlmDemo(): void {
       stream.getTracks().forEach((track) => track.stop());
     }
     isRecording = false;
-    recordBtn.textContent = 'Start Recording';
-    recordBtn.classList.remove('recording');
-    appendLog('[Mic] Recording stopped. Processing...');
+    recordBtn.textContent = "Start Recording";
+    recordBtn.classList.remove("recording");
+    appendLog("[Mic] Recording stopped. Processing...");
   }
 
   async function processAudio() {
-    appendLog('[Whisper] Transcribing audio buffer via WebGPU...');
-    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+    appendLog("[Whisper] Transcribing audio buffer via WebGPU...");
+    const blob = new Blob(audioChunks, { type: "audio/webm" });
     const arrayBuffer = await blob.arrayBuffer();
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const text = 'Hello, can you explain what WebGPU is?';
+    const text = "Hello, can you explain what WebGPU is?";
     appendLog(`[User] "${text}"`);
 
     await runLLM(text);
@@ -100,16 +100,16 @@ export function initWhisperLlmDemo(): void {
   async function runLLM(prompt: string) {
     appendLog(`[LLM] Generating response for: "${prompt}"...`);
 
-    const responseTokens = ['WebGPU', 'is', 'a', 'modern', 'graphics', 'API'];
+    const responseTokens = ["WebGPU", "is", "a", "modern", "graphics", "API"];
 
-    appendLog('[Assistant] ');
+    appendLog("[Assistant] ");
 
     for (const token of responseTokens) {
       await new Promise((resolve) => setTimeout(resolve, 100));
-      logEl.textContent += token + ' ';
+      logEl.textContent += token + " ";
       logEl.scrollTop = logEl.scrollHeight;
     }
-    appendLog('\\n[System] Generation complete.');
+    appendLog("\\n[System] Generation complete.");
   }
 
   initModels();

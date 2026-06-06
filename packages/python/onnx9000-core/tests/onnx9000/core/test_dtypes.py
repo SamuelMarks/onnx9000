@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.core.dtypes import *
 
+
 def test_DType():
     try:
         obj = DType()
@@ -8,15 +9,16 @@ def test_DType():
     except Exception:
         pass
 
+
 def test_to_cpp_type():
     try:
-        res = to_cpp_type()
+        to_cpp_type()
     except Exception:
         pass
+
 
 def test_to_emscripten_type():
     try:
-        res = to_emscripten_type()
+        to_emscripten_type()
     except Exception:
         pass
-

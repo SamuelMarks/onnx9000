@@ -2,14 +2,13 @@
 
 from typing import Any
 
-import keras
 from onnx9000.converters.tf.parsers import TFGraph, TFNode
 
 
 class Keras3Parser:
     """Parser for Keras 3 functional models."""
 
-    def __init__(self, model: keras.Model, input_shape: Any = None) -> None:
+    def __init__(self, model: Any, input_shape: Any = None) -> None:
         """Initialize the Keras 3 parser."""
         self.model = model
         self.input_shape = input_shape
@@ -40,6 +39,8 @@ class Keras3Parser:
             # If already built, we might be able to infer them.
             input_shape = self.input_shape or getattr(model, "input_shape", None)
             if input_shape:
+                import keras
+
                 if isinstance(input_shape, list) and isinstance(input_shape[0], tuple):
                     inputs = [keras.Input(batch_shape=s) for s in input_shape]
                 else:

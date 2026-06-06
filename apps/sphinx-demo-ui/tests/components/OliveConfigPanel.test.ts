@@ -5,8 +5,8 @@ describe('OliveConfigPanel.ts', () => {
   it('should instantiate and cover OliveConfigPanel', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).OliveConfigPanel();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).OliveConfigPanel();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

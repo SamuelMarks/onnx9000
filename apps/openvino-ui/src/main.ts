@@ -2,30 +2,32 @@
  * @fileoverview Main entry point for the ONNX to OpenVINO compiler UI.
  * Handles model file upload, OpenVINO XML/BIN generation, and ZIP packaging.
  */
-import { load } from '@onnx9000/core';
-import { OpenVinoExporter } from '@onnx9000/openvino-exporter';
-import JSZip from 'jszip';
+import { load } from "@onnx9000/core";
+import { OpenVinoExporter } from "@onnx9000/openvino-exporter";
+import JSZip from "jszip";
 
 /**
  * Initializes the OpenVINO UI.
  */
 export function initOpenVinoUI(): void {
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  const statusDiv = document.getElementById('status');
-  const compressFp16 = document.getElementById('compressFp16') as HTMLInputElement;
+  const dropzone = document.getElementById("dropzone");
+  const fileInput = document.getElementById("file-input") as HTMLInputElement;
+  const statusDiv = document.getElementById("status");
+  const compressFp16 = document.getElementById(
+    "compressFp16",
+  ) as HTMLInputElement;
 
   if (!dropzone || !fileInput || !statusDiv || !compressFp16) return;
 
-  function showStatus(message: string, type: 'info' | 'success' | 'error') {
-    statusDiv!.style.display = 'block';
+  function showStatus(message: string, type: "info" | "success" | "error") {
+    statusDiv!.style.display = "block";
     statusDiv!.className = type;
     statusDiv!.innerHTML = message;
   }
 
-  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener("click", () => fileInput.click());
 
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
     dropzone.addEventListener(eventName, preventDefaults, false);
   });
 
@@ -34,57 +36,70 @@ export function initOpenVinoUI(): void {
     e.stopPropagation();
   }
 
-  ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzone.addEventListener(eventName, () => dropzone.classList.add('active'), false);
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropzone.addEventListener(
+      eventName,
+      () => dropzone.classList.add("active"),
+      false,
+    );
   });
 
-  ['dragleave', 'drop'].forEach((eventName) => {
-    dropzone.addEventListener(eventName, () => dropzone.classList.remove('active'), false);
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropzone.addEventListener(
+      eventName,
+      () => dropzone.classList.remove("active"),
+      false,
+    );
   });
 
-  dropzone.addEventListener('drop', (e: DragEvent) => {
+  dropzone.addEventListener("drop", (e: DragEvent) => {
     const dt = e.dataTransfer;
     if (!dt) return;
     handleFiles(dt.files);
   });
 
-  fileInput.addEventListener('change', function () {
+  fileInput.addEventListener("change", function () {
     if (this.files) handleFiles(this.files);
   });
 
   async function handleFiles(files: FileList) {
     if (files.length === 0) return;
     const file = files[0];
-    if (!file.name.endsWith('.onnx')) {
-      showStatus('Please drop an .onnx file.', 'error');
+    if (!file.name.endsWith(".onnx")) {
+      showStatus("Please drop an .onnx file.", "error");
       return;
     }
 
     try {
-      showStatus(`Loading ${file.name}... (Phase 1/3)`, 'info');
+      showStatus(`Loading ${file.name}... (Phase 1/3)`, "info");
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
 
-      showStatus(`Parsing ONNX Graph... (Phase 2/3)`, 'info');
+      showStatus(`Parsing ONNX Graph... (Phase 2/3)`, "info");
       const graph = await load(buffer);
 
-      showStatus(`Compiling to OpenVINO XML/BIN... (Phase 3/3)`, 'info');
+      showStatus(`Compiling to OpenVINO XML/BIN... (Phase 3/3)`, "info");
       await new Promise((r) => setTimeout(r, 50));
 
-      const exporter = new OpenVinoExporter(graph, { compressToFp16: compressFp16.checked });
+      const exporter = new OpenVinoExporter(graph, {
+        compressToFp16: compressFp16.checked,
+      });
       const { xml, bin } = exporter.export();
 
-      showStatus(`Generating ZIP file...`, 'info');
+      showStatus(`Generating ZIP file...`, "info");
       const zip = new JSZip();
-      const baseName = file.name.replace('.onnx', '');
+      const baseName = file.name.replace(".onnx", "");
       zip.file(`${baseName}.xml`, xml);
       zip.file(`${baseName}.bin`, bin);
-      zip.file(`${baseName}.mapping`, '<?xml version="1.0" ?>\\n<mapping>\\n</mapping>');
+      zip.file(
+        `${baseName}.mapping`,
+        '<?xml version="1.0" ?>\\n<mapping>\\n</mapping>',
+      );
 
-      const blob = await zip.generateAsync({ type: 'blob' });
+      const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
 
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `${baseName}_openvino.zip`;
       document.body.appendChild(a);
@@ -96,19 +111,22 @@ export function initOpenVinoUI(): void {
       const newSizeMB = (blob.size / 1024 / 1024).toFixed(2);
       showStatus(
         `Success! Downloaded ${baseName}_openvino.zip<br>Original: ${originalSizeMB}MB -> OpenVINO: ${newSizeMB}MB`,
-        'success',
+        "success",
       );
     } catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
       console.error(err);
-      showStatus(`Error compiling model: ${err.message}`, 'error');
+      showStatus(`Error compiling model: ${err.message}`, "error");
     }
   }
 }
 
-if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initOpenVinoUI);
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", initOpenVinoUI);
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
     initOpenVinoUI();
   }
 }

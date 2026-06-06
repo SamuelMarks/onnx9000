@@ -91,7 +91,15 @@ export interface CaffeLayer {
     axis?: number;
     slice_point?: number | number[];
   };
-  [key: string]: string | number | boolean | string[] | number[] | object | object[] | undefined;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | string[]
+    | number[]
+    | object
+    | object[]
+    | undefined;
 }
 
 /** MXNet Node structure. */
@@ -143,7 +151,10 @@ export interface PaddleOp {
   outputs: Record<string, string[]>;
   attrs: Record<
     string,
-    { type: number; value: string | number | boolean | number[] | string[] | object }
+    {
+      type: number;
+      value: string | number | boolean | number[] | string[] | object;
+    }
   >;
 }
 
@@ -162,5 +173,5 @@ export interface PaddleModel {
  * @returns The string 'MMDNN_TYPES'.
  */
 export function getTypesIdentifier(): string {
-  return 'MMDNN_TYPES';
+  return "MMDNN_TYPES";
 }

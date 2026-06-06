@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.optimizer.pattern_matcher import *
 
+
 def test_Pattern():
     try:
         obj = Pattern()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PatternMatcherEngine():
     try:
@@ -15,27 +17,30 @@ def test_PatternMatcherEngine():
     except Exception:
         pass
 
+
 def test_matches():
     try:
-        res = matches()
+        matches()
     except Exception:
         pass
+
 
 def test_apply_algebraic_reuse():
     try:
-        res = apply_algebraic_reuse()
+        apply_algebraic_reuse()
     except Exception:
         pass
+
 
 def test_apply_fusion_reuse():
     try:
-        res = apply_fusion_reuse()
+        apply_fusion_reuse()
     except Exception:
         pass
+
 
 def test_apply_hardware_lowering():
     try:
-        res = apply_hardware_lowering()
+        apply_hardware_lowering()
     except Exception:
         pass
-

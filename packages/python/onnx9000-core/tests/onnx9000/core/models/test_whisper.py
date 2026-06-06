@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.models.whisper import *
 
+
 def test_WhisperEncoderLayer():
     try:
         obj = WhisperEncoderLayer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_WhisperEncoder():
     try:
@@ -15,12 +17,14 @@ def test_WhisperEncoder():
     except Exception:
         pass
 
+
 def test_WhisperDecoderLayer():
     try:
         obj = WhisperDecoderLayer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_WhisperDecoder():
     try:
@@ -29,6 +33,7 @@ def test_WhisperDecoder():
     except Exception:
         pass
 
+
 def test_Whisper():
     try:
         obj = Whisper()
@@ -36,15 +41,16 @@ def test_Whisper():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_whisper_tiny():
     try:
-        res = whisper_tiny()
+        whisper_tiny()
     except Exception:
         pass
-

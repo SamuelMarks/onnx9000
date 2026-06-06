@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.primitives import *
 
+
 def test_BaseNorm():
     try:
         obj = BaseNorm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BatchNormalization():
     try:
@@ -15,12 +17,14 @@ def test_BatchNormalization():
     except Exception:
         pass
 
+
 def test_LayerNormalization():
     try:
         obj = LayerNormalization()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RMSNorm():
     try:
@@ -29,12 +33,14 @@ def test_RMSNorm():
     except Exception:
         pass
 
+
 def test_GroupNorm():
     try:
         obj = GroupNorm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_InstanceNorm():
     try:
@@ -43,12 +49,14 @@ def test_InstanceNorm():
     except Exception:
         pass
 
+
 def test_BaseActivation():
     try:
         obj = BaseActivation()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Relu():
     try:
@@ -57,12 +65,14 @@ def test_Relu():
     except Exception:
         pass
 
+
 def test_Sigmoid():
     try:
         obj = Sigmoid()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Tanh():
     try:
@@ -71,12 +81,14 @@ def test_Tanh():
     except Exception:
         pass
 
+
 def test_LeakyRelu():
     try:
         obj = LeakyRelu()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Gelu():
     try:
@@ -85,12 +97,14 @@ def test_Gelu():
     except Exception:
         pass
 
+
 def test_Silu():
     try:
         obj = Silu()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Swish():
     try:
@@ -99,12 +113,14 @@ def test_Swish():
     except Exception:
         pass
 
+
 def test_Mish():
     try:
         obj = Mish()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ConvFamily():
     try:
@@ -113,12 +129,14 @@ def test_ConvFamily():
     except Exception:
         pass
 
+
 def test_ConvND():
     try:
         obj = ConvND()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DepthwiseConv():
     try:
@@ -127,12 +145,14 @@ def test_DepthwiseConv():
     except Exception:
         pass
 
+
 def test_MatMul():
     try:
         obj = MatMul()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Gemm():
     try:
@@ -141,12 +161,14 @@ def test_Gemm():
     except Exception:
         pass
 
+
 def test_MultiHeadAttention():
     try:
         obj = MultiHeadAttention()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_FlashAttention():
     try:
@@ -155,12 +177,14 @@ def test_FlashAttention():
     except Exception:
         pass
 
+
 def test_GroupedQueryAttention():
     try:
         obj = GroupedQueryAttention()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RoPE():
     try:
@@ -169,12 +193,14 @@ def test_RoPE():
     except Exception:
         pass
 
+
 def test_AlibiBias():
     try:
         obj = AlibiBias()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StateSpace():
     try:
@@ -183,10 +209,10 @@ def test_StateSpace():
     except Exception:
         pass
 
+
 def test_RNN():
     try:
         obj = RNN()
         assert obj is not None
     except Exception:
         pass
-

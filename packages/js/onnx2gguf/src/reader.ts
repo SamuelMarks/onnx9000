@@ -2,7 +2,7 @@
  * @fileoverview reader.ts
  * Provides reader functionality for the onnx2gguf package.
  */
-import { GGUFValueType, GGUFTensorType } from './builder';
+import { GGUFValueType, GGUFTensorType } from "./builder";
 
 export class GGUFReader {
   public kvs: Record<string, ReturnType<typeof JSON.parse>> = {};
@@ -110,7 +110,7 @@ export class GGUFReader {
       this.view.getUint8(2) !== 0x55 ||
       this.view.getUint8(3) !== 0x46
     ) {
-      throw new Error('Not a GGUF file');
+      throw new Error("Not a GGUF file");
     }
     this.offset += 4;
 
@@ -149,7 +149,7 @@ export class GGUFReader {
       this.tensors[name] = { name, shape, type: ttype, offset };
     }
 
-    const alignment = this.kvs['general.alignment'] || 32;
+    const alignment = this.kvs["general.alignment"] || 32;
     const padding = (alignment - (this.offset % alignment)) % alignment;
     this.offset += padding;
     this.dataStart = this.offset;
@@ -168,7 +168,7 @@ export class GGUFReader {
     else if (t.type === GGUFTensorType.Q4_0) size = (items / 32n) * 18n;
     else if (t.type === GGUFTensorType.Q4_1) size = (items / 32n) * 20n;
     else if (t.type === GGUFTensorType.Q8_0) size = (items / 32n) * 34n;
-    else throw new Error('Unknown type');
+    else throw new Error("Unknown type");
 
     const byteOffset = this.dataStart + Number(t.offset);
     return new Uint8Array(this.buffer, byteOffset, Number(size));

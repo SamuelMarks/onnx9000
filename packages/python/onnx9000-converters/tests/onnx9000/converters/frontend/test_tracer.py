@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.converters.frontend.tracer import *
 
+
 def test_Tracer():
     try:
         obj = Tracer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Proxy():
     try:
@@ -15,15 +17,16 @@ def test_Proxy():
     except Exception:
         pass
 
+
 def test_trace():
     try:
-        res = trace()
+        trace()
     except Exception:
         pass
+
 
 def test_script():
     try:
-        res = script()
+        script()
     except Exception:
         pass
-

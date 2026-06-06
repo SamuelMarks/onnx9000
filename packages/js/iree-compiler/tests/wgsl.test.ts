@@ -1,39 +1,44 @@
-import { describe, it, expect } from 'vitest';
-import { Type, Value, Region, Operation, Block } from '../src/ir/core.js';
-import { WGSLEmitter } from '../src/passes/lower_wgsl.js';
+import { describe, it, expect } from "vitest";
+import { Type, Value, Region, Operation, Block } from "../src/ir/core.js";
+import { WGSLEmitter } from "../src/passes/lower_wgsl.js";
 
-describe('WGSL Lowering', () => {
-  it('should emit minified wgsl', () => {
+describe("WGSL Lowering", () => {
+  it("should emit minified wgsl", () => {
     const region = new Region();
     const block = new Block(region);
     region.pushBlock(block);
 
-    block.pushOperation(new Operation('web.linalg.matmul', [], [], {}));
-    block.pushOperation(new Operation('web.mhlo.maximum', [], [], {}));
+    block.pushOperation(new Operation("web.linalg.matmul", [], [], {}));
+    block.pushOperation(new Operation("web.mhlo.maximum", [], [], {}));
 
     const emitter = new WGSLEmitter();
-    const wgsl = emitter.emit(region, { fp16: true, workgroupSize: [16, 16, 1] });
+    const wgsl = emitter.emit(region, {
+      fp16: true,
+      workgroupSize: [16, 16, 1],
+    });
 
     // 118, 119
-    expect(wgsl).toContain('enable f16;');
-    expect(wgsl).toContain('@compute @workgroup_size(16,16,1)');
+    expect(wgsl).toContain("enable f16;");
+    expect(wgsl).toContain("@compute @workgroup_size(16,16,1)");
     // 109, 111, 113, 117
-    expect(wgsl).toContain('fn main(@builtin(global_invocation_id) global_id:vec3<u32>)');
-    expect(wgsl).toContain('var<workgroup> tile_a:array<f32,256>;');
-    expect(wgsl).toContain('let flat_idx = global_id.y * 64u + global_id.x;');
+    expect(wgsl).toContain(
+      "fn main(@builtin(global_invocation_id) global_id:vec3<u32>)",
+    );
+    expect(wgsl).toContain("var<workgroup> tile_a:array<f32,256>;");
+    expect(wgsl).toContain("let flat_idx = global_id.y * 64u + global_id.x;");
   });
 });
 
-it('covers WGSLRunner execution stub', async () => {
-  const { WGSLRunner } = await import('../src/passes/lower_wgsl.js');
+it("covers WGSLRunner execution stub", async () => {
+  const { WGSLRunner } = await import("../src/passes/lower_wgsl.js");
   const runner = new WGSLRunner();
   await runner.executeGraph(null);
 });
 
-it('covers fallback options for wgsl', () => {
+it("covers fallback options for wgsl", () => {
   const emitter = new WGSLEmitter();
   const region = new Region();
   const wgsl = emitter.emit(region, {});
-  expect(wgsl).not.toContain('enable f16;');
-  expect(wgsl).toContain('@workgroup_size(64,1,1)');
+  expect(wgsl).not.toContain("enable f16;");
+  expect(wgsl).toContain("@workgroup_size(64,1,1)");
 });

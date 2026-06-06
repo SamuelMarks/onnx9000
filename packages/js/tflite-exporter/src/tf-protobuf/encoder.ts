@@ -50,7 +50,7 @@ export class TFProtobufEncoder {
 
   public encode(model: SavedModel): Uint8Array {
     // Mock encoding logic for GraphDef protobuf
-    console.log('[onnx2tf] Encoding SavedModel Protobuf...');
+    console.log("[onnx2tf] Encoding SavedModel Protobuf...");
     // Return a dummy buffer representing the .pb
     return new Uint8Array([0x0a, 0x14, 0x0a, 0x04, 0x54, 0x45, 0x53, 0x54]);
   }

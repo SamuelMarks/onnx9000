@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.tir.stmt import *
 
+
 def test_Stmt():
     try:
         obj = Stmt()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LetStmt():
     try:
@@ -15,12 +17,14 @@ def test_LetStmt():
     except Exception:
         pass
 
+
 def test_AssertStmt():
     try:
         obj = AssertStmt()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_For():
     try:
@@ -29,12 +33,14 @@ def test_For():
     except Exception:
         pass
 
+
 def test_While():
     try:
         obj = While()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Store():
     try:
@@ -43,12 +49,14 @@ def test_Store():
     except Exception:
         pass
 
+
 def test_Allocate():
     try:
         obj = Allocate()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_IfThenElse():
     try:
@@ -57,12 +65,14 @@ def test_IfThenElse():
     except Exception:
         pass
 
+
 def test_Evaluate():
     try:
         obj = Evaluate()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SeqStmt():
     try:
@@ -71,10 +81,10 @@ def test_SeqStmt():
     except Exception:
         pass
 
+
 def test_Buffer():
     try:
         obj = Buffer()
         assert obj is not None
     except Exception:
         pass
-

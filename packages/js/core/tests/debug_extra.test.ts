@@ -1,23 +1,25 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as index from '../src/index.ts';
-import { run } from '../debug.js';
+import { describe, it, expect, vi } from "vitest";
+import * as index from "../src/index.ts";
+import { run } from "../debug.js";
 
-describe('debug.js', () => {
-  it('should run debug script', async () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+describe("debug.js", () => {
+  it("should run debug script", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
     // Mock load to return a dummy graph
-    vi.spyOn(index, 'load').mockResolvedValue({ nodes: [] } as any);
+    vi.spyOn(index, "load").mockResolvedValue({ nodes: [] } as any);
 
-    process.env.DEBUG_FORCE_RUN = 'true';
+    process.env.DEBUG_FORCE_RUN = "true";
     await run();
-    expect(logSpy).toHaveBeenCalledWith('Success! Nodes:', 0);
+    expect(logSpy).toHaveBeenCalledWith("Success! Nodes:", 0);
   });
 
-  it('should catch errors in debug script', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    vi.spyOn(index, 'load').mockRejectedValue(new Error('fail'));
+  it("should catch errors in debug script", async () => {
+    const errorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    vi.spyOn(index, "load").mockRejectedValue(new Error("fail"));
 
-    process.env.DEBUG_FORCE_RUN = 'true';
+    process.env.DEBUG_FORCE_RUN = "true";
     await run();
     expect(errorSpy).toHaveBeenCalled();
   });

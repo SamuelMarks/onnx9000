@@ -2,8 +2,8 @@
  * @fileoverview canvas.ts
  * Provides canvas functionality for the modifier package.
  */
-import { Graph, Node } from '@onnx9000/core';
-import { GraphLayout, NodeLayout, EdgeLayout, Point } from './layout.js';
+import { Graph, Node } from "@onnx9000/core";
+import { GraphLayout, NodeLayout, EdgeLayout, Point } from "./layout.js";
 
 export interface CanvasConfig {
   nodeColor: string;
@@ -20,16 +20,16 @@ export interface CanvasConfig {
 }
 
 export const DefaultConfig: CanvasConfig = {
-  nodeColor: '#f8f9fa',
-  initializerColor: '#e9ecef',
-  outputColor: '#ffe3e3',
-  constantColor: '#e3f2fd',
-  font: '12px monospace',
-  textColor: '#212529',
-  edgeColor: '#adb5bd',
-  highlightColor: '#339af0',
-  backgroundColor: '#ffffff',
-  gridColor: '#f1f3f5',
+  nodeColor: "#f8f9fa",
+  initializerColor: "#e9ecef",
+  outputColor: "#ffe3e3",
+  constantColor: "#e3f2fd",
+  font: "12px monospace",
+  textColor: "#212529",
+  edgeColor: "#adb5bd",
+  highlightColor: "#339af0",
+  backgroundColor: "#ffffff",
+  gridColor: "#f1f3f5",
   lineWidth: 2,
 };
 
@@ -58,15 +58,22 @@ export class GraphRenderer {
 
   constructor(canvas: HTMLCanvasElement, config: Partial<CanvasConfig> = {}) {
     this.canvas = canvas;
-    const context = canvas.getContext('2d');
-    if (!context) throw new Error('Could not get 2D context');
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Could not get 2D context");
     this.ctx = context;
     this.config = { ...DefaultConfig, ...config };
   }
 
   // 40. Infinite pan and zoom
   applyTransform() {
-    this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+    this.ctx.setTransform(
+      this.scale,
+      0,
+      0,
+      this.scale,
+      this.offsetX,
+      this.offsetY,
+    );
   }
 
   clear() {
@@ -111,12 +118,12 @@ export class GraphRenderer {
     if (graph.nodes.length === 0) {
       this.ctx.save();
       this.applyTransform();
-      this.ctx.fillStyle = '#6c757d';
-      this.ctx.font = '20px sans-serif';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'middle';
+      this.ctx.fillStyle = "#6c757d";
+      this.ctx.font = "20px sans-serif";
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
       this.ctx.fillText(
-        'Empty Graph',
+        "Empty Graph",
         this.canvas.width / 2 / this.scale,
         this.canvas.height / 2 / this.scale,
       );
@@ -146,8 +153,11 @@ export class GraphRenderer {
   // 48. Edge routing
   drawEdge(edge: EdgeLayout, graph: Graph) {
     const isHighlighted =
-      this.hoveredNodeId === edge.sourceId || this.hoveredNodeId === edge.targetId;
-    this.ctx.strokeStyle = isHighlighted ? this.config.highlightColor : this.config.edgeColor;
+      this.hoveredNodeId === edge.sourceId ||
+      this.hoveredNodeId === edge.targetId;
+    this.ctx.strokeStyle = isHighlighted
+      ? this.config.highlightColor
+      : this.config.edgeColor;
     this.ctx.lineWidth = this.config.lineWidth;
     this.ctx.beginPath();
 
@@ -165,13 +175,13 @@ export class GraphRenderer {
       // 47. Display the tensor shape and type directly on the connecting edges
       const vi = graph.valueInfo.find((v) => v.name === edge.sourcePort);
       if (vi) {
-        const text = `${vi.dtype}[${vi.shape.join(',')}]`;
+        const text = `${vi.dtype}[${vi.shape.join(",")}]`;
         const midX = path[1]!.x;
         const midY = path[1]!.y;
         this.ctx.fillStyle = this.config.textColor;
-        this.ctx.font = '10px monospace';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'bottom';
+        this.ctx.font = "10px monospace";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "bottom";
         this.ctx.fillText(text, midX, midY - 2);
       }
     }
@@ -182,39 +192,39 @@ export class GraphRenderer {
     // 277. Pseudo-instancing via offscreen canvas caching
     const cacheKey =
       node.opType +
-      (this.hoveredNodeId === node.id ? '_hover' : '') +
-      (this.selectedNodeIds.has(node.id) ? '_sel' : '');
+      (this.hoveredNodeId === node.id ? "_hover" : "") +
+      (this.selectedNodeIds.has(node.id) ? "_sel" : "");
 
     // We only cache the background shape/colors, text is dynamic
     if (!this.nodeCache.has(cacheKey)) {
-      const off = document.createElement('canvas');
+      const off = document.createElement("canvas");
       off.width = layout.size.width + 10;
       off.height = layout.size.height + 10;
-      const octx = off.getContext('2d')!;
+      const octx = off.getContext("2d")!;
 
       octx.fillStyle = this.selectedNodeIds.has(node.id)
         ? this.config.highlightColor
         : this.config.nodeColor;
-      if (this.hoveredNodeId === node.id) octx.fillStyle = '#ffc107'; // hover color
+      if (this.hoveredNodeId === node.id) octx.fillStyle = "#ffc107"; // hover color
 
       // 191. Create custom warning badges on nodes that are known to be slow or unsupported in WebGPU
       if (
-        node.opType === 'NonMaxSuppression' ||
-        node.opType === 'TopK' ||
-        node.opType === 'RoiAlign'
+        node.opType === "NonMaxSuppression" ||
+        node.opType === "TopK" ||
+        node.opType === "RoiAlign"
       ) {
-        octx.fillStyle = '#dc3545'; // RED warning for unsupported ops
+        octx.fillStyle = "#dc3545"; // RED warning for unsupported ops
       }
 
       // 291. Add visual node highlighting based on inference path tracking.
-      if (node.attributes['_inference_path_active']) octx.fillStyle = '#28a745'; // Green path
+      if (node.attributes["_inference_path_active"]) octx.fillStyle = "#28a745"; // Green path
 
       octx.strokeStyle = this.config.edgeColor;
       octx.lineWidth = 2;
       octx.beginPath();
-      if (typeof octx.roundRect === 'function') {
+      if (typeof octx.roundRect === "function") {
         octx.roundRect(5, 5, layout.size.width, layout.size.height, 8);
-      } else if (typeof octx.rect === 'function') {
+      } else if (typeof octx.rect === "function") {
         octx.rect(5, 5, layout.size.width, layout.size.height);
       }
 
@@ -233,7 +243,7 @@ export class GraphRenderer {
 
     // Determine type
     let fillStyle = this.config.nodeColor;
-    if (node.opType === 'Constant') {
+    if (node.opType === "Constant") {
       fillStyle = this.config.constantColor;
     } else if (graph.outputs.some((o) => node.outputs.includes(o.name))) {
       fillStyle = this.config.outputColor;
@@ -259,7 +269,12 @@ export class GraphRenderer {
     this.ctx.lineTo(x + width - radius, y);
     this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     this.ctx.lineTo(x + width, y + height - radius);
-    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height,
+    );
     this.ctx.lineTo(x + radius, y + height);
     this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     this.ctx.lineTo(x, y + radius);
@@ -271,15 +286,15 @@ export class GraphRenderer {
     // 46. Display op_type prominently
     this.ctx.fillStyle = this.config.textColor;
     this.ctx.font = this.config.font;
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
     this.ctx.fillText(node.opType, x + width / 2, y + height / 2);
   }
 
   // 50. Implement visual grouping
   drawGroup(layout: GraphLayout) {
     if (layout.nodes.size === 0) return;
-    this.ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
+    this.ctx.fillStyle = "rgba(200, 200, 200, 0.1)";
     this.ctx.strokeStyle = this.config.edgeColor;
     this.ctx.setLineDash([5, 5]);
     let minX = Infinity,
@@ -289,12 +304,24 @@ export class GraphRenderer {
     for (const n of Array.from(layout.nodes.values())) {
       if (n.position.x < minX) minX = n.position.x;
       if (n.position.y < minY) minY = n.position.y;
-      if (n.position.x + n.size.width > maxX) maxX = n.position.x + n.size.width;
-      if (n.position.y + n.size.height > maxY) maxY = n.position.y + n.size.height;
+      if (n.position.x + n.size.width > maxX)
+        maxX = n.position.x + n.size.width;
+      if (n.position.y + n.size.height > maxY)
+        maxY = n.position.y + n.size.height;
     }
     if (minX < Infinity) {
-      this.ctx.fillRect(minX - 20, minY - 20, maxX - minX + 40, maxY - minY + 40);
-      this.ctx.strokeRect(minX - 20, minY - 20, maxX - minX + 40, maxY - minY + 40);
+      this.ctx.fillRect(
+        minX - 20,
+        minY - 20,
+        maxX - minX + 40,
+        maxY - minY + 40,
+      );
+      this.ctx.strokeRect(
+        minX - 20,
+        minY - 20,
+        maxX - minX + 40,
+        maxY - minY + 40,
+      );
     }
     this.ctx.setLineDash([]);
   }

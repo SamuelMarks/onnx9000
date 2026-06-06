@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.backends.memory.dlpack import *
 
+
 def test_DLDataType():
     try:
         obj = DLDataType()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DLDevice():
     try:
@@ -15,12 +17,14 @@ def test_DLDevice():
     except Exception:
         pass
 
+
 def test_DLTensor():
     try:
         obj = DLTensor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DLManagedTensor():
     try:
@@ -29,15 +33,16 @@ def test_DLManagedTensor():
     except Exception:
         pass
 
+
 def test_from_dlpack():
     try:
-        res = from_dlpack()
+        from_dlpack()
     except Exception:
         pass
+
 
 def test_from_numpy():
     try:
-        res = from_numpy()
+        from_numpy()
     except Exception:
         pass
-

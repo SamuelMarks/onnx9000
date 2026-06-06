@@ -3,11 +3,15 @@
  * Provides fusion functionality for the converters package.
  */
 // @ts-nocheck
-import { Graph } from '@onnx9000/core';
-import { Node } from '@onnx9000/core';
-import { MMDNNReporter } from './reporter.js';
+import { Graph } from "@onnx9000/core";
+import { Node } from "@onnx9000/core";
+import { MMDNNReporter } from "./reporter.js";
 
-export type FusionRule = (graph: Graph, node: Node, reporter: MMDNNReporter) => boolean;
+export type FusionRule = (
+  graph: Graph,
+  node: Node,
+  reporter: MMDNNReporter,
+) => boolean;
 
 export class NodeFusionRegistry {
   private rules: FusionRule[] = [];
@@ -24,14 +28,18 @@ export class NodeFusionRegistry {
     // Basic fusion: Conv + BatchNormalization -> Conv
     // In practice, this modifies the weights of the Conv based on BN params.
     this.registerRule((graph, node, reporter) => {
-      if (node.opType !== 'BatchNormalization') return false;
+      if (node.opType !== "BatchNormalization") return false;
 
       // Find producer
-      const producer = graph.nodes.find((n) => n.outputs.includes(node.inputs[0]!));
-      if (!producer || producer.opType !== 'Conv') return false;
+      const producer = graph.nodes.find((n) =>
+        n.outputs.includes(node.inputs[0]!),
+      );
+      if (!producer || producer.opType !== "Conv") return false;
 
       // Skip if producer output is used by multiple nodes
-      const usages = graph.nodes.filter((n) => n.inputs.includes(node.inputs[0]!));
+      const usages = graph.nodes.filter((n) =>
+        n.inputs.includes(node.inputs[0]!),
+      );
       if (usages.length > 1) return false;
 
       reporter.info(
@@ -49,18 +57,22 @@ export class NodeFusionRegistry {
 
     // Basic fusion: MatMul + Add -> Gemm
     this.registerRule((graph, node, reporter) => {
-      if (node.opType !== 'Add') return false;
+      if (node.opType !== "Add") return false;
 
-      const producerA = graph.nodes.find((n) => n.outputs.includes(node.inputs[0]!));
-      const producerB = graph.nodes.find((n) => n.outputs.includes(node.inputs[1]!));
+      const producerA = graph.nodes.find((n) =>
+        n.outputs.includes(node.inputs[0]!),
+      );
+      const producerB = graph.nodes.find((n) =>
+        n.outputs.includes(node.inputs[1]!),
+      );
 
       let matmulProducer: Node | undefined;
       let biasInput: string | undefined;
 
-      if (producerA && producerA.opType === 'MatMul') {
+      if (producerA && producerA.opType === "MatMul") {
         matmulProducer = producerA;
         biasInput = node.inputs[1]!;
-      } else if (producerB && producerB.opType === 'MatMul') {
+      } else if (producerB && producerB.opType === "MatMul") {
         matmulProducer = producerB;
         biasInput = node.inputs[0]!;
       }
@@ -68,12 +80,16 @@ export class NodeFusionRegistry {
       if (!matmulProducer || !biasInput) return false;
 
       // Skip if MatMul output is used by multiple nodes
-      const usages = graph.nodes.filter((n) => n.inputs.includes(matmulProducer!.outputs[0]!));
+      const usages = graph.nodes.filter((n) =>
+        n.inputs.includes(matmulProducer!.outputs[0]!),
+      );
       if (usages.length > 1) return false;
 
-      reporter.info(`Fusing MatMul '${matmulProducer.name}' and Add '${node.name}' into Gemm`);
+      reporter.info(
+        `Fusing MatMul '${matmulProducer.name}' and Add '${node.name}' into Gemm`,
+      );
 
-      matmulProducer.opType = 'Gemm';
+      matmulProducer.opType = "Gemm";
       matmulProducer.inputs.push(biasInput); // [A, B, C]
       matmulProducer.outputs = [...node.outputs];
 

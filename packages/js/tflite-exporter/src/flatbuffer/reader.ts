@@ -23,7 +23,7 @@ export class FlatBufferReader {
 
   public checkMagicBytes(magic: string): boolean {
     if (this.bytes.length < 8) return false;
-    let actual = '';
+    let actual = "";
     for (let i = 4; i < 8; i++) {
       actual += String.fromCharCode(this.bytes[i]!);
     }
@@ -47,22 +47,38 @@ export class FlatBufferReader {
     return objOffset + offsetInObject;
   }
 
-  public getInt8(objOffset: number, vtableIndex: number, def: number = 0): number {
+  public getInt8(
+    objOffset: number,
+    vtableIndex: number,
+    def: number = 0,
+  ): number {
     const offset = this.getFieldOffset(objOffset, vtableIndex);
     return offset !== 0 ? this.view.getInt8(offset) : def;
   }
 
-  public getInt16(objOffset: number, vtableIndex: number, def: number = 0): number {
+  public getInt16(
+    objOffset: number,
+    vtableIndex: number,
+    def: number = 0,
+  ): number {
     const offset = this.getFieldOffset(objOffset, vtableIndex);
     return offset !== 0 ? this.view.getInt16(offset, true) : def;
   }
 
-  public getInt32(objOffset: number, vtableIndex: number, def: number = 0): number {
+  public getInt32(
+    objOffset: number,
+    vtableIndex: number,
+    def: number = 0,
+  ): number {
     const offset = this.getFieldOffset(objOffset, vtableIndex);
     return offset !== 0 ? this.view.getInt32(offset, true) : def;
   }
 
-  public getFloat32(objOffset: number, vtableIndex: number, def: number = 0.0): number {
+  public getFloat32(
+    objOffset: number,
+    vtableIndex: number,
+    def: number = 0.0,
+  ): number {
     const offset = this.getFieldOffset(objOffset, vtableIndex);
     return offset !== 0 ? this.view.getFloat32(offset, true) : def;
   }
@@ -71,7 +87,11 @@ export class FlatBufferReader {
     return this.view.getUint32(vectorOffset, true);
   }
 
-  public getVectorItemOffset(vectorOffset: number, index: number, elemSize: number = 4): number {
+  public getVectorItemOffset(
+    vectorOffset: number,
+    index: number,
+    elemSize: number = 4,
+  ): number {
     // 4 bytes length, followed by data
     return vectorOffset + 4 + index * elemSize;
   }
@@ -83,7 +103,7 @@ export class FlatBufferReader {
     offset += this.view.getUint32(offset, true); // dereference string offset
     const length = this.view.getUint32(offset, true);
 
-    let str = '';
+    let str = "";
     for (let i = 0; i < length; i++) {
       str += String.fromCharCode(this.bytes[offset + 4 + i]!);
     }

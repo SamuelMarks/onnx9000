@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.optimizer.hardware.api import *
 
+
 def test_ONNX9000Optimizer():
     try:
         obj = ONNX9000Optimizer()
@@ -8,51 +9,58 @@ def test_ONNX9000Optimizer():
     except Exception:
         pass
 
+
 def test_optimize():
     try:
-        res = optimize()
+        optimize()
     except Exception:
         pass
+
 
 def test_quantize_dynamic():
     try:
-        res = quantize_dynamic()
+        quantize_dynamic()
     except Exception:
         pass
+
 
 def test_quantize_static():
     try:
-        res = quantize_static()
+        quantize_static()
     except Exception:
         pass
+
 
 def test_parse_olive_config():
     try:
-        res = parse_olive_config()
+        parse_olive_config()
     except Exception:
         pass
+
 
 def test_generate_optimization_report():
     try:
-        res = generate_optimization_report()
+        generate_optimization_report()
     except Exception:
         pass
+
 
 def test_run_in_pyodide():
     try:
-        res = run_in_pyodide()
+        run_in_pyodide()
     except Exception:
         pass
+
 
 def test_generate_js_wrapper():
     try:
-        res = generate_js_wrapper()
+        generate_js_wrapper()
     except Exception:
         pass
+
 
 def test_generate_visual_dag_comparison():
     try:
-        res = generate_visual_dag_comparison()
+        generate_visual_dag_comparison()
     except Exception:
         pass
-

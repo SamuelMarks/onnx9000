@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.tir.analysis import *
 
+
 def test_SemanticAnalyzer():
     try:
         obj = SemanticAnalyzer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PointerAliasingAnalysis():
     try:
@@ -15,12 +17,14 @@ def test_PointerAliasingAnalysis():
     except Exception:
         pass
 
+
 def test_InstructionCostModel():
     try:
         obj = InstructionCostModel()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BasicBlockExtractor():
     try:
@@ -29,12 +33,14 @@ def test_BasicBlockExtractor():
     except Exception:
         pass
 
+
 def test_DataFlowGraphBuilder():
     try:
         obj = DataFlowGraphBuilder()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BufferBoundsChecker():
     try:
@@ -43,6 +49,7 @@ def test_BufferBoundsChecker():
     except Exception:
         pass
 
+
 def test_TIRLinter():
     try:
         obj = TIRLinter()
@@ -50,10 +57,10 @@ def test_TIRLinter():
     except Exception:
         pass
 
+
 def test_CompilationSnapshotManager():
     try:
         obj = CompilationSnapshotManager()
         assert obj is not None
     except Exception:
         pass
-

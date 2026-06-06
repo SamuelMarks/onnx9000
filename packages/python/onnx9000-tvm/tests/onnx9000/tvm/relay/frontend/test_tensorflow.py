@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.frontend.tensorflow import *
 
+
 def test_TFImporter():
     try:
         obj = TFImporter()
@@ -8,9 +9,9 @@ def test_TFImporter():
     except Exception:
         pass
 
+
 def test_from_tensorflow():
     try:
-        res = from_tensorflow()
+        from_tensorflow()
     except Exception:
         pass
-

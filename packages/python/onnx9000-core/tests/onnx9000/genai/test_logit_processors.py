@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.logit_processors import *
 
+
 def test_LogitProcessor():
     try:
         obj = LogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TemperatureLogitProcessor():
     try:
@@ -15,12 +17,14 @@ def test_TemperatureLogitProcessor():
     except Exception:
         pass
 
+
 def test_TopKLogitProcessor():
     try:
         obj = TopKLogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RepetitionPenaltyLogitProcessor():
     try:
@@ -29,12 +33,14 @@ def test_RepetitionPenaltyLogitProcessor():
     except Exception:
         pass
 
+
 def test_MinPLogitProcessor():
     try:
         obj = MinPLogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PresencePenaltyLogitProcessor():
     try:
@@ -43,12 +49,14 @@ def test_PresencePenaltyLogitProcessor():
     except Exception:
         pass
 
+
 def test_FrequencyPenaltyLogitProcessor():
     try:
         obj = FrequencyPenaltyLogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ForcedBOSLogitProcessor():
     try:
@@ -57,12 +65,14 @@ def test_ForcedBOSLogitProcessor():
     except Exception:
         pass
 
+
 def test_ForcedEOSLogitProcessor():
     try:
         obj = ForcedEOSLogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LogitBiasProcessor():
     try:
@@ -71,12 +81,14 @@ def test_LogitBiasProcessor():
     except Exception:
         pass
 
+
 def test_NoRepeatNGramLogitProcessor():
     try:
         obj = NoRepeatNGramLogitProcessor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_NoBadWordsLogitProcessor():
     try:
@@ -85,10 +97,10 @@ def test_NoBadWordsLogitProcessor():
     except Exception:
         pass
 
+
 def test_AllowedWordsLogitProcessor():
     try:
         obj = AllowedWordsLogitProcessor()
         assert obj is not None
     except Exception:
         pass
-

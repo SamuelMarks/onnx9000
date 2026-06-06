@@ -5,8 +5,8 @@ describe('Debouncer.ts', () => {
   it('should instantiate and cover Debouncer', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Debouncer();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Debouncer();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

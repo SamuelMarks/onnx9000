@@ -5,8 +5,8 @@ describe('Store.ts', () => {
   it('should instantiate and cover Store', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Store();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Store();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

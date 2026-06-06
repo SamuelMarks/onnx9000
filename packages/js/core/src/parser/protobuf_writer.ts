@@ -25,7 +25,9 @@ export class BufferWriter {
   /** Ensure the buffer has enough remaining capacity. */
   private ensureSpace(size: number) {
     if (this.offset + size > this.buffer.length) {
-      const newBuffer = new Uint8Array(Math.max(this.buffer.length * 2, this.offset + size + 1024));
+      const newBuffer = new Uint8Array(
+        Math.max(this.buffer.length * 2, this.offset + size + 1024),
+      );
       newBuffer.set(this.buffer);
       this.buffer = newBuffer;
     }
@@ -86,7 +88,11 @@ export class BufferWriter {
   /** Write a 32-bit float (little-endian). */
   writeFloat(value: number) {
     this.ensureSpace(4);
-    const view = new DataView(this.buffer.buffer, this.buffer.byteOffset, this.buffer.byteLength);
+    const view = new DataView(
+      this.buffer.buffer,
+      this.buffer.byteOffset,
+      this.buffer.byteLength,
+    );
     view.setFloat32(this.offset, value, true);
     this.offset += 4;
   }
@@ -94,7 +100,11 @@ export class BufferWriter {
   /** Write a 64-bit signed integer (little-endian). */
   writeInt64(value: bigint | number) {
     this.ensureSpace(8);
-    const view = new DataView(this.buffer.buffer, this.buffer.byteOffset, this.buffer.byteLength);
+    const view = new DataView(
+      this.buffer.buffer,
+      this.buffer.byteOffset,
+      this.buffer.byteLength,
+    );
     view.setBigInt64(this.offset, BigInt(value), true);
     this.offset += 8;
   }

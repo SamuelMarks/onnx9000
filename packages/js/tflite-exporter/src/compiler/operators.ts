@@ -2,8 +2,13 @@
  * @fileoverview operators.ts
  * Provides operators functionality for the tflite-exporter package.
  */
-import { Node } from '@onnx9000/core';
-import { BuiltinOperator, BuiltinOptions, TensorType, Padding } from '../flatbuffer/schema';
+import { Node } from "@onnx9000/core";
+import {
+  BuiltinOperator,
+  BuiltinOptions,
+  TensorType,
+  Padding,
+} from "../flatbuffer/schema";
 
 export interface TFLiteOperatorMapping {
   builtinCode: BuiltinOperator;
@@ -15,21 +20,32 @@ export interface TFLiteOperatorMapping {
   ) => number;
 }
 
-export function mapPool2DOptions(builder: ReturnType<typeof JSON.parse>, node: Node): number {
-  const stridesAttr = node.attributes['strides']?.value as number[];
-  const kernelAttr = node.attributes['kernel_shape']?.value as number[];
-  const padsAttr = node.attributes['pads']?.value as number[];
-  const autoPadAttr = node.attributes['auto_pad']?.value as string;
+export function mapPool2DOptions(
+  builder: ReturnType<typeof JSON.parse>,
+  node: Node,
+): number {
+  const stridesAttr = node.attributes["strides"]?.value as number[];
+  const kernelAttr = node.attributes["kernel_shape"]?.value as number[];
+  const padsAttr = node.attributes["pads"]?.value as number[];
+  const autoPadAttr = node.attributes["auto_pad"]?.value as string;
 
   const strideH = stridesAttr ? stridesAttr[0] : 1;
-  const strideW = stridesAttr ? (stridesAttr[1] !== undefined ? stridesAttr[1] : 1) : 1;
+  const strideW = stridesAttr
+    ? stridesAttr[1] !== undefined
+      ? stridesAttr[1]
+      : 1
+    : 1;
   const filterH = kernelAttr ? kernelAttr[0] : 1;
-  const filterW = kernelAttr ? (kernelAttr[1] !== undefined ? kernelAttr[1] : 1) : 1;
+  const filterW = kernelAttr
+    ? kernelAttr[1] !== undefined
+      ? kernelAttr[1]
+      : 1
+    : 1;
 
   let padding = Padding.VALID;
-  if (autoPadAttr === 'SAME_UPPER' || autoPadAttr === 'SAME_LOWER') {
+  if (autoPadAttr === "SAME_UPPER" || autoPadAttr === "SAME_LOWER") {
     padding = Padding.SAME;
-  } else if (autoPadAttr === 'VALID') {
+  } else if (autoPadAttr === "VALID") {
     padding = Padding.VALID;
   } else if (padsAttr && padsAttr.reduce((a, b) => a + b, 0) > 0) {
     padding = Padding.SAME;
@@ -45,8 +61,11 @@ export function mapPool2DOptions(builder: ReturnType<typeof JSON.parse>, node: N
   return builder.endObject();
 }
 
-export function mapReducerOptions(builder: ReturnType<typeof JSON.parse>, node: Node): number {
-  const keepDims = (node.attributes['keepdims']?.value as number) || 1;
+export function mapReducerOptions(
+  builder: ReturnType<typeof JSON.parse>,
+  node: Node,
+): number {
+  const keepDims = (node.attributes["keepdims"]?.value as number) || 1;
   builder.startObject(2);
   builder.addFieldInt8(0, keepDims, 0); // keep_dims
   return builder.endObject();
@@ -73,7 +92,7 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.CAST,
     builtinOptionsType: BuiltinOptions.CastOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const to = n.attributes['to']?.value as number; // ONNX TensorProtoDataType
+      const to = n.attributes["to"]?.value as number; // ONNX TensorProtoDataType
       let outType = TensorType.FLOAT32;
       switch (to) {
         case 1:
@@ -130,9 +149,9 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.AddOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 98. Ensure TFLite fused_activation_function is utilized for Add+Relu optimizations.
-      const act = n.attributes['fused_activation']?.value as string;
+      const act = n.attributes["fused_activation"]?.value as string;
       b.startObject(2);
-      b.addFieldInt8(0, act === 'Relu' ? 1 : act === 'Relu6' ? 3 : 0, 0); // fused_activation NONE=0, RELU=1, RELU6=3
+      b.addFieldInt8(0, act === "Relu" ? 1 : act === "Relu6" ? 3 : 0, 0); // fused_activation NONE=0, RELU=1, RELU6=3
       return b.endObject();
     },
   },
@@ -141,9 +160,9 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.SUB,
     builtinOptionsType: BuiltinOptions.SubOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const act = n.attributes['fused_activation']?.value as string;
+      const act = n.attributes["fused_activation"]?.value as string;
       b.startObject(2);
-      b.addFieldInt8(0, act === 'Relu' ? 1 : act === 'Relu6' ? 3 : 0, 0);
+      b.addFieldInt8(0, act === "Relu" ? 1 : act === "Relu6" ? 3 : 0, 0);
       return b.endObject();
     },
   },
@@ -152,9 +171,9 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.MUL,
     builtinOptionsType: BuiltinOptions.MulOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const act = n.attributes['fused_activation']?.value as string;
+      const act = n.attributes["fused_activation"]?.value as string;
       b.startObject(2);
-      b.addFieldInt8(0, act === 'Relu' ? 1 : act === 'Relu6' ? 3 : 0, 0);
+      b.addFieldInt8(0, act === "Relu" ? 1 : act === "Relu6" ? 3 : 0, 0);
       return b.endObject();
     },
   },
@@ -163,9 +182,9 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.DIV,
     builtinOptionsType: BuiltinOptions.DivOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const act = n.attributes['fused_activation']?.value as string;
+      const act = n.attributes["fused_activation"]?.value as string;
       b.startObject(2);
-      b.addFieldInt8(0, act === 'Relu' ? 1 : act === 'Relu6' ? 3 : 0, 0);
+      b.addFieldInt8(0, act === "Relu" ? 1 : act === "Relu6" ? 3 : 0, 0);
       return b.endObject();
     },
   },
@@ -192,54 +211,108 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.MaximumMinimumOptions,
   },
   // 83. Emit POW
-  Pow: { builtinCode: BuiltinOperator.POW, builtinOptionsType: BuiltinOptions.PowOptions },
+  Pow: {
+    builtinCode: BuiltinOperator.POW,
+    builtinOptionsType: BuiltinOptions.PowOptions,
+  },
   // 84. Emit ABS
-  Abs: { builtinCode: BuiltinOperator.ABS, builtinOptionsType: BuiltinOptions.AbsOptions },
+  Abs: {
+    builtinCode: BuiltinOperator.ABS,
+    builtinOptionsType: BuiltinOptions.AbsOptions,
+  },
   // 85. Emit EXP
-  Exp: { builtinCode: BuiltinOperator.EXP, builtinOptionsType: BuiltinOptions.ExpOptions },
+  Exp: {
+    builtinCode: BuiltinOperator.EXP,
+    builtinOptionsType: BuiltinOptions.ExpOptions,
+  },
   // 86. Emit LOG
-  Log: { builtinCode: BuiltinOperator.LOG, builtinOptionsType: BuiltinOptions.NONE },
+  Log: {
+    builtinCode: BuiltinOperator.LOG,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 87. Emit SQRT
-  Sqrt: { builtinCode: BuiltinOperator.SQRT, builtinOptionsType: BuiltinOptions.NONE },
+  Sqrt: {
+    builtinCode: BuiltinOperator.SQRT,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 88. Emit RSQRT
   // Note: ONNX doesn't have RSQRT natively (it's 1/Sqrt or Reciprocal+Sqrt), but if we get one we map it.
-  Rsqrt: { builtinCode: BuiltinOperator.RSQRT, builtinOptionsType: BuiltinOptions.NONE },
+  Rsqrt: {
+    builtinCode: BuiltinOperator.RSQRT,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 89. Emit SIN
-  Sin: { builtinCode: BuiltinOperator.SIN, builtinOptionsType: BuiltinOptions.NONE },
+  Sin: {
+    builtinCode: BuiltinOperator.SIN,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 90. Emit COS
-  Cos: { builtinCode: BuiltinOperator.COS, builtinOptionsType: BuiltinOptions.CosOptions },
+  Cos: {
+    builtinCode: BuiltinOperator.COS,
+    builtinOptionsType: BuiltinOptions.CosOptions,
+  },
   // 91. Emit NEG
-  Neg: { builtinCode: BuiltinOperator.NEG, builtinOptionsType: BuiltinOptions.NegOptions },
+  Neg: {
+    builtinCode: BuiltinOperator.NEG,
+    builtinOptionsType: BuiltinOptions.NegOptions,
+  },
   // 92. Emit CEIL
-  Ceil: { builtinCode: BuiltinOperator.CEIL, builtinOptionsType: BuiltinOptions.NONE },
+  Ceil: {
+    builtinCode: BuiltinOperator.CEIL,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 93. Emit FLOOR
-  Floor: { builtinCode: BuiltinOperator.FLOOR, builtinOptionsType: BuiltinOptions.NONE },
+  Floor: {
+    builtinCode: BuiltinOperator.FLOOR,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 94. Emit ROUND
-  Round: { builtinCode: BuiltinOperator.ROUND, builtinOptionsType: BuiltinOptions.NONE },
+  Round: {
+    builtinCode: BuiltinOperator.ROUND,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 95. Emit SIGN
-  Sign: { builtinCode: BuiltinOperator.SIGN, builtinOptionsType: BuiltinOptions.NONE },
+  Sign: {
+    builtinCode: BuiltinOperator.SIGN,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
 
   // 126. Emit RELU
-  Relu: { builtinCode: BuiltinOperator.RELU, builtinOptionsType: BuiltinOptions.NONE },
+  Relu: {
+    builtinCode: BuiltinOperator.RELU,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 127. Emit RELU6
-  Relu6: { builtinCode: BuiltinOperator.RELU6, builtinOptionsType: BuiltinOptions.NONE },
+  Relu6: {
+    builtinCode: BuiltinOperator.RELU6,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 128. Emit LEAKY_RELU
   LeakyRelu: {
     builtinCode: BuiltinOperator.LEAKY_RELU,
     builtinOptionsType: BuiltinOptions.LeakyReluOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const alpha = (n.attributes['alpha']?.value as number) || 0.01;
+      const alpha = (n.attributes["alpha"]?.value as number) || 0.01;
       b.startObject(1);
       b.addFieldFloat32(0, alpha, 0.0);
       return b.endObject();
     },
   },
   // 129. Emit ELU
-  Elu: { builtinCode: BuiltinOperator.ELU, builtinOptionsType: BuiltinOptions.NONE },
+  Elu: {
+    builtinCode: BuiltinOperator.ELU,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 130. Emit LOGISTIC (Sigmoid)
-  Sigmoid: { builtinCode: BuiltinOperator.LOGISTIC, builtinOptionsType: BuiltinOptions.NONE },
+  Sigmoid: {
+    builtinCode: BuiltinOperator.LOGISTIC,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 131. Emit TANH
-  Tanh: { builtinCode: BuiltinOperator.TANH, builtinOptionsType: BuiltinOptions.NONE },
+  Tanh: {
+    builtinCode: BuiltinOperator.TANH,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 132. Emit SOFTMAX
   Softmax: {
     builtinCode: BuiltinOperator.SOFTMAX,
@@ -257,7 +330,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.LogSoftmaxOptions,
   },
   // 135. Emit HARD_SWISH
-  HardSwish: { builtinCode: BuiltinOperator.HARD_SWISH, builtinOptionsType: BuiltinOptions.NONE },
+  HardSwish: {
+    builtinCode: BuiltinOperator.HARD_SWISH,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 136. Emit GELU
   Gelu: {
     builtinCode: BuiltinOperator.GELU,
@@ -269,7 +345,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     },
   },
   // 138. Emit PRelu
-  PRelu: { builtinCode: BuiltinOperator.PRELU, builtinOptionsType: BuiltinOptions.NONE },
+  PRelu: {
+    builtinCode: BuiltinOperator.PRELU,
+    builtinOptionsType: BuiltinOptions.NONE,
+  },
   // 142. Emit L2_NORMALIZATION
   LpNormalization: {
     builtinCode: BuiltinOperator.L2_NORMALIZATION,
@@ -286,10 +365,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.LOCAL_RESPONSE_NORMALIZATION,
     builtinOptionsType: BuiltinOptions.LocalResponseNormOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const radius = (n.attributes['size']?.value as number) || 1;
-      const bias = (n.attributes['bias']?.value as number) || 1.0;
-      const alpha = (n.attributes['alpha']?.value as number) || 1.0;
-      const beta = (n.attributes['beta']?.value as number) || 0.5;
+      const radius = (n.attributes["size"]?.value as number) || 1;
+      const bias = (n.attributes["bias"]?.value as number) || 1.0;
+      const alpha = (n.attributes["alpha"]?.value as number) || 1.0;
+      const beta = (n.attributes["beta"]?.value as number) || 0.5;
 
       b.startObject(4);
       b.addFieldInt32(0, radius, 0);
@@ -357,7 +436,7 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.CONCATENATION,
     builtinOptionsType: BuiltinOptions.ConcatenationOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const axis = (n.attributes['axis']?.value as number) || 0;
+      const axis = (n.attributes["axis"]?.value as number) || 0;
       b.startObject(3);
       b.addFieldInt32(0, axis, 0);
       b.addFieldInt8(1, 0, 0); // activation None
@@ -388,18 +467,23 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     },
   },
   // 155. Emit SLICE
-  Slice: { builtinCode: BuiltinOperator.SLICE, builtinOptionsType: BuiltinOptions.SliceOptions },
+  Slice: {
+    builtinCode: BuiltinOperator.SLICE,
+    builtinOptionsType: BuiltinOptions.SliceOptions,
+  },
   // 156. Emit STRIDED_SLICE
   StridedSlice: {
     builtinCode: BuiltinOperator.STRIDED_SLICE,
     builtinOptionsType: BuiltinOptions.StridedSliceOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 157. Encode begin_mask, end_mask, shrink_axis_mask natively for STRIDED_SLICE.
-      const beginMask = (n.attributes['begin_mask']?.value as number) || 0;
-      const endMask = (n.attributes['end_mask']?.value as number) || 0;
-      const shrinkAxisMask = (n.attributes['shrink_axis_mask']?.value as number) || 0;
-      const ellipsisMask = (n.attributes['ellipsis_mask']?.value as number) || 0;
-      const newAxisMask = (n.attributes['new_axis_mask']?.value as number) || 0;
+      const beginMask = (n.attributes["begin_mask"]?.value as number) || 0;
+      const endMask = (n.attributes["end_mask"]?.value as number) || 0;
+      const shrinkAxisMask =
+        (n.attributes["shrink_axis_mask"]?.value as number) || 0;
+      const ellipsisMask =
+        (n.attributes["ellipsis_mask"]?.value as number) || 0;
+      const newAxisMask = (n.attributes["new_axis_mask"]?.value as number) || 0;
 
       b.startObject(5);
       b.addFieldInt32(0, beginMask, 0); // begin_mask
@@ -415,7 +499,7 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.GATHER,
     builtinOptionsType: BuiltinOptions.GatherOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const axis = (n.attributes['axis']?.value as number) || 0;
+      const axis = (n.attributes["axis"]?.value as number) || 0;
       b.startObject(2);
       b.addFieldInt32(0, axis, 0);
       b.addFieldInt32(1, 0, 0); // batch_dims
@@ -444,11 +528,20 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     },
   },
   // 162. Emit TILE
-  Tile: { builtinCode: BuiltinOperator.TILE, builtinOptionsType: BuiltinOptions.TileOptions },
+  Tile: {
+    builtinCode: BuiltinOperator.TILE,
+    builtinOptionsType: BuiltinOptions.TileOptions,
+  },
   // 163. Emit PAD
-  Pad: { builtinCode: BuiltinOperator.PAD, builtinOptionsType: BuiltinOptions.PadOptions },
+  Pad: {
+    builtinCode: BuiltinOperator.PAD,
+    builtinOptionsType: BuiltinOptions.PadOptions,
+  },
   // 164. Emit PADV2
-  PadV2: { builtinCode: BuiltinOperator.PADV2, builtinOptionsType: BuiltinOptions.PadV2Options },
+  PadV2: {
+    builtinCode: BuiltinOperator.PADV2,
+    builtinOptionsType: BuiltinOptions.PadV2Options,
+  },
   // 165. Emit MIRROR_PAD
   MirrorPad: {
     builtinCode: BuiltinOperator.MIRROR_PAD,
@@ -460,7 +553,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     },
   },
   // 166. Emit SHAPE
-  Shape: { builtinCode: BuiltinOperator.SHAPE, builtinOptionsType: BuiltinOptions.ShapeOptions },
+  Shape: {
+    builtinCode: BuiltinOperator.SHAPE,
+    builtinOptionsType: BuiltinOptions.ShapeOptions,
+  },
   // 167. Emit PACK
   SequenceConstruct: {
     builtinCode: BuiltinOperator.PACK,
@@ -516,11 +612,12 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
       if (graph) {
         const inX = n.inputs[0];
         if (inX) {
-          const producerX = graph.nodes.find((gNode: ReturnType<typeof JSON.parse>) =>
-            gNode.outputs.includes(inX),
+          const producerX = graph.nodes.find(
+            (gNode: ReturnType<typeof JSON.parse>) =>
+              gNode.outputs.includes(inX),
           );
-          if (producerX && producerX.opType === 'Transpose') {
-            const perm = producerX.attributes['perm']?.value as number[];
+          if (producerX && producerX.opType === "Transpose") {
+            const perm = producerX.attributes["perm"]?.value as number[];
             if (
               perm &&
               perm.length >= 2 &&
@@ -538,8 +635,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
       }
 
       // Let's assume Surgeon or LayoutOptimizer adds `adj_x` and `adj_y` attributes to MatMul if it fuses them.
-      adjX = (n.attributes['adj_x']?.value as number) || 0;
-      adjY = (n.attributes['adj_y']?.value as number) || 0;
+      adjX = (n.attributes["adj_x"]?.value as number) || 0;
+      adjY = (n.attributes["adj_y"]?.value as number) || 0;
 
       b.startObject(3);
       b.addFieldInt8(0, adjX, 0); // adj_x
@@ -551,14 +648,20 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
 
   // Phase 9: Logical, Reduction
   // 181. Emit EQUAL
-  Equal: { builtinCode: BuiltinOperator.EQUAL, builtinOptionsType: BuiltinOptions.EqualOptions },
+  Equal: {
+    builtinCode: BuiltinOperator.EQUAL,
+    builtinOptionsType: BuiltinOptions.EqualOptions,
+  },
   // 182. Emit NOT_EQUAL
   NotEqual: {
     builtinCode: BuiltinOperator.NOT_EQUAL,
     builtinOptionsType: BuiltinOptions.NotEqualOptions,
   },
   // 183. Emit LESS
-  Less: { builtinCode: BuiltinOperator.LESS, builtinOptionsType: BuiltinOptions.LessOptions },
+  Less: {
+    builtinCode: BuiltinOperator.LESS,
+    builtinOptionsType: BuiltinOptions.LessOptions,
+  },
   // 184. Emit LESS_EQUAL
   LessOrEqual: {
     builtinCode: BuiltinOperator.LESS_EQUAL,
@@ -590,7 +693,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.LogicalNotOptions,
   },
   // 190. Emit WHERE
-  Where: { builtinCode: BuiltinOperator.WHERE, builtinOptionsType: BuiltinOptions.WhereOptions },
+  Where: {
+    builtinCode: BuiltinOperator.WHERE,
+    builtinOptionsType: BuiltinOptions.WhereOptions,
+  },
 
   // 191. Emit REDUCE_MEAN
   ReduceMean: {
@@ -642,12 +748,13 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.ResizeBilinearOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 202. Encode align_corners and half_pixel_centers correctly.
-      const coordMode = n.attributes['coordinate_transformation_mode']?.value as string;
-      const alignCorners = coordMode === 'align_corners' ? 1 : 0;
-      const halfPixelCenters = coordMode === 'half_pixel' ? 1 : 0;
+      const coordMode = n.attributes["coordinate_transformation_mode"]
+        ?.value as string;
+      const alignCorners = coordMode === "align_corners" ? 1 : 0;
+      const halfPixelCenters = coordMode === "half_pixel" ? 1 : 0;
 
-      const mode = n.attributes['mode']?.value as string;
-      if (mode === 'nearest') {
+      const mode = n.attributes["mode"]?.value as string;
+      if (mode === "nearest") {
         b.startObject(2);
         b.addFieldInt8(0, alignCorners, 0);
         b.addFieldInt8(1, halfPixelCenters, 0);
@@ -665,7 +772,7 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.SPACE_TO_DEPTH,
     builtinOptionsType: BuiltinOptions.SpaceToDepthOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const blockSize = (n.attributes['blocksize']?.value as number) || 1;
+      const blockSize = (n.attributes["blocksize"]?.value as number) || 1;
       b.startObject(1);
       b.addFieldInt32(0, blockSize, 0);
       return b.endObject();
@@ -676,7 +783,7 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.DEPTH_TO_SPACE,
     builtinOptionsType: BuiltinOptions.DepthToSpaceOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const blockSize = (n.attributes['blocksize']?.value as number) || 1;
+      const blockSize = (n.attributes["blocksize"]?.value as number) || 1;
       b.startObject(1);
       b.addFieldInt32(0, blockSize, 0);
       return b.endObject();
@@ -713,7 +820,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     },
   },
   // 212. Emit TOPK_V2
-  TopK: { builtinCode: BuiltinOperator.TOPK_V2, builtinOptionsType: BuiltinOptions.TopKV2Options },
+  TopK: {
+    builtinCode: BuiltinOperator.TOPK_V2,
+    builtinOptionsType: BuiltinOptions.TopKV2Options,
+  },
   // 214. Emit REVERSE_V2
   Reverse: {
     builtinCode: BuiltinOperator.REVERSE_V2,
@@ -726,8 +836,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.CumsumOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // exclusive false, reverse false defaults
-      const exclusive = (n.attributes['exclusive']?.value as number) || 0;
-      const reverse = (n.attributes['reverse']?.value as number) || 0;
+      const exclusive = (n.attributes["exclusive"]?.value as number) || 0;
+      const reverse = (n.attributes["reverse"]?.value as number) || 0;
       b.startObject(2);
       b.addFieldInt8(0, exclusive, 0);
       b.addFieldInt8(1, reverse, 0);
@@ -745,7 +855,10 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.LSHProjectionOptions,
   },
   // 213. Emit UNIQUE
-  Unique: { builtinCode: BuiltinOperator.UNIQUE, builtinOptionsType: BuiltinOptions.UniqueOptions },
+  Unique: {
+    builtinCode: BuiltinOperator.UNIQUE,
+    builtinOptionsType: BuiltinOptions.UniqueOptions,
+  },
   // 218. Map ONNX GridSample to TFLite custom or math equivalents.
   // There is no standard builtin GridSample in TFL3 so we fallback to Flex or Custom.
   GridSample: {
@@ -795,7 +908,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.SequenceRNNOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 226. Support time_major flags natively.
-      const timeMajor = (n.attributes['time_major']?.value as number) === 1 ? 1 : 0;
+      const timeMajor =
+        (n.attributes["time_major"]?.value as number) === 1 ? 1 : 0;
       b.startObject(3);
       b.addFieldInt8(0, timeMajor, 0); // time_major false
       b.addFieldInt8(1, 0, 0); // fused_activation_function NONE
@@ -809,7 +923,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.SequenceRNNOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 226. Support time_major flags natively.
-      const timeMajor = (n.attributes['time_major']?.value as number) === 1 ? 1 : 0;
+      const timeMajor =
+        (n.attributes["time_major"]?.value as number) === 1 ? 1 : 0;
       b.startObject(3);
       b.addFieldInt8(0, timeMajor, 0); // time_major false
       b.addFieldInt8(1, 0, 0); // fused_activation_function NONE
@@ -823,7 +938,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinOptionsType: BuiltinOptions.SequenceRNNOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
       // 226. Support time_major flags natively.
-      const timeMajor = (n.attributes['time_major']?.value as number) === 1 ? 1 : 0;
+      const timeMajor =
+        (n.attributes["time_major"]?.value as number) === 1 ? 1 : 0;
       b.startObject(3);
       b.addFieldInt8(0, timeMajor, 0); // time_major false
       b.addFieldInt8(1, 0, 0); // fused_activation_function NONE
@@ -836,7 +952,8 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.UNIDIRECTIONAL_SEQUENCE_RNN,
     builtinOptionsType: BuiltinOptions.SequenceRNNOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const timeMajor = (n.attributes['time_major']?.value as number) === 1 ? 1 : 0;
+      const timeMajor =
+        (n.attributes["time_major"]?.value as number) === 1 ? 1 : 0;
       b.startObject(3);
       b.addFieldInt8(0, timeMajor, 0); // time_major false
       b.addFieldInt8(1, 0, 0); // fused_activation_function NONE
@@ -850,17 +967,21 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
     builtinCode: BuiltinOperator.TRANSPOSE_CONV,
     builtinOptionsType: BuiltinOptions.TransposeConvOptions,
     createOptions: (b: ReturnType<typeof JSON.parse>, n: Node) => {
-      const stridesAttr = n.attributes['strides']?.value as number[];
-      const padsAttr = n.attributes['pads']?.value as number[];
-      const autoPadAttr = n.attributes['auto_pad']?.value as string;
+      const stridesAttr = n.attributes["strides"]?.value as number[];
+      const padsAttr = n.attributes["pads"]?.value as number[];
+      const autoPadAttr = n.attributes["auto_pad"]?.value as string;
 
       const strideH = stridesAttr ? stridesAttr[0] : 1;
-      const strideW = stridesAttr ? (stridesAttr[1] !== undefined ? stridesAttr[1] : 1) : 1;
+      const strideW = stridesAttr
+        ? stridesAttr[1] !== undefined
+          ? stridesAttr[1]
+          : 1
+        : 1;
 
       let padding = Padding.VALID;
-      if (autoPadAttr === 'SAME_UPPER' || autoPadAttr === 'SAME_LOWER') {
+      if (autoPadAttr === "SAME_UPPER" || autoPadAttr === "SAME_LOWER") {
         padding = Padding.SAME;
-      } else if (autoPadAttr === 'VALID') {
+      } else if (autoPadAttr === "VALID") {
         padding = Padding.VALID;
       } else if (padsAttr && padsAttr.reduce((a, b) => a + b, 0) > 0) {
         padding = Padding.SAME;
@@ -913,31 +1034,42 @@ export const ELEMENTWISE_OPS: Record<string, TFLiteOperatorMapping> = {
 };
 
 // 101. Emit CONV_2D
-export function mapConv2DOptions(builder: ReturnType<typeof JSON.parse>, node: Node): number {
-  const stridesAttr = node.attributes['strides']?.value as number[];
-  const dilationsAttr = node.attributes['dilations']?.value as number[];
-  const padsAttr = node.attributes['pads']?.value as number[];
-  const autoPadAttr = node.attributes['auto_pad']?.value as string;
+export function mapConv2DOptions(
+  builder: ReturnType<typeof JSON.parse>,
+  node: Node,
+): number {
+  const stridesAttr = node.attributes["strides"]?.value as number[];
+  const dilationsAttr = node.attributes["dilations"]?.value as number[];
+  const padsAttr = node.attributes["pads"]?.value as number[];
+  const autoPadAttr = node.attributes["auto_pad"]?.value as string;
 
   const strideH = stridesAttr ? stridesAttr[0] : 1;
-  const strideW = stridesAttr ? (stridesAttr[1] !== undefined ? stridesAttr[1] : 1) : 1;
+  const strideW = stridesAttr
+    ? stridesAttr[1] !== undefined
+      ? stridesAttr[1]
+      : 1
+    : 1;
   const dilationH = dilationsAttr ? dilationsAttr[0] : 1;
-  const dilationW = dilationsAttr ? (dilationsAttr[1] !== undefined ? dilationsAttr[1] : 1) : 1;
+  const dilationW = dilationsAttr
+    ? dilationsAttr[1] !== undefined
+      ? dilationsAttr[1]
+      : 1
+    : 1;
 
   let padding = Padding.VALID;
-  if (autoPadAttr === 'SAME_UPPER' || autoPadAttr === 'SAME_LOWER') {
+  if (autoPadAttr === "SAME_UPPER" || autoPadAttr === "SAME_LOWER") {
     padding = Padding.SAME;
-  } else if (autoPadAttr === 'VALID') {
+  } else if (autoPadAttr === "VALID") {
     padding = Padding.VALID;
   } else if (padsAttr && padsAttr.reduce((a, b) => a + b, 0) > 0) {
     padding = Padding.SAME;
   }
 
-  const actAttr = node.attributes['fused_activation'];
+  const actAttr = node.attributes["fused_activation"];
   const act = actAttr?.value as string;
   let activation = 0; // NONE
-  if (act === 'Relu') activation = 1;
-  else if (act === 'Relu6') activation = 3; // RELU_N1_TO_1 (or RELU6=3 in ActivationFunctionType)
+  if (act === "Relu") activation = 1;
+  else if (act === "Relu6") activation = 3; // RELU_N1_TO_1 (or RELU6=3 in ActivationFunctionType)
 
   builder.startObject(6);
   builder.addFieldInt8(0, padding, 0); // PADDING_SAME or PADDING_VALID
@@ -954,20 +1086,28 @@ export function mapDepthwiseConv2DOptions(
   builder: ReturnType<typeof JSON.parse>,
   node: Node,
 ): number {
-  const stridesAttr = node.attributes['strides']?.value as number[];
-  const dilationsAttr = node.attributes['dilations']?.value as number[];
-  const padsAttr = node.attributes['pads']?.value as number[];
-  const autoPadAttr = node.attributes['auto_pad']?.value as string;
+  const stridesAttr = node.attributes["strides"]?.value as number[];
+  const dilationsAttr = node.attributes["dilations"]?.value as number[];
+  const padsAttr = node.attributes["pads"]?.value as number[];
+  const autoPadAttr = node.attributes["auto_pad"]?.value as string;
 
   const strideH = stridesAttr ? stridesAttr[0] : 1;
-  const strideW = stridesAttr ? (stridesAttr[1] !== undefined ? stridesAttr[1] : 1) : 1;
+  const strideW = stridesAttr
+    ? stridesAttr[1] !== undefined
+      ? stridesAttr[1]
+      : 1
+    : 1;
   const dilationH = dilationsAttr ? dilationsAttr[0] : 1;
-  const dilationW = dilationsAttr ? (dilationsAttr[1] !== undefined ? dilationsAttr[1] : 1) : 1;
+  const dilationW = dilationsAttr
+    ? dilationsAttr[1] !== undefined
+      ? dilationsAttr[1]
+      : 1
+    : 1;
 
   let padding = Padding.VALID;
-  if (autoPadAttr === 'SAME_UPPER' || autoPadAttr === 'SAME_LOWER') {
+  if (autoPadAttr === "SAME_UPPER" || autoPadAttr === "SAME_LOWER") {
     padding = Padding.SAME;
-  } else if (autoPadAttr === 'VALID') {
+  } else if (autoPadAttr === "VALID") {
     padding = Padding.VALID;
   } else if (padsAttr && padsAttr.reduce((a, b) => a + b, 0) > 0) {
     padding = Padding.SAME;
@@ -991,20 +1131,21 @@ export function mapDepthwiseConv2DOptions(
 export function mapOnnxNodeToTFLite(node: Node): TFLiteOperatorMapping | null {
   if (node.opType in ELEMENTWISE_OPS) {
     const mapping = Object.assign({}, ELEMENTWISE_OPS[node.opType]!);
-    if (node.opType === 'Resize') {
-      const mode = node.attributes['mode']?.value as string;
-      if (mode === 'nearest') {
+    if (node.opType === "Resize") {
+      const mode = node.attributes["mode"]?.value as string;
+      if (mode === "nearest") {
         mapping.builtinCode = BuiltinOperator.RESIZE_NEAREST_NEIGHBOR;
-        mapping.builtinOptionsType = BuiltinOptions.ResizeNearestNeighborOptions;
+        mapping.builtinOptionsType =
+          BuiltinOptions.ResizeNearestNeighborOptions;
       }
     }
     return mapping;
   }
 
   if (
-    node.opType === 'NonMaxSuppression' ||
-    node.opType === 'InstanceNormalization' ||
-    node.opType === 'LayerNormalization'
+    node.opType === "NonMaxSuppression" ||
+    node.opType === "InstanceNormalization" ||
+    node.opType === "LayerNormalization"
   ) {
     // 272. Map ONNX NonMaxSuppression to standard TFLite TFLite_Detection_PostProcess custom op.
     // 140. Map ONNX InstanceNormalization to custom op.
@@ -1017,7 +1158,7 @@ export function mapOnnxNodeToTFLite(node: Node): TFLiteOperatorMapping | null {
   }
 
   // 271. Implement TFLite Custom Operator embedding
-  if (node.domain && node.domain !== '') {
+  if (node.domain && node.domain !== "") {
     // Treat any non-standard domain ops as Custom Operators
     return {
       builtinCode: BuiltinOperator.CUSTOM,
@@ -1026,9 +1167,9 @@ export function mapOnnxNodeToTFLite(node: Node): TFLiteOperatorMapping | null {
     };
   }
 
-  if (node.opType === 'Conv') {
+  if (node.opType === "Conv") {
     // 109. Evaluate ONNX group attribute to trigger Depthwise translation natively.
-    const groupAttr = node.attributes['group']?.value as number;
+    const groupAttr = node.attributes["group"]?.value as number;
     if (groupAttr !== undefined && groupAttr > 1) {
       return {
         builtinCode: BuiltinOperator.DEPTHWISE_CONV_2D,

@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.extended import *
 
+
 def test_DraftingModel():
     try:
         obj = DraftingModel()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DraftVerifier():
     try:
@@ -15,12 +17,14 @@ def test_DraftVerifier():
     except Exception:
         pass
 
+
 def test_SelfConsistencyDecoder():
     try:
         obj = SelfConsistencyDecoder()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ContinuousBatchingQueue():
     try:
@@ -29,12 +33,14 @@ def test_ContinuousBatchingQueue():
     except Exception:
         pass
 
+
 def test_HiddenStateVisualizer():
     try:
         obj = HiddenStateVisualizer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PromptCompressor():
     try:
@@ -43,12 +49,14 @@ def test_PromptCompressor():
     except Exception:
         pass
 
+
 def test_ChunkedPrefiller():
     try:
         obj = ChunkedPrefiller()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DynamicParamAdjuster():
     try:
@@ -57,10 +65,10 @@ def test_DynamicParamAdjuster():
     except Exception:
         pass
 
+
 def test_MultiTurnCache():
     try:
         obj = MultiTurnCache()
         assert obj is not None
     except Exception:
         pass
-

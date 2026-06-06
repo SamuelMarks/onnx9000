@@ -20,10 +20,20 @@ export class LegacyQuirkResolver {
       return [0, 0, 0, 0];
     }
     if (pad.length === 1) {
-      return [pad[0] as number, pad[0] as number, pad[0] as number, pad[0] as number];
+      return [
+        pad[0] as number,
+        pad[0] as number,
+        pad[0] as number,
+        pad[0] as number,
+      ];
     }
     if (pad.length === 2) {
-      return [pad[0] as number, pad[1] as number, pad[0] as number, pad[1] as number];
+      return [
+        pad[0] as number,
+        pad[1] as number,
+        pad[0] as number,
+        pad[1] as number,
+      ];
     }
     if (pad.length === 4) {
       return pad;
@@ -49,7 +59,7 @@ export class LegacyQuirkResolver {
   // 173. Resolve MXNet's specific Flatten behaviors which occasionally differ from ONNX depending on rank.
   static resolveMxnetFlatten(node: Node, rank: number): Node {
     const newNode = { ...node };
-    if (newNode.opType === 'Flatten') {
+    if (newNode.opType === "Flatten") {
       newNode.attributes = newNode.attributes ? { ...newNode.attributes } : {};
       if (rank === 0 || rank === 1) {
         newNode.attributes.axis = 0;
@@ -64,15 +74,19 @@ export class LegacyQuirkResolver {
   static stripCaffeTrainingNodes(layers: object[]): object[] {
     if (!layers) return [];
     const trainingNodeTypes = new Set([
-      'Accuracy',
-      'SoftmaxWithLoss',
-      'EuclideanLoss',
-      'SigmoidCrossEntropyLoss',
+      "Accuracy",
+      "SoftmaxWithLoss",
+      "EuclideanLoss",
+      "SigmoidCrossEntropyLoss",
     ]);
     return layers.filter((layer) => {
       if (layer.include) {
-        const phases = Array.isArray(layer.include) ? layer.include : [layer.include];
-        const isTrainOnly = phases.some((p: object) => p.phase === 'TRAIN' || p.phase === 0);
+        const phases = Array.isArray(layer.include)
+          ? layer.include
+          : [layer.include];
+        const isTrainOnly = phases.some(
+          (p: object) => p.phase === "TRAIN" || p.phase === 0,
+        );
         if (isTrainOnly) {
           return false;
         }
@@ -85,7 +99,7 @@ export class LegacyQuirkResolver {
   static emulateCaffeROIPooling(layer: object): Node[] {
     const nodes: Node[] = [];
     nodes.push({
-      opType: 'MaxRoiPool',
+      opType: "MaxRoiPool",
       name: layer.name,
       inputs: layer.bottom || [],
       outputs: layer.top || [],

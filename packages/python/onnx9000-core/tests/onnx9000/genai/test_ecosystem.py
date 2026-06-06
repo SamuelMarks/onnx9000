@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.ecosystem import *
 
+
 def test_LangChainIntegration():
     try:
         obj = LangChainIntegration()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LlamaIndexIntegration():
     try:
@@ -15,12 +17,14 @@ def test_LlamaIndexIntegration():
     except Exception:
         pass
 
+
 def test_UnifiedPipelineModel():
     try:
         obj = UnifiedPipelineModel()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GGUFConverter():
     try:
@@ -29,12 +33,14 @@ def test_GGUFConverter():
     except Exception:
         pass
 
+
 def test_NuxtTypings():
     try:
         obj = NuxtTypings()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DiscordBotTemplate():
     try:
@@ -43,12 +49,14 @@ def test_DiscordBotTemplate():
     except Exception:
         pass
 
+
 def test_OfflineRAGVectorDB():
     try:
         obj = OfflineRAGVectorDB()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BenchmarksPub():
     try:
@@ -57,10 +65,10 @@ def test_BenchmarksPub():
     except Exception:
         pass
 
+
 def test_V1Certification():
     try:
         obj = V1Certification()
         assert obj is not None
     except Exception:
         pass
-

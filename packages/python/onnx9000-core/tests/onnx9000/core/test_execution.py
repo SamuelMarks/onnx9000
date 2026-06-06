@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.execution import *
 
+
 def test_SessionOptions():
     try:
         obj = SessionOptions()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RunOptions():
     try:
@@ -15,12 +17,14 @@ def test_RunOptions():
     except Exception:
         pass
 
+
 def test_Environment():
     try:
         obj = Environment()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ExecutionContext():
     try:
@@ -29,10 +33,10 @@ def test_ExecutionContext():
     except Exception:
         pass
 
+
 def test_ExecutionProvider():
     try:
         obj = ExecutionProvider()
         assert obj is not None
     except Exception:
         pass
-

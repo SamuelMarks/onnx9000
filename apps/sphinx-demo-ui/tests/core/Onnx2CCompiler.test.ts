@@ -5,8 +5,8 @@ describe('Onnx2CCompiler.ts', () => {
   it('should instantiate and cover Onnx2CCompiler', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Onnx2CCompiler();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Onnx2CCompiler();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

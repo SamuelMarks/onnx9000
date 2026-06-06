@@ -1,6 +1,6 @@
-import { Tensor } from '../ir/tensor.js';
-import { State } from './state.js';
-import { GeneratorParams } from './types.js';
+import { Tensor } from "../ir/tensor.js";
+import { State } from "./state.js";
+import { GeneratorParams } from "./types.js";
 
 /**
  * Base Generator class for stateful decoding.
@@ -43,7 +43,8 @@ export abstract class Generator {
     let currentTokens = 0;
     const maxTokens =
       this.params.maxNewTokens ??
-      this.params.maxLength - (promptIds.shape[promptIds.shape.length - 1] as number);
+      this.params.maxLength -
+        (promptIds.shape[promptIds.shape.length - 1] as number);
 
     let logits = await this.prefill(promptIds);
     let nextToken = this.sample(logits);
@@ -76,7 +77,10 @@ export abstract class Generator {
   protected sample(logits: Tensor): number {
     // Basic greedy search implementation for now.
     // Needs proper logit processing pipeline later.
-    if (logits.data instanceof Float32Array || logits.data instanceof Float64Array) {
+    if (
+      logits.data instanceof Float32Array ||
+      logits.data instanceof Float64Array
+    ) {
       const data = logits.data;
       const vocabSize = logits.shape[logits.shape.length - 1] as number;
       // Get the last logits
@@ -91,7 +95,7 @@ export abstract class Generator {
       }
       return maxIdx;
     }
-    throw new Error('Unsupported logit data type for sampling.');
+    throw new Error("Unsupported logit data type for sampling.");
   }
 
   /**

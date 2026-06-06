@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.converters.frontend.nn.containers import *
 
+
 def test_Sequential():
     try:
         obj = Sequential()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ModuleList():
     try:
@@ -15,6 +17,7 @@ def test_ModuleList():
     except Exception:
         pass
 
+
 def test_ModuleDict():
     try:
         obj = ModuleDict()
@@ -22,10 +25,10 @@ def test_ModuleDict():
     except Exception:
         pass
 
+
 def test_ParameterList():
     try:
         obj = ParameterList()
         assert obj is not None
     except Exception:
         pass
-

@@ -5,8 +5,8 @@ describe('ToastNotification.ts', () => {
   it('should instantiate and cover ToastNotification', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).ToastNotification();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).ToastNotification();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

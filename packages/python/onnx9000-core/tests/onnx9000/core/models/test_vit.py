@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.models.vit import *
 
+
 def test_PatchEmbed():
     try:
         obj = PatchEmbed()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Block():
     try:
@@ -15,6 +17,7 @@ def test_Block():
     except Exception:
         pass
 
+
 def test_VisionTransformer():
     try:
         obj = VisionTransformer()
@@ -22,15 +25,16 @@ def test_VisionTransformer():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_vit_base_patch16_224():
     try:
-        res = vit_base_patch16_224()
+        vit_base_patch16_224()
     except Exception:
         pass
-

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { JsonObject } from './tfjs-parser.js';
-import { OnnxNodeBuilder } from './emitters.js';
+import { JsonObject } from "./tfjs-parser.js";
+import { OnnxNodeBuilder } from "./emitters.js";
 
 /**
  * Type definition for a function that emits custom ONNX nodes for a Keras layer.
@@ -27,7 +27,9 @@ export function registerCustomKerasLayer(
   emitter: CustomLayerEmitter,
 ): void {
   if (layerPluginRegistry.has(kerasLayerName)) {
-    console.warn(`[onnx9000] Overwriting existing custom layer plugin for ${kerasLayerName}`);
+    console.warn(
+      `[onnx9000] Overwriting existing custom layer plugin for ${kerasLayerName}`,
+    );
   }
 
   layerPluginRegistry.set(kerasLayerName, emitter);
@@ -39,6 +41,8 @@ export function registerCustomKerasLayer(
  * @param kerasLayerName The class name of the Keras layer.
  * @returns The emitter function if registered, otherwise undefined.
  */
-export function getCustomKerasLayerEmitter(kerasLayerName: string): CustomLayerEmitter | undefined {
+export function getCustomKerasLayerEmitter(
+  kerasLayerName: string,
+): CustomLayerEmitter | undefined {
   return layerPluginRegistry.get(kerasLayerName);
 }

@@ -1,53 +1,57 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { handleWasmCommand } from '../src/commands/wasm.js';
-import { handleWebgpuCommand } from '../src/commands/webgpu.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { handleWasmCommand } from "../src/commands/wasm.js";
+import { handleWebgpuCommand } from "../src/commands/webgpu.js";
 
-describe('CLI Commands Batch 5', () => {
+describe("CLI Commands Batch 5", () => {
   let consoleLogSpy: any;
   let consoleErrorSpy: any;
   let processExitSpy: any;
 
   beforeEach(() => {
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    processExitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    processExitSpy = vi
+      .spyOn(process, "exit")
+      .mockImplementation(() => undefined as never);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  describe('handleWasmCommand', () => {
-    it('shows help when no args or -h', () => {
+  describe("handleWasmCommand", () => {
+    it("shows help when no args or -h", () => {
       handleWasmCommand([]);
       expect(processExitSpy).toHaveBeenCalledWith(0);
-      handleWasmCommand(['-h']);
+      handleWasmCommand(["-h"]);
       expect(processExitSpy).toHaveBeenCalledWith(0);
     });
 
-    it('processes command', () => {
-      handleWasmCommand(['model.onnx']);
+    it("processes command", () => {
+      handleWasmCommand(["model.onnx"]);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Initializing WebAssembly execution for model.onnx'),
+        expect.stringContaining(
+          "Initializing WebAssembly execution for model.onnx",
+        ),
       );
-      handleWasmCommand(['']);
+      handleWasmCommand([""]);
     });
   });
 
-  describe('handleWebgpuCommand', () => {
-    it('shows help when no args or -h', () => {
+  describe("handleWebgpuCommand", () => {
+    it("shows help when no args or -h", () => {
       handleWebgpuCommand([]);
       expect(processExitSpy).toHaveBeenCalledWith(0);
-      handleWebgpuCommand(['-h']);
+      handleWebgpuCommand(["-h"]);
       expect(processExitSpy).toHaveBeenCalledWith(0);
     });
 
-    it('processes command', () => {
-      handleWebgpuCommand(['model.onnx']);
+    it("processes command", () => {
+      handleWebgpuCommand(["model.onnx"]);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Initializing WebGPU execution for model.onnx'),
+        expect.stringContaining("Initializing WebGPU execution for model.onnx"),
       );
-      handleWebgpuCommand(['']);
+      handleWebgpuCommand([""]);
     });
   });
 });

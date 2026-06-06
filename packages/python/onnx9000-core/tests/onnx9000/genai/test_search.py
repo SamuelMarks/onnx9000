@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.search import *
 
+
 def test_SearchAlgorithm():
     try:
         obj = SearchAlgorithm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GreedySearch():
     try:
@@ -15,12 +17,14 @@ def test_GreedySearch():
     except Exception:
         pass
 
+
 def test_MultinomialSampling():
     try:
         obj = MultinomialSampling()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BeamSearchState():
     try:
@@ -29,10 +33,10 @@ def test_BeamSearchState():
     except Exception:
         pass
 
+
 def test_BeamSearchAlgorithm():
     try:
         obj = BeamSearchAlgorithm()
         assert obj is not None
     except Exception:
         pass
-

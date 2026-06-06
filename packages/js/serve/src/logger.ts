@@ -21,12 +21,16 @@ export class Logger {
     this.exporterUrl = exporterUrl;
   }
 
-  private async export(levelStr: string, message: string, meta?: ReturnType<typeof JSON.parse>) {
+  private async export(
+    levelStr: string,
+    message: string,
+    meta?: ReturnType<typeof JSON.parse>,
+  ) {
     if (this.exporterUrl) {
       try {
         await fetch(this.exporterUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             timestamp: new Date().toISOString(),
             level: levelStr,
@@ -40,32 +44,32 @@ export class Logger {
 
   public trace(msg: string, meta?: ReturnType<typeof JSON.parse>) {
     if (this.level <= LogLevel.TRACE) {
-      console.trace(msg, meta || '');
-      this.export('TRACE', msg, meta);
+      console.trace(msg, meta || "");
+      this.export("TRACE", msg, meta);
     }
   }
   public debug(msg: string, meta?: ReturnType<typeof JSON.parse>) {
     if (this.level <= LogLevel.DEBUG) {
-      console.debug(msg, meta || '');
-      this.export('DEBUG', msg, meta);
+      console.debug(msg, meta || "");
+      this.export("DEBUG", msg, meta);
     }
   }
   public info(msg: string, meta?: ReturnType<typeof JSON.parse>) {
     if (this.level <= LogLevel.INFO) {
-      console.info(msg, meta || '');
-      this.export('INFO', msg, meta);
+      console.info(msg, meta || "");
+      this.export("INFO", msg, meta);
     }
   }
   public warn(msg: string, meta?: ReturnType<typeof JSON.parse>) {
     if (this.level <= LogLevel.WARN) {
-      console.warn(msg, meta || '');
-      this.export('WARN', msg, meta);
+      console.warn(msg, meta || "");
+      this.export("WARN", msg, meta);
     }
   }
   public error(msg: string, meta?: ReturnType<typeof JSON.parse>) {
     if (this.level <= LogLevel.ERROR) {
-      console.error(msg, meta || '');
-      this.export('ERROR', msg, meta);
+      console.error(msg, meta || "");
+      this.export("ERROR", msg, meta);
     }
   }
 }
@@ -74,7 +78,7 @@ export const globalLogger = new Logger();
 
 // 141. Provide native OpenTelemetry traces (distributed tracing headers extraction).
 export function extractTraceContext(req: Request) {
-  const traceparent = req.headers.get('traceparent');
-  const tracestate = req.headers.get('tracestate');
+  const traceparent = req.headers.get("traceparent");
+  const tracestate = req.headers.get("tracestate");
   return { traceparent, tracestate };
 }

@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.optimizer.cli import *
 
+
 def test_ModelCache():
     try:
         obj = ModelCache()
@@ -8,27 +9,30 @@ def test_ModelCache():
     except Exception:
         pass
 
+
 def test_save_onnx():
     try:
-        res = save_onnx()
+        save_onnx()
     except Exception:
         pass
+
 
 def test_save_safetensors():
     try:
-        res = save_safetensors()
+        save_safetensors()
     except Exception:
         pass
+
 
 def test_optimize_cli():
     try:
-        res = optimize_cli()
+        optimize_cli()
     except Exception:
         pass
+
 
 def test_is_package_under_5mb():
     try:
-        res = is_package_under_5mb()
+        is_package_under_5mb()
     except Exception:
         pass
-

@@ -27,8 +27,17 @@ export enum GGUFTensorType {
 }
 
 export class GGUFWriter {
-  public kvs: { key: string; type: GGUFValueType; val: ReturnType<typeof JSON.parse> }[] = [];
-  public tensors: { name: string; shape: bigint[]; type: GGUFTensorType; offset: bigint }[] = [];
+  public kvs: {
+    key: string;
+    type: GGUFValueType;
+    val: ReturnType<typeof JSON.parse>;
+  }[] = [];
+  public tensors: {
+    name: string;
+    shape: bigint[];
+    type: GGUFTensorType;
+    offset: bigint;
+  }[] = [];
 
   public addUint8(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.UINT8, val });
@@ -71,10 +80,19 @@ export class GGUFWriter {
     val: ReturnType<typeof JSON.parse>[],
     arrayType: GGUFValueType,
   ): void {
-    this.kvs.push({ key, type: GGUFValueType.ARRAY, val: { arrayType, items: val } });
+    this.kvs.push({
+      key,
+      type: GGUFValueType.ARRAY,
+      val: { arrayType, items: val },
+    });
   }
 
-  public addTensorInfo(name: string, shape: bigint[], type: GGUFTensorType, offset: bigint): void {
+  public addTensorInfo(
+    name: string,
+    shape: bigint[],
+    type: GGUFTensorType,
+    offset: bigint,
+  ): void {
     this.tensors.push({ name, shape, type, offset });
   }
 
@@ -106,7 +124,7 @@ export class GGUFWriter {
 
     let alignment = 32;
     for (const kv of this.kvs) {
-      if (kv.key === 'general.alignment' && kv.type === GGUFValueType.UINT32) {
+      if (kv.key === "general.alignment" && kv.type === GGUFValueType.UINT32) {
         alignment = kv.val as number;
       }
     }
@@ -115,7 +133,10 @@ export class GGUFWriter {
     return size;
   }
 
-  private getValueSize(type: GGUFValueType, val: ReturnType<typeof JSON.parse>): number {
+  private getValueSize(
+    type: GGUFValueType,
+    val: ReturnType<typeof JSON.parse>,
+  ): number {
     switch (type) {
       case GGUFValueType.UINT8:
       case GGUFValueType.INT8:
@@ -146,7 +167,7 @@ export class GGUFWriter {
         return s;
       }
       default:
-        throw new Error('Unknown type');
+        throw new Error("Unknown type");
     }
   }
 
@@ -164,7 +185,10 @@ export class GGUFWriter {
       offset += encoded.length;
     };
 
-    const writeVal = (vtype: GGUFValueType, val: ReturnType<typeof JSON.parse>) => {
+    const writeVal = (
+      vtype: GGUFValueType,
+      val: ReturnType<typeof JSON.parse>,
+    ) => {
       switch (vtype) {
         case GGUFValueType.UINT8:
           view.setUint8(offset, val);
@@ -226,7 +250,7 @@ export class GGUFWriter {
           break;
         }
         default:
-          throw new Error('Unknown type');
+          throw new Error("Unknown type");
       }
     };
 
@@ -271,7 +295,7 @@ export class GGUFWriter {
 
     let alignment = 32;
     for (const kv of this.kvs) {
-      if (kv.key === 'general.alignment' && kv.type === GGUFValueType.UINT32) {
+      if (kv.key === "general.alignment" && kv.type === GGUFValueType.UINT32) {
         alignment = kv.val;
       }
     }

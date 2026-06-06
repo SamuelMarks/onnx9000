@@ -1,35 +1,35 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../src/ir/core';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../src/ir/core";
 
-describe('core.ts', () => {
-  it('should instantiate and cover Value', () => {
+describe("core.ts", () => {
+  it("should instantiate and cover Value", () => {
     try {
-       const obj = new (Module as any).Value();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Value();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover BlockArgument', () => {
+  it("should instantiate and cover BlockArgument", () => {
     try {
-       const obj = new (Module as any).BlockArgument();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).BlockArgument();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover Block', () => {
+  it("should instantiate and cover Block", () => {
     try {
-       const obj = new (Module as any).Block();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Block();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover Region', () => {
+  it("should instantiate and cover Region", () => {
     try {
-       const obj = new (Module as any).Region();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Region();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover Operation', () => {
+  it("should instantiate and cover Operation", () => {
     try {
-       const obj = new (Module as any).Operation();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Operation();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

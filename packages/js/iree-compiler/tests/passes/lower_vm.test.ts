@@ -1,29 +1,29 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../src/passes/lower_vm';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../src/passes/lower_vm";
 
-describe('lower_vm.ts', () => {
-  it('should instantiate and cover BytecodeEmitter', () => {
+describe("lower_vm.ts", () => {
+  it("should instantiate and cover BytecodeEmitter", () => {
     try {
-       const obj = new (Module as any).BytecodeEmitter();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).BytecodeEmitter();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should call and cover lowerHALToVM', async () => {
+  it("should call and cover lowerHALToVM", async () => {
     try {
-       const res = (Module as any).lowerHALToVM();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).lowerHALToVM();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
-  it('should call and cover optimizeAndAllocateRegisters', async () => {
+  it("should call and cover optimizeAndAllocateRegisters", async () => {
     try {
-       const res = (Module as any).optimizeAndAllocateRegisters();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).optimizeAndAllocateRegisters();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
-  it('should call and cover disassembleWVM', async () => {
+  it("should call and cover disassembleWVM", async () => {
     try {
-       const res = (Module as any).disassembleWVM();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).disassembleWVM();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

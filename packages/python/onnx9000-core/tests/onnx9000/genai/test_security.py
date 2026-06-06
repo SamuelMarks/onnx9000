@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.security import *
 
+
 def test_PromptInjectionDetector():
     try:
         obj = PromptInjectionDetector()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ContentSafetyFilter():
     try:
@@ -15,12 +17,14 @@ def test_ContentSafetyFilter():
     except Exception:
         pass
 
+
 def test_SecureExecutionBoundary():
     try:
         obj = SecureExecutionBoundary()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ExploitPreventer():
     try:
@@ -29,12 +33,14 @@ def test_ExploitPreventer():
     except Exception:
         pass
 
+
 def test_ChatTemplateSanitizer():
     try:
         obj = ChatTemplateSanitizer()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ResourceLimits():
     try:
@@ -43,12 +49,14 @@ def test_ResourceLimits():
     except Exception:
         pass
 
+
 def test_EncryptedModelExecutor():
     try:
         obj = EncryptedModelExecutor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SignatureValidator():
     try:
@@ -57,6 +65,7 @@ def test_SignatureValidator():
     except Exception:
         pass
 
+
 def test_KVCacheIsolator():
     try:
         obj = KVCacheIsolator()
@@ -64,10 +73,10 @@ def test_KVCacheIsolator():
     except Exception:
         pass
 
+
 def test_CSPCompliance():
     try:
         obj = CSPCompliance()
         assert obj is not None
     except Exception:
         pass
-

@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.toolkit.safetensors.parser import *
 
+
 def test_SafetensorsError():
     try:
         obj = SafetensorsError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsHeaderTooLargeError():
     try:
@@ -15,12 +17,14 @@ def test_SafetensorsHeaderTooLargeError():
     except Exception:
         pass
 
+
 def test_SafetensorsInvalidHeaderError():
     try:
         obj = SafetensorsInvalidHeaderError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsInvalidJSONError():
     try:
@@ -29,12 +33,14 @@ def test_SafetensorsInvalidJSONError():
     except Exception:
         pass
 
+
 def test_SafetensorsDuplicateKeyError():
     try:
         obj = SafetensorsDuplicateKeyError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsInvalidOffsetError():
     try:
@@ -43,12 +49,14 @@ def test_SafetensorsInvalidOffsetError():
     except Exception:
         pass
 
+
 def test_SafetensorsOutOfBoundsError():
     try:
         obj = SafetensorsOutOfBoundsError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsOverlapError():
     try:
@@ -57,12 +65,14 @@ def test_SafetensorsOverlapError():
     except Exception:
         pass
 
+
 def test_SafetensorsAlignmentError():
     try:
         obj = SafetensorsAlignmentError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsInvalidDtypeError():
     try:
@@ -71,12 +81,14 @@ def test_SafetensorsInvalidDtypeError():
     except Exception:
         pass
 
+
 def test_SafetensorsShapeMismatchError():
     try:
         obj = SafetensorsShapeMismatchError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsFileEmptyError():
     try:
@@ -85,12 +97,14 @@ def test_SafetensorsFileEmptyError():
     except Exception:
         pass
 
+
 def test_SafetensorsFileTooSmallError():
     try:
         obj = SafetensorsFileTooSmallError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafetensorsWriteError():
     try:
@@ -99,12 +113,14 @@ def test_SafetensorsWriteError():
     except Exception:
         pass
 
+
 def test_SafeTensors():
     try:
         obj = SafeTensors()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SafeTensorsSharded():
     try:
@@ -113,63 +129,72 @@ def test_SafeTensorsSharded():
     except Exception:
         pass
 
+
 def test__calculate_volume():
     try:
-        res = _calculate_volume()
+        _calculate_volume()
     except Exception:
         pass
+
 
 def test_save():
     try:
-        res = save()
+        save()
     except Exception:
         pass
+
 
 def test_save_file():
     try:
-        res = save_file()
+        save_file()
     except Exception:
         pass
+
 
 def test_load_file():
     try:
-        res = load_file()
+        load_file()
     except Exception:
         pass
+
 
 def test_load():
     try:
-        res = load()
+        load()
     except Exception:
         pass
+
 
 def test_check_safetensors():
     try:
-        res = check_safetensors()
+        check_safetensors()
     except Exception:
         pass
+
 
 def test_get_metadata():
     try:
-        res = get_metadata()
+        get_metadata()
     except Exception:
         pass
+
 
 def test_get_tensor():
     try:
-        res = get_tensor()
+        get_tensor()
     except Exception:
         pass
+
 
 def test_safe_open():
     try:
-        res = safe_open()
+        safe_open()
     except Exception:
         pass
+
 
 def test_save_sharded():
     try:
-        res = save_sharded()
+        save_sharded()
     except Exception:
         pass
-

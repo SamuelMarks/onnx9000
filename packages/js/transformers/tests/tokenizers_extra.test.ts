@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import * as toks from '../src/tokenizers/index.js';
+import { describe, it, expect } from "vitest";
+import * as toks from "../src/tokenizers/index.js";
 
-describe('Tokenizers coverage', () => {
-  it('instantiates all', async () => {
+describe("Tokenizers coverage", () => {
+  it("instantiates all", async () => {
     const list = [
       toks.AutoTokenizer,
       toks.PreTrainedTokenizer,
@@ -17,18 +17,18 @@ describe('Tokenizers coverage', () => {
 
     for (const Cls of list) {
       if (Cls === toks.AutoTokenizer) {
-        expect(await toks.AutoTokenizer.fromPretrained('a')).toBeDefined();
+        expect(await toks.AutoTokenizer.fromPretrained("a")).toBeDefined();
       } else {
         const t = new (Cls as any)({});
         expect(t).toBeDefined();
-        if (t.encode) expect(t.encode('test')).toBeDefined();
+        if (t.encode) expect(t.encode("test")).toBeDefined();
         if (t.decode) expect(t.decode([1, 2, 3])).toBeDefined();
         if (t.init) await t.init();
       }
     }
   });
 
-  it('Callable behavior', async () => {
+  it("Callable behavior", async () => {
     const t = new toks.PreTrainedTokenizer({});
     // no-op
   });

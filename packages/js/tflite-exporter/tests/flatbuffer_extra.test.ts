@@ -1,9 +1,15 @@
-import { BuiltinOperator } from '../src/flatbuffer/schema.js';
-import { describe, it, expect } from 'vitest';
-import { FlatBufferReader } from '../src/flatbuffer/reader.js';
-import { FlatBufferBuilder } from '../src/flatbuffer/builder.js';
-import { Tensor as SchemaTensor, TensorType } from '../src/flatbuffer/schema.js';
-import { Operator as SchemaOperator, BuiltinOptions } from '../src/flatbuffer/schema.js';
+import { BuiltinOperator } from "../src/flatbuffer/schema.js";
+import { describe, it, expect } from "vitest";
+import { FlatBufferReader } from "../src/flatbuffer/reader.js";
+import { FlatBufferBuilder } from "../src/flatbuffer/builder.js";
+import {
+  Tensor as SchemaTensor,
+  TensorType,
+} from "../src/flatbuffer/schema.js";
+import {
+  Operator as SchemaOperator,
+  BuiltinOptions,
+} from "../src/flatbuffer/schema.js";
 import {
   OperatorCode,
   QuantizationParameters,
@@ -11,14 +17,14 @@ import {
   Buffer,
   Model,
   Metadata,
-} from '../src/flatbuffer/schema.js';
-import { TFLiteExporter } from '../src/exporter.js';
+} from "../src/flatbuffer/schema.js";
+import { TFLiteExporter } from "../src/exporter.js";
 
-describe('Coverage FlatBuffer', () => {
-  it('Reader edges', () => {
+describe("Coverage FlatBuffer", () => {
+  it("Reader edges", () => {
     const shortBuf = new Uint8Array([1, 2, 3]);
     const reader1 = new FlatBufferReader(shortBuf);
-    expect(reader1.checkMagicBytes('TFL3')).toBe(false);
+    expect(reader1.checkMagicBytes("TFL3")).toBe(false);
 
     const buf = new Uint8Array(100);
     const view = new DataView(buf.buffer);
@@ -32,7 +38,7 @@ describe('Coverage FlatBuffer', () => {
     expect(reader2.getString(20, 0)).toBeNull();
   });
 
-  it('Schema edges', () => {
+  it("Schema edges", () => {
     const builder = new FlatBufferBuilder(1024);
     builder.startObject(10); // arbitrary
     const tensorLoc = SchemaTensor.create(
@@ -69,7 +75,7 @@ describe('Coverage FlatBuffer', () => {
     expect(opCodeLoc).toBeGreaterThan(0);
   });
 
-  it('Reader int getter fallbacks', () => {
+  it("Reader int getter fallbacks", () => {
     const buf = new Uint8Array(100);
     const view = new DataView(buf.buffer);
     const reader = new FlatBufferReader(buf);
@@ -85,7 +91,7 @@ describe('Coverage FlatBuffer', () => {
     expect(reader.getInt32(20, 0, 99)).toBe(99);
   });
 
-  it('Reader getFloat32 coverage', () => {
+  it("Reader getFloat32 coverage", () => {
     const buf = new Uint8Array(100);
     const view = new DataView(buf.buffer);
     const reader = new FlatBufferReader(buf);
@@ -98,7 +104,7 @@ describe('Coverage FlatBuffer', () => {
     expect(reader.getFloat32(20, 0, 1.5)).toBe(1.5);
   });
 
-  it('Schema more edges', () => {
+  it("Schema more edges", () => {
     const builder = new FlatBufferBuilder(1024);
     builder.startObject(7);
     const qLoc = QuantizationParameters.create(builder, 0, 0, 0, 0, 0, 0, 0);
@@ -117,7 +123,7 @@ describe('Coverage FlatBuffer', () => {
     expect(mLoc).toBeGreaterThan(0);
   });
 
-  it('Builder growBuffer from 0 and finish without identifier', () => {
+  it("Builder growBuffer from 0 and finish without identifier", () => {
     const b = new FlatBufferBuilder(0);
     (b as any).growBuffer();
     expect((b as any).bb.length).toBeGreaterThan(0);
@@ -128,7 +134,7 @@ describe('Coverage FlatBuffer', () => {
     b2.finish(root); // no identifier
   });
 
-  it('Schema Metadata', () => {
+  it("Schema Metadata", () => {
     const b = new FlatBufferBuilder(100);
     b.startObject(2);
     const mLoc = Metadata.create(b, 0, 0);
@@ -136,25 +142,47 @@ describe('Coverage FlatBuffer', () => {
 
     // Hit 372-375
     b.startObject(10);
-    const t2Loc = SchemaTensor.create(b, 0, TensorType.FLOAT32, 0, 0, 0, false, 0, 0, false);
+    const t2Loc = SchemaTensor.create(
+      b,
+      0,
+      TensorType.FLOAT32,
+      0,
+      0,
+      0,
+      false,
+      0,
+      0,
+      false,
+    );
     expect(t2Loc).toBeGreaterThan(0);
 
     // Hit 402
     b.startObject(10);
-    const op2Loc = SchemaOperator.create(b, 0, 0, 0, BuiltinOptions.AddOptions, 0, 0, 0, false, 0);
+    const op2Loc = SchemaOperator.create(
+      b,
+      0,
+      0,
+      0,
+      BuiltinOptions.AddOptions,
+      0,
+      0,
+      0,
+      false,
+      0,
+    );
     expect(op2Loc).toBeGreaterThan(0);
   });
 
-  it('Reader getRoot and getRootAsModel and checkMagicBytes true', () => {
+  it("Reader getRoot and getRootAsModel and checkMagicBytes true", () => {
     const b = new FlatBufferBuilder(100);
     b.startObject(1);
     const root = b.endObject();
-    b.finish(root, 'TFL3');
+    b.finish(root, "TFL3");
 
     const r = new FlatBufferReader(b.asUint8Array());
     expect(r.getRoot()).toBeGreaterThan(0);
     expect(r.getRootAsModel()).toBeGreaterThan(0);
-    expect(r.checkMagicBytes('TFL3')).toBe(true);
+    expect(r.checkMagicBytes("TFL3")).toBe(true);
 
     // Hit 45 in reader
     const buf = new Uint8Array(100);
@@ -167,19 +195,23 @@ describe('Coverage FlatBuffer', () => {
     expect(r2.getFieldOffset(20, 0)).toBe(0);
   });
 
-  it('Exporter edges', () => {
+  it("Exporter edges", () => {
     const exp = new TFLiteExporter();
 
     // addTensorBufferLazily
-    exp.addTensorBufferLazily([1, 2, 3, 4, 5, 6, 7], 10, () => new Uint8Array(10));
-
-    expect(() => exp.addTensorBufferLazily([1], 2 ** 31, () => new Uint8Array(1))).toThrow(
-      'limits (size:',
+    exp.addTensorBufferLazily(
+      [1, 2, 3, 4, 5, 6, 7],
+      10,
+      () => new Uint8Array(10),
     );
 
-    process.env['TFLITE_MEDIAPIPE_METADATA'] = '1';
+    expect(() =>
+      exp.addTensorBufferLazily([1], 2 ** 31, () => new Uint8Array(1)),
+    ).toThrow("limits (size:");
+
+    process.env["TFLITE_MEDIAPIPE_METADATA"] = "1";
     exp.finish(0); // This calls finish which wraps Model.create
-    delete process.env['TFLITE_MEDIAPIPE_METADATA'];
+    delete process.env["TFLITE_MEDIAPIPE_METADATA"];
 
     expect(exp.toJSON().version).toBe(3);
 
@@ -191,12 +223,12 @@ describe('Coverage FlatBuffer', () => {
   });
 });
 
-it('Exporter more edges', () => {
+it("Exporter more edges", () => {
   // ('../src/exporter');
   // ('../src/flatbuffer/schema');
   const exp = new TFLiteExporter();
 
-  exp.addMetadata('test-meta', new Uint8Array([1]));
+  exp.addMetadata("test-meta", new Uint8Array([1]));
 
   exp.addBuffer(new Uint8Array(0)); // empty cache
   const b1 = exp.addBuffer(new Uint8Array([1]));
@@ -206,8 +238,8 @@ it('Exporter more edges', () => {
   const op1 = exp.getOrAddOperatorCode(BuiltinOperator.ADD);
   const op2 = exp.getOrAddOperatorCode(BuiltinOperator.TRANSPOSE_CONV);
   const op3 = exp.getOrAddOperatorCode(BuiltinOperator.RESIZE_BILINEAR);
-  const op4 = exp.getOrAddOperatorCode(BuiltinOperator.ADD, 'custom', 5);
-  const op5 = exp.getOrAddOperatorCode(BuiltinOperator.ADD, 'custom', 5); // hash cache
+  const op4 = exp.getOrAddOperatorCode(BuiltinOperator.ADD, "custom", 5);
+  const op5 = exp.getOrAddOperatorCode(BuiltinOperator.ADD, "custom", 5); // hash cache
 
   exp.finish(0); // with metadata
 });

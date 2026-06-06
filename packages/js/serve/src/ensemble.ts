@@ -3,12 +3,12 @@
  * Provides ensemble functionality for the serve package.
  */
 export type EnsembleNodeType =
-  | 'model'
-  | 'logic'
-  | 'tokenizer'
-  | 'post_processor'
-  | 'lora_adapter'
-  | 'condition';
+  | "model"
+  | "logic"
+  | "tokenizer"
+  | "post_processor"
+  | "lora_adapter"
+  | "condition";
 
 export interface EnsembleNode {
   id: string;
@@ -16,7 +16,9 @@ export interface EnsembleNode {
   model_name?: string;
   inputs: Record<string, string>; // Maps local input names to source node outputs (e.g., { "image": "nodeA.output0" })
   outputs: string[];
-  logic?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => ReturnType<typeof JSON.parse>;
+  logic?: (
+    inputs: Record<string, ReturnType<typeof JSON.parse>>,
+  ) => ReturnType<typeof JSON.parse>;
   condition?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => string; // Returns the next node id to route to
 }
 
@@ -39,8 +41,8 @@ export class ModelEnsemble {
     for (const node of this.config.nodes) {
       adj[node.id] = [];
       for (const src of Object.values(node.inputs)) {
-        if (src.includes('.')) {
-          const srcNode = src.split('.')[0];
+        if (src.includes(".")) {
+          const srcNode = src.split(".")[0];
           if (srcNode && adj[node.id]) adj[node.id]!.push(srcNode);
         }
       }
@@ -64,7 +66,9 @@ export class ModelEnsemble {
 
     for (const node of this.config.nodes) {
       if (checkCycle(node.id)) {
-        throw new Error(`Infinite routing loop detected involving node ${node.id}`);
+        throw new Error(
+          `Infinite routing loop detected involving node ${node.id}`,
+        );
       }
     }
   }
@@ -102,27 +106,29 @@ export class ModelEnsemble {
       const resolvedInputs: Record<string, ReturnType<typeof JSON.parse>> = {};
 
       for (const [localKey, src] of Object.entries(node.inputs)) {
-        const [srcNodeId, srcOutput] = src.includes('.') ? src.split('.') : ['global', src];
+        const [srcNodeId, srcOutput] = src.includes(".")
+          ? src.split(".")
+          : ["global", src];
 
-        if (srcNodeId !== 'global' && nodePromises[srcNodeId!]) {
+        if (srcNodeId !== "global" && nodePromises[srcNodeId!]) {
           await nodePromises[srcNodeId!];
         }
         resolvedInputs[localKey] = memory[src];
       }
 
-      if (node.type === 'logic' && node.logic) {
+      if (node.type === "logic" && node.logic) {
         const result = await node.logic(resolvedInputs);
         memory[`${node.id}.out`] = result;
-      } else if (node.type === 'condition' && node.condition) {
+      } else if (node.type === "condition" && node.condition) {
         const nextNode = node.condition(resolvedInputs);
         memory[`${node.id}.route`] = nextNode;
-      } else if (node.type === 'model') {
+      } else if (node.type === "model") {
         memory[`${node.id}.output0`] = { data: [1.0] };
-      } else if (node.type === 'tokenizer') {
+      } else if (node.type === "tokenizer") {
         memory[`${node.id}.input_ids`] = [101, 2023, 102];
-      } else if (node.type === 'post_processor') {
+      } else if (node.type === "post_processor") {
         memory[`${node.id}.out`] = { bounding_boxes: [] };
-      } else if (node.type === 'lora_adapter') {
+      } else if (node.type === "lora_adapter") {
         memory[`${node.id}.weights`] = { ...resolvedInputs };
       }
 
@@ -144,7 +150,7 @@ export class ModelEnsemble {
     }
 
     // Attach latency metadata for 84
-    finalOutputs['__metadata__'] = { latencies };
+    finalOutputs["__metadata__"] = { latencies };
 
     return finalOutputs;
   }

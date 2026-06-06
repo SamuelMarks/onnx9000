@@ -5,8 +5,8 @@ describe('WasmManager.ts', () => {
   it('should instantiate and cover WasmManager', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).WasmManager();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).WasmManager();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

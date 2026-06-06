@@ -2,7 +2,7 @@
  * @fileoverview schema.ts
  * Provides schema functionality for the tflite-exporter package.
  */
-import { FlatBufferBuilder } from './builder';
+import { FlatBufferBuilder } from "./builder";
 
 export enum TensorType {
   FLOAT32 = 0,
@@ -437,7 +437,11 @@ export class Buffer {
 }
 
 export class Metadata {
-  static create(builder: FlatBufferBuilder, nameOffset: number, buffer: number): number {
+  static create(
+    builder: FlatBufferBuilder,
+    nameOffset: number,
+    buffer: number,
+  ): number {
     builder.startObject(2);
     builder.addFieldOffset(0, nameOffset, 0);
     builder.addFieldInt32(1, buffer, 0);

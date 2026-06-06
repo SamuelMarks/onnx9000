@@ -1,4 +1,4 @@
-import { Graph } from '@onnx9000/core';
+import { Graph } from "@onnx9000/core";
 
 // Phase 8: Data Privacy & Security
 
@@ -22,14 +22,14 @@ export function createStandaloneHTML(
 
   // Inject script
   finalHtml = finalHtml.replace(
-    '<!-- INJECT_SCRIPT -->',
+    "<!-- INJECT_SCRIPT -->",
     `<script type="module">\n${jsBundle}\n</script>`,
   );
 
   if (onnxBase64) {
     // Inject model
     finalHtml = finalHtml.replace(
-      '<!-- INJECT_MODEL -->',
+      "<!-- INJECT_MODEL -->",
       `<script id="baked-model" type="application/octet-stream">${onnxBase64}</script>`,
     );
   }
@@ -73,7 +73,7 @@ export function createTimeoutCircuitBreaker(timeoutMs: number = 5000) {
   const start = performance.now();
   return () => {
     if (performance.now() - start > timeoutMs) {
-      throw new Error('Execution timeout: potential infinite loop detected.');
+      throw new Error("Execution timeout: potential infinite loop detected.");
     }
   };
 }
@@ -82,12 +82,12 @@ export function createTimeoutCircuitBreaker(timeoutMs: number = 5000) {
  * 100. Disallow prototype pollution or malicious script injection
  */
 export function sanitizeMetadata(str: string | undefined): string {
-  if (!str) return '';
+  if (!str) return "";
   // Basic HTML entity encoding to prevent XSS / script injection when rendering metadata
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

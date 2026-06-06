@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.tvm.tir.transform.passes import *
 
+
 def test_LoopUnroller():
     try:
         obj = LoopUnroller()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Vectorizer():
     try:
@@ -15,12 +17,14 @@ def test_Vectorizer():
     except Exception:
         pass
 
+
 def test_StorageFlattener():
     try:
         obj = StorageFlattener()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StorageRewriter():
     try:
@@ -29,12 +33,14 @@ def test_StorageRewriter():
     except Exception:
         pass
 
+
 def test_DeadStoreEliminator():
     try:
         obj = DeadStoreEliminator()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_VirtualThreadInjector():
     try:
@@ -43,12 +49,14 @@ def test_VirtualThreadInjector():
     except Exception:
         pass
 
+
 def test_DoubleBufferInjector():
     try:
         obj = DoubleBufferInjector()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MathSimplifier():
     try:
@@ -57,12 +65,14 @@ def test_MathSimplifier():
     except Exception:
         pass
 
+
 def test_LoopPartitioner():
     try:
         obj = LoopPartitioner()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ThreadBinder():
     try:
@@ -71,12 +81,14 @@ def test_ThreadBinder():
     except Exception:
         pass
 
+
 def test_PackedAPIMaker():
     try:
         obj = PackedAPIMaker()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_CustomDatatypesLowerer():
     try:
@@ -85,6 +97,7 @@ def test_CustomDatatypesLowerer():
     except Exception:
         pass
 
+
 def test_BoundCheckerInstrumenter():
     try:
         obj = BoundCheckerInstrumenter()
@@ -92,81 +105,93 @@ def test_BoundCheckerInstrumenter():
     except Exception:
         pass
 
+
 def test_unroll_loop():
     try:
-        res = unroll_loop()
+        unroll_loop()
     except Exception:
         pass
+
 
 def test_vectorize():
     try:
-        res = vectorize()
+        vectorize()
     except Exception:
         pass
+
 
 def test_flatten_storage():
     try:
-        res = flatten_storage()
+        flatten_storage()
     except Exception:
         pass
+
 
 def test_rewrite_storage():
     try:
-        res = rewrite_storage()
+        rewrite_storage()
     except Exception:
         pass
+
 
 def test_eliminate_dead_store():
     try:
-        res = eliminate_dead_store()
+        eliminate_dead_store()
     except Exception:
         pass
+
 
 def test_inject_virtual_thread():
     try:
-        res = inject_virtual_thread()
+        inject_virtual_thread()
     except Exception:
         pass
+
 
 def test_inject_double_buffer():
     try:
-        res = inject_double_buffer()
+        inject_double_buffer()
     except Exception:
         pass
+
 
 def test_simplify_math():
     try:
-        res = simplify_math()
+        simplify_math()
     except Exception:
         pass
+
 
 def test_partition_loop():
     try:
-        res = partition_loop()
+        partition_loop()
     except Exception:
         pass
+
 
 def test_bind_thread():
     try:
-        res = bind_thread()
+        bind_thread()
     except Exception:
         pass
+
 
 def test_make_packed_api():
     try:
-        res = make_packed_api()
+        make_packed_api()
     except Exception:
         pass
+
 
 def test_lower_custom_datatypes():
     try:
-        res = lower_custom_datatypes()
+        lower_custom_datatypes()
     except Exception:
         pass
+
 
 def test_instrument_bound_checkers():
     try:
-        res = instrument_bound_checkers()
+        instrument_bound_checkers()
     except Exception:
         pass
-

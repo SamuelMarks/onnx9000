@@ -1,21 +1,21 @@
-import { describe, it, expect } from 'vitest';
-import { Region, Operation, Block } from '../src/ir/core.js';
-import { MetaScheduleAutotuner } from '../src/passes/autotuner.js';
+import { describe, it, expect } from "vitest";
+import { Region, Operation, Block } from "../src/ir/core.js";
+import { MetaScheduleAutotuner } from "../src/passes/autotuner.js";
 
-describe('Autotuner Passes', () => {
-  it('should identify hardware and heuristics', () => {
+describe("Autotuner Passes", () => {
+  it("should identify hardware and heuristics", () => {
     const tuner = new MetaScheduleAutotuner();
-    expect(tuner.isAppleMSeries('Apple M1 Max')).toBe(true);
-    expect(tuner.isNvidia('NVIDIA GeForce RTX 3080')).toBe(true);
-    expect(tuner.getHeuristicFallback('wgsl')).toEqual([64, 1, 1]);
+    expect(tuner.isAppleMSeries("Apple M1 Max")).toBe(true);
+    expect(tuner.isNvidia("NVIDIA GeForce RTX 3080")).toBe(true);
+    expect(tuner.getHeuristicFallback("wgsl")).toEqual([64, 1, 1]);
   });
 
-  it('should mutate sizes and config', () => {
+  it("should mutate sizes and config", () => {
     const region = new Region();
     const block = new Block(region);
     region.pushBlock(block);
 
-    const op = new Operation('web.linalg.generic', [], [], {});
+    const op = new Operation("web.linalg.generic", [], [], {});
     block.pushOperation(op);
 
     const tuner = new MetaScheduleAutotuner();
@@ -28,12 +28,12 @@ describe('Autotuner Passes', () => {
     expect(op.attributes.tiling_sizes).toEqual([16, 16]);
   });
 
-  it('covers missing branches', async () => {
+  it("covers missing branches", async () => {
     const tuner = new MetaScheduleAutotuner();
-    expect(tuner.getHeuristicFallback('wasm')).toEqual([1, 1, 1]);
-    expect(tuner.getHeuristicFallback('unknown')).toEqual([1, 1, 1]);
+    expect(tuner.getHeuristicFallback("wasm")).toEqual([1, 1, 1]);
+    expect(tuner.getHeuristicFallback("unknown")).toEqual([1, 1, 1]);
 
-    const op = new Operation('unknown', [], []);
+    const op = new Operation("unknown", [], []);
     tuner.mutateTilingSizes(op, [2, 2]);
     expect(op.attributes.tiling_sizes).toBeUndefined();
 
@@ -46,7 +46,7 @@ describe('Autotuner Passes', () => {
     tuner.loadIreeConfig(JSON.stringify({ optimalTileSizes: [8, 8] }), region);
     expect(op.attributes.tiling_sizes).toBeUndefined();
 
-    const time = await tuner.profileWGSL({}, 'shader');
-    expect(typeof time).toBe('number');
+    const time = await tuner.profileWGSL({}, "shader");
+    expect(typeof time).toBe("number");
   });
 });

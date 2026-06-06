@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.optimizer.simplifier.passes.validation import *
 
+
 def test_ValidationPass():
     try:
         obj = ValidationPass()
@@ -8,15 +9,16 @@ def test_ValidationPass():
     except Exception:
         pass
 
+
 def test_detect_cycles():
     try:
-        res = detect_cycles()
+        detect_cycles()
     except Exception:
         pass
+
 
 def test_detect_dangling():
     try:
-        res = detect_dangling()
+        detect_dangling()
     except Exception:
         pass
-

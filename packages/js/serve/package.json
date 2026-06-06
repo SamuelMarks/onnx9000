@@ -8,12 +8,13 @@
     "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },
   "dependencies": {
+    "@onnx9000/backend-web": "workspace:*",
     "@onnx9000/core": "workspace:*",
-    "@onnx9000/backend-web": "workspace:*"
+    "@onnx9000/tensorrt": "workspace:^"
   },
   "devDependencies": {
-    "vitest": "^1.6.0",
-    "@vitest/coverage-v8": "^1.6.0"
+    "@vitest/coverage-v8": "^1.6.0",
+    "vitest": "^1.6.0"
   },
   "type": "module"
 }

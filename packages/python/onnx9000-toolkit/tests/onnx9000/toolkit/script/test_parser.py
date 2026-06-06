@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.toolkit.script.parser import *
 
+
 def test_ScriptParser():
     try:
         obj = ScriptParser()
@@ -8,9 +9,9 @@ def test_ScriptParser():
     except Exception:
         pass
 
+
 def test_script():
     try:
-        res = script()
+        script()
     except Exception:
         pass
-

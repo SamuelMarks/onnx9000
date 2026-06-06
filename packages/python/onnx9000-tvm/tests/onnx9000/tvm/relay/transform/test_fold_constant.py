@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.transform.fold_constant import *
 
+
 def test_ConstantFolder():
     try:
         obj = ConstantFolder()
@@ -8,9 +9,9 @@ def test_ConstantFolder():
     except Exception:
         pass
 
+
 def test_fold_constant():
     try:
-        res = fold_constant()
+        fold_constant()
     except Exception:
         pass
-

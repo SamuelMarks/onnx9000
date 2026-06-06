@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.stability import *
 
+
 def test_SafeMode():
     try:
         obj = SafeMode()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_InputShapeValidator():
     try:
@@ -15,12 +17,14 @@ def test_InputShapeValidator():
     except Exception:
         pass
 
+
 def test_GeneratorThreadSafety():
     try:
         obj = GeneratorThreadSafety()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BrowserWorkerIsolation():
     try:
@@ -29,12 +33,14 @@ def test_BrowserWorkerIsolation():
     except Exception:
         pass
 
+
 def test_MalformedChatTemplateError():
     try:
         obj = MalformedChatTemplateError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_EndOfStreamError():
     try:
@@ -43,6 +49,7 @@ def test_EndOfStreamError():
     except Exception:
         pass
 
+
 def test_OOMHandler():
     try:
         obj = OOMHandler()
@@ -50,10 +57,10 @@ def test_OOMHandler():
     except Exception:
         pass
 
+
 def test_LargeVocabManager():
     try:
         obj = LargeVocabManager()
         assert obj is not None
     except Exception:
         pass
-

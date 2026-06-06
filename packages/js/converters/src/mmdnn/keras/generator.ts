@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Graph, Tensor } from '@onnx9000/core';
-import { zipSync } from 'fflate';
+import { Graph, Tensor } from "@onnx9000/core";
+import { zipSync } from "fflate";
 
 /**
  * Generator for Keras source code and weight files from onnx9000 IR.
@@ -24,10 +24,10 @@ export class KerasGenerator {
    * @returns A sanitized name string.
    */
   public sanitize(name: string): string {
-    if (!name) return 'unnamed';
-    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
+    if (!name) return "unnamed";
+    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, "_");
     if (/^[0-9]/.test(sanitized)) {
-      sanitized = 'v_' + sanitized;
+      sanitized = "v_" + sanitized;
     }
     return sanitized;
   }
@@ -65,25 +65,25 @@ export class KerasGenerator {
    * @returns Uint8Array containing the NPY file data.
    */
   public generateNpy(tensor: Tensor): Uint8Array {
-    let dtype = '<f4'; // default float32
-    if (tensor.dtype === 'float32') dtype = '<f4';
-    else if (tensor.dtype === 'uint8') dtype = '|u1';
-    else if (tensor.dtype === 'int8') dtype = '|i1';
-    else if (tensor.dtype === 'uint16') dtype = '<u2';
-    else if (tensor.dtype === 'int16') dtype = '<i2';
-    else if (tensor.dtype === 'int32') dtype = '<i4';
-    else if (tensor.dtype === 'int64') dtype = '<i8';
-    else if (tensor.dtype === 'float16') dtype = '<f2';
-    else if (tensor.dtype === 'float64') dtype = '<f8';
-    else if (tensor.dtype === 'bool') dtype = '|b1';
+    let dtype = "<f4"; // default float32
+    if (tensor.dtype === "float32") dtype = "<f4";
+    else if (tensor.dtype === "uint8") dtype = "|u1";
+    else if (tensor.dtype === "int8") dtype = "|i1";
+    else if (tensor.dtype === "uint16") dtype = "<u2";
+    else if (tensor.dtype === "int16") dtype = "<i2";
+    else if (tensor.dtype === "int32") dtype = "<i4";
+    else if (tensor.dtype === "int64") dtype = "<i8";
+    else if (tensor.dtype === "float16") dtype = "<f2";
+    else if (tensor.dtype === "float64") dtype = "<f8";
+    else if (tensor.dtype === "bool") dtype = "|b1";
 
-    const shapeStr = `(${tensor.shape.join(', ') + (tensor.shape.length === 1 ? ',' : '')})`;
+    const shapeStr = `(${tensor.shape.join(", ") + (tensor.shape.length === 1 ? "," : "")})`;
     let dictStr = `{'descr': '${dtype}', 'fortran_order': False, 'shape': ${shapeStr}, }`;
 
     let headerLen = dictStr.length + 1;
     let padLen = 64 - ((10 + headerLen) % 64);
     if (padLen < 0) padLen += 64;
-    dictStr += ' '.repeat(padLen) + '\n';
+    dictStr += " ".repeat(padLen) + "\n";
 
     headerLen = dictStr.length;
     const header = new Uint8Array(10 + headerLen);
@@ -103,7 +103,11 @@ export class KerasGenerator {
     }
 
     const dataBytes = tensor.data
-      ? new Uint8Array(tensor.data.buffer, tensor.data.byteOffset, tensor.data.byteLength)
+      ? new Uint8Array(
+          tensor.data.buffer,
+          tensor.data.byteOffset,
+          tensor.data.byteLength,
+        )
       : new Uint8Array(0);
     const result = new Uint8Array(header.length + dataBytes.length);
     result.set(header, 0);
@@ -137,20 +141,20 @@ export class KerasGenerator {
    * @returns A string containing the functional Keras model definition.
    */
   public generateSource(): string {
-    const graphName = this.sanitize(this.graph.name || 'Model');
+    const graphName = this.sanitize(this.graph.name || "Model");
 
-    let code = 'import keras\n';
-    code += 'from keras import ops\n';
-    code += 'import numpy as np\n\n';
+    let code = "import keras\n";
+    code += "from keras import ops\n";
+    code += "import numpy as np\n\n";
 
-    code += 'class Model_Generated(keras.Model):\n';
-    code += '    def __init__(self):\n';
-    code += '        super(Model_Generated, self).__init__()\n';
-    code += '        # Layers defined here if needed\n\n';
+    code += "class Model_Generated(keras.Model):\n";
+    code += "    def __init__(self):\n";
+    code += "        super(Model_Generated, self).__init__()\n";
+    code += "        # Layers defined here if needed\n\n";
 
     code += `def create_${graphName}():\n`;
     if (this.graph.nodes.length === 0) {
-      code += '    pass\n';
+      code += "    pass\n";
       return code;
     }
 
@@ -160,7 +164,7 @@ export class KerasGenerator {
       const sanitized = this.sanitize(input.name);
       const shape =
         input.shape.length > 0
-          ? input.shape[0] === -1 || typeof input.shape[0] === 'string'
+          ? input.shape[0] === -1 || typeof input.shape[0] === "string"
             ? input.shape.slice(1)
             : input.shape
           : [1];
@@ -181,33 +185,33 @@ export class KerasGenerator {
       const sanitizedOutputs = node.outputs.map((o) => this.sanitize(o));
       const lhs =
         sanitizedOutputs.length === 1
-          ? sanitizedOutputs[0] || 'None'
-          : `(${sanitizedOutputs.join(', ')})`;
-      const inputs = node.inputs.map((i) => nodeOutputs[i] || 'None');
+          ? sanitizedOutputs[0] || "None"
+          : `(${sanitizedOutputs.join(", ")})`;
+      const inputs = node.inputs.map((i) => nodeOutputs[i] || "None");
 
-      let rhs = '';
-      if (node.opType === 'Relu') {
-        rhs = `keras.layers.ReLU()(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'Add') {
-        rhs = `keras.layers.Add()([${inputs.join(', ')}])`;
-      } else if (node.opType === 'Conv') {
-        rhs = `keras.layers.Conv2D(filters=64, kernel_size=3)(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'MaxPool') {
-        rhs = `keras.layers.MaxPooling2D()(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'AveragePool') {
-        rhs = `keras.layers.AveragePooling2D()(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'GlobalAveragePool') {
-        rhs = `keras.layers.GlobalAveragePooling2D()(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'Flatten') {
-        rhs = `keras.layers.Flatten()(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'Gemm' || node.opType === 'Dense') {
-        rhs = `keras.layers.Dense(units=10)(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'Softmax') {
-        rhs = `ops.softmax(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'LSTM') {
-        rhs = `keras.layers.LSTM(units=128)(${inputs[0] || 'None'})`;
-      } else if (node.opType === 'GRU') {
-        rhs = `keras.layers.GRU(units=128)(${inputs[0] || 'None'})`;
+      let rhs = "";
+      if (node.opType === "Relu") {
+        rhs = `keras.layers.ReLU()(${inputs[0] || "None"})`;
+      } else if (node.opType === "Add") {
+        rhs = `keras.layers.Add()([${inputs.join(", ")}])`;
+      } else if (node.opType === "Conv") {
+        rhs = `keras.layers.Conv2D(filters=64, kernel_size=3)(${inputs[0] || "None"})`;
+      } else if (node.opType === "MaxPool") {
+        rhs = `keras.layers.MaxPooling2D()(${inputs[0] || "None"})`;
+      } else if (node.opType === "AveragePool") {
+        rhs = `keras.layers.AveragePooling2D()(${inputs[0] || "None"})`;
+      } else if (node.opType === "GlobalAveragePool") {
+        rhs = `keras.layers.GlobalAveragePooling2D()(${inputs[0] || "None"})`;
+      } else if (node.opType === "Flatten") {
+        rhs = `keras.layers.Flatten()(${inputs[0] || "None"})`;
+      } else if (node.opType === "Gemm" || node.opType === "Dense") {
+        rhs = `keras.layers.Dense(units=10)(${inputs[0] || "None"})`;
+      } else if (node.opType === "Softmax") {
+        rhs = `ops.softmax(${inputs[0] || "None"})`;
+      } else if (node.opType === "LSTM") {
+        rhs = `keras.layers.LSTM(units=128)(${inputs[0] || "None"})`;
+      } else if (node.opType === "GRU") {
+        rhs = `keras.layers.GRU(units=128)(${inputs[0] || "None"})`;
       } else {
         rhs = `Fallback for ${node.opType}`;
       }
@@ -220,9 +224,9 @@ export class KerasGenerator {
     }
 
     const finalOutputs = this.graph.outputs.map(
-      (o) => nodeOutputs[o.name] || this.sanitize(o.name) || 'None',
+      (o) => nodeOutputs[o.name] || this.sanitize(o.name) || "None",
     );
-    code += `    return keras.Model(inputs=[${inputNames.join(', ')}], outputs=[${finalOutputs.join(', ')}])\n`;
+    code += `    return keras.Model(inputs=[${inputNames.join(", ")}], outputs=[${finalOutputs.join(", ")}])\n`;
     return code;
   }
 }

@@ -9,7 +9,7 @@ import {
   WIRE_TYPE_64BIT,
   WIRE_TYPE_LENGTH_DELIMITED,
   WIRE_TYPE_32BIT,
-} from '@onnx9000/core';
+} from "@onnx9000/core";
 
 export class Writer {
   private chunks: Uint8Array[] = [];

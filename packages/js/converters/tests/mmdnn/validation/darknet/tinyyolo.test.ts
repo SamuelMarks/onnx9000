@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { parseCfg } from '../../../../src/mmdnn/darknet/parser.js';
-import { DarknetMapper } from '../../../../src/mmdnn/darknet/mapper.js';
-import { Graph } from '@onnx9000/core';
+import { describe, it, expect } from "vitest";
+import { parseCfg } from "../../../../src/mmdnn/darknet/parser.js";
+import { DarknetMapper } from "../../../../src/mmdnn/darknet/mapper.js";
+import { Graph } from "@onnx9000/core";
 
-describe('Darknet Tiny YOLO Validation', () => {
-  it('should parse and map a dummy Tiny YOLO cfg', () => {
+describe("Darknet Tiny YOLO Validation", () => {
+  it("should parse and map a dummy Tiny YOLO cfg", () => {
     const cfg = `
 [net]
 batch=1
@@ -39,19 +39,19 @@ classes=20
     const layers = parseCfg(cfg);
     expect(layers.length).toBe(5);
 
-    const graph = new Graph('tinyyolo');
+    const graph = new Graph("tinyyolo");
     const weights = new Float32Array(2000);
     const mapper = new DarknetMapper(graph, weights);
 
     expect(() => mapper.map(layers)).not.toThrow();
 
-    const regionLayer = layers.find((l) => l.type === 'region');
+    const regionLayer = layers.find((l) => l.type === "region");
     expect(regionLayer).toBeDefined();
     expect(regionLayer?.anchors).toEqual([
       1.08, 1.19, 3.42, 4.41, 6.63, 11.38, 9.42, 5.11, 16.62, 10.52,
     ]);
 
-    expect(graph.nodes.some((n) => n.opType === 'Conv')).toBe(true);
-    expect(graph.nodes.some((n) => n.opType === 'MaxPool')).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "Conv")).toBe(true);
+    expect(graph.nodes.some((n) => n.opType === "MaxPool")).toBe(true);
   });
 });

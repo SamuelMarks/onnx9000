@@ -34,171 +34,185 @@ export function emitActivation(
 ): OnnxNodeBuilder[] {
   const nodes: OnnxNodeBuilder[] = [];
   switch (activation) {
-    case 'relu':
+    case "relu":
       nodes.push({
-        opType: 'Relu',
+        opType: "Relu",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [],
       });
       break;
-    case 'softmax':
+    case "softmax":
       nodes.push({
-        opType: 'Softmax',
+        opType: "Softmax",
         inputs: [inputName],
         outputs: [outputName],
         name,
-        attributes: [{ name: 'axis', i: -1, type: 'INT' }],
+        attributes: [{ name: "axis", i: -1, type: "INT" }],
       });
       break;
-    case 'sigmoid':
+    case "sigmoid":
       nodes.push({
-        opType: 'Sigmoid',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [],
-      });
-      break;
-    case 'tanh':
-      nodes.push({
-        opType: 'Tanh',
+        opType: "Sigmoid",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [],
       });
       break;
-    case 'softplus':
+    case "tanh":
       nodes.push({
-        opType: 'Softplus',
+        opType: "Tanh",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [],
       });
       break;
-    case 'softsign':
+    case "softplus":
       nodes.push({
-        opType: 'Softsign',
+        opType: "Softplus",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [],
       });
       break;
-    case 'linear':
+    case "softsign":
       nodes.push({
-        opType: 'Identity',
+        opType: "Softsign",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [],
       });
       break;
-    case 'elu':
+    case "linear":
       nodes.push({
-        opType: 'Elu',
+        opType: "Identity",
         inputs: [inputName],
         outputs: [outputName],
         name,
-        attributes: [{ name: 'alpha', f: options?.alpha || 1.0, type: 'FLOAT' }],
+        attributes: [],
       });
       break;
-    case 'selu':
+    case "elu":
       nodes.push({
-        opType: 'Selu',
+        opType: "Elu",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [
-          { name: 'alpha', f: 1.6732632423543772848170429916717, type: 'FLOAT' },
-          { name: 'gamma', f: 1.0507009873554804934193349852946, type: 'FLOAT' },
+          { name: "alpha", f: options?.alpha || 1.0, type: "FLOAT" },
         ],
       });
       break;
-    case 'leaky_relu':
+    case "selu":
       nodes.push({
-        opType: 'LeakyRelu',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [{ name: 'alpha', f: options?.alpha || 0.3, type: 'FLOAT' }],
-      });
-      break;
-    case 'prelu':
-      // PReLU requires a learnable parameter 'slope' passed as an input. Assume it is options.alphaWeightName.
-      nodes.push({
-        opType: 'PRelu',
-        inputs: [inputName, options?.alphaWeightName || ''],
-        outputs: [outputName],
-        name,
-        attributes: [],
-      });
-      break;
-    case 'thresholded_relu':
-      nodes.push({
-        opType: 'ThresholdedRelu',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [{ name: 'alpha', f: options?.theta || 1.0, type: 'FLOAT' }],
-      });
-      break;
-    case 'swish':
-    case 'silu':
-      nodes.push({
-        opType: 'Sigmoid',
-        inputs: [inputName],
-        outputs: [name + '_sig'],
-        name: name + '_sigmoid',
-        attributes: [],
-      });
-      nodes.push({
-        opType: 'Mul',
-        inputs: [inputName, name + '_sig'],
-        outputs: [outputName],
-        name: name + '_mul',
-        attributes: [],
-      });
-      break;
-    case 'hard_swish':
-      nodes.push({
-        opType: 'HardSwish',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [],
-      });
-      break;
-    case 'mish':
-      nodes.push({
-        opType: 'Mish',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [],
-      });
-      break;
-    case 'gelu':
-      nodes.push({
-        opType: 'Gelu',
-        inputs: [inputName],
-        outputs: [outputName],
-        name,
-        attributes: [{ name: 'approximate', s: 'none', type: 'STRING' }],
-      });
-      break;
-    case 'hard_sigmoid':
-      nodes.push({
-        opType: 'HardSigmoid',
+        opType: "Selu",
         inputs: [inputName],
         outputs: [outputName],
         name,
         attributes: [
-          { name: 'alpha', f: 0.2, type: 'FLOAT' },
-          { name: 'beta', f: 0.5, type: 'FLOAT' },
+          {
+            name: "alpha",
+            f: 1.6732632423543772848170429916717,
+            type: "FLOAT",
+          },
+          {
+            name: "gamma",
+            f: 1.0507009873554804934193349852946,
+            type: "FLOAT",
+          },
+        ],
+      });
+      break;
+    case "leaky_relu":
+      nodes.push({
+        opType: "LeakyRelu",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [
+          { name: "alpha", f: options?.alpha || 0.3, type: "FLOAT" },
+        ],
+      });
+      break;
+    case "prelu":
+      // PReLU requires a learnable parameter 'slope' passed as an input. Assume it is options.alphaWeightName.
+      nodes.push({
+        opType: "PRelu",
+        inputs: [inputName, options?.alphaWeightName || ""],
+        outputs: [outputName],
+        name,
+        attributes: [],
+      });
+      break;
+    case "thresholded_relu":
+      nodes.push({
+        opType: "ThresholdedRelu",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [
+          { name: "alpha", f: options?.theta || 1.0, type: "FLOAT" },
+        ],
+      });
+      break;
+    case "swish":
+    case "silu":
+      nodes.push({
+        opType: "Sigmoid",
+        inputs: [inputName],
+        outputs: [name + "_sig"],
+        name: name + "_sigmoid",
+        attributes: [],
+      });
+      nodes.push({
+        opType: "Mul",
+        inputs: [inputName, name + "_sig"],
+        outputs: [outputName],
+        name: name + "_mul",
+        attributes: [],
+      });
+      break;
+    case "hard_swish":
+      nodes.push({
+        opType: "HardSwish",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [],
+      });
+      break;
+    case "mish":
+      nodes.push({
+        opType: "Mish",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [],
+      });
+      break;
+    case "gelu":
+      nodes.push({
+        opType: "Gelu",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [{ name: "approximate", s: "none", type: "STRING" }],
+      });
+      break;
+    case "hard_sigmoid":
+      nodes.push({
+        opType: "HardSigmoid",
+        inputs: [inputName],
+        outputs: [outputName],
+        name,
+        attributes: [
+          { name: "alpha", f: 0.2, type: "FLOAT" },
+          { name: "beta", f: 0.5, type: "FLOAT" },
         ],
       });
       break;
@@ -217,30 +231,33 @@ export function emitDense(
   name: string,
 ): OnnxNodeBuilder[] {
   const nodes: OnnxNodeBuilder[] = [];
-  const matmulOut = biasName || activation !== 'linear' ? name + '_matmul' : outputName;
+  const matmulOut =
+    biasName || activation !== "linear" ? name + "_matmul" : outputName;
 
   nodes.push({
-    opType: 'MatMul',
+    opType: "MatMul",
     inputs: [inputName, weightName],
     outputs: [matmulOut],
-    name: name + '_matmul',
+    name: name + "_matmul",
     attributes: [],
   });
 
   let addOut = matmulOut;
   if (biasName) {
-    addOut = activation !== 'linear' ? name + '_add' : outputName;
+    addOut = activation !== "linear" ? name + "_add" : outputName;
     nodes.push({
-      opType: 'Add',
+      opType: "Add",
       inputs: [matmulOut, biasName],
       outputs: [addOut],
-      name: name + '_add',
+      name: name + "_add",
       attributes: [],
     });
   }
 
-  if (activation && activation !== 'linear') {
-    nodes.push(...emitActivation(activation, addOut, outputName, name + '_act'));
+  if (activation && activation !== "linear") {
+    nodes.push(
+      ...emitActivation(activation, addOut, outputName, name + "_act"),
+    );
   }
 
   return nodes;
@@ -253,7 +270,7 @@ export function emitIdentity(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: 'Identity',
+      opType: "Identity",
       inputs: [inputName],
       outputs: [outputName],
       name,

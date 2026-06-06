@@ -4,6 +4,6 @@
  */
 export class Simplify {
   run() {
-    return '[simplify] processed';
+    return "[simplify] processed";
   }
 }

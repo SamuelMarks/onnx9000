@@ -2,10 +2,14 @@
  * @fileoverview rewriter.ts
  * Provides rewriter functionality for the coreml package.
  */
-import { Block, Operation, Var } from './ast.js';
-import { TensorType, MILType } from './types.js';
+import { Block, Operation, Var } from "./ast.js";
+import { TensorType, MILType } from "./types.js";
 
-export function replaceOperation(block: Block, oldOp: Operation, newOps: Operation[]): void {
+export function replaceOperation(
+  block: Block,
+  oldOp: Operation,
+  newOps: Operation[],
+): void {
   const idx = block.operations.indexOf(oldOp);
   if (idx === -1) {
     throw new Error(`Operation ${oldOp.opType} not found in block`);
@@ -56,14 +60,19 @@ export function inferShapes(block: Block): void {
     // Real MIL has exhaustive shape inference rules
 
     if (
-      op.opType === 'add' ||
-      op.opType === 'sub' ||
-      op.opType === 'mul' ||
-      op.opType === 'real_div'
+      op.opType === "add" ||
+      op.opType === "sub" ||
+      op.opType === "mul" ||
+      op.opType === "real_div"
     ) {
-      const xInput = op.inputs['x'];
-      const yInput = op.inputs['y'];
-      if (xInput && yInput && !Array.isArray(xInput) && !Array.isArray(yInput)) {
+      const xInput = op.inputs["x"];
+      const yInput = op.inputs["y"];
+      if (
+        xInput &&
+        yInput &&
+        !Array.isArray(xInput) &&
+        !Array.isArray(yInput)
+      ) {
         // Assume broadcast logic or identical shape
         const shapeX = varShapes.get(xInput.name) || [];
         const shapeY = varShapes.get(yInput.name) || [];
@@ -77,7 +86,7 @@ export function inferShapes(block: Block): void {
           }
         }
       }
-    } else if (op.opType === 'const') {
+    } else if (op.opType === "const") {
       for (const out of op.outputs) {
         if (out.type instanceof TensorType) {
           varShapes.set(out.name, out.type.shape);

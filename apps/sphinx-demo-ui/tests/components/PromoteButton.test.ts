@@ -5,8 +5,8 @@ describe('PromoteButton.ts', () => {
   it('should instantiate and cover PromoteButton', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).PromoteButton();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).PromoteButton();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

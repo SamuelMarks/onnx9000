@@ -5,8 +5,8 @@ describe('Cache.ts', () => {
   it('should instantiate and cover Cache', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Cache();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Cache();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

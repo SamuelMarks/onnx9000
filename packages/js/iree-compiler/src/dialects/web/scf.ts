@@ -2,7 +2,7 @@
  * @fileoverview scf.ts
  * Provides scf functionality for the iree-compiler package.
  */
-import { Operation, Type, Value, Region } from '../../ir/core.js';
+import { Operation, Type, Value, Region } from "../../ir/core.js";
 
 // 92. web.scf dialect
 export function forOp(
@@ -13,7 +13,7 @@ export function forOp(
   body: Region,
 ): Operation {
   return new Operation(
-    'web.scf.for',
+    "web.scf.for",
     [lowerBound, upperBound, step, ...initArgs],
     initArgs.map((a) => a.type),
     {},
@@ -22,7 +22,7 @@ export function forOp(
 }
 
 export function yieldOp(results: Value[]): Operation {
-  return new Operation('web.scf.yield', results, []);
+  return new Operation("web.scf.yield", results, []);
 }
 
 export function ifOp(
@@ -31,7 +31,10 @@ export function ifOp(
   falseRegion: Region,
   resultTypes: Type[],
 ): Operation {
-  return new Operation('web.scf.if', [condition], resultTypes, {}, [trueRegion, falseRegion]);
+  return new Operation("web.scf.if", [condition], resultTypes, {}, [
+    trueRegion,
+    falseRegion,
+  ]);
 }
 
 export function whileOp(
@@ -40,9 +43,12 @@ export function whileOp(
   afterRegion: Region,
   resultTypes: Type[],
 ): Operation {
-  return new Operation('web.scf.while', initArgs, resultTypes, {}, [beforeRegion, afterRegion]);
+  return new Operation("web.scf.while", initArgs, resultTypes, {}, [
+    beforeRegion,
+    afterRegion,
+  ]);
 }
 
 export function condition(cond: Value, args: Value[]): Operation {
-  return new Operation('web.scf.condition', [cond, ...args], []);
+  return new Operation("web.scf.condition", [cond, ...args], []);
 }

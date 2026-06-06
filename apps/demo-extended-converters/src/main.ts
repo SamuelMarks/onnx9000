@@ -1,21 +1,25 @@
 /* v8 ignore start */
-import { mmdnn } from '@onnx9000/converters';
+import { mmdnn } from "@onnx9000/converters";
 
 /**
  * Initializes the extended converters demo.
  */
 export function initExtendedConvertersDemo(): void {
-  const btnConvert = document.getElementById('btnConvert') as HTMLButtonElement;
-  const output = document.getElementById('output') as HTMLDivElement;
-  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-  const srcSelect = document.getElementById('srcFramework') as HTMLSelectElement;
-  const dstSelect = document.getElementById('dstFramework') as HTMLSelectElement;
+  const btnConvert = document.getElementById("btnConvert") as HTMLButtonElement;
+  const output = document.getElementById("output") as HTMLDivElement;
+  const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+  const srcSelect = document.getElementById(
+    "srcFramework",
+  ) as HTMLSelectElement;
+  const dstSelect = document.getElementById(
+    "dstFramework",
+  ) as HTMLSelectElement;
 
   if (!btnConvert || !output || !fileInput || !srcSelect || !dstSelect) return;
 
-  btnConvert.addEventListener('click', async () => {
+  btnConvert.addEventListener("click", async () => {
     if (!fileInput.files || fileInput.files.length === 0) {
-      output.textContent = 'Please select one or more files to convert.';
+      output.textContent = "Please select one or more files to convert.";
       return;
     }
 
@@ -32,7 +36,7 @@ export function initExtendedConvertersDemo(): void {
 
       output.textContent += `Conversion Successful!\n\n`;
 
-      if (typeof result === 'string') {
+      if (typeof result === "string") {
         output.textContent += `Result Type: String Payload\nLength: ${result.length}`;
       } else {
         output.textContent += `Result Type: Graph Object\n${JSON.stringify(result, null, 2).slice(0, 500)}...`;

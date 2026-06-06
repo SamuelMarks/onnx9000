@@ -9,7 +9,7 @@ export class PaddleParser {
    * @returns The parsed model object.
    */
   public parseModel(modelJson: string | object): object {
-    if (typeof modelJson === 'string') {
+    if (typeof modelJson === "string") {
       try {
         return JSON.parse(modelJson) as object;
       } catch {

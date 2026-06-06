@@ -85,7 +85,12 @@ export class KerasWebNNCompiler {
       epsilon: options.epsilon || 1e-5,
     };
 
-    const bnOut = this.builder.batchNormalization(convOut, bnMean, bnVar, bnOptions);
+    const bnOut = this.builder.batchNormalization(
+      convOut,
+      bnMean,
+      bnVar,
+      bnOptions,
+    );
 
     return this.builder.relu(bnOut);
   }

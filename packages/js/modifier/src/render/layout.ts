@@ -2,7 +2,7 @@
  * @fileoverview layout.ts
  * Provides layout functionality for the modifier package.
  */
-import { Graph, Node } from '@onnx9000/core';
+import { Graph, Node } from "@onnx9000/core";
 
 export interface Point {
   x: number;
@@ -35,12 +35,12 @@ export interface GraphLayout {
   bounds: Size;
 }
 
-export type LayoutDirection = 'TB' | 'LR';
+export type LayoutDirection = "TB" | "LR";
 
 export class DagreLayoutEngine {
   direction: LayoutDirection;
 
-  constructor(direction: LayoutDirection = 'TB') {
+  constructor(direction: LayoutDirection = "TB") {
     this.direction = direction;
   }
 
@@ -124,7 +124,7 @@ export class DagreLayoutEngine {
     for (const node of graph.nodes) {
       // Timeout check
       if (performance.now() - startTime > 2000) {
-        console.warn('Layout timeout! Falling back to grid layout.');
+        console.warn("Layout timeout! Falling back to grid layout.");
         return this.computeGrid(graph);
       }
 
@@ -158,7 +158,7 @@ export class DagreLayoutEngine {
 
         // 38. Vertical mode (TB)
         // 39. Horizontal mode (LR)
-        if (this.direction === 'TB') {
+        if (this.direction === "TB") {
           currentX = i * (nodeWidth + xSpacing);
           currentY = l * (nodeHeight + ySpacing);
         } else {
@@ -167,9 +167,9 @@ export class DagreLayoutEngine {
         }
 
         // 265. Allow pinning specific nodes to fixed coordinates on the canvas
-        if (node.attributes['pinned']) {
-          const px = node.attributes['pinned_x'];
-          const py = node.attributes['pinned_y'];
+        if (node.attributes["pinned"]) {
+          const px = node.attributes["pinned_x"];
+          const py = node.attributes["pinned_y"];
           if (px && py) {
             currentX = px.value as number;
             currentY = py.value as number;
@@ -202,8 +202,9 @@ export class DagreLayoutEngine {
 
           let path: Point[] = [];
 
-          if (this.direction === 'TB') {
-            const startX = sourceLayout.position.x + sourceLayout.size.width / 2;
+          if (this.direction === "TB") {
+            const startX =
+              sourceLayout.position.x + sourceLayout.size.width / 2;
             const startY = sourceLayout.position.y + sourceLayout.size.height;
             const endX = targetLayout.position.x + targetLayout.size.width / 2;
             const endY = targetLayout.position.y;
@@ -216,7 +217,8 @@ export class DagreLayoutEngine {
             ];
           } else {
             const startX = sourceLayout.position.x + sourceLayout.size.width;
-            const startY = sourceLayout.position.y + sourceLayout.size.height / 2;
+            const startY =
+              sourceLayout.position.y + sourceLayout.size.height / 2;
             const endX = targetLayout.position.x;
             const endY = targetLayout.position.y + targetLayout.size.height / 2;
 

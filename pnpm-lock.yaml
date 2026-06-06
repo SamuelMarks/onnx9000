@@ -1896,6 +1896,9 @@ importers:
       '@onnx9000/core':
         specifier: workspace:*
         version: link:../core
+      '@onnx9000/tensorrt':
+        specifier: workspace:^
+        version: link:../tensorrt
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0

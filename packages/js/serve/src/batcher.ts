@@ -76,7 +76,9 @@ export class DynamicBatcher {
     const activeBatch = this.queue.splice(0, this.maxBatchSize);
 
     const startTime = activeBatch[0] ? activeBatch[0].queuedAt : Date.now();
-    console.debug(`Batched ${activeBatch.length} requests in ${Date.now() - startTime}ms`);
+    console.debug(
+      `Batched ${activeBatch.length} requests in ${Date.now() - startTime}ms`,
+    );
 
     setTimeout(async () => {
       try {
@@ -86,7 +88,10 @@ export class DynamicBatcher {
         const concatenatedInputs = this.prepareBatchInputs(activeBatch);
 
         // Execute
-        const outputs = await this.executeBatch(activeBatch, concatenatedInputs);
+        const outputs = await this.executeBatch(
+          activeBatch,
+          concatenatedInputs,
+        );
 
         // 40. Split the single ONNX execution output back into isolated HTTP response promises.
         // 41. Strict ordering
@@ -104,7 +109,9 @@ export class DynamicBatcher {
     }, 0);
   }
 
-  private prepareBatchInputs(batch: BatchRequest[]): ReturnType<typeof JSON.parse> {
+  private prepareBatchInputs(
+    batch: BatchRequest[],
+  ): ReturnType<typeof JSON.parse> {
     const hasSequences = batch.some((b) => Array.isArray(b.payload?.input_ids));
     if (!hasSequences) {
       return {
@@ -127,7 +134,10 @@ export class DynamicBatcher {
       const padLen = maxLen - seq.length;
 
       const paddedSeq = [...seq, ...new Array(padLen).fill(0)];
-      const mask = [...new Array(seq.length).fill(1), ...new Array(padLen).fill(0)];
+      const mask = [
+        ...new Array(seq.length).fill(1),
+        ...new Array(padLen).fill(0),
+      ];
 
       paddedInputIds.push(paddedSeq);
       attentionMasks.push(mask);

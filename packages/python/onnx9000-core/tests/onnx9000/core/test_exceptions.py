@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.exceptions import *
 
+
 def test_Onnx9000Error():
     try:
         obj = Onnx9000Error()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_CompilationError():
     try:
@@ -15,12 +17,14 @@ def test_CompilationError():
     except Exception:
         pass
 
+
 def test_UnsupportedOpError():
     try:
         obj = UnsupportedOpError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ShapeMismatchError():
     try:
@@ -29,12 +33,14 @@ def test_ShapeMismatchError():
     except Exception:
         pass
 
+
 def test_ONNXParseError():
     try:
         obj = ONNXParseError()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ShapeInferenceError():
     try:
@@ -43,6 +49,7 @@ def test_ShapeInferenceError():
     except Exception:
         pass
 
+
 def test_UnsupportedOpsetError():
     try:
         obj = UnsupportedOpsetError()
@@ -50,10 +57,10 @@ def test_UnsupportedOpsetError():
     except Exception:
         pass
 
+
 def test_ValidationError():
     try:
         obj = ValidationError()
         assert obj is not None
     except Exception:
         pass
-

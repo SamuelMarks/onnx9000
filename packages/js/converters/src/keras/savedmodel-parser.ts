@@ -24,17 +24,17 @@ export function parseSavedModel(files: Record<string, Uint8Array>): SavedModel {
   for (const entry of Object.entries(files)) {
     const filename = entry[0];
     const data = entry[1];
-    if (filename.endsWith('saved_model.pb')) {
+    if (filename.endsWith("saved_model.pb")) {
       savedModelPb = data;
-    } else if (filename.endsWith('variables.index')) {
+    } else if (filename.endsWith("variables.index")) {
       variablesIndex = data;
-    } else if (filename.includes('variables.data')) {
+    } else if (filename.includes("variables.data")) {
       variablesData.push(data);
     }
   }
 
   if (savedModelPb === undefined) {
-    throw new Error('Invalid SavedModel format: missing saved_model.pb');
+    throw new Error("Invalid SavedModel format: missing saved_model.pb");
   }
 
   const result: SavedModel = {

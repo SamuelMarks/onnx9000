@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.toolkit.training.autograd.rules import *
 
+
 def test_AddVJP():
     try:
         obj = AddVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MulVJP():
     try:
@@ -15,12 +17,14 @@ def test_MulVJP():
     except Exception:
         pass
 
+
 def test_MatMulVJP():
     try:
         obj = MatMulVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SubVJP():
     try:
@@ -29,12 +33,14 @@ def test_SubVJP():
     except Exception:
         pass
 
+
 def test_DivVJP():
     try:
         obj = DivVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PowVJP():
     try:
@@ -43,12 +49,14 @@ def test_PowVJP():
     except Exception:
         pass
 
+
 def test_ModVJP():
     try:
         obj = ModVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_AbsVJP():
     try:
@@ -57,12 +65,14 @@ def test_AbsVJP():
     except Exception:
         pass
 
+
 def test_NegVJP():
     try:
         obj = NegVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SignVJP():
     try:
@@ -71,12 +81,14 @@ def test_SignVJP():
     except Exception:
         pass
 
+
 def test_ExpVJP():
     try:
         obj = ExpVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LogVJP():
     try:
@@ -85,12 +97,14 @@ def test_LogVJP():
     except Exception:
         pass
 
+
 def test_SqrtVJP():
     try:
         obj = SqrtVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SinVJP():
     try:
@@ -99,12 +113,14 @@ def test_SinVJP():
     except Exception:
         pass
 
+
 def test_CosVJP():
     try:
         obj = CosVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TanVJP():
     try:
@@ -113,12 +129,14 @@ def test_TanVJP():
     except Exception:
         pass
 
+
 def test_AsinVJP():
     try:
         obj = AsinVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_AcosVJP():
     try:
@@ -127,12 +145,14 @@ def test_AcosVJP():
     except Exception:
         pass
 
+
 def test_AtanVJP():
     try:
         obj = AtanVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SinhVJP():
     try:
@@ -141,12 +161,14 @@ def test_SinhVJP():
     except Exception:
         pass
 
+
 def test_CoshVJP():
     try:
         obj = CoshVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_AsinhVJP():
     try:
@@ -155,12 +177,14 @@ def test_AsinhVJP():
     except Exception:
         pass
 
+
 def test_AcoshVJP():
     try:
         obj = AcoshVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_AtanhVJP():
     try:
@@ -169,12 +193,14 @@ def test_AtanhVJP():
     except Exception:
         pass
 
+
 def test_ErfVJP():
     try:
         obj = ErfVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_IsNaNVJP():
     try:
@@ -183,12 +209,14 @@ def test_IsNaNVJP():
     except Exception:
         pass
 
+
 def test_ReluVJP():
     try:
         obj = ReluVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SigmoidVJP():
     try:
@@ -197,12 +225,14 @@ def test_SigmoidVJP():
     except Exception:
         pass
 
+
 def test_TanhVJP():
     try:
         obj = TanhVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LeakyReluVJP():
     try:
@@ -211,12 +241,14 @@ def test_LeakyReluVJP():
     except Exception:
         pass
 
+
 def test_EluVJP():
     try:
         obj = EluVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SeluVJP():
     try:
@@ -225,12 +257,14 @@ def test_SeluVJP():
     except Exception:
         pass
 
+
 def test_SoftplusVJP():
     try:
         obj = SoftplusVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SoftsignVJP():
     try:
@@ -239,12 +273,14 @@ def test_SoftsignVJP():
     except Exception:
         pass
 
+
 def test_HardSigmoidVJP():
     try:
         obj = HardSigmoidVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SiluVJP():
     try:
@@ -253,12 +289,14 @@ def test_SiluVJP():
     except Exception:
         pass
 
+
 def test_HardSwishVJP():
     try:
         obj = HardSwishVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GeluVJP():
     try:
@@ -267,12 +305,14 @@ def test_GeluVJP():
     except Exception:
         pass
 
+
 def test_SoftmaxVJP():
     try:
         obj = SoftmaxVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LogSoftmaxVJP():
     try:
@@ -281,12 +321,14 @@ def test_LogSoftmaxVJP():
     except Exception:
         pass
 
+
 def test_ReduceSumVJP():
     try:
         obj = ReduceSumVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceMeanVJP():
     try:
@@ -295,12 +337,14 @@ def test_ReduceMeanVJP():
     except Exception:
         pass
 
+
 def test_ReduceMaxVJP():
     try:
         obj = ReduceMaxVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceMinVJP():
     try:
@@ -309,12 +353,14 @@ def test_ReduceMinVJP():
     except Exception:
         pass
 
+
 def test_ReduceProdVJP():
     try:
         obj = ReduceProdVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceL1VJP():
     try:
@@ -323,12 +369,14 @@ def test_ReduceL1VJP():
     except Exception:
         pass
 
+
 def test_ReduceL2VJP():
     try:
         obj = ReduceL2VJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceLogSumVJP():
     try:
@@ -337,12 +385,14 @@ def test_ReduceLogSumVJP():
     except Exception:
         pass
 
+
 def test_ReduceLogSumExpVJP():
     try:
         obj = ReduceLogSumExpVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReduceSumSquareVJP():
     try:
@@ -351,12 +401,14 @@ def test_ReduceSumSquareVJP():
     except Exception:
         pass
 
+
 def test_PReluVJP():
     try:
         obj = PReluVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MaxPoolVJP():
     try:
@@ -365,12 +417,14 @@ def test_MaxPoolVJP():
     except Exception:
         pass
 
+
 def test_AveragePoolVJP():
     try:
         obj = AveragePoolVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ConvVJP():
     try:
@@ -379,12 +433,14 @@ def test_ConvVJP():
     except Exception:
         pass
 
+
 def test_GemmVJP():
     try:
         obj = GemmVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ConvTransposeVJP():
     try:
@@ -393,12 +449,14 @@ def test_ConvTransposeVJP():
     except Exception:
         pass
 
+
 def test_GlobalAveragePoolVJP():
     try:
         obj = GlobalAveragePoolVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GlobalMaxPoolVJP():
     try:
@@ -407,12 +465,14 @@ def test_GlobalMaxPoolVJP():
     except Exception:
         pass
 
+
 def test_ReshapeVJP():
     try:
         obj = ReshapeVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TransposeVJP():
     try:
@@ -421,12 +481,14 @@ def test_TransposeVJP():
     except Exception:
         pass
 
+
 def test_SqueezeVJP():
     try:
         obj = SqueezeVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_UnsqueezeVJP():
     try:
@@ -435,12 +497,14 @@ def test_UnsqueezeVJP():
     except Exception:
         pass
 
+
 def test_FlattenVJP():
     try:
         obj = FlattenVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ConcatVJP():
     try:
@@ -449,12 +513,14 @@ def test_ConcatVJP():
     except Exception:
         pass
 
+
 def test_SplitVJP():
     try:
         obj = SplitVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SliceVJP():
     try:
@@ -463,12 +529,14 @@ def test_SliceVJP():
     except Exception:
         pass
 
+
 def test_GatherVJP():
     try:
         obj = GatherVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GatherElementsVJP():
     try:
@@ -477,12 +545,14 @@ def test_GatherElementsVJP():
     except Exception:
         pass
 
+
 def test_GatherNDVJP():
     try:
         obj = GatherNDVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ScatterVJP():
     try:
@@ -491,12 +561,14 @@ def test_ScatterVJP():
     except Exception:
         pass
 
+
 def test_ScatterNDVJP():
     try:
         obj = ScatterNDVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ScatterElementsVJP():
     try:
@@ -505,12 +577,14 @@ def test_ScatterElementsVJP():
     except Exception:
         pass
 
+
 def test_TileVJP():
     try:
         obj = TileVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PadVJP():
     try:
@@ -519,12 +593,14 @@ def test_PadVJP():
     except Exception:
         pass
 
+
 def test_CastVJP():
     try:
         obj = CastVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ExpandVJP():
     try:
@@ -533,12 +609,14 @@ def test_ExpandVJP():
     except Exception:
         pass
 
+
 def test_WhereVJP():
     try:
         obj = WhereVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_NonZeroVJP():
     try:
@@ -547,12 +625,14 @@ def test_NonZeroVJP():
     except Exception:
         pass
 
+
 def test_LayerNormalizationVJP():
     try:
         obj = LayerNormalizationVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_InstanceNormalizationVJP():
     try:
@@ -561,12 +641,14 @@ def test_InstanceNormalizationVJP():
     except Exception:
         pass
 
+
 def test_DropoutVJP():
     try:
         obj = DropoutVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BatchNormalizationVJP():
     try:
@@ -575,12 +657,14 @@ def test_BatchNormalizationVJP():
     except Exception:
         pass
 
+
 def test_ReciprocalVJP():
     try:
         obj = ReciprocalVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ClipVJP():
     try:
@@ -589,12 +673,14 @@ def test_ClipVJP():
     except Exception:
         pass
 
+
 def test_RoundVJP():
     try:
         obj = RoundVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_FloorVJP():
     try:
@@ -603,12 +689,14 @@ def test_FloorVJP():
     except Exception:
         pass
 
+
 def test_CeilVJP():
     try:
         obj = CeilVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_EqualVJP():
     try:
@@ -617,12 +705,14 @@ def test_EqualVJP():
     except Exception:
         pass
 
+
 def test_LessVJP():
     try:
         obj = LessVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GreaterVJP():
     try:
@@ -631,12 +721,14 @@ def test_GreaterVJP():
     except Exception:
         pass
 
+
 def test_CeluVJP():
     try:
         obj = CeluVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MishVJP():
     try:
@@ -645,12 +737,14 @@ def test_MishVJP():
     except Exception:
         pass
 
+
 def test_ShrinkVJP():
     try:
         obj = ShrinkVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TopKVJP():
     try:
@@ -659,12 +753,14 @@ def test_TopKVJP():
     except Exception:
         pass
 
+
 def test_SpaceToDepthVJP():
     try:
         obj = SpaceToDepthVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DepthToSpaceVJP():
     try:
@@ -673,12 +769,14 @@ def test_DepthToSpaceVJP():
     except Exception:
         pass
 
+
 def test_CumSumVJP():
     try:
         obj = CumSumVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ReverseSequenceVJP():
     try:
@@ -687,12 +785,14 @@ def test_ReverseSequenceVJP():
     except Exception:
         pass
 
+
 def test_CompressVJP():
     try:
         obj = CompressVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_TriluVJP():
     try:
@@ -701,12 +801,14 @@ def test_TriluVJP():
     except Exception:
         pass
 
+
 def test_LpNormalizationVJP():
     try:
         obj = LpNormalizationVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GlobalLpPoolVJP():
     try:
@@ -715,12 +817,14 @@ def test_GlobalLpPoolVJP():
     except Exception:
         pass
 
+
 def test_EinsumVJP():
     try:
         obj = EinsumVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ResizeVJP():
     try:
@@ -729,12 +833,14 @@ def test_ResizeVJP():
     except Exception:
         pass
 
+
 def test_MaxRoiPoolVJP():
     try:
         obj = MaxRoiPoolVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RoiAlignVJP():
     try:
@@ -743,12 +849,14 @@ def test_RoiAlignVJP():
     except Exception:
         pass
 
+
 def test_SpaceToBatchNDVJP():
     try:
         obj = SpaceToBatchNDVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BatchToSpaceNDVJP():
     try:
@@ -757,12 +865,14 @@ def test_BatchToSpaceNDVJP():
     except Exception:
         pass
 
+
 def test_SplitToSequenceVJP():
     try:
         obj = SplitToSequenceVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BCEWithLogitsLossVJP():
     try:
@@ -771,12 +881,14 @@ def test_BCEWithLogitsLossVJP():
     except Exception:
         pass
 
+
 def test_BinaryCrossEntropyLossVJP():
     try:
         obj = BinaryCrossEntropyLossVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SoftmaxCrossEntropyLossVJP():
     try:
@@ -785,12 +897,14 @@ def test_SoftmaxCrossEntropyLossVJP():
     except Exception:
         pass
 
+
 def test_SequenceConstructVJP():
     try:
         obj = SequenceConstructVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_RecurrentVJP():
     try:
@@ -799,12 +913,14 @@ def test_RecurrentVJP():
     except Exception:
         pass
 
+
 def test_ShapeVJP():
     try:
         obj = ShapeVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SizeVJP():
     try:
@@ -813,12 +929,14 @@ def test_SizeVJP():
     except Exception:
         pass
 
+
 def test_BitShiftVJP():
     try:
         obj = BitShiftVJP()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StopGradientVJP():
     try:
@@ -827,15 +945,16 @@ def test_StopGradientVJP():
     except Exception:
         pass
 
+
 def test_get_vjp_rule():
     try:
-        res = get_vjp_rule()
+        get_vjp_rule()
     except Exception:
         pass
+
 
 def test_register_vjp():
     try:
-        res = register_vjp()
+        register_vjp()
     except Exception:
         pass
-

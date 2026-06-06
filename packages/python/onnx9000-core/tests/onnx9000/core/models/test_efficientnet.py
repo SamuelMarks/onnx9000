@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.models.efficientnet import *
 
+
 def test_SqueezeExcitation():
     try:
         obj = SqueezeExcitation()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MBConv():
     try:
@@ -15,6 +17,7 @@ def test_MBConv():
     except Exception:
         pass
 
+
 def test_EfficientNet():
     try:
         obj = EfficientNet()
@@ -22,15 +25,16 @@ def test_EfficientNet():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_efficientnet_b0():
     try:
-        res = efficientnet_b0()
+        efficientnet_b0()
     except Exception:
         pass
-

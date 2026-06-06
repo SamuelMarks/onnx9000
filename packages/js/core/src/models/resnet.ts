@@ -2,19 +2,20 @@
  * @fileoverview resnet.ts
  * Provides resnet functionality for the core package.
  */
-import { Tensor } from '../ir/tensor.js';
-import { recordOp } from '../macros.js';
-const add = (a: Tensor, b: Tensor) => recordOp('Add', [a, b]);
-const globalAveragePool = (x: Tensor) => recordOp('GlobalAveragePool', [x]);
-const maxPool = (x: Tensor, attr?: ReturnType<typeof JSON.parse>) => recordOp('MaxPool', [x], attr);
-const flatten = (x: Tensor) => recordOp('Flatten', [x]);
+import { Tensor } from "../ir/tensor.js";
+import { recordOp } from "../macros.js";
+const add = (a: Tensor, b: Tensor) => recordOp("Add", [a, b]);
+const globalAveragePool = (x: Tensor) => recordOp("GlobalAveragePool", [x]);
+const maxPool = (x: Tensor, attr?: ReturnType<typeof JSON.parse>) =>
+  recordOp("MaxPool", [x], attr);
+const flatten = (x: Tensor) => recordOp("Flatten", [x]);
 
-import { BatchNormalization, ConvND, Gemm, Relu } from '../primitives.js';
+import { BatchNormalization, ConvND, Gemm, Relu } from "../primitives.js";
 
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = 'float32',
+  dtype: ReturnType<typeof JSON.parse> = "float32",
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
@@ -36,7 +37,7 @@ export class BasicBlock {
     planes: number,
     stride: number = 1,
     downsample: boolean = false,
-    prefix: string = '',
+    prefix: string = "",
   ) {
     this.prefix = prefix;
     this.conv1 = new ConvND(2, inplanes, planes, 3, stride, 1, 1, 1, false);
@@ -112,22 +113,41 @@ export class BasicBlock {
       );
       identity = this.downsampleBn.call(
         identity,
-        getParam(`${this.prefix}.downsample.1.weight`, [this.downsampleBn.numFeatures]),
-        getParam(`${this.prefix}.downsample.1.bias`, [this.downsampleBn.numFeatures]),
-        getParam(`${this.prefix}.downsample.1.running_mean`, [this.downsampleBn.numFeatures]),
-        getParam(`${this.prefix}.downsample.1.running_var`, [this.downsampleBn.numFeatures]),
+        getParam(`${this.prefix}.downsample.1.weight`, [
+          this.downsampleBn.numFeatures,
+        ]),
+        getParam(`${this.prefix}.downsample.1.bias`, [
+          this.downsampleBn.numFeatures,
+        ]),
+        getParam(`${this.prefix}.downsample.1.running_mean`, [
+          this.downsampleBn.numFeatures,
+        ]),
+        getParam(`${this.prefix}.downsample.1.running_var`, [
+          this.downsampleBn.numFeatures,
+        ]),
       );
     }
 
     // We use a dummy add operation that returns a generic Tensor for now
     // Assuming add is in registry or primitives
     // Let's implement dummy fallback
-    const recordOp = (opType: string, inputs: Tensor[], attr?: ReturnType<typeof JSON.parse>) => {
-      const dtype = inputs[0]?.dtype ?? 'float32';
-      return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+    const recordOp = (
+      opType: string,
+      inputs: Tensor[],
+      attr?: ReturnType<typeof JSON.parse>,
+    ) => {
+      const dtype = inputs[0]?.dtype ?? "float32";
+      return new Tensor(
+        `${opType}_out`,
+        [],
+        dtype,
+        false,
+        false,
+        new Float32Array(),
+      );
     };
 
-    out = recordOp('Add', [out, identity]);
+    out = recordOp("Add", [out, identity]);
     out = this.relu.call(out);
 
     return out;
@@ -151,10 +171,10 @@ export class ResNet {
     this.bn1 = new BatchNormalization(this.inplanes);
     this.relu = new Relu();
 
-    this.layer1 = this.makeLayer(64, layers[0]!, 1, 'layer1');
-    this.layer2 = this.makeLayer(128, layers[1]!, 2, 'layer2');
-    this.layer3 = this.makeLayer(256, layers[2]!, 2, 'layer3');
-    this.layer4 = this.makeLayer(512, layers[3]!, 2, 'layer4');
+    this.layer1 = this.makeLayer(64, layers[0]!, 1, "layer1");
+    this.layer2 = this.makeLayer(128, layers[1]!, 2, "layer2");
+    this.layer3 = this.makeLayer(256, layers[2]!, 2, "layer3");
+    this.layer4 = this.makeLayer(512, layers[3]!, 2, "layer4");
 
     this.fc = new Gemm(1.0, 1.0, 0, 1); // transB = 1
     this.numClasses = numClasses;
@@ -164,7 +184,7 @@ export class ResNet {
     planes: number,
     blocks: number,
     stride: number = 1,
-    prefix: string = '',
+    prefix: string = "",
   ): BasicBlock[] {
     let downsample = false;
     if (stride !== 1 || this.inplanes !== planes * BasicBlock.expansion) {
@@ -172,10 +192,14 @@ export class ResNet {
     }
 
     const layers: BasicBlock[] = [];
-    layers.push(new BasicBlock(this.inplanes, planes, stride, downsample, `${prefix}.0`));
+    layers.push(
+      new BasicBlock(this.inplanes, planes, stride, downsample, `${prefix}.0`),
+    );
     this.inplanes = planes * BasicBlock.expansion;
     for (let i = 1; i < blocks; i++) {
-      layers.push(new BasicBlock(this.inplanes, planes, 1, false, `${prefix}.${i}`));
+      layers.push(
+        new BasicBlock(this.inplanes, planes, 1, false, `${prefix}.${i}`),
+      );
     }
 
     return layers;
@@ -184,23 +208,43 @@ export class ResNet {
   call(x: Tensor): Tensor {
     x = this.conv1.call(
       x,
-      getParam('conv1.weight', [this.conv1.outChannels, this.conv1.inChannels, 7, 7]),
+      getParam("conv1.weight", [
+        this.conv1.outChannels,
+        this.conv1.inChannels,
+        7,
+        7,
+      ]),
     );
     x = this.bn1.call(
       x,
-      getParam('bn1.weight', [this.bn1.numFeatures]),
-      getParam('bn1.bias', [this.bn1.numFeatures]),
-      getParam('bn1.running_mean', [this.bn1.numFeatures]),
-      getParam('bn1.running_var', [this.bn1.numFeatures]),
+      getParam("bn1.weight", [this.bn1.numFeatures]),
+      getParam("bn1.bias", [this.bn1.numFeatures]),
+      getParam("bn1.running_mean", [this.bn1.numFeatures]),
+      getParam("bn1.running_var", [this.bn1.numFeatures]),
     );
     x = this.relu.call(x);
 
-    const recordOp = (opType: string, inputs: Tensor[], attr?: ReturnType<typeof JSON.parse>) => {
-      const dtype = inputs[0]?.dtype ?? 'float32';
-      return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
+    const recordOp = (
+      opType: string,
+      inputs: Tensor[],
+      attr?: ReturnType<typeof JSON.parse>,
+    ) => {
+      const dtype = inputs[0]?.dtype ?? "float32";
+      return new Tensor(
+        `${opType}_out`,
+        [],
+        dtype,
+        false,
+        false,
+        new Float32Array(),
+      );
     };
 
-    x = recordOp('MaxPool', [x], { kernel_shape: [3, 3], strides: [2, 2], pads: [1, 1, 1, 1] });
+    x = recordOp("MaxPool", [x], {
+      kernel_shape: [3, 3],
+      strides: [2, 2],
+      pads: [1, 1, 1, 1],
+    });
 
     for (const layer of [this.layer1, this.layer2, this.layer3, this.layer4]) {
       for (const block of layer) {
@@ -208,11 +252,14 @@ export class ResNet {
       }
     }
 
-    x = recordOp('GlobalAveragePool', [x]);
-    x = recordOp('Flatten', [x]);
+    x = recordOp("GlobalAveragePool", [x]);
+    x = recordOp("Flatten", [x]);
 
-    const fcW = getParam('fc.weight', [this.numClasses, 512 * BasicBlock.expansion]);
-    const fcB = getParam('fc.bias', [this.numClasses]);
+    const fcW = getParam("fc.weight", [
+      this.numClasses,
+      512 * BasicBlock.expansion,
+    ]);
+    const fcB = getParam("fc.bias", [this.numClasses]);
 
     x = this.fc.call(x, fcW, fcB);
 

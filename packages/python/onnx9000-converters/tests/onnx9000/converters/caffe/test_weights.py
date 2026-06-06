@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.converters.caffe.weights import *
 
+
 def test_ProtobufDecoder():
     try:
         obj = ProtobufDecoder()
@@ -8,21 +9,23 @@ def test_ProtobufDecoder():
     except Exception:
         pass
 
+
 def test_parse_blob():
     try:
-        res = parse_blob()
+        parse_blob()
     except Exception:
         pass
+
 
 def test_parse_layer():
     try:
-        res = parse_layer()
+        parse_layer()
     except Exception:
         pass
+
 
 def test_load_caffemodel():
     try:
-        res = load_caffemodel()
+        load_caffemodel()
     except Exception:
         pass
-

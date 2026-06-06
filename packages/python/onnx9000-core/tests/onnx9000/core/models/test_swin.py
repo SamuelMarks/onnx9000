@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.models.swin import *
 
+
 def test_WindowAttention():
     try:
         obj = WindowAttention()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_SwinTransformerBlock():
     try:
@@ -15,6 +17,7 @@ def test_SwinTransformerBlock():
     except Exception:
         pass
 
+
 def test_SwinTransformer():
     try:
         obj = SwinTransformer()
@@ -22,15 +25,16 @@ def test_SwinTransformer():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_swin_t():
     try:
-        res = swin_t()
+        swin_t()
     except Exception:
         pass
-

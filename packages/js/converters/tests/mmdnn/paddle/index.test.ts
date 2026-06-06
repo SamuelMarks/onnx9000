@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../../src/mmdnn/paddle/index';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../../src/mmdnn/paddle/index";
 
-describe('index.ts', () => {
-  it('should load module', () => {
+describe("index.ts", () => {
+  it("should load module", () => {
     expect(Module).toBeDefined();
   });
 });

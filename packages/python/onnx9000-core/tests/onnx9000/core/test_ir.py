@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.ir import *
 
+
 def test_DLDataType():
     try:
         obj = DLDataType()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DLDevice():
     try:
@@ -15,12 +17,14 @@ def test_DLDevice():
     except Exception:
         pass
 
+
 def test_DLTensor():
     try:
         obj = DLTensor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DLManagedTensor():
     try:
@@ -29,12 +33,14 @@ def test_DLManagedTensor():
     except Exception:
         pass
 
+
 def test_DynamicDim():
     try:
         obj = DynamicDim()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Attribute():
     try:
@@ -43,12 +49,14 @@ def test_Attribute():
     except Exception:
         pass
 
+
 def test_ValueInfo():
     try:
         obj = ValueInfo()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Tensor():
     try:
@@ -57,12 +65,14 @@ def test_Tensor():
     except Exception:
         pass
 
+
 def test_SparseTensor():
     try:
         obj = SparseTensor()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Variable():
     try:
@@ -71,12 +81,14 @@ def test_Variable():
     except Exception:
         pass
 
+
 def test_Constant():
     try:
         obj = Constant()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_Node():
     try:
@@ -85,6 +97,7 @@ def test_Node():
     except Exception:
         pass
 
+
 def test_Graph():
     try:
         obj = Graph()
@@ -92,10 +105,10 @@ def test_Graph():
     except Exception:
         pass
 
+
 def test_QuantizedTensor():
     try:
         obj = QuantizedTensor()
         assert obj is not None
     except Exception:
         pass
-

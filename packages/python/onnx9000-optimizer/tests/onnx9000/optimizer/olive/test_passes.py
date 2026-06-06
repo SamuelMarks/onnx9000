@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.optimizer.olive.passes import *
 
+
 def test_Pass():
     try:
         obj = Pass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_QuantizationPass():
     try:
@@ -15,12 +17,14 @@ def test_QuantizationPass():
     except Exception:
         pass
 
+
 def test_DynamicQuantizationPass():
     try:
         obj = DynamicQuantizationPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StaticQuantizationPass():
     try:
@@ -29,12 +33,14 @@ def test_StaticQuantizationPass():
     except Exception:
         pass
 
+
 def test_WeightOnlyQuantizationPass():
     try:
         obj = WeightOnlyQuantizationPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PruningPass():
     try:
@@ -43,12 +49,14 @@ def test_PruningPass():
     except Exception:
         pass
 
+
 def test_GraphFusionPass():
     try:
         obj = GraphFusionPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MixedPrecisionPass():
     try:
@@ -57,12 +65,14 @@ def test_MixedPrecisionPass():
     except Exception:
         pass
 
+
 def test_LayoutConversionPass():
     try:
         obj = LayoutConversionPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_OrtPerfTuningPass():
     try:
@@ -71,12 +81,14 @@ def test_OrtPerfTuningPass():
     except Exception:
         pass
 
+
 def test_OrtTransformerOptimizationPass():
     try:
         obj = OrtTransformerOptimizationPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ConstantFoldingPass():
     try:
@@ -85,12 +97,14 @@ def test_ConstantFoldingPass():
     except Exception:
         pass
 
+
 def test_StripIdentityPass():
     try:
         obj = StripIdentityPass()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StripUnusedInitializersPass():
     try:
@@ -99,10 +113,10 @@ def test_StripUnusedInitializersPass():
     except Exception:
         pass
 
+
 def test_ExtractSymbolicShapesPass():
     try:
         obj = ExtractSymbolicShapesPass()
         assert obj is not None
     except Exception:
         pass
-

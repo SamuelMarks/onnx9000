@@ -5,8 +5,8 @@ describe('LHSContainer.ts', () => {
   it('should instantiate and cover LHSContainer', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).LHSContainer();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).LHSContainer();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

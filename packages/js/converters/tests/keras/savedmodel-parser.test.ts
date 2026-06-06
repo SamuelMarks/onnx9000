@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../src/keras/savedmodel-parser';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../src/keras/savedmodel-parser";
 
-describe('savedmodel-parser.ts', () => {
-  it('should call and cover parseSavedModel', async () => {
+describe("savedmodel-parser.ts", () => {
+  it("should call and cover parseSavedModel", async () => {
     try {
-       const res = (Module as any).parseSavedModel();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).parseSavedModel();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

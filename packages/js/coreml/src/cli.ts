@@ -4,20 +4,20 @@
  * Provides cli functionality for the coreml package.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 async function main() {
   const args = process.argv.slice(2);
   if (args.length < 2) {
-    console.error('Usage: onnx9000-coreml <export|import> <model_path>');
+    console.error("Usage: onnx9000-coreml <export|import> <model_path>");
     process.exit(1);
   }
 
   const [cmd, modelPath] = args;
   const resolvedPath = resolve(modelPath!);
 
-  if (cmd === 'export') {
+  if (cmd === "export") {
     // 239. Enable streaming conversion for files larger than 2GB (bypassing V8 array limits)
     // using Node.js fs.createReadStream and Web Streams API mapping
     console.log(
@@ -25,7 +25,7 @@ async function main() {
     );
     console.log(`Converting to CoreML MIL Program...`);
     console.log(`CoreML conversion stub executed for ${resolvedPath}`);
-  } else if (cmd === 'import') {
+  } else if (cmd === "import") {
     console.log(`Importing CoreML package from ${resolvedPath}...`);
     console.log(`ONNX conversion stub executed for ${resolvedPath}`);
   } else {

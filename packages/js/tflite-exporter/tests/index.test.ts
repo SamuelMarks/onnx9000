@@ -1,8 +1,8 @@
-import * as index from '../src/index.js';
-import { describe, it, expect } from 'vitest';
+import * as index from "../src/index.js";
+import { describe, it, expect } from "vitest";
 
-describe('index', () => {
-  it('should export modules', () => {
+describe("index", () => {
+  it("should export modules", () => {
     expect(index.TFLiteExporter).toBeDefined();
   });
 });

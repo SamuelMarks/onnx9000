@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { CaffeMapper } from '../../../../src/mmdnn/caffe/mapper.js';
-import { parsePrototxt } from '../../../../src/mmdnn/caffe/parser.js';
-import { Graph } from '@onnx9000/core';
+import { describe, it, expect } from "vitest";
+import { CaffeMapper } from "../../../../src/mmdnn/caffe/mapper.js";
+import { parsePrototxt } from "../../../../src/mmdnn/caffe/parser.js";
+import { Graph } from "@onnx9000/core";
 
-describe('Caffe Validation - VGG16', () => {
-  it('should parse and map VGG16 architecture', () => {
+describe("Caffe Validation - VGG16", () => {
+  it("should parse and map VGG16 architecture", () => {
     const prototxt = `
 name: "VGG16"
 layer {
@@ -86,7 +86,7 @@ layer {
 
     const parsed = parsePrototxt(prototxt);
     const mapper = new CaffeMapper();
-    const graph = new Graph('vgg16');
+    const graph = new Graph("vgg16");
 
     for (const layer of parsed.layer) {
       const nodes = mapper.map(layer, graph);
@@ -96,10 +96,10 @@ layer {
     }
 
     const opTypes = graph.nodes.map((n) => n.opType);
-    expect(opTypes).toContain('Conv');
-    expect(opTypes).toContain('Relu');
-    expect(opTypes).toContain('MaxPool');
-    expect(opTypes).toContain('Gemm');
-    expect(opTypes).toContain('Softmax');
+    expect(opTypes).toContain("Conv");
+    expect(opTypes).toContain("Relu");
+    expect(opTypes).toContain("MaxPool");
+    expect(opTypes).toContain("Gemm");
+    expect(opTypes).toContain("Softmax");
   });
 });

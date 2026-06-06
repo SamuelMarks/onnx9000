@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { Onnx2c } from '../src/index.js';
+import { describe, it, expect } from "vitest";
+import { Onnx2c } from "../src/index.js";
 
-describe('Onnx2c', () => {
-  it('should run', () => {
+describe("Onnx2c", () => {
+  it("should run", () => {
     expect(new Onnx2c().run()).toBeDefined();
   });
 });

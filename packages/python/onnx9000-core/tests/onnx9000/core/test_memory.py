@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.core.memory import *
 
+
 def test_MemoryMapError():
     try:
         obj = MemoryMapError()
@@ -8,9 +9,9 @@ def test_MemoryMapError():
     except Exception:
         pass
 
+
 def test_mmap_tensor_data():
     try:
-        res = mmap_tensor_data()
+        mmap_tensor_data()
     except Exception:
         pass
-

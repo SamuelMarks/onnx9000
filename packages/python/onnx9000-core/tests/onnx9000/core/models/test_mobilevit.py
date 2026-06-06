@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.core.models.mobilevit import *
 
+
 def test_MobileViTBlock():
     try:
         obj = MobileViTBlock()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_MobileViT():
     try:
@@ -15,15 +17,16 @@ def test_MobileViT():
     except Exception:
         pass
 
+
 def test_get_param():
     try:
-        res = get_param()
+        get_param()
     except Exception:
         pass
+
 
 def test_mobilevit_s():
     try:
-        res = mobilevit_s()
+        mobilevit_s()
     except Exception:
         pass
-

@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.printer import *
 
+
 def test_Printer():
     try:
         obj = Printer()
@@ -8,9 +9,9 @@ def test_Printer():
     except Exception:
         pass
 
+
 def test_astext():
     try:
-        res = astext()
+        astext()
     except Exception:
         pass
-

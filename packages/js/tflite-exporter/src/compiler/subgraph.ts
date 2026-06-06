@@ -2,26 +2,30 @@
  * @fileoverview subgraph.ts
  * Provides subgraph functionality for the tflite-exporter package.
  */
-import { Graph, Tensor } from '@onnx9000/core';
-import { TFLiteExporter } from '../exporter';
-import { mapOnnxShapeToTflite, mapOnnxTypeToTflite, createShapeSignature } from './mapping';
-import { mapOnnxNodeToTFLite } from './operators';
-import { LayoutOptimizer } from './layout';
-import { Quantizer, QuantizationContext } from '../quantization/quantizer';
-import { EdgeTPUOptimizer } from '../optimizations/edgetpu';
+import { Graph, Tensor } from "@onnx9000/core";
+import { TFLiteExporter } from "../exporter";
+import {
+  mapOnnxShapeToTflite,
+  mapOnnxTypeToTflite,
+  createShapeSignature,
+} from "./mapping";
+import { mapOnnxNodeToTFLite } from "./operators";
+import { LayoutOptimizer } from "./layout";
+import { Quantizer, QuantizationContext } from "../quantization/quantizer";
+import { EdgeTPUOptimizer } from "../optimizations/edgetpu";
 import {
   Tensor as TFLiteTensor,
   SubGraph,
   Operator,
   BuiltinOptions,
   BuiltinOperator,
-} from '../flatbuffer/schema';
+} from "../flatbuffer/schema";
 
 export function compileGraphToTFLite(
   graph: Graph,
   exporter: TFLiteExporter,
   keepNchw: boolean = false,
-  quantMode: 'none' | 'fp16' | 'int8' = 'none',
+  quantMode: "none" | "fp16" | "int8" = "none",
 ): number {
   // 31. Phase 2: Global Layout Transposition (NCHW -> NHWC)
   const optimizer = new LayoutOptimizer(graph, keepNchw);
@@ -31,7 +35,7 @@ export function compileGraphToTFLite(
   const edgeTpuOptimizer = new EdgeTPUOptimizer(graph);
   const compatibilityWarnings = edgeTpuOptimizer.optimize();
   if (compatibilityWarnings.length > 0) {
-    console.log('[onnx2tf] EdgeTPU Compatibility Report:');
+    console.log("[onnx2tf] EdgeTPU Compatibility Report:");
     compatibilityWarnings.forEach((w) => {
       console.log(`  - ${w}`);
     });
@@ -45,7 +49,7 @@ export function compileGraphToTFLite(
   let hasLoop = false;
   let hasIf = false;
   for (const node of graph.nodes) {
-    if (node.opType === 'Loop') {
+    if (node.opType === "Loop") {
       hasLoop = true;
       // 200. Map ONNX Loop to TFLite WHILE loops.
       console.warn(
@@ -53,7 +57,7 @@ export function compileGraphToTFLite(
       );
     }
 
-    if (node.opType === 'If') {
+    if (node.opType === "If") {
       hasIf = true;
       // 198. Map ONNX If to TFLite IF control flow operators.
       // 199. Extract SubGraphs iteratively into the TFLite Flatbuffer to support IF branches.
@@ -63,7 +67,10 @@ export function compileGraphToTFLite(
     }
 
     // 320. Provide fallback mappings for HuggingFace Tokenizer custom nodes.
-    if (node.domain === 'ai.onnx.contrib' && node.opType.includes('Tokenizer')) {
+    if (
+      node.domain === "ai.onnx.contrib" &&
+      node.opType.includes("Tokenizer")
+    ) {
       console.warn(
         `[onnx2tf] Warning: HuggingFace Tokenizer node ${node.name} found. Ensure TFLite runtime supports matching custom delegates.`,
       );
@@ -72,14 +79,16 @@ export function compileGraphToTFLite(
   // 319. Catch nested loops (`Loop` inside `If`) and warn users about severe mobile performance degradation.
   if (hasLoop && hasIf) {
     console.warn(
-      '[onnx2tf] Warning: Detected Loop and If control flow nodes in the same graph. TFLite execution on mobile DSPs may fallback to CPU, severely degrading performance.',
+      "[onnx2tf] Warning: Detected Loop and If control flow nodes in the same graph. TFLite execution on mobile DSPs may fallback to CPU, severely degrading performance.",
     );
   }
 
   // 316. Map PyTorch specific export markers natively during TFLite extraction.
   const metadata = (graph as ReturnType<typeof JSON.parse>).metadata;
-  if (metadata?.producer_name?.includes('pytorch')) {
-    console.log('[onnx2tf] PyTorch export detected. Mapping specific Aten structures natively.');
+  if (metadata?.producer_name?.includes("pytorch")) {
+    console.log(
+      "[onnx2tf] PyTorch export detected. Mapping specific Aten structures natively.",
+    );
   }
 
   // 317. Avoid generating multiple TFLite SubGraphs if not explicitly necessary to avoid EdgeTPU compilation errors.
@@ -89,7 +98,9 @@ export function compileGraphToTFLite(
   const tensorsOffsets: number[] = [];
 
   // Sort tensors deterministically to ensure unique integer IDs are sequential and repeatable.
-  const allTensors = Object.values(graph.tensors).sort((a, b) => a.name.localeCompare(b.name));
+  const allTensors = Object.values(graph.tensors).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 
   // 70. Generate unique integer IDs sequentially for all tensors.
   for (let i = 0; i < allTensors.length; i++) {
@@ -100,11 +111,11 @@ export function compileGraphToTFLite(
     if (t.isInitializer) {
       // 69. Resolve ONNX Initializers directly to TFLite Buffer indices.
       if (t.data) {
-        if (t.dtype === 'string') {
+        if (t.dtype === "string") {
           // 72. Ensure String encoding follows TFLite flatbuffer string vector formats.
           // TFLite string buffers start with int32 count, then int32 offsets, then string data.
           // In JS ONNX parser, string data might be an array of strings.
-          const strings: string[] = Array.isArray(t.data) ? t.data : ['']; // simplified
+          const strings: string[] = Array.isArray(t.data) ? t.data : [""]; // simplified
 
           let totalBytes = 4 + (strings.length + 1) * 4;
           const utf8Strings = strings.map((s) => new TextEncoder().encode(s));
@@ -128,7 +139,11 @@ export function compileGraphToTFLite(
           if (t.data instanceof Uint8Array) {
             arrayData = t.data;
           } else {
-            arrayData = new Uint8Array(t.data.buffer, t.data.byteOffset, t.data.byteLength);
+            arrayData = new Uint8Array(
+              t.data.buffer,
+              t.data.byteOffset,
+              t.data.byteLength,
+            );
           }
           bufferIndex = exporter.addBuffer(arrayData);
         }
@@ -202,10 +217,10 @@ export function compileGraphToTFLite(
   }
   const tensorsVecOffset = exporter.builder.endVector(tensorsOffsets.length);
 
-  const nameOffset = exporter.builder.createString(graph.name || 'main');
+  const nameOffset = exporter.builder.createString(graph.name || "main");
 
   // Map Operators
-  const stripCustomOps = process.env['TFLITE_STRIP_CUSTOM_OPS'] === '1';
+  const stripCustomOps = process.env["TFLITE_STRIP_CUSTOM_OPS"] === "1";
 
   const operatorOffsets: number[] = [];
   for (const node of graph.nodes) {
@@ -216,16 +231,18 @@ export function compileGraphToTFLite(
     }
 
     // 271. Implement TFLite Custom Operator embedding in FlatBuffers (handling arbitrary string names).
-    let customCode = '';
+    let customCode = "";
     if (mapping.builtinCode === BuiltinOperator.CUSTOM) {
       if (stripCustomOps) {
-        console.warn(`[onnx2tf] Stripping experimental custom operator: ${node.opType}`);
+        console.warn(
+          `[onnx2tf] Stripping experimental custom operator: ${node.opType}`,
+        );
         continue;
       }
 
-      if (node.opType === 'NonMaxSuppression') {
-        customCode = 'TFLite_Detection_PostProcess'; // 272. Map NMS
-      } else if (node.domain === 'tf') {
+      if (node.opType === "NonMaxSuppression") {
+        customCode = "TFLite_Detection_PostProcess"; // 272. Map NMS
+      } else if (node.domain === "tf") {
         // 273. Support Flex Delegates (Select TF ops) embedding TF operators within TFLite flatbuffers natively.
         customCode = `Flex${node.opType}`;
       } else {
@@ -233,7 +250,10 @@ export function compileGraphToTFLite(
       }
     }
 
-    const opCodeIndex = exporter.getOrAddOperatorCode(mapping.builtinCode, customCode);
+    const opCodeIndex = exporter.getOrAddOperatorCode(
+      mapping.builtinCode,
+      customCode,
+    );
 
     // Map inputs
     const nodeInputs = node.inputs
@@ -261,8 +281,8 @@ export function compileGraphToTFLite(
 
     // 276. Encode custom_options byte arrays securely for proprietary hardware runtimes.
     if (mapping.builtinCode === BuiltinOperator.CUSTOM) {
-      if (node.attributes['custom_options']) {
-        const co = node.attributes['custom_options'].value as Uint8Array;
+      if (node.attributes["custom_options"]) {
+        const co = node.attributes["custom_options"].value as Uint8Array;
         if (co && co.length > 0) {
           customOptionsOffset = exporter.builder.createByteVector(co);
         }

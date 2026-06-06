@@ -2,7 +2,7 @@
  * @fileoverview memory.ts
  * Provides memory functionality for the backend-web package.
  */
-import { Graph, Node } from '@onnx9000/core';
+import { Graph, Node } from "@onnx9000/core";
 
 export class WebGPUMemoryManager {
   // Current typical WebGPU limits: max buffer size 256MB on some, 2GB on others
@@ -25,7 +25,7 @@ export class WebGPUMemoryManager {
     for (const node of graph.nodes) {
       let nodeSize = this.estimateNodeMemory(node);
       if (currentSize + nodeSize > this.maxBufferSize) {
-        const subGraph = new Graph(graph.name + '_part' + subgraphs.length);
+        const subGraph = new Graph(graph.name + "_part" + subgraphs.length);
         subGraph.nodes = currentNodes;
         subgraphs.push(subGraph);
         currentNodes = [];
@@ -36,7 +36,7 @@ export class WebGPUMemoryManager {
     }
 
     if (currentNodes.length > 0) {
-      const subGraph = new Graph(graph.name + '_part' + subgraphs.length);
+      const subGraph = new Graph(graph.name + "_part" + subgraphs.length);
       subGraph.nodes = currentNodes;
       subgraphs.push(subGraph);
     }

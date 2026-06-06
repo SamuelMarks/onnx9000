@@ -1,219 +1,254 @@
 import pytest
 from onnx9000.tensorrt.ops import *
 
+
 def test__get_input():
     try:
-        res = _get_input()
+        _get_input()
     except Exception:
         pass
+
 
 def test_trt_add():
     try:
-        res = trt_add()
+        trt_add()
     except Exception:
         pass
+
 
 def test_trt_sub():
     try:
-        res = trt_sub()
+        trt_sub()
     except Exception:
         pass
+
 
 def test_trt_mul():
     try:
-        res = trt_mul()
+        trt_mul()
     except Exception:
         pass
+
 
 def test_trt_div():
     try:
-        res = trt_div()
+        trt_div()
     except Exception:
         pass
+
 
 def test_trt_max():
     try:
-        res = trt_max()
+        trt_max()
     except Exception:
         pass
+
 
 def test_trt_min():
     try:
-        res = trt_min()
+        trt_min()
     except Exception:
         pass
+
 
 def test_trt_pow():
     try:
-        res = trt_pow()
+        trt_pow()
     except Exception:
         pass
+
 
 def test_trt_equal():
     try:
-        res = trt_equal()
+        trt_equal()
     except Exception:
         pass
+
 
 def test_trt_less():
     try:
-        res = trt_less()
+        trt_less()
     except Exception:
         pass
+
 
 def test_trt_greater():
     try:
-        res = trt_greater()
+        trt_greater()
     except Exception:
         pass
+
 
 def test_trt_and():
     try:
-        res = trt_and()
+        trt_and()
     except Exception:
         pass
+
 
 def test_trt_or():
     try:
-        res = trt_or()
+        trt_or()
     except Exception:
         pass
+
 
 def test_trt_xor():
     try:
-        res = trt_xor()
+        trt_xor()
     except Exception:
         pass
+
 
 def test_trt_exp():
     try:
-        res = trt_exp()
+        trt_exp()
     except Exception:
         pass
+
 
 def test_trt_log():
     try:
-        res = trt_log()
+        trt_log()
     except Exception:
         pass
+
 
 def test_trt_sqrt():
     try:
-        res = trt_sqrt()
+        trt_sqrt()
     except Exception:
         pass
+
 
 def test_trt_abs():
     try:
-        res = trt_abs()
+        trt_abs()
     except Exception:
         pass
+
 
 def test_trt_neg():
     try:
-        res = trt_neg()
+        trt_neg()
     except Exception:
         pass
+
 
 def test_trt_not():
     try:
-        res = trt_not()
+        trt_not()
     except Exception:
         pass
+
 
 def test_trt_relu():
     try:
-        res = trt_relu()
+        trt_relu()
     except Exception:
         pass
+
 
 def test_trt_sigmoid():
     try:
-        res = trt_sigmoid()
+        trt_sigmoid()
     except Exception:
         pass
+
 
 def test_trt_tanh():
     try:
-        res = trt_tanh()
+        trt_tanh()
     except Exception:
         pass
+
 
 def test_trt_leakyrelu():
     try:
-        res = trt_leakyrelu()
+        trt_leakyrelu()
     except Exception:
         pass
+
 
 def test_trt_elu():
     try:
-        res = trt_elu()
+        trt_elu()
     except Exception:
         pass
+
 
 def test_trt_selu():
     try:
-        res = trt_selu()
+        trt_selu()
     except Exception:
         pass
+
 
 def test_trt_softplus():
     try:
-        res = trt_softplus()
+        trt_softplus()
     except Exception:
         pass
+
 
 def test_trt_clip():
     try:
-        res = trt_clip()
+        trt_clip()
     except Exception:
         pass
+
 
 def test_trt_hardsigmoid():
     try:
-        res = trt_hardsigmoid()
+        trt_hardsigmoid()
     except Exception:
         pass
+
 
 def test_trt_maxpool():
     try:
-        res = trt_maxpool()
+        trt_maxpool()
     except Exception:
         pass
+
 
 def test_trt_averagepool():
     try:
-        res = trt_averagepool()
+        trt_averagepool()
     except Exception:
         pass
+
 
 def test_trt_reducemean():
     try:
-        res = trt_reducemean()
+        trt_reducemean()
     except Exception:
         pass
+
 
 def test_trt_reducesum():
     try:
-        res = trt_reducesum()
+        trt_reducesum()
     except Exception:
         pass
+
 
 def test_trt_reducemax():
     try:
-        res = trt_reducemax()
+        trt_reducemax()
     except Exception:
         pass
+
 
 def test_trt_reducemin():
     try:
-        res = trt_reducemin()
+        trt_reducemin()
     except Exception:
         pass
+
 
 def test_trt_reduceprod():
     try:
-        res = trt_reduceprod()
+        trt_reduceprod()
     except Exception:
         pass
-

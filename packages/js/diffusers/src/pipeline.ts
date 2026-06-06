@@ -2,9 +2,9 @@
  * @fileoverview pipeline.ts
  * Provides pipeline functionality for the diffusers package.
  */
-import { PyTorchPCG, parseModelIndex } from './utils';
-import { UNet2DConditionModel, AutoencoderKL } from './models';
-import { Scheduler, DDPMScheduler } from './schedulers';
+import { PyTorchPCG, parseModelIndex } from "./utils";
+import { UNet2DConditionModel, AutoencoderKL } from "./models";
+import { Scheduler, DDPMScheduler } from "./schedulers";
 
 export class DiffusionPipeline {
   /** Configuration object for the pipeline. */
@@ -28,7 +28,7 @@ export class DiffusionPipeline {
    */
   constructor(config: Record<string, ReturnType<typeof JSON.parse>> = {}) {
     this.config = config;
-    this.device = 'cpu';
+    this.device = "cpu";
     this.unet = new UNet2DConditionModel();
     this.vae = new AutoencoderKL();
     this.scheduler = new DDPMScheduler();
@@ -69,7 +69,7 @@ export class DiffusionPipeline {
   ): Promise<Float32Array> {
     this._isAborted = false;
     if (signal) {
-      signal.addEventListener('abort', () => {
+      signal.addEventListener("abort", () => {
         this._isAborted = true;
       });
       if (signal.aborted) {
@@ -91,14 +91,21 @@ export class DiffusionPipeline {
 
     for (let step = 0; step < numInferenceSteps; step++) {
       if (this._isAborted) {
-        throw new Error('Pipeline aborted.');
+        throw new Error("Pipeline aborted.");
       }
 
       const timestep = this.scheduler.timesteps[step] || 0;
-      const noise_pred = this.unet.call(latents, timestep, encoder_hidden_states);
-      latents = this.scheduler.step(noise_pred, timestep, latents, gen) as ReturnType<
-        typeof JSON.parse
-      >;
+      const noise_pred = this.unet.call(
+        latents,
+        timestep,
+        encoder_hidden_states,
+      );
+      latents = this.scheduler.step(
+        noise_pred,
+        timestep,
+        latents,
+        gen,
+      ) as ReturnType<typeof JSON.parse>;
 
       if (callback) {
         callback(step, timestep, latents);

@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.genai.image import *
 
+
 def test_ImageGeneratorParams():
     try:
         obj = ImageGeneratorParams()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_UNetInference():
     try:
@@ -15,12 +17,14 @@ def test_UNetInference():
     except Exception:
         pass
 
+
 def test_VAEDecoder():
     try:
         obj = VAEDecoder()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_DDIMScheduler():
     try:
@@ -29,12 +33,14 @@ def test_DDIMScheduler():
     except Exception:
         pass
 
+
 def test_EulerAncestralScheduler():
     try:
         obj = EulerAncestralScheduler()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_PNDMScheduler():
     try:
@@ -43,12 +49,14 @@ def test_PNDMScheduler():
     except Exception:
         pass
 
+
 def test_LCMScheduler():
     try:
         obj = LCMScheduler()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ClassifierFreeGuidance():
     try:
@@ -57,12 +65,14 @@ def test_ClassifierFreeGuidance():
     except Exception:
         pass
 
+
 def test_NegativePromptHandler():
     try:
         obj = NegativePromptHandler()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_LatentNoiseGenerator():
     try:
@@ -71,12 +81,14 @@ def test_LatentNoiseGenerator():
     except Exception:
         pass
 
+
 def test_MultiModelPipeline():
     try:
         obj = MultiModelPipeline()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_StableDiffusion1_5():
     try:
@@ -85,12 +97,14 @@ def test_StableDiffusion1_5():
     except Exception:
         pass
 
+
 def test_StableDiffusionXL():
     try:
         obj = StableDiffusionXL()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ImageToImage():
     try:
@@ -99,12 +113,14 @@ def test_ImageToImage():
     except Exception:
         pass
 
+
 def test_Inpainting():
     try:
         obj = Inpainting()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_ControlNetSupport():
     try:
@@ -113,12 +129,14 @@ def test_ControlNetSupport():
     except Exception:
         pass
 
+
 def test_ProgressiveImageHooks():
     try:
         obj = ProgressiveImageHooks()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_HTMLCanvasExporter():
     try:
@@ -127,6 +145,7 @@ def test_HTMLCanvasExporter():
     except Exception:
         pass
 
+
 def test_DynamicResolutionScaler():
     try:
         obj = DynamicResolutionScaler()
@@ -134,10 +153,10 @@ def test_DynamicResolutionScaler():
     except Exception:
         pass
 
+
 def test_DiffusionMemoryOptimizer():
     try:
         obj = DiffusionMemoryOptimizer()
         assert obj is not None
     except Exception:
         pass
-

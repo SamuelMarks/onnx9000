@@ -2,7 +2,7 @@
  * @fileoverview pattern_matcher.ts
  * Provides pattern_matcher functionality for the modifier package.
  */
-import { Graph, Node } from '@onnx9000/core';
+import { Graph, Node } from "@onnx9000/core";
 
 export class Pattern {
   public opType: string;
@@ -49,19 +49,19 @@ export class PatternMatcherEngine {
 
 export function applyAlgebraicReuse(graph: Graph): Graph {
   const engine = new PatternMatcherEngine();
-  engine.addRule(new Pattern('Add'), (n) => null);
-  engine.addRule(new Pattern('Mul'), (n) => null);
+  engine.addRule(new Pattern("Add"), (n) => null);
+  engine.addRule(new Pattern("Mul"), (n) => null);
   return engine.apply(graph);
 }
 
 export function applyFusionReuse(graph: Graph): Graph {
   const engine = new PatternMatcherEngine();
-  engine.addRule(new Pattern('Conv'), (n) => null);
+  engine.addRule(new Pattern("Conv"), (n) => null);
   return engine.apply(graph);
 }
 
 export function applyHardwareLowering(graph: Graph): Graph {
   const engine = new PatternMatcherEngine();
-  engine.addRule(new Pattern('MatMul'), (n) => null);
+  engine.addRule(new Pattern("MatMul"), (n) => null);
   return engine.apply(graph);
 }

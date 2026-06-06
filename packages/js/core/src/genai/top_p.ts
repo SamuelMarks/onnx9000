@@ -1,5 +1,5 @@
-import { Tensor } from '../index.js';
-import { LogitProcessor } from './logit_processors.js';
+import { Tensor } from "../index.js";
+import { LogitProcessor } from "./logit_processors.js";
 
 /**
  * Nucleus sampling processor that keeps only the top tokens with cumulative probability P.
@@ -11,7 +11,7 @@ export class TopPLogitProcessor implements LogitProcessor {
    */
   constructor(private topP: number) {
     if (topP <= 0 || topP > 1.0) {
-      throw new Error('topP must be in (0, 1].');
+      throw new Error("topP must be in (0, 1].");
     }
   }
 

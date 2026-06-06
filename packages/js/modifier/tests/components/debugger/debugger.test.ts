@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../../src/components/debugger/debugger';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../../src/components/debugger/debugger";
 
-describe('debugger.ts', () => {
-  it('should instantiate and cover GraphDebugger', () => {
+describe("debugger.ts", () => {
+  it("should instantiate and cover GraphDebugger", () => {
     try {
-       const obj = new (Module as any).GraphDebugger();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).GraphDebugger();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

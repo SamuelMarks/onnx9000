@@ -1,14 +1,18 @@
-import { describe, it, expect } from 'vitest';
-import { GraphRenderer } from '../src/render/canvas.js';
-import { Graph } from '@onnx9000/core';
+import { describe, it, expect } from "vitest";
+import { GraphRenderer } from "../src/render/canvas.js";
+import { Graph } from "@onnx9000/core";
 
-describe('GraphRenderer', () => {
-  it('should render graph', () => {
-    const canvas = document.createElement('canvas');
+describe("GraphRenderer", () => {
+  it("should render graph", () => {
+    const canvas = document.createElement("canvas");
     const renderer = new GraphRenderer(canvas);
-    const g = new Graph('test');
+    const g = new Graph("test");
 
-    renderer.render(g, { nodes: new Map(), edges: [], bounds: { width: 100, height: 100 } });
+    renderer.render(g, {
+      nodes: new Map(),
+      edges: [],
+      bounds: { width: 100, height: 100 },
+    });
     expect(renderer).toBeDefined();
     renderer.destroy();
   });

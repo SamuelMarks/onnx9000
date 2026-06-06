@@ -1,3 +1,3 @@
 // @ts-nocheck
 /** coreml MMDNN submodule. */
-export * from './importer.js';
+export * from "./importer.js";

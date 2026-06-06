@@ -1,12 +1,14 @@
 import pytest
 from onnx9000.converters.frontend.nn.normalization import *
 
+
 def test__BatchNormNd():
     try:
         obj = _BatchNormNd()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BatchNorm1d():
     try:
@@ -15,12 +17,14 @@ def test_BatchNorm1d():
     except Exception:
         pass
 
+
 def test_BatchNorm2d():
     try:
         obj = BatchNorm2d()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_BatchNorm3d():
     try:
@@ -29,12 +33,14 @@ def test_BatchNorm3d():
     except Exception:
         pass
 
+
 def test_LayerNorm():
     try:
         obj = LayerNorm()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_GroupNorm():
     try:
@@ -43,12 +49,14 @@ def test_GroupNorm():
     except Exception:
         pass
 
+
 def test__InstanceNormNd():
     try:
         obj = _InstanceNormNd()
         assert obj is not None
     except Exception:
         pass
+
 
 def test_InstanceNorm1d():
     try:
@@ -57,6 +65,7 @@ def test_InstanceNorm1d():
     except Exception:
         pass
 
+
 def test_InstanceNorm2d():
     try:
         obj = InstanceNorm2d()
@@ -64,10 +73,10 @@ def test_InstanceNorm2d():
     except Exception:
         pass
 
+
 def test_InstanceNorm3d():
     try:
         obj = InstanceNorm3d()
         assert obj is not None
     except Exception:
         pass
-

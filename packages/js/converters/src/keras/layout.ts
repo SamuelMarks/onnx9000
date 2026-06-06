@@ -88,8 +88,13 @@ export function transposeConv3DWeights(
         for (let y = 0; y < h; y++) {
           for (let x = 0; x < w; x++) {
             const srcIdx =
-              z * (h * w * inC * outC) + y * (w * inC * outC) + x * (inC * outC) + i * outC + o;
-            const dstIdx = o * (inC * d * h * w) + i * (d * h * w) + z * (h * w) + y * w + x;
+              z * (h * w * inC * outC) +
+              y * (w * inC * outC) +
+              x * (inC * outC) +
+              i * outC +
+              o;
+            const dstIdx =
+              o * (inC * d * h * w) + i * (d * h * w) + z * (h * w) + y * w + x;
             out[dstIdx] = data[srcIdx]!;
           }
         }
@@ -102,7 +107,11 @@ export function transposeConv3DWeights(
 /**
  * Transpose Keras Dense weights: [In, Out] -> [Out, In]
  */
-export function transposeDenseWeights(data: Float32Array, inF: number, outF: number): Float32Array {
+export function transposeDenseWeights(
+  data: Float32Array,
+  inF: number,
+  outF: number,
+): Float32Array {
   const out = new Float32Array(data.length);
   for (let o = 0; o < outF; o++) {
     for (let i = 0; i < inF; i++) {

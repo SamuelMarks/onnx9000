@@ -5,8 +5,8 @@ describe('Component.ts', () => {
   it('should instantiate and cover Component', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).Component();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).Component();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

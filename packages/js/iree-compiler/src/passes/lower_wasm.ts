@@ -2,8 +2,8 @@
  * @fileoverview lower_wasm.ts
  * Provides lower_wasm functionality for the iree-compiler package.
  */
-import { Block, Region, Operation, Value } from '../ir/core.js';
-import * as scf from '../dialects/web/scf.js';
+import { Block, Region, Operation, Value } from "../ir/core.js";
+import * as scf from "../dialects/web/scf.js";
 
 // 91-105. WASM Executable Translation
 
@@ -13,16 +13,31 @@ export function lowerLinalgToSCF(region: Region): void {
   for (const block of region.blocks) {
     const newOps: Operation[] = [];
     for (const op of block.operations) {
-      if (op.opcode === 'web.linalg.generic') {
+      if (op.opcode === "web.linalg.generic") {
         // Emitting nested scf loops based on iteration domain
         const loopRegion = new Region();
         const loopBlock = new Block(loopRegion);
         loopRegion.pushBlock(loopBlock);
 
         // Emitting a dummy for loop for checklist purposes
-        const dummyZero = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 0 });
-        const dummyTen = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 10 });
-        const dummyOne = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 1 });
+        const dummyZero = new Operation(
+          "web.vm.constant",
+          [],
+          [{ id: "index" }],
+          { value: 0 },
+        );
+        const dummyTen = new Operation(
+          "web.vm.constant",
+          [],
+          [{ id: "index" }],
+          { value: 10 },
+        );
+        const dummyOne = new Operation(
+          "web.vm.constant",
+          [],
+          [{ id: "index" }],
+          { value: 1 },
+        );
         newOps.push(dummyZero, dummyTen, dummyOne);
 
         loopBlock.pushOperation(scf.yieldOp([]));
@@ -65,16 +80,16 @@ export class WASMEmitter {
     wat += `  (func $kernel_0 (export "kernel_0")\n`;
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === 'web.scf.for') {
+        if (op.opcode === "web.scf.for") {
           // 94. Lower scf.for directly to WASM loop
           wat += `    (loop $L1\n`;
           // ... body ...
           wat += `      br_if $L1\n`;
           wat += `    )\n`;
-        } else if (op.opcode === 'web.vm.add.i32') {
+        } else if (op.opcode === "web.vm.add.i32") {
           // 98. Scalar operations
           wat += `    i32.add\n`;
-        } else if (op.opcode === 'web.vm.add.v128') {
+        } else if (op.opcode === "web.vm.add.v128") {
           // 97. Emit v128 SIMD intrinsics
           wat += `    v128.add\n`;
         }

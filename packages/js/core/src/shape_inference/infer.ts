@@ -1,5 +1,5 @@
-import { Graph, ValueInfo } from '../ir/graph.js';
-import { Tensor, Shape, DType } from '../ir/tensor.js';
+import { Graph, ValueInfo } from "../ir/graph.js";
+import { Tensor, Shape, DType } from "../ir/tensor.js";
 
 /**
  * Performs naive shape and dtype inference on an ONNX graph.
@@ -38,7 +38,7 @@ export function inferShapes(graph: Graph): void {
     // Basic heuristics: if it's an elementwise op, output shape = input shape
     if (node.inputs.length > 0 && node.inputs[0]) {
       const firstInputShape = shapeMap.get(node.inputs[0]);
-      const firstInputDType = dtypeMap.get(node.inputs[0]) || 'float32';
+      const firstInputDType = dtypeMap.get(node.inputs[0]) || "float32";
 
       if (firstInputShape) {
         for (const output of node.outputs) {
@@ -48,7 +48,9 @@ export function inferShapes(graph: Graph): void {
             dtypeMap.set(output, firstInputDType);
 
             if (!trackedOutputs.has(output)) {
-              graph.valueInfo.push(new ValueInfo(output, firstInputShape, firstInputDType));
+              graph.valueInfo.push(
+                new ValueInfo(output, firstInputShape, firstInputDType),
+              );
               trackedOutputs.add(output);
             }
           }

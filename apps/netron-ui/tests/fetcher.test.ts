@@ -1,16 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
-import { fetchAndParseModel } from '../src/parser/fetcher.js';
+import { describe, it, expect, vi } from "vitest";
+import { fetchAndParseModel } from "../src/parser/fetcher.js";
 
-vi.mock('@onnx9000/core', () => ({
-  parseModelProto: vi.fn().mockReturnValue({ name: 'mock' }),
+vi.mock("@onnx9000/core", () => ({
+  parseModelProto: vi.fn().mockReturnValue({ name: "mock" }),
   BlobReader: class {},
 }));
 
-describe('netron-ui fetcher', () => {
-  it('should fetch and parse', async () => {
+describe("netron-ui fetcher", () => {
+  it("should fetch and parse", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      headers: new Headers({ 'content-length': '10' }),
+      headers: new Headers({ "content-length": "10" }),
       body: {
         getReader: () => {
           let readOnce = false;
@@ -27,7 +27,7 @@ describe('netron-ui fetcher', () => {
       },
     });
 
-    const graph = await fetchAndParseModel('https://example.com/model.onnx');
-    expect(graph.name).toBe('mock');
+    const graph = await fetchAndParseModel("https://example.com/model.onnx");
+    expect(graph.name).toBe("mock");
   });
 });

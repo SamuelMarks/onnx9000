@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.analysis import *
 
+
 def test_PostOrderVisitor():
     try:
         obj = PostOrderVisitor()
@@ -8,15 +9,16 @@ def test_PostOrderVisitor():
     except Exception:
         pass
 
+
 def test_post_order_visit():
     try:
-        res = post_order_visit()
+        post_order_visit()
     except Exception:
         pass
+
 
 def test_topological_sort():
     try:
-        res = topological_sort()
+        topological_sort()
     except Exception:
         pass
-

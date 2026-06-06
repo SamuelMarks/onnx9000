@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.converters.tf.importer import *
 
+
 def test_TFImporter():
     try:
         obj = TFImporter()
@@ -8,15 +9,16 @@ def test_TFImporter():
     except Exception:
         pass
 
+
 def test__convert_dtype():
     try:
-        res = _convert_dtype()
+        _convert_dtype()
     except Exception:
         pass
+
 
 def test_load_tf():
     try:
-        res = load_tf()
+        load_tf()
     except Exception:
         pass
-

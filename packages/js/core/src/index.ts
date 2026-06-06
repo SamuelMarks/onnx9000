@@ -2,21 +2,21 @@
  * @fileoverview index.ts
  * Provides index functionality for the core package.
  */
-export * from './ir/graph.js';
-export * from './ir/node.js';
-export * from './ir/tensor.js';
-export * from './parser/protobuf.js';
-export * from './parser/onnx.js';
-export * from './shape_inference/infer.js';
-export * from './parser/magic.js';
-export * from './parser/safetensors.js';
-export * from './parser/safetensors.node.js';
-export * from './parser/onnx_writer.js';
+export * from "./ir/graph.js";
+export * from "./ir/node.js";
+export * from "./ir/tensor.js";
+export * from "./parser/protobuf.js";
+export * from "./parser/onnx.js";
+export * from "./shape_inference/infer.js";
+export * from "./parser/magic.js";
+export * from "./parser/safetensors.js";
+export * from "./parser/safetensors.node.js";
+export * from "./parser/onnx_writer.js";
 
-import { Graph } from './ir/graph.js';
-import { BufferReader } from './parser/protobuf.js';
-import { parseModelProto } from './parser/onnx.js';
-import { serializeModelProto } from './parser/onnx_writer.js';
+import { Graph } from "./ir/graph.js";
+import { BufferReader } from "./parser/protobuf.js";
+import { parseModelProto } from "./parser/onnx.js";
+import { serializeModelProto } from "./parser/onnx_writer.js";
 
 /**
  * Loads an ONNX model from an ArrayBuffer or Uint8Array.
@@ -36,20 +36,23 @@ export async function load(buffer: ArrayBuffer | Uint8Array): Promise<Graph> {
  */
 export async function save(graph: Graph): Promise<ArrayBuffer> {
   const bytes = serializeModelProto(graph);
-  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+  const buffer = bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  );
   return buffer as ArrayBuffer;
 }
 
-export * from './sparse.js';
-export * from './checker.js';
-export * from './primitives.js';
-export * from './models/index.js';
+export * from "./sparse.js";
+export * from "./checker.js";
+export * from "./primitives.js";
+export * from "./models/index.js";
 
-export * from './macros.js';
+export * from "./macros.js";
 
-export * from './codegen/pytorch.js';
+export * from "./codegen/pytorch.js";
 
-export * from './sharding.js';
-export { globalRegistry, register_op } from './ops/registry.js';
-export type { OpImplementation } from './ops/registry.js';
-console.log('hello');
+export * from "./sharding.js";
+export { globalRegistry, register_op } from "./ops/registry.js";
+export type { OpImplementation } from "./ops/registry.js";
+console.log("hello");

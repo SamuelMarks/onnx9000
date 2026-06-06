@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../../src/mmdnn/tfjs/serializer';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../../src/mmdnn/tfjs/serializer";
 
-describe('serializer.ts', () => {
-  it('should call and cover serializeTFJSWeights', async () => {
+describe("serializer.ts", () => {
+  it("should call and cover serializeTFJSWeights", async () => {
     try {
-       const res = (Module as any).serializeTFJSWeights();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).serializeTFJSWeights();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

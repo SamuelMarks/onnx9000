@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { initWhisperLlmIndex } from '../index.js';
+import { describe, it, expect } from "vitest";
+import { initWhisperLlmIndex } from "../index.js";
 
-describe('demo-whisper-llm index', () => {
-  it('should be valid', () => {
+describe("demo-whisper-llm index", () => {
+  it("should be valid", () => {
     expect(initWhisperLlmIndex).toBeDefined();
   });
 });

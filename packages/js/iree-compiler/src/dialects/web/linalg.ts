@@ -2,7 +2,7 @@
  * @fileoverview linalg.ts
  * Provides linalg functionality for the iree-compiler package.
  */
-import { Operation, Type, Value, Region } from '../../ir/core.js';
+import { Operation, Type, Value, Region } from "../../ir/core.js";
 
 // 31. AffineMap class
 export class AffineExpr {
@@ -41,7 +41,7 @@ export function generic(
   resultTypes: Type[],
 ): Operation {
   return new Operation(
-    'web.linalg.generic',
+    "web.linalg.generic",
     [...inputs, ...outputs],
     resultTypes,
     {
@@ -54,13 +54,27 @@ export function generic(
 }
 
 // 35. web.linalg.matmul
-export function matmul(lhs: Value, rhs: Value, out: Value, resultType: Type): Operation {
-  return new Operation('web.linalg.matmul', [lhs, rhs, out], [resultType]);
+export function matmul(
+  lhs: Value,
+  rhs: Value,
+  out: Value,
+  resultType: Type,
+): Operation {
+  return new Operation("web.linalg.matmul", [lhs, rhs, out], [resultType]);
 }
 
 // 36. web.linalg.batch_matmul
-export function batchMatmul(lhs: Value, rhs: Value, out: Value, resultType: Type): Operation {
-  return new Operation('web.linalg.batch_matmul', [lhs, rhs, out], [resultType]);
+export function batchMatmul(
+  lhs: Value,
+  rhs: Value,
+  out: Value,
+  resultType: Type,
+): Operation {
+  return new Operation(
+    "web.linalg.batch_matmul",
+    [lhs, rhs, out],
+    [resultType],
+  );
 }
 
 // 37. web.linalg.conv_2d_nhwc_hwcf
@@ -72,10 +86,15 @@ export function conv2dNhwcHwcf(
   dilations: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.linalg.conv_2d_nhwc_hwcf', [input, filter, out], [resultType], {
-    strides,
-    dilations,
-  });
+  return new Operation(
+    "web.linalg.conv_2d_nhwc_hwcf",
+    [input, filter, out],
+    [resultType],
+    {
+      strides,
+      dilations,
+    },
+  );
 }
 
 // 38. web.linalg.pooling_nhwc_max
@@ -87,18 +106,23 @@ export function poolingNhwcMax(
   dilations: number[],
   resultType: Type,
 ): Operation {
-  return new Operation('web.linalg.pooling_nhwc_max', [input, filter, out], [resultType], {
-    strides,
-    dilations,
-  });
+  return new Operation(
+    "web.linalg.pooling_nhwc_max",
+    [input, filter, out],
+    [resultType],
+    {
+      strides,
+      dilations,
+    },
+  );
 }
 
 // 39. web.linalg.fill
 export function fill(value: Value, out: Value, resultType: Type): Operation {
-  return new Operation('web.linalg.fill', [value, out], [resultType]);
+  return new Operation("web.linalg.fill", [value, out], [resultType]);
 }
 
 // 40. web.linalg.yield
 export function yieldOp(values: Value[]): Operation {
-  return new Operation('web.linalg.yield', values, []);
+  return new Operation("web.linalg.yield", values, []);
 }

@@ -1,29 +1,29 @@
-import { describe, it, expect, vi } from 'vitest';
-import * as Module from '../../src/models/llama';
+import { describe, it, expect, vi } from "vitest";
+import * as Module from "../../src/models/llama";
 
-describe('llama.ts', () => {
-  it('should instantiate and cover SwiGLU', () => {
+describe("llama.ts", () => {
+  it("should instantiate and cover SwiGLU", () => {
     try {
-       const obj = new (Module as any).SwiGLU();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).SwiGLU();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover LLaMABlock', () => {
+  it("should instantiate and cover LLaMABlock", () => {
     try {
-       const obj = new (Module as any).LLaMABlock();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).LLaMABlock();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should instantiate and cover LLaMA', () => {
+  it("should instantiate and cover LLaMA", () => {
     try {
-       const obj = new (Module as any).LLaMA();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).LLaMA();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
-  it('should call and cover llama7b', async () => {
+  it("should call and cover llama7b", async () => {
     try {
-       const res = (Module as any).llama7b();
-       if (res instanceof Promise) await res.catch(() => {});
-    } catch(e) {}
+      const res = (Module as any).llama7b();
+      if (res instanceof Promise) await res.catch(() => {});
+    } catch (e) {}
   });
 });

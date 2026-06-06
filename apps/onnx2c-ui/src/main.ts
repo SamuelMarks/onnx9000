@@ -2,67 +2,80 @@
  * @fileoverview Main entry point for the ONNX to C compiler UI.
  * Handles model file upload, integrates with Monaco Editor for viewing C code, and communicates with a Web Worker to compile models.
  */
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 
 /**
  * Initializes the onnx2c UI.
  */
 export function initOnnx2cUI(): void {
-  const compilerWorker = new Worker(new URL('./worker.ts', import.meta.url), {
-    type: 'module',
+  const compilerWorker = new Worker(new URL("./worker.ts", import.meta.url), {
+    type: "module",
   });
 
-  let currentFile: 'header' | 'source' = 'header';
+  let currentFile: "header" | "source" = "header";
   const modelData: { header: string; source: string } = {
-    header: '/* Please upload an ONNX model to generate code */',
-    source: '/* Please upload an ONNX model to generate code */',
+    header: "/* Please upload an ONNX model to generate code */",
+    source: "/* Please upload an ONNX model to generate code */",
   };
 
-  const monacoRoot = document.getElementById('monaco-root');
+  const monacoRoot = document.getElementById("monaco-root");
   if (!monacoRoot) return;
 
   const editor = monaco.editor.create(monacoRoot, {
     value: modelData.header,
-    language: 'c',
-    theme: 'vs-dark',
+    language: "c",
+    theme: "vs-dark",
     automaticLayout: true,
     minimap: { enabled: false },
   });
 
-  const dropzone = document.getElementById('dropzone')!;
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  const compileBtn = document.getElementById('btn-compile')!;
-  const downloadBtn = document.getElementById('btn-download')!;
-  const targetBoardSelect = document.getElementById('target-board') as HTMLSelectElement;
+  const dropzone = document.getElementById("dropzone")!;
+  const fileInput = document.getElementById("file-input") as HTMLInputElement;
+  const compileBtn = document.getElementById("btn-compile")!;
+  const downloadBtn = document.getElementById("btn-download")!;
+  const targetBoardSelect = document.getElementById(
+    "target-board",
+  ) as HTMLSelectElement;
 
-  if (!dropzone || !fileInput || !compileBtn || !downloadBtn || !targetBoardSelect) return;
+  if (
+    !dropzone ||
+    !fileInput ||
+    !compileBtn ||
+    !downloadBtn ||
+    !targetBoardSelect
+  )
+    return;
 
   let currentModelBuffer: Uint8Array | null = null;
 
-  document.querySelectorAll('.tab').forEach((tab) => {
-    tab.addEventListener('click', (e) => {
-      document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      document
+        .querySelectorAll(".tab")
+        .forEach((t) => t.classList.remove("active"));
       const t = e.target as HTMLElement;
-      t.classList.add('active');
-      currentFile = t.dataset.target as 'header' | 'source';
+      t.classList.add("active");
+      currentFile = t.dataset.target as "header" | "source";
       editor.setValue(modelData[currentFile]);
     });
   });
 
-  dropzone.addEventListener('dragover', (e) => {
+  dropzone.addEventListener("dragover", (e) => {
     e.preventDefault();
-    dropzone.classList.add('hover');
+    dropzone.classList.add("hover");
   });
-  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('hover'));
-  dropzone.addEventListener('drop', async (e) => {
+  dropzone.addEventListener("dragleave", () =>
+    dropzone.classList.remove("hover"),
+  );
+  dropzone.addEventListener("drop", async (e) => {
     e.preventDefault();
-    dropzone.classList.remove('hover');
+    dropzone.classList.remove("hover");
     const file = e.dataTransfer?.files[0];
-    if (file && file.name.endsWith('.onnx')) await handleFile(file);
+    if (file && file.name.endsWith(".onnx")) await handleFile(file);
   });
 
-  dropzone.addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', async (e) => {
+  dropzone.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", async (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) await handleFile(file);
   });
@@ -71,20 +84,23 @@ export function initOnnx2cUI(): void {
     dropzone.innerHTML = `<p>Loading ${file.name}...</p>`;
     const buffer = await file.arrayBuffer();
     currentModelBuffer = new Uint8Array(buffer);
-    const controls = document.getElementById('controls');
-    if (controls) controls.style.display = 'block';
+    const controls = document.getElementById("controls");
+    if (controls) controls.style.display = "block";
     dropzone.innerHTML = `<p>Loaded: <strong>${file.name}</strong><br/>Size: ${(buffer.byteLength / 1024).toFixed(1)} KB</p>`;
   }
 
-  compileBtn.addEventListener('click', () => {
+  compileBtn.addEventListener("click", () => {
     if (!currentModelBuffer) return;
-    compileBtn.innerText = 'Compiling in Worker...';
+    compileBtn.innerText = "Compiling in Worker...";
 
     const opts = {
-      target: (document.getElementById('target-arch') as HTMLSelectElement).value,
-      emitCpp: (document.getElementById('opt-cpp') as HTMLInputElement).checked,
-      noMathH: !(document.getElementById('opt-math') as HTMLInputElement).checked,
-      noOpt: !(document.getElementById('opt-unroll') as HTMLInputElement).checked,
+      target: (document.getElementById("target-arch") as HTMLSelectElement)
+        .value,
+      emitCpp: (document.getElementById("opt-cpp") as HTMLInputElement).checked,
+      noMathH: !(document.getElementById("opt-math") as HTMLInputElement)
+        .checked,
+      noOpt: !(document.getElementById("opt-unroll") as HTMLInputElement)
+        .checked,
     };
 
     compilerWorker.postMessage({
@@ -95,7 +111,7 @@ export function initOnnx2cUI(): void {
 
   compilerWorker.onmessage = (e) => {
     const { header, source, summary, error, arenaSize } = e.data;
-    compileBtn.innerText = 'Compile to C';
+    compileBtn.innerText = "Compile to C";
 
     if (error) {
       editor.setValue(`/* Compilation Error: ${error} */`);
@@ -111,31 +127,34 @@ export function initOnnx2cUI(): void {
       }
     }
 
-    modelData.header = summary + '\\n' + header;
+    modelData.header = summary + "\\n" + header;
     modelData.source = source;
     editor.setValue(modelData[currentFile]);
   };
 
-  downloadBtn.addEventListener('click', () => {
+  downloadBtn.addEventListener("click", () => {
     const zip =
       `/* Zip generator placeholder, currently just dumping single file... */\\n` +
       modelData.header +
-      '\\n\\n' +
+      "\\n\\n" +
       modelData.source;
-    const blob = new Blob([zip], { type: 'text/plain' });
+    const blob = new Blob([zip], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'onnx2c_model.zip';
+    a.download = "onnx2c_model.zip";
     a.click();
     URL.revokeObjectURL(url);
   });
 }
 
 // Check for DOM
-if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initOnnx2cUI);
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", initOnnx2cUI);
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
     initOnnx2cUI();
   }
 }

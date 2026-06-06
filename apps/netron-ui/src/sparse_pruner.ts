@@ -3,40 +3,42 @@
  * Manages drag-and-drop of models and recipes, handles pruning operations
  * visually, and reports progress and statistics back to the user interface.
  */
-import { Graph } from '@onnx9000/core';
-import { applyRecipe } from '@onnx9000/modifier';
-import { unpackData } from '@onnx9000/core';
-import { DType } from '@onnx9000/core';
+import { Graph } from "@onnx9000/core";
+import { applyRecipe } from "@onnx9000/modifier";
+import { unpackData } from "@onnx9000/core";
+import { DType } from "@onnx9000/core";
 
 export class SparsePrunerUI {
   private graph: Graph | null = null;
   private logElement: HTMLElement | null = null;
 
   constructor() {
-    this.logElement = document.getElementById('log');
+    this.logElement = document.getElementById("log");
     this.setupEventListeners();
   }
 
   private setupEventListeners(): void {
-    const slider = document.getElementById('sparsity-slider') as HTMLInputElement;
-    const sliderVal = document.getElementById('sparsity-value');
+    const slider = document.getElementById(
+      "sparsity-slider",
+    ) as HTMLInputElement;
+    const sliderVal = document.getElementById("sparsity-value");
     if (slider && sliderVal) {
-      slider.addEventListener('input', () => {
+      slider.addEventListener("input", () => {
         sliderVal.innerText = `${slider.value}%`;
       });
     }
 
-    const runBtn = document.getElementById('run-btn');
+    const runBtn = document.getElementById("run-btn");
     if (runBtn) {
-      runBtn.addEventListener('click', () => this.runPruning());
+      runBtn.addEventListener("click", () => this.runPruning());
     }
 
-    this.setupDragAndDrop('drop-zone');
+    this.setupDragAndDrop("drop-zone");
   }
 
   private log(message: string): void {
     if (this.logElement) {
-      const entry = document.createElement('div');
+      const entry = document.createElement("div");
       entry.innerText = `[${new Date().toLocaleTimeString()}] ${message}`;
       this.logElement.appendChild(entry);
       this.logElement.scrollTop = this.logElement.scrollHeight;
@@ -48,28 +50,28 @@ export class SparsePrunerUI {
     const dropZone = document.getElementById(dropZoneId);
     if (!dropZone) return;
 
-    dropZone.addEventListener('dragover', (e) => {
+    dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
-      dropZone.classList.add('drag-over');
+      dropZone.classList.add("drag-over");
     });
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('drag-over');
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("drag-over");
     });
 
-    dropZone.addEventListener('drop', async (e) => {
+    dropZone.addEventListener("drop", async (e) => {
       e.preventDefault();
-      dropZone.classList.remove('drag-over');
+      dropZone.classList.remove("drag-over");
 
       const files = e.dataTransfer?.files;
       if (!files) return;
 
       for (const file of Array.from(files)) {
-        if (file.name.endsWith('.onnx')) {
+        if (file.name.endsWith(".onnx")) {
           this.log(`Loading model: ${file.name}`);
           const buffer = await file.arrayBuffer();
           await this.loadModel(new Uint8Array(buffer));
-        } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
+        } else if (file.name.endsWith(".yaml") || file.name.endsWith(".yml")) {
           this.log(`Loading recipe: ${file.name}`);
           const text = await file.text();
           (window as ReturnType<typeof JSON.parse>).currentRecipe = text;
@@ -79,32 +81,34 @@ export class SparsePrunerUI {
   }
 
   async loadModel(modelBytes: Uint8Array): Promise<void> {
-    this.log(`Parsing model (${(modelBytes.length / 1024 / 1024).toFixed(2)} MB)...`);
-    this.graph = new Graph('web-pruned-model');
-    document.getElementById('param-count')!.innerText = '1.2M';
+    this.log(
+      `Parsing model (${(modelBytes.length / 1024 / 1024).toFixed(2)} MB)...`,
+    );
+    this.graph = new Graph("web-pruned-model");
+    document.getElementById("param-count")!.innerText = "1.2M";
     this.updateStats();
   }
 
   async runPruning(): Promise<void> {
     if (!this.graph) {
-      this.log('Error: No model loaded.');
+      this.log("Error: No model loaded.");
       return;
     }
 
-    const progressDiv = document.getElementById('progress');
-    const fill = document.getElementById('progress-fill');
+    const progressDiv = document.getElementById("progress");
+    const fill = document.getElementById("progress-fill");
     if (progressDiv && fill) {
-      progressDiv.style.display = 'block';
-      fill.style.width = '0%';
+      progressDiv.style.display = "block";
+      fill.style.width = "0%";
     }
 
-    this.log('Starting pruning in Web Worker...');
+    this.log("Starting pruning in Web Worker...");
 
     const steps = [
-      'Extracting Tensors',
-      'Calculating Saliency',
-      'Applying Masks',
-      'Compacting Data',
+      "Extracting Tensors",
+      "Calculating Saliency",
+      "Applying Masks",
+      "Compacting Data",
     ];
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i]!;
@@ -114,26 +118,28 @@ export class SparsePrunerUI {
         await new Promise((r) => setTimeout(r, 100));
         const totalProgress = (i * 100 + p) / steps.length;
         if (fill) fill.style.width = `${totalProgress}%`;
-        document.getElementById('progress-text')!.innerText = `${step}: ${p}%`;
+        document.getElementById("progress-text")!.innerText = `${step}: ${p}%`;
 
         // Item 128: Provide visually updating accuracy charts during the browser-based calibration loop
         this.updateAccuracyChart(totalProgress, 0.99 - totalProgress / 1000);
       }
-      this.highlightLayer(`Layer_${i}`, 'processing');
+      this.highlightLayer(`Layer_${i}`, "processing");
     }
 
-    const recipe = (window as ReturnType<typeof JSON.parse>).currentRecipe || '';
+    const recipe =
+      (window as ReturnType<typeof JSON.parse>).currentRecipe || "";
     if (recipe) {
-      this.log('Applying recipe...');
+      this.log("Applying recipe...");
       applyRecipe(this.graph, recipe);
     }
 
-    this.log('Pruning complete.');
+    this.log("Pruning complete.");
     this.updateStats();
-    (document.getElementById('download-btn') as HTMLButtonElement).disabled = false;
+    (document.getElementById("download-btn") as HTMLButtonElement).disabled =
+      false;
 
     steps.forEach((_, i) => {
-      this.highlightLayer(`Layer_${i}`, 'complete');
+      this.highlightLayer(`Layer_${i}`, "complete");
     });
   }
 
@@ -143,11 +149,18 @@ export class SparsePrunerUI {
     // Integration with D3 or Chart.js would happen here.
   }
 
-  private highlightLayer(layerId: string, status: 'idle' | 'processing' | 'complete'): void {
+  private highlightLayer(
+    layerId: string,
+    status: "idle" | "processing" | "complete",
+  ): void {
     console.log(`Layer ${layerId} is now ${status}`);
   }
 
-  public adjustSaliency(tensorName: string, index: number, newScore: number): void {
+  public adjustSaliency(
+    tensorName: string,
+    index: number,
+    newScore: number,
+  ): void {
     if (!this.graph) return;
     const tensor = this.graph.tensors[tensorName];
     if (!tensor) return;
@@ -155,21 +168,28 @@ export class SparsePrunerUI {
     if (!(tensor as ReturnType<typeof JSON.parse>).metadata_props)
       (tensor as ReturnType<typeof JSON.parse>).metadata_props = {};
     const scores = (
-      (tensor as ReturnType<typeof JSON.parse>).metadata_props['saliency_scores'] || ''
-    ).split(',');
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props[
+        "saliency_scores"
+      ] || ""
+    ).split(",");
     if (index < scores.length) {
       scores[index] = newScore.toFixed(4);
-      (tensor as ReturnType<typeof JSON.parse>).metadata_props['saliency_scores'] =
-        scores.join(',');
-      this.log(`Adjusted saliency for ${tensorName} at index ${index} to ${newScore}`);
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props[
+        "saliency_scores"
+      ] = scores.join(",");
+      this.log(
+        `Adjusted saliency for ${tensorName} at index ${index} to ${newScore}`,
+      );
     }
   }
 
   updateStats(): void {
     if (!this.graph) return;
-    const slider = document.getElementById('sparsity-slider') as HTMLInputElement;
-    document.getElementById('current-sparsity')!.innerText = `${slider.value}%`;
-    document.getElementById('est-speedup')!.innerText = '2.4x';
+    const slider = document.getElementById(
+      "sparsity-slider",
+    ) as HTMLInputElement;
+    document.getElementById("current-sparsity")!.innerText = `${slider.value}%`;
+    document.getElementById("est-speedup")!.innerText = "2.4x";
   }
 
   getWeightDistribution(tensorName: string): number[] {

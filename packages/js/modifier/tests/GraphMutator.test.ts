@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { GraphMutator } from '../src/GraphMutator.js';
-import { Graph, Node } from '@onnx9000/core';
+import { describe, it, expect } from "vitest";
+import { GraphMutator } from "../src/GraphMutator.js";
+import { Graph, Node } from "@onnx9000/core";
 
-describe('GraphMutator', () => {
-  it('should add and undo', () => {
-    const g = new Graph('test');
+describe("GraphMutator", () => {
+  it("should add and undo", () => {
+    const g = new Graph("test");
     const m = new GraphMutator(g);
 
-    m.addNode('Relu', ['in'], ['out']);
+    m.addNode("Relu", ["in"], ["out"]);
     expect(g.nodes.length).toBe(1);
 
     m.undo();
@@ -17,10 +17,10 @@ describe('GraphMutator', () => {
     expect(g.nodes.length).toBe(1);
   });
 
-  it('should extract subgraph', () => {
-    const g = new Graph('test');
+  it("should extract subgraph", () => {
+    const g = new Graph("test");
     const m = new GraphMutator(g);
-    m.addNode('Relu', ['in'], ['out']);
+    m.addNode("Relu", ["in"], ["out"]);
     const n = g.nodes[0];
 
     const sub = m.extractSubgraph([n.id]);

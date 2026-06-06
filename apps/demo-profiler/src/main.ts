@@ -3,13 +3,13 @@
  * Initializes the profiler demo.
  */
 export function initProfilerDemo(): void {
-  document.getElementById('btn-run')?.addEventListener('click', () => {
-    const output = document.getElementById('output');
+  document.getElementById("btn-run")?.addEventListener("click", () => {
+    const output = document.getElementById("output");
     if (output) {
-      output.textContent = 'Initializing profiler...\n';
+      output.textContent = "Initializing profiler...\n";
       setTimeout(() => {
-        output.textContent += '[OK] Captured traces\n';
-        output.textContent += '[OK] execution complete';
+        output.textContent += "[OK] Captured traces\n";
+        output.textContent += "[OK] execution complete";
       }, 500);
     }
   });

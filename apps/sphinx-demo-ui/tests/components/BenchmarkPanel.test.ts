@@ -5,8 +5,8 @@ describe('BenchmarkPanel.ts', () => {
   it('should instantiate and cover BenchmarkPanel', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).BenchmarkPanel();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).BenchmarkPanel();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { OnnxScriptParser } from '../../src/mmdnn/onnxscript/parser.js';
+import { describe, it, expect } from "vitest";
+import { OnnxScriptParser } from "../../src/mmdnn/onnxscript/parser.js";
 
-describe('MMDNN - OnnxScript Importer', () => {
-  it('should parse basic ONNXScript Python code', () => {
+describe("MMDNN - OnnxScript Importer", () => {
+  it("should parse basic ONNXScript Python code", () => {
     const parser = new OnnxScriptParser();
     const mockCode = `
 import onnxscript
@@ -21,23 +21,23 @@ def mlp(X: FLOAT[10, 10], W1: FLOAT[10, 20], B1: FLOAT[20]) -> FLOAT[10, 20]:
 
     // Inputs
     expect(graph.inputs.length).toBe(3);
-    expect(graph.inputs[0].name).toBe('X');
+    expect(graph.inputs[0].name).toBe("X");
     expect(graph.inputs[0].shape).toEqual([10, 10]);
 
     // Nodes
     expect(graph.nodes.length).toBe(3);
-    expect(graph.nodes[0].opType).toBe('MatMul');
-    expect(graph.nodes[0].inputs).toEqual(['X', 'W1']);
-    expect(graph.nodes[0].outputs).toEqual(['H1']);
+    expect(graph.nodes[0].opType).toBe("MatMul");
+    expect(graph.nodes[0].inputs).toEqual(["X", "W1"]);
+    expect(graph.nodes[0].outputs).toEqual(["H1"]);
 
     // Outputs
     expect(graph.outputs.length).toBe(1);
-    expect(graph.outputs[0].name).toBe('H1_relu');
+    expect(graph.outputs[0].name).toBe("H1_relu");
   });
 
-  it('should handle un-annotated or empty functions gracefully', () => {
+  it("should handle un-annotated or empty functions gracefully", () => {
     const parser = new OnnxScriptParser();
-    const graph = parser.parseScript('def empty():\n  pass\n');
+    const graph = parser.parseScript("def empty():\n  pass\n");
     expect(graph.inputs.length).toBe(0);
     expect(graph.nodes.length).toBe(0);
   });

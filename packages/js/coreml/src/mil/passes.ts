@@ -2,7 +2,7 @@
  * @fileoverview passes.ts
  * Provides passes functionality for the coreml package.
  */
-import { Operation, Block, Function } from './ast.js';
+import { Operation, Block, Function } from "./ast.js";
 
 export function deadCodeElimination(block: Block): void {
   let changed = true;
@@ -62,10 +62,12 @@ export function commonSubexpressionElimination(block: Block): void {
         const inputs = op.inputs[key]!;
         if (Array.isArray(inputs)) {
           for (const v of inputs) {
-            if (varReplacement.has(v.name)) v.name = varReplacement.get(v.name)!;
+            if (varReplacement.has(v.name))
+              v.name = varReplacement.get(v.name)!;
           }
         } else {
-          if (varReplacement.has(inputs.name)) inputs.name = varReplacement.get(inputs.name)!;
+          if (varReplacement.has(inputs.name))
+            inputs.name = varReplacement.get(inputs.name)!;
         }
       }
 
@@ -77,8 +79,11 @@ export function commonSubexpressionElimination(block: Block): void {
       if (isSimple) {
         const inputNames = Object.entries(op.inputs)
           .sort((a, b) => a[0].localeCompare(b[0]))
-          .map(([k, v]) => `${k}:${Array.isArray(v) ? v.map((vi) => vi.name).join(',') : v.name}`)
-          .join('|');
+          .map(
+            ([k, v]) =>
+              `${k}:${Array.isArray(v) ? v.map((vi) => vi.name).join(",") : v.name}`,
+          )
+          .join("|");
         const exprKey = `${op.opType}#${inputNames}`;
 
         if (exprMap.has(exprKey)) {
@@ -114,7 +119,7 @@ export function constantFolding(block: Block): void {
 
     // identify constants
     for (const op of block.operations) {
-      if (op.opType === 'const') {
+      if (op.opType === "const") {
         const out = op.outputs[0];
         if (out && op.attributes.value !== undefined) {
           constVals.set(out.name, op.attributes.value);
@@ -124,7 +129,7 @@ export function constantFolding(block: Block): void {
 
     const newOps: Operation[] = [];
     for (const op of block.operations) {
-      if (op.opType === 'add' || op.opType === 'mul' || op.opType === 'sub') {
+      if (op.opType === "add" || op.opType === "mul" || op.opType === "sub") {
         let allInputsConst = true;
         for (const k in op.inputs) {
           const inputs = op.inputs[k]!;
@@ -161,31 +166,38 @@ export function fuseAdjacentOps(block: Block): void {
       const op = block.operations[i]!;
 
       // Basic heuristic for Split->Concat fusion
-      if (op.opType === 'concat') {
-        const inputs = op.inputs['values'];
+      if (op.opType === "concat") {
+        const inputs = op.inputs["values"];
         if (Array.isArray(inputs) && inputs.length > 0) {
           // Check if all inputs come from the same 'split' op
           const producerOp = block.operations.find((o) =>
             o.outputs.some((out) => out.name === inputs[0]!.name),
           );
-          if (producerOp && producerOp.opType === 'split') {
+          if (producerOp && producerOp.opType === "split") {
             // Simplified check: If concat just reverses split exactly.
-            op.opType = 'identity';
-            op.inputs = { x: producerOp.inputs['x']! };
+            op.opType = "identity";
+            op.inputs = { x: producerOp.inputs["x"]! };
             changed = true;
           }
         }
       }
 
       // 180. Fuse Pad into Slice
-      if (op.opType === 'slice_by_index' || op.opType === 'slice_by_size') {
-        const xInput = op.inputs['x'];
+      if (op.opType === "slice_by_index" || op.opType === "slice_by_size") {
+        const xInput = op.inputs["x"];
         if (xInput && !Array.isArray(xInput)) {
-          const producerOp = block.operations.find((o) => o.outputs[0]?.name === xInput.name);
-          if (producerOp && producerOp.opType === 'pad' && !op.attributes['ane_hint_fused_pad']) {
+          const producerOp = block.operations.find(
+            (o) => o.outputs[0]?.name === xInput.name,
+          );
+          if (
+            producerOp &&
+            producerOp.opType === "pad" &&
+            !op.attributes["ane_hint_fused_pad"]
+          ) {
             // In a real implementation we algebraically resolve pad amounts vs slice amounts.
             // We annotate fusion.
-            op.attributes['ane_hint_fused_pad'] = producerOp.attributes['pad_amounts'];
+            op.attributes["ane_hint_fused_pad"] =
+              producerOp.attributes["pad_amounts"];
             // producerOp (Pad) could be removed if it has no other consumers (DCE handles it later).
             changed = true;
           }

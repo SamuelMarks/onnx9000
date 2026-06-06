@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
-import { main } from '../bin/cli.js';
-import * as fs from 'fs';
+import { describe, it, expect, vi } from "vitest";
+import { main } from "../bin/cli.js";
+import * as fs from "fs";
 
-vi.mock('fs', () => ({
+vi.mock("fs", () => ({
   default: {
     readFileSync: vi.fn().mockReturnValue(new Uint8Array()),
     writeFileSync: vi.fn(),
@@ -11,7 +11,7 @@ vi.mock('fs', () => ({
   },
 }));
 
-vi.mock('@onnx9000/core', () => ({
+vi.mock("@onnx9000/core", () => ({
   load: vi.fn().mockReturnValue({
     inputs: [],
     outputs: [],
@@ -22,21 +22,23 @@ vi.mock('@onnx9000/core', () => ({
   }),
 }));
 
-vi.mock('../dist/index.js', () => ({
+vi.mock("../dist/index.js", () => ({
   OpenVinoExporter: class {
     export() {
-      return { xml: 'x', bin: new Uint8Array() };
+      return { xml: "x", bin: new Uint8Array() };
     }
   },
 }));
 
-describe('openvino cli', () => {
-  it('should run main', () => {
+describe("openvino cli", () => {
+  it("should run main", () => {
     const origArgs = process.argv;
-    process.argv = ['node', 'cli', 'test.onnx'];
+    process.argv = ["node", "cli", "test.onnx"];
 
-    const mockLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const mockExit = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+    const mockLog = vi.spyOn(console, "log").mockImplementation(() => {});
+    const mockExit = vi
+      .spyOn(process, "exit")
+      .mockImplementation((() => {}) as any);
 
     main();
 

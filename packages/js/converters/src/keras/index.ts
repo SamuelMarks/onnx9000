@@ -3,14 +3,23 @@
  * Provides index functionality for the converters package.
  */
 // @ts-nocheck
-import { parseTFJSModel, JsonObject } from './tfjs-parser.js';
-import { extractKerasTopology, KerasModelTopology, KerasNodeSpec } from './keras-ast.js';
-import { emitConv } from './emitters-conv.js';
-import { emitDense, emitActivation, emitIdentity, OnnxNodeBuilder } from './emitters.js';
-import { emitPool, emitGlobalPool } from './emitters-pool.js';
-import { LayoutOptimizer, OnnxNodeLike } from './layout-optimizer.js';
-import { KerasGraphOptimizer } from './optimizers.js';
-import { getCustomKerasLayerEmitter } from './plugin-registry.js';
+import { parseTFJSModel, JsonObject } from "./tfjs-parser.js";
+import {
+  extractKerasTopology,
+  KerasModelTopology,
+  KerasNodeSpec,
+} from "./keras-ast.js";
+import { emitConv } from "./emitters-conv.js";
+import {
+  emitDense,
+  emitActivation,
+  emitIdentity,
+  OnnxNodeBuilder,
+} from "./emitters.js";
+import { emitPool, emitGlobalPool } from "./emitters-pool.js";
+import { LayoutOptimizer, OnnxNodeLike } from "./layout-optimizer.js";
+import { KerasGraphOptimizer } from "./optimizers.js";
+import { getCustomKerasLayerEmitter } from "./plugin-registry.js";
 import {
   Graph,
   Node,
@@ -21,7 +30,7 @@ import {
   Shape,
   AttributeType,
   AttributeValue,
-} from '@onnx9000/core';
+} from "@onnx9000/core";
 
 /**
  * Type definition for a node translation handler.
@@ -71,8 +80,13 @@ export class Keras2OnnxConverter {
    */
   constructor(modelJson: string) {
     const model = parseTFJSModel(modelJson);
-    const signature = model.format === 'layers-model' ? model.signature : undefined;
-    this.topology = extractKerasTopology(model.modelTopology, '', signature || {});
+    const signature =
+      model.format === "layers-model" ? model.signature : undefined;
+    this.topology = extractKerasTopology(
+      model.modelTopology,
+      "",
+      signature || {},
+    );
     this.registerHandlers();
   }
 
@@ -88,55 +102,85 @@ export class Keras2OnnxConverter {
    * Registers all layer translation handlers into the registry.
    */
   private registerHandlers(): void {
-    this.handlers.set('Dense', this.handleDense.bind(this));
-    this.handlers.set('QDense', this.handleDense.bind(this));
-    this.handlers.set('Activation', this.handleActivation.bind(this));
-    this.handlers.set('QActivation', this.handleActivation.bind(this));
-    this.handlers.set('LeakyReLU', this.handleLeakyReLU.bind(this));
-    this.handlers.set('PReLU', this.handlePReLU.bind(this));
-    this.handlers.set('ELU', this.handleELU.bind(this));
-    this.handlers.set('ThresholdedReLU', this.handleThresholdedReLU.bind(this));
-    this.handlers.set('Softmax', this.handleSoftmax.bind(this));
-    this.handlers.set('Conv1D', this.handleConv2D.bind(this));
-    this.handlers.set('Conv2D', this.handleConv2D.bind(this));
-    this.handlers.set('Conv3D', this.handleConv2D.bind(this));
-    this.handlers.set('QConv1D', this.handleConv2D.bind(this));
-    this.handlers.set('QConv2D', this.handleConv2D.bind(this));
-    this.handlers.set('QConv3D', this.handleConv2D.bind(this));
-    this.handlers.set('MaxPooling1D', this.handlePooling2D.bind(this));
-    this.handlers.set('MaxPooling2D', this.handlePooling2D.bind(this));
-    this.handlers.set('MaxPooling3D', this.handlePooling2D.bind(this));
-    this.handlers.set('AveragePooling1D', this.handlePooling2D.bind(this));
-    this.handlers.set('AveragePooling2D', this.handlePooling2D.bind(this));
-    this.handlers.set('AveragePooling3D', this.handlePooling2D.bind(this));
-    this.handlers.set('GlobalAveragePooling1D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('GlobalAveragePooling2D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('GlobalAveragePooling3D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('GlobalMaxPooling1D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('GlobalMaxPooling2D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('GlobalMaxPooling3D', this.handleGlobalPooling2D.bind(this));
-    this.handlers.set('BatchNormalization', this.handleBatchNormalization.bind(this));
-    this.handlers.set('LayerNormalization', this.handleLayerNormalization.bind(this));
-    this.handlers.set('UnitNormalization', this.handleUnitNormalization.bind(this));
-    this.handlers.set('GroupNormalization', this.handleGroupNormalization.bind(this));
-    this.handlers.set('Embedding', this.handleEmbedding.bind(this));
+    this.handlers.set("Dense", this.handleDense.bind(this));
+    this.handlers.set("QDense", this.handleDense.bind(this));
+    this.handlers.set("Activation", this.handleActivation.bind(this));
+    this.handlers.set("QActivation", this.handleActivation.bind(this));
+    this.handlers.set("LeakyReLU", this.handleLeakyReLU.bind(this));
+    this.handlers.set("PReLU", this.handlePReLU.bind(this));
+    this.handlers.set("ELU", this.handleELU.bind(this));
+    this.handlers.set("ThresholdedReLU", this.handleThresholdedReLU.bind(this));
+    this.handlers.set("Softmax", this.handleSoftmax.bind(this));
+    this.handlers.set("Conv1D", this.handleConv2D.bind(this));
+    this.handlers.set("Conv2D", this.handleConv2D.bind(this));
+    this.handlers.set("Conv3D", this.handleConv2D.bind(this));
+    this.handlers.set("QConv1D", this.handleConv2D.bind(this));
+    this.handlers.set("QConv2D", this.handleConv2D.bind(this));
+    this.handlers.set("QConv3D", this.handleConv2D.bind(this));
+    this.handlers.set("MaxPooling1D", this.handlePooling2D.bind(this));
+    this.handlers.set("MaxPooling2D", this.handlePooling2D.bind(this));
+    this.handlers.set("MaxPooling3D", this.handlePooling2D.bind(this));
+    this.handlers.set("AveragePooling1D", this.handlePooling2D.bind(this));
+    this.handlers.set("AveragePooling2D", this.handlePooling2D.bind(this));
+    this.handlers.set("AveragePooling3D", this.handlePooling2D.bind(this));
+    this.handlers.set(
+      "GlobalAveragePooling1D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "GlobalAveragePooling2D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "GlobalAveragePooling3D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "GlobalMaxPooling1D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "GlobalMaxPooling2D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "GlobalMaxPooling3D",
+      this.handleGlobalPooling2D.bind(this),
+    );
+    this.handlers.set(
+      "BatchNormalization",
+      this.handleBatchNormalization.bind(this),
+    );
+    this.handlers.set(
+      "LayerNormalization",
+      this.handleLayerNormalization.bind(this),
+    );
+    this.handlers.set(
+      "UnitNormalization",
+      this.handleUnitNormalization.bind(this),
+    );
+    this.handlers.set(
+      "GroupNormalization",
+      this.handleGroupNormalization.bind(this),
+    );
+    this.handlers.set("Embedding", this.handleEmbedding.bind(this));
 
     const identityLayers = [
-      'GaussianNoise',
-      'GaussianDropout',
-      'AlphaDropout',
-      'SpatialDropout1D',
-      'SpatialDropout2D',
-      'SpatialDropout3D',
-      'ActivityRegularization',
-      'Dropout',
-      'RandomFlip',
-      'RandomRotation',
-      'RandomZoom',
-      'RandomCrop',
-      'RandomTranslation',
-      'RandomContrast',
-      'RandomBrightness',
+      "GaussianNoise",
+      "GaussianDropout",
+      "AlphaDropout",
+      "SpatialDropout1D",
+      "SpatialDropout2D",
+      "SpatialDropout3D",
+      "ActivityRegularization",
+      "Dropout",
+      "RandomFlip",
+      "RandomRotation",
+      "RandomZoom",
+      "RandomCrop",
+      "RandomTranslation",
+      "RandomContrast",
+      "RandomBrightness",
     ];
     for (const layer of identityLayers) {
       this.handlers.set(layer, (inName, outName, _layerName, nodeName) =>
@@ -144,22 +188,22 @@ export class Keras2OnnxConverter {
       );
     }
 
-    this.handlers.set('Permute', this.handlePermute.bind(this));
-    this.handlers.set('Flatten', this.handleFlatten.bind(this));
-    this.handlers.set('Reshape', this.handleReshape.bind(this));
-    this.handlers.set('Rescaling', this.handleRescaling.bind(this));
-    this.handlers.set('Resizing', this.handleResizing.bind(this));
-    this.handlers.set('CenterCrop', this.handleCenterCrop.bind(this));
+    this.handlers.set("Permute", this.handlePermute.bind(this));
+    this.handlers.set("Flatten", this.handleFlatten.bind(this));
+    this.handlers.set("Reshape", this.handleReshape.bind(this));
+    this.handlers.set("Rescaling", this.handleRescaling.bind(this));
+    this.handlers.set("Resizing", this.handleResizing.bind(this));
+    this.handlers.set("CenterCrop", this.handleCenterCrop.bind(this));
 
-    const mathLayers = ['Add', 'Subtract', 'Multiply', 'Minimum', 'Maximum'];
+    const mathLayers = ["Add", "Subtract", "Multiply", "Minimum", "Maximum"];
     for (const layer of mathLayers) {
       this.handlers.set(layer, this.handleMath.bind(this));
     }
 
-    this.handlers.set('Concatenate', this.handleConcatenate.bind(this));
-    this.handlers.set('Average', this.handleAverage.bind(this));
-    this.handlers.set('Dot', this.handleDot.bind(this));
-    this.handlers.set('EinsumDense', this.handleEinsumDense.bind(this));
+    this.handlers.set("Concatenate", this.handleConcatenate.bind(this));
+    this.handlers.set("Average", this.handleAverage.bind(this));
+    this.handlers.set("Dot", this.handleDot.bind(this));
+    this.handlers.set("EinsumDense", this.handleEinsumDense.bind(this));
   }
 
   /**
@@ -173,20 +217,40 @@ export class Keras2OnnxConverter {
     const layerName = node.layerName;
 
     const inName =
-      node.inboundNodes.length > 0 ? (node.inboundNodes[0] as string) : `${nodeName}_input`;
+      node.inboundNodes.length > 0
+        ? (node.inboundNodes[0] as string)
+        : `${nodeName}_input`;
     const outName = `${nodeName}:0`;
 
     const customEmitter = getCustomKerasLayerEmitter(className);
     if (customEmitter !== undefined) {
-      this.rawNodes.push(...customEmitter(nodeName, layerName, node.inboundNodes, outName, config));
+      this.rawNodes.push(
+        ...customEmitter(
+          nodeName,
+          layerName,
+          node.inboundNodes,
+          outName,
+          config,
+        ),
+      );
       return;
     }
 
-    if (className === 'InputLayer') return;
+    if (className === "InputLayer") return;
 
     const handler = this.handlers.get(className);
     if (handler) {
-      this.rawNodes.push(...handler(inName, outName, layerName, nodeName, config, className, node));
+      this.rawNodes.push(
+        ...handler(
+          inName,
+          outName,
+          layerName,
+          nodeName,
+          config,
+          className,
+          node,
+        ),
+      );
     }
   }
 
@@ -227,7 +291,8 @@ export class Keras2OnnxConverter {
       for (const nSpec of this.topology.nodes.values()) {
         if (
           rn.name.startsWith(nSpec.name) &&
-          (nSpec.config.dtype === 'mixed_float16' || nSpec.config.dtype === 'float16')
+          (nSpec.config.dtype === "mixed_float16" ||
+            nSpec.config.dtype === "float16")
         ) {
           requiresF16 = true;
           break;
@@ -236,15 +301,19 @@ export class Keras2OnnxConverter {
 
       if (requiresF16) {
         const castedInputs = rn.inputs.map((inp: string) => {
-          if (inp.includes('_weight') || inp.includes('_bias') || inp.includes('_kernel'))
+          if (
+            inp.includes("_weight") ||
+            inp.includes("_bias") ||
+            inp.includes("_kernel")
+          )
             return inp;
           const castName = `${inp}_cast_to_f16`;
           castedNodes.push({
-            opType: 'Cast',
+            opType: "Cast",
             inputs: [inp],
             outputs: [castName],
             name: `${rn.name}_cast_in`,
-            attributes: [{ name: 'to', i: 10, type: 'INT' }],
+            attributes: [{ name: "to", i: 10, type: "INT" }],
           });
           return castName;
         });
@@ -263,22 +332,22 @@ export class Keras2OnnxConverter {
     const coreNodes: Node[] = this.rawNodes.map((rn) => {
       const attributes: Record<string, Attribute> = {};
       for (const attr of rn.attributes) {
-        let type: AttributeType = 'UNKNOWN';
+        let type: AttributeType = "UNKNOWN";
         let val: AttributeValue = null;
-        if (attr.type === 'INT' || attr.i !== undefined) {
-          type = 'INT';
+        if (attr.type === "INT" || attr.i !== undefined) {
+          type = "INT";
           val = attr.i ?? 0;
-        } else if (attr.type === 'FLOAT' || attr.f !== undefined) {
-          type = 'FLOAT';
+        } else if (attr.type === "FLOAT" || attr.f !== undefined) {
+          type = "FLOAT";
           val = attr.f ?? 0.0;
-        } else if (attr.type === 'STRING' || attr.s !== undefined) {
-          type = 'STRING';
-          val = attr.s ?? '';
-        } else if (attr.type === 'INTS' || attr.ints !== undefined) {
-          type = 'INTS';
+        } else if (attr.type === "STRING" || attr.s !== undefined) {
+          type = "STRING";
+          val = attr.s ?? "";
+        } else if (attr.type === "INTS" || attr.ints !== undefined) {
+          type = "INTS";
           val = attr.ints ?? [];
-        } else if (attr.type === 'FLOATS' || attr.floats !== undefined) {
-          type = 'FLOATS';
+        } else if (attr.type === "FLOATS" || attr.floats !== undefined) {
+          type = "FLOATS";
           val = attr.floats ?? [];
         }
         attributes[attr.name] = new Attribute(attr.name, type, val);
@@ -289,19 +358,28 @@ export class Keras2OnnxConverter {
     // QAT (Quantization-Aware Training) Pass
     const qatNodes: Node[] = [];
     for (const node of coreNodes) {
-      if (node.name.includes('quantize_wrapper') || node.name.includes('qat_')) {
+      if (
+        node.name.includes("quantize_wrapper") ||
+        node.name.includes("qat_")
+      ) {
         const scaleName = `${node.name}_qat_scale`;
         const zpName = `${node.name}_qat_zp`;
-        const input0 = node.inputs[0] || '';
+        const input0 = node.inputs[0] || "";
         const qOutName = `${input0}_quantized`;
         const dqOutName = `${input0}_dequantized`;
 
         qatNodes.push(
-          new Node('QuantizeLinear', [input0, scaleName, zpName], [qOutName], {}, `${node.name}_q`),
+          new Node(
+            "QuantizeLinear",
+            [input0, scaleName, zpName],
+            [qOutName],
+            {},
+            `${node.name}_q`,
+          ),
         );
         qatNodes.push(
           new Node(
-            'DequantizeLinear',
+            "DequantizeLinear",
             [qOutName, scaleName, zpName],
             [dqOutName],
             {},
@@ -317,16 +395,19 @@ export class Keras2OnnxConverter {
     // DynamicQuantizeLinear (AWQ / GPTQ) Pass
     const finalNodesAfterQuant: Node[] = [];
     for (const node of qatNodes) {
-      if (node.opType === 'MatMul' && node.name.includes('packed_4bit')) {
-        node.opType = 'MatMulNBits';
-      } else if (node.opType === 'MatMul' && node.name.includes('dynamic_quant')) {
-        const input0 = node.inputs[0] || '';
+      if (node.opType === "MatMul" && node.name.includes("packed_4bit")) {
+        node.opType = "MatMulNBits";
+      } else if (
+        node.opType === "MatMul" &&
+        node.name.includes("dynamic_quant")
+      ) {
+        const input0 = node.inputs[0] || "";
         const dQuantOut = `${input0}_dyn_quant`;
         const scaleOut = `${input0}_dyn_scale`;
         const zpOut = `${input0}_dyn_zp`;
         finalNodesAfterQuant.push(
           new Node(
-            'DynamicQuantizeLinear',
+            "DynamicQuantizeLinear",
             [input0],
             [dQuantOut, scaleOut, zpOut],
             {},
@@ -334,9 +415,9 @@ export class Keras2OnnxConverter {
           ),
         );
 
-        node.opType = 'MatMulInteger';
-        const input1 = node.inputs[1] || '';
-        node.inputs = [dQuantOut, input1, zpOut, input1 ? `${input1}_zp` : ''];
+        node.opType = "MatMulInteger";
+        const input1 = node.inputs[1] || "";
+        node.inputs = [dQuantOut, input1, zpOut, input1 ? `${input1}_zp` : ""];
       }
       finalNodesAfterQuant.push(node);
     }
@@ -345,23 +426,23 @@ export class Keras2OnnxConverter {
     const maskedNodes: Node[] = [];
     for (const node of finalNodesAfterQuant) {
       maskedNodes.push(node);
-      if (node.opType === 'Gather' && node.name.includes('embed_masking')) {
+      if (node.opType === "Gather" && node.name.includes("embed_masking")) {
         const inputTensor = node.inputs[1] as string;
         const maskOutName = `${node.name}_keras_mask`;
         const zeroTensorName = `${node.name}_zero_const`;
 
         maskedNodes.push(
           new Node(
-            'Constant',
+            "Constant",
             [],
             [zeroTensorName],
-            { value: new Attribute('value', 'INT', 0) },
+            { value: new Attribute("value", "INT", 0) },
             `${node.name}_mask_zero`,
           ),
         );
         maskedNodes.push(
           new Node(
-            'Equal',
+            "Equal",
             [inputTensor, zeroTensorName],
             [`${node.name}_is_zero`],
             {},
@@ -369,12 +450,18 @@ export class Keras2OnnxConverter {
           ),
         );
         maskedNodes.push(
-          new Node('Not', [`${node.name}_is_zero`], [maskOutName], {}, `${node.name}_mask_not`),
+          new Node(
+            "Not",
+            [`${node.name}_is_zero`],
+            [maskOutName],
+            {},
+            `${node.name}_mask_not`,
+          ),
         );
       }
     }
 
-    const graph = new Graph('keras_to_onnx_model');
+    const graph = new Graph("keras_to_onnx_model");
     graph.nodes = maskedNodes;
 
     const optimizer = new KerasGraphOptimizer();
@@ -392,15 +479,19 @@ export class Keras2OnnxConverter {
     for (const n of graph.nodes) {
       for (const inp of n.inputs) {
         if (!allOutputs.has(inp)) {
-          if (inp.includes('_weights') || inp.includes('_kernel') || inp.includes('_bias')) {
+          if (
+            inp.includes("_weights") ||
+            inp.includes("_kernel") ||
+            inp.includes("_bias")
+          ) {
             if (!graph.initializers.includes(inp)) {
               graph.initializers.push(inp);
-              const shape: Shape = inp.includes('_bias') ? [1] : [1, 1, 3, 3];
-              const t = new Tensor(inp, shape, 'float32', true);
+              const shape: Shape = inp.includes("_bias") ? [1] : [1, 1, 3, 3];
+              const t = new Tensor(inp, shape, "float32", true);
               t.data = new Uint8Array(4 * (shape.length === 1 ? 1 : 9));
               graph.tensors[inp] = t;
             }
-          } else if (inp !== '') {
+          } else if (inp !== "") {
             inputs.add(inp);
           }
         }
@@ -424,22 +515,25 @@ export class Keras2OnnxConverter {
       let shape: Shape = [-1, -1, -1, -1];
       if (topIn && topIn.shape.length > 0) {
         shape = topIn.shape.map((s, idx) => {
-          if (s === null) return idx === 0 ? 'batch_size' : -1;
+          if (s === null) return idx === 0 ? "batch_size" : -1;
           return s;
         });
       }
 
       let signatureName = inp;
-      if (this.topology.signatures && this.topology.signatures['serving_default']) {
+      if (
+        this.topology.signatures &&
+        this.topology.signatures["serving_default"]
+      ) {
         for (const [sName, internalName] of Object.entries(
-          this.topology.signatures['serving_default'].inputs,
+          this.topology.signatures["serving_default"].inputs,
         )) {
-          if (internalName === inp || internalName === inp.split(':')[0]) {
+          if (internalName === inp || internalName === inp.split(":")[0]) {
             signatureName = sName;
           }
         }
       }
-      graph.inputs.push(new ValueInfo(signatureName, shape, 'float32'));
+      graph.inputs.push(new ValueInfo(signatureName, shape, "float32"));
 
       if (signatureName !== inp) {
         for (const n of graph.nodes) {
@@ -455,22 +549,25 @@ export class Keras2OnnxConverter {
       let shape: Shape = [-1, -1];
       if (topOut && topOut.shape.length > 0) {
         shape = topOut.shape.map((s, idx) => {
-          if (s === null) return idx === 0 ? 'batch_size' : -1;
+          if (s === null) return idx === 0 ? "batch_size" : -1;
           return s;
         });
       }
 
       let signatureName = out;
-      if (this.topology.signatures && this.topology.signatures['serving_default']) {
+      if (
+        this.topology.signatures &&
+        this.topology.signatures["serving_default"]
+      ) {
         for (const [sName, internalName] of Object.entries(
-          this.topology.signatures['serving_default'].outputs,
+          this.topology.signatures["serving_default"].outputs,
         )) {
-          if (internalName === out || internalName === out.split(':')[0]) {
+          if (internalName === out || internalName === out.split(":")[0]) {
             signatureName = sName;
           }
         }
       }
-      graph.outputs.push(new ValueInfo(signatureName, shape, 'float32'));
+      graph.outputs.push(new ValueInfo(signatureName, shape, "float32"));
 
       if (signatureName !== out) {
         for (const n of graph.nodes) {
@@ -496,13 +593,13 @@ export class Keras2OnnxConverter {
     config: JsonObject,
     className: string,
   ): OnnxNodeBuilder[] {
-    const activation = (config.activation as string) || 'linear';
+    const activation = (config.activation as string) || "linear";
     const useBias = config.use_bias !== false;
 
-    if (className === 'QDense') {
+    if (className === "QDense") {
       return [
         {
-          opType: 'QLinearMatMul',
+          opType: "QLinearMatMul",
           inputs: [
             inName,
             `${inName}_scale`,
@@ -553,8 +650,8 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const alpha = typeof config.alpha === 'number' ? config.alpha : 0.3;
-    return emitActivation('leaky_relu', inName, outName, nodeName, { alpha });
+    const alpha = typeof config.alpha === "number" ? config.alpha : 0.3;
+    return emitActivation("leaky_relu", inName, outName, nodeName, { alpha });
   }
 
   /**
@@ -566,7 +663,7 @@ export class Keras2OnnxConverter {
     layerName: string,
     nodeName: string,
   ): OnnxNodeBuilder[] {
-    return emitActivation('prelu', inName, outName, nodeName, {
+    return emitActivation("prelu", inName, outName, nodeName, {
       alphaWeightName: `${layerName}_alpha`,
     });
   }
@@ -581,8 +678,8 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const alpha = typeof config.alpha === 'number' ? config.alpha : 1.0;
-    return emitActivation('elu', inName, outName, nodeName, { alpha });
+    const alpha = typeof config.alpha === "number" ? config.alpha : 1.0;
+    return emitActivation("elu", inName, outName, nodeName, { alpha });
   }
 
   /**
@@ -595,8 +692,10 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const theta = typeof config.theta === 'number' ? config.theta : 1.0;
-    return emitActivation('thresholded_relu', inName, outName, nodeName, { theta });
+    const theta = typeof config.theta === "number" ? config.theta : 1.0;
+    return emitActivation("thresholded_relu", inName, outName, nodeName, {
+      theta,
+    });
   }
 
   /**
@@ -609,14 +708,14 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const axis = typeof config.axis === 'number' ? config.axis : -1;
+    const axis = typeof config.axis === "number" ? config.axis : -1;
     return [
       {
-        opType: 'Softmax',
+        opType: "Softmax",
         inputs: [inName],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'axis', i: axis, type: 'INT' }],
+        attributes: [{ name: "axis", i: axis, type: "INT" }],
       },
     ];
   }
@@ -632,16 +731,18 @@ export class Keras2OnnxConverter {
     config: JsonObject,
     className: string,
   ): OnnxNodeBuilder[] {
-    const activation = (config.activation as string) || 'linear';
-    const padding = (config.padding as string) === 'same' ? 'same' : 'valid';
+    const activation = (config.activation as string) || "linear";
+    const padding = (config.padding as string) === "same" ? "same" : "valid";
     const strides = (config.strides as number[] | undefined) ?? [1, 1];
-    const dilation_rate = (config.dilation_rate as number[] | undefined) ?? [1, 1];
+    const dilation_rate = (config.dilation_rate as number[] | undefined) ?? [
+      1, 1,
+    ];
     const kernel_size = (config.kernel_size as number[] | undefined) ?? [1, 1];
 
-    if (className === 'QConv2D') {
+    if (className === "QConv2D") {
       return [
         {
-          opType: 'QLinearConv',
+          opType: "QLinearConv",
           inputs: [
             inName,
             `${inName}_scale`,
@@ -655,20 +756,28 @@ export class Keras2OnnxConverter {
           outputs: [outName],
           name: nodeName,
           attributes: [
-            { name: 'strides', ints: strides, type: 'INTS' },
-            { name: 'dilations', ints: dilation_rate, type: 'INTS' },
-            { name: 'kernel_shape', ints: kernel_size, type: 'INTS' },
+            { name: "strides", ints: strides, type: "INTS" },
+            { name: "dilations", ints: dilation_rate, type: "INTS" },
+            { name: "kernel_shape", ints: kernel_size, type: "INTS" },
           ],
         },
       ];
     }
-    return emitConv('Conv', inName, outName, `${layerName}_kernel`, `${layerName}_bias`, nodeName, {
-      activation,
-      padding,
-      strides,
-      dilations: dilation_rate,
-      kernelShape: kernel_size,
-    });
+    return emitConv(
+      "Conv",
+      inName,
+      outName,
+      `${layerName}_kernel`,
+      `${layerName}_bias`,
+      nodeName,
+      {
+        activation,
+        padding,
+        strides,
+        dilations: dilation_rate,
+        kernelShape: kernel_size,
+      },
+    );
   }
 
   /**
@@ -682,12 +791,12 @@ export class Keras2OnnxConverter {
     config: JsonObject,
     className: string,
   ): OnnxNodeBuilder[] {
-    const isMax = className.startsWith('Max');
-    const padding = (config.padding as string) === 'same' ? 'same' : 'valid';
+    const isMax = className.startsWith("Max");
+    const padding = (config.padding as string) === "same" ? "same" : "valid";
     const pool_size = (config.pool_size as number[] | undefined) ?? [2, 2];
     const strides = (config.strides as number[] | undefined) ?? [2, 2];
 
-    return emitPool(isMax ? 'Max' : 'Average', inName, outName, nodeName, {
+    return emitPool(isMax ? "Max" : "Average", inName, outName, nodeName, {
       padding,
       poolSize: pool_size,
       strides,
@@ -705,9 +814,15 @@ export class Keras2OnnxConverter {
     config: JsonObject,
     className: string,
   ): OnnxNodeBuilder[] {
-    const isMax = className.startsWith('GlobalMax');
+    const isMax = className.startsWith("GlobalMax");
     const keepDims = config.keepdims === true;
-    return emitGlobalPool(isMax ? 'Max' : 'Average', inName, outName, nodeName, { keepDims });
+    return emitGlobalPool(
+      isMax ? "Max" : "Average",
+      inName,
+      outName,
+      nodeName,
+      { keepDims },
+    );
   }
 
   /**
@@ -720,25 +835,26 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const epsilon = typeof config.epsilon === 'number' ? config.epsilon : 1e-3;
-    const momentum = typeof config.momentum === 'number' ? config.momentum : 0.99;
+    const epsilon = typeof config.epsilon === "number" ? config.epsilon : 1e-3;
+    const momentum =
+      typeof config.momentum === "number" ? config.momentum : 0.99;
     const scale = config.scale !== false;
     const center = config.center !== false;
 
-    const gammaName = scale ? `${layerName}_gamma` : '';
-    const betaName = center ? `${layerName}_beta` : '';
+    const gammaName = scale ? `${layerName}_gamma` : "";
+    const betaName = center ? `${layerName}_beta` : "";
     const meanName = `${layerName}_moving_mean`;
     const varName = `${layerName}_moving_variance`;
 
     return [
       {
-        opType: 'BatchNormalization',
+        opType: "BatchNormalization",
         inputs: [inName, gammaName, betaName, meanName, varName],
         outputs: [outName],
         name: nodeName,
         attributes: [
-          { name: 'epsilon', f: epsilon, type: 'FLOAT' },
-          { name: 'momentum', f: momentum, type: 'FLOAT' },
+          { name: "epsilon", f: epsilon, type: "FLOAT" },
+          { name: "momentum", f: momentum, type: "FLOAT" },
         ],
       },
     ];
@@ -754,8 +870,8 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const epsilon = typeof config.epsilon === 'number' ? config.epsilon : 1e-3;
-    const axis = typeof config.axis === 'number' ? config.axis : -1;
+    const epsilon = typeof config.epsilon === "number" ? config.epsilon : 1e-3;
+    const axis = typeof config.axis === "number" ? config.axis : -1;
     const scale = config.scale !== false;
     const center = config.center !== false;
 
@@ -765,13 +881,13 @@ export class Keras2OnnxConverter {
 
     return [
       {
-        opType: 'LayerNormalization',
+        opType: "LayerNormalization",
         inputs,
         outputs: [outName],
         name: nodeName,
         attributes: [
-          { name: 'axis', i: axis, type: 'INT' },
-          { name: 'epsilon', f: epsilon, type: 'FLOAT' },
+          { name: "axis", i: axis, type: "INT" },
+          { name: "epsilon", f: epsilon, type: "FLOAT" },
         ],
       },
     ];
@@ -787,16 +903,16 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const axis = typeof config.axis === 'number' ? config.axis : -1;
+    const axis = typeof config.axis === "number" ? config.axis : -1;
     return [
       {
-        opType: 'LpNormalization',
+        opType: "LpNormalization",
         inputs: [inName],
         outputs: [outName],
         name: nodeName,
         attributes: [
-          { name: 'axis', i: axis, type: 'INT' },
-          { name: 'p', i: 2, type: 'INT' },
+          { name: "axis", i: axis, type: "INT" },
+          { name: "p", i: 2, type: "INT" },
         ],
       },
     ];
@@ -812,24 +928,24 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const epsilon = typeof config.epsilon === 'number' ? config.epsilon : 1e-3;
-    const groups = typeof config.groups === 'number' ? config.groups : 32;
+    const epsilon = typeof config.epsilon === "number" ? config.epsilon : 1e-3;
+    const groups = typeof config.groups === "number" ? config.groups : 32;
     const scale = config.scale !== false;
     const center = config.center !== false;
 
     const inputs = [inName];
-    inputs.push(scale ? `${layerName}_gamma` : '');
-    inputs.push(center ? `${layerName}_beta` : '');
+    inputs.push(scale ? `${layerName}_gamma` : "");
+    inputs.push(center ? `${layerName}_beta` : "");
 
     return [
       {
-        opType: 'GroupNormalization',
+        opType: "GroupNormalization",
         inputs,
         outputs: [outName],
         name: nodeName,
         attributes: [
-          { name: 'epsilon', f: epsilon, type: 'FLOAT' },
-          { name: 'num_groups', i: groups, type: 'INT' },
+          { name: "epsilon", f: epsilon, type: "FLOAT" },
+          { name: "num_groups", i: groups, type: "INT" },
         ],
       },
     ];
@@ -846,11 +962,11 @@ export class Keras2OnnxConverter {
   ): OnnxNodeBuilder[] {
     return [
       {
-        opType: 'Gather',
+        opType: "Gather",
         inputs: [`${layerName}_weights`, inName],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'axis', i: 0, type: 'INT' }],
+        attributes: [{ name: "axis", i: 0, type: "INT" }],
       },
     ];
   }
@@ -869,11 +985,11 @@ export class Keras2OnnxConverter {
     const perm = [0, ...dims];
     return [
       {
-        opType: 'Transpose',
+        opType: "Transpose",
         inputs: [inName],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'perm', ints: perm, type: 'INTS' }],
+        attributes: [{ name: "perm", ints: perm, type: "INTS" }],
       },
     ];
   }
@@ -889,11 +1005,11 @@ export class Keras2OnnxConverter {
   ): OnnxNodeBuilder[] {
     return [
       {
-        opType: 'Flatten',
+        opType: "Flatten",
         inputs: [inName],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'axis', i: 1, type: 'INT' }],
+        attributes: [{ name: "axis", i: 1, type: "INT" }],
       },
     ];
   }
@@ -908,20 +1024,21 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const target_shape = (config.target_shape as (number | null)[] | undefined) ?? [];
+    const target_shape =
+      (config.target_shape as (number | null)[] | undefined) ?? [];
     const targetShape = [0, ...target_shape.map((s) => (s === null ? -1 : s))];
     const shapeTensorName = `${layerName}_shape`;
 
     return [
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [shapeTensorName],
         name: `${nodeName}_shape_const`,
-        attributes: [{ name: 'value', ints: targetShape, type: 'INTS' }],
+        attributes: [{ name: "value", ints: targetShape, type: "INTS" }],
       },
       {
-        opType: 'Reshape',
+        opType: "Reshape",
         inputs: [inName, shapeTensorName],
         outputs: [outName],
         name: nodeName,
@@ -940,8 +1057,8 @@ export class Keras2OnnxConverter {
     nodeName: string,
     config: JsonObject,
   ): OnnxNodeBuilder[] {
-    const scale = typeof config.scale === 'number' ? config.scale : 1.0;
-    const offset = typeof config.offset === 'number' ? config.offset : 0.0;
+    const scale = typeof config.scale === "number" ? config.scale : 1.0;
+    const offset = typeof config.offset === "number" ? config.offset : 0.0;
 
     const scaleName = `${layerName}_scale`;
     const offsetName = `${layerName}_offset`;
@@ -949,28 +1066,28 @@ export class Keras2OnnxConverter {
 
     return [
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [scaleName],
         name: `${nodeName}_scale_const`,
-        attributes: [{ name: 'value', f: scale, type: 'FLOAT' }],
+        attributes: [{ name: "value", f: scale, type: "FLOAT" }],
       },
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [offsetName],
         name: `${nodeName}_offset_const`,
-        attributes: [{ name: 'value', f: offset, type: 'FLOAT' }],
+        attributes: [{ name: "value", f: offset, type: "FLOAT" }],
       },
       {
-        opType: 'Mul',
+        opType: "Mul",
         inputs: [inName, scaleName],
         outputs: [mulOut],
         name: `${nodeName}_mul`,
         attributes: [],
       },
       {
-        opType: 'Add',
+        opType: "Add",
         inputs: [mulOut, offsetName],
         outputs: [outName],
         name: `${nodeName}_add`,
@@ -991,11 +1108,11 @@ export class Keras2OnnxConverter {
   ): OnnxNodeBuilder[] {
     const height = (config.height as number) || 0;
     const width = (config.width as number) || 0;
-    const interpolation = (config.interpolation as string) || 'bilinear';
+    const interpolation = (config.interpolation as string) || "bilinear";
 
-    let mode = 'linear';
-    if (interpolation === 'nearest') mode = 'nearest';
-    else if (interpolation === 'bicubic') mode = 'cubic';
+    let mode = "linear";
+    if (interpolation === "nearest") mode = "nearest";
+    else if (interpolation === "bicubic") mode = "cubic";
 
     const sizesName = `${layerName}_sizes`;
     const roiName = `${layerName}_roi`;
@@ -1003,32 +1120,34 @@ export class Keras2OnnxConverter {
 
     return [
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [sizesName],
         name: `${nodeName}_sizes_const`,
-        attributes: [{ name: 'value', ints: [1, 1, height, width], type: 'INTS' }],
+        attributes: [
+          { name: "value", ints: [1, 1, height, width], type: "INTS" },
+        ],
       },
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [roiName],
         name: `${nodeName}_roi_const`,
-        attributes: [{ name: 'value', floats: [], type: 'FLOATS' }],
+        attributes: [{ name: "value", floats: [], type: "FLOATS" }],
       },
       {
-        opType: 'Constant',
+        opType: "Constant",
         inputs: [],
         outputs: [scalesName],
         name: `${nodeName}_scales_const`,
-        attributes: [{ name: 'value', floats: [], type: 'FLOATS' }],
+        attributes: [{ name: "value", floats: [], type: "FLOATS" }],
       },
       {
-        opType: 'Resize',
+        opType: "Resize",
         inputs: [inName, roiName, scalesName, sizesName],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'mode', s: mode, type: 'STRING' }],
+        attributes: [{ name: "mode", s: mode, type: "STRING" }],
       },
     ];
   }
@@ -1044,7 +1163,7 @@ export class Keras2OnnxConverter {
   ): OnnxNodeBuilder[] {
     return [
       {
-        opType: 'Slice',
+        opType: "Slice",
         inputs: [inName],
         outputs: [outName],
         name: nodeName,
@@ -1066,24 +1185,29 @@ export class Keras2OnnxConverter {
     node: KerasNodeSpec,
   ): OnnxNodeBuilder[] {
     const opMap: Record<string, string> = {
-      Add: 'Add',
-      Subtract: 'Sub',
-      Multiply: 'Mul',
-      Minimum: 'Min',
-      Maximum: 'Max',
+      Add: "Add",
+      Subtract: "Sub",
+      Multiply: "Mul",
+      Minimum: "Min",
+      Maximum: "Max",
     };
 
-    const onnxOp = opMap[className] || 'Add';
+    const onnxOp = opMap[className] || "Add";
     const nodes: OnnxNodeBuilder[] = [];
 
     if (node.inboundNodes.length === 1) {
       return emitIdentity(node.inboundNodes[0] as string, outName, nodeName);
-    } else if (node.inboundNodes.length === 2 || ['Sub', 'Mul'].includes(onnxOp)) {
+    } else if (
+      node.inboundNodes.length === 2 ||
+      ["Sub", "Mul"].includes(onnxOp)
+    ) {
       let currentOut = node.inboundNodes[0] as string;
       for (let j = 1; j < node.inboundNodes.length; j++) {
         const nextIn = node.inboundNodes[j] as string;
         const iterOut =
-          j === node.inboundNodes.length - 1 ? outName : `${nodeName}_merge_${j.toString()}`;
+          j === node.inboundNodes.length - 1
+            ? outName
+            : `${nodeName}_merge_${j.toString()}`;
         nodes.push({
           opType: onnxOp,
           inputs: [currentOut, nextIn],
@@ -1095,12 +1219,12 @@ export class Keras2OnnxConverter {
       }
     } else {
       const nOpMap: Record<string, string> = {
-        Add: 'Sum',
-        Minimum: 'Min',
-        Maximum: 'Max',
+        Add: "Sum",
+        Minimum: "Min",
+        Maximum: "Max",
       };
       nodes.push({
-        opType: nOpMap[className] || 'Sum',
+        opType: nOpMap[className] || "Sum",
         inputs: [...node.inboundNodes],
         outputs: [outName],
         name: nodeName,
@@ -1122,14 +1246,14 @@ export class Keras2OnnxConverter {
     _className: string,
     node: KerasNodeSpec,
   ): OnnxNodeBuilder[] {
-    const axis = typeof config.axis === 'number' ? config.axis : -1;
+    const axis = typeof config.axis === "number" ? config.axis : -1;
     return [
       {
-        opType: 'Concat',
+        opType: "Concat",
         inputs: [...node.inboundNodes],
         outputs: [outName],
         name: nodeName,
-        attributes: [{ name: 'axis', i: axis, type: 'INT' }],
+        attributes: [{ name: "axis", i: axis, type: "INT" }],
       },
     ];
   }
@@ -1151,7 +1275,7 @@ export class Keras2OnnxConverter {
     }
     return [
       {
-        opType: 'Mean',
+        opType: "Mean",
         inputs: [...node.inboundNodes],
         outputs: [outName],
         name: nodeName,
@@ -1174,8 +1298,11 @@ export class Keras2OnnxConverter {
   ): OnnxNodeBuilder[] {
     return [
       {
-        opType: 'MatMul',
-        inputs: [node.inboundNodes[0] as string, node.inboundNodes[1] as string],
+        opType: "MatMul",
+        inputs: [
+          node.inboundNodes[0] as string,
+          node.inboundNodes[1] as string,
+        ],
         outputs: [outName],
         name: nodeName,
         attributes: [],
@@ -1196,22 +1323,24 @@ export class Keras2OnnxConverter {
     const equation = config.equation as string;
     const nodes: OnnxNodeBuilder[] = [];
     nodes.push({
-      opType: 'Einsum',
+      opType: "Einsum",
       inputs: [inName, `${layerName}_kernel`],
-      outputs: [nodeName + '_einsum'],
+      outputs: [nodeName + "_einsum"],
       name: nodeName,
-      attributes: [{ name: 'equation', s: equation, type: 'STRING' }],
+      attributes: [{ name: "equation", s: equation, type: "STRING" }],
     });
     if (config.bias_axes) {
       nodes.push({
-        opType: 'Add',
-        inputs: [nodeName + '_einsum', `${layerName}_bias`],
+        opType: "Add",
+        inputs: [nodeName + "_einsum", `${layerName}_bias`],
         outputs: [outName],
-        name: nodeName + '_biasadd',
+        name: nodeName + "_biasadd",
         attributes: [],
       });
     } else {
-      nodes.push(...emitIdentity(nodeName + '_einsum', outName, nodeName + '_id'));
+      nodes.push(
+        ...emitIdentity(nodeName + "_einsum", outName, nodeName + "_id"),
+      );
     }
     return nodes;
   }

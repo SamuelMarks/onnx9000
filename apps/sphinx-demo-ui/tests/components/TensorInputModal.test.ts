@@ -5,8 +5,8 @@ describe('TensorInputModal.ts', () => {
   it('should instantiate and cover TensorInputModal', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).TensorInputModal();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).TensorInputModal();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

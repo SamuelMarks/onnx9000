@@ -47,20 +47,30 @@ export class MemoryManager {
 
   // 93. LRU Cache logic
   // 94. Evict models gracefully
-  public async requestLoad(modelId: string, requiredBytes: number): Promise<boolean> {
+  public async requestLoad(
+    modelId: string,
+    requiredBytes: number,
+  ): Promise<boolean> {
     // 98. static arena planner check
     if (requiredBytes > this.maxRamBytes * this.maxRamPercent) {
-      console.error(`Model ${modelId} (${requiredBytes}B) exceeds max allowable RAM bounds.`);
+      console.error(
+        `Model ${modelId} (${requiredBytes}B) exceeds max allowable RAM bounds.`,
+      );
       return false; // Refuse loading
     }
 
-    if (this.currentRamUsage + requiredBytes > this.maxRamBytes * this.maxRamPercent) {
+    if (
+      this.currentRamUsage + requiredBytes >
+      this.maxRamBytes * this.maxRamPercent
+    ) {
       this.evictUntilSpaceAvailable(requiredBytes);
     }
 
     // 96. Reject if severely OOM even after eviction
     if (this.currentRamUsage + requiredBytes > this.maxRamBytes) {
-      throw new Error('HTTP 503: Service Unavailable. Server is Out Of Memory.');
+      throw new Error(
+        "HTTP 503: Service Unavailable. Server is Out Of Memory.",
+      );
     }
 
     return true;
@@ -82,7 +92,9 @@ export class MemoryManager {
 
   public async beginExecution(): Promise<void> {
     if (this.activeExecutions >= this.maxConcurrentExecutions) {
-      throw new Error('HTTP 503: Service Unavailable. Max concurrent executions reached.');
+      throw new Error(
+        "HTTP 503: Service Unavailable. Max concurrent executions reached.",
+      );
     }
     this.activeExecutions++;
   }
@@ -90,7 +102,10 @@ export class MemoryManager {
   public endExecution(): void {
     this.activeExecutions--;
     // 100. Force Javascript Garbage Collection (global.gc()) explicitly
-    if (typeof global !== 'undefined' && (global as ReturnType<typeof JSON.parse>).gc) {
+    if (
+      typeof global !== "undefined" &&
+      (global as ReturnType<typeof JSON.parse>).gc
+    ) {
       // Don't run it on every single execution to avoid stutter, but for massive batches
       if (Math.random() < 0.05) {
         (global as ReturnType<typeof JSON.parse>).gc();
@@ -104,11 +119,16 @@ export class MemoryManager {
     );
 
     for (const model of sortedModels) {
-      if (this.currentRamUsage + requiredBytes <= this.maxRamBytes * this.maxRamPercent) {
+      if (
+        this.currentRamUsage + requiredBytes <=
+        this.maxRamBytes * this.maxRamPercent
+      ) {
         break;
       }
 
-      console.log(`Evicting model ${model.id} (LRU) to free ${model.sizeBytes} bytes.`);
+      console.log(
+        `Evicting model ${model.id} (LRU) to free ${model.sizeBytes} bytes.`,
+      );
       model.unload();
       this.activeModels.delete(model.id);
       this.currentRamUsage -= model.sizeBytes;

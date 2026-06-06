@@ -5,8 +5,8 @@ describe('MetricsDashboard.ts', () => {
   it('should instantiate and cover MetricsDashboard', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).MetricsDashboard();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).MetricsDashboard();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });

@@ -1,6 +1,7 @@
 import pytest
 from onnx9000.tvm.relay.transform.unroll_let import *
 
+
 def test_LetUnroller():
     try:
         obj = LetUnroller()
@@ -8,9 +9,9 @@ def test_LetUnroller():
     except Exception:
         pass
 
+
 def test_unroll_let():
     try:
-        res = unroll_let()
+        unroll_let()
     except Exception:
         pass
-

@@ -1,12 +1,16 @@
-import { describe, it, expect } from 'vitest';
-import { replaceOperation, replaceVarUsage, inferShapes } from '../src/mil/rewriter.js';
+import { describe, it, expect } from "vitest";
+import {
+  replaceOperation,
+  replaceVarUsage,
+  inferShapes,
+} from "../src/mil/rewriter.js";
 
-describe('rewriter', () => {
-  it('should infer shapes', () => {
+describe("rewriter", () => {
+  it("should infer shapes", () => {
     const block: any = {
       inputs: [],
       outputs: [],
-      operations: [{ opType: 'const', outputs: [{ type: { shape: [1] } }] }],
+      operations: [{ opType: "const", outputs: [{ type: { shape: [1] } }] }],
     };
     inferShapes(block);
   });

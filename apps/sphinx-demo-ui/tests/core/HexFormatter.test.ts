@@ -5,8 +5,8 @@ describe('HexFormatter.ts', () => {
   it('should instantiate and cover HexFormatter', () => {
     // Attempt to instantiate
     try {
-       const obj = new (Module as any).HexFormatter();
-       expect(obj).toBeDefined();
+      const obj = new (Module as any).HexFormatter();
+      expect(obj).toBeDefined();
     } catch (e) {}
   });
 });
