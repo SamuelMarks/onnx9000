@@ -1,7 +1,7 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create, $on, $off } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
 import { Tokenizer } from '../llm/Tokenizer';
+import { BaseComponent } from './BaseComponent';
 
 export class ChatInterface extends BaseComponent {
   private messagesContainer: HTMLElement;

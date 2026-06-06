@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('openvino-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/openvino-ui.html');
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
   });

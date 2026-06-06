@@ -3,7 +3,7 @@
  * Converts models from legacy formats (Caffe, MXNet, CNTK) into ONNX,
  * and exports ONNX graphs into modern targets (PyTorch Code, TFJS Code).
  */
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 /**
  * Supported Frameworks for Import and Export.
@@ -36,8 +36,8 @@ export class MMdnn {
    * @returns A string of generated code (for PyTorch/TFJS) or an IModelGraph (for ONNX).
    */
   static convert(options: ConvertOptions): string | IModelGraph {
-    const onnxGraph = this.parseToONNX(options.source, options.modelData, options.weightData);
-    return this.exportFromONNX(options.target, onnxGraph);
+    const onnxGraph = MMdnn.parseToONNX(options.source, options.modelData, options.weightData);
+    return MMdnn.exportFromONNX(options.target, onnxGraph);
   }
 
   /**
@@ -48,12 +48,12 @@ export class MMdnn {
    * @param weightData Binary weight buffer.
    * @returns The constructed ONNX IModelGraph.
    */
-  static parseToONNX(source: Framework, modelData: string, weightData?: ArrayBuffer): IModelGraph {
+  static parseToONNX(source: Framework, modelData: string, _weightData?: ArrayBuffer): IModelGraph {
     switch (source) {
       case 'caffe':
-        return this.parseCaffe(modelData);
+        return MMdnn.parseCaffe(modelData);
       case 'mxnet':
-        return this.parseMXNet(modelData);
+        return MMdnn.parseMXNet(modelData);
       case 'onnx':
         return JSON.parse(modelData) as IModelGraph;
       default:
@@ -71,9 +71,9 @@ export class MMdnn {
   static exportFromONNX(target: Framework, graph: IModelGraph): string | IModelGraph {
     switch (target) {
       case 'pytorch_code':
-        return this.generatePyTorchCode(graph);
+        return MMdnn.generatePyTorchCode(graph);
       case 'tfjs_code':
-        return this.generateTFJSCode(graph);
+        return MMdnn.generateTFJSCode(graph);
       case 'onnx':
         return graph;
       default:
@@ -105,7 +105,7 @@ export class MMdnn {
       if (line.includes('}') && currentType) {
         nodes.push({
           name: currentName || `node_${nodes.length}`,
-          opType: this.mapCaffeTypeToONNX(currentType),
+          opType: MMdnn.mapCaffeTypeToONNX(currentType),
           inputs: [`input_${nodes.length}`],
           outputs: [`output_${nodes.length}`],
           attributes: {},
@@ -168,7 +168,7 @@ export class MMdnn {
         if (!node || node.op === 'null') return;
         nodes.push({
           name: node.name || `mx_node_${idx}`,
-          opType: this.mapMXNetTypeToONNX(node.op),
+          opType: MMdnn.mapMXNetTypeToONNX(node.op),
           inputs: Array.isArray(node.inputs) ? node.inputs.map((i: any[]) => `tensor_${i[0]}`) : [],
           outputs: [`tensor_${idx}`],
           attributes: {},
@@ -226,7 +226,7 @@ export class MMdnn {
 
     graph.nodes.forEach((node) => {
       if (statefulOps.includes(node.opType)) {
-        const torchType = this.mapONNXToPyTorch(node.opType);
+        const torchType = MMdnn.mapONNXToPyTorch(node.opType);
         code += `        self.${node.name} = nn.${torchType}()  # Requires manual dims mapping\n`;
         statefulCount++;
       }
@@ -243,7 +243,7 @@ export class MMdnn {
       if (statefulOps.includes(node.opType)) {
         code += `        ${node.outputs[0]} = self.${node.name}(${currentInput})\n`;
       } else {
-        const funcCall = this.mapONNXToPyTorchFunc(node.opType, currentInput);
+        const funcCall = MMdnn.mapONNXToPyTorchFunc(node.opType, currentInput);
         code += `        ${node.outputs[0]} = ${funcCall}\n`;
       }
       currentInput = node.outputs[0];
@@ -301,7 +301,7 @@ export class MMdnn {
     code += `  const model = tf.sequential();\n`;
 
     graph.nodes.forEach((node) => {
-      const layerCall = this.mapONNXToTFJSLayer(node.opType);
+      const layerCall = MMdnn.mapONNXToTFJSLayer(node.opType);
       if (layerCall) {
         code += `  model.add(${layerCall});\n`;
       }

@@ -1,4 +1,4 @@
-import { $, $on, $off } from '../core/DOM';
+import { $, $off, $on } from '../core/DOM';
 
 export abstract class BaseComponent {
   protected container: HTMLElement;

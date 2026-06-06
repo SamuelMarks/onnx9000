@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Apple Metal Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-apple-metal');
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
   });

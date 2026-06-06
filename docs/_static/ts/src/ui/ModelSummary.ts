@@ -1,7 +1,7 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { IModelGraph, ITensor } from '../core/IR';
+import { $create } from '../core/DOM';
+import type { IModelGraph } from '../core/IR';
 import { escapeHTML } from '../core/Sanitize';
+import { BaseComponent } from './BaseComponent';
 
 export class ModelSummary extends BaseComponent {
   private model: IModelGraph | null = null;
@@ -33,7 +33,7 @@ export class ModelSummary extends BaseComponent {
     const header = $create('h3', { textContent: `Model: ${this.model.name}` });
 
     // 577. Verify watermarks
-    if (this.model.docString && this.model.docString.includes('onnx9000_verified_')) {
+    if (this.model.docString?.includes('onnx9000_verified_')) {
       const badge = $create('span', {
         className: 'badge success',
         textContent: 'DP Verified',
@@ -45,7 +45,7 @@ export class ModelSummary extends BaseComponent {
     this.tableContainer.appendChild(header);
 
     // 163. Calculate FLOPs / Memory Footprint reductions
-    let totalParams = 0;
+    const _totalParams = 0;
     let totalBytes = 0;
     let totalSparsity = 0;
     let paramElements = 0;

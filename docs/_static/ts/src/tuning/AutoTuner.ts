@@ -1,6 +1,6 @@
-import { IModelGraph } from '../core/IR';
-import { NASPrimitives } from './NAS';
+import type { IModelGraph } from '../core/IR';
 import { globalEvents } from '../core/State';
+import { NASPrimitives } from './NAS';
 
 export class AutoTuner {
   /**

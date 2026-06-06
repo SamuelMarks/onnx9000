@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Autograd Demo E2E', () => {
   test('Page loads and generates gradients', async ({ page }) => {

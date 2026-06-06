@@ -1,6 +1,6 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 import { Toast } from './Toast';
 
 // Minimal BM25 implementation logic for pure text searching (349)
@@ -157,7 +157,7 @@ export class RAGInterface extends BaseComponent {
       });
 
       Toast.show(`Indexed ${chunks.length} chunks successfully using BM25.`, 'success');
-    } catch (e) {
+    } catch (_e) {
       Toast.show('Failed to read file', 'error');
     }
   }

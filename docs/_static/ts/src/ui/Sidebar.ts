@@ -1,9 +1,7 @@
+import { $create } from '../core/DOM';
+import { globalEvents, isDistributedMode, isOfflineMode } from '../core/State';
 import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { globalEvents } from '../core/State';
 import { Toast } from './Toast';
-
-import { isOfflineMode, isDistributedMode } from '../core/State';
 
 export class Sidebar extends BaseComponent {
   private fileInput: HTMLInputElement;
@@ -310,7 +308,7 @@ export class Sidebar extends BaseComponent {
     quantizeInt4Btn.addEventListener('click', () => globalEvents.emit('surgeon', 'quantizeINT4'));
     applyPruneBtn.addEventListener('click', () => {
       const exp = parseInt(pruneSlider.value, 10);
-      globalEvents.emit('surgeon', `sparsify:${Math.pow(10, -exp)}`);
+      globalEvents.emit('surgeon', `sparsify:${10 ** -exp}`);
     });
 
     // Search toggle
@@ -646,7 +644,7 @@ export class Sidebar extends BaseComponent {
     });
 
     const webnnStatus = $create('span', {
-      className: 'badge ' + ('ml' in navigator ? 'success' : 'danger'),
+      className: `badge ${'ml' in navigator ? 'success' : 'danger'}`,
       textContent: 'ml' in navigator ? 'WebNN Supported' : 'WebNN Not Supported',
       attributes: {
         style:

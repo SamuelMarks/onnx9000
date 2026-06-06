@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('sphinx-demo-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       // The sphinx UI is usually embedded in the index or specific tutorial pages
       await page.goto('/');
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
   });

@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 import { globalEvents } from '../core/State';
 
 // 521. Generic CRDT model for IModelGraph
@@ -17,7 +17,6 @@ export class GraphCRDT {
 
   // 535. Undo/Redo tracking
   private historyStack: any[] = [];
-  private redoStack: any[] = [];
 
   // 532. Granular permissions
   public role: 'Admin' | 'Edit' | 'View' = 'Admin';

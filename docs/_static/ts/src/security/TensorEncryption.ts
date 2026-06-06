@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { Toast } from '../ui/Toast';
 
 /**
@@ -31,8 +31,8 @@ export class TensorEncryption {
 
   public static async encryptModel(model: IModelGraph, password: string): Promise<IModelGraph> {
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
-    const passKey = await this.getKeyMaterial(password);
-    const aesKey = await this.deriveKey(passKey, salt);
+    const passKey = await TensorEncryption.getKeyMaterial(password);
+    const aesKey = await TensorEncryption.deriveKey(passKey, salt);
 
     // Deep clone schema
     const clonedGraph: IModelGraph = JSON.parse(JSON.stringify(model));
@@ -72,7 +72,7 @@ export class TensorEncryption {
     let docMeta;
     try {
       docMeta = model.docString ? JSON.parse(model.docString) : {};
-    } catch (e) {
+    } catch (_e) {
       throw new Error('Model missing valid metadata for decryption.');
     }
 
@@ -81,8 +81,8 @@ export class TensorEncryption {
     }
 
     const salt = new Uint8Array(docMeta.salt);
-    const passKey = await this.getKeyMaterial(password);
-    const aesKey = await this.deriveKey(passKey, salt);
+    const passKey = await TensorEncryption.getKeyMaterial(password);
+    const aesKey = await TensorEncryption.deriveKey(passKey, salt);
 
     const clonedGraph: IModelGraph = JSON.parse(JSON.stringify(model));
 
@@ -103,7 +103,7 @@ export class TensorEncryption {
             cipherText.buffer,
           );
           init.rawData = new Uint8Array(decryptedBuf);
-        } catch (e) {
+        } catch (_e) {
           throw new Error(
             `Decryption failed on tensor ${init.name}. Invalid password or corrupt data.`,
           );

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // Skip running webserver locally via playwright if it's timing out on this setup
 test.describe('Triton Compiler Demo E2E', () => {

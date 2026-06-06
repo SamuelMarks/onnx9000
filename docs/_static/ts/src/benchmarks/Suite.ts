@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { globalEvents } from '../core/State';
 
 export interface IBenchmarkResult {
@@ -46,7 +46,7 @@ export class BenchmarkSuite {
     model: IModelGraph,
     datasetName: 'MNIST' | 'CIFAR10',
   ): Promise<IBenchmarkResult> {
-    const { inputs, labels } = await this.loadDataset(datasetName);
+    const { inputs, labels } = await BenchmarkSuite.loadDataset(datasetName);
 
     let totalLatency = 0;
     let correctPredictions = 0;

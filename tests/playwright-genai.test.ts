@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import config from './playwright-genai.config.js';
 
 describe('playwright-genai.config', () => {

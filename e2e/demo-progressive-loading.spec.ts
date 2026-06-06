@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Progressive Loading Demo E2E', () => {
   test('Page loads and runs progressive model loading', async ({ page }) => {

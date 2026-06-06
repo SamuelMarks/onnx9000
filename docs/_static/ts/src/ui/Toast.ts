@@ -4,11 +4,11 @@ export class Toast {
   private static container: HTMLElement;
 
   static init(): void {
-    if (!this.container) {
-      this.container = $create('div', {
+    if (!Toast.container) {
+      Toast.container = $create('div', {
         className: 'ide-toast-container',
       });
-      document.body.appendChild(this.container);
+      document.body.appendChild(Toast.container);
 
       const style = $create('style', {
         textContent: `  
@@ -59,12 +59,12 @@ export class Toast {
     type: 'info' | 'success' | 'warn' | 'error' = 'info',
     duration = 3000,
   ): void {
-    this.init();
+    Toast.init();
     const toast = $create('div', {
       className: `ide-toast ${type}`,
       textContent: message,
     });
-    this.container.appendChild(toast);
+    Toast.container.appendChild(toast);
 
     // Trigger reflow to animate
     void toast.offsetWidth;

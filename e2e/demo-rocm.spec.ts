@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('ROCm Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-rocm');
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
   });

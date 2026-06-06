@@ -1,8 +1,8 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { globalEvents } from '../core/State';
-import { INode, IModelGraph } from '../core/IR';
+import { $create } from '../core/DOM';
+import type { IModelGraph, INode } from '../core/IR';
 import { escapeHTML } from '../core/Sanitize';
+import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 
 export class NodeSidebar extends BaseComponent {
   private contentContainer: HTMLElement;
@@ -127,11 +127,11 @@ export class NodeSidebar extends BaseComponent {
             try {
               if (attr.type === 'INT') {
                 const parsed = parseInt(newVal, 10);
-                if (isNaN(parsed)) throw new Error('Must be an integer');
+                if (Number.isNaN(parsed)) throw new Error('Must be an integer');
                 attr.i = parsed;
               } else if (attr.type === 'FLOAT') {
                 const parsed = parseFloat(newVal);
-                if (isNaN(parsed)) throw new Error('Must be a float');
+                if (Number.isNaN(parsed)) throw new Error('Must be a float');
                 attr.f = parsed;
               } else if (attr.type === 'STRING') attr.s = newVal.replace(/^"|"$/g, '');
               else if (attr.type === 'INTS') {
@@ -172,7 +172,7 @@ export class NodeSidebar extends BaseComponent {
             this.currentModel.valueInfo?.find((v) => v.name === inp) ||
             this.currentModel.inputs.find((v) => v.name === inp);
 
-          if (vi && vi.type) {
+          if (vi?.type) {
             shapeStr = ` <span class="muted">(${vi.type.elemType}) [${vi.type.shape.join(', ')}]</span>`;
             isDynamic = vi.type.shape.some(
               (d: any) => typeof d === 'string' || d === '?' || d === null,
@@ -198,7 +198,7 @@ export class NodeSidebar extends BaseComponent {
         // 119. Render tensor initialization data (weights) as sparklines in the sidebar
         if (this.currentModel) {
           const init = this.currentModel.initializers.find((i) => i.name === inp);
-          if (init && init.rawData && init.dataType === 1 && init.dims.length >= 2) {
+          if (init?.rawData && init.dataType === 1 && init.dims.length >= 2) {
             // 1 = F32
             const floatArray = new Float32Array(
               init.rawData.buffer,
@@ -284,7 +284,7 @@ export class NodeSidebar extends BaseComponent {
           const vi =
             this.currentModel.valueInfo?.find((v) => v.name === out) ||
             this.currentModel.outputs.find((v) => v.name === out);
-          if (vi && vi.type) {
+          if (vi?.type) {
             shapeStr = ` <span class="muted">(${vi.type.elemType}) [${vi.type.shape.join(', ')}]</span>`;
           }
         }

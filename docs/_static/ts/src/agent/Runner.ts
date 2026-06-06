@@ -80,7 +80,7 @@ export class AgentRunner {
     this.registerTool({
       name: 'CodeGen_WGSL',
       description: 'Compiles custom WGSL kernels on demand',
-      execute: async (wgslString) => {
+      execute: async (_wgslString) => {
         // Mock
         return `Compiled WGSL successfully. Output tensor mapping created.`;
       },
@@ -179,7 +179,7 @@ export class AgentRunner {
     trace.push({ type: 'thought', text: 'I need to perform a task.', ts: Date.now() });
 
     // 622. Implement structured output validation
-    const parseJSON = (str: string) => {
+    const _parseJSON = (str: string) => {
       try {
         return JSON.parse(str);
       } catch {

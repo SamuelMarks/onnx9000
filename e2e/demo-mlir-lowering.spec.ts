@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('MLIR Lowering Demo E2E', () => {
   test('Page loads and runs MLIR lowering visualization', async ({ page }) => {

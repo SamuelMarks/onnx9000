@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('IREE Demo E2E', () => {
   test('Page loads and runs compile then execute', async ({ page }) => {

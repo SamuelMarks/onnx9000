@@ -1,37 +1,36 @@
-import { themeManager } from './core/ThemeManager';
-import { logger, LogEntry } from './core/Logger';
-import { Toast } from './ui/Toast';
-import { Spinner } from './ui/Spinner';
-import { LayoutManager } from './ui/LayoutManager';
-import { DropZone } from './ui/DropZone';
-import { FileParser } from './parsers/FileParser';
-import { ModelSummary } from './ui/ModelSummary';
-import { SafetensorsWriter } from './parsers/SafetensorsWriter';
-import { Sidebar } from './ui/Sidebar';
-import { NodeSidebar } from './ui/NodeSidebar';
-import { CodeEditor } from './ui/CodeEditor';
-import { GraphCanvas } from './ui/GraphCanvas';
-import { ChatInterface } from './ui/ChatInterface';
-import { SwarmInterface } from './ui/SwarmInterface';
-import { VaultManager } from './ui/VaultManager';
-import { VisionPipeline } from './ui/VisionPipeline';
-import { AudioPipeline } from './ui/AudioPipeline';
-import { GraphSurgeon } from './surgeon/GraphSurgeon';
 import { Autograd } from './autograd/Autograd';
+import { CEmitter } from './compiler/CEmitter';
+import { CppEmitter } from './compiler/CppEmitter';
 import { Lowering } from './compiler/Lowering';
 import { WasmEmitter } from './compiler/WasmEmitter';
 import { WGSLEmitter } from './compiler/WGSLEmitter';
-import { CppEmitter } from './compiler/CppEmitter';
-import { CEmitter } from './compiler/CEmitter';
-import { ONNX2TF } from './exporters/ONNX2TF';
-import { WebNNProvider } from './providers/WebNNProvider';
-import { CoreMLExporter } from './exporters/CoreML';
-import { TFLiteExporter } from './exporters/TFLite';
-import { Profiler } from './ui/Profiler';
-import { MemoryArenaVisualizer } from './ui/MemoryArenaVisualizer';
 import { $, $create } from './core/DOM';
-import { globalEvents, isOfflineMode, isDistributedMode } from './core/State';
-import { IModelGraph } from './core/IR';
+import type { IModelGraph } from './core/IR';
+import { type LogEntry, logger } from './core/Logger';
+import { globalEvents } from './core/State';
+import { themeManager } from './core/ThemeManager';
+import { CoreMLExporter } from './exporters/CoreML';
+import { ONNX2TF } from './exporters/ONNX2TF';
+import { TFLiteExporter } from './exporters/TFLite';
+import { FileParser } from './parsers/FileParser';
+import { SafetensorsWriter } from './parsers/SafetensorsWriter';
+import { WebNNProvider } from './providers/WebNNProvider';
+import { GraphSurgeon } from './surgeon/GraphSurgeon';
+import { ChatInterface } from './ui/ChatInterface';
+import { CodeEditor } from './ui/CodeEditor';
+import { DropZone } from './ui/DropZone';
+import { GraphCanvas } from './ui/GraphCanvas';
+import { LayoutManager } from './ui/LayoutManager';
+import { MemoryArenaVisualizer } from './ui/MemoryArenaVisualizer';
+import { ModelSummary } from './ui/ModelSummary';
+import { NodeSidebar } from './ui/NodeSidebar';
+import { Profiler } from './ui/Profiler';
+import { Sidebar } from './ui/Sidebar';
+import { Spinner } from './ui/Spinner';
+import { SwarmInterface } from './ui/SwarmInterface';
+import { Toast } from './ui/Toast';
+import { VaultManager } from './ui/VaultManager';
+import { VisionPipeline } from './ui/VisionPipeline';
 
 export class App {
   private layoutManager: LayoutManager | null = null;
@@ -46,7 +45,6 @@ export class App {
   private chatInterface: ChatInterface | null = null;
   private swarmInterface: SwarmInterface | null = null;
   private visionPipeline: VisionPipeline | null = null;
-  private audioPipeline: AudioPipeline | null = null;
 
   async bootstrap(): Promise<void> {
     try {
@@ -79,7 +77,7 @@ export class App {
           downloadBtn.disabled = true;
           downloadBtn.addEventListener('click', () => {
             if (this.currentModel) {
-              SafetensorsWriter.export(this.currentModel, this.currentModel.name + '.safetensors');
+              SafetensorsWriter.export(this.currentModel, `${this.currentModel.name}.safetensors`);
               Toast.show('Download started', 'success');
             }
           });
@@ -97,7 +95,7 @@ export class App {
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
-              a.download = this.currentModel.name + '.mlmodel';
+              a.download = `${this.currentModel.name}.mlmodel`;
               a.click();
               URL.revokeObjectURL(url);
               Toast.show('CoreML Download started', 'success');
@@ -117,7 +115,7 @@ export class App {
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
-              a.download = this.currentModel.name + '.tflite';
+              a.download = `${this.currentModel.name}.tflite`;
               a.click();
               URL.revokeObjectURL(url);
               Toast.show('TFLite Download started', 'success');
@@ -252,7 +250,7 @@ export class App {
                 return;
               }
 
-              if (data.signal && data.signal.aborted) {
+              if (data.signal?.aborted) {
                 return; // Stop generation
               }
 
@@ -380,7 +378,7 @@ export class App {
             // For the sake of zero-dependencies, we would typically rely on a pure JS protobuf encoder
             // Since that is a massive undertaking for a single mock step, we export the structured JSON AST mapping
             // which is our native `onnx9000` interchange format that maps 1:1 to onnx protobufs via `FileParser.ts`
-            const jsonString = JSON.stringify(this.currentModel, (key, value) => {
+            const jsonString = JSON.stringify(this.currentModel, (_key, value) => {
               if (
                 value instanceof Uint8Array ||
                 value instanceof Float32Array ||
@@ -473,10 +471,10 @@ export class App {
                         exports.execute();
 
                         // Mock traces based on graph nodes
-                        for (let j = 0; j < this.currentModel!.nodes.length; j++) {
+                        for (let j = 0; j < this.currentModel?.nodes.length; j++) {
                           const tExec = Math.random() * 2 + 0.1; // 0.1 to 2.1 ms mock
                           traces.push({
-                            opName: this.currentModel!.nodes[j].opType,
+                            opName: this.currentModel?.nodes[j].opType,
                             startTime: tBase,
                             duration: tExec,
                           });
@@ -493,7 +491,7 @@ export class App {
                     }
 
                     // 189 & 190. Read outputs and display
-                    const outBuf = new Float32Array(memory.buffer, 4 * 4, 4); // Assuming output starts after 4 floats
+                    const _outBuf = new Float32Array(memory.buffer, 4 * 4, 4); // Assuming output starts after 4 floats
                     console.info(`WASM Execution complete in ${(t1 - t0).toFixed(2)}ms`);
 
                     // For debugging: automatically download the bytes
@@ -546,7 +544,7 @@ export class App {
                     })
                     .then((device) => {
                       // 194. Compile module
-                      const module = device.createShaderModule({ code: wgslStr });
+                      const _module = device.createShaderModule({ code: wgslStr });
                       console.info('WGSL Module compiled successfully on WebGPU Device.');
                       Toast.show('WGSL Compiled & Validated on GPU', 'success');
                       Spinner.hide();
@@ -733,7 +731,7 @@ export class App {
               const dims = dimsStr
                 .split(',')
                 .map((d) => parseInt(d.trim(), 10))
-                .filter((d) => !isNaN(d));
+                .filter((d) => !Number.isNaN(d));
               if (dims.length > 0) {
                 Spinner.show();
                 this.currentModel = ShapeInference.lockShape(this.currentModel, tensorName, dims);
@@ -973,7 +971,7 @@ export class App {
           setInterval(async () => {
             // mock poll
           }, 5000);
-        } catch (e) {
+        } catch (_e) {
           Toast.show('Mount failed or cancelled', 'error');
         }
       });
@@ -997,7 +995,7 @@ export class App {
     } catch (e) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       console.error('Failed to bootstrap IDE:', errorMsg);
-      Toast.show('Failed to initialize IDE: ' + errorMsg, 'error');
+      Toast.show(`Failed to initialize IDE: ${errorMsg}`, 'error');
     }
   }
 

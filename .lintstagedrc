@@ -1,5 +1,5 @@
 {
-  "*.{ts,js}": ["eslint --fix", "prettier --write"],
+  "*.{ts,js}": ["biome check --write"],
   "*.py": ["ruff check --fix", "ruff format"],
-  "*.{json,md,yaml,toml}": ["prettier --write"]
+  "*.{json,md,yaml,toml}": ["biome check --write"]
 }

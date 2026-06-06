@@ -3,7 +3,7 @@
  * Parses Keras `.json` (TF.js topology) natively in the browser into ONNX AST.
  * Handles bridging the NHWC to NCHW topological differences.
  */
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 export interface KerasTopology {
   modelTopology?: {

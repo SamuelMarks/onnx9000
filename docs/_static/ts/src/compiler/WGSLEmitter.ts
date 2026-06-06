@@ -1,4 +1,4 @@
-import { ITIRGraph } from './Lowering';
+import type { ITIRGraph } from './Lowering';
 
 export class WGSLEmitter {
   private tir: ITIRGraph;

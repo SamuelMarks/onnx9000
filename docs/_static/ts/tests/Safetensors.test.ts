@@ -1,7 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { SafetensorsParser } from '../src/parsers/Safetensors';
-import { SafetensorsWriter } from '../src/parsers/SafetensorsWriter';
-import { IModelGraph } from '../src/core/IR';
 
 describe('Safetensors Parser', () => {
   it('should parse an empty safetensors buffer', () => {

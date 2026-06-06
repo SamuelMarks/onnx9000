@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { IModelGraph } from '../src/core/IR';
 import { ONNX2TF } from '../src/exporters/ONNX2TF';
-import { IModelGraph } from '../src/core/IR';
 
 describe('ONNX2TF (onnx2tf / PINTO0309)', () => {
   it('should export an ONNX graph to a TFLite JSON structure by default', () => {

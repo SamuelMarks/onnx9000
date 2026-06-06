@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ONNX9000Demo from '../_static/demo.js';
 
 describe('ONNX9000Demo', () => {
@@ -46,7 +46,7 @@ describe('ONNX9000Demo', () => {
     `;
 
     // Mock global requires and monaco
-    globalThis.require = vi.fn((deps, callback) => callback());
+    globalThis.require = vi.fn((_deps, callback) => callback());
 
     // Create mock monaco models and editors
     const mockModel = {
@@ -118,7 +118,7 @@ describe('ONNX9000Demo', () => {
     const netronTab = doc.querySelector('[data-target="netron-demo"]');
 
     // Test Enter key
-    let enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
     let preventDefaultSpy = vi.spyOn(enterEvent, 'preventDefault');
     netronTab.dispatchEvent(enterEvent);
 
@@ -128,7 +128,7 @@ describe('ONNX9000Demo', () => {
     const converterTab = doc.querySelector('[data-target="converter-demo"]');
 
     // Test Space key
-    let spaceEvent = new KeyboardEvent('keydown', { key: ' ' });
+    const spaceEvent = new KeyboardEvent('keydown', { key: ' ' });
     preventDefaultSpy = vi.spyOn(spaceEvent, 'preventDefault');
     converterTab.dispatchEvent(spaceEvent);
 
@@ -194,7 +194,7 @@ describe('ONNX9000Demo', () => {
 
     // Assert resolved state
     expect(convertBtn.disabled).toBe(false);
-    expect(setValueSpy).toHaveBeenCalledWith(demo.mockOutputs['onnx'].code);
+    expect(setValueSpy).toHaveBeenCalledWith(demo.mockOutputs.onnx.code);
     expect(doc.getElementById('conversion-log').textContent).toContain(
       'Compilation successful. Code generated.',
     );
@@ -238,8 +238,8 @@ describe('ONNX9000Demo', () => {
   });
 
   it('auto-initializes in browser environment', async () => {
-    const fs = require('fs');
-    const path = require('path');
+    const fs = require('node:fs');
+    const path = require('node:path');
     const code = fs.readFileSync(path.join(__dirname, '../_static/demo.js'), 'utf-8');
 
     const mockWindow = {

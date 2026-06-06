@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { Toast } from '../ui/Toast';
 
 // Minimal stub for CoreML .mlmodel export directly in browser
@@ -31,7 +31,7 @@ export class CoreMLExporter {
     // 269. Map ONNX node parameters to CoreML Layer parameters stub
     // 270. Handle CoreML specific tensor naming constraints stub
     let layerCount = 0;
-    for (const node of this.model.nodes) {
+    for (const _node of this.model.nodes) {
       layerCount++;
     }
 

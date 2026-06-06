@@ -1,8 +1,8 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { globalEvents } from '../core/State';
-import { Toast } from './Toast';
 import { globalAgent } from '../agent/Runner';
+import { $create } from '../core/DOM';
+import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
+import { Toast } from './Toast';
 
 export class AgentInterface extends BaseComponent {
   private chatContainer: HTMLElement;

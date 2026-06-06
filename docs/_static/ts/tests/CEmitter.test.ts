@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { CEmitter } from '../src/compiler/CEmitter';
-import { ITIRGraph, ILoweredNode } from '../src/compiler/Lowering';
+import type { ILoweredNode, ITIRGraph } from '../src/compiler/Lowering';
 
 describe('CEmitter (onnx2c)', () => {
   it('should emit a valid C program with headers and memory arena', () => {

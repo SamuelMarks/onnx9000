@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 const pages = [
   { url: '/apps/demo-ort-training/index.html', title: 'ORT Training', id: '#btn-run' },
@@ -13,7 +13,7 @@ test.describe('Spec Orphans Web Demos', () => {
       try {
         await page.goto(p.url);
         await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-      } catch (e) {
+      } catch (_e) {
         test.skip();
       }
       await page.click(p.id);

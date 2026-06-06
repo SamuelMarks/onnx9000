@@ -1,4 +1,4 @@
-import { ITIRGraph } from './Lowering';
+import type { ITIRGraph } from './Lowering';
 
 // 202. C backend emitter
 export class CEmitter {

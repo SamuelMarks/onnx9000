@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('ONNX2TF Demo E2E', () => {
   test('Page loads and runs ONNX2TF conversion', async ({ page }) => {

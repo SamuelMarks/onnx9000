@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 export type ExecutionProvider = 'CPU' | 'WebGPU' | 'WebNN' | 'WASM';
 
@@ -25,7 +25,7 @@ export class GraphPartitioner {
     }
 
     partitionedGraph.nodes.forEach((node) => {
-      const ep = this.selectBestProvider(node, prefer);
+      const ep = GraphPartitioner.selectBestProvider(node, prefer);
       partitionedGraph.partitions.set(node.name, ep);
     });
 

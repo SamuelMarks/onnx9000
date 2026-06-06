@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 // 488. Expose an API for custom rewrite rules
 export type RewriteRule = (graph: IModelGraph) => { mutated: boolean; newGraph: IModelGraph };
@@ -12,7 +12,7 @@ export class CustomRewriteEngine {
 
   public applyAll(graph: IModelGraph): IModelGraph {
     let current = graph;
-    let mutatedOverall = false;
+    let _mutatedOverall = false;
 
     // Apply until fixpoint or max iterations
     let iterations = 0;
@@ -25,7 +25,7 @@ export class CustomRewriteEngine {
           if (mutated) {
             current = newGraph;
             mutatedThisPass = true;
-            mutatedOverall = true;
+            _mutatedOverall = true;
             console.log(`[RewriteEngine] Applied rule: ${name}`);
           }
         } catch (e) {

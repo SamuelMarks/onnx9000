@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Specific Extended Converters', () => {
   test('Paddle2ONNX Web Demo', async ({ page }) => {
     try {
       await page.goto('/apps/demo-paddle2onnx/index.html');
       await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
     await page.click('#btn-convert');
@@ -18,7 +18,7 @@ test.describe('Specific Extended Converters', () => {
     try {
       await page.goto('/apps/demo-keras2onnx/index.html');
       await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
     await page.click('#btn-convert');
@@ -31,7 +31,7 @@ test.describe('Specific Extended Converters', () => {
     try {
       await page.goto('/apps/demo-skl2onnx/index.html');
       await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
     await page.click('#btn-convert');

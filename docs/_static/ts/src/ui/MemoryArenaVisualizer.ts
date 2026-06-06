@@ -1,7 +1,7 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { IModelGraph } from '../core/IR';
+import { $create } from '../core/DOM';
+import type { IModelGraph } from '../core/IR';
 import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 
 export interface IMemoryBlock {
   name: string;
@@ -82,10 +82,9 @@ export class MemoryArenaVisualizer extends BaseComponent {
     // Pass 1: compute lifetimes and sizes
     this.currentModel.nodes.forEach((node, i) => {
       node.outputs.forEach((out) => {
-        const vi = this.currentModel!.valueInfo?.find((v) => v.name === out);
+        const vi = this.currentModel?.valueInfo?.find((v) => v.name === out);
         let elCount = 1;
-        if (vi && vi.type && vi.type.shape)
-          elCount = (vi.type.shape as number[]).reduce((a, b) => a * b, 1) || 1;
+        if (vi?.type?.shape) elCount = (vi.type.shape as number[]).reduce((a, b) => a * b, 1) || 1;
         else elCount = 1000; // Stub
         activeLifetimes.set(out, { startNode: i, endNode: i, size: elCount * 4 });
       });

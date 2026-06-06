@@ -1,6 +1,6 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create, $on, $off } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 
 export interface IExecutionTrace {
   opName: string;
@@ -93,7 +93,7 @@ export class Profiler extends BaseComponent {
     return isDark ? '#333' : '#f0f0f0';
   }
 
-  private getBorderColor(opName: string): string {
+  private getBorderColor(_opName: string): string {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
     return isDark ? '#555' : '#ccc';
   }
@@ -195,7 +195,7 @@ export class Profiler extends BaseComponent {
 
       // Position tooltip
       let ttX = mouseX + 10;
-      let ttY = mouseY + 10;
+      const ttY = mouseY + 10;
       if (ttX + this.tooltip.offsetWidth > rect.width) ttX = mouseX - this.tooltip.offsetWidth - 10;
 
       this.tooltip.style.left = `${ttX}px`;

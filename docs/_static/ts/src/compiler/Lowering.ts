@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 // Abstract intermediate representation for lowered nodes
 export interface ILoweredNode {
@@ -27,7 +27,7 @@ export class Lowering {
       // Very basic MLIR/TIR mapping stub
       const lowered: ILoweredNode = {
         id: node.name,
-        type: this.mapOpToTIR(node.opType),
+        type: Lowering.mapOpToTIR(node.opType),
         inputs: [...node.inputs],
         outputs: [...node.outputs],
         metadata: { ...node.attributes },

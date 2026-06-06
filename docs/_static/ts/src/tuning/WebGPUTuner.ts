@@ -1,5 +1,3 @@
-import { globalEvents } from '../core/State';
-
 export interface IWorkgroupConfig {
   x: number;
   y: number;
@@ -13,7 +11,7 @@ export class WebGPUTuner {
    */
   public static async tuneWorkgroupSize(
     shaderTemplate: string,
-    mockInputs: Float32Array,
+    _mockInputs: Float32Array,
   ): Promise<IWorkgroupConfig> {
     if (!navigator.gpu) {
       throw new Error('WebGPU not available for tuning');
@@ -41,7 +39,7 @@ export class WebGPUTuner {
         .replace('{{WG_Z}}', config.z.toString());
 
       try {
-        const module = device.createShaderModule({ code: wgsl });
+        const _module = device.createShaderModule({ code: wgsl });
         // Typically we would create pipeline, buffers, and do a few warmup passes,
         // then measure a batch of executions.
 

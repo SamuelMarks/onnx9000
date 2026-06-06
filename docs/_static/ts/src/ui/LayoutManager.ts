@@ -1,5 +1,5 @@
+import { $, $off, $on } from '../core/DOM';
 import { BaseComponent } from './BaseComponent';
-import { $, $on, $off } from '../core/DOM';
 
 export class LayoutManager extends BaseComponent {
   private sidebar: HTMLElement;

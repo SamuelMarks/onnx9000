@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 export class GraphSurgeon {
   private model: IModelGraph;
@@ -235,37 +235,6 @@ export class GraphSurgeon {
     return quantCount;
   }
 
-  // 153. Magnitude-based pruning
-  // 508. Compress pruned weights using CSR format
-  private encodeCSR(
-    floatArray: Float32Array,
-    rows: number,
-    cols: number,
-  ): { values: Float32Array; colIndices: Int32Array; rowPointers: Int32Array } {
-    const values: number[] = [];
-    const colIndices: number[] = [];
-    const rowPointers: number[] = [0];
-
-    let nnz = 0;
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const val = floatArray[r * cols + c];
-        if (val !== 0) {
-          values.push(val);
-          colIndices.push(c);
-          nnz++;
-        }
-      }
-      rowPointers.push(nnz);
-    }
-
-    return {
-      values: new Float32Array(values),
-      colIndices: new Int32Array(colIndices),
-      rowPointers: new Int32Array(rowPointers),
-    };
-  }
-
   // 159. Generate a new IModelGraph containing only the selected nodes and their boundaries
   extractSubgraph(nodeNames: string[]): IModelGraph | null {
     if (nodeNames.length === 0) return null;
@@ -292,7 +261,7 @@ export class GraphSurgeon {
     // True inputs are those required by the subgraph but not generated within it
     // OR those that were already graph inputs
     const trueInputs = cloned.inputs.filter((i) => requiredInputs.has(i.name));
-    const originalInputNames = new Set(cloned.inputs.map((i) => i.name));
+    const _originalInputNames = new Set(cloned.inputs.map((i) => i.name));
 
     requiredInputs.forEach((req) => {
       if (
@@ -335,7 +304,7 @@ export class GraphSurgeon {
     // Re-attach memory references securely
     for (let i = 0; i < newInits.length; i++) {
       const orig = this.model.initializers.find((x) => x.name === newInits[i].name);
-      if (orig && orig.rawData) newInits[i].rawData = orig.rawData;
+      if (orig?.rawData) newInits[i].rawData = orig.rawData;
     }
 
     return {
@@ -414,7 +383,7 @@ export class GraphSurgeon {
 
   // 167. Algebraic rewriting rule stub
   algebraicRewrite(): number {
-    let rewriteCount = 0;
+    const rewriteCount = 0;
     // Example rule: Gemm(A, B, C) -> MatMul(A, B) + Add(Result, C)
     // Left as stub implementation
     return rewriteCount;

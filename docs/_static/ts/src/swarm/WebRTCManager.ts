@@ -252,7 +252,7 @@ export class WebRTCManager {
   // 375. Stream tensor activations natively across network
   sendTensor(peerId: string, buffer: ArrayBuffer): void {
     const dc = this.dataChannels.get(peerId);
-    if (!dc || dc.readyState !== 'open') return;
+    if (dc?.readyState !== 'open') return;
 
     const chunkSize = 16384; // 16KB WebRTC stable limit
     const chunks = Math.ceil(buffer.byteLength / chunkSize);

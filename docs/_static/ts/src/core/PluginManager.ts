@@ -1,5 +1,5 @@
-import { IModelGraph } from './IR';
 import { Toast } from '../ui/Toast';
+import type { IModelGraph } from './IR';
 import { logger } from './Logger';
 import { globalEvents } from './State';
 

@@ -42,7 +42,7 @@ export class PubSub {
     if (!this.events.has(event)) {
       this.events.set(event, []);
     }
-    this.events.get(event)!.push(callback);
+    this.events.get(event)?.push(callback);
   }
 
   off(event: string, callback: Function): void {

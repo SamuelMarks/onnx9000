@@ -1,8 +1,8 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create, $on, $off } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
-import { Toast } from './Toast';
 import { WebRTCManager } from '../swarm/WebRTCManager';
+import { BaseComponent } from './BaseComponent';
+import { Toast } from './Toast';
 
 export class SwarmInterface extends BaseComponent {
   private rtc: WebRTCManager;
@@ -141,7 +141,7 @@ export class SwarmInterface extends BaseComponent {
 
     this.container.appendChild(peerSection);
 
-    globalEvents.on('swarmDataFlow', (targetId: string) => {
+    globalEvents.on('swarmDataFlow', (_targetId: string) => {
       // Briefly flash the edge to the target node
       const ctx = swarmCanvas.getContext('2d');
       if (ctx) {
@@ -283,7 +283,7 @@ export class SwarmInterface extends BaseComponent {
           this.rtc.attachVoiceStream(activeVoiceStream);
           voiceBtn.textContent = 'Disable Voice Chat';
           Toast.show('Voice Chat Enabled. Broadcasting mic...', 'success');
-        } catch (e) {
+        } catch (_e) {
           Toast.show('Microphone access denied', 'error');
         }
       }
@@ -318,7 +318,7 @@ export class SwarmInterface extends BaseComponent {
         offerOutput.select();
         document.execCommand('copy');
         Toast.show('Offer generated and copied to clipboard', 'success');
-      } catch (e) {
+      } catch (_e) {
         Toast.show('Failed to create offer', 'error');
       }
     });
@@ -333,7 +333,7 @@ export class SwarmInterface extends BaseComponent {
         answerInput.select();
         document.execCommand('copy');
         Toast.show('Answer generated and copied to clipboard. Send back to peer.', 'success');
-      } catch (e) {
+      } catch (_e) {
         Toast.show('Failed to accept offer', 'error');
       }
     });
@@ -345,7 +345,7 @@ export class SwarmInterface extends BaseComponent {
         const mockPeerId = `peer_${Math.random().toString(36).substring(2, 6)}`;
         await this.rtc.acceptAnswer(tempId, mockPeerId, val);
         Toast.show('Connection established', 'success');
-      } catch (e) {
+      } catch (_e) {
         Toast.show('Failed to accept answer', 'error');
       }
     });
@@ -363,7 +363,7 @@ export class SwarmInterface extends BaseComponent {
     });
 
     // 536. Sync Layout Coordinates
-    globalEvents.on('nodeLayoutMoved', (data: any) => {
+    globalEvents.on('nodeLayoutMoved', (_data: any) => {
       // Mock: this.rtc.broadcast({ type: "sync", payload: { nodeLayout: data } });
     });
 

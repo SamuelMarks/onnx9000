@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('CoreML Exporter Demo E2E', () => {
   test('Page loads and converts code', async ({ page }) => {

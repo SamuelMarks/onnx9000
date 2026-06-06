@@ -1,4 +1,4 @@
-import { ITIRGraph, ILoweredNode } from './Lowering';
+import type { ITIRGraph } from './Lowering';
 
 // Minimal WebAssembly emitter using magic bytes and raw opcode array building.
 export class WasmEmitter {

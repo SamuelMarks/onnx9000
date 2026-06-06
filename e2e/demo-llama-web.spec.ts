@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Llama Web Demo E2E', () => {
   test('Page loads and elements are visible', async ({ page }) => {

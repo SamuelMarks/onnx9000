@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { Toast } from '../ui/Toast';
 
 // Temporary stub mapping for the proposed W3C WebNN standard.

@@ -1,14 +1,13 @@
-import { KerasParser } from './KerasParser';
-
-import { SafetensorsParser } from './Safetensors';
-import { ONNXProtoParser } from './ONNXProto';
-import { Toast } from '../ui/Toast';
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
+import { logger } from '../core/Logger';
+import { globalEvents } from '../core/State';
 import { WebWorkerPool } from '../core/WebWorkerPool';
 import { astCache } from '../storage/IndexedDBVault';
-import { logger } from '../core/Logger';
 import { Spinner } from '../ui/Spinner';
-import { globalEvents } from '../core/State';
+import { Toast } from '../ui/Toast';
+import { KerasParser } from './KerasParser';
+import { ONNXProtoParser } from './ONNXProto';
+import { SafetensorsParser } from './Safetensors';
 
 export class FileParser {
   private workerPool: WebWorkerPool | null = null;
@@ -26,7 +25,7 @@ export class FileParser {
   async initPyodide(): Promise<void> {
     if (!this.pyodidePool) return;
     try {
-      await this.pyodidePool.execute('INIT', null, (p: any) => {
+      await this.pyodidePool.execute('INIT', null, (_p: any) => {
         Spinner.show();
       });
       Spinner.hide();

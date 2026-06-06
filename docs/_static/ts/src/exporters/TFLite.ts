@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { Toast } from '../ui/Toast';
 
 // Minimal stub for TFLite flatbuffer export directly in browser
@@ -22,7 +22,7 @@ export class TFLiteExporter {
     buffer.set(magicBytes, 4);
 
     let opCount = 0;
-    for (const node of this.model.nodes) {
+    for (const _node of this.model.nodes) {
       // 276. Map ONNX to TFLite operator codes (Stub)
       // e.g. Add -> ADD, MatMul -> FULLY_CONNECTED
       opCount++;

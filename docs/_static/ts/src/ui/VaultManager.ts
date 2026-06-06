@@ -1,8 +1,8 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
-import { Toast } from './Toast';
 import { astCache } from '../storage/IndexedDBVault';
+import { BaseComponent } from './BaseComponent';
+import { Toast } from './Toast';
 
 export class VaultManager extends BaseComponent {
   private fileList: HTMLElement;
@@ -103,7 +103,7 @@ export class VaultManager extends BaseComponent {
       } else {
         this.quotaDisplay.textContent = 'Storage estimation not supported in this browser.';
       }
-    } catch (e) {
+    } catch (_e) {
       this.quotaDisplay.textContent = 'Failed to calculate quota.';
     }
   }
@@ -191,7 +191,7 @@ export class VaultManager extends BaseComponent {
         li.appendChild(tags);
         this.fileList.appendChild(li);
       }
-    } catch (e) {
+    } catch (_e) {
       this.fileList.innerHTML = "<p class='danger'>Failed to read IndexedDB.</p>";
     }
   }

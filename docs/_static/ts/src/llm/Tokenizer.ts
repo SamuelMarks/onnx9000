@@ -16,7 +16,7 @@ export class Tokenizer {
    * Load vocabulary from a parsed JSON manifest
    */
   loadVocab(json: any): void {
-    if (json.model && json.model.vocab) {
+    if (json.model?.vocab) {
       for (const [token, id] of Object.entries(json.model.vocab)) {
         this.vocab.set(token, id as number);
         this.decodes.set(id as number, token);

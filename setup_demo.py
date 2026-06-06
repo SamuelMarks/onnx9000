@@ -1,6 +1,6 @@
-import os
 import glob
 import json
+import os
 
 base_demo_test = """import { describe, it, expect, beforeEach } from 'vitest';
 
@@ -52,30 +52,30 @@ demo_apps = glob.glob("apps/demo-*")
 
 for app in demo_apps:
     print(f"Setting up {app}...")
-    
+
     # 1. Update package.json to include jsdom
     pkg_path = os.path.join(app, "package.json")
     if os.path.exists(pkg_path):
-        with open(pkg_path, "r") as f:
+        with open(pkg_path) as f:
             pkg = json.load(f)
-            
+
         if "devDependencies" not in pkg:
             pkg["devDependencies"] = {}
         pkg["devDependencies"]["jsdom"] = "^24.1.3"
         pkg["devDependencies"]["vitest"] = "^1.6.0"
-        
+
         # update scripts
         if "scripts" not in pkg:
             pkg["scripts"] = {}
         pkg["scripts"]["test"] = "vitest run --coverage"
-        
+
         with open(pkg_path, "w") as f:
             json.dump(pkg, f, indent=2)
-            
+
     # 2. Add vitest.config.ts
     with open(os.path.join(app, "vitest.config.ts"), "w") as f:
         f.write(base_vitest_config)
-        
+
     # 3. Add tests/main.test.ts
     os.makedirs(os.path.join(app, "tests"), exist_ok=True)
     with open(os.path.join(app, "tests", "main.test.ts"), "w") as f:
@@ -85,9 +85,9 @@ for app in demo_apps:
     # We will just write a general catch block ignore for the standard pattern if exists
     main_ts_path = os.path.join(app, "src", "main.ts")
     if os.path.exists(main_ts_path):
-        with open(main_ts_path, "r") as f:
+        with open(main_ts_path) as f:
             content = f.read()
-        
+
         # very simple ignore trick: put /* v8 ignore start */ at top if not there
         if "/* v8 ignore start */" not in content:
             content = "/* v8 ignore start */\n" + content + "\n/* v8 ignore stop */\n"

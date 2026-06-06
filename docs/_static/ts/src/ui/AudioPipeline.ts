@@ -1,8 +1,6 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { globalEvents } from '../core/State';
-import { Toast } from './Toast';
+import { $create } from '../core/DOM';
 import { micManager } from '../sensors/MicrophoneManager';
+import { BaseComponent } from './BaseComponent';
 
 export class AudioPipeline extends BaseComponent {
   private canvas: HTMLCanvasElement;

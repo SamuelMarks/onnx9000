@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
 test.describe('TVM Demo E2E', () => {
   test('Page loads and converts code', async ({ page }) => {
     test.setTimeout(120000);

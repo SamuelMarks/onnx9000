@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
-import { execSync } from 'child_process';
-import * as os from 'os';
+import { execSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { expect, test } from '@playwright/test';
 
 test.describe('WASM Sphinx Demo E2E', () => {
   test('Demo workflow: load, Keras LHS, C RHS default, compile with gcc', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('WASM Sphinx Demo E2E', () => {
       const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
-    console.log('C CONTENT:\n' + modelCContent);
+    console.log(`C CONTENT:\n${modelCContent}`);
     expect(modelCContent).toContain('void model_run');
 
     // The directory is expanded by default, click model.h

@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 /**
  * 496. Support dynamic shape inference algorithms.
@@ -80,6 +80,6 @@ export class ShapeInference {
     updateDims(cloned.initializers);
 
     // Re-run full inference to propagate the static lock
-    return this.infer(cloned);
+    return ShapeInference.infer(cloned);
   }
 }

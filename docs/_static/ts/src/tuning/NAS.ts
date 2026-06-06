@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 import { GraphSurgeon } from '../surgeon/GraphSurgeon';
 
 export interface IMutationAction {
@@ -43,7 +43,7 @@ export class NASPrimitives {
   public static generatePopulation(baseGraph: IModelGraph, size: number): IModelGraph[] {
     const population: IModelGraph[] = [];
     for (let i = 0; i < size; i++) {
-      let mutated = this.mutateConvKernel(baseGraph);
+      let mutated = NASPrimitives.mutateConvKernel(baseGraph);
 
       // Randomly apply Surgeon pruning
       if (Math.random() > 0.5) {

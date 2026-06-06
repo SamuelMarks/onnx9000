@@ -1,8 +1,8 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create, $on, $off } from '../core/DOM';
+import { $create } from '../core/DOM';
+import type { IModelGraph } from '../core/IR';
 import { globalEvents } from '../core/State';
-import { IModelGraph, INode } from '../core/IR';
-import { Dagrel, IGraphLayoutNode, IGraphLayoutEdge } from '../layout/Dagrel';
+import { Dagrel, type IGraphLayoutEdge, type IGraphLayoutNode } from '../layout/Dagrel';
+import { BaseComponent } from './BaseComponent';
 
 export class GraphCanvas extends BaseComponent {
   private canvas: HTMLCanvasElement;
@@ -185,7 +185,7 @@ export class GraphCanvas extends BaseComponent {
       if (!weightName) return;
 
       const init = this.model.initializers.find((i) => i.name === weightName);
-      if (init && init.rawData && init.dims.length === 2 && init.dataType === 1) {
+      if (init?.rawData && init.dims.length === 2 && init.dataType === 1) {
         this.isPaintingMask = true;
         this.paintTargetNode = nodeName;
         this.maskData = new Float32Array(
@@ -286,7 +286,7 @@ export class GraphCanvas extends BaseComponent {
       svg += `<rect class="node" x="${n.x}" y="${n.y}" width="${n.width}" height="${n.height}" rx="4" />\n`;
       svg += `<text class="text" x="${n.x + n.width / 2}" y="${n.y + n.height / 2 - 6}">${n.node.opType}</text>\n`;
       let name = n.node.name;
-      if (name.length > 20) name = name.substring(0, 17) + '...';
+      if (name.length > 20) name = `${name.substring(0, 17)}...`;
       svg += `<text class="text text-small" x="${n.x + n.width / 2}" y="${n.y + n.height / 2 + 10}">${name}</text>\n`;
     });
 
@@ -341,7 +341,7 @@ export class GraphCanvas extends BaseComponent {
       );
       const worker = new Worker(URL.createObjectURL(workerBlob));
       worker.postMessage(this.model);
-      worker.onmessage = (e) => {
+      worker.onmessage = (_e) => {
         const dagrel = new Dagrel();
         this.layout = dagrel.layout(this.model!);
         this.centerCamera();
@@ -479,7 +479,7 @@ export class GraphCanvas extends BaseComponent {
     if (!this.maskData || !this.model || !this.paintTargetNode) return;
 
     const init = this.model.initializers.find(
-      (i) => i.name === this.model!.nodes.find((n) => n.name === this.paintTargetNode)?.inputs[1],
+      (i) => i.name === this.model?.nodes.find((n) => n.name === this.paintTargetNode)?.inputs[1],
     );
     if (!init) return;
 
@@ -506,7 +506,7 @@ export class GraphCanvas extends BaseComponent {
 
     for (let r = Math.max(0, row - radius); r <= Math.min(rows - 1, row + radius); r++) {
       for (let c = Math.max(0, col - radius); c <= Math.min(cols - 1, col + radius); c++) {
-        const dist = Math.sqrt(Math.pow(r - row, 2) + Math.pow(c - col, 2));
+        const dist = Math.sqrt((r - row) ** 2 + (c - col) ** 2);
         if (dist <= radius) {
           // Force to exactly zero to create true sparsity
           this.maskData[r * cols + c] = 0;
@@ -604,7 +604,7 @@ export class GraphCanvas extends BaseComponent {
     }
   }
 
-  private onMouseLeave(e: Event): void {
+  private onMouseLeave(_e: Event): void {
     this.isDragging = false;
     this.hoveredNode = null;
     this.render();
@@ -675,7 +675,7 @@ export class GraphCanvas extends BaseComponent {
   private render(): void {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
     const bg = isDark ? '#121212' : '#ffffff';
-    const grid = isDark ? '#2a2a2a' : '#e9ecef';
+    const _grid = isDark ? '#2a2a2a' : '#e9ecef';
     const nodeBg = isDark ? '#1e1e1e' : '#f8f9fa';
     const nodeBorder = isDark ? '#444' : '#ccc';
     const text = isDark ? '#fff' : '#000';
@@ -751,7 +751,7 @@ export class GraphCanvas extends BaseComponent {
             const vi =
               this.model?.valueInfo?.find((v) => v.name === tensorName) ||
               this.model?.inputs.find((v) => v.name === tensorName);
-            if (vi && vi.type) {
+            if (vi?.type) {
               const p1 = edge.points[0];
               const p2 = edge.points[edge.points.length - 1];
               const midX = (p1.x + p2.x) / 2;
@@ -816,10 +816,10 @@ export class GraphCanvas extends BaseComponent {
         this.ctx.beginPath();
         this.ctx.arc(n.x + n.width - 10, n.y + 10, 4, 0, Math.PI * 2);
         this.ctx.fill();
-      } else if (n.node.attributes['is_backward']) {
+      } else if (n.node.attributes.is_backward) {
         // 216. Visualize new gradient graph red
         currentBg = isDark ? '#5c1010' : '#ffcccc';
-      } else if (n.node.attributes['is_loss'] || n.node.attributes['is_optimizer']) {
+      } else if (n.node.attributes.is_loss || n.node.attributes.is_optimizer) {
         currentBg = isDark ? '#4a3c10' : '#fff3cd';
       }
       this.ctx.fillStyle = currentBg;
@@ -832,13 +832,13 @@ export class GraphCanvas extends BaseComponent {
       this.ctx.fillStyle = text;
       // OpType text
       // Usage of optimized cache
-      const opWidth = this.measureText(n.node.opType, this.ctx);
+      const _opWidth = this.measureText(n.node.opType, this.ctx);
       this.ctx.fillText(n.node.opType, n.x + n.width / 2, n.y + n.height / 2 - 6);
       // Name text
       this.ctx.fillStyle = isDark ? '#888' : '#666';
       this.ctx.font = '10px sans-serif';
       let name = n.node.name;
-      if (name.length > 20) name = name.substring(0, 17) + '...';
+      if (name.length > 20) name = `${name.substring(0, 17)}...`;
       this.ctx.fillText(name, n.x + n.width / 2, n.y + n.height / 2 + 10);
       this.ctx.font = '12px sans-serif';
     });
@@ -926,7 +926,7 @@ export class GraphCanvas extends BaseComponent {
   private renderSparsityMask(rect: DOMRect): void {
     if (!this.maskData || !this.model || !this.paintTargetNode) return;
     const init = this.model.initializers.find(
-      (i) => i.name === this.model!.nodes.find((n) => n.name === this.paintTargetNode)?.inputs[1],
+      (i) => i.name === this.model?.nodes.find((n) => n.name === this.paintTargetNode)?.inputs[1],
     );
     if (!init) return;
 

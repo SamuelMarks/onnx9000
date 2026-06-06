@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
-import { IWorkerMessage, IWorkerResponse } from '../core/WebWorkerPool';
-import { IModelGraph } from '../core/IR';
+
+import type { IModelGraph } from '../core/IR';
+import type { IWorkerMessage } from '../core/WebWorkerPool';
 
 function postProgress(id: string, progress: number, message: string) {
   self.postMessage({
@@ -42,7 +43,7 @@ self.onmessage = async (e: MessageEvent<IWorkerMessage>) => {
   }
 };
 
-async function parseTF(id: string, buffer: ArrayBuffer): Promise<IModelGraph> {
+async function parseTF(id: string, _buffer: ArrayBuffer): Promise<IModelGraph> {
   postProgress(id, 10, 'Reading TF GraphDef...');
   // 59. Minimal TF SavedModel parser stub
   // 60. Map TF GraphDef to ONNX9000 IR stub
@@ -69,7 +70,7 @@ async function parseTF(id: string, buffer: ArrayBuffer): Promise<IModelGraph> {
   };
 }
 
-async function parseSKL(id: string, buffer: ArrayBuffer): Promise<IModelGraph> {
+async function parseSKL(id: string, _buffer: ArrayBuffer): Promise<IModelGraph> {
   postProgress(id, 20, 'Unpickling Scikit-Learn Model...');
   // 63. Minimal unpickle implementation stub
   // 64. Map SKLearn AST to ai.onnx.ml operators
@@ -94,7 +95,7 @@ async function parseSKL(id: string, buffer: ArrayBuffer): Promise<IModelGraph> {
   };
 }
 
-async function parsePaddle(id: string, buffer: ArrayBuffer): Promise<IModelGraph> {
+async function parsePaddle(id: string, _buffer: ArrayBuffer): Promise<IModelGraph> {
   postProgress(id, 30, 'Parsing PaddlePaddle pdmodel...');
   // 65. Implement PaddlePaddle flatbuffer/protobuf parser stub
   // 66. Map Paddle variables to ONNX tensor formats

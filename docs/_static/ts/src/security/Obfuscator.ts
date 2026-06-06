@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 export class Obfuscator {
   /**

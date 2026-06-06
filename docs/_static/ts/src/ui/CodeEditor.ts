@@ -1,6 +1,5 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 
 declare const require: any;
 declare const monaco: any;
@@ -9,15 +8,11 @@ export class CodeEditor extends BaseComponent {
   private editorInstance: any = null;
   private debounceTimer: any = null;
 
-  constructor(containerId: string) {
-    super(containerId);
-  }
-
   mount(): void {
     // 307. Verify Monaco editor web workers are loaded securely via blob URLs.
     if (typeof (window as any).MonacoEnvironment === 'undefined') {
       (window as any).MonacoEnvironment = {
-        getWorkerUrl: function (workerId: string, label: string) {
+        getWorkerUrl: (_workerId: string, _label: string) => {
           const proxy = `self.MonacoEnvironment = { baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/' }; importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`;
           return URL.createObjectURL(new Blob([proxy], { type: 'text/javascript' }));
         },

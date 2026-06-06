@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Agent Demo E2E', () => {
   test('Page loads and runs agent loop', async ({ page }) => {

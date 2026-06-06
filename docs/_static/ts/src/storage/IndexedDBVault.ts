@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 export class IndexedDBVault {
   private dbName = 'onnx9000_ast_cache';
@@ -33,7 +33,7 @@ export class IndexedDBVault {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(this.storeName, 'readonly');
+      const transaction = this.db?.transaction(this.storeName, 'readonly');
       const store = transaction.objectStore(this.storeName);
       const request = store.get(hash);
 
@@ -57,7 +57,7 @@ export class IndexedDBVault {
     }
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(this.storeName, 'readwrite');
+      const transaction = this.db?.transaction(this.storeName, 'readwrite');
       const store = transaction.objectStore(this.storeName);
       const request = store.put({ hash, model: strippedModel });
 
@@ -74,7 +74,7 @@ export class IndexedDBVault {
 
   // 407. Show persistent storage quota and usage
   async getStorageEstimate(): Promise<{ usage: number; quota: number } | null> {
-    if (navigator.storage && navigator.storage.estimate) {
+    if (navigator.storage?.estimate) {
       const estimate = await navigator.storage.estimate();
       return {
         usage: estimate.usage || 0,
@@ -88,7 +88,7 @@ export class IndexedDBVault {
   async listKeys(): Promise<string[]> {
     if (!this.db) await this.init();
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(this.storeName, 'readonly');
+      const transaction = this.db?.transaction(this.storeName, 'readonly');
       const store = transaction.objectStore(this.storeName);
       const request = store.getAllKeys();
       request.onsuccess = () => resolve(request.result as string[]);
@@ -99,7 +99,7 @@ export class IndexedDBVault {
   async delete(hash: string): Promise<void> {
     if (!this.db) await this.init();
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(this.storeName, 'readwrite');
+      const transaction = this.db?.transaction(this.storeName, 'readwrite');
       const store = transaction.objectStore(this.storeName);
       const request = store.delete(hash);
       request.onsuccess = () => resolve();

@@ -4,7 +4,7 @@
  * JSON mapping structure suitable for TF.js or TensorFlow Python ingestion.
  * Focuses on rigorous NCHW to NHWC topology transposition logic.
  */
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 export interface ONNX2TFOptions {
   /** Target export representation (default: tflite_json_stub) */
@@ -91,15 +91,15 @@ export class ONNX2TF {
 
     // NCHW to NHWC attribute transformations
     if (node.opType === 'Conv') {
-      tfNode.attr!['data_format'] = 'NHWC'; // Enforce TF standard
+      tfNode.attr!.data_format = 'NHWC'; // Enforce TF standard
       if (this.options.edgeTpuOptimization) {
-        tfNode.attr!['edge_tpu_padding'] = 'SAME'; // Specific edge optimization mock
+        tfNode.attr!.edge_tpu_padding = 'SAME'; // Specific edge optimization mock
       }
     } else if (node.opType === 'MaxPool' || node.opType === 'AveragePool') {
-      tfNode.attr!['data_format'] = 'NHWC';
+      tfNode.attr!.data_format = 'NHWC';
     } else if (node.opType === 'Transpose') {
       // Catch explicit transposes
-      tfNode.attr!['perm'] = node.attributes['perm']?.ints || [];
+      tfNode.attr!.perm = node.attributes.perm?.ints || [];
     }
 
     return tfNode;

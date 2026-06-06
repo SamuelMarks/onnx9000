@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { KerasParser } from '../src/parsers/KerasParser';
 
 describe('KerasParser (keras2onnx / tfjs-to-onnx)', () => {

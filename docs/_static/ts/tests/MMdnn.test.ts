@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { IModelGraph } from '../src/core/IR';
 import { MMdnn } from '../src/mmdnn/MMdnn';
-import { IModelGraph } from '../src/core/IR';
 
 describe('MMdnn Core Architecture & Converters', () => {
   it('should parse Caffe prototxt to ONNX', () => {

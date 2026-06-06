@@ -1,4 +1,4 @@
-import { IModelGraph, INode } from '../core/IR';
+import type { IModelGraph, INode } from '../core/IR';
 
 export interface IGraphLayoutNode {
   id: string;
@@ -40,10 +40,10 @@ export class Dagrel {
         const producer = graph.nodes.find((pn) => pn.outputs.includes(input));
         if (producer) {
           if (!outgoingEdges.has(producer.name)) outgoingEdges.set(producer.name, []);
-          outgoingEdges.get(producer.name)!.push(n.name);
+          outgoingEdges.get(producer.name)?.push(n.name);
 
           if (!incomingEdges.has(n.name)) incomingEdges.set(n.name, []);
-          incomingEdges.get(n.name)!.push(producer.name);
+          incomingEdges.get(n.name)?.push(producer.name);
         }
       });
     });

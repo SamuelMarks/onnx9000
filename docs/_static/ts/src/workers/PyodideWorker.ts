@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-import { IWorkerMessage, IWorkerResponse } from '../core/WebWorkerPool';
+import type { IWorkerMessage } from '../core/WebWorkerPool';
 
 // We have to declare this to avoid TS errors
 declare const self: WorkerGlobalScope & {

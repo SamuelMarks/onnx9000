@@ -1,6 +1,6 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create, $on, $off } from '../core/DOM';
+import { $create } from '../core/DOM';
 import { globalEvents } from '../core/State';
+import { BaseComponent } from './BaseComponent';
 
 export class DropZone extends BaseComponent {
   private overlay: HTMLElement;

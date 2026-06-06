@@ -1,4 +1,4 @@
-import { IModelGraph } from '../core/IR';
+import type { IModelGraph } from '../core/IR';
 
 export class SafetensorsWriter {
   private static async generateWatermark(model: IModelGraph): Promise<string> {
@@ -19,14 +19,14 @@ export class SafetensorsWriter {
     if (model.docString) {
       try {
         meta = JSON.parse(model.docString);
-      } catch (e) {
+      } catch (_e) {
         meta = { description: model.docString };
       }
     }
 
     // 575. Implement privacy-preserving model watermarking
     // 576. Embed cryptographic signatures into the headers
-    meta.watermark = await this.generateWatermark(model);
+    meta.watermark = await SafetensorsWriter.generateWatermark(model);
     header.__metadata__ = meta;
 
     let currentOffset = 0;
@@ -39,7 +39,7 @@ export class SafetensorsWriter {
       if (!tensor.rawData) continue;
 
       const byteLength = tensor.rawData.byteLength;
-      const dtype = this.mapONNXToDtype(tensor.dataType);
+      const dtype = SafetensorsWriter.mapONNXToDtype(tensor.dataType);
 
       header[tensor.name] = {
         dtype: dtype,

@@ -1,4 +1,4 @@
-import { IModelGraph, INode, ITensor } from '../core/IR';
+import type { IModelGraph, INode, ITensor } from '../core/IR';
 
 export class ONNXProtoParser {
   private view: Uint8Array;
@@ -118,7 +118,7 @@ export class ONNXProtoParser {
     return graph;
   }
 
-  private parseNodeProto(start: number, length: number): INode {
+  private parseNodeProto(start: number, _length: number): INode {
     // This is a minimal stub for node parsing
     return {
       name: `node_${start}`,
@@ -129,7 +129,7 @@ export class ONNXProtoParser {
     };
   }
 
-  private parseTensorProto(start: number, length: number): ITensor {
+  private parseTensorProto(start: number, _length: number): ITensor {
     // This is a minimal stub for tensor parsing
     return {
       name: `tensor_${start}`,

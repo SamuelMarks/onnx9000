@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('onnx2c-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/onnx2c-ui.html');
-    } catch (e) {
+    } catch (_e) {
       test.skip();
     }
   });

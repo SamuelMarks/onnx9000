@@ -1,8 +1,6 @@
-import { BaseComponent } from './BaseComponent';
-import { $, $create } from '../core/DOM';
-import { globalEvents } from '../core/State';
-import { Toast } from './Toast';
+import { $create } from '../core/DOM';
 import { cameraManager } from '../sensors/CameraManager';
+import { BaseComponent } from './BaseComponent';
 
 export class VisionPipeline extends BaseComponent {
   private canvas: HTMLCanvasElement;
