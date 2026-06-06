@@ -123,7 +123,11 @@ model.save('model.h5')
         children: [
           { name: 'resnet50.h5', type: 'file', path: '/keras-resnet/resnet50.h5' },
           { name: 'train_resnet.py', type: 'file', path: '/keras-resnet/train_resnet.py' },
-          { name: 'imagenet_classes.txt', type: 'file', path: '/keras-resnet/imagenet_classes.txt' }
+          {
+            name: 'imagenet_classes.txt',
+            type: 'file',
+            path: '/keras-resnet/imagenet_classes.txt'
+          }
         ]
       }
     }

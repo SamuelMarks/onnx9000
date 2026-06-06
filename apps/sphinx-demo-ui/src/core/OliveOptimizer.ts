@@ -52,7 +52,7 @@ export class OliveOptimizer {
       globalEventBus.emit('OLIVE_OPTIMIZATION_SUCCESS');
 
       return optimizedBinary;
-    } catch (e: object) {
+    } catch (e: any) {
       console.error(`Olive optimization failed`, e);
       globalEventBus.emit('OLIVE_OPTIMIZATION_ERROR', e);
       throw e;
@@ -75,7 +75,7 @@ export class OliveOptimizer {
       })) as Uint8Array;
       globalEventBus.emit('ONNX_SIMPLIFIER_SUCCESS');
       return simplifiedBinary;
-    } catch (e: object) {
+    } catch (e: any) {
       console.error(`ONNX simplification failed`, e);
       globalEventBus.emit('ONNX_SIMPLIFIER_ERROR', e);
       throw e;

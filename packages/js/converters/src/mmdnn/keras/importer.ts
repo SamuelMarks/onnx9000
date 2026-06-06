@@ -55,7 +55,7 @@ export class KerasImporter {
       }
 
       return graph;
-    } catch (e: object) {
+    } catch (e: any) {
       reporter.error(`Failed to parse Keras H5 model: ${e.message}`);
     }
   }

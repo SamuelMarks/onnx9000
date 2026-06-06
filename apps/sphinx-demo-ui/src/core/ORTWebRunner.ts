@@ -41,7 +41,7 @@ export class ORTWebRunner {
 
       globalEventBus.emit('INFERENCE_SUCCESS', { latency, outputs });
       return outputs;
-    } catch (e: object) {
+    } catch (e: any) {
       console.error(`ORT Web execution failed`, e);
       globalEventBus.emit('INFERENCE_ERROR', e);
       throw e;

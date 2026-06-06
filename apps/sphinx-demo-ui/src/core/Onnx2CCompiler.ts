@@ -17,7 +17,7 @@ export class Onnx2CCompiler {
     try {
       const cSource = await wm.execute(this.workerId, onnxBuffer, 60000);
       return cSource;
-    } catch (e: object) {
+    } catch (e: any) {
       throw new Error(`ONNX2C Compilation failed: ${e.message}`);
     }
   }

@@ -156,7 +156,7 @@ export class WasmManager {
       });
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);
       globalEventBus.emit('WASM_LOADED', this._instance);
-    } catch (err: object) {
+    } catch (err: any) {
       this._error = err.message || 'Failed to load WASM binary';
       this._state = WasmState.ERROR;
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);

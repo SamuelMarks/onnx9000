@@ -24,7 +24,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y edgetpu-compiler
       - name: Run Tests
-        run: pnpm turbo run test --filter="./packages/js/*" --filter="./apps/*" --filter="!cli"
+        run: pnpm turbo run test --concurrency=1 --filter="./packages/js/*" --filter="./apps/*" --filter="!cli"
 
   test-ui:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run UI Tests
-        run: pnpm turbo run test --filter="@onnx9000/sphinx-demo-ui"
+        run: pnpm turbo run test --concurrency=1 --filter="@onnx9000/sphinx-demo-ui"
 
   test-ui-e2e:
     runs-on: ubuntu-latest

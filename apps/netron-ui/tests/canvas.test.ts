@@ -1,3 +1,8 @@
+(globalThis as any).Worker = class Worker {
+  postMessage() {}
+  onmessage: any;
+};
+
 (global as any).Path2D = class Path2D {
   moveTo() {}
   bezierCurveTo() {}

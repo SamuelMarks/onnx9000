@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { denseToCoo, sparseToDense, getTypedArray } from "../src/sparse.js";
-import { Tensor } from "../ir/tensor.js";
+import { Tensor } from "../src/ir/tensor.js";
 
 describe("sparse", () => {
   it("should convert to coo and back", () => {

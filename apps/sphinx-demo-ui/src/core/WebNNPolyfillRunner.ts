@@ -38,7 +38,7 @@ export class WebNNPolyfillRunner {
 
       globalEventBus.emit('INFERENCE_SUCCESS', { latency, outputs });
       return outputs;
-    } catch (e: object) {
+    } catch (e: any) {
       console.error(`WebNN execution failed`, e);
       globalEventBus.emit('INFERENCE_ERROR', e);
       throw e;

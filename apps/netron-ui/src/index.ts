@@ -497,142 +497,142 @@ function handleFile(file: File) {
   if (file) {
     statusDiv.textContent = "Parsing and calculating layout in Worker...";
     dropZone.textContent = `Loaded: ${file.name}`;
-    worker.postMessage({
-      type: "PARSE_FILE",
-      file,
-      direction: "TB",
-    });
+    if (worker)
+      worker.postMessage({
+        type: "PARSE_FILE",
+        file,
+        direction: "TB",
+      });
+  }
+}
+const searchResults = document.getElementById(
+  "search-results",
+) as HTMLDivElement;
+searchBox.addEventListener("input", (e) => {
+  const query = searchBox.value.toLowerCase().trim();
+  if (!query || !currentGraph) {
+    currentSearchResults = [];
+    renderer.setSearchResults([]);
+    searchResults.textContent = "";
+    return;
   }
 
-  const searchResults = document.getElementById(
-    "search-results",
-  ) as HTMLDivElement;
-  searchBox.addEventListener("input", (e) => {
-    const query = searchBox.value.toLowerCase().trim();
-    if (!query || !currentGraph) {
-      currentSearchResults = [];
-      renderer.setSearchResults([]);
-      searchResults.textContent = "";
-      return;
+  currentSearchResults = [];
+
+  // Search logic (Node Name, Op Type, Tensor Name, Attribute Name/Value)
+  for (const node of currentGraph.nodes) {
+    if (
+      node.name.toLowerCase().includes(query) ||
+      node.opType.toLowerCase().includes(query)
+    ) {
+      currentSearchResults.push(node.id);
+      continue;
+    }
+    // Check tensors (inputs/outputs)
+    let found = false;
+    for (const i of node.inputs) {
+      if (i.toLowerCase().includes(query)) found = true;
+    }
+    for (const o of node.outputs) {
+      if (o.toLowerCase().includes(query)) found = true;
+    }
+    if (found) {
+      currentSearchResults.push(node.id);
+      continue;
     }
 
-    currentSearchResults = [];
-
-    // Search logic (Node Name, Op Type, Tensor Name, Attribute Name/Value)
-    for (const node of currentGraph.nodes) {
+    // Check attributes
+    for (const [k, v] of Object.entries(node.attributes)) {
       if (
-        node.name.toLowerCase().includes(query) ||
-        node.opType.toLowerCase().includes(query)
+        k.toLowerCase().includes(query) ||
+        String(v.value).toLowerCase().includes(query)
       ) {
         currentSearchResults.push(node.id);
-        continue;
-      }
-      // Check tensors (inputs/outputs)
-      let found = false;
-      for (const i of node.inputs) {
-        if (i.toLowerCase().includes(query)) found = true;
-      }
-      for (const o of node.outputs) {
-        if (o.toLowerCase().includes(query)) found = true;
-      }
-      if (found) {
-        currentSearchResults.push(node.id);
-        continue;
-      }
-
-      // Check attributes
-      for (const [k, v] of Object.entries(node.attributes)) {
-        if (
-          k.toLowerCase().includes(query) ||
-          String(v.value).toLowerCase().includes(query)
-        ) {
-          currentSearchResults.push(node.id);
-          break;
-        }
+        break;
       }
     }
+  }
 
-    // Also add inputs/outputs/constants to results if they match
-    for (const i of currentGraph.inputs) {
-      if (i.name.toLowerCase().includes(query))
-        currentSearchResults.push("input_" + i.name);
-    }
-    for (const o of currentGraph.outputs) {
-      if (o.name.toLowerCase().includes(query))
-        currentSearchResults.push("output_" + o.name);
-    }
-    for (const init of currentGraph.initializers) {
-      if (init.toLowerCase().includes(query))
-        currentSearchResults.push("const_" + init);
-    }
+  // Also add inputs/outputs/constants to results if they match
+  for (const i of currentGraph.inputs) {
+    if (i.name.toLowerCase().includes(query))
+      currentSearchResults.push("input_" + i.name);
+  }
+  for (const o of currentGraph.outputs) {
+    if (o.name.toLowerCase().includes(query))
+      currentSearchResults.push("output_" + o.name);
+  }
+  for (const init of currentGraph.initializers) {
+    if (init.toLowerCase().includes(query))
+      currentSearchResults.push("const_" + init);
+  }
 
-    renderer.setSearchResults(currentSearchResults);
-    searchResults.textContent =
-      currentSearchResults.length > 0
-        ? `Found ${currentSearchResults.length} items. Press Enter to step.`
-        : "No results found.";
-    currentSearchIndex = -1;
-  });
+  renderer.setSearchResults(currentSearchResults);
+  searchResults.textContent =
+    currentSearchResults.length > 0
+      ? `Found ${currentSearchResults.length} items. Press Enter to step.`
+      : "No results found.";
+  currentSearchIndex = -1;
+});
 
-  searchBox.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && currentSearchResults.length > 0) {
-      currentSearchIndex =
-        (currentSearchIndex + 1) % currentSearchResults.length;
-      const targetId = currentSearchResults[currentSearchIndex]!;
-      renderer.focusNode(targetId);
-      renderer.selectedNodes = [targetId];
-      renderSidebar(targetId);
-      renderer.render();
-    }
-  });
+searchBox.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && currentSearchResults.length > 0) {
+    currentSearchIndex = (currentSearchIndex + 1) % currentSearchResults.length;
+    const targetId = currentSearchResults[currentSearchIndex]!;
+    renderer.focusNode(targetId);
+    renderer.selectedNodes = [targetId];
+    renderSidebar(targetId);
+    renderer.render();
+  }
+});
 
-  // Worker for layout computation
-  var worker = new Worker(new URL("./parser/worker.ts", import.meta.url), {
-    type: "module",
-  });
+// Worker for layout computation
+var worker = new Worker(new URL("./parser/worker.ts", import.meta.url), {
+  type: "module",
+});
 
-  worker.onmessage = (e) => {
-    if (e.data.type === "PARSE_SUCCESS") {
-      currentGraph = e.data.graph;
-      statusDiv.textContent = "Rendered Model: " + currentGraph!.name;
-      renderer.setLayout(e.data.layout);
-      renderSidebar(null);
-    } else if (e.data.type === "PARSE_ERROR") {
-      statusDiv.textContent = "Error: " + e.data.error;
-      console.error(e.data.error);
-    }
-  };
+worker.onmessage = (e) => {
+  if (e.data.type === "PARSE_SUCCESS") {
+    currentGraph = e.data.graph;
+    statusDiv.textContent = "Rendered Model: " + currentGraph!.name;
+    renderer.setLayout(e.data.layout);
+    renderSidebar(null);
+  } else if (e.data.type === "PARSE_ERROR") {
+    statusDiv.textContent = "Error: " + e.data.error;
+    console.error(e.data.error);
+  }
+};
 
-  function renderSidebar(nodeId: string | null) {
-    if (!currentGraph) {
-      sidebar.style.display = "none";
-      return;
-    }
+function renderSidebar(nodeId: string | null) {
+  if (!currentGraph) {
+    sidebar.style.display = "none";
+    return;
+  }
 
-    sidebar.style.display = "block";
+  sidebar.style.display = "block";
 
-    if (!nodeId) {
-      // Show Graph Properties
-      let content = `<h2>Graph Properties</h2>`;
-      content += `<b>Name:</b> ${currentGraph.name}<br/>`;
-      content += `<b>Producer:</b> ${currentGraph.producerName} v${currentGraph.producerVersion}<br/>`;
-      content += `<b>Domain:</b> ${currentGraph.domain || "N/A"}<br/>`;
-      content += `<b>Model Version:</b> ${currentGraph.modelVersion}<br/>`;
+  if (!nodeId) {
+    // Show Graph Properties
+    let content = `<h2>Graph Properties</h2>`;
+    content += `<b>Name:</b> ${currentGraph.name}<br/>`;
+    content += `<b>Producer:</b> ${currentGraph.producerName} v${currentGraph.producerVersion}<br/>`;
+    content += `<b>Domain:</b> ${currentGraph.domain || "N/A"}<br/>`;
+    content += `<b>Model Version:</b> ${currentGraph.modelVersion}<br/>`;
 
-      content += `<hr style="border-color:var(--border)"/>`;
-      content += `<h3>Opset Imports</h3>`;
-      content += `<div id="opset-imports-container">`;
-      for (const [domain, version] of Object.entries(
-        currentGraph.opsetImports || {},
-      )) {
-        content += `<div style="margin-bottom: 5px;"> 
+    content += `<hr style="border-color:var(--border)"/>`;
+    content += `<h3>Opset Imports</h3>`;
+    content += `<div id="opset-imports-container">`;
+    for (const [domain, version] of Object.entries(
+      currentGraph.opsetImports || {},
+    )) {
+      content += `<div style="margin-bottom: 5px;"> 
         <input type="text" value="${domain}" disabled style="width: 120px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 2px;" /> :  
         <input type="number" class="opset-version-input" data-domain="${domain}" value="${version}" style="width: 60px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 2px;" /> 
       </div>`;
-      }
-      content += `</div>`;
+    }
+    content += `</div>`;
 
-      content += `<div style="margin-top: 10px;"> 
+    content += `<div style="margin-top: 10px;"> 
       <input type="text" id="new-opset-domain" placeholder="Domain (e.g., ai.onnx)" style="width: 120px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 2px;" /> 
       <input type="number" id="new-opset-version" placeholder="Version" style="width: 60px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 2px;" /> 
       <button id="add-opset-btn" style="background: #4A90E2; color: white; border: none; padding: 4px 8px; cursor: pointer;">Add</button> 
@@ -642,64 +642,61 @@ function handleFile(file: File) {
        <button id="btn-auto-format" style="width: 100%; padding: 8px; background: #555; color: white; border: 1px solid #777; cursor: pointer; border-radius: 4px;">Auto-Format Node Names</button> 
     </div>`;
 
-      sidebar.innerHTML = content;
-    }
+    sidebar.innerHTML = content;
+  }
 
-    // Attach events
-    const mutator = new GraphMutator(currentGraph);
+  // Attach events
+  const mutator = new GraphMutator(currentGraph);
 
-    const versionInputs = sidebar.querySelectorAll(".opset-version-input");
-    versionInputs.forEach((input) => {
-      input.addEventListener("change", (e) => {
-        const el = e.target as HTMLInputElement;
-        const domain = el.getAttribute("data-domain")!;
-        const newVersion = parseInt(el.value, 10);
-        if (!isNaN(newVersion)) {
-          currentGraph!.opsetImports[domain] = newVersion;
-        }
-      });
-    });
-
-    const addBtn = sidebar.querySelector("#add-opset-btn") as HTMLButtonElement;
-    addBtn.addEventListener("click", () => {
-      const domainInput = sidebar.querySelector(
-        "#new-opset-domain",
-      ) as HTMLInputElement;
-      const versionInput = sidebar.querySelector(
-        "#new-opset-version",
-      ) as HTMLInputElement;
-      const domain = domainInput.value.trim();
-      const version = parseInt(versionInput.value, 10);
-      if (domain && !isNaN(version)) {
-        currentGraph!.opsetImports[domain] = version;
-        renderSidebar(null); // Re-render
+  const versionInputs = sidebar.querySelectorAll(".opset-version-input");
+  versionInputs.forEach((input) => {
+    input.addEventListener("change", (e) => {
+      const el = e.target as HTMLInputElement;
+      const domain = el.getAttribute("data-domain")!;
+      const newVersion = parseInt(el.value, 10);
+      if (!isNaN(newVersion)) {
+        currentGraph!.opsetImports[domain] = newVersion;
       }
     });
+  });
 
-    const btnAutoFormat = sidebar.querySelector(
-      "#btn-auto-format",
-    ) as HTMLButtonElement;
-    if (btnAutoFormat) {
-      btnAutoFormat.addEventListener("click", () => {
-        import("@onnx9000/modifier/dist/components/utilities.js").then(
-          ({ ModifierUtilities }) => {
-            const utils = new ModifierUtilities(mutator);
-            utils.autoFormatNodeNames();
-
-            // Re-layout and render
-            statusDiv.textContent = "Recalculating layout...";
-            import("./layout/dag").then(({ computeLayout }) => {
-              const layout = computeLayout(currentGraph!, "TB");
-              renderer.setLayout(layout);
-              renderSidebar(null);
-              statusDiv.textContent = "Rendered Model: " + currentGraph!.name;
-            });
-          },
-        );
-      });
+  const addBtn = sidebar.querySelector("#add-opset-btn") as HTMLButtonElement;
+  addBtn.addEventListener("click", () => {
+    const domainInput = sidebar.querySelector(
+      "#new-opset-domain",
+    ) as HTMLInputElement;
+    const versionInput = sidebar.querySelector(
+      "#new-opset-version",
+    ) as HTMLInputElement;
+    const domain = domainInput.value.trim();
+    const version = parseInt(versionInput.value, 10);
+    if (domain && !isNaN(version)) {
+      currentGraph!.opsetImports[domain] = version;
+      renderSidebar(null); // Re-render
     }
+  });
 
-    return;
+  const btnAutoFormat = sidebar.querySelector(
+    "#btn-auto-format",
+  ) as HTMLButtonElement;
+  if (btnAutoFormat) {
+    btnAutoFormat.addEventListener("click", () => {
+      import("@onnx9000/modifier/dist/components/utilities.js").then(
+        ({ ModifierUtilities }) => {
+          const utils = new ModifierUtilities(mutator);
+          utils.autoFormatNodeNames();
+
+          // Re-layout and render
+          statusDiv.textContent = "Recalculating layout...";
+          import("./layout/dag").then(({ computeLayout }) => {
+            const layout = computeLayout(currentGraph!, "TB");
+            renderer.setLayout(layout);
+            renderSidebar(null);
+            statusDiv.textContent = "Rendered Model: " + currentGraph!.name;
+          });
+        },
+      );
+    });
   }
 
   // Find node

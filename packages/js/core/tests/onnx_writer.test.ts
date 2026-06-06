@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { serializeModelProto } from "../src/parser/onnx_writer.js";
-import { Graph } from "../ir/graph.js";
+import { Graph } from "../src/ir/graph.js";
 
 describe("onnx_writer", () => {
   it("should serialize model proto", () => {

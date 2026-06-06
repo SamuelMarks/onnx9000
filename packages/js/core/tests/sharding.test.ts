@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { AutoShardingPass, allReduce } from "../src/sharding.js";
-import { Graph } from "../ir/graph.js";
+import { Graph } from "../src/ir/graph.js";
 
 describe("sharding", () => {
   it("should apply sharding pass", () => {

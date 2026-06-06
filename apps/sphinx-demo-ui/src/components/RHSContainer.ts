@@ -75,7 +75,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
         // Auto-select and open the newly converted source file
         this.tree.selectFile(`${outputDir}/model.${ext}`);
         console.log(`[stdout] ${langName} compilation complete.`, result);
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] ${langName} compilation failed: ${e.message}`);
       }
     } else if (val === 'coreml') {
@@ -123,7 +123,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.tree.selectFile('/model.mlpackage/Manifest.json');
         }
         console.log('[stdout] CoreML compilation complete.');
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] CoreML compilation failed: ${e.message}`);
       }
     } else if (val === 'pytorch') {
@@ -143,7 +143,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/output-pytorch/module.py');
         console.log('[stdout] PyTorch conversion complete.');
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] PyTorch conversion failed: ${e.message}`);
       }
     } else if (val === 'olive') {
@@ -179,7 +179,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/olive-optimized/optimized_model.onnx');
         console.log('[stdout] Olive optimization complete.');
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] Olive optimization failed: ${e.message}`);
       }
     } else if (val === 'mlir') {
@@ -199,7 +199,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/output-mlir/graph.mlir');
         console.log('[stdout] MLIR generation complete.');
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] MLIR generation failed: ${e.message}`);
       }
     } else if (val === 'onnx-simplifier') {
@@ -230,7 +230,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/simplified-model/simplified.onnx');
         console.log('[stdout] Simplification complete.');
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] Simplification failed: ${e.message}`);
       }
     } else if (['caffe', 'keras', 'mxnet', 'tensorflow', 'cntk', 'onnxscript'].includes(val)) {
@@ -256,7 +256,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         if (filePath) this.tree.selectFile(filePath);
         console.log(`[stdout] ${val} conversion complete.`);
-      } catch (e: object) {
+      } catch (e: any) {
         console.error(`[stderr] ${val} conversion failed: ${e.message}`);
       }
     } else if (val === 'onnx') {

@@ -10,6 +10,6 @@ export default tseslint.config(...baseConfig, {
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
-    'no-restricted-syntax': 'off'
-  }
+    'no-restricted-syntax': 'off',
+  },
 });

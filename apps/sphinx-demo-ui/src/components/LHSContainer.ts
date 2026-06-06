@@ -121,7 +121,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
             } else {
               parsed = JSON.parse(sourceCode);
             }
-          } catch (err: object) {
+          } catch (err: any) {
             console.warn(
               `[stderr] Failed to parse editor content: ${err.message}. Falling back to default mnist model...`
             );
@@ -237,7 +237,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
           description: `${sourceLabel} -> ONNX`,
           state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' }
         });
-      } catch (err: object) {
+      } catch (err: any) {
         console.error(`[stderr] Error: ${err.stack || err.message || err}`);
         console.error('[stderr] Failed to generate ONNX representation.');
         console.error('Conversion unsuccessful.');

@@ -10,7 +10,7 @@ global.fetch = vi.fn().mockResolvedValue({
   arrayBuffer: async () => {
     const buf = new Uint8Array(8 + 50);
     const view = new DataView(buf.buffer);
-    view.setBigUint64(0, BigInt(18), true);
+    view.setBigUint64(0, BigInt(19), true);
     const header = '{"__metadata__":{}}';
     buf.set(new TextEncoder().encode(header), 8);
     return buf.buffer;
@@ -22,7 +22,7 @@ describe("safetensors", () => {
   it("should parse", async () => {
     const buf = new Uint8Array(8 + 50);
     const view = new DataView(buf.buffer);
-    view.setBigUint64(0, BigInt(18), true);
+    view.setBigUint64(0, BigInt(19), true);
     const header = '{"__metadata__":{}}';
     buf.set(new TextEncoder().encode(header), 8);
 
