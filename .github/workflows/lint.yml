@@ -29,6 +29,8 @@ jobs:
           uv pip install ruff mypy
       - name: Run oxlint
         run: pnpm lint
+      - name: Run Biome
+        run: pnpm exec biome check .
       - name: Run Ruff
         run: uv run ruff check .
       - name: Run Mypy
