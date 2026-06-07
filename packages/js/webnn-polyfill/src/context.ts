@@ -21,11 +21,8 @@ import { type MLTensorOptions, PolyfillMLTensor } from "./tensor.js";
 
 export class PolyfillMLContext implements MLContext {
   private providers: ExecutionProvider[] = [];
-  /** The configuration options for this context. */
-  private options: MLContextOptions;
 
   constructor(options: MLContextOptions = {}) {
-    this.options = options;
     const deviceType = options.deviceType || "cpu";
 
     // 7. Route `deviceType: 'gpu'` requests directly to the `onnx9000` WebGPU backend.

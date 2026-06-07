@@ -4,7 +4,6 @@
  */
 
 import { Attribute, Graph, Node, Tensor, ValueInfo } from "@onnx9000/core";
-import type { PolyfillMLContext } from "./context.js";
 import { PolyfillMLGraph } from "./graph.js";
 import type {
   MLBatchNormalizationOptions,
@@ -35,11 +34,8 @@ import { PolyfillMLOperand } from "./operand.js";
 export class PolyfillMLGraphBuilder {
   private graph: Graph;
   private nodeCounter: number = 0;
-  /** The associated ML context. */
-  private context: PolyfillMLContext;
 
-  constructor(context: MLContext) {
-    this.context = context as PolyfillMLContext;
+  constructor(_context: MLContext) {
     this.graph = new Graph("WebNN_Polyfill_Graph");
   }
 

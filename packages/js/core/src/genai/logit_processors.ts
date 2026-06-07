@@ -622,11 +622,6 @@ export class AllowedWordsLogitProcessor implements LogitProcessor {
  * Typical sampling processor based on local information gain.
  */
 export class TypicalLogitProcessor implements LogitProcessor {
-  private mass: number;
-  /** @param mass Targeted probability mass. */
-  constructor(mass: number = 0.9) {
-    this.mass = mass;
-  }
   /** Placeholder for typical sampling implementation. */
   process(_inputIds: number[], scores: Tensor): Tensor {
     return scores;

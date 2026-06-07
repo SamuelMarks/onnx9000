@@ -63,15 +63,6 @@ export class PagedKVCache implements KVCache {
   /** Mapping of layer index to block pointers */
   public blockTables: Map<number, number[]> = new Map();
   private pages: Map<number, { keys: Tensor; values: Tensor }[]> = new Map();
-  private pageSize: number;
-
-  /**
-   * Create a new PagedKVCache.
-   * @param pageSize Number of tokens per page
-   */
-  constructor(pageSize: number = 16) {
-    this.pageSize = pageSize;
-  }
 
   /** Clear all pages. */
   clear(): void {
@@ -109,7 +100,6 @@ export class PagedKVCache implements KVCache {
  */
 export class CrossLayerKVCache implements KVCache {
   private caches: Map<number, KVCache> = new Map();
-  private numLayers: number;
 
   /**
    * Create a cross-layer manager.
@@ -117,7 +107,6 @@ export class CrossLayerKVCache implements KVCache {
    * @param baseCacheFactory Factory function to create individual layer caches
    */
   constructor(numLayers: number, baseCacheFactory: () => KVCache) {
-    this.numLayers = numLayers;
     for (let i = 0; i < numLayers; i++) {
       this.caches.set(i, baseCacheFactory());
     }
@@ -235,16 +224,14 @@ export class State {
 export class MultiHeadAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numHeads: number;
-  private headDim: number;
 
   /**
    * Create an MHA cache.
    * @param numHeads Number of attention heads
    * @param headDim Dimension per head
    */
-  constructor(numHeads: number, headDim: number) {
+  constructor(numHeads: number, _headDim: number) {
     this.numHeads = numHeads;
-    this.headDim = headDim;
   }
 
   /** Clear all layer caches. */
@@ -281,16 +268,14 @@ export class MultiHeadAttentionCache implements KVCache {
 export class GroupedQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number;
-  private headDim: number;
 
   /**
    * Create a GQA cache.
    * @param numKVHeads Number of KV heads (less than query heads)
    * @param headDim Dimension per head
    */
-  constructor(numKVHeads: number, headDim: number) {
+  constructor(numKVHeads: number, _headDim: number) {
     this.numKVHeads = numKVHeads;
-    this.headDim = headDim;
   }
 
   /** Clear all layer caches. */
@@ -327,15 +312,6 @@ export class GroupedQueryAttentionCache implements KVCache {
 export class MultiQueryAttentionCache implements KVCache {
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
   private numKVHeads: number = 1;
-  private headDim: number;
-
-  /**
-   * Create an MQA cache.
-   * @param headDim Dimension per head
-   */
-  constructor(headDim: number) {
-    this.headDim = headDim;
-  }
 
   /** Clear all layer caches. */
   clear(): void {
