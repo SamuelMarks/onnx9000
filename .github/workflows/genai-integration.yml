@@ -20,7 +20,9 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: pnpm install && uv sync --all-extras --all-packages
       - name: Run GenAI Python Tests

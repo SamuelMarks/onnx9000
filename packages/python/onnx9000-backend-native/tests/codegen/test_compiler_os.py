@@ -9,7 +9,7 @@ from onnx9000.backends.codegen.compiler import compile_cpp, compile_static_lib
 
 def test_compile_cpp_os_branches():
     """Test compile cpp os branches."""
-    with patch("sys.platform", "win32"):
+    with patch("sys.platform", "win32"), patch("sysconfig.get_path", return_value="/mock/include"):
         with patch("subprocess.run"):
             # use_pybind=False, win32 -> .dll
             so_path = compile_cpp("int main(){}", use_pybind=False)
@@ -19,7 +19,7 @@ def test_compile_cpp_os_branches():
             so_path_py = compile_cpp("int main(){}", use_pybind=True)
             assert so_path_py.endswith(".pyd")
 
-    with patch("sys.platform", "linux"):
+    with patch("sys.platform", "linux"), patch("sysconfig.get_path", return_value="/mock/include"):
         with patch("subprocess.run"):
             # use_pybind=False, linux -> .so
             so_path = compile_cpp("int main(){}", use_pybind=False)

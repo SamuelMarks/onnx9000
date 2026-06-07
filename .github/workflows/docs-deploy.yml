@@ -45,6 +45,7 @@ jobs:
       - name: Install uv and Sphinx
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
           uv sync --all-extras --all-packages
           uv pip install -r requirements-doc.txt
 
