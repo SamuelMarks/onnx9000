@@ -3024,6 +3024,8 @@ export class Layer {
 export class LayersModel extends Layer {
   /** The layers in the model. */
   layers: Layer[] = [];
+  /** The compiled configuration. */
+  _compiledConfig?: object;
 
   /**
    * Adds a layer to the model.

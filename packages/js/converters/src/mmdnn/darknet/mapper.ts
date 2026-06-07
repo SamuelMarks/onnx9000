@@ -268,7 +268,10 @@ export class DarknetMapper {
           nodes.push(mulNode);
         } else {
           // linear
-          nodes[nodes.length - 1]?.outputs[0] = `${layerName}_out`;
+          const lastNode = nodes[nodes.length - 1];
+          if (lastNode && lastNode.outputs.length > 0) {
+            lastNode.outputs[0] = `${layerName}_out`;
+          }
         }
 
         this.channelsOutput[layerIdx] = filters;

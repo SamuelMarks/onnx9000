@@ -20,9 +20,11 @@ export function initOpenVinoUI(): void {
   if (!dropzone || !fileInput || !statusDiv || !compressFp16) return;
 
   function showStatus(message: string, type: "info" | "success" | "error") {
-    statusDiv?.style.display = "block";
-    statusDiv!.className = type;
-    statusDiv!.innerHTML = message;
+    if (statusDiv) {
+      statusDiv.style.display = "block";
+      statusDiv.className = type;
+      statusDiv.innerHTML = message;
+    }
   }
 
   dropzone.addEventListener("click", () => fileInput.click());

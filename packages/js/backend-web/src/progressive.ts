@@ -2,8 +2,8 @@
  * @fileoverview progressive.ts
  * Provides progressive functionality for the backend-web package.
  */
-import type { Tensor } from '@onnx9000/core';
-import type { SessionOptions } from './session.js';
+import type { Tensor } from "@onnx9000/core";
+import type { SessionOptions } from "./session.js";
 
 export interface ProgressiveLoadOptions extends SessionOptions {
   maxChunkSize?: number;
@@ -25,8 +25,10 @@ export class ProgressiveSession {
     // 3. Weight Streaming: Stream to WebGPU
 
     // Validate we can "fetch" conceptually (mock implementation)
-    if (!this.url.startsWith('http') && !this.url.startsWith('/')) {
-      throw new Error('Progressive loading requires a valid HTTP URL or absolute path.');
+    if (!this.url.startsWith("http") && !this.url.startsWith("/")) {
+      throw new Error(
+        "Progressive loading requires a valid HTTP URL or absolute path.",
+      );
     }
 
     if (!this.isLoaded) {

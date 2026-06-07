@@ -21,7 +21,7 @@ export class MLIRInterop {
         const parts = line.split("=");
         const rhs = parts[1]?.trim();
         if (!rhs) continue;
-        const opcode = rhs.split(" ")[0] ?? 'unknown';
+        const opcode = rhs.split(" ")[0] ?? "unknown";
         block.pushOperation(new Operation(opcode, [], [], {}));
       }
     }

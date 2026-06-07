@@ -649,7 +649,9 @@ function renderSidebar(nodeId: string | null) {
       const domain = el.getAttribute("data-domain")!;
       const newVersion = parseInt(el.value, 10);
       if (!Number.isNaN(newVersion)) {
-        currentGraph?.opsetImports[domain] = newVersion;
+        if (currentGraph) {
+          currentGraph.opsetImports[domain] = newVersion;
+        }
       }
     });
   });
@@ -665,7 +667,9 @@ function renderSidebar(nodeId: string | null) {
     const domain = domainInput.value.trim();
     const version = parseInt(versionInput.value, 10);
     if (domain && !Number.isNaN(version)) {
-      currentGraph?.opsetImports[domain] = version;
+      if (currentGraph) {
+        currentGraph.opsetImports[domain] = version;
+      }
       renderSidebar(null); // Re-render
     }
   });

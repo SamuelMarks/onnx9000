@@ -125,8 +125,8 @@ export class CanvasRenderer {
         if (e.touches.length === 1) {
           this.isDragging = true;
           this.hasMovedDuringDrag = false;
-          this.lastMouseX = e.touches[0]?.clientX;
-          this.lastMouseY = e.touches[0]?.clientY;
+          this.lastMouseX = e.touches[0]?.clientX ?? 0;
+          this.lastMouseY = e.touches[0]?.clientY ?? 0;
         }
       },
       { passive: false },
@@ -138,10 +138,12 @@ export class CanvasRenderer {
         if (this.isDragging && e.touches.length === 1) {
           e.preventDefault(); // Prevent scrolling
           this.hasMovedDuringDrag = true;
-          this.offsetX += e.touches[0]?.clientX - this.lastMouseX;
-          this.offsetY += e.touches[0]?.clientY - this.lastMouseY;
-          this.lastMouseX = e.touches[0]?.clientX;
-          this.lastMouseY = e.touches[0]?.clientY;
+          const clientX = e.touches[0]?.clientX ?? 0;
+          const clientY = e.touches[0]?.clientY ?? 0;
+          this.offsetX += clientX - this.lastMouseX;
+          this.offsetY += clientY - this.lastMouseY;
+          this.lastMouseX = clientX;
+          this.lastMouseY = clientY;
           try {
             localStorage.setItem("onnxModifier_offsetX", String(this.offsetX));
             localStorage.setItem("onnxModifier_offsetY", String(this.offsetY));

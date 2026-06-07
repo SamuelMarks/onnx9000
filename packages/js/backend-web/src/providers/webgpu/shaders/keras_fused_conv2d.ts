@@ -4,12 +4,15 @@
  * @param useBias Whether to include bias addition.
  * @returns The WGSL shader source code.
  */
-export const getKerasFusedConv2DWGSL = (activation: string = 'relu', useBias: boolean = true) => `
+export const getKerasFusedConv2DWGSL = (
+  activation: string = "relu",
+  useBias: boolean = true,
+) => `
 // WGSL Shader for Fused Keras Conv2D -> NCHW Conv2D + BiasAdd + Activation
 // Utilizes workgroup shared memory for optimal tile-based Convolution computation
 @group(0) @binding(0) var<storage, read> input: array<f32>;
 @group(0) @binding(1) var<storage, read> weight: array<f32>;
-${useBias ? '@group(0) @binding(2) var<storage, read> bias: array<f32>;' : ''}
+${useBias ? "@group(0) @binding(2) var<storage, read> bias: array<f32>;" : ""}
 @group(0) @binding(${useBias ? 3 : 2}) var<storage, read_write> output: array<f32>;
 
 struct Uniforms {
@@ -64,10 +67,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         }
     }
     
-    ${useBias ? 'acc = acc + bias[oc];' : ''}
+    ${useBias ? "acc = acc + bias[oc];" : ""}
     
-    ${activation === 'relu' ? 'acc = max(0.0, acc);' : ''}
-    ${activation === 'swish' ? 'acc = acc / (1.0 + exp(-acc));' : ''}
+    ${activation === "relu" ? "acc = max(0.0, acc);" : ""}
+    ${activation === "swish" ? "acc = acc / (1.0 + exp(-acc));" : ""}
     
     let out_idx = (oc * config.outHeight + oh) * config.outWidth + ow;
     output[out_idx] = acc;

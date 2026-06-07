@@ -95,6 +95,7 @@ export function parseRecipe(yamlText: string): Modifier[] {
     } else if (currentMod && trimmed.includes(":")) {
       const parts = trimmed.split(":");
       const key = parts[0]?.trim();
+      if (!key) continue;
       let val: ReturnType<typeof JSON.parse> = parts.slice(1).join(":").trim();
 
       if (val.startsWith("[") && val.endsWith("]")) {
@@ -102,7 +103,7 @@ export function parseRecipe(yamlText: string): Modifier[] {
           .substring(1, val.length - 1)
           .split(",")
           .map((s: string) => s.trim().replace(/['"]/g, ""));
-      } else if (!Number.isNaN(val)) {
+      } else if (!Number.isNaN(Number(val))) {
         val = parseFloat(val);
       } else {
         val = val.replace(/['"]/g, "");

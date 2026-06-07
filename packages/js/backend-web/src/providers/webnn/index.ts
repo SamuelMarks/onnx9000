@@ -2,17 +2,17 @@
  * @fileoverview index.ts
  * Provides index functionality for the backend-web package.
  */
-import { type Graph, Tensor } from '@onnx9000/core';
-import type { ExecutionProvider } from '../../session.js';
-import { WebNNCompiler } from './compiler.js';
-import { WebNNContextManager } from './context.js';
+import { type Graph, Tensor } from "@onnx9000/core";
+import type { ExecutionProvider } from "../../session.js";
+import { WebNNCompiler } from "./compiler.js";
+import { WebNNContextManager } from "./context.js";
 
 export interface WebNNProviderOptions {
   contextOptions?: MLContextOptions;
 }
 
 export class WebNNProvider implements ExecutionProvider {
-  name = 'WebNN';
+  name = "WebNN";
   private contextManager = WebNNContextManager.getInstance();
   private options: WebNNProviderOptions;
   private compiledGraph: MLGraph | null = null;
@@ -28,8 +28,8 @@ export class WebNNProvider implements ExecutionProvider {
 
   async initialize(): Promise<void> {
     const opts = this.options.contextOptions || {
-      deviceType: 'npu',
-      powerPreference: 'default',
+      deviceType: "npu",
+      powerPreference: "default",
     };
     await this.contextManager.initialize(opts);
   }
@@ -41,34 +41,39 @@ export class WebNNProvider implements ExecutionProvider {
     }
   }
 
-  private allocateBuffer(name: string, size: number, dtype: string): ArrayBufferView {
+  private allocateBuffer(
+    name: string,
+    size: number,
+    dtype: string,
+  ): ArrayBufferView {
     // 240. Track precise byte alignment requirements
     // 235. Support zero-initialization of padding buffers (new TypedArray automatically zero-inits)
-    if (this.bufferPool.has(name) && this.bufferPool.get(name)?.buffer.byteLength >= size * 4) {
+    const existing = this.bufferPool.get(name);
+    if (existing && existing.buffer.byteLength >= size * 4) {
       // oversimplified check
-      const buf = this.bufferPool.get(name)!;
+      const buf = existing;
       // Returning slice or view would be more accurate. 234. Handle sub-array views cleanly
       return buf;
     }
 
     let allocated: ArrayBufferView;
     switch (dtype) {
-      case 'float32':
+      case "float32":
         allocated = new Float32Array(size);
         break;
-      case 'float16':
+      case "float16":
         allocated = new Uint16Array(size);
         break;
-      case 'int32':
+      case "int32":
         allocated = new Int32Array(size);
         break;
-      case 'int8':
+      case "int8":
         allocated = new Int8Array(size);
         break;
-      case 'uint8':
+      case "uint8":
         allocated = new Uint8Array(size);
         break;
-      case 'int64':
+      case "int64":
         allocated = new BigInt64Array(size);
         break;
       default:
@@ -78,7 +83,10 @@ export class WebNNProvider implements ExecutionProvider {
     return allocated;
   }
 
-  async execute(graph: Graph, inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
+  async execute(
+    graph: Graph,
+    inputs: Record<string, Tensor>,
+  ): Promise<Record<string, Tensor>> {
     this.tryGC();
     const mlContext = this.contextManager.getContext();
     const builder = this.contextManager.getBuilder();
@@ -89,11 +97,12 @@ export class WebNNProvider implements ExecutionProvider {
       if (this.compiledGraph) {
         // 178. Handle graph disposal via graph.destroy()
         // 236. Manage WebGPU MLTensor lifecycles properly, calling tensor.destroy() precisely when the graph is destroyed.
-        if (typeof this.compiledGraph.destroy === 'function') {
+        if (typeof this.compiledGraph.destroy === "function") {
           this.compiledGraph.destroy();
         }
       }
-      const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      const t0 =
+        typeof performance !== "undefined" ? performance.now() : Date.now();
       const compiler = new WebNNCompiler(graph, builder);
       // 166. Implement the build() sequence
       // 167. Call await builder.build(outputs)
@@ -102,12 +111,13 @@ export class WebNNProvider implements ExecutionProvider {
       } catch (_e) {
         const e = _e instanceof Error ? _e : new Error(String(_e));
         // 179. Gracefully catch and log NPU timeout or out-of-memory errors
-        console.error('WebNN NPU Compilation failed:', e.message);
+        console.error("WebNN NPU Compilation failed:", e.message);
         throw new Error(`WebNN Compilation Error: ${e.message}`);
       }
       this.currentGraphId = graph.id;
       // 168. Track compile times and log NPU startup latency.
-      const t1 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      const t1 =
+        typeof performance !== "undefined" ? performance.now() : Date.now();
       console.log(`WebNN graph compiled in ${(t1 - t0).toFixed(2)} ms`);
     }
 
@@ -126,9 +136,13 @@ export class WebNNProvider implements ExecutionProvider {
     for (const output of graph.outputs) {
       let size = 1;
       for (const d of output.shape) {
-        if (typeof d === 'number') size *= d;
+        if (typeof d === "number") size *= d;
       }
-      mlOutputs[output.name] = this.allocateBuffer(output.name, size, output.dtype);
+      mlOutputs[output.name] = this.allocateBuffer(
+        output.name,
+        size,
+        output.dtype,
+      );
     }
 
     // 172. Implement context.compute(graph, inputs, outputs) execution cycle.
@@ -138,13 +152,18 @@ export class WebNNProvider implements ExecutionProvider {
     // 237. Ensure asynchronous execution prevents memory mutations from the main thread
     // 238. Fallback to copying buffers securely if SharedArrayBuffer is restricted by CORS/COOP headers.
     try {
-      const results = await mlContext.compute(this.compiledGraph, mlInputs, mlOutputs);
+      const results = await mlContext.compute(
+        this.compiledGraph,
+        mlInputs,
+        mlOutputs,
+      );
 
       // 176. Re-map WebNN ArrayBuffer outputs back to onnx9000.Tensor objects safely.
       const outputTensors: Record<string, Tensor> = {};
       for (const output of graph.outputs) {
         const resultData = results.outputs[output.name];
-        if (!resultData) throw new Error(`Missing output ${output.name} from WebNN compute.`);
+        if (!resultData)
+          throw new Error(`Missing output ${output.name} from WebNN compute.`);
         outputTensors[output.name] = new Tensor(
           output.name,
           output.shape,
@@ -159,7 +178,7 @@ export class WebNNProvider implements ExecutionProvider {
     } catch (_e) {
       const e = _e instanceof Error ? _e : new Error(String(_e));
       // 179. Gracefully catch and log runtime errors
-      console.error('WebNN NPU Execution failed:', e.message);
+      console.error("WebNN NPU Execution failed:", e.message);
       throw new Error(`WebNN Execution Error: ${e.message}`);
     }
   }

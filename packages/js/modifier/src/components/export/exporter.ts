@@ -59,7 +59,8 @@ export class ModelExporter {
   // 106. Copy to Clipboard -> onnx.helper script
   generateEditLog(): string {
     const log = {
-      mutations: this.mutator.undoStack.map(() => "mutation_applied"), // Simplified representation
+      mutations:
+        (this.mutator as any).undoStack?.map(() => "mutation_applied") || [], // Simplified representation
     };
     return JSON.stringify(log, null, 2);
   }

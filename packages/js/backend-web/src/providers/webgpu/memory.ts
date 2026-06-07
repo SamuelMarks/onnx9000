@@ -2,7 +2,7 @@
  * @fileoverview memory.ts
  * Provides memory functionality for the backend-web package.
  */
-import { Graph, type Node } from '@onnx9000/core';
+import { Graph, type Node } from "@onnx9000/core";
 
 export class WebGPUMemoryManager {
   // Current typical WebGPU limits: max buffer size 256MB on some, 2GB on others

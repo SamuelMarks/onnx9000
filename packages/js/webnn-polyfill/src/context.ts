@@ -21,6 +21,8 @@ import { type MLTensorOptions, PolyfillMLTensor } from "./tensor.js";
 
 export class PolyfillMLContext implements MLContext {
   private providers: ExecutionProvider[] = [];
+  /** The configuration options for this context. */
+  private options: MLContextOptions;
 
   constructor(options: MLContextOptions = {}) {
     this.options = options;

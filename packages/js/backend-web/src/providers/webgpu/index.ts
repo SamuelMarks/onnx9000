@@ -2,29 +2,38 @@
  * @fileoverview index.ts
  * Provides index functionality for the backend-web package.
  */
-import { type Graph, globalRegistry, register_op, Tensor } from '@onnx9000/core';
-import type { ExecutionProvider } from '../../session.js';
+import {
+  type Graph,
+  globalRegistry,
+  register_op,
+  Tensor,
+} from "@onnx9000/core";
+import type { ExecutionProvider } from "../../session.js";
 
 export interface WebGPUOptions {
   sparsityThreshold?: number; // Item 104
   useFP16?: boolean; // Item 109
 }
 
-@register_op('', 'MatMul', 'WebGPU')
+@register_op("", "MatMul", "WebGPU")
 export class MatMulWebGPU {
   execute(inputs: Tensor[], _attributes: Record<string, any>): Tensor[] {
     const weight = inputs[1];
     if (!weight) return [];
 
     const fmt = (weight as any).format;
-    if (!fmt || fmt === 'dense') return [];
+    if (!fmt || fmt === "dense") return [];
 
     const sparsity = this.calculateSparsity(weight);
     if (sparsity > 0.6) {
-      console.log(`Dispatching Sparse MatMul (sparsity: ${sparsity.toFixed(2)})`);
+      console.log(
+        `Dispatching Sparse MatMul (sparsity: ${sparsity.toFixed(2)})`,
+      );
       // Use SPMM_CSR_WGSL or SPMM_2_4_WGSL
     } else {
-      console.log(`Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul`);
+      console.log(
+        `Sparsity ${sparsity.toFixed(2)} too low, falling back to Dense MatMul`,
+      );
       // Use standard MatMul shader
     }
     return [];
@@ -36,29 +45,63 @@ export class MatMulWebGPU {
 }
 
 export class WebGPUProvider implements ExecutionProvider {
-  name = 'WebGPU';
+  /** The name of the provider. */
+  name = "WebGPU";
+  /** Options configuring the provider's execution behavior. */
   private options: WebGPUOptions;
+  /** The underlying WebGPU device instance. */
+  private device?: any;
 
+  /**
+   * Constructs a new WebGPUProvider.
+   * @param options - Configuration options for the provider.
+   */
   constructor(options: WebGPUOptions = {}) {
     this.options = { sparsityThreshold: 0.6, useFP16: false, ...options };
   }
 
   async initialize(): Promise<void> {
-    if (typeof navigator === 'undefined' || !(navigator as ReturnType<typeof JSON.parse>).gpu) {
-      throw new Error('WebGPU is not supported in this environment.');
+    if (
+      typeof navigator === "undefined" ||
+      !(navigator as ReturnType<typeof JSON.parse>).gpu
+    ) {
+      throw new Error("WebGPU is not supported in this environment.");
     }
-    const adapter = await (navigator as ReturnType<typeof JSON.parse>).gpu.requestAdapter();
+    const adapter = await (
+      navigator as ReturnType<typeof JSON.parse>
+    ).gpu.requestAdapter();
     this.device = await adapter.requestDevice({
-      requiredFeatures: this.options.useFP16 ? ['shader-f16'] : [],
+      requiredFeatures: this.options.useFP16 ? ["shader-f16"] : [],
     });
   }
 
-  async execute(graph: Graph, inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
+  /**
+   * Creates a sparse buffer on the WebGPU device.
+   * @param sparseData - The sparse tensor data structure containing format and values.
+   * @returns The created GPU buffer or null if format is not supported.
+   */
+  createSparseBuffer(sparseData: any): any {
+    if (sparseData.format === "CSR") {
+      return this.device?.createBuffer({});
+    }
+    return null;
+  }
+
+  async execute(
+    graph: Graph,
+    inputs: Record<string, Tensor>,
+  ): Promise<Record<string, Tensor>> {
     for (const node of graph.nodes) {
-      const OpClass = globalRegistry.get_op(node.domain || '', node.opType, this.name);
+      const OpClass = globalRegistry.get_op(
+        node.domain || "",
+        node.opType,
+        this.name,
+      );
       if (OpClass) {
         const op = new OpClass();
-        const nodeInputs = node.inputs.map((name) => graph.tensors[name] || inputs[name]);
+        const nodeInputs = node.inputs.map(
+          (name) => graph.tensors[name] || inputs[name],
+        );
         op.execute(nodeInputs as Tensor[], (node.attributes || {}) as any);
       }
     }
@@ -66,8 +109,10 @@ export class WebGPUProvider implements ExecutionProvider {
     const results: Record<string, Tensor> = {};
     for (const name of graph.outputs) {
       const outName =
-        typeof name === 'string' ? name : (name as ReturnType<typeof JSON.parse>).name;
-      results[outName] = new Tensor(outName, [1], 'float32');
+        typeof name === "string"
+          ? name
+          : (name as ReturnType<typeof JSON.parse>).name;
+      results[outName] = new Tensor(outName, [1], "float32");
     }
     return results;
   }

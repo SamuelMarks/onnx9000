@@ -163,10 +163,11 @@ export class GraphRenderer {
 
     const path = edge.path;
     if (path.length > 0) {
-      this.ctx.moveTo(path[0]?.x, path[0]?.y);
+      const p0 = path[0];
+      if (p0) this.ctx.moveTo(p0.x, p0.y);
       for (let i = 1; i < path.length; i++) {
-        // Simple lines for now (orthogonal routing handled by layout engine)
-        this.ctx.lineTo(path[i]?.x, path[i]?.y);
+        const pi = path[i];
+        if (pi) this.ctx.lineTo(pi.x, pi.y);
       }
     }
     this.ctx.stroke();
@@ -175,14 +176,15 @@ export class GraphRenderer {
       // 47. Display the tensor shape and type directly on the connecting edges
       const vi = graph.valueInfo.find((v) => v.name === edge.sourcePort);
       if (vi) {
-        const text = `${vi.dtype}[${vi.shape.join(",")}]`;
-        const midX = path[1]?.x;
-        const midY = path[1]?.y;
-        this.ctx.fillStyle = this.config.textColor;
-        this.ctx.font = "10px monospace";
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "bottom";
-        this.ctx.fillText(text, midX, midY - 2);
+        const p1 = path[1];
+        if (p1) {
+          const text = `${vi.dtype}[${vi.shape.join(",")}]`;
+          this.ctx.fillStyle = this.config.textColor;
+          this.ctx.font = "10px monospace";
+          this.ctx.textAlign = "center";
+          this.ctx.textBaseline = "bottom";
+          this.ctx.fillText(text, p1.x, p1.y - 2);
+        }
       }
     }
   }

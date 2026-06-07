@@ -35,6 +35,8 @@ import { PolyfillMLOperand } from "./operand.js";
 export class PolyfillMLGraphBuilder {
   private graph: Graph;
   private nodeCounter: number = 0;
+  /** The associated ML context. */
+  private context: PolyfillMLContext;
 
   constructor(context: MLContext) {
     this.context = context as PolyfillMLContext;
