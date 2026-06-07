@@ -20,14 +20,14 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Install Python tools
         run: |
           uv sync --all-extras --all-packages
-          uv pip install ruff mypy --system
-      - name: Run ESLint
+          uv pip install ruff mypy
+      - name: Run oxlint
         run: pnpm lint
       - name: Run Ruff
         run: uv run ruff check .
