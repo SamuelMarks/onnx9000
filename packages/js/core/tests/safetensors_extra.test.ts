@@ -751,23 +751,27 @@ test("saveSafetensors Uint8Array input", () => {
 test("getEndianness BE", () => {
   const OriginalUint8Array = globalThis.Uint8Array;
 
-  // Mock for BE
-  globalThis.Uint8Array = ((buf: Object) => {
-    const arr = new OriginalUint8Array(buf);
-    arr[0] = 0x12;
-    return arr;
-  }) as any;
-  expect(getEndianness()).toBe("BE");
+  try {
+    // Mock for BE
+    globalThis.Uint8Array = class extends OriginalUint8Array {
+      constructor(buf: any) {
+        super(buf);
+        this[0] = 0x12;
+      }
+    } as any;
+    expect(getEndianness()).toBe("BE");
 
-  // Mock for unknown
-  globalThis.Uint8Array = ((buf: Object) => {
-    const arr = new OriginalUint8Array(buf);
-    arr[0] = 0x99;
-    return arr;
-  }) as any;
-  expect(getEndianness()).toBe("LE");
-
-  globalThis.Uint8Array = OriginalUint8Array;
+    // Mock for unknown
+    globalThis.Uint8Array = class extends OriginalUint8Array {
+      constructor(buf: any) {
+        super(buf);
+        this[0] = 0x99;
+      }
+    } as any;
+    expect(getEndianness()).toBe("LE");
+  } finally {
+    globalThis.Uint8Array = OriginalUint8Array;
+  }
 });
 
 test("saveSafetensors dead branches", () => {

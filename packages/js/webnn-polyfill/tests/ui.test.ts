@@ -61,7 +61,8 @@ describe("PolyfillUI", () => {
 
   it("should have attached to window via index.ts", async () => {
     // Reload index to trigger side effects
-    await import(`../src/index.js?t=${Date.now()}`);
+    vi.resetModules();
+    await import("../src/index.js");
     expect((window.navigator as Navigator & { ml?: object }).ml).toBeDefined();
     expect((window as Window & { MLContext?: object }).MLContext).toBeDefined();
     expect(

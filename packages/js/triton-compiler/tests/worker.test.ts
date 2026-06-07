@@ -31,7 +31,8 @@ describe("Triton Worker", () => {
     };
 
     // Import worker to register listener
-    await import(`../src/worker.js?t=${Date.now().toString()}`);
+    vi.resetModules();
+    await import("../src/worker.js");
 
     const onmessage = (globalContext.self as MockSelf).onmessage!;
     expect(onmessage).toBeDefined();

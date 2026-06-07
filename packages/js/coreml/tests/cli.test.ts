@@ -22,7 +22,8 @@ describe("CLI", () => {
   const runCLI = async (args: string[]) => {
     process.argv = ["node", "cli.js", ...args];
     try {
-      await import(`../src/cli.js?t=${Date.now()}`);
+      vi.resetModules();
+      await import("../src/cli.js");
       // wait a tick for promises
       await new Promise((r) => setTimeout(r, 10));
     } catch (e) {

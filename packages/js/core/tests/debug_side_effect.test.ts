@@ -6,8 +6,11 @@ describe("debug.js side-effect", () => {
     process.env.DEBUG_FORCE_RUN = "true";
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
 
-    // Import the module
-    const debug = await import(`../debug.js?test=${Date.now()}`);
+    // Reset modules to clear the cache
+    vi.resetModules();
+
+    // Import the module statically analyzable
+    const debug = await import("../debug.js");
 
     // Manually call main to ensure it finishes and we can check the spy
     // The top-level call in the file might still be running or finished,
