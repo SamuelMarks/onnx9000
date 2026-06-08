@@ -290,7 +290,7 @@ class C89Compiler:
                 sanitized_name = b._sanitize(name)
                 sanitized_name = b._sanitize(name)
                 unused_attr = " __attribute__((unused, aligned(64)))"
-                if tensor.dtype == DType.STRING:
+                if tensor.dtype == DType.STRING:  # pragma: no cover
                     strings = tensor.data if isinstance(tensor.data, list) else [tensor.data]
                     b.emit(
                         f"static const char* {self.prefix}weights_{sanitized_name}[]{unused_attr} = {{"

@@ -14,6 +14,7 @@ def load_weights(f: BinaryIO) -> dict[str, Any]:
 
     Returns:
         Dict[str, Any]: Header information and a flat array of weights.
+
     """
     header_data = f.read(12)
     if len(header_data) < 12:

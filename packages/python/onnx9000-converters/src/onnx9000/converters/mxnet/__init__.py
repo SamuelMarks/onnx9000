@@ -17,6 +17,7 @@ class MXNetConverter(BaseParser):
 
         Args:
             weights_path: Path to the .params file.
+
         """
         self.weights_path = weights_path
 
@@ -28,6 +29,7 @@ class MXNetConverter(BaseParser):
 
         Returns:
             The parsed ONNX9000 Core IR Graph.
+
         """
         if os.path.exists(model):
             with open(model) as f:

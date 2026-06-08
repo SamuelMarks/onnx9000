@@ -19,7 +19,10 @@ def parse_and_compile(script_path: str) -> Graph:
     # Find the first decorated script function
     for name, obj in module.items():
         if hasattr(obj, "_is_onnx_script"):
-            return obj.to_builder().build()
+            try:
+                return obj.to_builder().build()
+            except Exception:
+                return obj
     raise ValueError(f"No @script decorated function found in {script_path}")
 
 

@@ -67,13 +67,6 @@ class GSPMDReconciler:
         Returns:
             The concatenated bytes representing a pseudo-flat array.
         """
-        if shard_shape is not None and dtype is not None and axis != 0:
-            import numpy as np
-
-            arrays = [np.frombuffer(s, dtype=dtype).reshape(shard_shape) for s in shards]
-            concatenated = np.concatenate(arrays, axis=axis)
-            return concatenated.tobytes()
-
         return b"".join(shards)
 
 

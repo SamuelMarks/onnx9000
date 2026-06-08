@@ -286,7 +286,7 @@ declare class MLGraphBuilder {
     query: MLOperand,
     key: MLOperand,
     value: MLOperand,
-    options?: Object,
+    options?: object,
   ): MLOperand;
 
   // Quantization (201, 202)

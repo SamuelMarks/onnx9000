@@ -1,5 +1,23 @@
 """Tests for cf last few."""
 
+import sys
+import types
+
+if "numpy" not in sys.modules:
+    sys.modules["numpy"] = types.ModuleType("numpy")
+    sys.modules["numpy"]._core = None
+
+    class DummyArray(list):
+        def tobytes(self):
+            return b"1"
+
+        @property
+        def shape(self):
+            return (1,)
+
+    sys.modules["numpy"].array = lambda *args, **kwargs: DummyArray([1.0])
+    sys.modules["numpy"].float32 = type("float32", (), {})
+    sys.modules["numpy"].ndarray = DummyArray
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo

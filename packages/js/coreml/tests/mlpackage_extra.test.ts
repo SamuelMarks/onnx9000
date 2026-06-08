@@ -39,8 +39,8 @@ describe("MLPackageBuilder", () => {
     );
 
     class MockZip {
-      files: Record<string, Object> = {};
-      file(name: string, data: Object) {
+      files: Record<string, object> = {};
+      file(name: string, data: object) {
         this.files[name] = data;
       }
       async generateAsync() {
@@ -57,8 +57,8 @@ describe("MLPackageBuilder", () => {
     const builder = new MLPackageBuilder(model, new Uint8Array(0));
 
     class MockZip {
-      files: Record<string, Object> = {};
-      file(name: string, data: Object) {
+      files: Record<string, object> = {};
+      file(name: string, data: object) {
         this.files[name] = data;
       }
       async generateAsync() {
@@ -87,8 +87,8 @@ describe("MLPackageBuilder", () => {
     const builder = new MLPackageBuilder(model, new Uint8Array(0), options);
 
     class MockZip {
-      files: Record<string, Object> = {};
-      file(name: string, data: Object) {
+      files: Record<string, object> = {};
+      file(name: string, data: object) {
         this.files[name] = data;
       }
       async generateAsync() {

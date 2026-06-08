@@ -1,3 +1,5 @@
+"""Benchmark script for safetensors."""
+
 import os
 import tempfile
 import time
@@ -19,6 +21,7 @@ from onnx9000.toolkit.safetensors.parser import save_file as py_save_file
 
 
 def run_benchmark():
+    """Run the safetensors benchmark."""
     print("Generating 100MB dummy tensor...")
     # 25,000,000 float32s = 100MB
     data = {"weight": np.random.rand(25000000).astype(np.float32)}
@@ -77,5 +80,5 @@ def run_benchmark():
             print("Rust Safetensors not installed, skipping load.")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     run_benchmark()

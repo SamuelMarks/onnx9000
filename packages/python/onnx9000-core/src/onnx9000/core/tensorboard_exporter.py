@@ -9,7 +9,7 @@ from onnx9000.core.ir import Graph, Node
 
 
 def export_tensorboard(graph: Graph, log_dir: str) -> str:
-    """Exports the Graph to a TensorBoard compatible events.out.tfevents file."""
+    """Export the Graph to a TensorBoard compatible events.out.tfevents file."""
     os.makedirs(log_dir, exist_ok=True)
     filename = f"events.out.tfevents.{int(time.time())}.onnx9000"
     filepath = os.path.join(log_dir, filename)

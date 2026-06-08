@@ -29,15 +29,15 @@ describe("Coverage OpenVINO 3", () => {
     const root = new XmlNode("root");
     root.addChild("string child <>&");
     root.addChild("another string");
-    expect(root.toString(0, true)).toContain("string child &lt;&gt;&amp;");
-    expect(root.toString(0, false)).toContain("string child &lt;&gt;&amp;");
+    expect(root.toXMLString(0, true)).toContain("string child &lt;&gt;&amp;");
+    expect(root.toXMLString(0, false)).toContain("string child &lt;&gt;&amp;");
 
     const builder = new XmlBuilder("builder_root");
     builder.setDeclaration("dec");
-    expect(builder.toString(false)).toContain("dec");
+    expect(builder.toXMLString(false)).toContain("dec");
 
     // setRoot and toString coverage
     builder.setRoot(root);
-    expect(builder.toString(true)).toContain("string child");
+    expect(builder.toXMLString(true)).toContain("string child");
   });
 });

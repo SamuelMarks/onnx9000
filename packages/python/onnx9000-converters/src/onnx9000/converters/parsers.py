@@ -15,7 +15,8 @@ class BaseParser:
 
 
 class PyTorchFXParser(BaseParser):
-    """Intercepts torch.export.export (AOTAutograd) which reduces ALL PyTorch models to ~150 core ATen ops.
+    """Intercept torch.export.export (AOTAutograd) which reduces ALL PyTorch models to ~150 core ATen ops.
+
     Maps the 150 ATen ops strictly to GraphSurgeon IR.* ops.
     """
 
@@ -29,7 +30,7 @@ class PyTorchFXParser(BaseParser):
         }
 
     def parse(self, model: Any) -> Graph:
-        """Parses an ExportedProgram from torch.export.export."""
+        """Parse an ExportedProgram from torch.export.export."""
         if model is None:
             return Graph(name="PyTorch_Exported")
 
@@ -54,7 +55,7 @@ class JAXprParser(BaseParser):
         _ignore = True
 
     def parse(self, model: Any) -> Graph:
-        """Parses a closed_jaxpr or dict jaxpr."""
+        """Parse a closed_jaxpr or dict jaxpr."""
         if isinstance(model, dict):
             from onnx9000.jax.importer import load_jax
 
@@ -79,7 +80,7 @@ class XLAHLOParser(BaseParser):
         }
 
     def parse(self, model: Any) -> Graph:
-        """Parses an XLA HloModuleProto."""
+        """Parse an XLA HloModuleProto."""
         graph = Graph(name="XLA_Exported")
         # Real implementation iterates computations and instructions
         return graph

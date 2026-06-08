@@ -4,8 +4,8 @@ import * as layout from "../src/layout/dag.js";
 import { messageHandler } from "../src/parser/worker.js";
 
 describe("Worker messageHandler", () => {
-  let postMessageData: Object = null;
-  const postMessage = (d: Object) => {
+  let postMessageData: object = null;
+  const postMessage = (d: object) => {
     postMessageData = d;
   };
 

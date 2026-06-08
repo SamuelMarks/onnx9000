@@ -4,10 +4,10 @@ import { parseKerasH5 } from "../src/keras/h5-parser.js";
 vi.mock("jsfive", () => {
   return {
     File: class MockFile {
-      attrs: Object;
-      _groups: Object;
+      attrs: object;
+      _groups: object;
       keys: string[];
-      constructor(buf: Object, _name: string) {
+      constructor(buf: object, _name: string) {
         // Determine mock behavior based on buffer length
         if (buf.byteLength === 0) {
           this.attrs = {}; // No model_config

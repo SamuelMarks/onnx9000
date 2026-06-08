@@ -20,7 +20,7 @@ describe("Dynamic Batching pass", () => {
 
     implementDynamicBatching(block);
 
-    expect((block.inputs[0]?.type as TensorType).shape[0]).toBe("B");
+    expect((block.inputs[0]!.type as TensorType).shape[0]).toBe("B");
   });
 
   it("Replaces static batch size 1 with dynamic B for operation outputs", () => {
@@ -41,7 +41,7 @@ describe("Dynamic Batching pass", () => {
     implementDynamicBatching(block);
 
     const op = block.operations[0];
-    expect((op?.outputs[0]?.type as TensorType).shape[0]).toBe("B");
+    expect((op!.outputs[0]!.type as TensorType).shape[0]).toBe("B");
   });
 
   it("Ignores dimensions that are not 1 or not index 0", () => {
@@ -57,7 +57,7 @@ describe("Dynamic Batching pass", () => {
 
     implementDynamicBatching(block);
 
-    expect((block.inputs[0]?.type as TensorType).shape[0]).toBe(4);
-    expect((block.inputs[0]?.type as TensorType).shape[1]).toBe(1);
+    expect((block.inputs[0]!.type as TensorType).shape[0]).toBe(4);
+    expect((block.inputs[0]!.type as TensorType).shape[1]).toBe(1);
   });
 });

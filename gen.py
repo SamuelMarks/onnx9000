@@ -1,3 +1,5 @@
+"""Generator script."""
+
 import os
 
 packages = [

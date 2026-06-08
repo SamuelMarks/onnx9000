@@ -8,6 +8,7 @@ def start_chat_tui() -> bool:
 
     Returns:
         bool: True when the session finishes successfully.
+
     """
     print("Starting ONNX9000 TUI chat... (type 'exit' to quit)")
     try:

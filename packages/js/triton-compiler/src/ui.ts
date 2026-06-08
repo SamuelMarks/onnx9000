@@ -99,11 +99,11 @@ export class TritonCompilerElement extends HTMLElement {
     bindSlider("#blockK", "#bk-val");
 
     this.shadowRoot?.querySelector("#gen")?.addEventListener("click", () => {
-      const bm = (this.shadowRoot?.querySelector("#blockM") as HTMLInputElement)
+      const bm = (this.shadowRoot!.querySelector("#blockM") as HTMLInputElement)
         .value;
-      const bn = (this.shadowRoot?.querySelector("#blockN") as HTMLInputElement)
+      const bn = (this.shadowRoot!.querySelector("#blockN") as HTMLInputElement)
         .value;
-      const bk = (this.shadowRoot?.querySelector("#blockK") as HTMLInputElement)
+      const bk = (this.shadowRoot!.querySelector("#blockK") as HTMLInputElement)
         .value;
       this.dispatchEvent(
         new CustomEvent("generate-requested", {

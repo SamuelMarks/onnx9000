@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WebNNCompiler } from "../src/providers/webnn/compiler.js";
 
 describe("WebNNCompiler specific lines coverage", () => {
-  let builder: Object;
+  let builder: object;
 
   beforeEach(() => {
     global.MLGraphBuilder = class {

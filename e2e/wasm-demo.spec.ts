@@ -30,12 +30,12 @@ test.describe('WASM Sphinx Demo E2E', () => {
     // Make sure the code editor contains Keras code
     // The Monaco editor content is deeply nested. We can evaluate to check it.
     await page.waitForFunction(
-      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+      () => !!(window as object).monaco && !!(window as object).monaco.editor,
     );
     const lhsContent = await page.evaluate(() => {
-      return (window as Object).monaco.editor
+      return (window as object).monaco.editor
         .getModels()
-        .find((m: Object) => m.uri.path.includes('train.py'))
+        .find((m: object) => m.uri.path.includes('train.py'))
         ?.getValue();
     });
     expect(lhsContent).toContain('models.Sequential');
@@ -55,8 +55,8 @@ test.describe('WASM Sphinx Demo E2E', () => {
     await page.waitForTimeout(2000); // Wait for conversion ONNX -> C
 
     const modelCContent = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelC = models.find((m: object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
     console.log(`C CONTENT:\n${modelCContent}`);
@@ -69,8 +69,8 @@ test.describe('WASM Sphinx Demo E2E', () => {
     await page.waitForTimeout(500);
 
     const modelHContent = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelH = models.find((m: Object) => m.uri.path.includes('model.h'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelH = models.find((m: object) => m.uri.path.includes('model.h'));
       return modelH ? modelH.getValue() : '';
     });
     expect(modelHContent).toContain('void model_run');
@@ -127,7 +127,7 @@ int main() {
 
     await page.waitForTimeout(2000);
     await page.waitForFunction(
-      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+      () => !!(window as object).monaco && !!(window as object).monaco.editor,
     );
 
     // Default should be C
@@ -141,8 +141,8 @@ int main() {
 
     // Get original C code
     const originalC = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelC = models.find((m: object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
 
@@ -150,9 +150,9 @@ int main() {
 
     // Change Keras code in LHS: e.g., change units from 128 to 256
     await page.evaluate(() => {
-      const kerasModel = (window as Object).monaco.editor
+      const kerasModel = (window as object).monaco.editor
         .getModels()
-        .find((m: Object) => m.uri.path.includes('train.py'));
+        .find((m: object) => m.uri.path.includes('train.py'));
       const val = kerasModel.getValue();
       kerasModel.setValue(val.replace('128', '256')); // Assuming 128 is in the keras input
     });
@@ -168,8 +168,8 @@ int main() {
 
     // Get new C code
     const newC = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelC = models.find((m: Object) => m.uri.path.includes('model.c'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelC = models.find((m: object) => m.uri.path.includes('model.c'));
       return modelC ? modelC.getValue() : '';
     });
 
@@ -186,7 +186,7 @@ int main() {
 
     await page.waitForTimeout(2000);
     await page.waitForFunction(
-      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+      () => !!(window as object).monaco && !!(window as object).monaco.editor,
     );
 
     // Select ONNX Script from RHS Dropdown
@@ -205,8 +205,8 @@ int main() {
 
     // Get generated ONNX Script Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelPy = models.find((m: Object) => m.uri.path.includes('model.py'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelPy = models.find((m: object) => m.uri.path.includes('model.py'));
       return modelPy ? modelPy.getValue() : '';
     });
 
@@ -242,7 +242,7 @@ int main() {
 
     await page.waitForTimeout(2000);
     await page.waitForFunction(
-      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+      () => !!(window as object).monaco && !!(window as object).monaco.editor,
     );
 
     // Select PyTorch from RHS Dropdown
@@ -261,8 +261,8 @@ int main() {
 
     // Get generated PyTorch Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
-      const modelPy = models.find((m: Object) => m.uri.path.includes('module.py'));
+      const models = (window as object).monaco.editor.getModels();
+      const modelPy = models.find((m: object) => m.uri.path.includes('module.py'));
       return modelPy ? modelPy.getValue() : '';
     });
 
@@ -299,7 +299,7 @@ int main() {
 
     await page.waitForTimeout(2000);
     await page.waitForFunction(
-      () => !!(window as Object).monaco && !!(window as Object).monaco.editor,
+      () => !!(window as object).monaco && !!(window as object).monaco.editor,
     );
 
     // Select CNTK from RHS Dropdown
@@ -318,9 +318,9 @@ int main() {
 
     // Get generated CNTK Python code
     const pyCode = await page.evaluate(() => {
-      const models = (window as Object).monaco.editor.getModels();
+      const models = (window as object).monaco.editor.getModels();
       const modelPy = models.find(
-        (m: Object) => m.uri.path.includes('model.py') && m.uri.path.includes('output-cntk'),
+        (m: object) => m.uri.path.includes('model.py') && m.uri.path.includes('output-cntk'),
       );
       return modelPy ? modelPy.getValue() : '';
     });

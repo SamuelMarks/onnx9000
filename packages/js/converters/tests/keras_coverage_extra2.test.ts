@@ -37,7 +37,7 @@ describe("Coverage Keras Converter 2", () => {
       "einsum_1",
       kerasJson.modelTopology.config.layers[0].config,
     );
-    expect(nodes1.find((n: Object) => n.opType === "Add")).toBeDefined();
+    expect(nodes1.find((n: object) => n.opType === "Add")).toBeDefined();
 
     const nodes2 = (converter as any).handleEinsumDense(
       "in",
@@ -46,6 +46,6 @@ describe("Coverage Keras Converter 2", () => {
       "einsum_2",
       kerasJson.modelTopology.config.layers[1].config,
     );
-    expect(nodes2.find((n: Object) => n.opType === "Identity")).toBeDefined();
+    expect(nodes2.find((n: object) => n.opType === "Identity")).toBeDefined();
   });
 });

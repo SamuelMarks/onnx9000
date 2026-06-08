@@ -10,7 +10,7 @@ from onnx9000.core.registry import global_registry as registry
 
 
 def _get_attr(node: Node, name: str, default: Any) -> Any:
-    """Helper to safely retrieve attribute values."""
+    """Safely retrieve attribute values."""
     attr = node.attributes.get(name)
     if attr is not None:
         return attr.value

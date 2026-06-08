@@ -1,3 +1,5 @@
+"""Fix box script."""
+
 import glob
 import os
 

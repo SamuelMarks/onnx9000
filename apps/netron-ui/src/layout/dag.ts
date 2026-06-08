@@ -161,7 +161,7 @@ export function computeLayout(
           const tensor = graph.tensors[name];
           if (tensor && tensor.dtype === "string" && tensor.data) {
             const decoder = new TextDecoder("utf-8");
-            // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping control chars
+            // eslint-disable-next-line no-control-regex
             const str = decoder
               .decode(tensor.data)
               .replace(/[\x00-\x1F\x7F]/g, "");
@@ -244,7 +244,7 @@ export function computeLayout(
           const tensor = graph.tensors[name];
           if (tensor && tensor.dtype === "string" && tensor.data) {
             const decoder = new TextDecoder("utf-8");
-            // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping control chars
+            // eslint-disable-next-line no-control-regex
             const str = decoder
               .decode(tensor.data)
               .replace(/[\x00-\x1F\x7F]/g, "");

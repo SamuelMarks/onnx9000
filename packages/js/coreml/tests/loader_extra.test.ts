@@ -8,7 +8,7 @@ describe("MLPackageLoader", () => {
     const modelBytes = emitModel(model as any);
 
     class MockZip {
-      files: Record<string, Object> = {};
+      files: Record<string, object> = {};
       async loadAsync() {
         this.files["Data/com.apple.CoreML/model.mlmodel"] = {
           async: async () => modelBytes,

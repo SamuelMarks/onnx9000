@@ -14,13 +14,13 @@ class PyTorchPCG:
     """
 
     def __init__(self, seed: int):
-        """Docstring for D107."""
+        """Initialize the instance."""
         self.state = int(seed) & 0xFFFFFFFFFFFFFFFF
         self.inc = 1442695040888963407
         self.next_uint()
 
     def next_uint(self) -> int:
-        """Docstring for D102."""
+        """Perform the operation."""
         oldstate = self.state
         self.state = (oldstate * 6364136223846793005 + self.inc) & 0xFFFFFFFFFFFFFFFF
         xorshifted = ((oldstate >> 18) ^ oldstate) >> 27
@@ -78,7 +78,7 @@ class ProgressBarConfig:
     """Global configuration for CLI progress bars."""
 
     def __init__(self):
-        """Docstring for D107."""
+        """Initialize the instance."""
         self.enabled = True
 
 

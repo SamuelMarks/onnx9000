@@ -2,31 +2,24 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 describe("demo", () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = "<textarea id=\"prompt\"></textarea><button id=\"runBtn\"></button><div id=\"output\"></div>";
   });
 
   it("should run flow", async () => {
-    // import to execute module top-level
     try {
-      await import("../src/main.js");
+      await import("../src/main.ts");
     } catch (_e) {}
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    const btn = document.getElementById("runBtn") as HTMLButtonElement;
+    const prompt = document.getElementById("prompt") as HTMLTextAreaElement;
+    const out = document.getElementById("output") as HTMLElement;
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    btn.click();
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    prompt.value = "test";
+    btn.click();
+
+    await new Promise((r) => setTimeout(r, 4000));
+    expect(out.innerText).toContain("[Agent] Final Answer: 55");
   });
 });

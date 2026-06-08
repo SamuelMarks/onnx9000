@@ -85,7 +85,7 @@ class MockMLGraphBuilder {
 }
 
 describe("WebNNCompiler mapping", () => {
-  let builder: Object;
+  let builder: object;
   let graph: Graph;
 
   beforeEach(() => {

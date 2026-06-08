@@ -30,7 +30,7 @@ class Dropout(_DropoutNd):
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
         """Initialize."""
-        super().__init__(p=p, inplace=inplace)
+        super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
 class Dropout1d(_DropoutNd):
@@ -38,7 +38,7 @@ class Dropout1d(_DropoutNd):
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
         """Initialize."""
-        super().__init__(p=p, inplace=inplace)
+        super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
 class Dropout2d(_DropoutNd):
@@ -46,7 +46,7 @@ class Dropout2d(_DropoutNd):
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
         """Initialize."""
-        super().__init__(p=p, inplace=inplace)
+        super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
 class Dropout3d(_DropoutNd):
@@ -54,4 +54,4 @@ class Dropout3d(_DropoutNd):
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
         """Initialize."""
-        super().__init__(p=p, inplace=inplace)
+        super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover

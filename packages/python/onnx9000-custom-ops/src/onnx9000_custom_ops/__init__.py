@@ -5,6 +5,7 @@ class CustomOpRegistry:
     """Registry for custom ONNX operations."""
 
     def __init__(self):
+        """Initialize."""
         self._ops = {}
 
     def register(self, op_name: str, op_func: callable):

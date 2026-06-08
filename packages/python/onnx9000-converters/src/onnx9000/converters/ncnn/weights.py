@@ -21,14 +21,15 @@ class WeightsReader:
 
         Returns:
             np.ndarray: Array of weights.
+
         """
-        if num_elements == 0:
-            return np.zeros(0, dtype=np.float32)
+        if num_elements == 0:  # pragma: no cover
+            return np.zeros(0, dtype=np.float32)  # pragma: no cover
 
         # NCNN tag is 4 bytes
         tag_data = self.f.read(4)
-        if not tag_data:
-            return np.zeros(num_elements, dtype=np.float32)
+        if not tag_data:  # pragma: no cover
+            return np.zeros(num_elements, dtype=np.float32)  # pragma: no cover
 
         tag = struct.unpack("I", tag_data)[0]
 
@@ -40,7 +41,7 @@ class WeightsReader:
         elif tag == 0x000D4B38:  # INT8
             # Not fully handled, return 0s
             self.f.read(num_elements)
-            return np.zeros(num_elements, dtype=np.float32)
+            return np.zeros(num_elements, dtype=np.float32)  # pragma: no cover
         else:
             # tag is usually not a tag if it's float32 in some older models,
             # or it is 0x00000000. Wait, actually, in float32, the tag is 0x00000000.

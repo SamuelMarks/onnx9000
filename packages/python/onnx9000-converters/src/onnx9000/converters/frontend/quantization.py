@@ -1,3 +1,5 @@
+"""Quantization utilities."""
+
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
@@ -21,6 +23,7 @@ class AWQParser:
     """Parse Hugging Face AWQ config files to reconstruct group-wise INT4 weights."""
 
     def parse_config(self, graph: Graph, config: dict, weight_name: str) -> None:
+        """Parse config."""
         group_size = config.get("group_size", 128)
         # Register group-wise quantization
         dequant = Node(
@@ -36,6 +39,7 @@ class GPTQParser:
     """Parse GPTQ state-dicts and descramble act-order permutations in the IR."""
 
     def parse_state_dict(self, graph: Graph, state_dict: dict, weight_name: str) -> None:
+        """Parse state dict."""
         g_idx = state_dict.get(f"{weight_name}.g_idx")
         if g_idx is not None:
             # Descramble pass logic using Gather
@@ -52,6 +56,7 @@ class AQTParser:
     """Replicate Bonsai AQT INT8/INT4 symmetric bound tensors."""
 
     def parse_aqt(self, graph: Graph, weight_name: str, bitwidth: int = 8) -> None:
+        """Parse AQT."""
         dequant = Node(
             op_type="DequantizeLinear",
             inputs=[weight_name, f"{weight_name}_scale"],

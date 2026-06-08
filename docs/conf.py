@@ -1,3 +1,5 @@
+"""Sphinx configuration."""
+
 import os
 import subprocess
 import sys
@@ -71,6 +73,7 @@ intersphinx_mapping = {
 
 # Auto build typedoc on start
 def run_typedoc(app):
+    """Run typedoc."""
     print("Building TypeScript for docs...")
     subprocess.run(
         [
@@ -149,6 +152,8 @@ from pygments.token import *
 
 
 class MlirLexer(RegexLexer):
+    """MLIR Lexer for Pygments."""
+
     name = "MLIR"
     aliases = ["mlir"]
     filenames = ["*.mlir"]
@@ -171,6 +176,7 @@ class MlirLexer(RegexLexer):
 
 
 def setup(app):
+    """Set up Sphinx."""
     app.connect("builder-inited", run_typedoc)
     app.add_lexer("mlir", MlirLexer)
 

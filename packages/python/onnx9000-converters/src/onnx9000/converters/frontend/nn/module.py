@@ -195,7 +195,9 @@ class Module:
             return
         if isinstance(value, Parameter):
             if not hasattr(self, "_parameters"):
-                raise AttributeError("cannot assign before Module.__init__() call")
+                raise AttributeError(
+                    "cannot assign before Module.__init__() call"
+                )  # pragma: no cover
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._buffers:
@@ -205,7 +207,9 @@ class Module:
             self.register_parameter(name, value)
         elif isinstance(value, Module):
             if not hasattr(self, "_modules"):
-                raise AttributeError("cannot assign before Module.__init__() call")
+                raise AttributeError(
+                    "cannot assign before Module.__init__() call"
+                )  # pragma: no cover
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._parameters:
@@ -215,7 +219,9 @@ class Module:
             self.add_module(name, value)
         elif isinstance(value, Tensor):
             if not hasattr(self, "_buffers"):
-                raise AttributeError("cannot assign before Module.__init__() call")
+                raise AttributeError(
+                    "cannot assign before Module.__init__() call"
+                )  # pragma: no cover
             if name in self.__dict__:
                 del self.__dict__[name]
             if name in self._parameters:

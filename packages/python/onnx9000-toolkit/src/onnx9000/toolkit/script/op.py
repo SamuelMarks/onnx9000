@@ -58,13 +58,9 @@ class OpNamespace:
             """Construct and adds an ONNX node to the currently active GraphBuilder."""
             inputs = []
             for arg in args:
-                if isinstance(arg, list) and op_type == "Concat":
-                    for a in arg:
-                        inputs.append(_make_var(a))
-                else:
-                    inputs.append(_make_var(arg))
+                inputs.append(_make_var(arg))
             num_outputs = 1
-            if op_type in ["TopK", "Split", "LSTM"] and op_type == "TopK":
+            if op_type in ["TopK", "Split", "LSTM"]:
                 num_outputs = 2
             from onnx9000.toolkit.script.schema import validate_op
 
@@ -128,9 +124,7 @@ def If(
     builder = get_active_builder()
     if builder is not None:
         builder.add_node(node)
-    if num_outputs == 0:
-        return None
-    elif num_outputs == 1:
+    if num_outputs == 1:
         return out_vars[0]
     return tuple(out_vars)
 
@@ -152,18 +146,16 @@ def Loop(
     builder = get_active_builder()
     if builder is not None:
         builder.add_node(node)
-    if num_outputs == 0:
-        return None
-    elif num_outputs == 1:
+    if num_outputs == 1:
         return out_vars[0]
     return tuple(out_vars)
 
 
-def Scan(body: Any, num_scan_inputs: int, num_outputs: int = 1) -> Var | tuple[Var, ...] | None:
+def Scan(body: Any, num_scan_inputs: int, num_outputs: int = 1) -> tuple[Var, ...]:
     """Build an ONNX Scan operation to iterate a subgraph over one or more input tensors."""
     out_vars = [Var() for _ in range(num_outputs)]
     out_names = [v.name for v in out_vars]
-    node = Node(
+    Node(
         op_type="Scan",
         inputs=[],
         outputs=out_names,
@@ -171,11 +163,7 @@ def Scan(body: Any, num_scan_inputs: int, num_outputs: int = 1) -> Var | tuple[V
     )
     builder = get_active_builder()
     if builder is not None:
-        builder.add_node(node)
-    if num_outputs == 0:
-        return None
-    elif num_outputs == 1:
-        return out_vars[0]
+        pass
     return tuple(out_vars)
 
 

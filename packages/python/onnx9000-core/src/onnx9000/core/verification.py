@@ -26,7 +26,8 @@ class IRGraph:
 
 
 def check_tolerance(target: torch.Tensor, oracle: torch.Tensor, dtype: str) -> tuple[bool, float]:
-    """Checks if the target tensor is within the allowed tolerance compared to the oracle tensor.
+    """Check if the target tensor is within the allowed tolerance compared to the oracle tensor.
+
     Returns (is_passed, max_diff_or_similarity).
     """
     target = target.float()
@@ -62,7 +63,7 @@ def check_tolerance(target: torch.Tensor, oracle: torch.Tensor, dtype: str) -> t
 
 
 def reset_environment(seed: int = 42):
-    """Resets the environment state."""
+    """Reset the environment state."""
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -85,11 +86,11 @@ class OracleVerifier:
         return None
 
     def generate_inputs(self, input_shape: tuple[int, ...]) -> torch.Tensor:
-        """Generates Gaussian noise inputs."""
+        """Generate Gaussian noise inputs."""
         return torch.randn(input_shape)
 
     def run_oracle(self, inputs: torch.Tensor) -> tuple[torch.Tensor, int]:
-        """Runs the oracle model and returns the output and peak VRAM."""
+        """Run the oracle model and returns the output and peak VRAM."""
         if torch.cuda.is_available():
             torch.cuda.reset_peak_memory_stats()
 
@@ -106,7 +107,7 @@ class OracleVerifier:
             return self.oracle_model(inputs)
 
     def verify(self, input_shape: tuple[int, ...]) -> bool:
-        """Runs the verification pipeline."""
+        """Run the verification pipeline."""
         reset_environment()
         ir = self.parse_to_ir()
         artifacts = self.generate_artifacts(ir)
@@ -127,8 +128,9 @@ def bisect_dag(
     target_eval_fn: Callable[[int], torch.Tensor],
     dtype: str = "FP32",
 ) -> IRNode | None:
-    """Given a failing graph, incrementally evaluates the oracle and target up to node N
-    to find the exact IR.Node where divergence exceeds the threshold.
+    """Given a failing graph, incrementally evaluates the oracle and target up to node N.
+
+    To find the exact IR.Node where divergence exceeds the threshold.
     """
     for i, node in enumerate(graph.nodes):
         oracle_output = oracle_eval_fn(i)

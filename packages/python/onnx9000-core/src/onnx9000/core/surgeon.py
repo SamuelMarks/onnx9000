@@ -2012,6 +2012,7 @@ class StatefulToStatelessPass:
 
     @staticmethod
     def apply(graph: Graph) -> Graph:
+        """Apply cleanup."""
         cache_inputs = []
         cache_outputs = []
 
@@ -2053,6 +2054,7 @@ class LayoutOptimizerPass:
 
     @staticmethod
     def apply(graph: Graph) -> Graph:
+        """Apply transpose."""
         for node in graph.nodes:
             if node.op_type in ("Conv", "MaxPool", "AveragePool"):
                 node.attributes["layout"] = Attribute(

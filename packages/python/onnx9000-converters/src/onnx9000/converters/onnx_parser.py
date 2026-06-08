@@ -66,7 +66,7 @@ class PureOnnxParser:
         return self._parse_message(self.view, 0, len(self.view), "ModelProto")
 
     def _parse_message(self, view: memoryview, start: int, end: int, msg_type: str) -> dict:
-        """parse message."""
+        """Parse message."""
         result = {}
         offset = start
         while offset < end:

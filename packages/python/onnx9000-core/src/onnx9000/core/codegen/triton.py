@@ -1,3 +1,5 @@
+"""Triton codegen."""
+
 import os
 from typing import Any
 
@@ -8,6 +10,7 @@ class TritonExporter:
     """Core IR -> @triton.jit exporter."""
 
     def __init__(self, graph: Graph):
+        """Initialize."""
         self.graph = graph
 
     def export(self) -> str:

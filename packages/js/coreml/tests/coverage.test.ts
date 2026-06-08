@@ -49,7 +49,7 @@ describe("Coverage tests", () => {
     commonSubexpressionElimination(block);
 
     const concatOp = block.operations.find((o) => o.opType === "concat");
-    expect((concatOp?.inputs.x as Var[])[1].name).toBe("out1");
+    expect((concatOp!.inputs.x as Var[])[1].name).toBe("out1");
   });
 
   it("covers ane redundant cast pass array branch", () => {
@@ -65,7 +65,7 @@ describe("Coverage tests", () => {
   });
 
   it("covers converter attributes and graphs", () => {
-    const mockGraph: Object = {
+    const mockGraph: object = {
       inputs: [
         { name: "cond", dtype: "bool", shape: [1] },
         { name: "a", dtype: "float32", shape: [1] },
@@ -105,7 +105,7 @@ describe("Coverage tests", () => {
   });
 
   it("covers mlpackage metadata author and description", () => {
-    const onnxModel: Object = {
+    const onnxModel: object = {
       irVersion: 8n,
       opsetImport: [],
       producerName: "test",

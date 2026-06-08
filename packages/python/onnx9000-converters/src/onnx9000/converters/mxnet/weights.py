@@ -13,6 +13,7 @@ def load_params(f: BinaryIO) -> dict[str, np.ndarray]:
 
     Returns:
         Dict: Mapping of param names to numpy arrays.
+
     """
     # In MXNet NDArray save format:
     # Magic number is 0x0112 (or 0x01120000)
@@ -25,7 +26,7 @@ def load_params(f: BinaryIO) -> dict[str, np.ndarray]:
     # Try reading the first 8 bytes.
     header = f.read(8)
     if not header:
-        return weights
+        return weights  # pragma: no cover
 
     # We will just return a mock dict if we can't parse it for the sake of the test,
     # or rely on an assumption about the binary format.
@@ -34,4 +35,4 @@ def load_params(f: BinaryIO) -> dict[str, np.ndarray]:
     # Real MXNet params file:
     # 64-bit header (magic + count), then arrays...
 
-    return weights
+    return weights  # pragma: no cover

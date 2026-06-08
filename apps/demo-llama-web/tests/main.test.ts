@@ -2,31 +2,40 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 describe("demo", () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = "<form id=\"chat-form\"><input id=\"prompt-input\"/><button id=\"send-btn\"></button><div id=\"messages\"></div></form>";
   });
 
   it("should run flow", async () => {
-    // import to execute module top-level
     try {
-      await import("../src/main.js");
+      const { initLlamaWebDemo } = await import("../src/main.ts");
+      initLlamaWebDemo();
+      
+      // now break the DOM to hit the early return branch
+      document.body.innerHTML = "";
+      initLlamaWebDemo();
     } catch (_e) {}
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    // Restore DOM to continue flow
+    document.body.innerHTML = "<form id=\"chat-form\"><input id=\"prompt-input\"/><button id=\"send-btn\"></button><div id=\"messages\"></div></form>";
+    const { initLlamaWebDemo } = await import("../src/main.ts");
+    initLlamaWebDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const form = document.getElementById("chat-form") as HTMLFormElement;
+    const input = document.getElementById("prompt-input") as HTMLInputElement;
+    const messages = document.getElementById("messages") as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    // submit empty
+    form.dispatchEvent(new Event("submit", { cancelable: true }));
+
+    // submit something
+    input.value = "hello";
+    form.dispatchEvent(new Event("submit", { cancelable: true }));
+    
+    // submit while generating
+    input.value = "ignored";
+    form.dispatchEvent(new Event("submit", { cancelable: true }));
+
+    await new Promise((r) => setTimeout(r, 2500));
+    expect(messages.textContent).toContain("How else can I help you today?");
   });
 });

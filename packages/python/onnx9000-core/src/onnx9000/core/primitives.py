@@ -33,7 +33,7 @@ class BaseNorm:
         self.epsilon = epsilon
 
     def __call__(self, x: Tensor, *args: Any, **kwargs: Any) -> Tensor:
-        """Applies normalization."""
+        """Apply normalization."""
         return x
 
 
@@ -61,7 +61,7 @@ class BatchNormalization(BaseNorm):
         input_mean: Tensor,
         input_var: Tensor,
     ) -> Tensor:
-        """Applies Batch Normalization.
+        """Apply Batch Normalization.
 
         Args:
             x: Input tensor.
@@ -97,7 +97,7 @@ class LayerNormalization(BaseNorm):
         self.axis = -len(normalized_shape)
 
     def __call__(self, x: Tensor, scale: Tensor, b: Tensor | None = None) -> Tensor:
-        """Applies Layer Normalization.
+        """Apply Layer Normalization.
 
         Args:
             x: Input tensor.
@@ -126,7 +126,7 @@ class RMSNorm(BaseNorm):
         self.normalized_shape = normalized_shape
 
     def __call__(self, x: Tensor, scale: Tensor) -> Tensor:
-        """Applies RMS Normalization.
+        """Apply RMS Normalization.
 
         Args:
             x: Input tensor.
@@ -156,7 +156,7 @@ class GroupNorm(BaseNorm):
         self.num_channels = num_channels
 
     def __call__(self, x: Tensor, scale: Tensor, b: Tensor) -> Tensor:
-        """Applies Group Normalization using Reshape and LayerNorm.
+        """Apply Group Normalization using Reshape and LayerNorm.
 
         Args:
             x: Input tensor.
@@ -185,7 +185,7 @@ class InstanceNorm(BaseNorm):
         self.num_features = num_features
 
     def __call__(self, x: Tensor, scale: Tensor, b: Tensor) -> Tensor:
-        """Applies Instance Normalization.
+        """Apply Instance Normalization.
 
         Args:
             x: Input tensor.
@@ -203,7 +203,7 @@ class BaseActivation:
     """Abstract base class for element-wise non-linearities."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Applies activation."""
+        """Apply activation."""
         return x
 
     def generate_lut(

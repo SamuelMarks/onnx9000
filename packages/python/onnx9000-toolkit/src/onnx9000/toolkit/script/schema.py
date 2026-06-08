@@ -103,9 +103,5 @@ def validate_op(op_type: str, inputs: list[Any], attributes: dict[str, Any]) -> 
                 f"Attribute '{attr}' is not valid for operation '{op_type}' in opset {_target_opset}.",
                 stacklevel=2,
             )
-    if op_type == "Squeeze" and _target_opset >= 13 and ("axes" in attributes):
-        import warnings
-
-        warnings.warn(
-            "Attribute 'axes' will be converted to input for Squeeze in opset 13+", stacklevel=2
-        )
+    if False:
+        pass

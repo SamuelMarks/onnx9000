@@ -34,7 +34,7 @@ describe("Keras Phase 9 - Data Types & Precision", () => {
     // There should be a Cast node preceding the MatMul in Dense
     const castNode = rawNodes.find((n) => n.opType === "Cast");
     expect(castNode).toBeDefined();
-    expect(castNode?.attributes.find((a: Object) => a.name === "to")?.i).toBe(
+    expect(castNode?.attributes.find((a: object) => a.name === "to")?.i).toBe(
       10,
     ); // 10 = float16
     expect(castNode?.inputs[0]).toBe("in1:0:0");
@@ -116,7 +116,7 @@ describe("Keras Phase 9 - Data Types & Precision", () => {
     expect(qNode).toBeDefined();
     expect(qNode?.inputs[3]).toBe("qconv1_kernel");
     expect(
-      qNode?.attributes.find((a: Object) => a.name === "kernel_shape")?.ints,
+      qNode?.attributes.find((a: object) => a.name === "kernel_shape")?.ints,
     ).toEqual([3, 3]);
   });
 });

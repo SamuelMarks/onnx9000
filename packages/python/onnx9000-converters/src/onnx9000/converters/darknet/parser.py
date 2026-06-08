@@ -11,6 +11,7 @@ def parse_cfg(content: str) -> list[dict[str, Any]]:
 
     Returns:
         List[Dict[str, Any]]: A list of dictionaries representing the layers.
+
     """
     lines = content.split("\n")
     blocks = []

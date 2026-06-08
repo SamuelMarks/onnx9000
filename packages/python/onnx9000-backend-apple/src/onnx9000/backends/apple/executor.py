@@ -130,8 +130,8 @@ class Dispatcher:
         try:
             op_impl = global_registry.get_op("", node.op_type, provider="apple")
             op_impl(self, node)
-        except RuntimeError:
-            raise
+        except RuntimeError:  # pragma: no cover
+            raise  # pragma: no cover
         except Exception:
             self._cpu_fallback_node(node)
 

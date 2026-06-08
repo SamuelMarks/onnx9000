@@ -1,3 +1,5 @@
+"""Generate TOC script."""
+
 import glob
 import os
 

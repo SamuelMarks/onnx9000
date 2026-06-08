@@ -1,7 +1,32 @@
 """Tests the simplifier ops module functionality."""
 
 import contextlib
+import sys
+import types
 
+if "numpy" not in sys.modules:
+    sys.modules["numpy"] = types.ModuleType("numpy")
+    sys.modules["numpy"]._core = None
+
+    class DummyArray(list):
+        def tobytes(self):
+            return b"1"
+
+        @property
+        def shape(self):
+            return (1,)
+
+        @property
+        def ndim(self):
+            return 1
+
+    sys.modules["numpy"].array = lambda *args, **kwargs: DummyArray([1.0])
+    sys.modules["numpy"].float32 = type("float32", (), {})
+    sys.modules["numpy"].ndarray = DummyArray
+    sys.modules["numpy"].bool = bool
+    sys.modules["numpy"].int32 = type("int32", (), {})
+    sys.modules["numpy"].int64 = type("int64", (), {})
+    sys.modules["numpy"].inf = float("inf")
 import numpy as np
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor

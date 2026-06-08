@@ -12,5 +12,6 @@ def parse_symbol(content: str) -> dict[str, Any]:
 
     Returns:
         Dict: Parsed JSON dictionary.
+
     """
     return json.loads(content)

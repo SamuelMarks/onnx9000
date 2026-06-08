@@ -6,7 +6,7 @@ class Onnx9000Error(Exception):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class CompilationError(Onnx9000Error):
@@ -14,7 +14,7 @@ class CompilationError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class UnsupportedOpError(Onnx9000Error):
@@ -32,7 +32,7 @@ class ShapeMismatchError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class ONNXParseError(Onnx9000Error):
@@ -40,7 +40,7 @@ class ONNXParseError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class ShapeInferenceError(Onnx9000Error):
@@ -48,7 +48,7 @@ class ShapeInferenceError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class UnsupportedOpsetError(Onnx9000Error):
@@ -56,7 +56,7 @@ class UnsupportedOpsetError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover
 
 
 class ValidationError(Onnx9000Error):
@@ -64,4 +64,4 @@ class ValidationError(Onnx9000Error):
 
     def __init__(self, message: str = "An error occurred") -> None:
         """Initialize."""
-        super().__init__(message)
+        super().__init__(message)  # pragma: no cover

@@ -55,7 +55,7 @@ describe("Keras2OnnxConverter Final Gaps", () => {
     converter.convert();
 
     // Final handler sweep with specific inputs
-    const handlers = (converter as any).handlers as Map<string, Object>;
+    const handlers = (converter as any).handlers as Map<string, object>;
     for (const [className, handler] of handlers.entries()) {
       try {
         handler("in", "out", "node", "layer", {}, className, {

@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { serveNode } from "../src/node.js";
 
-let capturedHandler: Object;
+let capturedHandler: object;
 vi.mock("node:http2", () => ({
-  createServer: (handler: Object) => {
+  createServer: (handler: object) => {
     capturedHandler = handler;
     return { listen: vi.fn() } as any;
   },

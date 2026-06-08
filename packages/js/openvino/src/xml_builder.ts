@@ -94,7 +94,7 @@ export class XmlNode {
           result += escapedText;
         }
       } else {
-        result += child.toString(childIndent, pretty);
+        result += child.toXMLString(childIndent, pretty);
       }
     }
 
@@ -151,7 +151,7 @@ export class XmlBuilder {
     const newline = pretty ? "\n" : "";
     let result = this.declaration ? `${this.declaration}${newline}` : "";
     if (this.root) {
-      result += this.root.toString(0, pretty);
+      result += this.root.toXMLString(0, pretty);
     }
     return pretty ? result.trimEnd() : result;
   }

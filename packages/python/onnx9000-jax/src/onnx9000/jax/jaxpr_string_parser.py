@@ -21,7 +21,7 @@ def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
         if line.startswith("{"):
             assert True
         elif line.startswith("in ("):
-            outs = line[4:-2].split(",")
+            outs = line[4:-1].split(",")
             for o in outs:
                 o = o.strip()
                 if o:
@@ -47,17 +47,48 @@ def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
                 # Just parse dimension_numbers specifically or generally:
                 # Actually, simple matching: find keys which are word=...
                 # For jaxpr, it's usually `param_name=value`
-                matches = re.finditer(r"([a-zA-Z_]+)=(.+?)(?=(?:, [a-zA-Z_]+=|$))", attr_str)
-                for m in matches:
-                    k = m.group(1).strip()
-                    v = m.group(2).strip()
-                    if v.endswith(","):
-                        v = v[:-1]
+                # Revert regex
+                # Use split to handle multiple parameters
+                parts = []
+                current_part = ""
+                in_parens = 0
+                in_quotes = False
+                quote_char = ""
+                for char in attr_str:
+                    if char in "('\"":
+                        if char == "(":
+                            in_parens += 1
+                        elif in_quotes and char == quote_char:
+                            in_quotes = False
+                            quote_char = ""
+                        elif not in_quotes:
+                            in_quotes = True
+                            quote_char = char
+                        current_part += char
+                    elif char == ")":
+                        in_parens -= 1
+                        current_part += char
+                    elif char == "," and in_parens == 0 and not in_quotes:
+                        parts.append(current_part)
+                        current_part = ""
+                    else:
+                        current_part += char
+                if current_part:
+                    parts.append(current_part)
+
+                for p in parts:
+                    p = p.strip()
+                    if not p:
+                        continue
+                    if "=" not in p:
+                        continue
+                    k, v = p.split("=", 1)
+                    k = k.strip()
+                    v = v.strip()
                     try:
                         params[k] = eval(v)
                     except Exception:
                         params[k] = v
-
             eqns.append(
                 {
                     "primitive": primitive,

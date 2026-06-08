@@ -14,6 +14,7 @@ export function sanitizeMetadataString(
 ): string | undefined {
   if (typeof str !== "string") return str;
   // Strip null terminators (\0) and ensure valid utf-8 strings for JSON serialization
+  // eslint-disable-next-line no-control-regex
   return str.replace(/\0/g, "").replace(/[\uFFFD\uFFFE\uFFFF]/g, "");
 }
 

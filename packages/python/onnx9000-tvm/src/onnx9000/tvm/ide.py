@@ -1,7 +1,5 @@
-"""TVM submodule for AST and optimization."""
+"""TVM module."""
 
 
-class WebIDE:
-    """Pass 338: Build an interactive web IDE for compiling models locally in-browser."""
-
-    __dummy__ = True
+def dummy():
+    pass

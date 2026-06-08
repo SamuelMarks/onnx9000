@@ -23,7 +23,7 @@ describe("Coverage Extra", () => {
     expect(manager.fallbackToWasm).toBe(true);
 
     // With navigator.gpu and adapter
-    let lostTrigger: Object;
+    let lostTrigger: object;
     const lostPromise = new Promise((resolve) => {
       lostTrigger = resolve;
     });

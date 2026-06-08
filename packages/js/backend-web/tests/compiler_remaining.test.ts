@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { WebNNCompiler } from "../src/providers/webnn/compiler.js";
 
 describe("WebNNCompiler remaining coverage", () => {
-  let builder: Object;
+  let builder: object;
 
   beforeEach(() => {
     global.MLGraphBuilder = class {

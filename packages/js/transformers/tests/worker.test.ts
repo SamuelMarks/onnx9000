@@ -3,15 +3,15 @@ import { WorkerPipeline } from "../src/worker/index";
 
 // Mock Worker
 class MockWorker {
-  listeners: Object = {};
+  listeners: object = {};
   constructor(public path: string) {}
-  addEventListener(event: string, cb: Object) {
+  addEventListener(event: string, cb: object) {
     this.listeners[event] = cb;
   }
-  removeEventListener(event: string, _cb: Object) {
+  removeEventListener(event: string, _cb: object) {
     delete this.listeners[event];
   }
-  postMessage(data: Object, _transfer: Object) {
+  postMessage(data: object, _transfer: object) {
     setTimeout(() => {
       if (this.listeners.message) {
         if (data.task === "err") {

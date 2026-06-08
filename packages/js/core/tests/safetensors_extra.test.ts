@@ -31,7 +31,7 @@ globalThis.Request = class Request {} as any;
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 function createDummySafeTensorsBuffer(
-  headerObj: Object,
+  headerObj: object,
   dataLength: number,
 ): ArrayBuffer {
   const headerStr = JSON.stringify(headerObj);
@@ -276,10 +276,10 @@ describe("Safetensors Parser - Full Coverage", () => {
 });
 
 describe("Async Fetch Operations", () => {
-  let originalFetch: Object;
-  let originalProcess: Object;
-  let originalCaches: Object;
-  let originalSetTimeout: Object;
+  let originalFetch: object;
+  let originalProcess: object;
+  let originalCaches: object;
+  let originalSetTimeout: object;
 
   beforeEach(() => {
     originalFetch = globalThis.fetch;
@@ -292,7 +292,7 @@ describe("Async Fetch Operations", () => {
     globalThis.process = { env: { HF_TOKEN: "test_token" } } as any;
 
     // Fast-forward retries immediately
-    globalThis.setTimeout = ((cb: Object) => {
+    globalThis.setTimeout = ((cb: object) => {
       cb();
       return 0;
     }) as any;
@@ -477,9 +477,9 @@ describe("Async Fetch Operations", () => {
     const OriginalWS = globalThis.WebSocket;
     class MockWebSocket {
       binaryType: string = "";
-      onopen: Object;
-      onmessage: Object;
-      onerror: Object;
+      onopen: object;
+      onmessage: object;
+      onerror: object;
       close = vi.fn();
       send = vi.fn();
       constructor() {
@@ -501,9 +501,9 @@ describe("Async Fetch Operations", () => {
     const OriginalWS = globalThis.WebSocket;
     class MockWebSocket {
       binaryType: string = "";
-      onopen: Object;
-      onmessage: Object;
-      onerror: Object;
+      onopen: object;
+      onmessage: object;
+      onerror: object;
       close = vi.fn();
       send = vi.fn();
       constructor() {

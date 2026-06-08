@@ -40,7 +40,6 @@ class WindowAttention:
         # In actual swin, the rel_pos_bias is added inside attention (to attn_weight).
         # We can pass it as mask to MultiHeadAttention if supported, but let's just
         # assume our MHA can take an alibi-like bias or we skip it for the high-level AST.
-
         """Call."""
         x = self.attn(x, x, x)
         x = self.proj(

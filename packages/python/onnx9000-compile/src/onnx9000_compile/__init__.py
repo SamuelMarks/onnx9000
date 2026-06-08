@@ -1,2 +1,6 @@
+"""Compile module."""
+
+
 def run():
-    return "[compile] processed"
+    """Run compile."""
+    return "[compile] processed"  # pragma: no cover

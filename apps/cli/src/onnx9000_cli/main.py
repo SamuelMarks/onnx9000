@@ -1609,6 +1609,7 @@ def custom_ops_cmd(args: argparse.Namespace) -> None:
 
 
 def ort_training_cmd(args):
+    """Run the ort_training command."""
     try:
         from onnx9000_ort_training import ORTTraining
 
@@ -1618,6 +1619,7 @@ def ort_training_cmd(args):
 
 
 def olive_optimizer_cmd(args):
+    """Run the olive_optimizer command."""
     try:
         from onnx9000_olive_optimizer import OliveOptimizer
 
@@ -1627,6 +1629,7 @@ def olive_optimizer_cmd(args):
 
 
 def triton_server_cmd(args):
+    """Run the triton_server command."""
     try:
         from onnx9000_triton_server import TritonServer
 
@@ -1636,6 +1639,7 @@ def triton_server_cmd(args):
 
 
 def onnx_tool_cmd(args):
+    """Run the onnx_tool command."""
     try:
         from onnx9000_onnx_tool import ONNXTool
 
@@ -1645,18 +1649,22 @@ def onnx_tool_cmd(args):
 
 
 def paddle2onnx_cmd(args):
+    """Run the paddle2onnx command."""
     print("Paddle2ONNX processed " + getattr(args, "model", ""))
 
 
 def keras2onnx_cmd(args):
+    """Run the keras2onnx command."""
     print("Keras2ONNX processed " + getattr(args, "model", ""))
 
 
 def skl2onnx_cmd(args):
+    """Run the skl2onnx command."""
     print("SKL2ONNX processed " + getattr(args, "model", ""))
 
 
 def arena_cmd(args):
+    """Run the arena command."""
     print("Arena processed " + getattr(args, "model", ""))
 
 

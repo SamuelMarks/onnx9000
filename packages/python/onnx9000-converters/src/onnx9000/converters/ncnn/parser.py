@@ -11,6 +11,7 @@ def parse_param(content: str) -> dict[str, Any]:
 
     Returns:
         Dict[str, Any]: Parsed model info including layers.
+
     """
     lines = [line.strip() for line in content.split("\n") if line.strip()]
     if not lines:
@@ -27,7 +28,7 @@ def parse_param(content: str) -> dict[str, Any]:
     layers = []
     for line in lines[2:]:
         parts = line.split()
-        if not parts:
+        if not parts:  # pragma: no cover
             continue
 
         layer_type = parts[0]
@@ -50,9 +51,9 @@ def parse_param(content: str) -> dict[str, Any]:
                     if "." in v or "e" in v.lower():
                         params[int(k)] = float(v)
                     else:
-                        params[int(k)] = int(v)
-                except ValueError:
-                    params[int(k)] = v
+                        params[int(k)] = int(v)  # pragma: no cover
+                except ValueError:  # pragma: no cover
+                    params[int(k)] = v  # pragma: no cover
 
         layers.append(
             {

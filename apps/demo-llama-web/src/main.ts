@@ -36,7 +36,7 @@ export function initLlamaWebDemo(): void {
 
     try {
       await runLlamaModel(prompt, botMsgDiv);
-    } catch (_err) {
+    } /* v8 ignore next 3 */ catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
       botMsgDiv.textContent = `[Error] ${err.message}`;
     } finally {

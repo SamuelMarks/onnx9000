@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class WebGPUExecutionProvider(CPUExecutionProvider):
-    """
-    Execution provider targeting WebGPU API.
+    """Execution provider targeting WebGPU API.
+
     Provides fallback to CPU for unsupported operations.
     """
 
@@ -28,9 +28,7 @@ class WebGPUExecutionProvider(CPUExecutionProvider):
         pass  # CPUProvider might not have initialize
 
     def execute(self, graph: Graph, context: Any, inputs: dict[str, Tensor]) -> dict[str, Tensor]:
-        """
-        Execute the ONNX graph using WebGPU if available, falling back to CPU.
-        """
+        """Execute the ONNX graph using WebGPU if available, falling back to CPU."""
         if not self._device_ready:
             self.initialize()
 

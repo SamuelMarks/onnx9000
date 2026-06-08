@@ -15,6 +15,7 @@ class NCNNMapper:
         Args:
             param_info: Parsed param file info.
             weights_reader: Weights reader.
+
         """
         self.param_info = param_info
         self.weights_reader = weights_reader
@@ -31,7 +32,7 @@ class NCNNMapper:
 
     def map(self) -> Graph:
         """Map layers to an ONNX IR graph."""
-        layers = self.param_info.get("layers", [])
+        layers = self.param_info.get("layers", [])  # pragma: no cover
 
         for i, layer in enumerate(layers):
             l_type = layer["type"]

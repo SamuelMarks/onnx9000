@@ -4,7 +4,7 @@ import struct
 
 
 def parse_msgpack(data: bytes):
-    """Docstring for D103."""
+    """Parse the msgpack file."""
 
     def _read(offset):
         """read."""
@@ -172,6 +172,9 @@ def parse_msgpack(data: bytes):
         return val, offset + n
 
     def _read_ext(n, offset):
+        """read ext."""
+        if offset >= len(data):
+            raise ValueError("Unexpected end of data")
         """read ext."""
         ext_type = data[offset]
         offset += 1

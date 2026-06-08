@@ -13,15 +13,15 @@ MACRO_REGISTRY: dict[str, Callable] = {}
 
 
 def ir_macro(name: str, domain: str = "ai.onnx9000.macro") -> Callable:
-    """Decorator to register a function as an IR Macro."""
+    """Register a function as an IR Macro."""
 
     def decorator(func: Callable) -> Callable:
-        """Decorator."""
+        """Wrap function."""
         MACRO_REGISTRY[name] = func
 
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
-            """Wrapper."""
+            """Execute macro."""
             tensors = []
             for arg in args:
                 if isinstance(arg, Tensor):
@@ -74,7 +74,7 @@ class MacroMatcher:
 # We will define a couple macros for testing.
 @ir_macro("TransformerBlock")
 def transformer_block_macro(x: Tensor, weight1: Tensor, weight2: Tensor) -> Tensor:
-    """Encapsulates Norm -> Attention -> Add -> Norm -> MLP -> Add."""
+    """Encapsulate Norm -> Attention -> Add -> Norm -> MLP -> Add."""
     from onnx9000.core.ops import add
     from onnx9000.core.primitives import Gemm, LayerNormalization, MultiHeadAttention
 
@@ -86,5 +86,5 @@ def transformer_block_macro(x: Tensor, weight1: Tensor, weight2: Tensor) -> Tens
 
 @ir_macro("MoE_Layer")
 def moe_layer_macro(x: Tensor, routing_weight: Tensor, expert_weights: list[Tensor]) -> Tensor:
-    """Encapsulates Router -> Dispatch -> ExpertMLPs -> Combine."""
+    """Encapsulate Router -> Dispatch -> ExpertMLPs -> Combine."""
     return x

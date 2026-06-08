@@ -1,6 +1,4 @@
-"""
-Provides bonsai functionality.
-"""
+"""Provide bonsai functionality."""
 
 from typing import Any
 
@@ -13,9 +11,11 @@ class BonsaiImporter:
     """Parses jax-ml/bonsai structures and integrates structured sparsity."""
 
     def __init__(self, strip_zeros_to_sparse: bool = True):
+        """Initialize."""
         self.strip_zeros_to_sparse = strip_zeros_to_sparse
 
     def import_model(self, model_dict: dict[str, Any]) -> Graph:
+        """Import model."""
         g = Graph(name="BonsaiImported")
 
         # Example dynamic strip during ingestion

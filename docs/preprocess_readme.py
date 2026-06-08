@@ -1,3 +1,5 @@
+"""Preprocess readme script."""
+
 import glob
 import os
 
@@ -5,6 +7,7 @@ from jinja2 import Template
 
 
 def generate_docs():
+    """Generate docs."""
     template_str = """
 ONNX9000 Internal API Documentation
 ===================================
@@ -33,6 +36,7 @@ ONNX9000 Internal API Documentation
 
 
 def generate_readme():
+    """Generate readme."""
     docs_dir = os.path.dirname(__file__)
     readme_src = os.path.join(docs_dir, "..", "README.md")
     readme_dest = os.path.join(docs_dir, "README_GENERATED.md")
@@ -46,6 +50,6 @@ def generate_readme():
         f.write(content)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     generate_docs()
     generate_readme()

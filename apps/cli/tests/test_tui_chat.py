@@ -1,34 +1,30 @@
-import os
-import sys
 from unittest.mock import patch
 
-import pytest
-
-# Ensure tui_chat is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../src"))
-import tui_chat
+from tui_chat import start_chat_tui
 
 
-def test_start_chat_tui_exit():
-    with patch("builtins.input", side_effect=["hello", "exit"]):
-        with patch("builtins.print") as mock_print:
-            assert tui_chat.start_chat_tui()
-            mock_print.assert_any_call(
-                "ONNX9000 Assistant: I received 'hello', but I am a simple mock."
-            )
-            mock_print.assert_any_call("Goodbye!")
+@patch("builtins.input", side_effect=["hello", "exit"])
+def test_tui_chat_exit(mock_input, capsys):
+    assert start_chat_tui() is True
+    out, _ = capsys.readouterr()
+    assert "Goodbye!" in out
+    assert "mock" in out
 
 
-def test_start_chat_tui_eof():
-    with patch("builtins.input", side_effect=EOFError):
-        assert tui_chat.start_chat_tui()
+@patch("builtins.input", side_effect=EOFError)
+def test_tui_chat_eof(mock_input, capsys):
+    assert start_chat_tui() is True
 
 
-def test_start_chat_tui_keyboard_interrupt():
-    with patch("builtins.input", side_effect=KeyboardInterrupt):
-        assert tui_chat.start_chat_tui()
+@patch("builtins.input", side_effect=["", "quit"])
+def test_tui_chat_empty_and_quit(mock_input, capsys):
+    assert start_chat_tui() is True
+    out, _ = capsys.readouterr()
+    assert "Goodbye!" in out
 
 
-def test_start_chat_tui_empty_input():
-    with patch("builtins.input", side_effect=["", "quit"]):
-        assert tui_chat.start_chat_tui()
+@patch("builtins.input", side_effect=KeyboardInterrupt)
+def test_tui_chat_keyboard_interrupt(mock_input, capsys):
+    assert start_chat_tui() is True
+    out, _ = capsys.readouterr()
+    assert "Goodbye!" in out

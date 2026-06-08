@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("CLI", () => {
   let originalArgv: string[];
-  let exitMock: Object;
-  let errorMock: Object;
-  let logMock: Object;
+  let exitMock: object;
+  let errorMock: object;
+  let logMock: object;
 
   beforeEach(() => {
     originalArgv = process.argv;

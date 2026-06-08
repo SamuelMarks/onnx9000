@@ -131,6 +131,8 @@ class GGUFParser:
                     arr.append(struct.unpack("<q", self._read_bytes(8))[0])
                 elif atype == 12:
                     arr.append(struct.unpack("<d", self._read_bytes(8))[0])
+                else:
+                    pass
             return arr
         elif vtype == 10:
             return self._read_uint64()  # UINT64

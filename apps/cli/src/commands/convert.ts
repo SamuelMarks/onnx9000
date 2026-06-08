@@ -3,8 +3,8 @@ import * as path from "node:path";
 import { mmdnn } from "@onnx9000/converters";
 
 const { convert } = mmdnn;
-type SourceFramework = Object;
-type TargetFramework = Object;
+type SourceFramework = object;
+type TargetFramework = object;
 
 export async function handleConvertCommand(args: string[]) {
   let src: SourceFramework | null = null;

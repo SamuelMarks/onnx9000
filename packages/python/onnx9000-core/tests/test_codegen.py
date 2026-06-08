@@ -392,6 +392,7 @@ def test_keras_codegen_new_ops():
 
 
 def test_pytorch_codegen_missing_ops():
+    """Test pytorch codegen."""
     from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
     from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -456,6 +457,7 @@ def test_pytorch_codegen_missing_ops():
 
 
 def test_flax_codegen_missing_ops():
+    """Test flax codegen."""
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -504,6 +506,7 @@ def test_flax_codegen_missing_ops():
 
 
 def test_keras_codegen_all_ops():
+    """Test keras codegen."""
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
     from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -595,6 +598,7 @@ def test_keras_codegen_all_ops():
 
 
 def test_triton_codegen_ops():
+    """Test triton codegen."""
     from onnx9000.core.codegen.triton import TritonExporter
     from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -612,6 +616,7 @@ def test_triton_codegen_ops():
 
 
 def test_codegen_branches():
+    """Test codegen branches."""
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
     from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor
@@ -652,6 +657,7 @@ def test_codegen_branches():
 
 
 def test_keras_inputs_outputs():
+    """Test keras io."""
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
     from onnx9000.core.ir import Graph, Tensor
 
@@ -688,6 +694,7 @@ def test_keras_inputs_outputs():
 
 
 def test_missing_cov_codegen():
+    """Test missing cov."""
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
     from onnx9000.core.ir import Graph

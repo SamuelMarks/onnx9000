@@ -148,7 +148,7 @@ export function generateTriton(
     int32: "tl.int32",
     int64: "tl.int64",
     bool: "tl.int1",
-    ...(config.precisionMap || {}),
+    ...config.precisionMap,
   };
 
   // 13. Support generating tl.constexpr arguments natively.

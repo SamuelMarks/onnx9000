@@ -1,10 +1,16 @@
+"""Test custom ops."""
+
 import unittest
 
 from onnx9000_custom_ops import registry
 
 
 class TestCustomOps(unittest.TestCase):
+    """Test custom ops."""
+
     def test_registry(self):
+        """Test registry."""
+
         def my_op():
             return "ok"
 

@@ -58,9 +58,9 @@ class MockWorker {
   constructor() {
     (globalThis as any).workerInstances.push(this);
   }
-  onmessage: Object;
-  onerror: Object;
-  postMessage(_data: Object) {
+  onmessage: object;
+  onerror: object;
+  postMessage(_data: object) {
     if (this.onmessage) {
       this.onmessage({
         data: {
@@ -117,13 +117,13 @@ class MockWorker {
 
 if (typeof Blob === "undefined") {
   (globalThis as any).Blob = class Blob {
-    constructor(public parts: Object[]) {}
+    constructor(public parts: object[]) {}
   };
 }
 if (typeof File === "undefined") {
   (globalThis as any).File = class File extends Blob {
     constructor(
-      parts: Object[],
+      parts: object[],
       public name: string,
     ) {
       super(parts);

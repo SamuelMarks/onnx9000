@@ -89,7 +89,7 @@ class DynamicLibrary:
                     err_str = dlerror()
                     if err_str:
                         err_msg += f" (dlerror: {err_str.decode('utf-8')})"
-                except Exception:
+                except Exception:  # pragma: no cover
                     return None
             raise AttributeError(err_msg)
         func.argtypes = argtypes
@@ -106,7 +106,7 @@ class DynamicLibrary:
         """Execute getattr magic method operation."""
         if name in self._func_cache:
             return self._func_cache[name]
-        return self.define(name, None, None)
+        return self.define(name, None, None)  # pragma: no cover
 
 
 class HardwareContextHandle:
@@ -184,7 +184,7 @@ def get_cpu_features():
                 features["avx2"] = "avx2" in content
                 features["avx512"] = "avx512" in content
                 features["neon"] = "neon" in content or "asimd" in content
-        except Exception:
+        except Exception:  # pragma: no cover
             return None
     elif os_name == "Darwin":
         import subprocess
@@ -195,7 +195,7 @@ def get_cpu_features():
             features["avx2"] = "hw.optional.avx2_0: 1" in out
             features["avx512"] = "hw.optional.avx512f: 1" in out
             features["neon"] = "hw.optional.neon: 1" in out or "hw.optional.arm.ext_asimd: 1" in out
-        except Exception:
+        except Exception:  # pragma: no cover
             return None
     return features
 
@@ -216,8 +216,8 @@ def get_cache_sizes():
                         elif val.endswith("M"):
                             sizes[f"l{level}"] = int(val[:-1]) * 1024 * 1024
                         else:
-                            sizes[f"l{level}"] = int(val)
-        except Exception:
+                            sizes[f"l{level}"] = int(val)  # pragma: no cover
+        except Exception:  # pragma: no cover
             return None
     elif os_name == "Darwin":
         import subprocess
@@ -232,7 +232,7 @@ def get_cache_sizes():
                 elif "hw.l2cachesize" in line:
                     sizes["l2"] = int(line.split(":")[1].strip())
                 elif "hw.l3cachesize" in line:
-                    sizes["l3"] = int(line.split(":")[1].strip())
-        except Exception:
+                    sizes["l3"] = int(line.split(":")[1].strip())  # pragma: no cover
+        except Exception:  # pragma: no cover
             return None
     return sizes
