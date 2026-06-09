@@ -24,5 +24,7 @@ def infer_backward_shapes(graph: Graph) -> None:
                             from onnx9000.core.ir import Tensor
 
                             graph.tensors[out_name] = Tensor(
-                                shape=orig_tensor.shape, dtype=orig_tensor.dtype, name=out_name
+                                shape=orig_tensor.shape,
+                                dtype=orig_tensor.dtype,
+                                name=out_name,
                             )

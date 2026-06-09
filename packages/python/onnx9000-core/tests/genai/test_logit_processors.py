@@ -19,7 +19,10 @@ def create_logits(vals):
     for i, v in enumerate(vals):
         data[i * 4 : (i + 1) * 4] = struct.pack("<f", v)
     return Tensor(
-        name="logits", shape=(1, len(vals)), data=data, dtype=type("mock", (), {"itemsize": 4})
+        name="logits",
+        shape=(1, len(vals)),
+        data=data,
+        dtype=type("mock", (), {"itemsize": 4}),
     )
 
 
@@ -317,10 +320,16 @@ def test_allowed_words_errors():
 def test_logit_processors_missing_2():
     """Test logit processors missing 2."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.genai.logit_processors import TemperatureLogitProcessor, TopKLogitProcessor
+    from onnx9000.genai.logit_processors import (
+        TemperatureLogitProcessor,
+        TopKLogitProcessor,
+    )
 
     t_short = Tensor(
-        name="x", shape=(1, 2), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 2),
+        data=bytearray(4),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     proc = TemperatureLogitProcessor(0.5)
     proc([], t_short)

@@ -23,7 +23,10 @@ ALL_MAPPINGS.update(CONTROL_FLOW_OPS_MAPPING)
 
 def paddle_optimize_graph(graph: Graph) -> Graph:
     """paddle_optimize_graph implementation."""
-    from onnx9000.converters.paddle.passes import dropout_removal_pass, identity_removal_pass
+    from onnx9000.converters.paddle.passes import (
+        dropout_removal_pass,
+        identity_removal_pass,
+    )
 
     graph = identity_removal_pass(graph)
     graph = dropout_removal_pass(graph)
@@ -41,7 +44,10 @@ def _convert_paddle_graph(p_graph: PaddleGraph, name: str = "paddle_to_onnx") ->
         else:
             logging.warning(f"Fallback to custom op for unknown Paddle node: {node.op_type}")
             builder.make_node(
-                f"Custom_Paddle_{node.op_type}", node.inputs.get("X", []), node.attrs, node.name
+                f"Custom_Paddle_{node.op_type}",
+                node.inputs.get("X", []),
+                node.attrs,
+                node.name,
             )
     if builder.graph.nodes:
         last_node = builder.graph.nodes[-1]

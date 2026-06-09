@@ -224,7 +224,13 @@ def get_cache_sizes():
 
         try:
             out = subprocess.check_output(
-                ["sysctl", "hw.l1icachesize", "hw.l1dcachesize", "hw.l2cachesize", "hw.l3cachesize"]
+                [
+                    "sysctl",
+                    "hw.l1icachesize",
+                    "hw.l1dcachesize",
+                    "hw.l2cachesize",
+                    "hw.l3cachesize",
+                ]
             ).decode("utf-8")
             for line in out.splitlines():
                 if "hw.l1dcachesize" in line:

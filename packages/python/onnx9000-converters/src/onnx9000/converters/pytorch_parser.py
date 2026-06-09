@@ -42,7 +42,14 @@ def _rebuild_tensor_v2(
 
 
 def _rebuild_tensor_v3(
-    storage, storage_offset, size, stride, requires_grad, backward_hooks, dtype=None, metadata=None
+    storage,
+    storage_offset,
+    size,
+    stride,
+    requires_grad,
+    backward_hooks,
+    dtype=None,
+    metadata=None,
 ):
     """Rebuild tensor v3."""
     return {

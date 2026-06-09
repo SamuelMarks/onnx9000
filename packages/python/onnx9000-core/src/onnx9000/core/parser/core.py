@@ -78,7 +78,11 @@ def parse_sparse_tensor_proto(sparse_init: Any, base_dir: Path | None = None) ->
     dims = tuple(sparse_init.dims)
     # values.name is usually the name of the sparse tensor
     return SparseTensor(
-        name=sparse_init.values.name, values=values, indices=indices, dims=dims, format="COO"
+        name=sparse_init.values.name,
+        values=values,
+        indices=indices,
+        dims=dims,
+        format="COO",
     )
 
 

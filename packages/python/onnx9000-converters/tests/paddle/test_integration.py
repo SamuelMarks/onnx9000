@@ -15,7 +15,10 @@ def test_integration_paddle_linear_regression() -> None:
     ops = [
         PaddleNode("feed", "feed", outputs={"Out": ["in1"]}),
         PaddleNode(
-            "fc", "fc", inputs={"X": ["in1"], "Y": ["w1"], "Bias": ["b1"]}, outputs={"Out": ["fc1"]}
+            "fc",
+            "fc",
+            inputs={"X": ["in1"], "Y": ["w1"], "Bias": ["b1"]},
+            outputs={"Out": ["fc1"]},
         ),
         PaddleNode(
             "sub",
@@ -56,11 +59,19 @@ def test_integration_paddle_resnet_mock() -> None:
         )
         ops.append(
             PaddleNode(
-                f"bn{i}", "batch_norm", inputs={"X": [f"conv_{i}"]}, outputs={"Y": [f"bn_{i}"]}
+                f"bn{i}",
+                "batch_norm",
+                inputs={"X": [f"conv_{i}"]},
+                outputs={"Y": [f"bn_{i}"]},
             )
         )
         ops.append(
-            PaddleNode(f"r{i}", "relu", inputs={"X": [f"bn_{i}"]}, outputs={"Out": [f"relu_{i}"]})
+            PaddleNode(
+                f"r{i}",
+                "relu",
+                inputs={"X": [f"bn_{i}"]},
+                outputs={"Out": [f"relu_{i}"]},
+            )
         )
     b = PaddleBlock(0, -1, {}, ops)
     pg = PaddleGraph([b])

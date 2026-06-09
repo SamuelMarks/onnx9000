@@ -71,13 +71,17 @@ def test_cf_math_ops2():
     )
     assert (
         cf._evaluate_node(
-            "Pad", [np.ones((2,)), np.array([1, 1]), np.array([5])], {"mode": "constant"}
+            "Pad",
+            [np.ones((2,)), np.array([1, 1]), np.array([5])],
+            {"mode": "constant"},
         )
         is not None
     )
     assert (
         cf._evaluate_node(
-            "Pad", [np.ones((2,)), np.array([1, 1]), np.array([5, 5])], {"mode": "constant"}
+            "Pad",
+            [np.ones((2,)), np.array([1, 1]), np.array([5, 5])],
+            {"mode": "constant"},
         )
         is not None
     )
@@ -90,7 +94,9 @@ def test_cf_math_ops2():
     # ConstantOfShape
     assert (
         cf._evaluate_node(
-            "ConstantOfShape", [np.array([2])], {"value": np.array([1.0], dtype=np.float32)}
+            "ConstantOfShape",
+            [np.array([2])],
+            {"value": np.array([1.0], dtype=np.float32)},
         )
         is not None
     )
@@ -123,7 +129,9 @@ def test_cf_math_ops2():
     assert cf._evaluate_node("CumSum", [np.array([1, 2, 3]), np.array([0])], {}) is not None
     assert (
         cf._evaluate_node(
-            "CumSum", [np.array([1, 2, 3]), np.array([0])], {"exclusive": 1, "reverse": 1}
+            "CumSum",
+            [np.array([1, 2, 3]), np.array([0])],
+            {"exclusive": 1, "reverse": 1},
         )
         is not None
     )

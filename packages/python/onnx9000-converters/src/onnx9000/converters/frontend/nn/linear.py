@@ -9,7 +9,11 @@ class Linear(Module):
     """Linear layer."""
 
     def __init__(
-        self, in_features: int, out_features: int, bias: bool = True, dtype: DType = DType.FLOAT32
+        self,
+        in_features: int,
+        out_features: int,
+        bias: bool = True,
+        dtype: DType = DType.FLOAT32,
     ) -> None:
         """Implement the __init__ method."""
         super().__init__()

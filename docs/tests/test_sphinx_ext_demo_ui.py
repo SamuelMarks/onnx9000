@@ -109,7 +109,15 @@ def test_interactive_demo_directive():
         reporter = None
 
     directive = InteractiveDemoDirective(
-        "test", [], MockOptions().options, None, None, None, None, None, MockStateMachine()
+        "test",
+        [],
+        MockOptions().options,
+        None,
+        None,
+        None,
+        None,
+        None,
+        MockStateMachine(),
     )
     nodes = directive.run()
     assert len(nodes) == 1

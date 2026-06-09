@@ -62,7 +62,12 @@ class PostProcessor:
     def apply_cast(self, input_name: str, output_name: str, to_type: int) -> None:
         """Provide ONNX Cast nodes for specific output target requirements (e.g., bool outputs)."""
         self.g.nodes.append(
-            Node("Cast", inputs=[input_name], outputs=[output_name], attributes={"to": to_type})
+            Node(
+                "Cast",
+                inputs=[input_name],
+                outputs=[output_name],
+                attributes={"to": to_type},
+            )
         )
 
     def map_hierarchical_probabilities(self) -> None:
@@ -72,7 +77,12 @@ class PostProcessor:
     def combine_multi_output_regression(self, output_names: list[str], final_name: str) -> None:
         """Combine multi-output regression lists into contiguous vectors."""
         self.g.nodes.append(
-            Node("Concat", inputs=output_names, outputs=[final_name], attributes={"axis": 1})
+            Node(
+                "Concat",
+                inputs=output_names,
+                outputs=[final_name],
+                attributes={"axis": 1},
+            )
         )
 
     def merge_multi_label_classification(self) -> None:
@@ -87,7 +97,9 @@ class PostProcessor:
         """Append top-K post-processing dynamically to the lowered graph."""
         self.g.nodes.append(
             Node(
-                "TopK", inputs=[probabilities_name, f"k_{k}"], outputs=["topk_vals", "topk_indices"]
+                "TopK",
+                inputs=[probabilities_name, f"k_{k}"],
+                outputs=["topk_vals", "topk_indices"],
             )
         )
 

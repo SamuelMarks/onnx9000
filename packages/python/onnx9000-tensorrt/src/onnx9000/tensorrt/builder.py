@@ -17,7 +17,9 @@ class BuilderConfig:
         """Execute set_memory_pool_limit."""
         if hasattr(ffi.lib, "setMemoryPoolLimit"):
             ffi.lib.setMemoryPoolLimit(
-                ctypes.c_void_p(self.ptr), ctypes.c_int(pool_type.value), ctypes.c_size_t(size)
+                ctypes.c_void_p(self.ptr),
+                ctypes.c_int(pool_type.value),
+                ctypes.c_size_t(size),
             )
         elif hasattr(ffi.lib, "setMaxWorkspaceSize"):
             ffi.lib.setMaxWorkspaceSize(ctypes.c_void_p(self.ptr), ctypes.c_size_t(size))
@@ -65,7 +67,10 @@ class Builder:
             """ILoggerVTable class."""
 
             _fields_ = [
-                ("log", ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p))
+                (
+                    "log",
+                    ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p),
+                )
             ]
 
         class ILogger(ctypes.Structure):

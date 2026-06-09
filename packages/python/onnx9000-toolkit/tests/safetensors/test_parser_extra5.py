@@ -4,7 +4,10 @@ import os
 
 import numpy as np
 import pytest
-from onnx9000.toolkit.safetensors.parser import SafeTensors, SafetensorsInvalidDtypeError
+from onnx9000.toolkit.safetensors.parser import (
+    SafeTensors,
+    SafetensorsInvalidDtypeError,
+)
 
 
 def test_parser_coverage():
@@ -120,7 +123,10 @@ def test_safetensors_sharded():
 
 def test_parser_file_empty(tmp_path):
     """Docstring for D103."""
-    from onnx9000.toolkit.safetensors.parser import SafeTensors, SafetensorsFileEmptyError
+    from onnx9000.toolkit.safetensors.parser import (
+        SafeTensors,
+        SafetensorsFileEmptyError,
+    )
 
     path = tmp_path / "empty.safetensors"
     path.touch()
@@ -131,7 +137,10 @@ def test_parser_file_empty(tmp_path):
 def test_parser_save_duplicate_key(tmp_path):
     """Docstring for D103."""
     import numpy as np
-    from onnx9000.toolkit.safetensors.parser import SafetensorsDuplicateKeyError, save_file
+    from onnx9000.toolkit.safetensors.parser import (
+        SafetensorsDuplicateKeyError,
+        save_file,
+    )
 
     tensors = {"__metadata__": np.array([1])}
     with pytest.raises(SafetensorsDuplicateKeyError):

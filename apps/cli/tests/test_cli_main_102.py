@@ -10,7 +10,10 @@ def test_coverage_gaps_cmd102():
     with patch(
         "onnx9000_cli.main.load_onnx",
         return_value=MagicMock(
-            nodes=[MagicMock(op_type="TreeEnsembleClassifier")], tensors={}, inputs=[], outputs=[]
+            nodes=[MagicMock(op_type="TreeEnsembleClassifier")],
+            tensors={},
+            inputs=[],
+            outputs=[],
         ),
     ):
         with patch("onnx9000_cli.main.save_onnx"):

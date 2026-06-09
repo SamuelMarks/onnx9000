@@ -290,12 +290,14 @@ class ConstantFoldingPass(GraphPass):
                 elif "value_float" in node.attributes:
                     attr_val = node.attributes["value_float"]
                     known_values[node.outputs[0]] = np.array(
-                        attr_val.value if hasattr(attr_val, "value") else attr_val, dtype=np.float32
+                        attr_val.value if hasattr(attr_val, "value") else attr_val,
+                        dtype=np.float32,
                     )
                 elif "value_int" in node.attributes:
                     attr_val = node.attributes["value_int"]
                     known_values[node.outputs[0]] = np.array(
-                        attr_val.value if hasattr(attr_val, "value") else attr_val, dtype=np.int64
+                        attr_val.value if hasattr(attr_val, "value") else attr_val,
+                        dtype=np.int64,
                     )
         new_nodes = []
         for node in graph.nodes:
@@ -741,7 +743,9 @@ class ConstantFoldingPass(GraphPass):
                 val = np.array(val)
             val = val.item() if val.size == 1 else val[0]
             return np.full(
-                shape, val, dtype=type(val) if not isinstance(val, float) else np.float32
+                shape,
+                val,
+                dtype=type(val) if not isinstance(val, float) else np.float32,
             )
         if op_type == "Where":
             return np.where(inputs[0], inputs[1], inputs[2])
@@ -758,7 +762,8 @@ class ConstantFoldingPass(GraphPass):
                 shape[axis] = 1
                 zeros = np.zeros(shape, dtype=data.dtype)
                 res = np.concatenate(
-                    (zeros, res.take(indices=range(res.shape[axis] - 1), axis=axis)), axis=axis
+                    (zeros, res.take(indices=range(res.shape[axis] - 1), axis=axis)),
+                    axis=axis,
                 )
             if reverse:
                 res = np.flip(res, axis=axis)
@@ -982,10 +987,22 @@ class ConstantFoldingPass(GraphPass):
                                 y2_int = min(box1[2], box2[2])
                                 x2_int = min(box1[3], box2[3])
                             else:  # [x_center, y_center, width, height]
-                                box1_y1, box1_x1 = box1[1] - box1[3] / 2, box1[0] - box1[2] / 2
-                                box1_y2, box1_x2 = box1[1] + box1[3] / 2, box1[0] + box1[2] / 2
-                                box2_y1, box2_x1 = box2[1] - box2[3] / 2, box2[0] - box2[2] / 2
-                                box2_y2, box2_x2 = box2[1] + box2[3] / 2, box2[0] + box2[2] / 2
+                                box1_y1, box1_x1 = (
+                                    box1[1] - box1[3] / 2,
+                                    box1[0] - box1[2] / 2,
+                                )
+                                box1_y2, box1_x2 = (
+                                    box1[1] + box1[3] / 2,
+                                    box1[0] + box1[2] / 2,
+                                )
+                                box2_y1, box2_x1 = (
+                                    box2[1] - box2[3] / 2,
+                                    box2[0] - box2[2] / 2,
+                                )
+                                box2_y2, box2_x2 = (
+                                    box2[1] + box2[3] / 2,
+                                    box2[0] + box2[2] / 2,
+                                )
 
                                 y1_int = max(box1_y1, box2_y1)
                                 x1_int = max(box1_x1, box2_x1)

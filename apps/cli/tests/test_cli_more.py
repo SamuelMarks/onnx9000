@@ -67,7 +67,8 @@ def test_openvino_export_cmd():
 
     with (
         patch(
-            "onnx9000.openvino.exporter.OpenVinoExporter.export", return_value=("<xml/>", b"bin")
+            "onnx9000.openvino.exporter.OpenVinoExporter.export",
+            return_value=("<xml/>", b"bin"),
         ),
         patch("onnx9000_cli.main.load_onnx", return_value=graph),
         patch("onnx9000.core.parser.core.load", return_value=graph),
@@ -185,7 +186,16 @@ def test_cli_more_branches():
     with patch.object(
         sys,
         "argv",
-        ["onnx9000", "sparse", "prune", "dummy.onnx", "--sparsity", "0.5", "-o", "out.onnx"],
+        [
+            "onnx9000",
+            "sparse",
+            "prune",
+            "dummy.onnx",
+            "--sparsity",
+            "0.5",
+            "-o",
+            "out.onnx",
+        ],
     ):
         import pytest
 
@@ -193,7 +203,9 @@ def test_cli_more_branches():
             main()
 
     with patch.object(
-        sys, "argv", ["onnx9000", "edit", "dummy.onnx", "--reshape", "input:?,224,224,,"]
+        sys,
+        "argv",
+        ["onnx9000", "edit", "dummy.onnx", "--reshape", "input:?,224,224,,"],
     ):
         import pytest
 
@@ -276,7 +288,10 @@ def test_hummingbird_cmd():
     from onnx9000_cli.main import hummingbird_cmd
 
     args = argparse.Namespace(model="test.onnx", output="out.onnx")
-    with patch("onnx9000_cli.main.load_onnx") as mock_load, patch("onnx9000_cli.main.save_onnx"):
+    with (
+        patch("onnx9000_cli.main.load_onnx") as mock_load,
+        patch("onnx9000_cli.main.save_onnx"),
+    ):
         mock_graph = MagicMock()
         node = MagicMock(op_type="TreeEnsembleClassifier")
         mock_graph.nodes = [node]

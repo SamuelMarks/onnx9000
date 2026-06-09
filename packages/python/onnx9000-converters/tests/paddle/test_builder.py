@@ -81,7 +81,11 @@ def test_paddle_builder_replace() -> None:
     builder.make_node("Relu", ["in"], {}, "relu")
     old_name = builder.graph.nodes[-1].name
     new_node = Node(
-        op_type="Sigmoid", inputs=["in"], outputs=["relu_out_0"], name="sig", attributes={}
+        op_type="Sigmoid",
+        inputs=["in"],
+        outputs=["relu_out_0"],
+        name="sig",
+        attributes={},
     )
     builder.replace_node(old_name, new_node)
     assert builder.graph.nodes[0].op_type == "Sigmoid"

@@ -166,7 +166,9 @@ class TorchScriptParser:
                 else DType.FLOAT32
             )
             tensor = Tensor(
-                shape=tuple(shape) if shape else (), dtype=dtype, name=out_val.debugName()
+                shape=tuple(shape) if shape else (),
+                dtype=dtype,
+                name=out_val.debugName(),
             )
             outputs.append(tensor)
             self.value_map[out_val] = tensor

@@ -35,7 +35,8 @@ def test_cli_success(capsys):
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: Graph("test_g")
                     with patch.dict(
-                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                        sys.modules,
+                        {"onnx9000.converters.frontend.pyodide_wrapper": mock_module},
                     ):
                         with patch.object(C89Compiler, "generate", return_value=("h", "c")):
                             C89Compiler.arena_size = 1024
@@ -45,7 +46,10 @@ def test_cli_success(capsys):
 
 def test_generator_extras():
     """Test generator extras."""
-    from onnx9000.c_compiler.project_generator import generate_arduino_sketch, generate_cmakelists
+    from onnx9000.c_compiler.project_generator import (
+        generate_arduino_sketch,
+        generate_cmakelists,
+    )
 
     cm = generate_cmakelists("pref_")
     assert "add_library(pref_model STATIC pref_model.c)" in cm
@@ -91,14 +95,18 @@ def test_cli_extras(capsys):
                 with patch("onnx9000.c_compiler.cli.os.makedirs"):
                     g = Graph("t")
                     g.tensors["A"] = Tensor(
-                        "A", shape=(1,), dtype=DType.FLOAT32, data=struct.pack("<f", 1.0)
+                        "A",
+                        shape=(1,),
+                        dtype=DType.FLOAT32,
+                        data=struct.pack("<f", 1.0),
                     )
                     import types
 
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: g
                     with patch.dict(
-                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                        sys.modules,
+                        {"onnx9000.converters.frontend.pyodide_wrapper": mock_module},
                     ):
                         from onnx9000.c_compiler.compiler import C89Compiler
 

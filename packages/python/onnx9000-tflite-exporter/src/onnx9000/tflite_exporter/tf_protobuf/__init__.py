@@ -41,7 +41,10 @@ class SavedModelGenerator:
                         "name": name,
                         "op": "Const",
                         "input": [],
-                        "attr": {"value": {"tensor": "dummy_value"}, "dtype": {"type": dtype}},
+                        "attr": {
+                            "value": {"tensor": "dummy_value"},
+                            "dtype": {"type": dtype},
+                        },
                     }
                 )
 
@@ -73,7 +76,10 @@ class SavedModelGenerator:
                 "tensorflowVersion": "2.10.0",
                 "tensorflowGitVersion": "unknown",
             },
-            "graphDef": {"node": tf_nodes, "versions": {"producer": 175, "minConsumer": 12}},
+            "graphDef": {
+                "node": tf_nodes,
+                "versions": {"producer": 175, "minConsumer": 12},
+            },
             "signatureDef": signature_def,
         }
 

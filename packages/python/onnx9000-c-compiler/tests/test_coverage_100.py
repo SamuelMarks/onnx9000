@@ -20,10 +20,18 @@ def test_100_cov():
     g.nodes.append(Node("Unique", inputs=["TK_X"], outputs=["TK_Y"]))
 
     g.nodes.append(
-        Node("NonMaxSuppression", inputs=["TK_X", "TK_X", "TK_X", "TK_X", "TK_X"], outputs=["TK_Y"])
+        Node(
+            "NonMaxSuppression",
+            inputs=["TK_X", "TK_X", "TK_X", "TK_X", "TK_X"],
+            outputs=["TK_Y"],
+        )
     )
     g.nodes.append(
-        Node("NonMaxSuppression", inputs=["TK_X", "TK_X", "TK_X", "TK_X"], outputs=["TK_Y"])
+        Node(
+            "NonMaxSuppression",
+            inputs=["TK_X", "TK_X", "TK_X", "TK_X"],
+            outputs=["TK_Y"],
+        )
     )
     g.nodes.append(
         Node(

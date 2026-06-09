@@ -32,7 +32,10 @@ def _map_aten_native_batch_norm_legit_no_training_default(
 ) -> Node:
     """Map aten native batch norm legit no training default."""
     return Node(
-        op_type="BatchNorm", inputs=inputs, outputs=outputs, name=f"batch_norm_{outputs[0]}"
+        op_type="BatchNorm",
+        inputs=inputs,
+        outputs=outputs,
+        name=f"batch_norm_{outputs[0]}",
     )
 
 
@@ -41,7 +44,10 @@ def _map_aten_native_layer_norm_default(
 ) -> Node:
     """Map aten native layer norm default."""
     return Node(
-        op_type="LayerNorm", inputs=inputs, outputs=outputs, name=f"layer_norm_{outputs[0]}"
+        op_type="LayerNorm",
+        inputs=inputs,
+        outputs=outputs,
+        name=f"layer_norm_{outputs[0]}",
     )
 
 
@@ -61,7 +67,10 @@ def _map_aten_max_pool2d_with_indices_default(
     # Discard indices if unused by returning only first output normally mapped
     """Map aten max pool2d with indices default."""
     return Node(
-        op_type="MaxPool2D", inputs=inputs, outputs=outputs, name=f"max_pool2d_{outputs[0]}"
+        op_type="MaxPool2D",
+        inputs=inputs,
+        outputs=outputs,
+        name=f"max_pool2d_{outputs[0]}",
     )
 
 

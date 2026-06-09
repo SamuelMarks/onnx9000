@@ -21,6 +21,9 @@ def test_convert_tf_to_onnx_else_branch() -> None:
         self.graph.tensors.clear()
         return out
 
-    with patch("onnx9000.converters.tf.builder.TFToONNXGraphBuilder.make_node", new=mock_make_node):
+    with patch(
+        "onnx9000.converters.tf.builder.TFToONNXGraphBuilder.make_node",
+        new=mock_make_node,
+    ):
         g = convert_tf_to_onnx(model_data)
         assert len(g.outputs) > 0

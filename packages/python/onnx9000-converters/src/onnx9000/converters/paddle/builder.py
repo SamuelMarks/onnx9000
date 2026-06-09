@@ -77,7 +77,11 @@ class PaddleToONNXGraphBuilder:
         node_name = self.get_unique_name(name_prefix)
         outputs = [f"{node_name}_out_0"] if not outputs else list(outputs)
         n = Node(
-            op_type=op_type, inputs=inputs, outputs=outputs, attributes=attributes, name=node_name
+            op_type=op_type,
+            inputs=inputs,
+            outputs=outputs,
+            attributes=attributes,
+            name=node_name,
         )
         self.graph.nodes.append(n)
         for out in outputs:

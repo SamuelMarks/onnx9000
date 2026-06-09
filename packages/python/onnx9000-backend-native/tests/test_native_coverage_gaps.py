@@ -209,14 +209,20 @@ def test_codegen_ops_nn_coverage_gaps() -> None:
     ctx.graph.tensors.update(
         {
             "x": MagicMock(
-                dtype=DType.FLOAT32, shape=[1, 2, 3, 3], buffer_id=2, is_initializer=False
+                dtype=DType.FLOAT32,
+                shape=[1, 2, 3, 3],
+                buffer_id=2,
+                is_initializer=False,
             ),
             "scale": MagicMock(dtype=DType.FLOAT32, shape=[2], buffer_id=3, is_initializer=True),
             "b": MagicMock(dtype=DType.FLOAT32, shape=[2], buffer_id=4, is_initializer=True),
             "mean": MagicMock(dtype=DType.FLOAT32, shape=[2], buffer_id=5, is_initializer=True),
             "var": MagicMock(dtype=DType.FLOAT32, shape=[2], buffer_id=6, is_initializer=True),
             "out_bn": MagicMock(
-                dtype=DType.FLOAT32, shape=[1, 2, 3, 3], buffer_id=7, is_initializer=False
+                dtype=DType.FLOAT32,
+                shape=[1, 2, 3, 3],
+                buffer_id=7,
+                is_initializer=False,
             ),
         }
     )

@@ -182,11 +182,19 @@ class GGUFParser:
 
                 if qtype:
                     return QuantizedTensor(
-                        name=name, type=qtype, block_size=block_size, shape=shape, data=tensor_data
+                        name=name,
+                        type=qtype,
+                        block_size=block_size,
+                        shape=shape,
+                        data=tensor_data,
                     )
                 else:
                     return Tensor(
-                        name=name, shape=shape, dtype=dtype, is_initializer=True, data=tensor_data
+                        name=name,
+                        shape=shape,
+                        dtype=dtype,
+                        is_initializer=True,
+                        data=tensor_data,
                     )
         raise KeyError(f"Tensor {name} not found")
 

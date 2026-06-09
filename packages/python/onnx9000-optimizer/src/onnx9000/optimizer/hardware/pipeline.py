@@ -51,7 +51,9 @@ class PipelineOptimizer:
         return partitions
 
     @staticmethod
-    def communication_via_shared_array_buffer(partitions: list[Graph]) -> dict[str, Any]:
+    def communication_via_shared_array_buffer(
+        partitions: list[Graph],
+    ) -> dict[str, Any]:
         """Partition the graph into separate ir.Graph objects communicating via SharedArrayBuffer."""
         return {"type": "SharedArrayBuffer", "partitions": len(partitions)}
 
@@ -73,7 +75,13 @@ class PipelineOptimizer:
             attrs = node.attributes.copy()
             attrs["pool_id"] = hash(node.op_type) % 10
             new_graph.add_node(
-                Node(node.op_type, node.inputs.copy(), node.outputs.copy(), attrs, node.name)
+                Node(
+                    node.op_type,
+                    node.inputs.copy(),
+                    node.outputs.copy(),
+                    attrs,
+                    node.name,
+                )
             )
         return new_graph
 
@@ -89,7 +97,11 @@ class PipelineOptimizer:
         for node in graph.nodes:
             for out in node.outputs:
                 alloc_node = Node(
-                    "Alloc", [], [f"{out}_ptr"], {"domain": "onnx9000.memory"}, f"Alloc_{out}"
+                    "Alloc",
+                    [],
+                    [f"{out}_ptr"],
+                    {"domain": "onnx9000.memory"},
+                    f"Alloc_{out}",
                 )
                 new_graph.add_node(alloc_node)
             new_graph.add_node(
@@ -103,7 +115,11 @@ class PipelineOptimizer:
             )
             for inp in node.inputs:
                 free_node = Node(
-                    "Free", [f"{inp}_ptr"], [], {"domain": "onnx9000.memory"}, f"Free_{inp}"
+                    "Free",
+                    [f"{inp}_ptr"],
+                    [],
+                    {"domain": "onnx9000.memory"},
+                    f"Free_{inp}",
                 )
                 new_graph.add_node(free_node)
         return new_graph
@@ -149,7 +165,13 @@ class PipelineOptimizer:
                 payload = 2 * 1024 * 1024 if node.op_type == "Conv" else 1024
             attrs["device"] = PipelineOptimizer.cpu_vs_gpu_heuristic(payload, node.op_type)
             new_graph.add_node(
-                Node(node.op_type, node.inputs.copy(), node.outputs.copy(), attrs, node.name)
+                Node(
+                    node.op_type,
+                    node.inputs.copy(),
+                    node.outputs.copy(),
+                    attrs,
+                    node.name,
+                )
             )
         return new_graph
 
@@ -249,7 +271,13 @@ class PipelineOptimizer:
                 del attrs["dynamic"]
             attrs["static"] = True
             new_graph.add_node(
-                Node(node.op_type, node.inputs.copy(), node.outputs.copy(), attrs, node.name)
+                Node(
+                    node.op_type,
+                    node.inputs.copy(),
+                    node.outputs.copy(),
+                    attrs,
+                    node.name,
+                )
             )
         return new_graph
 
@@ -301,7 +329,10 @@ class PipelineOptimizer:
                 child[idx] = 1 - child[idx]
                 next_population.append(child)
             population = next_population
-        return {"best_fitness": best_overall_fitness, "best_chromosome": best_overall_chrom}
+        return {
+            "best_fitness": best_overall_fitness,
+            "best_chromosome": best_overall_chrom,
+        }
 
     @staticmethod
     def integrate_auto_tuner_js() -> str:

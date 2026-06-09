@@ -42,7 +42,10 @@ def test_all_ops_coverage():
             # Full call: all args (using t for all)
             args_full = []
             for p_name, p in sig.parameters.items():
-                if p.kind not in [inspect.Parameter.VAR_KEYWORD, inspect.Parameter.VAR_POSITIONAL]:
+                if p.kind not in [
+                    inspect.Parameter.VAR_KEYWORD,
+                    inspect.Parameter.VAR_POSITIONAL,
+                ]:
                     args_full.append(t)
 
             try:

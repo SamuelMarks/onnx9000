@@ -13,7 +13,10 @@ import tempfile
 
 
 def compile_cpp(
-    cpp_code: str, output_path: str = None, use_pybind: bool = True, extra_flags: list[str] = None
+    cpp_code: str,
+    output_path: str = None,
+    use_pybind: bool = True,
+    extra_flags: list[str] = None,
 ) -> str:
     """Compiles C++ source code into a shared library.
 
@@ -132,7 +135,12 @@ def compile_wasm(
     ]
 
     if emit_tsd:
-        flags.extend(["--emit-tsd", output_path.replace(".js", ".d.ts").replace(".wasm", ".d.ts")])
+        flags.extend(
+            [
+                "--emit-tsd",
+                output_path.replace(".js", ".d.ts").replace(".wasm", ".d.ts"),
+            ]
+        )
 
     if not standalone_wasm:
         flags.extend(["-s", f"ENVIRONMENT={environment}"])

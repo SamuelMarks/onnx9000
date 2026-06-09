@@ -165,7 +165,9 @@ class LayoutOptimizer:
                             pads_attr = node.attributes.get("pads")
                             if pads_attr and len(pads_attr.value) == 2:
                                 node.attributes["pads"] = Attribute(
-                                    "pads", "INTS", [0, pads_attr.value[0], 0, pads_attr.value[1]]
+                                    "pads",
+                                    "INTS",
+                                    [0, pads_attr.value[0], 0, pads_attr.value[1]],
                                 )
 
                             if len(node.inputs) > 1:
@@ -238,7 +240,10 @@ class LayoutOptimizer:
                             epsilon = epsilon_attr.value if epsilon_attr else 1e-5
 
                             scale_data = list(
-                                struct.unpack(f"<{len(scale_tensor.data) // 4}f", scale_tensor.data)
+                                struct.unpack(
+                                    f"<{len(scale_tensor.data) // 4}f",
+                                    scale_tensor.data,
+                                )
                             )
                             b_data = list(
                                 struct.unpack(f"<{len(b_tensor.data) // 4}f", b_tensor.data)
@@ -372,10 +377,16 @@ class LayoutOptimizer:
                             )
 
                             mul_node = Node(
-                                "Mul", [x, mul_name], [mul_out_name], name=f"{node.name}_mul"
+                                "Mul",
+                                [x, mul_name],
+                                [mul_out_name],
+                                name=f"{node.name}_mul",
                             )
                             add_node = Node(
-                                "Add", [mul_out_name, add_name], [y], name=f"{node.name}_add"
+                                "Add",
+                                [mul_out_name, add_name],
+                                [y],
+                                name=f"{node.name}_add",
                             )
 
                             self.graph.nodes[i] = mul_node
@@ -784,7 +795,11 @@ class LayoutOptimizer:
                             i_dim, o_dim = weight_tensor.shape
                             weight_tensor.shape = (o_dim, i_dim)
 
-            if node.op_type in ("LSTM", "UnidirectionalSequenceLSTM", "BidirectionalSequenceLSTM"):
+            if node.op_type in (
+                "LSTM",
+                "UnidirectionalSequenceLSTM",
+                "BidirectionalSequenceLSTM",
+            ):
                 import logging
 
                 logging.warning(
@@ -965,17 +980,20 @@ class LayoutOptimizer:
                 if perm_attr:
                     perm = perm_attr.value
                     in_info = next(
-                        (v for v in self.graph.value_info if v.name == node.inputs[0]), None
+                        (v for v in self.graph.value_info if v.name == node.inputs[0]),
+                        None,
                     )
                     if not in_info:
                         in_info = next(
-                            (v for v in self.graph.inputs if v.name == node.inputs[0]), None
+                            (v for v in self.graph.inputs if v.name == node.inputs[0]),
+                            None,
                         )
 
                     if in_info:
                         out_shape = [in_info.shape[p] for p in perm]
                         out_info = next(
-                            (v for v in self.graph.value_info if v.name == node.outputs[0]), None
+                            (v for v in self.graph.value_info if v.name == node.outputs[0]),
+                            None,
                         )
                         if out_info:
                             out_info.shape = out_shape

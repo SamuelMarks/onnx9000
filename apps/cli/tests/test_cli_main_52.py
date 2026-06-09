@@ -46,7 +46,8 @@ def test_custom_handler():
     from onnx9000_cli.main import serve_cmd
 
     with patch(
-        "socketserver.TCPServer.__enter__", return_value=MagicMock(serve_forever=MagicMock())
+        "socketserver.TCPServer.__enter__",
+        return_value=MagicMock(serve_forever=MagicMock()),
     ):
         with patch("socketserver.TCPServer.__exit__"):
             handler_cls = None

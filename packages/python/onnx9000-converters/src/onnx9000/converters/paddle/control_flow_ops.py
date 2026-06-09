@@ -37,7 +37,10 @@ def _map_tensor_array(op_type: str) -> Callable:
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Execute the  impl operation."""
         return builder.make_node(
-            op_type, node.inputs.get("X", []) + node.inputs.get("Value", []), node.attrs, node.name
+            op_type,
+            node.inputs.get("X", []) + node.inputs.get("Value", []),
+            node.attrs,
+            node.name,
         )
 
     return _impl

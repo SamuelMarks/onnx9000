@@ -106,7 +106,10 @@ def test_optimization_analyzer():
 def test_profiler_grouping():
     """Docstring for D103."""
     import pytest
-    from onnx9000.core.profiler_grouping import HierarchicalProfileNode, extract_namespace
+    from onnx9000.core.profiler_grouping import (
+        HierarchicalProfileNode,
+        extract_namespace,
+    )
 
     n = HierarchicalProfileNode("test")
     n.add_stats(1, 2, 3, 4)

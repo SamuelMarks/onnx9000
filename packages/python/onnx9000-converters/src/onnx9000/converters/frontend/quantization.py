@@ -28,7 +28,11 @@ class AWQParser:
         # Register group-wise quantization
         dequant = Node(
             op_type="DequantizeLinear",
-            inputs=[weight_name, f"{weight_name}_awq_scales", f"{weight_name}_awq_zeros"],
+            inputs=[
+                weight_name,
+                f"{weight_name}_awq_scales",
+                f"{weight_name}_awq_zeros",
+            ],
             outputs=[f"{weight_name}_fp16"],
         )
         dequant.attributes["block_size"] = Attribute("block_size", "int", group_size)

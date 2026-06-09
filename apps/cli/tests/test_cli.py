@@ -69,7 +69,10 @@ def test_cli_commands(capsys) -> None:
         patch("onnx9000.core.exporter.export_graph"),
         patch("onnx9000.c_compiler.compiler.C89Compiler") as mock_compiler_cls,
     ):
-        mock_compiler_cls.return_value.generate.return_value = ("header_content", "source_content")
+        mock_compiler_cls.return_value.generate.return_value = (
+            "header_content",
+            "source_content",
+        )
         mock_graph = MagicMock()
         mock_graph.tensors = {}
         mock_graph.nodes = []

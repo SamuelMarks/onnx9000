@@ -3,7 +3,10 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
-from onnx9000.backends.codegen.ops.elementwise import _generate_binary_op, _generate_unary_op
+from onnx9000.backends.codegen.ops.elementwise import (
+    _generate_binary_op,
+    _generate_unary_op,
+)
 from onnx9000.backends.codegen.utils import get_attribute, get_omp_pragma
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
@@ -356,7 +359,9 @@ def generate_reciprocal(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 def generate_sign(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Generate the code implementation for the Sign operator."""
     return _generate_unary_op(
-        node, ctx, "std::isnan({inp}) ? {inp} : (({inp} > 0) ? 1.0f : (({inp} < 0) ? -1.0f : 0.0f))"
+        node,
+        ctx,
+        "std::isnan({inp}) ? {inp} : (({inp} > 0) ? 1.0f : (({inp} < 0) ? -1.0f : 0.0f))",
     )
 
 
@@ -594,7 +599,11 @@ def generate_reduce_max(node: Node, ctx: "onnx9000.backends.codegen.Generator") 
 def generate_reduce_min(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
     """Execute the generate_reduce_min operation."""
     return _generate_reduction(
-        node, ctx, "ReduceMin", "std::numeric_limits<float>::max()", "if ({inp} < acc) acc = {inp};"
+        node,
+        ctx,
+        "ReduceMin",
+        "std::numeric_limits<float>::max()",
+        "if ({inp} < acc) acc = {inp};",
     )
 
 

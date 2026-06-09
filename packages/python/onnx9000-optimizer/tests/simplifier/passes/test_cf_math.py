@@ -72,7 +72,9 @@ def test_cf_math_ops():
     assert cf._evaluate_node("IsInf", [inf_val], {})
     assert cf._evaluate_node("IsInf", [inf_val], {"detect_positive": 1, "detect_negative": 0})
     assert cf._evaluate_node(
-        "IsInf", [np.array([float("-inf")])], {"detect_positive": 0, "detect_negative": 1}
+        "IsInf",
+        [np.array([float("-inf")])],
+        {"detect_positive": 0, "detect_negative": 1},
     )
     assert not cf._evaluate_node("IsInf", [a], {"detect_positive": 0, "detect_negative": 0})
 

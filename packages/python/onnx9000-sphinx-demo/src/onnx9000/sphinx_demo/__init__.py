@@ -77,7 +77,15 @@ def build_frontend(app: Sphinx) -> None:
     if not os.path.exists(dist_dir) or os.environ.get("FORCE_FRONTEND_BUILD") == "1":
         print("[onnx9000-demo] Building Vanilla JS frontend with Vite...")
         subprocess.check_call(
-            ["pnpm", "exec", "turbo", "run", "build", "--filter", "@onnx9000/sphinx-demo-ui"],
+            [
+                "pnpm",
+                "exec",
+                "turbo",
+                "run",
+                "build",
+                "--filter",
+                "@onnx9000/sphinx-demo-ui",
+            ],
             cwd=repo_root,
         )
         print("[onnx9000-demo] Frontend build complete.")
@@ -123,7 +131,8 @@ def copy_frontend_assets(app: Sphinx, exc: Exception) -> None:
 def setup(app: Sphinx) -> dict[str, str]:
     """Extension setup."""
     app.add_node(
-        InteractiveDemoNode, html=(visit_interactive_demo_node, depart_interactive_demo_node)
+        InteractiveDemoNode,
+        html=(visit_interactive_demo_node, depart_interactive_demo_node),
     )
 
     app.add_directive("interactive-demo", InteractiveDemoDirective)

@@ -14,7 +14,13 @@ import pytest
 @patch("os.makedirs")
 @patch("shutil.copy")
 def test_export_model_flow(
-    mock_copy, mock_makedirs, mock_pbar, mock_json_load, mock_open, mock_exists, mock_get_hf
+    mock_copy,
+    mock_makedirs,
+    mock_pbar,
+    mock_json_load,
+    mock_open,
+    mock_exists,
+    mock_get_hf,
 ):
     """Test export model flow."""
     from onnx9000_optimum.export import export_model
@@ -211,7 +217,10 @@ def test_export_transformers_error():
 
     with patch.dict(sys.modules, {"transformers": None, "torch": MagicMock()}):
         with (
-            patch("onnx9000_optimum.export.get_huggingface_model_files", return_value="/tmp/test"),
+            patch(
+                "onnx9000_optimum.export.get_huggingface_model_files",
+                return_value="/tmp/test",
+            ),
             patch("os.path.exists", return_value=True),
             patch("builtins.open"),
             patch("json.load", return_value={}),

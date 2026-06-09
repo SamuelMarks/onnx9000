@@ -12,7 +12,14 @@ from onnx9000.core.surgeon import (
 def test_map_bonsai_rope():
     graph = Graph(name="test")
     graph.nodes = []
-    node = Node(op_type="BonsaiRoPE", name="rope1", inputs=[], outputs=[], domain="", attributes={})
+    node = Node(
+        op_type="BonsaiRoPE",
+        name="rope1",
+        inputs=[],
+        outputs=[],
+        domain="",
+        attributes={},
+    )
     graph.nodes.append(node)
 
     graph = map_bonsai_rope(graph)
@@ -23,7 +30,12 @@ def test_map_alibi():
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
-        op_type="ALiBi", name="alibi1", inputs=["in1"], outputs=["out1"], domain="", attributes={}
+        op_type="ALiBi",
+        name="alibi1",
+        inputs=["in1"],
+        outputs=["out1"],
+        domain="",
+        attributes={},
     )
     graph.nodes.append(node)
 
@@ -55,7 +67,12 @@ def test_normalize_sliding_window_attention():
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
-        op_type="SlidingWindowAttention", name="s1", inputs=[], outputs=[], domain="", attributes={}
+        op_type="SlidingWindowAttention",
+        name="s1",
+        inputs=[],
+        outputs=[],
+        domain="",
+        attributes={},
     )
     graph.nodes.append(node)
 

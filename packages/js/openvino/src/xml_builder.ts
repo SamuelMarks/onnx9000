@@ -52,7 +52,7 @@ export class XmlNode {
    * @param pretty - Whether to format the output with newlines and indentation.
    * @returns The XML string representation.
    */
-  toString(indent: number = 0, pretty: boolean = false): string {
+  toXMLString(indent: number = 0, pretty: boolean = false): string {
     const indentStr = pretty ? " ".repeat(indent) : "";
     const newline = pretty ? "\n" : "";
 
@@ -147,7 +147,7 @@ export class XmlBuilder {
    * @param pretty - Whether to format the output with newlines and indentation.
    * @returns The XML document string representation.
    */
-  toString(pretty: boolean = false): string {
+  toXMLString(pretty: boolean = false): string {
     const newline = pretty ? "\n" : "";
     let result = this.declaration ? `${this.declaration}${newline}` : "";
     if (this.root) {

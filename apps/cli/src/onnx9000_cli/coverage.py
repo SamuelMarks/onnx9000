@@ -362,7 +362,9 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
 
                     tmp_out = os.path.join(base_tmp, f"{fw}_out.json")
                     subprocess.run(
-                        [python_exe, dumper_path, fw, tmp_out], check=True, capture_output=True
+                        [python_exe, dumper_path, fw, tmp_out],
+                        check=True,
+                        capture_output=True,
                     )
 
                     with open(tmp_out, encoding="utf-8") as f:
@@ -398,7 +400,14 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
     with tempfile.TemporaryDirectory() as temp_dir:
         try:
             subprocess.run(
-                ["git", "clone", "--depth", "1", "https://github.com/onnx/onnx.git", temp_dir],
+                [
+                    "git",
+                    "clone",
+                    "--depth",
+                    "1",
+                    "https://github.com/onnx/onnx.git",
+                    temp_dir,
+                ],
                 check=True,
                 capture_output=True,
             )
@@ -455,7 +464,14 @@ def get_onnx9000_ops() -> list[str]:
     except (ImportError, AttributeError):
         ops_dir = os.path.abspath(
             os.path.join(
-                os.getcwd(), "packages", "python", "onnx9000-core", "src", "onnx9000", "core", "ops"
+                os.getcwd(),
+                "packages",
+                "python",
+                "onnx9000-core",
+                "src",
+                "onnx9000",
+                "core",
+                "ops",
             )
         )
 
@@ -533,7 +549,16 @@ def count_supported_framework_objects(fw_name: str) -> int:
         import json
 
         snapshot_files = glob.glob(
-            os.path.join(converters_dir, "..", "..", "..", "..", "..", "snapshots", "torch-*.json")
+            os.path.join(
+                converters_dir,
+                "..",
+                "..",
+                "..",
+                "..",
+                "..",
+                "snapshots",
+                "torch-*.json",
+            )
         )
         if not snapshot_files:
             snapshot_files = glob.glob(os.path.join(os.getcwd(), "snapshots", "torch-*.json"))

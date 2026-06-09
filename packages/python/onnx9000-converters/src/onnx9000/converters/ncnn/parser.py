@@ -65,4 +65,9 @@ def parse_param(content: str) -> dict[str, Any]:
             }
         )
 
-    return {"magic": magic, "layer_count": layer_count, "blob_count": blob_count, "layers": layers}
+    return {
+        "magic": magic,
+        "layer_count": layer_count,
+        "blob_count": blob_count,
+        "layers": layers,
+    }

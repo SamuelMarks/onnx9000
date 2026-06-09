@@ -37,7 +37,13 @@ def add_sgd_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [grad, f"{param}_wd_term"], [wd_grad], {}, name=f"{param}_wd_add")
+                Node(
+                    "Add",
+                    [grad, f"{param}_wd_term"],
+                    [wd_grad],
+                    {},
+                    name=f"{param}_wd_add",
+                )
             )
             grad = wd_grad
         update = f"{param}_update"
@@ -63,10 +69,22 @@ def add_sgd_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [f"{param}_mom_term", grad], [v_new], {}, name=f"{param}_mom_add")
+                Node(
+                    "Add",
+                    [f"{param}_mom_term", grad],
+                    [v_new],
+                    {},
+                    name=f"{param}_mom_add",
+                )
             )
             graph.add_node(
-                Node("Mul", [v_new, learning_rate], [update], {}, name=f"{param}_lr_mul_mom")
+                Node(
+                    "Mul",
+                    [v_new, learning_rate],
+                    [update],
+                    {},
+                    name=f"{param}_lr_mul_mom",
+                )
             )
         else:
             graph.add_node(Node("Mul", [grad, learning_rate], [update], {}, name=f"{param}_lr_mul"))
@@ -164,7 +182,13 @@ def add_adam_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [grad, f"{param}_wd_term"], [wd_grad], {}, name=f"{param}_wd_add")
+                Node(
+                    "Add",
+                    [grad, f"{param}_wd_term"],
+                    [wd_grad],
+                    {},
+                    name=f"{param}_wd_add",
+                )
             )
             grad = wd_grad
 
@@ -182,7 +206,13 @@ def add_adam_optimizer(
         graph.add_node(Node("Mul", [grad, grad], [grad_sq], {}, name=f"{param}_mul_g_sq"))
         graph.add_node(Node("Mul", [v, "_adam_b2"], [v_term1], {}, name=f"{param}_mul_v_b2"))
         graph.add_node(
-            Node("Mul", [grad_sq, "_adam_1_m_b2"], [v_term2], {}, name=f"{param}_mul_g_sq_b2")
+            Node(
+                "Mul",
+                [grad_sq, "_adam_1_m_b2"],
+                [v_term2],
+                {},
+                name=f"{param}_mul_g_sq_b2",
+            )
         )
         graph.add_node(Node("Add", [v_term1, v_term2], [v_new], {}, name=f"{param}_add_v"))
 
@@ -204,7 +234,13 @@ def add_adam_optimizer(
         graph.add_node(Node("Add", [v_hat_sqrt, "_adam_eps"], [denom], {}, name=f"{param}_add_eps"))
         graph.add_node(Node("Div", [m_hat, denom], [update_step], {}, name=f"{param}_div_upd"))
         graph.add_node(
-            Node("Mul", [update_step, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr")
+            Node(
+                "Mul",
+                [update_step, learning_rate],
+                [lr_scaled],
+                {},
+                name=f"{param}_mul_lr",
+            )
         )
 
         # Apply update
@@ -232,7 +268,13 @@ def add_adamw_optimizer(
     )
     graph.add_node(Node("Constant", [], ["_adamw_1"], {"value": [1.0]}, name="adamw_1_const"))
     graph.add_node(
-        Node("Constant", [], ["_adamw_wd"], {"value": [weight_decay]}, name="adamw_wd_const")
+        Node(
+            "Constant",
+            [],
+            ["_adamw_wd"],
+            {"value": [weight_decay]},
+            name="adamw_wd_const",
+        )
     )
 
     graph.add_node(
@@ -249,15 +291,33 @@ def add_adamw_optimizer(
         Node("Pow", ["_adamw_b2", global_step], ["_adamw_b2_t"], {}, name="adamw_pow_b2")
     )
     graph.add_node(
-        Node("Sub", ["_adamw_1", "_adamw_b1_t"], ["_adamw_bias_m"], {}, name="adamw_bias_m")
+        Node(
+            "Sub",
+            ["_adamw_1", "_adamw_b1_t"],
+            ["_adamw_bias_m"],
+            {},
+            name="adamw_bias_m",
+        )
     )
     graph.add_node(
-        Node("Sub", ["_adamw_1", "_adamw_b2_t"], ["_adamw_bias_v"], {}, name="adamw_bias_v")
+        Node(
+            "Sub",
+            ["_adamw_1", "_adamw_b2_t"],
+            ["_adamw_bias_v"],
+            {},
+            name="adamw_bias_v",
+        )
     )
 
     # Compute wd_scaled = learning_rate * weight_decay
     graph.add_node(
-        Node("Mul", [learning_rate, "_adamw_wd"], ["_adamw_lr_wd"], {}, name="adamw_lr_wd_mul")
+        Node(
+            "Mul",
+            [learning_rate, "_adamw_wd"],
+            ["_adamw_lr_wd"],
+            {},
+            name="adamw_lr_wd_mul",
+        )
     )
 
     for param in parameters:
@@ -281,10 +341,22 @@ def add_adamw_optimizer(
         param_wd_update = f"{param}_wd_upd"
         param_decayed = f"{param}_decayed"
         graph.add_node(
-            Node("Mul", [param, "_adamw_lr_wd"], [param_wd_update], {}, name=f"{param}_mul_wd")
+            Node(
+                "Mul",
+                [param, "_adamw_lr_wd"],
+                [param_wd_update],
+                {},
+                name=f"{param}_mul_wd",
+            )
         )
         graph.add_node(
-            Node("Sub", [param, param_wd_update], [param_decayed], {}, name=f"{param}_sub_wd")
+            Node(
+                "Sub",
+                [param, param_wd_update],
+                [param_decayed],
+                {},
+                name=f"{param}_sub_wd",
+            )
         )
 
         # Update biased first moment
@@ -303,7 +375,13 @@ def add_adamw_optimizer(
         graph.add_node(Node("Mul", [grad, grad], [grad_sq], {}, name=f"{param}_mul_g_sq"))
         graph.add_node(Node("Mul", [v, "_adamw_b2"], [v_term1], {}, name=f"{param}_mul_v_b2"))
         graph.add_node(
-            Node("Mul", [grad_sq, "_adamw_1_m_b2"], [v_term2], {}, name=f"{param}_mul_g_sq_b2")
+            Node(
+                "Mul",
+                [grad_sq, "_adamw_1_m_b2"],
+                [v_term2],
+                {},
+                name=f"{param}_mul_g_sq_b2",
+            )
         )
         graph.add_node(Node("Add", [v_term1, v_term2], [v_new], {}, name=f"{param}_add_v"))
 
@@ -329,12 +407,24 @@ def add_adamw_optimizer(
         )
         graph.add_node(Node("Div", [m_hat, denom], [update_step], {}, name=f"{param}_div_upd"))
         graph.add_node(
-            Node("Mul", [update_step, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr")
+            Node(
+                "Mul",
+                [update_step, learning_rate],
+                [lr_scaled],
+                {},
+                name=f"{param}_mul_lr",
+            )
         )
 
         # Apply update to the decayed parameter
         graph.add_node(
-            Node("Sub", [param_decayed, lr_scaled], [param_new], {}, name=f"{param}_sub_param")
+            Node(
+                "Sub",
+                [param_decayed, lr_scaled],
+                [param_new],
+                {},
+                name=f"{param}_sub_param",
+            )
         )
 
 
@@ -349,10 +439,22 @@ def add_rmsprop_optimizer(
 ) -> None:
     """Add RMSprop optimizer steps natively to the graph."""
     graph.add_node(
-        Node("Constant", [], ["_rmsprop_alpha"], {"value": [alpha]}, name="rmsprop_alpha_c")
+        Node(
+            "Constant",
+            [],
+            ["_rmsprop_alpha"],
+            {"value": [alpha]},
+            name="rmsprop_alpha_c",
+        )
     )
     graph.add_node(
-        Node("Constant", [], ["_rmsprop_1_m_alpha"], {"value": [1.0 - alpha]}, name="rmsprop_1ma_c")
+        Node(
+            "Constant",
+            [],
+            ["_rmsprop_1_m_alpha"],
+            {"value": [1.0 - alpha]},
+            name="rmsprop_1ma_c",
+        )
     )
     graph.add_node(
         Node("Constant", [], ["_rmsprop_eps"], {"value": [epsilon]}, name="rmsprop_eps_c")
@@ -360,7 +462,13 @@ def add_rmsprop_optimizer(
 
     if momentum > 0.0:
         graph.add_node(
-            Node("Constant", [], ["_rmsprop_mom"], {"value": [momentum]}, name="rmsprop_mom_c")
+            Node(
+                "Constant",
+                [],
+                ["_rmsprop_mom"],
+                {"value": [momentum]},
+                name="rmsprop_mom_c",
+            )
         )
 
     for param in parameters:
@@ -401,7 +509,13 @@ def add_rmsprop_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [grad, f"{param}_wd_term"], [wd_grad], {}, name=f"{param}_wd_add")
+                Node(
+                    "Add",
+                    [grad, f"{param}_wd_term"],
+                    [wd_grad],
+                    {},
+                    name=f"{param}_wd_add",
+                )
             )
             grad = wd_grad
 
@@ -415,7 +529,11 @@ def add_rmsprop_optimizer(
         )
         graph.add_node(
             Node(
-                "Mul", [grad_sq, "_rmsprop_1_m_alpha"], [v_term2], {}, name=f"{param}_mul_g_sq_1ma"
+                "Mul",
+                [grad_sq, "_rmsprop_1_m_alpha"],
+                [v_term2],
+                {},
+                name=f"{param}_mul_g_sq_1ma",
             )
         )
         graph.add_node(Node("Add", [v_term1, v_term2], [v_new], {}, name=f"{param}_add_v"))
@@ -440,19 +558,43 @@ def add_rmsprop_optimizer(
 
             lr_scaled = f"{param}_lr_scaled"
             graph.add_node(
-                Node("Mul", [m_new, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr_m")
+                Node(
+                    "Mul",
+                    [m_new, learning_rate],
+                    [lr_scaled],
+                    {},
+                    name=f"{param}_mul_lr_m",
+                )
             )
             graph.add_node(
-                Node("Sub", [param, lr_scaled], [param_new], {}, name=f"{param}_sub_param")
+                Node(
+                    "Sub",
+                    [param, lr_scaled],
+                    [param_new],
+                    {},
+                    name=f"{param}_sub_param",
+                )
             )
         else:
             # param_new = param - lr * update_step
             lr_scaled = f"{param}_lr_scaled"
             graph.add_node(
-                Node("Mul", [update_step, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr")
+                Node(
+                    "Mul",
+                    [update_step, learning_rate],
+                    [lr_scaled],
+                    {},
+                    name=f"{param}_mul_lr",
+                )
             )
             graph.add_node(
-                Node("Sub", [param, lr_scaled], [param_new], {}, name=f"{param}_sub_param")
+                Node(
+                    "Sub",
+                    [param, lr_scaled],
+                    [param_new],
+                    {},
+                    name=f"{param}_sub_param",
+                )
             )
 
 
@@ -499,7 +641,13 @@ def add_adagrad_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [grad, f"{param}_wd_term"], [wd_grad], {}, name=f"{param}_wd_add")
+                Node(
+                    "Add",
+                    [grad, f"{param}_wd_term"],
+                    [wd_grad],
+                    {},
+                    name=f"{param}_wd_add",
+                )
             )
             grad = wd_grad
 
@@ -518,7 +666,13 @@ def add_adagrad_optimizer(
         graph.add_node(Node("Add", [v_sqrt, "_adagrad_eps"], [denom], {}, name=f"{param}_add_eps"))
         graph.add_node(Node("Div", [grad, denom], [update_step], {}, name=f"{param}_div_upd"))
         graph.add_node(
-            Node("Mul", [update_step, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr")
+            Node(
+                "Mul",
+                [update_step, learning_rate],
+                [lr_scaled],
+                {},
+                name=f"{param}_mul_lr",
+            )
         )
 
         # Apply update
@@ -536,10 +690,22 @@ def add_adadelta_optimizer(
     """Add Adadelta optimizer steps natively to the graph."""
     graph.add_node(Node("Constant", [], ["_adadelta_rho"], {"value": [rho]}, name="adadelta_rho_c"))
     graph.add_node(
-        Node("Constant", [], ["_adadelta_1_m_rho"], {"value": [1.0 - rho]}, name="adadelta_1mrho_c")
+        Node(
+            "Constant",
+            [],
+            ["_adadelta_1_m_rho"],
+            {"value": [1.0 - rho]},
+            name="adadelta_1mrho_c",
+        )
     )
     graph.add_node(
-        Node("Constant", [], ["_adadelta_eps"], {"value": [epsilon]}, name="adadelta_eps_c")
+        Node(
+            "Constant",
+            [],
+            ["_adadelta_eps"],
+            {"value": [epsilon]},
+            name="adadelta_eps_c",
+        )
     )
 
     for param in parameters:
@@ -578,7 +744,13 @@ def add_adadelta_optimizer(
                 )
             )
             graph.add_node(
-                Node("Add", [grad, f"{param}_wd_term"], [wd_grad], {}, name=f"{param}_wd_add")
+                Node(
+                    "Add",
+                    [grad, f"{param}_wd_term"],
+                    [wd_grad],
+                    {},
+                    name=f"{param}_wd_add",
+                )
             )
             grad = wd_grad
 
@@ -590,7 +762,11 @@ def add_adadelta_optimizer(
         graph.add_node(Node("Mul", [v, "_adadelta_rho"], [v_term1], {}, name=f"{param}_mul_v_rho"))
         graph.add_node(
             Node(
-                "Mul", [grad_sq, "_adadelta_1_m_rho"], [v_term2], {}, name=f"{param}_mul_g_sq_1mrho"
+                "Mul",
+                [grad_sq, "_adadelta_1_m_rho"],
+                [v_term2],
+                {},
+                name=f"{param}_mul_g_sq_1mrho",
             )
         )
         graph.add_node(Node("Add", [v_term1, v_term2], [v_new], {}, name=f"{param}_add_v"))
@@ -608,7 +784,13 @@ def add_adadelta_optimizer(
         )
         graph.add_node(Node("Sqrt", [u_add_eps], [u_sqrt], {}, name=f"{param}_u_sqrt"))
         graph.add_node(
-            Node("Add", [v_new, "_adadelta_eps"], [v_add_eps], {}, name=f"{param}_v_add_eps")
+            Node(
+                "Add",
+                [v_new, "_adadelta_eps"],
+                [v_add_eps],
+                {},
+                name=f"{param}_v_add_eps",
+            )
         )
         graph.add_node(Node("Sqrt", [v_add_eps], [v_sqrt], {}, name=f"{param}_v_sqrt"))
         graph.add_node(Node("Div", [u_sqrt, v_sqrt], [ratio], {}, name=f"{param}_div_ratio"))
@@ -619,7 +801,13 @@ def add_adadelta_optimizer(
         u_term1 = f"{param}_u_t1"
         u_term2 = f"{param}_u_t2"
         graph.add_node(
-            Node("Mul", [update_step, update_step], [upd_sq], {}, name=f"{param}_mul_upd_sq")
+            Node(
+                "Mul",
+                [update_step, update_step],
+                [upd_sq],
+                {},
+                name=f"{param}_mul_upd_sq",
+            )
         )
         graph.add_node(Node("Mul", [u, "_adadelta_rho"], [u_term1], {}, name=f"{param}_mul_u_rho"))
         graph.add_node(
@@ -636,7 +824,13 @@ def add_adadelta_optimizer(
         # Apply update
         lr_scaled = f"{param}_lr_scaled"
         graph.add_node(
-            Node("Mul", [update_step, learning_rate], [lr_scaled], {}, name=f"{param}_mul_lr")
+            Node(
+                "Mul",
+                [update_step, learning_rate],
+                [lr_scaled],
+                {},
+                name=f"{param}_mul_lr",
+            )
         )
         graph.add_node(Node("Sub", [param, lr_scaled], [param_new], {}, name=f"{param}_sub_param"))
 
@@ -713,7 +907,13 @@ def add_gradient_clipping(graph: Graph, grad_names: list[str], max_norm: float) 
 
     norm_exceeds = "norm_exceeds"
     graph.add_node(
-        Node("Greater", [global_norm, c_max_norm], [norm_exceeds], {}, name="norm_exceeds_cmp")
+        Node(
+            "Greater",
+            [global_norm, c_max_norm],
+            [norm_exceeds],
+            {},
+            name="norm_exceeds_cmp",
+        )
     )
 
     graph.add_node(
@@ -741,7 +941,13 @@ def add_local_dp_gradient_clipping(graph: Graph, grad_names: list[str], max_l2_n
 
     c_max_norm = "local_dp_max_norm"
     graph.add_node(
-        Node("Constant", [], [c_max_norm], {"value": [max_l2_norm]}, name="local_dp_c_max_norm")
+        Node(
+            "Constant",
+            [],
+            [c_max_norm],
+            {"value": [max_l2_norm]},
+            name="local_dp_c_max_norm",
+        )
     )
 
     for i, g in enumerate(grad_names):

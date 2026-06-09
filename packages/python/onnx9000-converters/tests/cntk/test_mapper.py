@@ -8,7 +8,12 @@ def test_mapper_cntk_basic():
     model_dict = {
         "inputs": [{"name": "input_x"}],
         "nodes": [
-            {"op": "Convolution", "name": "conv1", "inputs": ["input_x"], "outputs": ["conv1_out"]},
+            {
+                "op": "Convolution",
+                "name": "conv1",
+                "inputs": ["input_x"],
+                "outputs": ["conv1_out"],
+            },
             {
                 "op": "Plus",
                 "name": "plus1",

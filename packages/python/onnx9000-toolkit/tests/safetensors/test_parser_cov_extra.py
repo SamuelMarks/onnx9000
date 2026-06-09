@@ -40,7 +40,8 @@ def test_json_recursion_error():
     """Test json recursion error."""
     with patch("json.loads", side_effect=RecursionError("too deep")):
         with pytest.raises(
-            SafetensorsInvalidJSONError, match="JSON deeply nested recursion limits reached"
+            SafetensorsInvalidJSONError,
+            match="JSON deeply nested recursion limits reached",
         ):
             header = b'{"__metadata__": {}}'
             buf = struct.pack("<Q", len(header)) + header
@@ -144,7 +145,9 @@ def test_convert_pytorch_to_safetensors_mocked(tmp_path):
         with patch("torch.load", return_value=state_dict) as mock_load:
             import os
 
-            from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
+            from onnx9000.toolkit.safetensors.converters import (
+                convert_pytorch_to_safetensors,
+            )
 
             output_file = tmp_path / "model.safetensors"
             (tmp_path / "dummy.bin").write_text("")

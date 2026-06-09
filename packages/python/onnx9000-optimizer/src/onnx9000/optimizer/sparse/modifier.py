@@ -175,7 +175,10 @@ class GradualPruningModifier(MagnitudePruningModifier):
         :param kwargs: Additional keyword arguments.
         """
         super().__init__(
-            params=params, init_sparsity=init_sparsity, final_sparsity=final_sparsity, **kwargs
+            params=params,
+            init_sparsity=init_sparsity,
+            final_sparsity=final_sparsity,
+            **kwargs,
         )
         self.start_step = start_step
         self.end_step = end_step

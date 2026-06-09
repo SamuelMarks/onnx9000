@@ -8,7 +8,9 @@ from onnx9000_cli.main import main
 def test_coverage_gaps_cmd42():
     try:
         with patch.object(
-            sys, "argv", ["onnx9000", "change-batch", "test.onnx", "10", "-o", "out.onnx"]
+            sys,
+            "argv",
+            ["onnx9000", "change-batch", "test.onnx", "10", "-o", "out.onnx"],
         ):
             with patch(
                 "onnx9000_cli.main.load_onnx",
@@ -33,7 +35,15 @@ def test_coverage_gaps_cmd42():
         with patch.object(
             sys,
             "argv",
-            ["onnx9000", "mutate", "test.onnx", "--script", "script.json", "-o", "out.onnx"],
+            [
+                "onnx9000",
+                "mutate",
+                "test.onnx",
+                "--script",
+                "script.json",
+                "-o",
+                "out.onnx",
+            ],
         ):
             with patch(
                 "onnx9000_cli.main.load_onnx",
@@ -50,7 +60,8 @@ def test_coverage_gaps_cmd42():
                 with patch("onnx9000_cli.main.save_onnx"):
                     with patch("builtins.open"):
                         with patch(
-                            "json.load", return_value=[{"action": "remove_node", "node_name": "1"}]
+                            "json.load",
+                            return_value=[{"action": "remove_node", "node_name": "1"}],
                         ):
                             main()
     except Exception:

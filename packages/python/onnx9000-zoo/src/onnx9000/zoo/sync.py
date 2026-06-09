@@ -13,7 +13,9 @@ class BonsaiHubSynchronizer:
     """Synchronizer for jax-ml/bonsai commit streams."""
 
     def __init__(
-        self, catalog: ZooCatalog, repo_url: str = "https://api.github.com/repos/jax-ml/bonsai"
+        self,
+        catalog: ZooCatalog,
+        repo_url: str = "https://api.github.com/repos/jax-ml/bonsai",
     ):
         self.catalog = catalog
         self.repo_url = repo_url

@@ -4,7 +4,10 @@ import os
 
 import numpy as np
 import pytest
-from onnx9000.toolkit.safetensors.parser import SafeTensors, SafetensorsInvalidDtypeError
+from onnx9000.toolkit.safetensors.parser import (
+    SafeTensors,
+    SafetensorsInvalidDtypeError,
+)
 
 
 def test_parser_coverage():

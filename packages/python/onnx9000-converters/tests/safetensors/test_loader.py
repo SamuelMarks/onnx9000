@@ -17,7 +17,10 @@ def test_load_safetensors_to_graph():
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
         save_file(
-            {"a": np.array([1, 2], dtype=np.float32), "b": np.array([3, 4], dtype=np.int32)},
+            {
+                "a": np.array([1, 2], dtype=np.float32),
+                "b": np.array([3, 4], dtype=np.int32),
+            },
             path,
             {"format": "pt"},
         )
@@ -65,10 +68,16 @@ def test_dump_graph_to_safetensors():
 
     g = Graph("test")
     g.tensors["w1"] = Tensor(
-        "w1", shape=(2,), dtype=DType.FLOAT32, data=np.array([1.0, 2.0], dtype=np.float32).tobytes()
+        "w1",
+        shape=(2,),
+        dtype=DType.FLOAT32,
+        data=np.array([1.0, 2.0], dtype=np.float32).tobytes(),
     )
     g.tensors["w2"] = Tensor(
-        "w2", shape=(2,), dtype=DType.FLOAT32, data=np.array([3.0, 4.0], dtype=np.float32).tobytes()
+        "w2",
+        shape=(2,),
+        dtype=DType.FLOAT32,
+        data=np.array([3.0, 4.0], dtype=np.float32).tobytes(),
     )
     with tempfile.TemporaryDirectory() as d:
         safetensors_path = os.path.join(d, "weights.safetensors")
@@ -93,7 +102,10 @@ def test_validate_onnx_shapes_and_dtypes(caplog):
         data=np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32).tobytes(),
     )
     g.tensors["w2"] = Tensor(
-        "w2", shape=(2,), dtype=DType.INT32, data=np.array([1, 2], dtype=np.int32).tobytes()
+        "w2",
+        shape=(2,),
+        dtype=DType.INT32,
+        data=np.array([1, 2], dtype=np.int32).tobytes(),
     )
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")

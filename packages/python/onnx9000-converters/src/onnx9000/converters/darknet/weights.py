@@ -35,4 +35,10 @@ def load_weights(f: BinaryIO) -> dict[str, Any]:
 
     weights = np.frombuffer(f.read(), dtype=np.float32).copy()
 
-    return {"major": major, "minor": minor, "revision": revision, "seen": seen, "weights": weights}
+    return {
+        "major": major,
+        "minor": minor,
+        "revision": revision,
+        "seen": seen,
+        "weights": weights,
+    }

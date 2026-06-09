@@ -17,7 +17,14 @@ def get_huggingface_model_files(model_id: str, cache_dir: str | None = None) -> 
         local_dir = snapshot_download(
             repo_id=model_id,
             cache_dir=cache_dir,
-            allow_patterns=["*.json", "*.bin", "*.safetensors", "*.model", "*.txt", "*.py"],
+            allow_patterns=[
+                "*.json",
+                "*.bin",
+                "*.safetensors",
+                "*.model",
+                "*.txt",
+                "*.py",
+            ],
         )
         return local_dir
     except ImportError:
@@ -144,7 +151,11 @@ def export_model(
     import torch
 
     try:
-        from transformers import AutoModel, AutoModelForCausalLM, AutoModelForSequenceClassification
+        from transformers import (
+            AutoModel,
+            AutoModelForCausalLM,
+            AutoModelForSequenceClassification,
+        )
 
         # Simplify loading for demo
         if task == "text-generation":
@@ -174,8 +185,14 @@ def export_model(
         dynamic_axes["logits"] = {0: "batch_size", 1: "sequence_length"}
         num_layers = config.get("num_hidden_layers", 12)
         for i in range(num_layers):
-            dynamic_axes[f"past_key_values_{i}_key"] = {0: "batch_size", 2: "sequence_length"}
-            dynamic_axes[f"past_key_values_{i}_value"] = {0: "batch_size", 2: "sequence_length"}
+            dynamic_axes[f"past_key_values_{i}_key"] = {
+                0: "batch_size",
+                2: "sequence_length",
+            }
+            dynamic_axes[f"past_key_values_{i}_value"] = {
+                0: "batch_size",
+                2: "sequence_length",
+            }
             output_names.extend([f"present_{i}_key", f"present_{i}_value"])
 
     os.makedirs(output_dir, exist_ok=True)

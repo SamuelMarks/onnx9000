@@ -93,7 +93,11 @@ def test_nn_ops_conv2d_nhwc() -> None:
         "n",
         "Conv2D",
         inputs=["input", "weight"],
-        attr={"data_format": b"NHWC", "strides": [1, 2, 2, 1], "dilations": [1, 1, 1, 1]},
+        attr={
+            "data_format": b"NHWC",
+            "strides": [1, 2, 2, 1],
+            "dilations": [1, 1, 1, 1],
+        },
     )
     NN_OPS_MAPPING["Conv2D"](builder, node)
     assert builder.graph.nodes[-1].op_type == "Transpose"
@@ -109,7 +113,11 @@ def test_nn_ops_conv2d_nchw() -> None:
         "n",
         "Conv2D",
         inputs=["input", "weight"],
-        attr={"data_format": "NCHW", "strides": [1, 1, 2, 2], "dilations": [1, 1, 1, 1]},
+        attr={
+            "data_format": "NCHW",
+            "strides": [1, 1, 2, 2],
+            "dilations": [1, 1, 1, 1],
+        },
     )
     NN_OPS_MAPPING["Conv2D"](builder, node)
     assert builder.graph.nodes[-1].op_type == "Conv"
@@ -152,7 +160,10 @@ def test_nn_ops_batch_norm() -> None:
         "FusedBatchNormV3",
     ]:
         node = TFNode(
-            f"n_{op}", op, inputs=["x", "scale", "bias", "mean", "var"], attr={"epsilon": 0.0001}
+            f"n_{op}",
+            op,
+            inputs=["x", "scale", "bias", "mean", "var"],
+            attr={"epsilon": 0.0001},
         )
         NN_OPS_MAPPING[op](builder, node)
         assert builder.graph.nodes[-1].op_type == "BatchNormalization"

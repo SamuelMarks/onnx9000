@@ -20,7 +20,10 @@ class ONNXBackendTestRunner:
     """Run official ONNX node tests against ONNX9000 InferenceSession."""
 
     def __init__(
-        self, providers: list[ExecutionProvider], rtol: float = 0.001, atol: float = 1e-05
+        self,
+        providers: list[ExecutionProvider],
+        rtol: float = 0.001,
+        atol: float = 1e-05,
     ) -> None:
         """Initialize the test runner."""
         self.providers = providers
@@ -98,7 +101,10 @@ class ONNXBackendTestRunner:
                         graph_outputs[i].name if i < len(graph_outputs) else expected_output.name
                     )
                     if i >= len(outputs):
-                        return (False, f"Missing output tensor at index {i}: {out_name}")
+                        return (
+                            False,
+                            f"Missing output tensor at index {i}: {out_name}",
+                        )
                     actual_tensor = outputs[i]
                     actual_arr = self._convert_tensor_to_numpy(actual_tensor)
                     expected_arr = self._convert_tensor_to_numpy(expected_output)

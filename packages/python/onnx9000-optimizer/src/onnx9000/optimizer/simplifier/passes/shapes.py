@@ -41,7 +41,18 @@ class ShapeInferencePass(GraphPass):
         """Implement the _infer_shape method or operation."""
         if (
             node.op_type
-            in ("Relu", "Sigmoid", "Exp", "Log", "Abs", "Sqrt", "Cast", "Identity", "Swish", "Gelu")
+            in (
+                "Relu",
+                "Sigmoid",
+                "Exp",
+                "Log",
+                "Abs",
+                "Sqrt",
+                "Cast",
+                "Identity",
+                "Swish",
+                "Gelu",
+            )
             and node.inputs[0] in shapes
         ):
             return shapes[node.inputs[0]]

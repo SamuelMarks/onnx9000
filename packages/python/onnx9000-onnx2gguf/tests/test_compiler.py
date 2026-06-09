@@ -4,7 +4,11 @@ import io
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Tensor
-from onnx9000.onnx2gguf.compiler import compile_gguf, infer_architecture, sanitize_doc_string
+from onnx9000.onnx2gguf.compiler import (
+    compile_gguf,
+    infer_architecture,
+    sanitize_doc_string,
+)
 
 
 def test_compile_gguf():
@@ -14,7 +18,12 @@ def test_compile_gguf():
     g.model_version = 1
     g.doc_string = "doc"
 
-    t1 = Tensor("model.layers.0.weight", (2, 2), DType.FLOAT32, data=bytearray(b"1234567812345678"))
+    t1 = Tensor(
+        "model.layers.0.weight",
+        (2, 2),
+        DType.FLOAT32,
+        data=bytearray(b"1234567812345678"),
+    )
     t2 = Tensor("model.layers.0.bias", (2,), DType.FLOAT16, data=bytearray(b"1234"))
 
     g.add_tensor(t1)

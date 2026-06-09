@@ -254,7 +254,12 @@ def interpolate(
     from onnx9000.core.dtypes import DType
 
     attrs = {"mode": mode}
-    if align_corners is not None and mode in ["linear", "bilinear", "trilinear", "bicubic"]:
+    if align_corners is not None and mode in [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "bicubic",
+    ]:
         return None
     inputs = [input]
     inputs.append(Parameter((0,), DType.FLOAT32, "roi", np.array([], dtype=np.float32)))

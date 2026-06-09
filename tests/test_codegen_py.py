@@ -1,4 +1,8 @@
-from onnx9000.c_compiler.codegen import BaseCodegenVisitor, CFamilyCodegen, PythonCodegen
+from onnx9000.c_compiler.codegen import (
+    BaseCodegenVisitor,
+    CFamilyCodegen,
+    PythonCodegen,
+)
 from onnx9000.core.ir import Graph, Node
 
 

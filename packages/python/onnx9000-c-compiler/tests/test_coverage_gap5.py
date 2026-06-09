@@ -44,7 +44,26 @@ def test_quant_matmul_nd():
     tY = Tensor("Y", [2, 2, 2, 2], DType.UINT8, data=b"\x00\x00\x80\x3f" * 8)
 
     generate_qlinear_matmul(
-        b, n, tY, tA, sA, zA, tB, sB, zB, sY, zY, "A", "sA", "zA", "B", "sB", "zB", "sY", "zY", "Y"
+        b,
+        n,
+        tY,
+        tA,
+        sA,
+        zA,
+        tB,
+        sB,
+        zB,
+        sY,
+        zY,
+        "A",
+        "sA",
+        "zA",
+        "B",
+        "sB",
+        "zB",
+        "sY",
+        "zY",
+        "Y",
     )
 
 

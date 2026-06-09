@@ -108,7 +108,8 @@ def test_parser_edge_cases_and_mocks():
             with pytest.raises(SafetensorsDuplicateKeyError):
                 SafeTensors(data)
     with pytest.raises(
-        SafetensorsInvalidDtypeError, match="Complex types \\(C64\\) are not currently supported"
+        SafetensorsInvalidDtypeError,
+        match="Complex types \\(C64\\) are not currently supported",
     ):
         header = b'{"a": {"dtype": "C64", "shape": [1], "data_offsets": [0, 8]}}'
         data = struct.pack("<Q", len(header)) + header + b"x" * 8
@@ -145,7 +146,8 @@ def test_parser_edge_cases_and_mocks():
                 except TypeError:
                     return None
     with patch.dict(
-        sys.modules, {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None}
+        sys.modules,
+        {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None},
     ):
         with pytest.raises(ImportError):
             st_valid.get_onnx9000_tensor("a")
@@ -199,7 +201,12 @@ def test_parser_edge_cases_and_mocks():
     with pytest.raises(SafetensorsInvalidDtypeError):
         st_valid.get_numpy("c")
     st_float = SafeTensors(
-        save({"f32": np.array([1.0], dtype=np.float32), "f64": np.array([1.0], dtype=np.float64)})
+        save(
+            {
+                "f32": np.array([1.0], dtype=np.float32),
+                "f64": np.array([1.0], dtype=np.float64),
+            }
+        )
     )
     arr_f16_from_f32 = st_float.get_numpy("f32", downcast_f16=True)
     assert arr_f16_from_f32.dtype == np.float16

@@ -49,4 +49,9 @@ class CaffeConverter(BaseParser):
         return graph  # pragma: no cover
 
 
-__all__ = ["parse_prototxt", "load_caffemodel", "CaffeMapper", "CaffeConverter"]  # pragma: no cover
+__all__ = [
+    "parse_prototxt",
+    "load_caffemodel",
+    "CaffeMapper",
+    "CaffeConverter",
+]  # pragma: no cover

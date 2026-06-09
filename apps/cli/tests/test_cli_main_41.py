@@ -88,7 +88,8 @@ def test_coverage_gaps_cmd41():
                 with patch("onnx9000_cli.main.save_onnx"):
                     with patch("builtins.open"):
                         with patch(
-                            "json.load", return_value=[{"action": "remove_node", "node_name": "1"}]
+                            "json.load",
+                            return_value=[{"action": "remove_node", "node_name": "1"}],
                         ):
                             main()
     except Exception:

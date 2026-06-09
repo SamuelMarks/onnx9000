@@ -71,7 +71,8 @@ def test_onnx2gguf(monkeypatch):
     monkeypatch.setattr("builtins.open", lambda *a, **kw: io.StringIO('{"dummy": 1}'))
     called = []
     monkeypatch.setattr(
-        "onnx9000.onnx2gguf.compiler.compile_gguf", lambda g, f, kv_overrides: called.append(True)
+        "onnx9000.onnx2gguf.compiler.compile_gguf",
+        lambda g, f, kv_overrides: called.append(True),
     )
 
     args = argparse.Namespace(

@@ -715,7 +715,7 @@ export class OpenVinoExporter {
 
     const builder = new XmlBuilder();
     builder.setRoot(net);
-    const xmlStr = builder.toString(true);
+    const xmlStr = builder.toXMLString(true);
 
     const totalLength = this.binBuffer.reduce(
       (acc, val) => acc + val.length,

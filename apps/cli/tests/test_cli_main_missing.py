@@ -8,7 +8,11 @@ from onnx9000_cli import main
 
 def test_convert_flax_json():
     args = argparse.Namespace(
-        src="dummy.flax", from_fmt="flax", to_fmt="onnx", output="out.onnx", weights=None
+        src="dummy.flax",
+        from_fmt="flax",
+        to_fmt="onnx",
+        output="out.onnx",
+        weights=None,
     )
     with patch("builtins.open", mock_open(read_data=b'{"not_msgpack": 1}')):
         with patch("onnx9000.core.serializer.save"):
@@ -47,7 +51,11 @@ def test_convert_files_json():
             "coreml",
         ]:
             args = argparse.Namespace(
-                src="dummy.json", from_fmt=fmt, to_fmt="onnx", output="out.onnx", weights=None
+                src="dummy.json",
+                from_fmt=fmt,
+                to_fmt="onnx",
+                output="out.onnx",
+                weights=None,
             )
             with patch("builtins.open", mock_open(read_data="{}")):
                 with patch("onnx9000.core.serializer.save"):
@@ -57,7 +65,11 @@ def test_convert_files_json():
                         pass
 
         args = argparse.Namespace(
-            src="dummy.pd", from_fmt="paddle", to_fmt="onnx", output="out.onnx", weights=None
+            src="dummy.pd",
+            from_fmt="paddle",
+            to_fmt="onnx",
+            output="out.onnx",
+            weights=None,
         )
         with patch("onnx9000.core.serializer.save"):
             try:
@@ -66,7 +78,11 @@ def test_convert_files_json():
                 pass
 
         args = argparse.Namespace(
-            src="dummy.pb", from_fmt="tensorflow", to_fmt="onnx", output="out.onnx", weights=None
+            src="dummy.pb",
+            from_fmt="tensorflow",
+            to_fmt="onnx",
+            output="out.onnx",
+            weights=None,
         )
         with patch("onnx9000.core.serializer.save"):
             try:
@@ -99,7 +115,11 @@ def test_convert_errors():
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy.cfg", from_fmt="darknet", to_fmt="onnx", output="out", weights=None
+                src="dummy.cfg",
+                from_fmt="darknet",
+                to_fmt="onnx",
+                output="out",
+                weights=None,
             )
         )
     with pytest.raises(SystemExit):
@@ -115,19 +135,31 @@ def test_convert_errors():
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy.param", from_fmt="ncnn", to_fmt="onnx", output="out", weights=None
+                src="dummy.param",
+                from_fmt="ncnn",
+                to_fmt="onnx",
+                output="out",
+                weights=None,
             )
         )
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy.txt", from_fmt="ncnn", to_fmt="onnx", output="out", weights="dummy.bin"
+                src="dummy.txt",
+                from_fmt="ncnn",
+                to_fmt="onnx",
+                output="out",
+                weights="dummy.bin",
             )
         )
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy.prototxt", from_fmt="caffe", to_fmt="onnx", output="out", weights=None
+                src="dummy.prototxt",
+                from_fmt="caffe",
+                to_fmt="onnx",
+                output="out",
+                weights=None,
             )
         )
     with pytest.raises(SystemExit):
@@ -143,13 +175,21 @@ def test_convert_errors():
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy.txt", from_fmt="cntk", to_fmt="onnx", output="out", weights=None
+                src="dummy.txt",
+                from_fmt="cntk",
+                to_fmt="onnx",
+                output="out",
+                weights=None,
             )
         )
     with pytest.raises(SystemExit):
         main.convert_cmd(
             argparse.Namespace(
-                src="dummy-symbol.json", from_fmt="mxnet", to_fmt="onnx", output="out", weights=None
+                src="dummy-symbol.json",
+                from_fmt="mxnet",
+                to_fmt="onnx",
+                output="out",
+                weights=None,
             )
         )
     with pytest.raises(SystemExit):
@@ -167,7 +207,11 @@ def test_convert_errors():
 def test_convert_out_formats():
     for out in ["c", "cpp", "mlir", "keras", "wasm"]:
         args = argparse.Namespace(
-            src="dummy.onnx", from_fmt="onnx", to_fmt=out, output="out.file", weights=None
+            src="dummy.onnx",
+            from_fmt="onnx",
+            to_fmt=out,
+            output="out.file",
+            weights=None,
         )
         with patch("onnx9000_cli.main.load_onnx"):
             with patch("onnx9000.core.exporter.export_graph"):

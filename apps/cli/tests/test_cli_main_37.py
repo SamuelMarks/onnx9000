@@ -22,8 +22,25 @@ def test_coverage_gaps_cmd37():
             "--opset",
             "12",
         ],
-        ["optimum", "optimize", "test", "--level", "O3", "--disable-fusion", "--optimize-size"],
-        ["optimum", "quantize", "test", "gptq", "--gptq-bits", "4", "--gptq-group-size", "128"],
+        [
+            "optimum",
+            "optimize",
+            "test",
+            "--level",
+            "O3",
+            "--disable-fusion",
+            "--optimize-size",
+        ],
+        [
+            "optimum",
+            "quantize",
+            "test",
+            "gptq",
+            "--gptq-bits",
+            "4",
+            "--gptq-group-size",
+            "128",
+        ],
         ["optimum", "train", "test.onnx", "ds", "out"],
     ]
 

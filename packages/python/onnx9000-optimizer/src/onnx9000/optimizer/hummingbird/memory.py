@@ -21,7 +21,13 @@ class TreeAbstractions:
         self.missing_tracks: list[int] = []
 
     def add_node(
-        self, feature: int, threshold: float, left: int, right: int, value: float, missing: int = 0
+        self,
+        feature: int,
+        threshold: float,
+        left: int,
+        right: int,
+        value: float,
+        missing: int = 0,
     ) -> None:
         """Execute the add node operation."""
         self.features.append(feature)

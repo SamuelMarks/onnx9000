@@ -91,7 +91,11 @@ class TreeTraversalCompiler:
             g.nodes.append(
                 Node(
                     op_type="Where",
-                    inputs=[f"go_left_d{depth}", f"left_idx_d{depth}", f"right_idx_d{depth}"],
+                    inputs=[
+                        f"go_left_d{depth}",
+                        f"left_idx_d{depth}",
+                        f"right_idx_d{depth}",
+                    ],
                     outputs=[f"next_idx_d{depth}"],
                 )
             )
@@ -99,7 +103,11 @@ class TreeTraversalCompiler:
             # Handle leaf node identification (e.g., negative index markers)
             # Use Where to freeze indices of rows that have reached a leaf
             g.nodes.append(
-                Node(op_type="Less", inputs=[curr_indices, "zero"], outputs=[f"is_leaf_d{depth}"])
+                Node(
+                    op_type="Less",
+                    inputs=[curr_indices, "zero"],
+                    outputs=[f"is_leaf_d{depth}"],
+                )
             )
             g.nodes.append(
                 Node(
@@ -113,7 +121,11 @@ class TreeTraversalCompiler:
 
         # Final prediction gather
         g.nodes.append(
-            Node(op_type="Gather", inputs=[t_values.name, curr_indices], outputs=["prediction"])
+            Node(
+                op_type="Gather",
+                inputs=[t_values.name, curr_indices],
+                outputs=["prediction"],
+            )
         )
 
     def _build_1d_array(self, data: list) -> Tensor:

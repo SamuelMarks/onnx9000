@@ -1,7 +1,13 @@
 """Module providing core logic and structural definitions."""
 
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
-from onnx9000.converters.frontend.models import GPT2, BasicBlock, GPT2Block, MobileNetV2, ResNet18
+from onnx9000.converters.frontend.models import (
+    GPT2,
+    BasicBlock,
+    GPT2Block,
+    MobileNetV2,
+    ResNet18,
+)
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.core.dtypes import DType
 

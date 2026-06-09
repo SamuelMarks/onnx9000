@@ -52,7 +52,8 @@ class MambaBlock:
         xz = self.in_proj(
             x_norm,
             get_param(
-                f"{self.prefix}.in_proj.weight", [self.d_model * self.expand * 2, self.d_model]
+                f"{self.prefix}.in_proj.weight",
+                [self.d_model * self.expand * 2, self.d_model],
             ),
         )
 
@@ -62,7 +63,10 @@ class MambaBlock:
 
         d_inner = self.d_model * self.expand
         x_inner = slice_op(
-            xz, constant([0], dtype=7), constant([d_inner], dtype=7), constant([2], dtype=7)
+            xz,
+            constant([0], dtype=7),
+            constant([d_inner], dtype=7),
+            constant([2], dtype=7),
         )
         z = slice_op(
             xz,
@@ -94,10 +98,14 @@ class MambaBlock:
 
         # SSM parameters
         x_dt_B_C = self.x_proj(
-            x_act, get_param(f"{self.prefix}.x_proj.weight", [self.d_state * 2 + 1, d_inner])
+            x_act,
+            get_param(f"{self.prefix}.x_proj.weight", [self.d_state * 2 + 1, d_inner]),
         )
         dt = slice_op(
-            x_dt_B_C, constant([0], dtype=7), constant([1], dtype=7), constant([2], dtype=7)
+            x_dt_B_C,
+            constant([0], dtype=7),
+            constant([1], dtype=7),
+            constant([2], dtype=7),
         )
         B = slice_op(
             x_dt_B_C,
@@ -161,7 +169,9 @@ class Mamba:
         from onnx9000.core.ops import gather
 
         x = gather(
-            get_param("embedding.weight", [self.vocab_size, self.d_model]), input_ids, axis=0
+            get_param("embedding.weight", [self.vocab_size, self.d_model]),
+            input_ids,
+            axis=0,
         )
 
         for block in self.blocks:
@@ -175,5 +185,11 @@ class Mamba:
 def mamba_130m(**kwargs: Any) -> Mamba:
     """Mamba 130m."""
     return Mamba(
-        vocab_size=50277, d_model=768, n_layer=24, d_state=16, d_conv=4, expand=2, **kwargs
+        vocab_size=50277,
+        d_model=768,
+        n_layer=24,
+        d_state=16,
+        d_conv=4,
+        expand=2,
+        **kwargs,
     )

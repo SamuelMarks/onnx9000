@@ -58,7 +58,10 @@ def test_coverage_gaps_cmd27():
             with patch("os.path.exists", return_value=True):
                 import subprocess
 
-                with patch("subprocess.run", side_effect=subprocess.CalledProcessError(1, "cmd")):
+                with patch(
+                    "subprocess.run",
+                    side_effect=subprocess.CalledProcessError(1, "cmd"),
+                ):
                     with patch.object(sys, "argv", ["onnx9000", "coreml", "export", "test"]):
                         try:
                             main()

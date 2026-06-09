@@ -1,7 +1,10 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from onnx9000_cli.coverage import clone_and_parse_onnx_spec, count_supported_framework_objects
+from onnx9000_cli.coverage import (
+    clone_and_parse_onnx_spec,
+    count_supported_framework_objects,
+)
 
 
 def test_clone_and_get_operators_fallback():
@@ -124,7 +127,11 @@ def test_count_classes_inheriting_module_ast_nodes_2():
                 with patch(
                     "json.load",
                     return_value={
-                        "objects": [{"name": "Class1"}, {"name": "pass"}, {"name": "if"}]
+                        "objects": [
+                            {"name": "Class1"},
+                            {"name": "pass"},
+                            {"name": "if"},
+                        ]
                     },
                 ):
                     with patch("os.walk", return_value=[("/fake", [], ["test.py"])]):
@@ -151,7 +158,10 @@ def test_count_map_funcs_ast_nodes_2():
 
 
 def test_coverage_ast_exceptions():
-    from onnx9000_cli.coverage import count_supported_framework_objects, get_onnx9000_ops
+    from onnx9000_cli.coverage import (
+        count_supported_framework_objects,
+        get_onnx9000_ops,
+    )
 
     with patch("os.path.exists", return_value=True):
         with patch("os.walk", return_value=[("/fake", [], ["test.py"])]):
@@ -294,6 +304,8 @@ def test_isfile_branches():
 
     with patch("onnx9000_cli.coverage.count_supported_framework_objects", return_value=0):
         res = generate_summary_table(
-            {"pytorch": {"objects": []}, "onnx": {}}, {"operators": ["Add", "Sub"]}, ["Add", "Sub"]
+            {"pytorch": {"objects": []}, "onnx": {}},
+            {"operators": ["Add", "Sub"]},
+            ["Add", "Sub"],
         )
         assert "| Pytorch | 0 | Unknown | N/A |" in res

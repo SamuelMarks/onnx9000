@@ -6,7 +6,10 @@ from onnx9000_cli.main import prune_cmd, sparse_cmd
 
 def test_sparse_cmd_missing_func():
     args = argparse.Namespace()
-    with patch("sys.exit", side_effect=SystemExit) as mock_exit, patch("builtins.print"):
+    with (
+        patch("sys.exit", side_effect=SystemExit) as mock_exit,
+        patch("builtins.print"),
+    ):
         try:
             sparse_cmd(args)
         except SystemExit:

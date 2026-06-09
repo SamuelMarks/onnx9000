@@ -22,7 +22,10 @@ def test_coreml_cmd_js_missing():
 def test_coreml_cmd_js_exists():
     args = argparse.Namespace(coreml_command="export", model="dummy.onnx", output="out.mlpackage")
 
-    with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
+    with (
+        patch("os.path.exists", return_value=True),
+        patch("subprocess.run") as mock_run,
+    ):
         coreml_cmd(args)
 
     mock_run.assert_called_once()

@@ -226,7 +226,11 @@ class GraphBuilder:
         for name, arr in self.initializers.items():
             graph.initializers.append(name)
             tensor = Tensor(
-                name=name, shape=arr.shape, dtype=DType.FLOAT32, is_initializer=True, data=arr
+                name=name,
+                shape=arr.shape,
+                dtype=DType.FLOAT32,
+                is_initializer=True,
+                data=arr,
             )
             graph.add_tensor(tensor)
         for node in self.nodes:

@@ -449,7 +449,10 @@ def test_all_empty_stubs() -> None:
         transform_nchw_to_nhwc,
         transform_nhwc_to_nchw,
     )
-    from onnx9000.optimizer.simplifier.passes.quantization import convert_to_int8, insert_qat_nodes
+    from onnx9000.optimizer.simplifier.passes.quantization import (
+        convert_to_int8,
+        insert_qat_nodes,
+    )
     from onnx9000.optimizer.simplifier.passes.versioning import (
         apply_opset_fallbacks,
         enforce_opset_18,
@@ -510,7 +513,14 @@ def test_cf_pow_identity() -> None:
 def test_cf_gather_concat() -> None:
     """Tests the test cf gather concat functionality."""
     g = _make_graph()
-    g.add_node(Node("Constant", [], ["a"], {"value": np.array([[1, 2], [3, 4]], dtype=np.float32)}))
+    g.add_node(
+        Node(
+            "Constant",
+            [],
+            ["a"],
+            {"value": np.array([[1, 2], [3, 4]], dtype=np.float32)},
+        )
+    )
     g.add_node(Node("Constant", [], ["ind"], {"value": np.array([1], dtype=np.int64)}))
     g.add_node(Node("Gather", ["a", "ind"], ["gth"], {"axis": 0}))
     g.add_node(Node("Concat", ["a", "a"], ["cat"], {"axis": 1}))

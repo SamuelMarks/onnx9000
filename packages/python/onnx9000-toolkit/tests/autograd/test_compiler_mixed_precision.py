@@ -1,7 +1,9 @@
 """Tests the compiler mixed precision module functionality."""
 
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.toolkit.training.autograd.compiler import scale_backward_graph_for_mixed_precision
+from onnx9000.toolkit.training.autograd.compiler import (
+    scale_backward_graph_for_mixed_precision,
+)
 
 
 def test_scale_backward_graph_for_mixed_precision() -> None:

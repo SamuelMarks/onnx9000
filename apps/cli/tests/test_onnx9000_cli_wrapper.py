@@ -104,5 +104,8 @@ def test_dunder_main_block():
         with mock.patch("sys.argv", ["onnx9000"]):
             with open(onnx9000.__main__.__file__) as f:
                 code = compile(f.read(), onnx9000.__main__.__file__, "exec")
-                exec(code, {"__name__": "__main__", "__file__": onnx9000.__main__.__file__})
+                exec(
+                    code,
+                    {"__name__": "__main__", "__file__": onnx9000.__main__.__file__},
+                )
             mock_main.assert_called_once()

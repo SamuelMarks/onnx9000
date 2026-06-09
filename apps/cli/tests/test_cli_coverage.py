@@ -109,9 +109,13 @@ def test_update_coverage_cmd():
             return_value={"version": "1.0", "operators": ["Add"]},
         ):
             with patch("onnx9000_cli.coverage.get_onnx9000_ops", return_value=["Add"]):
-                with patch("onnx9000_cli.coverage.generate_markdown_table", return_value="table"):
+                with patch(
+                    "onnx9000_cli.coverage.generate_markdown_table",
+                    return_value="table",
+                ):
                     with patch(
-                        "onnx9000_cli.coverage.generate_summary_table", return_value="summary"
+                        "onnx9000_cli.coverage.generate_summary_table",
+                        return_value="summary",
                     ):
                         with patch("onnx9000_cli.coverage.update_compliance_md"):
                             with patch("builtins.open"):
@@ -157,7 +161,8 @@ def test_generate_framework_snapshots_branches():
                                 '{"version": "1.0", "objects": ["a"]}'
                             )
                             with patch(
-                                "json.load", return_value={"version": "1.0", "objects": ["a"]}
+                                "json.load",
+                                return_value={"version": "1.0", "objects": ["a"]},
                             ):
                                 # Limit the number of frameworks to test
                                 with patch(
@@ -252,7 +257,8 @@ def test_generate_framework_snapshots_subprocess_fallback():
                         try:
                             # Let's test with just "torch"
                             with patch(
-                                "onnx9000_cli.coverage.get_pypi_info", return_value=("1.0", "3.10")
+                                "onnx9000_cli.coverage.get_pypi_info",
+                                return_value=("1.0", "3.10"),
                             ):
                                 generate_framework_snapshots("snapshots_dir")
                         except Exception:
@@ -278,7 +284,8 @@ def test_generate_framework_snapshots_pyenv_install():
                 with patch("builtins.open"):
                     try:
                         with patch(
-                            "onnx9000_cli.coverage.get_pypi_info", return_value=("1.0", "3.10")
+                            "onnx9000_cli.coverage.get_pypi_info",
+                            return_value=("1.0", "3.10"),
                         ):
                             generate_framework_snapshots("snapshots_dir")
                     except Exception:

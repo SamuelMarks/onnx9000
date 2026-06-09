@@ -122,7 +122,13 @@ class Mixtral:
 
         self.blocks = [
             MixtralBlock(
-                dim, num_heads, num_kv_heads, ffn_dim, num_experts, top_k, prefix=f"blocks.{i}"
+                dim,
+                num_heads,
+                num_kv_heads,
+                ffn_dim,
+                num_experts,
+                top_k,
+                prefix=f"blocks.{i}",
             )
             for i in range(depth)
         ]
@@ -135,7 +141,9 @@ class Mixtral:
         from onnx9000.core.ops import gather
 
         x = gather(
-            get_param("tok_embeddings.weight", [self.vocab_size, self.dim]), input_ids, axis=0
+            get_param("tok_embeddings.weight", [self.vocab_size, self.dim]),
+            input_ids,
+            axis=0,
         )
 
         x = self.rope(x, pos)

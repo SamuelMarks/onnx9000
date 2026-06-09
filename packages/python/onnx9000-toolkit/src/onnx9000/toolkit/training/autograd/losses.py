@@ -17,11 +17,23 @@ def add_mse_loss(
     graph.add_node(Node("Mul", [diff, diff], [sq], {}, name=f"{loss_out}_mul"))
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [sq], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [sq],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [sq], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [sq],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [sq], [loss_out], {}, name=f"{loss_out}_identity"))
@@ -51,7 +63,13 @@ def add_categorical_crossentropy_loss(
         c_smooth = f"{loss_out}_c_smooth"
         c_1_m_smooth = f"{loss_out}_c_1_m_smooth"
         graph.add_node(
-            Node("Constant", [], [c_smooth], {"value": [label_smoothing]}, name=f"{loss_out}_c_sm")
+            Node(
+                "Constant",
+                [],
+                [c_smooth],
+                {"value": [label_smoothing]},
+                name=f"{loss_out}_c_sm",
+            )
         )
         graph.add_node(
             Node(
@@ -77,7 +95,11 @@ def add_categorical_crossentropy_loss(
         graph.add_node(Node("Shape", [target], [shape_out], {}, name=f"{loss_out}_shape_node"))
         graph.add_node(
             Node(
-                "Constant", [], [f"{loss_out}_idx_c"], {"value": [-1]}, name=f"{loss_out}_idx_const"
+                "Constant",
+                [],
+                [f"{loss_out}_idx_c"],
+                {"value": [-1]},
+                name=f"{loss_out}_idx_const",
             )
         )
         graph.add_node(
@@ -109,7 +131,13 @@ def add_categorical_crossentropy_loss(
             )
         )
         graph.add_node(
-            Node("Mul", [target, c_1_m_smooth], [target_scaled], {}, name=f"{loss_out}_mul_t_1msm")
+            Node(
+                "Mul",
+                [target, c_1_m_smooth],
+                [target_scaled],
+                {},
+                name=f"{loss_out}_mul_t_1msm",
+            )
         )
         graph.add_node(
             Node(
@@ -123,7 +151,13 @@ def add_categorical_crossentropy_loss(
         current_target = smoothed_target
 
     graph.add_node(
-        Node("Mul", [current_target, log_pred], [mul_out], {}, name=f"{loss_out}_mul_node")
+        Node(
+            "Mul",
+            [current_target, log_pred],
+            [mul_out],
+            {},
+            name=f"{loss_out}_mul_node",
+        )
     )
     graph.add_node(
         Node(
@@ -138,11 +172,23 @@ def add_categorical_crossentropy_loss(
 
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [neg_out], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [neg_out],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [neg_out], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [neg_out],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [neg_out], [loss_out], {}, name=f"{loss_out}_identity"))
@@ -208,18 +254,35 @@ def add_l1_loss(
     graph.add_node(Node("Abs", [diff], [abs_diff], {}, name=f"{loss_out}_abs_node"))
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [abs_diff], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [abs_diff],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [abs_diff], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [abs_diff],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [abs_diff], [loss_out], {}, name=f"{loss_out}_identity"))
 
 
 def add_huber_loss(
-    graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean", delta: float = 1.0
+    graph: Graph,
+    pred: str,
+    target: str,
+    loss_out: str,
+    reduction: str = "mean",
+    delta: float = 1.0,
 ) -> None:
     """Add Huber loss to the graph."""
     graph.add_node(
@@ -270,7 +333,12 @@ def add_kldiv_loss(
 
 
 def add_dice_loss(
-    graph: Graph, pred: str, target: str, loss_out: str, reduction: str = "mean", eps: float = 1e-8
+    graph: Graph,
+    pred: str,
+    target: str,
+    loss_out: str,
+    reduction: str = "mean",
+    eps: float = 1e-8,
 ) -> None:
     """Add DiceLoss natively to the graph.
 
@@ -303,14 +371,26 @@ def add_dice_loss(
         Node("Constant", [], [f"{loss_out}_c_2"], {"value": [2.0]}, name=f"{loss_out}_c2")
     )
     graph.add_node(
-        Node("Constant", [], [f"{loss_out}_c_eps"], {"value": [eps]}, name=f"{loss_out}_ceps")
+        Node(
+            "Constant",
+            [],
+            [f"{loss_out}_c_eps"],
+            {"value": [eps]},
+            name=f"{loss_out}_ceps",
+        )
     )
     graph.add_node(
         Node("Constant", [], [f"{loss_out}_c_1"], {"value": [1.0]}, name=f"{loss_out}_c1")
     )
 
     graph.add_node(
-        Node("Mul", [sum_inter, f"{loss_out}_c_2"], [two_inter], {}, name=f"{loss_out}_2inter")
+        Node(
+            "Mul",
+            [sum_inter, f"{loss_out}_c_2"],
+            [two_inter],
+            {},
+            name=f"{loss_out}_2inter",
+        )
     )
     graph.add_node(
         Node(
@@ -343,23 +423,47 @@ def add_dice_loss(
 
     graph.add_node(Node("Add", [sum_p, sum_t], [sum_pt], {}, name=f"{loss_out}_add_pt"))
     graph.add_node(
-        Node("Add", [sum_pt, f"{loss_out}_c_eps"], [sum_pt_eps], {}, name=f"{loss_out}_add_pt_eps")
+        Node(
+            "Add",
+            [sum_pt, f"{loss_out}_c_eps"],
+            [sum_pt_eps],
+            {},
+            name=f"{loss_out}_add_pt_eps",
+        )
     )
 
     graph.add_node(
         Node("Div", [two_inter_eps, sum_pt_eps], [dice_coeff], {}, name=f"{loss_out}_div")
     )
     graph.add_node(
-        Node("Sub", [f"{loss_out}_c_1", dice_coeff], [dice_loss], {}, name=f"{loss_out}_sub_1")
+        Node(
+            "Sub",
+            [f"{loss_out}_c_1", dice_coeff],
+            [dice_loss],
+            {},
+            name=f"{loss_out}_sub_1",
+        )
     )
 
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [dice_loss], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [dice_loss],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [dice_loss], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [dice_loss],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [dice_loss], [loss_out], {}, name=f"{loss_out}_identity"))
@@ -385,11 +489,21 @@ def add_focal_loss(
 
     # Constants
     graph.add_node(
-        Node("Constant", [], [f"{loss_out}_c1"], {"value": [1.0]}, name=f"{loss_out}_c1_node")
+        Node(
+            "Constant",
+            [],
+            [f"{loss_out}_c1"],
+            {"value": [1.0]},
+            name=f"{loss_out}_c1_node",
+        )
     )
     graph.add_node(
         Node(
-            "Constant", [], [f"{loss_out}_alpha"], {"value": [alpha]}, name=f"{loss_out}_alpha_node"
+            "Constant",
+            [],
+            [f"{loss_out}_alpha"],
+            {"value": [alpha]},
+            name=f"{loss_out}_alpha_node",
         )
     )
     graph.add_node(
@@ -403,7 +517,11 @@ def add_focal_loss(
     )
     graph.add_node(
         Node(
-            "Constant", [], [f"{loss_out}_gamma"], {"value": [gamma]}, name=f"{loss_out}_gamma_node"
+            "Constant",
+            [],
+            [f"{loss_out}_gamma"],
+            {"value": [gamma]},
+            name=f"{loss_out}_gamma_node",
         )
     )
 
@@ -438,7 +556,13 @@ def add_focal_loss(
     # p^gamma
     p_gamma = f"{loss_out}_p_gamma"
     graph.add_node(
-        Node("Pow", [p, f"{loss_out}_gamma"], [p_gamma], {}, name=f"{loss_out}_pow_p_gamma")
+        Node(
+            "Pow",
+            [p, f"{loss_out}_gamma"],
+            [p_gamma],
+            {},
+            name=f"{loss_out}_pow_p_gamma",
+        )
     )
 
     # Term 1: alpha * y * (1-p)^gamma * log(p)
@@ -454,7 +578,13 @@ def add_focal_loss(
     t2_2 = f"{loss_out}_t2_2"
     t2_3 = f"{loss_out}_t2_3"
     graph.add_node(
-        Node("Mul", [f"{loss_out}_1m_alpha", one_m_y], [t2_1], {}, name=f"{loss_out}_t2_mul1")
+        Node(
+            "Mul",
+            [f"{loss_out}_1m_alpha", one_m_y],
+            [t2_1],
+            {},
+            name=f"{loss_out}_t2_mul1",
+        )
     )
     graph.add_node(Node("Mul", [t2_1, p_gamma], [t2_2], {}, name=f"{loss_out}_t2_mul2"))
     graph.add_node(Node("Mul", [t2_2, log_1m_p], [t2_3], {}, name=f"{loss_out}_t2_mul3"))
@@ -467,11 +597,23 @@ def add_focal_loss(
 
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [fl_neg], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [fl_neg],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [fl_neg], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [fl_neg],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [fl_neg], [loss_out], {}, name=f"{loss_out}_identity"))
@@ -514,7 +656,13 @@ def add_gradient_penalty(
     graph.add_node(Node("Constant", [], [c_1], {"value": [1.0]}, name=f"{loss_out}_pen_c1_node"))
     graph.add_node(Node("Sub", [norm, c_1], [norm_minus_1], {}, name=f"{loss_out}_pen_sub"))
     graph.add_node(
-        Node("Mul", [norm_minus_1, norm_minus_1], [penalty_base], {}, name=f"{loss_out}_pen_sq_m1")
+        Node(
+            "Mul",
+            [norm_minus_1, norm_minus_1],
+            [penalty_base],
+            {},
+            name=f"{loss_out}_pen_sq_m1",
+        )
     )
 
     # * penalty_weight
@@ -646,12 +794,24 @@ def add_triplet_margin_loss(
 
     add_margin = f"{loss_out}_add_margin"
     graph.add_node(
-        Node("Add", [diff_d, margin_name], [add_margin], {}, name=f"{loss_out}_add_margin_node")
+        Node(
+            "Add",
+            [diff_d, margin_name],
+            [add_margin],
+            {},
+            name=f"{loss_out}_add_margin_node",
+        )
     )
 
     zero_name = f"{loss_out}_zero"
     graph.add_node(
-        Node("ConstantOfShape", [d_ap], [zero_name], {"value": 0.0}, name=f"{loss_out}_c_zero")
+        Node(
+            "ConstantOfShape",
+            [d_ap],
+            [zero_name],
+            {"value": 0.0},
+            name=f"{loss_out}_c_zero",
+        )
     )
 
     max_out = f"{loss_out}_max"
@@ -659,11 +819,23 @@ def add_triplet_margin_loss(
 
     if reduction == "mean":
         graph.add_node(
-            Node("ReduceMean", [max_out], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceMean",
+                [max_out],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     elif reduction == "sum":
         graph.add_node(
-            Node("ReduceSum", [max_out], [loss_out], {"keepdims": 0}, name=f"{loss_out}_reduce")
+            Node(
+                "ReduceSum",
+                [max_out],
+                [loss_out],
+                {"keepdims": 0},
+                name=f"{loss_out}_reduce",
+            )
         )
     else:
         graph.add_node(Node("Identity", [max_out], [loss_out], {}, name=f"{loss_out}_identity"))

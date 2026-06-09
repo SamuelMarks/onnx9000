@@ -116,7 +116,11 @@ def test_scatternd_vjp() -> None:
 def test_scatterelements_vjp() -> None:
     """Tests the test_scatterelements_vjp functionality."""
     node = Node(
-        "ScatterElements", ["a", "indices", "updates"], ["c"], {}, name="scatterelements_node"
+        "ScatterElements",
+        ["a", "indices", "updates"],
+        ["c"],
+        {},
+        name="scatterelements_node",
     )
     rule = get_vjp_rule("ScatterElements")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])

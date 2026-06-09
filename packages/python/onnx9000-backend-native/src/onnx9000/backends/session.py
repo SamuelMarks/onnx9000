@@ -6,7 +6,12 @@ from typing import Any, Optional, Union
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import Onnx9000Error
-from onnx9000.core.execution import ExecutionContext, ExecutionProvider, RunOptions, SessionOptions
+from onnx9000.core.execution import (
+    ExecutionContext,
+    ExecutionProvider,
+    RunOptions,
+    SessionOptions,
+)
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.utils import topological_sort
 

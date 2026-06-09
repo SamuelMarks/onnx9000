@@ -1541,7 +1541,10 @@ def transpose_constant(tensor: Constant, axes: list[int]) -> Constant:
     arr = np.frombuffer(tensor.data, dtype=np_dtype).reshape(tensor.shape)
     res = np.transpose(arr, axes)
     return Constant(
-        f"{tensor.name}_transposed", values=res.tobytes(), shape=res.shape, dtype=tensor.dtype
+        f"{tensor.name}_transposed",
+        values=res.tobytes(),
+        shape=res.shape,
+        dtype=tensor.dtype,
     )
 
 
@@ -1669,7 +1672,13 @@ def evaluate_math_graph(graph: Graph) -> Constant | None:
         elif n.op_type == "Cast" and len(inputs) >= 1:
             if np:
                 to_type = n.attributes.get("to").value
-                dtype_map_to = {1: np.float32, 11: np.double, 6: np.int32, 7: np.int64, 9: np.bool_}
+                dtype_map_to = {
+                    1: np.float32,
+                    11: np.double,
+                    6: np.int32,
+                    7: np.int64,
+                    9: np.bool_,
+                }
                 res = inputs[0].astype(dtype_map_to.get(to_type, np.float32))
 
         if res is not None and n.outputs:
@@ -1698,7 +1707,10 @@ def evaluate_math_graph(graph: Graph) -> Constant | None:
             import struct
 
             return Constant(
-                last_out_name, values=struct.pack("<f", final_val), shape=(), dtype=DType.FLOAT32
+                last_out_name,
+                values=struct.pack("<f", final_val),
+                shape=(),
+                dtype=DType.FLOAT32,
             )
     return None
 
@@ -1943,7 +1955,9 @@ def map_gqa_mqa(graph: Graph) -> Graph:
             original_type = node.op_type
             node.op_type = "MultiHeadAttention"
             node.attributes["kv_num_heads"] = Attribute(
-                name="kv_num_heads", attr_type="int", value=1 if original_type == "MQA" else 8
+                name="kv_num_heads",
+                attr_type="int",
+                value=1 if original_type == "MQA" else 8,
             )
     return graph
 

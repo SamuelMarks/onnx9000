@@ -70,10 +70,18 @@ def test_quantizer_gaps():
     """Test quantizer gaps."""
     graph = Graph("TestGraph")
     graph.tensors["Scale"] = Tensor(
-        "Scale", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.5)
+        "Scale",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.5),
     )
     graph.tensors["ZP"] = Tensor(
-        "ZP", shape=(1,), dtype="uint8", is_initializer=True, data=struct.pack("<B", 128)
+        "ZP",
+        shape=(1,),
+        dtype="uint8",
+        is_initializer=True,
+        data=struct.pack("<B", 128),
     )
     graph.nodes.append(
         Node(
@@ -87,10 +95,18 @@ def test_quantizer_gaps():
         )
     )
     graph.tensors["Scale2"] = Tensor(
-        "Scale2", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.5)
+        "Scale2",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.5),
     )
     graph.tensors["ZP2"] = Tensor(
-        "ZP2", shape=(1,), dtype="uint8", is_initializer=True, data=struct.pack("<B", 128)
+        "ZP2",
+        shape=(1,),
+        dtype="uint8",
+        is_initializer=True,
+        data=struct.pack("<B", 128),
     )
     graph.nodes.append(
         Node(
@@ -134,7 +150,11 @@ def test_layout_gaps():
         )
     )
     graph.nodes.append(
-        Node("BatchNormalization", ["Y_unfused", "Scale", "B", "Mean", "Var"], ["Z_unfused"])
+        Node(
+            "BatchNormalization",
+            ["Y_unfused", "Scale", "B", "Mean", "Var"],
+            ["Z_unfused"],
+        )
     )
     graph.nodes.append(Node("Conv", ["X", "W"], ["Y_fused"]))
     graph.nodes.append(
@@ -179,11 +199,19 @@ def test_layout_gaps():
     )
     graph.nodes.append(Node("Resize", ["X", "R", "S", "Sz"], ["R"]))
     graph.tensors["Sz"] = Tensor(
-        "Sz", shape=(4,), dtype="int64", is_initializer=True, data=struct.pack("<4q", 1, 2, 3, 4)
+        "Sz",
+        shape=(4,),
+        dtype="int64",
+        is_initializer=True,
+        data=struct.pack("<4q", 1, 2, 3, 4),
     )
     graph.nodes.append(Node("Div", ["X", "Zero"], ["D"]))
     graph.tensors["Zero"] = Tensor(
-        "Zero", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.0)
+        "Zero",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.0),
     )
     graph.nodes.append(Node("Dropout", ["X"], ["Drop_Out"]))
     graph.nodes.append(Node("Identity", ["Drop_Out"], ["Id_Out"]))
@@ -198,7 +226,12 @@ def test_pushdown_gaps():
     graph = Graph("TestGraph")
     graph.inputs.append(ValueInfo("X", (1, 3, 224, 224), "float32"))
     graph.nodes.append(
-        Node("Transpose", ["X"], ["X_T"], {"perm": Attribute("perm", "INTS", [0, 2, 3, 1])})
+        Node(
+            "Transpose",
+            ["X"],
+            ["X_T"],
+            {"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
+        )
     )
     graph.nodes.append(
         Node("Concat", ["X_T", "X_T"], ["C_T"], {"axis": Attribute("axis", "INT", 3)})
@@ -219,11 +252,19 @@ def test_subgraph_gaps():
     graph.nodes.append(Node("Tokenizer", [], [], domain="ai.onnx.contrib"))
     graph.nodes.append(Node("UnknownOp", [], []))
     graph.tensors["X"] = Tensor(
-        "X", shape=(1,), dtype="float64", is_initializer=True, data=struct.pack("<d", 1.0)
+        "X",
+        shape=(1,),
+        dtype="float64",
+        is_initializer=True,
+        data=struct.pack("<d", 1.0),
     )
     graph.inputs.append(ValueInfo("X", (1,), "float64"))
     graph.tensors["StrTen"] = Tensor(
-        "StrTen", shape=(2,), dtype="string", is_initializer=True, data=["hello", b"world"]
+        "StrTen",
+        shape=(2,),
+        dtype="string",
+        is_initializer=True,
+        data=["hello", b"world"],
     )
     graph.tensors["DynShape"] = Tensor(
         "DynShape", shape=(-1, 10), dtype="float32", is_initializer=True, data=b"123"
@@ -271,7 +312,10 @@ def test_exporter_gaps():
 def test_operators_gaps():
     """Test operators gaps."""
     from onnx9000.core.ir import Attribute, Node
-    from onnx9000.tflite_exporter.compiler.operators import map_conv2d_options, map_pool2d_options
+    from onnx9000.tflite_exporter.compiler.operators import (
+        map_conv2d_options,
+        map_pool2d_options,
+    )
     from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
     b = FlatBufferBuilder(1024)
@@ -312,7 +356,10 @@ def test_subgraph_gaps_more():
     from onnx9000.core.ir import Attribute, Graph, Node
     from onnx9000.tflite_exporter.compiler.operators import TFLiteOperatorMapping
     from onnx9000.tflite_exporter.exporter import TFLiteExporter
-    from onnx9000.tflite_exporter.flatbuffer.schema import BuiltinOperator, BuiltinOptions
+    from onnx9000.tflite_exporter.flatbuffer.schema import (
+        BuiltinOperator,
+        BuiltinOptions,
+    )
 
     graph = Graph("TestGraphPytorch")
     graph.metadata = {"producer_name": "pytorch"}
@@ -369,7 +416,10 @@ def test_exporter_edge_cases():
 def test_operators_gaps2():
     """Test operators gaps2."""
     from onnx9000.core.ir import Attribute, Node
-    from onnx9000.tflite_exporter.compiler.operators import _map_transpose_conv, map_conv2d_options
+    from onnx9000.tflite_exporter.compiler.operators import (
+        _map_transpose_conv,
+        map_conv2d_options,
+    )
     from onnx9000.tflite_exporter.flatbuffer.builder import FlatBufferBuilder
 
     b = FlatBufferBuilder(1024)

@@ -141,7 +141,11 @@ class RWKV:
         """Docstring for D102."""
         from onnx9000.core.ops import gather
 
-        x = gather(get_param("embedding.weight", [self.vocab_size, self.dim]), input_ids, axis=0)
+        x = gather(
+            get_param("embedding.weight", [self.vocab_size, self.dim]),
+            input_ids,
+            axis=0,
+        )
 
         for block in self.blocks:
             x = block(x)

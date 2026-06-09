@@ -132,10 +132,20 @@ def test_gelu_softmax_concat_split():
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
     g.nodes.append(
-        Node("Gelu", ["X"], ["Y1"], {"approximate": Attribute("approximate", "STRING", "tanh")})
+        Node(
+            "Gelu",
+            ["X"],
+            ["Y1"],
+            {"approximate": Attribute("approximate", "STRING", "tanh")},
+        )
     )
     g.nodes.append(
-        Node("Gelu", ["X"], ["Y2"], {"approximate": Attribute("approximate", "STRING", "none")})
+        Node(
+            "Gelu",
+            ["X"],
+            ["Y2"],
+            {"approximate": Attribute("approximate", "STRING", "none")},
+        )
     )
     g.nodes.append(Node("Gelu", ["X"], ["Y3"]))
     g.nodes.append(Node("Softmax", ["X"], ["Y4"], {"axis": Attribute("axis", "INT", 1)}))
@@ -166,7 +176,12 @@ def test_pad_op():
     )
 
     g.nodes.append(
-        Node("Pad", ["X", "Pads"], ["Y2"], {"mode": Attribute("mode", "STRING", "constant")})
+        Node(
+            "Pad",
+            ["X", "Pads"],
+            ["Y2"],
+            {"mode": Attribute("mode", "STRING", "constant")},
+        )
     )
 
     exporter = OpenVinoExporter(g)
@@ -184,7 +199,10 @@ def test_gather_slice_reduce_argmax():
             "Gather",
             ["X"],
             ["Y1"],
-            {"batch_dims": Attribute("batch_dims", "INT", 1), "axis": Attribute("axis", "INT", 0)},
+            {
+                "batch_dims": Attribute("batch_dims", "INT", 1),
+                "axis": Attribute("axis", "INT", 0),
+            },
         )
     )
     g.nodes.append(Node("Gather", ["X", "X"], ["Y2"], {"axis": Attribute("axis", "INT", 1)}))
@@ -196,7 +214,10 @@ def test_gather_slice_reduce_argmax():
             "ReduceMean",
             ["X"],
             ["Y4"],
-            {"keepdims": Attribute("keepdims", "INT", 1), "axes": Attribute("axes", "INTS", [1])},
+            {
+                "keepdims": Attribute("keepdims", "INT", 1),
+                "axes": Attribute("axes", "INTS", [1]),
+            },
         )
     )
     g.nodes.append(Node("ReduceMax", ["X"], ["Y5"], {"keepdims": Attribute("keepdims", "INT", 0)}))
@@ -206,7 +227,10 @@ def test_gather_slice_reduce_argmax():
             "ArgMax",
             ["X"],
             ["Y6"],
-            {"keepdims": Attribute("keepdims", "INT", 1), "axis": Attribute("axis", "INT", 1)},
+            {
+                "keepdims": Attribute("keepdims", "INT", 1),
+                "axis": Attribute("axis", "INT", 1),
+            },
         )
     )
     g.nodes.append(Node("ArgMin", ["X"], ["Y7"], {"keepdims": Attribute("keepdims", "INT", 0)}))
@@ -264,7 +288,12 @@ def test_resize_space_nms_roi():
 
     g.nodes.append(Node("QuantizeLinear", ["X"], ["Y7"]))
     g.nodes.append(
-        Node("Einsum", ["X"], ["Y8"], {"equation": Attribute("equation", "STRING", "ij,jk->ik")})
+        Node(
+            "Einsum",
+            ["X"],
+            ["Y8"],
+            {"equation": Attribute("equation", "STRING", "ij,jk->ik")},
+        )
     )
 
     exporter = OpenVinoExporter(g)
@@ -282,12 +311,18 @@ def test_norms():
             "LayerNormalization",
             ["X"],
             ["Y1"],
-            {"axis": Attribute("axis", "INT", -1), "epsilon": Attribute("epsilon", "FLOAT", 1e-5)},
+            {
+                "axis": Attribute("axis", "INT", -1),
+                "epsilon": Attribute("epsilon", "FLOAT", 1e-5),
+            },
         )
     )
     g.nodes.append(
         Node(
-            "InstanceNormalization", ["X"], ["Y2"], {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)}
+            "InstanceNormalization",
+            ["X"],
+            ["Y2"],
+            {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)},
         )
     )
     g.nodes.append(
@@ -299,7 +334,12 @@ def test_norms():
         )
     )
     g.nodes.append(
-        Node("BatchNormalization", ["X"], ["Y4"], {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)})
+        Node(
+            "BatchNormalization",
+            ["X"],
+            ["Y4"],
+            {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)},
+        )
     )
 
     exporter = OpenVinoExporter(g)
@@ -363,13 +403,23 @@ def test_gather_elements_constantofshape():
     c2 = Constant("c2", shape=(1,), dtype=DType.INT64)
     c2.data = struct.pack("<q", 42)
     g.nodes.append(
-        Node("ConstantOfShape", ["X"], ["Y3"], {"value": Attribute("value", "TENSOR", c2)})
+        Node(
+            "ConstantOfShape",
+            ["X"],
+            ["Y3"],
+            {"value": Attribute("value", "TENSOR", c2)},
+        )
     )
 
     c3 = Constant("c3", shape=(1,), dtype=DType.INT32)
     c3.data = struct.pack("<i", 43)
     g.nodes.append(
-        Node("ConstantOfShape", ["X"], ["Y4"], {"value": Attribute("value", "TENSOR", c3)})
+        Node(
+            "ConstantOfShape",
+            ["X"],
+            ["Y4"],
+            {"value": Attribute("value", "TENSOR", c3)},
+        )
     )
 
     g.nodes.append(Node("ConstantOfShape", ["X"], ["Y5"]))
@@ -425,7 +475,10 @@ def test_mat_gemm():
             "MatMul",
             ["A", "B"],
             ["Y1"],
-            {"transA": Attribute("transA", "INT", 1), "transB": Attribute("transB", "INT", 1)},
+            {
+                "transA": Attribute("transA", "INT", 1),
+                "transB": Attribute("transB", "INT", 1),
+            },
         )
     )
     g.nodes.append(
@@ -433,7 +486,10 @@ def test_mat_gemm():
             "Gemm",
             ["A", "B", "C"],
             ["Y2"],
-            {"transA": Attribute("transA", "INT", 0), "transB": Attribute("transB", "INT", 0)},
+            {
+                "transA": Attribute("transA", "INT", 0),
+                "transB": Attribute("transB", "INT", 0),
+            },
         )
     )
     exporter = OpenVinoExporter(g)

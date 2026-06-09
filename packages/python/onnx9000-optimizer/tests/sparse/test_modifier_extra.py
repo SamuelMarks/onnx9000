@@ -2,7 +2,10 @@
 
 import pytest
 from onnx9000.core.ir import Graph, Node
-from onnx9000.optimizer.sparse.modifier import MagnitudePruningModifier, NMPruningModifier
+from onnx9000.optimizer.sparse.modifier import (
+    MagnitudePruningModifier,
+    NMPruningModifier,
+)
 
 
 def test_sparse_modifier_gaps():

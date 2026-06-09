@@ -171,7 +171,10 @@ def test_fetch_hub_file(mock_urlopen, tmp_path):
     def copyfileobj_side_effect(src, dst):
         dst.write(b"test data")
 
-    with patch("onnx9000_diffusers.utils.shutil.copyfileobj", side_effect=copyfileobj_side_effect):
+    with patch(
+        "onnx9000_diffusers.utils.shutil.copyfileobj",
+        side_effect=copyfileobj_side_effect,
+    ):
         mock_urlopen.return_value = mock_response
 
         cache_dir = str(tmp_path / "cache")

@@ -45,7 +45,10 @@ def test_coverage_gaps_cmd154():
                 with (
                     patch("builtins.open"),
                     patch("os.path.isdir", return_value=True),
-                    patch("os.path.exists", side_effect=[True, True, True, True, True, True]),
+                    patch(
+                        "os.path.exists",
+                        side_effect=[True, True, True, True, True, True],
+                    ),
                     patch("json.load", return_value={}),
                 ):
                     args = argparse.Namespace(src="test.onnx", to="onnx", output="out.onnx")

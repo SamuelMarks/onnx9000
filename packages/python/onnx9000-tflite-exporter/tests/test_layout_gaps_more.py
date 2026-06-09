@@ -70,10 +70,16 @@ def test_layout_remaining_gaps():
     # push_down_transposes 549-550, 553-554, 573-574, 580, 595, 672
     g = Graph("G_push")
     t1 = Node(
-        "Transpose", ["X"], ["T_out"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+        "Transpose",
+        ["X"],
+        ["T_out"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
     )
     c1 = Node(
-        "Transpose", ["T_out"], ["C1"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+        "Transpose",
+        ["T_out"],
+        ["C1"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
     )
     c2 = Node("Shape", ["T_out"], ["C2"])
     c3 = Node("NonMaxSuppression", ["T_out"], ["C3"])
@@ -95,17 +101,29 @@ def test_layout_remaining_gaps():
     # cancel_transposes
     g = Graph("G_cancel")
     t3 = Node(
-        "Transpose", ["X3"], ["T3"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+        "Transpose",
+        ["X3"],
+        ["T3"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
     )
     t4 = Node(
-        "Transpose", ["T3"], ["T4"], attributes={"perm": Attribute("perm", "INTS", [0, 3, 1, 2])}
+        "Transpose",
+        ["T3"],
+        ["T4"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 3, 1, 2])},
     )
     g.nodes.extend([t3, t4])
     t5 = Node(
-        "Transpose", ["X4"], ["T5"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+        "Transpose",
+        ["X4"],
+        ["T5"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
     )
     t6 = Node(
-        "Transpose", ["T5"], ["T6"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 1, 3])}
+        "Transpose",
+        ["T5"],
+        ["T6"],
+        attributes={"perm": Attribute("perm", "INTS", [0, 2, 1, 3])},
     )
     g.nodes.extend([t5, t6])
     g.outputs.append(ValueInfo("T3", (1,), "float"))  # 730
@@ -147,7 +165,10 @@ def test_layout_remaining_gaps():
     g.nodes.append(Node("UnknownOpXYZ", ["X"], ["Y"]))
     g.nodes.append(
         Node(
-            "Transpose", ["X"], ["T"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+            "Transpose",
+            ["X"],
+            ["T"],
+            attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
         )
     )
     LayoutOptimizer(g).recalculate_shapes()
@@ -156,12 +177,18 @@ def test_layout_remaining_gaps():
     g = Graph("G_irred")
     g.nodes.append(
         Node(
-            "Transpose", ["X"], ["T"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}
+            "Transpose",
+            ["X"],
+            ["T"],
+            attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
         )
     )
     g.nodes.append(
         Node(
-            "Transpose", ["T"], ["T2"], attributes={"perm": Attribute("perm", "INTS", [0, 2, 1, 3])}
+            "Transpose",
+            ["T"],
+            ["T2"],
+            attributes={"perm": Attribute("perm", "INTS", [0, 2, 1, 3])},
         )
     )
     LayoutOptimizer(g).check_irreducible_transposes()
@@ -187,16 +214,32 @@ def test_more_gaps():
     g.nodes.extend([bn, conv])
 
     g.tensors["scale"] = Tensor(
-        "scale", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 1.0, 1.0)
+        "scale",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 1.0, 1.0),
     )
     g.tensors["b"] = Tensor(
-        "b", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 0.0, 0.0)
+        "b",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 0.0, 0.0),
     )
     g.tensors["mean"] = Tensor(
-        "mean", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 0.0, 0.0)
+        "mean",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 0.0, 0.0),
     )
     g.tensors["v"] = Tensor(
-        "v", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 1.0, 1.0)
+        "v",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 1.0, 1.0),
     )
     g.tensors["W"] = Tensor(
         "W",
@@ -206,7 +249,11 @@ def test_more_gaps():
         data=struct.pack("<36f", *([1.0] * 36)),
     )
     g.tensors["B"] = Tensor(
-        "B", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 0.1, 0.2)
+        "B",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 0.1, 0.2),
     )
 
     LayoutOptimizer(g).fuse_conv_batch_normalization()
@@ -254,7 +301,11 @@ def test_more_gaps():
         attributes={"perm": Attribute("perm", "INTS", [0, 3, 1, 2])},
     )
     concat1 = Node(
-        "Concat", ["T4"], ["Y3"], name="c1", attributes={"axis": Attribute("axis", "INT", -1)}
+        "Concat",
+        ["T4"],
+        ["Y3"],
+        name="c1",
+        attributes={"axis": Attribute("axis", "INT", -1)},
     )
 
     t5 = Node(
@@ -265,7 +316,11 @@ def test_more_gaps():
         attributes={"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
     )
     concat2 = Node(
-        "Concat", ["T5"], ["Y4"], name="c2", attributes={"axis": Attribute("axis", "INT", -1)}
+        "Concat",
+        ["T5"],
+        ["Y4"],
+        name="c2",
+        attributes={"axis": Attribute("axis", "INT", -1)},
     )
 
     t6 = Node(
@@ -361,13 +416,29 @@ def test_more_gaps():
     n3 = Node("Concat", ["X_vi"], ["Y3"], attributes={"axis": Attribute("axis", "INT", -1)})
     n4 = Node("Concat", ["X_none"], ["Y4"], attributes={"axis": Attribute("axis", "INT", -1)})
 
-    n5 = Node("ReduceMean", ["X_in"], ["Y5"], attributes={"axes": Attribute("axes", "INTS", [-1])})
-    n6 = Node(
-        "ReduceMean", ["X_tens"], ["Y6"], attributes={"axes": Attribute("axes", "INTS", [-1])}
+    n5 = Node(
+        "ReduceMean",
+        ["X_in"],
+        ["Y5"],
+        attributes={"axes": Attribute("axes", "INTS", [-1])},
     )
-    n7 = Node("ReduceMean", ["X_vi"], ["Y7"], attributes={"axes": Attribute("axes", "INTS", [-1])})
+    n6 = Node(
+        "ReduceMean",
+        ["X_tens"],
+        ["Y6"],
+        attributes={"axes": Attribute("axes", "INTS", [-1])},
+    )
+    n7 = Node(
+        "ReduceMean",
+        ["X_vi"],
+        ["Y7"],
+        attributes={"axes": Attribute("axes", "INTS", [-1])},
+    )
     n8 = Node(
-        "ReduceMean", ["X_none"], ["Y8"], attributes={"axes": Attribute("axes", "INTS", [-1])}
+        "ReduceMean",
+        ["X_none"],
+        ["Y8"],
+        attributes={"axes": Attribute("axes", "INTS", [-1])},
     )
 
     g.nodes.extend([n1, n2, n3, n4, n5, n6, n7, n8])

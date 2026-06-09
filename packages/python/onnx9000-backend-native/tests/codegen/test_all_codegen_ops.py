@@ -110,7 +110,11 @@ def test_all_codegen_ops() -> None:
 
         # Try with 3 inputs
         node4 = Node(
-            op_type, ["in0", "in1", "in2"], ["out0"], attributes=node.attributes, domain=domain
+            op_type,
+            ["in0", "in1", "in2"],
+            ["out0"],
+            attributes=node.attributes,
+            domain=domain,
         )
         with contextlib.suppress(Exception):
             func(node4, gen)
@@ -156,19 +160,39 @@ def test_all_codegen_ops_extras() -> None:
     g.tensors["outf0"] = Tensor("outf0", (2, 2), DType.FLOAT32)
 
     # Mod int, fmod=0
-    n = Node("Mod", ["in0", "in1"], ["out0"], attributes={"fmod": Attribute("fmod", "INT", 0)})
+    n = Node(
+        "Mod",
+        ["in0", "in1"],
+        ["out0"],
+        attributes={"fmod": Attribute("fmod", "INT", 0)},
+    )
     global_registry.get_op("", "Mod")(n, gen)
 
     # Mod int, fmod=1
-    n = Node("Mod", ["in0", "in1"], ["out0"], attributes={"fmod": Attribute("fmod", "INT", 1)})
+    n = Node(
+        "Mod",
+        ["in0", "in1"],
+        ["out0"],
+        attributes={"fmod": Attribute("fmod", "INT", 1)},
+    )
     global_registry.get_op("", "Mod")(n, gen)
 
     # Mod float, fmod=0
-    n = Node("Mod", ["inf0", "inf1"], ["outf0"], attributes={"fmod": Attribute("fmod", "INT", 0)})
+    n = Node(
+        "Mod",
+        ["inf0", "inf1"],
+        ["outf0"],
+        attributes={"fmod": Attribute("fmod", "INT", 0)},
+    )
     global_registry.get_op("", "Mod")(n, gen)
 
     # Mod float, fmod=1
-    n = Node("Mod", ["inf0", "inf1"], ["outf0"], attributes={"fmod": Attribute("fmod", "INT", 1)})
+    n = Node(
+        "Mod",
+        ["inf0", "inf1"],
+        ["outf0"],
+        attributes={"fmod": Attribute("fmod", "INT", 1)},
+    )
     global_registry.get_op("", "Mod")(n, gen)
 
     # BitShift RIGHT
@@ -186,11 +210,21 @@ def test_all_codegen_ops_extras() -> None:
 
     # Constant with value tensor
     tval = Tensor("t", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32))
-    n = Node("Constant", [], ["outf0"], attributes={"value": Attribute("value", "TENSOR", tval)})
+    n = Node(
+        "Constant",
+        [],
+        ["outf0"],
+        attributes={"value": Attribute("value", "TENSOR", tval)},
+    )
     global_registry.get_op("", "Constant")(n, gen)
 
     tval2 = Tensor("t", (1,), DType.INT32, data=np.array([1], dtype=np.int32))
-    n = Node("Constant", [], ["out0"], attributes={"value": Attribute("value", "TENSOR", tval2)})
+    n = Node(
+        "Constant",
+        [],
+        ["out0"],
+        attributes={"value": Attribute("value", "TENSOR", tval2)},
+    )
     global_registry.get_op("", "Constant")(n, gen)
 
     # RandomNormal
@@ -203,6 +237,9 @@ def test_all_codegen_ops_extras() -> None:
 
     tval_list = Tensor("t", (1,), DType.FLOAT32, data=[1.0, 2.0])
     n = Node(
-        "Constant", [], ["outf0"], attributes={"value": Attribute("value", "TENSOR", tval_list)}
+        "Constant",
+        [],
+        ["outf0"],
+        attributes={"value": Attribute("value", "TENSOR", tval_list)},
     )
     global_registry.get_op("", "Constant")(n, gen)

@@ -358,7 +358,9 @@ class Tensor:
     def clip(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":
         """Implement the clip operation for the tensor."""
         return self._op(
-            "Clip", min if min is not None else min_val, max if max is not None else max_val
+            "Clip",
+            min if min is not None else min_val,
+            max if max is not None else max_val,
         )
 
     def clamp(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":

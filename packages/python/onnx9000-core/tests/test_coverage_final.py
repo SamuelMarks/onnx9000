@@ -7,7 +7,16 @@ from unittest.mock import patch
 
 import numpy as np
 import pytest
-from onnx9000.core.ir import Attribute, Constant, DType, DynamicDim, Graph, Node, Tensor, Variable
+from onnx9000.core.ir import (
+    Attribute,
+    Constant,
+    DType,
+    DynamicDim,
+    Graph,
+    Node,
+    Tensor,
+    Variable,
+)
 from onnx9000.core.registry import OperatorRegistry, UnsupportedOpError, register_op
 from onnx9000.core.surgeon import (
     PatternMatcher,
@@ -143,16 +152,28 @@ def test_fuse_conv_bn_coverage():
         dtype=DType.FLOAT32,
     )
     scale = Constant(
-        "scale", values=np.ones(16, dtype=np.float32).tobytes(), shape=(16,), dtype=DType.FLOAT32
+        "scale",
+        values=np.ones(16, dtype=np.float32).tobytes(),
+        shape=(16,),
+        dtype=DType.FLOAT32,
     )
     b = Constant(
-        "b", values=np.zeros(16, dtype=np.float32).tobytes(), shape=(16,), dtype=DType.FLOAT32
+        "b",
+        values=np.zeros(16, dtype=np.float32).tobytes(),
+        shape=(16,),
+        dtype=DType.FLOAT32,
     )
     mean = Constant(
-        "mean", values=np.zeros(16, dtype=np.float32).tobytes(), shape=(16,), dtype=DType.FLOAT32
+        "mean",
+        values=np.zeros(16, dtype=np.float32).tobytes(),
+        shape=(16,),
+        dtype=DType.FLOAT32,
     )
     var = Constant(
-        "var", values=np.ones(16, dtype=np.float32).tobytes(), shape=(16,), dtype=DType.FLOAT32
+        "var",
+        values=np.ones(16, dtype=np.float32).tobytes(),
+        shape=(16,),
+        dtype=DType.FLOAT32,
     )
 
     g.add_tensor(v_in)
@@ -309,8 +330,16 @@ def test_evaluate_math_graph_ops():
     g.add_node(Node("Div", ["c1", "c2"], ["out_div"]))
 
     # MatMul
-    c3 = Constant("c3", values=np.array([[1, 2], [3, 4]], dtype=np.float32).tobytes(), shape=(2, 2))
-    c4 = Constant("c4", values=np.array([[5, 6], [7, 8]], dtype=np.float32).tobytes(), shape=(2, 2))
+    c3 = Constant(
+        "c3",
+        values=np.array([[1, 2], [3, 4]], dtype=np.float32).tobytes(),
+        shape=(2, 2),
+    )
+    c4 = Constant(
+        "c4",
+        values=np.array([[5, 6], [7, 8]], dtype=np.float32).tobytes(),
+        shape=(2, 2),
+    )
     g.add_tensor(c3)
     g.add_tensor(c4)
     g.add_node(Node("MatMul", ["c3", "c4"], ["out_matmul"]))
@@ -327,7 +356,10 @@ def test_evaluate_math_graph_ops():
 
     # Reshape
     c_shape = Constant(
-        "c_shape", values=np.array([4], dtype=np.int64).tobytes(), shape=(1,), dtype=DType.INT64
+        "c_shape",
+        values=np.array([4], dtype=np.int64).tobytes(),
+        shape=(1,),
+        dtype=DType.INT64,
     )
     g.add_tensor(c_shape)
     g.add_node(Node("Reshape", ["c3", "c_shape"], ["out_reshape"]))

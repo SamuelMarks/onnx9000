@@ -20,7 +20,11 @@ def test_paddle_optimize_graph_identity_dropout_dce() -> None:
     n3 = Node(op_type="Relu", inputs=["out2"], outputs=["out"], name="n3", attributes={})
     n4 = Node(op_type="Add", inputs=["out"], outputs=["dead_out"], name="n4", attributes={})
     n5 = Node(
-        op_type="Custom_PaddleTest", inputs=["in1"], outputs=["out5"], name="n5", attributes={}
+        op_type="Custom_PaddleTest",
+        inputs=["in1"],
+        outputs=["out5"],
+        name="n5",
+        attributes={},
     )
     g.nodes = [n1, n2, n3, n4, n5]
     g = paddle_optimize_graph(g)

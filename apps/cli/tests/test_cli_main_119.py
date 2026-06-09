@@ -26,7 +26,10 @@ def test_coverage_gaps_cmd119():
             },
         ):
             with patch("os.path.isdir", side_effect=[True] * 4):
-                with patch("os.path.exists", side_effect=[False, True, True, False, False, False]):
+                with patch(
+                    "os.path.exists",
+                    side_effect=[False, True, True, False, False, False],
+                ):
                     for cmd_args in cmds:
                         with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                             try:
@@ -37,7 +40,10 @@ def test_coverage_gaps_cmd119():
                                 pass
 
             with patch("os.path.isdir", side_effect=[True] * 4):
-                with patch("os.path.exists", side_effect=[True, False, False, False, False, False]):
+                with patch(
+                    "os.path.exists",
+                    side_effect=[True, False, False, False, False, False],
+                ):
                     for cmd_args in cmds:
                         with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                             try:

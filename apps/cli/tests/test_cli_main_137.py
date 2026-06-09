@@ -18,10 +18,12 @@ def test_coverage_gaps_cmd137():
             with patch("torch.export", MagicMock(load=MagicMock(side_effect=Exception("e")))):
                 with patch("torch.load", return_value=MagicMock()):
                     with patch(
-                        "torch.fx", MagicMock(symbolic_trace=MagicMock(return_value=MagicMock()))
+                        "torch.fx",
+                        MagicMock(symbolic_trace=MagicMock(return_value=MagicMock())),
                     ):
                         with patch(
-                            "onnx9000.converters.parsers", MagicMock(PyTorchFXParser=MagicMock())
+                            "onnx9000.converters.parsers",
+                            MagicMock(PyTorchFXParser=MagicMock()),
                         ):
                             with patch("os.path.exists", return_value=False):
                                 for cmd_args in cmds:
@@ -34,7 +36,9 @@ def test_coverage_gaps_cmd137():
                                                 pass
 
                                             with patch("torch.load", return_value=FakeModule()):
-                                                from onnx9000.core.exporter import export_graph
+                                                from onnx9000.core.exporter import (
+                                                    export_graph,
+                                                )
 
                                                 with patch(
                                                     "onnx9000.core.exporter.export_graph",

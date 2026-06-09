@@ -762,7 +762,11 @@ def save(tensors: dict[str, Any], metadata: dict[str, str] | None = None) -> byt
         if not shape:
             shape = [size]
 
-        header[name] = {"dtype": dtype_str, "shape": shape, "data_offsets": [offset, offset + size]}
+        header[name] = {
+            "dtype": dtype_str,
+            "shape": shape,
+            "data_offsets": [offset, offset + size],
+        }
         data_buffer.write(raw_bytes)
         offset += size
 

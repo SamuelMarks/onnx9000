@@ -59,7 +59,8 @@ def test_coverage_gaps_cmd116():
                     ):
                         with patch("importlib.util.module_from_spec", return_value=MagicMock()):
                             with patch(
-                                "onnx9000.optimizer.simplifier.api.simplify", return_value=mock_g
+                                "onnx9000.optimizer.simplifier.api.simplify",
+                                return_value=mock_g,
                             ):
                                 simplify_cmd(args)
 

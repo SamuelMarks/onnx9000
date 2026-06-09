@@ -76,10 +76,20 @@ class GemmCompiler:
             )
         )
         g.nodes.append(
-            Node(op_type="Sign", inputs=["thresh_less"], outputs=["path_sign"], name="gemm_sign")
+            Node(
+                op_type="Sign",
+                inputs=["thresh_less"],
+                outputs=["path_sign"],
+                name="gemm_sign",
+            )
         )
         g.nodes.append(
-            Node(op_type="Relu", inputs=["path_sign"], outputs=["path_relu"], name="gemm_relu")
+            Node(
+                op_type="Relu",
+                inputs=["path_sign"],
+                outputs=["path_relu"],
+                name="gemm_relu",
+            )
         )
 
         # Use Where to conditionally zero-out path matrices natively
@@ -93,7 +103,12 @@ class GemmCompiler:
         )
 
         g.nodes.append(
-            Node(op_type="ArgMax", inputs=["routed"], outputs=["leaf_sel"], name="gemm_argmax")
+            Node(
+                op_type="ArgMax",
+                inputs=["routed"],
+                outputs=["leaf_sel"],
+                name="gemm_argmax",
+            )
         )
         g.nodes.append(
             Node(

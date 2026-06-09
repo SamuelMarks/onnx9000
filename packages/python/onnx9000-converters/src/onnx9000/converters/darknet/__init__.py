@@ -48,4 +48,9 @@ class DarknetConverter(BaseParser):
         return mapper.map()  # pragma: no cover
 
 
-__all__ = ["parse_cfg", "load_weights", "DarknetMapper", "DarknetConverter"]  # pragma: no cover
+__all__ = [
+    "parse_cfg",
+    "load_weights",
+    "DarknetMapper",
+    "DarknetConverter",
+]  # pragma: no cover

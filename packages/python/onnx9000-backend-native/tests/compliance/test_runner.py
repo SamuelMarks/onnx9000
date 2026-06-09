@@ -222,7 +222,12 @@ def test_runner_bool_int() -> None:
             def execute(self, g, ctx, inputs):
                 """Test the execute functionality."""
                 return {
-                    "C": Tensor("C", (1,), DType.BOOL, data=np.array([True], dtype=bool).tobytes())
+                    "C": Tensor(
+                        "C",
+                        (1,),
+                        DType.BOOL,
+                        data=np.array([True], dtype=bool).tobytes(),
+                    )
                 }
 
         g = Graph("t")
@@ -251,7 +256,10 @@ def test_runner_bool_int() -> None:
                 """Test the execute functionality."""
                 return {
                     "C": Tensor(
-                        "C", (1,), DType.INT64, data=np.array([1], dtype=np.int64).tobytes()
+                        "C",
+                        (1,),
+                        DType.INT64,
+                        data=np.array([1], dtype=np.int64).tobytes(),
                     )
                 }
 

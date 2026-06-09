@@ -47,7 +47,10 @@ def _convert_tree_regressor(estimator: object, input_names: list[str], graph: Gr
     """Execute the convert tree regressor operation."""
     out_name = graph._uniquify_tensor_name("tree_regressor_out")
     node = Node(
-        "TreeEnsembleRegressor", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name]
+        "TreeEnsembleRegressor",
+        domain="ai.onnx.ml",
+        inputs=input_names,
+        outputs=[out_name],
     )
     node.attrs["nodes_treeids"] = Attribute("nodes_treeids", "INTS", [0])
     node.attrs["nodes_nodeids"] = Attribute("nodes_nodeids", "INTS", [0])

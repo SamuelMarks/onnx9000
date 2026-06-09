@@ -47,7 +47,13 @@ def test_softsign_vjp() -> None:
 
 def test_hardsigmoid_vjp() -> None:
     """Tests the test_hardsigmoid_vjp functionality."""
-    node = Node("HardSigmoid", ["a"], ["c"], {"alpha": 0.2, "beta": 0.5}, name="hardsigmoid_node")
+    node = Node(
+        "HardSigmoid",
+        ["a"],
+        ["c"],
+        {"alpha": 0.2, "beta": 0.5},
+        name="hardsigmoid_node",
+    )
     rule = get_vjp_rule("HardSigmoid")
     (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
     assert len(nodes) == 1

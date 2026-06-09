@@ -44,7 +44,10 @@ class INetworkDefinition:
 
         name_bytes = name.encode("utf-8")
         ptr = add_input_func(
-            ctypes.c_void_p(self.ptr), name_bytes, ctypes.c_int32(dtype.value), ctypes.pointer(dims)
+            ctypes.c_void_p(self.ptr),
+            name_bytes,
+            ctypes.c_int32(dtype.value),
+            ctypes.pointer(dims),
         )
         if not ptr:
             raise RuntimeError(f"Failed to add input {name}")

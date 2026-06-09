@@ -7,7 +7,10 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from onnx9000.backends.testing.downloader import download_and_extract_onnx_tests, get_node_test_dirs
+from onnx9000.backends.testing.downloader import (
+    download_and_extract_onnx_tests,
+    get_node_test_dirs,
+)
 
 
 def test_downloader_and_extractor(monkeypatch) -> None:

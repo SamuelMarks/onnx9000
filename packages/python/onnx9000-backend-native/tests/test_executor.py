@@ -12,15 +12,28 @@ def test_executor_coverage() -> None:
     ep = CPUExecutionProvider({})
     g = Graph("g")
     g.add_node(
-        Node("Binarizer", ["T1"], ["T2"], attributes={"threshold": Attribute("t", "FLOAT", 0.0)})
+        Node(
+            "Binarizer",
+            ["T1"],
+            ["T2"],
+            attributes={"threshold": Attribute("t", "FLOAT", 0.0)},
+        )
     )
     g.add_node(Node("MissingOp", ["T1"], ["T3"], attributes={}))
     g.add_node(
-        Node("Binarizer", ["T2"], ["T4"], attributes={"threshold": Attribute("t", "FLOAT", 0.0)})
+        Node(
+            "Binarizer",
+            ["T2"],
+            ["T4"],
+            attributes={"threshold": Attribute("t", "FLOAT", 0.0)},
+        )
     )
     g.add_node(
         Node(
-            "Binarizer", ["MISSING"], ["T5"], attributes={"threshold": Attribute("t", "FLOAT", 0.0)}
+            "Binarizer",
+            ["MISSING"],
+            ["T5"],
+            attributes={"threshold": Attribute("t", "FLOAT", 0.0)},
         )
     )
     t1 = Tensor("T1", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32))

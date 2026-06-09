@@ -78,7 +78,10 @@ def test_coverage_gaps_cmd36():
             },
         ):
             sys.modules.pop("triton", None)
-            with patch("builtins.open", MagicMock()), patch("os.path.exists", return_value=False):
+            with (
+                patch("builtins.open", MagicMock()),
+                patch("os.path.exists", return_value=False),
+            ):
                 with patch.object(sys, "argv", ["onnx9000", "onnx2gguf", "test.onnx", "out.gguf"]):
                     try:
                         args = MagicMock()

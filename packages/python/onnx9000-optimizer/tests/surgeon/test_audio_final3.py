@@ -31,7 +31,10 @@ def test_fold_mel_weights_exception_hit_5_inputs():
 
     from unittest.mock import patch
 
-    with patch("onnx9000.optimizer.surgeon.audio.struct.pack", side_effect=Exception("mock err")):
+    with patch(
+        "onnx9000.optimizer.surgeon.audio.struct.pack",
+        side_effect=Exception("mock err"),
+    ):
         fold_mel_weights(g)
 
 

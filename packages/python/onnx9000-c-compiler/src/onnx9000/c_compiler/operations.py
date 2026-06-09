@@ -201,7 +201,12 @@ def generate_math_unary_op(
 
 
 def generate_sign(
-    b: C89Builder, node: Node, out_tensor: Tensor, in1_tensor: Tensor, in1: str, out: str
+    b: C89Builder,
+    node: Node,
+    out_tensor: Tensor,
+    in1_tensor: Tensor,
+    in1: str,
+    out: str,
 ):
     """Perform generate sign operation."""
     b.emit(f"/* Sign {node.op_type} */")

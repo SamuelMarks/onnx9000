@@ -144,7 +144,12 @@ class GGUFWriter:
         if not isinstance(dtype, GGUFTensorType):
             raise ValueError("Invalid tensor type")
         self.tensors.append(
-            {"name": name, "shape": shape, "type": dtype.value, "offset": self.tensor_data_offset}
+            {
+                "name": name,
+                "shape": shape,
+                "type": dtype.value,
+                "offset": self.tensor_data_offset,
+            }
         )
         items = 1
         for d in shape:

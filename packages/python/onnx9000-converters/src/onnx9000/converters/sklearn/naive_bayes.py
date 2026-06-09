@@ -8,7 +8,10 @@ def _convert_nb(estimator: object, input_names: list[str], graph: Graph) -> list
     out_label = graph._uniquify_tensor_name("nb_label")
     out_prob = graph._uniquify_tensor_name("nb_prob")
     node = Node(
-        "LinearClassifier", domain="ai.onnx.ml", inputs=input_names, outputs=[out_label, out_prob]
+        "LinearClassifier",
+        domain="ai.onnx.ml",
+        inputs=input_names,
+        outputs=[out_label, out_prob],
     )
     graph.nodes.append(node)
     return [out_label, out_prob]

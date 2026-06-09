@@ -40,7 +40,10 @@ def test_paddle_cumsum() -> None:
     """Tests the paddle cumsum functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
-        "n", "cumsum", inputs={"X": ["a"]}, attrs={"axis": 1, "exclusive": True, "reverse": True}
+        "n",
+        "cumsum",
+        inputs={"X": ["a"]},
+        attrs={"axis": 1, "exclusive": True, "reverse": True},
     )
     REDUCTION_OPS_MAPPING["cumsum"](builder, n)
     assert builder.graph.nodes[-1].op_type == "CumSum"

@@ -53,14 +53,21 @@ def test_apple_executor_matmul_accelerate() -> None:
 
 def test_apple_executor_elementwise_accelerate() -> None:
     """Tests the apple executor elementwise accelerate functionality."""
-    for op_type, func_name in [("Add", "vDSP_vadd"), ("Sub", "vDSP_vsub"), ("Mul", "vDSP_vmul")]:
+    for op_type, func_name in [
+        ("Add", "vDSP_vadd"),
+        ("Sub", "vDSP_vsub"),
+        ("Mul", "vDSP_vmul"),
+    ]:
         g = Graph("test")
         g.inputs.append(Tensor("A", (2, 2), DType.FLOAT32))
         g.inputs.append(Tensor("B", (2, 2), DType.FLOAT32))
         g.outputs.append(Tensor("C", (2, 2), DType.FLOAT32))
         g.add_node(Node(op_type, ["A", "B"], ["C"]))
 
-        with patch("onnx9000.backends.apple.executor.is_accelerate_available", return_value=True):
+        with patch(
+            "onnx9000.backends.apple.executor.is_accelerate_available",
+            return_value=True,
+        ):
             with patch("onnx9000.backends.apple.executor._accelerate_lib") as mock_accel:
                 dispatcher = executor.Dispatcher(g)
 
@@ -121,7 +128,10 @@ def test_apple_executor_init_memory() -> None:
     g = Graph("test")
     t_out = Tensor("out_t", (2,), DType.FLOAT32)
     t_init = Tensor(
-        "init_t", (2,), DType.FLOAT32, data=np.array([1.0, 2.0], dtype=np.float32).tobytes()
+        "init_t",
+        (2,),
+        DType.FLOAT32,
+        data=np.array([1.0, 2.0], dtype=np.float32).tobytes(),
     )
     g.tensors["out_t"] = t_out
     g.tensors["init_t"] = t_init

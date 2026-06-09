@@ -182,7 +182,9 @@ def test_other_ops_folding() -> None:
         {"detect_positive": 0, "detect_negative": 1},
     )
     _create_and_simplify(
-        "IsInf", [np.array([1.0], dtype=np.float32)], {"detect_positive": 0, "detect_negative": 0}
+        "IsInf",
+        [np.array([1.0], dtype=np.float32)],
+        {"detect_positive": 0, "detect_negative": 0},
     )
     _create_and_simplify("Relu", [np.array([-1.0, 1.0], dtype=np.float32)])
     _create_and_simplify(
@@ -194,7 +196,11 @@ def test_tensor_ops_folding() -> None:
     """Tests the tensor ops folding functionality."""
     with contextlib.suppress(Exception):
         _create_and_simplify(
-            "Split", [np.array([1.0, 2.0, 3.0], dtype=np.float32), np.array([1, 2], dtype=np.int64)]
+            "Split",
+            [
+                np.array([1.0, 2.0, 3.0], dtype=np.float32),
+                np.array([1, 2], dtype=np.int64),
+            ],
         )
     _create_and_simplify(
         "Expand", [np.array([1.0], dtype=np.float32), np.array([2, 2], dtype=np.int64)]
@@ -238,7 +244,8 @@ def test_tensor_ops_folding() -> None:
         ],
     )
     _create_and_simplify(
-        "CumSum", [np.array([1.0, 2.0], dtype=np.float32), np.array([0], dtype=np.int64)]
+        "CumSum",
+        [np.array([1.0, 2.0], dtype=np.float32), np.array([0], dtype=np.int64)],
     )
     _create_and_simplify(
         "CumSum",
@@ -257,17 +264,26 @@ def test_tensor_ops_folding() -> None:
     )
     _create_and_simplify(
         "Trilu",
-        [np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32), np.array([0], dtype=np.int64)],
+        [
+            np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32),
+            np.array([0], dtype=np.int64),
+        ],
         {"upper": 1},
     )
     _create_and_simplify(
         "Trilu",
-        [np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32), np.array([0], dtype=np.int64)],
+        [
+            np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32),
+            np.array([0], dtype=np.int64),
+        ],
         {"upper": 0},
     )
     _create_and_simplify(
         "MatMul",
-        [np.array([[1.0, 2.0]], dtype=np.float32), np.array([[1.0], [2.0]], dtype=np.float32)],
+        [
+            np.array([[1.0, 2.0]], dtype=np.float32),
+            np.array([[1.0], [2.0]], dtype=np.float32),
+        ],
     )
     _create_and_simplify(
         "Gemm",
@@ -279,7 +295,10 @@ def test_tensor_ops_folding() -> None:
     )
     _create_and_simplify(
         "Gemm",
-        [np.array([[1.0], [2.0]], dtype=np.float32), np.array([[1.0, 2.0]], dtype=np.float32)],
+        [
+            np.array([[1.0], [2.0]], dtype=np.float32),
+            np.array([[1.0, 2.0]], dtype=np.float32),
+        ],
         {"transA": 1, "transB": 1},
     )
 
@@ -360,7 +379,11 @@ def test_where_partial_folding() -> None:
     """Tests the where partial folding functionality."""
     g = Graph("test")
     t = Tensor(
-        "c", shape=(1,), dtype=DType.BOOL, data=np.array([True], dtype=bool), is_initializer=True
+        "c",
+        shape=(1,),
+        dtype=DType.BOOL,
+        data=np.array([True], dtype=bool),
+        is_initializer=True,
     )
     g.add_tensor(t)
     g.initializers.append("c")
@@ -372,7 +395,11 @@ def test_where_partial_folding() -> None:
     assert g_sim.outputs[0] == "x"
     g = Graph("test")
     t = Tensor(
-        "c", shape=(1,), dtype=DType.BOOL, data=np.array([False], dtype=bool), is_initializer=True
+        "c",
+        shape=(1,),
+        dtype=DType.BOOL,
+        data=np.array([False], dtype=bool),
+        is_initializer=True,
     )
     g.add_tensor(t)
     g.initializers.append("c")
@@ -394,7 +421,11 @@ def test_partial_math_folding() -> None:
             if isinstance(val, np.ndarray):
                 name = f"c{i}"
                 t = Tensor(
-                    name, shape=val.shape, dtype=DType.FLOAT32, data=val, is_initializer=True
+                    name,
+                    shape=val.shape,
+                    dtype=DType.FLOAT32,
+                    data=val,
+                    is_initializer=True,
                 )
                 g.add_tensor(t)
                 g.initializers.append(name)

@@ -14,7 +14,11 @@ def test_optimize_layouts_push():
     t3 = Variable("Y", [1, 224, 224, 3], "float32")
 
     n1 = Node(
-        "Transpose", ["X"], ["T1"], {"perm": Attribute("perm", "INTS", [0, 2, 3, 1])}, "trans"
+        "Transpose",
+        ["X"],
+        ["T1"],
+        {"perm": Attribute("perm", "INTS", [0, 2, 3, 1])},
+        "trans",
     )
     n2 = Node("Relu", ["T1"], ["Y"], {}, "relu")
 

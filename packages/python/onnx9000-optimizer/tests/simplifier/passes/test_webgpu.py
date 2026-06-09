@@ -79,7 +79,10 @@ def test_fp16_cast():
 
         def __init__(self):
             """Perform   init   operation."""
-            self.nodes = [MockNode("LayerNormalization", ["init1"]), MockNode("Conv", ["init2"])]
+            self.nodes = [
+                MockNode("LayerNormalization", ["init1"]),
+                MockNode("Conv", ["init2"]),
+            ]
             self.initializers = {
                 "init1": MockInit("init1", "float32"),
                 "init2": MockInit("init2", "float32"),

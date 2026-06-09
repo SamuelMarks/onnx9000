@@ -39,7 +39,8 @@ class DiTBlock:
         c_proj = self.adaLN_modulation(
             c,
             get_param(
-                f"{self.prefix}.adaLN_modulation.weight", [6 * self.hidden_size, self.hidden_size]
+                f"{self.prefix}.adaLN_modulation.weight",
+                [6 * self.hidden_size, self.hidden_size],
             ),
             get_param(f"{self.prefix}.adaLN_modulation.bias", [6 * self.hidden_size]),
         )
@@ -91,7 +92,8 @@ class DiTBlock:
         x_mlp = self.mlp_fc1(
             x_modulated,
             get_param(
-                f"{self.prefix}.mlp.fc1.weight", [int(self.hidden_size * 4), self.hidden_size]
+                f"{self.prefix}.mlp.fc1.weight",
+                [int(self.hidden_size * 4), self.hidden_size],
             ),
             get_param(f"{self.prefix}.mlp.fc1.bias", [int(self.hidden_size * 4)]),
         )
@@ -99,7 +101,8 @@ class DiTBlock:
         x_mlp = self.mlp_fc2(
             x_mlp,
             get_param(
-                f"{self.prefix}.mlp.fc2.weight", [self.hidden_size, int(self.hidden_size * 4)]
+                f"{self.prefix}.mlp.fc2.weight",
+                [self.hidden_size, int(self.hidden_size * 4)],
             ),
             get_param(f"{self.prefix}.mlp.fc2.bias", [self.hidden_size]),
         )
@@ -162,7 +165,8 @@ class DiT:
         c_proj = self.final_layer_adaLN(
             c,
             get_param(
-                "final_layer.adaLN_modulation.weight", [2 * self.hidden_size, self.hidden_size]
+                "final_layer.adaLN_modulation.weight",
+                [2 * self.hidden_size, self.hidden_size],
             ),
             get_param("final_layer.adaLN_modulation.bias", [2 * self.hidden_size]),
         )

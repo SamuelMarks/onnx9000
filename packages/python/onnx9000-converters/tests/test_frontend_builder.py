@@ -1,6 +1,10 @@
 """Tests the frontend builder module functionality."""
 
-from onnx9000.converters.frontend.builder import GraphBuilder, Tracing, get_active_builder
+from onnx9000.converters.frontend.builder import (
+    GraphBuilder,
+    Tracing,
+    get_active_builder,
+)
 from onnx9000.converters.frontend.tensor import Node
 
 

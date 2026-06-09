@@ -138,7 +138,10 @@ def test_cuda_executor_matmul_no_cublas() -> None:
 
         with pytest.raises(RuntimeError, match="cuBLAS is required"):
             dispatcher.run(
-                {"A": np.ones((2, 2), dtype=np.float32), "B": np.ones((2, 2), dtype=np.float32)}
+                {
+                    "A": np.ones((2, 2), dtype=np.float32),
+                    "B": np.ones((2, 2), dtype=np.float32),
+                }
             )
 
 
@@ -179,7 +182,8 @@ def test_cuda_executor_elementwise() -> None:
                 ),
             ),
             patch(
-                "onnx9000.backends.cuda.executor.CUDACompiler.compile_kernel", return_value=b"ptx"
+                "onnx9000.backends.cuda.executor.CUDACompiler.compile_kernel",
+                return_value=b"ptx",
             ),
             patch(
                 "onnx9000.backends.cuda.cuda_arena.CUDAMemoryPlanner.get_tensor_ptr",
@@ -233,7 +237,10 @@ def test_cuda_executor_elementwise_no_ptx() -> None:
                 }
             ),
         ),
-        patch("onnx9000.backends.cuda.executor.CUDACompiler.compile_kernel", return_value=b""),
+        patch(
+            "onnx9000.backends.cuda.executor.CUDACompiler.compile_kernel",
+            return_value=b"",
+        ),
     ):
         dispatcher = executor.Dispatcher(g)
         inp_A = np.ones((2, 2), dtype=np.float32)
@@ -257,7 +264,10 @@ def test_cuda_executor_init_memory_dynamic_and_init() -> None:
     # Using dynamic shape for output
     t_out = Tensor("out_t", ("N", 2), DType.FLOAT32)
     t_init = Tensor(
-        "init_t", (2,), DType.FLOAT32, data=np.array([1.0, 2.0], dtype=np.float32).tobytes()
+        "init_t",
+        (2,),
+        DType.FLOAT32,
+        data=np.array([1.0, 2.0], dtype=np.float32).tobytes(),
     )
     g.tensors["out_t"] = t_out
     g.tensors["init_t"] = t_init
@@ -287,7 +297,12 @@ def test_cuda_executor_del_handles_errors() -> None:
         ) as mock_cuda,
         patch(
             "onnx9000.backends.cuda.executor._cublas_lib",
-            MagicMock(**{"cublasCreate_v2.return_value": 0, "cublasSetStream_v2.return_value": 0}),
+            MagicMock(
+                **{
+                    "cublasCreate_v2.return_value": 0,
+                    "cublasSetStream_v2.return_value": 0,
+                }
+            ),
         ) as mock_cublas,
         patch(
             "onnx9000.backends.cuda.executor._cudnn_lib",
@@ -468,7 +483,12 @@ def test_cuda_executor_execute_node_fallback() -> None:
         ),
         patch(
             "onnx9000.backends.cuda.executor._cublas_lib",
-            MagicMock(**{"cublasCreate_v2.return_value": 0, "cublasSetStream_v2.return_value": 0}),
+            MagicMock(
+                **{
+                    "cublasCreate_v2.return_value": 0,
+                    "cublasSetStream_v2.return_value": 0,
+                }
+            ),
         ),
         patch(
             "onnx9000.backends.cuda.executor._cudnn_lib",

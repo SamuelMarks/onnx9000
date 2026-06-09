@@ -47,7 +47,10 @@ def test_coverage_gaps_cmd109():
             with (
                 patch("builtins.open"),
                 patch("os.path.isdir", return_value=True),
-                patch("os.path.exists", side_effect=[False, False, False, False, False, False]),
+                patch(
+                    "os.path.exists",
+                    side_effect=[False, False, False, False, False, False],
+                ),
                 patch("json.load", return_value={}),
             ):
                 for cmd_args in cmds:
@@ -64,7 +67,10 @@ def test_coverage_gaps_cmd109():
             with (
                 patch("builtins.open"),
                 patch("os.path.isdir", return_value=True),
-                patch("os.path.exists", side_effect=[True, False, False, False, False, False]),
+                patch(
+                    "os.path.exists",
+                    side_effect=[True, False, False, False, False, False],
+                ),
                 patch("json.load", return_value={}),
             ):
                 for cmd_args in cmds:

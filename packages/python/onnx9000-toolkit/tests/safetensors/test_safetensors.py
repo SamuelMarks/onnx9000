@@ -184,7 +184,10 @@ def test_sharded():
 
 def test_negative_dimension():
     """Test negative dimension."""
-    from onnx9000.toolkit.safetensors.parser import SafetensorsShapeMismatchError, _calculate_volume
+    from onnx9000.toolkit.safetensors.parser import (
+        SafetensorsShapeMismatchError,
+        _calculate_volume,
+    )
 
     with pytest.raises(SafetensorsShapeMismatchError, match="Negative dimension found"):
         _calculate_volume([-1, 10])
@@ -192,7 +195,10 @@ def test_negative_dimension():
 
 def test_huge_dimension():
     """Test huge dimension."""
-    from onnx9000.toolkit.safetensors.parser import SafetensorsShapeMismatchError, _calculate_volume
+    from onnx9000.toolkit.safetensors.parser import (
+        SafetensorsShapeMismatchError,
+        _calculate_volume,
+    )
 
     with pytest.raises(SafetensorsShapeMismatchError, match="Dimension too large"):
         _calculate_volume([2**51])
@@ -636,7 +642,10 @@ def test_fuzz_corrupted_binary_offsets():
 
 def test_zero_dim_scalar():
     """Test zero dim scalar."""
-    from onnx9000.toolkit.safetensors.parser import SafetensorsShapeMismatchError, _calculate_volume
+    from onnx9000.toolkit.safetensors.parser import (
+        SafetensorsShapeMismatchError,
+        _calculate_volume,
+    )
 
     assert _calculate_volume([]) == 1
     with pytest.raises(SafetensorsShapeMismatchError, match="Shape must be an array/list"):
@@ -694,7 +703,12 @@ def test_load_file_filter_regex():
     with tempfile.TemporaryDirectory() as d:
         path = os.path.join(d, "model.safetensors")
         save_file(
-            {"a.weight": np.array([1]), "a.bias": np.array([2]), "b.weight": np.array([3])}, path
+            {
+                "a.weight": np.array([1]),
+                "a.bias": np.array([2]),
+                "b.weight": np.array([3]),
+            },
+            path,
         )
         from onnx9000.toolkit.safetensors.parser import load_file
 
@@ -761,7 +775,10 @@ def test_bfloat16_generation_security():
         path = os.path.join(d, "bf16.safetensors")
         import struct
 
-        header = {"a": {"dtype": "BF16", "shape": [1], "data_offsets": [0, 2]}, "__metadata__": {}}
+        header = {
+            "a": {"dtype": "BF16", "shape": [1], "data_offsets": [0, 2]},
+            "__metadata__": {},
+        }
         import json
 
         header_str = json.dumps(header).encode("utf-8")
@@ -911,7 +928,11 @@ def test_hub_coverage():
     from urllib.error import HTTPError
 
     import pytest
-    from onnx9000.toolkit.safetensors.hub import _get_cache_dir, cached_download, resolve_model_file
+    from onnx9000.toolkit.safetensors.hub import (
+        _get_cache_dir,
+        cached_download,
+        resolve_model_file,
+    )
 
     with patch.dict(os.environ, {"HF_HOME": "/tmp/hf"}):
         assert _get_cache_dir() == "/tmp/hf"

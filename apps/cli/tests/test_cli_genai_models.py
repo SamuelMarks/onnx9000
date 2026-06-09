@@ -42,7 +42,10 @@ def test_llama_web_cmd_stdout():
 def test_llama_web_cmd_file():
     args = argparse.Namespace(model="llama.onnx", prompt="Hello", output="out.txt")
     m_open = mock_open()
-    with patch("onnx9000.core.models.llama.LLaMA") as mock_llama, patch("builtins.open", m_open):
+    with (
+        patch("onnx9000.core.models.llama.LLaMA") as mock_llama,
+        patch("builtins.open", m_open),
+    ):
         llama_web_cmd(args)
     mock_llama.assert_called_once()
     m_open.assert_called_once_with("out.txt", "w")

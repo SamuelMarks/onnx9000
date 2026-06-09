@@ -16,7 +16,10 @@ def _map_if(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
     then_branch = builder.extract_attr(node, "then_branch")
     else_branch = builder.extract_attr(node, "else_branch")
     return builder.make_node(
-        "If", node.inputs, {"then_branch": then_branch, "else_branch": else_branch}, node.name
+        "If",
+        node.inputs,
+        {"then_branch": then_branch, "else_branch": else_branch},
+        node.name,
     )
 
 
@@ -43,7 +46,10 @@ def _map_tensor_array_read(builder: TFToONNXGraphBuilder, node: TFNode) -> list[
 def _map_tensor_array_write(builder: TFToONNXGraphBuilder, node: TFNode) -> list[str]:
     """Execute the  map tensor array write operation."""
     return builder.make_node(
-        "SequenceInsert", [node.inputs[0], node.inputs[2], node.inputs[1]], {}, node.name
+        "SequenceInsert",
+        [node.inputs[0], node.inputs[2], node.inputs[1]],
+        {},
+        node.name,
     )
 
 

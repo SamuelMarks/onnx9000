@@ -50,7 +50,10 @@ def test_count_map_funcs_branches():
 
 def test_count_classes_inheriting_module_branches():
     with patch("os.path.exists", return_value=True):
-        with patch("glob.glob", side_effect=lambda p: ["snapshot.json"] if "snapshot" in p else []):
+        with patch(
+            "glob.glob",
+            side_effect=lambda p: ["snapshot.json"] if "snapshot" in p else [],
+        ):
 
             def fake_open(filepath, *args, **kwargs):
                 mock = MagicMock()

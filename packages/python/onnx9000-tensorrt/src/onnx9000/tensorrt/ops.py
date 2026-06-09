@@ -711,7 +711,12 @@ def trt_maxpool(network: INetworkDefinition, node: Any, tensors: dict[str, ITens
     if in1 is None:
         raise RuntimeError("Missing inputs for MaxPool")
     add_pool_func.restype = ctypes.c_void_p
-    add_pool_func.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int32, ctypes.c_void_p]
+    add_pool_func.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        ctypes.c_int32,
+        ctypes.c_void_p,
+    ]
     # Dims struct mock for kernel size
     from onnx9000.tensorrt.structs import Dims
 
@@ -738,7 +743,12 @@ def trt_averagepool(network: INetworkDefinition, node: Any, tensors: dict[str, I
     if in1 is None:
         raise RuntimeError("Missing inputs for AveragePool")
     add_pool_func.restype = ctypes.c_void_p
-    add_pool_func.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int32, ctypes.c_void_p]
+    add_pool_func.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        ctypes.c_int32,
+        ctypes.c_void_p,
+    ]
     # Dims struct mock for kernel size
     from onnx9000.tensorrt.structs import Dims
 

@@ -32,13 +32,26 @@ def test_quantizer_int8():
 
     graph = Graph("test")
     graph.tensors["Scale"] = Tensor(
-        "Scale", shape=(2,), dtype="float32", is_initializer=True, data=struct.pack("<2f", 0.5, 0.5)
+        "Scale",
+        shape=(2,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<2f", 0.5, 0.5),
     )
     graph.tensors["ZP"] = Tensor(
-        "ZP", shape=(2,), dtype="int8", is_initializer=True, data=struct.pack("<2b", -5, -5)
+        "ZP",
+        shape=(2,),
+        dtype="int8",
+        is_initializer=True,
+        data=struct.pack("<2b", -5, -5),
     )
     graph.nodes.append(
-        Node("QuantizeLinear", ["X", "Scale", "ZP"], ["Y"], {"axis": Attribute("axis", "INT", 1)})
+        Node(
+            "QuantizeLinear",
+            ["X", "Scale", "ZP"],
+            ["Y"],
+            {"axis": Attribute("axis", "INT", 1)},
+        )
     )
     quantizer = Quantizer(graph, mode="int8")
     quantizer.quantize()
@@ -72,16 +85,32 @@ def test_qdq_quantization_extraction():
 
     graph = Graph("TestGraph")
     graph.tensors["scale"] = Tensor(
-        "scale", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.5)
+        "scale",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.5),
     )
     graph.tensors["zp"] = Tensor(
-        "zp", shape=(1,), dtype="uint8", is_initializer=True, data=struct.pack("<B", 128)
+        "zp",
+        shape=(1,),
+        dtype="uint8",
+        is_initializer=True,
+        data=struct.pack("<B", 128),
     )
     graph.tensors["scale2"] = Tensor(
-        "scale2", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.5)
+        "scale2",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.5),
     )
     graph.tensors["zp2"] = Tensor(
-        "zp2", shape=(1,), dtype="int16", is_initializer=True, data=struct.pack("<h", 128)
+        "zp2",
+        shape=(1,),
+        dtype="int16",
+        is_initializer=True,
+        data=struct.pack("<h", 128),
     )
     graph.nodes.append(
         Node(
@@ -102,10 +131,18 @@ def test_qdq_quantization_extraction():
         )
     )
     graph.tensors["scale3"] = Tensor(
-        "scale3", shape=(1,), dtype="float32", is_initializer=True, data=struct.pack("<f", 0.5)
+        "scale3",
+        shape=(1,),
+        dtype="float32",
+        is_initializer=True,
+        data=struct.pack("<f", 0.5),
     )
     graph.tensors["zp3"] = Tensor(
-        "zp3", shape=(1,), dtype="uint8", is_initializer=True, data=struct.pack("<B", 128)
+        "zp3",
+        shape=(1,),
+        dtype="uint8",
+        is_initializer=True,
+        data=struct.pack("<B", 128),
     )
     graph.nodes.append(
         Node(
@@ -124,7 +161,11 @@ def test_qdq_quantization_extraction():
         data=struct.pack("<2f", 0.5, 0.5),
     )
     graph.tensors["zp_per_channel"] = Tensor(
-        "zp_pc", shape=(2,), dtype="uint8", is_initializer=True, data=struct.pack("<2B", 128, 128)
+        "zp_pc",
+        shape=(2,),
+        dtype="uint8",
+        is_initializer=True,
+        data=struct.pack("<2B", 128, 128),
     )
     graph.nodes.append(
         Node(

@@ -69,7 +69,9 @@ def test_mega_coverage():
     mock_load = patch(
         "onnx9000_cli.main.load_onnx",
         return_value=MagicMock(
-            nodes=[MagicMock(op_type="TreeEnsembleClassifier")], name="mocked_name", tensors={}
+            nodes=[MagicMock(op_type="TreeEnsembleClassifier")],
+            name="mocked_name",
+            tensors={},
         ),
     )
     mock_save = patch("onnx9000_cli.main.save_onnx")

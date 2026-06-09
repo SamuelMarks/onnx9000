@@ -110,7 +110,9 @@ ELEMENTWISE_OPS = {
         BuiltinOperator.DEQUANTIZE, BuiltinOptions.DequantizeOptions
     ),
     "Cast": TFLiteOperatorMapping(
-        BuiltinOperator.CAST, BuiltinOptions.CastOptions, lambda b, n, g=None: _map_cast(b, n)
+        BuiltinOperator.CAST,
+        BuiltinOptions.CastOptions,
+        lambda b, n, g=None: _map_cast(b, n),
     ),
     "PRelu": TFLiteOperatorMapping(BuiltinOperator.PRELU, BuiltinOptions.NONE),
     "Expand": TFLiteOperatorMapping(
@@ -118,19 +120,27 @@ ELEMENTWISE_OPS = {
     ),
     # 75. Emit ADD
     "Add": TFLiteOperatorMapping(
-        BuiltinOperator.ADD, BuiltinOptions.AddOptions, lambda b, n, g=None: _map_math_fused(b, n)
+        BuiltinOperator.ADD,
+        BuiltinOptions.AddOptions,
+        lambda b, n, g=None: _map_math_fused(b, n),
     ),
     # 76. Emit SUB
     "Sub": TFLiteOperatorMapping(
-        BuiltinOperator.SUB, BuiltinOptions.SubOptions, lambda b, n, g=None: _map_math_fused(b, n)
+        BuiltinOperator.SUB,
+        BuiltinOptions.SubOptions,
+        lambda b, n, g=None: _map_math_fused(b, n),
     ),
     # 77. Emit MUL
     "Mul": TFLiteOperatorMapping(
-        BuiltinOperator.MUL, BuiltinOptions.MulOptions, lambda b, n, g=None: _map_math_fused(b, n)
+        BuiltinOperator.MUL,
+        BuiltinOptions.MulOptions,
+        lambda b, n, g=None: _map_math_fused(b, n),
     ),
     # 78. Emit DIV
     "Div": TFLiteOperatorMapping(
-        BuiltinOperator.DIV, BuiltinOptions.DivOptions, lambda b, n, g=None: _map_math_fused(b, n)
+        BuiltinOperator.DIV,
+        BuiltinOptions.DivOptions,
+        lambda b, n, g=None: _map_math_fused(b, n),
     ),
     # 79. Emit FLOOR_DIV
     "FloorDiv": TFLiteOperatorMapping(BuiltinOperator.FLOOR_DIV, BuiltinOptions.FloorDivOptions),
@@ -196,7 +206,9 @@ ELEMENTWISE_OPS = {
     "HardSwish": TFLiteOperatorMapping(BuiltinOperator.HARD_SWISH, BuiltinOptions.NONE),
     # 136. Emit GELU
     "Gelu": TFLiteOperatorMapping(
-        BuiltinOperator.GELU, BuiltinOptions.GeluOptions, lambda b, n, g=None: _map_gelu(b, n)
+        BuiltinOperator.GELU,
+        BuiltinOptions.GeluOptions,
+        lambda b, n, g=None: _map_gelu(b, n),
     ),
     # 142. Emit L2_NORMALIZATION
     "LpNormalization": TFLiteOperatorMapping(
@@ -236,11 +248,15 @@ ELEMENTWISE_OPS = {
     ),
     # 153. Emit SPLIT
     "Split": TFLiteOperatorMapping(
-        BuiltinOperator.SPLIT, BuiltinOptions.SplitOptions, lambda b, n, g=None: _map_split(b, n)
+        BuiltinOperator.SPLIT,
+        BuiltinOptions.SplitOptions,
+        lambda b, n, g=None: _map_split(b, n),
     ),
     # 154. Emit SPLIT_V
     "SplitV": TFLiteOperatorMapping(
-        BuiltinOperator.SPLIT_V, BuiltinOptions.SplitVOptions, lambda b, n, g=None: _map_split(b, n)
+        BuiltinOperator.SPLIT_V,
+        BuiltinOptions.SplitVOptions,
+        lambda b, n, g=None: _map_split(b, n),
     ),
     # 155. Emit SLICE
     "Slice": TFLiteOperatorMapping(BuiltinOperator.SLICE, BuiltinOptions.SliceOptions),
@@ -252,7 +268,9 @@ ELEMENTWISE_OPS = {
     ),
     # 158. Emit GATHER
     "Gather": TFLiteOperatorMapping(
-        BuiltinOperator.GATHER, BuiltinOptions.GatherOptions, lambda b, n, g=None: _map_gather(b, n)
+        BuiltinOperator.GATHER,
+        BuiltinOptions.GatherOptions,
+        lambda b, n, g=None: _map_gather(b, n),
     ),
     # 159. Emit GATHER_ND
     "GatherND": TFLiteOperatorMapping(BuiltinOperator.GATHER_ND, BuiltinOptions.GatherNdOptions),
@@ -279,11 +297,15 @@ ELEMENTWISE_OPS = {
     "Shape": TFLiteOperatorMapping(BuiltinOperator.SHAPE, BuiltinOptions.ShapeOptions),
     # 167. Emit PACK
     "SequenceConstruct": TFLiteOperatorMapping(
-        BuiltinOperator.PACK, BuiltinOptions.PackOptions, lambda b, n, g=None: _map_pack(b, n)
+        BuiltinOperator.PACK,
+        BuiltinOptions.PackOptions,
+        lambda b, n, g=None: _map_pack(b, n),
     ),
     # 168. Emit UNPACK
     "SplitToSequence": TFLiteOperatorMapping(
-        BuiltinOperator.UNPACK, BuiltinOptions.UnpackOptions, lambda b, n, g=None: _map_unpack(b, n)
+        BuiltinOperator.UNPACK,
+        BuiltinOptions.UnpackOptions,
+        lambda b, n, g=None: _map_unpack(b, n),
     ),
     # 113. Emit MAX_POOL_2D
     "MaxPool": TFLiteOperatorMapping(
@@ -304,7 +326,9 @@ ELEMENTWISE_OPS = {
     ),
     # 116. Emit MEAN (GlobalAveragePool)
     "GlobalAveragePool": TFLiteOperatorMapping(
-        BuiltinOperator.MEAN, BuiltinOptions.ReducerOptions, lambda b, n, g=None: _map_reducer(b, n)
+        BuiltinOperator.MEAN,
+        BuiltinOptions.ReducerOptions,
+        lambda b, n, g=None: _map_reducer(b, n),
     ),
     # 117. Emit REDUCE_MAX (GlobalMaxPool)
     "GlobalMaxPool": TFLiteOperatorMapping(
@@ -422,11 +446,15 @@ ELEMENTWISE_OPS = {
     ),
     # 210. Emit ARG_MAX
     "ArgMax": TFLiteOperatorMapping(
-        BuiltinOperator.ARG_MAX, BuiltinOptions.ArgMaxOptions, lambda b, n, g=None: _map_arg(b, n)
+        BuiltinOperator.ARG_MAX,
+        BuiltinOptions.ArgMaxOptions,
+        lambda b, n, g=None: _map_arg(b, n),
     ),
     # 211. Emit ARG_MIN
     "ArgMin": TFLiteOperatorMapping(
-        BuiltinOperator.ARG_MIN, BuiltinOptions.ArgMinOptions, lambda b, n, g=None: _map_arg(b, n)
+        BuiltinOperator.ARG_MIN,
+        BuiltinOptions.ArgMinOptions,
+        lambda b, n, g=None: _map_arg(b, n),
     ),
     # 212. Emit TOPK_V2
     "TopK": TFLiteOperatorMapping(BuiltinOperator.TOPK_V2, BuiltinOptions.TopKV2Options),
@@ -434,7 +462,9 @@ ELEMENTWISE_OPS = {
     "Reverse": TFLiteOperatorMapping(BuiltinOperator.REVERSE_V2, BuiltinOptions.ReverseV2Options),
     # 215. Emit CUMSUM
     "CumSum": TFLiteOperatorMapping(
-        BuiltinOperator.CUMSUM, BuiltinOptions.CumsumOptions, lambda b, n, g=None: _map_cumsum(b, n)
+        BuiltinOperator.CUMSUM,
+        BuiltinOptions.CumsumOptions,
+        lambda b, n, g=None: _map_cumsum(b, n),
     ),
     # 219. Emit SEGMENT_SUM
     "SegmentSum": TFLiteOperatorMapping(
@@ -458,11 +488,15 @@ ELEMENTWISE_OPS = {
     # Phase 11: RNN, LSTM, Sequence
     # 221. Emit RNN
     "RNN": TFLiteOperatorMapping(
-        BuiltinOperator.RNN, BuiltinOptions.RNNOptions, lambda b, n, g=None: _map_rnn(b, n)
+        BuiltinOperator.RNN,
+        BuiltinOptions.RNNOptions,
+        lambda b, n, g=None: _map_rnn(b, n),
     ),
     # 223. Emit LSTM
     "LSTM": TFLiteOperatorMapping(
-        BuiltinOperator.LSTM, BuiltinOptions.LSTMOptions, lambda b, n, g=None: _map_lstm(b, n)
+        BuiltinOperator.LSTM,
+        BuiltinOptions.LSTMOptions,
+        lambda b, n, g=None: _map_lstm(b, n),
     ),
     # 222. Emit UNIDIRECTIONAL_SEQUENCE_RNN
     "UnidirectionalSequenceRNN": TFLiteOperatorMapping(
@@ -902,7 +936,11 @@ def map_onnx_node_to_tflite(node: Node) -> TFLiteOperatorMapping | None:
                 )
         return mapping
 
-    if node.op_type in ("NonMaxSuppression", "InstanceNormalization", "LayerNormalization"):
+    if node.op_type in (
+        "NonMaxSuppression",
+        "InstanceNormalization",
+        "LayerNormalization",
+    ):
         return TFLiteOperatorMapping(
             BuiltinOperator.CUSTOM, BuiltinOptions.NONE, lambda b, n, g=None: 0
         )

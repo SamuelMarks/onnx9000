@@ -104,7 +104,10 @@ class Module:
             yield module
 
     def named_modules(
-        self, memo: set["Module"] | None = None, prefix: str = "", remove_duplicate: bool = True
+        self,
+        memo: set["Module"] | None = None,
+        prefix: str = "",
+        remove_duplicate: bool = True,
     ) -> Iterator[tuple[str, "Module"]]:
         """Yield an iterator over all modules in the network, yielding both the name and the module itself."""
         if memo is None:

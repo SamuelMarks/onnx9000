@@ -184,7 +184,8 @@ class OpenVinoExporter:
             data.set_attribute("element_type", precision_str)
             # Explicit precise precision metadata mapping
             data.set_attribute(
-                "shape", ",".join(str(d) for d in val_info.shape) if val_info.shape else "1"
+                "shape",
+                ",".join(str(d) for d in val_info.shape) if val_info.shape else "1",
             )
             layer.add_child(data)
 
@@ -413,7 +414,8 @@ class OpenVinoExporter:
 
                 if node.attributes.get("strides"):
                     data.set_attribute(
-                        "strides", ",".join(str(x) for x in node.attributes["strides"].value)
+                        "strides",
+                        ",".join(str(x) for x in node.attributes["strides"].value),
                     )
                 if node.attributes.get("dilations"):
                     data.set_attribute(
@@ -427,7 +429,8 @@ class OpenVinoExporter:
                         data.set_attribute("pads_end", f"{pads[2]},{pads[3]}")
                     else:
                         data.set_attribute(
-                            "pads_begin", ",".join(str(x) for x in pads[: len(pads) // 2])
+                            "pads_begin",
+                            ",".join(str(x) for x in pads[: len(pads) // 2]),
                         )
                         data.set_attribute(
                             "pads_end", ",".join(str(x) for x in pads[len(pads) // 2 :])
@@ -455,7 +458,8 @@ class OpenVinoExporter:
                     )
                 if node.attributes.get("strides"):
                     data.set_attribute(
-                        "strides", ",".join(str(x) for x in node.attributes["strides"].value)
+                        "strides",
+                        ",".join(str(x) for x in node.attributes["strides"].value),
                     )
                 if node.attributes.get("pads"):
                     pads = node.attributes["pads"].value
@@ -464,7 +468,8 @@ class OpenVinoExporter:
                         data.set_attribute("pads_end", f"{pads[2]},{pads[3]}")
                     else:
                         data.set_attribute(
-                            "pads_begin", ",".join(str(x) for x in pads[: len(pads) // 2])
+                            "pads_begin",
+                            ",".join(str(x) for x in pads[: len(pads) // 2]),
                         )
                         data.set_attribute(
                             "pads_end", ",".join(str(x) for x in pads[len(pads) // 2 :])
@@ -590,12 +595,14 @@ class OpenVinoExporter:
             ]:
                 if node.attributes.get("keepdims"):
                     data.set_attribute(
-                        "keep_dims", "true" if node.attributes["keepdims"].value else "false"
+                        "keep_dims",
+                        "true" if node.attributes["keepdims"].value else "false",
                     )
             elif node.op_type in ["ArgMax", "ArgMin"]:
                 if node.attributes.get("keepdims"):
                     data.set_attribute(
-                        "keep_dims", "true" if node.attributes["keepdims"].value else "false"
+                        "keep_dims",
+                        "true" if node.attributes["keepdims"].value else "false",
                     )
                 if node.attributes.get("axis"):
                     data.set_attribute("axis", str(node.attributes["axis"].value))
@@ -743,7 +750,10 @@ class OpenVinoExporter:
                 layers.add_child(shape_layer)
 
                 axes_layer, axes_port = self._emit_dynamic_const(
-                    node.name + "_axes" if node.name else f"axes_{layer_id}", [0], [1], DType.INT64
+                    node.name + "_axes" if node.name else f"axes_{layer_id}",
+                    [0],
+                    [1],
+                    DType.INT64,
                 )
                 layers.add_child(axes_layer)
 
@@ -941,7 +951,10 @@ class OpenVinoExporter:
 
                 if has_decoupled_bias:
                     # Intermediate output
-                    self.port_ids[out_name + "_internal_nobias"] = (layer_id, output_port)
+                    self.port_ids[out_name + "_internal_nobias"] = (
+                        layer_id,
+                        output_port,
+                    )
                 else:
                     self.port_ids[out_name] = (layer_id, output_port)
             if len(node.outputs) > 0:

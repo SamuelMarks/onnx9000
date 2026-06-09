@@ -46,7 +46,11 @@ def test_resnet50_topology():
     )
     w_data = struct.pack(f"<{64 * 3 * 7 * 7}f", *[1.0] * (64 * 3 * 7 * 7))
     graph.tensors["Conv1_W"] = Tensor(
-        "Conv1_W", shape=(64, 3, 7, 7), dtype="float32", is_initializer=True, data=w_data
+        "Conv1_W",
+        shape=(64, 3, 7, 7),
+        dtype="float32",
+        is_initializer=True,
+        data=w_data,
     )
     from onnx9000.core.ir import Attribute
 
@@ -132,7 +136,11 @@ def test_mobilenet_v2_topology():
 
     w_data1 = struct.pack(f"<{32 * 27}f", *[1.0] * (32 * 27))
     graph.tensors["Conv1_W"] = Tensor(
-        "Conv1_W", shape=(32, 3, 3, 3), dtype="float32", is_initializer=True, data=w_data1
+        "Conv1_W",
+        shape=(32, 3, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=w_data1,
     )
     graph.nodes.append(
         Node(
@@ -216,7 +224,11 @@ def test_yolov8_topology():
 
     w_data1 = struct.pack(f"<{16 * 27}f", *[1.0] * (16 * 27))
     graph.tensors["Conv1_W"] = Tensor(
-        "Conv1_W", shape=(16, 3, 3, 3), dtype="float32", is_initializer=True, data=w_data1
+        "Conv1_W",
+        shape=(16, 3, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=w_data1,
     )
     graph.nodes.append(
         Node(
@@ -272,7 +284,11 @@ def test_yolov8_topology():
     )
     head_data = struct.pack(f"<{84 * 24}f", *[1.0] * (84 * 24))
     graph.tensors["Head_W"] = Tensor(
-        "Head_W", shape=(84, 24, 1, 1), dtype="float32", is_initializer=True, data=head_data
+        "Head_W",
+        shape=(84, 24, 1, 1),
+        dtype="float32",
+        is_initializer=True,
+        data=head_data,
     )
     graph.nodes.append(Node("Conv", ["Concat_Out", "Head_W"], ["Head_Out"], {}, "head_conv"))
     graph.tensors["Head_Out"] = Tensor(
@@ -301,7 +317,11 @@ def test_whisper_topology():
 
     w_data1 = struct.pack(f"<{384 * 80 * 3}f", *[1.0] * (384 * 80 * 3))
     graph.tensors["Conv1_W"] = Tensor(
-        "Conv1_W", shape=(384, 80, 3), dtype="float32", is_initializer=True, data=w_data1
+        "Conv1_W",
+        shape=(384, 80, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=w_data1,
     )
     graph.nodes.append(
         Node(
@@ -365,7 +385,11 @@ def test_deeplabv3_topology():
 
     feat_data = struct.pack(f"<{256 * 27}f", *[1.0] * (256 * 27))
     graph.tensors["Feat_W"] = Tensor(
-        "Feat_W", shape=(256, 3, 3, 3), dtype="float32", is_initializer=True, data=feat_data
+        "Feat_W",
+        shape=(256, 3, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=feat_data,
     )
     graph.nodes.append(
         Node(
@@ -381,7 +405,11 @@ def test_deeplabv3_topology():
     )
     aspp1_data = struct.pack(f"<{256 * 256 * 9}f", *[1.0] * (256 * 256 * 9))
     graph.tensors["ASPP1_W"] = Tensor(
-        "ASPP1_W", shape=(256, 256, 3, 3), dtype="float32", is_initializer=True, data=aspp1_data
+        "ASPP1_W",
+        shape=(256, 256, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=aspp1_data,
     )
     graph.nodes.append(
         Node(

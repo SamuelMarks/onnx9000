@@ -1,3 +1,5 @@
+/* eslint-disable no-control-regex */
+
 /**
  * @fileoverview Defines data structures and algorithms for Directed Acyclic Graph (DAG) layout computation.
  * This module is responsible for computing the visual layout of an ONNX graph,
@@ -161,7 +163,7 @@ export function computeLayout(
           const tensor = graph.tensors[name];
           if (tensor && tensor.dtype === "string" && tensor.data) {
             const decoder = new TextDecoder("utf-8");
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line
             const str = decoder
               .decode(tensor.data)
               .replace(/[\x00-\x1F\x7F]/g, "");
@@ -244,7 +246,7 @@ export function computeLayout(
           const tensor = graph.tensors[name];
           if (tensor && tensor.dtype === "string" && tensor.data) {
             const decoder = new TextDecoder("utf-8");
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line
             const str = decoder
               .decode(tensor.data)
               .replace(/[\x00-\x1F\x7F]/g, "");

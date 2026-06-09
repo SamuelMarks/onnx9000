@@ -122,7 +122,10 @@ def _map_batch_norm(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list
     epsilon = builder.extract_attr(node, "epsilon", 1e-05)
     momentum = builder.extract_attr(node, "momentum", 0.9)
     return builder.make_node(
-        "BatchNormalization", inputs, {"epsilon": epsilon, "momentum": momentum}, node.name
+        "BatchNormalization",
+        inputs,
+        {"epsilon": epsilon, "momentum": momentum},
+        node.name,
     )
 
 
@@ -178,7 +181,10 @@ def _map_group_norm(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list
         "Reshape", [x, reshape_in_shape], {}, f"{node.name}_reshape_in"
     )[0]
     inst_norm = builder.make_node(
-        "InstanceNormalization", [reshaped_in], {"epsilon": epsilon}, f"{node.name}_inst"
+        "InstanceNormalization",
+        [reshaped_in],
+        {"epsilon": epsilon},
+        f"{node.name}_inst",
     )[0]
     reshape_out_shape = builder.make_node(
         "Concat", [batch, c, h, w], {"axis": 0}, f"{node.name}_out_shape"

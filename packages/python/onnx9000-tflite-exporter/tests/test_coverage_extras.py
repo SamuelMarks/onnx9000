@@ -14,7 +14,12 @@ def test_layout_expand_tile():
     g = Graph("ExpandTile")
     g.inputs.append(ValueInfo("X", (1, 3, 2, 2), DType.FLOAT32))
 
-    t = Tensor("shape", (4,), DType.INT64, data=np.array([1, 3, 2, 2], dtype=np.int64).tobytes())
+    t = Tensor(
+        "shape",
+        (4,),
+        DType.INT64,
+        data=np.array([1, 3, 2, 2], dtype=np.int64).tobytes(),
+    )
     t.is_initializer = True
     g.tensors["shape"] = t
     g.initializers.append("shape")

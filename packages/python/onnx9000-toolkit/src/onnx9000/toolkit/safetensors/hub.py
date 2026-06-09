@@ -48,7 +48,10 @@ def resolve_model_file(repo_id: str, revision: str = "main") -> str:
 
 
 def cached_download(
-    url: str, force_download: bool = False, expected_sha256: str = None, revision: str = "main"
+    url: str,
+    force_download: bool = False,
+    expected_sha256: str = None,
+    revision: str = "main",
 ) -> str:
     """Emulate huggingface_hub cached_download paths if the library is not installed.
 

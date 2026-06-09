@@ -225,7 +225,10 @@ def test_missing_modifier_lines():
     # 682-684: NMPruningModifier len(block) < m
     g_nm = Graph("nm")
     w_nm = Constant(
-        "weight_nm", values=struct.pack("<3f", 1.0, 2.0, 3.0), shape=(1, 4), dtype=DType.FLOAT32
+        "weight_nm",
+        values=struct.pack("<3f", 1.0, 2.0, 3.0),
+        shape=(1, 4),
+        dtype=DType.FLOAT32,
     )
     g_nm.add_tensor(w_nm)
     NMPruningModifier(params=["re:weight_nm"], n=2, m=4).apply(g_nm)
@@ -286,7 +289,10 @@ def test_quant_symmetric():
 
     g = Graph("g")
     g.tensors["t"] = Constant(
-        "t", values=np.array([1.0, -0.5, 0.1, 0.05]).tobytes(), dtype=DType.FLOAT32, shape=(4,)
+        "t",
+        values=np.array([1.0, -0.5, 0.1, 0.05]).tobytes(),
+        dtype=DType.FLOAT32,
+        shape=(4,),
     )
     g.initializers.append("t")
 

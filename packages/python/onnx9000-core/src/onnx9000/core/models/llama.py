@@ -41,7 +41,8 @@ class SwiGLU:
         hidden = mul(activated_gate, up)
 
         down = self.w2(
-            hidden, get_param(f"{self.prefix}.w2.weight", [self.hidden_dim, self.ffn_dim])
+            hidden,
+            get_param(f"{self.prefix}.w2.weight", [self.hidden_dim, self.ffn_dim]),
         )
         return down
 
@@ -49,7 +50,14 @@ class SwiGLU:
 class LLaMABlock:
     """L la ma block."""
 
-    def __init__(self, dim: int, num_heads: int, num_kv_heads: int, ffn_dim: int, prefix: str = ""):
+    def __init__(
+        self,
+        dim: int,
+        num_heads: int,
+        num_kv_heads: int,
+        ffn_dim: int,
+        prefix: str = "",
+    ):
         """Init."""
         self.prefix = prefix
         self.dim = dim
@@ -110,7 +118,9 @@ class LLaMA:
         from onnx9000.core.ops import gather
 
         x = gather(
-            get_param("tok_embeddings.weight", [self.vocab_size, self.dim]), input_ids, axis=0
+            get_param("tok_embeddings.weight", [self.vocab_size, self.dim]),
+            input_ids,
+            axis=0,
         )
 
         # Apply RoPE to embeddings conceptually or inside blocks
@@ -127,12 +137,24 @@ class LLaMA:
 def llama_7b(**kwargs: Any) -> LLaMA:
     """Llama 7b."""
     return LLaMA(
-        vocab_size=32000, dim=4096, num_heads=32, num_kv_heads=32, depth=32, ffn_dim=11008, **kwargs
+        vocab_size=32000,
+        dim=4096,
+        num_heads=32,
+        num_kv_heads=32,
+        depth=32,
+        ffn_dim=11008,
+        **kwargs,
     )
 
 
 def mistral_7b(**kwargs: Any) -> LLaMA:
     """Mistral 7b."""
     return LLaMA(
-        vocab_size=32000, dim=4096, num_heads=32, num_kv_heads=8, depth=32, ffn_dim=14336, **kwargs
+        vocab_size=32000,
+        dim=4096,
+        num_heads=32,
+        num_kv_heads=8,
+        depth=32,
+        ffn_dim=14336,
+        **kwargs,
     )

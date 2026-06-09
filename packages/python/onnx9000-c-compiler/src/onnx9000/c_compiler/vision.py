@@ -41,7 +41,12 @@ def generate_nms(
 
 
 def generate_resize(
-    b: C89Builder, node: Node, out_tensor: Tensor, in_tensor: Tensor, in_name: str, out_name: str
+    b: C89Builder,
+    node: Node,
+    out_tensor: Tensor,
+    in_tensor: Tensor,
+    in_name: str,
+    out_name: str,
 ):
     """Generate C code for the Resize operation.
 

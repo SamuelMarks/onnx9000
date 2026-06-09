@@ -25,7 +25,8 @@ def test_pyenv_fallback():
                 with patch("builtins.open"):
                     with patch("json.load", return_value={"version": "1.0", "objects": ["a"]}):
                         with patch(
-                            "onnx9000_cli.coverage.get_pypi_info", return_value=("1.0", "3.10")
+                            "onnx9000_cli.coverage.get_pypi_info",
+                            return_value=("1.0", "3.10"),
                         ):
                             generate_framework_snapshots("snapshots_dir")
 
@@ -47,7 +48,10 @@ def test_pyenv_fallback_install():
         with patch("subprocess.run", side_effect=fake_run):
             with patch("glob.glob", return_value=[]):
                 with patch("builtins.open"):
-                    with patch("onnx9000_cli.coverage.get_pypi_info", return_value=("1.0", "3.10")):
+                    with patch(
+                        "onnx9000_cli.coverage.get_pypi_info",
+                        return_value=("1.0", "3.10"),
+                    ):
                         generate_framework_snapshots("snapshots_dir")
 
 
@@ -61,5 +65,8 @@ def test_pyenv_fallback_fails():
         with patch("subprocess.run", side_effect=fake_run):
             with patch("glob.glob", return_value=[]):
                 with patch("builtins.open"):
-                    with patch("onnx9000_cli.coverage.get_pypi_info", return_value=("1.0", "3.10")):
+                    with patch(
+                        "onnx9000_cli.coverage.get_pypi_info",
+                        return_value=("1.0", "3.10"),
+                    ):
                         generate_framework_snapshots("snapshots_dir")

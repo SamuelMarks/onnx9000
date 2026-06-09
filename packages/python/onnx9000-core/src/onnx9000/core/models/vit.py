@@ -43,7 +43,12 @@ class PatchEmbed:
             x,
             get_param(
                 f"{self.prefix}.proj.weight",
-                [self.proj.out_channels, self.proj.in_channels, self.patch_size, self.patch_size],
+                [
+                    self.proj.out_channels,
+                    self.proj.in_channels,
+                    self.patch_size,
+                    self.patch_size,
+                ],
             ),
             get_param(f"{self.prefix}.proj.bias", [self.proj.out_channels]),
         )
@@ -166,7 +171,9 @@ class VisionTransformer:
             x = block(x)
 
         x = self.norm(
-            x, get_param("norm.weight", [self.embed_dim]), get_param("norm.bias", [self.embed_dim])
+            x,
+            get_param("norm.weight", [self.embed_dim]),
+            get_param("norm.bias", [self.embed_dim]),
         )
 
         # Take the cls_token output (index 0)

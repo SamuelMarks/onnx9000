@@ -64,7 +64,11 @@ def quantize_dynamic(graph: Graph) -> Graph:
             g.add_node(matmul_int_node)
             dequant_scale = f"{node.outputs[0]}_scale_merged"
             mul_scales_node = Node(
-                "Mul", [dyn_q_scale_a, dyn_q_scale_b], [dequant_scale], {}, f"MulScales_{node.name}"
+                "Mul",
+                [dyn_q_scale_a, dyn_q_scale_b],
+                [dequant_scale],
+                {},
+                f"MulScales_{node.name}",
             )
             g.add_node(mul_scales_node)
             cast_node_out = f"{matmul_int_out}_float"

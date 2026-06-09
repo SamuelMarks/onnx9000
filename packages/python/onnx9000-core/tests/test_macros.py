@@ -105,7 +105,10 @@ def test_macro_expander_real():
 
     g = Graph("test")
     n = Node(
-        "transformer_block_macro", domain="ai.onnx9000.macro", inputs=["x", "w", "w"], outputs=["y"]
+        "transformer_block_macro",
+        domain="ai.onnx9000.macro",
+        inputs=["x", "w", "w"],
+        outputs=["y"],
     )
     x = Tensor("x", [1], 1)
     w = Tensor("w", [1], 1)
@@ -117,7 +120,10 @@ def test_macro_expander_real():
     # second one
     g2 = Graph("test2")
     n2 = Node(
-        "moe_layer_macro", domain="ai.onnx9000.macro", inputs=["x", "w", "w", "w"], outputs=["y"]
+        "moe_layer_macro",
+        domain="ai.onnx9000.macro",
+        inputs=["x", "w", "w", "w"],
+        outputs=["y"],
     )
     g2.tensors = {"x": x, "w": w}
     g2.nodes.append(n2)

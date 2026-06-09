@@ -14,7 +14,10 @@ def test_pytorch_codegen_cmd_stdout():
     with (
         patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
         patch("onnx9000.core.parser.core.load", return_value=mock_graph),
-        patch("onnx9000.core.codegen.pytorch.ONNXToPyTorchVisitor", return_value=mock_visitor),
+        patch(
+            "onnx9000.core.codegen.pytorch.ONNXToPyTorchVisitor",
+            return_value=mock_visitor,
+        ),
         patch("builtins.print") as mock_print,
     ):
         pytorch_codegen_cmd(args)
@@ -33,7 +36,10 @@ def test_pytorch_codegen_cmd_file():
     with (
         patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
         patch("onnx9000.core.parser.core.load", return_value=mock_graph),
-        patch("onnx9000.core.codegen.pytorch.ONNXToPyTorchVisitor", return_value=mock_visitor),
+        patch(
+            "onnx9000.core.codegen.pytorch.ONNXToPyTorchVisitor",
+            return_value=mock_visitor,
+        ),
         patch("builtins.open", m_open),
         patch("builtins.print"),
     ):

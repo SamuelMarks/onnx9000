@@ -58,7 +58,11 @@ class LoopContextManager:
     """Class LoopContextManager implementation."""
 
     def __init__(
-        self, parent_builder: GraphBuilder, max_trip_count: Var, cond: Var, num_outputs: int = 1
+        self,
+        parent_builder: GraphBuilder,
+        max_trip_count: Var,
+        cond: Var,
+        num_outputs: int = 1,
     ) -> None:
         """Initialize the Loop context manager with its bounds and conditions."""
         self.parent_builder = parent_builder
@@ -75,5 +79,8 @@ class LoopContextManager:
         """Finalize the Loop operation, embedding its body into the parent graph."""
         with self.parent_builder:
             return Loop(
-                self.max_trip_count, self.cond, body=self.body_builder, num_outputs=self.num_outputs
+                self.max_trip_count,
+                self.cond,
+                body=self.body_builder,
+                num_outputs=self.num_outputs,
             )

@@ -26,7 +26,10 @@ def test_clone_and_parse_onnx_spec_fallback():
                 with patch("builtins.open") as mock_open:
                     mock_open.return_value.__enter__.return_value = ["no match"]
                     # Will hit fallback
-                    with patch("json.load", return_value={"operators": ["Sub"], "commit": "123"}):
+                    with patch(
+                        "json.load",
+                        return_value={"operators": ["Sub"], "commit": "123"},
+                    ):
                         res = clone_and_parse_onnx_spec()
                         assert res["operators"][0] == "Sub"
 
@@ -58,7 +61,10 @@ def test_generate_framework_snapshots_cntk_success():
                         mock_open.return_value.__enter__.return_value.read.return_value = (
                             '{"version": "1.0", "objects": ["a"]}'
                         )
-                        with patch("json.load", return_value={"version": "1.0", "objects": ["a"]}):
+                        with patch(
+                            "json.load",
+                            return_value={"version": "1.0", "objects": ["a"]},
+                        ):
                             try:
                                 # We only want cntk
                                 with patch(
@@ -129,7 +135,10 @@ def test_generate_framework_snapshots_nt_and_rmtree():
                         mock_open.return_value.__enter__.return_value.read.return_value = (
                             '{"version": "1.0", "objects": ["a"]}'
                         )
-                        with patch("json.load", return_value={"version": "1.0", "objects": ["a"]}):
+                        with patch(
+                            "json.load",
+                            return_value={"version": "1.0", "objects": ["a"]},
+                        ):
                             with patch("os.name", "nt"):
 
                                 def exists_mock(p):

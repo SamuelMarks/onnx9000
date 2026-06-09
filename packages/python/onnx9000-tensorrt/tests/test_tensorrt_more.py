@@ -30,7 +30,13 @@ from onnx9000.tensorrt.ops import (
     trt_xor,
 )
 from onnx9000.tensorrt.ops_conv import trt_conv
-from onnx9000.tensorrt.ops_dim import trt_concat, trt_gather, trt_reshape, trt_slice, trt_transpose
+from onnx9000.tensorrt.ops_dim import (
+    trt_concat,
+    trt_gather,
+    trt_reshape,
+    trt_slice,
+    trt_transpose,
+)
 from onnx9000.tensorrt.ops_matmul import trt_matmul
 
 
@@ -156,7 +162,13 @@ class TestOpsMore(unittest.TestCase):
     def test_reduce_failures(self):
         """Docstring for D102."""
         node = MockNode("X", ["in1"], ["out"], {"axes": MockAttr([0])})
-        for fn in [trt_reducesum, trt_reducemean, trt_reducemax, trt_reducemin, trt_reduceprod]:
+        for fn in [
+            trt_reducesum,
+            trt_reducemean,
+            trt_reducemax,
+            trt_reducemin,
+            trt_reduceprod,
+        ]:
             self.mock_lib.addReduce = None
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
@@ -191,7 +203,9 @@ class TestOpsMore(unittest.TestCase):
             trt_reshape(self.net, MockNode("X", ["in1"], ["out"]), self.tensors)
         with self.assertRaises(RuntimeError):
             trt_transpose(
-                self.net, MockNode("X", ["in1"], ["out"], {"perm": MockAttr([0])}), self.tensors
+                self.net,
+                MockNode("X", ["in1"], ["out"], {"perm": MockAttr([0])}),
+                self.tensors,
             )
 
         self.mock_lib.addConcatenation = None

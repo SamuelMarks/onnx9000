@@ -138,7 +138,8 @@ def test_clone_and_parse_onnx_spec_errors(tmpdir):
     """Test error conditions in clone_and_parse_onnx_spec."""
     # Test subprocess error for coverage of line 448
     with patch(
-        "onnx9000_cli.coverage.subprocess.run", side_effect=subprocess.CalledProcessError(1, "git")
+        "onnx9000_cli.coverage.subprocess.run",
+        side_effect=subprocess.CalledProcessError(1, "git"),
     ):
         res = clone_and_parse_onnx_spec()
         assert res["commit"] == "unknown"
@@ -244,7 +245,10 @@ def test_all_coverage_commands():
                 with patch("builtins.open", m_open):
                     with patch("os.listdir", return_value=["dummy.py"]):
                         with patch("os.walk", return_value=[("dummy", [], ["dummy.py"])]):
-                            with patch("glob.glob", side_effect=lambda x: print("GLOB", x) or [x]):
+                            with patch(
+                                "glob.glob",
+                                side_effect=lambda x: print("GLOB", x) or [x],
+                            ):
                                 import onnx9000_cli.coverage as cov
 
                                 try:

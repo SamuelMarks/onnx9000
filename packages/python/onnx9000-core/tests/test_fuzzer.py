@@ -28,7 +28,20 @@ def ir_graph_strategy(draw):
     g.inputs.append(inp)
 
     current_tensor = inp
-    ops = ["Add", "Sub", "Mul", "Div", "Relu", "Sigmoid", "Tanh", "Exp", "Log", "Abs", "Sin", "Cos"]
+    ops = [
+        "Add",
+        "Sub",
+        "Mul",
+        "Div",
+        "Relu",
+        "Sigmoid",
+        "Tanh",
+        "Exp",
+        "Log",
+        "Abs",
+        "Sin",
+        "Cos",
+    ]
 
     for i in range(depth):
         op = draw(st.sampled_from(ops))

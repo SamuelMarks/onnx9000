@@ -15,14 +15,28 @@ def test_fold_batch_normalization_natively_on_standard_mobilenet():
 
     # BN inputs
     scale = Constant(
-        "scale", values=np.ones(32, dtype=np.float32), shape=(32,), dtype=np.dtype("float32")
+        "scale",
+        values=np.ones(32, dtype=np.float32),
+        shape=(32,),
+        dtype=np.dtype("float32"),
     )
-    b = Constant("b", values=np.zeros(32, dtype=np.float32), shape=(32,), dtype=np.dtype("float32"))
+    b = Constant(
+        "b",
+        values=np.zeros(32, dtype=np.float32),
+        shape=(32,),
+        dtype=np.dtype("float32"),
+    )
     mean = Constant(
-        "mean", values=np.full(32, 0.5, dtype=np.float32), shape=(32,), dtype=np.dtype("float32")
+        "mean",
+        values=np.full(32, 0.5, dtype=np.float32),
+        shape=(32,),
+        dtype=np.dtype("float32"),
     )
     var = Constant(
-        "var", values=np.full(32, 0.1, dtype=np.float32), shape=(32,), dtype=np.dtype("float32")
+        "var",
+        values=np.full(32, 0.1, dtype=np.float32),
+        shape=(32,),
+        dtype=np.dtype("float32"),
     )
 
     graph.add_tensor(scale)

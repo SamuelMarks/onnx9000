@@ -59,7 +59,8 @@ def test_compile_add_graph_wasm():
 def test_compile_wasm_failed():
     """Test WASM compilation failure handling."""
     with patch(
-        "subprocess.run", side_effect=subprocess.CalledProcessError(1, "emcc", stderr="error")
+        "subprocess.run",
+        side_effect=subprocess.CalledProcessError(1, "emcc", stderr="error"),
     ):
         with pytest.raises(RuntimeError, match="WASM Compilation failed"):
             compile_wasm("int main() { return 0; }")

@@ -7,7 +7,16 @@ from onnx9000_cli.main import main
 
 def test_coverage_gaps_cmd19():
     cmds = [
-        ["optimize", "test.onnx", "--prune", "--sparsity", "0.5", "--quantize", "-o", "out.onnx"],
+        [
+            "optimize",
+            "test.onnx",
+            "--prune",
+            "--sparsity",
+            "0.5",
+            "--quantize",
+            "-o",
+            "out.onnx",
+        ],
         ["quantize", "test.onnx"],
         ["info", "ops", "test.onnx"],
         ["info", "tensors", "test.onnx"],

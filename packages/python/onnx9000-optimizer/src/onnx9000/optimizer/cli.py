@@ -37,7 +37,9 @@ def optimize_cli(input_path: str, output_path: str, target: str = "webgpu") -> N
     session_options = SessionOptions()
     session_options.intra_op_num_threads = 4
     opt = AutoOptimizer(
-        t, [OrtPerfTuningPass(), DynamicQuantizationPass()], {"session_options": session_options}
+        t,
+        [OrtPerfTuningPass(), DynamicQuantizationPass()],
+        {"session_options": session_options},
     )
     opt_model = opt.optimize(model)
     save_onnx(opt_model, output_path)

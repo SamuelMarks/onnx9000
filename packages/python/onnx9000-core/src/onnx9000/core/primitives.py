@@ -356,7 +356,14 @@ class ConvND(ConvFamily):
     ):
         """Init."""
         super().__init__(
-            in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
         )
         self.dims = dims
 
@@ -379,7 +386,13 @@ class ConvND(ConvFamily):
         return record_op(
             "Conv",
             inputs,
-            {"kernel_shape": ks, "strides": st, "pads": pa, "dilations": di, "group": self.groups},
+            {
+                "kernel_shape": ks,
+                "strides": st,
+                "pads": pa,
+                "dilations": di,
+                "group": self.groups,
+            },
         )
 
 
@@ -398,7 +411,15 @@ class DepthwiseConv(ConvND):
     ):
         """Init."""
         super().__init__(
-            dims, channels, channels, kernel_size, stride, padding, dilation, channels, bias
+            dims,
+            channels,
+            channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            channels,
+            bias,
         )
 
 
@@ -466,7 +487,11 @@ class GroupedQueryAttention(MultiHeadAttention):
     """Reused across LLaMA 2/3, Mistral. Maps KV head tiling to standard Attention."""
 
     def __init__(
-        self, num_heads: int, num_kv_heads: int, qkv_bias: bool = False, out_bias: bool = False
+        self,
+        num_heads: int,
+        num_kv_heads: int,
+        qkv_bias: bool = False,
+        out_bias: bool = False,
     ):
         """Init."""
         super().__init__(num_heads, qkv_bias, out_bias)

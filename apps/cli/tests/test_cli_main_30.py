@@ -7,9 +7,28 @@ from onnx9000_cli.main import main
 
 def test_coverage_gaps_cmd30():
     cmds = [
-        ["optimum", "export", "test", "out", "--task", "task", "--device", "cpu", "--atol", "1e-4"],
+        [
+            "optimum",
+            "export",
+            "test",
+            "out",
+            "--task",
+            "task",
+            "--device",
+            "cpu",
+            "--atol",
+            "1e-4",
+        ],
         ["optimum", "optimize", "test", "out", "--level", "O3"],
-        ["optimum", "quantize", "test", "out", "--weight-only", "--calibration-data", "data"],
+        [
+            "optimum",
+            "quantize",
+            "test",
+            "out",
+            "--weight-only",
+            "--calibration-data",
+            "data",
+        ],
         ["autograd", "test.onnx", "out.onnx"],
         ["diffusers", "export", "test", "out"],
         ["jit", "test.onnx"],

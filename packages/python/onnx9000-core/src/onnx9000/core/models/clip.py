@@ -66,7 +66,8 @@ class CLIP:
         # For CLIP we take the EOS token / last token of text_features
         # Let's just project it directly for AST builder
         text_features = self.text_projection(
-            text_features, get_param("text_projection.weight", [self.embed_dim, self.text.dim])
+            text_features,
+            get_param("text_projection.weight", [self.embed_dim, self.text.dim]),
         )
 
         # Normalize

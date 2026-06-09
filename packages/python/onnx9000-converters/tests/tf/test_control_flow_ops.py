@@ -19,7 +19,10 @@ def test_control_flow_ops_if_while() -> None:
     CONTROL_FLOW_OPS_MAPPING["If"](
         builder,
         TFNode(
-            "n_if", "If", inputs=["cond"], attr={"then_branch": "graph1", "else_branch": "graph2"}
+            "n_if",
+            "If",
+            inputs=["cond"],
+            attr={"then_branch": "graph1", "else_branch": "graph2"},
         ),
     )
     assert builder.graph.nodes[-1].op_type == "If"
@@ -28,20 +31,33 @@ def test_control_flow_ops_if_while() -> None:
     CONTROL_FLOW_OPS_MAPPING["StatelessIf"](
         builder,
         TFNode(
-            "n_if", "If", inputs=["cond"], attr={"then_branch": "graph1", "else_branch": "graph2"}
+            "n_if",
+            "If",
+            inputs=["cond"],
+            attr={"then_branch": "graph1", "else_branch": "graph2"},
         ),
     )
     assert builder.graph.nodes[-1].op_type == "If"
     CONTROL_FLOW_OPS_MAPPING["While"](
         builder,
-        TFNode("n_while", "While", inputs=["a", "b"], attr={"cond": "graph1", "body": "graph2"}),
+        TFNode(
+            "n_while",
+            "While",
+            inputs=["a", "b"],
+            attr={"cond": "graph1", "body": "graph2"},
+        ),
     )
     assert builder.graph.nodes[-1].op_type == "Loop"
     assert builder.graph.nodes[-1].attributes["cond"] == "graph1"
     assert builder.graph.nodes[-1].attributes["body"] == "graph2"
     CONTROL_FLOW_OPS_MAPPING["StatelessWhile"](
         builder,
-        TFNode("n_while", "While", inputs=["a", "b"], attr={"cond": "graph1", "body": "graph2"}),
+        TFNode(
+            "n_while",
+            "While",
+            inputs=["a", "b"],
+            attr={"cond": "graph1", "body": "graph2"},
+        ),
     )
     assert builder.graph.nodes[-1].op_type == "Loop"
 
@@ -57,7 +73,8 @@ def test_control_flow_ops_tensor_array() -> None:
     assert builder.graph.nodes[-1].attributes["dtype"] == 2
     assert builder.graph.tensors[outs[1]].shape == ()
     outs = CONTROL_FLOW_OPS_MAPPING["TensorArrayReadV3"](
-        builder, TFNode("n_read", "TensorArrayReadV3", inputs=["handle", "index", "flow"])
+        builder,
+        TFNode("n_read", "TensorArrayReadV3", inputs=["handle", "index", "flow"]),
     )
     assert builder.graph.nodes[-1].op_type == "SequenceAt"
     outs = CONTROL_FLOW_OPS_MAPPING["TensorArrayWriteV3"](
@@ -71,14 +88,19 @@ def test_control_flow_ops_tensor_array() -> None:
     )
     assert builder.graph.nodes[-1].op_type == "SequenceLength"
     outs = CONTROL_FLOW_OPS_MAPPING["TensorArrayGatherV3"](
-        builder, TFNode("n_gather", "TensorArrayGatherV3", inputs=["handle", "indices", "flow"])
+        builder,
+        TFNode("n_gather", "TensorArrayGatherV3", inputs=["handle", "indices", "flow"]),
     )
     assert builder.graph.nodes[-1].op_type == "ConcatFromSequence"
     assert builder.graph.nodes[-1].attributes["axis"] == 0
     assert builder.graph.nodes[-1].attributes["new_axis"] == 1
     outs = CONTROL_FLOW_OPS_MAPPING["TensorArrayScatterV3"](
         builder,
-        TFNode("n_scatter", "TensorArrayScatterV3", inputs=["handle", "indices", "value", "flow"]),
+        TFNode(
+            "n_scatter",
+            "TensorArrayScatterV3",
+            inputs=["handle", "indices", "value", "flow"],
+        ),
     )
     assert builder.graph.nodes[-1].op_type == "SplitToSequence"
     assert builder.graph.nodes[-1].inputs == ["value"]

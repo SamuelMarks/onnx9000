@@ -35,7 +35,10 @@ def test_mega_graph_routing_coverage2():
         Node("Gather", ["A", "B"], ["O1"], attributes={"axis": -1}),
         # ScatterElements reductions
         Node(
-            "ScatterElements", ["A", "B", "C"], ["O2"], attributes={"reduction": "add", "axis": -1}
+            "ScatterElements",
+            ["A", "B", "C"],
+            ["O2"],
+            attributes={"reduction": "add", "axis": -1},
         ),
         Node("ScatterElements", ["A", "B", "C"], ["O3"], attributes={"reduction": "mul"}),
         Node("ScatterElements", ["A", "B", "C"], ["O4"], attributes={"reduction": "max"}),

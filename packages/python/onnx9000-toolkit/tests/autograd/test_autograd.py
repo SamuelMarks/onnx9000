@@ -86,7 +86,11 @@ def test_autograd_batchnorm(tmp_path: Path) -> None:
     from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 
     bn_node = Node(
-        "BatchNormalization", ["x", "scale", "B", "mean", "var"], ["y"], {}, name="bn_node"
+        "BatchNormalization",
+        ["x", "scale", "B", "mean", "var"],
+        ["y"],
+        {},
+        name="bn_node",
     )
     rule = get_vjp_rule("BatchNormalization")
     (nodes, names) = rule.build_backward_nodes(bn_node, ["grad_y"])

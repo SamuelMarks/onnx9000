@@ -3,7 +3,11 @@ import pytest
 #
 from onnx9000.core.codegen.triton import TritonExporter
 from onnx9000.core.ir import Graph, Node
-from onnx9000.core.surgeon import LayoutOptimizerPass, StatefulToStatelessPass, unroll_scan
+from onnx9000.core.surgeon import (
+    LayoutOptimizerPass,
+    StatefulToStatelessPass,
+    unroll_scan,
+)
 
 VISION_MODELS = [
     "ResNet-18",
@@ -351,7 +355,10 @@ def mock_graph_for_model(model_name: str) -> Graph:
         g.nodes.extend([Node("Conv", ["x"], ["c"]), Node("Resize", ["c"], ["r"])])
     elif model_name in NLP_MODELS:
         g.nodes.extend(
-            [Node("Gather", ["emb", "idx"], ["g"]), Node("MultiHeadAttention", ["g"], ["y"])]
+            [
+                Node("Gather", ["emb", "idx"], ["g"]),
+                Node("MultiHeadAttention", ["g"], ["y"]),
+            ]
         )
     elif model_name in LLM_MODELS:
         g.nodes.extend(

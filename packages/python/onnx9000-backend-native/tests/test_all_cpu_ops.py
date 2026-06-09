@@ -172,7 +172,8 @@ def test_ops_coverage_final() -> None:
     slice_op([a, np.array([0]), np.array([1]), np.array([0]), np.array([1])], {})
     reducelogsumexp_op([a], {"axes": [0], "keepdims": 0})
     concatfromsequence_op(
-        [[np.ones((2,), dtype=np.float32), np.ones((2,), dtype=np.float32)]], {"new_axis": 1}
+        [[np.ones((2,), dtype=np.float32), np.ones((2,), dtype=np.float32)]],
+        {"new_axis": 1},
     )
 
     from onnx9000.backends.cpu.ops import sequenceinsert_op

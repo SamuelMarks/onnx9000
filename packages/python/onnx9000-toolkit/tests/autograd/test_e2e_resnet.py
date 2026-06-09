@@ -28,17 +28,32 @@ def test_train_resnet_bottleneck() -> None:
 
     # Main path
     g.add_node(
-        Node("Conv", ["x", "w1", "b1"], ["c1"], {"kernel_shape": [1, 1], "pads": [0, 0, 0, 0]})
+        Node(
+            "Conv",
+            ["x", "w1", "b1"],
+            ["c1"],
+            {"kernel_shape": [1, 1], "pads": [0, 0, 0, 0]},
+        )
     )
     g.add_node(Node("Relu", ["c1"], ["r1"]))
 
     g.add_node(
-        Node("Conv", ["r1", "w2", "b2"], ["c2"], {"kernel_shape": [3, 3], "pads": [1, 1, 1, 1]})
+        Node(
+            "Conv",
+            ["r1", "w2", "b2"],
+            ["c2"],
+            {"kernel_shape": [3, 3], "pads": [1, 1, 1, 1]},
+        )
     )
     g.add_node(Node("Relu", ["c2"], ["r2"]))
 
     g.add_node(
-        Node("Conv", ["r2", "w3", "b3"], ["c3"], {"kernel_shape": [1, 1], "pads": [0, 0, 0, 0]})
+        Node(
+            "Conv",
+            ["r2", "w3", "b3"],
+            ["c3"],
+            {"kernel_shape": [1, 1], "pads": [0, 0, 0, 0]},
+        )
     )
 
     # Residual addition

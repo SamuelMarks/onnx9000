@@ -72,7 +72,13 @@ def test_api_opsets_metadata():
     g.opset_imports[""] = 14
     g.opset_imports["ai.onnx"] = 1
     g.opset_imports["ai.onnx.ml"] = 1
-    simplify(g, target_opset=15, strip_metadata=True, max_iterations=1, skip_shape_inference=True)
+    simplify(
+        g,
+        target_opset=15,
+        strip_metadata=True,
+        max_iterations=1,
+        skip_shape_inference=True,
+    )
     assert "" in g.opset_imports
     assert g.opset_imports[""] == 15
     assert g.opset_imports["ai.onnx"] == 1
@@ -163,11 +169,20 @@ def test_api_kwargs_all_the_things():
     g.tensors["X"].is_initializer = True
     g.initializers.append("X")
     g.inputs = ["Y", "X"]
-    g.value_info = [ValueInfo("Z", (), DType.FLOAT32), ValueInfo("A", (), DType.FLOAT32)]
+    g.value_info = [
+        ValueInfo("Z", (), DType.FLOAT32),
+        ValueInfo("A", (), DType.FLOAT32),
+    ]
     g.producer_name = "my_custom_producer"
     n = Node("Abs", ["X"], ["Y"])
     g.nodes.append(n)
-    simplify(g, target_opset=17, sort_value_info=True, log_json_summary=True, size_limit_mb=0.0001)
+    simplify(
+        g,
+        target_opset=17,
+        sort_value_info=True,
+        log_json_summary=True,
+        size_limit_mb=0.0001,
+    )
     assert g.opset_imports[""] == 17
     assert g.producer_name == "my_custom_producer_onnx9000-simplifier"
     assert g.inputs == ["X", "Y"]

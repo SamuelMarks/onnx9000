@@ -1,7 +1,10 @@
 """Module providing core logic and structural definitions."""
 
 from onnx9000.core.ir import Graph, Node
-from onnx9000.toolkit.training.autograd.compiler import extract_partial_subgraph, freeze_layers
+from onnx9000.toolkit.training.autograd.compiler import (
+    extract_partial_subgraph,
+    freeze_layers,
+)
 
 
 def test_compiler_extras() -> None:
@@ -42,7 +45,9 @@ def test_checkpointing() -> None:
 def test_mixed_precision() -> None:
     """Tests the test mixed precision functionality."""
     from onnx9000.core.ir import Graph
-    from onnx9000.toolkit.training.autograd.compiler import scale_backward_graph_for_mixed_precision
+    from onnx9000.toolkit.training.autograd.compiler import (
+        scale_backward_graph_for_mixed_precision,
+    )
 
     g = Graph("test")
     scale_backward_graph_for_mixed_precision(g)

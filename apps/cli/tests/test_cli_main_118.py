@@ -31,7 +31,16 @@ def test_coverage_gaps_cmd118():
         ["prune", "test.onnx", "--nodes", "1"],
         ["sparse", "prune", "test.onnx", "--recipe", "rec.yaml", "--sparsity", "0.5"],
         ["sparse", "de-sparsify", "test.onnx"],
-        ["optimize", "test.onnx", "--prune", "--sparsity", "0.5", "--quantize", "-o", "out.onnx"],
+        [
+            "optimize",
+            "test.onnx",
+            "--prune",
+            "--sparsity",
+            "0.5",
+            "--quantize",
+            "-o",
+            "out.onnx",
+        ],
         ["quantize", "test.onnx"],
         ["change-batch", "test.onnx", "10"],
         ["change-batch", "test.onnx", "invalid"],
@@ -80,7 +89,10 @@ def test_coverage_gaps_cmd118():
                     "onnx9000.core.mutator": MagicMock(),
                 },
             ):
-                with patch("builtins.open"), patch("os.path.exists", return_value=False):
+                with (
+                    patch("builtins.open"),
+                    patch("os.path.exists", return_value=False),
+                ):
                     with patch(
                         "importlib.util.spec_from_file_location",
                         return_value=MagicMock(loader=MagicMock()),

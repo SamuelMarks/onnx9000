@@ -116,7 +116,11 @@ def test_get_cpu_features_darwin(mock_check_output, mock_system):
 @patch("builtins.open", new_callable=MagicMock)
 def test_get_cache_sizes_linux(mock_open, mock_exists, mock_system):
     """Test get_cache_sizes on Linux."""
-    mock_open.return_value.__enter__.return_value.read.side_effect = ["32K", "256K", "12M"]
+    mock_open.return_value.__enter__.return_value.read.side_effect = [
+        "32K",
+        "256K",
+        "12M",
+    ]
     sizes = get_cache_sizes()
     assert sizes["l1"] == 32768
     assert sizes["l2"] == 262144
@@ -260,6 +264,10 @@ def test_get_cache_sizes_linux_format_exception():
     with patch("platform.system", return_value="Linux"):
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", new_callable=MagicMock) as mock_open:
-                mock_open.return_value.__enter__.return_value.read.side_effect = ["K", "M", ""]
+                mock_open.return_value.__enter__.return_value.read.side_effect = [
+                    "K",
+                    "M",
+                    "",
+                ]
                 sizes = get_cache_sizes()
                 assert sizes is None

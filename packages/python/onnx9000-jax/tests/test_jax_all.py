@@ -227,7 +227,12 @@ def test_jax_importer():
     def registered_op(inputs, outputs, params):
         from onnx9000.core.ir import Node
 
-        return Node(op_type="RegisteredMockOp", inputs=inputs, outputs=outputs, attributes=params)
+        return Node(
+            op_type="RegisteredMockOp",
+            inputs=inputs,
+            outputs=outputs,
+            attributes=params,
+        )
 
     global_registry.register_op("jax", "mock_op")(registered_op)
 

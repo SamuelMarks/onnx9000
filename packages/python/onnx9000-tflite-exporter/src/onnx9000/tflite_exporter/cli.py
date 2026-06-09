@@ -25,17 +25,23 @@ def main(args=None):
 
     # 286. Add --keep-nchw override flag
     parser.add_argument(
-        "--keep-nchw", action="store_true", help="Keep NCHW format instead of transposing to NHWC"
+        "--keep-nchw",
+        action="store_true",
+        help="Keep NCHW format instead of transposing to NHWC",
     )
     parser.add_argument("--int8", action="store_true", help="Trigger INT8 quantization")
     parser.add_argument("--fp16", action="store_true", help="Trigger FP16 quantization")
     parser.add_argument("-b", "--batch", type=int, help="Override dynamic batch sizes")
     parser.add_argument(
-        "--disable-optimization", action="store_true", help="Disable Layout optimizations entirely"
+        "--disable-optimization",
+        action="store_true",
+        help="Disable Layout optimizations entirely",
     )
     parser.add_argument("--external-weights", type=str, help="Path to external .bin weight files")
     parser.add_argument(
-        "--progress", action="store_true", help="Show build progress for massive flatbuffers"
+        "--progress",
+        action="store_true",
+        help="Show build progress for massive flatbuffers",
     )
 
     parser.add_argument(

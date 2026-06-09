@@ -86,12 +86,22 @@ def ensure_softmax_stability(g: Graph, input_name: str, output_name: str) -> Non
     """Ensure Softmax numerical stability (subtract max) internally."""
     # ONNX Softmax does this internally, but if building manually:
     g.nodes.append(
-        Node("ReduceMax", inputs=[input_name], outputs=["max_val"], attributes={"keepdims": 1})
+        Node(
+            "ReduceMax",
+            inputs=[input_name],
+            outputs=["max_val"],
+            attributes={"keepdims": 1},
+        )
     )
     g.nodes.append(Node("Sub", inputs=[input_name, "max_val"], outputs=["stable_x"]))
     g.nodes.append(Node("Exp", inputs=["stable_x"], outputs=["exp_x"]))
     g.nodes.append(
-        Node("ReduceSum", inputs=["exp_x"], outputs=["sum_exp"], attributes={"keepdims": 1})
+        Node(
+            "ReduceSum",
+            inputs=["exp_x"],
+            outputs=["sum_exp"],
+            attributes={"keepdims": 1},
+        )
     )
     g.nodes.append(Node("Div", inputs=["exp_x", "sum_exp"], outputs=[output_name]))
 

@@ -42,7 +42,13 @@ class LayoutOptimizer:
                 attrs = node.attributes.copy()
                 attrs["layout"] = "NHWC"
                 new_graph.add_node(
-                    Node(node.op_type, node.inputs.copy(), node.outputs.copy(), attrs, node.name)
+                    Node(
+                        node.op_type,
+                        node.inputs.copy(),
+                        node.outputs.copy(),
+                        attrs,
+                        node.name,
+                    )
                 )
             else:
                 new_graph.add_node(
@@ -70,7 +76,13 @@ class LayoutOptimizer:
                 attrs = node.attributes.copy()
                 attrs["layout"] = "NCHW"
                 new_graph.add_node(
-                    Node(node.op_type, node.inputs.copy(), node.outputs.copy(), attrs, node.name)
+                    Node(
+                        node.op_type,
+                        node.inputs.copy(),
+                        node.outputs.copy(),
+                        attrs,
+                        node.name,
+                    )
                 )
             else:
                 new_graph.add_node(
@@ -192,7 +204,17 @@ class LayoutOptimizer:
         new_graph.initializers = graph.initializers.copy()
         for _name, t in graph.tensors.items():
             new_graph.add_tensor(t)
-        elementwise_ops = {"Add", "Sub", "Mul", "Div", "Relu", "Sigmoid", "Tanh", "Exp", "Log"}
+        elementwise_ops = {
+            "Add",
+            "Sub",
+            "Mul",
+            "Div",
+            "Relu",
+            "Sigmoid",
+            "Tanh",
+            "Exp",
+            "Log",
+        }
         consumers: dict[str, list[Node]] = {}
         for node in graph.nodes:
             for inp in node.inputs:
@@ -379,7 +401,12 @@ class LayoutOptimizer:
         new_graph.inputs = graph.inputs.copy()
         new_graph.outputs = graph.outputs.copy()
         new_graph.initializers = graph.initializers.copy()
-        dtype_sizes = {DType.FLOAT32: 4, DType.FLOAT16: 2, DType.INT8: 1, DType.UINT8: 1}
+        dtype_sizes = {
+            DType.FLOAT32: 4,
+            DType.FLOAT16: 2,
+            DType.INT8: 1,
+            DType.UINT8: 1,
+        }
         chunked_tensors = {}
         for name, t in graph.tensors.items():
             num_elements = 1
@@ -398,7 +425,11 @@ class LayoutOptimizer:
                         c_shape[0] = min(chunk_size, axis_0 - i * chunk_size)
                         c_name = f"{t.name}_chunk_{i}"
                         c_t = Tensor(
-                            c_name, tuple(c_shape), t.dtype, t.is_initializer, t.requires_grad
+                            c_name,
+                            tuple(c_shape),
+                            t.dtype,
+                            t.is_initializer,
+                            t.requires_grad,
                         )
                         new_graph.add_tensor(c_t)
                         chunks.append(c_name)
@@ -413,7 +444,11 @@ class LayoutOptimizer:
                 if inp in chunked_tensors:
                     concat_out = f"{inp}_recombined"
                     concat_node = Node(
-                        "Concat", chunked_tensors[inp], [concat_out], {"axis": 0}, f"Concat_{inp}"
+                        "Concat",
+                        chunked_tensors[inp],
+                        [concat_out],
+                        {"axis": 0},
+                        f"Concat_{inp}",
                     )
                     new_graph.add_node(concat_node)
                     new_inputs.append(concat_out)
@@ -421,7 +456,11 @@ class LayoutOptimizer:
                     new_inputs.append(inp)
             new_graph.add_node(
                 Node(
-                    node.op_type, new_inputs, node.outputs.copy(), node.attributes.copy(), node.name
+                    node.op_type,
+                    new_inputs,
+                    node.outputs.copy(),
+                    node.attributes.copy(),
+                    node.name,
                 )
             )
         return new_graph

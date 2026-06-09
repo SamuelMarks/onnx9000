@@ -86,10 +86,18 @@ class PerfectTreeCompiler:
             # which is 2 * curr_idx + 2 - go_left
             # We can build this mathematically.
             g.nodes.append(
-                Node(op_type="Mul", inputs=[curr_indices, "two"], outputs=[f"pt_2i_d{depth}"])
+                Node(
+                    op_type="Mul",
+                    inputs=[curr_indices, "two"],
+                    outputs=[f"pt_2i_d{depth}"],
+                )
             )
             g.nodes.append(
-                Node(op_type="Add", inputs=[f"pt_2i_d{depth}", "two"], outputs=[f"pt_2i2_d{depth}"])
+                Node(
+                    op_type="Add",
+                    inputs=[f"pt_2i_d{depth}", "two"],
+                    outputs=[f"pt_2i2_d{depth}"],
+                )
             )
             g.nodes.append(
                 Node(
@@ -105,7 +113,11 @@ class PerfectTreeCompiler:
 
         # Final prediction gather
         g.nodes.append(
-            Node(op_type="Gather", inputs=[t_values.name, curr_indices], outputs=["prediction"])
+            Node(
+                op_type="Gather",
+                inputs=[t_values.name, curr_indices],
+                outputs=["prediction"],
+            )
         )
 
     def _pad_to_perfect_tree(self) -> tuple[Tensor, Tensor, Tensor]:

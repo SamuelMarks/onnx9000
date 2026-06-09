@@ -36,7 +36,8 @@ def test_coverage_gaps_cmd21():
             },
         ):
             with patch(
-                "importlib.util.spec_from_file_location", return_value=MagicMock(loader=MagicMock())
+                "importlib.util.spec_from_file_location",
+                return_value=MagicMock(loader=MagicMock()),
             ):
                 with patch(
                     "importlib.util.module_from_spec",

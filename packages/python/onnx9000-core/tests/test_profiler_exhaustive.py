@@ -112,7 +112,11 @@ def test_profiler_dynamic():
     from onnx9000.core.profiler import ProfilerResult, profile
 
     g = Graph("test")
-    x = Tensor("x", shape=[DynamicDim("b"), DynamicDim("s"), DynamicDim("e")], dtype=DType.FLOAT32)
+    x = Tensor(
+        "x",
+        shape=[DynamicDim("b"), DynamicDim("s"), DynamicDim("e")],
+        dtype=DType.FLOAT32,
+    )
     w = Tensor("w", shape=[64, 3, DynamicDim("k"), DynamicDim("k")], dtype=DType.FLOAT32)
     w.is_initializer = True
     b = Tensor("b", shape=[64], dtype=DType.FLOAT32)
@@ -131,7 +135,11 @@ def test_profiler_dynamic():
     n4.attributes["num_heads"] = type("obj", (object,), {"name": "num_heads", "value": 8})()
 
     # RNN
-    h = Tensor("h", shape=[DynamicDim("s"), DynamicDim("b"), DynamicDim("e")], dtype=DType.FLOAT32)
+    h = Tensor(
+        "h",
+        shape=[DynamicDim("s"), DynamicDim("b"), DynamicDim("e")],
+        dtype=DType.FLOAT32,
+    )
     n7 = Node("RNN", inputs=["x", "x", "x"], outputs=["h"])
     n7b = Node("GRU", inputs=["x", "x", "x"], outputs=["h"])
 

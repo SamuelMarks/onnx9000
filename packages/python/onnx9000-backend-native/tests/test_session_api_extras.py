@@ -43,7 +43,10 @@ def test_session_missing_output() -> None:
             ["MissingOut"],
             {
                 "A": Tensor(
-                    "A", (1,), DType.FLOAT32, data=np.array([1.0], dtype=np.float32).tobytes()
+                    "A",
+                    (1,),
+                    DType.FLOAT32,
+                    data=np.array([1.0], dtype=np.float32).tobytes(),
                 )
             },
         )

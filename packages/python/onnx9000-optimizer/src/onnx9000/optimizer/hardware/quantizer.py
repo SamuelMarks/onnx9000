@@ -65,7 +65,9 @@ class Quantizer:
         return (quantized, scale, zero_point)
 
     @staticmethod
-    def dynamic_quantize_linear(tensor: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def dynamic_quantize_linear(
+        tensor: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Implement DynamicQuantizeLinear calculation natively."""
         return Quantizer.quantize_asymmetric(tensor, 0, 255)
 
@@ -245,7 +247,9 @@ class Quantizer:
         return np.clip(tensor, min_val, max_val)
 
     @staticmethod
-    def per_tensor_quantization(tensor: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def per_tensor_quantization(
+        tensor: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Implement per-tensor (scalar scale/zero-point) quantization."""
         return Quantizer.quantize_asymmetric(tensor)
 
@@ -370,7 +374,10 @@ class Quantizer:
 
     @staticmethod
     def int32_accumulation_scaling(
-        accumulator: np.ndarray, a_scale: np.ndarray, b_scale: np.ndarray, output_scale: np.ndarray
+        accumulator: np.ndarray,
+        a_scale: np.ndarray,
+        b_scale: np.ndarray,
+        output_scale: np.ndarray,
     ) -> np.ndarray:
         """Implement INT32 accumulation scaling for MatMulInteger -> Add sequences."""
         real_multiplier = a_scale * b_scale / output_scale

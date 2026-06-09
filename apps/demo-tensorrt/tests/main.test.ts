@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 describe("demo", () => {
   beforeEach(() => {
-    document.body.innerHTML = "<button id=\"convert-btn\"></button><div id=\"output\"></div>";
+    document.body.innerHTML =
+      '<button id="convert-btn"></button><div id="output"></div>';
   });
 
   it("should run flow", async () => {
@@ -13,7 +14,8 @@ describe("demo", () => {
       initTensorrtDemo();
     } catch (_e) {}
 
-    document.body.innerHTML = "<button id=\"convert-btn\"></button><div id=\"output\"></div>";
+    document.body.innerHTML =
+      '<button id="convert-btn"></button><div id="output"></div>';
     const { initTensorrtDemo } = await import("../src/main.ts");
     initTensorrtDemo();
 

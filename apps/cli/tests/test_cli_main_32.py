@@ -12,7 +12,15 @@ def test_coverage_gaps_cmd32():
         ["cuda", "test.onnx"],
         ["apple", "test.onnx"],
         ["webgpu", "test.onnx"],
-        ["onnx2tf", "test.onnx", "out.pb", "--external-weights", "w.bin", "--progress", "--micro"],
+        [
+            "onnx2tf",
+            "test.onnx",
+            "out.pb",
+            "--external-weights",
+            "w.bin",
+            "--progress",
+            "--micro",
+        ],
     ]
 
     with (

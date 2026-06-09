@@ -19,14 +19,20 @@ def test_export_all_missing_ops():
 
     nodes.append(
         Node(
-            "ConvTranspose", ["x", "w"], ["y1"], attributes={"group": Attribute("group", "INT", 3)}
+            "ConvTranspose",
+            ["x", "w"],
+            ["y1"],
+            attributes={"group": Attribute("group", "INT", 3)},
         )
     )
     nodes.append(Node("Erf", ["x"], ["y2"]))
     nodes.append(Node("Softmax", ["x"], ["y3"], attributes={"axis": Attribute("axis", "INT", 1)}))
     nodes.append(
         Node(
-            "ReduceProd", ["x"], ["y4"], attributes={"keepdims": Attribute("keepdims", "INT", [1])}
+            "ReduceProd",
+            ["x"],
+            ["y4"],
+            attributes={"keepdims": Attribute("keepdims", "INT", [1])},
         )
     )
     nodes.append(
@@ -74,7 +80,12 @@ def test_export_all_missing_ops():
         )
     )
     nodes.append(
-        Node("RoiAlign", ["x"], ["y9"], attributes={"mode": Attribute("mode", "STRING", "max")})
+        Node(
+            "RoiAlign",
+            ["x"],
+            ["y9"],
+            attributes={"mode": Attribute("mode", "STRING", "max")},
+        )
     )
     nodes.append(
         Node(
@@ -108,7 +119,10 @@ def test_export_all_missing_ops():
             "LpNormalization",
             ["x"],
             ["y13"],
-            attributes={"axis": Attribute("axis", "INT", -1), "p": Attribute("p", "INT", 2)},
+            attributes={
+                "axis": Attribute("axis", "INT", -1),
+                "p": Attribute("p", "INT", 2),
+            },
         )
     )
     nodes.append(
@@ -149,7 +163,12 @@ def test_export_all_missing_ops():
     loop_graph.nodes.append(Node("Relu", ["x"], ["y"]))
 
     nodes.append(
-        Node("Loop", ["x"], ["y17"], attributes={"body": Attribute("body", "GRAPH", loop_graph)})
+        Node(
+            "Loop",
+            ["x"],
+            ["y17"],
+            attributes={"body": Attribute("body", "GRAPH", loop_graph)},
+        )
     )
 
     nodes.append(Node("MissingOp", ["x"], ["y18"]))
@@ -157,7 +176,12 @@ def test_export_all_missing_ops():
     t = Tensor("val", [], DType.FLOAT32, b"")
     t.data = None
     nodes.append(
-        Node("Constant", [], ["y19"], attributes={"value": Attribute("value", "TENSOR", t)})
+        Node(
+            "Constant",
+            [],
+            ["y19"],
+            attributes={"value": Attribute("value", "TENSOR", t)},
+        )
     )
 
     graph.nodes.extend(nodes)
@@ -219,7 +243,10 @@ def test_export_all_missing_ops_2():
             "ArgMin",
             ["in"],
             ["out"],
-            {"keepdims": Attribute("keepdims", "INT", 1), "axis": Attribute("axis", "INT", 0)},
+            {
+                "keepdims": Attribute("keepdims", "INT", 1),
+                "axis": Attribute("axis", "INT", 0),
+            },
         )
     )
     ops_to_add.append(
@@ -243,7 +270,10 @@ def test_export_all_missing_ops_2():
             "ArgMax",
             ["in"],
             ["out"],
-            {"keepdims": Attribute("keepdims", "INT", 0), "axis": Attribute("axis", "INT", 1)},
+            {
+                "keepdims": Attribute("keepdims", "INT", 0),
+                "axis": Attribute("axis", "INT", 1),
+            },
         )
     )
 
@@ -293,7 +323,12 @@ def test_export_all_missing_ops_2():
 
     # Einsum
     ops_to_add.append(
-        Node("Einsum", ["in"], ["out"], {"equation": Attribute("equation", "STRING", "ij,jk->ik")})
+        Node(
+            "Einsum",
+            ["in"],
+            ["out"],
+            {"equation": Attribute("equation", "STRING", "ij,jk->ik")},
+        )
     )
 
     # LayerNormalization
@@ -302,7 +337,10 @@ def test_export_all_missing_ops_2():
             "LayerNormalization",
             ["in"],
             ["out"],
-            {"axis": Attribute("axis", "INT", -1), "epsilon": Attribute("epsilon", "FLOAT", 1e-5)},
+            {
+                "axis": Attribute("axis", "INT", -1),
+                "epsilon": Attribute("epsilon", "FLOAT", 1e-5),
+            },
         )
     )
 
@@ -329,7 +367,10 @@ def test_export_all_missing_ops_2():
     # BatchNormalization
     ops_to_add.append(
         Node(
-            "BatchNormalization", ["in"], ["out"], {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)}
+            "BatchNormalization",
+            ["in"],
+            ["out"],
+            {"epsilon": Attribute("epsilon", "FLOAT", 1e-5)},
         )
     )
 

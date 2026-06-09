@@ -2,11 +2,17 @@
 
 import json
 
-from onnx9000.converters.mltools.catboost import parse_catboost_dict, parse_catboost_json
+from onnx9000.converters.mltools.catboost import (
+    parse_catboost_dict,
+    parse_catboost_json,
+)
 from onnx9000.converters.mltools.coreml import parse_coreml_model
 from onnx9000.converters.mltools.h2o import parse_h2o
 from onnx9000.converters.mltools.libsvm import parse_libsvm
-from onnx9000.converters.mltools.lightgbm import parse_lightgbm_dict, parse_lightgbm_json
+from onnx9000.converters.mltools.lightgbm import (
+    parse_lightgbm_dict,
+    parse_lightgbm_json,
+)
 from onnx9000.converters.mltools.sparkml import parse_sparkml_pipeline
 from onnx9000.converters.mltools.xgboost import parse_xgboost_dict, parse_xgboost_json
 

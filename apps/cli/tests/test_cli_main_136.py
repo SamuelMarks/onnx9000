@@ -18,10 +18,12 @@ def test_coverage_gaps_cmd136():
             with patch("torch.export", MagicMock(load=MagicMock(side_effect=Exception("e")))):
                 with patch("torch.load", return_value=MagicMock()):
                     with patch(
-                        "torch.fx", MagicMock(symbolic_trace=MagicMock(return_value=MagicMock()))
+                        "torch.fx",
+                        MagicMock(symbolic_trace=MagicMock(return_value=MagicMock())),
                     ):
                         with patch(
-                            "onnx9000.converters.parsers", MagicMock(PyTorchFXParser=MagicMock())
+                            "onnx9000.converters.parsers",
+                            MagicMock(PyTorchFXParser=MagicMock()),
                         ):
                             with patch("os.path.exists", return_value=False):
                                 for cmd_args in cmds:
@@ -32,7 +34,9 @@ def test_coverage_gaps_cmd136():
                                             orig_isinstance = builtins.isinstance
 
                                             def safe_isinstance(
-                                                obj, cls, orig_isinstance=orig_isinstance
+                                                obj,
+                                                cls,
+                                                orig_isinstance=orig_isinstance,
                                             ):
                                                 import torch
 
@@ -43,7 +47,8 @@ def test_coverage_gaps_cmd136():
                                                 return orig_isinstance(obj, cls)
 
                                             with patch(
-                                                "builtins.isinstance", side_effect=safe_isinstance
+                                                "builtins.isinstance",
+                                                side_effect=safe_isinstance,
                                             ):
                                                 with patch(
                                                     "onnx9000.core.exporter.export_graph",

@@ -344,7 +344,11 @@ def sparse_to_coo(sparse_tensor: SparseTensor) -> SparseTensor:
             dtype=DType.INT64,
         )
         return SparseTensor(
-            sparse_tensor.name, values=val_const, indices=idx_const, dims=dims, format="COO"
+            sparse_tensor.name,
+            values=val_const,
+            indices=idx_const,
+            dims=dims,
+            format="COO",
         )
 
     if sparse_tensor.format == "CSC":
@@ -373,7 +377,11 @@ def sparse_to_coo(sparse_tensor: SparseTensor) -> SparseTensor:
             dtype=DType.INT64,
         )
         return SparseTensor(
-            sparse_tensor.name, values=val_const, indices=idx_const, dims=dims, format="COO"
+            sparse_tensor.name,
+            values=val_const,
+            indices=idx_const,
+            dims=dims,
+            format="COO",
         )
 
     if sparse_tensor.format == "BSR":
@@ -411,7 +419,11 @@ def sparse_to_coo(sparse_tensor: SparseTensor) -> SparseTensor:
             dtype=DType.INT64,
         )
         return SparseTensor(
-            sparse_tensor.name, values=val_const, indices=idx_const, dims=dims, format="COO"
+            sparse_tensor.name,
+            values=val_const,
+            indices=idx_const,
+            dims=dims,
+            format="COO",
         )
 
     return sparse_tensor
@@ -660,7 +672,10 @@ def collapse_sparse_tensors(graph: Graph) -> None:
                     tensor.shape = (1,)
                 elif isinstance(tensor, SparseTensor):
                     graph.tensors[name] = Constant(
-                        name, values=pack_data([0], tensor.dtype), shape=(1,), dtype=tensor.dtype
+                        name,
+                        values=pack_data([0], tensor.dtype),
+                        shape=(1,),
+                        dtype=tensor.dtype,
                     )
                     if name in graph.sparse_initializers:
                         graph.sparse_initializers.remove(name)

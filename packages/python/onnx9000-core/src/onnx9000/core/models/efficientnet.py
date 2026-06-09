@@ -190,7 +190,8 @@ class EfficientNet:
         x = self.stem_conv(
             x,
             get_param(
-                "stem_conv.weight", [self.stem_conv.out_channels, self.stem_conv.in_channels, 3, 3]
+                "stem_conv.weight",
+                [self.stem_conv.out_channels, self.stem_conv.in_channels, 3, 3],
             ),
         )
         x = self.stem_bn(
@@ -208,7 +209,8 @@ class EfficientNet:
         x = self.head_conv(
             x,
             get_param(
-                "head_conv.weight", [self.head_conv.out_channels, self.head_conv.in_channels, 1, 1]
+                "head_conv.weight",
+                [self.head_conv.out_channels, self.head_conv.in_channels, 1, 1],
             ),
         )
         x = self.head_bn(

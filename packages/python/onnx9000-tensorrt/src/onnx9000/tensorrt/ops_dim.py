@@ -53,7 +53,11 @@ def trt_concat(network: INetworkDefinition, node: Any, tensors: dict[str, ITenso
     # Pointer array
     ptr_array = (ctypes.c_void_p * len(in_tensors))(*[t.ptr for t in in_tensors if t])
     add_concat_func.restype = ctypes.c_void_p
-    add_concat_func.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_int32]
+    add_concat_func.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(ctypes.c_void_p),
+        ctypes.c_int32,
+    ]
     ptr = add_concat_func(ctypes.c_void_p(network.ptr), ptr_array, ctypes.c_int32(len(in_tensors)))
     tensors[node.outputs[0]] = ITensor(ptr, node.outputs[0])
 
@@ -79,7 +83,11 @@ def trt_slice(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor
         ctypes.c_void_p,
     ]
     ptr = add_slice_func(
-        ctypes.c_void_p(network.ptr), ctypes.c_void_p(in1.ptr), dims_ptr, dims_ptr, dims_ptr
+        ctypes.c_void_p(network.ptr),
+        ctypes.c_void_p(in1.ptr),
+        dims_ptr,
+        dims_ptr,
+        dims_ptr,
     )
     tensors[node.outputs[0]] = ITensor(ptr, node.outputs[0])
 
@@ -96,7 +104,12 @@ def trt_gather(network: INetworkDefinition, node: Any, tensors: dict[str, ITenso
     if hasattr(node, "attributes") and "axis" in node.attributes:
         axis = int(node.attributes["axis"])
     add_gather_func.restype = ctypes.c_void_p
-    add_gather_func.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int32]
+    add_gather_func.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        ctypes.c_int32,
+    ]
     ptr = add_gather_func(
         ctypes.c_void_p(network.ptr),
         ctypes.c_void_p(in1.ptr),

@@ -775,7 +775,9 @@ def shrink_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarra
     lambd = attrs.get("lambd", 0.5)
     return [
         np.where(
-            inputs[0] < -lambd, inputs[0] + bias, np.where(inputs[0] > lambd, inputs[0] - bias, 0.0)
+            inputs[0] < -lambd,
+            inputs[0] + bias,
+            np.where(inputs[0] > lambd, inputs[0] - bias, 0.0),
         )
     ]
 
@@ -795,7 +797,11 @@ def rnn_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
 @register_op("", "LSTM", provider="cpu")
 def lstm_op(inputs: list[np.ndarray], attrs: dict[str, Any]) -> list[np.ndarray]:
     """Lstm Op function logic implementation."""
-    return [np.zeros_like(inputs[0]), np.zeros_like(inputs[0]), np.zeros_like(inputs[0])]
+    return [
+        np.zeros_like(inputs[0]),
+        np.zeros_like(inputs[0]),
+        np.zeros_like(inputs[0]),
+    ]
 
 
 @register_op("", "GRU", provider="cpu")

@@ -34,7 +34,12 @@ def test_train_cnn() -> None:
     )
     g.add_node(Node("Relu", ["conv_out"], ["relu_out"]))
     g.add_node(
-        Node("MaxPool", ["relu_out"], ["pool_out"], {"kernel_shape": [2, 2], "strides": [2, 2]})
+        Node(
+            "MaxPool",
+            ["relu_out"],
+            ["pool_out"],
+            {"kernel_shape": [2, 2], "strides": [2, 2]},
+        )
     )
 
     # Flatten dynamically to 2D

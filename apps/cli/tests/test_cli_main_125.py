@@ -33,7 +33,10 @@ def test_coverage_gaps_cmd125():
                     "onnx9000.optimizer.simplifier": MagicMock(),
                 },
             ):
-                with patch("builtins.open"), patch("os.path.exists", return_value=False):
+                with (
+                    patch("builtins.open"),
+                    patch("os.path.exists", return_value=False),
+                ):
                     with patch(
                         "importlib.util.spec_from_file_location",
                         return_value=MagicMock(loader=MagicMock()),

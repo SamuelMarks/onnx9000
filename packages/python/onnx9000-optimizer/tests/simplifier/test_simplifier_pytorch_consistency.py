@@ -15,7 +15,10 @@ def test_compare_mathematical_output_with_pytorch_mock():
 
     # Just a simple scale
     scale = Constant(
-        "scale", values=np.array([2.0], dtype=np.float32), shape=(1,), dtype=np.dtype("float32")
+        "scale",
+        values=np.array([2.0], dtype=np.float32),
+        shape=(1,),
+        dtype=np.dtype("float32"),
     )
     graph.add_tensor(scale)
     graph.initializers.append("scale")

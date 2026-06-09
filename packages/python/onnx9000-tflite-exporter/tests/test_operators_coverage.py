@@ -39,7 +39,16 @@ class MockBuilder:
 def test_map_cast():
     """Test map cast."""
     b = MockBuilder()
-    for to_val, expected_type in [(2, 4), (3, 9), (6, 2), (7, 4), (9, 6), (10, 1), (11, 0), (8, 5)]:
+    for to_val, expected_type in [
+        (2, 4),
+        (3, 9),
+        (6, 2),
+        (7, 4),
+        (9, 6),
+        (10, 1),
+        (11, 0),
+        (8, 5),
+    ]:
         n = Node("Cast", [], [], {"to": Attribute("to", "INT", to_val)})
         res = _map_cast(b, n)
         assert res[1] is not None
@@ -78,7 +87,12 @@ def test_map_conv2d_options():
 def test_map_transpose_conv():
     """Test map transpose conv."""
     b = MockBuilder()
-    n = Node("ConvTranspose", [], [], {"auto_pad": Attribute("auto_pad", "STRING", b"SAME_UPPER")})
+    n = Node(
+        "ConvTranspose",
+        [],
+        [],
+        {"auto_pad": Attribute("auto_pad", "STRING", b"SAME_UPPER")},
+    )
     res = _map_transpose_conv(b, n)
     assert res[0] == 0
     n = Node("ConvTranspose", [], [], {"auto_pad": Attribute("auto_pad", "STRING", b"VALID")})

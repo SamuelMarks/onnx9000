@@ -74,7 +74,12 @@ def test_map_fft():
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
-        op_type="jnp.fft.rfft2", name="fft1", inputs=[], outputs=[], domain="", attributes={}
+        op_type="jnp.fft.rfft2",
+        name="fft1",
+        inputs=[],
+        outputs=[],
+        domain="",
+        attributes={},
     )
     graph.nodes.append(node)
 

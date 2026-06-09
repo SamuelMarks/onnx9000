@@ -81,7 +81,9 @@ def test_erf():
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Constant, Graph, Node
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("g")
     g.tensors["in"] = Constant(

@@ -26,7 +26,10 @@ def test_cli_main_success():
 def test_cli_main_fallback():
     """Tests cli main fallback."""
     with patch.dict("sys.modules", {"onnx9000_cli.main": None}):
-        with patch("os.path.exists", return_value=True), patch("os.listdir", return_value=["pkg1"]):
+        with (
+            patch("os.path.exists", return_value=True),
+            patch("os.listdir", return_value=["pkg1"]),
+        ):
             with pytest.raises(SystemExit):
                 onnx9000.cli.main()
 

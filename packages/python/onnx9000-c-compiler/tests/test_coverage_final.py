@@ -136,7 +136,10 @@ def test_matmul_no_bias():
     g.tensors["C"] = Tensor("C", shape=(40, 40), dtype=DType.FLOAT32)
     g.nodes.append(
         Node(
-            "Gemm", inputs=["A", "B"], outputs=["C"], attributes={"alpha": Attribute("alpha", 2.0)}
+            "Gemm",
+            inputs=["A", "B"],
+            outputs=["C"],
+            attributes={"alpha": Attribute("alpha", 2.0)},
         )
     )
     c = C89Compiler(g)
@@ -169,7 +172,10 @@ def test_qlinear_conv_no_bias():
 def test_all_remaining_gaps():
     """Test all remaining gaps."""
     from onnx9000.c_compiler.ast_builder import C89Builder
-    from onnx9000.c_compiler.intrinsics import emit_esp_nn_qlinear_conv, emit_esp_nn_qlinear_matmul
+    from onnx9000.c_compiler.intrinsics import (
+        emit_esp_nn_qlinear_conv,
+        emit_esp_nn_qlinear_matmul,
+    )
     from onnx9000.core.ir import Node
 
     b = C89Builder()
@@ -211,7 +217,9 @@ def test_quant_no_target():
     g.tensors["ZP"] = Tensor("ZP", shape=(1,), dtype=DType.INT8)
     g.nodes.append(
         Node(
-            "QLinearMatMul", inputs=["Q_A", "S", "ZP", "Q_A", "S", "ZP", "S", "ZP"], outputs=["Q_A"]
+            "QLinearMatMul",
+            inputs=["Q_A", "S", "ZP", "Q_A", "S", "ZP", "S", "ZP"],
+            outputs=["Q_A"],
         )
     )
     g.tensors["QC_X"] = Tensor("QC_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)

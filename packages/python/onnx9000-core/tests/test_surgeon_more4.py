@@ -18,16 +18,28 @@ def test_fold_batchnorm_no_b_conv_data() -> None:
     b_conv = Variable("b_conv", shape=(2,), dtype="float32")
 
     scale = Constant(
-        "scale", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "scale",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     b_bn = Constant(
-        "b_bn", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "b_bn",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     mean = Constant(
-        "mean", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "mean",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     var = Constant(
-        "var", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "var",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
 
     g.add_tensor(w_conv)
@@ -46,7 +58,11 @@ def test_fold_batchnorm_no_b_conv_data() -> None:
 
     # Conv with bias that has no data
     conv = Node("Conv", inputs=[in_t, w_conv, b_conv], outputs=[conv_out])
-    bn = Node("BatchNormalization", inputs=[conv_out, scale, b_bn, mean, var], outputs=[bn_out])
+    bn = Node(
+        "BatchNormalization",
+        inputs=[conv_out, scale, b_bn, mean, var],
+        outputs=[bn_out],
+    )
     g.add_node(conv)
     g.add_node(bn)
 
@@ -69,20 +85,35 @@ def test_fold_batchnorm_with_b_conv_data() -> None:
     )
     # b_conv has data
     b_conv = Constant(
-        "b_conv", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "b_conv",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
 
     scale = Constant(
-        "scale", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "scale",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     b_bn = Constant(
-        "b_bn", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "b_bn",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     mean = Constant(
-        "mean", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "mean",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     var = Constant(
-        "var", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "var",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
 
     g.add_tensor(w_conv)
@@ -101,7 +132,11 @@ def test_fold_batchnorm_with_b_conv_data() -> None:
 
     # Conv with bias that has data
     conv = Node("Conv", inputs=[in_t, w_conv, b_conv], outputs=[conv_out])
-    bn = Node("BatchNormalization", inputs=[conv_out, scale, b_bn, mean, var], outputs=[bn_out])
+    bn = Node(
+        "BatchNormalization",
+        inputs=[conv_out, scale, b_bn, mean, var],
+        outputs=[bn_out],
+    )
     g.add_node(conv)
     g.add_node(bn)
 

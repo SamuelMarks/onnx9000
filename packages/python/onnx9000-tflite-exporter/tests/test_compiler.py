@@ -20,7 +20,11 @@ def test_compiler_subgraph_mapping():
 
     w_data = struct.pack("<4f", 1.0, 2.0, 3.0, 4.0)
     t_weight1 = Tensor(
-        "weight1", shape=(1000, 3, 3, 3), dtype="float32", is_initializer=True, data=w_data
+        "weight1",
+        shape=(1000, 3, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=w_data,
     )
 
     graph.tensors["input1"] = t_input1

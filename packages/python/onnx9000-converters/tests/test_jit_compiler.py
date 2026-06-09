@@ -5,7 +5,12 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from onnx9000.converters.jit.compiler import _get_compiler, compile_cpp, compile_wasm, load_module
+from onnx9000.converters.jit.compiler import (
+    _get_compiler,
+    compile_cpp,
+    compile_wasm,
+    load_module,
+)
 from onnx9000.core import config
 from onnx9000.core.dtypes import DType
 from onnx9000.core.exceptions import CompilationError
@@ -42,7 +47,14 @@ def test_get_compiler(monkeypatch) -> None:
 @patch("onnx9000.converters.jit.compiler.open")
 @patch("subprocess.run")
 def test_compile_cpp(
-    mock_run, mock_open, mock_loader, mock_env, mock_gen, mock_hash, monkeypatch, tmp_path
+    mock_run,
+    mock_open,
+    mock_loader,
+    mock_env,
+    mock_gen,
+    mock_hash,
+    monkeypatch,
+    tmp_path,
 ) -> None:
     """Tests the compile cpp functionality."""
     monkeypatch.setattr(config, "ONNX9000_CACHE_DIR", tmp_path)

@@ -14,7 +14,10 @@ def test_script_parser_full():
     def full_func(a):
         return a
 
-    from onnx9000.toolkit.script.control_flow import IfContextManager, LoopContextManager
+    from onnx9000.toolkit.script.control_flow import (
+        IfContextManager,
+        LoopContextManager,
+    )
     from onnx9000.toolkit.script.var import Var
 
     b = GraphBuilder("test_cf")

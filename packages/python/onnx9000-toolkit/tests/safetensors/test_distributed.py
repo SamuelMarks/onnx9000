@@ -2,7 +2,10 @@
 
 from unittest.mock import patch
 
-from onnx9000.toolkit.safetensors.distributed import load_sharded_tensors, pipeline_parallel_loader
+from onnx9000.toolkit.safetensors.distributed import (
+    load_sharded_tensors,
+    pipeline_parallel_loader,
+)
 
 
 def test_load_sharded_tensors():

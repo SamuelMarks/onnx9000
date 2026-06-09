@@ -198,7 +198,11 @@ def test_time_series_gnn_macros():
 def test_yolo_family():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import anchor_free_dfl_head, c2f_c3_block, repvgg_block
+    from onnx9000.core.models.macros_zoo import (
+        anchor_free_dfl_head,
+        c2f_c3_block,
+        repvgg_block,
+    )
 
     x = Tensor(name="x", shape=[1, 3, 224, 224], dtype=1)
     w = Tensor(name="w", shape=[1, 3, 3, 3], dtype=1)
@@ -248,7 +252,10 @@ def test_detr_family_rest():
 def test_hybrid_vision():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import any_resolution_vision, perceiver_resampler
+    from onnx9000.core.models.macros_zoo import (
+        any_resolution_vision,
+        perceiver_resampler,
+    )
 
     x = Tensor(name="x", shape=[1, 3, 224, 224], dtype=1)
 
@@ -286,7 +293,11 @@ def test_llms():
 def test_moe():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import moe_expert_masking, moe_router, moe_topk_dispatch
+    from onnx9000.core.models.macros_zoo import (
+        moe_expert_masking,
+        moe_router,
+        moe_topk_dispatch,
+    )
 
     x = Tensor(name="x", shape=[1, 3, 224, 224], dtype=1)
 
@@ -301,7 +312,11 @@ def test_moe():
 def test_ssm():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import mamba_scan, rwkv_time_mixing, token_shift
+    from onnx9000.core.models.macros_zoo import (
+        mamba_scan,
+        rwkv_time_mixing,
+        token_shift,
+    )
 
     x = Tensor(name="x", shape=[1, 3, 224, 224], dtype=1)
 
@@ -399,7 +414,10 @@ def test_advanced_llms():
 def test_extra_vision():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import mobilenet_inverted_residual, unet_double_conv
+    from onnx9000.core.models.macros_zoo import (
+        mobilenet_inverted_residual,
+        unet_double_conv,
+    )
 
     x = Tensor("x", (1, 64, 32, 32), 1)
     w = Tensor("w", (64, 64, 3, 3), 1)
@@ -411,7 +429,10 @@ def test_extra_vision():
 def test_diffusion_and_audio():
     """Docstring for D103."""
     from onnx9000.core.ir import Tensor
-    from onnx9000.core.models.macros_zoo import sd_cross_attention, wav2vec2_feature_extractor
+    from onnx9000.core.models.macros_zoo import (
+        sd_cross_attention,
+        wav2vec2_feature_extractor,
+    )
 
     x = Tensor("x", (1, 10, 128), 1)
     c = Tensor("c", (1, 20, 128), 1)

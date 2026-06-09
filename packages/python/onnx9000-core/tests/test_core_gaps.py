@@ -4,7 +4,16 @@ import ast
 import struct
 
 import pytest
-from onnx9000.core.ir import Attribute, Constant, DType, DynamicDim, Graph, Node, Tensor, Variable
+from onnx9000.core.ir import (
+    Attribute,
+    Constant,
+    DType,
+    DynamicDim,
+    Graph,
+    Node,
+    Tensor,
+    Variable,
+)
 from onnx9000.core.registry import UnsupportedOpError, global_registry, register_op
 from onnx9000.core.shape_inference import get_attr, infer_shapes_and_types
 from onnx9000.core.surgeon import cleanup, fold_constants_math, reconstruct_sequences
@@ -42,7 +51,12 @@ def test_shape_inference_gaps():
     g.add_tensor(v1)
 
     # Flatten
-    n_flat = Node("Flatten", ["v1"], ["out_flat"], attributes={"axis": Attribute("axis", "INT", 1)})
+    n_flat = Node(
+        "Flatten",
+        ["v1"],
+        ["out_flat"],
+        attributes={"axis": Attribute("axis", "INT", 1)},
+    )
     g.add_node(n_flat)
     infer_shapes_and_types(g)
     assert list(g.tensors["out_flat"].shape) == [2, 12]

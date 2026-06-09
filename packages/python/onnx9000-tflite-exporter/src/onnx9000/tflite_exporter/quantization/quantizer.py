@@ -81,7 +81,14 @@ class Quantizer:
             zp_offset = builder.end_vector(len(q.zero_point))
 
         return QuantizationParameters.create(
-            builder, min_offset, max_offset, scale_offset, zp_offset, 0, 0, q.quantized_dimension
+            builder,
+            min_offset,
+            max_offset,
+            scale_offset,
+            zp_offset,
+            0,
+            0,
+            q.quantized_dimension,
         )
 
     def quantize(self) -> None:

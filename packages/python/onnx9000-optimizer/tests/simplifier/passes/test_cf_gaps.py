@@ -9,7 +9,9 @@ from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldin
 
 def test_cf_shape_gaps():
     """Docstring for D103."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     cf = ConstantFoldingPass()
     g = Graph("G")
@@ -44,7 +46,9 @@ def test_cf_shape_gaps():
 def test_cf_shape_dynamic():
     """Docstring for D103."""
     from onnx9000.core.ir import DynamicDim
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     cf = ConstantFoldingPass()
     g = Graph("G")
@@ -55,7 +59,9 @@ def test_cf_shape_dynamic():
 
 def test_cf_gaps_misc():
     """Docstring for D103."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     cf = ConstantFoldingPass()
 
@@ -112,7 +118,9 @@ def test_custom_op_warning():
 
 def test_cf_nan_inf_types():
     """Test cf nan inf types."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("TestNanInfTypes")
     t1 = Tensor("t1", (1,), DType.FLOAT32)
@@ -144,7 +152,9 @@ def test_cf_nan_inf_types():
 
     with pytest.MonkeyPatch.context() as m:
         m.setattr(
-            ConstantFoldingPass, "_evaluate_node", lambda *args: [np.array([1.0], dtype=np.float32)]
+            ConstantFoldingPass,
+            "_evaluate_node",
+            lambda *args: [np.array([1.0], dtype=np.float32)],
         )
         g.nodes.append(Node("Split", ["t2"], ["out3", "out4"]))
         cf._run_once(g)
@@ -152,7 +162,9 @@ def test_cf_nan_inf_types():
 
 def test_cf_div_by_zero():
     """Test cf div by zero."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     _evaluate_node = ConstantFoldingPass()._evaluate_node
     n = Node("Div", [], [])
@@ -162,7 +174,9 @@ def test_cf_div_by_zero():
 
 def test_cf_concat_scalars():
     """Test cf concat scalars."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     _evaluate_node = ConstantFoldingPass()._evaluate_node
     n = Node("Concat", [], [])
@@ -173,7 +187,9 @@ def test_cf_concat_scalars():
 
 def test_cf_bn_slice():
     """Test cf bn slice."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     _evaluate_node = ConstantFoldingPass()._evaluate_node
     n = Node("BatchNormalization", [], [])

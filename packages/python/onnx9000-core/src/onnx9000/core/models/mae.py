@@ -87,7 +87,10 @@ class MaskedAutoencoderViT:
         # Append cls token
         cls_token = get_param("cls_token", [1, 1, self.embed_dim])
         cls_pos_embed = slice_op(
-            pos_embed, constant([0], dtype=7), constant([1], dtype=7), constant([1], dtype=7)
+            pos_embed,
+            constant([0], dtype=7),
+            constant([1], dtype=7),
+            constant([1], dtype=7),
         )
         cls_token = add(cls_token, cls_pos_embed)
 
@@ -97,7 +100,9 @@ class MaskedAutoencoderViT:
         for blk in self.blocks:
             x = blk(x)
         x = self.norm(
-            x, get_param("norm.weight", [self.embed_dim]), get_param("norm.bias", [self.embed_dim])
+            x,
+            get_param("norm.weight", [self.embed_dim]),
+            get_param("norm.bias", [self.embed_dim]),
         )
 
         return x, mask_indices

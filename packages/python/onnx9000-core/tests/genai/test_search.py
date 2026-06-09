@@ -12,7 +12,10 @@ def create_logits(vals):
     for i, v in enumerate(vals):
         data[i * 4 : (i + 1) * 4] = struct.pack("<f", v)
     return Tensor(
-        name="logits", shape=(1, len(vals)), data=data, dtype=type("mock", (), {"itemsize": 4})
+        name="logits",
+        shape=(1, len(vals)),
+        data=data,
+        dtype=type("mock", (), {"itemsize": 4}),
     )
 
 
@@ -43,7 +46,10 @@ def test_greedy_search_edge_cases():
     t_none = Tensor(name="x", shape=(1, 10), data=None)
     assert gs.select_next_token(t_none, []) == 0
     t_neg = Tensor(
-        name="x", shape=(1, 10), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 10),
+        data=bytearray(4),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     assert gs.select_next_token(t_neg, []) == 0
 
@@ -57,11 +63,17 @@ def test_multinomial_edge_cases():
     t_none = Tensor(name="x", shape=(1, 10), data=None)
     assert ms.select_next_token(t_none, []) == 0
     t_neg = Tensor(
-        name="x", shape=(1, 10), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 10),
+        data=bytearray(4),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     assert ms.select_next_token(t_neg, []) == 0
     t_empty = Tensor(
-        name="x", shape=(1, 0), data=bytearray(0), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 0),
+        data=bytearray(0),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     assert ms.select_next_token(t_empty, []) == 0
 
@@ -101,7 +113,10 @@ def test_search_missing():
     from onnx9000.genai.search import GreedySearch, MultinomialSampling
 
     t_short = Tensor(
-        name="x", shape=(1, 2), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 2),
+        data=bytearray(4),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     gs = GreedySearch()
     gs.select_next_token(t_short, [])

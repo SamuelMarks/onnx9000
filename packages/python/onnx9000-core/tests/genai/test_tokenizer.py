@@ -24,7 +24,17 @@ def test_basic_tokenizer():
 def test_bpe_tokenizer():
     """Test bpe tokenizer."""
     merges = [("h", "e"), ("he", "l"), ("hel", "l"), ("hell", "o")]
-    vocab = {"h": 0, "e": 1, "l": 2, "o": 3, "he": 4, "hel": 5, "hell": 6, "hello": 7, "<unk>": 8}
+    vocab = {
+        "h": 0,
+        "e": 1,
+        "l": 2,
+        "o": 3,
+        "he": 4,
+        "hel": 5,
+        "hell": 6,
+        "hello": 7,
+        "<unk>": 8,
+    }
     tokenizer = BPETokenizer(merges, vocab)
     ids = tokenizer.encode("hello")
     assert ids == [7]
@@ -250,7 +260,12 @@ def test_top_p_empty():
     from onnx9000.genai.top_p import TopPLogitProcessor
 
     proc = TopPLogitProcessor(0.5)
-    t = Tensor(name="x", shape=(1, 0), data=bytearray(0), dtype=type("mock", (), {"itemsize": 4}))
+    t = Tensor(
+        name="x",
+        shape=(1, 0),
+        data=bytearray(0),
+        dtype=type("mock", (), {"itemsize": 4}),
+    )
     assert proc([], t) is t
 
 
@@ -278,10 +293,18 @@ def test_logit_processors_missing():
     p = AllowedWordsLogitProcessor([1])
     assert p([1], t_none) is t_none
 
-    Tensor(name="x", shape=(1, 2), data=bytearray(8), dtype=type("mock", (), {"itemsize": 4}))
+    Tensor(
+        name="x",
+        shape=(1, 2),
+        data=bytearray(8),
+        dtype=type("mock", (), {"itemsize": 4}),
+    )
     p = ForcedBOSLogitProcessor(1)
     t_short = Tensor(
-        name="x", shape=(1, 2), data=bytearray(4), dtype=type("mock", (), {"itemsize": 4})
+        name="x",
+        shape=(1, 2),
+        data=bytearray(4),
+        dtype=type("mock", (), {"itemsize": 4}),
     )
     p([], t_short)
     p = ForcedEOSLogitProcessor(1, 1)
@@ -299,7 +322,17 @@ def test_bpe_complex():
     from onnx9000.genai.tokenizer import BPETokenizer
 
     merges = [("h", "e"), ("he", "l"), ("hel", "l"), ("hell", "o")]
-    vocab = {"h": 0, "e": 1, "l": 2, "o": 3, "he": 4, "hel": 5, "hell": 6, "hello": 7, "<unk>": 8}
+    vocab = {
+        "h": 0,
+        "e": 1,
+        "l": 2,
+        "o": 3,
+        "he": 4,
+        "hel": 5,
+        "hell": 6,
+        "hello": 7,
+        "<unk>": 8,
+    }
     bpe = BPETokenizer(merges, vocab)
     assert bpe.encode("hello") == [7]
     assert bpe.encode("h") == [0]

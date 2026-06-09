@@ -48,7 +48,8 @@ def test_coverage_gaps_cmd55():
         with patch.object(sys, "argv", ["onnx9000", "chat"]):
             sys.modules.pop("tui_chat", None)
             with patch(
-                "importlib.util.spec_from_file_location", return_value=MagicMock(loader=MagicMock())
+                "importlib.util.spec_from_file_location",
+                return_value=MagicMock(loader=MagicMock()),
             ):
                 with patch("importlib.util.module_from_spec", return_value=MagicMock()):
                     with patch("builtins.input", return_value="exit"):
@@ -62,7 +63,10 @@ def test_coverage_gaps_cmd55():
 
         with patch.object(sys, "argv", ["onnx9000", "chat"]):
             sys.modules.pop("tui_chat", None)
-            with patch("importlib.util.spec_from_file_location", side_effect=Exception("Failed")):
+            with patch(
+                "importlib.util.spec_from_file_location",
+                side_effect=Exception("Failed"),
+            ):
                 with patch("builtins.input", return_value="exit"):
                     main()
     except SystemExit:

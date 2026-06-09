@@ -329,7 +329,10 @@ class OperatorCode:
 
     @staticmethod
     def create(
-        builder: FlatBufferBuilder, builtin_code: int, custom_code_offset: int, version: int
+        builder: FlatBufferBuilder,
+        builtin_code: int,
+        custom_code_offset: int,
+        version: int,
     ) -> int:
         """Create a TFLite OperatorCode object."""
         builder.start_object(4)

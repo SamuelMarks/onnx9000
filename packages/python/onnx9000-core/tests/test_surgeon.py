@@ -37,7 +37,10 @@ def test_surgeon_missing_lines():
     g3 = Graph("test")
     g3.nodes.append(
         Node(
-            "GQA", inputs=["a", "b", "c"], outputs=["d"], attributes={"num_heads": 8, "kv_heads": 8}
+            "GQA",
+            inputs=["a", "b", "c"],
+            outputs=["d"],
+            attributes={"num_heads": 8, "kv_heads": 8},
         )
     )
     g4 = map_gqa_mqa(g3)
@@ -46,7 +49,10 @@ def test_surgeon_missing_lines():
     g5 = Graph("test")
     g5.nodes.append(
         Node(
-            "GQA", inputs=["a", "b", "c"], outputs=["d"], attributes={"num_heads": 8, "kv_heads": 1}
+            "GQA",
+            inputs=["a", "b", "c"],
+            outputs=["d"],
+            attributes={"num_heads": 8, "kv_heads": 1},
         )
     )
     g6 = map_gqa_mqa(g5)

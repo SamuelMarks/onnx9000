@@ -124,7 +124,11 @@ def _map_split(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     if not out_names:
         out_names = [f"{node.name}_out_{i}" for i in range(num)]
     builder.make_node(
-        "Split", inputs, {"axis": axis, "num_outputs": num}, node.name, outputs=out_names
+        "Split",
+        inputs,
+        {"axis": axis, "num_outputs": num},
+        node.name,
+        outputs=out_names,
     )
     return out_names
 
@@ -141,7 +145,10 @@ def _map_slice(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     ends_const = builder.add_constant(f"{node.name}_ends", ends, 7, [len(ends)])
     axes_const = builder.add_constant(f"{node.name}_axes", axes, 7, [len(axes)])
     slice_out = builder.make_node(
-        "Slice", inputs + [starts_const, ends_const, axes_const], {}, f"{node.name}_slice"
+        "Slice",
+        inputs + [starts_const, ends_const, axes_const],
+        {},
+        f"{node.name}_slice",
     )[0]
     decrease_axis = builder.extract_list_attr(node, "decrease_axis")
     if decrease_axis:

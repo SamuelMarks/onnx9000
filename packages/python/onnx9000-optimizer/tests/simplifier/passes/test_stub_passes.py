@@ -14,8 +14,14 @@ from onnx9000.optimizer.simplifier.passes.memory_planning import (
     plan_tensor_lifecycles,
 )
 from onnx9000.optimizer.simplifier.passes.partitioning import partition_for_multi_device
-from onnx9000.optimizer.simplifier.passes.quantization import convert_to_int8, insert_qat_nodes
-from onnx9000.optimizer.simplifier.passes.versioning import apply_opset_fallbacks, enforce_opset_18
+from onnx9000.optimizer.simplifier.passes.quantization import (
+    convert_to_int8,
+    insert_qat_nodes,
+)
+from onnx9000.optimizer.simplifier.passes.versioning import (
+    apply_opset_fallbacks,
+    enforce_opset_18,
+)
 from onnx9000.optimizer.simplifier.passes.webgpu import (
     optimize_for_webgpu,
     polyfill_webgpu_unsupported,

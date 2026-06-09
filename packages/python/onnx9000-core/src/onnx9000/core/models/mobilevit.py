@@ -122,7 +122,8 @@ class MobileViTBlock:
 
         # Fusion
         out = self.fusion_conv1(
-            attn_out, get_param(f"{self.prefix}.fusion_conv1.weight", [self.dim, self.dim, 1, 1])
+            attn_out,
+            get_param(f"{self.prefix}.fusion_conv1.weight", [self.dim, self.dim, 1, 1]),
         )
         out = self.fusion_bn1(
             out,
@@ -139,7 +140,8 @@ class MobileViTBlock:
         out = concat([identity, out], axis=1)
 
         out = self.fusion_conv2(
-            out, get_param(f"{self.prefix}.fusion_conv2.weight", [self.out_dim, self.dim * 2, 3, 3])
+            out,
+            get_param(f"{self.prefix}.fusion_conv2.weight", [self.out_dim, self.dim * 2, 3, 3]),
         )
         out = self.fusion_bn2(
             out,

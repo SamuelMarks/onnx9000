@@ -20,16 +20,28 @@ def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
 
     # We want to extract batch size (index 0) using Slice
     starts = Constant(
-        "starts", values=np.array([0], dtype=np.int64), shape=(1,), dtype=np.dtype("int64")
+        "starts",
+        values=np.array([0], dtype=np.int64),
+        shape=(1,),
+        dtype=np.dtype("int64"),
     )
     ends = Constant(
-        "ends", values=np.array([1], dtype=np.int64), shape=(1,), dtype=np.dtype("int64")
+        "ends",
+        values=np.array([1], dtype=np.int64),
+        shape=(1,),
+        dtype=np.dtype("int64"),
     )
     axes = Constant(
-        "axes", values=np.array([0], dtype=np.int64), shape=(1,), dtype=np.dtype("int64")
+        "axes",
+        values=np.array([0], dtype=np.int64),
+        shape=(1,),
+        dtype=np.dtype("int64"),
     )
     steps = Constant(
-        "steps", values=np.array([1], dtype=np.int64), shape=(1,), dtype=np.dtype("int64")
+        "steps",
+        values=np.array([1], dtype=np.int64),
+        shape=(1,),
+        dtype=np.dtype("int64"),
     )
 
     graph.add_tensor(starts)
@@ -48,7 +60,10 @@ def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
 
     # And maybe we expand a constant vector to batch_size
     v = Constant(
-        "v", values=np.array([1.5], dtype=np.float32), shape=(1,), dtype=np.dtype("float32")
+        "v",
+        values=np.array([1.5], dtype=np.float32),
+        shape=(1,),
+        dtype=np.dtype("float32"),
     )
     graph.add_tensor(v)
     graph.initializers.append("v")
@@ -56,7 +71,10 @@ def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
     # Expand expects a shape tensor: e.g. [batch_size, 512]
     # Concat batch_size_tensor with a fixed [512] tensor
     c512 = Constant(
-        "c512", values=np.array([512], dtype=np.int64), shape=(1,), dtype=np.dtype("int64")
+        "c512",
+        values=np.array([512], dtype=np.int64),
+        shape=(1,),
+        dtype=np.dtype("int64"),
     )
     graph.add_tensor(c512)
     graph.initializers.append("c512")
@@ -74,7 +92,10 @@ def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
     graph.add_node(concat_node)
 
     expand_node = Node(
-        op_type="Expand", inputs=["v", "expanded_shape"], outputs=["out"], name="expand1"
+        op_type="Expand",
+        inputs=["v", "expanded_shape"],
+        outputs=["out"],
+        name="expand1",
     )
     graph.add_node(expand_node)
 

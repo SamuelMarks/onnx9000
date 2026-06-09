@@ -113,7 +113,26 @@ def test_qlinear_matmul_miss():
     # Missing args handling
     n.inputs = ["X"]
     generate_qlinear_matmul(
-        b, n, tY, tX, xS, None, tW, wS, wZ, yS, yZ, "X", "xS", "", "W", "wS", "wZ", "yS", "yZ", "Y"
+        b,
+        n,
+        tY,
+        tX,
+        xS,
+        None,
+        tW,
+        wS,
+        wZ,
+        yS,
+        yZ,
+        "X",
+        "xS",
+        "",
+        "W",
+        "wS",
+        "wZ",
+        "yS",
+        "yZ",
+        "Y",
     )
     code = b.get_code()
     assert "QLinearMatMul" in code
@@ -140,7 +159,26 @@ def test_qlinear_matmul_miss_2():
 
     # Missing optional arg zp_out_tensor
     generate_qlinear_matmul(
-        b, n, tY, tX, xS, xZ, tW, wS, wZ, yS, None, "X", "xS", "xZ", "W", "wS", "wZ", "yS", "", "Y"
+        b,
+        n,
+        tY,
+        tX,
+        xS,
+        xZ,
+        tW,
+        wS,
+        wZ,
+        yS,
+        None,
+        "X",
+        "xS",
+        "xZ",
+        "W",
+        "wS",
+        "wZ",
+        "yS",
+        "",
+        "Y",
     )
     code = b.get_code()
     assert "QLinearMatMul" in code
@@ -171,7 +209,26 @@ def test_qlinear_matmul_q4_0():
     tY = Tensor("Y", [1, 3], DType.UINT8, data=b"\x00" * 32)
 
     generate_qlinear_matmul(
-        b, n, tY, tX, xS, xZ, tW, wS, wZ, yS, None, "X", "xS", "xZ", "W", "wS", "wZ", "yS", "", "Y"
+        b,
+        n,
+        tY,
+        tX,
+        xS,
+        xZ,
+        tW,
+        wS,
+        wZ,
+        yS,
+        None,
+        "X",
+        "xS",
+        "xZ",
+        "W",
+        "wS",
+        "wZ",
+        "yS",
+        "",
+        "Y",
     )
     code = b.get_code()
     assert "ggml_vec_dot_q4_0_q8_0" in code

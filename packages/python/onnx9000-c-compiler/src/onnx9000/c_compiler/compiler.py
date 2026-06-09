@@ -533,7 +533,15 @@ class C89Compiler:
                 generate_matmul(b, node, out_tensor, in1_tensor, in2_tensor, in1, in2, out)
             elif node.op_type == "MatMulInteger":
                 generate_matmul(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in1, in2, out, is_integer=True
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in1,
+                    in2,
+                    out,
+                    is_integer=True,
                 )
             elif node.op_type == "Einsum":
                 from onnx9000.c_compiler.operations import generate_einsum
@@ -563,11 +571,29 @@ class C89Compiler:
                 )
             elif node.op_type == "Conv":
                 generate_conv(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type == "ConvTranspose":
                 generate_conv_transpose(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type in ["MaxPool", "AveragePool"]:
                 generate_pooling(b, node, out_tensor, in1_tensor, in1, out, node.op_type)
@@ -581,7 +607,13 @@ class C89Compiler:
                 "ReduceProd",
             ]:
                 generate_reduction(
-                    b, node, out_tensor, in1_tensor, in1, out, node.op_type.replace("Reduce", "")
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in1,
+                    out,
+                    node.op_type.replace("Reduce", ""),
                 )
             elif node.op_type in ["ArgMax", "ArgMin"]:
                 generate_arg_reduction(b, node, out_tensor, in1_tensor, in1, out, node.op_type)
@@ -715,7 +747,16 @@ class C89Compiler:
                 generate_concat(b, node, out_tensor, in_tensors, in_names, out)
             elif node.op_type == "Pad":
                 generate_pad(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type == "Equal":
                 generate_boolean_binary(
@@ -753,15 +794,42 @@ class C89Compiler:
                 generate_boolean_unary(b, node, "!", out_tensor, in1_tensor, in1, out)
             elif node.op_type == "Where":
                 generate_where(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type == "QuantizeLinear":
                 generate_quantize_linear(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type == "DequantizeLinear":
                 generate_dequantize_linear(
-                    b, node, out_tensor, in1_tensor, in2_tensor, in3_tensor, in1, in2, in3, out
+                    b,
+                    node,
+                    out_tensor,
+                    in1_tensor,
+                    in2_tensor,
+                    in3_tensor,
+                    in1,
+                    in2,
+                    in3,
+                    out,
                 )
             elif node.op_type == "QLinearMatMul":
                 t_s1, t_zp1 = (
@@ -848,7 +916,11 @@ class C89Compiler:
                 )
             elif node.op_type == "Loop":
                 generate_loop(
-                    b, node, in1, in2, getattr(node.attributes.get("body"), "name", "body_graph")
+                    b,
+                    node,
+                    in1,
+                    in2,
+                    getattr(node.attributes.get("body"), "name", "body_graph"),
                 )
             elif node.op_type == "NonMaxSuppression":
                 generate_nms(

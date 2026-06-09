@@ -44,7 +44,16 @@ def test_activations_coverage():
     """Test activations coverage."""
     g = Graph("test_activations")
     g.tensors["X"] = Tensor("X", shape=(1, 10), dtype=DType.FLOAT32)
-    for op in ["LeakyRelu", "Sigmoid", "Tanh", "HardSigmoid", "HardSwish", "Gelu", "Clip", "PRelu"]:
+    for op in [
+        "LeakyRelu",
+        "Sigmoid",
+        "Tanh",
+        "HardSigmoid",
+        "HardSwish",
+        "Gelu",
+        "Clip",
+        "PRelu",
+    ]:
         g.tensors[f"Y_{op}"] = Tensor(f"Y_{op}", shape=(1, 10), dtype=DType.FLOAT32)
         n = Node(op, inputs=["X"], outputs=[f"Y_{op}"])
         g.nodes.append(n)

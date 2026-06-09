@@ -54,7 +54,11 @@ class TFToONNXGraphBuilder:
         )[0]
 
     def calc_dynamic_padding(
-        self, padding_type: str, input_shape: list[int], filter_shape: list[int], strides: list[int]
+        self,
+        padding_type: str,
+        input_shape: list[int],
+        filter_shape: list[int],
+        strides: list[int],
     ) -> list[int]:
         """Execute the calc dynamic padding operation."""
         if padding_type == "VALID":
@@ -81,7 +85,11 @@ class TFToONNXGraphBuilder:
         node_name = self.get_unique_name(name_prefix)
         outputs = [f"{node_name}_out_{i}" for i in range(num_outputs)]
         n = Node(
-            op_type=op_type, inputs=inputs, outputs=outputs, attributes=attributes, name=node_name
+            op_type=op_type,
+            inputs=inputs,
+            outputs=outputs,
+            attributes=attributes,
+            name=node_name,
         )
         self.graph.nodes.append(n)
         for out in outputs:

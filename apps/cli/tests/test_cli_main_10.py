@@ -37,7 +37,10 @@ def test_coverage_gaps_cmd10():
         patch("onnx9000_cli.main.save_onnx"),
         patch("builtins.open"),
         patch("os.path.exists", side_effect=[True, False]),
-        patch("importlib.util.spec_from_file_location", return_value=MagicMock(loader=MagicMock())),
+        patch(
+            "importlib.util.spec_from_file_location",
+            return_value=MagicMock(loader=MagicMock()),
+        ),
         patch("importlib.util.module_from_spec", return_value=MagicMock()),
     ):
         with patch.dict(

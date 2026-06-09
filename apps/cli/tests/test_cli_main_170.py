@@ -34,7 +34,11 @@ def test_convert_tensorflow_saved_model(tmp_path):
     out_path = tmp_path / "model_out.onnx"
 
     args = argparse.Namespace(
-        src=str(model_dir), from_fmt="tensorflow", to_fmt="onnx", output=str(out_path), weights=None
+        src=str(model_dir),
+        from_fmt="tensorflow",
+        to_fmt="onnx",
+        output=str(out_path),
+        weights=None,
     )
 
     try:
@@ -49,7 +53,11 @@ def test_convert_tensorflow_missing_pb(tmp_path):
     out_path = tmp_path / "model_out.onnx"
 
     args = argparse.Namespace(
-        src=str(model_dir), from_fmt="tensorflow", to_fmt="onnx", output=str(out_path), weights=None
+        src=str(model_dir),
+        from_fmt="tensorflow",
+        to_fmt="onnx",
+        output=str(out_path),
+        weights=None,
     )
 
     try:

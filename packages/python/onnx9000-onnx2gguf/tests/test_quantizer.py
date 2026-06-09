@@ -1,7 +1,12 @@
 """Tests for quantizer."""
 
 import numpy as np
-from onnx9000.onnx2gguf.quantizer import f32_to_f16, quantize_q4_0, quantize_q4_1, quantize_q8_0
+from onnx9000.onnx2gguf.quantizer import (
+    f32_to_f16,
+    quantize_q4_0,
+    quantize_q4_1,
+    quantize_q8_0,
+)
 
 
 def test_quantizer():

@@ -50,7 +50,11 @@ def test_paddle_tensor_ops_concat_stack() -> None:
     assert builder.graph.nodes[-1].op_type == "Concat"
     assert builder.graph.nodes[-2].op_type == "Unsqueeze"
     n = PaddleNode(
-        "n", "unstack", inputs={"X": ["a"]}, outputs={"Y": ["o1", "o2"]}, attrs={"axis": 0}
+        "n",
+        "unstack",
+        inputs={"X": ["a"]},
+        outputs={"Y": ["o1", "o2"]},
+        attrs={"axis": 0},
     )
     outs = TENSOR_OPS_MAPPING["unstack"](builder, n)
     assert outs == ["o1", "o2"]

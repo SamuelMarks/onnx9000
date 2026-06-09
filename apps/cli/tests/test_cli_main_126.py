@@ -24,7 +24,10 @@ def test_coverage_gaps_cmd126():
     ):
         with patch("onnx9000_cli.main.save_onnx"):
             with patch("builtins.open"), patch("os.path.exists", return_value=False):
-                with patch("json.load", return_value=[{"action": "remove_node", "node_name": "1"}]):
+                with patch(
+                    "json.load",
+                    return_value=[{"action": "remove_node", "node_name": "1"}],
+                ):
                     for cmd_args in cmds:
                         with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
                             try:

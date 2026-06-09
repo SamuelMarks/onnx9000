@@ -340,7 +340,11 @@ def _map_keras_cropping(dim: str) -> Callable:
             elif dim == "2D":
                 cropping = ((cropping, cropping), (cropping, cropping))
             else:
-                cropping = ((cropping, cropping), (cropping, cropping), (cropping, cropping))
+                cropping = (
+                    (cropping, cropping),
+                    (cropping, cropping),
+                    (cropping, cropping),
+                )
         starts = []
         ends = []
         axes = []
@@ -379,7 +383,10 @@ def _map_keras_cropping(dim: str) -> Callable:
         ends_name = builder.make_node("Constant", [], {"value": ends}, node.name + "_ends")[0]
         axes_name = builder.make_node("Constant", [], {"value": axes}, node.name + "_axes")[0]
         return builder.make_node(
-            "Slice", [node.inputs[0], starts_name, ends_name, axes_name], attr, node.name
+            "Slice",
+            [node.inputs[0], starts_name, ends_name, axes_name],
+            attr,
+            node.name,
         )
 
     return _impl
@@ -5682,7 +5689,10 @@ def _map_keras_mel_spectrogram(builder: TFToONNXGraphBuilder, node: TFNode) -> l
         "Constant", [], {"value": [stride]}, node.name + "_frame_step"
     )[0]
     stft_out = builder.make_node(
-        "STFT", [node.inputs[0], frame_step_node, frame_length_node], attr, node.name + "_stft"
+        "STFT",
+        [node.inputs[0], frame_step_node, frame_length_node],
+        attr,
+        node.name + "_stft",
     )[0]
     mag = builder.make_node("Abs", [stft_out], {}, node.name + "_mag")[0]
     mel_weights = builder.make_node("Constant", [], {"value": []}, node.name + "_mel_weights")[0]

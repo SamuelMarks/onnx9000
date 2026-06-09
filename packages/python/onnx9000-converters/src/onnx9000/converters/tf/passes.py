@@ -6,7 +6,9 @@ from onnx9000.core.ir import Graph, Node
 def constant_folding_pass(graph: Graph) -> Graph:
     """Execute the constant folding pass operation."""
     try:
-        from onnx9000.optimizer.simplifier.passes.constant_folding import constant_folding
+        from onnx9000.optimizer.simplifier.passes.constant_folding import (
+            constant_folding,
+        )
 
         constant_folding(graph)
     except ImportError:

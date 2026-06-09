@@ -2,7 +2,11 @@
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
-from onnx9000.core.memory_planner import ArenaSimulator, MemoryBlock, simulate_memory_plan
+from onnx9000.core.memory_planner import (
+    ArenaSimulator,
+    MemoryBlock,
+    simulate_memory_plan,
+)
 
 
 def test_memory_block():

@@ -7,7 +7,10 @@ logger = logging.getLogger(__name__)
 
 
 def quantize_model(
-    model_path: str, method: str = "dynamic", gptq_bits: int = 4, gptq_group_size: int = 128
+    model_path: str,
+    method: str = "dynamic",
+    gptq_bits: int = 4,
+    gptq_group_size: int = 128,
 ):
     """Quantize ONNX model for Web."""
     try:

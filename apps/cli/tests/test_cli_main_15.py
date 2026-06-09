@@ -66,11 +66,15 @@ def test_coverage_gaps_cmd15():
         patch("builtins.open"),
         patch("json.load", return_value=[{"action": "remove_node", "node_name": "1"}]),
         patch("os.path.exists", return_value=False),
-        patch("importlib.util.spec_from_file_location", return_value=MagicMock(loader=MagicMock())),
+        patch(
+            "importlib.util.spec_from_file_location",
+            return_value=MagicMock(loader=MagicMock()),
+        ),
         patch("importlib.util.module_from_spec", return_value=MagicMock()),
     ):
         with patch(
-            "onnx9000_cli.main.simplify", return_value=MagicMock(nodes=[DummyNode("2", "2", ["2"])])
+            "onnx9000_cli.main.simplify",
+            return_value=MagicMock(nodes=[DummyNode("2", "2", ["2"])]),
         ):
             try:
                 simplify_cmd(args)

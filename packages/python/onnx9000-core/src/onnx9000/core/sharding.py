@@ -51,7 +51,9 @@ class SPMDLoweringPass:
                         and getattr(inp, "is_initializer", False)
                     ):
                         allgather_out = Tensor(
-                            name=f"{inp.name}_allgather", shape=inp.shape, dtype=inp.dtype
+                            name=f"{inp.name}_allgather",
+                            shape=inp.shape,
+                            dtype=inp.dtype,
                         )
                         allgather_node = Node("AllGather", inputs=[inp], outputs=[allgather_out])
                         inserted_before.append(allgather_node)
@@ -101,7 +103,9 @@ class SPMDLoweringPass:
                 if node.outputs:
                     orig_out = node.outputs[0]
                     comp_out = Tensor(
-                        name=f"{orig_out.name}_comp", shape=orig_out.shape, dtype=orig_out.dtype
+                        name=f"{orig_out.name}_comp",
+                        shape=orig_out.shape,
+                        dtype=orig_out.dtype,
                     )
                     node.outputs[0] = comp_out
                     a2a_out_node = Node("AllToAll", inputs=[comp_out], outputs=[orig_out])
@@ -120,7 +124,9 @@ class SPMDLoweringPass:
                     inserted_before.append(recv_node)
 
                     send_node = Node(
-                        "Send", inputs=[node.outputs[0] if node.outputs else recv_out], outputs=[]
+                        "Send",
+                        inputs=[node.outputs[0] if node.outputs else recv_out],
+                        outputs=[],
                     )
                     inserted_after.append(send_node)
 
@@ -132,7 +138,9 @@ class SPMDLoweringPass:
             ):
                 orig_out = node.outputs[0]
                 node.outputs[0] = Tensor(
-                    name=f"{orig_out.name}_stage", shape=orig_out.shape, dtype=orig_out.dtype
+                    name=f"{orig_out.name}_stage",
+                    shape=orig_out.shape,
+                    dtype=orig_out.dtype,
                 )
                 node.outputs[0].sharding = PartitionSpec("pp")
 

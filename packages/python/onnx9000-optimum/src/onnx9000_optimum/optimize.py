@@ -8,7 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 def optimize_model(
-    model_path: str, level: str = "O1", disable_fusion: bool = False, optimize_size: bool = False
+    model_path: str,
+    level: str = "O1",
+    disable_fusion: bool = False,
+    optimize_size: bool = False,
 ):
     """Optimize ONNX model using onnx9000 core optimizer passes."""
     try:

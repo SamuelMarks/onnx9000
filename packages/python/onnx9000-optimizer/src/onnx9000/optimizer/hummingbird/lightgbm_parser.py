@@ -37,7 +37,12 @@ def _traverse_lgbm_tree(node_dict: dict, abstractions: TreeAbstractions) -> None
 
         # Add placeholder
         abstractions.add_node(
-            feature, threshold, -1, -1, 0.0, missing=1 if node_dict.get("default_left", True) else 0
+            feature,
+            threshold,
+            -1,
+            -1,
+            0.0,
+            missing=1 if node_dict.get("default_left", True) else 0,
         )
 
         # Left child

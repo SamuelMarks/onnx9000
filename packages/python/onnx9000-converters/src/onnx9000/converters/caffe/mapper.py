@@ -106,7 +106,10 @@ class CaffeMapper:
 
                 outputs = [self.get_tensor(t) for t in tops]  # pragma: no cover
                 node = Node("Conv", inputs=inputs, outputs=outputs, name=name)  # pragma: no cover
-                node.attributes["kernel_shape"] = [kernel_size, kernel_size]  # pragma: no cover
+                node.attributes["kernel_shape"] = [
+                    kernel_size,
+                    kernel_size,
+                ]  # pragma: no cover
                 node.attributes["strides"] = [stride, stride]  # pragma: no cover
                 node.attributes["pads"] = [pad, pad, pad, pad]  # pragma: no cover
                 node.attributes["group"] = group  # pragma: no cover
@@ -161,7 +164,10 @@ class CaffeMapper:
 
                 op = "AveragePool" if pool_type in ("AVE", 1) else "MaxPool"  # pragma: no cover
                 node = Node(op, inputs=inputs, outputs=outputs, name=name)  # pragma: no cover
-                node.attributes["kernel_shape"] = [kernel_size, kernel_size]  # pragma: no cover
+                node.attributes["kernel_shape"] = [
+                    kernel_size,
+                    kernel_size,
+                ]  # pragma: no cover
                 node.attributes["strides"] = [stride, stride]  # pragma: no cover
                 node.attributes["pads"] = [pad, pad, pad, pad]  # pragma: no cover
                 self.graph.add_node(node)  # pragma: no cover

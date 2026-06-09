@@ -4,7 +4,11 @@ import unittest
 
 import numpy as np
 import onnx9000.core.onnx_pb2 as onnx_pb2
-from onnx9000.core.parser.core import _parse_attribute, parse_model, parse_sparse_tensor_proto
+from onnx9000.core.parser.core import (
+    _parse_attribute,
+    parse_model,
+    parse_sparse_tensor_proto,
+)
 
 
 class TestParserSparse(unittest.TestCase):

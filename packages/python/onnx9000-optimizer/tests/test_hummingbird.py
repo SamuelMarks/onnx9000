@@ -86,7 +86,10 @@ def test_transpilation_engine() -> None:
 
 def test_engine_verbose() -> None:
     """Tests the engine verbose functionality."""
-    from onnx9000.optimizer.hummingbird.engine import TranspilationEngine, TreeAbstractions
+    from onnx9000.optimizer.hummingbird.engine import (
+        TranspilationEngine,
+        TreeAbstractions,
+    )
 
     engine = TranspilationEngine("webgpu", verbose=True)
     engine.register_backend("test", None)

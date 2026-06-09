@@ -58,7 +58,9 @@ def _generate_unary_op(
 def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
     """Implement the generate_relu method or operation."""
     return _generate_unary_op(
-        node, generator_context, "std::max(static_cast<float>(0.0f), static_cast<float>({inp}))"
+        node,
+        generator_context,
+        "std::max(static_cast<float>(0.0f), static_cast<float>({inp}))",
     )
 
 
@@ -128,7 +130,9 @@ def generate_thresholded_relu(
     """Generate the code implementation for the Thresholded Relu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
-        node, generator_context, f"({{inp}} > static_cast<float>({alpha})) ? {{inp}} : 0.0f"
+        node,
+        generator_context,
+        f"({{inp}} > static_cast<float>({alpha})) ? {{inp}} : 0.0f",
     )
 
 

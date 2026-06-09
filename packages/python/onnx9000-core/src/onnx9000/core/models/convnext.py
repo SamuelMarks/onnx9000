@@ -97,7 +97,8 @@ class ConvNeXt:
         x = self.stem_conv(
             x,
             get_param(
-                "stem_conv.weight", [self.stem_conv.out_channels, self.stem_conv.in_channels, 4, 4]
+                "stem_conv.weight",
+                [self.stem_conv.out_channels, self.stem_conv.in_channels, 4, 4],
             ),
             get_param("stem_conv.bias", [self.stem_conv.out_channels]),
         )

@@ -16,7 +16,10 @@ from .mapping import map_onnx_shape_to_tflite, map_onnx_type_to_tflite
 
 
 def compile_graph_to_tflite(
-    graph: Graph, exporter: TFLiteExporter, keep_nchw: bool = False, quant_mode: str = "none"
+    graph: Graph,
+    exporter: TFLiteExporter,
+    keep_nchw: bool = False,
+    quant_mode: str = "none",
 ) -> int:
     """Compile an ONNX graph into a TFLite SubGraph and write to builder."""
     # 31. Phase 2: Global Layout Transposition (NCHW -> NHWC)

@@ -31,7 +31,11 @@ def test_fold_batchnorm_fallback() -> None:
     g.add_tensor(bn_out)
 
     conv = Node("Conv", inputs=[in_t, w_conv, b_conv], outputs=[conv_out])
-    bn = Node("BatchNormalization", inputs=[conv_out, scale, b_bn, mean, var], outputs=[bn_out])
+    bn = Node(
+        "BatchNormalization",
+        inputs=[conv_out, scale, b_bn, mean, var],
+        outputs=[bn_out],
+    )
     g.add_node(conv)
     g.add_node(bn)
 
@@ -53,16 +57,28 @@ def test_fold_batchnorm_no_b_conv() -> None:
         dtype="float32",
     )
     scale = Constant(
-        "scale", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "scale",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     b_bn = Constant(
-        "b_bn", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "b_bn",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     mean = Constant(
-        "mean", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "mean",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     var = Constant(
-        "var", shape=(2,), values=np.ones((2,), dtype=np.float32).tobytes(), dtype="float32"
+        "var",
+        shape=(2,),
+        values=np.ones((2,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
 
     g.add_tensor(w_conv)
@@ -80,7 +96,11 @@ def test_fold_batchnorm_no_b_conv() -> None:
 
     # Conv with no bias
     conv = Node("Conv", inputs=[in_t, w_conv], outputs=[conv_out])
-    bn = Node("BatchNormalization", inputs=[conv_out, scale, b_bn, mean, var], outputs=[bn_out])
+    bn = Node(
+        "BatchNormalization",
+        inputs=[conv_out, scale, b_bn, mean, var],
+        outputs=[bn_out],
+    )
     g.add_node(conv)
     g.add_node(bn)
 
@@ -98,16 +118,28 @@ def test_fold_batchnorm_exception() -> None:
     # Wrong shape to trigger exception during reshaping
     w_conv = Constant("w_conv", shape=(2, 2, 3, 3), values=b"bad", dtype="float32")
     scale = Constant(
-        "scale", shape=(1,), values=np.ones((1,), dtype=np.float32).tobytes(), dtype="float32"
+        "scale",
+        shape=(1,),
+        values=np.ones((1,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     b_bn = Constant(
-        "b_bn", shape=(1,), values=np.ones((1,), dtype=np.float32).tobytes(), dtype="float32"
+        "b_bn",
+        shape=(1,),
+        values=np.ones((1,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     mean = Constant(
-        "mean", shape=(1,), values=np.ones((1,), dtype=np.float32).tobytes(), dtype="float32"
+        "mean",
+        shape=(1,),
+        values=np.ones((1,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
     var = Constant(
-        "var", shape=(1,), values=np.ones((1,), dtype=np.float32).tobytes(), dtype="float32"
+        "var",
+        shape=(1,),
+        values=np.ones((1,), dtype=np.float32).tobytes(),
+        dtype="float32",
     )
 
     g.add_tensor(w_conv)
@@ -124,7 +156,11 @@ def test_fold_batchnorm_exception() -> None:
     g.add_tensor(bn_out)
 
     conv = Node("Conv", inputs=[in_t, w_conv], outputs=[conv_out])
-    bn = Node("BatchNormalization", inputs=[conv_out, scale, b_bn, mean, var], outputs=[bn_out])
+    bn = Node(
+        "BatchNormalization",
+        inputs=[conv_out, scale, b_bn, mean, var],
+        outputs=[bn_out],
+    )
     g.add_node(conv)
     g.add_node(bn)
 

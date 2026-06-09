@@ -19,10 +19,15 @@ def main():
     )
     parser.add_argument("input_model", help="Path to the input .onnx model.")
     parser.add_argument(
-        "--output-dir", "-o", default="out_c", help="Output directory for generated C files."
+        "--output-dir",
+        "-o",
+        default="out_c",
+        help="Output directory for generated C files.",
     )
     parser.add_argument(
-        "--prefix", default="model_", help="Prefix for generated C functions and structs."
+        "--prefix",
+        default="model_",
+        help="Prefix for generated C functions and structs.",
     )
     parser.add_argument(
         "--target",
@@ -30,10 +35,14 @@ def main():
         help="Target hardware architecture (e.g. 'cmsis-nn', 'esp-nn', 'arduino', 'baremetal', 'avx2').",
     )
     parser.add_argument(
-        "--emit-cpp", action="store_true", help="Emit C++ compatible headers (extern C)."
+        "--emit-cpp",
+        action="store_true",
+        help="Emit C++ compatible headers (extern C).",
     )
     parser.add_argument(
-        "--no-math-h", action="store_true", help="Do not include <math.h> (uses inline fallbacks)."
+        "--no-math-h",
+        action="store_true",
+        help="Do not include <math.h> (uses inline fallbacks).",
     )
 
     parser.add_argument("--quiet", "-q", action="store_true", help="Limit output verbosity")

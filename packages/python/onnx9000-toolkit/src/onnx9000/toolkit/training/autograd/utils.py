@@ -25,7 +25,9 @@ def generate_gradient_proto(fwd_graph: Graph, bwd_graph: Graph) -> list[Gradient
             if weight_name in fwd_graph.initializers:
                 protos.append(
                     GradientProto(
-                        name=f"grad_proto_{weight_name}", weight_name=weight_name, gradient_name=out
+                        name=f"grad_proto_{weight_name}",
+                        weight_name=weight_name,
+                        gradient_name=out,
                     )
                 )
     return protos
@@ -184,7 +186,10 @@ def compile_multi_replica_graph(graph: Graph, num_replicas: int) -> Graph:
                     t = graph.tensors[orig_out]
                     multi_graph.add_tensor(
                         Tensor(
-                            name=out, shape=t.shape, dtype=t.dtype, requires_grad=t.requires_grad
+                            name=out,
+                            shape=t.shape,
+                            dtype=t.dtype,
+                            requires_grad=t.requires_grad,
                         )
                     )
 
@@ -210,7 +215,13 @@ def add_synchronous_barrier(graph: Graph) -> None:
     if "all_gradients_flat" in graph.outputs:
         barrier_out = "barrier_all_gradients_flat"
         graph.add_node(
-            Node("Identity", ["all_gradients_flat"], [barrier_out], {}, name="distributed_barrier")
+            Node(
+                "Identity",
+                ["all_gradients_flat"],
+                [barrier_out],
+                {},
+                name="distributed_barrier",
+            )
         )
         graph.outputs.remove("all_gradients_flat")
         graph.outputs.append(barrier_out)
@@ -245,7 +256,13 @@ def flatten_gradients(graph: Graph) -> None:
 
     all_grads_flat = "all_gradients_flat"
     graph.add_node(
-        Node("Concat", flattened_grads, [all_grads_flat], {"axis": 0}, name="concat_all_grads")
+        Node(
+            "Concat",
+            flattened_grads,
+            [all_grads_flat],
+            {"axis": 0},
+            name="concat_all_grads",
+        )
     )
 
     # Replace individual gradient outputs with the single flat gradient

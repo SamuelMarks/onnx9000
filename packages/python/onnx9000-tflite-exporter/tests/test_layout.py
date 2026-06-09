@@ -127,7 +127,11 @@ def test_layout_fold_constants():
     )
     w_ct_data = struct.pack(f"<{3 * 64 * 9}f", *[1.0] * (3 * 64 * 9))
     graph.tensors["W_ct"] = Tensor(
-        "W_ct", shape=(3, 64, 3, 3), dtype="float32", is_initializer=True, data=w_ct_data
+        "W_ct",
+        shape=(3, 64, 3, 3),
+        dtype="float32",
+        is_initializer=True,
+        data=w_ct_data,
     )
     graph.nodes.append(Node("ConvTranspose", ["X2", "W_ct"], ["Y2"], name="conv_t"))
     w_gemm_data = struct.pack(f"<{200}f", *[1.0] * 200)

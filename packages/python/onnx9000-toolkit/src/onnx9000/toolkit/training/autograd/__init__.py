@@ -20,7 +20,10 @@ from onnx9000.toolkit.training.autograd.compiler import (
     scale_backward_graph_for_mixed_precision,
     validate_training_graph,
 )
-from onnx9000.toolkit.training.autograd.losses import add_crossentropy_loss, add_mse_loss
+from onnx9000.toolkit.training.autograd.losses import (
+    add_crossentropy_loss,
+    add_mse_loss,
+)
 from onnx9000.toolkit.training.autograd.optimizers import (
     add_adam_optimizer,
     add_adamw_optimizer,

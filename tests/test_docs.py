@@ -32,7 +32,8 @@ def test_preprocess_readme():
     import docs.preprocess_readme as pr
 
     with patch(
-        "builtins.open", mock_open(read_data="<!-- DOCS_API_START -->\n<!-- DOCS_API_END -->")
+        "builtins.open",
+        mock_open(read_data="<!-- DOCS_API_START -->\n<!-- DOCS_API_END -->"),
     ):
         pr.generate_readme()
     pr.generate_docs()

@@ -30,7 +30,12 @@ def test_schema_coverage_more() -> None:
 def test_schema_opset_error():
     """Docstring for D103."""
     import pytest
-    from onnx9000.toolkit.script.schema import OpSchema, registry, set_target_opset, validate_op
+    from onnx9000.toolkit.script.schema import (
+        OpSchema,
+        registry,
+        set_target_opset,
+        validate_op,
+    )
 
     registry.register(OpSchema("TargetOp", 20, [], [], []))
     set_target_opset(10)
@@ -40,7 +45,12 @@ def test_schema_opset_error():
 
 def test_schema_valid_attributes():
     """Docstring for D103."""
-    from onnx9000.toolkit.script.schema import OpSchema, registry, set_target_opset, validate_op
+    from onnx9000.toolkit.script.schema import (
+        OpSchema,
+        registry,
+        set_target_opset,
+        validate_op,
+    )
 
     registry.register(OpSchema("ValidAttrOp", 10, [], [], ["my_attr"]))
     set_target_opset(10)

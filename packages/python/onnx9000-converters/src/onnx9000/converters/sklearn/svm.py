@@ -15,7 +15,10 @@ def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Gr
     out_label = graph._uniquify_tensor_name("svm_label")
     out_prob = graph._uniquify_tensor_name("svm_probabilities")
     node = Node(
-        "SVMClassifier", domain="ai.onnx.ml", inputs=input_names, outputs=[out_label, out_prob]
+        "SVMClassifier",
+        domain="ai.onnx.ml",
+        inputs=input_names,
+        outputs=[out_label, out_prob],
     )
     if hasattr(estimator, "kernel"):
         node.attrs["kernel_type"] = Attribute(

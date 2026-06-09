@@ -6,7 +6,9 @@ from onnx9000.converters.paddle.builder import PaddleToONNXGraphBuilder
 from onnx9000.converters.paddle.parsers import PaddleNode
 
 
-def _map_resize(mode: str) -> Callable[[PaddleToONNXGraphBuilder, PaddleNode], list[str]]:
+def _map_resize(
+    mode: str,
+) -> Callable[[PaddleToONNXGraphBuilder, PaddleNode], list[str]]:
     """Execute the  map resize operation."""
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
@@ -174,7 +176,11 @@ def _map_grid_sampler(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> li
     return builder.make_node(
         "GridSample",
         inputs,
-        {"mode": mode, "padding_mode": padding_mode, "align_corners": align_corners_int},
+        {
+            "mode": mode,
+            "padding_mode": padding_mode,
+            "align_corners": align_corners_int,
+        },
         node.name,
     )
 

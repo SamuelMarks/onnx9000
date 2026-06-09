@@ -103,7 +103,13 @@ class ZooCatalog:
 
         rows = cursor.fetchall()
         return [
-            {"id": r[0], "hub": r[1], "git_sha": r[2], "hyperparameters": r[3], "tensor_hash": r[4]}
+            {
+                "id": r[0],
+                "hub": r[1],
+                "git_sha": r[2],
+                "hyperparameters": r[3],
+                "tensor_hash": r[4],
+            }
             for r in rows
         ]
 

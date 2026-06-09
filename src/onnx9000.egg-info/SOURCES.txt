@@ -1,0 +1,17 @@
+LICENSE-APACHE
+LICENSE-MIT
+README.md
+pyproject.toml
+src/onnx9000/__init__.py
+src/onnx9000/arena.py
+src/onnx9000/fusion.py
+src/onnx9000/wasm.py
+src/onnx9000/wgsl.py
+src/onnx9000.egg-info/PKG-INFO
+src/onnx9000.egg-info/SOURCES.txt
+src/onnx9000.egg-info/dependency_links.txt
+src/onnx9000.egg-info/requires.txt
+src/onnx9000.egg-info/top_level.txt
+tests/test_codegen_py.py
+tests/test_docs.py
+tests/test_scripts.py

@@ -110,10 +110,19 @@ def apply_automatic_mixed_precision(graph: Graph, target_dtype: str = "float16")
 
         cast_out = f"{init}_cast_{target_dtype}"
         graph.add_tensor(
-            Tensor(name=cast_out, shape=tensor.shape, dtype=target_dtype, requires_grad=False)
+            Tensor(
+                name=cast_out,
+                shape=tensor.shape,
+                dtype=target_dtype,
+                requires_grad=False,
+            )
         )
         cast_node = Node(
-            "Cast", [init], [cast_out], {"to": target_onnx_type}, name=f"amp_cast_{init}"
+            "Cast",
+            [init],
+            [cast_out],
+            {"to": target_onnx_type},
+            name=f"amp_cast_{init}",
         )
 
         # Insert cast node at the beginning of the graph
@@ -137,7 +146,12 @@ def apply_automatic_mixed_precision(graph: Graph, target_dtype: str = "float16")
 
         cast_out = f"{inp}_cast_{target_dtype}"
         graph.add_tensor(
-            Tensor(name=cast_out, shape=tensor.shape, dtype=target_dtype, requires_grad=False)
+            Tensor(
+                name=cast_out,
+                shape=tensor.shape,
+                dtype=target_dtype,
+                requires_grad=False,
+            )
         )
         cast_node = Node(
             "Cast", [inp], [cast_out], {"to": target_onnx_type}, name=f"amp_cast_{inp}"
@@ -187,7 +201,11 @@ def cast_gradients_to_fp32(graph: Graph) -> None:
 
             if producer_idx >= 0:
                 cast_node = Node(
-                    "Cast", [g_fp32], [g], {"to": fp32_onnx_type}, name=f"amp_cast_grad_fp32_{g}"
+                    "Cast",
+                    [g_fp32],
+                    [g],
+                    {"to": fp32_onnx_type},
+                    name=f"amp_cast_grad_fp32_{g}",
                 )
                 graph.nodes.insert(producer_idx + 1, cast_node)
 
@@ -234,7 +252,13 @@ def scale_backward_graph_for_mixed_precision(graph: Graph, scale_factor: float =
     """
     scale_name = "mixed_precision_scale"
     graph.add_node(
-        Node("Constant", [], [scale_name], {"value": [scale_factor]}, name="mp_scale_const")
+        Node(
+            "Constant",
+            [],
+            [scale_name],
+            {"value": [scale_factor]},
+            name="mp_scale_const",
+        )
     )
 
     # Scale the loss gradient explicitly instead of requiring it as an external input
@@ -268,7 +292,11 @@ def scale_backward_graph_for_mixed_precision(graph: Graph, scale_factor: float =
             t = graph.tensors[grad_name]
             graph.add_tensor(Tensor(name=scaled_name, shape=t.shape, dtype=t.dtype))
             div_node = Node(
-                "Div", [scaled_name, scale_name], [grad_name], {}, name=f"{param}_unscale_div"
+                "Div",
+                [scaled_name, scale_name],
+                [grad_name],
+                {},
+                name=f"{param}_unscale_div",
             )
 
             consumer_idx = len(graph.nodes)
@@ -522,7 +550,13 @@ def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
     if len(is_invalid_nodes) > 1:
         # Recursively Or them all, for simplicity just pseudo-code a ReduceOr
         graph.add_node(
-            Node("ReduceOr", is_invalid_nodes, [global_invalid], {}, name="global_invalid_reduce")
+            Node(
+                "ReduceOr",
+                is_invalid_nodes,
+                [global_invalid],
+                {},
+                name="global_invalid_reduce",
+            )
         )
     else:
         global_invalid = is_invalid_nodes[0]
@@ -595,7 +629,11 @@ def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph
                 )
             if in_name in grads and grads[in_name] != g_in and in_tensor:
                 bwd_graph.add_tensor(
-                    Tensor(name=grads[in_name], shape=in_tensor.shape, dtype=in_tensor.dtype)
+                    Tensor(
+                        name=grads[in_name],
+                        shape=in_tensor.shape,
+                        dtype=in_tensor.dtype,
+                    )
                 )
     for init_name in fwd_graph.initializers:
         if init_name in grads and grads[init_name] not in bwd_graph.outputs:
@@ -820,7 +858,13 @@ class AOTBuilder:
                 delta_out = f"delta_{param}"
                 # delta = new - old
                 opt_graph.add_node(
-                    Node("Sub", [param_new, param], [delta_out], {}, name=f"{param}_delta_sub")
+                    Node(
+                        "Sub",
+                        [param_new, param],
+                        [delta_out],
+                        {},
+                        name=f"{param}_delta_sub",
+                    )
                 )
                 opt_graph.outputs.remove(param_new)
                 opt_graph.outputs.append(delta_out)

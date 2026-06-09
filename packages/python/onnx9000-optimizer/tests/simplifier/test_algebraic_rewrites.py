@@ -105,7 +105,9 @@ def test_reduce_mean_scalar():
 
 def test_constant_folding_tile():
     """Tests the constant folding tile functionality."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("mock_tile")
     data_val = np.array([1, 2], dtype=np.float32)
@@ -128,7 +130,9 @@ def test_constant_folding_tile():
 
 def test_constant_folding_split():
     """Tests the constant folding split functionality."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("mock_split")
     data_val = np.array([1, 2, 3, 4], dtype=np.float32)

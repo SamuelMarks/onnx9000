@@ -21,7 +21,14 @@ def test_transformers_cmd_success(tmp_path):
             args = argparse.Namespace(task="text-classification", inputs=["hello", "world"])
             transformers_cmd(args)
             mock_run.assert_called_once_with(
-                ["node", str(index_js), "transformers", "text-classification", "hello", "world"],
+                [
+                    "node",
+                    str(index_js),
+                    "transformers",
+                    "text-classification",
+                    "hello",
+                    "world",
+                ],
                 check=True,
             )
 

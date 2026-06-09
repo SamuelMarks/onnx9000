@@ -2,7 +2,11 @@
 
 from typing import Any, Optional
 
-from onnx9000.core.exceptions import UnsupportedOpError, UnsupportedOpsetError, ValidationError
+from onnx9000.core.exceptions import (
+    UnsupportedOpError,
+    UnsupportedOpsetError,
+    ValidationError,
+)
 from onnx9000.core.ir import Node, Tensor
 
 

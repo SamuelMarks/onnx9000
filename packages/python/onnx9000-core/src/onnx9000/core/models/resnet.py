@@ -39,7 +39,12 @@ class BasicBlock:
         self.downsample = downsample
         if self.downsample:
             self.downsample_conv = ConvND(
-                2, inplanes, planes * self.expansion, kernel_size=1, stride=stride, bias=False
+                2,
+                inplanes,
+                planes * self.expansion,
+                kernel_size=1,
+                stride=stride,
+                bias=False,
             )
             self.downsample_bn = BatchNormalization(planes * self.expansion)
 
@@ -83,18 +88,31 @@ class BasicBlock:
                 x,
                 get_param(
                     f"{self.prefix}.downsample.0.weight",
-                    [self.downsample_conv.out_channels, self.downsample_conv.in_channels, 1, 1],
+                    [
+                        self.downsample_conv.out_channels,
+                        self.downsample_conv.in_channels,
+                        1,
+                        1,
+                    ],
                 ),
             )
             identity = self.downsample_bn(
                 identity,
-                get_param(f"{self.prefix}.downsample.1.weight", [self.downsample_bn.num_features]),
-                get_param(f"{self.prefix}.downsample.1.bias", [self.downsample_bn.num_features]),
                 get_param(
-                    f"{self.prefix}.downsample.1.running_mean", [self.downsample_bn.num_features]
+                    f"{self.prefix}.downsample.1.weight",
+                    [self.downsample_bn.num_features],
                 ),
                 get_param(
-                    f"{self.prefix}.downsample.1.running_var", [self.downsample_bn.num_features]
+                    f"{self.prefix}.downsample.1.bias",
+                    [self.downsample_bn.num_features],
+                ),
+                get_param(
+                    f"{self.prefix}.downsample.1.running_mean",
+                    [self.downsample_bn.num_features],
+                ),
+                get_param(
+                    f"{self.prefix}.downsample.1.running_var",
+                    [self.downsample_bn.num_features],
                 ),
             )
 
@@ -123,7 +141,12 @@ class ResNet:
         self.num_classes = num_classes
 
     def _make_layer(
-        self, block_type: type, planes: int, blocks: int, stride: int = 1, prefix: str = ""
+        self,
+        block_type: type,
+        planes: int,
+        blocks: int,
+        stride: int = 1,
+        prefix: str = "",
     ) -> list[Any]:
         """Make layer."""
         downsample = False
@@ -142,7 +165,8 @@ class ResNet:
         # Initial Convolution
         """Call."""
         x = self.conv1(
-            x, get_param("conv1.weight", [self.conv1.out_channels, self.conv1.in_channels, 7, 7])
+            x,
+            get_param("conv1.weight", [self.conv1.out_channels, self.conv1.in_channels, 7, 7]),
         )
         x = self.bn1(
             x,

@@ -183,7 +183,9 @@ def test_cf_has_nan_inf_types():
     g.tensors["t3"] = t3
     with pytest.MonkeyPatch.context() as m:
         m.setattr(
-            ConstantFoldingPass, "_evaluate_node", lambda *args: [np.array([1.0]), float("nan")]
+            ConstantFoldingPass,
+            "_evaluate_node",
+            lambda *args: [np.array([1.0]), float("nan")],
         )
         g.nodes.append(Node("Split", ["t3"], ["out3", "out4"]))
         cf._run_once(g)
@@ -274,7 +276,9 @@ def test_gathernd_batch_dims():
 def test_cf_constant_attr_types_1():
     """Test cf constant attr types 1."""
     from onnx9000.core.ir import Attribute, Graph, Node
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("TestCFConstants")
     n1 = Node("Constant", [], ["out1"])
@@ -311,7 +315,9 @@ def test_cf_constant_attr_types():
     """Test cf constant attr types."""
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("TestCFConstants")
     n1 = Node("Constant", [], ["out1"])
@@ -351,7 +357,9 @@ def test_cf_tensor_proto():
     import numpy as np
     from onnx9000.core.dtypes import DType
     from onnx9000.core.ir import Attribute, Graph, Node, Tensor
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     g = Graph("TestTensorProto")
     n = Node("Constant", [], ["out"])
@@ -380,20 +388,28 @@ def test_cf_scatternd():
     assert out[0, 0] == 1.0
     assert out[1, 1] == 2.0
     out_add = cf._evaluate_node(
-        "ScatterND", [data, indices, updates], {"reduction": Attribute("r", "STRING", "add")}
+        "ScatterND",
+        [data, indices, updates],
+        {"reduction": Attribute("r", "STRING", "add")},
     )
     assert out_add[0, 0] == 1.0
     data2 = np.ones((3, 3), dtype=np.float32) * 2
     out_mul = cf._evaluate_node(
-        "ScatterND", [data2, indices, updates], {"reduction": Attribute("r", "STRING", "mul")}
+        "ScatterND",
+        [data2, indices, updates],
+        {"reduction": Attribute("r", "STRING", "mul")},
     )
     assert out_mul[0, 0] == 2.0
     out_max = cf._evaluate_node(
-        "ScatterND", [data2, indices, updates], {"reduction": Attribute("r", "STRING", "max")}
+        "ScatterND",
+        [data2, indices, updates],
+        {"reduction": Attribute("r", "STRING", "max")},
     )
     assert out_max[1, 1] == 2.0
     out_min = cf._evaluate_node(
-        "ScatterND", [data2, indices, updates], {"reduction": Attribute("r", "STRING", "min")}
+        "ScatterND",
+        [data2, indices, updates],
+        {"reduction": Attribute("r", "STRING", "min")},
     )
     assert out_min[0, 0] == 1.0
 
@@ -421,7 +437,9 @@ def test_cf_sequence_ops():
     split_tiny = np.array([1])
     assert (
         cf._evaluate_node(
-            "SplitToSequence", [data_large, split_tiny], {"axis": Attribute("a", "INT", 0)}
+            "SplitToSequence",
+            [data_large, split_tiny],
+            {"axis": Attribute("a", "INT", 0)},
         )
         is None
     )
@@ -476,7 +494,9 @@ def test_cf_nms():
 
 def test_cf_final_lines_1():
     """Test cf final lines 1."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     cf = ConstantFoldingPass()
     t = Tensor("t", (1,), DType.FLOAT32)
@@ -502,7 +522,9 @@ def test_cf_final_lines_1():
 
     with pytest.MonkeyPatch.context() as m:
         m.setattr(
-            ConstantFoldingPass, "_evaluate_node", lambda *args: [np.array([1.0]), float("nan")]
+            ConstantFoldingPass,
+            "_evaluate_node",
+            lambda *args: [np.array([1.0]), float("nan")],
         )
         g.nodes.append(Node("Split", ["t3"], ["out3", "out4"]))
         cf._run_once(g)
@@ -547,7 +569,9 @@ def test_cf_pass_subgraph_recurse_real():
 
 def test_cf_final_lines():
     """Test cf final lines."""
-    from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
+    from onnx9000.optimizer.simplifier.passes.constant_folding import (
+        ConstantFoldingPass,
+    )
 
     cf = ConstantFoldingPass()
     t = Tensor("t", (1,), DType.FLOAT32)
@@ -573,7 +597,9 @@ def test_cf_final_lines():
 
     with pytest.MonkeyPatch.context() as m:
         m.setattr(
-            ConstantFoldingPass, "_evaluate_node", lambda *args: [np.array([1.0]), float("nan")]
+            ConstantFoldingPass,
+            "_evaluate_node",
+            lambda *args: [np.array([1.0]), float("nan")],
         )
         g.nodes.append(Node("Split", ["t3"], ["out3", "out4"]))
         cf._run_once(g)

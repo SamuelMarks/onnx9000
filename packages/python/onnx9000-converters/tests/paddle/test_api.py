@@ -52,7 +52,8 @@ def test_convert_paddle_to_onnx_else_branch() -> None:
         return out
 
     with patch(
-        "onnx9000.converters.paddle.builder.PaddleToONNXGraphBuilder.make_node", new=mock_make_node
+        "onnx9000.converters.paddle.builder.PaddleToONNXGraphBuilder.make_node",
+        new=mock_make_node,
     ):
         g = convert_paddle_to_onnx(program_data)
         assert len(g.outputs) > 0

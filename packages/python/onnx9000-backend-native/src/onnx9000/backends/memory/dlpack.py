@@ -7,7 +7,11 @@ from typing import Any, Optional
 class DLDataType(ctypes.Structure):
     """Represents the D L Data Type class."""
 
-    _fields_ = [("code", ctypes.c_uint8), ("bits", ctypes.c_uint8), ("lanes", ctypes.c_uint16)]
+    _fields_ = [
+        ("code", ctypes.c_uint8),
+        ("bits", ctypes.c_uint8),
+        ("lanes", ctypes.c_uint16),
+    ]
 
 
 class DLDevice(ctypes.Structure):
@@ -48,7 +52,9 @@ kDLROCM = 10
 kDLCUDAManaged = 13
 
 
-def from_dlpack(ext_tensor: Any) -> tuple[ctypes.c_void_p, tuple, tuple | None, DLDataType, int]:
+def from_dlpack(
+    ext_tensor: Any,
+) -> tuple[ctypes.c_void_p, tuple, tuple | None, DLDataType, int]:
     """Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
 
     Extract raw memory pointers (`data_ptr`) strictly natively.

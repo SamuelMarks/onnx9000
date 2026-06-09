@@ -23,7 +23,10 @@ def test_coverage_gaps_cmd62():
                     MagicMock(name="2", op_type="2", inputs=["2"]),
                 ],
                 tensors={},
-                inputs=[MagicMock(name="old", shape=(1, 2)), MagicMock(name="o", shape=())],
+                inputs=[
+                    MagicMock(name="old", shape=(1, 2)),
+                    MagicMock(name="o", shape=()),
+                ],
                 outputs=[],
             ),
         ),
@@ -31,7 +34,10 @@ def test_coverage_gaps_cmd62():
         patch("builtins.open"),
         patch(
             "json.load",
-            return_value=[{"action": "remove_node", "node_name": "1"}, {"action": "other"}],
+            return_value=[
+                {"action": "remove_node", "node_name": "1"},
+                {"action": "other"},
+            ],
         ),
     ):
         for cmd_args in cmds:

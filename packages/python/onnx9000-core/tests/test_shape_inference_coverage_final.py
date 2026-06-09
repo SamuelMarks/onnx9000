@@ -67,7 +67,10 @@ def test_shape_inference_nms():
     n = Node("NonMaxSuppression", ["boxes", "scores"], ["selected_indices"])
     g.add_node(n)
     infer_shapes_and_types(g)
-    assert g.tensors["selected_indices"].shape == (DynamicDim("num_selected_indices"), 3)
+    assert g.tensors["selected_indices"].shape == (
+        DynamicDim("num_selected_indices"),
+        3,
+    )
     assert g.tensors["selected_indices"].dtype == DType.INT64
 
 

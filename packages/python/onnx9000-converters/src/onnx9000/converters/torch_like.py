@@ -1496,7 +1496,9 @@ def export_AdditionalInputs(input_tensor, *args, **kwargs):
         Tensor: The result of the export_AdditionalInputs operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_AdditionalInputs as core_export_AdditionalInputs
+    from onnx9000.core.ops.torch_auto import (
+        export_AdditionalInputs as core_export_AdditionalInputs,
+    )
 
     return core_export_AdditionalInputs(input_tensor, *args, **kwargs)
 
@@ -1602,7 +1604,9 @@ def export_draft_export(input_tensor, *args, **kwargs):
         Tensor: The result of the export_draft_export operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_draft_export as core_export_draft_export
+    from onnx9000.core.ops.torch_auto import (
+        export_draft_export as core_export_draft_export,
+    )
 
     return core_export_draft_export(input_tensor, *args, **kwargs)
 
@@ -1655,7 +1659,9 @@ def export_ExportedProgram(input_tensor, *args, **kwargs):
         Tensor: The result of the export_ExportedProgram operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_ExportedProgram as core_export_ExportedProgram
+    from onnx9000.core.ops.torch_auto import (
+        export_ExportedProgram as core_export_ExportedProgram,
+    )
 
     return core_export_ExportedProgram(input_tensor, *args, **kwargs)
 
@@ -1691,7 +1697,9 @@ def export_FlatArgsAdapter(input_tensor, *args, **kwargs):
         Tensor: The result of the export_FlatArgsAdapter operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_FlatArgsAdapter as core_export_FlatArgsAdapter
+    from onnx9000.core.ops.torch_auto import (
+        export_FlatArgsAdapter as core_export_FlatArgsAdapter,
+    )
 
     return core_export_FlatArgsAdapter(input_tensor, *args, **kwargs)
 
@@ -1725,7 +1733,9 @@ def export_ModuleCallEntry(input_tensor, *args, **kwargs):
         Tensor: The result of the export_ModuleCallEntry operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_ModuleCallEntry as core_export_ModuleCallEntry
+    from onnx9000.core.ops.torch_auto import (
+        export_ModuleCallEntry as core_export_ModuleCallEntry,
+    )
 
     return core_export_ModuleCallEntry(input_tensor, *args, **kwargs)
 
@@ -1797,7 +1807,9 @@ def export_ShapesCollection(input_tensor, *args, **kwargs):
         Tensor: The result of the export_ShapesCollection operation.
 
     """
-    from onnx9000.core.ops.torch_auto import export_ShapesCollection as core_export_ShapesCollection
+    from onnx9000.core.ops.torch_auto import (
+        export_ShapesCollection as core_export_ShapesCollection,
+    )
 
     return core_export_ShapesCollection(input_tensor, *args, **kwargs)
 
@@ -1850,7 +1862,9 @@ def get_default_device(input_tensor, *args, **kwargs):
         Tensor: The result of the get_default_device operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_default_device as core_get_default_device
+    from onnx9000.core.ops.torch_auto import (
+        get_default_device as core_get_default_device,
+    )
 
     return core_get_default_device(input_tensor, *args, **kwargs)
 
@@ -2026,7 +2040,9 @@ def is_warn_always_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_warn_always_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_warn_always_enabled as core_is_warn_always_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_warn_always_enabled as core_is_warn_always_enabled,
+    )
 
     return core_is_warn_always_enabled(input_tensor, *args, **kwargs)
 
@@ -2179,7 +2195,9 @@ def set_default_device(input_tensor, *args, **kwargs):
         Tensor: The result of the set_default_device operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_default_device as core_set_default_device
+    from onnx9000.core.ops.torch_auto import (
+        set_default_device as core_set_default_device,
+    )
 
     return core_set_default_device(input_tensor, *args, **kwargs)
 
@@ -2196,7 +2214,9 @@ def set_default_tensor_type(input_tensor, *args, **kwargs):
         Tensor: The result of the set_default_tensor_type operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_default_tensor_type as core_set_default_tensor_type
+    from onnx9000.core.ops.torch_auto import (
+        set_default_tensor_type as core_set_default_tensor_type,
+    )
 
     return core_set_default_tensor_type(input_tensor, *args, **kwargs)
 
@@ -2712,7 +2732,9 @@ def BenchmarkExecutionStats(input_tensor, *args, **kwargs):
         Tensor: The result of the BenchmarkExecutionStats operation.
 
     """
-    from onnx9000.core.ops.torch_auto import BenchmarkExecutionStats as core_BenchmarkExecutionStats
+    from onnx9000.core.ops.torch_auto import (
+        BenchmarkExecutionStats as core_BenchmarkExecutionStats,
+    )
 
     return core_BenchmarkExecutionStats(input_tensor, *args, **kwargs)
 
@@ -2865,7 +2887,9 @@ def CompleteArgumentSpec(input_tensor, *args, **kwargs):
         Tensor: The result of the CompleteArgumentSpec operation.
 
     """
-    from onnx9000.core.ops.torch_auto import CompleteArgumentSpec as core_CompleteArgumentSpec
+    from onnx9000.core.ops.torch_auto import (
+        CompleteArgumentSpec as core_CompleteArgumentSpec,
+    )
 
     return core_CompleteArgumentSpec(input_tensor, *args, **kwargs)
 
@@ -2899,7 +2923,9 @@ def ConcreteModuleType(input_tensor, *args, **kwargs):
         Tensor: The result of the ConcreteModuleType operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ConcreteModuleType as core_ConcreteModuleType
+    from onnx9000.core.ops.torch_auto import (
+        ConcreteModuleType as core_ConcreteModuleType,
+    )
 
     return core_ConcreteModuleType(input_tensor, *args, **kwargs)
 
@@ -3005,7 +3031,9 @@ def DisableTorchFunction(input_tensor, *args, **kwargs):
         Tensor: The result of the DisableTorchFunction operation.
 
     """
-    from onnx9000.core.ops.torch_auto import DisableTorchFunction as core_DisableTorchFunction
+    from onnx9000.core.ops.torch_auto import (
+        DisableTorchFunction as core_DisableTorchFunction,
+    )
 
     return core_DisableTorchFunction(input_tensor, *args, **kwargs)
 
@@ -3126,7 +3154,9 @@ def ExcludeDispatchKeyGuard(input_tensor, *args, **kwargs):
         Tensor: The result of the ExcludeDispatchKeyGuard operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ExcludeDispatchKeyGuard as core_ExcludeDispatchKeyGuard
+    from onnx9000.core.ops.torch_auto import (
+        ExcludeDispatchKeyGuard as core_ExcludeDispatchKeyGuard,
+    )
 
     return core_ExcludeDispatchKeyGuard(input_tensor, *args, **kwargs)
 
@@ -3313,7 +3343,9 @@ def GraphExecutorState(input_tensor, *args, **kwargs):
         Tensor: The result of the GraphExecutorState operation.
 
     """
-    from onnx9000.core.ops.torch_auto import GraphExecutorState as core_GraphExecutorState
+    from onnx9000.core.ops.torch_auto import (
+        GraphExecutorState as core_GraphExecutorState,
+    )
 
     return core_GraphExecutorState(input_tensor, *args, **kwargs)
 
@@ -3721,7 +3753,9 @@ def ScriptClassFunction(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptClassFunction operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptClassFunction as core_ScriptClassFunction
+    from onnx9000.core.ops.torch_auto import (
+        ScriptClassFunction as core_ScriptClassFunction,
+    )
 
     return core_ScriptClassFunction(input_tensor, *args, **kwargs)
 
@@ -3755,7 +3789,9 @@ def ScriptDictIterator(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptDictIterator operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptDictIterator as core_ScriptDictIterator
+    from onnx9000.core.ops.torch_auto import (
+        ScriptDictIterator as core_ScriptDictIterator,
+    )
 
     return core_ScriptDictIterator(input_tensor, *args, **kwargs)
 
@@ -3772,7 +3808,9 @@ def ScriptDictKeyIterator(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptDictKeyIterator operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptDictKeyIterator as core_ScriptDictKeyIterator
+    from onnx9000.core.ops.torch_auto import (
+        ScriptDictKeyIterator as core_ScriptDictKeyIterator,
+    )
 
     return core_ScriptDictKeyIterator(input_tensor, *args, **kwargs)
 
@@ -3823,7 +3861,9 @@ def ScriptListIterator(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptListIterator operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptListIterator as core_ScriptListIterator
+    from onnx9000.core.ops.torch_auto import (
+        ScriptListIterator as core_ScriptListIterator,
+    )
 
     return core_ScriptListIterator(input_tensor, *args, **kwargs)
 
@@ -3874,7 +3914,9 @@ def ScriptModuleSerializer(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptModuleSerializer operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptModuleSerializer as core_ScriptModuleSerializer
+    from onnx9000.core.ops.torch_auto import (
+        ScriptModuleSerializer as core_ScriptModuleSerializer,
+    )
 
     return core_ScriptModuleSerializer(input_tensor, *args, **kwargs)
 
@@ -3908,7 +3950,9 @@ def ScriptObjectProperty(input_tensor, *args, **kwargs):
         Tensor: The result of the ScriptObjectProperty operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ScriptObjectProperty as core_ScriptObjectProperty
+    from onnx9000.core.ops.torch_auto import (
+        ScriptObjectProperty as core_ScriptObjectProperty,
+    )
 
     return core_ScriptObjectProperty(input_tensor, *args, **kwargs)
 
@@ -4097,7 +4141,9 @@ def ThroughputBenchmark(input_tensor, *args, **kwargs):
         Tensor: The result of the ThroughputBenchmark operation.
 
     """
-    from onnx9000.core.ops.torch_auto import ThroughputBenchmark as core_ThroughputBenchmark
+    from onnx9000.core.ops.torch_auto import (
+        ThroughputBenchmark as core_ThroughputBenchmark,
+    )
 
     return core_ThroughputBenchmark(input_tensor, *args, **kwargs)
 
@@ -4254,7 +4300,9 @@ def clear_autocast_cache(input_tensor, *args, **kwargs):
         Tensor: The result of the clear_autocast_cache operation.
 
     """
-    from onnx9000.core.ops.torch_auto import clear_autocast_cache as core_clear_autocast_cache
+    from onnx9000.core.ops.torch_auto import (
+        clear_autocast_cache as core_clear_autocast_cache,
+    )
 
     return core_clear_autocast_cache(input_tensor, *args, **kwargs)
 
@@ -4271,7 +4319,9 @@ def cpp_OrderedModuleDict(input_tensor, *args, **kwargs):
         Tensor: The result of the cpp_OrderedModuleDict operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cpp_OrderedModuleDict as core_cpp_OrderedModuleDict
+    from onnx9000.core.ops.torch_auto import (
+        cpp_OrderedModuleDict as core_cpp_OrderedModuleDict,
+    )
 
     return core_cpp_OrderedModuleDict(input_tensor, *args, **kwargs)
 
@@ -4288,7 +4338,9 @@ def cpp_OrderedTensorDict(input_tensor, *args, **kwargs):
         Tensor: The result of the cpp_OrderedTensorDict operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cpp_OrderedTensorDict as core_cpp_OrderedTensorDict
+    from onnx9000.core.ops.torch_auto import (
+        cpp_OrderedTensorDict as core_cpp_OrderedTensorDict,
+    )
 
     return core_cpp_OrderedTensorDict(input_tensor, *args, **kwargs)
 
@@ -4407,7 +4459,9 @@ def get_autocast_cpu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the get_autocast_cpu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_autocast_cpu_dtype as core_get_autocast_cpu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        get_autocast_cpu_dtype as core_get_autocast_cpu_dtype,
+    )
 
     return core_get_autocast_cpu_dtype(input_tensor, *args, **kwargs)
 
@@ -4424,7 +4478,9 @@ def get_autocast_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the get_autocast_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_autocast_dtype as core_get_autocast_dtype
+    from onnx9000.core.ops.torch_auto import (
+        get_autocast_dtype as core_get_autocast_dtype,
+    )
 
     return core_get_autocast_dtype(input_tensor, *args, **kwargs)
 
@@ -4441,7 +4497,9 @@ def get_autocast_gpu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the get_autocast_gpu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_autocast_gpu_dtype as core_get_autocast_gpu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        get_autocast_gpu_dtype as core_get_autocast_gpu_dtype,
+    )
 
     return core_get_autocast_gpu_dtype(input_tensor, *args, **kwargs)
 
@@ -4458,7 +4516,9 @@ def get_autocast_ipu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the get_autocast_ipu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_autocast_ipu_dtype as core_get_autocast_ipu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        get_autocast_ipu_dtype as core_get_autocast_ipu_dtype,
+    )
 
     return core_get_autocast_ipu_dtype(input_tensor, *args, **kwargs)
 
@@ -4475,7 +4535,9 @@ def get_autocast_xla_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the get_autocast_xla_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_autocast_xla_dtype as core_get_autocast_xla_dtype
+    from onnx9000.core.ops.torch_auto import (
+        get_autocast_xla_dtype as core_get_autocast_xla_dtype,
+    )
 
     return core_get_autocast_xla_dtype(input_tensor, *args, **kwargs)
 
@@ -4509,7 +4571,9 @@ def get_num_interop_threads(input_tensor, *args, **kwargs):
         Tensor: The result of the get_num_interop_threads operation.
 
     """
-    from onnx9000.core.ops.torch_auto import get_num_interop_threads as core_get_num_interop_threads
+    from onnx9000.core.ops.torch_auto import (
+        get_num_interop_threads as core_get_num_interop_threads,
+    )
 
     return core_get_num_interop_threads(input_tensor, *args, **kwargs)
 
@@ -4700,7 +4764,9 @@ def is_anomaly_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_anomaly_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_anomaly_enabled as core_is_anomaly_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_anomaly_enabled as core_is_anomaly_enabled,
+    )
 
     return core_is_anomaly_enabled(input_tensor, *args, **kwargs)
 
@@ -4736,7 +4802,9 @@ def is_autocast_cpu_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_autocast_cpu_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_autocast_cpu_enabled as core_is_autocast_cpu_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_autocast_cpu_enabled as core_is_autocast_cpu_enabled,
+    )
 
     return core_is_autocast_cpu_enabled(input_tensor, *args, **kwargs)
 
@@ -4753,7 +4821,9 @@ def is_autocast_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_autocast_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_autocast_enabled as core_is_autocast_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_autocast_enabled as core_is_autocast_enabled,
+    )
 
     return core_is_autocast_enabled(input_tensor, *args, **kwargs)
 
@@ -4770,7 +4840,9 @@ def is_autocast_ipu_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_autocast_ipu_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_autocast_ipu_enabled as core_is_autocast_ipu_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_autocast_ipu_enabled as core_is_autocast_ipu_enabled,
+    )
 
     return core_is_autocast_ipu_enabled(input_tensor, *args, **kwargs)
 
@@ -4787,7 +4859,9 @@ def is_autocast_xla_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the is_autocast_xla_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_autocast_xla_enabled as core_is_autocast_xla_enabled
+    from onnx9000.core.ops.torch_auto import (
+        is_autocast_xla_enabled as core_is_autocast_xla_enabled,
+    )
 
     return core_is_autocast_xla_enabled(input_tensor, *args, **kwargs)
 
@@ -4927,7 +5001,9 @@ def parse_type_comment(input_tensor, *args, **kwargs):
         Tensor: The result of the parse_type_comment operation.
 
     """
-    from onnx9000.core.ops.torch_auto import parse_type_comment as core_parse_type_comment
+    from onnx9000.core.ops.torch_auto import (
+        parse_type_comment as core_parse_type_comment,
+    )
 
     return core_parse_type_comment(input_tensor, *args, **kwargs)
 
@@ -4978,7 +5054,9 @@ def set_anomaly_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the set_anomaly_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_anomaly_enabled as core_set_anomaly_enabled
+    from onnx9000.core.ops.torch_auto import (
+        set_anomaly_enabled as core_set_anomaly_enabled,
+    )
 
     return core_set_anomaly_enabled(input_tensor, *args, **kwargs)
 
@@ -5014,7 +5092,9 @@ def set_autocast_cpu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_cpu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_cpu_dtype as core_set_autocast_cpu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_cpu_dtype as core_set_autocast_cpu_dtype,
+    )
 
     return core_set_autocast_cpu_dtype(input_tensor, *args, **kwargs)
 
@@ -5050,7 +5130,9 @@ def set_autocast_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_dtype as core_set_autocast_dtype
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_dtype as core_set_autocast_dtype,
+    )
 
     return core_set_autocast_dtype(input_tensor, *args, **kwargs)
 
@@ -5067,7 +5149,9 @@ def set_autocast_enabled(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_enabled operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_enabled as core_set_autocast_enabled
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_enabled as core_set_autocast_enabled,
+    )
 
     return core_set_autocast_enabled(input_tensor, *args, **kwargs)
 
@@ -5084,7 +5168,9 @@ def set_autocast_gpu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_gpu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_gpu_dtype as core_set_autocast_gpu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_gpu_dtype as core_set_autocast_gpu_dtype,
+    )
 
     return core_set_autocast_gpu_dtype(input_tensor, *args, **kwargs)
 
@@ -5101,7 +5187,9 @@ def set_autocast_ipu_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_ipu_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_ipu_dtype as core_set_autocast_ipu_dtype
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_ipu_dtype as core_set_autocast_ipu_dtype,
+    )
 
     return core_set_autocast_ipu_dtype(input_tensor, *args, **kwargs)
 
@@ -5137,7 +5225,9 @@ def set_autocast_xla_dtype(input_tensor, *args, **kwargs):
         Tensor: The result of the set_autocast_xla_dtype operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_autocast_xla_dtype as core_set_autocast_xla_dtype
+    from onnx9000.core.ops.torch_auto import (
+        set_autocast_xla_dtype as core_set_autocast_xla_dtype,
+    )
 
     return core_set_autocast_xla_dtype(input_tensor, *args, **kwargs)
 
@@ -5173,7 +5263,9 @@ def set_flush_denormal(input_tensor, *args, **kwargs):
         Tensor: The result of the set_flush_denormal operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_flush_denormal as core_set_flush_denormal
+    from onnx9000.core.ops.torch_auto import (
+        set_flush_denormal as core_set_flush_denormal,
+    )
 
     return core_set_flush_denormal(input_tensor, *args, **kwargs)
 
@@ -5190,7 +5282,9 @@ def set_num_interop_threads(input_tensor, *args, **kwargs):
         Tensor: The result of the set_num_interop_threads operation.
 
     """
-    from onnx9000.core.ops.torch_auto import set_num_interop_threads as core_set_num_interop_threads
+    from onnx9000.core.ops.torch_auto import (
+        set_num_interop_threads as core_set_num_interop_threads,
+    )
 
     return core_set_num_interop_threads(input_tensor, *args, **kwargs)
 
@@ -5496,7 +5590,9 @@ def adaptive_avg_pool1d(input_tensor, *args, **kwargs):
         Tensor: The result of the adaptive_avg_pool1d operation.
 
     """
-    from onnx9000.core.ops.torch_auto import adaptive_avg_pool1d as core_adaptive_avg_pool1d
+    from onnx9000.core.ops.torch_auto import (
+        adaptive_avg_pool1d as core_adaptive_avg_pool1d,
+    )
 
     return core_adaptive_avg_pool1d(input_tensor, *args, **kwargs)
 
@@ -5513,7 +5609,9 @@ def adaptive_max_pool1d(input_tensor, *args, **kwargs):
         Tensor: The result of the adaptive_max_pool1d operation.
 
     """
-    from onnx9000.core.ops.torch_auto import adaptive_max_pool1d as core_adaptive_max_pool1d
+    from onnx9000.core.ops.torch_auto import (
+        adaptive_max_pool1d as core_adaptive_max_pool1d,
+    )
 
     return core_adaptive_max_pool1d(input_tensor, *args, **kwargs)
 
@@ -5683,7 +5781,9 @@ def affine_grid_generator(input_tensor, *args, **kwargs):
         Tensor: The result of the affine_grid_generator operation.
 
     """
-    from onnx9000.core.ops.torch_auto import affine_grid_generator as core_affine_grid_generator
+    from onnx9000.core.ops.torch_auto import (
+        affine_grid_generator as core_affine_grid_generator,
+    )
 
     return core_affine_grid_generator(input_tensor, *args, **kwargs)
 
@@ -6244,7 +6344,9 @@ def as_strided_scatter(input_tensor, *args, **kwargs):
         Tensor: The result of the as_strided_scatter operation.
 
     """
-    from onnx9000.core.ops.torch_auto import as_strided_scatter as core_as_strided_scatter
+    from onnx9000.core.ops.torch_auto import (
+        as_strided_scatter as core_as_strided_scatter,
+    )
 
     return core_as_strided_scatter(input_tensor, *args, **kwargs)
 
@@ -6622,7 +6724,9 @@ def batch_norm_gather_stats(input_tensor, *args, **kwargs):
         Tensor: The result of the batch_norm_gather_stats operation.
 
     """
-    from onnx9000.core.ops.torch_auto import batch_norm_gather_stats as core_batch_norm_gather_stats
+    from onnx9000.core.ops.torch_auto import (
+        batch_norm_gather_stats as core_batch_norm_gather_stats,
+    )
 
     return core_batch_norm_gather_stats(input_tensor, *args, **kwargs)
 
@@ -6675,7 +6779,9 @@ def batch_norm_update_stats(input_tensor, *args, **kwargs):
         Tensor: The result of the batch_norm_update_stats operation.
 
     """
-    from onnx9000.core.ops.torch_auto import batch_norm_update_stats as core_batch_norm_update_stats
+    from onnx9000.core.ops.torch_auto import (
+        batch_norm_update_stats as core_batch_norm_update_stats,
+    )
 
     return core_batch_norm_update_stats(input_tensor, *args, **kwargs)
 
@@ -6796,7 +6902,9 @@ def bitwise_left_shift(input_tensor, *args, **kwargs):
         Tensor: The result of the bitwise_left_shift operation.
 
     """
-    from onnx9000.core.ops.torch_auto import bitwise_left_shift as core_bitwise_left_shift
+    from onnx9000.core.ops.torch_auto import (
+        bitwise_left_shift as core_bitwise_left_shift,
+    )
 
     return core_bitwise_left_shift(input_tensor, *args, **kwargs)
 
@@ -6847,7 +6955,9 @@ def bitwise_right_shift(input_tensor, *args, **kwargs):
         Tensor: The result of the bitwise_right_shift operation.
 
     """
-    from onnx9000.core.ops.torch_auto import bitwise_right_shift as core_bitwise_right_shift
+    from onnx9000.core.ops.torch_auto import (
+        bitwise_right_shift as core_bitwise_right_shift,
+    )
 
     return core_bitwise_right_shift(input_tensor, *args, **kwargs)
 
@@ -7801,7 +7911,9 @@ def cosine_embedding_loss(input_tensor, *args, **kwargs):
         Tensor: The result of the cosine_embedding_loss operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cosine_embedding_loss as core_cosine_embedding_loss
+    from onnx9000.core.ops.torch_auto import (
+        cosine_embedding_loss as core_cosine_embedding_loss,
+    )
 
     return core_cosine_embedding_loss(input_tensor, *args, **kwargs)
 
@@ -7992,7 +8104,9 @@ def cudnn_convolution_relu(input_tensor, *args, **kwargs):
         Tensor: The result of the cudnn_convolution_relu operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cudnn_convolution_relu as core_cudnn_convolution_relu
+    from onnx9000.core.ops.torch_auto import (
+        cudnn_convolution_relu as core_cudnn_convolution_relu,
+    )
 
     return core_cudnn_convolution_relu(input_tensor, *args, **kwargs)
 
@@ -8028,7 +8142,9 @@ def cudnn_grid_sampler(input_tensor, *args, **kwargs):
         Tensor: The result of the cudnn_grid_sampler operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cudnn_grid_sampler as core_cudnn_grid_sampler
+    from onnx9000.core.ops.torch_auto import (
+        cudnn_grid_sampler as core_cudnn_grid_sampler,
+    )
 
     return core_cudnn_grid_sampler(input_tensor, *args, **kwargs)
 
@@ -8045,7 +8161,9 @@ def cudnn_is_acceptable(input_tensor, *args, **kwargs):
         Tensor: The result of the cudnn_is_acceptable operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cudnn_is_acceptable as core_cudnn_is_acceptable
+    from onnx9000.core.ops.torch_auto import (
+        cudnn_is_acceptable as core_cudnn_is_acceptable,
+    )
 
     return core_cudnn_is_acceptable(input_tensor, *args, **kwargs)
 
@@ -8130,7 +8248,9 @@ def cumulative_trapezoid(input_tensor, *args, **kwargs):
         Tensor: The result of the cumulative_trapezoid operation.
 
     """
-    from onnx9000.core.ops.torch_auto import cumulative_trapezoid as core_cumulative_trapezoid
+    from onnx9000.core.ops.torch_auto import (
+        cumulative_trapezoid as core_cumulative_trapezoid,
+    )
 
     return core_cumulative_trapezoid(input_tensor, *args, **kwargs)
 
@@ -9134,7 +9254,9 @@ def feature_alpha_dropout(input_tensor, *args, **kwargs):
         Tensor: The result of the feature_alpha_dropout operation.
 
     """
-    from onnx9000.core.ops.torch_auto import feature_alpha_dropout as core_feature_alpha_dropout
+    from onnx9000.core.ops.torch_auto import (
+        feature_alpha_dropout as core_feature_alpha_dropout,
+    )
 
     return core_feature_alpha_dropout(input_tensor, *args, **kwargs)
 
@@ -9151,7 +9273,9 @@ def feature_alpha_dropout_(input_tensor, *args, **kwargs):
         Tensor: The result of the feature_alpha_dropout_ operation.
 
     """
-    from onnx9000.core.ops.torch_auto import feature_alpha_dropout_ as core_feature_alpha_dropout_
+    from onnx9000.core.ops.torch_auto import (
+        feature_alpha_dropout_ as core_feature_alpha_dropout_,
+    )
 
     return core_feature_alpha_dropout_(input_tensor, *args, **kwargs)
 
@@ -10003,7 +10127,9 @@ def hinge_embedding_loss(input_tensor, *args, **kwargs):
         Tensor: The result of the hinge_embedding_loss operation.
 
     """
-    from onnx9000.core.ops.torch_auto import hinge_embedding_loss as core_hinge_embedding_loss
+    from onnx9000.core.ops.torch_auto import (
+        hinge_embedding_loss as core_hinge_embedding_loss,
+    )
 
     return core_hinge_embedding_loss(input_tensor, *args, **kwargs)
 
@@ -10598,7 +10724,9 @@ def is_vulkan_available(input_tensor, *args, **kwargs):
         Tensor: The result of the is_vulkan_available operation.
 
     """
-    from onnx9000.core.ops.torch_auto import is_vulkan_available as core_is_vulkan_available
+    from onnx9000.core.ops.torch_auto import (
+        is_vulkan_available as core_is_vulkan_available,
+    )
 
     return core_is_vulkan_available(input_tensor, *args, **kwargs)
 
@@ -11465,7 +11593,9 @@ def margin_ranking_loss(input_tensor, *args, **kwargs):
         Tensor: The result of the margin_ranking_loss operation.
 
     """
-    from onnx9000.core.ops.torch_auto import margin_ranking_loss as core_margin_ranking_loss
+    from onnx9000.core.ops.torch_auto import (
+        margin_ranking_loss as core_margin_ranking_loss,
+    )
 
     return core_margin_ranking_loss(input_tensor, *args, **kwargs)
 
@@ -11601,7 +11731,9 @@ def max_pool1d_with_indices(input_tensor, *args, **kwargs):
         Tensor: The result of the max_pool1d_with_indices operation.
 
     """
-    from onnx9000.core.ops.torch_auto import max_pool1d_with_indices as core_max_pool1d_with_indices
+    from onnx9000.core.ops.torch_auto import (
+        max_pool1d_with_indices as core_max_pool1d_with_indices,
+    )
 
     return core_max_pool1d_with_indices(input_tensor, *args, **kwargs)
 
@@ -11771,7 +11903,9 @@ def miopen_convolution(input_tensor, *args, **kwargs):
         Tensor: The result of the miopen_convolution operation.
 
     """
-    from onnx9000.core.ops.torch_auto import miopen_convolution as core_miopen_convolution
+    from onnx9000.core.ops.torch_auto import (
+        miopen_convolution as core_miopen_convolution,
+    )
 
     return core_miopen_convolution(input_tensor, *args, **kwargs)
 
@@ -11807,7 +11941,9 @@ def miopen_convolution_relu(input_tensor, *args, **kwargs):
         Tensor: The result of the miopen_convolution_relu operation.
 
     """
-    from onnx9000.core.ops.torch_auto import miopen_convolution_relu as core_miopen_convolution_relu
+    from onnx9000.core.ops.torch_auto import (
+        miopen_convolution_relu as core_miopen_convolution_relu,
+    )
 
     return core_miopen_convolution_relu(input_tensor, *args, **kwargs)
 
@@ -11915,7 +12051,9 @@ def mkldnn_convolution(input_tensor, *args, **kwargs):
         Tensor: The result of the mkldnn_convolution operation.
 
     """
-    from onnx9000.core.ops.torch_auto import mkldnn_convolution as core_mkldnn_convolution
+    from onnx9000.core.ops.torch_auto import (
+        mkldnn_convolution as core_mkldnn_convolution,
+    )
 
     return core_mkldnn_convolution(input_tensor, *args, **kwargs)
 
@@ -12325,7 +12463,9 @@ def native_channel_shuffle(input_tensor, *args, **kwargs):
         Tensor: The result of the native_channel_shuffle operation.
 
     """
-    from onnx9000.core.ops.torch_auto import native_channel_shuffle as core_native_channel_shuffle
+    from onnx9000.core.ops.torch_auto import (
+        native_channel_shuffle as core_native_channel_shuffle,
+    )
 
     return core_native_channel_shuffle(input_tensor, *args, **kwargs)
 
@@ -13005,7 +13145,9 @@ def q_per_channel_axis(input_tensor, *args, **kwargs):
         Tensor: The result of the q_per_channel_axis operation.
 
     """
-    from onnx9000.core.ops.torch_auto import q_per_channel_axis as core_q_per_channel_axis
+    from onnx9000.core.ops.torch_auto import (
+        q_per_channel_axis as core_q_per_channel_axis,
+    )
 
     return core_q_per_channel_axis(input_tensor, *args, **kwargs)
 
@@ -13022,7 +13164,9 @@ def q_per_channel_scales(input_tensor, *args, **kwargs):
         Tensor: The result of the q_per_channel_scales operation.
 
     """
-    from onnx9000.core.ops.torch_auto import q_per_channel_scales as core_q_per_channel_scales
+    from onnx9000.core.ops.torch_auto import (
+        q_per_channel_scales as core_q_per_channel_scales,
+    )
 
     return core_q_per_channel_scales(input_tensor, *args, **kwargs)
 
@@ -13126,7 +13270,9 @@ def quantize_per_channel(input_tensor, *args, **kwargs):
         Tensor: The result of the quantize_per_channel operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantize_per_channel as core_quantize_per_channel
+    from onnx9000.core.ops.torch_auto import (
+        quantize_per_channel as core_quantize_per_channel,
+    )
 
     return core_quantize_per_channel(input_tensor, *args, **kwargs)
 
@@ -13143,7 +13289,9 @@ def quantize_per_tensor(input_tensor, *args, **kwargs):
         Tensor: The result of the quantize_per_tensor operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantize_per_tensor as core_quantize_per_tensor
+    from onnx9000.core.ops.torch_auto import (
+        quantize_per_tensor as core_quantize_per_tensor,
+    )
 
     return core_quantize_per_tensor(input_tensor, *args, **kwargs)
 
@@ -13179,7 +13327,9 @@ def quantized_batch_norm(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_batch_norm operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_batch_norm as core_quantized_batch_norm
+    from onnx9000.core.ops.torch_auto import (
+        quantized_batch_norm as core_quantized_batch_norm,
+    )
 
     return core_quantized_batch_norm(input_tensor, *args, **kwargs)
 
@@ -13196,7 +13346,9 @@ def quantized_gru_cell(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_gru_cell operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_gru_cell as core_quantized_gru_cell
+    from onnx9000.core.ops.torch_auto import (
+        quantized_gru_cell as core_quantized_gru_cell,
+    )
 
     return core_quantized_gru_cell(input_tensor, *args, **kwargs)
 
@@ -13213,7 +13365,9 @@ def quantized_lstm_cell(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_lstm_cell operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_lstm_cell as core_quantized_lstm_cell
+    from onnx9000.core.ops.torch_auto import (
+        quantized_lstm_cell as core_quantized_lstm_cell,
+    )
 
     return core_quantized_lstm_cell(input_tensor, *args, **kwargs)
 
@@ -13230,7 +13384,9 @@ def quantized_max_pool1d(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_max_pool1d operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_max_pool1d as core_quantized_max_pool1d
+    from onnx9000.core.ops.torch_auto import (
+        quantized_max_pool1d as core_quantized_max_pool1d,
+    )
 
     return core_quantized_max_pool1d(input_tensor, *args, **kwargs)
 
@@ -13247,7 +13403,9 @@ def quantized_max_pool2d(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_max_pool2d operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_max_pool2d as core_quantized_max_pool2d
+    from onnx9000.core.ops.torch_auto import (
+        quantized_max_pool2d as core_quantized_max_pool2d,
+    )
 
     return core_quantized_max_pool2d(input_tensor, *args, **kwargs)
 
@@ -13264,7 +13422,9 @@ def quantized_max_pool3d(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_max_pool3d operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_max_pool3d as core_quantized_max_pool3d
+    from onnx9000.core.ops.torch_auto import (
+        quantized_max_pool3d as core_quantized_max_pool3d,
+    )
 
     return core_quantized_max_pool3d(input_tensor, *args, **kwargs)
 
@@ -13281,7 +13441,9 @@ def quantized_rnn_relu_cell(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_rnn_relu_cell operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_rnn_relu_cell as core_quantized_rnn_relu_cell
+    from onnx9000.core.ops.torch_auto import (
+        quantized_rnn_relu_cell as core_quantized_rnn_relu_cell,
+    )
 
     return core_quantized_rnn_relu_cell(input_tensor, *args, **kwargs)
 
@@ -13298,7 +13460,9 @@ def quantized_rnn_tanh_cell(input_tensor, *args, **kwargs):
         Tensor: The result of the quantized_rnn_tanh_cell operation.
 
     """
-    from onnx9000.core.ops.torch_auto import quantized_rnn_tanh_cell as core_quantized_rnn_tanh_cell
+    from onnx9000.core.ops.torch_auto import (
+        quantized_rnn_tanh_cell as core_quantized_rnn_tanh_cell,
+    )
 
     return core_quantized_rnn_tanh_cell(input_tensor, *args, **kwargs)
 
@@ -14609,7 +14773,9 @@ def split_with_sizes_copy(input_tensor, *args, **kwargs):
         Tensor: The result of the split_with_sizes_copy operation.
 
     """
-    from onnx9000.core.ops.torch_auto import split_with_sizes_copy as core_split_with_sizes_copy
+    from onnx9000.core.ops.torch_auto import (
+        split_with_sizes_copy as core_split_with_sizes_copy,
+    )
 
     return core_split_with_sizes_copy(input_tensor, *args, **kwargs)
 
@@ -14915,7 +15081,9 @@ def sym_constrain_range(input_tensor, *args, **kwargs):
         Tensor: The result of the sym_constrain_range operation.
 
     """
-    from onnx9000.core.ops.torch_auto import sym_constrain_range as core_sym_constrain_range
+    from onnx9000.core.ops.torch_auto import (
+        sym_constrain_range as core_sym_constrain_range,
+    )
 
     return core_sym_constrain_range(input_tensor, *args, **kwargs)
 
@@ -15308,7 +15476,9 @@ def triplet_margin_loss(input_tensor, *args, **kwargs):
         Tensor: The result of the triplet_margin_loss operation.
 
     """
-    from onnx9000.core.ops.torch_auto import triplet_margin_loss as core_triplet_margin_loss
+    from onnx9000.core.ops.torch_auto import (
+        triplet_margin_loss as core_triplet_margin_loss,
+    )
 
     return core_triplet_margin_loss(input_tensor, *args, **kwargs)
 
@@ -15478,7 +15648,9 @@ def unique_consecutive(input_tensor, *args, **kwargs):
         Tensor: The result of the unique_consecutive operation.
 
     """
-    from onnx9000.core.ops.torch_auto import unique_consecutive as core_unique_consecutive
+    from onnx9000.core.ops.torch_auto import (
+        unique_consecutive as core_unique_consecutive,
+    )
 
     return core_unique_consecutive(input_tensor, *args, **kwargs)
 
@@ -15529,7 +15701,9 @@ def unsafe_split_with_sizes(input_tensor, *args, **kwargs):
         Tensor: The result of the unsafe_split_with_sizes operation.
 
     """
-    from onnx9000.core.ops.torch_auto import unsafe_split_with_sizes as core_unsafe_split_with_sizes
+    from onnx9000.core.ops.torch_auto import (
+        unsafe_split_with_sizes as core_unsafe_split_with_sizes,
+    )
 
     return core_unsafe_split_with_sizes(input_tensor, *args, **kwargs)
 
@@ -15682,7 +15856,9 @@ def view_as_complex_copy(input_tensor, *args, **kwargs):
         Tensor: The result of the view_as_complex_copy operation.
 
     """
-    from onnx9000.core.ops.torch_auto import view_as_complex_copy as core_view_as_complex_copy
+    from onnx9000.core.ops.torch_auto import (
+        view_as_complex_copy as core_view_as_complex_copy,
+    )
 
     return core_view_as_complex_copy(input_tensor, *args, **kwargs)
 

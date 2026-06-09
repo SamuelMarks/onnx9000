@@ -18,10 +18,12 @@ def test_coverage_gaps_cmd135():
             with patch("torch.export", MagicMock(load=MagicMock(side_effect=Exception("e")))):
                 with patch("torch.load", return_value=MagicMock()):
                     with patch(
-                        "torch.fx", MagicMock(symbolic_trace=MagicMock(return_value=MagicMock()))
+                        "torch.fx",
+                        MagicMock(symbolic_trace=MagicMock(return_value=MagicMock())),
                     ):
                         with patch(
-                            "onnx9000.converters.parsers", MagicMock(PyTorchFXParser=MagicMock())
+                            "onnx9000.converters.parsers",
+                            MagicMock(PyTorchFXParser=MagicMock()),
                         ):
                             with patch("onnx9000.core.exporter.export_graph"):
                                 with patch("os.path.exists", return_value=False):
@@ -33,7 +35,9 @@ def test_coverage_gaps_cmd135():
                                                 orig_isinstance = builtins.isinstance
 
                                                 def safe_isinstance(
-                                                    obj, cls, orig_isinstance=orig_isinstance
+                                                    obj,
+                                                    cls,
+                                                    orig_isinstance=orig_isinstance,
                                                 ):
                                                     import torch
 

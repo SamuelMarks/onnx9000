@@ -39,7 +39,10 @@ def test_paddle_nn_ops_conv() -> None:
     """Tests the paddle nn ops conv functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
-        "n", "conv2d", inputs={"Input": ["a"], "Filter": ["w"], "Bias": ["b"]}, attrs={"groups": 2}
+        "n",
+        "conv2d",
+        inputs={"Input": ["a"], "Filter": ["w"], "Bias": ["b"]},
+        attrs={"groups": 2},
     )
     NN_OPS_MAPPING["conv2d"](builder, n)
     assert builder.graph.nodes[-1].op_type == "Conv"
@@ -66,7 +69,10 @@ def test_paddle_nn_ops_adaptive_pool() -> None:
     """Tests the paddle nn ops adaptive pool functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
-        "n", "adaptive_pool2d", inputs={"X": ["a"], "Y": ["b"]}, attrs={"pool_size": [1, 1]}
+        "n",
+        "adaptive_pool2d",
+        inputs={"X": ["a"], "Y": ["b"]},
+        attrs={"pool_size": [1, 1]},
     )
     NN_OPS_MAPPING["adaptive_pool2d"](builder, n)
     assert builder.graph.nodes[-1].op_type == "GlobalMaxPool"
@@ -102,7 +108,13 @@ def test_paddle_nn_ops_norms() -> None:
     n = PaddleNode(
         "n",
         "batch_norm",
-        inputs={"X": ["a"], "Scale": ["s"], "Bias": ["b"], "Mean": ["m"], "Variance": ["v"]},
+        inputs={
+            "X": ["a"],
+            "Scale": ["s"],
+            "Bias": ["b"],
+            "Mean": ["m"],
+            "Variance": ["v"],
+        },
     )
     NN_OPS_MAPPING["batch_norm"](builder, n)
     assert builder.graph.nodes[-1].op_type == "BatchNormalization"
@@ -175,7 +187,10 @@ def test_paddle_nn_ops_pad_rois() -> None:
     """Tests the paddle nn ops pad rois functionality."""
     builder = PaddleToONNXGraphBuilder()
     n = PaddleNode(
-        "n", "pad", inputs={"X": ["a"], "Y": ["b"]}, attrs={"paddings": [1, 1], "pad_value": 0.0}
+        "n",
+        "pad",
+        inputs={"X": ["a"], "Y": ["b"]},
+        attrs={"paddings": [1, 1], "pad_value": 0.0},
     )
     NN_OPS_MAPPING["pad"](builder, n)
     assert builder.graph.nodes[-1].op_type == "Pad"

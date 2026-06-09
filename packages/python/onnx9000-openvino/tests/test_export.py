@@ -52,7 +52,10 @@ def test_export_matmul():
         op_type="MatMul",
         inputs=["A", "B"],
         outputs=["C"],
-        attributes={"transA": Attribute("transA", value=1), "transB": Attribute("transB", value=0)},
+        attributes={
+            "transA": Attribute("transA", value=1),
+            "transB": Attribute("transB", value=0),
+        },
     )
     graph.nodes.append(node)
 

@@ -119,13 +119,19 @@ class SwinTransformerBlock:
         )
         x = self.mlp_fc1(
             x,
-            get_param(f"{self.prefix}.mlp_fc1.weight", [int(self.dim * self.mlp_ratio), self.dim]),
+            get_param(
+                f"{self.prefix}.mlp_fc1.weight",
+                [int(self.dim * self.mlp_ratio), self.dim],
+            ),
             get_param(f"{self.prefix}.mlp_fc1.bias", [int(self.dim * self.mlp_ratio)]),
         )
         x = self.act(x)
         x = self.mlp_fc2(
             x,
-            get_param(f"{self.prefix}.mlp_fc2.weight", [self.dim, int(self.dim * self.mlp_ratio)]),
+            get_param(
+                f"{self.prefix}.mlp_fc2.weight",
+                [self.dim, int(self.dim * self.mlp_ratio)],
+            ),
             get_param(f"{self.prefix}.mlp_fc2.bias", [self.dim]),
         )
         x = add(x, identity)
@@ -156,7 +162,11 @@ class SwinTransformer:
         from onnx9000.core.models.vit import PatchEmbed
 
         self.patch_embed = PatchEmbed(
-            img_size=224, patch_size=4, in_chans=3, embed_dim=embed_dim, prefix="patch_embed"
+            img_size=224,
+            patch_size=4,
+            in_chans=3,
+            embed_dim=embed_dim,
+            prefix="patch_embed",
         )
 
         # Build layers (blocks)

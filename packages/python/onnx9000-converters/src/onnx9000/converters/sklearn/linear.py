@@ -132,7 +132,10 @@ def _convert_linear_classifier(
     out_label = graph._uniquify_tensor_name("label")
     out_prob = graph._uniquify_tensor_name("probabilities")
     node = Node(
-        "LinearClassifier", domain="ai.onnx.ml", inputs=input_names, outputs=[out_label, out_prob]
+        "LinearClassifier",
+        domain="ai.onnx.ml",
+        inputs=input_names,
+        outputs=[out_label, out_prob],
     )
     if hasattr(estimator, "coef_"):
         node.attrs["coefficients"] = Attribute(

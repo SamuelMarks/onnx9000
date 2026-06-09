@@ -179,7 +179,11 @@ def test_qlinear_conv():
     g.tensors["ZP"] = Tensor("ZP", shape=(1,), dtype=DType.UINT8)
     g.tensors["Y_q"] = Tensor("Y_q", shape=(1, 6, 8, 8), dtype=DType.UINT8)
     g.nodes.append(
-        Node("QLinearConv", inputs=["X_q", "S", "ZP", "W_q", "S", "ZP", "S", "ZP"], outputs=["Y_q"])
+        Node(
+            "QLinearConv",
+            inputs=["X_q", "S", "ZP", "W_q", "S", "ZP", "S", "ZP"],
+            outputs=["Y_q"],
+        )
     )
     g.tensors["X_q1d"] = Tensor("X_q1d", shape=(1, 3, 10), dtype=DType.UINT8)
     g.tensors["W_q1d"] = Tensor("W_q1d", shape=(6, 3, 3), dtype=DType.UINT8)
@@ -291,7 +295,20 @@ def test_missing_math_and_targets():
     g = Graph("test_math")
     g.tensors["X"] = Tensor("X", shape=(1, 5), dtype=DType.FLOAT32)
     g.tensors["X2"] = Tensor("X2", shape=(1, 5), dtype=DType.FLOAT32)
-    ops = ["Sub", "Mul", "Sqrt", "Pow", "Sin", "Cos", "Tan", "Abs", "Ceil", "Floor", "Round", "Log"]
+    ops = [
+        "Sub",
+        "Mul",
+        "Sqrt",
+        "Pow",
+        "Sin",
+        "Cos",
+        "Tan",
+        "Abs",
+        "Ceil",
+        "Floor",
+        "Round",
+        "Log",
+    ]
     for op in ops:
         out = f"Y_{op}"
         g.tensors[out] = Tensor(out, shape=(1, 5), dtype=DType.FLOAT32)
@@ -407,7 +424,9 @@ def test_target_cmsis():
     g.tensors["Q_C"] = Tensor("Q_C", shape=(1, 2, 2), dtype=DType.INT8)
     g.nodes.append(
         Node(
-            "QLinearMatMul", inputs=["Q_A", "S", "ZP", "Q_B", "S", "ZP", "S", "ZP"], outputs=["Q_C"]
+            "QLinearMatMul",
+            inputs=["Q_A", "S", "ZP", "Q_B", "S", "ZP", "S", "ZP"],
+            outputs=["Q_C"],
         )
     )
     g.tensors["QC_X"] = Tensor("QC_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)
@@ -438,7 +457,9 @@ def test_target_esp():
     g.tensors["Q_C"] = Tensor("Q_C", shape=(1, 2, 2), dtype=DType.INT8)
     g.nodes.append(
         Node(
-            "QLinearMatMul", inputs=["Q_A", "S", "ZP", "Q_B", "S", "ZP", "S", "ZP"], outputs=["Q_C"]
+            "QLinearMatMul",
+            inputs=["Q_A", "S", "ZP", "Q_B", "S", "ZP", "S", "ZP"],
+            outputs=["Q_C"],
         )
     )
     g.tensors["QC_X"] = Tensor("QC_X", shape=(1, 3, 10, 10), dtype=DType.UINT8)

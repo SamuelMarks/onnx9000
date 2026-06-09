@@ -51,7 +51,13 @@ def test_split_to_sequence_vjp_no_split():
 
 def test_binary_cross_entropy_loss_vjp():
     """Tests the binary cross entropy loss vjp functionality."""
-    node = Node("BinaryCrossEntropyLoss", ["pred", "target", "weight"], ["loss"], {}, name="bce_1")
+    node = Node(
+        "BinaryCrossEntropyLoss",
+        ["pred", "target", "weight"],
+        ["loss"],
+        {},
+        name="bce_1",
+    )
     vjp = BinaryCrossEntropyLossVJP()
     nodes, grads = vjp.build_backward_nodes(node, ["dloss"])
     assert True
@@ -98,7 +104,11 @@ def test_register_custom_vjp():
 def test_resize_vjp_bilinear():
     """Tests the resize vjp bilinear functionality."""
     node = Node(
-        "Resize", ["x", "roi", "scales", "sizes"], ["y"], {"mode": "bilinear"}, name="resize_2"
+        "Resize",
+        ["x", "roi", "scales", "sizes"],
+        ["y"],
+        {"mode": "bilinear"},
+        name="resize_2",
     )
     vjp = ResizeVJP()
     vjp.build_backward_nodes(node, ["dy"])

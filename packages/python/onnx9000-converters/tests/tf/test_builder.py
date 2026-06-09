@@ -54,8 +54,18 @@ def test_builder_convert_nhwc_to_nchw() -> None:
 def test_builder_calc_dynamic_padding() -> None:
     """Tests the builder calc dynamic padding functionality."""
     builder = TFToONNXGraphBuilder()
-    assert builder.calc_dynamic_padding("VALID", (1, 5, 5, 1), (3, 3), [1, 1]) == [0, 0, 0, 0]
-    assert builder.calc_dynamic_padding("SAME", (1, 5, 5, 1), (3, 3), [1, 1]) == [1, 1, 1, 1]
+    assert builder.calc_dynamic_padding("VALID", (1, 5, 5, 1), (3, 3), [1, 1]) == [
+        0,
+        0,
+        0,
+        0,
+    ]
+    assert builder.calc_dynamic_padding("SAME", (1, 5, 5, 1), (3, 3), [1, 1]) == [
+        1,
+        1,
+        1,
+        1,
+    ]
 
 
 def test_builder_extract_attr() -> None:
@@ -95,7 +105,11 @@ def test_builder_replace_node() -> None:
     outs = builder.make_node("Relu", ["in_1"], {}, "relu_node")
     old_node_name = builder.graph.nodes[0].name
     new_node = Node(
-        op_type="Sigmoid", inputs=["in_1"], outputs=outs, name="sigmoid_node", attributes={}
+        op_type="Sigmoid",
+        inputs=["in_1"],
+        outputs=outs,
+        name="sigmoid_node",
+        attributes={},
     )
     builder.replace_node(old_node_name, new_node)
     assert builder.graph.nodes[0].op_type == "Sigmoid"

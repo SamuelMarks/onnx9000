@@ -45,7 +45,11 @@ class Scheduler:
         return sample
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Predict the sample at the previous timestep."""
         return None
@@ -113,7 +117,11 @@ class DDPMScheduler(Scheduler):
             self.alphas_cumprod.append(c)
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         t = timestep
@@ -159,7 +167,11 @@ class DDIMScheduler(Scheduler):
             self.alphas_cumprod.append(c)
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         t = timestep
@@ -220,7 +232,11 @@ class EulerDiscreteScheduler(Scheduler):
         return [s / math.sqrt(sigma**2 + 1) for s in sample]
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         step_index = self.timesteps.index(timestep)
@@ -241,7 +257,11 @@ class LCMScheduler(Scheduler):
     """LCMScheduler (Latent Consistency Models) for 2-4 step generation."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         # Fast consistency prediction
@@ -272,7 +292,11 @@ class FlowMatchEulerDiscreteScheduler(Scheduler):
         self.sigmas = [1.0 - (i / num_inference_steps) for i in range(num_inference_steps)] + [0.0]
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         # Rectified flow update
@@ -291,7 +315,11 @@ class SASolverScheduler(Scheduler):
     """SASolverScheduler."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         return [s - 0.02 * m for s, m in zip(sample, model_output)]
@@ -301,7 +329,11 @@ class EulerAncestralDiscreteScheduler(EulerDiscreteScheduler):
     """Class implementation."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         step_index = self.timesteps.index(timestep)
@@ -341,7 +373,11 @@ class DPMSolverMultistepScheduler(Scheduler):
     """Class implementation."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
@@ -351,7 +387,11 @@ class DPMSolverSinglestepScheduler(Scheduler):
     """Class implementation."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         return [s - 0.01 * m for s, m in zip(sample, model_output)]
@@ -379,7 +419,11 @@ class UniPCMultistepScheduler(Scheduler):
     """Class implementation."""
 
     def step(
-        self, model_output: list[float], timestep: int, sample: list[float], generator: Any = None
+        self,
+        model_output: list[float],
+        timestep: int,
+        sample: list[float],
+        generator: Any = None,
     ) -> list[float]:
         """Perform the operation."""
         return [s - 0.01 * m for s, m in zip(sample, model_output)]

@@ -11,7 +11,11 @@ from onnx9000.core.checker import (
     check_model_async,
     check_tensor,
 )
-from onnx9000.core.exceptions import UnsupportedOpError, UnsupportedOpsetError, ValidationError
+from onnx9000.core.exceptions import (
+    UnsupportedOpError,
+    UnsupportedOpsetError,
+    ValidationError,
+)
 
 
 class MockTensor:
@@ -186,7 +190,8 @@ def test_check_model_async():
     m1 = MockModel(
         opset_import=[MockDomain("ai.onnx")],
         graph=MockGraph(
-            inputs=[MockTensor("float", [1])], nodes=[MockNode("Add", ["x", "y"], ["z"])]
+            inputs=[MockTensor("float", [1])],
+            nodes=[MockNode("Add", ["x", "y"], ["z"])],
         ),
     )
     m1.graph.inputs[0].name = "x"

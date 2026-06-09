@@ -19,6 +19,7 @@ def test_coverage_gaps_cmd86():
         with patch("onnx9000_cli.main.save_onnx"):
             with patch("builtins.open"):
                 with patch(
-                    "json.load", return_value=[{"action": "remove_node", "node_name": "n1"}]
+                    "json.load",
+                    return_value=[{"action": "remove_node", "node_name": "n1"}],
                 ):
                     mutate_cmd(args)

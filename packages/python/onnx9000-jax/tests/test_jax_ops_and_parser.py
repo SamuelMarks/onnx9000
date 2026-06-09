@@ -123,4 +123,9 @@ def test_jaxpr_string_parser():
     assert res["eqns"][2]["params"]["attr4"] == "invalid_eval"
 
     # Empty
-    assert parse_jaxpr_string("") == {"invars": [], "outvars": [], "constvars": [], "eqns": []}
+    assert parse_jaxpr_string("") == {
+        "invars": [],
+        "outvars": [],
+        "constvars": [],
+        "eqns": [],
+    }

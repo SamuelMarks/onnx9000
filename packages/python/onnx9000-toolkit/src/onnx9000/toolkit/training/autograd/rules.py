@@ -33,7 +33,13 @@ class AddVJP(VJPRule):
             # have to use Shape, Sub, and dynamic axes generation.
             # We mock the structure here to satisfy the marker requirement.
             nodes.append(
-                Node("Shape", [inp], [shape_name], {}, name=f"{fwd_node.name}_bwd_shape_node_{inp}")
+                Node(
+                    "Shape",
+                    [inp],
+                    [shape_name],
+                    {},
+                    name=f"{fwd_node.name}_bwd_shape_node_{inp}",
+                )
             )
 
             # (Insert dynamic axes reduction sub-graph)
@@ -63,8 +69,20 @@ class MulVJP(VJPRule):
         (in_a, in_b) = (fwd_node.inputs[0], fwd_node.inputs[1])
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         grad_b_name = f"grad_{in_b}_wrt_{fwd_node.name}"
-        node_a = Node("Mul", [grad_out, in_b], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_mul_a")
-        node_b = Node("Mul", [grad_out, in_a], [grad_b_name], {}, name=f"{fwd_node.name}_bwd_mul_b")
+        node_a = Node(
+            "Mul",
+            [grad_out, in_b],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_mul_a",
+        )
+        node_b = Node(
+            "Mul",
+            [grad_out, in_a],
+            [grad_b_name],
+            {},
+            name=f"{fwd_node.name}_bwd_mul_b",
+        )
         return ([node_a, node_b], [grad_a_name, grad_b_name])
 
 
@@ -82,18 +100,37 @@ class MatMulVJP(VJPRule):
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         grad_b_name = f"grad_{in_b}_wrt_{fwd_node.name}"
         node_b_t = Node(
-            "Transpose", [in_b], [b_t], {"perm": [1, 0]}, name=f"{fwd_node.name}_bwd_trans_b"
+            "Transpose",
+            [in_b],
+            [b_t],
+            {"perm": [1, 0]},
+            name=f"{fwd_node.name}_bwd_trans_b",
         )
         node_a_t = Node(
-            "Transpose", [in_a], [a_t], {"perm": [1, 0]}, name=f"{fwd_node.name}_bwd_trans_a"
+            "Transpose",
+            [in_a],
+            [a_t],
+            {"perm": [1, 0]},
+            name=f"{fwd_node.name}_bwd_trans_a",
         )
         node_grad_a = Node(
-            "MatMul", [grad_out, b_t], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_matmul_a"
+            "MatMul",
+            [grad_out, b_t],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_matmul_a",
         )
         node_grad_b = Node(
-            "MatMul", [a_t, grad_out], [grad_b_name], {}, name=f"{fwd_node.name}_bwd_matmul_b"
+            "MatMul",
+            [a_t, grad_out],
+            [grad_b_name],
+            {},
+            name=f"{fwd_node.name}_bwd_matmul_b",
         )
-        return ([node_b_t, node_a_t, node_grad_a, node_grad_b], [grad_a_name, grad_b_name])
+        return (
+            [node_b_t, node_a_t, node_grad_a, node_grad_b],
+            [grad_a_name, grad_b_name],
+        )
 
 
 class SubVJP(VJPRule):
@@ -123,7 +160,13 @@ class DivVJP(VJPRule):
         (in_a, in_b) = (fwd_node.inputs[0], fwd_node.inputs[1])
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         grad_b_name = f"grad_{in_b}_wrt_{fwd_node.name}"
-        node_a = Node("Div", [grad_out, in_b], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_div_a")
+        node_a = Node(
+            "Div",
+            [grad_out, in_b],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_div_a",
+        )
         b_sq_name = f"{in_b}_sq_wrt_{fwd_node.name}"
         node_b_sq = Node("Mul", [in_b, in_b], [b_sq_name], {}, name=f"{fwd_node.name}_bwd_div_b_sq")
         a_div_b_sq_name = f"{in_a}_div_b_sq_wrt_{fwd_node.name}"
@@ -167,10 +210,18 @@ class PowVJP(VJPRule):
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         grad_b_name = f"grad_{in_b}_wrt_{fwd_node.name}"
         node_a = Node(
-            "PowGradA", [grad_out, in_a, in_b], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_pow_a"
+            "PowGradA",
+            [grad_out, in_a, in_b],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_pow_a",
         )
         node_b = Node(
-            "PowGradB", [grad_out, in_a, in_b], [grad_b_name], {}, name=f"{fwd_node.name}_bwd_pow_b"
+            "PowGradB",
+            [grad_out, in_a, in_b],
+            [grad_b_name],
+            {},
+            name=f"{fwd_node.name}_bwd_pow_b",
         )
         return ([node_a, node_b], [grad_a_name, grad_b_name])
 
@@ -187,10 +238,18 @@ class ModVJP(VJPRule):
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         grad_b_name = f"grad_{in_b}_wrt_{fwd_node.name}"
         node_a = Node(
-            "ModGradA", [grad_out, in_a, in_b], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_mod_a"
+            "ModGradA",
+            [grad_out, in_a, in_b],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_mod_a",
         )
         node_b = Node(
-            "ModGradB", [grad_out, in_a, in_b], [grad_b_name], {}, name=f"{fwd_node.name}_bwd_mod_b"
+            "ModGradB",
+            [grad_out, in_a, in_b],
+            [grad_b_name],
+            {},
+            name=f"{fwd_node.name}_bwd_mod_b",
         )
         return ([node_a, node_b], [grad_a_name, grad_b_name])
 
@@ -208,7 +267,11 @@ class AbsVJP(VJPRule):
         sign_name = f"sign_{in_a}_wrt_{fwd_node.name}"
         node_sign = Node("Sign", [in_a], [sign_name], {}, name=f"{fwd_node.name}_bwd_abs_sign")
         node_a = Node(
-            "Mul", [grad_out, sign_name], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_abs_a"
+            "Mul",
+            [grad_out, sign_name],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_abs_a",
         )
         return ([node_sign, node_a], [grad_a_name])
 
@@ -258,7 +321,11 @@ class ExpVJP(VJPRule):
         out_name = fwd_node.outputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "Mul", [grad_out, out_name], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_exp_a"
+            "Mul",
+            [grad_out, out_name],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_exp_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -273,7 +340,13 @@ class LogVJP(VJPRule):
         grad_out = grad_outputs[0]
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
-        node_a = Node("Div", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_log_a")
+        node_a = Node(
+            "Div",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_log_a",
+        )
         return ([node_a], [grad_a_name])
 
 
@@ -289,7 +362,11 @@ class SqrtVJP(VJPRule):
         out_name = fwd_node.outputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "SqrtGrad", [grad_out, out_name], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_sqrt_a"
+            "SqrtGrad",
+            [grad_out, out_name],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_sqrt_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -307,7 +384,11 @@ class SinVJP(VJPRule):
         cos_name = f"cos_{in_a}_wrt_{fwd_node.name}"
         node_cos = Node("Cos", [in_a], [cos_name], {}, name=f"{fwd_node.name}_bwd_sin_cos")
         node_a = Node(
-            "Mul", [grad_out, cos_name], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_sin_a"
+            "Mul",
+            [grad_out, cos_name],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_sin_a",
         )
         return ([node_cos, node_a], [grad_a_name])
 
@@ -327,7 +408,11 @@ class CosVJP(VJPRule):
         neg_sin_name = f"neg_{sin_name}"
         node_neg = Node("Neg", [sin_name], [neg_sin_name], {}, name=f"{fwd_node.name}_bwd_cos_neg")
         node_a = Node(
-            "Mul", [grad_out, neg_sin_name], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_cos_a"
+            "Mul",
+            [grad_out, neg_sin_name],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_cos_a",
         )
         return ([node_sin, node_neg, node_a], [grad_a_name])
 
@@ -343,7 +428,11 @@ class TanVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "TanGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_tan_a"
+            "TanGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_tan_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -359,7 +448,11 @@ class AsinVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AsinGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_asin_a"
+            "AsinGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_asin_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -375,7 +468,11 @@ class AcosVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AcosGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_acos_a"
+            "AcosGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_acos_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -391,7 +488,11 @@ class AtanVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AtanGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_atan_a"
+            "AtanGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_atan_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -410,7 +511,11 @@ class SinhVJP(VJPRule):
             "Cosh", [in_a], [f"cosh_{in_a}"], {}, name=f"{fwd_node.name}_bwd_sinh_cosh"
         )
         node_a = Node(
-            "Mul", [grad_out, f"cosh_{in_a}"], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_sinh_a"
+            "Mul",
+            [grad_out, f"cosh_{in_a}"],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_sinh_a",
         )
         return ([node_cosh, node_a], [grad_a_name])
 
@@ -429,7 +534,11 @@ class CoshVJP(VJPRule):
             "Sinh", [in_a], [f"sinh_{in_a}"], {}, name=f"{fwd_node.name}_bwd_cosh_sinh"
         )
         node_a = Node(
-            "Mul", [grad_out, f"sinh_{in_a}"], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_cosh_a"
+            "Mul",
+            [grad_out, f"sinh_{in_a}"],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_cosh_a",
         )
         return ([node_sinh, node_a], [grad_a_name])
 
@@ -445,7 +554,11 @@ class AsinhVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AsinhGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_asinh_a"
+            "AsinhGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_asinh_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -461,7 +574,11 @@ class AcoshVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AcoshGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_acosh_a"
+            "AcoshGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_acosh_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -477,7 +594,11 @@ class AtanhVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "AtanhGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_atanh_a"
+            "AtanhGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_atanh_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -493,7 +614,11 @@ class ErfVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "ErfGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_erf_a"
+            "ErfGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_erf_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -528,7 +653,11 @@ class ReluVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_grad = Node(
-            "ReluGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_relu"
+            "ReluGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_relu",
         )
         return ([node_grad], [grad_a_name])
 
@@ -564,7 +693,11 @@ class TanhVJP(VJPRule):
         fwd_out = fwd_node.outputs[0]
         grad_in_name = f"grad_{fwd_node.inputs[0]}_wrt_{fwd_node.name}"
         node_grad = Node(
-            "TanhGrad", [grad_out, fwd_out], [grad_in_name], {}, name=f"{fwd_node.name}_bwd_tanh"
+            "TanhGrad",
+            [grad_out, fwd_out],
+            [grad_in_name],
+            {},
+            name=f"{fwd_node.name}_bwd_tanh",
         )
         return ([node_grad], [grad_in_name])
 
@@ -716,14 +849,26 @@ class SiluVJP(VJPRule):
         silu_name = f"{fwd_node.name}_bwd_silu"
         nodes = [
             Node("Sigmoid", [in_a], [sig_name], {}, name=f"{fwd_node.name}_bwd_sig_node"),
-            Node("Mul", [in_a, sig_name], [silu_name], {}, name=f"{fwd_node.name}_bwd_silu_node"),
+            Node(
+                "Mul",
+                [in_a, sig_name],
+                [silu_name],
+                {},
+                name=f"{fwd_node.name}_bwd_silu_node",
+            ),
         ]
 
         # 1 - silu(x)
         c1_name = f"{fwd_node.name}_bwd_c1"
         one_m_silu = f"{fwd_node.name}_bwd_1m_silu"
         nodes.append(
-            Node("Constant", [], [c1_name], {"value": [1.0]}, name=f"{fwd_node.name}_bwd_c1_node")
+            Node(
+                "Constant",
+                [],
+                [c1_name],
+                {"value": [1.0]},
+                name=f"{fwd_node.name}_bwd_c1_node",
+            )
         )
         nodes.append(
             Node(
@@ -1349,7 +1494,11 @@ class TransposeVJP(VJPRule):
             )
         else:
             node_a = Node(
-                "Transpose", [grad_out], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_transpose_a"
+                "Transpose",
+                [grad_out],
+                [grad_a_name],
+                {},
+                name=f"{fwd_node.name}_bwd_transpose_a",
             )
         return ([node_a], [grad_a_name])
 
@@ -1390,7 +1539,11 @@ class UnsqueezeVJP(VJPRule):
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         shape_name = f"shape_{in_a}_wrt_{fwd_node.name}"
         node_shape = Node(
-            "Shape", [in_a], [shape_name], {}, name=f"{fwd_node.name}_bwd_unsqueeze_shape"
+            "Shape",
+            [in_a],
+            [shape_name],
+            {},
+            name=f"{fwd_node.name}_bwd_unsqueeze_shape",
         )
         node_a = Node(
             "Reshape",
@@ -1651,7 +1804,11 @@ class TileVJP(VJPRule):
         repeats = fwd_node.inputs[1]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "TileGrad", [grad_out, repeats], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_tile"
+            "TileGrad",
+            [grad_out, repeats],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_tile",
         )
         return ([node_a], [grad_a_name])
 
@@ -1688,7 +1845,11 @@ class CastVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "CastGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_cast"
+            "CastGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_cast",
         )
         return ([node_a], [grad_a_name])
 
@@ -1928,7 +2089,13 @@ class ClipVJP(VJPRule):
         in_a = inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         bwd_inputs = [grad_out] + inputs
-        node_a = Node("ClipGrad", bwd_inputs, [grad_a_name], {}, name=f"{fwd_node.name}_bwd_clip_a")
+        node_a = Node(
+            "ClipGrad",
+            bwd_inputs,
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_clip_a",
+        )
         grads = [grad_a_name] + [f"grad_{inp}_wrt_{fwd_node.name}" for inp in inputs[1:]]
         return ([node_a], grads)
 
@@ -2038,7 +2205,11 @@ class MishVJP(VJPRule):
         in_a = fwd_node.inputs[0]
         grad_a_name = f"grad_{in_a}_wrt_{fwd_node.name}"
         node_a = Node(
-            "MishGrad", [grad_out, in_a], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_mish_a"
+            "MishGrad",
+            [grad_out, in_a],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_mish_a",
         )
         return ([node_a], [grad_a_name])
 
@@ -2138,7 +2309,11 @@ class CumSumVJP(VJPRule):
         attrs = fwd_node.attributes.copy()
         attrs["reverse"] = 1 if not attrs.get("reverse", 0) else 0
         node_a = Node(
-            "CumSum", [grad_out, axis], [grad_a_name], attrs, name=f"{fwd_node.name}_bwd_cumsum"
+            "CumSum",
+            [grad_out, axis],
+            [grad_a_name],
+            attrs,
+            name=f"{fwd_node.name}_bwd_cumsum",
         )
         return ([node_a], [grad_a_name, f"grad_{axis}_wrt_{fwd_node.name}"])
 
@@ -2299,7 +2474,11 @@ class ResizeVJP(VJPRule):
 
         # Simplified structural return for validation parity
         node_a = Node(
-            "Identity", [grad_out], [grad_a_name], {}, name=f"{fwd_node.name}_bwd_resize_stub"
+            "Identity",
+            [grad_out],
+            [grad_a_name],
+            {},
+            name=f"{fwd_node.name}_bwd_resize_stub",
         )
 
         grads = [grad_a_name]
@@ -2463,7 +2642,13 @@ class BCEWithLogitsLossVJP(VJPRule):
         nodes = [
             Node("Sigmoid", [logits], [sig_out], {}, name=f"{fwd_node.name}_sig_node"),
             Node("Sub", [sig_out, target], [diff_out], {}, name=f"{fwd_node.name}_sub"),
-            Node("Mul", [diff_out, grad_out], [g_name], {}, name=f"{fwd_node.name}_mul_grad"),
+            Node(
+                "Mul",
+                [diff_out, grad_out],
+                [g_name],
+                {},
+                name=f"{fwd_node.name}_mul_grad",
+            ),
         ]
 
         t_g_name = f"grad_{target}_wrt_{fwd_node.name}"
@@ -2501,12 +2686,40 @@ class BinaryCrossEntropyLossVJP(VJPRule):
         nodes = [
             Node("Sub", [pred, target], [pred_diff], {}, name=f"{fwd_node.name}_sub"),
             Node(
-                "ConstantOfShape", [pred], ["_const_1"], {"value": 1.0}, name=f"{fwd_node.name}_c1"
+                "ConstantOfShape",
+                [pred],
+                ["_const_1"],
+                {"value": 1.0},
+                name=f"{fwd_node.name}_c1",
             ),
-            Node("Sub", ["_const_1", pred], [one_minus_pred], {}, name=f"{fwd_node.name}_sub1"),
-            Node("Mul", [pred, one_minus_pred], [denom], {}, name=f"{fwd_node.name}_mul_den"),
-            Node("Div", [pred_diff, denom], [grad_unscaled], {}, name=f"{fwd_node.name}_div"),
-            Node("Mul", [grad_unscaled, grad_out], [g_name], {}, name=f"{fwd_node.name}_mul_grad"),
+            Node(
+                "Sub",
+                ["_const_1", pred],
+                [one_minus_pred],
+                {},
+                name=f"{fwd_node.name}_sub1",
+            ),
+            Node(
+                "Mul",
+                [pred, one_minus_pred],
+                [denom],
+                {},
+                name=f"{fwd_node.name}_mul_den",
+            ),
+            Node(
+                "Div",
+                [pred_diff, denom],
+                [grad_unscaled],
+                {},
+                name=f"{fwd_node.name}_div",
+            ),
+            Node(
+                "Mul",
+                [grad_unscaled, grad_out],
+                [g_name],
+                {},
+                name=f"{fwd_node.name}_mul_grad",
+            ),
         ]
 
         # Target gradient is 0
@@ -2541,9 +2754,27 @@ class SoftmaxCrossEntropyLossVJP(VJPRule):
         diff_name = f"{fwd_node.name}_diff"
 
         nodes = [
-            Node("Softmax", [logits], [softmax_name], {"axis": -1}, name=f"{fwd_node.name}_sm"),
-            Node("Sub", [softmax_name, target], [diff_name], {}, name=f"{fwd_node.name}_sub"),
-            Node("Mul", [diff_name, grad_out], [g_name], {}, name=f"{fwd_node.name}_mul_grad"),
+            Node(
+                "Softmax",
+                [logits],
+                [softmax_name],
+                {"axis": -1},
+                name=f"{fwd_node.name}_sm",
+            ),
+            Node(
+                "Sub",
+                [softmax_name, target],
+                [diff_name],
+                {},
+                name=f"{fwd_node.name}_sub",
+            ),
+            Node(
+                "Mul",
+                [diff_name, grad_out],
+                [g_name],
+                {},
+                name=f"{fwd_node.name}_mul_grad",
+            ),
         ]
 
         # Target gradient is 0 (it's non-differentiable)

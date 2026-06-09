@@ -13,7 +13,15 @@ def test_coverage_gaps_cmd65():
             with patch.object(
                 sys,
                 "argv",
-                ["onnx9000", "convert", "test.onnx", "--from", "unknown", "--to", "onnx"],
+                [
+                    "onnx9000",
+                    "convert",
+                    "test.onnx",
+                    "--from",
+                    "unknown",
+                    "--to",
+                    "onnx",
+                ],
             ):
                 main()
     except Exception:
@@ -26,7 +34,15 @@ def test_coverage_gaps_cmd65():
             with patch.object(
                 sys,
                 "argv",
-                ["onnx9000", "convert", "test.onnx", "--from", "keras", "--to", "unknown"],
+                [
+                    "onnx9000",
+                    "convert",
+                    "test.onnx",
+                    "--from",
+                    "keras",
+                    "--to",
+                    "unknown",
+                ],
             ):
                 main()
     except Exception:

@@ -27,7 +27,8 @@ def test_translate_path():
 
         if handler_cls:
             with patch(
-                "http.server.SimpleHTTPRequestHandler.translate_path", return_value="translated"
+                "http.server.SimpleHTTPRequestHandler.translate_path",
+                return_value="translated",
             ):
                 h = handler_cls.__new__(handler_cls)
                 with patch("os.path.exists", side_effect=[True, False] * 14):

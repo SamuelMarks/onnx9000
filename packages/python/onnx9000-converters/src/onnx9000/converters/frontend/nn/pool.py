@@ -24,7 +24,12 @@ class _MaxPoolNd(Module):
     """Class _MaxPoolNd implementation."""
 
     def __init__(
-        self, kernel_size: Any, stride: Any, padding: Any, dilation: Any, ceil_mode: bool
+        self,
+        kernel_size: Any,
+        stride: Any,
+        padding: Any,
+        dilation: Any,
+        ceil_mode: bool,
     ) -> None:
         """Implement the __init__ method."""
         super().__init__()
@@ -90,7 +95,12 @@ class _AvgPoolNd(Module):
     """Class _AvgPoolNd implementation."""
 
     def __init__(
-        self, kernel_size: Any, stride: Any, padding: Any, ceil_mode: bool, count_include_pad: bool
+        self,
+        kernel_size: Any,
+        stride: Any,
+        padding: Any,
+        ceil_mode: bool,
+        count_include_pad: bool,
     ) -> None:
         """Implement the __init__ method."""
         super().__init__()

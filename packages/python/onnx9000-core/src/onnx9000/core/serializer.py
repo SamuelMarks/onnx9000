@@ -16,7 +16,9 @@ class SerializationError(Onnx9000Error):
     """Exception raised for serialization errors."""
 
 
-def _serialize_shape(shape: tuple[int | str | DynamicDim, ...]) -> onnx_pb2.TensorShapeProto:
+def _serialize_shape(
+    shape: tuple[int | str | DynamicDim, ...],
+) -> onnx_pb2.TensorShapeProto:
     """Serialize our internal shape into ONNX TensorShapeProto."""
     shape_proto = onnx_pb2.TensorShapeProto()
     for dim in shape:

@@ -41,7 +41,9 @@ class DynamicQuantizationPass(QuantizationPass):
     """Pass for dynamic quantization."""
 
     def __init__(
-        self, name: str = "DynamicQuantizationPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "DynamicQuantizationPass",
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -61,7 +63,9 @@ class WeightOnlyQuantizationPass(QuantizationPass):
     """Pass for weight-only quantization."""
 
     def __init__(
-        self, name: str = "WeightOnlyQuantizationPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "WeightOnlyQuantizationPass",
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -152,7 +156,10 @@ class OrtPerfTuningPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
-        model.metadata["ort_tuning"] = {"intra_op_num_threads": 4, "execution_provider": "CPU"}
+        model.metadata["ort_tuning"] = {
+            "intra_op_num_threads": 4,
+            "execution_provider": "CPU",
+        }
         return model
 
 
@@ -160,7 +167,9 @@ class OrtTransformerOptimizationPass(Pass):
     """Pass for OrtTransformerOptimization (Attention/Gelu fusion)."""
 
     def __init__(
-        self, name: str = "OrtTransformerOptimizationPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "OrtTransformerOptimizationPass",
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -184,7 +193,9 @@ class ConstantFoldingPass(Pass):
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
-        from onnx9000.optimizer.simplifier.passes.constant_folding import constant_folding
+        from onnx9000.optimizer.simplifier.passes.constant_folding import (
+            constant_folding,
+        )
 
         constant_folding(model.graph)
         return model
@@ -214,7 +225,9 @@ class StripUnusedInitializersPass(Pass):
     """Strip un-used initializers explicitly before quantization."""
 
     def __init__(
-        self, name: str = "StripUnusedInitializersPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "StripUnusedInitializersPass",
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -240,7 +253,9 @@ class ExtractSymbolicShapesPass(Pass):
     """Extract symbolic shapes to validate layout transformations safely."""
 
     def __init__(
-        self, name: str = "ExtractSymbolicShapesPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "ExtractSymbolicShapesPass",
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)

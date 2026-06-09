@@ -4,7 +4,10 @@ import pytest
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 from onnx9000.optimizer.surgeon.audio import fold_mel_weights
-from onnx9000.optimizer.surgeon.fusions import fuse_flash_attention, fuse_horizontal_gemm
+from onnx9000.optimizer.surgeon.fusions import (
+    fuse_flash_attention,
+    fuse_horizontal_gemm,
+)
 from onnx9000.optimizer.surgeon.layout import optimize_layouts
 from onnx9000.optimizer.surgeon.obfuscator import obfuscate_names
 from onnx9000.optimizer.surgeon.quantization import quantize_ptq

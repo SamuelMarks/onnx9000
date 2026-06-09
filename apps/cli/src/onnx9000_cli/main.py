@@ -1671,7 +1671,8 @@ def arena_cmd(args):
 def main() -> None:
     """CLI Entrypoint."""
     parser = argparse.ArgumentParser(
-        prog="onnx9000", description="ONNX9000 Unified MLOps and Execution Ecosystem CLI."
+        prog="onnx9000",
+        description="ONNX9000 Unified MLOps and Execution Ecosystem CLI.",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
@@ -1849,10 +1850,15 @@ def main() -> None:
         help="Input shape override, e.g., 'x:1,3,224,224'",
     )
     simplify_parser.add_argument(
-        "--target-opset", type=int, help="Target ONNX opset version to explicitly override"
+        "--target-opset",
+        type=int,
+        help="Target ONNX opset version to explicitly override",
     )
     simplify_parser.add_argument(
-        "--tensor-type", type=str, action="append", help="Input type override, e.g., 'x:FLOAT32'"
+        "--tensor-type",
+        type=str,
+        action="append",
+        help="Input type override, e.g., 'x:FLOAT32'",
     )
     simplify_parser.add_argument(
         "--overwrite", action="store_true", help="Overwrite output file if it exists"
@@ -1861,13 +1867,19 @@ def main() -> None:
         "--strip-metadata", action="store_true", help="Strip model metadata"
     )
     simplify_parser.add_argument(
-        "--sort-value-info", action="store_true", help="Sort ValueInfo lists alphabetically"
+        "--sort-value-info",
+        action="store_true",
+        help="Sort ValueInfo lists alphabetically",
     )
     simplify_parser.add_argument(
-        "--diff-json", action="store_true", help="Output a visual DAG difference JSON file"
+        "--diff-json",
+        action="store_true",
+        help="Output a visual DAG difference JSON file",
     )
     simplify_parser.add_argument(
-        "--preserve-nodes", type=str, help="Comma-separated names of nodes to preserve from DCE"
+        "--preserve-nodes",
+        type=str,
+        help="Comma-separated names of nodes to preserve from DCE",
     )
     simplify_parser.set_defaults(func=simplify_cmd)
 
@@ -1978,7 +1990,11 @@ def main() -> None:
         "workspace", help="Initialize a new ONNX9000 workspace"
     )
     workspace_parser.add_argument(
-        "path", type=str, nargs="?", default=".", help="Path to initialize the workspace"
+        "path",
+        type=str,
+        nargs="?",
+        default=".",
+        help="Path to initialize the workspace",
     )
     workspace_parser.set_defaults(func=workspace_cmd)
 
@@ -1991,7 +2007,10 @@ def main() -> None:
     export_parser = subparsers.add_parser("export", help="Export to ONNX or other formats")
     export_parser.add_argument("script", type=str, help="Path to export script")
     export_parser.add_argument(
-        "--format", type=str, default="onnx", help="Output format (onnx, c, cpp, mlir, keras, wasm)"
+        "--format",
+        type=str,
+        default="onnx",
+        help="Output format (onnx, c, cpp, mlir, keras, wasm)",
     )
     export_parser.add_argument("-o", "--output", type=str, help="Output path")
     export_parser.set_defaults(func=export_cmd)
@@ -2012,7 +2031,10 @@ def main() -> None:
     ov_exp.add_argument("-o", "--output-dir", type=str, default=".", help="Output directory")
     ov_exp.add_argument("--fp16", action="store_true", help="Downcast all weights to FP16")
     ov_exp.add_argument(
-        "--shape", type=str, action="append", help="Shape override, e.g., 'input:[1,3,224,224]'"
+        "--shape",
+        type=str,
+        action="append",
+        help="Shape override, e.g., 'input:[1,3,224,224]'",
     )
     ov_exp.add_argument("--data_type", type=str, action="append", help="Data type overrides")
     ov_exp.add_argument("--dynamic-batch", action="store_true", help="Set batch size to dynamic -1")
@@ -2111,7 +2133,11 @@ def main() -> None:
     jit_parser = subparsers.add_parser("jit", help="JIT compile an ONNX model")
     jit_parser.add_argument("model", type=str, help="Path to the model file")
     jit_parser.add_argument(
-        "--target", type=str, default="cpp", choices=["cpp", "wasm"], help="Compilation target"
+        "--target",
+        type=str,
+        default="cpp",
+        choices=["cpp", "wasm"],
+        help="Compilation target",
     )
     jit_parser.add_argument("-o", "--output", type=str, help="Output path")
     jit_parser.set_defaults(func=jit_cmd)
@@ -2221,7 +2247,9 @@ def main() -> None:
     onnx2tf_parser.add_argument("--fp16", action="store_true", help="Trigger FP16 quantization")
     onnx2tf_parser.add_argument("-b", "--batch", type=int, help="Override dynamic batch sizes")
     onnx2tf_parser.add_argument(
-        "--disable-optimization", action="store_true", help="Disable Layout optimizations"
+        "--disable-optimization",
+        action="store_true",
+        help="Disable Layout optimizations",
     )
     onnx2tf_parser.add_argument("--external-weights", type=str, help="Path to external weights")
     onnx2tf_parser.add_argument("--progress", action="store_true", help="Show build progress")
@@ -2236,7 +2264,9 @@ def main() -> None:
     tflite_parser.add_argument("--fp16", action="store_true", help="Trigger FP16 quantization")
     tflite_parser.add_argument("-b", "--batch", type=int, help="Override dynamic batch sizes")
     tflite_parser.add_argument(
-        "--disable-optimization", action="store_true", help="Disable Layout optimizations"
+        "--disable-optimization",
+        action="store_true",
+        help="Disable Layout optimizations",
     )
     tflite_parser.add_argument("--external-weights", type=str, help="Path to external weights")
     tflite_parser.add_argument("--progress", action="store_true", help="Show build progress")

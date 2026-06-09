@@ -83,7 +83,12 @@ class GGUFReader:
             ttype_int = struct.unpack("<I", self.f.read(4))[0]
             ttype = GGUFTensorType(ttype_int)
             offset = struct.unpack("<Q", self.f.read(8))[0]
-            self.tensors[name] = {"name": name, "shape": shape, "type": ttype, "offset": offset}
+            self.tensors[name] = {
+                "name": name,
+                "shape": shape,
+                "type": ttype,
+                "offset": offset,
+            }
         self.alignment = self.kvs.get("general.alignment", 32)
         pos = self.f.tell()
         padding = (self.alignment - pos % self.alignment) % self.alignment

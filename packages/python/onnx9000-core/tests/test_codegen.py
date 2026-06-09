@@ -49,7 +49,9 @@ def test_flax_codegen():
 
     node1 = Node(op_type="BatchNormalization", inputs=[inp], outputs=[Tensor(name="bn_out")])
     node2 = Node(
-        op_type="Gemm", inputs=[node1.outputs[0], Tensor(name="weight")], outputs=[Tensor(name="y")]
+        op_type="Gemm",
+        inputs=[node1.outputs[0], Tensor(name="weight")],
+        outputs=[Tensor(name="y")],
     )
     node3 = Node(op_type="Constant", inputs=[], outputs=[Tensor(name="c")])
 
@@ -135,7 +137,9 @@ def test_keras_codegen():
     node1 = Node(op_type="Conv", inputs=[inp], outputs=[Tensor(name="conv_out")])
     node2 = Node(op_type="Gemm", inputs=[node1.outputs[0]], outputs=[Tensor(name="y")])
     node3 = Node(
-        op_type="BatchNormalization", inputs=[node2.outputs[0]], outputs=[Tensor(name="y_bn")]
+        op_type="BatchNormalization",
+        inputs=[node2.outputs[0]],
+        outputs=[Tensor(name="y_bn")],
     )
     node4 = Node(op_type="Transpose", inputs=[node3.outputs[0]], outputs=[Tensor(name="y_trans")])
     node5 = Node(op_type="Add", inputs=[node4.outputs[0], inp], outputs=[Tensor(name="out")])
@@ -321,7 +325,10 @@ def test_flax_codegen_new_ops():
     n2 = Node("Pad", inputs=["y1"], outputs=["y2"], attributes={"mode": "reflect"})
     n3 = Node("Split", inputs=["y2"], outputs=["y3_1", "y3_2"], attributes={"axis": 1})
     n4 = Node(
-        "Einsum", inputs=["y3_1", "y3_2"], outputs=["y4"], attributes={"equation": "ij,jk->ik"}
+        "Einsum",
+        inputs=["y3_1", "y3_2"],
+        outputs=["y4"],
+        attributes={"equation": "ij,jk->ik"},
     )
     n5 = Node("Softmax", inputs=["y4"], outputs=["y5"], attributes={"axis": -1})
     n6 = Node("RandomNormal", inputs=[], outputs=["y6"])
@@ -407,7 +414,9 @@ def test_pytorch_codegen_missing_ops():
         outputs=[Tensor(name="y1")],
     )
     node2 = Node(
-        op_type="LayerNormalization", inputs=[node1.outputs[0]], outputs=[Tensor(name="y2")]
+        op_type="LayerNormalization",
+        inputs=[node1.outputs[0]],
+        outputs=[Tensor(name="y2")],
     )
     node3 = Node(op_type="BatchNorm", inputs=[node2.outputs[0]], outputs=[Tensor(name="y3")])
     node4 = Node(
@@ -429,7 +438,9 @@ def test_pytorch_codegen_missing_ops():
         outputs=[Tensor(name="y8")],
     )
     node9 = Node(
-        op_type="Tile", inputs=[node8.outputs[0], Tensor(name="idx")], outputs=[Tensor(name="y9")]
+        op_type="Tile",
+        inputs=[node8.outputs[0], Tensor(name="idx")],
+        outputs=[Tensor(name="y9")],
     )
     node10 = Node(
         op_type="Einsum",
@@ -531,15 +542,21 @@ def test_keras_codegen_all_ops():
         outputs=[Tensor(name="y3")],
     )
     node4 = Node(
-        op_type="LayerNormalization", inputs=[node3.outputs[0]], outputs=[Tensor(name="y4")]
+        op_type="LayerNormalization",
+        inputs=[node3.outputs[0]],
+        outputs=[Tensor(name="y4")],
     )
     node5 = Node(op_type="BatchNorm", inputs=[node4.outputs[0]], outputs=[Tensor(name="y5")])
     node6 = Node(
-        op_type="Add", inputs=[node5.outputs[0], Tensor(name="w")], outputs=[Tensor(name="y6")]
+        op_type="Add",
+        inputs=[node5.outputs[0], Tensor(name="w")],
+        outputs=[Tensor(name="y6")],
     )
     node7 = Node(op_type="Relu", inputs=[node6.outputs[0]], outputs=[Tensor(name="y7")])
     node8 = Node(
-        op_type="Reshape", inputs=[node7.outputs[0], Tensor(name="w")], outputs=[Tensor(name="y8")]
+        op_type="Reshape",
+        inputs=[node7.outputs[0], Tensor(name="w")],
+        outputs=[Tensor(name="y8")],
     )
     node9 = Node(
         op_type="Transpose",

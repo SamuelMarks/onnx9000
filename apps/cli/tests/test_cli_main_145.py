@@ -10,7 +10,9 @@ def test_coverage_gaps_cmd145():
         from onnx9000_cli.main import main
 
         with patch.object(
-            sys, "argv", ["onnx9000", "convert", "test", "--from", "pytorch", "--to", "onnx"]
+            sys,
+            "argv",
+            ["onnx9000", "convert", "test", "--from", "pytorch", "--to", "onnx"],
         ):
             with patch(
                 "onnx9000_cli.main.load_onnx",
@@ -22,9 +24,13 @@ def test_coverage_gaps_cmd145():
                             with patch("os.path.exists", return_value=False):
                                 with patch("torch.export.load", side_effect=Exception):
                                     with patch(
-                                        "torch.load", return_value=type("Mod", (object,), {})()
+                                        "torch.load",
+                                        return_value=type("Mod", (object,), {})(),
                                     ):
-                                        with patch("torch.nn.Module", type("Mod", (object,), {})):
+                                        with patch(
+                                            "torch.nn.Module",
+                                            type("Mod", (object,), {}),
+                                        ):
                                             with patch("torch.fx.symbolic_trace", MagicMock()):
                                                 with patch(
                                                     "onnx9000.converters.parsers.PyTorchFXParser",

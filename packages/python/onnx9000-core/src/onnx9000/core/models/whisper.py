@@ -4,7 +4,13 @@ from typing import Any, Optional
 
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add
-from onnx9000.core.primitives import ConvND, Gelu, Gemm, LayerNormalization, MultiHeadAttention
+from onnx9000.core.primitives import (
+    ConvND,
+    Gelu,
+    Gemm,
+    LayerNormalization,
+    MultiHeadAttention,
+)
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
@@ -16,7 +22,11 @@ class WhisperEncoderLayer:
     """Whisper encoder layer."""
 
     def __init__(
-        self, d_model: int, encoder_attention_heads: int, encoder_ffn_dim: int, prefix: str = ""
+        self,
+        d_model: int,
+        encoder_attention_heads: int,
+        encoder_ffn_dim: int,
+        prefix: str = "",
     ):
         """Init."""
         self.prefix = prefix
@@ -127,7 +137,11 @@ class WhisperDecoderLayer:
     """Whisper decoder layer."""
 
     def __init__(
-        self, d_model: int, decoder_attention_heads: int, decoder_ffn_dim: int, prefix: str = ""
+        self,
+        d_model: int,
+        decoder_attention_heads: int,
+        decoder_ffn_dim: int,
+        prefix: str = "",
     ):
         """Init."""
         self.prefix = prefix
@@ -145,7 +159,10 @@ class WhisperDecoderLayer:
         self.final_layer_norm = LayerNormalization((d_model,))
 
     def __call__(
-        self, x: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
+        self,
+        x: Tensor,
+        encoder_hidden_states: Tensor,
+        causal_mask: Tensor | None = None,
     ) -> Tensor:
         """Call."""
         identity = x
@@ -212,13 +229,18 @@ class WhisperDecoder:
         self.lm_head = Gemm(trans_b=1)
 
     def __call__(
-        self, input_ids: Tensor, encoder_hidden_states: Tensor, causal_mask: Tensor | None = None
+        self,
+        input_ids: Tensor,
+        encoder_hidden_states: Tensor,
+        causal_mask: Tensor | None = None,
     ) -> Tensor:
         """Call."""
         from onnx9000.core.ops import gather
 
         x = gather(
-            get_param("embed_tokens.weight", [self.vocab_size, self.d_model]), input_ids, axis=0
+            get_param("embed_tokens.weight", [self.vocab_size, self.d_model]),
+            input_ids,
+            axis=0,
         )
 
         pos_embed = get_param("embed_positions.weight", [1, 448, self.d_model])

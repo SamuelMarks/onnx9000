@@ -274,7 +274,10 @@ def test_phase_6():
         "ArgMax",
         inputs=["X4", "W3_scale", "B3_bias"],
         outputs=["Y4"],
-        attributes={"axis": Attribute("axis", value=1), "keepdims": Attribute("keepdims", value=0)},
+        attributes={
+            "axis": Attribute("axis", value=1),
+            "keepdims": Attribute("keepdims", value=0),
+        },
     )
     g.nodes.extend([n1, n2, n3, n4])
     g.inputs.extend(["X1", "X2", "X3", "X4"])
@@ -326,7 +329,10 @@ def test_phase_7():
     )
     n1 = Node("Relu", inputs=["X1"], outputs=["Y1"])
     n2 = Node(
-        "Softmax", inputs=["X2"], outputs=["Y2"], attributes={"axis": Attribute("axis", value=-1)}
+        "Softmax",
+        inputs=["X2"],
+        outputs=["Y2"],
+        attributes={"axis": Attribute("axis", value=-1)},
     )
     n3 = Node(
         "BatchNormalization",
@@ -382,7 +388,10 @@ def test_phase_8():
             "Y3": Tensor("Y3", shape=(1, 7, 2, 2), dtype=DType.FLOAT32),
             "X5": Tensor("X5", shape=(1, 2), dtype=DType.FLOAT32),
             "Pads": Constant(
-                "Pads", shape=(4,), dtype=DType.INT64, values=struct.pack("<4q", 0, 1, 0, 1)
+                "Pads",
+                shape=(4,),
+                dtype=DType.INT64,
+                values=struct.pack("<4q", 0, 1, 0, 1),
             ),
             "Val": Constant("Val", shape=(1,), dtype=DType.FLOAT32, values=struct.pack("<f", -1.0)),
             "Y5": Tensor("Y5", shape=(1, 4), dtype=DType.FLOAT32),
@@ -757,7 +766,8 @@ def test_cli_no_math_strip():
                     mock_module = types.ModuleType("onnx9000.converters.frontend.pyodide_wrapper")
                     mock_module.parse_onnx_to_ir = lambda x: g
                     with patch.dict(
-                        sys.modules, {"onnx9000.converters.frontend.pyodide_wrapper": mock_module}
+                        sys.modules,
+                        {"onnx9000.converters.frontend.pyodide_wrapper": mock_module},
                     ):
                         from onnx9000.c_compiler.compiler import C89Compiler
 
@@ -966,7 +976,11 @@ def test_onehot_coverage():
     b = C89Builder()
     n = Node("OneHot", ["x", "depth", "values"], ["y"], {"axis": -1})
     t_out = Tensor("y", shape=(2, 4))
-    in_t = [Tensor("x", shape=(2,)), Tensor("depth", shape=(1,)), Tensor("values", shape=(2,))]
+    in_t = [
+        Tensor("x", shape=(2,)),
+        Tensor("depth", shape=(1,)),
+        Tensor("values", shape=(2,)),
+    ]
     generate_onehot(b, n, t_out, in_t, ["x", "depth", "values"], "y")
     code = b.get_code()
     assert "y[i] = off_value;" in code
@@ -976,7 +990,10 @@ def test_onehot_coverage():
 def test_d2s_coverage():
     """Test d2s coverage."""
     from onnx9000.c_compiler.ast_builder import C89Builder
-    from onnx9000.c_compiler.routing import generate_depth_to_space, generate_space_to_depth
+    from onnx9000.c_compiler.routing import (
+        generate_depth_to_space,
+        generate_space_to_depth,
+    )
     from onnx9000.core.ir import Node, Tensor
 
     b = C89Builder()
