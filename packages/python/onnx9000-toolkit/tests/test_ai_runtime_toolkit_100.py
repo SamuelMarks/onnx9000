@@ -1,13 +1,16 @@
 """Exhaustive 100% coverage tests for Python AI/Runtime/Toolkit packages (Phase 6.3.6)."""
 
 import ast
+import importlib
 import mmap
 import struct
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import numpy as np
+import onnx9000.zoo.sync as zoo_sync
 import pytest
 from onnx9000.core import onnx_pb2 as pb
 from onnx9000.core.dtypes import DType
@@ -59,12 +62,23 @@ from onnx9000.toolkit.training.autograd.utils import (
     compile_multi_replica_graph,
     embed_distributed_identifiers,
 )
-from onnx9000.zoo.sync import HfApi
 
 
 def test_jax_and_zoo_remaining_branches() -> None:
     """Cover remaining statements and branches in onnx9000-jax and onnx9000-zoo."""
-    assert HfApi().list_models() == []
+    with patch.dict(sys.modules, {"requests": None, "huggingface_hub": None}):
+        importlib.reload(zoo_sync)
+        assert zoo_sync.HfApi().list_models() == []
+        assert zoo_sync.requests.get("https://example.com").status_code == 404
+    with patch.dict(
+        sys.modules,
+        {
+            "requests": SimpleNamespace(get=lambda *_: SimpleNamespace(status_code=404, json=list)),
+            "huggingface_hub": SimpleNamespace(HfApi=zoo_sync.HfApi),
+        },
+    ):
+        importlib.reload(zoo_sync)
+    importlib.reload(zoo_sync)
 
     imp = JaxprImporter()
     g = imp.parse(

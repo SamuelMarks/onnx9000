@@ -5,6 +5,7 @@ export default defineConfig({
     environment: 'jsdom',
     pool: 'forks',
     globals: true,
+    setupFiles: ['../sphinx-demo-ui/tests/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

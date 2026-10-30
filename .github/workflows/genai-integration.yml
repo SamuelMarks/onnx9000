@@ -26,4 +26,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install && uv sync --all-extras --all-packages
       - name: Run GenAI Python Tests
-        run: uv run pytest packages/python/onnx9000-core/tests/genai/
+        run: uv run pytest packages/python/onnx9000-genai/tests/

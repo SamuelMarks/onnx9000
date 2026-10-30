@@ -91,8 +91,9 @@ def test_missing_imports() -> None:
         with pytest.raises(SystemExit):
             quantize_model("test")
         warn_unsupported_ops()
-    res = _progress_bar([1, 2, 3])
-    list(res)
+    with patch.dict(sys.modules, {"tqdm": None}):
+        res = _progress_bar([1, 2, 3])
+        list(res)
 
 
 def test_export_unsupported() -> None:

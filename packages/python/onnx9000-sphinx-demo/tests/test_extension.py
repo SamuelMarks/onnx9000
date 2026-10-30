@@ -201,6 +201,12 @@ def test_copy_frontend_assets(
 
 def test_setup() -> None:
     """Verify that setup behaves as expected."""
+    import importlib
+    import sys
+    import types
+
+    import onnx9000.sphinx_demo as sd
+
     app = MagicMock()
     res = setup(app)
 
@@ -208,3 +214,39 @@ def test_setup() -> None:
     app.add_node.assert_called_once()
     app.add_directive.assert_called_once_with("interactive-demo", InteractiveDemoDirective)
     assert app.connect.call_count == 2
+
+    with patch.dict(
+        sys.modules,
+        {
+            "docutils": None,
+            "docutils.parsers": None,
+            "docutils.parsers.rst": None,
+            "sphinx": None,
+            "sphinx.application": None,
+        },
+    ):
+        importlib.reload(sd)
+        fb_dir = sd.InteractiveDemoDirective("interactive-demo", [], {"initial-source": "keras"})
+        fb_nodes = fb_dir.run()
+        assert fb_nodes[0]["initial-source"] == "keras"
+
+    mock_docutils = types.ModuleType("docutils")
+    mock_docutils.nodes = sd.nodes  # type: ignore[attr-defined]
+    mock_parsers = types.ModuleType("docutils.parsers")
+    mock_rst = types.ModuleType("docutils.parsers.rst")
+    mock_rst.Directive = sd.Directive  # type: ignore[attr-defined]
+    mock_sphinx = types.ModuleType("sphinx")
+    mock_sphinx_app = types.ModuleType("sphinx.application")
+    mock_sphinx_app.Sphinx = sd.Sphinx  # type: ignore[attr-defined]
+    with patch.dict(
+        sys.modules,
+        {
+            "docutils": mock_docutils,
+            "docutils.parsers": mock_parsers,
+            "docutils.parsers.rst": mock_rst,
+            "sphinx": mock_sphinx,
+            "sphinx.application": mock_sphinx_app,
+        },
+    ):
+        importlib.reload(sd)
+    importlib.reload(sd)

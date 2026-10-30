@@ -21,6 +21,9 @@
       "!**/.turbo",
       "!docs/_build",
       "!docs/js-api",
+      "!docs/_static/app.bundle.js",
+      "!docs/_static/assets",
+      "!docs/_static/sphinx_demo",
       "!python_coverage.json",
       "!snapshots"
     ],

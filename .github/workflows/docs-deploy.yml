@@ -59,8 +59,19 @@ jobs:
       - name: Build Sphinx Docs
         run: uv run make -C docs html
 
+      - name: Check GH_PAT validity
+        id: check_pat
+        run: |
+          if [ -n "$GH_PAT" ] && [ "$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: token $GH_PAT" https://api.github.com/user)" = "200" ]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::GH_PAT is missing or expired; skipping external repository deployment."
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # Deploy to external repository
       - name: Deploy to external repository
+        if: steps.check_pat.outputs.valid == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ env.GH_PAT }}

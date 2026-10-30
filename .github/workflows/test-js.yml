@@ -17,12 +17,6 @@ jobs:
           version: 9.15.9
       - name: Install dependencies
         run: pnpm install
-      - name: Setup EdgeTPU Compiler (Ubuntu)
-        run: |
-          curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/coral-edgetpu.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/coral-edgetpu.gpg] https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
-          sudo apt-get update
-          sudo apt-get install -y edgetpu-compiler
       - name: Run Tests
         run: pnpm turbo run test --concurrency=1 --filter="./packages/js/*" --filter="./apps/*" --filter="!cli"
 

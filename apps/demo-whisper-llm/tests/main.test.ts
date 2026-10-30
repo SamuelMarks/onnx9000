@@ -51,6 +51,7 @@ describe('demo-whisper-llm', () => {
         this.onstop?.();
       }
     }
+    Blob.prototype.arrayBuffer = async (): Promise<ArrayBuffer> => new ArrayBuffer(5);
     (globalThis as never as Record<string, unknown>).MediaRecorder = MockMediaRecorder;
 
     recordBtn.click();

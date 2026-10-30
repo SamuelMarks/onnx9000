@@ -19,30 +19,33 @@ except ImportError:
     class _Element(dict):  # type: ignore[type-arg]
         """Fallback docutils Element node."""
 
-        def __init__(self, *args: object, **kwargs: object) -> None:
+        def __init__(self, *args: str, **kwargs: str) -> None:
             """Initialize element."""
             super().__init__()
-            self.attributes: dict[str, object] = self
+            self.attributes: dict[str, str] = self
 
-        def __setitem__(self, key: str, value: object) -> None:
+        def __setitem__(self, key: str, value: str) -> None:
             """Set attribute."""
             super().__setitem__(key, value)
 
-    nodes = types.SimpleNamespace(General=_Element, Element=object, Node=_Element)
+    class _BaseNode:
+        """Fallback docutils base Node."""
+
+    nodes = types.SimpleNamespace(General=_Element, Element=_BaseNode, Node=_Element)
 
     class Directive:  # type: ignore[no-redef]
         """Fallback docutils Directive."""
 
         has_content: bool = False
-        option_spec: dict[str, object] = {}
+        option_spec: dict[str, type[str]] = {}
 
         def __init__(
             self,
             name: str = "",
             arguments: list[str] | None = None,
-            options: dict[str, object] | None = None,
-            *args: object,
-            **kwargs: object,
+            options: dict[str, str] | None = None,
+            *args: str | list[str] | dict[str, str] | int | None,
+            **kwargs: str | list[str] | dict[str, str] | int | None,
         ) -> None:
             """Initialize directive."""
             self.name = name
@@ -53,7 +56,9 @@ except ImportError:
 try:
     from sphinx.application import Sphinx
 except ImportError:
-    Sphinx = object
+
+    class Sphinx:  # type: ignore[no-redef]
+        """Fallback Sphinx application class."""
 
 
 class InteractiveDemoNode(nodes.General, nodes.Element):

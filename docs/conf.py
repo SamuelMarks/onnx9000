@@ -147,7 +147,7 @@ def run_typedoc(app: int | float | str | bool | bytes | list | dict | tuple | No
 
     # Preprocess README.md to fix relative paths pointing to js-api/_media
     preprocess_script = os.path.join(docs_dir, "preprocess_readme.py")
-    subprocess.run([sys.executable, preprocess_script])
+    subprocess.run([sys.executable, preprocess_script], cwd=root_dir)
 
 
 class MlirLexer(RegexLexer):

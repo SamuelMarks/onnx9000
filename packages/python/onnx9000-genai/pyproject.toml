@@ -17,3 +17,4 @@ packages = ["src/onnx9000", "src/onnx9000_genai"]
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
 testpaths = ["tests"]
+pythonpath = ["src", "../onnx9000-core/src"]
